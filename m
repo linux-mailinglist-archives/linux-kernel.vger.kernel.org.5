@@ -2,173 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB6D7B5E5E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83457B5E62
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238716AbjJCAsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 20:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
+        id S229846AbjJCAxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 20:53:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjJCAsu (ORCPT
+        with ESMTP id S229517AbjJCAxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 20:48:50 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082C9A9;
-        Mon,  2 Oct 2023 17:48:47 -0700 (PDT)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3930irGJ021736;
-        Tue, 3 Oct 2023 00:48:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-03-30;
- bh=GSyxAsazOcsMNfdFMkGsy3jWCgiew/0II8oAPiT8IDg=;
- b=HY0eTsEjSiR+YXDgsNKTw1sVd3vpGHTysGv8JpRRh+JHPeE8siZRrVZDa4/V98nxtRt2
- fvpXWhEPw5WEaBYJNGONnTW8ZZiLHetbcGZZ21AM4W6muomlVkR62l6EpDLHf2RRs7bq
- uaO060qezzkYzziN9O4+GBMbe6k8bLv9S3zDCUDNcsmHuAjJa3DeHqcwt4/pZoekUmaV
- HfEKCzgitXC1LfRFrgFd5++9DrbnNChIL8RwLFmeox/k9DJfSYQa8EfLWvTx3nJTsatu
- frdWsfOC9XjduyiTtX+5RVroKMIZjZx74kbExdjHzD5IFq0L4L3ZxG+0Orv155k3wQ43 pw== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3teakcbpfg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Oct 2023 00:48:12 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 392NPo16033676;
-        Tue, 3 Oct 2023 00:48:12 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2045.outbound.protection.outlook.com [104.47.73.45])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tea45fjj5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Oct 2023 00:48:12 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jUNwBulyuO7N5+zfYmJzdAUTYFPtlv9Pc0JYA/WfS1fmTKgov7rtyb81B57MOxHnhkJ8W9XulzaMT/GO+1iAmQPGK+UKyPQR5en601CNesiZcj2DliS3549jGcUeJBruwUgwwNkZr4OR4aRMyTjl1hKrOai51/giA8e3LAioOYYHK5j7sIHTX44/SaXtXBcNS63Koqn1RIcJUF8qKWHzBMRYbKOsXWr4OktgMxvvE9cn+lIFwCab+uMeiLey2PsFTM+LnNbXC9zSFiqHK5Zf2qW0i4nJuFESdGS4TIM0JrPXNWBxSmoII8qzddJBIYg60BZ9elu6EbcXAcRJibyVWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GSyxAsazOcsMNfdFMkGsy3jWCgiew/0II8oAPiT8IDg=;
- b=mxn6xJuK/WE1hj4/FFhSvlIn5x+xLoiaZo68srgHpF1UsQY+4wismTknCJSQJlgbmL61YtyleUAiVDogH0ff6zB7/3ItEuFbPHASDEy9FR37cdaJOy2in9dD0I/ZcKrrMTTvEuEiKP4TDy7W0A90zffvgVCDE+L/p0sq4ooT2UJQhtsgjKjFl2FKPSE3XWoPRrMJUXzefeowiNEOlACzR23p3BtLq6bvuHewymHfBPjZrk2+R23CyU0w+y/b5LQPPUTtejwk4ekpcRUCVeEfOLad4NIxUmzu3WKtnzhgS/6JZIPrLKFhEOqzw547V9VgQ2TF97f9VUpeCJhbvqwteQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 2 Oct 2023 20:53:16 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C48AB0
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:53:13 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c754ee3ec5so3571135ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 17:53:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GSyxAsazOcsMNfdFMkGsy3jWCgiew/0II8oAPiT8IDg=;
- b=hCcx3Io3cRo0nfoRq1U2oD7A5/ARUeL57lq9TLi8gGUDDSpO+Hbxy6bpJSkUZMGeJYHOYdhtdCp9yi+MXDT7n10Tj0iUEIuEtyPKag7w3LxCgShCVX1QnJ1rbb2/bUMCED4Gz7Do1+iXgzqZJY4XshwSXHzaRfJqqrXZ8NuMqDs=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by DS7PR10MB5198.namprd10.prod.outlook.com (2603:10b6:5:3a5::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Tue, 3 Oct
- 2023 00:48:09 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::59f3:b30d:a592:36be]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::59f3:b30d:a592:36be%7]) with mapi id 15.20.6813.017; Tue, 3 Oct 2023
- 00:48:09 +0000
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
-        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH 10/21] block: Add fops atomic write support
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1lecktuoo.fsf@ca-mkp.ca.oracle.com>
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
-        <20230929102726.2985188-11-john.g.garry@oracle.com>
-        <17ee1669-5830-4ead-888d-a6a4624b638a@acm.org>
-        <5d26fa3b-ec34-bc39-ecfe-4616a04977ca@oracle.com>
-        <b7a6f380-c6fa-45e0-b727-ba804c6684e4@acm.org>
-Date:   Mon, 02 Oct 2023 20:48:06 -0400
-In-Reply-To: <b7a6f380-c6fa-45e0-b727-ba804c6684e4@acm.org> (Bart Van Assche's
-        message of "Mon, 2 Oct 2023 12:12:49 -0700")
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR13CA0115.namprd13.prod.outlook.com
- (2603:10b6:a03:2c5::30) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|DS7PR10MB5198:EE_
-X-MS-Office365-Filtering-Correlation-Id: aa0dcfdc-0503-4542-c610-08dbc3aa69c5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: as7cWea8WZvO1YTivy0ynEEPpYwUt7Fv4sYWPQ5Qs0ZxiNolj16qBg6104rqQJGjCxrJqXVMU+baIlqomjMn64kPKXpAjArGuicIueTwVgGe4zBqiAp0E4phiB08WxkkZ469bC/R4I0XhUwbVACohPdUw5jYxD6ppWSH2EA8vwadyOyPx3NVvpQ5R2hPf25KUe9ErkTzr5xh9AUCPWO0zd/AT9eBQuEx754YlwZtChQ1YLFdKtB+jDmbaXNeOUDzGCVWNjf2xKMfBewCJk9u8uctGWzTKJpoasH5goYWbgD8nRNu7Bh37dHlKjpsY4iSXKETh6GMstUR/AhkW7w/2PNrFtYn4vTDNhi6Q3O6nri7HW58WHIeYkVTHqJV1j5OjVkxD3Tz86DGk9L/Pa8ecEY1j1BNB7hTkNHNKweOXp8OW5khC2RUAe9fJppXrLsa/Py5uY+0rz+vs6aFcnhk5Kj+rN5Dn+fMXP3Ln6lK4R/S9XBaRs02wqb+v7ZToH/VqiTj4tbrXymT8G2WbeQJr5DrkZDKbOCe+VWDSMWSUv5sdLYpvbJyIpxcd1FwVggP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(366004)(346002)(39860400002)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(66556008)(6916009)(316002)(4744005)(2906002)(66476007)(478600001)(7416002)(8676002)(8936002)(4326008)(66946007)(6486002)(26005)(5660300002)(83380400001)(6512007)(6666004)(6506007)(36916002)(41300700001)(86362001)(66899024)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KSGuefeC5TmV/ycCAsaVVocEUvYXJoo3wq4hiNJEQD5kCajtAqipaC+1l3PA?=
- =?us-ascii?Q?+5pDt6MAE47byVmufrq4O8UkywzWFuy5wzaj+0eH5fvjh2zjhUQA6QY2JsZS?=
- =?us-ascii?Q?qalYiZzTXLea6pWlJ3Vj54qlG98aRR7LJPx92+DRR8jpXn1HNq1QXagRyzJa?=
- =?us-ascii?Q?RBmG8+3TUT4OFqO+hUzNxosFKSgXKzTlAYu6OnVYgUEsnYF+tCMd2Zocky+w?=
- =?us-ascii?Q?9Q/4/sNSVtNLZ5SZBvGVLLlrrbtjvec+2fYQWBMBMiNJQi/CdIumQcLU3Pjk?=
- =?us-ascii?Q?Poq1zT/OYhxuXVOeSJEE6LtOD47pd1C/GfkkCCfm7oFtn9O2chefk9rHY0R5?=
- =?us-ascii?Q?LYqWiBa+aHSETJtweYlBb/nFAcsRnYVPzRanpf511jQHkMnCmhwLY/pRPzLL?=
- =?us-ascii?Q?7UEWMIYSuShyGuhPDArbhFHjRn4Zb28gGD54iM34hVlPy8WWPuDUOvAK8cIX?=
- =?us-ascii?Q?Tn72lBMO34Fz8NmLONt81KoDD3l/DU8OcAJhZ+LAu0ppK+bSJx3qLxmGR/E7?=
- =?us-ascii?Q?+5AKbykt8fj7ZPkOJNyt/am3rzHHnv1pAsVEHEj1yqMBaPY+AjynMRmQWAeV?=
- =?us-ascii?Q?yDyy9qNtrBk/D9PltnHRZ9TGadjVzf9ARVYjOoSCYZMm8K8vDEQStvvmX7Wv?=
- =?us-ascii?Q?H5sT52rplzbNMGrQgQ3EKTYnuhznpZuNihMK+ahyUcJra97aTxyl3NrJ0zcb?=
- =?us-ascii?Q?ZUO+atNxsZTXJi9lvg1df4zviIw6nBmf0FwSx+jkbvvrALSZ+NUnhKOD60DX?=
- =?us-ascii?Q?3MU2mNlHVwt+i9kPKtVD8SmZm1vE2xbrppqM7RIhT9UIp+OosClEowAf5oBQ?=
- =?us-ascii?Q?d4FMftnmd1J8x15JChMeox4tX7HiZgC3w/+NLDx1dPJ25z7CUqGOrNPSXuTQ?=
- =?us-ascii?Q?khbGJS1HscAPaoeHtKU+IOlB6NXR35gDaIQ50ZAtM6sa1pW6nQY36r73Li9A?=
- =?us-ascii?Q?Alp6Mpq4pTyi5P0d+AzwGXD/NQfszl00aiXSFkwwJmco94IP0Q1gCQfmHXyC?=
- =?us-ascii?Q?LsAAD+R3sj9fbAkdqQIhWwYY2+BZC5d9fkQTwCMxSSc4xR1zi0FyVkybYHlf?=
- =?us-ascii?Q?8pysn3lCBCKFiaJ0pYZ1e2nUZr6PtQdkkPnt1J/a3gDi5cPE3nZxIJ2g7Dws?=
- =?us-ascii?Q?4lThmDo4LlSu7sqmdkwoJsdlHbP2Nk/6dkpTnxSc/40T+psSiz/velSDcDRa?=
- =?us-ascii?Q?fEr0eDqjWdPCc88nNpzPTL62cJ0++bEyW8jW5i41ZoEYC9Xz7nTrA2MiOodp?=
- =?us-ascii?Q?SFQPAJTwTqj5P9BEDqyoENAR8Y5raMLj/Cbd5vmq5boaDNoLyAtjm2XIw007?=
- =?us-ascii?Q?NqWYkhzg9MgE3rJMT4q8lR5pTn643tm6h+O0PrhhoEkpQe1LTyHp6J51/0ws?=
- =?us-ascii?Q?mBPcKpMlpJ1Q1dJyJOLfPep03duK0eZplMw4jObSFs2yU8yhWMMoA8e3yBQB?=
- =?us-ascii?Q?KEX8b5HIZsDCiDK071bChyhIlowcAT7qjiTjB4SOtni/eg92YVqk9KhmEugf?=
- =?us-ascii?Q?TmvS0eRRMZwu47887J6j01iuZ1oNRwtGRT2pVly2GFRjoAnvZXb4ye4o28QB?=
- =?us-ascii?Q?x53ehmRZk1TqeNwjCSriiNp5B7a8io003l1x7Y27BiGpIPP6Iywqm0FwxqI+?=
- =?us-ascii?Q?QQ=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?YWB9EumeY4xipv+kUkXlW1gq8gDY+5C9L+1UrFekSk7z6nZxfal9sKO5Q7hF?=
- =?us-ascii?Q?6SM0qIK/LUAmSz+gkU91btPCfxEm6Idmv2W/VNgbYNORGC6fSl0qyK4OFE8p?=
- =?us-ascii?Q?7Q8HG96geUDsFt8Ub2s2VsNBLg2EZFiz838Y75X9fTlwBh3PFSVfFmD0+enB?=
- =?us-ascii?Q?atJ4b1JGyW3cSWNkxm0m9CKYMnNTqRJ/1EzdglVINiQe0J01DoeR46Veu48b?=
- =?us-ascii?Q?wxa63wJxA2n3Ah/G0zZDBeq0c8Tic7WcDyzfG9EPqbWNEeKX+4B2IvkRsEBF?=
- =?us-ascii?Q?lS8Z295Mwfm524uZl6qvmzlPLnqs8Y790Pre+K6DzeWudD0ip2q+qXUykV+b?=
- =?us-ascii?Q?lfXs1r+FHUitl6Ep+pr4MR85mHEkgsfBhuEBCuTqlOHzrfejtlMzOUmbrR49?=
- =?us-ascii?Q?bJ5R5essfy1R6XvwN2BIzZLbZsQFN9gva0seZ0hI7KTjDXFvm43oHVVZHLrj?=
- =?us-ascii?Q?An4OxL68hTq4f4NmuwVm63LM9s4hjQqNgT5STssYjYMSH/vXLHrbA9gFB42E?=
- =?us-ascii?Q?48Npp+BTFqoOdJb2cBKotKBYFzkjHeQslH+bmHVasI44FqeESD0SZkT6exCX?=
- =?us-ascii?Q?Efsd9pmEuZbzKSHeLW1cN0+ZmCowA+cY3El329NLyoVl7bSlH+dPLPMntdDc?=
- =?us-ascii?Q?0hT85F5Omnp/H66eJ83pbTV+Srdk1daK3+Tj2hvzgl3pMjtnuRtcsDorEfM2?=
- =?us-ascii?Q?JudQDr/iE19nUBF+1VU601W7Ng0TiMzkqZwdYZ8usWNXmcXD7yvl0ItiZSuK?=
- =?us-ascii?Q?MnSd9JZd7UU0EvCBE6pp7uQXXhnv5wNbYYXsrKOmKcuuGm5cX8xiV1nJn6J8?=
- =?us-ascii?Q?etCiFJ8yVZXAyS+0qSY5sqQa2nRp8en2E/rh8nps4zZsiNZPHqhNRgDqPrPt?=
- =?us-ascii?Q?aHPzMj5jq1PTTvIanqaK3k/+h3tYELLmM7KwhQrZ3kyEyGFxC6ILddBUaIZX?=
- =?us-ascii?Q?MFYQjAd1aZRtGS0dNyUC8nNpgjfTP2+IIKkhgOXY97WDzrKQBCXOyoTMVs/v?=
- =?us-ascii?Q?OxA49H0LsDxOBsepCMyxCV/lIfUt1pF+rUk0QOkdJjiOn/irre2Ufd/M/1HR?=
- =?us-ascii?Q?SxtrXgVKv9S0YB41BtgnXDaZDj/4jlAupnwiMBTwf9Wcmb44gbI=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa0dcfdc-0503-4542-c610-08dbc3aa69c5
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 00:48:09.1895
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: axw7B8kpNjDFt4ZESZ+sJ/m/3Gm75MVPYKhjTt+zi0kmaOlHDypQlebmY7Qf0OFTbr7MlTiOTzPeOjaamPv0UsmCyz2OEvBTBiNhFdSJgps=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5198
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-02_16,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- suspectscore=0 malwarescore=0 spamscore=0 bulkscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310030004
-X-Proofpoint-GUID: MSKxjt690Mf4HYr-RHAnQzOEVHKiLFtJ
-X-Proofpoint-ORIG-GUID: MSKxjt690Mf4HYr-RHAnQzOEVHKiLFtJ
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        d=google.com; s=20230601; t=1696294393; x=1696899193; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fGxNGV3zFHEKCKCtbi91VI3bPEN8a8y7A2TBvxaAZLw=;
+        b=jXIYlTaOmP4EbhxNElv0dYQ2M6GMZliMY9zzRg4iJ19/NUYXl5fGPNLG0Fo0NTy4Z/
+         e0p1yDymDQ7Ra7izw8/o+qUX4f0ej/Y7WV0zuqqpl9V8EQzwCEOC18Oh5QmremRQu8Uw
+         ejOBaSvnjH3T9UWtrvrI8mvqnbTEZ7cKlGLaFXLk2F32pgst7NT8bwYDf6Yq0ZxyYYDW
+         L22hIN+fyFPzKk1MxJ7PgwOcbVOk42fBgx+YtNHfSeHmMT2IBffG9Y2tNkxuk9qXfN3c
+         F6FcKcU5HIojAlG+SjLapmqms3YE5+NojJ8VDTQEp/nScufcm75+AGnzBTYMcDwKR66P
+         otYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696294393; x=1696899193;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fGxNGV3zFHEKCKCtbi91VI3bPEN8a8y7A2TBvxaAZLw=;
+        b=uYU9xKYZnzHjDkZy9O2W4Im8WRPM+PiD1/JYYm9U6lQGda/Kn9vL/dAZNCBOVNqi/+
+         y1MT1tFpb3Gr4JUFT8zuvgZHuzBKPKlfAhy9pAwcdQyd9RKujw9iPLHYHFu5UIZ6kVOW
+         VZUh82wuQiz0eAet6235M8nIoXeGclrnM5hqdUcr4Nxj0udQaG9VL2uZZqopfZigoR2r
+         2lWtAkKJSueQP+6cY6zN1E5Ep1mmMjZ7g3OjrdK5Uvvqe2LAtrH0VwLBpzZ0kYl3EiHF
+         gJV/tOB9/B+0faSPpKdOvx/MCZJsJ+sIk0t1E+YT073nU0Sdbz6iz/tUraeygkmnCMmd
+         bDXg==
+X-Gm-Message-State: AOJu0YxctumgaIhFKA8Z04Deo4oWpfzZcpHSh+IpM3W04+5UZbn1/Eus
+        GB8VD+DfT7T0FOOB8Y8QKN3mIN6wQ/c=
+X-Google-Smtp-Source: AGHT+IHLZ8a/M8CjatROO80yPekYyYwfVMsuGz2ZCKlbQoHa+u2C3FcsRTjT+/u//wte3ntKIuN1sOkULBM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:d4d2:b0:1bc:2547:b17c with SMTP id
+ o18-20020a170902d4d200b001bc2547b17cmr204487plg.1.1696294392673; Mon, 02 Oct
+ 2023 17:53:12 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 17:53:11 -0700
+In-Reply-To: <52a3cea2084482fc67e35a0bf37453f84dcd6297.camel@infradead.org>
+Mime-Version: 1.0
+References: <20230926230649.67852-1-dongli.zhang@oracle.com>
+ <377d9706-cc10-dfb8-5326-96c83c47338d@oracle.com> <36f3dbb1-61d7-e90a-02cf-9f151a1a3d35@oracle.com>
+ <ZRWnVDMKNezAzr2m@google.com> <a461bf3f-c17e-9c3f-56aa-726225e8391d@oracle.com>
+ <884aa233ef46d5209b2d1c92ce992f50a76bd656.camel@infradead.org>
+ <ZRrxtagy7vJO5tgU@google.com> <52a3cea2084482fc67e35a0bf37453f84dcd6297.camel@infradead.org>
+Message-ID: <ZRtl94_rIif3GRpu@google.com>
+Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock periodically
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -176,24 +74,242 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 02, 2023, David Woodhouse wrote:
+> On Mon, 2023-10-02 at 09:37 -0700, Sean Christopherson wrote:
+> > On Mon, Oct 02, 2023, David Woodhouse wrote:
+> > > On Fri, 2023-09-29 at 13:15 -0700, Dongli Zhang wrote:
+> > > > 
+> > > > 1. The vcpu->hv_clock (kvmclock) is based on its own mult/shift/equation.
+> > > > 
+> > > > 2. The raw monotonic (tsc_clocksource) uses different mult/shift/equation.
+> > > > 
+> > > 
+> > > That just seems wrong. I don't mean that you're incorrect; it seems
+> > > *morally* wrong.
+> > > 
+> > > In a system with X86_FEATURE_CONSTANT_TSC, why would KVM choose to use
+> > > a *different* mult/shift/equation (your #1) to convert TSC ticks to
+> > > nanoseconds than the host CLOCK_MONOTONIC_RAW does (your #2).
+> > > 
+> > > I understand that KVM can't track the host's CLOCK_MONOTONIC, as it's
+> > > adjusted by NTP. But CLOCK_MONOTONIC_RAW is supposed to be consistent.
+> > > 
+> > > Fix that, and the whole problem goes away, doesn't it?
+> > > 
+> > > What am I missing here, that means we can't do that?
+> > 
+> > I believe the answer is that "struct pvclock_vcpu_time_info" and its math are
+> > ABI between KVM and KVM guests.
+> > 
+> > Like many of the older bits of KVM, my guess is that KVM's behavior is the product
+> > of making things kinda sorta work with old hardware, i.e. was probably the least
+> > awful solution in the days before constant TSCs, but is completely nonsensical on
+> > modern hardware.
+> 
+> I still don't understand. The ABI and its math are fine. The ABI is just
+>  "at time X the TSC was Y, and the TSC frequency is Z"
+> 
+> I understand why on older hardware, those values needed to *change*
+> occasionally when TSC stupidity happened. 
+> 
+> But on newer hardware, surely we can set them precisely *once* when the
+> VM starts, and never ever have to change them again? Theoretically not
+> even when we pause the VM, kexec into a new kernel, and resume the VM!
+> 
+> But we *are* having to change it, because apparently
+> CLOCK_MONOTONIC_RAW is doing something *other* than incrementing at
+> precisely the frequency of the known and constant TSC.
+>
+> But *why* is CLOCK_MONOTONIC_RAW doing that? I thought that the whole
+> point of CLOCK_MONOTONIC_RAW was to be consistent and not adjusted by
+> NTP etc.? Shouldn't it run at precisely the same rate as the kvmclock,
+> with no skew at all?
 
-Bart,
+IIUC, the issue is that the paravirt clock ends up mixing time domains, i.e. is
+a weird bastardization of the host's monotonic raw clock and the paravirt clock.
 
-> Are there any SCSI devices that we care about that report an ATOMIC
-> TRANSFER LENGTH GRANULARITY that is larger than a single logical
-> block?
+Despite a name that suggests otherwise (to me at least), __pvclock_read_cycles()
+counts "cycles" in nanoseconds, not TSC ticks.
+ 
+  u64 __pvclock_read_cycles(const struct pvclock_vcpu_time_info *src, u64 tsc)
+  {
+	u64 delta = tsc - src->tsc_timestamp;
+	u64 offset = pvclock_scale_delta(delta, src->tsc_to_system_mul,
+					     src->tsc_shift);
+	return src->system_time + offset;
+  }
 
-Yes.
+In the above, "offset" is computed in the kvmclock domain, whereas system_time
+comes from the host's CLOCK_MONOTONIC_RAW domain by way of master_kernel_ns.
+The goofy math is much more obvious in __get_kvmclock(), i.e. KVM's host-side
+retrieval of the guest's view of kvmclock:
 
-Note that code path used inside a storage device to guarantee atomicity
-of an entire I/O may be substantially different from the code path which
-only offers an incremental guarantee at a single logical or physical
-block level (to the extent that those guarantees are offered at all but
-that's a different kettle of fish).
+  hv_clock.system_time = ka->master_kernel_ns + ka->kvmclock_offset;
 
-> I'm wondering whether we really have to support such devices.
+The two domains use the same "clock" (constant TSC), but different math to compute
+nanoseconds from a given TSC value.  For decently large TSC values, this results
+in CLOCK_MONOTONIC_RAW and kvmclock computing two different times in nanoseconds.
 
-Yes.
+When KVM decides to refresh the masterclock, e.g. vCPU hotplug in Dongli's case,
+it resets the base time, a.k.a. system_time.  I.e. KVM takes all of the time that
+was accumulated in the kvmclock domain and recomputes it in the CLOCK_MONOTONIC_RAW
+domain.  The more time that passes between refreshes, the bigger the time jump
+from the guest's perspective.
 
+E.g. IIUC, your proposed patch to use a single RDTSC[*] eliminates the drift by
+undoing the CLOCK_MONOTONIC_RAW crap using the same TSC value on both the "add"
+and the "subtract", but the underlying train wreck of mixing time domains is
+still there.
+
+Without a constant TSC, deferring the reference time to the host's computation
+makes sense (or at least, is less silly), because the effective TSC would be per
+physical CPU, whereas the reference time is per VM.
+
+[*] https://lore.kernel.org/all/ee446c823002dc92c8ea525f21d00a9f5d27de59.camel@infradead.org
+
+> And if CLOCK_MONOTONIC_RAW is not what I thought it was... do we really
+> have to keep resetting the kvmclock to it at all? On modern hardware
+> can't the kvmclock be defined by the TSC alone?
+
+I think there is still use for synchronizing with the host's view of time, e.g.
+to deal with lost time across host suspend+resume.
+
+So I don't think we can completely sever KVM's paravirt clocks from host time,
+at least not without harming use cases that rely on the host's view to keep
+accurate time.  And honestly at that point, the right answer would be to stop
+advertising paravirt clocks entirely.
+
+But I do think we can address the issues that Dongli and David are obversing
+where guest time drifts even though the host kernel's base time hasn't changed.
+If I've pieced everything together correctly, the drift can be eliminated simply
+by using the paravirt clock algorithm when converting the delta from the raw TSC
+to nanoseconds.
+
+This is *very* lightly tested, as in it compiles and doesn't explode, but that's
+about all I've tested.
+
+---
+ arch/x86/kvm/x86.c | 62 +++++++++++++++++++++++++++++++---------------
+ 1 file changed, 42 insertions(+), 20 deletions(-)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 6573c89c35a9..3ba7edfca47c 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -2417,6 +2417,9 @@ static void kvm_get_time_scale(uint64_t scaled_hz, uint64_t base_hz,
+ static atomic_t kvm_guest_has_master_clock = ATOMIC_INIT(0);
+ #endif
+ 
++static u32 host_tsc_to_system_mul;
++static s8 host_tsc_shift;
++
+ static DEFINE_PER_CPU(unsigned long, cpu_tsc_khz);
+ static unsigned long max_tsc_khz;
+ 
+@@ -2812,27 +2815,18 @@ static u64 read_tsc(void)
+ static inline u64 vgettsc(struct pvclock_clock *clock, u64 *tsc_timestamp,
+ 			  int *mode)
+ {
+-	u64 tsc_pg_val;
+-	long v;
++	u64 ns, v;
+ 
+ 	switch (clock->vclock_mode) {
+ 	case VDSO_CLOCKMODE_HVCLOCK:
+-		if (hv_read_tsc_page_tsc(hv_get_tsc_page(),
+-					 tsc_timestamp, &tsc_pg_val)) {
+-			/* TSC page valid */
++		if (hv_read_tsc_page_tsc(hv_get_tsc_page(), tsc_timestamp, &v))
+ 			*mode = VDSO_CLOCKMODE_HVCLOCK;
+-			v = (tsc_pg_val - clock->cycle_last) &
+-				clock->mask;
+-		} else {
+-			/* TSC page invalid */
++		else
+ 			*mode = VDSO_CLOCKMODE_NONE;
+-		}
+ 		break;
+ 	case VDSO_CLOCKMODE_TSC:
+ 		*mode = VDSO_CLOCKMODE_TSC;
+-		*tsc_timestamp = read_tsc();
+-		v = (*tsc_timestamp - clock->cycle_last) &
+-			clock->mask;
++		v = *tsc_timestamp = read_tsc();
+ 		break;
+ 	default:
+ 		*mode = VDSO_CLOCKMODE_NONE;
+@@ -2840,8 +2834,36 @@ static inline u64 vgettsc(struct pvclock_clock *clock, u64 *tsc_timestamp,
+ 
+ 	if (*mode == VDSO_CLOCKMODE_NONE)
+ 		*tsc_timestamp = v = 0;
++	else
++		v = (v - clock->cycle_last) & clock->mask;
+ 
+-	return v * clock->mult;
++	ns = clock->base_cycles;
++
++	/*
++	 * When the clock source is a raw, constant TSC, do the conversion to
++	 * nanoseconds using the paravirt clock math so that the delta in ns is
++	 * consistent regardless of whether the delta is converted in the host
++	 * or the guest.
++	 *
++	 * The base for paravirt clocks is the kernel's base time in ns, plus
++	 * the delta since the last sync.   E.g. if a masterclock update occurs,
++	 * KVM will shift some amount of delta from the guest to the host.
++	 * Conversions from TSC to ns for the hosts's CLOCK_MONOTONIC_RAW and
++	 * paravirt clocks aren't equivalent, and so shifting the delta can
++	 * cause time to jump from the guest's view of the paravirt clock.
++	 * This only works for a constant TSC, otherwise the calculation would
++	 * only be valid for the current physical CPU, whereas the base of the
++	 * clock must be valid for all vCPUs in the VM.
++	 */
++	if (static_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
++	    *mode == VDSO_CLOCKMODE_TSC && clock == &pvclock_gtod_data.raw_clock) {
++		ns >>= clock->shift;
++		ns += pvclock_scale_delta(v, host_tsc_to_system_mul, host_tsc_shift);
++	} else {
++		ns += v * clock->mult;
++		ns >>= clock->shift;
++	}
++	return ns;
+ }
+ 
+ static int do_monotonic_raw(s64 *t, u64 *tsc_timestamp)
+@@ -2853,9 +2875,7 @@ static int do_monotonic_raw(s64 *t, u64 *tsc_timestamp)
+ 
+ 	do {
+ 		seq = read_seqcount_begin(&gtod->seq);
+-		ns = gtod->raw_clock.base_cycles;
+-		ns += vgettsc(&gtod->raw_clock, tsc_timestamp, &mode);
+-		ns >>= gtod->raw_clock.shift;
++		ns = vgettsc(&gtod->raw_clock, tsc_timestamp, &mode);
+ 		ns += ktime_to_ns(ktime_add(gtod->raw_clock.offset, gtod->offs_boot));
+ 	} while (unlikely(read_seqcount_retry(&gtod->seq, seq)));
+ 	*t = ns;
+@@ -2873,9 +2893,7 @@ static int do_realtime(struct timespec64 *ts, u64 *tsc_timestamp)
+ 	do {
+ 		seq = read_seqcount_begin(&gtod->seq);
+ 		ts->tv_sec = gtod->wall_time_sec;
+-		ns = gtod->clock.base_cycles;
+-		ns += vgettsc(&gtod->clock, tsc_timestamp, &mode);
+-		ns >>= gtod->clock.shift;
++		ns = vgettsc(&gtod->clock, tsc_timestamp, &mode);
+ 	} while (unlikely(read_seqcount_retry(&gtod->seq, seq)));
+ 
+ 	ts->tv_sec += __iter_div_u64_rem(ns, NSEC_PER_SEC, &ns);
+@@ -12185,6 +12203,10 @@ int kvm_arch_hardware_enable(void)
+ 	if (ret != 0)
+ 		return ret;
+ 
++	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC))
++		kvm_get_time_scale(NSEC_PER_SEC, tsc_khz * 1000LL,
++				   &host_tsc_shift, &host_tsc_to_system_mul);
++
+ 	local_tsc = rdtsc();
+ 	stable = !kvm_check_tsc_unstable();
+ 	list_for_each_entry(kvm, &vm_list, vm_list) {
+
+base-commit: e2c8c2928d93f64b976b9242ddb08684b8cdea8d
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+
