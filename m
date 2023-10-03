@@ -2,122 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F5A7B62CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D767B62D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbjJCHtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 03:49:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54286 "EHLO
+        id S230380AbjJCHuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 03:50:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbjJCHtS (ORCPT
+        with ESMTP id S230237AbjJCHuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 03:49:18 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491A6A9;
-        Tue,  3 Oct 2023 00:49:15 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-406618d080eso6031655e9.2;
-        Tue, 03 Oct 2023 00:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696319354; x=1696924154; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=F4uGm4UsgcR7Wz0vCxNV3ZjfJf/Okbz0Af+MHqDGOL8=;
-        b=IFiy0DvNGYoUPT0kPDi3wkqhtzdv2pzpiv+QRdtxfBYLzfTlsqzZVPQPgZ7KCl9f4k
-         p2KfqyfTeeIUWI1CenznUqbS8c5uGFMw1fy3DYr48duH5+K6Z5CXds+2q81cGBoBngVy
-         sQb25vUbmgoyBsjvbK0VYpKyogJjkPgEI3UpywXBC6JkjyjzaFVUdD5r/QAkuf8bCf+n
-         mXzqtfhQlWMoY6DH8Phh8t0iOzLaQnMdNZoNlLgnN8b8no67gkrMe9GhqSEDOnfA60ad
-         4pwxfBanC2q/BIepcyewElXWVKJxJyw0OaijWh8TTWq/oTy6Vqf6xoKT0XZFfc6czZhA
-         S6+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696319354; x=1696924154;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F4uGm4UsgcR7Wz0vCxNV3ZjfJf/Okbz0Af+MHqDGOL8=;
-        b=w0XDqdp7Ukidjl0uzDbEH/RsOHY3uWGgZFgnjo+TMFt88nLn+tUqtORXzYKQ75eTR3
-         KpFDXqeuNgqOfOS7XGywEimq4T52Oc/kFxCLC3zuzFKBSIDyGFCfO+06ElwERojPLYV9
-         a5uXGvYiq/pGSF9MT4ZsZij4h+SZ3YZbfskcz8enWu92XQB3B9e05hKE6BUpARQY1W6T
-         xalavDjvipeDl1Qj6DsOJsNbscRnRgPgzaBhDDa6fNK2d/aUeqG420phe1cz0JCWWvwb
-         hkPhsgvGhAGg8YALhpotAkWAxE5YdSeDWb7VpxWZydfkAIyuar/krMmjpQZmYdgEVC2w
-         FxKQ==
-X-Gm-Message-State: AOJu0Yyo7pekdLFZwSFZImbBj4EqJlQYN0zHLAUCsUAbierqVLg4hWpG
-        CSOrbWuWyCOhzrxYRqGUJ7KqLmq7QZou0Q==
-X-Google-Smtp-Source: AGHT+IGM0toQ5phS7q3cqK/tEymfpWpGNUL/kuRaKervb++r8PKGOM+/7BfeUmkMJOrBrfRpZkpSOw==
-X-Received: by 2002:a7b:ce16:0:b0:405:3803:5588 with SMTP id m22-20020a7bce16000000b0040538035588mr11036440wmc.22.1696319353524;
-        Tue, 03 Oct 2023 00:49:13 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id n9-20020a05600c294900b00401c595fcc7sm8766499wmd.11.2023.10.03.00.49.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 00:49:13 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        linux-perf-users@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] perf: fix spelling mistake "parametrized" -> "parameterized"
-Date:   Tue,  3 Oct 2023 08:49:11 +0100
-Message-Id: <20231003074911.220216-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 3 Oct 2023 03:50:52 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3407890;
+        Tue,  3 Oct 2023 00:50:46 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3935SjWV027905;
+        Tue, 3 Oct 2023 09:50:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=3/Hv815GUU/fuX7VWT988Bdp+kCcO+DlPNC5bXYdkbY=; b=5o
+        18RN9ayOAIh8wPtoql7MzAuoX0gHmwKrI19F0f4OeoMyYQb32T6hEn6iHSmLIeoZ
+        UYH34kzvwxIHG+LcyhrlZ/spgqWe9OTVx3uB/gFUSeBwcpH2GYZGtU8qbGH1GToP
+        raC70KSjUhSU/bbmbm0TSdZ3jG0g9W+34iFCctUnDElQ9fia3Q1ToReudbGHx9a8
+        EakmKOsovEJBskhZKbRRFCtMyl2TSX3Xtr8vySPewxveFQHHg7nl0Bm0hJ4gFFNs
+        1KjaMkhDrLBpk2S9wx5hSlH9qlM96Mrkj/Tb7nNR/bAd6AUoopOSJwpOG4l1siTn
+        otRbwD3Id9HUtiPdGfkg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3teb0xag60-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Oct 2023 09:50:25 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1CE05100057;
+        Tue,  3 Oct 2023 09:50:25 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1526022A6E7;
+        Tue,  3 Oct 2023 09:50:25 +0200 (CEST)
+Received: from [10.201.20.35] (10.201.20.35) by SHFDAG1NODE3.st.com
+ (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 3 Oct
+ 2023 09:50:24 +0200
+Message-ID: <2c812b4c-294b-d54e-172a-3dfc11fc71b4@foss.st.com>
+Date:   Tue, 3 Oct 2023 09:50:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] i2c: stm32f7: Fix PEC handling in case of SMBUS transfers
+To:     Alain Volmat <alain.volmat@foss.st.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        M'boumba Cedric Madianga <cedric.madianga@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>
+CC:     Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231002084211.1108940-1-alain.volmat@foss.st.com>
+Content-Language: en-US
+From:   Pierre Yves MORDRET <pierre-yves.mordret@foss.st.com>
+In-Reply-To: <20231002084211.1108940-1-alain.volmat@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.20.35]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-03_04,2023-10-02_01,2023-05-22_02
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are spelling mistakes in comments and a pr_debug message. Fix them.
+Hi Alain,
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- tools/perf/tests/parse-events.c        | 4 ++--
- tools/perf/tests/shell/stat_all_pmu.sh | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Sounds good to me
 
-diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
-index f78be21a5999..e52f45c7c3d1 100644
---- a/tools/perf/tests/parse-events.c
-+++ b/tools/perf/tests/parse-events.c
-@@ -2549,7 +2549,7 @@ static int test__pmu_events(struct test_suite *test __maybe_unused, int subtest
- 			if (strchr(ent->d_name, '.'))
- 				continue;
- 
--			/* exclude parametrized ones (name contains '?') */
-+			/* exclude parameterized ones (name contains '?') */
- 			n = snprintf(pmu_event, sizeof(pmu_event), "%s%s", path, ent->d_name);
- 			if (n >= PATH_MAX) {
- 				pr_err("pmu event name crossed PATH_MAX(%d) size\n", PATH_MAX);
-@@ -2578,7 +2578,7 @@ static int test__pmu_events(struct test_suite *test __maybe_unused, int subtest
- 			fclose(file);
- 
- 			if (is_event_parameterized == 1) {
--				pr_debug("skipping parametrized PMU event: %s which contains ?\n", pmu_event);
-+				pr_debug("skipping parameterized PMU event: %s which contains ?\n", pmu_event);
- 				continue;
- 			}
- 
-diff --git a/tools/perf/tests/shell/stat_all_pmu.sh b/tools/perf/tests/shell/stat_all_pmu.sh
-index c77955419173..d2a3506e0d19 100755
---- a/tools/perf/tests/shell/stat_all_pmu.sh
-+++ b/tools/perf/tests/shell/stat_all_pmu.sh
-@@ -4,7 +4,7 @@
- 
- set -e
- 
--# Test all PMU events; however exclude parametrized ones (name contains '?')
-+# Test all PMU events; however exclude parameterized ones (name contains '?')
- for p in $(perf list --raw-dump pmu | sed 's/[[:graph:]]\+?[[:graph:]]\+[[:space:]]//g'); do
-   echo "Testing $p"
-   result=$(perf stat -e "$p" true 2>&1)
+Reviewed-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+
+Regards
+
+On 10/2/23 10:42, Alain Volmat wrote:
+> The PECBYTE bit allows to generate (in case of write) or
+> compute/compare the PEC byte (in case of read).  In case
+> of reading a value (performed by first sending a write
+> command, then followed by a read command) the PECBYTE should
+> only be set before starting the read command and not before
+> the first write command.
+> 
+> Fixes: 9e48155f6bfe ("i2c: i2c-stm32f7: Add initial SMBus protocols support")
+> 
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> ---
+>  drivers/i2c/busses/i2c-stm32f7.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+> index 579b30581725..0d3c9a041b56 100644
+> --- a/drivers/i2c/busses/i2c-stm32f7.c
+> +++ b/drivers/i2c/busses/i2c-stm32f7.c
+> @@ -1059,9 +1059,10 @@ static int stm32f7_i2c_smbus_xfer_msg(struct stm32f7_i2c_dev *i2c_dev,
+>  	/* Configure PEC */
+>  	if ((flags & I2C_CLIENT_PEC) && f7_msg->size != I2C_SMBUS_QUICK) {
+>  		cr1 |= STM32F7_I2C_CR1_PECEN;
+> -		cr2 |= STM32F7_I2C_CR2_PECBYTE;
+> -		if (!f7_msg->read_write)
+> +		if (!f7_msg->read_write) {
+> +			cr2 |= STM32F7_I2C_CR2_PECBYTE;
+>  			f7_msg->count++;
+> +		}
+>  	} else {
+>  		cr1 &= ~STM32F7_I2C_CR1_PECEN;
+>  		cr2 &= ~STM32F7_I2C_CR2_PECBYTE;
+> @@ -1149,8 +1150,10 @@ static void stm32f7_i2c_smbus_rep_start(struct stm32f7_i2c_dev *i2c_dev)
+>  	f7_msg->stop = true;
+>  
+>  	/* Add one byte for PEC if needed */
+> -	if (cr1 & STM32F7_I2C_CR1_PECEN)
+> +	if (cr1 & STM32F7_I2C_CR1_PECEN) {
+> +		cr2 |= STM32F7_I2C_CR2_PECBYTE;
+>  		f7_msg->count++;
+> +	}
+>  
+>  	/* Set number of bytes to be transferred */
+>  	cr2 &= ~(STM32F7_I2C_CR2_NBYTES_MASK);
+
 -- 
-2.39.2
-
+--
+~ Py MORDRET
+--
