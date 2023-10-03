@@ -2,117 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CCA7B7094
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5857B7096
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240766AbjJCSJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 14:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36402 "EHLO
+        id S240738AbjJCSLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 14:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbjJCSJp (ORCPT
+        with ESMTP id S231598AbjJCSLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:09:45 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29461AC;
-        Tue,  3 Oct 2023 11:09:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SR5hzwt7zM//0GbzM35Ia3E9iKMTwd/DCYDjYKbU5Ig=; b=ZXKjBEaHWD1Qo3XGspilT/vQRg
-        vSh8MKQ9EEVH/Y8NPGTsc3bLicNR1GX1Jk1DWEKyfbjeG15aUpxDe1KkKHvl530pl2NYiKE4Ir8w2
-        51GClqB+aEqMoGDxbnLBVe7YKZ/9eMGcsN8Q20CzqmAyGjBN0jstAUV2RbXZZVGtmK9NajuC8CXG2
-        KQlZ0Yu84WGDTz49172j5CMhbRIPTy0k8zaXqPaYQbR+4imnXzzVcxo+AcTZFeGRoUZ4cObk863xL
-        owQMVuoL6KoYdFSEWkE4I+CsqEDHjnSNO1Oq5mM2gj0xFCZbboiv6n6i89hvPnRfPXxUdNtZbCPnD
-        xo4KshaQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54130)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qnjpr-00023q-1t;
-        Tue, 03 Oct 2023 19:09:31 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qnjpm-00087H-G1; Tue, 03 Oct 2023 19:09:26 +0100
-Date:   Tue, 3 Oct 2023 19:09:26 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Xin Li <xin@zytor.com>
-Cc:     Gavin Shan <gshan@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-acpi@vger.kernel.org, James Morse <james.morse@arm.com>,
-        loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-ia64@vger.kernel.org
-Subject: Re: [PATCH] cpu-hotplug: provide prototypes for arch CPU registration
-Message-ID: <ZRxY1l+79XqOHZk1@shell.armlinux.org.uk>
-References: <E1qkoRr-0088Q8-Da@rmk-PC.armlinux.org.uk>
- <dd4dee9e-4d75-e1e6-04c8-82d84b28fd35@redhat.com>
- <ZRIU/yFrbFbIR7zZ@shell.armlinux.org.uk>
- <ZRwmj/e+jAXFfvCm@shell.armlinux.org.uk>
- <7aee5021-8bb6-4343-b746-a8417af030a9@zytor.com>
+        Tue, 3 Oct 2023 14:11:08 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6B083;
+        Tue,  3 Oct 2023 11:11:05 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 96A882188F;
+        Tue,  3 Oct 2023 18:11:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1696356664; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yYYOS2Rb4Gft46HT9a3Ew+hqjRkAXefJxlOoM/tdWIY=;
+        b=HjXqxe8/wntTzrvTsNfrdAnyH44mpAxBB6GfxJpG+O5R+e4+dnQHgqK9G5JCIrOIEjL3NE
+        T23x25vBLUDKeflfuTNYE0yyZKiN856A+VVR4uA/Gw1qrQopSUditko2I6uEw7eWU4tcMN
+        NGDPRRnyZbYrxIO2LKxocUmkG14coDI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6DEFB139F9;
+        Tue,  3 Oct 2023 18:11:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id lc4wGjhZHGVCNwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 03 Oct 2023 18:11:04 +0000
+Date:   Tue, 3 Oct 2023 20:11:03 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mm: memcg: refactor page state unit helpers
+Message-ID: <lflzirgjvnodndnuncbulipka6qcif5yijtbqpvbcr3zp3532u@6b37ks523gnt>
+References: <20230922175741.635002-1-yosryahmed@google.com>
+ <20230922175741.635002-2-yosryahmed@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i3qdsoh2u6z4zu32"
 Content-Disposition: inline
-In-Reply-To: <7aee5021-8bb6-4343-b746-a8417af030a9@zytor.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20230922175741.635002-2-yosryahmed@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 10:37:02AM -0700, Xin Li wrote:
-> On 10/3/2023 7:34 AM, Russell King (Oracle) wrote:
-> > > > > 
-> > > > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > > > > ---
-> > > > > Changes since RFC v2:
-> > > > >    - drop ia64 changes, as ia64 has already been removed.
-> > > > > 
-> 
-> If this is RFC v2, we put "RFC v2" in the subject, then people know you
-> are sending a newer version.
 
-Sorry, but this is yet another illustration why the kernel process is
-broken. Clearly, people do NOT bother reading what is actually written,
-but instead make up in their minds something completely different.
+--i3qdsoh2u6z4zu32
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This is *NOT* RFC v2. This is RFC v2:
+On Fri, Sep 22, 2023 at 05:57:39PM +0000, Yosry Ahmed <yosryahmed@google.com> wrote:
+> memcg_page_state_unit() is currently used to identify the unit of a
+> memcg state item so that all stats in memory.stat are in bytes. However,
+> it lies about the units of WORKINGSET_* stats. These stats actually
+> represent pages, but we present them to userspace as a scalar number of
+> events. In retrospect, maybe those stats should have been memcg "events"
+> rather than memcg "state".
 
-https://lore.kernel.org/all/E1qgnh2-007ZRZ-WD@rmk-PC.armlinux.org.uk/
+Why isn't it possible to move WORKINGSET_* stats under the events now?
+(Instead of using internal and external units.)
 
-And what I wrote was "changes **** SINCE **** RFC v2". For those who
-find English difficult, this means that what follows is the list of
-changes that are in THIS posting that WERE NOT IN THE PREVIOUS POSTING
-which was RFC v2.
+Thanks,
+Michal
 
-Thanks for making me even more frustrated than I was.
+--i3qdsoh2u6z4zu32
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> People are busy, and your patch could be
-> skipped if it appears the same as a previous one.
+-----BEGIN PGP SIGNATURE-----
 
-Yet another reason why the kernel process is just completely broken.
-"appears to be". Even when the changes are spelled out. Yes, right,
-people don't have time to read. If that's the case, then it's a
-waste of time adding a change log. It's a waste of time to add a
-commit message. In fact, it's a total waste of time trying to
-contribute to a rotten-to-the-core open source project that Linux
-seems to have turned into.
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZRxZNQAKCRAGvrMr/1gc
+jgo0AQDb9lpy0zerQzFtiZH/g19b+bqmEZBBe46qnjohE+hXYgD/WBCdV4mnuxTI
+vnNNETrx33ndymulCkeglLV+sj3sYwc=
+=mr+D
+-----END PGP SIGNATURE-----
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+--i3qdsoh2u6z4zu32--
