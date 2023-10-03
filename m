@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE2E7B6E3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8477A7B6E42
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240355AbjJCQUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
+        id S240348AbjJCQVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbjJCQUi (ORCPT
+        with ESMTP id S240305AbjJCQVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:20:38 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D4A9E
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:20:35 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77574c2cffdso88032885a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 09:20:35 -0700 (PDT)
+        Tue, 3 Oct 2023 12:21:01 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECACAF
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:20:56 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-533e7d127d4so1941626a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 09:20:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1696350034; x=1696954834; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=74pfqmyEpWzC0JVzEWtyP+utP1T9AK68aLigFiWOG7k=;
-        b=SeGWlQDHFSe0SAyTgSkbd9l1j4MbOw6umhkgwSE7gfst9dgZUvulkkW1dckcfwH5WL
-         707YwLZrVl36yeIm3Vq1+MC4tceHY1nqXMUnRUp+tkbNqlQcxGaIgpfk9XvBDXti9hCu
-         WcgFumdwruYx8Rx0+3nOX9OcW8neCZTubtpyzgVkM1x5iTFsn/ixb3CgSCcQqGZ2b0fs
-         es+lohLqFLzMarUICvZ1HEqSiL8wb7EVHARQ6GKuFSaU9XbkwDfcZjZlhn5mtBgRaJ72
-         nP8d+H7DQbvVrpZu2p8RanlquuZ9gPcckE0Fg2zQDWEIIiIwrqmFUlyvQxshUc7ANhzR
-         mz0g==
+        d=gmail.com; s=20230601; t=1696350055; x=1696954855; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/uvu5bBvPizSRzo1SPPOiLc73cEkD2LgnLyo2sbR8xc=;
+        b=dl1Ld7UGmfwVIJkMTaAeR+cEw7b4xxBdTRFsti1gdbkLM1BdUU9fJunvXlhcsnKvMA
+         6HK6mXNWHBdgtu39jq8Ggj0x4THTijjh1Ht86mAcult4F30OGWD6za8+fW8WXT/HFwtA
+         39x+NWReu+kdfTcj+iObukADYv54bPv2abie8xdEuOpE+t79SIVPUV7v1as/jOrmzSaj
+         s1OL3Du1//vlzZBP+AArY+/bkmKo+1039Pz0g7lo+7TiuAGlphKZL2YnqbKSFBYbZZCR
+         hq0aiXQiv13i/MVoJwHbBpSzhzvUlCTB0q3MhxVCklqXkTad0JWih532zVt1FtUx5Hnn
+         BSXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696350034; x=1696954834;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=74pfqmyEpWzC0JVzEWtyP+utP1T9AK68aLigFiWOG7k=;
-        b=PaKaxcAiqtA/66kwaaworfmBAVpTyTUgKJ5VUcXJtNduS/G8CRT9oXoYphOihueXb0
-         wS8++JTpph8pqCPen3xxxO7OMVqGq3C3GuDxuUb4mfaTDC9Xumwbl8JFWiszi1S9dK+K
-         D+Tzwi227PZzhvq09LvH7KYUOMsXEMWeohWUgHVVpL+J1lbn9vS+DPYWZQB/FLNOEou7
-         xHhn83okJpbSOq/wYSWxFbuz8fPQYoDPQus2qEASWSWuvaen/OnU4cHSdiYrelGfH2Rk
-         zEiG4hSzmSmGEZb0QgKGtNZx3EGSVYx/XmqfBps9mNaR9LBSfeZ49wyBHm5NcidI9oKB
-         wjUg==
-X-Gm-Message-State: AOJu0Yzmo0RYEPv4C+j7Neq5l0AbzYMPsLe6kx/0dBu66bvvSSZR73Y8
-        mQRm7yPmq5omkS9obV/vizsWFg==
-X-Google-Smtp-Source: AGHT+IHtRRYP0xi4EcqzYyTvcNrVFeQgKflRTd3luTug/5jCAn+dkgbCAWC4JjZKn8Y1qVNAZQ1H4w==
-X-Received: by 2002:a05:620a:4553:b0:76e:f73d:65ae with SMTP id u19-20020a05620a455300b0076ef73d65aemr3535399qkp.6.1696350034567;
-        Tue, 03 Oct 2023 09:20:34 -0700 (PDT)
-Received: from localhost.localdomain ([50.212.55.89])
-        by smtp.gmail.com with ESMTPSA id o8-20020a05620a110800b007756c8ce8f5sm574520qkk.59.2023.10.03.09.20.33
+        d=1e100.net; s=20230601; t=1696350055; x=1696954855;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/uvu5bBvPizSRzo1SPPOiLc73cEkD2LgnLyo2sbR8xc=;
+        b=WEfVF/rHvMNFR10/x01osPGQ1gqqaM4cI/S7oGRU+IMh+MnXKAFSx3H7g1M7QVKbH5
+         kl75dtrtcniSI/RpV7veCBZ+GwTOHZwNPf6+W4GChhW3gr2SA+Pr71vPwBaqFjg9ZTKb
+         x21iCB7/MSOSG7ZvNSlN6evpwCImuI4iViyt3fdEuXF8udEm1TMFBpUHqkJwKAvJf4FW
+         rdM5wNqyNWByuhhpp4yhd4Tu1iVJt9uFqPfO4F/Rxxgl8/t6smgGoERAFnGvh7E1Tuhi
+         n97rzjjlC5N/taVYq6yW1rLVonsvvldc7TrsCfbGaoVqgEkmuOrWTx1pazKwS6aakznn
+         5Liw==
+X-Gm-Message-State: AOJu0YxMU3vsVfNDHf6MhNWLEFxwThQtNMiT9UVG+gy3tY+txuYHa0sR
+        J60wmoeWV97d9M7WxLt0HA==
+X-Google-Smtp-Source: AGHT+IEmiUBLpYOxjQc+g540/CfOFZ+Y33i9y2t7m6IolLTgBfpyWAk/xMmNkVGdaxWpoCk1nmje9g==
+X-Received: by 2002:aa7:d7d4:0:b0:533:87c9:4a7d with SMTP id e20-20020aa7d7d4000000b0053387c94a7dmr11978377eds.35.1696350054929;
+        Tue, 03 Oct 2023 09:20:54 -0700 (PDT)
+Received: from p183 ([46.53.254.179])
+        by smtp.gmail.com with ESMTPSA id k21-20020a05640212d500b00537fa467ddasm1073180edx.65.2023.10.03.09.20.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 09:20:33 -0700 (PDT)
-From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
-To:     linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Subject: [PATCH] irqchip/stm32-exti: add missing DT IRQ flag translation
-Date:   Tue,  3 Oct 2023 12:20:03 -0400
-Message-ID: <20231003162003.1649967-1-ben.wolsieffer@hefring.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 03 Oct 2023 09:20:54 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 19:20:53 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     akpm@linux-foundation.org, Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] extract and use FILE_LINE macro
+Message-ID: <73bedf42-decf-450a-8e54-a318950ddc67@p183>
+References: <ebf12ac4-5a61-4b12-b8b0-1253eb371332@p183>
+ <202310021033.A5F0159F25@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202310021033.A5F0159F25@keescook>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,28 +72,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The STM32F4/7 EXTI driver was missing the xlate callback, so IRQ trigger
-flags specified in the device tree were being ignored. This was
-preventing the RTC alarm interrupt from working, because it must be set
-to trigger on the rising edge to function correctly.
+On Mon, Oct 02, 2023 at 10:33:49AM -0700, Kees Cook wrote:
+> > +#define FILE_LINE	__FILE__ ":" __stringify(__LINE__)
+> > +
+> >  #endif	/* !__LINUX_STRINGIFY_H */
 
-Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
----
- drivers/irqchip/irq-stm32-exti.c | 1 +
- 1 file changed, 1 insertion(+)
+> > --- a/sound/pci/asihpi/hpidebug.h
+> > +++ b/sound/pci/asihpi/hpidebug.h
+> > @@ -29,16 +29,15 @@ enum { HPI_DEBUG_LEVEL_ERROR = 0,	/* always log errors */
+> >     the start of each message, eg see linux kernel hpios.h */
+> >  
+> >  #ifdef SOURCEFILE_NAME
+> > +#undef FILE_LINE
+> >  #define FILE_LINE  SOURCEFILE_NAME ":" __stringify(__LINE__) " "
+> 
+> Should this drop the trailing " " to match the new macro?
 
-diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-index b5fa76ce5046..cb4b195bc849 100644
---- a/drivers/irqchip/irq-stm32-exti.c
-+++ b/drivers/irqchip/irq-stm32-exti.c
-@@ -459,6 +459,7 @@ static const struct irq_domain_ops irq_exti_domain_ops = {
- 	.map	= irq_map_generic_chip,
- 	.alloc  = stm32_exti_alloc,
- 	.free	= stm32_exti_free,
-+	.xlate	= irq_domain_xlate_twocell,
- };
- 
- static void stm32_irq_ack(struct irq_data *d)
--- 
-2.42.0
-
+Yes, probably. This SOURCEFILE_NAME is some out of tree stuff.
