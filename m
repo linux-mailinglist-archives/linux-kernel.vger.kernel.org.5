@@ -2,351 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 524367B707F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442457B7090
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240718AbjJCSEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 14:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
+        id S240758AbjJCSJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 14:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240753AbjJCSEL (ORCPT
+        with ESMTP id S231598AbjJCSJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:04:11 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E12BB;
-        Tue,  3 Oct 2023 11:04:07 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-533d6a8d6b6so2236528a12.2;
-        Tue, 03 Oct 2023 11:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696356246; x=1696961046; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=24a+mbw42cbjXBU1qU0bJoifqhTWtmSErBlgCs6Gs0c=;
-        b=G8FXCr2FUdP5B8rl9RcCBm21fgnGFPWLnZ5i7hZyWONKWbZLNpCAS4kraCKBln/K17
-         TqOk/sOcAY4xbv/qWCoyj0sNLPJYX2MAo/CyUFDlNVS/kV/40yI0xGeniLnlLsnXyLht
-         pKOwbQ0kzoUK8qlMAJ+DGVXWcSfs0PsiZld5zBIFD0+GgXy1Z7Tv1ni0qlpVW7JdbS0k
-         WwHWUTX500UKX8Hkqepvz+RcFpryGp9lGY8pbZnAFr/2mT49IxX67fOT7HAi+1mocr7y
-         oArXqfbIGEwURDHTQbsgZcbgghQSjFx+6yjHQj1/NCuaN2veFuT2UN751LasBXlm44o1
-         ZlkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696356246; x=1696961046;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=24a+mbw42cbjXBU1qU0bJoifqhTWtmSErBlgCs6Gs0c=;
-        b=mmqacoFtCz/5JevJhOtqomoSUfXmKJGWt7INEyLpz+UotZ1CetCj941f1vHBGCtPUu
-         MseMOJQRIX4tmxEvDi4WrJZIjaNRX39mno26EKHmevxZVLvVrd6wJQ0MgRLA336uiOpw
-         8222q/UHCCVFosgATEZF3CegcThfSUbAGg37Ow39E6iZ7Ut0wWuSd1UofgXyjCbk2Vsc
-         TaMwZ5iJ8ndXwLW6dojStgklDZnLjRKlYrGZ204+mabqwyIBnGHw1s68Kj/a74hidpHo
-         OWg4NFqPVm9lpo1vkGp6aEdWRBS+dRWThiWwrrxpqLGYh0GsRxLOHrja+X+SSgCzCTxG
-         RidA==
-X-Gm-Message-State: AOJu0Yx+WtURbJClzpwVbPhCL3XVT3Jvb5H/cNgoOz4gpVhQWcyVrMuZ
-        +6zoxLWnNlegBB0aHR7m/JY=
-X-Google-Smtp-Source: AGHT+IFKCgft2LpUD1WKlaBEB8nn/G48FYN5U98YbhpMI+zaHLxyDueVn51bLkJ2gL40c+yI+hBLZQ==
-X-Received: by 2002:aa7:c159:0:b0:534:78a6:36c4 with SMTP id r25-20020aa7c159000000b0053478a636c4mr13511077edp.36.1696356245499;
-        Tue, 03 Oct 2023 11:04:05 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id u11-20020a056402064b00b0053782c81c69sm1181645edx.96.2023.10.03.11.04.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 11:04:05 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     RCU <rcu@vger.kernel.org>, quic_neeraju@quicinc.com,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH v2 1/1] rcu: Reduce synchronize_rcu() waiting time
-Date:   Tue,  3 Oct 2023 20:04:03 +0200
-Message-Id: <20231003180403.58576-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
+        Tue, 3 Oct 2023 14:09:33 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04olkn2079.outbound.protection.outlook.com [40.92.75.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F2DAF
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:09:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GkO3/DNMG9vqRwiinBA8zD/0Tn4Mj3djPD4QsRyrWctdoRKEdz9LJxDpD/7fcYwBA/1qmK08rnNRGVnnrgASMoBdj2nkfl+ThXOIH8jZj0BGaCDzY3PYQD0fxWSxKPIPjgBXEMB+O5o0307hgW/ZaeCfKTfe6ah/dvYGzMHvIHfz5XdIw3JTjyhPf18et0gMGWeidIqDbZzaefqKR4+5D6szczroVONGZMySqesbDwZVKzXlsSAXMRKIdD/U+KKsUMhZ1V7+/AVp3HggFnK2quQkYfOm19BOBxFgXe0FR4nGpHRW9OrWr/qO8f0TU4MAm0m+a6olG+KBpgc5SsAkNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CxUiblOH1EPFha2exxQSvqCiT1JTlayJYPsTasvn97w=;
+ b=cdXrHbGe52mGqr36bV5Q4AePI0wX4c6299EK3K2pPlomE8tQlQX430mo2HRWiakvXlMT4OLefPz3c6Ev9LTYE0ulhjgFXvB1FR9utkZkz+5brSQCinI9Cn2J5vNjX2wKtwVtCpiPrRQvWKEmLAA7V1PDaf+XvA2WyilurArYK66ufAUmIwR/H+7M49/vT8mEwrmYmbixFNAtoZxFMTyU+3bdCVaDP8MbP2iTiRCOL7848htmnv985Y6PaOjbyPfXUhLQLfX+F4IjKUhGsILMU97n9MfvYIkZQLh6NwoAThd8H986oANDv+Y6nBJCRrjvEGT7n8tEKOtWFO6EZjVIMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CxUiblOH1EPFha2exxQSvqCiT1JTlayJYPsTasvn97w=;
+ b=kUuMiZHypS96F35AcWJKkZWwESzQSYm8q4lkpLVPbIBEktfyrj9Xu4+kXqb7JESHUIK1D+ZOZfk6zAP2XYpcwqnf+P/VE5o79KZuNVnNUkUlrS0bP9txx66d+EjguRIEjhjThAj868n+H6C3002g8T0acH3lyd9y3BIkleTaSiDGdtymKK7ldBdry3Io9j3mKFo4tUuK3sRTZDBwCP7u3m+beELZuEit+fKkShJ3+plSCQd+xUCWZChBDKlDnevAPtIVBwB2mnEdJd5fOHPjFYJDoRqejCEOfwp7PFQAHJgt1B1KlWAMz/DKF2VGnOdxAJIKEl3tRoAwsLWDGaswQQ==
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
+ by DB8P193MB0582.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:150::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.28; Tue, 3 Oct
+ 2023 18:09:28 +0000
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6838.029; Tue, 3 Oct 2023
+ 18:09:28 +0000
+From:   Juntong Deng <juntong.deng@outlook.com>
+To:     shaggy@kernel.org, liushixin2@huawei.com, yogi.kernel@gmail.com,
+        andrew.kanner@gmail.com
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+38e876a8aa44b7115c76@syzkaller.appspotmail.com
+Subject: [PATCH] fs/jfs: Add validity check for db_maxag and db_agpref
+Date:   Wed,  4 Oct 2023 02:06:41 +0800
+Message-ID: <VI1P193MB0752B8FE593B2854914ED09F99C4A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain
+X-TMN:  [dkmVihAjFH6jGEh1n3t4/aoS0CCLWrmu]
+X-ClientProxiedBy: AS4P195CA0009.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5e2::17) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:800:32::19)
+X-Microsoft-Original-Message-ID: <20231003180641.13320-1-juntong.deng@outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|DB8P193MB0582:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2d2b7f8e-f50f-4dae-0a51-08dbc43be1fb
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wPCgoO3rkgJxcCUiLaf4ElMouGGdOy/wvVv3dT730Un3hQKcfXCMsjMJmCj8QVUBE0EArOWHdxg/9p76/qwK6tDJ6HUodOqqt0lWaU29tSxrZZR8E3PAJqyP3ZiKGjvvvaKjIL/NqazVF6v3ZppwL/9HEYBX6nDTD2PIShofUZfSmH0dIDImOGPdps+LkusJBwmO4riSejPuIQtoqUyQ7qxsfgBEyUGrgBwytWIF9PLhy1NKDjqvl8/0sdJAH/HOj6iKtuPMVGnZdRhXvkak9eZld50kOB0rKWQgsfBYVy8bZSy6InOp0leS9jFP/CO9Ra4k9gs8idnSQENHRR3m3c7UEk2KWz8ihK4cu2xNPGEwzeCWBSIlZiEilvvFH0PCPbYB6Y3GnV6doLERXMkfJ4YTKFU32noNJXmWB+axLbbRPs6Ikn0H8uTrlub/rl754lKJMhJndnWI/YdwwAr9oU8aC9+aHEbkhUCqiASm2c8QVyzplHNZj7HOx+/QuKV6QYHX0vm1oexDqnp1Y64dxpFDfKrC8f0VYydxa/jDJksfFU/Dv2tekjQXCn5+FgfisrG0fnRhQiZWaoVAIU7jmE3BOk+6NDXon+dHVDi17GPEC03ntm1eJdg/UE6mgku1mZhSWgWUio+4aQcPh01JRhrhJ8HqDX/Q0Tz2dXEVAWwSOgQFdvmFks7aZWBbOcaoW8VAXSHOtAIMt4jdYZIcKab1ZykvpiJwmbmgZvi/H1rrgrPAHZn9RvJbSylv8sXDzQN9WVtlE5mFCc7kia6FESAt03j0Bx86frNWs3AM0t2vqUOOoBwKWa4U/ypkLpQOMWDsR96Sjzi4RYPCcLbXOt1LMfUb3FHzB8o5yh6eg7Xa0FFtgwiZHI9XAzjTD/w4wG5zo0f49jevBZnyu4MBfJWrE5s8xXjX1d6+oDxjjv0=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?i7TTjtKsWQhQzEEZNe3Nt/hR/qOZ3DQKp1gAApy9UPCi6Nhy/+j4CJYB6HYo?=
+ =?us-ascii?Q?1TIOrgZAI5u5t56yN0eymAU8swa0p9bFaMNcgritl7HPcRn/6OBDFEBjVZ3z?=
+ =?us-ascii?Q?7kUppuFcmCGpbj1cs2M28l9Ylya0NtjB3ZjInu846JTxYbjavG+NTRnIw5rU?=
+ =?us-ascii?Q?hxNN5tzswqOf/Kp6NHctUBhT+oV7LzTbsngMrm8wHt4XyqckEkkS2iMd2nQv?=
+ =?us-ascii?Q?1k5vDJdUhOfxSguaTmn/gHuBSxVARjCSMvGyoKMJlKaletkAl0Fg53ymx7Zb?=
+ =?us-ascii?Q?IxOul0chcehv2Bly2JevhWBfWm7z6Hpbj06EBbJQtjBf2THZWhtgnonQkCI1?=
+ =?us-ascii?Q?UaBzQbO9aEZo3ZQUOn2592a9srxpRXhzzA9dtMWKCcx8x+UThJC6+/ckiwf8?=
+ =?us-ascii?Q?onSv2a1gJCEvbRJFxJC9QFmpnq6EOp+/A01demQ3I9Rf3o1IxgwnqODVMOoO?=
+ =?us-ascii?Q?hRgQYTTiFBqZ1tZhRsZy5JoPdNL6j7xNfogpvK+eaUzUourfQgfG7BxNLKtS?=
+ =?us-ascii?Q?8AV5F4Xt4UQXZLKym6xrJkBO3ykIsiG1h+78I3/7aQKclKNX3pO8ntrtrcux?=
+ =?us-ascii?Q?CeuNAc0ZGUzKXrrN9hPDnksPF/wMRlJBC4+xOIcxwWgp0wGsR/t0xxejOQiE?=
+ =?us-ascii?Q?fsgFBgBrzNj7NyIIxkayFfAYXfOApyeTQ54CDPn82b07Os0qX9sDsCr0j6EB?=
+ =?us-ascii?Q?nrVRp5carLcl7O2yPyJtW2ZhjrAOw3imdUyiSUekghwBVnP7S7tEJukd0Lc3?=
+ =?us-ascii?Q?pL7XPwvLfYoB7Nuxi0sz+IwCm8Jt06QXl3CpX2FR1ctEYOZDE6NYMBYvYFvf?=
+ =?us-ascii?Q?f+v54vIBXyXKBYQG3OaL3Pxmvzaj8LhFNccP24InsNK2O9uydN58UcAsj9A3?=
+ =?us-ascii?Q?/oojjEylyo4q3zs/zXmAdd6c5FUVZ76/Rox3y/NESppEO0SEtVDjh4hEJZvL?=
+ =?us-ascii?Q?bG1g1PIREsx+eQO80ctREtdIE9bwgpux1iCGs1xGH5CApivSc9B4SnWcztkp?=
+ =?us-ascii?Q?WNkkCi+234UWUYpl5yX9HYBTJTr0i/AuvTK6tayFSpyFEV6Si1XViFyLDGBu?=
+ =?us-ascii?Q?Cu/TnJSzs7/9ntxA6q50qorQukHxrmVWvpZuWnn74Jtifjii/SmtaK/nJuy5?=
+ =?us-ascii?Q?tiM6F0F0DSlh+fLuOR7vix5oVrogy8kwHVh9zHKNZdiDh3wbFevjsQtl9lPx?=
+ =?us-ascii?Q?0vZz3YkRPSRHNgWC54/ltnnM5ETQZ2xyf/PkhHLZCe9DliwGXm4RqHLme9Y?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d2b7f8e-f50f-4dae-0a51-08dbc43be1fb
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 18:09:27.9497
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8P193MB0582
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A call to a synchronize_rcu() can be optimized from time point of
-view. Different workloads can be affected by this especially the
-ones which use this API in its time critical sections.
+Both db_maxag and db_agpref are used as the index of the
+db_agfree array, but there is currently no validity check for
+db_maxag and db_agpref, which can lead to errors.
 
-For example if CONFIG_RCU_NOCB_CPU is set, the wakeme_after_rcu()
-callback can be delayed and such delay depends on where in a nocb
-list it is located.
+The following is related bug reported by Syzbot:
 
-1. On our Android devices i can easily trigger the scenario when
-it is a last in the list out of ~3600 callbacks:
+UBSAN: array-index-out-of-bounds in fs/jfs/jfs_dmap.c:639:20
+index 7936 is out of range for type 'atomic_t[128]'
 
-<snip>
-  <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-...
-  <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
-  <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
-  <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
-  <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
-  <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
-  <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
-  <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
-<snip>
+Add checking that the values of db_maxag and db_agpref are valid
+indexes for the db_agfree array.
 
-2. On our Android devices we use cpuset/cgroup to classify tasks
-and assign them into different cgroups. For example "backgrond"
-group which binds tasks only to little CPUs or "foreground" that
-binds to all CPUs, i.e. tasks can be migrated between groups.
-
-See below an example of how "surfaceflinger" task is migrated.
-Initially it is located in the "system-background" cgroup which
-allows to run only on little cores. In order to speedup it up
-it can be temporary moved into "foreground" cgroup which allows
-to use big CPUs:
-
-cgroup_attach_task():
- -> cgroup_migrate_execute()
-   -> cpuset_can_attach()
-     -> percpu_down_write()
-       -> rcu_sync_enter()
-         -> synchronize_rcu()
-   -> now move tasks to the new cgroup.
- -> cgroup_migrate_finish()
-
-<snip>
-         rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
-    PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
-    PERFD-SERVER-1855    [000] d..1.  7030.530383: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
-   TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
-<snip>
-
-from this example it is clear that "a moving time" also depends
-on how fast synchronize_rcu() completes.
-
-3. This patch improves the synchronize_rcu() approximately by 30%-50%
-on synthetic tests. Apart of that i have tested app launch of camera
-app where i also see better perf. figures:
-
-542 vs 489 diff: 9%
-540 vs 466 diff: 13%
-518 vs 468 diff: 9%
-531 vs 457 diff: 13%
-548 vs 475 diff: 13%
-509 vs 484 diff: 4%
-
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Reported-by: syzbot+38e876a8aa44b7115c76@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=38e876a8aa44b7115c76
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 ---
- kernel/rcu/tree.c     | 151 +++++++++++++++++++++++++++++++++++++++++-
- kernel/rcu/tree_exp.h |   2 +-
- 2 files changed, 151 insertions(+), 2 deletions(-)
+ fs/jfs/jfs_dmap.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 78554e7181dd..a347c1f98f11 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1384,6 +1384,122 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- }
- 
-+/*
-+ * There are three lists for handling synchronize_rcu() users.
-+ * A first list corresponds to new coming users, second for users
-+ * which wait for a grace period and third is for which a grace
-+ * period is passed.
-+ */
-+static struct sr_normal_state {
-+	struct llist_head curr;	/* request a GP users. */
-+	struct llist_head wait;	/* wait for GP users. */
-+	struct llist_head done;	/* ready for GP users. */
-+	struct llist_node *curr_tail;
-+	struct llist_node *wait_tail;
-+	atomic_t active;
-+} sr;
-+
-+/* Enable it by default. */
-+static int rcu_normal_wake_from_gp = 1;
-+module_param(rcu_normal_wake_from_gp, int, 0644);
-+
-+static void rcu_sr_normal_complete(struct llist_node *node)
-+{
-+	struct rcu_synchronize *rs = container_of(
-+		(struct rcu_head *) node, struct rcu_synchronize, head);
-+	unsigned long oldstate = (unsigned long) rs->head.func;
-+
-+	if (!poll_state_synchronize_rcu(oldstate))
-+		WARN_ONCE(1, "A full grace period is not passed yet: %lu",
-+			rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
-+
-+	/* Finally. */
-+	complete(&rs->completion);
-+}
-+
-+static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-+{
-+	struct llist_node *done, *rcu, *next;
-+
-+	done = llist_del_all(&sr.done);
-+	if (!done)
-+		return;
-+
-+	llist_for_each_safe(rcu, next, done)
-+		rcu_sr_normal_complete(rcu);
-+}
-+static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
-+
-+/*
-+ * Helper function for rcu_gp_cleanup().
-+ */
-+static void rcu_sr_normal_gp_cleanup(void)
-+{
-+	struct llist_node *first, *tail;
-+
-+	tail = READ_ONCE(sr.wait_tail);
-+	first = llist_del_all(&sr.wait);
-+	if (!first)
-+		return;
-+
-+	/* Only one user? */
-+	if (!first->next) {
-+		rcu_sr_normal_complete(first);
-+		return;
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index 3a1842348112..4d59373f9e6c 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -195,6 +195,12 @@ int dbMount(struct inode *ipbmap)
+ 	bmp->db_maxlevel = le32_to_cpu(dbmp_le->dn_maxlevel);
+ 	bmp->db_maxag = le32_to_cpu(dbmp_le->dn_maxag);
+ 	bmp->db_agpref = le32_to_cpu(dbmp_le->dn_agpref);
++	if (bmp->db_maxag >= MAXAG || bmp->db_maxag < 0 ||
++		bmp->db_agpref >= MAXAG || bmp->db_agpref < 0) {
++		err = -EINVAL;
++		goto err_release_metapage;
 +	}
 +
-+	/* Can be not empty. */
-+	llist_add_batch(first, tail, &sr.done);
-+	queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
-+}
-+
-+/*
-+ * Helper function for rcu_gp_init().
-+ */
-+static void rcu_sr_normal_gp_init(void)
-+{
-+	struct llist_node *llnode, *rcu;
-+	int ret;
-+
-+	if (llist_empty(&sr.curr))
-+		return;
-+
-+	/*
-+	 * A waiting list of GP should be empty on this step,
-+	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
-+	 * rolls it over. If not, it is a BUG, warn a user.
-+	 */
-+	WARN_ON_ONCE(!llist_empty(&sr.wait));
-+
-+	/*
-+	 * Obtain a tail of current active users. It is guaranteed
-+	 * that if we are only one active user and the list is not
-+	 * empty, the tail has already been updated.
-+	 */
-+	ret = atomic_inc_return(&sr.active);
-+	WRITE_ONCE(sr.wait_tail, (ret == 1) ? READ_ONCE(sr.curr_tail):NULL);
-+	llnode = llist_del_all(&sr.curr);
-+	atomic_dec(&sr.active);
-+
-+	if (ret != 1) {
-+		llist_for_each(rcu, llnode) {
-+			if (!rcu->next)
-+				WRITE_ONCE(sr.wait_tail, rcu);
-+		}
-+	}
-+
-+	llist_add_batch(llnode, READ_ONCE(sr.wait_tail), &sr.wait);
-+}
-+
-+static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-+{
-+	atomic_inc(&sr.active);
-+	if (llist_add((struct llist_node *) &rs->head, &sr.curr))
-+		/* Set the tail. Only first and one user can do that. */
-+		WRITE_ONCE(sr.curr_tail, (struct llist_node *) &rs->head);
-+	atomic_dec(&sr.active);
-+}
-+
- /*
-  * Initialize a new grace period.  Return false if no grace period required.
-  */
-@@ -1420,6 +1536,7 @@ static noinline_for_stack bool rcu_gp_init(void)
- 	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
- 	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
- 	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
-+	rcu_sr_normal_gp_init();
- 	raw_spin_unlock_irq_rcu_node(rnp);
- 
- 	/*
-@@ -1787,6 +1904,9 @@ static noinline void rcu_gp_cleanup(void)
- 	}
- 	raw_spin_unlock_irq_rcu_node(rnp);
- 
-+	// Make synchronize_rcu() users aware of the end of old grace period.
-+	rcu_sr_normal_gp_cleanup();
-+
- 	// If strict, make all CPUs aware of the end of the old grace period.
- 	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
- 		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
-@@ -3500,6 +3620,35 @@ static int rcu_blocking_is_gp(void)
- 	return true;
- }
- 
-+/*
-+ * Helper function for the synchronize_rcu() API.
-+ */
-+static void synchronize_rcu_normal(void)
-+{
-+	struct rcu_synchronize rs;
-+
-+	if (READ_ONCE(rcu_normal_wake_from_gp)) {
-+		init_rcu_head_on_stack(&rs.head);
-+		init_completion(&rs.completion);
-+
-+		/*
-+		 * This code might be preempted, therefore take a GP
-+		 * snapshot before adding a request.
-+		 */
-+		rs.head.func = (void *) get_state_synchronize_rcu();
-+		rcu_sr_normal_add_req(&rs);
-+
-+		/* Kick a GP and start waiting. */
-+		(void) start_poll_synchronize_rcu();
-+
-+		/* Now we can wait. */
-+		wait_for_completion(&rs.completion);
-+		destroy_rcu_head_on_stack(&rs.head);
-+	} else {
-+		wait_rcu_gp(call_rcu_hurry);
-+	}
-+}
-+
- /**
-  * synchronize_rcu - wait until a grace period has elapsed.
-  *
-@@ -3551,7 +3700,7 @@ void synchronize_rcu(void)
- 		if (rcu_gp_is_expedited())
- 			synchronize_rcu_expedited();
- 		else
--			wait_rcu_gp(call_rcu_hurry);
-+			synchronize_rcu_normal();
- 		return;
- 	}
- 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 6d7cea5d591f..279a37beb05a 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -987,7 +987,7 @@ void synchronize_rcu_expedited(void)
- 
- 	/* If expedited grace periods are prohibited, fall back to normal. */
- 	if (rcu_gp_is_normal()) {
--		wait_rcu_gp(call_rcu_hurry);
-+		synchronize_rcu_normal();
- 		return;
- 	}
- 
+ 	bmp->db_aglevel = le32_to_cpu(dbmp_le->dn_aglevel);
+ 	bmp->db_agheight = le32_to_cpu(dbmp_le->dn_agheight);
+ 	bmp->db_agwidth = le32_to_cpu(dbmp_le->dn_agwidth);
 -- 
-2.30.2
+2.39.2
 
