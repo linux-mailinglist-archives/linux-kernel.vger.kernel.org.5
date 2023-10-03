@@ -2,184 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 800B37B5E6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6205C7B5E6E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 03:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238933AbjJCA6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 20:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
+        id S229974AbjJCBET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 21:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjJCA6F (ORCPT
+        with ESMTP id S229837AbjJCBET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 20:58:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B52B7
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696294682; x=1727830682;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=9ElHeu35WB3FN5ywyVYMmUbielz++Q1fz01ylClzBW8=;
-  b=i4VQZrwJNmD+OXstsJOXuI8FYtWBUOVZSpbme04tlY2HsvZTKTUn9CGK
-   hNMRE7qLzPSd/Bm4pY0IHrzB0BVCzgIoq0hli4j0jJKBo0+vCWaiziaCU
-   acCLYBEIr0CjPpHXMghSIgCUfwXJsARZh5QgXfmkIus0ynawS4oF9f/Vy
-   KDkoq9ntgTCJoyN6ZH0Z4GEpAZiPW3H7l4ckCpk+XklPisus00CrsyWQ6
-   ieWCUi2GBGbLiEjpHbdyrjGY/gGWIlNUopDpgqcv3Iks2pYvdd9TB5TNY
-   Hy7j27gYS1HICfME7zbX/rY6PJIBCMR0pBuQJlEWmsJJQl6Je4CQMLZVe
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="413688812"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="413688812"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 17:58:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="894299176"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="894299176"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 17:56:39 -0700
-Received: from [10.212.65.113] (kliang2-mobl1.ccr.corp.intel.com [10.212.65.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Mon, 2 Oct 2023 21:04:19 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB99B4;
+        Mon,  2 Oct 2023 18:04:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696295054;
+        bh=xsf9tIw5a6T3R+Pom55EWLjfIAm3f6Ai/hp/EsxCLXE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=j8twwBzmjkuslN1x5RHY0DwyGNwM4fvJq3AYuF4KDlgktjhRwkkIBPRk9q+j6Pvi/
+         Cksp2YV93qdxDwRbOU3RIVakM6blpKd8i5szwyTYlN0Y0GbmynvnekoLmHVvPQ6ngT
+         waD/aoQXHRzx1oqV7vDzKNR6vpFGD6gOMl6vjPbXUfgY7MPdmQE+0dKd6e08nJaTDa
+         Kq7eFJDcfs7t6Q0NGEe85X7YOT+FRn9rUh34wMX41gXk3LgOrIuYJVreqD7qBtnKEL
+         om/wouqNP8Au1lRaY59ExcD2LZkPFIvgxM2Qckce7TM6tr+h1HWddxW0L/pKsvQ8Kd
+         W016rKXOW+K7g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 360A8580CBC;
-        Mon,  2 Oct 2023 17:57:59 -0700 (PDT)
-Message-ID: <ed169d4d-76d5-c134-c685-ad3d812028be@linux.intel.com>
-Date:   Mon, 2 Oct 2023 20:57:57 -0400
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S002j1sdWz4xPf;
+        Tue,  3 Oct 2023 12:04:12 +1100 (AEDT)
+Date:   Tue, 3 Oct 2023 12:04:10 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Joerg Roedel <joro@8bytes.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: linux-next: manual merge of the iommu tree with the asm-generic
+ tree
+Message-ID: <20231003120410.3c408680@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RESEND PATCH V3 1/6] perf: Add branch stack extra
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
-        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-References: <20230911154822.2559213-1-kan.liang@linux.intel.com>
- <20231002154535.GB35785@noisy.programming.kicks-ass.net>
- <ce16c6c1-9bdc-35e2-fe85-155bd7edbaa4@linux.intel.com>
- <20231002213752.GB1539@noisy.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20231002213752.GB1539@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/3jZx8B.5TOmVuygG6eAZsh_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/3jZx8B.5TOmVuygG6eAZsh_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2023-10-02 5:37 p.m., Peter Zijlstra wrote:
-> On Mon, Oct 02, 2023 at 03:19:04PM -0400, Liang, Kan wrote:
-> 
->>>> Also, add a new branch sample type, PERF_SAMPLE_BRANCH_EVT_CNTRS, to
->>>> indicate whether include occurrences of events in branch info. The
->>>> information will be stored in the extra space.
->>>
->>> This... why do we need two flags?
->>
->> Users may only collect the occurrences of some events in a group. The
->> EVT_CNTRS flag is used to indicate those events. E.g.,
->> perf record -e "{cpu/branch-instructions,branch_type=call/,
->> cpu/branch-misses,branch_type=event/}"
->>
->> Only the occurrences of the branch-misses event is collected in LBR and
->> finally dumped into the extra buffer.
->>
->> While the first flag, PERF_SAMPLE_BRANCH_EXTRA, only tells that the
->> extra space is required.
-> 
-> Or have it implicit, I reallt don't see the point of having two bits
-> here.
+Today's linux-next merge of the iommu tree got a conflict in:
 
-Perf has to traverse the whole group to decide whether using the extra
-space. But It should be possible to use an internal flag to avoid the
-traverse every time. Let me have a try.
+  drivers/iommu/Kconfig
 
-> 
->>> Also, I can't find this in the SDM, how wide are these counter deltas?
->>> ISTR they're saturating, but not how wide they are.
->>
->> Now, it's documented in the Intel® Architecture Instruction Set
->> Extensions and Future Features, Chapter 8, 8.6 LBR ENHANCEMENTS. It
->> should be moved to SDM later.
->> https://cdrdv2.intel.com/v1/dl/getContent/671368
->>
->> Only 2 bits for each counter. Saturating at a value of 3.
-> 
-> Urgh, this ISE document is shite, that thing don't say how many
-> IA32_LBR_INFO.PMCx_CNT fields there are, I think your later patch says
-> 4, right? And is this for arch LBR or the other thing?
->
+between commit:
 
-It's for Arch LBR. Yes, the current CPUID enumeration implies that only
-4 counters.
+  cf8e8658100d ("arch: Remove Itanium (IA-64) architecture")
 
-"Per-counter support for LBR Event Logging is indicated by the “Event
-Logging Supported” bitmap in CPUID.(EAX=01CH, ECX=0).ECX[19:16]"
+from the asm-generic tree and commit:
 
-> (Also, what is IA32_LER_x_INFO ?)
+  c76c067e488c ("s390/pci: Use dma-iommu layer")
 
-Last Event Record (LER). It records the last taken branch preceding the
-last exception, hardware interrupt, or software interrupt.
-Linux doesn't have it supported.
+from the iommu tree.
 
-> 
-> This is then a grant total of 8 bits.
-> 
-> And we still have 31 spare bits in perf_branch_entry.
-> 
-> Why again do we need the extra u64 ?!?
->
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-The first version utilizes the spare bits in perf_branch_entry.
-https://lore.kernel.org/lkml/20230414145324.GB761523@hirez.programming.kicks-ass.net/
+--=20
+Cheers,
+Stephen Rothwell
 
-To address the similar concern (what should we do if more counters and a
-wider bits are added later), I changed it to the extra space method
-since V2.
+diff --cc drivers/iommu/Kconfig
+index 7f04491ca5f0,3199fd54b462..000000000000
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@@ -91,7 -91,7 +91,7 @@@ config IOMMU_DEBUGF
+  choice
+  	prompt "IOMMU default domain type"
+  	depends on IOMMU_API
+- 	default IOMMU_DEFAULT_DMA_LAZY if X86
+ -	default IOMMU_DEFAULT_DMA_LAZY if X86 || IA64 || S390
+++	default IOMMU_DEFAULT_DMA_LAZY if X86 || S390
+  	default IOMMU_DEFAULT_DMA_STRICT
+  	help
+  	  Choose the type of IOMMU domain used to manage DMA API usage by
+@@@ -146,7 -146,7 +146,7 @@@ config OF_IOMM
+ =20
+  # IOMMU-agnostic DMA-mapping layer
+  config IOMMU_DMA
+- 	def_bool ARM64 || X86
+ -	def_bool ARM64 || IA64 || X86 || S390
+++	def_bool ARM64 || X86 || S390
+  	select DMA_OPS
+  	select IOMMU_API
+  	select IOMMU_IOVA
 
-Another consideration is that the 'events' field in the
-perf_branch_entry from V1 is Intel specific. The u64 extra space is more
-generic. Other ARCHs can utilize it to store other extra information if
-they want.
+--Sig_/3jZx8B.5TOmVuygG6eAZsh_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Please let me know if I'm overthinking. I can switch back to the
-'events' field of V1.
+-----BEGIN PGP SIGNATURE-----
 
-> More specifically, this interface is pretty crap -- suppose the next
-> generation of things feels that 2 bits aint' enough and goes and gives
-> us 4. Then what do we do?
->
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUbaIoACgkQAVBC80lX
+0Gwf+gf/fTm1ValJxmMBwATFJLZLLpSDO7uf+N2P3c6dYXckucL302QmPaSrX/5w
+DyuRSqhnL3EsxK6oMMfSS6HqinSCPjktpnIptMzcan/1WoHAQ1Nr/O1GG1LChK5d
+CkdullLHJGhaJqdnZWAkY6/7C17IayZAMJhbdZ5GsERLYlyqibgUpMUOuSbw5UAt
+MdRc9J1Pe/KheLMoB1XbDdjOVU5dIbmuj2NAKb4RjvyVqHadCvZMSKo0fzAKstZv
+wbQLA4TgUi8K6Pt+E9xoILRjXQVv1j203sEYFgO7rQOsEibrAJnSHlrksb5hArjD
+YS15B48Y6yqei1V7VR26fWyaR5OGzQ==
+=8ZmM
+-----END PGP SIGNATURE-----
 
-The current LBR is an architectural feature. The existed fields of 2
-bits 4 counters should not be changed.
-But yes, it's possible to add more bits and counters into the reserved
-bits. The reserved bits of the IA32_LBR_x_INFO are only 31 now. The u64
-extra space should be good enough.
-If more information is introduced later (e.g., a brand new
-LBR_x_INFO_2), then we can add a extra_2 space.
-
-But I don't see there is a plan to extend the IA32_LBR_x_INFO again in
-the near future.
-
-> Did I already say that the ISE document raises more questions than it
-> provides answers?
-
-Yes. Would an improved CPUID enumeration can address the questions? For
-example, the CPUID enumeration can give the maximum number of counters
-and supported width? I think we can discuss it with the architect.
-
-Thanks,
-Kan
+--Sig_/3jZx8B.5TOmVuygG6eAZsh_--
