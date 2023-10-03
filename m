@@ -2,145 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7937B694A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E807B6955
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbjJCMo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 08:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
+        id S230321AbjJCMrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbjJCMo5 (ORCPT
+        with ESMTP id S229689AbjJCMrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:44:57 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3633883
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 05:44:53 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-7741c5bac51so61927285a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 05:44:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696337092; x=1696941892; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=xDj1q+Ee+ORzJ70hRtintqC5xZdcBaiRQa5S4Cdho10=;
-        b=WRfTQWpvQp3+AMJ84YUZSAUj2gNVc7Hi3P+fItsZqVcekiIBUL/TLW2hha/Z/y+qYx
-         Ypz9th/0xCyj6J6TKhiJptrUgz+mVs8MQ4tpUzYmrtFMab05nANMLSS2wniw43cvALkD
-         YzobMSnDKQbJu66dv0HcEZZh/EKJXkIJ3i9/2MzSnNj3IDtBy2dYvSX+8ziIWkN0RQ8Q
-         QY3s/UkAvX8CSk/OPGQSjxEVuNzAmagoVfcfiIlC4SBNpZRSjN5GwdXoZBcUCVIALz/t
-         M45H8D9ECJKh0ku7Z+xyGPWKOWPliBb7OexwYMGZcHn/7CsQ3uWdIcB3ZKWy2ixoXqlx
-         8+CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696337092; x=1696941892;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xDj1q+Ee+ORzJ70hRtintqC5xZdcBaiRQa5S4Cdho10=;
-        b=tcI1+A90q1lEPDKkePLdGu28ciAGf/fPNmkaN9UVTN861dxOvsGcI1oDQiq2KmdYIa
-         fK9keYKJ2CNBZiUFGOWTfKvGkEbFGQX1WCWBJJjUUdAM4XHzsCfbc1y/w0ZG2dPsLJar
-         jUsq0ucEuyQsezpyWpIB90OGJ8eAdHXESt2hKrkVHcVNSSB6pRlMYrCOR7gpQZbqNETm
-         ++Ya5tgd8almGHla8aOHUI2PvTd+ttjMkz2Gk/1zwE8AJaY4ogRLw+rrgy7U/tOggS+z
-         WwshOWPzGJqO/Gw0tcWCkcDhXq8MDoS1083gwDojFFc710OWmWKa8Vep1KKf/YfmSPDZ
-         dEfQ==
-X-Gm-Message-State: AOJu0YyNdsVb7u/f+tr709ibgZ3RuZYl0FaAP3q630vood2rbr/iqJEz
-        QCialBTLI+yDxKf0klWtmPYC
-X-Google-Smtp-Source: AGHT+IEbRFcGxZgw52UjDfv1LBZdcZLdSA4iZ7N+WH5lAbH4U4/cWa8LNP/L/IMXn2BWS/8z2N+zyQ==
-X-Received: by 2002:a05:620a:4007:b0:775:9bc3:c492 with SMTP id h7-20020a05620a400700b007759bc3c492mr9066667qko.7.1696337092194;
-        Tue, 03 Oct 2023 05:44:52 -0700 (PDT)
-Received: from thinkpad ([117.217.185.220])
-        by smtp.gmail.com with ESMTPSA id d15-20020a05620a136f00b007756d233fbdsm425442qkl.37.2023.10.03.05.44.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 05:44:51 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 18:14:35 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     quic_narepall@quicinc.com, bmasney@redhat.com,
-        krzysztof.kozlowski+dt@linaro.org, quic_nitirawa@quicinc.com,
-        vireshk@kernel.org, quic_asutoshd@quicinc.com,
-        quic_bhaskarv@quicinc.com, avri.altman@wdc.com,
-        krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
-        robh+dt@kernel.org, quic_cang@quicinc.com,
-        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
-        jejb@linux.ibm.com, cw00.choi@samsung.com, andersson@kernel.org,
-        bvanassche@acm.org, conor+dt@kernel.org, kyungmin.park@samsung.com,
-        martin.petersen@oracle.com, nm@ti.com,
-        linux-kernel@vger.kernel.org, quic_richardp@quicinc.com,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-scsi@vger.kernel.org, myungjoo.ham@samsung.com,
-        konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org,
-        sboyd@kernel.org
-Subject: Re: [PATCH v4 1/6] dt-bindings: ufs: common: add OPP table
-Message-ID: <20231003124435.GA44736@thinkpad>
-References: <20231003111232.42663-1-manivannan.sadhasivam@linaro.org>
- <20231003111232.42663-2-manivannan.sadhasivam@linaro.org>
- <169633539510.282606.1450427416869008072.robh@kernel.org>
+        Tue, 3 Oct 2023 08:47:19 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2637891;
+        Tue,  3 Oct 2023 05:47:14 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id CFEBA100007;
+        Tue,  3 Oct 2023 15:47:10 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru CFEBA100007
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1696337230;
+        bh=/WnGfwCh7HXbbHZcZiPkpNdYkHbP4G9AgWQIHB0A3+s=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=UmO/eb65HGSvpvMFWZkoWnvqwcCh3Hvm4r47Lb6Nh47/fA7JSjHhbhA8t1AoGR7fM
+         prWhv66oQDpC7UN2sxmlB2bWVlWVf3t3J1QUUjZNhR+vtsm9VT+eqSJchsOsqVdUAF
+         bWXsjuxKNEMnxHpeW9y/QntlC+sFiGFJzOU9BCK+oJGsKaVmU5GSGPmc6XwzVofv7U
+         qYNv6FGPOjBfEIpPJV8PPJRsvR5/F9lD7yNU270H48HlR/7Kjt86RVVLeGmTS5+hWo
+         L6aqbgHQ0+LkordfcGAtqLX9/PYj7p0unplRElE7UJw6WUmIY61aU0tbXYslsd0pfH
+         838Yf0epIxZ7A==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Tue,  3 Oct 2023 15:47:09 +0300 (MSK)
+Received: from [192.168.1.127] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 3 Oct 2023 15:47:08 +0300
+Message-ID: <8ef7ff71-08e1-b0af-483d-e7cf3cc5efea@sberdevices.ru>
+Date:   Tue, 3 Oct 2023 15:47:23 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <169633539510.282606.1450427416869008072.robh@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 2/2] iio: adc: meson: improve error logging at probe
+ stage
+Content-Language: en-US
+To:     Jonathan Cameron <jic23@kernel.org>
+CC:     <lars@metafoo.de>, <neil.armstrong@linaro.org>,
+        <khilman@baylibre.com>, <jbrunet@baylibre.com>,
+        <martin.blumenstingl@googlemail.com>, <nuno.sa@analog.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>, <kernel@sberdevices.ru>
+References: <20230721102413.255726-1-gnstark@sberdevices.ru>
+ <20230721102413.255726-3-gnstark@sberdevices.ru>
+ <ZLphZzO20QW+t1m/@smile.fi.intel.com> <20230722181559.02c8362c@jic23-huawei>
+From:   George Stark <gnstark@sberdevices.ru>
+In-Reply-To: <20230722181559.02c8362c@jic23-huawei>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180317 [Oct 03 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2, {Tracking_smtp_not_equal_from}, {Tracking_arrow_text}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/03 10:12:00 #22029534
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 07:16:35AM -0500, Rob Herring wrote:
-> 
-> On Tue, 03 Oct 2023 16:42:27 +0530, Manivannan Sadhasivam wrote:
-> > From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > 
-> > Except scaling UFS and bus clocks, it's necessary to scale also the
-> > voltages of regulators or power domain performance state levels.  Adding
-> > Operating Performance Points table allows to adjust power domain
-> > performance state, depending on the UFS clock speed.
-> > 
-> > OPPv2 deprecates previous property limited to clock scaling:
-> > freq-table-hz.
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  .../devicetree/bindings/ufs/ufs-common.yaml   | 36 ++++++++++++++++---
-> >  1 file changed, 32 insertions(+), 4 deletions(-)
-> > 
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> ./Documentation/devicetree/bindings/ufs/ufs-common.yaml:90:20: [error] string value is redundantly quoted with any quotes (quoted-strings)
-> ./Documentation/devicetree/bindings/ufs/ufs-common.yaml:91:26: [error] string value is redundantly quoted with any quotes (quoted-strings)
-> ./Documentation/devicetree/bindings/ufs/ufs-common.yaml:91:36: [error] string value is redundantly quoted with any quotes (quoted-strings)
-> 
+Hello Jonathan
 
-Oops! I ran the check on wrong binding file :/ Will fix it in next version.
+It seems like you haven't had time for this patch yet. Should I fix it 
+myself or just be more patient?
 
-- Mani
-
-> dtschema/dtc warnings/errors:
+On 7/22/23 20:15, Jonathan Cameron wrote:
+> On Fri, 21 Jul 2023 13:43:51 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 > 
-> doc reference errors (make refcheckdocs):
+>> On Fri, Jul 21, 2023 at 01:23:09PM +0300, George Stark wrote:
+>>> Add log messages for errors that may occur at probe stage
+>>
+>> the probe
 > 
-> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231003111232.42663-2-manivannan.sadhasivam@linaro.org
+> British English - excellent ! :) (I argue this one far too often in
+> specification committees :)
 > 
-> The base for the series is generally the latest rc1. A different dependency
-> should be noted in *this* patch.
 > 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
+>>
+>> stage.
+>>
 > 
-> pip3 install dtschema --upgrade
+> I can tidy this up, but the patch will be a while anyway given the fix
+> needs to work it's way into the upstream for my togreg branch (and I need
+> to have send a pull request for togreg as well).
 > 
-> Please check and re-submit after running the above command yourself. Note
-> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> your schema. However, it must be unset to test all examples with your schema.
+> Jonathan
 > 
 
 -- 
-மணிவண்ணன் சதாசிவம்
+Best regards
+George
