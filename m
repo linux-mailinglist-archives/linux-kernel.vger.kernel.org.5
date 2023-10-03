@@ -2,318 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1946C7B6299
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5A27B62A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbjJCHjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 03:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
+        id S231563AbjJCHke convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 03:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbjJCHi6 (ORCPT
+        with ESMTP id S239205AbjJCHkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 03:38:58 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0C090
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 00:38:53 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405361bb94eso6324985e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 00:38:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696318732; x=1696923532; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/2zaEJuMhIXZx+nYYP28IqzkKzzc2Oq+CJMYbt4pRr4=;
-        b=XpDqpWyUIouN9riV7lhbA22P+Io2ohpQcibw2tSiJUE2VW+DgErkR7CFO1VWVgrwlR
-         jzmuk83YLqklHDA9X/IaqhTuk9POeqFoPgeUPMYF+21MFuP33uOqDa6GzICfqIJHVOgG
-         dzKffwvd9iw/i1VLT6mxb2/xHnD6jdypH6IbDzytCRufI6M+NbAYyu6vHk1zchPsZD9c
-         SIVvp3Hha69rpNnpWkio/P1VhPsu7lnnETBvZO7h9WgZFYHqs1KUdSV0VHLAKOEknoc3
-         N88Sv0NSj4jFl4b0a2/HaRLRSRtkZGC0empAZfoC10u0lA/fIJFl0gLOOCuKjTMkoIVu
-         L8/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696318732; x=1696923532;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/2zaEJuMhIXZx+nYYP28IqzkKzzc2Oq+CJMYbt4pRr4=;
-        b=staNDv7T59F0sifAOdDE3vcWdqmLpFiL+TE1HqP1F2XnvVUCbrtX/VqUsskdLwkkaI
-         sqMOlqsCUR02cKIvb7nNSj/DyJgzxOwthVd8ub02XaN8LXuGgCdFO4e4Mrcz94bQMCra
-         gNMQA0skSpyfXdtkjB80649KRFPPmoN+GS1Kbml70M/vgaHhgCiJlGiQ/85m0i4eekAo
-         ic5a3I3LaNlNWyoJHij6KxoFYVGaQo3FwjqhH+BFquf4Y8wZXWUtY+t9uWQtcweo+HyQ
-         Tygsi2YC8DuKFUt3NfMDWWOfmgN4mzMS8knXtlaKI1302TIgqqNg3pa5/yB6Yid2+/Md
-         dTvg==
-X-Gm-Message-State: AOJu0YzA9+miSoz14qRhHe1+R33+y+gRBkU+P1oIcZyijeT3pIWaUi0x
-        dgkJlnXv/S0M7PgLMKeKtELBnA==
-X-Google-Smtp-Source: AGHT+IG6ZuhB5Ba66MQyZQ1zB2heVFV/sP35jhRiX5ppQH8wYVBmIaBHmHpdMC5YHNEH4K3Ugp199Q==
-X-Received: by 2002:a7b:ce98:0:b0:3fe:2bb1:11ba with SMTP id q24-20020a7bce98000000b003fe2bb111bamr12780977wmj.27.1696318732102;
-        Tue, 03 Oct 2023 00:38:52 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:e31a:fe1c:e925:9858? ([2a01:e0a:982:cbb0:e31a:fe1c:e925:9858])
-        by smtp.gmail.com with ESMTPSA id l7-20020a05600012c700b0031c52e81490sm884647wrx.72.2023.10.03.00.38.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 00:38:51 -0700 (PDT)
-Message-ID: <57059b74-9442-4657-a4ef-22a84d228356@linaro.org>
-Date:   Tue, 3 Oct 2023 09:38:50 +0200
+        Tue, 3 Oct 2023 03:40:31 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 03 Oct 2023 00:40:28 PDT
+Received: from esa.hc3777-42.iphmx.com (esa.hc3777-42.iphmx.com [216.71.141.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 43419AD
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 00:40:28 -0700 (PDT)
+X-CSE-ConnectionGUID: ZpVt91IETGW0rUWKc3MhRA==
+X-CSE-MsgGUID: pD1a42v1Toq8Jwiss/0bJw==
+X-IronPort-RemoteIP: 40.93.10.14
+X-IronPort-MID: 10732840
+X-IronPort-Reputation: None
+X-IronPort-Listener: OutgoingMail
+X-IronPort-SenderGroup: O365_Users_Outgoing_Mail
+X-IronPort-MailFlowPolicy: $O365_Users_Outgoing_Mail
+Received: from mail-westus2azlp17011014.outbound.protection.outlook.com (HELO CO1PR02CU001.outbound.protection.outlook.com) ([40.93.10.14])
+  by ob1.hc3777-42.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 Oct 2023 03:39:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nrh+0eF5J4RlWMAOpyZaoVnLuIc9FzXiPiYzo0zWF0mpbNm9lO6sTt3ht1FDnKOvMxJHM3MR7WUrCbkaq5Zw7gvzAQRZa1VBznclXXutmSzAmXl3tQCXu5oVIleBa9HjmA5NaN4jVGqpBrG/Td7mhLJzaVRws7hh9LZBol70/1TxfWmS+TOCi3S/xVP1ujdng4/s7Mj6glRldbXOamUlaYcX69AXnH/R1BCmSdnOYNvT1EK7DjAwSDTCNrP6b8Rqb7ngvhbOVmapZFoE8zfR7URrSyMiewuQLSso9Nm/2P35JW8K9f9tQ7J4bhJSmLtXfeO0nyBJaxvDqdl0mySGIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sAaMSgjybMoCYsqoquI/UJLzJidoz9kcrlJo3w/5WKA=;
+ b=av6HiB7ZP+tSVWsEu2MwU7jQPUIOl1BOxra//x4FuNlN4s02mowh0Ba2iJuh8ZVFcU7UBtZ4xP79tHy5y6gq+m+Y8G3PFY5Up+AvrJojbUbpGpfNGSlpM+l4B3Ydg176znisw+6H2KvYvWmJPv3t4jq8lIlLIcooXuZguRBXmJz12qnDkTneYBdaakD+JgbwcgpJKAo5eGhBY232jvykLqIPceLitbsq1mUyWhm5YokhqxoeB49eYvUbhb2iGmAVeGJfNkNaiYvnXrrZfWmkpOyNNlox2xDUCrL28tAAaoyTHWUx0roWmY3tdOazHLnFv+fbJlnfTotyF30MMh2MGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 146.91.48.123) smtp.rcpttodomain=xidtech.com smtp.mailfrom=xmails.me;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=xmails.me;
+ dkim=none (message not signed); arc=none
+Received: from MN2PR06CA0026.namprd06.prod.outlook.com (2603:10b6:208:23d::31)
+ by IA1PR05MB10031.namprd05.prod.outlook.com (2603:10b6:208:3f8::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.30; Tue, 3 Oct
+ 2023 07:39:18 +0000
+Received: from BL6PEPF0001AB4C.namprd04.prod.outlook.com
+ (2603:10b6:208:23d:cafe::4e) by MN2PR06CA0026.outlook.office365.com
+ (2603:10b6:208:23d::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.32 via Frontend
+ Transport; Tue, 3 Oct 2023 07:39:18 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 146.91.48.123) smtp.mailfrom=XMAILS.ME; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=XMAILS.ME;
+Received: from ACDCSWPAPP748.cummins.svcnet (146.91.48.123) by
+ BL6PEPF0001AB4C.mail.protection.outlook.com (10.167.242.70) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.6838.14 via Frontend Transport; Tue, 3 Oct 2023 07:39:17 +0000
+Received: from [185.225.73.120] (185.225.73.120) by
+ ACDCSWPAPP748.cummins.svcnet (10.208.14.101) with Microsoft SMTP Server id
+ 15.0.1497.42; Tue, 3 Oct 2023 02:39:01 -0500
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 2/2] arm64: dts: amlogic: add libretech cottonwood support
-Content-Language: en-US, fr
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Da Xue <da@lessconfused.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Da Xue <da.xue@libretech.co>,
-        devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-amlogic@lists.infradead.org
-References: <20231002141020.2403652-1-jbrunet@baylibre.com>
- <20231002141020.2403652-3-jbrunet@baylibre.com>
- <b81a296d-0640-4b2e-aab6-c9de37d10206@linaro.org>
- <1j5y3ozvmk.fsf@starbuckisacylon.baylibre.com>
- <CACdvmAgzBxja-oJkS9c88=P0Wmc1ptkJExz6YjaJUyyv6yxh0Q@mail.gmail.com>
- <DF61DA82-29E4-4504-B548-14F880A6221E@gmail.com>
- <1j1qecyxt4.fsf@starbuckisacylon.baylibre.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <1j1qecyxt4.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Dear Respectfully,
+To:     Recipients <SUPPORT@XMAILS.ME>
+From:   Ahmad Mualla <SUPPORT@XMAILS.ME>
+Date:   Tue, 3 Oct 2023 00:38:55 -0700
+Reply-To: <engr.dr.ahmadmualla@yandex.com>
+Message-ID: <45c043855b7d46cfbe3599b3e0757f00@ACDCSWPAPP748.cummins.svcnet>
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4C:EE_|IA1PR05MB10031:EE_
+X-MS-Office365-Filtering-Correlation-Id: a867f1c7-db63-421d-f839-08dbc3e3d996
+AntiSpoofAllow: True
+AllowCheck1: True
+X-MS-Exchange-SenderADCheck: 2
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?6olydMdRcAaKjxGpRLjA1FTIOQi3v9N1UDHiLgF0iUPFaLgpj9nC7Qgz/D?=
+ =?iso-8859-1?Q?rphiubdmJWcb09wAOK4xquEFWZrgsCVlIdsnUfGlsTd53GYR4zRWhB1soy?=
+ =?iso-8859-1?Q?PpelILAQN2TBsyXj5Fn/7bCm6jmKLXW3VA+io0yLmcEeJILOQxpYWvmIf+?=
+ =?iso-8859-1?Q?qRoqJTqEaPMPFnMjW+SHhJ755kZJYvRvFiBWbpNWqzYIWlc/AQeR5jYh17?=
+ =?iso-8859-1?Q?rsBy5+EU+QsrX+WKqx1BqELLXcG7+jqbne4F4q6mOEMUa6y3ecrDh6ytCF?=
+ =?iso-8859-1?Q?RknLfCgMLu4a509v/YuxbUUuSZW1/cR4cnF0K3dqT4gTdjKJBAxYE+ZNmM?=
+ =?iso-8859-1?Q?iQ2ME+bbLp1+At7QlR4ZOsLwldwqVC+HQXjFtfY7ZPU0Nf5OHqpLTObN4w?=
+ =?iso-8859-1?Q?SNBtwGggL5+CvuzJ24lWDovO/gb0WSVtFgYNroZ2kca9cTypKgbAIVkyuC?=
+ =?iso-8859-1?Q?1LSoNE/um/gqUg5flH7AOO0TeYYp9OYuWHm6/YkFuGxvl0qXgDlVLYgMMV?=
+ =?iso-8859-1?Q?ydddJJwab8XgyEhtG2xVvYb7nF9D1aLCQ6eEZeq3EgU23u5g96+LEu7RAc?=
+ =?iso-8859-1?Q?IIGPQakM2waAStfsLy94ICxcQLmjQrqfFiOQJFSnIjZt7UvPXEymNIp/qp?=
+ =?iso-8859-1?Q?Y3plBC+pqqFjVPcHjQFHz2437/xnnbJQuvgwDSvvLq0PdoDM1R5rkq4FPR?=
+ =?iso-8859-1?Q?ZCRnsKk7ducRczJ3UIHHNqlep1KpWU5J/RE6Hr6fAMZ0jPEXlQyzNbzaS+?=
+ =?iso-8859-1?Q?HCFSqdFyIr2ofFxuIHrwS+D/EvBuXkBUIhl8HYYBVzJnIu9F3fnqFbblVC?=
+ =?iso-8859-1?Q?515daVWf9xTSHy6HzgCz+9ybIpQnzEcnp+9czEZ7TXYfSiAh8NtPHW5gFg?=
+ =?iso-8859-1?Q?5mhmGQwwY4oQI03V+ZjJJr+jJ3ObPP0poEtLp0UC6vkcrUoV16g8ASWB3U?=
+ =?iso-8859-1?Q?X7drC2wXqvANh95ebiGyoxZuAcIWnV6Sy4ffTp8lvV3wBb70EY0Sop27Q/?=
+ =?iso-8859-1?Q?EtHL1RapDVfacEmnISrJ017ococs9L6S9d5E+5UORFWbaZqtHxWZMMF3lK?=
+ =?iso-8859-1?Q?hYKraxgoy1VnOV3963L8kcBEOZuODcEMaVVPYqeV911BtZNGFS3IVKvEu6?=
+ =?iso-8859-1?Q?SSg7AepN/bRxXgEA4Tn1ddXdDW4FhSHm9gLwgOnwhmURff6lonI8UtyTOD?=
+ =?iso-8859-1?Q?Yr2yTaoe5EUHKxcPMU4xXZL2MzFAlpPb5RrOM3tzH3mwNEPDRCEe2COlW0?=
+ =?iso-8859-1?Q?zhl7Hh+gz/56qx5F+JrWKESo8k2WulPF1tHTN9Kpwv4TOV1WZ2w1tbhmNP?=
+ =?iso-8859-1?Q?vZ/6?=
+X-Forefront-Antispam-Report: CIP:146.91.48.123;CTRY:US;LANG:en;SCL:5;SRV:;IPV:CAL;SFV:SPM;H:ACDCSWPAPP748.cummins.svcnet;PTR:InfoDomainNonexistent;CAT:OSPM;SFS:(13230031)(4636009)(39860400002)(346002)(396003)(136003)(376002)(230922051799003)(451199024)(64100799003)(82310400011)(61400799006)(48200799006)(46966006)(40470700004)(9686003)(24736004)(108616005)(956004)(508600001)(40460700003)(82740400003)(356005)(82960400001)(81166007)(86362001)(40480700001)(6706004)(3480700007)(35950700001)(7416002)(7366002)(26005)(4744005)(7406005)(83380400001)(2906002)(47076005)(6666004)(8676002)(336012)(316002)(169323002)(6862004)(8936002)(7116003)(41300700001)(2860700004)(6200100001)(16576012)(70586007)(70206006)(5660300002)(62346018);DIR:OUT;SFP:1501;
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 2
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?iso-8859-1?Q?G1taAw9XLUlBpF1EdCFUoj0zNpUjeo0IuFIpd3muZ9dI3DwF3LOJE+gpPa?=
+ =?iso-8859-1?Q?gTQHu7SFW/O85X1qkzmbH2KZHluyDncaGw4can0UYqMTly32L4R7UTzBaw?=
+ =?iso-8859-1?Q?tRKhi767bAb3D4ANs7TYn3h3cCB64h58N8Ees6ZAgfrNG/Qj6A3U/6dbvU?=
+ =?iso-8859-1?Q?LTBEQvqNxpTuLykb7D8QeghAHZu5d/eYEtzVBPWK+vJWz8YY5DGMtDEd0A?=
+ =?iso-8859-1?Q?jtbvsf7ZoQsg9/xwICpKwL4zM3qlEDJeVYg70Mo3xLrhNtge2rSwOU7tpa?=
+ =?iso-8859-1?Q?9i+GWVBzi57Fpyl56O7OcEi48PPoUGnWvy4GFLSsMfuRoEmgRlvoGQ+6mc?=
+ =?iso-8859-1?Q?nZn1LyFZfr/ozrZdDmDQ2vykMTCeRYFbwqmpO7+ZTnnIHZl8irOg7ONNJ2?=
+ =?iso-8859-1?Q?+BW63zfeQV+Mo6Ud+WDIL1v5jcUfN+R4bZR9rt7hr1YfxJJtWrDUyO2QbO?=
+ =?iso-8859-1?Q?3i6ZD3KhZaZCm48SbZL1rPp6e6xkXrVx9EaKu5xLwwQMKKUjL77U/fVEN8?=
+ =?iso-8859-1?Q?YhWZMInldV74sAGp3lj+Bq8lNZNLoD4PTzlSArB4g04u6RSYnkFzYvGEMH?=
+ =?iso-8859-1?Q?uHIiFyrCM68NE0tFdn9CzCnsWltALC7PUP3UydzZD6hTZcoVF20Y6CDNMD?=
+ =?iso-8859-1?Q?FXic3rsuTgXeTic3WAI+nFreABcL+3IjazYteYkN5vmyjgsQT7ILlLO0dV?=
+ =?iso-8859-1?Q?6XOLRKqYD5oCafH37Bx96H//FE1a+o0jk1lWK0wu5JVx8c0YEEGHiKhRrG?=
+ =?iso-8859-1?Q?zKaHwNTtV1hoZAzabVZIiXdV5gt8in3KNpUnuxddn59xWssowXdvnx9uuR?=
+ =?iso-8859-1?Q?YDfbu0oRSRpyVVqReNzHKiZh8mnMKsUFrsVk+6JcynmGv+0hwf0jUPbnYj?=
+ =?iso-8859-1?Q?B6tE3+n0g82nQZ6KtEsz1+cpqj2zr3U4tGB8ewwcuYYOOyvJj0KDvVndSg?=
+ =?iso-8859-1?Q?Axv+EMucmukv50hX6k2aye4HcMHitggCu/Leg/rBFUtfEy8HZMIVrgkjvj?=
+ =?iso-8859-1?Q?hT7O7T+Pu3wAD3/prac0kp2/6rJSezvAqAT9b0QzcqhTWVcn9EJAywF34X?=
+ =?iso-8859-1?Q?aR9tYNFmowEh5d7GY6HY7FvIron6/uKmsOz8ZbusWHGkLuS4Rk4zPckXJc?=
+ =?iso-8859-1?Q?vcUNNFxzSKfY0q7+oS+kl5QFopnptWwa9khXFpeFpE0wqMvHaLo23UJIhu?=
+ =?iso-8859-1?Q?zoeT4i9dsXzSYuuP1Z/3ta1cA7pw0hdR1ou5vJOcX6cp1SVzKaT0Z3dk0y?=
+ =?iso-8859-1?Q?8qA5MumW4effYy95qwo1yEiqyR3dHL8dUz20Y356/rwyMJAJ1pGo7cgILv?=
+ =?iso-8859-1?Q?gCkdVBX8uBmK/gP40wKPdtieCgTlsXblnBQjwHb9NNkAVNu1AFuofLtQPn?=
+ =?iso-8859-1?Q?Ce1xD+/5+3wssc3e8oJIsO51O+q+bZC2Mve7u2FfHogv7J3fMzM2OD/nnq?=
+ =?iso-8859-1?Q?m4DdkfjfBXqWryBPFW5l75X6cM511/jOxDSzZVQYhBIuOVQzZKELZi5Jmk?=
+ =?iso-8859-1?Q?VFwTLUVsvLijqUlm6uzpjslctT2efY0yaOqMoKmPsngniYxbM2cHAK8P4x?=
+ =?iso-8859-1?Q?Ii182QjXYWLisqe/Cfipy+Xdnf7OH42YOpmWQWGmGmeu6Ao+W0ethe8lqT?=
+ =?iso-8859-1?Q?b+SyWQ1J6V8mbAwsmjUsxbMcmAwR3fSputK1/pt36jh60q9wx9ZECunKMw?=
+ =?iso-8859-1?Q?k9WzraA4e/iNaT/IlCd2rBS5ksNdXp32qBAgA+oT83wpOEqhEXqno5kIfd?=
+ =?iso-8859-1?Q?dyr327ijjRf3i4K59Qd7Oy95JqtyY5sTXMgSwywuuylZkuZnqZjM0+/qI0?=
+ =?iso-8859-1?Q?E7KgApbbH63d72IrJeFMzMqbTy9UTarBmQ4CjaDmKPXdB372QQ2e4EP+Ps?=
+ =?iso-8859-1?Q?yI?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-1: 0Ztq98pxr9niDWEJBvgZOxs7uAcGQmwPETuQQpy7407wlKrNxwfbOLyv9Q7D0mx7bwRgDamPOxNMA6kUp01ZIWieZhBNTPJzfxMSsNI0CV8t6ouaiM/M37cU/eQOgKxNELnSCyDlw5JyUHW+PmAk0yKJDmMYpD2OqCKrVjLJcwTs6GhZLZE+6A3lzJqybf1ZMjG2TzkdzmzrsTXDu1hZcqvlggWqGGQrZhMyio7vxwHkJT5oY/so8w0vifFMUNfLL9rBB2lvAX35TjIyZrifUKu1gi2kcAvNbnlROrGwUG7+YCKgarkEhbOKoCiY4ZmLMtpixXBFrSULcC+uKPFO7iNPdYxk9qFVqI4E25b3T9UFqQJtBpAT+18c+D8hX/TUGg/1QYup10/CK7n+1WtmYn1yo0sU93KIOU1gKdtRfH4kJP2JRH7SiSyJ+mc3yw3/WRXljwCCOxc5VQ==
+X-OriginatorOrg: Cummins365.onmicrosoft.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 07:39:17.7036
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a867f1c7-db63-421d-f839-08dbc3e3d996
+X-MS-Exchange-CrossTenant-Id: b31a5d86-6dda-4457-85e5-c55bbc07923d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=b31a5d86-6dda-4457-85e5-c55bbc07923d;Ip=[146.91.48.123];Helo=[ACDCSWPAPP748.cummins.svcnet]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB4C.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR05MB10031
+X-Spam-Status: Yes, score=5.9 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
+        RCVD_IN_MSPIKE_L4,RCVD_IN_SBL,RCVD_IN_VALIDITY_RPBL,SPF_FAIL,
+        SPF_HELO_PASS,TO_EQ_FM_DOM_SPF_FAIL,TO_EQ_FM_SPF_FAIL autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [216.71.141.138 listed in list.dnswl.org]
+        *  1.3 RCVD_IN_BL_SPAMCOP_NET RBL: Received via a relay in
+        *      bl.spamcop.net
+        *      [Blocked - see <https://www.spamcop.net/bl.shtml?216.71.141.138>]
+        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *      [185.225.73.120 listed in zen.spamhaus.org]
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [216.71.141.138 listed in bl.score.senderscore.com]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 RCVD_IN_MSPIKE_L4 RBL: Bad reputation (-4)
+        *      [216.71.141.138 listed in bl.mailspike.net]
+        * -0.0 SPF_HELO_PASS SPF: HELO matches SPF record
+        *  0.2 HEADER_FROM_DIFFERENT_DOMAINS From and EnvelopeFrom 2nd level
+        *      mail domains are different
+        *  0.0 SPF_FAIL SPF: sender does not match SPF record (fail)
+        *      [SPF failed: Please see http://www.openspf.org/Why?s=mfrom;id=bounces%2Bsrs%3Dt2nez%3Dfr%40cummins365.onmicrosoft.com;ip=216.71.141.138;r=lindbergh.monkeyblade.net]
+        *  0.0 RCVD_IN_MSPIKE_BL Mailspike blocklisted
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+        *  0.0 TO_EQ_FM_SPF_FAIL To == From and external SPF failed
+        *  0.0 TO_EQ_FM_DOM_SPF_FAIL To domain == From domain and external SPF
+        *       failed
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 09:21, Jerome Brunet wrote:
-> 
-> On Tue 03 Oct 2023 at 05:23, Christian Hewitt <christianshewitt@gmail.com> wrote:
-> 
->>> On 3 Oct 2023, at 1:15 am, Da Xue <da@lessconfused.com> wrote:
->>>
->>> On Tue, Oct 3, 2023 at 3:13 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
->>>>
->>>>
->>>> On Mon 02 Oct 2023 at 18:45, Neil Armstrong <neil.armstrong@linaro.org> wrote:
->>>>
->>>>> Hi,
->>>>>
->>>>> On 02/10/2023 16:10, Jerome Brunet wrote:
->>>>>> Add support for the Libretech cottonwood board family.
->>>>>> These 2 boards are based on the same PCB, with an RPi B form factor.
->>>>>> The "Alta" board uses an a311d while the "Solitude" variant uses an
->>>>>> s905d3.
->>>>>> Co-developed-by: Da Xue <da.xue@libretech.co>
->>>>>> Signed-off-by: Da Xue <da.xue@libretech.co>
->>>>>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
->>>>>> ---
->>>>>>   arch/arm64/boot/dts/amlogic/Makefile          |   2 +
->>>>>>   .../amlogic/meson-g12b-a311d-libretech-cc.dts | 133 ++++
->>>>>>   .../amlogic/meson-libretech-cottonwood.dtsi   | 610 ++++++++++++++++++
->>>>>>   .../amlogic/meson-sm1-s905d3-libretech-cc.dts |  89 +++
->>>>>>   4 files changed, 834 insertions(+)
->>>>>>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
->>>>>>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
->>>>>>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts
->>>>>> diff --git a/arch/arm64/boot/dts/amlogic/Makefile
->>>>>> b/arch/arm64/boot/dts/amlogic/Makefile
->>>>>> index 4ce401d17b63..cc8b34bd583d 100644
->>>>>> --- a/arch/arm64/boot/dts/amlogic/Makefile
->>>>>> +++ b/arch/arm64/boot/dts/amlogic/Makefile
->>>>>> @@ -18,6 +18,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-bananapi-cm4-cm4io.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gsking-x.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking-pro.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking.dtb
->>>>>> +dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-libretech-cc.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-go-ultra.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2-plus.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2.dtb
->>>>>> @@ -73,6 +74,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-sm1-bananapi-m2-pro.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-sm1-bananapi-m5.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-sm1-h96-max.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-sm1-khadas-vim3l.dtb
->>>>>> +dtb-$(CONFIG_ARCH_MESON) += meson-sm1-s905d3-libretech-cc.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-sm1-odroid-c4.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-sm1-odroid-hc4.dtb
->>>>>>   dtb-$(CONFIG_ARCH_MESON) += meson-sm1-sei610.dtb
->>>>>> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
->>>>>> new file mode 100644
->>>>>> index 000000000000..fc890e235dbd
->>>>>> --- /dev/null
->>>>>> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
->>>>>> @@ -0,0 +1,133 @@
->>>>>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->>>>>> +/*
->>>>>> + * Copyright (c) 2023 BayLibre, SAS.
->>>>>> + * Author: Jerome Brunet <jbrunet@baylibre.com>
->>>>>> + */
->>>>>> +
->>>>>> +/dts-v1/;
->>>>>> +
->>>>>> +#include <dt-bindings/clock/g12a-clkc.h>
->>>>>> +#include "meson-g12b-a311d.dtsi"
->>>>>> +#include "meson-libretech-cottonwood.dtsi"
->>>>>> +
->>>>>> +/ {
->>>>>> +    compatible = "libretech,aml-a311d-cc", "amlogic,a311d", "amlogic,g12b";
->>>>>> +    model = "Libre Computer AML-A311D-CC Alta";
->>>>>> +
->>>>>> +    vddcpu_a: regulator-vddcpu-a {
->>>>>> +            compatible = "pwm-regulator";
->>>>>> +            regulator-name = "VDDCPU_A";
->>>>>> +            regulator-min-microvolt = <730000>;
->>>>>> +            regulator-max-microvolt = <1011000>;
->>>>>> +            regulator-boot-on;
->>>>>> +            regulator-always-on;
->>>>>> +            pwm-supply = <&dc_in>;
->>>>>> +            pwms = <&pwm_ab 0 1250 0>;
->>>>>> +            pwm-dutycycle-range = <100 0>;
->>>>>> +    };
->>>>>> +
->>>>>> +    sound {
->>>>>> +            model = "Alta";
->>>>>
->>>>> I think those sound model properties should be coherent with the
->>>>> other Libre Computer boards:
->>>>> arch/arm64/boot/dts/amlogic/meson-gx-libretech-pc.dtsi:         model = "LIBRETECH-PC";
->>>>> arch/arm64/boot/dts/amlogic/meson-gxl-s805x-libretech-ac.dts:           model = "LIBRETECH-AC";
->>>>> arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts:                model = "LIBRETECH-CC-V2";
->>>>> arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts:           model = "LIBRETECH-CC";
->>>>
->>>> "LIBRETECH-CC-" leave very little room to play with
->>>> That's not really something that could have been anticipated 5+ years ago
->>>>
->>>
->>> I think the formal model name is best, maybe with LC prefix.
->>> eg. LC-AML-A311D-CC and LC-AML-S905D3-CC
->>
->> The first is valid. The second will be truncated to LC-AML-S905D3-C by the
->> alsa 15-character naming limit (mentioned below).
->>
->> So name/rename them to:
->>
->> LC-XXXXXXXXXXXX <= MAX SIZE (15 Chars)
->> LC-LEPOTATO
->> LC-LEPOTATO-V2
->> LC-LAFRITE
->> LC-TARTIFLETTE
->> LC-ALTA
->> LC-SOLITUDE
->>
->> Personally I think the plain codenames (no "LC-“) work best as they are all
->> distinctive. Whenever I see lists of the official board names they look/read
->> the same at first glance and then I have to spot-the-difference to tell them
->> apart.
->>
->> At the moment AFAIK these names are just cosmetic as there’s no Amlogic alsa
->> ucm confs using board model (only downstream confs based on driver name). So
->> IMHO rework the names now before the confs go upstream.
->>
-> 
-> No they are not cosmetic. It can be used to match the card.
-> Changing old names may break userspace.
+Dear Respectfully,
 
-We changed them already because there was a clash from the 15 characters max width,
-but now it's different.
+I have a client who has money to invest either in the form of a loan or equity basis.
 
-So I think it's time to start a new clean scheme for the future LC boards, so:
-LC-ALTA
-LC-SOLITUDE
+A skilled and competent manager who have a secured and sustainable business plan that can generate good profits, is required.
 
-seems ok for me.
+Please respond with your thoughts so that we can discuss them.
 
-Using LC-AML-A311D-CC and LC-AML-S905D3-CC goes beyond the 15 chars limit.
-
-Neil
-
-> 
->> CH.
->>
->>> https://hub.libre.computer/t/libre-computer-board-naming-and-conventions/100
->>>
->>>>>
->>>>> It's ok to change the scheme since it's tried to keep the name under the 15 characters limit,
->>>>> will the next board keep this naming ?
->>>>
->>>> I don't know what the next board will be so I can hardly make any prediction
->>>> I'm open to suggestion if you prefer something else
->>>>
->>>>>
->>>>>
->>>>>> +            audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
->>>>>> +                            "TDMOUT_A IN 1", "FRDDR_B OUT 0",
->>>>>> +                            "TDMOUT_A IN 2", "FRDDR_C OUT 0",
->>>>>> +                            "TDM_A Playback", "TDMOUT_A OUT",
->>>>>> +                            "TDMOUT_B IN 0", "FRDDR_A OUT 1",
->>>>>> +                            "TDMOUT_B IN 1", "FRDDR_B OUT 1",
->>>>>> +                            "TDMOUT_B IN 2", "FRDDR_C OUT 1",
->>>>>> +                            "TDM_B Playback", "TDMOUT_B OUT",
->>>>>> +                            "TDMOUT_C IN 0", "FRDDR_A OUT 2",
->>>>>> +                            "TDMOUT_C IN 1", "FRDDR_B OUT 2",
->>>>>> +                            "TDMOUT_C IN 2", "FRDDR_C OUT 2",
->>>>>> +                            "TDM_C Playback", "TDMOUT_C OUT",
->>>>>> +                            "TDMIN_A IN 0", "TDM_A Capture",
->>>>>> +                            "TDMIN_B IN 0", "TDM_A Capture",
->>>>>> +                            "TDMIN_C IN 0", "TDM_A Capture",
->>>>>> +                            "TDMIN_A IN 3", "TDM_A Loopback",
->>>>>> +                            "TDMIN_B IN 3", "TDM_A Loopback",
->>>>>> +                            "TDMIN_C IN 3", "TDM_A Loopback",
->>>>>> +                            "TDMIN_A IN 1", "TDM_B Capture",
->>>>>> +                            "TDMIN_B IN 1", "TDM_B Capture",
->>>>>> +                            "TDMIN_C IN 1", "TDM_B Capture",
->>>>>> +                            "TDMIN_A IN 4", "TDM_B Loopback",
->>>>>> +                            "TDMIN_B IN 4", "TDM_B Loopback",
->>>>>> +                            "TDMIN_C IN 4", "TDM_B Loopback",
->>>>>> +                            "TDMIN_A IN 2", "TDM_C Capture",
->>>>>> +                            "TDMIN_B IN 2", "TDM_C Capture",
->>>>>> +                            "TDMIN_C IN 2", "TDM_C Capture",
->>>>>> +                            "TDMIN_A IN 5", "TDM_C Loopback",
->>>>>> +                            "TDMIN_B IN 5", "TDM_C Loopback",
->>>>>> +                            "TDMIN_C IN 5", "TDM_C Loopback",
->>>>>> +                            "TODDR_A IN 0", "TDMIN_A OUT",
->>>>>> +                            "TODDR_B IN 0", "TDMIN_A OUT",
->>>>>> +                            "TODDR_C IN 0", "TDMIN_A OUT",
->>>>>> +                            "TODDR_A IN 1", "TDMIN_B OUT",
->>>>>> +                            "TODDR_B IN 1", "TDMIN_B OUT",
->>>>>> +                            "TODDR_C IN 1", "TDMIN_B OUT",
->>>>>> +                            "TODDR_A IN 2", "TDMIN_C OUT",
->>>>>> +                            "TODDR_B IN 2", "TDMIN_C OUT",
->>>>>> +                            "TODDR_C IN 2", "TDMIN_C OUT",
->>>>>> +                            "Lineout", "ACODEC LOLP",
->>>>>> +                            "Lineout", "ACODEC LORP";
->>>>>> +    };
->>>>>> +};
->>>>>> +
-
-<snip>
-
+Regards,
+Ahmad Mualla
+Email: engr.dr.ahmadmualla@yandex.com
