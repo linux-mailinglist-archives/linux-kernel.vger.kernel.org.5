@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB2C7B69E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817417B69EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234361AbjJCNKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56972 "EHLO
+        id S232546AbjJCNNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232177AbjJCNKW (ORCPT
+        with ESMTP id S232177AbjJCNNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:10:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2AFA1;
-        Tue,  3 Oct 2023 06:10:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696338619; x=1727874619;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=sJ1wI9sackoBCbiYI9JY9yIefb7w0Ym5PLbqs6h94l4=;
-  b=BLDXq5/5o4BlzUq98EPtD0VtloKIGfQY+0IVivbGuqDaNhUZ4x7LuRFU
-   ydZqerJfeeE5CaxZjlBxk3G673v8+EL5fYoZKxOXRPY88XYu5rUqNws5Z
-   53RsKyWX7E/oHMn2OS5Dn2++c57oV4+MqynRYC9/Xu9j6pHVJKNaWJwcC
-   mmOSGYaC0LpzlZsr4CIkkLztk9mnGZyJqUfhXYtqhxiT2N6fXXZ4voZwT
-   QWiw/KDh9wrTW8cAQ0sdsHjoL/+5MZbkBpGgCp3lwfwLwt7y6BfvicTqZ
-   rA+jrIlJ1G1jAybn/Isqod3V/GMDUmlIEOHv5Z3QAFkC8BVnFgkUnOrVp
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="447027709"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="447027709"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 06:10:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="998018510"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="998018510"
-Received: from tciutacu-mobl.ger.corp.intel.com ([10.252.40.114])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 06:10:15 -0700
-Date:   Tue, 3 Oct 2023 16:10:13 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [UPDATE][PATCH] platform/x86/intel-uncore-freq: Conditionally
- create attribute for read frequency
-In-Reply-To: <20231002131817.1590966-1-srinivas.pandruvada@linux.intel.com>
-Message-ID: <6c59be5-1ff1-d0b1-5960-3789fe10c692@linux.intel.com>
-References: <20231002131817.1590966-1-srinivas.pandruvada@linux.intel.com>
+        Tue, 3 Oct 2023 09:13:14 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2F5A1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:13:10 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-57b5f0d658dso518485eaf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 06:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696338790; x=1696943590; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qngHVrILvNeCSm/s79v1hXPA4srlr06zsPatTFbmIhg=;
+        b=BxDM8DJ+YlixlnNbAVGaX48ZuXVRnGCDQBips3Aebj7xyS6oEbiU5pp/TMFWRbypEd
+         lzCulFlFll6x1lJsOPCSd7ySOd1SRyH77uydfP+Z/fUpR84te7AjeLkRi7BnbWpmZPTR
+         ZlInmS9gAgZ6uOLKh1lMo96Ixjrd9rT1xNASyS1bphjPbdd6l+uq8oR8AzxMatajL0Ee
+         eBXi4glsPIzWPJsHCe0L/DFo9BJAVYpxJV+rZBdUYX4dknaG/Jjylz0/os254EvUwPD8
+         78etQr7gG1C4Tf0KQJahT+ZOREh2cBuM041TB8nFx1iTvFhYsXUSZS9CWnKhV+D/7Kdg
+         ne1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696338790; x=1696943590;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qngHVrILvNeCSm/s79v1hXPA4srlr06zsPatTFbmIhg=;
+        b=pu0tgU82MTZepNlzL+br7uipZhgX+WVfT/ezSE6ZX3UemWWFHEeAPikeLP7iw40Z3v
+         AgnYP3tsHpu3pE5h5mhCh3qRzZmyVR3vhiC0j7qnRMUIgEbP13VoS1nBrKohlau4d5i4
+         u4sGEn+pWP22HggK4Oy1UrWR15A52+QSyszBsnlGPi8bUM6OzaXaN6H6QM8kz60od+Dp
+         42Pf0SxoIkNcyNzddz2fDAtHcwmxnnxEE/kmeQmHA6o8NHn+UmOGhPTHPwHoFU6KVQtA
+         dQhwy2P9sdBfGZmYLOyTg/IY/kznVm3gyIUZaAo5Zlai7wh8z+pxry+MbLwwYjFDUkCv
+         EbzA==
+X-Gm-Message-State: AOJu0Yx1gAkyrgnLO3LsDqv2EWi3DGz+loSHXEyH0c5gN/KzXUa2RlGx
+        fRXBG4ZaWQEA4xt//iPdvMdXEA==
+X-Google-Smtp-Source: AGHT+IGZa47bNwbD2O9N2xm+OcLA8zN+h0X/kwuWCtsg+xTV228gW+PB93NcRH/Aro1283tpnCWNew==
+X-Received: by 2002:a54:4899:0:b0:3a7:f650:af9b with SMTP id r25-20020a544899000000b003a7f650af9bmr15578226oic.55.1696338790195;
+        Tue, 03 Oct 2023 06:13:10 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id v4-20020a0c8e04000000b0065afd35c762sm469236qvb.91.2023.10.03.06.13.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 06:13:09 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 09:13:09 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mm: memcg: normalize the value passed into
+ memcg_rstat_updated()
+Message-ID: <20231003131309.GD17012@cmpxchg.org>
+References: <20230922175741.635002-1-yosryahmed@google.com>
+ <20230922175741.635002-3-yosryahmed@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922175741.635002-3-yosryahmed@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Oct 2023, Srinivas Pandruvada wrote:
-
-> When the current uncore frequency can't be read, don't create attribute
-> "current_freq_khz" as any read will fail later. Some user space
-> applications like turbostat fail to continue with the failure. So, check
-> error during attribute creation.
+On Fri, Sep 22, 2023 at 05:57:40PM +0000, Yosry Ahmed wrote:
+> memcg_rstat_updated() uses the value of the state update to keep track
+> of the magnitude of pending updates, so that we only do a stats flush
+> when it's worth the work. Most values passed into memcg_rstat_updated()
+> are in pages, however, a few of them are actually in bytes or KBs.
 > 
-> Fixes: 8a54e2253e4c ("platform/x86/intel-uncore-freq: Uncore frequency control via TPMI")
+> To put this into perspective, a 512 byte slab allocation today would
+> look the same as allocating 512 pages. This may result in premature
+> flushes, which means unnecessary work and latency.
 
-Hi,
+Yikes.
 
-Thanks for the update but that commit id looks bogus, or where the value 
-is used w/o error check?
+I'm somewhat less concerned about the performance as I am about the
+variance in flushing cost that could be quite difficult to pinpoint.
+IMO this is a correctness fix and a code cleanup, not a performance
+thing.
 
--- 
- i.
-
-
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
-> update
-> - Added Fixes tag
+> Normalize all the state values passed into memcg_rstat_updated() to
+> pages. Round up non-zero sub-page to 1 page, because
+> memcg_rstat_updated() ignores 0 page updates.
 > 
->  .../x86/intel/uncore-frequency/uncore-frequency-common.c  | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c
-> index 1152deaa0078..33ab207493e3 100644
-> --- a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c
-> +++ b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c
-> @@ -176,7 +176,7 @@ show_uncore_data(initial_max_freq_khz);
->  
->  static int create_attr_group(struct uncore_data *data, char *name)
->  {
-> -	int ret, index = 0;
-> +	int ret, freq, index = 0;
->  
->  	init_attribute_rw(max_freq_khz);
->  	init_attribute_rw(min_freq_khz);
-> @@ -197,7 +197,11 @@ static int create_attr_group(struct uncore_data *data, char *name)
->  	data->uncore_attrs[index++] = &data->min_freq_khz_dev_attr.attr;
->  	data->uncore_attrs[index++] = &data->initial_min_freq_khz_dev_attr.attr;
->  	data->uncore_attrs[index++] = &data->initial_max_freq_khz_dev_attr.attr;
-> -	data->uncore_attrs[index++] = &data->current_freq_khz_dev_attr.attr;
-> +
-> +	ret = uncore_read_freq(data, &freq);
-> +	if (!ret)
-> +		data->uncore_attrs[index++] = &data->current_freq_khz_dev_attr.attr;
-> +
->  	data->uncore_attrs[index] = NULL;
->  
->  	data->uncore_attr_group.name = name;
-> 
+> Fixes: 5b3be698a872 ("memcg: better bounds on the memcg stats updates")
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
