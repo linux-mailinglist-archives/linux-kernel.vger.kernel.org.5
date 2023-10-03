@@ -2,58 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD097B640F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F607B6422
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239492AbjJCI3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56322 "EHLO
+        id S230481AbjJCIan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 04:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjJCI3V (ORCPT
+        with ESMTP id S229835AbjJCIa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:29:21 -0400
-Received: from out-205.mta0.migadu.com (out-205.mta0.migadu.com [IPv6:2001:41d0:1004:224b::cd])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6C3A3
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:29:18 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 17:28:58 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696321756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SvHEdL127DkwY1o1/aHJZdaismZDLKyIFOf23kZMKII=;
-        b=SnZnaakkCBrskHWe8xJL1L5kXJ04u9tThP9M8iKTR/CDUx+XLVjReoLcedlF6WCxvIyGD6
-        OhdcyIniVLeOQ4Kzd3U+6O26XoRzrW7252N8bpgQy1lQ/Hvcody5jaKDq/8yQ6j4TdM4hz
-        ijfc3ipmQGWFZBIAd/Eq8b9RfxVpS2E=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-Cc:     rafael@kernel.org, wangkefeng.wang@huawei.com,
-        tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com,
-        linmiaohe@huawei.com, naoya.horiguchi@nec.com, james.morse@arm.com,
-        gregkh@linuxfoundation.org, will@kernel.org,
-        linux-acpi@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com,
-        ardb@kernel.org, ying.huang@intel.com, ashish.kalra@amd.com,
-        baolin.wang@linux.alibaba.com, bp@alien8.de, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, jarkko@kernel.org,
-        lenb@kernel.org, hpa@zytor.com, robert.moore@intel.com,
-        lvying6@huawei.com, xiexiuqi@huawei.com,
-        zhuo.song@linux.alibaba.com
-Subject: Re: [RESEND PATCH v8 2/2] ACPI: APEI: handle synchronous exceptions
- in task work
-Message-ID: <20231003082858.GA750796@ik1-406-35019.vs.sakura.ne.jp>
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20230919022127.69732-3-xueshuai@linux.alibaba.com>
+        Tue, 3 Oct 2023 04:30:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A1AA3
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:30:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1C54BC433C9;
+        Tue,  3 Oct 2023 08:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696321825;
+        bh=DqRTB6arV11tq5ZIytFbJxUjjbeix/wfn7i4t+l11Cg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=p7IUAPU2YHbAMKR0K3Vf1aCaHUY9pde7eYsnNi5S5FlqxF8YnylAuw+7a2VKIg4pJ
+         XllXNGTvvGmP636faPxUKd96GfuMvhYZmFdttYuiCBQqlU8wP+bbvgaMsj+5IZtYAn
+         QbJfDtq/z8qnYgkISTqB4SWVJw5gQG8sqcUKa3choBF5Y2h9xmWRrgWuXs7djL9sp0
+         lqbvPvM9TQouOKZhecCV6O/6OegexeXhWLE/WP2u34aMS0nXQt9ByqpdSVDIA7y63Y
+         iTr3mEvgkxLxrvc8vEo/P5bkajFx3FSPqH4LMwRabmiBm4moDXp1rDmUltSg+wTGWm
+         y5V8oHOJEWI/A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F3F6FE632D8;
+        Tue,  3 Oct 2023 08:30:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230919022127.69732-3-xueshuai@linux.alibaba.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: usb: smsc75xx: Fix uninit-value access in
+ __smsc75xx_read_reg
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169632182499.2138.3290447743580809288.git-patchwork-notify@kernel.org>
+Date:   Tue, 03 Oct 2023 08:30:24 +0000
+References: <20230923173549.3284502-1-syoshida@redhat.com>
+In-Reply-To: <20230923173549.3284502-1-syoshida@redhat.com>
+To:     Shigeru Yoshida <syoshida@redhat.com>
+Cc:     steve.glendinning@shawell.net, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+6966546b78d050bb0b5d@syzkaller.appspotmail.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,107 +55,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 10:21:27AM +0800, Shuai Xue wrote:
-> Hardware errors could be signaled by synchronous interrupt, e.g.  when an
-> error is detected by a background scrubber, or signaled by synchronous
-> exception, e.g. when an uncorrected error is consumed. Both synchronous and
-> asynchronous error are queued and handled by a dedicated kthread in
-> workqueue.
-> 
-> commit 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for
-> synchronous errors") keep track of whether memory_failure() work was
-> queued, and make task_work pending to flush out the workqueue so that the
-> work for synchronous error is processed before returning to user-space.
-> The trick ensures that the corrupted page is unmapped and poisoned. And
-> after returning to user-space, the task starts at current instruction which
-> triggering a page fault in which kernel will send SIGBUS to current process
-> due to VM_FAULT_HWPOISON.
-> 
-> However, the memory failure recovery for hwpoison-aware mechanisms does not
-> work as expected. For example, hwpoison-aware user-space processes like
-> QEMU register their customized SIGBUS handler and enable early kill mode by
-> seting PF_MCE_EARLY at initialization. Then the kernel will directy notify
-> the process by sending a SIGBUS signal in memory failure with wrong
-> si_code: the actual user-space process accessing the corrupt memory
-> location, but its memory failure work is handled in a kthread context, so
-> it will send SIGBUS with BUS_MCEERR_AO si_code to the actual user-space
-> process instead of BUS_MCEERR_AR in kill_proc().
-> 
-> To this end, separate synchronous and asynchronous error handling into
-> different paths like X86 platform does:
-> 
-> - valid synchronous errors: queue a task_work to synchronously send SIGBUS
->   before ret_to_user.
-> - valid asynchronous errors: queue a work into workqueue to asynchronously
->   handle memory failure.
-> - abnormal branches such as invalid PA, unexpected severity, no memory
->   failure config support, invalid GUID section, OOM, etc.
-> 
-> Then for valid synchronous errors, the current context in memory failure is
-> exactly belongs to the task consuming poison data and it will send SIBBUS
-> with proper si_code.
-> 
-> Fixes: 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for synchronous errors")
-> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-> Tested-by: Ma Wupeng <mawupeng1@huawei.com>
-> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->  arch/x86/kernel/cpu/mce/core.c |  9 +---
->  drivers/acpi/apei/ghes.c       | 84 +++++++++++++++++++++-------------
->  include/acpi/ghes.h            |  3 --
->  mm/memory-failure.c            | 17 ++-----
->  4 files changed, 56 insertions(+), 57 deletions(-)
-> 
-...
+Hello:
 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 4d6e43c88489..80e1ea1cc56d 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -2163,7 +2163,9 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
->   *
->   * Return: 0 for successfully handled the memory error,
->   *         -EOPNOTSUPP for hwpoison_filter() filtered the error event,
-> - *         < 0(except -EOPNOTSUPP) on failure.
-> + *         -EHWPOISON for already sent SIGBUS to the current process with
-> + *         the proper error info,
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-The meaning of this comment is understood, but the sentence seems to be
-a little too long. Could you sort this out with bullet points (like below)?
+On Sun, 24 Sep 2023 02:35:49 +0900 you wrote:
+> syzbot reported the following uninit-value access issue:
+> 
+> =====================================================
+> BUG: KMSAN: uninit-value in smsc75xx_wait_ready drivers/net/usb/smsc75xx.c:975 [inline]
+> BUG: KMSAN: uninit-value in smsc75xx_bind+0x5c9/0x11e0 drivers/net/usb/smsc75xx.c:1482
+> CPU: 0 PID: 8696 Comm: kworker/0:3 Not tainted 5.8.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: usb_hub_wq hub_event
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x21c/0x280 lib/dump_stack.c:118
+>  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+>  __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+>  smsc75xx_wait_ready drivers/net/usb/smsc75xx.c:975 [inline]
+>  smsc75xx_bind+0x5c9/0x11e0 drivers/net/usb/smsc75xx.c:1482
+>  usbnet_probe+0x1152/0x3f90 drivers/net/usb/usbnet.c:1737
+>  usb_probe_interface+0xece/0x1550 drivers/usb/core/driver.c:374
+>  really_probe+0xf20/0x20b0 drivers/base/dd.c:529
+>  driver_probe_device+0x293/0x390 drivers/base/dd.c:701
+>  __device_attach_driver+0x63f/0x830 drivers/base/dd.c:807
+>  bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
+>  __device_attach+0x4e2/0x7f0 drivers/base/dd.c:873
+>  device_initial_probe+0x4a/0x60 drivers/base/dd.c:920
+>  bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
+>  device_add+0x3b0e/0x40d0 drivers/base/core.c:2680
+>  usb_set_configuration+0x380f/0x3f10 drivers/usb/core/message.c:2032
+>  usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:241
+>  usb_probe_device+0x311/0x490 drivers/usb/core/driver.c:272
+>  really_probe+0xf20/0x20b0 drivers/base/dd.c:529
+>  driver_probe_device+0x293/0x390 drivers/base/dd.c:701
+>  __device_attach_driver+0x63f/0x830 drivers/base/dd.c:807
+>  bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
+>  __device_attach+0x4e2/0x7f0 drivers/base/dd.c:873
+>  device_initial_probe+0x4a/0x60 drivers/base/dd.c:920
+>  bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
+>  device_add+0x3b0e/0x40d0 drivers/base/core.c:2680
+>  usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2554
+>  hub_port_connect drivers/usb/core/hub.c:5208 [inline]
+>  hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
+>  port_event drivers/usb/core/hub.c:5494 [inline]
+>  hub_event+0x5e7b/0x8a70 drivers/usb/core/hub.c:5576
+>  process_one_work+0x1688/0x2140 kernel/workqueue.c:2269
+>  worker_thread+0x10bc/0x2730 kernel/workqueue.c:2415
+>  kthread+0x551/0x590 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+> 
+> [...]
 
- * Return values:
- *   0             - success
- *   -EOPNOTSUPP   - hwpoison_filter() filtered the error event.
- *   -EHWPOISON    - sent SIGBUS to the current process with the proper
- *                   error info by kill_accessing_process().
- *   other negative values - failure
+Here is the summary with links:
+  - net: usb: smsc75xx: Fix uninit-value access in __smsc75xx_read_reg
+    https://git.kernel.org/netdev/net/c/e9c65989920f
 
-> + *         other negative error code on failure.
->   */
->  int memory_failure(unsigned long pfn, int flags)
->  {
-> @@ -2445,19 +2447,6 @@ static void memory_failure_work_func(struct work_struct *work)
->  	}
->  }
->  
-> -/*
-> - * Process memory_failure work queued on the specified CPU.
-> - * Used to avoid return-to-userspace racing with the memory_failure workqueue.
-> - */
-> -void memory_failure_queue_kick(int cpu)
-> -{
-> -	struct memory_failure_cpu *mf_cpu;
-> -
-> -	mf_cpu = &per_cpu(memory_failure_cpu, cpu);
-> -	cancel_work_sync(&mf_cpu->work);
-> -	memory_failure_work_func(&mf_cpu->work);
-> -}
-> -
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-The declaration of memory_failure_queue_kick() still remains in include/linux/mm.h,
-so you can remove it together.
 
-Thanks,
-Naoya Horiguchi
