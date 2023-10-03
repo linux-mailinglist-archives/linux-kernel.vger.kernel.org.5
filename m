@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6F47B6B23
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671CA7B6B24
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238429AbjJCOOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
+        id S238695AbjJCOPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231834AbjJCOO3 (ORCPT
+        with ESMTP id S232498AbjJCOPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:14:29 -0400
-Received: from icp-osb-irony-out9.external.iinet.net.au (icp-osb-irony-out9.external.iinet.net.au [203.59.1.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EDAA195;
-        Tue,  3 Oct 2023 07:14:20 -0700 (PDT)
-Received: from gateway.pc5.atmailcloud.com (HELO mqr.i-0a234e95c20fc4c8e) ([13.54.26.16])
-  by icp-osb-irony-out9.iinet.net.au with ESMTP; 03 Oct 2023 22:14:16 +0800
-Received: from CMR-KAKADU04.i-07d08b64cb3fd2a62 by MQR.i-0a234e95c20fc4c8e with esmtps
-        (envelope-from <gregungerer@westnet.com.au>)
-        id 1qngAB-0000ig-0I;
-        Tue, 03 Oct 2023 14:14:15 +0000
-Received: from [203.220.76.238] (helo=[192.168.0.22])
-         by CMR-KAKADU04.i-07d08b64cb3fd2a62 with esmtpsa
-        (envelope-from <gregungerer@westnet.com.au>)
-        id 1qngAA-0005cb-24;
-        Tue, 03 Oct 2023 14:14:14 +0000
-Message-ID: <9d73b9e2-502e-4ef5-bb49-bc89d478329a@westnet.com.au>
-Date:   Wed, 4 Oct 2023 00:14:10 +1000
+        Tue, 3 Oct 2023 10:15:00 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C5D95
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:14:56 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A67A640E019B;
+        Tue,  3 Oct 2023 14:14:54 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id UxSJC3wcviSH; Tue,  3 Oct 2023 14:14:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1696342491; bh=cWe+9EKpu/IN0/8UdlEVGZJ0GpnN/C82QwDQgHFbvcc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RfQAPci9N4WQy7gnVO6ykw9TcEB2JbjTjbndCKR6IQiikvkkRElx0el1YxIFAzepU
+         ktjaqrDifUAVPMnw6StKOUavHvuyO6Hcnhe3TjMPPdsZB0SvBv4cENyGKKHRUDBbTF
+         uMIBKp2+H+QQetPWSXDp7bIygQ7xjMMkkvMFJMKnOx25XdLgwxMiyoYM3CkR278myT
+         pq29cbbo/2GZkveossdZ7DVB3wQMx/ZHRp6tjyYOXSVPCQszoum3GqVJpWhnys8XHz
+         kmuUHVGsDWi3XMTI4nOmg4iT1mMXuZDIdm0GtZzuovQOHmYYouGclMuM4f8N6S4u7R
+         JwztXlEjwIGA/QyIbxtG0RhZEoGAxTm6iGN+4zEoJiNHd024aSndUAj1m5ViqASUOW
+         qMiLsYL0v5ZgM6RTkJAwggUaS7KsSORJKP6itF75uUTfjnY7iW8s/vCIYgbzYEZHRe
+         t4Qij0r/ZUExdF5pdRssSi8tlmPykR2854exPdcv7h9IzLoTYSs1frp0Y7/76qxOoh
+         B/QSUUE7IG/v2hpwtElvOwCmaQXZyEWpn3snYYyOr8hlLuMLisCjpfPaDrHVMXT7OV
+         SMz9Ajo+2bsLvMykckqHCeqTX3rDA7nn4x8QeZ2gO5xzLD/0QBgpaBBxj+7dzx2t2L
+         M2y87aCP7jIK0k0mOvhSGvsM=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9A7C340E01A2;
+        Tue,  3 Oct 2023 14:14:45 +0000 (UTC)
+Date:   Tue, 3 Oct 2023 16:14:39 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [patch V3 12/30] x86/microcode/intel: Reuse
+ intel_cpu_collect_info()
+Message-ID: <20231003141439.GAZRwhz63IqTB+uNOM@fat_crate.local>
+References: <20230912065249.695681286@linutronix.de>
+ <20230912065501.530637507@linutronix.de>
+ <20230921104220.GHZQweDKyaJmkYdt4f@fat_crate.local>
+ <87zg1afs23.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-References: <20230915183707.2707298-1-willy@infradead.org>
- <20230915183707.2707298-10-willy@infradead.org>
- <6e409d5f-a419-07b7-c82c-4e80fe19c6ba@westnet.com.au>
- <ZQW849TfSCK6u2f8@casper.infradead.org>
- <e1fb697714ac408e85c4e3dc573cd7d5@AcuMS.aculab.com>
- <ZQmvhC+pGWNs9R23@casper.infradead.org>
- <cffc2a427ae74f62b07345ec9348e43e@AcuMS.aculab.com>
- <ZQm67lGOBBdC2Dl9@casper.infradead.org>
- <35a33582-9206-94bb-eca2-a1d9c585f6c1@westnet.com.au>
- <ZRsi7smLotWDwoNP@casper.infradead.org>
-From:   Greg Ungerer <gregungerer@westnet.com.au>
-In-Reply-To: <ZRsi7smLotWDwoNP@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Atmail-Id: gregungerer@westnet.com.au
-X-atmailcloud-spam-action: no action
-X-atmailcloud-spam-report: Action: no action
-X-Cm-Envelope: MS4xfIBMT51AiiNz2dlGlRP1BjcNFfsmNerdQ9uhalFXb8JZLgl5GZ6cboSon/f8+hS04zgKn58MdhBWKK7VJY1WoVixGuLcjJZXjl05wI08khOgN6Vn4Y9u t0bdjEbwJxBiYwdftZ0MRuCCZF+wfK5vfRwhthWETiDgJFd5jnp7nJXPs1XE/mjs4xpwJqQv8KOuWg==
-X-Cm-Analysis: v=2.4 cv=af+n3zkt c=1 sm=1 tr=0 ts=651c21b6 a=1qi1FL2F0EdFFg+SXJ3Exg==:117 a=1qi1FL2F0EdFFg+SXJ3Exg==:17 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=80-xaVIC0AIA:10 a=x7bEGLp0ZPQA:10 a=8AirrxEcAAAA:8 a=dndB6WL-r_NQjhKt7_AA:9 a=QEXdDO2ut3YA:10 a=ST-jHhOKWsTCqRlWije3:22
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87zg1afs23.ffs@tglx>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,107 +71,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 25, 2023 at 12:47:16PM +0200, Thomas Gleixner wrote:
+> Eew. That's a function exposed to code outside of microcode and just
+> grows that unused argument for no value and you obviously forgot to
+> fixup the extern callsite :)
 
-On 3/10/23 06:07, Matthew Wilcox wrote:
-> On Wed, Sep 20, 2023 at 05:22:33PM +1000, Greg Ungerer wrote:
->> On 20/9/23 01:14, Matthew Wilcox wrote:
->>> I have a 68020 book; what I don't have is a Coldfire manual.
->>
->> You can find it here: https://www.nxp.com/docs/en/reference-manual/CFPRM.pdf
-> 
-> Thanks, Greg.  This is almost good:
-> 
-> static inline bool xor_unlock_is_negative_byte(unsigned long mask,
->                  volatile unsigned long *p)
-> {
-> #ifdef CONFIG_COLDFIRE
->          __asm__ __volatile__ ("eorl %1, %0"
->                  : "+m" (*p)
->                  : "d" (mask)
->                  : "memory");
->          return *p & (1 << 7);
-> #else
->          char result;
->          char *cp = (char *)p + 3;       /* m68k is big-endian */
-> 
->          __asm__ __volatile__ ("eor.b %1, %2; smi %0"
->                  : "=d" (result)
->                  : "di" (mask), "o" (*cp)
->                  : "memory");
->          return result;
-> #endif
-> }
-> 
-> folio_end_read() does about as well as can be expected:
-> 
-> 00000708 <folio_end_read>:
->       708:       206f 0004       moveal %sp@(4),%a0
->       70c:       7009            moveq #9,%d0
->       70e:       4a2f 000b       tstb %sp@(11)
->       712:       6602            bnes 716 <folio_end_read+0xe>
->       714:       7001            moveq #1,%d0
->       716:       b190            eorl %d0,%a0@
->       718:       2010            movel %a0@,%d0
->       71a:       4a00            tstb %d0
->       71c:       6a0c            bpls 72a <folio_end_read+0x22>
->       71e:       42af 0008       clrl %sp@(8)
->       722:       2f48 0004       movel %a0,%sp@(4)
->       726:       6000 fcfe       braw 426 <folio_wake_bit>
->       72a:       4e75            rts
-> 
-> However, it seems that folio_unlock() could shave off an instruction:
-> 
-> 00000918 <folio_unlock>:
->       918:       206f 0004       moveal %sp@(4),%a0
->       91c:       7001            moveq #1,%d0
->       91e:       b190            eorl %d0,%a0@
->       920:       2010            movel %a0@,%d0
->       922:       4a00            tstb %d0
->       924:       6a0a            bpls 930 <folio_unlock+0x18>
->       926:       42a7            clrl %sp@-
->       928:       2f08            movel %a0,%sp@-
->       92a:       4eba fafa       jsr %pc@(426 <folio_wake_bit>)
->       92e:       508f            addql #8,%sp
->       930:       4e75            rts
-> 
-> We could use eori instead of eorl, at least according to table 3-9 on
-> page 3-8:
-> 
-> EOR Dy,<ea>x L Source ^ Destination → Destination ISA_A
-> EORI #<data>,Dx L Immediate Data ^ Destination → Destination ISA_A
-> 
-> but gas is unhappy with everything I've tried to use eori.  I'm building
+It's used on AMD. Adding the below to the pile.
 
-I can't seem to get it to always use it either. This comes close:
+---
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
+Date: Tue, 3 Oct 2023 16:12:01 +0200
+Subject: [PATCH] x86/microcode: Make microcode_ops.collect_cpu_info() return
+ void
 
-         __asm__ __volatile__ ("eorl %1, %0"
-                 : "+d" (*p)
-                 : "di" (mask)
-                 : "memory");
-         return *p & (1 << 7);
+Simplify code flow a bit more in the process.
 
-Using eoril for folio_unlock, but not for folio_end_read:
+No functional changes.
 
-400413e6 <folio_unlock>:
-400413e6:       206f 0004       moveal %sp@(4),%a0
-400413ea:       2010            movel %a0@,%d0
-400413ec:       0a80 0000 0001  eoril #1,%d0
-400413f2:       2080            movel %d0,%a0@
-400413f4:       2010            movel %a0@,%d0
-400413f6:       4a00            tstb %d0
-400413f8:       6c0a            bges 40041404 <folio_unlock+0x1e>
-400413fa:       42a7            clrl %sp@-
-400413fc:       2f08            movel %a0,%sp@-
-400413fe:       4eba ff30       jsr %pc@(40041330 <folio_wake_bit>)
-40041402:       508f            addql #8,%sp
-40041404:       4e75            rts
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20230921104220.GHZQweDKyaJmkYdt4f@fat_crate.local
+---
+ arch/x86/include/asm/cpu.h               |  2 +-
+ arch/x86/kernel/cpu/microcode/amd.c      |  4 +---
+ arch/x86/kernel/cpu/microcode/intel.c    | 12 +++---------
+ arch/x86/kernel/cpu/microcode/internal.h |  2 +-
+ 4 files changed, 6 insertions(+), 14 deletions(-)
 
-But that is still worse anyway.
+diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
+index 4066dd3734ba..581ecfbaf134 100644
+--- a/arch/x86/include/asm/cpu.h
++++ b/arch/x86/include/asm/cpu.h
+@@ -75,7 +75,7 @@ extern __noendbr void cet_disable(void);
+ 
+ struct cpu_signature;
+ 
+-void intel_collect_cpu_info(struct cpu_signature *sig);
++void intel_collect_cpu_info(int unused, struct cpu_signature *sig);
+ 
+ static inline bool intel_cpu_signatures_match(unsigned int s1, unsigned int p1,
+ 					      unsigned int s2, unsigned int p2)
+diff --git a/arch/x86/kernel/cpu/microcode/amd.c b/arch/x86/kernel/cpu/microcode/amd.c
+index 0f15e82a536c..5d1c2a716456 100644
+--- a/arch/x86/kernel/cpu/microcode/amd.c
++++ b/arch/x86/kernel/cpu/microcode/amd.c
+@@ -632,7 +632,7 @@ void reload_ucode_amd(unsigned int cpu)
+ 	}
+ }
+ 
+-static int collect_cpu_info_amd(int cpu, struct cpu_signature *csig)
++static void collect_cpu_info_amd(int cpu, struct cpu_signature *csig)
+ {
+ 	struct cpuinfo_x86 *c = &cpu_data(cpu);
+ 	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
+@@ -650,8 +650,6 @@ static int collect_cpu_info_amd(int cpu, struct cpu_signature *csig)
+ 		uci->mc = p->data;
+ 
+ 	pr_info("CPU%d: patch_level=0x%08x\n", cpu, csig->rev);
+-
+-	return 0;
+ }
+ 
+ static enum ucode_state apply_microcode_amd(int cpu)
+diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
+index 3817bb2ad6ac..0eff86a5ab8f 100644
+--- a/arch/x86/kernel/cpu/microcode/intel.c
++++ b/arch/x86/kernel/cpu/microcode/intel.c
+@@ -66,7 +66,7 @@ static inline unsigned int exttable_size(struct extended_sigtable *et)
+ 	return et->count * EXT_SIGNATURE_SIZE + EXT_HEADER_SIZE;
+ }
+ 
+-void intel_collect_cpu_info(struct cpu_signature *sig)
++void intel_collect_cpu_info(int unused, struct cpu_signature *sig)
+ {
+ 	sig->sig = cpuid_eax(1);
+ 	sig->pf = 0;
+@@ -363,7 +363,7 @@ static __init struct microcode_intel *get_microcode_blob(struct ucode_cpu_info *
+ 	if (!(cp.data && cp.size))
+ 		return NULL;
+ 
+-	intel_collect_cpu_info(&uci->cpu_sig);
++	intel_collect_cpu_info(0, &uci->cpu_sig);
+ 
+ 	return scan_microcode(cp.data, cp.size, uci);
+ }
+@@ -424,12 +424,6 @@ void reload_ucode_intel(void)
+ 		apply_microcode_early(&uci);
+ }
+ 
+-static int collect_cpu_info(int cpu_num, struct cpu_signature *csig)
+-{
+-	intel_collect_cpu_info(csig);
+-	return 0;
+-}
+-
+ static enum ucode_state apply_microcode_late(int cpu)
+ {
+ 	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
+@@ -592,7 +586,7 @@ static void finalize_late_load(int result)
+ 
+ static struct microcode_ops microcode_intel_ops = {
+ 	.request_microcode_fw	= request_microcode_fw,
+-	.collect_cpu_info	= collect_cpu_info,
++	.collect_cpu_info	= intel_collect_cpu_info,
+ 	.apply_microcode	= apply_microcode_late,
+ 	.finalize_late_load	= finalize_late_load,
+ };
+diff --git a/arch/x86/kernel/cpu/microcode/internal.h b/arch/x86/kernel/cpu/microcode/internal.h
+index 051b7956d4fd..b3753025cd4a 100644
+--- a/arch/x86/kernel/cpu/microcode/internal.h
++++ b/arch/x86/kernel/cpu/microcode/internal.h
+@@ -30,7 +30,7 @@ struct microcode_ops {
+ 	 * See also the "Synchronization" section in microcode_core.c.
+ 	 */
+ 	enum ucode_state (*apply_microcode)(int cpu);
+-	int (*collect_cpu_info)(int cpu, struct cpu_signature *csig);
++	void (*collect_cpu_info)(int cpu, struct cpu_signature *csig);
+ 	void (*finalize_late_load)(int result);
+ };
+ 
+-- 
+2.42.0.rc0.25.ga82fb66fed25
 
-> with stmark2_defconfig, which I assume should work.
 
-Yes, or any of amcore, m5208evb, m5249evb, m5272c3, m5275evb, m5307c3, m5407c3.
+-- 
+Regards/Gruss,
+    Boris.
 
-Regards
-Greg
-
+https://people.kernel.org/tglx/notes-about-netiquette
