@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3527B6F34
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212507B6F36
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240675AbjJCRCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
+        id S231654AbjJCRDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240671AbjJCRCL (ORCPT
+        with ESMTP id S231150AbjJCRDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:02:11 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA2895
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 10:02:08 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6673D5C0333;
-        Tue,  3 Oct 2023 13:02:07 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 03 Oct 2023 13:02:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1696352527; x=1696438927; bh=Xj
-        dGRjhPL+NgQbb0Fq8+LNYwiDlMZC0hbW4ulM6CgK4=; b=PqaGf9PvXgBcYBdsfT
-        CVLSD5SyMlTUthkuxTXYgjssGHMwGqHpoq5lW91MSvaXCO6xIX8toOzs0usNehRS
-        jVsl+wwSgpTHI+715b4vj9doR/wg8uNKmi6OzYMeB/K6zKr/35K8mBPxx/9E+Z8i
-        LTYMMZb9v9R6OxMs9wMb+sgmUCBY8FYRJznRRemxGNoyVmuXNKE5IOOmAa7j/dgk
-        QvVrC7CAjW1S4dmGP6GZ05mcxuKUNDAz+lHKPZ1kh+igz9XZyDuKirLvuzhtEiCc
-        qVg1wUdadRkkdJJwXzXRtO1XMCGggR63ewJIkfQ7KltZeO1gcXtiyQ0Gq3m9DLY6
-        qwjQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1696352527; x=1696438927; bh=XjdGRjhPL+NgQ
-        bb0Fq8+LNYwiDlMZC0hbW4ulM6CgK4=; b=bO7uNqDo/nuzsn69/n1i8DRAlZHQc
-        ROsQ4w257Uc4pbjchQSlZkODoCUOHYlaPIgQuRaCyuWwYTwVKHY+a71VIbxLyzey
-        HpbmFL2AsObsJEk1NdP+DPSp+EXmeYcQGgxUGcFEtE44PQkNrXkVpSZyY3FPUb2L
-        OqR7/2lchX4xqlf5A5Ui0SVnpwkjk9cTUVMqIJ4rHC4Vqe2d6ZrThz4rGNY82G4S
-        mxbJPGNBhLDOR4PbxJIo8TZLbWbZQI+hhrZj2w5bjK7tYlEOdb12DxF4WUXpl66G
-        pyUF/V27F9Y6oF7YG60pOeE9zuPXpK6kz7pAQXx8IfjtM9OlShupHdbxw==
-X-ME-Sender: <xms:D0kcZRauXhqshYL5WBvf4QOOaahkQcqo15itWd9q-zqdQau3dgZrgw>
-    <xme:D0kcZYb_9SJGxWloNMTL_MuoTHocdbG5MYoC3sqvZkeMHgC8fu5ZiI8tRtSR4q3BX
-    p52nk82FGDsTC20zkM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeejgddujecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:D0kcZT-IOKEmvzURn1S2tnxlzXjm1mykY9XeRAo8jkpA93nwj3i2aA>
-    <xmx:D0kcZfoIcvC3EiMOrl86ZFYSavva7mOTNT9_WfNeAmpOHBaPTRflTg>
-    <xmx:D0kcZcoyWiN86zHKZVRrVNLuj7SWgWmLoeosXmbSAlaHu6k-5Vi70Q>
-    <xmx:D0kcZT0PKR5Uzh4ZDcyNl5cecv4DqXtdkb2S_W4u5vyXWHYstzieAA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 04B78B60089; Tue,  3 Oct 2023 13:02:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+        Tue, 3 Oct 2023 13:03:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDA2AF;
+        Tue,  3 Oct 2023 10:03:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 746A5C433C8;
+        Tue,  3 Oct 2023 17:03:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696352588;
+        bh=2CYnWvtXt90mgRwSHfw8tCk2sH07p2olXVL/VqC8WNE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y1hsbnL4fm7Bv7ZICc/2FMKW/20RphpnHCx/Tn5Ui54gN20adbO2TOvmk+RMmuLzM
+         N9UE1KGku3S8zV1O0OQRdM0Yfunb5tZIAofpsRhc5tJalERLTpKu52j30Nyr9Gnprr
+         RnHTqxyL/ptiiPPIaG3x0z+SZZimAvF0dT+ex/1pR8H+SEcEvDR9Q0FR1XKSCma831
+         lGCFYnhC6w8jeq0IZbWBEqFNQsRcL+d7NZN0cX0WPnBcwh9sxGxXHtCU9Pio9IxQbN
+         ppTPLz1XuHDxdsNzRDcC8LxVmHp1Vlv8jwzjvqoah1sJjyAXPZVdU1AAWS+MIS79PU
+         RE8Vwr9POl5hQ==
+Date:   Tue, 3 Oct 2023 18:03:02 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Javier Martinez Canillas <javier@dowhile0.org>,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: submitting-patches: Suggest a longer expected time
+ for responses
+Message-ID: <68a9bc07-07dc-4e97-ae0e-e0b29c808707@sirena.org.uk>
+References: <20230913-submitting-patches-delay-v1-1-a2d48c5ca205@kernel.org>
+ <87y1gjen5d.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Message-Id: <f8d621c8-f5eb-4ba6-ab25-d3f782562abd@app.fastmail.com>
-In-Reply-To: <325de88f-1237-4910-aa2a-97707bedae26@app.fastmail.com>
-References: <20231003144857.752952-1-gregory.price@memverge.com>
- <20231003094912.08cf57998135446ef475dd19@linux-foundation.org>
- <325de88f-1237-4910-aa2a-97707bedae26@app.fastmail.com>
-Date:   Tue, 03 Oct 2023 19:01:45 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Andrew Morton" <akpm@linux-foundation.org>,
-        "Gregory Price" <gourry.memverge@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        "Gregory Price" <gregory.price@memverge.com>
-Subject: Re: [PATCH] mm/migrate: fix do_pages_move for compat pointers
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9Jz4o80Rm23Rqhve"
+Content-Disposition: inline
+In-Reply-To: <87y1gjen5d.fsf@meer.lwn.net>
+X-Cookie: Oh Dad!  We're ALL Devo!
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023, at 18:57, Arnd Bergmann wrote:
-> On Tue, Oct 3, 2023, at 18:49, Andrew Morton wrote:
->> On Tue,  3 Oct 2023 10:48:56 -0400 Gregory Price 
->> <gourry.memverge@gmail.com> wrote:
->>
->>> do_pages_move does not handle compat pointers for the page list.
->>> correctly.  Add in_compat_syscall check and appropriate get_user
->>> fetch when iterating the page list.
->>
->> What are the userspace visible effects of this change?
->
-> It makes the syscall in compat mode (32-bit userspace, 64-bit kernel)
-> work the same way as the native 32-bit syscall again, restoring the
-> behavior before my broken commit 5b1b561ba73c ("mm: simplify
-> compat_sys_move_pages").
 
-More specifically, my patch moved the parsing of the 'pages'
-array from the main entry point into do_pages_stat(), which left
-the syscall working correctly for the 'stat' operation (nodes = NULL),
-while the 'move' operation (nodes != NULL) is now missing
-the conversion and interprets 'pages' as an array of 64-bit
-pointers instead of the intended 32-bit userspace pointers.
+--9Jz4o80Rm23Rqhve
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-     Arnd
+On Tue, Oct 03, 2023 at 09:33:34AM -0600, Jonathan Corbet wrote:
+
+> I was hoping to see some more comments on this; it is a fairly
+> significant change in the expectations we put on our reviewers.  Oh
+> well, I've applied it.  I wonder if we should add a note saying to look
+> at the maintainer profile for the subsystem in question for more
+> specific guidance?  Of course, it would be good to have more of those...
+
+It's the sort of thing that's going to vary quite a lot with things like
+the point in the release cycle as well (as the existing text already
+gestures towards) plus the complexity of the change, I'm not sure that
+setting explicit QoS guarantees is going to work out well.  The list of
+variables gets long and complicated, and the more explicit things are
+the more likely someone is to be disappointed.
+
+--9Jz4o80Rm23Rqhve
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUcSUYACgkQJNaLcl1U
+h9Ag8gf9HduXLtJgMwI+3EeEQhIZIMvFNRa1kIyisAaAw/T2BBNHnujHGvh6Sp00
+2KQZ4+LiPMvmzzt10YXFTsK5L4E7HqrRIdcoRog8WVdQlQjKOgsMxPHUkP8V2E1l
+mOsC34R5VK8WDGp7BbhUWqWbFoqADUOGRwNs/gULaTap5tSsvHGQOKpqYzL+M/Lk
+iwaG8PQgAZ8urJVuf1aUH6AW4JIKG0s3hDn4PDV63lFMjIHuF0gnrZvJ6QvvUIdz
+0bocxGJkt+T+Smayrelvjr1eX3AxLKAUbNYUIuZXr682bXDOVTIRyQqG1geV0rmk
+rkc3V/GWC+geogdNu1Y27RKhbkmQmA==
+=VBdU
+-----END PGP SIGNATURE-----
+
+--9Jz4o80Rm23Rqhve--
