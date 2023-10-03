@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F527B7253
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 22:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E367B7254
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 22:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241019AbjJCUID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 16:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
+        id S241031AbjJCUIQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 16:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231915AbjJCUIB (ORCPT
+        with ESMTP id S241026AbjJCUIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 16:08:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C1FA9;
-        Tue,  3 Oct 2023 13:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=MCXIlJTeaIOaXTM2ypgst+WsqgexEVfRTwhtx2/9uAE=; b=G9emQtGJWrw5S+lxWLRQ2bsag6
-        VrjotrRUTj0/WHjtYof/nLmqx9hl4LFgskD6B8OUgWW7PXHgrJiZnmZcKkdKpR7y0kFLLsGMaNmZp
-        REX08Eo4/PA+fusNd8UFNcTm8HjLCodpFOvqTgU25BDzAtTfynbFzene611C6gYgHVsWwY+6SfEfh
-        R8mP8P2JytQihLF90fUUtsnngBvy9hP/LU6aqSmf5QVrY/wIbyjcilVk9urStDxBRaT6wpD1lGmiu
-        M/85IdH4f94whrKADyjeTQOZGkgRuQHcSvXNHystJCFIAibx1y0kyKBxBYv2aaLbVd2hwwkx+uouJ
-        Zhoom+7g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qnlgK-00Gu1C-NV; Tue, 03 Oct 2023 20:07:48 +0000
-Date:   Tue, 3 Oct 2023 21:07:48 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Greg Ungerer <gregungerer@westnet.com.au>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
-Message-ID: <ZRx0lIo5i2EuIsZ/@casper.infradead.org>
-References: <20230915183707.2707298-10-willy@infradead.org>
- <6e409d5f-a419-07b7-c82c-4e80fe19c6ba@westnet.com.au>
- <ZQW849TfSCK6u2f8@casper.infradead.org>
- <e1fb697714ac408e85c4e3dc573cd7d5@AcuMS.aculab.com>
- <ZQmvhC+pGWNs9R23@casper.infradead.org>
- <cffc2a427ae74f62b07345ec9348e43e@AcuMS.aculab.com>
- <ZQm67lGOBBdC2Dl9@casper.infradead.org>
- <35a33582-9206-94bb-eca2-a1d9c585f6c1@westnet.com.au>
- <ZRsi7smLotWDwoNP@casper.infradead.org>
- <9d73b9e2-502e-4ef5-bb49-bc89d478329a@westnet.com.au>
+        Tue, 3 Oct 2023 16:08:14 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BAEA1;
+        Tue,  3 Oct 2023 13:08:11 -0700 (PDT)
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3af5fd13004so906256b6e.0;
+        Tue, 03 Oct 2023 13:08:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696363691; x=1696968491;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1L7JTll2iZg4TpN2jgrHscBi0WZs33vPmuyNsxvOfNo=;
+        b=AzRUI7/xe+MXKnw/KPJVUJ0A58df4gaRkpqRfkAE0fC3qBv/gJSerUruTAusqRnLHS
+         SfgNDpoGLFTKmJbouBOQt4Ykvk3hMoj9lx6DH4jvao0cXGOV169eJK04yUarxOfBOxbw
+         mZ4ewM4CitGGrgmv4Sa5oKDjmODmTj2jpg5pPa9oJ6Je3ir4VGg5dUvUP6JJiCEJ9tLL
+         5OVeeefzQEv235+y4UD56cwEQh5lry0n3D7zfYedJYvwwabuJJOBTftMukZVUAgyY0I8
+         vSA/R6IcT8hp2/tUVp902MMpwXv33P2KPMUuT1uVZsF/yZRHXGsdyJKAxWcn+k6MZiu8
+         +KOQ==
+X-Gm-Message-State: AOJu0YzkhuxkS7wBOVFouyzUhUqMA7Bv6yEQ77hm+vvDB/ypKbSdTePI
+        kK5lwkbOpHkFHikYClLxxwRakx12ToFDZoMyzuE=
+X-Google-Smtp-Source: AGHT+IEvFmLOJnmgZT9/huzr+lyWE9YoYca94R5FI0tVfrqnzYWNE2s0hf91+akXZEvrFXRBJeH4xZMrp9nqTIHyOcQ=
+X-Received: by 2002:a05:6808:1b1f:b0:3ae:2877:9b31 with SMTP id
+ bx31-20020a0568081b1f00b003ae28779b31mr652430oib.20.1696363690891; Tue, 03
+ Oct 2023 13:08:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9d73b9e2-502e-4ef5-bb49-bc89d478329a@westnet.com.au>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230916040915.1075620-1-irogers@google.com> <CAL715WJxmMbXkZSE3p_+ODGxabgrXREsBo9aFu9G9=qkYZeH9A@mail.gmail.com>
+ <CAP-5=fUjNiDv=KQ7t8jqfOfOt5i8HGvt8Vv1hn2-hLxX_Kqucg@mail.gmail.com> <CAL715W+GQuCJm-1SEsNN2qnHghNL1SrzwH9Km5K8UxubEFfYVw@mail.gmail.com>
+In-Reply-To: <CAL715W+GQuCJm-1SEsNN2qnHghNL1SrzwH9Km5K8UxubEFfYVw@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 3 Oct 2023 13:07:59 -0700
+Message-ID: <CAM9d7cgKWi0fafwTxSrKLrVZxcwnhwMGz=oNkAsNdOjDwF6pEA@mail.gmail.com>
+Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 12:14:10AM +1000, Greg Ungerer wrote:
-> On 3/10/23 06:07, Matthew Wilcox wrote:
-> > 00000918 <folio_unlock>:
-> >       918:       206f 0004       moveal %sp@(4),%a0
-> >       91c:       7001            moveq #1,%d0
-> >       91e:       b190            eorl %d0,%a0@
-> >       920:       2010            movel %a0@,%d0
-> >       922:       4a00            tstb %d0
-> >       924:       6a0a            bpls 930 <folio_unlock+0x18>
-> >       926:       42a7            clrl %sp@-
-> >       928:       2f08            movel %a0,%sp@-
-> >       92a:       4eba fafa       jsr %pc@(426 <folio_wake_bit>)
-> >       92e:       508f            addql #8,%sp
-> >       930:       4e75            rts
+Hello,
 
-fwiw, here's what folio_unlock looks like today without any of my
-patches:
+On Wed, Sep 20, 2023 at 10:05 PM Mingwei Zhang <mizhang@google.com> wrote:
+>
+> On Mon, Sep 18, 2023 at 3:43 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > On Sat, Sep 16, 2023 at 5:46 PM Mingwei Zhang <mizhang@google.com> wrote:
+> > > Thank you very much for the change. I have one quick question about
+> > > the PMU unthrottling logic. When I am looking into the function
+> > > perf_adjust_freq_unthr_context(), I see the loop with PMU stop and
+> > > start in each iteration. Is there a good way to avoid this PMU reset
+> > > operation while quickly figuring out the event in frequency mode?
+> >
+> > Agreed. I think before the pmu_disable could be avoided for this condition:
+> > ```
+> > if (event->hw.interrupts != MAX_INTERRUPTS &&
+> >     (!event->attr.freq || !event->attr.sample_freq))
+> >         continue;
+> > ```
+> > Fixing up the event stop/start looks harder.
+> >
+>
+> Right, I think putting the check early before pmu_disable() is already
+> a great optimization. The only concern I initially had was whether
+> event->hw.interrupts can be accessed before we disable the pmu. But
+> after checking this field in other locations, I don't see any problem
+> at all.
 
-00000746 <folio_unlock>:
-     746:       206f 0004       moveal %sp@(4),%a0
-     74a:       43e8 0003       lea %a0@(3),%a1
-     74e:       0891 0000       bclr #0,%a1@
-     752:       2010            movel %a0@,%d0
-     754:       4a00            tstb %d0
-     756:       6a0a            bpls 762 <folio_unlock+0x1c>
-     758:       42a7            clrl %sp@-
-     75a:       2f08            movel %a0,%sp@-
-     75c:       4eba fcc8       jsr %pc@(426 <folio_wake_bit>)
-     760:       508f            addql #8,%sp
-     762:       4e75            rts
+The event->hw.interrupts would be increased in the NMI handler
+so there is a race between the check and the NMI.  That's why
+I think it checks that after disabling the PMU.
 
-Same number of instructions, but today's code has slightly longer insns,
-so I'm tempted to take the win?
+But I think we can skip non-sampling events for sure.  Then it
+would be better to set attr.sample_period = 0 rather than attr.freq.
 
-> > We could use eori instead of eorl, at least according to table 3-9 on
-> > page 3-8:
-> > 
-> > EOR Dy,<ea>x L Source ^ Destination → Destination ISA_A
-> > EORI #<data>,Dx L Immediate Data ^ Destination → Destination ISA_A
+    if (!is_sampling_event(event))
+        continue;
 
-Oh.  I misread.  It only does EORI to a data register; it can't do EORI
-to an address.
+    perf_pmu_disable(event->pmu);
+    ...
 
-> 400413e6 <folio_unlock>:
-> 400413e6:       206f 0004       moveal %sp@(4),%a0
-> 400413ea:       2010            movel %a0@,%d0
-> 400413ec:       0a80 0000 0001  eoril #1,%d0
-> 400413f2:       2080            movel %d0,%a0@
-> 400413f4:       2010            movel %a0@,%d0
-> 400413f6:       4a00            tstb %d0
-> 400413f8:       6c0a            bges 40041404 <folio_unlock+0x1e>
-> 400413fa:       42a7            clrl %sp@-
-> 400413fc:       2f08            movel %a0,%sp@-
-> 400413fe:       4eba ff30       jsr %pc@(40041330 <folio_wake_bit>)
-> 40041402:       508f            addql #8,%sp
-> 40041404:       4e75            rts
-> 
-> But that is still worse anyway.
-
-Yup.  Looks like the version I posted actually does the best!  I'll
-munge that into the patch series and repost.  Thanks for your help!
+Thanks,
+Namhyung
