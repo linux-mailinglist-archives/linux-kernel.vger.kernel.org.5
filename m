@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EFB7B64E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D797B64E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239307AbjJCJBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
+        id S239325AbjJCJBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231367AbjJCJBD (ORCPT
+        with ESMTP id S231360AbjJCJBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:01:03 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CEAAF
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:01:00 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 447B26607079;
-        Tue,  3 Oct 2023 10:00:58 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696323658;
-        bh=cvW64htWBwkbZa50ehWwGHppuYY384nnu1olxbLOfrc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lqsfHalCz/aFw0YXCDQqUQrDpgV1BVfV9FUbldI+Vn06NWEt0/oE9DpNqCi0NV613
-         Zzv5Ow+cc+O3QQG7+dqsPgK2Aot/H30/KoH3vPb9vjhzuEJh4D+bKBtTI4Krngkx2B
-         SNf1Z9OpJPONNAcaDwMAmFLV8DVRYz1JAhoR8bCLY/x6oT4TVyTvLrnOhBkYzQ0HWj
-         YurT6ILG14bLcU57gj5zKdhPt2SBMXYXJB3tNEcbpIVIHQFmRpf5o+GB9Ym8FK5F17
-         W6i4ktGWuDT6mJrDi4sQ2oAsxFIRaLMiFA6TDg3GFrMOjpf9qaeiqs7TPqSlvLn21r
-         203pqcOgXn6bQ==
-Date:   Tue, 3 Oct 2023 11:00:55 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v17 13/18] drm/shmem-helper: Add memory shrinker
-Message-ID: <20231003110055.346fd94c@collabora.com>
-In-Reply-To: <bbbd82a5-41bf-4ca3-476d-e5039e94631b@collabora.com>
-References: <20230914232721.408581-1-dmitry.osipenko@collabora.com>
-        <20230914232721.408581-14-dmitry.osipenko@collabora.com>
-        <20230915104633.0d5c3932@collabora.com>
-        <454c464e-4534-7ec3-6d38-49b7df83c7be@collabora.com>
-        <20230926093517.11a172ad@collabora.com>
-        <bbbd82a5-41bf-4ca3-476d-e5039e94631b@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 3 Oct 2023 05:01:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51DA9E;
+        Tue,  3 Oct 2023 02:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696323708; x=1727859708;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=j4r45DuPOKqBoDxxAsuV+SL7fxIH76HZazvWueuSR+Y=;
+  b=Xm5P8ni18BmyN4fNdtBrPf1yCBcZ3jn4N0fdpj0a8m8XeT16lUB8Ldfv
+   mR4tpVb5EimnXr2LyUL1Dg+CrzxQbSJi1SxRqP4dK7AF6HCMN/+npkviw
+   cuzvnLBxO6KRr3y7ESooPlck7GH7gC94Q4/Ka2klfk+lhJjSNz9Znf24S
+   08cpZHXg0fjG9rOoOdNo0e7886DZ2++NKGYUB7FNRjJW/N9lKY6TH/+Yo
+   YuYGHHnhRGBTjcLRocEYuOQ6E/jMT2dukXZog3TcTyV5ZlqjCnRHXmIvn
+   18LFZ2+s+pmgQeU9Y2nmUD17ctzo8AQofBALdM8aHgqefnD7WPaGOfFiq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="385650347"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="385650347"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 02:01:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="750854588"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="750854588"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 02:01:34 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qnbHY-00000002RKw-1KHY;
+        Tue, 03 Oct 2023 12:01:32 +0300
+Date:   Tue, 3 Oct 2023 12:01:32 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     linus.walleij@linaro.org, mika.westerberg@linux.intel.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v1 1/2] pinctrl: baytrail: drop runtime PM support
+Message-ID: <ZRvYbFF0h7OOo7Nu@smile.fi.intel.com>
+References: <20231003081519.27524-1-raag.jadav@intel.com>
+ <ZRvX9GUXbJksmSIP@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRvX9GUXbJksmSIP@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dmitry,
-
-On Tue, 3 Oct 2023 03:31:32 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-
-> On 9/26/23 10:35, Boris Brezillon wrote:
-> >>>> +	__drm_gem_shmem_release_pages(shmem);    
-> >>> Make sure you drop the implicit pages_use_count ref the sgt had, this
-> >>> way you can still tie the necessity to drop the pages to sgt != NULL in
-> >>> drm_gem_shmem_free().    
-> >> This will require further refcnt re-initialization when pages are
-> >> restored if it's dropped to zero. I don't see how this will improve
-> >> anything.  
-> > Sorry to disagree, but I do think it matters to have a clear ownership
-> > model, and if I look at the code (drm_gem_shmem_get_pages_sgt_locked()),
-> > the sgt clearly owns a reference to the pages it points to.  
+On Tue, Oct 03, 2023 at 11:59:33AM +0300, Andy Shevchenko wrote:
+> On Tue, Oct 03, 2023 at 01:45:18PM +0530, Raag Jadav wrote:
+> > Since Baytrail pinctrl device is not attached to acpi_lpss_pm_domain,
+> > runtime PM serves no purpose here. Drop it and switch to pm_sleep_ptr()
+> > as now we only have suspend and resume handles in place.
+> > 
+> > No functional impact.
 > 
-> It creates too much unnecessary trouble because, again, pages_use_count
-> can't drop to zero easily.
-
-Not saying pages_use_count should drop to zero, I'm just saying the
-reference that was owned by the sgt should be released when this sgt is
-freed, no matter if this sgt destruction is triggered by a GEM eviction,
-or because the GEM object is freed entirely.
-
-> Shrinker doesn't own the refcnt and not
-> allowed to touch it.
-
-I'm not asking the shrinker to own a reference on the pages either.
-It's really the sgt that owns this reference.
-
-> The pages_use_count is then used by things like
-> mmap() and etc that use get_pages(), which can be invoked for evicted GEM.
-
-Yes, and I still have a hard time seeing how this interferes with what
-I'm suggesting to be honest.
-
+> > TODO:
+> > Consider moving to DEFINE_LATE_DEV_PM_OPS() in the future once we have
+> > enough users to account for its introduction.
 > 
-> I'd prefer to keep refcounting as is, don't see how to implement your
-> suggestion.
+> This is not related to the commit message.
+> I'll drop it.
 
-Can you be more specific? I don't really see what the problem is with
-decrementing pages_use_count when you free the sgt (eviction), and
-re-incrementing it when the sgt is restored (swapin).
+Ah, and next time, please do a cover letter for the series, it can be
+better managed from maintainer perspective.
 
-Regards,
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Boris
+
