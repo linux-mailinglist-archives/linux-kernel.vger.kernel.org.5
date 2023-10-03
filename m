@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEF57B7558
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0535E7B755A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237859AbjJCXl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 19:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50900 "EHLO
+        id S238219AbjJCXmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 19:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237581AbjJCXl4 (ORCPT
+        with ESMTP id S238024AbjJCXmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 19:41:56 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDA5AC
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:41:52 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-27760c31056so997029a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:41:52 -0700 (PDT)
+        Tue, 3 Oct 2023 19:42:14 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88259DC
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:42:05 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d77ad095f13so1594558276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:42:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696376512; x=1696981312; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WhYcyR6Fe80biMSdh0fvQHW+o+cY1bEtG/iTTN+PcWg=;
-        b=IHpUi4Ksr7Sxs+EbzIhbDtk+ViKhlKz9Km5JnR4HJs/OQ0KTliyWo//MOgxoddb8T7
-         6ZlU3Y6KL2eWRewgAHgcBZqEnllPNwEtbaj+u4xJv6SyKhH8YxJDAgYIgrP28fXuE0WL
-         tJRReKVlRVi8HOoqzeZeiR4+VmGIPjVhplyEY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696376512; x=1696981312;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1696376525; x=1696981325; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WhYcyR6Fe80biMSdh0fvQHW+o+cY1bEtG/iTTN+PcWg=;
-        b=e+Gm/0LRC2fRXfpJdSebmLKp6vNm64rOt3u/6n6q4MWlHkT2vOL19jyNjje5UPkli3
-         LvlTjWA/ny/h7HcK6mmdBcfkNJECJh5lOP5lVddEbEXw1AKPU8MiC6l9CTVwIX3qPdHE
-         0/OGkYGRrArShn9zubPf9O3JMcyHb9Bj/UJKcJXIe3e81jZWw0S6ccYxYAQhYBqNE9g+
-         3vI8lXdMduke0xO/9UXPxuyz1IZZ6XINiWb9uPyP18QKiwtURGtsBfKvo0BwYoLURvjK
-         XrIQ0tlKqVIQFnPoVeY4re+ce2LKnQDfm8EGRRJ/PB7th5MRNoKHzPn7tzfBgrlStC4D
-         LDBw==
-X-Gm-Message-State: AOJu0Yz7pxuTvFS+K9OekhwShEjTBY1ewLWrlMc5M+gBHoAjkXYVyQ9F
-        O5RFEpyzqB3Ps4pYZnwdXsS+iA==
-X-Google-Smtp-Source: AGHT+IEn0DmTvbVbBFxNdq3OKXXpFw4I9foZJK6ZxmUa8EteSnTE9RTr4xVQgT2VKg+fsVzgi2nZeA==
-X-Received: by 2002:a17:90a:bf13:b0:277:5652:cb00 with SMTP id c19-20020a17090abf1300b002775652cb00mr674622pjs.24.1696376511915;
-        Tue, 03 Oct 2023 16:41:51 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 6-20020a17090a1a0600b00263dfe9b972sm188454pjk.0.2023.10.03.16.41.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 16:41:51 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 16:41:50 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     David Rheinsberg <david@readahead.eu>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] HID: uhid: replace deprecated strncpy with strscpy
-Message-ID: <202310031641.53DE6178@keescook>
-References: <20231003-strncpy-drivers-hid-uhid-c-v2-1-6a501402581e@google.com>
+        bh=7SjA75N+ejDLC45VlzVptLHxzNWXM0z0YjaVzLTZEJk=;
+        b=cauXbrqDMYfBfIJdCkh//lgXTor8mD4MEg+eoTrnZG+HoNVuoSflTy46Zjd6p0zRb7
+         cmQXkgJLQqV55dTMe3O66wgOqHtWHbRdo2ImyrT2gMxb7/tob+KHH7xoMvB/Jd1Jy65E
+         Xi76UuJ0KvjM1ysIHgrA+F+bc3HbSg19CiB6xGbceG8eQegggEUTrM3oZSZ1nEgjaMuq
+         8zwoLrnwTwXlL0GTgTxpJ/CjdEBaomlOQn8ZTrfpSpdDHGRlkUSSoc2Ofbv6bdM/T/iG
+         jWFByrdJ+E1btZYv7b+0OedJAWnKdMrAx0+fv8P//ZFqS7ovjwdJfgknTyG58i1ZfZEQ
+         1Gyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696376525; x=1696981325;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7SjA75N+ejDLC45VlzVptLHxzNWXM0z0YjaVzLTZEJk=;
+        b=tOostW5JM1aJelqVp4OQdXTTgA4/OOQkbDa2j93sMawlrNNUA3xvbwxFV/65na8LVr
+         1zGlEvcpEs1U2AffdkrABUgZD8c9SdYJPzBjWVanJdS4jGyOxX34u65dAgQMvcci6htr
+         XSwhdjXzzhXuCP6z28+uHaaCiUyDdgx+jnpKFWrAce50+MAmXc5kwJdBo6dZj8AK/61/
+         Dtnxu0HOpshtE6HuRYYHzOYroNj+9tDs4l4Bd027CFXqFOcuiyXfOgydI+zj7PBqA63s
+         ozOtR0rm0YSqA9g/RiUkLfKEEcoK+0xUFENOrXnZPaYCXi0FKJ3dTSGK0h18kTHkGbJU
+         V+gg==
+X-Gm-Message-State: AOJu0YycwMo/K8TYofS3P3kR1rjS6dlJwM4OxGwLx6QaPGCB0wdhlyJ2
+        /9coVB9ajWqNz30FO2iI0hFXUPZiI718I7S4y6a5
+X-Google-Smtp-Source: AGHT+IFn4aOITO9vhhWDdp9FdrjvDiH+io1tqL2nOtLDQ8d4YyHKQ8ObGVLtyHCRY1krbvWLxeBkhLZh3u09ydowjVY=
+X-Received: by 2002:a25:ab0b:0:b0:d7a:ea5b:a45 with SMTP id
+ u11-20020a25ab0b000000b00d7aea5b0a45mr667291ybi.57.1696376524736; Tue, 03 Oct
+ 2023 16:42:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003-strncpy-drivers-hid-uhid-c-v2-1-6a501402581e@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+References: <20230928110300.32891-1-jlayton@kernel.org> <20230928110413.33032-1-jlayton@kernel.org>
+ <20230928110413.33032-83-jlayton@kernel.org>
+In-Reply-To: <20230928110413.33032-83-jlayton@kernel.org>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 3 Oct 2023 19:41:54 -0400
+Message-ID: <CAHC9VhTsk5GyetM3ekBDv1f-QQVqWWgZmMWqpg8hqdyCOySHEQ@mail.gmail.com>
+Subject: Re: [PATCH 84/87] security: convert to new inode {a,m}time accessors
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,32 +72,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 09:01:58PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on the destination buffer without
-> unnecessarily NUL-padding.
-> 
-> Furthermore, let's make sure `hid->xyz` and `ev->u.create2.xyz` are the
-> same size at compile time to prevent silent truncation.
-> 
-> With these changes, it is abundantly clear what the intent and behavior
-> of the code is -- We are getting a string to string copy with
-> NUL-termination and no truncation.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+On Thu, Sep 28, 2023 at 7:22=E2=80=AFAM Jeff Layton <jlayton@kernel.org> wr=
+ote:
+>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  security/inode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Great! This looks much simpler to me. Thanks for adjusting it.
+Acked-by: Paul Moore <paul@paul-moore.com>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> diff --git a/security/inode.c b/security/inode.c
+> index 3aa75fffa8c9..9e7cde913667 100644
+> --- a/security/inode.c
+> +++ b/security/inode.c
+> @@ -145,7 +145,7 @@ static struct dentry *securityfs_create_dentry(const =
+char *name, umode_t mode,
+>
+>         inode->i_ino =3D get_next_ino();
+>         inode->i_mode =3D mode;
+> -       inode->i_atime =3D inode->i_mtime =3D inode_set_ctime_current(ino=
+de);
+> +       simple_inode_init_ts(inode);
+>         inode->i_private =3D data;
+>         if (S_ISDIR(mode)) {
+>                 inode->i_op =3D &simple_dir_inode_operations;
+> --
+> 2.41.0
 
--- 
-Kees Cook
+--=20
+paul-moore.com
