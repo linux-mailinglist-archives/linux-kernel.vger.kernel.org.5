@@ -2,94 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 975517B6A80
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034A57B6A07
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237361AbjJCN1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57716 "EHLO
+        id S234490AbjJCNQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235666AbjJCN04 (ORCPT
+        with ESMTP id S232629AbjJCNQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:26:56 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6561CCC;
-        Tue,  3 Oct 2023 06:26:52 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 0c737ab238faee0f; Tue, 3 Oct 2023 15:26:50 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 532036659AF;
-        Tue,  3 Oct 2023 15:26:50 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v2 0/6] thermal: Improve iteration over trip points
-Date:   Tue, 03 Oct 2023 15:15:51 +0200
-Message-ID: <4846448.GXAFRqVoOG@kreacher>
+        Tue, 3 Oct 2023 09:16:32 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84460A1;
+        Tue,  3 Oct 2023 06:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=EWfCXC5jXN6LSu7StfVJcsUroz0qkWSBAs6yZAX+Jhw=; b=bBB/wH8mCQY0Bcxmh37zBAHXaq
+        cjDhqk2k/nESyy2/0vMeS6LWS5ScVOAGg8VkV1SVmghzogDRNdhMKkiaWNauMmvHBxLAQu5dpZAUW
+        JBpW44Xdxfl4BJNwRu0fvyLAe+fn+/8xrZFER3FF3jLwVLo3YWExi2zbyf6z23hKu7JCCRvt9YUK5
+        udtrww+1uLLxsP5LDTJ/YiYVB9PMjhuIt+RS2nYhVUNEy/zDyPJDSMVvxPtKEpmHpiomri4mPz4Bw
+        UFq1cjsoaWe1yM2UTE72aNxYUmwp1AvqDPAZHHuhh+GVjbFVJeBioxlS+N0DcRF5hhk6gOcPUTGIO
+        Q+yivvtw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:34098)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qnfGC-0001lk-0j;
+        Tue, 03 Oct 2023 14:16:24 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qnfGD-0007vG-4G; Tue, 03 Oct 2023 14:16:25 +0100
+Date:   Tue, 3 Oct 2023 14:16:25 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Camelia Groza <camelia.groza@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor@kernel.org>,
+        Sean Anderson <sean.anderson@seco.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>
+Subject: Re: [RFC PATCH v2 net-next 12/15] net: phylink: add the 25G link
+ modes to phylink_c73_priority_resolution[]
+Message-ID: <ZRwUKf1bRa4JeKXC@shell.armlinux.org.uk>
+References: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
+ <20230923134904.3627402-13-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfeeigdeifecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeegfffhudejlefhtdegffekteduhfethffhieettefhkeevgfdvgfefieekiefgheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghn
- oheslhhinhgrrhhordhorhhgpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230923134904.3627402-13-vladimir.oltean@nxp.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On Sat, Sep 23, 2023 at 04:49:01PM +0300, Vladimir Oltean wrote:
+> Allow phylink_resolve_c73() to resolve backplane (KR) or SFP28 (CR)
+> link speeds of 25Gbps.
+> 
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-This is a new version of
+Shouldn't this also be part of patch 5?
 
-https://lore.kernel.org/linux-acpi/4871671.31r3eYUQgx@kreacher
-
-which is being posted, because I've realized that the ACPI piece could be
-somewhat simpler.  Namely, it is not really necessary to store the indices of
-active trip points in the ACPI thermal driver (so as to use them to invoke the
-appropriate ACPI methods), because they can be readily computed, but IMO it is
-better to make changes in more steps in order to use this observation.
-
-This is still true:
-
- It turns out that the notification-handling code in the ACPI thermal driver
- can be rearranged to iterate over trip points once, with the help of
- for_each_thermal_trip() called directly under the zone lock, so patch [1/6]
- adds a helper function for that.
-
-This time, however, more changes are made in order to use this new function in
-the ACPI thermal driver:
- * One function is relocated (so that the subsequent changes look cleaner)
-   in patch [2/6].
- * Two functions are merged into one (so as to prepare the code for the next
-   change) in patch [3/4]
- * Patch [4/6] changes the ACPI thermal driver to use the function introduced
-   in patch [1/6] and to reduce the number of trip point walks after a
-   notification from the platform firmware from 2 to 1.
-
-Next, patch [5/6] drops thermal_zone_device_exec() that is not used any more
-and patch [6/6] changes the int340x thermal driver to also use the new helper
-to iterate over trip points, so it need not make risky assumptions regarding
-the core functionality.
-
-Please see the individual patch changelogs for details.
-
-Thanks!
-
-
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
