@@ -2,98 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5067B66A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF1E7B66AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231792AbjJCKpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 06:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60846 "EHLO
+        id S231846AbjJCKpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 06:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231753AbjJCKpO (ORCPT
+        with ESMTP id S231769AbjJCKpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 06:45:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187AAAC;
-        Tue,  3 Oct 2023 03:45:10 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="362215516"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="362215516"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 03:45:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="786058702"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="786058702"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 03:45:04 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andy@kernel.org>)
-        id 1qnctg-00000002SXq-1k5x;
-        Tue, 03 Oct 2023 13:45:00 +0300
-Date:   Tue, 3 Oct 2023 13:45:00 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Ceclan Dumitru-Ioan <mitrutzceclan@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>, linus.walleij@linaro.org,
-        brgl@bgdev.pl, linux-gpio@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iio: adc: ad7173: add AD7173 driver
-Message-ID: <ZRvwrDcT770sJXkd@smile.fi.intel.com>
-References: <20230928125443.615006-1-mitrutzceclan@gmail.com>
- <20230928125443.615006-2-mitrutzceclan@gmail.com>
- <20230930150531.083c51d4@jic23-huawei>
- <c52afe87-eaa0-eb7f-090f-b22aec95e49d@gmail.com>
+        Tue, 3 Oct 2023 06:45:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95935BF
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 03:45:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7026CC433CA;
+        Tue,  3 Oct 2023 10:45:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696329913;
+        bh=JtcTWQxKGWwZqgm+l2lYgbyA83rSYz+5KPoIJRXClqs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lQk5DIi8st3IxeEoWswm+LZCDSJ1umvNGVAkWJDdNFUEjdE5B4Kejz/vXEoYDEoSc
+         0BgkVJx4ZdD9nmn481cjzkD4gsWUb+w7Ec/Ywiur2aabCOi0k2RykuiOH3ipz6YsWD
+         7hq9dEGEmCiV0+8he9Xar6k+PrxtIY49JRP7TmDmifVG12Iv+8WXun32SkqKRdmvd4
+         G0mJ8QGb+2PVSV6LerHokZUK9Jhw4mD9crcmCttr/EELnb0xHigjja/ee4o1e6zWNw
+         TxHBnjJDMQRA39KygOx9hwrenCopAGtslqyDSEKrqAwQKH1TilbSH79xc+scE8cpa+
+         RGehgD5Bx9nQQ==
+Date:   Tue, 3 Oct 2023 12:45:08 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH] page_pool: fix documentation typos
+Message-ID: <ZRvwtGG7hZSda3AM@kernel.org>
+References: <20231001003846.29541-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c52afe87-eaa0-eb7f-090f-b22aec95e49d@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231001003846.29541-1-rdunlap@infradead.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 01:33:36PM +0300, Ceclan Dumitru-Ioan wrote:
-> On 9/30/23 17:05, Jonathan Cameron wrote:
-> > On Thu, 28 Sep 2023 15:54:43 +0300
-> > Dumitru Ceclan <mitrutzceclan@gmail.com> wrote>> +config AD7173
-> >> +	tristate "Analog Devices AD7173 driver"
-> >> +	depends on SPI_MASTER
-> >> +	select AD_SIGMA_DELTA
-> >> +	select GPIO_REGMAP
-> > If you are selecting it, why does it have if guards in the driver.
-> > I prefer the select here, so drop this if guards.
+On Sat, Sep 30, 2023 at 05:38:45PM -0700, Randy Dunlap wrote:
+> Correct grammar for better readability.
 > 
-> From what i checked, selecting GPIO_REGMAP does not select GPIOLIB but only REGMAP.
-> 
-> Also, in the thread from V1 Arnd Bergmann suggested:
-> 	" I think the best way to handle these is to remove both
-> 	 the 'select' and the #ifdef in the driver and instead use
-> 	 'if (IS_ENABLED(CONFIG_GPIOLIB))' to handle optional gpio
-> 	 providers in the code. "
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
-Why not simply to be dependent on GPIOLIB like other drivers do in this folder?
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Reviewed-by: Simon Horman <horms@kernel.org>
 
