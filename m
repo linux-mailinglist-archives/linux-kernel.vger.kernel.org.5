@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 098B47B6DA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9123E7B6D98
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240073AbjJCP6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
+        id S239306AbjJCP6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237235AbjJCP6e (ORCPT
+        with ESMTP id S232085AbjJCP6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Oct 2023 11:58:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4888AAB;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF0CB0;
         Tue,  3 Oct 2023 08:58:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DADCEC433C8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7A0AC433C7;
         Tue,  3 Oct 2023 15:58:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1696348710;
-        bh=d3VaEwaFlyeMPWg3YHua4F4aRB7Tfwof5FHIy9UNucg=;
+        bh=jSnludvJeJTD+6HRSvHeKr3Owfs9qfyq4PwHRjnN+QU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NSXp24s3e8mvkSzjU7j3jfbsRkiRrdsCcyLfcSU7362Ak3Pd1N7fODvRQ4m+VKKlW
-         Ai8Q9kjjgXWiyuSP/UM391TIW0Bb83+rnOv39UL8WfvkKMRRldnqm7Qfez/ONMhCi6
-         0apiliYSifzA+dQq+cQXY60acuMFANuvzSEgJNsTLlztN80W43GeWCiFkH32Zxlk05
-         Mh5r91tfqDbY9cDihmDPBpsSWJUJ9J4dXWsv23MS2ejPJ2b8+ODoMlGKXscZnE3nsC
-         EPMYYoX4pvJj+SvCzca2F2OHaufKQE70zf9O73lQJ1kf8RKYR3fmBoX0hs8UTxRTA4
-         5S2mdKljgQBSg==
+        b=Fv5IC0Ni/LXK242jhOeSXIVdmLaP1PNHa2ff5rEY557ruQsQ2XrOtYJY+lXFTZvYQ
+         BeqeLL+nDvoW2Hqzqjw42JDaFgiW8Mn9C5LAr502TcMuI65HwLdqwvc4S9qr38L14R
+         /2dz98wEOYOrRLMwMNRKePniaI1SVUxLkE6cMMrv7/mt4QEITny1+u8lfLuHHc5JAH
+         9xAZC+oI2Z5k3pDnFNsL2B3kVawS+d0QkAKb1DdNlnhHrLNo+e5JE0bG+V5MNUIf20
+         vPl0Ir9AgYatkGTkfqLCmz4k3uFXd264wMgwb48y/RSwdIYXXu25yfa3PbSqKXVYQt
+         +OX/hK+7QQbBQ==
 Received: from johan by xi.lan with local (Exim 4.96)
         (envelope-from <johan+linaro@kernel.org>)
-        id 1qnhnF-00074n-3C;
+        id 1qnhnG-00074p-0B;
         Tue, 03 Oct 2023 17:58:42 +0200
 From:   Johan Hovold <johan+linaro@kernel.org>
 To:     Mark Brown <broonie@kernel.org>
@@ -39,9 +39,9 @@ Cc:     Liam Girdwood <lgirdwood@gmail.com>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH 1/7] ASoC: codecs: wcd938x: drop bogus bind error handling
-Date:   Tue,  3 Oct 2023 17:55:52 +0200
-Message-ID: <20231003155558.27079-2-johan+linaro@kernel.org>
+Subject: [PATCH 2/7] ASoC: codecs: wcd938x: fix unbind tear down order
+Date:   Tue,  3 Oct 2023 17:55:53 +0200
+Message-ID: <20231003155558.27079-3-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231003155558.27079-1-johan+linaro@kernel.org>
 References: <20231003155558.27079-1-johan+linaro@kernel.org>
@@ -56,32 +56,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the bogus error handling for a soundwire device backcast during
-bind() that cannot fail.
+Make sure to deregister the component before tearing down the resources
+it depends on during unbind().
 
 Fixes: 16572522aece ("ASoC: codecs: wcd938x-sdw: add SoundWire driver")
 Cc: stable@vger.kernel.org      # 5.14
 Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- sound/soc/codecs/wcd938x.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/codecs/wcd938x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index a3c680661377..cf1eaf678fc2 100644
+index cf1eaf678fc2..c617fc3ce489 100644
 --- a/sound/soc/codecs/wcd938x.c
 +++ b/sound/soc/codecs/wcd938x.c
-@@ -3448,10 +3448,6 @@ static int wcd938x_bind(struct device *dev)
- 	wcd938x->sdw_priv[AIF1_CAP] = dev_get_drvdata(wcd938x->txdev);
- 	wcd938x->sdw_priv[AIF1_CAP]->wcd938x = wcd938x;
- 	wcd938x->tx_sdw_dev = dev_to_sdw_dev(wcd938x->txdev);
--	if (!wcd938x->tx_sdw_dev) {
--		dev_err(dev, "could not get txslave with matching of dev\n");
--		return -EINVAL;
--	}
+@@ -3504,10 +3504,10 @@ static void wcd938x_unbind(struct device *dev)
+ {
+ 	struct wcd938x_priv *wcd938x = dev_get_drvdata(dev);
  
- 	/* As TX is main CSR reg interface, which should not be suspended first.
- 	 * expicilty add the dependency link */
++	snd_soc_unregister_component(dev);
+ 	device_link_remove(dev, wcd938x->txdev);
+ 	device_link_remove(dev, wcd938x->rxdev);
+ 	device_link_remove(wcd938x->rxdev, wcd938x->txdev);
+-	snd_soc_unregister_component(dev);
+ 	component_unbind_all(dev, wcd938x);
+ }
+ 
 -- 
 2.41.0
 
