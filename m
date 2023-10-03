@@ -2,92 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0BE7B6404
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD097B640F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbjJCIZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
+        id S239492AbjJCI3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 04:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbjJCIZz (ORCPT
+        with ESMTP id S230330AbjJCI3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:25:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1054A9
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:25:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CCB8C433C9;
-        Tue,  3 Oct 2023 08:25:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696321552;
-        bh=KXtojPedPQ+gz2QcHLNOECeONC8uwhpiha9CkLTHH94=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=gVmp0y6zM/OpiA+ivIdveacXcOe7zYH+/DlLedhxXryQIZ7BnDsKAOnDhX0O75ZA5
-         MfDH0hmrqjBtKXxwwnbL2mnonUZz6L+i6+t7Ce7YIDc6a/KfvAV1BYoz+DJ1eG8mkf
-         TXPQ9oqzBTzHDVgcZeFGkTRriOKqzcj1q+RvvIKcJjuTb+eh9Sr5aB3juC7UlLcNE2
-         ATVBdO7C0YLA2vX8v+2gqHi+4aFr44+VnlhwLDat6+2x8aHtJgFBfOv5F2Zi6+qAYT
-         OKnG0FE9nskYsQeDelp5tD+EhTTt2Y79hFqWTLHZWon4MECinn2ttVaWa8L4ai9a5e
-         jt0rvQDb95R/A==
-Message-ID: <4fe44a5f-9a6f-5259-f14a-d464a7cb8556@kernel.org>
-Date:   Tue, 3 Oct 2023 17:25:49 +0900
+        Tue, 3 Oct 2023 04:29:21 -0400
+Received: from out-205.mta0.migadu.com (out-205.mta0.migadu.com [IPv6:2001:41d0:1004:224b::cd])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6C3A3
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:29:18 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 17:28:58 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696321756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SvHEdL127DkwY1o1/aHJZdaismZDLKyIFOf23kZMKII=;
+        b=SnZnaakkCBrskHWe8xJL1L5kXJ04u9tThP9M8iKTR/CDUx+XLVjReoLcedlF6WCxvIyGD6
+        OhdcyIniVLeOQ4Kzd3U+6O26XoRzrW7252N8bpgQy1lQ/Hvcody5jaKDq/8yQ6j4TdM4hz
+        ijfc3ipmQGWFZBIAd/Eq8b9RfxVpS2E=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+Cc:     rafael@kernel.org, wangkefeng.wang@huawei.com,
+        tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com,
+        linmiaohe@huawei.com, naoya.horiguchi@nec.com, james.morse@arm.com,
+        gregkh@linuxfoundation.org, will@kernel.org,
+        linux-acpi@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
+        stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com,
+        ardb@kernel.org, ying.huang@intel.com, ashish.kalra@amd.com,
+        baolin.wang@linux.alibaba.com, bp@alien8.de, tglx@linutronix.de,
+        mingo@redhat.com, dave.hansen@linux.intel.com, jarkko@kernel.org,
+        lenb@kernel.org, hpa@zytor.com, robert.moore@intel.com,
+        lvying6@huawei.com, xiexiuqi@huawei.com,
+        zhuo.song@linux.alibaba.com
+Subject: Re: [RESEND PATCH v8 2/2] ACPI: APEI: handle synchronous exceptions
+ in task work
+Message-ID: <20231003082858.GA750796@ik1-406-35019.vs.sakura.ne.jp>
+References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+ <20230919022127.69732-3-xueshuai@linux.alibaba.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 2/3] mfd: max77686: Convert to use maple tree register
- cache
-To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20231001-mfd-maxim-maple-v1-0-cdfeb48a4d15@kernel.org>
- <20231001-mfd-maxim-maple-v1-2-cdfeb48a4d15@kernel.org>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20231001-mfd-maxim-maple-v1-2-cdfeb48a4d15@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230919022127.69732-3-xueshuai@linux.alibaba.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 23. 10. 1. 08:47, Mark Brown wrote:
-> The maple tree register cache is based on a much more modern data structure
-> than the rbtree cache and makes optimisation choices which are probably
-> more appropriate for modern systems than those made by the rbtree cache.
+On Tue, Sep 19, 2023 at 10:21:27AM +0800, Shuai Xue wrote:
+> Hardware errors could be signaled by synchronous interrupt, e.g.  when an
+> error is detected by a background scrubber, or signaled by synchronous
+> exception, e.g. when an uncorrected error is consumed. Both synchronous and
+> asynchronous error are queued and handled by a dedicated kthread in
+> workqueue.
 > 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+> commit 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for
+> synchronous errors") keep track of whether memory_failure() work was
+> queued, and make task_work pending to flush out the workqueue so that the
+> work for synchronous error is processed before returning to user-space.
+> The trick ensures that the corrupted page is unmapped and poisoned. And
+> after returning to user-space, the task starts at current instruction which
+> triggering a page fault in which kernel will send SIGBUS to current process
+> due to VM_FAULT_HWPOISON.
+> 
+> However, the memory failure recovery for hwpoison-aware mechanisms does not
+> work as expected. For example, hwpoison-aware user-space processes like
+> QEMU register their customized SIGBUS handler and enable early kill mode by
+> seting PF_MCE_EARLY at initialization. Then the kernel will directy notify
+> the process by sending a SIGBUS signal in memory failure with wrong
+> si_code: the actual user-space process accessing the corrupt memory
+> location, but its memory failure work is handled in a kthread context, so
+> it will send SIGBUS with BUS_MCEERR_AO si_code to the actual user-space
+> process instead of BUS_MCEERR_AR in kill_proc().
+> 
+> To this end, separate synchronous and asynchronous error handling into
+> different paths like X86 platform does:
+> 
+> - valid synchronous errors: queue a task_work to synchronously send SIGBUS
+>   before ret_to_user.
+> - valid asynchronous errors: queue a work into workqueue to asynchronously
+>   handle memory failure.
+> - abnormal branches such as invalid PA, unexpected severity, no memory
+>   failure config support, invalid GUID section, OOM, etc.
+> 
+> Then for valid synchronous errors, the current context in memory failure is
+> exactly belongs to the task consuming poison data and it will send SIBBUS
+> with proper si_code.
+> 
+> Fixes: 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for synchronous errors")
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> Tested-by: Ma Wupeng <mawupeng1@huawei.com>
+> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
+> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 > ---
->  drivers/mfd/max77686.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/x86/kernel/cpu/mce/core.c |  9 +---
+>  drivers/acpi/apei/ghes.c       | 84 +++++++++++++++++++++-------------
+>  include/acpi/ghes.h            |  3 --
+>  mm/memory-failure.c            | 17 ++-----
+>  4 files changed, 56 insertions(+), 57 deletions(-)
 > 
-> diff --git a/drivers/mfd/max77686.c b/drivers/mfd/max77686.c
-> index 91c286c4571c..0118a444a68b 100644
-> --- a/drivers/mfd/max77686.c
-> +++ b/drivers/mfd/max77686.c
-> @@ -108,7 +108,7 @@ static const struct regmap_config max77802_regmap_config = {
->  	.precious_reg = max77802_is_precious_reg,
->  	.volatile_reg = max77802_is_volatile_reg,
->  	.name = "max77802-pmic",
-> -	.cache_type = REGCACHE_RBTREE,
-> +	.cache_type = REGCACHE_MAPLE,
->  };
+...
+
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 4d6e43c88489..80e1ea1cc56d 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -2163,7 +2163,9 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+>   *
+>   * Return: 0 for successfully handled the memory error,
+>   *         -EOPNOTSUPP for hwpoison_filter() filtered the error event,
+> - *         < 0(except -EOPNOTSUPP) on failure.
+> + *         -EHWPOISON for already sent SIGBUS to the current process with
+> + *         the proper error info,
+
+The meaning of this comment is understood, but the sentence seems to be
+a little too long. Could you sort this out with bullet points (like below)?
+
+ * Return values:
+ *   0             - success
+ *   -EOPNOTSUPP   - hwpoison_filter() filtered the error event.
+ *   -EHWPOISON    - sent SIGBUS to the current process with the proper
+ *                   error info by kill_accessing_process().
+ *   other negative values - failure
+
+> + *         other negative error code on failure.
+>   */
+>  int memory_failure(unsigned long pfn, int flags)
+>  {
+> @@ -2445,19 +2447,6 @@ static void memory_failure_work_func(struct work_struct *work)
+>  	}
+>  }
 >  
->  static const struct regmap_irq max77686_irqs[] = {
-> 
+> -/*
+> - * Process memory_failure work queued on the specified CPU.
+> - * Used to avoid return-to-userspace racing with the memory_failure workqueue.
+> - */
+> -void memory_failure_queue_kick(int cpu)
+> -{
+> -	struct memory_failure_cpu *mf_cpu;
+> -
+> -	mf_cpu = &per_cpu(memory_failure_cpu, cpu);
+> -	cancel_work_sync(&mf_cpu->work);
+> -	memory_failure_work_func(&mf_cpu->work);
+> -}
+> -
 
-Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
+The declaration of memory_failure_queue_kick() still remains in include/linux/mm.h,
+so you can remove it together.
 
-Thanks.
-
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
-
+Thanks,
+Naoya Horiguchi
