@@ -2,199 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B28837B6E7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE057B6E85
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240393AbjJCQcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
+        id S240569AbjJCQcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240373AbjJCQcS (ORCPT
+        with ESMTP id S231592AbjJCQck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:32:18 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CF85391
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:32:14 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18165C15;
-        Tue,  3 Oct 2023 09:32:53 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.93.206])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CA9753F762;
-        Tue,  3 Oct 2023 09:32:11 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 17:32:09 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        D Scott Phillips <scott@os.amperecomputing.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Misono Tomohiro <misono.tomohiro@fujitsu.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/2] arm64: smp: Fix pseudo NMI issues w/ broken Mediatek
- FW
-Message-ID: <ZRxCCZxZWCG0NBur@FVFF77S0Q05N>
-References: <20231002094526.1.Ie8f760213053e3d11592f892b30912dbac6b8b48@changeid>
- <ZRr8r7XMoyDKaitd@FVFF77S0Q05N.cambridge.arm.com>
- <CAD=FV=UeeL9uycVeKpOm+eDm3xHrOnKi2frt6a1qFG1HX9yEUg@mail.gmail.com>
- <ZRwJKBZaYwF1rrur@FVFF77S0Q05N>
- <CAD=FV=WASz1uvTgwsu3H3cTr3smHk+E_XNUVnjoPpttwv095rQ@mail.gmail.com>
+        Tue, 3 Oct 2023 12:32:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BF1AF;
+        Tue,  3 Oct 2023 09:32:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696350757; x=1727886757;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=N5+XInekXK/3jlx2mlTDtiQAjBZc8FbJO7CCLm/0Lpc=;
+  b=hl5qvzEPy9fiUGxMlerxvT1N+fVHr+v4795MYg6aCnxDphK5pZPlfq6m
+   FbpE5OSzYi1ORfn4ox74XraURW83jQZVQDu5KeSQSeauJ6IoNzBEKqXJ8
+   Hefh1YD7hhrL5rQ4X38F15CP/GeNTET5Pen7AyAnsIv+TkCo0FGTs1Apk
+   6CZc1FSebUbGT+etbNmakFuSjOK2jR1G0rEZOsipqgrpzpjPf5Ta84/+/
+   VlEh5cCW7CDIEILG+j80as44gOCOLaE19fa9fVrbja08aNX3c3g17TxE4
+   9DN7ZB7JZLvV21RNkVt4AVqYiNCJuzkd8f777GomUZ3/u28+cSwsyXN0i
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="381799116"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="381799116"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 09:32:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="1082069879"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="1082069879"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
+  by fmsmga005.fm.intel.com with ESMTP; 03 Oct 2023 09:32:36 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     hdegoede@redhat.com, markgross@kernel.org,
+        ilpo.jarvinen@linux.intel.com, andriy.shevchenko@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v2 0/4] Minor SST optimizations
+Date:   Tue,  3 Oct 2023 09:32:30 -0700
+Message-Id: <20231003163234.1856669-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=WASz1uvTgwsu3H3cTr3smHk+E_XNUVnjoPpttwv095rQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 06:43:07AM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Tue, Oct 3, 2023 at 5:29 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > On Mon, Oct 02, 2023 at 12:16:17PM -0700, Doug Anderson wrote:
-> > > Hi,
-> > >
-> > > On Mon, Oct 2, 2023 at 10:24 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > >
-> > > > On Mon, Oct 02, 2023 at 09:45:29AM -0700, Douglas Anderson wrote:
-> > > > > Some mediatek devices have the property
-> > > > > "mediatek,broken-save-restore-fw" in their GIC. This means that,
-> > > > > although the hardware supports pseudo-NMI, the firmware has a bug
-> > > > > that blocks enabling it. When we're in this state,
-> > > > > system_uses_irq_prio_masking() will return true but we'll fail to
-> > > > > actually enable the IRQ in the GIC.
-> > > > >
-> > > > > Let's make the code handle this. We'll detect that we failed to
-> > > > > request an IPI as NMI and fallback to requesting it normally. Though
-> > > > > we expect that either all of our requests will fail or all will
-> > > > > succeed, it's just as cheap to keep a per-IPI bitmap and that keeps us
-> > > > > robust.
-> > > > >
-> > > > > Fixes: 331a1b3a836c ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
-> > > > > Reported-by: Chen-Yu Tsai <wenst@chromium.org>
-> > > > > Closes: https://issuetracker.google.com/issues/197061987#comment68
-> > > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > > > ---
-> > > > >
-> > > > >  arch/arm64/kernel/smp.c | 19 ++++++++++++-------
-> > > > >  1 file changed, 12 insertions(+), 7 deletions(-)
-> > > >
-> > > > I'm not too keen on falling back here when we have no idea why the request failed.
-> > > >
-> > > > I'd prefer if we could check the `supports_pseudo_nmis` static key directly to
-> > > > account for the case of broken FW, e.g. as below.
-> > > >
-> > > > Mark.
-> > > >
-> > > > ---->8----
-> > > > From 72fdec05c64a74f21871b44c7c760bbe07cac044 Mon Sep 17 00:00:00 2001
-> > > > From: Mark Rutland <mark.rutland@arm.com>
-> > > > Date: Mon, 2 Oct 2023 18:00:36 +0100
-> > > > Subject: [PATCH] arm64: smp: avoid NMI IPIs with broken MediaTek FW
-> > > >
-> > > > Some MediaTek devices have broken firmware which corrupts some GICR
-> > > > registers behind the back of the OS, and pseudo-NMIs cannot be used on
-> > > > these devices. For more details see commit:
-> > > >
-> > > >   44bd78dd2b8897f5 ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware issues")
-> > > >
-> > > > We did not take this problem into account in commit:
-> > > >
-> > > >   331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
-> > > >
-> > > > Since that commit arm64's SMP code will try to setup some IPIs as
-> > > > pseudo-NMIs, even on systems with broken FW. The GICv3 code will
-> > > > (rightly) reject attempts to request interrupts as pseudo-NMIs,
-> > > > resulting in boot-time failures.
-> > > >
-> > > > Avoid the problem by taking the broken FW into account when deciding to
-> > > > request IPIs as pseudo-NMIs. The GICv3 driver maintains a static_key
-> > > > named "supports_pseudo_nmis" which is false on systems with broken FW,
-> > > > and we can consult this within ipi_should_be_nmi().
-> > > >
-> > > > Fixes: 331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
-> > > > Reported-by: Chen-Yu Tsai <wenst@chromium.org>
-> > > > Closes: https://issuetracker.google.com/issues/197061987#comment68
-> > > > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > > > Cc: Douglas Anderson <dianders@chromium.org>
-> > > > Cc: Marc Zyngier <maz@kernel.org>
-> > > > ---
-> > > >  arch/arm64/kernel/smp.c      | 5 ++++-
-> > > >  drivers/irqchip/irq-gic-v3.c | 2 +-
-> > > >  2 files changed, 5 insertions(+), 2 deletions(-)
-> > >
-> > > Sure, this is OK w/ me as long as folks don't mind accessing the
-> > > global here, it's OK w/ me:
-> > >
-> > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > >
-> > > It seems to work for me, thus:
-> > >
-> > > Tested-by: Douglas Anderson <dianders@chromium.org>
-> > >
-> > >
-> > > > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> > > > index 814d9aa93b21b..061c69160f90f 100644
-> > > > --- a/arch/arm64/kernel/smp.c
-> > > > +++ b/arch/arm64/kernel/smp.c
-> > > > @@ -964,7 +964,10 @@ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
-> > > >
-> > > >  static bool ipi_should_be_nmi(enum ipi_msg_type ipi)
-> > > >  {
-> > > > -       if (!system_uses_irq_prio_masking())
-> > > > +       DECLARE_STATIC_KEY_FALSE(supports_pseudo_nmis);
-> > > > +
-> > > > +       if (!system_uses_irq_prio_masking() ||
-> > > > +           !static_branch_likely(&supports_pseudo_nmis))
-> > >
-> > > One thought, actually, is whether we should actually change
-> > > system_uses_irq_prio_masking() to return the correct value. What do
-> > > you think?
-> >
-> > I don't think we should add this to system_uses_irq_prio_masking(); that's used
-> > by the low-level flags manipulation code that gets inlined all over the place,
-> > and that code will work regarldess of whether we actually use NMI priorities.
-> >
-> > If we want to avoid using PMR masking *at all* on these platforms, we'd need to
-> > detect that within can_use_gic_priorities() or early_enable_pseudo_nmi().
-> 
-> I suspect that anyone trying to use PMR masking on these systems for
-> any purpose will be unhappy. The issue is talked about in:
-> 
-> https://issuetracker.google.com/281831288
-> 
-> ...where you can see that the firmware on these systems isn't properly
-> saving/restoring some registers, including GICR_IPRIORITYR.
+Contains some minor changes to use SST for non dynamic use cases
+for display purpose and remove hardcoded size for map.
 
-Ok, then that's a latent bug even before the IPI changes, going back to the
-original workaround in commit:
+v2
+Update commit description, no code change
+Added a new patch which was independent before
 
-  44bd78dd2b8897f5 ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware issues")
+Srinivas Pandruvada (4):
+  platform/x86: ISST: Use fuse enabled mask instead of allowed levels
+  platform/x86: ISST: Allow level 0 to be not present
+  platform/x86: intel_speed_select_if: Remove hardcoded map size
+  platform/x86: intel_speed_select_if: Use devm_ioremap_resource
 
-For the sake of those reading the archive, can we have a better description of
-what exactly happens on these boards?
+ .../x86/intel/speed_select_if/isst_if_mmio.c  | 21 ++++++++++++-------
+ .../intel/speed_select_if/isst_tpmi_core.c    |  5 +----
+ 2 files changed, 14 insertions(+), 12 deletions(-)
 
-IIUC on these boards the firmware fails to save+restore (some?) GICR registers
-across (some?) PSCI CPU_SUSPEND idle states.
+-- 
+2.41.0
 
-Which registers does it save+restore?
-
-Does it reset other registers into a specific state?
-
-Thanks,
-Mark.
