@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CB27B6726
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8A27B6728
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239937AbjJCLEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 07:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
+        id S240005AbjJCLEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 07:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240000AbjJCLES (ORCPT
+        with ESMTP id S239715AbjJCLEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 07:04:18 -0400
+        Tue, 3 Oct 2023 07:04:44 -0400
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139BAD7;
-        Tue,  3 Oct 2023 04:04:15 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 393B43MP060583;
-        Tue, 3 Oct 2023 06:04:03 -0500
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A47BD;
+        Tue,  3 Oct 2023 04:04:41 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 393B4GBt060602;
+        Tue, 3 Oct 2023 06:04:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696331043;
-        bh=iYebNZPy/CKbXWaKFyAsuXzDusEsLM6uFiE/1hHDe00=;
+        s=ti-com-17Q1; t=1696331056;
+        bh=WOMYLjdsgwCUjmueSDss3yq/aUWw73r1I6VvK8Gyu0A=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=bbQmSSM4pfLvDFexR7d7Ubk3ALBFl4q/H8cFIUufS5s1aCc8WSpFNifmvJFrTa830
-         /W4lupXzRJfaXRo+lv3PGwl3wgKc0idELhyzYHvpaYFaqf2qh6kqohy8zL6a6p1Q3S
-         oiwcPCEsILZaDtPvKyIi5NwMs8pdcGToNUdRA+dY=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 393B43ul003074
+        b=lvtStY2/YyzJ55lD+PupoVpOcfTpGgLLGS/Rm22zo4JVgB6jm1tpsl1mX9b5jptOd
+         fB1YaWRXD/qbkEUlKSC1meSSENCbzNeW17C27rXtwa4/fyqKJrkXSnNVBt+wmOtbfM
+         a4qYqO3BGG8fCQTjFNRmLdoq/09JVOZFL++RcpuI=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 393B4GXP001885
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Oct 2023 06:04:03 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+        Tue, 3 Oct 2023 06:04:16 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 3
- Oct 2023 06:04:02 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2023 06:04:16 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 3 Oct 2023 06:04:02 -0500
+ Frontend Transport; Tue, 3 Oct 2023 06:04:16 -0500
 Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 393B1Dvq129223;
-        Tue, 3 Oct 2023 06:03:58 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 393B1Dvr129223;
+        Tue, 3 Oct 2023 06:04:11 -0500
 From:   Vignesh Raghavendra <vigneshr@ti.com>
 To:     <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        Wadim Egorov <w.egorov@phytec.de>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>, <upstream@lists.phytec.de>,
+        <keescook@chromium.org>, <tony.luck@intel.com>,
+        <gpiccoli@igalia.com>, Wadim Egorov <w.egorov@phytec.de>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: ti: phycore-am64: Add RTC interrupt pin
-Date:   Tue, 3 Oct 2023 16:30:53 +0530
-Message-ID: <169633065054.2221719.7869317058245309197.b4-ty@ti.com>
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>, <upstream@lists.phytec.de>
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-am625-beagleplay: Fix typo in ramoops reg
+Date:   Tue, 3 Oct 2023 16:30:54 +0530
+Message-ID: <169633065056.2221719.2919691139656141039.b4-ty@ti.com>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230914093027.3901602-1-w.egorov@phytec.de>
-References: <20230914093027.3901602-1-w.egorov@phytec.de>
+In-Reply-To: <20230925151444.1856852-1-w.egorov@phytec.de>
+References: <20230925151444.1856852-1-w.egorov@phytec.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -69,18 +71,17 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Wadim Egorov,
 
-On Thu, 14 Sep 2023 11:30:27 +0200, Wadim Egorov wrote:
-> Wth commit 16b26f602758 ("rtc: rv3028: Use IRQ flags obtained from device
-> tree if available") we can now use the interrupt pin of the RTC.
-> Let's add interrupt pin definitions to the SoM RTC.
+On Mon, 25 Sep 2023 17:14:44 +0200, Wadim Egorov wrote:
+> Seems like the address value of the reg property was mistyped.
+> Update reg to 0x9ca00000 to match node's definition.
 > 
 > 
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/1] arm64: dts: ti: phycore-am64: Add RTC interrupt pin
-      commit: a1cd710f56c145bc7e7fc2bfbe332d944d5338cd
+[1/1] arm64: dts: ti: k3-am625-beagleplay: Fix typo in ramoops reg
+      commit: c3357773f560135c956de0c195e5ffe71c744a34
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
