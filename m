@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCCF7B665C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F37A7B6660
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbjJCK1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 06:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
+        id S231624AbjJCK1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 06:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbjJCK1g (ORCPT
+        with ESMTP id S231218AbjJCK1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 06:27:36 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7D1F393;
-        Tue,  3 Oct 2023 03:27:33 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-        id F2B5520B74C0; Tue,  3 Oct 2023 03:27:32 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F2B5520B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1696328853;
-        bh=aysThpHQGFMTeVdI+Rawde/DGhWbjbxle/zDNrgG3rw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QADkRjb0rLbTndCt5MDIufWKkV369E7NKRTSnPiPxX2Lc++TFqUBWabK/acTYpO4n
-         Yz0xHi26ZXEeKlDcZd8NT7BskvSOp63eJInSkE4uMkFKejWDh5R/CmGmN8MrkLOiHz
-         Mn8Usutan361mbSUx6mbRrRMNBj7Zr3l9c25e5Bs=
-Date:   Tue, 3 Oct 2023 03:27:32 -0700
-From:   Shradha Gupta <shradhagupta@linux.microsoft.com>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
-        paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
-        davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
-        longli@microsoft.com, ssengar@linux.microsoft.com,
-        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-        sharmaajay@microsoft.com, hawk@kernel.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH net,v2, 1/3] net: mana: Fix TX CQE error handling
-Message-ID: <20231003102732.GB32191@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1696020147-14989-1-git-send-email-haiyangz@microsoft.com>
- <1696020147-14989-2-git-send-email-haiyangz@microsoft.com>
+        Tue, 3 Oct 2023 06:27:53 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151B3B7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 03:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6qb4WZ92U8yIFE7GYSvrq4aS/hQetxiLq3tL2nxTeg0=; b=gkvUCEwWmEDjsOagl1Wah+jnga
+        vuOazKXCqy9IiKzCgpJlZVnqcbONeyv47g+baPnwDFvwIYrR0Lpwnup6QSSmNU+MX4IQWMLHRs3Gf
+        nUPdZHoqwYWkM8OYKyOBrxTpHQrk8R2zqSW2zz19PtlluqtKS74Wu8lJUobKDBqzWzjmRQOPW7TXR
+        lv6P+TUdrnGZkOSyc3wPrrz9+SBgpiWmyMPbdwDFIpApUui8qjhHWxV3VCOOBnSN7N5PWu/Pc7jX1
+        kjm7SYMbByAeTe57AwdJCCWatIX9m40kzMKrDY7K/s1IhMdPvmrKFhNW7B28AcXM2imUrN+LiWvhi
+        8vDEk57Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qnccm-009oOa-1p;
+        Tue, 03 Oct 2023 10:27:34 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 822BC300348; Tue,  3 Oct 2023 12:27:33 +0200 (CEST)
+Date:   Tue, 3 Oct 2023 12:27:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Subject: Re: [RESEND PATCH V3 1/6] perf: Add branch stack extra
+Message-ID: <20231003102733.GC1539@noisy.programming.kicks-ass.net>
+References: <20230911154822.2559213-1-kan.liang@linux.intel.com>
+ <20231002154535.GB35785@noisy.programming.kicks-ass.net>
+ <ce16c6c1-9bdc-35e2-fe85-155bd7edbaa4@linux.intel.com>
+ <20231002213752.GB1539@noisy.programming.kicks-ass.net>
+ <ed169d4d-76d5-c134-c685-ad3d812028be@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1696020147-14989-2-git-send-email-haiyangz@microsoft.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ed169d4d-76d5-c134-c685-ad3d812028be@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 01:42:25PM -0700, Haiyang Zhang wrote:
-> For an unknown TX CQE error type (probably from a newer hardware),
-> still free the SKB, update the queue tail, etc., otherwise the
-> accounting will be wrong.
+On Mon, Oct 02, 2023 at 08:57:57PM -0400, Liang, Kan wrote:
+
+> > Did I already say that the ISE document raises more questions than it
+> > provides answers?
 > 
-> Also, TX errors can be triggered by injecting corrupted packets, so
-> replace the WARN_ONCE to ratelimited error logging.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> Reviewed-by: Simon Horman <horms@kernel.org>
-> ---
->  drivers/net/ethernet/microsoft/mana/mana_en.c | 18 +++++++++++-------
->  1 file changed, 11 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 4a16ebff3d1d..5cdcf7561b38 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -1317,19 +1317,23 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
->  		case CQE_TX_VPORT_IDX_OUT_OF_RANGE:
->  		case CQE_TX_VPORT_DISABLED:
->  		case CQE_TX_VLAN_TAGGING_VIOLATION:
-> -			WARN_ONCE(1, "TX: CQE error %d: ignored.\n",
-> -				  cqe_oob->cqe_hdr.cqe_type);
-> +			if (net_ratelimit())
-> +				netdev_err(ndev, "TX: CQE error %d\n",
-> +					   cqe_oob->cqe_hdr.cqe_type);
-> +
->  			apc->eth_stats.tx_cqe_err++;
->  			break;
->  
->  		default:
-> -			/* If the CQE type is unexpected, log an error, assert,
-> -			 * and go through the error path.
-> +			/* If the CQE type is unknown, log an error,
-> +			 * and still free the SKB, update tail, etc.
->  			 */
-> -			WARN_ONCE(1, "TX: Unexpected CQE type %d: HW BUG?\n",
-> -				  cqe_oob->cqe_hdr.cqe_type);
-> +			if (net_ratelimit())
-> +				netdev_err(ndev, "TX: unknown CQE type %d\n",
-> +					   cqe_oob->cqe_hdr.cqe_type);
-> +
->  			apc->eth_stats.tx_cqe_unknown_type++;
-> -			return;
-> +			break;
->  		}
->  
->  		if (WARN_ON_ONCE(txq->gdma_txq_id != completions[i].wq_num))
-> -- 
-> 2.25.1
-Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> Yes. Would an improved CPUID enumeration can address the questions? For
+> example, the CPUID enumeration can give the maximum number of counters
+> and supported width? I think we can discuss it with the architect.
+
+So.. no. Suppose another arch goes and does the same, but with a
+different number and width of counters. They won't have CPUID.
+
+I'm thinking we should do something like expose branch_counter_nr and
+branch_counter_width in the sysfs node, and then rename this extra field
+to counters.
+
+Then userspace can do something like:
+
+	for (i = 0; i < branch_counter_nr; i++) {
+		counter[i] = counters & ((1 << branch_counter_width) - 1);
+		counters >>= branch_counter_width;
+	}
+
+to extract the actual counter values.
+
+
+So then we end up with:
+
+         *      { u64                   nr;
+         *        { u64 hw_idx; } && PERF_SAMPLE_BRANCH_HW_INDEX
+         *        { u64 from, to, flags } lbr[nr];
++        *        { u64 counters; } cntr[nr] && PERF_SAMPLE_BRANCH_COUNTERS
+         *      } && PERF_SAMPLE_BRANCH_STACK
+
+Have it explicitly named counters, have only the one flag and have sysfs
+files describe how to decode it.
+
+Then for this Intel thing we have 4 counters of 2 bits, but if someone
+else were to do something different (both Power and ARM64 have this
+branch stack stuff now) they can describe it.
+
+It is a bit wasteful on bits... but at least its clear I suppose.
