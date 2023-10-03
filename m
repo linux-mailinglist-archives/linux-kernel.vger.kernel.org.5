@@ -2,55 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD79D7B669E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212807B669D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbjJCKmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 06:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        id S231747AbjJCKmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 06:42:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbjJCKmo (ORCPT
+        with ESMTP id S231512AbjJCKmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Oct 2023 06:42:44 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4170B4;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C870D3;
         Tue,  3 Oct 2023 03:42:39 -0700 (PDT)
-Date:   Tue, 03 Oct 2023 10:42:36 -0000
+Date:   Tue, 03 Oct 2023 10:42:37 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1696329758;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X9ftg0JpBJiHaMhlIbJUcgMI8xyvm5PQSTdqLJVFKz8=;
-        b=HsjtQn6sY+Uu1njmyST3TlmSi4K+fkU6XS+P1MSJcuXgH0VLxcR9ZNGxX3fgnICHvDfr+3
-        WwBaBH2kaO/JC62LXFWeRidfLnwfFlM9hRrYbfp8frbBl43kW3u0mUriUo8RRGqCfBel/o
-        7bATTnPSpbFo54ivO/xMR17/0oDNzQro12uH7tDW6nO43HORMAqAFolqdTKzkXg9ykMhUg
-        mDe86KIeB2Bv18ZwVf2x0RHVesYaOp0Ns27lUbT2WddZ7EEnO3jv6dUncECGR/oQHhkyuX
-        v3NS+mzyJwAXWMjChp7/2v/4aw6+nbhqQSQdgg/+rjQpet5NDcLECXjC6wNqhA==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=WxE0dPjXVRoqzOKIikXrexpeB8LT3+xgtw9e0GJ98CA=;
+        b=PI1VAnl5vXp/p41cdckqyCLKsAZHnORC58uYnD/1x4DUn5TRUYk0BwSTPGajCrS6KDKzHq
+        mjr3pegcPsyhfiKvHCIAvs784DsGofxTwXimlxj6vpDkGCc8UEFNJTeea8wTqA8rsw6hGV
+        tT/Oa1LxqGQdIu9EInYqnGQngdppKcmq4r8Rik8x8F1lO/DKEBR/7uBxMFfHRo80Rnm88y
+        t3Tld6roh+bzaz2gali/D3hv0Pr3H0JZcN3tbEXOzyOBMrtohx4Isj7jW+diwfwHzRDO4j
+        65HYUUSfFTwxhNBLGMfjIHcnJiP8aFHtl1ahxcfBvSgWWDnTheJ28jWbh8CVyg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1696329758;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X9ftg0JpBJiHaMhlIbJUcgMI8xyvm5PQSTdqLJVFKz8=;
-        b=Q156DRbVBEdSef9Eix2GX4vhTT3t9BOg2GC0v99IaTa2dEWjjuW8WdAeOJLqvK4n4QsyBK
-        xT5xaRyTpA6Ou9Cg==
-From:   "tip-bot2 for Benjamin Segall" <tip-bot2@linutronix.de>
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=WxE0dPjXVRoqzOKIikXrexpeB8LT3+xgtw9e0GJ98CA=;
+        b=DbCMkLaBbmLuSH6+/uwvUGZk0OE1J0UpZ+F8cNEN8OSloOHYbAK2CE/mGWh8PHUCfZRo5Z
+        YzzQ2SpGkc71wjBA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/fair: Fix pick_eevdf()
-Cc:     Ben Segall <bsegall@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: sched/urgent] sched/eevdf: Fix avg_vruntime()
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <xm261qego72d.fsf_-_@google.com>
-References: <xm261qego72d.fsf_-_@google.com>
 MIME-Version: 1.0
-Message-ID: <169632975707.3135.15953962497014148115.tip-bot2@tip-bot2>
+Message-ID: <169632975777.3135.1926466016577986434.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,152 +59,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/urgent branch of tip:
 
-Commit-ID:     561c58efd2394d76a32254d91e4b1de8ecdeb5c8
-Gitweb:        https://git.kernel.org/tip/561c58efd2394d76a32254d91e4b1de8ecdeb5c8
-Author:        Benjamin Segall <bsegall@google.com>
-AuthorDate:    Fri, 29 Sep 2023 17:09:30 -07:00
+Commit-ID:     650cad561cce04b62a8c8e0446b685ef171bc3bb
+Gitweb:        https://git.kernel.org/tip/650cad561cce04b62a8c8e0446b685ef171bc3bb
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 26 Sep 2023 14:29:50 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 03 Oct 2023 12:32:30 +02:00
+CommitterDate: Tue, 03 Oct 2023 12:32:29 +02:00
 
-sched/fair: Fix pick_eevdf()
+sched/eevdf: Fix avg_vruntime()
 
-The old pick_eevdf() could fail to find the actual earliest eligible
-deadline when it descended to the right looking for min_deadline, but
-it turned out that that min_deadline wasn't actually eligible. In that
-case we need to go back and search through any left branches we
-skipped looking for the actual best _eligible_ min_deadline.
+The expectation is that placing a task at avg_vruntime() makes it
+eligible. Turns out there is a corner case where this is not the case.
 
-This is more expensive, but still O(log n), and at worst should only
-involve descending two branches of the rbtree.
+Specifically, avg_vruntime() relies on the fact that integer division
+is a flooring function (eg. it discards the remainder). By this
+property the value returned is slightly left of the true average.
 
-I've run this through a userspace stress test (thank you
-tools/lib/rbtree.c), so hopefully this implementation doesn't miss any
-corner cases.
+However! when the average is a negative (relative to min_vruntime) the
+effect is flipped and it becomes a ceil, with the result that the
+returned value is just right of the average and thus not eligible.
 
-Fixes: 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling policy")
-Signed-off-by: Ben Segall <bsegall@google.com>
+Fixes: af4cf40470c2 ("sched/fair: Add cfs_rq::avg_vruntime")
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/xm261qego72d.fsf_-_@google.com
 ---
- kernel/sched/fair.c | 72 +++++++++++++++++++++++++++++++++++---------
- 1 file changed, 58 insertions(+), 14 deletions(-)
+ kernel/sched/fair.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ef7490c..929d21d 100644
+index 7d73652..ef7490c 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -872,14 +872,16 @@ struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)
-  *
-  * Which allows an EDF like search on (sub)trees.
-  */
--static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
-+static struct sched_entity *__pick_eevdf(struct cfs_rq *cfs_rq)
- {
- 	struct rb_node *node = cfs_rq->tasks_timeline.rb_root.rb_node;
- 	struct sched_entity *curr = cfs_rq->curr;
- 	struct sched_entity *best = NULL;
-+	struct sched_entity *best_left = NULL;
- 
- 	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
- 		curr = NULL;
-+	best = curr;
- 
- 	/*
- 	 * Once selected, run a task until it either becomes non-eligible or
-@@ -900,33 +902,75 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 		}
- 
- 		/*
--		 * If this entity has an earlier deadline than the previous
--		 * best, take this one. If it also has the earliest deadline
--		 * of its subtree, we're done.
-+		 * Now we heap search eligible trees for the best (min_)deadline
- 		 */
--		if (!best || deadline_gt(deadline, best, se)) {
-+		if (!best || deadline_gt(deadline, best, se))
- 			best = se;
--			if (best->deadline == best->min_deadline)
--				break;
--		}
- 
- 		/*
--		 * If the earlest deadline in this subtree is in the fully
--		 * eligible left half of our space, go there.
-+		 * Every se in a left branch is eligible, keep track of the
-+		 * branch with the best min_deadline
- 		 */
-+		if (node->rb_left) {
-+			struct sched_entity *left = __node_2_se(node->rb_left);
-+
-+			if (!best_left || deadline_gt(min_deadline, best_left, left))
-+				best_left = left;
-+
-+			/*
-+			 * min_deadline is in the left branch. rb_left and all
-+			 * descendants are eligible, so immediately switch to the second
-+			 * loop.
-+			 */
-+			if (left->min_deadline == se->min_deadline)
-+				break;
-+		}
-+
-+		/* min_deadline is at this node, no need to look right */
-+		if (se->deadline == se->min_deadline)
-+			break;
-+
-+		/* else min_deadline is in the right branch. */
-+		node = node->rb_right;
-+	}
-+
-+	/*
-+	 * We ran into an eligible node which is itself the best.
-+	 * (Or nr_running == 0 and both are NULL)
-+	 */
-+	if (!best_left || (s64)(best_left->min_deadline - best->deadline) > 0)
-+		return best;
-+
-+	/*
-+	 * Now best_left and all of its children are eligible, and we are just
-+	 * looking for deadline == min_deadline
-+	 */
-+	node = &best_left->run_node;
-+	while (node) {
-+		struct sched_entity *se = __node_2_se(node);
-+
-+		/* min_deadline is the current node */
-+		if (se->deadline == se->min_deadline)
-+			return se;
-+
-+		/* min_deadline is in the left branch */
- 		if (node->rb_left &&
- 		    __node_2_se(node->rb_left)->min_deadline == se->min_deadline) {
- 			node = node->rb_left;
- 			continue;
- 		}
- 
-+		/* else min_deadline is in the right branch */
- 		node = node->rb_right;
- 	}
-+	return NULL;
-+}
- 
--	if (!best || (curr && deadline_gt(deadline, best, curr)))
--		best = curr;
-+static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
-+{
-+	struct sched_entity *se = __pick_eevdf(cfs_rq);
- 
--	if (unlikely(!best)) {
-+	if (!se) {
- 		struct sched_entity *left = __pick_first_entity(cfs_rq);
- 		if (left) {
- 			pr_err("EEVDF scheduling fail, picking leftmost\n");
-@@ -934,7 +978,7 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 		}
- 	}
- 
--	return best;
-+	return se;
+@@ -664,6 +664,10 @@ void avg_vruntime_update(struct cfs_rq *cfs_rq, s64 delta)
+ 	cfs_rq->avg_vruntime -= cfs_rq->avg_load * delta;
  }
  
- #ifdef CONFIG_SCHED_DEBUG
++/*
++ * Specifically: avg_runtime() + 0 must result in entity_eligible() := true
++ * For this to be so, the result of this function must have a left bias.
++ */
+ u64 avg_vruntime(struct cfs_rq *cfs_rq)
+ {
+ 	struct sched_entity *curr = cfs_rq->curr;
+@@ -677,8 +681,12 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
+ 		load += weight;
+ 	}
+ 
+-	if (load)
++	if (load) {
++		/* sign flips effective floor / ceil */
++		if (avg < 0)
++			avg -= (load - 1);
+ 		avg = div_s64(avg, load);
++	}
+ 
+ 	return cfs_rq->min_vruntime + avg;
+ }
