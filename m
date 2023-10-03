@@ -2,233 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED1A7B6A46
+	by mail.lfdr.de (Postfix) with ESMTP id 535B97B6A45
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237977AbjJCNTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
+        id S237331AbjJCNTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235893AbjJCNTC (ORCPT
+        with ESMTP id S235929AbjJCNTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Oct 2023 09:19:02 -0400
-Received: from mo4-p04-ob.smtp.rzone.de (mo4-p04-ob.smtp.rzone.de [81.169.146.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F690A1;
-        Tue,  3 Oct 2023 06:18:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1696339129; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=FfXHI5z85pFW5Y617fsif0hDGFdhByWmGZKgyC6ItfYRrl6e1uxDUztu58PDnWw1sG
-    ggE0w0gBXVVI3Dz21GwEWXMeC7qxh8V4lR/5Tp28a7VM5r8WiX5OLAKmejzSNk6GNbFB
-    RAb/4XDrZOkbQ+XBnc6PijJwgZkOWkuSQq4g7q/uyqgovRDTmpy2GB2cXDHZhZrtF/tl
-    C6z0fXXMl75uJrXCV8R86uWk6IE+xBHGENy00ZsnfZmlKSyP9v9iOgd7BSWR6qhH9QmH
-    KpiAkfUFu0SRy+0Yo0XvfhunwlatvDK9dRADIBBySCjJx05uLCBKVMVEp797h0YC1QBX
-    Hjiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1696339129;
-    s=strato-dkim-0002; d=strato.com;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=Gthy3JZsd0POCax8iakG2TwMg0evFgfpOwFOAF4TfGU=;
-    b=OIxGCXWXBRM8TQ0arBmYXi0iUmNH0KTrIJTF40U0/mfTFHE9sfrNt5L34/eqOshA/p
-    Nu9rfTA6Cn/9fh9baQwgDO7oNFX4+yMOO/uzDp/lU1iy5bbxDeZqBdDtvKTiZV+8FuUB
-    y0aJjREap5C9HMXMIf54nS2xX/7+MMNykC4JaZivWwHHgEVcPoyFyrQtdFyPhqdBKApq
-    zfS3RyxuvKDWmMwPRL4YVHsgPf37OLbK0oHEMfK34sDk+a++egG2pCJRE8Iql+xO+pSs
-    JqF0Ly9IoTAw/a21azfUWgM2yI/XQV5Tj9prZBvYdUcYteuoVGlAWNYZT31Paq4WSQi9
-    LJhw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo04
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1696339129;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=Gthy3JZsd0POCax8iakG2TwMg0evFgfpOwFOAF4TfGU=;
-    b=KpgqbqGlCBEbqsIh5Z5cnOA9nM8SvKhW1z4HpDvLrq56BdRL3uh2MeeFPcYb7Eaaif
-    gixvA/zzA7054hPv/qDNNUx9vLqor+1GNmC/nzxt/mm/YtQ8OOiAsQ7OVnqcY3k1dG+3
-    ylM6zaZKu1WsF/4y/+VTWOU0z0NcB4Mh3294xL7JEMdNUb0mazI1XecGKTNrpAMArraa
-    EY9wPYMjHEaPg4qQsRXeQv3WwxfU25frVHyiJRTxIeoVNRe5rEVWugcPqw1yvlkZHwPZ
-    12V8Uuyj1xcGbxLYsSnWTp4qC2WJnnPU9Lx6Bh0l9WeBI78LCrbIViaGenSlW/j4VECM
-    TOaA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1696339129;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=Gthy3JZsd0POCax8iakG2TwMg0evFgfpOwFOAF4TfGU=;
-    b=DKuerXdB9UpbvEy5/to8ka0g/S5knTp24S+f3VVpez6j1EOLt8x/FNCqbE2XNjw5wo
-    uuGsMjzl7cSS1/tGCyBg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u4l+/zY="
-Received: from [192.168.244.3]
-    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
-    with ESMTPSA id R04c57z93DIn2OQ
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 3 Oct 2023 15:18:49 +0200 (CEST)
-From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Tue, 03 Oct 2023 15:18:32 +0200
-Subject: [PATCH v2 14/14] arm64: dts: qcom: msm8939-samsung-a7: Add sound
- and modem
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F804E3;
+        Tue,  3 Oct 2023 06:18:55 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 29A0C2189B;
+        Tue,  3 Oct 2023 13:18:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1696339134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LqjOkdf8wEGORSfxlGDuLFjsaB2EonO8sU3/o8407WE=;
+        b=0L1N84/g4JW4Pz4EHuBiDWpCHedzO4xCWFk93E412HzHjVHMG2caaqbBmKjd54UvzEKNW3
+        XzqOvxVn5fmUsDC+LZAx5acFvUUAydhayTqik7QMcHtRVwZOMHjUEka2gvCaYJEOG4zliA
+        CCcjwTM5k6bjfVExditBMu97suSKm1E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1696339134;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LqjOkdf8wEGORSfxlGDuLFjsaB2EonO8sU3/o8407WE=;
+        b=SBF+rWXcUn9e/501dNskOYmABTAkWJTPRFeceh/Zvkr8VgH4m0t+8/qME8tZhGLLf9Ho6y
+        mRFWnMNlgk0DB+BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1BF73132D4;
+        Tue,  3 Oct 2023 13:18:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id CIjIBr4UHGXpMwAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 03 Oct 2023 13:18:54 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id A9412A07CC; Tue,  3 Oct 2023 15:18:53 +0200 (CEST)
+Date:   Tue, 3 Oct 2023 15:18:53 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Maiolino <cem@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 3/8] shmem: factor shmem_falloc_wait() out of
+ shmem_fault()
+Message-ID: <20231003131853.ramdlfw5s6ne4iqx@quack3>
+References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
+ <6fe379a4-6176-9225-9263-fe60d2633c0@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231003-msm8916-modem-v2-14-61b684be55c0@gerhold.net>
-References: <20231003-msm8916-modem-v2-0-61b684be55c0@gerhold.net>
-In-Reply-To: <20231003-msm8916-modem-v2-0-61b684be55c0@gerhold.net>
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6fe379a4-6176-9225-9263-fe60d2633c0@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
+On Fri 29-09-23 20:27:53, Hugh Dickins wrote:
+> That Trinity livelock shmem_falloc avoidance block is unlikely, and a
+> distraction from the proper business of shmem_fault(): separate it out.
+> (This used to help compilers save stack on the fault path too, but both
+> gcc and clang nowadays seem to make better choices anyway.)
+> 
+> Signed-off-by: Hugh Dickins <hughd@google.com>
 
-Enable sound and modem for the Samsung A7. The setup is similar to most
-MSM8916 devices, i.e.:
+Looks good. Feel free to add:
 
- - QDSP6 audio
- - Earpiece/headphones/microphones via digital/analog codec in
-   MSM8916/PM8916
- - WWAN Internet via BAM-DMUX
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-except for the same differences as the MSM8916-based Samsung A2015
-devices:
+Looking at the code I'm just wondering whether the livelock with
+shmem_undo_range() couldn't be more easy to avoid by making
+shmem_undo_range() always advance the index by 1 after evicting a page and
+thus guaranteeing a forward progress... Because the forward progress within
+find_get_entries() is guaranteed these days, it should be enough.
 
- - NXP TFA9895 codec for speaker on Quaternary MI2S
- - Samsung-specific audio jack detection (not supported yet)
+								Honza
 
-Signed-off-by: "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
-[Stephan: Add consistent commit message, minor refactoring]
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts | 70 +++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts b/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts
-index fccd8fec8b8f..aa6c39482a2f 100644
---- a/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts
-@@ -3,10 +3,12 @@
- /dts-v1/;
- 
- #include "msm8939-pm8916.dtsi"
-+#include "msm8916-modem-qdsp6.dtsi"
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/sound/apq8016-lpass.h>
- 
- / {
- 	model = "Samsung Galaxy A7 (2015)";
-@@ -287,6 +289,18 @@ muic: extcon@25 {
- 	};
- };
- 
-+&blsp_i2c2 {
-+	status = "okay";
-+
-+	speaker_codec: audio-codec@34 {
-+		compatible = "nxp,tfa9895";
-+		reg = <0x34>;
-+		vddd-supply = <&pm8916_l5>;
-+		sound-name-prefix = "Speaker";
-+		#sound-dai-cells = <0>;
-+	};
-+};
-+
- &blsp_i2c5 {
- 	status = "okay";
- 
-@@ -309,6 +323,29 @@ &blsp_uart2 {
- 	status = "okay";
- };
- 
-+/*
-+ * For some reason the speaker amplifier is connected to the second SD line
-+ * (MI2S_2_D1) instead of the first (MI2S_2_D0). This must be configured in the
-+ * device tree, otherwise audio will seemingly play fine on the wrong SD line
-+ * but the speaker stays silent.
-+ *
-+ * When routing audio via QDSP6 (the default) the &lpass node is reserved and
-+ * the definitions from &q6afedai are used. When the modem is disabled audio can
-+ * be alternatively routed directly to the LPASS hardware with reduced latency.
-+ * The definitions for &lpass are here for completeness to simplify changing the
-+ * setup with minor changes to the DT (either manually or with DT overlays).
-+ */
-+&lpass {
-+	dai-link@3 {
-+		reg = <MI2S_QUATERNARY>;
-+		qcom,playback-sd-lines = <1>;
-+	};
-+};
-+
-+&mpss_mem {
-+	reg = <0x0 0x86800000 0x0 0x5800000>;
-+};
-+
- &pm8916_resin {
- 	linux,code = <KEY_VOLUMEDOWN>;
- 	status = "okay";
-@@ -321,6 +358,13 @@ pm8916_l17: l17 {
- 	};
- };
- 
-+&q6afedai {
-+	dai@22 {
-+		reg = <QUATERNARY_MI2S_RX>;
-+		qcom,sd-lines = <1>;
-+	};
-+};
-+
- &sdhc_1 {
- 	status = "okay";
- };
-@@ -335,6 +379,32 @@ &sdhc_2 {
- 	status = "okay";
- };
- 
-+&sound {
-+	model = "samsung-a2015";
-+	audio-routing =
-+		"AMIC1", "MIC BIAS External1",
-+		"AMIC2", "MIC BIAS Internal2",
-+		"AMIC3", "MIC BIAS External1";
-+
-+	pinctrl-0 = <&cdc_pdm_default &sec_mi2s_default>;
-+	pinctrl-1 = <&cdc_pdm_sleep &sec_mi2s_sleep>;
-+	pinctrl-names = "default", "sleep";
-+
-+	sound_link_backend2: backend2-dai-link {
-+		link-name = "Quaternary MI2S";
-+
-+		cpu {
-+			sound-dai = <&q6afedai QUATERNARY_MI2S_RX>;
-+		};
-+		platform {
-+			sound-dai = <&q6routing>;
-+		};
-+		codec {
-+			sound-dai = <&speaker_codec>;
-+		};
-+	};
-+};
-+
- &usb {
- 	extcon = <&muic>, <&muic>;
- 	status = "okay";
-
+> ---
+>  mm/shmem.c | 126 +++++++++++++++++++++++++++++------------------------
+>  1 file changed, 69 insertions(+), 57 deletions(-)
+> 
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 824eb55671d2..5501a5bc8d8c 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2148,87 +2148,99 @@ int shmem_get_folio(struct inode *inode, pgoff_t index, struct folio **foliop,
+>   * entry unconditionally - even if something else had already woken the
+>   * target.
+>   */
+> -static int synchronous_wake_function(wait_queue_entry_t *wait, unsigned mode, int sync, void *key)
+> +static int synchronous_wake_function(wait_queue_entry_t *wait,
+> +			unsigned int mode, int sync, void *key)
+>  {
+>  	int ret = default_wake_function(wait, mode, sync, key);
+>  	list_del_init(&wait->entry);
+>  	return ret;
+>  }
+>  
+> +/*
+> + * Trinity finds that probing a hole which tmpfs is punching can
+> + * prevent the hole-punch from ever completing: which in turn
+> + * locks writers out with its hold on i_rwsem.  So refrain from
+> + * faulting pages into the hole while it's being punched.  Although
+> + * shmem_undo_range() does remove the additions, it may be unable to
+> + * keep up, as each new page needs its own unmap_mapping_range() call,
+> + * and the i_mmap tree grows ever slower to scan if new vmas are added.
+> + *
+> + * It does not matter if we sometimes reach this check just before the
+> + * hole-punch begins, so that one fault then races with the punch:
+> + * we just need to make racing faults a rare case.
+> + *
+> + * The implementation below would be much simpler if we just used a
+> + * standard mutex or completion: but we cannot take i_rwsem in fault,
+> + * and bloating every shmem inode for this unlikely case would be sad.
+> + */
+> +static vm_fault_t shmem_falloc_wait(struct vm_fault *vmf, struct inode *inode)
+> +{
+> +	struct shmem_falloc *shmem_falloc;
+> +	struct file *fpin = NULL;
+> +	vm_fault_t ret = 0;
+> +
+> +	spin_lock(&inode->i_lock);
+> +	shmem_falloc = inode->i_private;
+> +	if (shmem_falloc &&
+> +	    shmem_falloc->waitq &&
+> +	    vmf->pgoff >= shmem_falloc->start &&
+> +	    vmf->pgoff < shmem_falloc->next) {
+> +		wait_queue_head_t *shmem_falloc_waitq;
+> +		DEFINE_WAIT_FUNC(shmem_fault_wait, synchronous_wake_function);
+> +
+> +		ret = VM_FAULT_NOPAGE;
+> +		fpin = maybe_unlock_mmap_for_io(vmf, NULL);
+> +		shmem_falloc_waitq = shmem_falloc->waitq;
+> +		prepare_to_wait(shmem_falloc_waitq, &shmem_fault_wait,
+> +				TASK_UNINTERRUPTIBLE);
+> +		spin_unlock(&inode->i_lock);
+> +		schedule();
+> +
+> +		/*
+> +		 * shmem_falloc_waitq points into the shmem_fallocate()
+> +		 * stack of the hole-punching task: shmem_falloc_waitq
+> +		 * is usually invalid by the time we reach here, but
+> +		 * finish_wait() does not dereference it in that case;
+> +		 * though i_lock needed lest racing with wake_up_all().
+> +		 */
+> +		spin_lock(&inode->i_lock);
+> +		finish_wait(shmem_falloc_waitq, &shmem_fault_wait);
+> +	}
+> +	spin_unlock(&inode->i_lock);
+> +	if (fpin) {
+> +		fput(fpin);
+> +		ret = VM_FAULT_RETRY;
+> +	}
+> +	return ret;
+> +}
+> +
+>  static vm_fault_t shmem_fault(struct vm_fault *vmf)
+>  {
+> -	struct vm_area_struct *vma = vmf->vma;
+> -	struct inode *inode = file_inode(vma->vm_file);
+> +	struct inode *inode = file_inode(vmf->vma->vm_file);
+>  	gfp_t gfp = mapping_gfp_mask(inode->i_mapping);
+>  	struct folio *folio = NULL;
+> +	vm_fault_t ret = 0;
+>  	int err;
+> -	vm_fault_t ret = VM_FAULT_LOCKED;
+>  
+>  	/*
+>  	 * Trinity finds that probing a hole which tmpfs is punching can
+> -	 * prevent the hole-punch from ever completing: which in turn
+> -	 * locks writers out with its hold on i_rwsem.  So refrain from
+> -	 * faulting pages into the hole while it's being punched.  Although
+> -	 * shmem_undo_range() does remove the additions, it may be unable to
+> -	 * keep up, as each new page needs its own unmap_mapping_range() call,
+> -	 * and the i_mmap tree grows ever slower to scan if new vmas are added.
+> -	 *
+> -	 * It does not matter if we sometimes reach this check just before the
+> -	 * hole-punch begins, so that one fault then races with the punch:
+> -	 * we just need to make racing faults a rare case.
+> -	 *
+> -	 * The implementation below would be much simpler if we just used a
+> -	 * standard mutex or completion: but we cannot take i_rwsem in fault,
+> -	 * and bloating every shmem inode for this unlikely case would be sad.
+> +	 * prevent the hole-punch from ever completing: noted in i_private.
+>  	 */
+>  	if (unlikely(inode->i_private)) {
+> -		struct shmem_falloc *shmem_falloc;
+> -
+> -		spin_lock(&inode->i_lock);
+> -		shmem_falloc = inode->i_private;
+> -		if (shmem_falloc &&
+> -		    shmem_falloc->waitq &&
+> -		    vmf->pgoff >= shmem_falloc->start &&
+> -		    vmf->pgoff < shmem_falloc->next) {
+> -			struct file *fpin;
+> -			wait_queue_head_t *shmem_falloc_waitq;
+> -			DEFINE_WAIT_FUNC(shmem_fault_wait, synchronous_wake_function);
+> -
+> -			ret = VM_FAULT_NOPAGE;
+> -			fpin = maybe_unlock_mmap_for_io(vmf, NULL);
+> -			if (fpin)
+> -				ret = VM_FAULT_RETRY;
+> -
+> -			shmem_falloc_waitq = shmem_falloc->waitq;
+> -			prepare_to_wait(shmem_falloc_waitq, &shmem_fault_wait,
+> -					TASK_UNINTERRUPTIBLE);
+> -			spin_unlock(&inode->i_lock);
+> -			schedule();
+> -
+> -			/*
+> -			 * shmem_falloc_waitq points into the shmem_fallocate()
+> -			 * stack of the hole-punching task: shmem_falloc_waitq
+> -			 * is usually invalid by the time we reach here, but
+> -			 * finish_wait() does not dereference it in that case;
+> -			 * though i_lock needed lest racing with wake_up_all().
+> -			 */
+> -			spin_lock(&inode->i_lock);
+> -			finish_wait(shmem_falloc_waitq, &shmem_fault_wait);
+> -			spin_unlock(&inode->i_lock);
+> -
+> -			if (fpin)
+> -				fput(fpin);
+> +		ret = shmem_falloc_wait(vmf, inode);
+> +		if (ret)
+>  			return ret;
+> -		}
+> -		spin_unlock(&inode->i_lock);
+>  	}
+>  
+> +	WARN_ON_ONCE(vmf->page != NULL);
+>  	err = shmem_get_folio_gfp(inode, vmf->pgoff, &folio, SGP_CACHE,
+>  				  gfp, vmf, &ret);
+>  	if (err)
+>  		return vmf_error(err);
+> -	if (folio)
+> +	if (folio) {
+>  		vmf->page = folio_file_page(folio, vmf->pgoff);
+> +		ret |= VM_FAULT_LOCKED;
+> +	}
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.35.3
+> 
 -- 
-2.42.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
