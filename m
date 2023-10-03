@@ -2,103 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C82797B6531
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132E97B651B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239463AbjJCJOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:14:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
+        id S239607AbjJCJMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231424AbjJCJOa (ORCPT
+        with ESMTP id S239631AbjJCJMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:14:30 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89985B4;
-        Tue,  3 Oct 2023 02:14:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=3fkeKLu8eKsK/dT8AEb6sGG8jQihJxdjqGhWs7rpjjo=; b=dcIgzB49dsVS4CJ4I13EIALnoH
-        xwjOHX2P+qvbaPZ4imstnQaHVFHiw8eibyGT8BpPoP5/FsDAd/IkGmPBuULL3MwaGI5o4J9/kx4nq
-        EHBqPbtScHTE6/DF4Rvb8cH7eANHI5A1EtSurce1kIGblPvfNsFZDqBx4/Fp3/AOjJYrqui+YAiMT
-        gjbQ5DnNhnE5j+k8IkA+UgXryxJoil+v+K/2LDh0vAwvDqRw/TBAwgUXF5926d7wislBnXxNaI2am
-        RIwTy4Nf5TzW9SWYAX0nxo0YdcQTbxUX3h1H1fYf07D5zA6r99xfSUPsLM6bQETreGysoy2gtZhb0
-        LE0KFDxw==;
-Received: from [2a00:23ee:1830:6abb:c7c0:8714:54ca:8840] (helo=[IPv6:::1])
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qnbRt-009m9t-03;
-        Tue, 03 Oct 2023 09:14:17 +0000
-Date:   Tue, 03 Oct 2023 10:12:09 +0100
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-CC:     Dongli Zhang <dongli.zhang@oracle.com>,
-        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_RFC_1/1=5D_KVM=3A_x86=3A_add_par?= =?US-ASCII?Q?am_to_update_master_clock_periodically?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <ZRtl94_rIif3GRpu@google.com>
-References: <20230926230649.67852-1-dongli.zhang@oracle.com> <377d9706-cc10-dfb8-5326-96c83c47338d@oracle.com> <36f3dbb1-61d7-e90a-02cf-9f151a1a3d35@oracle.com> <ZRWnVDMKNezAzr2m@google.com> <a461bf3f-c17e-9c3f-56aa-726225e8391d@oracle.com> <884aa233ef46d5209b2d1c92ce992f50a76bd656.camel@infradead.org> <ZRrxtagy7vJO5tgU@google.com> <52a3cea2084482fc67e35a0bf37453f84dcd6297.camel@infradead.org> <ZRtl94_rIif3GRpu@google.com>
-Message-ID: <20EAA3C4-A9F4-4EC1-AE0C-D540CC2E024A@infradead.org>
+        Tue, 3 Oct 2023 05:12:34 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E748A10D
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:12:25 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d81afd5273eso699219276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 02:12:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696324345; x=1696929145; darn=vger.kernel.org;
+        h=mime-version:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vwdKPsSZX5lF9BZ1cbD7q6c/KB8Lk1EC3PAauvodoEY=;
+        b=LOufoRZcPrXDsGdwQo1HsndzLcdo7VhBUWm2XT3uvQiomIVfYe3dkfZZMw0ridFNOx
+         0Utb1GSeHBwzt2FqFsJgn8mSGNaHn8sgLGGNgKaXa880xly+y67kSbzGDR6r0NHy3gqg
+         yrWdl87ldtZHyHhYcHgFV3LrUvxhDxrMnlHI3/LY1/bY6bVPy+KZiAmPlldmG3zKQwJS
+         0cZElmkVr7tplsXs6Sg4k3gJDAD2ZHbBhU+WgUDoJbY1INqjY6tIedtiYZ+M+ZNGKeKG
+         lix1MAv/7qhmOHwy7foryyTxAloI7UrY+KNEEX2E3scszI8Ou0GxjsRQhe/gcV3Qs2s5
+         9a0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696324345; x=1696929145;
+        h=mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vwdKPsSZX5lF9BZ1cbD7q6c/KB8Lk1EC3PAauvodoEY=;
+        b=S8Iok2X8VroNfFO9AL3t14TtR25NjzjsMs0AYYgPH1/VdeaMPpFVKZSJ9ZuOzUPUgm
+         G29wi080jz6foctw8p2Pf4RZEzZKol69K5zWaG2+XEyTBqBUr5xyW4DPbn5hPRpv1Vtl
+         PVJBhGGLZGRMIC1ImkvW5oqPRwhU+4YkHfcNa1nOfdXp8FgIIctYBiioI63tOkDSTKvL
+         Spjf6fVDI8yu5aKesDR76zMKT58wPyHSw0Izs/OnpNUkRgzYr7kuZmpRK0CUotx5Jp72
+         dAHCf4kIXEKeNVUl+DvYIRiL5oGyO5ABQVF+COXwlgrEHxQarNfmDEgYVOiuvVrRomVr
+         aE7A==
+X-Gm-Message-State: AOJu0YxNegVJt3CljbCFrHHdG+oyOryrFDNvDXT6ZnrncrNomvFWEkAI
+        T3U74Z11tgFqL0V7BLwxHPIidw==
+X-Google-Smtp-Source: AGHT+IHeox1fltLEhdIRRcLFlBpcEWhixSw6n5wz+13doXbu/4zqff/jwBbGoie468vAGNRgTE+iFA==
+X-Received: by 2002:a5b:251:0:b0:d81:a0c5:f274 with SMTP id g17-20020a5b0251000000b00d81a0c5f274mr12294841ybp.48.1696324344885;
+        Tue, 03 Oct 2023 02:12:24 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id w7-20020a05690202c700b00d7ba4c5e31fsm274592ybh.39.2023.10.03.02.12.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 02:12:24 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 02:12:14 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Andi Kleen <ak@linux.intel.com>, Christoph Lameter <cl@linux.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        "Huang, Ying" <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2 00/12] mempolicy: cleanups leading to NUMA mpol without
+ vma
+Message-ID: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Here is v2 of a series of mempolicy patches, this version based on
+mm-everything-2023-10-02-21-43, applicable also to next-20231003:
+mostly cleanups in mm/mempolicy.c, but finally removing the pseudo-vma
+from shmem folio allocation, and removing the mmap_lock around folio
+migration for mbind and migrate_pages syscalls.
 
+This replaces the "mempolicy: cleanups leading to NUMA mpol without vma"
+https://lore.kernel.org/linux-mm/2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com/
+series of 12 based on 6.6-rc3 and posted on 2023-09-25.
 
-On 3 October 2023 01:53:11 BST, Sean Christopherson <seanjc@google=2Ecom> =
-wrote:
->I think there is still use for synchronizing with the host's view of time=
-, e=2Eg=2E
->to deal with lost time across host suspend+resume=2E
->
->So I don't think we can completely sever KVM's paravirt clocks from host =
-time,
->at least not without harming use cases that rely on the host's view to ke=
-ep
->accurate time=2E  And honestly at that point, the right answer would be t=
-o stop
->advertising paravirt clocks entirely=2E
->
->But I do think we can address the issues that Dongli and David are obvers=
-ing
->where guest time drifts even though the host kernel's base time hasn't ch=
-anged=2E
->If I've pieced everything together correctly, the drift can be eliminated=
- simply
->by using the paravirt clock algorithm when converting the delta from the =
-raw TSC
->to nanoseconds=2E
->
->This is *very* lightly tested, as in it compiles and doesn't explode, but=
- that's
->about all I've tested=2E
+01/12 hugetlbfs: drop shared NUMA mempolicy pretence
+      v2: add reviewed-by Matthew
+          hugetlb.h include pagemap.h for filemap_lock_folio()
+02/12 kernfs: drop shared NUMA mempolicy hooks
+      v2: add reviewed-by Matthew
+03/12 mempolicy: fix migrate_pages(2) syscall return
+      v2: add reviewed-by Matthew
+          replace Yang Shi's qp->has_unmovable by qp->nr_failed
+          remove ptl,addr,end to queue_folios_pmd() per Huang,Ying
+          reword comments above queue_folios_pte_range()
+          fix incorrect migrate_folio_add()ing per Huang,Ying
+          which also fixes qp->nr_failed as count of folios
+04/12 mempolicy trivia: delete those ancient pr_debug()s
+      v2: add reviewed-by Matthew
+05/12 mempolicy trivia: slightly more consistent naming
+      v2: add reviewed-by Matthew
+06/12 mempolicy trivia: use pgoff_t in shared mempolicy tree
+      v2: declare struct shared_policy (the root) before struct sp_node
+          reformat sp_lookup, mpol_shared_policy_lookup decls per Matthew
+07/12 mempolicy: mpol_shared_policy_init() without pseudo-vma
+      v2: sn,npol instead of n,new (but no optimization) per Matthew
+08/12 mempolicy: remove confusing MPOL_MF_LAZY dead code
+      v2: add reviewed-by Matthew
+09/12 mm: add page_rmappable_folio() wrapper
+      v2: move page_rmappable_folio() to mm/internal.h per Matthew
+10/12 mempolicy: alloc_pages_mpol() for NUMA policy without vma
+      v2: adjust to fit on top of earlier mm-unstable mods
+11/12 mempolicy: mmap_lock is not needed while migrating folios
+      v2: remove HugeTLBfs special casing of src->index
+12/12 mempolicy: migration attempt to match interleave nodes
+      v2: remove HugeTLBfs special casing of page->index
 
-Hm, I don't think I like this=2E
+ fs/hugetlbfs/inode.c           |  41 +-
+ fs/kernfs/file.c               |  49 --
+ fs/proc/task_mmu.c             |   5 +-
+ include/linux/gfp.h            |  10 +-
+ include/linux/hugetlb.h        |  12 +-
+ include/linux/mempolicy.h      |  44 +-
+ include/linux/mm.h             |   2 +-
+ include/uapi/linux/mempolicy.h |   2 +-
+ ipc/shm.c                      |  21 +-
+ mm/hugetlb.c                   |  38 +-
+ mm/internal.h                  |   9 +
+ mm/mempolicy.c                 | 988 ++++++++++++++++-------------------
+ mm/page_alloc.c                |   8 +-
+ mm/shmem.c                     |  92 ++--
+ mm/swap.h                      |   9 +-
+ mm/swap_state.c                |  83 +--
+ 16 files changed, 630 insertions(+), 783 deletions(-)
 
-You're making get_monotonic_raw() not *actually* return the monotonic_raw =
-clock, but basically return the kvmclock instead? And why? So that when KVM=
- attempts to synchronize the kvmclock to the monotonic_raw clock, it gets t=
-ricked into actually synchronizing the kvmclock to *itself*?
-
-If you get this right, don't we have a fairly complex piece of code that h=
-as precisely *no* effect?=20
-
-Can't we just *refrain* from synchronizing the kvmclock to *anything*, in =
-the CONSTANT_TSC case? Why do we do that anyway?
-
-(Suspend/resume, live update and live migration are different=2E In *those=
-* cases we may need to preserve both the guest TSC and kvmclock based on ei=
-ther the host TSC or CLOCK_TAI=2E But that's different=2E)
+Hugh
