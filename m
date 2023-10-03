@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B0E7B7388
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B82B7B738D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241275AbjJCVwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 17:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
+        id S241286AbjJCVyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 17:54:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232049AbjJCVwI (ORCPT
+        with ESMTP id S241282AbjJCVyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 17:52:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11455A7
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:52:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nnmS8DXkjdVhg68qX7c14kBClGtQYzgjiQqqX6QhaL4=; b=HeB+7NoXrJ4t/oTZGb8b7OFEFi
-        V3A3z9zevjwclhDluaVDBm0i3fGqXet/tTX/csic4k0xIgGo02PMH0W8BT9zAeG22T1P2+eQbjhGx
-        0iEVSOJzfAXwv99OLmbX1hXuhw/4IgRdGqaApb1e7dwDumDjJpiDNRBn6HV14VCvDBdY0gc0pqv7Z
-        KiQTRvCHJVWfz/M2Jw3s4jw+l0DpnjCGPAof3RUvoP84ag3Db04OdWLVquDRMjnjtKKAaFLwH9J7D
-        C/UgnaS1zBMMR9sVhdzIpCNQLEKWnINUsRh7KN+m0Rw/uXH7TIBeVOiEc/NIDIEmLQv/m/0937SYL
-        syiGWLkA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qnnJA-00HLnP-2L; Tue, 03 Oct 2023 21:52:00 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B88BB30036C; Tue,  3 Oct 2023 23:51:59 +0200 (CEST)
-Date:   Tue, 3 Oct 2023 23:51:59 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: EEVDF and NUMA balancing
-Message-ID: <20231003215159.GJ1539@noisy.programming.kicks-ass.net>
-References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
+        Tue, 3 Oct 2023 17:54:04 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF43A1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:54:02 -0700 (PDT)
+Received: from [127.0.0.1] ([99.8.153.148])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 393LrRTV1773610
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 3 Oct 2023 14:53:28 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 393LrRTV1773610
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023091101; t=1696370009;
+        bh=s7M3jPu88VzYxvgafIQdD5PZlhNhSK8uSfdd5mIZprE=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=qzHo+0PywrAnDtUs+udBREyLz4hUEKi9doXzhFtkFdo77Fv7ui7OYR9Ax6GYZOnKx
+         bXnnwptIBB9zO9YNGLLnXajY9GOyqIrGNQ5agwyHxUuzCfFGDJF3Kbql8AR9f5RXcO
+         q782sQ2bfjGV3BN+pbSBZIvlQLceo2zPj0385P6FMJkekQPxe4/bnFNP0oPOBcQCi2
+         7doeleL3AEm4Ok8ryLr4nhIUgNdmiTgiG5kVOal89kzmb4WOqaMZl7fdXKJV9KRhcH
+         fdSJe8dIhyey0ubvt19FbZmEvKpyvspHuh2JUCYTkYBVUOeoCiXXnXhri6rqixPJgY
+         fULQp5QXR/I0w==
+Date:   Tue, 03 Oct 2023 14:53:17 -0700
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Dave Hansen <dave.hansen@intel.com>, Ingo Molnar <mingo@kernel.org>
+CC:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86_64: test that userspace stack is in fact NX
+User-Agent: K-9 Mail for Android
+In-Reply-To: <1dad6a33-1cd0-0d0f-29c5-97fd2807f07a@intel.com>
+References: <4b78a714-5ac3-4783-8256-1dda4673db01@p183> <1d5223b8-0275-619d-db1c-e2aaaddb173e@intel.com> <d468d13c-6c4b-4d8d-8e2d-e4314b4bb1a7@p183> <f972d59c-40dd-2a68-ff13-a2658513a25b@intel.com> <ZRxmS/3nr6pDa1+z@gmail.com> <ZRxr79i5PAXRXjqr@gmail.com> <1dad6a33-1cd0-0d0f-29c5-97fd2807f07a@intel.com>
+Message-ID: <060F14C5-3E81-4A9B-8576-8905410EF830@zytor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 10:25:08PM +0200, Julia Lawall wrote:
-> Is it expected that the commit e8f331bcc270 should have an impact on the
-> frequency of NUMA balancing?
+On October 3, 2023 1:46:20 PM PDT, Dave Hansen <dave=2Ehansen@intel=2Ecom> =
+wrote:
+>On 10/3/23 12:30, Ingo Molnar wrote:
+>> * Ingo Molnar <mingo@kernel=2Eorg> wrote:
+>>> Because not having NX in 2023 on any system that is threatened is a
+>>> big security vulnerability in itself, and whether the vendor or owner
+>>> intentionally did that or not doesn't really matter, and a failing
+>>> kernel testcase will be the least of their problems=2E
+>> BTW=2E, it's also questionable whether the owner is *aware* of the fact=
+ that=20
+>> NX is not available: what if some kernel debug option cleared the NX fl=
+ag,=20
+>> unintended, or there's some serious firmware bug?
+>>=20
+>> However unlikely those situations might be, I think unconditionally war=
+ning=20
+>> about NX not available is a very 2023 thing to do=2E
+>
+>100% agree for x86_64=2E  Any sane x86_64 system has NX and the rest are
+>noise that can live with the error message, unless someone shows up with
+>a compelling reason why not=2E
+>
+>For 32-bit, the situation is reversed=2E  The majority of 32-bit-only CPU=
+s
+>never had NX=2E  The only reason to even *do* this check on 32-bit is tha=
+t
+>we think folks are running i386 kernels on x86_64 hardware _or_ we just
+>don't care about 32-bit in the first place=2E
+>
+>In the end, I think if we're going to do this test on i386, we should
+>_also_ do the 5-lines-of-code CPUID check=2E  But I honestly don't care
+>that much=2E  I wouldn't NAK (or not merge) this patch over it=2E
 
-Definitely not expected. The only effect of that commit was supposed to
-be the runqueue order of tasks. I'll go stare at it in the morning --
-definitely too late for critical thinking atm.
-
-Thanks!
-
-> The NAS benchmark ua.C.x (NPB3.4-OMP,
-> https://github.com/mbdevpl/nas-parallel-benchmarks.git) on a 4-socket
-> Intel Xeon 6130 suffers from some NUMA moves that leave some sockets with
-> too few threads and other sockets with too many threads.  Prior to the
-> commit e8f331bcc270, this was corrected by subsequent load balancing,
-> leading to run times of 20-40 seconds (around 20 seconds can be achieved
-> if one just turns NUMA balancing off).  After commit e8f331bcc270, the
-> running time can go up to 150 seconds.  In the worst case, I have seen a
-> core remain idle for 75 seconds.  It seems that the load balancer at the
-> NUMA domain level is not able to do anything, because when a core on the
-> overloaded socket has multiple threads, they are tasks that were NUMA
-> balanced to the socket, and thus should not leave.  So the "busiest" core
-> chosen by find_busiest_queue doesn't actually contain any stealable
-> threads.  Maybe it could be worth stealing from a core that has only one
-> task in this case, in hopes that the tasks that are tied to a socket will
-> spread out better across it if more space is available?
-> 
-> An example run is attached.  The cores are renumbered according to the
-> sockets, so there is an overload on socket 1 and an underload on sockets
-> 2.
-> 
-> julia
-
-
+Perhaps we should also complain at people who are still running 32-bit ker=
+nels on 64-bit hardware? It has been 20 years=2E=2E=2E
