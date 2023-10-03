@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 817417B69EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BAE7B69ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232546AbjJCNNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
+        id S234374AbjJCNNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232177AbjJCNNO (ORCPT
+        with ESMTP id S232177AbjJCNNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:13:14 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2F5A1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:13:10 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-57b5f0d658dso518485eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 06:13:10 -0700 (PDT)
+        Tue, 3 Oct 2023 09:13:52 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56613A3
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:13:49 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-405361bba99so8752675e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 06:13:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696338790; x=1696943590; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qngHVrILvNeCSm/s79v1hXPA4srlr06zsPatTFbmIhg=;
-        b=BxDM8DJ+YlixlnNbAVGaX48ZuXVRnGCDQBips3Aebj7xyS6oEbiU5pp/TMFWRbypEd
-         lzCulFlFll6x1lJsOPCSd7ySOd1SRyH77uydfP+Z/fUpR84te7AjeLkRi7BnbWpmZPTR
-         ZlInmS9gAgZ6uOLKh1lMo96Ixjrd9rT1xNASyS1bphjPbdd6l+uq8oR8AzxMatajL0Ee
-         eBXi4glsPIzWPJsHCe0L/DFo9BJAVYpxJV+rZBdUYX4dknaG/Jjylz0/os254EvUwPD8
-         78etQr7gG1C4Tf0KQJahT+ZOREh2cBuM041TB8nFx1iTvFhYsXUSZS9CWnKhV+D/7Kdg
-         ne1g==
+        d=linaro.org; s=google; t=1696338828; x=1696943628; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JvJMFPN5XnfTryJd6+O+n7ZB7bWg89FdCPQdvOsvcr4=;
+        b=soAZbw6jmNVjeh6/UtRaQcV7puJBnxWddrgWrdbrVqsm8mzJR7bt/hhkAXXdLIdqOZ
+         G3mSQhZOC5kJLNNUefguldj8lvAoNWcPsAtJtofVovVENH5jjy8bJZXYzhmAguCzNOVY
+         NXO+CP/KPLEBQ+SGz/JUFAft3UVupfwjyli09i3uVW8ZGld4f5Y31U2VsL0/sRoK5d4X
+         tD+OYGzgMO3Hgszz5VMtodd4Dvqm5GPIBLEMLTo8lWMdvSnR8xLJxfaJYW6BiIQqH3P5
+         g5SiNVA3y7NBBQLbWtKHdL/n2s7sHpQ0q0+eEEo5OCmqXNvFU/yvrcjELhWaw3QSlvSs
+         XFZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696338790; x=1696943590;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qngHVrILvNeCSm/s79v1hXPA4srlr06zsPatTFbmIhg=;
-        b=pu0tgU82MTZepNlzL+br7uipZhgX+WVfT/ezSE6ZX3UemWWFHEeAPikeLP7iw40Z3v
-         AgnYP3tsHpu3pE5h5mhCh3qRzZmyVR3vhiC0j7qnRMUIgEbP13VoS1nBrKohlau4d5i4
-         u4sGEn+pWP22HggK4Oy1UrWR15A52+QSyszBsnlGPi8bUM6OzaXaN6H6QM8kz60od+Dp
-         42Pf0SxoIkNcyNzddz2fDAtHcwmxnnxEE/kmeQmHA6o8NHn+UmOGhPTHPwHoFU6KVQtA
-         dQhwy2P9sdBfGZmYLOyTg/IY/kznVm3gyIUZaAo5Zlai7wh8z+pxry+MbLwwYjFDUkCv
-         EbzA==
-X-Gm-Message-State: AOJu0Yx1gAkyrgnLO3LsDqv2EWi3DGz+loSHXEyH0c5gN/KzXUa2RlGx
-        fRXBG4ZaWQEA4xt//iPdvMdXEA==
-X-Google-Smtp-Source: AGHT+IGZa47bNwbD2O9N2xm+OcLA8zN+h0X/kwuWCtsg+xTV228gW+PB93NcRH/Aro1283tpnCWNew==
-X-Received: by 2002:a54:4899:0:b0:3a7:f650:af9b with SMTP id r25-20020a544899000000b003a7f650af9bmr15578226oic.55.1696338790195;
-        Tue, 03 Oct 2023 06:13:10 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id v4-20020a0c8e04000000b0065afd35c762sm469236qvb.91.2023.10.03.06.13.09
+        d=1e100.net; s=20230601; t=1696338828; x=1696943628;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JvJMFPN5XnfTryJd6+O+n7ZB7bWg89FdCPQdvOsvcr4=;
+        b=Lt9fh5gvT7aej01g7Gnyhv+S43H6J45BBlxdKfhI6SMpM9DeDWyDxxsM4pBb4G46jl
+         iCpMnkHX46YT7mXZwRJ56hfdVWnclTo04rdgzjnPkIEilGYQiadA8ixFQXZ/q7Foubwq
+         nJM4Q2XTzJxOZN4RVFR9j/hQu0p+0zmdd/RjSH9PDorDB0E3mRz1zS4mtA6PGo11Up79
+         xbNl+UjwLWgqfRG6cltwOPpDPGlqKlRn5IEIFb0V21/VbGtG6PZFIpdqXKt2lXCxG6sN
+         afUO2ktXQ4NOOROEQvxBBZ+bOqjec6ngp4mfBprvi6RAT7IAx9NpC900hitARbANm4iz
+         Y7CQ==
+X-Gm-Message-State: AOJu0YxDPSLN6rVZdX4uLi19DQqGE71RvR3fyWqWgarIhiY9GKLYWCg1
+        13mCWzWF7vdtXaIQl+kIlPg4yI5o5sJvsDAGGhqbfA==
+X-Google-Smtp-Source: AGHT+IExPEFcZuoTnw4s70mC2iDssgJUPOn8skie5JIgUxQqRtwkBoV1wW0AgUE33byl9ZMwcWTAgA==
+X-Received: by 2002:a05:600c:207:b0:3fe:f74c:b4f6 with SMTP id 7-20020a05600c020700b003fef74cb4f6mr13419469wmi.17.1696338827645;
+        Tue, 03 Oct 2023 06:13:47 -0700 (PDT)
+Received: from loic-ThinkPad-T470p.. ([2a01:e0a:82c:5f0:6937:1bb0:405c:b59c])
+        by smtp.gmail.com with ESMTPSA id c4-20020a05600c0ac400b00405442edc69sm9385112wmr.14.2023.10.03.06.13.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 06:13:09 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 09:13:09 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mm: memcg: normalize the value passed into
- memcg_rstat_updated()
-Message-ID: <20231003131309.GD17012@cmpxchg.org>
-References: <20230922175741.635002-1-yosryahmed@google.com>
- <20230922175741.635002-3-yosryahmed@google.com>
+        Tue, 03 Oct 2023 06:13:46 -0700 (PDT)
+From:   Loic Poulain <loic.poulain@linaro.org>
+To:     srinivas.kandagatla@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Loic Poulain <loic.poulain@linaro.org>
+Subject: [PATCH] nvmem: core: Fix possible buffer overflow on nvmem cell write
+Date:   Tue,  3 Oct 2023 15:13:43 +0200
+Message-Id: <20231003131343.1324962-1-loic.poulain@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922175741.635002-3-yosryahmed@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 05:57:40PM +0000, Yosry Ahmed wrote:
-> memcg_rstat_updated() uses the value of the state update to keep track
-> of the magnitude of pending updates, so that we only do a stats flush
-> when it's worth the work. Most values passed into memcg_rstat_updated()
-> are in pages, however, a few of them are actually in bytes or KBs.
-> 
-> To put this into perspective, a 512 byte slab allocation today would
-> look the same as allocating 512 pages. This may result in premature
-> flushes, which means unnecessary work and latency.
+Nothing prevents a nvmem consumer to try writing excessive data to a
+given nvmem cell (except when bit_offset is 0). The allocated buffer
+of size 'cell->bytes' in nvmem_cell_prepare_write_buffer may not be
+large enough to host the copied 'len' bytes.
 
-Yikes.
+Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+---
+ drivers/nvmem/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I'm somewhat less concerned about the performance as I am about the
-variance in flushing cost that could be quite difficult to pinpoint.
-IMO this is a correctness fix and a code cleanup, not a performance
-thing.
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index eaf6a3fe8ca6..0b27ab3b3b86 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -1654,6 +1654,9 @@ static void *nvmem_cell_prepare_write_buffer(struct nvmem_cell_entry *cell,
+ 	int i, rc, nbits, bit_offset = cell->bit_offset;
+ 	u8 v, *p, *buf, *b, pbyte, pbits;
+ 
++	if (len > cell->bytes)
++		return ERR_PTR(-EINVAL);
++
+ 	nbits = cell->nbits;
+ 	buf = kzalloc(cell->bytes, GFP_KERNEL);
+ 	if (!buf)
+-- 
+2.34.1
 
-> Normalize all the state values passed into memcg_rstat_updated() to
-> pages. Round up non-zero sub-page to 1 page, because
-> memcg_rstat_updated() ignores 0 page updates.
-> 
-> Fixes: 5b3be698a872 ("memcg: better bounds on the memcg stats updates")
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
