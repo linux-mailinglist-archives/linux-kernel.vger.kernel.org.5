@@ -2,115 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE887B6F0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30957B6F15
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240656AbjJCQ4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
+        id S240711AbjJCQ4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240561AbjJCQzk (ORCPT
+        with ESMTP id S240538AbjJCQ4C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:55:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AB6136
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696352133; x=1727888133;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pOmDbgmKcuR1roL2tpS4qxKkRr99cuVsIxqAedHHY30=;
-  b=hl+rTVuFffzSCFHmqCz9ICBuQmXM5kpRMV9GRrJWEOXkXrANyNSTdl/1
-   y69jERJ46mnkPO89xjVSSqgUmr35zNOjXEKPzqm83zBon0OYVUcbG9BLy
-   IbGG0SHm/31E8phyhalO+6GqW/AplBWPsmrOuZy6iGfeTPa4gb/cJvzNa
-   OS+3LZ1sOEJDgYTxW+M8l+85K0Brxsq6+Ehwlx1bsGsfbwd5h2TNOhucO
-   5Tp2v3bVpeFKjNQc8aDleMUgeJ1l/s+R0gVbnGPre2XKO1Cym6n7z5yhB
-   2znvCzYz6JJjU75vh4xdayzr/FZu7LkTAEiZRcrB/zDUro6Z+RsVdbCvi
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="413836513"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="413836513"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 09:55:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="816755076"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="816755076"
-Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 09:55:26 -0700
-Date:   Tue, 3 Oct 2023 09:55:25 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Liang, Kan" <kan.liang@linux.intel.com>, mingo@redhat.com,
-        acme@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com, eranian@google.com,
-        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Subject: Re: [RESEND PATCH V3 1/6] perf: Add branch stack extra
-Message-ID: <ZRxHfTF1YrlONXPL@tassilo>
-References: <20230911154822.2559213-1-kan.liang@linux.intel.com>
- <20231002154535.GB35785@noisy.programming.kicks-ass.net>
- <ce16c6c1-9bdc-35e2-fe85-155bd7edbaa4@linux.intel.com>
- <20231002213752.GB1539@noisy.programming.kicks-ass.net>
- <ed169d4d-76d5-c134-c685-ad3d812028be@linux.intel.com>
- <20231003102733.GC1539@noisy.programming.kicks-ass.net>
- <ZRwuE8LPkwtkjX5C@tassilo>
- <20231003163300.GF1539@noisy.programming.kicks-ass.net>
+        Tue, 3 Oct 2023 12:56:02 -0400
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461431B9;
+        Tue,  3 Oct 2023 09:55:44 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1c60cec8041so8245445ad.3;
+        Tue, 03 Oct 2023 09:55:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696352143; x=1696956943;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/OTDR5NyHbb5QfDMSXNmt2Tc0LOejPzxDMttSZkL2/8=;
+        b=WnnfO7+aeMjMYVsL9+tl0f+FVNbYr0lkeWaff6duPro/NnGxvZwDDnKZc7OEZD6V49
+         Esd1l8CbORy4KX1EvAevdXtx6zvZhdjsYuIkFt2ilApQcXo9EFCfzw6mFBzAm/3ibSxU
+         ywF+XIfY/xSI7uLR9a+pZDqHHGVgDTpzPqpU/wBYthqYTIV361qvSgLtd1EWrW/6ZwXi
+         bojGkE1AzEqXysDm7OPEaKwBL5QQNl51GT2mCuESv3mfagNY7RPeJNFl6F8Oss83vtlx
+         OOSFpDADfnzM6jhQpaY/87v18Erw4a2ya5+CRPV9Uc2HC+U1qpQH7ACcIa4Hp2WbS1PD
+         JWKg==
+X-Gm-Message-State: AOJu0YzqCwHu2g44Yphp90kHix7zGTeOqT46KYvGkEHcEXv/OMCiNFNa
+        pmeYbJeTW1eLuXu0ZZM8pnI=
+X-Google-Smtp-Source: AGHT+IHkImNltSCEcrQL09yiA54GtSP4oWfRcumNXnmrqYOlKYAw0cgN14lN/1BxGiHV1bJDHfZauw==
+X-Received: by 2002:a17:902:a415:b0:1c7:443d:7412 with SMTP id p21-20020a170902a41500b001c7443d7412mr174904plq.26.1696352143218;
+        Tue, 03 Oct 2023 09:55:43 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:fc96:5ba7:a6f5:b187? ([2620:15c:211:201:fc96:5ba7:a6f5:b187])
+        by smtp.gmail.com with ESMTPSA id j4-20020a170902c3c400b001c5de42c185sm1801070plj.253.2023.10.03.09.55.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Oct 2023 09:55:42 -0700 (PDT)
+Message-ID: <db6a950b-1308-4ca1-9f75-6275118bdcf5@acm.org>
+Date:   Tue, 3 Oct 2023 09:55:40 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003163300.GF1539@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/21] block: Add fops atomic write support
+Content-Language: en-US
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
+        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org
+References: <20230929102726.2985188-1-john.g.garry@oracle.com>
+ <20230929102726.2985188-11-john.g.garry@oracle.com>
+ <17ee1669-5830-4ead-888d-a6a4624b638a@acm.org>
+ <5d26fa3b-ec34-bc39-ecfe-4616a04977ca@oracle.com>
+ <b7a6f380-c6fa-45e0-b727-ba804c6684e4@acm.org>
+ <yq1lecktuoo.fsf@ca-mkp.ca.oracle.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <yq1lecktuoo.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 06:33:00PM +0200, Peter Zijlstra wrote:
-> On Tue, Oct 03, 2023 at 08:06:59AM -0700, Andi Kleen wrote:
-> > > I'm thinking we should do something like expose branch_counter_nr and
-> > > branch_counter_width in the sysfs node, and then rename this extra field
-> > > to counters.
-> > > 
-> > > Then userspace can do something like:
-> > > 
-> > > 	for (i = 0; i < branch_counter_nr; i++) {
-> > > 		counter[i] = counters & ((1 << branch_counter_width) - 1);
-> > > 		counters >>= branch_counter_width;
-> > > 	}
-> > > 
-> > > to extract the actual counter values.
-> > 
-> > perf script/report won't necessarily have access to the sysfs
-> > values if they run on a different system
-> > 
-> > It would need extra PT style metadata written by perf record to
-> > perf.data and read by the user tools.
-> > 
-> > Seems complicated. It would be better if it just parsed on its own.
+On 10/2/23 17:48, Martin K. Petersen wrote:
 > 
-> Well, you really don't want to repeat the 4,2 thing in every event, that
-> seems daft (and a waste of space, because how large do we want those
-> fields to be etc..).
+> Bart,
+> 
+>> Are there any SCSI devices that we care about that report an ATOMIC
+>> TRANSFER LENGTH GRANULARITY that is larger than a single logical
+>> block?
+> 
+> Yes.
+> 
+> Note that code path used inside a storage device to guarantee atomicity
+> of an entire I/O may be substantially different from the code path which
+> only offers an incremental guarantee at a single logical or physical
+> block level (to the extent that those guarantees are offered at all but
+> that's a different kettle of fish).
+> 
+>> I'm wondering whether we really have to support such devices.
+> 
+> Yes.
 
-It's just a few bits? It could be an extra 16bit field or so per event.
+Hi Martin,
 
-There are probably other self describing encodings for the numbers
-(e.g. some variant of LEB128 on a sub byte level), but that might be more
-expensive to store it.
+I'm still wondering whether we really should support storage devices
+that report an ATOMIC TRANSFER LENGTH GRANULARITY that is larger than
+the logical block size. Is my understanding correct that the NVMe
+specification makes it mandatory to support single logical block atomic
+writes since the smallest value that can be reported as the AWUN 
+parameter is one logical block because this parameter is a 0's based
+value? Is my understanding correct that SCSI devices that report an 
+ATOMIC TRANSFER LENGTH GRANULARITY that is larger than the logical block
+size are not able to support the NVMe protocol?
 
-What would worry me is that various users would just hard code and then
-fail later. There are lots of non perf tools perf.data parsers around
-these days.
+ From the NVMe specification section about the identify controller 
+response: "Atomic Write Unit Normal (AWUN): This field indicates the 
+size of the write operation guaranteed to be written atomically to the 
+NVM across all namespaces with any supported namespace format during 
+normal operation. This field is specified in logical blocks and is a 0’s 
+based value."
 
--Andi
+Thanks,
+
+Bart.
+
 
