@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D797B64E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1374C7B64EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239325AbjJCJBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
+        id S239444AbjJCJDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbjJCJBv (ORCPT
+        with ESMTP id S239299AbjJCJDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:01:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51DA9E;
-        Tue,  3 Oct 2023 02:01:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696323708; x=1727859708;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=j4r45DuPOKqBoDxxAsuV+SL7fxIH76HZazvWueuSR+Y=;
-  b=Xm5P8ni18BmyN4fNdtBrPf1yCBcZ3jn4N0fdpj0a8m8XeT16lUB8Ldfv
-   mR4tpVb5EimnXr2LyUL1Dg+CrzxQbSJi1SxRqP4dK7AF6HCMN/+npkviw
-   cuzvnLBxO6KRr3y7ESooPlck7GH7gC94Q4/Ka2klfk+lhJjSNz9Znf24S
-   08cpZHXg0fjG9rOoOdNo0e7886DZ2++NKGYUB7FNRjJW/N9lKY6TH/+Yo
-   YuYGHHnhRGBTjcLRocEYuOQ6E/jMT2dukXZog3TcTyV5ZlqjCnRHXmIvn
-   18LFZ2+s+pmgQeU9Y2nmUD17ctzo8AQofBALdM8aHgqefnD7WPaGOfFiq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="385650347"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="385650347"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 02:01:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="750854588"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="750854588"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 02:01:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qnbHY-00000002RKw-1KHY;
-        Tue, 03 Oct 2023 12:01:32 +0300
-Date:   Tue, 3 Oct 2023 12:01:32 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Raag Jadav <raag.jadav@intel.com>
-Cc:     linus.walleij@linaro.org, mika.westerberg@linux.intel.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Subject: Re: [PATCH v1 1/2] pinctrl: baytrail: drop runtime PM support
-Message-ID: <ZRvYbFF0h7OOo7Nu@smile.fi.intel.com>
-References: <20231003081519.27524-1-raag.jadav@intel.com>
- <ZRvX9GUXbJksmSIP@smile.fi.intel.com>
+        Tue, 3 Oct 2023 05:03:04 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADA1AB;
+        Tue,  3 Oct 2023 02:03:01 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B7A974000B;
+        Tue,  3 Oct 2023 09:02:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696323780;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=10eDGalXqUFx1plS+nqHC9qTy/c98P26lcDQXh/vEcM=;
+        b=Osw/i3JU9VGknE2CuivGOzHuNithMhN/CSNQublSeSj1D6G/boY+iGmuvLRD+bUxxzAJAF
+        bp7xDpHnwu1ZIFNNo14sY9OBnF6prOXHq5IXiAmJId1HTrEcLJ0ISOVtMBzoXJhlj+OOo8
+        EYeS7GgXHazgWn6d6JkywLJHCQHTs2rwNLfow5JtHsTRLvPXb1tT2azbYgDxGKrE2m9D+5
+        bPopaLx6QkU7YjxAOZhQ9ssL8BrFXDT9Tm5LXiVgidWI4+SqVDsR8ZjffEQWGuucBPncm+
+        vXjwSUAsHdlmYsi3p0SZjyMJxFBosTori59OfuUiWVKVZ6mKy/HCuQC/45miag==
+Date:   Tue, 3 Oct 2023 11:02:56 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Lizhi Hou <lizhi.hou@amd.com>, Brian Xu <brian.xu@amd.com>,
+        Raj Kumar Rampelli <raj.kumar.rampelli@amd.com>,
+        Michal Simek <michal.simek@amd.com>, dmaengine@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dmaengine: xilinx: xdma: Support cyclic
+ transfers
+Message-ID: <20231003110256.44286fcd@xps-13>
+In-Reply-To: <ZRVbZwQz13hL2QfY@matsya>
+References: <20230922162056.594933-1-miquel.raynal@bootlin.com>
+        <20230922162056.594933-3-miquel.raynal@bootlin.com>
+        <ZRVbZwQz13hL2QfY@matsya>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRvX9GUXbJksmSIP@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 11:59:33AM +0300, Andy Shevchenko wrote:
-> On Tue, Oct 03, 2023 at 01:45:18PM +0530, Raag Jadav wrote:
-> > Since Baytrail pinctrl device is not attached to acpi_lpss_pm_domain,
-> > runtime PM serves no purpose here. Drop it and switch to pm_sleep_ptr()
-> > as now we only have suspend and resume handles in place.
-> > 
-> > No functional impact.
-> 
-> > TODO:
-> > Consider moving to DEFINE_LATE_DEV_PM_OPS() in the future once we have
-> > enough users to account for its introduction.
-> 
-> This is not related to the commit message.
-> I'll drop it.
+Hi Vinod,
 
-Ah, and next time, please do a cover letter for the series, it can be
-better managed from maintainer perspective.
+Thanks for the feedback.
 
--- 
-With Best Regards,
-Andy Shevchenko
+vkoul@kernel.org wrote on Thu, 28 Sep 2023 16:24:31 +0530:
+
+> On 22-09-23, 18:20, Miquel Raynal wrote:
+>=20
+> > @@ -583,7 +690,36 @@ static int xdma_alloc_chan_resources(struct dma_ch=
+an *chan)
+> >  static enum dma_status xdma_tx_status(struct dma_chan *chan, dma_cooki=
+e_t cookie,
+> >  				      struct dma_tx_state *state)
+> >  {
+> > -	return dma_cookie_status(chan, cookie, state);
+> > +	struct xdma_chan *xdma_chan =3D to_xdma_chan(chan);
+> > +	struct xdma_desc *desc =3D NULL;
+> > +	struct virt_dma_desc *vd;
+> > +	enum dma_status ret;
+> > +	unsigned long flags;
+> > +	unsigned int period_idx;
+> > +	u32 residue =3D 0;
+> > +
+> > +	ret =3D dma_cookie_status(chan, cookie, state);
+> > +	if (ret =3D=3D DMA_COMPLETE)
+> > +		return ret;
+> > +
+> > +	spin_lock_irqsave(&xdma_chan->vchan.lock, flags);
+> > +
+> > +	vd =3D vchan_find_desc(&xdma_chan->vchan, cookie);
+> > +	if (vd)
+> > +		desc =3D to_xdma_desc(vd); =20
+>=20
+> vd is not used in below check, so should be done after below checks, why
+> do this for cyclic case?
+
+I'm not sure I get this comment. vd is my way to get the descriptor,
+and I need the descriptor to know whether we are in a cyclic transfer
+or not. If the transfer is not cyclic, I just return the value from
+dma_cookie_status() like before, otherwise I update the residue based
+on the content of desc.
+
+Maybe I don't understand what you mean, would you mind explaining it
+again?
+
+> Otherwise series lgtm, just fix the error reported by test bot
+
+I will.
+
+>=20
+> > +	if (!desc || !desc->cyclic) {
+> > +		spin_unlock_irqrestore(&xdma_chan->vchan.lock, flags);
+> > +		return ret;
+> > +	} =20
 
 
+Thanks,
+Miqu=C3=A8l
