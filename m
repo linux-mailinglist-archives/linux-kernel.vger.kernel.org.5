@@ -2,95 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B3A7B7469
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37EB7B746B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbjJCXCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 19:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
+        id S232411AbjJCXCe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 19:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231985AbjJCXCS (ORCPT
+        with ESMTP id S232328AbjJCXCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 19:02:18 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16D0B0
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:02:13 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-278eaffd81dso1090297a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696374133; x=1696978933; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nEaRtaRax1n0h+1IKPeikRHaTx6MRk96Qy5GH4j8LaQ=;
-        b=EzlLmj2oJp/hxPa+CD6Hcew2zFqskosP4shxeocDaYZXCqwIuFbiYSXercrtckIsvV
-         vSRWruFCqWjKUCeE8ehlGgBJ6ve1hAKqkeYZGvHgWJ9F1LRlGE7C3F1ncrUIhuMN7tse
-         +Plo2WsUXhmUCAelOcwJ5QskH9epT4mZ+vqca3cPMmHcHILiAS0kgaJCPAFZtWa+Vrrm
-         cKDpqwGdrTRkQSKp1mFuaPNB9ogc77u4vufKLPkEnEDny7sxkk6YPpdKbhguVy0rf23G
-         50cLHRvIOXhCH1nVI/1HAuUi+xOG1JPhn+IabDnq/gomHqj43SUtDXTkuGfPLFPzJpR6
-         urMw==
+        Tue, 3 Oct 2023 19:02:33 -0400
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277EDCC;
+        Tue,  3 Oct 2023 16:02:29 -0700 (PDT)
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1027696a12.1;
+        Tue, 03 Oct 2023 16:02:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696374133; x=1696978933;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nEaRtaRax1n0h+1IKPeikRHaTx6MRk96Qy5GH4j8LaQ=;
-        b=EsN8hEDXaAQcI5G0oVih9/O01W44BE0UUeJiWH1oasHXXQXqASeREtdE7gjR0qfO7e
-         BHNbo2ZYSkO1UUNOPjovcSK23FYfzxGk4vlY3hjW5KmiUN+U0TrhY9Gi3Zx+G+L0Zm+J
-         0pVlqKVL98HuTZuAAKB9kyGAikqTDHxWCBcIbdfgPjoAFNhr+Q6tWvsnIf3o4ETgyS2L
-         FsJjYLQGGWeQWDgEKgygi81XCtCCauhNLDn6xWLYrUuLg1BSt46UMiT7jQLEdyM5YizM
-         e76nIOAc/C8fcgIKPxAkkAQTBzzEDZYS/t7KFx/Oq6r3SCMHyiRkM6Z3wTo7IeI3b+fM
-         Y4zg==
-X-Gm-Message-State: AOJu0Yzc8bqIWO6nJYcsxbhKCGnCNqZbNOWsyYObsWgJLwMOzKpwtt+E
-        PJ69TeJWr/Rf+YAP7ppepj7BMTxA60Y=
-X-Google-Smtp-Source: AGHT+IHSyviMq44U3UuFEk2M4ds+PrQx58KEBZHBDUujKrCVVa2ZnMDeTAUbtE9+odUQcUIRWSBM3A==
-X-Received: by 2002:a17:90a:4292:b0:279:be6:bf73 with SMTP id p18-20020a17090a429200b002790be6bf73mr732397pjg.11.1696374133149;
-        Tue, 03 Oct 2023 16:02:13 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:1d9:902f:6531:9779])
-        by smtp.gmail.com with ESMTPSA id ji13-20020a170903324d00b001c727d3ea6bsm2167940plb.74.2023.10.03.16.02.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 16:02:12 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH] f2fs-tools: use proper address entry count for direct nodes
-Date:   Tue,  3 Oct 2023 16:01:55 -0700
-Message-ID: <20231003230155.355807-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+        d=1e100.net; s=20230601; t=1696374148; x=1696978948;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Bc75ZLj27HqA99qp9BegB2tmAdW+msTPeqxif7xbAds=;
+        b=c3iTPSvpAIuxsy5yNxtHdeeDfrqN4j2fN9yJYyNj0UZxdwCdaEOZ/KTTQJY53ZBenb
+         VPi3lP+1MzPnL6hv6FralCteLDvZ2etoyBYP01gROD3XyOfK2ODccFKq8FmChy/h+n07
+         AGHl8BjTf/d2Eh5bHZ+t/RaOIijqi6cTUG9AHsStGEz5lXgusXYhc3i61THXCaHN6dCH
+         u78CQ7zJ1tb8XXRq1zbbV1tfS/izc4xu9BZeq1UVQp2Zlv/ot3EfiFUqmudk5ksUe7gV
+         RH5gajfam9H2lbh54Oram2mHhQd/bOU5HW+1H3/vgd0WLWNZ7IM5DgdOgWqGtG+VKH3i
+         /1/g==
+X-Gm-Message-State: AOJu0Yy28/Ry0D/WHMXcWv9J0Q19cHeEJcFhO7Vc/f6xXS8H89SwpuTT
+        2KstOuYiXujs78aDqCgT4f6+6vdYYTBbeaEQ7I8=
+X-Google-Smtp-Source: AGHT+IGAkoQiMFTXkbVvOxFELSTwKSi5Kx8u6/d/wdATKmcGrHUGgEhpNZTlcEuSPPK+Aj0GSgPlI+1C0Cy+KHRn7K8=
+X-Received: by 2002:a17:90a:c293:b0:268:18e:9dfa with SMTP id
+ f19-20020a17090ac29300b00268018e9dfamr731538pjt.5.1696374148336; Tue, 03 Oct
+ 2023 16:02:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230916040915.1075620-1-irogers@google.com> <CAL715WJxmMbXkZSE3p_+ODGxabgrXREsBo9aFu9G9=qkYZeH9A@mail.gmail.com>
+ <CAP-5=fUjNiDv=KQ7t8jqfOfOt5i8HGvt8Vv1hn2-hLxX_Kqucg@mail.gmail.com>
+ <CAL715W+GQuCJm-1SEsNN2qnHghNL1SrzwH9Km5K8UxubEFfYVw@mail.gmail.com>
+ <CAM9d7cgKWi0fafwTxSrKLrVZxcwnhwMGz=oNkAsNdOjDwF6pEA@mail.gmail.com> <CAP-5=fWXXi7Y=6Q0k8oLOZmYon+vvg-k4dNUSex_ijcL8ti9sQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fWXXi7Y=6Q0k8oLOZmYon+vvg-k4dNUSex_ijcL8ti9sQ@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 3 Oct 2023 16:02:16 -0700
+Message-ID: <CAM9d7cjJxR5bvx5UvywEkwazkzpRZiKo8s7GLWutNiBKYa1J7g@mail.gmail.com>
+Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
+To:     Ian Rogers <irogers@google.com>
+Cc:     Mingwei Zhang <mizhang@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+On Tue, Oct 3, 2023 at 3:36 PM Ian Rogers <irogers@google.com> wrote:
+>
+> On Tue, Oct 3, 2023 at 1:08 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Hello,
+> >
+> > On Wed, Sep 20, 2023 at 10:05 PM Mingwei Zhang <mizhang@google.com> wrote:
+> > >
+> > > On Mon, Sep 18, 2023 at 3:43 PM Ian Rogers <irogers@google.com> wrote:
+> > > >
+> > > > On Sat, Sep 16, 2023 at 5:46 PM Mingwei Zhang <mizhang@google.com> wrote:
+> > > > > Thank you very much for the change. I have one quick question about
+> > > > > the PMU unthrottling logic. When I am looking into the function
+> > > > > perf_adjust_freq_unthr_context(), I see the loop with PMU stop and
+> > > > > start in each iteration. Is there a good way to avoid this PMU reset
+> > > > > operation while quickly figuring out the event in frequency mode?
+> > > >
+> > > > Agreed. I think before the pmu_disable could be avoided for this condition:
+> > > > ```
+> > > > if (event->hw.interrupts != MAX_INTERRUPTS &&
+> > > >     (!event->attr.freq || !event->attr.sample_freq))
+> > > >         continue;
+> > > > ```
+> > > > Fixing up the event stop/start looks harder.
+> > > >
+> > >
+> > > Right, I think putting the check early before pmu_disable() is already
+> > > a great optimization. The only concern I initially had was whether
+> > > event->hw.interrupts can be accessed before we disable the pmu. But
+> > > after checking this field in other locations, I don't see any problem
+> > > at all.
+> >
+> > The event->hw.interrupts would be increased in the NMI handler
+> > so there is a race between the check and the NMI.  That's why
+> > I think it checks that after disabling the PMU.
+> >
+> > But I think we can skip non-sampling events for sure.  Then it
+> > would be better to set attr.sample_period = 0 rather than attr.freq.
+> >
+> >     if (!is_sampling_event(event))
+> >         continue;
+> >
+> >     perf_pmu_disable(event->pmu);
+> >     ...
+> >
+> > Thanks,
+> > Namhyung
+>
+> With the PMU disabled, isn't there still a risk of an interrupt still
+> being in flight? In other words the disable doesn't prevent a race and
+> we'll catch this on the next timer call to
+> perf_adjust_freq_unthr_context. I think we can also improve the code
+> by just disabling a PMU once, we can take advantage of the
+> perf_event_pmu_context and disable that PMU, iterate its events and
+> then re-enable the PMU - i.e. no need for an enable and disable per
+> event. I'll put a patch together.
 
-For direct nodes, we have to use DEF_ADDRS_PER_BLOCK.
+Thanks, I was thinking about that too.  It's also a side effect of
+the context rewrite.  Maybe we could iterate pmu_ctx's active lists
+and skip pmus with PERF_PMU_CAP_NO_INTERRUPT and
+individual non-sampling events.
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- fsck/fsck.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fsck/fsck.c b/fsck/fsck.c
-index 78ffdb6..56a7d31 100644
---- a/fsck/fsck.c
-+++ b/fsck/fsck.c
-@@ -2894,7 +2894,7 @@ static void fsck_failed_reconnect_file_dnode(struct f2fs_sb_info *sbi,
- 	fsck->chk.valid_blk_cnt--;
- 	f2fs_clear_main_bitmap(sbi, ni.blk_addr);
- 
--	for (i = 0; i < ADDRS_PER_BLOCK(&node->i); i++) {
-+	for (i = 0; i < DEF_ADDRS_PER_BLOCK; i++) {
- 		addr = le32_to_cpu(node->dn.addr[i]);
- 		if (!addr)
- 			continue;
--- 
-2.42.0.582.g8ccd20d70d-goog
-
+Thanks,
+Namhyung
