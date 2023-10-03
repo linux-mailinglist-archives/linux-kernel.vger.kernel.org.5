@@ -2,270 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB797B74C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222557B74C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235783AbjJCXW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 19:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37014 "EHLO
+        id S235962AbjJCXW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 19:22:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235282AbjJCXW1 (ORCPT
+        with ESMTP id S235282AbjJCXWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 19:22:27 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2087.outbound.protection.outlook.com [40.107.237.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA17A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:22:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e8qNmidYn60AxvLskiR8A1djnFlivP9hVaR7iGQ4xbB24Pd6zYkB14PIhiDYFWISrmRSszAF2PraXzw+gLtahde6QlRGrLA89TziTWjYfFJ0y5YpcRTPJVC/Wafsx/sDAdI8x6GPC5QcQ+4IU5ve2nFw5Rm4LzfrbLWg4kLTbrjR+Oaop8Bq4LWmWXV1I3EC5HhS8ZR9ZN1uWeu0mRF1uBnXDgCXKMKOwQgn4ROaMyaK7TJAdwDDDHfntFhJ4k20HNYtSXgDG56054T+eyXLE83aLe5FwbWJOFwwmmrNYlYC3QnmiIvLCDajqBZRCVyJxeU2dmC1p86Woe6FXxv6HA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1KNbUUDxEDohvpCxVTYiH8wiGbABALyQC+qp7Tc2w5s=;
- b=dbdvGyz90aY8Y68CdMbkaofqzadh+ZJMxr3uBcsA2Nt9Cb5o6OdQubO5Wppmp8EVgaKnJBaKfRWrwNKCuJRAPxgJ8rdS7FUh8UU+O7o1n4GZqP9S5CqpbpsVYruMQl97HIMaoxd1jF3cOCbasegVfNiqt5CN9H57OGsudDIQ/kJmfZlIKGwJ36PqbcKWJ+nO5xnLtKuZrP3cWQhvt7Ri0xnldYAWCvgjwUFdKWdlm7Q2btkYZbPUHCCLF/H2xSyD53vczItjjMSfZmv/wOR9j4LmZIFU25d2+Uor9iQZGNK0KrQ0TF3TzgHuAQRkxIIaWeGDaGJW7oTmXh96TaLqWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1KNbUUDxEDohvpCxVTYiH8wiGbABALyQC+qp7Tc2w5s=;
- b=d2pNcmDYc5n35p9zWNUyFBWh2qaslk2VlDO/3yNQTzjYFdL3CF0jMkYCkx/lusq65Z7Fl7R+jmYoBIfGdESoaOy1h1Qy4uuACX3GM+5wD7nyU6xNEHSCfgsD5G6sfisr3JYviO4LJXNyTfySMODjGyQ3o0cU0NTTZomQoPJSLKE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com (2603:10b6:610:19f::7)
- by SA1PR12MB6972.namprd12.prod.outlook.com (2603:10b6:806:24f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.29; Tue, 3 Oct
- 2023 23:22:17 +0000
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::16da:8b28:d454:ad5a]) by CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::16da:8b28:d454:ad5a%3]) with mapi id 15.20.6838.033; Tue, 3 Oct 2023
- 23:22:17 +0000
-Message-ID: <14619d42-b319-4b5c-9363-c75096d27584@amd.com>
-Date:   Wed, 4 Oct 2023 10:22:09 +1100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH kernel v3] x86/compressed/64: reduce #VC nesting for
- intercepted CPUID for SEV-SNP guest
-Content-Language: en-US
-To:     Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>
-References: <20231003073123.1763564-1-aik@amd.com>
- <32c0080f-1bd1-32c4-2bfa-910537a50ca8@amd.com>
-From:   Alexey Kardashevskiy <aik@amd.com>
-In-Reply-To: <32c0080f-1bd1-32c4-2bfa-910537a50ca8@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: DM6PR14CA0048.namprd14.prod.outlook.com
- (2603:10b6:5:18f::25) To CH3PR12MB9194.namprd12.prod.outlook.com
- (2603:10b6:610:19f::7)
+        Tue, 3 Oct 2023 19:22:55 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC28FB8
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:22:51 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-98377c5d53eso263290566b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:22:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696375370; x=1696980170; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4Z022+hD2oB//jAKqOrdZqf+zZSE40o5uTIGWJ6ucIE=;
+        b=HAwn4xaKvmQHVasnSdKN6Drv6pwjaLzxIDORBEpExt2T4xv4cIcPyXzTMDjlSTd3Ta
+         MXZaVbDiY6V3yVBEUWn5UcXFhSYt0bKRFy3nmKDfSQb2b1jXVmp82Olg69Vayhb3T82n
+         2ICjT0jWDSnXzXf5ic7KA8h+0FXhqCHvgs1pL8geUjdxfeirdjkKx8p412K7Z2Z/HoU7
+         Qr9TLpRlShS+cKtPznm5jrYFDEsAjFBU5yiJ3UAZx4pYU2SozsYtfmSNmzQuOdBAPaWk
+         +d/xEQ/d7MdrVkP6+gp5S4EtgBd0FJftVJuw243TqhBfq8an446BFlfDLEJHBEFmCfcZ
+         XI6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696375370; x=1696980170;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4Z022+hD2oB//jAKqOrdZqf+zZSE40o5uTIGWJ6ucIE=;
+        b=EXAbUVEji9ZjeLV7JuefupKG7pQhGHzqnLBYAHW1exh4Is4yBK/1ZGBbbpQ4+yblGN
+         UERxJy4gpw6TzHCj4sQFbTaXr8v9GUDVAUz/JA0hwCEZvi1SmBaWpvItg7iIQ6dkjFVS
+         6nizjo/o2uITNFawxuNEm1BZGvJFuWWUNA4+VweAKBH69wSUBjKk7PuGBYWjk0gnq58l
+         Qv1CX9ewmhVifs5k4PbPfDEC2g8SjXFknW3HVPzBnijmv5TNzkpxEN4xOZpzY4J8YC6h
+         1tnq16jpjjChUyHVyP8mhHQ7BKZwhM/Hc3CovsgqJB0J67rRTqbWB/W7ZVCKQbWYsuYj
+         SN1A==
+X-Gm-Message-State: AOJu0YyGVxJkcnVu0u6O0yFoCyMjFfjJQzhf6tU2E6Yo1F3Yzr8y5Dt/
+        E/Yr6myDvn1YzrMZFTV6NbfTWezoDwhsd3U+OG6sFQ==
+X-Google-Smtp-Source: AGHT+IGAyGev7nf+zBtH4Km6sxjwtNzFlkUturz3cFMrNbSh0v1YhO7orCqpkZDnkSFsw8ajzWEUmfVvX5MRV4zjWmk=
+X-Received: by 2002:a17:906:538f:b0:99e:f3b:2f78 with SMTP id
+ g15-20020a170906538f00b0099e0f3b2f78mr610073ejo.67.1696375370218; Tue, 03 Oct
+ 2023 16:22:50 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB9194:EE_|SA1PR12MB6972:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad81e49c-cab2-4afe-4e79-08dbc467957b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r3tBMA6yWMnem5wrB9xaJI8zxsX8ydZJYvbFlOmuSzoaXIXMEVHB2mhljNK9VA5jfwKW3j++t0QAdkfxqjPuJUL/87NWTtNjCMrFmHsCquPIvGq+Bm5WHO2bIZnVOjFg6Kgg9s1fnqkuC7eTnNo/fYuLxIqExuW+S8qNgOXphSBhmE4XbihTBBfXDxRsp7rIE1cEz1lBya7X/G7MkMoOi440I9cpnpj2A0k5+bf46mJE2V+8Uoty5niqimqdznxhgRKvUb2PQnev1DrtGF/W+LvqTPgoiLgOY+m8G1I7z2gQwZt4ihpgKyh8anQK7SXVjr1SW+r8TiyKL/cUTDxJL5PSt35TwDHWGaMrVzxHMrqAaEZYinmWJO0OSYUbTfB125o5mW5wYDPWWcc2IjUewj0Kr6jOTWVj0U6TXRvJU39huMslbhrRBRpSF3N1vfG72el6LwJ5ezt1ZA9V8GCypGk1Q+x4ZeF2HZIk9TyDy7QDZ1h5wnT/7Om7IVG11KqmFFm6MGaOu7C4oZn6A4WjiIP9kiQEWu0gbFHn4bZbY8px/IfS5QEo84FDdpLbV7qcE+1t/PdG7+ZnvSmCeZi4r05XbKWH6uh2Q+25cBWfHKS8UIUG4VCYFPYNuSjbWC9E82Mhtu0C0OQMG3M9kCHIaQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB9194.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(39860400002)(366004)(346002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(2616005)(26005)(6512007)(54906003)(53546011)(66946007)(66556008)(66476007)(316002)(8676002)(8936002)(4326008)(41300700001)(38100700002)(6506007)(6486002)(6666004)(478600001)(966005)(83380400001)(31686004)(2906002)(31696002)(36756003)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b01Cb1hKWC9TOVdwQVVFaEg4M1RVMHh1YUVud2orQmlLbXNROHBOVW1GVzF1?=
- =?utf-8?B?UVJ1YlBBdlM1UDRERFJmZC95MndjRlVvNjVSUGxFMmFJVitHN3ljYWZjZll5?=
- =?utf-8?B?NFQxZmJoTHpBT3VSSjRpYnlSSER6d3hpdUlrTjJHWnlSSjFkajY3SlkvRlI2?=
- =?utf-8?B?M0pHZXhRQ0JuNytDaEIzUzQ3SUVoMnVub3hFNENMZzVHVU4vY1N4cWZZcE8w?=
- =?utf-8?B?c3Fnb0RvdldzZ2I4dXpRZWJFUTBFZzhQaG8za2lLL1U1cml3bEk3amJNQ0FB?=
- =?utf-8?B?bDBQM2prc1I3cHYvZlU2ZzBsTjJ4S2xrd0RheVhTSHphbFlGa3IxVm5YWDhk?=
- =?utf-8?B?MkZscjNDUFUvWGpVZVVEL2J3WUx2a3IyV1lWL0drTVViTk9jRFEvU29Rczd6?=
- =?utf-8?B?NHcvTU03YTJGU2kyVFNmTk1LL2RqN0JqZUVFbmlYZzdQVUZGSktXamNKUjJm?=
- =?utf-8?B?ZWVJblVlVTdGVjU1OXcrRlZOS1RDN01YOEU2NVErRTM0U2oyVjFRZHZ3RjVS?=
- =?utf-8?B?NXV1WUVzSzlDY042QjZnMlhVbGtuOVRxMWpVendRWFdRM2JrOUtJZmdzM1Z0?=
- =?utf-8?B?UVNNK2NORk5VVHVjSkdjNFBEc0V4ckJIMnpFNURtK1BydTNiSFdPbXBSeVZw?=
- =?utf-8?B?Zk5QMkVScGRjRWZ6ZzVlMGFadXQ4UWdsam10Vkg3SnR6elZOTEZQdHBud1hR?=
- =?utf-8?B?cUt1MXpOYTcwWjNPQ2VRTzEzN2FLUmJieC9MLzQxSm50NWxERTI5eWY2STNE?=
- =?utf-8?B?Tkc5NnE1ZWgvTjk0eCtVZ2ZzV244MklQQXgxZVQycmpSTk1ZQnpyYnI5RHhW?=
- =?utf-8?B?NzFscGg3WG16ZXNKT3p0cHovdVFVd3AyOW93TG9hMlFNdUZKQUI1M0tTWGVI?=
- =?utf-8?B?TFJTdlhVVG5ZRGR5Q2FxY2haNmswQXRVL2J2K3Z1UFpsUUxSelBsUzRVcjVN?=
- =?utf-8?B?aFF2c0lhb2ZWbmd5SWJZL3B0M2p3QnEyb0NIK1pEd0lDTHorTlhTWDlrZHJC?=
- =?utf-8?B?ZFBnSGM0U1NXUEx0dnFYUCtaRjNQN1RJZlBkRVpvcndzSXNhS2VaY3g4ekRU?=
- =?utf-8?B?WCtzTVpYN0hhd0ZXU3BJcXd5Mm1aTXhiOGVyYnljRCtqS3FpUy9jcjVsRXJX?=
- =?utf-8?B?NDBBYXZqcCs4ckRQTXJHNEwxRlJVcThLRkZNMzU5dFVmRmJobnRIekhzeFdp?=
- =?utf-8?B?ZVhaYWZoR3M2R3V6RWk3ZUR2QW5hWWZGaWJoa3IrS1RJNGZRVHVJNXhKS3Av?=
- =?utf-8?B?NnBSNmtKekNxMzQrWVpOcUJBNEVFOSt3clhENHpNUXg0Wk01ZUtHZ09KK1dF?=
- =?utf-8?B?alRwQmdqVjFEdXEvSEpkQy9lSThZamdjSkVSeVhBS3ByZEs0S3pyNGdzRE4y?=
- =?utf-8?B?NVd3b3hoMW10YmZkQlJqNUoxYm9HUW0wdjBLK2htdHRxVGkzUm93bmNOWGVN?=
- =?utf-8?B?c3Y3TE9uYlZKNzE2UytsZjlIMkFWMFhMdFNnQXl4NThmWC9Ha2d4SDF5UDRs?=
- =?utf-8?B?L0I2ZzNZbVNQcW8vbk5kYmJGOGZUWjFXSytnTjU5WlNzWlltS1ZWWi9VSlF2?=
- =?utf-8?B?WGpWSlhOWUhoT0NrQmp3anZRUktUMzJqZklER2tvclRLQzBpY25ENjZzTGpm?=
- =?utf-8?B?aUQ5T2lYRGpveWJCbkticDRvS3J5N3RXeGkyckJLNmxjTnorZmtSdFRDdTJm?=
- =?utf-8?B?NUxQdytNNHZGUVBwNHFHS0xJNjljNW9XekF0ZllTSWJSNnVyOENhQUxTOElt?=
- =?utf-8?B?eEVMdVFGK3dLVXoxNGhnTm83aklYU01iN2ZhQVUxYWdvOTE2eEtZKzFXWkFL?=
- =?utf-8?B?MFZhR1RiYkFKMVRYb0VEMDJtNEYxeVdVVWtBeHlYc3VqWEVJVkg3OGRlZDdL?=
- =?utf-8?B?R1JRa3VNZnE5OTRrVC9MQzlzZnl2WFF0VW9DdFRZUUR2a0dzOCtVbzQxL3dF?=
- =?utf-8?B?eUhuSnk5aEVkVDN6bHdydUN2aU5xZHl1YlFKRVJQZFo0c3hiLzBMYlVxNlBP?=
- =?utf-8?B?RXFMaEhoWlhVYi9EZjNwc1V5Nm9OaDBteSttQmp5K1pOU1N1VCtVZllvRTZU?=
- =?utf-8?B?cHAwbjRUUWRYZlQ3dkt4TkZCTGpSd2ZNTFRoSFB0VllBK3YvUzFXOWMyeDM2?=
- =?utf-8?Q?Nq9CDpeJ2OM4zw8ark68XUZcU?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad81e49c-cab2-4afe-4e79-08dbc467957b
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB9194.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 23:22:17.3158
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: C24020Pq0lLG+P+EdyNGcxphBo68uOH4LQijXI3jx3AUWBu/RUVGpg6zjHREneKONRpqf6JvAFO62FOyEB4kMw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6972
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231003171329.GB314430@monkey> <20231003231422.4046187-1-nphamcs@gmail.com>
+In-Reply-To: <20231003231422.4046187-1-nphamcs@gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 3 Oct 2023 16:22:10 -0700
+Message-ID: <CAJD7tkZRH5-y-ux2hDt70JpmL5=YwRwrg_otiTbAei09x-GAJQ@mail.gmail.com>
+Subject: Re: [PATCH] memcontrol: only transfer the memcg data for migration
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     akpm@linux-foundation.org, riel@surriel.com, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, fvdl@google.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 3, 2023 at 4:14=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote:
+>
+> For most migration use cases, only transfer the memcg data from the old
+> folio to the new folio, and clear the old folio's memcg data. No
+> charging and uncharging will be done. These use cases include the new
+> hugetlb memcg accounting behavior (which was not previously handled).
+>
+> This shaves off some work on the migration path, and avoids the
+> temporary double charging of a folio during its migration.
+>
+> The only exception is replace_page_cache_folio(), which will use the old
+> mem_cgroup_migrate() (now renamed to mem_cgroup_replace_folio). In that
+> context, the isolation of the old page isn't quite as thorough as with
+> migration, so we cannot use our new implementation directly.
+>
+> This patch is the result of the following discussion on the new hugetlb
+> memcg accounting behavior:
+>
+> https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
+>
+> Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Closes: https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 
-On 4/10/23 04:21, Tom Lendacky wrote:
-> On 10/3/23 02:31, Alexey Kardashevskiy wrote:
->> For certain intercepts an SNP guest uses the GHCB protocol to talk to
->> the hypervisor from the #VC handler. The protocol requires a shared 
->> page so
->> there is one per vCPU. In case NMI arrives in a middle of #VC or the NMI
->> handler triggers a #VC, there is another "backup" GHCB page which stores
->> the content of the first one while SVM_VMGEXIT_NMI_COMPLETE is sent.
->> The vc_raw_handle_exception() handler manages main and backup GHCB pages
->> via __sev_get_ghcb/__sev_put_ghcb.
->>
->> This works fine for #VC and occasional NMIs but not so fine when the #VC
->> handler causes intercept + another #VC. If NMI arrives during
->> the second #VC, there are no more pages for SVM_VMGEXIT_NMI_COMPLETE.
->> The problem place is the #VC CPUID handler which reads an MSR which
->> triggers another #VC and if "perf" was running, panic happens:
->>
->> Kernel panic - not syncing: Unable to handle #VC exception! GHCB and 
->> Backup GHCB are already in use
->>
->> Add a helper similar to native_read_msr_safe() for making a direct 
->> hypercall
->> in the SEV-ES environment. Use the new helper instead of the raw 
->> "rdmsr" to
->> avoid the extra #VC event.
->>
->> Fixes: ee0bfa08a345 ("x86/compressed/64: Add support for SEV-SNP CPUID 
->> table in #VC handlers")
->> Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
->> ---
->>
->> Based on:
->> https://git.kernel.org/pub/scm/linux/kernel/git/bp/bp.git/log/?h=tip-x86-urgent
->> which top at the time was:
->> 62d5e970d022 "x86/sev: Change npages to unsigned long in 
->> snp_accept_memory()"
->>
->> ---
->> Changes:
->> v3:
->> * made it a function, mimic native_read_msr_safe() which 1) returns 
->> value 2) returns an error
->> * removed debug backtraces the commit log as these were added for 
->> debugging and never
->> appear with actual kernels
->>
->>
->> v2:
->> * de-uglify by defining rdmsr_safe_GHCB()
->> ---
->>   arch/x86/kernel/sev-shared.c | 27 +++++++++++++++++---
->>   1 file changed, 23 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
->> index dcf325b7b022..494d92a71986 100644
->> --- a/arch/x86/kernel/sev-shared.c
->> +++ b/arch/x86/kernel/sev-shared.c
->> @@ -241,6 +241,25 @@ static enum es_result sev_es_ghcb_hv_call(struct 
->> ghcb *ghcb,
->>       return verify_exception_info(ghcb, ctxt);
->>   }
->> +
->> +/* Paravirt SEV-ES rdmsr which avoids extra #VC event */
->> +static unsigned long long ghcb_prot_read_msr(unsigned int msr, struct 
->> ghcb *ghcb,
->> +                         struct es_em_ctxt *ctxt, int *err)
-> 
-> Alternatively you could return enum es_result and take xss as a 
-> parameter... six of one, half dozen of another I guess.
+Does this patch fit before or after your series? In both cases I think
+there might be a problem for bisectability.
 
-How do we decide on this? :)
-
-and yeah, I need to s/int/enum es_result/
-
->> +{
->> +    unsigned long long ret = 0;
->> +
->> +    ghcb_set_rcx(ghcb, msr);
->> +
->> +    *err = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_MSR, 0, 0);
->> +    if (*err == ES_OK)
->> +        ret = (ghcb->save.rdx << 32) | ghcb->save.rax;
-> 
-> You should check ghcb_rax_is_valid(ghcb) and ghcb_rdx_is_valid(ghcb) 
-> before using the values.
-
-Huh. v4 is coming then. Although what are the chances of *err == ES_OK 
-and !ghcb_rax_is_valid() at the same time? What if *err == ES_OK and 
-ghcb_rdx_is_valid()==true but ghcb_rax_is_valid()==false?
-
-return ((ghcb_rdx_is_valid(ghcb)?(ghcb->save.rdx << 32):0) |
-	(ghcb_rax_is_valid(ghcb)?ghcb->save.rax:0;
-
-Or I can just drop *err, invalidate ghcb before sev_es_ghcb_hv_call() 
-and only rely on (ghcb_rdx_is_valid() && ghcb_rax_is_valid)?
-
-Where should I stop with this? :)
-
->> +
->> +    /* Invalidate qwords for likely another following GHCB call */
->> +    vc_ghcb_invalidate(ghcb);
-> 
-> We should probably call this on entry to the function, too, right? Not 
-> sure it really matters though.
-
-The SVM_EXIT_MSR's handler in SVM/KVM only cares if RCX is valid in 
-sev_es_validate_vmgexit() and the guest's ghcb_set_rcx() does that. 
-Nothing in SVM enforces that other (unused) registers are not valid 
-though. Thanks,
-
-
-> 
-> Thanks,
-> Tom
-> 
->> +
->> +    return ret;
->> +}
->> +
->>   static int __sev_cpuid_hv(u32 fn, int reg_idx, u32 *reg)
->>   {
->>       u64 val;
->> @@ -477,11 +496,11 @@ static int snp_cpuid_postprocess(struct ghcb 
->> *ghcb, struct es_em_ctxt *ctxt,
->>           if (leaf->subfn == 1) {
->>               /* Get XSS value if XSAVES is enabled. */
->>               if (leaf->eax & BIT(3)) {
->> -                unsigned long lo, hi;
->> +                int err = 0;
->> -                asm volatile("rdmsr" : "=a" (lo), "=d" (hi)
->> -                             : "c" (MSR_IA32_XSS));
->> -                xss = (hi << 32) | lo;
->> +                xss = ghcb_prot_read_msr(MSR_IA32_XSS, ghcb, ctxt, 
->> &err);
->> +                if (err != ES_OK)
->> +                    return -EINVAL;
->>               }
->>               /*
-
--- 
-Alexey
-
-
+> ---
+>  include/linux/memcontrol.h |  7 ++++++
+>  mm/filemap.c               |  2 +-
+>  mm/memcontrol.c            | 45 +++++++++++++++++++++++++++++++++++---
+>  mm/migrate.c               |  3 +--
+>  4 files changed, 51 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index a827e2129790..e3eaa123256b 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -711,6 +711,8 @@ static inline void mem_cgroup_uncharge_list(struct li=
+st_head *page_list)
+>
+>  void mem_cgroup_cancel_charge(struct mem_cgroup *memcg, unsigned int nr_=
+pages);
+>
+> +void mem_cgroup_replace_folio(struct folio *old, struct folio *new);
+> +
+>  void mem_cgroup_migrate(struct folio *old, struct folio *new);
+>
+>  /**
+> @@ -1294,6 +1296,11 @@ static inline void mem_cgroup_cancel_charge(struct=
+ mem_cgroup *memcg,
+>  {
+>  }
+>
+> +static inline void mem_cgroup_replace_folio(struct folio *old,
+> +               struct folio *new)
+> +{
+> +}
+> +
+>  static inline void mem_cgroup_migrate(struct folio *old, struct folio *n=
+ew)
+>  {
+>  }
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 9481ffaf24e6..673745219c82 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -819,7 +819,7 @@ void replace_page_cache_folio(struct folio *old, stru=
+ct folio *new)
+>         new->mapping =3D mapping;
+>         new->index =3D offset;
+>
+> -       mem_cgroup_migrate(old, new);
+> +       mem_cgroup_replace_folio(old, new);
+>
+>         xas_lock_irq(&xas);
+>         xas_store(&xas, new);
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 6660684f6f97..cbaa26605b3d 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -7316,16 +7316,17 @@ void __mem_cgroup_uncharge_list(struct list_head =
+*page_list)
+>  }
+>
+>  /**
+> - * mem_cgroup_migrate - Charge a folio's replacement.
+> + * mem_cgroup_replace_folio - Charge a folio's replacement.
+>   * @old: Currently circulating folio.
+>   * @new: Replacement folio.
+>   *
+>   * Charge @new as a replacement folio for @old. @old will
+> - * be uncharged upon free.
+> + * be uncharged upon free. This is only used by the page cache
+> + * (in replace_page_cache_folio()).
+>   *
+>   * Both folios must be locked, @new->mapping must be set up.
+>   */
+> -void mem_cgroup_migrate(struct folio *old, struct folio *new)
+> +void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
+>  {
+>         struct mem_cgroup *memcg;
+>         long nr_pages =3D folio_nr_pages(new);
+> @@ -7364,6 +7365,44 @@ void mem_cgroup_migrate(struct folio *old, struct =
+folio *new)
+>         local_irq_restore(flags);
+>  }
+>
+> +/**
+> + * mem_cgroup_migrate - Transfer the memcg data from the old to the new =
+folio.
+> + * @old: Currently circulating folio.
+> + * @new: Replacement folio.
+> + *
+> + * Transfer the memcg data from the old folio to the new folio for migra=
+tion.
+> + * The old folio's data info will be cleared. Note that the memory count=
+ers
+> + * will remain unchanged throughout the process.
+> + *
+> + * Both folios must be locked, @new->mapping must be set up.
+> + */
+> +void mem_cgroup_migrate(struct folio *old, struct folio *new)
+> +{
+> +       struct mem_cgroup *memcg;
+> +
+> +       VM_BUG_ON_FOLIO(!folio_test_locked(old), old);
+> +       VM_BUG_ON_FOLIO(!folio_test_locked(new), new);
+> +       VM_BUG_ON_FOLIO(folio_test_anon(old) !=3D folio_test_anon(new), n=
+ew);
+> +       VM_BUG_ON_FOLIO(folio_nr_pages(old) !=3D folio_nr_pages(new), new=
+);
+> +
+> +       if (mem_cgroup_disabled())
+> +               return;
+> +
+> +       memcg =3D folio_memcg(old);
+> +       /*
+> +        * Note that it is normal to see !memcg for a hugetlb folio.
+> +        * It could have been allocated when memory_hugetlb_accounting wa=
+s not
+> +        * selected, for e.g.
+> +        */
+> +       VM_WARN_ON_ONCE_FOLIO(!memcg, old);
+> +       if (!memcg)
+> +               return;
+> +
+> +       /* Transfer the charge and the css ref */
+> +       commit_charge(new, memcg);
+> +       old->memcg_data =3D 0;
+> +}
+> +
+>  DEFINE_STATIC_KEY_FALSE(memcg_sockets_enabled_key);
+>  EXPORT_SYMBOL(memcg_sockets_enabled_key);
+>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 7d1804c4a5d9..6034c7ed1d65 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -633,8 +633,7 @@ void folio_migrate_flags(struct folio *newfolio, stru=
+ct folio *folio)
+>
+>         folio_copy_owner(newfolio, folio);
+>
+> -       if (!folio_test_hugetlb(folio))
+> -               mem_cgroup_migrate(folio, newfolio);
+> +       mem_cgroup_migrate(folio, newfolio);
+>  }
+>  EXPORT_SYMBOL(folio_migrate_flags);
+>
+> --
+> 2.34.1
+>
