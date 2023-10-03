@@ -2,123 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B257B7416
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6840E7B7417
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjJCW0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 18:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
+        id S229829AbjJCW2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 18:28:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjJCW0e (ORCPT
+        with ESMTP id S229512AbjJCW2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 18:26:34 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADB4A7
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:26:31 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a200028437so18367557b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 15:26:31 -0700 (PDT)
+        Tue, 3 Oct 2023 18:28:21 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEAFA7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:28:18 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-51b4ef5378bso1132088a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 15:28:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696371990; x=1696976790; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696372097; x=1696976897; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=e/ezmrX03/lx2b3wgyBKph28UWpTDQ/b9recBcS7DQI=;
-        b=G+b5779MpqRobRsSke/A28Ctz1M3VA5W813AVH7yhZ3ERrCZcJrImS8b5m8ed5/Fkt
-         lTRZu93ok7yX9Z+Ns8Am5goBW3QSI+j466+IUH2zg1fT0cYU9YAhPSU2qPG0rniR+tgU
-         XhUK1ZQmqMUBAcZNQIKeCG0HFQkX96ncSKQ4AsH7VYJZpzlWZfCR4UoCzV9Ax8xQIbd8
-         Bh9HvI49GGhtulwh45EvYr++sEWH/uBmaLvgx938ggrpTPcXofshppYs4fjzX1So9LwQ
-         +wmf97Ji2886zoNqv/nFoLAaBJd+MgQumy41hx4QuS/dglr7PXYz/JefHahoGUugsD0z
-         Z6rw==
+        bh=GjVaaNbjiuXfFRi+hsEJ3ityN5sLjRpwvH34Vm3lyCg=;
+        b=jyvu6Z05ZCB7jqaknM4j7H3/cplwrJBeNZfTZYemEvC7wB5tG5dG7x+95UyP601gmS
+         751lV6er9IaaIgw/+383yxsYseK3FW82Z+CLfBz4r/8E/oLFttFoSyKpYMyHUCiedFoA
+         oSjHy1tywep6dOP4Q7ImngoCxoCPe8nlmcfGZzOxYXqnSjJ+wUHz/ngtfT5Pu4StZRVC
+         HeP1dFOQf+Jy1+dDIC/4yQdNhfYpY50P9/X6zC5aA679zQxrujyyolfXVXAdT0GWDUzI
+         rxBDnLhRzxgSpGIMxKKnnMenKNILl7JOSEjtTTcG/KmGK67hxCG5StckffcDiHse2TIL
+         yCTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696371990; x=1696976790;
+        d=1e100.net; s=20230601; t=1696372097; x=1696976897;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=e/ezmrX03/lx2b3wgyBKph28UWpTDQ/b9recBcS7DQI=;
-        b=DT2tAKKEGpOoRaUOp2wwpvy9OR0X4GgRDPka2/v/SuckizrsbmWLti8afeJ5R730ry
-         vpzIYIfpXJmjnLGwSMhTV95MG+G4seWeptT34N5GWetg1MUoiJkMqIj58222cjxbUE/c
-         xTTIgVqoDUxFSqb4X8fVsEV2615jiZRxoA+Qn/C+2krXE9v2mun/zasC+AurnrdnXug4
-         uK6hPiYO/IxJdgXJqKnExMyYWSZGn2VPBceoLNkEIFur7DNYEuiEPw+WwF/CXNZVtB7n
-         MVzaWfvhbelUVtJRpooE9u3bRkCyHdzhLPa2XuOKYUw/zk513BLwr1VOE49v3X2d8JoA
-         MUhw==
-X-Gm-Message-State: AOJu0YwkXlQ+VeewMjXxdocl00DbnAuGH6UZEQLrhY+WnSZGi8AF+15A
-        XcUrTt+EsWMsJa/ddxVF4VRTRtByUSvAUueJV8sN2A==
-X-Google-Smtp-Source: AGHT+IF0xmlVD08wVXp1gfdjZoxUeDjnszKhqUw2F/pnugOO1Cxpl/juxTDOh8Z6Eaai/DseLkxNvD3iKRk8HMP31oI=
-X-Received: by 2002:a0d:cbd7:0:b0:59b:fb30:9862 with SMTP id
- n206-20020a0dcbd7000000b0059bfb309862mr1004133ywd.3.1696371990056; Tue, 03
- Oct 2023 15:26:30 -0700 (PDT)
+        bh=GjVaaNbjiuXfFRi+hsEJ3ityN5sLjRpwvH34Vm3lyCg=;
+        b=o67FWKLV2jpKhGMyDkYMbGAqOBowFtLhMH2RwY3SvzqvmAqvGY5hsq1IOth+qzZB/I
+         XmxfITW8T5HC/qnCyv+A7dQ2yt/Y2s2FpXj0plzArzBcxG93o37YzVBdmUpaKNC56ZaB
+         J7DUi5jCQ+RRuTX9vYfWMGuTJGeFLy7P1uDAGylgmj6C9IhRj7V8bC5liHs9xHfFkrkR
+         ZDzRIkcs5V2mjoFnwsM9RWb+fbR9eZohFquYk+Y87v3Gn781CgnB33zM/RGVJk7DvV40
+         J9uC2NoIG0O5pYP4e5k7YySM5ZzqN1sPlylX1X5UEKl4UuZPkhUWSP1B/O4VWnyaI1Q1
+         Nd0w==
+X-Gm-Message-State: AOJu0YyQg3Mgvkj6IiDsQGC+vqh8iRrGExjCXFyw2rjkxdf5ovUTbah9
+        6nZd4ENTIy1LjnW50djd2t6nTFiXrIjK0PCr+Uf313Z1
+X-Google-Smtp-Source: AGHT+IG/4DThVes56oFOfCGNi886XpnTUDNUMFs/fiSC0i2swouaA5d0uQH9WnPDgF1WR/bDiFIUlddVXFKR0D9urjs=
+X-Received: by 2002:a05:6a21:99a2:b0:15e:d84:1c5e with SMTP id
+ ve34-20020a056a2199a200b0015e0d841c5emr800517pzb.38.1696372097502; Tue, 03
+ Oct 2023 15:28:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZRXHK3hbdjfQvCCp@x1n> <fc27ce41-bc97-91a7-deb6-67538689021c@redhat.com>
- <ZRrf8NligMzwqx97@x1n> <CA+EESO5VtrfXv-kvDsotPLXcpMgOK5t5c+tbXZ7KWRU2O_0PBQ@mail.gmail.com>
- <CA+EESO4W2jmBSpyHkkqZV0LHnA_OyWQcvwSkfPcWmWCsAF5UWw@mail.gmail.com>
- <9434ef94-15e8-889c-0c31-3e875060a2f7@redhat.com> <CA+EESO4GuDXZ6newN-oF43WOxrfsZ9Ejq8RJNF2wOYq571zmDA@mail.gmail.com>
- <CAJuCfpE_h7Bj41sBiADswkUfVCoLXANuQmctdYUEgYjn6fHSCw@mail.gmail.com>
- <ZRx31TKFDGRatoC8@x1n> <c837fc02-3dbd-ba88-dacb-cf150272a4c4@redhat.com> <ZRyFnurIgVFVD8hd@x1n>
-In-Reply-To: <ZRyFnurIgVFVD8hd@x1n>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 3 Oct 2023 15:26:16 -0700
-Message-ID: <CAJuCfpFggFpPxJjx9uGe05x0fTNONgoUf=QzkpCHLx43Tbryjg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
-To:     Peter Xu <peterx@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Jann Horn <jannh@google.com>, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, hughd@google.com, mhocko@suse.com,
-        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
-        Liam.Howlett@oracle.com, zhangpeng362@huawei.com,
-        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
-        jdduke@google.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
+References: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com> <80c9665c-1c3f-17ba-21a3-f6115cebf7d@google.com>
+In-Reply-To: <80c9665c-1c3f-17ba-21a3-f6115cebf7d@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 3 Oct 2023 15:28:06 -0700
+Message-ID: <CAHbLzkpso6SKP05UDwgSnY_PcX+9O9JF2ud1h69v71A_KHHO3A@mail.gmail.com>
+Subject: Re: [PATCH v2 08/12] mempolicy: remove confusing MPOL_MF_LAZY dead code
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Christoph Lameter <cl@linux.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        "Huang, Ying" <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 2:21=E2=80=AFPM Peter Xu <peterx@redhat.com> wrote:
+On Tue, Oct 3, 2023 at 2:24=E2=80=AFAM Hugh Dickins <hughd@google.com> wrot=
+e:
 >
-> On Tue, Oct 03, 2023 at 11:08:07PM +0200, David Hildenbrand wrote:
-> > Sorry I have to ask: has this ever been discussed on the list? I don't =
-see
-> > any pointers. If not, then probably the number of people that know abou=
-t the
-> > history can be counted with my two hands and that shouldn't be the basi=
-s for
-> > making decisions.
+> v3.8 commit b24f53a0bea3 ("mm: mempolicy: Add MPOL_MF_LAZY") introduced
+> MPOL_MF_LAZY, and included it in the MPOL_MF_VALID flags; but a720094ded8
+> ("mm: mempolicy: Hide MPOL_NOOP and MPOL_MF_LAZY from userspace for now")
+> immediately removed it from MPOL_MF_VALID flags, pending further review.
+> "This will need to be revisited", but it has not been reinstated.
 >
-> For example:
+> The present state is confusing: there is dead code in mm/mempolicy.c to
+> handle MPOL_MF_LAZY cases which can never occur.  Remove that: it can be
+> resurrected later if necessary.  But keep the definition of MPOL_MF_LAZY,
+> which must remain in the UAPI, even though it always fails with EINVAL.
 >
-> https://lore.kernel.org/all/1425575884-2574-21-git-send-email-aarcange@re=
-dhat.com/
+> https://lore.kernel.org/linux-mm/1553041659-46787-1-git-send-email-yang.s=
+hi@linux.alibaba.com/
+> links to a previous request to remove MPOL_MF_LAZY.
 
-There was another submission in 2019:
-https://lore.kernel.org/all/cover.1547251023.git.blake.caldwell@colorado.ed=
-u/
+Thanks for mentioning my work. I'm glad to see the dead code go away.
 
-Though both times it did not generate much discussion. I don't have a
-strong preference though MOVE sounds more generic to me TBH (it
-specifies the operation rather than REMAP which hints on how that
-operation is carried out). But again, I'm fine either way.
-As for UFFDIO_MOVE_ZERO_COPY_ONLY vs UFFDIO_MOVE_MODE_ALLOW_COPY, I
-find it weird that the default (the most efficient/desired) mode of
-operation needs a flag. I would prefer to have no flag initially and
-add UFFDIO_MOVE_MODE_ALLOW_COPY or whatever name is more appropriate
-when/if we ever need it. Makes sense?
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 
 >
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  include/uapi/linux/mempolicy.h |  2 +-
+>  mm/mempolicy.c                 | 18 ------------------
+>  2 files changed, 1 insertion(+), 19 deletions(-)
+>
+> diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolic=
+y.h
+> index 046d0ccba4cd..a8963f7ef4c2 100644
+> --- a/include/uapi/linux/mempolicy.h
+> +++ b/include/uapi/linux/mempolicy.h
+> @@ -48,7 +48,7 @@ enum {
+>  #define MPOL_MF_MOVE    (1<<1) /* Move pages owned by this process to co=
+nform
+>                                    to policy */
+>  #define MPOL_MF_MOVE_ALL (1<<2)        /* Move every page to conform to =
+policy */
+> -#define MPOL_MF_LAZY    (1<<3) /* Modifies '_MOVE:  lazy migrate on faul=
+t */
+> +#define MPOL_MF_LAZY    (1<<3) /* UNSUPPORTED FLAG: Lazy migrate on faul=
+t */
+>  #define MPOL_MF_INTERNAL (1<<4)        /* Internal flags start here */
+>
+>  #define MPOL_MF_VALID  (MPOL_MF_STRICT   |     \
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 5d99fd5cd60b..f3224a8b0f6c 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -636,12 +636,6 @@ unsigned long change_prot_numa(struct vm_area_struct=
+ *vma,
+>
+>         return nr_updated;
+>  }
+> -#else
+> -static unsigned long change_prot_numa(struct vm_area_struct *vma,
+> -                       unsigned long addr, unsigned long end)
+> -{
+> -       return 0;
+> -}
+>  #endif /* CONFIG_NUMA_BALANCING */
+>
+>  static int queue_pages_test_walk(unsigned long start, unsigned long end,
+> @@ -680,14 +674,6 @@ static int queue_pages_test_walk(unsigned long start=
+, unsigned long end,
+>         if (endvma > end)
+>                 endvma =3D end;
+>
+> -       if (flags & MPOL_MF_LAZY) {
+> -               /* Similar to task_numa_work, skip inaccessible VMAs */
+> -               if (!is_vm_hugetlb_page(vma) && vma_is_accessible(vma) &&
+> -                       !(vma->vm_flags & VM_MIXEDMAP))
+> -                       change_prot_numa(vma, start, endvma);
+> -               return 1;
+> -       }
+> -
+>         /*
+>          * Check page nodes, and queue pages to move, in the current vma.
+>          * But if no moving, and no strict checking, the scan can be skip=
+ped.
+> @@ -1274,9 +1260,6 @@ static long do_mbind(unsigned long start, unsigned =
+long len,
+>         if (IS_ERR(new))
+>                 return PTR_ERR(new);
+>
+> -       if (flags & MPOL_MF_LAZY)
+> -               new->flags |=3D MPOL_F_MOF;
+> -
+>         /*
+>          * If we are using the default policy then operation
+>          * on discontinuous address spaces is okay after all
+> @@ -1321,7 +1304,6 @@ static long do_mbind(unsigned long start, unsigned =
+long len,
+>
+>         if (!err) {
+>                 if (!list_empty(&pagelist)) {
+> -                       WARN_ON_ONCE(flags & MPOL_MF_LAZY);
+>                         nr_failed |=3D migrate_pages(&pagelist, new_folio=
+, NULL,
+>                                 start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND, =
+NULL);
+>                 }
 > --
-> Peter Xu
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
+> 2.35.3
 >
