@@ -2,139 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7677B6C06
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471017B6C0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240155AbjJCOrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
+        id S240159AbjJCOsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240106AbjJCOrA (ORCPT
+        with ESMTP id S229539AbjJCOsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:47:00 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EE0AD;
-        Tue,  3 Oct 2023 07:46:56 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393EHIIV026514;
-        Tue, 3 Oct 2023 14:46:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=tfLOe0VjA/rPVml+32m2VjdMp1XlyYfrkQaY6Acrs8o=;
- b=RVZapUYXEprjyDsX0sZsebjBBO2JFOD0ZR/rmGI17mArmJCawd3irDq4c/VCS5sccvWO
- vVhsJzFFcp6uMQMqUhmiqdFvpFiYoHjc0DlRhoFy+SDyGHzTY2PAskhoKTPnfxkhrC0u
- iEj/layxNpAvP5IVDYMzVDccW0YDB8THLVfhUeLrug65TJxfydijqUap0Cib0FXCwx4q
- ce90TLMT9/eLD3ppYeDrmUu0Xl6tEP+/HJUg2D6tW4Y21Wh7XD5k5mJAaSO61vOiY3AO
- REI8fmUuiAC3FgOnNQoM44rygQXYRv+pKTuG7MO60ecwRhzFGeSSLRAMCVPh7is0fPvI dQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3teb0se8us-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Oct 2023 14:46:36 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 393EkA4O032041
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 3 Oct 2023 14:46:10 GMT
-Received: from [10.216.32.208] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 3 Oct
- 2023 07:46:00 -0700
-Message-ID: <8eaec03f-40c1-4285-9b86-c39bda251c61@quicinc.com>
-Date:   Tue, 3 Oct 2023 20:15:56 +0530
+        Tue, 3 Oct 2023 10:48:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E15A1;
+        Tue,  3 Oct 2023 07:48:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696344514; x=1727880514;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xOPb2YJyo9DElC9cdF/qeqFy+J/BPVzboCD+C8033Ew=;
+  b=NSLJGu4t1WYTjPlkdiY6X/HD37BTeM5NXeZAyvdKuPqSuSgsomLqtpCj
+   vmk/S1sasq3E7404CuoYgp1ERKlBGr07Lt9tEDOPmcu0RsHWj4EoSV1rI
+   AevcCsUQsnQm78FHhh7JY/m/LElFsOc9077WlULZzmvgYRTB8piqQ6cHH
+   Yr6aq4JzIDWpdyuiTzJhX5R6cGTdIXKVoRtsESzLtGWgPhtvlFtd+KrHm
+   Aja+bJloboy2xB6AyfBWiCKVSYZLLGEFnPOfvtO3xrzIQA5w8zfXWf1S0
+   I0pkTH+2JvZgsmfXXqklMrOwDjgiWPiv/kxIrD9NMnZBuz9eo93pGPzs5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="385718306"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="385718306"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 07:48:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="821277035"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="821277035"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 07:48:30 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qnghJ-00000002VwI-1pU0;
+        Tue, 03 Oct 2023 17:48:29 +0300
+Date:   Tue, 3 Oct 2023 17:48:29 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 1/1] serial: 8250_bcm7271: Use
+ devm_clk_get_optional_enabled()
+Message-ID: <ZRwpvYn9xSm3+F/T@smile.fi.intel.com>
+References: <20231003141241.3071687-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/8] arm64: dts: qcom: ipq5332: Add clocks for USB
- Super-Speed
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <gregkh@linuxfoundation.org>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <p.zabel@pengutronix.de>,
-        <geert+renesas@glider.be>, <arnd@arndb.de>,
-        <neil.armstrong@linaro.org>, <nfraprado@collabora.com>,
-        <u-kumar1@ti.com>, <peng.fan@nxp.com>, <quic_wcheng@quicinc.com>,
-        <quic_varada@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <quic_kathirav@quicinc.com>, <quic_nsekar@quicinc.com>,
-        <quic_srichara@quicinc.com>
-References: <20230929084209.3033093-1-quic_ipkumar@quicinc.com>
- <20230929084209.3033093-6-quic_ipkumar@quicinc.com>
- <356a4f97-a483-4202-a6da-b48351d9b209@linaro.org>
-From:   Praveenkumar I <quic_ipkumar@quicinc.com>
-In-Reply-To: <356a4f97-a483-4202-a6da-b48351d9b209@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: a85uTrtq1TBPcd8x4djM9PzJ3ohD8rPG
-X-Proofpoint-ORIG-GUID: a85uTrtq1TBPcd8x4djM9PzJ3ohD8rPG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-03_11,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=768
- impostorscore=0 bulkscore=0 suspectscore=0 adultscore=0 mlxscore=0
- clxscore=1015 phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310030109
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003141241.3071687-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 03, 2023 at 05:12:41PM +0300, Andy Shevchenko wrote:
+
+Seems the old version had been sent...
+
+...
+
+> +	baud_mux_clk = devm_clk_get_optional_enabled(dev, "sw_baud");
+
+Here should be
+
+	ret = PTR_ERR_OR_ZERO(baud_mux_clk);
+
+> +	if (IS_ERR(baud_mux_clk))
+
+	if (ret)
+
+> +		goto release_dma;
 
 
-On 9/30/2023 10:55 PM, Dmitry Baryshkov wrote:
-> On 29/09/2023 11:42, Praveenkumar I wrote:
->> Add aux and lfps clocks in USB node for Super-Speed support.
->>
->> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/ipq5332.dtsi | 9 +++++++--
->>   1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi 
->> b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
->> index b08ffd8c094e..1813b9fa4bb5 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
->> @@ -336,11 +336,16 @@ usb: usb@8af8800 {
->>               clocks = <&gcc GCC_USB0_MASTER_CLK>,
->>                    <&gcc GCC_SNOC_USB_CLK>,
->>                    <&gcc GCC_USB0_SLEEP_CLK>,
->> -                 <&gcc GCC_USB0_MOCK_UTMI_CLK>;
->> +                 <&gcc GCC_USB0_MOCK_UTMI_CLK>,
->> +                 <&gcc GCC_USB0_AUX_CLK>,
->> +                 <&gcc GCC_USB0_LFPS_CLK>;
->
-> This looks like a strange change. Usually the DTB is considered to be 
-> the ABI, so older DTBs should continue to work with newer kernels. Is 
-> there a reason why the AUX and LFPS clocks were not a part of the 
-> original submission?
-This AUX and LFPS clocks are required only when USB controller uses the 
-UNIPHY and works in 3.0. Original change added 2.0 support and used m31-phy.
->
->> +
->>               clock-names = "core",
->>                         "iface",
->>                         "sleep",
->> -                      "mock_utmi";
->> +                      "mock_utmi",
->> +                      "aux",
->> +                      "lfps";
->>                 resets = <&gcc GCC_USB_BCR>;
->
---
-Thanks,
-Praveenkumar
+...I'll send a v2 later on. Sorry for the noise.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
