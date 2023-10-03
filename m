@@ -2,330 +2,457 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2B37B6ECF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9D87B6ED2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbjJCQoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
+        id S231482AbjJCQok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbjJCQoU (ORCPT
+        with ESMTP id S232066AbjJCQoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:44:20 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CAB49E;
-        Tue,  3 Oct 2023 09:44:17 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393E0d8V010510;
-        Tue, 3 Oct 2023 16:44:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=M3EgibbGHl0JH+WCJCAweVGyoXe1yl9zM3upiIVq4Ko=;
- b=fpiNDDNf2s9mXq7LS8sRhASOQoVClpk8yvqMdzeEQW3VTW3OKK0lzBs96a204EfZFH+j
- IHRxfem/s5OLI8YNwlOe3N2DfedqSZq6WMZm7xEH3QTABw+C6eBuR61LcZPdd8yXnOCr
- tVkqp85MZ0BBdLdrJsr5nYW/8LCvVikhaJbCGfQ0kNhjH0RWND0sIn+dh1DNqOJvsr7y
- LVgVJcBMCvDdPVsDjYEBOOSAG62fMKQKDxhweFXA34BGgfCV3etmfsq8UyiefS3PXlCC
- 0HCcBerHK09IrAKov47aEQBlPgaDfy62ftVFEXjbm/aFyaTLm4q5tJ+c/CGSRpm365dF /w== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgaw5hmwm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Oct 2023 16:44:00 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 393Ghw9K029764
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 3 Oct 2023 16:43:58 GMT
-Received: from [10.110.36.217] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 3 Oct
- 2023 09:43:57 -0700
-Message-ID: <e72ae247-459d-9f23-0583-ce6da1a30336@quicinc.com>
-Date:   Tue, 3 Oct 2023 09:43:56 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 7/8] drm/msm/dp: add
- pm_runtime_force_suspend()/resume()
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
-        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
-        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1695848028-18023-1-git-send-email-quic_khsieh@quicinc.com>
- <1695848028-18023-8-git-send-email-quic_khsieh@quicinc.com>
- <CAA8EJpor3WEYmN=hQJQPFyjZGdr4j8F-XAB=2BDVRFCTNioEiA@mail.gmail.com>
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <CAA8EJpor3WEYmN=hQJQPFyjZGdr4j8F-XAB=2BDVRFCTNioEiA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: CVmUA8p3xgoxXVsAwGnwwaugMs5z2RGd
-X-Proofpoint-GUID: CVmUA8p3xgoxXVsAwGnwwaugMs5z2RGd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-03_13,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- phishscore=0 priorityscore=1501 clxscore=1015 impostorscore=0 mlxscore=0
- lowpriorityscore=0 mlxlogscore=999 adultscore=0 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310030125
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 3 Oct 2023 12:44:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEFAB7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:44:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5008BC433C8;
+        Tue,  3 Oct 2023 16:44:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696351470;
+        bh=Z8k7r0SijCjAWC/bx4pqU4oVDof5/D3bwuNqj8zQNcU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EQ1YDltin6EW6+MPO+IOB0YPm/E1ZgJIZfSCOyxrE1vxpU4lVSMGfr1PeAele94Rv
+         hFfOtktmD1SdgZB1yB32a5YzAEDkE6kMA6kIf0VcogYwSQwqUdGLRsF779G4uXHG0c
+         ExytAmPRKBclSSHiNVEz/j1yfyCRxFheU5bxOrDd+xmwDb6iOzMfc6zr/o3jTEAQy8
+         sDBaWqjE/TQKpS16flKHNp7f/Pa7+Wtm7ocVYcITk38Xq8ddW6JsVMrJYJemWww+yo
+         x3fGT+MO+dFTc4PCxJE1yqUvrpc3H4SvKYQeJHLkCV2HD9FMjoOFwTa1N3dVC/6KMC
+         fOkUhGVwdj/sQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qniVX-000nOY-Ou;
+        Tue, 03 Oct 2023 17:44:27 +0100
+Date:   Tue, 03 Oct 2023 17:44:27 +0100
+Message-ID: <86r0mboduc.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Fang Xiang <fangxiang3@xiaomi.com>
+Subject: Re: [PATCH 2/2] irqchip/gic-v3: Enable non-coherent redistributors/ITSes probing
+In-Reply-To: <ZRwonK+01HKJkKXa@lpieralisi>
+References: <20230905104721.52199-1-lpieralisi@kernel.org>
+        <20230905104721.52199-3-lpieralisi@kernel.org>
+        <86msy0etul.wl-maz@kernel.org>
+        <ZRwonK+01HKJkKXa@lpieralisi>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: lpieralisi@kernel.org, linux-kernel@vger.kernel.org, robin.murphy@arm.com, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, robh+dt@kernel.org, fangxiang3@xiaomi.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 03 Oct 2023 15:43:40 +0100,
+Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
+>=20
+> On Tue, Sep 05, 2023 at 12:34:58PM +0100, Marc Zyngier wrote:
+>=20
+> [...]
+>=20
+> > >  	 * Make sure *all* the ITS are reset before we probe any, as
+> > >  	 * they may be sharing memory. If any of the ITS fails to
+> > > @@ -5396,7 +5405,8 @@ static int __init its_of_probe(struct device_no=
+de *node)
+> > >  			continue;
+> > >  		}
+> > > =20
+> > > -		its_probe_one(&res, &np->fwnode, of_node_to_nid(np));
+> > > +		its_probe_one(&res, &np->fwnode, of_node_to_nid(np),
+> > > +			      of_property_read_bool(np, "dma-noncoherent"));
+> > >  	}
+> > >  	return 0;
+> > >  }
+> > > @@ -5533,7 +5543,8 @@ static int __init gic_acpi_parse_madt_its(union=
+ acpi_subtable_headers *header,
+> > >  	}
+> > > =20
+> > >  	err =3D its_probe_one(&res, dom_handle,
+> > > -			acpi_get_its_numa_node(its_entry->translation_id));
+> > > +			acpi_get_its_numa_node(its_entry->translation_id),
+> > > +			false);
+> >=20
+> > I came up with the following alternative approach, which is as usual
+> > completely untested. It is entirely based on the quirk infrastructure,
+> > and doesn't touch the ACPI path at all.
+>=20
+> Writing the ACPI bits. We can't use the quirks framework for ACPI (we
+> don't have "properties" and I don't think we want to attach any to the
+> fwnode_handle) that's why I generalized its_probe_one() above with an
+> extra param, that would have simplified ACPI parsing:
+>=20
+> - we alloc struct its_node in its_probe_one() but at that stage
+>   ACPI parsing was already done. If we have to parse the MADT(ITS) again
+>   just to scan for non-coherent we then have to match the MADT entries
+>   to the *current* struct its_node* we are handling (MADT parsing
+>   callbacks don't even take a param - we have to resort to global
+>   variables - definitely doable but it is a bit ugly).
 
-On 9/27/2023 3:00 PM, Dmitry Baryshkov wrote:
-> On Wed, 27 Sept 2023 at 23:54, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->> After incorporated pm_runtime framework into eDP/DP driver, the
-> incorporating
->
->
->> original dp_pm_suspend() to handle power off both DP phy and
->> controller during suspend and dp_pm_resume() to handle power on
->> both DP phy and controller during resume are not necessary since
->> those function are replaced by dp_pm_runtime_suspend() and
->> dp_pm_runtime_resume() through pm runtime framework.
->> Therefore add pm framework provides functions,
->> pm_runtime_force_suspend()/resume() to complete incorporating pm
->> runtime framework into DP driver.
->>
->> Changes in v4:
->> -- drop both dp_pm_prepare() and dp_pm_compete() from this change
->> -- delete ST_SUSPENDED state
->> -- rewording commit text to add more details regrading the purpose
->>     of this change
->>
->> Changes in v3:
->> -- replace dp_pm_suspend() with pm_runtime_force_suspend()
->> -- replace dp_pm_resume() with pm_runtime_force_resume()
->>
->> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->> ---
->>   drivers/gpu/drm/msm/dp/dp_display.c | 113 ++----------------------------------
->>   1 file changed, 5 insertions(+), 108 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
->> index 9158a2c..711d262 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->> @@ -49,7 +49,6 @@ enum {
->>          ST_CONNECTED,
->>          ST_DISCONNECT_PENDING,
->>          ST_DISPLAY_OFF,
->> -       ST_SUSPENDED,
->>   };
->>
->>   enum {
->> @@ -560,7 +559,7 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
->>          drm_dbg_dp(dp->drm_dev, "Before, type=%d hpd_state=%d\n",
->>                          dp->dp_display.connector_type, state);
->>
->> -       if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
->> +       if (state == ST_DISPLAY_OFF) {
->>                  mutex_unlock(&dp->event_mutex);
->>                  return 0;
->>          }
->> @@ -674,7 +673,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
->>          drm_dbg_dp(dp->drm_dev, "Before, type=%d hpd_state=%d\n",
->>                          dp->dp_display.connector_type, state);
->>
->> -       if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
->> +       if (state == ST_DISPLAY_OFF) {
->>                  mutex_unlock(&dp->event_mutex);
->>                  return 0;
->>          }
->> @@ -1321,110 +1320,10 @@ static int dp_pm_runtime_resume(struct device *dev)
->>          return 0;
->>   }
->>
->> -static int dp_pm_resume(struct device *dev)
->> -{
->> -       struct platform_device *pdev = to_platform_device(dev);
->> -       struct msm_dp *dp_display = platform_get_drvdata(pdev);
->> -       struct dp_display_private *dp;
->> -       int sink_count = 0;
->> -
->> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
->> -
->> -       mutex_lock(&dp->event_mutex);
->> -
->> -       drm_dbg_dp(dp->drm_dev,
->> -               "Before, type=%d core_inited=%d phy_inited=%d power_on=%d\n",
->> -               dp->dp_display.connector_type, dp->core_initialized,
->> -               dp->phy_initialized, dp_display->power_on);
->> -
->> -       /* start from disconnected state */
->> -       dp->hpd_state = ST_DISCONNECTED;
->> -
->> -       /* turn on dp ctrl/phy */
->> -       dp_display_host_init(dp);
->> -
->> -       if (dp_display->is_edp)
->> -               dp_catalog_ctrl_hpd_enable(dp->catalog);
->> -
->> -       if (dp_catalog_link_is_connected(dp->catalog)) {
->> -               /*
->> -                * set sink to normal operation mode -- D0
->> -                * before dpcd read
->> -                */
->> -               dp_display_host_phy_init(dp);
->> -               dp_link_psm_config(dp->link, &dp->panel->link_info, false);
->> -               sink_count = drm_dp_read_sink_count(dp->aux);
->> -               if (sink_count < 0)
->> -                       sink_count = 0;
->> -
->> -               dp_display_host_phy_exit(dp);
->> -       }
->> -
->> -       dp->link->sink_count = sink_count;
->> -       /*
->> -        * can not declared display is connected unless
->> -        * HDMI cable is plugged in and sink_count of
->> -        * dongle become 1
->> -        * also only signal audio when disconnected
->> -        */
->> -       if (dp->link->sink_count) {
->> -               dp->dp_display.link_ready = true;
->> -       } else {
->> -               dp->dp_display.link_ready = false;
->> -               dp_display_handle_plugged_change(dp_display, false);
->> -       }
->> -
->> -       drm_dbg_dp(dp->drm_dev,
->> -               "After, type=%d sink=%d conn=%d core_init=%d phy_init=%d power=%d\n",
->> -               dp->dp_display.connector_type, dp->link->sink_count,
->> -               dp->dp_display.link_ready, dp->core_initialized,
->> -               dp->phy_initialized, dp_display->power_on);
->> -
->> -       mutex_unlock(&dp->event_mutex);
->> -
->> -       return 0;
->> -}
->> -
->> -static int dp_pm_suspend(struct device *dev)
->> -{
->> -       struct platform_device *pdev = to_platform_device(dev);
->> -       struct msm_dp *dp_display = platform_get_drvdata(pdev);
->> -       struct dp_display_private *dp;
->> -
->> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
->> -
->> -       mutex_lock(&dp->event_mutex);
->> -
->> -       drm_dbg_dp(dp->drm_dev,
->> -               "Before, type=%d core_inited=%d  phy_inited=%d power_on=%d\n",
->> -               dp->dp_display.connector_type, dp->core_initialized,
->> -               dp->phy_initialized, dp_display->power_on);
->> -
->> -       /* mainlink enabled */
->> -       if (dp_power_clk_status(dp->power, DP_CTRL_PM))
->> -               dp_ctrl_off_link_stream(dp->ctrl);
->> -
->> -       dp_display_host_phy_exit(dp);
-> I was under the impression that dp_pm_runtime_suspend / _resume
-> functions perform phy init/exit only in eDP cases. Can we really drop
-> the main suspend/resume functions?
+Well, a more acceptable approach would be for its_probe_one() to take
+an allocated and possibly pre-populated its_node structure (crucially,
+with the quirk flags set), which itself results in a bunch of low
+hanging cleanups, see the patch below.
 
-yes on eDP case since it is embedded.
+I have boot tested it in a DT guest, so it is obviously perfect.
 
-for external DP case, there are two steps
+	M.
 
-step 1: enable DP controller's  hpd block and start waiting for hpd 
-interrupts at dp_display_hpd_enable()
+=46rom 978f654d4459adf0b8f3f8e896ca37035b3b114c Mon Sep 17 00:00:00 2001
+From: Marc Zyngier <maz@kernel.org>
+Date: Tue, 3 Oct 2023 17:35:27 +0100
+Subject: [PATCH] irqchip/gic-v3-its: Split allocation from initialisation of
+ its_node
 
-step 2:  at plugin interrupts,  dp_display_host_phy_init()
+In order to pave the way for more fancy quirk handling without making
+more of a mess of this terrible driver, split the allocation of the
+ITS descriptor (its_node) from the actual probing.
 
-step 3: at unplug interrupt: dp_bridge_atomic_post_disable() 
-dp_display_host_phy_exi()
+This will allow firmware-specific hooks to be added between these
+two points.
 
-at runtime, there is loop between step 2 and step 3
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ drivers/irqchip/irq-gic-v3-its.c | 151 +++++++++++++++++++------------
+ 1 file changed, 91 insertions(+), 60 deletions(-)
 
-step  4: disable DP controller's  hpd block
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-=
+its.c
+index e0c2b10d154d..bf21383b714e 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -4952,7 +4952,7 @@ static void __init __iomem *its_map_one(struct resour=
+ce *res, int *err)
+ 	return NULL;
+ }
+=20
+-static int its_init_domain(struct fwnode_handle *handle, struct its_node *=
+its)
++static int its_init_domain(struct its_node *its)
+ {
+ 	struct irq_domain *inner_domain;
+ 	struct msi_domain_info *info;
+@@ -4966,7 +4966,7 @@ static int its_init_domain(struct fwnode_handle *hand=
+le, struct its_node *its)
+=20
+ 	inner_domain =3D irq_domain_create_hierarchy(its_parent,
+ 						   its->msi_domain_flags, 0,
+-						   handle, &its_domain_ops,
++						   its->fwnode_handle, &its_domain_ops,
+ 						   info);
+ 	if (!inner_domain) {
+ 		kfree(info);
+@@ -5017,8 +5017,7 @@ static int its_init_vpe_domain(void)
+ 	return 0;
+ }
+=20
+-static int __init its_compute_its_list_map(struct resource *res,
+-					   void __iomem *its_base)
++static int __init its_compute_its_list_map(struct its_node *its)
+ {
+ 	int its_number;
+ 	u32 ctlr;
+@@ -5032,15 +5031,15 @@ static int __init its_compute_its_list_map(struct r=
+esource *res,
+ 	its_number =3D find_first_zero_bit(&its_list_map, GICv4_ITS_LIST_MAX);
+ 	if (its_number >=3D GICv4_ITS_LIST_MAX) {
+ 		pr_err("ITS@%pa: No ITSList entry available!\n",
+-		       &res->start);
++		       &its->phys_base);
+ 		return -EINVAL;
+ 	}
+=20
+-	ctlr =3D readl_relaxed(its_base + GITS_CTLR);
++	ctlr =3D readl_relaxed(its->base + GITS_CTLR);
+ 	ctlr &=3D ~GITS_CTLR_ITS_NUMBER;
+ 	ctlr |=3D its_number << GITS_CTLR_ITS_NUMBER_SHIFT;
+-	writel_relaxed(ctlr, its_base + GITS_CTLR);
+-	ctlr =3D readl_relaxed(its_base + GITS_CTLR);
++	writel_relaxed(ctlr, its->base + GITS_CTLR);
++	ctlr =3D readl_relaxed(its->base + GITS_CTLR);
+ 	if ((ctlr & GITS_CTLR_ITS_NUMBER) !=3D (its_number << GITS_CTLR_ITS_NUMBE=
+R_SHIFT)) {
+ 		its_number =3D ctlr & GITS_CTLR_ITS_NUMBER;
+ 		its_number >>=3D GITS_CTLR_ITS_NUMBER_SHIFT;
+@@ -5048,75 +5047,50 @@ static int __init its_compute_its_list_map(struct r=
+esource *res,
+=20
+ 	if (test_and_set_bit(its_number, &its_list_map)) {
+ 		pr_err("ITS@%pa: Duplicate ITSList entry %d\n",
+-		       &res->start, its_number);
++		       &its->phys_base, its_number);
+ 		return -EINVAL;
+ 	}
+=20
+ 	return its_number;
+ }
+=20
+-static int __init its_probe_one(struct resource *res,
+-				struct fwnode_handle *handle, int numa_node)
++static int __init its_probe_one(struct its_node *its)
+ {
+-	struct its_node *its;
+-	void __iomem *its_base;
+-	u64 baser, tmp, typer;
++	u64 baser, tmp;
+ 	struct page *page;
+ 	u32 ctlr;
+ 	int err;
+=20
+-	its_base =3D its_map_one(res, &err);
+-	if (!its_base)
+-		return err;
+-
+-	pr_info("ITS %pR\n", res);
+-
+-	its =3D kzalloc(sizeof(*its), GFP_KERNEL);
+-	if (!its) {
+-		err =3D -ENOMEM;
+-		goto out_unmap;
+-	}
+-
+-	raw_spin_lock_init(&its->lock);
+-	mutex_init(&its->dev_alloc_lock);
+-	INIT_LIST_HEAD(&its->entry);
+-	INIT_LIST_HEAD(&its->its_device_list);
+-	typer =3D gic_read_typer(its_base + GITS_TYPER);
+-	its->typer =3D typer;
+-	its->base =3D its_base;
+-	its->phys_base =3D res->start;
+ 	if (is_v4(its)) {
+-		if (!(typer & GITS_TYPER_VMOVP)) {
+-			err =3D its_compute_its_list_map(res, its_base);
++		if (!(its->typer & GITS_TYPER_VMOVP)) {
++			err =3D its_compute_its_list_map(its);
+ 			if (err < 0)
+-				goto out_free_its;
++				goto out;
+=20
+ 			its->list_nr =3D err;
+=20
+ 			pr_info("ITS@%pa: Using ITS number %d\n",
+-				&res->start, err);
++				&its->phys_base, err);
+ 		} else {
+-			pr_info("ITS@%pa: Single VMOVP capable\n", &res->start);
++			pr_info("ITS@%pa: Single VMOVP capable\n", &its->phys_base);
+ 		}
+=20
+ 		if (is_v4_1(its)) {
+-			u32 svpet =3D FIELD_GET(GITS_TYPER_SVPET, typer);
++			u32 svpet =3D FIELD_GET(GITS_TYPER_SVPET, its->typer);
+=20
+-			its->sgir_base =3D ioremap(res->start + SZ_128K, SZ_64K);
++			its->sgir_base =3D ioremap(its->phys_base + SZ_128K, SZ_64K);
+ 			if (!its->sgir_base) {
+ 				err =3D -ENOMEM;
+-				goto out_free_its;
++				goto out;
+ 			}
+=20
+-			its->mpidr =3D readl_relaxed(its_base + GITS_MPIDR);
++			its->mpidr =3D readl_relaxed(its->base + GITS_MPIDR);
+=20
+ 			pr_info("ITS@%pa: Using GICv4.1 mode %08x %08x\n",
+-				&res->start, its->mpidr, svpet);
++				&its->phys_base, its->mpidr, svpet);
+ 		}
+ 	}
+=20
+-	its->numa_node =3D numa_node;
+-
+ 	page =3D alloc_pages_node(its->numa_node, GFP_KERNEL | __GFP_ZERO,
+ 				get_order(ITS_CMD_QUEUE_SZ));
+ 	if (!page) {
+@@ -5125,12 +5099,9 @@ static int __init its_probe_one(struct resource *res,
+ 	}
+ 	its->cmd_base =3D (void *)page_address(page);
+ 	its->cmd_write =3D its->cmd_base;
+-	its->fwnode_handle =3D handle;
+ 	its->get_msi_base =3D its_irq_get_msi_base;
+ 	its->msi_domain_flags =3D IRQ_DOMAIN_FLAG_ISOLATED_MSI;
+=20
+-	its_enable_quirks(its);
+-
+ 	err =3D its_alloc_tables(its);
+ 	if (err)
+ 		goto out_free_cmd;
+@@ -5174,7 +5145,7 @@ static int __init its_probe_one(struct resource *res,
+ 		ctlr |=3D GITS_CTLR_ImDe;
+ 	writel_relaxed(ctlr, its->base + GITS_CTLR);
+=20
+-	err =3D its_init_domain(handle, its);
++	err =3D its_init_domain(its);
+ 	if (err)
+ 		goto out_free_tables;
+=20
+@@ -5191,11 +5162,8 @@ static int __init its_probe_one(struct resource *res,
+ out_unmap_sgir:
+ 	if (its->sgir_base)
+ 		iounmap(its->sgir_base);
+-out_free_its:
+-	kfree(its);
+-out_unmap:
+-	iounmap(its_base);
+-	pr_err("ITS@%pa: failed probing (%d)\n", &res->start, err);
++out:
++	pr_err("ITS@%pa: failed probing (%d)\n", &its->phys_base, err);
+ 	return err;
+ }
+=20
+@@ -5356,10 +5324,53 @@ static const struct of_device_id its_device_id[] =
+=3D {
+ 	{},
+ };
+=20
++static struct its_node __init *its_node_init(struct resource *res,
++					     struct fwnode_handle *handle, int numa_node)
++{
++	void __iomem *its_base;
++	struct its_node *its;
++	int err;
++
++	its_base =3D its_map_one(res, &err);
++	if (!its_base)
++		return NULL;
++
++	pr_info("ITS %pR\n", res);
++
++	its =3D kzalloc(sizeof(*its), GFP_KERNEL);
++	if (!its)
++		goto out_unmap;
++
++	raw_spin_lock_init(&its->lock);
++	mutex_init(&its->dev_alloc_lock);
++	INIT_LIST_HEAD(&its->entry);
++	INIT_LIST_HEAD(&its->its_device_list);
++
++	its->typer =3D gic_read_typer(its_base + GITS_TYPER);
++	its->base =3D its_base;
++	its->phys_base =3D res->start;
++
++	its->numa_node =3D numa_node;
++	its->fwnode_handle =3D handle;
++
++	return its;
++
++out_unmap:
++	iounmap(its_base);
++	return NULL;
++}
++
++static void its_node_destroy(struct its_node *its)
++{
++	iounmap(its->base);
++	kfree(its);
++}
++
+ static int __init its_of_probe(struct device_node *node)
+ {
+ 	struct device_node *np;
+ 	struct resource res;
++	int err;
+=20
+ 	/*
+ 	 * Make sure *all* the ITS are reset before we probe any, as
+@@ -5369,8 +5380,6 @@ static int __init its_of_probe(struct device_node *no=
+de)
+ 	 */
+ 	for (np =3D of_find_matching_node(node, its_device_id); np;
+ 	     np =3D of_find_matching_node(np, its_device_id)) {
+-		int err;
+-
+ 		if (!of_device_is_available(np) ||
+ 		    !of_property_read_bool(np, "msi-controller") ||
+ 		    of_address_to_resource(np, 0, &res))
+@@ -5383,6 +5392,8 @@ static int __init its_of_probe(struct device_node *no=
+de)
+=20
+ 	for (np =3D of_find_matching_node(node, its_device_id); np;
+ 	     np =3D of_find_matching_node(np, its_device_id)) {
++		struct its_node *its;
++
+ 		if (!of_device_is_available(np))
+ 			continue;
+ 		if (!of_property_read_bool(np, "msi-controller")) {
+@@ -5396,7 +5407,17 @@ static int __init its_of_probe(struct device_node *n=
+ode)
+ 			continue;
+ 		}
+=20
+-		its_probe_one(&res, &np->fwnode, of_node_to_nid(np));
++
++		its =3D its_node_init(&res, &np->fwnode, of_node_to_nid(np));
++		if (!its)
++			return -ENOMEM;
++
++		its_enable_quirks(its);
++		err =3D its_probe_one(its);
++		if (err)  {
++			its_node_destroy(its);
++			return err;
++		}
+ 	}
+ 	return 0;
+ }
+@@ -5508,6 +5529,7 @@ static int __init gic_acpi_parse_madt_its(union acpi_=
+subtable_headers *header,
+ {
+ 	struct acpi_madt_generic_translator *its_entry;
+ 	struct fwnode_handle *dom_handle;
++	struct its_node *its;
+ 	struct resource res;
+ 	int err;
+=20
+@@ -5532,11 +5554,20 @@ static int __init gic_acpi_parse_madt_its(union acp=
+i_subtable_headers *header,
+ 		goto dom_err;
+ 	}
+=20
+-	err =3D its_probe_one(&res, dom_handle,
+-			acpi_get_its_numa_node(its_entry->translation_id));
++	its =3D its_node_init(&res, dom_handle,
++			    acpi_get_its_numa_node(its_entry->translation_id));
++	if (!its) {
++		err =3D -ENOMEM;
++		goto node_err;
++	}
++
++	/* Stick ACPI quirk handling here */
++
++	err =3D its_probe_one(its);
+ 	if (!err)
+ 		return 0;
+=20
++node_err:
+ 	iort_deregister_domain_token(its_entry->translation_id);
+ dom_err:
+ 	irq_domain_free_fwnode(dom_handle);
+--=20
+2.34.1
 
->
->> -
->> -       /* host_init will be called at pm_resume */
->> -       dp_display_host_deinit(dp);
->> -
->> -       dp->hpd_state = ST_SUSPENDED;
->> -
->> -       drm_dbg_dp(dp->drm_dev,
->> -               "After, type=%d core_inited=%d phy_inited=%d power_on=%d\n",
->> -               dp->dp_display.connector_type, dp->core_initialized,
->> -               dp->phy_initialized, dp_display->power_on);
->> -
->> -       mutex_unlock(&dp->event_mutex);
->> -
->> -       return 0;
->> -}
->> -
->>   static const struct dev_pm_ops dp_pm_ops = {
->>          SET_RUNTIME_PM_OPS(dp_pm_runtime_suspend, dp_pm_runtime_resume, NULL)
->> -       .suspend = dp_pm_suspend,
->> -       .resume =  dp_pm_resume,
->> +       SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
->> +                                pm_runtime_force_resume)
->>   };
->>
->>   static struct platform_driver dp_display_driver = {
->> @@ -1658,9 +1557,6 @@ void dp_bridge_atomic_post_disable(struct drm_bridge *drm_bridge,
->>
->>          dp_display = container_of(dp, struct dp_display_private, dp_display);
->>
->> -       if (dp->is_edp)
->> -               dp_hpd_unplug_handle(dp_display, 0);
-> Why?
-
-dp_hpd_unplug_handle() does not tear down phy.
-
-Therefore eDP does not need to call unplug handle.
-
-
-
->> -
->>          mutex_lock(&dp_display->event_mutex);
->>
->>          state = dp_display->hpd_state;
->> @@ -1748,6 +1644,7 @@ void dp_bridge_hpd_disable(struct drm_bridge *bridge)
->>          dp_catalog_ctrl_hpd_disable(dp->catalog);
->>
->>          dp_display->internal_hpd = false;
->> +       dp->hpd_state = ST_DISCONNECTED;
-> Why? We have only disabled sending of the HPD events. The dongle might
-> still be connected.
-
-dp_bridge_hpd_disable() disable dp controller hpd block (no more hpd 
-interrupt will be received).
-
-dp_bridge_hpd_disable() should happen after DP main link had been teared 
-down already.
-
-Therefore hpd_state need to be in default state so that next plugin 
-handle will be start with correct state.
-
-
->
->>          pm_runtime_mark_last_busy(&dp->pdev->dev);
->>          pm_runtime_put_autosuspend(&dp->pdev->dev);
->> --
->> 2.7.4
->>
->
-> --
-> With best wishes
->
-> Dmitry
+--=20
+Without deviation from the norm, progress is not possible.
