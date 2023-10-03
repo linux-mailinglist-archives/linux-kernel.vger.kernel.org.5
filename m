@@ -2,110 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F077B69D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24F37B69D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232573AbjJCNHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
+        id S231266AbjJCNHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbjJCNHa (ORCPT
+        with ESMTP id S232578AbjJCNHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:07:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DA993;
-        Tue,  3 Oct 2023 06:07:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1115CC433C8;
-        Tue,  3 Oct 2023 13:07:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696338447;
-        bh=ArFpsG+rmsCSYEIB4kkM8QPGFJQJDJOHz7UBLDI+9zE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gVPVFPEs1/OCC8qjCciwFIU3setxljjE5Q0Nh12gpiXrCBm9YrwGGTLL2Sll2nnhE
-         xAMKRJ6B6fsIaABPHnnbZfVRbUrFGePnVkrdlppa8RyN1Z4gEMfLbKOjI5oywxUJBk
-         Cq5NltCK3+O6rDxH0Qpy0Uq9bln0sPMiJiPZnhxZS6po30gpPOzFnzsrxDa4O90TQL
-         zNm9yd8tHbjBhEOdayrG3eI3/Hz2QNqwcmgHbutDi8Yy2c9d7PDirN6x0uRw4BMT4b
-         b6hXS+0+aMwKD3xgJeEk33u1xRYcX7JUtwSp31Xa/b8I1bY9AYdRqUr/QcyxEIRmL5
-         +0NjjPeTuc8/g==
-Date:   Tue, 3 Oct 2023 15:07:24 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        bcm-kernel-feedback-list@broadcom.com, jonathan.derrick@linux.dev,
-        kw@linux.com, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-renesas-soc@vger.kernel.org,
-        lpieralisi@kernel.org, marek.vasut+renesas@gmail.com,
-        minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
-        m.karthikeyan@mobiveil.co.in, nirmal.patel@linux.intel.com,
-        rjui@broadcom.com, robh@kernel.org, roy.zang@nxp.com,
-        sbranden@broadcom.com, yoshihiro.shimoda.uh@renesas.com,
-        Zhiqiang.Hou@nxp.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] PCI: Use PCI_HEADER_TYPE_* instead of literals
-Message-ID: <ZRwSDNOlZwUu+vqE@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        bcm-kernel-feedback-list@broadcom.com, jonathan.derrick@linux.dev,
-        kw@linux.com, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-renesas-soc@vger.kernel.org,
-        lpieralisi@kernel.org, marek.vasut+renesas@gmail.com,
-        minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
-        m.karthikeyan@mobiveil.co.in, nirmal.patel@linux.intel.com,
-        rjui@broadcom.com, robh@kernel.org, roy.zang@nxp.com,
-        sbranden@broadcom.com, yoshihiro.shimoda.uh@renesas.com,
-        Zhiqiang.Hou@nxp.com, linux-kernel@vger.kernel.org
-References: <20231003125300.5541-1-ilpo.jarvinen@linux.intel.com>
- <20231003125300.5541-4-ilpo.jarvinen@linux.intel.com>
+        Tue, 3 Oct 2023 09:07:35 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF66893;
+        Tue,  3 Oct 2023 06:07:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A76911F45B;
+        Tue,  3 Oct 2023 13:07:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1696338450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FrpETq8twusJ5sdH9d+XrhUFsRvR1gF/4TiRFUUmkNo=;
+        b=tOXjeMZGVlb97/Zga+TON5k8gXv2c7gmG4KxASLu0sE/TvavPKgmvnkSVcpY5tCwIgqIMJ
+        JdgDc1Hx1IuePwvXuFIRv9VJMtfufVzx6B8B1RPpjjOF8rfyiHvgKAYr3VGQLitpsCbAl3
+        fiVAJ0Oh6Dnx/oe7HtEjBFRLL1WG5JI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1696338450;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FrpETq8twusJ5sdH9d+XrhUFsRvR1gF/4TiRFUUmkNo=;
+        b=Tc5HhKdZU8QKXE3JUQyWi4uE30im3D3QubNCSrnQjD7NHbDOKkdpTAkHv1shINBQYVdCIF
+        jz/GIVFtdYoFfJBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9A6D4132D4;
+        Tue,  3 Oct 2023 13:07:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0Aa4JRISHGWVLgAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 03 Oct 2023 13:07:30 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 48209A07CC; Tue,  3 Oct 2023 15:07:30 +0200 (CEST)
+Date:   Tue, 3 Oct 2023 15:07:30 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Maiolino <cem@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 2/8] shmem: remove vma arg from shmem_get_folio_gfp()
+Message-ID: <20231003130730.hiag5s6ubditcazg@quack3>
+References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
+ <d9ce6f65-a2ed-48f4-4299-fdb0544875c5@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8/zJ+jH2FaDITq/3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231003125300.5541-4-ilpo.jarvinen@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <d9ce6f65-a2ed-48f4-4299-fdb0544875c5@google.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 29-09-23 20:26:53, Hugh Dickins wrote:
+> The vma is already there in vmf->vma, so no need for a separate arg.
+> 
+> Signed-off-by: Hugh Dickins <hughd@google.com>
 
---8/zJ+jH2FaDITq/3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sure. Feel free to add:
 
-On Tue, Oct 03, 2023 at 03:53:00PM +0300, Ilpo J=C3=A4rvinen wrote:
-> Replace literals under drivers/pci/ with PCI_HEADER_TYPE_MASK,
-> PCI_HEADER_TYPE_NORMAL, and PCI_HEADER_TYPE_MFD.
->=20
-> While at it, replace !! boolean conversion with FIELD_GET().
->=20
-> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com> # for Renesas =
-R-Car
+								Honza
 
-
---8/zJ+jH2FaDITq/3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUcEgwACgkQFA3kzBSg
-KbbwZQ/+OWN+pr0W3mgNuEkqIJy1gENxgZSQwTuDfc50jkQ+QvaDabXZyduk5uDf
-QDqFHQCwuodVcB2FkK+WUddSmLHChpSSX4imzxhhd21YAAd2mZMwKxvW1T0theCe
-ZdRnxE1S0H/B4OsULDMppn+3DZVW2aGre32u7lq7hIpmj2dRbpH4TBbTLchXoMQY
-RCOUJ0baTYSXiDjgbmq+urT98IqO4gMxuEmzuoICqZCsb1gFUOz+aM3Jfxc/9BJw
-su9LoOCg/Ud447vnOkzs6BlkBgocWXFJPb/dIPPiaMkDIPyxrljWU9S8MVpcC2/7
-Fhd0phffcjTn1W0cSRwTJPpS9fagWYduMrLjFimhR1a9ERmTzzI8QAOH5/Dk9zoO
-b4AQ4dysH08lHur+o+tMnlhtGS3xbcvymorR4uqA35gzCTVDSdNbnmIi+K/WutuR
-8N1DsSwyvMpwAMLvoFeQZGY2zNAP83/CGbITi6Gj3RUmEMP9jCkEl1r+YKOC5bjQ
-rkv1pRvPgG/am6hzVx3RyIdOUddcKCsgQt+3nBfby6HG+PbuxxKtrthxXUHmunDX
-p/zlkUzjNKryvwL09lzLs3Ys13EBazLZAbPWN0lZYuekcbKrL//m0N7qvNmLo8oy
-ZcMD9javfLimKe1u3MffJ7RMnEjwcPViS/7Ym54dm5YjNmLMTrI=
-=KypN
------END PGP SIGNATURE-----
-
---8/zJ+jH2FaDITq/3--
+> ---
+>  mm/shmem.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 69595d341882..824eb55671d2 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1921,14 +1921,13 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
+>   * vm. If we swap it in we mark it dirty since we also free the swap
+>   * entry since a page cannot live in both the swap and page cache.
+>   *
+> - * vma, vmf, and fault_type are only supplied by shmem_fault:
+> - * otherwise they are NULL.
+> + * vmf and fault_type are only supplied by shmem_fault: otherwise they are NULL.
+>   */
+>  static int shmem_get_folio_gfp(struct inode *inode, pgoff_t index,
+>  		struct folio **foliop, enum sgp_type sgp, gfp_t gfp,
+> -		struct vm_area_struct *vma, struct vm_fault *vmf,
+> -		vm_fault_t *fault_type)
+> +		struct vm_fault *vmf, vm_fault_t *fault_type)
+>  {
+> +	struct vm_area_struct *vma = vmf ? vmf->vma : NULL;
+>  	struct address_space *mapping = inode->i_mapping;
+>  	struct shmem_inode_info *info = SHMEM_I(inode);
+>  	struct shmem_sb_info *sbinfo;
+> @@ -2141,7 +2140,7 @@ int shmem_get_folio(struct inode *inode, pgoff_t index, struct folio **foliop,
+>  		enum sgp_type sgp)
+>  {
+>  	return shmem_get_folio_gfp(inode, index, foliop, sgp,
+> -			mapping_gfp_mask(inode->i_mapping), NULL, NULL, NULL);
+> +			mapping_gfp_mask(inode->i_mapping), NULL, NULL);
+>  }
+>  
+>  /*
+> @@ -2225,7 +2224,7 @@ static vm_fault_t shmem_fault(struct vm_fault *vmf)
+>  	}
+>  
+>  	err = shmem_get_folio_gfp(inode, vmf->pgoff, &folio, SGP_CACHE,
+> -				  gfp, vma, vmf, &ret);
+> +				  gfp, vmf, &ret);
+>  	if (err)
+>  		return vmf_error(err);
+>  	if (folio)
+> @@ -4897,7 +4896,7 @@ struct folio *shmem_read_folio_gfp(struct address_space *mapping,
+>  
+>  	BUG_ON(!shmem_mapping(mapping));
+>  	error = shmem_get_folio_gfp(inode, index, &folio, SGP_CACHE,
+> -				  gfp, NULL, NULL, NULL);
+> +				    gfp, NULL, NULL);
+>  	if (error)
+>  		return ERR_PTR(error);
+>  
+> -- 
+> 2.35.3
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
