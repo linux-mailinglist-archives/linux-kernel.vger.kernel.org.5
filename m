@@ -2,126 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3723E7B6913
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCEC7B691C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232163AbjJCMeb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 08:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
+        id S232345AbjJCMg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbjJCMea (ORCPT
+        with ESMTP id S231207AbjJCMg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:34:30 -0400
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF1C83;
-        Tue,  3 Oct 2023 05:34:27 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-59f6041395dso10603887b3.1;
-        Tue, 03 Oct 2023 05:34:27 -0700 (PDT)
+        Tue, 3 Oct 2023 08:36:57 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21EBF83
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 05:36:54 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d894b8b9b7cso734895276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 05:36:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696336613; x=1696941413; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BBX7WALro7ZMkb002Ch3k9j1xjJ9wEjQFSfSLSNKyVA=;
+        b=wowDWE69tD5ieLR6Ads/Gyej3DkIMinqPh4cf/7coSvZFkJzUDlN2cLFVx7EQ3hTNB
+         6fJcMgDSlDvBfW49tVCMEksYLzhaL93dCQCXELdqo0cHyuPZwmm1n4ohS6zn5M5QjfQy
+         /GxFQfrb6uTdu+j8YJ9znAVNbXndw2vrEWS07hFxk4reJyYXEq5G2DUT0yemwBRvrOF3
+         VIhBDKDjQW9pJnapUZZp2ZVG/GX5JYq6yJPwwTR0uvocDQHTGybydTc0/P1Csa9tkwHZ
+         246VrjNHqcNLnvN+30nged/SL2CYVWX3Y16qte3XE1Y3REak48Uvrbsern8cKwXf+vIU
+         l+zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696336466; x=1696941266;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3DyBs7OjE8jGf/jQcbBbdy03j+SsN0IPwt3J55hhRj0=;
-        b=e0fFxxstmbGaGuXzrIAY6XEizdk4rGey1o1qDeufielZbrSSF2ZE3/KqBPctjIM8Ao
-         H+slMRDLl4Zb4iOTiODrujqCvWvieGyv2cAA6Ke09wEDYkewXT0mlQ5L1zLKr1XwtwnI
-         aMX7TbTsRmYuxUfIailLgK2WsZRYAWGfqr/HD+dX3i9aurMk+k8acdTVrkChvmOL4T6I
-         i49sp7YmtkBx9HnQuJK0ECGelJbuAq6zPTezLEJn00xQPX47GuFDjDfQn7cdLdQUaKmM
-         O7tmncPNH3RKsqlj0zV1+T/Od7R1F4sz27gGndC0o6fUHT+tGr6afkMLcsmR2Uoby1K8
-         irwg==
-X-Gm-Message-State: AOJu0YyCIMnm5DCq+nl+C3tQ9h/SxWGjtUsw5FHUtrYF2gDQZ3QapcJ0
-        ORYXblU77ZBPax6E+1G3A9mNYvqAx2rOBQ==
-X-Google-Smtp-Source: AGHT+IHQxI4Lae36EIbOfXgiDWX/lVBpqDp2zC1dMSZbiYcpijEowWNlU4EEo5ZBG2FgvApaU7ttHQ==
-X-Received: by 2002:a25:8204:0:b0:d86:55a1:3e5f with SMTP id q4-20020a258204000000b00d8655a13e5fmr13761013ybk.48.1696336466400;
-        Tue, 03 Oct 2023 05:34:26 -0700 (PDT)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id v93-20020a25abe6000000b00d81425266c1sm373700ybi.42.2023.10.03.05.34.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 05:34:26 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-59f6e6b206fso10486567b3.3;
-        Tue, 03 Oct 2023 05:34:26 -0700 (PDT)
-X-Received: by 2002:a25:c791:0:b0:d81:6e88:7cb3 with SMTP id
- w139-20020a25c791000000b00d816e887cb3mr13683713ybe.47.1696336465884; Tue, 03
- Oct 2023 05:34:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696336613; x=1696941413;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BBX7WALro7ZMkb002Ch3k9j1xjJ9wEjQFSfSLSNKyVA=;
+        b=O6jx6Z9B2oWmgfxLKMdco3PQkBDCTg3eCKqZMH7ZPz+ZEHAXbQjISJzPEMi5Y8EmYB
+         pzhPT711+7qOWSf/DE8EpNu1SDchD8x6vDw3UB53AIrV6UEPqBWXTU+8BmkG9NvEtKyf
+         /6QUT5IYbhxwYH/uEUH9DeiXLUWGAl/7Zj6nXn3OYfRMyZBxq0Vbt1r9sC+35aaEzKTq
+         Xpq+OnPCSgnBY2O6PGTOCpf5dLMtX1Z2Hc5a7Z9DLDP86dDYaGH6gip+ffsnYOwoWRZN
+         3TlKswslSNXpbWX3Ld2QDxFrx3QH6xmgfiELIPB+RsajFT4fiiG/bZGcHxCxUCB2bcs6
+         n/xw==
+X-Gm-Message-State: AOJu0Yw1Fzdu+CsrYq1zWul1Mx22YBPj58E13jJY3Ecm4IUpyX7ZRLYE
+        5BoXCX3NZv+DRuKuv/8w82scDDZvp0VI+hNn3xhkFw==
+X-Google-Smtp-Source: AGHT+IGdl+vhW0m01pb/+ML+OMGARTp9lewRZVPBj7PzhWM7waqR82ShESUiVLf8ufb7gdbuRoiu4yVr0cW53ETCZw0=
+X-Received: by 2002:a25:8b09:0:b0:d81:b5e2:b1cc with SMTP id
+ i9-20020a258b09000000b00d81b5e2b1ccmr1931296ybl.5.1696336613296; Tue, 03 Oct
+ 2023 05:36:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230929000704.53217-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20230929000704.53217-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20230929000704.53217-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 3 Oct 2023 14:34:13 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVdWzK_MRz+NeZ_mx=NcH9_EF-B0At=YsOfOABLV3B9tg@mail.gmail.com>
-Message-ID: <CAMuHMdVdWzK_MRz+NeZ_mx=NcH9_EF-B0At=YsOfOABLV3B9tg@mail.gmail.com>
-Subject: Re: [PATCH 5/5] riscv: configs: defconfig: Enable configs required
- for RZ/Five SoC
-To:     Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20230925131715.138411-1-ulf.hansson@linaro.org>
+ <20230925131715.138411-7-ulf.hansson@linaro.org> <CAPDyKFo+XCEtTSNqtA1SeajWo4tuRroA4GrRegta5TsqSGd4eQ@mail.gmail.com>
+ <20231003082322.cmok766jxzftsgrg@vireshk-i7>
+In-Reply-To: <20231003082322.cmok766jxzftsgrg@vireshk-i7>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 3 Oct 2023 14:36:17 +0200
+Message-ID: <CAPDyKForAJfdqqpkAP0vwZFAtSAtGMyqChLVr96v7PDWRj2qzw@mail.gmail.com>
+Subject: Re: [PATCH 6/9] OPP: Extend support for the opp-level beyond required-opps
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
-
-On Fri, Sep 29, 2023 at 2:07 AM Prabhakar <prabhakar.csengg@gmail.com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Tue, 3 Oct 2023 at 10:23, Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >
-> Enable the configs required by the below IP blocks which are
-> present on RZ/Five SoC:
-> * ADC
-> * CANFD
-> * DMAC
-> * eMMC/SDHI
-> * OSTM
-> * RAVB (+ Micrel PHY)
-> * RIIC
-> * RSPI
-> * SSI (Sound+WM8978 codec)
-> * Thermal
-> * USB (PHY/RESET/OTG)
+> On 25-09-23, 15:33, Ulf Hansson wrote:
+> > On Mon, 25 Sept 2023 at 15:18, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > At this point the level (performance state) for an OPP is currently limited
+> > > to be requested for a device that is attached to a PM domain.  Moreover,
+> > > the device needs to have the so called required-opps assigned to it, which
+> > > are based upon OPP tables being described in DT.
+> > >
+> > > To extend the support beyond required-opps and DT, let's enable the level
+> > > to be set for all OPPs. More precisely, if the requested OPP has a valid
+> > > level let's try to request it through the device's optional PM domain, via
+> > > calling dev_pm_domain_set_performance_state().
+> > >
+> > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > ---
+> > >  drivers/opp/core.c | 29 +++++++++++++++++++++++++++++
+> > >  1 file changed, 29 insertions(+)
+> > >
+> > > diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> > > index 60dca60ac4af..afb73978cdcb 100644
+> > > --- a/drivers/opp/core.c
+> > > +++ b/drivers/opp/core.c
+> > > @@ -1107,6 +1107,22 @@ void _update_set_required_opps(struct opp_table *opp_table)
+> > >                 opp_table->set_required_opps = _opp_set_required_opps_generic;
+> > >  }
+> > >
+> > > +static int _set_opp_level(struct device *dev, struct opp_table *opp_table,
+> > > +                         struct dev_pm_opp *opp)
+> > > +{
+> > > +       int ret = 0;
+> > > +
+> > > +       /* Request a new performance state through the device's PM domain. */
+> > > +       if (opp && opp->level) {
+> > > +               ret = dev_pm_domain_set_performance_state(dev, opp->level);
+> > > +               if (ret)
+> > > +                       dev_err(dev, "Failed to set performance state %u (%d)\n",
+> > > +                               opp->level, ret);
+> > > +       }
+> >
+> > Okay, so reviewing my own code found a problem here. We need an "else"
+> > here, that should request the performance state to be set to 0.
+> >
+> > I am not sending a new version at this point, but awaiting more feedback first.
 >
-> Along with the above some core configs are enabled too,
-> -> CPU frequency scaling as RZ/Five does support this.
-> -> MTD is enabled as RSPI can be connected to flash chips
-> -> Enabled I2C chardev so that it enables userspace to read/write
->    i2c devices (similar to arm64)
-> -> Thermal configs as RZ/Five SoC does have thermal unit
-> -> GPIO regulator as we might have IP blocks for which voltage
->    levels are controlled by GPIOs
-> -> OTG configs as RZ/Five USB can support host/function
-> -> Gadget configs so that we can test USB function (as done in arm64
->    all the gadget configs are enabled)
+> I am looking to add below to this patch, is that okay with you ?
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 7b505316bb1c..a113e9caaa5a 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1135,16 +1135,22 @@ void _update_set_required_opps(struct opp_table *opp_table)
+>  static int _set_opp_level(struct device *dev, struct opp_table *opp_table,
+>                           struct dev_pm_opp *opp)
+>  {
+> +       unsigned int level = 0;
+>         int ret = 0;
+>
+> -       /* Request a new performance state through the device's PM domain. */
+> -       if (opp && opp->level) {
+> -               ret = dev_pm_domain_set_performance_state(dev, opp->level);
+> -               if (ret)
+> -                       dev_err(dev, "Failed to set performance state %u (%d)\n",
+> -                               opp->level, ret);
+> +       if (opp) {
+> +               if (!opp->level)
+> +                       return 0;
+> +
+> +               level = opp->level;
+>         }
+>
+> +       /* Request a new performance state through the device's PM domain. */
+> +       ret = dev_pm_genpd_set_performance_state(dev, level);
+> +       if (ret)
+> +               dev_err(dev, "Failed to set performance state %u (%d)\n", level,
+> +                       ret);
+> +
+>         return ret;
+>  }
+>
+> I am switching back to dev_pm_genpd_set_performance_state() as I won't be
+> applying the power domain changes.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Can you please explain further on this. Rafael has acked those
+patches, so it should be perfectly fine for you to pick them via your
+tree too. There is no need to defer them.
 
-As I expect this to go in through the RISC-V tree, I will let the
-RISC-V people handle any discussion about more options that should be
-made modular instead of builtin.
+> I will then push out a branch and you can
+> rebase your patches on top of it ? And then probably Sudeep or someone else can
+> apply everything ?
 
-Gr{oetje,eeting}s,
+Or are you suggesting to just take one of the patches from my series,
+and then I will re-base everything on top?
 
-                        Geert
+Just trying to understand the way forward. :-)
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Kind regards
+Uffe
