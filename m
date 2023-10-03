@@ -2,183 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 932717B6ABB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8CB7B6AC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232146AbjJCNkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
+        id S235334AbjJCNk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbjJCNkK (ORCPT
+        with ESMTP id S232169AbjJCNkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:40:10 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F0AADA9
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:40:06 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1AFA2C15;
-        Tue,  3 Oct 2023 06:40:45 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 92D613F59C;
-        Tue,  3 Oct 2023 06:40:05 -0700 (PDT)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Peter Collingbourne <pcc@google.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] arm64/mm: Hoist synchronization out of set_ptes() loop
-Date:   Tue,  3 Oct 2023 14:39:55 +0100
-Message-Id: <20231003133955.637353-1-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 3 Oct 2023 09:40:53 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14591AD;
+        Tue,  3 Oct 2023 06:40:49 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 8AB133200B40;
+        Tue,  3 Oct 2023 09:40:45 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 03 Oct 2023 09:40:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1696340445; x=1696426845; bh=pFiUCM0Cn00jPD1kU6gNbpIBQuIHykihdnF
+        gCoeT11M=; b=N1rsup18Lf/e/7bOBtifmqIztvYO5QZengtcNpzCJUyAeIOrTTQ
+        RwSPWXxrpgkpGub37RnfhA4l8kNZQ2/6ISAtp4cXBp4pd3EKcIhdhuISJbqMH3QW
+        VqmrZPyWiiojsQA5j+Bq7TWvI7emjjNTTN97CZt1V3mWhIJWVUJQuhxqkN9PWg/v
+        LRsQuH3JdNmtHO9nOBgsU8298q1dSBXlrhbpGNJfHdzpTlRkTe1EgY800b63u7Kb
+        BE87xNSa8uC4A/ZlPsfVjAUyBOFSn3Vdg+iypFhO55M2CVb0AeST8iyxupVigOkg
+        ZzNy4a+XxzwvQjdzhcXceRKkfi/dSkqG9TA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1696340445; x=1696426845; bh=pFiUCM0Cn00jPD1kU6gNbpIBQuIHykihdnF
+        gCoeT11M=; b=X8xWX1F87dFRO3w8fBnHCxAjOlmej7UIeTtFEDQO3JFj/z8xhhD
+        aqjCsFoshVqquyrxj81l2OdqYMGnfHAoT/nqTkKtWiJf1IHJu7mnbaf3Z3PuCYs9
+        b2sM7M3PJmxAbYOTRr89zA4YghcmGNN23VyItGXPLMnhNfFmxRHKF2Y/p31zrZv3
+        DF9LC44mfcQ40ZFJUDlywjvAn5wtDgx+gcB11wfUg46FGB+GOkxW2me4VD3jXMEt
+        HEjHxcA4Regb8zAABd97Eh+CtQ3ZujpuRyzA5jWMBKBNjnLTgdEOeerC58PD2e44
+        lyRKaXA+a0Lr+HSchP8KNTHjK15YI4eq2cw==
+X-ME-Sender: <xms:3BkcZWwjGs7LvcVC55nvMdLGmR9riSdPjYORODr6gtPz9GK-cGTc-g>
+    <xme:3BkcZSQ5etQsozNBvMakkeCpck1-cuwFp8qsdzYhcDYWMnIzwv3bf1CflTP_ep1Jz
+    q_qiNJY6B2xjdIbGVg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeeigdeihecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgfekueelgeeigefhudduledtkeefffejueelheelfedutedttdfgveeufeef
+    ieegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:3BkcZYUE8SN8HerVPa3OcBXQR5czyY9JUEKot_I15wNz2yoWT1VMDw>
+    <xmx:3BkcZcjWLZ1RDOhC-0EiDQtl_E_FbQc6oFR5BbIP0uTIq5yMO9Maaw>
+    <xmx:3BkcZYDnH8g49iUq2pL8bFWVz9yW9vTeazdOY-kBlLTanv0l-TuHtg>
+    <xmx:3RkcZRJZ3hxVzxVnwd3RLlepQE3kDRSWegZNuC_ltIWliSaKyMIg3w>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0F0E8B6008D; Tue,  3 Oct 2023 09:40:44 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <0174c612-ed97-44f3-bec5-1f512f135d21@app.fastmail.com>
+In-Reply-To: <20231003.ahPha5bengee@digikod.net>
+References: <20231003.ahPha5bengee@digikod.net>
+Date:   Tue, 03 Oct 2023 15:40:23 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        "Stephen Rothwell" <sfr@canb.auug.org.au>
+Cc:     "Konstantin Meskhidze" <konstantin.meskhidze@huawei.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-next <linux-next@vger.kernel.org>,
+        "Willem de Bruijn" <willemdebruijn.kernel@gmail.com>,
+        gnoack3000@gmail.com, linux-security-module@vger.kernel.org,
+        Netdev <netdev@vger.kernel.org>, netfilter-devel@vger.kernel.org,
+        yusongping@huawei.com, artem.kuzin@huawei.com,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>
+Subject: Re: linux-next: build warning after merge of the landlock tree
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-set_ptes() sets a physically contiguous block of memory (which all
-belongs to the same folio) to a contiguous block of ptes. The arm64
-implementation of this previously just looped, operating on each
-individual pte. But the __sync_icache_dcache() and mte_sync_tags()
-operations can both be hoisted out of the loop so that they are
-performed once for the contiguous set of pages (which may be less than
-the whole folio). This should result in minor performance gains.
+On Tue, Oct 3, 2023, at 15:15, Micka=C3=ABl Sala=C3=BCn wrote:
+> PowerPC-64 follows the LP64 data model and then uses int-l64.h (instea=
+d of
+> int-ll64.h like most architectures) for user space code.
+>
+> Here is the same code with the (suggested) "%lu" token on x86_86:
+>
+>   samples/landlock/sandboxer.c: In function =E2=80=98populate_ruleset_=
+net=E2=80=99:
+>   samples/landlock/sandboxer.c:170:77: error: format =E2=80=98%lu=E2=80=
+=99 expects=20
+> argument of type =E2=80=98long unsigned int=E2=80=99, but argument 3 h=
+as type =E2=80=98__u64=E2=80=99=20
+> {aka =E2=80=98long long unsigned int=E2=80=99} [-Werror=3Dformat=3D]
+>     170 |                                 "Failed to update the rulese=
+t=20
+> with port \"%lu\": %s\n",
+>         |                                                             =
+ =20
+>             ~~^
+>         |                                                             =
+ =20
+>               |
+>         |                                                             =
+ =20
+>               long unsigned int
+>         |                                                             =
+ =20
+>             %llu
+>     171 |                                 net_port.port,=20
+> strerror(errno));
+>         |                                 ~~~~~~~~~~~~~
+>         |                                         |
+>         |                                         __u64 {aka long long=20
+> unsigned int}
+>
+>
+> We would then need to cast __u64 to unsigned long long to avoid this w=
+arning,
+> which may look useless, of even buggy, for people taking a look at thi=
+s sample.
+>
+> Anyway, it makes more sense to cast it to __u16 because it is the
+> expected type for a TCP port. I'm updating the patch with that.
+> Konstantin, please take this fix for the next series:
+> https://git.kernel.org/mic/c/fc9de206a61a
+>
+>
+> On Tue, Oct 03, 2023 at 02:27:37PM +1100, Stephen Rothwell wrote:
+>> Hi all,
+>>=20
+>> After merging the landlock tree, today's linux-next build (powerpc
+>> allyesconfig) produced this warning:
+>>=20
+>> samples/landlock/sandboxer.c: In function 'populate_ruleset_net':
+>> samples/landlock/sandboxer.c:170:78: warning: format '%llu' expects a=
+rgument of type 'long long unsigned int', but argument 3 has type '__u64=
+' {aka 'long unsigned int'} [-Wformat=3D]
+>>   170 |                                 "Failed to update the ruleset=
+ with port \"%llu\": %s\n"
 
-__sync_icache_dcache() already acts on the whole folio, and sets a flag
-in the folio so that it skips duplicate calls. But by hoisting the call,
-all the pte testing is done only once.
+I think defining the __SANE_USERSPACE_TYPES__ macro should take care of =
+this,
+then __u64 has the same type as it does in the kernel.
 
-mte_sync_tags() operates on each individual page with its own loop. But
-by passing the number of pages explicitly, we can rely solely on its
-loop and do the checks only once. This approach also makes it robust for
-the future, rather than assuming if a head page of a compound page is
-being mapped, then the whole compound page is being mapped, instead we
-explicitly know how many pages are being mapped. The old assumption may
-not continue to hold once the "anonymous large folios" feature is
-merged.
-
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
- arch/arm64/include/asm/mte.h     |  4 ++--
- arch/arm64/include/asm/pgtable.h | 27 +++++++++++++++++----------
- arch/arm64/kernel/mte.c          |  4 ++--
- 3 files changed, 21 insertions(+), 14 deletions(-)
-
-diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-index 4cedbaa16f41..91fbd5c8a391 100644
---- a/arch/arm64/include/asm/mte.h
-+++ b/arch/arm64/include/asm/mte.h
-@@ -90,7 +90,7 @@ static inline bool try_page_mte_tagging(struct page *page)
- }
-
- void mte_zero_clear_page_tags(void *addr);
--void mte_sync_tags(pte_t pte);
-+void mte_sync_tags(pte_t pte, unsigned int nr_pages);
- void mte_copy_page_tags(void *kto, const void *kfrom);
- void mte_thread_init_user(void);
- void mte_thread_switch(struct task_struct *next);
-@@ -122,7 +122,7 @@ static inline bool try_page_mte_tagging(struct page *page)
- static inline void mte_zero_clear_page_tags(void *addr)
- {
- }
--static inline void mte_sync_tags(pte_t pte)
-+static inline void mte_sync_tags(pte_t pte, unsigned int nr_pages)
- {
- }
- static inline void mte_copy_page_tags(void *kto, const void *kfrom)
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 7f7d9b1df4e5..374c1c1485f9 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -325,8 +325,7 @@ static inline void __check_safe_pte_update(struct mm_struct *mm, pte_t *ptep,
- 		     __func__, pte_val(old_pte), pte_val(pte));
- }
-
--static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
--				pte_t *ptep, pte_t pte)
-+static inline void __sync_cache_and_tags(pte_t pte, unsigned int nr_pages)
- {
- 	if (pte_present(pte) && pte_user_exec(pte) && !pte_special(pte))
- 		__sync_icache_dcache(pte);
-@@ -339,20 +338,18 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
- 	 */
- 	if (system_supports_mte() && pte_access_permitted(pte, false) &&
- 	    !pte_special(pte) && pte_tagged(pte))
--		mte_sync_tags(pte);
--
--	__check_safe_pte_update(mm, ptep, pte);
--
--	set_pte(ptep, pte);
-+		mte_sync_tags(pte, nr_pages);
- }
-
- static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
- 			      pte_t *ptep, pte_t pte, unsigned int nr)
- {
- 	page_table_check_ptes_set(mm, ptep, pte, nr);
-+	__sync_cache_and_tags(pte, nr);
-
- 	for (;;) {
--		__set_pte_at(mm, addr, ptep, pte);
-+		__check_safe_pte_update(mm, ptep, pte);
-+		set_pte(ptep, pte);
- 		if (--nr == 0)
- 			break;
- 		ptep++;
-@@ -531,18 +528,28 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
- #define pud_pfn(pud)		((__pud_to_phys(pud) & PUD_MASK) >> PAGE_SHIFT)
- #define pfn_pud(pfn,prot)	__pud(__phys_to_pud_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
-
-+static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
-+				pte_t *ptep, pte_t pte, unsigned int nr)
-+{
-+	__sync_cache_and_tags(pte, nr);
-+	__check_safe_pte_update(mm, ptep, pte);
-+	set_pte(ptep, pte);
-+}
-+
- static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
- 			      pmd_t *pmdp, pmd_t pmd)
- {
- 	page_table_check_pmd_set(mm, pmdp, pmd);
--	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd));
-+	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd),
-+						PMD_SHIFT - PAGE_SHIFT);
- }
-
- static inline void set_pud_at(struct mm_struct *mm, unsigned long addr,
- 			      pud_t *pudp, pud_t pud)
- {
- 	page_table_check_pud_set(mm, pudp, pud);
--	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud));
-+	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud),
-+						PUD_SHIFT - PAGE_SHIFT);
- }
-
- #define __p4d_to_phys(p4d)	__pte_to_phys(p4d_pte(p4d))
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index 4edecaac8f91..2fb5e7a7a4d5 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -35,10 +35,10 @@ DEFINE_STATIC_KEY_FALSE(mte_async_or_asymm_mode);
- EXPORT_SYMBOL_GPL(mte_async_or_asymm_mode);
- #endif
-
--void mte_sync_tags(pte_t pte)
-+void mte_sync_tags(pte_t pte, unsigned int nr_pages)
- {
- 	struct page *page = pte_page(pte);
--	long i, nr_pages = compound_nr(page);
-+	unsigned int i;
-
- 	/* if PG_mte_tagged is set, tags have already been initialised */
- 	for (i = 0; i < nr_pages; i++, page++) {
---
-2.25.1
-
+        Arnd
