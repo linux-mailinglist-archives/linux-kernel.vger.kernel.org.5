@@ -2,158 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D847B5F11
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 04:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444127B5F1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 04:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239012AbjJCCck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 22:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
+        id S230028AbjJCCfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 22:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjJCCck (ORCPT
+        with ESMTP id S229719AbjJCCfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 22:32:40 -0400
-Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2086.outbound.protection.outlook.com [40.92.102.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2C7BF;
-        Mon,  2 Oct 2023 19:32:36 -0700 (PDT)
+        Mon, 2 Oct 2023 22:35:18 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08834BD
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 19:35:15 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hOWkXhdOYL1SpcMiv8wZxR2tHtiSrE6GPm/67LkCOE5tG7cNwbBNwsMXEcTwhKbzWfftp+v07IlcbQvQBRf2VG4XHFLCWfd/+nKRO+4wx57/LyqTMIvUR05wLhIFDnneZ2GQv+AkFgRZ5G6Rs8arBk98AVaWZvmPCGekSjd1y6aXB+HaIa/WCKN5JKp+YKlzQfluCCqYt1YY5H0QKpl9xj1y7mXnYzbrunSJcexYtEI+wRDeN5PWds7Us2QsSt07EPwmo1IKftBQKI1gUODaA6nKPszNkJECYYz0YDoB+LLc+sDXd3aTW9dQk4XvAdTSZAqGAP+p/tp6hqZu5jJE9Q==
+ b=B4PNXMhX/i6MyRb2AKiSqsvau3586SroC/ZOdJsKS5bTBufD2jVCffIRoWOh18kxg1cihdU5ZNf7QZDW8jO5fCT+yndKmTwY67CamLsxRD+fOcAila3ol2x6wx2swHza2zKzY4qOtuDvVjJnbgnIsIrnD1BbNo5kvq2gdEyKLo/SichrnNb20XUiOaymN+DwBDgJEIz6nJugObB64NlldvmmlEMmenuyKfSog0zZPzg0occnhWnIMo9wVSowWhdEAZb9AW9jBX/p65nEVqmFfGktPPD6Ow7zeERQyk6atzjwEzgaiPt4tA4QpG3cFyrzeGX38CUZT/DCmGmYPFK/mQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=srtYqI5fxWdxWnt69NGrVgg9OFCl1KuDtkCOprzXcyU=;
- b=jHj8bxsPsNGw6MO4W6vhXoxALtBbe34rgE7J5Z5ri9UL1Tsea/y2DR7PDHDuEI7ISrmx0qum6kGucCTDKHpZrPjuyanE6ztjIxAkLs/iqS3xgmJTvrUC5/Z2baUTqKrU81F1aBfB37zV3ccUcRzmMzYcKlQpWB4IN/JxzNxH1ZD3neTcPs+sRA5VfmKvft7MyP2YTisOUjlKcfMfLeimmwypPXKiQriDfSKTnZnbN76VUZNq0nPHzUfHz1d9upK5O95DFLZKXy1LTgdOi+VK+3KJ0ilO4pUXsbpN5NlAs9it4SEU3BzHo3sHlqex9uAld7ytHI9ngcjte9SQRoIyug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
+ bh=V9KLRPZYVkmpK1RhseISmYEeL8ZC5/ardhzOLkac8ME=;
+ b=oGlleoAf8v0aENA53A7DN0m/qhqB3rdX1A9eOfyKJMIwZhA8+ad2qqiREMt+Nj1tXvaCQ8cfn8rM7ipEKPBYNXCassxyG9ON11oG/DntIkLUCvisH3++LcVgrf54ob4V/JES8zOBua3mHVGh1jsq24sW313NEY+gsTPdQPPoq21kR6vYDtOSFUxEUuIhaMamVDQnJFdxQrYALqIYRwWz3JLnr3V2ewJ1WjMYLMGeRPnIL+U6Jl/aHlkCw5yM9hCAp4ONR1eHJvDZc21zOxYQ/2ziuF/clt/z1N86Cw9+SXU9FBjdQVSx8o3UH6aRCNRjbNoEiKZZdRyegy7IVVAtLg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=srtYqI5fxWdxWnt69NGrVgg9OFCl1KuDtkCOprzXcyU=;
- b=E/4cq891jW+dV/owec4JNTu018eZfBbrnI2boo4ysez7zY8g2v3p9zMirwjKj5EqpqvsYlH1uvVmnwl5nbFywLVhniy1NyvzKGZ9eG7EkskYvT1XM777Xw04N7Qujpg6UNDuV5CCw9fVxgFVhJcymu8G5jyiFN4tCDpkaU6cTtIbAnaT4GKjXNJRmMQTKjxppl6F0LRoSXsSwiB9yNoJqllzVh7ywDNvtfk0waB6YL5yCk+JhN9Iv9P/4WuJeTT7jpkM3zQzeleW9IuMOLaA3ACGoIxzbdNBQOyEJKljQJuDGaiUoWzncSrYTBAgkvNmIHiIfiKuRnKIQSQv21yURQ==
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
- PN2P287MB1631.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:1a9::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.29; Tue, 3 Oct 2023 02:32:27 +0000
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7%3]) with mapi id 15.20.6838.028; Tue, 3 Oct 2023
- 02:32:27 +0000
-Message-ID: <MA0P287MB03323A58B068D400E8225E80FEC4A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-Date:   Tue, 3 Oct 2023 10:32:20 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] Add Milk-V Duo board support
-To:     Conor Dooley <conor@kernel.org>, Jisheng Zhang <jszhang@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
-        xiaoguang.xing@sophgo.com
-References: <20230930123937.1551-1-jszhang@kernel.org>
- <20231002-slurp-anime-a2308245174e@spud>
-From:   Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <20231002-slurp-anime-a2308245174e@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN:  [k3J3NN7BTkwyO6A6E6lh92Npy4x5GQFV]
-X-ClientProxiedBy: SI2PR06CA0010.apcprd06.prod.outlook.com
- (2603:1096:4:186::6) To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:ab::5)
-X-Microsoft-Original-Message-ID: <caacf3ab-1391-44ef-b023-95ac5c01a981@outlook.com>
+ bh=V9KLRPZYVkmpK1RhseISmYEeL8ZC5/ardhzOLkac8ME=;
+ b=BjdQHv4aqhQ3P9kq/tiw5TDDxy4rHL9D5ajyGWUGqknUKQjpYC3SJ2EvYzF67TN+eoA1iZ6bp/zTbgti0YNmq+vNaGWgcYJrS6iaumKi1iLkBLzwth7h6lVVpJsIae4YUG1k4u+j7Z+ruNBKJr9i3sWrtJXfZV5ksERoGJ4ci/nrJmEnxA63EzEsFnI7GpLcehyKvkTBmOJ7J8lsWb4RyDM7nv+FnN3jenman3V5ilzT8KmUPYOkTYnjaHAddgMsMkX+P1uAMn/8eCt4ClnSMjtdspeNJdPNpRhWnHv8lCRqIgDb+B3jIBlX/dQ5a/S50uFE0T5Jd38oSXnen3aCAg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ PH8PR12MB6891.namprd12.prod.outlook.com (2603:10b6:510:1cb::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Tue, 3 Oct
+ 2023 02:35:12 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::4b09:197c:609a:1013]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::4b09:197c:609a:1013%7]) with mapi id 15.20.6838.016; Tue, 3 Oct 2023
+ 02:35:12 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 0/6] mm: page_alloc: freelist migratetype hygiene
+Date:   Mon, 02 Oct 2023 22:35:10 -0400
+X-Mailer: MailMate (1.14r5987)
+Message-ID: <6EA38E52-1E76-4A25-BC14-B5D5FC46298B@nvidia.com>
+In-Reply-To: <ac73d772-c585-1d9e-c8ee-36c51b608906@redhat.com>
+References: <a88b7339-beab-37c6-7d32-0292b325916d@suse.cz>
+ <20230918145204.GB16104@cmpxchg.org> <20230918174037.GA112714@monkey>
+ <20230919064914.GA124289@cmpxchg.org> <20230919184731.GC112714@monkey>
+ <C416A861-44D3-46E7-B756-63DA3731FC1E@nvidia.com>
+ <20230920003239.GD112714@monkey>
+ <149ACAE8-D3E4-4009-828A-D3AC881FFB9C@nvidia.com>
+ <bc4bd049-1e29-0f23-cca6-493abb5e774f@suse.cz>
+ <20230920134811.GB124289@cmpxchg.org> <20230920160400.GC124289@cmpxchg.org>
+ <762CA634-053A-41DD-8ED7-895374640858@nvidia.com>
+ <D4F59724-61EB-4DA5-94DF-59E79F0F1FB3@nvidia.com>
+ <505e7f55-f63a-b33d-aa10-44de16d2d3cc@redhat.com>
+ <4466F447-43D3-43CD-8930-FBE9A49028BA@nvidia.com>
+ <98f3e433-153d-5dd8-c868-30f703baeb46@redhat.com>
+ <6DD1F426-A87D-47B7-B27F-043B399CBEDA@nvidia.com>
+ <ac73d772-c585-1d9e-c8ee-36c51b608906@redhat.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_3C158B70-4045-41D7-88D6-665F331E9115_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: BLAP220CA0009.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:208:32c::14) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|PN2P287MB1631:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7bb12ee6-6bdb-4bf5-2063-08dbc3b8fbf2
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|PH8PR12MB6891:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7785163d-f484-4b88-7af3-08dbc3b95e67
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GeJ8FwXjxZXWE46Xmgg7HItErrs5T1RJ1Y6/jhlGY8duiV8VKkcR0MnoRCDxoHibOX7/a476gfttLfCnqGiLKL2Ei3v28NN43MJrkpsKQ0FtkYNBFW0++A3moSYkKv+QnUWKBSUE7GfLZ1k/+bcp4WCoWGJ/b9xlCq8Ltls1MMB2qDQkPCSDVXxbG7uldUkkSYumR3IpHJvzFFtKiZS+JTqKVkMmG0SPYpA12NihoT6dQv3AK15CnPVYi6p9zWZRkB/BwzvL6VN8ohjIR5PqPEsklwzGCw6AFSkhbE9jpwV8BX0aQly5ZW8UxpWjibzzPKlZC7oL9ZQ+tLIe43hzJgJ8LyD+iOPlSTerHN0gvL18ck0U09kkSaTijp1pTmErs1ZMq6IAT4of7u6U+uiZT1O973nTuX5jv2E71zFOIh1Vz054rDtSDiYfNsLg+4pdFVH8imeTtBRK035yZ04zUnHnvqgho4Vapa4D0UObekXS35CpAcbrBzehqCHiKfhXOtuAQemypStSkg93kZF5QE6Qx7Tb4RBE4C+Ru+Mgoc4bxcHe8V9wQhv/P/qjy7udfuuhdMElcY3D3J3xerCzsDvq+VHamX7QOaY94LK4YPI=
+X-Microsoft-Antispam-Message-Info: AvCicecTINPPgEeyCwd/CVRgcYEz+OGOaLpsuGgz/gMfSUO1f/aEoaxhh6YwMlcEzU3pkMZxnhSTwTy2B1G6ziv6fFJYwExdSc2qBGKQ/AHlFNpseR7ywHzDNACPgj4WwhiiX1rVhzR5h/YBYEgymC3dOB3QitFB09CdLBXgS9+sgU9/holaSno/uigPJOGlX0NMhXEpsmnNGybwrE9+ogo2sfOxKG0xFUkDpqZPCwE2WtQdB3Uapq1LgT2Sbbf0BklRFSb68u3Tc/5jlChr+8gR8NWLQlsY+hLIJzOU4kTmXDQPi2yYCBp5GM2zd8nTw9zBkG4ZuAibpWOSpWvbGhjpnnDpsk+otSVA6YDpCV4st7/FWW00vJG76DWQxnT0DCcZBDa2gdKHdjYTZR/oSqB6efEOeUhaokZyHL66WY/NQvh50L5endEPNAMYvCjcqv5xkLf4xfJyjT4209ClLeGNTuCDBOfC+/mxfCSnsrHQZm7Ew9t5OmD5yGNecsjbA8k5pl4714LQ7+6gcCxInnQiWpdDoJVRajmVpunAHCTLTOccGhUtl0B+7sfZPnUw7X/CY+LIK86fehzG8eZHfp5Uu0us4auWtxjukf5efDGjqOdH4WQkc7xLe8i74w23
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(366004)(39860400002)(346002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(38100700002)(26005)(83380400001)(8676002)(316002)(8936002)(41300700001)(66556008)(2616005)(66476007)(6916009)(66946007)(53546011)(4326008)(6512007)(6506007)(478600001)(54906003)(6486002)(5660300002)(2906002)(235185007)(86362001)(33656002)(36756003)(7416002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVUrM3laM3B1bXlkaE5tQ0Rud2QrMTRXV0hzR3gyeUlQU3V2Qk5lS2JOcVpE?=
- =?utf-8?B?RmV5b21QYkxzdE1mSUhFY1U2VWJVaVphblRzU1FvZW1oOEdudlY2d2VHc1l1?=
- =?utf-8?B?Y3hjNEtZZWMzYmsyVU1LWFhtbVMzeUkzcU1tR3JySmlZRk1oZTJPT2wwVG80?=
- =?utf-8?B?RTYrOTVkaXg3d0JkalU0eTBJQlpyeXJyWUUxOVBNOTBFNlNJOFlUZFZmTEhL?=
- =?utf-8?B?Wlc5ZnA3NkNscloyaS9QTU94VXRZb1pjQ3dyRTdSWFVtL0grQyt2VjZQVkZD?=
- =?utf-8?B?Y0k1L3RVS1FKeUlKV0Q5cC81cFZJL2hjbWdMM1lHM2pGTGZuSDU1WkRNczVj?=
- =?utf-8?B?NHFROEhYSmE5ekhSV3BWQ3N4dnZ1VytGSXFHb3M3UWxBMjd2VER4RU1WaHRB?=
- =?utf-8?B?U2pMd1Q3Nmh1RWk0c1l5NzJENXo1YkVqWjNpTVpDOTR6aDFmMjRxSks2YnBR?=
- =?utf-8?B?YSsvMk1zUFdxdlJLUlRWM3BUS3RRTUsxUGxJN0V3N0hDSEt0SHBKRTFmYWR2?=
- =?utf-8?B?RWs1aGtqeXlneEFMSVZmQWFDVjJDem9MVktuZldhTFR5S3QvVEdjSVZUbmdF?=
- =?utf-8?B?YTdVMGsrS1pURUg4c3BCOUJJOGVTTU5yazNQTE9HSXcvL3JBS0RtU1Q0Y0xy?=
- =?utf-8?B?WmI0NTRINVI0eHY1UDFsbHlWdVlpOXNOVzAwdGVuQm9PdjFiN3kwVE14VTNm?=
- =?utf-8?B?Rm52L2VwZTJkbnZCYW43SDlRdHZJaUorYmgrV2xudG1LalBhUXRzTGJsRm90?=
- =?utf-8?B?SFpWclg0WUlyZWJPZ3ZWTTBteitKb1VQcFVhL2Q3bktLMmJIR2VQdnBQWnN1?=
- =?utf-8?B?dTJGbkhsSGIyY1VjTnhObWp5YjVPRjM3V3YrSmJESFpFTUM5a2pFakkvaXkr?=
- =?utf-8?B?cEM4WVRvdWUvWjJGV2dUSjhIZ0g5ZHo5eGsrbU13aExOQmtKdExWNm9IWnh6?=
- =?utf-8?B?Tk81N0xPQlN4eG1QT2pyMmlwN01RU2dxOE1ZNXEzSmp4Y1NsN3JJODJaRUJH?=
- =?utf-8?B?NTdRSDRBa2poYThSeW9vS1M3dElXMGxaK1J1TFBqaE91Q0JMaXdvbGRCc29v?=
- =?utf-8?B?Q25LN2x0UEtPam41M1RRY3Y1WC9laCtkd1NIMnJXTEpSakltUDdVeFNKN2VQ?=
- =?utf-8?B?VHJWV29HNnIvbU1CNFQ3KzZiRzFWS1RjMW9ZMDhrSDE5YUNSZGs2aGxuK3RU?=
- =?utf-8?B?YjVJaXNPSXVjWXFrcDJpNytrVWxQWWNobi9jMFhncDhTaEhQd2FtV2VZWDN0?=
- =?utf-8?B?cnEvMXIwa0JQR3VPRFVlai9qZkhOM2VvTDJZMERGeUVCWnJPc0k3cmV3bWhD?=
- =?utf-8?B?bG04MjdUQXp6Rm1LT09ibjU3TmRrbFVKbkh0U2VVM2NUczl6QmR2QVJmSjFw?=
- =?utf-8?B?dkJqVVhqOEtnZWZQdjZkYktmUDlQcWV1OTRlcmx0M3AyM3dpTUl1WWZIb08w?=
- =?utf-8?B?WS9DcHNRYmN3RWFRUEVvL2RjY1F3bWJQQnBjR29EVzNvTDFTNFptb3M5bEJh?=
- =?utf-8?B?QTVZT2pKcm15RmdoeWNZSHJ4S0VnMFdRSUdYUEp2djVmT1hlNUdRWlVPY1BY?=
- =?utf-8?B?SE5FMXI5djhlWXFvaVJnRkhjcERka20rOTRpOFFvK3VnQmRZdUkzVHBOcHR6?=
- =?utf-8?Q?mUifHyW+sCHRaXOUYI/tKOsZ8VzT4kHgjS/hDDWoV4Ws=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bb12ee6-6bdb-4bf5-2063-08dbc3b8fbf2
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?N1IE6VqR2S8lOus0nbDg+EgN8l2Cyro18QdxY/Nw97lPTS4l9Mg1jVbQpL8F?=
+ =?us-ascii?Q?PAR92PO+dz1USnyEmUhQwSX7eQ1eLNUDkxo2xJN8uGnaC3gVlKYQMnbNTmxf?=
+ =?us-ascii?Q?XLtkFpK67z9zQq2cD8q5zjeftXUCK2gUhjnM6/SxZng7Mz6dT6bM6f9hgfdf?=
+ =?us-ascii?Q?vNIebdvJgieDsnnUnY3QJ+87F6VzQ7GSbJu4HgeInHEZzd4omCYPUsSSCAPm?=
+ =?us-ascii?Q?gx3le339yOIBTReZKEhzJH+WDt3IR7JxQAhxXHmMnBIUsgfWwSUB4mhCLt85?=
+ =?us-ascii?Q?Y17ZlFkNNnwdLAEJjd2253YtuJZTD5MvN/zefkA/BtXT6w0FDlANGMJUht2s?=
+ =?us-ascii?Q?7fcRXYhzYxygtKsG+WAudrx6N39ZH36OcLP68BkhBOChS1ALfj4bbiry8W3X?=
+ =?us-ascii?Q?uE7m9RBm7JvaWcCSbpW++QSREQQRoDfXvow0kx4bviYeNrBGY73eMj4TX/W/?=
+ =?us-ascii?Q?v2KbCLJpqN+dvs+0AnKn7KBzs5Zx9ZBLH2CUgQnduSILBhe5l5aK1L9ZutpI?=
+ =?us-ascii?Q?7ExXvZfiW9XvDbothTSKUS/u171/PwGJXEJHvjILI1MCo1N7PeRVrCOCmBTA?=
+ =?us-ascii?Q?Fc73lOcsMaQgj77XiERRZ0QP1t8/lKWj0hZOv/I+svexwlliwYJ1qaUBbVb3?=
+ =?us-ascii?Q?xfAYE2z/bSa/TONRIvatC8xiIPeH0TO1GQHloInrAvK8cgVfdL/GvKjlnrFv?=
+ =?us-ascii?Q?C9+ydPCjHnwjhrj1d4M+p4RPXLoI/tUOW+CzNbcd+EzShFS5kZKQ0ZdswOeo?=
+ =?us-ascii?Q?w4QkFFifYgGCn6D2mhBRndGTDMAivtgE8EOUa0r7NB5cG6XlzZo9swX/NYoK?=
+ =?us-ascii?Q?km15HSbUxrVBW2/EcYFmeut62KBGQWfwqh8qrx9BcPAzS6OFwoBdd+UYayyo?=
+ =?us-ascii?Q?XLO4OlYtcGXiif/8hJtRxT1LhJYDCRcBiaRo7/8fr8UUaihpnIMzsVlU++gc?=
+ =?us-ascii?Q?yAgkcbBjNNP+tO7kISHSO4XzdHZ0ggRPlehCRovlJOTssGdX9joik9KcnXBP?=
+ =?us-ascii?Q?U3P2NlkPqkDQf8OC0dYtYDRF8+KybmfK2puZDYykCWMOzczaLl9Wt2r9NDCJ?=
+ =?us-ascii?Q?Bp28aq5LlbxHgWxmuHGTKWnCtJ1fRaNtBh5OxmQVQhYvyQGEOJ5vtdXVl7gW?=
+ =?us-ascii?Q?WXFctTg+2/9CKKI3KvchGigu1z61vABialHA5vHRfQj2XAXHuT5SLOchbLX3?=
+ =?us-ascii?Q?zSeZfHgUm4afx7Y5887sW5D2k4Ep2iGiQCLY220TYElrDAa6gwAeCgjWXnRc?=
+ =?us-ascii?Q?tKtaOumi06zOcfq77FAJF5ChY0P3n2bcvgC8rCFD7BamAA2QEJTyG0T1T3jr?=
+ =?us-ascii?Q?hal2j6unVUXbkHJGAk7jpjHvhu2eDB8d9yhyRaH1G2dm8UKInqpszmKSAgkB?=
+ =?us-ascii?Q?sC8f6w0uzzvIVRv3O+0Xn7UYN2z/DK/mTm1FCPATb6ooHnv7qFU6CjshzQrZ?=
+ =?us-ascii?Q?hO3UVDywmFaZDrABhdhkvMYLIMgmPm+SKnVA5JAXRH8+YNuetgXVqQh3A/cx?=
+ =?us-ascii?Q?S81ueZbk8VFr0KvzeRmFm95w3Mvf/dwj6Hq/n7rxM5RE6sjLjF6e/VJm6Nmc?=
+ =?us-ascii?Q?tJRH4zGIBBQbytd0TDWhU09RpkxySx0V9Bh5kv62?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7785163d-f484-4b88-7af3-08dbc3b95e67
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 02:32:27.5737
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 02:35:12.4292
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN2P287MB1631
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Nq3lqbvs2EWZN0yUnbkxOiXIYv+VGJUBbiES8Jxd2TApA17JaNkmQIKFAGHQXR0M
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6891
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--=_MailMate_3C158B70-4045-41D7-88D6-665F331E9115_=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-在 2023/10/2 20:22, Conor Dooley 写道:
-> Hey,
->
-> On Sat, Sep 30, 2023 at 08:39:32PM +0800, Jisheng Zhang wrote:
->> Milk-V Duo[1] board is an embedded development platform based on the
->> CV1800B[2] chip. Add minimal device tree files for the development board.
->> Currently, now it's supported to boot to a basic shell.
+On 2 Oct 2023, at 7:43, David Hildenbrand wrote:
+
+>>>> I can do it after I fix this. That change might or might not help on=
+ly if we make
+>>>> some redesign on how migratetype is managed. If MIGRATE_ISOLATE does=
+ not
+>>>> overwrite existing migratetype, the code might not need to split a p=
+age and move
+>>>> it to MIGRATE_ISOLATE freelist?
+>>>
+>>> Did someone test how memory offlining plays along with that? (I can t=
+ry myself
+>>> within the next 1-2 weeks)
+>>>
+>>> There [mm/memory_hotplug.c:offline_pages] we always cover full MAX_OR=
+DER ranges,
+>>> though.
+>>>
+>>> ret =3D start_isolate_page_range(start_pfn, end_pfn,
+>>> 			       MIGRATE_MOVABLE,
+>>> 			       MEMORY_OFFLINE | REPORT_FAILURE,
+>>> 			       GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL);
 >>
->> NOTE: this series is based on the SG2042 upstream series for the vendor
->> prefix and ARCH_SOPHGO option.
+>> Since a full MAX_ORDER range is passed, no free page split will happen=
+=2E
+>
+> Okay, thanks for verifying that it should not be affected!
+>
 >>
->> Link: https://milkv.io/duo [1]
->> Link: https://en.sophgo.com/product/introduce/cv180xB.html [2]
->> Link: https://lore.kernel.org/linux-riscv/cover.1695804418.git.unicornxw@gmail.com/ [3]
-> Other than the comment I left, this seems fine to me. I'd be happy
-> enough to pick up the pre-reqs from the other series & this one if one
-> of the Sophgo maintainers acked these patches.
-
-Conor, just FYI, sophgo maintainers are located in China, and they are 
-in National holiday vacation these days. I think they may reply to 
-emails later this weekend.
-
-Thanks,
-
-Chen
-
+>>>
+>>>>
+>>>> The fundamental issue in alloc_contig_range() is that to work at
+>>>> pageblock level, a page (>pageblock_order) can have one part is isol=
+ated and
+>>>> the rest is a different migratetype. {add_to,move_to,del_page_from}_=
+free_list()
+>>>> now checks first pageblock migratetype, so such a page needs to be r=
+emoved
+>>>> from its free_list, set MIGRATE_ISOLATE on one of the pageblock, spl=
+it, and
+>>>> finally put back to multiple free lists. This needs to be done at is=
+olation stage
+>>>> before free pages are removed from their free lists (the stage after=
+ isolation).
+>>>
+>>> One idea was to always isolate larger chunks, and handle movability c=
+hecks/split/etc
+>>> at a later stage. Once isolation would be decoupled from the actual/o=
+riginal migratetype,
+>>> the could have been easier to handle (especially some corner cases I =
+had in mind back then).
+>>
+>> I think it is a good idea. When I coded alloc_contig_range() up, I tri=
+ed to
+>> accommodate existing set_migratetype_isolate(), which calls has_unmova=
+ble_pages().
+>> If these two are decoupled, set_migrateype_isolate() can work on MAX_O=
+RDER-aligned
+>> ranges and has_unmovable_pages() can still work on pageblock-aligned r=
+anges.
+>> Let me give this a try.
+>>
 >
-> Thanks,
-> Conor.
+> But again, just some thought I had back then, maybe it doesn't help for=
+ anything; I found more time to look into the whole thing in more detail.=
+
+
+Sure. The devil is in the details, but I will only know the details and w=
+hat works
+after I code it up. :)
+
+>>>
+>>>> If MIGRATE_ISOLATE is a separate flag and we are OK with leaving iso=
+lated pages
+>>>> in their original migratetype and check migratetype before allocatin=
+g a page,
+>>>> that might help. But that might add extra work (e.g., splitting a pa=
+rtially
+>>>> isolated free page before allocation) in the really hot code path, w=
+hich is not
+>>>> desirable.
+>>>
+>>> With MIGRATE_ISOLATE being a separate flag, one idea was to have not =
+a single
+>>> separate isolate list, but one per "proper migratetype". But again, j=
+ust some random
+>>> thoughts I had back then, I never had sufficient time to think it all=
+ through.
+>>
+>> Got it. I will think about it.
+>>
+>> One question on separate MIGRATE_ISOLATE:
+>>
+>> the implementation I have in mind is that MIGRATE_ISOLATE will need a =
+dedicated flag
+>> bit instead of being one of migratetype. But now there are 5 migratety=
+pes +
 >
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> Exactly what I was concerned about back then ...
+>
+>> MIGRATE_ISOLATE and PB_migratetype_bits is 3, so an extra migratetype_=
+bit is needed.
+>> But current migratetype implementation is a word-based operation, requ=
+iring
+>> NR_PAGEBLOCK_BITS to be divisor of BITS_PER_LONG. This means NR_PAGEBL=
+OCK_BITS
+>> needs to be increased from 4 to 8 to meet the requirement, wasting a l=
+ot of space.
+>
+> ... until I did the math. Let's assume a pageblock is 2 MiB.
+>
+> 4/(2* 1024 * 1024 * 8) =3D 0,00002384185791016 %
+>
+> 8/(2* 1024 * 1024 * 8) -> 1 / (2* 1024 * 1024) =3D 0,00004768371582031 =
+%
+>
+> For a 1 TiB machine that means 256 KiB vs. 512 KiB
+>
+> I concluded that "wasting a lot of space" is not really the right word =
+to describe that :)
+>
+> Just to put it into perspective, the memmap (64/4096) for a 1 TiB machi=
+ne is ... 16 GiB.
+
+You are right. I should have done the math. The absolute increase is not =
+much.
+
+>> An alternative is to have a separate array for MIGRATE_ISOLATE, which =
+requires
+>> additional changes. Let me know if you have a better idea. Thanks.
+>
+> It would probably be cleanest to just use one byte per pageblock. That =
+would cleanup the whole machinery eventually as well.
+
+Let me give this a try and see if it cleans things up.
+
+
+--
+Best Regards,
+Yan, Zi
+
+--=_MailMate_3C158B70-4045-41D7-88D6-665F331E9115_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmUbfd4PHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUl8AQAIxHpVTpydIUe7Fhd8lqkWrXy1aH+DV94I1X
+0G0FfTC1Yp5Sfjrvcz1xI6VSb0WI6cCQIrv7N9sAwK10phtfQevs7zYPY3ITu4h0
+TzEDZnMx+qzIRAaa1xNoO1/eTfSjpEpnNHDoEPk8HONIijw2bqkGowOsOdL+/9vr
+npkAWEeXA7r+glYGYw44knf00CYcS96o6graznROBGOpCNzEQ37RFdXPOvuenX8o
+G3v6nfnGy5w789LiAi6V7NLxyqK3I83KF27CUQPQHyuB/u2c823s+UTthlXQuntj
+Hdg7qGbybUBcHADxiM+Mw8fpkieV+W3is4G2djYEWoe0Nuucq21A/5c8Tkpas91k
+/1T9racoyu5VCWWMFhE4HJAVjAqSwQ6JOlUJJmqfnYRnnSowr0pMr2qJqkowKbzg
+7vO8znDFo2ZIbdJBXv0u73SUlKMM3ybFXXVTM9DP7BqSoYcHjkXw0ZQJgIX+AXFV
+EgXvXeiNdlpx40B0bqEaui94fK/5fCKiGabZFKNQ/tkckjwyCqWd9HsrBrMu/6I5
+CJag3FkZc5hmc/fHnaaLB5OPYf41iLbXB6U5NZmFe8KRcJEXB6YMMwAAtisFoAeI
+Fm2qApwzGKfWal0XQMxG+TBZdw7dPUTBBb40mKN7Qdy99PcvAsgwL/jZ1hzAk4Td
+XDOKnT5O
+=3A51
+-----END PGP SIGNATURE-----
+
+--=_MailMate_3C158B70-4045-41D7-88D6-665F331E9115_=--
