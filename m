@@ -2,167 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B5C7B610A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 08:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292587B6111
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 08:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbjJCGxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 02:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
+        id S230432AbjJCGyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 02:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJCGxO (ORCPT
+        with ESMTP id S230263AbjJCGyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 02:53:14 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF5EAC;
-        Mon,  2 Oct 2023 23:53:11 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 116305C02F9;
-        Tue,  3 Oct 2023 02:53:08 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute4.internal (MEProxy); Tue, 03 Oct 2023 02:53:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1696315988; x=1696402388; bh=DQ
-        9fnka5ezD2MosoIlfkv7KgG/vCuTqTaE7p+egKu68=; b=eN2KXjNHIYJbQgWGle
-        rlLQ7w3kLGnQyjyLU/OByRNITYptT+q/ecOtOeoMHSt/IYM6Ml7nMyXXfnQwKzB2
-        4OWQDI+0xrY455eK8tEEWntyOgHDGhhQZEtV7e9IZOHi26Wwrfr05KDiGkX6bBu0
-        MnI6jh1024OucjBiqF0xJcmYsN4W5mTkJHenVaE0A2L3JdEjPtvJg4H9bR1S6V81
-        2Q5XWxZDityvc54+joXw66sSHq0MgJdN05hLBpsJ2SqJuTf/kOJq1pD4aLZdDGOo
-        zvc32xd9qIkt2KB7J2m0Cwb4B9lF1Xivfk6V3ymPqQ/5+BMVoZc5aZvKFwOJFsIj
-        rNyQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1696315988; x=1696402388; bh=DQ9fnka5ezD2M
-        osoIlfkv7KgG/vCuTqTaE7p+egKu68=; b=Xfm66XNf66JzisjrpSREKJpPTffZ9
-        0BJDDCF7HeFd0JQgVt0EksolRz9oaXTaCOli1Au2qC9Vaz763j4lfXBqZKTOv0UM
-        dyxj0xjGLzBUd1+pd1FipUIG+8T03CiFaO4xJX6FO1E6sgjVcX/5tB0Jgi7v4qOP
-        Z50ZeTdXX7dzvuiUHH9tQpfXmcCbwc+LHblD/OQ9C5QmkZB2Q+vfaEE1ifD+0N73
-        v91cHlQ0MnzgCdd1Skg0fXop7cm0LwiT6/eEaZZlmWtpzeNrxnGYwXNS/uMtWxIW
-        0ImfeZ+zniypvEZOJLj5TRb2+TRiJkIRevte9EIlkm3SSOMYxX9XTSrYg==
-X-ME-Sender: <xms:UrobZSPogWQZp4XvkklxNgta43YSMuij42Y557ew1W8leDREAUrYnw>
-    <xme:UrobZQ9lGSTNF5QWcuIw6pANwVl-qlmAtX5xU1O1Vf9Nc_uO4HmaVvUfUKBQijFvi
-    0_KEzgbulZuY6Ojeg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeehgddtkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:UrobZZTZz1Kri7_9m83dhS-pbB2hBr_MkiYMhCK821-K0C0aPwvumg>
-    <xmx:UrobZSsITjFDf-6sfVp1OVXge8Av-fQnSE2PZ1t83qU5n6NfldJ-BA>
-    <xmx:UrobZafgdyfD6QHIxz3qiAAssdgxDSHA3HOxLNBJHPufQqHD4YFZwA>
-    <xmx:VLobZQtRcrrazDs0uBaxrEJ0pEMJBuIfNb8Nr9pm-w-8Nggp6Cm5AQ>
-Feedback-ID: idfb84289:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id AFA081700089; Tue,  3 Oct 2023 02:53:06 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+        Tue, 3 Oct 2023 02:54:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED96AC;
+        Mon,  2 Oct 2023 23:54:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 591ECC433C8;
+        Tue,  3 Oct 2023 06:54:30 +0000 (UTC)
+Message-ID: <e9a6c88d-d7f0-41a0-b8c6-e10f01bffdfa@xs4all.nl>
+Date:   Tue, 3 Oct 2023 08:54:28 +0200
 MIME-Version: 1.0
-Message-Id: <4bee3205-212b-4032-a105-9b8f1fb1fa22@app.fastmail.com>
-In-Reply-To: <SG2PR06MB336555C2C52E24FCCDE72C748BC5A@SG2PR06MB3365.apcprd06.prod.outlook.com>
-References: <20230925081845.4147424-1-billy_tsai@aspeedtech.com>
- <a310aba3-0f04-4549-a776-36ff8cef736e@app.fastmail.com>
- <SG2PR06MB336555C2C52E24FCCDE72C748BC5A@SG2PR06MB3365.apcprd06.prod.outlook.com>
-Date:   Tue, 03 Oct 2023 17:22:45 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Billy Tsai" <billy_tsai@aspeedtech.com>,
-        "Jonathan Cameron" <jic23@kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Potin Lai" <Potin.Lai@quantatw.com>,
-        "patrickw3@meta.com" <patrickw3@meta.com>
-Subject: Re: [PATCH v1] iio: adc: aspeed: Support deglitch feature.
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 5/7] media: chips-media: wave5: Add the v4l2 layer
+Content-Language: en-US, nl
+To:     Deborah Brouwer <deborah.brouwer@collabora.com>
+Cc:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Sebastian Fricke <sebastian.fricke@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Robert Beckett <bob.beckett@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20230915-wave5_v12_on_media_master-v12-0-92fc66cd685d@collabora.com>
+ <20230915-wave5_v12_on_media_master-v12-5-92fc66cd685d@collabora.com>
+ <b7aa9a5a-018a-4d78-b001-4ba84acb1e24@xs4all.nl>
+ <7b159731dfbc2ab8243396eaec8f41be10af5160.camel@collabora.com>
+ <6ae8a639-b9f5-4426-be49-5340a8b8b5e9@xs4all.nl>
+ <330a177320fd766af8eddb76f57ea728b2e36afe.camel@collabora.com>
+ <d9af2b98-8da5-4487-8125-3c68eefcf77c@xs4all.nl> <ZRtXgMhSS3D6H3/4@db550>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <ZRtXgMhSS3D6H3/4@db550>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Billy,
+Hi Deb,
 
-On Mon, 2 Oct 2023, at 19:20, Billy Tsai wrote:
-> On Mon, 25 Sep 2023, at 17:48, Billy Tsai wrote:
->> > Create event sysfs for applying the deglitch condition. When
->> > in_voltageY_thresh_rising_en/in_voltageY_thresh_falling_en is set to true,
->> > the driver will use the in_voltageY_thresh_rising_value and
->> > in_voltageY_thresh_falling_value as threshold values. If the ADC value
->> > falls outside this threshold, the driver will wait for the ADC sampling
->> > period and perform an additional read once to achieve the deglitching
->> > purpose.
->> >
->> > Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
->> > ---
->> >  drivers/iio/adc/aspeed_adc.c | 193 ++++++++++++++++++++++++++++++++++-
->> >  1 file changed, 189 insertions(+), 4 deletions(-)
->> >
->> > diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
->> > index 998e8bcc06e1..9e746c81d916 100644
->> > --- a/drivers/iio/adc/aspeed_adc.c
->> > +++ b/drivers/iio/adc/aspeed_adc.c
->> > @@ -95,6 +95,7 @@ struct aspeed_adc_model_data {
->> >       bool wait_init_sequence;
->> >       bool need_prescaler;
->> >       bool bat_sense_sup;
->> > +     bool require_extra_eoc;
->
->> What is "eoc"? Can we use a better name or add an explanatory comment?
->
-> Hi Andrew,
-> This is the signal name for our ADC controller, it means "End Of 
-> Conversion".
-> The appearance of this signal period indicates that the ADC value is 
-> valid and being updated to the register.
+On 03/10/2023 01:51, Deborah Brouwer wrote:
+> On Wed, Sep 27, 2023 at 09:19:46AM +0200, Hans Verkuil wrote:
+>> On 27/09/2023 01:29, Nicolas Dufresne wrote:
+>>> Le vendredi 22 septembre 2023 à 09:33 +0200, Hans Verkuil a écrit :
+>>>> On 21/09/2023 21:11, Nicolas Dufresne wrote:
+>>>>> Le mercredi 20 septembre 2023 à 17:13 +0200, Hans Verkuil a écrit :
+>>>>>> On 15/09/2023 23:11, Sebastian Fricke wrote:
+>>>>>>> From: Nas Chung <nas.chung@chipsnmedia.com>
+>>>>>>>
+>>>>>>> Add the decoder and encoder implementing the v4l2
+>>>>>>> API. This patch also adds the Makefile and the VIDEO_WAVE_VPU config
+>>>>>>>
+>>>>>>> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+>>>>>>> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+>>>>>>> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+>>>>>>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>>>>>>> Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
+>>>>>>> ---
+>>>>>>>  drivers/media/platform/chips-media/Kconfig         |    1 +
+>>>>>>>  drivers/media/platform/chips-media/Makefile        |    1 +
+>>>>>>>  drivers/media/platform/chips-media/wave5/Kconfig   |   12 +
+>>>>>>>  drivers/media/platform/chips-media/wave5/Makefile  |   10 +
+>>>>>>>  .../platform/chips-media/wave5/wave5-helper.c      |  196 ++
+>>>>>>>  .../platform/chips-media/wave5/wave5-helper.h      |   30 +
+>>>>>>>  .../platform/chips-media/wave5/wave5-vpu-dec.c     | 1965 ++++++++++++++++++++
+>>>>>>>  .../platform/chips-media/wave5/wave5-vpu-enc.c     | 1825 ++++++++++++++++++
+>>>>>>>  .../media/platform/chips-media/wave5/wave5-vpu.c   |  331 ++++
+>>>>>>>  .../media/platform/chips-media/wave5/wave5-vpu.h   |   83 +
+>>>>>>>  10 files changed, 4454 insertions(+)
+>>>>>>>
+>>>>
+>>>> <snip>
+>>>>
+>>>>>>> +static int wave5_vpu_dec_set_eos_on_firmware(struct vpu_instance *inst)
+>>>>>>> +{
+>>>>>>> +	int ret;
+>>>>>>> +
+>>>>>>> +	ret = wave5_vpu_dec_update_bitstream_buffer(inst, 0);
+>>>>>>> +	if (ret) {
+>>>>>>> +		dev_err(inst->dev->dev,
+>>>>>>> +			"Setting EOS for the bitstream, fail: %d\n", ret);
+>>>>>>
+>>>>>> Is this an error due to a driver problem, or because a bad bitstream is
+>>>>>> fed from userspace? In the first case, dev_err would be right, in the
+>>>>>> second dev_dbg would be more appropriate. Bad userspace input should not
+>>>>>> spam the kernel log in general.
+>>>>>
+>>>>> Its the first. To set the EOS flag, a command is sent to the firmware. That
+>>>>> command may never return (timeout) or may report an error. For this specific
+>>>>> command, if that happens we are likely facing firmware of driver problem (or
+>>>>> both).
+>>>>
+>>>> OK, I'd add that as a comment here as this is unexpected behavior.
+>>>>
+>>>>>
+>>>>>>
+>>>>>>> +		return ret;
+>>>>>>> +	}
+>>>>>>> +	return 0;
+>>>>>>> +}
+>>>>
+>>>> <snip>
+>>>>
+>>>>>>> +static int wave5_vpu_dec_create_bufs(struct file *file, void *priv,
+>>>>>>> +				     struct v4l2_create_buffers *create)
+>>>>>>> +{
+>>>>>>> +	struct v4l2_format *f = &create->format;
+>>>>>>> +
+>>>>>>> +	if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
+>>>>>>> +		return -ENOTTY;
+>>>>>>
+>>>>>> Huh? Why is this needed?
+>>>>>
+>>>>> Minimally a comment should be added. The why is that we support CREATE_BUF for
+>>>>> OUTPUT queue (bitstream) but not for CAPTURE queues. This is simply not
+>>>>> supported by Wave5 firmware. Do you have any suggestion how this asymmetry can
+>>>>> be implemented better ?
+>>>>
+>>>> Certainly not with ENOTTY: the ioctl exists, it is just not supported for
+>>>> CAPTURE queues.
+>>>>
+>>>> How about -EPERM? And document this error as well in the VIDIOC_CREATE_BUFS
+>>>> documentation. And you want a dev_dbg here too.
+>>>
+>>> The suggestion cannot be used since there is documentation for that one already,
+>>> and it does not match "unsupported".
+>>>
+>>> "Permission denied. Can be returned if the device needs write permission, or
+>>> some special capabilities is needed (e. g. root)"
+>>>
+>>> What about using the most logical error code, which name is actually obvious,
+>>> like ENOTSUP ?
+>>>
+>>>    #define ENOTSUPP	524	/* Operation is not supported */
+>>>
+>>
+>> Let's go with EOPNOTSUPP. That seems to be the more commonly used error
+>> code in drivers.
+> 
+> Hi Hans,
+> 
+> Sorry to belabour this issue but when I change the return value
+> to EOPNOTSUPP, it now causes v4l2-compliance to fail because
+> v4l2-test-buffers.cpp expects ENOTTY if CREATE_BUFS is not supported.
+> 
+> We didn't get this warning before because there was a typo in the
+> buffer check and it was only checking for single-planar buffers.
+> 
+> How would you prefer to handle this? The options seem like
+> keep ENOTTY in this driver or
+> patch v4l2-compliance to warn if it also receives EOPNOTSUPP?
 
-Okay, searching for "conversion" in the datasheet didn't turn up anything like this. It seems I wasn't off-track with asking. If you go forward with the patch in some manner, can you add a comment to the code documenting the meaning of 'eoc'?
+You patch v4l2-compliance. It makes sense: we're making a uAPI modification,
+so that implies changes to v4l2-compliance.
 
->
->> >       /* Register ADC clock prescaler with source specified by device tree.
->> > */
->> >       spin_lock_init(&data->clk_lock);
->> >       snprintf(clk_parent_name, ARRAY_SIZE(clk_parent_name), "%s",
->> > @@ -632,7 +806,14 @@ static int aspeed_adc_probe(struct platform_device
->> > *pdev)
->> >       adc_engine_control_reg_val |= ASPEED_ADC_CTRL_CHANNEL;
->> >       writel(adc_engine_control_reg_val,
->> >              data->base + ASPEED_REG_ENGINE_CONTROL);
->> > -
->> > +     adc_engine_control_reg_val =
->> > +             FIELD_GET(ASPEED_ADC_CTRL_CHANNEL,
->> > +                       readl(data->base + ASPEED_REG_ENGINE_CONTROL));
->> > +     data->required_eoc_num = hweight_long(adc_engine_control_reg_val);
->> > +     if (data->model_data->require_extra_eoc &&
->> > +         (adc_engine_control_reg_val &
->> > +          BIT(data->model_data->num_channels - 1)))
->> > +             data->required_eoc_num += 12;
->
->> Why 12? Why add a value to the number of engines enabled? Have I misunderstood?
->
-> This behavior is specified by the hardware. In our ADC, it requires 12 
-> dummy sampling
-> periods to switch the sampling channel from CH7 to CH0. Hence, this 
-> condition checks
-> the enable status of channel 7 to determine the necessary delay period 
-> for obtaining the
-> updated ADC values for each channel.
+So v4l2-compliance needs to understand EOPNOTSUPP for CREATE_BUFS: if it is
+returned it has to check that it is used correctly: so there has to be at
+least one buffer type for which CREATE_BUFS actually works. In other words,
+v4l2-compliance must check that EOPNOTSUPP isn't used as a replacement
+for ENOTTY.
 
-Okay, I feel using a magic value '12' with what you wrote above as an explanation is asking a bit much of the reader. Again, if you go forward with this patch in some fashion, can you document the meaning of 12 in a comment (and possibly use a macro to name it)?
+This can be done in testReqBufs().
 
-Cheers,
+Regards,
 
-Andrew
+	Hans
