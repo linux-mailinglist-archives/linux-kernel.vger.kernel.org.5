@@ -2,293 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9028C7B67F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3527B6804
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240475AbjJCLeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 07:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
+        id S240521AbjJCLeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 07:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232042AbjJCLeB (ORCPT
+        with ESMTP id S240482AbjJCLeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 07:34:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1929E;
-        Tue,  3 Oct 2023 04:33:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33E29C433C7;
-        Tue,  3 Oct 2023 11:33:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696332837;
-        bh=jzJQoJEOtgE0PCeISU6Se33lKuEE7ReBhhE5kchD/uY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K7dDC9WGx6YUj3fhmNLR3sAQzWZOH02ZE5rggptZcUme76kJWI3Paa7A8AQ3NtMpY
-         WhzMOw9W95ZOSwwY+NEUXfhBt885kWRG0FZKclw5DkywTJjAfVHQqDQGjQTeDb0lGQ
-         sq8k9yhLFR+W2VSXvZHMZ72036WCYkH4RAyrpOX07wOfUKS5U6x2mzp6aWZyU3HMjr
-         uU/xhPM2k/LHTK6D8Hu13cjRlo0gGdfmVJoO08O/3mB9e95Nsplm44EZIZBUQX/4Pe
-         vOALXj3KkYX+4KkGpOOEjo+am6YB+M/2/ciWRit20FQDfHuX0ICeckKeL5T2ad37M0
-         KqjWDoJhoDS7w==
-Date:   Tue, 3 Oct 2023 13:33:54 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Benjamin Bara <bbara93@gmail.com>
-Cc:     aford173@gmail.com, benjamin.bara@skidata.com, frank@oltmanns.dev,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org
-Subject: Re: [PATCH RFC 0/4] clk: re-set required rates during clk_set_rate()
-Message-ID: <koutffkprg3asrokmaxx6optdbw35ouw2o3llc5kaw6dw4ttrd@kgjijzztzor4>
-References: <cjow276e3hsgtaqq6e2lzv3xdxyssoh34wan7lcwunh636wsqv@35eyi5cvbbwd>
- <20231003074407.2856447-1-bbara93@gmail.com>
+        Tue, 3 Oct 2023 07:34:05 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D5F68AF
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 04:33:59 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxJugm_BtlGc0uAA--.30631S3;
+        Tue, 03 Oct 2023 19:33:58 +0800 (CST)
+Received: from openarena.loongson.cn (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx7y8k_Btl7JAXAA--.48472S5;
+        Tue, 03 Oct 2023 19:33:58 +0800 (CST)
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v11 3/5] drm/etnaviv: Allow bypass component framework
+Date:   Tue,  3 Oct 2023 19:33:54 +0800
+Message-Id: <20231003113356.645394-4-suijingfeng@loongson.cn>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231003113356.645394-1-suijingfeng@loongson.cn>
+References: <20231003113356.645394-1-suijingfeng@loongson.cn>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="keylsesp7i7kvq27"
-Content-Disposition: inline
-In-Reply-To: <20231003074407.2856447-1-bbara93@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Cx7y8k_Btl7JAXAA--.48472S5
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW3Jr48ZF4UtryUCF4fJrW8AFc_yoWftFWDpF
+        47JFyYkrW8uayqg34DArn5ZF1akw1Sq34Iy34kK3sa9ws8JryktFyYyFyjyrnxJFZ5WFW3
+        tr1DtrWUAF40y3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r126r13M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE
+        14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
+        C0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7
+        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j5l1kUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Component framework is used to bind multiple GPU cores to a virtual master,
+but there are SoC/chipset that contain only one GPU core. In those case,
+component framework can be avoided. The reason is that usperspace programs
+(such as X server and Mesa) will search the PCI device to use precedently.
+Creating a virtual master device for PCI(e) GPUs is unnecessary and
+incurring troubles.
 
---keylsesp7i7kvq27
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch add additional code paths to allow bypassing the component
+frameworks, which pave the way for us to introduce the PCI device driver
+wrapper. The goal is to share the code between the PCI driver and the
+platform driver as much as possible. Platforms with a single GPU core could
+also try non-component code path.
 
-On Tue, Oct 03, 2023 at 09:44:07AM +0200, Benjamin Bara wrote:
-> Hi Maxime,
->
-> thank you for the feedback!
->
-> On Mon, 2 Oct 2023 at 14:27, Maxime Ripard <mripard@kernel.org> wrote:
-> > There's a couple of things you didn't reply on the first version and
-> > you didn't really expand it here:
->
-> Sorry for that, wanted to get the reduced series out first to have a
-> better discussion base. Planned to reply to them and link to the
-> spin-off later, probably should have mentioned that :/ Thanks for
-> summarizing!
+Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+---
+ drivers/gpu/drm/etnaviv/etnaviv_drv.c | 48 +++++++++++-----
+ drivers/gpu/drm/etnaviv/etnaviv_drv.h |  1 +
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 83 +++++++++++++++++----------
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.h |  7 +++
+ 4 files changed, 96 insertions(+), 43 deletions(-)
 
-That's fine, don't worry :)
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+index 41ef7a8b7839..0b68c76d117e 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+@@ -25,6 +25,8 @@
+ #include "etnaviv_mmu.h"
+ #include "etnaviv_perfmon.h"
+ 
++static struct etnaviv_drm_private *etna_drm_priv_ptr;
++
+ /*
+  * DRM operations:
+  */
+@@ -545,10 +547,7 @@ static const struct drm_driver etnaviv_drm_driver = {
+ 	.minor              = 3,
+ };
+ 
+-/*
+- * Platform driver:
+- */
+-static int etnaviv_bind(struct device *dev)
++static int etnaviv_drm_bind(struct device *dev, bool component)
+ {
+ 	struct etnaviv_drm_private *priv;
+ 	struct drm_device *drm;
+@@ -564,13 +563,17 @@ static int etnaviv_bind(struct device *dev)
+ 		goto out_put;
+ 	}
+ 
++	priv->drm = drm;
+ 	drm->dev_private = priv;
++	etna_drm_priv_ptr = priv;
+ 
+ 	dma_set_max_seg_size(dev, SZ_2G);
+ 
+-	dev_set_drvdata(dev, drm);
++	if (component)
++		ret = component_bind_all(dev, drm);
++	else
++		ret = etnaviv_gpu_bind(dev, NULL, drm);
+ 
+-	ret = component_bind_all(dev, drm);
+ 	if (ret < 0)
+ 		goto out_free_priv;
+ 
+@@ -583,7 +586,10 @@ static int etnaviv_bind(struct device *dev)
+ 	return 0;
+ 
+ out_unbind:
+-	component_unbind_all(dev, drm);
++	if (component)
++		component_unbind_all(dev, drm);
++	else
++		etnaviv_gpu_unbind(dev, NULL, drm);
+ out_free_priv:
+ 	etnaviv_free_private(priv);
+ out_put:
+@@ -592,14 +598,17 @@ static int etnaviv_bind(struct device *dev)
+ 	return ret;
+ }
+ 
+-static void etnaviv_unbind(struct device *dev)
++static void etnaviv_drm_unbind(struct device *dev, bool component)
+ {
+-	struct drm_device *drm = dev_get_drvdata(dev);
+-	struct etnaviv_drm_private *priv = drm->dev_private;
++	struct etnaviv_drm_private *priv = etna_drm_priv_ptr;
++	struct drm_device *drm = priv->drm;
+ 
+ 	drm_dev_unregister(drm);
+ 
+-	component_unbind_all(dev, drm);
++	if (component)
++		component_unbind_all(dev, drm);
++	else
++		etnaviv_gpu_unbind(dev, NULL, drm);
+ 
+ 	etnaviv_free_private(priv);
+ 
+@@ -608,9 +617,22 @@ static void etnaviv_unbind(struct device *dev)
+ 	drm_dev_put(drm);
+ }
+ 
++/*
++ * Platform driver:
++ */
++static int etnaviv_master_bind(struct device *dev)
++{
++	return etnaviv_drm_bind(dev, true);
++}
++
++static void etnaviv_master_unbind(struct device *dev)
++{
++	return etnaviv_drm_unbind(dev, true);
++}
++
+ static const struct component_master_ops etnaviv_master_ops = {
+-	.bind = etnaviv_bind,
+-	.unbind = etnaviv_unbind,
++	.bind = etnaviv_master_bind,
++	.unbind = etnaviv_master_unbind,
+ };
+ 
+ static int etnaviv_pdev_probe(struct platform_device *pdev)
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.h b/drivers/gpu/drm/etnaviv/etnaviv_drv.h
+index b3eb1662e90c..e58f82e698de 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_drv.h
++++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.h
+@@ -35,6 +35,7 @@ struct etnaviv_file_private {
+ };
+ 
+ struct etnaviv_drm_private {
++	struct drm_device *drm;
+ 	int num_gpus;
+ 	struct etnaviv_gpu *gpu[ETNA_MAX_PIPES];
+ 	gfp_t shm_gfp_mask;
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+index 4aa7c59ae581..330f8a272184 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+@@ -1756,8 +1756,7 @@ static const struct thermal_cooling_device_ops cooling_ops = {
+ 	.set_cur_state = etnaviv_gpu_cooling_set_cur_state,
+ };
+ 
+-static int etnaviv_gpu_bind(struct device *dev, struct device *master,
+-	void *data)
++int etnaviv_gpu_bind(struct device *dev, struct device *master, void *data)
+ {
+ 	struct drm_device *drm = data;
+ 	struct etnaviv_drm_private *priv = drm->dev_private;
+@@ -1812,8 +1811,7 @@ static int etnaviv_gpu_bind(struct device *dev, struct device *master,
+ 	return ret;
+ }
+ 
+-static void etnaviv_gpu_unbind(struct device *dev, struct device *master,
+-	void *data)
++void etnaviv_gpu_unbind(struct device *dev, struct device *master, void *data)
+ {
+ 	struct etnaviv_gpu *gpu = dev_get_drvdata(dev);
+ 
+@@ -1858,9 +1856,9 @@ static const struct of_device_id etnaviv_gpu_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, etnaviv_gpu_match);
+ 
+-static int etnaviv_gpu_platform_probe(struct platform_device *pdev)
++int etnaviv_gpu_driver_create(struct device *dev, void __iomem *mmio,
++			      int irq, bool component, bool has_clk)
+ {
+-	struct device *dev = &pdev->dev;
+ 	struct etnaviv_gpu *gpu;
+ 	int err;
+ 
+@@ -1868,31 +1866,28 @@ static int etnaviv_gpu_platform_probe(struct platform_device *pdev)
+ 	if (!gpu)
+ 		return -ENOMEM;
+ 
+-	gpu->dev = &pdev->dev;
++	gpu->dev = dev;
++	gpu->mmio = mmio;
+ 	mutex_init(&gpu->lock);
+ 	mutex_init(&gpu->sched_lock);
+ 
+-	/* Map registers: */
+-	gpu->mmio = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(gpu->mmio))
+-		return PTR_ERR(gpu->mmio);
+-
+ 	/* Get Interrupt: */
+-	gpu->irq = platform_get_irq(pdev, 0);
++	gpu->irq = irq;
+ 	if (gpu->irq < 0)
+ 		return gpu->irq;
+ 
+-	err = devm_request_irq(&pdev->dev, gpu->irq, irq_handler, 0,
+-			       dev_name(gpu->dev), gpu);
++	err = devm_request_irq(dev, irq, irq_handler, 0, dev_name(dev), gpu);
+ 	if (err) {
+ 		dev_err(dev, "failed to request IRQ%u: %d\n", gpu->irq, err);
+ 		return err;
+ 	}
+ 
+ 	/* Get Clocks: */
+-	err = etnaviv_gpu_clk_get(gpu);
+-	if (err)
+-		return err;
++	if (has_clk) {
++		err = etnaviv_gpu_clk_get(gpu);
++		if (err)
++			return err;
++	}
+ 
+ 	/* TODO: figure out max mapped size */
+ 	dev_set_drvdata(dev, gpu);
+@@ -1902,24 +1897,27 @@ static int etnaviv_gpu_platform_probe(struct platform_device *pdev)
+ 	 * autosuspend delay is rather arbitary: no measurements have
+ 	 * yet been performed to determine an appropriate value.
+ 	 */
+-	pm_runtime_use_autosuspend(gpu->dev);
+-	pm_runtime_set_autosuspend_delay(gpu->dev, 200);
+-	pm_runtime_enable(gpu->dev);
+-
+-	err = component_add(&pdev->dev, &gpu_ops);
+-	if (err < 0) {
+-		dev_err(&pdev->dev, "failed to register component: %d\n", err);
+-		return err;
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_set_autosuspend_delay(dev, 200);
++	pm_runtime_enable(dev);
++
++	if (component) {
++		err = component_add(dev, &gpu_ops);
++		if (err < 0) {
++			dev_err(dev, "failed to register component: %d\n", err);
++			return err;
++		}
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int etnaviv_gpu_platform_remove(struct platform_device *pdev)
++void etnaviv_gpu_driver_destroy(struct device *dev, bool component)
+ {
+-	component_del(&pdev->dev, &gpu_ops);
+-	pm_runtime_disable(&pdev->dev);
+-	return 0;
++	if (component)
++		component_del(dev, &gpu_ops);
++
++	pm_runtime_disable(dev);
+ }
+ 
+ static int etnaviv_gpu_rpm_suspend(struct device *dev)
+@@ -1973,6 +1971,31 @@ static const struct dev_pm_ops etnaviv_gpu_pm_ops = {
+ 	RUNTIME_PM_OPS(etnaviv_gpu_rpm_suspend, etnaviv_gpu_rpm_resume, NULL)
+ };
+ 
++static int etnaviv_gpu_platform_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	void __iomem *mmio;
++	int irq;
++
++	/* Map registers: */
++	mmio = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(mmio))
++		return PTR_ERR(mmio);
++
++	irq = platform_get_irq(pdev, 0);
++
++	return etnaviv_gpu_driver_create(dev, mmio, irq, true, true);
++}
++
++static int etnaviv_gpu_platform_remove(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++
++	etnaviv_gpu_driver_destroy(dev, true);
++
++	return 0;
++}
++
+ struct platform_driver etnaviv_gpu_driver = {
+ 	.driver = {
+ 		.name = "etnaviv-gpu",
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.h b/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
+index 197e0037732e..407f3a501b17 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
+@@ -215,6 +215,13 @@ void etnaviv_gpu_pm_put(struct etnaviv_gpu *gpu);
+ int etnaviv_gpu_wait_idle(struct etnaviv_gpu *gpu, unsigned int timeout_ms);
+ void etnaviv_gpu_start_fe(struct etnaviv_gpu *gpu, u32 address, u16 prefetch);
+ 
++int etnaviv_gpu_bind(struct device *dev, struct device *master, void *data);
++void etnaviv_gpu_unbind(struct device *dev, struct device *master, void *data);
++
++int etnaviv_gpu_driver_create(struct device *dev, void __iomem *mmio,
++			      int irq, bool component, bool has_clk);
++void etnaviv_gpu_driver_destroy(struct device *dev, bool component);
++
+ extern struct platform_driver etnaviv_gpu_driver;
+ 
+ #endif /* __ETNAVIV_GPU_H__ */
+-- 
+2.34.1
 
-> > Most clocks don't care, and only the clocks that have used
-> > clk_set_rate_exclusive actually care.
->=20
-> I think that is one of the main points I don't understand yet... Why? I
-> mean, the point of calling clk_set_rate() is to get a certain rate for a
-> clock, right? Why should the clock not care if it is changed to
-> something completely different?
-
-Because it doesn't matter for most clocks, and doesn't really affect the
-system in any way. Or there's never any conflicting rate change that
-would impact them. I guess it's on a per-clock basis so it's hard to
-generalize, but the fact alone that the CCF is 10+ years old and we only
-have to discuss it now is kind of a proof that things mostly work out
-for most cases :)
-
-Also, some systems have likely side-stepped the entire problem by
-switching different outputs to different PLLs for example if the SoCs
-allow to.
-
-And while the vast majority of those drivers don't really care about the
-rate being strictly enforced, I would expect a reasonable amount of them
-to check the return code of clk_set_rate(). So if you start strictly
-enforcing the rate, you'll also have to fail more often because there's
-configuration that you just can't handle.
-
-And that would lead to more drivers failing for something they don't
-really care about :)
-
-> Maybe I am a bit biased here because I use the imx8mp as a reference.
-> On this platform, most hardware blocks have an own divider and
-> therefore the clocks which are connected to the blocks are mostly
-> "exclusive". E.g. the tree for a panel looks like
-> this:
-> -osc_24m (oscillator)
-> -- video_pll1_ref_sel (mux)
-> --- video_pll1 (configurable; shared)
-> ---- video_pll1_bypass (mux; shared)
-> ----- video_pll1_out (gate; shared)
-> ------ media_disp2_pix (divider; "panel exclusive")
-> ------- media_disp2_pix_root_clk (gate; "panel exclusive")
-> -------- <PANEL>
-
-I guess that's mostly a typical clock tree for a panel. However, notice
-that you only took a handful of clocks as an example, and not the 50-100
-others in your system. While the panel clock rate is critical, the
-register clock speed of the timers probably won't be as much.
-
-And that's what I was mentioning really: out of the 50-100 clocks in
-your system right now, you only really care about the rate of ~5, and
-most of them are going to be in different subtrees.
-
-So, while your problem is indeed a concern, it's also a corner case.
-
-> > clk_set_rate never provided that guarantee, you're effectively merging
-> > clk_set_rate and clk_set_rate_exclusive.
->=20
-> Ah, I guess I see what you mean... Since we would error out now on a
-> "conflict", this becomes very close to the "exclusiveness concept".
-
-Yeah, exactly. clk_set_rate() gains the "I want this rate to be enforced
-forever" property that clk_set_rate_exclusive() provides already.
-
-> However, what I actually try to achieve is to leave the rest of the
-> subtree unaffected by a change (if required and possible).
->=20
-> > This might or might not be a good idea (it's probably not unless you
-> > want to track down regressions forever), but we should really tie this
-> > to clk_set_rate_exclusive or merge both.
->=20
-> I see that the current "conflict handling" might fit very well for
-> clk_set_rate_exclusive(). However, I think it's pretty hard to use
-> clk_set_rate_exclusive() in a multi-platform driver, as the other
-> competing consumers are not known.
-
-You don't know that with clk_set_rate either though?
-
-> But maybe it makes sense to have the same path and decide on a
-> conflict whether we are allowed to do the change or not
-> (exclusive/protected).
->=20
-> > Why do we need a new req_rate, and why req_rate can't be changed to
-> > accomodate your changes.
->=20
-> For me, the existing req_rate is a "persistent" rate. It is the rate a
-> consumer requires the clock to have. It's something typically for leaves
-> of the clock-tree, which are directly connected to (probably
-> multi-platform) clock-consuming blocks, e.g. the dividers mentioned.
-> The new req_rate is "temporary". It is rather important for the !leaves
-> and indicate that a clock is required to change during this
-> clk_set_rate() call, in order to fulfill the requested rate.
->=20
-> Short example, let's say we have something like this:
-> - Video PLL
-> -- LVDS divider
-> --- LVDS bridge (HW block)
-> -- CRTC divider
-> --- Panel (HW block)
->=20
-> From a hardware-description point of view, the CRTC divider is exclusive
-> to the panel and the LVDS divider exclusive to the LVDS bridge. However,
-> the Video PLL is not the only possible parent of both and it should also
-> not be set exclusively by one of them.
->=20
-> When a CRTC rate of 35M is required by the panel, it would be set to the
-> following:
-> - Video PLL:     req_tmp=3D35M, req=3D-1,  new=3D35M
-> -- LVDS divider: req_tmp=3D-1,  req=3D-1,  new=3D35M (div=3D1)
-> -- CRTC divider: req_tmp=3D35M, req=3D35M, new=3D35M (div=3D1)
->=20
-> Next, the LVDS bridge requires 245M, which would be a multiple of
-> 35M. The Video PLL is configured again, this time "by" the LVDS divider:
-> - Video PLL:     req_tmp=3D245M, req=3D-1,   new=3D245M
-> -- LVDS divider: req_tmp=3D245M, req=3D245M, new=3D245M (div=3D1)
-> -- CRTC divider: req_tmp=3D-1,   req=3D35M,  new=3D245M (div=3D1)
->=20
-> So without additional interaction (current behaviour), we would set the
-> CRTC divider to 245M, which contradicts with the unchanged previous
-> requirement stored in req. As req_tmp =3D=3D -1, we know that the new rate
-> of the CRTC divider is not crucial for the actual requested change (LVDS
-> =3D> 245M). Therefore, what I would like to achieve is to have some
-> component/process that tells the CRTC divider to set its div to 7, as
-> this won't affect the ongoing requested change and would restore a
-> required rate of a different component, which was changed "unintended".
-
-My point earlier was that if we configure the Video PLL from the start
-to be 245MHz, then we don't need to worry about it.
-
-For the temporary requested rate, it's not clear to me why we should
-store it into the struct clk_core itself. It looks to be transient by
-nature, so it would be better in the clk_rate_request structure.
-clk_rate_request are now instantiated by functions, maybe we could add a
-pointer to the clk_rate_request that triggered it (some kind of
-"parent", but most likely to go from the child clock to the parent)?
-
-> > Why do you even need the core to be involved in the first place? You
-> > say you think it does, but you haven't answered any of my mails to
-> > provide more details and figure out if we can do it without it.
->=20
-> We already have this functionality (calc required new rates) inside the
-> core and the core currently is the only one knowing all the context
-> about the tree-structure and the required and new rates.
-
-I mean, that whole discussion kind of proves that we don't have that
-functionality in the core.
-
-> So I think in the example above, calling calc_new_rates() again, this
-> time with the CRTC divider and req, might be the simplest solution to
-> the problem.
->=20
-> I think as the Video PLL isn't directly consumed, we don't really have a
-> different possibility to achieve the same outcome, except of starting
-> Video PLL already with 245M (e.g. via device-tree).
-
-It doesn't need to happen in the device tree, but that sounds completely
-reasonable to me.
-
-> Just for the sake of completeness:
-> A "conflict" occurs if this call would try to re-configure Video PLL
-> again (if req_tmp is already set; by not involving req here, we
-> basically avoid the "exclusiveness"). IMO, there are different ways to
-> proceed on a conflict: A possible clk_set_rate() option would be to
-> ignore a potential re-change of Video PLL by the second calc_new_rates()
-> and just set a somewhat close to the req rate for CRTC divider. A
-> possible clk_set_rate_exclusive() option is the one implemented here:
-> error out if we cannot guarantee the existing required rates for the
-> rest of the subtree.
-
-The problem here is that you effectively want to coordinate clocks to
-change their rate. Most of the logic of whether or not they care about
-it, and how they care about it cannot be embedded in the clock
-framework.
-
-If we want to address this properly, I think we would need to switch the
-entire clock framework to some kind of state like KMS does.
-
-Something like:
-
-  - All the affected clocks by a configuration (rate, parent, phase,
-    accuracy, etc.) change are supposed to be within the state.
-
-  - Whenever someone does a clk_set_rate call, we build up a state with
-    the clock it was called on and all its child clocks.
-
-  - We introduce a new hook in clk_ops that will take that state and the
-    clock tells whether it's ok, or whether it needs to modify some
-    parameters. We call every clock, starting from the top most clock,
-    asking whether it's ok or if they need to change anything. If they
-    need to change anything, we start again with the new set of
-    parameters.
-
-  - Clocks are free to pull into the state more clocks (ie, their
-    parent), which in turn will pull their child.
-
-  - Once every driver agrees, we "commit" that state.
-
-That way, we can keep the driver requirements in the driver, and every
-clock affected by a rate change can adapt.
-
-That's a major undertaking, and we would need a bunch of helpers to
-maintain compatibility with the current API we have. Plus tons of kunit
-tests.
-
-Again, if we have the option to just run the PLL at some multiple of
-both, I really think for everyone's sanity that we should do that.
-
-Maxime
-
---keylsesp7i7kvq27
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZRv8IgAKCRDj7w1vZxhR
-xVVQAQDF35HfjmL/HOOhvk0TTYhKIUjV8PqkzI77bFiZmWhWEAEAz7bZ9L3uKqzs
-MUwMsOx2POBhs5AVo9xrZb9h8pJMQAM=
-=PWXd
------END PGP SIGNATURE-----
-
---keylsesp7i7kvq27--
