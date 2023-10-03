@@ -2,181 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C22467B70CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E567B70CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240777AbjJCS1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 14:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
+        id S240053AbjJCS3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 14:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240779AbjJCS1g (ORCPT
+        with ESMTP id S231592AbjJCS3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:27:36 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2063.outbound.protection.outlook.com [40.107.92.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20612BB;
-        Tue,  3 Oct 2023 11:27:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CTCHEqSu3RPfv9mstYrkBQIoGjd/kxJOjTgIMe2nDEJb15MBPBGw1sQjytLx12+p7qwmgr2Uynd7kZGw14SJNVM1+a0ysDeFkUxjLfgmP3HZkD1b7PrnZFTBIEZ6x7Crij6XR2OoVCIMU8TuPZNTd1FnBMOsQm/5DMU/LCdNkWDHkFtMpyr6BTzqN5aW14++c5YG7+ail7F7btV25JPWHAgwYqMhrFeKdT7/VmYtIPIO/Cw2dDMAf23v3Lu2Sm5SApuAzLJ5rmaLzzJ7Y4v88kX4TmyERvQ5IprvmD9o84LVDA1ircTTafvwNlSzxQ+Pt+P9XZarHIYxR1cdGQcVng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Nl3/eyEKlta8WpveTOZZmzYEJsusCJI1gqdrxd7kOlE=;
- b=IRqOSQzpCHT/7KWVo5Tt8QQCF7RV6qlb3JaA9M4MNl8qDhODrZwUXxb7FJToi5CUE2f2hY0aMrXXHe0lwNapeoZpjnBD/kWEE7hPFW713lfkfFwfbvA8SIyGkyCw1kswzfc5Q1EJsHeJ9+bjJY3KwyVERckmvDZwGVRmbmqiqUPY+f5Il4ZDMJ+QpjLzjRxivZbcvQ6w9TL1Zq0tC/zFH7YNGbduMhhaY+WxrK5gaVNgLxbiXgi6iuJAynNfoTdHRKDAPOVNtarDyoa4EC6P6JHY/+8FVssz5nUPvk0KPf3tPv4mq4NKG3oKYCM5WIIQQGlQyKOlqamWz9RHqBNiqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Nl3/eyEKlta8WpveTOZZmzYEJsusCJI1gqdrxd7kOlE=;
- b=QmrKBvLzHFnzCe46Mql0V0GRA/0Aqkh2vJchYRMB1RK7CbfGDIsVwQi0GGa+PIQ1qyUeAd1kFfUrBxT3k2OFZXJPGgYT0dIu9ODRrsCM0IP96G/fRWJOZnkr7lxaQ4PHjrC9R/S6KEWqfElAXS+zuZIYtXQ/xlw3FvwYmp3TjJY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by SJ0PR12MB6928.namprd12.prod.outlook.com (2603:10b6:a03:47a::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25; Tue, 3 Oct
- 2023 18:27:27 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::2b54:7ddf:9e2e:751c]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::2b54:7ddf:9e2e:751c%3]) with mapi id 15.20.6838.033; Tue, 3 Oct 2023
- 18:27:24 +0000
-Message-ID: <a16814ee-28e8-d240-d672-8f9511b832cb@amd.com>
-Date:   Tue, 3 Oct 2023 13:27:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] arch/x86: Set XSS while handling #VC intercept for CPUID
-Content-Language: en-US
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Jinank Jain <jinankjain@linux.microsoft.com>,
-        seanjc@google.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, jinankjain@microsoft.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     wei.liu@kernel.org, tiala@microsoft.com
-References: <20231003092835.18974-1-jinankjain@linux.microsoft.com>
- <e7ae2b89-f2c4-e95f-342b-fcf92a2e0ae3@intel.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <e7ae2b89-f2c4-e95f-342b-fcf92a2e0ae3@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9PR13CA0036.namprd13.prod.outlook.com
- (2603:10b6:806:22::11) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        Tue, 3 Oct 2023 14:29:46 -0400
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BE990;
+        Tue,  3 Oct 2023 11:29:42 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-690d8fb3b7eso973644b3a.1;
+        Tue, 03 Oct 2023 11:29:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696357782; x=1696962582;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C8sQRY8roqNIFk3L84KXVcV0uLeEhN7pGXERpmeZkvg=;
+        b=tSsnzmPHOEL25bHOw6FAZ/iyMLFWSzFn/0rVtdyQqhPzBhipYpdLw9mwwpMyKj++Kx
+         sBzK7kSWJMrjgDnf848dEsO35fjwFu2ACbPW2IfwCTMRQ5eWkZyTysloipwVBdt66eB4
+         uD9Fjnm9tzfrTTT8y4dRSbuHZn6SrH4NaOUqm1LIXrLGWtVhVqDFh0eVzl4dLZIBnyVI
+         bBBzlbRLeOUEV7SJaC7mjlp/xHiZmKUhvd46KvRnQk9NpGuUidoM1bGG5vDCN+uHaFX2
+         P1hznFHTEp61W+3wmKhgP6GZAE2emxYsNsaLErp1v8Y2szdB+gxd7QJfo8izesjngFuT
+         tJ1g==
+X-Gm-Message-State: AOJu0YyjczOMTF9vzGSBVxMNuFd9CsHwHOCJ+Gh+QjdY9bwMeFSjJBoq
+        DxrmbrjwxigBvz8rkhtzEbw=
+X-Google-Smtp-Source: AGHT+IG6HIs+20OBGFQ3lm7n7+ND1W09MC3dl849h2sUlCWqAAFTtkCxzugKEheYLuy2Iq/oRGCZLg==
+X-Received: by 2002:a05:6a20:144c:b0:13c:ca8b:7e29 with SMTP id a12-20020a056a20144c00b0013cca8b7e29mr345308pzi.12.1696357782138;
+        Tue, 03 Oct 2023 11:29:42 -0700 (PDT)
+Received: from maniforge ([2620:10d:c090:400::4:d6ec])
+        by smtp.gmail.com with ESMTPSA id c9-20020a62e809000000b00690b8961bf4sm1724032pfi.146.2023.10.03.11.29.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 11:29:41 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 13:29:36 -0500
+From:   David Vernet <void@manifault.com>
+To:     Song Liu <songliubraving@meta.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "song@kernel.org" <song@kernel.org>,
+        "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "sdf@google.com" <sdf@google.com>,
+        "haoluo@google.com" <haoluo@google.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>,
+        "himadrispandya@gmail.com" <himadrispandya@gmail.com>,
+        "julia.lawall@inria.fr" <julia.lawall@inria.fr>
+Subject: Re: [PATCH bpf-next 2/2] bpf/selftests: Test pinning bpf timer to a
+ core
+Message-ID: <20231003182936.GC5902@maniforge>
+References: <20231002234708.331192-1-void@manifault.com>
+ <20231002234708.331192-2-void@manifault.com>
+ <4EC94A6E-B3C5-4D2D-BD4B-FF7C4F149FD1@fb.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|SJ0PR12MB6928:EE_
-X-MS-Office365-Filtering-Correlation-Id: 87553730-b2a5-4a8b-61f5-08dbc43e63dc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6fntcTkXwntc5pIBKaVwKcC4QESgZhK31pFX+aNUU5KqoARwomD/Kl8/1OILJf1SaIZWT3SAZjfqWx4c82jlXbgRGyP7PxquVWAcnFOMkacUSGLMov+b/XGngXqVsIC0UaaawSJj69Phqs9/OqA0Smnc/usiulZqcmVcR14SvTr0TnbVOMgxZf8Qpgy7Q85MO9XopR/TH33J0Oj0Lj4dblZcYhHZNYrdiRbym+aLJ54pcxthO5hfezfl/pOcP/GOrBpg/jFwfEfAm+hGjUDVuAqvt8fQ13dG4VktlNhceo84Y3CW9qBAuEWc/gXkeAc9hWIM4qpb3dBzcG6yM2y1lGlOevMGL1ZZd865BLsjzDdMam0eQitJXVMO/sKoNH3ncQ+vwUxCOLOTulXIFACkiB6C1PxIQ+47y7oa4kHfM7QcEJ3+Kb/oXcbUjoXBaJoPMYqzADB9gvAeygul314WiSS06GLOj1DGfDqpGQ4/4qjPQI15vC0IzKucKBBLar01c+2cLSKjvuJ88CUnY17iPgfRS5iY+Gc3QJMS3D1YOiVKbg8Wsu5JfY4MTF2lYJha0upivd3JjF39alERCo+SXhCIhEz9eHbPwCq1KeizIN8LdPeg8V77ThzRHYb+d6B9pTZ0VZoKDGS1Mw/R/0B5QZEynP7UIFCmNboHWzfjsU0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(346002)(376002)(136003)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(2906002)(83380400001)(66899024)(7416002)(31696002)(86362001)(36756003)(921005)(38100700002)(316002)(53546011)(66946007)(66476007)(66556008)(6512007)(6506007)(110136005)(41300700001)(2616005)(6486002)(478600001)(31686004)(4326008)(8676002)(5660300002)(26005)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?THR1d3k5UlBVUWNOWDZ3T04wa1JkbmNLZDdWaFNQdFlmM1dIQzFUOG0zQ1RD?=
- =?utf-8?B?eklyYXlPQ3ZhQ1lPQkZhNUxHbjgzVVR0dThTNmpTS2tQa251K0piUGsyYzUv?=
- =?utf-8?B?RGo4NVcyMEdPa2I4T2RsY3JWemtabHh1UTlTaVprcjlMYUI2K3YwWDhuWjli?=
- =?utf-8?B?Y25uRFRDVUY2NkxTY2RseGZOMFNUdEZRVjA4LzVqVWlFdnp0ckI3OW85bkhT?=
- =?utf-8?B?S1N5N2MwNDdjQUdGZXNrUFFRQVhURzlzTDJvNFJEY29hS3hDUmlnL0lWZ3l3?=
- =?utf-8?B?TzAxYzVrQU12ZTRPQ1RKK0tnMzhJcUpIeTJVSFpsNis1ZDloWFlTQUcyL2d5?=
- =?utf-8?B?ZVBiTGxKcGoyOUNxUW5CWlNtbCt5eTk4dlBMSVNPZERNcWVyaVN5U2RaS2pG?=
- =?utf-8?B?cXNxR2RySXh2V045SDNHdUkwMUQyQ2xid0VHa2tLbzRodmlIRllkRmdHbWMx?=
- =?utf-8?B?NFppOW9IY0RNUmxTclFjclAxaTBhWUI0b2FUZ2lMK3BOYlIxbkZWcis2a1Bu?=
- =?utf-8?B?NUU5OTBuR01yazR4WnhicFN2d2Y3cVZJOGVNUi8wK2FMSHB5R1dBczBSSktZ?=
- =?utf-8?B?R0xYOXRROUZtbGFNOTJ1SytWYU5SMWcwYnM5dWRheUhSQytsS2pDRDVSY0l2?=
- =?utf-8?B?bU5mUDhDcUF3Q3pZbGpQNVFFVXJwYzdMbVNPNWZKQW8wSlZKRmh0dVArWEI3?=
- =?utf-8?B?UFNTVXJjSnYzZm9ua0djUzN3VmpIVnJrSjVUWEw2TUpCZHFSTzV6ZExkQXhL?=
- =?utf-8?B?SHN3c3BLdGtGeWh0clUrWWVRRzhjcEtxWmhZWUFUdHVlWGkyQUZhWU5CR1Zm?=
- =?utf-8?B?SmNwcGxqL3pidkYxeEVHK2h3bDlMQnJDMjBib1BMTFVYYi9uNWZHOEZHclpS?=
- =?utf-8?B?eW02U0lxZnR1VFlTZ3RCcHZTTExPWTNDbGdOQXBJOXF5dkVWMjMyc0tKbDRi?=
- =?utf-8?B?MGdFME45RVRoeGg1UXhERnhkWGxiODM2R21VVnVpWExSd3EwbTRlMERKTXhB?=
- =?utf-8?B?QkpwUWlNUGtWN0Y4UnRJMGpDTkloRmJmR1ZVcjNXY3UvOFBheElDVExWM3Bw?=
- =?utf-8?B?Tk8vZ1F3a21qRERuekdKVXo5SXkzcGh6QzVXaGt6MzhXbjl2TU52Ny8rcTc2?=
- =?utf-8?B?QkxsamNJeHU4Z2JZSnlvaXBSZnVKWWt2QmYrSTVOVzI3eFM4Mm81Q01HWnhw?=
- =?utf-8?B?emc2a1o5ZXI3aVpIcG5FT0ZiYjNSREZzNWtzcnZaQUUwbVd6NkE5RFNQUTJn?=
- =?utf-8?B?bytNYTJydDNHUDVLZkRlTlFaOHlSZUVua0ZZaGVVbyswb1hiMGZFUHhlMWRK?=
- =?utf-8?B?MlRyMUhtUVdrZDhkcjJIK0hQazBiRGZvcGRJTWdMOXcwOEE3V0dYZkFXQzJ5?=
- =?utf-8?B?bElxUkcxeEV4UHkvM3N2NllVV3N0WkRFTFhZM2lVVUpzMm9IQ21pSlQvREFu?=
- =?utf-8?B?bndyNnVDbHFQRVJ6ZWwyV0FWWUJSc3FKYklBaE5TcHBtVWZhVldEaFRLSW1V?=
- =?utf-8?B?VUNpTHFEOXlzVmRKT3VrTkFtZW04akYxSkdLeEZWbjJVckRlQXlaK3NvWncy?=
- =?utf-8?B?bis0Q0FrN3NCb0lpaWNYZ0ZILy82Q3paV3BXU0NCazUvOC9RRDhxcjU4ZU51?=
- =?utf-8?B?NElDdHprbGE0OFN6ZWZoS2pUcUppeGp6NzJRNVlVUVdIL2R3aWtzSnhDeUx4?=
- =?utf-8?B?dnZ3UTd3NWtsYVVkRTg5Ylh6RTFWSW0zMlUzSldvZ0lhMXBGd3YyTWxrVWZ6?=
- =?utf-8?B?RFdYcHJkVmNDK0RicmlYY3Q5NEVyWjRoRU51aE4rbEpVdEpXQWZUOU9IdHU3?=
- =?utf-8?B?Y3pGclBuSGYxTjE3cGtyT2huTS9SK3ZMbGRUMG1Uc1d3cGV0aC95dkpnU1hm?=
- =?utf-8?B?ZTJaalFMNnJsb1NFVjhMOG5UejZ5UytyWjVMQ2E3Q2dka2VMbU9pWGw3Y1Ew?=
- =?utf-8?B?RFFQUURjV1ZWcW12OWJOZTMxT1QyR1AzaXhhS2lVS0k3S2ZpeVAvbHppN294?=
- =?utf-8?B?dHRUTDd3UitUYlRCOFQ4RlN3bkgwK3FueUw2cjE3Z2ZlMTVENkYyK2Y1OWVp?=
- =?utf-8?B?blBObUJYWEFpUzFVTnl4QksrMllsTmYrWElnMHRXcFdFR3Z2cUFtNW5ReURr?=
- =?utf-8?Q?j3WMpCcEI3YvPro9IGhUxSPly?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87553730-b2a5-4a8b-61f5-08dbc43e63dc
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 18:27:24.8177
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Jzr40/IetPwI3962pWcQSFz2Y92suFZeMEkjkGHNQD9HmRYge61hdM/AmxqlKj94Q5KCgoufJpk0P3EZTKfiQQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6928
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4EC94A6E-B3C5-4D2D-BD4B-FF7C4F149FD1@fb.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 11:07, Dave Hansen wrote:
-> On 10/3/23 02:28, Jinank Jain wrote:
-> ...
->> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
->> index 2eabccde94fb..92350a24848c 100644
->> --- a/arch/x86/kernel/sev-shared.c
->> +++ b/arch/x86/kernel/sev-shared.c
->> @@ -880,6 +880,9 @@ static enum es_result vc_handle_cpuid(struct ghcb *ghcb,
->>   	if (snp_cpuid_ret != -EOPNOTSUPP)
->>   		return ES_VMM_ERROR;
->>   
->> +	if (regs->ax == 0xD && regs->cx == 0x1)
->> +		ghcb_set_xss(ghcb, 0);
+On Tue, Oct 03, 2023 at 06:15:03PM +0000, Song Liu wrote:
 > 
-> The spec talks about leaf 0xD, but not the subleaf:
 > 
->> XSS is only required to besupplied when a request forCPUID 0000_000D
->> is made andthe guest supports the XSS MSR(0x0000_0DA0).
-> Why restrict this to subleaf (regx->cx) 1?
-
-Today, only subleaf 1 deals with XSS, but we could do just what you say 
-and set it for any 0xD subleaf to be safe.
-
+> > On Oct 2, 2023, at 4:47 PM, David Vernet <void@manifault.com> wrote:
+> > 
+> > Now that we support pinning a BPF timer to the current core, we should
+> > test it with some selftests. This patch adds two new testcases to the
+> > timer suite, which verifies that a BPF timer both with and without
+> > BPF_F_TIMER_ABS, can be pinned to the calling core with
+> > BPF_F_TIMER_CPU_PIN.
+> > 
+> > Signed-off-by: David Vernet <void@manifault.com>
 > 
-> Second, XCR0 is being supplied regardless of the CPUID leaf.  Why should
-> XSS be restricted to 0xD while XCR0 is universally supplied?
-
-XCR0 is really only required for 0xD, I'm not sure why it is being setting 
-all the time (unless similar to above, it becomes required for some other 
-CPUID leaf in the future?)
-
+> Acked-by: Song Liu <song@kernel.org>
 > 
-> Third, why is it OK to supply a garbage (0) value?  If the GHCB field is
-> required it's surely because the host *NEEDS* the value to do something.
->   Won't a garbage value potentially confuse the host?
+> With one nit/question below. 
+> 
+> > ---
+> > .../testing/selftests/bpf/prog_tests/timer.c  |  4 +
+> > tools/testing/selftests/bpf/progs/timer.c     | 75 +++++++++++++++++++
+> > 2 files changed, 79 insertions(+)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
+> > index 290c21dbe65a..d8bc838445ec 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/timer.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/timer.c
+> > @@ -14,6 +14,7 @@ static int timer(struct timer *timer_skel)
+> > 
+> > ASSERT_EQ(timer_skel->data->callback_check, 52, "callback_check1");
+> > ASSERT_EQ(timer_skel->data->callback2_check, 52, "callback2_check1");
+> > + ASSERT_EQ(timer_skel->bss->pinned_callback_check, 0, "pinned_callback_check1");
+> > 
+> > prog_fd = bpf_program__fd(timer_skel->progs.test1);
+> > err = bpf_prog_test_run_opts(prog_fd, &topts);
+> > @@ -32,6 +33,9 @@ static int timer(struct timer *timer_skel)
+> > /* check that timer_cb3() was executed twice */
+> > ASSERT_EQ(timer_skel->bss->abs_data, 12, "abs_data");
+> > 
+> > + /* check that timer_cb_pinned() was executed twice */
+> > + ASSERT_EQ(timer_skel->bss->pinned_callback_check, 2, "pinned_callback_check");
+> > +
+> > /* check that there were no errors in timer execution */
+> > ASSERT_EQ(timer_skel->bss->err, 0, "err");
+> > 
+> > diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
+> > index 9a16d95213e1..0112b9c038b4 100644
+> > --- a/tools/testing/selftests/bpf/progs/timer.c
+> > +++ b/tools/testing/selftests/bpf/progs/timer.c
+> > @@ -53,12 +53,28 @@ struct {
+> > __type(value, struct elem);
+> > } abs_timer SEC(".maps");
+> > 
+> > +struct {
+> > + __uint(type, BPF_MAP_TYPE_ARRAY);
+> > + __uint(max_entries, 1);
+> > + __type(key, int);
+> > + __type(value, struct elem);
+> > +} soft_timer_pinned SEC(".maps");
+> > +
+> > +struct {
+> > + __uint(type, BPF_MAP_TYPE_ARRAY);
+> > + __uint(max_entries, 1);
+> > + __type(key, int);
+> > + __type(value, struct elem);
+> > +} abs_timer_pinned SEC(".maps");
+> 
+> nit: I think we can also do something like the following, but I am not 
+> sure whether this style is not recommended. 
+> 
+> diff --git i/tools/testing/selftests/bpf/progs/timer.c w/tools/testing/selftests/bpf/progs/timer.c
+> index 9a16d95213e1..638eeebcd6c9 100644
+> --- i/tools/testing/selftests/bpf/progs/timer.c
+> +++ w/tools/testing/selftests/bpf/progs/timer.c
+> @@ -51,7 +51,7 @@ struct {
+>         __uint(max_entries, 1);
+>         __type(key, int);
+>         __type(value, struct elem);
+> -} abs_timer SEC(".maps");
+> +} abs_timer SEC(".maps"), soft_timer_pinned SEC(".maps"), abs_timer_pinned SEC(".maps");
 
-Ideally, the guest should be checking if XSAVES is enabled, which requires 
-checking CPUID leaf 0xD, subleaf 1. So a bit of a chicken and egg thing 
-going on the very first time. And then the guest should read MSR_IA32_XSS 
-to get the actual value. This MSR is virtualized, so the hypervisor needs 
-to not intercept access in order for the guest to actually set/get a 
-value. Today, KVM/SVM doesn't support that since XSS is used (mainly/only) 
-for shadow stack and KVM shadow stack support is only getting looked at now.
-
-So the guest support for XSS and ES/SNP guests needs to be thought out a 
-bit more.
+This looks like a nice readability improvement / cleanup to me. If
+nobody objects, I'd say let's apply it.
 
 Thanks,
-Tom
-
-> 
+David
