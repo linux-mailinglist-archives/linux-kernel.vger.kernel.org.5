@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2F37B748C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620587B7492
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbjJCXO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 19:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
+        id S232640AbjJCXQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 19:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231504AbjJCXO1 (ORCPT
+        with ESMTP id S232616AbjJCXQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 19:14:27 -0400
+        Tue, 3 Oct 2023 19:16:07 -0400
 Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7D4AF;
-        Tue,  3 Oct 2023 16:14:24 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c723f1c80fso11384575ad.1;
-        Tue, 03 Oct 2023 16:14:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD972B0
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:16:02 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c737d61a00so11426925ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:16:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696374864; x=1696979664; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xWjIhVNT1E7PfrfKwNLVQZ455aStkJaWOS9he+QZwc4=;
-        b=bmJ0Os0XHMwPi+/FSTBaHKOQFubBPd8lJsAuoj7Ouw4QydaJIyp7+cfJtZnmo0EF2n
-         4cioSqFeEAlGIVJvFu448HiCssEoupJw5xV7MBJu6BEHiGEalCuVkP2ljOgsYp7qpswD
-         LJ9+rzz/IWZJ7Yhsc930S+Ve5T050hyd0s4x3lPWxr6GrincDyQWXLEafowBaKjumaOt
-         iuT3/19pEeENg/EU4BiaDKF3Yz9Bbt9MnN3c6DNukwnmQ6aC62ZxD4G/sbwsB+OQHyRN
-         UkI8vnBKeaaAC0+JRoYsAK6Mg5/ugkRixwQCYqs5etz62xxYJcoVzXFu6Yod9Mgfpw8e
-         XBAQ==
+        d=google.com; s=20230601; t=1696374962; x=1696979762; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CQvjZ6Vg1TORaVshay2K+ceZECfUUPc83u0Du1Ap9X0=;
+        b=mnqT0CFhF6VjfTwVe6vh6CvoHF/wU2YohWTLyEcL+K69EE/HQ0qxUz8F/I4/d5wWig
+         qqQDoCVVM3Bzni0LGF49lCx3zMTIW2mJgw0xnuqy/O2+XiO/3VfU9kMKQFohhqKwjmMr
+         RKmxnALYwWLVXfD/pC+CdLWX1YER/ZpikdL1HslZG0vY+SWcWsjlFW7Vi6+hMpqgFnbR
+         SOQ3A7VV4AzkpRTnMK7+/lipnyKP+b6kyJ4aN583rlmFZgIZAs7y3TG+OXplr8AoXvx6
+         KvTELbschUUs2GADtFpnDT7wwUbT11u38NOiC+g9VTz0wT9AsCxGfQqsMbt7FlHLHULz
+         d2CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696374864; x=1696979664;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xWjIhVNT1E7PfrfKwNLVQZ455aStkJaWOS9he+QZwc4=;
-        b=Kbfz5mvbIdoFafq4ZZiAnYu5pIBiXgVn/IAfiEaOX/LQMdwe4ByDJO3ZIArE8uB+5t
-         aOmvSjScfX9Lq1kcVGvefN5RyBsReLdlmxgu62R48Vnnn0nZdC1Rlvd5r5VckKFKBZ10
-         BS43EMWO2uX3/vlJz5zZT3VBkgOeOOQB8iLMl2NgMSXjSxbkUKsyESU9znzC19kgTTyN
-         GqqX66LL6OXiI+dmfn4/aYwbxPqtp8ncmdZvJWWvY3uznqtVEG680KWWl6Gh4kurpPXS
-         432OaW3scmCLGz/AYuH6tshgDoTQLNpOHwWU1YKDbDkmfWQpKVZJlpkuMZKm3ms73UeI
-         GXig==
-X-Gm-Message-State: AOJu0YwC5zLJWwR0Gn7+0mx8Zak4Zy8zDI6DoTHghoh4tJK49K9UzgUv
-        Q/077O4K8wwZZaazG3X9W5w=
-X-Google-Smtp-Source: AGHT+IETIduuzQcGbX3ju74VeGurMPVK+mZzhRAQKI3L+wYgIJF0Bkfu8w2t03oMVilyhWuyfFZ02g==
-X-Received: by 2002:a17:902:bc45:b0:1c7:7916:e87b with SMTP id t5-20020a170902bc4500b001c77916e87bmr1071338plz.14.1696374863896;
-        Tue, 03 Oct 2023 16:14:23 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-116.fbsv.net. [2a03:2880:ff:74::face:b00c])
-        by smtp.gmail.com with ESMTPSA id u5-20020a17090282c500b001c446dea2c5sm2173607plz.143.2023.10.03.16.14.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 16:14:23 -0700 (PDT)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH] memcontrol: only transfer the memcg data for migration
-Date:   Tue,  3 Oct 2023 16:14:22 -0700
-Message-Id: <20231003231422.4046187-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231003171329.GB314430@monkey>
-References: <20231003171329.GB314430@monkey>
+        d=1e100.net; s=20230601; t=1696374962; x=1696979762;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CQvjZ6Vg1TORaVshay2K+ceZECfUUPc83u0Du1Ap9X0=;
+        b=fzz3K+X3kD4SHvN1qySyUfAVIsTAvS9xXYdm+zhrZOk39IRThaPPLjPtlHkB7/MFnr
+         cUw79EvOwRKstpnYK5Byk4n2+aRknEXVp7+/M3ZtCZ54lv40++KIAbXQ5WUIaBr3ug/n
+         eNRNDajCy8xn1UyvgHYZri+kQE9yPZ7H/oi5sls/AfEEDyFvsqbV0cDEHK0sz+T83Git
+         nDg0wCpwHoqLyh3UjxfHSSAaDtUHr0ychCLna29qelze5VmAUv//Xz76BRhccUPqVeuC
+         AWvtj5ZNfIbyR90V6vNVIxcAC+RPNLQQWNIVezFnEYRxZ3vHE8KBruqnxQFGRl8M1TVs
+         R3ZQ==
+X-Gm-Message-State: AOJu0YxgijGUYBsyxqoQT6DpVyPxjZ16vtyypt8TbPvJj8gLh0am+eD8
+        IhcFGGvisvY63Di1RQsKyC2ZXrKhi4fG8DpGpeB+7w==
+X-Google-Smtp-Source: AGHT+IHbJ4svnNe0Uz7gtX62WWEVUOR1Lb0TLS4/QGnyuum2NTMNrkADnkgIuAIzd2qDEAKfIpOeaw==
+X-Received: by 2002:a17:902:b70f:b0:1c4:375c:110a with SMTP id d15-20020a170902b70f00b001c4375c110amr906373pls.19.1696374961982;
+        Tue, 03 Oct 2023 16:16:01 -0700 (PDT)
+Received: from [192.168.60.239] (213.126.145.34.bc.googleusercontent.com. [34.145.126.213])
+        by smtp.gmail.com with ESMTPSA id b4-20020a170902d30400b001c62c9d7289sm2179840plc.104.2023.10.03.16.16.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Oct 2023 16:16:01 -0700 (PDT)
+Message-ID: <0ccb2c13-438d-4715-af79-d5cf536930cc@google.com>
+Date:   Tue, 3 Oct 2023 16:16:00 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/3] usb: gadget: uvc: stability fixes on STREAMOFF.
+Content-Language: en-US
+To:     Michael Grzeschik <mgr@pengutronix.de>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Scally <dan.scally@ideasonboard.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        jchowdhary@google.com, etalvala@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230930184821.310143-1-arakesh@google.com>
+ <ZRv2UnKztgyqk2pt@pengutronix.de>
+From:   Avichal Rakesh <arakesh@google.com>
+In-Reply-To: <ZRv2UnKztgyqk2pt@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,157 +79,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For most migration use cases, only transfer the memcg data from the old
-folio to the new folio, and clear the old folio's memcg data. No
-charging and uncharging will be done. These use cases include the new
-hugetlb memcg accounting behavior (which was not previously handled).
+Thank you for testing the patch, Michael!
 
-This shaves off some work on the migration path, and avoids the
-temporary double charging of a folio during its migration.
+On 10/3/23 04:09, Michael Grzeschik wrote:
+> Hi
+> 
+> On Sat, Sep 30, 2023 at 11:48:18AM -0700, Avichal Rakesh wrote:
+>> We have been seeing two main stability issues that uvc gadget driver
+>> runs into when stopping streams:
+>> 1. Attempting to queue usb_requests to a disabled usb_ep
+>> 2. use-after-free issue for inflight usb_requests
+>>
+>> The three patches below fix the two issues above. Patch 1/3 fixes the
+>> first issue, and Patch 2/3 and 3/3 fix the second issue.
+>>
+>> Avichal Rakesh (3):
+>>  usb: gadget: uvc: prevent use of disabled endpoint
+>>  usb: gadget: uvc: Allocate uvc_requests one at a time
+>>  usb: gadget: uvc: Fix use-after-free for inflight usb_requests
+>>
+>> drivers/usb/gadget/function/f_uvc.c     |  11 +-
+>> drivers/usb/gadget/function/f_uvc.h     |   2 +-
+>> drivers/usb/gadget/function/uvc.h       |   6 +-
+>> drivers/usb/gadget/function/uvc_v4l2.c  |  21 ++-
+>> drivers/usb/gadget/function/uvc_video.c | 189 +++++++++++++++++-------
+>> 5 files changed, 164 insertions(+), 65 deletions(-)
+> 
+> These patches are not applying on gregkh/usb-testing since
+> Greg did take my patches first. I have already rebased them.
 
-The only exception is replace_page_cache_folio(), which will use the old
-mem_cgroup_migrate() (now renamed to mem_cgroup_replace_folio). In that
-context, the isolation of the old page isn't quite as thorough as with
-migration, so we cannot use our new implementation directly.
+Ah, I didn't realize Greg had picked up your changes in his tree.
+Rebased the patches in V2.
 
-This patch is the result of the following discussion on the new hugetlb
-memcg accounting behavior:
+Also want to point out that 
+https://lore.kernel.org/20230911002451.2860049-2-m.grzeschik@pengutronix.de/
+may have introduced an issue when setting the uvc->state to 
+UVC_STATE_CONNECTED in uvcg_video_enable. 
 
-https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
+Effectively, uvc_video_enable can be called 
+  1. because the host asks to halt the stream, or 
+  2. if the gadget was disabled. 
 
-Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
-Closes: https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- include/linux/memcontrol.h |  7 ++++++
- mm/filemap.c               |  2 +-
- mm/memcontrol.c            | 45 +++++++++++++++++++++++++++++++++++---
- mm/migrate.c               |  3 +--
- 4 files changed, 51 insertions(+), 6 deletions(-)
+Setting uvc->state to CONNECTED is fine for (1). In (2), uvc_v4l2 
+sets uvc->state to DISCONNECTED before calling uvcg_video_enable. 
+In this case, your change would overwrite the value to CONNECTED 
+without any further checks.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index a827e2129790..e3eaa123256b 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -711,6 +711,8 @@ static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
- 
- void mem_cgroup_cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages);
- 
-+void mem_cgroup_replace_folio(struct folio *old, struct folio *new);
-+
- void mem_cgroup_migrate(struct folio *old, struct folio *new);
- 
- /**
-@@ -1294,6 +1296,11 @@ static inline void mem_cgroup_cancel_charge(struct mem_cgroup *memcg,
- {
- }
- 
-+static inline void mem_cgroup_replace_folio(struct folio *old,
-+		struct folio *new)
-+{
-+}
-+
- static inline void mem_cgroup_migrate(struct folio *old, struct folio *new)
- {
- }
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 9481ffaf24e6..673745219c82 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -819,7 +819,7 @@ void replace_page_cache_folio(struct folio *old, struct folio *new)
- 	new->mapping = mapping;
- 	new->index = offset;
- 
--	mem_cgroup_migrate(old, new);
-+	mem_cgroup_replace_folio(old, new);
- 
- 	xas_lock_irq(&xas);
- 	xas_store(&xas, new);
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6660684f6f97..cbaa26605b3d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7316,16 +7316,17 @@ void __mem_cgroup_uncharge_list(struct list_head *page_list)
- }
- 
- /**
-- * mem_cgroup_migrate - Charge a folio's replacement.
-+ * mem_cgroup_replace_folio - Charge a folio's replacement.
-  * @old: Currently circulating folio.
-  * @new: Replacement folio.
-  *
-  * Charge @new as a replacement folio for @old. @old will
-- * be uncharged upon free.
-+ * be uncharged upon free. This is only used by the page cache
-+ * (in replace_page_cache_folio()).
-  *
-  * Both folios must be locked, @new->mapping must be set up.
-  */
--void mem_cgroup_migrate(struct folio *old, struct folio *new)
-+void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
- {
- 	struct mem_cgroup *memcg;
- 	long nr_pages = folio_nr_pages(new);
-@@ -7364,6 +7365,44 @@ void mem_cgroup_migrate(struct folio *old, struct folio *new)
- 	local_irq_restore(flags);
- }
- 
-+/**
-+ * mem_cgroup_migrate - Transfer the memcg data from the old to the new folio.
-+ * @old: Currently circulating folio.
-+ * @new: Replacement folio.
-+ *
-+ * Transfer the memcg data from the old folio to the new folio for migration.
-+ * The old folio's data info will be cleared. Note that the memory counters
-+ * will remain unchanged throughout the process.
-+ *
-+ * Both folios must be locked, @new->mapping must be set up.
-+ */
-+void mem_cgroup_migrate(struct folio *old, struct folio *new)
-+{
-+	struct mem_cgroup *memcg;
-+
-+	VM_BUG_ON_FOLIO(!folio_test_locked(old), old);
-+	VM_BUG_ON_FOLIO(!folio_test_locked(new), new);
-+	VM_BUG_ON_FOLIO(folio_test_anon(old) != folio_test_anon(new), new);
-+	VM_BUG_ON_FOLIO(folio_nr_pages(old) != folio_nr_pages(new), new);
-+
-+	if (mem_cgroup_disabled())
-+		return;
-+
-+	memcg = folio_memcg(old);
-+	/*
-+	 * Note that it is normal to see !memcg for a hugetlb folio.
-+	 * It could have been allocated when memory_hugetlb_accounting was not
-+	 * selected, for e.g.
-+	 */
-+	VM_WARN_ON_ONCE_FOLIO(!memcg, old);
-+	if (!memcg)
-+		return;
-+
-+	/* Transfer the charge and the css ref */
-+	commit_charge(new, memcg);
-+	old->memcg_data = 0;
-+}
-+
- DEFINE_STATIC_KEY_FALSE(memcg_sockets_enabled_key);
- EXPORT_SYMBOL(memcg_sockets_enabled_key);
- 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 7d1804c4a5d9..6034c7ed1d65 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -633,8 +633,7 @@ void folio_migrate_flags(struct folio *newfolio, struct folio *folio)
- 
- 	folio_copy_owner(newfolio, folio);
- 
--	if (!folio_test_hugetlb(folio))
--		mem_cgroup_migrate(folio, newfolio);
-+	mem_cgroup_migrate(folio, newfolio);
- }
- EXPORT_SYMBOL(folio_migrate_flags);
- 
--- 
-2.34.1
+> 
+> In the updated version I the stack runs into the
+> following error, when enabling lockdep. Could you
+> try your version with lockdep enabled?
+> 
+> [   41.278520] configfs-gadget.vz gadget.0: uvc: reset UVC
+> [   47.156261] configfs-gadget.vz gadget.0: uvc: uvc_function_set_alt(2, 0)
+> [   47.169177]
+> [   47.170903] ============================================
+> [   47.176857] WARNING: possible recursive locking detected
+> [   47.182798] 6.5.0-20230919-1+ #19 Tainted: G         C
+> [   47.189323] --------------------------------------------
+> [   47.195256] vzuvcd/412 is trying to acquire lock:
+> [   47.200511] ffffff8009560928 (&video->req_lock){....}-{3:3}, at: uvc_video_complete+0x44/0x2e0
+> [   47.210172]
+> [   47.210172] but task is already holding lock:
+> [   47.216687] ffffff8009560928 (&video->req_lock){....}-{3:3}, at: uvcg_video_enable+0x2d0/0x5c0
+> [   47.226333]
+> [   47.226333] other info that might help us debug this:
+> [   47.233625]  Possible unsafe locking scenario:
+> [   47.233625]
+> [   47.240242]        CPU0
+> [   47.242974]        ----
+> [   47.245709]   lock(&video->req_lock);
+> [   47.249802]   lock(&video->req_lock);
+> [   47.253897]
+> [   47.253897]  *** DEADLOCK ***
+> [   47.253897]
+> [   47.260511]  May be due to missing lock nesting notation
+> [   47.260511]
+> 
 
+Thank you for catching this. I couldn't repro the deadlock, but it looks
+like DWC3 controller can call the complete callback directly from 
+usb_ep_dequeue for requests in its pending list. I am not sure if that 
+is up to spec, considering calling usb_ep_queue explicitly forbids calling
+the complete callback from within. Regardless, it is easy enough to fix
+by moving the dequeue calls to before we acquire req_lock. The semantics
+of the rest of the patch is unchanged.
+
+Uploading the fixed patches shortly.
+
+Regards,
+Avi.
