@@ -2,117 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 382537B7011
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9697B6FF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240550AbjJCRkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49958 "EHLO
+        id S240567AbjJCRhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231845AbjJCRko (ORCPT
+        with ESMTP id S230202AbjJCRhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:40:44 -0400
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36BDBD;
-        Tue,  3 Oct 2023 10:40:40 -0700 (PDT)
-Received: from [192.168.7.187] ([76.103.185.250])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 393Hb5dd1691810
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 3 Oct 2023 10:37:05 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 393Hb5dd1691810
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023091101; t=1696354628;
-        bh=pV/MsKucrKusG2Y/zWi1V+/lmmij2RlMuAhslhwjBGY=;
+        Tue, 3 Oct 2023 13:37:33 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC050A6;
+        Tue,  3 Oct 2023 10:37:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1696354646;
+        bh=v6YWBoTIP+f7aIOUjc6YmisDl139de8ayHYE7Lvve78=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ie+iUNG++evbuJJIH4LlVE0y2kO/anm5d/KQwE81BTvjNrZxoKeTGUjvRP94gJyOW
-         sFFwd0PevILqj6hD6U2qhBArrigpGLpXM8fHjGxeiGT+ars6lZM63/+CSvM7JcI6Ce
-         i/1trzuvN3L4daAHaFAv1RVz8+foCPfh2Rmolh8QxMA/Xrvn95KJpYWuswaXnnZolW
-         YcYqO+AG6Y17Wv5Ou8D9OODEB0u/t1bXtlvbsLuz6TiurGl9UM3D82tn97PdzO/W6E
-         Iv0qGHQNJAC0k8ul3K4pRSLLwEm7lTKyXhJ30LwwQxK+sgBP6hHFmJXb3j2p6StTgX
-         RDV3jN2oQ7j6A==
-Message-ID: <7aee5021-8bb6-4343-b746-a8417af030a9@zytor.com>
-Date:   Tue, 3 Oct 2023 10:37:02 -0700
+        b=ohQsuWp6hs+97S0a6HF2z3/HYRXs5V6dDmDnJ1DP8cWkEo55lQSrfRastyeD7vynp
+         whSwJjXGxff2X6th22IsOfTBK36dJaKjcdgWz0KT1ysARfHPyh+9IsmMj8+hVQyvUk
+         Jw3xwqrraglrP1p2T9N+NK50/0Xd0VBEZkywzujgEfNx/VNuaTLeuq3wy6bL4j81WH
+         eAG19cQEptGjO1Kzu5drvWfPbphpF9K+qzpM3HHCNBMrhrLXs87Eeuk3fpnEuGFlmN
+         xlW1qRzD0WDF1xpo07dyGWrxP3ay+Rd5ETmhl8DUhXCCgo9dbDa3bwSiqIjn723c35
+         BNvsxPcHGLzug==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4S0Q4k2rDBz1VlH;
+        Tue,  3 Oct 2023 13:37:26 -0400 (EDT)
+Message-ID: <fab2b062-4fcd-a8f5-88fa-8afeec20fe5b@efficios.com>
+Date:   Tue, 3 Oct 2023 13:37:26 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cpu-hotplug: provide prototypes for arch CPU registration
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Gavin Shan <gshan@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-acpi@vger.kernel.org,
-        James Morse <james.morse@arm.com>, loongarch@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-ia64@vger.kernel.org
-References: <E1qkoRr-0088Q8-Da@rmk-PC.armlinux.org.uk>
- <dd4dee9e-4d75-e1e6-04c8-82d84b28fd35@redhat.com>
- <ZRIU/yFrbFbIR7zZ@shell.armlinux.org.uk>
- <ZRwmj/e+jAXFfvCm@shell.armlinux.org.uk>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v3 1/5] tracing: Introduce faultable tracepoints (v3)
 Content-Language: en-US
-From:   Xin Li <xin@zytor.com>
-Autocrypt: addr=xin@zytor.com; keydata=
- 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
- l75w1xInsg==
-In-Reply-To: <ZRwmj/e+jAXFfvCm@shell.armlinux.org.uk>
+To:     paulmck@kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+References: <20231002202531.3160-1-mathieu.desnoyers@efficios.com>
+ <20231002202531.3160-2-mathieu.desnoyers@efficios.com>
+ <20231002191023.6175294d@gandalf.local.home>
+ <97c559c9-51cf-415c-8b0b-39eba47b8898@paulmck-laptop>
+ <20231002211936.5948253e@gandalf.local.home>
+ <5d0771e9-332c-42cd-acf3-53d46bb691f3@paulmck-laptop>
+ <20231003100854.7285d2a9@gandalf.local.home>
+ <99ec6025-c170-459c-8b43-58cf1a85f832@paulmck-laptop>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <99ec6025-c170-459c-8b43-58cf1a85f832@paulmck-laptop>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/2023 7:34 AM, Russell King (Oracle) wrote:
->>>>
->>>> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
->>>> ---
->>>> Changes since RFC v2:
->>>>    - drop ia64 changes, as ia64 has already been removed.
->>>>
+On 10/3/23 13:33, Paul E. McKenney wrote:
+> On Tue, Oct 03, 2023 at 10:08:54AM -0400, Steven Rostedt wrote:
+>> On Tue, 3 Oct 2023 06:44:50 -0700
+>> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+>>
+>>>> That way it is clear what uses what, as I read the original paragraph a
+>>>> couple of times and could have sworn that rcu_read_lock_trace() required
+>>>> tasks to not block.
+>>>
+>>> That would work for me.  Would you like to send a patch, or would you
+>>> rather we made the adjustments?
+>>
+>> Which ever.
+> 
+> OK, how about like this?
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 973eb79ec46c16f13bb5b47ad14d44a1f1c79dc9
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Tue Oct 3 10:30:01 2023 -0700
+> 
+>      doc: Clarify RCU Tasks reader/updater checklist
+>      
+>      Currently, the reader/updater compatibility rules for the three RCU
+>      Tasks flavors are squished together in a single paragraph, which can
+>      result in confusion.  This commit therefore splits them out into a list,
+>      clearly showing the distinction between these flavors.
+>      
 
-If this is RFC v2, we put "RFC v2" in the subject, then people know you
-are sending a newer version.  People are busy, and your patch could be 
-skipped if it appears the same as a previous one.
+Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+
+Thanks!
+
+Mathieu
+
+>      Reported-by: Steven Rostedt <rostedt@goodmis.org>
+>      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+> index bd3c58c44bef..c432899aff22 100644
+> --- a/Documentation/RCU/checklist.rst
+> +++ b/Documentation/RCU/checklist.rst
+> @@ -241,15 +241,22 @@ over a rather long period of time, but improvements are always welcome!
+>   	srcu_struct.  The rules for the expedited RCU grace-period-wait
+>   	primitives are the same as for their non-expedited counterparts.
+>   
+> -	If the updater uses call_rcu_tasks() or synchronize_rcu_tasks(),
+> -	then the readers must refrain from executing voluntary
+> -	context switches, that is, from blocking.  If the updater uses
+> -	call_rcu_tasks_trace() or synchronize_rcu_tasks_trace(), then
+> -	the corresponding readers must use rcu_read_lock_trace() and
+> -	rcu_read_unlock_trace().  If an updater uses call_rcu_tasks_rude()
+> -	or synchronize_rcu_tasks_rude(), then the corresponding readers
+> -	must use anything that disables preemption, for example,
+> -	preempt_disable() and preempt_enable().
+> +	Similarly, it is necssary to correctly use the RCU Tasks flavors:
+> +
+> +	a.	If the updater uses synchronize_rcu_tasks() or
+> +		call_rcu_tasks(), then the readers must refrain from
+> +		executing voluntary context switches, that is, from
+> +		blocking.
+> +
+> +	b.	If the updater uses call_rcu_tasks_trace()
+> +		or synchronize_rcu_tasks_trace(), then the
+> +		corresponding readers must use rcu_read_lock_trace()
+> +		and rcu_read_unlock_trace().
+> +
+> +	c.	If an updater uses call_rcu_tasks_rude() or
+> +		synchronize_rcu_tasks_rude(), then the corresponding
+> +		readers must use anything that disables preemption,
+> +		for example, preempt_disable() and preempt_enable().
+>   
+>   	Mixing things up will result in confusion and broken kernels, and
+>   	has even resulted in an exploitable security issue.  Therefore,
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
