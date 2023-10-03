@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E57547B6516
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8577B6510
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239566AbjJCJMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
+        id S239541AbjJCJMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239508AbjJCJML (ORCPT
+        with ESMTP id S231502AbjJCJMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:12:11 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073A39E;
-        Tue,  3 Oct 2023 02:12:07 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3939BpKn023068;
-        Tue, 3 Oct 2023 04:11:51 -0500
+        Tue, 3 Oct 2023 05:12:10 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7485A9;
+        Tue,  3 Oct 2023 02:12:06 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3939Bqeu036026;
+        Tue, 3 Oct 2023 04:11:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696324311;
-        bh=Cg7DT8ln9TJjE5CRUv3uGyQwdTEo56UtERpBKDIvvgI=;
-        h=From:Subject:Date:To:CC;
-        b=vzwH2PcUDgzSMMBrtpwCqQ35EO1CqAH2Wv87LumubX+4k8+ppWFME4bQZvN0XQmZj
-         At4od2PCyyqYUT0C2+MHxukfUY5VHauMgVlDfHz94/XieJNX8bCtr87nZZYaCMP/kS
-         cNnMHrUAL/qvVbxhxFjk6N2fimQ+HQTNAGlMvuq4=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3939BpQf034676
+        s=ti-com-17Q1; t=1696324313;
+        bh=P9o4tq79uA35dbYJVQYuXuuWplStgOw/NJTItLt8iuk=;
+        h=From:Date:Subject:References:In-Reply-To:To:CC;
+        b=zNieLKpsoPbJl98TGH50yK0uTxh2bOkMxmIdyaFO3SR84SC2Bd/8ZK5IAcftis5XX
+         hBiJuJcd/JVcrLnC+0fwhi2avTep1vIGAEdxS64eKCOeQur8sbBeb7EJIunkjpAVgP
+         z64BCAmkQkNrvrfhsBYqHskyRJoOJ2HV3ZYbREuA=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3939Bq4w000799
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Oct 2023 04:11:51 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+        Tue, 3 Oct 2023 04:11:52 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 3
- Oct 2023 04:11:51 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2023 04:11:52 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 3 Oct 2023 04:11:51 -0500
+ Frontend Transport; Tue, 3 Oct 2023 04:11:52 -0500
 Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3939BowH019159;
-        Tue, 3 Oct 2023 04:11:50 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3939BpSY019173;
+        Tue, 3 Oct 2023 04:11:52 -0500
 From:   Jai Luthra <j-luthra@ti.com>
-Subject: [PATCH v3 0/6] arm64: ti: Enable audio on AM62A
-Date:   Tue, 3 Oct 2023 14:41:29 +0530
-Message-ID: <20231003-mcasp_am62a-v3-0-2b631ff319ca@ti.com>
+Date:   Tue, 3 Oct 2023 14:41:30 +0530
+Subject: [PATCH v3 1/6] arm64: dts: ti: k3-am62a-main: Add nodes for McASP
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAMHaG2UC/23MywrCMBCF4VcpWRtJJpK2rnwPEZmmEzuLXkhKU
- Erf3bQLRXB5Dnz/IiIFpijOxSICJY48DnmYQyFch8ODJLd5C1BgVGm07B3G6Y69BZTotbXKwsn
- XpchiCuT5udeut7w7jvMYXns86e3930laKlk1rTal91h5fZn56MZebJEEX1hD9QshQ0e1V6QbB
- Gg+cF3XN2V5RtLcAAAA
+Message-ID: <20231003-mcasp_am62a-v3-1-2b631ff319ca@ti.com>
+References: <20231003-mcasp_am62a-v3-0-2b631ff319ca@ti.com>
+In-Reply-To: <20231003-mcasp_am62a-v3-0-2b631ff319ca@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         Tero Kristo <kristo@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -62,74 +60,115 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <devarsht@ti.com>, <a-bhatia1@ti.com>,
         Jai Luthra <j-luthra@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        Julien Panis <jpanis@baylibre.com>,
-        Esteban Blanc <eblanc@baylibre.com>
+        Jayesh Choudhary <j-choudhary@ti.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1517; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=smsj/lq+tZbmsGHZBLqMjtgta5PFDiLSddmPTUv51H8=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBlG9rN9SU04IQJXWGOOZOKYwJip7op/Ac/XXDQH
- FRE0SHGz+GJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZRvazQAKCRBD3pH5JJpx
- RREhD/0ZuK3NUjvduE4sxoAVyishxZdyZMYpJ6S/dBxNt7Zt6IOZXqx6iNgzXCJtvTUzgZNdJ2N
- C0j7jgjsgI7ewvO3z3eyACnS2/+SdVKIj2MsU4uDvccd2LVJsPfNL/WbsVS4oTgZ6lFZ1uIatNo
- hImab2C+xyMW1U3dBbz/DytgtE/NPQN7Y5fHRYP7kLCAq6YuL1xr4NgmwQ9icRQZln2HKPJ0deh
- oCc/MDMjvU4ZZ1dRa8oXA0jA1Mc+5X353QswItnLJwLHi7BK6iB59seAxdox3eapzu028QhNnm8
- nqoyiY3dG4mC+Nc8HXRl5UlpHbIpRz5bnkamekOMTcbpKQAmrncpHi9YYe0uSiL+IBvlQyAE6un
- +g3wRkI+s1LRRFb7CmdxE2FPptmZ8MrRpOU+WLiKXmqsTHpjn7h17bo7g6PWRSKHmx9URI/frH3
- Lg8WIphUsR0OJ+xAZuR2ztGOx0MErCH0L05x+0dhpRgpRk1toOKM+/hD7P0Usjl9YVZtnUe7s0Q
- 5vlzkZjKWg2/4grxBNpN/iv4y2zU/ZOgFn74Qf8t7L3jjHHQ3Sn45EAEgeWpWirGTH25cYCEJkZ
- ehhlF2OxnkL09uV5Im/rjQ8nZLrNEVnuNSbce3wftbug5NfvFU6dM7YuGb1LlBJUmWweA7y4ly2
- rz1cpyOHqg3UCeQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2715; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=W0CFJHzCWlZGY7NHNntLX4dpZnlqu3OOkzLG1IBCpRA=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBlG9rOd1ykTnAyNFVqC+Qii7y/QOOzUgaC545hC
+ P9KHUhzH3KJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZRvazgAKCRBD3pH5JJpx
+ RX/sEADOwTJqn4VvUuXEnYg3pvYeg8Gw79vl0OYyGqb8LK14d19pdm/bbGQwW8JnOK+a+as1T3R
+ /fUSpJSuJVBXNmM1XP+9ZLGS2s/BqNDZpw4RdJcrfceUcr6J/wyrHsoYnZPoJu1LwP+qZMnWsyC
+ lXHA+BmE6Z99DjAL8ewtV779+vwBcWFgOyeNxFpFsUJQ2/QteBe0g2uALVukeM9wcu4vD0Vj2DZ
+ ZGtMHE7Pryp8saOBWquuDKgNRVwNYkKRu6vCVlqsdSEndignmzpCO7nX+gwdsjAimIpxCo1/ec8
+ rLGboheFxS3v0q3GRzTzzwg7KopemTDm8U0lOqEn5zFC5heTXwR2w8f9UBB77Ejw/pTU8Emiyqs
+ bC3PfZYy5eIOCDB3v6nhy3HWk7zEwXd+O3C9Gxvo+2tHfibNj7WeALr4yn0zCtF3fBW9E7BbnPv
+ 2DKDYcur4wycC0q4V3VLya4XV7MH0Jnqu5ABbF6motXIR9sr5T125rGm0Au0d99MsUfK4BptGsd
+ +C8VEPleUoZwjYZUczbrHXsqzZkxfLK4PXxa+4CqJJiAsqT0O2l1STCYUw7toKwVlwuM+o0kT0+
+ WkQDTD59IoebaQz1qfoKGRDhc/al+svS8bn9hPwJUsUVseKOHvuFocovp5HI2DYc+bdXqcNX94v
+ 9vxy3PdDywiql0Q==
 X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
  fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds support for audio via headphone jack on
-SK-AM62A-LP. The jack is wired to TLV320AIC3106 (codec), which is
-connected to McASP1 (serializer) on the SoC.
+Same as AM62, AM62A has three instances of McASP which can be used for
+transmitting or receiving digital audio in various formats.
 
-The TRRS 3.5mm jack can be used for simultaneous playback and recording.
-
+Reviewed-by: Jayesh Choudhary <j-choudhary@ti.com>
+Reviewed-by: Devarsh Thakkar <devarsht@ti.com>
 Signed-off-by: Jai Luthra <j-luthra@ti.com>
 ---
-Changes in v3:
-- Add Fixes tag in PATCH [3/6], along with Aradhya's R-by
-- Fix node names for mcasp1 pins (should end with -pins to match regex)
-- Link to v2: https://lore.kernel.org/r/20230928-mcasp_am62a-v2-0-ce9f0e1ba22b@ti.com
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 60 +++++++++++++++++++++++++++++++
+ 1 file changed, 60 insertions(+)
 
-Changes in v2:
-- Move the patch that enables TPS6593 PMIC to this series
-- Link to v1: https://lore.kernel.org/r/20230731-mcasp_am62a-v1-0-8bd137ffa8f1@ti.com
+diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+index 3198af08fb9f..4ae7fdc5221b 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+@@ -816,4 +816,64 @@ ecap2: pwm@23120000 {
+ 		clock-names = "fck";
+ 		status = "disabled";
+ 	};
++
++	mcasp0: audio-controller@2b00000 {
++		compatible = "ti,am33xx-mcasp-audio";
++		reg = <0x00 0x02b00000 0x00 0x2000>,
++		      <0x00 0x02b08000 0x00 0x400>;
++		reg-names = "mpu", "dat";
++		interrupts = <GIC_SPI 236 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 235 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "tx", "rx";
++
++		dmas = <&main_bcdma 0 0xc500 0>, <&main_bcdma 0 0x4500 0>;
++		dma-names = "tx", "rx";
++
++		clocks = <&k3_clks 190 0>;
++		clock-names = "fck";
++		assigned-clocks = <&k3_clks 190 0>;
++		assigned-clock-parents = <&k3_clks 190 2>;
++		power-domains = <&k3_pds 190 TI_SCI_PD_EXCLUSIVE>;
++		status = "disabled";
++	};
++
++	mcasp1: audio-controller@2b10000 {
++		compatible = "ti,am33xx-mcasp-audio";
++		reg = <0x00 0x02b10000 0x00 0x2000>,
++		      <0x00 0x02b18000 0x00 0x400>;
++		reg-names = "mpu", "dat";
++		interrupts = <GIC_SPI 238 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 237 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "tx", "rx";
++
++		dmas = <&main_bcdma 0 0xc501 0>, <&main_bcdma 0 0x4501 0>;
++		dma-names = "tx", "rx";
++
++		clocks = <&k3_clks 191 0>;
++		clock-names = "fck";
++		assigned-clocks = <&k3_clks 191 0>;
++		assigned-clock-parents = <&k3_clks 191 2>;
++		power-domains = <&k3_pds 191 TI_SCI_PD_EXCLUSIVE>;
++		status = "disabled";
++	};
++
++	mcasp2: audio-controller@2b20000 {
++		compatible = "ti,am33xx-mcasp-audio";
++		reg = <0x00 0x02b20000 0x00 0x2000>,
++		      <0x00 0x02b28000 0x00 0x400>;
++		reg-names = "mpu", "dat";
++		interrupts = <GIC_SPI 240 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 239 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "tx", "rx";
++
++		dmas = <&main_bcdma 0 0xc502 0>, <&main_bcdma 0 0x4502 0>;
++		dma-names = "tx", "rx";
++
++		clocks = <&k3_clks 192 0>;
++		clock-names = "fck";
++		assigned-clocks = <&k3_clks 192 0>;
++		assigned-clock-parents = <&k3_clks 192 2>;
++		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
++		status = "disabled";
++	};
+ };
 
----
-Jai Luthra (5):
-      arm64: dts: ti: k3-am62a-main: Add nodes for McASP
-      arm64: dts: ti: k3-am62a7-sk: Split vcc_3v3 regulators
-      arm64: dts: ti: k3-am62a7-sk: Drop i2c-1 to 100Khz
-      arm64: dts: ti: k3-am62a7-sk: Enable audio on AM62A
-      arm64: defconfig: Enable TPS6593 PMIC for SK-AM62A
-
-Julien Panis (1):
-      arm64: dts: ti: k3-am62a7-sk: Add support for TPS6593 PMIC
-
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi |  60 ++++++++++
- arch/arm64/boot/dts/ti/k3-am62a7-sk.dts   | 189 +++++++++++++++++++++++++++++-
- arch/arm64/configs/defconfig              |   1 +
- 3 files changed, 247 insertions(+), 3 deletions(-)
----
-base-commit: c9f2baaa18b5ea8f006a2b3a616da9597c71d15e
-change-id: 20230731-mcasp_am62a-af1660624f97
-
-Best regards,
 -- 
-Jai Luthra <j-luthra@ti.com>
+2.42.0
 
