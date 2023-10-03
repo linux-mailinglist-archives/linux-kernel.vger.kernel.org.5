@@ -2,148 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2547B6053
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 07:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2488F7B6059
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 07:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbjJCFWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 01:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        id S230231AbjJCFYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 01:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbjJCFWD (ORCPT
+        with ESMTP id S230140AbjJCFYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 01:22:03 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4F1AD
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 22:21:59 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-537f07dfe8eso5231a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 22:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696310518; x=1696915318; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XqpR6B8+nR6pcymfGZfMhsWiKXO7OC+lMbowiW4LVxc=;
-        b=UaBLzEzVytEjZbXxfZJ/yKqhK1RZp492+FSmCuOa7ivIYhUjuF8hhU9LAqmzdU4w6t
-         ul2WUkeUtwkfafuUvtV5ho6mCBWCD1BhiuFT3QHzF9AgAZincFasUEejf8VNCz3bzWlf
-         GcEipmR4Vx/LRl/d6L2tGAtJhsSmlAtgXdQ+lecGw4omrkwjLD213+u2cjhh74VBEOOo
-         QIO1M7y3isPpmNsFx+OBLYxufeYEl8tgPqr0eoUNHY5EkFk9sRSqyWRRUootS4hdLrMg
-         dMK2ipfmJzdEbgC5gFllURR7gNvSbIldfQxtXeVgoX8FZYliPEHedY71EL84X+SlgOTP
-         vjjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696310518; x=1696915318;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XqpR6B8+nR6pcymfGZfMhsWiKXO7OC+lMbowiW4LVxc=;
-        b=GLE1WpZZ1u9E91ny0+lQNVyDf9MUCNFAs5vIJmlvouHxhsAQTCs7V6senQTeXZp1WJ
-         42z8MyO4rhAMM/tPwNvZ8frtVHMb8oIGJ4cQYGFS+uM4qXpqjMQ4awUoJmjzQeVMKpMj
-         SluS/yRi5PYoNRGQ/GAbHPyYqvrkJW5hUDlA+8SC6jHlTmls9nkgpLy/9LK/6o+c5lGK
-         LtqCONd/5glevgAH+QMlmmL5kDEEvpXFmBVL8yfPmhhBrQZWfiHjn5xLL1SKA2EeWaW2
-         Ng5WplGYSCUGsIlmh4Gccsva7I7WlZ8HYdUKmcJKeMpTaNBTL17OUSgXYmgqCv0rFP+P
-         jpoA==
-X-Gm-Message-State: AOJu0YzfPW+lmbX9GOFyqRp0k15ifxuDEKUF/ve0limjv+mhr6JrG4kQ
-        4+ZxvfHa8HxCDr1XIDvEKFmCaPifwrjW9/eKtX44ig==
-X-Google-Smtp-Source: AGHT+IFKI0HKrYVLDl5vmsJpfAS1RFLGp2hw35YvLJzj9lzKha+Fza93n9nqgIQgLugkI+eoDblKihBS9oaXtRjP+8s=
-X-Received: by 2002:a50:d4d7:0:b0:538:1d3b:172f with SMTP id
- e23-20020a50d4d7000000b005381d3b172fmr49263edj.3.1696310517644; Mon, 02 Oct
- 2023 22:21:57 -0700 (PDT)
+        Tue, 3 Oct 2023 01:24:38 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3F3AC;
+        Mon,  2 Oct 2023 22:24:34 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3935OHkU003026;
+        Tue, 3 Oct 2023 00:24:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696310657;
+        bh=z13FM/FhQO9TGboXVWTOAYm2uOxotLYexsVKcrzQFBc=;
+        h=Date:From:Subject:To:CC:References:In-Reply-To;
+        b=d1kK7YDrDZGfmnISe3fv+NTSb8RWGQMBtTaXRwNPSokZub6Tb/83lWlye8gbXp7nk
+         AUl5Mo0ERqUrMlXI5jq17b027sKuLlQOKtWxX9OxmWarJ2gnOyIFEkboSKuxmNR6oK
+         Gqh8wUyQxGpE2CN6bB87HD8tG4vnygl3Kom1LloU=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3935OH2a015400
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Oct 2023 00:24:17 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 3
+ Oct 2023 00:24:17 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 3 Oct 2023 00:24:17 -0500
+Received: from [172.24.227.252] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3935OCjv094166;
+        Tue, 3 Oct 2023 00:24:13 -0500
+Message-ID: <1ad3087c-c9aa-9a67-46c7-4969c97041d8@ti.com>
+Date:   Tue, 3 Oct 2023 10:54:12 +0530
 MIME-Version: 1.0
-References: <20231002151023.4054-1-ansuelsmth@gmail.com> <20231002151023.4054-2-ansuelsmth@gmail.com>
-In-Reply-To: <20231002151023.4054-2-ansuelsmth@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 3 Oct 2023 07:21:46 +0200
-Message-ID: <CANn89i+eSWYuE=wE1TPJFtAS1OCfFYytC_nAjDWkizxmR9e6JQ@mail.gmail.com>
-Subject: Re: [net-next PATCH 2/4] netdev: make napi_schedule return bool on
- NAPI successful schedule
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Douglas Miller <dougmill@linux.ibm.com>,
-        Nick Child <nnac123@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Haren Myneni <haren@linux.ibm.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Dany Madden <danymadden@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun <haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Wei Fang <wei.fang@nxp.com>, Alex Elder <elder@linaro.org>,
-        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
-        Bailey Forrest <bcf@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Junfeng Guo <junfeng.guo@intel.com>,
-        Ziwei Xiao <ziweixiao@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rushil Gupta <rushilg@google.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Yuri Karpov <YKarpov@ispras.ru>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Lee Jones <lee@kernel.org>, Dawei Li <set_pte_at@outlook.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+Subject: Re: [PATCH v2 3/6] arm64: dts: ti: k3-am62a7-sk: Drop i2c-1 to 100Khz
+To:     Jai Luthra <j-luthra@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devarsht@ti.com>
+References: <20230928-mcasp_am62a-v2-0-ce9f0e1ba22b@ti.com>
+ <20230928-mcasp_am62a-v2-3-ce9f0e1ba22b@ti.com>
+Content-Language: en-US
+In-Reply-To: <20230928-mcasp_am62a-v2-3-ce9f0e1ba22b@ti.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 5:10=E2=80=AFPM Christian Marangi <ansuelsmth@gmail.=
-com> wrote:
->
-> Change napi_schedule to return a bool on NAPI successful schedule. This
-> might be useful for some driver to do additional step after a NAPI ahs
 
-This might be useful for some drivers to do additional steps after a
-NAPI has been scheduled.
 
-> been scheduled.
->
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+On 28-Sep-23 14:54, Jai Luthra wrote:
+> The TLV320AIC3106 audio codec is interfaced on the i2c-1 bus. With the
+> default rate of 400Khz the i2c register writes fail to sync:
+> 
+> [   36.026387] tlv320aic3x 1-001b: Unable to sync registers 0x16-0x16. -110
+> [   38.101130] omap_i2c 20010000.i2c: controller timed out
+> 
+> Dropping the rate to 100Khz fixes the issue.
+> 
+> Reviewed-by: Devarsh Thakkar <devarsht@ti.com>
+> Signed-off-by: Jai Luthra <j-luthra@ti.com>
 
-Yeah, I guess you forgot to mention I suggested this patch ...
+Since the codec wouldn't have worked with the 400KHz, the initial DT
+configuration is wrong, which makes this patch a fix, and should be
+indicated as such.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+With the Fixes tag added,
+
+Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+
+Regards
+Aradhya
+
+> ---
+>  arch/arm64/boot/dts/ti/k3-am62a7-sk.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
+> index c689d3da2def..866b2725f775 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
+> @@ -261,7 +261,7 @@ &main_i2c1 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&main_i2c1_pins_default>;
+> -	clock-frequency = <400000>;
+> +	clock-frequency = <100000>;
+>  
+>  	exp1: gpio@22 {
+>  		compatible = "ti,tca6424";
+> 
+
