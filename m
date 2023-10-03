@@ -2,80 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AB27B5EE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 04:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D94E7B5EE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 04:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238990AbjJCCDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 22:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48120 "EHLO
+        id S238994AbjJCCDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 22:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbjJCCDB (ORCPT
+        with ESMTP id S238989AbjJCCDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 22:03:01 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27260BF
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 19:02:56 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-273e3d8b57aso93260a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 19:02:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696298575; x=1696903375; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BZrutkVbMBVvwGrOxYI2YPR8cwqjWmpv0Ny3maTyQSA=;
-        b=qX0qGz9+zJA6vNyPx+JUGhBtIhf8i1pj6Ut3SHjMO3Ia4hVOnwkkLUWAe3mtSfhVNF
-         TBL3SsNSiUbnyDji5RG9925xUtfrPy5atcEmK2YFbotcHAsk0nlGJDJxkgDq7liq9LxX
-         FeycdGHh7uZp0Kv+nLXpSqmQhOcZ0n230hzDu/ffsiAiaFj881eTL2y6gajBx6sZbAP/
-         dyuDI2/wRk+tlMtOCgCJxMUZ8OawBYloHkiGfHoYt6ZiynW68lCIcrDWrfCG6tcCIydL
-         p5p/NKaFiTVHKlnW907IV7D4k2cIABUFYhhSdc46RUzuFsOp05vD9Iqw7VSUNvrqdmLC
-         OtNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696298575; x=1696903375;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BZrutkVbMBVvwGrOxYI2YPR8cwqjWmpv0Ny3maTyQSA=;
-        b=UCRA4DnE8XpTMez+1EphWtVR3PIdqgDK5YNVJ3GWBBfu7P7FYQxleS8oeyBC3gcCZ1
-         El3jZ4g9fFkZqfErvT4eB+dc2Y1e4w8b18elBE3thVyir586e+cKwfhatpU2DT4Wlp0E
-         9mLd6GgTmFbtGqQzSUsn6I0HskrkIgwNNp196Fb0TbBPOzrt/NdkS/+l7Z97wnPJCPB6
-         +TFAJcdyMzM9GUDv7LfJsFya7Vse5YDJ+Y/N5puJgdyinmqyDHCRnUTK9hoWvzeZg4l1
-         Qno9aYxB01FBUGX/cSzk4uW3EQvlM9DK2fzpYQgD8KFQzLpxpQydAI0g5f5aEg2sEysu
-         yQzw==
-X-Gm-Message-State: AOJu0YzobHLhmqAr2okc/rOvV3z+ladAGqP8dlMJtve9/fbY8OdsrCBH
-        UHCv8zT6CsWUcHxWPu8cS4D98A==
-X-Google-Smtp-Source: AGHT+IEuWEhHJST/y24EjhDuOhffSUWx6PWRgK+57cfZ06wCgMiDDVN2Q26yzEWLwc9BJwdzImg2wA==
-X-Received: by 2002:a17:90a:4506:b0:268:ca63:e412 with SMTP id u6-20020a17090a450600b00268ca63e412mr11816933pjg.4.1696298575608;
-        Mon, 02 Oct 2023 19:02:55 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id v14-20020a17090ad58e00b002777ba600fdsm6903982pju.25.2023.10.02.19.02.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 19:02:54 -0700 (PDT)
-Message-ID: <04086fa2-8506-4f6f-8b31-3b539736adc6@kernel.dk>
-Date:   Mon, 2 Oct 2023 20:02:54 -0600
+        Mon, 2 Oct 2023 22:03:09 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A488FDC;
+        Mon,  2 Oct 2023 19:03:05 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id CE95C32009BD;
+        Mon,  2 Oct 2023 22:03:01 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Mon, 02 Oct 2023 22:03:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1696298580; x=1696384980; bh=/r
+        hTflYoPwnnmnQhWCyTwhi8FB2reVSWDhY2bHzcxhs=; b=SFTMUiALgcbhCjiXxi
+        FM3zEpPlAMpB3OcfaDVfRKiXoAm0jS1j3eqmpE1aDJxWgtwIsVtIvy62M/md1+Cp
+        XnnAe72GPO/SX+2YHZ3hBeeVuQZeCgtWaJLUHajyf+YB37lyem3czNbw8lau9j5Z
+        wRRI28WZLw8hRtEYhjyQwHCbkS2KiqcrwXd1KlswpUWdQorq5binvBGumnkBLtHc
+        gZrjHgeEWevnONhZIVNWgOQSBfeQvxOh9JHaYczapwIx2mWy6Pf7wvllhKOH/mL9
+        joJN3oVg3FtU/B3aMrtoQBaL0SlVB7l8nx5/tAUZKcdEASz7NSy637elT6+0sAHI
+        l64A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696298580; x=1696384980; bh=/rhTflYoPwnnm
+        nQhWCyTwhi8FB2reVSWDhY2bHzcxhs=; b=d+APmJxtvAAm0wTWWJMUS0n7GXC4U
+        CL+Azk+cJqRrJreG131PjZoECN2JDPKdgzoG8hIh7o7lmRukCJFiwCy2VUufQBjj
+        qiCLS/n7iV4sHWuiMWrm2P25K5xj2rmCGcNPqZY6IhBghipaBaWSu3k5DSnAtOjO
+        gUiPYs47vs91LFmf7xVMyUw1SuKz0tlHoKsN45KedCh/SxAcQiU3+3ZGwFqEGBJ0
+        wI9ayQa+7OVluMQ+v5kwaTJJGQd2SWNEMpZWPwW4C9Dz2wsw66AyO9+PoLulkT/j
+        JQQ89VgKSdJUySX9FaZJoM8178f2TyeBgkN+T+5c7MZ2hmOr6jWljnvLw==
+X-ME-Sender: <xms:U3YbZSj1m82saTiMtgQZFJwwCt732BNDyxJr10-sd3faHThNByWkHg>
+    <xme:U3YbZTBuf6JUqwWljfu_7fRyr3p0MO8EjWxQn32i-QVEotsvtibg2R7kBcqodvY5Z
+    o-9F0pa7JOIbqVZPKM>
+X-ME-Received: <xmr:U3YbZaFi4dhGLFNlidCHNE_5EQeJP_c6nvIPgA6529q8CnpXBPgd5ktg7kmJkA3Kfo0KBSfSxD2esk227abqeoLyfg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedvgddvfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdeimdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
+    necuhfhrohhmpeflrghnucfjvghnughrihhkucfhrghrrhcuoehkvghrnhgvlhesjhhfrg
+    hrrhdrtggtqeenucggtffrrghtthgvrhhnpedukeegffdtfeeihfehteevvdeiueetteel
+    gfefvdfhleeufeegieduieduhfekieenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpehkvghrnhgvlhesjhhfrghrrhdrtggt
+X-ME-Proxy: <xmx:U3YbZbQQ46XiWmR0LV9mP1rbb0Xrp_U7toyQpqwiPqv4xKfFUpKW3g>
+    <xmx:U3YbZfyY41xOIz04Ua5Qv4_SKCvM5v0y1pnvEheHtLzSviFzeXc1Vg>
+    <xmx:U3YbZZ4nkRnTEpt10v_Ex6o9-L0WUowm4uVxFkc9qkBMD80fZ-kjIg>
+    <xmx:VHYbZSrvZyl1x9TQaHgoQn2ZOjsuEmhzK_gsf5KNrC_guCwI-4DncQ>
+Feedback-ID: i01d149f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 2 Oct 2023 22:02:57 -0400 (EDT)
+Date:   Tue, 3 Oct 2023 04:02:54 +0200
+From:   Jan Hendrik Farr <kernel@jfarr.cc>
+To:     Ard Biesheuvel <ardb@google.com>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Jones <pjones@redhat.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 00/15] x86/boot: Rework PE header generation
+Message-ID: <ZRt2ToOHm2XT8MlU@desktop>
+References: <20230912090051.4014114-17-ardb@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [io-uring?] BUG: unable to handle kernel NULL pointer
- dereference in __io_remove_buffers (2)
-Content-Language: en-US
-To:     syzbot <syzbot+2113e61b8848fa7951d8@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000af635c0606bcb889@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <000000000000af635c0606bcb889@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912090051.4014114-17-ardb@google.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test: git://git.kernel.dk/linux.git io_uring-6.6
+On 12 09:00:51, Ard Biesheuvel wrote:
+> From: Ard Biesheuvel <ardb@kernel.org>
+> 
+> Now that the EFI stub boot flow no longer relies on memory that is
+> executable and writable at the same time, we can reorganize the PE/COFF
+> view of the kernel image and expose the decompressor binary's code and
+> r/o data as a .text section and data/bss as a .data section, using 4k
+> alignment and limited permissions.
+> 
+> Doing so is necessary for compatibility with hardening measures that are
+> being rolled out on x86 PCs built to run Windows (i.e., the majority of
+> them). The EFI boot environment that the Linux EFI stub executes in is
+> especially sensitive to safety issues, given that a vulnerability in the
+> loader of one OS can be abused to attack another.
 
--- 
-Jens Axboe
+This split is also useful for the work of kexecing the next kernel as an
+EFI application. With the current EFI stub I have to set the memory both
+writable and executable which results in W^X warnings with a default
+config.
 
+What made this more confusing was that the flags of the .text section in
+current EFI stub bzImages are set to
+IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_READ. So if you load that section
+according to those flags the EFI stub will quickly run into issues.
+
+I assume current firmware on x86 machines does not set any restricted
+permissions on the memory. Can someone enlighten me on their behavior?
+
+
+> In true x86 fashion, this is a lot more complicated than on other
+> architectures, which have implemented this code/data split with 4k
+> alignment from the beginning. The complicating factor here is that the
+> boot image consists of two different parts, which are stitched together
+> and fixed up using a special build tool.
+> 
+> After this series is applied, the only remaining task performed by the
+> build tool is generating the CRC-32. Even though this checksum is
+> usually wrong (given that distro kernels are signed for secure boot in a
+> way that corrupts the CRC), this feature is retained as we cannot be
+> sure that nobody is relying on this.
+> 
+> This supersedes the work proposed by Evgeniy last year, which did a
+> major rewrite of the build tool in order to clean it up, before updating
+> it to generate the new 4k aligned image layout. As this series proves,
+> the build tool is mostly unnecessary, and we have too many of those
+> already.
+> 
+> Changes since v1:
+> - drop patch that removed the CRC and the build tool
+> - do not use fixed setup_size but derive it in the setup.ld linker
+>   script
+> - reorganize the PE header so the .compat section only covers its
+>   payload and the padding that follows it
+> - add hpa's ack to patch #4
+> 
+> Cc: Evgeniy Baskov <baskov@ispras.ru>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Peter Jones <pjones@redhat.com>
+> Cc: Matthew Garrett <mjg59@srcf.ucam.org>
+> Cc: Gerd Hoffmann <kraxel@redhat.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> 
+> Ard Biesheuvel (15):
+>   x86/efi: Drop EFI stub .bss from .data section
+>   x86/efi: Disregard setup header of loaded image
+>   x86/efi: Drop alignment flags from PE section headers
+>   x86/boot: Remove the 'bugger off' message
+>   x86/boot: Omit compression buffer from PE/COFF image memory footprint
+>   x86/boot: Drop redundant code setting the root device
+>   x86/boot: Grab kernel_info offset from zoffset header directly
+>   x86/boot: Drop references to startup_64
+>   x86/boot: Set EFI handover offset directly in header asm
+>   x86/boot: Define setup size in linker script
+>   x86/boot: Derive file size from _edata symbol
+>   x86/boot: Construct PE/COFF .text section from assembler
+>   x86/boot: Drop PE/COFF .reloc section
+>   x86/boot: Split off PE/COFF .data section
+>   x86/boot: Increase section and file alignment to 4k/512
+> 
+>  arch/x86/boot/Makefile                  |   2 +-
+>  arch/x86/boot/compressed/vmlinux.lds.S  |   6 +-
+>  arch/x86/boot/header.S                  | 213 ++++++---------
+>  arch/x86/boot/setup.ld                  |  14 +-
+>  arch/x86/boot/tools/build.c             | 273 +-------------------
+>  drivers/firmware/efi/libstub/Makefile   |   7 -
+>  drivers/firmware/efi/libstub/x86-stub.c |  46 +---
+>  7 files changed, 114 insertions(+), 447 deletions(-)
+> 
+> -- 
+> 2.42.0.283.g2d96d420d3-goog
+> 
