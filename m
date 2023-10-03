@@ -2,107 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FCF7B64A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3EB7B64AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239347AbjJCIsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56084 "EHLO
+        id S239376AbjJCIuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 04:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231241AbjJCIst (ORCPT
+        with ESMTP id S231398AbjJCIuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:48:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B44CA9;
-        Tue,  3 Oct 2023 01:48:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696322926; x=1727858926;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=x8PAGnQYc2NcxY6KGr2gS4Kpd9E+7T9nG0n2qjbE0G4=;
-  b=E9Nk42yQdXYVPv9CemGIYi4TtUEjDTDueZJnm4x31IBnn7+Au0xUuaLI
-   ZI0QTQc2AW30Sfe7B5J1GZoB4MEMZJRiRqtTuEjqwcWCLysuWUZn+4Xie
-   JcQzJl3V/Qk293lvykAMSOO2Ye7MLdcShGh04nyy9w5SVore2/ZSnOLSa
-   RVMcZ0E48rYqJssYGxZKuczM3o/RShFy9AkQIy2rHVJipNmk83V+vJVFH
-   DjudnMJWJCDWsKaUie2irRZ/WZHpA3kgkLGEZrb8XMs0Lnji7DKUeC0ze
-   p5rFivJeJAu3MxMNVLK+Ser5fXMdArpOwRYEu2GfnfurKzU0SS62JKaWT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="380101442"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="380101442"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 01:48:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="727546647"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="727546647"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 01:48:42 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qnb55-00000002R9j-2xen;
-        Tue, 03 Oct 2023 11:48:39 +0300
-Date:   Tue, 3 Oct 2023 11:48:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Wilczynski, Michal" <michal.wilczynski@intel.com>
-Cc:     nvdimm@lists.linux.dev, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v1 1/1] ACPI: NFIT: Switch to use
- acpi_evaluate_dsm_typed()
-Message-ID: <ZRvVZylnYeIBDEH/@smile.fi.intel.com>
-References: <20231002135458.2603293-1-andriy.shevchenko@linux.intel.com>
- <ec5029b0-553c-4a6c-b2a9-ef9943e553dc@intel.com>
+        Tue, 3 Oct 2023 04:50:02 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA15AD
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:49:59 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9a645e54806so109196666b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 01:49:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696322998; x=1696927798; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/0JTpNHaoGiA988EVZvIhjeIbRusRoOXVDRZstAjXHc=;
+        b=Crs1iIu6w7O//RXyGvoZLrFqNciD74xeXoBcdT6kCH+F6n0xMErEtnFrOJWHRCgz7r
+         06OEwMI+qnZ/tVmusTCC+yJz/TFvRmYRK40c7N379zy3zZ2crF12AoOVF6ijkhjxBmJY
+         l7XslEUqkAY2JgH8hR3CMTMF6Aak2HxD6Nyg93VDobK1jvTz7p4cHIyf2I8pXJkfaKSs
+         +qEetTRI2tUJM/IjmKTRr4os95Hsgq9D86fPSsomtFNc4aOQP7YQEQeFIIjd2R2Ih9K2
+         B7+bNxKln3jL3xPVmXoImA5cqis8tnC/n3JQfZ0/EWEJhmsXjMm/5EL0lV1k2TgrFqNU
+         t4Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696322998; x=1696927798;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/0JTpNHaoGiA988EVZvIhjeIbRusRoOXVDRZstAjXHc=;
+        b=Epl/iGzO2v+o3ZIIfSEMH0W5CYtzehFihXlhU/l396/cz9I3fHaOcLcbF5glHFy6nN
+         e/AC1JsD6VNW8KJ8znzQMQhKTGBKkmX/6rR3tilGgJMRfTVbef4yqg5D4SfriA6YyIOj
+         3DJee8ZIZCUUL9lBULcTKxJD2Fi5J3h5BcnGPmla5WjIxoPqKOMLQa69nCBi6p2uX8Mg
+         eaWrTkkka6+28hB/UjttqJJuys89paqUyJ85TCAwgW4k8XXin40Ugxf6rblHRk+4tRtZ
+         uAppU3UZ6DKhDkfX6AfnwiwFedDBUumTdDpyUfPTqnSoKNxS1QyayHf2qrFjD+NRObE7
+         BeYw==
+X-Gm-Message-State: AOJu0YzgATyVCY2oOjo9/lQkLDyWWg1+XfYd0NlDBWlf0DWZEKkTPgY9
+        wqJ6/6+3Ttt566uGuCf9PXBc1gegP1SvNA9o4Ycy2g==
+X-Google-Smtp-Source: AGHT+IE/rRUq2nOuhn7JqQ2cqMxNW59rUeB4tBcbgslLSABRUEhuhdcBREiy64prQ88LyzMxrnIQeWLA6K/I8PudtWQ=
+X-Received: by 2002:a17:907:2e01:b0:9ae:6389:911 with SMTP id
+ ig1-20020a1709072e0100b009ae63890911mr12233677ejc.31.1696322997687; Tue, 03
+ Oct 2023 01:49:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ec5029b0-553c-4a6c-b2a9-ef9943e553dc@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230922175741.635002-1-yosryahmed@google.com>
+ <ZRGQIhWF02SRzN4D@dhcp22.suse.cz> <CAJD7tkbWz7mx6mUrvFQHP10ncqL-iVwD4ymHTm=oXW5qGgrZtA@mail.gmail.com>
+ <ZRvJa1Hza1RS28+G@dhcp22.suse.cz> <CAJD7tkaOfsKC=F1inymxz8C0UT5=Sjo830bYLsoPd6WOOShyDQ@mail.gmail.com>
+ <ZRvMTBEg4Vf63Uao@dhcp22.suse.cz>
+In-Reply-To: <ZRvMTBEg4Vf63Uao@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 3 Oct 2023 01:49:19 -0700
+Message-ID: <CAJD7tkZYd1u1s_s8hK4LHktWfPOFjPYdqhyXmsLEdY6KAeYuXA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] mm: memcg: fix tracking of pending stats updates values
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 10:27:02PM +0200, Wilczynski, Michal wrote:
-> On 10/2/2023 3:54 PM, Andy Shevchenko wrote:
+On Tue, Oct 3, 2023 at 1:09=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Tue 03-10-23 01:03:53, Yosry Ahmed wrote:
+> > On Tue, Oct 3, 2023 at 12:57=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
+wrote:
+> > >
+> > > On Mon 25-09-23 10:11:05, Yosry Ahmed wrote:
+> > > > On Mon, Sep 25, 2023 at 6:50=E2=80=AFAM Michal Hocko <mhocko@suse.c=
+om> wrote:
+> > > > >
+> > > > > On Fri 22-09-23 17:57:38, Yosry Ahmed wrote:
+> > > > > > While working on adjacent code [1], I realized that the values =
+passed
+> > > > > > into memcg_rstat_updated() to keep track of the magnitude of pe=
+nding
+> > > > > > updates is consistent. It is mostly in pages, but sometimes it =
+can be in
+> > > > > > bytes or KBs. Fix that.
+> > > > >
+> > > > > What kind of practical difference does this change make? Is it wo=
+rth
+> > > > > additional code?
+> > > >
+> > > > As explained in patch 2's commit message, the value passed into
+> > > > memcg_rstat_updated() is used for the "flush only if not worth it"
+> > > > heuristic. As we have discussed in different threads in the past fe=
+w
+> > > > weeks, unnecessary flushes can cause increased global lock contenti=
+on
+> > > > and/or latency.
+> > > >
+> > > > Byte-sized paths (percpu, slab, zswap, ..) feed bytes into the
+> > > > heuristic, but those are interpreted as pages, which means we will
+> > > > flush earlier than we should. This was noticed by code inspection. =
+How
+> > > > much does this matter in practice? I would say it depends on the
+> > > > workload: how many percpu/slab allocations are being made vs. how m=
+any
+> > > > flushes are requested.
+> > > >
+> > > > On a system with 100 cpus, 25M of stat updates are needed for a flu=
+sh
+> > > > usually, but ~6K of slab/percpu updates will also (mistakenly) caus=
+e a
+> > > > flush.
+> > >
+> > > This surely depends on workload and that is understandable. But it wo=
+uld
+> > > be really nice to provide some numbers for typical workloads which
+> > > exercise slab heavily.
+> >
+> > If you have a workload in mind I can run it and see how many flushes
+> > we get with/without this patch. The first thing that pops into my head
+> > is creating a bunch of empty files but I don't know if that's the best
+> > thing to get numbers from.
+>
+> Let me remind you that you are proposing a performance optimization and
+> such a change requires some numbers to actually show it is benefitial.
+> There are cases where the resulting code is clearly an improvement and
+> the performance benefit is just a nice side effect. I do not consider
+> this to be the case. The whole thing is quite convoluted even without
+> a better precision you are proposing. And let me be clear, I am not
+> opposing your patch but I would rather see it based on more than just
+> hand waving.
 
-...
+It is purely based on code inspection, and honestly I don't have
+numbers to support it. I saw something wrong with the code and I tried
+to fix it, I was working on something else when I noticed it. That
+being said, I acknowledge it's not making the code any prettier :)
 
-> > +	out_obj = acpi_evaluate_dsm_typed(handle, guid, revid, func, &in_obj, ACPI_TYPE_BUFFER);
-> 
-> This line is 90 characters long, wouldn't it be better to split it ?
+Feel free to suggest improvements to the code to make it more
+bearable, otherwise if you don't like it I will just leave it to be
+honest.
 
-I dunno it's a problem, but if people insist, I can redo that.
+Thanks for taking a look!
 
-...
-
-> > +	if (!out_obj || out_obj->buffer.length < sizeof(smart)) {
-> >  		dev_dbg(dev->parent, "%s: failed to retrieve initial health\n",
-> >  				dev_name(dev));
-> 
-> While at it maybe fix alignment ? :-)
-
-I don't think it's in scope of this change.
-
-> >  		ACPI_FREE(out_obj);
-> 
-> Just nitpicks, functionally code seems correct to me.
-> Reviewed-by: Michal Wilczynski <michal.wilczynski@intel.com>
-
-Thank you!
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> --
+> Michal Hocko
+> SUSE Labs
