@@ -2,257 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8758C7B7320
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC2E7B7321
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241149AbjJCVMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 17:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
+        id S241157AbjJCVNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 17:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232236AbjJCVMm (ORCPT
+        with ESMTP id S241146AbjJCVNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 17:12:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C750D7
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:12:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BF8AC433C9;
-        Tue,  3 Oct 2023 21:12:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696367559;
-        bh=l0FCnY5pU4umvfRCAPFiudSeIIRtVXn2RLWvb73Xh1w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JZ+hjmuTQJ6ZY1ZVp2rv2I8Y82Iw3KMHK8FM4ne8KNFdSbb0NlNMUN+Wt0Ao4lNaR
-         vI6v2rguqIlmzLviz3UAZFs94zR8LmRjxkCGKGqIFVSI5ztp4dgjGgPQaCg2ImoQn4
-         RFsxSJ4T7gb75RNvSJsoUurVoRoLvdVMMNfhP6QBbnLXI0TQlN+Fp3Lxoo5ynxkqlc
-         z3hBniVPjdK+Z1X/LOi/xd7mjrQdaz2N9HzTa2C3Q66L/F9ZKQrohkvPrewWzc69PF
-         X5lEAx3TvFGvegOcl6wxaNzazG4MFWasSY8CT/lE3ICCmBw0kBuiT1wDVfGMhT9W5Z
-         8PQYoajkzkMTg==
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-503065c4b25so1709661e87.1;
-        Tue, 03 Oct 2023 14:12:39 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxNwPWbndYjWynFvUOVe3kjMJhAHrvbI2hndPMAV/2eQn+I1sqg
-        RelIb22Uc6buaj9E8l6hvcRhverMOwjNVGG2ww==
-X-Google-Smtp-Source: AGHT+IEI5Koj+rpPumZOdUd5lqY3ameNoqIdKlN4yxluWHb83LK1bdeZ/zS6p1KPV2LAQpn8xO+fisvS4yG5aWs3cyU=
-X-Received: by 2002:a05:6512:3f18:b0:503:35bb:1e74 with SMTP id
- y24-20020a0565123f1800b0050335bb1e74mr297292lfa.61.1696367557235; Tue, 03 Oct
- 2023 14:12:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231003065236.121987-1-herve.codina@bootlin.com>
-In-Reply-To: <20231003065236.121987-1-herve.codina@bootlin.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 3 Oct 2023 16:12:25 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+O245=TZQG5UsQS2xxBp0BRC2szg9vgbNsxKFBpPcvag@mail.gmail.com>
-Message-ID: <CAL_Jsq+O245=TZQG5UsQS2xxBp0BRC2szg9vgbNsxKFBpPcvag@mail.gmail.com>
-Subject: Re: [PATCH 1/1] of: address: Fix address translation when
- address-size is greater than 2
-To:     Herve Codina <herve.codina@bootlin.com>,
-        Lizhi Hou <lizhi.hou@amd.com>
-Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+        Tue, 3 Oct 2023 17:13:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9541AC
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696367626; x=1727903626;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=1+u0MUhFfoIbZ28Hn2yWsSs1+IrCkEQeZCMqh1KG8/I=;
+  b=gtDOQHOr2I4nsy0glF+DBV+7l2G2jIimU00Qa+xdRqCQFa4am36GzjLs
+   j8uxdjxl0QRqkxL8TVlYFWAnbLSW8e0qMEiHIR49zKjbFf9Nf4/lebDRM
+   /8Aljp4oHp1Pw7OaqV6K+jnSBikcza2E2LK2YsyEJvcOegXqZsWoSA2Tg
+   7D2hbDbzUgV8i9rEOpUYwoE/XBAejZc1Ooc7SnVLWGhUFfWHBF7dJbUOl
+   RWmrz3phnTc6iLnIzCTvYQkccXWRJlVaQYeC6lqkY+4JUpFxEQmAGXxg9
+   Rczwe6bjMOVanS9+hVc6Pg3idN3DmYQPi8Yf80MJBuL5RHhAHw6y0ODQe
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="385798806"
+X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
+   d="scan'208";a="385798806"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 14:13:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="998182167"
+X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
+   d="scan'208";a="998182167"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Oct 2023 14:13:45 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 3 Oct 2023 14:13:45 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 3 Oct 2023 14:13:44 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Tue, 3 Oct 2023 14:13:44 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Tue, 3 Oct 2023 14:12:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IVGTNSNsPRJKMAzUEmKNtqMJgsPkIvUao2oTvhNjPGAMhnKeqbfouqQI6ZDmciWlBR/m1Q4i9/ixX8Tz16f034kiSJ0YE1Xtj0wRZvUownEImRd/gbdvhncEiUY9S6s8DJxOlnK6BETK2Fk1hV7M94+PtQUPk/Hb1XN3E+cpSFc6Ca/7vbNUuxdSci1AH887WLGxd/um39ZjOvoVHEJwYakcLjr/4Bdx2BB/fxCDgbo1ZeniIr8OZo/L9j6QDOQkBecqFsjJUI/Qxo1erBVzyo7oNT1x8Q7Bb7Jc1MK0hNvMI9EIarTXtUO3XcusBKLADWa5I+VM6P0DU021svlzQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6E+CxixMMppthUttmFA3aZMYkJoceroE+ZO1z5sufM0=;
+ b=Mo2Zp5jn/wMqzoG6JsKc+jnK8RUUqd7ynvogdQ38y31y+xojH7S1bYF0PXEeiqfcj3uA0Mb/nxQ6u4JoWrBE02P0jclaAYJIcRI3lFet0lRdwPriSsgmqIEMAuuqOYSiAARYLPlThalrSX5AKjBtEaqr6+BG1Qvfiec4GN/qEqKBnB3Xto3l/StHBe+8DKaZ/7pyzAGgCD19AzfA+oZnqk4mgj035ttc+9IsK5Lig7sr7ucEk3nbnXynehU/LTqoWgEqMWb8LcWCjZ4vxCUoqzCT/BxJ5YiM8Ed1cwgQp40N9kAXhflsW6231/aHHb2R+OfScOyUJf748WNqRLiSeg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by DS0PR11MB7577.namprd11.prod.outlook.com (2603:10b6:8:142::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.27; Tue, 3 Oct
+ 2023 21:12:53 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6838.033; Tue, 3 Oct 2023
+ 21:12:53 +0000
+Message-ID: <3b83dea1-7d99-5300-7b3f-f6311c6a2a6b@intel.com>
+Date:   Tue, 3 Oct 2023 14:12:49 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
+Subject: Re: [PATCH v6 07/24] x86/resctrl: Allow RMID allocation to be scoped
+ by CLOSID
+Content-Language: en-US
+To:     James Morse <james.morse@arm.com>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        <carl@os.amperecomputing.com>, <lcherian@marvell.com>,
+        <bobo.shaobowang@huawei.com>, <tan.shaopeng@fujitsu.com>,
+        <xingxin.hx@openanolis.org>, <baolin.wang@linux.alibaba.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, <peternewman@google.com>,
+        <dfustini@baylibre.com>, <amitsinght@marvell.com>
+References: <20230914172138.11977-1-james.morse@arm.com>
+ <20230914172138.11977-8-james.morse@arm.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20230914172138.11977-8-james.morse@arm.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0317.namprd04.prod.outlook.com
+ (2603:10b6:303:82::22) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DS0PR11MB7577:EE_
+X-MS-Office365-Filtering-Correlation-Id: 18d8944d-cbaa-497b-aa7a-08dbc4558198
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vz+wU3RgseBCnv46Zhw9vGvv8GEfBxlvSec7b0gu3Ytqx1SNlNGuTCbxUV84owCd3hv27d91ma+f2TT6wzfIhc3aqQFwNrAo0+7XP6fEr9uqghP1J/Yioh2CVpWtPweYMc1qbNDSjt8eXTAHO572jjf7b8UjgLqpCikTPO+dqQfBrfMI2atngnDeRpFwlL5DKzJXzFSk6OOsdcJmU9lQDg7jsIXjeyZ4AVHWBiJQWBZptyq4FE6gU7GPd7YjoU9GhUUt6efcF56jHZY3OYX9B5v1p1+2fBWkdFAxuAwivObRoFSC7PB/CvJYHOOaNTrzKvn9RwaASl5tib3vBzsQ7iIrblSXVoDreuAQGo9u+1cOAz0GG7toGSZezNvH/jjE9nH2GCr/fSdOGB4DlOGy/OXzFlCJFPBzNDBugh5odgfNKc/P1SJzj2KE+Q3hoJnXFMMaSyM9Hyf0rdZW3z7T+pwYVUwdP8n/aITBiYA8SiXtBXHo3TSsYaXx5FjvMb56Q3oCfU4vX0kyZs+IpIyWNALMfZ0VjGzGw+6glJJjZG4+yAI62IUSzPbF7WI4rjWyQ0EU8h+JCU4VztaVoou1oPWjhJzON9YaFuOUcT/SoszmYl2d4eokmrOjNyJWaYjyxfJvQZYOpnrQhLT1Uy/2nQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(366004)(396003)(376002)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(66476007)(66556008)(6486002)(66946007)(54906003)(2616005)(8676002)(41300700001)(8936002)(4326008)(26005)(36756003)(478600001)(6666004)(86362001)(83380400001)(38100700002)(31696002)(6506007)(82960400001)(6512007)(316002)(53546011)(2906002)(7416002)(31686004)(5660300002)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dzFtbFlYdDdLZS8yM3BiQy9OQzByWU9FbFRuWEJXaTZtSytmN3g0ZTNiZktn?=
+ =?utf-8?B?czJkSHA2dW9IK2kvb1dsblBwdHYxNkNpNXFybm9YNzA1SHBlMTBKOHF1NlVn?=
+ =?utf-8?B?V3I3a1BiRUNMbW14ZGpSWFdrNnBxZ2diTHhVa1hNakt3UXV3c3lGdTVZeHdN?=
+ =?utf-8?B?Z1I4RHc4YnVUaXBEWW9md1dkSmptUEk5TjFFTEE3SDdPa2RubENmcy9xenlX?=
+ =?utf-8?B?Vm1sWFR0TGF1NE9KVk5OL1p4U3FwUjZtNUVmaGs5ZzFhc1FNdDJWK3JqUU1J?=
+ =?utf-8?B?RUlIbWQxZmphMGx4NmxxT3dibGZ5Nk1NK1g2RlpFTjF3TkJNRjFneTFTdWxj?=
+ =?utf-8?B?MXRnWDBHbzhuMEl2bDJYazRKS0lVbjlHc0NDUGcyeVpyY3MwY2htT3JlS2JM?=
+ =?utf-8?B?bi9PZG9ZUGZEcmhXcWlGRWI3NGVRV29aMit2UE9JZjgxcmErOUVBOHlZWjhn?=
+ =?utf-8?B?T1NZblFxRjd3alRNbGNVTXVXei91L1hvZXZzZVVINVl2V2xHTUNJazNkalFq?=
+ =?utf-8?B?MmxmZzFITUhOQkh3K2d5cVRqY1Z4T0NQNUZ1Vk5VLzgxMmJVbXR2dFVIeDdE?=
+ =?utf-8?B?VjlCWWtWUmZ1NEdGVGs3Tm5iV0QyMC8vek9SdW5iQUtwZzlKaTdSUTU0MXl4?=
+ =?utf-8?B?eWhpNG5mQnFIRVpxa1dqcWs3WVE0TGw3ZENZeVhWQUZLcHBhd1JnZ3BCU1BQ?=
+ =?utf-8?B?SEYrbzNYSE52NnRSWjRlLzY3aVZRQWVrekJWTm8rN1RLdmJnUmEwcWNmZWRO?=
+ =?utf-8?B?ZFVaK2V1VGp4ZU9ZVDBMV05ia2NpSVBRL3NuVmdLQzRJdFhwSzBzNmMvdDh1?=
+ =?utf-8?B?ajZRbzdCVlNIRFpJeGpLaXd5WmtOSjhKVkUwR2VHZFh2MVNFY1N3TFMwdmpS?=
+ =?utf-8?B?SjlyZWtjR08rbXZUOFVOWUE3NHo0cEJhYzMzY0dlM2pXUVdva1lOS2JTOWdX?=
+ =?utf-8?B?MTRxbllpUDY1QkJONmp2ZkxnQU12QjhTTmZQUzV5dW00anhUM3dEM3gzTFll?=
+ =?utf-8?B?SUtmZ2lsd3AyRGJHbVFKcDVQQ0p6YzZlRW9mcUllU1YybklUc0k5clZWL3J1?=
+ =?utf-8?B?UUpuMU50SkJvaWNhc1F2RE80bjJ1dUw1TDNOOGlZOXA4REZSNHFQSVJhUXNI?=
+ =?utf-8?B?RkVSN0lZeGlmR1pKdDV3WHVGaXJ6dlZUQUJmMkk2aElzelZxZWQrNmdBeU1V?=
+ =?utf-8?B?ZkZpenVDUDdyUDV1OVBFT1AwSWF4THM2RGowQi9YZUR4bHRwcmZ6ZXRkR1cx?=
+ =?utf-8?B?b2hHQU43b3l6bkYwQzc5Q2orbXR6VEpBT3hiaXprNnIyT1FqM3JuSGZEY1l6?=
+ =?utf-8?B?S3ZZWVpWbHErT3RqckVudFptK0FLb05NbWVRcG1IQ3pJbFFqQlNQa1FXRFVR?=
+ =?utf-8?B?NXhkQncwNDh6QjFBUlExZWQ2U1RFRTVhQjREbnpVZU15Q2JzbGFkaGhxMEJq?=
+ =?utf-8?B?WHZpOUNLMGdGUjlneVp2VHVkRWRBNE92MngyS2lnMmVhcnFVZnErL24zall0?=
+ =?utf-8?B?MHVrVlE2SDJRRGp1ak9lU25McmNLc2p6TG80V0daVU5rM2R1N21wbWg4SUEz?=
+ =?utf-8?B?bDhuMVVUQlhrdnlUbDVzVTRuY21NcXd5Q3NmeVcxVng4SnVPWG5BZ0tVSlB5?=
+ =?utf-8?B?UU9MNUtmSVJ6S05VTklNaGVBeWhkYjdORnR6TjA4dmtPMURTN2E1Y0RvcTV1?=
+ =?utf-8?B?UlY3V0Q3SkN5VkVlM1k4c1p1MEs0d3M4ZnhWVUlhVlBqT0dNUlNzQlBldEhD?=
+ =?utf-8?B?T0pZWkNGakhmYW5QZUV6QzBDbWY2N0xwOWNDNXpXZFJ6NkQ0WVF3d3lJVmRV?=
+ =?utf-8?B?UktOWkdTa1NrMGhLOXliRHlHYWtjZUZLVE1ueDJZNVNEU2JZOFIydmp0a2Zs?=
+ =?utf-8?B?bXRqcHdGVURkclNZZU9OZldXN2tIMXRORkt1eldHOUNPN0pRMHh5bXhPdUo0?=
+ =?utf-8?B?RGo5RlBvN1ByeFZyMFA4YjkvbXFSbENnZjMvUFI0enkxM2tlU0licTFRYklh?=
+ =?utf-8?B?Mm51dFk3RVRab2xlZ2Vla1djNnBHV1R2N0VmQmp2NzNZQTZRdEVieU9vZUFh?=
+ =?utf-8?B?MWVIcFV0SjdXNzRQRnRDenY0SVBqVVFNSElQNzV2MjlnMFdSMkVTd0lWSG9D?=
+ =?utf-8?B?TEVORDY5NkFleCtHdnZaM3VoSkkyUDZMd0VremhkeUlqbWFXR3lYa0l6Sngx?=
+ =?utf-8?B?R2c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18d8944d-cbaa-497b-aa7a-08dbc4558198
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 21:12:52.9990
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cFDxMGqr+2pi7JPAr9yEeP40rgb+5uYNSF+lij0sEDneKpBuySv7orZbrTyCrUrBN498kkUXfBdO5/jiLJsckmyFYlLH8OXRPNJfLbFrn7I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7577
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 1:53=E2=80=AFAM Herve Codina <herve.codina@bootlin.c=
-om> wrote:
->
-> With the recent addition of of_pci_prop_ranges() in commit 407d1a51921e
-> ("PCI: Create device tree node for bridge"), the ranges property can
-> have a 3 cells child address, a 3 cells parent address and a 2 cells
-> child size.
+Hi James,
 
-Sigh. I'm starting to regret applying this for 6.6... You failed to Cc
-the AMD folks too. Lizhi now added.
+On 9/14/2023 10:21 AM, James Morse wrote:
 
-What's different here from the test cases? The having 3 cells in
-parent and child?
+...
 
->
-> A range item property for a PCI device is filled as follow:
->   <BAR_nbr> 0 0 <phys.hi> <phys.mid> <phys.low> <BAR_sizeh> <BAR_sizel>
->   <-- Child --> <-- Parent (PCI definition) --> <- BAR size (64bit) -->
->
-> This allow to translate BAR addresses from the DT. For instance:
-> pci@0,0 {
->   #address-cells =3D <0x03>;
->   #size-cells =3D <0x02>;
->   device_type =3D "pci";
->   compatible =3D "pci11ab,100\0pciclass,060400\0pciclass,0604";
->   ranges =3D <0x82000000 0x00 0xe8000000
->             0x82000000 0x00 0xe8000000
->             0x00 0x4400000>;
->   ...
->   dev@0,0 {
->     #address-cells =3D <0x03>;
->     #size-cells =3D <0x02>;
->     compatible =3D "pci1055,9660\0pciclass,020000\0pciclass,0200";
->     /* Translations for BAR0 to BAR5 */
->     ranges =3D <0x00 0x00 0x00 0x82010000 0x00 0xe8000000 0x00 0x2000000
->               0x01 0x00 0x00 0x82010000 0x00 0xea000000 0x00 0x1000000
->               0x02 0x00 0x00 0x82010000 0x00 0xeb000000 0x00 0x800000
->               0x03 0x00 0x00 0x82010000 0x00 0xeb800000 0x00 0x800000
->               0x04 0x00 0x00 0x82010000 0x00 0xec000000 0x00 0x20000
->               0x05 0x00 0x00 0x82010000 0x00 0xec020000 0x00 0x2000>;
->     ...
->     pci-ep-bus@0 {
->       #address-cells =3D <0x01>;
->       #size-cells =3D <0x01>;
->       compatible =3D "simple-bus";
->       /* Translate 0xe2000000 to BAR0 and 0xe0000000 to BAR1 */
->       ranges =3D <0xe2000000 0x00 0x00 0x00 0x2000000
->                 0xe0000000 0x01 0x00 0x00 0x1000000>;
-
-Why are you reusing a PCI bus address value for the child bus? I'm
-wondering if this is some hackery because the child devices need PCI
-addresses to work. What address does a device need for DMA for
-example?
-
-Also, I think each BAR should be a separate child. We need to
-formalize this BAR addressing in a schema.
-
->       ...
->     };
->   };
-> };
->
-> During the translation process, the "default-flags" map() function is
-> used to select the matching item in the ranges table and determine the
-> address offset from this matching item.
-> This map() function simply calls of_read_number() and when address-size
-> is greater than 2, the map() function skips the extra high address part
-> (ie part over 64bit). This lead to a wrong matching item and a wrong
-> offset computation.
-> Also during the translation itself, the extra high part related to the
-> parent address is not present in the translated address.
->
-> Fix the "default-flags" map() and translate() in order to take into
-> account the child extra high address part in map() and the parent extra
-> high address part in translate() and so having a correct address
-> translation for ranges patterns such as the one given in the example
-> above.
-
-Please add a test case for this.
-
->
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
->  drivers/of/address.c | 56 ++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 54 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/of/address.c b/drivers/of/address.c
-> index e692809ff822..8665de3a6344 100644
-> --- a/drivers/of/address.c
-> +++ b/drivers/of/address.c
-> @@ -100,6 +100,58 @@ static unsigned int of_bus_default_get_flags(const _=
-_be32 *addr)
->         return IORESOURCE_MEM;
+> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+> index be0b7cb6e1f5..d286aba1ee63 100644
+> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> @@ -345,24 +345,50 @@ bool has_busy_rmid(struct rdt_domain *d)
+>  	return find_first_bit(d->rmid_busy_llc, idx_limit) != idx_limit;
 >  }
->
-> +static bool of_addr_is_equal(const __be32 *addr1, const __be32 *addr2, i=
-nt na)
-> +{
-> +       int i;
-> +       u32 a1;
-> +       u32 a2;
+>  
+> -/*
+> - * As of now the RMIDs allocation is global.
+> - * However we keep track of which packages the RMIDs
+> - * are used to optimize the limbo list management.
+> - */
+> -int alloc_rmid(void)
+> +static struct rmid_entry *resctrl_find_free_rmid(u32 closid)
+>  {
+> -	struct rmid_entry *entry;
+> -
+> -	lockdep_assert_held(&rdtgroup_mutex);
+> +	struct rmid_entry *itr;
+> +	u32 itr_idx, cmp_idx;
+>  
+>  	if (list_empty(&rmid_free_lru))
+> -		return rmid_limbo_count ? -EBUSY : -ENOSPC;
+> +		return rmid_limbo_count ? ERR_PTR(-EBUSY) : ERR_PTR(-ENOSPC);
 > +
-> +       for (i =3D 0; i < na; i++) {
-> +               a1 =3D be32_to_cpup(addr1 + i);
-> +               a2 =3D be32_to_cpup(addr2 + i);
+> +	list_for_each_entry(itr, &rmid_free_lru, list) {
+> +		/*
+> +		 * Get the index of this free RMID, and the index it would need
+> +		 * to be if it were used with this CLOSID.
+> +		 * If the CLOSID is irrelevant on this architecture, the two
+> +		 * index values are always same on every entry and thus the
 
-You don't need to do the swap. Then isn't this just a memcmp?
+"are always same" -> "are always the same"?
 
-> +               if (a1 =3D=3D a2)
-> +                       continue;
-> +               return false;
-> +       }
-> +       return true;
+> +		 * very first entry will be returned.
+> +
+
+Stray empty line.
+
+> +		 */
+> +		itr_idx = resctrl_arch_rmid_idx_encode(itr->closid, itr->rmid);
+> +		cmp_idx = resctrl_arch_rmid_idx_encode(closid, itr->rmid);
+> +
+> +		if (itr_idx == cmp_idx)
+> +			return itr;
+> +	}
+> +
+> +	return ERR_PTR(-ENOSPC);
 > +}
 > +
-> +static u64 of_bus_default_flags_map(__be32 *addr, const __be32 *range, i=
-nt na,
-> +                                   int ns, int pna)
-> +{
-> +       u64 cp, s, da;
-> +       int extra =3D 0;
-> +
-> +       if (na > 2) {
+> +/*
 
-I believe this clause works for na=3D=3D2. It wouldn't for na=3D=3D1 though=
-.
-All you really need is:
+Rest of the patch looks good.
 
-if (na =3D=3D 3)
-  extra =3D 1;
+Reinette
 
-But at this point, don't we know we have a 3rd cell? We've only
-matched if we do, right? If "extra" is always 1, then this function is
-pretty much the same as the PCI and ISA versions after the flags
-comparison.
-
-> +               /*
-> +                * Given address contains more than 2 cells.
-> +                * The address high extra part must match the range extra=
- part
-> +                * and must be filtered-out from 64bit offset computation=
-.
-> +                */
-> +               extra =3D na - 2;
-> +               if (!of_addr_is_equal(addr, range, extra))
-
-A bit misleading as all you are doing is comparing the 3rd (top) cell.
-
-> +                       return OF_BAD_ADDR;
-> +
-> +               cp =3D of_read_number(range + extra, na - extra);
-> +               s  =3D of_read_number(range + na + pna, ns);
-> +               da =3D of_read_number(addr + extra, na - extra);
-> +       } else {
-> +               cp =3D of_read_number(range, na);
-> +               s  =3D of_read_number(range + na + pna, ns);
-> +               da =3D of_read_number(addr, na);
-> +       }
-> +       pr_debug("default flags map, extra=3D%d cp=3D%llx, s=3D%llx, da=
-=3D%llx\n", extra, cp, s, da);
-> +
-> +       if (da < cp || da >=3D (cp + s))
-> +               return OF_BAD_ADDR;
-> +       return da - cp;
-> +}
-> +
-> +static int of_bus_default_flags_translate(__be32 *addr, u64 offset, int =
-na)
-
-Same as of_bus_pci_translate() and of_bus_isa_translate(). 3rd case
-gets to rename and consolidate.
-
-> +{
-> +       /* Keep "flags" part in translated address */
-> +       return of_bus_default_translate(addr + 1, offset, na - 1);
-> +}
->
->  #ifdef CONFIG_PCI
->  static unsigned int of_bus_pci_get_flags(const __be32 *addr)
-> @@ -374,8 +426,8 @@ static struct of_bus of_busses[] =3D {
->                 .addresses =3D "reg",
->                 .match =3D of_bus_default_flags_match,
->                 .count_cells =3D of_bus_default_count_cells,
-> -               .map =3D of_bus_default_map,
-> -               .translate =3D of_bus_default_translate,
-> +               .map =3D of_bus_default_flags_map,
-> +               .translate =3D of_bus_default_flags_translate,
->                 .has_flags =3D true,
->                 .get_flags =3D of_bus_default_flags_get_flags,
->         },
-> --
-> 2.41.0
->
