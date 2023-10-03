@@ -2,74 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA067B6CF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1E97B6CF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbjJCPUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
+        id S231480AbjJCPVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbjJCPUc (ORCPT
+        with ESMTP id S230238AbjJCPVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 11:20:32 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E35C6;
-        Tue,  3 Oct 2023 08:20:29 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50573e85ee0so1247974e87.3;
-        Tue, 03 Oct 2023 08:20:29 -0700 (PDT)
+        Tue, 3 Oct 2023 11:21:21 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C054083;
+        Tue,  3 Oct 2023 08:21:17 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6c67060fdfaso720837a34.2;
+        Tue, 03 Oct 2023 08:21:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696346428; x=1696951228; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6W20St9AUDpDFBNyugoMYR8+Qn4dlil3atLZEE5i40k=;
-        b=Ua8+QRV3sZ99sRKlKC25DSkqwE23CHq+Eos3vQ8Ae08CB9YS7O6/ttrGAP3+/EA1wN
-         XcrWIVxlzK6PntT06foDf8ZsO04PEdST1lIoowKqDngsEg6q78y51ZyT1jvZX3BrRx7I
-         2Mb+TkjlqOIdxF4sHEYR/dsRspQsW/H/eHoZwHwyfphtYzWWixsIdVvoeRkJJ4ImgCbt
-         yGbSlm9I5yygyAfnA7b05DhaLUkvtYHdbRzYltqcxq3KazZXXW8Dm/q2qoGMvLNO8sXX
-         6c7bFat0cVHL9Dx/+75B8i+amoIjh5Y976/A9nEhQ9g/YbNUUjwpJO42ccyeM0SrGAjK
-         9kXQ==
+        d=gmail.com; s=20230601; t=1696346477; x=1696951277; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1z9Omi3EfSCh5yQBotfP7z50wuoV8LxiixPm+3LhYpQ=;
+        b=W/uABWY7+nWORqtxp2xxh3C9pESQRDAXnESbr9XkTG9k3BVAWuHFom+I1PrAhimvtY
+         mqKu1JBNvVP5gL5mJdRFgztku2SJ0DJNtMSnArNeOdJ+KThWZRKUQjp1vwYT5R2lwLCu
+         ZxTHb2iG0zHN6geSe4B2Hx9urNjNUVvuh04dDz6Kvp8oHDLz6f+HMqXm08XIk9CU1avL
+         CAQiVxYc7QY83rVFIwTrhv5JDQY1TBXimvREC/n1jF0OA+iFIX51+LIoyyn9iO76gj2x
+         9SwBokj/p/7z3aAj1WRTq7gyGOUi4bxvizUB1FDkuvHfdDxJGp96dsxpNr2cJOiUSBaM
+         kevw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696346428; x=1696951228;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6W20St9AUDpDFBNyugoMYR8+Qn4dlil3atLZEE5i40k=;
-        b=Y5nOnUKbUtyDgdeNORhs3VNIFqkpWd5ZSEpUW7VEzy0wunOiSDbGxHKG6EvpSi9SuT
-         i4NfaNsuBC5Rec0JUt+mjwxScAX6iwbGJtbL/njzXBNCxSYI8i+PBxxZQDGpRvmygrPr
-         qlWttRS5a1mvdWBRlpuyHvec9n+DSksNlHP/jnSkISlhcVsNXEN+fyfFQPDAEslkzYgj
-         c4o571f+AtghwkaXuCNngVGRq0fxsra8zmLwXXJ/DbIKLzKrJvLGS942XKc3zER4dywm
-         DqMuVrUhUBZl+Y7D2PReTjDqrASDMpAibuRf1b1yiR23tF4fa3VdAJIiGPxrbP9Fba5+
-         MT/w==
-X-Gm-Message-State: AOJu0YyZBt8nh5EF+VNAsdiBo9Vg2CO4lX2pbuUvZMdVm9m0A6ESFWUr
-        AGL7Hv8pEyDvITPpI6ueEI4=
-X-Google-Smtp-Source: AGHT+IHqPWs0sH1E101Rja23QIH+UT00iRKC9sEArefggB80uHbjbDH1bSl/u09z8I41ZW8fvH2Liw==
-X-Received: by 2002:a05:6512:10cd:b0:503:5d8:da33 with SMTP id k13-20020a05651210cd00b0050305d8da33mr14322552lfg.20.1696346427546;
-        Tue, 03 Oct 2023 08:20:27 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id u25-20020ac248b9000000b0050318721b62sm223813lfg.6.2023.10.03.08.20.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 08:20:27 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 18:20:23 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-Cc:     Cai Huoqing <cai.huoqing@linux.dev>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Herve Codina <herve.codina@bootlin.com>
-Subject: Re: [PATCH v2 4/5] dmaengine: dw-edma: HDMA: Add sync read before
- starting the DMA transfer in remote setup
-Message-ID: <2yh3lus7qqhvewva6dr4p2g7azbgov4ls57xvzefbrw24h2t7m@cbx26pwj73zn>
-References: <m6mxnmppc7hybs2tz57anoxq6afu2x63tigjya2eooaninpe4h@ayupt4qauq7v>
- <20231003121542.3139696-1-kory.maincent@bootlin.com>
+        d=1e100.net; s=20230601; t=1696346477; x=1696951277;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1z9Omi3EfSCh5yQBotfP7z50wuoV8LxiixPm+3LhYpQ=;
+        b=CWtujNoZaur6xqGH5d6HpYilwtlw2x6teeMya8wMhoSho0TItzy/fb21CXv/mDbpGY
+         ZBl5crE1NufgbsF5Wp2Y4mZI2FVQJQRj/cGBJxjjEbKxemzE8y5dANHdUX5KjO2rTTOy
+         MmuZ86WT+8far9eYrcLTc5pKL0rYSQD7dt9aGiJXWvPS5AOcvwmODU4vQkY2frbW8Ul+
+         UAMigfC0YDISOM7SXbj1LgdpoXzbqe0d/Z+rHRpLkMmTGow7r/YhPkOSdrwsR3MJnEOa
+         MSE0FsdociA1FVHu4G+a0kS7/gfhfUyM7OTldw7EuCmcskAhocROvO3tQLXM2p59TQdq
+         ew1g==
+X-Gm-Message-State: AOJu0YxShHN0valcvhHvWegu88zJah3uxMLLCBKf+iDOZoABtPrsZFh9
+        +pHxSaMuutHeyW2dHkgT0RAXOTIN8VBCWsVjN44=
+X-Google-Smtp-Source: AGHT+IETV0LxOFOFHvGdReEo1wLRQ8Ox2E/7FPUFivgbHbFlkNM6gGwPKhV0dJeUxwQtnlsDb11uHiHvgJ37tK2KI/c=
+X-Received: by 2002:a05:6808:92:b0:3a8:5fd6:f4cf with SMTP id
+ s18-20020a056808009200b003a85fd6f4cfmr15159009oic.22.1696346477021; Tue, 03
+ Oct 2023 08:21:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231003121542.3139696-1-kory.maincent@bootlin.com>
+References: <20231003145114.21637-1-brgl@bgdev.pl> <20231003145114.21637-31-brgl@bgdev.pl>
+In-Reply-To: <20231003145114.21637-31-brgl@bgdev.pl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 3 Oct 2023 18:20:40 +0300
+Message-ID: <CAHp75VdvUUw77MuuhY3Ts9L0ezOdakyppQcnikpYCu672Ghb9Q@mail.gmail.com>
+Subject: Re: [PATCH 30/36] pinctrl: remove old GPIO helpers
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -80,68 +71,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 02:15:42PM +0200, Köry Maincent wrote:
-> From: Kory Maincent <kory.maincent@bootlin.com>
-> 
-> The Linked list element and pointer are not stored in the same memory as
-> the HDMA controller register. If the doorbell register is toggled before
-> the full write of the linked list a race condition error can appears.
-> In remote setup we can only use a readl to the memory to assured the full
-> write has occurred.
-> 
-> Fixes: e74c39573d35 ("dmaengine: dw-edma: Add support for native HDMA")
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> ---
-> 
-> Changes in v2:
-> - Move the sync read in a function.
-> - Add commments
+On Tue, Oct 3, 2023 at 5:51=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
+wrote:
+>
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Old variants of pinctrl GPIO helpers are no longer used. Let's remove
+> them as well as convert all static functions in pinctrl/core.c that
+> still deal with global GPIO numbers to using the gpio_chip + offset
+> pairs.
 
-Note you need to resubmit the entire series if any of its part has
-changed. So please add these patches to your patchset (in place of the
-4/5 and 5/5 patches I commented) and resend it as v3.
+This patch does three thighs as I see it.
 
--Serge(y)
+First of all, it silently converts to RAII. Please, do this separately.
+Second, it shuffles a lot of code between old and new implementations.
+What I prefer to see is what the subject tells: only "-" (minus)
+lines.
+Third, it will become easier if you name the "new" functions better to
+begin with, it will help a lot here.
 
-> ---
->  drivers/dma/dw-edma/dw-hdma-v0-core.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/drivers/dma/dw-edma/dw-hdma-v0-core.c b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> index 0cce1880cfdc..9109dd6c2e76 100644
-> --- a/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> +++ b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> @@ -221,6 +221,20 @@ static void dw_hdma_v0_core_write_chunk(struct dw_edma_chunk *chunk)
->  	dw_hdma_v0_write_ll_link(chunk, i, control, chunk->ll_region.paddr);
->  }
->  
-> +static void dw_hdma_v0_sync_ll_data(struct dw_edma_chunk *chunk)
-> +{
-> +	/*
-> +	 * In case of remote HDMA engine setup, the DW PCIe RP/EP internals
-> +	 * configuration registers and Application memory are normally accessed
-> +	 * over different buses. Ensure LL-data reaches the memory before the
-> +	 * doorbell register is toggled by issuing the dummy-read from the remote
-> +	 * LL memory in a hope that the posted MRd TLP will return only after the
-> +	 * last MWr TLP is completed
-> +	 */
-> +	if (!(chunk->chan->dw->chip->flags & DW_EDMA_CHIP_LOCAL))
-> +		readl(chunk->ll_region.vaddr.io);
-> +}
-> +
->  static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
->  {
->  	struct dw_edma_chan *chan = chunk->chan;
-> @@ -251,6 +265,9 @@ static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
->  	/* Set consumer cycle */
->  	SET_CH_32(dw, chan->dir, chan->id, cycle_sync,
->  		  HDMA_V0_CONSUMER_CYCLE_STAT | HDMA_V0_CONSUMER_CYCLE_BIT);
-> +
-> +	dw_hdma_v0_sync_ll_data(chunk);
-> +
->  	/* Doorbell */
->  	SET_CH_32(dw, chan->dir, chan->id, doorbell, HDMA_V0_DOORBELL_START);
->  }
-> -- 
-> 2.25.1
-> 
+--=20
+With Best Regards,
+Andy Shevchenko
