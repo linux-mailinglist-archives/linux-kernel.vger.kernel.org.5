@@ -2,147 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B137B68EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160D87B68ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbjJCM0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 08:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
+        id S239993AbjJCM0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:26:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231440AbjJCM0D (ORCPT
+        with ESMTP id S232427AbjJCM0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:26:03 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9686B8;
-        Tue,  3 Oct 2023 05:25:58 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d8162698f0dso917009276.0;
-        Tue, 03 Oct 2023 05:25:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696335958; x=1696940758; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LNO5GJBfVgDppnnjLs8Ey/aGvi+SY8q8n/RPtqg6Lb0=;
-        b=hsK9jHxmOtLJ2VlYpbe5A0BRGU/6RDLVwpPRxUb0G1oC85PnNiA52gzFW2ObtQVlQL
-         iQ2zTKF6rKkpISQFpKJ+X4dUzNmD9iFsSO4F+c58xpvoj3jcfsprEDV+bNrfeGVsDB4s
-         yC4iZbmASYhXgWa2L0fw1DtJFzInEJBb8SDldCwtT+2weRTfVuDou98lFk6OUYiF1Phk
-         5NkqUZE2W2rkVfrV6J37Sv/kdggOGseURs+SukdCAdTeyLXKhDDzHMS8EkhGrJ3acBhs
-         zhWeFL11SZ/X4Pl/6ieo0fClJGLt3IzvHeOWOeJAdXbNpbkOUaZvOu26mYMjj6tk0COQ
-         AZUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696335958; x=1696940758;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LNO5GJBfVgDppnnjLs8Ey/aGvi+SY8q8n/RPtqg6Lb0=;
-        b=f+uOcryYhMYlLLC0HYOFWaCEY/jEsPMqwojaHDkpErDjlNufs/UIV937Z78TwvAeDK
-         wz1WvxSX+ttvRaULy7Lod+BA4b+T15xcPbe2O3c2D6z0tCxwg6yZhnWT8t+vhtoNEonL
-         FvFdxWu2fV6qwVug9n8yAgNUgIgdjW9IELcD16toWr6aWy//fLtKQRIihR3IVh8qf0DQ
-         lwuk3OcRy+eRej2jNxWyxN9Czpl/i/uU+84XoRtyJbxwNb/u+QCdV1SeAqjDiLUrJDDl
-         L4ffkfvI2gyB+QEq8rlilh1iziLxt9q3El2WBYuU+DndqnVOJW0VlpqtmClwo2p7Zl0w
-         bqow==
-X-Gm-Message-State: AOJu0YzD3/8uxZCcJ1PwrmK5CYbRE+oS0N2//prvH1T+eOMnwIFzX2TW
-        Hx7TWYLX4QLamVrDLBmDxWMnQYq5ICmPWC9tdiw=
-X-Google-Smtp-Source: AGHT+IH3vFPI8wkZPSB+huGryIAf1o97KjtxkawCjpbmFqLZ7a060PcmeyqhgyDquT7PF4ujt0bcej93HgDs77wHvAQ=
-X-Received: by 2002:a05:6902:707:b0:d85:aa81:53f0 with SMTP id
- k7-20020a056902070700b00d85aa8153f0mr16641798ybt.4.1696335957740; Tue, 03 Oct
- 2023 05:25:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAH7-e5sb+kT_LRb1_y-c5JaFN0=KrrRT97otUPKzTCgzGsVdrQ@mail.gmail.com>
- <ZRtWcgiH5JhD5NU2@debian.me>
-In-Reply-To: <ZRtWcgiH5JhD5NU2@debian.me>
-From:   =?UTF-8?Q?Erik_Dob=C3=A1k?= <erik.dobak@gmail.com>
-Date:   Tue, 3 Oct 2023 14:25:46 +0200
-Message-ID: <CAH7-e5uspavg_VBJxKLOKJfU3nAq-OrPqzihF2opffY-ReiC-w@mail.gmail.com>
-Subject: Re: bluetooth issues since kernel 6.4 - not discovering other bt
- devices - /linux/drivers/bluetooth/btusb.c
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux Stable <stable@vger.kernel.org>,
-        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Mediatek <linux-mediatek@lists.infradead.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        =?UTF-8?Q?Tomasz_Mo=C5=84?= <tomasz.mon@nordicsemi.no>
+        Tue, 3 Oct 2023 08:26:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E902B4
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 05:26:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696335962; x=1727871962;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=h+SKNqPou1zwDxYZgK8h0KS06+1YNpO5fxzYV7YI4q0=;
+  b=csVy1HBQz1wcHBpU5GBS2KbCDv8zPMBocDS56F6OdKRQpDiwsJQabmYQ
+   pCokpxIk4xwk5lWwOYZOF1Ul3fUEK6xuyq/bkgrulzpaa/ZzLK05d1Hj7
+   AhQ7rF2U75mIMr3qDy/MwsNTQxrJq1YMNpiRiyxyOWxXsa7WK+RuiL1WA
+   619z29s45s2inhIAgVwzUfWcdm6sBjtub77msDgUPSERrsFN/oaux5qaz
+   apWE0UX40vXaDZAA9XWOdUeuHkSHBc5ZMyffyuOJpaZbee3FMFLFpTT97
+   sWtcL7vqg6G1LKSb+6D1jW4gOECHdx+FQl3oqFeG4z3IS94HUflm2uDja
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="449350382"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="449350382"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 05:26:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="997997355"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="997997355"
+Received: from fhoeg-mobl1.ger.corp.intel.com (HELO [10.249.254.234]) ([10.249.254.234])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 05:25:58 -0700
+Message-ID: <f551ee9059e52d46343f5fa997b7d9f8ab6654d9.camel@linux.intel.com>
+Subject: Re: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate
+ external/evicted objects
+From:   Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, christian.koenig@amd.com,
+        faith@gfxstrand.net, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Date:   Tue, 03 Oct 2023 14:25:56 +0200
+In-Reply-To: <20231003120554.547090bc@collabora.com>
+References: <20230928191624.13703-1-dakr@redhat.com>
+         <20230928191624.13703-5-dakr@redhat.com>
+         <e4e68970-c7c9-55e2-9483-01252f38c956@linux.intel.com>
+         <20231003120554.547090bc@collabora.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Oct 2023 at 01:47, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
->
-> On Sun, Oct 01, 2023 at 07:47:54AM +0200, Erik Dob=C3=A1k wrote:
-> > Hello!
-> >
-> > I bought a new laptop fujitsu life book and everything is going fine
-> > on artix just the bt makes trouble:
-> >
-> > /var/log/error.log
-> > Sep 30 18:43:48 nexus bluetoothd[2266]:
-> > src/adapter.c:reset_adv_monitors_complete() Failed to reset Adv
-> > Monitors: Failed (0x03)
-> > Sep 30 18:43:48 nexus bluetoothd[2266]: Failed to clear UUIDs: Failed (=
-0x03)
-> > Sep 30 18:43:48 nexus bluetoothd[2266]: Failed to add UUID: Failed (0x0=
-3)
-> > Sep 30 18:43:48 nexus bluetoothd[2266]: Failed to add UUID: Failed (0x0=
-3)
-> >
-> > i searched a bit the webs and found a new commit at kernel org that
-> > does do the trouble:
-> > https://bugs.archlinux.org/task/78980
-> >
-> > follow the linkeys inside the commits there or read this one:
-> >
-> > ---------------before------------------------------------
-> > /* interface numbers are hardcoded in the spec */
-> >         if (intf->cur_altsetting->desc.bInterfaceNumber !=3D 0) {
-> >                 if (!(id->driver_info & BTUSB_IFNUM_2))
-> >                         return -ENODEV;
-> >                 if (intf->cur_altsetting->desc.bInterfaceNumber !=3D 2)
-> >                         return -ENODEV;
-> >         }
-> > -----------after----------------------------------------------------
-> > if ((id->driver_info & BTUSB_IFNUM_2) &&
-> >     (intf->cur_altsetting->desc.bInterfaceNumber !=3D 0) &&
-> >     (intf->cur_altsetting->desc.bInterfaceNumber !=3D 2))
-> > return -ENODEV;
-> > --------------------------------------------------------
-> >
-> > the dude just hooked up 3 conditions in a row with && where before it
-> > was 2 conditions in 1 condition. + the comment was removed.
-> >
-> >
->
-> Try latest mainline first (currently v6.6-rc4). Because you have to
-> compile your own kernel, please refer to
-> Documentation/admin-guide/quickly-build-trimmed-linux.rst if you don't kn=
-ow how to do the compilation.
->
-> Also, don't top-post when replying; reply inline with appropriate context
-> instead.
->
-> Thanks.
->
-> --
-> An old man doll... just what I always wanted! - Clara
+SGksIEJvcmlzLAoKT24gVHVlLCAyMDIzLTEwLTAzIGF0IDEyOjA1ICswMjAwLCBCb3JpcyBCcmV6
+aWxsb24gd3JvdGU6Cj4gSGVsbG8gVGhvbWFzLAo+IAo+IE9uIFR1ZSwgMyBPY3QgMjAyMyAxMDoz
+NjoxMCArMDIwMAo+IFRob21hcyBIZWxsc3Ryw7ZtIDx0aG9tYXMuaGVsbHN0cm9tQGxpbnV4Lmlu
+dGVsLmNvbT4gd3JvdGU6Cj4gCj4gPiA+ICsvKioKPiA+ID4gKyAqIGdldF9uZXh0X3ZtX2JvX2Zy
+b21fbGlzdCgpIC0gZ2V0IHRoZSBuZXh0IHZtX2JvIGVsZW1lbnQKPiA+ID4gKyAqIEBfX2dwdXZt
+OiBUaGUgR1BVIFZNCj4gPiA+ICsgKiBAX19saXN0X25hbWU6IFRoZSBuYW1lIG9mIHRoZSBsaXN0
+IHdlJ3JlIGl0ZXJhdGluZyBvbgo+ID4gPiArICogQF9fbG9jYWxfbGlzdDogQSBwb2ludGVyIHRv
+IHRoZSBsb2NhbCBsaXN0IHVzZWQgdG8gc3RvcmUKPiA+ID4gYWxyZWFkeSBpdGVyYXRlZCBpdGVt
+cwo+ID4gPiArICogQF9fcHJldl92bV9ibzogVGhlIHByZXZpb3VzIGVsZW1lbnQgd2UgZ290IGZy
+b20KPiA+ID4gZHJtX2dwdXZtX2dldF9uZXh0X2NhY2hlZF92bV9ibygpCj4gPiA+ICsgKgo+ID4g
+PiArICogVGhpcyBoZWxwZXIgaXMgaGVyZSB0byBwcm92aWRlIGxvY2tsZXNzIGxpc3QgaXRlcmF0
+aW9uLgo+ID4gPiBMb2NrbGVzcyBhcyBpbiwgdGhlCj4gPiA+ICsgKiBpdGVyYXRvciByZWxlYXNl
+cyB0aGUgbG9jayBpbW1lZGlhdGVseSBhZnRlciBwaWNraW5nIHRoZQo+ID4gPiBmaXJzdCBlbGVt
+ZW50IGZyb20KPiA+ID4gKyAqIHRoZSBsaXN0LCBzbyBsaXN0IGluc2VydGlvbiBkZWxldGlvbiBj
+YW4gaGFwcGVuIGNvbmN1cnJlbnRseS4KPiA+ID4gKyAqCj4gPiA+ICsgKiBFbGVtZW50cyBwb3Bw
+ZWQgZnJvbSB0aGUgb3JpZ2luYWwgbGlzdCBhcmUga2VwdCBpbiBhIGxvY2FsCj4gPiA+IGxpc3Qs
+IHNvIHJlbW92YWwKPiA+ID4gKyAqIGFuZCBpc19lbXB0eSBjaGVja3MgY2FuIHN0aWxsIGhhcHBl
+biB3aGlsZSB3ZSdyZSBpdGVyYXRpbmcKPiA+ID4gdGhlIGxpc3QuCj4gPiA+ICsgKi8KPiA+ID4g
+KyNkZWZpbmUgZ2V0X25leHRfdm1fYm9fZnJvbV9saXN0KF9fZ3B1dm0sIF9fbGlzdF9uYW1lLAo+
+ID4gPiBfX2xvY2FsX2xpc3QsIF9fcHJldl92bV9ibynCoMKgwqDCoMKgXAo+ID4gPiArwqDCoMKg
+wqDCoMKgwqAoe8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgCj4gPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqBcCj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgZHJtX2dwdXZt
+X2JvICpfX3ZtX2JvID0KPiA+ID4gTlVMTDvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBcCj4gPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgXAo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZHJtX2dwdXZtX2JvX3B1
+dChfX3ByZXZfdm1fYm8pO8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoAo+ID4g
+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgXAo+ID4gPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoFwKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHNwaW5fbG9j
+aygmKF9fZ3B1dm0pLQo+ID4gPiA+X19saXN0X25hbWUubG9jayk7wqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoFzCoCAKPiA+IAo+
+ID4gSGVyZSB3ZSB1bmNvbmRpdGlvbmFsbHkgdGFrZSB0aGUgc3BpbmxvY2tzIHdoaWxlIGl0ZXJh
+dGluZywgYW5kIHRoZQo+ID4gbWFpbiAKPiA+IHBvaW50IG9mIERSTV9HUFVWTV9SRVNWX1BST1RF
+Q1RFRCB3YXMgcmVhbGx5IHRvIGF2b2lkIHRoYXQ/Cj4gPiAKPiA+IAo+ID4gPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKCEoX19ncHV2bSktCj4gPiA+ID5fX2xpc3RfbmFtZS5s
+b2NhbF9saXN0KcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoFwKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAoX19ncHV2bSktPl9fbGlzdF9uYW1lLmxvY2FsX2xpc3QgPQo+ID4g
+PiBfX2xvY2FsX2xpc3Q7wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgXAo+ID4gPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZWxzZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgXAo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oFdBUk5fT04oKF9fZ3B1dm0pLT5fX2xpc3RfbmFtZS5sb2NhbF9saXN0Cj4gPiA+ICE9IF9fbG9j
+YWxfbGlzdCk7wqDCoMKgwqDCoFwKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgCj4gPiA+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBcCj4gPiA+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqB3aGlsZSAoIWxpc3RfZW1wdHkoJihfX2dwdXZtKS0+X19saXN0
+X25hbWUubGlzdCkpCj4gPiA+IHvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqBcCj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgX192bV9ibyA9IGxpc3RfZmlyc3RfZW50cnkoJihfX2dwdXZtKS0KPiA+ID4gPl9fbGlzdF9u
+YW1lLmxpc3QswqDCoMKgwqDCoMKgwqDCoFwKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIHN0cnVjdAo+ID4gPiBkcm1fZ3B1dm1fYm8swqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoFwKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgCj4gPiA+IGxpc3QuZW50cnkuX19saXN0X25hbWUpO8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgXAo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoGlmIChrcmVmX2dldF91bmxlc3NfemVybygmX192bV9iby0+a3JlZikpCj4g
+PiA+IHvCoCAKPiA+IEFuZCB1bm5lY2Vzc2FyaWx5IGdyYWIgYSByZWZlcmVuY2UgaW4gdGhlIFJF
+U1ZfUFJPVEVDVEVEIGNhc2UuCj4gPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoFwKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgbGlzdF9tb3ZlX3RhaWwoJihfX3ZtX2JvKS0K
+PiA+ID4gPmxpc3QuZW50cnkuX19saXN0X25hbWUswqDCoMKgwqDCoMKgXAo+ID4gPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgCj4gPiA+IF9fbG9jYWxfbGlzdCk7wqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgXAo+ID4gPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqBicmVhazvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oFwKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9
+IGVsc2UKPiA+ID4ge8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqBcCj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGxpc3RfZGVsX2luaXQoJihfX3ZtX2JvKS0KPiA+ID4g
+Pmxpc3QuZW50cnkuX19saXN0X25hbWUpO8KgwqDCoMKgwqDCoFwKPiA+ID4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgX192bV9i
+byA9Cj4gPiA+IE5VTEw7wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoFwKPiA+ID4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9wqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oFwKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoH3CoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoFwKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oHNwaW5fdW5sb2NrKCYoX19ncHV2bSktCj4gPiA+ID5fX2xpc3RfbmFtZS5sb2NrKTvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBcCj4g
+PiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgXAo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgX192
+bV9ibzvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgCj4gPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBcCj4gPiA+ICvCoMKgwqDCoMKgwqDCoH0pwqAgCj4g
+PiAKPiA+IElNSE8gdGhpcyBsb2NrbGVzcyBsaXN0IGl0ZXJhdGlvbiBsb29rcyB2ZXJ5IGNvbXBs
+ZXggYW5kIHNob3VsZCBiZSAKPiA+IHByZXR0eSBkaWZmaWN1bHQgdG8gbWFpbnRhaW4gd2hpbGUg
+bW92aW5nIGZvcndhcmQsIGFsc28gc2luY2UgaXQKPiA+IHB1bGxzIAo+ID4gdGhlIGdwdXZtX2Jv
+cyBvZmYgdGhlIGxpc3QsIGxpc3QgaXRlcmF0aW9uIG5lZWRzIHRvIGJlIHByb3RlY3RlZCBieQo+
+ID4gYW4gCj4gPiBvdXRlciBsb2NrIGFueXdheS4KPiAKPiBBcyBiZWluZyBwYXJ0bHkgcmVzcG9u
+c2libGUgZm9yIHRoaXMgY29udm9sdXRlZCBsaXN0IGl0ZXJhdG9yLCBJIG11c3QKPiBzYXkgSSBh
+Z3JlZSB3aXRoIHlvdS4gVGhlcmUncyBzbyBtYW55IHdheXMgdGhpcyBjYW4gZ28gd3JvbmcgaWYg
+dGhlCj4gdXNlciBkb2Vzbid0IGNhbGwgaXQgdGhlIHJpZ2h0IHdheSwgb3IgZG9lc24ndCBwcm90
+ZWN0IGNvbmN1cnJlbnQKPiBsaXN0Cj4gaXRlcmF0aW9ucyB3aXRoIGEgc2VwYXJhdGUgbG9jayAo
+bHVja2lseSwgdGhpcyBpcyBhIHByaXZhdGUKPiBpdGVyYXRvcikuIEkKPiBtZWFuLCBpdCB3b3Jr
+cywgc28gdGhlcmUncyBjZXJ0YWlubHkgYSB3YXkgdG8gZ2V0IGl0IHJpZ2h0LCBidXQgZ29zaCwK
+PiB0aGlzIGlzIHNvIGZhciBmcm9tIHRoZSBzaW1wbGUgQVBJIEkgaGFkIGhvcGVkIGZvci4KPiAK
+PiA+IEFsc28gZnJvbSB3aGF0IEkgdW5kZXJzdGFuZCBmcm9tIEJvcmlzLCB0aGUgZXh0b2JqIAo+
+ID4gbGlzdCB3b3VsZCB0eXBpY2FsbHkgbm90IG5lZWQgdGhlIGZpbmUtZ3JhaW5lZCBsb2NraW5n
+OyBvbmx5IHRoZQo+ID4gZXZpY3QgCj4gPiBsaXN0Pwo+IAo+IFJpZ2h0LCBJJ20gYWRkaW5nIHRo
+ZSBncHV2bV9ibyB0byBleHRvYmogbGlzdCBpbiB0aGUgaW9jdGwgcGF0aCwgd2hlbgo+IHRoZSBH
+RU0gYW5kIFZNIHJlc3ZzIGFyZSBoZWxkLCBhbmQgSSdtIGRlZmVycmluZyB0aGUKPiBkcm1fZ3B1
+dm1fYm9fcHV0KCkKPiBjYWxsIHRvIGEgd29yayB0aGF0J3Mgbm90IGluIHRoZSBkbWEtc2lnbmFs
+bGluZyBwYXRoLiBUaGlzIGJlaW5nCj4gc2FpZCwKPiBJJ20gc3RpbGwgbm90IGNvbWZvcnRhYmxl
+IHdpdGggdGhlCj4gCj4gZ2VtID0gZHJtX2dlbV9vYmplY3RfZ2V0KHZtX2JvLT5nZW0pOwo+IGRt
+YV9yZXN2X2xvY2soZ2VtLT5yZXN2KTsKPiBkcm1fZ3B1dm1fYm9fcHV0KHZtX2JvKTsKPiBkbWFf
+cmVzdl91bmxvY2soZ2VtLT5yZXN2KTsKPiBkcm1fZ2VtX29iamVjdF9wdXQoZ2VtKTsKPiAKPiBk
+YW5jZSB0aGF0J3MgbmVlZGVkIHRvIGF2b2lkIGEgVUFGIHdoZW4gdGhlIGdwdXZtX2JvIGlzIHRo
+ZSBsYXN0IEdFTQo+IG93bmVyLCBub3QgdG8gbWVudGlvbiB0aGF0IGRybV9ncHV2YV91bmxpbmso
+KSBjYWxscwo+IGRybV9ncHV2bV9ib19wdXQoKQo+IGFmdGVyIG1ha2luZyBzdXJlIHRoZSBHRU0g
+Z3B1dm1fbGlzdCBsb2NrIGlzIGhlbGQsIGJ1dCB0aGlzIGxvY2sKPiBtaWdodAo+IGRpZmZlciBm
+cm9tIHRoZSByZXN2IGxvY2sgKGN1c3RvbSBsb2NraW5nIHNvIHdlIGNhbiBjYWxsCj4gZ3B1dm1f
+dW5saW5rKCkgaW4gdGhlIGRtYS1zaWduYWxsaW5nIHBhdGgpLiBTbyB3ZSBub3cgaGF2ZSBwYXRo
+cwo+IHdoZXJlCj4gZHJtX2dwdXZtX2JvX3B1dCgpIGFyZSBjYWxsZWQgd2l0aCB0aGUgcmVzdiBs
+b2NrIGhlbGQsIGFuZCBvdGhlcnMKPiB3aGVyZQo+IHRoZXkgYXJlIG5vdCwgYW5kIHRoYXQgb25s
+eSB3b3JrcyBiZWNhdXNlIHdlJ3JlIHJlbHlpbmcgb24gdGhlIHRoZQo+IGZhY3QKPiB0aG9zZSBk
+cm1fZ3B1dm1fYm9fcHV0KCkgY2FsbHMgd29uJ3QgbWFrZSB0aGUgcmVmY291bnQgZHJvcCB0byB6
+ZXJvLAo+IGJlY2F1c2UgdGhlIGRlZmVycmVkIHZtX2JvX3B1dCgpIHdvcmsgc3RpbGwgb3ducyBh
+IHZtX2JvIHJlZi4KCkknbSBub3Qgc3VyZSBJIGZvbGxvdyB0byAxMDAlIGhlcmUsIGJ1dCBpbiB0
+aGUgY29kZSBzbmlwcGV0IGFib3ZlIGl0J3MKcHJldHR5IGNsZWFyIHRvIG1lIHRoYXQgaXQgbmVl
+ZHMgdG8gaG9sZCBhbiBleHBsaWNpdCBnZW0gb2JqZWN0CnJlZmVyZW5jZSB3aGVuIGNhbGxpbmcg
+ZG1hX3Jlc3ZfdW5sb2NrKGdlbS0+cmVzdikuIEVhY2ggdGltZSB5b3UgY29weSBhCnJlZmVyZW5j
+ZWQgcG9pbnRlciAoaGVyZSBmcm9tIHZtX2JvLT5nZW0gdG8gZ2VtKSB5b3UgbmVlZCB0byB1cCB0
+aGUKcmVmY291bnQgdW5sZXNzIHlvdSBtYWtlIHN1cmUgKGJ5IGxvY2tzIG9yIG90aGVyIG1lYW5z
+KSB0aGF0IHRoZSBzb3VyY2UKb2YgdGhlIGNvcHkgaGFzIGEgc3Ryb25nIHJlZmNvdW50IGFuZCBz
+dGF5cyBhbGl2ZSwgc28gdGhhdCdzIG5vIHdlaXJkCmFjdGlvbiB0byBtZS4gQ291bGQgcG9zc2li
+bHkgYWRkIGEgZHJtX2dwdXZtX2JvX2dldF9nZW0oKSB0byBhY2Nlc3MgdGhlCmdlbSBtZW1iZXIg
+KGFuZCB0aGF0IGFsc28gdGFrZXMgYSByZWZjb3VudCkgZm9yIGRyaXZlciB1c2VycyB0byBhdm9p
+ZAp0aGUgcG90ZW50aWFsIHBpdGZhbGwuCgo+IAo+IEFsbCB0aGVzZSB0aW55IGRldGFpbHMgYWRk
+IHRvIHRoZSBvdmVyYWxsIGNvbXBsZXhpdHkgb2YgdGhpcyBjb21tb24KPiBsYXllciwgYW5kIHRv
+IG1lLCB0aGF0J3Mgbm90IGFueSBiZXR0ZXIgdGhhbiB0aGUKPiBnZXRfbmV4dF92bV9ib19mcm9t
+X2xpc3QoKSBjb21wbGV4aXR5IHlvdSB3ZXJlIGNvbXBsYWluaW5nIGFib3V0Cj4gKG1pZ2h0Cj4g
+YmUgZXZlbiB3b3J0aCwgYmVjYXVzZSB0aGlzIHNvcnQgb2YgdGhpbmdzIGxlYWsgdG8gdXNlcnMp
+Lgo+IAo+IEhhdmluZyBhbiBpbnRlcm5hbCBsb2NrIHBhcnRseSBzb2x2ZXMgdGhhdCwgaW4gdGhh
+dCB0aGUgbG9ja2luZyBvZgo+IHRoZQo+IGV4dG9iaiBsaXN0IGlzIG5vdyBlbnRpcmVseSBvcnRo
+b2dvbmFsIHRvIHRoZSBHRU0gdGhhdCdzIGJlaW5nCj4gcmVtb3ZlZAo+IGZyb20gdGhpcyBsaXN0
+LCBhbmQgd2UgY2FuIGxvY2svdW5sb2NrIGludGVybmFsbHkgd2l0aG91dCBmb3JjaW5nIHRoZQo+
+IGNhbGxlciB0byB0YWtlIHdlaXJkIGFjdGlvbnMgdG8gbWFrZSBzdXJlIHRoaW5ncyBkb24ndCBl
+eHBsb2RlLiBEb24ndAo+IGdldCBtZSB3cm9uZywgSSBnZXQgdGhhdCB0aGlzIGxvY2tpbmcgb3Zl
+cmhlYWQgaXMgbm90IGFjY2VwdGFibGUgZm9yCj4gWGUsIGJ1dCBJIGZlZWwgbGlrZSB3ZSdyZSB0
+dXJuaW5nIGRybV9ncHV2bSBpbnRvIGEgd2hpdGUgZWxlcGhhbnQKPiB0aGF0Cj4gb25seSBmZXcg
+cGVvcGxlIHdpbGwgZ2V0IHJpZ2h0LgoKSSB0ZW5kIHRvIGFncmVlLCBidXQgdG8gbWUgdGhlIGJp
+ZyBjb21wbGljYXRpb24gY29tZXMgZnJvbSB0aGUgYXN5bmMKKGRtYSBzaWduYWxsaW5nIHBhdGgp
+IHN0YXRlIHVwZGF0ZXMuCgpMZXQncyBzYXkgZm9yIGV4YW1wbGUgd2UgaGF2ZSBhIGxvd2VyIGxl
+dmVsIGxvY2sgZm9yIHRoZSBnZW0gb2JqZWN0J3MKZ3B1dm1fYm8gbGlzdC4gU29tZSBkcml2ZXJz
+IGdyYWIgaXQgZnJvbSB0aGUgZG1hIGZlbmNlIHNpZ25hbGxpbmcgcGF0aCwKb3RoZXIgZHJpdmVy
+cyBuZWVkIHRvIGFjY2VzcyBhbGwgdm0ncyBvZiBhIGJvIHRvIGdyYWIgdGhlaXIgZG1hX3Jlc3YK
+bG9ja3MgdXNpbmcgYSBXVyB0cmFuc2FjdGlvbi4gVGhlcmUgd2lsbCBiZSBwcm9ibGVtcywgYWx0
+aG91Z2ggcHJvYmFibHkKc29sdmVhYmxlLgoKPiAKPiBUaGlzIGlzIGp1c3QgbXkgcGVyc29uYWwg
+dmlldyBvbiB0aGlzLCBhbmQgSSBjZXJ0YWlubHkgZG9uJ3Qgd2FudCB0bwo+IGJsb2NrIG9yIGRl
+bGF5IHRoZSBtZXJnaW5nIG9mIHRoaXMgcGF0Y2hzZXQsIGJ1dCBJIHRob3VnaHQgSSdkIHNoYXJl
+Cj4gbXkKPiBjb25jZXJucy4gQXMgc29tZW9uZSB3aG8ncyBiZWVuIGZvbGxvd2luZyB0aGUgZXZv
+bHV0aW9uIG9mIHRoaXMKPiBkcm1fZ3B1dmEvdm0gc2VyaWVzIGZvciB3ZWVrcywgYW5kIHdobydz
+IHN0aWxsIHNvbWV0aW1lcyBnZXR0aW5nCj4gbG9zdCwKPiBJIGNhbid0IGltYWdpbmUgaG93IG5l
+dyBkcm1fZ3B1dm0gdXNlcnMgd291bGQgZmVlbC4uLgoKCj4gCj4gPiBBbHNvIGl0IHNlZW1zIHRo
+YXQgaWYgd2UgYXJlIHRvIG1haW50YWluIHR3byBtb2RlcyBoZXJlLCBmb3IgCj4gPiByZWFzb25h
+Ymx5IGNsZWFuIGNvZGUgd2UnZCBuZWVkIHR3byBzZXBhcmF0ZSBpbnN0YW5jZXMgb2YgCj4gPiBn
+ZXRfbmV4dF9ib19mcm9tX2xpc3QoKS4KPiA+IAo+ID4gRm9yIHRoZSAhUkVTVl9QUk9URUNURUQg
+Y2FzZSwgcGVyaGFwcyBvbmUgd291bGQgd2FudCB0byBjb25zaWRlcgo+ID4gdGhlIAo+ID4gc29s
+dXRpb24gdXNlZCBjdXJyZW50bHkgaW4geGUsIHdoZXJlIHRoZSBWTSBtYWludGFpbnMgdHdvIGV2
+aWN0Cj4gPiBsaXN0cy4gCj4gPiBPbmUgcHJvdGVjdGVkIGJ5IGEgc3BpbmxvY2sgYW5kIG9uZSBw
+cm90ZWN0ZWQgYnkgdGhlIFZNIHJlc3YuIFdoZW4KPiA+IHRoZSAKPiA+IFZNIHJlc3YgaXMgbG9j
+a2VkIHRvIGJlZ2luIGxpc3QgdHJhdmVyc2FsLCB0aGUgc3BpbmxvY2sgaXMgbG9ja2VkCj4gPiAq
+b25jZSogCj4gPiBhbmQgdGhlIHNwaW5sb2NrLXByb3RlY3RlZCBsaXN0IGlzIGxvb3BlZCBvdmVy
+IGFuZCBjb3BpZWQgaW50byB0aGUKPiA+IHJlc3YgCj4gPiBwcm90ZWN0ZWQgb25lLiBGb3IgdHJh
+dmVyc2FsLCB0aGUgcmVzdiBwcm90ZWN0ZWQgb25lIGlzIHVzZWQuCj4gCj4gT2gsIHNvIHlvdSBk
+byBoYXZlIHRoZSBzYW1lIHNvcnQgb2YgdHJpY2sgd2hlcmUgeW91IG1vdmUgdGhlIGVudGlyZQo+
+IGxpc3QgdG8gYW5vdGhlciBsaXN0LCBzdWNoIHRoYXQgeW91IGNhbiBsZXQgb3RoZXIgcGF0aHMg
+dXBkYXRlIHRoZQo+IGxpc3QKPiB3aGlsZSB5b3UncmUgaXRlcmF0aW5nIHlvdXIgb3duIHNuYXBz
+aG90LiBUaGF0J3MgaW50ZXJlc3RpbmcuLi4KClllcywgaXQncyBpbnN0ZWFkIG9mIHRoZSAiZXZp
+Y3RlZCIgYm9vbCBzdWdnZXN0ZWQgaGVyZS4gSSB0aG91Z2h0IHRoZQpsYXR0ZXIgd291bGQgYmUg
+c2ltcGxlci4gQWx0aG91Z2ggdGhhdCByZW1haW5zIHRvIGJlIHNlZW4gYWZ0ZXIgYWxsCnVzZS1j
+YXNlcyBhcmUgaW1wbGVtZW50ZWQuCgpCdXQgaW4gZ2VuZXJhbCBJIHRoaW5rIHRoZSBjb25jZXB0
+IG9mIGNvcHlpbmcgZnJvbSBhIHN0YWdpbmcgbGlzdCB0bwphbm90aGVyIHdpdGggZGlmZmVyZW50
+IHByb3RlY3Rpb24gcmF0aGVyIHRoYW4gdHJhdmVyc2luZyB0aGUgZmlyc3QgbGlzdAphbmQgdW5s
+b2NraW5nIGJldHdlZW4gaXRlbXMgaXMgYSBnb29kIHdheSBvZiBzb2x2aW5nIHRoZSBsb2NraW5n
+CmludmVyc2lvbiBwcm9ibGVtIHdpdGggbWluaW1hbCBvdmVyaGVhZC4gV2UgdXNlIGl0IGFsc28g
+Zm9yIE8oMSkKdXNlcnB0ciB2YWxpZGF0aW9uLgoKL1Rob21hcwoKCj4gCj4gUmVnYXJkcywKPiAK
+PiBCb3JpcwoK
 
-Hi i booted now into linux-6.6-rc4 and the issue is still there. No
-bluetooth devices are discovered.
-with this device: Bus 001 Device 004: ID 04c5:1670 Fujitsu, Ltd Bluetooth R=
-adio
-
-E
