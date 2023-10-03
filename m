@@ -2,130 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DBD7B7505
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0947B7508
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235337AbjJCXfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 19:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
+        id S236452AbjJCXgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 19:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbjJCXf3 (ORCPT
+        with ESMTP id S235978AbjJCXf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 19:35:29 -0400
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095D8AC;
-        Tue,  3 Oct 2023 16:35:24 -0700 (PDT)
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-690bc3f82a7so1271758b3a.0;
-        Tue, 03 Oct 2023 16:35:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696376123; x=1696980923;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UJD24QbXAixuWuUpvUYY/DJkjTh/y9ZMHAxjDwAuOCg=;
-        b=dulbo8hKkcuH/Wn0336uMqp1zEwOiEteaOzWQVjiK82Yt2Wuub50C7gdYVIj605FBD
-         VZi2iwRAepDaGiI4g/xTWU+HwZyOdDR0zgSKtQd+pdIwUSjSW3qrsKB3ij/ZULa1gyRU
-         GPf/5zExPiCxbgcS7sRak22PR6GI2Pxje5DGMEjLzjvu5c8UzBCrL3eX1TOJc3V9dlT+
-         ILjeN2oTIUyRYnLPn8P2p/9pnYyTiAzJ82iD381xF5Fpp5nmmP/JZ14hNO/XOVHL9aKV
-         7O5bZXA6PHavdbmI3QnPa6Ka04xSD5uE2B6sty6vrdZ6w8yeuNJfNwk1PosyS9DMMXVT
-         zjvw==
-X-Gm-Message-State: AOJu0YyZIqVDnAiNf9+zI+5CkTX76HZD9shfLYxy7dd+Q7GSDENSKejV
-        vYBgZdNgVyDoCcEpN/3MQEc=
-X-Google-Smtp-Source: AGHT+IFygOHV2/FvdD4qmBhjkUVrn/Kq2uyKGkQqrsQf3OvfZZd939O7TMH4i4YP0wgmh5TMOwkkxg==
-X-Received: by 2002:a05:6a00:852:b0:68f:efc2:ba3d with SMTP id q18-20020a056a00085200b0068fefc2ba3dmr1215971pfk.33.1696376123288;
-        Tue, 03 Oct 2023 16:35:23 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id w16-20020a639350000000b0057d0a8e634dsm1948102pgm.48.2023.10.03.16.35.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 16:35:22 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 23:35:21 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
-        decui@microsoft.com, apais@linux.microsoft.com,
-        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
-        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
-        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
-        catalin.marinas@arm.com
-Subject: Re: [PATCH v4 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Message-ID: <ZRylORx/KAgJyLgQ@liuwe-devbox-debian-v2>
-References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1696010501-24584-16-git-send-email-nunodasneves@linux.microsoft.com>
- <2023093004-evoke-snowbird-363b@gregkh>
- <ZRhkxxBbxkeM4whg@liuwe-devbox-debian-v2>
- <2023093002-bonfire-petty-c3ca@gregkh>
- <ZRiPY5GzrGvlnPmY@liuwe-devbox-debian-v2>
- <2023100130-profusely-landside-0f97@gregkh>
+        Tue, 3 Oct 2023 19:35:57 -0400
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E9FC4
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:35:53 -0700 (PDT)
+Received: from eig-obgw-5008a.ext.cloudfilter.net ([10.0.29.246])
+        by cmsmtp with ESMTP
+        id nlgiqLWccqBU3novhq36tl; Tue, 03 Oct 2023 23:35:53 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id novgq4mci2F81novgqgCVh; Tue, 03 Oct 2023 23:35:52 +0000
+X-Authority-Analysis: v=2.4 cv=a7wjSGeF c=1 sm=1 tr=0 ts=651ca558
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=Dx1Zrv+1i3YEdDUMOX3koA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=3HDBlxybAAAA:8
+ a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8 a=20KFwNOVAAAA:8
+ a=NEAV23lmAAAA:8 a=cm27Pg_UAAAA:8 a=YSKGN3ub9cUXa_79IdMA:9 a=QEXdDO2ut3YA:10
+ a=laEoCiVfU_Unz3mSdgXN:22 a=y1Q9-5lHfBjTkpIzbSAN:22 a=AjGcO6oz07-iQ99wixmX:22
+ a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=N8OoUqclecjSXuxsX++R1XQqudAlWxTs4LvafvsnyYw=; b=WcJGOnjCVOyzuv9c3Ui2vkOssc
+        cNZs0wcj6FgTs47K8Hh6JBgDm3cRQqhPXlu2ngGn2aou6wyFP605cLlsPUbqQkwia2Q5X3Z/uYC2O
+        pwZZhCwuElQVgs4dOzYiL06jQ+FkSsi8S3+2WTevWTTfD1xpgFRG3QBrA94yLGYa6/1d8y0cMqMBn
+        i8DK17m4q2F9Pnajk7QcWgbTfB+e5ELusECASs6VM8H6XiH6qHRpAP62RFrK+o8Q9dh1754DB4+7O
+        4Gg1M6Rung+sfKv9elzHLRlG8EOoDwlYir6qDlVbx6CmZVm4XH+TiVt2NpaEqUHsQJCO5u6E+M0gN
+        qc5f5e9g==;
+Received: from 94-238-9-39.abo.bbox.fr ([94.238.9.39]:36624 helo=[192.168.1.98])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qnove-001QlU-0b;
+        Tue, 03 Oct 2023 18:35:50 -0500
+Message-ID: <a1be01f4-3e39-a42a-3112-5bcf728ccd0c@embeddedor.com>
+Date:   Wed, 4 Oct 2023 01:35:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023100130-profusely-landside-0f97@gregkh>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] netfilter: nf_tables: Annotate struct nft_pipapo_match
+ with __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
+References: <20231003231750.work.190-kees@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20231003231750.work.190-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 94.238.9.39
+X-Source-L: No
+X-Exim-ID: 1qnove-001QlU-0b
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 94-238-9-39.abo.bbox.fr ([192.168.1.98]) [94.238.9.39]:36624
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 52
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfCkoSgllBbwyV/MYm0ejgpr0Ig/hmsbWQlH5Jb+4XuZzbCsrj/4EDZM++82jJztQKGWVe0WRUOjhGIfkUJ7W/X/Kt8bhu7GWq1A9fn60+Z1pR68tyY3w
+ s5JrtPlvpTBRb/tLhc+MTP9woscrftb7mKe8B16NS2+AzRbFZIxElOTDGjy2pS3csnSvXrHZTgdYKMRSRQItMdBy6RFz+EOON7nMRpz4FtJR/yoHqsFMAPKA
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 01, 2023 at 08:20:37AM +0200, Greg KH wrote:
-> On Sat, Sep 30, 2023 at 09:13:07PM +0000, Wei Liu wrote:
-> > On Sat, Sep 30, 2023 at 08:31:13PM +0200, Greg KH wrote:
-> > > On Sat, Sep 30, 2023 at 06:11:19PM +0000, Wei Liu wrote:
-> > > > On Sat, Sep 30, 2023 at 08:11:37AM +0200, Greg KH wrote:
-> > > > > On Fri, Sep 29, 2023 at 11:01:41AM -0700, Nuno Das Neves wrote:
-> > > > > > --- /dev/null
-> > > > > > +++ b/include/uapi/linux/mshv.h
-> > > > > > @@ -0,0 +1,306 @@
-> > > > > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > > > 
-> > > > > Much better.
-> > > > > 
-> > > > > > +#ifndef _UAPI_LINUX_MSHV_H
-> > > > > > +#define _UAPI_LINUX_MSHV_H
-> > > > > > +
-> > > > > > +/*
-> > > > > > + * Userspace interface for /dev/mshv
-> > > > > > + * Microsoft Hypervisor root partition APIs
-> > > > > > + * NOTE: This API is not yet stable!
-> > > > > 
-> > > > > Sorry, that will not work for obvious reasons.
-> > > > 
-> > > > This can be removed. For practical purposes, the API has been stable for
-> > > > the past three years.
-> > > 
-> > > Then who wrote this text?
-> > 
-> > I don't think this matter, does it? This patch series had been rewritten
-> > so many times internally to conform to upstream standard it is very
-> > difficult to track down who wrote this and when.
-> 
-> The point is someone wrote this for a good reason so figuring out why
-> that was done would be good for you all to do as maybe it is true!
-> 
-> > If you have concrete concerns about removing the text, please let me
-> > know.
-> 
-> You need to verify that the comment is not true before removing it,
-> otherwise you all will have a very hard time in the future when things
-> change...
 
-I understand your point. Thanks, I will make sure to do that. :-)
 
-Thanks,
-Wei.
+On 10/4/23 01:17, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct nft_pipapo_match.
+> 
+> Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+> Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
+> Cc: Florian Westphal <fw@strlen.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: netfilter-devel@vger.kernel.org
+> Cc: coreteam@netfilter.org
+> Cc: netdev@vger.kernel.org
+> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+--
+Gustavo
+
+> ---
+>   net/netfilter/nft_set_pipapo.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> thanks,
-> 
-> greg k-h
+> diff --git a/net/netfilter/nft_set_pipapo.h b/net/netfilter/nft_set_pipapo.h
+> index 25a75591583e..2e164a319945 100644
+> --- a/net/netfilter/nft_set_pipapo.h
+> +++ b/net/netfilter/nft_set_pipapo.h
+> @@ -147,7 +147,7 @@ struct nft_pipapo_match {
+>   	unsigned long * __percpu *scratch;
+>   	size_t bsize_max;
+>   	struct rcu_head rcu;
+> -	struct nft_pipapo_field f[];
+> +	struct nft_pipapo_field f[] __counted_by(field_count);
+>   };
+>   
+>   /**
