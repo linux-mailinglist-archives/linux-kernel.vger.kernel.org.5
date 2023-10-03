@@ -2,274 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE297B6E2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466DF7B6E33
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240291AbjJCQQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
+        id S240376AbjJCQRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbjJCQQp (ORCPT
+        with ESMTP id S240345AbjJCQRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:16:45 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13129E;
-        Tue,  3 Oct 2023 09:16:41 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393FdGIN018635;
-        Tue, 3 Oct 2023 16:16:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=douq6YaXrLgHHXN8AuyJXl6X3+hQetlgxqwpw4Dy7+I=;
- b=Aqc87l97RSof+Q00WtFw4N9AF1cl8dWcklNH0bt9Kzc3vUyrVh8t+1rL6uxx/5tsP9Jv
- 8bVHjhcYRAGEwMi2WllpeBx+wZR6oSHqXWJE9Y0QvDivCxvAJ1fqmkzUQmHr4cDo8zDR
- vcQLNz5xZDv5raPnUM668+piC+R+aQhT/hKiey5zjOgHo2OoLoSzDUJQUUIeUq5lsyXD
- 8PPJv2pGPBVRtnktjShRd1oP6TW6qYjlE1wL7pp3HcuVZIKUWVr4hzGVMNAhBspth9Lf
- 7UWdGw6yYpfLPdpSknXI+F7xVaDSllXj5V7b0EIPjcI03tOFxiFTTY9mYqxpCNybJjDT aw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgbjj9j9b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Oct 2023 16:16:29 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 393GGS5q020111
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 3 Oct 2023 16:16:28 GMT
-Received: from [10.110.20.163] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 3 Oct
- 2023 09:16:28 -0700
-Message-ID: <6246714a-3b40-e1b6-640e-560ba55b6436@quicinc.com>
-Date:   Tue, 3 Oct 2023 09:16:27 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v4 4/4] firmware: arm_scmi: Add qcom hvc/shmem transport
- support
-Content-Language: en-US
-To:     Sudeep Holla <sudeep.holla@arm.com>
-CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        Tue, 3 Oct 2023 12:17:53 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A984AF;
+        Tue,  3 Oct 2023 09:17:46 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S0NGw0PMnz6K5tf;
+        Wed,  4 Oct 2023 00:16:08 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 3 Oct
+ 2023 17:17:43 +0100
+Date:   Tue, 3 Oct 2023 17:17:42 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Konstantin Aladyshev <aladyshev22@gmail.com>
+CC:     <minyard@acm.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <avifishman70@gmail.com>, <tmaimon77@gmail.com>,
+        <tali.perry1@gmail.com>, <venture@google.com>, <yuenn@google.com>,
+        <benjaminfair@google.com>, <jk@codeconstruct.com.au>,
+        <matt@codeconstruct.com.au>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <openipmi-developer@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20230911194359.27547-1-quic_nkela@quicinc.com>
- <20230911194359.27547-5-quic_nkela@quicinc.com>
- <20231003111914.63z35sn3r3k7drtp@bogus>
-From:   Nikunj Kela <quic_nkela@quicinc.com>
-In-Reply-To: <20231003111914.63z35sn3r3k7drtp@bogus>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: vFVXyVfHUSut4knD7meNZuZ0yPNxnPMk
-X-Proofpoint-ORIG-GUID: vFVXyVfHUSut4knD7meNZuZ0yPNxnPMk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-03_13,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- clxscore=1015 impostorscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310030123
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH 3/3] mctp: Add MCTP-over-KCS transport binding
+Message-ID: <20231003171742.00004a14@Huawei.com>
+In-Reply-To: <CACSj6VUS+cjsvjzY=wggMXXO1DEH0=9aHi1ADp0F-O8AKL5cCg@mail.gmail.com>
+References: <20230928123009.2913-1-aladyshev22@gmail.com>
+        <20230928123009.2913-4-aladyshev22@gmail.com>
+        <20230929120835.0000108e@Huawei.com>
+        <CACSj6VUS+cjsvjzY=wggMXXO1DEH0=9aHi1ADp0F-O8AKL5cCg@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2 Oct 2023 17:41:42 +0300
+Konstantin Aladyshev <aladyshev22@gmail.com> wrote:
 
-On 10/3/2023 4:19 AM, Sudeep Holla wrote:
-> On Mon, Sep 11, 2023 at 12:43:59PM -0700, Nikunj Kela wrote:
->> This change adds the support for SCMI message exchange on Qualcomm
->> virtual platforms.
->>
->> The hypervisor associates an object-id also known as capability-id
->> with each hvc doorbell object. The capability-id is used to identify the
->> doorbell from the VM's capability namespace, similar to a file-descriptor.
->>
->> The hypervisor, in addition to the function-id, expects the capability-id
->> to be passed in x1 register when HVC call is invoked.
->>
->> The function-id & capability-id are allocated by the hypervisor on bootup
->> and are stored in the shmem region by the firmware before starting Linux.
->>
->> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
->> ---
->>   drivers/firmware/arm_scmi/driver.c |  1 +
->>   drivers/firmware/arm_scmi/smc.c    | 47 ++++++++++++++++++++++++++----
->>   2 files changed, 43 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
->> index 87383c05424b..ea344bc6ae49 100644
->> --- a/drivers/firmware/arm_scmi/driver.c
->> +++ b/drivers/firmware/arm_scmi/driver.c
->> @@ -2915,6 +2915,7 @@ static const struct of_device_id scmi_of_match[] = {
->>   #ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC
->>   	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
->>   	{ .compatible = "arm,scmi-smc-param", .data = &scmi_smc_desc},
->> +	{ .compatible = "qcom,scmi-hvc-shmem", .data = &scmi_smc_desc},
->>   #endif
->>   #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
->>   	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
->> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
->> index 0a0b7e401159..94ec07fdc14a 100644
->> --- a/drivers/firmware/arm_scmi/smc.c
->> +++ b/drivers/firmware/arm_scmi/smc.c
->> @@ -50,6 +50,9 @@
->>    * @func_id: smc/hvc call function id
->>    * @param_page: 4K page number of the shmem channel
->>    * @param_offset: Offset within the 4K page of the shmem channel
->> + * @cap_id: hvc doorbell's capability id to be used on Qualcomm virtual
->> + *	    platforms
->> + * @qcom_xport: Flag to indicate the transport on Qualcomm virtual platforms
->>    */
->>   
->>   struct scmi_smc {
->> @@ -63,6 +66,8 @@ struct scmi_smc {
->>   	u32 func_id;
->>   	u32 param_page;
->>   	u32 param_offset;
->> +	u64 cap_id;
-> Can it be unsigned long instead so that it just works for both 32 and 64 bit.
+> Thanks for the review!
+> I've corrected many things from your comments and have sent the V2 patch.
+> I'm not sure about the LIST thing and all the devres management. I've
+> written the KCS handling the same way it is done in the standard IPMI
+> KCS driver (https://github.com/torvalds/linux/blob/master/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c)
+> Not sure if we need to do any different here.
+> Please see detailed response below:
+> 
+> > > +#include <linux/module.h>
+> > > +#include <linux/mutex.h>  
+> > Check these.  There aren't any mutex's in here that I noticed...
+> >  
+> 
+> Currently there are no mutex's in the driver. Where do you think they
+> are needed?
+> For example there no mutex's in the 'mctp-serial.c' driver
+> (https://github.com/torvalds/linux/blob/master/drivers/net/mctp/mctp-serial.c)
 
-My first version of this patch was ulong but Bjorn suggested to make 
-this structure size fixed i.e. architecture independent. Hence changed 
-it to u64. If you are ok with ulong, I can change it back to ulong.
+I don't think you need a mutex.  Hence don't include the header either! :)
+> 
+> > > +#include <linux/netdevice.h>
+
+...
+
+> > > +
+> > > +static DEFINE_SPINLOCK(kcs_bmc_mctp_instances_lock);
+> > > +static LIST_HEAD(kcs_bmc_mctp_instances);  
+> > As mentioned below, this seems to be only used to find some data again
+> > in remove. Lots of cleaner ways to do that than a list in the driver.
+> > I'd explore the alternatives.
+> >  
+> 
+> This was copied from the other KCS drivers. For example please see
+> 'kcs_bmc_cdev_ipmi.c':
+> https://github.com/torvalds/linux/blob/8a749fd1a8720d4619c91c8b6e7528c0a355c0aa/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c#L469
+
+Sure, I spotted it was copied but doesn't mean I like that code either :)
 
 
->
->> +	bool qcom_xport;
-> Do we really need this ?
+> 
+> > > +
+> > > +static int kcs_bmc_mctp_add_device(struct kcs_bmc_device *kcs_bmc)
+> > > +{
+> > > +     struct mctp_kcs *mkcs;
+> > > +     struct net_device *ndev;
+> > > +     char name[32];
+> > > +     int rc;
+> > > +
+> > > +     snprintf(name, sizeof(name), "mctpkcs%d", kcs_bmc->channel);
+> > > +
+> > > +     ndev = alloc_netdev(sizeof(*mkcs), name, NET_NAME_ENUM, mctp_kcs_setup);  
+> > Interesting that there is an explicit devm_register_netdev() but not one for
+> > this simple allocation case (there is one for the ethernet specific version).
+> > Never mind, we have devm_add_action_or_reset() for that.  Just create a
+> > small wrapper for free_netdev() (which will look like devm_free_netdev()
+> > in net/devres.c but that's local to that file) and add
+> >
+> >         rc = devm_add_action_or_reset(&kcs_bmc->dev,
+> >                                       wrapper_for_free_netdev(), ndev);
+> >         if (rc)
+> >                 return rc;
+> >  
+> 
+> 
+> Did you mean something like this?
+> ```
+> static void devm_free_netdev(struct device *dev, void *this)
+> {
+> struct net_device_devres *res = this;
+> 
+> free_netdev(res->ndev);
+> }
 
-Not if we initialize it with a negative value since 0 is a valid value 
-for cap-id.
+No. That would be unwind for a devm_alloc_netdev() which doesn't
+exist for the case where you want to override the manual version.
 
-
->
->>   };
->>   
->>   static irqreturn_t smc_msg_done_isr(int irq, void *data)
->> @@ -129,6 +134,7 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
->>   	struct resource res;
->>   	struct device_node *np;
->>   	u32 func_id;
->> +	u64 cap_id;
-> Ditto..
-
-Answered in earlier comment.
-
-
->>   	int ret;
->>   
->>   	if (!tx)
->> @@ -158,9 +164,34 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
->>   		return -EADDRNOTAVAIL;
->>   	}
->>   
->> -	ret = of_property_read_u32(dev->of_node, "arm,smc-id", &func_id);
->> -	if (ret < 0)
->> -		return ret;
->> +	if (of_device_is_compatible(dev->of_node, "qcom,scmi-hvc-shmem")) {
->> +		scmi_info->qcom_xport = true;
->> +
->> +		/* The func-id & capability-id are kept in last 16 bytes of shmem.
->> +		 *     +-------+
->> +		 *     |       |
->> +		 *     | shmem |
->> +		 *     |       |
->> +		 *     |       |
->> +		 *     +-------+ <-- (size - 16)
->> +		 *     | funcId|
->> +		 *     +-------+ <-- (size - 8)
->> +		 *     | capId |
->> +		 *     +-------+ <-- size
->> +		 */
->> +
->> +		func_id = readl((void __iomem *)(scmi_info->shmem) + size - 16);
-> So unlike 'arm,scmi-smc', you don't want 'arm,smc-id' in the DT ? Any
-> particular reason ? Just to get both FID and cap ID from shmem ?
-
-I could use smc-id binding for func-id, it's just two parameters will 
-come from two different places so thought of keeping everything at one 
-place to maintain consistency.  Since DT can't take cap-id, I decided to 
-move func-id. I am fine if you want me to use smc-id binding.
+Here would be
+static void kcs_bmc_mctp_free_netdev(void *priv)
+{
+	free_netdev(priv);
+}
 
 
->> +#ifdef CONFIG_ARM64
-> I would rather make this arch agnostic using CONFIG_64BIT
-ok.
->
->> +		cap_id = readq((void __iomem *)(scmi_info->shmem) + size - 8);
-> Do you need __iomem typecast here ? Is scmi_info->shmem not already __iomem ?
-> Also scmi_info->shmem is ioremapped just few steps above and you are using
-> read* here, is that safe ?
+> 
+> 
+> ...
+> 
+> static int kcs_bmc_mctp_add_device(struct kcs_bmc_device *kcs_bmc)
+> {
+> 
+> // Instead of:
+> //ndev = alloc_netdev
+> //rc = register_netdev(ndev);
+> 
+> // Use
+> ...
+> if (!devm_register_netdev(kcs_bmc->dev, ndev)) {
+> dev_err_probe(kcs_bmc->dev,
+>         "alloc_netdev failed for KCS channel %d\n",
+>         kcs_bmc->channel);
+> return -ENOMEM;
+> }
+> 
+> rc = devm_add_action_or_reset(&kcs_bmc->dev,
+>                               devm_free_netdev(),
+>                               ndev);
+> if (rc)
+> return rc;
+> ...
+> }
+> ```
+> What calls do I need to perform in `kcs_bmc_mctp_remove_device` in this case?
+> Do I still have to perform `unregister_netdev` and `free_netdev` for example?
 
-I saw some compilation warnings without __iomem. I will use ioread* API 
-instead of read*.
+Ideally none at all once everthing has moved over to device managed (devm) based
+handling.  The purpose of devm is to automatically call all the release functions
+in reverse order of the setup calls (gets more complex but in this case it will
+simply be reverse order).  That will occur on an error in probe() or after
+remove() callback is called. Happens without the remove() callback as well which
+is what we want here.
+> 
+> Anyway I don't see anything similar in the current mctp-i2c/mctp-serial drivers.
+
+True - lots of examples elsewhere though :)
+
+> 
+> 
+> > > +     if (!ndev) {
+> > > +             dev_err(kcs_bmc->dev,
+> > > +                     "alloc_netdev failed for KCS channel %d\n",
+> > > +                     kcs_bmc->channel);  
+> > No idea if the kcs subsystem handles deferred probing right, but in general
+> > anything called just in 'probe' routines can use dev_err_probe() to pretty
+> > print errors and also register any deferred cases with the logging stuff that
+> > lets you find out why they were deferred.
+> >  
+> 
+> Done
+> 
+> > > +             rc = -ENOMEM;
+> > > +             goto err;  
+> > In general I find it easier to follow code that only uses a goto if there
+> > is shared cleanup to do.
+> >                 return -ENOMEM; and for this path I don't need to read further.  
+> 
+> Done
+> 
+> > > +     }
+> > > +
+> > > +     mkcs = netdev_priv(ndev);
+> > > +     mkcs->netdev = ndev;
+> > > +     mkcs->client.dev = kcs_bmc;
+> > > +     mkcs->client.ops = &kcs_bmc_mctp_client_ops;
+> > > +     mkcs->data_in = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
+> > > +     mkcs->data_out = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);  
+> >
+> > You should not be mixing device manged cleanup and manual cleanup.  Rule of thumb
+> > is don't call any devm_ functions in a 'probe / add' type routine after you pass
+> > the first element that requires manual cleanup. Otherwise you get horrible
+> > race conditions or if not that, just code that is hard to check for them.
+> >  
+> 
+> Not sure how to fix
+
+Some simple rules of thumb.
+
+1. The first call in probe() that you make that does not have automated cleanup
+   (so non devm_ * or you haven't manually added a cleanup callback via
+    devm_add_action_or_reset()) ends devm usage in probe.
+2. In remove() and in error paths in probe() don't do anything at all to cleanup
+   stuff that was registered with devm_ calls as they will be automatically
+   cleaned up for you.
+
+In a simple driver it's often possible to move everything over to devm_ 
+calls so there is no manual cleanup to do at all. If that's the case
+don't provide a remove() callback.  However the subsystem may insist
+on one in which case either fix that (they should be optional) or
+provide an empty one.
 
 
->
->> +#else
->> +		/* capability-id is 32 bit wide on 32bit machines */
->> +		cap_id = rieadl((void __iomem *)(scmi_info->shmem) + size - 8);
-> Other thought once you move for u64 to unsigned long you need not have
-> #ifdeffery, just do copy of sizeof(unsigned long)
-Right, my first version was like that only.
->
->> +#endif
->> +	} else {
->> +		ret = of_property_read_u32(dev->of_node, "arm,smc-id", &func_id);
->> +		if (ret < 0)
->> +			return ret;
->> +	}
->>   
->>   	if (of_device_is_compatible(dev->of_node, "arm,scmi-smc-param")) {
->>   		scmi_info->param_page = SHMEM_PAGE(res.start);
->> @@ -184,6 +215,7 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
->>   	}
->>   
->>   	scmi_info->func_id = func_id;
->> +	scmi_info->cap_id = cap_id;
->>   	scmi_info->cinfo = cinfo;
->>   	smc_channel_lock_init(scmi_info);
->>   	cinfo->transport_info = scmi_info;
->> @@ -213,6 +245,7 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
->>   	struct arm_smccc_res res;
->>   	unsigned long page = scmi_info->param_page;
->>   	unsigned long offset = scmi_info->param_offset;
->> +	unsigned long cap_id = (unsigned long)scmi_info->cap_id;
->>   
->>   	/*
->>   	 * Channel will be released only once response has been
->> @@ -222,8 +255,12 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
->>   
->>   	shmem_tx_prepare(scmi_info->shmem, xfer, cinfo);
->>   
->> -	arm_smccc_1_1_invoke(scmi_info->func_id, page, offset, 0, 0, 0, 0, 0,
->> -			     &res);
->> +	if (scmi_info->qcom_xport)
-> Just make sure cap_id is set only for qcom and just use that as your flag.
-> No point in setting always true scmi_info->qcom_xport and using it here.
-ok, I can remove that. Though 0 is a valid value for cap-id so will have 
-to init cap-id with a negative value.
->
->> +		arm_smccc_1_1_hvc(scmi_info->func_id, cap_id, 0, 0, 0, 0, 0, 0,
->> +				  &res);
->> +	else
->> +		arm_smccc_1_1_invoke(scmi_info->func_id, page, offset, 0, 0, 0,
->> +				     0, 0, &res);
->>   
->>   	/* Only SMCCC_RET_NOT_SUPPORTED is valid error code */
->>   	if (res.a0) {
->> -- 
->> 2.17.1
->>
+
+> > > +
+> > > +static int kcs_bmc_mctp_remove_device(struct kcs_bmc_device *kcs_bmc)
+> > > +{
+> > > +     struct mctp_kcs *mkcs = NULL, *pos;
+> > > +
+> > > +     dev_info(kcs_bmc->dev, "Remove MCTP client for the KCS channel %d",
+> > > +              kcs_bmc->channel);
+> > > +     spin_lock_irq(&kcs_bmc_mctp_instances_lock);
+> > > +     list_for_each_entry(pos, &kcs_bmc_mctp_instances, entry) {
+> > > +             if (pos->client.dev == kcs_bmc) {
+> > > +                     mkcs = pos;
+> > > +                     list_del(&pos->entry);
+> > > +                     break;  
+> > I don't know the kcs stuff at all but these seems 'unusual'.
+> > Can't you stash  device_set_drvdata(kcs_bmc->dev) or does it
+> > just match the structure containing the client pointed to
+> > by kcs_bmc_device? If so use something like
+> > container_of(kcs_bmc->client, struct mctp_kcs, client);
+> > Ah. You already have a function for that.  Why not use that here?
+> >
+> > There isn't normally a reason for a driver to maintain an
+> > additional list like this.
+> >  
+> 
+> Once again this logic was copied from the KCS IPMI driver:
+> https://github.com/torvalds/linux/blob/8a749fd1a8720d4619c91c8b6e7528c0a355c0aa/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c#L520
+
+Understood - should be able to do better than that though ;)
+
+> 
+> > > +             }
+> > > +     }
+> > > +     spin_unlock_irq(&kcs_bmc_mctp_instances_lock);
+> > > +
+> > > +     if (!mkcs)
+> > > +             return -ENODEV;
+> > > +
+> > > +     unregister_netdev(mkcs->netdev);
+> > > +     free_netdev(mkcs->netdev);  
+> >
+> > This stuff should be opposite order of add above, or leave it to devm to clean up.  
+> 
+> Which things are exact things that are currently in the incorrect order?
+
+Allocations occur in probe just before register_netdev, so they should be
+before free_netdev() for example.
+
+> 
+> >  
+> > > +     kcs_bmc_disable_device(mkcs->client.dev, &mkcs->client);  
+> >
+> > This doesn't match with stuff in add - so I'd like a comment to explain
+> > why it is here.  Also needs a comment on the ordering.  Perhaps this
+> > is why you can't use devm for all the above, in which case I'd use it
+> > nowhere in this driver.
+> > I'm also confused on relationship between mks->client.dev and kcs_bmc
+> > (I'm fairly sure they are the same, so just use kcs_bmc here).
+> >  
+> 
+> I've changed the variable. Not sure about `kcs_bmc_disable_device`.
+> I've added it since it is also present in the IPMI KCS driver.
+> https://github.com/torvalds/linux/blob/8a749fd1a8720d4619c91c8b6e7528c0a355c0aa/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c#L533
+
+Understood. Would need some experimenting to figure
+out a path where it does something rather than it already
+being disabled.
+
+> 
+> >  
+> > > +     devm_kfree(kcs_bmc->dev, mkcs->data_in);
+> > > +     devm_kfree(kcs_bmc->dev, mkcs->data_out);  
+> >
+> > Alarm bells occur whenever an explicit devm_kfree turns up in
+> > except in complex corner cases. Please look at how devm based
+> > resource management works. These should not be here.
+> >
+> > Also, remove_device should either do things in the opposite order
+> > to add_device, or it should have comments saying why not!
+> >
+> >  
+> 
+> https://github.com/torvalds/linux/blob/8a749fd1a8720d4619c91c8b6e7528c0a355c0aa/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c#L534C2-L534C2
+
+Yeah. That's bad :(  Seems devm being relied on for error paths, but not
+remove() 
+
+
+> 
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static const struct kcs_bmc_driver_ops kcs_bmc_mctp_driver_ops = {
+> > > +     .add_device = kcs_bmc_mctp_add_device,
+> > > +     .remove_device = kcs_bmc_mctp_remove_device,
+> > > +};
+> > > +
+> > > +static struct kcs_bmc_driver kcs_bmc_mctp_driver = {
+> > > +     .ops = &kcs_bmc_mctp_driver_ops,
+> > > +};
+> > > +
+> > > +static int __init mctp_kcs_init(void)
+> > > +{
+> > > +     kcs_bmc_register_driver(&kcs_bmc_mctp_driver);
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static void __exit mctp_kcs_exit(void)
+> > > +{
+> > > +     kcs_bmc_unregister_driver(&kcs_bmc_mctp_driver);
+> > > +}  
+> >
+> > Hmm. So kcs is a very small subsystem hence no one has done the usual
+> > module_kcs_driver() wrapper (see something like module_i2c_driver)
+> > for an example.  You can just use the underlying macro directly
+> > though to get rid of most of this boilerplate.
+> >
+> >
+> > module_driver(kcs_bmc_mctp_driver, kcs_bmc_register_driver,
+> >               kcs_bmc_uregister_driver);
+> >  
+> 
+> Not possible. If I understand error message correctly it is from the
+> fact that 'kcs_bmc_register_driver' returns void:
+
+That's annoying..  Could fix it by making it return an int so it
+could report the failure it handles to the caller module instead
+of always returning success...  That smells like a bug to me though
+I haven't checked if the module_init() return value gets used
+for anything much.
+
+
+> ```
+> | drivers/net/mctp/mctp-kcs.c: In function 'kcs_bmc_mctp_driver_init':
+> | drivers/net/mctp/mctp-kcs.c:576:36: error: void value not ignored as
+> it ought to be
+> |   576 | module_driver(kcs_bmc_mctp_driver, kcs_bmc_register_driver,
+> kcs_bmc_unregister_driver);
+> | include/linux/device/driver.h:265:16: note: in definition of macro
+> 'module_driver'
+> |   265 |         return __register(&(__driver) , ##__VA_ARGS__); \
+> |       |                ^~~~~~~~~~
+> | include/linux/device/driver.h:266:1: error: control reaches end of
+> non-void function [-Werror=return-type]
+> |   266 | } \
+> |       | ^
+> | drivers/net/mctp/mctp-kcs.c:576:1: note: in expansion of macro 'module_driver'
+> |   576 | module_driver(kcs_bmc_mctp_driver, kcs_bmc_register_driver,
+> kcs_bmc_unregister_driver);
+> |       | ^~~~~~~~~~~~~
+> | cc1: some warnings being treated as errors
+> ```
+> 
+> > > +
+> > > +module_init(mctp_kcs_init);
+> > > +module_exit(mctp_kcs_exit);
+> > > +
+> > > +MODULE_LICENSE("GPL");
+> > > +MODULE_AUTHOR("Konstantin Aladyshev <aladyshev22@gmail.com>");
+> > > +MODULE_DESCRIPTION("MCTP KCS transport");  
+> >  
+> 
+> Best regards,
+> Konstantin Aladyshev
+> 
+
