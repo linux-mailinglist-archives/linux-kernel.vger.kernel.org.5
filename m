@@ -2,255 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6D97B6833
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669DB7B6845
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240625AbjJCLoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 07:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
+        id S231997AbjJCLtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 07:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240604AbjJCLo3 (ORCPT
+        with ESMTP id S231770AbjJCLs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 07:44:29 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2042.outbound.protection.outlook.com [40.107.20.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BD9B4;
-        Tue,  3 Oct 2023 04:44:26 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gd+gFAc1x+t0cVf5sVH/cvnbBOr5eQJDDGflzKP69ff9B4WhktTDG1GOBq5HeDX5dLdaRuqQ7DOe3JDsDG9fyl009V1XzftedHikUA1iyuI0JIozLGERLIA3xJB44T5NcilfOxC+rftxpS4Hf/o4HsDbdQh4swhIjituL4oPdZqCcwl8lGwZ8qTL9Opsj/sr9ehNvLBl/aa5jgaLSjB4wL+9b1Oncl6M6093qSa8P23Pqwxe9AJKplR7IborASddUjKB9c5f/J0bNOQ655UhKccBT2WdzHE4DWPzjlYNjmhvfMbo0Tw863C2cABVA/BRuBYfb9U9HpOPcOkyUJEHvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rhjNGsp4xwdX0P6o9i0kzlk25NllGv3UowCaiQQeSaI=;
- b=HRpEhwdJmyKijOPR9U215f9p3NTku3A2CocGdrTSxGXuABcoWpYl4SzPDlptjjAUdqOM7hNn+AIwOtA7BTSUCJv+USu/uRwOPEodEOudRraP8g9LMDbh7/ijErhwZvQPj1z+a64taxT+cSVpahXckdHfexiTdX0PdCfSUIvs86BVeX4Mw3yt8jjyBMU3mWsUm9ZySxKk9ertD09bw/BdQmX/zviuK0QiY8GZLy2ZE19ojFUX6Ja2TheaIIBNr7MSCMBnxUoEgj5uSwSul7xI6WRwjXnb61yANFXzoM/b1NQRNBD7Mw653ebUcsnC9H0XoOmdCRlmS84GR0i2kGnf3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rhjNGsp4xwdX0P6o9i0kzlk25NllGv3UowCaiQQeSaI=;
- b=b5xKnoyRq1Ff4KFSPYVEoe06W5qj6Cn4Y+/ww1+sKgiI8MTTLeJ0k1FQsff38bzq3zGAumW+w3lYuTbMNVkQH/wMDGDxx5ChnuyQFjAkXfkeWv2mcxtxqyyqcFkmeDTApOGhkCbZfPc0ngqVJ+tnI66Y/HK/DwAHB4avg8zwYRk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by DB9PR04MB10067.eurprd04.prod.outlook.com (2603:10a6:10:4c8::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Tue, 3 Oct
- 2023 11:44:22 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::2b3:d8de:95c8:b28b]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::2b3:d8de:95c8:b28b%3]) with mapi id 15.20.6838.024; Tue, 3 Oct 2023
- 11:44:22 +0000
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Date:   Tue, 03 Oct 2023 19:48:49 +0800
-Subject: [PATCH v4 2/2] clk: scmi: add set/get_parent support
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231003-scmi-clock-v3-v4-2-358d7f916a05@nxp.com>
-References: <20231003-scmi-clock-v3-v4-0-358d7f916a05@nxp.com>
-In-Reply-To: <20231003-scmi-clock-v3-v4-0-358d7f916a05@nxp.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Peng Fan <peng.fan@nxp.com>, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696333746; l=3574;
- i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
- bh=MEH6g0VX59/MRx44I4/IiR8vh5iZLuYSBdn2AKvC5sQ=;
- b=8p/C+mQjxnZ2Gh8BEQilCyIs73x2bWLnu6kce7+FocjU7sIvGvkGhDerfcKjqhZ+GHRVm1MJu
- q8PQMkulFtDDYPhQn+sNYWwEwm9O9rx87gxTfVSFIWSgQhShmbSEgvR
-X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
- pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
-X-ClientProxiedBy: SI2P153CA0002.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::16) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+        Tue, 3 Oct 2023 07:48:58 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70100A6;
+        Tue,  3 Oct 2023 04:48:55 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-503f39d3236so996973e87.0;
+        Tue, 03 Oct 2023 04:48:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696333734; x=1696938534; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=m6tHL69a/PWxjome3u44isF/AAc7d6tUD65N4GlVjME=;
+        b=XjNI/vs2w0juS/HSLsTNncKh/dxigZKM9dCWZFLBikXGr9ojIccSBgZC87tWyr9cEP
+         s7R1hDbrBWlPXcRgEGg2XIAtD0NCSYLFDc0qrpNf9uGwIzXHNwG+YLKAhSPY0BsWZBGU
+         wmbd6ArhiM+BxcK6W49BWT8glkUV0VsGI9ffxfdSPTmlU82rLFIvQrDES0+Hzf112aYL
+         cwe2jPsEu4v1pzGjL3XMhp9LwnywCAWJE0rsmGFUWQlA3i5nNSDkLCyM+kCKHTz6fgYH
+         kMvB2Gh/4zZ8kikNFJKUioOfheq3+NyCDVHprN0Ow0UC+PQff4OUIfkRgMSQ9uDIuEGd
+         l6rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696333734; x=1696938534;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m6tHL69a/PWxjome3u44isF/AAc7d6tUD65N4GlVjME=;
+        b=ZePo7979Qjn9o99iFR2r5Jmj80h4S13PxYsxSaoK81gsU6bkzMcwR+QMvvU1qT/D0R
+         q+sxUWW76SSaUsph2lnq8H3Tedua0gjumEsvhvhuZiF/TDYkB6vtAjk5GIB9PEyB72dv
+         cEi3CA1f48lah/2clcXycORZ0LkHzdwCZFdXTdn1Ak1g/cT/ph8pQdASJ0DyAIbacqYr
+         26ECTJXlnD0SH0uCCOEPvVGERUgkiltFnpFEGTuPeibiSygKcGoe0j/ggD7aJMV3u8pI
+         bvM4BMyzH/h4cxT03H7BaGP/k7Hfs+H/GDTT5bwdUwqM2sMuZs+apw8egmyUWuQqLyEL
+         ghgQ==
+X-Gm-Message-State: AOJu0YwKIyM6ob7CkejuKmylJFfhV0ucXZyuwKozGzyzlncGK8F8UdUE
+        nHp1g0nunEWNSgwhgA/tD2M=
+X-Google-Smtp-Source: AGHT+IG0Bwm/NctqmFLWTNkm5va2FY1nJXTwB7VfDaYg1ys+9hRVreTuZR1ScnEOpwy6Yus8bv5T4g==
+X-Received: by 2002:a05:6512:2521:b0:4f8:6abe:5249 with SMTP id be33-20020a056512252100b004f86abe5249mr11772250lfb.3.1696333733469;
+        Tue, 03 Oct 2023 04:48:53 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id t18-20020ac243b2000000b00500829f7b2bsm162581lfl.250.2023.10.03.04.48.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 04:48:53 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 14:48:49 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+Cc:     Cai Huoqing <cai.huoqing@linux.dev>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Herve Codina <herve.codina@bootlin.com>
+Subject: Re: [PATCH v2 4/5] dmaengine: dw-edma: HDMA: Add sync read before
+ starting the DMA transfer in remote setup
+Message-ID: <m6mxnmppc7hybs2tz57anoxq6afu2x63tigjya2eooaninpe4h@ayupt4qauq7v>
+References: <20231002131749.2977952-1-kory.maincent@bootlin.com>
+ <20231002131749.2977952-5-kory.maincent@bootlin.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|DB9PR04MB10067:EE_
-X-MS-Office365-Filtering-Correlation-Id: 61c1e95c-b098-42eb-85fd-08dbc406165c
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GfH1wF/EtXw+2KMQaKQs+eh+WwH64L85vd7Yui1HRNj55yMVkg593Coa5XDI2ku2VVBBdNR2RuFwrhJFfqFx/mXW025v24uiWKZa0SA5TEkuXo8MpoGceE5OQ0/UvCaRaHWxzXGQmqha6hy0OoQhvVE8P2iKNEFqMnPpFLfOhH9ojXY1jfKYGJQWjAeCdqph1Iz4LNcYzZmLzdTBZS/Jy3MoOom0ZSE2SaQ+kNJWZ3ClT4CglB+TCRDFWicqkIelgaiQzfQqliDSb7hIQ9kMB9T+8oa374lImXReGG2NzjUVHaZDmBMkUotJF5NRv7gl1y6WvWpSojntS8i/PX7Ff3jcVVqAL+ovtx610N7gDlsOfGvIbv0/w1IalQjIs7ligtl7qOC2sblmwMQT5/6I7Fls0Sr7wwBIIoThxWkbO4KFXGtxQQI+pHfqoB0G+PCl9poPyv9ahAAxVDLSFa2FXsHEP2GvqtuMkFzkEnZAGNfri5mZwSG5Y2nFs6C+5va+a1MWZB/8WlGwULwgtiAz0Basq55oNahdaykEgFdVKshqvFx133zaEHbWwI9TZ7fEDxj5+56fCcHa2cCndqGtvpQ3IyD8dhLijkNlBBxpWKK+27WHOuAoI5MbjIlfimls
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(396003)(376002)(39860400002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(8936002)(316002)(66556008)(478600001)(66476007)(83380400001)(9686003)(66946007)(4326008)(26005)(36756003)(41300700001)(8676002)(6486002)(6506007)(6666004)(86362001)(52116002)(38100700002)(6512007)(38350700002)(110136005)(2906002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K3BZSW00b3l5b2ZEakthb0NhZkFURTFvSHNGa2RTMTRQMEJyaDBpNU5WT1ZM?=
- =?utf-8?B?eWowcGRLWDh2V01OdzdtMUgzbXJmVkkwV212OU1Cb3RKcjQ4WnUwK092YXpq?=
- =?utf-8?B?aTAxeEs3Tk5pdDdLRzB0R1p2dHM4c3RNeXVVbVU2UTlpL21JY3c0TTArRVVT?=
- =?utf-8?B?TWdZdWk3OERpVUNyYmlYNkdkcWpnK05ka21OQlM5WEQyOXppSHVRN3c5bDIv?=
- =?utf-8?B?cU9qTEc0RXNwSkVnZHBzRm1ZQlpBZ2tZUDE3VmQ0UWtuNlZkenZSZXBiUFAz?=
- =?utf-8?B?a0t4N2NRdDlOOFhRQjQrMU9DWU9UWGU1dXZtSWExWVo2bWhDQXVFdk5BZitv?=
- =?utf-8?B?T1MzNmZ6R0xlVmtWZ0JhaEE1bzVDOGluV2FsYkkzLzRETUhIWnRkdW15eUgz?=
- =?utf-8?B?S1ljWlY0d3FoT1g3aUQ5SzVnZFJwL3VmRmM3VDE3L0RibTJ0eCtkczI4VWd2?=
- =?utf-8?B?OGpvQ1N5VnlJZlNpaThVYU5IZ0N6RG83T1Z4bllnYUlKeEhwNFN1R29kSkdC?=
- =?utf-8?B?dHAzTHlEV25HYU5scW9OOFRQcVNqZGU0KzkvWnFaMFEzbTBaKzJGZVZ4aGd0?=
- =?utf-8?B?SG5jK0RRUmFBNld3bUFxMUZyMm5GT1BKQWpvbEh6T1NTSVd4MSswb2ZSZWpW?=
- =?utf-8?B?VkpmNDdOcThrcDRHTGhxblptZkdUQjE0SXVMbkNKdGwweXJ0Zlp1YTdlaWd4?=
- =?utf-8?B?c0QrNGpNbG40V0h5ODJmdEFma2NLV3ZDZFg4NGphQm5MaEVSQlE3Z2RMeXZO?=
- =?utf-8?B?aHBRR1Y0UVROTDNLbnN6ZkE1aHRmVEovL1BEM252K25GMVUwMHdmZXhydFEv?=
- =?utf-8?B?UWJPcnZRSTFqWU9JdHZSMXN1NXVEblkwaWdOSzh4RVdING1rWlI4Y0MybUxz?=
- =?utf-8?B?eHhqbTJnS2ZrMDM5WkVJWXVqTk04VDA3LzZtbHB3dG9QVitxY2pCeWp2M25D?=
- =?utf-8?B?UzFJTXNieEhnOFFHNFpRVXhXRjA2WlJNZGd0Q0dyT2M0MG5DcTQrRXJNZHhm?=
- =?utf-8?B?Q01hdGdkRW9GeHEvdTlUL0hJWHhBRGkvSEtybmJ2UUNGRGM5OU9HdUdKT3dj?=
- =?utf-8?B?ZGs1SzJtK1Q1WUNrZHRsdTZsM3MzVjRmSFdRcWZWeUFGQjZzQU53YytOQmgy?=
- =?utf-8?B?ZVpZL0l3VDV2bURLTDl1OUN5bS8xeksyKzRibUF5WVNyQ09tTTFKVmlxWWM3?=
- =?utf-8?B?Y1VYcC9pS1RySEw2U1hIT1dXc2FUK1RzcmNMVG9GeHQ0WnBFRkRpeHRzSTJR?=
- =?utf-8?B?MjRQUUhFUVczUjkxcjdjV0xSa2pSZkEyOHp5dzByZitRUTlObHk0SlR4VmlH?=
- =?utf-8?B?RHFPNWZaSnk4eEtBcVRmckF6eEVQNS9kdVVLVjlZUFNNNk9UTmx4QWVvVHNn?=
- =?utf-8?B?bXU5KzNCRVRQMnZybUVJZXUrMjZ5QlZldTlaQUdPSDJaZCsrVWZEcExobS8x?=
- =?utf-8?B?eTBQVENqNFByb2Y3QUdVbXpvUlBKZTcrbS85MmdsSmZKYkZiajVNK0tFYkpF?=
- =?utf-8?B?MGh0Y2pUU1p2bkxna3daQThTWkxqUkp3dktJNjdXT0dzWnFVMDk2S2RvWE5l?=
- =?utf-8?B?cVdualdZRzI2UzJHSE5Xdzlob1VVN0dkU0lxR0hGZnpZRm1OdEMwZmpQK0tM?=
- =?utf-8?B?eFhZT1c0am02LzZyTFhiRUNodkgyR0hUdWw5dDRZNTM5b2N3SjZwODd5MVpF?=
- =?utf-8?B?bHUvVjlwajJKV2ViaXNhSU9pRUJMUHc1SXEzY2hpcko5aEFsdk9NdG52UVVL?=
- =?utf-8?B?SHlUc1NuR2tscmxrb1RkQVFkNzVOMWljZ0pCWmJnYUs0YjltdnArYW9FSHM0?=
- =?utf-8?B?dkQ5NU5BYWd0SEpLRkh4U21LY0s4TVhUREwwWWd0MlpHcWx0TUJhdC9ydDBx?=
- =?utf-8?B?OG8wNTV0eHBkMXR4eStkTC9Nbm1uY2VKNjFkQU5WaFVKbmxXNS9PSVh0ckdt?=
- =?utf-8?B?ZEFoVllMSEFsTEJJSzlRK1R2SEVTQkVFcnhKY3B0SFAya3FDL1c3VE9KeUI1?=
- =?utf-8?B?ZnhBNHZEWFdDdTRFZ2d1enQvNkNWS2JJZVpDOGkwcEhNV2lpVDlrcmpqUDM3?=
- =?utf-8?B?alVVejgwaWQvN0FwOXgzWFplTEs5WkxMclFqT01LeHYybTFRNHpDQ04wMFIz?=
- =?utf-8?Q?8y8t55G53K3FRNXf3F6lWLCO6?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61c1e95c-b098-42eb-85fd-08dbc406165c
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 11:44:22.8143
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t11JKuufYl0WYaDbxdnC3sh1wVn21etbsHfhBiagVGfv6npbpqTfRNeDtTpbjTAi3eLlXgnp5WXTozciZEPIAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB10067
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231002131749.2977952-5-kory.maincent@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+On Mon, Oct 02, 2023 at 03:17:48PM +0200, Köry Maincent wrote:
+> From: Kory Maincent <kory.maincent@bootlin.com>
+> 
+> The Linked list element and pointer are not stored in the same memory as
+> the HDMA controller register. If the doorbell register is toggled before
+> the full write of the linked list a race condition error can appears.
+> In remote setup we can only use a readl to the memory to assured the full
+> write has occurred.
+> 
+> Fixes: e74c39573d35 ("dmaengine: dw-edma: Add support for native HDMA")
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> ---
+> 
+> Changes in v2:
+> - Move the sync read in a function.
+> - Add commments
+> ---
+>  drivers/dma/dw-edma/dw-hdma-v0-core.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/drivers/dma/dw-edma/dw-hdma-v0-core.c b/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> index 0cce1880cfdc..26b5020dcc2a 100644
+> --- a/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> +++ b/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> @@ -221,6 +221,25 @@ static void dw_hdma_v0_core_write_chunk(struct dw_edma_chunk *chunk)
+>  	dw_hdma_v0_write_ll_link(chunk, i, control, chunk->ll_region.paddr);
+>  }
+>  
+> +/**
+> + * dw_hdma_v0_sync_ll_data() - sync the ll data write
+> + * @chunk: dma chunk
+> + *
 
-SCMI v3.2 adds set/get parent clock commands, so update the clk driver
-to support them.
+> + * In case of remote HDMA engine setup, the DW PCIe RP/EP internals
+> + * configuration registers and Application memory are normally accesse
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/clk/clk-scmi.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 57 insertions(+), 1 deletion(-)
+accessed
 
-diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-index 2e1337b511eb..e7a27fda561b 100644
---- a/drivers/clk/clk-scmi.c
-+++ b/drivers/clk/clk-scmi.c
-@@ -24,6 +24,7 @@ struct scmi_clk {
- 	struct clk_hw hw;
- 	const struct scmi_clock_info *info;
- 	const struct scmi_protocol_handle *ph;
-+	struct clk_parent_data *parent_data;
- };
- 
- #define to_scmi_clk(clk) container_of(clk, struct scmi_clk, hw)
-@@ -78,6 +79,43 @@ static int scmi_clk_set_rate(struct clk_hw *hw, unsigned long rate,
- 	return scmi_proto_clk_ops->rate_set(clk->ph, clk->id, rate);
- }
- 
-+static int scmi_clk_set_parent(struct clk_hw *hw, u8 parent_index)
-+{
-+	struct scmi_clk *clk = to_scmi_clk(hw);
-+
-+	return scmi_proto_clk_ops->parent_set(clk->ph, clk->id, parent_index);
-+}
-+
-+static u8 scmi_clk_get_parent(struct clk_hw *hw)
-+{
-+	struct scmi_clk *clk = to_scmi_clk(hw);
-+	u32 parent_id, p_idx;
-+	int ret;
-+
-+	ret = scmi_proto_clk_ops->parent_get(clk->ph, clk->id, &parent_id);
-+	if (ret)
-+		return 0;
-+
-+	for (p_idx = 0; p_idx < clk->info->num_parents; p_idx++) {
-+		if (clk->parent_data[p_idx].index == parent_id)
-+			break;
-+	}
-+
-+	if (p_idx == clk->info->num_parents)
-+		return 0;
-+
-+	return p_idx;
-+}
-+
-+static int scmi_clk_determine_rate(struct clk_hw *hw, struct clk_rate_request *req)
-+{
-+	/*
-+	 * Suppose all the requested rates are supported, and let firmware
-+	 * to handle the left work.
-+	 */
-+	return 0;
-+}
-+
- static int scmi_clk_enable(struct clk_hw *hw)
- {
- 	struct scmi_clk *clk = to_scmi_clk(hw);
-@@ -139,6 +177,9 @@ static const struct clk_ops scmi_clk_ops = {
- 	.set_rate = scmi_clk_set_rate,
- 	.prepare = scmi_clk_enable,
- 	.unprepare = scmi_clk_disable,
-+	.set_parent = scmi_clk_set_parent,
-+	.get_parent = scmi_clk_get_parent,
-+	.determine_rate = scmi_clk_determine_rate,
- };
- 
- static const struct clk_ops scmi_atomic_clk_ops = {
-@@ -148,6 +189,9 @@ static const struct clk_ops scmi_atomic_clk_ops = {
- 	.enable = scmi_clk_atomic_enable,
- 	.disable = scmi_clk_atomic_disable,
- 	.is_enabled = scmi_clk_atomic_is_enabled,
-+	.set_parent = scmi_clk_set_parent,
-+	.get_parent = scmi_clk_get_parent,
-+	.determine_rate = scmi_clk_determine_rate,
- };
- 
- static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk,
-@@ -158,9 +202,10 @@ static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk,
- 
- 	struct clk_init_data init = {
- 		.flags = CLK_GET_RATE_NOCACHE,
--		.num_parents = 0,
-+		.num_parents = sclk->info->num_parents,
- 		.ops = scmi_ops,
- 		.name = sclk->info->name,
-+		.parent_data = sclk->parent_data,
- 	};
- 
- 	sclk->hw.init = &init;
-@@ -250,6 +295,17 @@ static int scmi_clocks_probe(struct scmi_device *sdev)
- 		else
- 			scmi_ops = &scmi_clk_ops;
- 
-+		/* Initialize clock parent data. */
-+		if (sclk->info->num_parents > 0) {
-+			sclk->parent_data = devm_kcalloc(dev, sclk->info->num_parents,
-+							 sizeof(*sclk->parent_data), GFP_KERNEL);
-+
-+			for (int i = 0; i < sclk->info->num_parents; i++) {
-+				sclk->parent_data[i].index = sclk->info->parents[i];
-+				sclk->parent_data[i].hw = hws[sclk->info->parents[i]];
-+			}
-+		}
-+
- 		err = scmi_clk_ops_init(dev, sclk, scmi_ops);
- 		if (err) {
- 			dev_err(dev, "failed to register clock %d\n", idx);
+> + * over different buses. We need to insure ll data has been written before
+> + * toggling the doorbell register.
 
--- 
-2.37.1
+1. Please replace "We need to insure ..." with "Ensure LL-data reaches
+the memory before the doorbell register is toggled by issuing the
+dummy-read from the remote LL memory in a hope that the posted MRd TLP
+will return only after the last MWr TLP is completed".
 
+2. Please move this comment to being above the if-statement. The
+driver doesn't use kdoc at all. Having it for just a single function
+doesn't look well, especially seeing it's static and isn't take part
+of the kernel API.
+
+> + */
+> +static void dw_hdma_v0_sync_ll_data(struct dw_edma_chunk *chunk)
+> +{
+> +	if (!(chunk->chan->dw->chip->flags & DW_EDMA_CHIP_LOCAL))
+
+> +		/* Linux memory barriers don't cater for what's required here.
+> +		 * What's required is what's here - a read of the linked
+> +		 * list region.
+> +		 */
+
+1. The comment isn't that much informative. If it wasn't required then
+why would have this been needed in the first place? Anyway just drop it since
+you'll move the kdoc detailed comment to being above the if-statement.
+
+2. Note the preferred style for the multi-line comments is:
+   /*
+    *...
+    */
+except for the networking subsystem. It's DMA so normal format should
+be utilized. I know there are several comments in this driver which
+are defined in the net-format. Just ignore them. These are legacy code
+which should be eventually fixed to comply with the preferred style.
+
+-Serge(y)
+
+> +		readl(chunk->ll_region.vaddr.io);
+> +}
+> +
+>  static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
+>  {
+>  	struct dw_edma_chan *chan = chunk->chan;
+> @@ -251,6 +270,9 @@ static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
+>  	/* Set consumer cycle */
+>  	SET_CH_32(dw, chan->dir, chan->id, cycle_sync,
+>  		  HDMA_V0_CONSUMER_CYCLE_STAT | HDMA_V0_CONSUMER_CYCLE_BIT);
+> +
+> +	dw_hdma_v0_sync_ll_data(chunk);
+> +
+>  	/* Doorbell */
+>  	SET_CH_32(dw, chan->dir, chan->id, doorbell, HDMA_V0_DOORBELL_START);
+>  }
+> -- 
+> 2.25.1
+> 
