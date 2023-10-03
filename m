@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E367B7254
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 22:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C7D7B7258
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 22:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241031AbjJCUIQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 16:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
+        id S241018AbjJCUJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 16:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241026AbjJCUIO (ORCPT
+        with ESMTP id S232069AbjJCUJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 16:08:14 -0400
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BAEA1;
-        Tue,  3 Oct 2023 13:08:11 -0700 (PDT)
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3af5fd13004so906256b6e.0;
-        Tue, 03 Oct 2023 13:08:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696363691; x=1696968491;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1L7JTll2iZg4TpN2jgrHscBi0WZs33vPmuyNsxvOfNo=;
-        b=AzRUI7/xe+MXKnw/KPJVUJ0A58df4gaRkpqRfkAE0fC3qBv/gJSerUruTAusqRnLHS
-         SfgNDpoGLFTKmJbouBOQt4Ykvk3hMoj9lx6DH4jvao0cXGOV169eJK04yUarxOfBOxbw
-         mZ4ewM4CitGGrgmv4Sa5oKDjmODmTj2jpg5pPa9oJ6Je3ir4VGg5dUvUP6JJiCEJ9tLL
-         5OVeeefzQEv235+y4UD56cwEQh5lry0n3D7zfYedJYvwwabuJJOBTftMukZVUAgyY0I8
-         vSA/R6IcT8hp2/tUVp902MMpwXv33P2KPMUuT1uVZsF/yZRHXGsdyJKAxWcn+k6MZiu8
-         +KOQ==
-X-Gm-Message-State: AOJu0YzkhuxkS7wBOVFouyzUhUqMA7Bv6yEQ77hm+vvDB/ypKbSdTePI
-        kK5lwkbOpHkFHikYClLxxwRakx12ToFDZoMyzuE=
-X-Google-Smtp-Source: AGHT+IEvFmLOJnmgZT9/huzr+lyWE9YoYca94R5FI0tVfrqnzYWNE2s0hf91+akXZEvrFXRBJeH4xZMrp9nqTIHyOcQ=
-X-Received: by 2002:a05:6808:1b1f:b0:3ae:2877:9b31 with SMTP id
- bx31-20020a0568081b1f00b003ae28779b31mr652430oib.20.1696363690891; Tue, 03
- Oct 2023 13:08:10 -0700 (PDT)
+        Tue, 3 Oct 2023 16:09:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71610AB;
+        Tue,  3 Oct 2023 13:09:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696363751; x=1727899751;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=m1jzLPKVwohtVS0OdopZyn0iGeijh4uOxRMQpSXsukI=;
+  b=OL4v7ZHnqM2jcCNwXqroGe921w6x+WdJTD4WvPtfY8ZrXdyflfoXFQBQ
+   8HNkE4SMZx2EAMQzIoHYsuYVPeK26H5Pjaw7I/VTfSJXDpP4yIavEkHaF
+   eKcWzQ54Exo+VlSMWD+rn/z9Cibc74X0t1M7LtlXjs8+MJtpAeqfw3xQN
+   zpDkkQK3W2MRZhfGTfWky+GJLf1qNL9H7ck2bFM2u/MViC5a0glYlBcUN
+   a2YRxm9UY+sM0uudWQWQ2rGJvpYoudjRaVerxoB487lFk+9213WFfYLhn
+   Oy2p7/v6StF0SOOcRR8cRtP5KrXGoeO1IoK/jFghupLe4CmQrQ3yIdWin
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="386840389"
+X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
+   d="scan'208";a="386840389"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 13:09:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="841494545"
+X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
+   d="scan'208";a="841494545"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 03 Oct 2023 13:09:07 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qnlhY-0008t2-0L;
+        Tue, 03 Oct 2023 20:09:04 +0000
+Date:   Wed, 4 Oct 2023 04:08:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     David Lechner <dlechner@baylibre.com>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-staging@lists.linux.dev
+Cc:     oe-kbuild-all@lists.linux.dev,
+        David Lechner <david@lechnology.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 24/27] staging: iio: resolver: ad2s1210: convert DOS
+ mismatch threshold to event attr
+Message-ID: <202310040309.rX4s31l7-lkp@intel.com>
+References: <20230929-ad2s1210-mainline-v3-24-fa4364281745@baylibre.com>
 MIME-Version: 1.0
-References: <20230916040915.1075620-1-irogers@google.com> <CAL715WJxmMbXkZSE3p_+ODGxabgrXREsBo9aFu9G9=qkYZeH9A@mail.gmail.com>
- <CAP-5=fUjNiDv=KQ7t8jqfOfOt5i8HGvt8Vv1hn2-hLxX_Kqucg@mail.gmail.com> <CAL715W+GQuCJm-1SEsNN2qnHghNL1SrzwH9Km5K8UxubEFfYVw@mail.gmail.com>
-In-Reply-To: <CAL715W+GQuCJm-1SEsNN2qnHghNL1SrzwH9Km5K8UxubEFfYVw@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 3 Oct 2023 13:07:59 -0700
-Message-ID: <CAM9d7cgKWi0fafwTxSrKLrVZxcwnhwMGz=oNkAsNdOjDwF6pEA@mail.gmail.com>
-Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230929-ad2s1210-mainline-v3-24-fa4364281745@baylibre.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi David,
 
-On Wed, Sep 20, 2023 at 10:05 PM Mingwei Zhang <mizhang@google.com> wrote:
->
-> On Mon, Sep 18, 2023 at 3:43 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > On Sat, Sep 16, 2023 at 5:46 PM Mingwei Zhang <mizhang@google.com> wrote:
-> > > Thank you very much for the change. I have one quick question about
-> > > the PMU unthrottling logic. When I am looking into the function
-> > > perf_adjust_freq_unthr_context(), I see the loop with PMU stop and
-> > > start in each iteration. Is there a good way to avoid this PMU reset
-> > > operation while quickly figuring out the event in frequency mode?
-> >
-> > Agreed. I think before the pmu_disable could be avoided for this condition:
-> > ```
-> > if (event->hw.interrupts != MAX_INTERRUPTS &&
-> >     (!event->attr.freq || !event->attr.sample_freq))
-> >         continue;
-> > ```
-> > Fixing up the event stop/start looks harder.
-> >
->
-> Right, I think putting the check early before pmu_disable() is already
-> a great optimization. The only concern I initially had was whether
-> event->hw.interrupts can be accessed before we disable the pmu. But
-> after checking this field in other locations, I don't see any problem
-> at all.
+kernel test robot noticed the following build warnings:
 
-The event->hw.interrupts would be increased in the NMI handler
-so there is a race between the check and the NMI.  That's why
-I think it checks that after disabling the PMU.
+[auto build test WARNING on 5e99f692d4e32e3250ab18d511894ca797407aec]
 
-But I think we can skip non-sampling events for sure.  Then it
-would be better to set attr.sample_period = 0 rather than attr.freq.
+url:    https://github.com/intel-lab-lkp/linux/commits/David-Lechner/dt-bindings-iio-resolver-add-devicetree-bindings-for-ad2s1210/20230930-014031
+base:   5e99f692d4e32e3250ab18d511894ca797407aec
+patch link:    https://lore.kernel.org/r/20230929-ad2s1210-mainline-v3-24-fa4364281745%40baylibre.com
+patch subject: [PATCH v3 24/27] staging: iio: resolver: ad2s1210: convert DOS mismatch threshold to event attr
+config: i386-randconfig-062-20231003 (https://download.01.org/0day-ci/archive/20231004/202310040309.rX4s31l7-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231004/202310040309.rX4s31l7-lkp@intel.com/reproduce)
 
-    if (!is_sampling_event(event))
-        continue;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310040309.rX4s31l7-lkp@intel.com/
 
-    perf_pmu_disable(event->pmu);
-    ...
+sparse warnings: (new ones prefixed by >>)
+   drivers/staging/iio/resolver/ad2s1210.c:901:1: sparse: sparse: symbol 'iio_const_attr_in_phase0_mag_value_available' was not declared. Should it be static?
+   drivers/staging/iio/resolver/ad2s1210.c:906:1: sparse: sparse: symbol 'iio_const_attr_in_altvoltage0_thresh_falling_value_available' was not declared. Should it be static?
+   drivers/staging/iio/resolver/ad2s1210.c:907:1: sparse: sparse: symbol 'iio_const_attr_in_altvoltage0_thresh_rising_value_available' was not declared. Should it be static?
+>> drivers/staging/iio/resolver/ad2s1210.c:908:1: sparse: sparse: symbol 'iio_const_attr_in_altvoltage0_mag_value_available' was not declared. Should it be static?
+   drivers/staging/iio/resolver/ad2s1210.c:909:1: sparse: sparse: symbol 'iio_dev_attr_in_angl1_thresh_rising_value_available' was not declared. Should it be static?
+   drivers/staging/iio/resolver/ad2s1210.c:910:1: sparse: sparse: symbol 'iio_dev_attr_in_angl1_thresh_rising_hysteresis_available' was not declared. Should it be static?
 
-Thanks,
-Namhyung
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
