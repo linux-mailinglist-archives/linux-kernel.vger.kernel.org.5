@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 224597B6C00
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7677B6C06
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240138AbjJCOqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
+        id S240155AbjJCOrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240106AbjJCOqJ (ORCPT
+        with ESMTP id S240106AbjJCOrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:46:09 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0A0B0
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:46:03 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id DE2AC5C0358;
-        Tue,  3 Oct 2023 10:46:02 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 03 Oct 2023 10:46:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1696344362; x=1696430762; bh=cf
-        Lg0FTt870s90m6D5NuIv5XQXp/nmAmNe4tSouovjA=; b=eZGA4ngRNhIErLzsV+
-        HXf0v/3NAWge7/pxxpnYxZPncEJo/AQHoE6kDY1hGgtiy+AeDHg+6D4XvG4sQF0/
-        t812v+As9dan2YmvlfE1dlEeJG1KMfufOsBPc+0xTVddG69V/hhOn6hZysFk9ndv
-        dkmGjuzeWJCj1UChoGXuocv1xuuJ4wKx34e41qVHEecCLtqOLcDCyvGX8i6q7GD7
-        y8O1F78DM/ePjldP3mxUDJYS4fWCpKcgUfTk+7PKpDxYSTwo20xX34NXGBCnmEM6
-        fjEy0rWGAlUXA2+d7oyKjQ9G3jKk9IeMctt3uv6jklEOc3pPbn9GybTYulZKpehV
-        p/zw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1696344362; x=1696430762; bh=cfLg0FTt870s9
-        0m6D5NuIv5XQXp/nmAmNe4tSouovjA=; b=EHEfnzl8tlq/P4QeGBl5+lJnwmOAm
-        LaMc4FAXeSOADDplXL2nGQWraiko89Gq3BNVX5E/xZd1NKLRmp72U+M+XTjfbYnY
-        eng1tnSOGTKDmuV0GRJfRTHROHwKVp8Yk/UrJM9oXe6euREwVhNaMYDhO8m7Um34
-        1DiD0vlHC5k1E0Buii5WjEO6n3girOGj0H7Gfaoso0xleD4SI3Cb0PI5ZG/yM2gN
-        o9mwejAaM5X5Hfn4vbjNP5Mv3xM4etDWmEkkvK1aVPEGnVcNzxn1cW6R1uz286Md
-        qOGf1hfy0SOW8GkaGj7TP+IHgX+dS118qBsf5BB90tI9A6C0D8j0D0rEA==
-X-ME-Sender: <xms:KikcZZaUPbgMW3l1fSp6PaOxllXetWT42hLV4ZvIyACbOUBBVNacHQ>
-    <xme:KikcZQYk9Rsofd-97HwDugbcVdAyC2hM1Oom8rwee4ua7ERA2JHAwqA2zhASTSb6_
-    Qw0a3oliDjg-KzNWxo>
-X-ME-Received: <xmr:KikcZb8SpoaMRye3HGk_jOrcEyX2yoxb_1gRHhkf0FyYJ13aXkvQ3lVNduSQNdnFcyYtlS_LOOvNJtdmAzJjq94BRfNWepD0q2MPxF2fFDIK9VTYW5m09fw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeeigdejkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffuvfevkfgjfhfogggtsehttdertdertddvnecuhfhrohhmpefnuhhkvgcu
-    lfhonhgvshcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrhhnpe
-    dvvdegledtheefieejgfevgeefiefhtdevteefteduhfevtdefleethfetgeeludenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslh
-    hjohhnvghsrdguvghv
-X-ME-Proxy: <xmx:KikcZXoBhbifQpMtTpbXxWPGDs4rlfuZeo8jnj26pxfKb-W5-iNxKQ>
-    <xmx:KikcZUoBsXRqJiaVBZPF6HGMqZYJF0-AqfVBHX8BlwJRZz17R36dRQ>
-    <xmx:KikcZdSkpJPNrUWGMIzhsS1YuvM6FVSfnkzZtSKdXZyxfNBGHkRpxg>
-    <xmx:KikcZVdLMYKUORhWJYv-lz9rGU4q5CYeHfw_crK6WnEG17H1VQ3ikw>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 3 Oct 2023 10:45:57 -0400 (EDT)
-Date:   Tue, 03 Oct 2023 16:45:44 +0200
-From:   Luke Jones <luke@ljones.dev>
-Subject: RE: [PATCH] ALSA: hda: cs35l41: Support ASUS 2023 laptops with
- missing DSD
-To:     Stefan Binding <sbinding@opensource.cirrus.com>
-Cc:     'Takashi Iwai' <tiwai@suse.de>, tiwai@suse.com,
-        james.schulman@cirrus.com, david.rhodes@cirrus.com,
-        rf@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        'Jonathan LoBue' <jlobue10@gmail.com>,
-        patches@opensource.cirrus.com
-Message-Id: <8OJY1S.X7HJ24U4D5AG2@ljones.dev>
-In-Reply-To: <UB2VZR.B7HP6HUMGFA03@ljones.dev>
-References: <20230823011008.13146-1-luke@ljones.dev>
-        <87v8d6cm30.wl-tiwai@suse.de> <R32UZR.6AQKQL1J6UQI3@ljones.dev>
-        <87lee2ciqj.wl-tiwai@suse.de> <NN3UZR.VNYA824H66Q8@ljones.dev>
-        <87il96cfnb.wl-tiwai@suse.de>
-        <000601d9d5b0$8d6817f0$a83847d0$@opensource.cirrus.com>
-        <UB2VZR.B7HP6HUMGFA03@ljones.dev>
-X-Mailer: geary/44.1
+        Tue, 3 Oct 2023 10:47:00 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EE0AD;
+        Tue,  3 Oct 2023 07:46:56 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393EHIIV026514;
+        Tue, 3 Oct 2023 14:46:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=tfLOe0VjA/rPVml+32m2VjdMp1XlyYfrkQaY6Acrs8o=;
+ b=RVZapUYXEprjyDsX0sZsebjBBO2JFOD0ZR/rmGI17mArmJCawd3irDq4c/VCS5sccvWO
+ vVhsJzFFcp6uMQMqUhmiqdFvpFiYoHjc0DlRhoFy+SDyGHzTY2PAskhoKTPnfxkhrC0u
+ iEj/layxNpAvP5IVDYMzVDccW0YDB8THLVfhUeLrug65TJxfydijqUap0Cib0FXCwx4q
+ ce90TLMT9/eLD3ppYeDrmUu0Xl6tEP+/HJUg2D6tW4Y21Wh7XD5k5mJAaSO61vOiY3AO
+ REI8fmUuiAC3FgOnNQoM44rygQXYRv+pKTuG7MO60ecwRhzFGeSSLRAMCVPh7is0fPvI dQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3teb0se8us-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Oct 2023 14:46:36 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 393EkA4O032041
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 3 Oct 2023 14:46:10 GMT
+Received: from [10.216.32.208] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 3 Oct
+ 2023 07:46:00 -0700
+Message-ID: <8eaec03f-40c1-4285-9b86-c39bda251c61@quicinc.com>
+Date:   Tue, 3 Oct 2023 20:15:56 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/8] arm64: dts: qcom: ipq5332: Add clocks for USB
+ Super-Speed
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <p.zabel@pengutronix.de>,
+        <geert+renesas@glider.be>, <arnd@arndb.de>,
+        <neil.armstrong@linaro.org>, <nfraprado@collabora.com>,
+        <u-kumar1@ti.com>, <peng.fan@nxp.com>, <quic_wcheng@quicinc.com>,
+        <quic_varada@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <quic_kathirav@quicinc.com>, <quic_nsekar@quicinc.com>,
+        <quic_srichara@quicinc.com>
+References: <20230929084209.3033093-1-quic_ipkumar@quicinc.com>
+ <20230929084209.3033093-6-quic_ipkumar@quicinc.com>
+ <356a4f97-a483-4202-a6da-b48351d9b209@linaro.org>
+From:   Praveenkumar I <quic_ipkumar@quicinc.com>
+In-Reply-To: <356a4f97-a483-4202-a6da-b48351d9b209@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: a85uTrtq1TBPcd8x4djM9PzJ3ohD8rPG
+X-Proofpoint-ORIG-GUID: a85uTrtq1TBPcd8x4djM9PzJ3ohD8rPG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-03_11,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=768
+ impostorscore=0 bulkscore=0 suspectscore=0 adultscore=0 mlxscore=0
+ clxscore=1015 phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310030109
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -95,114 +95,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On Thu, Aug 24 2023 at 08:31:06 AM +12:00:00, Luke Jones 
-<luke@ljones.dev> wrote:
-> 
->> 
->> The second member variable in cs35l41_prop_model_table is the SSID to
->> match against.
->> The Lenovo laptops in the initial patch didn't have different SSIDs 
->> so
->> the entry was set to NULL for those.
->> Future entries using CSC3551 MUST always have an accompanying SSID
->> with this entry.
->> Takashi was correct, the implementation is intended to also be used 
->> to
->> patch incorrect DSD.
->> 
->> We have a potential solution to workaround the SPI cs-gpios issue
->> inside here,
->> though the drawback for that is that it only works for laptops with 2
->> SPI amps.
-> 
-> Can you provide me this so I can test? I have laptops with SPI 2 and 
-> 4 speaker setups.
-
-Hi Stefan,
-
-Do you have any further information about the status of this in regards 
-to the 2023 laptops?
-
-> 
->> I also took a look at the function for applying DSD properties for 
->> the
->> 2023 ROG laptops.
->> Unfortunately the one-size-fits-all approach will not work, some of
->> these laptops are i2c
->> and some are SPI, meaning the GPIO indexes are different for 
->> different
->> laptops.
-> 
-> Do you mean "spk-id-gpios"? For all the laptops I know of this seems 
-> to be
-> Package () { "spk-id-gpios", Package () {
->    SPK1, 0x02, Zero, Zero,
->    SPK1, 0x02, Zero, Zero
-> } },
-> 
-> There is one laptop where it is One not 0x02 (the GA402N)
-> 
->> Some of the laptops do no have Speaker IDs.
->> Also, no laptop other than the 2 I added already should ever use
->> CS35L41_EXT_BOOST_NO_VSPK_SWITCH (in fact I believe all these laptops
->> are internal
->> boost anyway).
-> 
-> Grazie.
-> 
->> 
->> We are currently working internally on adding support for the 2023 
->> ROG
->> laptops, so we
->> ask for you guys to hold off on trying to upstream support for these
->> laptops.
-> 
-> Ah great. Thank you. I apologise for trying to rush things, but I do 
-> have a discord server of over 4000 people, many of whom have laptops 
-> with cirrus amps.
-> 
-> For now I'm including a patch in my kernel builds with this mapping:
-> 
-> const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
-> 	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
-> 	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
-> 	{ "CSC3551", "10431433", asus_rog_2023_no_acpi }, // ASUS GS650P - 
-> i2c
-> 	{ "CSC3551", "10431463", asus_rog_2023_no_acpi }, // ASUS GA402X - 
-> i2c
-> 	{ "CSC3551", "10431473", asus_rog_2023_no_acpi }, // ASUS GU604V - 
-> spi
-> 	{ "CSC3551", "10431483", asus_rog_2023_no_acpi }, // ASUS GU603V - 
-> spi
-> 	{ "CSC3551", "10431493", asus_rog_2023_no_acpi }, // ASUS GV601V - 
-> spi
-> 	{ "CSC3551", "10431573", asus_rog_2023_no_acpi }, // ASUS GZ301V - 
-> spi
-> 	{ "CSC3551", "104317F3", asus_rog_2023_no_acpi }, // ASUS ROG ALLY - 
-> i2c
-> 	{ "CSC3551", "10431B93", asus_rog_2023_no_acpi }, // ASUS G614J - spi
-> 	{ "CSC3551", "10431CAF", asus_rog_2023_no_acpi }, // ASUS G634J - spi
-> 	{ "CSC3551", "10431C9F", asus_rog_2023_no_acpi }, // ASUS G614JI -spi
-> 	{ "CSC3551", "10431D1F", asus_rog_2023_no_acpi }, // ASUS G713P - i2c
-> 	{ "CSC3551", "10431F1F", asus_rog_2023_no_acpi }, // ASUS H7604JV - 
-> spi
-> 	{}
-> };
-> 
-> These are the machines I have verified the gpios and such for.
-
-I have a new version of this patch with all listed models confirmed as 
-working, and with slightly different settings for some. The only thing 
-missing in a solution to the gpio-cs issue.
-
-Can you please provide an update on where you are with ASUS support in 
-particular so that I may consider if it is worth my time submitting the 
-updated patch.
-
-> 
-> Cheers,
-> Luke.
-> 
-> 
-
-
+On 9/30/2023 10:55 PM, Dmitry Baryshkov wrote:
+> On 29/09/2023 11:42, Praveenkumar I wrote:
+>> Add aux and lfps clocks in USB node for Super-Speed support.
+>>
+>> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/ipq5332.dtsi | 9 +++++++--
+>>   1 file changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi 
+>> b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+>> index b08ffd8c094e..1813b9fa4bb5 100644
+>> --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+>> @@ -336,11 +336,16 @@ usb: usb@8af8800 {
+>>               clocks = <&gcc GCC_USB0_MASTER_CLK>,
+>>                    <&gcc GCC_SNOC_USB_CLK>,
+>>                    <&gcc GCC_USB0_SLEEP_CLK>,
+>> -                 <&gcc GCC_USB0_MOCK_UTMI_CLK>;
+>> +                 <&gcc GCC_USB0_MOCK_UTMI_CLK>,
+>> +                 <&gcc GCC_USB0_AUX_CLK>,
+>> +                 <&gcc GCC_USB0_LFPS_CLK>;
+>
+> This looks like a strange change. Usually the DTB is considered to be 
+> the ABI, so older DTBs should continue to work with newer kernels. Is 
+> there a reason why the AUX and LFPS clocks were not a part of the 
+> original submission?
+This AUX and LFPS clocks are required only when USB controller uses the 
+UNIPHY and works in 3.0. Original change added 2.0 support and used m31-phy.
+>
+>> +
+>>               clock-names = "core",
+>>                         "iface",
+>>                         "sleep",
+>> -                      "mock_utmi";
+>> +                      "mock_utmi",
+>> +                      "aux",
+>> +                      "lfps";
+>>                 resets = <&gcc GCC_USB_BCR>;
+>
+--
+Thanks,
+Praveenkumar
