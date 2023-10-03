@@ -2,147 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 791DC7B65F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B2A7B65F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239822AbjJCJ66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:58:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54360 "EHLO
+        id S239837AbjJCKAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 06:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239782AbjJCJ64 (ORCPT
+        with ESMTP id S239782AbjJCKAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:58:56 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E09CAC
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:58:53 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d865685f515so4793709276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 02:58:53 -0700 (PDT)
+        Tue, 3 Oct 2023 06:00:01 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A319A91;
+        Tue,  3 Oct 2023 02:59:58 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c3bd829b86so5451065ad.0;
+        Tue, 03 Oct 2023 02:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696327133; x=1696931933; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=znrOVYIM3TgYWJ+uG1Asu14WG/jKlSZIDknBX8rEXMs=;
-        b=H+OqqOoxj3kvNqMBQgjkn19cJV37rshMzVtStcV0zsXzO1CKLVa/bD8qsabWbipy8f
-         13qP6hJK9OIF7lv5yU3ns6PogcNPhwIvYGOowBhUPJGDPNx3Cpy8Es6sn/FCU9bX5Uez
-         tDCQXBkYvrq4evI8blKqWR9D8nPU8GFudG3rQXXhPCsPQAdluxv0+72UZIkBzWfw4vyc
-         MISX1lDmnDxgjLFUorFsEGqqoWzPoGCEB3bMZud8SA2iVvqF3KY0VCVTSYEyLAKcA40y
-         mKYh2+SUZYFHdc9ysj1FUsQ14OPNx+O0PeDmMauprOusvbWn0Y4BrqDINfAz1vWN81bv
-         1qyA==
+        d=gmail.com; s=20230601; t=1696327198; x=1696931998; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7mfj166RZXa6+OGlC23mV90s8HoMj5oVIl7zgyFgTFU=;
+        b=H5pXYzVKJ1cluuOdb6AzUVrEXCvkaWBzOpmca0uk5N55iZ4vdfEjt5Pqg3U4hUXfUh
+         k0BE9clJEXJclFb6rs0iBJk3Lfm+mxF1wQYieUdwZNxaa/c7sF1p70UvDDOPCS4KeUbu
+         mEhSLN6plucjtGDRvTRmRTpTKkFbq7fhkEXmXf9ios1Z/kS1iTy4G6/FPuIJRVDpJkIK
+         3IgcFyyY3Vd/qgW9teFdF9q3SC2PPAFqZgWTxUTAt8Wg09/bG6RawnmlmOHQVlNVUq1t
+         VUxEJrkvdfDXxW4zXcKKKq/z8+Qr0pWZt/q1ys0Yv0ndqdBP+BFDu09h7w/ZR8ddArqL
+         4A8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696327133; x=1696931933;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=znrOVYIM3TgYWJ+uG1Asu14WG/jKlSZIDknBX8rEXMs=;
-        b=tIFwML1BbIghcnDtiiqlAhzGb6yyjiiI5dMIhFjDxRnfQ7932pwG5ew++3xyPgqAfg
-         SJhi/t8wtMLH+qSTlUnQSonR5pJIv/T9YE9apGmEL5W0RFpFEYTf0JwBCoRm9FMKnOxJ
-         RjMo0nDSnXSzBbmYX/+kR3DIR1+stHaEBvCv1N7jEG+eF02uTchqx01s+Cpmt8UviAK/
-         g5qOQBMGzLppyz0TApvKOs3pA+f32dIZx4ix1CK3EZmwwRijRjwJhwXnP8fbkzKeP2bv
-         VO0yqvW0b2IHiQt73hdDMVLMxPNBa6bTNJJEJxymY13qDjie0ytlKtBUp757qaeFDoIq
-         yygg==
-X-Gm-Message-State: AOJu0YweoCOkT3hHY+550pX/vExbs40xqQ1FIE+RUQVPxIlwoE26qmTJ
-        1xn8bzqUXxGGWjp2w0xiYcgY0AZCcViF8pVzIVBEPqzRLvxhJvPw6K0=
-X-Google-Smtp-Source: AGHT+IHOABImhHJaaAE1q8BneZDvSrnMU/2KbtgnUSN9zby4FOmr+mJVXE7EryPRqvcEvH697Oy130x/J8DeF5Wx7ZU=
-X-Received: by 2002:a25:accd:0:b0:d85:ae0d:20eb with SMTP id
- x13-20020a25accd000000b00d85ae0d20ebmr1606305ybd.14.1696327132702; Tue, 03
- Oct 2023 02:58:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696327198; x=1696931998;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7mfj166RZXa6+OGlC23mV90s8HoMj5oVIl7zgyFgTFU=;
+        b=NXjpIHWUwIMVFX0NqvhwrNBbVHFjVwtzz6ijJcIvnt5K0dE7q7loW3vOTjhXFqnQKc
+         zLP8y+W3fEPXKL7FUi1/hcHzUVJ482q6vMZaQqE7FJOwWDw0ZYerGAjWW9L2c842hIIj
+         Nn7Wk/y4ZZy08h4HAmzOc/Dqu8buv26P24MKq2W0er+RI7G4sCvyCbbwgsoTDGmBFnWI
+         d+/D07qZrlcmNelPEthdDnxjlntYgTu5Y50K2B7TsMy97+gP4sGSUmSiEqurfahbTqjx
+         Gb9yhqC3LCsfrlguBHNFITzog2UnVg9wm0As9+BbqKQe9Gr6CACn9q3H7jgc8Gx4owVm
+         Da5g==
+X-Gm-Message-State: AOJu0YyKJuNf7c3avwY2A7GEHiUBRKvGWOVaMThIh9mSFJbsZM5q/+6v
+        oNz69SvU3kju2P2hvd1F5GI=
+X-Google-Smtp-Source: AGHT+IEcFB0/Nf7z2acAywtjf22FDYWrA9IDkrD58mbuzHGOwLkPwm0grCEuAMx9zkt09wQq3hfj/Q==
+X-Received: by 2002:a17:902:d2cb:b0:1c4:fae:bf28 with SMTP id n11-20020a170902d2cb00b001c40faebf28mr14401254plc.32.1696327197979;
+        Tue, 03 Oct 2023 02:59:57 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id u9-20020a17090341c900b001c1f161949fsm1088243ple.96.2023.10.03.02.59.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 02:59:57 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id CEF7581193F1; Tue,  3 Oct 2023 16:59:52 +0700 (WIB)
+Date:   Tue, 3 Oct 2023 16:59:52 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
+        mhiramat@kernel.org, andrew.cooper3@citrix.com,
+        jiangshanlai@gmail.com, nik.borisov@suse.com
+Subject: Re: [PATCH v12 06/37] Documentation/x86/64: Add a documentation for
+ FRED
+Message-ID: <ZRvmGNRZ4IvmguAY@debian.me>
+References: <20231003062458.23552-1-xin3.li@intel.com>
+ <20231003062458.23552-7-xin3.li@intel.com>
 MIME-Version: 1.0
-References: <20230915094351.11120-1-victorshihgli@gmail.com> <20230915094351.11120-13-victorshihgli@gmail.com>
-In-Reply-To: <20230915094351.11120-13-victorshihgli@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 3 Oct 2023 11:58:17 +0200
-Message-ID: <CAPDyKFpzuds6Ttbhw1cqZwisa+M6167DT3DUihcDqFjYJX95eA@mail.gmail.com>
-Subject: Re: [PATCH V12 12/23] mmc: sdhci-uhs2: skip signal_voltage_switch()
-To:     Victor Shih <victorshihgli@gmail.com>
-Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
-        HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
-        takahiro.akashi@linaro.org, dlunev@chromium.org,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Victor Shih <victor.shih@genesyslogic.com.tw>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LN8xCBDRRuLQePIA"
+Content-Disposition: inline
+In-Reply-To: <20231003062458.23552-7-xin3.li@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 11:44, Victor Shih <victorshihgli@gmail.com> wrote:
->
-> From: Victor Shih <victor.shih@genesyslogic.com.tw>
->
-> For UHS2, the signal voltage is supplied by vdd2 which is already 1.8v,
-> so no voltage switch required.
 
-Can you please elaborate on this? I don't get anything of the above, sorry.
+--LN8xCBDRRuLQePIA
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->
-> Updates in V5:
->  - Use sdhci_uhs2_mode() to simplify code in
->    sdhci_uhs2_start_signal_voltage_switch().
->
-> ---
->
->  drivers/mmc/host/sdhci-uhs2.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
->
-> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
-> index fc37a34629c2..92fb69b7e209 100644
-> --- a/drivers/mmc/host/sdhci-uhs2.c
-> +++ b/drivers/mmc/host/sdhci-uhs2.c
-> @@ -142,6 +142,27 @@ static void sdhci_uhs2_set_power(struct sdhci_host *host, unsigned char mode, un
->         }
->  }
->
-> +/*****************************************************************************\
-> + *                                                                           *
-> + * MMC callbacks                                                             *
-> + *                                                                           *
-> +\*****************************************************************************/
+On Mon, Oct 02, 2023 at 11:24:27PM -0700, Xin Li wrote:
+> diff --git a/Documentation/arch/x86/x86_64/fred.rst b/Documentation/arch/=
+x86/x86_64/fred.rst
+> new file mode 100644
+> index 000000000000..9f57e7b91f7e
+> --- /dev/null
+> +++ b/Documentation/arch/x86/x86_64/fred.rst
+> @@ -0,0 +1,96 @@
+> +.. SPDX-License-Identifier: GPL-2.0
 > +
-> +static int sdhci_uhs2_start_signal_voltage_switch(struct mmc_host *mmc,
-> +                                                 struct mmc_ios *ios)
-> +{
-> +       struct sdhci_host *host = mmc_priv(mmc);
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +Flexible Return and Event Delivery (FRED)
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 > +
-> +       /*
-> +        * For UHS2, the signal voltage is supplied by vdd2 which is
-> +        * already 1.8v so no voltage switch required.
-> +        */
-> +       if (sdhci_uhs2_mode(host))
-> +               return 0;
+> +Overview
+> +=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +The FRED architecture defines simple new transitions that change
+> +privilege level (ring transitions). The FRED architecture was
+> +designed with the following goals:
+> +
+> +1) Improve overall performance and response time by replacing event
+> +   delivery through the interrupt descriptor table (IDT event
+> +   delivery) and event return by the IRET instruction with lower
+> +   latency transitions.
+> +
+> +2) Improve software robustness by ensuring that event delivery
+> +   establishes the full supervisor context and that event return
+> +   establishes the full user context.
+> +
+> +The new transitions defined by the FRED architecture are FRED event
+> +delivery and, for returning from events, two FRED return instructions.
+> +FRED event delivery can effect a transition from ring 3 to ring 0, but
+> +it is used also to deliver events incident to ring 0. One FRED
+> +instruction (ERETU) effects a return from ring 0 to ring 3, while the
+> +other (ERETS) returns while remaining in ring 0. Collectively, FRED
+> +event delivery and the FRED return instructions are FRED transitions.
+> +
+> +In addition to these transitions, the FRED architecture defines a new
+> +instruction (LKGS) for managing the state of the GS segment register.
+> +The LKGS instruction can be used by 64-bit operating systems that do
+> +not use the new FRED transitions.
+> +
+> +Furthermore, the FRED architecture is easy to extend for future CPU
+> +architectures.
+> +
+> +Software based event dispatching
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +FRED operates differently from IDT in terms of event handling. Instead
+> +of directly dispatching an event to its handler based on the event
+> +vector, FRED requires the software to dispatch an event to its handler
+> +based on both the event's type and vector. Therefore, an event dispatch
+> +framework must be implemented to facilitate the event-to-handler
+> +dispatch process. The FRED event dispatch framework takes control
+> +once an event is delivered, and employs a two-level dispatch.
+> +
+> +The first level dispatching is event type based, and the second level
+> +dispatching is event vector based.
+> +
+> +Full supervisor/user context
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> +
+> +FRED event delivery atomically save and restore full supervisor/user
+> +context upon event delivery and return. Thus it avoids the problem of
+> +transient states due to %cr2 and/or %dr6, and it is no longer needed
+> +to handle all the ugly corner cases caused by half baked entry states.
+> +
+> +FRED allows explicit unblock of NMI with new event return instructions
+> +ERETS/ERETU, avoiding the mess caused by IRET which unconditionally
+> +unblocks NMI, e.g., when an exception happens during NMI handling.
+> +
+> +FRED always restores the full value of %rsp, thus ESPFIX is no longer
+> +needed when FRED is enabled.
+> +
+> +LKGS
+> +=3D=3D=3D=3D
+> +
+> +LKGS behaves like the MOV to GS instruction except that it loads the
+> +base address into the IA32_KERNEL_GS_BASE MSR instead of the GS
+> +segment=E2=80=99s descriptor cache. With LKGS, it ends up with avoiding
+> +mucking with kernel GS, i.e., an operating system can always operate
+> +with its own GS base address.
+> +
+> +Because FRED event delivery from ring 3 and ERETU both swap the value
+> +of the GS base address and that of the IA32_KERNEL_GS_BASE MSR, plus
+> +the introduction of LKGS instruction, the SWAPGS instruction is no
+> +longer needed when FRED is enabled, thus is disallowed (#UD).
+> +
+> +Stack levels
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +4 stack levels 0~3 are introduced to replace the nonreentrant IST for
+> +event handling, and each stack level should be configured to use a
+> +dedicated stack.
+> +
+> +The current stack level could be unchanged or go higher upon FRED
+> +event delivery. If unchanged, the CPU keeps using the current event
+> +stack. If higher, the CPU switches to a new event stack specified by
+> +the MSR of the new stack level, i.e., MSR_IA32_FRED_RSP[123].
+> +
+> +Only execution of a FRED return instruction ERET[US], could lower the
+> +current stack level, causing the CPU to switch back to the stack it was
+> +on before a previous event delivery that promoted the stack level.
 
-This is just wrong. If we are initializing a uhs2 card, we certainly
-should call ->start_signal_voltage_switch() callback at all. This is
-for UHS-I cards, right?
+LGTM, thanks!
 
-> +
-> +       return sdhci_start_signal_voltage_switch(mmc, ios);
-> +}
-> +
->  /*****************************************************************************\
->   *                                                                           *
->   * Driver init/exit                                                          *
-> @@ -150,6 +171,9 @@ static void sdhci_uhs2_set_power(struct sdhci_host *host, unsigned char mode, un
->
->  static int sdhci_uhs2_host_ops_init(struct sdhci_host *host)
->  {
-> +       host->mmc_host_ops.start_signal_voltage_switch =
-> +               sdhci_uhs2_start_signal_voltage_switch;
-> +
->         return 0;
->  }
->
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-Kind regards
-Uffe
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--LN8xCBDRRuLQePIA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZRvmEwAKCRD2uYlJVVFO
+o5qOAQDw8M+2297q5X5j+JlTjJmKURsOh0vN4+TkT6xGTw1/oAEA7lexKTaNoRJm
+dwxTvxrQ6FWCfYMKDNZLsLpxSIwB3AQ=
+=e3m/
+-----END PGP SIGNATURE-----
+
+--LN8xCBDRRuLQePIA--
