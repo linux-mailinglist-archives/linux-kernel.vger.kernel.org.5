@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 980A67B5F02
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 04:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8F57B5F0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 04:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238959AbjJCCTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 22:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51064 "EHLO
+        id S238955AbjJCC0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 22:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjJCCTh (ORCPT
+        with ESMTP id S229737AbjJCC0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 22:19:37 -0400
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA5EBB
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 19:19:34 -0700 (PDT)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3af83e7478bso659400b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 19:19:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696299574; x=1696904374;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NSCwa9O7C69qs9jC/KCMMATl1O+va+8ssXqOeOaOqj4=;
-        b=GW7/d93fuokMAD+xYFWlpNASs8spIBWGBeH+DraVjzvV5Y2xCyyM6Vq+unILuzq8FB
-         UuifKhYx+fe09EWkaLC922kPnzfJ5S45aFcOSLIqvtjGWWfPdGDhqidU6If3Q1D4adxr
-         07MTM8hyJoa4nvIi1u1X81q2flUm+0BIiA4N2zscDNBKwQeKvmE0kRiJHVMphQNZ4tt+
-         K9VnE15rXgmAPSp7U+yN4xED75LX73bH8rkTyaIShoGFUCZ2nJfxMhODWo2Fg3sxn993
-         MKd0GBY8thpDrPiT9pkHLqdbLXHkcpSiOm8OD3iXN8qhqL8wnmntzpmOG1yb6qiieyMc
-         /Oww==
-X-Gm-Message-State: AOJu0YxH6BqR/kHLRBC7qMcQtiCVWYnvQPf7pMB8ifSQTL7TM7NDxA+h
-        dyBsYkBwP5OdksOhdF0QzL9kZ9VnLggnsxT6fCdUZEhv716x
-X-Google-Smtp-Source: AGHT+IGMcq0BbRra36NFLQk1oDnyK2gOJGsA4+4sjqfOoS0M9JJfbemrY9QQ3GdF9LeIiRZ6SvhkZBGVPW3U48fwAfkGB2erCNJS
+        Mon, 2 Oct 2023 22:26:10 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE52AD;
+        Mon,  2 Oct 2023 19:26:06 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3932Pry361367183, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 3932Pry361367183
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 3 Oct 2023 10:25:53 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Tue, 3 Oct 2023 10:25:53 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Tue, 3 Oct 2023 10:25:53 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Tue, 3 Oct 2023 10:25:53 +0800
+From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
+        <stanley_chang@realtek.com>
+To:     Chanwoo Choi <chanwoo@kernel.org>
+CC:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 1/2] extcon: add Realtek DHC RTD SoC Type-C driver
+Thread-Topic: [PATCH v3 1/2] extcon: add Realtek DHC RTD SoC Type-C driver
+Thread-Index: AQHZ3u58OLY8hY7bwUySjxPCOIjYqLAgN6uggBZR8QCAAPlCYA==
+Date:   Tue, 3 Oct 2023 02:25:53 +0000
+Message-ID: <294cca4cfd77430ba4aae76567277439@realtek.com>
+References: <20230904051253.23208-1-stanley_chang@realtek.com>
+ <43138ac278224fb78055c5c78e93cfb0@realtek.com>
+ <CAGTfZH0QTYCXF_hpPw_gHMBX4Mf-ZQ_5auU4p-20CtYtcOWYoA@mail.gmail.com>
+In-Reply-To: <CAGTfZH0QTYCXF_hpPw_gHMBX4Mf-ZQ_5auU4p-20CtYtcOWYoA@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.21.190.159]
+x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:201c:b0:3ab:858e:2d6e with SMTP id
- q28-20020a056808201c00b003ab858e2d6emr6053572oiw.11.1696299573807; Mon, 02
- Oct 2023 19:19:33 -0700 (PDT)
-Date:   Mon, 02 Oct 2023 19:19:33 -0700
-In-Reply-To: <039d664c-b25e-4d68-80da-ba460ea7f269@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000878f0a0606c68568@google.com>
-Subject: Re: [syzbot] [io-uring?] general protection fault in io_get_cqe_overflow
-From:   syzbot <syzbot+efc45d4e7ba6ab4ef1eb@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-
-Reported-and-tested-by: syzbot+efc45d4e7ba6ab4ef1eb@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         163521f0 io_uring: ensure io_lockdep_assert_cq_locked(..
-git tree:       git://git.kernel.dk/linux.git io_uring-6.6
-console output: https://syzkaller.appspot.com/x/log.txt?x=1674879e680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
-dashboard link: https://syzkaller.appspot.com/bug?extid=efc45d4e7ba6ab4ef1eb
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+SGkgQ2hhbndvbywNCg0KVGhhbmsgeW91IHNvIG11Y2guDQoNClN0YW5sZXkNCj4gDQo+IA0KPiBI
+aSBTdGFubGV5LA0KPiANCj4gQXBwbGllZCB0aGVtIHdpdGggcGF0Y2gxLzIuDQo+IA0KPiBJJ20g
+c29ycnkgZm9yIGxhdGUgcmVwbHkuDQo+IA0KPiBSZWdhcmRzLA0KPiBDaGFud29vIENob2kNCj4g
+DQoNCg==
