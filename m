@@ -2,195 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 770EC7B72F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EEC7B72F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbjJCVAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 17:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
+        id S232259AbjJCVAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 17:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241094AbjJCVAn (ORCPT
+        with ESMTP id S232120AbjJCVAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 17:00:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5E3B0
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:00:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696366838; x=1727902838;
-  h=date:from:to:cc:subject:message-id;
-  bh=LNurVcbGWdjMjpBf7D13sNADi/UkSwpr/cB4fsmF8tg=;
-  b=EQa2GdTEoVkAQOHZIqasNpgdW4EU63uPkVyz44SQY4GTh/qo/lyKBous
-   f3KVMunhT2l7DosMUzIAjKKVljE6ha09jl3u6nduKzqm04lWrYeZht90k
-   KTP/Qv5Ci+zZrLJKGHaKyDLXmLDx8/lX7Gmlto8Fc8RLn2T2j1dIS5sDT
-   ohfUn4QxsqHSZMm9RKD2mnUcrRXoYWp2VvTkbUmQzkcQGjkKLjhJWFIPb
-   dAgoQvaGrZnTGsIkM0DTeAvjaZNH8qLdW4URJ383BtYKaGJ5wTYx0QLFz
-   YvtU5kKyU0Fi4gPC73F6CO/meOT3Hi3erx5kpCtDMo1qhv2K5LbTY9HPt
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="4543020"
-X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="4543020"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 14:00:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="874824373"
-X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="874824373"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 03 Oct 2023 14:00:34 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qnmVM-00099b-0s;
-        Tue, 03 Oct 2023 21:00:32 +0000
-Date:   Wed, 04 Oct 2023 05:00:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/headers] BUILD SUCCESS
- 8b01de80306cbd914be9c45bce30206a49699141
-Message-ID: <202310040501.uaDHU6Wo-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 3 Oct 2023 17:00:15 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33903AC
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:00:09 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8660e23801so1690553276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 14:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696366808; x=1696971608; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mE7WbSRGG3IBXYNyxwgRAed3lO7KyWMV50CsUdXZcYc=;
+        b=TqutrsOmn9atFkU2oGu/uezbxygdBlh0cVfTPBgn7AnUDjklWdqjlycZiIZN0mRgH9
+         Vb6LvB/nzvC2vYLCYAmbOfdWvT2vUSQkOWbdqykKWC29xyVQg4uLG/e1dxhRQmniZy5t
+         ChI0pD7cM1iNITN5nyj3GdDrpkVANEnrpr6MiEvaYw3eyUN8Wq77RaeITIa725AHPjBB
+         tKVgZMsvK6afuDJTJOGw9PKQwCKmUfacfjofLKW/4a+XG7DW5neDya6iTiisPoF0/RQk
+         sK+Gww8pi+LfWt1uXkP4eeLRhSyJhsB/qmYq5B+j9gEOeMFUvbcMKRo0+vGKRPDHh3cV
+         Yg2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696366808; x=1696971608;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mE7WbSRGG3IBXYNyxwgRAed3lO7KyWMV50CsUdXZcYc=;
+        b=PKs52pQ8x0f3ZPv/ZDpXlgrV04yCpDV4KW9dWW8tLHr74F+Mp7U4juAu8QX4tyS/9O
+         X1jLTE+Ks/NyWtVC8+++NDGsWJtxk0AQ0GriwFV86dX1quNGEFVbojsp2Zwe9YkNA8pe
+         gbesnxOwOvG03R1Ayg0jqu+sskfr+CxQRuvuffI7gSG4mFB+6XEDSJ1/e4nUmC13rLo3
+         OxYjd9VHaiinH0nXxoCSgvgqSpW9xJIalVxk97i2I7i4hr0SkWbX8Z+V1Lcqzq/V795k
+         E5POq4C6AiqOzuRG0JCwj3WjlQH+bTCVYtXlg7NU3aplJu/sQMfr+MWfOurNz0NtqPcW
+         fDGg==
+X-Gm-Message-State: AOJu0YwUCiel1VBaFiQqi43QG8lmy1pdrSGAxiP1liFld3xBi+onB758
+        W1e/m3+xoVkArsIKMJMcujwXcEy5RGU=
+X-Google-Smtp-Source: AGHT+IGbJxXZ4vvK5lEPewhlyhfI4WFnbA1LXX3nxv5zgeQeix4PkOW5F84jEuW4er/V5aRynVB7EGLG54c=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:482:0:b0:d81:b2db:8c2e with SMTP id
+ 124-20020a250482000000b00d81b2db8c2emr5346ybe.6.1696366808381; Tue, 03 Oct
+ 2023 14:00:08 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 14:00:06 -0700
+In-Reply-To: <1326f47a-45c0-963d-d50f-a9774d932744@oracle.com>
+Mime-Version: 1.0
+References: <36f3dbb1-61d7-e90a-02cf-9f151a1a3d35@oracle.com>
+ <ZRWnVDMKNezAzr2m@google.com> <a461bf3f-c17e-9c3f-56aa-726225e8391d@oracle.com>
+ <884aa233ef46d5209b2d1c92ce992f50a76bd656.camel@infradead.org>
+ <ZRrxtagy7vJO5tgU@google.com> <52a3cea2084482fc67e35a0bf37453f84dcd6297.camel@infradead.org>
+ <ZRtl94_rIif3GRpu@google.com> <afa70110-72dc-cf7d-880f-345a6e8a3995@oracle.com>
+ <ZRtzEgnRVZ7FpG3R@google.com> <1326f47a-45c0-963d-d50f-a9774d932744@oracle.com>
+Message-ID: <ZRyA1jSb_Ok9l0po@google.com>
+Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock periodically
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/headers
-branch HEAD: 8b01de80306cbd914be9c45bce30206a49699141  x86/headers: Remove <asm/export.h>
+On Mon, Oct 02, 2023, Dongli Zhang wrote:
+> Hi Sean,
+> 
+> On 10/2/23 18:49, Sean Christopherson wrote:
+> > On Mon, Oct 02, 2023, Dongli Zhang wrote:
+> >>> @@ -12185,6 +12203,10 @@ int kvm_arch_hardware_enable(void)
+> >>>  	if (ret != 0)
+> >>>  		return ret;
+> >>>  
+> >>> +	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC))
+> >>> +		kvm_get_time_scale(NSEC_PER_SEC, tsc_khz * 1000LL,
+> >>> +				   &host_tsc_shift, &host_tsc_to_system_mul);
+> >>
+> >> I agree that to use the kvmclock to calculate the ns elapsed when updating the
+> >> master clock.
+> >>
+> >> Would you take the tsc scaling into consideration?
+> >>
+> >> While the host_tsc_shift and host_tsc_to_system_mul are pre-computed, how about
+> >> the VM using different TSC frequency?
+> > 
+> > Heh, I'm pretty sure that's completely broken today.  I don't see anything in KVM
+> > that takes hardware TSC scaling into account.
+> > 
+> > This code:
+> > 
+> > 	if (unlikely(vcpu->hw_tsc_khz != tgt_tsc_khz)) {
+> > 		kvm_get_time_scale(NSEC_PER_SEC, tgt_tsc_khz * 1000LL,
+> > 				   &vcpu->hv_clock.tsc_shift,
+> > 				   &vcpu->hv_clock.tsc_to_system_mul);
+> > 		vcpu->hw_tsc_khz = tgt_tsc_khz;
+> > 		kvm_xen_update_tsc_info(v);
+> > 	}
+> > 
+> > is recomputing the multipler+shift for the current *physical* CPU, it's not
+> > related to the guest's TSC in any way.
+> 
+> The below is the code.
+> 
+> line 3175: query freq for current *physical* CPU.
+> 
+> line 3211: scale the freq if scaling is involved.
+> 
+> line 3215: compute the view for guest based on new 'tgt_tsc_khz' after scaling.
+> 
+> 3146 static int kvm_guest_time_update(struct kvm_vcpu *v)
+> 3147 {
+> 3148         unsigned long flags, tgt_tsc_khz;
+> 3149         unsigned seq;
+> ... ...
+> 3173         /* Keep irq disabled to prevent changes to the clock */
+> 3174         local_irq_save(flags);
+> 3175         tgt_tsc_khz = get_cpu_tsc_khz();
+> ... ...
+> 3210         if (kvm_caps.has_tsc_control)
+> 3211                 tgt_tsc_khz = kvm_scale_tsc(tgt_tsc_khz,
+> 3212                                             v->arch.l1_tsc_scaling_ratio);
+> 3213
+> 3214         if (unlikely(vcpu->hw_tsc_khz != tgt_tsc_khz)) {
+> 3215                 kvm_get_time_scale(NSEC_PER_SEC, tgt_tsc_khz * 1000LL,
+> 3216                                    &vcpu->hv_clock.tsc_shift,
+> 3217                                    &vcpu->hv_clock.tsc_to_system_mul);
+> 3218                 vcpu->hw_tsc_khz = tgt_tsc_khz;
+> 3219                 kvm_xen_update_tsc_info(v);
+> 3220         }
+> 
+> 
+> Would you please let me know if the above understanding is incorrect?
 
-elapsed time: 730m
-
-configs tested: 119
-configs skipped: 105
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231003   gcc  
-arc                   randconfig-001-20231004   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231003   gcc  
-arm                   randconfig-001-20231004   gcc  
-csky                             alldefconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231003   gcc  
-i386         buildonly-randconfig-001-20231004   gcc  
-i386         buildonly-randconfig-002-20231003   gcc  
-i386         buildonly-randconfig-002-20231004   gcc  
-i386         buildonly-randconfig-003-20231003   gcc  
-i386         buildonly-randconfig-003-20231004   gcc  
-i386         buildonly-randconfig-004-20231003   gcc  
-i386         buildonly-randconfig-004-20231004   gcc  
-i386         buildonly-randconfig-005-20231003   gcc  
-i386         buildonly-randconfig-005-20231004   gcc  
-i386         buildonly-randconfig-006-20231003   gcc  
-i386         buildonly-randconfig-006-20231004   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231003   gcc  
-i386                  randconfig-001-20231004   gcc  
-i386                  randconfig-002-20231003   gcc  
-i386                  randconfig-002-20231004   gcc  
-i386                  randconfig-003-20231003   gcc  
-i386                  randconfig-003-20231004   gcc  
-i386                  randconfig-004-20231003   gcc  
-i386                  randconfig-004-20231004   gcc  
-i386                  randconfig-005-20231003   gcc  
-i386                  randconfig-005-20231004   gcc  
-i386                  randconfig-006-20231003   gcc  
-i386                  randconfig-006-20231004   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231003   gcc  
-loongarch             randconfig-001-20231004   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                      ep88xc_defconfig   gcc  
-powerpc                      ppc40x_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                           se7751_defconfig   gcc  
-sh                        sh7757lcr_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231003   gcc  
-x86_64                randconfig-002-20231003   gcc  
-x86_64                randconfig-003-20231003   gcc  
-x86_64                randconfig-004-20231003   gcc  
-x86_64                randconfig-005-20231003   gcc  
-x86_64                randconfig-006-20231003   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Ah, yeah, you're correct.  I missed the call to kvm_scale_tsc() at 3211.
