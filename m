@@ -2,138 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D767B62D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8917B62D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbjJCHuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 03:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
+        id S231128AbjJCHxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 03:53:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbjJCHuw (ORCPT
+        with ESMTP id S230237AbjJCHxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 03:50:52 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3407890;
-        Tue,  3 Oct 2023 00:50:46 -0700 (PDT)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3935SjWV027905;
-        Tue, 3 Oct 2023 09:50:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=3/Hv815GUU/fuX7VWT988Bdp+kCcO+DlPNC5bXYdkbY=; b=5o
-        18RN9ayOAIh8wPtoql7MzAuoX0gHmwKrI19F0f4OeoMyYQb32T6hEn6iHSmLIeoZ
-        UYH34kzvwxIHG+LcyhrlZ/spgqWe9OTVx3uB/gFUSeBwcpH2GYZGtU8qbGH1GToP
-        raC70KSjUhSU/bbmbm0TSdZ3jG0g9W+34iFCctUnDElQ9fia3Q1ToReudbGHx9a8
-        EakmKOsovEJBskhZKbRRFCtMyl2TSX3Xtr8vySPewxveFQHHg7nl0Bm0hJ4gFFNs
-        1KjaMkhDrLBpk2S9wx5hSlH9qlM96Mrkj/Tb7nNR/bAd6AUoopOSJwpOG4l1siTn
-        otRbwD3Id9HUtiPdGfkg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3teb0xag60-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Oct 2023 09:50:25 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1CE05100057;
-        Tue,  3 Oct 2023 09:50:25 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1526022A6E7;
-        Tue,  3 Oct 2023 09:50:25 +0200 (CEST)
-Received: from [10.201.20.35] (10.201.20.35) by SHFDAG1NODE3.st.com
- (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 3 Oct
- 2023 09:50:24 +0200
-Message-ID: <2c812b4c-294b-d54e-172a-3dfc11fc71b4@foss.st.com>
-Date:   Tue, 3 Oct 2023 09:50:04 +0200
+        Tue, 3 Oct 2023 03:53:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3DE90;
+        Tue,  3 Oct 2023 00:53:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696319618; x=1727855618;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cn4FFoJx/oeaBVpP42T/THT0z776pI2L6x7rZsA/yMk=;
+  b=R8qQzYxcoOD/JF6DBhcMuT7s8uQGzY/fmI6ovHem7yXduMaMNBzCOnNo
+   001C95ziLEMpzaG5J1H8tGJin2KoqHYz1N9zq7zgU1G43gPd/WX5ygZy8
+   vSg+U2fW6AnAXMNNHI/YF1ZC2yB+DM6HFpRsPMdQJ7lvva+j7OqPyZdn7
+   +y7wLBTUTNXl6UZSbiG50Ug7z6bQU7Gt1QXYLz9SBj+IKxYqO5KVd6e11
+   +kuKvYXt6r1s5XWVmnhIm4G8ODwJxjiKf1eE5MPH2Epyp8i86rWuhsxtu
+   rQ+jqLTMr9d38bUSaT1d8sBJNbIfirberv1j8QOt496EeaisuhY0gecEr
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="385639767"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="385639767"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 00:53:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="754323419"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="754323419"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 03 Oct 2023 00:52:57 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qnaD7-0006tx-2G;
+        Tue, 03 Oct 2023 07:52:54 +0000
+Date:   Tue, 3 Oct 2023 15:52:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: Re: [PATCH 2/5] mm: Introduce pudp/p4dp/pgdp_get() functions
+Message-ID: <202310031548.53wZmUUH-lkp@intel.com>
+References: <20231002151031.110551-3-alexghiti@rivosinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] i2c: stm32f7: Fix PEC handling in case of SMBUS transfers
-To:     Alain Volmat <alain.volmat@foss.st.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        M'boumba Cedric Madianga <cedric.madianga@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>
-CC:     Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231002084211.1108940-1-alain.volmat@foss.st.com>
-Content-Language: en-US
-From:   Pierre Yves MORDRET <pierre-yves.mordret@foss.st.com>
-In-Reply-To: <20231002084211.1108940-1-alain.volmat@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.35]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-03_04,2023-10-02_01,2023-05-22_02
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002151031.110551-3-alexghiti@rivosinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alain,
+Hi Alexandre,
 
-Sounds good to me
+kernel test robot noticed the following build errors:
 
-Reviewed-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.6-rc4 next-20231003]
+[cannot apply to efi/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Regards
+url:    https://github.com/intel-lab-lkp/linux/commits/Alexandre-Ghiti/riscv-Use-WRITE_ONCE-when-setting-page-table-entries/20231002-231725
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231002151031.110551-3-alexghiti%40rivosinc.com
+patch subject: [PATCH 2/5] mm: Introduce pudp/p4dp/pgdp_get() functions
+config: arm-moxart_defconfig (https://download.01.org/0day-ci/archive/20231003/202310031548.53wZmUUH-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231003/202310031548.53wZmUUH-lkp@intel.com/reproduce)
 
-On 10/2/23 10:42, Alain Volmat wrote:
-> The PECBYTE bit allows to generate (in case of write) or
-> compute/compare the PEC byte (in case of read).  In case
-> of reading a value (performed by first sending a write
-> command, then followed by a read command) the PECBYTE should
-> only be set before starting the read command and not before
-> the first write command.
-> 
-> Fixes: 9e48155f6bfe ("i2c: i2c-stm32f7: Add initial SMBus protocols support")
-> 
-> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> ---
->  drivers/i2c/busses/i2c-stm32f7.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-> index 579b30581725..0d3c9a041b56 100644
-> --- a/drivers/i2c/busses/i2c-stm32f7.c
-> +++ b/drivers/i2c/busses/i2c-stm32f7.c
-> @@ -1059,9 +1059,10 @@ static int stm32f7_i2c_smbus_xfer_msg(struct stm32f7_i2c_dev *i2c_dev,
->  	/* Configure PEC */
->  	if ((flags & I2C_CLIENT_PEC) && f7_msg->size != I2C_SMBUS_QUICK) {
->  		cr1 |= STM32F7_I2C_CR1_PECEN;
-> -		cr2 |= STM32F7_I2C_CR2_PECBYTE;
-> -		if (!f7_msg->read_write)
-> +		if (!f7_msg->read_write) {
-> +			cr2 |= STM32F7_I2C_CR2_PECBYTE;
->  			f7_msg->count++;
-> +		}
->  	} else {
->  		cr1 &= ~STM32F7_I2C_CR1_PECEN;
->  		cr2 &= ~STM32F7_I2C_CR2_PECBYTE;
-> @@ -1149,8 +1150,10 @@ static void stm32f7_i2c_smbus_rep_start(struct stm32f7_i2c_dev *i2c_dev)
->  	f7_msg->stop = true;
->  
->  	/* Add one byte for PEC if needed */
-> -	if (cr1 & STM32F7_I2C_CR1_PECEN)
-> +	if (cr1 & STM32F7_I2C_CR1_PECEN) {
-> +		cr2 |= STM32F7_I2C_CR2_PECBYTE;
->  		f7_msg->count++;
-> +	}
->  
->  	/* Set number of bytes to be transferred */
->  	cr2 &= ~(STM32F7_I2C_CR2_NBYTES_MASK);
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310031548.53wZmUUH-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from arch/arm/kernel/asm-offsets.c:12:
+   In file included from include/linux/mm.h:29:
+>> include/linux/pgtable.h:310:29: error: function cannot return array type 'pgd_t' (aka 'unsigned int[2]')
+     310 | static inline pgd_t pgdp_get(pgd_t *pgdp)
+         |                             ^
+>> include/linux/pgtable.h:312:9: error: incompatible pointer to integer conversion returning 'const volatile pmdval_t *' (aka 'const volatile unsigned int *') from a function with result type 'int' [-Wint-conversion]
+     312 |         return READ_ONCE(*pgdp);
+         |                ^~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:47:28: note: expanded from macro 'READ_ONCE'
+      47 | #define READ_ONCE(x)                                                    \
+         |                                                                         ^
+      48 | ({                                                                      \
+         | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      49 |         compiletime_assert_rwonce_type(x);                              \
+         |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      50 |         __READ_ONCE(x);                                                 \
+         |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      51 | })
+         | ~~
+   In file included from arch/arm/kernel/asm-offsets.c:12:
+   In file included from include/linux/mm.h:1075:
+   In file included from include/linux/huge_mm.h:8:
+   In file included from include/linux/fs.h:33:
+   In file included from include/linux/percpu-rwsem.h:7:
+   In file included from include/linux/rcuwait.h:6:
+   In file included from include/linux/sched/signal.h:6:
+   include/linux/signal.h:97:11: warning: array index 3 is past the end of the array (that has type 'unsigned long[2]') [-Warray-bounds]
+      97 |                 return (set->sig[3] | set->sig[2] |
+         |                         ^        ~
+   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
+      17 |         unsigned long sig[_NSIG_WORDS];
+         |         ^
+   In file included from arch/arm/kernel/asm-offsets.c:12:
+   In file included from include/linux/mm.h:1075:
+   In file included from include/linux/huge_mm.h:8:
+   In file included from include/linux/fs.h:33:
+   In file included from include/linux/percpu-rwsem.h:7:
+   In file included from include/linux/rcuwait.h:6:
+   In file included from include/linux/sched/signal.h:6:
+   include/linux/signal.h:97:25: warning: array index 2 is past the end of the array (that has type 'unsigned long[2]') [-Warray-bounds]
+      97 |                 return (set->sig[3] | set->sig[2] |
+         |                                       ^        ~
+   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
+      17 |         unsigned long sig[_NSIG_WORDS];
+         |         ^
+   In file included from arch/arm/kernel/asm-offsets.c:12:
+   In file included from include/linux/mm.h:1075:
+   In file included from include/linux/huge_mm.h:8:
+   In file included from include/linux/fs.h:33:
+   In file included from include/linux/percpu-rwsem.h:7:
+   In file included from include/linux/rcuwait.h:6:
+   In file included from include/linux/sched/signal.h:6:
+   include/linux/signal.h:113:11: warning: array index 3 is past the end of the array (that has type 'const unsigned long[2]') [-Warray-bounds]
+     113 |                 return  (set1->sig[3] == set2->sig[3]) &&
+         |                          ^         ~
+   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
+      17 |         unsigned long sig[_NSIG_WORDS];
+         |         ^
+   In file included from arch/arm/kernel/asm-offsets.c:12:
+   In file included from include/linux/mm.h:1075:
+   In file included from include/linux/huge_mm.h:8:
+   In file included from include/linux/fs.h:33:
+   In file included from include/linux/percpu-rwsem.h:7:
+   In file included from include/linux/rcuwait.h:6:
+   In file included from include/linux/sched/signal.h:6:
+   include/linux/signal.h:113:27: warning: array index 3 is past the end of the array (that has type 'const unsigned long[2]') [-Warray-bounds]
+     113 |                 return  (set1->sig[3] == set2->sig[3]) &&
+         |                                          ^         ~
+   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
+      17 |         unsigned long sig[_NSIG_WORDS];
+         |         ^
+   In file included from arch/arm/kernel/asm-offsets.c:12:
+   In file included from include/linux/mm.h:1075:
+   In file included from include/linux/huge_mm.h:8:
+   In file included from include/linux/fs.h:33:
+   In file included from include/linux/percpu-rwsem.h:7:
+   In file included from include/linux/rcuwait.h:6:
+   In file included from include/linux/sched/signal.h:6:
+   include/linux/signal.h:114:5: warning: array index 2 is past the end of the array (that has type 'const unsigned long[2]') [-Warray-bounds]
+     114 |                         (set1->sig[2] == set2->sig[2]) &&
+         |                          ^         ~
+   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
+      17 |         unsigned long sig[_NSIG_WORDS];
+         |         ^
+   In file included from arch/arm/kernel/asm-offsets.c:12:
+   In file included from include/linux/mm.h:1075:
+   In file included from include/linux/huge_mm.h:8:
+   In file included from include/linux/fs.h:33:
+   In file included from include/linux/percpu-rwsem.h:7:
+   In file included from include/linux/rcuwait.h:6:
+   In file included from include/linux/sched/signal.h:6:
+   include/linux/signal.h:114:21: warning: array index 2 is past the end of the array (that has type 'const unsigned long[2]') [-Warray-bounds]
+     114 |                         (set1->sig[2] == set2->sig[2]) &&
+         |                                          ^         ~
+   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
+      17 |         unsigned long sig[_NSIG_WORDS];
+         |         ^
+   In file included from arch/arm/kernel/asm-offsets.c:12:
+   In file included from include/linux/mm.h:1075:
+   In file included from include/linux/huge_mm.h:8:
+   In file included from include/linux/fs.h:33:
+   In file included from include/linux/percpu-rwsem.h:7:
+   In file included from include/linux/rcuwait.h:6:
+   In file included from include/linux/sched/signal.h:6:
+   include/linux/signal.h:156:1: warning: array index 3 is past the end of the array (that has type 'const unsigned long[2]') [-Warray-bounds]
+     156 | _SIG_SET_BINOP(sigorsets, _sig_or)
+
+
+vim +310 include/linux/pgtable.h
+
+   308	
+   309	#ifndef pgdp_get
+ > 310	static inline pgd_t pgdp_get(pgd_t *pgdp)
+   311	{
+ > 312		return READ_ONCE(*pgdp);
+   313	}
+   314	#endif
+   315	
 
 -- 
---
-~ Py MORDRET
---
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
