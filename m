@@ -2,128 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C48517B5E4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 971757B5E4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238738AbjJCAgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 20:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
+        id S237295AbjJCAlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 20:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238618AbjJCAgU (ORCPT
+        with ESMTP id S229806AbjJCAlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 20:36:20 -0400
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196CBA1
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:36:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1696293377; x=1727829377;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=56bRHO/ETstzmwg90kCUicb/HWKgPMGsIwf14WOAco0=;
-  b=G4fSrBYsje43MNdkAZ8r9UQAh4EuR48M6xzyFWCgd2Pxy8Q6Ps8a1KHa
-   apL4zfo1VHKNU+ob1UxpeKf3KrcAtmyANjA1p0Nquqe0Si3l/PsFQjoDK
-   LFpIF51ox+ry0UAVtDcjgCtgCRDanDA6fiBVztW1mojKc8WycL//Q52dc
-   PfOxSDeA6LBQVvk65qhZ34lD4JP2Hli1S9DG8BQ1gFP4siHBYtrM+FhM+
-   Q+eMzLsgxWWcpJPZPHmzImxh4u9E9DmeWk7+0TOL6SP1dD9K/yMbM4XjY
-   jU95RUT9EmBa0oxlOPEY0fUFAwrW7e7/hYV+inea/toQHuy8XP6QUi1lV
-   A==;
-X-CSE-ConnectionGUID: 4Tk+tdk3QhyqjJ1+bMo7gg==
-X-CSE-MsgGUID: Vq9cs+h0Ti20cPoh29QrYQ==
-X-IronPort-AV: E=Sophos;i="6.03,194,1694707200"; 
-   d="scan'208";a="245492699"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Oct 2023 08:36:15 +0800
-IronPort-SDR: MhV3EQ1ZmsJZa4WKg7UdAgDHPpMScSL0NSTzMX+7PXZXAJ8kAQ7e1wQt31lMMt93zjztTVIq/6
- CIXokvTwrQdY61PnEK2dDZH9dMeN2jm0wfmOm3VKgLtzLfaGK/LutZvYi1Y7VKOaSpLAZap0kB
- 41rvkIFaGY7DTuNVri6jznoPTnGjgEBh/F87w6//bEnZHBIFZ3j1/MvQEFiS7Ad//gteaJ0tD8
- Hd85EBPeCe+zf7Jo/oz2XU7dqD/JCBOZB+lIhD2UaAGaEo9rxzmtkPWwQV3+Ap/Ls2mOotC6bY
- Hww=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Oct 2023 16:48:35 -0700
-IronPort-SDR: KdNu8qIN0ISFJhID8hf9phEGnyWU0gBCkaP9IECsZg6B3GiCR1mJ3XTHfqqRaoqda01+L+tdS2
- X111Aj7T9C19e5U8ChfHKXnPz/NUSy5Us/PKSgggkCEV4WeBMxn+stIo/Pl8REcKnS98piEWgi
- L7NPMSjtWrXhq6u8XEegIjcFfzimEgI0WPNdJqXjDqmyH3Q3oWZ/c/mBZ4jT6dcJKmoNjpqQdZ
- zh0aZYU/Y/bbrxUHSLbekPPS8ttDmS/CKHpXhHyup/YXSKnEN9o3u6I4Jv8U4Nrvgp3SWuBxB4
- sM0=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Oct 2023 17:36:15 -0700
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4RzzQR2cVPz1RtVN
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:36:15 -0700 (PDT)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1696293360; x=1698885361; bh=56bRHO/ETstzmwg90kCUicb/HWKgPMGsIwf
-        14WOAco0=; b=hrikPHbNTwDpfEkzZbpcc9BTWg5MGm8ZQnUMSwD1PSXBOhqBXhg
-        AlGtemoDDHhnuRgonsl1x7iz/bb/I+hBn6jrKJBXwoVBufdY+Andz+mlq8CViyzb
-        CwjFqNbZtrXAxYaKrQgKmnckGTRFWqGDY286Kd+MuLifW6xv5hcActwcfK7TFzA9
-        SfpNWF98g3ojOPCt1ZwLpZJuysLEeL8q5LeSaMloZzsywzog3oKPg6FOUSr3liSd
-        /xgetze/iEP9og1zg/C7y/xBARqMEj+I0ms34vWg35xfEjEl/nnIqZNFWko0X/pN
-        o/yO1xqcNRjF4s7o83V7NhlcRlWvYRrRC4A==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 46tmchg-R2l1 for <linux-kernel@vger.kernel.org>;
-        Mon,  2 Oct 2023 17:36:00 -0700 (PDT)
-Received: from [10.225.163.119] (unknown [10.225.163.119])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4RzzQ75LYbz1RtVG;
-        Mon,  2 Oct 2023 17:35:59 -0700 (PDT)
-Message-ID: <b18388fd-ff86-14cb-45f7-6eb56e4bb60e@opensource.wdc.com>
-Date:   Tue, 3 Oct 2023 09:35:58 +0900
+        Mon, 2 Oct 2023 20:41:12 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E7EA1A9;
+        Mon,  2 Oct 2023 17:41:07 -0700 (PDT)
+Received: from [10.0.0.178] (c-76-135-56-23.hsd1.wa.comcast.net [76.135.56.23])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D572220B74C0;
+        Mon,  2 Oct 2023 17:41:04 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D572220B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1696293665;
+        bh=q1lXOIgpOpeoyI8MnD95ZJF7BeW1/5fq2wtlMaBBZP4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=iSVcFH40SA0y+q78CHE8RtSw6g6tF1YQ+fTI4d8PyWo5iquAj++CYCmSXlqX8gwpC
+         Mv+s1kid6MYugDmetwjd6KOD7xT/lIy64sb9vzqVMUghSgKZQWJ/uKlWtZ63gsJyFN
+         obbMw4JYEsHjZKluEpBRoU04sukOWjGwWltG6gEw=
+Message-ID: <749f477a-1e7a-495e-bea1-e3abe8da7fb9@linux.microsoft.com>
+Date:   Mon, 2 Oct 2023 17:41:02 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: linux-next: duplicate patches in the libata tree
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 14/15] asm-generic: hyperv: Use new Hyper-V headers
+ conditionally.
+To:     Alex Ionescu <aionescu@gmail.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        gregkh@linuxfoundation.org, haiyangz@microsoft.com,
+        decui@microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
+        catalin.marinas@arm.com
+References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1696010501-24584-15-git-send-email-nunodasneves@linux.microsoft.com>
+ <CAJ-90NKJ=FViuuy2MyA-8S1j9Lsia8bR-ytZuAr=pOPuAiO0VQ@mail.gmail.com>
 Content-Language: en-US
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20231003080744.69ca4ed0@canb.auug.org.au>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <20231003080744.69ca4ed0@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+In-Reply-To: <CAJ-90NKJ=FViuuy2MyA-8S1j9Lsia8bR-ytZuAr=pOPuAiO0VQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 06:07, Stephen Rothwell wrote:
-> Hi all,
-> 
-> The following commits are also in Linus Torvalds' tree as different
-> commits (but the same patches):
-> 
->   0e23330fccd4 ("ata: libata-scsi: Disable scsi device manage_system_start_stop")
->   1cf14228f460 ("scsi: sd: Differentiate system and runtime start/stop management")
->   540bd522a82e ("ata: libata-scsi: link ata port and scsi device")
->   54e5c956a103 ("scsi: sd: Do not issue commands to suspended disks on shutdown")
->   6d62f34a6741 ("ata: libata-core: Fix ata_port_request_pm() locking")
->   7c412cfbeecf ("scsi: Do not attempt to rescan suspended devices")
->   9459518aba7b ("ata: libata-scsi: Fix delayed scsi_rescan_device() execution")
->   cb37013b985e ("ata: libata-eh: Fix compilation warning in ata_eh_link_report()")
->   e4bfeedb3b50 ("ata: libata-core: Fix port and device removal")
->   f215cc816f8f ("ata: libata-core: Do not register PM operations for SAS ports")
->   fdd57890e769 ("ata: libata-core: Fix compilation warning in ata_dev_config_ncq()")
-> 
+Hi Alex,
 
-Stephen,
+On 10/2/2023 12:35 PM, Alex Ionescu wrote:
+> Hi Nuno,
+> 
+> I understand the requirement to have
+> undocumented/non-standard/non-TLFS-published information in the HDK
+> headers, however, the current state of this patch is that for any
+> other code that's not in the kernel today, or in this upcoming driver,
+> the hyperv-tlfs definitions are incomplete, because some *documented*
+> TLFS fields are only in HDK headers. Similarly, it is also impossible
 
-Sorry about that. Will fix this asap.
+If I understand correctly, you are saying there are documented
+definitions (in the TLFS document), which are NOT in hyperv-tlfs.h, but
+ARE in these new HDK headers, correct?
 
--- 
-Damien Le Moal
-Western Digital Research
+If these are needed elsewhere in the kernel, they can just be added to
+hyperv-tlfs.h.
+
+> to only use the HDK headers for other use cases, because some basic
+> documented, standard defines only exist in hyperv-tlfs. So there is no
+> "logical" relationship between the two -- HDK headers are not _just_
+> undocumented information, but also documented information, but also
+> not complete documented information.
+
+That is correct - they are meant to be independently compileable.
+The new HDK headers only serve as a replacement *in our driver* when we
+need some definitions like do_hypercall() etc in mshyperv.h.
+
+> 
+> Would you consider:
+> 
+> 1) Updating hyperv-tlfs with all newly documented TLFS fields that are
+> in the HDK headers?
+
+I think this can be done on an as-needed basis, as I outlined above.
+
+> OR
+> 2) Updating the new HDK headers you're adding here to also include
+> previously-documented information from hyperv-tlfs? This way, someone
+> can include the HDK headers and get everything they need
+
+The new HDK headers are only intended for the new mshv driver.
+
+> OR
+> 3) Truly making hypertv-tlfs the "documented" header, and then > removing any duplication from HDK so that it remains the
+> "undocumented" header file. In this manner, one would include
+> hyperv-tlfs to use the stable ABI, and they would include HDK (which
+> would include hyperv-tlfs) to use the unstable+stable ABI.
+
+hyperv-tlfs.h is remaining the "documented" header.
+
+But, we can't make the HDK header depend on hyperv-tlfs.h, for 2 primary
+reasons:
+1. We need to put the new HDK headers in uapi so that we can use them in 
+our IOCTL interface. As a result, we can't include hyperv-tlfs.h (unless 
+we put it in uapi as well).
+2. The HDK headers not only duplicate, but also MODIFY some structures 
+in hyperv-tlfs.h. e.g., The struct is in hyperv-tlfs.h, but a particular
+field or bitfield is not.
+
+Thanks,
+Nuno
+
+> 
+> Thank you for your consideration.
+> 
+> Best regards,
+> Alex Ionescu
+> 
+> On Fri, Sep 29, 2023 at 2:02 PM Nuno Das Neves
+> <nunodasneves@linux.microsoft.com> wrote:
+>>
+>> Add asm-generic/hyperv-defs.h. It includes hyperv-tlfs.h or hvhdk.h
+>> depending on compile-time constant HV_HYPERV_DEFS which will be defined in
+>> the mshv driver.
+>>
+>> This is needed to keep unstable Hyper-V interfaces independent of
+>> hyperv-tlfs.h. This ensures hvhdk.h replaces hyperv-tlfs.h in the mshv
+>> driver, even via indirect includes.
+>>
+>> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+>> Acked-by: Wei Liu <wei.liu@kernel.org>
+>> ---
+>>   arch/arm64/include/asm/mshyperv.h |  2 +-
+>>   arch/x86/include/asm/mshyperv.h   |  3 +--
+>>   drivers/hv/hyperv_vmbus.h         |  1 -
+>>   include/asm-generic/hyperv-defs.h | 26 ++++++++++++++++++++++++++
+>>   include/asm-generic/mshyperv.h    |  2 +-
+>>   include/linux/hyperv.h            |  2 +-
+>>   6 files changed, 30 insertions(+), 6 deletions(-)
+>>   create mode 100644 include/asm-generic/hyperv-defs.h
+>>
+>> diff --git a/arch/arm64/include/asm/mshyperv.h b/arch/arm64/include/asm/mshyperv.h
+>> index 20070a847304..8ec14caf3d4f 100644
+>> --- a/arch/arm64/include/asm/mshyperv.h
+>> +++ b/arch/arm64/include/asm/mshyperv.h
+>> @@ -20,7 +20,7 @@
+>>
+>>   #include <linux/types.h>
+>>   #include <linux/arm-smccc.h>
+>> -#include <asm/hyperv-tlfs.h>
+>> +#include <asm-generic/hyperv-defs.h>
+>>
+>>   /*
+>>    * Declare calls to get and set Hyper-V VP register values on ARM64, which
+>> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+>> index e3768d787065..bb1b97106cd3 100644
+>> --- a/arch/x86/include/asm/mshyperv.h
+>> +++ b/arch/x86/include/asm/mshyperv.h
+>> @@ -6,10 +6,9 @@
+>>   #include <linux/nmi.h>
+>>   #include <linux/msi.h>
+>>   #include <linux/io.h>
+>> -#include <asm/hyperv-tlfs.h>
+>>   #include <asm/nospec-branch.h>
+>>   #include <asm/paravirt.h>
+>> -#include <asm/mshyperv.h>
+>> +#include <asm-generic/hyperv-defs.h>
+>>
+>>   /*
+>>    * Hyper-V always provides a single IO-APIC at this MMIO address.
+>> diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
+>> index 09792eb4ffed..0e4bc18a13fa 100644
+>> --- a/drivers/hv/hyperv_vmbus.h
+>> +++ b/drivers/hv/hyperv_vmbus.h
+>> @@ -15,7 +15,6 @@
+>>   #include <linux/list.h>
+>>   #include <linux/bitops.h>
+>>   #include <asm/sync_bitops.h>
+>> -#include <asm/hyperv-tlfs.h>
+>>   #include <linux/atomic.h>
+>>   #include <linux/hyperv.h>
+>>   #include <linux/interrupt.h>
+>> diff --git a/include/asm-generic/hyperv-defs.h b/include/asm-generic/hyperv-defs.h
+>> new file mode 100644
+>> index 000000000000..ac6fcba35c8c
+>> --- /dev/null
+>> +++ b/include/asm-generic/hyperv-defs.h
+>> @@ -0,0 +1,26 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef _ASM_GENERIC_HYPERV_DEFS_H
+>> +#define _ASM_GENERIC_HYPERV_DEFS_H
+>> +
+>> +/*
+>> + * There are cases where Microsoft Hypervisor ABIs are needed which may not be
+>> + * stable or present in the Hyper-V TLFS document. E.g. the mshv_root driver.
+>> + *
+>> + * As these interfaces are unstable and may differ from hyperv-tlfs.h, they
+>> + * must be kept separate and independent.
+>> + *
+>> + * However, code from files that depend on hyperv-tlfs.h (such as mshyperv.h)
+>> + * is still needed, so work around the issue by conditionally including the
+>> + * correct definitions.
+>> + *
+>> + * Note: Since they are independent of each other, there are many definitions
+>> + * duplicated in both hyperv-tlfs.h and uapi/hyperv/hv*.h files.
+>> + */
+>> +#ifdef HV_HYPERV_DEFS
+>> +#include <uapi/hyperv/hvhdk.h>
+>> +#else
+>> +#include <asm/hyperv-tlfs.h>
+>> +#endif
+>> +
+>> +#endif /* _ASM_GENERIC_HYPERV_DEFS_H */
+>> +
+>> diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
+>> index d832852d0ee7..6bef0d59d1b7 100644
+>> --- a/include/asm-generic/mshyperv.h
+>> +++ b/include/asm-generic/mshyperv.h
+>> @@ -25,7 +25,7 @@
+>>   #include <linux/cpumask.h>
+>>   #include <linux/nmi.h>
+>>   #include <asm/ptrace.h>
+>> -#include <asm/hyperv-tlfs.h>
+>> +#include <asm-generic/hyperv-defs.h>
+>>
+>>   #define VTPM_BASE_ADDRESS 0xfed40000
+>>
+>> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+>> index 4d5a5e39d76c..722a8cf23d87 100644
+>> --- a/include/linux/hyperv.h
+>> +++ b/include/linux/hyperv.h
+>> @@ -24,7 +24,7 @@
+>>   #include <linux/mod_devicetable.h>
+>>   #include <linux/interrupt.h>
+>>   #include <linux/reciprocal_div.h>
+>> -#include <asm/hyperv-tlfs.h>
+>> +#include <asm-generic/hyperv-defs.h>
+>>
+>>   #define MAX_PAGE_BUFFER_COUNT                          32
+>>   #define MAX_MULTIPAGE_BUFFER_COUNT                     32 /* 128K */
+>> --
+>> 2.25.1
+>>
+>>
 
