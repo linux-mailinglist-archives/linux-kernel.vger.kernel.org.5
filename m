@@ -2,166 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1638F7B6DB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAB37B6DBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbjJCP7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59202 "EHLO
+        id S240292AbjJCQAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240235AbjJCP7s (ORCPT
+        with ESMTP id S240341AbjJCQAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 11:59:48 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45AFEFB
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:59:33 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-65b051a28b3so6981196d6.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 08:59:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696348772; x=1696953572; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=L9u6M/qg0tY6l2Kd5bsxAtI2pU7AK646ndJLozYLDOY=;
-        b=RxnqM2rctBvIne417JHVEVWEdV+SP+0ZxG55fpPTPq04SuETvDMDeyxh3G/ZRjnsiR
-         Su7gWpdiglr2NABUjLSFpjzE0AdkcMdczdF677s9VPPpGevxJCwTQBaqQb4TwE4uzdK1
-         4mSXYsqHW6tqQrcn9h5hd19/ZXspEZb+l167cO8mnG9OB5w3vmGFfQueH9TLL0kGNT7R
-         emLbnKqqhQiuaLEQD7iSRUhfkWA6TlRU4oA58yeJjoPSRczkMLUFUaFIeWSwJdqhIrc4
-         PDvHowfNnx1XmJ5U9sVedKABNQ+KkIMdG6jtdc5BevnHv6dJM2qZXtWIuN22XFxXborV
-         9Nqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696348772; x=1696953572;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L9u6M/qg0tY6l2Kd5bsxAtI2pU7AK646ndJLozYLDOY=;
-        b=JsPwl7iVxy5eE4YFJ1L7iHMF9uHcyr4jxX/8ka/ZxXnvPVor8/5G3qrYDZ8bVxcVF8
-         ZiL0m3x3O6X5vWAbRkmL/l4kBw+rj4JF0sh0GVOLm3mh6zbG1p7WzURVVzPxLuZTK9+c
-         TM/5zyVWLBksuYJIeN0hMvAIeki9oaX7P2h7yG3eearIKVzJwOAFyomyi23zopeZiOpF
-         5rjSLbZc5Ya8bDFnKR2dr+sEsGFUdlwj+VhvgTCQ/qbB5bUviSuvBBcC+F4eqrn+G0Os
-         e+U8BIoNBbTuvXr0HPVmiBhk18Zvs1dfrg2Witd78TivzX4Lhw73fEPzkuq7BsEpqezf
-         RQCw==
-X-Gm-Message-State: AOJu0YybCd1n2vSXTa9ZMw265UPhPiPH5EO3UznegfnQIZ+n1EYV6sUk
-        +mEFONmD3+EYOzs6ohuDcJ1oog==
-X-Google-Smtp-Source: AGHT+IHqGr4J+qukUaSisJrYlEvvxoW/auCoCxrT+jkY3iF56XKG6U4RM8wS4bSzjDtmCxHmSD3aRw==
-X-Received: by 2002:a0c:a9db:0:b0:655:71df:4c7d with SMTP id c27-20020a0ca9db000000b0065571df4c7dmr14977510qvb.56.1696348772174;
-        Tue, 03 Oct 2023 08:59:32 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id o10-20020a0cf4ca000000b0065862497fd2sm591100qvm.22.2023.10.03.08.59.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 08:59:31 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 11:59:31 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        riel@surriel.com, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] hugetlb: memcg: account hugetlb-backed memory in
- memory controller
-Message-ID: <20231003155931.GF17012@cmpxchg.org>
-References: <20231003001828.2554080-1-nphamcs@gmail.com>
- <20231003001828.2554080-3-nphamcs@gmail.com>
- <ZRwQEv62Ex4+H2CZ@dhcp22.suse.cz>
+        Tue, 3 Oct 2023 12:00:03 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C51114;
+        Tue,  3 Oct 2023 08:59:58 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393Dtihq014212;
+        Tue, 3 Oct 2023 15:59:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ADaA/9nF9XWLSlIH/V1+7qMot+xDTDjD4TBk10pSGI0=;
+ b=DWL+1lhiby6lsHUzhFN+3eiWLLkHmFPnxn1CZYV/hkpFAGYQg33qauXpj3c0CczXqc8i
+ Sy+771zoE6r9oF5jQEWtsIgHQhDgJ2sBcV9MMt8M6kKhsNf2QkSWo5ErbIBbIW3bPeD3
+ pF49BtILMs63wJnmcemMy7niXpYGqNasPjXhQWxqB3siJ6QsBi9Ebh5TOcNk3GapMrGS
+ p71xpK7QktDhi1SVfGkNDFzyfeFxmifoNVTgb77vzICZKXi3evPct0UHA1tzcD/JGIQb
+ LR1oUbCsgbhqUGiHwB1Ix5OskmPHPY4jdnu/qBV3MfuJd0XWXiy4JxQEm6TDtcv0bfYX vw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tg98rhsbx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Oct 2023 15:59:47 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 393FxkvX000946
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 3 Oct 2023 15:59:46 GMT
+Received: from [10.110.20.163] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 3 Oct
+ 2023 08:59:45 -0700
+Message-ID: <7c871b23-5544-6604-257d-f0c8fd5afd06@quicinc.com>
+Date:   Tue, 3 Oct 2023 08:59:45 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRwQEv62Ex4+H2CZ@dhcp22.suse.cz>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v4 3/4] dt-bindings: arm: Add new compatible for smc/hvc
+ transport for SCMI
+Content-Language: en-US
+To:     Sudeep Holla <sudeep.holla@arm.com>
+CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-4-quic_nkela@quicinc.com>
+ <20231003104404.o7yxg3y7dn7uhrq4@bogus>
+From:   Nikunj Kela <quic_nkela@quicinc.com>
+In-Reply-To: <20231003104404.o7yxg3y7dn7uhrq4@bogus>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: LCfrz6QFLV8u2SOKqyuHcQWBXIMu85DO
+X-Proofpoint-GUID: LCfrz6QFLV8u2SOKqyuHcQWBXIMu85DO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-03_12,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 bulkscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
+ clxscore=1015 spamscore=0 mlxscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310030119
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 02:58:58PM +0200, Michal Hocko wrote:
-> On Mon 02-10-23 17:18:27, Nhat Pham wrote:
-> > Currently, hugetlb memory usage is not acounted for in the memory
-> > controller, which could lead to memory overprotection for cgroups with
-> > hugetlb-backed memory. This has been observed in our production system.
-> > 
-> > For instance, here is one of our usecases: suppose there are two 32G
-> > containers. The machine is booted with hugetlb_cma=6G, and each
-> > container may or may not use up to 3 gigantic page, depending on the
-> > workload within it. The rest is anon, cache, slab, etc. We can set the
-> > hugetlb cgroup limit of each cgroup to 3G to enforce hugetlb fairness.
-> > But it is very difficult to configure memory.max to keep overall
-> > consumption, including anon, cache, slab etc. fair.
-> > 
-> > What we have had to resort to is to constantly poll hugetlb usage and
-> > readjust memory.max. Similar procedure is done to other memory limits
-> > (memory.low for e.g). However, this is rather cumbersome and buggy.
-> 
-> Could you expand some more on how this _helps_ memory.low? The
-> hugetlb memory is not reclaimable so whatever portion of its memcg
-> consumption will be "protected from the reclaim". Consider this
-> 	      parent
-> 	/		\
->        A		 B
->        low=50%		 low=0
->        current=40%	 current=60%
-> 
-> We have an external memory pressure and the reclaim should prefer B as A
-> is under its low limit, correct? But now consider that the predominant
-> consumption of B is hugetlb which would mean the memory reclaim cannot
-> do much for B and so the A's protection might be breached.
-> 
-> As an admin (or a tool) you need to know about hugetlb as a potential
-> contributor to this behavior (sure mlocked memory would behave the same
-> but mlock rarely consumes huge amount of memory in my experience).
-> Without the accounting there might not be any external pressure in the
-> first place.
-> 
-> All that being said, I do not see how adding hugetlb into accounting
-> makes low, min limits management any easier.
 
-It's important to differentiate the cgroup usecases. One is of course
-the cloud/virtual server scenario, where you set the hard limits to
-whatever the customer paid for, and don't know and don't care about
-the workload running inside. In that case, memory.low and overcommit
-aren't really safe to begin with due to unknown unreclaimable mem.
+On 10/3/2023 3:44 AM, Sudeep Holla wrote:
+> On Mon, Sep 11, 2023 at 12:43:58PM -0700, Nikunj Kela wrote:
+>> Introduce compatible "qcom,scmi-hvc-shmem" for SCMI smc/hvc
+>> transport channel for Qualcomm virtual platforms.
+>> The compatible mandates a shared memory channel.
+>>
+>> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
+>> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> ---
+>>   .../devicetree/bindings/firmware/arm,scmi.yaml       | 12 ++++++++++++
+>>   1 file changed, 12 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+>> index 8d54ea768d38..4090240f45b1 100644
+>> --- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+>> +++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+>> @@ -45,6 +45,9 @@ properties:
+>>         - description: SCMI compliant firmware with OP-TEE transport
+>>           items:
+>>             - const: linaro,scmi-optee
+>> +      - description: SCMI compliant firmware with Qualcomm hvc/shmem transport
+>> +        items:
+>> +          - const: qcom,scmi-hvc-shmem
+> Can it be simply "qcom,scmi-smc" for 2 reasons ?
+> 1. We don't support SMC/HVC without shmem, so what is your argument to add
+>     '-shmem' in the compatible here ?
 
-The other common usecase is the datacenter where you run your own
-applications. You understand their workingset and requirements, and
-configure and overcommit the containers in a way where jobs always
-meet their SLAs. E.g. if multiple containers spike, memory.low is set
-such that interactive workloads are prioritized over batch jobs, and
-both have priority over routine system management tasks.
+In our platforms, there are multiple ways to allocate memory. One is 
+preallocated shmem as used here, another is dynamically by hypervisor 
+APIs. shmem was to just to indicate it is preallocated.
 
-This is arguably the only case where it's safe to use memory.low. You
-have to know what's reclaimable and what isn't, otherwise you cannot
-know that memory.low will even do anything, and isolation breaks down.
-So we already have that knowledge: mlocked sections, how much anon is
-without swap space, and how much memory must not be reclaimed (even if
-it is reclaimable) for the workload to meet its SLAs. Hugetlb doesn't
-really complicate this equation - we already have to consider it
-unreclaimable workingset from an overcommit POV on those hosts.
 
-The reason this patch helps in this scenario is that the service teams
-are usually different from the containers/infra team. The service
-understands their workload and declares its workingset. But it's the
-infra team running the containers that currently has to go and find
-out if they're using hugetlb and tweak the cgroups. Bugs and
-untimeliness in the tweaking have caused multiple production incidents
-already. And both teams are regularly confused when there are large
-parts of the workload that don't show up in memory.current which both
-sides monitor. Keep in mind that these systems are already pretty
-complex, with multiple overcommitted containers and system-level
-activity. The current hugetlb quirk can heavily distort what a given
-container is doing on the host.
+> 2. The exact conduit(SMC/HVC) used is detected runtime, so I prefer to keep
+>    '-smc' instead of '-hvc' in the compatible just to avoid giving an illusion
+>    that HVC is the conduit chosen here based on the compatible. It can be true
+>    for other reason but I don't want to mislead here by using HVC.
 
-With this patch, the service can declare its workingset, the container
-team can configure the container, and memory.current makes sense to
-everybody. The workload parameters are pretty reliable, but if the
-service team gets it wrong and we underprotect the workload, and/or
-its unreclaimable memory exceeds what was declared, the infra team
-gets alarms on elevated LOW breaching events and investigates if its
-an infra problem or a service spec problem that needs escalation.
+IUUC, currently, conduit comes from PSCI dt node. We have been using smc 
+for PSCI but want to use hvc here. That being said, I am fine to explore 
+if we can change PSCI to use hvc too.
 
-So the case you describe above only happens when mistakes are made,
-and we detect and rectify them. In the common case, hugetlb is part of
-the recognized workingset, and we configure memory.low to cut off only
-known optional and reclaimable memory under pressure.
+
+>>     interrupts:
+>>       description:
+>> @@ -320,6 +323,15 @@ allOf:
+>>         required:
+>>           - linaro,optee-channel-id
+>>   
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            const: qcom,scmi-hvc-shmem
+>> +    then:
+>> +      required:
+>> +        - shmem
+>> +
+>>   examples:
+>>     - |
+>>       firmware {
+>> -- 
+>> 2.17.1
+>>
