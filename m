@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3290D7B5E3A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BB57B5E3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238210AbjJCAac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 20:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
+        id S237630AbjJCAbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 20:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbjJCAab (ORCPT
+        with ESMTP id S229789AbjJCAbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 20:30:31 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED03AB
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:30:27 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-65d0da28fa8so2452616d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 17:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696293026; x=1696897826; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gm95BT66K1A2Zf/YgTxpWCUle5PuInPRhEHdoEUKoQE=;
-        b=F3SOZI5Affm7XwvYCNy1kYbY2urL72mIe19Vo+2y0mYD9/U5GK+mcgSSCcZ/frjKRK
-         4NigmqhHFASsvkPbf9Wr3pdyJzr6uM3cyvZRdu91Z1GrqVKW34A84djwqe6vLE2E9pmd
-         Co00+HztcfTv6rBDwoQVlUWALKZLpLytnNulhsbLXQtYfi2Fm6zbdoBJ3+YINB8wLVVf
-         IQl5QhFXq7VvNWYQgZkxXh/+9Oncga4EMQ+4ApkM9Sa4he5mtsmqfX5TDqF0niPydF7o
-         hSeYBwUe8d51xmX7AkhhJWeoZCpfr3XoQDgZpgoRf8o9/uBDIlHOI0BPKW8qERrirvqq
-         M/Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696293026; x=1696897826;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gm95BT66K1A2Zf/YgTxpWCUle5PuInPRhEHdoEUKoQE=;
-        b=L4RALk62TJzLkG8/gbfx2aSR1YQzUSQM8/hjqH2Ep29F9KL1DOloUUtCHeEJqWjdWC
-         dmmBwr1KpQ/rqm2cIOa0RIMOOETU76lJwycDP8obRix2xs7F7Ih5Eh6zO9wxMHZEhvfi
-         XjkTDf4KSx1gsnZX5BxuIvuaktttvmxcM0kmfw44OwdQ20LCIy7ONkm/kRR9WTV8twte
-         CSwAgBsBZqa6muSXNkDZIk8TwV7VaT0xnjAHZOSbHmBTSmG0aBJ+icECQICjHql/4Apy
-         L91zS89GwHU3cgh8UFJqh9u27oZbtQPrJlpQ73e5nDQUy0INrLMsPUBzgYa8s3kxCpWo
-         VDag==
-X-Gm-Message-State: AOJu0YxDv3yfKx1rHDLXFI1FCTrntEQ5eNndjaoKxX0oItw8rJUq04Jr
-        issdLw4RunwP9uYmkt21KHpYxlPNCBKYAug6ZaPdLw==
-X-Google-Smtp-Source: AGHT+IEpb7Cfo0yp4UqChQuah8UnSbiBBCbiC5lnkF9DzW3+QZ+WfjSNxRJF6F4+aUbfmcOC/wgFcIB74fjZr1vko4s=
-X-Received: by 2002:a0c:e383:0:b0:65d:4840:6eb4 with SMTP id
- a3-20020a0ce383000000b0065d48406eb4mr13854778qvl.6.1696293026067; Mon, 02 Oct
- 2023 17:30:26 -0700 (PDT)
+        Mon, 2 Oct 2023 20:31:42 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE77A9
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:31:37 -0700 (PDT)
+Received: from [192.168.2.166] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8C79A66072AF;
+        Tue,  3 Oct 2023 01:31:34 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696293095;
+        bh=Q7Lly/fabU+asTB6nUOlm3sUI4Epx0pqEjs+/1oqAuU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=IMSXJglYchP3I2/mWfSU5Q+ooRhU8A5AB8g7x0nSbkr0nH/NI4StYIJsR3KQdxkmT
+         QwfA+ci9dNhpMZM5YKMRfY3cO7oI6jpydqj473pyh4gnB6wEcjOyfPbRRcuFus8MN8
+         Y5jK12LehhxBi3gnz8ug2q1jpF4OQp1PPF647zgrXoCKl1Kdua2fC5SD/NyrqF2xGl
+         7pkA4KnlPUUbZzJR9I24uCo/pYg7G6bpokYPlhq1qbCb/Q4i+2jqiUqKz9k37VpAkj
+         lHqww54SrVncjgJ4Fauuk0aABMIlAvKX7VieJ78jJD5HUlENvU0Xr/lolJRvMMkitX
+         kTJMrNOcKg0Mg==
+Message-ID: <bbbd82a5-41bf-4ca3-476d-e5039e94631b@collabora.com>
+Date:   Tue, 3 Oct 2023 03:31:32 +0300
 MIME-Version: 1.0
-References: <20230929023743.1611460-1-maheshb@google.com> <ZRiSQ/fCa3pYZnXJ@hoboy.vegasvil.org>
-In-Reply-To: <ZRiSQ/fCa3pYZnXJ@hoboy.vegasvil.org>
-From:   =?UTF-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS14KS+4KSwKQ==?= 
-        <maheshb@google.com>
-Date:   Mon, 2 Oct 2023 17:29:58 -0700
-Message-ID: <CAF2d9jgWpwNye89qrANfngG2+NQPDhpZQjXMKBDG6x7e32_cOw@mail.gmail.com>
-Subject: Re: [PATCH 3/4] ptp: add ioctl interface for ptp_gettimex64any()
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Linux <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Don Hatchett <hatch@google.com>,
-        Yuliang Li <yuliangli@google.com>,
-        Mahesh Bandewar <mahesh@bandewar.net>,
-        Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v17 13/18] drm/shmem-helper: Add memory shrinker
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20230914232721.408581-1-dmitry.osipenko@collabora.com>
+ <20230914232721.408581-14-dmitry.osipenko@collabora.com>
+ <20230915104633.0d5c3932@collabora.com>
+ <454c464e-4534-7ec3-6d38-49b7df83c7be@collabora.com>
+ <20230926093517.11a172ad@collabora.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20230926093517.11a172ad@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,27 +72,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 2:25=E2=80=AFPM Richard Cochran
-<richardcochran@gmail.com> wrote:
->
-> On Thu, Sep 28, 2023 at 07:37:43PM -0700, Mahesh Bandewar wrote:
-> > add an ioctl op PTP_SYS_OFFSET_ANY2 to support ptp_gettimex64any() meth=
-od
->
-> This is a useful idea.
->
-> But how about a new system call instead?
->
->     clock_compare(clockid_t a, clockid_t b);
->
-The purpose of this API is not to compare clocks but to get the width
-of reading the MTS value (offered by NICs) in terms of the timebase
-that is selected to essentially improve the accuracy.
+On 9/26/23 10:35, Boris Brezillon wrote:
+>>>> +	__drm_gem_shmem_release_pages(shmem);  
+>>> Make sure you drop the implicit pages_use_count ref the sgt had, this
+>>> way you can still tie the necessity to drop the pages to sgt != NULL in
+>>> drm_gem_shmem_free().  
+>> This will require further refcnt re-initialization when pages are
+>> restored if it's dropped to zero. I don't see how this will improve
+>> anything.
+> Sorry to disagree, but I do think it matters to have a clear ownership
+> model, and if I look at the code (drm_gem_shmem_get_pages_sgt_locked()),
+> the sgt clearly owns a reference to the pages it points to.
 
-> It would accept any two clock IDs.
->
-> I've been wanting this for a long time, but never found time to
-> implement it.
->
-> Thanks,
-> Richard
+It creates too much unnecessary trouble because, again, pages_use_count
+can't drop to zero easily. Shrinker doesn't own the refcnt and not
+allowed to touch it. The pages_use_count is then used by things like
+mmap() and etc that use get_pages(), which can be invoked for evicted GEM.
+
+I'd prefer to keep refcounting as is, don't see how to implement your
+suggestion. Will be happy to help with reviewing and testing patches
+made on top of this series ;)
+
+-- 
+Best regards,
+Dmitry
+
