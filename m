@@ -2,214 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 959BC7B6E7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28837B6E7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232414AbjJCQc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:32:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
+        id S240393AbjJCQcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240421AbjJCQcW (ORCPT
+        with ESMTP id S240373AbjJCQcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:32:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325F791
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:32:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 448C8C433C9;
-        Tue,  3 Oct 2023 16:32:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696350737;
-        bh=sjh9BGA1nsCUJfo4UKIgAo5O6d5+5ra7VbGEXelDVqQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Yz+XCHNJ79P10SM8ZkqFGI5eLP2S2oVNmwc8BfIGAmXrO8QO+CCPBPrdY698nuUGW
-         oqBW5ay34H1/tLD5g+17rZsQdmKWhTRP0K8jOFZv6OIA20DuzsFhuTaVRVfpQH2dPD
-         qQ6Tu35VrlO9kg03zMGatkCxyVdoncz4sshKMUGMzWbgSETPeTPsN6Pdnw/Pa5M6wv
-         Vh08uAsjxO/d+1VZuWUbpcRtsYxY6cvgre7UwDbGS8kxnzBo+7Thfvl4+7ZD7AOBNu
-         2m8pd+0RTZDUgKOvN/JKd2+1jJY4nbnthCBWAzUPmZVv+Pwlj/Hp4K8AGRq70OwV4z
-         NssPctnmuWf6g==
-Received: (nullmailer pid 771085 invoked by uid 1000);
-        Tue, 03 Oct 2023 16:32:16 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: aoa: Replace asm/prom.h with explicit includes
-Date:   Tue,  3 Oct 2023 11:32:02 -0500
-Message-Id: <20231003163209.770750-1-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
+        Tue, 3 Oct 2023 12:32:18 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CF85391
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:32:14 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18165C15;
+        Tue,  3 Oct 2023 09:32:53 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.93.206])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CA9753F762;
+        Tue,  3 Oct 2023 09:32:11 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 17:32:09 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Misono Tomohiro <misono.tomohiro@fujitsu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/2] arm64: smp: Fix pseudo NMI issues w/ broken Mediatek
+ FW
+Message-ID: <ZRxCCZxZWCG0NBur@FVFF77S0Q05N>
+References: <20231002094526.1.Ie8f760213053e3d11592f892b30912dbac6b8b48@changeid>
+ <ZRr8r7XMoyDKaitd@FVFF77S0Q05N.cambridge.arm.com>
+ <CAD=FV=UeeL9uycVeKpOm+eDm3xHrOnKi2frt6a1qFG1HX9yEUg@mail.gmail.com>
+ <ZRwJKBZaYwF1rrur@FVFF77S0Q05N>
+ <CAD=FV=WASz1uvTgwsu3H3cTr3smHk+E_XNUVnjoPpttwv095rQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAD=FV=WASz1uvTgwsu3H3cTr3smHk+E_XNUVnjoPpttwv095rQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-asm/prom.h should not be included directly as it no longer contains
-anything drivers need. Drivers should include of.h and/or other headers
-which were getting implicitly included.
+On Tue, Oct 03, 2023 at 06:43:07AM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Tue, Oct 3, 2023 at 5:29 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > On Mon, Oct 02, 2023 at 12:16:17PM -0700, Doug Anderson wrote:
+> > > Hi,
+> > >
+> > > On Mon, Oct 2, 2023 at 10:24 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > >
+> > > > On Mon, Oct 02, 2023 at 09:45:29AM -0700, Douglas Anderson wrote:
+> > > > > Some mediatek devices have the property
+> > > > > "mediatek,broken-save-restore-fw" in their GIC. This means that,
+> > > > > although the hardware supports pseudo-NMI, the firmware has a bug
+> > > > > that blocks enabling it. When we're in this state,
+> > > > > system_uses_irq_prio_masking() will return true but we'll fail to
+> > > > > actually enable the IRQ in the GIC.
+> > > > >
+> > > > > Let's make the code handle this. We'll detect that we failed to
+> > > > > request an IPI as NMI and fallback to requesting it normally. Though
+> > > > > we expect that either all of our requests will fail or all will
+> > > > > succeed, it's just as cheap to keep a per-IPI bitmap and that keeps us
+> > > > > robust.
+> > > > >
+> > > > > Fixes: 331a1b3a836c ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
+> > > > > Reported-by: Chen-Yu Tsai <wenst@chromium.org>
+> > > > > Closes: https://issuetracker.google.com/issues/197061987#comment68
+> > > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > > > ---
+> > > > >
+> > > > >  arch/arm64/kernel/smp.c | 19 ++++++++++++-------
+> > > > >  1 file changed, 12 insertions(+), 7 deletions(-)
+> > > >
+> > > > I'm not too keen on falling back here when we have no idea why the request failed.
+> > > >
+> > > > I'd prefer if we could check the `supports_pseudo_nmis` static key directly to
+> > > > account for the case of broken FW, e.g. as below.
+> > > >
+> > > > Mark.
+> > > >
+> > > > ---->8----
+> > > > From 72fdec05c64a74f21871b44c7c760bbe07cac044 Mon Sep 17 00:00:00 2001
+> > > > From: Mark Rutland <mark.rutland@arm.com>
+> > > > Date: Mon, 2 Oct 2023 18:00:36 +0100
+> > > > Subject: [PATCH] arm64: smp: avoid NMI IPIs with broken MediaTek FW
+> > > >
+> > > > Some MediaTek devices have broken firmware which corrupts some GICR
+> > > > registers behind the back of the OS, and pseudo-NMIs cannot be used on
+> > > > these devices. For more details see commit:
+> > > >
+> > > >   44bd78dd2b8897f5 ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware issues")
+> > > >
+> > > > We did not take this problem into account in commit:
+> > > >
+> > > >   331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
+> > > >
+> > > > Since that commit arm64's SMP code will try to setup some IPIs as
+> > > > pseudo-NMIs, even on systems with broken FW. The GICv3 code will
+> > > > (rightly) reject attempts to request interrupts as pseudo-NMIs,
+> > > > resulting in boot-time failures.
+> > > >
+> > > > Avoid the problem by taking the broken FW into account when deciding to
+> > > > request IPIs as pseudo-NMIs. The GICv3 driver maintains a static_key
+> > > > named "supports_pseudo_nmis" which is false on systems with broken FW,
+> > > > and we can consult this within ipi_should_be_nmi().
+> > > >
+> > > > Fixes: 331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
+> > > > Reported-by: Chen-Yu Tsai <wenst@chromium.org>
+> > > > Closes: https://issuetracker.google.com/issues/197061987#comment68
+> > > > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> > > > Cc: Douglas Anderson <dianders@chromium.org>
+> > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > ---
+> > > >  arch/arm64/kernel/smp.c      | 5 ++++-
+> > > >  drivers/irqchip/irq-gic-v3.c | 2 +-
+> > > >  2 files changed, 5 insertions(+), 2 deletions(-)
+> > >
+> > > Sure, this is OK w/ me as long as folks don't mind accessing the
+> > > global here, it's OK w/ me:
+> > >
+> > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > >
+> > > It seems to work for me, thus:
+> > >
+> > > Tested-by: Douglas Anderson <dianders@chromium.org>
+> > >
+> > >
+> > > > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> > > > index 814d9aa93b21b..061c69160f90f 100644
+> > > > --- a/arch/arm64/kernel/smp.c
+> > > > +++ b/arch/arm64/kernel/smp.c
+> > > > @@ -964,7 +964,10 @@ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
+> > > >
+> > > >  static bool ipi_should_be_nmi(enum ipi_msg_type ipi)
+> > > >  {
+> > > > -       if (!system_uses_irq_prio_masking())
+> > > > +       DECLARE_STATIC_KEY_FALSE(supports_pseudo_nmis);
+> > > > +
+> > > > +       if (!system_uses_irq_prio_masking() ||
+> > > > +           !static_branch_likely(&supports_pseudo_nmis))
+> > >
+> > > One thought, actually, is whether we should actually change
+> > > system_uses_irq_prio_masking() to return the correct value. What do
+> > > you think?
+> >
+> > I don't think we should add this to system_uses_irq_prio_masking(); that's used
+> > by the low-level flags manipulation code that gets inlined all over the place,
+> > and that code will work regarldess of whether we actually use NMI priorities.
+> >
+> > If we want to avoid using PMR masking *at all* on these platforms, we'd need to
+> > detect that within can_use_gic_priorities() or early_enable_pseudo_nmi().
+> 
+> I suspect that anyone trying to use PMR masking on these systems for
+> any purpose will be unhappy. The issue is talked about in:
+> 
+> https://issuetracker.google.com/281831288
+> 
+> ...where you can see that the firmware on these systems isn't properly
+> saving/restoring some registers, including GICR_IPRIORITYR.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- sound/aoa/aoa-gpio.h                | 1 -
- sound/aoa/aoa.h                     | 1 -
- sound/aoa/codecs/onyx.c             | 1 +
- sound/aoa/codecs/onyx.h             | 1 -
- sound/aoa/codecs/tas.c              | 2 +-
- sound/aoa/fabrics/layout.c          | 3 ++-
- sound/aoa/soundbus/core.c           | 2 ++
- sound/aoa/soundbus/i2sbus/control.c | 1 -
- sound/aoa/soundbus/i2sbus/core.c    | 1 +
- sound/aoa/soundbus/i2sbus/i2sbus.h  | 1 -
- sound/aoa/soundbus/soundbus.h       | 2 +-
- 11 files changed, 8 insertions(+), 8 deletions(-)
+Ok, then that's a latent bug even before the IPI changes, going back to the
+original workaround in commit:
 
-diff --git a/sound/aoa/aoa-gpio.h b/sound/aoa/aoa-gpio.h
-index 54f9a78fa08e..77ae75d7594c 100644
---- a/sound/aoa/aoa-gpio.h
-+++ b/sound/aoa/aoa-gpio.h
-@@ -9,7 +9,6 @@
- #define __AOA_GPIO_H
- #include <linux/workqueue.h>
- #include <linux/mutex.h>
--#include <asm/prom.h>
- 
- typedef void (*notify_func_t)(void *data);
- 
-diff --git a/sound/aoa/aoa.h b/sound/aoa/aoa.h
-index 3d2d03ff6337..badff9f7cd54 100644
---- a/sound/aoa/aoa.h
-+++ b/sound/aoa/aoa.h
-@@ -7,7 +7,6 @@
- 
- #ifndef __AOA_H
- #define __AOA_H
--#include <asm/prom.h>
- #include <linux/module.h>
- #include <sound/core.h>
- #include <sound/asound.h>
-diff --git a/sound/aoa/codecs/onyx.c b/sound/aoa/codecs/onyx.c
-index a8a59d71dcec..e90e03bb0dc0 100644
---- a/sound/aoa/codecs/onyx.c
-+++ b/sound/aoa/codecs/onyx.c
-@@ -30,6 +30,7 @@
-  */
- #include <linux/delay.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/slab.h>
- MODULE_AUTHOR("Johannes Berg <johannes@sipsolutions.net>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/aoa/codecs/onyx.h b/sound/aoa/codecs/onyx.h
-index 6c31b7373b78..bbdca841fe90 100644
---- a/sound/aoa/codecs/onyx.h
-+++ b/sound/aoa/codecs/onyx.h
-@@ -8,7 +8,6 @@
- #define __SND_AOA_CODEC_ONYX_H
- #include <linux/i2c.h>
- #include <asm/pmac_low_i2c.h>
--#include <asm/prom.h>
- 
- /* PCM3052 register definitions */
- 
-diff --git a/sound/aoa/codecs/tas.c b/sound/aoa/codecs/tas.c
-index ab1472390061..be9822ebf9f8 100644
---- a/sound/aoa/codecs/tas.c
-+++ b/sound/aoa/codecs/tas.c
-@@ -60,10 +60,10 @@
-  */
- #include <linux/i2c.h>
- #include <asm/pmac_low_i2c.h>
--#include <asm/prom.h>
- #include <linux/delay.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-+#include <linux/of.h>
- #include <linux/slab.h>
- 
- MODULE_AUTHOR("Johannes Berg <johannes@sipsolutions.net>");
-diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
-index 850dc8c53e9b..0cd19a05db19 100644
---- a/sound/aoa/fabrics/layout.c
-+++ b/sound/aoa/fabrics/layout.c
-@@ -7,9 +7,10 @@
-  * This fabric module looks for sound codecs based on the
-  * layout-id or device-id property in the device tree.
-  */
--#include <asm/prom.h>
- #include <linux/list.h>
- #include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
- #include "../aoa.h"
- #include "../soundbus/soundbus.h"
-diff --git a/sound/aoa/soundbus/core.c b/sound/aoa/soundbus/core.c
-index 39fb8fe4e6ab..8f24a3eea16b 100644
---- a/sound/aoa/soundbus/core.c
-+++ b/sound/aoa/soundbus/core.c
-@@ -6,6 +6,8 @@
-  */
- 
- #include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
- #include "soundbus.h"
- 
- MODULE_AUTHOR("Johannes Berg <johannes@sipsolutions.net>");
-diff --git a/sound/aoa/soundbus/i2sbus/control.c b/sound/aoa/soundbus/i2sbus/control.c
-index 7d3abb8b2416..a003ef06de63 100644
---- a/sound/aoa/soundbus/i2sbus/control.c
-+++ b/sound/aoa/soundbus/i2sbus/control.c
-@@ -10,7 +10,6 @@
- #include <linux/slab.h>
- #include <linux/io.h>
- 
--#include <asm/prom.h>
- #include <asm/macio.h>
- #include <asm/pmac_feature.h>
- #include <asm/pmac_pfunc.h>
-diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
-index 51ed2f34b276..3f49a9e28bfc 100644
---- a/sound/aoa/soundbus/i2sbus/core.c
-+++ b/sound/aoa/soundbus/i2sbus/core.c
-@@ -10,6 +10,7 @@
- #include <linux/pci.h>
- #include <linux/interrupt.h>
- #include <linux/dma-mapping.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
- 
-diff --git a/sound/aoa/soundbus/i2sbus/i2sbus.h b/sound/aoa/soundbus/i2sbus/i2sbus.h
-index e86fdbb3b4c5..7a3cae0d6c26 100644
---- a/sound/aoa/soundbus/i2sbus/i2sbus.h
-+++ b/sound/aoa/soundbus/i2sbus/i2sbus.h
-@@ -13,7 +13,6 @@
- 
- #include <sound/pcm.h>
- 
--#include <asm/prom.h>
- #include <asm/pmac_feature.h>
- #include <asm/dbdma.h>
- 
-diff --git a/sound/aoa/soundbus/soundbus.h b/sound/aoa/soundbus/soundbus.h
-index db40f9d042b4..877cbad93f12 100644
---- a/sound/aoa/soundbus/soundbus.h
-+++ b/sound/aoa/soundbus/soundbus.h
-@@ -7,7 +7,7 @@
- #ifndef __SOUNDBUS_H
- #define __SOUNDBUS_H
- 
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- #include <sound/pcm.h>
- #include <linux/list.h>
- 
--- 
-2.40.1
+  44bd78dd2b8897f5 ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware issues")
 
+For the sake of those reading the archive, can we have a better description of
+what exactly happens on these boards?
+
+IIUC on these boards the firmware fails to save+restore (some?) GICR registers
+across (some?) PSCI CPU_SUSPEND idle states.
+
+Which registers does it save+restore?
+
+Does it reset other registers into a specific state?
+
+Thanks,
+Mark.
