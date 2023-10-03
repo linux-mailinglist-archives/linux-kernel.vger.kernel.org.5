@@ -2,151 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 437037B7100
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F13E67B7103
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240803AbjJCSfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 14:35:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34896 "EHLO
+        id S240796AbjJCSgY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 14:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240772AbjJCSfa (ORCPT
+        with ESMTP id S240642AbjJCSgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:35:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08416AF;
-        Tue,  3 Oct 2023 11:35:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696358125; x=1727894125;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=W1efFUb+6PT2mcTSVJjAVd93d/gbP7EU4t5/Y7eNlYo=;
-  b=amX5lHa9EN6ufnuEvwVe0jRyMvrotxOg1VtyqE9HHm/6Tc2OlFU445x1
-   LegIpRt7enCuarJZtkuT1hhl58MbsgtZdTmaMtHjQKZCP1DdZlj5ggxxM
-   g7/JvOLiAOD4CFQJOYV6Xx9UVRgy4QIFJwvDmXCVD4iSSBRKh519B2V8S
-   7qxsTWC9/FCTjWADfZn5/Q8shGUfH9VzkesKQdru1IJOpJW7mUsyKXtBn
-   Hzav6un5YTaV9FUHJGD2K2U8IoekCaBhQXlcmkyQSrENnVY88BN+oTl2M
-   nYT0sbfO6+QEZtOF6Kj+6dLEq3z5qU+9kgd3U/Nb2W8dY49F3aIelRhgy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="362315126"
-X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="362315126"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 11:35:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="816804585"
-X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="816804585"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Oct 2023 11:35:23 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qnkEp-0008K5-0l;
-        Tue, 03 Oct 2023 18:35:19 +0000
-Date:   Wed, 4 Oct 2023 02:34:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 30/36] pinctrl: remove old GPIO helpers
-Message-ID: <202310040236.w3AOZ94W-lkp@intel.com>
-References: <20231003145114.21637-31-brgl@bgdev.pl>
+        Tue, 3 Oct 2023 14:36:22 -0400
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5887E95;
+        Tue,  3 Oct 2023 11:36:19 -0700 (PDT)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6c61dd1c229so263909a34.0;
+        Tue, 03 Oct 2023 11:36:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696358178; x=1696962978;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xy90cq1kuMyI11xZOKPFY3MxuNUWTItrB3fMlvJOfd4=;
+        b=O9dLGlfaQu9dsp0LkMFVvkMVK9NXoFp9BD2ib+m6UkECPMwgttPL9+hxP1bK0bLuzy
+         Ll/QY+gYRGA5g0chO+WX8vAOiJaAgc12ROBambSLISHZp2GxTr6O/Yyv6pDFMK3OsHW/
+         +Bi99lprj7takUSJnKSn+iUBKB0O1lG2gWC6+VzPoLT3kD9eEKUF8ufYKnP7CHF2eKbO
+         91CF6RVFvIJb4UocHewnnscmiWnvNoyMnqe7DxZ9JEYyjQD195KbvCOqn8SZNaYJyGoo
+         EbfFboOlKix6iDKLaa3IAuY1jGL8FeqVwg8kgpPVgP8qAZvcctJGDkI9bFwfopHWCnpy
+         dtuQ==
+X-Gm-Message-State: AOJu0YwyLxHy/E3OJf7rhHDI1LKLmNSgqTwbF9GpkyP//WJjEfkKjdYb
+        LHoUrFgQRJXKi0srNIdSF9TGpgrfvyBZtObenjU=
+X-Google-Smtp-Source: AGHT+IFOz8NfzaTm+TQNu/A6JnOferW/Rsbvp5a+Se/KmXjyxbJucR7lDLEgD8KYWY1iGfGprX4gu2qrFiskX8eQ040=
+X-Received: by 2002:a05:6808:2286:b0:3ae:100d:5320 with SMTP id
+ bo6-20020a056808228600b003ae100d5320mr386644oib.2.1696358178605; Tue, 03 Oct
+ 2023 11:36:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003145114.21637-31-brgl@bgdev.pl>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230929202055.12724-1-linux@zary.sk>
+In-Reply-To: <20230929202055.12724-1-linux@zary.sk>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 3 Oct 2023 20:36:07 +0200
+Message-ID: <CAJZ5v0gqywy7o69fD4F4Snjb5Oh1Z44GD=C_WfkiSyW7NrxsGw@mail.gmail.com>
+Subject: =?UTF-8?Q?Re=3A_=5BPATCH=5D_ACPI=3A_video=3A_Add_acpi=5Fbacklight=3Dvendor_q?=
+        =?UTF-8?Q?uirk_for_Toshiba_Port=C3=A9g=C3=A9_R100?=
+To:     Ondrej Zary <linux@zary.sk>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bartosz,
+On Fri, Sep 29, 2023 at 10:21 PM Ondrej Zary <linux@zary.sk> wrote:
+>
+> Toshiba Portégé R100 has both acpi_video and toshiba_acpi vendor
+> backlight driver working. But none of them gets activated as it has
+> a VGA with no kernel driver (Trident CyberBlade XP4m32).
+>
+> The DMI strings are very generic ("Portable PC") so add a custom
+> callback function to check for Trident CyberBlade XP4m32 PCI device
+> before enabling the vendor backlight driver (better than acpi_video
+> as it has more brightness steps).
+>
+> Fixes: 5aa9d943e9b6 ("ACPI: video: Don't enable fallback path for creating ACPI backlight by default")
+> Signed-off-by: Ondrej Zary <linux@zary.sk>
+> ---
+>  drivers/acpi/video_detect.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+>
+> diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
+> index 442396f6ed1f..31205fee59d4 100644
+> --- a/drivers/acpi/video_detect.c
+> +++ b/drivers/acpi/video_detect.c
+> @@ -130,6 +130,16 @@ static int video_detect_force_native(const struct dmi_system_id *d)
+>         return 0;
+>  }
+>
+> +static int video_detect_portege_r100(const struct dmi_system_id *d)
+> +{
+> +       struct pci_dev *dev;
+> +       /* Search for Trident CyberBlade XP4m32 to confirm Portégé R100 */
+> +       dev = pci_get_device(PCI_VENDOR_ID_TRIDENT, 0x2100, NULL);
+> +       if (dev)
+> +               acpi_backlight_dmi = acpi_backlight_vendor;
+> +       return 0;
+> +}
+> +
+>  static const struct dmi_system_id video_detect_dmi_table[] = {
+>         /*
+>          * Models which should use the vendor backlight interface,
+> @@ -270,6 +280,22 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
+>                 },
+>         },
+>
+> +       /*
+> +        * Toshiba Portégé R100 has working both acpi_video and toshiba_acpi
+> +        * vendor driver. But none of them gets activated as it has a VGA with
+> +        * no kernel driver (Trident CyberBlade XP4m32).
+> +        * The DMI strings are generic so check for the VGA chip in callback.
+> +        */
+> +       {
+> +        .callback = video_detect_portege_r100,
+> +        .matches = {
+> +               DMI_MATCH(DMI_SYS_VENDOR, "TOSHIBA"),
+> +               DMI_MATCH(DMI_PRODUCT_NAME, "Portable PC"),
+> +               DMI_MATCH(DMI_PRODUCT_VERSION, "Version 1.0"),
+> +               DMI_MATCH(DMI_BOARD_NAME, "Portable PC")
+> +               },
+> +       },
+> +
+>         /*
+>          * Models which need acpi_video backlight control where the GPU drivers
+>          * do not call acpi_video_register_backlight() because no internal panel
+> --
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on linusw-pinctrl/devel]
-[also build test WARNING on linusw-pinctrl/for-next next-20231003]
-[cannot apply to brgl/gpio/for-next geert-renesas-drivers/renesas-pinctrl linus/master v6.6-rc4]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Bartosz-Golaszewski/pinctrl-remove-unneeded-extern-specifiers-from-consumer-h/20231003-225540
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git devel
-patch link:    https://lore.kernel.org/r/20231003145114.21637-31-brgl%40bgdev.pl
-patch subject: [PATCH 30/36] pinctrl: remove old GPIO helpers
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231004/202310040236.w3AOZ94W-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231004/202310040236.w3AOZ94W-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310040236.w3AOZ94W-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/pinctrl/core.c:338: warning: Excess function parameter 'offset' description in 'pinctrl_ready_for_gpio_range'
-
-
-vim +338 drivers/pinctrl/core.c
-
-2744e8afb3b763 Linus Walleij       2011-05-02  321  
-51e13c2475913d Haojian Zhuang      2013-02-17  322  /**
-51e13c2475913d Haojian Zhuang      2013-02-17  323   * pinctrl_ready_for_gpio_range() - check if other GPIO pins of
-51e13c2475913d Haojian Zhuang      2013-02-17  324   * the same GPIO chip are in range
-4b4af250917e1a Bartosz Golaszewski 2023-10-03  325   * @gc: GPIO chip structure from the GPIO subsystem
-4b4af250917e1a Bartosz Golaszewski 2023-10-03  326   * @offset: hardware offset of the GPIO relative to the controller
-51e13c2475913d Haojian Zhuang      2013-02-17  327   *
-51e13c2475913d Haojian Zhuang      2013-02-17  328   * This function is complement of pinctrl_match_gpio_range(). If the return
-51e13c2475913d Haojian Zhuang      2013-02-17  329   * value of pinctrl_match_gpio_range() is NULL, this function could be used
-51e13c2475913d Haojian Zhuang      2013-02-17  330   * to check whether pinctrl device is ready or not. Maybe some GPIO pins
-51e13c2475913d Haojian Zhuang      2013-02-17  331   * of the same GPIO chip don't have back-end pinctrl interface.
-51e13c2475913d Haojian Zhuang      2013-02-17  332   * If the return value is true, it means that pinctrl device is ready & the
-51e13c2475913d Haojian Zhuang      2013-02-17  333   * certain GPIO pin doesn't have back-end pinctrl device. If the return value
-51e13c2475913d Haojian Zhuang      2013-02-17  334   * is false, it means that pinctrl device may not be ready.
-51e13c2475913d Haojian Zhuang      2013-02-17  335   */
-2afe8229687ec2 Haojian Zhuang      2013-03-28  336  #ifdef CONFIG_GPIOLIB
-4b4af250917e1a Bartosz Golaszewski 2023-10-03  337  static bool pinctrl_ready_for_gpio_range(struct gpio_chip *gc)
-51e13c2475913d Haojian Zhuang      2013-02-17 @338  {
-51e13c2475913d Haojian Zhuang      2013-02-17  339  	struct pinctrl_dev *pctldev;
-51e13c2475913d Haojian Zhuang      2013-02-17  340  	struct pinctrl_gpio_range *range = NULL;
-942cde724075f8 Tony Lindgren       2015-09-03  341  
-44d5f7bbead9e7 Linus Walleij       2013-05-16  342  	mutex_lock(&pinctrldev_list_mutex);
-44d5f7bbead9e7 Linus Walleij       2013-05-16  343  
-51e13c2475913d Haojian Zhuang      2013-02-17  344  	/* Loop over the pin controllers */
-51e13c2475913d Haojian Zhuang      2013-02-17  345  	list_for_each_entry(pctldev, &pinctrldev_list, node) {
-51e13c2475913d Haojian Zhuang      2013-02-17  346  		/* Loop over the ranges */
-5ffbe2e6138732 Axel Lin            2013-08-18  347  		mutex_lock(&pctldev->mutex);
-51e13c2475913d Haojian Zhuang      2013-02-17  348  		list_for_each_entry(range, &pctldev->gpio_ranges, node) {
-51e13c2475913d Haojian Zhuang      2013-02-17  349  			/* Check if any gpio range overlapped with gpio chip */
-4b4af250917e1a Bartosz Golaszewski 2023-10-03  350  			if (range->base + range->npins - 1 < gc->base ||
-4b4af250917e1a Bartosz Golaszewski 2023-10-03  351  			    range->base > gc->base + gc->ngpio - 1)
-51e13c2475913d Haojian Zhuang      2013-02-17  352  				continue;
-5ffbe2e6138732 Axel Lin            2013-08-18  353  			mutex_unlock(&pctldev->mutex);
-44d5f7bbead9e7 Linus Walleij       2013-05-16  354  			mutex_unlock(&pinctrldev_list_mutex);
-51e13c2475913d Haojian Zhuang      2013-02-17  355  			return true;
-51e13c2475913d Haojian Zhuang      2013-02-17  356  		}
-5ffbe2e6138732 Axel Lin            2013-08-18  357  		mutex_unlock(&pctldev->mutex);
-51e13c2475913d Haojian Zhuang      2013-02-17  358  	}
-44d5f7bbead9e7 Linus Walleij       2013-05-16  359  
-44d5f7bbead9e7 Linus Walleij       2013-05-16  360  	mutex_unlock(&pinctrldev_list_mutex);
-44d5f7bbead9e7 Linus Walleij       2013-05-16  361  
-51e13c2475913d Haojian Zhuang      2013-02-17  362  	return false;
-51e13c2475913d Haojian Zhuang      2013-02-17  363  }
-2afe8229687ec2 Haojian Zhuang      2013-03-28  364  #else
-4b4af250917e1a Bartosz Golaszewski 2023-10-03  365  static bool pinctrl_ready_for_gpio_range(struct gpio_chip *gc) { return true; }
-2afe8229687ec2 Haojian Zhuang      2013-03-28  366  #endif
-51e13c2475913d Haojian Zhuang      2013-02-17  367  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Applied as 6.7 material, thanks!
