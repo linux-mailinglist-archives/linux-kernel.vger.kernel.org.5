@@ -2,144 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9BF7B7413
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B257B7416
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbjJCWXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 18:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
+        id S229953AbjJCW0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 18:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbjJCWXL (ORCPT
+        with ESMTP id S229729AbjJCW0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 18:23:11 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA30A1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:23:08 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d85fc6261ffso1784919276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 15:23:08 -0700 (PDT)
+        Tue, 3 Oct 2023 18:26:34 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADB4A7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:26:31 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a200028437so18367557b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 15:26:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696371788; x=1696976588; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tCZ9sGW2dFIoiIJ1Nka8giJRyf+MG2OcgcHbbbzJ3zU=;
-        b=k38tSP/FZHBZWkCLkPJENS3ab9nQCYS/y+TaeCLpFnRL+LEqTytPUiDL9M8cfchfYA
-         QR29Wf0UkE8712jVDG7x2S85Vx2EjkUt5gqPY4V3C4qon25umM5NzVIm4kwlctAnBkM0
-         b/cS7GCu+1wb0ziz2VNFBtFafOPdrNM9ljccKQAxiLy1ILd4CUmNsMh20c9it7MNz87s
-         bmGSYEoqmcAms8NqjDw5gBZHBUNkRc9SusMF7GUHSzPtTFr46fIs1GHCnzrOyv7UPLg7
-         rUtfWfVRoi1IN6s+arLhzOqNcDDzwJRW1kKlFOunqisvsHeblISfJpCW5z1JsNfyh7Wb
-         0UtQ==
+        d=google.com; s=20230601; t=1696371990; x=1696976790; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e/ezmrX03/lx2b3wgyBKph28UWpTDQ/b9recBcS7DQI=;
+        b=G+b5779MpqRobRsSke/A28Ctz1M3VA5W813AVH7yhZ3ERrCZcJrImS8b5m8ed5/Fkt
+         lTRZu93ok7yX9Z+Ns8Am5goBW3QSI+j466+IUH2zg1fT0cYU9YAhPSU2qPG0rniR+tgU
+         XhUK1ZQmqMUBAcZNQIKeCG0HFQkX96ncSKQ4AsH7VYJZpzlWZfCR4UoCzV9Ax8xQIbd8
+         Bh9HvI49GGhtulwh45EvYr++sEWH/uBmaLvgx938ggrpTPcXofshppYs4fjzX1So9LwQ
+         +wmf97Ji2886zoNqv/nFoLAaBJd+MgQumy41hx4QuS/dglr7PXYz/JefHahoGUugsD0z
+         Z6rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696371788; x=1696976588;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tCZ9sGW2dFIoiIJ1Nka8giJRyf+MG2OcgcHbbbzJ3zU=;
-        b=cV4na6ipY6HrIjwh5Ip03gIyDK3L7E2bpU2DQ6nD5zp9Nwsh9cVhYUq01PE+jfLqKA
-         6BKEI7PmhJ+MfP7rIIL5GTFCMEdLroSfjwllUdNNNl82j7aHhx0ZdzdhM01CxP6Nl6gI
-         tenQQNB5MC8+YX59oM+mxKyRcvxdc1+N5qUdyHAXqMuhSsQtxvahtndOJHRyvft7ilkN
-         vtndamd87fhQlRPUxbat1EmqmooTexZ8X8T3REGwEYvZ1aEOnkg5s+I52rIMtidHL4DL
-         AkLOApD6WCRxNHydG+qvVl6OktMLG5nnZY28ojZfbDwYvR648J/7OQj/o/S79GnzrAiq
-         q6dQ==
-X-Gm-Message-State: AOJu0Yx1n1wRutrx4ZPqPNbGsvs4ENC90c9h3ukTgaHUqlipQSUwc1th
-        QbrpIE2WjhKLJZZL5hNgTMtz/zQTaTEE3D2mlQ==
-X-Google-Smtp-Source: AGHT+IF3MCdVcuEbUDPuR1AxHYCEQ+XcRpz3Ql56S2cBradS8j/Y6cCKomMEFbSycqYVYjSHC13duE6J74qwZ9HP8w==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:1907:0:b0:d86:a97a:8a92 with SMTP
- id 7-20020a251907000000b00d86a97a8a92mr8582ybz.4.1696371787997; Tue, 03 Oct
- 2023 15:23:07 -0700 (PDT)
-Date:   Tue, 03 Oct 2023 22:23:07 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAEqUHGUC/5WNQQqDMBBFryJZd4ozgsWueo8iJSZTHVqNZCRUx
- Ls39QaFv3l/8d5mlKOwmmuxmchJVMKUgU6FcYOdegbxmQ2VVJUNXUCXOLl5BR8lcVQYRR0skv+
- 8x0tGcMBY15UlRFs6k01z5Kd8jsq9zTyILiGuRzTh7/3PnxAQqOk6z+zRkrv1IfRvPrswmnbf9 y8034xz1wAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696371786; l=2527;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=cCDkWAced3tU7PCx4WFFpYw9ujSV23pQSM7iZfWw2HE=; b=GUfH119OCZQSjHT80MnLIY0cic8miLh0zHXnjG7ymGxUzmL52MGPI5Yxmw4y+zfSNS2rGTwIz
- eJ1yTaUNKnYBFbI5y4yZ2gNcpff6ptEj/CCQ63xs2JW+UBW+Ij03Ius
-X-Mailer: b4 0.12.3
-Message-ID: <20231003-strncpy-drivers-misc-ti-st-st_kim-c-v2-1-79630447b0a1@google.com>
-Subject: [PATCH v2] drivers: misc: ti-st: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1696371990; x=1696976790;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e/ezmrX03/lx2b3wgyBKph28UWpTDQ/b9recBcS7DQI=;
+        b=DT2tAKKEGpOoRaUOp2wwpvy9OR0X4GgRDPka2/v/SuckizrsbmWLti8afeJ5R730ry
+         vpzIYIfpXJmjnLGwSMhTV95MG+G4seWeptT34N5GWetg1MUoiJkMqIj58222cjxbUE/c
+         xTTIgVqoDUxFSqb4X8fVsEV2615jiZRxoA+Qn/C+2krXE9v2mun/zasC+AurnrdnXug4
+         uK6hPiYO/IxJdgXJqKnExMyYWSZGn2VPBceoLNkEIFur7DNYEuiEPw+WwF/CXNZVtB7n
+         MVzaWfvhbelUVtJRpooE9u3bRkCyHdzhLPa2XuOKYUw/zk513BLwr1VOE49v3X2d8JoA
+         MUhw==
+X-Gm-Message-State: AOJu0YwkXlQ+VeewMjXxdocl00DbnAuGH6UZEQLrhY+WnSZGi8AF+15A
+        XcUrTt+EsWMsJa/ddxVF4VRTRtByUSvAUueJV8sN2A==
+X-Google-Smtp-Source: AGHT+IF0xmlVD08wVXp1gfdjZoxUeDjnszKhqUw2F/pnugOO1Cxpl/juxTDOh8Z6Eaai/DseLkxNvD3iKRk8HMP31oI=
+X-Received: by 2002:a0d:cbd7:0:b0:59b:fb30:9862 with SMTP id
+ n206-20020a0dcbd7000000b0059bfb309862mr1004133ywd.3.1696371990056; Tue, 03
+ Oct 2023 15:26:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <ZRXHK3hbdjfQvCCp@x1n> <fc27ce41-bc97-91a7-deb6-67538689021c@redhat.com>
+ <ZRrf8NligMzwqx97@x1n> <CA+EESO5VtrfXv-kvDsotPLXcpMgOK5t5c+tbXZ7KWRU2O_0PBQ@mail.gmail.com>
+ <CA+EESO4W2jmBSpyHkkqZV0LHnA_OyWQcvwSkfPcWmWCsAF5UWw@mail.gmail.com>
+ <9434ef94-15e8-889c-0c31-3e875060a2f7@redhat.com> <CA+EESO4GuDXZ6newN-oF43WOxrfsZ9Ejq8RJNF2wOYq571zmDA@mail.gmail.com>
+ <CAJuCfpE_h7Bj41sBiADswkUfVCoLXANuQmctdYUEgYjn6fHSCw@mail.gmail.com>
+ <ZRx31TKFDGRatoC8@x1n> <c837fc02-3dbd-ba88-dacb-cf150272a4c4@redhat.com> <ZRyFnurIgVFVD8hd@x1n>
+In-Reply-To: <ZRyFnurIgVFVD8hd@x1n>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 3 Oct 2023 15:26:16 -0700
+Message-ID: <CAJuCfpFggFpPxJjx9uGe05x0fTNONgoUf=QzkpCHLx43Tbryjg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+To:     Peter Xu <peterx@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Jann Horn <jannh@google.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Tue, Oct 3, 2023 at 2:21=E2=80=AFPM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Tue, Oct 03, 2023 at 11:08:07PM +0200, David Hildenbrand wrote:
+> > Sorry I have to ask: has this ever been discussed on the list? I don't =
+see
+> > any pointers. If not, then probably the number of people that know abou=
+t the
+> > history can be counted with my two hands and that shouldn't be the basi=
+s for
+> > making decisions.
+>
+> For example:
+>
+> https://lore.kernel.org/all/1425575884-2574-21-git-send-email-aarcange@re=
+dhat.com/
 
-We expect both `kim_data->dev_name` and `kim_gdata->dev_name` to be
-NUL-terminated.
+There was another submission in 2019:
+https://lore.kernel.org/all/cover.1547251023.git.blake.caldwell@colorado.ed=
+u/
 
-`kim_data->dev_name` seems to not require NUL-padding.
+Though both times it did not generate much discussion. I don't have a
+strong preference though MOVE sounds more generic to me TBH (it
+specifies the operation rather than REMAP which hints on how that
+operation is carried out). But again, I'm fine either way.
+As for UFFDIO_MOVE_ZERO_COPY_ONLY vs UFFDIO_MOVE_MODE_ALLOW_COPY, I
+find it weird that the default (the most efficient/desired) mode of
+operation needs a flag. I would prefer to have no flag initially and
+add UFFDIO_MOVE_MODE_ALLOW_COPY or whatever name is more appropriate
+when/if we ever need it. Makes sense?
 
-`kim_gdata` is already zero-allocated and as such does not require
-NUL-padding:
-|       kim_gdata = kzalloc(sizeof(struct kim_data_s), GFP_KERNEL);
-
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-Let's also opt to use the more idiomatic strscpy usage of:
-strscpy(dest, src, sizeof(dest))
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- use sizeof(dest) (thanks Kees)
-- rebase onto mainline cbf3a2cb156a2c91
-- Link to v1: https://lore.kernel.org/r/20230927-strncpy-drivers-misc-ti-st-st_kim-c-v1-1-29bbdeed1a2c@google.com
----
-Note: build-tested only.
----
- drivers/misc/ti-st/st_kim.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/misc/ti-st/st_kim.c b/drivers/misc/ti-st/st_kim.c
-index fe682e0553b2..4b1be0bb6ac0 100644
---- a/drivers/misc/ti-st/st_kim.c
-+++ b/drivers/misc/ti-st/st_kim.c
-@@ -590,7 +590,7 @@ static ssize_t store_dev_name(struct device *dev,
- {
- 	struct kim_data_s *kim_data = dev_get_drvdata(dev);
- 	pr_debug("storing dev name >%s<", buf);
--	strncpy(kim_data->dev_name, buf, count);
-+	strscpy(kim_data->dev_name, buf, sizeof(kim_data->dev_name));
- 	pr_debug("stored dev name >%s<", kim_data->dev_name);
- 	return count;
- }
-@@ -751,7 +751,8 @@ static int kim_probe(struct platform_device *pdev)
- 	}
- 
- 	/* copying platform data */
--	strncpy(kim_gdata->dev_name, pdata->dev_name, UART_DEV_NAME_LEN);
-+	strscpy(kim_gdata->dev_name, pdata->dev_name,
-+		sizeof(kim_gdata->dev_name));
- 	kim_gdata->flow_cntrl = pdata->flow_cntrl;
- 	kim_gdata->baud_rate = pdata->baud_rate;
- 	pr_info("sysfs entries created\n");
-
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20230927-strncpy-drivers-misc-ti-st-st_kim-c-e1663a211a0c
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+>
+> --
+> Peter Xu
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
+>
