@@ -2,219 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B03C77B60B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 08:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856287B60B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 08:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239167AbjJCGWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 02:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
+        id S230285AbjJCGWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 02:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbjJCGWk (ORCPT
+        with ESMTP id S230213AbjJCGWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 02:22:40 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2044.outbound.protection.outlook.com [40.107.244.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE20BD;
-        Mon,  2 Oct 2023 23:22:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VWMN//X/w4qU5JPG0xbyxDrfYMJqvyk/UK7BdZpsiRAjjQMy43qMkfY1ohJZ3G5HxGdeuFx3oJtzoS8invQMZuD3/OTYKGNJ81kNyKb4Xm+BZ4KeMRMq5Rbn6taEwPDK/14YvCzesH+IWVPFjBEfqJcYiG7l1j6xENMxYkQUxaq0aPO7jrjNzW01Yp0cAAjz5+4SAuQag9bzDYOK80HmcBKO/ky33oyr9waZVsOO1Ovfun9CgmCDrs7YH8zoe/+B+hQy6h03vDFkg2o5ZD8ksVTWhl2Y8wTUtArlEaRABrRZw31btUI/4v2MHQpZ5w2HZnTwDG3Zqb+MYNhZng7p6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aX/ewiwVvxectQk+ywRB3ivU2XZjRqHGNqzA3sRY6ZM=;
- b=B7V5ujDKHjCcJpnr8gpzcuWhvG0sLfDHcezPJVl2cX+zpvL76djE6kju2edbMrd2niBuirfRe99yhogVvSltmhQN+hkDFV2vZPj9WGHwaSIOzYO1hNEd2DuPYqUdMAlsNt8BYHuabjL+HLnIRIYl1+TKbn059EyMOveX7mGaycCEPoa/ovu6ciWJPossYdCcUo6FZapPIXZkg9CuH0VKFfsQJuxsNNrJTTAsMYRMIldwgqZ7ccReKB4i6TDBBfwuwiKODcuGaXQo3CXeZIHhgQU2Lto0qvUqNuc0RYjPoQUCjtc5RLDtZ+swrts7oRYCyo/zEVGcZcYffKMeIU6hCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=baylibre.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aX/ewiwVvxectQk+ywRB3ivU2XZjRqHGNqzA3sRY6ZM=;
- b=B/9X3C8PpZq85/ti85JEIUWu962TVKtTfeSYf0LSCMYv0ekpSIUctKSAIjGXRsqOT6LjQRW/fxaOvrk0qMD9QLYCGUNuBS/sxxgSbWuBJ07xgZTe5m7fj7mbsM2fI5ZblJ5Tgfx+7ZUscIlTgkcP/AnHnxGBt0os1wflfwVW2kY=
-Received: from CYZPR11CA0014.namprd11.prod.outlook.com (2603:10b6:930:8d::24)
- by SA1PR12MB7271.namprd12.prod.outlook.com (2603:10b6:806:2b8::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.29; Tue, 3 Oct
- 2023 06:22:34 +0000
-Received: from CY4PEPF0000E9CF.namprd03.prod.outlook.com
- (2603:10b6:930:8d:cafe::17) by CYZPR11CA0014.outlook.office365.com
- (2603:10b6:930:8d::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.31 via Frontend
- Transport; Tue, 3 Oct 2023 06:22:34 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9CF.mail.protection.outlook.com (10.167.241.142) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.22 via Frontend Transport; Tue, 3 Oct 2023 06:22:34 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 3 Oct
- 2023 01:22:32 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 2 Oct
- 2023 23:22:32 -0700
-Received: from xsjarunbala50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Tue, 3 Oct 2023 01:22:31 -0500
-From:   Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <michal.simek@amd.com>
-CC:     <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-Subject: [PATCH 2/2] drivers: clk: zynqmp: update divider round rate logic
-Date:   Mon, 2 Oct 2023 23:21:53 -0700
-Message-ID: <20231003062153.12215-3-jay.buddhabhatti@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231003062153.12215-1-jay.buddhabhatti@amd.com>
-References: <20231003062153.12215-1-jay.buddhabhatti@amd.com>
+        Tue, 3 Oct 2023 02:22:39 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA22FB8
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 23:22:35 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5384975e34cso808033a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 23:22:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696314154; x=1696918954; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=rfkoUxJACf4CcCgB8OXqoTR+gMEgjCyITO8KbM4zkjM=;
+        b=V6IDrrSQ0B4aPwOPPBHXFbIUXkWMaNaa06YZ0kHnrKMBEXbY5EibOp9SSsLn1Bzmr/
+         nwNKaxB+TlyvLAxYToeIYWJR0VczPPoChcR6u52Xc1OajgUsdjuYrPr1OaIwWSNAvFO2
+         lN6Y1Gv2DKb8XsOO9Pq692MXW9XojRdBVx5oSAmA+/g0uTwOcsuAh+FATGhMDlYfQmAl
+         fueTNIpSl/6N4o9b6lmY+a9YLXlhGXxd7/VvJLWIjLCgyY7ZGoT4nGvQcFxH8CizqxJQ
+         yG6IqQRZ/6DcHjK69zVB0qDxPQTxF47lg0UGTGEQhrJnpvGe0nG1bjz07PH0cZkFS31e
+         wdyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696314154; x=1696918954;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rfkoUxJACf4CcCgB8OXqoTR+gMEgjCyITO8KbM4zkjM=;
+        b=WUSNw3MhKH4X/XoU3GmR2Hd6ZNU74iKZ0jonWJa227KDaRQDZQhwLh/2D9RHXqPRE7
+         Dt4iygpnkJSh8jwS5Jcz8zTUX8dRUlaKAOuU252eiHqvI5De1C82Y2Jn0JEUCsP/FKK4
+         Y93cedXji3z98yJszbgRXLyWwqIpKLkZtD0vaJijq9RYsqeXUyiE8M/8IvkaRrS8r8w3
+         MrDP8h/qTwyHN1+YnTqVfvxBEXZtVU8DIWcea9u31vvZVeQsnLNhc7LGQD9f03paX0ib
+         vuqIJCePGJpbOypAMCBb9asIStS2e3BUQa/SJABWnjpQTLGP20EnXYYLHt5eET1TXvOs
+         WYsQ==
+X-Gm-Message-State: AOJu0YxiQfqVIiwIFnNb253Af9Ojhn1z3trO7mXjsQhBE4PLXD2ZLno7
+        mDHGf16YrwqC+wcM4PHCIP7OVKbD72d03eroXT2+FAOB
+X-Google-Smtp-Source: AGHT+IGbAZWLMWaPm/bMpagP2CKU/BasVWEssEk+X8HVQd87Mk8t7d8P+4TVJ54Yec4Ckj884WrpSw==
+X-Received: by 2002:a17:906:5a4e:b0:9b2:d367:d818 with SMTP id my14-20020a1709065a4e00b009b2d367d818mr9930251ejc.38.1696314154275;
+        Mon, 02 Oct 2023 23:22:34 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id dt26-20020a170906b79a00b0099cbfee34e3sm475127ejb.196.2023.10.02.23.22.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 23:22:33 -0700 (PDT)
+Message-ID: <50f32be6-ccbe-42b7-81bf-7509da400ba6@linaro.org>
+Date:   Tue, 3 Oct 2023 08:22:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CF:EE_|SA1PR12MB7271:EE_
-X-MS-Office365-Filtering-Correlation-Id: 95873bb7-6ea9-463a-a3ee-08dbc3d9218d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Yr0NCl9SVktay39afOXzB7+hn/+GLu6oD+UjGSWY1sw5j7wjkECRnTM38qmKiX3s7zNSISbdKx8ZNc4loxD0pWBSlgabDd9JJOYRVwnCAOYYe2uCv/5oJBmXQ//g5RLAU8LwRgkeqTsigTL9ZnBKessaOor6eXDEKR3CWZ1o+p6jxn+xC/HlVAjPdCsDBQVfm+X+Uef0YMnNe1V7uWy6wqzOv3pYBU+GRIYpfLdp37opXsZAO3pPlpWVNPGevd8gpBk3PhnvFw4zjJ6+xjbX9DK0JNaDZDH1xp33X55rlL84gJCfELzTGkelcWbWCoVHtAL6UPZX4IgwPxEMGLR8UCUQmEuSKu0oJVv2XMYv1K8G7wny+IuCuXKBNUrAQjWY649/sGM/C7myYsuvgrGc2Z2XBwARcWIb++8LCoo9l7cbuW91QWT7h/cl+Lc+tlwJJ6jEgN7vl3U5MEMaiwtxCD41j/SXVvgq60PoV0rkvV6CgxDtNPCx1DSKPNthFx0m8h/IvwxYGPV0e6SzD2S4fSyeRZcMwh3+mlF0PxGa+8IV/rhlZXljJJaGZWEL1Z9Bltitps3p9drJjLScj2rO2+RQlxFADxhMbaZCvFJWce2u7x0cryih1BjUzqqd1kcLiQy7B88x/vetybeAvkEQSPSM3v0yAG1RsteQDg+R3RiXWpDsNkUXOLT4PBtXJAPvnKkSF0KkFsJ8EEckzKQKQxoiMCW0YWk6ayTsj5eQMENYuRHVZMubRG83Idi/tWG0udbIlurYRxwodF6zocrBtg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(346002)(39860400002)(376002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(82310400011)(36840700001)(46966006)(40470700004)(110136005)(4326008)(70586007)(41300700001)(70206006)(44832011)(8676002)(8936002)(478600001)(54906003)(426003)(26005)(336012)(1076003)(2616005)(83380400001)(2906002)(47076005)(6666004)(36860700001)(81166007)(356005)(5660300002)(6636002)(86362001)(316002)(82740400003)(36756003)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 06:22:34.0369
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95873bb7-6ea9-463a-a3ee-08dbc3d9218d
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9CF.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7271
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: duplicate patch in the samsung-krzk tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
+Cc:     ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20230929102539.42b11f3c@canb.auug.org.au>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20230929102539.42b11f3c@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently zynqmp divider round rate is considering single parent and
-calculating rate and parent rate accordingly. But if divider clock flag
-is set to SET_RATE_PARENT then its not trying to traverse through all
-parent rate and not selecting best parent rate from that. So use common
-divider_round_rate() which is traversing through all clock parents and
-its rate and calculating proper parent rate.
+On 29/09/2023 02:25, Stephen Rothwell wrote:
+> Hi all,
+> 
+> The following commit is also in the arm-soc-fixes tree as a different
+> commit (but the same patch):
+> 
+>   471eed5ad217 ("arm64: defconfig: enable syscon-poweroff driver")
+> 
+> This is commit
+> 
+>   d75e870c32f6 ("arm64: defconfig: enable syscon-poweroff driver")
+> 
+> in the arm-soc-fixes tree.
 
-Signed-off-by: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
----
- drivers/clk/zynqmp/divider.c | 70 ++++++------------------------------
- 1 file changed, 10 insertions(+), 60 deletions(-)
+Hm, I did not expect this going through arm-soc, but no problem. I
+dropped it now from my tree.
 
-diff --git a/drivers/clk/zynqmp/divider.c b/drivers/clk/zynqmp/divider.c
-index 33a3b2a22659..a42c183d7e5d 100644
---- a/drivers/clk/zynqmp/divider.c
-+++ b/drivers/clk/zynqmp/divider.c
-@@ -110,52 +110,6 @@ static unsigned long zynqmp_clk_divider_recalc_rate(struct clk_hw *hw,
- 	return DIV_ROUND_UP_ULL(parent_rate, value);
- }
- 
--static void zynqmp_get_divider2_val(struct clk_hw *hw,
--				    unsigned long rate,
--				    struct zynqmp_clk_divider *divider,
--				    u32 *bestdiv)
--{
--	int div1;
--	int div2;
--	long error = LONG_MAX;
--	unsigned long div1_prate;
--	struct clk_hw *div1_parent_hw;
--	struct zynqmp_clk_divider *pdivider;
--	struct clk_hw *div2_parent_hw = clk_hw_get_parent(hw);
--
--	if (!div2_parent_hw)
--		return;
--
--	pdivider = to_zynqmp_clk_divider(div2_parent_hw);
--	if (!pdivider)
--		return;
--
--	div1_parent_hw = clk_hw_get_parent(div2_parent_hw);
--	if (!div1_parent_hw)
--		return;
--
--	div1_prate = clk_hw_get_rate(div1_parent_hw);
--	*bestdiv = 1;
--	for (div1 = 1; div1 <= pdivider->max_div;) {
--		for (div2 = 1; div2 <= divider->max_div;) {
--			long new_error = ((div1_prate / div1) / div2) - rate;
--
--			if (abs(new_error) < abs(error)) {
--				*bestdiv = div2;
--				error = new_error;
--			}
--			if (divider->flags & CLK_DIVIDER_POWER_OF_TWO)
--				div2 = div2 << 1;
--			else
--				div2++;
--		}
--		if (pdivider->flags & CLK_DIVIDER_POWER_OF_TWO)
--			div1 = div1 << 1;
--		else
--			div1++;
--	}
--}
--
- /**
-  * zynqmp_clk_divider_round_rate() - Round rate of divider clock
-  * @hw:			handle between common and hardware-specific interfaces
-@@ -174,6 +128,8 @@ static long zynqmp_clk_divider_round_rate(struct clk_hw *hw,
- 	u32 div_type = divider->div_type;
- 	u32 bestdiv;
- 	int ret;
-+	u8 width = 0;
-+	u16 max;
- 
- 	/* if read only, just return current value */
- 	if (divider->flags & CLK_DIVIDER_READ_ONLY) {
-@@ -193,23 +149,17 @@ static long zynqmp_clk_divider_round_rate(struct clk_hw *hw,
- 		return DIV_ROUND_UP_ULL((u64)*prate, bestdiv);
- 	}
- 
--	bestdiv = zynqmp_divider_get_val(*prate, rate, divider->flags);
--
--	/*
--	 * In case of two divisors, compute best divider values and return
--	 * divider2 value based on compute value. div1 will  be automatically
--	 * set to optimum based on required total divider value.
--	 */
--	if (div_type == TYPE_DIV2 &&
--	    (clk_hw_get_flags(hw) & CLK_SET_RATE_PARENT)) {
--		zynqmp_get_divider2_val(hw, rate, divider, &bestdiv);
-+	max = divider->max_div;
-+	while (max != 0) {
-+		if ((max & 1) == 1)
-+			width++;
-+		max = max >> 1;
- 	}
- 
--	if ((clk_hw_get_flags(hw) & CLK_SET_RATE_PARENT) && divider->is_frac)
--		bestdiv = rate % *prate ? 1 : bestdiv;
-+	rate = divider_round_rate(hw, rate, prate, NULL, width, divider->flags);
- 
--	bestdiv = min_t(u32, bestdiv, divider->max_div);
--	*prate = rate * bestdiv;
-+	if (divider->is_frac && (clk_hw_get_flags(hw) & CLK_SET_RATE_PARENT) && (rate % *prate))
-+		*prate = rate;
- 
- 	return rate;
- }
--- 
-2.17.1
+Best regards,
+Krzysztof
 
