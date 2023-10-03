@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B82B7B738D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 221A87B738F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241286AbjJCVyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 17:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35444 "EHLO
+        id S232424AbjJCVzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 17:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241282AbjJCVyE (ORCPT
+        with ESMTP id S232355AbjJCVzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 17:54:04 -0400
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF43A1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:54:02 -0700 (PDT)
-Received: from [127.0.0.1] ([99.8.153.148])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 393LrRTV1773610
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 3 Oct 2023 14:53:28 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 393LrRTV1773610
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023091101; t=1696370009;
-        bh=s7M3jPu88VzYxvgafIQdD5PZlhNhSK8uSfdd5mIZprE=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=qzHo+0PywrAnDtUs+udBREyLz4hUEKi9doXzhFtkFdo77Fv7ui7OYR9Ax6GYZOnKx
-         bXnnwptIBB9zO9YNGLLnXajY9GOyqIrGNQ5agwyHxUuzCfFGDJF3Kbql8AR9f5RXcO
-         q782sQ2bfjGV3BN+pbSBZIvlQLceo2zPj0385P6FMJkekQPxe4/bnFNP0oPOBcQCi2
-         7doeleL3AEm4Ok8ryLr4nhIUgNdmiTgiG5kVOal89kzmb4WOqaMZl7fdXKJV9KRhcH
-         fdSJe8dIhyey0ubvt19FbZmEvKpyvspHuh2JUCYTkYBVUOeoCiXXnXhri6rqixPJgY
-         fULQp5QXR/I0w==
-Date:   Tue, 03 Oct 2023 14:53:17 -0700
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     Dave Hansen <dave.hansen@intel.com>, Ingo Molnar <mingo@kernel.org>
-CC:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86_64: test that userspace stack is in fact NX
-User-Agent: K-9 Mail for Android
-In-Reply-To: <1dad6a33-1cd0-0d0f-29c5-97fd2807f07a@intel.com>
-References: <4b78a714-5ac3-4783-8256-1dda4673db01@p183> <1d5223b8-0275-619d-db1c-e2aaaddb173e@intel.com> <d468d13c-6c4b-4d8d-8e2d-e4314b4bb1a7@p183> <f972d59c-40dd-2a68-ff13-a2658513a25b@intel.com> <ZRxmS/3nr6pDa1+z@gmail.com> <ZRxr79i5PAXRXjqr@gmail.com> <1dad6a33-1cd0-0d0f-29c5-97fd2807f07a@intel.com>
-Message-ID: <060F14C5-3E81-4A9B-8576-8905410EF830@zytor.com>
+        Tue, 3 Oct 2023 17:55:05 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEC6A1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:55:02 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a22eaafd72so17953577b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 14:55:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696370102; x=1696974902; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Xv9u3ucLLjlP5EiWRSs6ylR+qTsic8mZD/1X78BJP4=;
+        b=iNiqPr8ARa1PX5RdHu3c3XdkbbLQLIvvwybyicAqEaASgrxKoWYCfe6gs0ncD5Qa5e
+         MyRGYXZxfPOPNmlTnwi/HDoZF6gImzR8XDvrgDA17yoHrU8nOWME7GGVOwP9O4Ftxqjo
+         BHy4Jrg7A2b0iSf0GoAAN0gQhWB/9I3S88f8O2KBnNnJFFlw65ps03/6CEcTMwwMf4Zs
+         zhH/Qm7slv4kVC/fuRpmIM1bxy6JgBhuy6b2OE9ZJuIH+IljJXV8y/P4f6aPjKZL93nf
+         Gsv/FoYYyr996kflPDiXGmT9Fz/DWiAJKEUGMMcqO+ik/GMaDJcOLcKTT4zx+hvY9LYt
+         dhsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696370102; x=1696974902;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6Xv9u3ucLLjlP5EiWRSs6ylR+qTsic8mZD/1X78BJP4=;
+        b=pgmMqtQE9pIZ84CjK+nKBATGDEajwiR94bbHBOi4TBkXTOczElP9gsqt3JWLKFtX9m
+         p/fJRZyoYhNnR6bls9ZgDSZRldKSaubx2DI/vMAqvUru7JmUlWNtb9xloQgs4Hu2S8k7
+         NwolyZZy/huSgZtTvi4wEFPjfhFKUUxEZblxryq15gqSgtbNxsixYv4cbRsZy10Sblle
+         Epbh4eJ6KXpDftViMGnhQ5h/KhTJCkEhZ49/iy1o0uNHWBZ6XRVfivAvMFUQmwUojQIW
+         ehgU3PtfW+GFvCqJ8+30gxX1OaUI9Z97kusn/vQiP/CwQH2AjlBTWTMV0PEDEDyT++sb
+         OwAA==
+X-Gm-Message-State: AOJu0Yx+vJs9L6S2HzGvocgUrKs86XCIlatcqvygKazraMSNX/9myvr2
+        5LCGtOyNvhEWLKcjM24JGVHBcDZp0+Tt2VNqQIlQgA==
+X-Google-Smtp-Source: AGHT+IFiz9jLtqqyu/bUfWMmxSrAm5G7bYi6ikGRjXOf59sT/YSLJOCOxtl+UgwPUHqNHm1pzNWBgFg+uSCJnwzcVVA=
+X-Received: by 2002:a81:6c13:0:b0:576:93f1:d118 with SMTP id
+ h19-20020a816c13000000b0057693f1d118mr895084ywc.2.1696370100826; Tue, 03 Oct
+ 2023 14:55:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20230923-ixp4xx-eth-mtu-v1-1-9e88b908e1b2@linaro.org> <169632602529.26043.5537275057934582250.git-patchwork-notify@kernel.org>
+In-Reply-To: <169632602529.26043.5537275057934582250.git-patchwork-notify@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 3 Oct 2023 23:54:49 +0200
+Message-ID: <CACRpkdacagNg8EA54_9euW8M4WHivLb01C7yEubAreNan06sGA@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: ixp4xx_eth: Specify min/max MTU
+To:     patchwork-bot+netdevbpf@kernel.org
+Cc:     khalasa@piap.pl, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On October 3, 2023 1:46:20 PM PDT, Dave Hansen <dave=2Ehansen@intel=2Ecom> =
-wrote:
->On 10/3/23 12:30, Ingo Molnar wrote:
->> * Ingo Molnar <mingo@kernel=2Eorg> wrote:
->>> Because not having NX in 2023 on any system that is threatened is a
->>> big security vulnerability in itself, and whether the vendor or owner
->>> intentionally did that or not doesn't really matter, and a failing
->>> kernel testcase will be the least of their problems=2E
->> BTW=2E, it's also questionable whether the owner is *aware* of the fact=
- that=20
->> NX is not available: what if some kernel debug option cleared the NX fl=
-ag,=20
->> unintended, or there's some serious firmware bug?
->>=20
->> However unlikely those situations might be, I think unconditionally war=
-ning=20
->> about NX not available is a very 2023 thing to do=2E
->
->100% agree for x86_64=2E  Any sane x86_64 system has NX and the rest are
->noise that can live with the error message, unless someone shows up with
->a compelling reason why not=2E
->
->For 32-bit, the situation is reversed=2E  The majority of 32-bit-only CPU=
-s
->never had NX=2E  The only reason to even *do* this check on 32-bit is tha=
-t
->we think folks are running i386 kernels on x86_64 hardware _or_ we just
->don't care about 32-bit in the first place=2E
->
->In the end, I think if we're going to do this test on i386, we should
->_also_ do the 5-lines-of-code CPUID check=2E  But I honestly don't care
->that much=2E  I wouldn't NAK (or not merge) this patch over it=2E
+On Tue, Oct 3, 2023 at 11:40=E2=80=AFAM <patchwork-bot+netdevbpf@kernel.org=
+> wrote:
 
-Perhaps we should also complain at people who are still running 32-bit ker=
-nels on 64-bit hardware? It has been 20 years=2E=2E=2E
+> This patch was applied to netdev/net-next.git (main)
+> by Paolo Abeni <pabeni@redhat.com>:
+
+Sorry Paolo, this is the latest version of this patch, which sadly changed
+Subject in the process:
+https://lore.kernel.org/netdev/20230928-ixp4xx-eth-mtu-v3-1-cb18eaa0edb9@li=
+naro.org/
+
+If it causes trouble for you to replace the patch I can rebase
+this work on top of your branch, just tell me.
+
+Yours,
+Linus Walleij
