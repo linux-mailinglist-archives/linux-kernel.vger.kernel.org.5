@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9267B66D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C21717B66DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239742AbjJCK41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 06:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51054 "EHLO
+        id S239752AbjJCK4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 06:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239718AbjJCK4Y (ORCPT
+        with ESMTP id S239743AbjJCK41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 06:56:24 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE677AC;
-        Tue,  3 Oct 2023 03:56:21 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 393Atm8B059039;
-        Tue, 3 Oct 2023 05:55:48 -0500
+        Tue, 3 Oct 2023 06:56:27 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BCAB4;
+        Tue,  3 Oct 2023 03:56:24 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 393AttNu057563;
+        Tue, 3 Oct 2023 05:55:55 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696330548;
-        bh=qfxFibk2z512fCIHjq/ouom5dRBwGuEZAl2syfqwaSs=;
-        h=From:To:CC:Subject:Date;
-        b=bmlI58Sf4zIY+pcO8LhvJhRqCOoMipIzu9Wt2Q6GCo5RAeztRGZ+t1DVQZnKwDcux
-         6wNAEZbMdTEHba9FfSj5cEmWQNVhCR7Ki2vcdgzTG/KtH+ngRi9slsny76qWbCiV0V
-         EiMh+KBFUHOjD9fXZnzX7s6EiA164tbzfU6I5m9o=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 393Atmjl006116
+        s=ti-com-17Q1; t=1696330555;
+        bh=VJXrid2kPeeupJMKwSjbH7n+scpImlf2w0s3YRl2uVQ=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=B0JybiYjDbXQC6h+gw9pywHu6HiJjIbaLRqVmRd83vl4vx3nkw9UqcPtj86cTQh1F
+         gTKsgzuugz/jBItupgy3deSosoOdKmjQE3CNSpY/gvgRM2X2+SA+DbPQFigSSihfcD
+         ucfs/GxznWlWQgCBd0L2uVbuanj+luXHvi7lextg=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 393AttZs029509
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Oct 2023 05:55:48 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+        Tue, 3 Oct 2023 05:55:55 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 3
- Oct 2023 05:55:47 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2023 05:55:54 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 3 Oct 2023 05:55:47 -0500
+ Frontend Transport; Tue, 3 Oct 2023 05:55:54 -0500
 Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 393AtluA122962;
-        Tue, 3 Oct 2023 05:55:47 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 393Atsh6104152;
+        Tue, 3 Oct 2023 05:55:54 -0500
 Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.199])
-        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 393Atlsg007878;
-        Tue, 3 Oct 2023 05:55:47 -0500
+        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 393AtrAV007891;
+        Tue, 3 Oct 2023 05:55:54 -0500
 From:   MD Danish Anwar <danishanwar@ti.com>
 To:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
 CC:     Peng Fan <peng.fan@nxp.com>, Udit Kumar <u-kumar1@ti.com>,
@@ -63,10 +63,12 @@ CC:     Peng Fan <peng.fan@nxp.com>, Udit Kumar <u-kumar1@ti.com>,
         Tero Kristo <kristo@kernel.org>, <linux-omap@vger.kernel.org>,
         <srk@ti.com>, <r-gunasekaran@ti.com>,
         MD Danish Anwar <danishanwar@ti.com>
-Subject: [PATCH v4 0/4] Add AM65x ICSSG Ethernet support
-Date:   Tue, 3 Oct 2023 16:25:35 +0530
-Message-ID: <20231003105539.1698436-1-danishanwar@ti.com>
+Subject: [PATCH v4 1/4] arm64: dts: ti: k3-am65-main: Add ICSSG IEP nodes
+Date:   Tue, 3 Oct 2023 16:25:36 +0530
+Message-ID: <20231003105539.1698436-2-danishanwar@ti.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231003105539.1698436-1-danishanwar@ti.com>
+References: <20231003105539.1698436-1-danishanwar@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -81,55 +83,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+The ICSSG IP on AM65x SoCs have two Industrial Ethernet Peripherals (IEPs)
+to manage/generate Industrial Ethernet functions such as time stamping.
+Each IEP sub-module is sourced from an internal clock mux that can be
+sourced from either of the IP instance's ICSSG_IEP_GCLK or ICSSG_ICLK.
+Add the IEP nodes for all the ICSSG instances.
 
-This series adds support for ICSSG ethernet on AM65x SR2.0. 
-This series also enables TI_ICSSG_PRUETH as loadable kernel module.
-This series is based on the latest next-20230925 linux-next.
+Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 36 ++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-This is the v4 of the series [v1]. This addresses comments made on v3.
-
-Changes from v3 to v4:
-*) Added RB tag of Andrew Davis.
-*) Added LAKML to the --cc of this series as it was dropped in v3.
-
-Changes from v2 to v3:
-*) Changed comment of icssg nodes in device trees from "Dual Ethernet
-   application node" to "Ethernet node" as asked by Andrew L.
-*) Applied k3-am654-idk.dtbo at build time to the k3-am654-base-board.dtb
-   in order to not have orphan DTBO as asked by Andrew D.
-*) Modified k3-am654-gp-evm.dtb to have k3-am654-icssg2.dtbo as well.
-
-Changes from v1 to v2:
-*) Moved ICSSG2 nodes from k3-am654-base-board.dts to new overlay file
-   k3-am654-icssg2.dtso as asked by Andrew.
-*) Renamed k3-am654-base-board.dts to k3-am654-common-board.dts
-*) Added "Enable TI_ICSSG_PRUETH" patch to this series.
-
-[v1] https://lore.kernel.org/all/20230911071245.2173520-1-danishanwar@ti.com/
-[v2] https://lore.kernel.org/all/20230921060913.721336-1-danishanwar@ti.com/
-[v3] https://lore.kernel.org/all/20230926045337.1248276-1-danishanwar@ti.com/
-
-Thanks and Regards,
-MD Danish Anwar
-
-MD Danish Anwar (4):
-  arm64: dts: ti: k3-am65-main: Add ICSSG IEP nodes
-  arm64: dts: ti: k3-am654-base-board: add ICSSG2 Ethernet support
-  arm64: dts: ti: k3-am654-idk: Add ICSSG Ethernet ports
-  arm64: defconfig: Enable TI_ICSSG_PRUETH
-
- arch/arm64/boot/dts/ti/Makefile               |   4 +
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi      |  36 +++
- ...se-board.dts => k3-am654-common-board.dts} |   0
- arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso   | 145 +++++++++
- arch/arm64/boot/dts/ti/k3-am654-idk.dtso      | 296 ++++++++++++++++++
- arch/arm64/configs/defconfig                  |   1 +
- 6 files changed, 482 insertions(+)
- rename arch/arm64/boot/dts/ti/{k3-am654-base-board.dts => k3-am654-common-board.dts} (100%)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
- create mode 100644 arch/arm64/boot/dts/ti/k3-am654-idk.dtso
-
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index bc460033a37a..fdb042d04ad9 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -1151,6 +1151,18 @@ icssg0_iepclk_mux: iepclk-mux@30 {
+ 			};
+ 		};
+ 
++		icssg0_iep0: iep@2e000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2e000 0x1000>;
++			clocks = <&icssg0_iepclk_mux>;
++		};
++
++		icssg0_iep1: iep@2f000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2f000 0x1000>;
++			clocks = <&icssg0_iepclk_mux>;
++		};
++
+ 		icssg0_mii_rt: mii-rt@32000 {
+ 			compatible = "ti,pruss-mii", "syscon";
+ 			reg = <0x32000 0x100>;
+@@ -1293,6 +1305,18 @@ icssg1_iepclk_mux: iepclk-mux@30 {
+ 			};
+ 		};
+ 
++		icssg1_iep0: iep@2e000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2e000 0x1000>;
++			clocks = <&icssg1_iepclk_mux>;
++		};
++
++		icssg1_iep1: iep@2f000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2f000 0x1000>;
++			clocks = <&icssg1_iepclk_mux>;
++		};
++
+ 		icssg1_mii_rt: mii-rt@32000 {
+ 			compatible = "ti,pruss-mii", "syscon";
+ 			reg = <0x32000 0x100>;
+@@ -1435,6 +1459,18 @@ icssg2_iepclk_mux: iepclk-mux@30 {
+ 			};
+ 		};
+ 
++		icssg2_iep0: iep@2e000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2e000 0x1000>;
++			clocks = <&icssg2_iepclk_mux>;
++		};
++
++		icssg2_iep1: iep@2f000 {
++			compatible = "ti,am654-icss-iep";
++			reg = <0x2f000 0x1000>;
++			clocks = <&icssg2_iepclk_mux>;
++		};
++
+ 		icssg2_mii_rt: mii-rt@32000 {
+ 			compatible = "ti,pruss-mii", "syscon";
+ 			reg = <0x32000 0x100>;
 -- 
 2.34.1
 
