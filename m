@@ -2,174 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF98C7B5EB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 03:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C407B5EC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 03:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbjJCBeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 21:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
+        id S238974AbjJCBnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 21:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbjJCBeR (ORCPT
+        with ESMTP id S238973AbjJCBnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 21:34:17 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE289E
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 18:34:14 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-57bf04841ccso75623eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 18:34:14 -0700 (PDT)
+        Mon, 2 Oct 2023 21:43:00 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30691C6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 18:42:57 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5859b06509cso222922a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 18:42:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696296853; x=1696901653; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I7nyeV1Yn2yP8Ggds9eqnE7ec2vBo1fUqwlgRN2c/0g=;
-        b=y0Ge++je358a66UI8vjzZA3ztSBnlYcrePO5jpI/hBpFCwsQzbVDKlSitLhcDdltuj
-         Pz05wimlwDbO3E4YV2al65IHstG00no1946dQSrtiiZ82pfWnjfGtKNYG47S3kxc5wHu
-         3XbXqjcFDu6rtJQtNiPOVs+qdG2Cp3cEKvt+rBJBUWwTyWCfZsQkvIOA5oBt8QOvcnT3
-         p+GRtlFNLo4yHkxKwRFc5C+dZNH38XmV5nK0s/B/XgOMl17XhWKFpd/zwpnB14m8Ib/l
-         0h8tdSSrpESjc8iFMDa+Q86DZoTTd92T+2RK4D0e7DGnQpCuII5yAjom3Rj1+gtkw1G+
-         F9HQ==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696297376; x=1696902176; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8V805m7ttXbTthUXmXdTXgnda0hJbi48S1GO+p1UKEU=;
+        b=drU+HS8Q5K01OZ4mrulL42bp1jZBbIUFfNlNphHL+Dqee9x/wJe8ze2FAmDhbixoK6
+         39UKiXmfALVdAFz+SJ7dsWH2PgEtEtTCQ9tNIgdUZyXs3UpKt2KSHEoKnvb2jeFIPaGG
+         thMuPJfZF2uKJDbPKPZpNG8hwN3VdjWF8xhxPI8Rf3xGIQ4ENP6c76W54P6dQwTrtKmC
+         5dxyBy8tL5qf6IGFUIBIHCwzeVxHVpsuVSTE1/eBJb9/fyJpaYrLU3xPEYBXFqZjUgtM
+         VlurOrUZaUM5opNgGZW4uq+g+cG5e34moKNBGCjBd+aNRFBJQADT6qpl4+yAYwVj/doM
+         SkMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696296853; x=1696901653;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I7nyeV1Yn2yP8Ggds9eqnE7ec2vBo1fUqwlgRN2c/0g=;
-        b=sfI9zcq0x7BQyR7awgtHZ18senZGYjEW9m0Pf/tjRTIBDM95a7WDT1ZPu2W6LjIQ3z
-         HQMKSYMkypEOeC56G36n8jf34hmM2/hAfCd3qjdTXqQ5XpS/AYLgG0Od9gyReWp5xHmy
-         hdjDYjsOyMNWoU4EJp6Y4oaV6WEJcmcLalT7p1VkJWd1VwsccVH0p2iFfth0/64gF4oS
-         uiiv1b/gjKVz+a0qHi+s+HwOAWmV9JEE1qnRnBtPk2NKsLo87Nl+VsZOiwMbqTEfNm8k
-         Am1eVQBwQHZaVCOGnY0ZY3kdrxd42fclI3cOrJwCblPAiFkl1M08q1UxzsO+hHG+hwUr
-         Bt8Q==
-X-Gm-Message-State: AOJu0YydWVFnKUmloDaw3EFi70LO130TShrAecsAGW0DQ0E8Vf/XT/fF
-        G/287wKavsgFtnm2OvbPr1uIAw==
-X-Google-Smtp-Source: AGHT+IFl7MKPdUyLdYV+664LiWNT6GvamIQT6n7BLip/4YiuwCVklAkskqnxLOqewP8BEXYfSrxH5g==
-X-Received: by 2002:a05:6808:1997:b0:3af:6453:2d83 with SMTP id bj23-20020a056808199700b003af64532d83mr16345408oib.2.1696296853242;
-        Mon, 02 Oct 2023 18:34:13 -0700 (PDT)
-Received: from octopus ([2400:4050:c3e1:100:783d:e8bb:e013:a869])
-        by smtp.gmail.com with ESMTPSA id fv21-20020a17090b0e9500b002775281b9easm6931241pjb.50.2023.10.02.18.34.10
+        d=1e100.net; s=20230601; t=1696297376; x=1696902176;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8V805m7ttXbTthUXmXdTXgnda0hJbi48S1GO+p1UKEU=;
+        b=e50ujLIikj4KKV81og2mGDtepOe6BbmgtDjy9/r22fEwPnb05fXfMvMvrcLv9yrW3R
+         mZ7P5elxeDgctVDMZ14hh7jn5Qq0g4+GhLEDL4e4goNHOpWmXLibFPIpoja5XaaOUcOQ
+         AoHIAupguBWsxj2r1G70CX83TImFtLh1tJDgHYwAp6JfTgfBF8O3hqR9jTkN9/mL57Lb
+         TI0tHNbKX8fWRuukwjuBZ20d4fvqgh48CsNtda+QEHZZd1wwheTwvXM9Gt/0jXabo+Qt
+         m343k8W2lF2YfQYPdaYNS0+oEg+2VcL+UcF0u0EBH4drX/56VfUt6RpGQkNus7v38blq
+         sdiw==
+X-Gm-Message-State: AOJu0YwYIlMY+COwPc8rAGrfnxhTDJVBbthxQTZwy/NAeMrswVCINvWb
+        NkknCyCuj6FrN1koi0/rE3y2VA==
+X-Google-Smtp-Source: AGHT+IH1MMBNEn/3axN7rieR3Ka9rd9cKkhqHZcuCTJaLw3uXvLw0daIzmInBxIrIYUS3hte/ESRZw==
+X-Received: by 2002:a05:6a20:734a:b0:15d:641b:57b6 with SMTP id v10-20020a056a20734a00b0015d641b57b6mr12536153pzc.5.1696297376470;
+        Mon, 02 Oct 2023 18:42:56 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id w9-20020a1709026f0900b001b895336435sm133951plk.21.2023.10.02.18.42.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 18:34:12 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 10:34:08 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     Rob Herring <robh@kernel.org>, sudeep.holla@arm.com,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, Oleksii_Moisieiev@epam.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [RFC 4/4] dt-bindings: gpio: Add bindings for SCMI pinctrl based
- gpio
-Message-ID: <ZRtvkO56iM9JgHTS@octopus>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Rob Herring <robh@kernel.org>, sudeep.holla@arm.com,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, Oleksii_Moisieiev@epam.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-References: <20231002021602.260100-1-takahiro.akashi@linaro.org>
- <20231002021602.260100-5-takahiro.akashi@linaro.org>
- <20231002144155.GA1675188-robh@kernel.org>
- <ZRrak57Vg0X0Aqf3@pluto>
+        Mon, 02 Oct 2023 18:42:56 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qnUR3-008hoD-0v;
+        Tue, 03 Oct 2023 12:42:53 +1100
+Date:   Tue, 3 Oct 2023 12:42:53 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH 13/21] fs: xfs: Make file data allocations observe the
+ 'forcealign' flag
+Message-ID: <ZRtxnc7LpOlxZnON@dread.disaster.area>
+References: <20230929102726.2985188-1-john.g.garry@oracle.com>
+ <20230929102726.2985188-14-john.g.garry@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZRrak57Vg0X0Aqf3@pluto>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230929102726.2985188-14-john.g.garry@oracle.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob, Cristian,
-
-On Mon, Oct 02, 2023 at 03:58:27PM +0100, Cristian Marussi wrote:
-> On Mon, Oct 02, 2023 at 09:41:55AM -0500, Rob Herring wrote:
-> > On Mon, Oct 02, 2023 at 11:16:02AM +0900, AKASHI Takahiro wrote:
-> > > A dt binding for SCMI pinctrl based gpio driver is defined in this
-> > > commit. It basically conforms to generic pinctrl-gpio mapping framework.
+On Fri, Sep 29, 2023 at 10:27:18AM +0000, John Garry wrote:
+> From: "Darrick J. Wong" <djwong@kernel.org>
 > 
-> [ snip]
+> The existing extsize hint code already did the work of expanding file
+> range mapping requests so that the range is aligned to the hint value.
+> Now add the code we need to guarantee that the space allocations are
+> also always aligned.
 > 
-> > > +    additionalProperties: false
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - gpio-controller
-> > > +  - "#gpio-cells"
-> > > +  - gpio-ranges
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/gpio/gpio.h>
-> > > +
-> > > +    scmi_gpio_0: scmi_gpio@0 {
-> > 
-> > gpio {
-> > 
-> > But doesn't SCMI have protocol numbers?
-> > 
+> XXX: still need to check all this with reflink
 > 
-> My understanding is that this RFC GPIO driver from Akashi is built
-> completely on Pinctrl facilities (as he says in the cover), it is not
-> indeed a typical pure SCMI driver, it just happen to trigger the use
-> of SCMI if the underlying backend pinctrl driver is pinctrl-scmi;
-> but this driver does not really call directly into any SCMI API by
-> itself, i.e. it does not get and call any SCMI protocol ops.
-> (but it could indeed trigger the backend Pinctrl SCMI driver to issue
->  such call on its behalf AFAIU...)
-
-It would be possible to implement this driver by directly using SCMI
-pinctrl interfaces (I mean drivers/firmware/arm,scmi/pinctrl.c)
-if the system wants to utilize SCMI solely for GPIO accesses and doesn't
-need pinctrl support.
-(Even so, "protocol@19" will be required due to the current SCMI binding.)
-
-But I didn't take this approach because the kernel's pinctrl framework
-(and many existing pinctrl drivers) instead adopts standard pinctrl-
-gpio mapping (I mean gpiolib(-of).c) and it just seems to work well.
-
-> I wonder why it has even a dependency on PINCTRL_SCMI at this point;
-> is not that it could work (generically) even if the backend Pinctrl
-> driver is NOT SCMI ?
-> What makes it usable only against an SCMI Pinctrl backend ?
-> Cannot be a generic GPIO driver based on top of Pinctrl, no matter which
-> Pinctrl backend driver has been configured ?
-
-That is one of my questions (See the issue (3) in my cover letter.)
-Why doesn't there exist a generic GPIO driver of this kind (based on gpiolib
-framework) even though it could apparently be possible?
-
-I guess that there a couple of reasons:
-1) As I mentioned in the issue (1) in my cover letter, the current
-  framework doesn't present an interface, especially for obtaining
-  a value on a gpio input pin. Then it enforces each pinctrl-based gpio
-  driver needs to have its own driver.
-2) Furthermore, there may be driver-specific semantics required,
-  say, for pinconf-related configurations? (I don't come up with any
-  example, though)
-
-If my driver is good enough for applying to other gpio controllers as well,
-I would not hesitate to name it a genuine generic driver whether the backend
-may be SCMI or not.
-        -> Linus, comment here please.
-
-Due to possible cases of (2), I still added "-generic" postfix to the
-"compatibles" property so that other variant drivers may be tagged as
-"arm,scmi-gpio-some-system" or "some-vendor,scmi-gpio".
-
-Thanks,
--Takahiro Akashi
-
+> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+> Co-developed-by: John Garry <john.g.garry@oracle.com>
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>  fs/xfs/libxfs/xfs_bmap.c | 22 +++++++++++++++++-----
+>  fs/xfs/xfs_iomap.c       |  4 +++-
+>  2 files changed, 20 insertions(+), 6 deletions(-)
 > 
-> ...I maybe missing something here about Pinctrl AND GPIO frameworks :P
-> 
-> Thanks,
-> Cristian
+> diff --git a/fs/xfs/libxfs/xfs_bmap.c b/fs/xfs/libxfs/xfs_bmap.c
+> index 328134c22104..6c864dc0a6ff 100644
+> --- a/fs/xfs/libxfs/xfs_bmap.c
+> +++ b/fs/xfs/libxfs/xfs_bmap.c
+> @@ -3328,6 +3328,19 @@ xfs_bmap_compute_alignments(
+>  		align = xfs_get_cowextsz_hint(ap->ip);
+>  	else if (ap->datatype & XFS_ALLOC_USERDATA)
+>  		align = xfs_get_extsz_hint(ap->ip);
+> +
+> +	/*
+> +	 * xfs_get_cowextsz_hint() returns extsz_hint for when forcealign is
+> +	 * set as forcealign and cowextsz_hint are mutually exclusive
+> +	 */
+> +	if (xfs_inode_forcealign(ap->ip) && align) {
+> +		args->alignment = align;
+> +		if (stripe_align % align)
+> +			stripe_align = align;
+> +	} else {
+> +		args->alignment = 1;
+> +	}
+
+This smells wrong.
+
+If a filesystem has a stripe unit set (hence stripe_align is
+non-zero) then any IO that crosses stripe unit boundaries will not
+be atomic - they will require multiple IOs to different devices.
+
+Hence if the filesystem has a stripe unit set, then all forced
+alignment hints for atomic IO *must* be an exact integer divider
+of the stripe unit. hence when an atomic IO bundle is aligned, the
+atomic boundaries within the bundle always fall on a stripe unit
+boundary and never cross devices.
+
+IOWs, for a striped filesystem, the maximum size/alignment for a
+single atomic IO unit is the stripe unit.
+
+This should be enforced when the forced align flag is set on the
+inode (i.e. from the ioctl)
+
+
+> +
+>  	if (align) {
+>  		if (xfs_bmap_extsize_align(mp, &ap->got, &ap->prev, align, 0,
+>  					ap->eof, 0, ap->conv, &ap->offset,
+> @@ -3423,7 +3436,6 @@ xfs_bmap_exact_minlen_extent_alloc(
+>  	args.minlen = args.maxlen = ap->minlen;
+>  	args.total = ap->total;
+>  
+> -	args.alignment = 1;
+>  	args.minalignslop = 0;
+>  
+>  	args.minleft = ap->minleft;
+> @@ -3469,6 +3481,7 @@ xfs_bmap_btalloc_at_eof(
+>  {
+>  	struct xfs_mount	*mp = args->mp;
+>  	struct xfs_perag	*caller_pag = args->pag;
+> +	int			orig_alignment = args->alignment;
+>  	int			error;
+>  
+>  	/*
+> @@ -3543,10 +3556,10 @@ xfs_bmap_btalloc_at_eof(
+>  
+>  	/*
+>  	 * Allocation failed, so turn return the allocation args to their
+> -	 * original non-aligned state so the caller can proceed on allocation
+> -	 * failure as if this function was never called.
+> +	 * original state so the caller can proceed on allocation failure as
+> +	 * if this function was never called.
+>  	 */
+> -	args->alignment = 1;
+> +	args->alignment = orig_alignment;
+>  	return 0;
+>  }
+
+Urk. Not sure that is right, it's certainly a change of behaviour.
+
+> @@ -3694,7 +3707,6 @@ xfs_bmap_btalloc(
+>  		.wasdel		= ap->wasdel,
+>  		.resv		= XFS_AG_RESV_NONE,
+>  		.datatype	= ap->datatype,
+> -		.alignment	= 1,
+>  		.minalignslop	= 0,
+>  	};
+>  	xfs_fileoff_t		orig_offset;
+> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+> index 18c8f168b153..70fe873951f3 100644
+> --- a/fs/xfs/xfs_iomap.c
+> +++ b/fs/xfs/xfs_iomap.c
+> @@ -181,7 +181,9 @@ xfs_eof_alignment(
+>  		 * If mounted with the "-o swalloc" option the alignment is
+>  		 * increased from the strip unit size to the stripe width.
+>  		 */
+> -		if (mp->m_swidth && xfs_has_swalloc(mp))
+> +		if (xfs_inode_forcealign(ip))
+> +			align = xfs_get_extsz_hint(ip);
+> +		else if (mp->m_swidth && xfs_has_swalloc(mp))
+>  			align = mp->m_swidth;
+>  		else if (mp->m_dalign)
+>  			align = mp->m_dalign;
+
+Ah. Now I see. This abuses the stripe alignment code to try to
+implement this new inode allocation alignment restriction, rather
+than just making the extent size hint alignment mandatory....
+
+Yeah, this can be done better... :)
+
+As it is, I have been working on a series that reworks all this
+allocator code to separate out the aligned IO from the exact EOF
+allocation case to help clean this up for better perag selection
+during allocation. I think that needs to be done first before we go
+making the alignment code more intricate like this....
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
