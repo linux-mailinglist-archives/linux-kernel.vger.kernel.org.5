@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E987B72B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 22:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0DC7B72BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 22:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbjJCUqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 16:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
+        id S241087AbjJCUt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 16:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232210AbjJCUq0 (ORCPT
+        with ESMTP id S231653AbjJCUt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 16:46:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD3BAB
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 13:46:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696365981; x=1727901981;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ocFdCaQn0YtyQXJZyENMtrHQHH5+3WfkzDHWrFzYugc=;
-  b=fdP81XkphsdNi26kPEyeAYBCoasT9JdSd58DUH1aquCmt81rLgmRyJki
-   0J0vHL4c4+WKe0lFma5wvgp+vTB3ZHI1J5cFlgl730dqaVu/l5JqMfuSu
-   VaD4XDvYjK3uv6a0jKJED5B52EWybpSzsK5CS7K7/9NSFOyGOfcLz8+n1
-   xr/7N8xRoLofiiAnevAYsh4c5Yt99IlPn4Pzu5d+ig1kuvObH+w9nV4K4
-   YE/s7wbXm8fVbFpvYtuGEZB+Tna4K+TQZyr2lndx4c9PPO0OCaeJzE8G3
-   ArPgrXjxtH+57nc3e05QxSoCbKAi/m6uMFHmx+LqfJroqnLQu7KQ2tb6h
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="382883760"
-X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="382883760"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 13:46:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="700854257"
-X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="700854257"
-Received: from ddiaz-mobl4.amr.corp.intel.com (HELO [10.209.57.36]) ([10.209.57.36])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 13:46:20 -0700
-Message-ID: <1dad6a33-1cd0-0d0f-29c5-97fd2807f07a@intel.com>
-Date:   Tue, 3 Oct 2023 13:46:20 -0700
+        Tue, 3 Oct 2023 16:49:27 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97895AC
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 13:49:23 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a1f00b75aaso16412097b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 13:49:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696366163; x=1696970963; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1FJPUi+MyKd+dVlpPJp8bCnu+4EByJ0OLEwCa+47Woc=;
+        b=iQuYNBszchRggbd6WjC55XwIUE+gyP/TU5N/kmIZaDYm70LI6NqGfn1UzzGQi/tXaC
+         unkpbqBS7c5TR0yJ34a/OdFb6FwQGjNMHrtiChKmpUdtQCegM+xuJFjXIyxhogSnEOVx
+         f26/hvizaKpAkmFIm1A/4kf2HJH2EeK6AnHz6qFCS4zZ0nSd4HzZaJKAsangJS+fKZpx
+         NKdPdSMYeri8z2PiYed0NaWLcGBNQxM0in4EPXL9IXKevIrM+Hq9rt3RT78KM/x6JGBa
+         Tb3y3iF37kLVIha2+xdHhdSURKn9Am1vl3H9Sis0/kn4+jXgoo9p7wHMJQaFZZFxHdBL
+         Dspg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696366163; x=1696970963;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1FJPUi+MyKd+dVlpPJp8bCnu+4EByJ0OLEwCa+47Woc=;
+        b=UhQiZVKBt73lrH4jTcDxN4Tj/Le/77kT6pgm9QorPpQB7vPSZWtPpXvN0IR/IW+wwY
+         KWZcVbZugA7TegFYdtJIkAEM/VCxSFCnQ9FBrJuTaPyUnJqfoZVOxsuvQi9ES5GB3Mn4
+         QHnbTn9/ZFGHFWRh+WzzIFzZsRVMePZm0WIUKNDS6Q3nuZ6v1XXIK9oS/vvFQeZ/ij27
+         kEIv7+Qv5IqK0hVToekaK1ARtNKHVyyE0gDDmbLxDRliDMfE3i5pLlQztbuNcWOjkQ95
+         dAgCEG9jREyiMBT0Pny+pB3ggEH28UvNMq+zlhpl37kYVRn9S+ZtIr4PuZwdyLRoYQhX
+         v6nw==
+X-Gm-Message-State: AOJu0YxLuZCowrRCP2E4QOEJKRndzA78PypTXBQVhuyiGYhihO+19MJs
+        b0I6gFDaJXNkPVJaqZDJODAhhLyyMejuCkRgH1QNqg==
+X-Google-Smtp-Source: AGHT+IEreLlAAb1BEaIqmVOi80nv6yIE6GNZPrSiU+SaEd9snYNzmyb1GnIOcQcstQN89h5TnTmEDXhfiAWNkiQFVLc=
+X-Received: by 2002:a0d:e215:0:b0:573:bb84:737c with SMTP id
+ l21-20020a0de215000000b00573bb84737cmr740029ywe.26.1696366162811; Tue, 03 Oct
+ 2023 13:49:22 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] x86_64: test that userspace stack is in fact NX
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-References: <4b78a714-5ac3-4783-8256-1dda4673db01@p183>
- <1d5223b8-0275-619d-db1c-e2aaaddb173e@intel.com>
- <d468d13c-6c4b-4d8d-8e2d-e4314b4bb1a7@p183>
- <f972d59c-40dd-2a68-ff13-a2658513a25b@intel.com> <ZRxmS/3nr6pDa1+z@gmail.com>
- <ZRxr79i5PAXRXjqr@gmail.com>
-Content-Language: en-US
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <ZRxr79i5PAXRXjqr@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231002021602.260100-1-takahiro.akashi@linaro.org> <20231002021602.260100-2-takahiro.akashi@linaro.org>
+In-Reply-To: <20231002021602.260100-2-takahiro.akashi@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 3 Oct 2023 22:49:10 +0200
+Message-ID: <CACRpkdZsQN5V0Nt46dQmUiQo-co81Z_TrzWW_9CPJEbF+X-vnw@mail.gmail.com>
+Subject: Re: [RFC 1/4] pinctrl: define PIN_CONFIG_INPUT
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>
+Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        Oleksii_Moisieiev@epam.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 12:30, Ingo Molnar wrote:
-> * Ingo Molnar <mingo@kernel.org> wrote:
->> Because not having NX in 2023 on any system that is threatened is a
->> big security vulnerability in itself, and whether the vendor or owner
->> intentionally did that or not doesn't really matter, and a failing
->> kernel testcase will be the least of their problems.
-> BTW., it's also questionable whether the owner is *aware* of the fact that 
-> NX is not available: what if some kernel debug option cleared the NX flag, 
-> unintended, or there's some serious firmware bug?
-> 
-> However unlikely those situations might be, I think unconditionally warning 
-> about NX not available is a very 2023 thing to do.
+Hi Takahiro,
 
-100% agree for x86_64.  Any sane x86_64 system has NX and the rest are
-noise that can live with the error message, unless someone shows up with
-a compelling reason why not.
+On Mon, Oct 2, 2023 at 4:17=E2=80=AFAM AKASHI Takahiro
+<takahiro.akashi@linaro.org> wrote:
 
-For 32-bit, the situation is reversed.  The majority of 32-bit-only CPUs
-never had NX.  The only reason to even *do* this check on 32-bit is that
-we think folks are running i386 kernels on x86_64 hardware _or_ we just
-don't care about 32-bit in the first place.
+> This allows for enabling SCMI pinctrl based GPIO driver to obtain
+> an input gpio pin.
+>
+> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+(...)
+> + * @PIN_CONFIG_INPUT: This will obtain a value on an input pin. The retu=
+rned
+> + *     argument indicates the value.
 
-In the end, I think if we're going to do this test on i386, we should
-_also_ do the 5-lines-of-code CPUID check.  But I honestly don't care
-that much.  I wouldn't NAK (or not merge) this patch over it.
+We need to specify that this is the inverse of @PIN_CONFIG_OUTPUT,
+that setting a line into *input mode* requires the use of
+@PIN_CONFIG_INPUT_ENABLE, so the config can never be set
+but should return an error on set, and that the argument returned is 1 for
+logic high and 0 for logic low.
+
+Otherwise I think this is fine!
+
+Yours,
+Linus Walleij
