@@ -2,48 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59AA57B6E3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE2E7B6E3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbjJCQTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40222 "EHLO
+        id S240355AbjJCQUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbjJCQTI (ORCPT
+        with ESMTP id S230486AbjJCQUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:19:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 59824BF;
-        Tue,  3 Oct 2023 09:19:05 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE6C0C15;
-        Tue,  3 Oct 2023 09:19:43 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A5393F762;
-        Tue,  3 Oct 2023 09:19:04 -0700 (PDT)
-Message-ID: <e0855325-37be-63ac-a0d5-9cd4cd4d375d@arm.com>
-Date:   Tue, 3 Oct 2023 17:18:55 +0100
+        Tue, 3 Oct 2023 12:20:38 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D4A9E
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:20:35 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77574c2cffdso88032885a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 09:20:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1696350034; x=1696954834; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=74pfqmyEpWzC0JVzEWtyP+utP1T9AK68aLigFiWOG7k=;
+        b=SeGWlQDHFSe0SAyTgSkbd9l1j4MbOw6umhkgwSE7gfst9dgZUvulkkW1dckcfwH5WL
+         707YwLZrVl36yeIm3Vq1+MC4tceHY1nqXMUnRUp+tkbNqlQcxGaIgpfk9XvBDXti9hCu
+         WcgFumdwruYx8Rx0+3nOX9OcW8neCZTubtpyzgVkM1x5iTFsn/ixb3CgSCcQqGZ2b0fs
+         es+lohLqFLzMarUICvZ1HEqSiL8wb7EVHARQ6GKuFSaU9XbkwDfcZjZlhn5mtBgRaJ72
+         nP8d+H7DQbvVrpZu2p8RanlquuZ9gPcckE0Fg2zQDWEIIiIwrqmFUlyvQxshUc7ANhzR
+         mz0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696350034; x=1696954834;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=74pfqmyEpWzC0JVzEWtyP+utP1T9AK68aLigFiWOG7k=;
+        b=PaKaxcAiqtA/66kwaaworfmBAVpTyTUgKJ5VUcXJtNduS/G8CRT9oXoYphOihueXb0
+         wS8++JTpph8pqCPen3xxxO7OMVqGq3C3GuDxuUb4mfaTDC9Xumwbl8JFWiszi1S9dK+K
+         D+Tzwi227PZzhvq09LvH7KYUOMsXEMWeohWUgHVVpL+J1lbn9vS+DPYWZQB/FLNOEou7
+         xHhn83okJpbSOq/wYSWxFbuz8fPQYoDPQus2qEASWSWuvaen/OnU4cHSdiYrelGfH2Rk
+         zEiG4hSzmSmGEZb0QgKGtNZx3EGSVYx/XmqfBps9mNaR9LBSfeZ49wyBHm5NcidI9oKB
+         wjUg==
+X-Gm-Message-State: AOJu0Yzmo0RYEPv4C+j7Neq5l0AbzYMPsLe6kx/0dBu66bvvSSZR73Y8
+        mQRm7yPmq5omkS9obV/vizsWFg==
+X-Google-Smtp-Source: AGHT+IHtRRYP0xi4EcqzYyTvcNrVFeQgKflRTd3luTug/5jCAn+dkgbCAWC4JjZKn8Y1qVNAZQ1H4w==
+X-Received: by 2002:a05:620a:4553:b0:76e:f73d:65ae with SMTP id u19-20020a05620a455300b0076ef73d65aemr3535399qkp.6.1696350034567;
+        Tue, 03 Oct 2023 09:20:34 -0700 (PDT)
+Received: from localhost.localdomain ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id o8-20020a05620a110800b007756c8ce8f5sm574520qkk.59.2023.10.03.09.20.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 09:20:33 -0700 (PDT)
+From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To:     linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Subject: [PATCH] irqchip/stm32-exti: add missing DT IRQ flag translation
+Date:   Tue,  3 Oct 2023 12:20:03 -0400
+Message-ID: <20231003162003.1649967-1-ben.wolsieffer@hefring.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 2/2] irqchip/gic-v3: Enable non-coherent
- redistributors/ITSes probing
-Content-Language: en-GB
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Fang Xiang <fangxiang3@xiaomi.com>
-References: <20230905104721.52199-1-lpieralisi@kernel.org>
- <20230905104721.52199-3-lpieralisi@kernel.org> <86msy0etul.wl-maz@kernel.org>
- <ZRwonK+01HKJkKXa@lpieralisi>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <ZRwonK+01HKJkKXa@lpieralisi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,54 +72,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 3:43 pm, Lorenzo Pieralisi wrote:
-> On Tue, Sep 05, 2023 at 12:34:58PM +0100, Marc Zyngier wrote:
-> 
-> [...]
-> 
->>>   	 * Make sure *all* the ITS are reset before we probe any, as
->>>   	 * they may be sharing memory. If any of the ITS fails to
->>> @@ -5396,7 +5405,8 @@ static int __init its_of_probe(struct device_node *node)
->>>   			continue;
->>>   		}
->>>   
->>> -		its_probe_one(&res, &np->fwnode, of_node_to_nid(np));
->>> +		its_probe_one(&res, &np->fwnode, of_node_to_nid(np),
->>> +			      of_property_read_bool(np, "dma-noncoherent"));
->>>   	}
->>>   	return 0;
->>>   }
->>> @@ -5533,7 +5543,8 @@ static int __init gic_acpi_parse_madt_its(union acpi_subtable_headers *header,
->>>   	}
->>>   
->>>   	err = its_probe_one(&res, dom_handle,
->>> -			acpi_get_its_numa_node(its_entry->translation_id));
->>> +			acpi_get_its_numa_node(its_entry->translation_id),
->>> +			false);
->>
->> I came up with the following alternative approach, which is as usual
->> completely untested. It is entirely based on the quirk infrastructure,
->> and doesn't touch the ACPI path at all.
-> 
-> Writing the ACPI bits. We can't use the quirks framework for ACPI (we
-> don't have "properties" and I don't think we want to attach any to the
-> fwnode_handle) that's why I generalized its_probe_one() above with an
-> extra param, that would have simplified ACPI parsing:
-> 
-> - we alloc struct its_node in its_probe_one() but at that stage
->    ACPI parsing was already done. If we have to parse the MADT(ITS) again
->    just to scan for non-coherent we then have to match the MADT entries
->    to the *current* struct its_node* we are handling (MADT parsing
->    callbacks don't even take a param - we have to resort to global
->    variables - definitely doable but it is a bit ugly).
+The STM32F4/7 EXTI driver was missing the xlate callback, so IRQ trigger
+flags specified in the device tree were being ignored. This was
+preventing the RTC alarm interrupt from working, because it must be set
+to trigger on the rising edge to function correctly.
 
-How about a compromise of passing a whole MADT flags field into 
-its_probe_one() (where its_of_probe() can just pass 0), to pass through 
-to its_enable_quirks() to then match against an madt_flags field in the 
-gic_quirk? gic_acpi_init() could then do something similar for the 
-redistributor quirk, although I guess it would then need to distinguish 
-GICC and GICR-based quirks cases since the respective flags are in 
-different formats.
+Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+---
+ drivers/irqchip/irq-stm32-exti.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks,
-Robin.
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index b5fa76ce5046..cb4b195bc849 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -459,6 +459,7 @@ static const struct irq_domain_ops irq_exti_domain_ops = {
+ 	.map	= irq_map_generic_chip,
+ 	.alloc  = stm32_exti_alloc,
+ 	.free	= stm32_exti_free,
++	.xlate	= irq_domain_xlate_twocell,
+ };
+ 
+ static void stm32_irq_ack(struct irq_data *d)
+-- 
+2.42.0
+
