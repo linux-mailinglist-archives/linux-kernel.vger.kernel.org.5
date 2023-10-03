@@ -2,184 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 276EE7B6A77
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58177B6A7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235862AbjJCN04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57598 "EHLO
+        id S235655AbjJCN1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbjJCN0v (ORCPT
+        with ESMTP id S235261AbjJCN0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:26:51 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F9BA1;
-        Tue,  3 Oct 2023 06:26:47 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 790a30df8c9ae96b; Tue, 3 Oct 2023 15:26:46 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id B05B36659AF;
-        Tue,  3 Oct 2023 15:26:45 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v2 6/6] thermal: int340x: Use thermal_zone_for_each_trip()
-Date:   Tue, 03 Oct 2023 15:26:35 +0200
-Message-ID: <3532950.iIbC2pHGDl@kreacher>
-In-Reply-To: <4846448.GXAFRqVoOG@kreacher>
-References: <4846448.GXAFRqVoOG@kreacher>
+        Tue, 3 Oct 2023 09:26:54 -0400
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBB6A9;
+        Tue,  3 Oct 2023 06:26:49 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R691e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VtKcuA3_1696339603;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0VtKcuA3_1696339603)
+          by smtp.aliyun-inc.com;
+          Tue, 03 Oct 2023 21:26:44 +0800
+Date:   Tue, 3 Oct 2023 21:26:43 +0800
+From:   Dust Li <dust.li@linux.alibaba.com>
+To:     Paolo Abeni <pabeni@redhat.com>,
+        Albert Huang <huangjie.albert@bytedance.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>
+Cc:     "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net/smc: add support for netdevice in
+ containers.
+Message-ID: <20231003132643.GG92403@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20230925023546.9964-1-huangjie.albert@bytedance.com>
+ <20230927034209.GE92403@linux.alibaba.com>
+ <6e5fb3e148ae1fb4a29561fe9d04235d8be6ab1f.camel@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfeeigdeifecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphht
- thhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e5fb3e148ae1fb4a29561fe9d04235d8be6ab1f.camel@redhat.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, Oct 03, 2023 at 12:41:25PM +0200, Paolo Abeni wrote:
+>On Wed, 2023-09-27 at 11:42 +0800, Dust Li wrote:
+>> On Mon, Sep 25, 2023 at 10:35:45AM +0800, Albert Huang wrote:
+>> > If the netdevice is within a container and communicates externally
+>> > through network technologies like VXLAN, we won't be able to find
+>> > routing information in the init_net namespace. To address this issue,
+>> 
+>> Thanks for your founding !
+>> 
+>> I think this is a more generic problem, but not just related to VXLAN ?
+>> If we use SMC-R v2 and the netdevice is in a net namespace which is not
+>> init_net, we should always fail, right ? If so, I'd prefer this to be a bugfix.
+>
+>Re-stating the above to be on the same page: the patch should be re-
+>posted targeting the net tree, and including a suitable fixes tag.
+>
+>@Dust Li: please correct me if I misread you.
 
-Modify int340x_thermal_update_trips() to use thermal_zone_for_each_trip()
-for walking trips instead of using the trips[] table passed to the
-thermal zone registration function.
+Right, this is exactly what I mean.
 
-For this purpose, store active trip point indices in the priv fieids of
-the corresponding thermal_trip structures.
+Best regards,
+Dust
 
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-v1 -> v2: Mo changes
-
----
- drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c |   76 +++++------
- 1 file changed, 41 insertions(+), 35 deletions(-)
-
-Index: linux-pm/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-+++ linux-pm/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-@@ -67,6 +67,16 @@ static struct thermal_zone_device_ops in
- 	.critical	= int340x_thermal_critical,
- };
- 
-+static inline void *int_to_trip_priv(int i)
-+{
-+	return (void *)(long)i;
-+}
-+
-+static inline int trip_priv_to_int(const struct thermal_trip *trip)
-+{
-+	return (long)trip->priv;
-+}
-+
- static int int340x_thermal_read_trips(struct acpi_device *zone_adev,
- 				      struct thermal_trip *zone_trips,
- 				      int trip_cnt)
-@@ -101,6 +111,7 @@ static int int340x_thermal_read_trips(st
- 			break;
- 
- 		zone_trips[trip_cnt].type = THERMAL_TRIP_ACTIVE;
-+		zone_trips[trip_cnt].priv = int_to_trip_priv(i);
- 		trip_cnt++;
- 	}
- 
-@@ -212,45 +223,40 @@ void int340x_thermal_zone_remove(struct
- }
- EXPORT_SYMBOL_GPL(int340x_thermal_zone_remove);
- 
--void int340x_thermal_update_trips(struct int34x_thermal_zone *int34x_zone)
-+static int int340x_update_one_trip(struct thermal_trip *trip, void *arg)
- {
--	struct acpi_device *zone_adev = int34x_zone->adev;
--	struct thermal_trip *zone_trips = int34x_zone->trips;
--	int trip_cnt = int34x_zone->zone->num_trips;
--	int act_trip_nr = 0;
--	int i;
--
--	mutex_lock(&int34x_zone->zone->lock);
--
--	for (i = int34x_zone->aux_trip_nr; i < trip_cnt; i++) {
--		int temp, err;
--
--		switch (zone_trips[i].type) {
--		case THERMAL_TRIP_CRITICAL:
--			err = thermal_acpi_critical_trip_temp(zone_adev, &temp);
--			break;
--		case THERMAL_TRIP_HOT:
--			err = thermal_acpi_hot_trip_temp(zone_adev, &temp);
--			break;
--		case THERMAL_TRIP_PASSIVE:
--			err = thermal_acpi_passive_trip_temp(zone_adev, &temp);
--			break;
--		case THERMAL_TRIP_ACTIVE:
--			err = thermal_acpi_active_trip_temp(zone_adev, act_trip_nr++,
--							    &temp);
--			break;
--		default:
--			err = -ENODEV;
--		}
--		if (err) {
--			zone_trips[i].temperature = THERMAL_TEMP_INVALID;
--			continue;
--		}
-+	struct acpi_device *zone_adev = arg;
-+	int temp, err;
- 
--		zone_trips[i].temperature = temp;
-+	switch (trip->type) {
-+	case THERMAL_TRIP_CRITICAL:
-+		err = thermal_acpi_critical_trip_temp(zone_adev, &temp);
-+		break;
-+	case THERMAL_TRIP_HOT:
-+		err = thermal_acpi_hot_trip_temp(zone_adev, &temp);
-+		break;
-+	case THERMAL_TRIP_PASSIVE:
-+		err = thermal_acpi_passive_trip_temp(zone_adev, &temp);
-+		break;
-+	case THERMAL_TRIP_ACTIVE:
-+		err = thermal_acpi_active_trip_temp(zone_adev,
-+						    trip_priv_to_int(trip),
-+						    &temp);
-+		break;
-+	default:
-+		err = -ENODEV;
- 	}
-+	if (err)
-+		temp = THERMAL_TEMP_INVALID;
- 
--	mutex_unlock(&int34x_zone->zone->lock);
-+	trip->temperature = temp;
-+	return 0;
-+}
-+
-+void int340x_thermal_update_trips(struct int34x_thermal_zone *int34x_zone)
-+{
-+	thermal_zone_for_each_trip(int34x_zone->zone, int340x_update_one_trip,
-+				   int34x_zone->adev);
- }
- EXPORT_SYMBOL_GPL(int340x_thermal_update_trips);
- 
-
-
-
+>
+>Thanks,
+>
+>Paolo
