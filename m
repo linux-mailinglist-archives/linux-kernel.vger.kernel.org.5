@@ -2,51 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFAD7B71A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E03297B71B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbjJCTV2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 15:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41170 "EHLO
+        id S232392AbjJCT0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 15:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231389AbjJCTVZ (ORCPT
+        with ESMTP id S230239AbjJCT0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 15:21:25 -0400
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9CF9E;
-        Tue,  3 Oct 2023 12:21:22 -0700 (PDT)
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-57ddba5ba84so110251eaf.0;
-        Tue, 03 Oct 2023 12:21:22 -0700 (PDT)
+        Tue, 3 Oct 2023 15:26:07 -0400
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FEE93;
+        Tue,  3 Oct 2023 12:26:01 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1bf6ea270b2so10045475ad.0;
+        Tue, 03 Oct 2023 12:26:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696360881; x=1696965681;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J07arKxPhBE5rnWHs+W7EtnjO5FU638RRkKT7+PaWpg=;
-        b=KmU+P0Lz0Kqcb+CNQQoTEtK4pR6aTDrJK+wzSNoPmp1xLrhMUR3/tCvTJ/lK9+w3Hf
-         ke+E/3vwKJqHOYqngeh7oc1J1hdzzSsryJSAEOzxzke5wGOAlhuzk7rn8e6pvX+KbXP0
-         ufWsacyVK2a76CtHEEoHoGCa7YgzXJl9UWbzvAou0sRDNX4iZQQkf0eyrK1PPQIJ/rgc
-         BbjRBhY6B73Gv46AYwDQ7PbUykfxb7dri08b1DOaRQiHC8Um4bf7Fx8hX7O5QBy7yLsE
-         fSOY5xyQXevRWHn8caLhoxTx/UfdKAXGnzUPvC0aeU/VPByoa9OOBqdN4h0mPYdD0a9m
-         kFGQ==
-X-Gm-Message-State: AOJu0Yx/ed/V0yDCZOjrKyfj+jlU9bbzVpROTjsNsS67QCyw8vYAKFLr
-        tXMSpmyuv3Am6UwGgZ7U4DlazkfTaZbQ9LH9POcdeKw8
-X-Google-Smtp-Source: AGHT+IGFaRIXSHi99kNgDcHLm2UMpLuGWM/+wDAn3cApVRn6pa2cCI3SO0+MG4kvHsYCDhyIry2fRFOPz8oC1Tgh6JQ=
-X-Received: by 2002:a4a:b588:0:b0:578:c2af:45b5 with SMTP id
- t8-20020a4ab588000000b00578c2af45b5mr331719ooo.0.1696360881692; Tue, 03 Oct
- 2023 12:21:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696361161; x=1696965961;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mvmeoMdGq/xr4jJD60T1ZLKABdnT8aFJPxFgwlDXHy0=;
+        b=mPTFHmeHfkTU542x09DuxdgaxyqzqBazQT3gcJZOx9pKyNKTB2uvOR0fhR4uPeXrzX
+         XI1avUcHlbnbGxKSDvBMm5Bh6LUIXCVzXSeUwgXTyu3xGxcfd4fHjTljBvP90935QLrr
+         zJkUXpA/dS/RGh8Pz9/uuBfGnHX+O2eehT9OrCgjgSzuthKM9uPHMIP/r7g4f63ESXkZ
+         CXQcB4tNmrvYEZFaTQXagPx7SO4W71VnzbvlLINurG70QAleVgrJkegAYK7yJjvecZY6
+         ENGvY6IlRj0J+KMtcpfeipz6VsnlQWknI58BTQtxxCtFYbsUlDjDw/swmagxREJ/ihGS
+         juMA==
+X-Gm-Message-State: AOJu0YxH2iCpl+EuH6rxKHjm/+cXu+7aaB0XNkKZiANLr7Pn5eVz7CAt
+        fckNQlw2anG/hHGJyjYp7Ks=
+X-Google-Smtp-Source: AGHT+IFIYRUS5m4yRgtItZ8WzAh4hem8rd3fIRxCTadNXk4dIv+TmPaAMYkBU+jBLYSnZS5+ewmlNg==
+X-Received: by 2002:a17:902:e847:b0:1bd:d92d:6b2 with SMTP id t7-20020a170902e84700b001bdd92d06b2mr579129plg.10.1696361161272;
+        Tue, 03 Oct 2023 12:26:01 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:fc96:5ba7:a6f5:b187? ([2620:15c:211:201:fc96:5ba7:a6f5:b187])
+        by smtp.gmail.com with ESMTPSA id bg5-20020a1709028e8500b001c76891b1c9sm1981549plb.10.2023.10.03.12.25.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Oct 2023 12:26:00 -0700 (PDT)
+Message-ID: <9ba10b14-931b-42db-b7c2-e6f9aa95e477@acm.org>
+Date:   Tue, 3 Oct 2023 12:25:58 -0700
 MIME-Version: 1.0
-References: <13c70c43.85d.18ad53580c7.Coremail.chenguohua@jari.cn>
-In-Reply-To: <13c70c43.85d.18ad53580c7.Coremail.chenguohua@jari.cn>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 3 Oct 2023 21:21:10 +0200
-Message-ID: <CAJZ5v0hwn3AueWnxD37Ar04FAYrKE+MkUMg5MjjLki9nSu=w1g@mail.gmail.com>
-Subject: Re: [PATCH] pnp: Clean up errors in pnp.h
-To:     chenguohua@jari.cn
-Cc:     rafael.j.wysocki@intel.com, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] readv.2: Document RWF_ATOMIC flag
+Content-Language: en-US
+To:     John Garry <john.g.garry@oracle.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Cc:     martin.petersen@oracle.com, djwong@kernel.org, david@fromorbit.com,
+        himanshu.madhani@oracle.com
+References: <20230929093717.2972367-1-john.g.garry@oracle.com>
+ <20230929093717.2972367-3-john.g.garry@oracle.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230929093717.2972367-3-john.g.garry@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
@@ -57,57 +64,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 8:31 AM <chenguohua@jari.cn> wrote:
->
-> Fix the following errors reported by checkpatch:
->
-> ERROR: "foo * bar" should be "foo *bar"
-> ERROR: space required after that ';' (ctx:VxV)
->
-> Signed-off-by: GuoHua Cheng <chenguohua@jari.cn>
-> ---
->  include/linux/pnp.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/include/linux/pnp.h b/include/linux/pnp.h
-> index c2a7cfbca713..267fb8a4fb6e 100644
-> --- a/include/linux/pnp.h
-> +++ b/include/linux/pnp.h
-> @@ -291,7 +291,7 @@ static inline void pnp_set_drvdata(struct pnp_dev *pdev, void *data)
->
->  struct pnp_fixup {
->         char id[7];
-> -       void (*quirk_function) (struct pnp_dev * dev);  /* fixup function */
-> +       void (*quirk_function) (struct pnp_dev *dev);   /* fixup function */
->  };
->
->  /* config parameters */
-> @@ -419,8 +419,8 @@ struct pnp_protocol {
->
->         /* protocol specific suspend/resume */
->         bool (*can_wakeup) (struct pnp_dev *dev);
-> -       int (*suspend) (struct pnp_dev * dev, pm_message_t state);
-> -       int (*resume) (struct pnp_dev * dev);
-> +       int (*suspend) (struct pnp_dev *dev, pm_message_t state);
-> +       int (*resume) (struct pnp_dev *dev);
->
->         /* used by pnp layer only (look but don't touch) */
->         unsigned char number;   /* protocol number */
-> @@ -492,7 +492,7 @@ static inline int pnp_start_dev(struct pnp_dev *dev) { return -ENODEV; }
->  static inline int pnp_stop_dev(struct pnp_dev *dev) { return -ENODEV; }
->  static inline int pnp_activate_dev(struct pnp_dev *dev) { return -ENODEV; }
->  static inline int pnp_disable_dev(struct pnp_dev *dev) { return -ENODEV; }
-> -static inline int pnp_range_reserved(resource_size_t start, resource_size_t end) { return 0;}
-> +static inline int pnp_range_reserved(resource_size_t start, resource_size_t end) { return 0; }
->
->  /* protocol helpers */
->  static inline int pnp_is_active(struct pnp_dev *dev) { return 0; }
-> --
+On 9/29/23 02:37, John Garry wrote:
+> +.BR RWF_ATOMIC " (since Linux 6.7)"
+> +Allows block-based filesystems to indicate that write operations will be issued
+> +with torn-write protection. Torn-write protection means that for a power or any
+> +other hardware failure, all or none of the data from the write will be stored,
+> +but never a mix of old and new data. This flag is meaningful only for
+> +.BR pwritev2 (),
+> +and its effect applies only to the data range written by the system call.
+> +The total write length must be power-of-2 and must be sized between
+> +stx_atomic_write_unit_min and stx_atomic_write_unit_max, both inclusive. The
+> +write must be at a natural offset within the file with respect to the total
+> +write length. Torn-write protection only works with
+> +.B O_DIRECT
+> +flag, i.e. buffered writes are not supported. To guarantee consistency from
+> +the write between a file's in-core state with the storage device,
 
-Applied as 6.7 material with edited subject and changelog.
+It seems wrong to me to start the first sentence with "Allows". Atomic
+behavior should be mandatory if RWF_ATOMIC has been set.
 
-That said, checkpatch.pl is for checking patches.  Applying it to the
-existing code is questionable and sending patches based on that is
-even more so.
+Additionally, shouldn't it be documented what value will be stored in
+errno if the atomic write has been rejected?
 
-Thanks!
+Thanks,
+
+Bart.
