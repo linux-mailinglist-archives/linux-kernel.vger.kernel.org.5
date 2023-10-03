@@ -2,54 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 688627B5DF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816717B5DFA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjJCAKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 20:10:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39098 "EHLO
+        id S237333AbjJCALd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 20:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjJCAKF (ORCPT
+        with ESMTP id S229595AbjJCALc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 20:10:05 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2A9C6;
-        Mon,  2 Oct 2023 17:10:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696291800;
-        bh=qxtEAZde4kFbj1tXH6gOwr/ukfnaFXq940/Y/rS7DbI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BGeedbwldabh6z6QF3gwU1NWR5TdET3CLkHcmT+oCs7uyug4oskTp9CJR7aEAOuax
-         if/JQ3NmFoZG0KvXqG5adK3yB/dOxIZ98zUNP3a/LsJSXH3pKKIdEwQKCyptVku9R4
-         uhNBOz8127rhdVwxb1ElMJZBjzIf++j5W6PkIkudKQY4pwYBZfQapBID+Any83e/9u
-         L5+MkoUO+7/A6xscCUXyNFgkBJIJwd6P3UI7JMHQEI8suJhOkyjaLiz0BWOCL/6Uja
-         4MG9b+jjAjsgV/4nPXCDqTzj+WfpRS+PqAQtRHlT8kLLnRCnDPMp+HebmKp28c5RB0
-         tKsjMSVVyrgBg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rzyr66nM4z4x2r;
-        Tue,  3 Oct 2023 11:09:58 +1100 (AEDT)
-Date:   Tue, 3 Oct 2023 11:09:57 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Dave Airlie <airlied@redhat.com>
-Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Matt Roper <matthew.d.roper@intel.com>
-Subject: linux-next: manual merge of the drm-intel tree with the drm tree
-Message-ID: <20231003110957.34fc9483@canb.auug.org.au>
+        Mon, 2 Oct 2023 20:11:32 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C36C6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:11:29 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3af5fd13004so244664b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 17:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696291888; x=1696896688; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ks1xegmL9smUxtsS+SMxje7YFeTJohysqIN7y13aErc=;
+        b=P92zNgIEREdkIR6L98oatRszRF8JEa3orFWQL2QszQQpGxwa5FkODI+SNzpDFngwyo
+         KiMUEFKWYdO74gco08YTk/tQc9+tpsR+waagD2SdWbwAcd9c6S9/GlbxX9O7br+5HcP0
+         KCiFqowKCcSZtIQmVqLA5xhvwLUw85oi+E4SyGuNgVPz0/Xadlf73y4aDfcRIHhaguDq
+         WaXhojP187TbRZu8+F+FubTF1apG0JozUen9U1cZDXqtMWzSt7ZngzxIoV0PnS724e0I
+         Vw3i8b2XFWuwdI1KWKOQFMwi+nVz/LTiJNAR2/r2rPT5j2ro7CtDsekCh4NlLIcj92WI
+         49QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696291888; x=1696896688;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ks1xegmL9smUxtsS+SMxje7YFeTJohysqIN7y13aErc=;
+        b=cJfYpmxabar4iXPFGvp0RdaJDfAv9VyYp+Q+PcF0p4qhQ5NX1xxjFUbHqsBuK/yy0v
+         XBP+241rI0fxwpWm23NCpsijyzKm+9qZyzgB26JYLJSUfA7CilircXRO56B8mkhprdQK
+         tsjPyxtEVqfgVU1/yafO8XTPaF9tXi/w4xAsM1gA8Sxr2eqYgDixHPq/DXl4lPtueEsk
+         6AYXrGo1aRGV55GyILOq4D4gTyvmSsV+mShfdDo2bdHu+Ql+ASKC0BO3BZ2OyJFrzZBf
+         qeTPbtsCGzlw4CM9FwCZnZtrqFf/d2XosDVi+/tOdKouh9iuH5Iat6Tk5kvYU3D7Te4n
+         s83w==
+X-Gm-Message-State: AOJu0Yw0PNVnjKjsanUxjN64AhE/TNuxpjkcs9h5RnLEJq6cXIw4/aD9
+        hBOeYFzA5k2VSe5D1+cVQwMOJlY0S1rwBf7i
+X-Google-Smtp-Source: AGHT+IFTWba9eUFM3rjM4kgPEDm8MwKiMQMbS/JQZLLX2yNC3re1qyZgQ3d34guFhNkiV6jeZKnnUg==
+X-Received: by 2002:a05:6808:13c1:b0:3a9:a334:907e with SMTP id d1-20020a05680813c100b003a9a334907emr16317500oiw.16.1696291888591;
+        Mon, 02 Oct 2023 17:11:28 -0700 (PDT)
+Received: from localhost.localdomain ([2804:1b3:a743:e840:d142:20bb:769e:e427])
+        by smtp.gmail.com with ESMTPSA id m123-20020a633f81000000b00578f697b277sm47192pga.5.2023.10.02.17.11.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 17:11:28 -0700 (PDT)
+From:   Lucas Gabriel <git.send.mail@gmail.com>
+X-Google-Original-From: Lucas Gabriel <g@11xx.org>
+To:     felixonmars@archlinux.org
+Cc:     highenthalpyh@gmail.com, kbusch@kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        xuwd1@hotmail.com, Lucas Gabriel <g@11xx.org>
+Subject: [PATCH] nvme-pci: Add quirk for Netac NV7000-T
+Date:   Mon,  2 Oct 2023 21:11:19 -0300
+Message-ID: <20231003001119.384377-1-g@11xx.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230907183605.631347-1-felixonmars@archlinux.org>
+References: <20230907183605.631347-1-felixonmars@archlinux.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vcTvl.sbAssNW7vb1Uc0pbr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,106 +74,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vcTvl.sbAssNW7vb1Uc0pbr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Same problem with Netac NV7000-T that also uses the MAXIO MAP1602 controller.
 
-Hi all,
+Adding the NVME_QUIRK_DELAY_BEFORE_CHK_RDY quirk solves it:
+---
+ drivers/nvme/host/pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Today's linux-next merge of the drm-intel tree got a conflict in:
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 2f57da12d983..d44a69b1548a 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3430,6 +3430,8 @@ static const struct pci_device_id nvme_id_table[] = {
+ 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+ 	{ PCI_DEVICE(0x1f40, 0x1202),   /* Netac Technologies Co. NV3000 NVMe SSD */
+ 		.driver_data = NVME_QUIRK_BOGUS_NID, },
++	{ PCI_DEVICE(0x1f40, 0x1602),   /* Netac Technologies Co. NV7000-T NVMe SSD */
++		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY, },
+ 	{ PCI_DEVICE(0x1f40, 0x5236),   /* Netac Technologies Co. NV7000 NVMe SSD */
+ 		.driver_data = NVME_QUIRK_BOGUS_NID, },
+ 	{ PCI_DEVICE(0x1e4B, 0x1001),   /* MAXIO MAP1001 */
+-- 
+2.42.0
 
-  drivers/gpu/drm/i915/i915_drv.h
-
-between commits:
-
-  c9517783060a ("drm/i915/dg2: Drop Wa_16011777198")
-  5a213086a025 ("drm/i915: Eliminate IS_MTL_GRAPHICS_STEP")
-  81af8abe6513 ("drm/i915: Eliminate IS_MTL_MEDIA_STEP")
-
-from the drm tree and commits:
-
-  e50086f3d313 ("drm/i915/dg2: Drop pre-production display workarounds")
-  213454b3af2e ("drm/i915: Eliminate IS_MTL_DISPLAY_STEP")
-
-from the drm-intel tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/i915/i915_drv.h
-index e994bd2d69db,cc229f08dfdb..000000000000
---- a/drivers/gpu/drm/i915/i915_drv.h
-+++ b/drivers/gpu/drm/i915/i915_drv.h
-@@@ -647,21 -653,33 +649,6 @@@ IS_SUBPLATFORM(const struct drm_i915_pr
-  #define IS_XEHPSDV_GRAPHICS_STEP(__i915, since, until) \
-  	(IS_XEHPSDV(__i915) && IS_GRAPHICS_STEP(__i915, since, until))
- =20
-- #define IS_MTL_DISPLAY_STEP(__i915, since, until) \
- -#define IS_MTL_GRAPHICS_STEP(__i915, variant, since, until) \
- -	(IS_SUBPLATFORM(__i915, INTEL_METEORLAKE, INTEL_SUBPLATFORM_##variant) &=
-& \
- -	 IS_GRAPHICS_STEP(__i915, since, until))
- -
- -#define IS_MTL_MEDIA_STEP(__i915, since, until) \
---	(IS_METEORLAKE(__i915) && \
-- 	 IS_DISPLAY_STEP(__i915, since, until))
- -	 IS_MEDIA_STEP(__i915, since, until))
---
-- #define IS_DG2_DISPLAY_STEP(__i915, since, until) \
-- 	(IS_DG2(__i915) && \
-- 	 IS_DISPLAY_STEP(__i915, since, until))
- -/*
- - * DG2 hardware steppings are a bit unusual.  The hardware design was for=
-ked to
- - * create three variants (G10, G11, and G12) which each have distinct
- - * workaround sets.  The G11 and G12 forks of the DG2 design reset the GT
- - * stepping back to "A0" for their first iterations, even though they're =
-more
- - * similar to a G10 B0 stepping and G10 C0 stepping respectively in terms=
- of
- - * functionality and workarounds.  However the display stepping does not =
-reset
- - * in the same manner --- a specific stepping like "B0" has a consistent
- - * meaning regardless of whether it belongs to a G10, G11, or G12 DG2.
- - *
- - * TLDR:  All GT workarounds and stepping-specific logic must be applied =
-in
- - * relation to a specific subplatform (G10/G11/G12), whereas display work=
-arounds
- - * and stepping-specific logic will be applied with a general DG2-wide st=
-epping
- - * number.
- - */
- -#define IS_DG2_GRAPHICS_STEP(__i915, variant, since, until) \
- -	(IS_SUBPLATFORM(__i915, INTEL_DG2, INTEL_SUBPLATFORM_##variant) && \
- -	 IS_GRAPHICS_STEP(__i915, since, until))
---
-  #define IS_PVC_BD_STEP(__i915, since, until) \
-  	(IS_PONTEVECCHIO(__i915) && \
-  	 IS_BASEDIE_STEP(__i915, since, until))
-
---Sig_/vcTvl.sbAssNW7vb1Uc0pbr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUbW9UACgkQAVBC80lX
-0Gw26wf9HbL90IKPELoLLlVbG2JcbbZd08SCv86GTf2FIg+fvKLZSEZa4L5eyE+u
-VF2/6s177nCNBrWLbgyXu5NAJy33wOYu4xsn3lmEKeN2TxuXuaGbf956WJFqs4s6
-+CbYsFEREk2lLTs7X4VhB5WwaWpHxzDd5x7prqZm26ELUS1iiSDEZh33SQRD/n/j
-Tqs10RiHUxOn4XQR3bjm0LCJS6/i59IEYJ757Vz/EzQ3TmJe8By1HDn6Cr2ccr/c
-Xwc5rLA4+m4yjgqgXBBnVq0Z85ewuFIbYmhe1+jQ3+NnLyUwRqy+mmgRZMQrgTOK
-RrxubzQynv20tGptEK6dL/H3ZiJs3w==
-=anKz
------END PGP SIGNATURE-----
-
---Sig_/vcTvl.sbAssNW7vb1Uc0pbr--
