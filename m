@@ -2,164 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 775987B72F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 22:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F977B72F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 22:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232081AbjJCU6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 16:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
+        id S241101AbjJCU6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 16:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbjJCU6u (ORCPT
+        with ESMTP id S232120AbjJCU6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Oct 2023 16:58:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BFEAB
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 13:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696366681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=R0J7KehNMsr0jjrLYehZsVAtwRuvkbKBMf/ZqDdCVXY=;
-        b=Y7Hk8Nk4dB5Ylx63syWvmPcxLaZmot4iE0e7yR5zuKtVrmZAZPdfxpI4MbMOuCG5gz3OFv
-        gcoj8pp/xvBmStKw7C+zKAJI/U7C19UsRYUV0mR/j72Vxf59F3qYoVu/dbaw7XyIHzydho
-        LOqeoIi9S8XR0GT4aE5ZNFPx23wndlI=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-691-_IGW9c5dOaOKfgZ-fURqaw-1; Tue, 03 Oct 2023 16:57:46 -0400
-X-MC-Unique: _IGW9c5dOaOKfgZ-fURqaw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8536F3806706;
-        Tue,  3 Oct 2023 20:57:45 +0000 (UTC)
-Received: from llong.com (unknown [10.22.10.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D3CA40C6EA8;
-        Tue,  3 Oct 2023 20:57:44 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v4] sched/core: Use zero length to reset cpumasks in sched_setaffinity()
-Date:   Tue,  3 Oct 2023 16:57:35 -0400
-Message-Id: <20231003205735.2921964-1-longman@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BFCAD
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 13:58:47 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-279353904a9so1092149a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 13:58:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696366727; x=1696971527; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ofK3yTXudgH3dPOX+NXSBZm32mvv1GbIdTLu5eO4ZUw=;
+        b=hsQ+h+zfEPMCI/50kh3uYHFre+0DewKghyeEOScbZURjbzs4Xqgl7eg7ObPDFdJBx6
+         GxyYyVlH4Tqqou1ShFGVsxuXenXmxFNcNmwYkG8xVTX5Y9pl8vgcpZ6Abk99wenw/fnK
+         S0ELSUpQWfX2bnKeTHUdXbfAWXe/kBSdl8DwlfAn4gAqRp6/01aQkzC6n4gBRdHfRaGp
+         7H1bfyIBWWPn61RnqJLCJslnne8tUK4S79LcbdApOR9Zzova18T91gI+i4bG6s9uR4IH
+         djNy81a+H1hzWGQ/kDkeQW8fJuaZc8K4WQm66gPzGWwpniShzqn2jIGUM23iyyT3EqIZ
+         aTUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696366727; x=1696971527;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ofK3yTXudgH3dPOX+NXSBZm32mvv1GbIdTLu5eO4ZUw=;
+        b=YMp0CQAE+ZVntoVBq0fnF8DB56zBLBunKS2g5o2t+KCQVpWUnhhXCTQyfkZ9YOnwg/
+         hBYLEFJ1E7rZ8vQz6ciorUTUGKsXPjr5bDilU+byHQsvm5OdfooR6s3E8fLUE4qZOorD
+         ATnRsKbi4iZEQX8iWsbi2V0N4qhsRCATbgBEdc4IjPs6NUbmlg/R/NiMvvpzw1qic5aA
+         JU5/RScU6X0S+zjY0dDq8RFjoa4ilN1+c6s91Lg9i3oDB5njgOZN0BaAei+/2eZHgYt2
+         S3luHuu1RSFMYu43HihAdVF4vlV4PpscSwS9KJHVHQ8l075BYpCOMhyfrgGSc4YTUlhy
+         Jj5Q==
+X-Gm-Message-State: AOJu0YxP0jUx3dqwWuf7syGgSOr95iHFaG1LwTGU9AN9sI3HsO49bNVB
+        HKvnXUyxvHgIDdT6vSsBH/6OM68zEkA=
+X-Google-Smtp-Source: AGHT+IEpJRqfisemR4Ma6/26idPCJUHwNJZNRJlSNji243dfZdo+DGHvKt5onPD5NiiwHo9l66/HVhcVsls=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:92:b0:26d:ae3:f6a4 with SMTP id
+ bb18-20020a17090b009200b0026d0ae3f6a4mr6815pjb.5.1696366727020; Tue, 03 Oct
+ 2023 13:58:47 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 13:58:45 -0700
+In-Reply-To: <fe832be36d46a946431567cbc315766fbdc772b1.camel@redhat.com>
+Mime-Version: 1.0
+References: <20230911021637.1941096-1-stevensd@google.com> <20230911021637.1941096-6-stevensd@google.com>
+ <fe832be36d46a946431567cbc315766fbdc772b1.camel@redhat.com>
+Message-ID: <ZRyAhdIvAkQhYJVr@google.com>
+Subject: Re: [PATCH v9 5/6] KVM: x86: Migrate to __kvm_follow_pfn
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     David Stevens <stevensd@chromium.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 8f9ea86fdf99 ("sched: Always preserve the user requested
-cpumask"), user provided CPU affinity via sched_setaffinity(2) is
-perserved even if the task is being moved to a different cpuset. However,
-that affinity is also being inherited by any subsequently created child
-processes which may not want or be aware of that affinity.
+On Tue, Oct 03, 2023, Maxim Levitsky wrote:
+> =D0=A3 =D0=BF=D0=BD, 2023-09-11 =D1=83 11:16 +0900, David Stevens =D0=BF=
+=D0=B8=D1=88=D0=B5:
+> > From: David Stevens <stevensd@chromium.org>
+> > @@ -4283,12 +4290,20 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *v=
+cpu, struct kvm_page_fault *fault
+> >  			return RET_PF_EMULATE;
+> >  	}
+> > =20
+> > -	async =3D false;
+> > -	fault->pfn =3D __gfn_to_pfn_memslot(slot, fault->gfn, false, false, &=
+async,
+> > -					  fault->write, &fault->map_writable,
+> > -					  &fault->hva);
+> > -	if (!async)
+> > -		return RET_PF_CONTINUE; /* *pfn has correct page already */
+> > +	foll.flags |=3D FOLL_NOWAIT;
+> > +	fault->pfn =3D __kvm_follow_pfn(&foll);
+> > +
+> > +	if (!is_error_noslot_pfn(fault->pfn))
+> > +		goto success;
+> Unrelated but I can't say I like the 'is_error_noslot_pfn()' name,=20
+> I wish it was called something like is_valid_pfn().
 
-One way to solve this problem is to provide a way to back off from that
-user provided CPU affinity.  This patch implements such a scheme by
-using an input cpumask length of 0 to signal a reset of the cpumasks
-to the default as allowed by the current cpuset.  A non-NULL cpumask
-should still be provided to avoid problem with older kernel.
-
-If sched_setaffinity(2) has been called previously to set a user
-supplied cpumask, a value of 0 will be returned to indicate success.
-Otherwise, an error value of -EINVAL will be returned.
-
-We may have to update the sched_setaffinity(2) manpage to document
-this new side effect of passing in an input length of 0.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/sched/core.c | 43 ++++++++++++++++++++++++++++++++++---------
- 1 file changed, 34 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 802551e0009b..a10d507a05df 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8315,7 +8315,12 @@ __sched_setaffinity(struct task_struct *p, struct affinity_context *ctx)
- 	}
- 
- 	cpuset_cpus_allowed(p, cpus_allowed);
--	cpumask_and(new_mask, ctx->new_mask, cpus_allowed);
-+
-+	/* Default to cpus_allowed with NULL new_mask */
-+	if (ctx->new_mask)
-+		cpumask_and(new_mask, ctx->new_mask, cpus_allowed);
-+	else
-+		cpumask_copy(new_mask, cpus_allowed);
- 
- 	ctx->new_mask = new_mask;
- 	ctx->flags |= SCA_CHECK;
-@@ -8401,15 +8406,29 @@ long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
- 		goto out_put_task;
- 
- 	/*
--	 * With non-SMP configs, user_cpus_ptr/user_mask isn't used and
--	 * alloc_user_cpus_ptr() returns NULL.
-+	 * If a NULL cpumask is passed in and user_cpus_ptr is set,
-+	 * clear user_cpus_ptr and reset the current cpu affinity to the
-+	 * default for the current cpuset. If user_cpus_ptr isn't set,
-+	 * -EINVAL will be returned.
- 	 */
--	user_mask = alloc_user_cpus_ptr(NUMA_NO_NODE);
--	if (user_mask) {
--		cpumask_copy(user_mask, in_mask);
--	} else if (IS_ENABLED(CONFIG_SMP)) {
--		retval = -ENOMEM;
--		goto out_put_task;
-+	if (!in_mask) {
-+		if (!p->user_cpus_ptr) {
-+			retval = -EINVAL;
-+			goto out_put_task;
-+		}
-+		user_mask = NULL;
-+	} else {
-+		/*
-+		 * With non-SMP configs, user_cpus_ptr/user_mask isn't used
-+		 * and alloc_user_cpus_ptr() returns NULL.
-+		 */
-+		user_mask = alloc_user_cpus_ptr(NUMA_NO_NODE);
-+		if (user_mask) {
-+			cpumask_copy(user_mask, in_mask);
-+		} else if (IS_ENABLED(CONFIG_SMP)) {
-+			retval = -ENOMEM;
-+			goto out_put_task;
-+		}
- 	}
- 
- 	ac = (struct affinity_context){
-@@ -8451,6 +8470,12 @@ SYSCALL_DEFINE3(sched_setaffinity, pid_t, pid, unsigned int, len,
- 	cpumask_var_t new_mask;
- 	int retval;
- 
-+	/*
-+	 * A len of 0 will reset a previously set user cpumask.
-+	 */
-+	if (!len)
-+		return sched_setaffinity(pid, NULL);
-+
- 	if (!alloc_cpumask_var(&new_mask, GFP_KERNEL))
- 		return -ENOMEM;
- 
--- 
-2.39.3
-
+I don't love the name either, but is_valid_pfn() would be extremely confusi=
+ng
+because the kernel already provides pfn_valid() to identify pfns/pages that=
+ are
+managed by the kernel.  Trying to shove "guest" somewhere in the name also =
+gets
+confusing because it's a host pfn, not a guest pfn.
