@@ -2,71 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 816717B5DFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786127B5DFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237333AbjJCALd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 20:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
+        id S237321AbjJCAMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 20:12:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjJCALc (ORCPT
+        with ESMTP id S229595AbjJCAMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 20:11:32 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C36C6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:11:29 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3af5fd13004so244664b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 17:11:29 -0700 (PDT)
+        Mon, 2 Oct 2023 20:12:22 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2786CC;
+        Mon,  2 Oct 2023 17:12:18 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3af8b498d30so226388b6e.0;
+        Mon, 02 Oct 2023 17:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696291888; x=1696896688; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ks1xegmL9smUxtsS+SMxje7YFeTJohysqIN7y13aErc=;
-        b=P92zNgIEREdkIR6L98oatRszRF8JEa3orFWQL2QszQQpGxwa5FkODI+SNzpDFngwyo
-         KiMUEFKWYdO74gco08YTk/tQc9+tpsR+waagD2SdWbwAcd9c6S9/GlbxX9O7br+5HcP0
-         KCiFqowKCcSZtIQmVqLA5xhvwLUw85oi+E4SyGuNgVPz0/Xadlf73y4aDfcRIHhaguDq
-         WaXhojP187TbRZu8+F+FubTF1apG0JozUen9U1cZDXqtMWzSt7ZngzxIoV0PnS724e0I
-         Vw3i8b2XFWuwdI1KWKOQFMwi+nVz/LTiJNAR2/r2rPT5j2ro7CtDsekCh4NlLIcj92WI
-         49QA==
+        d=gmail.com; s=20230601; t=1696291938; x=1696896738; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bm7hq6cTECoBLZpFvDj16bGHkwPq1hmdasgTEM8lHeg=;
+        b=njGp0tr5SZSsfU9fxFGH7bz7L6WCRt7BbpKrcMTJfB8omS25kfRJ75progo8IXZut6
+         EoirAQvUz7eZI4IyQjReUUJGdMGVdbc2dkWMKCMKTMyPJPZPEwqhLeDdPnYhrX5YK8Lg
+         NOg9+KgqW5YUqh4dHGUQMOHzWMjYMSr/e4ZIVfSMHvYE49uem2hKXo9XYHrjJtKlwd5M
+         C8FAKYqw1/uH2YYyQlMtB9qB2hn2cXwCHXg1+aOKd+060wLpwo5DkDqw4czDDZ+otU13
+         v83l0sU3L5RxnKBfAF/RjZXHz4IraO/Qd+YzbF+iVzaDhF2KIGlObAGJQW8TfTYKeWb4
+         Siog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696291888; x=1696896688;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ks1xegmL9smUxtsS+SMxje7YFeTJohysqIN7y13aErc=;
-        b=cJfYpmxabar4iXPFGvp0RdaJDfAv9VyYp+Q+PcF0p4qhQ5NX1xxjFUbHqsBuK/yy0v
-         XBP+241rI0fxwpWm23NCpsijyzKm+9qZyzgB26JYLJSUfA7CilircXRO56B8mkhprdQK
-         tsjPyxtEVqfgVU1/yafO8XTPaF9tXi/w4xAsM1gA8Sxr2eqYgDixHPq/DXl4lPtueEsk
-         6AYXrGo1aRGV55GyILOq4D4gTyvmSsV+mShfdDo2bdHu+Ql+ASKC0BO3BZ2OyJFrzZBf
-         qeTPbtsCGzlw4CM9FwCZnZtrqFf/d2XosDVi+/tOdKouh9iuH5Iat6Tk5kvYU3D7Te4n
-         s83w==
-X-Gm-Message-State: AOJu0Yw0PNVnjKjsanUxjN64AhE/TNuxpjkcs9h5RnLEJq6cXIw4/aD9
-        hBOeYFzA5k2VSe5D1+cVQwMOJlY0S1rwBf7i
-X-Google-Smtp-Source: AGHT+IFTWba9eUFM3rjM4kgPEDm8MwKiMQMbS/JQZLLX2yNC3re1qyZgQ3d34guFhNkiV6jeZKnnUg==
-X-Received: by 2002:a05:6808:13c1:b0:3a9:a334:907e with SMTP id d1-20020a05680813c100b003a9a334907emr16317500oiw.16.1696291888591;
-        Mon, 02 Oct 2023 17:11:28 -0700 (PDT)
-Received: from localhost.localdomain ([2804:1b3:a743:e840:d142:20bb:769e:e427])
-        by smtp.gmail.com with ESMTPSA id m123-20020a633f81000000b00578f697b277sm47192pga.5.2023.10.02.17.11.26
+        d=1e100.net; s=20230601; t=1696291938; x=1696896738;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Bm7hq6cTECoBLZpFvDj16bGHkwPq1hmdasgTEM8lHeg=;
+        b=c+xiY0iQK/f3LjMV5p5VH7HBrfnhGgI1Tpf57mpYZmBfDlaCLn5djuOzQHSxrYsAjl
+         e9rcb7hHEga1Q4/ItD8swlUG7S5l6ze6oEpbFuuGETA0fTJIzZxS4GtU+F1ninBNKwU2
+         lnoP9w8jKKNEZLEZqHR7FU2PCD0tohmMY7aq/H4KTitPa/4EVIwCQpFFegdng9O2tOty
+         MpJS8MrVsuiKBCdywB8QHzp6hgl15TFdCs3IkY0y65La4Na/K+qvEC4zEh9ybv0iPqfB
+         piwIQ501Tq/Wuj5NeoNWtGDUzrK6YwZ7HJH4o/2VcSOH4bXopaz0y/ImToPdrTgYAUMc
+         xyvg==
+X-Gm-Message-State: AOJu0YyzYQcc6hdmxR8R5IT+dOPOjKFejyp76/V37zTyaloEnFzHT72Y
+        6U95kRSa7X7LjPANOGqXySw=
+X-Google-Smtp-Source: AGHT+IEBrbMGL0Ht5TAu9DNDKPv4BfTUS/Uj6l2v76pNr+fDG2CY53moeLMRpQja/KB6fohFqvyUIg==
+X-Received: by 2002:a05:6808:14c9:b0:3ab:9afd:8efd with SMTP id f9-20020a05680814c900b003ab9afd8efdmr15230659oiw.40.1696291937951;
+        Mon, 02 Oct 2023 17:12:17 -0700 (PDT)
+Received: from GTR7940.witekio.dom (207-109-71-206.dia.static.qwest.net. [207.109.71.206])
+        by smtp.googlemail.com with ESMTPSA id 23-20020a17090a199700b0026801e06ac1sm59683pji.30.2023.10.02.17.12.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 17:11:28 -0700 (PDT)
-From:   Lucas Gabriel <git.send.mail@gmail.com>
-X-Google-Original-From: Lucas Gabriel <g@11xx.org>
-To:     felixonmars@archlinux.org
-Cc:     highenthalpyh@gmail.com, kbusch@kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        xuwd1@hotmail.com, Lucas Gabriel <g@11xx.org>
-Subject: [PATCH] nvme-pci: Add quirk for Netac NV7000-T
-Date:   Mon,  2 Oct 2023 21:11:19 -0300
-Message-ID: <20231003001119.384377-1-g@11xx.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230907183605.631347-1-felixonmars@archlinux.org>
-References: <20230907183605.631347-1-felixonmars@archlinux.org>
+        Mon, 02 Oct 2023 17:12:17 -0700 (PDT)
+From:   Stan Bertrand <stanislasbertrand@gmail.com>
+X-Google-Original-From: Stan Bertrand <sbertrand@witekio.com>
+To:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Stanislas Bertrand <stanislasbertrand@gmail.com>
+Subject: [PATCH] USB: serial: ftdi_sio: add ftdi serial to gpiochip label
+Date:   Mon,  2 Oct 2023 17:11:35 -0700
+Message-Id: <20231003001135.2713961-1-sbertrand@witekio.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,26 +71,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Same problem with Netac NV7000-T that also uses the MAXIO MAP1602 controller.
+From: Stanislas Bertrand <stanislasbertrand@gmail.com>
 
-Adding the NVME_QUIRK_DELAY_BEFORE_CHK_RDY quirk solves it:
+Use ftdi serial number on gpiochip label.
+Allows to interface with gpiod utils using the serial number:
+
+$ gpiodetect
+gpiochip5 [ftdi-cbus-FTRelay2] (4 lines)
+gpiochip6 [ftdi-cbus] (4 lines)
+gpiochip7 [ftdi-cbus-A106TPEC] (4 lines)
+
+$ gpioget ftdi-cbus-FTRelay2 2
+0
+
+Signed-off-by: Stanislas Bertrand <stanislasbertrand@gmail.com>
 ---
- drivers/nvme/host/pci.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/serial/ftdi_sio.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 2f57da12d983..d44a69b1548a 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -3430,6 +3430,8 @@ static const struct pci_device_id nvme_id_table[] = {
- 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
- 	{ PCI_DEVICE(0x1f40, 0x1202),   /* Netac Technologies Co. NV3000 NVMe SSD */
- 		.driver_data = NVME_QUIRK_BOGUS_NID, },
-+	{ PCI_DEVICE(0x1f40, 0x1602),   /* Netac Technologies Co. NV7000-T NVMe SSD */
-+		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY, },
- 	{ PCI_DEVICE(0x1f40, 0x5236),   /* Netac Technologies Co. NV7000 NVMe SSD */
- 		.driver_data = NVME_QUIRK_BOGUS_NID, },
- 	{ PCI_DEVICE(0x1e4B, 0x1001),   /* MAXIO MAP1001 */
+diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
+index 1bf23611be12..3e1b1c3194a2 100644
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -2094,6 +2094,8 @@ static int ftdi_gpio_init(struct usb_serial_port *port)
+ {
+ 	struct ftdi_private *priv = usb_get_serial_port_data(port);
+ 	struct usb_serial *serial = port->serial;
++	struct usb_device *udev = serial->dev;
++	const char *label;
+ 	int result;
+ 
+ 	switch (priv->chip_type) {
+@@ -2116,6 +2118,15 @@ static int ftdi_gpio_init(struct usb_serial_port *port)
+ 	mutex_init(&priv->gpio_lock);
+ 
+ 	priv->gc.label = "ftdi-cbus";
++
++	if (udev->serial) {
++		label = devm_kasprintf(&udev->dev, GFP_KERNEL, "ftdi-cbus-%s",
++					udev->serial);
++		if (label) {
++			priv->gc.label = label;
++		}
++	}
++
+ 	priv->gc.request = ftdi_gpio_request;
+ 	priv->gc.get_direction = ftdi_gpio_direction_get;
+ 	priv->gc.direction_input = ftdi_gpio_direction_input;
 -- 
-2.42.0
+2.34.1
 
