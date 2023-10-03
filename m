@@ -2,81 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3527B5E01
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13647B5E00
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237743AbjJCANJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 20:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
+        id S237510AbjJCAMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 20:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjJCANI (ORCPT
+        with ESMTP id S229791AbjJCAMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 20:13:08 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142A7E6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:13:04 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-65af726775eso2766686d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 17:13:04 -0700 (PDT)
+        Mon, 2 Oct 2023 20:12:53 -0400
+Received: from mail-oa1-x43.google.com (mail-oa1-x43.google.com [IPv6:2001:4860:4864:20::43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6BDC6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:12:50 -0700 (PDT)
+Received: by mail-oa1-x43.google.com with SMTP id 586e51a60fabf-1dd94578a4fso52547fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 17:12:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696291983; x=1696896783; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zpzQO8HbLLTPu6D1/OgydzIxmygx7jcnUo/6D03H5hI=;
-        b=X7bdRYY0/rynfyoAhSoUh9L8FwvVIleMHYV3oQeM67EEXIdVOiZSw5tSmyocEinHJ/
-         xUsV6xnHtdy17N3j8z+ur22UZ0O7f66mdU/bTk+8dFqX/Mj+aU601qu/01XqU9PTh7Ce
-         ScpKU6p0MtpyF9T2OCVkmv861WPlKJ/qN16xiJ1kM67yrY7aLTz7oY2tFCWvfbAOoOIP
-         1+D60iYy06D0eeY9c4Icf22ebFxkQoQoW9d9ULLRqB/FF998eWlTsouqWysAGKd5o8dc
-         o45LbNm/2gVyWoSip9j/wpUgkSSP9ep5d+6uXaWDsLQIiEKb2oq0ziXUIkqxS4f0Um4o
-         yU0w==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696291969; x=1696896769; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3ZYFOCnJg3JB+NMDyiBkV1Ci3jAh1uzwfMkuIhs6hs0=;
+        b=ZxK+ppqIAwBoLU4Zrlxbxl99bJyWSPO4YXpbA+aA5+U6dM6VaTw63DAV7ypdcRALLK
+         yBwp4EY5sxDocSj8s/C6z13uZXD3A09KH5mBLmmig3gV6XiG29EY/mB2Tf1PfFWxRSUR
+         FoX8DYHyYO1FWJEzZC/67CVuBck8rz8XOvIjFo9SAm1AosXqQmPdB7nVsSZsBzJKPV3i
+         v8vB26ygaMFeX9CQ5p4xdisvL+xmkVDrCap42GCGd2AfyEQo6GlFFwQrWKv78ZHFv/Nz
+         lmla6ezeiAA8EGRBRUkUSKsVFQ/GJFfKq3Ctl140G0Vgwic81uR3FlsWTKJuBAhFENrQ
+         BsKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696291983; x=1696896783;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zpzQO8HbLLTPu6D1/OgydzIxmygx7jcnUo/6D03H5hI=;
-        b=rL+QbQENoNox/GeUu4M9taoTnDo3Ea1g2cTCxDTva7yb7MOSRQtZuBX00SxamsXTdl
-         1eIo4CfWG/LBkUTwyNZbv4VRFq5LiFIhtOhpyQeApSZ6fNIIuhHPKFZxX05hEHMclWup
-         ftCs6jDsAgTDaO1o1pktzbQm5divE4T+XrwzefgGUhXtsur+JIjQNyRTi5NZMhfXdwfu
-         Ea70JM/JB6yVwjxGTLYtV2Lem+pNjGucWlXswk5NRIUvawqpL5rpv/ff+8GNtHKzkMlI
-         FejcdECHW9s9DMvfUJMHa6lA8W6P14IXMPTMti0TNt3/n1dr4d8m3HojT+0pL5unaOm7
-         L3VQ==
-X-Gm-Message-State: AOJu0Yzdn4quyl24U+Dqy+3uscukWk2gcYoypZQWrZRPNDU2AK/iaoqC
-        CI6iXGPBOE0PSZpoW3TPj6bAZ6IdTi7OD7JB5qLIeA==
-X-Google-Smtp-Source: AGHT+IEu+vHhbZ59joJNhLRB31A5U3wMDk5lul1uPHoBj1/3uG4Jv9CQ2ahJSglvAzIhUIsJIRbZZ1sRTx+IlMEUupQ=
-X-Received: by 2002:a0c:aad5:0:b0:65b:92c:3eee with SMTP id
- g21-20020a0caad5000000b0065b092c3eeemr1505639qvb.15.1696291982695; Mon, 02
- Oct 2023 17:13:02 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696291969; x=1696896769;
+        h=content-transfer-encoding:in-reply-to:references:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ZYFOCnJg3JB+NMDyiBkV1Ci3jAh1uzwfMkuIhs6hs0=;
+        b=r82xJFCfe3K8CO7Kez3j60Mrn4ThdM9VLP/LnGNXjQe2NnnMp4k5cF50zyy4hoG9gH
+         Ov6uClpPAud1lIubIg9sgwS+ikT2rp5uC8CYC/t8cVLC4zCr7ors75B160NJ/bzveMma
+         HZus0/xDwI2Kqq7Iha3koCecJ92eAe1VAMURYevkBABLGG51Edan+F4H/miJk4ajmDlo
+         abAAsy5j6GIxFbCetMDjvmSyY5wbVpJV4JjMWbwqrfPCcAmmVZIxDYVABloFLRUFdDkt
+         c0Xu9xC2X/rH5zS8VOZFwjFNRs//aGyhf4/V/WZ0g/Gpq0R98kHkFfu/j44+U1MxrMy5
+         Q0Bw==
+X-Gm-Message-State: AOJu0YyYze9FJA6mKt7b16yAUSJGfVUog6p6DS6brMVaWicXXIlHQgRM
+        /ucHZ0/EDtkCKp4LTGA0JE+pAVNdZgVzFXfOxFKRWw==
+X-Google-Smtp-Source: AGHT+IF9baUR9p6DAKFjII/kVTO/AjJMvz3lg30gHWN7cn7bssakhG73wKi092cOJs92S3iO0TpdEQ==
+X-Received: by 2002:a05:6358:c610:b0:147:eb87:3665 with SMTP id fd16-20020a056358c61000b00147eb873665mr10087049rwb.3.1696291969642;
+        Mon, 02 Oct 2023 17:12:49 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id f17-20020aa782d1000000b0068bc6a75848sm71459pfn.156.2023.10.02.17.12.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 17:12:48 -0700 (PDT)
+Message-ID: <fa467e6b-12be-4234-914f-02ec5c787412@kernel.dk>
+Date:   Mon, 2 Oct 2023 18:12:47 -0600
 MIME-Version: 1.0
-References: <20230929023737.1610865-1-maheshb@google.com> <CANDhNCqb5JzEDOdAnocanR2KFbokrpMOL=iNwY3fTxcn_ftuZQ@mail.gmail.com>
- <CAF2d9jgeGLCzbFZhptGzpUnmMgLaRysyzBmpZ+dK4sxWdmR5ZQ@mail.gmail.com>
- <CANDhNCro+AQum3eSmKK5OTNik2E0cFxV_reCQg0+_uTubHaDsA@mail.gmail.com> <CANDhNCryn8TjJZRdCvVUj88pakHSUvtyN53byjmAcyowKj5mcA@mail.gmail.com>
-In-Reply-To: <CANDhNCryn8TjJZRdCvVUj88pakHSUvtyN53byjmAcyowKj5mcA@mail.gmail.com>
-From:   =?UTF-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS14KS+4KSwKQ==?= 
-        <maheshb@google.com>
-Date:   Mon, 2 Oct 2023 17:12:36 -0700
-Message-ID: <CAF2d9jg4Oxm3NwDuh21eeKC5-m7umZM3XLuxUKcFkchFjTgTtQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] time: add ktime_get_cycles64() api
-To:     John Stultz <jstultz@google.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Linux <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Don Hatchett <hatch@google.com>,
-        Yuliang Li <yuliangli@google.com>,
-        Mahesh Bandewar <mahesh@bandewar.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [io-uring?] BUG: unable to handle kernel NULL pointer
+ dereference in __io_remove_buffers (2)
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+To:     syzbot <syzbot+2113e61b8848fa7951d8@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000af635c0606bcb889@google.com>
+ <7567c27a-b5d0-41fc-a7e5-d65ed168b39c@kernel.dk>
+In-Reply-To: <7567c27a-b5d0-41fc-a7e5-d65ed168b39c@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,50 +75,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 12:07=E2=80=AFAM John Stultz <jstultz@google.com> w=
-rote:
->
-> On Thu, Sep 28, 2023 at 11:56=E2=80=AFPM John Stultz <jstultz@google.com>=
- wrote:
-> > On Thu, Sep 28, 2023 at 11:35=E2=80=AFPM Mahesh Bandewar (=E0=A4=AE=E0=
-=A4=B9=E0=A5=87=E0=A4=B6 =E0=A4=AC=E0=A4=82=E0=A4=A1=E0=A5=87=E0=A4=B5=E0=
-=A4=BE=E0=A4=B0)
-> > <maheshb@google.com> wrote:
-> > > On Thu, Sep 28, 2023 at 10:15=E2=80=AFPM John Stultz <jstultz@google.=
-com> wrote:
-> > > > 3) Nit: The interface is called ktime_get_cycles64 (timespec64
-> > > > returning interfaces usually are postfixed with ts64).
-> > > >
-> > > Ah, thanks for the explanation. I can change to comply with the
-> > > convention. Does ktime_get_cycles_ts64() make more sense?
-> >
-> > Maybe a little (it at least looks consistent), but not really if
-> > you're sticking raw cycles in the timespec :)
-> >
->
-> Despite my concerns that it's a bad idea, If one was going to expose
-> raw cycles from the timekeeping core, I'd suggest doing so directly as
-> a u64 (`u64 ktime_get_cycles(void)`).
->
-> That may mean widening (or maybe using a union in) your PTP ioctl data
-> structure to have a explicit cycles field.
-> Or introducing a separate ioctl that deals with cycles instead of timespe=
-c64s.
->
-> Squeezing data into types that are canonically used for something else
-> should always be avoided if possible (there are some cases where
-> you're stuck with an existing interface, but that's not the case
-> here).
->
-> But I still think we should avoid exporting the raw cycle values
-> unless there is some extremely strong argument for it (and if we can,
-> they should be abstracted into some sort of cookie value to avoid
-> userland using it as a raw clock).
->
-Thanks for the input John. This change is basically to address the API
-gap and allow it to give a user-given timebase for the sandwich time.
-I will remove this RAW-CYCLES option for now. If it's deemed
-necessary, we can always add it later into the same API.
+On 10/2/23 10:43 AM, Jens Axboe wrote:
+> On 10/2/23 8:38 AM, syzbot wrote:
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    ec8c298121e3 Merge tag 'x86-urgent-2023-10-01' of git://gi..
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=16ef0ed6680000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=3be743fa9361d5b0
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=2113e61b8848fa7951d8
+>> compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+>> userspace arch: arm
+> 
+> I tried the syz repro in the console output, but can't trigger it. It
+> also makes very little sense to me... For when there is a reproducer,
+> the below would perhaps shed some light on it. We have bl->is_mapped ==
+> 1, yet bl->buf_ring is NULL. Probably some artifact of 32-bit arm?
 
-> thanks
-> -john
+I think this is 32-bit and highmem... The page being mapped into the
+kernel is a highmem page, and this won't really fly with having a
+permanent ->buf_ring address which we get from page_address().
+
+-- 
+Jens Axboe
+
