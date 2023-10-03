@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E67107B6634
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBE37B6644
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239852AbjJCKRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 06:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
+        id S230442AbjJCKVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 06:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbjJCKRv (ORCPT
+        with ESMTP id S229758AbjJCKVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 06:17:51 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D74E893;
-        Tue,  3 Oct 2023 03:17:48 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-        id 477DB20B74C0; Tue,  3 Oct 2023 03:17:48 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 477DB20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1696328268;
-        bh=rPoWxArSPTX73zRYqxSh03l9OCqoYJW886p1zjn4TkE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lgkAWGaEOC3pMX+wazaPs/M9R0m0veb/24KBGsMHsZ7MzKCfUocTtLXWo3JjVnqEE
-         kSwh/5P+V5mJJNzFzbnpLFuZ7bB7k4I4CKfjiFnKj9g82mnXlm9xmFsUOCAmFZolOk
-         OFVHYqeqwAlnttFBqL8TBEivQ8xLQuAmNYRFRz3E=
-Date:   Tue, 3 Oct 2023 03:17:48 -0700
-From:   Shradha Gupta <shradhagupta@linux.microsoft.com>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
-        paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
-        davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
-        longli@microsoft.com, ssengar@linux.microsoft.com,
-        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-        sharmaajay@microsoft.com, hawk@kernel.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH net,v2, 2/3] net: mana: Fix the tso_bytes calculation
-Message-ID: <20231003101748.GA32191@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1696020147-14989-1-git-send-email-haiyangz@microsoft.com>
- <1696020147-14989-3-git-send-email-haiyangz@microsoft.com>
+        Tue, 3 Oct 2023 06:21:33 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F43A3;
+        Tue,  3 Oct 2023 03:21:30 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32329d935d4so763442f8f.2;
+        Tue, 03 Oct 2023 03:21:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696328488; x=1696933288; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wyk1y8XC/A7otYhdDr88eU8AxtqyBbvI9qOM1Ivdglo=;
+        b=UFovOfJH+qEMPSXwCYfuPLowKy8V2JSdSE48yuGCyOks1EAMFKbRNo7BkZYO/yIFIw
+         k9q2dF9FHSVVQ1T4fC1j9D2plNxaBRBQtpGCxAzPLeupP5kgcQONZbcNN9ZkC9fh5qP4
+         AwfGJXauMXc6aXBGNe596E1jtr4WOUZyWQGeSMUg70Pr8hY1yH7S2Xdpg04zAHPSu/1J
+         TsXMvZK4HEuYms0enhKgi+Mmr22p8Nass560ld9pQmInjLHTKg5Y+oBcnUurGL9t8HzL
+         dOoJxAtNpG71GANS96rT7xMoz8zj12gyj8jtYWbI2j138el1oBZR528YfcubszKP9iPc
+         STpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696328488; x=1696933288;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wyk1y8XC/A7otYhdDr88eU8AxtqyBbvI9qOM1Ivdglo=;
+        b=tG1ox+MWlbEYcLs+JGok7fhilgYjQGED/0Cukwr8SRi4HG7CNg7jkzSlGFGZgnoeUs
+         czY7XcAEPsfSLbkaCME4Z+8Z8tANckmHdME2VAGGh8QIz0j1DqU3ANZ2TY+J+98sphuJ
+         R/ahxC8poYfybWIVu6rwb3vIMJTftBo8Xa++y2Yyb4IZzuTyyJUfB07RTtQRcM6OfnEh
+         t1X2Abi5c/usV6EIKilih5iqCw1jUmvqkWgtpLJj5SCuHos1RLYHXisdtjSeGFgtcoR4
+         uTiBRnSHApTl8lL2NZOnYglZMMhrkB21XE7wN43z1BuD7JrJh+nSF9fE6R0ryp3r44UF
+         kU9g==
+X-Gm-Message-State: AOJu0YyC+myPH/AP9I7klxQ1rjKvEKrWeAVAOndLNOvZezQ1/faw/lvg
+        3JQ9nOtgwWrrH6mzRu6LKQU=
+X-Google-Smtp-Source: AGHT+IFoGSxPH67dI0pSqB17FrRseCZNLJ1HnkigQOoUBOBngTInpQ+0b6carltMEWxkHkGJaPnRMQ==
+X-Received: by 2002:adf:e592:0:b0:31f:f9de:6a4e with SMTP id l18-20020adfe592000000b0031ff9de6a4emr13329765wrm.69.1696328488077;
+        Tue, 03 Oct 2023 03:21:28 -0700 (PDT)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id f7-20020a7bcc07000000b004053a2138bfsm9119977wmh.12.2023.10.03.03.21.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 03:21:27 -0700 (PDT)
+Message-ID: <651beb27.7b0a0220.fe7ca.2796@mx.google.com>
+X-Google-Original-Message-ID: <ZRvrJnPG6hTpyO1h@Ansuel-xps.>
+Date:   Tue, 3 Oct 2023 12:21:26 +0200
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Robert Marko <robimarko@gmail.com>, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next] net: phy: aquantia: add firmware load
+ support
+References: <20230930104008.234831-1-robimarko@gmail.com>
+ <df89a28e-0886-4db0-9e68-5f9af5bec888@lunn.ch>
+ <651b26a5.050a0220.213bf.e11b@mx.google.com>
+ <9a84642e-b4fe-4e36-bcdc-d02c84bb1dc9@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1696020147-14989-3-git-send-email-haiyangz@microsoft.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <9a84642e-b4fe-4e36-bcdc-d02c84bb1dc9@lunn.ch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 01:42:26PM -0700, Haiyang Zhang wrote:
-> sizeof(struct hop_jumbo_hdr) is not part of tso_bytes, so remove
-> the subtraction from header size.
+On Mon, Oct 02, 2023 at 11:07:25PM +0200, Andrew Lunn wrote:
+> > This is problematic... Since this is a plain standard PHY and we don't
+> > have a compatible (as it's matched with the PHY id) we don't have DT to
+> > add this... Sooo how to add this? Should we update the generic-phy dt?
+> > 
+> > Should we create a dummy dt and add a compatible adding
+> > ethernet-phy.ID... just for this properties?
+> > 
+> > This is why we were a bit confused about adding a DT commit to this.
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: bd7fc6e1957c ("net: mana: Add new MANA VF performance counters for easier troubleshooting")
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> Reviewed-by: Simon Horman <horms@kernel.org>
-> ---
->  drivers/net/ethernet/microsoft/mana/mana_en.c | 2 --
->  1 file changed, 2 deletions(-)
+> Just do what other PHYs do. ti,dp83869.yaml, motorcomm,yt8xxx.yaml,
+> nxp,tja11xx.yaml, etc.
 > 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 5cdcf7561b38..86e724c3eb89 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -264,8 +264,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  				ihs = skb_transport_offset(skb) + sizeof(struct udphdr);
->  			} else {
->  				ihs = skb_tcp_all_headers(skb);
-> -				if (ipv6_has_hopopt_jumbo(skb))
-> -					ihs -= sizeof(struct hop_jumbo_hdr);
->  			}
->  
->  			u64_stats_update_begin(&tx_stats->syncp);
-> -- 
-> 2.25.1
-Reviewed-by:Shradha Gupta <shradhagupta@linux.microsoft.com>
+
+Thanks I prepared a DT hoping it will be good in v2.
+
+-- 
+	Ansuel
