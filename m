@@ -2,109 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6618F7B75E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 02:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15B17B75F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 02:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238126AbjJDAfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 20:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52964 "EHLO
+        id S232220AbjJDAoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 20:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbjJDAfg (ORCPT
+        with ESMTP id S229794AbjJDAoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 20:35:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28EDA6;
-        Tue,  3 Oct 2023 17:35:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3898AC433C7;
-        Wed,  4 Oct 2023 00:35:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696379732;
-        bh=xTLf60xl9ywLlbfDNQmvd8IqUlwOS3SJ+u4eCvgHsog=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=atW2Z6340QtMCKI8qMfcwBjRgADGd6qTVXy/dhms8Ls1XdIgOn3N/arWd2e/DQ911
-         B1CWAHHGhiXlgoN9VZE5Db35fX8hxXkoyg+apqoOG7pu8GWyaM3SJ6aD/q05+0Ub0R
-         HMQc7qACPaNrexqyobcJW1NUry3Cuz3yiUceT5J2brb9Bx4XDYz286PxoOWRYpKEOm
-         EBs7DGlNZ6ilJH00w19sQ2krB+Hn0UqcQh0Z1EAd9pNVNDFqFLVynJJM8woXSTOYCs
-         sHxLVG7H0wHoSeJMrowr5J0ireJ8kxKAuRKPXF2ko30ED8Dp0iDLQ/Wf/Bu3Incxop
-         ih8GREYNELj1Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C6B74CE09E4; Tue,  3 Oct 2023 17:35:31 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 17:35:31 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Yong He <zhuangel570@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/5] srcu fixes
-Message-ID: <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231003232903.7109-1-frederic@kernel.org>
+        Tue, 3 Oct 2023 20:44:09 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A29A7;
+        Tue,  3 Oct 2023 17:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696380238;
+        bh=VTUgVwGFs/x1FHkkO7KJ0hxykuV2FQw9OJPcxcssznM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Arnyhv6pHMymBXETeIMD6pL9PdUcZg35nqkmN0t/DNMu36jY3M9g3gedTNzVKMF/F
+         7nx12bnxjLSE9wZIx2GQuq2jLpqogaZ0NasWb+g1lF9uBJkeEaN3+wukUAtSSyZwni
+         wfYrV86DqcYU+79jzWkNexK8nA5RplWT+zV4suFZOks8ENsXkb2NWTcOx2LffP925n
+         jTwKicr8VFkWY1q7rGgX42mpZe143k9Vm1sl1kOAWxBcDxPaxRQ+FC5tcVa74Pb/RB
+         c/i03qgIDJD6vNsj8EMm5wHJ73ODlGE9sw7dVr6J575TY4JZvZQoYwWJHcKk+MPBHc
+         PDD5ELeBeim5A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S0bXs4ydwz4xM2;
+        Wed,  4 Oct 2023 11:43:57 +1100 (AEDT)
+Date:   Wed, 4 Oct 2023 11:43:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Jack Brennen <jbrennen@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: linux-next: manual merge of the modules tree with the kbuild tree
+Message-ID: <20231004114354.39a71ab3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003232903.7109-1-frederic@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/oH1/TL=DeD9tVNWwk++UQXc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
-> Hi,
-> 
-> This contains a fix for "SRCU: kworker hung in synchronize_srcu":
-> 
-> 	http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
-> 
-> And a few cleanups.
-> 
-> Passed 50 hours of SRCU-P and SRCU-N.
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> 	srcu/fixes
-> 
-> HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
-> 
-> Thanks,
-> 	Frederic
+--Sig_/oH1/TL=DeD9tVNWwk++UQXc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Very good, and a big "Thank You!!!" to all of you!
+Hi all,
 
-I queued this series for testing purposes, and have started a bunch of
-SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
-SRCU-N on another system, but with both scenarios resized to 40 CPU each.
+Today's linux-next merge of the modules tree got a conflict in:
 
-While that is in flight, a few questions:
+  scripts/mod/modpost.c
 
-o	Please check the Co-developed-by rules.  Last I knew, it was
-	necessary to have a Signed-off-by after each Co-developed-by.
+between commit:
 
-o	Is it possible to get a Tested-by from the original reporter?
-	Or is this not reproducible?
+  4074532758c5 ("modpost: Optimize symbol search from linear to binary sear=
+ch")
 
-o	Is it possible to convince rcutorture to find this sort of
-	bug?  Seems like it should be, but easy to say...
+from the kbuild tree and commit:
 
-o	Frederic, would you like to include this in your upcoming
-	pull request?  Or does it need more time?
+  dc95e422c283 ("module: Make is_valid_name() return bool")
 
-						Thanx, Paul
+from the modules tree.
 
-> ---
-> 
-> Frederic Weisbecker (5):
->       srcu: Fix callbacks acceleration mishandling
->       srcu: Only accelerate on enqueue time
->       srcu: Remove superfluous callbacks advancing from srcu_start_gp()
->       srcu: No need to advance/accelerate if no callback enqueued
->       srcu: Explain why callbacks invocations can't run concurrently
-> 
-> 
->  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++---------------
->  1 file changed, 39 insertions(+), 16 deletions(-)
+I fixed it up (I used the former version of this files and applied the
+following merge resolution patch) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 4 Oct 2023 11:39:03 +1100
+Subject: [PATCH] fix up for "module: Make is_valid_name() return bool"
+
+interacting with commit
+
+  4074532758c5 ("modpost: Optimize symbol search from linear to binary sear=
+ch")
+
+from the kbuild tree.
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ scripts/mod/modpost.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
+index 6413f26fcb6b..5a0324f3257f 100644
+--- a/scripts/mod/modpost.h
++++ b/scripts/mod/modpost.h
+@@ -163,12 +163,12 @@ static inline unsigned int get_secindex(const struct =
+elf_info *info,
+  *
+  * Internal symbols created by tools should be ignored by modpost.
+  */
+-static inline int is_valid_name(struct elf_info *elf, Elf_Sym *sym)
++static inline bool is_valid_name(struct elf_info *elf, Elf_Sym *sym)
+ {
+ 	const char *name =3D elf->strtab + sym->st_name;
+=20
+ 	if (!name || !strlen(name))
+-		return 0;
++		return false;
+ 	return !is_mapping_symbol(name);
+ }
+=20
+--=20
+2.40.1
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/oH1/TL=DeD9tVNWwk++UQXc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUctUoACgkQAVBC80lX
+0Gx2Pwf9FTvYCFWISG4yvSKQy0vGAxJGeWoybTOEEUj7DwO5hZC/1BepWpNbUJOt
+9nD/cPQVLz/S3FJsg0oUWbzm+TjXt9TZVJTuLgdYdlOIVTNutb18mDPV0726LOSm
+neHlF9U3+TPJhc8+LRNW0nlQAwvrGsSx3TLk5NKXOtKKjGiYv2h22LYFh2B2haVd
+4lcjFl24TNBYvsdeGzdkzWwY6aFbanLy7j53LCaA17DGAO/mPhVuBrKvMJTUeZpC
+5whnT7oEU5thhQpFKX8ov6orAOixGWWD/NaNcS8PPyjAd4uMe5kXXzd+nqqZ7lMa
+15b2FN8YE09Ag4DM6snQ48ZcRZ+7Jw==
+=yr7x
+-----END PGP SIGNATURE-----
+
+--Sig_/oH1/TL=DeD9tVNWwk++UQXc--
