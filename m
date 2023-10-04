@@ -2,78 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DEA7B7A81
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39BD7B7A86
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241762AbjJDIqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        id S232972AbjJDIqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241822AbjJDIqI (ORCPT
+        with ESMTP id S232650AbjJDIqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:46:08 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CA4B4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:46:01 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-533f193fc8dso3197952a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:46:01 -0700 (PDT)
+        Wed, 4 Oct 2023 04:46:53 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53E4A9;
+        Wed,  4 Oct 2023 01:46:45 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-4547322a756so883365137.3;
+        Wed, 04 Oct 2023 01:46:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696409160; x=1697013960; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iwt6yecZwQb9RsRqs87uClcaB8jIHdaxjvckvEuQJXo=;
-        b=nRJ0qxoXTurn8d4tvmMIZ13t25YOpBr5ruGzC82VzC8y3r7tknX3W7w/s6JiTvewyI
-         //1uAKErgNb0fntnAmAVnzOLwo9BFRct7ff5nT7XEj9DH4hH9tLbdCBQXiynJMDpNw/m
-         zgy0AlgpZP7vQGkCfcQRAwYvYaCLdsw6dlVskBqAbJLM3LstqZvKKWSaznIWyb+orW+F
-         mStgP/XUAsKpa2lW7g1omToKqXlwz3QchhD/EUTUktLb2eH8XYWvfhvtEMqlISlt0V/k
-         NdCQtykKAxIiirniLGWqsB+Yv8hs/sFQ1ocBY2IUiWcdSupPsguHwOshzNSDVinLR2m4
-         S+Gg==
+        d=gmail.com; s=20230601; t=1696409205; x=1697014005; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jc8qrZXDSoL7kpl3gyjhpQEKwXowbxIhbU9agf01R5g=;
+        b=DhYbXYVS5kmM+HnklJ0KL5XYytip4NaAYOzTNholuCjQCFwl1ChjKlZj16SLn0UvrW
+         5j7U8le8mB1m1nfiofwicVjK50CzngyjC2lKR5YMRsg1NkLO1VSTCd408V1yL50Cfrlx
+         27pIjwk0tclsfSTMF/P8sf4N1jmxwO098wubaXMzAS4gScZ8LQESB7g7PpUsdRs6RtOk
+         SAqQY9kTSpPI2uH1M5g+fN1Ym01s5fZTz9sF2vRx/I5F6Xhs3blh7hqGvVJQ0mqX1QWV
+         SYHPChkcz+GkajxZMxzeau0LVuxwPcYX6P6ndWFKkPzXuVhWhNMZC6S8svvAzFatAmxU
+         O/Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696409160; x=1697013960;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iwt6yecZwQb9RsRqs87uClcaB8jIHdaxjvckvEuQJXo=;
-        b=gf0vf7VU0khkvQJ9wjt0qIXWJSb71hXg90OFF5GTmdrw5UtvU0m0Crez2pzF+kNRzn
-         yY7ffHK20tLbXAjTh6TTZesqyOdG25olgn+mzUlbENh8c8G2VzYQkMkr5XZEJAdYYrOz
-         ax7OKCMuX+appP6JJK6RnmiQiMLlLZuXyD4Dt6403bvjVqXY9PEqkI+mwa8ll3COAYuY
-         La0SdaGeWmJsa7acJy/XSkE5jd1w5oFUREDB33rBMGFjKTZWAjmIrw8z6d4IJCPkeq4d
-         xYEgdoAnjogl1li22N7TRsThnGywqooXRYHyxfpS4SBrjzEV4qxaKrZoO22VmMInrYLi
-         rbng==
-X-Gm-Message-State: AOJu0Yw/kxBzAB2KRgAEbgbOIpikX5f7UGBq7AYaM8kubyvAOE9UJHYJ
-        bJLwzJpsQzPWyeumDX+7CC0=
-X-Google-Smtp-Source: AGHT+IH1fMjq62Gk6rhHc+iucHf6asMon83lNrjM18EM+difkExI/cC19QvT1Zq7gIYruQC6uZvYFA==
-X-Received: by 2002:aa7:db46:0:b0:532:ac24:3081 with SMTP id n6-20020aa7db46000000b00532ac243081mr1398036edt.30.1696409160139;
-        Wed, 04 Oct 2023 01:46:00 -0700 (PDT)
-Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.googlemail.com with ESMTPSA id i18-20020aa7dd12000000b0052889d090bfsm2082065edv.79.2023.10.04.01.45.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 01:45:59 -0700 (PDT)
-Message-ID: <691f908e-37ed-4f3a-8c7f-e9615819d3db@gmail.com>
-Date:   Wed, 4 Oct 2023 10:45:58 +0200
+        d=1e100.net; s=20230601; t=1696409205; x=1697014005;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jc8qrZXDSoL7kpl3gyjhpQEKwXowbxIhbU9agf01R5g=;
+        b=LXYMME8wKXkLqeBhxheQJYilHVG0k1hXnO7lyJXqHRnNHPY8KyW6IFaUs9ZDbQ3FAH
+         Zyticiw96EYIZ7PAN4yEsQ7CQ+9DtqPzW1anD9dA2ThdK0WrSazPrHzuamKEv+fvLFXT
+         C2w7V3Q2wxjtJW6/n+fdVmKOEYz0EP7VLVk62cIpfqV88G9G4tfs5J0CMWg5Vx+Co0Cb
+         OJoYugO/Lww1xMUkpvJO7sDjnY9MA3IVVk0tW3aRiHLYSzZHIawFVnktSaleuU0ovzug
+         Hx2bvmq3XdPWUpUnCb1eTO1Vl41XhKBc9xGMZFecEYAnSIXsF1+1QPDe5h22sxCn7vZm
+         MMVA==
+X-Gm-Message-State: AOJu0YyJQ81e+sbxfPXFamWVRUJE2+w9RzeWnJt67b1MGvc8DKOME9A1
+        XjQMDNIhkqASUhuXHWChSVw+3VzWIutRqeIyqEU=
+X-Google-Smtp-Source: AGHT+IEm5NmgzTa0Leub7LeZ39qMTVoZ6WBfLn7YVM/M9zVEcQWMn1fpproHR4QjJB8jEt96o3CUQoH2F/v0ZOYfZ2k=
+X-Received: by 2002:a05:6102:3c7:b0:44d:4fc0:3340 with SMTP id
+ n7-20020a05610203c700b0044d4fc03340mr1529589vsq.7.1696409204878; Wed, 04 Oct
+ 2023 01:46:44 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Revert "nvmem: add new config option"
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alban Bedel <albeu@free.fr>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20230718084804.20139-1-zajec5@gmail.com>
- <ba3c419a-6511-480a-b5f2-6c418f9c02e7@gmail.com>
-Content-Language: en-US
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <ba3c419a-6511-480a-b5f2-6c418f9c02e7@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+References: <000000000000ca2df5060676b6d8@google.com>
+In-Reply-To: <000000000000ca2df5060676b6d8@google.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 4 Oct 2023 11:46:34 +0300
+Message-ID: <CAOQ4uxgS3HK5eZCm-YRuqSZ8932PafmqWBZfB5diYyj7qhAfQQ@mail.gmail.com>
+Subject: Re: [syzbot] [overlayfs?] possible deadlock in ovl_copy_up_start (2)
+To:     syzbot <syzbot+e8628856801e9809216f@syzkaller.appspotmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,84 +70,217 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srini,
+On Fri, Sep 29, 2023 at 6:06=E2=80=AFAM syzbot
+<syzbot+e8628856801e9809216f@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    940fcc189c51 Add linux-next specific files for 20230921
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D12dea70e68000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D1f140ae6e669a=
+c24
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3De8628856801e980=
+9216f
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for D=
+ebian) 2.40
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/b8921b235c24/dis=
+k-940fcc18.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/c80a9f6bcdd4/vmlinu=
+x-940fcc18.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/ed10a4df6950/b=
+zImage-940fcc18.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+e8628856801e9809216f@syzkaller.appspotmail.com
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> WARNING: possible circular locking dependency detected
+> 6.6.0-rc2-next-20230921-syzkaller #0 Not tainted
+> ------------------------------------------------------
+> syz-executor.3/15498 is trying to acquire lock:
+> ffff88808e717968 (&ovl_i_lock_key[depth]#2){+.+.}-{3:3}, at: ovl_inode_lo=
+ck_interruptible fs/overlayfs/overlayfs.h:630 [inline]
+> ffff88808e717968 (&ovl_i_lock_key[depth]#2){+.+.}-{3:3}, at: ovl_copy_up_=
+start+0x4d/0x290 fs/overlayfs/util.c:692
+>
+> but task is already holding lock:
+> ffff88801d8b13e0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x89=
+3/0x1cc0 security/integrity/ima/ima_main.c:266
+>
+> which lock already depends on the new lock.
+>
+>
+> the existing dependency chain (in reverse order) is:
+>
+> -> #2 (&iint->mutex){+.+.}-{3:3}:
+>        __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+>        __mutex_lock+0x181/0x1340 kernel/locking/mutex.c:747
+>        process_measurement+0x893/0x1cc0 security/integrity/ima/ima_main.c=
+:266
+>        ima_file_check+0xc2/0x110 security/integrity/ima/ima_main.c:543
+>        do_open fs/namei.c:3622 [inline]
+>        path_openat+0x17a1/0x29c0 fs/namei.c:3777
+>        do_filp_open+0x1de/0x430 fs/namei.c:3804
+>        do_sys_openat2+0x176/0x1e0 fs/open.c:1422
+>        do_sys_open fs/open.c:1437 [inline]
+>        __do_sys_open fs/open.c:1445 [inline]
+>        __se_sys_open fs/open.c:1441 [inline]
+>        __x64_sys_open+0x154/0x1e0 fs/open.c:1441
+>        do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>        do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+>        entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> -> #1 (sb_writers#4){.+.+}-{0:0}:
+>        percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+>        __sb_start_write include/linux/fs.h:1572 [inline]
+>        sb_start_write include/linux/fs.h:1647 [inline]
+>        ovl_start_write+0xfe/0x2d0 fs/overlayfs/util.c:31
+>        ovl_copy_up_tmpfile fs/overlayfs/copy_up.c:830 [inline]
+>        ovl_do_copy_up fs/overlayfs/copy_up.c:945 [inline]
+>        ovl_copy_up_one+0x16a5/0x3250 fs/overlayfs/copy_up.c:1137
+>        ovl_copy_up_flags+0x189/0x200 fs/overlayfs/copy_up.c:1192
+>        ovl_xattr_set+0x387/0x4e0 fs/overlayfs/xattrs.c:56
+>        __vfs_setxattr+0x173/0x1d0 fs/xattr.c:201
+>        __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:235
+>        __vfs_setxattr_locked+0x17e/0x250 fs/xattr.c:296
+>        vfs_setxattr+0x146/0x350 fs/xattr.c:322
+>        do_setxattr+0x142/0x170 fs/xattr.c:630
+>        setxattr+0x159/0x170 fs/xattr.c:653
+>        path_setxattr+0x1a3/0x1d0 fs/xattr.c:672
+>        __do_sys_setxattr fs/xattr.c:688 [inline]
+>        __se_sys_setxattr fs/xattr.c:684 [inline]
+>        __x64_sys_setxattr+0xc4/0x160 fs/xattr.c:684
+>        do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>        do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+>        entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> -> #0 (&ovl_i_lock_key[depth]#2){+.+.}-{3:3}:
+>        check_prev_add kernel/locking/lockdep.c:3134 [inline]
+>        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+>        validate_chain kernel/locking/lockdep.c:3868 [inline]
+>        __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
+>        lock_acquire kernel/locking/lockdep.c:5753 [inline]
+>        lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
+>        __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+>        __mutex_lock+0x181/0x1340 kernel/locking/mutex.c:747
+>        ovl_inode_lock_interruptible fs/overlayfs/overlayfs.h:630 [inline]
+>        ovl_copy_up_start+0x4d/0x290 fs/overlayfs/util.c:692
+>        ovl_copy_up_one+0x598/0x3250 fs/overlayfs/copy_up.c:1130
+>        ovl_copy_up_flags+0x189/0x200 fs/overlayfs/copy_up.c:1192
+>        ovl_maybe_copy_up+0x124/0x160 fs/overlayfs/copy_up.c:1222
+>        ovl_open+0x16f/0x330 fs/overlayfs/file.c:166
+>        do_dentry_open+0x88b/0x1730 fs/open.c:929
+>        vfs_open fs/open.c:1063 [inline]
+>        dentry_open+0x13f/0x1d0 fs/open.c:1079
+>        ima_calc_file_hash+0x2c4/0x4a0 security/integrity/ima/ima_crypto.c=
+:558
+>        ima_collect_measurement+0x5e2/0x6f0 security/integrity/ima/ima_api=
+.c:289
+>        process_measurement+0xc87/0x1cc0 security/integrity/ima/ima_main.c=
+:345
+>        ima_file_check+0xc2/0x110 security/integrity/ima/ima_main.c:543
+>        do_open fs/namei.c:3622 [inline]
+>        path_openat+0x17a1/0x29c0 fs/namei.c:3777
+>        do_filp_open+0x1de/0x430 fs/namei.c:3804
+>        do_sys_openat2+0x176/0x1e0 fs/open.c:1422
+>        do_sys_open fs/open.c:1437 [inline]
+>        __do_sys_openat fs/open.c:1453 [inline]
+>        __se_sys_openat fs/open.c:1448 [inline]
+>        __x64_sys_openat+0x175/0x210 fs/open.c:1448
+>        do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>        do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+>        entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> other info that might help us debug this:
+>
+> Chain exists of:
+>   &ovl_i_lock_key[depth]#2 --> sb_writers#4 --> &iint->mutex
+>
+>  Possible unsafe locking scenario:
+>
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(&iint->mutex);
+>                                lock(sb_writers#4);
+>                                lock(&iint->mutex);
+>   lock(&ovl_i_lock_key[depth]#2);
+>
+>  *** DEADLOCK ***
+>
+> 1 lock held by syz-executor.3/15498:
+>  #0: ffff88801d8b13e0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement=
++0x893/0x1cc0 security/integrity/ima/ima_main.c:266
+>
+> stack backtrace:
+> CPU: 0 PID: 15498 Comm: syz-executor.3 Not tainted 6.6.0-rc2-next-2023092=
+1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 08/04/2023
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+>  check_noncircular+0x311/0x3f0 kernel/locking/lockdep.c:2187
+>  check_prev_add kernel/locking/lockdep.c:3134 [inline]
+>  check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+>  validate_chain kernel/locking/lockdep.c:3868 [inline]
+>  __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
+>  lock_acquire kernel/locking/lockdep.c:5753 [inline]
+>  lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
+>  __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+>  __mutex_lock+0x181/0x1340 kernel/locking/mutex.c:747
+>  ovl_inode_lock_interruptible fs/overlayfs/overlayfs.h:630 [inline]
+>  ovl_copy_up_start+0x4d/0x290 fs/overlayfs/util.c:692
+>  ovl_copy_up_one+0x598/0x3250 fs/overlayfs/copy_up.c:1130
+>  ovl_copy_up_flags+0x189/0x200 fs/overlayfs/copy_up.c:1192
+>  ovl_maybe_copy_up+0x124/0x160 fs/overlayfs/copy_up.c:1222
+>  ovl_open+0x16f/0x330 fs/overlayfs/file.c:166
+>  do_dentry_open+0x88b/0x1730 fs/open.c:929
+>  vfs_open fs/open.c:1063 [inline]
+>  dentry_open+0x13f/0x1d0 fs/open.c:1079
+>  ima_calc_file_hash+0x2c4/0x4a0 security/integrity/ima/ima_crypto.c:558
+>  ima_collect_measurement+0x5e2/0x6f0 security/integrity/ima/ima_api.c:289
+>  process_measurement+0xc87/0x1cc0 security/integrity/ima/ima_main.c:345
+>  ima_file_check+0xc2/0x110 security/integrity/ima/ima_main.c:543
+>  do_open fs/namei.c:3622 [inline]
+>  path_openat+0x17a1/0x29c0 fs/namei.c:3777
+>  do_filp_open+0x1de/0x430 fs/namei.c:3804
+>  do_sys_openat2+0x176/0x1e0 fs/open.c:1422
+>  do_sys_open fs/open.c:1437 [inline]
+>  __do_sys_openat fs/open.c:1453 [inline]
+>  __se_sys_openat fs/open.c:1448 [inline]
+>  __x64_sys_openat+0x175/0x210 fs/open.c:1448
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f30bf67cae9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
+ ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f30c03990c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+> RAX: ffffffffffffffda RBX: 00007f30bf79c050 RCX: 00007f30bf67cae9
+> RDX: 0000000000008443 RSI: 0000000020004280 RDI: ffffffffffffff9c
+> RBP: 00007f30bf6c847a R08: 0000000000000000 R09: 0000000000000000
+> R10: 00000000000000cc R11: 0000000000000246 R12: 0000000000000000
+> R13: 000000000000006e R14: 00007f30bf79c050 R15: 00007ffce77ebe68
+>  </TASK>
+>
+>
 
-On 26.08.2023 22:15, Rafał Miłecki wrote:
-> On 18.07.2023 10:48, Rafał Miłecki wrote:
->> From: Rafał Miłecki <rafal@milecki.pl>
->>
->> This reverts commit 517f14d9cf3533d5ab4fded195ab6f80a92e378f.
->>
->> It seems that "no_of_node" config option was added to help mtd's case.
->>
->> DT nodes of MTD partitions (that are also NVMEM devices) may contain
->> subnodes that SHOULD NOT be treated as NVMEM fixed cells. To prevent
->> NVMEM core code from parsing them "no_of_node" was set to true and that
->> made for_each_child_of_node() in NVMEM a no-op.
->>
->> With the introduction of "add_legacy_fixed_of_cells" config option
->> things got more explicit. MTD subsystem simply tells NVMEM when to look
->> for fixed cells and there is no need to hack "of_node" pointer anymore.
->>
->> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> ---
->> Important: this is based on top of the
->> [PATCH V4] nvmem: add explicit config option to read old syntax fixed OF cells
-> 
-> I see you skipped those two patches for 6.6.
-> 
-> Can you queue them for 6.7, please?
+This looks like a new report that started after:
+346f114cc506 ovl: reorder ovl_want_write() after ovl_inode_lock()
 
-Did you have a chance to look at this one?
+but the root cause looks like the same old false positive
 
->> ---
->>   drivers/mtd/mtdcore.c          | 1 -
->>   drivers/nvmem/core.c           | 2 +-
->>   include/linux/nvmem-provider.h | 2 --
->>   3 files changed, 1 insertion(+), 4 deletions(-)
->>
->> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
->> index 9db8d7853639..3d781ffb8c32 100644
->> --- a/drivers/mtd/mtdcore.c
->> +++ b/drivers/mtd/mtdcore.c
->> @@ -554,7 +554,6 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
->>       config.read_only = true;
->>       config.root_only = true;
->>       config.ignore_wp = true;
->> -    config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
->>       config.priv = mtd;
->>       mtd->nvmem = nvmem_register(&config);
->> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
->> index 58d8919e6682..a0c9153cda28 100644
->> --- a/drivers/nvmem/core.c
->> +++ b/drivers/nvmem/core.c
->> @@ -1027,7 +1027,7 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
->>       nvmem->nkeepout = config->nkeepout;
->>       if (config->of_node)
->>           nvmem->dev.of_node = config->of_node;
->> -    else if (!config->no_of_node)
->> +    else
->>           nvmem->dev.of_node = config->dev->of_node;
->>       switch (config->id) {
->> diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
->> index 1b81adebdb8b..e3930835235b 100644
->> --- a/include/linux/nvmem-provider.h
->> +++ b/include/linux/nvmem-provider.h
->> @@ -89,7 +89,6 @@ struct nvmem_cell_info {
->>    * @read_only:    Device is read-only.
->>    * @root_only:    Device is accessibly to root only.
->>    * @of_node:    If given, this will be used instead of the parent's of_node.
->> - * @no_of_node:    Device should not use the parent's of_node even if it's !NULL.
->>    * @reg_read:    Callback to read data.
->>    * @reg_write:    Callback to write data.
->>    * @size:    Device size.
->> @@ -122,7 +121,6 @@ struct nvmem_config {
->>       bool            ignore_wp;
->>       struct nvmem_layout    *layout;
->>       struct device_node    *of_node;
->> -    bool            no_of_node;
->>       nvmem_reg_read_t    reg_read;
->>       nvmem_reg_write_t    reg_write;
->>       int    size;
-> 
-
+#syz dup: possible deadlock in mnt_want_write (2)
