@@ -2,278 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CB77B853A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550277B853E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243461AbjJDQ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
+        id S243382AbjJDQ2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243418AbjJDQ1n (ORCPT
+        with ESMTP id S243365AbjJDQ2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:27:43 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C21100;
-        Wed,  4 Oct 2023 09:27:32 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394F9MdC026971;
-        Wed, 4 Oct 2023 16:27:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=nG38MyMQZUo1+nDmSmoF18hVuuDXrNzWpZOrgAEYFTI=;
- b=G9RcHQ9yzaWTJzSbmf8P2ukLCz+pZToSpA3FYejeR8z4fqWLNiJ5/+n7DcqhFeSue5LW
- a2X45G0IFT/mG2JR/1oByfj+GaFlymTc4YtLvw5+43m3TZR7GlZLZPtoE+IjwazMBLDX
- 2q5lMwVqOD8HgC0ycik/maqVohBf/HUSCbx0TMKoa6n/3/VltIHKvVOJzDWo27gfHUbO
- V1COsmyrc98PEgvRJd1Vi9HmDm1hAkvYWaaA/MRZinAuLKE0RPUznjG2PCHCaOcFyq8I
- clMN9Xf5BJO6YC4Odp7X+11TO4/Ztif1p16jD+G90H/SzCG3Z1v3oZJT/BJ5tG/JXiTr +Q== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3th18jhhk0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 16:27:23 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 394GRMt1019543
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 4 Oct 2023 16:27:22 GMT
-Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 4 Oct 2023 09:27:22 -0700
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-To:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
-        <andersson@kernel.org>
-CC:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
-        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
-        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 7/7] drm/msm/dp: move of_dp_aux_populate_bus() to eDP probe()
-Date:   Wed, 4 Oct 2023 09:27:01 -0700
-Message-ID: <1696436821-14261-8-git-send-email-quic_khsieh@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1696436821-14261-1-git-send-email-quic_khsieh@quicinc.com>
-References: <1696436821-14261-1-git-send-email-quic_khsieh@quicinc.com>
+        Wed, 4 Oct 2023 12:28:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2D3FB
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:27:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696436864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HeOIY+TMASmn87xWV8+r7N8mCnLxXs+pOXJs1mPVrBE=;
+        b=bhLa11pNCYZxn8lWK9a2vAfRFNHkyNy4EDfOfQ8Cpxrhh0pf9zCHXsvQ/xhmlciCuauWw1
+        jOvDReGNZmGvd9N1aQkhibjkjeRQK9YWkvrQVspkBt6pUfvR6sDiBXys7KdelBdEGaeOXw
+        u78SBESWGd5jtgiRyvpQCsVDkgxQyl8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-561-BwFdtP73PduARcASkKtT2w-1; Wed, 04 Oct 2023 12:27:42 -0400
+X-MC-Unique: BwFdtP73PduARcASkKtT2w-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3231f43fc5eso24931f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 09:27:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696436860; x=1697041660;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HeOIY+TMASmn87xWV8+r7N8mCnLxXs+pOXJs1mPVrBE=;
+        b=QU7rhN1fjVZTXRaueNVE1nS6zQ4aXykag3pxHMeyCApdl+jRKxROf3Zc7QqRxJHSoA
+         TQWCBxEc0Yli5oI1HgsyoRcd57AnXbNLmm4sO0UWLqlg9H9iRJK4jNQZXH03UWj9dPaN
+         5mGxs7VYgbOsYPHkpHPUiUWD9UJqNzbGBpYd/lcWcMzN/0YsEXS1+Q4EApgUWVi9EJ/3
+         fI6v3cZBx82OeFUJPkC5cH0Eu4Utyemk98F9yadNaamBWMjf2MN8GlbyM+rOMhkdai7P
+         F/GMXbrqhZygCaM4hYiqgwj6J9Urb346rmaYZDLpJTx+PLDGXDvYoKHyRzSXiULIeRxl
+         QVrA==
+X-Gm-Message-State: AOJu0YyTtkgrkwu8Er+bLmkg1Gc3c0rYrFInRLQw7cQGbMWqaEBYMdo7
+        9nsmZkU5CfAWtSDT1Fb+2K/vcdpXETNyHora87gBSrR7qG5ppkc/Dy03rz/1w1m3koUWR9PA8/N
+        hFmlRBm/mYsei8EqaA7prP/vXZWFQUjdz
+X-Received: by 2002:adf:f08f:0:b0:318:f7a:e3c8 with SMTP id n15-20020adff08f000000b003180f7ae3c8mr2966660wro.57.1696436860469;
+        Wed, 04 Oct 2023 09:27:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGrXRDIEuP3VkHPBdR8hK4Narzkji4gpOpXS4wQ4PXY81B0mBGZkcbuxvanEiTrfGdMm7v67A==
+X-Received: by 2002:adf:f08f:0:b0:318:f7a:e3c8 with SMTP id n15-20020adff08f000000b003180f7ae3c8mr2966646wro.57.1696436860215;
+        Wed, 04 Oct 2023 09:27:40 -0700 (PDT)
+Received: from redhat.com ([2a06:c701:73d2:bf00:e379:826:5137:6b23])
+        by smtp.gmail.com with ESMTPSA id c6-20020a5d4cc6000000b00325c7295450sm4385094wrt.3.2023.10.04.09.27.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 09:27:39 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 12:27:36 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eugenio Perez Martin <eperezma@redhat.com>
+Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, linux-kernel@vger.kernel.org,
+        Dragos Tatulea <dtatulea@nvidia.com>,
+        virtualization@lists.linux-foundation.org, leiyang@redhat.com,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [PATCH] mlx5_vdpa: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
+Message-ID: <20231004122716-mutt-send-email-mst@kernel.org>
+References: <20230703142514.363256-1-eperezma@redhat.com>
+ <20230703110241-mutt-send-email-mst@kernel.org>
+ <ba5099b8-f72c-f267-41a7-d0ee18680796@oracle.com>
+ <20230704061356-mutt-send-email-mst@kernel.org>
+ <CAJaqyWf7DzJMEUT0NcPeDLQyPkthEJZydnSSPztoCxF6PWEu1w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: f31v7cQg46cSTQhNeq9XKDYtonUlv27e
-X-Proofpoint-ORIG-GUID: f31v7cQg46cSTQhNeq9XKDYtonUlv27e
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_07,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 bulkscore=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310040117
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJaqyWf7DzJMEUT0NcPeDLQyPkthEJZydnSSPztoCxF6PWEu1w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently eDP population is done at msm_dp_modeset_init() which happen
-at binding time. Move eDP population to be done at display probe time
-so that probe deferral cases can be handled effectively.
-wait_for_hpd_asserted callback is added during drm_dp_aux_init()
-to ensure eDP's HPD is up before proceeding eDP population.
+On Wed, Oct 04, 2023 at 02:56:53PM +0200, Eugenio Perez Martin wrote:
+> On Tue, Jul 4, 2023 at 12:16 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Mon, Jul 03, 2023 at 05:26:02PM -0700, Si-Wei Liu wrote:
+> > >
+> > >
+> > > On 7/3/2023 8:46 AM, Michael S. Tsirkin wrote:
+> > > > On Mon, Jul 03, 2023 at 04:25:14PM +0200, Eugenio Pérez wrote:
+> > > > > Offer this backend feature as mlx5 is compatible with it. It allows it
+> > > > > to do live migration with CVQ, dynamically switching between passthrough
+> > > > > and shadow virtqueue.
+> > > > >
+> > > > > Signed-off-by: Eugenio Pérez <eperezma@redhat.com>
+> > > > Same comment.
+> > > to which?
+> > >
+> > > -Siwei
+> >
+> > VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK is too narrow a use-case to commit to it
+> > as a kernel/userspace ABI: what if one wants to start rings in some
+> > other specific order?
+> > As was discussed on list, a better promise is not to access ring
+> > until the 1st kick. vdpa can then do a kick when it wants
+> > the device to start accessing rings.
+> >
+> 
+> Friendly ping about this series,
+> 
+> Now that VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK has been merged for
+> vdpa_sim, does it make sense for mlx too?
+> 
+> Thanks!
 
-Changes in v5:
--- inline dp_display_auxbus_population() and delete it
+For sure. I was just busy with a qemu pull, will handle this next.
 
-Changes in v4:
--- delete duplicate initialize code to dp_aux before drm_dp_aux_register()
--- delete of_get_child_by_name(dev->of_node, "aux-bus") and inline the function
--- not initialize rc = 0
-
-Changes in v3:
--- add done_probing callback into devm_of_dp_aux_populate_bus()
-
-Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
----
- drivers/gpu/drm/msm/dp/dp_aux.c     | 34 ++++++++++++++++-----
- drivers/gpu/drm/msm/dp/dp_display.c | 59 +++++++++++++++----------------------
- 2 files changed, 51 insertions(+), 42 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
-index 10b6eeb..03f4951 100644
---- a/drivers/gpu/drm/msm/dp/dp_aux.c
-+++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-@@ -479,7 +479,6 @@ void dp_aux_deinit(struct drm_dp_aux *dp_aux)
- 
- int dp_aux_register(struct drm_dp_aux *dp_aux)
- {
--	struct dp_aux_private *aux;
- 	int ret;
- 
- 	if (!dp_aux) {
-@@ -487,12 +486,7 @@ int dp_aux_register(struct drm_dp_aux *dp_aux)
- 		return -EINVAL;
- 	}
- 
--	aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
--
--	aux->dp_aux.name = "dpu_dp_aux";
--	aux->dp_aux.dev = aux->dev;
--	aux->dp_aux.transfer = dp_aux_transfer;
--	ret = drm_dp_aux_register(&aux->dp_aux);
-+	ret = drm_dp_aux_register(dp_aux);
- 	if (ret) {
- 		DRM_ERROR("%s: failed to register drm aux: %d\n", __func__,
- 				ret);
-@@ -507,6 +501,21 @@ void dp_aux_unregister(struct drm_dp_aux *dp_aux)
- 	drm_dp_aux_unregister(dp_aux);
- }
- 
-+static int dp_wait_hpd_asserted(struct drm_dp_aux *dp_aux,
-+				 unsigned long wait_us)
-+{
-+	int ret;
-+	struct dp_aux_private *aux;
-+
-+	aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
-+
-+	pm_runtime_get_sync(aux->dev);
-+	ret = dp_catalog_aux_wait_for_hpd_connect_state(aux->catalog);
-+	pm_runtime_put_sync(aux->dev);
-+
-+	return ret;
-+}
-+
- struct drm_dp_aux *dp_aux_get(struct device *dev, struct dp_catalog *catalog,
- 			      bool is_edp)
- {
-@@ -530,6 +539,17 @@ struct drm_dp_aux *dp_aux_get(struct device *dev, struct dp_catalog *catalog,
- 	aux->catalog = catalog;
- 	aux->retry_cnt = 0;
- 
-+	/*
-+	 * Use the drm_dp_aux_init() to use the aux adapter
-+	 * before registering AUX with the DRM device so that
-+	 * msm eDP panel can be detected by generic_dep_panel_probe().
-+	 */
-+	aux->dp_aux.name = "dpu_dp_aux";
-+	aux->dp_aux.dev = dev;
-+	aux->dp_aux.transfer = dp_aux_transfer;
-+	aux->dp_aux.wait_hpd_asserted = dp_wait_hpd_asserted;
-+	drm_dp_aux_init(&aux->dp_aux);
-+
- 	return &aux->dp_aux;
- }
- 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 79e56d9..df15145 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -1207,6 +1207,17 @@ static const struct msm_dp_desc *dp_display_get_desc(struct platform_device *pde
- 	return NULL;
- }
- 
-+static int dp_auxbus_done_probe(struct drm_dp_aux *aux)
-+{
-+	int rc;
-+
-+	rc = component_add(aux->dev, &dp_display_comp_ops);
-+	if (rc)
-+		DRM_ERROR("eDP component add failed, rc=%d\n", rc);
-+
-+	return rc;
-+}
-+
- static int dp_display_probe(struct platform_device *pdev)
- {
- 	int rc = 0;
-@@ -1272,10 +1283,18 @@ static int dp_display_probe(struct platform_device *pdev)
- 	if (rc)
- 		goto err;
- 
--	rc = component_add(&pdev->dev, &dp_display_comp_ops);
--	if (rc) {
--		DRM_ERROR("component add failed, rc=%d\n", rc);
--		goto err;
-+	if (dp->dp_display.is_edp) {
-+		rc = devm_of_dp_aux_populate_bus(dp->aux, dp_auxbus_done_probe);
-+		if (rc) {
-+			DRM_ERROR("eDP auxbus population failed, rc=%d\n", rc);
-+			goto err;
-+		}
-+	} else {
-+		rc = component_add(&pdev->dev, &dp_display_comp_ops);
-+		if (rc) {
-+			DRM_ERROR("component add failed, rc=%d\n", rc);
-+			goto err;
-+		}
- 	}
- 
- 	return rc;
-@@ -1291,7 +1310,6 @@ static int dp_display_remove(struct platform_device *pdev)
- 
- 	component_del(&pdev->dev, &dp_display_comp_ops);
- 	dp_display_deinit_sub_modules(dp);
--
- 	platform_set_drvdata(pdev, NULL);
- 
- 	return 0;
-@@ -1388,29 +1406,8 @@ static int dp_display_get_next_bridge(struct msm_dp *dp)
- {
- 	int rc;
- 	struct dp_display_private *dp_priv;
--	struct device_node *aux_bus;
--	struct device *dev;
- 
- 	dp_priv = container_of(dp, struct dp_display_private, dp_display);
--	dev = &dp_priv->pdev->dev;
--	aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
--
--	if (aux_bus && dp->is_edp) {
--		/*
--		 * The code below assumes that the panel will finish probing
--		 * by the time devm_of_dp_aux_populate_ep_devices() returns.
--		 * This isn't a great assumption since it will fail if the
--		 * panel driver is probed asynchronously but is the best we
--		 * can do without a bigger driver reorganization.
--		 */
--		rc = of_dp_aux_populate_bus(dp_priv->aux, NULL);
--		of_node_put(aux_bus);
--		if (rc)
--			goto error;
--	} else if (dp->is_edp) {
--		DRM_ERROR("eDP aux_bus not found\n");
--		return -ENODEV;
--	}
- 
- 	/*
- 	 * External bridges are mandatory for eDP interfaces: one has to
-@@ -1423,17 +1420,9 @@ static int dp_display_get_next_bridge(struct msm_dp *dp)
- 	if (!dp->is_edp && rc == -ENODEV)
- 		return 0;
- 
--	if (!rc) {
-+	if (!rc)
- 		dp->next_bridge = dp_priv->parser->next_bridge;
--		return 0;
--	}
- 
--error:
--	if (dp->is_edp) {
--		of_dp_aux_depopulate_bus(dp_priv->aux);
--		dp_display_host_phy_exit(dp_priv);
--		dp_display_host_deinit(dp_priv);
--	}
- 	return rc;
- }
- 
--- 
-2.7.4
+> > > >
+> > > > > ---
+> > > > >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
+> > > > >   1 file changed, 7 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > index 9138ef2fb2c8..5f309a16b9dc 100644
+> > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > @@ -7,6 +7,7 @@
+> > > > >   #include <uapi/linux/virtio_net.h>
+> > > > >   #include <uapi/linux/virtio_ids.h>
+> > > > >   #include <uapi/linux/vdpa.h>
+> > > > > +#include <uapi/linux/vhost_types.h>
+> > > > >   #include <linux/virtio_config.h>
+> > > > >   #include <linux/auxiliary_bus.h>
+> > > > >   #include <linux/mlx5/cq.h>
+> > > > > @@ -2499,6 +2500,11 @@ static void unregister_link_notifier(struct mlx5_vdpa_net *ndev)
+> > > > >                   flush_workqueue(ndev->mvdev.wq);
+> > > > >   }
+> > > > > +static u64 mlx5_vdpa_get_backend_features(const struct vdpa_device *vdpa)
+> > > > > +{
+> > > > > + return BIT_ULL(VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK);
+> > > > > +}
+> > > > > +
+> > > > >   static int mlx5_vdpa_set_driver_features(struct vdpa_device *vdev, u64 features)
+> > > > >   {
+> > > > >           struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+> > > > > @@ -3140,6 +3146,7 @@ static const struct vdpa_config_ops mlx5_vdpa_ops = {
+> > > > >           .get_vq_align = mlx5_vdpa_get_vq_align,
+> > > > >           .get_vq_group = mlx5_vdpa_get_vq_group,
+> > > > >           .get_device_features = mlx5_vdpa_get_device_features,
+> > > > > + .get_backend_features = mlx5_vdpa_get_backend_features,
+> > > > >           .set_driver_features = mlx5_vdpa_set_driver_features,
+> > > > >           .get_driver_features = mlx5_vdpa_get_driver_features,
+> > > > >           .set_config_cb = mlx5_vdpa_set_config_cb,
+> > > > > --
+> > > > > 2.39.3
+> >
 
