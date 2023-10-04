@@ -2,170 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF10C7B8CB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBA27B8C12
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244967AbjJDS5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 14:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44724 "EHLO
+        id S244530AbjJDSxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 14:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244921AbjJDSzS (ORCPT
+        with ESMTP id S244550AbjJDSxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 14:55:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B0BE4;
-        Wed,  4 Oct 2023 11:54:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBA89C43391;
-        Wed,  4 Oct 2023 18:54:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696445685;
-        bh=H9Lg9euMGZuxmMKeqAIzK2Cek3hrbdgrjDGHylOx0vA=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=hDpc2bRReKUCHbe39dGQf3XZktLcVOaGC9VjQhy1EbJAphkT6ujmAva0TjOI2sjve
-         CY8tFlErQqv8n7h+5HElp3jPjbymz7h28rnvMFrjeRyba6NFt9K7aZiZU31C0pTBKF
-         05Py0YNrYH0TtXJCJFzirogMPjSw3G3yogTqe1FHTHOZpXDSGQ1sEmYZdgw43f1Yen
-         Ebzqcd45YiBuoXwAu/lNJV/aGmSThKfgpLiKpPzN9CNR7t5HHQB+GxNi4tqEabYjHF
-         dpqAFZuSK4jxJ7vt8fvATBh/ugzRUrxGIsv4Bw2SATVmNBKmEKILxsqB88sbkSq0NW
-         UyBpl0evE+yWg==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 50/89] minix: convert to new timestamp accessors
-Date:   Wed,  4 Oct 2023 14:52:35 -0400
-Message-ID: <20231004185347.80880-48-jlayton@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231004185347.80880-1-jlayton@kernel.org>
-References: <20231004185221.80802-1-jlayton@kernel.org>
- <20231004185347.80880-1-jlayton@kernel.org>
+        Wed, 4 Oct 2023 14:53:12 -0400
+Received: from hosting.gsystem.sk (hosting.gsystem.sk [212.5.213.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 27FF5EB;
+        Wed,  4 Oct 2023 11:52:46 -0700 (PDT)
+Received: from gsql.ggedos.sk (off-20.infotel.telecom.sk [212.5.213.20])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id BCC0B7A073C;
+        Wed,  4 Oct 2023 20:52:45 +0200 (CEST)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Damien Le Moal <dlemoal@kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Tim Waugh <tim@cyberelk.net>,
+        linux-parport@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 4/4] ata: pata_parport: fit3: implement IDE command set registers
+Date:   Wed,  4 Oct 2023 20:52:35 +0200
+Message-Id: <20231004185235.27417-5-linux@zary.sk>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20231004185235.27417-1-linux@zary.sk>
+References: <20231004185235.27417-1-linux@zary.sk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert to using the new inode timestamp accessor functions.
+fit3 protocol driver does not support accessing IDE control registers
+(device control/altstatus). The DOS driver does not use these registers
+either (as observed from DOSEMU trace). But the HW seems to be capable
+of accessing these registers - I simply tried bit 3 and it works!
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+The control register is required to properly reset ATAPI devices or
+they will be detected only once (after a power cycle).
+
+Tested with EXP Computer CD-865 with MC-1285B EPP cable and
+TransDisk 3000.
+
+Signed-off-by: Ondrej Zary <linux@zary.sk>
 ---
- fs/minix/bitmap.c       |  2 +-
- fs/minix/dir.c          |  6 +++---
- fs/minix/inode.c        | 17 ++++++++---------
- fs/minix/itree_common.c |  2 +-
- 4 files changed, 13 insertions(+), 14 deletions(-)
+ drivers/ata/pata_parport/fit3.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/fs/minix/bitmap.c b/fs/minix/bitmap.c
-index 25c08fbfcb9d..7da66ca184f4 100644
---- a/fs/minix/bitmap.c
-+++ b/fs/minix/bitmap.c
-@@ -251,7 +251,7 @@ struct inode *minix_new_inode(const struct inode *dir, umode_t mode)
- 	}
- 	inode_init_owner(&nop_mnt_idmap, inode, dir, mode);
- 	inode->i_ino = j;
--	inode->i_mtime = inode->i_atime = inode_set_ctime_current(inode);
-+	simple_inode_init_ts(inode);
- 	inode->i_blocks = 0;
- 	memset(&minix_i(inode)->u, 0, sizeof(minix_i(inode)->u));
- 	insert_inode_hash(inode);
-diff --git a/fs/minix/dir.c b/fs/minix/dir.c
-index 20f23e6e58ad..62c313fc9a49 100644
---- a/fs/minix/dir.c
-+++ b/fs/minix/dir.c
-@@ -281,7 +281,7 @@ int minix_add_link(struct dentry *dentry, struct inode *inode)
- 		de->inode = inode->i_ino;
- 	}
- 	dir_commit_chunk(page, pos, sbi->s_dirsize);
--	dir->i_mtime = inode_set_ctime_current(dir);
-+	inode_set_mtime_to_ts(dir, inode_set_ctime_current(dir));
- 	mark_inode_dirty(dir);
- 	err = minix_handle_dirsync(dir);
- out_put:
-@@ -313,7 +313,7 @@ int minix_delete_entry(struct minix_dir_entry *de, struct page *page)
- 	else
- 		de->inode = 0;
- 	dir_commit_chunk(page, pos, len);
--	inode->i_mtime = inode_set_ctime_current(inode);
-+	inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
- 	mark_inode_dirty(inode);
- 	return minix_handle_dirsync(inode);
- }
-@@ -436,7 +436,7 @@ int minix_set_link(struct minix_dir_entry *de, struct page *page,
- 	else
- 		de->inode = inode->i_ino;
- 	dir_commit_chunk(page, pos, sbi->s_dirsize);
--	dir->i_mtime = inode_set_ctime_current(dir);
-+	inode_set_mtime_to_ts(dir, inode_set_ctime_current(dir));
- 	mark_inode_dirty(dir);
- 	return minix_handle_dirsync(dir);
- }
-diff --git a/fs/minix/inode.c b/fs/minix/inode.c
-index df575473c1cc..f8af6c3ae336 100644
---- a/fs/minix/inode.c
-+++ b/fs/minix/inode.c
-@@ -501,7 +501,8 @@ static struct inode *V1_minix_iget(struct inode *inode)
- 	i_gid_write(inode, raw_inode->i_gid);
- 	set_nlink(inode, raw_inode->i_nlinks);
- 	inode->i_size = raw_inode->i_size;
--	inode->i_mtime = inode->i_atime = inode_set_ctime(inode, raw_inode->i_time, 0);
-+	inode_set_mtime_to_ts(inode,
-+			      inode_set_atime_to_ts(inode, inode_set_ctime(inode, raw_inode->i_time, 0)));
- 	inode->i_blocks = 0;
- 	for (i = 0; i < 9; i++)
- 		minix_inode->u.i1_data[i] = raw_inode->i_zone[i];
-@@ -538,11 +539,9 @@ static struct inode *V2_minix_iget(struct inode *inode)
- 	i_gid_write(inode, raw_inode->i_gid);
- 	set_nlink(inode, raw_inode->i_nlinks);
- 	inode->i_size = raw_inode->i_size;
--	inode->i_mtime.tv_sec = raw_inode->i_mtime;
--	inode->i_atime.tv_sec = raw_inode->i_atime;
-+	inode_set_mtime(inode, raw_inode->i_mtime, 0);
-+	inode_set_atime(inode, raw_inode->i_atime, 0);
- 	inode_set_ctime(inode, raw_inode->i_ctime, 0);
--	inode->i_mtime.tv_nsec = 0;
--	inode->i_atime.tv_nsec = 0;
- 	inode->i_blocks = 0;
- 	for (i = 0; i < 10; i++)
- 		minix_inode->u.i2_data[i] = raw_inode->i_zone[i];
-@@ -589,7 +588,7 @@ static struct buffer_head * V1_minix_update_inode(struct inode * inode)
- 	raw_inode->i_gid = fs_high2lowgid(i_gid_read(inode));
- 	raw_inode->i_nlinks = inode->i_nlink;
- 	raw_inode->i_size = inode->i_size;
--	raw_inode->i_time = inode->i_mtime.tv_sec;
-+	raw_inode->i_time = inode_get_mtime_sec(inode);
- 	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode))
- 		raw_inode->i_zone[0] = old_encode_dev(inode->i_rdev);
- 	else for (i = 0; i < 9; i++)
-@@ -616,9 +615,9 @@ static struct buffer_head * V2_minix_update_inode(struct inode * inode)
- 	raw_inode->i_gid = fs_high2lowgid(i_gid_read(inode));
- 	raw_inode->i_nlinks = inode->i_nlink;
- 	raw_inode->i_size = inode->i_size;
--	raw_inode->i_mtime = inode->i_mtime.tv_sec;
--	raw_inode->i_atime = inode->i_atime.tv_sec;
--	raw_inode->i_ctime = inode_get_ctime(inode).tv_sec;
-+	raw_inode->i_mtime = inode_get_mtime_sec(inode);
-+	raw_inode->i_atime = inode_get_atime_sec(inode);
-+	raw_inode->i_ctime = inode_get_ctime_sec(inode);
- 	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode))
- 		raw_inode->i_zone[0] = old_encode_dev(inode->i_rdev);
- 	else for (i = 0; i < 10; i++)
-diff --git a/fs/minix/itree_common.c b/fs/minix/itree_common.c
-index ce18ae37c29d..dad131e30c05 100644
---- a/fs/minix/itree_common.c
-+++ b/fs/minix/itree_common.c
-@@ -350,7 +350,7 @@ static inline void truncate (struct inode * inode)
- 		}
- 		first_whole++;
- 	}
--	inode->i_mtime = inode_set_ctime_current(inode);
-+	inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
- 	mark_inode_dirty(inode);
- }
+diff --git a/drivers/ata/pata_parport/fit3.c b/drivers/ata/pata_parport/fit3.c
+index bad7aa920cdc..86b39966755b 100644
+--- a/drivers/ata/pata_parport/fit3.c
++++ b/drivers/ata/pata_parport/fit3.c
+@@ -9,11 +9,6 @@
+  *
+  * The TD-2000 and certain older devices use a different protocol.
+  * Try the fit2 protocol module with them.
+- *
+- * NB:  The FIT adapters do not appear to support the control
+- * registers.  So, we map ALT_STATUS to STATUS and NO-OP writes
+- * to the device control register - this means that IDE reset
+- * will not work on these devices.
+  */
  
+ #include <linux/module.h>
+@@ -35,10 +30,11 @@
+  * cont = 1 - access the IDE command set
+  */
+ 
++static int cont_map[] = { 0x00, 0x08 };
++
+ static void fit3_write_regr(struct pi_adapter *pi, int cont, int regr, int val)
+ {
+-	if (cont == 1)
+-		return;
++	regr += cont_map[cont];
+ 
+ 	switch (pi->mode) {
+ 	case 0:
+@@ -59,11 +55,7 @@ static int fit3_read_regr(struct pi_adapter *pi, int cont, int regr)
+ {
+ 	int  a, b;
+ 
+-	if (cont) {
+-		if (regr != 6)
+-			return 0xff;
+-		regr = 7;
+-	}
++	regr += cont_map[cont];
+ 
+ 	switch (pi->mode) {
+ 	case 0:
 -- 
-2.41.0
+Ondrej Zary
 
