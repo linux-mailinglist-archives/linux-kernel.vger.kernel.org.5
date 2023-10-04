@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E697B7A19
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F18E7B7A17
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241695AbjJDIc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
+        id S232823AbjJDIcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241703AbjJDIcy (ORCPT
+        with ESMTP id S232844AbjJDIcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:32:54 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF00D7
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:32:51 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5373F40E0176;
-        Wed,  4 Oct 2023 08:32:49 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WggtAmaRNGsN; Wed,  4 Oct 2023 08:32:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1696408366; bh=O4CwRbuRelGXMSOb280gHAYwKgs13o50KAGxFAAybuM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N1RZZ5lP3XBF5cmWzO9Q8Pnu5NxKX/moh36PdC7ZwpeaoHHoM6TAhonOKlm7uxqKs
-         hVKUxqCZD8GWkOOQpJFT6EEBmuex305KUvK0+qqMf37/D6pBktLxIFX7doLi2vGyWT
-         eF5ln6O9vyjVvMoxzHtqxs8KvkGpQRNFhqNQPVra2huZJWMPP9H+Uf/2FEbSKypjF6
-         4NjlHWY7u889BU9ad5ixm0JfEAc37jXBHiRaBt59sst5cRUhKkX9TknYQ4xlXEEbyc
-         7F7Vv96QQItlUPOuShcvV92tG3FtShBs8Cgx5bVo4iYEPyBI2VINBQVZ9ACrAMgKMK
-         mKXyh6hFn6w84Q4A9uythGe8T+VOmgoVJ9+j+9Ocftbfzvjft8O/lgPNTGh4bLNI4P
-         Tcr2FFXoNNRCaOXZ8iwb/8ivYxnKhs4nZhXpqWzhoN6E98LzxN9s41OME0wgOqkEBS
-         PXT/HcjCBlzVpbX6UbERQMy0lgI4pqO6oU2AfQ1IsEsqLOculzCGOYwV4c3xq1bXdO
-         HX1Sl25flo1eeOysBCUOet/OyvYilCxCYeaG6poE9y22nWrzMTqmxB4OELsMeDhdwU
-         r2VDhNug4BV8JE24onb3D9CMnKWzAK0Jv+1zmS9QTt1XVblcHyUnuqrSw4gn4HWrP2
-         kejO1h/QuL4ldpvrP6bSCIsg=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        Wed, 4 Oct 2023 04:32:48 -0400
+Received: from nikam.ms.mff.cuni.cz (nikam.ms.mff.cuni.cz [195.113.20.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D42E1;
+        Wed,  4 Oct 2023 01:32:42 -0700 (PDT)
+Received: from gimli.ms.mff.cuni.cz (gimli.ms.mff.cuni.cz [195.113.20.176])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AB6A840E0081;
-        Wed,  4 Oct 2023 08:32:40 +0000 (UTC)
-Date:   Wed, 4 Oct 2023 10:32:35 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [patch V4 14/30] x86/microcode/amd: Read revision from hardware
- in collect_cpu_info_amd()
-Message-ID: <20231004083235.GDZR0jI3TPtC96p0d0@fat_crate.local>
-References: <20231002115506.217091296@linutronix.de>
- <20231002115902.854919221@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231002115902.854919221@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        by nikam.ms.mff.cuni.cz (Postfix) with ESMTPS id 8DC02285078;
+        Wed,  4 Oct 2023 10:32:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gimli.ms.mff.cuni.cz;
+        s=gen1; t=1696408360;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RdpatbGoKHvRonzK6UU9+LbdnKe8p7FuVMX0hk+KgI4=;
+        b=q0k9ovatWGBsQRTK3zHnf8/b8cDrXupvCcw1uIZEx+rS3idQoedBLFG550hrQKySG+MZGm
+        vyAMIDN68u40IbIay1D6elzx4j4TdIoggB71DQgweMeF+bHYpL7ooJvUe0M9GkhOHuCkt/
+        DNQvDe12PiJEROjy1udGAfvuQtLG1GQ=
+Received: from localhost (visitor.troja.mff.cuni.cz [195.113.29.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: karelb)
+        by gimli.ms.mff.cuni.cz (Postfix) with ESMTPSA id 6AD99441AC5;
+        Wed,  4 Oct 2023 10:32:40 +0200 (CEST)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 04 Oct 2023 10:32:53 +0200
+Message-Id: <CVZIKW399928.15QFSHKLY0CSN@gimli.ms.mff.cuni.cz>
+Subject: Re: [PATCH v2 2/5] dt-bindings: input/touchscreen: Add compatible
+ for IST3038B
+To:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
+        "Markuss Broks" <markuss.broks@gmail.com>,
+        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Henrik Rydberg" <rydberg@bitmath.org>,
+        <linux-input@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <~postmarketos/upstreaming@lists.sr.ht>
+From:   "Karel Balej" <karelb@gimli.ms.mff.cuni.cz>
+Cc:     =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        "Karel Balej" <balejk@matfyz.cz>
+References: <20231003133440.4696-1-karelb@gimli.ms.mff.cuni.cz>
+ <20231003133440.4696-3-karelb@gimli.ms.mff.cuni.cz>
+ <b14654a4-7cbc-4027-8456-73efe214498d@linaro.org>
+In-Reply-To: <b14654a4-7cbc-4027-8456-73efe214498d@linaro.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 01:59:51PM +0200, Thomas Gleixner wrote:
-> Prepare to decrapify the core initialization logic which invokes
-> microcode_ops::apply_microcode() several times just to set
-> cpu_data::microcode.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V2: New patch
-> ---
->  arch/x86/kernel/cpu/microcode/amd.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> --- a/arch/x86/kernel/cpu/microcode/amd.c
-> +++ b/arch/x86/kernel/cpu/microcode/amd.c
-> @@ -634,12 +634,12 @@ void reload_ucode_amd(unsigned int cpu)
->  
->  static int collect_cpu_info_amd(int cpu, struct cpu_signature *csig)
->  {
-> -	struct cpuinfo_x86 *c = &cpu_data(cpu);
->  	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
-> +	u32 dummy __always_unused;
->  	struct ucode_patch *p;
->  
->  	csig->sig = cpuid_eax(0x00000001);
-> -	csig->rev = c->microcode;
-> +	rdmsr(MSR_AMD64_PATCH_LEVEL, csig->rev, dummy);
->  
->  	/*
-> * a patch could have been loaded early, set uci->mc so that
+Hello, Krzysztof,
 
-Skipping that one as the rev needs to be read on the respective CPU for
-mixed silicon steppings on AMD.
+On Wed Oct 4, 2023 at 10:09 AM CEST, Krzysztof Kozlowski wrote:
+> On 03/10/2023 15:34, karelb@gimli.ms.mff.cuni.cz wrote:
+> > From: Karel Balej <karelb@gimli.ms.mff.cuni.cz>
+> >=20
+> > From: Markuss Broks <markuss.broks@gmail.com>
+>
+> This does not look right. Please apply it to your tree and see the
+> result. You cannot have two From fields,
 
--- 
-Regards/Gruss,
-    Boris.
+I am aware of this problem and I have explained it in a follow-up
+message to the cover-letter, which should have reached you too - was it
+not so?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+The patches themselves should be fine though, so I plan to wait for some
+feedback and fix this either in v3 or in a resend before application.
+
+Best regards,
+K. B.
