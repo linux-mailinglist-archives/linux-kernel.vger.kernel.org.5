@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D76247B7E46
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5CF7B7E49
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242241AbjJDLfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 07:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
+        id S242211AbjJDLgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 07:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232944AbjJDLfQ (ORCPT
+        with ESMTP id S232795AbjJDLgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 07:35:16 -0400
+        Wed, 4 Oct 2023 07:36:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FCCA1
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 04:35:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4756C433C8;
-        Wed,  4 Oct 2023 11:35:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080F5A7;
+        Wed,  4 Oct 2023 04:36:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0F8FC433C8;
+        Wed,  4 Oct 2023 11:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696419313;
-        bh=EKub7DB0kxiceubZBtND+wquahZHKwwMH5j2bwwGvZo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E6myhdpplLeJMfThiZcQnD5TncbV3oJuuWCinlPuQn3k62ICZ8+K1qAe7EQ3P+ESt
-         x6o33yAOVmljx52m51Uqj3J5Ef+/6Zjv1Uumgy4uOj+QhZoDzNzLvfbSQuB0Ma7uf2
-         GWh+mHpReWV2wzYF2F2ON1l7PZG9NxLcHKuGCkTHgycbXS8cVWCSH1CH9uV9TWRntm
-         gKrqsO0Wx8WY6IV1emB+TGJeTnLYlhulj+hojFts5ksLDZ3dJc6vcJ24Kh5TPrBpzY
-         Yp2+jP9LJYd3sUDcB4fYX5EkjIFbCYHpVD7jPKnS59GLT78lyezPF2/oKNTNKgZk/x
-         s/fFrsndcc4GQ==
-From:   Michael Walle <mwalle@kernel.org>
-To:     miquel.raynal@bootlin.com
-Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, ptyadav@amazon.de, rafal@milecki.pl,
-        richard@nod.at, robh+dt@kernel.org, robh@kernel.org,
-        sjg@chromium.org, trini@konsulko.com, u-boot@lists.denx.de,
-        vigneshr@ti.com, Michael Walle <mwalle@kernel.org>
-Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: fixed-partitions: Add binman compatible
-Date:   Wed,  4 Oct 2023 13:34:58 +0200
-Message-Id: <20231004113458.531124-1-mwalle@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231004093620.2b1d6917@xps-13>
-References: <20231004093620.2b1d6917@xps-13>
+        s=k20201202; t=1696419364;
+        bh=mcWA0wViupJvIASfSKZEGUIK3vbJV++064Yp6OBrzsA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=cRYgICXeevgKm9jj+UhMkn7tXMCth5y3alN4A5PmHhV/8c/U4MHKo9axgNKiO3n/f
+         XYOu5Ypezy9VHQv1eDage3UZq6hS8NCHq+GvwRJIvLboaNrZWy/3/k47khLaq7JrHy
+         ljrj1LdoBUy+7pLphrTWG9V9D/jvaR4T7Fnl3LakhPns0xuHeuhl/BFM+moXCXZB/e
+         fekNjEht0RZDmgake1QeNixISHiO0c6ie/16S1RRgrVNA/exwg9Fmz3tl8tXyXtc9l
+         0X01FXWCQk6RjnfvIC3WB5AWWkQEhqkeRVJwJYKLuVo3dq+txzY7Hr2R+YBjRfx/NR
+         WBmXzuQD/xTMw==
+Message-ID: <29443ef6dc000b058a49d560759e25a430f6d82d.camel@kernel.org>
+Subject: Re: [PATCH] nfs/super: check NFS_CAP_ACLS instead of the NFS version
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Max Kellermann <max.kellermann@ionos.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>
+Cc:     "J . Bruce Fields" <bfields@redhat.com>, stable@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>
+Date:   Wed, 04 Oct 2023 07:36:02 -0400
+In-Reply-To: <20230919081844.1096767-1-max.kellermann@ionos.com>
+References: <20230919081844.1096767-1-max.kellermann@ionos.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -52,37 +52,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 2023-09-19 at 10:18 +0200, Max Kellermann wrote:
+> This sets SB_POSIXACL only if ACL support is really enabled, instead
+> of always setting SB_POSIXACL if the NFS protocol version
+> theoretically supports ACL.
+>=20
+> The code comment says "We will [apply the umask] ourselves", but that
+> happens in posix_acl_create() only if the kernel has POSIX ACL
+> support.  Without it, posix_acl_create() is an empty dummy function.
+>=20
+> So let's not pretend we will apply the umask if we can already know
+> that we will never.
+>=20
+> This fixes a problem where the umask is always ignored in the NFS
+> client when compiled without CONFIG_FS_POSIX_ACL.  This is a 4 year
+> old regression caused by commit 013cdf1088d723 which itself was not
+> completely wrong, but failed to consider all the side effects by
+> misdesigned VFS code.
+>=20
 
->> Add a compatible string for binman, so we can extend fixed-partitions
->> in various ways.
-> 
-> I've been thinking at the proper way to describe the binman partitions.
-> I am wondering if we should really extend the fixed-partitions
-> schema. This description is really basic and kind of supposed to remain
-> like that. Instead, I wonder if we should not just keep the binman
-> compatible alone, like many others already. This way it would be very clear
-> what is expected and allowed in both cases. I am thinking about
-> something like that:
-> 
-> 	Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml 
-> 
-> this file is also referenced there (but this patch does the same, which
-> is what I'd expect):
-> 
-> 	Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-> 
-> I'll let the binding maintainers judge whether they think it's
-> relevant, it's not a strong opposition.
+A little more than 4 years now!
 
-What is the overall goal here? To replace the current binman node which is
-usually contained in the -u-boot.dtsi files? If one is using binman to
-create an image, is it expected that one needs to adapt the DT in linux?
-Or will it still be a seperate -u-boot.dtsi? Because in the latter case
-I see that there will be conflicts because you have to overwrite the
-flash node. Or will it be a seperate node with all the information
-duplicated?
+> Reviewed-by: J. Bruce Fields <bfields@redhat.com>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+> ---
+>  fs/nfs/super.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/fs/nfs/super.c b/fs/nfs/super.c
+> index 0d6473cb00cb..051986b422b0 100644
+> --- a/fs/nfs/super.c
+> +++ b/fs/nfs/super.c
+> @@ -1064,14 +1064,19 @@ static void nfs_fill_super(struct super_block *sb=
+, struct nfs_fs_context *ctx)
+>  		 * The VFS shouldn't apply the umask to mode bits.
+>  		 * We will do so ourselves when necessary.
+>  		 */
+> -		sb->s_flags |=3D SB_POSIXACL;
+> +		if (NFS_SB(sb)->caps & NFS_CAP_ACLS) {
+> +			sb->s_flags |=3D SB_POSIXACL;
+> +		}
+> +
 
-Maybe (a more complete) example would be helpful.
+nit: curly braces aren't needed here
 
--michael
+>  		sb->s_time_gran =3D 1;
+>  		sb->s_time_min =3D 0;
+>  		sb->s_time_max =3D U32_MAX;
+>  		sb->s_export_op =3D &nfs_export_ops;
+>  		break;
+>  	case 4:
+> -		sb->s_flags |=3D SB_POSIXACL;
+> +		if (NFS_SB(sb)->caps & NFS_CAP_ACLS) {
+> +			sb->s_flags |=3D SB_POSIXACL;
+> +		}
+>  		sb->s_time_gran =3D 1;
+>  		sb->s_time_min =3D S64_MIN;
+>  		sb->s_time_max =3D S64_MAX;
+
+
+(cc'ing Christian)
+
+This patch may have a minor conflict with this patch:
+
+https://lore.kernel.org/linux-nfs/20230911-acl-fix-v3-1-b25315333f6c@kernel=
+.org/
+
+...but it seems like the right thing to do if POSIX ACLs are compiled
+out.
+
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
