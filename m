@@ -2,137 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98EA67B7CF8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451BC7B7CF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232905AbjJDKUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
+        id S242113AbjJDKSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233010AbjJDKUT (ORCPT
+        with ESMTP id S232895AbjJDKR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:20:19 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18EA695
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:20:16 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qnyzB-0006b4-Ij; Wed, 04 Oct 2023 12:20:09 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qnyzA-00B0Ww-JG; Wed, 04 Oct 2023 12:20:08 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qnyzA-008v3I-9q; Wed, 04 Oct 2023 12:20:08 +0200
-Date:   Wed, 4 Oct 2023 12:20:08 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Paul Geurts <paul_geurts@live.nl>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] serial: imx: fix tx statemachine deadlock
-Message-ID: <20231004102008.giyogvnsc26ucx4k@pengutronix.de>
-References: <AM0PR09MB26750E782F81CD447058FE7D95CBA@AM0PR09MB2675.eurprd09.prod.outlook.com>
+        Wed, 4 Oct 2023 06:17:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B370C90;
+        Wed,  4 Oct 2023 03:17:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93E87C433C8;
+        Wed,  4 Oct 2023 10:17:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696414676;
+        bh=j4zQEj6l4C9JbR2fWIyArESVjilnZfkBsOS/xgac0Ug=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=sBRnBYY1Tgj3ZgtQlK6BmWY3dmdqjSbKOMfI7OpdL+cQxdiuhS9Ad5a1RsTNp2ipZ
+         af4N6ls+NtTqcOaVI965joWeTQWX21oaFlBwaqFJam3k9EyTqoXbIz6PIMJvyqqc+o
+         sNpR3smBQzZJnluLcctKEPmC8+GFd5BDetv6G6JkqlJ3+O0+488u2GoGOQGe8arg9k
+         JgschOAetOrAeAEGlv/rirTgX8H8Hk0gWfj9ow3fuIkW70bVwBjycjdfsG5beWFU7+
+         67Jvos90NzVSQTk/DNrOMYzUG/iYqFEEpWgIhiyblGQf2AJpspFZ5cmkAkLTRf9JPp
+         y9oAnM/X5P9AQ==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/9] wifi: wfx: fix power_save setting when AP is
+ stopped
+References: <20230927163257.568496-1-jerome.pouiller@silabs.com>
+        <20230927163257.568496-2-jerome.pouiller@silabs.com>
+Date:   Wed, 04 Oct 2023 13:20:12 +0300
+In-Reply-To: <20230927163257.568496-2-jerome.pouiller@silabs.com>
+ (=?utf-8?B?IkrDqXLDtG1l?=
+        Pouiller"'s message of "Wed, 27 Sep 2023 18:32:49 +0200")
+Message-ID: <87ttr6heoz.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7bn7gd7f23wh6bot"
-Content-Disposition: inline
-In-Reply-To: <AM0PR09MB26750E782F81CD447058FE7D95CBA@AM0PR09MB2675.eurprd09.prod.outlook.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
 
---7bn7gd7f23wh6bot
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Paul,
-
-On Wed, Oct 04, 2023 at 11:57:22AM +0200, Paul Geurts wrote:
-> When using the serial port as RS485 port, the tx statemachine is used to
-> control the RTS pin to drive the RS485 transceiver TX_EN pin. When the
-> TTY port is closed in the middle of a transmission (for instance during
-> userland application crash), imx_uart_shutdown disables the interface
-> and disables the Transmission Complete interrupt. afer that,
-> imx_uart_stop_tx bails on an incomplete transmission, to be retriggered
-> by the TC interrupt. This interrupt is disabled and therefore the tx
-> statemachine never transitions out of SEND. The statemachine is in
-> deadlock now, and the TX_EN remains low, making the interface useless.
->=20
-> imx_uart_stop_tx now checks for incomplete transmission AND whether TC
-> interrupts are enabled before bailing to be retriggered. This makes sure
-> the state machine handling is reached, and is properly set to
-> WAIT_AFTER_SEND.
-
-Sounds reasonable.
-
-A Fixes: line would be nice.
-
-> Signed-off-by: Paul Geurts <paul_geurts@live.nl>
+> The WF200 allow to start two network interfaces (one AP, one station) on
+> two different channels. Since magic does not exist, it only works if the
+> station interface enables power save.
+>
+> Thus, the driver detects this case and enforce power save as necessary.
+>
+> This patch fixes the case where the AP interface is stopped and it is no
+> more necessary to enforce power saving on the station interface.
+>
+> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
 > ---
->  drivers/tty/serial/imx.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-> index 13cb78340709..90a4b7841030 100644
-> --- a/drivers/tty/serial/imx.c
-> +++ b/drivers/tty/serial/imx.c
-> @@ -421,13 +421,13 @@ static void imx_uart_stop_tx(struct uart_port *port)
->  	ucr1 =3D imx_uart_readl(sport, UCR1);
->  	imx_uart_writel(sport, ucr1 & ~UCR1_TRDYEN, UCR1);
-> =20
-> +	ucr4 =3D imx_uart_readl(sport, UCR4);
->  	usr2 =3D imx_uart_readl(sport, USR2);
-> -	if (!(usr2 & USR2_TXDC)) {
-> +	if ((!(usr2 & USR2_TXDC)) && (ucr4 & UCR4_TCEN)) {
->  		/* The shifter is still busy, so retry once TC triggers */
->  		return;
->  	}
+>  drivers/net/wireless/silabs/wfx/sta.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/net/wireless/silabs/wfx/sta.c b/drivers/net/wireless=
+/silabs/wfx/sta.c
+> index 626dfb4b7a55d..9c0a11c277e97 100644
+> --- a/drivers/net/wireless/silabs/wfx/sta.c
+> +++ b/drivers/net/wireless/silabs/wfx/sta.c
+> @@ -402,7 +402,12 @@ void wfx_stop_ap(struct ieee80211_hw *hw, struct iee=
+e80211_vif *vif,
+>  		 struct ieee80211_bss_conf *link_conf)
+>  {
+>  	struct wfx_vif *wvif =3D (struct wfx_vif *)vif->drv_priv;
+> +	struct wfx_dev *wdev =3D wvif->wdev;
+>=20=20
+> +	wvif =3D  NULL;
+> +	while ((wvif =3D wvif_iterate(wdev, wvif)) !=3D NULL)
+> +		wfx_update_pm(wvif);
 
-So the new thing is: If the hardware is still busy sending stuff but
-/dev/ttymxcX isn't open any more (i.e. .shutdown was called), the
-transmitter gets disabled. I wonder if in this case disabling the
-transmitter should be delayed until the shifter is empty? Or maybe this
-should be handled in .shutdown, that is only disable TCEN once the
-shifter is empty?
-
-Best regards
-Uwe
+Isn't the assignment of wvif to NULL unnecessary as in the next line we
+assign it to again?
 
 --=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+https://patchwork.kernel.org/project/linux-wireless/list/
 
---7bn7gd7f23wh6bot
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUdPFcACgkQj4D7WH0S
-/k6pIAgAhtQzFddfFAsyp+llHfHprz6jXLIyZ7bFBtvlyvmF9gW4YrfowVrrhW5j
-ITqbAMZ09+vg4YQn81euMB34qwkQJYv1oeQrdEb1aj/q991UySdETRiv9hujpxPo
-VShKNb3ktSOqqwbZSjlw+2+H1s5Vx4YGlVnNOz6J5pVMoZ6NEodp1iI9kiycs7Pf
-laxMn6XUXP4k1y/FO0D1fHXh4ZDvVbZA8wtchT0H8PNwC8SCTDHjWDa0qMlwl6ce
-yOY4kNo41VHZIMJ1z3nDRj9QOzwOk2Thloq4SU0vJPBXCcn6A9fZLrgjNqUYTJnC
-jUXlYXJmfBN6U9QnfewxKudVIxGgLA==
-=Y1On
------END PGP SIGNATURE-----
-
---7bn7gd7f23wh6bot--
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
