@@ -2,107 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD5A7B8D77
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C23D7B8D7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbjJDTez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 15:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60524 "EHLO
+        id S233713AbjJDTgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 15:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233525AbjJDTey (ORCPT
+        with ESMTP id S243494AbjJDTg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 15:34:54 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD645AB
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 12:34:50 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf55a81eeaso1207135ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 12:34:50 -0700 (PDT)
+        Wed, 4 Oct 2023 15:36:27 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF28598;
+        Wed,  4 Oct 2023 12:36:23 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-2792d70ae25so129526a91.0;
+        Wed, 04 Oct 2023 12:36:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696448090; x=1697052890; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696448183; x=1697052983; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QiGYv3XhQldm154F5KRxnbU0FzMDf5iW4/dGkdNnd1w=;
-        b=kKJ8m61K1KhSUM48Mp+psjvKH9SQ9bLAUfmF59JCdvIR92hU0A/kOpn3fbk0DgIPSI
-         ZYJ1I6zumL7Agc2Cewl7jUtEanEnRgvrziYOIg3cfLBa7uk5MPs3dcHmLeWsjinYEwiJ
-         0hTzYkxu35zgOecLL7o/9+Tagtf2IqvQGnvmA=
+        bh=Oxe/lUUklxbHu0vEIlUOVm4PBVuobqclnUB653St8qw=;
+        b=KIFgDUGVqY3JVs3jmQR+xmEBsSoH2cZO1u2R/HJTQFwOPyMKL+RGlvI0Z+yddqFrHe
+         sZ8XjingvA8bXgbhUeOju6jr+sNldAfWX87IOmxSKcCggXZioQT1LCNzAiOxmxFmuD9f
+         cH+6RaiEeAHeRhQvJ7t8E+p3Pg1+t4XmkIS3tQo05lHUBaLTKwTLl9bpstakg05EMLGQ
+         FaXI9qCRr4lzdS6Pd9fYGffK4OyaTFb2vorKp3lZeiEMYL1wMp/f//O0+JHbk2qHOxqN
+         r9Il1J07YomaW3drqhwqCIO2Z5yPFM0bXuQGWEGVEL4ArktdwQgpsIyxcYSDYHjh9Ah9
+         RckQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696448090; x=1697052890;
+        d=1e100.net; s=20230601; t=1696448183; x=1697052983;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QiGYv3XhQldm154F5KRxnbU0FzMDf5iW4/dGkdNnd1w=;
-        b=rNGKBg0JSV7xL4XnInQQuyRSy9vKyiurb98KQZHENNgppIdl3+qVXhA3+ERDg8ppqv
-         oe2pTOp3ouOYrfgl7QCERM3pZ5N0RXR5vyS5G6tKGPdBNz4WTs7sHGRTGRtYmrce/oJY
-         kPfZYbFkuC9mC850laKmzC3L2YeDUaL/SV60VQsdfPjHrwoQED8R6OGHTc0IVvhdqaUF
-         NvxC+yhOFWcoh3USxYQVqtP3iMCcqmNpoVbrgKmSyMJuO/cj3ewvJU+TVurA7Rldn0vJ
-         +/pb8Qgg7juTO8vxIrByh3YtinO/2kzZRuTDEJFSteQ4WCCaIq5/IimChH6QtWiPvy5O
-         EBVw==
-X-Gm-Message-State: AOJu0Yxiy2FRhAsqMcDtTDWOn5KrwT5rtRvLo1xN/7N0nWR/lK1oWgox
-        WShkpwqDuyrVKMvWV7ovjVEYqA==
-X-Google-Smtp-Source: AGHT+IGW+5tCTp+rfRDKGyryZJft29Uej9ZX6/lOVFuf+sZLXjaQY42Sc3pk2VbKzS4d5A+F/QEJbw==
-X-Received: by 2002:a17:903:120f:b0:1c0:c86a:5425 with SMTP id l15-20020a170903120f00b001c0c86a5425mr3661525plh.19.1696448090415;
-        Wed, 04 Oct 2023 12:34:50 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g2-20020a170902868200b001bde65894c8sm4078755plo.268.2023.10.04.12.34.49
+        bh=Oxe/lUUklxbHu0vEIlUOVm4PBVuobqclnUB653St8qw=;
+        b=tkWlUYnBM38kL5GiLZ2Fxb9IRCbqN0nbnOthAnPlc0w4vaTINDjkUCvgyKutlsxHT8
+         HbhIf3l56VP7ky2IF24EvIiTTDVZ/qaFaFnfKxiv3Y98eNjigEL88vKHsnyyisU83CHj
+         9n3JavJUF1dePjqtUi3v5o+ono6toqtvDaQu73QZH1rqJMagcZhtoQHJKq3xjZniDQb1
+         f4ncBpu4Oj+YN4otuwkMW9GSl868nSrpHdh/SihedREmZH1rXZ1/gbsEfy1q/ax5nhz7
+         so/2aV2e0HXqqbgI1adZWu5Fh3KXMOAqCKXVduvzk8DIp+9TJpl1wBADKUH7c793Y40r
+         fSvQ==
+X-Gm-Message-State: AOJu0Yz79e4mzdagHgBtDSEv/rr8WjXL+3aE9jCuWkD3JpAgXsyKrP1e
+        OqCqFj+bNls5mF/ViAkPAng=
+X-Google-Smtp-Source: AGHT+IGC2IF1Rwb6lyP1BbCO/xIxVJzbxzbXytefjWzvm4+Km4BvCbHu0QkrrRljkhcMchfRMGJoEA==
+X-Received: by 2002:a17:90a:ce92:b0:274:6135:8363 with SMTP id g18-20020a17090ace9200b0027461358363mr2908761pju.33.1696448183010;
+        Wed, 04 Oct 2023 12:36:23 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-113.fbsv.net. [2a03:2880:ff:71::face:b00c])
+        by smtp.gmail.com with ESMTPSA id bv6-20020a17090af18600b002630c9d78aasm1961226pjb.5.2023.10.04.12.36.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 12:34:49 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Include additional ASoC paths
-Date:   Wed,  4 Oct 2023 12:34:45 -0700
-Message-Id: <20231004193441.work.109-kees@kernel.org>
+        Wed, 04 Oct 2023 12:36:22 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH v2] memcontrol: only transfer the memcg data for migration
+Date:   Wed,  4 Oct 2023 12:36:22 -0700
+Message-Id: <20231004193622.900383-1-nphamcs@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=709; i=keescook@chromium.org;
- h=from:subject:message-id; bh=bhO/Y1ttQwe5f/Nbhm1DLvm+Y0QnCguIE2+6MVMwPNY=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlHb5Vf1R8xZZf5h0PRJQQS7HmNKGQrWHzm1kWg
- v+I32cN2RqJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZR2+VQAKCRCJcvTf3G3A
- JlCpD/4ubP8CNRBGcjvh18YOaX4poB1KbkiLzsURWeXoOa047EHVuso+qKvwbdPQXRZJDXmg2zP
- VZHOgPNQksxt6jlxRfaB/UYO66jsMFax5MrLpY8nPRnXXH8QqnM5dpaxo1abCkjybM5fS8I1N8K
- 7MqrEvMSs1GgGXr0ODsyiaQfndqy3rnNiwRCoPxUeSgnLzIOUk4m2gLvUvSm9EvsccC3GFzYcXm
- HEFPQLGEWZEbyC4KvY8enhnDWTU8Fx3ktGHoAC+KHA9AleeskDbZMzaiIx5WNuHEBFLrElKBNea
- NsYFo93eoWueGFAxy6jVg/Id7CF8gCkCNlral6Y7DhD/tsujaKWcaN5n2PLxS/1mCDMgtyfjx63
- 4EMaJpFinUZdyCDKHBttXgV1eHJMoRvfntPjYc+B72GvTYBvxiqlxeHDT9tz2TW4jEnLBw6fC7p
- dQSeBOccWsdn0luTLkQY0jeM9lUJtiUhDFaFsSMNy5bcFcYSdMCAN+aM0/VjVPvu6aitM6jN6EZ
- o8JMgIIYPd7zDCs44TZYydYPtSaYgzJjUvKE1w8q62ukenM3D2NBd2L5InulAgN0FtqAc+q09Iv
- yPZlcXGC2akp13FbJMJbsBG6z9vFziJHbGArDJQTt4iEi8t+ZXWBCDiJVPwW2buOcbRLN2dprFO
- LwKjRBeT qKJbPgA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure a few other paths are correctly sent to the ASoC maintainers.
+For most migration use cases, only transfer the memcg data from the old
+folio to the new folio, and clear the old folio's memcg data. No
+charging and uncharging will be done.
 
-Link: https://lore.kernel.org/lkml/63dd3676.170a0220.1f1b2.3244@mx.google.com/
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
+This shaves off some work on the migration path, and avoids the
+temporary double charging of a folio during its migration.
+
+The only exception is replace_page_cache_folio(), which will use the old
+mem_cgroup_migrate() (now renamed to mem_cgroup_replace_folio). In that
+context, the isolation of the old page isn't quite as thorough as with
+migration, so we cannot use our new implementation directly.
+
+This patch is the result of the following discussion on the new hugetlb
+memcg accounting behavior:
+
+https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
+
+This should be added as the second prep patch in the following series:
+https://lore.kernel.org/all/20231003001828.2554080-1-nphamcs@gmail.com/
+(hugetlb memcg accounting)
+
+and should go right before the following patch:
+hugetlb: memcg: account hugetlb-backed memory in memory controller
+
+Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
+Closes: https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
+Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 ---
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/memcontrol.h |  7 ++++++
+ mm/filemap.c               |  2 +-
+ mm/memcontrol.c            | 45 +++++++++++++++++++++++++++++++++++---
+ 3 files changed, 50 insertions(+), 4 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5f18ed0fbd42..585a13b9b52a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20116,6 +20116,8 @@ F:	Documentation/devicetree/bindings/sound/
- F:	Documentation/sound/soc/
- F:	include/dt-bindings/sound/
- F:	include/sound/soc*
-+F:	include/sound/sof/
-+F:	include/uapi/sound/asoc.h
- F:	sound/soc/
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 42bf7e9b1a2f..5daf14da3759 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -708,6 +708,8 @@ static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
  
- SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS
+ void mem_cgroup_cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages);
+ 
++void mem_cgroup_replace_folio(struct folio *old, struct folio *new);
++
+ void mem_cgroup_migrate(struct folio *old, struct folio *new);
+ 
+ /**
+@@ -1285,6 +1287,11 @@ static inline void mem_cgroup_cancel_charge(struct mem_cgroup *memcg,
+ {
+ }
+ 
++static inline void mem_cgroup_replace_folio(struct folio *old,
++		struct folio *new)
++{
++}
++
+ static inline void mem_cgroup_migrate(struct folio *old, struct folio *new)
+ {
+ }
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 9481ffaf24e6..673745219c82 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -819,7 +819,7 @@ void replace_page_cache_folio(struct folio *old, struct folio *new)
+ 	new->mapping = mapping;
+ 	new->index = offset;
+ 
+-	mem_cgroup_migrate(old, new);
++	mem_cgroup_replace_folio(old, new);
+ 
+ 	xas_lock_irq(&xas);
+ 	xas_store(&xas, new);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 0219befeae38..2ccf0a53cd71 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7281,16 +7281,17 @@ void __mem_cgroup_uncharge_list(struct list_head *page_list)
+ }
+ 
+ /**
+- * mem_cgroup_migrate - Charge a folio's replacement.
++ * mem_cgroup_replace_folio - Charge a folio's replacement.
+  * @old: Currently circulating folio.
+  * @new: Replacement folio.
+  *
+  * Charge @new as a replacement folio for @old. @old will
+- * be uncharged upon free.
++ * be uncharged upon free. This is only used by the page cache
++ * (in replace_page_cache_folio()).
+  *
+  * Both folios must be locked, @new->mapping must be set up.
+  */
+-void mem_cgroup_migrate(struct folio *old, struct folio *new)
++void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
+ {
+ 	struct mem_cgroup *memcg;
+ 	long nr_pages = folio_nr_pages(new);
+@@ -7329,6 +7330,44 @@ void mem_cgroup_migrate(struct folio *old, struct folio *new)
+ 	local_irq_restore(flags);
+ }
+ 
++/**
++ * mem_cgroup_migrate - Transfer the memcg data from the old to the new folio.
++ * @old: Currently circulating folio.
++ * @new: Replacement folio.
++ *
++ * Transfer the memcg data from the old folio to the new folio for migration.
++ * The old folio's data info will be cleared. Note that the memory counters
++ * will remain unchanged throughout the process.
++ *
++ * Both folios must be locked, @new->mapping must be set up.
++ */
++void mem_cgroup_migrate(struct folio *old, struct folio *new)
++{
++	struct mem_cgroup *memcg;
++
++	VM_BUG_ON_FOLIO(!folio_test_locked(old), old);
++	VM_BUG_ON_FOLIO(!folio_test_locked(new), new);
++	VM_BUG_ON_FOLIO(folio_test_anon(old) != folio_test_anon(new), new);
++	VM_BUG_ON_FOLIO(folio_nr_pages(old) != folio_nr_pages(new), new);
++
++	if (mem_cgroup_disabled())
++		return;
++
++	memcg = folio_memcg(old);
++	/*
++	 * Note that it is normal to see !memcg for a hugetlb folio.
++	 * For e.g, itt could have been allocated when memory_hugetlb_accounting
++	 * was not selected.
++	 */
++	VM_WARN_ON_ONCE_FOLIO(!folio_test_hugetlb(old) && !memcg, old);
++	if (!memcg)
++		return;
++
++	/* Transfer the charge and the css ref */
++	commit_charge(new, memcg);
++	old->memcg_data = 0;
++}
++
+ DEFINE_STATIC_KEY_FALSE(memcg_sockets_enabled_key);
+ EXPORT_SYMBOL(memcg_sockets_enabled_key);
+ 
 -- 
 2.34.1
-
