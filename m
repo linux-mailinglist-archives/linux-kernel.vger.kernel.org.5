@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 451BC7B7CF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9B47B7CFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242113AbjJDKSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
+        id S242123AbjJDKW3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 06:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232895AbjJDKR7 (ORCPT
+        with ESMTP id S242069AbjJDKW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:17:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B370C90;
-        Wed,  4 Oct 2023 03:17:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93E87C433C8;
-        Wed,  4 Oct 2023 10:17:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696414676;
-        bh=j4zQEj6l4C9JbR2fWIyArESVjilnZfkBsOS/xgac0Ug=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=sBRnBYY1Tgj3ZgtQlK6BmWY3dmdqjSbKOMfI7OpdL+cQxdiuhS9Ad5a1RsTNp2ipZ
-         af4N6ls+NtTqcOaVI965joWeTQWX21oaFlBwaqFJam3k9EyTqoXbIz6PIMJvyqqc+o
-         sNpR3smBQzZJnluLcctKEPmC8+GFd5BDetv6G6JkqlJ3+O0+488u2GoGOQGe8arg9k
-         JgschOAetOrAeAEGlv/rirTgX8H8Hk0gWfj9ow3fuIkW70bVwBjycjdfsG5beWFU7+
-         67Jvos90NzVSQTk/DNrOMYzUG/iYqFEEpWgIhiyblGQf2AJpspFZ5cmkAkLTRf9JPp
-         y9oAnM/X5P9AQ==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/9] wifi: wfx: fix power_save setting when AP is
- stopped
-References: <20230927163257.568496-1-jerome.pouiller@silabs.com>
-        <20230927163257.568496-2-jerome.pouiller@silabs.com>
-Date:   Wed, 04 Oct 2023 13:20:12 +0300
-In-Reply-To: <20230927163257.568496-2-jerome.pouiller@silabs.com>
- (=?utf-8?B?IkrDqXLDtG1l?=
-        Pouiller"'s message of "Wed, 27 Sep 2023 18:32:49 +0200")
-Message-ID: <87ttr6heoz.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 4 Oct 2023 06:22:27 -0400
+Received: from esa2.hc5620-63.iphmx.com (esa2.hc5620-63.iphmx.com [68.232.149.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6D416A1;
+        Wed,  4 Oct 2023 03:22:22 -0700 (PDT)
+X-CSE-ConnectionGUID: MTWq+6PoRRSac90mBygg/g==
+X-CSE-MsgGUID: MwhDSf00RDSY8tROrZqGVQ==
+Message-Id: <bc8e20$rcfu@esa2.hc5620-63.iphmx.com>
+X-IronPort-RemoteIP: 185.225.73.120
+X-IronPort-MID: 897534
+X-IronPort-Reputation: -5.6
+X-IronPort-Listener: MailFlow
+X-IronPort-SenderGroup: RELAY_O365
+X-IronPort-MailFlowPolicy: $RELAYED
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from unknown (HELO [185.225.73.120]) ([185.225.73.120])
+  by esa2.hc5620-63.iphmx.com with ESMTP; 04 Oct 2023 06:22:15 -0400
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: business reminder please call me +2378124804975
+To:     Recipients <test@caprice.co.nz>
+From:   "Mr. mohd" <test@caprice.co.nz>
+Date:   Wed, 04 Oct 2023 03:21:48 -0700
+Reply-To: abdulqaderaref115@gmail.com
+X-Spam-Status: Yes, score=5.6 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,HK_NAME_MR_MRS,
+        MSGID_FROM_MTA_HEADER,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL,
+        RCVD_IN_VALIDITY_RPBL,SPF_FAIL,SPF_HELO_PASS,TO_EQ_FM_DOM_SPF_FAIL,
+        TO_EQ_FM_SPF_FAIL autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [68.232.149.158 listed in list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *      [185.225.73.120 listed in zen.spamhaus.org]
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [68.232.149.158 listed in bl.score.senderscore.com]
+        *  0.0 SPF_FAIL SPF: sender does not match SPF record (fail)
+        *      [SPF failed: Please see http://www.openspf.org/Why?s=mfrom;id=test%40caprice.co.nz;ip=68.232.149.158;r=lindbergh.monkeyblade.net]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [abdulqaderaref115[at]gmail.com]
+        * -0.0 SPF_HELO_PASS SPF: HELO matches SPF record
+        *  1.0 HK_NAME_MR_MRS No description available.
+        *  0.0 MSGID_FROM_MTA_HEADER Message-Id was added by a relay
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+        *  0.0 TO_EQ_FM_DOM_SPF_FAIL To domain == From domain and external SPF
+        *       failed
+        *  0.0 TO_EQ_FM_SPF_FAIL To == From and external SPF failed
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
 
-> The WF200 allow to start two network interfaces (one AP, one station) on
-> two different channels. Since magic does not exist, it only works if the
-> station interface enables power save.
->
-> Thus, the driver detects this case and enforce power save as necessary.
->
-> This patch fixes the case where the AP interface is stopped and it is no
-> more necessary to enforce power saving on the station interface.
->
-> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> ---
->  drivers/net/wireless/silabs/wfx/sta.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/net/wireless/silabs/wfx/sta.c b/drivers/net/wireless=
-/silabs/wfx/sta.c
-> index 626dfb4b7a55d..9c0a11c277e97 100644
-> --- a/drivers/net/wireless/silabs/wfx/sta.c
-> +++ b/drivers/net/wireless/silabs/wfx/sta.c
-> @@ -402,7 +402,12 @@ void wfx_stop_ap(struct ieee80211_hw *hw, struct iee=
-e80211_vif *vif,
->  		 struct ieee80211_bss_conf *link_conf)
->  {
->  	struct wfx_vif *wvif =3D (struct wfx_vif *)vif->drv_priv;
-> +	struct wfx_dev *wdev =3D wvif->wdev;
->=20=20
-> +	wvif =3D  NULL;
-> +	while ((wvif =3D wvif_iterate(wdev, wvif)) !=3D NULL)
-> +		wfx_update_pm(wvif);
+Dear
+My name is Mohamed Abdul I have the capacity to inject a considerable
+amount of capital in any viable project we can loan too
+1,cell phone number what-sap
+2,full name
+call me direct +2347044289766 am seeking asylum
 
-Isn't the assignment of wvif to NULL unnecessary as in the next line we
-assign it to again?
-
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+yours truly
+Mohamed Abdul Ahmed
