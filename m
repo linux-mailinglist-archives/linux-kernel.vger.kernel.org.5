@@ -2,153 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEFC7B82A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC67F7B82A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233204AbjJDOrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55526 "EHLO
+        id S233338AbjJDOsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232838AbjJDOrd (ORCPT
+        with ESMTP id S232838AbjJDOsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:47:33 -0400
-X-Greylist: delayed 2582 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 04 Oct 2023 07:47:30 PDT
-Received: from sender4-op-o10.zoho.com (sender4-op-o10.zoho.com [136.143.188.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C86C0;
-        Wed,  4 Oct 2023 07:47:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1696430820; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=nxDApxEtzlx2xFddY5YqEaRiOelJY8n/5mSNawUGpBG3I4vQC4X6GggHHzTZGSLcLkPGqCZOrc+tkBKbKAd3i06Bbk7F0OUL7UxA76yEowMwZhSJ74h2XX37KOf54puONWX7BIVNHtshOXE/9mI3fxe3FOJu3TJpZ9yeDzplVFw=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1696430820; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=U9trAlWX6nBvb4VRniGzCrIKYuNDIMWaTtr2TJttzSk=; 
-        b=Pb0xQhHAo1a30Wk3f00tHT5zSAo2GAyeRFIbWiMCxFSbygrlW4OnZkyNQoDbzqLwOwSwyQOebsf6/MlERWP1fwTNGjA2pBlD/OqclMdwf49it/1lzynrNllKQdwiSv5oknBgYLs0vMONzdPCafJAOFvRlkXb15dZE03/+ELxbug=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=icenowy.me;
-        spf=pass  smtp.mailfrom=uwu@icenowy.me;
-        dmarc=pass header.from=<uwu@icenowy.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1696430820;
-        s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
-        h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
-        bh=U9trAlWX6nBvb4VRniGzCrIKYuNDIMWaTtr2TJttzSk=;
-        b=clD1xuxQ/rJT7sA7O7drvAgcArpOp3gx//OhNLxCkza9KKFmcbCglsnObwhOrAKZ
-        V4iO/MHUcJIfw+nCFggVYLY0hPT/C/R0nG9HUcMtbRgcQwvxBt6DrPVPLO5xVl4tqj9
-        t/+YXinXCg+k30aSzalQmTOkomM8b/NVjL5ArW78BBufIWPenKo7XjKK+Gd5iYWtH7H
-        urAHnBNC4SpiQ6QzjUG19BJg3sxcSxZeb0TDa3liQHXmPy/A9Pt8j96RbJlaFoApC/t
-        ug0UzUii4LGLU2jmdXK7JwSwRe6suIbo9t68yzPgI/egoHEWZU+P2ZFIgI34IxpOMjs
-        UfnD+EigcQ==
-Received: from edelgard.fodlan.icenowy.me (120.85.98.65 [120.85.98.65]) by mx.zohomail.com
-        with SMTPS id 1696430817671586.6852143453285; Wed, 4 Oct 2023 07:46:57 -0700 (PDT)
-Message-ID: <be4e43b676ca5619e99b0f5abf228e45fadedb70.camel@icenowy.me>
-Subject: Re: [PATCH 0/6] RISC-V: Add eMMC support for TH1520 boards
-From:   Icenowy Zheng <uwu@icenowy.me>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>
-Cc:     Drew Fustini <dfustini@baylibre.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Linux-MM <linux-mm@kvack.org>
-Date:   Wed, 04 Oct 2023 22:46:49 +0800
-In-Reply-To: <a568a9dd-bab2-1e23-c4d5-9f6475bdcc3b@arm.com>
-References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
-         <CAOCHtYhnx1EpBM+o3xhdsicx5uqLidojK3f0HQ+VfyVv1ZXnVQ@mail.gmail.com>
-         <CAOCHtYi5Ab5ppCmaQV3QuKQcpmJX+sHdAmtuEXhfq8xf5fFCYQ@mail.gmail.com>
-         <ZRuamJuShOnvP1pr@x1> <ZR1M3FcdXrDmIGu2@xhacker>
-         <CA+V-a8ugwqkQxnX-wwWCHVtBBtG=aVv=MZTc53LbpxtFA=N1_A@mail.gmail.com>
-         <bc2b0b30-ab37-f336-c90e-eab570d393a2@arm.com>
-         <c2ea3f34bb919293b850fab6ed42b61e3517ba35.camel@icenowy.me>
-         <a568a9dd-bab2-1e23-c4d5-9f6475bdcc3b@arm.com>
-Organization: Anthon Open-Source Community
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 
+        Wed, 4 Oct 2023 10:48:06 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2040.outbound.protection.outlook.com [40.107.220.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EA4C0;
+        Wed,  4 Oct 2023 07:48:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GJQju9Amn651tb/mYgMZfcX1oMoG4rfY+PyZQ/pf+AvJcecyjAPLogPKyy9+pVEQPQ0JRzI+BcQ0Wts5PZdJsMWZmGxgbIcQaDc2QNC3H3Q8hE9fk0v+5j60zt6uuFCL+KcqYaVcsQfLWEV5D7AlTTjIixL9rOM62aZtpWN3c6T2NntdyNbf9UYjeHrWuVY5LkyFzajSyL6U8a06DKaoGioQS2OSfRKhmskGywhd0c66G+at7897ejxF84bs2RLVD6OFTUp9eIukOKvxJengUZNmuzjMhu5hwfyeqI/kFt29m/nbNP7bO/dvxGM6+Bv3XWodJ/RSTgIM0a1Psi69Ig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Zpqp2qNH9kU7dpWm/rVoLysJsuXZSUa4aDoqLRmqG1U=;
+ b=Clu5TF2uBcroq4XEqRf9TrqCj9Lvrp33CSulbGz/g05jpCFSmM0DnRyX9/wPe013/qQqj2OR01iR+PfFRGLMd5Sis9t19bFL3bidvhSC6U0rnNFCtwR2D53/TSfm1vjTY8eG3HgrPBIXNLp7oz9ZiM0L3S+8FJKLf3PgJnkKm34igdCFDNHf4aIOXrQlrxoAS1vwTuMsMH+yohO/EJnRW2OB3mSDAmq+g5WbWLewZDWO4wJc7EUwzCXia7XFqopNTnt/b6I6uMgzBOfhCYRrI8ziHqmLrQdX/VVOtDYy8qCBaBwVE+YyEM+vQXhlQrxBzDgRtq+f06ZKi3X6qI9QIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zpqp2qNH9kU7dpWm/rVoLysJsuXZSUa4aDoqLRmqG1U=;
+ b=CUO4ifdYLH98IKGf7pOZKZDCSzGGW+GFjPOtCpSN1s6ifh+8bEAcRwYxFp6btw5kpc4cYTjLUEbYFzopuwxbk9dmKWIYQPn1sb3BxBFID2Z/uA5nSqseXDG6HuQNEtfbtTfJbnBnOZJj18oBN5L7UjpiG+Rgbqqtd11Y4b1OMZU=
+Received: from MN2PR22CA0020.namprd22.prod.outlook.com (2603:10b6:208:238::25)
+ by PH7PR12MB6665.namprd12.prod.outlook.com (2603:10b6:510:1a7::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Wed, 4 Oct
+ 2023 14:47:59 +0000
+Received: from MN1PEPF0000ECD6.namprd02.prod.outlook.com
+ (2603:10b6:208:238:cafe::d0) by MN2PR22CA0020.outlook.office365.com
+ (2603:10b6:208:238::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33 via Frontend
+ Transport; Wed, 4 Oct 2023 14:47:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MN1PEPF0000ECD6.mail.protection.outlook.com (10.167.242.135) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Wed, 4 Oct 2023 14:47:58 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 4 Oct
+ 2023 09:47:57 -0500
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     <bhelgaas@google.com>, <lukas@wunner.de>
+CC:     <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <mika.westerberg@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Subject: [PATCH v2] PCI: Make d3cold_allowed sysfs attribute read only
+Date:   Wed, 4 Oct 2023 09:47:31 -0500
+Message-ID: <20231004144731.158342-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD6:EE_|PH7PR12MB6665:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7665f5bb-d4e2-42c6-eb0a-08dbc4e8e6bd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MUD+Q+DhLANTYDjmJf7RQZgzsibvtmOY5ng/sAmngmzFuSK6tgwtW0CxaIlXYDTSSHVdEVtjP0TgAW23u0UxOpgTpHafuNgmdWZ4w1S4W3wlhJILyP5IUNQAlx3alabVMKqQ43tVf6CObUG0VS/pICye3+XeaZub77WE8sq6hFMuydgp3qAbxSByuXrb74sIFqAWiPPOV2fOvuI0AZbrqh5V0hgqm4RWwZ2G5z8jMWRfY1B08Eo3eRvGEGgPkXLqKG17nGEkF2aQ+5rBYN75fK2xbM89WzThCj8ruLpIOFDmdgMjCmqn4JXJYymsA5LIt00FzU1BzOn5E+n4dt2anhb4Z+VMcUKlA8VkruVqag0GxK5Mz2s2o02oN4/WdRuHVqZb2vd3QfAxFo7hUHiBdVUE1uBp4RakfaYCFE+gITqiZ/Q0+GsGYfmgHh+k7HQpUWmIebgeRPfCdoCdzOQzlGpGhcPXZdbTQNE9Oma7InkaGbconxUyruETdjb6avMzBeSviXtWRfO0BDeOQYPq9q98OL0o119UyHcS0hWRsPztoNcHnuf+GraTbotUMp4Vwg6wPXXydlcdwGxg29qpKu+9lyYSkHOt29F+zBBegYnsFQAuJHEGN8x59wZZf/jcvrsmA1Pk5JCV5Ft5Y7T7CZxmFn1DdrKZR3EEHml3S/wAtzmrD2miZpep99159yTMR4R/TEdFJHvQsvudifjODw5KGxdVQ+FDvzW7WP5C5vuWzRKycp0mBxmLw/usjp0JW1IDaVvm5XYynqBFEO4Hbhhj2tUt8KSUsbUf2Fm8jaQ=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(186009)(64100799003)(82310400011)(451199024)(1800799009)(36840700001)(46966006)(40470700004)(16526019)(2906002)(44832011)(5660300002)(26005)(4326008)(1076003)(41300700001)(8676002)(36756003)(40480700001)(316002)(8936002)(2616005)(54906003)(478600001)(83380400001)(110136005)(40460700003)(70206006)(7696005)(356005)(70586007)(86362001)(36860700001)(6666004)(426003)(336012)(82740400003)(47076005)(81166007)(36900700001)(309714004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 14:47:58.5252
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7665f5bb-d4e2-42c6-eb0a-08dbc4e8e6bd
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000ECD6.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6665
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=E5=9C=A8 2023-10-04=E6=98=9F=E6=9C=9F=E4=B8=89=E7=9A=84 15:18 +0100=EF=BC=
-=8CRobin Murphy=E5=86=99=E9=81=93=EF=BC=9A
-> On 04/10/2023 3:02 pm, Icenowy Zheng wrote:
-> [...]
-> > > > > I believe commit 484861e09f3e ("soc: renesas: Kconfig: Select
-> > > > > the
-> > > > > required configs for RZ/Five SoC") can cause regression on
-> > > > > all
-> > > > > non-dma-coherent riscv platforms with generic defconfig. This
-> > > > > is
-> > > > > a common issue. The logic here is: generic riscv defconfig
-> > > > > selects
-> > > > > ARCH_R9A07G043 which selects DMA_GLOBAL_POOL, which assumes
-> > > > > all
-> > > > > non-dma-coherent riscv platforms have a dma global pool, this
-> > > > > assumption
-> > > > > seems not correct. And I believe DMA_GLOBAL_POOL should not
-> > > > > be
-> > > > > selected by ARCH_SOCFAMILIY, instead, only ARCH under some
-> > > > > specific
-> > > > > conditions can select it globaly, for example NOMMU ARM and
-> > > > > so
-> > > > > on.
-> > > > >=20
-> > > > > Since this is a regression, what's proper fix? any suggestion
-> > > > > is
-> > > > > appreciated.
-> > >=20
-> > > I think the answer is to not select DMA_GLOBAL_POOL, since that
-> > > is
-> > > only
-> >=20
-> > Well I think for RISC-V, it's not NOMMU only but applicable for
-> > every
-> > core that does not support Svpbmt or vendor-specific alternatives,
-> > because the original RISC-V priv spec does not define memory
-> > attributes
-> > in page table entries.
-> >=20
-> > For the Renesas/Andes case I think a pool is set by OpenSBI with
-> > vendor-specific M-mode facility and then passed in DT, and the S-
-> > mode
-> > (which MMU is enabled in) just sees fixed memory attributes, in
-> > this
-> > case I think DMA_GLOBAL_POOL is needed.
->=20
-> Oh wow, is that really a thing? In that case, either you just can't=20
-> support this platform in a multi-platform kernel, or someone needs to
-> do=20
+Before d3cold was stable userspace was allowed to influence the kernel's
+decision of whether to enable d3cold for a device by a sysfs file
+`d3cold_allowed`.  This potentially allows userspace to break the suspend
+for the system.
 
-Emmmm thus RZ/Five should `depends on NONPORTABLE`?
+For debugging purposes `pci_port_pm=` can be used to control whether
+a PCI port will go into D3cold and runtime PM can be turned off by
+sysfs on PCI end points.
 
-> some fiddly work in dma-direct to a) introduce the notion of an
-> optional=20
-> global pool, and b) make it somehow cope with DMA_DIRECT_REMAP being=20
-> enabled but non-functional.
->=20
-> Thanks,
-> Robin.
+Change the sysfs attribute to a noop that ignores the input when written
+and shows a warning. Simplify the internal kernel logic to drop
+`d3cold_allowed`.
+
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+v1->v2:
+ * Leave R/W and show a warning instead
+ * Mark deprecated in sysfs file
+---
+ Documentation/ABI/testing/sysfs-bus-pci |  4 ++--
+ drivers/pci/pci-acpi.c                  |  2 +-
+ drivers/pci/pci-sysfs.c                 | 14 ++------------
+ drivers/pci/pci.c                       |  3 +--
+ include/linux/pci.h                     |  1 -
+ 5 files changed, 6 insertions(+), 18 deletions(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+index ecf47559f495..b5db141dfee6 100644
+--- a/Documentation/ABI/testing/sysfs-bus-pci
++++ b/Documentation/ABI/testing/sysfs-bus-pci
+@@ -283,8 +283,8 @@ Description:
+ 		device will never be put into D3Cold state.  If it is set, the
+ 		device may be put into D3Cold state if other requirements are
+ 		satisfied too.  Reading this attribute will show the current
+-		value of d3cold_allowed bit.  Writing this attribute will set
+-		the value of d3cold_allowed bit.
++		value of no_d3cold bit.
++		Writing to this attribute is deprecated and will do nothing.
+ 
+ What:		/sys/bus/pci/devices/.../sriov_totalvfs
+ Date:		November 2012
+diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+index 05b7357bd258..a05350a4e49c 100644
+--- a/drivers/pci/pci-acpi.c
++++ b/drivers/pci/pci-acpi.c
+@@ -911,7 +911,7 @@ pci_power_t acpi_pci_choose_state(struct pci_dev *pdev)
+ {
+ 	int acpi_state, d_max;
+ 
+-	if (pdev->no_d3cold || !pdev->d3cold_allowed)
++	if (pdev->no_d3cold)
+ 		d_max = ACPI_STATE_D3_HOT;
+ 	else
+ 		d_max = ACPI_STATE_D3_COLD;
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index 5e741a05cf2c..52ed5a55a371 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -523,17 +523,7 @@ static ssize_t d3cold_allowed_store(struct device *dev,
+ 				    struct device_attribute *attr,
+ 				    const char *buf, size_t count)
+ {
+-	struct pci_dev *pdev = to_pci_dev(dev);
+-	unsigned long val;
+-
+-	if (kstrtoul(buf, 0, &val) < 0)
+-		return -EINVAL;
+-
+-	pdev->d3cold_allowed = !!val;
+-	pci_bridge_d3_update(pdev);
+-
+-	pm_runtime_resume(dev);
+-
++	dev_warn_once(dev, "pci: writing to d3cold_allowed is deprecated\n");
+ 	return count;
+ }
+ 
+@@ -541,7 +531,7 @@ static ssize_t d3cold_allowed_show(struct device *dev,
+ 				   struct device_attribute *attr, char *buf)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(dev);
+-	return sysfs_emit(buf, "%u\n", pdev->d3cold_allowed);
++	return sysfs_emit(buf, "%u\n", !pdev->no_d3cold);
+ }
+ static DEVICE_ATTR_RW(d3cold_allowed);
+ #endif
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 59c01d68c6d5..8c5a6f68f63d 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -3067,7 +3067,7 @@ static int pci_dev_check_d3cold(struct pci_dev *dev, void *data)
+ 	bool *d3cold_ok = data;
+ 
+ 	if (/* The device needs to be allowed to go D3cold ... */
+-	    dev->no_d3cold || !dev->d3cold_allowed ||
++	    dev->no_d3cold ||
+ 
+ 	    /* ... and if it is wakeup capable to do so from D3cold. */
+ 	    (device_may_wakeup(&dev->dev) &&
+@@ -3204,7 +3204,6 @@ void pci_pm_init(struct pci_dev *dev)
+ 	dev->d3hot_delay = PCI_PM_D3HOT_WAIT;
+ 	dev->d3cold_delay = PCI_PM_D3COLD_WAIT;
+ 	dev->bridge_d3 = pci_bridge_d3_possible(dev);
+-	dev->d3cold_allowed = true;
+ 
+ 	dev->d1_support = false;
+ 	dev->d2_support = false;
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 8c7c2c3c6c65..5f4ed71d31f5 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -376,7 +376,6 @@ struct pci_dev {
+ 	unsigned int	no_d1d2:1;	/* D1 and D2 are forbidden */
+ 	unsigned int	no_d3cold:1;	/* D3cold is forbidden */
+ 	unsigned int	bridge_d3:1;	/* Allow D3 for bridge */
+-	unsigned int	d3cold_allowed:1;	/* D3cold is allowed by user */
+ 	unsigned int	mmio_always_on:1;	/* Disallow turning off io/mem
+ 						   decoding during BAR sizing */
+ 	unsigned int	wakeup_prepared:1;
+-- 
+2.34.1
 
