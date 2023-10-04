@@ -2,468 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E25417B841C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461247B843A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242819AbjJDPtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
+        id S242971AbjJDPxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233774AbjJDPtH (ORCPT
+        with ESMTP id S233661AbjJDPxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:49:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD63D8
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:48:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696434497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rZ8aDKUrpN2q/s8i97pAGn8PQgXbCGC0dTTfu9VD+mg=;
-        b=VvDioVj6hYVlAC+3WMePYBqyyo+4A1t3huhpMciyLkp7EIK6j07a4QYLXrJyhtKiSTlP87
-        zgQBi9Ku0t4hpbFkfNMkBEaxVuN8XU7BV3HjbItoIq2qnztQT6cwVPEVanWHfEyiYjQkjq
-        g3KZQTHEPgbGAdEDz39x0w7xcDM8LMs=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-356-1bW_3GvyPNWpxM2xWtkr4Q-1; Wed, 04 Oct 2023 11:48:15 -0400
-X-MC-Unique: 1bW_3GvyPNWpxM2xWtkr4Q-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-65b08994e15so15994006d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 08:48:15 -0700 (PDT)
+        Wed, 4 Oct 2023 11:53:11 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48866C1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:53:05 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c1c66876aso432063366b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 08:53:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1696434784; x=1697039584; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=hZDNFZC6WiTT02ULBJ6jIt5/1FUgLgt3WVljz4aDHFY=;
+        b=Ls5YFI1iHeKJe7R9ObhOWxWOAdkDFbGSGmuerXZc5oJ9ZvxzqT6Z3Mjw//CJ0RogKo
+         U4S5BxK78MCXwDfKUtDC7WT4xdYtO31BSlskDlzX3I/7fLG7SLJnFN2EpfpgWqXJZ8y+
+         MHNh27Ai/0BPhPJ5nOpPVvTgMG8+sZpForTwXRqMHqmxcQB6OMLyGYTBquZkH2BNiKoq
+         s/Cpajy/G6f0vzNy1GmxkXOAldS/DJkfsYBiZs+GxUW3j9UQQu0l7EIwT8UUlcfo2Cvs
+         KGzSHJZ7yhy/+6eVyy5+zI3eCGlogsTFDigrVWoSQiEDiZyeZtowYevjeDNvuDO+40FR
+         Apiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696434495; x=1697039295;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1696434784; x=1697039584;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rZ8aDKUrpN2q/s8i97pAGn8PQgXbCGC0dTTfu9VD+mg=;
-        b=I1VKadLgoDrc9eipMehIxK/C/688YRo0coTmQTYeCR+5R9Zix5xqdhMz7nppYfNyQ/
-         loJv2ZKC3y35KMd6UYBpgV6vXQ68qMbKPbn/WIZwkgSzCKS4l1a9A9UvZ9I81bxrD6hP
-         D8GcTEmZsq8K6T6wDff+bkRQRrflb7tbaaFJDX6JE7W+4nla7l/7B/U9tGb+gg6K3Vf5
-         hb3fwyYK/p++7LXlurBEofLndoo/54uV7nouP9cHa8D4UlDFBns//lPJSSPXH+jGrgzx
-         5ABqRPPzXeOa4asYnd8xLkqAHJtUBMd6TMMD+rqbFnmZ62At+wcnJJ45JB9pMiGK0C0L
-         2huQ==
-X-Gm-Message-State: AOJu0Yy0YQgSf1xLutph4Y6M1vvnNGE69YWpRybS176cyx5bHSpUMT8i
-        htKyeaBQugHJP3MKQ71krPl/H8abGuQabZeCqY4cmAqmqVIDyS4hkylIyGIH21R8nuIRNDx4QJG
-        r8wCYW2QysR1nRRmKpQwP/Ym/
-X-Received: by 2002:a0c:f491:0:b0:668:e6f7:3d42 with SMTP id i17-20020a0cf491000000b00668e6f73d42mr12919qvm.9.1696434495046;
-        Wed, 04 Oct 2023 08:48:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEFzQg9/PAKTUXYSmajg5mVR3ruDmI4lIW/Vdt72+UPy2wHO49ln/xAqowD3iY3Bl4a21lIzw==
-X-Received: by 2002:a0c:f491:0:b0:668:e6f7:3d42 with SMTP id i17-20020a0cf491000000b00668e6f73d42mr12884qvm.9.1696434494754;
-        Wed, 04 Oct 2023 08:48:14 -0700 (PDT)
-Received: from sgarzare-redhat (host-82-57-51-114.retail.telecomitalia.it. [82.57.51.114])
-        by smtp.gmail.com with ESMTPSA id op52-20020a05620a537400b0076d9e298928sm1349795qkn.66.2023.10.04.08.48.12
+        bh=hZDNFZC6WiTT02ULBJ6jIt5/1FUgLgt3WVljz4aDHFY=;
+        b=sgEimNuK9BamWo8FgGGqQTnB6Kby+2Vcqpn/uAqwpf+j0EAJKr3lfs7P7VSUmz9V4H
+         6fMmUGa8jqVobDteiqtlts0ACqxgadvKyX4hSybO0tpBMUbSLOglHzZxDRT+hexDNaX6
+         g3FUpKgl22xDMIaQ7vEtfsm7JLCbkpg52uSXKPwAVZBCePOFOOU3ts5A2ylw0W39CkQ+
+         /YvW4Kxkpnrp5EUfnRV88OddLew3lDEU6uFxPyI8mB6y00Wnsc4iw5l3RIyTpBnl0WfB
+         Uw7+gpcO2JcknxJo4F9x9O04PgvAVfAKtKYNWMNCkv10mn8cgSod13FJkFFUq3Ka1av9
+         JECw==
+X-Gm-Message-State: AOJu0YykRQI476itz5aA9CDv3KCD1km3JdpSTem3LE5sZqcMYZ4Mg+9u
+        9cLqcEnmyuo9IipOiNEt/wwd8g==
+X-Google-Smtp-Source: AGHT+IHyhGmibidLlX+i+h3CeE+RkyvRJ1BmsD82yqONASQWydT4Q9HuIszDXGT+fFfHOEohePFpdQ==
+X-Received: by 2002:a17:906:538f:b0:9a2:1ce5:1243 with SMTP id g15-20020a170906538f00b009a21ce51243mr2663645ejo.60.1696434783543;
+        Wed, 04 Oct 2023 08:53:03 -0700 (PDT)
+Received: from localhost ([79.142.230.34])
+        by smtp.gmail.com with ESMTPSA id gh18-20020a170906e09200b009b27d4153cfsm3034424ejb.176.2023.10.04.08.53.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 08:48:14 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 17:48:10 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v2 12/12] test/vsock: io_uring rx/tx tests
-Message-ID: <ycm437ztyvh4kch3loje5wsx4rvip5zgeppexhvdd2afkngofo@re24nrfczp47>
-References: <20230930210308.2394919-1-avkrasnov@salutedevices.com>
- <20230930210308.2394919-13-avkrasnov@salutedevices.com>
+        Wed, 04 Oct 2023 08:53:03 -0700 (PDT)
+References: <CVZ2KU4KK5YH.2HVL1F6X93YLL@pogg>
+ <20231003222947.374039-1-aliceryhl@google.com>
+ <CVZLU74VWMKA.GQXYH7WUNPS4@pogg> <ZR144pugIJQRAFjj@boqun-archlinux>
+ <CVZQQCDA444R.KWA6OPEZRIBG@ftml.net>
+User-agent: mu4e 1.10.7; emacs 28.2.50
+From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+To:     Konstantin Shelekhin <k.shelekhin@ftml.net>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Alice Ryhl <aliceryhl@google.com>, alex.gaynor@gmail.com,
+        benno.lossin@proton.me, bjorn3_gh@protonmail.com, gary@garyguo.net,
+        jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+        ojeda@kernel.org, patches@lists.linux.dev,
+        rust-for-linux@vger.kernel.org, tj@kernel.org, wedsonaf@gmail.com,
+        yakoyoku@gmail.com
+Subject: Re: [PATCH v4 7/7] rust: workqueue: add examples
+Date:   Wed, 04 Oct 2023 17:49:30 +0200
+In-reply-to: <CVZQQCDA444R.KWA6OPEZRIBG@ftml.net>
+Message-ID: <87v8bm5qqp.fsf@metaspace.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230930210308.2394919-13-avkrasnov@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 01, 2023 at 12:03:08AM +0300, Arseniy Krasnov wrote:
->This adds set of tests which use io_uring for rx/tx. This test suite is
->implemented as separated util like 'vsock_test' and has the same set of
->input arguments as 'vsock_test'. These tests only cover cases of data
->transmission (no connect/bind/accept etc).
->
->Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->---
-> Changelog:
-> v1 -> v2:
->  * Add 'LDLIBS = -luring' to the target 'vsock_uring_test'.
->  * Add 'vsock_uring_test' to the target 'test'.
->
-> tools/testing/vsock/Makefile           |   7 +-
-> tools/testing/vsock/vsock_uring_test.c | 321 +++++++++++++++++++++++++
-> 2 files changed, 326 insertions(+), 2 deletions(-)
-> create mode 100644 tools/testing/vsock/vsock_uring_test.c
->
->diff --git a/tools/testing/vsock/Makefile b/tools/testing/vsock/Makefile
->index 1a26f60a596c..b80e7c7def1e 100644
->--- a/tools/testing/vsock/Makefile
->+++ b/tools/testing/vsock/Makefile
->@@ -1,12 +1,15 @@
-> # SPDX-License-Identifier: GPL-2.0-only
-> all: test vsock_perf
->-test: vsock_test vsock_diag_test
->+test: vsock_test vsock_diag_test vsock_uring_test
-> vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o
-> vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
-> vsock_perf: vsock_perf.o
->
->+vsock_uring_test: LDLIBS = -luring
->+vsock_uring_test: control.o util.o vsock_uring_test.o timeout.o
->+
-> CFLAGS += -g -O2 -Werror -Wall -I. -I../../include -I../../../usr/include -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-common -MMD -U_FORTIFY_SOURCE -D_GNU_SOURCE
-> .PHONY: all test clean
-> clean:
->-	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf
->+	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf vsock_uring_test
-> -include *.d
->diff --git a/tools/testing/vsock/vsock_uring_test.c b/tools/testing/vsock/vsock_uring_test.c
->new file mode 100644
->index 000000000000..725895350697
->--- /dev/null
->+++ b/tools/testing/vsock/vsock_uring_test.c
->@@ -0,0 +1,321 @@
->+// SPDX-License-Identifier: GPL-2.0-only
->+/* io_uring tests for vsock
->+ *
->+ * Copyright (C) 2023 SberDevices.
->+ *
->+ * Author: Arseniy Krasnov <avkrasnov@salutedevices.com>
->+ */
->+
->+#include <getopt.h>
->+#include <stdio.h>
->+#include <stdlib.h>
->+#include <string.h>
->+#include <liburing.h>
->+#include <unistd.h>
->+#include <sys/mman.h>
->+#include <linux/kernel.h>
->+#include <error.h>
->+
->+#include "util.h"
->+#include "control.h"
->+
->+#define PAGE_SIZE		4096
->+#define RING_ENTRIES_NUM	4
->+
->+static struct vsock_test_data test_data_array[] = {
 
-Ah, I see vsock_test_data is used here, but we are using a subset
-of fields that are not exposed outside of this file.
+Hi,
 
-So, let's define a custom struct in this file for this
-(e.g. struct vsock_io_uring_tests)
+"Konstantin Shelekhin" <k.shelekhin@ftml.net> writes:
 
-The rest LGTM!
-
->+	/* All elements have page aligned base and size. */
->+	{
->+		.vecs_cnt = 3,
->+		{
->+			{ NULL, PAGE_SIZE },
->+			{ NULL, 2 * PAGE_SIZE },
->+			{ NULL, 3 * PAGE_SIZE },
->+		}
->+	},
->+	/* Middle element has both non-page aligned base and size. */
->+	{
->+		.vecs_cnt = 3,
->+		{
->+			{ NULL, PAGE_SIZE },
->+			{ (void *)1, 200  },
->+			{ NULL, 3 * PAGE_SIZE },
->+		}
->+	}
->+};
->+
->+static void vsock_io_uring_client(const struct test_opts *opts,
->+				  const struct vsock_test_data *test_data,
->+				  bool msg_zerocopy)
->+{
->+	struct io_uring_sqe *sqe;
->+	struct io_uring_cqe *cqe;
->+	struct io_uring ring;
->+	struct iovec *iovec;
->+	struct msghdr msg;
->+	int fd;
->+
->+	fd = vsock_stream_connect(opts->peer_cid, 1234);
->+	if (fd < 0) {
->+		perror("connect");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (msg_zerocopy)
->+		enable_so_zerocopy(fd);
->+
->+	iovec = iovec_from_test_data(test_data);
->+
->+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
->+		error(1, errno, "io_uring_queue_init");
->+
->+	if (io_uring_register_buffers(&ring, iovec, test_data->vecs_cnt))
->+		error(1, errno, "io_uring_register_buffers");
->+
->+	memset(&msg, 0, sizeof(msg));
->+	msg.msg_iov = iovec;
->+	msg.msg_iovlen = test_data->vecs_cnt;
->+	sqe = io_uring_get_sqe(&ring);
->+
->+	if (msg_zerocopy)
->+		io_uring_prep_sendmsg_zc(sqe, fd, &msg, 0);
->+	else
->+		io_uring_prep_sendmsg(sqe, fd, &msg, 0);
->+
->+	if (io_uring_submit(&ring) != 1)
->+		error(1, errno, "io_uring_submit");
->+
->+	if (io_uring_wait_cqe(&ring, &cqe))
->+		error(1, errno, "io_uring_wait_cqe");
->+
->+	io_uring_cqe_seen(&ring, cqe);
->+
->+	control_writeulong(iovec_hash_djb2(iovec, test_data->vecs_cnt));
->+
->+	control_writeln("DONE");
->+	io_uring_queue_exit(&ring);
->+	free_iovec_test_data(test_data, iovec);
->+	close(fd);
->+}
->+
->+static void vsock_io_uring_server(const struct test_opts *opts,
->+				  const struct vsock_test_data *test_data)
->+{
->+	unsigned long remote_hash;
->+	unsigned long local_hash;
->+	struct io_uring_sqe *sqe;
->+	struct io_uring_cqe *cqe;
->+	struct io_uring ring;
->+	struct iovec iovec;
->+	size_t data_len;
->+	void *data;
->+	int fd;
->+
->+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->+	if (fd < 0) {
->+		perror("accept");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	data_len = iovec_bytes(test_data->vecs, test_data->vecs_cnt);
->+
->+	data = malloc(data_len);
->+	if (!data) {
->+		perror("malloc");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
->+		error(1, errno, "io_uring_queue_init");
->+
->+	sqe = io_uring_get_sqe(&ring);
->+	iovec.iov_base = data;
->+	iovec.iov_len = data_len;
->+
->+	io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
->+
->+	if (io_uring_submit(&ring) != 1)
->+		error(1, errno, "io_uring_submit");
->+
->+	if (io_uring_wait_cqe(&ring, &cqe))
->+		error(1, errno, "io_uring_wait_cqe");
->+
->+	if (cqe->res != data_len) {
->+		fprintf(stderr, "expected %zu, got %u\n", data_len,
->+			cqe->res);
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	local_hash = hash_djb2(data, data_len);
->+
->+	remote_hash = control_readulong();
->+	if (remote_hash != local_hash) {
->+		fprintf(stderr, "hash mismatch\n");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	control_expectln("DONE");
->+	io_uring_queue_exit(&ring);
->+	free(data);
->+}
->+
->+void test_stream_uring_server(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
->+		vsock_io_uring_server(opts, &test_data_array[i]);
->+}
->+
->+void test_stream_uring_client(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
->+		vsock_io_uring_client(opts, &test_data_array[i], false);
->+}
->+
->+void test_stream_uring_msg_zc_server(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
->+		vsock_io_uring_server(opts, &test_data_array[i]);
->+}
->+
->+void test_stream_uring_msg_zc_client(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
->+		vsock_io_uring_client(opts, &test_data_array[i], true);
->+}
->+
->+static struct test_case test_cases[] = {
->+	{
->+		.name = "SOCK_STREAM io_uring test",
->+		.run_server = test_stream_uring_server,
->+		.run_client = test_stream_uring_client,
->+	},
->+	{
->+		.name = "SOCK_STREAM io_uring MSG_ZEROCOPY test",
->+		.run_server = test_stream_uring_msg_zc_server,
->+		.run_client = test_stream_uring_msg_zc_client,
->+	},
->+	{},
->+};
->+
->+static const char optstring[] = "";
->+static const struct option longopts[] = {
->+	{
->+		.name = "control-host",
->+		.has_arg = required_argument,
->+		.val = 'H',
->+	},
->+	{
->+		.name = "control-port",
->+		.has_arg = required_argument,
->+		.val = 'P',
->+	},
->+	{
->+		.name = "mode",
->+		.has_arg = required_argument,
->+		.val = 'm',
->+	},
->+	{
->+		.name = "peer-cid",
->+		.has_arg = required_argument,
->+		.val = 'p',
->+	},
->+	{
->+		.name = "help",
->+		.has_arg = no_argument,
->+		.val = '?',
->+	},
->+	{},
->+};
->+
->+static void usage(void)
->+{
->+	fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid>\n"
->+		"\n"
->+		"  Server: vsock_uring_test --control-port=1234 --mode=server --peer-cid=3\n"
->+		"  Client: vsock_uring_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
->+		"\n"
->+		"Run transmission tests using io_uring. Usage is the same as\n"
->+		"in ./vsock_test\n"
->+		"\n"
->+		"Options:\n"
->+		"  --help                 This help message\n"
->+		"  --control-host <host>  Server IP address to connect to\n"
->+		"  --control-port <port>  Server port to listen on/connect to\n"
->+		"  --mode client|server   Server or client mode\n"
->+		"  --peer-cid <cid>       CID of the other side\n"
->+		);
->+	exit(EXIT_FAILURE);
->+}
->+
->+int main(int argc, char **argv)
->+{
->+	const char *control_host = NULL;
->+	const char *control_port = NULL;
->+	struct test_opts opts = {
->+		.mode = TEST_MODE_UNSET,
->+		.peer_cid = VMADDR_CID_ANY,
->+	};
->+
->+	init_signals();
->+
->+	for (;;) {
->+		int opt = getopt_long(argc, argv, optstring, longopts, NULL);
->+
->+		if (opt == -1)
->+			break;
->+
->+		switch (opt) {
->+		case 'H':
->+			control_host = optarg;
->+			break;
->+		case 'm':
->+			if (strcmp(optarg, "client") == 0) {
->+				opts.mode = TEST_MODE_CLIENT;
->+			} else if (strcmp(optarg, "server") == 0) {
->+				opts.mode = TEST_MODE_SERVER;
->+			} else {
->+				fprintf(stderr, "--mode must be \"client\" or \"server\"\n");
->+				return EXIT_FAILURE;
->+			}
->+			break;
->+		case 'p':
->+			opts.peer_cid = parse_cid(optarg);
->+			break;
->+		case 'P':
->+			control_port = optarg;
->+			break;
->+		case '?':
->+		default:
->+			usage();
->+		}
->+	}
->+
->+	if (!control_port)
->+		usage();
->+	if (opts.mode == TEST_MODE_UNSET)
->+		usage();
->+	if (opts.peer_cid == VMADDR_CID_ANY)
->+		usage();
->+
->+	if (!control_host) {
->+		if (opts.mode != TEST_MODE_SERVER)
->+			usage();
->+		control_host = "0.0.0.0";
->+	}
->+
->+	control_init(control_host, control_port,
->+		     opts.mode == TEST_MODE_SERVER);
->+
->+	run_tests(test_cases, &opts);
->+
->+	control_cleanup();
->+
->+	return 0;
->+}
->-- 
->2.25.1
+>> This is not a problem until nvmet actually uses/switches to Rust, right?
+>> ;-) We can certainly improve the API when a real user needs something.
+>> Or you know someone is already working on this?
 >
+> Nope, not at this moment. I have an itch to experiment with Rust and
+> iSCSI, but that's my personal toy without any plans to at least propose
+> it to the subsystem maintainers yet.
 
+If you are so inclined, I would suggest you take a look at the blk-mq
+bindings and the nvme (pci) [1] and null_blk [2] Rust drivers. I am
+available if you have any questions!
+
+BR Andreas
+
+[1] https://github.com/metaspace/linux/tree/nvme-next-for-6.6
+[2] https://github.com/metaspace/linux/tree/null_blk-next-for-6.6
