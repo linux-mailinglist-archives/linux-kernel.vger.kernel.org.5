@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 392C47B7F39
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860857B7F37
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242384AbjJDMfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 08:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
+        id S242390AbjJDMfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 08:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242313AbjJDMfc (ORCPT
+        with ESMTP id S242353AbjJDMfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Oct 2023 08:35:32 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EF8BF
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5EEC1
         for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:35:29 -0700 (PDT)
 From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696422927;
+        s=2020; t=1696422928;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AXGP/cV38TkuwT0IRhJ9YYY7aFG2G6iSF6EqZ7aAS+o=;
-        b=mCLdP9Sz8EnBzXJX1cpWsLaMbxR7yBHBthK1dXImUp5/1a4RJY6/2zTW9g9VG6gxLbEvqB
-        LB2zeTRuEBPLCCKi+VE7dWf6Wv9JBXfrDO9D74AyVgcMYJ1gHqXZ3ts5N4npijeFIx3DVS
-        kTJg98s0HfyGgpqdC6SeijQ4uy3dwi9efOfXk7q9gxXvoafo61HdiFs9pEt3Nbusy4hbT1
-        hH9wZJshZI6kvoop02euzfKTrCm+kFU8NvNWVmxqx7us6gPr+eWw1YzCfCTS4vZTqB5HCj
-        dFFL4hQ39Gyt2IiUpM+3QqV5+wBEcqceFz5bL0JMvqgypKiG4NA8en71090VcQ==
+        bh=MAxMuF84OJMFwj1mVQcHjPmQ7zTcHiYKK0tzuJi+A1g=;
+        b=NGiVHVMKQ89c2HqOfoJKJwMmDbG3+ohTltyLW1E7IzR22caosCulch2P490f0kWBtaRGbd
+        KP5bDXJydfUfFPuGaFqTJoEaiU4X8XdW6VuMYFTjcxawK5VKBkZp+P2ru5yzT2IChIeBl2
+        h9hafLvRBdvbqm0ZSRTQGkIVtuQFJzvxqKInsDdDPIe81yEn0wy1tWSjjQPQSDbV/6nhi7
+        2FxeM2e2LTe97EvaNLypD/daOhdNiUaZmnv+Q8j7qp8W8Z9S7NKJCWlmEyeQhv7w42HX9O
+        rLCLIWFywCAaqkpPlmTd+TFh4v4M0AjIXALAy3o2Gjit+veJaQMQ0+7mS/TAfg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696422927;
+        s=2020e; t=1696422928;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AXGP/cV38TkuwT0IRhJ9YYY7aFG2G6iSF6EqZ7aAS+o=;
-        b=GWXVBCrmoEVjjFNM0cucO6c5WGmhbmj1qsAX4zXMVXYQfZsTYVYDDA0RuF72hw13/S3+U5
-        UmBtuN00urfORyBw==
+        bh=MAxMuF84OJMFwj1mVQcHjPmQ7zTcHiYKK0tzuJi+A1g=;
+        b=gKxbWVn7euG7rhu4l9t6pbj4lH9l8lg3FF9JrO40qXbMHGCaS/OLkU6TC5pL3M6jikIBzB
+        /JJFsQ9FYtojaeBg==
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         John Stultz <jstultz@google.com>,
@@ -55,9 +55,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
         K Prateek Nayak <kprateek.nayak@amd.com>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v8 03/25] timer: Do not IPI for deferrable timers
-Date:   Wed,  4 Oct 2023 14:34:32 +0200
-Message-Id: <20231004123454.15691-4-anna-maria@linutronix.de>
+Subject: [PATCH v8 04/25] timer: Move store of next event into __next_timer_interrupt()
+Date:   Wed,  4 Oct 2023 14:34:33 +0200
+Message-Id: <20231004123454.15691-5-anna-maria@linutronix.de>
 In-Reply-To: <20231004123454.15691-1-anna-maria@linutronix.de>
 References: <20231004123454.15691-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
@@ -72,52 +72,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Deferrable timers do not prevent CPU from going idle and are not taken into
-account on idle path. Sending an IPI to a remote CPU when a new first
-deferrable timer was enqueued will wake up the remote CPU and but nothing
-will be done regarding the deferrable timers.
+Both call sites of __next_timer_interrupt() store return value directly in
+base->next_expiry. Move the store into __next_timer_interrupt() and to make
+its purpose more clear, rename function to next_expiry_recalc().
 
-Drop IPI completely when a new first deferrable timer was enqueued.
+No functional change.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 ---
-v8: Update comment
+v6: Fix typos in commit message and drop not required return as suggested
+    by Peter Zijlstra
 
-v6: new patch
+v4: rename function as suggested by Frederic Weisbecker
 ---
- kernel/time/timer.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ kernel/time/timer.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 63a8ce7177dd..7d06351aff54 100644
+index 7d06351aff54..5e17244a9465 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -571,18 +571,15 @@ static int calc_wheel_index(unsigned long expires, unsigned long clk,
- static void
- trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer)
+@@ -1800,8 +1800,10 @@ static int next_pending_bucket(struct timer_base *base, unsigned offset,
+ /*
+  * Search the first expiring timer in the various clock levels. Caller must
+  * hold base->lock.
++ *
++ * Store next expiry time in base->next_expiry.
+  */
+-static unsigned long __next_timer_interrupt(struct timer_base *base)
++static void next_expiry_recalc(struct timer_base *base)
  {
--	if (!is_timers_nohz_active())
--		return;
+ 	unsigned long clk, next, adj;
+ 	unsigned lvl, offset = 0;
+@@ -1867,10 +1869,9 @@ static unsigned long __next_timer_interrupt(struct timer_base *base)
+ 		clk += adj;
+ 	}
+ 
++	base->next_expiry = next;
+ 	base->next_expiry_recalc = false;
+ 	base->timers_pending = !(next == base->clk + NEXT_TIMER_MAX_DELTA);
 -
- 	/*
--	 * TODO: This wants some optimizing similar to the code below, but we
--	 * will do that when we switch from push to pull for deferrable timers.
-+	 * Deferrable timers do not prevent CPU from entering dynticks and are
-+	 * not taken into account on idle/nohz_full path. An IPI when a new
-+	 * deferrable timer is enqueued will wake up the remote CPU but nothing
-+	 * will be done with the deferrable timer base. Therefore skip remote
-+	 * IPI for deferrable timers completely.
- 	 */
--	if (timer->flags & TIMER_DEFERRABLE) {
--		if (tick_nohz_full_cpu(base->cpu))
--			wake_up_nohz_cpu(base->cpu);
-+	if (!is_timers_nohz_active() || timer->flags & TIMER_DEFERRABLE)
- 		return;
--	}
+-	return next;
+ }
+ 
+ #ifdef CONFIG_NO_HZ_COMMON
+@@ -1930,7 +1931,7 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+ 
+ 	raw_spin_lock(&base->lock);
+ 	if (base->next_expiry_recalc)
+-		base->next_expiry = __next_timer_interrupt(base);
++		next_expiry_recalc(base);
+ 	nextevt = base->next_expiry;
  
  	/*
- 	 * We might have to IPI the remote CPU if the base is idle and the
+@@ -2013,7 +2014,7 @@ static inline void __run_timers(struct timer_base *base)
+ 		WARN_ON_ONCE(!levels && !base->next_expiry_recalc
+ 			     && base->timers_pending);
+ 		base->clk++;
+-		base->next_expiry = __next_timer_interrupt(base);
++		next_expiry_recalc(base);
+ 
+ 		while (levels--)
+ 			expire_timers(base, heads + levels);
 -- 
 2.39.2
 
