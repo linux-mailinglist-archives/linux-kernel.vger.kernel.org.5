@@ -2,93 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0EC7B895E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBEF7B8994
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244170AbjJDSZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 14:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42364 "EHLO
+        id S244223AbjJDS1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 14:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244168AbjJDSZQ (ORCPT
+        with ESMTP id S244210AbjJDS1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 14:25:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A2C98
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 11:24:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696443865;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9SOmUjy4ewgil/vdpgmMKA0zu4u1oLN4xpKp5BP8Qhk=;
-        b=Mmc+/XH8AJn3mn7Sz4kbCtOibFQyPy9TUgw/i/fmhZfgubyeXMjxjRKyeNFAOEnBaf6V3+
-        FhbF3m3XzIsreKkzOGnpmXE3WQC9CKi/vsUUrIA/EmHsZlXGrMejLhhAKVDjgGBjt3pM8P
-        v5Db/tDUlVVxZZtDYLXGYswHbChA5Rg=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-336-WeAlo18QOtqYGyCsBPJvQw-1; Wed, 04 Oct 2023 14:24:23 -0400
-X-MC-Unique: WeAlo18QOtqYGyCsBPJvQw-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9b95fa56bd5so11453766b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 11:24:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696443862; x=1697048662;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9SOmUjy4ewgil/vdpgmMKA0zu4u1oLN4xpKp5BP8Qhk=;
-        b=n7oGu5wnitoidsnRX9N5fq7iuiPtOvl7ThSFamvL+M7y8jliUY/M5YORVWNiJlQUWT
-         0V+CQyU44B4j11II5anrpPpzaLzURE/L59cHXO09L1yZpMh4LnAGMOF9JPohIMY1XDmM
-         44HKgaEZuRrmY4XA4JrOXywwmDFx1MX9lilYxEOmCAzqKtIY8Y54pUFzRgal5dBHgbLt
-         Ov/sDV33DRXQr3tnYouoM9DuIr7AmuzfabVjUKpijWgNZoVeaP0K6+N7032w0NuWGmoj
-         3fGdZKguq2onL98qaZMGzQSdx4euhpwtj5F2LysUO8L/vFg3YXZsPn6eWjPdP7blXfDs
-         kf8g==
-X-Gm-Message-State: AOJu0YzJn7pvd0H6eQEha6gSd6EXuAIoiheWPUGIhNmijyhtXVEzFOyL
-        XUPcd3mAfAJwjPCBNQUX7UpQpH7t7gRQd6+jKkVbF4CQnUBgglacyOWRlb4k4RQ0/pA1DTGAU2S
-        qRviqoQwAYlv0mfWWDJ3/7lD5
-X-Received: by 2002:a17:907:75f4:b0:9ae:699d:8a2f with SMTP id jz20-20020a17090775f400b009ae699d8a2fmr2872321ejc.2.1696443862638;
-        Wed, 04 Oct 2023 11:24:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHaTGauzrgPDJoqH5o5zYkXK0yLuoPnRy4442MLPXXORZIQSn/BCnR2Wnhe+SJ2XqN1OnbK0g==
-X-Received: by 2002:a17:907:75f4:b0:9ae:699d:8a2f with SMTP id jz20-20020a17090775f400b009ae699d8a2fmr2872308ejc.2.1696443862329;
-        Wed, 04 Oct 2023 11:24:22 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id jw21-20020a17090776b500b009786c8249d6sm3256405ejc.175.2023.10.04.11.24.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 11:24:21 -0700 (PDT)
-Message-ID: <cdb528b1-b53f-bff6-fdf9-260ee4bd897a@redhat.com>
-Date:   Wed, 4 Oct 2023 20:24:20 +0200
+        Wed, 4 Oct 2023 14:27:21 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B859E;
+        Wed,  4 Oct 2023 11:27:17 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394FIvIT014490;
+        Wed, 4 Oct 2023 18:26:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=vqbA25hMjpAKtkqeGTcdfYSK6tT8rhjph3knYp4cOKM=;
+ b=hjp4FMY75Msxquy9esQx9UAkW68uKaAJZdrnYugNlQDoje16b+F/h4wZOaDfO6Vi644H
+ iTy9S1jzJSDEa2SaP1Owi6tzNSo/nRkiO5ShT924/UoVaUJVZcXQurZA4tc2ZklIsQsx
+ 8KnjjR1sIpGR9NCpBE7QGlNRRdCjB4KBmuQApWfUY8963EqcUlCDMDYMgf6mgBI0MR1G
+ jD3jhfu8T/BoCQpthn09iJ2P0VaVX4MV9Wm4P2TcOoh4PDL5w4ogbfkj1uUycFZ66Azu
+ yrIkSykrohCFGJAZ9uI1O9Gcdvwjrqcy5cyIazyltBbQvm9Tc0Qqjbyp255d2+upgwP+ vA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tea927t0k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 04 Oct 2023 18:26:49 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 394IPmYG000345;
+        Wed, 4 Oct 2023 18:26:48 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tea47w8pm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 04 Oct 2023 18:26:48 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y32Iu7kT8ubr17alExobMlfzhxGYBCxIrzY53KGJs/nzxbuhHvj+C2GZQAST+Xt6KqC7NldYBt9V7AMriu6F9FQ5Cwnz8VkdPRTM1zZ21ydSzfrRJYszgmSzN03BWf+lpGJd3+G62eLSHFHlPxHIz/vNnCq40R/5CAqE+3rXfzLW/a9N/ub4HBcCVobG5qxfqDHCFO31m/sm6/PhgEfdQnG7VOcb5ifKzKmh1v5mKRPXXzuNnnOb62vQM+OEPajI9lJS6cT+NsShf9d54H3t0fE9S5VhWUynvKbLFkug5gaTefTH8i1swAbwqraF8vNR1plxp3JWrhgv1BR/w+yDKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vqbA25hMjpAKtkqeGTcdfYSK6tT8rhjph3knYp4cOKM=;
+ b=nAF7k4SdAwM+ca164T5C98PDss1PVOVf9oOQHiyqTJ82BpkUem9+WRxvobZHDMsWVIU1AC4sMYSB1pU5o8cyj+z4grT6wIGEZLQxWmbJu3E9MVRqiCboXRRNV/EglmxAPwGLHAhdW238FdetCdr29vTdcDK4Hcw6oCi+vua4Dbu6J3gtphA7WWEX18DDaI1K06wDMeX98AwO+MGSqKUseBolfJGHOC2gouEUwlCdSIFIaXMbqQyZkW+SsGbx/QTmQfLvDuulL/OU01Lvug8NigrC0ZHe+wO7hzZE3qLsOOx5LPljIkrZDpOCB70FHRbjm1cALeFSAQBSuMWmfElXXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vqbA25hMjpAKtkqeGTcdfYSK6tT8rhjph3knYp4cOKM=;
+ b=IlDuh2B0E1r2TLddgEEU+evhxEPmWdEFQ1WMufLHKMsFH1ZmER4mWrbcXG4Ew4hlqrxeT1jpa6ZMdabeczbQOoQFUq/b0DEfu7wG0hS3jMZZCnC2B0brWnKaLiymLcqs/DPsLWd7AoQy+vokUqtWYt7oHgSdp7RnsNnvSSXgdo4=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by CY8PR10MB6537.namprd10.prod.outlook.com (2603:10b6:930:5b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Wed, 4 Oct
+ 2023 18:26:45 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::59f3:b30d:a592:36be]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::59f3:b30d:a592:36be%7]) with mapi id 15.20.6813.017; Wed, 4 Oct 2023
+ 18:26:45 +0000
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
+        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>
+Subject: Re: [PATCH 01/21] block: Add atomic write operations to
+ request_queue limits
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1o7heqmk0.fsf@ca-mkp.ca.oracle.com>
+References: <20230929102726.2985188-1-john.g.garry@oracle.com>
+        <20230929102726.2985188-2-john.g.garry@oracle.com>
+        <7f031c7a-1830-4331-86f9-4d5fbca94b8a@acm.org>
+        <yq1bkdfrt8l.fsf@ca-mkp.ca.oracle.com>
+        <776ff7e4-879f-4967-ba46-fd170804a9e0@acm.org>
+Date:   Wed, 04 Oct 2023 14:26:42 -0400
+In-Reply-To: <776ff7e4-879f-4967-ba46-fd170804a9e0@acm.org> (Bart Van Assche's
+        message of "Wed, 4 Oct 2023 10:28:10 -0700")
+Content-Type: text/plain
+X-ClientProxiedBy: PH8PR21CA0023.namprd21.prod.outlook.com
+ (2603:10b6:510:2ce::20) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate
- external/evicted objects
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith@gfxstrand.net
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230928191624.13703-1-dakr@redhat.com>
- <20230928191624.13703-5-dakr@redhat.com>
- <e4e68970-c7c9-55e2-9483-01252f38c956@linux.intel.com>
- <6b16ab6f-b1a2-efdb-04bf-5af4c3de381b@linux.intel.com>
- <6489f31f-8929-3e59-fbef-a22049cccbe3@redhat.com>
- <36233651a7675ab894134e41fc711fdcc71eefec.camel@linux.intel.com>
- <74d79ced-e811-bed9-6fb0-db694428c10f@redhat.com>
- <bbb235037b02336a8c69271d5ff97c69b2e8b597.camel@linux.intel.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <bbb235037b02336a8c69271d5ff97c69b2e8b597.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|CY8PR10MB6537:EE_
+X-MS-Office365-Filtering-Correlation-Id: cdf8bea6-bb50-4e29-cba8-08dbc50776de
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zD/Y9nGr7ip9UwgPmLDDh9/2YrzKm2U7EDXCRMohV8jY6LAzslJeT3XZ3j58YRmLLaIYQUnbPSRjB5i5pASxpBVEMokAby0hcQ3Z+S6E5zdghinpVRYoLAVca+9AQX5SapYYJUlco1HaLNoP24kPd19FvtM81qNuBbPgOv8ci1aMykzNFI7DDt2yJWcZqdBWlwypjbte0xNK9AnqIrFtXImNEb9Z2LKaEhrh8z+K1OiyKFXZCJ79Dtvn2AwrmpKVllnmjsDm06SN1oLhZQnPTQ/RPR7Qzc2c4Zv8ilwFfzLChSMYsPWWl/jH/sG+jXRBctaX0yWuwhsBNIiDotTy1NE9UXqTq5nzOGDMjxI/6UFIJk+BlMLiKU75rz53jODeQQR6uUtSZ2bXXyMga5bOk76tUZKz+6zLWJn8IU2EjiYGGSYf11E+GCRbDDxcGr6LJ4QmOosGkbA0rKzRC4FDgEZV7P0EVWa99NGV1Qo8nWCG4igD9Fx0igKFoX4qgrFRoNFSVco3Vn3GThsDkPNRSWizZv0sBBXOfp63ugER4vEk/6/8gsXO6D611vKvCCLi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(366004)(346002)(396003)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(8936002)(7416002)(4744005)(2906002)(5660300002)(316002)(107886003)(26005)(4326008)(66556008)(66899024)(8676002)(41300700001)(66946007)(66476007)(54906003)(6916009)(478600001)(6486002)(83380400001)(6666004)(36916002)(86362001)(38100700002)(6506007)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hy5Lwth7bIuDBhGBCyGHWCg3z1Hrxl+jE+1iyb+NOjcaYXWd8d0HIDEbwfJ4?=
+ =?us-ascii?Q?fnj0yXFSYQa/YqwMuCMim6V9P29Ne06zArTzx3qEoGi5wzspxdxSMvm43c9y?=
+ =?us-ascii?Q?7iU5Tm6AFNd9BIsz3ILub8zeSnRt7LXPXAplc0lzfxzFp2lgw3Y2kuthJsI0?=
+ =?us-ascii?Q?Gqerjp2/LL4XizpfeOuu5IGUdqYlbEt1nKrJuYjtaeoxEDoepsHxCXiJBEYk?=
+ =?us-ascii?Q?smO/Nt8GN+ifjbNeWnIvO1DxizN9PuV3gROb6RRMX/AR7Djo1auv4xvIWbZB?=
+ =?us-ascii?Q?v97XXc58OW9b4kjo0MArAJCUGI/irzmgDHEAznhJm9jYUtI9GootWMy7sIlL?=
+ =?us-ascii?Q?wAFkuZHrY+p0ScnBHXT8TnU0NdzTYSiC6nxjgq3goNjH1ONsIEl04+TIdhE/?=
+ =?us-ascii?Q?21Tp14ia5JhjWKan6woit4LDJbV062uPd6q20kfHcMJ3u/joD2NbfcbXqbZB?=
+ =?us-ascii?Q?j/RXpCy1Rg3W/WQejDbC6yi+UFlImG248qHAuKNCVJsvNdy/Y63pou7OMteR?=
+ =?us-ascii?Q?WL7lzR7h8eYvn4if6N6xgKWJ0NEme6N7zITYIulpitpMW+f4KU2hqayrYMEO?=
+ =?us-ascii?Q?sDJHCPnNDX789vrHCIxBx7yqoduXYyV+NTGoJ0w9MCseXdy//3RQ8QQjTpcr?=
+ =?us-ascii?Q?Wbf7M6JzxMNOwa/DHWQJ7j7tLacNGH4yY7bMJb/Wt/vwtalRam7Y3MarBI3T?=
+ =?us-ascii?Q?4/wnbeQ3uvEPZ54Wi/CFAz8lvQC8teoUyfd4fBDgcUoKbs3DWC+5M9vb34J9?=
+ =?us-ascii?Q?AaIddxNXenhuKWBCHGWxTVRcwLluXa8pxTS9ItVdJSIz6Xnax1BU9zGbX2wy?=
+ =?us-ascii?Q?C+Y2GlqgPwWr0blzPdT7bwISSU1f2lr8PQ+EvlQTamv755jbZBLIrYZEwELt?=
+ =?us-ascii?Q?yy6SbgIh2/0lOA0nwfvanhd72n4Lw6dn9EyQ7KIL1mi2FSWBCK/sTmI0lNBE?=
+ =?us-ascii?Q?vqYMp+qN4KI2KCbfmxGMKwmnnVmNVTkWh7W5e6+7n5Z++74Z1X0O60/eCp8/?=
+ =?us-ascii?Q?uFa0juujyclKoUcTqAHHtXdMOwN0E/uUG9ICFALLiZwQ+8uRTITvhD7TqP0W?=
+ =?us-ascii?Q?CLst3XbZom60aeJnNpSHrSV3IvkkSXwGb8csvmKYHnLHyhNUbCcYZbnJ4+Bc?=
+ =?us-ascii?Q?KslfXhmEIQJGYLB3s/UHLYEgGkSfKmLHR/h2nw9aYTAemvtzhkIY+2G0mZJp?=
+ =?us-ascii?Q?xAKLeif/NAgdRYd1Kpqvi1unRviMGZ64JlQu3pUjidhs2QYj4RQTFZJYy7sN?=
+ =?us-ascii?Q?HjxbpYc1vGieUltU71pKHfNzP7mv7JipIC03noszbtdmbqasEAxtmhVnNhwx?=
+ =?us-ascii?Q?esCHh29w0EkEypLcSp3h5NNzDjeCYqWt5YhegCE5cKjWeOsdZkzlWpejq1Pj?=
+ =?us-ascii?Q?0Ev6O1NvxbTUp/rjRIpNy/O5vuv9zjgx5TlTY/4GR87jDYi3NloEM2N+9QB3?=
+ =?us-ascii?Q?WyTvZVmd4+UcH2SNKdFraXx023HAkViOVkupSOwql3SMwBWdVqC45NkOod6Q?=
+ =?us-ascii?Q?qMXcmuwcq5kN7CSIinz5/EKvBXPev/L3xu6NxUUFcI40oQOmbFfdv9B7WSOb?=
+ =?us-ascii?Q?k3j9ayNIBmgtkrRiEhrfRVhen8r4w55onXlLeFOaoA+7hSMGzltjX8gZ+7AF?=
+ =?us-ascii?Q?ig=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?d51To0xB7rw2jdyhJiDTiubaU3mPPlLYLyFeEksD45NVUwhwtuz+8X87SkuC?=
+ =?us-ascii?Q?NUI+9aTEzsMgt4c6z/KSD9vJLriNAwOjRmEJIQSMJVh8HbnDoHQXgyKqacfq?=
+ =?us-ascii?Q?gV0JCMR/gg+kkGH2mjXd3x7qCSb/lu8WIRdZaKIJKzbDnsrIjQA9xP/rcrML?=
+ =?us-ascii?Q?QZxxfdYZCoNVc+fLcQMMzigiYGT5gmKNz0R8gKPi1ebN70XKVj/MEqVCswNa?=
+ =?us-ascii?Q?JA7TetXnlCGllkmyhkn3OQ1SNAZH0AmvUkMwn77pzaafep3ZqkNC51G9+gC5?=
+ =?us-ascii?Q?i5OascOUfb4KLOgwArMSowqNokh+BnVKGaaQICGUAtGF552M3e7y5Tf1guoq?=
+ =?us-ascii?Q?b4yCSBtVj3o3P9jMUsM/1+wJwotndhN42TyvN2Q+mRM6vbwxAJxGSbNhP1VF?=
+ =?us-ascii?Q?Y6oR6uZkc4qifum5ES/eCzloOv+zftiXoaguALlq3jBMuh8VeUi6B69vdmdF?=
+ =?us-ascii?Q?3VE03tGsM6A0NaeSfvdyludgjxfDSRWPvkyKq2d3F9+s5vaKfatkUf3DHM/f?=
+ =?us-ascii?Q?Uj6x14kOdPVRrGKBJuRBGcx5dJpEyv++IxMtRAO9r7SAqS9E9iXtWcfQcmKk?=
+ =?us-ascii?Q?RmLaCJM7iriBlXfh4ffsHy/Rfc9b72HYjRn3EoUpM1NrBNaMi0fusGtTl9np?=
+ =?us-ascii?Q?eFQ0WT6gd1U+nK2a1XNX5GhD8B45vtExy5vAqd5z9Oh3Aoinw2O+5+pafyk/?=
+ =?us-ascii?Q?Pn2oBlJRBgAvTpCLfunnpdxddk60OcXnBiWWbqIaKZ92A48WcNtQ8eTASOkJ?=
+ =?us-ascii?Q?18p22O8BpyZh+q+J2C9bJmaxuvVpy88zdDeqRyefbSOtg1CoKSbfwQMMKeUb?=
+ =?us-ascii?Q?j+y1Bn8KRHAKMWdXycPE2+3/OH9XVHWgJlFQbTBeMD5TcSSjrZ3yGAiGKd/v?=
+ =?us-ascii?Q?BZchXXN3rkex8+yYQbL2fr5ChS+CQ9A5avBwsxU0Yp2GkaSTGrvikNwir4I/?=
+ =?us-ascii?Q?NQ0d4hr3sBfMLKGEJlW8qh65LyCpUN2iQvmDSsMU8oNMsJPXHDvyMt6ng7Xv?=
+ =?us-ascii?Q?vacmg+T1SJUg8NsQgefbVr4YXkPohb2qWdQdiAHUAkfPfCymqAFB1QFJuq4v?=
+ =?us-ascii?Q?TjhefFwecAgL/SAizBZw2zX8ktYHoZSJpCVwb+w1ECN6kX+Jwhg=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cdf8bea6-bb50-4e29-cba8-08dbc50776de
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 18:26:45.7254
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rQIq0dlx/YW+8UxBgRjLRmp88obii82qOENJfcBH8UN091qSSfKDtIRlskpMj5D6dBSZCyMWNF9rNztEaDJvlnMdap+dgbWE0AR73fnuTvE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6537
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-04_10,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ adultscore=0 suspectscore=0 mlxlogscore=785 bulkscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310040134
+X-Proofpoint-GUID: HGRCpqJOJj2PMk0M3WMS0k-z6g0o2uYs
+X-Proofpoint-ORIG-GUID: HGRCpqJOJj2PMk0M3WMS0k-z6g0o2uYs
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -96,159 +179,20 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Bart,
 
-On 10/4/23 19:57, Thomas Hellström wrote:
-> On Wed, 2023-10-04 at 19:17 +0200, Danilo Krummrich wrote:
->> On 10/4/23 17:29, Thomas Hellström wrote:
->>>
->>> On Wed, 2023-10-04 at 14:57 +0200, Danilo Krummrich wrote:
->>>> On 10/3/23 11:11, Thomas Hellström wrote:
->>>>
->>>> <snip>
->>>>
->>>>>>> +
->>>>>>> +/**
->>>>>>> + * drm_gpuvm_bo_evict() - add / remove a &drm_gpuvm_bo to
->>>>>>> /
->>>>>>> from the &drm_gpuvms
->>>>>>> + * evicted list
->>>>>>> + * @vm_bo: the &drm_gpuvm_bo to add or remove
->>>>>>> + * @evict: indicates whether the object is evicted
->>>>>>> + *
->>>>>>> + * Adds a &drm_gpuvm_bo to or removes it from the
->>>>>>> &drm_gpuvms
->>>>>>> evicted list.
->>>>>>> + */
->>>>>>> +void
->>>>>>> +drm_gpuvm_bo_evict(struct drm_gpuvm_bo *vm_bo, bool evict)
->>>>>>> +{
->>>>>>> +    struct drm_gem_object *obj = vm_bo->obj;
->>>>>>> +
->>>>>>> +    dma_resv_assert_held(obj->resv);
->>>>>>> +
->>>>>>> +    /* Always lock list transactions, even if
->>>>>>> DRM_GPUVM_RESV_PROTECTED is
->>>>>>> +     * set. This is required to protect multiple
->>>>>>> concurrent
->>>>>>> calls to
->>>>>>> +     * drm_gpuvm_bo_evict() with BOs with different
->>>>>>> dma_resv.
->>>>>>> +     */
->>>>>>
->>>>>> This doesn't work. The RESV_PROTECTED case requires the
->>>>>> evicted
->>>>>> flag we discussed before. The list is either protected by the
->>>>>> spinlock or the resv. Otherwise a list add could race with a
->>>>>> list
->>>>>> removal elsewhere.
->>>>
->>>> I think it does unless I miss something, but it might be a bit
->>>> subtle
->>>> though.
->>>>
->>>> Concurrent drm_gpuvm_bo_evict() are protected by the spinlock.
->>>> Additionally, when
->>>> drm_gpuvm_bo_evict() is called we hold the dma-resv of the
->>>> corresponding GEM object.
->>>>
->>>> In drm_gpuvm_validate() I assert that we hold *all* dma-resv,
->>>> which
->>>> implies that no
->>>> one can call drm_gpuvm_bo_evict() on any of the VM's objects and
->>>> no
->>>> one can add a new
->>>> one and directly call drm_gpuvm_bo_evict() on it either.
->>>
->>> But translated into how the data (the list in this case) is
->>> protected
->>> it becomes
->>>
->>> "Either the spinlock and the bo resv of a single list item OR the
->>> bo
->>> resvs of all bos that can potentially be on the list",
->>>
->>> while this is certainly possible to assert, any new / future code
->>> that
->>> manipulates the evict list will probably get this wrong and as a
->>> result
->>> the code becomes pretty fragile. I think drm_gpuvm_bo_destroy()
->>> already
->>> gets it wrong in that it, while holding a single resv, doesn't take
->>> the
->>> spinlock.
->>
->> That's true and I don't like it either. Unfortunately, with the dma-
->> resv
->> locking scheme we can't really protect the evict list without the
->> drm_gpuvm_bo::evicted trick properly.
->>
->> But as pointed out in my other reply, I'm a bit worried about the
->> drm_gpuvm_bo::evicted trick being too restrictive, but maybe it's
->> fine
->> doing it in the RESV_PROTECTED case.
-> 
-> Ah, indeed. I misread that as discussing the current code rather than
-> the drm_gpuvm_bo::evicted trick. If validating only a subset, or a
-> range, then with the drm_gpuvm_bo::evicted trick would be valid only
-> for that subset.
-> 
-> But the current code would break because the condition of locking "the
-> resvs of all bos that can potentially be on the list" doesn't hold
-> anymore, and you'd get list corruption.
-> 
-> What *would* work, though, is the solution currently in xe, The
-> original evict list, and a staging evict list whose items are copied
-> over on validation. The staging evict list being protected by the
-> spinlock, the original evict list by the resv, and they'd use separate
-> list heads in the drm_gpuvm_bo, but that is yet another complication.
-> 
-> But I think if this becomes an issue, those VMs (perhaps OpenGL UMD
-> VMs) only wanting to validate a subset, would simply initially rely on
-> the current non-RESV solution. It looks like it's only a matter of
-> flipping the flag on a per-vm basis.
+> In my opinion there is a contradiction between the above reply and
+> patch 19/21 of this series. Data written with the SCSI WRITE ATOMIC
+> command is not guaranteed to survive a power failure.
 
-If such a driver locks a range it can also just validate all locked
-objects I guess.
+That is not the intent. The intent is to ensure that for any given
+application block (say 16KB), the application block on media will
+contain either 100% old data or 100% new data. Always.
 
-And for everything else, we still have the spinlock protected variant,
-where drivers can freely move things around by just taking the spinlock.
+If a storage device offers no such guarantee across a power failure,
+then it is not suitable for use by applications which do not tolerate
+torn writes. That is why the writes-are-atomic-unless-there's-a-problem
+variant of the values reports in NVMe are of no interest.
 
-I think I will go ahead and add drm_gpuvm_bo::evicted, plus the helpers
-I mentioned.
-
-> 
-> /Thomas
-> 
-> 
->>
->>>
->>> So I think that needs fixing, and if keeping that protection I
->>> think it
->>> needs to be documented with the list member and ideally an assert.
->>> But
->>> also note that lockdep_assert_held will typically give false true
->>> for
->>> dma_resv locks; as long as the first dma_resv lock locked in a
->>> drm_exec
->>> sequence  remains locked, lockdep thinks *all* dma_resv locks are
->>> held.
->>> (or something along those lines), so the resv lockdep asserts are
->>> currently pretty useless.
->>>
->>> /Thomas
->>>
->>>
->>>
->>>>
->>>>>>
->>>>>> Thanks,
->>>>>>
->>>>>> Thomas
->>>>>>
->>>>>>
->>>>>
->>>>
->>>
->>
-> 
-
+-- 
+Martin K. Petersen	Oracle Linux Engineering
