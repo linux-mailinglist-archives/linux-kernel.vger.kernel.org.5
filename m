@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 459997B769C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 04:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A2B7B769E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 04:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240809AbjJDC3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 22:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
+        id S240848AbjJDCdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 22:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbjJDC3C (ORCPT
+        with ESMTP id S229654AbjJDCdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 22:29:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CA4AD
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 19:28:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4F06C433C8;
-        Wed,  4 Oct 2023 02:28:58 +0000 (UTC)
-Date:   Tue, 3 Oct 2023 22:30:03 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Nicholas Lowell <nicholas.lowell@gmail.com>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Nicholas Lowell <nlowell@lexmark.com>
-Subject: Re: [PATCH v2] trace: tracing_event_filter: fast path when no
- subsystem filters
-Message-ID: <20231003223003.675bd888@gandalf.local.home>
-In-Reply-To: <20231002144149.1325-1-Nicholas.Lowell@gmail.com>
-References: <20231002144149.1325-1-Nicholas.Lowell@gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 3 Oct 2023 22:33:14 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D239AC;
+        Tue,  3 Oct 2023 19:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696386788;
+        bh=JzrQrv8Zf7NOIYh0RJOeFHtXquOahUcLeF1fcCrAuKE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=IlC0iaMwApXSV/qbqkr9p9cuRUdnBsGGTE3FnGL9pIW73l/TTeOzqfNbZBqQRXmZA
+         6HkmCfgdwWRm/wG/KtfsQNY53YvP06B4aDqdT8n5RJUNIfyqe52ciYrFaoFJu+Mjek
+         nnoucE5yGqlyDj0LGSsh2NTOiqxjuRJzXEWw9D50ylkqaBSH2GNyjzFAODrbvFIiez
+         fiCqkdXlOCNvCuLSkYtf7A2s1J15p49TTr8jkwY9yHXPnz029WmbJqurCOsMjaI/7L
+         IdsfcFC6pJA5suUb/XZQt4huuo3BjOgnDT80oqSKQSvHFmjafb++9BW3wfoSgufRNq
+         DOfO8DgMBDkzg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S0dyq4yTbz4xQT;
+        Wed,  4 Oct 2023 13:33:07 +1100 (AEDT)
+Date:   Wed, 4 Oct 2023 13:33:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Jianlin Li <ljianlin99@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the tip tree
+Message-ID: <20231004133306.3285d8de@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/7r=e_5vTFARqEtAR87ECHq/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  2 Oct 2023 10:41:48 -0400
-Nicholas Lowell <nicholas.lowell@gmail.com> wrote:
+--Sig_/7r=e_5vTFARqEtAR87ECHq/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> @@ -2411,7 +2418,12 @@ int apply_subsystem_event_filter(struct trace_subsystem_dir *dir,
->  	}
->  
->  	if (!strcmp(strstrip(filter_string), "0")) {
-> -		filter_free_subsystem_preds(dir, tr);
-> +		/* If nothing was freed, we do not need to sync */
-> +		if (!filter_free_subsystem_preds(dir, tr)) {
-> +			if(!(WARN_ON_ONCE(system->filter)))
-> +				goto out_unlock;
-> +		}
-> +
->  		remove_filter_string(system->filter);
->  		filter = system->filter;
->  		system->filter = NULL;
-> -- 
+Hi all,
 
-This is why I asked for the warning:
+The following commit is also in the jc_docs tree as a different commit
+(but the same patch):
 
-trace-cmd record -o /tmp/trace.dat -e sched -f "(common_pid == $$) || ((common_pid > 10) && common_pid < 100) || (common_pid >= 1000 && common_pid <= 1050) || (common_pid > 10000 && common_pid < 20000)" sleep 5
+  c53cbc54ccff ("x86/iommu/docs: Update AMD IOMMU specification document UR=
+L")
 
+This is commit
 
-Causes:
+  73c5f76ecbdb ("x86/iommu/docs: Update AMD IOMMU specification document UR=
+L")
 
-------------[ cut here ]------------
- WARNING: CPU: 5 PID: 944 at kernel/trace/trace_events_filter.c:2423 apply_subsystem_event_filter+0x18c/0x5e0
- Modules linked in:
- CPU: 5 PID: 944 Comm: trace-cmd Not tainted 6.6.0-rc4-test-00009-gff7cd7446fe5 #102
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
- RIP: 0010:apply_subsystem_event_filter+0x18c/0x5e0
- Code: 44 24 08 00 00 00 00 48 8b 6d 00 4c 39 f5 75 bc 48 8b 44 24 18 4c 8b 60 18 4c 89 e5 45 84 ff 75 14 48 85 ed 0f 84 37 ff ff ff <0f> 0b eb 10 e8 4b be fd ff eb b0 4d 85 e4 0f 84 a3 02 00 00 48 8b
- RSP: 0018:ffff9b4941607db8 EFLAGS: 00010286
- RAX: ffff8b2780a77280 RBX: ffff8b2780a77400 RCX: 0000000000000000
- RDX: 0000000000000000 RSI: ffff8b2781c11c38 RDI: ffff8b2781c11c38
- RBP: ffff8b28df449030 R08: ffff8b2781c11c38 R09: 0000000000000000
- R10: ffff8b2781c11c38 R11: 0000000000000000 R12: ffff8b28df449030
- R13: ffffffffaaf64de0 R14: ffffffffaaf66bb8 R15: 0000000000000000
- FS:  00007fd221def3c0(0000) GS:ffff8b28f7d40000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 000056117c93e160 CR3: 000000010173a003 CR4: 0000000000170ee0
- Call Trace:
-  <TASK>
-  ? apply_subsystem_event_filter+0x18c/0x5e0
-  ? __warn+0x81/0x130
-  ? apply_subsystem_event_filter+0x18c/0x5e0
-  ? report_bug+0x191/0x1c0
-  ? handle_bug+0x3c/0x80
-  ? exc_invalid_op+0x17/0x70
-  ? asm_exc_invalid_op+0x1a/0x20
-  ? apply_subsystem_event_filter+0x18c/0x5e0
-  ? apply_subsystem_event_filter+0x5b/0x5e0
-  ? __check_object_size+0x25b/0x2c0
-  subsystem_filter_write+0x41/0x70
-  vfs_write+0xf2/0x440
-  ? kmem_cache_free+0x22/0x350
-  ksys_write+0x6f/0xf0
-  do_syscall_64+0x3f/0xc0
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
- RIP: 0033:0x7fd221ee7ae0
+in the jc_docs tree.
 
--- Steve
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/7r=e_5vTFARqEtAR87ECHq/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUczuIACgkQAVBC80lX
+0GycPggAo09fJ/GO1yCFcBwETCAYYZNdbHCeAYNpW5ybvUiHgxgnCvK9SglExbry
++iBHN7y27QWG26zzkB8uQpfrSYfw2nPyjSw9Z5F3523TStgEyNv0L9LcWajyx0aZ
+APwQ85uoHPxCMBkt/tP8GuUBvre4XZ9GRu9jhzH+ZwiRyJnjmkdOCzcJVDBK5Eps
+sipqtTeQL0gRfoEn1lIWWWvIQGhFtkCWjWtkpFKctkLNy6oYesUe0VpaAPRGrJXG
+ilhtxOLTFMg/6d9Am3vEr9HyNaA3cNtXqScN1zc4Z28ceRQ1kiFUatyOBS0JybsP
+rX1CVBAIdU8+tudG/tQbHgiYEznb/A==
+=TJa7
+-----END PGP SIGNATURE-----
+
+--Sig_/7r=e_5vTFARqEtAR87ECHq/--
