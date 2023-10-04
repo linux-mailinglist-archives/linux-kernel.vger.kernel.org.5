@@ -2,100 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4017B7DE8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E207B7DEB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242228AbjJDLNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 07:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40564 "EHLO
+        id S242217AbjJDLNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 07:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242232AbjJDLNF (ORCPT
+        with ESMTP id S233335AbjJDLNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 07:13:05 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C010BF;
-        Wed,  4 Oct 2023 04:12:59 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 394BCjxI021513;
-        Wed, 4 Oct 2023 06:12:45 -0500
+        Wed, 4 Oct 2023 07:13:54 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B71B0;
+        Wed,  4 Oct 2023 04:13:48 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 394BDgCc018714;
+        Wed, 4 Oct 2023 06:13:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696417965;
-        bh=AWm94OcSYQMiV0cbA4Ey3lwR6RIUb40JJctj6csgig0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Nx5VTWx7mEt2k1p0K5QV+0w4Lm42hQkR7WlCZtb1Rht/cQopqC+ckUWlHm+IsRFLD
-         zRrtrMeju4rVqrZPX9I1AjAYFXZlRZLsRPIOihvaUnafVbpO85KDWXFACH7YKm+ZJm
-         Y/dWvIT6Yn7WesgHpPRp13ggjTcp6eHZRiVbhUUY=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 394BCjux039939
+        s=ti-com-17Q1; t=1696418022;
+        bh=3uoyr+JW6VEuPEtXqA1Yqm1VcrYyfrhzgcubOT8isrU=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=w3XsiyKowWSjx81bGg9zl+c0yAoDfAE5vzs9gv22VvpCTgMP5AU+KWb5Y6+j/gef1
+         8J+9AKPp3dQ9L8Q9QtVhYP0nhTb2ZlrYoZXP2GxYHAXf2ZUCu6W0su9Nk3ACd8wQtN
+         yMu5uQs5Jto1VaF9FjGmD8z8naeH5qT1wD88WYtY=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 394BDgf8024666
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 4 Oct 2023 06:12:45 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 4 Oct 2023 06:13:42 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 4
- Oct 2023 06:12:44 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2023 06:13:42 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 4 Oct 2023 06:12:44 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 394BCiI9022785;
-        Wed, 4 Oct 2023 06:12:44 -0500
-From:   Nitin Yadav <n-yadav@ti.com>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <rogerq@ti.com>
-CC:     <kristo@kernel.org>, <robh+dt@kernel.org>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 3/3] arm64: defconfig: Enable GPMC NAND support
-Date:   Wed, 4 Oct 2023 16:42:38 +0530
-Message-ID: <20231004111238.3968984-4-n-yadav@ti.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231004111238.3968984-1-n-yadav@ti.com>
-References: <20231004111238.3968984-1-n-yadav@ti.com>
+ Frontend Transport; Wed, 4 Oct 2023 06:13:41 -0500
+Received: from [172.24.227.112] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 394BDbOp098083;
+        Wed, 4 Oct 2023 06:13:37 -0500
+Message-ID: <395f1670-d9cd-42ed-99f0-8d33bc6164e5@ti.com>
+Date:   Wed, 4 Oct 2023 16:43:36 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 3/5] arm64: dts: ti: k3-j784s4-main: Add DSS and
+ DP-bridge node
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>
+CC:     <vigneshr@ti.com>, <a-bhatia1@ti.com>, <afd@ti.com>,
+        <rogerq@kernel.org>, <s-vadapalli@ti.com>, <conor+dt@kernel.org>,
+        <r-ravikumar@ti.com>, <sabiya.d@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230927121157.278592-1-j-choudhary@ti.com>
+ <20230927121157.278592-4-j-choudhary@ti.com>
+ <20230927122437.4a76enao7xqyw7hp@retreat>
+From:   Jayesh Choudhary <j-choudhary@ti.com>
+In-Reply-To: <20230927122437.4a76enao7xqyw7hp@retreat>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        UPPERCASE_50_75,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable config required to support GPMC NAND on
-AM62x LP SK and AM64x SKEVM.
 
-Signed-off-by: Nitin Yadav <n-yadav@ti.com>
----
- arch/arm64/configs/defconfig | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 66bfbef73324..a2758ac73f87 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -270,6 +270,8 @@ CONFIG_MTD_DATAFLASH=y
- CONFIG_MTD_SST25L=y
- CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_DENALI_DT=y
-+CONFIG_MTD_NAND_OMAP2=m
-+CONFIG_MTD_NAND_OMAP_BCH=y
- CONFIG_MTD_NAND_MARVELL=y
- CONFIG_MTD_NAND_BRCMNAND=m
- CONFIG_MTD_NAND_FSL_IFC=y
-@@ -1357,6 +1359,7 @@ CONFIG_ARM_MEDIATEK_CCI_DEVFREQ=m
- CONFIG_EXTCON_PTN5150=m
- CONFIG_EXTCON_USB_GPIO=y
- CONFIG_EXTCON_USBC_CROS_EC=y
-+CONFIG_OMAP_GPMC=m
- CONFIG_RENESAS_RPCIF=m
- CONFIG_IIO=y
- CONFIG_EXYNOS_ADC=y
--- 
-2.25.1
+On 27/09/23 17:54, Nishanth Menon wrote:
+> On 17:41-20230927, Jayesh Choudhary wrote:
+>> From: Rahul T R <r-ravikumar@ti.com>
+>>
+>> Add DSS and DP-bridge node for J784S4 SoC. DSS IP in J784S4 is
+>> same as DSS IP in J721E, so same compatible is being used.
+>> The DP is Cadence MHDP8546.
+>>
+>> Signed-off-by: Rahul T R <r-ravikumar@ti.com>
+>> [j-choudhary@ti.com: move dss & mhdp node together in main, fix dss node]
+>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+>> Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+>> ---
+>>   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 61 ++++++++++++++++++++++
+>>   1 file changed, 61 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+>> index a0e4d8808693..5ae11b0d5d0a 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+>> @@ -1772,4 +1772,65 @@ c71_3: dsp@67800000 {
+>>   		firmware-name = "j784s4-c71_3-fw";
+>>   		status = "disabled";
+>>   	};
+>> +
+>> +	mhdp: bridge@a000000 {
+>> +		compatible = "ti,j721e-mhdp8546";
+>> +		reg = <0x0 0xa000000 0x0 0x30a00>,
+>> +		      <0x0 0x4f40000 0x0 0x20>;
+>> +		reg-names = "mhdptx", "j721e-intg";
+>> +		clocks = <&k3_clks 217 11>;
+>> +		interrupt-parent = <&gic500>;
+>> +		interrupts = <GIC_SPI 614 IRQ_TYPE_LEVEL_HIGH>;
+>> +		power-domains = <&k3_pds 217 TI_SCI_PD_EXCLUSIVE>;
+>> +		status = "disabled";
+> 
+> Document why disabled.
 
+Okay.
+
+> 
+>> +
+>> +		dp0_ports: ports {
+>> +		};
+> 
+> Document why empty node
+
+I will mention that the remote-endpoint are on the board so all the
+properties are defined there together. So keeping it empty here.
+
+Other way could be to add #address-cells and #size-cell here with port
+child-node. And its remote end point added in the board file. But node
+would still be incomplete here.
+
+Warm Regards,
+-Jayesh
+
+> 
+>> +	};
+>> +
+>> +	dss: dss@4a00000 {
+>> +		compatible = "ti,j721e-dss";
+>> +		reg = <0x00 0x04a00000 0x00 0x10000>, /* common_m */
+>> +		      <0x00 0x04a10000 0x00 0x10000>, /* common_s0*/
+>> +		      <0x00 0x04b00000 0x00 0x10000>, /* common_s1*/
+>> +		      <0x00 0x04b10000 0x00 0x10000>, /* common_s2*/
+>> +		      <0x00 0x04a20000 0x00 0x10000>, /* vidl1 */
+>> +		      <0x00 0x04a30000 0x00 0x10000>, /* vidl2 */
+>> +		      <0x00 0x04a50000 0x00 0x10000>, /* vid1 */
+>> +		      <0x00 0x04a60000 0x00 0x10000>, /* vid2 */
+>> +		      <0x00 0x04a70000 0x00 0x10000>, /* ovr1 */
+>> +		      <0x00 0x04a90000 0x00 0x10000>, /* ovr2 */
+>> +		      <0x00 0x04ab0000 0x00 0x10000>, /* ovr3 */
+>> +		      <0x00 0x04ad0000 0x00 0x10000>, /* ovr4 */
+>> +		      <0x00 0x04a80000 0x00 0x10000>, /* vp1 */
+>> +		      <0x00 0x04aa0000 0x00 0x10000>, /* vp1 */
+>> +		      <0x00 0x04ac0000 0x00 0x10000>, /* vp1 */
+>> +		      <0x00 0x04ae0000 0x00 0x10000>, /* vp4 */
+>> +		      <0x00 0x04af0000 0x00 0x10000>; /* wb */
+>> +		reg-names = "common_m", "common_s0",
+>> +			    "common_s1", "common_s2",
+>> +			    "vidl1", "vidl2","vid1","vid2",
+>> +			    "ovr1", "ovr2", "ovr3", "ovr4",
+>> +			    "vp1", "vp2", "vp3", "vp4",
+>> +			    "wb";
+>> +		clocks = <&k3_clks 218 0>,
+>> +			 <&k3_clks 218 2>,
+>> +			 <&k3_clks 218 5>,
+>> +			 <&k3_clks 218 14>,
+>> +			 <&k3_clks 218 18>;
+>> +		clock-names = "fck", "vp1", "vp2", "vp3", "vp4";
+>> +		power-domains = <&k3_pds 218 TI_SCI_PD_EXCLUSIVE>;
+>> +		interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>,
+>> +			     <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>,
+>> +			     <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
+>> +			     <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
+>> +		interrupt-names = "common_m",
+>> +				  "common_s0",
+>> +				  "common_s1",
+>> +				  "common_s2";
+>> +		status = "disabled";
+> 
+> Same
+> 
+>> +
+>> +		dss_ports: ports {
+> 
+> Same
+> 
+>> +		};
+>> +	};
+>>   };
+>> -- 
+>> 2.25.1
+>>
+> 
