@@ -2,123 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8BC7B825C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E7E7B826C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242863AbjJDOay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36916 "EHLO
+        id S242790AbjJDOew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242817AbjJDOax (ORCPT
+        with ESMTP id S233111AbjJDOeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:30:53 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C1DAB;
-        Wed,  4 Oct 2023 07:30:49 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id af79cd13be357-7740c8509c8so145239985a.3;
-        Wed, 04 Oct 2023 07:30:49 -0700 (PDT)
+        Wed, 4 Oct 2023 10:34:50 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66FC9C1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:34:45 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-406532c49dcso4962755e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 07:34:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696429848; x=1697034648; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=USpvcRz4CuNcVJmMxyqLmWIPNbgGu4nTDs11HK2klfU=;
-        b=SEf/VLBqQnI4WAdtIB4uIhO2hu9mbQLWzky8EsSYZWgccarTABDMukKPHqEMvYIF5s
-         tXJRCYEPdlvKcUv/EmzgCCd0hWbrZkrVZKQM0MSKzyd6yYiLL05kTGE3kacfkpGQH81C
-         FpGwpAsh3yCbjBZhzSDhM90JTzzUBzUd3AnmtB6TsaStnI2o8QwxkeAkS5wAzp+y98ZX
-         nOjkLjIM0189+YSCuDBFnXDR9fkznsZajH3hUluG0UjlelpiNRZnBwzsy3oHcKfpAwB/
-         7ED5SjMpHGJhLiGa5bNzG/lksXzMNTjmVF8urmNU0bD+lqkpZzsVe2LvCFvGGY05eN9N
-         DTwA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1696430084; x=1697034884; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CM1tzOwYIRfBowwMaDOZ0YTv6DSHjRM1ieV3JngoGb0=;
+        b=zEip87a0BH1j92Z/jps+EGC6DV3MxeNx5LtX4FBEpISjNNEYsJg4mbdQGHLOHSdLHy
+         xFbG7KASGIupi44Jia+cpHBuRqQsy5dzriC6VLao+g8Lc7CtUIEtnGyTp77u+dzSuozk
+         AfMZWpToKPycdJjYhyOwSvf5hNTXtpAMROuH20kp64XvBxRqL74v1Dyn9p7ONQbX1wxg
+         b+0COpHsMLnzJ2qWwnfmVWGnZIkRZyKLxzCxjdaF3X0zljQ57WdRkjDdrsDdycU1Pngu
+         9GfPuT6IdQ4ZaxUvtdogEsCm3eQPtgmPjSb8JTUhUZbho6HztewR37Ogt/4DXdjIyBlC
+         Us/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696429848; x=1697034648;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=USpvcRz4CuNcVJmMxyqLmWIPNbgGu4nTDs11HK2klfU=;
-        b=Lm6KWG7Yoinazt47jNVV1LLBm2i5d57/T1eTc0ZhnafcFDzdLiL//WjejtWeVwjFbD
-         GoiELmCAO7jXXI2wZgoYZcgqPUZNlbm/5NisXjQ4dn+PUB5mpwPyyip//tW4/nlk/8WP
-         pXfxT/gVn9dDnCkDhJl5h547cncXHOrLtV2iy+reHpd8YrFCi/tQdXZh+bminAS9rMo3
-         EVUlHGPb0uLfGhsA6ZQM3DKKUsiHr0SvQgSa/mft9X2K08GgivgCnt9CzaL97uVcdX/0
-         3UPkDr84QFbkrTESuyyxrrXaE8Xz/BYehgKd2bZW0cYSU1ILPB+amBa5CcK7Vs88Cz/V
-         5+Zg==
-X-Gm-Message-State: AOJu0YwBTrRkNrEhiL0mGHoeluzQIfQ3DKuxJ5jIaEuI64TyRKm/0xIH
-        CLAufhwBhXmZ25kK5vmTnDI=
-X-Google-Smtp-Source: AGHT+IG+XTAVPhruWrJjp9S2MwhU9i5fx+CZeW/QgGdPus3+L6MpEOclSxuLLlQBzjIQYaUWd44Yjw==
-X-Received: by 2002:a05:620a:4512:b0:774:9dc7:ce3d with SMTP id t18-20020a05620a451200b007749dc7ce3dmr3215444qkp.12.1696429848376;
-        Wed, 04 Oct 2023 07:30:48 -0700 (PDT)
-Received: from penguin ([205.220.129.20])
-        by smtp.gmail.com with ESMTPSA id m21-20020ae9e715000000b00767da9b6ae9sm1298527qka.11.2023.10.04.07.30.36
+        d=1e100.net; s=20230601; t=1696430084; x=1697034884;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CM1tzOwYIRfBowwMaDOZ0YTv6DSHjRM1ieV3JngoGb0=;
+        b=kmsL9voWoMP6qrIXRGzWvsUNEGbYWb2Qd/vlJR8SGw7gKeEAx4VyKQ2sujfXHBqalQ
+         WGoTV8M/SBEPvCd7Byny9TFgziK+uWtsm22+2WZwmW8yCfIAwxzqxLZ6/0efys8gaT1K
+         JA+prUxlzAxGo3Cn/K2opG7+1p9doZYaLY2WpZd49a/Dt/oI4GbnHEMS1xwBqRoENifA
+         SNJ1l2oR/ZjvlBm2ZIhnDMiKisSTlfLIN16ZvDwWlYVSKmDxvOIiQkShmc3wu7Oqd89F
+         hXimkZkj2UGiI1X+BYjWLq3GrPtYynGdot0HZfogFqUNlC5dLJJiNBiRFMloWTno9tlp
+         rHcQ==
+X-Gm-Message-State: AOJu0YxR1q/ViocVuZh19cmpVrP5SwpyyCzBEXhIyOdqKtQNXXFy8Lgc
+        pPk955lcBiFsFJPpFP+uyQ9MTg==
+X-Google-Smtp-Source: AGHT+IEcQotQCjgDXMBBO6ccwZ9igg2/BW1u3BEgiE/Ihu0ulcuIV203Up+Cur0jM4vJZJIKO6KgBA==
+X-Received: by 2002:a05:600c:5114:b0:405:4127:f471 with SMTP id o20-20020a05600c511400b004054127f471mr2532705wms.1.1696430083756;
+        Wed, 04 Oct 2023 07:34:43 -0700 (PDT)
+Received: from carbon-x1.. ([2a01:e0a:999:a3a0:9474:8d75:5115:42cb])
+        by smtp.gmail.com with ESMTPSA id t20-20020a1c7714000000b00401e32b25adsm1686205wmi.4.2023.10.04.07.34.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 07:30:47 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 07:30:21 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+0434ac83f907a1dbdd1e@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] Input: powermate - fix use-after-free in
- powermate_config_complete
-Message-ID: <ZR12/VYt0rNL1Lzd@penguin>
-References: <20230916-topic-powermate_use_after_free-v2-1-505f49019f2f@gmail.com>
+        Wed, 04 Oct 2023 07:34:43 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>
+Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org
+Subject: [PATCH 0/5] riscv: cleanup assembly usage of ENTRY()/END() and use local labels
+Date:   Wed,  4 Oct 2023 16:30:49 +0200
+Message-ID: <20231004143054.482091-1-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230916-topic-powermate_use_after_free-v2-1-505f49019f2f@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
+This series does a cleanup of all ENTRY()/END() macros that are used in
+arch/riscv/ as well as use of local labels. This allows to remove the
+use of the now deprecated ENTRY()/END()/WEAK() macros as well as using
+the new SYM_*() ones which provide a better understanding of what is
+meant to be annotated. Some wrong usage of SYM_FUNC_START() are also
+fixed in this series by using the correct annotations. Finally a few
+labels that were meant to be local have been renamed to use the .L
+suffix and thus not to be emitted as visible symbols.
 
-On Sun, Oct 01, 2023 at 05:35:54PM +0200, Javier Carrasco wrote:
-> syzbot has found a use-after-free bug [1] in the powermate driver. This
-> happens when the device is disconnected, which leads to a memory free
-> from the powermate_device struct.
-> When an asynchronous control message completes after the kfree and its
-> callback is invoked, the lock does not exist anymore and hence the bug.
-> 
-> Use usb_kill_urb() on pm->config to cancel any in-progress requests upon
-> device disconnection. Given that this action is already done on pm->irq,
-> reorder the code to have both calls after the call to
-> input_unregister_device(), which is the most common approach.
-> 
-> [1] https://syzkaller.appspot.com/bug?extid=0434ac83f907a1dbdd1e
-> 
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> Reported-by: syzbot+0434ac83f907a1dbdd1e@syzkaller.appspotmail.com
-> ---
-> Changes in v2:
-> - Use usb_kill_urb() on pm->config upon device disconnection.
-> - Link to v1: https://lore.kernel.org/r/20230916-topic-powermate_use_after_free-v1-1-2ffa46652869@gmail.com
-> ---
->  drivers/input/misc/powermate.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/misc/powermate.c b/drivers/input/misc/powermate.c
-> index c1c733a9cb89..c0aea75eb087 100644
-> --- a/drivers/input/misc/powermate.c
-> +++ b/drivers/input/misc/powermate.c
-> @@ -423,8 +423,9 @@ static void powermate_disconnect(struct usb_interface *intf)
->  	usb_set_intfdata(intf, NULL);
->  	if (pm) {
->  		pm->requires_update = 0;
-> -		usb_kill_urb(pm->irq);
+Note: the patches have been split between arch/riscv/ and
+arch/riscv/kvm/ due to having different maintainers.
 
-No, you do not want interrupts coming in while input device is being
-destroyed, this one needs to stay where it is.
+Clément Léger (5):
+  riscv: use ".L" local labels in assembly when applicable
+  riscv: Use SYM_*() assembly macros instead of deprecated ones
+  riscv: kernel: Use correct SYM_DATA_*() macro for data
+  riscv: kvm: Use SYM_*() assembly macros instead of deprecated ones
+  riscv: kvm: use ".L" local labels in assembly when applicable
 
->  		input_unregister_device(pm->input);
-> +		usb_kill_urb(pm->irq);
-> +		usb_kill_urb(pm->config);
->  		usb_free_urb(pm->irq);
->  		usb_free_urb(pm->config);
->  		powermate_free_buffers(interface_to_usbdev(intf), pm);
-
-Thanks.
+ arch/riscv/kernel/copy-unaligned.S            |  8 +--
+ arch/riscv/kernel/entry.S                     | 19 +++----
+ arch/riscv/kernel/fpu.S                       |  8 +--
+ arch/riscv/kernel/head.S                      | 30 +++++-----
+ arch/riscv/kernel/hibernate-asm.S             | 12 ++--
+ arch/riscv/kernel/mcount-dyn.S                | 20 +++----
+ arch/riscv/kernel/mcount.S                    | 18 +++---
+ arch/riscv/kernel/probes/rethook_trampoline.S |  4 +-
+ arch/riscv/kernel/suspend_entry.S             |  4 +-
+ arch/riscv/kernel/vdso/flush_icache.S         |  4 +-
+ arch/riscv/kernel/vdso/getcpu.S               |  4 +-
+ arch/riscv/kernel/vdso/rt_sigreturn.S         |  4 +-
+ arch/riscv/kernel/vdso/sys_hwprobe.S          |  4 +-
+ arch/riscv/kvm/vcpu_switch.S                  | 32 +++++------
+ arch/riscv/lib/memcpy.S                       |  6 +-
+ arch/riscv/lib/memmove.S                      | 56 +++++++++----------
+ arch/riscv/lib/memset.S                       |  6 +-
+ arch/riscv/lib/uaccess.S                      | 11 ++--
+ arch/riscv/purgatory/entry.S                  | 16 ++----
+ 19 files changed, 125 insertions(+), 141 deletions(-)
 
 -- 
-Dmitry
+2.42.0
+
