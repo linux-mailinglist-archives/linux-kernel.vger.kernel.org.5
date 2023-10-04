@@ -2,113 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA0D7B8391
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03A27B8395
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233482AbjJDP3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40832 "EHLO
+        id S233519AbjJDP37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233085AbjJDP3V (ORCPT
+        with ESMTP id S233473AbjJDP3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:29:21 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C254BD;
-        Wed,  4 Oct 2023 08:29:18 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77386822cfbso155807885a.0;
-        Wed, 04 Oct 2023 08:29:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696433357; x=1697038157; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1pp3fcQ7FJOqborLPqxKyTwdh4X5c9UMKg0BftM+5OM=;
-        b=D0cRnCZ6EAgPJJsIAD+Vrb8LGO2ZPCO+UiOdXvcAim2+sy4id9KYk/shwA4wqqB6fE
-         oy5WfigpF/YMsmlbg3X7RQGPqbF+xEvGfdllnxJUIqCQix5t0JIo5R1jyW8jq16xeEuP
-         Mpdq6KBDeVbBUCXoF5t7rVzWqijbBODpaCcBCmSf5KomrGVP0+cZLhhB5Ctfwfe8oeTi
-         n5uoLFzODcG2cjVP4zhO6Tn4URQC0S6Qc6NTZ/kfFduY1VbDHuZ6lBVztJR/GP5jd2Rc
-         B0uCqXAgX4jAP8AbI0gMdL8S2WR7i94wH3nknK0xS+wPik+b+qKpX4CRcEcsSJ7Y1VC6
-         6ZSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696433357; x=1697038157;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1pp3fcQ7FJOqborLPqxKyTwdh4X5c9UMKg0BftM+5OM=;
-        b=JOcI8GTrn1nIbimKr0brncOwBYSg1phdodruHKB0/a1Zp3P9rRTus+kpAKO9Tmsi0q
-         qnw07Q6akgZZLWCoQyZdM73ZuCMLfms2ssCBNWp0FZGlEQIygHqQ33VwOYGMpjl9Fsjq
-         eW6Vj0RVRc2kwgWP7dP+dS15mUXOuW6dieo1pfRNY88/OHkKPzDMWV4zEn4OW7rhB11+
-         BMrGRP+YR+Z59QaguIveb5ZReJxdibp3KpBDDhdyndEN2tHMqZ579A9rwMw5qzbtOZlH
-         X6oLIdKpG8pBogHqRNF8nWTNlknTL3tja8KzUkgWosjbKQT0rp8Hwyj999DPdkOzWm38
-         IuFQ==
-X-Gm-Message-State: AOJu0YzIV0qn07AIwhp/CGBK2bXeTehnXF+GEm2nVSNOlUssTfhPdscP
-        ivIQ1GpTD/QFY+LBudqVdZM=
-X-Google-Smtp-Source: AGHT+IErN77YwXwvT/7yy4wgBAH4cMWdYh0XlJUsosZnTUdal8Ue3ccamEsrM08lCtZNGjyn4NScDw==
-X-Received: by 2002:a05:6214:3019:b0:65b:150e:604b with SMTP id ke25-20020a056214301900b0065b150e604bmr2806646qvb.49.1696433357301;
-        Wed, 04 Oct 2023 08:29:17 -0700 (PDT)
-Received: from luigi.stachecki.net ([65.115.226.163])
-        by smtp.gmail.com with ESMTPSA id c12-20020a0cca0c000000b0065b21b232bfsm1389520qvk.138.2023.10.04.08.29.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 08:29:16 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 11:29:13 -0400
-From:   Tyler Stachecki <stachecki.tyler@gmail.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Leonardo Bras <leobras@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 0/5] KVM: x86: Fix breakage in KVM_SET_XSAVE's ABI
-Message-ID: <ZR2EyUULbRpXW8wK@luigi.stachecki.net>
-References: <20230928001956.924301-1-seanjc@google.com>
- <ZR0QOGo5DftkRWsr@redhat.com>
- <ZR1Yt6Z+dhMbn/FJ@luigi.stachecki.net>
- <ZR175enUCh3KkAU6@google.com>
+        Wed, 4 Oct 2023 11:29:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAF4BF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:29:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696433391; x=1727969391;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=NY9HB0zQGmhyY1YFpVA1//jEG21hilDIDTgq1LDfXtY=;
+  b=YH3itSaAbjwcb9gs4G0/TYfrH1H9Vi14ZzYdkXP/cnG9wxLzW/mRQLqT
+   hpExHu/a05KnYja7Bo5kpfYs3O16SB6iiMifwnbEmlK2rMaI2UZLFJnEa
+   a/aD2y85g/ojCvVkG3cfmidZ8gR7G4JaEbfJCemf6wk+rRhgcWdEi4Yep
+   hpfQvzv2S30gZbVi1+QXwnIeVt158DF1zZsUvOMnMF+TNHiEOz+S2cEgC
+   NRgG72igBBtumh3dBe1eUJKjG0+yZE7kDpt8gav14q/2l0B1zsXeUB9Y1
+   UreC5D1/wuVO/GZJEhE5K5KFY6/l622dIm7zQyk4dE1/ZldALLyICEUU5
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="449693834"
+X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
+   d="scan'208";a="449693834"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 08:29:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="751348760"
+X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
+   d="scan'208";a="751348760"
+Received: from binsumax-mobl.gar.corp.intel.com (HELO [10.249.254.31]) ([10.249.254.31])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 08:29:22 -0700
+Message-ID: <36233651a7675ab894134e41fc711fdcc71eefec.camel@linux.intel.com>
+Subject: Re: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate
+ external/evicted objects
+From:   Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith@gfxstrand.net
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 04 Oct 2023 17:29:20 +0200
+In-Reply-To: <6489f31f-8929-3e59-fbef-a22049cccbe3@redhat.com>
+References: <20230928191624.13703-1-dakr@redhat.com>
+         <20230928191624.13703-5-dakr@redhat.com>
+         <e4e68970-c7c9-55e2-9483-01252f38c956@linux.intel.com>
+         <6b16ab6f-b1a2-efdb-04bf-5af4c3de381b@linux.intel.com>
+         <6489f31f-8929-3e59-fbef-a22049cccbe3@redhat.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZR175enUCh3KkAU6@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 07:51:17AM -0700, Sean Christopherson wrote:
-> KVM's ABI has no formal notion of guest boot=>shutdown or live migration.  The
-> myriad KVM_GET_* APIs allow taking a snapshot of guest state, and the KVM_SET_*
-> APIs allow loading a snapshot of guest state.  Live migration is probably the most
-> common use of those APIs, but there are other use cases.
 
-I think the lightbulb just clicked, it is really this:
+On Wed, 2023-10-04 at 14:57 +0200, Danilo Krummrich wrote:
+> On 10/3/23 11:11, Thomas Hellstr=C3=B6m wrote:
+>=20
+> <snip>
+>=20
+> > > > +
+> > > > +/**
+> > > > + * drm_gpuvm_bo_evict() - add / remove a &drm_gpuvm_bo to /
+> > > > from the &drm_gpuvms
+> > > > + * evicted list
+> > > > + * @vm_bo: the &drm_gpuvm_bo to add or remove
+> > > > + * @evict: indicates whether the object is evicted
+> > > > + *
+> > > > + * Adds a &drm_gpuvm_bo to or removes it from the &drm_gpuvms
+> > > > evicted list.
+> > > > + */
+> > > > +void
+> > > > +drm_gpuvm_bo_evict(struct drm_gpuvm_bo *vm_bo, bool evict)
+> > > > +{
+> > > > +=C2=A0=C2=A0=C2=A0 struct drm_gem_object *obj =3D vm_bo->obj;
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0 dma_resv_assert_held(obj->resv);
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0 /* Always lock list transactions, even if
+> > > > DRM_GPUVM_RESV_PROTECTED is
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * set. This is required to protect multip=
+le concurrent
+> > > > calls to
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * drm_gpuvm_bo_evict() with BOs with diff=
+erent dma_resv.
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > >=20
+> > > This doesn't work. The RESV_PROTECTED case requires the evicted
+> > > flag we discussed before. The list is either protected by the
+> > > spinlock or the resv. Otherwise a list add could race with a list
+> > > removal elsewhere.
+>=20
+> I think it does unless I miss something, but it might be a bit subtle
+> though.
+>=20
+> Concurrent drm_gpuvm_bo_evict() are protected by the spinlock.
+> Additionally, when
+> drm_gpuvm_bo_evict() is called we hold the dma-resv of the
+> corresponding GEM object.
+>=20
+> In drm_gpuvm_validate() I assert that we hold *all* dma-resv, which
+> implies that no
+> one can call drm_gpuvm_bo_evict() on any of the VM's objects and no
+> one can add a new
+> one and directly call drm_gpuvm_bo_evict() on it either.
 
-> No, the VM will not have less features, because KVM_SET_XSAVE loads *data*, not
-> features [...]
+But translated into how the data (the list in this case) is protected
+it becomes
 
-I think I'm conflating the data vs. features aspect here and will have to
-revisit my understanding of the code...
+"Either the spinlock and the bo resv of a single list item OR the bo
+resvs of all bos that can potentially be on the list",
 
-> > Ultimately, this problem is not really fixable if said features cannot be
-> > removed.
+while this is certainly possible to assert, any new / future code that
+manipulates the evict list will probably get this wrong and as a result
+the code becomes pretty fragile. I think drm_gpuvm_bo_destroy() already
+gets it wrong in that it, while holding a single resv, doesn't take the
+spinlock.
 
-> It's not about removing features.  The change you're asking for is to have KVM
-> *silently* drop data.  Aside from the fact that such a change would break KVM's
-> ABI, silently ignoring data that userspace has explicitly requested be loaded for
-> a vCPU is incredibly dangerous.
+So I think that needs fixing, and if keeping that protection I think it
+needs to be documented with the list member and ideally an assert. But
+also note that lockdep_assert_held will typically give false true for
+dma_resv locks; as long as the first dma_resv lock locked in a drm_exec
+sequence  remains locked, lockdep thinks *all* dma_resv locks are held.
+(or something along those lines), so the resv lockdep asserts are
+currently pretty useless.=20
 
-Sorry if it came off that way - I fully understand and am resigned to the "you
-break it, you keep both halves" nature of what I had initially proposed and
-that it is not a generally tractable solution.
+/Thomas
 
-That being said, I genuinely appreciate your jump to action on this problem!
 
-Thanks,
-Tyler
+
+>=20
+> > >=20
+> > > Thanks,
+> > >=20
+> > > Thomas
+> > >=20
+> > >=20
+> >=20
+>=20
+
