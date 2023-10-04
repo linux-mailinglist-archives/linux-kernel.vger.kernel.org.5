@@ -2,187 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A41B7B8387
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FC17B83AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbjJDP1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
+        id S233609AbjJDPdo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 11:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbjJDP1B (ORCPT
+        with ESMTP id S233550AbjJDPdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:27:01 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6096CBF;
-        Wed,  4 Oct 2023 08:26:57 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50308217223so2768054e87.3;
-        Wed, 04 Oct 2023 08:26:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696433215; x=1697038015; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cta9CLZy1VMMKdLBc42UHAQN4kdrIXpyKwH2WLkXFL0=;
-        b=a6nyilVCTp5VdycTBGiEoSbLmgWLTHzaz9/kVNl2ehGFLb6G5HEpFlhmqQJw/ZtQub
-         OQa52C6Vmerm0kO3ukWMsDBwBQ9E4I4QnlnFe2MD28l4aj+kQkoQBi+Y77rAyiMD5exM
-         uRGR5iry/oNXqHG2WnD8pgOJZgvn6TtPN2hjHGE8j39/GCJCLxRPplmaqqnKDUO81fI9
-         Pmc4H4BWUNNxI1QOs002j8InnAV1xHA+0gDylvEvWR+hEwZpMPQKao0wD+pObV/EKHJ6
-         CNnREz8YIfR7vPWynILXTfA9v+ubS4vKzQjVcuv/XyPHiJ12jFBwgTj9v8NWpQzF8b1B
-         XxZQ==
+        Wed, 4 Oct 2023 11:33:43 -0400
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0A2293;
+        Wed,  4 Oct 2023 08:33:39 -0700 (PDT)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6c4e7951dc1so1568995a34.3;
+        Wed, 04 Oct 2023 08:33:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696433215; x=1697038015;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cta9CLZy1VMMKdLBc42UHAQN4kdrIXpyKwH2WLkXFL0=;
-        b=ArRgo+Y4E19LxjYwZnYu8SHB7UhKTGAyWj5Tv3spwpdN8oQ9YDPtZGHwoy9Xr0LGwx
-         MeaCJduSJa0oNGdJLBuaEP8oaO4N3neHOBH9DG5GWWaIQbjrDgUXZujrdIcouJpGbcQk
-         CPtEvDwirl4/gmqLbkK8qoVlZjRNM20RD6a4QO9yFLyXfClgnnJQit1KRkN/tvrLtQwB
-         /9JrTbceWb/kM5U7rPaVX0CqMmlW+2Xwr1o6GCFZHGW5jgRaAmLlx1hznm6B37HaNlwf
-         Vqw0tzYbwcAmecVNngMNy5EWmesQR8awV6TeYosbpRCBmzpeH4K7gRcpkfB/bLnprDbS
-         ab6A==
-X-Gm-Message-State: AOJu0Yy2wcuBNnQI1+umypZd2mqC3yTc7/WicjTrwdmtssnODI7eZku+
-        JsixrKKDuCk49PrsjsP6dsfUDbWQXp0=
-X-Google-Smtp-Source: AGHT+IETuvwwyeI7fnfuvC3wmx2fed+YSCpijOCkjWqVuXrir5duJCha9metvfqb3ug5AulP9z56Yg==
-X-Received: by 2002:ac2:58d8:0:b0:502:feeb:48b2 with SMTP id u24-20020ac258d8000000b00502feeb48b2mr1813831lfo.35.1696433215158;
-        Wed, 04 Oct 2023 08:26:55 -0700 (PDT)
-Received: from pc636 (host-95-193-108-88.mobileonline.telia.com. [95.193.108.88])
-        by smtp.gmail.com with ESMTPSA id n10-20020a19550a000000b00504211d2a7bsm636927lfe.297.2023.10.04.08.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 08:26:54 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 4 Oct 2023 17:26:52 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        RCU <rcu@vger.kernel.org>, quic_neeraju@quicinc.com,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v2 1/1] rcu: Reduce synchronize_rcu() waiting time
-Message-ID: <ZR2EPBHgidvTFjuU@pc636>
-References: <20231003180403.58576-1-urezki@gmail.com>
- <c22dfd1e-a0e5-4b86-8eac-e5a3d74d714e@paulmck-laptop>
+        d=1e100.net; s=20230601; t=1696433619; x=1697038419;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7+vH9ZjDJZ1+GqxJ7pOb8CHx+0pluQ1FP46Flmdef0g=;
+        b=n4fr1K42TUy8Q5nvd8XagEwOHTSPHcphWm00XmYm/rnF0vR4ljoir5ng1mnyXQFzC9
+         8an80Q/U55hXcQfBKm+DWwbx8YgW5wX266ynhUNPJ1J9U8HAv7Sq4w1ZZMNJPGYY1WU5
+         kBNztqVc+dRZt65tnISLiKIfwGXHAT3ndzLL0WVq5Y87i4uXmj4C5+ZmF2jCha781xtV
+         Ks5j92AyiUafoThVtHai1tL2xduW/7yhD+LPYe+pnKgoql70WKKhwv8BSyhS5P8sFBid
+         2hRtFqVt18uRBnWjJNtN03lNn1PMS6GwcnCqzMvUIZ5sljljxwMjUzratJpXBrpZDs/z
+         aTmA==
+X-Gm-Message-State: AOJu0Yx0UoY/DoNKJ8+3vDgiMeimfnu4vwQyc3CB3+5DvG68B2IT3zvK
+        DJsKk9a9becZwEX1Pn7KAc3IUfMSmIzRyg==
+X-Google-Smtp-Source: AGHT+IGikuA3DCiy97pWZ2LJok93ciQGyAH+B+/W4sGOxgHyiI56RSO1SjDUhmiTBYFqzSDygfTnFA==
+X-Received: by 2002:a9d:7e87:0:b0:6bc:b80c:bd53 with SMTP id m7-20020a9d7e87000000b006bcb80cbd53mr2401833otp.38.1696433618795;
+        Wed, 04 Oct 2023 08:33:38 -0700 (PDT)
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com. [209.85.160.51])
+        by smtp.gmail.com with ESMTPSA id i22-20020a056830011600b006b8a0c7e14asm483186otp.55.2023.10.04.08.33.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 08:33:38 -0700 (PDT)
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1dd7139aa57so1495978fac.1;
+        Wed, 04 Oct 2023 08:33:38 -0700 (PDT)
+X-Received: by 2002:a0d:d7cc:0:b0:584:4bbb:963b with SMTP id
+ z195-20020a0dd7cc000000b005844bbb963bmr2800485ywd.15.1696433239582; Wed, 04
+ Oct 2023 08:27:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c22dfd1e-a0e5-4b86-8eac-e5a3d74d714e@paulmck-laptop>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
+ <CAOCHtYhnx1EpBM+o3xhdsicx5uqLidojK3f0HQ+VfyVv1ZXnVQ@mail.gmail.com>
+ <CAOCHtYi5Ab5ppCmaQV3QuKQcpmJX+sHdAmtuEXhfq8xf5fFCYQ@mail.gmail.com>
+ <ZRuamJuShOnvP1pr@x1> <ZR1M3FcdXrDmIGu2@xhacker> <CA+V-a8ugwqkQxnX-wwWCHVtBBtG=aVv=MZTc53LbpxtFA=N1_A@mail.gmail.com>
+ <bc2b0b30-ab37-f336-c90e-eab570d393a2@arm.com> <ZR1xSw47Z1/SEIwz@xhacker>
+In-Reply-To: <ZR1xSw47Z1/SEIwz@xhacker>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 4 Oct 2023 17:27:06 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXt9+XuUEF2j=osAVFFaPkYF4UntPdcqYydu8QzyyuMfw@mail.gmail.com>
+Message-ID: <CAMuHMdXt9+XuUEF2j=osAVFFaPkYF4UntPdcqYydu8QzyyuMfw@mail.gmail.com>
+Subject: Re: [PATCH 0/6] RISC-V: Add eMMC support for TH1520 boards
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Drew Fustini <dfustini@baylibre.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor@kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
+        Icenowy Zheng <uwu@icenowy.me>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 08:24:35AM -0700, Paul E. McKenney wrote:
-> On Tue, Oct 03, 2023 at 08:04:03PM +0200, Uladzislau Rezki (Sony) wrote:
-> > A call to a synchronize_rcu() can be optimized from time point of
-> > view. Different workloads can be affected by this especially the
-> > ones which use this API in its time critical sections.
-> > 
-> > For example if CONFIG_RCU_NOCB_CPU is set, the wakeme_after_rcu()
-> > callback can be delayed and such delay depends on where in a nocb
-> > list it is located.
-> > 
-> > 1. On our Android devices i can easily trigger the scenario when
-> > it is a last in the list out of ~3600 callbacks:
-> > 
-> > <snip>
-> >   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-> > ...
-> >   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
-> >   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
-> > <snip>
-> > 
-> > 2. On our Android devices we use cpuset/cgroup to classify tasks
-> > and assign them into different cgroups. For example "backgrond"
-> > group which binds tasks only to little CPUs or "foreground" that
-> > binds to all CPUs, i.e. tasks can be migrated between groups.
-> > 
-> > See below an example of how "surfaceflinger" task is migrated.
-> > Initially it is located in the "system-background" cgroup which
-> > allows to run only on little cores. In order to speedup it up
-> > it can be temporary moved into "foreground" cgroup which allows
-> > to use big CPUs:
-> > 
-> > cgroup_attach_task():
-> >  -> cgroup_migrate_execute()
-> >    -> cpuset_can_attach()
-> >      -> percpu_down_write()
-> >        -> rcu_sync_enter()
-> >          -> synchronize_rcu()
-> >    -> now move tasks to the new cgroup.
-> >  -> cgroup_migrate_finish()
-> > 
-> > <snip>
-> >          rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
-> >     PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
-> >     PERFD-SERVER-1855    [000] d..1.  7030.530383: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
-> >    TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
-> > <snip>
-> > 
-> > from this example it is clear that "a moving time" also depends
-> > on how fast synchronize_rcu() completes.
-> > 
-> > 3. This patch improves the synchronize_rcu() approximately by 30%-50%
-> > on synthetic tests. Apart of that i have tested app launch of camera
-> > app where i also see better perf. figures:
-> > 
-> > 542 vs 489 diff: 9%
-> > 540 vs 466 diff: 13%
-> > 518 vs 468 diff: 9%
-> > 531 vs 457 diff: 13%
-> > 548 vs 475 diff: 13%
-> > 509 vs 484 diff: 4%
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  kernel/rcu/tree.c     | 151 +++++++++++++++++++++++++++++++++++++++++-
-> >  kernel/rcu/tree_exp.h |   2 +-
-> >  2 files changed, 151 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 78554e7181dd..a347c1f98f11 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -1384,6 +1384,122 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
-> >  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> >  }
-> >  
-> > +/*
-> > + * There are three lists for handling synchronize_rcu() users.
-> > + * A first list corresponds to new coming users, second for users
-> > + * which wait for a grace period and third is for which a grace
-> > + * period is passed.
-> > + */
-> > +static struct sr_normal_state {
-> > +	struct llist_head curr;	/* request a GP users. */
-> > +	struct llist_head wait;	/* wait for GP users. */
-> > +	struct llist_head done;	/* ready for GP users. */
-> > +	struct llist_node *curr_tail;
-> > +	struct llist_node *wait_tail;
-> > +	atomic_t active;
-> > +} sr;
-> > +
-> > +/* Enable it by default. */
-> > +static int rcu_normal_wake_from_gp = 1;
-> > +module_param(rcu_normal_wake_from_gp, int, 0644);
-> 
-> Nice!
-> 
-> But could you please make this default to zero in order to avoid
-> surprising people for whom the old way works better?
-> 
-Yep, that i can do. If people prefer a slower version of it :)
+Hi Jisheng,
 
---
-Uladzislau Rezki
+On Wed, Oct 4, 2023 at 4:18 PM Jisheng Zhang <jszhang@kernel.org> wrote:
+> On Wed, Oct 04, 2023 at 02:49:56PM +0100, Robin Murphy wrote:
+> > On 04/10/2023 2:02 pm, Lad, Prabhakar wrote:
+> > > + CC linux-mm and Robin Murphy
+> > >
+> > > On Wed, Oct 4, 2023 at 12:42 PM Jisheng Zhang <jszhang@kernel.org> wrote:
+ > > >
+> > > > On Mon, Oct 02, 2023 at 09:37:44PM -0700, Drew Fustini wrote:
+> > > > > On Fri, Sep 22, 2023 at 05:48:21PM -0500, Robert Nelson wrote:
+> > > > > > On Fri, Sep 22, 2023 at 2:08 PM Robert Nelson <robertcnelson@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Thu, Sep 21, 2023 at 8:51 PM Drew Fustini <dfustini@baylibre.com> wrote:
+> > > > > > > >
+> > > > > > > > This series adds support for the eMMC on the BeagleV Ahead and the
+> > > > > > > > Sipeed LicheePi 4A. This allows the kernel to boot with the rootfs on
+> > > > > > > > eMMC.
+> > > > > > > >
+> > > > > > > > I tested on top of v6.6-rc2 with this config [1]. I was able to boot
+> > > > > > > > both the Ahead [2] and LPi4a [3] from eMMC. The following prerequisites
+> > > > > > > > are required:
+> > > > > > > >
+> > > > > > > >    [PATCH v2] riscv: dts: thead: set dma-noncoherent to soc bus [4]
+> > > > > > > >
+> > > > > > > > I pushed a branch [5] with this patch series and the above patch for
+> > > > > > > > those that find a git branch easier to test.
+> > > > > > > >
+> > > > > > > > Please note that only the MMC controller connected to the eMMC device
+> > > > > > > > is enabled in the device trees for these two boards. I did not yet
+> > > > > > > > attempt to configure and use the microSD card slot. My preference is to
+> > > > > > > > address that in a future patch series.
+> > > > > > > >
+> > > > > > > > References:
+> > > > > > > > [1] https://gist.github.com/pdp7/5fbdcf2a65eb1abdd3a29d519c19cdd2
+> > > > > > > > [2] https://gist.github.com/pdp7/91a801a5f8d1070c53509eda9800ad78
+> > > > > > > > [3] https://gist.github.com/pdp7/1445c3c991e88fd69c60165cef65726a
+> > > > > > > > [4] https://lore.kernel.org/linux-riscv/20230912072232.2455-1-jszhang@kernel.org/
+> > > > > > > > [5] https://github.com/pdp7/linux/tree/b4/th1520-mmc
+> > > > > > >
+> > > > > > > This patchset came out very nice!
+> > > > > > >
+> > > > > > > v6.6-rc2 with Last RFC v2:
+> > > > > > >
+> > > > > > > [    4.066630] mmc0: SDHCI controller on ffe7080000.mmc
+> > > > > > > [ffe7080000.mmc] using PIO
+> > > > > > >
+> > > > > > > debian@BeagleV:~$ sudo hdparm -tT /dev/mmcblk0
+> > > > > > >
+> > > > > > > /dev/mmcblk0:
+> > > > > > >   Timing cached reads:   1516 MB in  2.00 seconds = 758.09 MB/sec
+> > > > > > >   Timing buffered disk reads:  84 MB in  3.01 seconds =  27.94 MB/sec
+> > > > > > >
+> > > > > > > vs v6.6-rc2 with this patchset:
+> > > > > > >
+> > > > > > >   [    4.096837] mmc0: SDHCI controller on ffe7080000.mmc
+> > > > > > > [ffe7080000.mmc] using DMA
+> > > > > > >
+> > > > > > > debian@BeagleV:~$ sudo hdparm -tT /dev/mmcblk0
+> > > > > > >
+> > > > > > > /dev/mmcblk0:
+> > > > > > >   Timing cached reads:   1580 MB in  2.00 seconds = 790.97 MB/sec
+> > > > > > >   Timing buffered disk reads: 418 MB in  3.00 seconds = 139.11 MB/sec
+> > > > > >
+> > > > > > Drew pointed out on Slack, this was not quite right.. After more
+> > > > > > digging by Drew, CONFIG_DMA_GLOBAL_POOL is causing a DMA limitation
+> > > > > > with the multiplatform defconfig. so with,
+> > > > > >
+> > > > > > ./scripts/config --disable CONFIG_ARCH_R9A07G043
+> > > > > >
+> > > > > > (to remove CONFIG_DMA_GLOBAL_POOL)... another 2x in buffered reads..
+> > > > > >
+> > > > > > [    4.059242] mmc0: SDHCI controller on ffe7080000.mmc
+> > > > > > [ffe7080000.mmc] using ADMA 64-bit
+> > > > > >
+> > > > > > debian@BeagleV:~$ sudo hdparm -tT /dev/mmcblk0
+> > > > > >
+> > > > > > /dev/mmcblk0:
+> > > > > >   Timing cached reads:   1600 MB in  2.00 seconds = 800.93 MB/sec
+> > > > > >   Timing buffered disk reads: 892 MB in  3.00 seconds = 297.06 MB/sec
+> > > > >
+> > > > > It seems CONFIG_DMA_GLOBAL_POOL=y causes ADMA buffer alloc to fail [1]:
+> > > > >
+> > > > >    mmc0: Unable to allocate ADMA buffers - falling back to standard DMA
+> > > > >
+> > > > > Prabhakar's AX45MP non-coherent DMA support [2] series introduced the
+> > > > > selection of DMA_GLOBAL_POOL for ARCH_R9A07G043 and the riscv defconfig
+> > > > > selects ARCH_R9A07G043.
+> > > > >
+> > > > > Patch 5 in the series [3] states that:
+> > > > >
+> > > > >    With DMA_GLOBAL_POOL enabled all DMA allocations happen from this
+> > > > >    region and synchronization callbacks are implemented to synchronize
+> > > > >    when doing DMA transactions.
+> > > > >
+> > > > > This example of a "shared-dma-pool" node was given:
+> > > > >
+> > > > >          pma_resv0@58000000 {
+> > > > >              compatible = "shared-dma-pool";
+> > > > >              reg = <0x0 0x58000000 0x0 0x08000000>;
+> > > > >              no-map;
+> > > > >              linux,dma-default;
+> > > > >          };
+> > > > >
+> > > > > I've copied that to th1520-beaglev-ahead.dts. The address of 0x58000000
+> > > > > has no significance on th1520, but the existence of shared-dma-pool
+> > > > > seems to fix the problem. ADMA mode [4] is now working even though
+> > > > > CONFIG_DMA_GLOBAL_POOL=y.
+> > > >
+> > > > + Christoph, Lad
+> > > >
+> > > > IMHO, this is not TH1520 specific but a generic issue.
+> > > >
+> > > > I believe commit 484861e09f3e ("soc: renesas: Kconfig: Select the
+> > > > required configs for RZ/Five SoC") can cause regression on all
+> > > > non-dma-coherent riscv platforms with generic defconfig. This is
+> > > > a common issue. The logic here is: generic riscv defconfig selects
+> > > > ARCH_R9A07G043 which selects DMA_GLOBAL_POOL, which assumes all
+> > > > non-dma-coherent riscv platforms have a dma global pool, this assumption
+> > > > seems not correct. And I believe DMA_GLOBAL_POOL should not be
+> > > > selected by ARCH_SOCFAMILIY, instead, only ARCH under some specific
+> > > > conditions can select it globaly, for example NOMMU ARM and so on.
+> > > >
+> > > > Since this is a regression, what's proper fix? any suggestion is
+> > > > appreciated.
+> >
+> > I think the answer is to not select DMA_GLOBAL_POOL, since that is only
+> > designed for nommu cases where non-cacheable memory lives in a fixed place
+> > in the physical address map, and regular kernel pages can't be remapped. As
+> > far as I'm aware, RISCV_DMA_NONCOHERENT is the thing you want, such that
+> > DMA_DIRECT_REMAP can dynamically provide non-cacheable coherent buffers for
+> > non-hardware-coherent devices.
+>
+> Thank Robin!
+> AFAIK, ARCH_R9A07G043 needs the dma global pool to handle its CMO. So
+> it looks like ARCH_R9A07G043 can't be enabled in riscv generic
+> defconfig. And we also need a special solution to prevent random config
+> from selecting ARCH_R9A07G043 by chance for other platforms
+
+There will be a similar issue with e.g. Starlight, as ERRATA_STARFIVE_JH7100
+(not yet upstream, but in esmil/visionfive) also selects DMA_GLOBAL_POOL.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
