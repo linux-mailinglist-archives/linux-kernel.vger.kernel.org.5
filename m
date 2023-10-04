@@ -2,351 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9877B83FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FB37B83F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243154AbjJDPqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
+        id S233504AbjJDPpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233616AbjJDPqH (ORCPT
+        with ESMTP id S233600AbjJDPpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:46:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7A4C4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696434319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IxsazhYs2n/9MAXKA5npAthF91JV0rzqOS4I79VruDs=;
-        b=iLYBplWljKc6T7vwfaR+mYnfVY2/asCCHii8FOnee2DklDagB+/C9w7jZQQYZaJXnFov6t
-        VG7/A9jz3r7xkiZcFqa706FCgoJG/SpKzx5jnKiBA/noR6XcIckGpnA8ZHkPFe+sLTIQAZ
-        LMZa92001qNF+Ry6EUYnoei0EO686Io=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-607-rX-ASqATNnie8_eE9DeCwA-1; Wed, 04 Oct 2023 11:45:12 -0400
-X-MC-Unique: rX-ASqATNnie8_eE9DeCwA-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-65afcf18d05so24386816d6.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 08:45:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696434312; x=1697039112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IxsazhYs2n/9MAXKA5npAthF91JV0rzqOS4I79VruDs=;
-        b=cwNWve5Q7nSalzgOuqQ0ROAbF3yKPh2sjSSXy1hVa9wuxTA38voCjlq9g7g8/46BE4
-         DnTwiXBAztRxItkJurIsfXLUlQs9tqQgLxdtixpWVwRj8eCmIyNN9BYFCz+KxAlmzLVw
-         UsR+SCH906iJJe51RhLdvWfOeNGoD9DH478aNcdYCgDuiThZQL06O3aD1tTItCNCB9FT
-         yjXlZwZu+7k9I9HCq8g/sQx4RS6Zox0AnSI7cWf8EfOTIx/l77mJTgNaLuwvfoPfpSB3
-         7nTmmgfZRSYgwsLDbbBtF3kyRqViJZp2EejdpZWK7cIKwrl+Cc+1K9f7f+an6CMpkteq
-         0J4g==
-X-Gm-Message-State: AOJu0YyvZ479JEFAGK6kNU9AH9o+8xkazA4MWW6j8SQpSuxspkBucBm6
-        TdHraY+kuPs75fNExLlvC5wTqlgg467upe5XeBRa2PqEi34kfnXD0B9w6T6JQyFwxTPIYs8zjJU
-        809qvfJTrXfb8pYSix//YV/wz
-X-Received: by 2002:a0c:e20a:0:b0:65b:8a2:6b86 with SMTP id q10-20020a0ce20a000000b0065b08a26b86mr2448003qvl.59.1696434312459;
-        Wed, 04 Oct 2023 08:45:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF9JiqUasipY0BgL87SyW5GEOL9U/R/0xTXkbkmk6K2dh+lVGuHH2VfMxE94OR1d7VlhS5Teg==
-X-Received: by 2002:a0c:e20a:0:b0:65b:8a2:6b86 with SMTP id q10-20020a0ce20a000000b0065b08a26b86mr2447984qvl.59.1696434312046;
-        Wed, 04 Oct 2023 08:45:12 -0700 (PDT)
-Received: from sgarzare-redhat (host-82-57-51-114.retail.telecomitalia.it. [82.57.51.114])
-        by smtp.gmail.com with ESMTPSA id o3-20020a0ccb03000000b0064f4ac061b0sm1414263qvk.12.2023.10.04.08.45.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 08:45:11 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 17:45:06 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v2 11/12] test/vsock: MSG_ZEROCOPY support for
- vsock_perf
-Message-ID: <s5ofd3qomvc6dd7kyo675cyit6u4goehukoq5mkwa2hqsg3bzb@4v46dm7dpuye>
-References: <20230930210308.2394919-1-avkrasnov@salutedevices.com>
- <20230930210308.2394919-12-avkrasnov@salutedevices.com>
+        Wed, 4 Oct 2023 11:45:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF1ABF;
+        Wed,  4 Oct 2023 08:45:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696434312; x=1727970312;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=R3WnGCcHkT1lyLmM5v4NwuNwkg5B7PuvL34RS8utXYc=;
+  b=ffFJ1VyY30iJgxlT6itISvEMkhgihPIM4wW2ZOXqMmTc5wjdCA/gRERP
+   YkjiZWruDmm1ZkCynPE99SjaY1MkJu2rLc5QqbRqRv/X/NCT94IweMPXU
+   a5JwwC4n/6m3wYh20WjMK9L9rqKK/3n+znhJbtXaMkYIyvO9P71RRjZdM
+   8NgfOtHqx6zXy6rcXxRoskN/TOGLcJ0YrzouFcAK8qdttKAAU+MqWSCs1
+   IulwbNig9y0TtlKyFaUgB9EbojSGv4OorIyRXiNfwsP5KP/B+qgPQRjv8
+   Gji+TDwXfzq2r5QghyYHSRA4dAJydIVNljOcGn2y/KlDUpHLDQzEc4sP8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="382068935"
+X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
+   d="scan'208";a="382068935"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 08:45:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="745027765"
+X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
+   d="scan'208";a="745027765"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 04 Oct 2023 08:45:09 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>, dave.hansen@linux.intel.com,
+        tj@kernel.org, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        sohil.mehta@intel.com
+Cc:     zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+        zhanb@microsoft.com, anakrish@microsoft.com,
+        mikko.ylinen@linux.intel.com, yangjie@microsoft.com
+Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for CSS
+ events
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-2-haitao.huang@linux.intel.com>
+ <CVS5XFKKTTUZ.XRMYK1ADHSPG@suppilovahvero>
+ <op.2buytfetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <CVSVH3ARQBRC.1QUTEQE3YNN5T@qgv27q77ld-mac>
+ <CVSVJ8DYAME8.SMTH7VYG7ER@qgv27q77ld-mac>
+ <op.2bwqct0rwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <CVYBI76N4PTF.38BQ9KIBIOGEH@seitikki> <CVYBO2F1D1NC.1N7LNWPTDRG04@seitikki>
+Date:   Wed, 04 Oct 2023 10:45:08 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230930210308.2394919-12-avkrasnov@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2cardibgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CVYBO2F1D1NC.1N7LNWPTDRG04@seitikki>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 01, 2023 at 12:03:07AM +0300, Arseniy Krasnov wrote:
->To use this option pass '--zc' parameter:
+Hi Jarkko
 
---zerocopy would be better IMHO
-
+On Mon, 02 Oct 2023 17:55:14 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
+...
+>> > >> I noticed this one later:
+>> > >>
+>> > >> It would better to create a separate ops struct and declare the  
+>> instance
+>> > >> as const at minimum.
+>> > >>
+>> > >> Then there is no need for dynamic assigment of ops and all that is  
+>> in
+>> > >> rodata. This is improves both security and also allows static  
+>> analysis
+>> > >> bit better.
+>> > >>
+>> > >> Now you have to dynamically trace the struct instance, e.g. in  
+>> case of
+>> > >> a bug. If this one done, it would be already in the vmlinux.
+>> > >I.e. then in the driver you can have static const struct declaration
+>> > > with *all* pointers pre-assigned.
+>> > >
+>> > > Not sure if cgroups follows this or not but it is *objectively*
+>> > > better. Previous work is not always best possible work...
+>> > >
+>> >
+>> > IIUC, like vm_ops field in vma structs. Although function pointers in
+>> > vm_ops are assigned statically, but you still need dynamically assign
+>> > vm_ops for each instance of vma.
+>> >
+>> > So the code will look like this:
+>> >
+>> > if (parent_cg->res[i].misc_ops && parent_cg->res[i].misc_ops->alloc)
+>> > {
+>> > ...
+>> > }
+>> >
+>> > I don't see this is the pattern used in cgroups and no strong opinion
+>> > either way.
+>> >
+>> > TJ, do you have preference on this?
+>>
+>> I do have strong opinion on this. In the client side we want as much
+>> things declared statically as we can because it gives more tools for
+>> statical analysis.
+>>
+>> I don't want to see dynamic assignments in the SGX driver, when they
+>> are not actually needed, no matter things are done in cgroups.
 >
->./vsock_perf --zc --sender <cid> --port <port> --bytes <bytes to send>
+> I.e. I don't really even care what crazy things cgroups subsystem
+> might do or not do. It's not my problem.
 >
->With this option MSG_ZEROCOPY flag will be passed to the 'send()' call.
+> All I care is that we *do not* have any use for assigning those
+> pointers at run-time. So do whatever you want with cgroups side
+> as long as this is not the case.
 >
->Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->---
-> tools/testing/vsock/vsock_perf.c | 143 +++++++++++++++++++++++++++++--
-> 1 file changed, 134 insertions(+), 9 deletions(-)
->
->diff --git a/tools/testing/vsock/vsock_perf.c b/tools/testing/vsock/vsock_perf.c
->index a72520338f84..f0f183f3f9e8 100644
->--- a/tools/testing/vsock/vsock_perf.c
->+++ b/tools/testing/vsock/vsock_perf.c
->@@ -18,6 +18,8 @@
-> #include <poll.h>
-> #include <sys/socket.h>
-> #include <linux/vm_sockets.h>
->+#include <sys/mman.h>
->+#include <linux/errqueue.h>
->
-> #define DEFAULT_BUF_SIZE_BYTES	(128 * 1024)
-> #define DEFAULT_TO_SEND_BYTES	(64 * 1024)
->@@ -28,9 +30,18 @@
-> #define BYTES_PER_GB		(1024 * 1024 * 1024ULL)
-> #define NSEC_PER_SEC		(1000000000ULL)
->
->+#ifndef SOL_VSOCK
->+#define SOL_VSOCK	287
->+#endif
->+
->+#ifndef VSOCK_RECVERR
->+#define VSOCK_RECVERR	1
->+#endif
->+
-> static unsigned int port = DEFAULT_PORT;
-> static unsigned long buf_size_bytes = DEFAULT_BUF_SIZE_BYTES;
-> static unsigned long vsock_buf_bytes = DEFAULT_VSOCK_BUF_BYTES;
->+static bool zerocopy;
->
-> static void error(const char *s)
-> {
->@@ -247,15 +258,76 @@ static void run_receiver(unsigned long rcvlowat_bytes)
-> 	close(fd);
-> }
->
->+static void recv_completion(int fd)
->+{
->+	struct sock_extended_err *serr;
->+	char cmsg_data[128];
->+	struct cmsghdr *cm;
->+	struct msghdr msg = { 0 };
->+	ssize_t ret;
->+
->+	msg.msg_control = cmsg_data;
->+	msg.msg_controllen = sizeof(cmsg_data);
->+
->+	ret = recvmsg(fd, &msg, MSG_ERRQUEUE);
->+	if (ret) {
->+		fprintf(stderr, "recvmsg: failed to read err: %zi\n", ret);
->+		return;
->+	}
->+
->+	cm = CMSG_FIRSTHDR(&msg);
->+	if (!cm) {
->+		fprintf(stderr, "cmsg: no cmsg\n");
->+		return;
->+	}
->+
->+	if (cm->cmsg_level != SOL_VSOCK) {
->+		fprintf(stderr, "cmsg: unexpected 'cmsg_level'\n");
->+		return;
->+	}
->+
->+	if (cm->cmsg_type != VSOCK_RECVERR) {
->+		fprintf(stderr, "cmsg: unexpected 'cmsg_type'\n");
->+		return;
->+	}
->+
->+	serr = (void *)CMSG_DATA(cm);
->+	if (serr->ee_origin != SO_EE_ORIGIN_ZEROCOPY) {
->+		fprintf(stderr, "serr: wrong origin\n");
->+		return;
->+	}
->+
->+	if (serr->ee_errno) {
->+		fprintf(stderr, "serr: wrong error code\n");
->+		return;
->+	}
->+
->+	if (zerocopy && (serr->ee_code & SO_EE_CODE_ZEROCOPY_COPIED))
->+		fprintf(stderr, "warning: copy instead of zerocopy\n");
->+}
->+
->+static void enable_so_zerocopy(int fd)
->+{
->+	int val = 1;
->+
->+	if (setsockopt(fd, SOL_SOCKET, SO_ZEROCOPY, &val, sizeof(val)))
->+		error("setsockopt(SO_ZEROCOPY)");
->+}
-
-We use enable_so_zerocopy() in a single place, maybe we can put this
-code there.
-
-Anyway it seems we are copy & paste some codes from util, etc.
-
-Would make sense create a new header to use on both tests and perf?
 
 
->+
-> static void run_sender(int peer_cid, unsigned long to_send_bytes)
-> {
-> 	time_t tx_begin_ns;
-> 	time_t tx_total_ns;
-> 	size_t total_send;
->+	time_t time_in_send;
-> 	void *data;
-> 	int fd;
->
->-	printf("Run as sender\n");
->+	if (zerocopy)
->+		printf("Run as sender MSG_ZEROCOPY\n");
->+	else
->+		printf("Run as sender\n");
->+
-> 	printf("Connect to %i:%u\n", peer_cid, port);
-> 	printf("Send %lu bytes\n", to_send_bytes);
-> 	printf("TX buffer %lu bytes\n", buf_size_bytes);
->@@ -265,38 +337,82 @@ static void run_sender(int peer_cid, unsigned long to_send_bytes)
-> 	if (fd < 0)
-> 		exit(EXIT_FAILURE);
->
->-	data = malloc(buf_size_bytes);
->+	if (zerocopy) {
->+		enable_so_zerocopy(fd);
->
->-	if (!data) {
->-		fprintf(stderr, "'malloc()' failed\n");
->-		exit(EXIT_FAILURE);
->+		data = mmap(NULL, buf_size_bytes, PROT_READ | PROT_WRITE,
->+			    MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->+		if (data == MAP_FAILED) {
->+			perror("mmap");
->+			exit(EXIT_FAILURE);
->+		}
->+	} else {
->+		data = malloc(buf_size_bytes);
->+
->+		if (!data) {
->+			fprintf(stderr, "'malloc()' failed\n");
->+			exit(EXIT_FAILURE);
->+		}
-> 	}
->
-> 	memset(data, 0, buf_size_bytes);
-> 	total_send = 0;
->+	time_in_send = 0;
-> 	tx_begin_ns = current_nsec();
->
-> 	while (total_send < to_send_bytes) {
-> 		ssize_t sent;
->+		size_t rest_bytes;
->+		time_t before;
->
->-		sent = write(fd, data, buf_size_bytes);
->+		rest_bytes = to_send_bytes - total_send;
->+
->+		before = current_nsec();
->+		sent = send(fd, data, (rest_bytes > buf_size_bytes) ?
->+			    buf_size_bytes : rest_bytes,
->+			    zerocopy ? MSG_ZEROCOPY : 0);
->+		time_in_send += (current_nsec() - before);
->
-> 		if (sent <= 0)
-> 			error("write");
->
-> 		total_send += sent;
->+
->+		if (zerocopy) {
->+			struct pollfd fds = { 0 };
->+
->+			fds.fd = fd;
->+
->+			if (poll(&fds, 1, -1) < 0) {
->+				perror("poll");
->+				exit(EXIT_FAILURE);
->+			}
->+
->+			if (!(fds.revents & POLLERR)) {
->+				fprintf(stderr, "POLLERR expected\n");
->+				exit(EXIT_FAILURE);
->+			}
->+
->+			recv_completion(fd);
->+		}
-> 	}
->
-> 	tx_total_ns = current_nsec() - tx_begin_ns;
->
-> 	printf("total bytes sent: %zu\n", total_send);
-> 	printf("tx performance: %f Gbits/s\n",
->-	       get_gbps(total_send * 8, tx_total_ns));
->-	printf("total time in 'write()': %f sec\n",
->+	       get_gbps(total_send * 8, time_in_send));
->+	printf("total time in tx loop: %f sec\n",
-> 	       (float)tx_total_ns / NSEC_PER_SEC);
->+	printf("time in 'send()': %f sec\n",
->+	       (float)time_in_send / NSEC_PER_SEC);
->
-> 	close(fd);
->-	free(data);
->+
->+	if (zerocopy)
->+		munmap(data, buf_size_bytes);
->+	else
->+		free(data);
-> }
->
-> static const char optstring[] = "";
->@@ -336,6 +452,11 @@ static const struct option longopts[] = {
-> 		.has_arg = required_argument,
-> 		.val = 'R',
-> 	},
->+	{
->+		.name = "zc",
->+		.has_arg = no_argument,
->+		.val = 'Z',
->+	},
-> 	{},
-> };
->
->@@ -351,6 +472,7 @@ static void usage(void)
-> 	       "  --help			This message\n"
-> 	       "  --sender   <cid>		Sender mode (receiver default)\n"
-> 	       "                                <cid> of the receiver to connect to\n"
->+	       "  --zc				Enable zerocopy\n"
+So I will update to something like following. Let me know if that's  
+correct understanding.
+@tj, I'd appreciate for your input on whether this is acceptable from  
+cgroups side.
 
-Should we specify that this is used only in the sender?
+--- a/include/linux/misc_cgroup.h
++++ b/include/linux/misc_cgroup.h
+@@ -31,22 +31,26 @@ struct misc_cg;
 
-> 	       "  --port     <port>		Port (default %d)\n"
-> 	       "  --bytes    <bytes>KMG		Bytes to send (default %d)\n"
-> 	       "  --buf-size <bytes>KMG		Data buffer size (default %d). In sender mode\n"
->@@ -413,6 +535,9 @@ int main(int argc, char **argv)
-> 		case 'H': /* Help. */
-> 			usage();
-> 			break;
->+		case 'Z': /* Zerocopy. */
->+			zerocopy = true;
->+			break;
-> 		default:
-> 			usage();
-> 		}
->-- 
->2.25.1
->
+  #include <linux/cgroup.h>
 
++/* per resource callback ops */
++struct misc_operations_struct {
++       int (*alloc)(struct misc_cg *cg);
++       void (*free)(struct misc_cg *cg);
++       void (*max_write)(struct misc_cg *cg);
++};
+  /**
+   * struct misc_res: Per cgroup per misc type resource
+   * @max: Maximum limit on the resource.
+   * @usage: Current usage of the resource.
+   * @events: Number of times, the resource limit exceeded.
++ * @priv: resource specific data.
++ * @misc_ops: resource specific operations.
+   */
+  struct misc_res {
+         u64 max;
+         atomic64_t usage;
+         atomic64_t events;
+         void *priv;
+-
+-       /* per resource callback ops */
+-       int (*alloc)(struct misc_cg *cg);
+-       void (*free)(struct misc_cg *cg);
+-       void (*max_write)(struct misc_cg *cg);
++       const struct misc_operations_struct *misc_ops;
+  };
+
+...
+diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+index 4633b8629e63..500415087643 100644
+--- a/kernel/cgroup/misc.c
++++ b/kernel/cgroup/misc.c
+@@ -277,8 +277,8 @@ static ssize_t misc_cg_max_write(struct  
+kernfs_open_file *of, char *buf,
+
+         if (READ_ONCE(misc_res_capacity[type])) {
+                 WRITE_ONCE(cg->res[type].max, max);
+-               if (cg->res[type].max_write)
+-                       cg->res[type].max_write(cg);
++               if (cg->res[type].misc_ops &&  
+cg->res[type].misc_ops->max_write)
++                       cg->res[type].misc_ops->max_write(cg);
+
+[skip other similar changes in misc.c]
+
+And on SGX side, it'll be updated like this:
+
+--- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
++++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+@@ -376,6 +376,14 @@ static void sgx_epc_cgroup_max_write(struct misc_cg  
+*cg)
+         queue_work(sgx_epc_cg_wq, &rc.epc_cg->reclaim_work);
+  }
+
++static int sgx_epc_cgroup_alloc(struct misc_cg *cg);
++
++const struct misc_operations_struct sgx_epc_cgroup_ops = {
++        .alloc = sgx_epc_cgroup_alloc,
++        .free = sgx_epc_cgroup_free,
++        .max_write = sgx_epc_cgroup_max_write,
++};
++
+  static int sgx_epc_cgroup_alloc(struct misc_cg *cg)
+  {
+         struct sgx_epc_cgroup *epc_cg;
+@@ -386,12 +394,7 @@ static int sgx_epc_cgroup_alloc(struct misc_cg *cg)
+
+         sgx_lru_init(&epc_cg->lru);
+         INIT_WORK(&epc_cg->reclaim_work, sgx_epc_cgroup_reclaim_work_func);
+-       cg->res[MISC_CG_RES_SGX_EPC].alloc = sgx_epc_cgroup_alloc;
+-       cg->res[MISC_CG_RES_SGX_EPC].free = sgx_epc_cgroup_free;
+-       cg->res[MISC_CG_RES_SGX_EPC].max_write = sgx_epc_cgroup_max_write;
+-       cg->res[MISC_CG_RES_SGX_EPC].priv = epc_cg;
+-       epc_cg->cg = cg;
+-
++       cg->res[MISC_CG_RES_SGX_EPC].misc_ops = &sgx_epc_cgroup_ops;
+         return 0;
+  }
+
+
+Thanks again to all of you for feedback.
+
+Haitao
