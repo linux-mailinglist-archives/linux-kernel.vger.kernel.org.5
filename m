@@ -2,152 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57AAA7B865B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8217B85FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbjJDRWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 13:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
+        id S243534AbjJDQ7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243587AbjJDRFS (ORCPT
+        with ESMTP id S233437AbjJDQ7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 13:05:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA3BAD
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 10:05:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696439115; x=1727975115;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=BPrbOdjfDQnlu7PBBE6jMSOGqJlteSEMb7Ixz8XIRgc=;
-  b=FNXt+Yt0epE2UKq9LF2EgNLw+/iTBNTGj7cuGBogulwDRkRZIRugyVzE
-   Ufh2WK6CGyDLpOEDw2sGGcdGgAMDQfHrtNF9aTfDB/AHy6MKxDMvAPLVD
-   bUGi8k7MI6H7M4cOHZlOz1lyumf95FxF72n774a0RJK2cp3DYLtJLKhKm
-   x3aa7C3C57dGaJaSjHXZ6sM2WXhgQHU+PPxoWY7/f5ZztIMXlUalAa+v6
-   8Mco/x1BCO6qqiEqZjB3j+GHFmpCgwVuGBaNvwgRNDP5zIEJWj2s7fOMt
-   KQ8j9raMgFM7rZfYM26EcNxDKpO09Tcd0bfJH5Ii95aWRTMbTLGJBFVOY
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="383138204"
-X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
-   d="scan'208";a="383138204"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 10:03:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="755023978"
-X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
-   d="scan'208";a="755023978"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 10:03:55 -0700
-Date:   Wed, 4 Oct 2023 19:59:42 +0300 (EEST)
-From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-cc:     Alsa-devel <alsa-devel@alsa-project.org>,
-        Maarten Lankhorst <dev@lankhorst.se>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: Re: [PATCH v6 11/12] ASoC: SOF: Intel: Move binding to display driver
- outside of deferred probe
-In-Reply-To: <20231004145540.32321-12-maarten.lankhorst@linux.intel.com>
-Message-ID: <alpine.DEB.2.22.394.2310041953090.3390143@eliteleevi.tm.intel.com>
-References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com> <20231004145540.32321-12-maarten.lankhorst@linux.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+        Wed, 4 Oct 2023 12:59:52 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2053.outbound.protection.outlook.com [40.107.243.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEB8A7
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:59:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WK1ht/KeyVUSrFaSj680f6jo/n5SsnbZyD4FfMsIquZRyKQ/UsQXCH6JE0Yrn7zUgNMh+3q9llQ5Bg2ibUiVxcEUOPPdl6HG6PImNomkcZHHYL6sSlJGXKKhNZxDYFfXud6O3q4i39FGKE7N0kcXyciV4Zt2siQ/Mews1+0NIO/5QdLPOYEpJDhJMgGkpTaM5dnFeynjIH19pOyYcYx2YuRzWFj/0OVTBaJ8juqTuvAccOuPHGfGa5YChMZ3ypXIK6rqQArrMIvLmtliQNV7EB1x8UwUR/EepDMMj88XKjPrN6VQOuZTDatAz6nIBWdiVGzcdphZQvBZAzfGubDdLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kiu85Cg1dUpSq3ISZ8eSTdrDvZLpVAtG9jI30+T33NY=;
+ b=jUWJS+pvR7YVbyLWX6CLx4P5EIy0cgFnV1vSN2nBWj7GTdFyr/mNmfuxmvaCa2QsEmjVcBkbvkWFHv/sH4jG4EzZ2MTB4Kt8A1cqvsBFYjcNCr2EVAud4wfnSmvGV7LmlNLH57ySqLc1SaQfQR5+3HFl2x3Rcr5h5QUYJOyzAOAWwKkd6D/+iQPVmZDFyFfxcTLi9+9OvtcsN7pCZ02QtXFSMmCtymAyxXLh8eKYp5tbJ2P9xxQGZcSi1ArYSnUvTV/LHFPjgi24z8o/SM5j8UzhfKPvJGbJ3+9eZpmzU+AHDVXQTNmuCDIsaN15u8iSnZiZAWlujIHxhjioXcFoJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kiu85Cg1dUpSq3ISZ8eSTdrDvZLpVAtG9jI30+T33NY=;
+ b=FBFCz0KlmMW05ayVxT9f26sDlCsRLpJBcZuRQGl04atAF04ZE163jR9Jnt/Ywaga0Thnm5dEgzKfAgX+Eg/Rx3YvNYv9j58817lvPk9VL3WINTGwC7NNMOidvXIzMfWsdnEqHxCbhcAHnP57MveJBtVWa4EQP47i85OTdsLzWaw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
+ by PH7PR12MB7162.namprd12.prod.outlook.com (2603:10b6:510:201::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.35; Wed, 4 Oct
+ 2023 16:59:45 +0000
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::2e40:ffd7:e752:644f]) by BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::2e40:ffd7:e752:644f%6]) with mapi id 15.20.6838.033; Wed, 4 Oct 2023
+ 16:59:45 +0000
+Message-ID: <c0d6ea10-b648-4f44-8ce6-156aefe556f9@amd.com>
+Date:   Wed, 4 Oct 2023 12:59:43 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] drm/amdkfd: get doorbell's absolute offset based
+ on the db size
+Content-Language: en-US
+To:     Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
+        alexander.deucher@amd.com, shashank.sharma@amd.com,
+        Mukul.Joshi@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231004161652.3082-1-Arvind.Yadav@amd.com>
+ <20231004161652.3082-3-Arvind.Yadav@amd.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Organization: AMD Inc.
+In-Reply-To: <20231004161652.3082-3-Arvind.Yadav@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YQZPR01CA0072.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:88::26) To BN9PR12MB5115.namprd12.prod.outlook.com
+ (2603:10b6:408:118::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|PH7PR12MB7162:EE_
+X-MS-Office365-Filtering-Correlation-Id: bcd20be0-652c-42c9-dd1d-08dbc4fb4faf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yHRdyYULdlFtBc4PT4Vdy2pYSlPcOTwqe7rSvv/VjJTguaI3vdXsQ/afpQucPg/jHPTna/3j/OyhvV7mUlcU7nEPykuNgiNN+qTwVWL0YpB6+uUGMFfcMk0A9xDI3+t9pZsWqnP6zSCdOFVYCkhsv6wyrLWAymIOCO6GcUEUwGjEY4Vz5GZyzFd2BRQdMyKvsR8VE0FbKPZDkUcC7arv+lPq5q3eZOoCclFraQ/+O7ODdTaypfLK3AUf2OoYfJjtOaM5I6anWIg3c+XMdGSBartj6hDLLqRZrHZePrtYfwVgjiJeBg8jxdfSvQSz3ZdzXPIrYMDpgInIkHN+1UIvrdS5CDd/8mVq2INVPmVh53mihb6hgTlBmvnzHMdjK/3BMX/FwhlBT84wecN4coAXQMx5HRU+5kLQC17/8MYqDEd4xeyfXv1YdnRreK2gT9NScjIpUd5jMcYPZWdlnz0os2qwnB9cowTY8m84cHZHbiZ8P/45mOpaZNde2Tx5L8KHfp3svczr2QdLIJWJbBs8bsHaLJvbS8i7lnKgbMmHBx1rvolkalUiUM+1DzDSx7XPpdEZtASvxjn9Oo5NXnOWsHIo14fYxYOuLfbBdGYlagpq+03rgYEXAm3aPzeriiWNXE8dXMwMhcDNfyZcalONLQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(136003)(39860400002)(396003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(31686004)(6512007)(53546011)(6506007)(36916002)(478600001)(6486002)(38100700002)(86362001)(31696002)(2906002)(316002)(83380400001)(26005)(2616005)(36756003)(66556008)(66476007)(66946007)(44832011)(5660300002)(4326008)(8936002)(8676002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ems3cVVwQTBQcjVGemJhVm1ZQnRURERaTklYR3NoVnd5bDJJdURkd3dqTEVs?=
+ =?utf-8?B?aEtwUWFGMzcyMkdzVUl0dXVBOVY3Z1FDc1d1WXIyYk9pRGQ0V09UbzU0Q0Fm?=
+ =?utf-8?B?bWQ0UFlzNkF6QzRiZTNleFl4amcvd0lWZFh5RTFLVCtaZ2pHM3VyT3ltNGFw?=
+ =?utf-8?B?SjY0anZqMlhKbzdGcnpnUGNHOHQrc1hCOVhHTFBOWGFEWFkyK1ZaVktNU0g0?=
+ =?utf-8?B?MWxFL3pXSkJZbWFQODlqeHZmZFJ0VTlKemdvUlZnY1czVmRaVzlJNlR1R1JH?=
+ =?utf-8?B?aWNoQThDVGEzSzhEREtGa2FiaitCcWRhaVRkZEdGS2VYZ1BxSGs3c1luWm93?=
+ =?utf-8?B?UTdxdG5FK3Q1clBpWjNhdWNJWmMrZXNEMEtEVUdxREdLeFlMTFlvUnRwV1F4?=
+ =?utf-8?B?bGJFZ2xUQUNINUJvVXFMMkE4Q3Z4aFNsa3VJRk5UUmlmdzdjSEllb2tjOXVw?=
+ =?utf-8?B?blpFR3kwTFJ1NWpYcmZVdWhBdzRLRThweXd2UEZoUWp6dHpscml6dzNiM2hG?=
+ =?utf-8?B?WVpzNlhDUUR4ZGpCeXBnWTE2RjZrc1pzT3NMZ1JZa2l1QzlkUVZWQjVJdkdM?=
+ =?utf-8?B?QTNFbTBaK2F5a2NHK05vNjNrZ1Y2Vkx6c3UwVzNXRnVLVFBNOEFBV3VZZ2Ju?=
+ =?utf-8?B?MHFJeHJyY2kwaDdVaWIzbFhVZGxNbjIrT1I5R01YSHFXRjg4V1VzLzRPTTNi?=
+ =?utf-8?B?eTVRMUtJcTMzamVGVExSck9kOWsyM04xejhTOGFNNDRDUUxNcVVHS1BsejZl?=
+ =?utf-8?B?cXVBbEJVWVRVRytpUG9MeURQdTRIRkVTVmEycUM0MGJmSmtpQ3NENmtqakZl?=
+ =?utf-8?B?bnliV3dyUFVPMXpJTzlqTll4MHBPRU5sWUQwcUtQckRTYVh0Q3dCRDBWNEJv?=
+ =?utf-8?B?Si9CekFVa252NlcwRjFyYlhaMWltQlMyVzRvS29WaDE4dXBNM0g5V01BRlcw?=
+ =?utf-8?B?cjBlcmJKbFV0eW5qK3NNNFZNQWw4YzBMeEk5U2NiaG1QTHJVWEZYL3RLY1J4?=
+ =?utf-8?B?SDNIWXRLaGdaQTllbVVaOEhiTTBjcXErODZqeUpCSk1aQ2ZQb0dLRjZmUGJ0?=
+ =?utf-8?B?WG9XMzREbzRoUmMxSlhVUzBGY0srMmQ4MEVNaFpiZE1zbUQ2WEtjTVZyTFRw?=
+ =?utf-8?B?VTBGbXlTb3NtKzBBSmVTLzhCYVB6NTFQYjF2M0d1UzUzUWVuVHJwS0h5dHFH?=
+ =?utf-8?B?S0NqSlhzd0ROVkpnKzhraG5BNk53Ti9LNDA0VGlaK1BCa3FpVjh4bWtkdExn?=
+ =?utf-8?B?b240QjZtNzk3T0tOUmhKMVpaNkZmZlRVcG96cU5MRm1ZK3lSWlpnVTZvdzJO?=
+ =?utf-8?B?ZE03N3F4S2M4ckQ5Q2ZEUTkybVNzUWpnMS9hV1p6ZlNiVHNTeU1YUlJiZWs4?=
+ =?utf-8?B?aUROcmtIYXVIVzlHOFVFOElwZDRQdHBqd2RQY3RVT3R3aWx2dnJQL3BwOHZ0?=
+ =?utf-8?B?T1VOZlFZWHloL3czUjVtMUh2V1hxQnovcTdCOTdPVVBiTis5S2lIa1NMckF0?=
+ =?utf-8?B?aXlKQnI0SWczUGpiaGpDbWtseGo2K2RabWJUVWZKT2VwTTUyK1JocC9DZ2cw?=
+ =?utf-8?B?b3lra2dWVkhkZ2FxUUM0SFlBK284YVY5U01SNmJhUkxzczhFeHk0Y0kydnVL?=
+ =?utf-8?B?RTVTTTRtWkNNbG02akZtSXA1cExRMCsrL1krUmgrRGFKOC9rY0dBcmp2S0d2?=
+ =?utf-8?B?MWdqRlZpeVBWZzJUUWUreVZCQnRlekxlNU9EcFR4STcxTk9taGpzMkp1N2py?=
+ =?utf-8?B?c0p0QTZMMnhKOVJYb3RrVXF6QjRWcTQvajE5OEhnQUFiMU1GYlY5dWJ3VVY1?=
+ =?utf-8?B?T1FKK0pBdDJqNDVRbm9zWmxiaGxNYWVqdysxTHoybnJXajE2bjdvZVdEQng5?=
+ =?utf-8?B?WHBWYktqYmFHa05ybTAyVklBblNDQklFaHNUb1BhQ25uUmlsRVoxR2ZLTjVN?=
+ =?utf-8?B?K2xvVVNoZU1DcUNIUTR5b3h6NmNOTWRJdExPWEg0VG5KSkE2czRVWmVmcE9t?=
+ =?utf-8?B?S245Q1U1L1BscXBsbG5xckNtTnlUTmZmdFd2anVMVXdEMjN2eTVxMUk1LzBr?=
+ =?utf-8?B?Sm9RT25IZmNBc0FmY1JpZTJOZ3IrN1A3S1NMeTJPVDhuRjMwZnpxdDR4eWk3?=
+ =?utf-8?Q?lsv5F6mZMJIAZEwoY2nS7QpR9?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bcd20be0-652c-42c9-dd1d-08dbc4fb4faf
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 16:59:45.7620
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: z8BtvchYB00oFbq0/KGts+8tejq/QpvPvGlOVLnknwWnbvt0D8lRDZ6iDvlC1Oub89YQBtQ0NWPHk4SMbGFvdg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7162
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-I'm good with rest of the series, but one patch requires work.
+On 2023-10-04 12:16, Arvind Yadav wrote:
+> This patch is to align the absolute doorbell offset
+> based on the doorbell's size. So that doorbell offset
+> will be aligned for both 32 bit and 64 bit.
+>
+> v2:
+> - Addressed the review comment from Felix.
+> v3:
+> - Adding doorbell_size as parameter to get db absolute offset.
+>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
+> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
 
-On Wed, 4 Oct 2023, Maarten Lankhorst wrote:
+The final result looks good to me. But please squash the two patches 
+into one. The first patch on its own breaks the build, and that's 
+something we don't want to commit to the branch history as it makes 
+tracking regressions (e.g. with git bisect) very hard or impossible.
 
-> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-> the snd_hdac_i915_init into a workqueue.
-> 
-> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
-> probe function.
-> 
-> The previously added probe_early can be used for this,
-> and we also use the newly added remove_late for unbinding afterwards.
-[...]
-> --- a/sound/soc/sof/intel/hda-common-ops.c
-> +++ b/sound/soc/sof/intel/hda-common-ops.c
-> @@ -19,6 +19,7 @@ struct snd_sof_dsp_ops sof_hda_common_ops = {
->  	.probe_early	= hda_dsp_probe_early,
->  	.probe		= hda_dsp_probe,
->  	.remove		= hda_dsp_remove,
-> +	.remove_late	= hda_dsp_remove_late,
->  
->  	/* Register IO uses direct mmio */
->  
-> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-> index 86a2571488bc..4eb7f04b8ae1 100644
-> --- a/sound/soc/sof/intel/hda.c
-> +++ b/sound/soc/sof/intel/hda.c
-> @@ -1160,6 +1160,7 @@ int hda_dsp_probe_early(struct snd_sof_dev *sdev)
->  		return -ENOMEM;
->  	sdev->pdata->hw_pdata = hdev;
->  	hdev->desc = chip;
-> +	ret = hda_init(sdev);
->  
->  err:
->  	return ret;
+More nit-picks inline.
 
-I don't think this works. The hda_codec_i915_init() errors are ignored in 
-hda_init() so this never returns -EPROBE_DEFER.
 
-So something like this is needed on top (tested quickly on one SOF 
-machine and this blocks SOF load until i915 or xe driver is loaded):
+> ---
+>   .../gpu/drm/amd/amdkfd/kfd_device_queue_manager.c   |  6 +++++-
+>   drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c           | 13 +++++++++++--
+>   .../gpu/drm/amd/amdkfd/kfd_process_queue_manager.c  |  4 +++-
+>   3 files changed, 19 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+> index 0d3d538b64eb..690ff131fe4b 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+> @@ -346,6 +346,7 @@ static int allocate_doorbell(struct qcm_process_device *qpd,
+>   			     uint32_t const *restore_id)
+>   {
+>   	struct kfd_node *dev = qpd->dqm->dev;
+> +	uint32_t doorbell_size;
+>   
+>   	if (!KFD_IS_SOC15(dev)) {
+>   		/* On pre-SOC15 chips we need to use the queue ID to
+> @@ -405,9 +406,12 @@ static int allocate_doorbell(struct qcm_process_device *qpd,
+>   		}
+>   	}
+>   
+> +	doorbell_size = dev->kfd->device_info.doorbell_size;
+> +
+>   	q->properties.doorbell_off = amdgpu_doorbell_index_on_bar(dev->adev,
+>   								  qpd->proc_doorbells,
+> -								  q->doorbell_id);
+> +								  q->doorbell_id,
+> +								  doorbell_size);
 
---cut--
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 9025bfaf6a7e..8b17c82dcc89 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -863,13 +863,20 @@ static int hda_init(struct snd_sof_dev *sdev)
-        /* init i915 and HDMI codecs */
-        ret = hda_codec_i915_init(sdev);
-        if (ret < 0)
--               dev_warn(sdev->dev, "init of i915 and HDMI codec 
-failed\n");
-+               dev_warn(sdev->dev, "init of i915 and HDMI codec failed 
-(%d)\n", ret);
-+
-+       if (ret < 0 && ret != -ENODEV)
-+               goto out;
- 
-        /* get controller capabilities */
-        ret = hda_dsp_ctrl_get_caps(sdev);
-        if (ret < 0)
-                dev_err(sdev->dev, "error: get caps error\n");
- 
-+out:
-+       if (ret < 0)
-+               iounmap(sof_to_bus(sdev)->remap_addr);
-+
-        return ret;
- }
---cut--
+You don't need a local variable for doorbell size that's only used once. 
+Just pass dev->kfd->device_info.doorbell_size directly.
 
-Br, Kai
+
+>   	return 0;
+>   }
+>   
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c b/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
+> index 7b38537c7c99..59dd76c4b138 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
+> @@ -161,7 +161,10 @@ void __iomem *kfd_get_kernel_doorbell(struct kfd_dev *kfd,
+>   	if (inx >= KFD_MAX_NUM_OF_QUEUES_PER_PROCESS)
+>   		return NULL;
+>   
+> -	*doorbell_off = amdgpu_doorbell_index_on_bar(kfd->adev, kfd->doorbells, inx);
+> +	*doorbell_off = amdgpu_doorbell_index_on_bar(kfd->adev,
+> +						     kfd->doorbells,
+> +						     inx,
+> +						     kfd->device_info.doorbell_size);
+>   	inx *= 2;
+>   
+>   	pr_debug("Get kernel queue doorbell\n"
+> @@ -233,6 +236,7 @@ phys_addr_t kfd_get_process_doorbells(struct kfd_process_device *pdd)
+>   {
+>   	struct amdgpu_device *adev = pdd->dev->adev;
+>   	uint32_t first_db_index;
+> +	uint32_t doorbell_size;
+>   
+>   	if (!pdd->qpd.proc_doorbells) {
+>   		if (kfd_alloc_process_doorbells(pdd->dev->kfd, pdd))
+> @@ -240,7 +244,12 @@ phys_addr_t kfd_get_process_doorbells(struct kfd_process_device *pdd)
+>   			return 0;
+>   	}
+>   
+> -	first_db_index = amdgpu_doorbell_index_on_bar(adev, pdd->qpd.proc_doorbells, 0);
+> +	doorbell_size = pdd->dev->kfd->device_info.doorbell_size;
+> +
+> +	first_db_index = amdgpu_doorbell_index_on_bar(adev,
+> +						      pdd->qpd.proc_doorbells,
+> +						      0,
+> +						      doorbell_size);
+
+Same as above, no local variable needed.
+
+
+>   	return adev->doorbell.base + first_db_index * sizeof(uint32_t);
+>   }
+>   
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+> index adb5e4bdc0b2..010cd8e8e6a1 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+> @@ -375,9 +375,11 @@ int pqm_create_queue(struct process_queue_manager *pqm,
+>   		 * relative doorbell index = Absolute doorbell index -
+>   		 * absolute index of first doorbell in the page.
+>   		 */
+> +		uint32_t doorbell_size = pdd->dev->kfd->device_info.doorbell_size;
+>   		uint32_t first_db_index = amdgpu_doorbell_index_on_bar(pdd->dev->adev,
+>   								       pdd->qpd.proc_doorbells,
+> -								       0);
+> +								       0,
+> +								       doorbell_size);
+
+No local variable needed.
+
+Regards,
+   Felix
+
+
+>   
+>   		*p_doorbell_offset_in_process = (q->properties.doorbell_off
+>   						- first_db_index) * sizeof(uint32_t);
