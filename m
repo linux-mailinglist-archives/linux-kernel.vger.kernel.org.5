@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC147B7D56
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1367B7D52
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242143AbjJDKiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
+        id S242140AbjJDKiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233291AbjJDKiN (ORCPT
+        with ESMTP id S233073AbjJDKiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:38:13 -0400
+        Wed, 4 Oct 2023 06:38:12 -0400
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE93D9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801D7D3;
         Wed,  4 Oct 2023 03:38:02 -0700 (PDT)
 Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3949wih0012766;
-        Wed, 4 Oct 2023 12:37:30 +0200
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3949ec65012636;
+        Wed, 4 Oct 2023 12:37:31 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=RSHVUWQqiiSCGyaP5hbNR9En5S9BGwHfp0DZcgl56dY=; b=l6
-        ZXbqMCmL2mCsfyBSeXRXajNiiJD2jJsJnd4gZjDoX2DnblWPNhB0lT95zaTrT/65
-        G6tDWfQXCC98E40UKtYN8/Eov2ddCkt0c002hczDPuSLuvYOEYqm38f9VXr4eMwq
-        S198BKRc4hiVtRMWpHkaG9AQTNAy5F+TqSvJCFodTc4EZnX4PzMvvaxsQ0fbFEYr
-        W4fSfbGgK6jwW5hACdJ+CiW7kZL2ADE0cem4OYOmPivWe606SpeFybYBjtjRIIgM
-        RGg5W7ZJF95VqFsVdxzVj5ntBCjrjPW3U17jsd6p3PjyTS1ryfszhkDlWmlyML1g
-        csX3mC4cPltr1gLIVEcg==
+        selector1; bh=Nin6yR6sxTTdFKNnfhUwpU55NswOOHHtFfaeZu/3F68=; b=0n
+        9SGXEeW4ZYk7vPHSlur8JmGXRQlyeLAGuxu2UFA5ZLltuYvjSh/w3pI84t2oY0DL
+        idpVE73nXe6NQLPufdSbpwn/PSNCFbwGidq73jLO+mNELXrF8pKoPOclM1iPHlJG
+        5mXQrByNxC9TWdrO6KY3JaLnYhQFnyxGTsXYdTF1H5OVaZCe07UsB7rFUjn4Sw3C
+        VPVrPfc/dxaJXYI/wRbLK4Y15bcDtsSnhRWz6uAv8p+rdotDPG2iqjk1J3KH3ZzJ
+        xC/1rjGmGlkj9BIg1Ly4Aw1+YCcn19bV2zUfhqXLOdWNLNz1kYA0cvUtrtE6uhx6
+        4NuXl2YPBBHDxZYxwPSw==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3te93g0p0n-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3te93g0p0q-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 12:37:30 +0200 (MEST)
+        Wed, 04 Oct 2023 12:37:31 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 01E9810005C;
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E5F67100053;
         Wed,  4 Oct 2023 12:37:30 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id ED593231510;
-        Wed,  4 Oct 2023 12:37:29 +0200 (CEST)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DD1A7231510;
+        Wed,  4 Oct 2023 12:37:30 +0200 (CEST)
 Received: from localhost (10.201.20.120) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 4 Oct
- 2023 12:37:29 +0200
+ 2023 12:37:30 +0200
 From:   Hugues Fruchet <hugues.fruchet@foss.st.com>
 To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
         Philipp Zabel <p.zabel@pengutronix.de>,
@@ -69,9 +69,9 @@ To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
 CC:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
         Marco Felsch <m.felsch@pengutronix.de>,
         Adam Ford <aford173@gmail.com>
-Subject: [RFC 2/6] media: hantro: add VP8 encode support for Rockchip RK3399 VPU2
-Date:   Wed, 4 Oct 2023 12:37:16 +0200
-Message-ID: <20231004103720.3540436-3-hugues.fruchet@foss.st.com>
+Subject: [RFC 3/6] media: hantro: add h1 vp8 encode support
+Date:   Wed, 4 Oct 2023 12:37:17 +0200
+Message-ID: <20231004103720.3540436-4-hugues.fruchet@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231004103720.3540436-1-hugues.fruchet@foss.st.com>
 References: <20231004103720.3540436-1-hugues.fruchet@foss.st.com>
@@ -93,502 +93,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Fork Rockchip VPU2 codec driver to H1 codebase.
 
-A stateless VP8 encoder for rockchip vpu2 found e.g. in rk3399.
-
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
 ---
- drivers/media/platform/verisilicon/Makefile   |    2 +
- drivers/media/platform/verisilicon/hantro.h   |   10 +
- .../platform/verisilicon/hantro_boolenc.c     |   69 +
- .../platform/verisilicon/hantro_boolenc.h     |   21 +
- .../media/platform/verisilicon/hantro_drv.c   |   15 +-
- .../media/platform/verisilicon/hantro_hw.h    |   90 +
- .../media/platform/verisilicon/hantro_v4l2.c  |    5 +-
- .../media/platform/verisilicon/hantro_vp8.c   |  118 ++
- .../verisilicon/rockchip_vpu2_hw_vp8_enc.c    | 1574 +++++++++++++++++
- .../platform/verisilicon/rockchip_vpu2_regs.h |    1 +
- .../platform/verisilicon/rockchip_vpu_hw.c    |   23 +-
- 11 files changed, 1924 insertions(+), 4 deletions(-)
- create mode 100644 drivers/media/platform/verisilicon/hantro_boolenc.c
- create mode 100644 drivers/media/platform/verisilicon/hantro_boolenc.h
- create mode 100644 drivers/media/platform/verisilicon/rockchip_vpu2_hw_vp8_enc.c
+ drivers/media/platform/verisilicon/Makefile   |    1 +
+ .../platform/verisilicon/hantro_h1_regs.h     |   71 +-
+ .../platform/verisilicon/hantro_h1_vp8_enc.c  | 1578 +++++++++++++++++
+ .../media/platform/verisilicon/hantro_hw.h    |    3 +
+ 4 files changed, 1648 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 
 diff --git a/drivers/media/platform/verisilicon/Makefile b/drivers/media/platform/verisilicon/Makefile
-index 3bf43fdbedc1..fb5804e332ba 100644
+index fb5804e332ba..faa19644fecb 100644
 --- a/drivers/media/platform/verisilicon/Makefile
 +++ b/drivers/media/platform/verisilicon/Makefile
-@@ -6,6 +6,7 @@ hantro-vpu-y += \
- 		hantro_drv.o \
- 		hantro_v4l2.o \
+@@ -8,6 +8,7 @@ hantro-vpu-y += \
  		hantro_postproc.o \
-+		hantro_boolenc.o \
+ 		hantro_boolenc.o \
  		hantro_h1_jpeg_enc.o \
++		hantro_h1_vp8_enc.o \
  		hantro_g1.o \
  		hantro_g1_h264_dec.o \
-@@ -18,6 +19,7 @@ hantro-vpu-y += \
- 		rockchip_vpu2_hw_h264_dec.o \
- 		rockchip_vpu2_hw_mpeg2_dec.o \
- 		rockchip_vpu2_hw_vp8_dec.o \
-+		rockchip_vpu2_hw_vp8_enc.o \
- 		rockchip_vpu981_hw_av1_dec.o \
- 		rockchip_av1_filmgrain.o \
- 		rockchip_av1_entropymode.o \
-diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
-index 77aee9489516..a248734013db 100644
---- a/drivers/media/platform/verisilicon/hantro.h
-+++ b/drivers/media/platform/verisilicon/hantro.h
-@@ -32,6 +32,7 @@ struct hantro_codec_ops;
- struct hantro_postproc_ops;
+ 		hantro_g1_mpeg2_dec.o \
+diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
+index 30e7e7b920b5..5062ee1c87a2 100644
+--- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
++++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
+@@ -34,9 +34,12 @@
+ #define H1_REG_ADDR_IN_PLANE_2				0x034
+ #define H1_REG_ENC_CTRL					0x038
+ #define     H1_REG_ENC_CTRL_TIMEOUT_EN			BIT(31)
++#define     H1_REG_ENC_CTRL_MV_WRITE			BIT(30)
+ #define     H1_REG_ENC_CTRL_NAL_MODE_BIT		BIT(29)
+ #define     H1_REG_ENC_CTRL_WIDTH(w)			((w) << 19)
+ #define     H1_REG_ENC_CTRL_HEIGHT(h)			((h) << 10)
++#define     H1_REG_ENC_REC_WRITE_BUFFER_4MB		BIT(7)
++#define     H1_REG_ENC_REC_WRITE_DISABLE		BIT(6)
+ #define     H1_REG_ENC_PIC_INTER			(0x0 << 3)
+ #define     H1_REG_ENC_PIC_INTRA			(0x1 << 3)
+ #define     H1_REG_ENC_PIC_MVCINTER			(0x2 << 3)
+@@ -98,15 +101,52 @@
+ #define    H1_REG_QP_VAL_MIN(x)				((x) << 14)
+ #define    H1_REG_QP_VAL_CHECKPOINT_DISTAN(x)		((x))
+ #define H1_REG_VP8_QP_VAL(i)				(0x06c + ((i) * 0x4))
++#define H1_REG_VP8_SEG0_QUANT_DC_Y1			0x06c
++#define     H1_REG_VP8_SEG0_RND_DC_Y1(x)		(((x) & 0xff) << 23)
++#define     H1_REG_VP8_SEG0_ZBIN_DC_Y1(x)		(((x) & 0x1ff) << 14)
++#define     H1_REG_VP8_SEG0_QUT_DC_Y1(x)		(((x) & 0x3fff) << 0)
+ #define H1_REG_CHECKPOINT(i)				(0x070 + ((i) * 0x4))
+ #define     H1_REG_CHECKPOINT_CHECK0(x)			(((x) & 0xffff))
+ #define     H1_REG_CHECKPOINT_CHECK1(x)			(((x) & 0xffff) << 16)
+ #define     H1_REG_CHECKPOINT_RESULT(x)			((((x) >> (16 - 16 \
+ 							 * (i & 1))) & 0xffff) \
+ 							 * 32)
++#define H1_REG_VP8_SEG0_QUANT_AC_Y1			0x070
++#define     H1_REG_VP8_SEG0_RND_AC_Y1(x)		(((x) & 0xff) << 23)
++#define     H1_REG_VP8_SEG0_ZBIN_AC_Y1(x)		(((x) & 0x1ff) << 14)
++#define     H1_REG_VP8_SEG0_QUT_AC_Y1(x)		(((x) & 0x3fff) << 0)
++#define H1_REG_VP8_SEG0_QUANT_DC_Y2			0x074
++#define     H1_REG_VP8_SEG0_RND_DC_Y2(x)		(((x) & 0xff) << 23)
++#define     H1_REG_VP8_SEG0_ZBIN_DC_Y2(x)		(((x) & 0x1ff) << 14)
++#define     H1_REG_VP8_SEG0_QUT_DC_Y2(x)		(((x) & 0x3fff) << 0)
++#define H1_REG_VP8_SEG0_QUANT_AC_Y2			0x078
++#define     H1_REG_VP8_SEG0_RND_AC_Y2(x)		(((x) & 0xff) << 23)
++#define     H1_REG_VP8_SEG0_ZBIN_AC_Y2(x)		(((x) & 0x1ff) << 14)
++#define     H1_REG_VP8_SEG0_QUT_AC_Y2(x)		(((x) & 0x3fff) << 0)
++#define H1_REG_VP8_SEG0_QUANT_DC_CHR			0x07c
++#define     H1_REG_VP8_SEG0_RND_DC_CHR(x)		(((x) & 0xff) << 23)
++#define     H1_REG_VP8_SEG0_ZBIN_DC_CHR(x)		(((x) & 0x1ff) << 14)
++#define     H1_REG_VP8_SEG0_QUT_DC_CHR(x)		(((x) & 0x3fff) << 0)
++#define H1_REG_VP8_SEG0_QUANT_AC_CHR			0x080
++#define     H1_REG_VP8_SEG0_RND_AC_CHR(x)		(((x) & 0xff) << 23)
++#define     H1_REG_VP8_SEG0_ZBIN_AC_CHR(x)		(((x) & 0x1ff) << 14)
++#define     H1_REG_VP8_SEG0_QUT_AC_CHR(x)		(((x) & 0x3fff) << 0)
+ #define H1_REG_CHKPT_WORD_ERR(i)			(0x084 + ((i) * 0x4))
+ #define     H1_REG_CHKPT_WORD_ERR_CHK0(x)		(((x) & 0xffff))
+ #define     H1_REG_CHKPT_WORD_ERR_CHK1(x)		(((x) & 0xffff) << 16)
++#define H1_REG_VP8_SEG0_QUANT_DQUT			0x084
++#define     H1_REG_VP8_MV_REF_IDX1(x)			(((x) & 0x03) << 26)
++#define     H1_REG_VP8_SEG0_DQUT_DC_Y2(x)		(((x) & 0x1ff) << 17)
++#define     H1_REG_VP8_SEG0_DQUT_AC_Y1(x)		(((x) & 0x1ff) << 8)
++#define     H1_REG_VP8_SEG0_DQUT_DC_Y1(x)		(((x) & 0xff) << 0)
++#define H1_REG_VP8_SEG0_QUANT_DQUT_1			0x088
++#define     H1_REG_VP8_SEGMENT_MAP_UPDATE		BIT(30)
++#define     H1_REG_VP8_SEGMENT_EN			BIT(29)
++#define     H1_REG_VP8_MV_REF_IDX2_EN			BIT(28)
++#define     H1_REG_VP8_MV_REF_IDX2(x)			(((x) & 0x03) << 26)
++#define     H1_REG_VP8_SEG0_DQUT_AC_CHR(x)		(((x) & 0x1ff) << 17)
++#define     H1_REG_VP8_SEG0_DQUT_DC_CHR(x)		(((x) & 0xff) << 9)
++#define     H1_REG_VP8_SEG0_DQUT_AC_Y2(x)		(((x) & 0x1ff) << 0)
+ #define H1_REG_VP8_BOOL_ENC				0x08c
+ #define H1_REG_CHKPT_DELTA_QP				0x090
+ #define     H1_REG_CHKPT_DELTA_QP_CHK0(x)		(((x) & 0x0f) << 0)
+@@ -116,7 +156,13 @@
+ #define     H1_REG_CHKPT_DELTA_QP_CHK4(x)		(((x) & 0x0f) << 16)
+ #define     H1_REG_CHKPT_DELTA_QP_CHK5(x)		(((x) & 0x0f) << 20)
+ #define     H1_REG_CHKPT_DELTA_QP_CHK6(x)		(((x) & 0x0f) << 24)
+-#define H1_REG_VP8_CTRL0				0x090
++#define H1_REG_VP8_PENALTY_FILTER			0x090
++#define     H1_REG_VP8_ZERO_MV_PENALTY_FOR_REF2(x)	(((x) & 0xff) << 24)
++#define     H1_REG_VP8_FILTER_SHARPNESS(x)		(((x) & 0x07) << 21)
++#define     H1_REG_VP8_FILTER_LEVEL(x)		(((x) & 0x3f) << 15)
++#define     H1_REG_VP8_DCT_PARTITION_CNT(x)		(((x) & 0x03) << 13)
++#define     H1_REG_VP8_BOOL_ENC_VALUE_BITS(x)		(((x) & 0x1f) << 8)
++#define     H1_REG_VP8_BOOL_ENC_RANGE(x)		(((x) & 0xff) << 0)
+ #define H1_REG_RLC_CTRL					0x094
+ #define     H1_REG_RLC_CTRL_STR_OFFS_SHIFT		23
+ #define     H1_REG_RLC_CTRL_STR_OFFS_MASK		(0x3f << 23)
+@@ -138,9 +184,15 @@
+ #define H1_REG_ADDR_VP8_DCT_PART(i)			(0x0e8 + ((i) * 0x4))
+ #define H1_REG_FIRST_ROI_AREA				0x0f0
+ #define H1_REG_SECOND_ROI_AREA				0x0f4
+-#define H1_REG_MVC_CTRL					0x0f8
+-#define	H1_REG_MVC_CTRL_MV16X16_FAVOR(x)		((x) << 28)
+-#define H1_REG_VP8_INTRA_PENALTY(i)			(0x100 + ((i) * 0x4))
++#define H1_REG_QP_MV_MVC_CTRL				0x0f8
++#define     H1_REG_ZERO_MV_FAVOR_D2(x)			(((x) & 0xf) << 28)
++#define     H1_REG_PENALTY_4X4MV(x)			(((x) & 0x1ff) << 19)
++#define H1_REG_VP8_INTRA_16X16_PENALTY(i)		(0x100 + ((i) * 0x4))
++#define     H1_REG_VP8_INTRA_16X16_PENALTY_0(x)	(((x) & 0x3ff) << 0)
++#define     HI_REG_VP8_INTRA_16X16_PENALTY_1(x)	(((x) & 0x3ff) << 10)
++#define H1_REG_VP8_INTRA_4X4_PENALTY(i)			(0x108 + ((i) * 0x4))
++#define     H1_REG_VP8_INTRA_4X4_PENALTY_0(x)		(((x) & 0x3ff) << 0)
++#define     HI_REG_VP8_INTRA_4X4_PENALTY_1(x)		(((x) & 0x3ff) << 10)
+ #define H1_REG_ADDR_VP8_SEG_MAP				0x11c
+ #define H1_REG_VP8_SEG_QP(i)				(0x120 + ((i) * 0x4))
+ #define H1_REG_DMV_4P_1P_PENALTY(i)			(0x180 + ((i) * 0x4))
+@@ -149,6 +201,15 @@
+ #define     H1_REG_DMV_QPEL_PENALTY_BIT(x, i)		((x) << (i) * 8)
+ #define H1_REG_VP8_CTRL1				0x280
+ #define H1_REG_VP8_BIT_COST_GOLDEN			0x284
+-#define H1_REG_VP8_LOOP_FLT_DELTA(i)			(0x288 + ((i) * 0x4))
++#define H1_REG_VP8_LOOP_FILTER_REF_DELTA		0x288
++#define     H1_REG_VP8_LF_REF_DELTA_ALT_REF(x)		(((x) & 0x7f) << 21)
++#define     H1_REG_VP8_LF_REF_DELTA_GOLDEN(x)		(((x) & 0x7f) << 14)
++#define     H1_REG_VP8_LF_REF_DELTA_LAST_REF(x)		(((x) & 0x7f) << 7)
++#define     H1_REG_VP8_LF_REF_DELTA_INTRA_MB(x)		(((x) & 0x7f) << 0)
++#define H1_REG_VP8_LOOP_FILTER_MODE_DELTA		0x28c
++#define     H1_REG_VP8_LF_MODE_DELTA_SPLITMV(x)		(((x) & 0x7f) << 21)
++#define     H1_REG_VP8_LF_MODE_DELTA_NEWMV(x)		(((x) & 0x7f) << 14)
++#define     H1_REG_VP8_LF_MODE_DELTA_ZEROMV(x)		(((x) & 0x7f) << 7)
++#define     H1_REG_VP8_LF_MODE_DELTA_BPRED(x)		(((x) & 0x7f) << 0)
  
- #define HANTRO_JPEG_ENCODER	BIT(0)
-+#define HANTRO_VP8_ENCODER	BIT(1)
- #define HANTRO_ENCODERS		0x0000ffff
- #define HANTRO_MPEG2_DECODER	BIT(16)
- #define HANTRO_VP8_DECODER	BIT(17)
-@@ -113,6 +114,7 @@ struct hantro_variant {
-  * @HANTRO_MODE_HEVC_DEC: HEVC decoder.
-  * @HANTRO_MODE_VP9_DEC: VP9 decoder.
-  * @HANTRO_MODE_AV1_DEC: AV1 decoder
-+ * @HANTRO_MODE_VP8_ENC: VP8 encoder.
-  */
- enum hantro_codec_mode {
- 	HANTRO_MODE_NONE = -1,
-@@ -123,6 +125,7 @@ enum hantro_codec_mode {
- 	HANTRO_MODE_HEVC_DEC,
- 	HANTRO_MODE_VP9_DEC,
- 	HANTRO_MODE_AV1_DEC,
-+	HANTRO_MODE_VP8_ENC,
- };
- 
- /*
-@@ -273,6 +276,7 @@ struct hantro_ctx {
- 		struct hantro_hevc_dec_hw_ctx hevc_dec;
- 		struct hantro_vp9_dec_hw_ctx vp9_dec;
- 		struct hantro_av1_dec_hw_ctx av1_dec;
-+		struct hantro_vp8_enc_hw_ctx vp8_enc;
- 	};
- };
- 
-@@ -369,6 +373,12 @@ extern int hantro_debug;
- #define vpu_err(fmt, args...)					\
- 	pr_err("%s:%d: " fmt, __func__, __LINE__, ##args)
- 
-+static inline unsigned int hantro_rounded_luma_size(unsigned int w,
-+						    unsigned int h)
-+{
-+	return round_up(w, MB_DIM) * round_up(h, MB_DIM);
-+}
-+
- /* Structure access helpers. */
- static __always_inline struct hantro_ctx *fh_to_ctx(struct v4l2_fh *fh)
- {
-diff --git a/drivers/media/platform/verisilicon/hantro_boolenc.c b/drivers/media/platform/verisilicon/hantro_boolenc.c
+ #endif /* HANTRO_H1_REGS_H_ */
+diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 new file mode 100644
-index 000000000000..88a1c1c166fe
+index 000000000000..b7a635fb73b0
 --- /dev/null
-+++ b/drivers/media/platform/verisilicon/hantro_boolenc.c
-@@ -0,0 +1,69 @@
++++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
+@@ -0,0 +1,1578 @@
 +// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bug.h>
-+
-+#include "hantro_boolenc.h"
-+
-+void hantro_boolenc_init(struct hantro_boolenc *e, uint8_t *output)
-+{
-+	e->output = output;
-+	e->range = 255;
-+	e->bottom = 0;
-+	e->bit_count = 24;
-+	e->bytes_written = 0;
-+}
-+
 +/*
-+ * Add one to a number stored in bytes preceding *q.
-+ * There's exactly bytes_written such bytes.
++ * Copyright (C) STMicroelectronics SA 2023
++ * Authors: Hugues Fruchet <hugues.fruchet@foss.st.com>
++ *          for STMicroelectronics.
 + *
-+ * The spec guarantees that the backward search won't go beyond
-+ * the start of the buffer, so if we detect such condition we can
-+ * BUG_ON() - this should never happen anyway.
-+ */
-+static void add_one_to_output(uint8_t *q, int bytes_written)
-+{
-+	/*
-+	 * originally:
-+	 * while (*--q == 0xff)
-+	 *       *q = 0;
-+	 */
-+	for (;;) {
-+		BUG_ON(bytes_written-- <= 0); /* check if we're allowed to go back one byte */
-+
-+		if (*--q == 0xff)	      /* adding a 1 overflows *--q? */
-+			*q = 0;		      /* yes, so zero *q */
-+		else
-+			break;		      /* no, we're good to add 1 */
-+	}
-+
-+	++*q;				      /* add 1 */
-+}
-+
-+void hantro_boolenc_write_bool(struct hantro_boolenc *e, uint32_t prob, bool bool_value)
-+{
-+	uint32_t split = 1 + (((e->range - 1) * prob) >> 8);
-+
-+	if (bool_value) {
-+		e->bottom += split;
-+		e->range -= split;
-+	} else {
-+		e->range = split;
-+	}
-+
-+	while (e->range < 128) {
-+		e->range <<= 1;
-+
-+		if (e->bottom & (1 << 31))
-+			add_one_to_output(e->output, e->bytes_written);
-+
-+		e->bottom <<= 1;
-+
-+		if (!--e->bit_count) {
-+			*e->output++ = (uint8_t)(e->bottom >> 24);
-+			++e->bytes_written;
-+			e->bottom &= (1 << 24) - 1;
-+			e->bit_count = 8;
-+		}
-+	}
-+}
-diff --git a/drivers/media/platform/verisilicon/hantro_boolenc.h b/drivers/media/platform/verisilicon/hantro_boolenc.h
-new file mode 100644
-index 000000000000..80ec686d504d
---- /dev/null
-+++ b/drivers/media/platform/verisilicon/hantro_boolenc.h
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#include <linux/types.h>
-+
-+struct hantro_boolenc {
-+	uint8_t *output;	/* next byte pointer */
-+	uint32_t range;
-+	uint32_t bottom;	/* 4 LSB of leftmost end of the range, MSB alread in output  */
-+	int bit_count;		/* how many shifts until next encoded byte available */
-+	int bytes_written;
-+};
-+
-+void hantro_boolenc_init(struct hantro_boolenc *e, uint8_t *output);
-+
-+void hantro_boolenc_write_bool(struct hantro_boolenc *e, uint32_t prob, bool bool_value);
-+
-+static inline void hantro_boolenc_write_lit(struct hantro_boolenc *e, uint32_t val, uint8_t n)
-+{
-+	while (n--)
-+		hantro_boolenc_write_bool(e, 128, (val >> n) & 0x1);
-+}
-diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
-index 3156aff50eb5..b25f365ca13f 100644
---- a/drivers/media/platform/verisilicon/hantro_drv.c
-+++ b/drivers/media/platform/verisilicon/hantro_drv.c
-@@ -160,7 +160,6 @@ void hantro_end_prepare_run(struct hantro_ctx *ctx)
- 	src_buf = hantro_get_src_buf(ctx);
- 	v4l2_ctrl_request_complete(src_buf->vb2_buf.req_obj.req,
- 				   &ctx->ctrl_handler);
--
- 	/* Kick the watchdog. */
- 	schedule_delayed_work(&ctx->dev->watchdog_work,
- 			      msecs_to_jiffies(2000));
-@@ -441,6 +440,20 @@ static const struct hantro_ctrl controls[] = {
- 		.cfg = {
- 			.id = V4L2_CID_STATELESS_MPEG2_SEQUENCE,
- 		},
-+	}, {
-+		.codec = HANTRO_VP8_ENCODER,
-+		.cfg = {
-+			.id = V4L2_CID_STATELESS_VP8_ENCODE_PARAMS,
-+		},
-+	}, {
-+		.codec = HANTRO_VP8_ENCODER,
-+		.cfg = {
-+			.id = V4L2_CID_STATELESS_VP8_ENCODE_QP,
-+			.min = 0,
-+			.max = 127,
-+			.step = 1,
-+			.def = 0,
-+		},
- 	}, {
- 		.codec = HANTRO_MPEG2_DECODER,
- 		.cfg = {
-diff --git a/drivers/media/platform/verisilicon/hantro_hw.h b/drivers/media/platform/verisilicon/hantro_hw.h
-index 70c72e9d11d5..aaf82e694cd0 100644
---- a/drivers/media/platform/verisilicon/hantro_hw.h
-+++ b/drivers/media/platform/verisilicon/hantro_hw.h
-@@ -18,6 +18,8 @@
- #include "rockchip_av1_entropymode.h"
- #include "rockchip_av1_filmgrain.h"
- 
-+#include "hantro_boolenc.h"
-+
- #define DEC_8190_ALIGN_MASK	0x07U
- 
- #define MB_DIM			16
-@@ -354,6 +356,67 @@ struct hantro_postproc_ops {
- 	int (*enum_framesizes)(struct hantro_ctx *ctx, struct v4l2_frmsizeenum *fsize);
- };
- 
-+struct hantro_vp8_entropy {
-+	/* TODO: int32_t? */
-+	int32_t coeff_prob[4][8][3][11];
-+	int32_t coeff_prob_old[4][8][3][11];
-+	int32_t mv_prob[2][19];
-+	int32_t mv_prob_old[2][19];
-+	int32_t y_mode_prob[4];
-+	int32_t uv_mode_prob[3];
-+};
-+
-+#define VP8_BIT_LAST	0
-+#define VP8_BIT_GOLDEN	1
-+#define VP8_BIT_ALT	2
-+
-+struct hantro_vp8_enc_hw_ctx {
-+	struct hantro_aux_buf ref_frames[4];	/* recreated and reference images */
-+	struct hantro_aux_buf priv_src;	/* cabac table, segment map */
-+	struct hantro_aux_buf mv_buf;	/* motion vector */
-+	struct hantro_aux_buf priv_dst;	/* prob count */
-+	struct hantro_aux_buf ctrl_buf;	/* size table */
-+	struct hantro_boolenc boolenc;
-+	struct hantro_vp8_entropy entropy;
-+	size_t header_size;
-+	size_t estimated_hdr_size;
-+	size_t frame_counter;
-+	int last_ref;
-+	int golden_ref;
-+	int alt_ref;
-+	int first_free;
-+	int reconstructed;
-+	char ref_bitmaps[4];
-+
-+	int32_t mode_delta[4];
-+	int32_t old_mode_delta[4];
-+	int32_t ref_delta[4];
-+	int32_t old_ref_delta[4];
-+
-+	struct {
-+		uint8_t tag[3];
-+
-+		/* the following three only used for inter frames */
-+		uint8_t magic[3];	/* 0x9d012a */
-+		uint8_t width[2];	/* (scale << 14) | width */
-+		uint8_t height[2];	/* (scale << 14) | height */
-+	} __packed *frame_tag;
-+
-+	u8 is_intra:1;
-+	u8 last_intra:1;
-+	u8 show_frame:1;
-+	u8 refresh_golden_frame:1;
-+	u8 refresh_alternate_frame:1;
-+	u8 refresh_entropy_probs:1;
-+
-+	u8 prob_skip_false;
-+	u8 prob_intra;
-+	u8 prob_last;
-+	u8 prob_gf;
-+	u8 copy_buffer_to_golden;
-+	u8 copy_buffer_to_alternate;
-+};
-+
- /**
-  * struct hantro_codec_ops - codec mode specific operations
-  *
-@@ -521,6 +584,28 @@ hantro_av1_mv_size(unsigned int width, unsigned int height)
- 	return ALIGN(num_sbs * 384, 16) * 2 + 512;
- }
- 
-+static inline void hantro_vp8_set_bit(struct hantro_vp8_enc_hw_ctx *vp8_enc, char bit, int idx)
-+{
-+	if (idx < 0)
-+		return;
-+
-+	if (bit != VP8_BIT_LAST && bit != VP8_BIT_GOLDEN && bit != VP8_BIT_ALT)
-+		return;
-+
-+	vp8_enc->ref_bitmaps[idx] |= (1 << bit);
-+}
-+
-+static inline void hantro_vp8_clr_bit(struct hantro_vp8_enc_hw_ctx *vp8_enc, char bit, int idx)
-+{
-+	if (idx < 0)
-+		return;
-+
-+	if (bit != VP8_BIT_LAST && bit != VP8_BIT_GOLDEN && bit != VP8_BIT_ALT)
-+		return;
-+
-+	vp8_enc->ref_bitmaps[idx] &= ~(1 << bit);
-+}
-+
- int hantro_g1_mpeg2_dec_run(struct hantro_ctx *ctx);
- int rockchip_vpu2_mpeg2_dec_run(struct hantro_ctx *ctx);
- void hantro_mpeg2_dec_copy_qtable(u8 *qtable,
-@@ -542,4 +627,9 @@ void hantro_vp9_dec_exit(struct hantro_ctx *ctx);
- void hantro_g2_check_idle(struct hantro_dev *vpu);
- irqreturn_t hantro_g2_irq(int irq, void *dev_id);
- 
-+int rockchip_vpu2_vp8_enc_run(struct hantro_ctx *ctx);
-+int hantro_vp8_enc_init(struct hantro_ctx *ctx);
-+void rockchip_vpu2_vp8_enc_done(struct hantro_ctx *ctx);
-+void hantro_vp8_enc_exit(struct hantro_ctx *ctx);
-+
- #endif /* HANTRO_HW_H_ */
-diff --git a/drivers/media/platform/verisilicon/hantro_v4l2.c b/drivers/media/platform/verisilicon/hantro_v4l2.c
-index b3ae037a50f6..89730f6eee90 100644
---- a/drivers/media/platform/verisilicon/hantro_v4l2.c
-+++ b/drivers/media/platform/verisilicon/hantro_v4l2.c
-@@ -332,8 +332,9 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
- 
- 	pix_mp->field = V4L2_FIELD_NONE;
- 
--	v4l2_apply_frmsize_constraints(&pix_mp->width, &pix_mp->height,
--				       &vpu_fmt->frmsize);
-+	if (!capture || !ctx->is_encoder)
-+		v4l2_apply_frmsize_constraints(&pix_mp->width, &pix_mp->height,
-+					       &vpu_fmt->frmsize);
- 
- 	if (!coded) {
- 		/* Fill remaining fields */
-diff --git a/drivers/media/platform/verisilicon/hantro_vp8.c b/drivers/media/platform/verisilicon/hantro_vp8.c
-index 381bc1d3bfda..63e026055615 100644
---- a/drivers/media/platform/verisilicon/hantro_vp8.c
-+++ b/drivers/media/platform/verisilicon/hantro_vp8.c
-@@ -199,3 +199,121 @@ void hantro_vp8_dec_exit(struct hantro_ctx *ctx)
- 	dma_free_coherent(vpu->dev, vp8_dec->prob_tbl.size,
- 			  vp8_dec->prob_tbl.cpu, vp8_dec->prob_tbl.dma);
- }
-+
-+int hantro_vp8_enc_init(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+	struct hantro_aux_buf *aux_buf;
-+	unsigned int mb_width, mb_height;
-+	size_t luma_size, segment_map_size;
-+	static int32_t mode_delta[4] = { 4, -2, 2, 4 };
-+	static int32_t ref_delta[4] = { 2, 0, -2, -2 };
-+	int ret, i;
-+
-+	memcpy(ctx->vp8_enc.mode_delta, mode_delta, sizeof(mode_delta));
-+	memcpy(ctx->vp8_enc.ref_delta, ref_delta, sizeof(ref_delta));
-+
-+	mb_width = DIV_ROUND_UP(ctx->src_fmt.width, 16);
-+	mb_height = DIV_ROUND_UP(ctx->src_fmt.height, 16);
-+	luma_size = mb_width * mb_height * 16 * 16;
-+	segment_map_size = round_up(DIV_ROUND_UP(mb_width * mb_height, 4), 64);
-+
-+	for (i = 0; i < ARRAY_SIZE(ctx->vp8_enc.ref_frames); ++i) {
-+		aux_buf = &ctx->vp8_enc.ref_frames[i];
-+		aux_buf->size = luma_size * 3 / 2;
-+		aux_buf->cpu = dma_alloc_coherent(vpu->dev, aux_buf->size,
-+						  &aux_buf->dma, GFP_KERNEL);
-+		if (!aux_buf->cpu) {
-+			ret = -ENOMEM;
-+			goto err_free_ref_frames;
-+		}
-+		ctx->vp8_enc.ref_bitmaps[i] = 0;
-+	}
-+	ctx->vp8_enc.last_ref = ctx->vp8_enc.golden_ref = ctx->vp8_enc.alt_ref = -1;
-+	ctx->vp8_enc.first_free = 0;
-+
-+	aux_buf = &ctx->vp8_enc.priv_src;
-+	aux_buf->size = 1208 + segment_map_size + PAGE_SIZE; /* TODO: eliminate one page overhead */
-+	aux_buf->cpu = dma_alloc_coherent(vpu->dev, aux_buf->size, &aux_buf->dma, GFP_KERNEL);
-+	if (!aux_buf->cpu) {
-+		ret = -ENOMEM;
-+		goto err_free_ref_frames;
-+	}
-+
-+	aux_buf = &ctx->vp8_enc.mv_buf;
-+	aux_buf->size = mb_width * mb_height * 4;
-+	aux_buf->cpu = dma_alloc_coherent(vpu->dev, aux_buf->size, &aux_buf->dma, GFP_KERNEL);
-+	if (!aux_buf->cpu) {
-+		ret = -ENOMEM;
-+		goto err_free_priv_src;
-+	}
-+
-+	aux_buf = &ctx->vp8_enc.priv_dst;
-+	aux_buf->size = PAGE_SIZE; /* TODO: use correct size */
-+	aux_buf->cpu = dma_alloc_coherent(vpu->dev, aux_buf->size, &aux_buf->dma, GFP_KERNEL);
-+	if (!aux_buf->cpu) {
-+		ret = -ENOMEM;
-+		goto err_free_mv_buf;
-+	}
-+
-+	aux_buf = &ctx->vp8_enc.ctrl_buf;
-+	aux_buf->size = PAGE_SIZE; /* TODO: use correct size */
-+	aux_buf->cpu = dma_alloc_coherent(vpu->dev, aux_buf->size, &aux_buf->dma, GFP_KERNEL);
-+	if (!aux_buf->cpu) {
-+		ret = -ENOMEM;
-+		goto err_free_priv_dst;
-+	}
-+
-+	return 0;
-+
-+err_free_priv_dst:
-+	dma_free_coherent(vpu->dev, ctx->vp8_enc.priv_dst.size,
-+			  ctx->vp8_enc.priv_dst.cpu,
-+			  ctx->vp8_enc.priv_dst.dma);
-+
-+err_free_mv_buf:
-+	dma_free_coherent(vpu->dev, ctx->vp8_enc.mv_buf.size,
-+			  ctx->vp8_enc.mv_buf.cpu,
-+			  ctx->vp8_enc.mv_buf.dma);
-+
-+err_free_priv_src:
-+	dma_free_coherent(vpu->dev, ctx->vp8_enc.priv_src.size,
-+			  ctx->vp8_enc.priv_src.cpu,
-+			  ctx->vp8_enc.priv_src.dma);
-+
-+err_free_ref_frames:
-+	while (--i >= 0)
-+		dma_free_coherent(vpu->dev, ctx->vp8_enc.ref_frames[i].size,
-+				  ctx->vp8_enc.ref_frames[i].cpu,
-+				  ctx->vp8_enc.ref_frames[i].dma);
-+
-+	return ret;
-+}
-+
-+void hantro_vp8_enc_exit(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+	int i;
-+
-+	dma_free_coherent(vpu->dev, ctx->vp8_enc.ctrl_buf.size,
-+			  ctx->vp8_enc.ctrl_buf.cpu,
-+			  ctx->vp8_enc.ctrl_buf.dma);
-+
-+	dma_free_coherent(vpu->dev, ctx->vp8_enc.priv_dst.size,
-+			  ctx->vp8_enc.priv_dst.cpu,
-+			  ctx->vp8_enc.priv_dst.dma);
-+
-+	dma_free_coherent(vpu->dev, ctx->vp8_enc.mv_buf.size,
-+			  ctx->vp8_enc.mv_buf.cpu,
-+			  ctx->vp8_enc.mv_buf.dma);
-+
-+	dma_free_coherent(vpu->dev, ctx->vp8_enc.priv_src.size,
-+			  ctx->vp8_enc.priv_src.cpu,
-+			  ctx->vp8_enc.priv_src.dma);
-+
-+	for (i = 0; i < ARRAY_SIZE(ctx->vp8_enc.ref_frames); ++i)
-+		dma_free_coherent(vpu->dev, ctx->vp8_enc.ref_frames[i].size,
-+				  ctx->vp8_enc.ref_frames[i].cpu,
-+				  ctx->vp8_enc.ref_frames[i].dma);
-+
-+}
-diff --git a/drivers/media/platform/verisilicon/rockchip_vpu2_hw_vp8_enc.c b/drivers/media/platform/verisilicon/rockchip_vpu2_hw_vp8_enc.c
-new file mode 100644
-index 000000000000..95b14e3a8fcb
---- /dev/null
-+++ b/drivers/media/platform/verisilicon/rockchip_vpu2_hw_vp8_enc.c
-@@ -0,0 +1,1574 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
 + * Copyright (C) 2023 Collabora Ltd.
 + *	Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 + *
@@ -618,7 +278,7 @@ index 000000000000..95b14e3a8fcb
 +
 +#include "hantro.h"
 +#include "hantro_hw.h"
-+#include "rockchip_vpu2_regs.h"
++#include "hantro_h1_regs.h"
 +
 +/* threshold of MBs count to disable quarter pixel mv for encode speed */
 +#define MAX_MB_COUNT_TO_DISABLE_QUARTER_PIXEL_MV	3600
@@ -733,8 +393,7 @@ index 000000000000..95b14e3a8fcb
 +	280, 622, 832, 1177, 1240, 1341, 1085, 1259, 1357, 1495
 +};
 +
-+
-+int32_t const offset_tbl[] = {
++static const s32 offset_tbl[] = {
 +	-1, -1, -1,  0,  1,  2, -1,  3,  4, -1,  5,  6, -1,  7,  8, -1,
 +	9, 10, -1, 11, 12, 13, 14, 15, -1, 16, 17, -1, 18, 19, -1, 20,
 +	21, -1, 22, 23, -1, 24, 25, -1, 26, 27, 28, 29, 30, -1, 31, 32,
@@ -792,12 +451,12 @@ index 000000000000..95b14e3a8fcb
 + * is log2(1/p), to encode 1 is log2(1/(1-p)).
 + *
 + * For example, if the probability of being zero is 0.5
-+ * bin = 0 -> average bits used is log2(1/0.5)      = 1 bits/bin
-+ * bin = 1 -> average bits used is log2(1/(1 - 0.5) = 1 bits/bin
++ * _bin = 0 -> average bits used is log2(1/0.5)      = 1 bits/bin
++ * _bin = 1 -> average bits used is log2(1/(1 - 0.5) = 1 bits/bin
 + *
 + * For example, if the probability of being zero is 0.95
-+ * bin = 0 -> average bits used is log2(1/0.95)      = 0.074 bits/bin
-+ * bin = 1 -> average bits used is log2(1/(1 - 0.95) = 4.321 bits/bin
++ * _bin = 0 -> average bits used is log2(1/0.95)      = 0.074 bits/bin
++ * _bin = 1 -> average bits used is log2(1/(1 - 0.95) = 4.321 bits/bin
 + *
 + * The cost[p] is average number of bits used to encode 0 if the probability is
 + * p / 256, scaled by a magic number 256,
@@ -833,9 +492,12 @@ index 000000000000..95b14e3a8fcb
 +};
 +
 +/* Approximate bit cost of bin at given probability prob */
-+#define COST_BOOL(prob, bin)	vp8_prob_cost[(bin) ? 255 - (prob) : (prob)]
++static inline s32 cost_bool(s32 prob, s32 bin)
++{
++	return vp8_prob_cost[(bin) ? 255 - (prob) : (prob)];
++}
 +
-+uint32_t const coeff_update_prob[4][8][3][11] = {
++static const u32 coeff_update_prob[4][8][3][11] = {
 +	{
 +		{
 +			{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
@@ -975,7 +637,7 @@ index 000000000000..95b14e3a8fcb
 +	},
 +};
 +
-+uint32_t const mv_update_prob[2][19] = {
++static const u32 mv_update_prob[2][19] = {
 +	{
 +		237, 246, 253, 253, 254, 254, 254, 254, 254, 254,
 +		254, 254, 254, 254, 250, 250, 252, 254, 254
@@ -985,7 +647,7 @@ index 000000000000..95b14e3a8fcb
 +	}
 +};
 +
-+uint8_t const default_prob_skip_false[128] = {
++static const u8 default_prob_skip_false[128] = {
 +	255, 255, 255, 255, 255, 255, 255, 255,
 +	255, 255, 255, 255, 255, 255, 255, 255,
 +	255, 255, 255, 255, 255, 255, 255, 255,
@@ -1004,15 +666,15 @@ index 000000000000..95b14e3a8fcb
 +	30,  28,  26,  24,  22,  20,  18, 16,
 +};
 +
-+int32_t const y_mode_prob[4] = {
++static const s32 y_mode_prob[4] = {
 +	112, 86, 140, 37
 +};
 +
-+int32_t const uv_mode_prob[3] = {
++static const s32 uv_mode_prob[3] = {
 +	162, 101, 204
 +};
 +
-+uint32_t const default_prob_coeff[4][8][3][11] = {
++static const u32 default_prob_coeff[4][8][3][11] = {
 +	{
 +		{
 +			{128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128},
@@ -1152,7 +814,7 @@ index 000000000000..95b14e3a8fcb
 +	}
 +};
 +
-+uint32_t const default_prob_mv[2][19] = {
++static const u32 default_prob_mv[2][19] = {
 +	{
 +		162, 128, 225, 146, 172, 147, 214,  39, 156, 128,
 +		129, 132,  75, 145, 178, 206, 239, 254, 254,
@@ -1178,13 +840,13 @@ index 000000000000..95b14e3a8fcb
 +	return is_intra(ctx) ? 10 : 3;
 +}
 +
-+static void rockchip_vpu2_vp8_enc_write_coeff_prob(struct hantro_ctx *ctx)
++static void hantro_h1_vp8_enc_write_coeff_prob(struct hantro_ctx *ctx)
 +{
 +	struct hantro_boolenc *e = &ctx->vp8_enc.boolenc;
 +	struct hantro_vp8_entropy *entropy = &ctx->vp8_enc.entropy;
 +
 +	int i, j, k, l;
-+	uint32_t prob, new, old;
++	u32 prob, new, old;
 +
 +	for (i = 0; i < 4; i++) {
 +		for (j = 0; j < 8; j++) {
@@ -1207,13 +869,13 @@ index 000000000000..95b14e3a8fcb
 +	}
 +}
 +
-+static void rockchip_vpu2_vp8_enc_write_mv_prob(struct hantro_ctx *ctx)
++static void hantro_h1_vp8_enc_write_mv_prob(struct hantro_ctx *ctx)
 +{
 +	struct hantro_boolenc *e = &ctx->vp8_enc.boolenc;
 +	struct hantro_vp8_entropy *entropy = &ctx->vp8_enc.entropy;
 +
 +	int i, j;
-+	uint32_t prob, new, old;
++	u32 prob, new, old;
 +
 +	for (i = 0; i < 2; i++) {
 +		for (j = 0; j < 19; j++) {
@@ -1231,13 +893,13 @@ index 000000000000..95b14e3a8fcb
 +	}
 +}
 +
-+static void rockchip_vpu2_vp8_enc_write_filter_level_delta(struct hantro_ctx *ctx)
++static void hantro_h1_vp8_enc_write_filter_level_delta(struct hantro_ctx *ctx)
 +{
 +	struct hantro_boolenc *e = &ctx->vp8_enc.boolenc;
-+	int32_t i, tmp;
-+	uint8_t  update = 0;
-+	int32_t mode_update[4];
-+	int32_t ref_update[4];
++	s32 i, tmp;
++	u8  update = 0;
++	s32 mode_update[4];
++	s32 ref_update[4];
 +
 +	if (is_intra(ctx)) {
 +		memset(ctx->vp8_enc.old_mode_delta, 0, sizeof(ctx->vp8_enc.old_mode_delta));
@@ -1282,8 +944,8 @@ index 000000000000..95b14e3a8fcb
 +	       sizeof(ctx->vp8_enc.old_ref_delta));
 +}
 +
-+static void rockchip_vpu2_vp8_enc_write_header(struct hantro_ctx *ctx, u32 qp,
-+					       struct v4l2_ctrl_vp8_encode_params *params)
++static void hantro_h1_vp8_enc_write_header(struct hantro_ctx *ctx, u32 qp,
++					   struct v4l2_ctrl_vp8_encode_params *params)
 +{
 +	struct hantro_boolenc *e = &ctx->vp8_enc.boolenc;
 +	struct vb2_v4l2_buffer *dst_buf = hantro_get_dst_buf(ctx);
@@ -1301,11 +963,11 @@ index 000000000000..95b14e3a8fcb
 +		ctx->vp8_enc.frame_tag->magic[1] = 0x01;
 +		ctx->vp8_enc.frame_tag->magic[2] = 0x2a;
 +
-+		ctx->vp8_enc.frame_tag->width[0] = ctx->src_fmt.width & 0xff;
-+		ctx->vp8_enc.frame_tag->width[1] = (ctx->src_fmt.width >> 8) & 0xff;
++		ctx->vp8_enc.frame_tag->width[0] = ctx->dst_fmt.width & 0xff;
++		ctx->vp8_enc.frame_tag->width[1] = (ctx->dst_fmt.width >> 8) & 0xff;
 +
-+		ctx->vp8_enc.frame_tag->height[0] = ctx->src_fmt.height & 0xff;
-+		ctx->vp8_enc.frame_tag->height[1] = (ctx->src_fmt.height >> 8) & 0xff;
++		ctx->vp8_enc.frame_tag->height[0] = ctx->dst_fmt.height & 0xff;
++		ctx->vp8_enc.frame_tag->height[1] = (ctx->dst_fmt.height >> 8) & 0xff;
 +	} else {
 +		ctx->vp8_enc.frame_tag->tag[0] |= 0x1;
 +	}
@@ -1325,7 +987,7 @@ index 000000000000..95b14e3a8fcb
 +	hantro_boolenc_write_lit(e, !!(params->flags & V4L2_VP8_FRAME_FLAG_LOOP_FILTER_ADJ_ENABLED),
 +				 1);
 +	if (params->flags & V4L2_VP8_FRAME_FLAG_LOOP_FILTER_ADJ_ENABLED)
-+		rockchip_vpu2_vp8_enc_write_filter_level_delta(ctx);
++		hantro_h1_vp8_enc_write_filter_level_delta(ctx);
 +
 +	hantro_boolenc_write_lit(e, params->log2_nbr_of_dct_partitions, 2);
 +
@@ -1350,7 +1012,7 @@ index 000000000000..95b14e3a8fcb
 +		hantro_boolenc_write_lit(e, ctx->vp8_enc.refresh_entropy_probs, 1);
 +	}
 +
-+	rockchip_vpu2_vp8_enc_write_coeff_prob(ctx);
++	hantro_h1_vp8_enc_write_coeff_prob(ctx);
 +
 +	hantro_boolenc_write_lit(e, 1, 1);
 +	hantro_boolenc_write_lit(e, ctx->vp8_enc.prob_skip_false, 8);
@@ -1364,12 +1026,12 @@ index 000000000000..95b14e3a8fcb
 +	hantro_boolenc_write_lit(e, 0, 1); /* intra 16x16 prob update flag */
 +	hantro_boolenc_write_lit(e, 0, 1); /* intra chroma prob update flag */
 +
-+	rockchip_vpu2_vp8_enc_write_mv_prob(ctx);
++	hantro_h1_vp8_enc_write_mv_prob(ctx);
 +}
 +
-+static uint32_t calc_mvprob(uint32_t left, uint32_t right, uint32_t prob)
++static u32 calc_mvprob(u32 left, u32 right, u32 prob)
 +{
-+	uint32_t p;
++	u32 p;
 +
 +	if (left + right) {
 +		p = (left * 255) / (left + right);
@@ -1383,32 +1045,71 @@ index 000000000000..95b14e3a8fcb
 +	return p;
 +}
 +
-+static uint32_t update_prob(uint32_t prob, uint32_t left, uint32_t right,
-+			    uint32_t old_prob, uint32_t new_prob, uint32_t fixed)
++static u32 update_prob(u32 prob, u32 left, u32 right,
++		       u32 old_prob, u32 new_prob, u32 fixed)
 +{
-+	int32_t u, s;
++	s32 u, s;
 +
-+	u = (int32_t)fixed + ((vp8_prob_cost[255 - prob] - vp8_prob_cost[prob]) >> 8);
-+	s = ((int32_t)left * (vp8_prob_cost[old_prob] - vp8_prob_cost[new_prob]) +
-+		(int32_t)right *
++	u = (s32)fixed + ((vp8_prob_cost[255 - prob] - vp8_prob_cost[prob]) >> 8);
++	s = ((s32)left * (vp8_prob_cost[old_prob] - vp8_prob_cost[new_prob]) +
++		(s32)right *
 +		(vp8_prob_cost[255 - old_prob] - vp8_prob_cost[255 - new_prob])) >> 8;
 +
 +	return (s > u);
 +}
 +
-+static void rockchip_vpu2_vp8_enc_update_entropy(struct hantro_ctx *ctx)
++static void _update_entropy(struct hantro_vp8_entropy *entropy,
++			    u16 *p_cnt, s32 i, s32 j)
++{
++	s32 k, l;
++	u32 p, left, right;
++	u32 old_p, upd_p = 0;
++
++	for (k = 0; k < 3; k++) {
++		s32 tmp, ii;
++
++		tmp = i * 7 * 3 + j * 3 + k;
++		tmp += 2 * 4 * 7 * 3;
++		ii = offset_tbl[tmp];
++
++		right = ii >= 0 ? p_cnt[ii] : 0;
++
++		for (l = 2; l--;) {
++			old_p = entropy->coeff_prob[i][j][k][l];
++			old_p = coeff_update_prob[i][j][k][l];
++
++			tmp -= 4 * 7 * 3;
++			ii = offset_tbl[tmp];
++			left = ii >= 0 ? p_cnt[ii] : 0;
++			if (left + right) {
++				p = ((left * 256) + ((left + right) >> 1)) /
++				    (left + right);
++			if (p > 255)
++				p = 255;
++			} else {
++				p = old_p;
++			}
++
++			if (update_prob(upd_p, left, right, old_p, p, 8))
++				entropy->coeff_prob[i][j][k][l] = p;
++
++			right += left;
++		}
++	}
++}
++
++static void hantro_h1_vp8_enc_update_entropy(struct hantro_ctx *ctx)
 +{
 +	struct hantro_vp8_entropy *entropy = &ctx->vp8_enc.entropy;
-+	uint16_t *p_cnt = (uint16_t *)ctx->vp8_enc.priv_dst.cpu;
++	u16 *p_cnt = (u16 *)ctx->vp8_enc.priv_dst.cpu;
 +
-+	int32_t i, j, k, l;
++	s32 i, j;
 +
-+	uint32_t p, left, right;
-+	uint32_t old_p, upd_p = 0;
++	u32 p, left, right;
 +
-+	uint32_t type;
-+	uint32_t branch_cnt[2];
-+	uint16_t *p_tmp = NULL;
++	u32 type;
++	u32 branch_cnt[2];
++	u16 *p_tmp = NULL;
 +
 +	if (!ctx->vp8_enc.refresh_entropy_probs || is_intra(ctx)) {
 +		memcpy(entropy->coeff_prob, default_prob_coeff, sizeof(default_prob_coeff));
@@ -1423,39 +1124,8 @@ index 000000000000..95b14e3a8fcb
 +		return;
 +
 +	for (i = 0; i < 4; i++) {
-+		for (j = 0; j < 7; j++) {
-+			for (k = 0; k < 3; k++) {
-+				int32_t tmp, ii;
-+
-+				tmp = i * 7 * 3 + j * 3 + k;
-+				tmp += 2 * 4 * 7 * 3;
-+				ii = offset_tbl[tmp];
-+
-+				right = ii >= 0 ? p_cnt[ii] : 0;
-+
-+				for (l = 2; l--;) {
-+					old_p = entropy->coeff_prob[i][j][k][l];
-+					old_p = coeff_update_prob[i][j][k][l];
-+
-+					tmp -= 4 * 7 * 3;
-+					ii = offset_tbl[tmp];
-+					left = ii >= 0 ? p_cnt[ii] : 0;
-+					if (left + right) {
-+						p = ((left * 256) + ((left + right) >> 1)) /
-+						    (left + right);
-+						if (p > 255)
-+							p = 255;
-+					} else {
-+						p = old_p;
-+					}
-+
-+					if (update_prob(upd_p, left, right, old_p, p, 8))
-+						entropy->coeff_prob[i][j][k][l] = p;
-+
-+					right += left;
-+				}
-+			}
-+		}
++		for (j = 0; j < 7; j++)
++			_update_entropy(entropy, p_cnt, i, j);
 +	}
 +
 +	p_tmp = p_cnt + VP8_PROB_COUNT_MV_OFFSET;
@@ -1526,10 +1196,10 @@ index 000000000000..95b14e3a8fcb
 +	return (index / 8) * 8 + 7 - (index % 8);
 +}
 +
-+static void rockchip_vpu2_vp8_enc_write_entropy(struct hantro_ctx *ctx)
++static void hantro_h1_vp8_enc_write_entropy(struct hantro_ctx *ctx)
 +{
 +	struct hantro_vp8_entropy *entropy = &ctx->vp8_enc.entropy;
-+	uint8_t *entropy_table = ctx->vp8_enc.priv_src.cpu;
++	u8 *entropy_table = ctx->vp8_enc.priv_src.cpu;
 +	int index, i, j, k, l;
 +
 +	memset(entropy_table, 0, 56);
@@ -1597,31 +1267,35 @@ index 000000000000..95b14e3a8fcb
 +	return ctx->vp8_enc.boolenc.bytes_written + frame_tag_size(ctx);
 +}
 +
-+static inline u32 enc_in_img_ctrl(struct hantro_ctx *ctx, u32 qp)
++static void hantro_h1_vp8_enc_set_src_img_ctrl(struct hantro_dev *vpu,
++					       struct hantro_ctx *ctx)
 +{
-+	unsigned int overfill_r, overfill_b;
++	u32 overfill_r, overfill_b;
++	u32 reg;
 +
 +	/*
-+	 * The hardware needs only the value for luma plane, because
-+	 * values of other planes are calculated internally based on
-+	 * format setting.
++	 * The format width and height are already macroblock aligned
++	 * by .vidioc_s_fmt_vid_cap_mplane() callback. Destination
++	 * format width and height can be further modified by
++	 * .vidioc_s_selection(), and the width is 4-aligned.
 +	 */
 +	overfill_r = ctx->src_fmt.width - ctx->dst_fmt.width;
 +	overfill_b = ctx->src_fmt.height - ctx->dst_fmt.height;
 +
-+	return VEPU_REG_STREAM_START_OFFSET(0) |
-+		VEPU_REG_IN_IMG_CTRL_OVRFLR_D4(overfill_r / 4) |
-+		VEPU_REG_IN_IMG_CTRL_OVRFLB(overfill_b) |
-+		VEPU_REG_SKIP_MACROBLOCK_PENALTY(qp >= 100 ? (3 * qp / 4) : 0);
++	reg = H1_REG_IN_IMG_CTRL_ROW_LEN(ctx->src_fmt.width)
++		| H1_REG_IN_IMG_CTRL_OVRFLR_D4(overfill_r / 4)
++		| H1_REG_IN_IMG_CTRL_OVRFLB(overfill_b)
++		| H1_REG_IN_IMG_CTRL_FMT(ctx->vpu_src_fmt->enc_fmt);
++	vepu_write_relaxed(vpu, reg, H1_REG_IN_IMG_CTRL);
 +}
 +
 +static void
-+rockchip_vpu2_vp8_enc_set_buffers(struct hantro_dev *vpu, struct hantro_ctx *ctx, u32 qp,
-+				  struct v4l2_ctrl_vp8_encode_params *params)
++hantro_h1_vp8_enc_set_buffers(struct hantro_dev *vpu, struct hantro_ctx *ctx, u32 qp,
++			      struct v4l2_ctrl_vp8_encode_params *params)
 +{
-+	const u32 src_addr_regs[] = { VEPU_REG_ADDR_IN_PLANE_0,
-+				      VEPU_REG_ADDR_IN_PLANE_1,
-+				      VEPU_REG_ADDR_IN_PLANE_2 };
++	const u32 src_addr_regs[] = { H1_REG_ADDR_IN_PLANE_0,
++				      H1_REG_ADDR_IN_PLANE_1,
++				      H1_REG_ADDR_IN_PLANE_2 };
 +	struct vb2_v4l2_buffer *src_buf, *dst_buf;
 +	struct v4l2_pix_format_mplane *src_fmt = &ctx->src_fmt;
 +	size_t luma_size;
@@ -1651,28 +1325,28 @@ index 000000000000..95b14e3a8fcb
 +	 * compressed header and the "extended header" generated in hw.
 +	 */
 +	vepu_write_relaxed(vpu, dst_dma + round_up(sw_hdr_size(ctx), 8),
-+			   VEPU_REG_ADDR_OUTPUT_STREAM);
++			   H1_REG_ADDR_OUTPUT_STREAM);
 +	vepu_write_relaxed(vpu, dst_dma + ctx->vp8_enc.estimated_hdr_size,
-+			   VEPU_REG_ADDR_VP8_DCT_PART(0));
++			   H1_REG_ADDR_VP8_DCT_PART(0));
 +	vepu_write_relaxed(vpu, dst_size - ctx->vp8_enc.estimated_hdr_size,
-+			   VEPU_REG_STR_BUF_LIMIT);
++			   H1_REG_STR_BUF_LIMIT);
 +
 +	/* Auxiliary buffers. */
 +	vepu_write_relaxed(vpu, ctx->vp8_enc.ctrl_buf.dma,
-+			   VEPU_REG_ADDR_OUTPUT_CTRL);
++			   H1_REG_ADDR_OUTPUT_CTRL);
 +	memset(ctx->vp8_enc.ctrl_buf.cpu, 0, ctx->vp8_enc.ctrl_buf.size);
 +	vepu_write_relaxed(vpu, ctx->vp8_enc.mv_buf.dma,
-+			   VEPU_REG_ADDR_MV_OUT);
++			   H1_REG_ADDR_MV_OUT);
 +	vepu_write_relaxed(vpu, ctx->vp8_enc.priv_dst.dma,
-+			   VEPU_REG_ADDR_VP8_PROB_CNT);
++			   H1_REG_ADDR_VP8_PROB_CNT);
 +	memset(ctx->vp8_enc.priv_dst.cpu, 0, ctx->vp8_enc.priv_dst.size);
 +	vepu_write_relaxed(vpu, ctx->vp8_enc.priv_src.dma,
-+			   VEPU_REG_ADDR_CABAC_TBL);
++			   H1_REG_ADDR_CABAC_TBL);
 +
-+	rockchip_vpu2_vp8_enc_write_entropy(ctx);
++	hantro_h1_vp8_enc_write_entropy(ctx);
 +
 +	vepu_write_relaxed(vpu, ctx->vp8_enc.priv_src.dma + 151 * 8,
-+			   VEPU_REG_ADDR_VP8_SEG_MAP);
++			   H1_REG_ADDR_VP8_SEG_MAP);
 +
 +	/* Reference buffers. */
 +	switch (params->reference_type) {
@@ -1688,16 +1362,16 @@ index 000000000000..95b14e3a8fcb
 +	}
 +	if (ref_idx < 0)
 +		ref_idx = 0;
-+	vepu_write_relaxed(vpu, ctx->vp8_enc.ref_frames[ref_idx].dma, VEPU_REG_ADDR_REF_LUMA);
++	vepu_write_relaxed(vpu, ctx->vp8_enc.ref_frames[ref_idx].dma, H1_REG_ADDR_REF_LUMA);
 +	vepu_write_relaxed(vpu, ctx->vp8_enc.ref_frames[ref_idx].dma + luma_size,
-+			   VEPU_REG_ADDR_REF_CHROMA);
++			   H1_REG_ADDR_REF_CHROMA);
 +
 +	/* Reconstruction buffers. */
 +	ctx->vp8_enc.reconstructed =  ctx->vp8_enc.first_free;
 +	vepu_write_relaxed(vpu, ctx->vp8_enc.ref_frames[ctx->vp8_enc.reconstructed].dma,
-+			   VEPU_REG_ADDR_REC_LUMA);
++			   H1_REG_ADDR_REC_LUMA);
 +	vepu_write_relaxed(vpu, ctx->vp8_enc.ref_frames[ctx->vp8_enc.reconstructed].dma + luma_size,
-+			   VEPU_REG_ADDR_REC_CHROMA);
++			   H1_REG_ADDR_REC_CHROMA);
 +
 +	/* Source buffer. */
 +	for (i = 0; i < src_fmt->num_planes; ++i)
@@ -1705,13 +1379,9 @@ index 000000000000..95b14e3a8fcb
 +				   vb2_dma_contig_plane_dma_addr(&src_buf->vb2_buf, i) +
 +				   src_buf->vb2_buf.planes[i].data_offset,
 +				   src_addr_regs[i]);
-+
-+	/* Source parameters. */
-+	vepu_write_relaxed(vpu, enc_in_img_ctrl(ctx, qp),
-+			   VEPU_REG_ENC_OVER_FILL_STRM_OFFSET);
 +}
 +
-+static inline uint32_t compute_filter_level(int32_t qp)
++static inline u32 compute_filter_level(s32 qp)
 +{
 +	return clamp((qp * 64) / 128 + 8, 0, 63);
 +}
@@ -1724,7 +1394,7 @@ index 000000000000..95b14e3a8fcb
 +	s32 bit_cost = 0;
 +
 +	while (number--)
-+		bit_cost += COST_BOOL(prob[*index++], (value >> number) & 1);
++		bit_cost += cost_bool(prob[*index++], (value >> number) & 1);
 +
 +	return bit_cost;
 +}
@@ -1737,26 +1407,26 @@ index 000000000000..95b14e3a8fcb
 +
 +	/* Short Tree */
 +	if (tmp < 8) {
-+		bit_cost += COST_BOOL(mv_prob[0], 0);
++		bit_cost += cost_bool(mv_prob[0], 0);
 +		bit_cost += cost_tree(&mv_tree[tmp], mv_prob + 2);
 +		if (!tmp)
 +			return bit_cost;
 +
 +		/* Sign */
-+		bit_cost += COST_BOOL(mv_prob[1], mvd < 0);
++		bit_cost += cost_bool(mv_prob[1], mvd < 0);
 +		return bit_cost;
 +	}
 +
 +	/* Long Tree */
-+	bit_cost += COST_BOOL(mv_prob[0], 1);
++	bit_cost += cost_bool(mv_prob[0], 1);
 +
 +	/* Bits 0, 1, 2 */
 +	for (i = 0; i < 3; i++)
-+		bit_cost += COST_BOOL(mv_prob[9 + i], (tmp >> i) & 1);
++		bit_cost += cost_bool(mv_prob[9 + i], (tmp >> i) & 1);
 +
 +	/* Bits 9, 8, 7, 6, 5, 4 */
 +	for (i = 9; i > 3; i--)
-+		bit_cost += COST_BOOL(mv_prob[9 + i], (tmp >> i) & 1);
++		bit_cost += cost_bool(mv_prob[9 + i], (tmp >> i) & 1);
 +
 +	/*
 +	 * Bit 3: if ABS(mvd) < 8, it is coded with short tree, so if here
@@ -1764,16 +1434,16 @@ index 000000000000..95b14e3a8fcb
 +	 * 8,...,15) and is not explicitly coded.
 +	 */
 +	if (tmp > 15)
-+		bit_cost += COST_BOOL(mv_prob[9 + 3], (tmp >> 3) & 1);
++		bit_cost += cost_bool(mv_prob[9 + 3], (tmp >> 3) & 1);
 +
 +	/* Sign */
-+	bit_cost += COST_BOOL(mv_prob[1], mvd < 0);
++	bit_cost += cost_bool(mv_prob[1], mvd < 0);
 +
 +	return bit_cost;
 +}
 +
-+static void rockchip_vpu2_vp8_enc_set_params(struct hantro_dev *vpu, struct hantro_ctx *ctx, u32 qp,
-+					     struct v4l2_ctrl_vp8_encode_params *params)
++static void hantro_h1_vp8_enc_set_params(struct hantro_dev *vpu, struct hantro_ctx *ctx, u32 qp,
++					 struct v4l2_ctrl_vp8_encode_params *params)
 +{
 +	struct hantro_vp8_entropy *entropy = &ctx->vp8_enc.entropy;
 +	int i;
@@ -1784,216 +1454,194 @@ index 000000000000..95b14e3a8fcb
 +	u32 reg;
 +	s32 inter_favor;
 +
-+	reg = VEPU_REG_OUTPUT_SWAP32
-+		| VEPU_REG_OUTPUT_SWAP16
-+		| VEPU_REG_OUTPUT_SWAP8
-+		| VEPU_REG_INPUT_SWAP8
-+		| VEPU_REG_INPUT_SWAP16
-+		| VEPU_REG_INPUT_SWAP32;
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_DATA_ENDIAN);
-+
-+	reg = VEPU_REG_SIZE_TABLE_PRESENT
-+		| VEPU_REG_IN_IMG_CTRL_FMT(ctx->vpu_src_fmt->enc_fmt)
-+		| VEPU_REG_IN_IMG_ROTATE_MODE(0);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_ENC_CTRL1);
-+
-+	reg = VEPU_REG_INTERRUPT_TIMEOUT_EN
-+		| VEPU_REG_MV_WRITE_EN;
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_INTERRUPT);
-+
-+	reg = VEPU_REG_IN_IMG_CHROMA_OFFSET(0)
-+		| VEPU_REG_IN_IMG_LUMA_OFFSET(0)
-+		| VEPU_REG_IN_IMG_CTRL_ROW_LEN(mb_width * 16);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_INPUT_LUMA_INFO);
-+
-+	vepu_write_relaxed(vpu, 0, VEPU_REG_STR_HDR_REM_MSB);
-+	vepu_write_relaxed(vpu, 0, VEPU_REG_STR_HDR_REM_LSB);
++	vepu_write_relaxed(vpu, 0, H1_REG_STR_HDR_REM_MSB);
++	vepu_write_relaxed(vpu, 0, H1_REG_STR_HDR_REM_LSB);
 +
 +	reg = 0;
 +	if (mb_width * mb_height > MAX_MB_COUNT_TO_DISABLE_QUARTER_PIXEL_MV)
-+		reg = VEPU_REG_DISABLE_QUARTER_PIXEL_MV;
-+	reg |= VEPU_REG_ENTROPY_CODING_MODE;
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_ENC_CTRL0);
++		reg = H1_REG_ENC_CTRL2_DISABLE_QUARTER_PIXMV;
++	reg |= H1_REG_ENC_CTRL2_ENTROPY_CODING_MODE;
 +
 +	inter_favor = 128 - ctx->vp8_enc.prob_intra;
 +	if (inter_favor >= 0)
-+		inter_favor = max(0, (int32_t)(qp * 2 - 40));
++		inter_favor = max(0, (s32)(qp * 2 - 40));
 +
-+	reg = VEPU_REG_INTRA16X16_MODE(qp * 1024 / 128)
-+		| VEPU_REG_INTER_MODE(inter_favor);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_INTRA_INTER_MODE);
++	reg |= H1_REG_ENC_CTRL2_INTRA16X16_MODE(qp * 1024 / 128);
++	vepu_write_relaxed(vpu, reg, H1_REG_ENC_CTRL2);
 +
-+	reg = VEPU_REG_1MV_PENALTY(60 / 2 * 32)
-+		| VEPU_REG_QMV_PENALTY(8)
-+		| VEPU_REG_4MV_PENALTY(64 / 2);
++	reg = H1_REG_ENC_CTRL5_INTER_MODE(inter_favor);
++	reg |= H1_REG_ENC_CTRL5_MACROBLOCK_PENALTY(qp >= 100 ? (3 * qp / 4) : 0);
++	vepu_write_relaxed(vpu, reg, H1_REG_ENC_CTRL5);
++
++	reg = H1_REG_ENC_CTRL3_MV_PENALTY_1P(60 / 2 * 32)
++		| H1_REG_ENC_CTRL3_MV_PENALTY_1_4P(8)
++		| H1_REG_ENC_CTRL3_MV_PENALTY_4P(64 / 2);
 +	if (mb_width * mb_height < MAX_MB_COUNT_TO_DISABLE_SPLIT_MV)
-+		reg |= VEPU_REG_SPLIT_MV_MODE_EN;
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_MV_PENALTY);
++		reg |= H1_REG_ENC_CTRL3_MUTIMV_EN;
++	vepu_write_relaxed(vpu, reg, H1_REG_ENC_CTRL3);
 +
-+	reg = VEPU_REG_MV_PENALTY_16X8_8X16(
-+			min(1023, split_penalty[qp] / 2))
-+		| VEPU_REG_MV_PENALTY_8X8(
-+			min(1023, (2 * split_penalty[qp] + 40) / 4))
-+		| VEPU_REG_MV_PENALTY_8X4_4X8(0x3ff);
++	reg = H1_REG_ENC_CTRL4_MV_PENALTY_16X8_8X16
++			(min(1023, split_penalty[qp] / 2))
++		| H1_REG_ENC_CTRL4_MV_PENALTY_8X8
++			(min(1023, (2 * split_penalty[qp] + 40) / 4))
++		| H1_REG_ENC_CTRL4_8X4_4X8(0x3ff);
 +	/* no 8x4 or 4x8 block define in vp8 */
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_ENC_CTRL4);
++	vepu_write_relaxed(vpu, reg, H1_REG_ENC_CTRL4);
 +
-+	reg = VEPU_REG_PENALTY_4X4MV(min(511,
-+					 (8 * split_penalty[qp] + 500) / 16))
-+		| VEPU_REG_ZERO_MV_FAVOR_D2(0);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_MVC_RELATE);
++	reg = H1_REG_PENALTY_4X4MV(min(511,
++				       (8 * split_penalty[qp] + 500) / 16))
++		| H1_REG_ZERO_MV_FAVOR_D2(0);
++	vepu_write_relaxed(vpu, reg, H1_REG_QP_MV_MVC_CTRL);
 +
 +	/* initialize quant table for segment0 */
 +	deq = dc_q_lookup[qp];
-+	reg = VEPU_REG_VP8_SEG0_QUT_DC_Y1(min((1 << 16) / deq, 0x3FFFu));
-+	reg |= VEPU_REG_VP8_SEG0_ZBIN_DC_Y1(((qzbin_factors[qp] * deq) + 64) >>
++	reg = H1_REG_VP8_SEG0_QUT_DC_Y1(min((1 << 16) / deq, 0x3FFFu));
++	reg |= H1_REG_VP8_SEG0_ZBIN_DC_Y1(((qzbin_factors[qp] * deq) + 64) >>
 +					    7);
-+	reg |= VEPU_REG_VP8_SEG0_RND_DC_Y1((qrounding_factors[qp] * deq) >> 7);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_SEG0_QUANT_DC_Y1);
++	reg |= H1_REG_VP8_SEG0_RND_DC_Y1((qrounding_factors[qp] * deq) >> 7);
++	vepu_write_relaxed(vpu, reg, H1_REG_VP8_SEG0_QUANT_DC_Y1);
 +
 +	deq = ac_q_lookup[qp];
-+	reg = VEPU_REG_VP8_SEG0_QUT_AC_Y1(min((1 << 16) / deq, 0x3FFFu));
-+	reg |= VEPU_REG_VP8_SEG0_ZBIN_AC_Y1(((qzbin_factors[qp] * deq) + 64) >>
++	reg = H1_REG_VP8_SEG0_QUT_AC_Y1(min((1 << 16) / deq, 0x3FFFu));
++	reg |= H1_REG_VP8_SEG0_ZBIN_AC_Y1(((qzbin_factors[qp] * deq) + 64) >>
 +					    7);
-+	reg |= VEPU_REG_VP8_SEG0_RND_AC_Y1((qrounding_factors[qp] * deq) >> 7);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_SEG0_QUANT_AC_Y1);
++	reg |= H1_REG_VP8_SEG0_RND_AC_Y1((qrounding_factors[qp] * deq) >> 7);
++	vepu_write_relaxed(vpu, reg, H1_REG_VP8_SEG0_QUANT_AC_Y1);
 +
 +	deq = dc_q_lookup[qp] * 2;
-+	reg = VEPU_REG_VP8_SEG0_QUT_DC_Y2(min((1 << 16) / deq, 0x3FFFu));
-+	reg |= VEPU_REG_VP8_SEG0_ZBIN_DC_Y2((qzbin_factors[qp] * deq + 64) >>
++	reg = H1_REG_VP8_SEG0_QUT_DC_Y2(min((1 << 16) / deq, 0x3FFFu));
++	reg |= H1_REG_VP8_SEG0_ZBIN_DC_Y2((qzbin_factors[qp] * deq + 64) >>
 +					    7);
-+	reg |= VEPU_REG_VP8_SEG0_RND_DC_Y2((qrounding_factors[qp] * deq) >> 7);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_SEG0_QUANT_DC_Y2);
++	reg |= H1_REG_VP8_SEG0_RND_DC_Y2((qrounding_factors[qp] * deq) >> 7);
++	vepu_write_relaxed(vpu, reg, H1_REG_VP8_SEG0_QUANT_DC_Y2);
 +
 +	deq = max(ac_q_lookup[qp] * 155 / 100, 8);
-+	reg = VEPU_REG_VP8_SEG0_QUT_AC_Y2(min((1 << 16) / deq, 0x3FFFu));
-+	reg |= VEPU_REG_VP8_SEG0_ZBIN_AC_Y2((qzbin_factors[qp] * deq + 64) >>
++	reg = H1_REG_VP8_SEG0_QUT_AC_Y2(min((1 << 16) / deq, 0x3FFFu));
++	reg |= H1_REG_VP8_SEG0_ZBIN_AC_Y2((qzbin_factors[qp] * deq + 64) >>
 +					    7);
-+	reg |= VEPU_REG_VP8_SEG0_RND_AC_Y2((qrounding_factors[qp] * deq) >> 7);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_SEG0_QUANT_AC_Y2);
++	reg |= H1_REG_VP8_SEG0_RND_AC_Y2((qrounding_factors[qp] * deq) >> 7);
++	vepu_write_relaxed(vpu, reg, H1_REG_VP8_SEG0_QUANT_AC_Y2);
 +
 +	deq = min(dc_q_lookup[qp], 132);
-+	reg = VEPU_REG_VP8_SEG0_QUT_DC_CHR(min((1 << 16) / deq, 0x3FFFu));
-+	reg |= VEPU_REG_VP8_SEG0_ZBIN_DC_CHR((qzbin_factors[qp] * deq + 64) >>
++	reg = H1_REG_VP8_SEG0_QUT_DC_CHR(min((1 << 16) / deq, 0x3FFFu));
++	reg |= H1_REG_VP8_SEG0_ZBIN_DC_CHR((qzbin_factors[qp] * deq + 64) >>
 +					     7);
-+	reg |= VEPU_REG_VP8_SEG0_RND_DC_CHR((qrounding_factors[qp] * deq) >> 7);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_SEG0_QUANT_DC_CHR);
++	reg |= H1_REG_VP8_SEG0_RND_DC_CHR((qrounding_factors[qp] * deq) >> 7);
++	vepu_write_relaxed(vpu, reg, H1_REG_VP8_SEG0_QUANT_DC_CHR);
 +
 +	deq = ac_q_lookup[qp];
-+	reg = VEPU_REG_VP8_SEG0_QUT_AC_CHR(min((1 << 16) / deq, 0x3FFFu));
-+	reg |= VEPU_REG_VP8_SEG0_ZBIN_AC_CHR((qzbin_factors[qp] * deq + 64) >>
++	reg = H1_REG_VP8_SEG0_QUT_AC_CHR(min((1 << 16) / deq, 0x3FFFu));
++	reg |= H1_REG_VP8_SEG0_ZBIN_AC_CHR((qzbin_factors[qp] * deq + 64) >>
 +					     7);
-+	reg |= VEPU_REG_VP8_SEG0_RND_AC_CHR((qrounding_factors[qp] * deq) >> 7);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_SEG0_QUANT_AC_CHR);
++	reg |= H1_REG_VP8_SEG0_RND_AC_CHR((qrounding_factors[qp] * deq) >> 7);
++	vepu_write_relaxed(vpu, reg, H1_REG_VP8_SEG0_QUANT_AC_CHR);
 +
-+	reg = VEPU_REG_VP8_MV_REF_IDX1(params->reference_type);
-+	reg |= VEPU_REG_VP8_SEG0_DQUT_DC_Y1(dc_q_lookup[qp]);
-+	reg |= VEPU_REG_VP8_SEG0_DQUT_AC_Y1(ac_q_lookup[qp]);
-+	reg |= VEPU_REG_VP8_SEG0_DQUT_DC_Y2(dc_q_lookup[qp] * 2);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_SEG0_QUANT_DQUT);
++	reg = H1_REG_VP8_MV_REF_IDX1(params->reference_type);
++	reg |= H1_REG_VP8_SEG0_DQUT_DC_Y1(dc_q_lookup[qp]);
++	reg |= H1_REG_VP8_SEG0_DQUT_AC_Y1(ac_q_lookup[qp]);
++	reg |= H1_REG_VP8_SEG0_DQUT_DC_Y2(dc_q_lookup[qp] * 2);
++	vepu_write_relaxed(vpu, reg, H1_REG_VP8_SEG0_QUANT_DQUT);
 +
-+	reg = VEPU_REG_VP8_MV_REF_IDX2(0);
-+	reg |= VEPU_REG_VP8_SEG0_DQUT_DC_CHR(min(dc_q_lookup[qp], 132));
-+	reg |= VEPU_REG_VP8_SEG0_DQUT_AC_CHR(ac_q_lookup[qp]);
-+	reg |= VEPU_REG_VP8_SEG0_DQUT_AC_Y2(max(ac_q_lookup[qp] * 155 / 100, 8));
++	reg = H1_REG_VP8_MV_REF_IDX2(0);
++	reg |= H1_REG_VP8_SEG0_DQUT_DC_CHR(min(dc_q_lookup[qp], 132));
++	reg |= H1_REG_VP8_SEG0_DQUT_AC_CHR(ac_q_lookup[qp]);
++	reg |= H1_REG_VP8_SEG0_DQUT_AC_Y2(max(ac_q_lookup[qp] * 155 / 100, 8));
 +	if (is_intra(ctx))
-+		reg |= VEPU_REG_VP8_SEGMENT_MAP_UPDATE;
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_SEG0_QUANT_DQUT_1);
++		reg |= H1_REG_VP8_SEGMENT_MAP_UPDATE;
++	vepu_write_relaxed(vpu, reg, H1_REG_VP8_SEG0_QUANT_DQUT_1);
++
 +	vepu_write_relaxed(vpu, ctx->vp8_enc.boolenc.bottom,
-+			   VEPU_REG_VP8_BOOL_ENC_VALUE);
++			   H1_REG_VP8_BOOL_ENC);
 +
-+	reg = VEPU_REG_VP8_DCT_PARTITION_CNT(0);
-+	reg |= VEPU_REG_VP8_FILTER_LEVEL(compute_filter_level(qp));
-+	reg |= VEPU_REG_VP8_FILTER_SHARPNESS(params->sharpness_level);
-+	reg |= VEPU_REG_VP8_ZERO_MV_PENALTY_FOR_REF2(0);
-+	reg |= VEPU_REG_VP8_BOOL_ENC_VALUE_BITS(24 - ctx->vp8_enc.boolenc.bit_count);
-+	reg |= VEPU_REG_VP8_BOOL_ENC_RANGE(ctx->vp8_enc.boolenc.range);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_ENC_CTRL2);
++	reg = H1_REG_VP8_DCT_PARTITION_CNT(0);
++	reg |= H1_REG_VP8_FILTER_LEVEL(compute_filter_level(qp));
++	reg |= H1_REG_VP8_FILTER_SHARPNESS(params->sharpness_level);
++	reg |= H1_REG_VP8_ZERO_MV_PENALTY_FOR_REF2(0);
++	reg |= H1_REG_VP8_BOOL_ENC_VALUE_BITS(24 - ctx->vp8_enc.boolenc.bit_count);
++	reg |= H1_REG_VP8_BOOL_ENC_RANGE(ctx->vp8_enc.boolenc.range);
++	vepu_write_relaxed(vpu, reg, H1_REG_VP8_PENALTY_FILTER);
 +
-+	vepu_write_relaxed(vpu, 0xffffffff, VEPU_REG_ROI1);
-+	vepu_write_relaxed(vpu, 0xffffffff, VEPU_REG_ROI2);
-+	vepu_write_relaxed(vpu, 0, VEPU_REG_STABILIZATION_OUTPUT);
-+	vepu_write_relaxed(vpu, 0x962b4c85, VEPU_REG_RGB2YUV_CONVERSION_COEF1);
-+	vepu_write_relaxed(vpu, 0x90901d50, VEPU_REG_RGB2YUV_CONVERSION_COEF2);
-+	vepu_write_relaxed(vpu, 0x0000b694, VEPU_REG_RGB2YUV_CONVERSION_COEF3);
-+	vepu_write_relaxed(vpu, 0, VEPU_REG_RGB_MASK_MSB);
-+	vepu_write_relaxed(vpu, 0, VEPU_REG_CIR_INTRA_CTRL);
-+	vepu_write_relaxed(vpu, 0xffffffff, VEPU_REG_INTRA_AREA_CTRL);
++	vepu_write_relaxed(vpu, 0xffffffff, H1_REG_FIRST_ROI_AREA);
++	vepu_write_relaxed(vpu, 0xffffffff, H1_REG_SECOND_ROI_AREA);
++	vepu_write_relaxed(vpu, 0, H1_REG_STABILIZATION_OUTPUT);
++	vepu_write_relaxed(vpu, 0x962b4c85, H1_REG_RGB_YUV_COEFF(0));
++	vepu_write_relaxed(vpu, 0x90901d50, H1_REG_RGB_YUV_COEFF(1));
++	vepu_write_relaxed(vpu, 0x0000b694, H1_REG_RGB_YUV_COEFF(2));
++	vepu_write_relaxed(vpu, 0, H1_REG_RGB_MASK_MSB);
++	vepu_write_relaxed(vpu, 0, H1_REG_CIR_INTRA_CTRL);
++	vepu_write_relaxed(vpu, 0xffffffff, H1_REG_INTRA_AREA_CTRL);
 +
 +	/* Intra 4x4 mode */
 +	tmp = qp * 2 + 8;
 +	for (i = 0; i < 5; i++) {
-+		reg = VEPU_REG_VP8_INTRA_4X4_PENALTY_0
++		reg = H1_REG_VP8_INTRA_4X4_PENALTY_0
 +			((intra_4_tree_penalty[i * 2] * tmp) >> 8);
-+		reg |= VEPU_REG_VP8_INTRA_4x4_PENALTY_1
++		reg |= HI_REG_VP8_INTRA_4X4_PENALTY_1
 +			((intra_4_tree_penalty[i * 2 + 1] * tmp) >> 8);
 +		vepu_write_relaxed(vpu, reg,
-+				   VEPU_REG_VP8_INTRA_4X4_PENALTY(i));
++				   H1_REG_VP8_INTRA_4X4_PENALTY(i));
 +	}
 +
 +	/* Intra 16x16 mode */
 +	tmp = qp * 2 + 64;
 +	for (i = 0; i < 2; i++) {
-+		reg = VEPU_REG_VP8_INTRA_16X16_PENALTY_0
++		reg = H1_REG_VP8_INTRA_16X16_PENALTY_0
 +			((intra_16_tree_penalty[2 * i] * tmp) >> 8);
-+		reg |= VEPU_REG_VP8_INTRA_16X16_PENALTY_1
++		reg |= HI_REG_VP8_INTRA_16X16_PENALTY_1
 +			((intra_16_tree_penalty[2 * i + 1] * tmp) >> 8);
 +		vepu_write_relaxed(vpu, reg,
-+				   VEPU_REG_VP8_INTRA_16X16_PENALTY(i));
++				   H1_REG_VP8_INTRA_16X16_PENALTY(i));
 +	}
 +
-+	reg = VEPU_REG_VP8_LF_REF_DELTA_INTRA_MB(ctx->vp8_enc.ref_delta[REF_DELTA_INTRA_MB]);
-+	reg |= VEPU_REG_VP8_LF_MODE_DELTA_BPRED(ctx->vp8_enc.mode_delta[MODE_DELTA_BPRED]);
-+	reg |= VEPU_REG_VP8_INTER_TYPE_BIT_COST(0);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_CONTROL);
++	reg = H1_REG_VP8_LF_REF_DELTA_INTRA_MB(ctx->vp8_enc.ref_delta[REF_DELTA_INTRA_MB])
++		| H1_REG_VP8_LF_REF_DELTA_LAST_REF(ctx->vp8_enc.ref_delta[REF_DELTA_LAST_REF])
++		| H1_REG_VP8_LF_REF_DELTA_GOLDEN(ctx->vp8_enc.ref_delta[REF_DELTA_GOLDEN])
++		| H1_REG_VP8_LF_REF_DELTA_ALT_REF(ctx->vp8_enc.ref_delta[REF_DELTA_ALT_REF]);
++	vepu_write_relaxed(vpu, reg, H1_REG_VP8_LOOP_FILTER_REF_DELTA);
 +
-+	reg = VEPU_REG_VP8_LF_REF_DELTA_ALT_REF(ctx->vp8_enc.ref_delta[REF_DELTA_ALT_REF])
-+		| VEPU_REG_VP8_LF_REF_DELTA_LAST_REF(ctx->vp8_enc.ref_delta[REF_DELTA_LAST_REF])
-+		| VEPU_REG_VP8_LF_REF_DELTA_GOLDEN(ctx->vp8_enc.ref_delta[REF_DELTA_GOLDEN]);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_LOOP_FILTER_REF_DELTA);
-+
-+	reg = VEPU_REG_VP8_LF_MODE_DELTA_SPLITMV(ctx->vp8_enc.mode_delta[MODE_DELTA_SPLITMV])
-+		| VEPU_REG_VP8_LF_MODE_DELTA_ZEROMV(ctx->vp8_enc.mode_delta[MODE_DELTA_ZEROMV])
-+		| VEPU_REG_VP8_LF_MODE_DELTA_NEWMV(ctx->vp8_enc.mode_delta[MODE_DELTA_NEWMV]);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_VP8_LOOP_FILTER_MODE_DELTA);
++	reg = H1_REG_VP8_LF_MODE_DELTA_BPRED(ctx->vp8_enc.mode_delta[MODE_DELTA_BPRED])
++		| H1_REG_VP8_LF_MODE_DELTA_ZEROMV(ctx->vp8_enc.mode_delta[MODE_DELTA_ZEROMV])
++		| H1_REG_VP8_LF_MODE_DELTA_NEWMV(ctx->vp8_enc.mode_delta[MODE_DELTA_NEWMV])
++		| H1_REG_VP8_LF_MODE_DELTA_SPLITMV(ctx->vp8_enc.mode_delta[MODE_DELTA_SPLITMV]);
++	vepu_write_relaxed(vpu, reg, H1_REG_VP8_LOOP_FILTER_MODE_DELTA);
 +
 +	for (i = 0; i < 128; i += 4) {
 +		u32 x;
 +		u32 y;
 +
-+		reg = VEPU_REG_DMV_PENALTY_TABLE_BIT(i * 2, 3);
-+		reg |= VEPU_REG_DMV_PENALTY_TABLE_BIT((i + 1) * 2, 2);
-+		reg |= VEPU_REG_DMV_PENALTY_TABLE_BIT((i + 2) * 2, 1);
-+		reg |= VEPU_REG_DMV_PENALTY_TABLE_BIT((i + 3) * 2, 0);
-+		vepu_write_relaxed(vpu, reg, VEPU_REG_DMV_PENALTY_TBL(i / 4));
++		reg = H1_REG_DMV_4P_1P_PENALTY_BIT(i * 2, 3);
++		reg |= H1_REG_DMV_4P_1P_PENALTY_BIT((i + 1) * 2, 2);
++		reg |= H1_REG_DMV_4P_1P_PENALTY_BIT((i + 2) * 2, 1);
++		reg |= H1_REG_DMV_4P_1P_PENALTY_BIT((i + 3) * 2, 0);
++		vepu_write_relaxed(vpu, reg, H1_REG_DMV_4P_1P_PENALTY(i / 4));
 +
 +		y = cost_mv(i * 2, entropy->mv_prob[0]);	/* mv y */
 +		x = cost_mv(i * 2, entropy->mv_prob[1]);	/* mv x */
 +
-+		reg = VEPU_REG_DMV_Q_PIXEL_PENALTY_TABLE_BIT(
-+			min(255u, (y + x + 1) / 2 * weight[qp] >> 8), 3);
++		reg = H1_REG_DMV_QPEL_PENALTY_BIT
++			(min(255u, (y + x + 1) / 2 * weight[qp] >> 8), 3);
 +
 +		y = cost_mv((i + 1) * 2, entropy->mv_prob[0]); /* mv y */
 +		x = cost_mv((i + 1) * 2, entropy->mv_prob[1]); /* mv x */
-+		reg |= VEPU_REG_DMV_Q_PIXEL_PENALTY_TABLE_BIT(
-+			min(255u, (y + x + 1) / 2 * weight[qp] >> 8), 2);
++		reg |= H1_REG_DMV_QPEL_PENALTY_BIT
++			(min(255u, (y + x + 1) / 2 * weight[qp] >> 8), 2);
 +
 +		y = cost_mv((i + 2) * 2, entropy->mv_prob[0]); /* mv y */
 +		x = cost_mv((i + 2) * 2, entropy->mv_prob[1]); /* mv x */
-+		reg |= VEPU_REG_DMV_Q_PIXEL_PENALTY_TABLE_BIT(
-+			min(255u, (y + x + 1) / 2 * weight[qp] >> 8), 1);
++		reg |= H1_REG_DMV_QPEL_PENALTY_BIT
++			(min(255u, (y + x + 1) / 2 * weight[qp] >> 8), 1);
 +
 +		y = cost_mv((i + 3) * 2, entropy->mv_prob[0]); /* mv y */
 +		x = cost_mv((i + 3) * 2, entropy->mv_prob[1]); /* mv x */
-+		reg |= VEPU_REG_DMV_Q_PIXEL_PENALTY_TABLE_BIT(
-+			min(255u, (y + x + 1) / 2 * weight[qp] >> 8), 0);
++		reg |= H1_REG_DMV_QPEL_PENALTY_BIT
++			(min(255u, (y + x + 1) / 2 * weight[qp] >> 8), 0);
 +
 +		vepu_write_relaxed(vpu, reg,
-+				   VEPU_REG_DMV_Q_PIXEL_PENALTY_TBL(i / 4));
++				   H1_REG_DMV_QPEL_PENALTY(i / 4));
 +	}
 +}
 +
-+int rockchip_vpu2_vp8_enc_run(struct hantro_ctx *ctx)
++int hantro_h1_vp8_enc_run(struct hantro_ctx *ctx)
 +{
 +	struct hantro_dev *vpu = ctx->dev;
 +	struct v4l2_ctrl_vp8_encode_params *params;
@@ -2035,37 +1683,44 @@ index 000000000000..95b14e3a8fcb
 +	ctx->vp8_enc.prob_last = params->prob_last;
 +	ctx->vp8_enc.prob_gf = params->prob_gf;
 +
-+	rockchip_vpu2_vp8_enc_update_entropy(ctx);
++	hantro_h1_vp8_enc_update_entropy(ctx);
 +
 +	qp = *ctrl->p_cur.p_s32;
 +	ctx->vp8_enc.prob_skip_false = default_prob_skip_false[qp];
-+	rockchip_vpu2_vp8_enc_write_header(ctx, qp, params);
++	hantro_h1_vp8_enc_write_header(ctx, qp, params);
 +
 +	/*
 +	 * Program the hardware.
 +	 */
-+	vepu_write_relaxed(vpu, VEPU_REG_ENCODE_FORMAT_VP8, VEPU_REG_ENCODE_START);
++	vepu_write_relaxed(vpu, H1_REG_ENC_CTRL_ENC_MODE_VP8, H1_REG_ENC_CTRL);
 +
-+	rockchip_vpu2_vp8_enc_set_params(vpu, ctx, qp, params);
-+	rockchip_vpu2_vp8_enc_set_buffers(vpu, ctx, qp, params);
++	hantro_h1_vp8_enc_set_params(vpu, ctx, qp, params);
++	hantro_h1_vp8_enc_set_src_img_ctrl(vpu, ctx);
++	hantro_h1_vp8_enc_set_buffers(vpu, ctx, qp, params);
 +
-+	reg = VEPU_REG_AXI_CTRL_READ_ID(0)
-+		| VEPU_REG_AXI_CTRL_WRITE_ID(0)
-+		| VEPU_REG_AXI_CTRL_BURST_LEN(16)
-+		| VEPU_REG_AXI_CTRL_INCREMENT_MODE(0)
-+		| VEPU_REG_AXI_CTRL_BIRST_DISCARD(0);
-+	vepu_write_relaxed(vpu, reg, VEPU_REG_AXI_CTRL);
++	reg =     H1_REG_AXI_CTRL_OUTPUT_SWAP16
++		| H1_REG_AXI_CTRL_INPUT_SWAP16
++		| H1_REG_AXI_CTRL_BURST_LEN(16)
++		| H1_REG_AXI_CTRL_OUTPUT_SWAP32
++		| H1_REG_AXI_CTRL_INPUT_SWAP32
++		| H1_REG_AXI_CTRL_OUTPUT_SWAP8
++		| H1_REG_AXI_CTRL_INPUT_SWAP8;
++	/* Make sure that all registers are written at this point. */
++	vepu_write(vpu, reg, H1_REG_AXI_CTRL);
 +
 +	/* Start the hardware. */
-+	reg = VEPU_REG_MB_HEIGHT(MB_HEIGHT(ctx->src_fmt.height))
-+		| VEPU_REG_MB_WIDTH(MB_WIDTH(ctx->src_fmt.width))
-+		| VEPU_REG_ENCODE_FORMAT_VP8
-+		| VEPU_REG_ENCODE_ENABLE;
++	reg =     H1_REG_ENC_CTRL_TIMEOUT_EN
++		| H1_REG_ENC_CTRL_MV_WRITE
++		| H1_REG_ENC_REC_WRITE_DISABLE
++		| H1_REG_ENC_CTRL_WIDTH(MB_WIDTH(ctx->src_fmt.width))
++		| H1_REG_ENC_CTRL_HEIGHT(MB_HEIGHT(ctx->src_fmt.height))
++		| H1_REG_ENC_CTRL_ENC_MODE_VP8
++		| H1_REG_ENC_CTRL_EN_BIT;
 +
 +	if (is_intra(ctx))
-+		reg |= VEPU_REG_FRAME_TYPE_INTRA;
++		reg |= H1_REG_ENC_PIC_INTRA;
 +	else
-+		reg |= VEPU_REG_FRAME_TYPE_INTER;
++		reg |= H1_REG_ENC_PIC_INTER;
 +
 +	/* Kick the watchdog and start encoding */
 +	hantro_end_prepare_run(ctx);
@@ -2073,12 +1728,12 @@ index 000000000000..95b14e3a8fcb
 +	for (i = 0; i < 184; ++i)
 +		vepu_read(vpu, i * 4);
 +
-+	vepu_write(vpu, reg, VEPU_REG_ENCODE_START);
++	vepu_write(vpu, reg, H1_REG_ENC_CTRL);
 +
 +	return 0;
 +}
 +
-+void rockchip_vpu2_vp8_enc_done(struct hantro_ctx *ctx)
++void hantro_h1_vp8_enc_done(struct hantro_ctx *ctx)
 +{
 +	struct vb2_v4l2_buffer *dst_buf;
 +	struct hantro_vp8_enc_ctrl_buf *ctrl_buf = ctx->vp8_enc.ctrl_buf.cpu;
@@ -2160,74 +1815,24 @@ index 000000000000..95b14e3a8fcb
 +
 +	ctx->vp8_enc.last_intra = is_intra(ctx);
 +	++ctx->vp8_enc.frame_counter;
-+}
-diff --git a/drivers/media/platform/verisilicon/rockchip_vpu2_regs.h b/drivers/media/platform/verisilicon/rockchip_vpu2_regs.h
-index 49e40889545b..b68882965770 100644
---- a/drivers/media/platform/verisilicon/rockchip_vpu2_regs.h
-+++ b/drivers/media/platform/verisilicon/rockchip_vpu2_regs.h
-@@ -258,6 +258,7 @@
- #define     VEPU_REG_FRAME_TYPE_INTER			(0x0 << 6)
- #define     VEPU_REG_FRAME_TYPE_INTRA			(0x1 << 6)
- #define     VEPU_REG_FRAME_TYPE_MVCINTER		(0x2 << 6)
-+#define     VEPU_REG_ENCODE_FORMAT_VP8			(0x1 << 4)	/* undocumented */
- #define     VEPU_REG_ENCODE_FORMAT_JPEG			(0x2 << 4)
- #define     VEPU_REG_ENCODE_FORMAT_H264			(0x3 << 4)
- #define     VEPU_REG_ENCODE_ENABLE			BIT(0)
-diff --git a/drivers/media/platform/verisilicon/rockchip_vpu_hw.c b/drivers/media/platform/verisilicon/rockchip_vpu_hw.c
-index 816ffa905a4b..794fda950e9f 100644
---- a/drivers/media/platform/verisilicon/rockchip_vpu_hw.c
-+++ b/drivers/media/platform/verisilicon/rockchip_vpu_hw.c
-@@ -60,6 +60,19 @@ static const struct hantro_fmt rockchip_vpu_enc_fmts[] = {
- 			.step_height = MB_DIM,
- 		},
- 	},
-+	{
-+		.fourcc = V4L2_PIX_FMT_VP8_FRAME,
-+		.codec_mode = HANTRO_MODE_VP8_ENC,
-+		.max_depth = 2,
-+		.frmsize = {
-+			.min_width = 96,
-+			.max_width = 1920,
-+			.step_width = MB_DIM,
-+			.min_height = 96,
-+			.max_height = 1088,
-+			.step_height = MB_DIM,
-+		},
-+	},
- };
- 
- static const struct hantro_fmt rockchip_vpu1_postproc_fmts[] = {
-@@ -452,6 +465,7 @@ static int rockchip_vpu_hw_init(struct hantro_dev *vpu)
- {
- 	/* Bump ACLK to max. possible freq. to improve performance. */
- 	clk_set_rate(vpu->clocks[0].clk, RK3288_ACLK_MAX_FREQ);
 +
- 	return 0;
- }
++	if (is_intra(ctx))
++		dst_buf->flags |= V4L2_BUF_FLAG_KEYFRAME;
++	else
++		dst_buf->flags |= V4L2_BUF_FLAG_PFRAME;
++}
+diff --git a/drivers/media/platform/verisilicon/hantro_hw.h b/drivers/media/platform/verisilicon/hantro_hw.h
+index aaf82e694cd0..e2dc03b81b0d 100644
+--- a/drivers/media/platform/verisilicon/hantro_hw.h
++++ b/drivers/media/platform/verisilicon/hantro_hw.h
+@@ -632,4 +632,7 @@ int hantro_vp8_enc_init(struct hantro_ctx *ctx);
+ void rockchip_vpu2_vp8_enc_done(struct hantro_ctx *ctx);
+ void hantro_vp8_enc_exit(struct hantro_ctx *ctx);
  
-@@ -590,6 +604,13 @@ static const struct hantro_codec_ops rk3399_vpu_codec_ops[] = {
- 		.init = hantro_vp8_dec_init,
- 		.exit = hantro_vp8_dec_exit,
- 	},
-+	[HANTRO_MODE_VP8_ENC] = {
-+		.run = rockchip_vpu2_vp8_enc_run,
-+		.reset = rockchip_vpu2_enc_reset,
-+		.init = hantro_vp8_enc_init,
-+		.done = rockchip_vpu2_vp8_enc_done,
-+		.exit = hantro_vp8_enc_exit,
-+	},
- };
- 
- static const struct hantro_codec_ops rk3568_vepu_codec_ops[] = {
-@@ -744,7 +765,7 @@ const struct hantro_variant rk3399_vpu_variant = {
- 	.dec_fmts = rk3399_vpu_dec_fmts,
- 	.num_dec_fmts = ARRAY_SIZE(rk3399_vpu_dec_fmts),
- 	.codec = HANTRO_JPEG_ENCODER | HANTRO_MPEG2_DECODER |
--		 HANTRO_VP8_DECODER,
-+		 HANTRO_VP8_DECODER | HANTRO_VP8_ENCODER,
- 	.codec_ops = rk3399_vpu_codec_ops,
- 	.irqs = rockchip_vpu2_irqs,
- 	.num_irqs = ARRAY_SIZE(rockchip_vpu2_irqs),
++int hantro_h1_vp8_enc_run(struct hantro_ctx *ctx);
++void hantro_h1_vp8_enc_done(struct hantro_ctx *ctx);
++
+ #endif /* HANTRO_HW_H_ */
 -- 
 2.25.1
 
