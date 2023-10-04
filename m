@@ -2,63 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3D07B786B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6F37B7877
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241367AbjJDHMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
+        id S241481AbjJDHNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232624AbjJDHMT (ORCPT
+        with ESMTP id S241375AbjJDHNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:12:19 -0400
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D686AB
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 00:12:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1696403530;
-        bh=nnsazRl0VawtG0Ot+fpS8kiTavsPsKlA4kc+rHNHQmU=;
-        h=From:To:Cc:Subject:Date;
-        b=hdIiuHX+JSQipiYLgLufs4vbNdi2C/znrA9pbkdQ49mAJZCxxaHdnrBtytiZslGq7
-         NB0IWLDtOsg69qHWOEpd/kxpKXZ6OpFkcTe2ZDM3HU0e3EfHTviT3YDztMcDk0pslE
-         gBXa08c8RmGCU33UwDrUGo62+yogqH5zV510Xxds=
-Received: from KernelDevBox.byted.org ([180.184.49.4])
-        by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
-        id 3071DA8C; Wed, 04 Oct 2023 15:12:07 +0800
-X-QQ-mid: xmsmtpt1696403527tq1y2h3b8
-Message-ID: <tencent_681B0528D436898B1B945A8B2D46300C0F07@qq.com>
-X-QQ-XMAILINFO: M5ZQ+xctoGy32JF2BS+69Ng/YkDt5B0Lg7DW4BkRYST/lLCvbYHJTGm0NllUmu
-         D69sI1B/XbiUDrolkyjamC4AYqdlhGJvMdGX+BaoYDGEhmdDg8hisMOlN9/D6M0Xg2loqGHDBGkx
-         Jbt5lrV0JxzxQU47wEKg5RkKBCVQLafviOR0h+ftgTNpHBS0kWLj8Ht5WC3Jp6YaNmgJsAEV0UrE
-         M7LLS+lZAX4bRzNFOXLxlnlYKjbVsPf29BfXF3YxcZkZM26aIfY5bNfcPAZBzzV7RNWsLsCJCDBZ
-         I08mmmNrBiCezn6iZXFMiAcHUNdRQZSryKV4geVq0Ur51WDhjq76d6FAe3K0EF6kSHgAV1cIF1eU
-         eR1GaEIU5z2FgC6Cx8mkJopFZbxbjR4m/r0uCA/jUaw5YNN0HaMcpl4EtDD5zCOmRPZAnJmibh6p
-         3VfZcXxbsB8fcfsKnXEmbiu06tVmSujcpCO4nGDuj5MOOUlA7OtuGE4eSyoqi7Drit+cLDhAFMmR
-         Rn/5Aan1+PxrMn1wu6lSFavUdcx3Jekp2bJBElfzShplchKK0MEmUrUn5AI6WfHZAWQwdWyb0Ys7
-         OD2jakV3BMJmmIn/Llguqn1PEM+s5BJ6svDtDYwAcoOnnAkTk9ZktdSKmwSlG0rkKgYORO/kNdRB
-         n3fNM8brtoaT49CskpiVAMO86Y8VfZ8noNTktPyqX/N4PdVAO88o+GPey2LLvzUFQ18bJRdJD5Tm
-         XEnpxuzUDja0UzyMD7hQWFTrQuq18gNyxjwRjLepDzEcBCOAXW7zRW/rWh1iI0ZhxOMDEmOctoqN
-         DJEGcovROsDoaaL3C/wLrOCdVDkPnH1jYTgZr0k9dRL2NyGwvyrHGAS5fbhmKcJxH47Cs1W/lu3L
-         B+LztfDUYpLw+8ViKP8CMN9RNG1iLgp7YXo/+dxeaxRs28m8FkMQ+1k+TBlHDjosqn2hHus+enMW
-         r60evUAPfdYRqsFWNtjjDFk7QS2gQEX4CgdPBtCEAdvFRXiLVOfGJu9bCbmTfX
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-From:   Zhang Shurong <zhang_shurong@foxmail.com>
-To:     shengjiu.wang@gmail.com
-Cc:     Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Zhang Shurong <zhang_shurong@foxmail.com>
-Subject: [PATCH] ASoC: fsl: Fix PM disable depth imbalance in fsl_easrc_probe
-Date:   Wed,  4 Oct 2023 15:12:05 +0800
-X-OQ-MSGID: <20231004071205.3857082-1-zhang_shurong@foxmail.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 4 Oct 2023 03:13:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03DCB7;
+        Wed,  4 Oct 2023 00:13:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 867FDC433C7;
+        Wed,  4 Oct 2023 07:13:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696403621;
+        bh=slTWOyAU1ZBbYv/JtLRY8Y7iFRGILVvZKFfcQRK6mjU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SFB/MuUtKtRQlI+MlBjIu76Wg/9CWWZCq098e2vitg2omxQz5qn3UE4ZUrfY/35FJ
+         LgF6gT4VCSaymC9cZ3j5PiHnPcupI0nL5LsWb4ycLcNyWEnA3FRjfSbwJColtsvO6v
+         0oHI5TYuwd1LWmKvmbejzDOwSMmCL9SFFV0Cdqx0QOMnUEvJJgQ9whChh1wSWFS25Y
+         uRNbhcglC2j8bl5Us4pWA9bNRDvB6vY21MAhpb2SDFkmYRVo652LB4Zo5VsU3G6YVJ
+         zWjeHW41UsSiqFrg05HBCBakP6j2GrLMk5iZdDvAGoiT2uaCfkYzy6DEZgl2Mu9CLp
+         OZwc0e/sikbFw==
+Date:   Wed, 4 Oct 2023 12:43:37 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Om Prakash Singh <quic_omprsing@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>
+Subject: Re: [PATCH v4 0/5] arm64: qcom: sm8x50: enable RNG
+Message-ID: <ZR0QoUiVPJP8WXJY@matsya>
+References: <20231003-topic-sm8550-rng-v4-0-255e4d0ba08e@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003-topic-sm8550-rng-v4-0-255e4d0ba08e@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,44 +60,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pm_runtime_enable will increase power disable depth. Thus
-a pairing decrement is needed on the error handling path to
-keep it balanced according to context. We fix it by calling
-pm_runtime_disable when error returns.
+On 03-10-23, 09:10, Neil Armstrong wrote:
+> Enable RNG on SM8550 & SM8450 by reverting the PRNG bindings & DT
+> for SM8450 and correctly document it as a True Random Number Generator.
+> 
+> - SM8550 QRD test run:
+> 
+> smccc_trng qcom_hwrng 
+> 
+> qcom_hwrng
+> 
+> rngtest 6.15
+> Copyright (c) 2004 by Henrique de Moraes Holschuh
+> This is free software; see the source for copying conditions.  There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> 
+> rngtest: starting FIPS tests...
+> rngtest: bits received from input: 209420032
+> rngtest: FIPS 140-2 successes: 10461
+> rngtest: FIPS 140-2 failures: 10
+> rngtest: FIPS 140-2(2001-10-10) Monobit: 1
+> rngtest: FIPS 140-2(2001-10-10) Poker: 2
+> rngtest: FIPS 140-2(2001-10-10) Runs: 3
+> rngtest: FIPS 140-2(2001-10-10) Long run: 4
+> rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
+> rngtest: input channel speed: (min=9.219; avg=63.879; max=19073.486)Mibits/s
+> rngtest: FIPS tests speed: (min=24.965; avg=29.093; max=118.469)Mibits/s
+> rngtest: Program run time: 10002827 microseconds
+> 
+> - SM8450 HDK test run:
+> 
+> qcom_hwrng
+> 
+> rngtest 6.15
+> Copyright (c) 2004 by Henrique de Moraes Holschuh
+> This is free software; see the source for copying conditions.  There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> 
+> rngtest: starting FIPS tests...
+> rngtest: bits received from input: 420580032
+> rngtest: FIPS 140-2 successes: 21014
+> rngtest: FIPS 140-2 failures: 15
+> rngtest: FIPS 140-2(2001-10-10) Monobit: 2
+> rngtest: FIPS 140-2(2001-10-10) Poker: 0
+> rngtest: FIPS 140-2(2001-10-10) Runs: 7
+> rngtest: FIPS 140-2(2001-10-10) Long run: 6
+> rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
+> rngtest: input channel speed: (min=15.711; avg=50.033; max=32.493)Mibits/s
+> rngtest: FIPS tests speed: (min=136.239; avg=203.833; max=227.065)Mibits/s
+> rngtest: Program run time: 10000978 microseconds
 
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
----
- sound/soc/fsl/fsl_easrc.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Acked-by: Vinod Koul <vkoul@kernel.org>
 
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index ba62995c909a..ec53bda46a46 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1966,17 +1966,21 @@ static int fsl_easrc_probe(struct platform_device *pdev)
- 					      &fsl_easrc_dai, 1);
- 	if (ret) {
- 		dev_err(dev, "failed to register ASoC DAI\n");
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	ret = devm_snd_soc_register_component(dev, &fsl_asrc_component,
- 					      NULL, 0);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to register ASoC platform\n");
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	return 0;
-+
-+err_pm_disable:
-+	pm_runtime_disable(&pdev->dev);
-+	return ret;
- }
- 
- static void fsl_easrc_remove(struct platform_device *pdev)
 -- 
-2.30.2
-
+~Vinod
