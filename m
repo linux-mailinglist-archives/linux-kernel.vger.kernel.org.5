@@ -2,75 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C507B84E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036667B84FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243309AbjJDQWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
+        id S243351AbjJDQZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243267AbjJDQWN (ORCPT
+        with ESMTP id S243350AbjJDQZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:22:13 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDA4A7;
-        Wed,  4 Oct 2023 09:22:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5FB5C433C7;
-        Wed,  4 Oct 2023 16:22:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696436527;
-        bh=pvpGmo1Yrt+7LMlccum7Usx/gcLqZWbEtiJQ4DejeFg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VxEPyFJ1+lzraM+2M57RSOdNws0syfKnTDqjRM04kXjmrrlVE8B/VdzofnQmIW3e3
-         dZUu8GH9stBl1Tf/kSB3YrD+ci3AP6NWfLnImPAt7mTEZqGAyJUUyjCKLJCqkwLmw4
-         tR/E0V48Gdn+lVVTadNmmvFyCr05bFrYpoFDEo4j6iplF5O+U6Rnkg5SjzKgSMivep
-         WDMZxiVuIUCAzkkGnS+QZ3o4C9ez+qgKsqxFlHmPCg+QUUhmolRny9hu4DdWF86v7y
-         jZZs1O1tDU99DveNkLdW/+4mdW0n17IMpNb5SsOVzms5ipZxA77rxjElhRn7Oh7eYf
-         zIHIMI5gkfVow==
-Date:   Wed, 4 Oct 2023 09:22:05 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH 0/4] tracing: improve symbolic printing
-Message-ID: <20231004092205.02c8eb0b@kernel.org>
-In-Reply-To: <20230921085129.261556-5-johannes@sipsolutions.net>
-References: <20230921085129.261556-5-johannes@sipsolutions.net>
+        Wed, 4 Oct 2023 12:25:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC504CE
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:23:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696436624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kHHB0nuT3xkUSZTp0095FiMfUGouLO4qSIAie4xx6Z4=;
+        b=GFFQs4UmPsWbASRJ2tI4j5mBvnHYRFslWbLGZMgdH0ho2SqQpdvWlXLKDL7VAxWiFLVWOm
+        cpc+0M/74oVBX7vj3VuIepjNB5viXI9dIl/4aedENh6zkNXC/SM0WN38K5onK1fHTi7DpD
+        cMOghJv18+y/GhKUoS8r+WoozjD2UsU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-124-y9HjJXybP7OcneZxV6mywg-1; Wed, 04 Oct 2023 12:23:30 -0400
+X-MC-Unique: y9HjJXybP7OcneZxV6mywg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BE6533C2864B;
+        Wed,  4 Oct 2023 16:23:29 +0000 (UTC)
+Received: from [10.22.32.136] (unknown [10.22.32.136])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 02BB01005B8E;
+        Wed,  4 Oct 2023 16:23:28 +0000 (UTC)
+Message-ID: <0c36c117-b44c-89ef-1988-6059c41fad65@redhat.com>
+Date:   Wed, 4 Oct 2023 12:23:28 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v4] sched/core: Use zero length to reset cpumasks in
+ sched_setaffinity()
+Content-Language: en-US
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
+        Brent Rowsell <browsell@redhat.com>,
+        Peter Hunt <pehunt@redhat.com>
+References: <20231003205735.2921964-1-longman@redhat.com>
+ <20231004083648.GI27267@noisy.programming.kicks-ass.net>
+ <871qeaefco.fsf@oldenburg.str.redhat.com>
+ <4a4076c4-c6ad-063d-a2e1-3048cf71f723@redhat.com>
+ <87mswycztd.fsf@oldenburg.str.redhat.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <87mswycztd.fsf@oldenburg.str.redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023 10:51:30 +0200 Johannes Berg wrote:
-> So I was frustrated with not seeing the names of SKB dropreasons
-> for all but the core reasons, and then while looking into this
-> all, realized, that the current __print_symbolic() is pretty bad
-> anyway.
-> 
-> So I came up with a new approach, using a separate declaration
-> of the symbols, and __print_sym() in there, but to userspace it
-> all doesn't matter, it shows it the same way, just dyamically
-> instead of munging with the strings all the time.
-> 
-> This is a huge .data savings as far as I can tell, with a modest
-> amount (~4k) of .text addition, while making it all dynamic and
-> in the SKB dropreason case even reusing the existing list that
-> dropmonitor uses today. Surely patch 3 isn't needed here, but it
-> felt right.
-> 
-> Anyway, I think it's a pretty reasonable approach overall, and
-> it does works.
-> 
-> I've listed a number of open questions in the first patch since
-> that's where the real changes for this are.
 
-Potentially naive question - the trace point holds enum skb_drop_reason.
-The user space can get the names from BTF. Can we not teach user space
-to generically look up names of enums in BTF?
+On 10/4/23 08:55, Florian Weimer wrote:
+> * Waiman Long:
+>
+>> On 10/4/23 08:34, Florian Weimer wrote:
+>>> * Peter Zijlstra:
+>>>
+>>>> Subject: sched: Add CPU_FILL()
+>>>>
+>>>> Add the CPU_FILL() macros to easily create an all-set cpumask.
+>>>>
+>>>> FreeBSD also provides this macro with this semantic.
+>>>>
+>>>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>>> My main concer is that obtaining the size of the mask, or at least an
+>>> approximiation is not exactly easy.  If there's an expectation that
+>>> applications reset the mask more often than they do today (I don't have
+>>> the full context here), then we'd some decent interface to get the
+>>> approriate size.
+>> I believe the macro just use sizeof(cpu_set_t) as the size of the
+>> bitmask. It is the same case as in CPU_ZERO().
+> I mean the CPU_FILL_S macro also defined in the patch.  Correctly
+> written applications should not use CPU_FILL and statically sized CPU
+> sets.
+
+Right, that can be a problem. If the input bitmask size is less than 
+cpumask_size(), CPU_FILL_S() won't work to reset the cpumask. In fact, 
+it will treat that bitmask just like a regular sched_setaffinity() call 
+and set it accordingly.
+
+With that caveat, I would prefer to keep using a length of 0 for the 
+reset then.
+
+Cheers,
+Longman
+
