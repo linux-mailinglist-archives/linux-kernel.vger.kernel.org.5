@@ -2,51 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 687CB7B7671
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 04:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC117B7682
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 04:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240564AbjJDCAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 22:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
+        id S241170AbjJDCC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 22:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbjJDCAk (ORCPT
+        with ESMTP id S241041AbjJDCCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 22:00:40 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25080A7;
-        Tue,  3 Oct 2023 19:00:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696384835;
-        bh=OYwuO+L2Qg7Tzeggc39l+CyC2BYsYQ2kidiuBqWOV8Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sVozHDImVZuon2+wdzT2jfr6p2eOywX3H/CZr8YiH4IsWYhY/ZI8jwlWi7G+fNVxt
-         lJEfiessyjfMjCrlQyuDyiqtz9AC4IhgMPob5/3G25bT2fsRIqPFZ/DlPzjPq8V/dj
-         UQmOiSdkWKKDtNx+nvj2L9KV169bW3bMR3+YVT2u6azorLX6nFPuI1ic4JOlvvUw41
-         sPJ7AQUmKUSJPc+q8TFd6B/eds/CDr/VyJxJZrT5S+bAyq1asuAHh2eoo6LGl5VIHR
-         ZPqD3nN1i79GxYpBP5K8q7p7LctATO1uszFUlWQeq1lsoUVPZW45GIvUv9+3w1OMuF
-         SYbU43ltry5kQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S0dFH0ptjz4xQX;
-        Wed,  4 Oct 2023 13:00:35 +1100 (AEDT)
-Date:   Wed, 4 Oct 2023 13:00:34 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, Greg KH <greg@kroah.com>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Rohit Agarwal <quic_rohiagar@quicinc.com>
-Subject: linux-next: manual merge of the phy-next tree with the usb tree
-Message-ID: <20231004130034.7b1c5b89@canb.auug.org.au>
+        Tue, 3 Oct 2023 22:02:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BFDCE;
+        Tue,  3 Oct 2023 19:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696384961; x=1727920961;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=C32fXhOHrOdnQibV0Vp/v0wM36M4oPsGHuFMplkjBYo=;
+  b=IRSsg2bRmuvaKkiXZRvx+wQphWnPPViyIbVbT/SAODZTbpqCmK+c5WVE
+   v1+54uKGkTwygz+elB/qEgHJK2Ai2iGWfJFE/t1CSTGfqc3pdIM8Z6u0Y
+   /Xb4ZuKIFVsZEUgkZQTUpnGo9Tg5hBYCaEmWH30T4DLVC2BjE5Ll7hT67
+   3UKOYlIC3HEuaDMnG6bVXoM69WKRrmNRXxMwU5QLuBzMOVCdB0jTKzrD9
+   6kBwEuaH+gVJ5i1SzPiBhlfGg1yJEenzHutlCK5zeyY/xCKDxZRcalOoF
+   yRvTzyttK2YlhrHB7xtLz+mP1O8w8d9H0EQHudy3Zfb9SBbczxxRlozd+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="1625859"
+X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
+   d="scan'208";a="1625859"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 19:02:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="700926284"
+X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
+   d="scan'208";a="700926284"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 19:02:22 -0700
+Received: from debox1-desk4.intel.com (unknown [10.209.24.172])
+        by linux.intel.com (Postfix) with ESMTP id 6280D580C73;
+        Tue,  3 Oct 2023 19:02:22 -0700 (PDT)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        ilpo.jarvinen@linux.intel.com, rajvi.jingar@linux.intel.com
+Subject: [PATCH V2 00/13] intel_pmc: Add telemetry API to read counters
+Date:   Tue,  3 Oct 2023 19:02:09 -0700
+Message-Id: <20231004020222.193445-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Y3J+i5H.APdc/1GimyGA2.1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,95 +61,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Y3J+i5H.APdc/1GimyGA2.1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On newer Intel silicon, more IP counters are being added in Intel Platform
+Monitoring Technology (PMT) telemetry spaces hosted in MMIO.  There is a
+need for the intel_pmc_core driver and other drivers to access PMT hosted
+telemetry in the kernel using an API. This patchset adds driver APIs to
+allow registering and reading telemetry entries. It makes changes to the
+intel_pmc_core driver to use these interfaces to access the low power mode
+counters that are now exclusively available from PMT.
 
-Hi all,
+David E. Box (8):
+  platform/x86/intel/vsec: Move structures to header
+  platform/x86/intel/vsec: remove platform_info from vsec device
+    structure
+  platform/x86/intel/vsec: Add base address field
+  platform/x86/intel/pmt: Add header to struct intel_pmt_entry
+  platform/x86/intel/pmt: telemetry: Export API to read telemetry
+  platform/x86/intel/pmc: Split pmc_core_ssram_get_pmc()
+  platform/x86/intel/pmc: Find and register PMC telemetry entries
+  platform/x86/intel/pmc: Add debug attribute for Die C6 counter
 
-Today's linux-next merge of the phy-next tree got a conflict in:
+Gayatri Kammela (1):
+  platform/x86/intel/vsec: Add intel_vsec_register
 
-  Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
+Rajvi Jingar (1):
+  platform/x86/intel/pmc: Display LPM requirements for multiple PMCs
 
-between commit:
+Xi Pardee (3):
+  platform/x86:intel/pmc: Call pmc_get_low_power_modes from platform
+    init
+  platform/x86/intel/pmc: Retrieve LPM information using Intel PMT
+  platform/x86/intel/pmc: Read low power mode requirements for MTL-M and
+    MTL-P
 
-  df55d4f814f9 ("dt-bindings: phy: qcom,qmp-usb: Add SDX75 USB3 PHY")
+ drivers/platform/x86/intel/pmc/Kconfig      |   1 +
+ drivers/platform/x86/intel/pmc/adl.c        |   2 +
+ drivers/platform/x86/intel/pmc/cnp.c        |   2 +
+ drivers/platform/x86/intel/pmc/core.c       | 191 ++++++++----
+ drivers/platform/x86/intel/pmc/core.h       |  10 +-
+ drivers/platform/x86/intel/pmc/core_ssram.c | 312 +++++++++++++++++---
+ drivers/platform/x86/intel/pmc/icl.c        |  10 +-
+ drivers/platform/x86/intel/pmc/mtl.c        |  87 +++++-
+ drivers/platform/x86/intel/pmc/spt.c        |  10 +-
+ drivers/platform/x86/intel/pmc/tgl.c        |   1 +
+ drivers/platform/x86/intel/pmt/class.c      |  43 ++-
+ drivers/platform/x86/intel/pmt/class.h      |  30 +-
+ drivers/platform/x86/intel/pmt/crashlog.c   |   2 +-
+ drivers/platform/x86/intel/pmt/telemetry.c  | 200 ++++++++++++-
+ drivers/platform/x86/intel/pmt/telemetry.h  | 129 ++++++++
+ drivers/platform/x86/intel/vsec.c           |  68 ++---
+ drivers/platform/x86/intel/vsec.h           |  44 ++-
+ 17 files changed, 962 insertions(+), 180 deletions(-)
+ create mode 100644 drivers/platform/x86/intel/pmt/telemetry.h
 
-from the usb tree and commit:
 
-  15c83637402c ("dt-bindings: phy: migrate QMP USB PHY bindings to qcom,sc8=
-280xp-qmp-usb3-uni-phy.yaml")
+base-commit: acce85a7dd28eac3858d44230f4c65985d0f271c
+-- 
+2.34.1
 
-from the phy-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-=
-phy.yaml
-index d58dd744d5d2,bbdb28cd8029..000000000000
---- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.=
-yaml
-+++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.=
-yaml
-@@@ -20,8 -24,14 +24,15 @@@ properties
-        - qcom,qcm2290-qmp-usb3-phy
-        - qcom,sa8775p-qmp-usb3-uni-phy
-        - qcom,sc8280xp-qmp-usb3-uni-phy
-+       - qcom,sdm845-qmp-usb3-uni-phy
-+       - qcom,sdx55-qmp-usb3-uni-phy
-+       - qcom,sdx65-qmp-usb3-uni-phy
- +      - qcom,sdx75-qmp-usb3-uni-phy
-        - qcom,sm6115-qmp-usb3-phy
-+       - qcom,sm8150-qmp-usb3-uni-phy
-+       - qcom,sm8250-qmp-usb3-uni-phy
-+       - qcom,sm8350-qmp-usb3-uni-phy
-+=20
- =20
-    reg:
-      maxItems: 1
-@@@ -75,10 -87,17 +88,18 @@@ allOf
-          compatible:
-            contains:
-              enum:
-+               - qcom,ipq6018-qmp-usb3-phy
-+               - qcom,ipq8074-qmp-usb3-phy
-                - qcom,ipq9574-qmp-usb3-phy
-+               - qcom,msm8996-qmp-usb3-phy
-+               - qcom,msm8998-qmp-usb3-phy
-+               - qcom,sdx55-qmp-usb3-uni-phy
-+               - qcom,sdx65-qmp-usb3-uni-phy
- +              - qcom,sdx75-qmp-usb3-uni-phy
-      then:
-        properties:
-+         clocks:
-+           maxItems: 4
-          clock-names:
-            items:
-              - const: aux
-
---Sig_/Y3J+i5H.APdc/1GimyGA2.1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUcx0IACgkQAVBC80lX
-0Gw1xQgAiB3AkuboEx/mJcMqr10UKljRaa8sUUoM4ZaGk8u3+POVfkM/Fml5q4Q+
-kbLksVJrjrBFHa2+faywkkH8NSRjLwFtHcMGqrd30YE5muAx5W6/QHb9Ji2bWY8W
-CxohfOZA2sxVj+lR4D/2lbeGGIoIIfInDoPeBN+J0eNoKOHSHNVBsShwnuBmFExV
-mul1AedhZ00oOcVfTUt/uBJykxhbYspljoOVrIDosvqD4FqNPHH8EYeQgMZw/nQz
-x5XPs9ycUv6YvQyzykGSAjXW8vqvkOYTy6KQYScfnpy+sRxTYIjneYcfkc1rrg4y
-PK+mfyzLkxXOuCtBzEbhUxWMRcTffg==
-=ai3w
------END PGP SIGNATURE-----
-
---Sig_/Y3J+i5H.APdc/1GimyGA2.1--
