@@ -2,58 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D936D7B7FC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8CA7B7FD2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242588AbjJDMvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 08:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
+        id S233170AbjJDMwt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 08:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233193AbjJDMvq (ORCPT
+        with ESMTP id S233003AbjJDMwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 08:51:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D7398
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:51:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F7BCC433C7;
-        Wed,  4 Oct 2023 12:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696423902;
-        bh=DWJ81lm9HCoDsSMA7UMPwROL0++RNp9iG5oEiXDUaxM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2Vyq+iiVtwiO5k4OStEx80RScBzFIqSrSt32GEE9UdSRcwsGRVX/Q6QCjBBJKY/63
-         UomezbFgm/d4u4ALKwBsZyl46EPxDPuRRzs4FL9EjH+Q3C/8452MZVY6+wiXm3aqnw
-         z/J+w41VyVP4kgB6bUi2Vh5iFSFgezBaI2lcgVC4=
-Date:   Wed, 4 Oct 2023 14:51:39 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Buddhabhatti, Jay" <jay.buddhabhatti@amd.com>
-Cc:     "Simek, Michal" <michal.simek@amd.com>,
-        "Shah, Tanmay" <tanmay.shah@amd.com>,
-        "Manne, Nava kishore" <nava.kishore.manne@amd.com>,
-        "Levinsky, Ben" <ben.levinsky@amd.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "marex@denx.de" <marex@denx.de>,
-        "Shaikh, Izhar Ameer" <izhar.ameer.shaikh@amd.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "ruanjinjie@huawei.com" <ruanjinjie@huawei.com>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 4/6] drivers: soc: xilinx: Fix error message on SGI
- registration failure
-Message-ID: <2023100441-blouse-quickness-9389@gregkh>
-References: <20231004094116.27128-1-jay.buddhabhatti@amd.com>
- <20231004094116.27128-5-jay.buddhabhatti@amd.com>
- <2023100425-chivalry-pound-78d0@gregkh>
- <DM6PR12MB4465A8A84D28A1AC444AB53C9DCBA@DM6PR12MB4465.namprd12.prod.outlook.com>
+        Wed, 4 Oct 2023 08:52:47 -0400
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278B1B0;
+        Wed,  4 Oct 2023 05:52:43 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-d89ba259964so2146260276.2;
+        Wed, 04 Oct 2023 05:52:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696423962; x=1697028762;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mBL5QUqe0Kh8uzoko40pp2HXZhfkObRutzBhYjUaXf4=;
+        b=VS8uP8eNRTFrwI/2q5U/IlzvKlsuMhhuxIFfuamDJ34N/rZLyVNpeBnRiVZgf9YDmS
+         r9pbyprHon6u2BNlXdtbhaJn6UOtfSKOSIZu+N1lddAHs8U6d5MGn3f3qjN+oFUzuKMJ
+         RAshjDec72BOlIQ4eZOVHNpp06kox01Dg1nbgDJ09OUpmS2mJ1tssS3ASiWR2x8iJF9i
+         sdNiIHs8J8YR+WKg8zxhajWo7GsdK4+gtdQfZiCPvUZckt/aK7s4QZt9mj8vZsk72uD5
+         jmBoG3O2lc/DH/mcZuWPSRi3lBGch78OYc6Pc9Mm54dI/8yWgTMqC/Kh1YHtDpiljnVO
+         Ib6g==
+X-Gm-Message-State: AOJu0Yw3/DkuIU06PKhKpa5/MqssnhGVq/0cEZL5yWnI/ayd78T+J7Jb
+        ZvZ2HtQ1doj6zUJX4mSrVvoO1xmmMnEbZA==
+X-Google-Smtp-Source: AGHT+IGR9YC3TA37FUPT0izo16noKpGS8cKa7IAZZs3Z6jE1noCuRwJznhQx3Q+N+dSfBAc0K9g5Yg==
+X-Received: by 2002:a5b:70d:0:b0:d8b:d12:87a5 with SMTP id g13-20020a5b070d000000b00d8b0d1287a5mr1857047ybq.34.1696423961971;
+        Wed, 04 Oct 2023 05:52:41 -0700 (PDT)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id c11-20020a25880b000000b00c62e0df7ca8sm1003969ybl.24.2023.10.04.05.52.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 05:52:41 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-59f6e6b206fso25029897b3.3;
+        Wed, 04 Oct 2023 05:52:41 -0700 (PDT)
+X-Received: by 2002:a81:d54e:0:b0:577:189b:ad4 with SMTP id
+ l14-20020a81d54e000000b00577189b0ad4mr2280819ywj.48.1696423961482; Wed, 04
+ Oct 2023 05:52:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR12MB4465A8A84D28A1AC444AB53C9DCBA@DM6PR12MB4465.namprd12.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com> <20230929053915.1530607-15-claudiu.beznea@bp.renesas.com>
+In-Reply-To: <20230929053915.1530607-15-claudiu.beznea@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 4 Oct 2023 14:52:28 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX17ZwHpCC75Xr4BxK69+1bumbDFYrYqLWLaybRkoRtXg@mail.gmail.com>
+Message-ID: <CAMuHMdX17ZwHpCC75Xr4BxK69+1bumbDFYrYqLWLaybRkoRtXg@mail.gmail.com>
+Subject: Re: [PATCH v2 14/28] pinctrl: renesas: rzg2l: index all registers
+ based on port offset
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, magnus.damm@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
+        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,98 +76,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 12:48:25PM +0000, Buddhabhatti, Jay wrote:
-> Hi Greg,
-> 
-> > -----Original Message-----
-> > From: Greg KH <gregkh@linuxfoundation.org>
-> > Sent: Wednesday, October 4, 2023 5:45 PM
-> > To: Buddhabhatti, Jay <jay.buddhabhatti@amd.com>
-> > Cc: Simek, Michal <michal.simek@amd.com>; Shah, Tanmay
-> > <tanmay.shah@amd.com>; Manne, Nava kishore
-> > <nava.kishore.manne@amd.com>; Levinsky, Ben <ben.levinsky@amd.com>;
-> > robh@kernel.org; dhaval.r.shah@amd.com; marex@denx.de; Shaikh, Izhar
-> > Ameer <izhar.ameer.shaikh@amd.com>; arnd@arndb.de;
-> > ruanjinjie@huawei.com; mathieu.poirier@linaro.org; linux-
-> > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> > Subject: Re: [PATCH v2 4/6] drivers: soc: xilinx: Fix error message on SGI
-> > registration failure
-> > 
-> > On Wed, Oct 04, 2023 at 02:41:14AM -0700, Jay Buddhabhatti wrote:
-> > > Failure to register SGI for firmware event notification is non-fatal
-> > > error when feature is not supported by other modules such as Xen and
-> > > TF-A. Add _info level log message for such special case.
-> > >
-> > > Also add XST_PM_INVALID_VERSION error code and map it to -EOPNOSUPP
-> > > Linux kernel error code. If feature is not supported or EEMI API
-> > > version is mismatch, firmware can return XST_PM_INVALID_VERSION = 4 or
-> > > XST_PM_NO_FEATURE = 19 error code.
-> > >
-> > > Co-developed-by: Tanmay Shah <tanmay.shah@amd.com>
-> > > Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
-> > > Signed-off-by: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-> > > ---
-> > >  drivers/firmware/xilinx/zynqmp.c        | 4 +++-
-> > >  drivers/soc/xilinx/xlnx_event_manager.c | 7 ++++++-
-> > >  include/linux/firmware/xlnx-zynqmp.h    | 1 +
-> > >  3 files changed, 10 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/firmware/xilinx/zynqmp.c
-> > > b/drivers/firmware/xilinx/zynqmp.c
-> > > index 00ea2508f692..de09d77cf1e4 100644
-> > > --- a/drivers/firmware/xilinx/zynqmp.c
-> > > +++ b/drivers/firmware/xilinx/zynqmp.c
-> > > @@ -92,6 +92,8 @@ static int zynqmp_pm_ret_code(u32 ret_status)
-> > >  		return 0;
-> > >  	case XST_PM_NO_FEATURE:
-> > >  		return -ENOTSUPP;
-> > > +	case XST_PM_INVALID_VERSION:
-> > > +		return -EOPNOTSUPP;
-> > >  	case XST_PM_NO_ACCESS:
-> > >  		return -EACCES;
-> > >  	case XST_PM_ABORT_SUSPEND:
-> > > @@ -379,7 +381,7 @@ int zynqmp_pm_register_sgi(u32 sgi_num, u32 reset)
-> > >
-> > >  	ret = zynqmp_pm_invoke_fn(TF_A_PM_REGISTER_SGI, sgi_num, reset,
-> > 0, 0,
-> > >  				  0, NULL);
-> > > -	if (!ret)
-> > > +	if (ret != -EOPNOTSUPP && !ret)
-> > >  		return ret;
-> > >
-> > >  	/* try old implementation as fallback strategy if above fails */
-> > > diff --git a/drivers/soc/xilinx/xlnx_event_manager.c
-> > > b/drivers/soc/xilinx/xlnx_event_manager.c
-> > > index 38cfc161a713..bfa5cf4a0cab 100644
-> > > --- a/drivers/soc/xilinx/xlnx_event_manager.c
-> > > +++ b/drivers/soc/xilinx/xlnx_event_manager.c
-> > > @@ -653,7 +653,12 @@ static int xlnx_event_manager_probe(struct
-> > > platform_device *pdev)
-> > >
-> > >  	ret = zynqmp_pm_register_sgi(sgi_num, 0);
-> > >  	if (ret) {
-> > > -		dev_err(&pdev->dev, "SGI %d Registration over TF-A failed with
-> > %d\n", sgi_num, ret);
-> > > +		if (ret == -EOPNOTSUPP)
-> > > +			dev_info(&pdev->dev, "PM firmware event notification
-> > not
-> > > +supported\n");
-> > 
-> > Why is this "info"?  Why not error?
-> [Jay] Because it is non-fatal error which will not cause kernel crash.
+Hi Claudiu,
 
-Neither do dev_err() messages :)
+On Fri, Sep 29, 2023 at 7:39 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> To get address that needs to be read/write for specific port
+> functionalities the P(), PM(), PMC(), PFC(), PIN(), IOLH() IEN(), ISEL()
+> macros are used. Some of these macros received as argument the hardware
+> port identifier, some hardware port offset address (e.g. ISEL() received
+> port identifier, IOLH() received port offset address). This makes hard to
+> extend the current driver for SoCs were port identifiers are not continuous
+> in memory map of pin controller. This is the case for RZ/G3S pin controller
+> were ports are mapped as follows:
+>
+> port offset    port identifier
+> -----------    ---------------
+> 0x20           P0
+> 0x21           P5
+> 0x22           P6
+> 0x23           P11
+> 0x24           P12
+> 0x25           P13
+> 0x26           P14
+> 0x27           P15
+> 0x28           P16
+> 0x29           P17
+> 0x2a           P18
+> 0x30           P1
+> 0x31           P2
+> 0x32           P3
+> 0x33           P4
+> 0x34           P7
+> 0x35           P8
+> 0x36           P8
+> 0x37           P10
+>
+> To make this achievable change all the above macros used to get the address
+> of a port register for specific port functionality based on port hardware
+> address. Shortly, all the above macros will get as argument the port
+> offset address listed in the above table.
+>
+> With this RZG2L_SINGLE_PIN_GET_PORT_OFFSET(), RZG2L_PIN_ID_TO_PORT_OFFSET()
+> and RZG2L_GPIO_PORT_GET_INDEX() were replaced by
+> RZG2L_PIN_CFG_TO_PORT_OFFSET(), RZG2L_SINGLE_PIN_GET_CFGS() and
+> RZG2L_GPIO_PORT_GET_CFGS() were replaced by RZG2L_PIN_CFG_TO_CAPS().
+>
+> Also rzg2l_pinctrl_set_pfc_mode() don't need port argument anymore.
+> Also rzg2l_gpio_direction_input() and rzg2l_gpio_direction_output() don't
+> need to translate port and bit locally as this can be done by
+> rzg2l_gpio_set_direction().
+>
+> To use the same naming for port, bit/pin and register offset the
+> port_offset variable names in different places was replaced by variable
+> named off and there is no need to initialize anymore cfg and bit in
+> different code places.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>
+> Changes in v2:
+> - mentioned in commit description about the replacement of
+>   RZG2L_GPIO_PORT_GET_INDEX() with RZG2L_PIN_CFG_TO_PORT_OFFSET()
+> - moved variable declaration inside for()
+> - got rid of local variable and used directly RZG2L_PIN_ID_TO_PORT() in
+>   debug message from rzg2l_pinctrl_set_mux() function
+> - collected tags
 
-And something failed, this isn't just "here's some nice information", it
-is "something went wrong" which should be a warning or error in my
-opinion.
+Thanks for the update! Sill queue in renesas-pinctrl-for-v6.7.
 
-> > And what is userspace supposed to do with this information if it sees it?
-> [Jay] This message indicates that SGI registration is not supported by other modules like TF-A or Xen. So user need to use TF-A with this support if they want to use event management driver.
+> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> @@ -202,9 +202,11 @@ static int rzg2l_pinctrl_set_mux(struct pinctrl_dev *pctldev,
+>                                  unsigned int group_selector)
+>  {
+>         struct rzg2l_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +       const struct pinctrl_pin_desc *pin_desc;
+> +       unsigned int *psel_val, *pin_data;
+>         struct function_desc *func;
+> -       unsigned int i, *psel_val;
+>         struct group_desc *group;
+> +       u32 pin, off;
+>         int *pins;
+>
+>         func = pinmux_generic_get_function(pctldev, func_selector);
+> @@ -217,12 +219,17 @@ static int rzg2l_pinctrl_set_mux(struct pinctrl_dev *pctldev,
+>         psel_val = func->data;
+>         pins = group->pins;
+>
+> -       for (i = 0; i < group->num_pins; i++) {
+> -               dev_dbg(pctrl->dev, "port:%u pin: %u PSEL:%u\n",
+> -                       RZG2L_PIN_ID_TO_PORT(pins[i]), RZG2L_PIN_ID_TO_PIN(pins[i]),
+> -                       psel_val[i]);
+> -               rzg2l_pinctrl_set_pfc_mode(pctrl, RZG2L_PIN_ID_TO_PORT(pins[i]),
+> -                                          RZG2L_PIN_ID_TO_PIN(pins[i]), psel_val[i]);
+> +       for (unsigned int i = 0; i < group->num_pins; i++) {
+> +               pin_desc = &pctrl->desc.pins[pins[i]];
+> +               pin_data = pin_desc->drv_data;
+> +
+> +               pin = RZG2L_PIN_ID_TO_PIN(pins[i]);
+> +               off = RZG2L_PIN_CFG_TO_PORT_OFFSET(*pin_data);
 
-So perhaps say that here too?  Otherwise how are they supposed to know
-that?
+In my comments on v1, I actually meant to combine these assignments
+to variables with the variable declarations.  I will handle that while applying.
 
-thanks,
+> +
+> +               dev_dbg(pctrl->dev, "port:%u pin: %u off:%x PSEL:%u\n",
+> +                       RZG2L_PIN_ID_TO_PORT(pins[i]), pin, off, psel_val[i]);
+> +
+> +               rzg2l_pinctrl_set_pfc_mode(pctrl, pin, off, psel_val[i]);
+>         }
+>
+>         return 0;
 
-greg k-h
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
