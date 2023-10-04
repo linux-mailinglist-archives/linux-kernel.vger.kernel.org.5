@@ -2,195 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2087B985C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 00:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8033C7B985F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 00:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237554AbjJDWrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 18:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34754 "EHLO
+        id S238215AbjJDWsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 18:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233871AbjJDWrU (ORCPT
+        with ESMTP id S236796AbjJDWsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 18:47:20 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B902C6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 15:47:16 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4064876e8b8so3497475e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 15:47:16 -0700 (PDT)
+        Wed, 4 Oct 2023 18:48:31 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE0A90
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 15:48:28 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-69101d33315so269567b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 15:48:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1696459635; x=1697064435; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=WWhzfTx2zeu32T5vJxvsYkXM/9ZTkaUKm+XZEMMPRPk=;
-        b=JQU5rZ7TuHQjJH+ogxkBogfbA79t4yuUaYXZnkBrFiKk7u7TjNI4iBwPoceIrH9aid
-         7FwBxNxyZbSG72FL/oFbuyjgurkZZMPlkj1qrHf3QFpHOZtnqeWf18jw2uKDM0Xmlrag
-         RqAmmnNJ7kXnaCbh7sSs1TMHluUiVB9jB0llxHF+HBvptToqYH9nxEjFZNmqEg/wr60K
-         FDkE38dhRpXVGc+nKtp5azN85Dh8TxhQ3iWdPidG0IZCf82j2K51Le9LMG1DrJofbc4s
-         XeZ+jBh/nrpeA3mNAMrLAwyXpgSTTkQSs4AEX+DM4jboOIzxeN5UUzBNXkDjPuqdY54y
-         nwmA==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696459708; x=1697064508; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+A41qc5nnmnXCGqzGK/2/pzW8O1/gqRl39Ug/MmsPjY=;
+        b=k04h216BWDygbKaOY92AakISD4ZjtzPmUdiyg+0v6kZZdAgcbedC5zjHM/KOiNGGMv
+         ZY43AwHTXutqIkxE14K0BJwfp22ZjZqVLPYbeF6hxDovxr71k3N/Wi9nIgmm56Mqcfdj
+         0rQbnpADW1bOs9DnwdWAnJWIdMm2UmIaesPpuxvAGu8EuWQUIsioZuOJrb9lNUkeFu6p
+         W/Eh9AL0MhD/qYc0ydlX1rAL3/iaC0XORBeerCOB4rMMMYjLGa18j61u0rV0k3CSNxpD
+         1VEsO7cFnyRSRY+1EUare54vimTaLYtlhl4yClKdH9/DfEStcvK0N8JhzXAOUTfV0AUB
+         bplA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696459635; x=1697064435;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WWhzfTx2zeu32T5vJxvsYkXM/9ZTkaUKm+XZEMMPRPk=;
-        b=jf9Eoi9kaFYUoi/ildgpyeMXzYKNE2U3UM59xxk4alBTujh3JqVpbdSydD/002cpsA
-         o7Kk5bra2E+eJk0kOOLZN2s1uiO1on+zD8V9pQeJ16yfwxx1BfHwE/w87Mm2dJ7CMMQy
-         Vg9gEpJJ3NcJevXVyuZlXV99rjwKMpstFo3LMDJJzrLgmJx0r9ix771YAGXzC+QTAhD4
-         PsgayHB9YzWZgxSQRcpcMdOHpI+wX37m3nwqP3m3m46i934fa5QpaHtEmwUBwbsGOuSV
-         wUue/xNqeG6E8HGmdshAvDR8JPEYDLTTm55NxJ6FHcgKPRo6AK+K214bChoTmBgb8cro
-         ihpg==
-X-Gm-Message-State: AOJu0YyOTGCwIh0xiX/2vkloKUheZvXAZ7y5dqzft6K8mCbExQpEqfMN
-        DW0gBEDjr9wzyt5B8N4HD5QMlw==
-X-Google-Smtp-Source: AGHT+IFlBT44f1p61H0a8CKaBCtUqmYtq3IyCYd7PF4YEV7diALOPFXCjpGvHF60gomfWy16BOqsPw==
-X-Received: by 2002:a7b:c5c9:0:b0:405:40ab:7693 with SMTP id n9-20020a7bc5c9000000b0040540ab7693mr3321564wmk.31.1696459634588;
-        Wed, 04 Oct 2023 15:47:14 -0700 (PDT)
-Received: from [192.168.0.23] ([89.159.1.53])
-        by smtp.gmail.com with ESMTPSA id l6-20020a5d6746000000b00318147fd2d3sm209198wrw.41.2023.10.04.15.47.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 15:47:14 -0700 (PDT)
-Message-ID: <bb3d2b39-0b3b-09cf-b98f-1c8bbdb26dd7@smile.fr>
-Date:   Thu, 5 Oct 2023 00:47:13 +0200
+        d=1e100.net; s=20230601; t=1696459708; x=1697064508;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+A41qc5nnmnXCGqzGK/2/pzW8O1/gqRl39Ug/MmsPjY=;
+        b=qvSYtC5vEkO8UYdj9bhHk8KgavuA3mzLeJOG+XSl+j2YE6HnoKRg3aA3MWEQTveUBW
+         1SAhkIHcOkEGVq1NhZ2SmjIKOpQJUZ7ablCGamlbupfEGDCwAzML183uCfFTFMOXyH/u
+         jcDCWUR+FNmIAaGifH+Vi5OG424K+cV3nLYatxNMFNUW98u+TRscX62eZgd2Ms6YIzp5
+         wVGdr3aKO4nst4s0HzlTITmwiYKrwyR4cWqTOcW2WBlxb884Zc4JIxzlgosDS3OcSBUi
+         RNc5tNNO+1nDoTPZz3ohCatkFVEa7Pk51FomghO9hcYLXVyhPNb5S8oAsHjdy1OeTpim
+         VinQ==
+X-Gm-Message-State: AOJu0YzngzghomsU9QxsZ5oha3lPUVXRPdh/XPOVD3U9yeo7gFplLaCP
+        rVXxBOPAr5arYbTaADFJcOsZVQ==
+X-Google-Smtp-Source: AGHT+IHTMmCgJaPPPebL/z6ptP+ioTw9on4mYiswrAi8Kcue6f5UNTVBPQhGJAi31/XYj6jO6KbLMg==
+X-Received: by 2002:a05:6a00:2406:b0:690:d620:7801 with SMTP id z6-20020a056a00240600b00690d6207801mr3836132pfh.11.1696459707926;
+        Wed, 04 Oct 2023 15:48:27 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id y22-20020aa78056000000b00692b6fe1c7asm32069pfm.179.2023.10.04.15.48.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 15:48:27 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qoAfI-009Wtm-33;
+        Thu, 05 Oct 2023 09:48:24 +1100
+Date:   Thu, 5 Oct 2023 09:48:24 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, martin.petersen@oracle.com,
+        djwong@kernel.org, himanshu.madhani@oracle.com
+Subject: Re: [PATCH 2/4] readv.2: Document RWF_ATOMIC flag
+Message-ID: <ZR3ruIg5tpKSG0mp@dread.disaster.area>
+References: <20230929093717.2972367-1-john.g.garry@oracle.com>
+ <20230929093717.2972367-3-john.g.garry@oracle.com>
+ <9ba10b14-931b-42db-b7c2-e6f9aa95e477@acm.org>
+ <dee45e9a-6a45-e949-2b46-1373fea8dcda@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3] kconfig: avoid an infinite loop in
- oldconfig/syncconfig
-Content-Language: en-US
-To:     Brandon Maier <brandon.maier@collins.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>
-References: <20230912154811.1338390-1-yoann.congal@smile.fr>
- <wikmpahnfwa3bgei7mglda53l6smzieinlogvvswlwhw6l7uaw@a4qgkxqjkz4h>
-From:   Yoann Congal <yoann.congal@smile.fr>
-Organization: Smile ECS
-In-Reply-To: <wikmpahnfwa3bgei7mglda53l6smzieinlogvvswlwhw6l7uaw@a4qgkxqjkz4h>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dee45e9a-6a45-e949-2b46-1373fea8dcda@oracle.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/23 23:52, Brandon Maier wrote:
-> Hi Yoann,
+On Wed, Oct 04, 2023 at 09:47:24AM +0100, John Garry wrote:
+> On 03/10/2023 20:25, Bart Van Assche wrote:
+> > On 9/29/23 02:37, John Garry wrote:
+> > > +.BR RWF_ATOMIC " (since Linux 6.7)"
+> > > +Allows block-based filesystems to indicate that write operations
+> > > will be issued
+> > > +with torn-write protection. Torn-write protection means that for a
+> > > power or any
+> > > +other hardware failure, all or none of the data from the write will
+> > > be stored,
+> > > +but never a mix of old and new data. This flag is meaningful only for
+> > > +.BR pwritev2 (),
+> > > +and its effect applies only to the data range written by the system
+> > > call.
+> > > +The total write length must be power-of-2 and must be sized between
+> > > +stx_atomic_write_unit_min and stx_atomic_write_unit_max, both
+> > > inclusive. The
+> > > +write must be at a natural offset within the file with respect to
+> > > the total
+> > > +write length. Torn-write protection only works with
+> > > +.B O_DIRECT
+> > > +flag, i.e. buffered writes are not supported. To guarantee
+> > > consistency from
+> > > +the write between a file's in-core state with the storage device,
+> > 
+> > It seems wrong to me to start the first sentence with "Allows". Atomic
+> > behavior should be mandatory if RWF_ATOMIC has been set.
+> 
+> Yes, I agree that this has been poorly worded. Flag RWF_ATOMIC does not
+> indicate anything. I will fix it.
+> 
+> > 
+> > Additionally, shouldn't it be documented what value will be stored in
+> > errno if the atomic write has been rejected?
+> 
+> So I was treating all atomic writes errors which don't follow the "rules" as
+> low-level I/O errors, which is -EIO. However, yes, I can document this.
+> Further to that, based on description of an error for O_DIRECT, which is to
+> return -EINVAL for misaligned, I think that -EINVAL may be better for any
+> atomic write rule violations. OK?
 
-Hi,
+Agreed - I was going to make that comment myself about using EINVAL
+instead of EIO...
 
-> We encountered the same issue in U-Boot under Buildroot. I verified that
-> this patch fixes the issue, causing Kconfig to exit out instead of
-> infinitely looping. Thanks for the fix.
-
-Awesome! I've also found this on U-boot (but under Yocto).
-I planned to get this merged here in kbuild then U-boot downstream and then Yocto.
-
-Please CC me if you try to do something with this patch in Buildroot :)
-
-> Tested-by: Brandon Maier <brandon.maier@collins.com>
-
-Thanks!
- 
-> On Tue, Sep 12, 2023 at 05:48:11PM +0200, Yoann Congal wrote:
->> Exit on error when asking for value and reading stdin returns an error
->> (mainly if it has reached EOF or is closed).
->>
->> This infinite loop happens in particular for hex/int configs without an
->> explicit default value.
->>
->> Previously, this case would loop:
->> * oldconfig prompts for the value but stdin has reached EOF
->> * It gets the global default value : an empty string
->> * This is not a valid hex/int value so it prompts again, hence the
->>   infinite loop.
->>
->> This case happens with a configuration like this (a hex config without a
->> valid default value):
->>   config TEST_KCONFIG
->>        hex "Test KConfig"
->>        # default 0x0
->>
->> And using:
->>   make oldconfig < /dev/null
->>
->> This was discovered when working on Yocto bug[0] on a downstream
->> kconfig user (U-boot)
->>
->> [0]: https://bugzilla.yoctoproject.org/show_bug.cgi?id=14136
->>
->> Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
->> ---
->> v2->v3:
->>  * Simplify the patch by fusing comments of :
->>    * Masahiro Yamada : Exit as soon as reading stdin hits an error
->>    * Randy Dunlap : Display the name of the currently read symbol
->>
->> v1->v2:
->>  * Improve coding style
->>  * Put more info in the commit message
->>
->>  scripts/kconfig/conf.c | 19 +++++++++++++++----
->>  1 file changed, 15 insertions(+), 4 deletions(-)
->>
->> diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
->> index 33d19e419908b..68f0c649a805e 100644
->> --- a/scripts/kconfig/conf.c
->> +++ b/scripts/kconfig/conf.c
->> @@ -74,13 +74,17 @@ static void strip(char *str)
->>  }
->>
->>  /* Helper function to facilitate fgets() by Jean Sacren. */
->> -static void xfgets(char *str, int size, FILE *in)
->> +static int xfgets(char *str, int size, FILE *in)
->>  {
->> +	int ret = 0;
->> +
->>  	if (!fgets(str, size, in))
->> -		fprintf(stderr, "\nError in reading or end of file.\n");
->> +		ret = -1;
->>
->>  	if (!tty_stdio)
->>  		printf("%s", str);
->> +
->> +	return ret;
->>  }
->>
->>  static void set_randconfig_seed(void)
->> @@ -339,7 +343,10 @@ static int conf_askvalue(struct symbol *sym, const char *def)
->>  		/* fall through */
->>  	default:
->>  		fflush(stdout);
->> -		xfgets(line, sizeof(line), stdin);
->> +		if (xfgets(line, sizeof(line), stdin) != 0) {
->> +			fprintf(stderr, "Error while reading value of symbol \"%s\"\n", sym->name);
->> +			exit(1);
->> +		}
->>  		break;
->>  	}
->>
->> @@ -521,7 +528,11 @@ static int conf_choice(struct menu *menu)
->>  			/* fall through */
->>  		case oldaskconfig:
->>  			fflush(stdout);
->> -			xfgets(line, sizeof(line), stdin);
->> +			if (xfgets(line, sizeof(line), stdin) != 0) {
->> +				fprintf(stderr, "Error while reading value of symbol \"%s\"\n",
->> +						sym->name);
->> +				exit(1);
->> +			}
->>  			strip(line);
->>  			if (line[0] == '?') {
->>  				print_help(menu);
->> --
->> 2.30.2
->>
-
+-Dave.
 -- 
-Yoann Congal
-Smile ECS - Tech Expert
+Dave Chinner
+david@fromorbit.com
