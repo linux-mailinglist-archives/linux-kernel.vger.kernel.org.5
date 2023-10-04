@@ -2,34 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 798047B7607
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 02:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF367B760A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 03:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239061AbjJDA6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 20:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
+        id S232580AbjJDBCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 21:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238800AbjJDA6H (ORCPT
+        with ESMTP id S229794AbjJDBCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 20:58:07 -0400
+        Tue, 3 Oct 2023 21:02:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA87BBF;
-        Tue,  3 Oct 2023 17:58:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E3BBC433C7;
-        Wed,  4 Oct 2023 00:58:02 +0000 (UTC)
-Date:   Tue, 3 Oct 2023 20:59:08 -0400
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B443A9
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 18:02:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38633C433C8;
+        Wed,  4 Oct 2023 01:02:03 +0000 (UTC)
+Date:   Tue, 3 Oct 2023 21:03:09 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, cleger@rivosinc.com,
-        linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH 2/2] selftests/user_events: Fix abi_test for BE archs
-Message-ID: <20231003205908.391d17f5@gandalf.local.home>
-In-Reply-To: <20230925230829.341-3-beaub@linux.microsoft.com>
-References: <20230925230829.341-1-beaub@linux.microsoft.com>
-        <20230925230829.341-3-beaub@linux.microsoft.com>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3] tracing/timerlat: Hotplug support for the user-space
+ interface
+Message-ID: <20231003210309.4335307d@gandalf.local.home>
+In-Reply-To: <a1bbd57692c1a59458c4ee99999b7f83a29bc3c5.1695999408.git.bristot@kernel.org>
+References: <a1bbd57692c1a59458c4ee99999b7f83a29bc3c5.1695999408.git.bristot@kernel.org>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,88 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 29 Sep 2023 17:02:46 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-Note, this doesn't seem to apply to my tree so I only added the first
-patch. I think this needs to go through Shuah's tree.
+> The osnoise/per_cpu/CPU$/timerlat_fd is create for each possible
+> CPU, but it might create confusion if the CPU is not online.
+> 
+> Create the file only for online CPUs, also follow hotplug by
+> creating and deleting as CPUs come and go.
+> 
+> Fixes: e88ed227f639 ("tracing/timerlat: Add user-space interface")
+
+Is this a fix that needs to go in now and Cc'd to stable? Or is this
+something that can wait till the next merge window?
 
 -- Steve
 
 
-On Mon, 25 Sep 2023 23:08:29 +0000
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
-
-> The abi_test currently uses a long sized test value for enablement
-> checks. On LE this works fine, however, on BE this results in inaccurate
-> assert checks due to a bit being used and assuming it's value is the
-> same on both LE and BE.
-> 
-> Use int type for 32-bit values and long type for 64-bit values to ensure
-> appropriate behavior on both LE and BE.
-> 
-> Fixes: 60b1af8de8c1 ("tracing/user_events: Add ABI self-test")
-> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 > ---
->  tools/testing/selftests/user_events/abi_test.c | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/user_events/abi_test.c b/tools/testing/selftests/user_events/abi_test.c
-> index 5125c42efe65..67af4c491c0c 100644
-> --- a/tools/testing/selftests/user_events/abi_test.c
-> +++ b/tools/testing/selftests/user_events/abi_test.c
-> @@ -46,7 +46,7 @@ static int change_event(bool enable)
->  	return ret;
->  }
->  
-> -static int reg_enable(long *enable, int size, int bit)
-> +static int reg_enable(void *enable, int size, int bit)
->  {
->  	struct user_reg reg = {0};
->  	int fd = open(data_file, O_RDWR);
-> @@ -68,7 +68,7 @@ static int reg_enable(long *enable, int size, int bit)
->  	return ret;
->  }
->  
-> -static int reg_disable(long *enable, int bit)
-> +static int reg_disable(void *enable, int bit)
->  {
->  	struct user_unreg reg = {0};
->  	int fd = open(data_file, O_RDWR);
-> @@ -89,12 +89,14 @@ static int reg_disable(long *enable, int bit)
->  }
->  
->  FIXTURE(user) {
-> -	long check;
-> +	int check;
-> +	long check_long;
->  };
->  
->  FIXTURE_SETUP(user) {
->  	change_event(false);
->  	self->check = 0;
-> +	self->check_long = 0;
->  }
->  
->  FIXTURE_TEARDOWN(user) {
-> @@ -131,9 +133,9 @@ TEST_F(user, bit_sizes) {
->  
->  #if BITS_PER_LONG == 8
->  	/* Allow 0-64 bits for 64-bit */
-> -	ASSERT_EQ(0, reg_enable(&self->check, sizeof(long), 63));
-> -	ASSERT_NE(0, reg_enable(&self->check, sizeof(long), 64));
-> -	ASSERT_EQ(0, reg_disable(&self->check, 63));
-> +	ASSERT_EQ(0, reg_enable(&self->check_long, sizeof(long), 63));
-> +	ASSERT_NE(0, reg_enable(&self->check_long, sizeof(long), 64));
-> +	ASSERT_EQ(0, reg_disable(&self->check_long, 63));
->  #endif
->  
->  	/* Disallowed sizes (everything beside 4 and 8) */
-> @@ -195,7 +197,7 @@ static int clone_check(void *check)
->  	for (i = 0; i < 10; ++i) {
->  		usleep(100000);
->  
-> -		if (*(long *)check)
-> +		if (*(int *)check)
->  			return 0;
->  	}
->  
-
+> Changes from V2:
+>   - Better split the code into the generic (per_cpu/cpu$)
+>     and timerlat (/timerlat_fd) specific function (Daniel)
+>   - Fixed a cpus_read_lock/unlock() usage (kbuild test)
+>   Link: https://lore.kernel.org/lkml/6b9a5f306e488bc77bf8521faeade420a0adf3e4.1695224204.git.bristot@kernel.org/
+> 
+> Changes from V1:
+>   - Fix compilation issue when !HOTPLUG
+>   - Fix init interface | hotplug race
+>   Link: https://lore.kernel.org/lkml/b619d9fd08a3bb47018cf40afa95783844a3c1fd.1694789910.git.bristot@kernel.org/
+> 
+>  kernel/trace/trace_osnoise.c | 149 ++++++++++++++++++++++++++++-------
+>  1 file changed, 121 insertions(+), 28 deletions(-)
+> 
+>
