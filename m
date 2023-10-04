@@ -2,127 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B0B7B8427
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A838A7B843C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242922AbjJDPuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        id S243113AbjJDPxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233774AbjJDPut (ORCPT
+        with ESMTP id S233661AbjJDPxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:50:49 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C210BF;
-        Wed,  4 Oct 2023 08:50:44 -0700 (PDT)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 394FjWgS013834;
-        Wed, 4 Oct 2023 17:50:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=8mC8DzLCJr8pbaqd7TJBf5FL8cBOmE3cRTtig5bDfrw=; b=ys
-        Bp+eaOxHzxbvk3wLP1SZXvhYB3XX0meS+GObIPNDLpMIhOqwtE+jSwsiHc33S6W6
-        quJU0dG+lhGQR5xtCh5TAZKaxgOt5TEB3EFp0LMz08MJA7463cYFDFWvlBNG5C7K
-        AYU4jRwNdeBvIg+TK2ICg60BfW5tN1GYhb1THv3x9VULybubrRmecJLBaZ/e2wyv
-        1BL9rriiM/R+NjMzV79uljVbCjMUsBp8QWggqr7L80F+L50vjkVuWk8hiHgHyNHv
-        6RuptB7iatfDfD0xnGgY5Gk7RsoFPzazhmWoTJz4jU/fLbCRshQLZKuOl4WDHZQB
-        cF8Ss3p9KX/UrFAuDkhg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3te93g1xju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 17:50:30 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D3A74100064;
-        Wed,  4 Oct 2023 17:50:29 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CAEE226029A;
-        Wed,  4 Oct 2023 17:50:29 +0200 (CEST)
-Received: from localhost (10.252.26.61) by SHFDAG1NODE3.st.com (10.75.129.71)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 4 Oct
- 2023 17:50:29 +0200
-From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>
-CC:     <stable@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] dmaengine: stm32-dma: fix residue in case of MDMA chaining
-Date:   Wed, 4 Oct 2023 17:50:24 +0200
-Message-ID: <20231004155024.2609531-2-amelie.delaunay@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231004155024.2609531-1-amelie.delaunay@foss.st.com>
-References: <20231004155024.2609531-1-amelie.delaunay@foss.st.com>
+        Wed, 4 Oct 2023 11:53:17 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5880CA6;
+        Wed,  4 Oct 2023 08:53:14 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0F11C15;
+        Wed,  4 Oct 2023 08:53:52 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C5B23F762;
+        Wed,  4 Oct 2023 08:53:12 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 16:53:10 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Nikunj Kela <quic_nkela@quicinc.com>
+Cc:     cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>, andersson@kernel.org,
+        konrad.dybcio@linaro.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v4 3/4] dt-bindings: arm: Add new compatible for smc/hvc
+ transport for SCMI
+Message-ID: <20231004155310.zqwlj6boy65atoyq@bogus>
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-4-quic_nkela@quicinc.com>
+ <20231003104404.o7yxg3y7dn7uhrq4@bogus>
+ <7c871b23-5544-6604-257d-f0c8fd5afd06@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.252.26.61]
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_07,2023-10-02_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c871b23-5544-6604-257d-f0c8fd5afd06@quicinc.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of MDMA chaining, DMA is configured in Double-Buffer Mode (DBM)
-with two periods, but if transfer has been prepared with _prep_slave_sg(),
-the transfer is not marked cyclic (=!chan->desc->cyclic). However, as DBM
-is activated for MDMA chaining, residue computation must take into account
-cyclic constraints.
+On Tue, Oct 03, 2023 at 08:59:45AM -0700, Nikunj Kela wrote:
+> 
+> On 10/3/2023 3:44 AM, Sudeep Holla wrote:
+> > On Mon, Sep 11, 2023 at 12:43:58PM -0700, Nikunj Kela wrote:
+> > > Introduce compatible "qcom,scmi-hvc-shmem" for SCMI smc/hvc
+> > > transport channel for Qualcomm virtual platforms.
+> > > The compatible mandates a shared memory channel.
+> > > 
+> > > Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
+> > > Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > ---
+> > >   .../devicetree/bindings/firmware/arm,scmi.yaml       | 12 ++++++++++++
+> > >   1 file changed, 12 insertions(+)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > > index 8d54ea768d38..4090240f45b1 100644
+> > > --- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > > +++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > > @@ -45,6 +45,9 @@ properties:
+> > >         - description: SCMI compliant firmware with OP-TEE transport
+> > >           items:
+> > >             - const: linaro,scmi-optee
+> > > +      - description: SCMI compliant firmware with Qualcomm hvc/shmem transport
+> > > +        items:
+> > > +          - const: qcom,scmi-hvc-shmem
+> > Can it be simply "qcom,scmi-smc" for 2 reasons ?
+> > 1. We don't support SMC/HVC without shmem, so what is your argument to add
+> >     '-shmem' in the compatible here ?
+> 
+> In our platforms, there are multiple ways to allocate memory. One is
+> preallocated shmem as used here, another is dynamically by hypervisor APIs.
+> shmem was to just to indicate it is preallocated.
+>
 
-With only two periods in MDMA chaining, and no update due to Transfer
-Complete interrupt masked, n_sg is always 0. If DMA current memory address
-(depending on SxCR.CT and SxM0AR/SxM1AR) does not correspond, it means n_sg
-should be increased.
-Then, the residue of the current period is the one read from SxNDTR and
-should not be overwritten with the full period length.
+Let us keep it without shmem. If it is dynamically allocated, you must not
+need another compatible as you can check it at the runtime.
 
-Fixes: 723795173ce1 ("dmaengine: stm32-dma: add support to trigger STM32 MDMA")
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Cc: stable@vger.kernel.org
----
- drivers/dma/stm32-dma.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> > 2. The exact conduit(SMC/HVC) used is detected runtime, so I prefer to keep
+> >    '-smc' instead of '-hvc' in the compatible just to avoid giving an illusion
+> >    that HVC is the conduit chosen here based on the compatible. It can be true
+> >    for other reason but I don't want to mislead here by using HVC.
+> 
+> IUUC, currently, conduit comes from PSCI dt node. We have been using smc for
+> PSCI but want to use hvc here. That being said, I am fine to explore if we
+> can change PSCI to use hvc too.
+>
 
-diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
-index 7427acc82259..0b30151fb45c 100644
---- a/drivers/dma/stm32-dma.c
-+++ b/drivers/dma/stm32-dma.c
-@@ -1389,11 +1389,12 @@ static size_t stm32_dma_desc_residue(struct stm32_dma_chan *chan,
- 
- 	residue = stm32_dma_get_remaining_bytes(chan);
- 
--	if (chan->desc->cyclic && !stm32_dma_is_current_sg(chan)) {
-+	if ((chan->desc->cyclic || chan->trig_mdma) && !stm32_dma_is_current_sg(chan)) {
- 		n_sg++;
- 		if (n_sg == chan->desc->num_sgs)
- 			n_sg = 0;
--		residue = sg_req->len;
-+		if (!chan->trig_mdma)
-+			residue = sg_req->len;
- 	}
- 
- 	/*
-@@ -1403,7 +1404,7 @@ static size_t stm32_dma_desc_residue(struct stm32_dma_chan *chan,
- 	 * residue = remaining bytes from NDTR + remaining
- 	 * periods/sg to be transferred
- 	 */
--	if (!chan->desc->cyclic || n_sg != 0)
-+	if ((!chan->desc->cyclic && !chan->trig_mdma) || n_sg != 0)
- 		for (i = n_sg; i < desc->num_sgs; i++)
- 			residue += desc->sg_req[i].len;
- 
+I think only OPTEE has explicit conduit other than PSCI and it is continued
+for legacy/compatibility reasons IIUC and IIRC. Anything else depends on
+the conduit used by PSCI to be consistent. So yes you need to use what the
+PSCI conduit is and you don't need the extra information from the DT either
+as new property or in the compatible.
+
 -- 
-2.25.1
-
+Regards,
+Sudeep
