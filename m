@@ -2,67 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 938687B85E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1807B85EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243522AbjJDQyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
+        id S243540AbjJDQzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243590AbjJDQyf (ORCPT
+        with ESMTP id S243538AbjJDQzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:54:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A58112;
-        Wed,  4 Oct 2023 09:54:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42553C433C9;
-        Wed,  4 Oct 2023 16:54:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696438472;
-        bh=VpzyBn3Pwo9+mwRDTSw2t9nV2rS3KflHer205rUr8ec=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mNeNF8ppZsNimabomo0sOLVL5LVo7YlSYKE6MvG4KPQC2fW1tSDEX1absM2bvoTeo
-         AGFB7gRvoGpM7oTT7hn8u5dswttm7l7Hy+FZhCQHosnJISjohT2EXEmLJJN8DJGWhh
-         6zNvX02klCMsOnPZ+3+CTFOqthkeLkm4I2Zq0iqYQY0SoxYnnCgLzr9740TqARkWPl
-         +nmk7SdBx0DobLYKsXzwaMx9mO2AAgb9ElF//O+Wa4NfHaK1G2bLOIMMnhTrOCtwKh
-         5/3ckG02jIQGLH7Ja2IfAFvOzda+FLHxX/tRu5qcZdcD+kb0Im/BHAQmuaAOjmhV2s
-         VicGPxkROFeDg==
-Date:   Wed, 4 Oct 2023 09:54:31 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH 0/4] tracing: improve symbolic printing
-Message-ID: <20231004095431.1dd234e6@kernel.org>
-In-Reply-To: <20231004123524.27feeae7@gandalf.local.home>
-References: <20230921085129.261556-5-johannes@sipsolutions.net>
-        <20231004092205.02c8eb0b@kernel.org>
-        <20231004123524.27feeae7@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 4 Oct 2023 12:55:00 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FE8AD
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:54:57 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f7d109926so33353577b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 09:54:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696438497; x=1697043297; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=v1SpCSVBVkGWfR+UVpLKMyMdKYaLIo/4ycal5KL0JmU=;
+        b=BQCb8ij3zdhky/1vgEEKMhtBMsgfFAo6jps8xVr3wBICqOF/kjqhXaqdElAK2xI1bS
+         U3cgOrlMvtFG5ECDU0wbJX7io9/m+60G84oEVcyPXvW5l+c99C+nkhMcjqMG06lAs64J
+         JcsUd5KjOhbY3t9S2KlFc2Lqnf54zyOA4NMnRme9qoOxHc56ihSYzPgiCfXS1KTOHRLQ
+         7vqXSS9ZrMAqfViGVSYkaeO1rOdjaapK3UjLBKajtx9Ig7L9WIYQPNjuJczk7iHBYs5+
+         7Bb3NbuRQ1K4k+rGFvupZ64bfmUnyG8EH0+/Tr4Rp2z2ywod6gN4uoG6+3Y42syQheqN
+         al7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696438497; x=1697043297;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v1SpCSVBVkGWfR+UVpLKMyMdKYaLIo/4ycal5KL0JmU=;
+        b=bTsQPLfVHuHTmDiqG0Cjd6H+rKo8p9fgmGLU6pGR9DLdQBtLZp9MgiZD6kBRKKRhWs
+         SR80qs2eU5sMy0wQXCW3iIzmafsJ2WXCtOxQpEIoLRCAyj59DUV0z+4aAvKAludI4ohQ
+         nKqzkK42InH+IppQPZpEE6N7F4GG+sACqwW/TiyRWU9+o0EoqF9T6YR2OkilhyhHPa0Q
+         /YGlE0b2IarKIa5YcfRanx/cBNkoNM6AlzD6kWx/9MdyMBulW6QOvoF4MIGbI7yyE16w
+         lNRF1/flenLWxPN/2W8Us5qP0ALXBPCQszBdCTUzeRSyil4k8x+sSr6mc92WdNL4FyCK
+         vwww==
+X-Gm-Message-State: AOJu0Yy5qq4vR6u08nOEKKAWaJbkFwUO2K8JeaQBaMPiRNdgU9N1wlaB
+        fxZLMiiJK/a/3mSrtHSm9ZtYjSGEdXo=
+X-Google-Smtp-Source: AGHT+IF4i+oQKJd8u1V+TB1VPIOAogrhPtMWZdEvSZy8rU+jM1S65yQ94jKQ9NyvjRiXgJ/MLji9dcyTwZ4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:a909:0:b0:59b:e97e:f7e3 with SMTP id
+ g9-20020a81a909000000b0059be97ef7e3mr53564ywh.2.1696438496733; Wed, 04 Oct
+ 2023 09:54:56 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 09:54:55 -0700
+In-Reply-To: <ZR2EyUULbRpXW8wK@luigi.stachecki.net>
+Mime-Version: 1.0
+References: <20230928001956.924301-1-seanjc@google.com> <ZR0QOGo5DftkRWsr@redhat.com>
+ <ZR1Yt6Z+dhMbn/FJ@luigi.stachecki.net> <ZR175enUCh3KkAU6@google.com> <ZR2EyUULbRpXW8wK@luigi.stachecki.net>
+Message-ID: <ZR2Y34hFpLmCYsUr@google.com>
+Subject: Re: [PATCH 0/5] KVM: x86: Fix breakage in KVM_SET_XSAVE's ABI
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tyler Stachecki <stachecki.tyler@gmail.com>
+Cc:     Leonardo Bras <leobras@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Oct 2023 12:35:24 -0400 Steven Rostedt wrote:
-> > Potentially naive question - the trace point holds enum skb_drop_reason.
-> > The user space can get the names from BTF. Can we not teach user space
-> > to generically look up names of enums in BTF?  
+On Wed, Oct 04, 2023, Tyler Stachecki wrote:
+> On Wed, Oct 04, 2023 at 07:51:17AM -0700, Sean Christopherson wrote:
+ 
+> > It's not about removing features.  The change you're asking for is to have KVM
+> > *silently* drop data.  Aside from the fact that such a change would break KVM's
+> > ABI, silently ignoring data that userspace has explicitly requested be loaded for
+> > a vCPU is incredibly dangerous.
 > 
-> That puts a hard requirement to include BTF in builds where it was not
-> needed before. I really do not want to build with BTF just to get access to
-> these symbols. And since this is used by the embedded world, and BTF is
-> extremely bloated, the short answer is "No".
+> Sorry if it came off that way
 
-Dunno. BTF is there most of the time. It could make the life of
-majority of the users far more pleasant.
+No need to apologise, you got bit by a nasty kernel bug and are trying to find a
+solution.  There's nothing wrong with that.
 
-I hope we can at least agree that the current methods of generating 
-the string arrays at C level are... aesthetically displeasing.
+> I fully understand and am resigned to the "you
+> break it, you keep both halves" nature of what I had initially proposed and
+> that it is not a generally tractable solution.
+
+Yeah, the crux of the matter is that we have no control or even knowledge of who
+all is using KVM, with what userspace VMM, on what hardware, etc.  E.g. if this
+bug were affecting our fleet and for some reason we couldn't address the problem
+in userspace, carrying a hack in KVM in our internal kernel would probably be a
+viable option because we can do a proper risk assessment.  E.g. we know and control
+exactly what userspace we're running, the underlying hardware in affected pools,
+what features are exposed to the guest, etc.  And we could revert the hack once
+all affected VMs had been sanitized.
