@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF4E7B7B14
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FFD7B7BBA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241975AbjJDJGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        id S232798AbjJDJSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:18:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241934AbjJDJFw (ORCPT
+        with ESMTP id S242111AbjJDJGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:05:52 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB830E9;
-        Wed,  4 Oct 2023 02:05:40 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3945XZC6014767;
-        Wed, 4 Oct 2023 09:05:22 GMT
+        Wed, 4 Oct 2023 05:06:31 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C845E0;
+        Wed,  4 Oct 2023 02:06:00 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3945skwR010880;
+        Wed, 4 Oct 2023 09:05:27 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : subject
  : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=KLlIbxbr6FoU2YW+qTSg2/yxNKk+LwDOZJ8E9V40cmk=;
- b=baIquWe06O/7gLkahG32HUrEZVrVMwPGxfpo0g9+iO0rIeQAPxTkw6WBd4y4MVGcNlc1
- l18GYAvaa3ePEx6E/KvZXC1UxTmA6IlpZgnIsAJTB0ZDqkIqE2tqm6HzimwfNlcs97vg
- +XQjm+uglGwlRwC34FguhFOw/vKk6jj+vg3nqbvMEFY3+tnB/O1rETRqducYiSrbnVoA
- IFzjkU/OBCOMZntrdn9rcytLMSptRRpLxhCG+WQ+RlFJI9JmF8S3QVYeG4qf+a53Hqml
- 3XpNdNfH4bAgNFc4g25RcX2AxQiLhE2STwSWi3lQuCNZbZM1T6y3ssCFnVMqRN2T559n eA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgr9mhcjt-1
+ content-transfer-encoding : content-type; s=qcppdkim1;
+ bh=pl0XitQlQbuU4A8mQQ0bS01oCfOmc+xlq+Q+YQKCFCA=;
+ b=XBSQE0PFhGFOuV9j1IEBuR9oPwtgyq8fGuGceBaur4UgzIhoZrPgYtHmP3DZCIdqTbZ4
+ JFXZjUrCvuO6cu6M/G7rfMylklDTuhJKCIOE0g0uYz4JllGyWPDZtZG0QyHxMnoys8dI
+ JY165VbyJ/yi4iMXXL+AXyrpfu5+G8XD4Er0693Bz3/zc7Y2nxh5EqDvb275nZKc9qLD
+ JhQTkYkfYMtFejTXjkXHNTKevgGlusfD9BJ7ww0MSqH496g8glmaa0mj5loYCPDe1WIx
+ LTrjQTsanC9wnh4vGQ8f4ngvnjr8Uz1jXnMGBjIjxxpxsLtCJDNmA+w/ck/c+1FP/YPC FQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgxrjrrdf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 09:05:22 +0000
+        Wed, 04 Oct 2023 09:05:26 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39495KHv014034
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39495Qft022348
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 4 Oct 2023 09:05:20 GMT
+        Wed, 4 Oct 2023 09:05:26 GMT
 Received: from hu-devipriy-blr.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 4 Oct 2023 02:05:15 -0700
+ 15.2.1118.36; Wed, 4 Oct 2023 02:05:20 -0700
 From:   Devi Priya <quic_devipriy@quicinc.com>
 To:     <agross@kernel.org>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
@@ -47,30 +47,30 @@ To:     <agross@kernel.org>, <andersson@kernel.org>,
         <trix@redhat.com>, <baruch@tkos.co.il>,
         <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>
-Subject: [PATCH V13 2/4] dt-bindings: pwm: add IPQ6018 binding
-Date:   Wed, 4 Oct 2023 14:34:47 +0530
-Message-ID: <20231004090449.256229-3-quic_devipriy@quicinc.com>
+Subject: [PATCH V13 3/4] dt-bindings: mfd: qcom,tcsr: Add simple-mfd support for IPQ6018
+Date:   Wed, 4 Oct 2023 14:34:48 +0530
+Message-ID: <20231004090449.256229-4-quic_devipriy@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231004090449.256229-1-quic_devipriy@quicinc.com>
 References: <20231004090449.256229-1-quic_devipriy@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [10.80.80.8]
 X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: XQEd-T8x5J1QuMSJw4Bh92ImV3vXhjvt
-X-Proofpoint-ORIG-GUID: XQEd-T8x5J1QuMSJw4Bh92ImV3vXhjvt
+X-Proofpoint-GUID: u8xJiPeF6VzvtIaXNlmr20g6uXStt41g
+X-Proofpoint-ORIG-GUID: u8xJiPeF6VzvtIaXNlmr20g6uXStt41g
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-04_01,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 adultscore=0 clxscore=1015
- mlxlogscore=999 phishscore=0 suspectscore=0 priorityscore=1501 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310040064
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ clxscore=1015 suspectscore=0 phishscore=0 mlxlogscore=999 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 mlxscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310040064
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -81,124 +81,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DT binding for the PWM block in Qualcomm IPQ6018 SoC.
+Update the binding to include pwm as the child node to TCSR block and
+add simple-mfd support for IPQ6018.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Co-developed-by: Baruch Siach <baruch.siach@siklu.com>
-Signed-off-by: Baruch Siach <baruch.siach@siklu.com>
 Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
 ---
-v13:
+V13:
 
-  Updated the file name to match the compatible
-  
-  Sorted the properties and updated the order in the required field
+ Added simple-mfd support for IPQ6018 based devices
 
-  Dropped the syscon node from examples
+ Added support to include pwm as the child node to TCSR
 
-v12:
+ Included syscon node found on IPQ6018 to the examples
 
-  Picked up the R-b tag
+ .../devicetree/bindings/mfd/qcom,tcsr.yaml    | 100 ++++++++++++------
+ 1 file changed, 69 insertions(+), 31 deletions(-)
 
-v11:
-
-  No change
-
-v10:
-
-  No change
-
-v9:
-
-  Add 'ranges' property to example (Rob)
-
-  Drop label in example (Rob)
-
-v8:
-
-  Add size cell to 'reg' (Rob)
-
-v7:
-
-  Use 'reg' instead of 'offset' (Rob)
-
-  Drop 'clock-names' and 'assigned-clock*' (Bjorn)
-
-  Use single cell address/size in example node (Bjorn)
-
-  Move '#pwm-cells' lower in example node (Bjorn)
-
-  List 'reg' as required
-
-v6:
-
-  Device node is child of TCSR; remove phandle (Rob Herring)
-
-  Add assigned-clocks/assigned-clock-rates (Uwe Kleine-König)
-
-v5: Use qcom,pwm-regs for phandle instead of direct regs (Bjorn
-    Andersson, Kathiravan T)
-
-v4: Update the binding example node as well (Rob Herring's bot)
-
-v3: s/qcom,pwm-ipq6018/qcom,ipq6018-pwm/ (Rob Herring)
-
-v2: Make #pwm-cells const (Rob Herring)
-
- .../bindings/pwm/qcom,ipq6018-pwm.yaml        | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
-
-diff --git a/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml b/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
-new file mode 100644
-index 000000000000..6d0d7ed271f7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pwm/qcom,ipq6018-pwm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/Documentation/devicetree/bindings/mfd/qcom,tcsr.yaml b/Documentation/devicetree/bindings/mfd/qcom,tcsr.yaml
+index 33c3d023a106..14267a493b15 100644
+--- a/Documentation/devicetree/bindings/mfd/qcom,tcsr.yaml
++++ b/Documentation/devicetree/bindings/mfd/qcom,tcsr.yaml
+@@ -15,41 +15,58 @@ description:
+ 
+ properties:
+   compatible:
+-    items:
+-      - enum:
+-          - qcom,msm8976-tcsr
+-          - qcom,msm8998-tcsr
+-          - qcom,qcs404-tcsr
+-          - qcom,sc7180-tcsr
+-          - qcom,sc7280-tcsr
+-          - qcom,sc8280xp-tcsr
+-          - qcom,sdm630-tcsr
+-          - qcom,sdm845-tcsr
+-          - qcom,sdx55-tcsr
+-          - qcom,sdx65-tcsr
+-          - qcom,sm4450-tcsr
+-          - qcom,sm8150-tcsr
+-          - qcom,sm8450-tcsr
+-          - qcom,tcsr-apq8064
+-          - qcom,tcsr-apq8084
+-          - qcom,tcsr-ipq5332
+-          - qcom,tcsr-ipq6018
+-          - qcom,tcsr-ipq8064
+-          - qcom,tcsr-ipq8074
+-          - qcom,tcsr-ipq9574
+-          - qcom,tcsr-mdm9615
+-          - qcom,tcsr-msm8226
+-          - qcom,tcsr-msm8660
+-          - qcom,tcsr-msm8916
+-          - qcom,tcsr-msm8953
+-          - qcom,tcsr-msm8960
+-          - qcom,tcsr-msm8974
+-          - qcom,tcsr-msm8996
+-      - const: syscon
++    oneOf:
++      - items:
++          - enum:
++              - qcom,msm8976-tcsr
++              - qcom,msm8998-tcsr
++              - qcom,qcs404-tcsr
++              - qcom,sc7180-tcsr
++              - qcom,sc7280-tcsr
++              - qcom,sc8280xp-tcsr
++              - qcom,sdm630-tcsr
++              - qcom,sdm845-tcsr
++              - qcom,sdx55-tcsr
++              - qcom,sdx65-tcsr
++              - qcom,sm4450-tcsr
++              - qcom,sm8150-tcsr
++              - qcom,sm8450-tcsr
++              - qcom,tcsr-apq8064
++              - qcom,tcsr-apq8084
++              - qcom,tcsr-ipq5332
++              - qcom,tcsr-ipq6018
++              - qcom,tcsr-ipq8064
++              - qcom,tcsr-ipq8074
++              - qcom,tcsr-ipq9574
++              - qcom,tcsr-mdm9615
++              - qcom,tcsr-msm8226
++              - qcom,tcsr-msm8660
++              - qcom,tcsr-msm8916
++              - qcom,tcsr-msm8953
++              - qcom,tcsr-msm8960
++              - qcom,tcsr-msm8974
++              - qcom,tcsr-msm8996
++          - const: syscon
++      - items:
++          - const: qcom,tcsr-ipq6018
++          - const: syscon
++          - const: simple-mfd
+ 
+   reg:
+     maxItems: 1
+ 
++  ranges: true
 +
-+title: Qualcomm IPQ6018 PWM controller
++  "#address-cells":
++    const: 1
 +
-+maintainers:
-+  - Baruch Siach <baruch@tkos.co.il>
++  "#size-cells":
++    const: 1
 +
-+properties:
-+  compatible:
-+    const: qcom,ipq6018-pwm
++patternProperties:
++  "pwm@[a-f0-9]+$":
++    $ref: ../pwm/qcom,ipq6018-pwm.yaml
 +
-+  reg:
-+    description: Offset of PWM register in the TCSR block.
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  "#pwm-cells":
-+    const: 2
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - "#pwm-cells"
-+
-+additionalProperties: false
-+
-+examples:
+ required:
+   - compatible
+   - reg
+@@ -57,8 +74,29 @@ required:
+ additionalProperties: false
+ 
+ examples:
++  # Example 1 - Syscon node found on MSM8960
+   - |
+     syscon@1a400000 {
+         compatible = "qcom,tcsr-msm8960", "syscon";
+         reg = <0x1a400000 0x100>;
+     };
++  # Example 2 - Syscon node found on IPQ6018
 +  - |
 +    #include <dt-bindings/clock/qcom,gcc-ipq6018.h>
 +
-+    pwm: pwm@a010 {
-+        compatible = "qcom,ipq6018-pwm";
-+        reg = <0xa010 0x20>;
-+        clocks = <&gcc GCC_ADSS_PWM_CLK>;
-+        assigned-clocks = <&gcc GCC_ADSS_PWM_CLK>;
-+        assigned-clock-rates = <100000000>;
-+        #pwm-cells = <2>;
++    syscon@1937000 {
++        compatible = "qcom,tcsr-ipq6018", "syscon", "simple-mfd";
++        reg = <0x01937000 0x21000>;
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges = <0 0x1937000 0x21000>;
++
++        pwm: pwm@a010 {
++            compatible = "qcom,ipq6018-pwm";
++            reg = <0xa010 0x20>;
++            clocks = <&gcc GCC_ADSS_PWM_CLK>;
++            assigned-clocks = <&gcc GCC_ADSS_PWM_CLK>;
++            assigned-clock-rates = <100000000>;
++            #pwm-cells = <2>;
++        };
 +    };
 -- 
 2.34.1
