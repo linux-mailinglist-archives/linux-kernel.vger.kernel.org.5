@@ -2,157 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3753D7B8310
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7987E7B8315
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbjJDO7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
+        id S243059AbjJDPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233192AbjJDO7n (ORCPT
+        with ESMTP id S242870AbjJDPAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:59:43 -0400
-Received: from sender3-op-o18.zoho.com (sender3-op-o18.zoho.com [136.143.184.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBD59B;
-        Wed,  4 Oct 2023 07:59:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1696431543; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=gMNoEli4g2cQmjpcvCqiTd0zYxrBPMD7THOpvqCJHuBCjFTHlL9bRpK1PpNn9VxWIMRRvOWFj/81OVWtua0txKV9ePNxYJz/s9wa8Qqwc1qR17pt+ONK2llQh9jXO0O5o9UxpU03SAa1SuhE8GBIMYh9hcJmZxEeC1MxpTxWMWQ=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1696431543; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=LdPMaLjHlfUS0gHSy+2qt31lLyAWmRO7wmsNvzL4OAA=; 
-        b=RndgPiKwFgWEQvELvUjLB4YgihwR+6RtVkQGlc1vQeTytOl0qwkq5Grh5h9Q9vBuNH3GrYJZrJs9ZSIAeB86tKLvEloWPMRDz0OLeCPIvzRfZ1ZFefbdsUggu3U4WAAyjQNBpKAKOZ4d/EhXai85OdmlZj5xQXKqxiKnUt5F3uM=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=icenowy.me;
-        spf=pass  smtp.mailfrom=uwu@icenowy.me;
-        dmarc=pass header.from=<uwu@icenowy.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1696431543;
-        s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
-        h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
-        bh=LdPMaLjHlfUS0gHSy+2qt31lLyAWmRO7wmsNvzL4OAA=;
-        b=eR+gxRYUfLByktnwDoAwm9lPs4BfVqK07dHUdshqDxQX2gRuSzUu3NFgPnhbxYRc
-        rMLb8eGiorRLyOJ6xgw3daXcyMGY2mq886CEGxS+toWYQzUc2hAtqYhDWbylPy5cyru
-        lULRYYaZaMkWc4UCNNbRIi8ttEPo1CXM5swK74Bcscl9OZ3+MlpilTGcqSMFxaV0HNR
-        VmMkv2V9QlRvVB2a9wjbrBQ02AP5OmGfA642uz3IbHTtbREbkub7MO2+IpvBJ9yECtI
-        PK3T9xtDX4OVUyarYMIkSfRjEgR286oGWKYn3eTMHyjiFuQ29v0YbqYHFSlrN6FjeGg
-        xCr+bBBG+w==
-Received: from edelgard.fodlan.icenowy.me (120.85.98.65 [120.85.98.65]) by mx.zohomail.com
-        with SMTPS id 1696431540266745.8094566529361; Wed, 4 Oct 2023 07:59:00 -0700 (PDT)
-Message-ID: <12ea9707f8c45dc398eb20f303aba9ecc7624455.camel@icenowy.me>
-Subject: Re: [PATCH 0/6] RISC-V: Add eMMC support for TH1520 boards
-From:   Icenowy Zheng <uwu@icenowy.me>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>
-Cc:     Drew Fustini <dfustini@baylibre.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Linux-MM <linux-mm@kvack.org>
-Date:   Wed, 04 Oct 2023 22:58:52 +0800
-In-Reply-To: <a568a9dd-bab2-1e23-c4d5-9f6475bdcc3b@arm.com>
-References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
-         <CAOCHtYhnx1EpBM+o3xhdsicx5uqLidojK3f0HQ+VfyVv1ZXnVQ@mail.gmail.com>
-         <CAOCHtYi5Ab5ppCmaQV3QuKQcpmJX+sHdAmtuEXhfq8xf5fFCYQ@mail.gmail.com>
-         <ZRuamJuShOnvP1pr@x1> <ZR1M3FcdXrDmIGu2@xhacker>
-         <CA+V-a8ugwqkQxnX-wwWCHVtBBtG=aVv=MZTc53LbpxtFA=N1_A@mail.gmail.com>
-         <bc2b0b30-ab37-f336-c90e-eab570d393a2@arm.com>
-         <c2ea3f34bb919293b850fab6ed42b61e3517ba35.camel@icenowy.me>
-         <a568a9dd-bab2-1e23-c4d5-9f6475bdcc3b@arm.com>
-Organization: Anthon Open-Source Community
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 
+        Wed, 4 Oct 2023 11:00:11 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 460C4E5;
+        Wed,  4 Oct 2023 08:00:07 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394Eki7Y026565;
+        Wed, 4 Oct 2023 14:59:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qQgILTW2wTzA1iiqVeB/cfzJOWsEmS8TF5Uj8zbtSv4=;
+ b=OWyqYP7vdJZEe5WoSP5FIV1mnGYHd/A6mj0IgDmJj5RD2XJzxMNnaSx2RG0/OFtRFOpX
+ ffMwZ/+4wdlHlUlacNT8FJ6xEr12ZX9nfh3R2WP2PnHB0565aQWPv02T0Ce90FpZSk9I
+ EzAOfKZ1DYef/El/OzhtlyRj87LVLzmTT7HayipYQb3De9YFkfjMCOWq1ckdQuk83znS
+ 6Fk0BaUEjordY9Uxn63jmenLBnCdmS8cecwJfwP95Xze3znNcJQM+RhJ/8dpxzPN114e
+ 1hfSj0RYvJHg+2+3Ef8psR5RBmciWe3JzpD86RpjO/62EgxhXHaaUFoNmk28fZg6EjXk wA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3th9ax237j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Oct 2023 14:59:46 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 394Em5xB031415;
+        Wed, 4 Oct 2023 14:59:46 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3th9ax236b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Oct 2023 14:59:45 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 394EfnRH017637;
+        Wed, 4 Oct 2023 14:59:44 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tey0nebe4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Oct 2023 14:59:44 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
+        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 394ExhNV3146480
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 4 Oct 2023 14:59:43 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8047C58060;
+        Wed,  4 Oct 2023 14:59:43 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E69BE5803F;
+        Wed,  4 Oct 2023 14:59:35 +0000 (GMT)
+Received: from [9.179.14.141] (unknown [9.179.14.141])
+        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  4 Oct 2023 14:59:35 +0000 (GMT)
+Message-ID: <03cfbe39-da81-408e-6e61-3a1af6fabcac@linux.vnet.ibm.com>
+Date:   Wed, 4 Oct 2023 20:29:33 +0530
 MIME-Version: 1.0
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 2/2] sched/topology: change behaviour of sysctl
+ sched_energy_aware based on the platform
+Content-Language: en-US
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, qperret@google.com,
+        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
+        mingo@kernel.org, pierre.gondois@arm.com, yu.c.chen@intel.com,
+        tim.c.chen@linux.intel.com, pauld@redhat.com, lukasz.luba@arm.com,
+        linux-doc@vger.kernel.org, bsegall@google.com, linux-eng@arm.com,
+        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
+References: <20230929155209.667764-1-sshegde@linux.vnet.ibm.com>
+ <20230929155209.667764-3-sshegde@linux.vnet.ibm.com>
+ <xhsmhttr6oceh.mognet@vschneid.remote.csb>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <xhsmhttr6oceh.mognet@vschneid.remote.csb>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: YpnK0TJkTEwoCjujP6_EQ1jbEFFaNC5j
+X-Proofpoint-ORIG-GUID: RFke6C4QVFPZNT9PZqyM3qeDzzEr9Uq9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-04_07,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1015 adultscore=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310040105
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=E5=9C=A8 2023-10-04=E6=98=9F=E6=9C=9F=E4=B8=89=E7=9A=84 15:18 +0100=EF=BC=
-=8CRobin Murphy=E5=86=99=E9=81=93=EF=BC=9A
-> On 04/10/2023 3:02 pm, Icenowy Zheng wrote:
-> [...]
-> > > > > I believe commit 484861e09f3e ("soc: renesas: Kconfig: Select
-> > > > > the
-> > > > > required configs for RZ/Five SoC") can cause regression on
-> > > > > all
-> > > > > non-dma-coherent riscv platforms with generic defconfig. This
-> > > > > is
-> > > > > a common issue. The logic here is: generic riscv defconfig
-> > > > > selects
-> > > > > ARCH_R9A07G043 which selects DMA_GLOBAL_POOL, which assumes
-> > > > > all
-> > > > > non-dma-coherent riscv platforms have a dma global pool, this
-> > > > > assumption
-> > > > > seems not correct. And I believe DMA_GLOBAL_POOL should not
-> > > > > be
-> > > > > selected by ARCH_SOCFAMILIY, instead, only ARCH under some
-> > > > > specific
-> > > > > conditions can select it globaly, for example NOMMU ARM and
-> > > > > so
-> > > > > on.
-> > > > >=20
-> > > > > Since this is a regression, what's proper fix? any suggestion
-> > > > > is
-> > > > > appreciated.
-> > >=20
-> > > I think the answer is to not select DMA_GLOBAL_POOL, since that
-> > > is
-> > > only
-> >=20
-> > Well I think for RISC-V, it's not NOMMU only but applicable for
-> > every
-> > core that does not support Svpbmt or vendor-specific alternatives,
-> > because the original RISC-V priv spec does not define memory
-> > attributes
-> > in page table entries.
-> >=20
-> > For the Renesas/Andes case I think a pool is set by OpenSBI with
-> > vendor-specific M-mode facility and then passed in DT, and the S-
-> > mode
-> > (which MMU is enabled in) just sees fixed memory attributes, in
-> > this
-> > case I think DMA_GLOBAL_POOL is needed.
->=20
-> Oh wow, is that really a thing? In that case, either you just can't=20
-> support this platform in a multi-platform kernel, or someone needs to
-> do=20
 
-Well, considering RZ/Five enables some spec-non-conformant local memory
-(which bypasses MMU) that makes even running generic user space
-binaries not so viable (PIE ones may still run, but those built to be
-on the default fixed location of binutils will conflict with the MMU-
-bypassing local memory), not supporting it in a multi-platform kernel
-doesn't look like a big deal.
 
-> some fiddly work in dma-direct to a) introduce the notion of an
-> optional=20
-> global pool, and b) make it somehow cope with DMA_DIRECT_REMAP being=20
-> enabled but non-functional.
->=20
-> Thanks,
-> Robin.
+On 10/4/23 4:57 PM, Valentin Schneider wrote:
+> On 29/09/23 21:22, Shrikanth Hegde wrote:
 
+Hi Valentin, Thanks for taking a look at this patchset.
+
+>> +static bool sched_is_eas_possible(const struct cpumask *cpu_mask)
+>> +{
+>> +	bool any_asym_capacity = false;
+>> +	struct cpufreq_policy *policy;
+>> +	struct cpufreq_governor *gov;
+>> +	int i;
+>> +
+>> +	/* EAS is enabled for asymmetric CPU capacity topologies. */
+>> +	for_each_cpu(i, cpu_mask) {
+>> +		if (per_cpu(sd_asym_cpucapacity, i)) {
+> 
+> Lockdep should complain here in the sysctl path - this is an RCU-protected
+> pointer.
+> 
+> rcu_access_pointer() should do since you're not dereferencing the pointer.
+
+Yes. I did miss to catch that since mostly copied the snippets from build_perf_domains.
+ 
+> 
+>> +			any_asym_capacity = true;
+>> +			break;
+>> +		}
+>> +	}
+> 
+>> @@ -231,6 +295,15 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
+>>               return -EPERM;
+>>
+>>       ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+> 
+> Shouldn't this happen after we check sched_is_eas_possible()? Otherwise
+> AFAICT a write can actually happen despite !sched_is_eas_possible().
+
+Yes. That's right. Will change that.
+
+> 
+>> +	if (!sched_is_eas_possible(cpu_active_mask)) {
+>> +		if (write) {
+>> +			return -EOPNOTSUPP;
+>> +		} else {
+>> +			*lenp = 0;
+>> +			return 0;
+>> +		}
+>> +	}
+> 
+> But now this is making me wonder, why not bite the bullet and store
+> somewhere whether we ever managed to enable EAS? Something like so?
+> (I didn't bother making this yet another static key given this is not a hot
+> path at all)
+
+IIUC, Problem with this is, a platform which can do EAS now, may not be able to do EAS 
+sometime later. 
+for example, frequency governor is changed from performance to 
+schedutil, EAS can be enabled and sched_energy_once will be set, but later it can be 
+set to performance again. In that case saying it is EAS capable is wrong. 
+
+> ---
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index e0b9920e7e3e4..abd950f434206 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -209,6 +209,7 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
+>  #if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
+>  DEFINE_STATIC_KEY_FALSE(sched_energy_present);
+>  static unsigned int sysctl_sched_energy_aware = 1;
+> +static bool __read_mostly sched_energy_once;
+>  static DEFINE_MUTEX(sched_energy_mutex);
+>  static bool sched_energy_update;
+> 
+> @@ -230,6 +231,15 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
+>  	if (write && !capable(CAP_SYS_ADMIN))
+>  		return -EPERM;
+> 
+> +	if (!sched_energy_once) {
+> +		if (write) {
+> +			return -EOPNOTSUPP;
+> +		} else {
+> +			*lenp = 0;
+> +			return 0;
+> +		}
+> +	}
+> +
+>  	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+>  	if (!ret && write) {
+>  		state = static_branch_unlikely(&sched_energy_present);
+> @@ -340,6 +350,8 @@ static void sched_energy_set(bool has_eas)
+>  		if (sched_debug())
+>  			pr_info("%s: starting EAS\n", __func__);
+>  		static_branch_enable_cpuslocked(&sched_energy_present);
+> +		// Record that we managed to enable EAS at least once
+> +		sched_energy_once = true;
+>  	}
+>  }
+> 
+> 
