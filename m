@@ -2,150 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD827B7782
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 07:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529F67B7786
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 07:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241359AbjJDFfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 01:35:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
+        id S241353AbjJDFpj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 01:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232178AbjJDFfb (ORCPT
+        with ESMTP id S232178AbjJDFph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 01:35:31 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2083.outbound.protection.outlook.com [40.107.243.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB768A7
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 22:35:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CLRkiawHO5Gj8tKa79GVpjCUZoMNG+JGgslPyzccU2rV3sSLZvusxFIIRsx+LUsBlamxKTv5r0HFvy0buYtXBCWSVJhbPVEogEtE5olIVnm43CwmF5+Rv0LLkqQN6QrJP33yJ0obKyPhw4FWNd5c4Evo6k7JzwuekkfBzOY3rlKKCLTO2R9N5HBuh13/XiUnrAhmdsatox3vcxhLPuJIlDNZWYO029Q9aXfF5O3iV0+K7fvIpqs6zhAHfAI0dUbEaPl4wPleFfGhf/Rc6epnnPH5bq8QyHVMfOBQUgRGgr0o79VKKvbK5BdW/gDjiE+WHWO9/FFy2sHgCKysPlfMUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5UiYYDnEZqe//oyZQE6lDtt41VEWei4zPF7ak984Jwo=;
- b=AYBudQA3076/MON2p6LtO59zHBe+fuEBKF3LIp0VQtoR7cUKBeckIjloaYEqKeeJZdPMSaV97th7cvlEqarCVJ0pYZ+fYkicD6VG7FPUeQvVvQ88i/c0OEneUWOpgv+sWf7/ap0N6GgzYVjI6s+hRFkm+YYtIP6MB1NNKCQrev4Nw+Is5h2AES9UnF1VS9g3GNJxeLymi/8Msn7plmq7TQqvqNbVNaZb9v0gYPP5MVaJ5v04xz0G5VGf5SHO+/K5Fz7VohbAKfHBS0cgix1vyJ/HgwFE+cR17BM3KTf8fvLxmLeUCMLtOltxLoI01xj0Ge5vqxQAmrMjoZR1Cbb24A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5UiYYDnEZqe//oyZQE6lDtt41VEWei4zPF7ak984Jwo=;
- b=hDAgUgFcmdMgBFM4eNSuv/k524T8YJFrbebjcJAysps7p1bHqwl4SQGzwhpjLR8fB4YtQp5uUgHk5bz7VnrEYr14RF2sigZdObVGpbnbhpXd+hvvnlI04Vy2L+rP3Rb+GSanUGYNgQpcEb3m+eST+p190C4wxWM/DfHhemvKtAA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6309.namprd12.prod.outlook.com (2603:10b6:8:96::19) by
- SN7PR12MB7934.namprd12.prod.outlook.com (2603:10b6:806:346::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Wed, 4 Oct
- 2023 05:35:24 +0000
-Received: from DS7PR12MB6309.namprd12.prod.outlook.com
- ([fe80::93cc:c27:4af6:b78c]) by DS7PR12MB6309.namprd12.prod.outlook.com
- ([fe80::93cc:c27:4af6:b78c%2]) with mapi id 15.20.6838.033; Wed, 4 Oct 2023
- 05:35:24 +0000
-Message-ID: <9a6af215-e696-5091-69fa-1cbebe772471@amd.com>
-Date:   Wed, 4 Oct 2023 11:05:14 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4 00/14] Add Secure TSC support for SNP guests
-From:   "Nikunj A. Dadhania" <nikunj@amd.com>
-To:     thomas.lendacky@amd.com, x86@kernel.org
-Cc:     dionnaglaze@google.com, pgonda@google.com, seanjc@google.com,
-        pbonzini@redhat.com, bp@alien8.de, linux-kernel@vger.kernel.org
-References: <20230814055222.1056404-1-nikunj@amd.com>
- <f200403b-c460-5ebb-fec5-c5caf0cdb006@amd.com>
-Content-Language: en-US
-In-Reply-To: <f200403b-c460-5ebb-fec5-c5caf0cdb006@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN3PR01CA0028.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:97::7) To DS7PR12MB6309.namprd12.prod.outlook.com
- (2603:10b6:8:96::19)
+        Wed, 4 Oct 2023 01:45:37 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179A6A9;
+        Tue,  3 Oct 2023 22:45:30 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3945ionlF2967808, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 3945ionlF2967808
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 4 Oct 2023 13:44:51 +0800
+Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Wed, 4 Oct 2023 13:44:51 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Wed, 4 Oct 2023 13:44:50 +0800
+Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
+ RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
+ 15.01.2375.007; Wed, 4 Oct 2023 13:44:50 +0800
+From:   Max Chou <max.chou@realtek.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+CC:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Hilda Wu <hildawu@realtek.com>,
+        "alex_lu@realsil.com.cn" <alex_lu@realsil.com.cn>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        "Johan Hedberg" <johan.hedberg@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: Regression: devcoredump patch broke Realtek usb bluetooth adapter
+Thread-Topic: Regression: devcoredump patch broke Realtek usb bluetooth
+ adapter
+Thread-Index: AQHZ9iZZqIk9cnxrEkOIPrwHFnXgfLA4N/0AgAA1ZDCAABycgIAAkrXQ
+Date:   Wed, 4 Oct 2023 05:44:49 +0000
+Message-ID: <b452257b550a47feb1c45b905018fe17@realtek.com>
+References: <20231003182038.k57nirtt4sonvt7c@box.shutemov.name>
+ <ZRyqIn0_qqEFBPdy@debian.me> <b2ef2f1c457a4cf7a246b2e8b8598a30@realtek.com>
+ <20231004044947.vgegwvxxindkjo7g@box.shutemov.name>
+In-Reply-To: <20231004044947.vgegwvxxindkjo7g@box.shutemov.name>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.21.132.197]
+x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6309:EE_|SN7PR12MB7934:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1247e123-e9a6-407d-02da-08dbc49bb513
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1qSwTs8LFxdHGLxVLOVHA23NjKzdy7tcghFuoqjqtUaxiqAuBZYin5uJ1kGBAn8x0g9tIP3+gmdFQdoxVZEIZu+TOWh6yJAgFF8KUMbvUgAyxOJLCDk3MAs4GOEuEr/zoPShgqRBZLxu/kG2WhJ4xtWgkILSdgVk11ZQIVeCqjrWK310xiZa0TrCW5Zj/s18Hqhz1sUvLfbsUSy4OuEY+zB8Orxm4TScx1W58TOpp/W6IRR1ieuaF1XUhAZ7rBwkosZvcAcbNl9JqXlnMHeAVvpMsFlOxgCDwMXWtgcPspL3dIdTRBpqJulPOkrUPrYzw75uE7bbv9Ixl4LN0BVf0jOoOfd+r54nGYhSlrclElLC/ptAb82i4A/14Hlq+umx7QBInHrPC0CIPyBGZ+fATIHO7xCmFNMqhYa+iBnN4RQ3whPSRjzXuFXF2kFNj9jQwAj2267HbPqb+CdRsArzDeA2QSDDvrZvEAppOEr7abv03KNGwz4FULpfa/awlYa5b4qbCPgUXK1BdLMkhg+LLu3Scz7Vt+ouzY27tb2MTJn0+2DADCTjC7YYIbNVeze/Nh2MWQ6AVMsQmqZX3Tj2N39A2YKjpnfDtwgyP8uVG3I+u2E5CT4vc0nzTao+OgDCr9LrBm6Im6MjA7DDuByAcQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6309.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(396003)(376002)(136003)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(31686004)(53546011)(6506007)(6486002)(6666004)(478600001)(6512007)(31696002)(38100700002)(2906002)(4744005)(83380400001)(26005)(2616005)(36756003)(66556008)(66946007)(5660300002)(66476007)(41300700001)(316002)(4326008)(8936002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QlZIcldZUTdEUlRqaVIvckJ2MmZsTllFcmRaMTFpZ2VHdkZMSW8xQlVaeUZM?=
- =?utf-8?B?b0lucXB5NVJ5TkVzRjBSUFhDYkpaK0ExRnkwM2xuNUtNdWNrTVVaeDdiaWZJ?=
- =?utf-8?B?eGtCL3pXZkYrSDYxWEFCQW05eTB0dnZCTUt3MmNySTNFaXBVZUtiZTZqRmVi?=
- =?utf-8?B?YWE4a1B5WEdHa2xDWkkrZUZmdmFhU0tudHI4dzloTHhPWkhaZVNvZXNLNU9T?=
- =?utf-8?B?VHVwZk0rSGVEVFRhc0NYZE1wK1BtbnNxb29hN2hYVHV5aFN0UmVaZkJaU29h?=
- =?utf-8?B?aEZqVFlKcXFreENTNFcyU1hmZGp2Mi9hMVpYMGhNdktFb2dIYXVtSUVmd3Nr?=
- =?utf-8?B?bDVmdytkK1VCTHBUTi8zb1E2UDZnZ2R6Y0Y0YlF1WmpncHFwNmFnZHlKd0Yv?=
- =?utf-8?B?ZlBJN1N3MzZIZGlxTCtFcFY3Z0pOVGs2RldxRU1RcEZOdzhwQlhKY1Z5djJ3?=
- =?utf-8?B?aXRsdVFRd2h0TGlqZHFFc3I3WlY2QVpkUXphNXhiOTU3RzkzaHZTa0NvQ2dw?=
- =?utf-8?B?Z01kd1BMT1dDSlpQNExOWDNoK1VJeEFUbC85NFJZYXlVQTA1NUhpZ3daOUZh?=
- =?utf-8?B?Nnd4cGVCVXlqZFl3MmlrREhRYjkvc0hrM2JFdmgyY201Qjg2eTcyZ1JiRFlS?=
- =?utf-8?B?NmgxMG9XOUN1VGxYRm9Fa3JvTk9vU3lXSkliYnFPREpzYVBGVThZcG1iZHli?=
- =?utf-8?B?V1Z1bGJTeTlUT2tkbVBCem1wSldPNU5SWnZxU0hFclExZ255VkZLRGZFZmJu?=
- =?utf-8?B?WXVQYSsxSE81ZXByZGp3d1dzS0puMzhyMU5BMWJBUVFERDA3MUN5bkI5VjVO?=
- =?utf-8?B?VFZmdXMvZk5nV3dXMVRLdVJXWEgxcEJLWnNTMS8xSkgvc0JrRHl4OTBXOGxo?=
- =?utf-8?B?QkpOdlhFbGZQWC9hZGZpOGN6WDZ1NnJTZit4NDREanQ1T3hYNkdqcmxUejA5?=
- =?utf-8?B?L1g0NkxlQ25UbmZ2bXU3UlVXcCtHeGdianhidmc0SlJrOU1WclZPSnl1Rnhs?=
- =?utf-8?B?RjA2QXdUSVFTK053VzhyVGRyQWs4M0RiOUtMWUFOY0xGRHlRZ3A2alJGcDJl?=
- =?utf-8?B?ZUNMVXo4SXcwNGVOZGdHajA3VmpMekJ2MTAyRlhJRXdObldIRG43MlVtWXho?=
- =?utf-8?B?QTQ2WUdFS1R6RmJEdnFsOFZBSzNUaS9KcHFZVU9LSkU1WFduOVhuSW9sWmRI?=
- =?utf-8?B?bWRGNERzS1lRbUFoTEZWM1ZUTU1pMXE4TlpTRE5NWmtLb1dzMGJwc2UzTFdL?=
- =?utf-8?B?WDl3SEZMd0RhalBoaHFNMlRCbUkwSTArWGs2TE9PTVhpOXgwcUludmgzUXRQ?=
- =?utf-8?B?M2w2ejA2Q2hlU2lEdnNOY1pVQXVDKzljMUJhKzFmL012UzdORytXY2RGRC9S?=
- =?utf-8?B?NlpkV0lFalVIdS8rTldRMG5KU0VCZEtqb0txeFZsR3ZMdjZWdExESGVvYkFT?=
- =?utf-8?B?aFFLTTZsYk41ZktPa2t6ZEdUL0dFTUVOZnRIdDFGMmllck5Lb0VFU0JmaENK?=
- =?utf-8?B?SjBWc1JhczVjSkR0emRvVG5lVW05bmQzQmpnMkxGZUc3MzNjZmZ4QStHK2dU?=
- =?utf-8?B?S3M3TUJWUmVUbmxOdTN1ZHQ2VDhDbkEwbHEvNDN5OERpaVNIR3JRWExNZHRI?=
- =?utf-8?B?TE1DTTV6NklBWTRhRHRaNUtCY2ExTFloYjlKbXU4NjhHQUhKcWZNRytKK25x?=
- =?utf-8?B?aEtQaXNoM2NZYnhOZnVsWHF1aVBDVFk5Yi9nVHF3RVJZbkp4RmxQZElPTGtG?=
- =?utf-8?B?VFBGdmg5ZUhIWEE2bTI4MjFIaExDUWVkY3hKNjFYbDllM1RialNPeEgyS0sw?=
- =?utf-8?B?eTJicE9CdkNPeHBWTFdPZE5WV2pkTitlZlVRNDQxWXZOL1VkNDVjWTVkMUpr?=
- =?utf-8?B?OFQrOTR2K3dJc1N3WEFiQWxyZ1lUYkY2N3RyNGlBYXJRYUJvdEpOY01jQktr?=
- =?utf-8?B?ekNkMHJDMmRDWXhLMHFrZ1dUVURKazQ5eEdQeWFTZzBsUEtKQU4vRDFrTXRh?=
- =?utf-8?B?Wlo2c0tjc0lBb1lNOTZxTTBJUE95MU90NzJNbEcxVmRpWnJaYVdMZHdmTnlX?=
- =?utf-8?B?VjlqZ1h1T1FrQXl4eDhTazdJdXNISWRmU05jeDRIVmFIR3BZWUVUdXRHTlJS?=
- =?utf-8?Q?raGFHMwcr6grbhq1j2pgUeLhS?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1247e123-e9a6-407d-02da-08dbc49bb513
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6309.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 05:35:24.4638
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yUJcIcAQvdxx1hu8zrsJe3TWOX6r8X+0GtQLvvFNWhMFUFAahZLNxQnfXzS7OxL8siaAqHYuDCXRdNZiIKyHbQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7934
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/2023 9:17 AM, Nikunj A. Dadhania wrote:
-> On 8/14/2023 11:22 AM, Nikunj A Dadhania wrote:
->> Secure TSC allows guests to securely use RDTSC/RDTSCP instructions as the
->> parameters being used cannot be changed by hypervisor once the guest is
->> launched. More details in the AMD64 APM Vol 2, Section "Secure TSC".
->>
-...
->>
->> Changelog:
->> ----------
->> v4:
->> * Drop handle_guest_request() and handle_guest_request_ext()
->> * Drop NULL check for key
->> * Corrected commit subject
->> * Added Reviewed-by from Tom
+Hi! Kirill,
+As your mentions, there's not obvious wrong from the dmesg.
+Could you capture btmon log with raw data? (btmon -w xxx.log)
+In additional, did you build the last version of bluetooth-next?
+By my understanding, you can just duplicate the issue by the commit "044014ce85a1 Bluetooth: btrtl: Add Realtek devcoredump support"?
+Unfortunately, I can not duplicate this issue sofar.
+
+
+BRs,
+Max
+
+
+> -----Original Message-----
+> From: Kirill A. Shutemov <kirill@shutemov.name>
+> Sent: Wednesday, October 4, 2023 12:50 PM
+> To: Max Chou <max.chou@realtek.com>
+> Cc: Bagas Sanjaya <bagasdotme@gmail.com>; Hilda Wu
+> <hildawu@realtek.com>; alex_lu@realsil.com.cn; Luiz Augusto von Dentz
+> <luiz.von.dentz@intel.com>; Marcel Holtmann <marcel@holtmann.org>;
+> Johan Hedberg <johan.hedberg@gmail.com>; Juerg Haefliger
+> <juerg.haefliger@canonical.com>; Linux Bluetooth
+> <linux-bluetooth@vger.kernel.org>; Thorsten Leemhuis <linux@leemhuis.info>;
+> Linux Regressions <regressions@lists.linux.dev>; Linux Kernel Mailing List
+> <linux-kernel@vger.kernel.org>
+> Subject: Re: Regression: devcoredump patch broke Realtek usb bluetooth
+> adapter
 > 
-> A gentle reminder.
-
-
-Ping ?
-
-Regards
-Nikunj
-
+> 
+> External mail.
+> 
+> 
+> 
+> On Wed, Oct 04, 2023 at 03:07:24AM +0000, Max Chou wrote:
+> > Hi! Kirill,
+> > I based on Kernel v6.5.5 and updated drivers/bluetooth to the last version of
+> bluetooth-next tree for a test with RTL8761BUV.
+> > The dmesg log and "hciconfig -a" are correct.
+> > Could you share the dmesg for your failure case?
+> >
+> > [56133.563293] usb 3-1: new full-speed USB device number 28 using
+> > xhci_hcd [56133.712559] usb 3-1: New USB device found, idVendor=0bda,
+> > idProduct=8771, bcdDevice= 2.00 [56133.712577] usb 3-1: New USB device
+> > strings: Mfr=1, Product=2, SerialNumber=3 [56133.712582] usb 3-1:
+> > Product: Bluetooth Radio [56133.712585] usb 3-1: Manufacturer: Realtek
+> > [56133.712588] usb 3-1: SerialNumber: 00E04C239987 [56133.737812]
+> > usbcore: registered new interface driver btusb [56133.742126]
+> > Bluetooth: hci0: RTL: examining hci_ver=0a hci_rev=000b lmp_ver=0a
+> > lmp_subver=8761 [56133.743115] Bluetooth: hci0: RTL: rom_version
+> > status=0 version=1 [56133.743124] Bluetooth: hci0: RTL: loading
+> > rtl_bt/rtl8761bu_fw.bin [56133.743754] Bluetooth: hci0: RTL: loading
+> > rtl_bt/rtl8761bu_config.bin [56133.743829] Bluetooth: hci0: RTL:
+> > cfg_sz 6, total sz 30210 [56133.913311] Bluetooth: hci0: RTL: fw
+> > version 0xdfc6d922 [56133.980299] Bluetooth: MGMT ver 1.22
+> >
+> > hci0:   Type: Primary  Bus: USB
+> >         BD Address: 98:A2:35:85:56:F1  ACL MTU: 1021:6  SCO MTU:
+> 255:12
+> >         UP RUNNING
+> >         RX bytes:1670 acl:0 sco:0 events:184 errors:0
+> >         TX bytes:33917 acl:0 sco:0 commands:184 errors:0
+> >         Features: 0xff 0xff 0xff 0xfe 0xdb 0xfd 0x7b 0x87
+> >         Packet type: DM1 DM3 DM5 DH1 DH3 DH5 HV1 HV2 HV3
+> >         Link policy: RSWITCH HOLD SNIFF PARK
+> >         Link mode: PERIPHERAL ACCEPT
+> >         Name: 'max-ThinkPad-X230'
+> >         Class: 0x6c010c
+> >         Service Classes: Rendering, Capturing, Audio, Telephony
+> >         Device Class: Computer, Laptop
+> >         HCI Version: 5.1 (0xa)  Revision: 0xdfc6
+> >         LMP Version: 5.1 (0xa)  Subversion: 0xd922
+> >         Manufacturer: Realtek Semiconductor Corporation (93)
+> 
+> I don't see anything obviously wrong in dmesg. Attached hciconfig and dmesg
+> for both functional and broken cases.
+> 
+> --
+>   Kiryl Shutsemau / Kirill A. Shutemov
