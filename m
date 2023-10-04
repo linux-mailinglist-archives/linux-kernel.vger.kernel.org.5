@@ -2,161 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9917B8002
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0217B7FF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242543AbjJDM6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 08:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        id S242496AbjJDM5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 08:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242533AbjJDM6U (ORCPT
+        with ESMTP id S233146AbjJDM5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 08:58:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF06BE3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696424252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7u0qRNgbqDEiWsnicM0bjmnfQ0yrBqbgKexDYpUvT5Q=;
-        b=Iy4AXkas2R3IKWnzaM/gZUx7+jtBcKXOhw1p6TUfXRdn8n+k4auowGvAvexNFdn3OZVboG
-        6ssnWg4Gm6b5GXzG2CNBvvJQRgwpf04E4yJoPkGAyufhBSqSz0jway+5l88QxtFk8mGE4c
-        0BgMBT603hp6O5vatSCvyrWuSU2tiCA=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-70-cCO3SecwP3m4qlbPrUYpOA-1; Wed, 04 Oct 2023 08:57:31 -0400
-X-MC-Unique: cCO3SecwP3m4qlbPrUYpOA-1
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-5a23fed55d7so30995757b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 05:57:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696424250; x=1697029050;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7u0qRNgbqDEiWsnicM0bjmnfQ0yrBqbgKexDYpUvT5Q=;
-        b=QQ3kupU9CKemiyHFEXBuf7fOxagRayYT1FMtd8991g8nUK7S9EmnIlMvrOAosIqVqG
-         1dkoNuzo70N75Ky7rLwHnr13TC7AVueiXiHGJf/Z7qW1eoiQ/Jzd+aFGyZqEpQzmnpHY
-         w2cspiuzvb7fymqi29iIiq96MddRiH8N82GUfXUakqVnFdcX7Sv/Vyn9Ky/3jXcNgc8V
-         KoFyx/azmtX+0C5BfpwmHFgfXCZ7gJzEPlI0r9O4hMVkNC7+2Bu0eLeaUPcwmqvcKx+0
-         dSS7Xc/stnM4j8HMTESTHbyHngT5khCIVRInzQnjuCnqTn2xDs77FMKiiOHFNfbl2iwv
-         RzWA==
-X-Gm-Message-State: AOJu0Yy11paR64VUxnxlrgcifEJrzTuPc+3jK1dhmDyBG8KkDdAzO9E+
-        zitrG569HHM2hV363a5jBkR/K0p06qoWm3r2tuVfNwzDVs/ioAUEvW+DtRBTy5iDerrJGu3tNu8
-        zdKNKWBZzxuTyPTH25sB7AkwrlIUvUbVAFK/jiPj/CuvoO9AgWFE=
-X-Received: by 2002:a0d:dec7:0:b0:59e:9a44:9db9 with SMTP id h190-20020a0ddec7000000b0059e9a449db9mr2244801ywe.26.1696424250428;
-        Wed, 04 Oct 2023 05:57:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHMFxsYT9s+vpgZJb+3Q0dlaA/iuuNpoTQN5CbQqCAJnRaUBSjbJ8kbjqosXHzAvnO7mdaYCpUMdKiPNgBfFlE=
-X-Received: by 2002:a0d:dec7:0:b0:59e:9a44:9db9 with SMTP id
- h190-20020a0ddec7000000b0059e9a449db9mr2244764ywe.26.1696424249524; Wed, 04
- Oct 2023 05:57:29 -0700 (PDT)
+        Wed, 4 Oct 2023 08:57:13 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB993A6;
+        Wed,  4 Oct 2023 05:57:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C002DC433C8;
+        Wed,  4 Oct 2023 12:57:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696424229;
+        bh=c0B8rcdyLaJqRDe54RZrNhWFmOTGkuIhTF5iHLVhyvU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Uzbko4RDR2v6YIAOqSeaq0KR6qZ+8S52iFfEwWok3OTjWQ6uNBwZxbj5/LvRZXkxy
+         ORPrlcdE0BM2K19AVebvVu0xifaGhdaNChJ7Zi0dhUT+y7vVdUFpDa5jMBmtocYDIO
+         SA3UvjmZO0dvrD2TIlJp1p138HHvsGMaaCsoWHe06BnEW0aOZEGbbNZ5TpV3Ts1omv
+         I9zYQUrS6lvLl2DI0TQz/1kp3NyMolbNq7eFObh+HV0UpTjD09Y4MSQai4JC8WwkNE
+         fdBwsShVLgJMj/SnjxkPd9OR9HqNtxhlTWJqkglfJAfhGjPdWajLu7GkPpRQ4Kr2Mm
+         IMNR3MCYQj2mQ==
+Date:   Wed, 4 Oct 2023 13:57:04 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Starke, Daniel" <daniel.starke@siemens.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Fedor Pchelkin <pchelkin@ispras.ru>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com" 
+        <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
+Subject: Re: [PATCH 1/1] tty: n_gsm: Avoid sleeping during .write() whilst
+ atomic
+Message-ID: <20231004125704.GA83257@google.com>
+References: <20231003170020.830242-1-lee@kernel.org>
+ <2023100320-immorally-outboard-573a@gregkh>
+ <DB9PR10MB588170E923A6ED8B3D6D9613E0CBA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM>
+ <2023100421-negotiate-stammer-1b35@gregkh>
+ <20231004085720.GA9374@google.com>
+ <2023100448-cotton-safehouse-aca2@gregkh>
 MIME-Version: 1.0
-References: <20230703142514.363256-1-eperezma@redhat.com> <20230703110241-mutt-send-email-mst@kernel.org>
- <ba5099b8-f72c-f267-41a7-d0ee18680796@oracle.com> <20230704061356-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20230704061356-mutt-send-email-mst@kernel.org>
-From:   Eugenio Perez Martin <eperezma@redhat.com>
-Date:   Wed, 4 Oct 2023 14:56:53 +0200
-Message-ID: <CAJaqyWf7DzJMEUT0NcPeDLQyPkthEJZydnSSPztoCxF6PWEu1w@mail.gmail.com>
-Subject: Re: [PATCH] mlx5_vdpa: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, linux-kernel@vger.kernel.org,
-        Dragos Tatulea <dtatulea@nvidia.com>,
-        virtualization@lists.linux-foundation.org, leiyang@redhat.com,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Jason Wang <jasowang@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2023100448-cotton-safehouse-aca2@gregkh>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 4, 2023 at 12:16=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
- wrote:
->
-> On Mon, Jul 03, 2023 at 05:26:02PM -0700, Si-Wei Liu wrote:
-> >
-> >
-> > On 7/3/2023 8:46 AM, Michael S. Tsirkin wrote:
-> > > On Mon, Jul 03, 2023 at 04:25:14PM +0200, Eugenio P=C3=A9rez wrote:
-> > > > Offer this backend feature as mlx5 is compatible with it. It allows=
- it
-> > > > to do live migration with CVQ, dynamically switching between passth=
-rough
-> > > > and shadow virtqueue.
-> > > >
-> > > > Signed-off-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
-> > > Same comment.
-> > to which?
-> >
-> > -Siwei
->
-> VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK is too narrow a use-case to commit=
- to it
-> as a kernel/userspace ABI: what if one wants to start rings in some
-> other specific order?
-> As was discussed on list, a better promise is not to access ring
-> until the 1st kick. vdpa can then do a kick when it wants
-> the device to start accessing rings.
->
+On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
 
-Friendly ping about this series,
+> On Wed, Oct 04, 2023 at 09:57:20AM +0100, Lee Jones wrote:
+> > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
+> > 
+> > > On Wed, Oct 04, 2023 at 05:59:09AM +0000, Starke, Daniel wrote:
+> > > > > Daniel, any thoughts?
+> > > > 
+> > > > Our application of this protocol is only with specific modems to enable
+> > > > circuit switched operation (handling calls, selecting/querying networks,
+> > > > etc.) while doing packet switched communication (i.e. IP traffic over PPP).
+> > > > The protocol was developed for such use cases.
+> > > > 
+> > > > Regarding the issue itself:
+> > > > There was already an attempt to fix all this by switching from spinlocks to
+> > > > mutexes resulting in ~20% performance loss. However, the patch was reverted
+> > > > as it did not handle the T1 timer leading into sleep during atomic within
+> > > > gsm_dlci_t1() on every mutex lock there.
+> > 
+> > That's correct.  When I initially saw this report, my initial thought
+> > was to replace the spinlocks with mutexts, but having read the previous
+> > accepted attempt and it's subsequent reversion I started to think of
+> > other ways to solve this issue.  This solution, unlike the last, does
+> > not involve adding sleep inducing locks into atomic contexts, nor
+> > should it negatively affect performance.
+> > 
+> > > > There was also a suggestion to fix this in do_con_write() as
+> > > > tty_operations::write() appears to be documented as "not allowed to sleep".
+> > > > The patch for this was rejected. It did not fix the issue within n_gsm.
+> > > > 
+> > > > Link: https://lore.kernel.org/all/20221203215518.8150-1-pchelkin@ispras.ru/
+> > > > Link: https://lore.kernel.org/all/20221212023530.2498025-1-zengheng4@huawei.com/
+> > > > Link: https://lore.kernel.org/all/5a994a13-d1f2-87a8-09e4-a877e65ed166@kernel.org/
+> > > 
+> > > Ok, I thought I remembered this, I'll just drop this patch from my
+> > > review queue and wait for a better solution if it ever comes up as this
+> > > isn't a real issue that people are seeing on actual systems, but just a
+> > > syzbot report.
+> > 
+> > What does the "better solution" look like?
+> 
+> One that actually fixes the root problem here (i.e. does not break the
+> recursion loop, or cause a performance decrease for normal users, or
+> prevent this from being bound to the console).
 
-Now that VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK has been merged for
-vdpa_sim, does it make sense for mlx too?
+Does this solution break the recursion loop or affect performance?
 
-Thanks!
+The last suggestion was recently made (after mine was posted).
 
-> > >
-> > > > ---
-> > > >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
-> > > >   1 file changed, 7 insertions(+)
-> > > >
-> > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/=
-net/mlx5_vnet.c
-> > > > index 9138ef2fb2c8..5f309a16b9dc 100644
-> > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > @@ -7,6 +7,7 @@
-> > > >   #include <uapi/linux/virtio_net.h>
-> > > >   #include <uapi/linux/virtio_ids.h>
-> > > >   #include <uapi/linux/vdpa.h>
-> > > > +#include <uapi/linux/vhost_types.h>
-> > > >   #include <linux/virtio_config.h>
-> > > >   #include <linux/auxiliary_bus.h>
-> > > >   #include <linux/mlx5/cq.h>
-> > > > @@ -2499,6 +2500,11 @@ static void unregister_link_notifier(struct =
-mlx5_vdpa_net *ndev)
-> > > >                   flush_workqueue(ndev->mvdev.wq);
-> > > >   }
-> > > > +static u64 mlx5_vdpa_get_backend_features(const struct vdpa_device=
- *vdpa)
-> > > > +{
-> > > > + return BIT_ULL(VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK);
-> > > > +}
-> > > > +
-> > > >   static int mlx5_vdpa_set_driver_features(struct vdpa_device *vdev=
-, u64 features)
-> > > >   {
-> > > >           struct mlx5_vdpa_dev *mvdev =3D to_mvdev(vdev);
-> > > > @@ -3140,6 +3146,7 @@ static const struct vdpa_config_ops mlx5_vdpa=
-_ops =3D {
-> > > >           .get_vq_align =3D mlx5_vdpa_get_vq_align,
-> > > >           .get_vq_group =3D mlx5_vdpa_get_vq_group,
-> > > >           .get_device_features =3D mlx5_vdpa_get_device_features,
-> > > > + .get_backend_features =3D mlx5_vdpa_get_backend_features,
-> > > >           .set_driver_features =3D mlx5_vdpa_set_driver_features,
-> > > >           .get_driver_features =3D mlx5_vdpa_get_driver_features,
-> > > >           .set_config_cb =3D mlx5_vdpa_set_config_cb,
-> > > > --
-> > > > 2.39.3
->
-
+-- 
+Lee Jones [李琼斯]
