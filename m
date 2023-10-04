@@ -2,129 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7017F7B76E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 05:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747D37B76E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 05:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbjJDDav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 23:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
+        id S235336AbjJDDcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 23:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbjJDDat (ORCPT
+        with ESMTP id S231867AbjJDDcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 23:30:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6212ABB;
-        Tue,  3 Oct 2023 20:30:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4803C433C8;
-        Wed,  4 Oct 2023 03:30:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696390246;
-        bh=ZJV26I3OfMh+CmPLvclEZyyKMf9/0YGwgBVF1Wyp/ak=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=C+XLGSTRm1recRu4TbPznvRvGc7Fj0UcnBH4OY8nurLd/jSOGTvwgcvsxPPEz5ymJ
-         sUxzyFkaBFw0uW94CoQNqt6Dg5+bgLHuRqa0wj8N53OwLSYyxN+vbJifQ1jTG+EVNr
-         86MVNHejx5KCQclsOQqUKglyLXqwo+ki0pEBSFRU9gxeZ2ZI+zTijhaW1dJy9zD9MI
-         mueO6MqNBREI/Uwg+5F7WBOkl9ntTrm+Xo06psh2apsI6WDhx9OxuviJpPvuh+3xTL
-         eFo24Yd4GIaxf5Qt7aDukXh1hflmf4wHj7wTjQnCtNWisM7YXagJmxcfH8eu3jx+/2
-         NMImfjiOUYRzQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 70C46CE0D14; Tue,  3 Oct 2023 20:30:45 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 20:30:45 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Yong He <zhuangel570@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/5] srcu fixes
-Message-ID: <811d08e3-efb8-4398-8fbc-6b5d030afb15@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231003232903.7109-1-frederic@kernel.org>
- <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
- <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
+        Tue, 3 Oct 2023 23:32:47 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F198BA9
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 20:32:43 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-691c05bc5aaso1275204b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 20:32:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1696390363; x=1696995163; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u5OaR8DthMsUyWl9mFY7CUG1t46HFxwH/NtoS9Paoao=;
+        b=CWSjTOLfUidj+/k6i1A3DoOdhE5OhuTRB+68BrImmMhE8U4NkhujiJVYce/8cc9y1O
+         QEeS9VfCd4oYzEZRK1CS1ScVMZgqfbQ73ZM7YZ62N7xSe0P4A3sawCZ7ZkNkayOyjnsR
+         gqpQSSgeT9NQvaTFIjH/I5set4oM63NUeJzpHa4BTsc0wuadWYBb1Ga99RP/TBrOa5Ae
+         nC8KDQ8azkmPl4Uztua02iQIV9WypRSgcpZVbh8/pTeCaKRXCeZDM3HhrnI9Si+AuNIV
+         g8cNtrr7HRYpXYh3eqrHA10W619fwbwN1hzpP2+cqd2IrnFk58fNFkHGD905gFbQgB52
+         1bRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696390363; x=1696995163;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u5OaR8DthMsUyWl9mFY7CUG1t46HFxwH/NtoS9Paoao=;
+        b=hz/AIfeMDqQiHnVM2nwN7TLYbLOVJaKN999aDvJ3oK3HOCeJFaU2qoFUkKpykpADPl
+         VjiHJEpqudGSCOJgb9QYh6T2rvqKOC2rBUOsZ3Ezeotn3QPx7kMyObX03UbUBmAYDA4M
+         eaLeBw0rncnsgPyIXrdANiheSrbs20oukSWnHZcZMncj7TR8hX0ckaqMP6H0Pxc3JqcX
+         juoWEEJbJIhQwaxzDpVtZWVbES7nmn8LSfYxogU34XOJz6rj+kBkGu63IpqUHqHaLGGD
+         uJfYiXKh5vs3jDeoyYJiW0jVdyItdd2bH/q3dcqat4ffQ+7+9q88ngheKTiXPi3g0QYk
+         fjWA==
+X-Gm-Message-State: AOJu0Yzn03BLzo0iQ99z2+fmUQzzHPsMNmuWF4X7hb3Q4sRK1trDHvIS
+        i50nGfLqqd5XcUWjBERXLHtHCg==
+X-Google-Smtp-Source: AGHT+IGGpsEw0e3LTyT8M7WzDJclFEVAubYuk5fb/YO6bOu6xRTDtMULAYA3M1rgQmLE3v3tCyXsrA==
+X-Received: by 2002:a05:6a00:a18:b0:690:fe13:1d28 with SMTP id p24-20020a056a000a1800b00690fe131d28mr1249286pfh.33.1696390363246;
+        Tue, 03 Oct 2023 20:32:43 -0700 (PDT)
+Received: from hermes.local (204-195-126-68.wavecable.com. [204.195.126.68])
+        by smtp.gmail.com with ESMTPSA id m16-20020aa79010000000b0069346777241sm2185428pfo.97.2023.10.03.20.32.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 20:32:43 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 20:32:40 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] netem: Annotate struct disttable with __counted_by
+Message-ID: <20231003203240.45705fde@hermes.local>
+In-Reply-To: <20231003231823.work.684-kees@kernel.org>
+References: <20231003231823.work.684-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 08:21:42PM -0700, Paul E. McKenney wrote:
-> On Tue, Oct 03, 2023 at 05:35:31PM -0700, Paul E. McKenney wrote:
-> > On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
-> > > Hi,
-> > > 
-> > > This contains a fix for "SRCU: kworker hung in synchronize_srcu":
-> > > 
-> > > 	http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
-> > > 
-> > > And a few cleanups.
-> > > 
-> > > Passed 50 hours of SRCU-P and SRCU-N.
-> > > 
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> > > 	srcu/fixes
-> > > 
-> > > HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
-> > > 
-> > > Thanks,
-> > > 	Frederic
-> > 
-> > Very good, and a big "Thank You!!!" to all of you!
-> > 
-> > I queued this series for testing purposes, and have started a bunch of
-> > SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
-> > SRCU-N on another system, but with both scenarios resized to 40 CPU each.
+On Tue,  3 Oct 2023 16:18:23 -0700
+Kees Cook <keescook@chromium.org> wrote:
 
-The 200*1h of SRCU-N and the 100*1h of SRCU-p passed other than the usual
-tick-stop errors.  (Is there a patch for that one?)  The 40-CPU SRCU-N
-run was fine, but the 40-CPU SRCU-P run failed due to the fanouts setting
-a maximum of 16 CPUs.  So I started a 10-hour 40-CPU SRCU-P and a pair
-of 10-hour 16-CPU SRCU-N runs on one system, and 200*10h of SRCU-N and
-100*10h of SRCU-P.
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct disttable.
+> 
+> Cc: Stephen Hemminger <stephen@networkplumber.org>
+> Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+> Cc: Cong Wang <xiyou.wangcong@gmail.com>
+> Cc: Jiri Pirko <jiri@resnulli.us>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: netdev@vger.kernel.org
+> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
+> Signed-off-by: Kees Cook <keescook@chromium.org
 
-I will let you know how it goes.
+Reviewed-by: Stephen Hemminger <stephen@networkplumber.org>
 
-							Thanx, Paul
-
-> > While that is in flight, a few questions:
-> > 
-> > o	Please check the Co-developed-by rules.  Last I knew, it was
-> > 	necessary to have a Signed-off-by after each Co-developed-by.
-> > 
-> > o	Is it possible to get a Tested-by from the original reporter?
-> > 	Or is this not reproducible?
-> > 
-> > o	Is it possible to convince rcutorture to find this sort of
-> > 	bug?  Seems like it should be, but easy to say...
-> 
-> And one other thing...
-> 
-> o	What other bugs like this one are hiding elsewhere
-> 	in RCU?
-> 
-> > o	Frederic, would you like to include this in your upcoming
-> > 	pull request?  Or does it need more time?
-> 
-> 						Thanx, Paul
-> 
-> > > ---
-> > > 
-> > > Frederic Weisbecker (5):
-> > >       srcu: Fix callbacks acceleration mishandling
-> > >       srcu: Only accelerate on enqueue time
-> > >       srcu: Remove superfluous callbacks advancing from srcu_start_gp()
-> > >       srcu: No need to advance/accelerate if no callback enqueued
-> > >       srcu: Explain why callbacks invocations can't run concurrently
-> > > 
-> > > 
-> > >  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++---------------
-> > >  1 file changed, 39 insertions(+), 16 deletions(-)
+PS: size is intended wrong in original code but that is not important.
+Should have lined up with table[].
