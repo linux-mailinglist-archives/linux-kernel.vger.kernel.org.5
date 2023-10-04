@@ -2,84 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C967B779A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4421D7B779D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232776AbjJDGFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 02:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
+        id S232719AbjJDGIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 02:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232537AbjJDGFR (ORCPT
+        with ESMTP id S232537AbjJDGIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 02:05:17 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9834CA7;
-        Tue,  3 Oct 2023 23:05:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA188C433C8;
-        Wed,  4 Oct 2023 06:05:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696399513;
-        bh=YPjhyhXTHc/JSPJaMPXxVEW44XmFbXt6asYBrVFetjc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GlZwdsxFs9UMZfcMpU6G97Yr5hUUr005ha3ia1L5hCHOEX1++ZoHT2PJ9zzSzAUg2
-         jsQYHAMnLCi2djAal5jDWydHI187M2ygPvvwNhfEZ95AWZOAMbSQn+JFDEfxWowI01
-         R57xSqrWXE78rJ5e6ZEfvZoU6VFdhZNopsNioEXk=
-Date:   Wed, 4 Oct 2023 08:05:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Starke, Daniel" <daniel.starke@siemens.com>
-Cc:     Lee Jones <lee@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Fedor Pchelkin <pchelkin@ispras.ru>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com" 
-        <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
-Subject: Re: [PATCH 1/1] tty: n_gsm: Avoid sleeping during .write() whilst
- atomic
-Message-ID: <2023100421-negotiate-stammer-1b35@gregkh>
-References: <20231003170020.830242-1-lee@kernel.org>
- <2023100320-immorally-outboard-573a@gregkh>
- <DB9PR10MB588170E923A6ED8B3D6D9613E0CBA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM>
+        Wed, 4 Oct 2023 02:08:53 -0400
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E423A7;
+        Tue,  3 Oct 2023 23:08:49 -0700 (PDT)
+Received: from [192.168.68.112] (ppp118-210-190-253.adl-adc-lon-bras34.tpg.internode.on.net [118.210.190.253])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 90DDF20059;
+        Wed,  4 Oct 2023 14:08:41 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=codeconstruct.com.au; s=2022a; t=1696399727;
+        bh=U9qVTqbFIewKoAsLnFsdhiJGF9HS2KYiKRlGJluJu0Y=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=UiS+P6bky+a6ZVu7C+L1ig8dFGepNsZX+B9a26raR5D4qi7PJvyPkhdRYew2EDLy0
+         sDd8p5jF5W4xtogGyCKDzdfUOz/KYLI3IpAxDj6J4uVJPes1x3SL/9rpED2hVTlb0A
+         QaCPU36IOoMhtVPm9N8+W5cnJeXjBAM6K2K+h71mmmZxGp1z2SUbyO7vXTWbKh7uoK
+         rC1qIm+XvfuBpB1RS2nN9izTm9IHqxUU0Y/VL9UmBNnBqJcHSi/eeMNPSgNNAXtYY7
+         1pTBnTdljnRBfxWALVJVnR3qz/1NXYmHXW96Th3FsZ8kn3gSJ2OF+I8ijkO58cssim
+         zpSKJblfsZCaA==
+Message-ID: <975c69de32eefb124fe668e921e8dbda86962deb.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v2] i2c: aspeed: Fix i2c bus hang in slave read
+From:   Andrew Jeffery <andrew@codeconstruct.com.au>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Jian Zhang <zhangjian.3032@bytedance.com>
+Cc:     brendan.higgins@linux.dev, benh@kernel.crashing.org,
+        joel@jms.id.au, andrew@aj.id.au, zhangjian3032@gmail.com,
+        yulei.sh@bytedance.com, xiexinnan@bytedance.com,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Tommy Huang <tommy_huang@aspeedtech.com>,
+        "open list:ARM/ASPEED I2C DRIVER" <linux-i2c@vger.kernel.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 04 Oct 2023 16:38:38 +1030
+In-Reply-To: <ZRZ/ObZmntMLw2r+@ninjato>
+References: <20230927154244.3774670-1-zhangjian.3032@bytedance.com>
+         <ZRZ/ObZmntMLw2r+@ninjato>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB9PR10MB588170E923A6ED8B3D6D9613E0CBA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 05:59:09AM +0000, Starke, Daniel wrote:
-> > Daniel, any thoughts?
-> 
-> Our application of this protocol is only with specific modems to enable
-> circuit switched operation (handling calls, selecting/querying networks,
-> etc.) while doing packet switched communication (i.e. IP traffic over PPP).
-> The protocol was developed for such use cases.
-> 
-> Regarding the issue itself:
-> There was already an attempt to fix all this by switching from spinlocks to
-> mutexes resulting in ~20% performance loss. However, the patch was reverted
-> as it did not handle the T1 timer leading into sleep during atomic within
-> gsm_dlci_t1() on every mutex lock there.
-> There was also a suggestion to fix this in do_con_write() as
-> tty_operations::write() appears to be documented as "not allowed to sleep".
-> The patch for this was rejected. It did not fix the issue within n_gsm.
-> 
-> Link: https://lore.kernel.org/all/20221203215518.8150-1-pchelkin@ispras.ru/
-> Link: https://lore.kernel.org/all/20221212023530.2498025-1-zengheng4@huawei.com/
-> Link: https://lore.kernel.org/all/5a994a13-d1f2-87a8-09e4-a877e65ed166@kernel.org/
+On Fri, 2023-09-29 at 09:39 +0200, Wolfram Sang wrote:
+> On Wed, Sep 27, 2023 at 11:42:43PM +0800, Jian Zhang wrote:
+> > When the `CONFIG_I2C_SLAVE` option is enabled and the device operates
+> > as a slave, a situation arises where the master sends a START signal
+> > without the accompanying STOP signal. This action results in a
+> > persistent I2C bus timeout. The core issue stems from the fact that
+> > the i2c controller remains in a slave read state without a timeout
+> > mechanism. As a consequence, the bus perpetually experiences timeouts.
+> >=20
+> > In this case, the i2c bus will be reset, but the slave_state reset is
+> > missing.
+> >=20
+> > Fixes: fee465150b45 ("i2c: aspeed: Reset the i2c controller when timeou=
+t occurs")
+> > Signed-off-by: Jian Zhang <zhangjian.3032@bytedance.com>
+>=20
+> Somebody wants to add tags here? I think it should go to my pull request
+> this week.
+>=20
 
-Ok, I thought I remembered this, I'll just drop this patch from my
-review queue and wait for a better solution if it ever comes up as this
-isn't a real issue that people are seeing on actual systems, but just a
-syzbot report.
+I've tested this patch applied on top of fee465150b45 on an AST2600 and
+the the system behaviour doesn't seem worse. However, I can still lock=20
+the bus up and trigger a hung task panic by surprise-unplugging things.
+I'll poke around to see if I can get to the bottom of that.
 
-thanks,
+Resetting the slave state makes sense, so with the above observation=20
+aside:
 
-greg k-h
+Tested-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+
+That said I do wonder whether we should update the slave state in the=20
+same place we're updating the hardware state. It would cover off the=20
+gap identified by Jian if it were to ever occur anywhere else.
+Something like:
+
+diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-
+aspeed.c
+index 5a416b39b818..28e2a5fc4528 100644
+--- a/drivers/i2c/busses/i2c-aspeed.c
++++ b/drivers/i2c/busses/i2c-aspeed.c
+@@ -749,6 +749,8 @@ static void __aspeed_i2c_reg_slave(struct
+aspeed_i2c_bus *bus, u16 slave_addr)
+        func_ctrl_reg_val =3D readl(bus->base + ASPEED_I2C_FUN_CTRL_REG);
+        func_ctrl_reg_val |=3D ASPEED_I2CD_SLAVE_EN;
+        writel(func_ctrl_reg_val, bus->base + ASPEED_I2C_FUN_CTRL_REG);
++
++       bus->slave_state =3D ASPEED_I2C_SLAVE_INACTIVE;
+ }
+=20
+ static int aspeed_i2c_reg_slave(struct i2c_client *client)
+@@ -765,7 +767,6 @@ static int aspeed_i2c_reg_slave(struct i2c_client
+*client)
+        __aspeed_i2c_reg_slave(bus, client->addr);
+=20
+        bus->slave =3D client;
+-       bus->slave_state =3D ASPEED_I2C_SLAVE_INACTIVE;
+        spin_unlock_irqrestore(&bus->lock, flags);
+=20
+        return 0;
+
+
