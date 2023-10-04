@@ -2,149 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4DF7B8180
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6557B8183
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242713AbjJDN6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
+        id S242732AbjJDN6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 09:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242695AbjJDN6Y (ORCPT
+        with ESMTP id S242722AbjJDN6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:58:24 -0400
-Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E01AB
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:58:20 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id E9C25361C84
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:58:19 +0000 (UTC)
-Received: from pdx1-sub0-mail-a237.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id DF71C36208B
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:58:18 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1696427898; a=rsa-sha256;
-        cv=none;
-        b=v11tcbL1pu6eAPyuJXT3MDZXbKWxf1j/A+mC0pwuNEAnvlGy9HVm1txqKjmm8bAtx/okPP
-        0wUMSutXbLVxwT0xF8ab0fz/Ln8q4oMDHz7BPfuFuht4HRTaMVcS8eGSumO1VovvBYk/kW
-        +7EXLwgv7o/hXMat+5hMAbvNSmLyGvkoKZWkm5TXKPClUKMTWOf68KfnhDtN+GUXZSzsIM
-        i3o1c0A9YwOcB89CsTaCJwohKCrPvV78lUpvGy0e2yNcBlQL2M/CY54x50dOPcwnLuB5ev
-        3e2sgOya6GJSmIQyfUILi+mgJPFo6u9zGxGx3px4lSSVO+/ChQdtxvJcD8tvfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1696427898;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=kADOC6162V5NCcVVMP9gX8MPZmEiYTw9JdB0/cprF7Y=;
-        b=RSISFzoQ5bLYA/xdH9kUUGYMzPT3j4D92p0Wj0rhl3rTGgbZzcOmnF1mVHd6SWDpwqEZdB
-        E83ZFOhkHIczoxNuUF+41JUOMpMyobShl3mbBsCUh9mAPBOWcrhQpm+tpeyJklY24591fR
-        Z6gCPeYOHvpsvpn0Iuaz/dvJ8/1KcQ3T3ToakLPGgATPoEe6q0ytv+yNCtGYL5qQ5U6qVO
-        rWH7Wcbn/xjbapE4FO3qcDnP/Fcf5fUYgNUxHcAhV2ba8iqZH4NhtFTEM/G8ClUOSVj5up
-        W6E4FS5JaehQ6IYTnTTCvEtGJaRbsQFr8EGvhNNYhYhT1RbsBFD8xsaMR7TmPA==
-ARC-Authentication-Results: i=1;
-        rspamd-7c449d4847-8xnst;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Minister-Spicy: 4aca0aff540bb1d0_1696427899777_3967111885
-X-MC-Loop-Signature: 1696427899777:70600680
-X-MC-Ingress-Time: 1696427899776
-Received: from pdx1-sub0-mail-a237.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.99.159.71 (trex/6.9.1);
-        Wed, 04 Oct 2023 13:58:19 +0000
-Received: from kmjvbox (c-73-231-176-24.hsd1.ca.comcast.net [73.231.176.24])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kjlx@templeofstupid.com)
-        by pdx1-sub0-mail-a237.dreamhost.com (Postfix) with ESMTPSA id 4S0x9Q3nnRz97
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:58:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-        s=dreamhost; t=1696427898;
-        bh=kADOC6162V5NCcVVMP9gX8MPZmEiYTw9JdB0/cprF7Y=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=S4fhHYhp4gEL1RaIuHV620uZhsqzqrdJ3GIwlu1drzYjj3/Gk11iIEAxgaXaA3b9f
-         G9NYQrPshq+55QGsCTzfTIq+tNy1xiy/ack0oQmG4W67wXxrB5+43ucl3kWLYR41ls
-         hajJToc9PfyqC51ALG966BHGInqgfy3II0J8l9Wu3K2aY1OxPSUWW8vqcCnMEvAoFi
-         GLxvgyAU3USAjr1Wtv+96wlGCbsjqVqd914kOdKToLji30kqT9ZnNTwHFDudc5VL/F
-         HDRgKYtzcjkUVDWajFR9Ry6qXeHE9MB1tiAnNKcED6XYqn2xFNm/svNzScw13npuss
-         DSo/uUFVDbWXQ==
-Received: from johansen (uid 1000)
-        (envelope-from kjlx@templeofstupid.com)
-        id e0100
-        by kmjvbox (DragonFly Mail Agent v0.12);
-        Wed, 04 Oct 2023 06:58:14 -0700
-Date:   Wed, 4 Oct 2023 06:58:14 -0700
-From:   Krister Johansen <kjlx@templeofstupid.com>
-To:     Bernd Schubert <bernd.schubert@fastmail.fm>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        German Maglione <gmaglione@redhat.com>,
-        Greg Kurz <groug@kaod.org>, Max Reitz <mreitz@redhat.com>
-Subject: Re: [resend PATCH v2 0/2] virtiofs submounts that are still in use
- forgotten by shrinker
-Message-ID: <20231004135814.GA2051@templeofstupid.com>
-References: <cover.1696043833.git.kjlx@templeofstupid.com>
- <97163cdf-ab2c-4fb8-abf2-738a4680c47f@fastmail.fm>
- <20231003164823.GA1995@templeofstupid.com>
- <18552fc7-184c-4bc7-9154-c885fae06d31@fastmail.fm>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18552fc7-184c-4bc7-9154-c885fae06d31@fastmail.fm>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 4 Oct 2023 09:58:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765DFA1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:58:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A2DBC433BA;
+        Wed,  4 Oct 2023 13:58:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696427907;
+        bh=A2wSvAtglc0Xbc7LGJotQhQdmM583IU5oJ9LjFKKIu4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XMUoiT4+427ztGhRxk115JYCnj0NYYS5KaPouxlDY2jkbexB3TxuttvTRJ8xJh/RT
+         REuqKr2zlup7x12KVOnxGLThyv0tmPRFlygQGe2NFUh+B9eVAbFC5BRZWdiWXpRcjS
+         tQ4Geoh6wOC47VKnYt2qS+qKd+qlIZlXMnsu8U4BjrsZuri/VFpEG/OEjoY23qpb2V
+         8sJRMFNONtutiz+SNKVHVJIi5oOdncUphCJgUIMIA7+cNwJ05n1QXCEVbyOG/WBY3O
+         o7ir1F2mKTRcqOBHMOrYUJ2Xvp1SvcgutbXAaIUguhkWrmMZHrVsv5f8G1DQEkaaj3
+         eR7jrU9emW33w==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qo2OO-0014oA-Fx;
+        Wed, 04 Oct 2023 14:58:24 +0100
+Date:   Wed, 04 Oct 2023 14:58:22 +0100
+Message-ID: <86h6n6o5fl.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Kristina Martsenko <kristina.martsenko@arm.com>,
+        kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-kernel@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>
+Subject: Re: [PATCH v2 1/2] KVM: arm64: Add handler for MOPS exceptions
+In-Reply-To: <ZRwlVgWTqtCRi/jz@arm.com>
+References: <20230922112508.1774352-1-kristina.martsenko@arm.com>
+        <20230922112508.1774352-2-kristina.martsenko@arm.com>
+        <87sf734ofv.wl-maz@kernel.org>
+        <9f731870-ed36-d2e4-378b-f7fbf338ebd6@arm.com>
+        <ZRPnpHwiRhrYwfSM@linux.dev>
+        <87h6ndmixh.wl-maz@kernel.org>
+        <0f99fa65-c8c1-5d5c-d9b0-5436b7592656@arm.com>
+        <86ttr9nkey.wl-maz@kernel.org>
+        <ZRwlVgWTqtCRi/jz@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: catalin.marinas@arm.com, kristina.martsenko@arm.com, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org, vladimir.murzin@arm.com, coltonlewis@google.com, linux-kernel@vger.kernel.org, oliver.upton@linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 12:54:49AM +0200, Bernd Schubert wrote:
+On Tue, 03 Oct 2023 15:29:42 +0100,
+Catalin Marinas <catalin.marinas@arm.com> wrote:
 > 
+> The way the architecture works, either with or without Kristina's
+> single-step change, a debugger would get confused. At least for EL0, I
+> find the proposed (well, upstreamed) approach more predictable - it
+> always restarts from the prologue in case of migration between CPUs with
+> different MOPS implementation (which is not just theoretical AFAIK).
+> It's more like these three instructions are a bigger CISC one ;) (though
+> the CPU can step through its parts).
 > 
-> On 10/3/23 18:48, Krister Johansen wrote:
-> > On Tue, Oct 03, 2023 at 12:18:42AM +0200, Bernd Schubert wrote:
-> > > 
-> > > 
-> > > On 10/2/23 17:24, Krister Johansen wrote:
-> > > > Hi,
-> > > > I recently ran into a situation where a virtiofs client began
-> > > > encountering EBADF after the client / guest system had an OOM.  After
-> > > > reproducing the issue and debugging, the problem is caused by a
-> > > > virtiofsd submount having the nodeid of its root dentry fogotten.  This
-> > > > occurs because it borrows the reference for this dentry from the parent
-> > > > that is passed into the function.
-> > > 
-> > > Please also note that there will be merge conflicts with atomic open patches
-> > > from Dharmendra/me. Although probably not too difficult to resolve.
-> > 
-> > Sure. I'm happy to reparent, resolve those conflicts, re-test, and send
-> > another revision when we're ready.  I suspect there are going to be
-> > additional changes requested on the v2.  With that in mind, I'll hold
-> > off for the moment unless it is going to cause headaches for you.
+> A more transparent approach would have been to fully emulate the
+> instructions in the kernel and advance the PC as expected but I don't
+> think that's even possible. An implementation may decide to leave some
+> bytes to be copied by the epilogue but we can't know that in software,
+> it's a microarchitecture thing.
 > 
-> I certainly also didn't mean that you should check for merge conflicts, it
-> was more an annotation that it might come up - depending on the merge order.
-> Please don't stop to do improvements, resolving merge conflicts shouldn't be
-> difficult.
-> I'm going to add you to the atomic open patch series to keep you updated, if
-> you don't mind.
+> There is the case of EL1 debugging itself (kgdb) and it triggers a MOPS
+> exception to EL2. It would look weird for the guest but I guess the only
+> other option is to disable MCE2 and let EL1 handle the mismatch MOPS
+> option itself (assuming it knows how to; it should be fine for Linux). I
+> think I still prefer Kristina's proposal for KVM as more generic, with
+> the downside of breaking less usual cases like the kernel
+> single-stepping itself.
 
-Thanks, no objections from me.  I'm willing to help with any conflict
-resolution or retesting tasks, if anything turns out to be non-trivial.
-My goal is to get these patches to the state where they're acceptable.
-I'm happy to make additional changes, or work against a different
-branch.
+I don't disagree at all.
 
+My issue isn't with Kristina's patches, which are absolutely fine. It
+has more to do with the shape of the FEAT_MOPS extension itself, which
+exposes uarch details to SW instead of abstracting them.
 
--K
+But I've now ranted about it for close to two weeks, and it is time
+for me to move on... ;-)
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
