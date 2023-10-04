@@ -2,175 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 033897B8594
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AEB7B8559
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243460AbjJDQoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54730 "EHLO
+        id S243384AbjJDQcn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 12:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233112AbjJDQod (ORCPT
+        with ESMTP id S243290AbjJDQcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:44:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6662A9B
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:44:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC080C433C8;
-        Wed,  4 Oct 2023 16:44:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696437870;
-        bh=bJUdCu4n8Q616ruuLdWGE4yAQa292y0ym8neR1k201A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J0goTKf7yenCuo1njZMrdo0wDTZQ5t1AC2tPHka97g2Tw8m49Gbju3yP3QFrztt7U
-         PN/0QG/WY1onVRnFunFTmiV9QhcIcASYT19N+va3cryvt4q6+Z/cxMIAidJ0kNOF6w
-         Wb6oOuXTJuD/I8RpVkWvMcI6ZlSMYBsAhNIz3SnnCzNfffbYTB2YrbsY0PUk90MCpe
-         2XKJDz2xfxe/JJuLwx14ZYyXc7RqfTlkL3KlVH/Bsg2k18iK1dSy93uImyHWmQyRvG
-         g5ANS9iQg3CvKRycbtbSuhZny1k3bnQKtZBxX2WwR2Ycjzan5KB/Tk8fCQBuv1mTh4
-         cNatltJeDS8HA==
-Date:   Thu, 5 Oct 2023 00:32:23 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
-        Fu Wei <wefu@redhat.com>, linux-riscv@lists.infradead.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Subject: Re: [PATCH 1/2] dt-bindings: usb: Add T-HEAD TH1520 USB controller
-Message-ID: <ZR2Tl1rkRdIG+fQa@xhacker>
-References: <20230927164222.3505-1-jszhang@kernel.org>
- <20230927164222.3505-2-jszhang@kernel.org>
- <cf68f6f1-e405-4c20-b4e1-da04189d0e2f@sifive.com>
+        Wed, 4 Oct 2023 12:32:41 -0400
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86919B;
+        Wed,  4 Oct 2023 09:32:37 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-690ba63891dso1860468b3a.2;
+        Wed, 04 Oct 2023 09:32:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696437157; x=1697041957;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bpOILGaPzFme8eJnGnR7nEZgZ9N3yDhRVdNPBjXB47c=;
+        b=b+YejCkoEdwopGfDPgAGjaHWPvDM7ZsfMdewoH0wvRXcHLwmEYmxGZjCs4/B6uTG+n
+         7q5xNNGxTaaM0fcpI3dpuVMlza53HXHvmj8T6L5SfDngig1vF26ezuREEEpnhTAmY588
+         5DcJHripshVPKqMH9sPip8SvIS7vZW7/rTaAhk+ewlUBDyaNgL9n4bg9fpRPuU9NPS65
+         2zXcts/gycDWv3+W0BDTvXmUR1C76WVFTRqDZ3a5+IVmOOMVGrW6DOUrlO2hEDuLy4Ih
+         aGe/Sc3m4tmxISMVTpFQSBe8orm8mcAn9cw+KC9Z7VnyIv0TxCnduA5Hstc4rdYatBk/
+         wJpA==
+X-Gm-Message-State: AOJu0YzeHq1VCiiP9/oqS8dPVoOp+bM7pX38Suop24+pWgG3VeyUjIUL
+        NfKkQivw20gqJCOoZ8oOrUDbgyEKARFUda/Lms0=
+X-Google-Smtp-Source: AGHT+IHW186xVTeJmlnOiSCmnojvR2aQu3JeoB9Ud4SaLe0VHaFIYFXp2RClDsx5Ggek5JoNCr7YFlnR0Qxq+UZGStM=
+X-Received: by 2002:a17:90b:1047:b0:277:6985:a3ff with SMTP id
+ gq7-20020a17090b104700b002776985a3ffmr2429510pjb.3.1696437156981; Wed, 04 Oct
+ 2023 09:32:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cf68f6f1-e405-4c20-b4e1-da04189d0e2f@sifive.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231004040844.797044-1-namhyung@kernel.org> <20231004160224.GB6307@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231004160224.GB6307@noisy.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 4 Oct 2023 09:32:24 -0700
+Message-ID: <CAM9d7cizC0J85ByuF5fBmc_Bqi=wpNJpiVsw+3F1Avusn2aQog@mail.gmail.com>
+Subject: Re: [PATCH] perf/core: Introduce cpuctx->cgrp_ctx_list
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 03:00:59PM -0500, Samuel Holland wrote:
-> On 2023-09-27 11:42 AM, Jisheng Zhang wrote:
-> > T-HEAD TH1520 platform's USB has a wrapper module around
-> > the DesignWare USB3 DRD controller. Add binding information doc for
-> > it.
-> > 
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > ---
-> >  .../bindings/usb/thead,th1520-usb.yaml        | 73 +++++++++++++++++++
-> >  1 file changed, 73 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml b/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
-> > new file mode 100644
-> > index 000000000000..afb618eb5013
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
-> > @@ -0,0 +1,73 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/usb/thead,th1520-usb.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: T-HEAD TH1520 DWC3 USB Controller Glue
-> > +
-> > +maintainers:
-> > +  - Jisheng Zhang <jszhang@kernel.org>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: thead,th1520-usb
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    maxItems: 4
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: ref
-> > +      - const: bus_early
-> > +      - const: phy
-> > +      - const: suspend
-> 
-> Except for "phy", these clocks are already documented in snps,dwc3.yaml. Are
-> they necessary for the glue/PHY, or do they belong only in the controller node?
+Hi Peter,
 
-Hi Samuel,
+On Wed, Oct 4, 2023 at 9:02 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Oct 03, 2023 at 09:08:44PM -0700, Namhyung Kim wrote:
+>
+> > But after the change, it ended up iterating all pmus/events in the cpu
+> > context if there's a cgroup event somewhere on the cpu context.
+> > Unfortunately it includes uncore pmus which have much longer latency to
+> > control.
+>
+> Can you describe the problem in more detail please?
 
-Enabling ref, bus_early clks are necessary for the glue layer, because
-we program the glue registers before calling of_platform_populate()
+Sure.
 
-> They are not used by the driver in patch 2. Also, the PHY clock probably belongs
-> with the PHY node.
+>
+> We have cgrp as part of the tree key: {cpu, pmu, cgroup, idx},
+> so it should be possible to find a specific cgroup for a cpu and or skip
+> to the next cgroup on that cpu in O(log n) time.
 
-Except enabling the phy clk, we don't need to touch the phy, so I'm not
-sure how to handle this if we have a dedicated phy driver thus a phy node.
-or use the usb-nop-xceiv?
+This is about a single (core) pmu when it has a lot of events.
+But this problem is different, it's about accessing more pmus
+unnecessarily.
 
-Thanks
-> 
-> > +
-> > +  ranges: true
-> > +
-> > +  '#address-cells':
-> > +    enum: [ 1, 2 ]
-> > +
-> > +  '#size-cells':
-> > +    enum: [ 1, 2 ]
-> > +
-> > +# Required child node:
-> > +
-> > +patternProperties:
-> > +  "^usb@[0-9a-f]+$":
-> > +    $ref: snps,dwc3.yaml#
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - clocks
-> > +  - clock-names
-> > +  - ranges
-> > +
-> > +additionalProperties: false
-> 
-> The driver in patch 2 uses the thead,misc-sysreg and vbus-supply properties,
-> neither of which is documented here. Also, depending on the other bindings, the
-> VBUS supply should be referenced from the USB PHY or connector node, not here.
-> 
-> Regards,
-> Samuel
-> 
-> > +examples:
-> > +  - |
-> > +
-> > +    usb {
-> > +          compatible = "thead,th1520-usb";
-> > +          reg = <0xec03f000 0x1000>;
-> > +          clocks = <&clk 1>,
-> > +                   <&clk 2>,
-> > +                   <&clk 3>,
-> > +                   <&clk 4>;
-> > +          clock-names = "ref", "bus_early", "phy", "suspend";
-> > +          ranges;
-> > +          #address-cells = <1>;
-> > +          #size-cells = <1>;
-> > +
-> > +          usb@e7040000 {
-> > +                compatible = "snps,dwc3";
-> > +                reg = <0xe7040000 0x10000>;
-> > +                interrupts = <68>;
-> > +                dr_mode = "host";
-> > +          };
-> > +    };
-> 
+Say we have the following events for CPU 0.
+
+  sw: context-switches
+  core: cycles, cycles-for-cgroup-A
+  uncore: whatever
+
+The cpu context has a cgroup event so it needs to call
+perf_cgroup_switch() at every context switch.  But actually
+it only needs to resched the 'core' pmu since it only has a
+cgroup event.  Other pmu events (like context-switches or
+any uncore event) should not be bothered by that.
+
+But perf_cgroup_switch() calls the general functions which
+iterate all pmus in the (cpu) context.
+
+  cpuctx.ctx.pmu_ctx_list:
+    +-> sw -> core -> uncore  (pmu_ctx_entry)
+
+Then it disables pmus, sched-out current events, switch
+cgroup pointer, sched-in new events and enable pmus.
+This gives a lot more overhead when it has uncore pmus
+since accessing MSRs for uncore pmus has longer latency.
+But uncore pmus cannot have cgroup events in the first
+place.
+
+So we need a separate list to keep pmus that have
+active cgroup events.
+
+  cpuctx.cgrp_ctx_list:
+    +-> core  (cgrp_ctx_entry)
+
+And we also need a logic to do the same work only
+for this list.
+
+Hope this helps.
+
+>
+> > To fix the issue, I restored a linked list equivalent to cgrp_cpuctx_list
+> > in the perf_cpu_context and link perf_cpu_pmu_contexts that have cgroup
+> > events only.  Also add new helpers to enable/disable and does ctx sched
+> > in/out for cgroups.
+>
+> Adding a list and duplicating the whole scheduling infrastructure seems
+> 'unfortunate' at best.
+
+Yeah, I know.. but I couldn't come up with a better solution.
+
+Thanks,
+Namhyung
