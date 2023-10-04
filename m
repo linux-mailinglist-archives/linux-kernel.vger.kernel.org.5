@@ -2,155 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 529F67B7786
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 07:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E7C7B7788
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 07:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241353AbjJDFpj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 01:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
+        id S232718AbjJDFr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 01:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232178AbjJDFph (ORCPT
+        with ESMTP id S230181AbjJDFr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 01:45:37 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179A6A9;
-        Tue,  3 Oct 2023 22:45:30 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3945ionlF2967808, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 3945ionlF2967808
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 4 Oct 2023 13:44:51 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Wed, 4 Oct 2023 13:44:51 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Wed, 4 Oct 2023 13:44:50 +0800
-Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
- RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
- 15.01.2375.007; Wed, 4 Oct 2023 13:44:50 +0800
-From:   Max Chou <max.chou@realtek.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-CC:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Hilda Wu <hildawu@realtek.com>,
-        "alex_lu@realsil.com.cn" <alex_lu@realsil.com.cn>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        "Johan Hedberg" <johan.hedberg@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
-        Thorsten Leemhuis <linux@leemhuis.info>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: Regression: devcoredump patch broke Realtek usb bluetooth adapter
-Thread-Topic: Regression: devcoredump patch broke Realtek usb bluetooth
- adapter
-Thread-Index: AQHZ9iZZqIk9cnxrEkOIPrwHFnXgfLA4N/0AgAA1ZDCAABycgIAAkrXQ
-Date:   Wed, 4 Oct 2023 05:44:49 +0000
-Message-ID: <b452257b550a47feb1c45b905018fe17@realtek.com>
-References: <20231003182038.k57nirtt4sonvt7c@box.shutemov.name>
- <ZRyqIn0_qqEFBPdy@debian.me> <b2ef2f1c457a4cf7a246b2e8b8598a30@realtek.com>
- <20231004044947.vgegwvxxindkjo7g@box.shutemov.name>
-In-Reply-To: <20231004044947.vgegwvxxindkjo7g@box.shutemov.name>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.132.197]
-x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 4 Oct 2023 01:47:28 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C7BA7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 22:47:25 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d9443c01a7336-1c723f1c80fso12847825ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 22:47:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696398444; x=1697003244; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zsxyl+cgvB20az6pAOhEj6zcICahCJD5e9PCu7NYewo=;
+        b=B4W2YvhSxELbbt85SEONrx+NQBRFi/SoiS9TwHtw8krs8mmvHrusLALBu2UrTXndvl
+         iIOm9x4PKA2rkXB3IYXleCM+TfaI2YfHvubWiJ6r+LPqD00oDUNEV9epzH0/zGTbh8LJ
+         cVQr7uSe69RTbmygLvtGIJBrTJ7Qq3VGp3U7KYi85MwU3kco0NaiFPNQbevIK/DvC/Vl
+         n4OMLLjZMBHco02t8nHynNv+rwuMtGWxLBQf/oQiqnRS3sKoS2Ln/Jpc5iBal5B77g75
+         KO8coNJOAb8Py84gOMSK46lnPZFN5ZxFd+BGp+68e9pi0Gqhn4A1BcjwlsR9rBW3aBmZ
+         DMDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696398444; x=1697003244;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zsxyl+cgvB20az6pAOhEj6zcICahCJD5e9PCu7NYewo=;
+        b=PSkAkboZ7mlyj1s7uvkk8wOx4RN39j99erRVnaQVaJdchCSAPNXQ2qfhXxvLA910ft
+         T1bBvicKWG95bPdQaBARnYmcKnu41dwXiLXxcqx1Fuu244aB24K6u1TmlqjpuMl5Cztk
+         Iov6TPC/1gonF6gJPESQECcOrF1R3I5HQX3Ah6cCwVIRfbX10zOXExqW+3f+WSIX1Sih
+         xUorK4Q3dBkd1xFarhbnq15BNclV82IDYfZ15XK6jowCxX9KL9sjYgmdSzRxnhckJ8Fy
+         5/3wn20eaTpUqyvxC1PmkoufbGJ9RfR9EfPtp97bSePYnFTzzaBJtBCsJqLSPYzd8SVM
+         cMzQ==
+X-Gm-Message-State: AOJu0YwRWQFwdThOhxjMb4HLkS2XfPIczD8ej2VIFWAdCqLIZbeuFJeo
+        Shpacc2qknRhLHHt7VuayyU=
+X-Google-Smtp-Source: AGHT+IG3mhIIeNTaduBdTCLgjgOUoe7QYgJDvI3JPdeOSEYfO5qXALn6EjHaFi7WvEOaDwydjEaYjA==
+X-Received: by 2002:a17:903:32cf:b0:1c7:56b9:eae with SMTP id i15-20020a17090332cf00b001c756b90eaemr1547394plr.32.1696398444432;
+        Tue, 03 Oct 2023 22:47:24 -0700 (PDT)
+Received: from manas-VirtualBox.iitr.ac.in ([103.37.201.173])
+        by smtp.gmail.com with ESMTPSA id f21-20020a170902ab9500b001c5fc11c085sm2631846plr.264.2023.10.03.22.47.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 22:47:24 -0700 (PDT)
+From:   Manas Ghandat <ghandatmanas@gmail.com>
+To:     dave.kleikamp@oracle.com
+Cc:     Manas Ghandat <ghandatmanas@gmail.com>,
+        Linux-kernel-mentees@lists.linuxfoundation.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        syzbot+aea1ad91e854d0a83e04@syzkaller.appspotmail.com
+Subject: [PATCH v3] jfs: fix array-index-out-of-bounds in dbFindLeaf
+Date:   Wed,  4 Oct 2023 11:17:18 +0530
+Message-Id: <20231004054718.7976-1-ghandatmanas@gmail.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi! Kirill,
-As your mentions, there's not obvious wrong from the dmesg.
-Could you capture btmon log with raw data? (btmon -w xxx.log)
-In additional, did you build the last version of bluetooth-next?
-By my understanding, you can just duplicate the issue by the commit "044014ce85a1 Bluetooth: btrtl: Add Realtek devcoredump support"?
-Unfortunately, I can not duplicate this issue sofar.
+Currently while searching for dmtree_t for sufficient free blocks there
+is an array out of bounds while getting element in tp->dm_stree. To add
+the required check for out of bound we first need to determine the type
+of dmtree. Thus added an extra parameter to dbFindLeaf so that the type
+of tree can be determined and the required check can be applied.
 
+Reported-by: syzbot+aea1ad91e854d0a83e04@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=aea1ad91e854d0a83e04
+Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
+---
+V2 -> V3: Changed the argument name from type to is_ctl
+V1 -> V2: Updated dbFindLeaf function.
 
-BRs,
-Max
+ fs/jfs/jfs_dmap.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index a14a0f18a4c4..d2a4fced8976 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -87,7 +87,7 @@ static int dbAllocCtl(struct bmap * bmp, s64 nblocks, int l2nb, s64 blkno,
+ static int dbExtend(struct inode *ip, s64 blkno, s64 nblocks, s64 addnblocks);
+ static int dbFindBits(u32 word, int l2nb);
+ static int dbFindCtl(struct bmap * bmp, int l2nb, int level, s64 * blkno);
+-static int dbFindLeaf(dmtree_t * tp, int l2nb, int *leafidx);
++static int dbFindLeaf(dmtree_t *tp, int l2nb, int *leafidx, bool is_ctl);
+ static int dbFreeBits(struct bmap * bmp, struct dmap * dp, s64 blkno,
+ 		      int nblocks);
+ static int dbFreeDmap(struct bmap * bmp, struct dmap * dp, s64 blkno,
+@@ -1709,7 +1709,7 @@ static int dbFindCtl(struct bmap * bmp, int l2nb, int level, s64 * blkno)
+ 		 * dbFindLeaf() returns the index of the leaf at which
+ 		 * free space was found.
+ 		 */
+-		rc = dbFindLeaf((dmtree_t *) dcp, l2nb, &leafidx);
++		rc = dbFindLeaf((dmtree_t *) dcp, l2nb, &leafidx, true);
+ 
+ 		/* release the buffer.
+ 		 */
+@@ -1956,7 +1956,7 @@ dbAllocDmapLev(struct bmap * bmp,
+ 	 * free space.  if sufficient free space is found, dbFindLeaf()
+ 	 * returns the index of the leaf at which free space was found.
+ 	 */
+-	if (dbFindLeaf((dmtree_t *) & dp->tree, l2nb, &leafidx))
++	if (dbFindLeaf((dmtree_t *) &dp->tree, l2nb, &leafidx, false))
+ 		return -ENOSPC;
+ 
+ 	if (leafidx < 0)
+@@ -2920,14 +2920,18 @@ static void dbAdjTree(dmtree_t * tp, int leafno, int newval)
+  *	leafidx	- return pointer to be set to the index of the leaf
+  *		  describing at least l2nb free blocks if sufficient
+  *		  free blocks are found.
++ *	is_ctl	- determines if the tree is of type ctl
+  *
+  * RETURN VALUES:
+  *	0	- success
+  *	-ENOSPC	- insufficient free blocks.
+  */
+-static int dbFindLeaf(dmtree_t * tp, int l2nb, int *leafidx)
++static int dbFindLeaf(dmtree_t *tp, int l2nb, int *leafidx, bool is_ctl)
+ {
+ 	int ti, n = 0, k, x = 0;
++	int max_size;
++
++	max_size = is_ctl ? CTLTREESIZE : TREESIZE;
+ 
+ 	/* first check the root of the tree to see if there is
+ 	 * sufficient free space.
+@@ -2948,6 +2952,8 @@ static int dbFindLeaf(dmtree_t * tp, int l2nb, int *leafidx)
+ 			/* sufficient free space found.  move to the next
+ 			 * level (or quit if this is the last level).
+ 			 */
++			if (x + n > max_size)
++				return -ENOSPC;
+ 			if (l2nb <= tp->dmt_stree[x + n])
+ 				break;
+ 		}
+-- 
+2.37.2
 
-> -----Original Message-----
-> From: Kirill A. Shutemov <kirill@shutemov.name>
-> Sent: Wednesday, October 4, 2023 12:50 PM
-> To: Max Chou <max.chou@realtek.com>
-> Cc: Bagas Sanjaya <bagasdotme@gmail.com>; Hilda Wu
-> <hildawu@realtek.com>; alex_lu@realsil.com.cn; Luiz Augusto von Dentz
-> <luiz.von.dentz@intel.com>; Marcel Holtmann <marcel@holtmann.org>;
-> Johan Hedberg <johan.hedberg@gmail.com>; Juerg Haefliger
-> <juerg.haefliger@canonical.com>; Linux Bluetooth
-> <linux-bluetooth@vger.kernel.org>; Thorsten Leemhuis <linux@leemhuis.info>;
-> Linux Regressions <regressions@lists.linux.dev>; Linux Kernel Mailing List
-> <linux-kernel@vger.kernel.org>
-> Subject: Re: Regression: devcoredump patch broke Realtek usb bluetooth
-> adapter
-> 
-> 
-> External mail.
-> 
-> 
-> 
-> On Wed, Oct 04, 2023 at 03:07:24AM +0000, Max Chou wrote:
-> > Hi! Kirill,
-> > I based on Kernel v6.5.5 and updated drivers/bluetooth to the last version of
-> bluetooth-next tree for a test with RTL8761BUV.
-> > The dmesg log and "hciconfig -a" are correct.
-> > Could you share the dmesg for your failure case?
-> >
-> > [56133.563293] usb 3-1: new full-speed USB device number 28 using
-> > xhci_hcd [56133.712559] usb 3-1: New USB device found, idVendor=0bda,
-> > idProduct=8771, bcdDevice= 2.00 [56133.712577] usb 3-1: New USB device
-> > strings: Mfr=1, Product=2, SerialNumber=3 [56133.712582] usb 3-1:
-> > Product: Bluetooth Radio [56133.712585] usb 3-1: Manufacturer: Realtek
-> > [56133.712588] usb 3-1: SerialNumber: 00E04C239987 [56133.737812]
-> > usbcore: registered new interface driver btusb [56133.742126]
-> > Bluetooth: hci0: RTL: examining hci_ver=0a hci_rev=000b lmp_ver=0a
-> > lmp_subver=8761 [56133.743115] Bluetooth: hci0: RTL: rom_version
-> > status=0 version=1 [56133.743124] Bluetooth: hci0: RTL: loading
-> > rtl_bt/rtl8761bu_fw.bin [56133.743754] Bluetooth: hci0: RTL: loading
-> > rtl_bt/rtl8761bu_config.bin [56133.743829] Bluetooth: hci0: RTL:
-> > cfg_sz 6, total sz 30210 [56133.913311] Bluetooth: hci0: RTL: fw
-> > version 0xdfc6d922 [56133.980299] Bluetooth: MGMT ver 1.22
-> >
-> > hci0:   Type: Primary  Bus: USB
-> >         BD Address: 98:A2:35:85:56:F1  ACL MTU: 1021:6  SCO MTU:
-> 255:12
-> >         UP RUNNING
-> >         RX bytes:1670 acl:0 sco:0 events:184 errors:0
-> >         TX bytes:33917 acl:0 sco:0 commands:184 errors:0
-> >         Features: 0xff 0xff 0xff 0xfe 0xdb 0xfd 0x7b 0x87
-> >         Packet type: DM1 DM3 DM5 DH1 DH3 DH5 HV1 HV2 HV3
-> >         Link policy: RSWITCH HOLD SNIFF PARK
-> >         Link mode: PERIPHERAL ACCEPT
-> >         Name: 'max-ThinkPad-X230'
-> >         Class: 0x6c010c
-> >         Service Classes: Rendering, Capturing, Audio, Telephony
-> >         Device Class: Computer, Laptop
-> >         HCI Version: 5.1 (0xa)  Revision: 0xdfc6
-> >         LMP Version: 5.1 (0xa)  Subversion: 0xd922
-> >         Manufacturer: Realtek Semiconductor Corporation (93)
-> 
-> I don't see anything obviously wrong in dmesg. Attached hciconfig and dmesg
-> for both functional and broken cases.
-> 
-> --
->   Kiryl Shutsemau / Kirill A. Shutemov
