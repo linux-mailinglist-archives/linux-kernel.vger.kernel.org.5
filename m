@@ -2,87 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F6D7B78AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1887B78B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241502AbjJDHZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
+        id S241500AbjJDH04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232638AbjJDHY7 (ORCPT
+        with ESMTP id S232754AbjJDH0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:24:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3FF98;
-        Wed,  4 Oct 2023 00:24:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696404295; x=1727940295;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=J45APvEWw0Qw6avaptNiCzbHSD2QuFuV6PHhzGyCKcM=;
-  b=BQ7vlZDZdGA0lJZAaUa3dVp6p+dlLrAHbNfNVS2te34FtiORUUjYDKvp
-   2CfXJ3rfafyF6ecb0jMHXsqmpwhrJ3PpZoO8ESDrAHEuvsMj6OszU8B5Q
-   W4J/ey/PJJetih0FW2DxO78wF1nG+MuCUy0dEZbpJOhi8L4JzgewBIyxA
-   ofSxiVQ8lJpN1NC+xsAb7qMqTMhS0DLWxe9OMPdixMZh+G2iblVeW6C1L
-   XbaW0V1ML/D/S5jhnZj10w1WY7qcAFKHlVxGff3YGtnr0+LMa/1IaV9U3
-   v7ndLLjBNPzEnUqPk4OgqanBl4oGNRQbsItLVUW8HnlZVjCfBdZupgaq7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="447259904"
-X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
-   d="scan'208";a="447259904"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 00:24:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="924978119"
-X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
-   d="scan'208";a="924978119"
-Received: from cyrillet-mobl.ger.corp.intel.com ([10.252.55.203])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 00:24:53 -0700
-Date:   Wed, 4 Oct 2023 10:24:51 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Subject: Re: [PATCH V2 01/13] platform/x86/intel/vsec: Move structures to
- header
-In-Reply-To: <20231004020222.193445-2-david.e.box@linux.intel.com>
-Message-ID: <ac9ee86a-43d5-f72c-ca6b-e73e6c30f6f3@linux.intel.com>
-References: <20231004020222.193445-1-david.e.box@linux.intel.com> <20231004020222.193445-2-david.e.box@linux.intel.com>
+        Wed, 4 Oct 2023 03:26:55 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C2598;
+        Wed,  4 Oct 2023 00:26:52 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99de884ad25so318325866b.3;
+        Wed, 04 Oct 2023 00:26:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696404410; x=1697009210; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ampmjb5nn6WsDhiRi4sd5xEjXsA9NxoOOxrN/nCo4sk=;
+        b=WpceyEMNR+xjdVzqOpNYMoQkfJudTbdhgF1ygspyMhP/doH0CnLUfc3PN79CxsbVwH
+         WUK756ZlNpNKwtxeINrVyxsjkY3ABfSdS1oQGJpSju4Wuj9QCB1PIkdsuVQgY4QfHg3E
+         Vpc7r57M2LcO3ycqeEWv7/b8ddcOOS7yVV3UcYfnaDPeIssfXPcubHdDJZkQTRFNdIZ0
+         UFjY2dtH/JdphGDV3R7BQkvIYyIZmSy89//L00wJsu1FQiyuaa/s1+0gflESbBhcSlZc
+         JGRQl2H7+8crv90PB5fMVbQMI2NLunnecq6PcuXEh8Tgcy8G3/c2kvm/hhZsXp1SgNFe
+         ISBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696404410; x=1697009210;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ampmjb5nn6WsDhiRi4sd5xEjXsA9NxoOOxrN/nCo4sk=;
+        b=qyjuokW8eNatZYFYWXy/bPPWkq9UK7zQy64WJB9SenapCDevhP7w4BceEdNV6Tdy92
+         xnj8jKg6dSVHx1wGCycPgkbmp1uD3NCX8Vv1dLzHS3rwdZ3wwBWkpGUxirpGEnxN6s/L
+         tshz4nOnWGW4ZgMmXwYzdCEEtL5PaDKaz1Kx2aXRQ6Gg/1fk9gWon/23vA++1e3clMNO
+         Uk9XUgw26iYsHFSkhP5WHZcTY6qiM+pzzcK0Rihfsq7/g7qrTzPYcgHgkgrOnnq3hBo0
+         z/4O9EXkp7V/Ar9XTJX2c9mBy7VM5576fp7pmy+6plXtMehpGYMU03aMCRXhkBKCM52k
+         srDw==
+X-Gm-Message-State: AOJu0Yx0+AiGhsijjRqE7DqK1H57/XTWOkdonNLcjz9jfMe/jE98dcmL
+        iSY+/4WMCM6Kmhqqf1V7ZwIz+Z9defQ=
+X-Google-Smtp-Source: AGHT+IHhM8GYxYqCvvWUMJ1UlRFlRa9ZWycKMdjOnVw3AuuLqBB6baMgb10S45O9mpMn312cfDlGxQ==
+X-Received: by 2002:a17:906:30db:b0:9ae:41db:c27f with SMTP id b27-20020a17090630db00b009ae41dbc27fmr1568311ejb.10.1696404410443;
+        Wed, 04 Oct 2023 00:26:50 -0700 (PDT)
+Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
+        by smtp.gmail.com with ESMTPSA id l7-20020a1709061c4700b00997d7aa59fasm2320059ejg.14.2023.10.04.00.26.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 00:26:48 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 4 Oct 2023 09:26:46 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] perf/core: Introduce cpuctx->cgrp_ctx_list
+Message-ID: <ZR0TtjhGT+Em+/ti@gmail.com>
+References: <20231004040844.797044-1-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-78298424-1696404295=:1931"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231004040844.797044-1-namhyung@kernel.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-78298424-1696404295=:1931
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+* Namhyung Kim <namhyung@kernel.org> wrote:
 
-On Tue, 3 Oct 2023, David E. Box wrote:
-
-> In preparation for exporting an API to register Intel Vendor Specific
-> Extended Capabilities (VSEC) from other drivers, move needed structures to
-> the header file.
+> AFAIK we don't have a tool to measure the context switch overhead
+> directly.  (I think I should add one to perf ftrace latency).  But I can
+> see it with a simple perf bench command like this.
 > 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
-> V2 - New patch splitting previous PATCH 1
+>   $ perf bench sched pipe -l 100000
+>   # Running 'sched/pipe' benchmark:
+>   # Executed 100000 pipe operations between two processes
+> 
+>        Total time: 0.650 [sec]
+> 
+>          6.505740 usecs/op
+>            153710 ops/sec
+> 
+> It runs two tasks communicate each other using a pipe so it should
+> stress the context switch code.  This is the normal numbers on my
+> system.  But after I run these two perf stat commands in background,
+> the numbers vary a lot.
+> 
+>   $ sudo perf stat -a -e cycles -G user.slice -- sleep 100000 &
+>   $ sudo perf stat -a -e uncore_imc/cas_count_read/ -- sleep 10000 &
+> 
+> I will show the last two lines of perf bench sched pipe output for
+> three runs.
+> 
+>         58.597060 usecs/op    # run 1
+>             17065 ops/sec
+> 
+>         11.329240 usecs/op    # run 2
+>             88267 ops/sec
+> 
+>         88.481920 usecs/op    # run 3
+>             11301 ops/sec
+> 
+> I think the deviation comes from the fact that uncore events are managed
+> a certain number of cpus only.  If the target process runs on a cpu that
+> manages uncore pmu, it'd take longer.  Otherwise it won't affect the
+> performance much.
 
-Thanks, so much easier to review in this form! :-)
+The numbers of pipe-message context switching will vary a lot depending on 
+CPU migration patterns as well.
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+The best way to measure context-switch overhead is to pin that task
+to a single CPU with something like:
 
+   $ taskset 1 perf stat --null --repeat 10 perf bench sched pipe -l 10000 >/dev/null
 
--- 
- i.
+   Performance counter stats for 'perf bench sched pipe -l 10000' (10 runs):
 
---8323329-78298424-1696404295=:1931--
+            0.049798 +- 0.000102 seconds time elapsed  ( +-  0.21% )
+
+as you can see the 0.21% stddev is pretty low.
+
+If we allow 2 CPUs, both runtime and stddev is much higher:
+
+   $ taskset 3 perf stat --null --repeat 10 perf bench sched pipe -l 10000 >/dev/null
+
+   Performance counter stats for 'perf bench sched pipe -l 10000' (10 runs):
+
+              1.4835 +- 0.0383 seconds time elapsed  ( +-  2.58% )
+
+Thanks,
+
+	Ingo
