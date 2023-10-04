@@ -2,93 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD607B8E01
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5167B8E04
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244546AbjJDU2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 16:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60530 "EHLO
+        id S243946AbjJDU27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 16:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbjJDU2V (ORCPT
+        with ESMTP id S233332AbjJDU24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 16:28:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AE493
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:28:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBF07C433C8
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 20:28:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696451297;
-        bh=ESQvJZctYiv8lN6ltsro47C1eNao1M4P8HhyGWJi1h4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h1x1dXpxsW0znEXAMg1TsOxUEQAeL4mameKwEflZkI3ud72E4SfSnMLv4MTyPJOGK
-         91xKEos+lnRlsdOawtcs1w7xjj/NrHk6TkQun8DsZU6AEJZ9kq8yvqhWsCcAP7ToV0
-         3GMHy78dDOOJgAnAvr2ii/YekvQwjb2tiYwKcj8h+qj46tO8durP9jmgOwujcb89DT
-         1Fcvt0BdxthkDKsconPNNWQjko1VboNg1Q5AJwRe7Wl23lo/dozWL04bt+Kplgmc+I
-         i/sX6rb9bwFGm0GxmpG+U6qFYRmMILtd8DUJKRvdgDyKyyQ3S4+2RbKVtrvmaizWbG
-         91yqWlSOeijRA==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2bfea381255so3116671fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:28:17 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwfE2ZwTuM55a8yYwHpEGDtSX1p1WY4c4cyTzpSyuiqzbCwFLS0
-        BL/VULQb+or816pRssJuSUWRQuzWPAFZtI+A3g==
-X-Google-Smtp-Source: AGHT+IFXJfh8tz1TfG4klEB0mQGxX4Kz28T+ev5c9ShobOxqcsUhL+MV/lbeEpe9jSwPaddrVVnL759EryfLJI5QK0U=
-X-Received: by 2002:a05:6512:605:b0:503:1ca6:c590 with SMTP id
- b5-20020a056512060500b005031ca6c590mr2798624lfe.22.1696451275113; Wed, 04 Oct
- 2023 13:27:55 -0700 (PDT)
+        Wed, 4 Oct 2023 16:28:56 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638F993
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:28:53 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-79fb8f60374so2714739f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:28:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696451333; x=1697056133; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=21cBEUSjF4TZhsDOLZLhdwXsG9t3AJsN/zN+Wwuijrc=;
+        b=iNQChHV5T/CHEshLWavEPjwVYgN7joApUKBQw5QjJXJwv2cbQiZzV7JeTrpSQLDtWr
+         xotZRQ61F8iIVJZAiIZwQTpi1sM7fG8wPE/jG6cFrCnsyb0irH7eFrB2YyE5Zuhy8ekN
+         zI5te5lSEW++ea7So7iMd2bALval9dd1M6SVLIWB+H9V0WKsqagFRkjEd0qGElKnBsoh
+         Y62SOQD7DVeAvof9TYGd+hs9i9W6bK9MiWjk7C5/JVVT2nRsxV9Q7me7lPAG7WZGASDy
+         7sxTb5IdLovYckPnBxCDY14UE/CoGD+q6jntvXKENwDjffqXU71qhqz6rce7Qtr/d1ew
+         98ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696451333; x=1697056133;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=21cBEUSjF4TZhsDOLZLhdwXsG9t3AJsN/zN+Wwuijrc=;
+        b=Z97f6XnLN38Phx6ZfZQxi0g3aQckmBJCnFBlYUb2C+yddV1opbmHYxFitCDC5X3kiM
+         dZRrmxtBFl6XK1i9iFwS9t9NQfUwzxpkUU/mN9BHqifrHoseAfty3fUhW8GYmPOsjA/O
+         05l8/fWWSWraybyRxDfAw2j6rcvd009OMpCT0CW1UWGTcWJujqTZqkJFy6iHeSEbUdl2
+         zxEZn0MgkrBBOwiLxx3gTqE5mdmZ6oXLI3Ph+5cngbFR9kwCZdU459gkJyEZktnu1ENp
+         8TWHCajUgc1s7dph+/ZMwtvyaayqBjAJTnHRt5KEKl5fLlD9OuhMIV4AKkHqvQB2SPOf
+         ZqoA==
+X-Gm-Message-State: AOJu0YwtadbLXGyQ3uhxK3iQcvvLGNWd5B4j1bUqYAq9kT1Bpb00U/oq
+        gXJD5uVrjCyiiShbXnJnWxiBXlzC9nXwn/JQSak=
+X-Google-Smtp-Source: AGHT+IGnED8kVpBtGrfQrHoqH87z4y55vamJMb4nxM1//BpBi7Lotw0mZly67kx58aeD6ggT+yLUgg==
+X-Received: by 2002:a05:6602:3a05:b0:792:6be4:3dcb with SMTP id by5-20020a0566023a0500b007926be43dcbmr3319534iob.2.1696451332812;
+        Wed, 04 Oct 2023 13:28:52 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id j29-20020a02cb1d000000b00439fa6ff6a9sm13989jap.70.2023.10.04.13.28.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 13:28:52 -0700 (PDT)
+Message-ID: <43b1a228-9a60-40ef-936b-c8a062d7eb21@kernel.dk>
+Date:   Wed, 4 Oct 2023 14:28:51 -0600
 MIME-Version: 1.0
-References: <20231004-dt-asoc-header-cleanups-v2-0-e77765080cbc@kernel.org>
- <20231004-dt-asoc-header-cleanups-v2-1-e77765080cbc@kernel.org> <72f8f521-93f0-4e3d-929c-f7478622ddb3@sirena.org.uk>
-In-Reply-To: <72f8f521-93f0-4e3d-929c-f7478622ddb3@sirena.org.uk>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 4 Oct 2023 15:27:42 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLw6TKBsTee6U5Yfiz_T7WDt+1LZZNWzW1pL+z9bK5R0w@mail.gmail.com>
-Message-ID: <CAL_JsqLw6TKBsTee6U5Yfiz_T7WDt+1LZZNWzW1pL+z9bK5R0w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] ASoC: Explicitly include correct DT includes
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Peter Rosin <peda@axentia.se>,
-        Lars-Peter Clausen <lars@metafoo.de>, nuno.sa@analog.com,
-        James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Shenghao Ding <shenghao-ding@ti.com>,
-        Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Kiseok Jo <kiseok.jo@irondevice.com>,
-        Kevin Cernekee <cernekee@chromium.org>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Ban Tao <fengzheng923@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] block: Fix regression in sed-opal for a saved key.
+Content-Language: en-US
+To:     Milan Broz <gmazyland@gmail.com>, linux-block@vger.kernel.org
+Cc:     gjoyce@linux.vnet.ibm.com, jonathan.derrick@linux.dev,
+        linux-kernel@vger.kernel.org, Ondrej Kozina <okozina@redhat.com>
+References: <20231003100209.380037-1-gmazyland@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231003100209.380037-1-gmazyland@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,24 +73,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 12:39=E2=80=AFPM Mark Brown <broonie@kernel.org> wro=
-te:
->
-> On Wed, Oct 04, 2023 at 10:58:05AM -0500, Rob Herring wrote:
-> > The DT of_device.h and of_platform.h date back to the separate
-> > of_platform_bus_type before it was merged into the regular platform bus=
-.
-> > As part of that merge prepping Arm DT support 13 years ago, they
-> > "temporarily" include each other. They also include platform_device.h
-> > and of.h. As a result, there's a pretty much random mix of those includ=
-e
-> > files used throughout the tree. In order to detangle these headers and
-> > replace the implicit includes with struct declarations, users need to
-> > explicitly include the correct includes.
->
-> This is breaking various builds for me, for example arm64 defconfig:
+On 10/3/23 4:02 AM, Milan Broz wrote:
+> The commit 3bfeb61256643281ac4be5b8a57e9d9da3db4335
+> introduced the use of keyring for sed-opal.
+> 
+> Unfortunately, there is also a possibility to save
+> the Opal key used in opal_lock_unlock().
+> 
+> This patch switches the order of operation, so the cached
+> key is used instead of failure for opal_get_key.
+> 
+> The problem was found by the cryptsetup Opal test recently
+> added to the cryptsetup tree.
 
-I believe I got some of the include changes in the wrong place. They
-should go into patch 5.
+Greg, please review this.
 
-Rob
+-- 
+Jens Axboe
+
+
