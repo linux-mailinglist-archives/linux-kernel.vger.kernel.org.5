@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4CD7B7719
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 06:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A2F7B76FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 06:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238542AbjJDEZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 00:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34290 "EHLO
+        id S232586AbjJDEEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 00:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235435AbjJDEZZ (ORCPT
+        with ESMTP id S232115AbjJDEEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 00:25:25 -0400
-Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A34B8;
-        Tue,  3 Oct 2023 21:25:19 -0700 (PDT)
-Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
-        by cmsmtp with ESMTP
-        id npJ5qpBfzytxcntRnqKfRi; Wed, 04 Oct 2023 04:25:19 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id ntRmqh6ODaLYjntRnqH2bC; Wed, 04 Oct 2023 04:25:19 +0000
-X-Authority-Analysis: v=2.4 cv=c764/Dxl c=1 sm=1 tr=0 ts=651ce92f
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=Dx1Zrv+1i3YEdDUMOX3koA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=NEAV23lmAAAA:8 a=cm27Pg_UAAAA:8 a=0yL73Cyy68KADmUz8mEA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ATLVwROIy0WDBtGkwve64B69YI4jtu5jD65viGC9LUs=; b=zPdZ2JL/OcajtT1/TtUCZaUpva
-        GdHLlaoybosv1Lnh5O4vTVMW64GCpVP4i8XXgIY+xepNPRgsjJ1Kc+Uv9NzRbXOBxy86s3ALQ/3Rv
-        aff2+m8cM1z/s1L8MZAlMSggxG5j49Hi72xxAUHdnqDq3/KgL2t5j0tMmuJZTSuTFt1RppqFzpPIg
-        SyKf1NAV7dT35RDCWGXi+mjsAJ1Ly6i/doEqmDqOW7C9FQDp+f2j3MOsV/6MqsPuy9KvohinA8zRX
-        Nh0X5xF0sCDCLkvEpRugg5ugNHsNdaNU8fiRQM7kHM08ovc1Gbde4+hnmeEqPyMOTpwa+rzItejn+
-        ah3G/jjw==;
-Received: from 94-238-9-39.abo.bbox.fr ([94.238.9.39]:58986 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qnp2Q-001Z3j-2X;
-        Tue, 03 Oct 2023 18:42:50 -0500
-Message-ID: <32b291a1-57f3-4282-eb21-f4e039f54931@embeddedor.com>
-Date:   Wed, 4 Oct 2023 01:42:46 +0200
+        Wed, 4 Oct 2023 00:04:02 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9279AC
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 21:03:58 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 838083200BD9;
+        Wed,  4 Oct 2023 00:03:55 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 04 Oct 2023 00:03:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1696392235; x=
+        1696478635; bh=SWFPw/0TEHgJsNbMuYRSrl82EkyqBVdnsb+uJkEkozM=; b=E
+        ictTuO+6v9WQ/or0362c5W74YzAgReFIvbZ8pAJ6+M6j8PJD/il4KXzIum3NYEby
+        laTklbiYwQ/bTb7NMOpPWWPio1NLE0TdjveqYD/M7ELJDr07z6KVhIJ3URCHGj7/
+        L4byZ+HpLQ+OyKOSLyfd7BuJK4V4cmB4KleblbmgEYcuW6vQcqZRRj47pim2NomS
+        qVatxrebR6o6Ndc/RHh7ZyrcnKB0kOOm5vNjju81ODSTnEa+LSs5T7+I7LxPAaPx
+        Y8sh2WxU8X0LHbpUkNA1lwOE/qjxXVWtGFvGZmOUJf1cKiH+42YJ/Mb8sxfH/688
+        IkY439oBsuIDeLJWvSoiw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696392235; x=1696478635; bh=SWFPw/0TEHgJs
+        NbMuYRSrl82EkyqBVdnsb+uJkEkozM=; b=TYmlVbbEeehLmcgEDjVjI7QR+rA/G
+        mCEE+cGmWgwxbeFG2VLE6PjCR93LFM0Us44dKm/U6ywjwyKd7qB+Z7g47H/zIo06
+        OMSseeZ1CBDK13XgwNJX5tzoXltstCZMj76GT8NUitWbC8WgeqQ8Et9VUTAsavku
+        qKAp0Qtw3aDrP9ZtTYzZ0M/DHMWN9HmDm0cle9q9M3O6YC0xe/2Vq7uvTN73Mwr3
+        dKkwWBm/isRZ8RopgBXsNc091H3p7Stndsz/Yz8B7Ve2V8s8NyC3iUDxfSjioyhr
+        6pmJDt0vQq6GIYWTu0grcD1CQuqn6pd2RD8ium0TjRrKnGqYyE/443wNA==
+X-ME-Sender: <xms:KuQcZXas0h1PIRSqLnGrtFLb6JF0aRz-LqbdG5J6zfzUrkqQebCsfw>
+    <xme:KuQcZWaOY5JOq49l1vrDT6wSuXzoyBErmm_H_0zv-dW_7BCHzaBMfrhNFihnb0og_
+    pldBH25m0sz6nnTvBY>
+X-ME-Received: <xmr:KuQcZZ-du3fgP35bSQ2cvzr6Oo5uSVzi3G2-XP3zpJemdwiyOFCEKkunun6dQCVnBbDcmqvEZ8xgJM-y5Y4JLWdrJVoIMHI9HA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgedtucetufdoteggodetrfdotffvucfrrh
+    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
+    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
+    epfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhhihcu
+    ufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjpheqne
+    cuggftrfgrthhtvghrnhepveeilefhudekffehkeffudduvedvfeduleelfeegieeljeeh
+    jeeuvdeghfetvedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehs
+    rghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:KuQcZdpi9v9lmmiZzjLRSaYK4oo46Dom6vZaEaIc3B0uXw3LmkKBqg>
+    <xmx:KuQcZSq388GqD3KrmvZK6Pr6C9YsAKG-tX45GnfK4ZZAuk3alVJ-1A>
+    <xmx:KuQcZTRV81LIjQiVfpY6M8S4eAZwe1-UP3Ivo9f2R3kQY6i7b45iQQ>
+    <xmx:K-QcZZ2_CquhgATFDOsWxnhXu2mhP3gvH74Bo2PZNkFzMvDXYBk-mw>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 4 Oct 2023 00:03:53 -0400 (EDT)
+Date:   Wed, 4 Oct 2023 13:03:49 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     Kai Bosch <kellerassel@gmail.com>
+Cc:     linux1394-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kai Bosch <kbosch@protonmail.com>
+Subject: Re: [PATCH] Firewire: IP over IEEE 1394: replaced implicit mentions
+ of unsigned int
+Message-ID: <20231004040349.GA53158@workstation.local>
+Mail-Followup-To: Kai Bosch <kellerassel@gmail.com>,
+        linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Kai Bosch <kbosch@protonmail.com>
+References: <20231003211650.349521-1-kbosch@protonmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] dmaengine: fsl-edma: Annotate struct struct
- fsl_edma_engine with __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Vinod Koul <vkoul@kernel.org>
-Cc:     dmaengine@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-References: <20231003232704.work.596-kees@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20231003232704.work.596-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.238.9.39
-X-Source-L: No
-X-Exim-ID: 1qnp2Q-001Z3j-2X
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 94-238-9-39.abo.bbox.fr ([192.168.1.98]) [94.238.9.39]:58986
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 0
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfMssYrgH2yhWgFvVPNPyD6z+JDdiogl+gCFtTl5atZBX3PL1XIn6ACUbLpoZYewzTfxlxCVKityjBHvbrxX7Lz5iXbY5k81GKnVz5GgoXBtfZZ8c/D0N
- Fuaiantb82vbMKRA20xgwo1c5CNXneoNLxsLUnHsSdAMXUQFLq7M1nkgtKIZUU9vgABQVILDJgYWUmudEE0blSihUk84zqDnUaptEgdI4bN8G+jviTq0q33I
- 6MluE07L5LK08zU9kFO0BFf+TmvVqSCMOQM+3IPeWvQhqg+RUk76WyYWrhtfcxxrkdKhAna0knsumivcYK4K6w==
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003211650.349521-1-kbosch@protonmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,42 +89,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+Thanks for your sending the patch.
 
-On 10/4/23 01:27, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct struct fsl_edma_engine.
-> 
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: dmaengine@vger.kernel.org
-> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks
---
-Gustavo
-
+On Tue, Oct 03, 2023 at 09:16:50PM +0000, Kai Bosch wrote:
 > ---
->   drivers/dma/fsl-edma-common.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma/fsl-edma-common.h b/drivers/dma/fsl-edma-common.h
-> index 40d50cc3d75a..bb5221158a77 100644
-> --- a/drivers/dma/fsl-edma-common.h
-> +++ b/drivers/dma/fsl-edma-common.h
-> @@ -225,7 +225,7 @@ struct fsl_edma_engine {
->   	bool			big_endian;
->   	struct edma_regs	regs;
->   	u64			chan_masked;
-> -	struct fsl_edma_chan	chans[];
-> +	struct fsl_edma_chan	chans[] __counted_by(n_chans);
->   };
->   
->   #define edma_read_tcdreg(chan, __name)				\
+>  drivers/firewire/net.c | 48 +++++++++++++++++++++---------------------
+>  1 file changed, 24 insertions(+), 24 deletions(-)
+ 
+As long as I know, the coding style of Linux kernel[1] does not forbidden
+brief expression of 'unsigned int' (= just 'unsigned'). Furthermore,
+in C language specification, 'unsigned' and 'unsigned int' are the
+same[2]. I have no functional change over the patch.
+
+If the intension of patch is in the point of human readability, please
+note it in the commit comment. It is the most important for the kind of
+change.
+
+I'm waiting for your next post.
+
+[1] Linux kernel coding style
+https://www.kernel.org/doc/html/v4.10/process/coding-style.html
+[2] See '6.7.2 Type specifiers' in ISO/IEC 9899:1999, so called 'C99'.
+
+
+Regards
+
+Takashi Sakamoto
