@@ -2,159 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BF67B827D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B399F7B8274
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242905AbjJDOgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
+        id S242952AbjJDOfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233111AbjJDOgT (ORCPT
+        with ESMTP id S242920AbjJDOfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:36:19 -0400
-X-Greylist: delayed 333 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 04 Oct 2023 07:36:07 PDT
-Received: from mailo.com (msg-4.mailo.com [213.182.54.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F9A114;
-        Wed,  4 Oct 2023 07:36:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=triplefau.lt; s=mailo;
-        t=1696430144; bh=W5PvFP3Gw5uKhxD9CUkqsxWtpbEX48dkIbT12G1DE2A=;
-        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-         MIME-Version:Content-Transfer-Encoding;
-        b=YDytJxlUUeybvXrdD5LRMZ9ltQOP9sIES6Pe/CZ4fMc0gL6dYTVR+k9Sw0XNcW2Wu
-         /FRKtv34kfzAAB1VVFBi5888HtKpFtpdbtw9N4ylQKgsn/rB43jRdNIYW/W8TK/p6s
-         UCARbcW26LMGnQYli5fXhv4AI2Dr/SgC6h9Xcvu0=
-Received: by b221-6.in.mailobj.net [192.168.90.26] with ESMTP
-        via ip-20.mailobj.net [213.182.54.20]
-        Wed,  4 Oct 2023 16:35:44 +0200 (CEST)
-X-EA-Auth: g2dus1cobUlbsNVadb0mm/YbIdgQDytxLe63okReyGpdMx+oXIlNsenYyRsgRwiHak3A83Pk2kowDrLhXv0ofdhKRLPBVNjU
-From:   Remi Pommarel <repk@triplefau.lt>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Remi Pommarel <repk@triplefau.lt>, stable@vger.kernel.org
-Subject: [PATCH net v3] net: stmmac: remove unneeded stmmac_poll_controller
-Date:   Wed,  4 Oct 2023 16:33:56 +0200
-Message-Id: <1c156a6d8c9170bd6a17825f2277115525b4d50f.1696429960.git.repk@triplefau.lt>
-X-Mailer: git-send-email 2.40.0
+        Wed, 4 Oct 2023 10:35:02 -0400
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C6FEB;
+        Wed,  4 Oct 2023 07:34:57 -0700 (PDT)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 70CAE86040;
+        Wed,  4 Oct 2023 16:34:55 +0200 (CEST)
+From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Date:   Wed, 04 Oct 2023 16:34:43 +0200
+Subject: [PATCH v3] dt-bindings: phy: Convert PXA1928 USB/HSIC PHY to DT
+ schema
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Message-Id: <20231004-pxa1928-usb-yaml-v3-1-150c9ef3ab9d@skole.hr>
+X-B4-Tracking: v=1; b=H4sIAAJ4HWUC/32NQQ6CMBBFr0K6tmZmitq68h7GRYVBGhFIqw2Ec
+ HcLKxbG5fvJe38Sgb3jIM7ZJDxHF1zXJlC7TBS1bR8sXZlYEJBCAJT9YNGQlp9wl6N9NVKDORx
+ z0EQ5iqT1nis3rMnrLXHtwrvz4/oQcVn/xCJKlEaBsbqAAlR1Cc+u4X3txdKKtPXph0/JR0J7Y
+ qCSzNaf5/kLrtQkXO8AAAA=
+To:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3096;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=qO9ou1l5FEkTyCnSICtnUTG5cQCSx7IkoImt5WAeNhQ=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlHXgIOpjprFnT+GwaiK4ZJNiEGr8aaTwnhzCdW
+ AcHrU4p6dWJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZR14CAAKCRCaEZ6wQi2W
+ 4ScDEACN90WVQXJ1XBT0o0Gs+qqlsnuw26/ff3WG/rbQVKHFWLSmAqinISvMAOYK89kK/yXby/r
+ szZ6s+zoZpMGfqI5LcTm9Q6mltOtw5hkYSaqOW6CWgIxwYkV/oSOtp0pDu3KutxOcqPLvbM7VyY
+ 6r7xkN4VdJTm4kprrvVqTy/uAHrPYs9N2EGafsRcMTwObHn62TbynIyoCS9ZVmhFuDn6ev8I+JA
+ prxjZqHoafdl+5cOvt+c8McKNwhlVPjc/AfKXzhG6Ts/Nr42UpE9/zLnANs4a3WlfmzIJdOaPxn
+ dB02ed1mOvBoIJtogT+dmaYFNmYo3UPePXpqCXUytAn3y4DTbaP7lvoCWUzu+H2vfBw9bWLXtCq
+ OwDxJ+QSLKjpkXg9AQmepYPZpRp706wq0qtXLlXwVHgUpCFFhlT+1PG23j5cqHlGS4T7ZLYhUxV
+ NO1MZ5jSi1sCLqdeaHgqVCyAPKsmUnR/yRN54O5xxmaLWwpT4ClLp2JQbzFVQVMRwSOccZIT7jM
+ tIlEhmcv6E+QYKIFJnVoz8yVYO2PX+BUhKROywS/5AlqkcRrKTDGs1kOaQCC/7HeYbhNi3SN2ya
+ aK6uRkpcfI1VLh396IOCGf6tQNQQuqUL9XRchMRCfp1u3cD7zo8dtl8fFEC09siMn2Y5q88j5Yk
+ +6nLdtYQ4deoKlQ==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using netconsole netpoll_poll_dev could be called from interrupt
-context, thus using disable_irq() would cause the following kernel
-warning with CONFIG_DEBUG_ATOMIC_SLEEP enabled:
+Convert the binding for the Marvell PXA1928 USB and HSIC PHYs from TXT
+to DT schema.
 
-  BUG: sleeping function called from invalid context at kernel/irq/manage.c:137
-  in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 10, name: ksoftirqd/0
-  CPU: 0 PID: 10 Comm: ksoftirqd/0 Tainted: G        W         5.15.42-00075-g816b502b2298-dirty #117
-  Hardware name: aml (r1) (DT)
-  Call trace:
-   dump_backtrace+0x0/0x270
-   show_stack+0x14/0x20
-   dump_stack_lvl+0x8c/0xac
-   dump_stack+0x18/0x30
-   ___might_sleep+0x150/0x194
-   __might_sleep+0x64/0xbc
-   synchronize_irq+0x8c/0x150
-   disable_irq+0x2c/0x40
-   stmmac_poll_controller+0x140/0x1a0
-   netpoll_poll_dev+0x6c/0x220
-   netpoll_send_skb+0x308/0x390
-   netpoll_send_udp+0x418/0x760
-   write_msg+0x118/0x140 [netconsole]
-   console_unlock+0x404/0x500
-   vprintk_emit+0x118/0x250
-   dev_vprintk_emit+0x19c/0x1cc
-   dev_printk_emit+0x90/0xa8
-   __dev_printk+0x78/0x9c
-   _dev_warn+0xa4/0xbc
-   ath10k_warn+0xe8/0xf0 [ath10k_core]
-   ath10k_htt_txrx_compl_task+0x790/0x7fc [ath10k_core]
-   ath10k_pci_napi_poll+0x98/0x1f4 [ath10k_pci]
-   __napi_poll+0x58/0x1f4
-   net_rx_action+0x504/0x590
-   _stext+0x1b8/0x418
-   run_ksoftirqd+0x74/0xa4
-   smpboot_thread_fn+0x210/0x3c0
-   kthread+0x1fc/0x210
-   ret_from_fork+0x10/0x20
-
-Since [0] .ndo_poll_controller is only needed if driver doesn't or
-partially use NAPI. Because stmmac does so, stmmac_poll_controller
-can be removed fixing the above warning.
-
-[0] commit ac3d9dd034e5 ("netpoll: make ndo_poll_controller() optional")
-
-Cc: <stable@vger.kernel.org> # 5.15.x
-Fixes: 47dd7a540b8a ("net: add support for STMicroelectronics Ethernet controllers")
-Signed-off-by: Remi Pommarel <repk@triplefau.lt>
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 30 -------------------
- 1 file changed, 30 deletions(-)
+Changes in v3:
+- Address maintainer comments:
+  - Re-add example DTS
+  - Drop nodename
+  - Simplify compatible
+- Link to v2: https://lore.kernel.org/r/20231002-pxa1928-usb-yaml-v2-1-121a7e02d29f@skole.hr
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 83c567a89a46..ed1a5a31a491 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -6002,33 +6002,6 @@ static irqreturn_t stmmac_msi_intr_rx(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
--#ifdef CONFIG_NET_POLL_CONTROLLER
--/* Polling receive - used by NETCONSOLE and other diagnostic tools
-- * to allow network I/O with interrupts disabled.
-- */
--static void stmmac_poll_controller(struct net_device *dev)
--{
--	struct stmmac_priv *priv = netdev_priv(dev);
--	int i;
+Changes in v2:
+- Add myself as maintainer
+- Combine HSIC and USB bindings into one
+- Drop unneeded quotes
+- Remove example as it can't compile (probably because of clock
+  reference)
+- Link to v1: https://lore.kernel.org/r/20231001-pxa1928-usb-yaml-v1-1-9309a8c0c03f@skole.hr
+---
+ .../bindings/phy/marvell,pxa1928-usb-phy.yaml      | 47 ++++++++++++++++++++++
+ .../devicetree/bindings/phy/pxa1928-usb-phy.txt    | 18 ---------
+ 2 files changed, 47 insertions(+), 18 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/phy/marvell,pxa1928-usb-phy.yaml b/Documentation/devicetree/bindings/phy/marvell,pxa1928-usb-phy.yaml
+new file mode 100644
+index 000000000000..be33f036cda8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/marvell,pxa1928-usb-phy.yaml
+@@ -0,0 +1,47 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/phy/marvell,pxa1928-usb-phy.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Marvell PXA1928 USB/HSIC PHY
++
++maintainers:
++  - Duje Mihanović <duje.mihanovic@skole.hr>
++
++properties:
++  compatible:
++    enum:
++      - marvell,pxa1928-usb-phy
++      - marvell,pxa1928-hsic-phy
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  '#phy-cells':
++    const: 0
++
++  resets:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - '#phy-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/marvell,pxa1928.h>
++
++    usbphy: phy@7000 {
++        compatible = "marvell,pxa1928-usb-phy";
++        reg = <0x7000 0xe0>;
++        clocks = <&apmu PXA1928_CLK_USB>;
++        #phy-cells = <0>;
++    };
+diff --git a/Documentation/devicetree/bindings/phy/pxa1928-usb-phy.txt b/Documentation/devicetree/bindings/phy/pxa1928-usb-phy.txt
+deleted file mode 100644
+index da94426aa694..000000000000
+--- a/Documentation/devicetree/bindings/phy/pxa1928-usb-phy.txt
++++ /dev/null
+@@ -1,18 +0,0 @@
+-* Marvell PXA1928 USB and HSIC PHYs
 -
--	/* If adapter is down, do nothing */
--	if (test_bit(STMMAC_DOWN, &priv->state))
--		return;
+-Required properties:
+-- compatible: "marvell,pxa1928-usb-phy" or "marvell,pxa1928-hsic-phy"
+-- reg: base address and length of the registers
+-- clocks - A single clock. From common clock binding.
+-- #phys-cells: should be 0. From common phy binding.
+-- resets: reference to the reset controller
 -
--	if (priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN) {
--		for (i = 0; i < priv->plat->rx_queues_to_use; i++)
--			stmmac_msi_intr_rx(0, &priv->dma_conf.rx_queue[i]);
+-Example:
 -
--		for (i = 0; i < priv->plat->tx_queues_to_use; i++)
--			stmmac_msi_intr_tx(0, &priv->dma_conf.tx_queue[i]);
--	} else {
--		disable_irq(dev->irq);
--		stmmac_interrupt(dev->irq, dev);
--		enable_irq(dev->irq);
--	}
--}
--#endif
+-	usbphy: phy@7000 {
+-		compatible = "marvell,pxa1928-usb-phy";
+-		reg = <0x7000 0xe0>;
+-		clocks = <&apmu_clocks PXA1928_CLK_USB>;
+-		#phy-cells = <0>;
+-	};
 -
- /**
-  *  stmmac_ioctl - Entry point for the Ioctl
-  *  @dev: Device pointer.
-@@ -6989,9 +6962,6 @@ static const struct net_device_ops stmmac_netdev_ops = {
- 	.ndo_get_stats64 = stmmac_get_stats64,
- 	.ndo_setup_tc = stmmac_setup_tc,
- 	.ndo_select_queue = stmmac_select_queue,
--#ifdef CONFIG_NET_POLL_CONTROLLER
--	.ndo_poll_controller = stmmac_poll_controller,
--#endif
- 	.ndo_set_mac_address = stmmac_set_mac_address,
- 	.ndo_vlan_rx_add_vid = stmmac_vlan_rx_add_vid,
- 	.ndo_vlan_rx_kill_vid = stmmac_vlan_rx_kill_vid,
+
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20231001-pxa1928-usb-yaml-809564082241
+
+Best regards,
 -- 
-2.40.0
-
+Duje Mihanović <duje.mihanovic@skole.hr>
 
 
