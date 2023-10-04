@@ -2,128 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9096B7B7E73
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 360207B7E7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242288AbjJDLqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 07:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38008 "EHLO
+        id S242248AbjJDLu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 07:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbjJDLqV (ORCPT
+        with ESMTP id S229687AbjJDLu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 07:46:21 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1191A1;
-        Wed,  4 Oct 2023 04:46:18 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 8ECAF32009AF;
-        Wed,  4 Oct 2023 07:46:15 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 04 Oct 2023 07:46:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
-         h=cc:cc:content-type:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1696419975; x=
-        1696506375; bh=Q/KtTjvMil+v8KL+aP+mJR97Myi1BBiXbwWlZPHU1Nk=; b=W
-        QU7IJa8O83F6rFW5rMKN2xMNCNAO1E7kUjaswcY+1o/OLZI1+fUzPCt2QpdcBQNy
-        133NAH7ERLxK6zxMxRSIyhuYHevx1B5hqmgCxC8fcpHvonn1WZLjG6pg6G0VqWLV
-        VxjQG8vCnyaXwDHSxn4yH0ih/7v8GErRNK3gkQ+qHwrFEibMWTZoIE6YKW/+dQiX
-        ec1wbiu2/9/bjopMAJlM5gysJwhmooAwCzzRrhTP9ztCFzZvnC5FJmQR0PeJB84m
-        iWme/Bil+ufrmwcyJiAzvpsoaY+MRdqxeGix8n4LhFBH6jIEi3HjBunYm+rAqBPr
-        7J+R58NuSauCqFvmm4muw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1696419975; x=1696506375; bh=Q/KtTjvMil+v8
-        KL+aP+mJR97Myi1BBiXbwWlZPHU1Nk=; b=eFnwXzXm1yTdESHDZdKWoRIe9KrRJ
-        IgPDpJaykVDGIUCjSwXnP5pdlL1NxvdPahaHo+ySa1sbe1nBQX2k9J7fT/sOks5F
-        u3czjoFrLfJ9GdLxaGo5swCw3e4WBQthLLlAD+GgYpkW+ueCmXm4enGlHsyY6Zkk
-        UPvmddDgMESAntvoytwnuqEDVuQeOWO4X67YhnkXh/SkQGDHKAVvBrthcKzmbjg4
-        /jakHeX1HZw7duKvycYugS39KGwFxJsUM7pIi/m0RskCdp1yZjH6Mj6ksqV4KcZW
-        X6XR5o2Im49KqMGZ6orpCDsjdgjduJgKkFMgGo33ZhghmGsPi5GhaK+pA==
-X-ME-Sender: <xms:hVAdZUtoJ0iPK9HFbvQ9SKfr1XB7_yfGF7r9iPlilrWJBoBEGw7U2A>
-    <xme:hVAdZRfmlJflt9ZWukW7n5BFWK67Z9Z35YA9XJJWa7QOv16NXgTih5mRHJR8kJBWk
-    caXui3JO69XBBPNd4Y>
-X-ME-Received: <xmr:hVAdZfz5sldCLkd4cNsslD93WhLhJsDOp5DvdhlHpJdoMsK_hkz9KnGw0e2gZcx_ct3nYA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgedvgdegvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttddttddttddvnecuhfhrohhmpedfmfhirhhi
-    lhhlucetrdcuufhhuhhtvghmohhvfdcuoehkihhrihhllhesshhhuhhtvghmohhvrdhnrg
-    hmvgeqnecuggftrfgrthhtvghrnhephfeigefhtdefhedtfedthefghedutddvueehtedt
-    tdehjeeukeejgeeuiedvkedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepkhhirhhilhhlsehshhhuthgvmhhovhdrnhgrmhgv
-X-ME-Proxy: <xmx:hVAdZXNEAGWcGCtzozspDnqIn2K0H6T6T4HNNgbVjAb5miVRmITD3w>
-    <xmx:hVAdZU875E7jEbhJIjeFLh74_j9-qkEnzKwTMbo1it_fi1AyiHnNxQ>
-    <xmx:hVAdZfXWMFTrVfF75yasj8R6qpYy0AunTXqpp_mQ3q7TVrYIJoVT5Q>
-    <xmx:h1AdZV0_nOCEO7VcmXqGnqVYN5ipphMc1jm1NvwYUFmZhWSqv9oVeA>
-Feedback-ID: ie3994620:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 4 Oct 2023 07:46:13 -0400 (EDT)
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id C8BD710989F; Wed,  4 Oct 2023 14:46:09 +0300 (+03)
-Date:   Wed, 4 Oct 2023 14:46:09 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Max Chou <max.chou@realtek.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Hilda Wu <hildawu@realtek.com>,
-        "alex_lu@realsil.com.cn" <alex_lu@realsil.com.cn>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
-        Thorsten Leemhuis <linux@leemhuis.info>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Regression: devcoredump patch broke Realtek usb bluetooth adapter
-Message-ID: <20231004114609.dca6ebtmx37fsx5l@box.shutemov.name>
-References: <20231003182038.k57nirtt4sonvt7c@box.shutemov.name>
- <ZRyqIn0_qqEFBPdy@debian.me>
- <b2ef2f1c457a4cf7a246b2e8b8598a30@realtek.com>
- <20231004044947.vgegwvxxindkjo7g@box.shutemov.name>
- <7507ad6c8a964b179bf2b3318104a124@realtek.com>
+        Wed, 4 Oct 2023 07:50:27 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021B390;
+        Wed,  4 Oct 2023 04:50:23 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so3790427a12.1;
+        Wed, 04 Oct 2023 04:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696420221; x=1697025021; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sxFN1579U8L5KSgdpnL27QtyaBIzDdnGagI0+P77qY8=;
+        b=k2wi6IpRh/En1tJ4zkWUJIec8VT3cu5hyzL7mrfS/CCEZDUTLfXSEjob1zJQ+5FiMb
+         PTIPl7GsBjCIrki+eJPOMYKvWqFVwdkMouWDpfhxdG4TVdWR+6ReVkQVgEpfI5KOO+7I
+         T+s0qWjHO/joQBSTz/orvVz6/3+vW/K60CgM/LWNcMGmEWl9ilLmSKBdr07d48PkcOqI
+         RRRFj5yRbeyME0cy05RYyw3/o7sZZ0LHfWQKTL99GFqaoFdv9kEj/MNTrEcGUq04vFAd
+         NMjVof3jhbSKhRa6BUNz0656PM93lg7NgyYHmUvDKKWlHIA/pnYyviVowegzoYHUrzwy
+         kNIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696420221; x=1697025021;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sxFN1579U8L5KSgdpnL27QtyaBIzDdnGagI0+P77qY8=;
+        b=UN6ozGoZMNc8h73z14RNiVQ8moR4xbJNJC2+DulAflx05PtbiaclA2DOf9o3U5zgj3
+         yw30sicaIPjhbT9tmEuehdjHzhoirtgtXYqDJ8NKQf/BqenLbnpjNNmnpsU04oB7UWwM
+         5NDBVuFQUbY4HJo0Jh1mFY+JmOYMqMYr3Fqh/4TKIKGYLSvOIRERS+H5nfmAS3+ZAhJT
+         pwbm+aS4Mz1USsLYUAN6T/LrR/EtJo4nfY62ByVVROJ6CGzQ/W+9lZKfTxiYDg7EHJEk
+         cSAuT59pE7i78kIOw/VYI7h/nsH2RYrwSVZHbq9SUaW9AkLadsJiH7/99R9LTY/Q0Bx0
+         17Ng==
+X-Gm-Message-State: AOJu0YzMQzWvQmHcu1sJhXo4CJHfaWq/2QRNityZBT/MAGIIVFs+cgKe
+        ivE8jadEDWCH80/cYOTE9x0yYsKchik=
+X-Google-Smtp-Source: AGHT+IH5apXuLQK1NmVSu/nMv7jihtF+iBMpQpy9TiewttB72QC1moRm3RYe5K2C7tpvO3najOrPFw==
+X-Received: by 2002:aa7:c508:0:b0:534:78a6:36c4 with SMTP id o8-20020aa7c508000000b0053478a636c4mr1867077edq.36.1696420221177;
+        Wed, 04 Oct 2023 04:50:21 -0700 (PDT)
+Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
+        by smtp.gmail.com with ESMTPSA id g24-20020a056402115800b0053629f43083sm2321095edw.57.2023.10.04.04.50.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 04:50:19 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 4 Oct 2023 13:50:16 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Len Brown <lenb@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        x86@kernel.org, linux-pm@vger.kernel.org,
+        Robin Jarry <rjarry@redhat.com>, Joe Mario <jmario@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v6 0/4] x86/speculation: Disable IBRS when idle
+Message-ID: <ZR1RePXx6/zZueI8@gmail.com>
+References: <20230727184600.26768-1-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7507ad6c8a964b179bf2b3318104a124@realtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230727184600.26768-1-longman@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 07:28:45AM +0000, Max Chou wrote:
-> Hi! Kirill,
-> I guess the root cause is as below.
-> ===
-> static int btrtl_register_devcoredump_support(struct hci_dev *hdev)
-> {
->         int err;
+
+* Waiman Long <longman@redhat.com> wrote:
+
+> For Intel processors that need to turn on IBRS to protect against
+> Spectre v2 and Retbleed, the IBRS bit in the SPEC_CTRL MSR affects
+> the performance of the whole core even if only one thread is turning
+> it on when running in the kernel. For user space heavy applications,
+> the performance impact of occasionally turning IBRS on during syscalls
+> shouldn't be significant. Unfortunately, that is not the case when the
+> sibling thread is idling in the kernel. In that case, the performance
+> impact can be significant.
 > 
->         err = hci_devcd_register(hdev, btrtl_coredump, btrtl_dmp_hdr, NULL);
+> When DPDK is running on an isolated CPU thread processing network packets
+> in user space while its sibling thread is idle. The performance of the
+> busy DPDK thread with IBRS on and off in the sibling idle thread are:
 > 
->         return err;
-> }
-> ===
-> If CONFIG_DEV_COREDUMP is not enabled, it would return -EOPNOTSUPP for hci_devcd_register().
-> Unfortunately, btrtl_register_devcoredump_support() will return it. 
-> Finally, -EOPNOSTUPP will be returned for btrtl_setup_realtek().
+>                                 IBRS on         IBRS off
+>                                 -------         --------
+>   packets/second:                  7.8M           10.4M
+>   avg tsc cycles/packet:         282.26          209.86
 > 
-> Could you have the following workaround for the root cause checked?
-> Please share dmesg as well. Thanks,
+> This is a 25% performance degradation. The test system is a Intel Xeon
+> 4114 CPU @ 2.20GHz.
 
-Yes. It works and I see 
+Ok, that's a solid improvement, and the feature has no obvious
+downsides, so I've applied your series to tip:sched/core with a few
+edits here and there.
 
-[    3.640539] Bluetooth: hci0: RTL: btrtl_register_devcoredump_support(): err = -95
+Thanks!
 
-in dmesg. -EOPNOTSUPP indeed.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+	Ingo
