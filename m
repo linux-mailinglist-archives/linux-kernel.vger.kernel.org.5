@@ -2,265 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5351D7B97EB
+	by mail.lfdr.de (Postfix) with ESMTP id A0F637B97EC
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 00:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234926AbjJDWXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 18:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
+        id S234617AbjJDWXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 18:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbjJDWXE (ORCPT
+        with ESMTP id S237463AbjJDWXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 18:23:04 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D93DC;
-        Wed,  4 Oct 2023 15:22:59 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A07521C0009;
-        Wed,  4 Oct 2023 22:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696458177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MJSnkDzDxHMCQetZ/+skPNzc1TJhICAJggt8E2GoXhw=;
-        b=CPLsLqOebwAUKFkOPiza6wA07lk29WukSFnS52exZjJL4ZU7H3NOxXhGZ8B+dOhM2iAT0V
-        wHiWFeTKF/DYA1w7OJWouhLys9jF7I3roD/dXL9rIp1TXlyaecPGfi2opEgyYqL3wv8e9Y
-        pZG+qU/5Y9Dv32w+TpUSkRhyv6HCZnj2lGBRQ+ZxmD7c8XnmsKKx3UfJmZ/ZMJFLsYe88K
-        XnP1uSLb59r5cRFbFdp75vhL9vwJDhUNWsJzxO8RJ9Y90bx4qy++VvTPgWsi6Ihf98bS4U
-        slEAIz97JW2UyXSwfc47Lpju1WPB2PzBVlPmqWpX57VKMgl5jWprM2IVuzZaJQ==
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Michael Walle <michael@walle.cc>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, <linux-kernel@vger.kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v11 7/7] nvmem: core: Expose cells through sysfs
-Date:   Thu,  5 Oct 2023 00:22:36 +0200
-Message-Id: <20231004222236.411248-8-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231004222236.411248-1-miquel.raynal@bootlin.com>
-References: <20231004222236.411248-1-miquel.raynal@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 4 Oct 2023 18:23:43 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CB310FC
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 15:23:26 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d865f1447a2so592380276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 15:23:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696458206; x=1697063006; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=raoMQ3SQ/7ZFelkz0l8EiT5sUCvEdkA2km5MKOLJhzo=;
+        b=QYfC+wRugJ4lQvqgBCiqmcgXHB6ESxeWYPtjzQSoBgY8qUxYUMV3L0OGnyhLxVaOsr
+         cxsqzQ/YEGh7N8UldMs/u2nV20Kr+nvcsiokgQPUdT3xNyLYy+DdZBs6BEiB+Rs7ucLj
+         LMKfYgoIWNgmLYHuIOaEPYtqwtdcjSe9duR2Bu4C2dQz2h3wERt1NbRupbCPadAYuYGB
+         qu/+m9oX+SJRad8fShgk+yHFuVdJvVQssA0AOmvKhDlnn+IAztWjw9gkAA0STxN5cc0N
+         FHOFYKtItacqE/0RgR05bzroVIuuYZzGo3qkRNAJOMC0/HBncopjRm3VtlGu+IPwu2XO
+         /PtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696458206; x=1697063006;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=raoMQ3SQ/7ZFelkz0l8EiT5sUCvEdkA2km5MKOLJhzo=;
+        b=o3503Bj/EuUoHw6qrclge/wYWJqKJmsjZ71wicH5Y0CxO0pXYKLmGSQAksBOa4e9KC
+         a3wCg/GG6ycJosCM8OkoX15wAHIUw1UKTa8jOwgotw7NmRaxuE3F1wm13KJNvTBMjOYW
+         Ml7UemuCMWmjrDbe+pC/0JZ72CIAdrSRsbSm88d6WlMWB5zYGcdyXqW/yIruCht6+goF
+         14Ot60OuRn4O2BCa+ypQ0PS8w0C/14f09cmzB6hbLmwNhB7ayuukzEswKAWqOtx0FaYR
+         J4/+Jz0h6cxyz5DHw/QDrh5J7ZPy8KK+o7qd5K1iU0zejnPx9WMUCTx4JJWi07bSAw+K
+         0QzA==
+X-Gm-Message-State: AOJu0Yyee9X5ZzHkyyT6iJRRRDdB3seEx/0C2Hd6pP5QPVJGw+oSDH7R
+        MdqGj+LdTMkBACHzUgt9o2/LmOjhLpJJ
+X-Google-Smtp-Source: AGHT+IHuWIDrX75i83mVKUxiuU6q58yAN8CALuDciPIg46gAx0U1ncoVbvRysJAxkkItHi9M7Z9Ux8p3GNvU
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f42:a09e:8ee2:1491])
+ (user=irogers job=sendgmr) by 2002:a25:3442:0:b0:d0e:e780:81b3 with SMTP id
+ b63-20020a253442000000b00d0ee78081b3mr48786yba.2.1696458206114; Wed, 04 Oct
+ 2023 15:23:26 -0700 (PDT)
+Date:   Wed,  4 Oct 2023 15:23:22 -0700
+Message-Id: <20231004222323.3503030-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+Subject: [PATCH v4 1/2] bpftool: Align output skeleton ELF code
+From:   Ian Rogers <irogers@google.com>
+To:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ian Rogers <irogers@google.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The binary content of nvmem devices is available to the user so in the
-easiest cases, finding the content of a cell is rather easy as it is
-just a matter of looking at a known and fixed offset. However, nvmem
-layouts have been recently introduced to cope with more advanced
-situations, where the offset and size of the cells is not known in
-advance or is dynamic. When using layouts, more advanced parsers are
-used by the kernel in order to give direct access to the content of each
-cell, regardless of its position/size in the underlying
-device. Unfortunately, these information are not accessible by users,
-unless by fully re-implementing the parser logic in userland.
+libbpf accesses the ELF data requiring at least 8 byte alignment,
+however, the data is generated into a C string that doesn't guarantee
+alignment. Fix this by assigning to an aligned char array. Use sizeof
+on the array, less one for the \0 terminator, rather than generating a
+constant.
 
-Let's expose the cells and their content through sysfs to avoid these
-situations. Of course the relevant NVMEM sysfs Kconfig option must be
-enabled for this support to be available.
-
-Not all nvmem devices expose cells. Indeed, the .bin_attrs attribute
-group member will be filled at runtime only when relevant and will
-remain empty otherwise. In this case, as the cells attribute group will
-be empty, it will not lead to any additional folder/file creation.
-
-Exposed cells are read-only. There is, in practice, everything in the
-core to support a write path, but as I don't see any need for that, I
-prefer to keep the interface simple (and probably safer). The interface
-is documented as being in the "testing" state which means we can later
-add a write attribute if though relevant.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Tested-by: Rafał Miłecki <rafal@milecki.pl>
+Fixes: a6cc6b34b93e ("bpftool: Provide a helper method for accessing skeleton's embedded ELF data")
+Signed-off-by: Ian Rogers <irogers@google.com>
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- drivers/nvmem/core.c      | 116 ++++++++++++++++++++++++++++++++++++++
- drivers/nvmem/internals.h |   1 +
- 2 files changed, 117 insertions(+)
+ tools/bpf/bpftool/gen.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 1f311c899ae1..bb29cfe11334 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -303,6 +303,43 @@ static umode_t nvmem_bin_attr_is_visible(struct kobject *kobj,
- 	return nvmem_bin_attr_get_umode(nvmem);
- }
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 2883660d6b67..b8ebcee9bc56 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -1209,7 +1209,7 @@ static int do_skeleton(int argc, char **argv)
+ 	codegen("\
+ 		\n\
+ 									    \n\
+-			s->data = (void *)%2$s__elf_bytes(&s->data_sz);	    \n\
++			s->data = (void *)%1$s__elf_bytes(&s->data_sz);	    \n\
+ 									    \n\
+ 			obj->skeleton = s;				    \n\
+ 			return 0;					    \n\
+@@ -1218,12 +1218,12 @@ static int do_skeleton(int argc, char **argv)
+ 			return err;					    \n\
+ 		}							    \n\
+ 									    \n\
+-		static inline const void *%2$s__elf_bytes(size_t *sz)	    \n\
++		static inline const void *%1$s__elf_bytes(size_t *sz)	    \n\
+ 		{							    \n\
+-			*sz = %1$d;					    \n\
+-			return (const void *)\"\\			    \n\
+-		"
+-		, file_sz, obj_name);
++			static const char data[] __attribute__((__aligned__(8))) = \"\\\n\
++		",
++		obj_name
++	);
  
-+static struct nvmem_cell *nvmem_create_cell(struct nvmem_cell_entry *entry,
-+					    const char *id, int index);
-+
-+static ssize_t nvmem_cell_attr_read(struct file *filp, struct kobject *kobj,
-+				    struct bin_attribute *attr, char *buf,
-+				    loff_t pos, size_t count)
-+{
-+	struct nvmem_cell_entry *entry;
-+	struct nvmem_cell *cell = NULL;
-+	size_t cell_sz, read_len;
-+	void *content;
-+
-+	entry = attr->private;
-+	cell = nvmem_create_cell(entry, entry->name, 0);
-+	if (IS_ERR(cell))
-+		return PTR_ERR(cell);
-+
-+	if (!cell)
-+		return -EINVAL;
-+
-+	content = nvmem_cell_read(cell, &cell_sz);
-+	if (IS_ERR(content)) {
-+		read_len = PTR_ERR(content);
-+		goto destroy_cell;
-+	}
-+
-+	read_len = min_t(unsigned int, cell_sz - pos, count);
-+	memcpy(buf, content + pos, read_len);
-+	kfree(content);
-+
-+destroy_cell:
-+	kfree_const(cell->id);
-+	kfree(cell);
-+
-+	return read_len;
-+}
-+
- /* default read/write permissions */
- static struct bin_attribute bin_attr_rw_nvmem = {
- 	.attr	= {
-@@ -324,11 +361,21 @@ static const struct attribute_group nvmem_bin_group = {
- 	.is_bin_visible = nvmem_bin_attr_is_visible,
- };
- 
-+/* Cell attributes will be dynamically allocated */
-+static struct attribute_group nvmem_cells_group = {
-+	.name		= "cells",
-+};
-+
- static const struct attribute_group *nvmem_dev_groups[] = {
- 	&nvmem_bin_group,
- 	NULL,
- };
- 
-+static const struct attribute_group *nvmem_cells_groups[] = {
-+	&nvmem_cells_group,
-+	NULL,
-+};
-+
- static struct bin_attribute bin_attr_nvmem_eeprom_compat = {
- 	.attr	= {
- 		.name	= "eeprom",
-@@ -384,6 +431,69 @@ static void nvmem_sysfs_remove_compat(struct nvmem_device *nvmem,
- 		device_remove_bin_file(nvmem->base_dev, &nvmem->eeprom);
- }
- 
-+static int nvmem_dev_populate_sysfs_cells(struct device *dev, void *data)
-+{
-+	struct nvmem_device *nvmem = to_nvmem_device(dev);
-+	struct bin_attribute **cells_attrs, *attrs;
-+	struct nvmem_cell_entry *entry;
-+	unsigned int ncells = 0, i = 0;
-+	int ret = 0;
-+
-+	mutex_lock(&nvmem_mutex);
-+
-+	if (list_empty(&nvmem->cells) || nvmem->sysfs_cells_populated) {
-+		nvmem_cells_group.bin_attrs = NULL;
-+		goto unlock_mutex;
-+	}
-+
-+	/* Allocate an array of attributes with a sentinel */
-+	ncells = list_count_nodes(&nvmem->cells);
-+	cells_attrs = devm_kcalloc(&nvmem->dev, ncells + 1,
-+				   sizeof(struct bin_attribute *), GFP_KERNEL);
-+	if (!cells_attrs) {
-+		ret = -ENOMEM;
-+		goto unlock_mutex;
-+	}
-+
-+	attrs = devm_kcalloc(&nvmem->dev, ncells, sizeof(struct bin_attribute), GFP_KERNEL);
-+	if (!attrs) {
-+		ret = -ENOMEM;
-+		goto unlock_mutex;
-+	}
-+
-+	/* Initialize each attribute to take the name and size of the cell */
-+	list_for_each_entry(entry, &nvmem->cells, node) {
-+		sysfs_bin_attr_init(&attrs[i]);
-+		attrs[i].attr.name = devm_kasprintf(&nvmem->dev, GFP_KERNEL,
-+						    "%s@%x", entry->name,
-+						    entry->offset);
-+		attrs[i].attr.mode = 0444;
-+		attrs[i].size = entry->bytes;
-+		attrs[i].read = &nvmem_cell_attr_read;
-+		attrs[i].private = entry;
-+		if (!attrs[i].attr.name) {
-+			ret = -ENOMEM;
-+			goto unlock_mutex;
-+		}
-+
-+		cells_attrs[i] = &attrs[i];
-+		i++;
-+	}
-+
-+	nvmem_cells_group.bin_attrs = cells_attrs;
-+
-+	ret = devm_device_add_groups(&nvmem->dev, nvmem_cells_groups);
-+	if (ret)
-+		goto unlock_mutex;
-+
-+	nvmem->sysfs_cells_populated = true;
-+
-+unlock_mutex:
-+	mutex_unlock(&nvmem_mutex);
-+
-+	return ret;
-+}
-+
- #else /* CONFIG_NVMEM_SYSFS */
- 
- static int nvmem_sysfs_setup_compat(struct nvmem_device *nvmem,
-@@ -2151,6 +2261,12 @@ static int nvmem_notifier_call(struct notifier_block *notifier,
- 	if (ret)
- 		return notifier_from_errno(ret);
- 
-+#ifdef CONFIG_NVMEM_SYSFS
-+	ret = nvmem_for_each_dev(nvmem_dev_populate_sysfs_cells);
-+	if (ret)
-+		return notifier_from_errno(ret);
-+#endif
-+
- 	return NOTIFY_OK;
- }
- 
-diff --git a/drivers/nvmem/internals.h b/drivers/nvmem/internals.h
-index eb73b59d1fd9..baa1c173be1c 100644
---- a/drivers/nvmem/internals.h
-+++ b/drivers/nvmem/internals.h
-@@ -30,6 +30,7 @@ struct nvmem_device {
- 	struct gpio_desc	*wp_gpio;
- 	struct nvmem_layout	*layout;
- 	void *priv;
-+	bool			sysfs_cells_populated;
- };
- 
- int nvmem_layout_bus_register(void);
+ 	/* embed contents of BPF object file */
+ 	print_hex(obj_data, file_sz);
+@@ -1231,6 +1231,9 @@ static int do_skeleton(int argc, char **argv)
+ 	codegen("\
+ 		\n\
+ 		\";							    \n\
++									    \n\
++			*sz = sizeof(data) - 1;				    \n\
++			return (const void *)data;			    \n\
+ 		}							    \n\
+ 									    \n\
+ 		#ifdef __cplusplus					    \n\
 -- 
-2.34.1
+2.42.0.609.gbb76f46606-goog
 
