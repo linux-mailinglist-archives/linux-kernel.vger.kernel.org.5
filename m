@@ -2,181 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E49F7B8E44
+	by mail.lfdr.de (Postfix) with ESMTP id 177617B8E43
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243838AbjJDUoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 16:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38952 "EHLO
+        id S233727AbjJDUn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 16:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243764AbjJDUoD (ORCPT
+        with ESMTP id S233243AbjJDUn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 16:44:03 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B785BF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:43:57 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7ec535fe42so400846276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:43:57 -0700 (PDT)
+        Wed, 4 Oct 2023 16:43:56 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CE5B8
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:43:53 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f7d109926so3333917b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:43:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696452236; x=1697057036; darn=vger.kernel.org;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=62TaHeKznYGJNCCBRaj8AgsGHCErkYyX8npqYRMhtgg=;
-        b=xoJ/4GCCvARflY83Xzl/+LuHonxdBfiLWf8Cf5mFmzqP1HYL2wBDu/L84XIvxm0n+z
-         NWYTYk0L1qh/XQ0/2H3rDiw1Yd6cjgogPUS24mQJyCIsosU1Ob846qmhfJUOdrCCfc9k
-         1M+Ss139+t/sfmDKi5atuHFpBzQTHoj+ZmZWjdfnXVMr1nkmDeK2fga7D3aaSum4wHAs
-         ZTpYk/0k9vvkOolwmtV2wj444G4bojJwVR/zhBMNaBNPGrX89xo1TMBRBgbmD+ylXQcJ
-         i5ZRtCHQAkJGwf7lv7WAjidWW65CvlkRuHs1ek1Aa/MWVc4fuOgKoz/lHIuA4sVhwyUd
-         pPnA==
+        d=google.com; s=20230601; t=1696452232; x=1697057032; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wlxMyVNfjSoRd0rBi0mcIrA81XFNXKxdXgwPCPKKi+c=;
+        b=H3oNnDSb1ptmSWlR1eGP4UzY4jKXo+IhvD8pqUNFPMBByPe825qdI2i05focHY1HCk
+         9YNkeCO6VtciiEAzWZ+peisMwXCu3jUWThy8DExH6SWBzRMp8SBXFI36LDjvJL04Ux6P
+         efXOsdwcfN4WhgeLvvZVmBqMGZFHqrp5cu2YlWn9lh3b3GxfRxvRHRNucaD9AcyhqvrC
+         F2zzubenazDDfJfdi3sPi4NtFZQdYFEYvMKjPNAN5T+uGqOXgeyu5ssEH8/mssUPEftM
+         O78pk3a8gXvcrKmrwX9KAetSYBk3JknJakBY55EAXzHBhIG9jc1bPX9unQxSvsfQmdQ6
+         WfmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696452236; x=1697057036;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=62TaHeKznYGJNCCBRaj8AgsGHCErkYyX8npqYRMhtgg=;
-        b=Wf1m5n8fQPmo/qgz2to2d8+d35Z4AdTm55aBCgd5dkdyZHbU0lUGLNDphOYugz+j8U
-         9drrRI5bOTEjMS069rOypqYVHH22HwW2IEMYMobpENlC9Z6J39HB+qoQGM8YTOz4/ekw
-         e3jwWS5vuU1fQd8OPS2kO/KHf5lev/PtspBhVEE2f7MJay30YzeXveeeIdK5YlYddd87
-         +wmVKq0Zj4/6c/vKqoVbvW7STGixfJzpz/ekDG+ZXPV1jnMzNO/uoJGYUm7z9ZS9we8x
-         0Sb8rLQnlTFQ3Dq3fF5lXD5WRguTpb6EJvbu2Fsgq1YjzHT65uAb9p84syvruhE6zyyK
-         FZ+A==
-X-Gm-Message-State: AOJu0Yzhpcssz5O1gYhmwOyuk1fjydOqIfV/e/n6oIej4A2Ta6NxV2af
-        09vuQadyzOzJQPbJCAuE7E2niHWCwXuH
-X-Google-Smtp-Source: AGHT+IHnS2q4BQaNebBUwC8Wa6GFTLy93u8/Au3kJwkZeXtUpMl/qENTslwujnEYg/SeROm1frLjDzvPM40A
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f42:a09e:8ee2:1491])
- (user=irogers job=sendgmr) by 2002:a25:b18f:0:b0:d86:55b7:97b0 with SMTP id
- h15-20020a25b18f000000b00d8655b797b0mr53834ybj.9.1696452236615; Wed, 04 Oct
- 2023 13:43:56 -0700 (PDT)
-Date:   Wed,  4 Oct 2023 13:43:34 -0700
-In-Reply-To: <20231004204334.3465116-1-irogers@google.com>
-Message-Id: <20231004204334.3465116-2-irogers@google.com>
+        d=1e100.net; s=20230601; t=1696452232; x=1697057032;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wlxMyVNfjSoRd0rBi0mcIrA81XFNXKxdXgwPCPKKi+c=;
+        b=ZOjEUWyekY8nXN5Fe300eqqGAULA9m8KanyJlQQ0HSQSUMD3+R2Ver8VqLaET6eFnV
+         McHk5R7vFiApM9x0ZBYIY97GNbyOSYGvFlsPTKdd0h05fZaJciq0qR77fzgT92gvlN3Q
+         cjDR12fBjCbS1pPIfIpLauF80SNOA5STEvzz6JbQinlDQa0nTIvZKAiel/dlvp/uGVPL
+         mLTIUukfKo74JMKwDCD++m8Tz+z1pAn6txP3RaUUvDIW0AJaRugx0VmQSPnNZaIDsIKw
+         +e+wBL1FszX1rraqjqqmXMB/npiL+urlCeTp3V5F5QwATHvBzAzxe/w0mrUFSzkp6p0N
+         qTgg==
+X-Gm-Message-State: AOJu0Yz6+aOhp0jYpXcXCqDV6Uu0WF2ynBXw5GKX6EPdUAtYbLWrqYcl
+        2ik647zJA+W1HXyWNq1PV27ztPlfjK4=
+X-Google-Smtp-Source: AGHT+IG2BxIFzc18lhT+t5otGKsS7OX2vGezvKCEpmxGtv1UbKYti1bZa4/a2NuIvrXiOGhPcEgq5gnEBhw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:a909:0:b0:59b:e97e:f7e3 with SMTP id
+ g9-20020a81a909000000b0059be97ef7e3mr63909ywh.2.1696452232294; Wed, 04 Oct
+ 2023 13:43:52 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 13:43:50 -0700
+In-Reply-To: <CAL715WLbAnnGUiTdHPO0L7v2FHGa5qmTnWJDi8k9qVkGry5GGQ@mail.gmail.com>
 Mime-Version: 1.0
-References: <20231004204334.3465116-1-irogers@google.com>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v3 2/2] bpftool: Align bpf_load_and_run_opts insns and data
-From:   Ian Rogers <irogers@google.com>
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <20230927113312.GD21810@noisy.programming.kicks-ass.net>
+ <ZRRl6y1GL-7RM63x@google.com> <20230929115344.GE6282@noisy.programming.kicks-ass.net>
+ <ZRbxb15Opa2_AusF@google.com> <20231002115718.GB13957@noisy.programming.kicks-ass.net>
+ <ZRrF38RGllA04R8o@gmail.com> <ZRroQg6flyGBtZTG@google.com>
+ <20231002204017.GB27267@noisy.programming.kicks-ass.net> <ZRtmvLJFGfjcusQW@google.com>
+ <CAL715WLbAnnGUiTdHPO0L7v2FHGa5qmTnWJDi8k9qVkGry5GGQ@mail.gmail.com>
+Message-ID: <ZR3Ohk50rSofAnSL@google.com>
+Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics event
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Like Xu <likexu@tencent.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Lv Zhiyuan <zhiyuan.lv@intel.com>,
+        Yang Weijiang <weijiang.yang@intel.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Dunn <daviddunn@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A C string lacks alignment so use aligned arrays to avoid potential
-alignment problems. Switch to using sizeof (less 1 for the \0
-terminator) rather than a hardcode size constant.
+On Tue, Oct 03, 2023, Mingwei Zhang wrote:
+> On Mon, Oct 2, 2023 at 5:56=E2=80=AFPM Sean Christopherson <seanjc@google=
+.com> wrote:
+> > The "when" is what's important.   If KVM took a literal interpretation =
+of
+> > "exclude guest" for pass-through MSRs, then KVM would context switch al=
+l those
+> > MSRs twice for every VM-Exit=3D>VM-Enter roundtrip, even when the VM-Ex=
+it isn't a
+> > reschedule IRQ to schedule in a different task (or vCPU).  The overhead=
+ to save
+> > all the host/guest MSRs and load all of the guest/host MSRs *twice* for=
+ every
+> > VM-Exit would be a non-starter.  E.g. simple VM-Exits are completely ha=
+ndled in
+> > <1500 cycles, and "fastpath" exits are something like half that.  Switc=
+hing all
+> > the MSRs is likely 1000+ cycles, if not double that.
+>=20
+> Hi Sean,
+>=20
+> Sorry, I have no intention to interrupt the conversation, but this is
+> slightly confusing to me.
+>=20
+> I remember when doing AMX, we added gigantic 8KB memory in the FPU
+> context switch. That works well in Linux today. Why can't we do the
+> same for PMU? Assuming we context switch all counters, selectors and
+> global stuff there?
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/bpf/bpftool/gen.c | 47 ++++++++++++++++++++++-------------------
- 1 file changed, 25 insertions(+), 22 deletions(-)
+That's what we (Google folks) are proposing.  However, there are significan=
+t
+side effects if KVM context switches PMU outside of vcpu_run(), whereas the=
+ FPU
+doesn't suffer the same problems.
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index b8ebcee9bc56..8c36c96cd692 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -408,8 +408,8 @@ static void codegen(const char *template, ...)
- 		/* skip baseline indentation tabs */
- 		for (n = skip_tabs; n > 0; n--, src++) {
- 			if (*src != '\t') {
--				p_err("not enough tabs at pos %td in template '%s'",
--				      src - template - 1, template);
-+				p_err("not enough tabs at pos %td in template '%s'\n'%s'",
-+					src - template - 1, template, src);
- 				free(s);
- 				exit(-1);
- 			}
-@@ -708,17 +708,22 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 
- 		codegen("\
- 		\n\
--			skel->%1$s = skel_prep_map_data((void *)\"\\	    \n\
--		", ident);
-+			{						    \n\
-+				static const char data[] __attribute__((aligned__(8))) = \"\\\n\
-+		");
- 		mmap_data = bpf_map__initial_value(map, &mmap_size);
- 		print_hex(mmap_data, mmap_size);
- 		codegen("\
- 		\n\
--		\", %1$zd, %2$zd);					    \n\
--			if (!skel->%3$s)				    \n\
--				goto cleanup;				    \n\
--			skel->maps.%3$s.initial_value = (__u64) (long) skel->%3$s;\n\
--		", bpf_map_mmap_sz(map), mmap_size, ident);
-+		\";							    \n\
-+									    \n\
-+				skel->%1$s = skel_prep_map_data((void *)data, %2$zd,\n\
-+								sizeof(data) - 1);\n\
-+				if (!skel->%1$s)			    \n\
-+					goto cleanup;			    \n\
-+				skel->maps.%1$s.initial_value = (__u64) (long) skel->%1$s;\n\
-+			}						    \n\
-+			", ident, bpf_map_mmap_sz(map));
- 	}
- 	codegen("\
- 		\n\
-@@ -733,32 +738,30 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 		{							    \n\
- 			struct bpf_load_and_run_opts opts = {};		    \n\
- 			int err;					    \n\
--									    \n\
--			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
--			opts.data_sz = %2$d;				    \n\
--			opts.data = (void *)\"\\			    \n\
-+			static const char opts_data[] __attribute__((aligned__(8))) = \"\\\n\
- 		",
--		obj_name, opts.data_sz);
-+		obj_name);
- 	print_hex(opts.data, opts.data_sz);
- 	codegen("\
- 		\n\
- 		\";							    \n\
-+			static const char opts_insn[] __attribute__((aligned__(8))) = \"\\\n\
- 		");
--
--	codegen("\
--		\n\
--			opts.insns_sz = %d;				    \n\
--			opts.insns = (void *)\"\\			    \n\
--		",
--		opts.insns_sz);
- 	print_hex(opts.insns, opts.insns_sz);
- 	codegen("\
- 		\n\
- 		\";							    \n\
-+									    \n\
-+			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
-+			opts.data_sz = sizeof(opts_data) - 1;		    \n\
-+			opts.data = (void *)opts_data;			    \n\
-+			opts.insns_sz = sizeof(opts_insn) - 1;		    \n\
-+			opts.insns = (void *)opts_insn;			    \n\
-+									    \n\
- 			err = bpf_load_and_run(&opts);			    \n\
- 			if (err < 0)					    \n\
- 				return err;				    \n\
--		", obj_name);
-+		");
- 	bpf_object__for_each_map(map, obj) {
- 		const char *mmap_flags;
- 
--- 
-2.42.0.609.gbb76f46606-goog
+Keeping the guest FPU resident for the duration of vcpu_run() is, in terms =
+of
+functionality, completely transparent to the rest of the kernel.  From the =
+kernel's
+perspective, the guest FPU is just a variation of a userspace FPU, and the =
+kernel
+is already designed to save/restore userspace/guest FPU state when the kern=
+el wants
+to use the FPU for whatever reason.  And crucially, kernel FPU usage is exp=
+licit
+and contained, e.g. see kernel_fpu_{begin,end}(), and comes with mechanisms=
+ for
+KVM to detect when the guest FPU needs to be reloaded (see TIF_NEED_FPU_LOA=
+D).
 
+The PMU is a completely different story.  PMU usage, a.k.a. perf, by design=
+ is
+"always running".  KVM can't transparently stop host usage of the PMU, as d=
+isabling
+host PMU usage stops perf events from counting/profiling whatever it is the=
+y're
+supposed to profile.
+
+Today, KVM minimizes the "downtime" of host PMU usage by context switching =
+PMU
+state at VM-Enter and VM-Exit, or at least as close as possible, e.g. for L=
+BRs
+and Intel PT.
+
+What we are proposing would *significantly* increase the downtime, to the p=
+oint
+where it would almost be unbounded in some paths, e.g. if KVM faults in a p=
+age,
+gup() could go swap in memory from disk, install PTEs, and so on and so for=
+th.
+If the host is trying to profile something related to swap or memory manage=
+ment,
+they're out of luck.
