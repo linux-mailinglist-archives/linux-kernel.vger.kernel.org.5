@@ -2,143 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A15B17B75F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 02:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B997B75F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 02:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbjJDAoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 20:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        id S232603AbjJDAuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 20:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbjJDAoJ (ORCPT
+        with ESMTP id S229794AbjJDAuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 20:44:09 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A29A7;
-        Tue,  3 Oct 2023 17:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696380238;
-        bh=VTUgVwGFs/x1FHkkO7KJ0hxykuV2FQw9OJPcxcssznM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Arnyhv6pHMymBXETeIMD6pL9PdUcZg35nqkmN0t/DNMu36jY3M9g3gedTNzVKMF/F
-         7nx12bnxjLSE9wZIx2GQuq2jLpqogaZ0NasWb+g1lF9uBJkeEaN3+wukUAtSSyZwni
-         wfYrV86DqcYU+79jzWkNexK8nA5RplWT+zV4suFZOks8ENsXkb2NWTcOx2LffP925n
-         jTwKicr8VFkWY1q7rGgX42mpZe143k9Vm1sl1kOAWxBcDxPaxRQ+FC5tcVa74Pb/RB
-         c/i03qgIDJD6vNsj8EMm5wHJ73ODlGE9sw7dVr6J575TY4JZvZQoYwWJHcKk+MPBHc
-         PDD5ELeBeim5A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S0bXs4ydwz4xM2;
-        Wed,  4 Oct 2023 11:43:57 +1100 (AEDT)
-Date:   Wed, 4 Oct 2023 11:43:54 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Jack Brennen <jbrennen@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: linux-next: manual merge of the modules tree with the kbuild tree
-Message-ID: <20231004114354.39a71ab3@canb.auug.org.au>
+        Tue, 3 Oct 2023 20:50:13 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3E2A9
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 17:50:10 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-564af0ac494so1011179a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 17:50:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696380610; x=1696985410; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HkObdmx0XqrL9iRYXBWgzfnzoTu3OH9oUH6D5cDUZRU=;
+        b=L3R9K9XDB8Q1+pK9k1izQMuZS0heWehXxJbRSfLg91HQf0lWXgnrCNWbADKGf6zz7Y
+         EATGrkFp2v8rG8kjHuzGaE5fcDjSckLg3xS+Opy4KadewzbW5ACyYO33K2BqZ0tzYd2I
+         SvqK/W6CCCkdLY7WQqTdhH6DlQBXjL3sESvDg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696380610; x=1696985410;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HkObdmx0XqrL9iRYXBWgzfnzoTu3OH9oUH6D5cDUZRU=;
+        b=Hcn6Gb8O2ci21ucM1nKjKQFcyZzoPG190ApQkmoJrFNeQd+XpgaiJJ0RRVy4EWE/LD
+         fQqrsEljNIPwC9dAaFoHGamvcySfKt/B4n5Sb3K6BdPGh12uHPwWzC4uwfG4OEsRQjka
+         3uub7mZUZ/HIFVyyZFS8D9o4hduvQ/UoOvphQllMIpyESnDKf2Wch8Avw/JbK8E93kGF
+         QzX7MnwMqgt91jQDXiDhxjb0RSQUE+2yAzb0JZgzbKb0H64fi3wkQpuUhYE+oJMGnP3I
+         ByxGK82NFdTpHDaMoJU0THB2OiWFa+soGxIdE2jmU+IbrGAKHBtERfreIb9r7I2lvxh6
+         mdqg==
+X-Gm-Message-State: AOJu0Yzbbx40njq4/CpWe7nEHOTuQ0PZCo0YMBkPWgeW+3M/zKYkBqJP
+        izOV52baWkGHtRXLmr5M8Yc41Q==
+X-Google-Smtp-Source: AGHT+IGI/mx9BNPA/mhtet3yk8HW5ozun3RdTR2B5hPC+jgDlXDoFcfxl39ptXhO0jTLDSEXJUdJkg==
+X-Received: by 2002:a05:6300:8002:b0:140:324c:124c with SMTP id an2-20020a056300800200b00140324c124cmr860380pzc.62.1696380609805;
+        Tue, 03 Oct 2023 17:50:09 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id r2-20020a62e402000000b0068aca503b9fsm1983321pfh.114.2023.10.03.17.50.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 17:50:09 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] Documentation: embargoed-hardware-issues.rst: Clarify prenotifaction
+Date:   Tue,  3 Oct 2023 17:50:03 -0700
+Message-Id: <20231004004959.work.258-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oH1/TL=DeD9tVNWwk++UQXc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3829; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=hLygWwZ4r2oWqCkWiQIJpJX1Eb6KLVK7aDJIYb6pK8s=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlHLa7vXH9VlCVJ865fzbKZj5zAyA99QKxgRs1S
+ F1Ihht6Yz2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRy2uwAKCRCJcvTf3G3A
+ JlDxEACjkpEV7WilYLPNOhCZGPsuvAEqxdIw+03oEcYlN3xdvQS90hiYX2Z8JV+vVca97hUrUu1
+ ZGYsPZyTwkzxdqedvxOXZ1PJRDWT+x5PYZTiKAcvLyVvYj7yP/WZRG9DFtZHHhHo/dmoXLTYC9W
+ d/zVRHEJr9FlejKIWLIiAwCQih2sS8yHNNEswmVr1rI8c5KjnhjpD7SSW7WuPiVAK9cF+LGxCet
+ aZOXiuNgLvCSgLK4s5ahSpRkyQ27i1YzM/WLP8AflzGl+Fe348ftZ/TL6SIXOLK21G4oKnCuU/9
+ QGWsMhIA5AzOdXK1WeDRV0XJVXy8ZCCZJ1LXo7Qf74qR8lOOinFGzBRQe47wcN70uveRDjGIy8k
+ xge/pegM2EgeX4P0/leLUL9I41wsE+68hjG1DMd/s+N7p8/dkKMiiVx4tscFruXYFpJx9OK5w+Z
+ QQZu7NLK0gWB4XmmhhkE6oxU8wR3raG8lRzAz5PYEXlxg/iEsgsGsuXgmtg7o5PR4w4crDbidZR
+ h70wBYUNAhMILeo71lMdk8Lo/wLJHrwgW35AZ3PTM6XUlm6r8K8Q3BMAAF/Tpbnd0hHDhtV9Lgl
+ ayiQ7IC6ncAsCCx7i0nqycM5czn4z9I73RbNlNYf/s3aE9Wb8pJcjqTT75mA+AORXwSNleRxHWA
+ 2I/bpr6 JS68W72g==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        WEIRD_QUOTING autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/oH1/TL=DeD9tVNWwk++UQXc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+There has been a repeated misunderstanding about what the hardware embargo
+list is for. Clarify the language in the process so that it is clear
+that only fixes are coordinated. There is explicitly no prenotification
+process. The list members are also expected to keep total radio silence
+during embargoes.
 
-Hi all,
-
-Today's linux-next merge of the modules tree got a conflict in:
-
-  scripts/mod/modpost.c
-
-between commit:
-
-  4074532758c5 ("modpost: Optimize symbol search from linear to binary sear=
-ch")
-
-from the kbuild tree and commit:
-
-  dc95e422c283 ("module: Make is_valid_name() return bool")
-
-from the modules tree.
-
-I fixed it up (I used the former version of this files and applied the
-following merge resolution patch) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Wed, 4 Oct 2023 11:39:03 +1100
-Subject: [PATCH] fix up for "module: Make is_valid_name() return bool"
-
-interacting with commit
-
-  4074532758c5 ("modpost: Optimize symbol search from linear to binary sear=
-ch")
-
-from the kbuild tree.
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: workflows@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- scripts/mod/modpost.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../process/embargoed-hardware-issues.rst     | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
-index 6413f26fcb6b..5a0324f3257f 100644
---- a/scripts/mod/modpost.h
-+++ b/scripts/mod/modpost.h
-@@ -163,12 +163,12 @@ static inline unsigned int get_secindex(const struct =
-elf_info *info,
-  *
-  * Internal symbols created by tools should be ignored by modpost.
-  */
--static inline int is_valid_name(struct elf_info *elf, Elf_Sym *sym)
-+static inline bool is_valid_name(struct elf_info *elf, Elf_Sym *sym)
- {
- 	const char *name =3D elf->strtab + sym->st_name;
-=20
- 	if (!name || !strlen(name))
--		return 0;
-+		return false;
- 	return !is_mapping_symbol(name);
- }
-=20
---=20
-2.40.1
+diff --git a/Documentation/process/embargoed-hardware-issues.rst b/Documentation/process/embargoed-hardware-issues.rst
+index ac7c52f130c9..31000f075707 100644
+--- a/Documentation/process/embargoed-hardware-issues.rst
++++ b/Documentation/process/embargoed-hardware-issues.rst
+@@ -25,15 +25,15 @@ Contact
+ The Linux kernel hardware security team is separate from the regular Linux
+ kernel security team.
+ 
+-The team only handles the coordination of embargoed hardware security
+-issues.  Reports of pure software security bugs in the Linux kernel are not
++The team only handles developing fixes for embargoed hardware security
++issues. Reports of pure software security bugs in the Linux kernel are not
+ handled by this team and the reporter will be guided to contact the regular
+ Linux kernel security team (:ref:`Documentation/admin-guide/
+ <securitybugs>`) instead.
+ 
+ The team can be contacted by email at <hardware-security@kernel.org>. This
+-is a private list of security officers who will help you to coordinate an
+-issue according to our documented process.
++is a private list of security officers who will help you to coordinate a
++fix according to our documented process.
+ 
+ The list is encrypted and email to the list can be sent by either PGP or
+ S/MIME encrypted and must be signed with the reporter's PGP key or S/MIME
+@@ -132,11 +132,11 @@ other hardware could be affected.
+ 
+ The hardware security team will provide an incident-specific encrypted
+ mailing-list which will be used for initial discussion with the reporter,
+-further disclosure and coordination.
++further disclosure, and coordination of fixes.
+ 
+ The hardware security team will provide the disclosing party a list of
+ developers (domain experts) who should be informed initially about the
+-issue after confirming with the developers  that they will adhere to this
++issue after confirming with the developers that they will adhere to this
+ Memorandum of Understanding and the documented process. These developers
+ form the initial response team and will be responsible for handling the
+ issue after initial contact. The hardware security team is supporting the
+@@ -209,13 +209,18 @@ five work days this is taken as silent acknowledgement.
+ After acknowledgement or resolution of an objection the expert is disclosed
+ by the incident team and brought into the development process.
+ 
++List participants may not communicate about the issue outside of the
++private mailing list. List participants may not use any shared resources
++(e.g. employer build farms, CI systems, etc) when working on patches.
++
+ 
+ Coordinated release
+ """""""""""""""""""
+ 
+ The involved parties will negotiate the date and time where the embargo
+ ends. At that point the prepared mitigations are integrated into the
+-relevant kernel trees and published.
++relevant kernel trees and published. There is no pre-notification process:
++fixes are published in public and available to everyone at the same time.
+ 
+ While we understand that hardware security issues need coordinated embargo
+ time, the embargo time should be constrained to the minimum time which is
+-- 
+2.34.1
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/oH1/TL=DeD9tVNWwk++UQXc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUctUoACgkQAVBC80lX
-0Gx2Pwf9FTvYCFWISG4yvSKQy0vGAxJGeWoybTOEEUj7DwO5hZC/1BepWpNbUJOt
-9nD/cPQVLz/S3FJsg0oUWbzm+TjXt9TZVJTuLgdYdlOIVTNutb18mDPV0726LOSm
-neHlF9U3+TPJhc8+LRNW0nlQAwvrGsSx3TLk5NKXOtKKjGiYv2h22LYFh2B2haVd
-4lcjFl24TNBYvsdeGzdkzWwY6aFbanLy7j53LCaA17DGAO/mPhVuBrKvMJTUeZpC
-5whnT7oEU5thhQpFKX8ov6orAOixGWWD/NaNcS8PPyjAd4uMe5kXXzd+nqqZ7lMa
-15b2FN8YE09Ag4DM6snQ48ZcRZ+7Jw==
-=yr7x
------END PGP SIGNATURE-----
-
---Sig_/oH1/TL=DeD9tVNWwk++UQXc--
