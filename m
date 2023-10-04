@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC0A7B7F4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A4D7B7F43
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242635AbjJDMgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 08:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        id S242495AbjJDMgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 08:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242393AbjJDMfn (ORCPT
+        with ESMTP id S242358AbjJDMfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Oct 2023 08:35:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FB6D9
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:35:33 -0700 (PDT)
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37565DC
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:35:34 -0700 (PDT)
 From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1696422932;
@@ -22,21 +22,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=R6p91zzmcTgFtBegVAgz86f9rPOZl2ESGLLtaCGNKmE=;
-        b=tD5J+oiaWrqrU1ELhMzwRcDVY01AqSqRWzluw0BE0LA9bqRLkpt/mTPfu/6X5qYIQm7/6r
-        azGNPmxrTGX7M2KTsSaEQRGMORPVKnsrDvvFjl+6VtmnFZkZxfhv0EHg11C43a9GDqIK8v
-        hObFc6IZs5xltBwsQNQqQdhb+2tQyhVnb2M8nZ9EOzfOPwZT9WKv38d4wGpGPnyYvdfBa4
-        haJBSp9CEa4z2BOe6Gn/QavcG2GTsHfKTbAklvgqN2PhubiqwOBTL4eEuIe42UwiNbHReY
-        QIK0UzjalspQk7MYaH2vRt2OIs8Hy+joCll0qaReQlsAc9J9mxb6NkTJmI3QmA==
+        bh=6DPHaSkgekB2I+0lkcOsz7/7iYLTa5GbGumx2pBBGqU=;
+        b=Qd8FZSDAYvAL7lxkOI5jQrs5CgGcU4uAc7nnagLndWZobaOuf/Dvk0zyWZDa/uAw/ItCrc
+        3VwoOTu/u1QZWjLt46Th72F4+6gSSj4+p732/V7jTJcFvocbTp/DxqXirqwwjaj8H4t99Z
+        7oU5lVYUGnqhJQklI8UJpl+1tBs1yXXhwqGQYnfEIL4DakSLcyrstgXhvslUuIurs3hjRc
+        WWeKwnm79rFQvRIh6sG6QbxeNM3quvtE+G0VEe3vpW879Hrhctvp4y/o86iFrBs187XYjJ
+        JjxHRZhOZ8xWs2uEoyj1tsMYZEDFAjUKbJl3NiVrMF3yQCAiPLWpxcnXpV2Uxw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1696422932;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=R6p91zzmcTgFtBegVAgz86f9rPOZl2ESGLLtaCGNKmE=;
-        b=p4HI0TmibWqsmsZsVt86GITKCM8Cm5JkQzQKKPtx1yqL/g4yCL49TSeheoAImYhl51+X6o
-        DFLUUenUA6uxCwAw==
+        bh=6DPHaSkgekB2I+0lkcOsz7/7iYLTa5GbGumx2pBBGqU=;
+        b=GF+aQ6268WK32U46sW7y8gJaofxzjHKXNrx1llzCNt/AaQqBRSn1wulaQgmV1OESGvG5gD
+        01BmrJM8D6fQPzBw==
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         John Stultz <jstultz@google.com>,
@@ -54,103 +54,59 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
         Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
         K Prateek Nayak <kprateek.nayak@amd.com>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v8 11/25] timers: Introduce add_timer() variants which modify timer flags
-Date:   Wed,  4 Oct 2023 14:34:40 +0200
-Message-Id: <20231004123454.15691-12-anna-maria@linutronix.de>
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: [PATCH v8 12/25] workqueue: Use global variant for add_timer()
+Date:   Wed,  4 Oct 2023 14:34:41 +0200
+Message-Id: <20231004123454.15691-13-anna-maria@linutronix.de>
 In-Reply-To: <20231004123454.15691-1-anna-maria@linutronix.de>
 References: <20231004123454.15691-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Timer might be used as pinned timer (using add_timer_on()) and later on as
-non pinned timers using add_timer(). When the NOHZ timer pull at expiry
-model is in place, TIMER_PINNED flag is required to be used whenever a
-timer needs to expire on a dedicated CPU. Flag must no be set, if
-expiration on a dedicated CPU is not required.
+The implementation of the NOHZ pull at expiry model will change the timer
+bases per CPU. Timers, that have to expire on a specific CPU, require the
+TIMER_PINNED flag. If the CPU doesn't matter, the TIMER_PINNED flag must be
+dropped. This is required for call sites which use the timer alternately as
+pinned and not pinned timer like workqueues do.
 
-add_timer_on()'s behavior will be changed during the preparation patches
-for the NOHZ timer pull at expiry model to unconditionally set TIMER_PINNED
-flag. To be able to reset/set the flag when queueing a timer, two variants
-of add_timer() are introduced.
-
-This is a preparatory patch and has no functional change.
+Therefore use add_timer_global() to make sure TIMER_PINNED flag is dropped.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Acked-by: Tejun Heo <tj@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 ---
-New in v6
+v6:
+  - New patch: As v6 provides unconditially setting TIMER_PINNED flag in
+    add_timer_on() workqueue requires new add_timer_global() variant.
 ---
- include/linux/timer.h |  2 ++
- kernel/time/timer.c   | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ kernel/workqueue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/timer.h b/include/linux/timer.h
-index 9162f275819a..6f96661480dd 100644
---- a/include/linux/timer.h
-+++ b/include/linux/timer.h
-@@ -180,6 +180,8 @@ extern int timer_reduce(struct timer_list *timer, unsigned long expires);
- #define NEXT_TIMER_MAX_DELTA	((1UL << 30) - 1)
- 
- extern void add_timer(struct timer_list *timer);
-+extern void add_timer_local(struct timer_list *timer);
-+extern void add_timer_global(struct timer_list *timer);
- 
- extern int try_to_del_timer_sync(struct timer_list *timer);
- extern int timer_delete_sync(struct timer_list *timer);
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 8518f7aa7319..3172b8094097 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -1245,6 +1245,40 @@ void add_timer(struct timer_list *timer)
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index c85825e17df8..36474a2c4b6f 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1958,7 +1958,7 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
+ 	if (unlikely(cpu != WORK_CPU_UNBOUND))
+ 		add_timer_on(timer, cpu);
+ 	else
+-		add_timer(timer);
++		add_timer_global(timer);
  }
- EXPORT_SYMBOL(add_timer);
  
-+/**
-+ * add_timer_local - Start a timer on the local CPU
-+ * @timer:	The timer to be started
-+ *
-+ * Same as add_timer() except that the timer flag TIMER_PINNED is set.
-+ *
-+ * See add_timer() for further details.
-+ */
-+void add_timer_local(struct timer_list *timer)
-+{
-+	if (WARN_ON_ONCE(timer_pending(timer)))
-+		return;
-+	timer->flags |= TIMER_PINNED;
-+	__mod_timer(timer, timer->expires, MOD_TIMER_NOTPENDING);
-+}
-+EXPORT_SYMBOL(add_timer_local);
-+
-+/**
-+ * add_timer_global - Start a timer without TIMER_PINNED flag set
-+ * @timer:	The timer to be started
-+ *
-+ * Same as add_timer() except that the timer flag TIMER_PINNED is unset.
-+ *
-+ * See add_timer() for further details.
-+ */
-+void add_timer_global(struct timer_list *timer)
-+{
-+	if (WARN_ON_ONCE(timer_pending(timer)))
-+		return;
-+	timer->flags &= ~TIMER_PINNED;
-+	__mod_timer(timer, timer->expires, MOD_TIMER_NOTPENDING);
-+}
-+EXPORT_SYMBOL(add_timer_global);
-+
  /**
-  * add_timer_on - Start a timer on a particular CPU
-  * @timer:	The timer to be started
 -- 
 2.39.2
 
