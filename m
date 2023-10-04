@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B8B7B8DEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3D77B8DFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244736AbjJDUUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 16:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60326 "EHLO
+        id S244847AbjJDUXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 16:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244615AbjJDUU0 (ORCPT
+        with ESMTP id S245025AbjJDUWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 16:20:26 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD1810F
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:20:14 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99de884ad25so40041966b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:20:14 -0700 (PDT)
+        Wed, 4 Oct 2023 16:22:32 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274C0DD
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:22:25 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5347e657a11so289839a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:22:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1696450813; x=1697055613; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696450943; x=1697055743; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m9mTC8wA+MdwB2bC0d8PKAI3uifJR/WN1f9PPReg/+E=;
-        b=HbWJBPX6OsgNdQzdfCuCBUESjrTa+a9B1CrCFpRjvCsH/T3DmAB7uOx1djaXW2VfC8
-         8xUbRtwPfcQnrVw7ADjov4KN0/jyzOzcZdKaaRLjrsRZ/z7ntPkx7Iw4Ah9FfOGFVlsr
-         XXgBU+WTYTgzDV0nE3UuI1sqpMKjRDwH2RRsU=
+        bh=0Mbt0TmvMuhni3vtowqeLm74FeVQbN/EJlrFIRwD6Dg=;
+        b=LTaVvTcgi7bM1Xt5KBlNW0tlYzK/nfQcGgk8Ejh/Zllug3boa2aDmpLnjAuZuyVmRI
+         H5LBAYFkrgA8Yju2sq8za7Q+DzTuAFJSaobX8e2AKSlTVYqyYcmiDmchktEjPg8GN7MB
+         bmpOKhlLe/X304bGxilDCGAB66THJeh34TvVFcaHq+qQUTwrhegO14cqIMq1DSZm/tBV
+         JwPaEF6f/CWqYfvgokjGCZQwXuLtw0qQqNW1/bDQMZw3bCyiBmVj8UXyRLtksMBkcrmi
+         KMGyxgp08aZNLSzKO3tatVoASdBXNuo9uEAMjnIjXLm5aJI19W6lfmi65Jtua+m/kEBT
+         6O7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696450813; x=1697055613;
+        d=1e100.net; s=20230601; t=1696450943; x=1697055743;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=m9mTC8wA+MdwB2bC0d8PKAI3uifJR/WN1f9PPReg/+E=;
-        b=uQ8Wru66Lui6AXw/EFH06gn3+qr4nIjtlPOPGx9FbSwyTEOENWNl1xIA99kEU7zo7U
-         AUZZv9ssjtQ+i6g/BDYmRqaGvwxvCHaC5T241D2n2W4qCDaSOizyzisk8yDyfOV+3RV8
-         AD7/niP+u4tLy3Ftup/R+y5FjPQJryZQkrcE8tDSALRjm1IVxCw0FANFuT44t4+cUgB9
-         tqYZtyVpPYnbaD0KayRsQEcMEFbT/8+8cbpZsbWzH/KGTLF76TPSlnocHIoEAo2+7990
-         q8vZ+XvSPt2ulQh7P1FZHh6Y0MzgflGi3Up/xg7e+ak3KYnd1LnPvUDnMvxVwYfZtC9U
-         HVlg==
-X-Gm-Message-State: AOJu0Yw15WIyvvvartxoS8QVyG/XEsoK7FOAYxriOGGzNzGPkQZcdV3x
-        V+qPwDNaph1Iliem3tRmkCvfn9BCBy8Z5giEFlww2Q==
-X-Google-Smtp-Source: AGHT+IH36JuPGAS2Fa2jtqJrXaC2v60BIBY4uBGTgtgY/BLQWmmrw+YEpSrtbiexLM6hf+qjTnPwXA==
-X-Received: by 2002:a17:906:714a:b0:9b2:b9ad:ddd1 with SMTP id z10-20020a170906714a00b009b2b9adddd1mr3256581ejj.28.1696450813107;
-        Wed, 04 Oct 2023 13:20:13 -0700 (PDT)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id pk21-20020a170906d7b500b0099bcf9c2ec6sm3284864ejb.75.2023.10.04.13.20.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 13:20:12 -0700 (PDT)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-53639fb0ba4so336338a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:20:12 -0700 (PDT)
-X-Received: by 2002:a17:906:538a:b0:9b2:b269:d563 with SMTP id
- g10-20020a170906538a00b009b2b269d563mr3404125ejo.63.1696450812025; Wed, 04
- Oct 2023 13:20:12 -0700 (PDT)
+        bh=0Mbt0TmvMuhni3vtowqeLm74FeVQbN/EJlrFIRwD6Dg=;
+        b=ERvE9DRaH+UeRi+OlSqoEI8jLzvlEvqHMkxLvqnSaWoyIXsJB1gCR3+/NcV45AhXPo
+         o0fV/ClkgVk5xTulEjItXNDD1iqxI2fPi/+xQoKXVw6TUVPLR7kzCoJ30FTqNra8olyN
+         FD324By8TuCcTWi7GP4ExhNXd3ySiGW0KATn10Fw4M+MrHEBmv1MIBDXoaRUn5PFels3
+         DtbtE+36LSKGUO2G8qyTI4HOyNEThtBChYExhBXUzDksXRf+iIhfqB4NlRVW2RXoq/nO
+         KYAAJs19EFkk7Mdb/414eGjRYk2Y+N1PAo1Lb6vVjZKWFAgKZF4NHrQZWQd0xWHOI0LP
+         VWnQ==
+X-Gm-Message-State: AOJu0Yxesgx32u3+pOU7ZCMcf8X4oa7jd8cXPDKjS9Iso+OqO2iVb+GM
+        wp1qwphSODBR/knBwbi13ME9xm7QKeXL5mjchi0=
+X-Google-Smtp-Source: AGHT+IGqzunMaRN/3uw7iRHSFZeK7Mzia1dP9K6VjR+9oK7VZkrT26V2lAcQRmg4kBzBzJ00WOT1E/sylua8cgFnEQE=
+X-Received: by 2002:a05:6402:699:b0:522:3a89:a7bc with SMTP id
+ f25-20020a056402069900b005223a89a7bcmr2528381edy.42.1696450943354; Wed, 04
+ Oct 2023 13:22:23 -0700 (PDT)
 MIME-Version: 1.0
 References: <ZR2U4DLycLT5xFH6@gmail.com> <20231004192404.31733-1-ubizjak@gmail.com>
  <CAHk-=wjuRGzhuETLYDoi4hM6RAxHVL0ptuRb3TH-od+348Y8zA@mail.gmail.com>
- <CAFULd4YRHmQVnwaORm7=7kUs7DYG7SfwdTXAitDt=bxiMU5AoQ@mail.gmail.com> <CAHk-=whKc9UCsrZ6sNRb=T2Yhy4Dhr=LUBi9r-gPhfwCmuOeZA@mail.gmail.com>
-In-Reply-To: <CAHk-=whKc9UCsrZ6sNRb=T2Yhy4Dhr=LUBi9r-gPhfwCmuOeZA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 4 Oct 2023 13:19:54 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgcTXGJ7-cS_V4pWakQKh7rViKbzjxAfiaQ=nDvF7s+gQ@mail.gmail.com>
-Message-ID: <CAHk-=wgcTXGJ7-cS_V4pWakQKh7rViKbzjxAfiaQ=nDvF7s+gQ@mail.gmail.com>
+ <CAFULd4YRHmQVnwaORm7=7kUs7DYG7SfwdTXAitDt=bxiMU5AoQ@mail.gmail.com>
+ <CAHk-=whKc9UCsrZ6sNRb=T2Yhy4Dhr=LUBi9r-gPhfwCmuOeZA@mail.gmail.com> <CAHk-=wgcTXGJ7-cS_V4pWakQKh7rViKbzjxAfiaQ=nDvF7s+gQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wgcTXGJ7-cS_V4pWakQKh7rViKbzjxAfiaQ=nDvF7s+gQ@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Wed, 4 Oct 2023 22:22:12 +0200
+Message-ID: <CAFULd4b2vmJrUReQw1TXvndzB=DfmHOvNwM9=bU_4O86s4UO3g@mail.gmail.com>
 Subject: Re: [PATCH v2 4/4] x86/percpu: Use C for percpu read/write accessors
-To:     Uros Bizjak <ubizjak@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
         Andy Lutomirski <luto@kernel.org>,
         Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
@@ -76,47 +70,53 @@ Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
         Josh Poimboeuf <jpoimboe@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Oct 2023 at 13:12, Linus Torvalds
+On Wed, Oct 4, 2023 at 10:20=E2=80=AFPM Linus Torvalds
 <torvalds@linux-foundation.org> wrote:
 >
-> On Wed, 4 Oct 2023 at 13:08, Uros Bizjak <ubizjak@gmail.com> wrote:
+> On Wed, 4 Oct 2023 at 13:12, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
 > >
-> > You get a store forwarding stall when you write a bigger operand to
-> > memory and then read part of it, if the smaller part doesn't start at
-> > the same address.
+> > On Wed, 4 Oct 2023 at 13:08, Uros Bizjak <ubizjak@gmail.com> wrote:
+> > >
+> > > You get a store forwarding stall when you write a bigger operand to
+> > > memory and then read part of it, if the smaller part doesn't start at
+> > > the same address.
+> >
+> > I don't think that has been true for over a decade now.
+> >
+> > Afaik, any half-way modern Intel and AMD cores will forward any fully
+> > contained load.
 >
-> I don't think that has been true for over a decade now.
+> https://www.agner.org/optimize/microarchitecture.pdf
 >
-> Afaik, any half-way modern Intel and AMD cores will forward any fully
-> contained load.
+> See for example pg 136 (Sandy Bridge / Ivy Bridge):
+>
+>  "Store forwarding works in the following cases:
+>   ..
+>   =E2=80=A2 When a write of 64 bits or less is followed by a read of a sm=
+aller
+> size which is fully contained in the write address range, regardless
+> of alignment"
+>
+> and for AMD Zen cores:
+>
+>   "Store forwarding of a write to a subsequent read works very well in
+> all cases, including reads from a part of the written data"
+>
+> So forget the whole "same address" rule. It's simply not true or
+> relevant any more.
 
-https://www.agner.org/optimize/microarchitecture.pdf
+No problem then, we will implement the optimization in the compiler.
 
-See for example pg 136 (Sandy Bridge / Ivy Bridge):
-
- "Store forwarding works in the following cases:
-  ..
-  =E2=80=A2 When a write of 64 bits or less is followed by a read of a smal=
-ler
-size which is fully contained in the write address range, regardless
-of alignment"
-
-and for AMD Zen cores:
-
-  "Store forwarding of a write to a subsequent read works very well in
-all cases, including reads from a part of the written data"
-
-So forget the whole "same address" rule. It's simply not true or
-relevant any more.
-
-                  Linus
+Thanks,
+Uros.
