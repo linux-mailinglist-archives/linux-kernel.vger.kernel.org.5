@@ -2,157 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 851597B8E47
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D5F7B8E52
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233605AbjJDUop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 16:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
+        id S243881AbjJDUsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 16:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233548AbjJDUon (ORCPT
+        with ESMTP id S233286AbjJDUsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 16:44:43 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FBAC6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:44:40 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-41983b83e53so1320511cf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:44:40 -0700 (PDT)
+        Wed, 4 Oct 2023 16:48:04 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8400BF;
+        Wed,  4 Oct 2023 13:48:00 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-49d45964fcaso916735e0c.1;
+        Wed, 04 Oct 2023 13:48:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696452279; x=1697057079; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696452480; x=1697057280; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OsTHf1RxRwyrCT7iXJgHTlu9ULLERBCmiy3t5RYublw=;
-        b=ejpowT72cbHCwTCoyvwcjZx8IdYjV2Amscu1qZ3Nn7yKaLvTSp/2yYv9eJICAarjgh
-         ul1YFeWMCtKS9e6tJbz1/EGW8xjp9AsTAYO5E8Pk+Kad/U2P1psPbvuv+KUPipDXc7ca
-         A7xhTdF94WlCzlVhsgpUf7B5ezCaC/P29gYwA=
+        bh=HfMc2o3aeaMtgo1tIGkp8mKMdGYs27vkJXRJNkCUQ0A=;
+        b=gtaAswo8hQfyNdz0TsBfYA1dZ/cinoQwqTodnlwWfIkqJ/yJZys/YfWKh8hWMRBnRP
+         Kk0tAoxPtQEGaSSBWiw1JaF7iXDjjs5A8os5Yoj2LP1yVdBq8YsjXOK764QsiHYPx6Y7
+         /CqlfON3kgNETZYRjj4BNkO3IgC8WGauFrjnIrtY5gwoz8aWUTq0TNCN+o+P2BjF14ER
+         XovCoSNEZ/BEtRFVqgSKcWVd39htGYGx2i817rhIDQF58LRW6agAOOfxgyD1kpRs5pfs
+         bNKAaH7TterUEJHOFeonofRoadxP7YlBITcGhxSoflxVxeAcYdzWkLYizkRSCOD0ISMT
+         HPAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696452279; x=1697057079;
+        d=1e100.net; s=20230601; t=1696452480; x=1697057280;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OsTHf1RxRwyrCT7iXJgHTlu9ULLERBCmiy3t5RYublw=;
-        b=dvEgKKbinxyLn3Qr4aQD+H3p097c+M4Xc7HBnp9LNp4GwQ0awzv33ZrK/r9k+ptmMo
-         YTUGmy5qR3R37h/V263y1cK9LNmE4Vi3EFJQvQmNTshPALl+jl6QnMU3hRjMSvzLJDpG
-         U8ypuIkhug6BC7qJ0CDkO1zwjaVhX8cwW3Ocl0AHm8P5QfhwAW7FH8rfivgtQUwP0Mqg
-         z0rVnsKKVQe+RQxpLO+fPtw4T2qNhRECt72oD3b06mjbkpkUXASgjPmk7E4lguN+Ooq/
-         Vzv3X3ahRETxmMqlekyu9bJQUsdqz25A5PaTrjCCBrA+sN0OjzxT0CsgNqrgqXUorG97
-         GQ0A==
-X-Gm-Message-State: AOJu0YxXA59+boV3cqxduzPJ/dvsE2V5Op8fqDnm8yc2fXPKaT2nF24h
-        OIit49f+F7LnnpRPccN6MfID8IxSQUSQmsa5hUaYAg==
-X-Google-Smtp-Source: AGHT+IHc7TqC5oKuPmbxt1kOS8T9mt08qtsrKtF4I/TQ9q59kAv7XXZDPGfZr2V4UU7oH/oOurE+ww==
-X-Received: by 2002:a05:622a:548:b0:417:b45b:84c3 with SMTP id m8-20020a05622a054800b00417b45b84c3mr3723369qtx.65.1696452278792;
-        Wed, 04 Oct 2023 13:44:38 -0700 (PDT)
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com. [209.85.160.174])
-        by smtp.gmail.com with ESMTPSA id w28-20020a05620a149c00b0076ef29f3429sm1525839qkj.120.2023.10.04.13.44.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 13:44:37 -0700 (PDT)
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-419768e69dfso100171cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:44:37 -0700 (PDT)
-X-Received: by 2002:a05:622a:100e:b0:417:5a8c:a104 with SMTP id
- d14-20020a05622a100e00b004175a8ca104mr69912qte.26.1696452277267; Wed, 04 Oct
- 2023 13:44:37 -0700 (PDT)
+        bh=HfMc2o3aeaMtgo1tIGkp8mKMdGYs27vkJXRJNkCUQ0A=;
+        b=Zy8iHRWu6lSPcDU9DyxmIglgwyhPhtKaPK0r0n1qoSzI2XOyiZyTcUmiwUvFIVV/LI
+         NBRAarlIz0W82DD8PS3eaXONSl+Q39+fYiPBdaxMhM1GPswFQsjpaxu2OlZ0MlG40U3Y
+         jYaEqdpwwEoAe+tPTLK+q3VIKXKmb0VwbNvkxzeASgZ4fE1J51Juzjy6lQyn/gWx5dmP
+         wx4oTD/NFYOyOmInOrmDTuMhjBVCbzStBhbaLdnUhZvZI3cXIOIgvtd7Fn9MCK7yOscq
+         vYuUKOoslfUdigCJjff2KiOb16AH5g7id+oPZ5PM79lB/tDyYMw8PoF0SzeQJb7d3VUR
+         t8kw==
+X-Gm-Message-State: AOJu0YxmRPyknXFtn5JE0u7a0H/gmF2lkT9uWTvtIa+nXuVQHcAC1u7L
+        AxGEj40igiiONwimTQf6uPGeap+LkMG+KhrEfuw=
+X-Google-Smtp-Source: AGHT+IGz+I4KR7M4OtZmQSMxVqj0EW9sFvCy2VD93W9/vEp7JtwUuQn+RAVp3yVHNE7MpbzIb/Ew4ddKR/ZMgWxfe9A=
+X-Received: by 2002:a05:6122:178a:b0:495:f495:bab1 with SMTP id
+ o10-20020a056122178a00b00495f495bab1mr442731vkf.0.1696452478361; Wed, 04 Oct
+ 2023 13:47:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230928015858.1809934-1-linan666@huaweicloud.com>
-In-Reply-To: <20230928015858.1809934-1-linan666@huaweicloud.com>
-From:   Khazhy Kumykov <khazhy@chromium.org>
-Date:   Wed, 4 Oct 2023 13:44:26 -0700
-X-Gmail-Original-Message-ID: <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
-Message-ID: <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
-Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
- throttle is enabled
-To:     linan666@huaweicloud.com
-Cc:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
-        yukuai3@huawei.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linan122@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
-        yangerkun@huawei.com
+References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
+ <CAOCHtYhnx1EpBM+o3xhdsicx5uqLidojK3f0HQ+VfyVv1ZXnVQ@mail.gmail.com>
+ <CAOCHtYi5Ab5ppCmaQV3QuKQcpmJX+sHdAmtuEXhfq8xf5fFCYQ@mail.gmail.com>
+ <ZRuamJuShOnvP1pr@x1> <ZR1M3FcdXrDmIGu2@xhacker> <CA+V-a8ugwqkQxnX-wwWCHVtBBtG=aVv=MZTc53LbpxtFA=N1_A@mail.gmail.com>
+ <bc2b0b30-ab37-f336-c90e-eab570d393a2@arm.com> <c2ea3f34bb919293b850fab6ed42b61e3517ba35.camel@icenowy.me>
+ <a568a9dd-bab2-1e23-c4d5-9f6475bdcc3b@arm.com> <CA+V-a8s1S4yTH19PVNSznAgUFoHRNoye9CfwjW6iy6PbQ9thew@mail.gmail.com>
+ <CA+V-a8vbWW6=HTfR+FCPOB0bAa8M3Bbm_k=7+XbjOc3ybo6VNQ@mail.gmail.com>
+ <20075b03-e3b0-4f29-9ba1-98eed361a44f@sifive.com> <498ffcef-2ff9-495b-8544-b87c5c2eb6e1@arm.com>
+In-Reply-To: <498ffcef-2ff9-495b-8544-b87c5c2eb6e1@arm.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Wed, 4 Oct 2023 21:47:03 +0100
+Message-ID: <CA+V-a8u3+k3c6RQsmSVH+iQkFo3s_iwAZS_OFBvGpxzx_i_Ftw@mail.gmail.com>
+Subject: Re: [PATCH 0/6] RISC-V: Add eMMC support for TH1520 boards
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Samuel Holland <samuel.holland@sifive.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Drew Fustini <dfustini@baylibre.com>,
+        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        Guo Ren <guoren@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-riscv@lists.infradead.org, Christoph Hellwig <hch@lst.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Fabrizio Castro <fabrizio.castro@bp.renesas.com>,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Arnd Bergmann <arnd@arndb.de>, Han Gao <gaohan@iscas.ac.cn>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        linux-mmc@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Conor Dooley <conor@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Xi Ruoyao <xry111@xry111.site>, Fu Wei <wefu@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 7:05=E2=80=AFPM <linan666@huaweicloud.com> wrote:
+On Wed, Oct 4, 2023 at 8:38=E2=80=AFPM Robin Murphy <robin.murphy@arm.com> =
+wrote:
 >
-> From: Li Nan <linan122@huawei.com>
+> On 2023-10-04 19:49, Samuel Holland wrote:
+> > On 2023-10-04 12:16 PM, Lad, Prabhakar wrote:
+> >> On Wed, Oct 4, 2023 at 5:03=E2=80=AFPM Lad, Prabhakar
+> >> <prabhakar.csengg@gmail.com> wrote:
+> >>>
+> >>> On Wed, Oct 4, 2023 at 3:18=E2=80=AFPM Robin Murphy <robin.murphy@arm=
+.com> wrote:
+> >>>>
+> >>>> On 04/10/2023 3:02 pm, Icenowy Zheng wrote:
+> >>>> [...]
+> >>>>>>>> I believe commit 484861e09f3e ("soc: renesas: Kconfig: Select th=
+e
+> >>>>>>>> required configs for RZ/Five SoC") can cause regression on all
+> >>>>>>>> non-dma-coherent riscv platforms with generic defconfig. This is
+> >>>>>>>> a common issue. The logic here is: generic riscv defconfig
+> >>>>>>>> selects
+> >>>>>>>> ARCH_R9A07G043 which selects DMA_GLOBAL_POOL, which assumes all
+> >>>>>>>> non-dma-coherent riscv platforms have a dma global pool, this
+> >>>>>>>> assumption
+> >>>>>>>> seems not correct. And I believe DMA_GLOBAL_POOL should not be
+> >>>>>>>> selected by ARCH_SOCFAMILIY, instead, only ARCH under some
+> >>>>>>>> specific
+> >>>>>>>> conditions can select it globaly, for example NOMMU ARM and so
+> >>>>>>>> on.
+> >>>>>>>>
+> >>>>>>>> Since this is a regression, what's proper fix? any suggestion is
+> >>>>>>>> appreciated.
+> >>>>>>
+> >>>>>> I think the answer is to not select DMA_GLOBAL_POOL, since that is
+> >>>>>> only
+> >>>>>
+> >>>>> Well I think for RISC-V, it's not NOMMU only but applicable for eve=
+ry
+> >>>>> core that does not support Svpbmt or vendor-specific alternatives,
+> >>>>> because the original RISC-V priv spec does not define memory attrib=
+utes
+> >>>>> in page table entries.
+> >>>>>
+> >>>>> For the Renesas/Andes case I think a pool is set by OpenSBI with
+> >>>>> vendor-specific M-mode facility and then passed in DT, and the S-mo=
+de
+> >>>>> (which MMU is enabled in) just sees fixed memory attributes, in thi=
+s
+> >>>>> case I think DMA_GLOBAL_POOL is needed.
+> >>>>
+> >>>> Oh wow, is that really a thing? In that case, either you just can't
+> >>>> support this platform in a multi-platform kernel, or someone needs t=
+o do
+> >>>> some fiddly work in dma-direct to a) introduce the notion of an opti=
+onal
+> >>>> global pool,
+> >>> Looking at the code [0] we do have compile time check for
+> >>> CONFIG_DMA_GLOBAL_POOL irrespective of this being present in DT or
+> >>> not, instead if we make it compile time and runtime check ie either
+> >>> check for DT node or see if pool is available and only then proceed
+> >>> for allocation form this pool.
+> >>>
+> >>> What are your thoughts on this?
+> >>>
+> >> Something like the below:
+> >>
+> >> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+> >> index f2fc203fb8a1..7bf41a4634a4 100644
+> >> --- a/include/linux/dma-map-ops.h
+> >> +++ b/include/linux/dma-map-ops.h
+> >> @@ -198,6 +198,7 @@ int dma_release_from_global_coherent(int order,
+> >> void *vaddr);
+> >>   int dma_mmap_from_global_coherent(struct vm_area_struct *vma, void *=
+cpu_addr,
+> >>                  size_t size, int *ret);
+> >>   int dma_init_global_coherent(phys_addr_t phys_addr, size_t size);
+> >> +bool dma_global_pool_available(void);
+> >>   #else
+> >>   static inline void *dma_alloc_from_global_coherent(struct device *de=
+v,
+> >>                  ssize_t size, dma_addr_t *dma_handle)
+> >> @@ -213,6 +214,10 @@ static inline int
+> >> dma_mmap_from_global_coherent(struct vm_area_struct *vma,
+> >>   {
+> >>          return 0;
+> >>   }
+> >> +static inline bool dma_global_pool_available(void)
+> >> +{
+> >> +       return false;
+> >> +}
+> >>   #endif /* CONFIG_DMA_GLOBAL_POOL */
+> >>
+> >>   /*
+> >> diff --git a/kernel/dma/coherent.c b/kernel/dma/coherent.c
+> >> index c21abc77c53e..605f243b8262 100644
+> >> --- a/kernel/dma/coherent.c
+> >> +++ b/kernel/dma/coherent.c
+> >> @@ -277,6 +277,14 @@ int dma_mmap_from_dev_coherent(struct device
+> >> *dev, struct vm_area_struct *vma,
+> >>   #ifdef CONFIG_DMA_GLOBAL_POOL
+> >>   static struct dma_coherent_mem *dma_coherent_default_memory __ro_aft=
+er_init;
+> >>
+> >> +bool dma_global_pool_available(void)
+> >> +{
+> >> +       if (!dma_coherent_default_memory)
+> >> +               return false;
+> >> +
+> >> +       return true;
+> >> +}
+> >> +
+> >>   void *dma_alloc_from_global_coherent(struct device *dev, ssize_t siz=
+e,
+> >>                                       dma_addr_t *dma_handle)
+> >>   {
+> >> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> >> index 9596ae1aa0da..a599bb731ceb 100644
+> >> --- a/kernel/dma/direct.c
+> >> +++ b/kernel/dma/direct.c
+> >> @@ -235,7 +235,7 @@ void *dma_direct_alloc(struct device *dev, size_t =
+size,
+> >>                   * If there is a global pool, always allocate from it=
+ for
+> >>                   * non-coherent devices.
+> >>                   */
+> >> -               if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL))
+> >> +               if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
+> >> dma_global_pool_available())
+> >>                          return dma_alloc_from_global_coherent(dev, si=
+ze,
+> >>                                          dma_handle);
+> >
+> > dma_alloc_from_global_coherent() already checks dma_coherent_default_me=
+mory, so
+> > the solution could be even simpler:
+> >
+> > --- a/kernel/dma/direct.c
+> > +++ b/kernel/dma/direct.c
+> > @@ -232,12 +232,12 @@ void *dma_direct_alloc(struct device *dev, size_t=
+ size,
+> >                                             attrs);
+> >
+> >               /*
+> > -              * If there is a global pool, always allocate from it for
+> > +              * If there is a global pool, always try to allocate from=
+ it for
+> >                * non-coherent devices.
+> >                */
+> > -             if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL))
+> > -                     return dma_alloc_from_global_coherent(dev, size,
+> > -                                     dma_handle);
+> > +             ret =3D dma_alloc_from_global_coherent(dev, size, dma_han=
+dle);
+> > +             if (ret)
+> > +                     return ret;
 >
-> When the throttle of bps is not enabled, tg_bps_limit() returns U64_MAX,
-> which is be used in calculate_bytes_allowed(), and divide 0 error will
-> happen.
+> So if allocation fails because the pool is full, we should go ahead and
+> remap something that can't work? ;)
 >
-> To fix it, only calculate allowed value when the throttle of bps/iops is
-> enabled and the value will be used.
+> The dma_global_pool_available() idea sort of works, but I'm still
+> concerned about the case where it *should* have been available but the
+> platform has been misconfigured, so again we fall through to
 >
-> Fixes: e8368b57c006 ("blk-throttle: use calculate_io/bytes_allowed() for =
-throtl_trim_slice()")
-> Reported-by: Changhui Zhong <czhong@redhat.com>
-> Closes: https://lore.kernel.org/all/CAGVVp+Vt6idZtxfU9jF=3DVSbu145Wi-d-Wn=
-AZx_hEfOL8yLZgBA@mail.gmail.com
-> Signed-off-by: Li Nan <linan122@huawei.com>
-> ---
->  block/blk-throttle.c | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
->
-> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-> index 38a881cf97d0..3c9a74ab9f0e 100644
-> --- a/block/blk-throttle.c
-> +++ b/block/blk-throttle.c
-> @@ -730,8 +730,10 @@ static u64 calculate_bytes_allowed(u64 bps_limit, un=
-signed long jiffy_elapsed)
->  static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
->  {
->         unsigned long time_elapsed;
-> -       long long bytes_trim;
-> -       int io_trim;
-> +       long long bytes_trim =3D 0;
-> +       int io_trim =3D 0;
-> +       u64 bps_limit;
-> +       u32 iops_limit;
->
->         BUG_ON(time_before(tg->slice_end[rw], tg->slice_start[rw]));
->
-> @@ -758,11 +760,14 @@ static inline void throtl_trim_slice(struct throtl_=
-grp *tg, bool rw)
->         if (!time_elapsed)
->                 return;
->
-> -       bytes_trim =3D calculate_bytes_allowed(tg_bps_limit(tg, rw),
-> -                                            time_elapsed) +
-> -                    tg->carryover_bytes[rw];
-> -       io_trim =3D calculate_io_allowed(tg_iops_limit(tg, rw), time_elap=
-sed) +
-> -                 tg->carryover_ios[rw];
-> +       bps_limit =3D tg_bps_limit(tg, rw);
-> +       iops_limit =3D tg_iops_limit(tg, rw);
-> +       if (tg->bytes_disp[rw] > 0 && bps_limit !=3D U64_MAX)
-I don't think this change is sufficient to prevent kernel crash, as a
-"clever" user could still set the bps_limit to U64_MAX - 1 (or another
-large value), which probably would still result in the same crash. The
-comment in mul_u64_u64_div_u64 suggests there's something we can do to
-better handle the overflow case, but I'm not sure what it's referring
-to. ("Will generate an #DE when the result doesn't fit u64, could fix
-with an __ex_table[] entry when it becomes an issue.") Otherwise, we
-probably need to remove the mul_u64_u64_div_u64 and check for
-overflow/potential overflow ourselves?
+If the platform is misconfigured it is bound to fail anyway so should
+we consider that as a valid case?
 
-Khazhy
-> +               bytes_trim =3D calculate_bytes_allowed(bps_limit,
-> +                            time_elapsed) + tg->carryover_bytes[rw];
-> +       if (tg->io_disp[rw] > 0 && iops_limit !=3D UINT_MAX)
-> +               io_trim =3D calculate_io_allowed(iops_limit, time_elapsed=
-) +
-> +                         tg->carryover_ios[rw];
->         if (bytes_trim <=3D 0 && io_trim <=3D 0)
->                 return;
+> DMA_DIRECT_REMAP "successfully" returning a coherent buffer that isn't,
+> and the user's filesystem gets corrupted. Or at best, they get confused
+> by weird errors from random devices going wrong. That's why I said it
+> would be fiddly - the current state of DMA_GLOBAL_POOL as a binary
+> arch-wide thing is relatively robust and easy to reason about, but
+> attempting to generalise it further is... less so.
 >
-> --
-> 2.39.2
+> Thanks,
+> Robin.
 >
+
+Cheers,
+Prabhakar
