@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D747B98DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FDA7B98D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244002AbjJDXr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 19:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
+        id S229824AbjJDXrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 19:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243211AbjJDXrq (ORCPT
+        with ESMTP id S233418AbjJDXrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 19:47:46 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0420C0;
-        Wed,  4 Oct 2023 16:47:42 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-79faba5fe12so19075139f.3;
-        Wed, 04 Oct 2023 16:47:42 -0700 (PDT)
+        Wed, 4 Oct 2023 19:47:19 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6A8C9
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 16:47:16 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-2773ced5d40so398422a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 16:47:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696463262; x=1697068062; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fvKzcw6kAiBcbkeqMYP32mbpOXiT4xaGw7IdDJk9+NA=;
-        b=czqYeRQQZQBCEeP/ItM/hFvdLpsrHV8LIDUeMPc/g5K5VovMejmgXMUVoRp2qtFwdW
-         DKn4p9aAslY/DfNaPtPE0iqDzW/wI1t3VNGgPzg9dj82IhluD0dpac52fJtkpHRYQLBY
-         VrEGCZgkjqMWOC3S15yZODB6hE+InoC6hI4x73BwMRcZycqO7VtswgxNAtsYg1hdffWx
-         kDQ6uJQu9CYb789DqYxrq17NqzhNIJlXq7xALPACp8X5yhhKt9N3GIct7NnlCyNjhvK/
-         ZsoDO+/edKp4RcXdMU1YIXgBUQYpoEl80uzNP5GdGco0wSOAQmn1N2RL/4DUMz8v+KGv
-         NIfw==
+        d=google.com; s=20230601; t=1696463236; x=1697068036; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WfiepEv/LKhAXzybyJ+CjdLDBfoN1mMfHVU5qQvL01c=;
+        b=fl9SXyEFljNctZ0MIa77ROQONCESib3+t8CqfA15x1ratExocx2O4dFqhIh2mjLn3u
+         gVSmhavU2sEL/kxvWFRlofqJZO+wHXUgCnePUB5G3fFs/r8qilaovChx689M8AaNbsmm
+         o4XV1DYOPgKfW0Kkh+uMWVEimcR/7fogPQuPis3UeBMaqfjzA5eaUAU+UAOGGXXO3X9P
+         14DbbQZckoj1atnjK9Y5HTeGY6hEMrxLHCQasFXzdHKbDDqFfjZDgi8s2LuOLnlCAMeP
+         o6IT3+RFgs6aSum67nqG64Azt8R+SCRXgDbqZvhmOH+X/R4a0dHKxgMTOtFZ20Uz9Bxo
+         2sYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696463262; x=1697068062;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fvKzcw6kAiBcbkeqMYP32mbpOXiT4xaGw7IdDJk9+NA=;
-        b=e9apZ52cK02x8UbJiBFpJ1BClzorbrgcj4RJcJBnqyzUh7Qp7utIJaQcbYy3GawVUt
-         VdriK4CZpwzeemJKalYzpkS3K/LCHyDc2UwHzc/95NhP4dYs6tzOEixUNqRETJFWLZix
-         zt/9aZ1IpwWR4oAz5In14b9zhkPJCjqtOesU8l9X8nVOpj2PMyO9dyOzuVfXEBQVwpfk
-         CAIQkiJAU8ARD6OTR/QdJSGSqEnle7W+zTkS7iq0Q79SPJnWwqoF7xWzplr6BLhxqJEK
-         rf0t5EkIabNVfig8nrvwvnbln96x1vzFfwmazl96gtX8Q45W1gLrdNJkXNrcr3abaDWr
-         AI6g==
-X-Gm-Message-State: AOJu0YzKNkUlMbEMq654D5bSFy5RA+V20Mh8Aai/AoQ0PhM9jxNankfh
-        3PxYcgPGU6iAt3g8PzYxX+w=
-X-Google-Smtp-Source: AGHT+IERgrYzaJpuc7jM4/PCOFndZn8k1/2YZm7ZCTSH1+VQD/f3kQln9HlU0YN5aZqa9r3pfC1ycg==
-X-Received: by 2002:a05:6602:2012:b0:7a2:ac5a:89c3 with SMTP id y18-20020a056602201200b007a2ac5a89c3mr4094534iod.1.1696463261844;
-        Wed, 04 Oct 2023 16:47:41 -0700 (PDT)
-Received: from aford-System-Version.lan (c-75-72-166-104.hsd1.mn.comcast.net. [75.72.166.104])
-        by smtp.gmail.com with ESMTPSA id l13-20020a5e880d000000b0079fa3d0d790sm50062ioj.31.2023.10.04.16.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 16:47:41 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 4/4] arm64: dts: imx8mp-beacon: Add DMIC support
-Date:   Wed,  4 Oct 2023 18:46:57 -0500
-Message-Id: <20231004234657.44592-4-aford173@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231004234657.44592-1-aford173@gmail.com>
-References: <20231004234657.44592-1-aford173@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        d=1e100.net; s=20230601; t=1696463236; x=1697068036;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WfiepEv/LKhAXzybyJ+CjdLDBfoN1mMfHVU5qQvL01c=;
+        b=VbsEIA5okdH/ZEbsJFLN3cmAJRmddmWICCAL1R8528gfaFVVCoomGOZXBEzQnwBe/j
+         WZCTFF/8qvbpLXtkrTHGyb7vgbCd2+qa9lcfuW5F53FmiH4yH7dpE0iaX9vSR/Gis84N
+         5PNcS2trodB7tOEJd5yHw9YTzu71M0hiisRap1tGKD1oI8h91wVLIpD0VF+RB9o0swvq
+         EfS70PHPlvr0aGpk+lRbatqNXH6ufN19g1UXPPWeQetLICt5SQQk8bEcJdk2mj3j7PzJ
+         AlUuTbcQ2NWsGELtJNwN9FQP7GpTTGuznoRhTwqUzee/OTtMr5mm8fF3mxelq73gl0gL
+         5G6A==
+X-Gm-Message-State: AOJu0Yxxpe2kaKATA90HvQ0voM0ysk4OeIDv/gBE33+0oeqviPtbekkq
+        oeyMsjOTvKPbAvJ4VHIJU7bOwBu5U48=
+X-Google-Smtp-Source: AGHT+IEHz+mw4DhitY8y9C/S8Up/qu3OdT/M7XZs12P6EE5VRHRcOOuhoE73ZugxuOKawvct7RsGdsREFJ0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:e06:b0:279:9aa1:402c with SMTP id
+ ge6-20020a17090b0e0600b002799aa1402cmr59319pjb.7.1696463235588; Wed, 04 Oct
+ 2023 16:47:15 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 16:47:14 -0700
+In-Reply-To: <20231001111313.77586-1-nsaenz@amazon.com>
+Mime-Version: 1.0
+References: <20231001111313.77586-1-nsaenz@amazon.com>
+Message-ID: <ZR35gq1NICwhOUAS@google.com>
+Subject: Re: [RFC] KVM: Allow polling vCPUs for events
+From:   Sean Christopherson <seanjc@google.com>
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>
+Cc:     kvm@vger.kernel.org, pbonzini@redhat.com,
+        linux-kernel@vger.kernel.org, graf@amazon.de, dwmw2@infradead.org,
+        fgriffo@amazon.com, anelkz@amazon.de, peterz@infradead.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,96 +68,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The baseboard has a connector for a pulse density microphone.
-This is connected via the micfil interface and uses the DMIC
-audio codec with the simple-audio-card.
+On Sun, Oct 01, 2023, Nicolas Saenz Julienne wrote:
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 9436dca9903b..7c12d44486e1 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -63,6 +63,10 @@
+>   */
+>  #define HV_EXT_CALL_MAX (HV_EXT_CALL_QUERY_CAPABILITIES + 64)
+>  
+> +#define HV_VTL_RETURN_POLL_MASK                                 \
+> +	(BIT_ULL(KVM_REQ_UNBLOCK) | BIT_ULL(KVM_REQ_HV_STIMER) | \
+> +		BIT_ULL(KVM_REQ_EVENT))
+> +
+>  void kvm_tdp_mmu_role_set_hv_bits(struct kvm_vcpu *vcpu, union kvm_mmu_page_role *role)
+>  {
+>  	//role->vtl = to_kvm_hv(vcpu->kvm)->hv_enable_vsm ? get_active_vtl(vcpu) : 0;
+> @@ -3504,6 +3508,7 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  		goto hypercall_userspace_exit;
+>  	case HVCALL_VTL_RETURN:
+>  		vcpu->dump_state_on_run = true;
+> +		vcpu->poll_mask = HV_VTL_RETURN_POLL_MASK;
+>  		goto hypercall_userspace_exit;
+>  	case HVCALL_TRANSLATE_VIRTUAL_ADDRESS:
+>  		if (unlikely(hc.rep_cnt)) {
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
-V2:  No Change
+...
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-index acd265d8b58e..ee64c6ffb551 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-@@ -49,6 +49,12 @@ ss_ep: endpoint {
- 		};
- 	};
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index db106f2e16d8..2985e462ef56 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -238,7 +238,7 @@ static bool kvm_request_needs_ipi(struct kvm_vcpu *vcpu, unsigned req)
+>  	 * READING_SHADOW_PAGE_TABLES mode.
+>  	 */
+>  	if (req & KVM_REQUEST_WAIT)
+> -		return mode != OUTSIDE_GUEST_MODE;
+> +		return !(mode == OUTSIDE_GUEST_MODE || mode == POLLING_FOR_EVENTS);
+
+This won't work if the vCPU makes a self-request, because kvm_make_vcpu_request()
+won't bother sending an IPI if the current pCPU is running the vCPU.  Piggybacking
+the IPI logic is unnecessarily convoluted and silly.  More below.
+
+> @@ -3996,6 +4002,39 @@ static int kvm_vcpu_mmap(struct file *file, struct vm_area_struct *vma)
+>  	return 0;
+>  }
+>  
+> +static __poll_t kvm_vcpu_poll(struct file *file, poll_table *wait)
+> +{
+> +	struct kvm_vcpu *vcpu = file->private_data;
+> +
+> +	if (!vcpu->poll_mask)
+> +		return EPOLLERR;
+> +
+> +	switch (READ_ONCE(vcpu->mode)) {
+> +	case OUTSIDE_GUEST_MODE:
+> +		/*
+> +		 * Make sure writes to vcpu->request are visible before the
+> +		 * mode changes.
+> +		 */
+
+Huh?  There are no writes to vcpu->request anywhere in here.
+
+> +		smp_store_mb(vcpu->mode, POLLING_FOR_EVENTS);
+> +		break;
+> +	case POLLING_FOR_EVENTS:
+> +		break;
+> +	default:
+> +		WARN_ONCE(true, "Trying to poll vCPU %d in mode %d\n",
+> +			  vcpu->vcpu_id, vcpu->mode);
+
+This is definitely a user-triggerable WARN.
+
+> +		return EPOLLERR;
+> +	}
+> +
+> +	poll_wait(file, &vcpu->wqh, wait);
+> +
+> +	if (READ_ONCE(vcpu->requests) & vcpu->poll_mask) {
+
+This effectively makes requests ABI.  The simple mask also means that this will
+get false positives on unrelated requests.
+
+In short, whatever mechanism controls the polling needs to be formal uAPI.
+
+> +		WRITE_ONCE(vcpu->mode, OUTSIDE_GUEST_MODE);
+
+This does not look remotely safe on multiple fronts.  For starters, I don't see
+anything in the .poll() infrastructure that provides serialization, e.g. if there
+are multiple tasks polling then this will be "interesting".
+
+And there is zero chance this is race-free, e.g. nothing prevents the vCPU task
+itself from changing vcpu->mode from POLLING_FOR_EVENTS to something else.
+
+Why on earth is this mucking with vcpu->mode?  Ignoring for the moment that using
+vcpu->requests as the poll source is never going to happen, there's zero reason
+to write vcpu->mode.  From a correctness perspective, AFAICT there's no need for
+any shenanigans at all, i.e. kvm_make_vcpu_request() could blindly and unconditionally
+call wake_up_interruptible().
+
+I suspect what you want is a fast way to track if there *may* be pollers.  Keying
+off and *writing* vcpu->mode makes no sense to me.
+
+I think what you want is something like this, where kvm_vcpu_poll() could use
+atomic_fetch_or() and atomic_fetch_andnot() to manipulate vcpu->poll_mask.
+Or if we only want to support a single poller at a time, it could be a vanilla
+u64.  I suspect getting the poll_mask manipulation correct for multiple pollers
+would be tricky, e.g. to avoid false negatives and leave a poller hanging.
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 486800a7024b..5a260fb3b248 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -259,6 +259,14 @@ static inline bool kvm_kick_many_cpus(struct cpumask *cpus, bool wait)
+        return true;
+ }
  
-+	dmic_codec: dmic-codec {
-+		compatible = "dmic-codec";
-+		num-channels = <1>;
-+		#sound-dai-cells = <0>;
-+	};
++static inline bool kvm_request_is_being_polled(struct kvm_vcpu *vcpu,
++                                              unsigned int req)
++{
++       u32 poll_mask = kvm_request_to_poll_mask(req);
 +
- 	gpio-keys {
- 		compatible = "gpio-keys";
- 		autorepeat;
-@@ -147,6 +153,22 @@ reg_usb1_host_vbus: regulator-usb1-vbus {
- 		enable-active-high;
- 	};
++       return (atomic_read(vcpu->poll_mask) & poll_mask)
++}
++
+ static void kvm_make_vcpu_request(struct kvm_vcpu *vcpu, unsigned int req,
+                                  struct cpumask *tmp, int current_cpu)
+ {
+@@ -285,6 +293,9 @@ static void kvm_make_vcpu_request(struct kvm_vcpu *vcpu, unsigned int req,
+                if (cpu != -1 && cpu != current_cpu)
+                        __cpumask_set_cpu(cpu, tmp);
+        }
++
++       if (kvm_request_is_being_polled(vcpu, req))
++               wake_up_interruptible(...);
+ }
  
-+	sound-dmic {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "sound-pdm";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,bitclock-master = <&dailink_master>;
-+		simple-audio-card,frame-master = <&dailink_master>;
-+
-+		dailink_master: simple-audio-card,cpu {
-+			sound-dai = <&micfil>;
-+		};
-+
-+		simple-audio-card,codec {
-+			sound-dai = <&dmic_codec>;
-+		};
-+	};
-+
- 	sound-wm8962 {
- 		compatible = "simple-audio-card";
- 		simple-audio-card,name = "wm8962";
-@@ -174,6 +196,11 @@ simple-audio-card,codec {
- 	};
- };
- 
-+&audio_blk_ctrl {
-+	assigned-clocks = <&clk IMX8MP_AUDIO_PLL1>, <&clk IMX8MP_AUDIO_PLL2>;
-+	assigned-clock-rates = <393216000>, <135475200>;
-+};
-+
- &ecspi2 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_ecspi2>;
-@@ -364,6 +391,15 @@ hd3ss3220_out_ep: endpoint {
- 	};
- };
- 
-+&micfil {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pdm>;
-+	assigned-clocks = <&clk IMX8MP_CLK_PDM>;
-+	assigned-clock-parents = <&clk IMX8MP_AUDIO_PLL1_OUT>;
-+	assigned-clock-rates = <49152000>;
-+	status = "okay";
-+};
-+
- &pcie {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_pcie>;
-@@ -545,6 +581,13 @@ MX8MP_IOMUXC_SAI2_RXFS__GPIO4_IO21 0x10	/* PCIe_nRST */
- 		>;
- 	};
- 
-+	pinctrl_pdm: pdmgrp {
-+		fsl,pins = <
-+			MX8MP_IOMUXC_SAI5_RXC__AUDIOMIX_PDM_CLK		0xd6
-+			MX8MP_IOMUXC_SAI5_RXD0__AUDIOMIX_PDM_BIT_STREAM00	0xd6
-+		>;
-+	};
-+
- 	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
- 		fsl,pins = <
- 			MX8MP_IOMUXC_SD2_RESET_B__GPIO2_IO19	0x40
--- 
-2.40.1
+ bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
 
