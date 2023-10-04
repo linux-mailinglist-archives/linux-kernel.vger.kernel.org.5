@@ -2,170 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3077B7A7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12DEA7B7A81
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241819AbjJDIpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
+        id S241762AbjJDIqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241744AbjJDIpv (ORCPT
+        with ESMTP id S241822AbjJDIqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:45:51 -0400
-Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44C9A7
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:45:47 -0700 (PDT)
-Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-3af609cb0afso2685545b6e.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:45:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696409147; x=1697013947;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        Wed, 4 Oct 2023 04:46:08 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CA4B4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:46:01 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-533f193fc8dso3197952a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:46:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696409160; x=1697013960; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2LXOqdL09PdEzf2Z1P9MseJKNWEnjUR6MgaW5Ba4b4k=;
-        b=SXWCJDzdgaZwBCyoe1R3yh5RVisnE9QoAUIx9tznXijunKQkb2kJhXJCauj8dj9UjK
-         8EIpiMLdszHWjwAzVLxAZtdsblnak99//tqG3dwnC7RPGcwiM9Vv7RdTh3Q5cGMHm27p
-         7+z25CagYyQQlC8yxxwaqatZhWpkYQYZYG/9j/ri0J3T9v3lvzTW8C0JLWUlSMDdQyxO
-         1PBYEpANaFZNr1Fs9Sz6hdqbSqeZjQM4yN5JSgOIz22OxVKNu/Jik4TAoWeROzWLvX0+
-         E867qchjH8rxEmXrH6CSl2BniwJmXAb44zaQsepBcKf/eqvL7sv43J/jNLbbYqIfObnn
-         EcQA==
-X-Gm-Message-State: AOJu0YwyR+37X8HRo2m67TfmIv/9Fr0BJx+RCqdP6JYAmeCLpU4u3ucc
-        C24wKr9ghlyHGYazoXE4PffINz6Y3gOlDYqaZjss2T2EQIZT
-X-Google-Smtp-Source: AGHT+IEWHp6cZMFHBw7kmkOx2YxIFrzIHl4HLYaXzfrBPgZGJg8qTVWaj9fO4RD6PsRAIDixFw9mWzpyJokD1Sg8QvuLcge10uZY
+        bh=iwt6yecZwQb9RsRqs87uClcaB8jIHdaxjvckvEuQJXo=;
+        b=nRJ0qxoXTurn8d4tvmMIZ13t25YOpBr5ruGzC82VzC8y3r7tknX3W7w/s6JiTvewyI
+         //1uAKErgNb0fntnAmAVnzOLwo9BFRct7ff5nT7XEj9DH4hH9tLbdCBQXiynJMDpNw/m
+         zgy0AlgpZP7vQGkCfcQRAwYvYaCLdsw6dlVskBqAbJLM3LstqZvKKWSaznIWyb+orW+F
+         mStgP/XUAsKpa2lW7g1omToKqXlwz3QchhD/EUTUktLb2eH8XYWvfhvtEMqlISlt0V/k
+         NdCQtykKAxIiirniLGWqsB+Yv8hs/sFQ1ocBY2IUiWcdSupPsguHwOshzNSDVinLR2m4
+         S+Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696409160; x=1697013960;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iwt6yecZwQb9RsRqs87uClcaB8jIHdaxjvckvEuQJXo=;
+        b=gf0vf7VU0khkvQJ9wjt0qIXWJSb71hXg90OFF5GTmdrw5UtvU0m0Crez2pzF+kNRzn
+         yY7ffHK20tLbXAjTh6TTZesqyOdG25olgn+mzUlbENh8c8G2VzYQkMkr5XZEJAdYYrOz
+         ax7OKCMuX+appP6JJK6RnmiQiMLlLZuXyD4Dt6403bvjVqXY9PEqkI+mwa8ll3COAYuY
+         La0SdaGeWmJsa7acJy/XSkE5jd1w5oFUREDB33rBMGFjKTZWAjmIrw8z6d4IJCPkeq4d
+         xYEgdoAnjogl1li22N7TRsThnGywqooXRYHyxfpS4SBrjzEV4qxaKrZoO22VmMInrYLi
+         rbng==
+X-Gm-Message-State: AOJu0Yw/kxBzAB2KRgAEbgbOIpikX5f7UGBq7AYaM8kubyvAOE9UJHYJ
+        bJLwzJpsQzPWyeumDX+7CC0=
+X-Google-Smtp-Source: AGHT+IH1fMjq62Gk6rhHc+iucHf6asMon83lNrjM18EM+difkExI/cC19QvT1Zq7gIYruQC6uZvYFA==
+X-Received: by 2002:aa7:db46:0:b0:532:ac24:3081 with SMTP id n6-20020aa7db46000000b00532ac243081mr1398036edt.30.1696409160139;
+        Wed, 04 Oct 2023 01:46:00 -0700 (PDT)
+Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.googlemail.com with ESMTPSA id i18-20020aa7dd12000000b0052889d090bfsm2082065edv.79.2023.10.04.01.45.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 01:45:59 -0700 (PDT)
+Message-ID: <691f908e-37ed-4f3a-8c7f-e9615819d3db@gmail.com>
+Date:   Wed, 4 Oct 2023 10:45:58 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:23d0:b0:3a8:74ff:6c01 with SMTP id
- bq16-20020a05680823d000b003a874ff6c01mr1053711oib.5.1696409147021; Wed, 04
- Oct 2023 01:45:47 -0700 (PDT)
-Date:   Wed, 04 Oct 2023 01:45:46 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009a1d4a0606e008dc@google.com>
-Subject: [syzbot] [fbdev?] general protection fault in bit_putcs
-From:   syzbot <syzbot+524697c54d6e7ec67cf2@syzkaller.appspotmail.com>
-To:     daniel@ffwll.ch, deller@gmx.de, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Revert "nvmem: add new config option"
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alban Bedel <albeu@free.fr>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20230718084804.20139-1-zajec5@gmail.com>
+ <ba3c419a-6511-480a-b5f2-6c418f9c02e7@gmail.com>
+Content-Language: en-US
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+In-Reply-To: <ba3c419a-6511-480a-b5f2-6c418f9c02e7@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Srini,
 
-syzbot found the following issue on:
+On 26.08.2023 22:15, Rafał Miłecki wrote:
+> On 18.07.2023 10:48, Rafał Miłecki wrote:
+>> From: Rafał Miłecki <rafal@milecki.pl>
+>>
+>> This reverts commit 517f14d9cf3533d5ab4fded195ab6f80a92e378f.
+>>
+>> It seems that "no_of_node" config option was added to help mtd's case.
+>>
+>> DT nodes of MTD partitions (that are also NVMEM devices) may contain
+>> subnodes that SHOULD NOT be treated as NVMEM fixed cells. To prevent
+>> NVMEM core code from parsing them "no_of_node" was set to true and that
+>> made for_each_child_of_node() in NVMEM a no-op.
+>>
+>> With the introduction of "add_legacy_fixed_of_cells" config option
+>> things got more explicit. MTD subsystem simply tells NVMEM when to look
+>> for fixed cells and there is no need to hack "of_node" pointer anymore.
+>>
+>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>> ---
+>> Important: this is based on top of the
+>> [PATCH V4] nvmem: add explicit config option to read old syntax fixed OF cells
+> 
+> I see you skipped those two patches for 6.6.
+> 
+> Can you queue them for 6.7, please?
 
-HEAD commit:    2e530aeb342b Merge branch 'for-next/core', remote-tracking..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=121c1fe6680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5cc95add722fb0c1
-dashboard link: https://syzkaller.appspot.com/bug?extid=524697c54d6e7ec67cf2
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b93281680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1076e749680000
+Did you have a chance to look at this one?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2468ab4c933e/disk-2e530aeb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/bd3708bf8a20/vmlinux-2e530aeb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/86bc7d3468f9/Image-2e530aeb.gz.xz
+>> ---
+>>   drivers/mtd/mtdcore.c          | 1 -
+>>   drivers/nvmem/core.c           | 2 +-
+>>   include/linux/nvmem-provider.h | 2 --
+>>   3 files changed, 1 insertion(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+>> index 9db8d7853639..3d781ffb8c32 100644
+>> --- a/drivers/mtd/mtdcore.c
+>> +++ b/drivers/mtd/mtdcore.c
+>> @@ -554,7 +554,6 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+>>       config.read_only = true;
+>>       config.root_only = true;
+>>       config.ignore_wp = true;
+>> -    config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
+>>       config.priv = mtd;
+>>       mtd->nvmem = nvmem_register(&config);
+>> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+>> index 58d8919e6682..a0c9153cda28 100644
+>> --- a/drivers/nvmem/core.c
+>> +++ b/drivers/nvmem/core.c
+>> @@ -1027,7 +1027,7 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
+>>       nvmem->nkeepout = config->nkeepout;
+>>       if (config->of_node)
+>>           nvmem->dev.of_node = config->of_node;
+>> -    else if (!config->no_of_node)
+>> +    else
+>>           nvmem->dev.of_node = config->dev->of_node;
+>>       switch (config->id) {
+>> diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
+>> index 1b81adebdb8b..e3930835235b 100644
+>> --- a/include/linux/nvmem-provider.h
+>> +++ b/include/linux/nvmem-provider.h
+>> @@ -89,7 +89,6 @@ struct nvmem_cell_info {
+>>    * @read_only:    Device is read-only.
+>>    * @root_only:    Device is accessibly to root only.
+>>    * @of_node:    If given, this will be used instead of the parent's of_node.
+>> - * @no_of_node:    Device should not use the parent's of_node even if it's !NULL.
+>>    * @reg_read:    Callback to read data.
+>>    * @reg_write:    Callback to write data.
+>>    * @size:    Device size.
+>> @@ -122,7 +121,6 @@ struct nvmem_config {
+>>       bool            ignore_wp;
+>>       struct nvmem_layout    *layout;
+>>       struct device_node    *of_node;
+>> -    bool            no_of_node;
+>>       nvmem_reg_read_t    reg_read;
+>>       nvmem_reg_write_t    reg_write;
+>>       int    size;
+> 
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+524697c54d6e7ec67cf2@syzkaller.appspotmail.com
-
-Unable to handle kernel paging request at virtual address dfff800000000040
-KASAN: null-ptr-deref in range [0x0000000000000200-0x0000000000000207]
-Mem abort info:
-  ESR = 0x0000000096000005
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x05: level 1 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[dfff800000000040] address between user and kernel address ranges
-Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 PID: 6015 Comm: syz-executor865 Not tainted 6.6.0-rc3-syzkaller-g2e530aeb342b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __fb_pad_aligned_buffer include/linux/fb.h:629 [inline]
-pc : bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
-pc : bit_putcs+0x958/0xe30 drivers/video/fbdev/core/bitblit.c:185
-lr : __fb_pad_aligned_buffer include/linux/fb.h:626 [inline]
-lr : bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
-lr : bit_putcs+0x93c/0xe30 drivers/video/fbdev/core/bitblit.c:185
-sp : ffff800096a974a0
-x29: ffff800096a976b0 x28: 0000000000000200 x27: ffff0000c8fb9010
-x26: ffff0000c8fb9010 x25: 000000000000000f x24: dfff800000000000
-x23: 0000000000000080 x22: 0000000000000000 x21: 0000000000000000
-x20: ffff0000c0032440 x19: 0000000000000200 x18: ffff800096a96dc0
-x17: ffff80008e19d000 x16: ffff80008a576f00 x15: 0000000000000009
-x14: 1ffff00012d52ec1 x13: 0000000000000000 x12: 00000000ffffffff
-x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-x8 : 0000000000000040 x7 : 0000000000000000 x6 : 0000000000000007
-x5 : 0000000000000000 x4 : 0000000000000008 x3 : ffff8000831e57e8
-x2 : 0000000000000800 x1 : 0000000000000010 x0 : 0000000000000000
-Call trace:
- __fb_pad_aligned_buffer include/linux/fb.h:629 [inline]
- bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
- bit_putcs+0x958/0xe30 drivers/video/fbdev/core/bitblit.c:185
- fbcon_putcs+0x318/0x4e8 drivers/video/fbdev/core/fbcon.c:1282
- do_update_region+0x42c/0x5f8 drivers/tty/vt/vt.c:623
- redraw_screen+0x82c/0xd54 drivers/tty/vt/vt.c:983
- fbcon_modechanged+0x9f4/0x1090 drivers/video/fbdev/core/fbcon.c:2703
- fbcon_update_vcs+0x3c/0x4c drivers/video/fbdev/core/fbcon.c:2748
- do_fb_ioctl+0xa68/0xd24 drivers/video/fbdev/core/fb_chrdev.c:92
- fb_ioctl+0xec/0x134 drivers/video/fbdev/core/fb_chrdev.c:169
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-Code: 51000679 aa1c03f3 d343fe68 12000a69 (38f86908) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	51000679 	sub	w25, w19, #0x1
-   4:	aa1c03f3 	mov	x19, x28
-   8:	d343fe68 	lsr	x8, x19, #3
-   c:	12000a69 	and	w9, w19, #0x7
-* 10:	38f86908 	ldrsb	w8, [x8, x24] <-- trapping instruction
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
