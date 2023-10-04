@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D42EB7B7E42
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76247B7E46
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242263AbjJDLeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 07:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        id S242241AbjJDLfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 07:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232919AbjJDLeD (ORCPT
+        with ESMTP id S232944AbjJDLfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 07:34:03 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F0CB0;
-        Wed,  4 Oct 2023 04:34:00 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 394BXoIB020720;
-        Wed, 4 Oct 2023 06:33:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696419230;
-        bh=gvkfpYUXSs08HkjljItKTkfyHQ5gojnXFO0RRMu0sM4=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=Qb0M+4lh0hDfw7tMXaqsM0+/AUTmeuazCOtXyvkPfG2KziBJtNjLq8IKpNfxFCEUx
-         kfvP5ERQD4etfnnrnePG13REiv61N/tSqELdJx2F4LDoj+1TeQszD503mGGnAx/0Oi
-         DN7IYFeqzw0wzTZiTNxcRpeET1F8e4SOd767hGmg=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 394BXoZ9004246
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 4 Oct 2023 06:33:50 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 4
- Oct 2023 06:33:49 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 4 Oct 2023 06:33:49 -0500
-Received: from [10.250.135.44] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 394BXgrt040139;
-        Wed, 4 Oct 2023 06:33:44 -0500
-Message-ID: <238c71c9-98cd-bb1d-65d6-316678759333@ti.com>
-Date:   Wed, 4 Oct 2023 14:33:42 +0300
+        Wed, 4 Oct 2023 07:35:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FCCA1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 04:35:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4756C433C8;
+        Wed,  4 Oct 2023 11:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696419313;
+        bh=EKub7DB0kxiceubZBtND+wquahZHKwwMH5j2bwwGvZo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=E6myhdpplLeJMfThiZcQnD5TncbV3oJuuWCinlPuQn3k62ICZ8+K1qAe7EQ3P+ESt
+         x6o33yAOVmljx52m51Uqj3J5Ef+/6Zjv1Uumgy4uOj+QhZoDzNzLvfbSQuB0Ma7uf2
+         GWh+mHpReWV2wzYF2F2ON1l7PZG9NxLcHKuGCkTHgycbXS8cVWCSH1CH9uV9TWRntm
+         gKrqsO0Wx8WY6IV1emB+TGJeTnLYlhulj+hojFts5ksLDZ3dJc6vcJ24Kh5TPrBpzY
+         Yp2+jP9LJYd3sUDcB4fYX5EkjIFbCYHpVD7jPKnS59GLT78lyezPF2/oKNTNKgZk/x
+         s/fFrsndcc4GQ==
+From:   Michael Walle <mwalle@kernel.org>
+To:     miquel.raynal@bootlin.com
+Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, ptyadav@amazon.de, rafal@milecki.pl,
+        richard@nod.at, robh+dt@kernel.org, robh@kernel.org,
+        sjg@chromium.org, trini@konsulko.com, u-boot@lists.denx.de,
+        vigneshr@ti.com, Michael Walle <mwalle@kernel.org>
+Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: fixed-partitions: Add binman compatible
+Date:   Wed,  4 Oct 2023 13:34:58 +0200
+Message-Id: <20231004113458.531124-1-mwalle@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231004093620.2b1d6917@xps-13>
+References: <20231004093620.2b1d6917@xps-13>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 2/3] arm64: dts: ti: Add overlay for NAND daughter card
-Content-Language: en-US
-To:     Nitin Yadav <n-yadav@ti.com>, <nm@ti.com>, <vigneshr@ti.com>
-CC:     <kristo@kernel.org>, <robh+dt@kernel.org>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231004111238.3968984-1-n-yadav@ti.com>
- <20231004111238.3968984-3-n-yadav@ti.com>
-From:   Roger Quadros <rogerq@ti.com>
-In-Reply-To: <20231004111238.3968984-3-n-yadav@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+>> Add a compatible string for binman, so we can extend fixed-partitions
+>> in various ways.
+> 
+> I've been thinking at the proper way to describe the binman partitions.
+> I am wondering if we should really extend the fixed-partitions
+> schema. This description is really basic and kind of supposed to remain
+> like that. Instead, I wonder if we should not just keep the binman
+> compatible alone, like many others already. This way it would be very clear
+> what is expected and allowed in both cases. I am thinking about
+> something like that:
+> 
+> 	Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml 
+> 
+> this file is also referenced there (but this patch does the same, which
+> is what I'd expect):
+> 
+> 	Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
+> 
+> I'll let the binding maintainers judge whether they think it's
+> relevant, it's not a strong opposition.
 
-On 4.10.2023 14.12, Nitin Yadav wrote:
-> Introduce k3-am62-lp-sk-nand.dtso overlay file to support
-> the X8 NAND EXPANSION BOARD card (PROC143E1) for AM62x LP SK
-> board. NAND has partitions for different boot components as
-> below:
-> 
-> 0x000000000000-0x000000200000 : "NAND.tiboot3
-> 0x000000200000-0x000000400000 : "NAND.tispl
-> 0x000000400000-0x000000600000 : "NAND.tiboot3.backup
-> 0x000000600000-0x000000a00000 : "NAND.u-boot
-> 0x000000a00000-0x000000a40000 : "NAND.u-boot-env
-> 0x000000a40000-0x000000a80000 : "NAND.u-boot-env.backup
-> 0x000000a80000-0x000040000000 : "NAND.file-system
-> 
-> Disable mcasp1 node in DT to avoid pinmux conflict. Update
-> Makefile to include k3-am62-lp-sk-nand.dtso.
-> 
-> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+What is the overall goal here? To replace the current binman node which is
+usually contained in the -u-boot.dtsi files? If one is using binman to
+create an image, is it expected that one needs to adapt the DT in linux?
+Or will it still be a seperate -u-boot.dtsi? Because in the latter case
+I see that there will be conflicts because you have to overwrite the
+flash node. Or will it be a seperate node with all the information
+duplicated?
 
-Reviewed-by: Roger Quadros <rogerq@kernel.org>
+Maybe (a more complete) example would be helpful.
+
+-michael
