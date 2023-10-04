@@ -2,104 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6748E7B7622
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 03:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B118D7B7625
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 03:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239275AbjJDBIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 21:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38792 "EHLO
+        id S239315AbjJDBMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 21:12:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232430AbjJDBIu (ORCPT
+        with ESMTP id S232316AbjJDBMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 21:08:50 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC398AF
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 18:08:45 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-537f07dfe8eso3554a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 18:08:45 -0700 (PDT)
+        Tue, 3 Oct 2023 21:12:35 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E458AB;
+        Tue,  3 Oct 2023 18:12:32 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-58949a142bfso60456a12.1;
+        Tue, 03 Oct 2023 18:12:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696381724; x=1696986524; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696381952; x=1696986752; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4vxM4zNVFuUMx5H9x8OKQLI8DNjHa1TcGf47a6wRUPc=;
-        b=KIdclyHoEzmJklFaDJN6ZoZSUZj3CFGeEKoiI2ETrEnikSBUc9hC3ODwehaskiFsZs
-         RoutitI9TP/W4DuaZAHyF3dfd3ymjk3XTe/TVHVur8pGpd2HGiPaJHEw0DcO3K1Bpiev
-         Ojidu1dW64GoMd4P4watTW8JjJeuB2JwsrvPyj9151Qb9UrppgrfNotnYOlB2050JvjK
-         aO575CsyrhOXhc9q/CyOGiqac64IS2nUO/LRy+GD4osP9/ImISd3gMhBaBlPI//TbiYn
-         VSQwu490tB9drluMeUji5XW3W7yLxdlfZOoLvsqrIXNfTBnCkMAIc5YagRvE9KgrNFxz
-         Z49g==
+        bh=fas0XW9KdFPhCRYKtIjUyg9fUjXrDBEyScssVvJXH/A=;
+        b=UqVyN9seF/pKtvdft4Eo0V+0P0hWx5L8c2TUqMA/z6WeEtwSrNjlb2aoAY8bwYKEvC
+         BQPCRGlQmvPaw6k1YYRd+z+U1+SQEtsHyQ84DBQu+eiuQqqQf+wSCxHnsf0KWlXQMPql
+         qkRz1wPvYgj/dV7Fpa56KKYNzLzQD0t3iSmYXabYbw5Df7iGEN30n87XnGUNryPbniBv
+         CJhq/SefBb+C/QORiPbhtNlBYTTCgld4CzkSVr+h4aV27lCWovSmNyrfWL/oC83j6Foc
+         xi6qHyOH2XEoHv1tDPZMfzwLLrUh7DUdWvXjni0YyB3AVu6wVG2yoDv6O2xdYQCuAStc
+         Asfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696381724; x=1696986524;
+        d=1e100.net; s=20230601; t=1696381952; x=1696986752;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4vxM4zNVFuUMx5H9x8OKQLI8DNjHa1TcGf47a6wRUPc=;
-        b=PrH+utWQA3jBtNR4BjhPX2DNvGUOBX/JaM2xlaM78ciR7M77RFIVwcMY5AO4BJh87k
-         Gia8Q5Q340WFr4gZJzSSRYZATslgkpL5zw+4s3e7pc58P8V2wYjE0+fH9Wa8esS/pHtB
-         kP71SZRSCwCwYcAWq7D/BhxGcTugsgjKwQzyt5IuLT6wMUJSpiE6UT5dHr/KYTy7FsAh
-         JffQZ7v0o8d4PidxZ3M2a2HAu+PZyNZkjO2624JMlIeKq79A9yJlWkPVSCZ9OhH5kPql
-         NOQE7Y1LG+LUKfYGbS/ntRL5TuJF5Jd7ZPGROFWkWl1guxVYnCdl/ChZq+GiG7BmT9BU
-         isOA==
-X-Gm-Message-State: AOJu0YzjlQJjUTuLn6RZai7wqLtXJGI2HMzVvo++MIAE1bhL0AajrvmM
-        ZyTNNSijsgx4hQFDgXGTrrx+4NZjFcusQ6/rey7ZpHbRx+5RLj6TJNMITVcV
-X-Google-Smtp-Source: AGHT+IHDHKR3s5a3A/HxReBTzQR4+rqVuNCkERmQJmVfXcOBVLD3NZxto2J5t2WUWe44svD4BC43pI66NQw+/k+o6qI=
-X-Received: by 2002:a50:d083:0:b0:522:4741:d992 with SMTP id
- v3-20020a50d083000000b005224741d992mr64635edd.4.1696381724108; Tue, 03 Oct
- 2023 18:08:44 -0700 (PDT)
+        bh=fas0XW9KdFPhCRYKtIjUyg9fUjXrDBEyScssVvJXH/A=;
+        b=PIcfljMI9KMIlKYBhUvToctU2OfbbUs0u81hXV4KD3GXdHNidipdoXbA0R6qXyf/w7
+         3IM5O9nS6sCCB5qqPsVRV1k2SQRwt57rnvxN/SKwVLPwfpwdMBRYypgu8erYykIa/dk9
+         CJin+irIheZFMhjLoiAeBTlNggEF/xUvuLUDnbVV/KXD0ZV1O33XLn91+8ql9PwNYxev
+         SmAb/XnRWqDkxzTeJxjfrYvwzmY/vd4tlhtLWwVDz7hqFEg3StcD2JJ8RDx02sjBCO5M
+         c3RweDJvIzgS5NFBdk30DLn4LZnaAP2cEhtlKvcPRAJrRHUAzCNXuMD/TXXh2qXFzPU2
+         DNjg==
+X-Gm-Message-State: AOJu0YzLZF6MfxvYgfDxftyf6rxbLxpdrEkRKnMyqhfs93iDTkrzSali
+        JP3DNVA5mvf/8T5AR6helEDSnXpBq909TW/03gE=
+X-Google-Smtp-Source: AGHT+IFen0a+X+gv/rudm9g2ZVTwJtB9njJO1Lz/cEwq0MQEtgeUeeSEuWPSIwYeovwRMb7oV3/tUMeNH3CCdZ3MKcc=
+X-Received: by 2002:a05:6a00:10c2:b0:68f:c9f6:f366 with SMTP id
+ d2-20020a056a0010c200b0068fc9f6f366mr1240061pfu.0.1696381951815; Tue, 03 Oct
+ 2023 18:12:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <ca0109fa-c64b-43c1-a651-75b294d750a1@leemhuis.info>
- <CAAzPG9NkoaUz_JRtZt_JomsYj-8ZPn4QH0w0eeR-oxd55-18Qg@mail.gmail.com>
- <CAAzPG9NWp8yPU52o7d2-jLjxjLodFOiE_AjoxmCAZ=MXtV__Aw@mail.gmail.com>
- <cf87d6a5-7ff3-4add-8c48-fd3447b32697@leemhuis.info> <1b3f8dd2-6364-4f00-a33e-8b15b8911dbf@leemhuis.info>
- <CAAzPG9MD+UQb_RdiMkPkpQGYe-arD1nMKWngMj4P5s3_zJvphQ@mail.gmail.com> <906cfb11-ee93-4251-a6ff-1c4d9656b577@leemhuis.info>
-In-Reply-To: <906cfb11-ee93-4251-a6ff-1c4d9656b577@leemhuis.info>
-From:   Jeffery Miller <jefferymiller@google.com>
-Date:   Tue, 3 Oct 2023 20:08:32 -0500
-Message-ID: <CAAzPG9PrOzOawLBRNenO0Xx1bArg020Qf0iPh1bNJbwUK1c-6A@mail.gmail.com>
-Subject: Re: [regression] Resume broken on T14s Gen1 (AMD) due to "Input:
- psmouse - add delay when deactivating for SMBus mode"
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Andrew Duggan <aduggan@synaptics.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <20230831044431.250338-1-aford173@gmail.com> <20230831044431.250338-2-aford173@gmail.com>
+In-Reply-To: <20230831044431.250338-2-aford173@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 3 Oct 2023 22:12:20 -0300
+Message-ID: <CAOMZO5DyZJuqYswLYhf1f3zP7Rc1ZhnPfq26dpyU2m5mhvRtVw@mail.gmail.com>
+Subject: Re: [PATCH V3 2/3] arm64: dts: imx8mp: Add micfil node
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, marex@denx.de,
+        aford@beaconembedded.com, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 2:30=E2=80=AFAM Thorsten Leemhuis <linux@leemhuis.in=
-fo> wrote:
+Hi Adam and devicetree folks,
+
+On Thu, Aug 31, 2023 at 1:44=E2=80=AFAM Adam Ford <aford173@gmail.com> wrot=
+e:
 >
-> This didn't print anything on resume, so `psmouse->private` apparently
-> is set.
+> The i.MX8MP has a micfil controller which is used for interfacing
+> with a pulse density microphone. Add the node and mark it as
+> disabled by default.
 >
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V3:  The AUDIOMIX_PDM_ROOT doesn't exist and the real clock is
+>      called IMX8MP_CLK_AUDIOMIX_PDM_SEL, so swap it out.
+>
+> V2:  No change
+>
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/=
+dts/freescale/imx8mp.dtsi
+> index 3167706d81e1..341fd0369ce9 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> @@ -1479,6 +1479,27 @@ easrc: easrc@30c90000 {
+>                                         fsl,asrc-format =3D <2>;
+>                                         status =3D "disabled";
+>                                 };
+> +
+> +                               micfil: audio-controller@30ca0000 {
+> +                                       compatible =3D "fsl,imx8mp-micfil=
+";
+> +                                       reg =3D <0x30ca0000 0x10000>;
+> +                                       #sound-dai-cells =3D <0>;
 
-Thank you for reporting this and providing the information!
+After this patch, the following schema warning is seen:
 
-need_deactivate is never being set on the smbdev struct since it's elantouc=
-h.
-On this machine SMBus is not used so it falls back to PS/2 mode.
-When this occurs the psmouse->private pointer is being replaced but
-psmouse_smbus_reconnect is still being called on resume expecting smbdev.
-That explains why when it is setup needs_deactivate is false, but on resume=
- it
-has somehow changed to true.
+imx8mp-beacon-kit.dtb: audio-controller@30ca0000: '#sound-dai-cells'
+does not match any of the regexes: 'pinctrl-[0-9]+'
+from schema $id: http://devicetree.org/schemas/sound/fsl,micfil.yaml#
 
-I've submitted a fix for this at
-https://lore.kernel.org/all/20231004005729.3943515-1-jefferymiller@google.c=
-om/
-and it should resolve this issue for you.
+What is the correct way to solve this?
 
-Thanks,
-Jeff
+- Document #sound-dai-cells in fsl,micfil.yaml as an optional property
+- Remove #sound-dai-cells from imx8mp.dtsi
+- Document #sound-dai-cells in fsl,micfil.yaml as a required property
+and pass #sound-dai-cells to imx8mm/imx8mn/imx83.dtsi?
