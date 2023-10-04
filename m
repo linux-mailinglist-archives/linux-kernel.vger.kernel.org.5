@@ -2,166 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 182F07B7C5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6874E7B7C67
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242033AbjJDJjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
+        id S242050AbjJDJkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:40:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233011AbjJDJjR (ORCPT
+        with ESMTP id S242068AbjJDJkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:39:17 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9949DB4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:39:12 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-7ab9f1efecfso837783241.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:39:12 -0700 (PDT)
+        Wed, 4 Oct 2023 05:40:01 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95AD8E8
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:39:57 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5334d78c5f6so3323067a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:39:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696412351; x=1697017151; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OZIppNZc8WtckvOq4XHwl7wWpDkGe48vm+frvcoMRE0=;
-        b=oywUPUMUCHnPRhT+CKik9GL4nPbSniV2Y2uDtnk+0SQdwA04Ey/qCPSJ5IVc2Ff6uR
-         XWfxrEDKXVVmu8n8b/1AGd06fX2ciBBvH28eRmnkIjpb6agZZt9IND1YXGRq5Lw2d2t2
-         nIMAYtdkj4JaHeTnQq70u4c3BBj9tZMLl2zN0Mr2COmY7/u3MaKocutj+Y9VuvglxTws
-         lx5PzCgvTKjuL1lY9lFlO+xXTh0xXJ0iIf6thSmfhav6uTLKTfMDo2S+7JZmLTvuW2ky
-         LpugL8hlVkOjhQhkdqpzo0htE/anPxKZ6RvTX+64EpqdyMcGVOfa1EDUa5+m2Wr1GghX
-         pC6w==
+        d=gmail.com; s=20230601; t=1696412396; x=1697017196; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Oigu8aAhegucB1u9jLNtc55kOYYLgQuWD8KQg9b2gcI=;
+        b=UZ5SV8SuguDyJ+aWRr6ew979bdHVgucYiOH7iAlKmgQnwK3UrQxqtsRQ0UiRRay7As
+         UFiVU30SB58REX6YuLIl9lUY5ON7yRpJtJXKj8t1qtjXLWtHwb+a5ShkFa4bknxxsuD2
+         ue0LY9d4n75CsYs7HtFJv1/yzF0XF8/UW/7imbwG339uPnYLJwsuV6FhXLjij1T02S+0
+         57t6qMjgOIfTP5qRmzYapNLb+s0xbr3SiDhNMj0Yg/nKGRacmo0jYEUMNMXpX41VnWt6
+         RXWLuSP6GttsF+sBcUJXCtwk4YgguIJEQx6bIEWbiYzibIkeh0GQ8L45geYPZKpaRDZE
+         OntQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696412351; x=1697017151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696412396; x=1697017196;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OZIppNZc8WtckvOq4XHwl7wWpDkGe48vm+frvcoMRE0=;
-        b=vg6z6in/yr49Idd/UXZbnC7bYKUyD5mFzAav+hCbEG6BxZb57erBVSWzgIHCiDjtWD
-         FBtwWpXsoTWYTCOWd2OXonfKSAVBvZcW4Oew0ZfyVXVIYfGPczkp310KSkq0v5lzHsew
-         XPIeLREJGEgWEPFBlcn6ux1836TACLNsxpRTS4rccghWnbEsgwDBi7HKKWa/Ub/hRD+f
-         Q2Nvgh8KiFK7FCqaUy8e/0cisYxTYe9YONIJp8I6WXxRlBPdh8PZxY7gTZgdF2Z3p912
-         acXgouvVaE3lk5aodlI0W2tXUJaVb8S0Z24+Pj3BGep4qsG+kiT44K+3LvSf/LOSSvTs
-         SZ/A==
-X-Gm-Message-State: AOJu0Yy3o0iF9oTw2nqVgZjdowp2UW05Zubck/T4y44LOVurvdEeJ9mx
-        vfcvrniHNVBssJvHU1s+bwS7TSXIsY8o3+eWt5mLR8bg4UwbwIPE
-X-Google-Smtp-Source: AGHT+IEBbSFgRD3egaNvVX6F9D/Pu3JQtH65YLzuTkw3ULEH94k0aQ44z2vNlfxJuboKh3EeYfBRh42T0UVLWx1zTrc=
-X-Received: by 2002:a67:ee48:0:b0:44e:a9b6:5290 with SMTP id
- g8-20020a67ee48000000b0044ea9b65290mr1624229vsp.19.1696412351698; Wed, 04 Oct
- 2023 02:39:11 -0700 (PDT)
+        bh=Oigu8aAhegucB1u9jLNtc55kOYYLgQuWD8KQg9b2gcI=;
+        b=O9vmE1DPgjLI5OLLErsqmuiVjCvgqv23//KqR1tUvK5nCrLfBeAQt4R7cnv/gMT67b
+         XMDVVlEJQJqGsaJAtNir0o0Qu3lGfYRHk+/mSaFsxwtBA8ldFeOktX/O3ZkYtfRg7HGf
+         bfMyOsfjSkHNPW/lXYQkixIo4m41yf7VtSVrB2Or/eIHvIRaOOREDPJQXPxNsCJnOMh5
+         Rsx4/SLyRBfzBoxFGsfDBQkDY+N0UstxY6kigTtDDRCjJZS6Hc3txf9NVPVRWHNNadXK
+         VS1/Cyj+IRZ0br+7hbE8qWZaSCkF/mP/byA2ESx6Y8sttfovUeYTAFdI1eDZ58ToKpi3
+         pw3w==
+X-Gm-Message-State: AOJu0YyMb7S1pK+qil7tuoR4WFbwge4rZg89Ed6a2+0nyOOKxZVHAiiy
+        2zOgZvgrdWb7+gAEN7GeDCZ4jG3G8Co=
+X-Google-Smtp-Source: AGHT+IFLDp6RCsujrBUwP/nfa0Gza0pYjnt9xOIMYah1uoKblXun2OZkqTSZur2h8Qs04zFHyIvPVw==
+X-Received: by 2002:a17:906:73d1:b0:9b6:4b5d:7758 with SMTP id n17-20020a17090673d100b009b64b5d7758mr1643793ejl.68.1696412395859;
+        Wed, 04 Oct 2023 02:39:55 -0700 (PDT)
+Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
+        by smtp.gmail.com with ESMTPSA id l11-20020a170906a40b00b009b64987e1absm2488023ejz.139.2023.10.04.02.39.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 02:39:55 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 4 Oct 2023 11:39:53 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Zhang Qiao <zhangqiao22@huawei.com>, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/core: Update stale comment in try_to_wake_up()
+Message-ID: <ZR0y6RJFnOrG2/Nw@gmail.com>
+References: <20230731085759.11443-1-zhangqiao22@huawei.com>
+ <ZR0w7vtVhiOVI4uD@gmail.com>
+ <20231004093323.GK1539@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20231003145114.21637-1-brgl@bgdev.pl> <20231003145114.21637-19-brgl@bgdev.pl>
- <CAJM55Z8S_4OGM_-iEACLzZgwt6_KoYr56RbPn+4kx7Beu2WjUg@mail.gmail.com>
-In-Reply-To: <CAJM55Z8S_4OGM_-iEACLzZgwt6_KoYr56RbPn+4kx7Beu2WjUg@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 4 Oct 2023 11:39:00 +0200
-Message-ID: <CAMRc=MeEKuSDRs2GjgFFYH2fAqr2KGhnoEGq7Jgh0S1DdqaoTg@mail.gmail.com>
-Subject: Re: [PATCH 18/36] pinctrl: starfive: use new pinctrl GPIO helpers
-To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        Hal Feng <hal.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231004093323.GK1539@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 11:37=E2=80=AFAM Emil Renner Berthing
-<emil.renner.berthing@canonical.com> wrote:
->
-> Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Replace the pinctrl helpers taking the global GPIO number as argument
-> > with the improved variants that instead take a pointer to the GPIO chip
-> > and the controller-relative offset.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > ---
-> >  drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c | 4 ++--
-> >  drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c | 4 ++--
-> >  2 files changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c b/drive=
-rs/pinctrl/starfive/pinctrl-starfive-jh7100.c
-> > index 530fe340a9a1..22a2db8fa315 100644
-> > --- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
-> > +++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
-> > @@ -918,12 +918,12 @@ static struct pinctrl_desc starfive_desc =3D {
-> >
-> >  static int starfive_gpio_request(struct gpio_chip *gc, unsigned int gp=
-io)
-> >  {
-> > -     return pinctrl_gpio_request(gc->base + gpio);
-> > +     return pinctrl_gpio_request_new(gc, gpio);
-> >  }
-> >
-> >  static void starfive_gpio_free(struct gpio_chip *gc, unsigned int gpio=
-)
-> >  {
-> > -     pinctrl_gpio_free(gc->base + gpio);
-> > +     pinctrl_gpio_free_new(gc, gpio);
->
-> Hi Bartosz,
->
-> Thank you for the patch. These new pinctrl_gpio_*_new() functions now see=
-m to
-> have the same signature as the starfive_gpio_*() functions. Is there a re=
-ason
-> they can't be used as callbacks directly so we could just delete the
-> starfive_gpio_*() wrapppers?
 
-Ha! Make sense and it'll probably apply to more users.
+* Peter Zijlstra <peterz@infradead.org> wrote:
 
->
-> Also it'd be great to be to be CC'd on at least the first generic patches=
- where
-> the new functions are introduced to have some context without having to l=
-ook it
-> up on lore.
->
+> On Wed, Oct 04, 2023 at 11:31:26AM +0200, Ingo Molnar wrote:
+> > 
+> > * Zhang Qiao <zhangqiao22@huawei.com> wrote:
+> > 
+> > > Since commit 9b3c4ab3045e ("sched,rcu: Rework
+> > > try_invoke_on_locked_down_task()") renamed
+> > > try_invoke_on_locked_down_task() to task_call_func().
+> > > Now, update some comment about it.
+> > > 
+> > > Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
+> > > ---
+> > >  kernel/sched/core.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > > index 0d18c3969f90..540ac33ddb80 100644
+> > > --- a/kernel/sched/core.c
+> > > +++ b/kernel/sched/core.c
+> > > @@ -4186,7 +4186,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+> > >  	 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+> > >  	 * __schedule().  See the comment for smp_mb__after_spinlock().
+> > >  	 *
+> > > -	 * A similar smb_rmb() lives in try_invoke_on_locked_down_task().
+> > > +	 * A similar smb_rmb() lives in task_call_func().
+> > 
+> > Except the matching smp_rmb() doesn't live in task_call_func() anymore, so 
+> > you now turned a stale comment into a misleading one ...
+> 
+> It moved, *again*, it's now in __task_needs_rq_lock() :-)
 
-I wanted to reduce noise for maintainers but ended up introducing
-confusion. I will probably just send the v2 to everyone so proper
-context.
+Yeah, I know, see:
 
-Bart
+   bdf85bec2b1e ("sched/core: Update stale comment in try_to_wake_up()")
 
-> /Emil
->
-> >  }
-> >
-> >  static int starfive_gpio_get_direction(struct gpio_chip *gc, unsigned =
-int gpio)
-> > diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c b/drive=
-rs/pinctrl/starfive/pinctrl-starfive-jh7110.c
-> > index 640f827a9b2c..5557ef3fbeb2 100644
-> > --- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
-> > +++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
-> > @@ -547,12 +547,12 @@ static const struct pinconf_ops jh7110_pinconf_op=
-s =3D {
-> >
-> >  static int jh7110_gpio_request(struct gpio_chip *gc, unsigned int gpio=
-)
-> >  {
-> > -     return pinctrl_gpio_request(gc->base + gpio);
-> > +     return pinctrl_gpio_request_new(gc, gpio);
-> >  }
-> >
-> >  static void jh7110_gpio_free(struct gpio_chip *gc, unsigned int gpio)
-> >  {
-> > -     pinctrl_gpio_free(gc->base + gpio);
-> > +     pinctrl_gpio_free_new(gc, gpio);
-> >  }
-> >
-> >  static int jh7110_gpio_get_direction(struct gpio_chip *gc,
-> > --
-> > 2.39.2
+Thanks,
+
+	Ingo
+
+====================>
+From: Ingo Molnar <mingo@kernel.org>
+Date: Wed, 4 Oct 2023 11:33:36 +0200
+Subject: [PATCH] sched/core: Update stale comment in try_to_wake_up()
+
+The following commit:
+
+  9b3c4ab3045e ("sched,rcu: Rework try_invoke_on_locked_down_task()")
+
+... renamed try_invoke_on_locked_down_task() to task_call_func(),
+but forgot to update the comment in try_to_wake_up().
+
+But it turns out that the smp_rmb() doesn't live in task_call_func()
+either, it was moved to __task_needs_rq_lock() in:
+
+  91dabf33ae5d ("sched: Fix race in task_call_func()")
+
+Fix that now.
+
+Also fix the s/smb/smp typo while at it.
+
+Reported-by: Zhang Qiao <zhangqiao22@huawei.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20230731085759.11443-1-zhangqiao22@huawei.com
+---
+ kernel/sched/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 65e10ac34660..f5783cb16791 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4237,7 +4237,7 @@ int try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 		 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+ 		 * __schedule().  See the comment for smp_mb__after_spinlock().
+ 		 *
+-		 * A similar smb_rmb() lives in try_invoke_on_locked_down_task().
++		 * A similar smp_rmb() lives in __task_needs_rq_lock().
+ 		 */
+ 		smp_rmb();
+ 		if (READ_ONCE(p->on_rq) && ttwu_runnable(p, wake_flags))
+
