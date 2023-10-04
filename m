@@ -2,105 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAC17B79F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE4D7B79F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241658AbjJDIY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46426 "EHLO
+        id S241617AbjJDIZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241617AbjJDIYz (ORCPT
+        with ESMTP id S232743AbjJDIZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:24:55 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4250A7
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:24:51 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50585357903so2197513e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:24:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696407890; x=1697012690; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TBzBZLupXX9UvXePvIFpTAv9OlD36MZ7fOKKYNoR2SQ=;
-        b=kjygUUFE5GnEOOvdYosUeFeICI76kEgoGnj/TRNED9n0JexH/dxJ6y81d3JNTakjdc
-         uCYHMlsV9DuFFxGXecViAF/ydLHvuPoSyZ8kb4Qnq4lyJJ1ZCMTFFzVeL6rqxP9aqmTQ
-         VvZDOAsFCmwpagFT36ojPB484vEbdRMCEJwgH0nsIn3oWFdjL+CD1cW9CY9r6EDe1lSZ
-         bmulkisSvYpF78hUgcZk6Ddb4afE9aR03hz6vZVC9vEylcDyx2pr1HVeMrDg+6RYr9L5
-         UO8UAuTW9hkzfylSXtdGa22WI/AIhFxmF06L2hZ+bk+JiMSW+M3DGjn03QO47DMrMvoN
-         15Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696407890; x=1697012690;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TBzBZLupXX9UvXePvIFpTAv9OlD36MZ7fOKKYNoR2SQ=;
-        b=quYnQWjQrw78Jyz6hLs4a7Y33HNzGlo0fHSYiNiQeI26/rdNl6n3Kri7Gi6M4ut0fK
-         Swj7ftkMR8E8y+lx1BkBGVBUys0TNYBefZFHIJkYRVeseWcsoBB6vzA9cz+7fdoYpT8c
-         f6AlvT3d4SnNUcxLm8k/cO7xfCyd0Rv4wFN7ppFv1R4qsgtuzTmBelZAN6xUafnekkcl
-         /ZsZ9m8LA3NoZ/xz7g6FsDHtmjWcNqSE8/SAEAQdfyL2KHw1AlO/jbhploK6/VvMFxCm
-         o/N6y05OQaKRSP93bDPFOuECR1Ji8iq2Q2YeaWInRfO0fMPPoEvxEACU1OAOyH3WnMK6
-         3/qg==
-X-Gm-Message-State: AOJu0Yw9Jp/t4/QQl6VdcsK55FukFurnxAAfUxT6JE9ZeIQxzdZIMDQN
-        sc4iRXLy7N9BpHuCvbJhSBa9sQ==
-X-Google-Smtp-Source: AGHT+IEvoV7teqz1BwPrURsFy2E9i2CruD+t5R/jxpizo3Sc5L4ZFkFV6uWGLb5w+yGTlNScGzRgiA==
-X-Received: by 2002:a19:e05b:0:b0:503:56e:ae4 with SMTP id g27-20020a19e05b000000b00503056e0ae4mr1277421lfj.38.1696407890054;
-        Wed, 04 Oct 2023 01:24:50 -0700 (PDT)
-Received: from hackbox.lan ([86.123.99.172])
-        by smtp.gmail.com with ESMTPSA id bo18-20020a0564020b3200b00533f111b61dsm2021467edb.68.2023.10.04.01.24.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 01:24:49 -0700 (PDT)
-From:   Abel Vesa <abel.vesa@linaro.org>
-To:     abelvesa@kernel.org, peng.fan@nxp.com, mturquette@baylibre.com,
-        sboyd@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        shengjiu.wang@nxp.com,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2 0/5] clk: imx: imx8: Fix some error handling paths
-Date:   Wed,  4 Oct 2023 11:24:41 +0300
-Message-Id: <169640782687.164802.380569938820374861.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694722339.git.christophe.jaillet@wanadoo.fr>
-References: <cover.1694722339.git.christophe.jaillet@wanadoo.fr>
+        Wed, 4 Oct 2023 04:25:28 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BDFA6;
+        Wed,  4 Oct 2023 01:25:25 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 563C15C02AC;
+        Wed,  4 Oct 2023 04:25:24 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 04 Oct 2023 04:25:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1696407924; x=1696494324; bh=aq
+        tZu7OFev7NROEvHGfYU30sQ+IlAUffS+3M2Pl5nF4=; b=QjhymVHWCqusF8IFqT
+        ikZjK6+FYk62zzoOY02+GtlFMMYgrPC8q8moBEWyctTt6AEIPTbXPogUOAQlQaU1
+        NFGkH9LjZBkt1/oIQe6NARo3fCY26gdZqXsC/3Ir/spAs7RXGVAy8/lzjY0+XDda
+        Gu0dPduOCOdBizXgePcKUDorKki5BZAg+zKNiZN0BXI0oW2VbDXyQm1dEXnZl9G7
+        ctuLq/yh4R8hodREyyuNZE+2IQU/rEZQPV47uBGDAjb3hqr3Chwv3pJgd85gqkrC
+        wkFzWSISTswJHDyZASe/5WN58Y65xx2XgstA7+PG+Qd3VzX8+AcZgRaAQMCUQbRm
+        sz7A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696407924; x=1696494324; bh=aqtZu7OFev7NR
+        OEvHGfYU30sQ+IlAUffS+3M2Pl5nF4=; b=P+F31/JaounfPvJtB8ifQo9UlK2wY
+        VDzT07Umo/inHQhOv+N20tod9dXqxMBQtMyWQtTn8k5EXWQEx8hvKNWo2wtBqdv8
+        rdzZU/CXPT1TnjROA+MMf65bRX6DPAXtrv7k9wA/tdN0szYX3KCCTtYLw83MoE83
+        3KZ5Yldj302bDaKyo07Yqn29hOfPYWguRVo6WRl5juRSiyk9OQw1H0uVhOIs11xV
+        /XWqiNk2XJixQwOkMqYpxSd2KHs1jJIneViSHugqYq3ZjNaKY7dFJMIquXnAZ/oP
+        qXHdMQjwSSSzkj/cIm/5PbsfXhgdbNHSaBZmC76NJf/Eh8o+slHt7zCxw==
+X-ME-Sender: <xms:cyEdZThGkcgtQKiNst9aTwmEfzTst4M7xcrSYZmWa3IkY3bRp17LkA>
+    <xme:cyEdZQBSh34aldmGUvRX7_wdtWHlOh3lMWKMjw6KHlxYUaiTNBtD4-avXcJaZ8JAs
+    u4Mq1v7YuvMWYk6XOk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgedvgddtvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:cyEdZTFCqgKmgsRORsrDsuR3xr0oiFQ3Ydqt6Y7zeOtu8pp1R0q8Wg>
+    <xmx:cyEdZQShBeKyeRzuSBnw7h22xWk9cVMOAIrLycCyt_kkaMK4v4cHkA>
+    <xmx:cyEdZQzrAm_5oERKTLRD2DEmY3_rMxL8KM0lNK8ZzDxQBMciokUpTA>
+    <xmx:dCEdZVhJC96TxtIqfrsA2ZZ39TmeWfs7mqWtsqOL1RwBAQvUvPxxPQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id A361EB6008F; Wed,  4 Oct 2023 04:25:23 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Message-Id: <4ed81222-9409-4c9b-bd29-dbaf4275984f@app.fastmail.com>
+In-Reply-To: <20231003154326.213e9c81@kernel.org>
+References: <20230925155858.651425-1-arnd@kernel.org>
+ <1430f3d3-4e84-b0ec-acd9-8a51db178f73@intel.com>
+ <20231003154326.213e9c81@kernel.org>
+Date:   Wed, 04 Oct 2023 10:25:03 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Jakub Kicinski" <kuba@kernel.org>,
+        "Anthony L Nguyen" <anthony.l.nguyen@intel.com>
+Cc:     "Arnd Bergmann" <arnd@kernel.org>,
+        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
+        "Lobakin, Alexandr" <alexandr.lobakin@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        "Paolo Abeni" <pabeni@redhat.com>,
+        "Alan Brady" <alan.brady@intel.com>,
+        "Sridhar Samudrala" <sridhar.samudrala@intel.com>,
+        "Willem de Bruijn" <willemb@google.com>,
+        "Phani Burra" <phani.r.burra@intel.com>,
+        "Joshua A Hay" <joshua.a.hay@intel.com>,
+        "Pavan Kumar Linga" <pavan.kumar.linga@intel.com>,
+        "Madhu Chittim" <madhu.chittim@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        "Alexander Lobakin" <aleksander.lobakin@intel.com>
+Subject: Re: [PATCH] idpf: fix building without IPv4
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 4, 2023, at 00:43, Jakub Kicinski wrote:
+> On Mon, 25 Sep 2023 10:05:03 -0700 Tony Nguyen wrote:
+>> Also, a pending patch for this [1], however, this does look a bit more 
+>> efficient. Adding Olek as he's author on the other patch.
+>> 
+>> netdev maintainers,
+>> 
+>> If this is the version that does get picked up, did you want to take it 
+>> directly to close out the compile issues?
+>
+> Sorry for the delays. Should we not add a !INET static inline wrapper
+> for tcp_gro_complete()? Seems a bit backwards to me to make drivers
+> suffer and think about such a preposterous config :S
+>
+> $ git grep tcp_gro_complete -- drivers/
+> drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c:        tcp_gro_complete(skb);
+> drivers/net/ethernet/broadcom/bnxt/bnxt.c:              tcp_gro_complete(skb);
+> drivers/net/ethernet/intel/idpf/idpf_txrx.c:    tcp_gro_complete(skb);
+> drivers/net/ethernet/qlogic/qede/qede_fp.c:     tcp_gro_complete(skb);
+>
+> We have 4 drivers which need ifdefs already and the number will only
+> grow with GRO-HW spreading.
 
-On Thu, 14 Sep 2023 22:31:01 +0200, Christophe JAILLET wrote:
-> This serie fix some error handling paths. It is split in different patches to
-> ease review because the issues are unrelated and the proposed fixes are maybe
-> wrong (I don't have the hardware to test anything)
-> 
-> Some of v1 patches had been incorrectly hand modified. There was a extra ')' in
-> patch 3 and 4 that prevented the merge.
-> 
-> [...]
+That sounds good to me, but it's better if someone that understands
+this code patch better than me writes the stub helpers, to ensure
+all callers have sensible behavior in that configuration.
 
-Applied, thanks!
+I also had a brief look at who might be using kernels without CONFIG_INET.
+In the kernel source tree, there are 19 defconfig files that completely
+enable CONFIG_NET, which means that both INET and ETHERNET are always
+turned off as well.
 
-[1/5] clk: imx: imx8: Fix an error handling path in clk_imx_acm_attach_pm_domains()
-      commit: 156624e2cf815ce98fad5a24f04370f4459ae6f4
-[2/5] clk: imx: imx8: Fix an error handling path if devm_clk_hw_register_mux_parent_data_table() fails
-      commit: 9a0108acdb1b6189dcc8f9318edfc6b7e0281df4
-[3/5] clk: imx: imx8: Fix an error handling path in imx8_acm_clk_probe()
-      commit: e9a164e367f039629fd5466a79b9f495646e1261
-[4/5] clk: imx: imx8: Add a message in case of devm_clk_hw_register_mux_parent_data_table() error
-      commit: ef23d44b7fcbd19773dcedcb50ca2f625107604f
-[5/5] clk: imx: imx8: Simplify clk_imx_acm_detach_pm_domains()
-      commit: 3af29a89de2c6e49737a1201b7d6fd5ad3f635a4
+There are four configs that enable CONFIG_NET but not CONFIG_INET:
 
-Best regards,
--- 
-Abel Vesa <abel.vesa@linaro.org>
+arch/arm/configs/spear3xx_defconfig
+arch/arm/configs/spear6xx_defconfig
+arch/m68k/configs/virt_defconfig
+arch/s390/configs/zfcpdump_defconfig
+
+I'm confident that the two arm configs are a mistake, as these are
+regular embedded SoCs with on-chip ethernet that is enabled in
+the config but almost certainly has no other use. The virt defconfig
+lost CONFIG_INET after commit d7385ba13771 ("9p: Remove INET
+dependency") added an 'imply INET'. This sounds like a bad idea,
+since it messes up the 'defconfig' logic when a leaf driver enables
+an entire subsystem.
+
+The s390 zfcpdump defconfig looks like a legitimate case for
+disabling INET, but it's not that size constrained and it might
+not actually need CONFIG_NET either.
+
+So overall, it seems there is no real need to support CONFIG_NET=y
+with CONFIG_INET=n and we could just make them be the same and
+avoid bugs like this. In theory we could also go the opposite way
+and try to make INET a tristate symbol that can live in a loadable
+module like all other network protocols. This would be nice
+conceptually and for smaller vmlinux files (some systems are
+much more limited in the size of their boot partition than their
+RAM and rootfs), but would clearly cause way more build failures.
+
+      Arnd
