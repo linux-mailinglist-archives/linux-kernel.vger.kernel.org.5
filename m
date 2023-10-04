@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CD77B7713
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 06:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C727B7716
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 06:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237712AbjJDEXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 00:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S238057AbjJDEYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 00:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232628AbjJDEXJ (ORCPT
+        with ESMTP id S235435AbjJDEYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 00:23:09 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F179AD;
-        Tue,  3 Oct 2023 21:23:05 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-693400e09afso383414b3a.1;
-        Tue, 03 Oct 2023 21:23:05 -0700 (PDT)
+        Wed, 4 Oct 2023 00:24:33 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C893B4
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 21:24:29 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-537f07dfe8eso4826a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 21:24:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696393385; x=1696998185; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=mdh6W1N1Pc5uEkvtWKu2b0D4c3j6GY2r5pUlMYcimSo=;
-        b=jq95pEc4AW+JB4eQhrSmo/akvA/Fb/Bc8qXIH7Gnsgla/4xCWKsS40uxDhA86Ctwd3
-         f1G3IDNZI/BadIlH458HTmnYHtIdKM7eyqAeRy2nxjfXN2ZRws26sWDJI6eVtqqLgrB+
-         QUd7aM7n8X5AQGaNrW1UQJdL/QFqykSCoTY2Nk0uMJZoHdW+TiKx9zkk0mfiqhESDv+O
-         a0YenwwXfin/lAK7uaGLGjLnv7evruHqLvIbKRRwqxUpC4/DvWrxgEe+6egPS0V3RD3l
-         QOhXwZi2MiERyGaUVZn+LMbrBpYKxdYYfYwWXEAQez+i+xaNsyngOG6o4lqaQOruN9Hi
-         YVFw==
+        d=google.com; s=20230601; t=1696393468; x=1696998268; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gb48+9J6OzaJRq8+aduPuwzJE/KK9ZXSagOdlOkmQoE=;
+        b=JZXGPSEepYM5LW1PaUnGslbIMZFFAl1vrmv3bx2/S+TIHQpJM2wZDnLK3EJLlmEWQw
+         xU3G61T7zfaBB1CD3PQpiqYNMgtKN5ul3YayQgDa4K06KFzeZ3B5vKstAFnB3qTYIlNk
+         cw9bCrUoHZ2nqJPvSYLc2A5U//44zGutN+v0mnvdCS9Unoue2FG3etwEZ8WYXB+BId6i
+         vU49XQkyOePSggWanEYnS4AXgyl/foAg1wFHqfT/jo2BrT91z7xfQxDl/fWTvfgckGTc
+         +EPfNxgwzv/IYnJVfRAfORD0PVyiu1yi3jch8AfvW/zoLPsFwvog3zDAMZZYeiYI6/8G
+         jOug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696393385; x=1696998185;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mdh6W1N1Pc5uEkvtWKu2b0D4c3j6GY2r5pUlMYcimSo=;
-        b=dplVvoQ2Ke33cx7QPjx7qlvDAhYeGmwORaf+wNj5BSPyyqvVNk/CmH1b7SrzfQUOYS
-         CnSJGvEJOgAeWcvJq4YQa9gUVj9Yvqfgw17AiIH2ZilEWSzM55y0a5RBvlIkF9ZPxPaJ
-         ErCDMlDU6Vq4aoEkHx+zjsu8JrIGaMhXxJ6lLdbfaGb10i8Gr02SSlpIgqvEmwHYGD3Z
-         s7W457qtWbL9wt0e9e+t7C/2o4oS33HlPz2BitnQnM+rkI56BPp4ieDPZKYh+MK82NPD
-         dfg4iaqG4Le1mquFo3+wFDipBTGK8V0HLNwzoqh+U6+cU4GaeJOCqpC3O7YVws58Hero
-         VYDA==
-X-Gm-Message-State: AOJu0YycJoreLCgYFnTCPA2MuBjX1g/I8yAIu3Zf2hdmPzliViGA6ZUX
-        iv5rYXCQ07qoTNaQ+F8gmOw=
-X-Google-Smtp-Source: AGHT+IFiJoeta9M8uZxfsYLguNw2WHIfFzSL0lORiY6JAAsa+HGRxv9RsKq/xYxkQMwD/bPRKw6+6g==
-X-Received: by 2002:a05:6a00:39a8:b0:692:ad93:e852 with SMTP id fi40-20020a056a0039a800b00692ad93e852mr1470821pfb.2.1696393384991;
-        Tue, 03 Oct 2023 21:23:04 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id j25-20020a62b619000000b0068fe5a5a566sm2252035pff.142.2023.10.03.21.23.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 21:23:04 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 21:23:01 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Mahesh Bandewar
-         =?utf-8?B?KOCkruCkueClh+CktiDgpKzgpILgpKHgpYfgpLXgpL4=?=
-         =?utf-8?B?4KSwKQ==?= <maheshb@google.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Linux <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Don Hatchett <hatch@google.com>,
-        Yuliang Li <yuliangli@google.com>,
-        Mahesh Bandewar <mahesh@bandewar.net>,
-        Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: Re: [PATCH 3/4] ptp: add ioctl interface for ptp_gettimex64any()
-Message-ID: <ZRzopem76msVVFCB@hoboy.vegasvil.org>
-References: <20230929023743.1611460-1-maheshb@google.com>
- <ZRiSQ/fCa3pYZnXJ@hoboy.vegasvil.org>
- <CAF2d9jgWpwNye89qrANfngG2+NQPDhpZQjXMKBDG6x7e32_cOw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1696393468; x=1696998268;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Gb48+9J6OzaJRq8+aduPuwzJE/KK9ZXSagOdlOkmQoE=;
+        b=usiyBMweIXAzNxyB5cS/eFS1s19L+kGaEUENq0Bo3J+ONqTFzyRcQdxj8uRiEd562Q
+         p8B6qa9epOBLs9aWySKDR/me5GxmFw3fHyeoikshDWfmnv6RP6zre0/Jo+/EgHfO6ATW
+         nv/0Di7ox+Sove7UryIkjCt3QC47ACgqJnFI3takOopeVeDm79nplvLc93yo5ApxAsDB
+         8D4pUX6qSr8dJs3yC/nDYLxVRx9UTZwHwGM1Hjwqr7QpmS8PydhZ0lIIzhiFjw8ry6Gq
+         SS628Iod+YjYuAj28KAQQPemN/5G7zdUYxs63hqNjsquMrJH9UP/F68EJcwJByED6u2P
+         7cNg==
+X-Gm-Message-State: AOJu0YwzpiRBG9bb5YuaSP76K/ghCffcasg3+SDeBWW1ipjzBpPbRxui
+        sKHBXB2o6/GeN70GiwBQ3o4NAOWnuQExcA4+odRs4g==
+X-Google-Smtp-Source: AGHT+IFStvjOlkx2OAzXk89YBDYZTwvQWvQXoabu6dir1CR300tiisxAPYth1mtiFIG6xx8IO8NNzGJkZ1wsvuZRoMM=
+X-Received: by 2002:a50:9fa4:0:b0:538:1d3b:172f with SMTP id
+ c33-20020a509fa4000000b005381d3b172fmr43527edf.3.1696393467921; Tue, 03 Oct
+ 2023 21:24:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF2d9jgWpwNye89qrANfngG2+NQPDhpZQjXMKBDG6x7e32_cOw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231004002038.907778-1-jmattson@google.com> <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
+ <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com> <dfdba4e2-371c-db18-6989-541f802a0783@intel.com>
+In-Reply-To: <dfdba4e2-371c-db18-6989-541f802a0783@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 3 Oct 2023 21:24:12 -0700
+Message-ID: <CALMp9eRGrwYzmDxJmhNi1v-1dDgjoC0PUc-RfGiw6JVcMBnpqg@mail.gmail.com>
+Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's FsGsKernelGsBaseNonSerializing
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,10 +79,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 05:29:58PM -0700, Mahesh Bandewar (महेश बंडेवार) wrote:
+On Tue, Oct 3, 2023 at 8:27=E2=80=AFPM Dave Hansen <dave.hansen@intel.com> =
+wrote:
+>
+> On 10/3/23 19:44, Jim Mattson wrote:
+> > I'm a little surprised at the pushback, TBH. Are you implying that
+> > there is some advantage to *not* passing this bit through?
+>
+> I'm not really trying to push back.  I'm honestly just curious.  Linux
+> obviously doesn't cat about the bit.  So is this for some future Linux
+> or some other OS?
 
-> The purpose of this API is not to compare clocks but to get the width
-> of reading the MTS value (offered by NICs) in terms of the timebase
-> that is selected to essentially improve the accuracy.
-
-What is MTS ?
+It's not for any particular guest OS. It's just for correctness of the
+virtual CPU. Pedantically, hardware that enumerates this bit cannot
+run a guest that doesn't. Pragmatically, it almost certainly doesn't
+matter. Getting it right is trivial and has no impact on performance
+or code size, so why not just do it?
