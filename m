@@ -2,244 +2,819 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDF27B7C9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEB17B7C9F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232971AbjJDJuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
+        id S232915AbjJDJyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232840AbjJDJux (ORCPT
+        with ESMTP id S232849AbjJDJyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:50:53 -0400
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2052.outbound.protection.outlook.com [40.107.13.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE4AB7
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZRr8O79q4KAm9LHhdQBv90pQcIyPcffgLsfMMGyOi4k=;
- b=FH20lKsZH6QTr6pyRv0FMN/56BJe34lYz+5/4UhAZ6yXyVrxTJz7o0yWcKlcNq1Vb+Fh4ZwUjnVCJ/yJoLUP+KNEGHmcr88t6RaV3P057SNVAN3UrjVG7282+tec+TyofemOWwQxgpH3IqX/ClZbKtk2K+SC1KFzIQ+086YlkOE=
-Received: from DB8PR04CA0026.eurprd04.prod.outlook.com (2603:10a6:10:110::36)
- by AS4PR08MB7878.eurprd08.prod.outlook.com (2603:10a6:20b:51d::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Wed, 4 Oct
- 2023 09:50:40 +0000
-Received: from DBAEUR03FT063.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:10:110:cafe::a5) by DB8PR04CA0026.outlook.office365.com
- (2603:10a6:10:110::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33 via Frontend
- Transport; Wed, 4 Oct 2023 09:50:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;dmarc=pass action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
- pr=C
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- DBAEUR03FT063.mail.protection.outlook.com (100.127.142.255) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6863.26 via Frontend Transport; Wed, 4 Oct 2023 09:50:40 +0000
-Received: ("Tessian outbound 9aeaca65ec26:v211"); Wed, 04 Oct 2023 09:50:40 +0000
-X-CheckRecipientChecked: true
-X-CR-MTA-CID: f050de1b0f6484c5
-X-CR-MTA-TID: 64aa7808
-Received: from 4e75d1152161.2
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 8F3C78CB-2E95-4351-AF4F-E170A67BE5D3.1;
-        Wed, 04 Oct 2023 09:50:29 +0000
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 4e75d1152161.2
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Wed, 04 Oct 2023 09:50:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eGQrI93pfW4ULCCRQuBHPjvWAW4wbCQcqNNJdba0Eqa0Vmk4DlBTQsMX5xjzm+mGdO0KbtIXNnofXSkRLeK2sb9zE9wyti1A+cVMwORf6GSLSXUqTmXS+u/dNxxjaPwgB++RQXSCCNZQ/xZ8Uwnu/i99bmUUf8ZSO/rcMzVd1UVt2o/usvvbpCiZpkzSoMsErPvntQRqJdhEZajSPf9x80uPfvsep6UjX9ND9JV8KMeYlsR5zny32YPFvOG8xWL2AuzZ/dNRzgrISIo1bGxhepueQ+MivLwxtsOCERnz/xpzveDUfc7cV2GOwBlpTIUuNX+OAt5rvo6SORikpptzbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZRr8O79q4KAm9LHhdQBv90pQcIyPcffgLsfMMGyOi4k=;
- b=TIAWM0uMTgcQHLwEPBTRlOdGnWRD7ETRtg7YkTWZDwBQJ+ybFBoS9beyJvl3eww/k8emnVCCNnMiTEh11c3jrVv10vODQsb1FrFqoAnlYAEhE8XzFkPkDL5WzTJg97GLT4zw0svUoyTICWp392zugTPYXbt9Sq50+7NF11y778AY0KQqzb9AfTtjXX/I/35fFdrvaj3/NAedLeXyNsQ3e+fvI0x9sIpXJEYJnna9in06vXktGw0709WAm4DmhH4S+DDdjkHk+F7xffs8vpNkzsI+WiLmm30HTb/aSk1crwAUU8CVO+lO9zXovB+Q+b9HVyEDfzgFKZhE93CXJxtJow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZRr8O79q4KAm9LHhdQBv90pQcIyPcffgLsfMMGyOi4k=;
- b=FH20lKsZH6QTr6pyRv0FMN/56BJe34lYz+5/4UhAZ6yXyVrxTJz7o0yWcKlcNq1Vb+Fh4ZwUjnVCJ/yJoLUP+KNEGHmcr88t6RaV3P057SNVAN3UrjVG7282+tec+TyofemOWwQxgpH3IqX/ClZbKtk2K+SC1KFzIQ+086YlkOE=
-Received: from DB9PR08MB6796.eurprd08.prod.outlook.com (2603:10a6:10:2ad::16)
- by PAWPR08MB10018.eurprd08.prod.outlook.com (2603:10a6:102:363::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Wed, 4 Oct
- 2023 09:50:27 +0000
-Received: from DB9PR08MB6796.eurprd08.prod.outlook.com
- ([fe80::38fa:73c3:8734:da10]) by DB9PR08MB6796.eurprd08.prod.outlook.com
- ([fe80::38fa:73c3:8734:da10%5]) with mapi id 15.20.6838.033; Wed, 4 Oct 2023
- 09:50:26 +0000
-From:   Olivier Deprez <Olivier.Deprez@arm.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Sudeep Holla <Sudeep.Holla@arm.com>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marc Bonnici <Marc.Bonnici@arm.com>,
-        Coboy Chen <coboy.chen@mediatek.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>
-Subject: Re: [PATCH v3 03/17] firmware: arm_ffa: Implement the notification
- bind and unbind interface
-Thread-Topic: [PATCH v3 03/17] firmware: arm_ffa: Implement the notification
- bind and unbind interface
-Thread-Index: AQHZ8uYfXUltWHUNdUaSfjUxLh+2BLA5X9YAgAAKSRg=
-Date:   Wed, 4 Oct 2023 09:50:26 +0000
-Message-ID: <DB9PR08MB67968986584B6EAC87B20C439BCBA@DB9PR08MB6796.eurprd08.prod.outlook.com>
-References: <20230929-ffa_v1-1_notif-v3-0-c8e4f15190c8@arm.com>
- <20230929-ffa_v1-1_notif-v3-3-c8e4f15190c8@arm.com>
- <20231004091154.GB1091193@rayden>
-In-Reply-To: <20231004091154.GB1091193@rayden>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-x-ms-traffictypediagnostic: DB9PR08MB6796:EE_|PAWPR08MB10018:EE_|DBAEUR03FT063:EE_|AS4PR08MB7878:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5c6128fd-b2bc-4ef5-7961-08dbc4bf5e9a
-x-checkrecipientrouted: true
-nodisclaimer: true
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: xg68xhL0qcSz1oHb6Fw7YBgNT7a/mHzOYTX1V+74ZTMWwezxe4hapId6Z6y2r++2CEZsNmYnkBEwJmTIdiZGvp9JCiSe1an6Xb+iEdno3cKkA/VKz41N98pZJyt7l61Zj6CWDuq7P7B2nFaa4oKoz8t5EOcfiMr8CVHqw99/YLpkQPbi6wtZQ0keDgo6aFKaedM9yLhF5LnBXaQXGJMzqb7Efag+ajgiBhVq6MWJhp4MbYj47dPZkbPWeRf7rzLqBZI/OYcvt2p92C99i1UmRvxOIocXZDI0dbbRW5Aq7V7g6R2HFHBhrTqyvv0n/yXSOfsq4nzgwMWcDWAEubZF+sDTIPoZIIQ8WNkuZITm0I1jizETMrsLPJ55VgJBZgkEFcrzd6riGTon65xMaSb4dEcAI2DYaA4chwB0o5PIowB06gKdjU1CNhJnuAQymFEu9l+ht8JESazyykN8RIxUY5I7Cvf3fJoNlKLY8tpywhICTEfQQ4kFmVhP+DePsqm++sPQE16CoSy+CpjObPari8tvJYraep08bclU7V6iuRSfb1u4cDxh6mhU9aQDoR9d75JJ4OT60lAFsAehxmlZaDcs7twHDCXf8RoGHIDdYyQ16uIccscYHwnYbjP85S1r
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR08MB6796.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(136003)(346002)(396003)(366004)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(33656002)(83380400001)(52536014)(86362001)(8676002)(5660300002)(8936002)(53546011)(26005)(71200400001)(4326008)(9686003)(6506007)(7696005)(122000001)(64756008)(55016003)(38100700002)(38070700005)(478600001)(2906002)(66946007)(110136005)(76116006)(316002)(91956017)(66446008)(66476007)(6636002)(54906003)(41300700001)(15650500001)(66556008);DIR:OUT;SFP:1101;
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 4 Oct 2023 05:54:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B54AC;
+        Wed,  4 Oct 2023 02:54:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4415AC433C7;
+        Wed,  4 Oct 2023 09:54:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696413250;
+        bh=DsquM9tEx33nGwumQu0NWjQmqydj6gI4nrLb6Np8JcE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T9NAt65+jEmMoTZVGhWXDdW7Co7+koML4kUDCD2AJQCoZQjY+KRSyLo3yuTI8K6Ux
+         +DS7JVqHb9DIyYA/9ysCCYlSwu0ZhebzR9IE2FQa4ogBdCgC8c/c8nm/pA210/AcNN
+         3wJRHKkxGPSDrHqF8rNKOg2cnJY5LDURYPDAjdvb7wu40RXZmKzq0mVMBKMoQetnuT
+         1VF0OpbsWPpQCriq0o+ml9QkERfK0qKeCf933nxsf6vTkmJKSP/8P5hfjO60ahm4i+
+         0+8nMtzPg3h+PlQj1rbet3gIS2Bq2l1YHVItxfUsPQEQKgdwXcaaYHhViFDJ0E/Kq8
+         pt/od4pJ3xcIg==
+Date:   Wed, 4 Oct 2023 15:24:05 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sanjay R Mehta <Sanju.Mehta@amd.com>
+Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
+        robh@kernel.org, mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH 1/3] dmaengine: ae4dma: Initial ae4dma controller driver
+ with multi channel
+Message-ID: <ZR02PT/k0op8T71U@matsya>
+References: <1694460324-60346-1-git-send-email-Sanju.Mehta@amd.com>
+ <1694460324-60346-2-git-send-email-Sanju.Mehta@amd.com>
 MIME-Version: 1.0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR08MB10018
-Original-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: DBAEUR03FT063.eop-EUR03.prod.protection.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs: b35215cb-2812-4e8f-bd1a-08dbc4bf565d
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CLvG+JSlDmfhUxHRpZiYIVtirT5cPoGFNiIJV8njP1X4vMXS2VFZK0TiXnacKGyB3pmtbdahVLRWvrEfTPuPdH8iafQCgXzSnqvFijDDIwAN+KyKF4HQVAukzqO17ouVL0vWiWW7RS7Ly+I5DFH5KLI40XqzeuFz40h6rfkrAlgEkAdOTieoTGqrqckBUIzq49zdCduY7t9wTWiGVtPyH5QCDa0h4T2FGm/W08/0uj2aeDXiI7mkXl16/cmqWoUPoctSR/hu2EDPdhshdhc5vsmJVWr/KlTapmBOCgIro4V3NCqnjmm0U+qBrn4onQo6zZhGxd6/BFgXXn8vGDkqwRG2bh1TYxbCtTxBmgXh/b4h9j6tbdHXu2ipMKhaFf+uoNt5Zd/wVbo64uX1NCOqy3o0xcDokqyF5l/IpSBZ1nYOOAHtAKOJF1KKAqHjaTFTF00x+saNUOCbpA2V1T7pkNXo2ltr4obqy68XWp+EaY9qoPkJwVvB1HyciwoUNpOeSvykJQxGwObTgDcQSXkbD5g3JSMeXefcMCkEEJ9jA2UJE3thVsgkFT7jjpLIMcw4l6m97l4M8Kc7JgPfa3dIDvUHMRVx6ItVBptqStphdzVrTh1T/L8ruNBkE9j5bOzaW0mR7OCNFcxLpJp0fpfOZ9HhsM9Bt8SUAg+Hrt0LCPAtn+qnl/1knM1w2EoekKHrKOXqL3AiGBu1uzWvLBMS79nACir/evOJW0Qw2t/Kq+yyjK8f4xObn4wjUMWPcjah
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(396003)(346002)(376002)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(82310400011)(46966006)(36840700001)(40470700004)(40460700003)(55016003)(40480700001)(53546011)(478600001)(7696005)(6506007)(47076005)(336012)(36860700001)(356005)(86362001)(33656002)(82740400003)(81166007)(2906002)(83380400001)(26005)(9686003)(15650500001)(6636002)(4326008)(54906003)(41300700001)(70586007)(5660300002)(110136005)(316002)(70206006)(8936002)(8676002)(52536014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 09:50:40.8036
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c6128fd-b2bc-4ef5-7961-08dbc4bf5e9a
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: DBAEUR03FT063.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR08MB7878
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FORGED_SPF_HELO,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_NONE,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1694460324-60346-2-git-send-email-Sanju.Mehta@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,=0A=
-=0A=
-> dst_id and drv_info->vm_id should be swapped.=0A=
-=0A=
-I'm curious about this because swapping like this actually makes hafnium fa=
-il. Need to check from the spec.=0A=
-=0A=
-Regards,=0A=
-Olivier.=0A=
-=0A=
-=0A=
-=0A=
-________________________________________=0A=
-From: Jens Wiklander <jens.wiklander@linaro.org>=0A=
-Sent: 04 October 2023 11:11=0A=
-To: Sudeep Holla=0A=
-Cc: linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; Mar=
-c Bonnici; Coboy Chen; Lorenzo Pieralisi; Olivier Deprez=0A=
-Subject: Re: [PATCH v3 03/17] firmware: arm_ffa: Implement the notification=
- bind and unbind interface=0A=
-=0A=
-On Fri, Sep 29, 2023 at 04:02:52PM +0100, Sudeep Holla wrote:=0A=
-> A receiver endpoint must bind a notification to any sender endpoint=0A=
-> before the latter can signal the notification to the former. The receiver=
-=0A=
-> assigns one or more doorbells to a specific sender. Only the sender can=
-=0A=
-> ring these doorbells.=0A=
->=0A=
-> A receiver uses the FFA_NOTIFICATION_BIND interface to bind one or more=
-=0A=
-> notifications to the sender. A receiver un-binds a notification from a=0A=
-> sender endpoint to stop the notification from being signaled. It uses=0A=
-> the FFA_NOTIFICATION_UNBIND interface to do this.=0A=
->=0A=
-> Allow the FF-A driver to be able to bind and unbind a given notification=
-=0A=
-> ID to a specific partition ID. This will be used to register and=0A=
-> unregister notification callbacks from the FF-A client drivers.=0A=
->=0A=
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>=0A=
-> ---=0A=
->  drivers/firmware/arm_ffa/driver.c | 29 +++++++++++++++++++++++++++++=0A=
->  1 file changed, 29 insertions(+)=0A=
->=0A=
-> diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa=
-/driver.c=0A=
-> index efa4e7fb15e3..26bf9c4e3b5f 100644=0A=
-> --- a/drivers/firmware/arm_ffa/driver.c=0A=
-> +++ b/drivers/firmware/arm_ffa/driver.c=0A=
-> @@ -587,6 +587,35 @@ static int ffa_notification_bitmap_destroy(void)=0A=
->       return 0;=0A=
->  }=0A=
->=0A=
-> +#define NOTIFICATION_LOW_MASK                GENMASK(31, 0)=0A=
-> +#define NOTIFICATION_HIGH_MASK               GENMASK(63, 32)=0A=
-> +#define NOTIFICATION_BITMAP_HIGH(x)  \=0A=
-> +             ((u32)(FIELD_GET(NOTIFICATION_HIGH_MASK, (x))))=0A=
-> +#define NOTIFICATION_BITMAP_LOW(x)   \=0A=
-> +             ((u32)(FIELD_GET(NOTIFICATION_LOW_MASK, (x))))=0A=
-> +=0A=
-> +static int ffa_notification_bind_common(u16 dst_id, u64 bitmap,=0A=
-> +                                     u32 flags, bool is_bind)=0A=
-> +{=0A=
-> +     ffa_value_t ret;=0A=
-> +     u32 func, src_dst_ids =3D PACK_TARGET_INFO(dst_id, drv_info->vm_id)=
-;=0A=
-=0A=
-dst_id and drv_info->vm_id should be swapped.=0A=
-=0A=
-Thanks,=0A=
-Jens=0A=
-=0A=
-> +=0A=
-> +     func =3D is_bind ? FFA_NOTIFICATION_BIND : FFA_NOTIFICATION_UNBIND;=
-=0A=
-> +=0A=
-> +     invoke_ffa_fn((ffa_value_t){=0A=
-> +               .a0 =3D func, .a1 =3D src_dst_ids, .a2 =3D flags,=0A=
-> +               .a3 =3D NOTIFICATION_BITMAP_LOW(bitmap),=0A=
-> +               .a4 =3D NOTIFICATION_BITMAP_HIGH(bitmap),=0A=
-> +               }, &ret);=0A=
-> +=0A=
-> +     if (ret.a0 =3D=3D FFA_ERROR)=0A=
-> +             return ffa_to_linux_errno((int)ret.a2);=0A=
-> +     else if (ret.a0 !=3D FFA_SUCCESS)=0A=
-> +             return -EINVAL;=0A=
-> +=0A=
-> +     return 0;=0A=
-> +}=0A=
-> +=0A=
->  static void ffa_set_up_mem_ops_native_flag(void)=0A=
->  {=0A=
->       if (!ffa_features(FFA_FN_NATIVE(MEM_LEND), 0, NULL, NULL) ||=0A=
->=0A=
-> --=0A=
-> 2.42.0=0A=
->=0A=
+On 11-09-23, 14:25, Sanjay R Mehta wrote:
+> From: Sanjay R Mehta <sanju.mehta@amd.com>
+> 
+> Add support for AMD AE4DMA controller. It performs high-bandwidth
+> memory to memory and IO copy operation. Device commands are managed
+> via a circular queue of 'descriptors', each of which specifies source
+> and destination addresses for copying a single buffer of data.
+> 
+> Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
+> ---
+>  MAINTAINERS                     |   6 +
+>  drivers/dma/Kconfig             |   2 +
+>  drivers/dma/Makefile            |   1 +
+>  drivers/dma/ae4dma/Kconfig      |  11 ++
+>  drivers/dma/ae4dma/Makefile     |  10 ++
+>  drivers/dma/ae4dma/ae4dma-dev.c | 320 +++++++++++++++++++++++++++++++++++++
+>  drivers/dma/ae4dma/ae4dma-pci.c | 247 +++++++++++++++++++++++++++++
+>  drivers/dma/ae4dma/ae4dma.h     | 338 ++++++++++++++++++++++++++++++++++++++++
+>  8 files changed, 935 insertions(+)
+>  create mode 100644 drivers/dma/ae4dma/Kconfig
+>  create mode 100644 drivers/dma/ae4dma/Makefile
+>  create mode 100644 drivers/dma/ae4dma/ae4dma-dev.c
+>  create mode 100644 drivers/dma/ae4dma/ae4dma-pci.c
+>  create mode 100644 drivers/dma/ae4dma/ae4dma.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d590ce3..fdcc6d9 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -891,6 +891,12 @@ Q:	https://patchwork.kernel.org/project/linux-rdma/list/
+>  F:	drivers/infiniband/hw/efa/
+>  F:	include/uapi/rdma/efa-abi.h
+>  
+> +AMD AE4DMA DRIVER
+> +M:	Sanjay R Mehta <sanju.mehta@amd.com>
+> +L:	dmaengine@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/dma/ae4dma/
+> +
+>  AMD CDX BUS DRIVER
+>  M:	Nipun Gupta <nipun.gupta@amd.com>
+>  M:	Nikhil Agarwal <nikhil.agarwal@amd.com>
+> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+> index 08fdd0e..b26dbfb 100644
+> --- a/drivers/dma/Kconfig
+> +++ b/drivers/dma/Kconfig
+> @@ -777,6 +777,8 @@ source "drivers/dma/fsl-dpaa2-qdma/Kconfig"
+>  
+>  source "drivers/dma/lgm/Kconfig"
+>  
+> +source "drivers/dma/ae4dma/Kconfig"
+
+There is another amd driver on the list, I suggest move all of these to
+amd/ and have one kconfig inside amd/
+
+> +
+>  # clients
+>  comment "DMA Clients"
+>  	depends on DMA_ENGINE
+> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
+> index a4fd1ce..513d87f 100644
+> --- a/drivers/dma/Makefile
+> +++ b/drivers/dma/Makefile
+> @@ -81,6 +81,7 @@ obj-$(CONFIG_XGENE_DMA) += xgene-dma.o
+>  obj-$(CONFIG_ST_FDMA) += st_fdma.o
+>  obj-$(CONFIG_FSL_DPAA2_QDMA) += fsl-dpaa2-qdma/
+>  obj-$(CONFIG_INTEL_LDMA) += lgm/
+> +obj-$(CONFIG_AMD_AE4DMA) += ae4dma/
+>  
+>  obj-y += mediatek/
+>  obj-y += qcom/
+> diff --git a/drivers/dma/ae4dma/Kconfig b/drivers/dma/ae4dma/Kconfig
+> new file mode 100644
+> index 0000000..1cda9de
+> --- /dev/null
+> +++ b/drivers/dma/ae4dma/Kconfig
+> @@ -0,0 +1,11 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +config AMD_AE4DMA
+> +	tristate  "AMD AE4DMA Engine"
+> +	depends on X86_64 && PCI
+> +	help
+> +	  Enabling this option provides support for the AMD AE4DMA controller,
+> +	  which offers DMA capabilities for high-bandwidth memory-to-memory and
+> +	  I/O copy operations. The controller utilizes a queue-based descriptor
+> +	  management system for efficient DMA transfers. It is specifically
+> +	  designed to be used in conjunction with AMD Non-Transparent Bridge devices
+> +	  and is not intended for general-purpose peripheral DMA functionality.
+> diff --git a/drivers/dma/ae4dma/Makefile b/drivers/dma/ae4dma/Makefile
+> new file mode 100644
+> index 0000000..db9cab1
+> --- /dev/null
+> +++ b/drivers/dma/ae4dma/Makefile
+> @@ -0,0 +1,10 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# AMD AE4DMA driver
+> +#
+> +
+> +obj-$(CONFIG_AMD_AE4DMA) += ae4dma.o
+> +
+> +ae4dma-objs := ae4dma-dev.o
+> +
+> +ae4dma-$(CONFIG_PCI) += ae4dma-pci.o
+> diff --git a/drivers/dma/ae4dma/ae4dma-dev.c b/drivers/dma/ae4dma/ae4dma-dev.c
+> new file mode 100644
+> index 0000000..a3c50a2
+> --- /dev/null
+> +++ b/drivers/dma/ae4dma/ae4dma-dev.c
+> @@ -0,0 +1,320 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * AMD AE4DMA device driver
+> + * -- Based on the PTDMA driver
+> + *
+> + * Copyright (C) 2023 Advanced Micro Devices, Inc.
+> + *
+> + * Author: Sanjay R Mehta <sanju.mehta@amd.com>
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/delay.h>
+> +
+> +#include "ae4dma.h"
+> +#include "../dmaengine.h"
+> +#include "../virt-dma.h"
+> +
+> +static unsigned int max_hw_q = 1;
+> +module_param(max_hw_q, uint, 0444);
+> +MODULE_PARM_DESC(max_hw_q, "Max queues per engine (any non-zero value less than or equal to 16, default: 1)");
+> +
+> +/* Human-readable error strings */
+> +static char *ae4_error_codes[] = {
+> +	"",
+> +	"ERR 01: INVALID HEADER DW0",
+> +	"ERR 02: INVALID STATUS",
+> +	"ERR 03: INVALID LENGTH - 4 BYTE ALIGNMENT",
+> +	"ERR 04: INVALID SRC ADDR - 4 BYTE ALIGNMENT",
+> +	"ERR 05: INVALID DST ADDR - 4 BYTE ALIGNMENT",
+> +	"ERR 06: INVALID ALIGNMENT",
+> +	"ERR 07: INVALID DESCRIPTOR",
+> +};
+> +
+> +static void ae4_log_error(struct ae4_device *d, int e)
+> +{
+> +	if (e <= 7)
+> +		dev_info(d->dev, "AE4DMA error: %s (0x%x)\n", ae4_error_codes[e], e);
+> +	else if (e > 7 && e <= 15)
+> +		dev_info(d->dev, "AE4DMA error: %s (0x%x)\n", "INVALID DESCRIPTOR", e);
+> +	else if (e > 15 && e <= 31)
+> +		dev_info(d->dev, "AE4DMA error: %s (0x%x)\n", "INVALID DESCRIPTOR", e);
+> +	else if (e > 31 && e <= 63)
+> +		dev_info(d->dev, "AE4DMA error: %s (0x%x)\n", "INVALID DESCRIPTOR", e);
+> +	else if (e > 63 && e <= 127)
+> +		dev_info(d->dev, "AE4DMA error: %s (0x%x)\n", "PTE ERROR", e);
+> +	else if (e > 127 && e <= 255)
+> +		dev_info(d->dev, "AE4DMA error: %s (0x%x)\n", "PTE ERROR", e);
+
+why info level? It should err going by fn description
+
+> +}
+> +
+> +void ae4_start_queue(struct ae4_cmd_queue *cmd_q)
+> +{
+> +	/* Turn on the run bit */
+> +	iowrite32(cmd_q->qcontrol | CMD_Q_RUN, cmd_q->reg_control);
+> +}
+> +
+> +void ae4_stop_queue(struct ae4_cmd_queue *cmd_q)
+> +{
+> +	/* Turn off the run bit */
+> +	iowrite32(cmd_q->qcontrol & ~CMD_Q_RUN, cmd_q->reg_control);
+> +}
+> +
+> +static int ae4_core_execute_cmd(struct ae4dma_desc *desc, struct ae4_cmd_queue *cmd_q)
+> +{
+> +	bool soc = FIELD_GET(DWORD0_SOC, desc->dw0);
+> +	u8 *q_desc = (u8 *)&cmd_q->qbase[0];
+> +	u32 tail_wi;
+> +
+> +	cmd_q->int_rcvd = 0;
+> +
+> +	if (soc) {
+> +		desc->dw0 |= FIELD_PREP(DWORD0_IOC, desc->dw0);
+> +		desc->dw0 &= ~DWORD0_SOC;
+> +	}
+> +	mutex_lock(&cmd_q->q_mutex);
+> +
+> +	/* Write Index of circular queue */
+> +	tail_wi =  ioread32(cmd_q->reg_control + 0x10);
+> +	q_desc += (tail_wi * 32);
+> +
+> +	/* Copy 32-byte command descriptor to hw queue. */
+> +	memcpy(q_desc, desc, 32);
+> +	cmd_q->qidx = (cmd_q->qidx + 1) % CMD_Q_LEN; // Increment q_desc id.
+> +
+> +	/* The data used by this command must be flushed to memory */
+> +	wmb();
+> +
+> +	/* Write the new tail_wi address back to the queue register */
+> +	tail_wi = (tail_wi + 1) % CMD_Q_LEN;
+> +	iowrite32(tail_wi, cmd_q->reg_control + 0x10);
+> +
+> +	mutex_unlock(&cmd_q->q_mutex);
+> +
+> +	return 0;
+> +}
+> +
+> +int ae4_core_perform_passthru(struct ae4_cmd_queue *cmd_q, struct ae4_passthru_engine *ae4_engine)
+
+Who calls this, pls document the arguments for apis
+
+
+> +{
+> +	struct ae4dma_desc desc;
+> +	struct ae4_device *ae4 = cmd_q->ae4;
+> +
+> +	cmd_q->cmd_error = 0;
+> +	memset(&desc, 0, sizeof(desc));
+> +	desc.dw0 = CMD_DESC_DW0_VAL;
+> +	desc.dw1.status = 0;
+> +	desc.dw1.err_code = 0;
+> +	desc.dw1.desc_id = 0;
+
+these are redundant, u already did memset
+
+> +	desc.length = ae4_engine->src_len;
+> +	desc.src_lo = upper_32_bits(ae4_engine->src_dma);
+> +	desc.src_hi = lower_32_bits(ae4_engine->src_dma);
+> +	desc.dst_lo = upper_32_bits(ae4_engine->dst_dma);
+> +	desc.dst_hi = lower_32_bits(ae4_engine->dst_dma);
+> +
+> +	if (cmd_q->int_en)
+> +		ae4_core_enable_queue_interrupts(ae4, cmd_q);
+> +	else
+> +		ae4_core_disable_queue_interrupts(ae4, cmd_q);
+> +
+> +	return ae4_core_execute_cmd(&desc, cmd_q);
+> +}
+> +
+> +static void ae4_do_cmd_complete(struct tasklet_struct *t)
+> +{
+> +	struct ae4_cmd_queue *cmd_q = from_tasklet(cmd_q, t, irq_tasklet);
+> +	unsigned long flags;
+> +	struct ae4_cmd *cmd;
+> +
+> +	spin_lock_irqsave(&cmd_q->cmd_lock, flags);
+> +	cmd = list_first_entry(&cmd_q->cmd, struct ae4_cmd, entry);
+> +	list_del(&cmd->entry);
+> +	spin_unlock_irqrestore(&cmd_q->cmd_lock, flags);
+> +
+> +	cmd->ae4_cmd_callback(cmd->data, cmd->ret);
+> +}
+> +
+> +void ae4_check_status_trans(struct ae4_device *ae4, struct ae4_cmd_queue *cmd_q)
+> +{
+> +	u8 status;
+> +	int head = ioread32(cmd_q->reg_control + 0x0C);
+> +	struct ae4dma_desc *desc;
+> +
+> +	head = (head - 1) & (CMD_Q_LEN - 1);
+> +	desc = &cmd_q->qbase[head];
+> +
+> +	status = desc->dw1.status;
+> +	if (status) {
+> +		cmd_q->int_status = status;
+> +		if (status != 0x3) {
+
+magic number
+
+> +			/* On error, only save the first error value */
+> +			cmd_q->cmd_error = desc->dw1.err_code;
+> +			if (cmd_q->cmd_error) {
+> +				/*
+> +				 * Log the error and flush the queue by
+> +				 * moving the head pointer
+> +				 */
+> +				ae4_log_error(cmd_q->ae4, cmd_q->cmd_error);
+> +			}
+> +		}
+> +	}
+> +}
+> +
+> +static irqreturn_t ae4_core_irq_handler(int irq, void *data)
+> +{
+> +	struct ae4_cmd_queue *cmd_q = data;
+> +	struct ae4_device *ae4 = cmd_q->ae4;
+> +	u32 status = ioread32(cmd_q->reg_control + 0x4);
+> +	u8 q_intr_type = (status >> 24) & 0xf;
+> +
+> +	if (q_intr_type ==  0x4)
+> +		dev_info(ae4->dev, "AE4DMA INTR: %s (0x%x)\n", "queue desc error", q_intr_type);
+> +	else if (q_intr_type ==  0x2)
+> +		dev_info(ae4->dev, "AE4DMA INTR: %s (0x%x)\n", "queue stopped", q_intr_type);
+> +	else if (q_intr_type ==  0x1)
+> +		dev_info(ae4->dev, "AE4DMA INTR: %s (0x%x)\n", "queue empty", q_intr_type);
+> +	else
+> +		dev_info(ae4->dev, "AE4DMA INTR: %s (0x%x)\n", "unknown error", q_intr_type);
+
+better use a switch
+
+> +
+> +	ae4_check_status_trans(ae4, cmd_q);
+> +
+> +	tasklet_schedule(&cmd_q->irq_tasklet);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +int ae4_core_init(struct ae4_device *ae4)
+> +{
+> +	char dma_pool_name[MAX_DMAPOOL_NAME_LEN];
+> +	struct ae4_cmd_queue *cmd_q;
+> +	u32 dma_addr_lo, dma_addr_hi;
+> +	struct device *dev = ae4->dev;
+> +	struct dma_pool *dma_pool;
+> +	unsigned int i;
+> +	int ret;
+> +	u32 q_per_eng = max_hw_q;
+> +
+> +	/* Update the device registers with queue information. */
+> +	iowrite32(q_per_eng, ae4->io_regs);
+> +
+> +	q_per_eng = ioread32(ae4->io_regs);
+> +
+> +	for (i = 0; i < q_per_eng; i++) {
+> +		/* Allocate a dma pool for the queue */
+> +		snprintf(dma_pool_name, sizeof(dma_pool_name), "%s_q%d", dev_name(ae4->dev), i);
+> +		dma_pool = dma_pool_create(dma_pool_name, dev,
+> +					   AE4_DMAPOOL_MAX_SIZE,
+> +					   AE4_DMAPOOL_ALIGN, 0);
+> +		if (!dma_pool)
+> +			return -ENOMEM;
+> +
+> +		/* ae4dma core initialisation */
+> +		cmd_q = &ae4->cmd_q[i];
+> +		cmd_q->id = ae4->cmd_q_count;
+> +		ae4->cmd_q_count++;
+> +		cmd_q->ae4 = ae4;
+> +		cmd_q->dma_pool = dma_pool;
+> +		mutex_init(&cmd_q->q_mutex);
+> +		spin_lock_init(&cmd_q->q_lock);
+> +
+> +		/* Preset some register values (Q size is 32byte (0x20)) */
+> +		cmd_q->reg_control = ae4->io_regs + ((i + 1) * 0x20);
+> +
+> +		/* Page alignment satisfies our needs for N <= 128 */
+> +		cmd_q->qsize = Q_SIZE(Q_DESC_SIZE);
+> +		cmd_q->qbase = dma_alloc_coherent(dev, cmd_q->qsize, &cmd_q->qbase_dma, GFP_KERNEL);
+> +
+> +		if (!cmd_q->qbase) {
+> +			ret = -ENOMEM;
+> +			goto e_destroy_pool;
+> +		}
+> +
+> +		cmd_q->qidx = 0;
+> +		cmd_q->q_space_available = 0;
+> +
+> +		init_waitqueue_head(&cmd_q->int_queue);
+> +		init_waitqueue_head(&cmd_q->q_space);
+
+why do you need two waitqueues here?
+
+> +
+> +		dev_dbg(dev, "queue #%u available\n", i);
+> +	}
+> +
+> +	if (ae4->cmd_q_count == 0) {
+> +		dev_notice(dev, "no command queues available\n");
+> +		ret = -EIO;
+> +		goto e_destroy_pool;
+> +	}
+> +	for (i = 0; i < ae4->cmd_q_count; i++) {
+> +		cmd_q = &ae4->cmd_q[i];
+> +		cmd_q->qcontrol = 0;
+> +		ret = request_irq(ae4->ae4_irq[i], ae4_core_irq_handler, 0,
+> +				  dev_name(ae4->dev), cmd_q);
+> +		if (ret) {
+> +			dev_err(dev, "unable to allocate an IRQ\n");
+> +			goto e_free_dma;
+> +		}
+> +
+> +		/* Update the device registers with cnd queue length (Max Index reg). */
+> +		iowrite32(CMD_Q_LEN, cmd_q->reg_control + 0x08);
+> +		cmd_q->qdma_tail = cmd_q->qbase_dma;
+> +		dma_addr_lo = lower_32_bits(cmd_q->qdma_tail);
+> +		iowrite32((u32)dma_addr_lo, cmd_q->reg_control + 0x18);
+> +		dma_addr_lo = ioread32(cmd_q->reg_control + 0x18);
+> +		dma_addr_hi = upper_32_bits(cmd_q->qdma_tail);
+> +		iowrite32((u32)dma_addr_hi, cmd_q->reg_control + 0x1C);
+> +		dma_addr_hi = ioread32(cmd_q->reg_control + 0x1C);
+> +		ae4_core_enable_queue_interrupts(ae4, cmd_q);
+> +		INIT_LIST_HEAD(&cmd_q->cmd);
+> +
+> +		/* Initialize the ISR tasklet */
+> +		tasklet_setup(&cmd_q->irq_tasklet, ae4_do_cmd_complete);
+> +	}
+> +
+> +	return 0;
+> +
+> +e_free_dma:
+> +	dma_free_coherent(dev, cmd_q->qsize, cmd_q->qbase, cmd_q->qbase_dma);
+> +
+> +e_destroy_pool:
+> +	for (i = 0; i < ae4->cmd_q_count; i++)
+> +		dma_pool_destroy(ae4->cmd_q[i].dma_pool);
+> +
+> +	return ret;
+> +}
+> +
+> +void ae4_core_destroy(struct ae4_device *ae4)
+> +{
+> +	struct device *dev = ae4->dev;
+> +	struct ae4_cmd_queue *cmd_q;
+> +	struct ae4_cmd *cmd;
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < ae4->cmd_q_count; i++) {
+> +		cmd_q = &ae4->cmd_q[i];
+> +
+> +		wake_up_all(&cmd_q->q_space);
+> +		wake_up_all(&cmd_q->int_queue);
+> +
+> +		/* Disable and clear interrupts */
+> +		ae4_core_disable_queue_interrupts(ae4, cmd_q);
+> +
+> +		/* Turn off the run bit */
+> +		ae4_stop_queue(cmd_q);
+> +
+> +		free_irq(ae4->ae4_irq[i], cmd_q);
+> +
+> +		dma_free_coherent(dev, cmd_q->qsize, cmd_q->qbase,
+> +				  cmd_q->qbase_dma);
+> +	}
+> +
+> +	/* Flush the cmd queue */
+> +	while (!list_empty(&ae4->cmd)) {
+> +		/* Invoke the callback directly with an error code */
+> +		cmd = list_first_entry(&ae4->cmd, struct ae4_cmd, entry);
+> +		list_del(&cmd->entry);
+> +		cmd->ae4_cmd_callback(cmd->data, -ENODEV);
+> +	}
+> +}
+> diff --git a/drivers/dma/ae4dma/ae4dma-pci.c b/drivers/dma/ae4dma/ae4dma-pci.c
+> new file mode 100644
+> index 0000000..a77fbb5
+> --- /dev/null
+> +++ b/drivers/dma/ae4dma/ae4dma-pci.c
+> @@ -0,0 +1,247 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * AMD AE4DMA device driver
+> + * -- Based on the PTDMA driver
+
+cant we use ptdma driver to support both cores?
+
+> + *
+> + * Copyright (C) 2023 Advanced Micro Devices, Inc.
+> + *
+> + * Author: Sanjay R Mehta <sanju.mehta@amd.com>
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/delay.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/kthread.h>
+> +#include <linux/module.h>
+> +#include <linux/pci_ids.h>
+> +#include <linux/pci.h>
+> +#include <linux/spinlock.h>
+> +
+> +#include "ae4dma.h"
+> +
+> +struct ae4_msix {
+> +	int msix_count;
+> +	struct msix_entry msix_entry[MAX_HW_QUEUES];
+> +};
+> +
+> +/*
+> + * ae4_alloc_struct - allocate and initialize the ae4_device struct
+> + *
+> + * @dev: device struct of the AE4DMA
+> + */
+> +static struct ae4_device *ae4_alloc_struct(struct device *dev)
+> +{
+> +	struct ae4_device *ae4;
+> +
+> +	ae4 = devm_kzalloc(dev, sizeof(*ae4), GFP_KERNEL);
+> +
+
+This empty line here doesnt make sense
+> +	if (!ae4)
+> +		return NULL;
+
+it should be here instead :-)
+
+> +	ae4->dev = dev;
+> +
+> +	INIT_LIST_HEAD(&ae4->cmd);
+> +
+> +	return ae4;
+> +}
+> +
+> +static int ae4_get_msix_irqs(struct ae4_device *ae4)
+> +{
+> +	struct ae4_msix *ae4_msix = ae4->ae4_msix;
+> +	struct device *dev = ae4->dev;
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	int v, i, ret;
+> +
+> +	for (v = 0; v < ARRAY_SIZE(ae4_msix->msix_entry); v++)
+> +		ae4_msix->msix_entry[v].entry = v;
+> +
+> +	ret = pci_enable_msix_range(pdev, ae4_msix->msix_entry, 1, v);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ae4_msix->msix_count = ret;
+> +
+> +	for (i = 0; i < MAX_HW_QUEUES; i++)
+> +		ae4->ae4_irq[i] = ae4_msix->msix_entry[i].vector;
+> +
+> +	return 0;
+> +}
+> +
+> +static int ae4_get_msi_irq(struct ae4_device *ae4)
+> +{
+> +	struct device *dev = ae4->dev;
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	int ret, i;
+> +
+> +	ret = pci_enable_msi(pdev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	for (i = 0; i < MAX_HW_QUEUES; i++)
+> +		ae4->ae4_irq[i] = pdev->irq;
+> +
+> +	return 0;
+> +}
+> +
+> +static int ae4_get_irqs(struct ae4_device *ae4)
+> +{
+> +	struct device *dev = ae4->dev;
+> +	int ret;
+> +
+> +	ret = ae4_get_msix_irqs(ae4);
+> +	if (!ret)
+> +		return 0;
+> +
+> +	/* Couldn't get MSI-X vectors, try MSI */
+> +	dev_err(dev, "could not enable MSI-X (%d), trying MSI\n", ret);
+> +	ret = ae4_get_msi_irq(ae4);
+> +	if (!ret)
+> +		return 0;
+> +
+> +	/* Couldn't get MSI interrupt */
+> +	dev_err(dev, "could not enable MSI (%d)\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static void ae4_free_irqs(struct ae4_device *ae4)
+> +{
+> +	struct ae4_msix *ae4_msix = ae4->ae4_msix;
+> +	struct device *dev = ae4->dev;
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	unsigned int i;
+> +
+> +	if (ae4_msix->msix_count)
+> +		pci_disable_msix(pdev);
+> +	else if (ae4->ae4_irq)
+> +		pci_disable_msi(pdev);
+> +
+> +	for (i = 0; i < MAX_HW_QUEUES; i++)
+> +		ae4->ae4_irq[i] = 0;
+> +}
+> +
+> +static int ae4_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> +{
+> +	struct ae4_device *ae4;
+> +	struct ae4_msix *ae4_msix;
+> +	struct device *dev = &pdev->dev;
+> +	void __iomem * const *iomap_table;
+> +	int bar_mask;
+> +	int ret = -ENOMEM;
+> +
+> +	ae4 = ae4_alloc_struct(dev);
+> +	if (!ae4)
+> +		goto e_err;
+> +
+> +	ae4_msix = devm_kzalloc(dev, sizeof(*ae4_msix), GFP_KERNEL);
+> +	if (!ae4_msix)
+> +		goto e_err;
+> +
+> +	ae4->ae4_msix = ae4_msix;
+> +	ae4->dev_vdata = (struct ae4_dev_vdata *)id->driver_data;
+> +	if (!ae4->dev_vdata) {
+> +		ret = -ENODEV;
+> +		dev_err(dev, "missing driver data\n");
+> +		goto e_err;
+> +	}
+> +
+> +	ret = pcim_enable_device(pdev);
+> +	if (ret) {
+> +		dev_err(dev, "pcim_enable_device failed (%d)\n", ret);
+> +		goto e_err;
+> +	}
+> +
+> +	bar_mask = pci_select_bars(pdev, IORESOURCE_MEM);
+> +	ret = pcim_iomap_regions(pdev, bar_mask, "ae4dma");
+> +	if (ret) {
+> +		dev_err(dev, "pcim_iomap_regions failed (%d)\n", ret);
+> +		goto e_err;
+> +	}
+> +
+> +	iomap_table = pcim_iomap_table(pdev);
+> +	if (!iomap_table) {
+> +		dev_err(dev, "pcim_iomap_table failed\n");
+> +		ret = -ENOMEM;
+> +		goto e_err;
+> +	}
+> +
+> +	ae4->io_regs = iomap_table[ae4->dev_vdata->bar];
+> +	if (!ae4->io_regs) {
+> +		dev_err(dev, "ioremap failed\n");
+> +		ret = -ENOMEM;
+> +		goto e_err;
+> +	}
+> +
+> +	ret = ae4_get_irqs(ae4);
+> +	if (ret)
+> +		goto e_err;
+> +
+> +	pci_set_master(pdev);
+> +
+> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(48));
+> +	if (ret) {
+> +		ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
+> +		if (ret) {
+> +			dev_err(dev, "dma_set_mask_and_coherent failed (%d)\n",
+> +				ret);
+> +			goto e_err;
+> +		}
+> +	}
+> +
+> +	dev_set_drvdata(dev, ae4);
+> +
+> +	if (ae4->dev_vdata)
+> +		ret = ae4_core_init(ae4);
+> +
+> +	if (ret)
+> +		goto e_err;
+> +
+> +	return 0;
+> +
+> +e_err:
+> +	dev_err(dev, "initialization failed ret = %d\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static void ae4_pci_remove(struct pci_dev *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct ae4_device *ae4 = dev_get_drvdata(dev);
+> +
+> +	if (!ae4)
+> +		return;
+> +
+> +	if (ae4->dev_vdata)
+> +		ae4_core_destroy(ae4);
+> +
+> +	ae4_free_irqs(ae4);
+> +}
+> +
+> +static const struct ae4_dev_vdata dev_vdata[] = {
+> +	{
+> +		.bar = 0,
+
+why pass zero data?
+
+> +	},
+> +};
+> +
+> +static const struct pci_device_id ae4_pci_table[] = {
+> +	{ PCI_VDEVICE(AMD, 0x14C8), (kernel_ulong_t)&dev_vdata[0] },
+> +	{ PCI_VDEVICE(AMD, 0x14DC), (kernel_ulong_t)&dev_vdata[0] },
+> +	/* Last entry must be zero */
+> +	{ 0, }
+> +};
+> +MODULE_DEVICE_TABLE(pci, ae4_pci_table);
+> +
+> +static struct pci_driver ae4_pci_driver = {
+> +	.name = "ae4dma",
+> +	.id_table = ae4_pci_table,
+> +	.probe = ae4_pci_probe,
+> +	.remove = ae4_pci_remove,
+> +};
+> +
+> +module_pci_driver(ae4_pci_driver);
+> +
+> +MODULE_AUTHOR("Sanjay R Mehta <sanju.mehta@amd.com>");
+> +MODULE_LICENSE("GPL");
+> +MODULE_DESCRIPTION("AMD AE4DMA driver");
+> diff --git a/drivers/dma/ae4dma/ae4dma.h b/drivers/dma/ae4dma/ae4dma.h
+> new file mode 100644
+> index 0000000..0ae46ee
+> --- /dev/null
+> +++ b/drivers/dma/ae4dma/ae4dma.h
+> @@ -0,0 +1,338 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * AMD AE4DMA device driver
+> + *
+> + * Copyright (C) 2023 Advanced Micro Devices, Inc.
+> + *
+> + * Author: Sanjay R Mehta <sanju.mehta@amd.com>
+> + */
+> +
+> +#ifndef __AE4_DEV_H__
+> +#define __AE4_DEV_H__
+> +
+> +#include <linux/device.h>
+> +#include <linux/pci.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/mutex.h>
+> +#include <linux/list.h>
+> +#include <linux/wait.h>
+> +#include <linux/dmapool.h>
+> +
+> +#define MAX_AE4_NAME_LEN			16
+> +#define MAX_DMAPOOL_NAME_LEN		32
+> +
+> +#define MAX_HW_QUEUES			16
+> +#define MAX_CMD_QLEN			32
+> +
+> +#define AE4_ENGINE_PASSTHRU		5
+> +
+> +/* Register Mappings */
+> +#define IRQ_MASK_REG			0x040
+> +#define IRQ_STATUS_REG			0x200
+> +
+> +#define CMD_Q_ERROR(__qs)		((__qs) & 0x0000003f)
+> +
+> +#define CMD_QUEUE_PRIO_OFFSET		0x00
+> +#define CMD_REQID_CONFIG_OFFSET		0x04
+> +#define CMD_TIMEOUT_OFFSET		0x08
+> +#define CMD_AE4_VERSION			0x10
+> +
+> +#define CMD_Q_CONTROL_BASE		0x0000
+> +#define CMD_Q_TAIL_LO_BASE		0x0004
+> +#define CMD_Q_HEAD_LO_BASE		0x0008
+> +#define CMD_Q_INT_ENABLE_BASE		0x000C
+
+lower case please (here and elsewhere)
+
+-- 
+~Vinod
