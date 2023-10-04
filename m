@@ -2,69 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AD07B83A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456947B83A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233560AbjJDPcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47376 "EHLO
+        id S233568AbjJDPc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233593AbjJDPcn (ORCPT
+        with ESMTP id S233550AbjJDPcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:32:43 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 96598C4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:32:38 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EFE9EC15;
-        Wed,  4 Oct 2023 08:33:16 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 422893F762;
-        Wed,  4 Oct 2023 08:32:37 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 16:32:34 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Olivier Deprez <Olivier.Deprez@arm.com>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marc Bonnici <Marc.Bonnici@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Coboy Chen <coboy.chen@mediatek.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>
-Subject: Re: [PATCH v3 03/17] firmware: arm_ffa: Implement the notification
- bind and unbind interface
-Message-ID: <20231004153234.ktk6egntk7drao47@bogus>
-References: <20230929-ffa_v1-1_notif-v3-0-c8e4f15190c8@arm.com>
- <20230929-ffa_v1-1_notif-v3-3-c8e4f15190c8@arm.com>
- <20231004091154.GB1091193@rayden>
- <DB9PR08MB67968986584B6EAC87B20C439BCBA@DB9PR08MB6796.eurprd08.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB9PR08MB67968986584B6EAC87B20C439BCBA@DB9PR08MB6796.eurprd08.prod.outlook.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 4 Oct 2023 11:32:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCF7C6
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:32:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEFEBC433C7;
+        Wed,  4 Oct 2023 15:32:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696433570;
+        bh=Na16UD/s1oSoqnUU7cLXvGvYgsS3in1QKmZWnqaLLM8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UlRUnRxR4Knt/zA1ssgoCg17S7pcXjBahn655ReiBJ/eLOS5x/vT0cNWB+zftQ7/2
+         yWHdSS4rhR4Y0oYGHmClcdBh+rL5reJPF0yPyFNod0LOv7pAnVYN4KuKVm7jIfjyeQ
+         pDpDvD5yer+ZQ4AejEO6htlgMPAmFHk/BTrXNKrjScnABeZAjuh+SwuMxa/eQ/YDnh
+         gT476gABsmUxf1Wf8BNSuBOjsDQ77L2uJuzR8Xc1TeJjZyJxiR2K0gndCzA8ioimm5
+         DI9yGP7EjGgXIdZaqDV2kfk/tk5FuRuzef7jQVHgaXiIW6U60lPqTU96T6EOEikSvm
+         mLjqOI8PHOVaA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qo3rk-0016Ui-GG;
+        Wed, 04 Oct 2023 16:32:48 +0100
+Date:   Wed, 04 Oct 2023 16:32:47 +0100
+Message-ID: <86cyxuo128.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Dmitry Dunaev <dunaev@tecon.ru>, dunaich@mail.ru,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] irqchip/riscv-intc: Mark INTC nodes for secondary CPUs as initialized.
+In-Reply-To: <CAK9=C2UUQ+ChueJVs+AnY0oCTb1zSv7qOCTijSchwxiMspX74w@mail.gmail.com>
+References: <20230926102801.1591126-1-dunaev@tecon.ru>
+        <CAK9=C2UiBNQtv0Q2yJMKqc5pMX_jam+ZmfRz3Rme0ZYuqN68HA@mail.gmail.com>
+        <86il7mofmm.wl-maz@kernel.org>
+        <CAK9=C2UUQ+ChueJVs+AnY0oCTb1zSv7qOCTijSchwxiMspX74w@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: apatel@ventanamicro.com, dunaev@tecon.ru, dunaich@mail.ru, tglx@linutronix.de, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 10:50:26AM +0100, Olivier Deprez wrote:
-> Hi Jens,
-> 
-> > dst_id and drv_info->vm_id should be swapped.
-> 
-> I'm curious about this because swapping like this actually makes hafnium
-> fail. Need to check from the spec.
+On Wed, 04 Oct 2023 15:59:33 +0100,
+Anup Patel <apatel@ventanamicro.com> wrote:
+>=20
+> On Wed, Oct 4, 2023 at 3:48=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrot=
+e:
+> >
+> > On Tue, 26 Sep 2023 11:36:31 +0100,
+> > Anup Patel <apatel@ventanamicro.com> wrote:
+> > >
+> > > On Tue, Sep 26, 2023 at 3:59=E2=80=AFPM Dmitry Dunaev <dunaev@tecon.r=
+u> wrote:
+> > > >
+> > > > The current Linux driver irq-riscv-intc initialize IRQ domain only =
+once,
+> > > > when init function called on primary hart. In other cases no IRQ do=
+main is
+> > > > created and no operation on interrupt-controller node is performed.
+> > > > This is cause of that no common Linux driver can use per-cpu interr=
+upts
+> > > > mapped to several CPUs because fwnode of secondary cores INTC is not
+> > > > marked as initialized. This device is always will be marked as defe=
+rred.
+> > > > For example the system with devicetree
+> > > >
+> > > >     cpu0: cpu@0 {
+> > > >         cpu0_intc: interrupt-controller {
+> > > >             interrupt-controller;
+> > > >             compatible =3D riscv,cpu-intc;
+> > > >         };
+> > > >     };
+> > > >
+> > > >     cpu1: cpu@1 {
+> > > >         cpu1_intc: interrupt-controller {
+> > > >             interrupt-controller;
+> > > >             compatible =3D riscv,cpu-intc;
+> > > >         };
+> > > >     };
+> > > >
+> > > >     buserr {
+> > > >         compatible =3D riscv,buserr;
+> > > >         interrupts-extended =3D <&cpu0_intc 16 &cpu1_intc 16>;
+> > > >     };
+> > > >
+> > > > will always report 'buserr' node as deferred without calling any
+> > > > bus probe function.
+> > > >
+> > > > This patch will mark all secondary nodes passed to irq-riscv-intc
+> > > > driver init function as initialized to be able to act as correct
+> > > > IRQ phandle node.
+> > > >
+> > > > Signed-off-by: Dmitry Dunaev <dunaev@tecon.ru>
+> > > > ---
+> > > >  drivers/irqchip/irq-riscv-intc.c | 8 ++++++--
+> > > >  1 file changed, 6 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq=
+-riscv-intc.c
+> > > > index 4adeee1bc391..c01a4e8d4983 100644
+> > > > --- a/drivers/irqchip/irq-riscv-intc.c
+> > > > +++ b/drivers/irqchip/irq-riscv-intc.c
+> > > > @@ -155,8 +155,10 @@ static int __init riscv_intc_init(struct devic=
+e_node *node,
+> > > >          * for each INTC DT node. We only need to do INTC initializ=
+ation
+> > > >          * for the INTC DT node belonging to boot CPU (or boot HART=
+).
+> > > >          */
+> > > > -       if (riscv_hartid_to_cpuid(hartid) !=3D smp_processor_id())
+> > > > +       if (riscv_hartid_to_cpuid(hartid) !=3D smp_processor_id()) {
+> > > > +               fwnode_dev_initialized(of_node_to_fwnode(node), tru=
+e);
+> > >
+> > > There is already a patch on LKML to address this.
+> > > https://www.spinics.net/lists/kernel/msg4929886.html
+> >
+> > If this is a fix, why is it buried in a huge series and not brought
+> > forward as an independent fix that needs to be picked early?
+>=20
+> Dmitry saw this issue in a totally different context which is not
+> reproducible with existing DTS files in kernel sources.
 
-I did check after I had swapped this in v2(because I was convinced Jens) was
-correct and you reported the failure. Reading the spec again the other day,
-I got corrected myself and agreed with Olivier and my original
-implementation(v1) which matches this patch(v3).
+I hope you're not suggesting that only the DTs that are present in the
+kernel tree are valid. Because as far as I'm concern, the DTs in the
+kernel tree are only some *examples*, and not a reference.
 
--- 
-Regards,
-Sudeep
+I fully expect the vast majority of DTs to live *outside* of the
+kernel tree, provided by the firmware, and never upstreamed. Would you
+expect every PC vendor to upstream their ACPI tables?
+
+> This issue only manifests when some platform driver DT node
+> points to the per-HART INTC nodes. For example, RISC-V
+> irqchip device DT nodes point to per-HART INTC nodes.
+
+Is this configuration legal or not as per the DT binding? I don't see
+anything that suggests it isn't legal, and having per-CPU interrupts
+isn't exactly a new thing.
+
+> Currently, all RISC-V irqchip drivers (INTC and PLIC) are probed
+> early (not as platform drivers) so we don't see this issue with
+> existing irqchip drivers.
+
+You don't, but Dimitry does. Who wins?
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
