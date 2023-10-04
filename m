@@ -2,156 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD987B86BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B997B86D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbjJDRj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 13:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59370 "EHLO
+        id S233614AbjJDRnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 13:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbjJDRj5 (ORCPT
+        with ESMTP id S233139AbjJDRnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 13:39:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F1EA6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 10:39:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14D07C433C7;
-        Wed,  4 Oct 2023 17:39:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696441193;
-        bh=K/tg8/w4CVZM+MMZbqiJI4I0lw8Qwa2sMwfhdev7ubQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OeKoTfCewQffVeEdL4VkIXNCVSD9d9NunmbLsCQ4KZkE5fGE3EzF5s2CJMEFTkFUR
-         9+Rp0Lnw0r+oc+Gh5cs7EiGtRjCli4Pt6URVlEReTs6A8YRyKnMlwZuVSsvN5yl8ae
-         nXnm9skgJdM3YBXLd0m7/YSlo87hzvKhk8PwH4P4i+Th69UGbjXYVgi82wU+QW8gDS
-         TI0fbqAPstYUmGmbBYwsdfYqwZqe7LynkAtCAyxbEKu53rOqqPRSC9TsSL7q66drdJ
-         IeRPQWuLX595ZGXfia1I+HXaRR8rGBrwp321J0JJdtnGTVTOmuXonAq7ANk6wMljxf
-         w1+um5izaFBhA==
-Date:   Wed, 4 Oct 2023 18:39:41 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Peter Rosin <peda@axentia.se>,
-        Lars-Peter Clausen <lars@metafoo.de>, nuno.sa@analog.com,
-        James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Shenghao Ding <shenghao-ding@ti.com>,
-        Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Kiseok Jo <kiseok.jo@irondevice.com>,
-        Kevin Cernekee <cernekee@chromium.org>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Ban Tao <fengzheng923@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: Re: [PATCH v2 1/5] ASoC: Explicitly include correct DT includes
-Message-ID: <72f8f521-93f0-4e3d-929c-f7478622ddb3@sirena.org.uk>
-References: <20231004-dt-asoc-header-cleanups-v2-0-e77765080cbc@kernel.org>
- <20231004-dt-asoc-header-cleanups-v2-1-e77765080cbc@kernel.org>
+        Wed, 4 Oct 2023 13:43:01 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E779E
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 10:42:57 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c6219307b2so71235ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 10:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696441377; x=1697046177; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PAz1DFCYnOrFN4tIroBsTa6sPFO/dCrdBUsEUFQEyNU=;
+        b=DN3V9vCzLrYoivi49vMp4dDuJ/ofMrXGrlbhyXoXwCeD+Adg1TCyq4HCZxSbgTAR1r
+         3NHlWwY6cQVzoOkOtv/oGFyPj4kxiXVNjD26BPlHfgdz1AXI0NLIsIwyYpmegOOIToso
+         es+6ep0WGLR+VO0FkfxdgPk/Z7NMALJ6bF5WKECVdI8KnEBfnViMzI+EzCMOWOBZx4PF
+         Pc7XQ9odW7OVHCA2unJ5KhqRpHSbsOv3nX/lvTIm/a/5daPaU5TdwNEkZ+6n+NP+evBr
+         DTM5fiSkgobswignL7sFLTok/BAXp9x36n0lJFjYfok+yCcNnz+74HSh/1TNZjs8s61k
+         Tsuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696441377; x=1697046177;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PAz1DFCYnOrFN4tIroBsTa6sPFO/dCrdBUsEUFQEyNU=;
+        b=s3TAMtvU8RIvNXp65RgN+twY2g/B1hh55QddZuZs7rVQrQVjg+CODzFA/iM6LLfPRT
+         73Wv0kvbcZYRUD2jlCLWyYfckFj0Rtk0t9UhGhsPzMu5vD8Le4O3qSFeOUEyZw1HdlKd
+         w0RMulw3HZye4SZprAbd962KkpDCEnBBmJ8JOgZUl3Z512qLL88V5D6m8OTnU67b1+Yz
+         8YG3FkPc0x9iZnNLXCOHGBYwAKNzEZ8PPxfAsjxAGDRFeYMYPTpml0i5z5dYSIM81LzA
+         GDV8bReabhuL6UyQyY8ZzoRdVBrxThNo/KkYksyx73M1oopfTS0eFidz2UKcf5zXN5mU
+         cW1Q==
+X-Gm-Message-State: AOJu0Yym2odfyRjzSOHyzmPtsZH6Bn4bUEuDrZcoaIwLi+34FQPvg9hP
+        cOEih8MZzSi7QOF5GIVcr5ZTUA==
+X-Google-Smtp-Source: AGHT+IGCU8SV8LgeVtV8MEhdZCojuC38BkViH9No+0IHftNGmQ/M48mEVbfFLmkXJV2TQfY+9EjP+w==
+X-Received: by 2002:a17:903:25c3:b0:1c5:76b6:d4f7 with SMTP id jc3-20020a17090325c300b001c576b6d4f7mr2813402plb.36.1696441376967;
+        Wed, 04 Oct 2023 10:42:56 -0700 (PDT)
+Received: from x1 ([2601:1c2:1800:f680:95a1:7b5c:a766:5db1])
+        by smtp.gmail.com with ESMTPSA id c1-20020a170903234100b001b9c960ffeasm3993160plh.47.2023.10.04.10.42.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 10:42:56 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 10:42:53 -0700
+From:   Drew Fustini <dfustini@baylibre.com>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] soc: renesas: make ARCH_R9A07G043 (riscv version) depend
+ on NONPORTABLE
+Message-ID: <ZR2kHfUXmQ9jwQC9@x1>
+References: <20231004150856.2540-1-jszhang@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="K1Dh/zQH53UxpeTH"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231004-dt-asoc-header-cleanups-v2-1-e77765080cbc@kernel.org>
-X-Cookie: I thought YOU silenced the guard!
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231004150856.2540-1-jszhang@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 04, 2023 at 11:08:56PM +0800, Jisheng Zhang wrote:
+> Drew found "CONFIG_DMA_GLOBAL_POOL=y causes ADMA buffer alloc to fail"
+> the log looks like:
+> [    3.741083] mmc0: Unable to allocate ADMA buffers - falling back to standard DMA
+> 
+> The logic is: generic riscv defconfig selects ARCH_RENESAS then
+> ARCH_R9A07G043 which selects DMA_GLOBAL_POOL, which assumes all
+> non-dma-coherent riscv platforms have a dma global pool, this assumption
+> seems not correct. And I believe DMA_GLOBAL_POOL should not be
+> selected by ARCH_SOCFAMILIY, instead, only ARCH under some specific
+> conditions can select it globaly, for example NOMMU ARM and so on,
+> because it's designed for special cases such as "nommu cases where
+> non-cacheable memory lives in a fixed place in the physical address
+> map" as pointed out by Robin.
+> 
+> Fix the issue by making ARCH_R9A07G043 (riscv version) depend on
+> NONPORTABLE, thus generic defconfig won't select ARCH_R9A07G043 by
+> default. And even for random config case, there will be less debug
+> effort once we see NONPORTABLE is enabled.
+> 
+> Reported-by: Drew Fustini <dfustini@baylibre.com>
+> Closes: https://lore.kernel.org/linux-riscv/ZRuamJuShOnvP1pr@x1/
+> Fixes: 484861e09f3e ("soc: renesas: Kconfig: Select the required configs for RZ/Five SoC")
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  drivers/soc/renesas/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/soc/renesas/Kconfig b/drivers/soc/renesas/Kconfig
+> index 5a75ab64d1ed..12040ce116a5 100644
+> --- a/drivers/soc/renesas/Kconfig
+> +++ b/drivers/soc/renesas/Kconfig
+> @@ -333,6 +333,7 @@ if RISCV
+>  
+>  config ARCH_R9A07G043
+>  	bool "RISC-V Platform support for RZ/Five"
+> +	depends on NONPORTABLE
+>  	select ARCH_RZG2L
+>  	select AX45MP_L2_CACHE if RISCV_DMA_NONCOHERENT
+>  	select DMA_GLOBAL_POOL
+> -- 
+> 2.40.1
+> 
 
---K1Dh/zQH53UxpeTH
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tested-by: Drew Fustini <dfustini@baylibre.com>
 
-On Wed, Oct 04, 2023 at 10:58:05AM -0500, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it was merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+With this patch, I can use the defconfig and sdhci-of-dwcmshc driver is
+able to use ADMA mode without needing to add shared-dma-pool to dts:
 
-This is breaking various builds for me, for example arm64 defconfig:
+# zcat /proc/config.gz |grep DMA_GLOBAL_POOL
+# dtc -I fs /sys/firmware/devicetree/base/ 2>/dev/null |grep pool
+# dmesg |grep ADMA
+[    3.910269] mmc0: SDHCI controller on ffe7080000.mmc [ffe7080000.mmc] using ADMA 64-bit
 
-/build/stage/linux/sound/soc/rockchip/rockchip_i2s_tdm.c: In function =E2=
-=80=98rockchip_i2s_tdm_probe=E2=80=99:
-/build/stage/linux/sound/soc/rockchip/rockchip_i2s_tdm.c:1557:17: error: im=
-plicit declaration of function =E2=80=98of_match_device=E2=80=99; did you m=
-ean =E2=80=98of_match_node=E2=80=99? [-Werror=3Dimplicit-function-declarati=
-on]
- 1557 |         of_id =3D of_match_device(rockchip_i2s_tdm_match, &pdev->de=
-v);
-      |                 ^~~~~~~~~~~~~~~
-      |                 of_match_node
-/build/stage/linux/sound/soc/rockchip/rockchip_i2s_tdm.c:1557:15: warning: =
-assignment to =E2=80=98const struct of_device_id *=E2=80=99 from =E2=80=98i=
-nt=E2=80=99 makes pointer from integer without a cast [-Wint-conversion]
- 1557 |         of_id =3D of_match_device(rockchip_i2s_tdm_match, &pdev->de=
-v);
-      |               ^
-/build/stage/linux/sound/soc/tegra/tegra210_amx.c: In function =E2=80=98teg=
-ra210_amx_platform_probe=E2=80=99:
-/build/stage/linux/sound/soc/tegra/tegra210_amx.c:541:17: error: implicit d=
-eclaration of function =E2=80=98of_match_device=E2=80=99; did you mean =E2=
-=80=98of_match_node=E2=80=99? [-Werror=3Dimplicit-function-declaration]
-  541 |         match =3D of_match_device(tegra210_amx_of_match, dev);
-      |                 ^~~~~~~~~~~~~~~
-      |                 of_match_node
-/build/stage/linux/sound/soc/tegra/tegra210_amx.c:541:15: warning: assignme=
-nt to =E2=80=98const struct of_device_id *=E2=80=99 from =E2=80=98int=E2=80=
-=99 makes pointer from integer without a cast [-Wint-conversion]
-  541 |         match =3D of_match_device(tegra210_amx_of_match, dev);
-      |               ^
-cc1: some warnings being treated as errors
 
-multi_v7_defconfig is also broken.
-
---K1Dh/zQH53UxpeTH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUdo10ACgkQJNaLcl1U
-h9Cx8gf/XCPMEtGS0YkOT48jnbRA+1YlgQJR8uZlu9+gze7VMTlA1QqBf04fiiA9
-I6p4yAWbk8inm8rqWm9T75tCz/xi0cZrcoQHPEFGYgneMyXkkoapTGe/PQbR9ZIT
-grUfha4+oIa2oZXQjYL1tV3U/hfjGjRG6dPR9n+92qlgwLfwdMUhOy7Nn752+xHF
-f6Igs59sXl5kvZTQVUb7Hkt9jfkBRz3QfUWiYcp9bJCblkEv9tWhi1YgLua+fUQY
-VjxE2e4zNB+Z2z3A9zlFKhTB/9yBIaRma+Qp3PElEYmsQQry9nRssA/aXS5Jccon
-7fWLNWj6wDBzZjKCwf69j2cORg/HHw==
-=RFjB
------END PGP SIGNATURE-----
-
---K1Dh/zQH53UxpeTH--
+Thanks,
+Drew
