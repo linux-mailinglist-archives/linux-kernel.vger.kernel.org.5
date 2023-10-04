@@ -2,77 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8037B8E0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8CF7B8E0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244067AbjJDU3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 16:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40228 "EHLO
+        id S244721AbjJDUab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 16:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbjJDU3f (ORCPT
+        with ESMTP id S243768AbjJDUaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 16:29:35 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3481C93
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:29:32 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-502f29ed596so1577e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:29:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696451370; x=1697056170; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ULcbPeVXF1YZ+PSpdpBI4ln4bPTinWz7u+G6K/2zwK0=;
-        b=26GqU3ytQmiEs5cmGlgk5+IGkzW5jTio9t5V3W2QwVWIL3wDelSHGnKAvus1APDTfw
-         rv5CFTO7UDLd5umIndG7ATXGbKy/VVueysmZdjaOjfef/5smNCLUHJggzGNxjebg4vwE
-         2mYNXv3/pZtaIkU6QGXyQxdhjgVZkN+tOToWrOUHXSje24+KmiSiG/uYhggr17l/rGrz
-         z1gYOmW+qsB9/y6E80jc+HMu/W3mCDm4G58hTp2h3jdtPJc5W22Q+l2nU9/LU9fdw0bC
-         4iNtnE42xCZoEtIHsT/JV8FTGM1tJaCKOfNnzdzSOhBz1OLQWicqM9YeKY6+sHJ7Q6BT
-         EDlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696451370; x=1697056170;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ULcbPeVXF1YZ+PSpdpBI4ln4bPTinWz7u+G6K/2zwK0=;
-        b=D4KQ9UD9pG6Yq2s4dzIvtpvNmqvZ5koYobTZpudC/bZjoHkHfkWeBxzSdL9gfzD7NM
-         POKyj0+aNzkbu2BRl8uRy2RHsl3npKap0aElL2qGTd2EXeq2jc0Q+fSYAeR9n03cJcYo
-         3TpXdEH9Hnopm+Q1qXVYxxJtd1pTRrbaJPPHD2E1KaNyliNdXTf9iZU/V1ORSgmwLAyY
-         MOTaVgYjfvbUIsTc8MiwGerJSqFTr/LHxLHN1OCbRZdoOqqcQY6E+DLVsFwS/KFjwfj+
-         loQW4qUhv5Fp5lahcoqqqqEpQyEnUU0qLd+XbNp97ukJlvIRuaOhdvBM1fG2GiV7Kzf2
-         6dvw==
-X-Gm-Message-State: AOJu0YwkfePk6o8nGACEhARf3lp+B9hZPK/OR2+uha61X9SyasUloenr
-        Bx9ijdnAzu+RsTxUmg+Jq3hWxvfkvfkqRdPSajVk8klVSfmM0pnuME0=
-X-Google-Smtp-Source: AGHT+IHzJtM7k+kUTGyXAWVzPEzSaQ1kE5vqmOg+cGd45iBE1Lgxpx9c3I5fBCW0FMS138wNvOmmuyOL9idRGF7p4uk=
-X-Received: by 2002:ac2:5142:0:b0:502:dc15:7fb with SMTP id
- q2-20020ac25142000000b00502dc1507fbmr100lfd.5.1696451369919; Wed, 04 Oct 2023
- 13:29:29 -0700 (PDT)
+        Wed, 4 Oct 2023 16:30:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D2B93
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:30:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B027FC433C8;
+        Wed,  4 Oct 2023 20:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696451426;
+        bh=mdDX07PCg9576DleQyl2CYXvWPdBHOjEh3zc5XJe1gg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=QpNozK2TBgVwFAxoyMxA4s/bPvwW+g46RiuKu2xeB+/FmGEo3325gSpAJOLrhscrz
+         DzFRRqOtiHtO4mzRsVzVjGMI7i0wo8iWFsvCONfuNiYGLg2CdHWjH2Ij9vucO3gb4h
+         KaAv8DqQn9afT7+eVhsXqDTiPyIHENWJZbaFu6/IyNBQF20wxtC7iora0XH15jBYEt
+         snyC+fbRMaQKM2p6jFckBXbFqwuCiMck6g6nmbdzSjeoe+OKzrjq/o40E2EuuE22yf
+         y2s1A/foU9nqLb3kEJLPi/FZ7z4UHshcdbcXvmlJFE0IFfq5iui0xgQonyDG/3rCrW
+         a8xYTDPqEvpPg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 94C5AC395EC;
+        Wed,  4 Oct 2023 20:30:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20231004002038.907778-1-jmattson@google.com> <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
- <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com> <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
-In-Reply-To: <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 4 Oct 2023 13:29:15 -0700
-Message-ID: <CALMp9eQN9_OK6oE9tEz_DW4ZBwWEB_JJJdjKsQoLyh9tGWNfYw@mail.gmail.com>
-Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's FsGsKernelGsBaseNonSerializing
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Dave Hansen <dave.hansen@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: stmmac: dwmac-stm32: fix resume on STM32 MCU
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169645142659.7929.1401837139446302985.git-patchwork-notify@kernel.org>
+Date:   Wed, 04 Oct 2023 20:30:26 +0000
+References: <20230927175749.1419774-1-ben.wolsieffer@hefring.com>
+In-Reply-To: <20230927175749.1419774-1-ben.wolsieffer@hefring.com>
+To:     Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Cc:     linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, mcoquelin.stm32@gmail.com,
+        christophe.roullier@st.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,53 +56,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 12:59=E2=80=AFAM Borislav Petkov <bp@alien8.de> wrot=
-e:
->
-> On Tue, Oct 03, 2023 at 07:44:51PM -0700, Jim Mattson wrote:
-> > The business of declaring breaking changes to the architectural
-> > specification in a CPUID bit has never made much sense to me.
->
-> How else should they be expressed then?
->
-> In some flaky PDF which changes URLs whenever the new corporate CMS gets
-> installed?
->
-> Or we should do f/m/s matching which doesn't make any sense for VMs?
->
-> When you think about it, CPUID is the best thing we have.
->
-> > No one is likely to query CPUID.80000021H.EAX[bit 21] today, but if
-> > someone does query the bit in the future, they can reasonably expect
-> > that WRMSR({FS,GS,KERNELGS}_BASE) is a serializing operation whenever
-> > this bit is clear. Therefore, any hypervisor that doesn't pass the bit
-> > through is broken. Sadly, this also means that for a heterogenous
-> > migration pool, the hypervisor must set this bit in the guest CPUID if
-> > it is set on any host in the pool. Yes, that means that the legacy
-> > behavior may sometimes be present in a VM that enumerates the CPUID
-> > bit, but that's the best we can do.
->
-> Yes, add this to your commit message.
->
-> > I'm a little surprised at the pushback, TBH. Are you implying that
-> > there is some advantage to *not* passing this bit through?
->
-> We don't add stuff which is not worth adding. There has to be *at*
-> *least* some justification for it.
+Hello:
 
-Let me propose the following axiom as justification:
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-KVM_GET_SUPPORTED_CPUID must pass through any defeature bits that are
-set on the host, unless KVM is prepared to emulate the missing
-feature.
+On Wed, 27 Sep 2023 13:57:49 -0400 you wrote:
+> The STM32MP1 keeps clk_rx enabled during suspend, and therefore the
+> driver does not enable the clock in stm32_dwmac_init() if the device was
+> suspended. The problem is that this same code runs on STM32 MCUs, which
+> do disable clk_rx during suspend, causing the clock to never be
+> re-enabled on resume.
+> 
+> This patch adds a variant flag to indicate that clk_rx remains enabled
+> during suspend, and uses this to decide whether to enable the clock in
+> stm32_dwmac_init() if the device was suspended.
+> 
+> [...]
 
-Here, a defeature bit is any CPUID bit where a value of '1' indicates
-the absence of a feature.
+Here is the summary with links:
+  - [net] net: stmmac: dwmac-stm32: fix resume on STM32 MCU
+    https://git.kernel.org/netdev/net/c/6f195d6b0da3
 
-> Thx.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
