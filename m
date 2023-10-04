@@ -2,82 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F00597B7B58
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988C97B7B61
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241924AbjJDJLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
+        id S241936AbjJDJMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242006AbjJDJLb (ORCPT
+        with ESMTP id S241885AbjJDJMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:11:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1E0A6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:11:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 804A6C433C8;
-        Wed,  4 Oct 2023 09:11:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696410688;
-        bh=3tcd15/ZhZ377CKHNn8APJe8bHeAciTOTOhoUjvaohg=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=DxSpJYyVREb2yGfKKnw9XSQ1b8/PfzDDLw1n0AfAWJpbDxN5aeF8+GwUULbrMkUgH
-         OTYTGKvD9ba9vCfGfHV/aEOrTNxwhtl/O8OABpQABMAs5FeM3+KQXz5I2RPk9b9flc
-         wkSZcKKx2DnIhFcaKgCjwVwezihs8unE9xmAOWGilJIloCd5P/qWQjHr/TxxfTfQua
-         jWcbgEjvR2M/TCB28g8Z0+FI7lrSHPsiMqsf9jRUghMqKqj5NI6yKqBZODV0D3DHJH
-         gsJLlCAtLQIRIuduqECIQElhZszhdkr0VExwQN2Xz+dEF58YZVBizNAUpZBSI5JGxT
-         q8VeZop7iehGQ==
-From:   Lee Jones <lee@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Mark Brown <broonie@kernel.org>,
-        Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Lee Jones <lee@kernel.org>, Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230928085537.3246669-2-wenst@chromium.org>
-References: <20230928085537.3246669-1-wenst@chromium.org>
- <20230928085537.3246669-2-wenst@chromium.org>
-Subject: Re: (subset) [PATCH v4 01/12] dt-bindings: mfd: mt6397: Split out
- compatible for MediaTek MT6366 PMIC
-Message-Id: <169641068524.66814.2537584517055836452.b4-ty@kernel.org>
-Date:   Wed, 04 Oct 2023 10:11:25 +0100
+        Wed, 4 Oct 2023 05:12:02 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DBE98
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:11:58 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99c1c66876aso342112866b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696410717; x=1697015517; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bdOdPPFMdcei2S7fb8cUUxol5V7FnF0pUPc0MzWLtwM=;
+        b=eRTp74y3HaboucgV4WqVJfo7fRzQqVlA/OO0Am/guxhc5mToBw8/HgerSSLH/aVRsY
+         AU6cV+chlewyM3dFPepu4mNHkugXFiLflpR4Pz5KqxC1PHAhiELapyGQNmRKB319NljH
+         ltcYUxrZJMVFWENmHJCkeL6H5PDwsZK0n+wXHeFRztKNL83lXr/HUnn6DFvVHkPwEMld
+         Xqa3WCcaca2UhzqgCxDbi8h9ylZp8+ngCyw0ov8a2aePbcN8SRxnHLfMr/LMqIhLRVAM
+         w+AsU8rC0gMNJwouRDgEKcCPQDva0MsQ3RfPesBGqWxeIhNWBFPyIqb82SLAVwS0jR5+
+         h7lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696410717; x=1697015517;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bdOdPPFMdcei2S7fb8cUUxol5V7FnF0pUPc0MzWLtwM=;
+        b=HmL+kNNxFHaqfYETimm52BVFwHuy1nkV8iYF6/OXjTXg67vRlqAO27l7dDqIwvk3lq
+         5sT8IPzrngkO5Taunw5Q0zq74EL9dDV02m6+A42c+5HxXyhIbHRHTQeLYptOVL/hY5Ss
+         G28Yi9VRPsuTAdCPJmLhk4h0TmSOPRkU/2RIKOWHNSF901kpPflGT1pMn03Isxh/NuPR
+         7fgZ8vrQ7nkWdKi4NgiLq4RrJMko1ghvgsb7h7hEymVgWMDUyCWamqEo0VSApcOZVgMW
+         9CUIcbEzfymBSNh1Pn3EkSFnDTQgnzdu5ULiUG4I3z5YoIc3bxXM5vvsJJYpKmOjnaXv
+         43YQ==
+X-Gm-Message-State: AOJu0YxG3BwkVuuukVzJLyvronsU6SGUsghOP2mwhEPx58zDFX2Ugror
+        B0cl9GxloYVPOptL0nQpkIbr4Q==
+X-Google-Smtp-Source: AGHT+IFdCq/a3Ahhn3WZlqm5Nk2OC7djHwlYLFv5BofaQ2vxpeiJPbXJjIZWTFKJ9mcv05gaELflyg==
+X-Received: by 2002:a17:906:13:b0:9ae:519f:8276 with SMTP id 19-20020a170906001300b009ae519f8276mr1423408eja.73.1696410717148;
+        Wed, 04 Oct 2023 02:11:57 -0700 (PDT)
+Received: from rayden (h-46-59-78-111.A175.priv.bahnhof.se. [46.59.78.111])
+        by smtp.gmail.com with ESMTPSA id g12-20020a170906594c00b00997e99a662bsm2448324ejr.20.2023.10.04.02.11.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 02:11:56 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 11:11:54 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Coboy Chen <coboy.chen@mediatek.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Olivier Deprez <olivier.deprez@arm.com>
+Subject: Re: [PATCH v3 03/17] firmware: arm_ffa: Implement the notification
+ bind and unbind interface
+Message-ID: <20231004091154.GB1091193@rayden>
+References: <20230929-ffa_v1-1_notif-v3-0-c8e4f15190c8@arm.com>
+ <20230929-ffa_v1-1_notif-v3-3-c8e4f15190c8@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230929-ffa_v1-1_notif-v3-3-c8e4f15190c8@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sep 2023 16:55:24 +0800, Chen-Yu Tsai wrote:
-> The MT6366 PMIC is mostly, but not fully, compatible with MT6358. It has
-> a different set of regulators. Specifically, it lacks the camera related
-> VCAM* LDOs and VLDO28, but has additional VM18, VMDDR, and VSRAM_CORE LDOs.
+On Fri, Sep 29, 2023 at 04:02:52PM +0100, Sudeep Holla wrote:
+> A receiver endpoint must bind a notification to any sender endpoint
+> before the latter can signal the notification to the former. The receiver
+> assigns one or more doorbells to a specific sender. Only the sender can
+> ring these doorbells.
 > 
-> The PMICs contain a chip ID register that can be used to detect which
-> exact model is preset, so it is possible to share a common base
-> compatible string.
+> A receiver uses the FFA_NOTIFICATION_BIND interface to bind one or more
+> notifications to the sender. A receiver un-binds a notification from a
+> sender endpoint to stop the notification from being signaled. It uses
+> the FFA_NOTIFICATION_UNBIND interface to do this.
 > 
-> [...]
+> Allow the FF-A driver to be able to bind and unbind a given notification
+> ID to a specific partition ID. This will be used to register and
+> unregister notification callbacks from the FF-A client drivers.
+> 
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  drivers/firmware/arm_ffa/driver.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+> 
+> diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
+> index efa4e7fb15e3..26bf9c4e3b5f 100644
+> --- a/drivers/firmware/arm_ffa/driver.c
+> +++ b/drivers/firmware/arm_ffa/driver.c
+> @@ -587,6 +587,35 @@ static int ffa_notification_bitmap_destroy(void)
+>  	return 0;
+>  }
+>  
+> +#define NOTIFICATION_LOW_MASK		GENMASK(31, 0)
+> +#define NOTIFICATION_HIGH_MASK		GENMASK(63, 32)
+> +#define NOTIFICATION_BITMAP_HIGH(x)	\
+> +		((u32)(FIELD_GET(NOTIFICATION_HIGH_MASK, (x))))
+> +#define NOTIFICATION_BITMAP_LOW(x)	\
+> +		((u32)(FIELD_GET(NOTIFICATION_LOW_MASK, (x))))
+> +
+> +static int ffa_notification_bind_common(u16 dst_id, u64 bitmap,
+> +					u32 flags, bool is_bind)
+> +{
+> +	ffa_value_t ret;
+> +	u32 func, src_dst_ids = PACK_TARGET_INFO(dst_id, drv_info->vm_id);
 
-Applied, thanks!
+dst_id and drv_info->vm_id should be swapped.
 
-[01/12] dt-bindings: mfd: mt6397: Split out compatible for MediaTek MT6366 PMIC
-        commit: 9e2a2fd1ca0555bd0c278cd4061cc4bd9c8d0f7f
+Thanks,
+Jens
 
---
-Lee Jones [李琼斯]
-
+> +
+> +	func = is_bind ? FFA_NOTIFICATION_BIND : FFA_NOTIFICATION_UNBIND;
+> +
+> +	invoke_ffa_fn((ffa_value_t){
+> +		  .a0 = func, .a1 = src_dst_ids, .a2 = flags,
+> +		  .a3 = NOTIFICATION_BITMAP_LOW(bitmap),
+> +		  .a4 = NOTIFICATION_BITMAP_HIGH(bitmap),
+> +		  }, &ret);
+> +
+> +	if (ret.a0 == FFA_ERROR)
+> +		return ffa_to_linux_errno((int)ret.a2);
+> +	else if (ret.a0 != FFA_SUCCESS)
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+>  static void ffa_set_up_mem_ops_native_flag(void)
+>  {
+>  	if (!ffa_features(FFA_FN_NATIVE(MEM_LEND), 0, NULL, NULL) ||
+> 
+> -- 
+> 2.42.0
+> 
