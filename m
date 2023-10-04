@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 826657B8D6F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664697B8D72
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243581AbjJDTaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 15:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58916 "EHLO
+        id S244709AbjJDTb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 15:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233525AbjJDTah (ORCPT
+        with ESMTP id S244749AbjJDTbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 15:30:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B028FAD;
-        Wed,  4 Oct 2023 12:30:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4E865C433CC;
-        Wed,  4 Oct 2023 19:30:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696447834;
-        bh=qUFTQIRoEeKJZwY5Eyghpz6w7q9r9nOu0dTBfAehd54=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=S5V5OXcYaUqJLMtLezbcz9IUc9KQej++5Pl05X/Be+olaaYfH6GZNFzkTyXeYu7n2
-         wHDFgoRjsv3X8ye7JOy1HNS903LCyAm7QNvxpFtV9Bogi+NskVvQA+xScGv1P3UhNr
-         9YhiWsaTAx0gZwu84ICTbtu6H4WZ4QZJVgS889C2vSzXUPyN632ZZvEqXAA1SZDgnt
-         jplEHQY1HyyIg7/uZSF8ARW5xIFXnxvrP0pOQZ0GIrlu1bERovKLpqtv06rvLJOoQs
-         wkg9HXXw9ZuEUhZ16XHjynRtEdmlQrrUTpgZcGD1EayvFlTxkHFIz4nZbIesTbhqQW
-         VYGWMuE86XI8w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 36A57E632D6;
-        Wed,  4 Oct 2023 19:30:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 4 Oct 2023 15:31:44 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599CF90;
+        Wed,  4 Oct 2023 12:31:41 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c60a514f3aso972225ad.3;
+        Wed, 04 Oct 2023 12:31:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696447901; x=1697052701; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=W5HfVM4fCCGY68ob5MM+ty4dyWUo6GBaDagauhTzLa4=;
+        b=Oa4MzZ0JEIgnoPl4BhpcvNMRm+cW1j9ZmGBxLQ04OuZTUIumiSBxsMI+kZ732pMQxo
+         ROAWWtOF9hCO4+tXRrpEuQdwWbcbnAfitkThEjtqtpzF3lDxFqGIa53Lh/Oef7Gm9A7o
+         6ayfbiL99VoEOReq4xUvUG1/2703xw9ZawpExyMeWVX0r0o+Vdp/kEhRS+UPmqAbv69L
+         BJC33+qhGI8XP7/wFEYatGuzWHFiPyOroAiHLe/OJrXoVZFmaiJPCiWAFdwmV/5Sgd56
+         T8qmOwNY1Z31JoLpYhbhYPqIxihmiNFH7wfo3Uzbb7qVorkaIeTuVvDI6zTFluqY7WSD
+         H1QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696447901; x=1697052701;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W5HfVM4fCCGY68ob5MM+ty4dyWUo6GBaDagauhTzLa4=;
+        b=A8qR6aTvNELXhIE4NdlAwbyFhz9ma4FUNYa2S5OLzu6VqyzSphUaYd8cNVw0Tw+8Ba
+         8lf7fpdBLR+Bt9Pn/Jqrlzsu258YBoPX8dHj7280FZpPQ1rnMzm9506XujNFtSsGEnye
+         +JGrdKa9RcQy5b8DBFMaTjkiQmxpcWoNn1E5AtGxCCJPx9Vkignv6ESZfxu777SYqyuh
+         qd17qP1IkCd+ASkZ4F3HcyEfPEKj+FY2lbt8tj3tZ6PNsvMy14bbwbAI6uRfIY+9R9oC
+         Ammqpz4LVnYq9A4JTXlowpK+Wc2YnUDQprVJ8RXUBO6spYAle3nWMLTcig3JIExXEMxQ
+         fwxg==
+X-Gm-Message-State: AOJu0YxJUQzZLvsyTgNgjCleZ4DwmT0YGQ2gf+SFvZTTETfnm6nFVNGi
+        31vw9crrhFXqr9X7j2HYkpk=
+X-Google-Smtp-Source: AGHT+IGZVPAbnXzw1VU0d3EYLakJJsXUlO6LA/FUAriMf/+lkcNF8C6IYLBjMpnG89KJvtciD7X+lQ==
+X-Received: by 2002:a17:902:6946:b0:1bf:27a2:b52b with SMTP id k6-20020a170902694600b001bf27a2b52bmr3238653plt.58.1696447900827;
+        Wed, 04 Oct 2023 12:31:40 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:cef])
+        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001bc6e6069a6sm4079064plh.122.2023.10.04.12.31.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 12:31:40 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 4 Oct 2023 09:31:38 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     linan666@huaweicloud.com
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linan122@huawei.com,
+        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
+ throttle is enabled
+Message-ID: <ZR29mvoQMxcZcppw@slm.duckdns.org>
+References: <20230928015858.1809934-1-linan666@huaweicloud.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Bluetooth: Fix a refcnt underflow problem for hci_conn
-From:   patchwork-bot+bluetooth@kernel.org
-Message-Id: <169644783421.9933.17180442549400716324.git-patchwork-notify@kernel.org>
-Date:   Wed, 04 Oct 2023 19:30:34 +0000
-References: <20231004124224.630914-1-william.xuanziyang@huawei.com>
-In-Reply-To: <20231004124224.630914-1-william.xuanziyang@huawei.com>
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928015858.1809934-1-linan666@huaweicloud.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hello,
 
-This patch was applied to bluetooth/bluetooth-next.git (master)
-by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
-
-On Wed, 4 Oct 2023 20:42:24 +0800 you wrote:
-> Syzbot reports a warning as follows:
+On Thu, Sep 28, 2023 at 09:58:58AM +0800, linan666@huaweicloud.com wrote:
+> From: Li Nan <linan122@huawei.com>
 > 
-> WARNING: CPU: 1 PID: 26946 at net/bluetooth/hci_conn.c:619 hci_conn_timeout+0x122/0x210 net/bluetooth/hci_conn.c:619
-> ...
-> Call Trace:
->  <TASK>
->  process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
->  process_scheduled_works kernel/workqueue.c:2703 [inline]
->  worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
->  kthread+0x33c/0x440 kernel/kthread.c:388
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
->  </TASK>
-> 
-> [...]
+> When the throttle of bps is not enabled, tg_bps_limit() returns U64_MAX,
+> which is be used in calculate_bytes_allowed(), and divide 0 error will
+> happen.
 
-Here is the summary with links:
-  - Bluetooth: Fix a refcnt underflow problem for hci_conn
-    https://git.kernel.org/bluetooth/bluetooth-next/c/6be21d987868
+calculate_bytes_allowed() is just
 
-You are awesome, thank you!
+  return mul_u64_u64_div_u64(bps_limit, (u64)jiffy_elapsed, (u64)HZ); 
+
+The only division is by HZ. How does divide by 0 happen?
+
+Thanks.
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+tejun
