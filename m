@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4C07B7EF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C3D7B7EF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242339AbjJDMV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 08:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49496 "EHLO
+        id S242345AbjJDMVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 08:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242347AbjJDMV1 (ORCPT
+        with ESMTP id S242325AbjJDMVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 08:21:27 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BE893;
-        Wed,  4 Oct 2023 05:21:22 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-65d0da28fa8so12140906d6.0;
-        Wed, 04 Oct 2023 05:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696422081; x=1697026881; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AM7m7vaSmmMYAyEADAXdMx0sZwgXiamITxRXtutrqys=;
-        b=Pb+59J6I4x7+S1oGKFk1bJMbVv3b4vAtsPo9ZvzEQrPxPUEt118fT/c0bA6E3lI2Vr
-         8QbP3NeVw0TmB+2bwIhSTZk6TUmsMkCO+yVjo2apx00C5dX3KwiJYq1iZ8grhXEEtLiz
-         ROejw1hldDFLIr84u12nRTpcZG+TvBl6KTh9MPSYjydXkU5T+r8hoVOSoqjNt9MvcjOj
-         UzPMcmAKWiET2vOQsD4pINRw6dsJdN+SuPDO9mXrF5q486brTs8zYJ+rWZJ6RD/fleGl
-         BRROJR27EAOsWtmyf1DTsFp2CwoibXohcAstP+feccQkr6qzrfVzvkd4sjthqcS8AI0w
-         q+1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696422081; x=1697026881;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AM7m7vaSmmMYAyEADAXdMx0sZwgXiamITxRXtutrqys=;
-        b=nP5SQUN2FWoa38WSwYhu0vD0SixUzH/34wWpkyjmqJ3LM3zUn+sui9H/Jf0lqDUf20
-         FWh4CUUj5MXeSyhbuAssMJYCHQLD+daUCwkMJ1WQV4DzraavEFOH5qDNZPU7rU3D/t2Z
-         bcyvDa5g+Xs/D90V1q/HvtDaC/jarGQRPulMA/nkB4jZEZoRBayx7CeYgocVxvmIXh8s
-         CBVUZfG5b6R9jmNW5AeOz1Vi5AMVRJD/GSldY8mStvWmLX4zX/Hz3XIGArzagm3IW/PZ
-         xcrs48PJSBuED0a4sHS9pGQ/fVf06/D2Wmo5ccTZKMARQiKhOiTZ1zXvIR7oyCtW1lO6
-         JNAg==
-X-Gm-Message-State: AOJu0YzawUDef7HgXoQgZEdn8VvUOARrGgkN1z+uiOwayX3QqxsroGxT
-        jGHcsnceewFIWyx+vffIQ5s=
-X-Google-Smtp-Source: AGHT+IH6JR0icKV87wR6aK9vYjlSTqVEiUxLPDe63ZwohLb+GJ8E9PGNFpX9Dg+q4xR/zsjTXO5W9A==
-X-Received: by 2002:a0c:e18f:0:b0:656:4ba4:f8b6 with SMTP id p15-20020a0ce18f000000b006564ba4f8b6mr2113572qvl.54.1696422081606;
-        Wed, 04 Oct 2023 05:21:21 -0700 (PDT)
-Received: from luigi.stachecki.net ([2607:fb90:fe4a:a54:f3b3:2ab7:a445:b3f2])
-        by smtp.gmail.com with ESMTPSA id z15-20020a0cf00f000000b0065b12c7a48dsm1277228qvk.133.2023.10.04.05.21.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 05:21:21 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 08:21:11 -0400
-From:   Tyler Stachecki <stachecki.tyler@gmail.com>
-To:     Leonardo Bras <leobras@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 0/5] KVM: x86: Fix breakage in KVM_SET_XSAVE's ABI
-Message-ID: <ZR1Yt6Z+dhMbn/FJ@luigi.stachecki.net>
-References: <20230928001956.924301-1-seanjc@google.com>
- <ZR0QOGo5DftkRWsr@redhat.com>
+        Wed, 4 Oct 2023 08:21:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D06A1;
+        Wed,  4 Oct 2023 05:21:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7771CC433C8;
+        Wed,  4 Oct 2023 12:21:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696422087;
+        bh=11CQYpSKM2pcMi8aU4IMUllyrD6lDC+S1Hae75gjfpI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XxoZ4m3mh2BmBsFJKRt+wvKo4rBlcxmwegmfsWWNd47SfMKaPV8WW1quCEcf5+xxF
+         Xa03pTzsHTPleppIb/ES0v2Bv6wU/Z0ywLB3KcyIaM1UkDOsVRHGFqipguwvL/L4kw
+         N5dZ1Ne3tf4uBtIWRETe89yL3tbcS3s6Bg6OamD4=
+Date:   Wed, 4 Oct 2023 14:21:24 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee@kernel.org>
+Cc:     "Starke, Daniel" <daniel.starke@siemens.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Fedor Pchelkin <pchelkin@ispras.ru>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com" 
+        <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
+Subject: Re: [PATCH 1/1] tty: n_gsm: Avoid sleeping during .write() whilst
+ atomic
+Message-ID: <2023100448-cotton-safehouse-aca2@gregkh>
+References: <20231003170020.830242-1-lee@kernel.org>
+ <2023100320-immorally-outboard-573a@gregkh>
+ <DB9PR10MB588170E923A6ED8B3D6D9613E0CBA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM>
+ <2023100421-negotiate-stammer-1b35@gregkh>
+ <20231004085720.GA9374@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZR0QOGo5DftkRWsr@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231004085720.GA9374@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 04:11:52AM -0300, Leonardo Bras wrote:
-> So this patch is supposed to fix migration of VM from a host with
-> pre-ad856280ddea (OLD) kernel to a host with ad856280ddea + your set(NEW).
-> Right?
+On Wed, Oct 04, 2023 at 09:57:20AM +0100, Lee Jones wrote:
+> On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
 > 
-> Let's get the scenario here, where all machines are the same:
-> 1 - VM created on OLD kernel with a host-supported xfeature F, which is not
->     guest supported.
-> 2 - VM is migrated to a NEW kernel/host, and KVM_SET_XSAVE xfeature F.
-> 3 - VM will be migrated to another host, qemu requests KVM_GET_XSAVE, which
->     returns only guest-supported xfeatures, and this is passed to next host
-> 4 - VM will be started on 3rd host with guest-supported xfeatures, meaning
->     xfeature F is filtered-out, which is not good, because the VM will have
->     less features compared to boot.
+> > On Wed, Oct 04, 2023 at 05:59:09AM +0000, Starke, Daniel wrote:
+> > > > Daniel, any thoughts?
+> > > 
+> > > Our application of this protocol is only with specific modems to enable
+> > > circuit switched operation (handling calls, selecting/querying networks,
+> > > etc.) while doing packet switched communication (i.e. IP traffic over PPP).
+> > > The protocol was developed for such use cases.
+> > > 
+> > > Regarding the issue itself:
+> > > There was already an attempt to fix all this by switching from spinlocks to
+> > > mutexes resulting in ~20% performance loss. However, the patch was reverted
+> > > as it did not handle the T1 timer leading into sleep during atomic within
+> > > gsm_dlci_t1() on every mutex lock there.
+> 
+> That's correct.  When I initially saw this report, my initial thought
+> was to replace the spinlocks with mutexts, but having read the previous
+> accepted attempt and it's subsequent reversion I started to think of
+> other ways to solve this issue.  This solution, unlike the last, does
+> not involve adding sleep inducing locks into atomic contexts, nor
+> should it negatively affect performance.
+> 
+> > > There was also a suggestion to fix this in do_con_write() as
+> > > tty_operations::write() appears to be documented as "not allowed to sleep".
+> > > The patch for this was rejected. It did not fix the issue within n_gsm.
+> > > 
+> > > Link: https://lore.kernel.org/all/20221203215518.8150-1-pchelkin@ispras.ru/
+> > > Link: https://lore.kernel.org/all/20221212023530.2498025-1-zengheng4@huawei.com/
+> > > Link: https://lore.kernel.org/all/5a994a13-d1f2-87a8-09e4-a877e65ed166@kernel.org/
+> > 
+> > Ok, I thought I remembered this, I'll just drop this patch from my
+> > review queue and wait for a better solution if it ever comes up as this
+> > isn't a real issue that people are seeing on actual systems, but just a
+> > syzbot report.
+> 
+> What does the "better solution" look like?
 
-This is what I was (trying) to convey earlier...
+One that actually fixes the root problem here (i.e. does not break the
+recursion loop, or cause a performance decrease for normal users, or
+prevent this from being bound to the console).
 
-See Sean's response here:
-https://lore.kernel.org/all/ZRMHY83W%2FVPjYyhy@google.com/
+thanks,
 
-I'll copy the pertinent part of his very detailed response inline:
-> KVM *must* "trim" features when servicing KVM_GET_SAVE{2}, because that's been
-> KVM's ABI for a very long time, and userspace absolutely relies on that
-> functionality to ensure that a VM can be migrated within a pool of heterogenous
-> systems so long as the features that are *exposed* to the guest are supported
-> on all platforms.
-
-My 2 cents: as an outsider with less familiarity of the KVM code, it is hard
-to understand the contract here with the guest/userspace. It seems there is a
-fundamental question of whether or not "superfluous" features, those being
-host-supported features which extend that which the guest is actually capable
-of, can be removed between the time that the guest boots and when it
-terminates, through however many live-migrations that may be.
-
-Ultimately, this problem is not really fixable if said features cannot be
-removed.
-
-Is there an RFC or document which captures expectations of this form?
+greg k-h
