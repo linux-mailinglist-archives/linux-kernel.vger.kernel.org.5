@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 550277B853E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E457B8544
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243382AbjJDQ2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
+        id S243316AbjJDQ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243365AbjJDQ2j (ORCPT
+        with ESMTP id S233484AbjJDQ3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:28:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2D3FB
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:27:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696436864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HeOIY+TMASmn87xWV8+r7N8mCnLxXs+pOXJs1mPVrBE=;
-        b=bhLa11pNCYZxn8lWK9a2vAfRFNHkyNy4EDfOfQ8Cpxrhh0pf9zCHXsvQ/xhmlciCuauWw1
-        jOvDReGNZmGvd9N1aQkhibjkjeRQK9YWkvrQVspkBt6pUfvR6sDiBXys7KdelBdEGaeOXw
-        u78SBESWGd5jtgiRyvpQCsVDkgxQyl8=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-561-BwFdtP73PduARcASkKtT2w-1; Wed, 04 Oct 2023 12:27:42 -0400
-X-MC-Unique: BwFdtP73PduARcASkKtT2w-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3231f43fc5eso24931f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 09:27:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696436860; x=1697041660;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HeOIY+TMASmn87xWV8+r7N8mCnLxXs+pOXJs1mPVrBE=;
-        b=QU7rhN1fjVZTXRaueNVE1nS6zQ4aXykag3pxHMeyCApdl+jRKxROf3Zc7QqRxJHSoA
-         TQWCBxEc0Yli5oI1HgsyoRcd57AnXbNLmm4sO0UWLqlg9H9iRJK4jNQZXH03UWj9dPaN
-         5mGxs7VYgbOsYPHkpHPUiUWD9UJqNzbGBpYd/lcWcMzN/0YsEXS1+Q4EApgUWVi9EJ/3
-         fI6v3cZBx82OeFUJPkC5cH0Eu4Utyemk98F9yadNaamBWMjf2MN8GlbyM+rOMhkdai7P
-         F/GMXbrqhZygCaM4hYiqgwj6J9Urb346rmaYZDLpJTx+PLDGXDvYoKHyRzSXiULIeRxl
-         QVrA==
-X-Gm-Message-State: AOJu0YyTtkgrkwu8Er+bLmkg1Gc3c0rYrFInRLQw7cQGbMWqaEBYMdo7
-        9nsmZkU5CfAWtSDT1Fb+2K/vcdpXETNyHora87gBSrR7qG5ppkc/Dy03rz/1w1m3koUWR9PA8/N
-        hFmlRBm/mYsei8EqaA7prP/vXZWFQUjdz
-X-Received: by 2002:adf:f08f:0:b0:318:f7a:e3c8 with SMTP id n15-20020adff08f000000b003180f7ae3c8mr2966660wro.57.1696436860469;
-        Wed, 04 Oct 2023 09:27:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGrXRDIEuP3VkHPBdR8hK4Narzkji4gpOpXS4wQ4PXY81B0mBGZkcbuxvanEiTrfGdMm7v67A==
-X-Received: by 2002:adf:f08f:0:b0:318:f7a:e3c8 with SMTP id n15-20020adff08f000000b003180f7ae3c8mr2966646wro.57.1696436860215;
-        Wed, 04 Oct 2023 09:27:40 -0700 (PDT)
-Received: from redhat.com ([2a06:c701:73d2:bf00:e379:826:5137:6b23])
-        by smtp.gmail.com with ESMTPSA id c6-20020a5d4cc6000000b00325c7295450sm4385094wrt.3.2023.10.04.09.27.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 09:27:39 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 12:27:36 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eugenio Perez Martin <eperezma@redhat.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, linux-kernel@vger.kernel.org,
-        Dragos Tatulea <dtatulea@nvidia.com>,
-        virtualization@lists.linux-foundation.org, leiyang@redhat.com,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [PATCH] mlx5_vdpa: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
-Message-ID: <20231004122716-mutt-send-email-mst@kernel.org>
-References: <20230703142514.363256-1-eperezma@redhat.com>
- <20230703110241-mutt-send-email-mst@kernel.org>
- <ba5099b8-f72c-f267-41a7-d0ee18680796@oracle.com>
- <20230704061356-mutt-send-email-mst@kernel.org>
- <CAJaqyWf7DzJMEUT0NcPeDLQyPkthEJZydnSSPztoCxF6PWEu1w@mail.gmail.com>
+        Wed, 4 Oct 2023 12:29:51 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B661BF;
+        Wed,  4 Oct 2023 09:29:46 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1793966003B0;
+        Wed,  4 Oct 2023 17:29:44 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696436984;
+        bh=eY3J6B+d3OqRFON8pdfHkkKrg0jpP3yRtk7Fqx4owG0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=PnTZ8o7+tYlOzZFUqUMVdJWa2t5ikPnSOB9Vdx/fXDEbaeIYvzjGGKqkCZmD4kmv8
+         qm/WNio/tTtJsMwBVKjzm0TWZFnxujkDy6ihwvyCnnVvNVk57rdqq+C3uXI5345vDo
+         yvPORxxKHBWoBQ0WfBFg0IJa6NW7Sqtj6C9ob6kEiw3FNFwbOnR/Sl2jjeWgoWyHpy
+         jQ+HSF1YlbSg4/sJIyUjb2qQknPTJ7pCm6HEQbAFEWlkJtPVq+HkQDqRJ1l0FF2dIr
+         QX9U72uLPVApTFgn3AcuWIXlrhkIvvdP7oBIpTTU2wSRu7gzjGHOZ1fhur/5mCiDvE
+         OPpZJS99IsPEQ==
+Message-ID: <d88b72f1-6a60-dc7d-6922-1dde278a61db@collabora.com>
+Date:   Wed, 4 Oct 2023 18:29:41 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJaqyWf7DzJMEUT0NcPeDLQyPkthEJZydnSSPztoCxF6PWEu1w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 2/2] clk: mediatek: mt8195-topckgen: Refactor parents for
+ top_dp/edp muxes
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Alexandre Mergnat <amergnat@baylibre.com>, sboyd@kernel.org,
+        mturquette@baylibre.com, matthias.bgg@gmail.com, msp@baylibre.com,
+        yangyingliang@huawei.com, u.kleine-koenig@pengutronix.de,
+        miles.chen@mediatek.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@collabora.com
+References: <20230713072138.84117-1-angelogioacchino.delregno@collabora.com>
+ <20230713072138.84117-3-angelogioacchino.delregno@collabora.com>
+ <9a0817c2-4101-5c21-977d-77ac0d83a067@baylibre.com>
+ <CAGXv+5E7YYdkG7GtxG90KzdAG8Kke+74Amtbw4mmyVNZgDZHRA@mail.gmail.com>
+ <jv6daj2w3pwjtde3m3m26yg4wyxbbio4zqra5yqc4gb32ri5ub@noinbbkjovwm>
+ <25724ee3-858a-01eb-352b-3edbfad31c8e@collabora.com>
+ <jxgy2pvns4ri2aj5nmdhb4zbluseuzdejbplh2avwz63df2cfx@grrrdm6ujzi4>
+ <24d17b07-1e8d-05f6-46b7-9da1ff1bed7a@collabora.com>
+ <hd2ydj33vp3dsri4czx6frxxvir6vxnovc27n6rrgs4qqbtrjz@whhyt2iinq5k>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <hd2ydj33vp3dsri4czx6frxxvir6vxnovc27n6rrgs4qqbtrjz@whhyt2iinq5k>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,78 +72,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 02:56:53PM +0200, Eugenio Perez Martin wrote:
-> On Tue, Jul 4, 2023 at 12:16 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Mon, Jul 03, 2023 at 05:26:02PM -0700, Si-Wei Liu wrote:
-> > >
-> > >
-> > > On 7/3/2023 8:46 AM, Michael S. Tsirkin wrote:
-> > > > On Mon, Jul 03, 2023 at 04:25:14PM +0200, Eugenio Pérez wrote:
-> > > > > Offer this backend feature as mlx5 is compatible with it. It allows it
-> > > > > to do live migration with CVQ, dynamically switching between passthrough
-> > > > > and shadow virtqueue.
-> > > > >
-> > > > > Signed-off-by: Eugenio Pérez <eperezma@redhat.com>
-> > > > Same comment.
-> > > to which?
-> > >
-> > > -Siwei
-> >
-> > VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK is too narrow a use-case to commit to it
-> > as a kernel/userspace ABI: what if one wants to start rings in some
-> > other specific order?
-> > As was discussed on list, a better promise is not to access ring
-> > until the 1st kick. vdpa can then do a kick when it wants
-> > the device to start accessing rings.
-> >
+Il 18/07/23 11:03, Maxime Ripard ha scritto:
+> On Mon, Jul 17, 2023 at 04:30:48PM +0200, AngeloGioacchino Del Regno wrote:
+>>>>>> AFAIK the recommended way to deal with this is to use
+>>>>>> clk_set_rate_exclusive() and co. in whatever consumer driver that
+>>>>>> needs exclusive control on the clock rate.
+>>>>>
+>>>>> I guess it works, but it looks to me like the issue here is that the
+>>>>> provider should disable it entirely? My expectation for
+>>>>> clk_set_rate_exclusive() is that one user needs to lock the clock rate
+>>>>> to operate properly.
+>>>>>
+>>>>> If the provider expectation is that the rate or parent should never
+>>>>> changed, then that needs to be dealt with at the provider level, ie
+>>>>> through the clk_ops.
+>>>>>
+>>>>>> However I'm not sure if that works for parents. It should, given the
+>>>>>> original use case was for the sunxi platforms, which like the MediaTek
+>>>>>> platform here has 2 PLLs for video related consumers, but I couldn't
+>>>>>> find code verifying it.
+>>>>>
+>>>>> If you want to prevent clocks from ever being reparented, you can use
+>>>>> the new clk_hw_determine_rate_no_reparent() determine_rate
+>>>>> implementation.
+>>>>>
+>>>>
+>>>> We want the clocks to be reparented, as we need them to switch parents as
+>>>> explained before... that's more or less how the tree looks:
+>>>>
+>>>> TVDPLL(x) -> PLL Divider (fixed) -> MUX -> Gate -> Controller
+>>>>
+>>>> Besides, I think that forcing *one* parent to the dp/edp mux would produce a
+>>>> loss of the flexibility that the clock framework provides.
+>>>>
+>>>> I again want to emphasize on the fact that TVDPLL1 and TVDPLL2 are *identical*
+>>>> in specs, and on that there will never be a MT8195 SoC that has only one of
+>>>> the two PLLs, for obvious reasons...
+>>>>
+>>>> P.S.: If you need more context, I'll be glad to answer to any other question!
+>>>
+>>> Then I have no idea what the question is :)
+>>>
+>>> What are you trying to achieve / fix, and how can I help you ? :)
+>>
+>> Chen-Yu, Alexandre had/have questions about if there was any other solution instead
+>> of using the solution of *this* commit, so, if there's any other better solution
+>> than the one that I've sent as this commit.
+>>
+>> I'm the one saying that this commit is the best solution :-P
 > 
-> Friendly ping about this series,
+> I went back to the original patch, and my understanding is that, when
+> running two output in parallel, the modeset of one can affect the second
+> one, and that's bad, right?
 > 
-> Now that VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK has been merged for
-> vdpa_sim, does it make sense for mlx too?
+> If so, then you usually have multiple ways to fix this:
 > 
-> Thanks!
+>   - This patch
+>   - Using clk_set_rate_exclusive like Chen-Yu suggested
+>   - Using a notifier to react to a rate change and adjust
+> 
+> I'm not aware of any "official" guidelines at the clock framework level
+> regarding which to pick and all are fine.
+> 
+> My opinion though would be to use clk_set_rate_exclusive(), for multiple
+> reasons.
+> 
+> The first one is that it models correctly what you consumer expects:
+> that the rate is left untouched. This can happen in virtually any
+> situation where you have one clock in the same subtree changing rate,
+> while the patch above will only fix that particular interference.
+> 
+> The second one is that, especially with DP, you only have a handful of
+> rates you'll need to reach. 148MHz, 297MHz, 594MHz, and possibly a bunch
+> of others for eDP panels. It's thus likely to have both controllers
+> having the same frequency requirement, and thus it makes it possible to
+> run from only one PLL and shut the other down.
+> 
+> This patch will introduce orphan clocks issues that are always a bit
+> bothersome. A notifier would be troublesome to use and will probably
+> introduce glitches plus some weird interaction with scrambling if you
+> ever support it.
+> 
+> So, yeah, using clk_set_rate_exclusive() seems like the best option to me :)
+> 
+> Maxime
 
-For sure. I was just busy with a qemu pull, will handle this next.
+Sorry for resurrecting a very old thread, I was able to come back to this issue
+right now: there's an issue that I can't really think about how to solve with
+just the usage of clk_set_rate_exclusive().
 
-> > > >
-> > > > > ---
-> > > > >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
-> > > > >   1 file changed, 7 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > index 9138ef2fb2c8..5f309a16b9dc 100644
-> > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > @@ -7,6 +7,7 @@
-> > > > >   #include <uapi/linux/virtio_net.h>
-> > > > >   #include <uapi/linux/virtio_ids.h>
-> > > > >   #include <uapi/linux/vdpa.h>
-> > > > > +#include <uapi/linux/vhost_types.h>
-> > > > >   #include <linux/virtio_config.h>
-> > > > >   #include <linux/auxiliary_bus.h>
-> > > > >   #include <linux/mlx5/cq.h>
-> > > > > @@ -2499,6 +2500,11 @@ static void unregister_link_notifier(struct mlx5_vdpa_net *ndev)
-> > > > >                   flush_workqueue(ndev->mvdev.wq);
-> > > > >   }
-> > > > > +static u64 mlx5_vdpa_get_backend_features(const struct vdpa_device *vdpa)
-> > > > > +{
-> > > > > + return BIT_ULL(VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK);
-> > > > > +}
-> > > > > +
-> > > > >   static int mlx5_vdpa_set_driver_features(struct vdpa_device *vdev, u64 features)
-> > > > >   {
-> > > > >           struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
-> > > > > @@ -3140,6 +3146,7 @@ static const struct vdpa_config_ops mlx5_vdpa_ops = {
-> > > > >           .get_vq_align = mlx5_vdpa_get_vq_align,
-> > > > >           .get_vq_group = mlx5_vdpa_get_vq_group,
-> > > > >           .get_device_features = mlx5_vdpa_get_device_features,
-> > > > > + .get_backend_features = mlx5_vdpa_get_backend_features,
-> > > > >           .set_driver_features = mlx5_vdpa_set_driver_features,
-> > > > >           .get_driver_features = mlx5_vdpa_get_driver_features,
-> > > > >           .set_config_cb = mlx5_vdpa_set_config_cb,
-> > > > > --
-> > > > > 2.39.3
-> >
+Remembering that the clock tree is as following:
+TVDPLL(x) -> PLL Divider (fixed) ->
+-> MUX (can choose any of TVDPLL(1/2)_d(2/4/6/8/16)) -> Gate -> Controller
 
+The DPI driver is doing:
+1. Check the best factor for setting rate of a TVDPLL
+2. Set rate of one TVDPLL (specified in DT): clk_set_rate(dpi->tvd_clk, rate);
+    2a. Read the rate of that PLL again to know the precise clock output
+3. Set rate on the Gate clock (forwards to MUX, selecting TVDPLL(x)_d(y)):
+    clk_set_rate(dpi->pixel_clk, rate);
+
+
+Now, the issue is: if I change the final pixel_clk rate setting to _exclusive(),
+nothing still guarantees that we will be selecting the TVDPLL that we have
+manipulated in step 2, look at the following example.
+
+tvd_clk == TVDPLL1
+pixel_clk == TOP_DP (can be muxed to any tvdpll1/2 dividers!)
+
+clk_set_rate(tvdpll1, something); new_rate = clk_get_rate(tvdpll1)
+
+...calculations... new_rate = pixclk * factor;
+...more calculations....
+
+clk_set_rate(pixel_clk, calculated_something)
+        ^^^^^^
+
+There is still no guarantee that pixel_clk is getting parented to one of the
+TVDPLL1 dividers, as it could still get parented to a TVDPLL2 divider instead
+if the other controller has set TVDPLL2 to "an acceptable rate": it's true that
+this would work - yes but suboptimally! - because we want to set a specific
+factor to reduce jitter on the final pixel clock.
+
+
+....And I came back to this commit being again the best solution for me because....
+
+1. You also seem to agree with me that a notifier would be troublesome and would
+    probably introduce glitches; and
+2. clk_set_rate_exclusive() doesn't give me any guarantee about selecting the same
+    PLL that the driver was manipulating before.
+
+
+Am I underestimating and/or ignoring anything else in all of that?
+
+Cheers,
+Angelo
