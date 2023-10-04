@@ -2,113 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F267B81CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19A77B81DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242754AbjJDOHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
+        id S242773AbjJDOLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbjJDOHq (ORCPT
+        with ESMTP id S242752AbjJDOLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:07:46 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B961AB;
-        Wed,  4 Oct 2023 07:07:42 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so3690164a12.2;
-        Wed, 04 Oct 2023 07:07:42 -0700 (PDT)
+        Wed, 4 Oct 2023 10:11:24 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195CEBF;
+        Wed,  4 Oct 2023 07:11:20 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-7741109bdeeso148974785a.2;
+        Wed, 04 Oct 2023 07:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696428461; x=1697033261; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=T0sP0tgQAUHqC8yCC+IOTFqWb27w1M9CLBpbcefWOCM=;
-        b=heZv85G2mX68Fq5PzuTtt2e0fbuu04GIWdP+7szv8azeeWALB3oUMCmq2MMW+LMM8m
-         9rDz7uWgnTwVTPMj6n3EKiifg7LWQL+rqKHL+fhV403nDXPqteGqu83vapwAAlQKcS4Y
-         dyoFcX1ESj56r74baeutxBGcDqqcSOdNUwCCvxIorcxA1YqNDHxdjLbMYYDvG73PREcv
-         ljwO7rb0MgZtfqkXdhh3ciONqwn/lzmLWrg7BpCbzJk90Lb2IYuvaVKZ/ay/vTM9nhhg
-         pZp0LHGPheXIxeRLEf4D2i9MSr9vI89WCFtXqI9tBoaDz5FmIv/Xo1qz+tcDlS8ngtaq
-         FdEA==
+        d=gmail.com; s=20230601; t=1696428679; x=1697033479; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ksUh+jrzzPybnoiQtQr0hrHzGQz1wGgqWI8u8Q1EWwE=;
+        b=FibIyqO5qxJDuwJNsNg3C1HZqN6UW9irFKi+YWOqeq/gnGgVjFm0AWCgbYj21RxA6Y
+         HlUAjRE0vO3driSVmtluSL86j6rjFK8ZtkGmZ3kUYdpT/g+O2Sf8xtOoS9HHog2eqVBr
+         6qhxI6Kbb2IA1SDbkoSLa4wSBmMja7nAE6QUwxgKSd5INj8R3Kh6NpMKvFOTRw/PDj47
+         IpttbthxrSUaFu4uhOc3hxfg8QyszeH/82VAYwUn5BnCHs7W3RYvOD8pPSjGDsNwzBBU
+         3RvTXZJYoDsOukTfTnQ7IzvteLbIbzEmEBDVz5eQTDLDqdMakCibS8y2k6E8iGWWrg5e
+         0hBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696428461; x=1697033261;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1696428679; x=1697033479;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T0sP0tgQAUHqC8yCC+IOTFqWb27w1M9CLBpbcefWOCM=;
-        b=RFCVjLuqyyzjXdWsGDLcQZ5g8mlz++Razt77T7gnmdXefVrBkobUTqZoov0HVu+goX
-         094n4fND6lPf+wcNp7YG8JKznDWvHLvjsFXdl9yzydil/6sVUGR0DZQ7/BRR++w/9pqp
-         7/WUwS6ZAB9LSMbC5gPGWlCusqWf/oWPwg+en+kMhG+FRaXF7XjHSTERjYS2thH5siZq
-         UN1AptgNmhDeetuteb7lC7qDYbaoPmSK848fa65boDiI9WK+966Vm+ls7BP3xOCEa1YX
-         sU9t9iT5P2sBE7KtcqUM6I322uXcsCdBVKsM+XX5K4EYkzUVVouz6u1XzqA1AOJL8Kl3
-         x+oQ==
-X-Gm-Message-State: AOJu0Yy1RP98fhjoOyrmBX5qVKlwmyMC3HyigXKRuKBA05+TKc1xIWxU
-        BEcxDKWIyDJRR02fOGnarb4na9WMzMU=
-X-Google-Smtp-Source: AGHT+IFCPJZwxy+qqLaPWB48IYMJFtZqhWvX4HlYN4o9eddnBTeS5bYXY8Wf//chvbDKHxq/TlXmRA==
-X-Received: by 2002:a05:6402:b18:b0:531:1875:bbc8 with SMTP id bm24-20020a0564020b1800b005311875bbc8mr2124049edb.19.1696428460318;
-        Wed, 04 Oct 2023 07:07:40 -0700 (PDT)
-Received: from [192.168.2.30] (85-70-151-113.rcd.o2.cz. [85.70.151.113])
-        by smtp.gmail.com with ESMTPSA id f17-20020a50ee91000000b00537f5e85ea0sm2472700edr.13.2023.10.04.07.07.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 07:07:39 -0700 (PDT)
-Message-ID: <1edcdb9d-196a-4b0f-9752-5f6ef0520e48@gmail.com>
-Date:   Wed, 4 Oct 2023 16:07:38 +0200
+        bh=ksUh+jrzzPybnoiQtQr0hrHzGQz1wGgqWI8u8Q1EWwE=;
+        b=F6sF0fLR61cri8Rt3D//DcsFNcNUcF092q3rlAzNVrwdx6TxmveexT87d9kn6WO5dP
+         KwALP1/PYC9j6rkyugHN81oGkigAiLbkyDo+tuv0v1/8DgH7apA7ijHz75zQXnW/RCbd
+         +mmtgv38BwQEkrArx8m5Pr9N/w3l61CTDqUTkMO7ICqqRXFgUOJb+fP8a3jjnnmJD8n5
+         yksFPCiDZOOvy6tzCTNL/D8XOBW4IYxxnrRujS3Khoe4NCPXofUGugKhPGHt4nr/6ttS
+         zMhARxRTmNQ2glKAJu6SuLWPUxEykgdHb29+MAHnqDnfmd4RFgazoxCYeLYAT8W/Fgg2
+         SDkg==
+X-Gm-Message-State: AOJu0Yx8mrscBq9eow9WQtYkZ7qkW8uF57fhk3oRLarV9n3ous2hMSk+
+        hiK5aPMxDRE9LqOrlM/C4q8=
+X-Google-Smtp-Source: AGHT+IH/IAS+d9I4qWoXCuKpcuQ84RN9Tb4+vrGL/0GIxBtw8qst5tubQ93uWZKgmvywJp8KC+EXZA==
+X-Received: by 2002:a05:620a:2911:b0:773:b62b:3474 with SMTP id m17-20020a05620a291100b00773b62b3474mr2532251qkp.63.1696428678933;
+        Wed, 04 Oct 2023 07:11:18 -0700 (PDT)
+Received: from penguin ([205.220.129.20])
+        by smtp.gmail.com with ESMTPSA id op52-20020a05620a537400b0076d9e298928sm1286326qkn.66.2023.10.04.07.10.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 07:11:18 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 07:10:24 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jeffery Miller <jefferymiller@google.com>
+Cc:     regressions@lists.linux.dev, benjamin.tissoires@redhat.com,
+        linux@leemhuis.info, Andrew Duggan <aduggan@synaptics.com>,
+        Andrew Duggan <andrew@duggan.us>, loic.poulain@linaro.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: elantech - fix fast_reconnect callback in ps2 mode
+Message-ID: <ZR1yUFJ8a9Zt606N@penguin>
+References: <20231004005729.3943515-1-jefferymiller@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] block: Fix regression in sed-opal for a saved key.
-To:     linux-block@vger.kernel.org
-Cc:     gjoyce@linux.vnet.ibm.com, jonathan.derrick@linux.dev,
-        axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        Ondrej Kozina <okozina@redhat.com>
-References: <20231003100209.380037-1-gmazyland@gmail.com>
-Content-Language: en-US
-From:   Milan Broz <gmazyland@gmail.com>
-Autocrypt: addr=gmazyland@gmail.com; keydata=
- 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
-In-Reply-To: <20231003100209.380037-1-gmazyland@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231004005729.3943515-1-jefferymiller@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -119,53 +74,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 12:02, Milan Broz wrote:
-> The commit 3bfeb61256643281ac4be5b8a57e9d9da3db4335
-> introduced the use of keyring for sed-opal.
+Hi Jeffery,
+
+On Tue, Oct 03, 2023 at 07:57:24PM -0500, Jeffery Miller wrote:
+> Make `elantech_setup_ps2` set a compatible fast_reconnect pointer
+> when its ps2 mode is used.
 > 
-> Unfortunately, there is also a possibility to save
-> the Opal key used in opal_lock_unlock().
+> When an SMBus connection is attempted and fails `psmouse_smbus_init`
+> sets fast_reconnect to `psmouse_smbus_reconnect`.
+> `psmouse_smbus_reconnect` expects `psmouse->private` to be
+> `struct psmouse_smbus_dev` but `elantech_setup_ps2` replaces
+> it with its private data. This was causing an issue on resume
+> since psmouse_smbus_reconnect was being called while in ps2, not SMBus
+> mode.
 > 
-> This patch switches the order of operation, so the cached
-> key is used instead of failure for opal_get_key.
-> 
-> The problem was found by the cryptsetup Opal test recently
-> added to the cryptsetup tree.
+> This was uncovered by commit 92e24e0e57f7 ("Input: psmouse - add delay when
+> deactivating for SMBus mode")
 
-Just forgot to mention - this is regression in 6.6-rc,
-breaking our OPAL cryptsetup support, so  I think this
-should go into next 6.6 rc.
-
-Stable versions are ok, only 6.6-rc is affected currently.
-
-Milan
-
+Nice find, thank you.
 
 > 
-> Fixes: 3bfeb6125664 ("block: sed-opal: keyring support for SED keys")
-> Tested-by: Ondrej Kozina <okozina@redhat.com>
-> Signed-off-by: Milan Broz <gmazyland@gmail.com>
+> Closes:
+> Link:https://lore.kernel.org/all/ca0109fa-c64b-43c1-a651-75b294d750a1@leemhuis.info/
+> Reported-by: Thorsten Leemhuis <linux@leemhuis.info>
+> 
+> Signed-off-by: Jeffery Miller <jefferymiller@google.com>
 > ---
->   block/sed-opal.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
 > 
-> diff --git a/block/sed-opal.c b/block/sed-opal.c
-> index 6d7f25d1711b..04f38a3f5d95 100644
-> --- a/block/sed-opal.c
-> +++ b/block/sed-opal.c
-> @@ -2888,12 +2888,11 @@ static int opal_lock_unlock(struct opal_dev *dev,
->   	if (lk_unlk->session.who > OPAL_USER9)
->   		return -EINVAL;
->   
-> -	ret = opal_get_key(dev, &lk_unlk->session.opal_key);
-> -	if (ret)
-> -		return ret;
->   	mutex_lock(&dev->dev_lock);
->   	opal_lock_check_for_saved_key(dev, lk_unlk);
-> -	ret = __opal_lock_unlock(dev, lk_unlk);
-> +	ret = opal_get_key(dev, &lk_unlk->session.opal_key);
-> +	if (!ret)
-> +		ret = __opal_lock_unlock(dev, lk_unlk);
->   	mutex_unlock(&dev->dev_lock);
->   
->   	return ret;
+> The other callbacks set in psmouse_smbus_init are already replaced.
+> Should fast_reconnect be set to `elantech_reconnect` instead?
+
+No, doing PS/2 Elantech reinitialization is not a "fast" operation, as
+it takes a while to communicate with/query the device, so we should not
+be using elantech_reconnect() as a "fast" reconnect handler.
+
+In fact, now that I think about it more, we should rework the original
+patch that added the delay, so that we do not wait these 30 msec in the
+"fast" reconnect handler. It turns out your original approach was
+better, but we should not be using retries, but rather the existing
+reset_delay_ms already defined in rmi platform data. I would appreciate
+if you try the draft patch at the end of this email (to be applied after
+reverting your original one adding the delay in psmouse-smbus.c).
+
+> 
+> 
+>  drivers/input/mouse/elantech.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
+> index 2118b2075f43..4e38229404b4 100644
+> --- a/drivers/input/mouse/elantech.c
+> +++ b/drivers/input/mouse/elantech.c
+> @@ -2114,6 +2114,7 @@ static int elantech_setup_ps2(struct psmouse *psmouse,
+>  	psmouse->protocol_handler = elantech_process_byte;
+>  	psmouse->disconnect = elantech_disconnect;
+>  	psmouse->reconnect = elantech_reconnect;
+> +	psmouse->fast_reconnect = NULL;
+
+I think we need a similar change in synaptics.c as that one also can
+fall back to PS/2 mode.
+
+Thanks!
+
+---
+
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index ada299ec5bba..6ccc4a099b51 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -1752,6 +1752,7 @@ static int synaptics_create_intertouch(struct psmouse *psmouse,
+ 		psmouse_matches_pnp_id(psmouse, topbuttonpad_pnp_ids) &&
+ 		!SYN_CAP_EXT_BUTTONS_STICK(info->ext_cap_10);
+ 	const struct rmi_device_platform_data pdata = {
++		.reset_delay_ms = 30,
+ 		.sensor_pdata = {
+ 			.sensor_type = rmi_sensor_touchpad,
+ 			.axis_align.flip_y = true,
+diff --git a/drivers/input/rmi4/rmi_smbus.c b/drivers/input/rmi4/rmi_smbus.c
+index 7059a2762aeb..b0b099b5528a 100644
+--- a/drivers/input/rmi4/rmi_smbus.c
++++ b/drivers/input/rmi4/rmi_smbus.c
+@@ -235,12 +235,29 @@ static void rmi_smb_clear_state(struct rmi_smb_xport *rmi_smb)
+ 
+ static int rmi_smb_enable_smbus_mode(struct rmi_smb_xport *rmi_smb)
+ {
+-	int retval;
++	struct i2c_client *client = rmi_smb->client;
++	int smbus_version;
++
++	/*
++	 * psmouse driver resets the controller, we only need to wait
++	 * to give the firmware chance to fully reinitialize.
++	 */
++	if (rmi_smb->xport.pdata.reset_delay_ms)
++		msleep(rmi_smb->xport.pdata.reset_delay_ms);
+ 
+ 	/* we need to get the smbus version to activate the touchpad */
+-	retval = rmi_smb_get_version(rmi_smb);
+-	if (retval < 0)
+-		return retval;
++	smbus_version = rmi_smb_get_version(rmi_smb);
++	if (smbus_version < 0)
++		return smbus_version;
++
++	rmi_dbg(RMI_DEBUG_XPORT, &client->dev, "Smbus version is %d",
++		smbus_version);
++
++	if (smbus_version != 2 && smbus_version != 3) {
++		dev_err(&client->dev, "Unrecognized SMB version %d\n",
++				smbus_version);
++		return -ENODEV;
++	}
+ 
+ 	return 0;
+ }
+@@ -253,11 +270,10 @@ static int rmi_smb_reset(struct rmi_transport_dev *xport, u16 reset_addr)
+ 	rmi_smb_clear_state(rmi_smb);
+ 
+ 	/*
+-	 * we do not call the actual reset command, it has to be handled in
+-	 * PS/2 or there will be races between PS/2 and SMBus.
+-	 * PS/2 should ensure that a psmouse_reset is called before
+-	 * intializing the device and after it has been removed to be in a known
+-	 * state.
++	 * We do not call the actual reset command, it has to be handled in
++	 * PS/2 or there will be races between PS/2 and SMBus. PS/2 should
++	 * ensure that a psmouse_reset is called before initializing the
++	 * device and after it has been removed to be in a known state.
+ 	 */
+ 	return rmi_smb_enable_smbus_mode(rmi_smb);
+ }
+@@ -272,7 +288,6 @@ static int rmi_smb_probe(struct i2c_client *client)
+ {
+ 	struct rmi_device_platform_data *pdata = dev_get_platdata(&client->dev);
+ 	struct rmi_smb_xport *rmi_smb;
+-	int smbus_version;
+ 	int error;
+ 
+ 	if (!pdata) {
+@@ -311,18 +326,9 @@ static int rmi_smb_probe(struct i2c_client *client)
+ 	rmi_smb->xport.proto_name = "smb";
+ 	rmi_smb->xport.ops = &rmi_smb_ops;
+ 
+-	smbus_version = rmi_smb_get_version(rmi_smb);
+-	if (smbus_version < 0)
+-		return smbus_version;
+-
+-	rmi_dbg(RMI_DEBUG_XPORT, &client->dev, "Smbus version is %d",
+-		smbus_version);
+-
+-	if (smbus_version != 2 && smbus_version != 3) {
+-		dev_err(&client->dev, "Unrecognized SMB version %d\n",
+-				smbus_version);
+-		return -ENODEV;
+-	}
++	error = rmi_smb_enable_smbus_mode(rmi_smb);
++	if (error)
++		return error;
+ 
+ 	i2c_set_clientdata(client, rmi_smb);
+ 
+
+-- 
+Dmitry
