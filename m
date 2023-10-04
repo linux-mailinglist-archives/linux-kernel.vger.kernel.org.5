@@ -2,74 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D20B7B8279
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93A47B8263
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242442AbjJDOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
+        id S233417AbjJDOcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242814AbjJDOey (ORCPT
+        with ESMTP id S233092AbjJDOcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:34:54 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12DCCE
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:34:50 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4053e6e8ca7so5615385e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 07:34:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1696430089; x=1697034889; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OyQJmck1/pI5OX/IX07IDtTyF+FKPIka6gVUOADEZr8=;
-        b=HuiX6L5hojurAbfmxheJJzTFOLB3kiq38MPPBpO6IIf2HKgom5FfHDxWnDnQ7HkUgz
-         DRlnzfQeDaFmqGom0Jy4ZaSvdNnbQ5dqftYwklkcJJQUmGr84CJtE9kz/5om9oEwmQV2
-         s1N3K6HVmcb7pzY3wPXY07Ne3VMsiHfl4TWQYaWjWfevxmD2mJsFF+9wqG7zsb4sDJV7
-         kK9jTH9IzwsH088wAgCXrrdPxq45zLaGvmWeKKZ4rTg04p6t3gbrTFEn4NPXAbiML69x
-         eij7XkZ5ISob9947THJfb5fbmWny1J6+6FkEHX9uAH+0lXS+kQEGdkDloiNkVqPGOFKr
-         W5Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696430089; x=1697034889;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OyQJmck1/pI5OX/IX07IDtTyF+FKPIka6gVUOADEZr8=;
-        b=ZIRyB0mHqhg+cHVyvUBCN6Lbc4YxPNYd6K8KyVJ0Jo7wXRTSZ4YD1k84CTuR3Yj3Kf
-         MUzyRCDen9isK+ZOlMByTp26l3RTNSQhsQ0DIzyp79KRCVQFEu2oFhekeqKRl+JUzONP
-         cIk+dYnVIVNlxi4QLSbQT8XLz5cr44bfDHF2DArq+0uNLqgYRPl2D11pxkwLqJz7UWME
-         X/Oy9/miLbd1WjhgLzM4oypAPJd2xF8ow597Hb5ceTTN3wVyDCF2Sh05UtyLRgxwVu9D
-         24a4wLfj6W2aqy8w5ldqYSVi2JIUcUSFf0izC8p4STZRNC5Uvg8It5qgDjVe5HASCj+A
-         LJLQ==
-X-Gm-Message-State: AOJu0YxDHQA6ijJZIvsdYcbr1n6YSwbKRHBimutQpn4wJxTMWUIhBBFs
-        GzS8d8iLSYjMm93m1QGR6NDj2g==
-X-Google-Smtp-Source: AGHT+IGzp/S6AMTHi02JDakLFsQHybTWZ0pEAN4ECemzds5xOO34p1aXoKuAUJwbGsZ5rcqs2qdXOQ==
-X-Received: by 2002:adf:ecc3:0:b0:31f:edc3:c5fb with SMTP id s3-20020adfecc3000000b0031fedc3c5fbmr2087729wro.5.1696430089475;
-        Wed, 04 Oct 2023 07:34:49 -0700 (PDT)
-Received: from carbon-x1.. ([2a01:e0a:999:a3a0:9474:8d75:5115:42cb])
-        by smtp.gmail.com with ESMTPSA id t20-20020a1c7714000000b00401e32b25adsm1686205wmi.4.2023.10.04.07.34.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 07:34:49 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org
-Subject: [PATCH 5/5] riscv: kvm: use ".L" local labels in assembly when applicable
-Date:   Wed,  4 Oct 2023 16:30:54 +0200
-Message-ID: <20231004143054.482091-6-cleger@rivosinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231004143054.482091-1-cleger@rivosinc.com>
-References: <20231004143054.482091-1-cleger@rivosinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Wed, 4 Oct 2023 10:32:50 -0400
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2042.outbound.protection.outlook.com [40.107.14.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A66D9;
+        Wed,  4 Oct 2023 07:32:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UshTWT9yaOtCfiyASVa8NiWZA6la7diCfFs6kDA3xLLYzqc/NYawDYIz5Of9UuA7+IHZrVG47RboWDeJ/1LJs1Oq+Khg7QKoRC6EdiSKiSPaef+LP7czi9LMTsawy5p3t/sh8C3iPsr23MqOg4XI36NJHcE5g8ryppu0CmVeUnrc3HFOdjcGtP2RBhkdDUP6pVDZeEmLBS0cPEjjqUYJl9Oqbu7bo3yuUVQvCa1Emjy0U1/iydv9EKJuMrGxoZiPgFhWVPQg6iYpkeNtEV2F8LOxB6EFsF4k84SQ2u5aI8GkW+h9weORNnYBBnoyI3ZqPSaoSMdX+c7jPFAMLl978Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BtMbVCC5yLj8a4VFxJQxcn/HvYIutrRr0IZoF5e0RGw=;
+ b=N+y+513bGIZkM0ptOqRbemTciR746N7Toqsqvt632VGj5Q+WVvLlh9FWs4f7iMxpXVtHYXIaK5zCHP3xuTipX7iaJdooqkHHqs5mTtY4Qjc4bIpW3ejwlfBrDsrWFTZjSg6ad2uEzIC122dRfqtVcTIslXB/nfgRQBYV9eEoxgSVHovLpyltVsJr52NdvNyYt6AQMUfNA6706NqnibpPMauErxLqtk66Yrvts/DQlxDnBP5TI5wXRN/CqInDSZ+kjE3n1Gl5iYiEFBiVwxtKJop0Gx20Ypnm/8uFqIZi8hO5T1SW4ySoXVe0uYuUk2JPAFE9S6C+NjZQmVyrKixpCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BtMbVCC5yLj8a4VFxJQxcn/HvYIutrRr0IZoF5e0RGw=;
+ b=UunsFf/yJi8AvDx3Y0ujACM2MKNOyjI4gN1ytfKJPtSpZLQWCxgSlZiUxqHfRhE9pvj7FC1AtsTc5CeCdL4HF8jiRiI1pOKJwTnsTZAYmmdxHzTxqHWGLeZX8aAFadCLWRYLThX9OXZwp6FssG2vg0w+lmTwSUpIN5TUnIBSxu4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by DB9PR04MB9913.eurprd04.prod.outlook.com (2603:10a6:10:4c4::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21; Wed, 4 Oct
+ 2023 14:32:43 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6813.027; Wed, 4 Oct 2023
+ 14:32:43 +0000
+From:   Frank Li <Frank.Li@nxp.com>
+To:     vkoul@kernel.org
+Cc:     Frank.li@nxp.com, dmaengine@vger.kernel.org, imx@lists.linux.dev,
+        joy.zou@nxp.com, linux-kernel@vger.kernel.org, peng.fan@nxp.com,
+        rdunlap@infradead.org, shenwei.wang@nxp.com
+Subject: [PATCH resent 1/1] MAINTAINERS: Add entries for NXP(Freescale) eDMA drivers
+Date:   Wed,  4 Oct 2023 10:32:28 -0400
+Message-Id: <20231004143228.839288-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR05CA0072.namprd05.prod.outlook.com
+ (2603:10b6:a03:332::17) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DB9PR04MB9913:EE_
+X-MS-Office365-Filtering-Correlation-Id: da58e961-cd4e-4a1b-6e33-08dbc4e6c4cd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +K8KYlD/9+ZMbb7zZgta/QlJuP+uxPKf3x7Rakqmaac5E7f2aHw6ojyu+m9oAV95B074eKFkTh94NkzBCB4p5jfkpg/yuaj5QKMCtMN83u0gzEWhFtf9fNp9lRF/4nBnfsvvFbzAmrL19WWSMX316cNOLi5gopK0jLmCsITq4BCOyap2gKOCdc6IRxpintz/4aVQYppfmvJXSokE/48rnDqsowjNw3Tm74S2UdfAgBE9H1d/rp+6yJGjptV9w11aXZCFnxuB7Xexw8G/SiKHEDjIdPkUnmM+HyIh10Ry1PnSrpZRhqnTD2wSWQuOk5BDYDT+i2YkNBJpgrsQKsQ+Ns3KlfxSAgdT1sI8jKJ+ChohNKtaPPRch0zMK4b1uuaY+9E1toLf7bPDbV04omzdf4l0adZZHgsBxRHD9JuDIW5Fz4yJ18fVmvSdcEnGtmBVjmRDxNHa4rl3Ra6kpI1B15nM4FtO2OPeSintrxC1z8/JUtLmdURrYZ/X92h0/+oNOWtzFsOLK/guCceec7XKcMW8oifb++39LcZNt6yjUt5EZt+ihf4rxKX29WwmOPfdwDIqtu8nvZIetzJ9HjuuneSzFBGY7Gwoo0yxLVJPoaIiczJ14O/tKhWVDY6cyClg
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(39860400002)(366004)(346002)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(52116002)(38350700002)(6666004)(6486002)(66946007)(86362001)(2616005)(41300700001)(66556008)(38100700002)(26005)(1076003)(83380400001)(8936002)(4326008)(4744005)(316002)(6916009)(2906002)(8676002)(6506007)(36756003)(478600001)(5660300002)(6512007)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uwfvi6j2C2+pB39c9CgNmgXBNlK309lwM7PVcRaY+3UIADEgN3E6pB/TZ3KE?=
+ =?us-ascii?Q?Io9nMkXW/VbnJaIWY5TmpOfWyjoaZ0wprEXtiAdSL6Qhc4rmp8DifMFrtqHq?=
+ =?us-ascii?Q?iqjb3ZBCRsedcw4batwUN5caCrrPowcgM6YeIX9HFHMS5cUE5rIlqbx+12gL?=
+ =?us-ascii?Q?19Pn8nfNcJKqLORfN8I7R6hNQcsIFfUH/dAopAXbb/s9sbA657KdwpZmkeYw?=
+ =?us-ascii?Q?hcZoxC4qio7s9JPc/Yqrg2jaVZGSqAoa+4C2bo01wUHLUe8lRVLCTPYmlxjf?=
+ =?us-ascii?Q?BWuc6O6Am3oj5Rv3DqeooOGvOw98PNvYzUHwOneqe8bHAaI05lKoxkCPWYTD?=
+ =?us-ascii?Q?qTn87A6dPY3T8B+E/rJhhj+301lTpIuXbGIsxOj88FCDmlOAtKrYcHkL/swk?=
+ =?us-ascii?Q?e76OQTuSt51n3j7HgeSZHDh7mY9Fs08umN/apyvu5IgduGvFC8FZbCU1ywQV?=
+ =?us-ascii?Q?ChauAUd5e/5Jac1EAuAY7j8Z1iAEJ7/y+KlHu1yRZmOm5g+xVrxMmrJAksGA?=
+ =?us-ascii?Q?h5+z23nl70pyKN2H+jYhogzqXm2eFAHVuahFXG4iPoa4EU0z9ub+n6deUohg?=
+ =?us-ascii?Q?KYrmRahGiSe1jzw/orDiZDbMn+fdxkgpID45eG6SeSKmEwvuPq3mNwbPf7JG?=
+ =?us-ascii?Q?+nRfoIKck2S5I1JoQ3N6W/zOHwoqxOnyEwF2zX7Irv+oeuxs1dTZVeyLA1ev?=
+ =?us-ascii?Q?MPEj0jcIt9mJVyOLT4H0XaRqsP2kwOMtV0pfT+tyH/CCBWBe2HgcsXBv7FMx?=
+ =?us-ascii?Q?BKdZ2mnqfoMVjUoYpMFeDACm88W8QG0lh46R9kRdUeCLzQDyU1xU1kFPkoKT?=
+ =?us-ascii?Q?RV/8BEH1MnatMurii0PJEWretnpmu2/qD1qaM5XEK032m80uywRKmVoHDYf2?=
+ =?us-ascii?Q?aBWK8qHO9lv/J2MziU9BByovDd2j/bKXzdh1a51OBn30kPfElL/zlvnD57bu?=
+ =?us-ascii?Q?f0DIg0M8o9KgPOWtsf8/Isry3/ynXWBE3KETwv4aJWqeJWzlZocVaISoq/NG?=
+ =?us-ascii?Q?h8bVUlim1/fWNupAjl6C798fqg5bV5GiFqMwyabk1AkdvP1jXmiM2ymvXa0W?=
+ =?us-ascii?Q?ycz4DDaMwBb92RiO/qICjILp98FzC0M9jiLisPsSc6+Of+BS4DGxmphRmCC2?=
+ =?us-ascii?Q?szBVdkVxeXGKR+1TZHhx8Q1H2tDJeuPIldP6cC1XzFYmg8Z9H8qhRJBFe0Of?=
+ =?us-ascii?Q?4n+2/IJW+NUH8JdX3Nc5FAoGAlcmQauCKHCA9Q6AwfklKP8AIA9IbC+aMDsS?=
+ =?us-ascii?Q?GiPyC3yIYz3iqTF3tnXygFobThS4084/hf+2E0ZxcTJBP+e/Pief5lDHoI+w?=
+ =?us-ascii?Q?qE6/tEoAS/Thov/uvqY8GO7pperuZR6XiWDE2QQmjwJfcgIaGpNSAPG95l+j?=
+ =?us-ascii?Q?S+FqFKddRDX5rptCjBQD2EDuiVmln+jqEoegeyk4kx+ygum7LfCJVrdhbDOk?=
+ =?us-ascii?Q?U6r6/qKjnnx/KzwKrSyI+o4R4FaJjgYoJ2SFDufCFh9q2zDXPQLL1NnOdUTC?=
+ =?us-ascii?Q?4HA01X1ykVqpnER2Xe5jfOe3c8jo4rxP7XV7wF9Gb9Yf7dLZ3OGRXu6z0p3j?=
+ =?us-ascii?Q?RpSys4oaDqeNrF9gBJI=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da58e961-cd4e-4a1b-6e33-08dbc4e6c4cd
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 14:32:42.9860
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bDPyIqH13ro6pXsm6wOSbH4NYYATsvT4Cf7d/vV9Ra/enjeKaNxNKoC67kRyyJdOoa6VvYoqCca2xq1C2YguSw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9913
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,40 +112,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the sake of coherency, use local labels in assembly when
-applicable. This also avoid kprobes being confused when applying a
-kprobe since the size of function is computed by checking where the
-next visible symbol is located. This might end up in computing some
-function size to be way shorter than expected and thus failing to apply
-kprobes to the specified offset.
+Add the MAINTAINERS entries for NXP(Freescale) eDMA drivers
 
-Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
 ---
- arch/riscv/kvm/vcpu_switch.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/kvm/vcpu_switch.S b/arch/riscv/kvm/vcpu_switch.S
-index 8b18473780ac..0c26189aa01c 100644
---- a/arch/riscv/kvm/vcpu_switch.S
-+++ b/arch/riscv/kvm/vcpu_switch.S
-@@ -45,7 +45,7 @@ SYM_FUNC_START(__kvm_riscv_switch_to)
- 	REG_L	t0, (KVM_ARCH_GUEST_SSTATUS)(a0)
- 	REG_L	t1, (KVM_ARCH_GUEST_HSTATUS)(a0)
- 	REG_L	t2, (KVM_ARCH_GUEST_SCOUNTEREN)(a0)
--	la	t4, __kvm_switch_return
-+	la	t4, .Lkvm_switch_return
- 	REG_L	t5, (KVM_ARCH_GUEST_SEPC)(a0)
+Notes:
+    Change from v2 to v3
+    - Again, fixed order
+    
+    Change from v1 to v2
+    - alphabetical order
+    
+    Change from v1 to v2
+    - alphabetical order
+
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 23eafda02056..c1c7a9ae244f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8236,6 +8236,14 @@ F:	Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
+ F:	drivers/spi/spi-fsl-dspi.c
+ F:	include/linux/spi/spi-fsl-dspi.h
  
- 	/* Save Host and Restore Guest SSTATUS */
-@@ -113,7 +113,7 @@ SYM_FUNC_START(__kvm_riscv_switch_to)
- 
- 	/* Back to Host */
- 	.align 2
--__kvm_switch_return:
-+.Lkvm_switch_return:
- 	/* Swap Guest A0 with SSCRATCH */
- 	csrrw	a0, CSR_SSCRATCH, a0
- 
++FREESCALE eDMA DRIVER
++M:	Frank Li <Frank.Li@nxp.com>
++L:	imx@lists.linux.dev
++L:	dmaengine@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/dma/fsl,edma.yaml
++F:	drivers/dma/fsl-edma*.*
++
+ FREESCALE ENETC ETHERNET DRIVERS
+ M:	Claudiu Manoil <claudiu.manoil@nxp.com>
+ M:	Vladimir Oltean <vladimir.oltean@nxp.com>
 -- 
-2.42.0
+2.34.1
 
