@@ -2,126 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1097B8339
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD687B833F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243092AbjJDPLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48350 "EHLO
+        id S243089AbjJDPL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbjJDPLb (ORCPT
+        with ESMTP id S233475AbjJDPL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:11:31 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F90993
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:11:27 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 284E9C15;
-        Wed,  4 Oct 2023 08:12:05 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F7873F762;
-        Wed,  4 Oct 2023 08:11:25 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 16:11:23 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Coboy Chen <coboy.chen@mediatek.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Olivier Deprez <olivier.deprez@arm.com>
-Subject: Re: [PATCH v3 07/17] firmware: arm_ffa: Implement the
- NOTIFICATION_INFO_GET interface
-Message-ID: <20231004151123.z4w5u3j7a743bmdq@bogus>
-References: <20230929-ffa_v1-1_notif-v3-0-c8e4f15190c8@arm.com>
- <20230929-ffa_v1-1_notif-v3-7-c8e4f15190c8@arm.com>
- <20231004091021.GA1091193@rayden>
+        Wed, 4 Oct 2023 11:11:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7815BBD;
+        Wed,  4 Oct 2023 08:11:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47565C433C7;
+        Wed,  4 Oct 2023 15:11:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696432312;
+        bh=dmLK1DKw97BO7gbbEGRFxJuTlV8DsqMHc8PPHEDaT9k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tp67XPTQ0DDswas/FkM2I2UFCMZYKpolH8nNES6ctDav7ybQsBzGTDiI+jZ1auJjz
+         xCAgBCjF8yTOAk0PYGxSC2CLXdybAxc8JVzKQ3y/DRwZuujl98JS3Efs4RQY+xqqQk
+         uXObJTAae06II51Fy2sFC4a/GuI42XdfR1+wYHt45fQ1CByoYwir5lh9IRB/0RX8K7
+         L23U1OoNzFIc03C2rcEkT2aA63TTtBCUXMAkqzI3UTGA/kDSEWC3cqj9WUbvsC5m2Q
+         vfnLZI8uso4qd8epGRJTqR9FOR6pX4FL4cJkQcm09G/XanACJU0H04xymrI/W5cQJj
+         Aw5PHNyq27Y4w==
+Received: (nullmailer pid 3144693 invoked by uid 1000);
+        Wed, 04 Oct 2023 15:11:50 -0000
+Date:   Wed, 4 Oct 2023 10:11:50 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     werneazc@gmail.com
+Cc:     jic23@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, lars@metafoo.de, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andre Werner <andre.werner@systec-electronic.com>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: ti,ads7038: Add description
+ for ADS7038
+Message-ID: <20231004151150.GA3140591-robh@kernel.org>
+References: <20231004102330.3713-1-andre.werner@systec-electronic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231004091021.GA1091193@rayden>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231004102330.3713-1-andre.werner@systec-electronic.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 11:10:21AM +0200, Jens Wiklander wrote:
-> On Fri, Sep 29, 2023 at 04:02:56PM +0100, Sudeep Holla wrote:
-> > The receiver’s scheduler uses the FFA_NOTIFICATION_INFO_GET interface
-> > to retrieve the list of endpoints that have pending notifications and
-> > must be run. A notification could be signaled by a sender in the secure
-> > world to a VM. The Hypervisor needs to determine which VM and vCPU
-> > (in case a per-vCPU notification is signaled) has a pending notification
-> > in this scenario. It must obtain this information through an invocation
-> > of the FFA_NOTIFICATION_INFO_GET.
-> > 
-> > Add the implementation of the NOTIFICATION_INFO_GET interface
-> > and prepare to use this to handle the schedule receiver interrupt.
-> > Implementation of handling notifications will be added later.
-> > 
-> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > ---
-> >  drivers/firmware/arm_ffa/driver.c | 70 +++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 70 insertions(+)
-> > 
-> > diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-> > index 02eedb7bc171..dfeeb751bebe 100644
-> > --- a/drivers/firmware/arm_ffa/driver.c
-> > +++ b/drivers/firmware/arm_ffa/driver.c
-> > @@ -602,6 +602,13 @@ static int ffa_notification_bitmap_destroy(void)
-> >  	(FIELD_PREP(RECEIVER_VCPU_MASK, (vcpu_r)) | \
-> >  	 FIELD_PREP(RECEIVER_ID_MASK, (r)))
-> >  
-> > +#define NOTIFICATION_INFO_GET_MORE_PEND_MASK	BIT(0)
-> > +#define NOTIFICATION_INFO_GET_ID_COUNT		GENMASK(11, 7)
-> > +#define ID_LIST_MASK_64				GENMASK(51, 12)
-> > +#define ID_LIST_MASK_32				GENMASK(31, 12)
-> > +#define MAX_IDS_64				20
-> > +#define MAX_IDS_32				10
-> > +
-> >  static int ffa_notification_bind_common(u16 dst_id, u64 bitmap,
-> >  					u32 flags, bool is_bind)
-> >  {
-> > @@ -673,6 +680,69 @@ static int ffa_notification_get(u32 flags, struct ffa_notify_bitmaps *notify)
-> >  	return 0;
-> >  }
-> >  
-> > +static void __do_sched_recv_cb(u16 partition_id, u16 vcpu, bool is_per_vcpu)
-> > +{
-> > +	pr_err("Callback for partition 0x%x failed.\n", partition_id);
-> > +}
-> > +
-> > +static void ffa_notification_info_get(bool is_64b)
-> > +{
-> > +	int idx, list, max_ids, lists_cnt, ids_processed, ids_count[MAX_IDS_64];
-> > +	ffa_value_t ret;
-> > +	u64 id_list;
-> > +
-> > +	do {
-> > +		invoke_ffa_fn((ffa_value_t){
-> > +			  .a0 = FFA_FN_NATIVE(NOTIFICATION_INFO_GET),
-> > +			  }, &ret);
-> > +
-> > +		if (ret.a0 != FFA_FN_NATIVE(SUCCESS)) {
+On Wed, Oct 04, 2023 at 12:23:29PM +0200, werneazc@gmail.com wrote:
+> From: Andre Werner <andre.werner@systec-electronic.com>
 > 
-> The specification doesn't require a response using 64-bit SMCCC, it is
-> valid to respond using 32-bit SMCCC too.
->
 
-Do you mean to say the we need to support 64b NOTIFICATION_INFO_GET
-returning 32b FFA_SUCCESS ? If so do we need to assume only 32bits are
-used in the result. As per the specification,
+Needs a commit message.
 
-"0xC4000061(FFA_FN64_SUCCESS): This function ID is used only if any result
- register encodes a 64-bit parameter."
+> Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
+> ---
+>  .../bindings/iio/adc/ti,ads7038.yaml          | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads7038.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads7038.yaml b/Documentation/devicetree/bindings/iio/adc/ti,ads7038.yaml
+> new file mode 100644
+> index 000000000000..37fbae95c8e6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/ti,ads7038.yaml
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/ti,ads7038.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Texas Instruments ADS7038 and similar ADCs
+> +
+> +maintainers:
+> +  - Andre Werner <andre.werner@systec-electronic.com>
+> +
+> +description: |
+> +  Family of 7 channel, 12 bit ADCs with SPI/I2C interface.
+> +  
+> +  Datasheet: https://www.ti.com/lit/gpn/ads7038
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,ads7038
+> +      - ti,ads7138
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  spi-max-frequency:
+> +    maximum: 60000000
+> +
+> +  vref-supply:
+> +    description: Supplies the 2.5V or 5V reference voltage
 
-My question is what that means allowing 32bit FFA_SUCCESS here?
+I don't see that in the datasheet. It has AVDD and DVDD.
 
--- 
-Regards,
-Sudeep
+Also, looks like there are GPIOs. Those aren't ever exposed to the OS?
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - vref-supply
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    spi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        adc@0 {
+> +            compatible = "ti,ads7038";
+> +            reg = <0>;
+> +            vref-supply = <&refin_supply>;
+> +            spi-max-frequency = <10000000>;
+> +        };
+> +    };
+> -- 
+> 2.42.0
+> 
