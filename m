@@ -2,204 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5577B7856
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF3D7B7852
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241478AbjJDHD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
+        id S241471AbjJDHD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232647AbjJDHD4 (ORCPT
+        with ESMTP id S232647AbjJDHD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:03:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C84AB
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 00:03:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696402985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kDu6btx99QXs0kSLMHh2AKh2KZqG8BWNFgkrbgEVHdw=;
-        b=ipR70txYv6OCvdBB72tfob3VPZAIV8ZGVgZFkMyFwwg7jymr62AuU7g1FcwYCPbzYGMwFM
-        5AU63an8kTReuRt0VsYCnuWmX7i8f/N+QHa6rfmOFtnt4K+l8Sx0oeSUzNn44R/qXzrW4s
-        GRjic8Re/+KFZzfifWca6QZGkRJz/dk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-283-uQEUgsEkNvisFnqZy2eq6Q-1; Wed, 04 Oct 2023 03:03:02 -0400
-X-MC-Unique: uQEUgsEkNvisFnqZy2eq6Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 68D80382135E;
-        Wed,  4 Oct 2023 07:03:01 +0000 (UTC)
-Received: from alecto.usersys.redhat.com (unknown [10.43.17.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7E9D2140E950;
-        Wed,  4 Oct 2023 07:02:59 +0000 (UTC)
-Date:   Wed, 4 Oct 2023 09:02:57 +0200
-From:   Artem Savkov <asavkov@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [RFC PATCH] tracing: change syscall number type in struct
- syscall_trace_*
-Message-ID: <20231004070257.GA311687@alecto.usersys.redhat.com>
-References: <20231002135242.247536-1-asavkov@redhat.com>
- <CAEf4BzbM1z-ccRq-gH7UkVrSa6Vhewu3R7wV3sHW6BKxhm9k2Q@mail.gmail.com>
+        Wed, 4 Oct 2023 03:03:26 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF417AF;
+        Wed,  4 Oct 2023 00:03:23 -0700 (PDT)
+Received: from p200300ccff1732001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff17:3200:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1qnvuf-004VBJ-Ti; Wed, 04 Oct 2023 09:03:17 +0200
+Received: from andi by aktux with local (Exim 4.96)
+        (envelope-from <andreas@kemnade.info>)
+        id 1qnvuf-00A6cw-0c;
+        Wed, 04 Oct 2023 09:03:17 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     bcousson@baylibre.com, tony@atomide.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH v2] ARM: dts: omap4-embt2ws: Add Bluetooth
+Date:   Wed,  4 Oct 2023 09:03:09 +0200
+Message-Id: <20231004070309.2408745-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbM1z-ccRq-gH7UkVrSa6Vhewu3R7wV3sHW6BKxhm9k2Q@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 03:11:15PM -0700, Andrii Nakryiko wrote:
-> On Mon, Oct 2, 2023 at 6:53 AM Artem Savkov <asavkov@redhat.com> wrote:
-> >
-> > linux-rt-devel tree contains a patch that adds an extra member to struct
-> 
-> can you please point to the patch itself that makes that change?
+Since the required clock is now available, add bluetooth.
 
-Of course, some context would be useful. The patch in question is b1773eac3f29c
-("sched: Add support for lazy preemption") from rt-devel tree [0]. It came up
-a couple of times before: [1] [2] [3] [4].
+Note: Firmware (bts file) from device vendor reroutes tx for some time
+during initialisation and later put it back, producing timeouts in
+bluetooth initialisation but ignoring that command leads to proper
+initialisation.
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?id=b1773eac3f29cbdcdfd16e0339f1a164066e9f71
-[1] https://lore.kernel.org/linux-rt-users/20200221153541.681468-1-jolsa@kernel.org/t/#u
-[2] https://github.com/iovisor/bpftrace/commit/a2e3d5dbc03ceb49b776cf5602d31896158844a7
-[3] https://lore.kernel.org/bpf/xunyjzy64q9b.fsf@redhat.com/t/#u
-[4] https://lore.kernel.org/bpf/20230727150647.397626-1-ykaliuta@redhat.com/t/#u
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+Depends on: https://lore.kernel.org/linux-omap/20230916100515.1650336-6-andreas@kemnade.info/T/#u
 
-> > trace_entry. This causes the offset of args field in struct
-> > trace_event_raw_sys_enter be different from the one in struct
-> > syscall_trace_enter:
-> >
-> > struct trace_event_raw_sys_enter {
-> >         struct trace_entry         ent;                  /*     0    12 */
-> >
-> >         /* XXX last struct has 3 bytes of padding */
-> >         /* XXX 4 bytes hole, try to pack */
-> >
-> >         long int                   id;                   /*    16     8 */
-> >         long unsigned int          args[6];              /*    24    48 */
-> >         /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
-> >         char                       __data[];             /*    72     0 */
-> >
-> >         /* size: 72, cachelines: 2, members: 4 */
-> >         /* sum members: 68, holes: 1, sum holes: 4 */
-> >         /* paddings: 1, sum paddings: 3 */
-> >         /* last cacheline: 8 bytes */
-> > };
-> >
-> > struct syscall_trace_enter {
-> >         struct trace_entry         ent;                  /*     0    12 */
-> >
-> >         /* XXX last struct has 3 bytes of padding */
-> >
-> >         int                        nr;                   /*    12     4 */
-> >         long unsigned int          args[];               /*    16     0 */
-> >
-> >         /* size: 16, cachelines: 1, members: 3 */
-> >         /* paddings: 1, sum paddings: 3 */
-> >         /* last cacheline: 16 bytes */
-> > };
-> >
-> > This, in turn, causes perf_event_set_bpf_prog() fail while running bpf
-> > test_profiler testcase because max_ctx_offset is calculated based on the
-> > former struct, while off on the latter:
-> >
-> >   10488         if (is_tracepoint || is_syscall_tp) {
-> >   10489                 int off = trace_event_get_offsets(event->tp_event);
-> >   10490
-> >   10491                 if (prog->aux->max_ctx_offset > off)
-> >   10492                         return -EACCES;
-> >   10493         }
-> >
-> > This patch changes the type of nr member in syscall_trace_* structs to
-> > be long so that "args" offset is equal to that in struct
-> > trace_event_raw_sys_enter.
-> >
-> > Signed-off-by: Artem Savkov <asavkov@redhat.com>
-> > ---
-> >  kernel/trace/trace.h          | 4 ++--
-> >  kernel/trace/trace_syscalls.c | 7 ++++---
-> >  2 files changed, 6 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> > index 77debe53f07cf..cd1d24df85364 100644
-> > --- a/kernel/trace/trace.h
-> > +++ b/kernel/trace/trace.h
-> > @@ -135,13 +135,13 @@ enum trace_type {
-> >   */
-> >  struct syscall_trace_enter {
-> >         struct trace_entry      ent;
-> > -       int                     nr;
-> > +       long                    nr;
-> >         unsigned long           args[];
-> >  };
-> >
-> >  struct syscall_trace_exit {
-> >         struct trace_entry      ent;
-> > -       int                     nr;
-> > +       long                    nr;
-> >         long                    ret;
-> >  };
-> >
-> > diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-> > index de753403cdafb..c26939119f2e4 100644
-> > --- a/kernel/trace/trace_syscalls.c
-> > +++ b/kernel/trace/trace_syscalls.c
-> > @@ -101,7 +101,7 @@ find_syscall_meta(unsigned long syscall)
-> >         return NULL;
-> >  }
-> >
-> > -static struct syscall_metadata *syscall_nr_to_meta(int nr)
-> > +static struct syscall_metadata *syscall_nr_to_meta(long nr)
-> >  {
-> >         if (IS_ENABLED(CONFIG_HAVE_SPARSE_SYSCALL_NR))
-> >                 return xa_load(&syscalls_metadata_sparse, (unsigned long)nr);
-> > @@ -132,7 +132,8 @@ print_syscall_enter(struct trace_iterator *iter, int flags,
-> >         struct trace_entry *ent = iter->ent;
-> >         struct syscall_trace_enter *trace;
-> >         struct syscall_metadata *entry;
-> > -       int i, syscall;
-> > +       int i;
-> > +       long syscall;
-> >
-> >         trace = (typeof(trace))ent;
-> >         syscall = trace->nr;
-> > @@ -177,7 +178,7 @@ print_syscall_exit(struct trace_iterator *iter, int flags,
-> >         struct trace_seq *s = &iter->seq;
-> >         struct trace_entry *ent = iter->ent;
-> >         struct syscall_trace_exit *trace;
-> > -       int syscall;
-> > +       long syscall;
-> >         struct syscall_metadata *entry;
-> >
-> >         trace = (typeof(trace))ent;
-> > --
-> > 2.41.0
-> >
-> >
-> 
+Changes in V2:
+- more standard node name, removing unneeded label
 
+ arch/arm/boot/dts/ti/omap/omap4-epson-embt2ws.dts | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/ti/omap/omap4-epson-embt2ws.dts b/arch/arm/boot/dts/ti/omap/omap4-epson-embt2ws.dts
+index 46a80eacf771..6a790124bcf5 100644
+--- a/arch/arm/boot/dts/ti/omap/omap4-epson-embt2ws.dts
++++ b/arch/arm/boot/dts/ti/omap/omap4-epson-embt2ws.dts
+@@ -447,10 +447,12 @@ &uart2 {
+ 	interrupts-extended = <&wakeupgen GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH
+ 			       &omap4_pmx_core OMAP4_UART2_RX>;
+ 
+-	/*
+-	 * BT + GPS in WL1283 in WG7500 requiring CLK32KAUDIO of pmic
+-	 * which does not have a driver
+-	 */
++	bluetooth-gnss {
++		compatible = "ti,wl1283-st";
++		enable-gpios = <&gpio1 25 GPIO_ACTIVE_HIGH>;	/* GPIO_25 */
++		clocks = <&twl 1>;
++		clock-names = "ext_clock";
++	};
+ };
+ 
+ &uart3 {
 -- 
- Artem
+2.39.2
 
