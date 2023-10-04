@@ -2,117 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D55AC7B86A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AC97B86A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243695AbjJDReW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 13:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
+        id S243698AbjJDRea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 13:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233721AbjJDReU (ORCPT
+        with ESMTP id S243696AbjJDRe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 13:34:20 -0400
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA171A6;
-        Wed,  4 Oct 2023 10:34:16 -0700 (PDT)
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1c63164a2b6so9710405ad.0;
-        Wed, 04 Oct 2023 10:34:16 -0700 (PDT)
+        Wed, 4 Oct 2023 13:34:28 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFA6B8
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 10:34:23 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a234ffeb90so213437b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 10:34:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696440863; x=1697045663; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NVYE1f5AKKSdXEUAuRkbKCyNykYeN1CpN0+yLpATvIs=;
+        b=xjeNhHOSXvemlkdQmRAltZ5THz2AxH/HM0mXY5BXuKnwP79vkCMqCjymAsTw6CdtEW
+         teZwbD2wceUvDysE1Q9LBiFXxl8u5xr6iVMtJjWjSMtnFUBiqiTpP3OyKZCB92AroHQy
+         MFuDuzYzaBIkT8RzKWZP9/Cjybbkhv5DvWAMEshSVVp8zrhIvY6M1KUhwl8LcNMAoj0Y
+         0H3vXSHlEx8ogVmPw8QPE9D1BH5NnJcZ21+nkTSWwdxq69lZ5n1gyadNmCCAyhozA0kP
+         UY7fvQtKAM69VtcrgMv/Crt0RBWSUtbs83BbqupVV25eXgyGny7YKWjDDGEjKdPPW4UO
+         7Eww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696440856; x=1697045656;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A+/9fMvIMylBk0tUbkGNvHwmLNtY7jK7qI7VPa1SYvo=;
-        b=kO0PWT5No7NlODxM63GhW7VUuyO89xEdHizAXlK+4KHh880crBurt3wcMndUKeqRTg
-         cwFuIZum5VQ11J9iIRMGoyE7VBadrFVYbGHI5HFJ5jRwjg/1PSjuFVitxe6osjG424ES
-         O1wo3WRSAr+hs0BGeakrA9EG/MOGp130rEEE7eraLidDqKBVK9PdZVBUlAPffJdtbwz3
-         r8W1MvCZ/XEZSdtBpRftKhaV7eMuW+IljlUYu4YWTuy+osXc1QhEuDD7Tvex9VoT6Tb/
-         yQj8TQlNY0w4eorwcS52ln4z57slUSuCM9yLZPKaaTUlMZCZrtBn515PscBtOgT2/ygR
-         etvQ==
-X-Gm-Message-State: AOJu0YxPlAE8R6YCYS2Nczjmk9A+QQz3ns7qdgRqyhu+NbRBnyrrljz7
-        r4PAv4lK056Xh8yhOi1shRQ=
-X-Google-Smtp-Source: AGHT+IG8R+DlyiiEVWC+68KptejH+cGLh+ypDyuFaNYiG/lvbHPG9T3lVvSCSBbHEXdRAJ132q1v4Q==
-X-Received: by 2002:a17:902:d4c4:b0:1c5:e207:836e with SMTP id o4-20020a170902d4c400b001c5e207836emr444422plg.26.1696440856149;
-        Wed, 04 Oct 2023 10:34:16 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:969d:167a:787c:a6c7? ([2620:15c:211:201:969d:167a:787c:a6c7])
-        by smtp.gmail.com with ESMTPSA id i1-20020a17090332c100b001bbb25dd3a7sm3978166plr.187.2023.10.04.10.34.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 10:34:15 -0700 (PDT)
-Message-ID: <e6c7b33c-38ba-402b-abdc-b783d4402402@acm.org>
-Date:   Wed, 4 Oct 2023 10:34:13 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/21] block: Add fops atomic write support
-Content-Language: en-US
-To:     John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
-        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
- <20230929102726.2985188-11-john.g.garry@oracle.com>
- <17ee1669-5830-4ead-888d-a6a4624b638a@acm.org>
- <5d26fa3b-ec34-bc39-ecfe-4616a04977ca@oracle.com>
- <b7a6f380-c6fa-45e0-b727-ba804c6684e4@acm.org>
- <1adeff8e-e2fe-7dc3-283e-4979f9bd6adc@oracle.com>
- <8e2f4aeb-e00e-453a-9658-b1c4ae352084@acm.org>
- <d981dea1-9851-6511-d101-22ea8d7fd31e@oracle.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <d981dea1-9851-6511-d101-22ea8d7fd31e@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696440863; x=1697045663;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NVYE1f5AKKSdXEUAuRkbKCyNykYeN1CpN0+yLpATvIs=;
+        b=smXFmdETF7S32WXjdG3R0BljJDUapcSLulc4nuaJyNnISyB+iAvBhjC4N29frcT8g/
+         Z6zynu+d5668cwQlX0wtEmlQxexNr1fEaiDYPSXaBIPWUkclxf0MjF4v0M1bvdSWiugF
+         dinH8fjIh/5Rmjn4iM3J4mwmsQIaJl73co/ej51o5MonY1I3K/mlpoCfG83+mD6deczh
+         Xg0Sl9CNkWuJoIQd8z8bEBTw+Tfx5B4HQoFSh1Z50hzPI6yS+AGa8CMFO9Gzs41+Ca4V
+         kA7rNA8k9uKyuhNBcrrXeD3Sd3m1hZpBmYXaJlog/rJtNTj9INdEUzNbpBtWfd1do9rc
+         qp3w==
+X-Gm-Message-State: AOJu0YyIrh4JNpHsPIFAJXPfMhhlv5+t6WYrmXkZxO4tRrIAjsG+0OJv
+        rufRZtUwfGSvsxqbka5IS/2sW4jO+WA=
+X-Google-Smtp-Source: AGHT+IHeVIrOY+AVAtMfBE9HZToW2CdMvxYltSIAO3hwng2/XfKB6+JUeZfCkr5f1cH1ai9srVu5OR/Fl8s=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:bd08:0:b0:59b:c811:a702 with SMTP id
+ b8-20020a81bd08000000b0059bc811a702mr54351ywi.6.1696440863056; Wed, 04 Oct
+ 2023 10:34:23 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 10:34:21 -0700
+In-Reply-To: <f5e08c03f6815945588f3eaf47dcee9ff166800e.camel@infradead.org>
+Mime-Version: 1.0
+References: <20231004171102.2073141-1-paul@xen.org> <f5e08c03f6815945588f3eaf47dcee9ff166800e.camel@infradead.org>
+Message-ID: <ZR2iHd18_FsyeWxP@google.com>
+Subject: Re: [PATCH] KVM: xen: ignore the VCPU_SSHOTTMR_future flag
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Durrant <pdurrant@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/23 02:14, John Garry wrote:
-> On 03/10/2023 17:45, Bart Van Assche wrote:
->> On 10/3/23 01:37, John Garry wrote:
->>> I don't think that is_power_of_2(write length) is specific to XFS.
->>
->> I think this is specific to XFS. Can you show me the F2FS code that 
->> restricts the length of an atomic write to a power of two? I haven't 
->> found it. The only power-of-two check that I found in F2FS is the 
->> following (maybe I overlooked something):
->>
->> $ git grep -nH is_power fs/f2fs
->> fs/f2fs/super.c:3914:    if (!is_power_of_2(zone_sectors)) {
-> 
-> Any usecases which we know of requires a power-of-2 block size.
-> 
-> Do you know of a requirement for other sizes? Or are you concerned that 
-> it is unnecessarily restrictive?
-> 
-> We have to deal with HW features like atomic write boundary and FS 
-> restrictions like extent and stripe alignment transparent, which are 
-> almost always powers-of-2, so naturally we would want to work with 
-> powers-of-2 for atomic write sizes.
-> 
-> The power-of-2 stuff could be dropped if that is what people want. 
-> However we still want to provide a set of rules to the user to make 
-> those HW and FS features mentioned transparent to the user.
+On Wed, Oct 04, 2023, David Woodhouse wrote:
+> On Wed, 2023-10-04 at 17:11 +0000, Paul Durrant wrote:
+> nit: I think the commit title should probably be 'KVM: x86:' and then
+> mention Xen somewhere in the rest of the line?
 
-Hi John,
-
-My concern is that the power-of-2 requirements are only needed for
-traditional filesystems and not for log-structured filesystems (BTRFS,
-F2FS, BCACHEFS).
-
-What I'd like to see is that each filesystem declares its atomic write
-requirements (in struct address_space_operations?) and that
-blkdev_atomic_write_valid() checks the filesystem-specific atomic write
-requirements.
-
-Thanks,
-
-Bart.
+I would also be ok if we start doing "KVM: x86/xen:", because it seems like y'all
+are sending enough Xen specific changes that differentiating would be useful.
