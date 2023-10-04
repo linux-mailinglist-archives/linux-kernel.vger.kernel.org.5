@@ -2,207 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FDA7B98D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997297B98E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbjJDXrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 19:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55712 "EHLO
+        id S243611AbjJDXse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 19:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233418AbjJDXrT (ORCPT
+        with ESMTP id S240956AbjJDXsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 19:47:19 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6A8C9
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 16:47:16 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-2773ced5d40so398422a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 16:47:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696463236; x=1697068036; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WfiepEv/LKhAXzybyJ+CjdLDBfoN1mMfHVU5qQvL01c=;
-        b=fl9SXyEFljNctZ0MIa77ROQONCESib3+t8CqfA15x1ratExocx2O4dFqhIh2mjLn3u
-         gVSmhavU2sEL/kxvWFRlofqJZO+wHXUgCnePUB5G3fFs/r8qilaovChx689M8AaNbsmm
-         o4XV1DYOPgKfW0Kkh+uMWVEimcR/7fogPQuPis3UeBMaqfjzA5eaUAU+UAOGGXXO3X9P
-         14DbbQZckoj1atnjK9Y5HTeGY6hEMrxLHCQasFXzdHKbDDqFfjZDgi8s2LuOLnlCAMeP
-         o6IT3+RFgs6aSum67nqG64Azt8R+SCRXgDbqZvhmOH+X/R4a0dHKxgMTOtFZ20Uz9Bxo
-         2sYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696463236; x=1697068036;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WfiepEv/LKhAXzybyJ+CjdLDBfoN1mMfHVU5qQvL01c=;
-        b=VbsEIA5okdH/ZEbsJFLN3cmAJRmddmWICCAL1R8528gfaFVVCoomGOZXBEzQnwBe/j
-         WZCTFF/8qvbpLXtkrTHGyb7vgbCd2+qa9lcfuW5F53FmiH4yH7dpE0iaX9vSR/Gis84N
-         5PNcS2trodB7tOEJd5yHw9YTzu71M0hiisRap1tGKD1oI8h91wVLIpD0VF+RB9o0swvq
-         EfS70PHPlvr0aGpk+lRbatqNXH6ufN19g1UXPPWeQetLICt5SQQk8bEcJdk2mj3j7PzJ
-         AlUuTbcQ2NWsGELtJNwN9FQP7GpTTGuznoRhTwqUzee/OTtMr5mm8fF3mxelq73gl0gL
-         5G6A==
-X-Gm-Message-State: AOJu0Yxxpe2kaKATA90HvQ0voM0ysk4OeIDv/gBE33+0oeqviPtbekkq
-        oeyMsjOTvKPbAvJ4VHIJU7bOwBu5U48=
-X-Google-Smtp-Source: AGHT+IEHz+mw4DhitY8y9C/S8Up/qu3OdT/M7XZs12P6EE5VRHRcOOuhoE73ZugxuOKawvct7RsGdsREFJ0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:e06:b0:279:9aa1:402c with SMTP id
- ge6-20020a17090b0e0600b002799aa1402cmr59319pjb.7.1696463235588; Wed, 04 Oct
- 2023 16:47:15 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 16:47:14 -0700
-In-Reply-To: <20231001111313.77586-1-nsaenz@amazon.com>
-Mime-Version: 1.0
-References: <20231001111313.77586-1-nsaenz@amazon.com>
-Message-ID: <ZR35gq1NICwhOUAS@google.com>
-Subject: Re: [RFC] KVM: Allow polling vCPUs for events
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nicolas Saenz Julienne <nsaenz@amazon.com>
-Cc:     kvm@vger.kernel.org, pbonzini@redhat.com,
-        linux-kernel@vger.kernel.org, graf@amazon.de, dwmw2@infradead.org,
-        fgriffo@amazon.com, anelkz@amazon.de, peterz@infradead.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 4 Oct 2023 19:48:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2BBC0;
+        Wed,  4 Oct 2023 16:48:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696463307; x=1727999307;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DeciXl2Atu8VXCLj4G2OA73SHmItxg7YaDBUu5u+dHo=;
+  b=cgNT7l6wwMBlJXw//weht6hNDUUip/HMyxeuXHlN598s+mmnzw6dd8IC
+   zE4Bu9GHPUkgW0ZpFN9W0MmayoObPgdOxwe2SvA6CrVIUbMMcSlSrD3YW
+   kKZ2wPAWiHWtL9RungMkjSmO7AEvo0eOLHOj8HCEOPWL6x50ZtbHkYHMx
+   iO10Zpr1jyMQ9Exw/gL8DCp2m1JV8ANPgzBob5vRs7p6CReUbT49T0I3L
+   HEjkDUnlv/ibe/S4PdXdUs1PSKstyY1TO7etCiq9BZw0X/pD0DaZAD703
+   FDs8snIZcW+MJ5f2auRXUs5vPJnupVzSvi3VrIOFbgScQEz3CWkphsPuJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="414312014"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="414312014"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 16:48:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="998710851"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="998710851"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 04 Oct 2023 16:48:23 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qoBbI-000Kll-2c;
+        Wed, 04 Oct 2023 23:48:20 +0000
+Date:   Thu, 5 Oct 2023 07:47:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Justin Lai <justinlai0215@realtek.com>, kuba@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        andrew@lunn.ch, pkshih@realtek.com, larry.chiu@realtek.com,
+        Justin Lai <justinlai0215@realtek.com>
+Subject: Re: [PATCH net-next v9 12/13] net:ethernet:realtek: Update the
+ Makefile and Kconfig in the realtek folder
+Message-ID: <202310050703.fr8Txbrs-lkp@intel.com>
+References: <20230928104920.113511-13-justinlai0215@realtek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928104920.113511-13-justinlai0215@realtek.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 01, 2023, Nicolas Saenz Julienne wrote:
-> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> index 9436dca9903b..7c12d44486e1 100644
-> --- a/arch/x86/kvm/hyperv.c
-> +++ b/arch/x86/kvm/hyperv.c
-> @@ -63,6 +63,10 @@
->   */
->  #define HV_EXT_CALL_MAX (HV_EXT_CALL_QUERY_CAPABILITIES + 64)
->  
-> +#define HV_VTL_RETURN_POLL_MASK                                 \
-> +	(BIT_ULL(KVM_REQ_UNBLOCK) | BIT_ULL(KVM_REQ_HV_STIMER) | \
-> +		BIT_ULL(KVM_REQ_EVENT))
-> +
->  void kvm_tdp_mmu_role_set_hv_bits(struct kvm_vcpu *vcpu, union kvm_mmu_page_role *role)
->  {
->  	//role->vtl = to_kvm_hv(vcpu->kvm)->hv_enable_vsm ? get_active_vtl(vcpu) : 0;
-> @@ -3504,6 +3508,7 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  		goto hypercall_userspace_exit;
->  	case HVCALL_VTL_RETURN:
->  		vcpu->dump_state_on_run = true;
-> +		vcpu->poll_mask = HV_VTL_RETURN_POLL_MASK;
->  		goto hypercall_userspace_exit;
->  	case HVCALL_TRANSLATE_VIRTUAL_ADDRESS:
->  		if (unlikely(hc.rep_cnt)) {
+Hi Justin,
 
-...
+kernel test robot noticed the following build warnings:
 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index db106f2e16d8..2985e462ef56 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -238,7 +238,7 @@ static bool kvm_request_needs_ipi(struct kvm_vcpu *vcpu, unsigned req)
->  	 * READING_SHADOW_PAGE_TABLES mode.
->  	 */
->  	if (req & KVM_REQUEST_WAIT)
-> -		return mode != OUTSIDE_GUEST_MODE;
-> +		return !(mode == OUTSIDE_GUEST_MODE || mode == POLLING_FOR_EVENTS);
+[auto build test WARNING on net-next/main]
 
-This won't work if the vCPU makes a self-request, because kvm_make_vcpu_request()
-won't bother sending an IPI if the current pCPU is running the vCPU.  Piggybacking
-the IPI logic is unnecessarily convoluted and silly.  More below.
+url:    https://github.com/intel-lab-lkp/linux/commits/Justin-Lai/net-ethernet-realtek-rtase-Add-pci-table-supported-in-this-module/20230928-185229
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20230928104920.113511-13-justinlai0215%40realtek.com
+patch subject: [PATCH net-next v9 12/13] net:ethernet:realtek: Update the Makefile and Kconfig in the realtek folder
+config: i386-randconfig-061-20231005 (https://download.01.org/0day-ci/archive/20231005/202310050703.fr8Txbrs-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310050703.fr8Txbrs-lkp@intel.com/reproduce)
 
-> @@ -3996,6 +4002,39 @@ static int kvm_vcpu_mmap(struct file *file, struct vm_area_struct *vma)
->  	return 0;
->  }
->  
-> +static __poll_t kvm_vcpu_poll(struct file *file, poll_table *wait)
-> +{
-> +	struct kvm_vcpu *vcpu = file->private_data;
-> +
-> +	if (!vcpu->poll_mask)
-> +		return EPOLLERR;
-> +
-> +	switch (READ_ONCE(vcpu->mode)) {
-> +	case OUTSIDE_GUEST_MODE:
-> +		/*
-> +		 * Make sure writes to vcpu->request are visible before the
-> +		 * mode changes.
-> +		 */
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310050703.fr8Txbrs-lkp@intel.com/
 
-Huh?  There are no writes to vcpu->request anywhere in here.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/net/ethernet/realtek/rtase/rtase_main.c:203:20: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le64 [usertype] addr @@     got long long @@
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:203:20: sparse:     expected restricted __le64 [usertype] addr
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:203:20: sparse:     got long long
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:362:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le64 [usertype] addr @@     got long long @@
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:362:29: sparse:     expected restricted __le64 [usertype] addr
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:362:29: sparse:     got long long
+>> drivers/net/ethernet/realtek/rtase/rtase_main.c:686:37: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:687:37: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:692:19: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:694:37: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:708:27: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:710:27: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:727:35: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:729:35: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:732:35: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:734:35: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:1580:19: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:1584:37: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:1614:29: sparse: sparse: cast to restricted __le64
+>> drivers/net/ethernet/realtek/rtase/rtase_main.c:1614:29: sparse: sparse: cast from restricted __le32
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:1615:36: sparse: sparse: cast to restricted __le64
+>> drivers/net/ethernet/realtek/rtase/rtase_main.c:1615:36: sparse: sparse: cast from restricted __le16
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:1616:35: sparse: sparse: cast to restricted __le64
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:1616:35: sparse: sparse: cast from restricted __le16
 
-> +		smp_store_mb(vcpu->mode, POLLING_FOR_EVENTS);
-> +		break;
-> +	case POLLING_FOR_EVENTS:
-> +		break;
-> +	default:
-> +		WARN_ONCE(true, "Trying to poll vCPU %d in mode %d\n",
-> +			  vcpu->vcpu_id, vcpu->mode);
+vim +203 drivers/net/ethernet/realtek/rtase/rtase_main.c
 
-This is definitely a user-triggerable WARN.
+1f431ee317f33f Justin Lai 2023-09-28  195  
+29576bc3be86aa Justin Lai 2023-09-28  196  static void rtase_unmap_tx_skb(struct pci_dev *pdev, u32 len,
+29576bc3be86aa Justin Lai 2023-09-28  197  			       struct tx_desc *desc)
+29576bc3be86aa Justin Lai 2023-09-28  198  {
+29576bc3be86aa Justin Lai 2023-09-28  199  	dma_unmap_single(&pdev->dev, le64_to_cpu(desc->addr), len,
+29576bc3be86aa Justin Lai 2023-09-28  200  			 DMA_TO_DEVICE);
+29576bc3be86aa Justin Lai 2023-09-28  201  	desc->opts1 = cpu_to_le32(RTK_OPTS1_DEBUG_VALUE);
+29576bc3be86aa Justin Lai 2023-09-28  202  	desc->opts2 = 0x00;
+29576bc3be86aa Justin Lai 2023-09-28 @203  	desc->addr = RTK_MAGIC_NUMBER;
+29576bc3be86aa Justin Lai 2023-09-28  204  }
+29576bc3be86aa Justin Lai 2023-09-28  205  
 
-> +		return EPOLLERR;
-> +	}
-> +
-> +	poll_wait(file, &vcpu->wqh, wait);
-> +
-> +	if (READ_ONCE(vcpu->requests) & vcpu->poll_mask) {
-
-This effectively makes requests ABI.  The simple mask also means that this will
-get false positives on unrelated requests.
-
-In short, whatever mechanism controls the polling needs to be formal uAPI.
-
-> +		WRITE_ONCE(vcpu->mode, OUTSIDE_GUEST_MODE);
-
-This does not look remotely safe on multiple fronts.  For starters, I don't see
-anything in the .poll() infrastructure that provides serialization, e.g. if there
-are multiple tasks polling then this will be "interesting".
-
-And there is zero chance this is race-free, e.g. nothing prevents the vCPU task
-itself from changing vcpu->mode from POLLING_FOR_EVENTS to something else.
-
-Why on earth is this mucking with vcpu->mode?  Ignoring for the moment that using
-vcpu->requests as the poll source is never going to happen, there's zero reason
-to write vcpu->mode.  From a correctness perspective, AFAICT there's no need for
-any shenanigans at all, i.e. kvm_make_vcpu_request() could blindly and unconditionally
-call wake_up_interruptible().
-
-I suspect what you want is a fast way to track if there *may* be pollers.  Keying
-off and *writing* vcpu->mode makes no sense to me.
-
-I think what you want is something like this, where kvm_vcpu_poll() could use
-atomic_fetch_or() and atomic_fetch_andnot() to manipulate vcpu->poll_mask.
-Or if we only want to support a single poller at a time, it could be a vanilla
-u64.  I suspect getting the poll_mask manipulation correct for multiple pollers
-would be tricky, e.g. to avoid false negatives and leave a poller hanging.
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 486800a7024b..5a260fb3b248 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -259,6 +259,14 @@ static inline bool kvm_kick_many_cpus(struct cpumask *cpus, bool wait)
-        return true;
- }
- 
-+static inline bool kvm_request_is_being_polled(struct kvm_vcpu *vcpu,
-+                                              unsigned int req)
-+{
-+       u32 poll_mask = kvm_request_to_poll_mask(req);
-+
-+       return (atomic_read(vcpu->poll_mask) & poll_mask)
-+}
-+
- static void kvm_make_vcpu_request(struct kvm_vcpu *vcpu, unsigned int req,
-                                  struct cpumask *tmp, int current_cpu)
- {
-@@ -285,6 +293,9 @@ static void kvm_make_vcpu_request(struct kvm_vcpu *vcpu, unsigned int req,
-                if (cpu != -1 && cpu != current_cpu)
-                        __cpumask_set_cpu(cpu, tmp);
-        }
-+
-+       if (kvm_request_is_being_polled(vcpu, req))
-+               wake_up_interruptible(...);
- }
- 
- bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
