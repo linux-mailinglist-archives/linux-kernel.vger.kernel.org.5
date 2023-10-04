@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 531DA7B7CB7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBE47B7CBF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbjJDJ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
+        id S235597AbjJDJ7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232862AbjJDJ5w (ORCPT
+        with ESMTP id S232862AbjJDJ7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:57:52 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91759E
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:57:49 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c6052422acso108085ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:57:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696413469; x=1697018269; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MM7BG54IGeNcadztHnJVieIfNJYmVQnqoKio+eTmSoc=;
-        b=b2jCyj0xQ1v7uedK+4/PvDlrUIrlZ0bSL+10XrEchycRNIMP2IPTObmRFGABM3hznN
-         aRFy/HCLE/07zBJwWvvi21eJmVFtPdOOa3V7xjLfwfxcWPkZYEZ0nPAFpxb/4OPTCeNU
-         da7KdgVDWuUBq+YLae4jjLxuhMiawumWQkNN4JjF49pIas9EiJZlQYduQOR+5j0RGGtu
-         +MUt8eMDZgp3Z6cBRWNrCw9GLJKuEFmn18bmU39Ws3bAckwnxFFjDh3XUCj6kCMJrR6o
-         9viS34JZZgAtfPwcK+Inh5FSvITtGIqDnkwHr4WthMJcH2Gh49NpxgzbwAtA2HEo/yMq
-         B9tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696413469; x=1697018269;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MM7BG54IGeNcadztHnJVieIfNJYmVQnqoKio+eTmSoc=;
-        b=PIb2x6ilgB5i5RxqTje8ZOW8arliZk1/P4d7hi8mSXcHdKyzdlRHPrZ+8y/itjNqsJ
-         9by0Eyw1TC/9OlqjJ6CJFE/UQT/IBvRsQHFmamlSbnPzA93oQuQrCTQRGdZqnvwh6PxH
-         9nMpFKt2uZoTwoqXJDXtkNNcMnNRjPcZRe5oAjLYoZ9fG1hlRje4nJ2NpT0/uavuD/Xu
-         gxBhV5n0USvFIsO3eNfhqr79w3M6ru98JjaOwOHXRwGAKcgf+3utmN/+AcV3W9bDC/ys
-         KCcVZwtclyciMHtVih9Hbtb4awFdKDCT7W0z+eJvMGNGuNEKrpz5AdxgUNUN5qDE/dQl
-         M1Lg==
-X-Gm-Message-State: AOJu0YwzNpbpk8fiIYb77HZVr86j2m5yOfqVLd8kbyLKycda7PghFga9
-        CYbPV9/98tniS3Vb9aEWC1FVso5sXpEkDJvS+fykXA==
-X-Google-Smtp-Source: AGHT+IEIDOc4KVSYMmRNDXodVgTUVlh7i7f8MWEUu4ZiNyUP9I+Q9wNcnYFIvP908iaq23sTB++9/0TUlP0w7aUboPk=
-X-Received: by 2002:a17:903:22c3:b0:1c3:3649:1f6a with SMTP id
- y3-20020a17090322c300b001c336491f6amr137837plg.7.1696413469078; Wed, 04 Oct
- 2023 02:57:49 -0700 (PDT)
+        Wed, 4 Oct 2023 05:59:41 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3B3AC
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:59:37 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qnyf5-0002vN-0q; Wed, 04 Oct 2023 11:59:23 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qnyf3-00Azxr-7z; Wed, 04 Oct 2023 11:59:21 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qnyf2-008uPw-UB; Wed, 04 Oct 2023 11:59:20 +0200
+Date:   Wed, 4 Oct 2023 11:59:20 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Young <sean@mess.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pwm@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] pwm: make it possible to apply pwm changes in atomic
+ context
+Message-ID: <20231004095920.ne7yrrthow6tnuvg@pengutronix.de>
+References: <cover.1696156485.git.sean@mess.org>
+ <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
 MIME-Version: 1.0
-References: <00000000000044b47605ee8544b2@google.com> <000000000000e99a3e0606e0169e@google.com>
-In-Reply-To: <000000000000e99a3e0606e0169e@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 4 Oct 2023 11:57:37 +0200
-Message-ID: <CANp29Y4MJvu7RANUknMGthSMDJb2u_5_BOgfYce=SiMKK1aKtQ@mail.gmail.com>
-Subject: Re: [syzbot] kernel BUG in __ext4_journal_stop
-To:     syzbot <syzbot+bdab24d5bf96d57c50b0@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, joneslee@google.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-android-bugs@googlegroups.com,
-        syzkaller-bugs@googlegroups.com, tudor.ambarus@linaro.org,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hz3c3li5tw4muaqt"
+Content-Disposition: inline
+In-Reply-To: <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,46 +73,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 10:49=E2=80=AFAM syzbot
-<syzbot+bdab24d5bf96d57c50b0@syzkaller.appspotmail.com> wrote:
->
-> This bug is marked as fixed by commit:
-> ext4: fix race condition between buffer write and page_mkwrite
 
-There's been such a series, but it apparently did not get through.
-Let's unfix the bug, syzbot will either do a fix bisection and find
-the actual fix commit or auto-invalidate the bug.
+--hz3c3li5tw4muaqt
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-#syz unfix
+Hello Sean,
 
+On Sun, Oct 01, 2023 at 11:40:29AM +0100, Sean Young wrote:
+> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> index dc66e3405bf5..d9679ae5b2be 100644
+> --- a/drivers/pwm/core.c
+> +++ b/drivers/pwm/core.c
+> @@ -505,7 +505,7 @@ int pwm_apply_state(struct pwm_device *pwm, const str=
+uct pwm_state *state)
+>  	 * is a bad idea. So make it explicit that calling this function might
+>  	 * sleep.
+>  	 */
+> -	might_sleep();
+> +	might_sleep_if(pwm_can_sleep(pwm));
+> =20
+>  	if (!pwm || !state || !state->period ||
+>  	    state->duty_cycle > state->period)
 
->
-> But I can't find it in the tested trees[1] for more than 90 days.
-> Is it a correct commit? Please update it by replying:
->
-> #syz fix: exact-commit-title
->
-> Until then the bug is still considered open and new crashes with
-> the same signature are ignored.
->
-> Kernel: Linux
-> Dashboard link: https://syzkaller.appspot.com/bug?extid=3Dbdab24d5bf96d57=
-c50b0
->
-> ---
-> [1] I expect the commit to be present in:
->
-> 1. for-kernelci branch of
-> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
->
-> 2. master branch of
-> git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
->
-> 3. master branch of
-> git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
->
-> 4. main branch of
-> git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
->
-> The full list of 9 trees can be found at
-> https://syzkaller.appspot.com/upstream/repos
+I'd like to have a mechanism to catch drivers that missed to set
+=2Ecan_sleep. The best idea I currently have for that is to disable
+preemption if IS_ENABLED(CONFIG_PWM_DEBUG) && !pwm_can_sleep(pwm) while
+=2Eapply() is running.
+
+> diff --git a/drivers/pwm/pwm-fsl-ftm.c b/drivers/pwm/pwm-fsl-ftm.c
+> index b7c6045c5d08..b8b9392844e9 100644
+> --- a/drivers/pwm/pwm-fsl-ftm.c
+> +++ b/drivers/pwm/pwm-fsl-ftm.c
+> @@ -405,6 +405,7 @@ static int fsl_pwm_probe(struct platform_device *pdev)
+> =20
+>  	fpc->soc =3D of_device_get_match_data(&pdev->dev);
+>  	fpc->chip.dev =3D &pdev->dev;
+> +	fpc->chip.can_sleep =3D true;
+
+As .apply() being callable in non-sleepable context only depends on
+=2Eapply() I think a better place for this property is in struct pwm_ops.
+
+Also I wonder if the distinction between atomic and sleeping
+pwm_state_apply() should be more explicit. For GPIOs you have a sleeping
+variant gpiod_set_value_cansleep() that allows to immediately determine
+the intended context in the caller. This would allow that programming
+a PWM stays a preemption point (if possible/desired) even if the
+underlying hardware/driver is atomic. To not have to touch all consumer
+drivers, maybe the pair for pwm should better be
+
+	pwm_apply_state()
+	pwm_apply_state_atomic()
+
+instead of a "cansleep" suffix for the sleeping variant? Or maybe it's
+better to accept touching all consumer drivers to get semantics similar
+to gpio? I couldn't decide quickly what I really like better here, so
+that's your chance to comment and influence the outcome :-)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--hz3c3li5tw4muaqt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUdN3gACgkQj4D7WH0S
+/k7Vgwf+OSTM/5a3jTbEn+zj18WbWk6jQQdj6kqyM47GR36RweXbkLMfbl++5ogJ
+z6xjVfn/ov9rQsnn2Em53Zkv7yV/AQb+Hu1tLnuVAsdyxVC/CrCRjWAcrkpoZf6o
+Ru7Nf7hs/mJ57jeLgBfPp+k2kwntn470QPIpzLiruZge1YeEwuYKzeHuO7WI4KCb
+777XYS5j+tntQRSrlm2dzE8H+5lEqc7mEzG22MAd+yIt4dAsuSAdno2hKLMJx960
+4k6Y+UmLJB3cC+BPcAjEllupp1c4turpZ+3P/7D0Fo8P5BgH937nm/wktXJJlPBs
+aJ8B/mMpia+WhQcYdq+TjejxlzAf3Q==
+=THVI
+-----END PGP SIGNATURE-----
+
+--hz3c3li5tw4muaqt--
