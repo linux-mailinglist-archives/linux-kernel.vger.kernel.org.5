@@ -2,174 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E98E17B7DC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C51437B7DC9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236820AbjJDLEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 07:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
+        id S233281AbjJDLGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 07:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241830AbjJDLEj (ORCPT
+        with ESMTP id S233001AbjJDLGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 07:04:39 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED4ACE;
-        Wed,  4 Oct 2023 04:04:35 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 394B4IFs011799;
-        Wed, 4 Oct 2023 06:04:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696417458;
-        bh=ZuhTM4eIuKAH9nVuWPonCXaxsjUYIfHKZ3Pl97CJrpY=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=FW/WtSnpc8S8R888JYkbixZbu7QnJd8h6WpdBcHHg+m2KTlVQdFTqBmlcz7P3UIuw
-         CZeMYMCtBSND/NDRsLdYLFG6bwelNinV5nF8pOTZetO71aqCm5wAd0XTG+SiCliSbj
-         3jKPVme9JaA5V+YFm6ahl9vTAHfpH98aX0QBxdNs=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 394B4IXV051881
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 4 Oct 2023 06:04:18 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 4
- Oct 2023 06:04:17 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 4 Oct 2023 06:04:17 -0500
-Received: from [172.24.227.112] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 394B4DCX016288;
-        Wed, 4 Oct 2023 06:04:13 -0500
-Message-ID: <fdc21c4d-1465-4642-8fe3-d0fd97885cd0@ti.com>
-Date:   Wed, 4 Oct 2023 16:34:12 +0530
+        Wed, 4 Oct 2023 07:06:11 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6355AB0;
+        Wed,  4 Oct 2023 04:06:06 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2FC0D6607038;
+        Wed,  4 Oct 2023 12:06:04 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696417564;
+        bh=sCoRUm/yErIinRg3cxNQnIzO1owQHzL0i3WFVtdDzXI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BSFw6URRG5wWAbJKZMDyBO1alEaelaRms8/qCzOc0XZ81ii5h2033ILbzJTt+JnOD
+         2pqX2xlMWsQ73sthZiakVGejXXN5J5+AjVU050hoq2EppEhYV7wNTmx1JP37y82aYb
+         7Ob4uY2EHpjDLembhJcjjk+xICMFXlLoHzTyeP45r3iV71tO+uqWkqC4fkmySYWE1W
+         xcuEyjfolhNZ2abRNsnHPP+LUt613FisRCpbxg4Mv3kzRdThp/hB0val8ovd6J5qpA
+         rn84bv6cCDI7lkMPFDXKFQgtkEGarXTJgwEvuZTyEorlOUK3WEpf9LT7+j1jAzxNvu
+         wG6fWN+AzjWIQ==
+Date:   Wed, 4 Oct 2023 13:06:01 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, healych@amazon.com,
+        kernel@collabora.com, tvrtko.ursulin@linux.intel.com
+Subject: Re: [PATCH v8 0/5]  Add fdinfo support to Panfrost
+Message-ID: <20231004130601.60239c7f@collabora.com>
+In-Reply-To: <20230929181616.2769345-1-adrian.larumbe@collabora.com>
+References: <20230929181616.2769345-1-adrian.larumbe@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 2/5] arm64: dts: ti: k3-j784s4-main: Add WIZ and
- SERDES PHY nodes
-To:     Nishanth Menon <nm@ti.com>
-CC:     <vigneshr@ti.com>, <a-bhatia1@ti.com>, <afd@ti.com>,
-        <rogerq@kernel.org>, <s-vadapalli@ti.com>, <conor+dt@kernel.org>,
-        <r-ravikumar@ti.com>, <sabiya.d@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230927121157.278592-1-j-choudhary@ti.com>
- <20230927121157.278592-3-j-choudhary@ti.com>
- <20230927122503.cskdfnair5jtprdl@pennant>
-Content-Language: en-US
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-In-Reply-To: <20230927122503.cskdfnair5jtprdl@pennant>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nishanth,
+On Fri, 29 Sep 2023 19:14:26 +0100
+Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
 
-On 27/09/23 17:55, Nishanth Menon wrote:
-> On 17:41-20230927, Jayesh Choudhary wrote:
->> From: Siddharth Vadapalli <s-vadapalli@ti.com>
->>
->> J784S4 SoC has 4 Serdes instances along with their respective WIZ
->> instances. Add device-tree nodes for them and disable them by default.
->>
->> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->> [j-choudhary@ti.com: fix serdes_wiz clock order & disable serdes refclk]
->> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
->> ---
->>   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 164 +++++++++++++++++++++
->>   1 file changed, 164 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
->> index 6d9a5a91fa75..a0e4d8808693 100644
->> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
->> @@ -6,9 +6,19 @@
->>    */
->>   
->>   #include <dt-bindings/mux/mux.h>
->> +#include <dt-bindings/phy/phy.h>
->> +#include <dt-bindings/phy/phy-ti.h>
->>   
->>   #include "k3-serdes.h"
->>   
->> +/ {
->> +	serdes_refclk: clock-serdes {
->> +		#clock-cells = <0>;
->> +		compatible = "fixed-clock";
->> +		status = "disabled";
-> 
-> Document why disabled. - same for rest of default disabled nodes.
+> This patch series adds fdinfo support to the Panfrost DRM driver. It will
+> display a series of key:value pairs under /proc/pid/fdinfo/fd for render
+> processes that open the Panfrost DRM file.
+>=20
+> The pairs contain basic drm gpu engine and memory region information that
+> can either be cat by a privileged user or accessed with IGT's gputop
+> utility.
+>=20
+> Changelog:
+>=20
+> v1: https://lore.kernel.org/lkml/bb52b872-e41b-3894-285e-b52cfc849782@arm=
+.com/T/
+>=20
+> v2: https://lore.kernel.org/lkml/20230901084457.5bc1ad69@collabora.com/T/
+>  - Changed the way gpu cycles and engine time are calculated, using GPU
+>    registers and taking into account potential resets.
+>  - Split render engine values into fragment and vertex/tiler ones.
+>  - Added more fine-grained calculation of RSS size for BO's.
+>  - Implemente selection of drm-memory region size units.
+>  - Removed locking of shrinker's mutex in GEM obj status function.
+>=20
+> v3: https://lore.kernel.org/lkml/20230905184533.959171-1-adrian.larumbe@c=
+ollabora.com/
+>  - Changed fdinfo engine names to something more descriptive.;
+>  - Mentioned GPU cycle counts aren't an exact measure.
+>  - Handled the case when job->priv might be NULL.
+>  - Handled 32 bit overflow of cycle register.
+>  - Kept fdinfo drm memory stats size unit display within 10k times the
+>    previous multiplier for more accurate BO size numbers.
+>  - Removed special handling of Prime imported BO RSS.
+>  - Use rss_size only for heap objects.
+>  - Use bo->base.madv instead of specific purgeable flag.
+>  - Fixed kernel test robot warnings.
+>=20
+> v4: https://lore.kernel.org/lkml/20230912084044.955864-1-adrian.larumbe@c=
+ollabora.com/
+>  - Move cycle counter get and put to panfrost_job_hw_submit and
+>    panfrost_job_handle_{err,done} for more accuracy.
+>  - Make sure cycle counter refs are released in reset path
+>  - Drop the model param for toggling cycle counting and do
+>    leave it down to the debugfs file.
+>  - Don't disable cycle counter when togglint debugfs file,
+>    let refcounting logic handle it instead.
+>  - Remove fdinfo data nested structure definion and 'names' field
+>  - When incrementing BO RSS size in GPU MMU page fault IRQ handler, assume
+>    granuality of 2MiB for every successful mapping.
+>  - drm-file picks an fdinfo memory object size unit that doesn't lose pre=
+cision.
+>=20
+> v5: https://lore.kernel.org/lkml/20230914223928.2374933-1-adrian.larumbe@=
+collabora.com/
+>  - Removed explicit initialisation of atomic variable for profiling mode,
+>    as it's allocated with kzalloc.
+>  - Pass engine utilisation structure to jobs rather than the file context=
+, to avoid
+>    future misusage of the latter.
+>  - Remove double reading of cycle counter register and ktime in job deqeu=
+eue function,
+>    as the scheduler will make sure these values are read over in case of =
+requeuing.
+>  - Moved putting of cycle counting refcnt into panfrost job dequeue.
+>    function to avoid repetition.
+>=20
+> v6: https://lore.kernel.org/lkml/c73ad42b-a8db-23c2-86c7-1a2939dba044@lin=
+ux.intel.com/T/
+>  - Fix wrong swapped-round engine time and cycle values in fdinfo
+>    drm print statements.
+>=20
+> v7: https://lore.kernel.org/lkml/20230927213133.1651169-6-adrian.larumbe@=
+collabora.com/T/
+>  - Make sure an object's actual RSS size is added to the overall fdinfo's=
+ purgeable
+>    and active size tally when it's both resident and purgeable or active.
+>  - Create a drm/panfrost.rst documentation file with meaning of fdinfo st=
+rings.
+>  - BUILD_BUG_ON checking the engine name array size for fdinfo.
+>  - Added copyright notices for Amazon in Panfrost's new debugfs files.
+>  - Discarded fdinfo memory stats unit size selection patch.
+>=20
+> v8:
+>  - Style improvements and addressing nitpicks.        =20
+>=20
+> Adri=C3=A1n Larumbe (5):
+>   drm/panfrost: Add cycle count GPU register definitions
+>   drm/panfrost: Add fdinfo support GPU load metrics
+>   drm/panfrost: Add fdinfo support for memory stats
+>   drm/drm_file: Add DRM obj's RSS reporting function for fdinfo
+>   drm/panfrost: Implement generic DRM object RSS reporting function
 
-Okay I will add a comment here that the clock is coming from the board
-but required here by serdes-wiz node. So keeping it disabled by default.
+Queued to drm-misc-next.
 
-For serdes and serdes-wiz node, since there are multiple instances,
-I will mention in the commit message that the nodes are incomplete
-and phy link is added in the board file. Hence disabled by default.
+Thanks!
 
-Thanks,
--Jayesh
+Boris
 
-> 
->> +	};
->> +};
->> +
->>   &cbass_main {
->>   	msmc_ram: sram@70000000 {
->>   		compatible = "mmio-sram";
->> @@ -709,6 +719,160 @@ main_sdhci1: mmc@4fb0000 {
->>   		status = "disabled";
->>   	};
->>   
->> +	serdes_wiz0: wiz@5060000 {
->> +		compatible = "ti,j784s4-wiz-10g";
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		power-domains = <&k3_pds 404 TI_SCI_PD_EXCLUSIVE>;
->> +		clocks = <&k3_clks 404 2>, <&k3_clks 404 6>, <&serdes_refclk>, <&k3_clks 404 5>;
->> +		clock-names = "fck", "core_ref_clk", "ext_ref_clk", "core_ref1_clk";
->> +		assigned-clocks = <&k3_clks 404 6>;
->> +		assigned-clock-parents = <&k3_clks 404 10>;
->> +		num-lanes = <4>;
->> +		#reset-cells = <1>;
->> +		#clock-cells = <1>;
->> +		ranges = <0x5060000 0x00 0x5060000 0x10000>;
->> +		status = "disabled";
->> +
->> +		serdes0: serdes@5060000 {
->> +			compatible = "ti,j721e-serdes-10g";
->> +			reg = <0x05060000 0x010000>;
->> +			reg-names = "torrent_phy";
->> +			resets = <&serdes_wiz0 0>;
->> +			reset-names = "torrent_reset";
->> +			clocks = <&serdes_wiz0 TI_WIZ_PLL0_REFCLK>,
->> +				 <&serdes_wiz0 TI_WIZ_PHY_EN_REFCLK>;
->> +			clock-names = "refclk", "phy_en_refclk";
->> +			assigned-clocks = <&serdes_wiz0 TI_WIZ_PLL0_REFCLK>,
->> +					  <&serdes_wiz0 TI_WIZ_PLL1_REFCLK>,
->> +					  <&serdes_wiz0 TI_WIZ_REFCLK_DIG>;
->> +			assigned-clock-parents = <&k3_clks 404 6>,
->> +						 <&k3_clks 404 6>,
->> +						 <&k3_clks 404 6>;
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +			#clock-cells = <1>;
->> +			status = "disabled";
->> +		};
->> +	};
->> +
->> +	serdes_wiz1: wiz@5070000 {
->> +
+>=20
+>  Documentation/gpu/drm-usage-stats.rst       |  1 +
+>  Documentation/gpu/panfrost.rst              | 38 +++++++++++++
+>  drivers/gpu/drm/drm_file.c                  |  8 +--
+>  drivers/gpu/drm/panfrost/Makefile           |  2 +
+>  drivers/gpu/drm/panfrost/panfrost_debugfs.c | 21 ++++++++
+>  drivers/gpu/drm/panfrost/panfrost_debugfs.h | 14 +++++
+>  drivers/gpu/drm/panfrost/panfrost_devfreq.c |  8 +++
+>  drivers/gpu/drm/panfrost/panfrost_devfreq.h |  3 ++
+>  drivers/gpu/drm/panfrost/panfrost_device.c  |  2 +
+>  drivers/gpu/drm/panfrost/panfrost_device.h  | 13 +++++
+>  drivers/gpu/drm/panfrost/panfrost_drv.c     | 60 ++++++++++++++++++++-
+>  drivers/gpu/drm/panfrost/panfrost_gem.c     | 30 +++++++++++
+>  drivers/gpu/drm/panfrost/panfrost_gem.h     |  5 ++
+>  drivers/gpu/drm/panfrost/panfrost_gpu.c     | 41 ++++++++++++++
+>  drivers/gpu/drm/panfrost/panfrost_gpu.h     |  4 ++
+>  drivers/gpu/drm/panfrost/panfrost_job.c     | 24 +++++++++
+>  drivers/gpu/drm/panfrost/panfrost_job.h     |  5 ++
+>  drivers/gpu/drm/panfrost/panfrost_mmu.c     |  1 +
+>  drivers/gpu/drm/panfrost/panfrost_regs.h    |  5 ++
+>  include/drm/drm_gem.h                       |  9 ++++
+>  20 files changed, 290 insertions(+), 4 deletions(-)
+>  create mode 100644 Documentation/gpu/panfrost.rst
+>  create mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
+>  create mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+>=20
+>=20
+> base-commit: f45acf7acf75921c0409d452f0165f51a19a74fd
 
-
-
-> 
