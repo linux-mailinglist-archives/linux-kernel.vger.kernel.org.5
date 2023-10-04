@@ -2,210 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C55487B7BC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7507B7BCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbjJDJU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
+        id S232885AbjJDJUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232942AbjJDJUZ (ORCPT
+        with ESMTP id S232866AbjJDJUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:20:25 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C14B4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:20:18 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1755E6607079;
-        Wed,  4 Oct 2023 10:20:16 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696411216;
-        bh=13nUw+iTCisxqevQVzt8K18HbU2kBO3wGBxDcnPry/c=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=bVh67iMUgd7Pl5N1xE6+ybUv7aLG/1ROTMi/H9cpzUDcIivP3JCodJobk7o5y1Dq3
-         dwOaro1gSAQ3jLxntGBq7XQAZmsjwa/LND+aOHjKaMbMDXZdQDDZmOKGVXm+bZcsvh
-         FDebe/DdKA7t1Z8MNW41QOeLDQU3nrAL1M1PNIxDnUA2gqLaPhpFkr750RvnXlAf8q
-         ziFllgFz+x7hI2oIxCiOmzIKbhger3svawkY0j7tVpv8WwhpV8nV+1Qux0PWinD7HQ
-         1gHe5xcBrVYucSTO75wD7g/xV3ll7AGkfQsfzvQXgbBm8uBQzcoYC+h0WLwR7nyIYL
-         Tds3gsrwzrxpw==
-Message-ID: <baa122da-4ae3-9023-3529-3ad38204b989@collabora.com>
-Date:   Wed, 4 Oct 2023 11:20:13 +0200
+        Wed, 4 Oct 2023 05:20:43 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CADABB
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:20:39 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40666aa674fso18410095e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:20:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696411238; x=1697016038; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FYUpaA39Zc2Claj+3mSht0h7QLhWJIDPOIO7TJqJpH4=;
+        b=c3y7TEm2ns6Fo86W7TilwzCTcitSQWD9By2zrRXJFiNVBvIwUfgd9FDHlKMIi2XY98
+         r1n59QM432V5sRzJvIwBFHaeE9lzAuLxkYQWHHTiyq4sLWIAvH4HXeAobny1ERKdQsBm
+         l+nyrfejQHD/xzxdmt3/lNvYMe+TSHc8DzdEsmZ2kuj6jFM2i3FO5j8EGNshagn2P7qX
+         P9XPCCTM5+QsxbO4RH7C/Ld2BS4KR5SmDR8UlSNjBrhKZu5ZlNgVMAYC1WfSwf9EIhSB
+         K0iZImUk8+aKO2Qe/WykjbiRtRupK2GyeL5msc0liSHad4pgwPruIgcZ1HlPR24DqMf1
+         HOUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696411238; x=1697016038;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FYUpaA39Zc2Claj+3mSht0h7QLhWJIDPOIO7TJqJpH4=;
+        b=K7quXQhNcB0qOuw0K3FMzAqa6ABeF9w1YBTyintn0XOLXlNeIGsuYUJB9ozj4njChh
+         GrvUpp2HCTro2IYJMVvYhwd30o1UwukICDx4LkeT/z7Gs0hhZVReLQObhRT+tVUZETIw
+         szZn/WVhUAMjGTC84kU1MAC6KxXG2re500xN5I+VGlWLidxscIry7uFyb2Z64XkEsL0o
+         F4ZLIwL2sxgcQ209jDv5d0H9kGJYA0gpuul396hk/fvzDgSxLLpJIhowlkTIdeXZD+bg
+         zJDUBxAKn44fXkyD4k6xR1jrrna72tDHdmJRGTx2UD4pf5/2MC90SlAqqNEZs0o0RQ2h
+         0IQw==
+X-Gm-Message-State: AOJu0YxIhRIUPsWa1AWew8bvBOo4KdG+Qim5bE7AiJrdkwmGD7AZOFDN
+        7t8vglq8OTT18ZI1CCjIN4yJTw==
+X-Google-Smtp-Source: AGHT+IGhb5sZH7KTL52JvEolZHRy2oJ4mfpdYcXphWQZvT1QqIVd+xEVOW+XeIPHs63dgbbvXQ+zEg==
+X-Received: by 2002:a1c:4c13:0:b0:406:7d74:a29b with SMTP id z19-20020a1c4c13000000b004067d74a29bmr1709008wmf.13.1696411237969;
+        Wed, 04 Oct 2023 02:20:37 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:5bcc:9741:3ed2:97f5? ([2a01:e0a:982:cbb0:5bcc:9741:3ed2:97f5])
+        by smtp.gmail.com with ESMTPSA id t14-20020a05600c198e00b0040531f5c51asm1032465wmq.5.2023.10.04.02.20.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 02:20:37 -0700 (PDT)
+Message-ID: <2248b34e-d755-4142-986c-0ead80796e13@linaro.org>
+Date:   Wed, 4 Oct 2023 11:20:36 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2] mailbox: remove runtime GCE clk control
-Content-Language: en-US
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>
-References: <20231004085430.19538-1-jason-jh.lin@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231004085430.19538-1-jason-jh.lin@mediatek.com>
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 2/2] arm64: dts: amlogic: add libretech cottonwood support
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Kevin Hilman <khilman@baylibre.com>, Da Xue <da.xue@libretech.co>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+References: <20231002141020.2403652-1-jbrunet@baylibre.com>
+ <20231002141020.2403652-3-jbrunet@baylibre.com>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231002141020.2403652-3-jbrunet@baylibre.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 04/10/23 10:54, Jason-JH.Lin ha scritto:
-> 1. GCE is a frequently used module, so runtime controlling
-> GCE clock won't save too much power and its original design
-> doesn't expect it to be enabled and disabled too frequently.
+On 02/10/2023 16:10, Jerome Brunet wrote:
+> Add support for the Libretech cottonwood board family.
+> These 2 boards are based on the same PCB, with an RPi B form factor.
 > 
-> 2. Runtime controlling GCE clock will cause display HW register
-> configured in worng stream done event issue below:
->    GCE should config HW in every vblanking duration.
->    The stream done event is the start signal of vblanking.
+> The "Alta" board uses an a311d while the "Solitude" variant uses an s905d3.
 > 
->    If stream done event is sent between GCE clk_disable
->    and clk_enable. After GCE clk_enable the stream done event
->    may not appear immediately and have about 3us delay.
-> 
->    Normal case:
->    clk_disable -> get EventA -> clk_enable -> clear EventA
->    -> wait EventB -> get EventB -> config HW
-> 
->    Abnormal case:
->    clk_disable -> get EventA -> clk_enable -> EventA delay appear
->    -> clear EventA fail -> wait EventB but get EventA -> config HW
-> 
-> So just remove the runtime GCE clock contorl.
-> 
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-
-Instead of entirely removing the logic that controls the clocks and always
-refuse to save power, what about using autosuspend?
-
-If the two cases that you're describing are happening always in a range of
-time, we could *yes* remove the "manual" bulk disable/enable calls, but then
-we could use runtime_suspend/runtime_resume callbacks for that.
-
-Hint: pm_runtime_set_autosuspend_delay(dev, 1000);
-
-Regards,
-Angelo
-
+> Co-developed-by: Da Xue <da.xue@libretech.co>
+> Signed-off-by: Da Xue <da.xue@libretech.co>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 > ---
-> v1 -> v2:
-> 1. Rebase on Linux 6.6-rc4
-> 2. Adjust commit message.
-> ---
->   drivers/mailbox/mtk-cmdq-mailbox.c | 18 +++++-------------
->   1 file changed, 5 insertions(+), 13 deletions(-)
+>   arch/arm64/boot/dts/amlogic/Makefile          |   2 +
+>   .../amlogic/meson-g12b-a311d-libretech-cc.dts | 133 ++++
+>   .../amlogic/meson-libretech-cottonwood.dtsi   | 610 ++++++++++++++++++
+>   .../amlogic/meson-sm1-s905d3-libretech-cc.dts |  89 +++
+>   4 files changed, 834 insertions(+)
+>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
+>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
+>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts
 > 
-> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-> index 4d62b07c1411..a3c2d318beb7 100644
-> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
-> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-> @@ -140,7 +140,6 @@ static void cmdq_init(struct cmdq *cmdq)
->   	int i;
->   	u32 gctl_regval = 0;
->   
-> -	WARN_ON(clk_bulk_enable(cmdq->pdata->gce_num, cmdq->clocks));
->   	if (cmdq->pdata->control_by_sw)
->   		gctl_regval = GCE_CTRL_BY_SW;
->   	if (cmdq->pdata->sw_ddr_en)
-> @@ -152,7 +151,6 @@ static void cmdq_init(struct cmdq *cmdq)
->   	writel(CMDQ_THR_ACTIVE_SLOT_CYCLES, cmdq->base + CMDQ_THR_SLOT_CYCLES);
->   	for (i = 0; i <= CMDQ_MAX_EVENT; i++)
->   		writel(i, cmdq->base + CMDQ_SYNC_TOKEN_UPDATE);
-> -	clk_bulk_disable(cmdq->pdata->gce_num, cmdq->clocks);
->   }
->   
->   static int cmdq_thread_reset(struct cmdq *cmdq, struct cmdq_thread *thread)
-> @@ -283,10 +281,8 @@ static void cmdq_thread_irq_handler(struct cmdq *cmdq,
->   			break;
->   	}
->   
-> -	if (list_empty(&thread->task_busy_list)) {
-> +	if (list_empty(&thread->task_busy_list))
->   		cmdq_thread_disable(cmdq, thread);
-> -		clk_bulk_disable(cmdq->pdata->gce_num, cmdq->clocks);
-> -	}
->   }
->   
->   static irqreturn_t cmdq_irq_handler(int irq, void *dev)
-> @@ -333,7 +329,7 @@ static int cmdq_suspend(struct device *dev)
->   	if (cmdq->pdata->sw_ddr_en)
->   		cmdq_sw_ddr_enable(cmdq, false);
->   
-> -	clk_bulk_unprepare(cmdq->pdata->gce_num, cmdq->clocks);
-> +	clk_bulk_disable_unprepare(cmdq->pdata->gce_num, cmdq->clocks);
->   
->   	return 0;
->   }
-> @@ -342,7 +338,7 @@ static int cmdq_resume(struct device *dev)
->   {
->   	struct cmdq *cmdq = dev_get_drvdata(dev);
->   
-> -	WARN_ON(clk_bulk_prepare(cmdq->pdata->gce_num, cmdq->clocks));
-> +	WARN_ON(clk_bulk_prepare_enable(cmdq->pdata->gce_num, cmdq->clocks));
->   	cmdq->suspended = false;
->   
->   	if (cmdq->pdata->sw_ddr_en)
-> @@ -358,7 +354,7 @@ static int cmdq_remove(struct platform_device *pdev)
->   	if (cmdq->pdata->sw_ddr_en)
->   		cmdq_sw_ddr_enable(cmdq, false);
->   
-> -	clk_bulk_unprepare(cmdq->pdata->gce_num, cmdq->clocks);
-> +	clk_bulk_disable_unprepare(cmdq->pdata->gce_num, cmdq->clocks);
->   	return 0;
->   }
->   
-> @@ -384,8 +380,6 @@ static int cmdq_mbox_send_data(struct mbox_chan *chan, void *data)
->   	task->pkt = pkt;
->   
->   	if (list_empty(&thread->task_busy_list)) {
-> -		WARN_ON(clk_bulk_enable(cmdq->pdata->gce_num, cmdq->clocks));
-> -
->   		/*
->   		 * The thread reset will clear thread related register to 0,
->   		 * including pc, end, priority, irq, suspend and enable. Thus
-> @@ -457,7 +451,6 @@ static void cmdq_mbox_shutdown(struct mbox_chan *chan)
->   	}
->   
->   	cmdq_thread_disable(cmdq, thread);
-> -	clk_bulk_disable(cmdq->pdata->gce_num, cmdq->clocks);
->   
->   done:
->   	/*
-> @@ -497,7 +490,6 @@ static int cmdq_mbox_flush(struct mbox_chan *chan, unsigned long timeout)
->   
->   	cmdq_thread_resume(thread);
->   	cmdq_thread_disable(cmdq, thread);
-> -	clk_bulk_disable(cmdq->pdata->gce_num, cmdq->clocks);
->   
->   out:
->   	spin_unlock_irqrestore(&thread->chan->lock, flags);
-> @@ -631,7 +623,7 @@ static int cmdq_probe(struct platform_device *pdev)
->   
->   	platform_set_drvdata(pdev, cmdq);
->   
-> -	WARN_ON(clk_bulk_prepare(cmdq->pdata->gce_num, cmdq->clocks));
-> +	WARN_ON(clk_bulk_prepare_enable(cmdq->pdata->gce_num, cmdq->clocks));
->   
->   	cmdq_init(cmdq);
->   
+
+<snip>
+
+> +
+> +	leds-pwm {
+> +		compatible = "pwm-leds";
+> +
+> +		led-green {
+> +			color = <LED_COLOR_ID_GREEN>;
+> +			function = LED_FUNCTION_STATUS;
+> +			linux,default-trigger = "default-on";
+> +			panic-indicator;
+> +			max-brightness = <255>;
+> +			pwms = <&pwm_cd 1 1250 0>;
+> +			active-low;
+> +		};
+> +
+> +		led-blue {
+> +			color = <LED_COLOR_ID_BLUE>;
+> +			function = LED_FUNCTION_ACTIVITY;
+> +			linux,default-trigger = "activity";
+
+"activity" isn't documented, perhaps heartbeat instead ?
+
+> +			max-brightness = <255>;
+> +			pwms = <&pwm_ab 1 1250 0>;
+> +			active-low;
+> +		};
+
+leds subnodes should be named as led(-[0-9a-f]+)
+
+see Documentation/devicetree/bindings/leds/leds-pwm.yaml
+
+> +	};
+> +
+> +	leds-gpio {
+> +		compatible = "gpio-leds";
+> +
+> +		led-orange {
+> +			color = <LED_COLOR_ID_AMBER>;
+> +			function = LED_FUNCTION_STANDBY;
+> +			gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
+> +		};
+
+Ditto, but you can simply use "led" since it's the only one.
+
+See Documentation/devicetree/bindings/leds/leds-gpio.yaml
+
+Neil
 
 
+<snip>
 
