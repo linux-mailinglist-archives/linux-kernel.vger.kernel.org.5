@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F5A7B8DC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFEF7B8DC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243952AbjJDUAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 16:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
+        id S243993AbjJDUAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 16:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbjJDUAL (ORCPT
+        with ESMTP id S243969AbjJDUAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 16:00:11 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3182DAD;
-        Wed,  4 Oct 2023 13:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3UgUbzqswLEhIYLsMeLmJBtIHWsl9lF0pUcedalU9Rw=; b=kbYSa7TKEcTi7K3IrRBh2nEBXy
-        Tob4nvzqSaB8CpDYrQe17wCHZI+LbZCqUp/bCxtyMYJdDa6QbhHFIxPZ29YlkiAtqcRVCnnIR6BG6
-        JZA9tt/5h1YjOHAbHo9j5maK4iYXeSzaMqt0Za2XVUi2aU2rZ1WzrAv1M8+GBqwxfgLjtjjHXxz6P
-        Wr32lVeyU6m8UrSsRDBmziqA0LgfZYR/nMO46tj8FjLMzLAM18Zrf52zLpp1EihV4VMi1ndRxihid
-        2i9pEzQHIE2onxiMM834Ndmg5LY3KguTyNhxrJM3baUUdciH/LJIXE/RzempEn0niQHCOIv77NztR
-        8el9VzFg==;
-Received: from jlbec by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qo827-00Fp2x-0U;
-        Wed, 04 Oct 2023 19:59:47 +0000
-Date:   Wed, 4 Oct 2023 12:59:38 -0700
-From:   Joel Becker <jlbec@evilplan.org>
-To:     Breno Leitao <leitao@debian.org>
-Cc:     kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
-        Eric Dumazet <edumazet@google.com>, hch@lst.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        horms@kernel.org
-Subject: Re: [PATCH 1/3] netconsole: Initialize configfs_item for default
- targets
-Message-ID: <ZR3EKnepIOKlVGgZ@google.com>
-Mail-Followup-To: Breno Leitao <leitao@debian.org>, kuba@kernel.org,
-        davem@davemloft.net, pabeni@redhat.com,
-        Eric Dumazet <edumazet@google.com>, hch@lst.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        horms@kernel.org
-References: <20231002155349.2032826-1-leitao@debian.org>
- <20231002155349.2032826-2-leitao@debian.org>
+        Wed, 4 Oct 2023 16:00:30 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6F2E8
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:00:27 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-7741c5bac51so13419685a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:00:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696449626; x=1697054426; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=glw2eflXaWyZcVCXjzXx5plNNuZGimWl7Idf1GSBlgM=;
+        b=SFrQJfcvMz0t3C94c9cwbZHkV8FelVNOTCNhkQgGkwZkw8Q/hbaZXlokolCpAlEVEN
+         xMLZRDH/Ik8UEG7N9pYuu17myPQJBoNf3BeNX23SbLXrOtL6Yf/eT2E1suPjhQ7k5M10
+         EbwPqyqQYiV4SDQvVoNM0V5H5tVXGozMyX9WXXXXfFwYM1nqaSIz/us2IuXLvTAKiSwv
+         2jW4IFugox0rc6tliXOaItTKHSSKFeO733tzH3+V42QOOAGDT2yXALI61WcbduBniP2i
+         XOo1yleSp1XxjIUgMwNAOTlWhtDfWQkePtULxrEwFUg0cOOnHkVX4rZ/hfFcrXB+QsG+
+         Om8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696449626; x=1697054426;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=glw2eflXaWyZcVCXjzXx5plNNuZGimWl7Idf1GSBlgM=;
+        b=a6/fR2g1dAH1lkOr1wM3iTJnCdbhQgx78zidzq14VLi18+g4MsQ9XAxq1WKe6zmoEd
+         B3Jy/b/M/6PQ8amK+65CSUZM6qtw1cmAsVlhxM25btKMyYDxX+4rzT2AAfa/fyIZSc5D
+         Zz79TgPN9jAdh/RIQnr1jQxpgp6O8BjEUCkE77KJtQWsx6ScZqDLGXxy6SE73R/0/DYm
+         oTXrUfqaGc2lqaHPL6PrkX48usYY3KtYLUNOIoq0PlhLizJe4tZEFhctiiwYbL9o/gYI
+         /XrQgvnMBtFRdQoNrzjFzKibN8TGAcLGd97Rm2bUwFg5kDHF4g5hAbqqgJqySlo7nGSi
+         0ahQ==
+X-Gm-Message-State: AOJu0YxUYfSIpkZEIQk+yIB5Y7bK5cjdsfIv2ueVLEnY1R1v7CR3CiJL
+        x6q7bZeM0xb/Z23OLI6hJylMMQ==
+X-Google-Smtp-Source: AGHT+IF0w9RIq7iWk6yVTsSNe4IEuVRRJFeWTzPEC9v/OSfZEAP33bpqfgtug+p8jjGC81hwrVmgRA==
+X-Received: by 2002:a0c:f24a:0:b0:656:1af7:e9f9 with SMTP id z10-20020a0cf24a000000b006561af7e9f9mr3192156qvl.0.1696449626077;
+        Wed, 04 Oct 2023 13:00:26 -0700 (PDT)
+Received: from maple.home ([174.94.49.189])
+        by smtp.gmail.com with ESMTPSA id v4-20020a0c8e04000000b006648514e276sm1579095qvb.78.2023.10.04.13.00.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 13:00:25 -0700 (PDT)
+From:   Ralph Siemsen <ralph.siemsen@linaro.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ralph Siemsen <ralph.siemsen@linaro.org>
+Subject: [PATCH] pinctrl: renesas: rzn1: enable PINMUX
+Date:   Wed,  4 Oct 2023 16:00:08 -0400
+Message-Id: <20231004200008.1306798-1-ralph.siemsen@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231002155349.2032826-2-leitao@debian.org>
-X-Burt-Line: Trees are cool.
-X-Red-Smith: Ninety feet between bases is perhaps as close as man has ever
- come to perfection.
-Sender: Joel Becker <jlbec@ftp.linux.org.uk>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 08:53:47AM -0700, Breno Leitao wrote:
-> diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
-> index 3111e1648592..b68456054a0c 100644
-> --- a/drivers/net/netconsole.c
-> +++ b/drivers/net/netconsole.c
-> @@ -53,6 +53,8 @@ static bool oops_only = false;
->  module_param(oops_only, bool, 0600);
->  MODULE_PARM_DESC(oops_only, "Only log oops messages");
->  
-> +#define DEFAULT_TARGET_NAME "cmdline"
-> +
+Enable pin muxing (eg. programmable function), so that the RZN1 GPIO
+pins will be configured as specified by the pinmux in the DTS.
 
-I'm not sure `DEFAULT` is the right terminology here.  e.g. it's not a
-default for dynamic targets, etc.  Perhaps `BOOT_TARGET_NAME` or
-`NETCONSOLE_PARAM_TARGET_NAME`?
+This used to be enabled implicitly via CONFIG_GENERIC_PINMUX_FUNCTIONS,
+however that was removed in 308fb4e4eae14e6189dece3b7cf5b5f453c5d02
+since the rzn1 driver does not call any of the generic pinmux functions.
 
-Joel
+Signed-off-by: Ralph Siemsen <ralph.siemsen@linaro.org>
+---
+ drivers/pinctrl/renesas/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/pinctrl/renesas/Kconfig b/drivers/pinctrl/renesas/Kconfig
+index 77730dc548ed..0ad8e14ccc52 100644
+--- a/drivers/pinctrl/renesas/Kconfig
++++ b/drivers/pinctrl/renesas/Kconfig
+@@ -234,6 +234,7 @@ config PINCTRL_RZN1
+ 	bool "pin control support for RZ/N1"
+ 	depends on OF
+ 	depends on ARCH_RZN1 || COMPILE_TEST
++	select PINMUX
+ 	select GENERIC_PINCONF
+ 	help
+ 	  This selects pinctrl driver for Renesas RZ/N1 devices.
 -- 
+2.25.1
 
-"Friends may come and go, but enemies accumulate." 
-        - Thomas Jones
-
-			http://www.jlbec.org/
-			jlbec@evilplan.org
