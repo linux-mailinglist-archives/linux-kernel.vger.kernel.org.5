@@ -2,77 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 295E47B75BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 02:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAC07B75BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 02:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238601AbjJDAUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 20:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37260 "EHLO
+        id S238679AbjJDAUe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 20:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238406AbjJDAUN (ORCPT
+        with ESMTP id S238406AbjJDAUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 20:20:13 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF00EA7;
-        Tue,  3 Oct 2023 17:20:09 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b281a2aa94so274277766b.2;
-        Tue, 03 Oct 2023 17:20:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696378808; x=1696983608; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/As1VhnozQGSmkx2UPQKSVlv7yhYS02UudRqOf6rBnQ=;
-        b=BS5ybtHfiGQtBZ0ocmDZWehMwXUrE+q2P0Af2fXQqeTIVwF+gL6QZXxJmm/BKTRdhO
-         AtxfohmCszymb+kkJAq+hFeh1xsKyWeE5fb5Tjcl9SoQAl/24blDeObxF+A8LolAQH2X
-         p5fNWZZvteAg4yHj4OnXoY/S+IM1sdZOClyjM7Vo1gdTWcBHm0gfxRJ1rNA6/Ef8xbwE
-         /yDOity50BSha7GjLFMKcs+0ivnn8hm81NB6cfjHq2/CvRikFOgqD+5+HoXNVESJ4xMA
-         a8umLH4Zwz61py+z8SuIKtNWt2vQw2ubhqSQxNfAmShCl8ljkZ/TYhOoWevFXaQ//lDV
-         JgOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696378808; x=1696983608;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/As1VhnozQGSmkx2UPQKSVlv7yhYS02UudRqOf6rBnQ=;
-        b=VNEjXibSr1rQKAeTPriUI0usVQwhpAPLj5rZnneDxqPVtsRlD8gDTJEEh8IpcDLXVO
-         RdLvdBhU0GF58PAqHTP4YizFF9xNWVn9nuRHQA9NR9Iqzdjo6NvXsFLW77Z6J4IHQTl2
-         UR2dEycAwhSJuRmB7YTEIm3m1L/5rCy5AO7fKhPs+XQzCdeILN8Mwed3aB/Xf2/p+hQq
-         od3OZnDQPl/63521Qz2+jdndttshA5lg1ZO1Zgk+EB6WFWRlJMCbZhr+C9aVD4My9U5b
-         RT6iZiAzDezW5VwEUbawsaqtOKGawOg3oinyRwQk00Hm7bjC0ar4/QHKbFs4TinnfgmZ
-         xt9A==
-X-Gm-Message-State: AOJu0YzPiUmmXelblYiJV8FSmunpB7ezZcpBKCYlT2wICKHpsc8Fq52C
-        IAOJrZfv6Qt8eW3ZEBbouBdtfLqeoPxSDmltmns=
-X-Google-Smtp-Source: AGHT+IEPgi3RYw3kAAWCjOk2e4sxVjRJabqJboxaKI/KgrhFcDR7ljN6iPFKt63ztp8NFI9JAIhrx9w74NsX5SLUii0=
-X-Received: by 2002:a17:906:1daa:b0:9b8:b683:5854 with SMTP id
- u10-20020a1709061daa00b009b8b6835854mr103108ejh.61.1696378807949; Tue, 03 Oct
- 2023 17:20:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231003191412.3171385-1-irogers@google.com>
-In-Reply-To: <20231003191412.3171385-1-irogers@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 3 Oct 2023 17:19:56 -0700
-Message-ID: <CAEf4BzYiayepsmABmVjhCgYoy4VZMFya6vYOhWQqx4Zt5+w+Sg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] bpftool: Align output skeleton ELF code
-To:     Ian Rogers <irogers@google.com>
-Cc:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
+        Tue, 3 Oct 2023 20:20:32 -0400
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44151B4
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 17:20:26 -0700 (PDT)
+Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1qnpcQ-0003RO-2X;
+        Tue, 03 Oct 2023 20:20:02 -0400
+Message-ID: <c5c77b6cadde9032ad1941bd7610cfb3925ac1ab.camel@surriel.com>
+Subject: Re: [PATCH 2/3] hugetlbfs: close race between MADV_DONTNEED and
+ page fault
+From:   Rik van Riel <riel@surriel.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        muchun.song@linux.dev, leit@meta.com, willy@infradead.org
+Date:   Tue, 03 Oct 2023 20:20:02 -0400
+In-Reply-To: <20231003201916.GD314430@monkey>
+References: <20231001005659.2185316-1-riel@surriel.com>
+         <20231001005659.2185316-3-riel@surriel.com> <20231002043958.GB11194@monkey>
+         <8d19b6d092b7b5d9b1d0829e0d99c9915db3ed61.camel@surriel.com>
+         <20231003201916.GD314430@monkey>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+Sender: riel@surriel.com
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLACK autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,93 +49,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 12:15=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
->
-> libbpf accesses the ELF data requiring at least 8 byte alignment,
-> however, the data is generated into a C string that doesn't guarantee
-> alignment. Fix this by assigning to an aligned char array. Use sizeof
-> on the array, less one for the \0 terminator, rather than generating a
-> constant.
->
-> Fixes: a6cc6b34b93e ("bpftool: Provide a helper method for accessing skel=
-eton's embedded ELF data")
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
+On Tue, 2023-10-03 at 13:19 -0700, Mike Kravetz wrote:
+> On 10/03/23 15:35, Rik van Riel wrote:
+> > On Sun, 2023-10-01 at 21:39 -0700, Mike Kravetz wrote:
+> > > 
+> > > Something is not right here.  I have not looked closely at the
+> > > patch,
+> > > but running libhugetlbfs test suite hits this NULL deref in
+> > > misalign
+> > > (2M: 32).
+> > 
+> > Hi Mike,
+> > 
+> > fixing the null dereference was easy, but I continued running
+> > into a test case failure with linkhuge_rw. After tweaking the
+> > code in my patches quite a few times, I finally ran out of
+> > ideas and tried it on a tree without my patches.
+> > 
+> > I still see the test failure on upstream
+> > 2cf0f7156238 ("Merge tag 'nfs-for-6.6-2' of git://git.linux-
+> > nfs.org/projects/anna/linux-nfs")
+> > 
+> > This is with a modern glibc, and the __morecore assignments
+> > in libhugetlbfs/morecore.c commented out.
+> > 
+> > 
+> > HUGETLB_ELFMAP=R HUGETLB_SHARE=1 linkhuge_rw (2M: 32):  Pool state:
+> > (('hugepages-2048kB', (('free_hugepages', 1), ('resv_hugepages',
+> > 0),
+> > ('surplus_hugepages', 0), ('nr_hugepages_mempolicy', 1),
+> > ('nr_hugepages', 1), ('nr_overcommit_hugepages', 0))),)
+> > Hugepage pool state not preserved!
+> > BEFORE: (('hugepages-2048kB', (('free_hugepages', 1),
+> > ('resv_hugepages', 0), ('surplus_hugepages', 0),
+> > ('nr_hugepages_mempolicy', 1), ('nr_hugepages', 1),
+> > ('nr_overcommit_hugepages', 0))),)
+> > AFTER: (('hugepages-2048kB', (('free_hugepages', 0),
+> > ('resv_hugepages',
+> > 0), ('surplus_hugepages', 0), ('nr_hugepages_mempolicy', 1),
+> > ('nr_hugepages', 1), ('nr_overcommit_hugepages', 0))),)
+> > 
+> 
+> Please consider the above failures normal and expected.  That have
+> been
+> this way for many years.  Sorry for any waste of your time.
+> 
+> Of course, if you would like to look into these you are welcome.
 
-See CI failures ([0]). You messed up tabs somewhere.
+I'm not too worried about the test cases returning failure,
+but having free_hugepages not go back to 1 after linkhuge_rw
+exits looks bad.
 
-  [0] https://github.com/kernel-patches/bpf/actions/runs/6397510833/job/173=
-65616392?pr=3D5756
+In this case it appears that linkhuge_rw simply left behind
+a file in /dev/hugepages when it died, and removing that file
+returns free_hugepages back to what it should be.
 
+I guess I'll go run the test cases without -c 1 :)
 
->  tools/bpf/bpftool/gen.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 2883660d6b67..b8ebcee9bc56 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -1209,7 +1209,7 @@ static int do_skeleton(int argc, char **argv)
->         codegen("\
->                 \n\
->                                                                          =
-   \n\
-> -                       s->data =3D (void *)%2$s__elf_bytes(&s->data_sz);=
-     \n\
-> +                       s->data =3D (void *)%1$s__elf_bytes(&s->data_sz);=
-     \n\
->                                                                          =
-   \n\
->                         obj->skeleton =3D s;                             =
-     \n\
->                         return 0;                                        =
-   \n\
-> @@ -1218,12 +1218,12 @@ static int do_skeleton(int argc, char **argv)
->                         return err;                                      =
-   \n\
->                 }                                                        =
-   \n\
->                                                                          =
-   \n\
-> -               static inline const void *%2$s__elf_bytes(size_t *sz)    =
-   \n\
-> +               static inline const void *%1$s__elf_bytes(size_t *sz)    =
-   \n\
->                 {                                                        =
-   \n\
-> -                       *sz =3D %1$d;                                    =
-     \n\
-> -                       return (const void *)\"\\                        =
-   \n\
-> -               "
-> -               , file_sz, obj_name);
-> +                       static const char data[] __attribute__((__aligned=
-__(8))) =3D \"\\\n\
-> +               ",
-> +               obj_name
-> +       );
->
->         /* embed contents of BPF object file */
->         print_hex(obj_data, file_sz);
-> @@ -1231,6 +1231,9 @@ static int do_skeleton(int argc, char **argv)
->         codegen("\
->                 \n\
->                 \";                                                      =
-   \n\
-> +                                                                        =
-   \n\
-> +                       *sz =3D sizeof(data) - 1;                        =
-     \n\
-> +                       return (const void *)data;                       =
-   \n\
->                 }                                                        =
-   \n\
->                                                                          =
-   \n\
->                 #ifdef __cplusplus                                       =
-   \n\
-> --
-> 2.42.0.582.g8ccd20d70d-goog
->
+-- 
+All Rights Reversed.
