@@ -2,184 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 010457B7939
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0337B7949
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241600AbjJDH5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:57:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
+        id S241608AbjJDH7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241516AbjJDH5m (ORCPT
+        with ESMTP id S241661AbjJDH7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:57:42 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011A1AC
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 00:57:37 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9adca291f99so317829866b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 00:57:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696406256; x=1697011056; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ay5Vsk+ralU3n0O47rCc8tQOr+v7R/FfrmtlL/DaMB0=;
-        b=EMrjUsf/SmZizdAQbZBlEv8lpn8B9VyDyKo82uPSmTKOjxQGmVTZgYMNTiprhH+bT8
-         RPAg704wXBopMZtLSh3fxGfAB/UZM2lGOpvtXo9oP3GMrrqRfCS7SLQxn9YhpH62lJ8C
-         Z3ln7E/Y2jCFUIcZDQxu95pIWxKHm2OQrca1lQj4SMWWzdANXWVsZdGqF58B//y42x5b
-         OA/zgF2OArH7yNZiDIxUy/bCZkYkaaxDHgJYN3Fph54RM3d+eBDIGwUzmB7SWna1eV8W
-         32wStvm1vjTxwQCvdLr5SAJelTgiyfzBtpZ+cJ1Vv63vuUrzWaig+Fie4LYhG6qJAvJo
-         FVUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696406256; x=1697011056;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ay5Vsk+ralU3n0O47rCc8tQOr+v7R/FfrmtlL/DaMB0=;
-        b=DCjo+2WapwZGiMzGu4pyMHmqPOWcC0xKM3o0v4PspGw7vCDNDhE633VteEDVh2zQ/p
-         llWW8HKAx3z/xdrzHHeC++Xb50lS23IqQCS/y6W4JP9rjeyg0cDVvPfVHzsBjl8AS8IW
-         EXiAbVpUMbN9cwh3Knz8BRrS4189e07YwmKR+5Q2NaUPbdsT1fFm0zOGMAOWgVCbZWJe
-         iZBOGk/vlhynSQ03IDplIbq5AiF7cq1R2k7Vvfmvpfze2KfnyHdQEpGmb3FFZKnT3uWu
-         djECvnLMiUmVjA19/+ts6pi/M2twH0YNYEY1X9jVTi0YkAgVQQ2ryTzfe8Z2nt1qt8B5
-         ZEDg==
-X-Gm-Message-State: AOJu0Yz75j3pAgMphrseidN3/Xo2aL+pcP0xbaBXlfgg8t3x/DrTRfxv
-        l7I33FeTyFwO91ZKdW0I7ZTojg==
-X-Google-Smtp-Source: AGHT+IExVkG9sutLmv2CCXRkGqFp0eb0ufokjcEUXnRDnQiLLWYXIXB4c/UKg9ZAA39UsmVzRmv4+w==
-X-Received: by 2002:a17:906:4496:b0:9b2:babd:cd51 with SMTP id y22-20020a170906449600b009b2babdcd51mr1192483ejo.5.1696406256379;
-        Wed, 04 Oct 2023 00:57:36 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id s3-20020aa7d783000000b0053404772535sm1975565edq.81.2023.10.04.00.57.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 00:57:35 -0700 (PDT)
-Message-ID: <37021ef8-55e2-4116-8201-2ab7df9e0fc1@linaro.org>
-Date:   Wed, 4 Oct 2023 09:57:33 +0200
+        Wed, 4 Oct 2023 03:59:09 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487A9C9;
+        Wed,  4 Oct 2023 00:59:06 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 45FE840E01A4;
+        Wed,  4 Oct 2023 07:59:04 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id sr-s69_c3MXx; Wed,  4 Oct 2023 07:59:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1696406342; bh=PPjuHf+AhXSxFM9jDrJbk8Nu7BK+WooeaVjE0MSwi40=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T2qmtsTd7YtlFf7t3DXYmwHQ7SGwDf8ZQ1qBNz+9rxe/XxHJ4ZwiRXId654g+BzDw
+         yIHUxPoc2hubwf0WO/Ul3yQJ7qcerj6TBKn9ssdcVdPRXU5OuH1ZwXGTvikGwn/lTQ
+         v9A7CyrjcPbf73FAxgjxb77whgg1lHOHR3vXPR8R1zXe0mxbkDgy4sAEJUtwvqCBNU
+         DH7gvCNXm3QUBKoSjDfZcBbvznn6b7q3fxEj0sIi92u6dTmsrbs64AsR2TqM8XtTxG
+         5tfPG/h9+HJk5Y7Yz1QbPP2Gl9iI3tec5ExPdRKFNq4FY2MTXQW7ShXN5KO87xn8Dd
+         Vk+EOHeSD/QC8fwjEJO4uy0VcnT/dmVcC0Q2bVgW5bI60MrFKHavmnQCCkUu37OscR
+         9Y3WJGKaafE5DUEtowI0PhIS2Z5Tv+mDBd2YZ1IPUz3tvc4BpBa6ugqV28uRr+GBut
+         3wMaTli5iMXIye9OQMKzsSnvze09BRuzMDl3iWEUKjtf/AzceJWNvPv6/P1i2bY+X7
+         A2rYfJVWycY7Wc6AzJ1CgeXrEZP6uN4aTwYI8sXV3+fLZBkk7HNzy141q6shc8n7CS
+         NirFcnILe3q0AKOCINNwAp7dDMouFDBJVwQVuUdQjfyBabIj4dbsbX+rKNGMZaMZRG
+         lr4MMxLh3wDboLEdty2zq1Wk=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7890A40E0176;
+        Wed,  4 Oct 2023 07:58:48 +0000 (UTC)
+Date:   Wed, 4 Oct 2023 09:58:44 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's
+ FsGsKernelGsBaseNonSerializing
+Message-ID: <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
+References: <20231004002038.907778-1-jmattson@google.com>
+ <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
+ <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] riscv: dts: sophgo: add initial CV1800B SoC device
- tree
-Content-Language: en-US
-To:     Chen Wang <unicorn_wang@outlook.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Anup Patel <anup@brainfault.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
-        xiaoguang.xing@sophgo.com
-References: <20230930123937.1551-1-jszhang@kernel.org>
- <20230930123937.1551-5-jszhang@kernel.org>
- <MA0P287MB033277186E21A09127407452FECBA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <MA0P287MB033277186E21A09127407452FECBA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2023 09:23, Chen Wang wrote:
-> 
-> 在 2023/9/30 20:39, Jisheng Zhang 写道:
->> Add initial device tree for the CV1800B RISC-V SoC by SOPHGO.
->>
->> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->> ---
->>   arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 117 ++++++++++++++++++++++++
->>   1 file changed, 117 insertions(+)
->>   create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> 
-> Hi, Jisheng, as far as I know, sg2042 and cv180x are now tracked by 
-> different people and even in sophgo, they are two independent 
-> projects(sg2042 is target for HPC and cv180x is target for embeded 
-> device). To facilitate future management and review, I recommend 
-> registering the maintainer information in two entries in MAINTAINERS. 
-> The example is as follows:
-> 
-> ```
-> 
-> SOPHGO CV180X DEVICETREES
-> M:  Jisheng Zhang <jszhang@kernel.org>
-> F:  arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-> F:  arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> 
-> SOPHGO SG2042 DEVICETREES
-> M:  Chao Wei <chao.wei@sophgo.com>
-> M:  Chen Wang <unicornxw@gmail.com>
-> S:  Maintained
-> F:  arch/riscv/boot/dts/sophgo/Makefile
-> F:  arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi
-> F:  arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-> F:  arch/riscv/boot/dts/sophgo/sg2042.dtsi
-> F:  Documentation/devicetree/bindings/riscv/sophgo.yaml
-> ```
-> 
-> For Makefile and sophgo.yaml such common files, just keep in sg2042 
-> entry should be fine.
-> 
-> @Conor, what do you think?
+On Tue, Oct 03, 2023 at 07:44:51PM -0700, Jim Mattson wrote:
+> The business of declaring breaking changes to the architectural
+> specification in a CPUID bit has never made much sense to me.
 
-We do no have usually per-board maintainer entries (with few
-exceptions). I strongly prefer this one instead:
+How else should they be expressed then?
 
-https://lore.kernel.org/all/829b122da52482707b783dc3d93d3ff0179cb0ca.camel@perches.com/
+In some flaky PDF which changes URLs whenever the new corporate CMS gets
+installed?
 
-Best regards,
-Krzysztof
+Or we should do f/m/s matching which doesn't make any sense for VMs?
 
+When you think about it, CPUID is the best thing we have.
+
+> No one is likely to query CPUID.80000021H.EAX[bit 21] today, but if
+> someone does query the bit in the future, they can reasonably expect
+> that WRMSR({FS,GS,KERNELGS}_BASE) is a serializing operation whenever
+> this bit is clear. Therefore, any hypervisor that doesn't pass the bit
+> through is broken. Sadly, this also means that for a heterogenous
+> migration pool, the hypervisor must set this bit in the guest CPUID if
+> it is set on any host in the pool. Yes, that means that the legacy
+> behavior may sometimes be present in a VM that enumerates the CPUID
+> bit, but that's the best we can do.
+
+Yes, add this to your commit message.
+
+> I'm a little surprised at the pushback, TBH. Are you implying that
+> there is some advantage to *not* passing this bit through?
+
+We don't add stuff which is not worth adding. There has to be *at*
+*least* some justification for it.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
