@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E017B7F38
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392C47B7F39
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242377AbjJDMff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 08:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
+        id S242384AbjJDMfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 08:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbjJDMfc (ORCPT
+        with ESMTP id S242313AbjJDMfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Oct 2023 08:35:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A09CB0
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:35:28 -0700 (PDT)
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EF8BF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:35:29 -0700 (PDT)
 From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1696422927;
@@ -22,21 +22,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Qz4nJBaG6XRtjj3mRkMTDjA4wkxAWKGzl0cHJtp9Oe0=;
-        b=BIozC7PyZ4VhQOCf4rAfBpbcQ7TgnF/JfDtlw7mlsRDKvWNbWOyEamfwSre+uzcIh8bmNQ
-        MNg+c1mk0p6wtXauMY8pQrNRb5+qGggoexuscNVjelnE8Sv6zezgM6Ym7tiaEQTBHbKlEo
-        t9qGlU7wzEpmqeQ2yWwqvCUsvocrgXbc/Zg2Dn4AEpdo2TNzL3j7PGIzH2cpdBvwDtFYEI
-        6HlUqNBd9Evc7k30v5rm1GNYhBITNjeTggg3PwIjZUKVEx/vEkrRdLvouCEyODoFyL2c3q
-        /WGvqyUNT2/uvcFL45xHRBWxSP5Qm4DAB1CTgpc2yLbS/xQag2tChfePA+o7Ew==
+        bh=AXGP/cV38TkuwT0IRhJ9YYY7aFG2G6iSF6EqZ7aAS+o=;
+        b=mCLdP9Sz8EnBzXJX1cpWsLaMbxR7yBHBthK1dXImUp5/1a4RJY6/2zTW9g9VG6gxLbEvqB
+        LB2zeTRuEBPLCCKi+VE7dWf6Wv9JBXfrDO9D74AyVgcMYJ1gHqXZ3ts5N4npijeFIx3DVS
+        kTJg98s0HfyGgpqdC6SeijQ4uy3dwi9efOfXk7q9gxXvoafo61HdiFs9pEt3Nbusy4hbT1
+        hH9wZJshZI6kvoop02euzfKTrCm+kFU8NvNWVmxqx7us6gPr+eWw1YzCfCTS4vZTqB5HCj
+        dFFL4hQ39Gyt2IiUpM+3QqV5+wBEcqceFz5bL0JMvqgypKiG4NA8en71090VcQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1696422927;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Qz4nJBaG6XRtjj3mRkMTDjA4wkxAWKGzl0cHJtp9Oe0=;
-        b=CHFn5XMk74YVpQGH5n+8y0lqHnXKS2zTHVWFKCa+56NDFEzcfcQW4uiJDc6bqoVS8IKl4w
-        majPpeh3Rwnn8WBw==
+        bh=AXGP/cV38TkuwT0IRhJ9YYY7aFG2G6iSF6EqZ7aAS+o=;
+        b=GWXVBCrmoEVjjFNM0cucO6c5WGmhbmj1qsAX4zXMVXYQfZsTYVYDDA0RuF72hw13/S3+U5
+        UmBtuN00urfORyBw==
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         John Stultz <jstultz@google.com>,
@@ -55,50 +55,69 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
         K Prateek Nayak <kprateek.nayak@amd.com>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v8 02/25] tick-sched: Warn when next tick seems to be in the past
-Date:   Wed,  4 Oct 2023 14:34:31 +0200
-Message-Id: <20231004123454.15691-3-anna-maria@linutronix.de>
+Subject: [PATCH v8 03/25] timer: Do not IPI for deferrable timers
+Date:   Wed,  4 Oct 2023 14:34:32 +0200
+Message-Id: <20231004123454.15691-4-anna-maria@linutronix.de>
 In-Reply-To: <20231004123454.15691-1-anna-maria@linutronix.de>
 References: <20231004123454.15691-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the next tick is in the past, the delta between basemono and the next
-tick gets negativ. But the next tick should never be in the past. The
-negative effect of a wrong next tick might be a stop of the tick and timers
-might expire late.
+Deferrable timers do not prevent CPU from going idle and are not taken into
+account on idle path. Sending an IPI to a remote CPU when a new first
+deferrable timer was enqueued will wake up the remote CPU and but nothing
+will be done regarding the deferrable timers.
 
-To prevent expensive debugging when changing underlying code, add a
-WARN_ON_ONCE into this code path.
+Drop IPI completely when a new first deferrable timer was enqueued.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/time/tick-sched.c | 2 ++
- 1 file changed, 2 insertions(+)
+v8: Update comment
 
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index bdad2abdc0c7..b3cf535881a4 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -842,6 +842,8 @@ static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
- 	 * If the tick is due in the next period, keep it ticking or
- 	 * force prod the timer.
+v6: new patch
+---
+ kernel/time/timer.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 63a8ce7177dd..7d06351aff54 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -571,18 +571,15 @@ static int calc_wheel_index(unsigned long expires, unsigned long clk,
+ static void
+ trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer)
+ {
+-	if (!is_timers_nohz_active())
+-		return;
+-
+ 	/*
+-	 * TODO: This wants some optimizing similar to the code below, but we
+-	 * will do that when we switch from push to pull for deferrable timers.
++	 * Deferrable timers do not prevent CPU from entering dynticks and are
++	 * not taken into account on idle/nohz_full path. An IPI when a new
++	 * deferrable timer is enqueued will wake up the remote CPU but nothing
++	 * will be done with the deferrable timer base. Therefore skip remote
++	 * IPI for deferrable timers completely.
  	 */
-+	WARN_ON_ONCE(basemono > next_tick);
-+
- 	delta = next_tick - basemono;
- 	if (delta <= (u64)TICK_NSEC) {
- 		/*
+-	if (timer->flags & TIMER_DEFERRABLE) {
+-		if (tick_nohz_full_cpu(base->cpu))
+-			wake_up_nohz_cpu(base->cpu);
++	if (!is_timers_nohz_active() || timer->flags & TIMER_DEFERRABLE)
+ 		return;
+-	}
+ 
+ 	/*
+ 	 * We might have to IPI the remote CPU if the base is idle and the
 -- 
 2.39.2
 
