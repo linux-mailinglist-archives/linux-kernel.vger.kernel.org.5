@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BCC87B7D28
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9E57B7CD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233059AbjJDKar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
+        id S232949AbjJDKIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbjJDKap (ORCPT
+        with ESMTP id S232746AbjJDKH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:30:45 -0400
-X-Greylist: delayed 3200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 04 Oct 2023 03:30:39 PDT
-Received: from correo.hgj.gob.ec (correo.hgj.gob.ec [181.196.185.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8052A6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:30:39 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by correo.hgj.gob.ec (Postfix) with ESMTP id 2802840455082;
-        Wed,  4 Oct 2023 04:19:36 -0500 (-05)
-Received: from correo.hgj.gob.ec ([127.0.0.1])
-        by localhost (correo.hgj.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id aD4FQbXZcXDX; Wed,  4 Oct 2023 04:19:35 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by correo.hgj.gob.ec (Postfix) with ESMTP id 5FEE540477967;
-        Wed,  4 Oct 2023 04:19:35 -0500 (-05)
-DKIM-Filter: OpenDKIM Filter v2.10.3 correo.hgj.gob.ec 5FEE540477967
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hgj.gob.ec;
-        s=AE113AC8-D929-11ED-97A4-E896B0C4411E; t=1696411175;
-        bh=mAhvhhVt0FojqIoI5vUL967LmtKhh/nKngvxnrO5ImE=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=nXpEic9nTrKx40EnThY8EhpYONqJ4+LJi3cHqFwN3O3gBT3XgA1DDpLXq7sO1q9Z8
-         r35ajXl7LRR4bYNMzuTqbaXzv8mr3+6dK20lFok/FoMMhArFQFq9zYGKeTgcDuFeya
-         6PyX/vH44y+cWB0cR+fE29nlzgnY7ZCVHka6hd1xDv99InASaRtdFjPH8kCiP0wQb7
-         31hquZlhnLqyCXjYM11yQ4x0AkBz1OezVwkR5c9jngu5nrh8u3DQ0f3DjNTiiYgpWh
-         TApvU69F4dUt/G/kMFFhSV7itfvAJRJv0/fkLueBURHKTeGTlAbfkhqytxvu2/b5SZ
-         30RauxQpxR+mA==
-X-Virus-Scanned: amavisd-new at correo.hgj.gob.ec
-Received: from correo.hgj.gob.ec ([127.0.0.1])
-        by localhost (correo.hgj.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id I6P9k69fG6de; Wed,  4 Oct 2023 04:19:35 -0500 (-05)
-Received: from [156.96.56.93] (unknown [156.96.56.93])
-        by correo.hgj.gob.ec (Postfix) with ESMTPSA id E5B6640468B25;
-        Wed,  4 Oct 2023 04:19:27 -0500 (-05)
-Content-Type: text/plain; charset="iso-8859-1"
+        Wed, 4 Oct 2023 06:07:59 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D79C9E
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:07:55 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4066692ad35so18402025e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 03:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696414074; x=1697018874; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=MBKM8WudF4CqsEttpndJwRTdLPCz/dkPP0MH3GBVDlA=;
+        b=kGnIldHkqjYF49qEzlOaehapPYwPRe1ID6FuSYDEUFaNzx3Y+ctrXpc4exGa41Frio
+         N9EDm5ZXwyJbptHrgx7RTicg3plZpXCpbpcDI2/LS8UfQvPBCgOAwA6DKUTjxllDPffB
+         wDWkVW5CjsojHDuTkzzaWAoL21P/Qs0N+NV9wxvZBw8o7vBOlxmKa0cWRJdiUpuuN04K
+         aTK3Fpd6nu1RamQENtCxTwGvNVS+QnLvMX83l3qpu00VrSesuZ1Hg7grkSeRGPExouvL
+         iHp2PgduiPHM5hq92dHlcofCnsy2HjSfNI7f1AnVpmc6TJSOnzCaZbKhT0SoIf/ho+Jh
+         GVgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696414074; x=1697018874;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MBKM8WudF4CqsEttpndJwRTdLPCz/dkPP0MH3GBVDlA=;
+        b=aOamE6Ofwp775kjzs5/GNjbKeZ5FHAw18S+tW+OAJm6ZWGwTslZiI6Ca578fsk0O4i
+         7qFyUAoB4xw3O1d3oJT1Xqvo/b0H9OYvFjHKx/HNhhuo/n7VwS+vLBMUIOmN5+Uet/V1
+         kacEYk68cSf38S6KXw0akS1G5fbJHGf0gvJOPJIvZkk4Ny1pWhbp+jCZ1AxdzOtTLRsJ
+         89uXhJWQ2V0talkZduNGysZQhqL6W73BLIwj0Mxndp+debguLdFVEJKIROsDcA2BbdkA
+         rLTcq6VEegurCatuX9XvFaSbJQfwOS1BKkW6kZuTJvTksoMVECZ4esh0Zx6pVHFb4hIK
+         YypA==
+X-Gm-Message-State: AOJu0Yx5V39xDkOcHv4aPGtMtSrouvFsvxfurJgxbh3J5HMZwHgF+GRx
+        mK7T2Kf+uisjN/SWCP8I1H+5tw==
+X-Google-Smtp-Source: AGHT+IHQs2OVv7qxHlgfeXUsFovafyJV0iId+qZZAuGf2Y7OewcW4WvIpw4kR8j5aS/my81AXiNOdA==
+X-Received: by 2002:a7b:c8c8:0:b0:401:906b:7e9d with SMTP id f8-20020a7bc8c8000000b00401906b7e9dmr1729419wml.18.1696414073831;
+        Wed, 04 Oct 2023 03:07:53 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:d9fc:647c:aca8:fc21])
+        by smtp.gmail.com with ESMTPSA id k1-20020a05600c0b4100b00405442edc69sm1109745wmr.14.2023.10.04.03.07.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 03:07:53 -0700 (PDT)
+References: <20231002141020.2403652-1-jbrunet@baylibre.com>
+ <20231002141020.2403652-3-jbrunet@baylibre.com>
+ <b81a296d-0640-4b2e-aab6-c9de37d10206@linaro.org>
+ <1j5y3ozvmk.fsf@starbuckisacylon.baylibre.com>
+ <CACdvmAgzBxja-oJkS9c88=P0Wmc1ptkJExz6YjaJUyyv6yxh0Q@mail.gmail.com>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Da Xue <da@lessconfused.com>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Da Xue <da.xue@libretech.co>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH 2/2] arm64: dts: amlogic: add libretech cottonwood support
+Date:   Wed, 04 Oct 2023 12:03:40 +0200
+In-reply-to: <CACdvmAgzBxja-oJkS9c88=P0Wmc1ptkJExz6YjaJUyyv6yxh0Q@mail.gmail.com>
+Message-ID: <1jh6n6ya2v.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?q?Atenci=C3=B3n_al_cliente?=
-To:     Recipients <cesar.pibaque@hgj.gob.ec>
-From:   "@zimbra" <cesar.pibaque@hgj.gob.ec>
-Date:   Wed, 04 Oct 2023 02:19:15 -0700
-Reply-To: webmasterzimbra1@gmail.com
-Message-Id: <20231004091927.E5B6640468B25@correo.hgj.gob.ec>
-X-Spam-Status: No, score=3.5 required=5.0 tests=BAYES_50,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Su cuenta no ha pasado por el proceso de verificaci=F3n / actualizaci=F3n. =
-Los titulares de cuentas deben actualizar sus cuentas dentro de los 5 d=EDa=
-s h=E1biles posteriores a la recepci=F3n de este aviso. El incumplimiento d=
-e este aviso dentro de la fecha l=EDmite puede no ser capaz de enviar o rec=
-ibir todos los mensajes y el propietario correr=E1 el riesgo de perder su c=
-uenta.
 
-Confirme los detalles de la cuenta a continuaci=F3n.
-_____________________________________
-1. Nombre y apellido:
-2. Correo electr=F3nico completo en:
-3. Nombre de usuario:
-4. Contrase=F1a:
-5. Vuelva a escribir la contrase=F1a:
-_____________________________________
- =
+On Tue 03 Oct 2023 at 05:15, Da Xue <da@lessconfused.com> wrote:
 
-NOTA !!! Si no actualiza su cuenta, su cuenta se eliminar=E1 autom=E1ticame=
-nte de nuestro sistema.
- =
+>> >> +
+>> >> +    leds-gpio {
+>> >> +            compatible = "gpio-leds";
+>> >> +
+>> >> +            led-orange {
+>> >> +                    color = <LED_COLOR_ID_AMBER>;
+>
+> Should this be LED_COLOR_ID_ORANGE?
 
-Nos disculpamos por cualquier inconveniente causado.
- =
+It should (and initally was)
+It was coming funny '(null)-standby' in sysfs and I did really checked
+why
 
-Sinceramente
-Atenci=F3n al cliente
-Equipo de soporte t=E9cnico de Zimbra.
- =
+I can change it back, no problem
 
-Copyright =A9 2005-2023 Synacor, Inc. Todos los derechos reservados
+>
+>> >> +                    function = LED_FUNCTION_STANDBY;
+>> >> +                    gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
+>> >> +            };
+>> >> +    };
+>> >> +
