@@ -2,136 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 620097B8001
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8B77B7FF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242526AbjJDM6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 08:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48876 "EHLO
+        id S242515AbjJDM53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 08:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242354AbjJDM6N (ORCPT
+        with ESMTP id S242505AbjJDM51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 08:58:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0A3DD
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:57:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696424243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UocplIidO7zTE/4ZN7c3P31bQ70zOq+bV6Role3kEz0=;
-        b=IYZWPiepPI3PVPYLMjmFlDHyqMT3UfEE5QEH3i/BvLgrFT3J/TMWft36sG6mDljaXGo5z4
-        /NIVu+BrHpKu1IqwpX9l/Vqkz2im9++yorD38mg2744eWGXgXPSwkCABG/RL1lU8ASb9L0
-        iNXc6g9h1ZHr9/JAdDMyGd/FnntnJ9Q=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-182-cXjCU4ekMFynQP-34WZcEg-1; Wed, 04 Oct 2023 08:57:12 -0400
-X-MC-Unique: cXjCU4ekMFynQP-34WZcEg-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9b95fa56bd5so11071466b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 05:57:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696424231; x=1697029031;
-        h=content-transfer-encoding:in-reply-to:organization:content-language
-         :references:cc:to:subject:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UocplIidO7zTE/4ZN7c3P31bQ70zOq+bV6Role3kEz0=;
-        b=i2KNyKKmx17ZORYXnJxTMqEarmCmc9jK3gQ1ts2NGRL5HIJaVchjgWgpV/7T6gWbnr
-         B7+WCHLbUTE5i4AHboIJ8U04DIgt/B3tAmd6jaev3bh2GIdoOrn5ZHHNPZd9tqJFOqYF
-         c0zDFbXFQDjMDUB6j57fZ71eK+B6VHYKC9aIqSLDxwPZV+WwuJJk3V/2EDM9OfxuPKK8
-         13SpVxGuowNcSe74y9LvnRYLGwWmPDQ8HGr8FBDwgl26UpO030KvBGHPE6/JP8sUiIA0
-         IWBVzgI9tScmyv8JDMMDrclESv/Qc10up3qCGUYk6ArSbGYnOCQuR7xtC8zvA3FCfk+1
-         9t/w==
-X-Gm-Message-State: AOJu0YxTaOEb1FFjTkzvBivQChYOzhag7SG/UxtdL8+Aqf5n6yzEKIEm
-        F9c88PltmHVyTBAYeU54q/wwl5tc1X5949kanObpVjX9nh6AiTpKiUiyX+KPaK0aggGMo2FGnhN
-        3KAESrdUCEFELsxP7XwZhc26Hc3iVf2Fl
-X-Received: by 2002:a17:906:4d2:b0:9a2:26d8:f184 with SMTP id g18-20020a17090604d200b009a226d8f184mr1535501eja.51.1696424230993;
-        Wed, 04 Oct 2023 05:57:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHmt8ptQ+NpMGEA8WwD3MopWfb9O4X8+QQKV5V2rPVZNgpUR9p7BK5+q5JqnyoFPOngtFGAoA==
-X-Received: by 2002:a17:906:4d2:b0:9a2:26d8:f184 with SMTP id g18-20020a17090604d200b009a226d8f184mr1535481eja.51.1696424230614;
-        Wed, 04 Oct 2023 05:57:10 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id va17-20020a17090711d100b0099d804da2e9sm2828850ejb.225.2023.10.04.05.57.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 05:57:09 -0700 (PDT)
-Message-ID: <6489f31f-8929-3e59-fbef-a22049cccbe3@redhat.com>
-Date:   Wed, 4 Oct 2023 14:57:08 +0200
+        Wed, 4 Oct 2023 08:57:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D916798;
+        Wed,  4 Oct 2023 05:57:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCFC4C433C7;
+        Wed,  4 Oct 2023 12:57:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696424243;
+        bh=ectF9UM9nsuyhPQEzGjpDSsG7n+9AFSouVvBvBRz4RU=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=aWYNO4ih2/gLk3G6T2FcpuBf9c0kV2zijLkIMF9GTTQ+nepdEMGBdrvfmFYWFhRUW
+         KVRDHP7aFL9dv9Lpxp0FxDQ/2EnVhHsKAAB2VwwjCdgy5wnut2pHjpvxPGTZeAFQDH
+         dx3Ofes5pgXTfpQpA+49sMtyVkJ6wUe9nt7h00/0Tpa4gxY+gTTXr1y0nZKaKDh7RT
+         qN8W7ur4vnfKDJ4kOnzxobzVRviDf6TDCnfv1GD2dRoq6TeFgSAIHqeXzMQlavsBvb
+         lWldeHfhdjuv1mXF9zoGO2eE5MpCaETqwWDx9UwtRdisxi7UpFY614fbhZ52U42njQ
+         DHldIsd1FJBWA==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felix Fietkau <nbd@nbd.name>,
+        Felipe Negrelli Wolter <felipe.negrelliwolter@silabs.com>,
+        Olivier Souloumiac <olivier.souloumiac@silabs.com>,
+        Alexandr Suslenko <suslenko.o@ajax.systems>
+Subject: Re: [PATCH v2] wifi: wfx: fix case where rates are out of order
+References: <20231004123039.157112-1-jerome.pouiller@silabs.com>
+Date:   Wed, 04 Oct 2023 15:57:19 +0300
+In-Reply-To: <20231004123039.157112-1-jerome.pouiller@silabs.com>
+ (=?utf-8?B?IkrDqXLDtG1l?=
+        Pouiller"'s message of "Wed, 4 Oct 2023 14:30:39 +0200")
+Message-ID: <8734yq7dg0.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Danilo Krummrich <dakr@redhat.com>
-Subject: Re: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate
- external/evicted objects
-To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith@gfxstrand.net
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230928191624.13703-1-dakr@redhat.com>
- <20230928191624.13703-5-dakr@redhat.com>
- <e4e68970-c7c9-55e2-9483-01252f38c956@linux.intel.com>
- <6b16ab6f-b1a2-efdb-04bf-5af4c3de381b@linux.intel.com>
-Content-Language: en-US
-Organization: RedHat
-In-Reply-To: <6b16ab6f-b1a2-efdb-04bf-5af4c3de381b@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 11:11, Thomas Hellström wrote:
+J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
 
-<snip>
+> From: Felipe Negrelli Wolter <felipe.negrelliwolter@silabs.com>
+>
+> When frames are sent over the air, the device always applies the data
+> rates in descending order. The driver assumed Minstrel also provided
+> rate in descending order.
+>
+> However, in some cases, Minstrel can a choose a fallback rate greater
+> than the primary rate. In this case, the two rates was inverted, the
+> device try highest rate first and we get many retries.
+>
+> Since the device always applies rates in descending order, the
+> workaround is to drop the rate when it higher than its predecessor in
+> the rate list. Thus [ 4, 5, 3 ] becomes [ 4, 3 ].
+>
+> This patch has been tested in isolated room with a series of
+> attenuators. Here are the Minstrel statistics with 80dBm of attenuation:
+>
+>   Without the fix:
+>
+>                   best    ____________rate__________    ____statistics___=
+    _____last____    ______sum-of________
+>     mode guard #  rate   [name   idx airtime  max_tp]  [avg(tp) avg(prob)=
+]  [retry|suc|att]  [#success | #attempts]
+>     HT20  LGI  1       S  MCS0     0    1477     5.6       5.2      82.7 =
+      3     0 0             3   4
+>     HT20  LGI  1          MCS1     1     738    10.6       0.0       0.0 =
+      0     0 0             0   1
+>     HT20  LGI  1     D    MCS2     2     492    14.9      13.5      81.5 =
+      5     0 0             5   9
+>     HT20  LGI  1    C     MCS3     3     369    18.8      17.6      84.3 =
+      5     0 0            76   96
+>     HT20  LGI  1  A   P   MCS4     4     246    25.4      22.4      79.5 =
+      5     0 0         11268   14026
+>     HT20  LGI  1   B   S  MCS5     5     185    30.7      19.7      57.7 =
+      5     8 9          3918   9793
+>     HT20  LGI  1          MCS6     6     164    33.0       0.0       0.0 =
+      5     0 0             6   102
+>     HT20  LGI  1          MCS7     7     148    35.1       0.0       0.0 =
+      0     0 0             0   44
+>
+>   With the fix:
+>
+>                   best    ____________rate__________    ____statistics___=
+    _____last____    ______sum-of________
+>     mode guard #  rate   [name   idx airtime  max_tp]  [avg(tp) avg(prob)=
+]  [retry|suc|att]  [#success | #attempts]
+>     HT20  LGI  1       S  MCS0     0    1477     5.6       1.8      28.6 =
+      1     0 0             1   5
+>     HT20  LGI  1     DP   MCS1     1     738    10.6       9.7      82.6 =
+      4     0 0            14   34
+>     HT20  LGI  1          MCS2     2     492    14.9       9.2      55.4 =
+      5     0 0            52   77
+>     HT20  LGI  1   B   S  MCS3     3     369    18.8      15.6      74.9 =
+      5     1 1           417   554
+>     HT20  LGI  1  A       MCS4     4     246    25.4      16.7      59.2 =
+      5     1 1         13812   17951
+>     HT20  LGI  1    C  S  MCS5     5     185    30.7      14.0      41.0 =
+      5     1 5            57   640
+>     HT20  LGI  1          MCS6     6     164    33.0       0.0       0.0 =
+      0     0 1             0   48
+>     HT20  LGI  1       S  MCS7     7     148    35.1       0.0       0.0 =
+      0     0 0             0   36
+>
+> We can notice the device try now to send with lower rates (and high
+> success rates). At the end, we measured 20-25% better throughput with
+> this patch.
+>
+> Fixes: 9bca45f3d692 ("staging: wfx: allow to send 802.11 frames")
+> Tested-by: Olivier Souloumiac <olivier.souloumiac@silabs.com>
+> Tested-by: Alexandr Suslenko <suslenko.o@ajax.systems>
+> Reported-by: Alexandr Suslenko <suslenko.o@ajax.systems>
+> Co-developed-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+> Signed-off-by: Felipe Negrelli Wolter <felipe.negrelliwolter@silabs.com>
+> ---
+> v2:
+>   - Fix malformed tags in commit body. (checkpatch still complains about
+>     missing Close tag, but the bug tracker is not public and I don't have
+>     the exact URL)
 
->>> +
->>> +/**
->>> + * drm_gpuvm_bo_evict() - add / remove a &drm_gpuvm_bo to / from the &drm_gpuvms
->>> + * evicted list
->>> + * @vm_bo: the &drm_gpuvm_bo to add or remove
->>> + * @evict: indicates whether the object is evicted
->>> + *
->>> + * Adds a &drm_gpuvm_bo to or removes it from the &drm_gpuvms evicted list.
->>> + */
->>> +void
->>> +drm_gpuvm_bo_evict(struct drm_gpuvm_bo *vm_bo, bool evict)
->>> +{
->>> +    struct drm_gem_object *obj = vm_bo->obj;
->>> +
->>> +    dma_resv_assert_held(obj->resv);
->>> +
->>> +    /* Always lock list transactions, even if DRM_GPUVM_RESV_PROTECTED is
->>> +     * set. This is required to protect multiple concurrent calls to
->>> +     * drm_gpuvm_bo_evict() with BOs with different dma_resv.
->>> +     */
->>
->> This doesn't work. The RESV_PROTECTED case requires the evicted flag we discussed before. The list is either protected by the spinlock or the resv. Otherwise a list add could race with a list removal elsewhere.
+Just out of curiosity why does the checkpatch complain about a missing
+Close tag? I don't get it why there should be one.
 
-I think it does unless I miss something, but it might be a bit subtle though.
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Concurrent drm_gpuvm_bo_evict() are protected by the spinlock. Additionally, when
-drm_gpuvm_bo_evict() is called we hold the dma-resv of the corresponding GEM object.
-
-In drm_gpuvm_validate() I assert that we hold *all* dma-resv, which implies that no
-one can call drm_gpuvm_bo_evict() on any of the VM's objects and no one can add a new
-one and directly call drm_gpuvm_bo_evict() on it either.
-
->>
->> Thanks,
->>
->> Thomas
->>
->>
-> 
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
