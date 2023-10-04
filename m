@@ -2,159 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 386967B858C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883767B8596
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243446AbjJDQnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44358 "EHLO
+        id S243470AbjJDQop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233485AbjJDQnL (ORCPT
+        with ESMTP id S243464AbjJDQoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:43:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E16D8
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696437747;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PQchYUvGxxsCc4djV8D5Ngra+tr0SbVapL0lFjxteFg=;
-        b=ICQQ33f8i5/WbTN/tmhwPn30gv+38HliBOjldkkBt1vPQUfBA27tuJ4aN4ezgGA3vxmd31
-        N8dYxtfH9Zd+uFa9m+cBSyl1cXtMtaIpMDKqwE4DKDk/18hGI63jL9gEwbUDORMj3WxnpE
-        h1PeW963WbHY/aMKgoN7cqMgITuNI5M=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-552-fMhXrQMWPTGvRMPJESWjKQ-1; Wed, 04 Oct 2023 12:42:25 -0400
-X-MC-Unique: fMhXrQMWPTGvRMPJESWjKQ-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7756d4d252cso303943485a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 09:42:25 -0700 (PDT)
+        Wed, 4 Oct 2023 12:44:44 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB87D8
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:44:40 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-692d2e8c003so909351b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 09:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696437880; x=1697042680; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=P9XaYn4lnPCdZB+6xNgGrQfZXQTuNNsqAtwrHKyNOHg=;
+        b=rsDHKJcLPFehRXqwzgavkAknaxznvjRbIBb8ILgDf4enuqORaEsKVJOJm+k2dIuwMD
+         lYRruGDfBU8mY/UqFcqR3C7iULOS8oA5pG/mJ4LG+giZcNzvAAWIHhYuv+VsnN1+QstW
+         0SD/4dRGcbjC2Dm/P25pefUHaHdB/vdB2CHStSdKYABznNhLWgFhr2dTWizPZycajXDd
+         6CzYpeN5lPS41qkN98CQ4r2G7sNeE605/flTCgIKRKaD9mbvluN3BLVSniiwxsnhsFyE
+         uQNgUyqM7ay01IpC07jc0kD5MoMqNiMxnRM5+cPROg2188qd6oFBILmIwX4AkzfdegeW
+         X01g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696437745; x=1697042545;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PQchYUvGxxsCc4djV8D5Ngra+tr0SbVapL0lFjxteFg=;
-        b=Ov7cDkQRdhj0FPMe9kWqSOK+Q36Btn3KWBmbGk64D6Fzf9HQyRScV64vMN7x4Km4aA
-         TTd4MPmKuhIELaRgcyZG6uKNjvoO2TbiS7vrv19MkVI6vjbFPztvLTmgJnK5TEYBMno9
-         dBjI63j/MaRdMhyv4+/SlyA7d00OdRlN8+A3kc85aMrVcCP8nP9+9kZoBCnoHgA3Zo9Y
-         FqGCRY2ZpxoYvAkp41gAXzqfT26uxSLBzzBl4FIJhrZm4StXEGZEggd6UPo0rFRj243t
-         0FOKDUEm4BOr4Gh0vA1A4TZ3DVBYD9K1JkMFONfc45M0rYlxN4jTU5LbeA0+ZmGN+F+k
-         ZuYg==
-X-Gm-Message-State: AOJu0Yz28lff8HHxQ4fD/goVAW8kSqgL9BT1jPxS/LpJTFWJSZgT5j8J
-        1sSgBkaGrFJySctfoe+h9+CTCKHlsci8ql3HRz2wbNB254tbeFYORnmZqeyebvUpnEhBsRg0c3C
-        grAMdC9bIPHUbts2Kis5hhEfJ
-X-Received: by 2002:a05:620a:258f:b0:767:1d7e:ec40 with SMTP id x15-20020a05620a258f00b007671d7eec40mr3175087qko.1.1696437745124;
-        Wed, 04 Oct 2023 09:42:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEt9ZzO3ODQL872WyKfk3Dg3TgfHXkRo+gA8ZChzf0rtqBB4Wiu+lGNy76VPmqz4kqAeDz51Q==
-X-Received: by 2002:a05:620a:258f:b0:767:1d7e:ec40 with SMTP id x15-20020a05620a258f00b007671d7eec40mr3175068qko.1.1696437744855;
-        Wed, 04 Oct 2023 09:42:24 -0700 (PDT)
-Received: from sgarzare-redhat (host-82-57-51-114.retail.telecomitalia.it. [82.57.51.114])
-        by smtp.gmail.com with ESMTPSA id o15-20020ae9f50f000000b0076cb1eff83csm1387058qkg.5.2023.10.04.09.42.22
+        d=1e100.net; s=20230601; t=1696437880; x=1697042680;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P9XaYn4lnPCdZB+6xNgGrQfZXQTuNNsqAtwrHKyNOHg=;
+        b=JvIkABLB0tyN4HqdTkNaFgOlBBrOOLhIpWU4Z9bOq1yd9J2vPFoZiOfYhSXu7Qxkn+
+         Q9xxhgdQ4WeygH5dpcGm0r0xGFU08mkLMat/04Odtjr49fV+18570cc7VG5Y8PEOqxOO
+         WHrE+2/QvmpEswoDPmP6wtEJ6E4NFfuD4JEIU2NVUYaohfTDU8YAQydR86iptjXGUnNc
+         KRSeWGt/Dv7jtGJzMt4RSPSs3MC05MoTTcjSHxq2fbS24PwWKbQoPxznrH4L8Zd4m3ZW
+         CVWK6b4fM2SVQ1iF49rAM+Fi6YrzvCtzY43561q+cYVNR1OMsb+Ql8fwp2RzK9yK3x5u
+         MBrA==
+X-Gm-Message-State: AOJu0Yx6j7g9ycdBbFBBVhrQ2x/ZNzPJSLdxg12SlmGNKqsn2DUsq8Rk
+        BP+9t1qQDsM7L3N7OUG825dW
+X-Google-Smtp-Source: AGHT+IEFcvP3XfvGXNIkQ2XxxnOQguVsBOs1pcwF/K2wzns1RX27yQqJNGuDIdCewhaTO3npgwYxRw==
+X-Received: by 2002:a05:6a20:8f0b:b0:155:1710:664a with SMTP id b11-20020a056a208f0b00b001551710664amr274538pzk.18.1696437879936;
+        Wed, 04 Oct 2023 09:44:39 -0700 (PDT)
+Received: from localhost.localdomain ([117.217.185.220])
+        by smtp.gmail.com with ESMTPSA id k14-20020aa792ce000000b0066a31111cc5sm3434628pfa.152.2023.10.04.09.44.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 09:42:24 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 18:42:18 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v2 00/12] vsock/virtio: continue MSG_ZEROCOPY
- support
-Message-ID: <zilryvqespe5k4d3xjer2fcrseqo3yu3lvairvobvop6shqvsz@gzdmzpujxzkx>
-References: <20230930210308.2394919-1-avkrasnov@salutedevices.com>
- <4nwo6nd2ihjqsoqnjdjhuucqyc4fhfhxk52q6ulrs6sd2fmf7z@24hi65hbpl4i>
- <aef9a438-3c61-44ec-688f-ed89eb886bfd@salutedevices.com>
- <5ae3b08d-bcbb-514c-856a-94c538796714@salutedevices.com>
+        Wed, 04 Oct 2023 09:44:39 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     lpieralisi@kernel.org, kw@linux.com
+Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
+        bhelgaas@google.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        abel.vesa@linaro.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v4 1/3] PCI: qcom: Use PCIE_SPEED2MBS_ENC() macro for encoding link speed
+Date:   Wed,  4 Oct 2023 22:14:28 +0530
+Message-Id: <20231004164430.39662-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5ae3b08d-bcbb-514c-856a-94c538796714@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 07:22:04PM +0300, Arseniy Krasnov wrote:
->
->
->On 04.10.2023 08:25, Arseniy Krasnov wrote:
->>
->>
->> On 03.10.2023 19:26, Stefano Garzarella wrote:
->>> Hi Arseniy,
->>>
->>> On Sun, Oct 01, 2023 at 12:02:56AM +0300, Arseniy Krasnov wrote:
->>>> Hello,
->>>>
->>>> this patchset contains second and third parts of another big patchset
->>>> for MSG_ZEROCOPY flag support:
->>>> https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
->>>>
->>>> During review of this series, Stefano Garzarella <sgarzare@redhat.com>
->>>> suggested to split it for three parts to simplify review and merging:
->>>>
->>>> 1) virtio and vhost updates (for fragged skbs) (merged to net-next, see
->>>>   link below)
->>>> 2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
->>>>   tx completions) and update for Documentation/. <-- this patchset
->>>> 3) Updates for tests and utils. <-- this patchset
->>>>
->>>> Part 1) was merged:
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=71b263e79370348349553ecdf46f4a69eb436dc7
->>>>
->>>> Head for this patchset is:
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=236f3873b517acfaf949c23bb2d5dec13bfd2da2
->>>>
->>>> Link to v1:
->>>> https://lore.kernel.org/netdev/20230922052428.4005676-1-avkrasnov@salutedevices.com/
->>>>
->>>> Changelog:
->>>> v1 -> v2:
->>>> * Patchset rebased and tested on new HEAD of net-next (see hash above).
->>>> * See per-patch changelog after ---.
->>>
->>> Thanks for this new version.
->>> I started to include vsock_uring_test in my test suite and tests are
->>> going well.
->>>
->>> I reviewed code patches, I still need to review the tests.
->>> I'll do that by the end of the week, but they looks good!
->>
->> Thanks for review! Ok, I'll wait for tests review, and then send next
->> version.
->
->Got your comments from review. I'll update patches by:
->1) Trying to avoid touching util.c/util.h
+Instead of hardcoding the link speed in MBps, use existing
+PCIE_SPEED2MBS_ENC() macro that does the encoding of the link speed for us.
+Also, let's Wrap it with QCOM_PCIE_LINK_SPEED_TO_BW() macro to do the
+conversion to ICC speed.
 
-I mean, we can touch it ;-) but for this case it looks like we don't
-need most of that functions to be there.
+This eliminates the need for a switch case in qcom_pcie_icc_update() and
+also works for future Gen speeds without any code modifications.
 
-At least for now. If we need them to be used in more places, then it
-makes sense.
+Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
 
->2) Add new header with functions shared between util vsock_perf and
->tests
+Changes in v4:
 
-We can do this also later in another PR as cleanup if you prefer.
+* Modified the subject and commit message as per Bjorn's suggestion
 
-Thanks,
-Stefano
+Changes in v3:
+
+- Used Mbps_to_icc() macro and changed the commit message a bit
+
+Changes in v2:
+
+- Switched to QCOM_PCIE_LINK_SPEED_TO_BW() macro as per Bjorn's suggestion
+  https://lore.kernel.org/linux-pci/20230924160713.217086-1-manivannan.sadhasivam@linaro.org/
+
+ drivers/pci/controller/dwc/pcie-qcom.c | 24 ++++++------------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index e2f29404c84e..367acb419a2b 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -148,6 +148,9 @@
+ 
+ #define QCOM_PCIE_CRC8_POLYNOMIAL		(BIT(2) | BIT(1) | BIT(0))
+ 
++#define QCOM_PCIE_LINK_SPEED_TO_BW(speed) \
++		Mbps_to_icc(PCIE_SPEED2MBS_ENC(pcie_link_speed[speed]))
++
+ #define QCOM_PCIE_1_0_0_MAX_CLOCKS		4
+ struct qcom_pcie_resources_1_0_0 {
+ 	struct clk_bulk_data clks[QCOM_PCIE_1_0_0_MAX_CLOCKS];
+@@ -1347,7 +1350,7 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
+ 	 * Set an initial peak bandwidth corresponding to single-lane Gen 1
+ 	 * for the pcie-mem path.
+ 	 */
+-	ret = icc_set_bw(pcie->icc_mem, 0, MBps_to_icc(250));
++	ret = icc_set_bw(pcie->icc_mem, 0, QCOM_PCIE_LINK_SPEED_TO_BW(1));
+ 	if (ret) {
+ 		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+ 			ret);
+@@ -1360,7 +1363,7 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
+ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+ {
+ 	struct dw_pcie *pci = pcie->pci;
+-	u32 offset, status, bw;
++	u32 offset, status;
+ 	int speed, width;
+ 	int ret;
+ 
+@@ -1377,22 +1380,7 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+ 	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
+ 	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
+ 
+-	switch (speed) {
+-	case 1:
+-		bw = MBps_to_icc(250);
+-		break;
+-	case 2:
+-		bw = MBps_to_icc(500);
+-		break;
+-	default:
+-		WARN_ON_ONCE(1);
+-		fallthrough;
+-	case 3:
+-		bw = MBps_to_icc(985);
+-		break;
+-	}
+-
+-	ret = icc_set_bw(pcie->icc_mem, 0, width * bw);
++	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+ 	if (ret) {
+ 		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+ 			ret);
+-- 
+2.25.1
 
