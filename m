@@ -2,155 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBE47B7CBF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EB67B7CC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbjJDJ7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
+        id S241776AbjJDKAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232862AbjJDJ7l (ORCPT
+        with ESMTP id S232984AbjJDKAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:59:41 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3B3AC
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:59:37 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qnyf5-0002vN-0q; Wed, 04 Oct 2023 11:59:23 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qnyf3-00Azxr-7z; Wed, 04 Oct 2023 11:59:21 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qnyf2-008uPw-UB; Wed, 04 Oct 2023 11:59:20 +0200
-Date:   Wed, 4 Oct 2023 11:59:20 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] pwm: make it possible to apply pwm changes in atomic
- context
-Message-ID: <20231004095920.ne7yrrthow6tnuvg@pengutronix.de>
-References: <cover.1696156485.git.sean@mess.org>
- <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
+        Wed, 4 Oct 2023 06:00:04 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A869383
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:00:00 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E89ACDA7;
+        Wed,  4 Oct 2023 03:00:38 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.95.70])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 56DB53F5A1;
+        Wed,  4 Oct 2023 02:59:57 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 10:59:50 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Misono Tomohiro <misono.tomohiro@fujitsu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/2] arm64: smp: Fix pseudo NMI issues w/ broken Mediatek
+ FW
+Message-ID: <ZR03liCodnTQWs7s@FVFF77S0Q05N>
+References: <20231002094526.1.Ie8f760213053e3d11592f892b30912dbac6b8b48@changeid>
+ <ZRr8r7XMoyDKaitd@FVFF77S0Q05N.cambridge.arm.com>
+ <CAD=FV=UeeL9uycVeKpOm+eDm3xHrOnKi2frt6a1qFG1HX9yEUg@mail.gmail.com>
+ <ZRwJKBZaYwF1rrur@FVFF77S0Q05N>
+ <CAD=FV=WASz1uvTgwsu3H3cTr3smHk+E_XNUVnjoPpttwv095rQ@mail.gmail.com>
+ <ZRxCCZxZWCG0NBur@FVFF77S0Q05N>
+ <CAD=FV=Xk-OMKQPXxU9Z9HOcWwUxxrmLZ4vD0u5ouZRW_zDFDPg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hz3c3li5tw4muaqt"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=Xk-OMKQPXxU9Z9HOcWwUxxrmLZ4vD0u5ouZRW_zDFDPg@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 03, 2023 at 12:32:39PM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Tue, Oct 3, 2023 at 9:32 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > On Tue, Oct 03, 2023 at 06:43:07AM -0700, Doug Anderson wrote:
+> > > Hi,
+> > >
+> > > On Tue, Oct 3, 2023 at 5:29 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > >
+> > > > On Mon, Oct 02, 2023 at 12:16:17PM -0700, Doug Anderson wrote:
+> > > > > Hi,
+> > > > >
+> > > > > On Mon, Oct 2, 2023 at 10:24 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > > >
+> > > > > > On Mon, Oct 02, 2023 at 09:45:29AM -0700, Douglas Anderson wrote:
+> > > > > > > Some mediatek devices have the property
+> > > > > > > "mediatek,broken-save-restore-fw" in their GIC. This means that,
+> > > > > > > although the hardware supports pseudo-NMI, the firmware has a bug
+> > > > > > > that blocks enabling it. When we're in this state,
+> > > > > > > system_uses_irq_prio_masking() will return true but we'll fail to
+> > > > > > > actually enable the IRQ in the GIC.
+> > > > > > >
+> > > > > > > Let's make the code handle this. We'll detect that we failed to
+> > > > > > > request an IPI as NMI and fallback to requesting it normally. Though
+> > > > > > > we expect that either all of our requests will fail or all will
+> > > > > > > succeed, it's just as cheap to keep a per-IPI bitmap and that keeps us
+> > > > > > > robust.
+> > > > > > >
+> > > > > > > Fixes: 331a1b3a836c ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
+> > > > > > > Reported-by: Chen-Yu Tsai <wenst@chromium.org>
+> > > > > > > Closes: https://issuetracker.google.com/issues/197061987#comment68
+> > > > > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > > > > > ---
+> > > > > > >
+> > > > > > >  arch/arm64/kernel/smp.c | 19 ++++++++++++-------
+> > > > > > >  1 file changed, 12 insertions(+), 7 deletions(-)
+> > > > > >
+> > > > > > I'm not too keen on falling back here when we have no idea why the request failed.
+> > > > > >
+> > > > > > I'd prefer if we could check the `supports_pseudo_nmis` static key directly to
+> > > > > > account for the case of broken FW, e.g. as below.
+> > > > > >
+> > > > > > Mark.
+> > > > > >
+> > > > > > ---->8----
+> > > > > > From 72fdec05c64a74f21871b44c7c760bbe07cac044 Mon Sep 17 00:00:00 2001
+> > > > > > From: Mark Rutland <mark.rutland@arm.com>
+> > > > > > Date: Mon, 2 Oct 2023 18:00:36 +0100
+> > > > > > Subject: [PATCH] arm64: smp: avoid NMI IPIs with broken MediaTek FW
+> > > > > >
+> > > > > > Some MediaTek devices have broken firmware which corrupts some GICR
+> > > > > > registers behind the back of the OS, and pseudo-NMIs cannot be used on
+> > > > > > these devices. For more details see commit:
+> > > > > >
+> > > > > >   44bd78dd2b8897f5 ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware issues")
+> > > > > >
+> > > > > > We did not take this problem into account in commit:
+> > > > > >
+> > > > > >   331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
+> > > > > >
+> > > > > > Since that commit arm64's SMP code will try to setup some IPIs as
+> > > > > > pseudo-NMIs, even on systems with broken FW. The GICv3 code will
+> > > > > > (rightly) reject attempts to request interrupts as pseudo-NMIs,
+> > > > > > resulting in boot-time failures.
+> > > > > >
+> > > > > > Avoid the problem by taking the broken FW into account when deciding to
+> > > > > > request IPIs as pseudo-NMIs. The GICv3 driver maintains a static_key
+> > > > > > named "supports_pseudo_nmis" which is false on systems with broken FW,
+> > > > > > and we can consult this within ipi_should_be_nmi().
+> > > > > >
+> > > > > > Fixes: 331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
+> > > > > > Reported-by: Chen-Yu Tsai <wenst@chromium.org>
+> > > > > > Closes: https://issuetracker.google.com/issues/197061987#comment68
+> > > > > > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> > > > > > Cc: Douglas Anderson <dianders@chromium.org>
+> > > > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > > > ---
+> > > > > >  arch/arm64/kernel/smp.c      | 5 ++++-
+> > > > > >  drivers/irqchip/irq-gic-v3.c | 2 +-
+> > > > > >  2 files changed, 5 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > Sure, this is OK w/ me as long as folks don't mind accessing the
+> > > > > global here, it's OK w/ me:
+> > > > >
+> > > > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > > > >
+> > > > > It seems to work for me, thus:
+> > > > >
+> > > > > Tested-by: Douglas Anderson <dianders@chromium.org>
+> > > > >
+> > > > >
+> > > > > > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> > > > > > index 814d9aa93b21b..061c69160f90f 100644
+> > > > > > --- a/arch/arm64/kernel/smp.c
+> > > > > > +++ b/arch/arm64/kernel/smp.c
+> > > > > > @@ -964,7 +964,10 @@ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
+> > > > > >
+> > > > > >  static bool ipi_should_be_nmi(enum ipi_msg_type ipi)
+> > > > > >  {
+> > > > > > -       if (!system_uses_irq_prio_masking())
+> > > > > > +       DECLARE_STATIC_KEY_FALSE(supports_pseudo_nmis);
+> > > > > > +
+> > > > > > +       if (!system_uses_irq_prio_masking() ||
+> > > > > > +           !static_branch_likely(&supports_pseudo_nmis))
+> > > > >
+> > > > > One thought, actually, is whether we should actually change
+> > > > > system_uses_irq_prio_masking() to return the correct value. What do
+> > > > > you think?
+> > > >
+> > > > I don't think we should add this to system_uses_irq_prio_masking(); that's used
+> > > > by the low-level flags manipulation code that gets inlined all over the place,
+> > > > and that code will work regarldess of whether we actually use NMI priorities.
+> > > >
+> > > > If we want to avoid using PMR masking *at all* on these platforms, we'd need to
+> > > > detect that within can_use_gic_priorities() or early_enable_pseudo_nmi().
+> > >
+> > > I suspect that anyone trying to use PMR masking on these systems for
+> > > any purpose will be unhappy. The issue is talked about in:
+> > >
+> > > https://issuetracker.google.com/281831288
+> > >
+> > > ...where you can see that the firmware on these systems isn't properly
+> > > saving/restoring some registers, including GICR_IPRIORITYR.
+> >
+> > Ok, then that's a latent bug even before the IPI changes, going back to the
+> > original workaround in commit:
+> >
+> >   44bd78dd2b8897f5 ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware issues")
+> >
+> > For the sake of those reading the archive, can we have a better description of
+> > what exactly happens on these boards?
+> >
+> > IIUC on these boards the firmware fails to save+restore (some?) GICR registers
+> > across (some?) PSCI CPU_SUSPEND idle states.
+> >
+> > Which registers does it save+restore?
+> >
+> > Does it reset other registers into a specific state?
+> 
+> Though I'm not an expert in this area, my understanding is that in
+> some of the deeper idle states then GICR registers are lost. That
+> matches a thread [0] I found. In early investigation I found that I
+> could comment out `cpu-idle-states` in the device tree to avoid the
+> problems [1]. I believe this is fully expected which is why firmware
+> is supposed to save/restore these registers whenever a low power is
+> entered/exited. I'd presume that any register not properly
+> saved/restored comes up in whatever its default state is.
+> 
+> As far as pseudo-NMI was concerned, all I really needed to
+> save/restore was "GICR_NUM_IPRIORITYR" [2], but Marc Zyngier looked at
+> the code and identified [3] at least these in addition:
+> * GICR_CTLR
+> * GICR_ISPENDR0
+> * GICR_ISACTIVER0
+> * GICR_NSACR
 
---hz3c3li5tw4muaqt
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Looking at the GIC spec (Arm IHI 0069H), page 12-673, I see for all of the
+GICR_IPRIORITYR<n>.Priority_offset_*B fields:
 
-Hello Sean,
+| The reset behavior of this field is:
+| • On a GIC reset, this field resets to an architecturally UNKNOWN value.
 
-On Sun, Oct 01, 2023 at 11:40:29AM +0100, Sean Young wrote:
-> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> index dc66e3405bf5..d9679ae5b2be 100644
-> --- a/drivers/pwm/core.c
-> +++ b/drivers/pwm/core.c
-> @@ -505,7 +505,7 @@ int pwm_apply_state(struct pwm_device *pwm, const str=
-uct pwm_state *state)
->  	 * is a bad idea. So make it explicit that calling this function might
->  	 * sleep.
->  	 */
-> -	might_sleep();
-> +	might_sleep_if(pwm_can_sleep(pwm));
-> =20
->  	if (!pwm || !state || !state->period ||
->  	    state->duty_cycle > state->period)
+... so at least per the architecture these could be reset to arbitrary values,
 
-I'd like to have a mechanism to catch drivers that missed to set
-=2Ecan_sleep. The best idea I currently have for that is to disable
-preemption if IS_ENABLED(CONFIG_PWM_DEBUG) && !pwm_can_sleep(pwm) while
-=2Eapply() is running.
+and that priority might permit SGI/PPIs to be taken IRQs are priority-masked,
+or to prevent SGI/PPIs to be taken when priority-unmasked.
 
-> diff --git a/drivers/pwm/pwm-fsl-ftm.c b/drivers/pwm/pwm-fsl-ftm.c
-> index b7c6045c5d08..b8b9392844e9 100644
-> --- a/drivers/pwm/pwm-fsl-ftm.c
-> +++ b/drivers/pwm/pwm-fsl-ftm.c
-> @@ -405,6 +405,7 @@ static int fsl_pwm_probe(struct platform_device *pdev)
-> =20
->  	fpc->soc =3D of_device_get_match_data(&pdev->dev);
->  	fpc->chip.dev =3D &pdev->dev;
-> +	fpc->chip.can_sleep =3D true;
+I also see for GICR_CTLR that EnableLPIs would be reset to 0, and IIUC that
+means LPIs won't work on these parts, which seems like a problem.
 
-As .apply() being callable in non-sleepable context only depends on
-=2Eapply() I think a better place for this property is in struct pwm_ops.
+> That list seems to match the Arm Trusted Firmware patch that fixed the
+> issue [4]. ...but it will be impossible to ever get the fix rolled out
+> to all devices. Even if we could get firmware spins Qualified for
+> every device there will still be cases where we'll boot with the old
+> firmware. Since we _don't_ bundle the device tree with the firmware,
+> we believe that the quirk mechanism that we came up with (add a quirk
+> in never device trees and firmware removes the quirk when we have a
+> fix) is at least a robust/reliable way to detect the issue.
+> 
+> The whole issue seems rather concerning, but (apparently) it never
+> caused issues in the kernel until we tried to use pseudo-NMI.
 
-Also I wonder if the distinction between atomic and sleeping
-pwm_state_apply() should be more explicit. For GPIOs you have a sleeping
-variant gpiod_set_value_cansleep() that allows to immediately determine
-the intended context in the caller. This would allow that programming
-a PWM stays a preemption point (if possible/desired) even if the
-underlying hardware/driver is atomic. To not have to touch all consumer
-drivers, maybe the pair for pwm should better be
+Given you haven't seen any issues, I suspect those are getting reset to fixed
+values that happens to work out for us, but it is a bit worrisome more
+generally (e.g. the LPI case above).
 
-	pwm_apply_state()
-	pwm_apply_state_atomic()
+Mark.
 
-instead of a "cansleep" suffix for the sleeping variant? Or maybe it's
-better to accept touching all consumer drivers to get semantics similar
-to gpio? I couldn't decide quickly what I really like better here, so
-that's your chance to comment and influence the outcome :-)
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---hz3c3li5tw4muaqt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUdN3gACgkQj4D7WH0S
-/k7Vgwf+OSTM/5a3jTbEn+zj18WbWk6jQQdj6kqyM47GR36RweXbkLMfbl++5ogJ
-z6xjVfn/ov9rQsnn2Em53Zkv7yV/AQb+Hu1tLnuVAsdyxVC/CrCRjWAcrkpoZf6o
-Ru7Nf7hs/mJ57jeLgBfPp+k2kwntn470QPIpzLiruZge1YeEwuYKzeHuO7WI4KCb
-777XYS5j+tntQRSrlm2dzE8H+5lEqc7mEzG22MAd+yIt4dAsuSAdno2hKLMJx960
-4k6Y+UmLJB3cC+BPcAjEllupp1c4turpZ+3P/7D0Fo8P5BgH937nm/wktXJJlPBs
-aJ8B/mMpia+WhQcYdq+TjejxlzAf3Q==
-=THVI
------END PGP SIGNATURE-----
-
---hz3c3li5tw4muaqt--
+> 
+> [0] https://github.com/ARM-software/tf-issues/issues/464
+> [1] https://issuetracker.google.com/issues/197061987#comment27
+> [2] https://crrev.com/c/4519877
+> [3] https://issuetracker.google.com/issues/281831288#comment5
+> [4] https://github.com/ARM-software/arm-trusted-firmware/commit/1c62cc7fbdf2ec2a7e69b3c027d507fcafdcaa12
