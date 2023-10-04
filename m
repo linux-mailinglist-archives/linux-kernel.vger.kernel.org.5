@@ -2,181 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3B87B8A96
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F76A7B8A8D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244494AbjJDSg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 14:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41666 "EHLO
+        id S244446AbjJDSgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 14:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244490AbjJDSga (ORCPT
+        with ESMTP id S244444AbjJDSgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 14:36:30 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8487A7;
-        Wed,  4 Oct 2023 11:36:26 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394FBLvr028282;
-        Wed, 4 Oct 2023 18:35:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=6M3YAebF9rrs3opK3mpTD1jmedIyRT/cMOQ6DDH1tyM=;
- b=AfcnYAjLVk8hVxmWmdF/yylUGqfIZ7FeD1F4DB9WeY2hh1UuUaO8K8wzGq8ENxXacTBv
- +rXSm3UKVxoh9zjzKMby24VOV44iXS4UiH+RgCqYC8p/eg4/8vz4et4tjPoOwYPM4B4q
- duDpI5J0Dr9MHLh4hLwsjAQZOps3/HLypCaDY9fIcuMU6YyyGj6OgzDanbRsqcki2GAi
- 2ujp+RKWMC8xWFH56kRquJsGwybxookOCZVxSPiNqMMm/Z89gpgUGFNEdLbTr4ZyTIdm
- WvAqoiCoOL9fA3OTtsRUCuK3AydDvMiu0GhTgKM0stQKqOcKGtZuH+vz4/U4Wny8iARN Jw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3th2gq1t4n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 18:35:45 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 394IZhC3025160
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 4 Oct 2023 18:35:44 GMT
-Received: from [10.71.112.36] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 4 Oct
- 2023 11:35:10 -0700
-Message-ID: <2127ef61-e263-2a0e-438a-6baa125aa70d@quicinc.com>
-Date:   Wed, 4 Oct 2023 11:35:06 -0700
+        Wed, 4 Oct 2023 14:36:18 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04olkn2091.outbound.protection.outlook.com [40.92.75.91])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0AE98
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 11:36:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RVEPslkQ7UEPGaOGPuy+qtl4zCL+OVaFwBcImR22nUKDYsrcIktSsZW6itoCBeNIxSCV2VZ54LJkOmIk6cr2iWxW+rBnVtTbtSrL4EKgh2rp1rOlNztNW4lIY82QoOeJodgHq8DHuwMFXu28wCs/ulY5XJxEqT4fnF+3lklaarByqWoQqUfx2FY83exPzVcbg/ETiTbPDO9mWlOHxUJPrJorgrd5G1FHFS8rrgdDodXSQUli9iynQPcKkoqPf1x1ZjOLiDaHszFeXSPZ64ks4RnDFp25b/x8L8zRnguo/dCrxbYkOBUPu9dPyXkk2xsZ9nnUPfWNOqCCaRk1NMvVSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7J6szbLbROjTLbQP/hP41WOqbGIVY8FQI//Gs8PnN4g=;
+ b=ZSA78GBoIY4Df9oRcpJP2shjNXNB+8RixLbovKAAuhfrPzjbNA90M+HTyEpH3b4kx0/s7n/fZt5DoOlgkDDBEKwabwNOfO8wNjkMa44vaQ3SRj7/EB3XVqM7uCpTKrBCZNq6WHgS9aHz5gAwxOerk+qzXVse8uYKBo/dGUGw0U5GKpaNoF6Lwm+BZhmFRPoD6LeoXqhqPPnjQNprl7E6a9OcWPZMmTjPPrc3Zn3Qx95xEFSHSEoYm381vgAPu5zZn05UKc69daAzNZj1vlqBWZ1uxBWDaxna4yprN+O3HnIEtotNppKgA7kJzgiqh48x+VI/VO8on9NQPDq9prJNDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from DU0PR02MB7899.eurprd02.prod.outlook.com (2603:10a6:10:347::11)
+ by DU2PR02MB10447.eurprd02.prod.outlook.com (2603:10a6:10:49d::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Wed, 4 Oct
+ 2023 18:36:12 +0000
+Received: from DU0PR02MB7899.eurprd02.prod.outlook.com
+ ([fe80::b753:178a:394e:af8e]) by DU0PR02MB7899.eurprd02.prod.outlook.com
+ ([fe80::b753:178a:394e:af8e%7]) with mapi id 15.20.6838.033; Wed, 4 Oct 2023
+ 18:36:12 +0000
+Date:   Wed, 4 Oct 2023 19:36:09 +0100
+From:   Cameron Williams <cang1@live.co.uk>
+To:     sudipm.mukherjee@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v2] parport: Add support for Brainboxes IX/UC/PX parallel
+ cards
+Message-ID: <DU0PR02MB7899E7932292E7366920C303C4CBA@DU0PR02MB7899.eurprd02.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TMN:  [dirSlwgG3okYuAn55WoNHCPikX2XJKSL]
+X-ClientProxiedBy: LO4P265CA0008.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:2ad::16) To DU0PR02MB7899.eurprd02.prod.outlook.com
+ (2603:10a6:10:347::11)
+X-Microsoft-Original-Message-ID: <ZR2wmYs7G0mlIJ8O@CHIHIRO>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v7 01/33] xhci: add support to allocate several
- interrupters
-Content-Language: en-US
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        <gregkh@linuxfoundation.org>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
-        <Thinh.Nguyen@synopsys.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20230921214843.18450-1-quic_wcheng@quicinc.com>
- <20230921214843.18450-2-quic_wcheng@quicinc.com>
- <10ad0613-7e88-dbe8-c5a2-d535f8e9db03@linux.intel.com>
- <e3f3c8cd-6338-da08-d988-4d2ed68280e6@quicinc.com>
- <843897f1-3ce5-f8da-5f10-7d8a68849fd2@intel.com>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <843897f1-3ce5-f8da-5f10-7d8a68849fd2@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6qI8t9feb8uXz-ckzPnXYaJeZ5ViYC9L
-X-Proofpoint-ORIG-GUID: 6qI8t9feb8uXz-ckzPnXYaJeZ5ViYC9L
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_10,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 phishscore=0 mlxlogscore=598 mlxscore=0 impostorscore=0
- malwarescore=0 suspectscore=0 clxscore=1015 bulkscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310040136
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR02MB7899:EE_|DU2PR02MB10447:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2daaf15c-57f6-4fad-9d39-08dbc508c86c
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: r/AtqQqd9MFUlq3BAsR/5IcbjMwWU2STZk+fEcfITqSEuWoFfsDAFtqVnqwOQnnlh3q5uXT+ygEmGAC8xfYiTQcuvg8meYOSZnvwstjuTDqmvsSE9V0gbLlcRxSyk+9ofPmFj0S81/zuzok3hwPd2PPbn9E/m6xvr6LtnhLZmXK5o6cTtrnoiDz7/wCMeGzD4PXwcIyo591yDupBfwfCnjabstcWp5uwh0QXtMgu8ks8N2snyBpxlEQe9I5eHB1zKiZVOswMgkAe+IiHhgO3xgW9pJEDlDYXxejg/hanIza2qJhehpdK7NVoRx6CaIcGtl3eYItHFerwtYcatoGAstbcnsUMI90aCwnboWQxDJzFJM3pnQ82vTnNF1XwBfcbNYvm6D504/V5gPrA/mHVJjX4DkG8G/ASlPFX2WsxL0mKX49nBFVQnqqfQqhrrKTkCA7IUmhH9O/qlcWnwXhjccI5rOHujDh+xQnHxXjsQP/Ud4F+5auuyob6F3oII2o/g/oOxUqlihQiSqZ15uePpmQUIhPTn/02eduSe0QEhQU=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?e3NPi8jBHJ/wReeec1u+zvBNu6fhbEc7m5PMmWaG0eI2LzZSCmBL58wrEMDj?=
+ =?us-ascii?Q?pM5vipu93A9g0udGp0w7FbTsWLXiiAjO2gX0EAfj79fUkCUBzUXUyn6wj042?=
+ =?us-ascii?Q?Ek7MqOW9QxOpPkG5XCXD4/04BqNG3Wn5zD+H/bARPC5OzoWXAVbf4Tdap9Da?=
+ =?us-ascii?Q?Rd7TXhD5h5FO6MQIHYZRemgeZhY02wXdaomfpd6eZ497YVmlFF4Y0YNrLNsI?=
+ =?us-ascii?Q?6fT86qcL3vvx/2NpQ/2ObgTv3sAysp4bJyGQaPjGm5ekZoOAUbiYYuo6VvO0?=
+ =?us-ascii?Q?+7y2WMqWVGroEdvGN9F50L9Wb7TtPx6ouRRI8cxpbfR92VF75TkLkV4Kssqr?=
+ =?us-ascii?Q?0TxjY1dyUZIq29Fxl3+aFshlhfkpMZskysCtacGKHTC371cu+3GSi61RT6sh?=
+ =?us-ascii?Q?lp4bUqoAIOhqzMk/GqDyiG9+5kAAoJYNLU+YXRxXyAGUexfrHcQRHdjgSqLw?=
+ =?us-ascii?Q?gyxWh1DpffFfduqUmi9DRQ06RvA+ozdz/rny2d8X5/+//saNmNr5M7LTPCG+?=
+ =?us-ascii?Q?ibfOFJrlYmbAt/mGwP57f2/SL/znnFPiois+i0Twd2HfnTY093ES8plm2P35?=
+ =?us-ascii?Q?jRW5zNs/ASh79BC+8k6zPF6SWti6T25uu/KYNNSHuLF4fuyYtVJRLm+XQ52n?=
+ =?us-ascii?Q?FbW8lFmmOSSYwY22hmahr6BNmvM9brx2hSwcRGykJbNVBNHrn/kRu97qIWDW?=
+ =?us-ascii?Q?y764CN+gj4pv0Y2hEjBTPg186NMjHeXu6HlbU3CLCGBC+Zw1j4t4JAlfww9D?=
+ =?us-ascii?Q?eFmEknjxZ8RrAG/b1wxwaPUUNCK+50bsdQUS1d2w46A8tUh2IxTWsOho1GqL?=
+ =?us-ascii?Q?m/cL3n3fzsB/pk1PYpPsqRN4PmtaMdtpGmFdiejfsXF58lTBMyFjdxrXmEkN?=
+ =?us-ascii?Q?L/W1q6+k2Fjgh4vgCIP05fIkTvsw/GTlO/XYvoP3SivryEIvtLmvtuGF1BoT?=
+ =?us-ascii?Q?m/FF2I76wuxYUAKZiGlV0b/pHq6ZGKyl75l702sEUYexC5bbuq+6FoUFNmcu?=
+ =?us-ascii?Q?h+r5KGw7pQ1AHOPRcJVAQhPD6Bcfo6p5P1OvR30e94N1bcYRflFBtdiVhbmE?=
+ =?us-ascii?Q?hWHEqWwoWOBFxqau2UX+VdJsy9ZY8iDKyxvYMDppmcaHO6vBNqwiI3dOdwTD?=
+ =?us-ascii?Q?tpV45LyrGhUiI2kMoJ8kkDC3wYbIX6fXvCBw3koXqgwpv6XaKPFe5hLYuALl?=
+ =?us-ascii?Q?PJ8evl/bbNRie8grFu5ngZohjSgLe684LnCO6Q=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-ab7de.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2daaf15c-57f6-4fad-9d39-08dbc508c86c
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB7899.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 18:36:12.2019
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR02MB10447
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathias,
+Adds support for Intashield IX-500/IX-550, UC-146/UC-157, PX-146/PX-157,
+PX-203 and PX-475 (LPT port)
 
-On 10/4/2023 7:02 AM, Mathias Nyman wrote:
-> On 2.10.2023 23.07, Wesley Cheng wrote:
->> Hi Mathias,
->>
->> On 9/28/2023 3:31 AM, Mathias Nyman wrote:
->>> On 22.9.2023 0.48, Wesley Cheng wrote:
->>>> From: Mathias Nyman <mathias.nyman@linux.intel.com>
->>>>
->>>> Modify the XHCI drivers to accommodate for handling multiple event 
->>>> rings in
->>>> case there are multiple interrupters.  Add the required APIs so 
->>>> clients are
->>>> able to allocate/request for an interrupter ring, and pass this 
->>>> information
->>>> back to the client driver.  This allows for users to handle the 
->>>> resource
->>>> accordingly, such as passing the event ring base address to an audio 
->>>> DSP.
->>>> There is no actual support for multiple MSI/MSI-X vectors.
->>>>
->>>> Factoring out XHCI interrupter APIs and structures done by Wesley 
->>>> Cheng, in
->>>> order to allow for USB class drivers to utilze them.
->>>>
->>>>   }
->>>> +void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct 
->>>> xhci_interrupter *ir)
->>>> +{
->>>> +    struct xhci_hcd *xhci = hcd_to_xhci(hcd);
->>>> +    unsigned int intr_num;
->>>> +
->>>> +    /* interrupter 0 is primary interrupter, don't touchit */
->>>> +    if (!ir || !ir->intr_num || ir->intr_num >= 
->>>> xhci->max_interrupters) {
->>>> +        xhci_dbg(xhci, "Invalid secondary interrupter, can't 
->>>> remove\n");
->>>> +        return;
->>>> +    }
->>>> +
->>>> +    /* fixme, should we check xhci->interrupter[intr_num] == ir */
->>>> +    spin_lock(&xhci->lock);
->>>
->>> Needs to be spin_lock_irq() ir spin_lock_irqsave() as xhci->lock is 
->>> used in interrupt handler.
->>>
->>>
->>>> +    intr_num = ir->intr_num;
->>>> +    xhci_free_interrupter(xhci, ir);
->>>> +    xhci->interrupters[intr_num] = NULL;
->>>> +    spin_unlock(&xhci->lock);
->>>
->>> likewise
->>>
->>
->> Let me check these again.  In general, I think I will use both the 
->> xhci->mutex and xhci->lock where needed, because I believe we'd run 
->> into sleep while atomic issues
->> while freeing the DMA memory.  Will rework this and submit in the next 
->> rev.
->>
-> 
-> Maybe we need to split xhci_free_interrupter() into separate remove and 
-> free functions
-> 
+Signed-off-by: Cameron Williams <cang1@live.co.uk>
+---
 
-Thanks for sharing the work you've been doing.  Yes, I did something 
-similar as well on my end, but will refactor in your code and re-test.
+This is a re-submission for [1], instead using raw hexadecimal
+IDs for the PCI device. This patch is also sent separetaly instead
+of part of a series as was done previously.
 
-> Did some work on this, and on the sideband api in general.
-> 
-> Code still has a lot of FIXMEs, and it's completely untested, but to 
-> avoid us
-> from doing duplicate work I pushed it to my feature_interrupters branch 
-> anyway
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git 
-> feature_interrupters
-> https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters 
-> 
+[1] https://lore.kernel.org/all/DU0PR02MB7899DE53DFC900EFB50E53F2C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
 
-Ok.  Initial look at it seems like it will be fine, but will integrate 
-and make changes where needed.
+ drivers/parport/parport_pc.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-Thanks
-Wesley Cheng
+diff --git a/drivers/parport/parport_pc.c b/drivers/parport/parport_pc.c
+index 1f236aaf7867..f33b5d1ddfc1 100644
+--- a/drivers/parport/parport_pc.c
++++ b/drivers/parport/parport_pc.c
+@@ -2658,6 +2658,8 @@ enum parport_pc_pci_cards {
+ 	asix_ax99100,
+ 	quatech_sppxp100,
+ 	wch_ch382l,
++	brainboxes_uc146,
++	brainboxes_px203,
+ };
+ 
+ 
+@@ -2737,6 +2739,8 @@ static struct parport_pc_pci {
+ 	/* asix_ax99100 */		{ 1, { { 0, 1 }, } },
+ 	/* quatech_sppxp100 */		{ 1, { { 0, 1 }, } },
+ 	/* wch_ch382l */		{ 1, { { 2, -1 }, } },
++	/* brainboxes_uc146 */		{ 1, { { 3, -1 }, } },
++	/* brainboxes_px203 */		{ 1, { { 0, -1 }, } },
+ };
+ 
+ static const struct pci_device_id parport_pc_pci_tbl[] = {
+@@ -2833,6 +2837,23 @@ static const struct pci_device_id parport_pc_pci_tbl[] = {
+ 	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, quatech_sppxp100 },
+ 	/* WCH CH382L PCI-E single parallel port card */
+ 	{ 0x1c00, 0x3050, 0x1c00, 0x3050, 0, 0, wch_ch382l },
++	/* Brainboxes IX-500/IX-550 */
++	{ PCI_VENDOR_ID_INTASHIELD, 0x402a,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, oxsemi_pcie_pport },
++	/* Brainboxes UC-146/UC-157 */
++	{ PCI_VENDOR_ID_INTASHIELD, 0x0be1,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc146 },
++	{ PCI_VENDOR_ID_INTASHIELD, 0x0be2,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_uc146 },
++	/* Brainboxes PX-146/PX-157 */
++	{ PCI_VENDOR_ID_INTASHIELD, 0x401c,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, oxsemi_pcie_pport },
++	/* Brainboxes PX-203 */
++	{ PCI_VENDOR_ID_INTASHIELD, 0x4007,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, brainboxes_px203 },
++	/* Brainboxes PX-475 */
++	{ PCI_VENDOR_ID_INTASHIELD, 0x401f,
++	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, oxsemi_pcie_pport },
+ 	{ 0, } /* terminate list */
+ };
+ MODULE_DEVICE_TABLE(pci, parport_pc_pci_tbl);
+-- 
+2.42.0
+
