@@ -2,72 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 374607B80B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E721F7B80BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242570AbjJDNWC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 09:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
+        id S242579AbjJDNWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 09:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233319AbjJDNWB (ORCPT
+        with ESMTP id S233134AbjJDNWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:22:01 -0400
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03664A1;
-        Wed,  4 Oct 2023 06:21:58 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5a505762c9dso579917b3.2;
-        Wed, 04 Oct 2023 06:21:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696425717; x=1697030517;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KVzjW9Eo52+SfKHVjtESmESLgB/bR8EgYwxS/kFJXaU=;
-        b=XoFG6HF7r2ykjVvHvQy0z2sSJETwAvMUrOXt0bOSlfepHUBRBVIULvUCm9QdW6Njpm
-         vDFRS4bXb3L+7JEvuoSeiEpUdZLqPPkS0zgY+aNKyYQtdbfKnE0xXJOcPuC3Y+iMQHo9
-         FSM6CZhce2WzeUIn2PsXtmoIBirybFpkmcPq7UL/6GFdy2oIhi27keOKYZUvC+s+wmzV
-         nfnWQlMChK1oFlWX8Uxuxq+60N4acdNpkFeeH1Ao7MwyMSw22SYb+cT+EqTINtUIbeyE
-         iSJHV409oYdkrOR6DEcvGrPFdaySu7YY7bL6I83GDsOjupxI8r7aS4iKC8pqofuEgdUj
-         Jnsw==
-X-Gm-Message-State: AOJu0YzkUD656JC5qcOgY+4RXBCgBJdgSe41/SVJITWv8RZdo7mNUDGo
-        J58jmGaUZSwG1oydCtlgk6XO8OrfhipucA==
-X-Google-Smtp-Source: AGHT+IHyqcV23pigUpA0knuyVjlhROOr5hdHcHUKFwCYzjIRDBFGw+vzYl6kX/U1EJOjvFmJDs+/EA==
-X-Received: by 2002:a0d:fb83:0:b0:586:e50:fb50 with SMTP id l125-20020a0dfb83000000b005860e50fb50mr2561771ywf.28.1696425716915;
-        Wed, 04 Oct 2023 06:21:56 -0700 (PDT)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id u76-20020a0deb4f000000b00583e52232f1sm1133550ywe.112.2023.10.04.06.21.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 06:21:56 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-59c268676a9so25310877b3.0;
-        Wed, 04 Oct 2023 06:21:56 -0700 (PDT)
-X-Received: by 2002:a0d:ee01:0:b0:59b:c6a4:15c7 with SMTP id
- x1-20020a0dee01000000b0059bc6a415c7mr2252067ywe.46.1696425716334; Wed, 04 Oct
- 2023 06:21:56 -0700 (PDT)
+        Wed, 4 Oct 2023 09:22:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2056EA9;
+        Wed,  4 Oct 2023 06:22:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36839C433C7;
+        Wed,  4 Oct 2023 13:22:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696425735;
+        bh=XcNVHacYiIbSwWhIVO7sCT66vTxeZhDiJBmFYdVfMQA=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=UmE4ZMKFpiTI5ejNFIKrUnbyTIICN9g07PoKMfRFBspih3a8vN5E72+NozXhztg53
+         7jIL+111n84DW7dqaVpSRk3YXeCkXimZ1W2RL54TM1vvW/JshuECieVscKc8Und4K0
+         r8p2QwcOlcwNh2gWhfW3V6MUfzVlkRTz5XK+BgXKCimZrkVKQhNHfGCeTqfRj0PsAN
+         DqWRl/8Y+OIpdkOYGFVmrH11kSKHJQZN19oDji5MSGOuWRSBwJAx9Ftm8gXIuUNWiQ
+         k0IQuuzaEh1N3Q+qIMorlswYRf5Xzbq9WIOAeRGNRZyWzT0xLRzqyMEJk10+SG+exA
+         OghsHYOu492dw==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felix Fietkau <nbd@nbd.name>,
+        Felipe Negrelli Wolter <felipe.negrelliwolter@silabs.com>,
+        Olivier Souloumiac <olivier.souloumiac@silabs.com>,
+        Alexandr Suslenko <suslenko.o@ajax.systems>
+Subject: Re: [PATCH v2] wifi: wfx: fix case where rates are out of order
+References: <20231004123039.157112-1-jerome.pouiller@silabs.com>
+        <8734yq7dg0.fsf@kernel.org> <2534699.vzjCzTo3RI@pc-42>
+Date:   Wed, 04 Oct 2023 16:22:12 +0300
+In-Reply-To: <2534699.vzjCzTo3RI@pc-42> (=?utf-8?B?IkrDqXLDtG1l?=
+ Pouiller"'s message of "Wed,
+        04 Oct 2023 15:00:49 +0200")
+Message-ID: <87y1gi5xq3.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com> <20230929053915.1530607-21-claudiu.beznea@bp.renesas.com>
-In-Reply-To: <20230929053915.1530607-21-claudiu.beznea@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 4 Oct 2023 15:21:43 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVx1rNzp417=11Bi+RQUbuauuh_QASJyWevag-htVeY0Q@mail.gmail.com>
-Message-ID: <CAMuHMdVx1rNzp417=11Bi+RQUbuauuh_QASJyWevag-htVeY0Q@mail.gmail.com>
-Subject: Re: [PATCH v2 20/28] dt-bindings: pinctrl: renesas: document RZ/G3S SoC
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, magnus.damm@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
-        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,31 +56,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 7:40 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
+
+>> > v2:
+>> >   - Fix malformed tags in commit body. (checkpatch still complains abo=
+ut
+>> >     missing Close tag, but the bug tracker is not public and I don't h=
+ave
+>> >     the exact URL)
+>>=20
+>> Just out of curiosity why does the checkpatch complain about a missing
+>> Close tag? I don't get it why there should be one.
 >
-> Add documentation for pin controller found on RZ/G3S (R9A08G045) SoC.
-> Compared with RZ/G2{L,UL} RZ/G3S has 82 general-purpose IOs, no slew
-> rate and output impedance support and more values for drive strength
-> which needs to be expressed in microamp.
+> I am on top of v6.6-rc3. I get:
 >
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
+>     $ ./scripts/checkpatch.pl -g HEAD^..HEAD
+>     WARNING: Prefer a maximum 75 chars per line (possible unwrapped commi=
+t description?)
+>     #26:
+>                       best    ____________rate__________    ____statistic=
+s___    _____last____    ______sum-of________
 >
-> Changes in v2:
-> - defined drive-strength-microamp as general and make if/then schema to
->   not allow specific properties depending on compatible
+>     WARNING: Reported-by: should be immediately followed by Closes: with =
+a URL to the report
+>     #57:
+>     Reported-by: Alexandr Suslenko <suslenko.o@ajax.systems>
+>     Co-developed-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.co=
+m>
+>     [...]
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-pinctrl-for-v6.7.
+Ah, thanks. Now I understand. But that rule doesn't make any sense to
+me, for example I get reports privately as well and add a Reported-by
+without a Closes tag. So always feel free to ignore that checkpatch
+warning.
 
-Gr{oetje,eeting}s,
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
