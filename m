@@ -2,101 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9A47B806C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596C87B8075
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242615AbjJDNOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
+        id S233131AbjJDNPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 09:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242601AbjJDNN6 (ORCPT
+        with ESMTP id S233003AbjJDNPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:13:58 -0400
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A8DD8
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:13:54 -0700 (PDT)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6bf0d513257so2555468a34.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 06:13:54 -0700 (PDT)
+        Wed, 4 Oct 2023 09:15:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F421A1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:14:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696425264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CKB87bTajQH/5HfXBd7T/7DKZGQoywxxIms8WQ1l3Bc=;
+        b=Gk2TpchBvbG7Ok8DRKAogY/mgsbwkh4M9SIDJos4H7vlhRCLY206SDZ7K49ZweTUycH5Mp
+        2fXshYD64k0JqeBPrRmIqSFrhul+Mobeag3THWofroqz/BzSeoMNIbtJ7045uIPw2Tx/vK
+        Rgz+qnxR9ZRZHKBG7QaIP+3DzHMfkNI=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-541-mz8YbnRuPyOK0Tr-WDtI0g-1; Wed, 04 Oct 2023 09:14:06 -0400
+X-MC-Unique: mz8YbnRuPyOK0Tr-WDtI0g-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9ae0bf9c0a9so177698466b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 06:14:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696425234; x=1697030034;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        d=1e100.net; s=20230601; t=1696425245; x=1697030045;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WnT9mm81EGurra3sbmIkgyRkR1mbNMjC0mH42Ehxctc=;
-        b=oojVTeeE0p9GWNduV23uwR4RBGERw+Rz3Hw41IfFdPsc7vJwzBFYl5v+Y5QuLQPX9t
-         dcBI6Wr2+Z48+8uuIHjOcKz1yegMi/lkAyqOEJ+THubiHBU+8mVkpF4epzBQ8V7m6qZ3
-         dcaewcz0X66JIZvv1km0+aNYlSfp8EGLk0o5tzHKNZz7MTfXCArjG5LJLlTEAhJwwlDu
-         PqXk83Szc+gBibiMaYX924OwloDDU6GvMNMIlfJyFXFu5zHHHxfoO/h52nj5EXcgxslQ
-         SQiP0A2sfAUyINDylFOXiJIdNAMhzG+2DboFnPkFBzl1c5vnjn/r0Lnsx++RZU0KsUo4
-         edog==
-X-Gm-Message-State: AOJu0YwC8rDSGhJjaVhJBk4cqfPir8b2NHp4mM+u9E3a2CubmXmSRMl0
-        iUkh2Ri/JhTocx9SfTf1iqX1QW+cyvGNT8m1ySn+dKuh80wt
-X-Google-Smtp-Source: AGHT+IGUAofh+8r+Oh0/Def6ijScSV5T+rXKZ1byN0sspuCtt3jKMjaAac5Opyu0n9CfSLMyLrKcuanu0px3GQjZ5OBYLrh7g3u7
-MIME-Version: 1.0
-X-Received: by 2002:a05:6870:3a18:b0:1dd:39ce:e252 with SMTP id
- du24-20020a0568703a1800b001dd39cee252mr1011367oab.0.1696425234278; Wed, 04
- Oct 2023 06:13:54 -0700 (PDT)
-Date:   Wed, 04 Oct 2023 06:13:54 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007a31ca0606e3c7b4@google.com>
-Subject: [syzbot] Monthly ntfs report (Oct 2023)
-From:   syzbot <syzbot+list840e3c8e5a11b542fa0b@syzkaller.appspotmail.com>
-To:     anton@tuxera.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com
+        bh=CKB87bTajQH/5HfXBd7T/7DKZGQoywxxIms8WQ1l3Bc=;
+        b=JVoa0fWVnL8Sx2tjCqmVejaKPwzSLQAF0hzFYnia+I5RMobnenlWR8OQngtpwAz0dO
+         7kAzprca37WWkhfTqQr2cWruoHqPh5nX6w5aq3tq1Ny9IIpNGJ5kVsosy1NfPGsSJkfh
+         ilbI52LPtJNNy8aNC7FYCTDxhXyrGFT/6+m8poCK8FPxxO+uB+DM43e4nPZ6U/Jxxbt4
+         Y0Z2TuuZybTWE0aOwvTv9MHW27PHJml7s1faHKuEx4Xo18KFiFvVzZELkiAO8vxkoGnH
+         V0H5Y77ZGVR2G+E8WUEvsSCMIThzOynTqtx+O7rJYJ+UvB64xgTdhzzM6qMTHGptfF8U
+         vR8Q==
+X-Gm-Message-State: AOJu0YzwUcA2MmiQYiuo/1LzTimT2uELMv9etDsqJxk6DTFCVlFapPLV
+        2+G09RnwDIc6Rtekbb7DM35NnM9iAM8srsFiud8o94I/Qv+FS98Ccaxk+7hi0xizFzOUkb68hiJ
+        oRAkpJfpRaAXcDQ/o5fWDCp6d
+X-Received: by 2002:a17:907:2cf1:b0:9ae:513d:de22 with SMTP id hz17-20020a1709072cf100b009ae513dde22mr1648385ejc.56.1696425245064;
+        Wed, 04 Oct 2023 06:14:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEC30AVKWCM9IrhyyL18ynsqE9iCne0MTdbHhx8Q+RGfk5sKrumzX45E7UuQGRJoR3t6l1Fjw==
+X-Received: by 2002:a17:907:2cf1:b0:9ae:513d:de22 with SMTP id hz17-20020a1709072cf100b009ae513dde22mr1648367ejc.56.1696425244676;
+        Wed, 04 Oct 2023 06:14:04 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id f3-20020a170906048300b009b2ca104988sm2824343eja.98.2023.10.04.06.14.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 06:14:04 -0700 (PDT)
+Message-ID: <1d6044e0d71cd95c477e319d7e47819eee61a8fc.camel@redhat.com>
+Subject: Re: [PATCH v3 0/4] Allow AVIC's IPI virtualization to be optional
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+        Paolo Bonzini <pbonzini@redhat.com>
+Date:   Wed, 04 Oct 2023 16:14:01 +0300
+In-Reply-To: <ZRsYNnYEEaY1gMo5@google.com>
+References: <20231002115723.175344-1-mlevitsk@redhat.com>
+         <ZRsYNnYEEaY1gMo5@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello ntfs maintainers/developers,
+У пн, 2023-10-02 у 12:21 -0700, Sean Christopherson пише:
+> On Mon, Oct 02, 2023, Maxim Levitsky wrote:
+> > Hi!
+> > 
+> > This patch allows AVIC's ICR emulation to be optional and thus allows
+> > to workaround AVIC's errata #1235 by disabling this portion of the feature.
+> > 
+> > This is v3 of my patch series 'AVIC bugfixes and workarounds' including
+> > review feedback.
+> 
+> Please respond to my idea[*] instead of sending more patches. 
 
-This is a 31-day syzbot report for the ntfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ntfs
+Hi,
 
-During the period, 1 new issues were detected and 1 were fixed.
-In total, 24 issues are still open and 8 have been fixed so far.
+For the v2 of the patch I was already on the fence if to do it this way or to refactor
+the code, and back when I posted it, I decided still to avoid the refactoring.
 
-Some of the still happening issues:
+However, your idea of rewriting this patch, while it does change less lines of code,
+is even less obvious and consequently required you to write even longer comment to 
+justify it which is not a good sign.
 
-Ref  Crashes Repro Title
-<1>  4008    Yes   possible deadlock in ntfs_read_folio
-                   https://syzkaller.appspot.com/bug?extid=8ef76b0b1f86c382ad37
-<2>  3219    Yes   kernel BUG at fs/ntfs/aops.c:LINE!
-                   https://syzkaller.appspot.com/bug?extid=6a5a7672f663cce8b156
-<3>  1420    Yes   kernel BUG in __ntfs_grab_cache_pages
-                   https://syzkaller.appspot.com/bug?extid=01b3ade7c86f7dd584d7
-<4>  638     Yes   possible deadlock in map_mft_record
-                   https://syzkaller.appspot.com/bug?extid=cb1fdea540b46f0ce394
-<5>  396     Yes   KASAN: slab-out-of-bounds Read in ntfs_readdir
-                   https://syzkaller.appspot.com/bug?extid=d36761079ac1b585a6df
-<6>  232     No    possible deadlock in __ntfs_clear_inode
-                   https://syzkaller.appspot.com/bug?extid=5ebb8d0e9b8c47867596
-<7>  37      Yes   kernel BUG in ntfs_iget
-                   https://syzkaller.appspot.com/bug?extid=d62e6bd2a2d05103d105
-<8>  36      Yes   kernel BUG in ntfs_lookup_inode_by_name
-                   https://syzkaller.appspot.com/bug?extid=d532380eef771ac0034b
-<9>  15      Yes   KASAN: use-after-free Read in ntfs_attr_find (2)
-                   https://syzkaller.appspot.com/bug?extid=ef50f8eb00b54feb7ba2
-<10> 13      Yes   KASAN: use-after-free Read in ntfs_lookup_inode_by_name
-                   https://syzkaller.appspot.com/bug?extid=3625b78845a725e80f61
+In particular I don't want someone to find out later, and in the hard way that sometimes
+real physid table is accessed, and sometimes a fake copy of it is.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+So I decided to fix the root cause by not reading the physid table back,
+which made the code cleaner, and even with the workaround the code 
+IMHO is still simpler than it was before.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+About the added 'vcpu->loaded' variable, I added it also because it is something that is 
+long overdue to be added, I remember that in IPIv code there was also a need for this, 
+and probalby more places in KVM can be refactored to take advantage of it,
+instead of various hacks.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+I did adopt your idea of using 'enable_ipiv', although I am still not 100% sure that this
+is more readable than 'avic_zen2_workaround'.
 
-You may send multiple commands in a single email message.
+Best regards,
+	Maxim Levitsky
+
+>  I'm not opposed to
+> a different approach, but we need to have an actual discussion around the pros and
+> cons, and hopefully come to an agreement.  This cover letter doesn't even acknowledge
+> that there is an alternative proposal, let alone justify why the vcpu->loaded
+> approach was taken.
+> 
+> [*] https://lore.kernel.org/all/ZRYxPNeq1rnp-M0f@google.com
+> 
+
+
