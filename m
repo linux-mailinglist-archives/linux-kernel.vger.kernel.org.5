@@ -2,68 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB28C7B8482
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30037B8484
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243245AbjJDQIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
+        id S233723AbjJDQJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233125AbjJDQIX (ORCPT
+        with ESMTP id S233451AbjJDQJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:08:23 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170CEC1
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:08:20 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-565334377d0so1782332a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 09:08:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1696435698; x=1697040498; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ArAGPHgh3ozAFw+P3T3leViQVG79Y2xBPqOZ8Wv+fnM=;
-        b=MaOoas2kX6UbfzDSrJ8PBjIrS40cq1xzAqXlsXLz84BQhG4+AcqOripiX4CEtVJWlc
-         vnAAuJN8x+/wg8i+Ex2OqprgtMB4qF28GkgV8g7UqxVSVze2SIgRD7phQsF6d48g8X/A
-         +5kjekPFSiuEojHddizq8QpU9FwtL9rqywYNO3pDnEdkpdIgs6FkNhK5tv2xzTgBrZNn
-         IlRZR+m2uIZGuQ2jdhmacHiD+VstQaPcfbLvKwNUyuCzQYtTRAC6rSLFA/9GGEhT0OTy
-         1+oHns/ke1eml833cqTxxH1Os/tkfAzp9VsPoxB4F+861Gu6Nv7FunlkEZsIlU58E4s1
-         hZgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696435698; x=1697040498;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ArAGPHgh3ozAFw+P3T3leViQVG79Y2xBPqOZ8Wv+fnM=;
-        b=Q0ovL/ygQU6LyMkCVSoVhIO25RX6Yp7IcUdOak99RrPQZYQ9pTmtikvWccBMaWAqxJ
-         xykQ+7WsPhbLmYgh/tfJKkkFSHZJHl2zh1JsUUd8hTJQuUbFokBTH1pA5+UQrNIitzAE
-         d+Qn4bGZwLq0/HdeTfA5izIZZOcMLNr7QkG6m2RuaP0aLzVufjEwIaSAH5/GtHDtJ73p
-         NzJhiKQNhGe+wJTNxfBigSJbf/r7hJx6MkMZ60mqmh2NSSH8SSz/lqh49vjReFH3CvJo
-         FUIBgW8FzjIg2TLKb193E58GNJLC4nZL4OiuUhCXM/kMq1yjSfl1PRQMaJPyk1wTz9bk
-         UZwQ==
-X-Gm-Message-State: AOJu0Yw7W4iJiclsxvCA9r6DPrEtXJJ5rwrezQx4NmJ4uAwzIv8i5ZtG
-        e4Ccx0DXDwPzwtqEid2lvL0VjtKgl8SGQdcLZslYsw==
-X-Google-Smtp-Source: AGHT+IFahlwd2MGDSD/UYYt8bxNZKia47kJFK5G12tNZu0xaYee3sS1go2QSPWZJ5H6NX/KCiQ+9Eb5A9aLjQZvveHs=
-X-Received: by 2002:a17:90a:b891:b0:273:441a:dae6 with SMTP id
- o17-20020a17090ab89100b00273441adae6mr2549660pjr.19.1696435698141; Wed, 04
- Oct 2023 09:08:18 -0700 (PDT)
+        Wed, 4 Oct 2023 12:09:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A967ABF;
+        Wed,  4 Oct 2023 09:09:38 -0700 (PDT)
+Date:   Wed, 04 Oct 2023 16:09:36 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696435777;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tco2oLrQfsIAEtlgl8Nce5/Ay0Sr42yRCzzDGiBrR/Q=;
+        b=xmvEdK1LeY9SnwT0MxVzAbsXBO2w3pW80AydelL8KdlB3VIcFO0h4vp1qnAm+uTUW4rqAM
+        89wIXdF9Al3SiNX3EYp3PCL2yV5IPI1vQiKPOkrHvRsH5NTJSbMVjbEIBMTKChYHaAhPcx
+        ynlLS1iG9ao77IUB+6n9S0V3YKwWriYte/Q5l2GrAiRVvAe8GXnsH9uVEmqQtVo+AmVLle
+        iDoihTnilhO76HcgxsQQWdaS8erieWBOrLpfH99fsyiyxq6PkuCMRUHWMWwMV+9dKnTqxM
+        34nZTdrdzIjX0BCabwSVhWFAQP7xbndrgRrBQPYymHchc9BVwJdksqQBOjSzXQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696435777;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tco2oLrQfsIAEtlgl8Nce5/Ay0Sr42yRCzzDGiBrR/Q=;
+        b=+JlsNjIzx0e3wu1n2YiM46cZY6K2of5+o37DGo6vsQpyOJF7zV3AdgHGIwREsrUmX9K5xm
+        csiA0CGqmk8XbCAQ==
+From:   "tip-bot2 for Li zeming" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] futex/requeue: Remove unnecessary =?utf-8?q??=
+ =?utf-8?b?4oCYTlVMTOKAmQ==?= initialization from futex_proxy_trylock_atomic()
+Cc:     Li zeming <zeming@nfschina.com>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230725195047.3106-1-zeming@nfschina.com>
+References: <20230725195047.3106-1-zeming@nfschina.com>
 MIME-Version: 1.0
-References: <20230926102801.1591126-1-dunaev@tecon.ru> <CAK9=C2UiBNQtv0Q2yJMKqc5pMX_jam+ZmfRz3Rme0ZYuqN68HA@mail.gmail.com>
- <86il7mofmm.wl-maz@kernel.org> <CAK9=C2UUQ+ChueJVs+AnY0oCTb1zSv7qOCTijSchwxiMspX74w@mail.gmail.com>
- <86cyxuo128.wl-maz@kernel.org>
-In-Reply-To: <86cyxuo128.wl-maz@kernel.org>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Wed, 4 Oct 2023 21:38:06 +0530
-Message-ID: <CAK9=C2WcOy0_iEF7EF0LwjSRqVf2bbFaVNbxPXa=0OJtUkoVMw@mail.gmail.com>
-Subject: Re: [PATCH] irqchip/riscv-intc: Mark INTC nodes for secondary CPUs as initialized.
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Dmitry Dunaev <dunaev@tecon.ru>, dunaich@mail.ru,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <169643577653.3135.1339527957884113798.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -75,136 +65,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 9:02=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Wed, 04 Oct 2023 15:59:33 +0100,
-> Anup Patel <apatel@ventanamicro.com> wrote:
-> >
-> > On Wed, Oct 4, 2023 at 3:48=E2=80=AFPM Marc Zyngier <maz@kernel.org> wr=
-ote:
-> > >
-> > > On Tue, 26 Sep 2023 11:36:31 +0100,
-> > > Anup Patel <apatel@ventanamicro.com> wrote:
-> > > >
-> > > > On Tue, Sep 26, 2023 at 3:59=E2=80=AFPM Dmitry Dunaev <dunaev@tecon=
-.ru> wrote:
-> > > > >
-> > > > > The current Linux driver irq-riscv-intc initialize IRQ domain onl=
-y once,
-> > > > > when init function called on primary hart. In other cases no IRQ =
-domain is
-> > > > > created and no operation on interrupt-controller node is performe=
-d.
-> > > > > This is cause of that no common Linux driver can use per-cpu inte=
-rrupts
-> > > > > mapped to several CPUs because fwnode of secondary cores INTC is =
-not
-> > > > > marked as initialized. This device is always will be marked as de=
-ferred.
-> > > > > For example the system with devicetree
-> > > > >
-> > > > >     cpu0: cpu@0 {
-> > > > >         cpu0_intc: interrupt-controller {
-> > > > >             interrupt-controller;
-> > > > >             compatible =3D riscv,cpu-intc;
-> > > > >         };
-> > > > >     };
-> > > > >
-> > > > >     cpu1: cpu@1 {
-> > > > >         cpu1_intc: interrupt-controller {
-> > > > >             interrupt-controller;
-> > > > >             compatible =3D riscv,cpu-intc;
-> > > > >         };
-> > > > >     };
-> > > > >
-> > > > >     buserr {
-> > > > >         compatible =3D riscv,buserr;
-> > > > >         interrupts-extended =3D <&cpu0_intc 16 &cpu1_intc 16>;
-> > > > >     };
-> > > > >
-> > > > > will always report 'buserr' node as deferred without calling any
-> > > > > bus probe function.
-> > > > >
-> > > > > This patch will mark all secondary nodes passed to irq-riscv-intc
-> > > > > driver init function as initialized to be able to act as correct
-> > > > > IRQ phandle node.
-> > > > >
-> > > > > Signed-off-by: Dmitry Dunaev <dunaev@tecon.ru>
-> > > > > ---
-> > > > >  drivers/irqchip/irq-riscv-intc.c | 8 ++++++--
-> > > > >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/i=
-rq-riscv-intc.c
-> > > > > index 4adeee1bc391..c01a4e8d4983 100644
-> > > > > --- a/drivers/irqchip/irq-riscv-intc.c
-> > > > > +++ b/drivers/irqchip/irq-riscv-intc.c
-> > > > > @@ -155,8 +155,10 @@ static int __init riscv_intc_init(struct dev=
-ice_node *node,
-> > > > >          * for each INTC DT node. We only need to do INTC initial=
-ization
-> > > > >          * for the INTC DT node belonging to boot CPU (or boot HA=
-RT).
-> > > > >          */
-> > > > > -       if (riscv_hartid_to_cpuid(hartid) !=3D smp_processor_id()=
-)
-> > > > > +       if (riscv_hartid_to_cpuid(hartid) !=3D smp_processor_id()=
-) {
-> > > > > +               fwnode_dev_initialized(of_node_to_fwnode(node), t=
-rue);
-> > > >
-> > > > There is already a patch on LKML to address this.
-> > > > https://www.spinics.net/lists/kernel/msg4929886.html
-> > >
-> > > If this is a fix, why is it buried in a huge series and not brought
-> > > forward as an independent fix that needs to be picked early?
-> >
-> > Dmitry saw this issue in a totally different context which is not
-> > reproducible with existing DTS files in kernel sources.
->
-> I hope you're not suggesting that only the DTs that are present in the
-> kernel tree are valid. Because as far as I'm concern, the DTs in the
-> kernel tree are only some *examples*, and not a reference.
+The following commit has been merged into the locking/core branch of tip:
 
-I am only saying why this issue was not observed before.
+Commit-ID:     01a99a750a4f414c221781de2e5570e0ceae04b5
+Gitweb:        https://git.kernel.org/tip/01a99a750a4f414c221781de2e5570e0cea=
+e04b5
+Author:        Li zeming <zeming@nfschina.com>
+AuthorDate:    Wed, 26 Jul 2023 03:50:47 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 04 Oct 2023 18:04:47 +02:00
 
->
-> I fully expect the vast majority of DTs to live *outside* of the
-> kernel tree, provided by the firmware, and never upstreamed. Would you
-> expect every PC vendor to upstream their ACPI tables?
+futex/requeue: Remove unnecessary =E2=80=98NULL=E2=80=99 initialization from =
+futex_proxy_trylock_atomic()
 
-I agree. We can't expect all vendors to submit DT to kernel sources.
+'top_waiter' is assigned unconditionally before first use,
+so it does not need an initialization.
 
->
-> > This issue only manifests when some platform driver DT node
-> > points to the per-HART INTC nodes. For example, RISC-V
-> > irqchip device DT nodes point to per-HART INTC nodes.
->
-> Is this configuration legal or not as per the DT binding? I don't see
-> anything that suggests it isn't legal, and having per-CPU interrupts
-> isn't exactly a new thing.
+[ mingo: Created legible changelog. ]
 
-This is a perfect legal configuration in the RISC-V world. We have
-similar DT binding for AIA drivers as well.
+Signed-off-by: Li zeming <zeming@nfschina.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20230725195047.3106-1-zeming@nfschina.com
+---
+ kernel/futex/requeue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> > Currently, all RISC-V irqchip drivers (INTC and PLIC) are probed
-> > early (not as platform drivers) so we don't see this issue with
-> > existing irqchip drivers.
->
-> You don't, but Dimitry does. Who wins?
-
-I am totally fine taking PATCH3 of the Linux AIA v10 series as a
-fix PATCH for 6.6-rcX. The PATCH3 is pretty self contained and
-does not depend on any other PATCH of Linux AIA v10 series.
-
-Do you want me to re-send it as an individual PATCH ?
-
-Regards,
-Anup
-
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+diff --git a/kernel/futex/requeue.c b/kernel/futex/requeue.c
+index a0a7995..16a3645 100644
+--- a/kernel/futex/requeue.c
++++ b/kernel/futex/requeue.c
+@@ -269,7 +269,7 @@ futex_proxy_trylock_atomic(u32 __user *pifutex, struct fu=
+tex_hash_bucket *hb1,
+ 			   union futex_key *key2, struct futex_pi_state **ps,
+ 			   struct task_struct **exiting, int set_waiters)
+ {
+-	struct futex_q *top_waiter =3D NULL;
++	struct futex_q *top_waiter;
+ 	u32 curval;
+ 	int ret;
+=20
