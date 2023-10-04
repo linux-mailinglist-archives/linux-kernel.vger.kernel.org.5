@@ -2,52 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B69EB7B78C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 281567B78C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241537AbjJDHa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
+        id S241525AbjJDHco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241528AbjJDHay (ORCPT
+        with ESMTP id S232754AbjJDHcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:30:54 -0400
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2F498
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 00:30:49 -0700 (PDT)
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6c4deb5c9e3so768444a34.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 00:30:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696404649; x=1697009449;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5QaEuhNUG2u0gjcE5rRLCa9ZuWdzsZH122JJe8SJznI=;
-        b=djGbj5GaSnp3uwJ9hOUhSxGxSOvQT1VlWyuOlQNA5+vP5KIOA6alnEhXPTy0nWj/mN
-         CTGLhsOs4wz+komkhKe71O3aKUIuWGDXvlWt5WdDThCwAtpF2aXHFOmlgGyUzPIwTIkc
-         tQGjFmvjzXPoRJsBpoBaJR5GDOSBQ0BKokp7w4KWjEV1blmvb4ECI+NYYd0lYXxuY9YP
-         4f192FCqDpnpaaBJiRzDdyjLSonVAC66THVj58gL+L7KPfhyK2eNa1MGiQVbMGInKeRx
-         PH2o+mTfqhITBwpIeBYWSNJ8Xuo/eu8IaMwSgDfg6UHsVKZFFIhzKLMachcxGi20p/XB
-         aBUQ==
-X-Gm-Message-State: AOJu0YwAR3jPqyTqXg/a9ymv3VDpj9zxXI7bCSB+nmIsUkMZp8rgoSGi
-        kGbp9G92Y4UPnffMlKyoOjIKU+vLLrq1Pd9HPaJAG8h1pQPb
-X-Google-Smtp-Source: AGHT+IHXtCmEy6T+yEflnajIuE0+uj7DiV5VNTPbvc60HO7N2Oomc3w9gTo1e8HdhI1DLL2cDH00OrA0fz9gdr00dDBVv4cPS98n
+        Wed, 4 Oct 2023 03:32:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDE398;
+        Wed,  4 Oct 2023 00:32:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A05CC433C8;
+        Wed,  4 Oct 2023 07:32:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696404759;
+        bh=c0sblUv/k3X4rxTQo+ycwCdkeBNEQJr2yNqOWAvpvUg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GUkqFgUUE8h0HfcvopN8fByxCJBWsDAt9UKULj1nw1/yX3zaDtTlGMKBi6RC2grO3
+         Zk5c5QDAQ4QZT2PER4+fHZvqU2SS3/h+lWtEu9xD7LT5EmEvNX+UH9MgfIhBr2WrjK
+         G+vkNn+ImkA1OU3JYFiLFwb44uaa3VTJH0Yv4yQyw051ti9MC0Lv/F2Jqy5he97lWC
+         L7OhjaAqAyHV6D/o5Y8AUeRLI8tYKPx2vs5pOk5QmOk1ktgaGImN+mbODXDNCf/Bnu
+         /OAQlgmwJQGpnfRVLhvbtyY5E8NNn1wY5rMpWzLGmv/2q9ZBRy8AuyygpKO/6xBNGE
+         JLSO2VQF6IZ9A==
+Date:   Wed, 4 Oct 2023 13:02:36 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, dmaengine@vger.kernel.org,
+        imx@lists.linux.dev, joy.zou@nxp.com, linux-kernel@vger.kernel.org,
+        peng.fan@nxp.com, shenwei.wang@nxp.com
+Subject: Re: [PATCH v3 1/1] MAINTAINERS: Add entries for NXP(Freescale) eDMA
+ drivers
+Message-ID: <ZR0VFKzbl7Dt5KkR@matsya>
+References: <20230824145834.2825847-1-Frank.Li@nxp.com>
+ <b1c5ba0d-748f-ae2e-4a5f-e1e853161d16@infradead.org>
+ <ZRWKH1gSwdLMhBCt@lizhi-Precision-Tower-5810>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:1407:b0:6b7:528c:d8bf with SMTP id
- v7-20020a056830140700b006b7528cd8bfmr1594231otp.0.1696404649180; Wed, 04 Oct
- 2023 00:30:49 -0700 (PDT)
-Date:   Wed, 04 Oct 2023 00:30:49 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000082839e0606defcaf@google.com>
-Subject: [syzbot] Monthly overlayfs report (Oct 2023)
-From:   syzbot <syzbot+list66be8346f4383d3fe5a9@syzkaller.appspotmail.com>
-To:     amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRWKH1gSwdLMhBCt@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,34 +53,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello overlayfs maintainers/developers,
+On 28-09-23, 10:13, Frank Li wrote:
+> On Thu, Aug 24, 2023 at 02:01:20PM -0700, Randy Dunlap wrote:
+> > 
+> > 
+> > On 8/24/23 07:58, Frank Li wrote:
+> > > Add the MAINTAINERS entries for NXP(Freescale) eDMA drivers
+> > > 
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > 
+> > Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> > 
+> > Thanks for fixing. :)
+> 
+> @Vinod:
+> 	ping
 
-This is a 31-day syzbot report for the overlayfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/overlayfs
+Can you please resend
 
-During the period, 4 new issues were detected and 0 were fixed.
-In total, 9 issues are still open and 18 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 836     Yes   possible deadlock in mnt_want_write (2)
-                  https://syzkaller.appspot.com/bug?extid=b42fe626038981fb7bfa
-<2> 27      Yes   BUG: unable to handle kernel paging request in take_dentry_name_snapshot
-                  https://syzkaller.appspot.com/bug?extid=90392eaed540afcc8fc3
-<3> 1       No    possible deadlock in ovl_copy_up_start (2)
-                  https://syzkaller.appspot.com/bug?extid=e8628856801e9809216f
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+-- 
+~Vinod
