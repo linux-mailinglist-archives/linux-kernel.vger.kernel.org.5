@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 345107B83E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF427B83E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242942AbjJDPmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
+        id S233662AbjJDPmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233775AbjJDPmQ (ORCPT
+        with ESMTP id S233775AbjJDPme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:42:16 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07752D7;
-        Wed,  4 Oct 2023 08:42:13 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-57b74782be6so1294919eaf.2;
-        Wed, 04 Oct 2023 08:42:12 -0700 (PDT)
+        Wed, 4 Oct 2023 11:42:34 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF7FD8;
+        Wed,  4 Oct 2023 08:42:32 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6c7b3adbeb6so575995a34.0;
+        Wed, 04 Oct 2023 08:42:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696434132; x=1697038932; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696434151; x=1697038951; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WnxaBYdRGKVgJldzBvlLszd95TgiOglWQuyS4MNphf0=;
-        b=JkLUUjhU0GuUBAvofFTHDBuggUKVXkr9S8Z8+QJ4bo57dtuKA3b5KYCnV359GKtceo
-         4xPeHnk6HXwqUxjL+u2Ff4veQHMY/8kwIqQveUnzi+9gKz54MGzH0CIW9enrZYDUU++q
-         g1xY5NpBRsSc6n1zQAPJxr0JEnoGxlV2o0ehToxIQ9OaMeNRSWOeYbNRLvvzrH6+Qjkc
-         GNrHGTbWrbFklwyY2IgAr+BaaPQGjdhHLUTESBy85U159TWZCOmR7C/0lK2ijKp0wQ2R
-         qc56yPTx4uWtTVwReVhGs4Y+xUdDDzfT3TgFCzggJQVsqkxZxF+HzYMN8EByGD8gk1DV
-         CLJQ==
+        bh=tD24LkujqQMbRRxB8/xrA8at3l30kwtwxAWKzy7MPw4=;
+        b=GI1LDTh76zDJrs9FKZBMbG2KlVf7P5z9drsA8zs9gGKNdkguq3bHI92of4B0V0XQ3k
+         d64Na1XAsnx7PA4GVeoAFTyncOwcIi3kkO5q+H8O21pqgnzc3BqhHHXDkuyd54LvBb1g
+         uxOXMgEs5BsP3IjGPeNThCtB+ceQDPKu1HiyMzz3zbtSwMeiMhMgRgvHKIxiCYbeKYrx
+         wvC54PEH5BU3hGw4EtTHTpfK68DptnP1pBMDgqN2PuUFxxuu2b85gh8TSxP02Y3wqlE8
+         U4OriXq4kISS6N00FuXuto0tbizINU9XTnnKmveKsGLzOICxnUgSeuwRp5SiwWgSslHt
+         q28g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696434132; x=1697038932;
+        d=1e100.net; s=20230601; t=1696434151; x=1697038951;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WnxaBYdRGKVgJldzBvlLszd95TgiOglWQuyS4MNphf0=;
-        b=hZ5483NRBzJufhDjXuMc5efDiCJMZjSEt160p+OghrTd/suK5KEXXrw+vVKQ0uaP7/
-         EPHiamkyIXo5VXCNIGoeO/x5sl1wPFHLc0iRysXUEBIlJEHgE6R92LgP/LvDwAo0AjLB
-         hfI53R0262Nq3Lefw1EnZIWiINXJo36SEuU3Z/NRj7/gonHOzWo8q/WxkCddfVOpmTmL
-         3O/VbWUGk6EjMcsAwJTV1GY1UjTCtD/IO3EU4zEiEuz0Cn1MROtOXRz7sX6tgaIiIRKg
-         p7npFF6MIt56SFi0HtghpBsj1EaKOqK7UFYztVs09luM7F+E5rQnJz7gDu20JVNg8O8R
-         BwKw==
-X-Gm-Message-State: AOJu0YyDXHdIGXprGEy0Hmksapjz5XGULSzCsqGabYhdJqOJjQSolkLX
-        MBibWem8L0Ed+nCgaAhjJ5JMOpsvW/izdA==
-X-Google-Smtp-Source: AGHT+IEQbM2bZQBMikxUSN8+tNBqkEpBzn/Q1qrIXW/53+hljMBT5wP0e0XQ6KwfcYnOIkCY6UfnuA==
-X-Received: by 2002:a05:6820:220e:b0:56c:cd0c:1d67 with SMTP id cj14-20020a056820220e00b0056ccd0c1d67mr2315269oob.7.1696434131744;
-        Wed, 04 Oct 2023 08:42:11 -0700 (PDT)
+        bh=tD24LkujqQMbRRxB8/xrA8at3l30kwtwxAWKzy7MPw4=;
+        b=kcI2nLmerIdMh2o60yvFlZwbVn60foLpanVJsQgCAWI7j1isoBUx6fcliqciVGRDvD
+         U3A1P6FgXuV5i9HYGXr5k6ni2+fbqwm4PogKx0+0YfLanRF/fj9Wtlpd+57oHCsalzRN
+         Oz116ePHqLbY3dcM62R9+mMU/DFzMtrPW1LOnr3uQ7uvxrl6R1S/rS7FlMQlMerCSZhe
+         dKf4jPMEO7ChhIH42dCzntR0sVMoguK+eMtpu5yiDJgnzyuWfJ7U/3FkLLCUfiwz/wer
+         gabqeTfGHvIs80Q03kjLdSAGaDzSx6wL2movVssSJqaNybj9yMOPe3fSvtdhUfcit+tw
+         UAoA==
+X-Gm-Message-State: AOJu0YyDAixmE2z9EqgNBo5QHI5ZfpHo+MupxGP8VVpGdBDot/kwi8dS
+        MEIFL+rLWGKWdWW88tapP7Q=
+X-Google-Smtp-Source: AGHT+IHiVCdVEpqi7jlc0CA8t+7KoZMRtaA+COKsbNFkbWk5l/6KEeiWVzvpQZZ9dEIXCy3vm2pBew==
+X-Received: by 2002:a05:6870:f708:b0:1d5:bda7:130e with SMTP id ej8-20020a056870f70800b001d5bda7130emr2754434oab.18.1696434151284;
+        Wed, 04 Oct 2023 08:42:31 -0700 (PDT)
 Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id f65-20020a4a5844000000b0057dd74ad3casm672580oob.41.2023.10.04.08.42.10
+        by smtp.gmail.com with ESMTPSA id n9-20020a0568301e8900b006b954f7f422sm486778otr.6.2023.10.04.08.42.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 08:42:11 -0700 (PDT)
+        Wed, 04 Oct 2023 08:42:31 -0700 (PDT)
 From:   Chen Wang <unicornxw@gmail.com>
 To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
         devicetree@vger.kernel.org, guoren@kernel.org, jszhang@kernel.org,
@@ -58,10 +58,10 @@ To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
         paul.walmsley@sifive.com, robh+dt@kernel.org,
         xiaoguang.xing@sophgo.com, apatel@ventanamicro.com
 Cc:     Chen Wang <unicorn_wang@outlook.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v4 03/10] dt-bindings: riscv: add sophgo sg2042 bindings
-Date:   Wed,  4 Oct 2023 23:42:03 +0800
-Message-Id: <c8107a1ef18071ee6555a2368567f3554a673f97.1696433229.git.unicorn_wang@outlook.com>
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v4 04/10] dt-bindings: riscv: Add T-HEAD C920 compatibles
+Date:   Wed,  4 Oct 2023 23:42:23 +0800
+Message-Id: <bd63ede60c5757af3d15a13d1259fc91589325ec.1696433229.git.unicorn_wang@outlook.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1696433229.git.unicorn_wang@outlook.com>
 References: <cover.1696433229.git.unicorn_wang@outlook.com>
@@ -69,8 +69,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,73 +79,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chen Wang <unicorn_wang@outlook.com>
 
-Add DT binding documentation for the SOPHGO's SG2042 Soc [1] and the
-Milk-V Pioneer board [2].
-
-Link: https://en.sophgo.com/product/introduce/sg2042.html [1]
-Link: https://milkv.io/pioneer [2]
+The C920 is RISC-V CPU cores from T-HEAD Semiconductor.
+Notably, the C920 core is used in the SOPHGO's SG2042 SoC.
 
 Acked-by: Chao Wei <chao.wei@sophgo.com>
 Reviewed-by: Guo Ren <guoren@kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
 ---
- .../devicetree/bindings/riscv/sophgo.yaml     | 28 +++++++++++++++++++
- MAINTAINERS                                   |  6 ++++
- 2 files changed, 34 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/riscv/sophgo.yaml
+ Documentation/devicetree/bindings/riscv/cpus.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/riscv/sophgo.yaml b/Documentation/devicetree/bindings/riscv/sophgo.yaml
-new file mode 100644
-index 000000000000..8adb5f39ca53
---- /dev/null
-+++ b/Documentation/devicetree/bindings/riscv/sophgo.yaml
-@@ -0,0 +1,28 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/riscv/sophgo.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Sophgo SoC-based boards
-+
-+maintainers:
-+  - Chao Wei <chao.wei@sophgo.com>
-+  - Chen Wang <unicorn_wang@outlook.com>
-+
-+description:
-+  Sophgo SoC-based boards
-+
-+properties:
-+  $nodename:
-+    const: '/'
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - milkv,pioneer
-+          - const: sophgo,sg2042
-+
-+additionalProperties: true
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 90f13281d297..97cb8abcfeee 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20063,6 +20063,12 @@ F:	drivers/char/sonypi.c
- F:	drivers/platform/x86/sony-laptop.c
- F:	include/linux/sony-laptop.h
- 
-+SOPHGO DEVICETREES
-+M:	Chao Wei <chao.wei@sophgo.com>
-+M:	Chen Wang <unicorn_wang@outlook.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/riscv/sophgo.yaml
-+
- SOUND
- M:	Jaroslav Kysela <perex@perex.cz>
- M:	Takashi Iwai <tiwai@suse.com>
+diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
+index 38c0b5213736..185a0191bad6 100644
+--- a/Documentation/devicetree/bindings/riscv/cpus.yaml
++++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+@@ -47,6 +47,7 @@ properties:
+               - sifive,u74-mc
+               - thead,c906
+               - thead,c910
++              - thead,c920
+           - const: riscv
+       - items:
+           - enum:
 -- 
 2.25.1
 
