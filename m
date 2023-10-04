@@ -2,104 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 969E77B784A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5577B7856
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241472AbjJDHBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
+        id S241478AbjJDHD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232647AbjJDHBW (ORCPT
+        with ESMTP id S232647AbjJDHD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:01:22 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6240AB
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 00:01:18 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 051C840E01AE;
-        Wed,  4 Oct 2023 07:01:17 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id RIDc3lHE68r0; Wed,  4 Oct 2023 07:01:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1696402874; bh=bsHdMgmkYQMK2TFiy3Hx4BW+BGLq8oQTxKGgK6wIGjE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YNnDMW/syvY4FQeiBdoAYjYaoTBSzrb6Qeveo3rQF+rMz3YPLtLI3+9IjoeQFVqjK
-         l4H/MUltLUruTaYYwM9ysD+JgX++w/T01987eavgSDPuRmnQ4p4z6AkGfIHakU+wvP
-         XXd5qZQ1QeK92vcDlItj0EvAhsWu4C0c6GF+Kz1OOut/B2mejimGUriL45JZmy1mpl
-         DplQZu71YJygfLoym6xagZCqd6un7fOqwY1uTm0fWOoJaRUaTGXYrECjaqKsSSUK2T
-         wkD72NGzG/WsSL5ZKCjprg0sNxgtLiGyHVdMgTDKFmEniOb22XqxUTojcu3cjG3XvT
-         x8hLcbbdKUQiDM0cVW1RqYfyJa2WDilSp/NBkDLp9RsyxOUR1qzq69mDe9CwgVpfrZ
-         Sfo7lmqA0xT5ui7JSCmYY+hrJmj6WAgVDJkW6LJ8+16ZLeRNkTZnGI5s7dSVjyHRjU
-         L4bfOGDpmtGm9FoAfg0L2my9UiuhNlB8jjXTFEDqAsnsYTvdnSfFEz2dc8Jhzr5O4M
-         /Oj+uqTY2efr0zXcdOUevgkNxnfkHXiW1MjAgs0y7qWV/sl7cptiIrbmRqbKgE5fPC
-         xm+BR5LT5TO/U38m2z94eBEfbs4U04ZJG3Dqlga2VfoV5XcUpmp1i99jgUPzHFD0JW
-         c0dpHugDDiajnhCgyo/VAUIE=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        Wed, 4 Oct 2023 03:03:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C84AB
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 00:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696402985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kDu6btx99QXs0kSLMHh2AKh2KZqG8BWNFgkrbgEVHdw=;
+        b=ipR70txYv6OCvdBB72tfob3VPZAIV8ZGVgZFkMyFwwg7jymr62AuU7g1FcwYCPbzYGMwFM
+        5AU63an8kTReuRt0VsYCnuWmX7i8f/N+QHa6rfmOFtnt4K+l8Sx0oeSUzNn44R/qXzrW4s
+        GRjic8Re/+KFZzfifWca6QZGkRJz/dk=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-283-uQEUgsEkNvisFnqZy2eq6Q-1; Wed, 04 Oct 2023 03:03:02 -0400
+X-MC-Unique: uQEUgsEkNvisFnqZy2eq6Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7E6F840E0176;
-        Wed,  4 Oct 2023 07:01:06 +0000 (UTC)
-Date:   Wed, 4 Oct 2023 09:01:00 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Nikunj A. Dadhania" <nikunj@amd.com>
-Cc:     thomas.lendacky@amd.com, x86@kernel.org, dionnaglaze@google.com,
-        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/14] Add Secure TSC support for SNP guests
-Message-ID: <20231004070100.GAZR0NrFSIDKPSQIjA@fat_crate.local>
-References: <20230814055222.1056404-1-nikunj@amd.com>
- <f200403b-c460-5ebb-fec5-c5caf0cdb006@amd.com>
- <9a6af215-e696-5091-69fa-1cbebe772471@amd.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 68D80382135E;
+        Wed,  4 Oct 2023 07:03:01 +0000 (UTC)
+Received: from alecto.usersys.redhat.com (unknown [10.43.17.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7E9D2140E950;
+        Wed,  4 Oct 2023 07:02:59 +0000 (UTC)
+Date:   Wed, 4 Oct 2023 09:02:57 +0200
+From:   Artem Savkov <asavkov@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [RFC PATCH] tracing: change syscall number type in struct
+ syscall_trace_*
+Message-ID: <20231004070257.GA311687@alecto.usersys.redhat.com>
+References: <20231002135242.247536-1-asavkov@redhat.com>
+ <CAEf4BzbM1z-ccRq-gH7UkVrSa6Vhewu3R7wV3sHW6BKxhm9k2Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9a6af215-e696-5091-69fa-1cbebe772471@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbM1z-ccRq-gH7UkVrSa6Vhewu3R7wV3sHW6BKxhm9k2Q@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 11:05:14AM +0530, Nikunj A. Dadhania wrote:
-> On 8/28/2023 9:17 AM, Nikunj A. Dadhania wrote:
-> > On 8/14/2023 11:22 AM, Nikunj A Dadhania wrote:
-> >> Secure TSC allows guests to securely use RDTSC/RDTSCP instructions as the
-> >> parameters being used cannot be changed by hypervisor once the guest is
-> >> launched. More details in the AMD64 APM Vol 2, Section "Secure TSC".
-> >>
-> ...
-> >>
-> >> Changelog:
-> >> ----------
-> >> v4:
-> >> * Drop handle_guest_request() and handle_guest_request_ext()
-> >> * Drop NULL check for key
-> >> * Corrected commit subject
-> >> * Added Reviewed-by from Tom
-> > 
-> > A gentle reminder.
+On Tue, Oct 03, 2023 at 03:11:15PM -0700, Andrii Nakryiko wrote:
+> On Mon, Oct 2, 2023 at 6:53 AM Artem Savkov <asavkov@redhat.com> wrote:
+> >
+> > linux-rt-devel tree contains a patch that adds an extra member to struct
 > 
+> can you please point to the patch itself that makes that change?
+
+Of course, some context would be useful. The patch in question is b1773eac3f29c
+("sched: Add support for lazy preemption") from rt-devel tree [0]. It came up
+a couple of times before: [1] [2] [3] [4].
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?id=b1773eac3f29cbdcdfd16e0339f1a164066e9f71
+[1] https://lore.kernel.org/linux-rt-users/20200221153541.681468-1-jolsa@kernel.org/t/#u
+[2] https://github.com/iovisor/bpftrace/commit/a2e3d5dbc03ceb49b776cf5602d31896158844a7
+[3] https://lore.kernel.org/bpf/xunyjzy64q9b.fsf@redhat.com/t/#u
+[4] https://lore.kernel.org/bpf/20230727150647.397626-1-ykaliuta@redhat.com/t/#u
+
+> > trace_entry. This causes the offset of args field in struct
+> > trace_event_raw_sys_enter be different from the one in struct
+> > syscall_trace_enter:
+> >
+> > struct trace_event_raw_sys_enter {
+> >         struct trace_entry         ent;                  /*     0    12 */
+> >
+> >         /* XXX last struct has 3 bytes of padding */
+> >         /* XXX 4 bytes hole, try to pack */
+> >
+> >         long int                   id;                   /*    16     8 */
+> >         long unsigned int          args[6];              /*    24    48 */
+> >         /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
+> >         char                       __data[];             /*    72     0 */
+> >
+> >         /* size: 72, cachelines: 2, members: 4 */
+> >         /* sum members: 68, holes: 1, sum holes: 4 */
+> >         /* paddings: 1, sum paddings: 3 */
+> >         /* last cacheline: 8 bytes */
+> > };
+> >
+> > struct syscall_trace_enter {
+> >         struct trace_entry         ent;                  /*     0    12 */
+> >
+> >         /* XXX last struct has 3 bytes of padding */
+> >
+> >         int                        nr;                   /*    12     4 */
+> >         long unsigned int          args[];               /*    16     0 */
+> >
+> >         /* size: 16, cachelines: 1, members: 3 */
+> >         /* paddings: 1, sum paddings: 3 */
+> >         /* last cacheline: 16 bytes */
+> > };
+> >
+> > This, in turn, causes perf_event_set_bpf_prog() fail while running bpf
+> > test_profiler testcase because max_ctx_offset is calculated based on the
+> > former struct, while off on the latter:
+> >
+> >   10488         if (is_tracepoint || is_syscall_tp) {
+> >   10489                 int off = trace_event_get_offsets(event->tp_event);
+> >   10490
+> >   10491                 if (prog->aux->max_ctx_offset > off)
+> >   10492                         return -EACCES;
+> >   10493         }
+> >
+> > This patch changes the type of nr member in syscall_trace_* structs to
+> > be long so that "args" offset is equal to that in struct
+> > trace_event_raw_sys_enter.
+> >
+> > Signed-off-by: Artem Savkov <asavkov@redhat.com>
+> > ---
+> >  kernel/trace/trace.h          | 4 ++--
+> >  kernel/trace/trace_syscalls.c | 7 ++++---
+> >  2 files changed, 6 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> > index 77debe53f07cf..cd1d24df85364 100644
+> > --- a/kernel/trace/trace.h
+> > +++ b/kernel/trace/trace.h
+> > @@ -135,13 +135,13 @@ enum trace_type {
+> >   */
+> >  struct syscall_trace_enter {
+> >         struct trace_entry      ent;
+> > -       int                     nr;
+> > +       long                    nr;
+> >         unsigned long           args[];
+> >  };
+> >
+> >  struct syscall_trace_exit {
+> >         struct trace_entry      ent;
+> > -       int                     nr;
+> > +       long                    nr;
+> >         long                    ret;
+> >  };
+> >
+> > diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
+> > index de753403cdafb..c26939119f2e4 100644
+> > --- a/kernel/trace/trace_syscalls.c
+> > +++ b/kernel/trace/trace_syscalls.c
+> > @@ -101,7 +101,7 @@ find_syscall_meta(unsigned long syscall)
+> >         return NULL;
+> >  }
+> >
+> > -static struct syscall_metadata *syscall_nr_to_meta(int nr)
+> > +static struct syscall_metadata *syscall_nr_to_meta(long nr)
+> >  {
+> >         if (IS_ENABLED(CONFIG_HAVE_SPARSE_SYSCALL_NR))
+> >                 return xa_load(&syscalls_metadata_sparse, (unsigned long)nr);
+> > @@ -132,7 +132,8 @@ print_syscall_enter(struct trace_iterator *iter, int flags,
+> >         struct trace_entry *ent = iter->ent;
+> >         struct syscall_trace_enter *trace;
+> >         struct syscall_metadata *entry;
+> > -       int i, syscall;
+> > +       int i;
+> > +       long syscall;
+> >
+> >         trace = (typeof(trace))ent;
+> >         syscall = trace->nr;
+> > @@ -177,7 +178,7 @@ print_syscall_exit(struct trace_iterator *iter, int flags,
+> >         struct trace_seq *s = &iter->seq;
+> >         struct trace_entry *ent = iter->ent;
+> >         struct syscall_trace_exit *trace;
+> > -       int syscall;
+> > +       long syscall;
+> >         struct syscall_metadata *entry;
+> >
+> >         trace = (typeof(trace))ent;
+> > --
+> > 2.41.0
+> >
+> >
 > 
-> Ping ?
-
-Pong.
-
-How about you find other SEV patches on LKML which are waiting for
-review and review them, while waiting for yours?
-
-Thx.
 
 -- 
-Regards/Gruss,
-    Boris.
+ Artem
 
-https://people.kernel.org/tglx/notes-about-netiquette
