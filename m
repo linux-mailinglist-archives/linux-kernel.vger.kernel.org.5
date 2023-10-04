@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3257B7A5E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D74177B7A5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241746AbjJDImq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
+        id S241764AbjJDIms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232767AbjJDImp (ORCPT
+        with ESMTP id S241744AbjJDImq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:42:45 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8552E83
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:42:42 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59bbdb435bfso22349397b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:42:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696408962; x=1697013762; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ULFiP3t9GCPetbc+PSp93r0o0dlnHCkh2C+y7ClD9xQ=;
-        b=XaAKm3OF6Uq787w2tfJaYlTiwx5XeyG5AS04z3PxQ0FA/HBI/++tfLQOxBzgFe4I69
-         AaEMAxixVD5oGKN2I4SyjRb3N2fkZCNfb3nE2U59LB6S/0XCis57gHX7vs6m+N9rglQT
-         pCX8ayeoC4H7JXrWOlcdoJrtED94L7QauOqlC44gL0n5XdWq1AX6GSO+TIcz5GPjPNY8
-         fALafpVfyalP49RRnt4pXkcstxx1lml00jVSaDJGr8aqynSN4CwZnIKx8dhgH5dtOAuD
-         uFHSNkzuclPsWjurVueYrmzEENlDuacjtn0ApVJCLq8rYbGV3nIAjQJKqTuJAxDOvTGE
-         0VrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696408962; x=1697013762;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ULFiP3t9GCPetbc+PSp93r0o0dlnHCkh2C+y7ClD9xQ=;
-        b=st4pLEm20Tbq5/A0Vod/XLGfO6HSEsR2HxHvJ4JqpW7DXO1gUu8TEJm8MOKBoHXRNV
-         eeT0RwDlCVB3B6Cd4/qbDiwDRL4tMIakAE9Js9PhqDyz2bmiXa4RTmv3fyfwqrs/WZ+I
-         z/PB6PFR34txxkGNld5+Ov9eXPgtoojyfQf9Vhls+pcZRfFwD89cOmr7NdR6JmVJH1My
-         GT5kkegbxVn100us1w2N3SyAkQ1orfNL3lMpMTKIkpQKgl5WuQdEdbiXTNh9hgTsu/Bp
-         4RhkZxA7/dDhZWYXRlYLM9NS/9cAcLHKbApsBX2xrsJxxRLtyIRdj70LZLdnhkX5kReA
-         aaJQ==
-X-Gm-Message-State: AOJu0YxQxTQ7hoQsJkezX6B+XApm2+ZNswY9tZvBzzALcOFO3qd9Sm4N
-        wy9ugYVPxL9C7hlsildlhGhUwNbrvvkCYGVejtzgkQ==
-X-Google-Smtp-Source: AGHT+IE6ZbwY8J4Ih5WNxWy2Ppcz6et6k7N6GPeiIFRn+wvdi6e69h/TmO1imu98VtFQc+fT5c8F/JmUb8bt7BkgsT4=
-X-Received: by 2002:a0d:d748:0:b0:5a3:dc2b:6f44 with SMTP id
- z69-20020a0dd748000000b005a3dc2b6f44mr1917620ywd.18.1696408961772; Wed, 04
- Oct 2023 01:42:41 -0700 (PDT)
+        Wed, 4 Oct 2023 04:42:46 -0400
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0A1A7;
+        Wed,  4 Oct 2023 01:42:42 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VtMTZNd_1696408958;
+Received: from 30.13.48.40(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VtMTZNd_1696408958)
+          by smtp.aliyun-inc.com;
+          Wed, 04 Oct 2023 16:42:40 +0800
+Message-ID: <0af36858-5141-4e7b-744d-ec446993010f@linux.alibaba.com>
+Date:   Wed, 4 Oct 2023 16:42:35 +0800
 MIME-Version: 1.0
-References: <20231003145114.21637-1-brgl@bgdev.pl> <CACRpkdY03QUkHcmyfTTfvVFbmNujW3qg5GcNJ-=8zj_zvGqDeg@mail.gmail.com>
- <CAMRc=Md7QKYqRaytw2xG8hqTmEDmZGxFfDyGZqoE96h-CvmJcw@mail.gmail.com>
-In-Reply-To: <CAMRc=Md7QKYqRaytw2xG8hqTmEDmZGxFfDyGZqoE96h-CvmJcw@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 4 Oct 2023 10:42:30 +0200
-Message-ID: <CACRpkdZkQ8tJz=94rKGB4DcEC0z8HJHieZn5FD+-efRU-897Pw@mail.gmail.com>
-Subject: Re: [PATCH 00/36] pinctrl: don't use GPIOLIB global numberspace in helpers
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH net-next v4 00/18] net/smc: implement virtual ISM
+ extension and loopback-ism
+To:     Alexandra Winter <wintera@linux.ibm.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     schnelle@linux.ibm.com, gbayer@linux.ibm.com, pasic@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        dust.li@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
+ <2e4bb42a-1a6c-476e-c982-c4d6cfdac63b@linux.ibm.com>
+ <1fc9a6aa-019d-f3f5-7cac-3b78388c2730@linux.ibm.com>
+ <4bac8bcf-5507-0982-fed2-c507fc3264c2@linux.alibaba.com>
+ <da1d0698-ea4c-12b3-3e20-fc9b65e56a3a@linux.ibm.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <da1d0698-ea4c-12b3-3e20-fc9b65e56a3a@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 10:12=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
 
-> What is your view on Andy's and Kent's issues with the _new() name
-> suffix?
 
-We have done similar operations in the past, and it is similar to what
-Uwe is doing for the moment with the .remove() callbacks.
+On 2023/9/29 21:31, Alexandra Winter wrote:
+> 
+> 
+> On 28.09.23 19:29, Wen Gu wrote:
+>>
+>>
+>> On 2023/9/28 16:56, Alexandra Winter wrote:
+>>>
+>>>
+>>> On 27.09.23 17:16, Alexandra Winter wrote:
+>>>> Hello Wen Gu,
+>>>>
+>>>> I applied and built your patches and noticed some things that you may want to consider in the next version:
+>>>
+>>>
+>>> FYI, patchwork basically complains about many the same issues:
+>>> https://patchwork.kernel.org/project/netdevbpf/list/?series=787037&state=*
+>>>
+>>> In general you should run those check BEFORE you send the patches and not rely on patchwork.
+>> Thank you Sandy. I seem to have not seen the specific content of these checks. May I ask how to
+>> run those patchwork check locally? So that I can make sure everything is ok before send them.
+>>
+> 
+> Citing from Documentation/process/maintainer-netdev.rst :
+> 
+> "patchwork checks
+> ~~~~~~~~~~~~~~~~
+> 
+> Checks in patchwork are mostly simple wrappers around existing kernel
+> scripts, the sources are available at:
+> 
+> https://github.com/kuba-moo/nipa/tree/master/tests
+> 
+> **Do not** post your patches just to run them through the checks.
+> You must ensure that your patches are ready by testing them locally
+> before posting to the mailing list. The patchwork build bot instance
+> gets overloaded very easily and netdev@vger really doesn't need more
+> traffic if we can help it."
+> 
+> HTH
 
-Usually the strategy is employed when the work needs to be spread
-out over a few merge windows so it is a bit of a marker that "this is
-in transition".
-
-There is the  horror story of this staying around forever and becoming
-idiomatic: struct napi_struct (include/linux/netdevice.h) where
-"napi" means "new API" - yeah that could have been handled better...
-
-If there is more moaning about it I will simply squash all the patches
-into one and call it a day - the end result will be the same and no
-sign of any *_new suffix anywhere. It was still worth it for reviewing
-the driver changes on a per-driver basis so then it becomes one of
-those Schopenhauer ladders that you can toss away after climbing
-it.
-
-Yours,
-Linus Walleij
+Thank you! Sandy.
