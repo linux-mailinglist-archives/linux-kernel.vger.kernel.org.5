@@ -2,84 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E9A7B7A80
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3077B7A7C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241811AbjJDIqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
+        id S241819AbjJDIpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241828AbjJDIqB (ORCPT
+        with ESMTP id S241744AbjJDIpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:46:01 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697FEB4;
-        Wed,  4 Oct 2023 01:45:58 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3945gWi6010655;
-        Wed, 4 Oct 2023 08:45:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=bUTwAgBTkAW73VZQU7ly3NnRTsZxNPhoaf8XJA07n7A=;
- b=RhLv9DYh6Lh1lkkoXcoa72jFr9Xidwf36//xZU1zkOpEK5FYVeoh4t/2u9J0JfPA55rk
- +ojyZnAjO1GOcLftxRxsJ9/NCJdoviFJfeTP7InZaxdeOwnfQri/6CXQe27IaWE/MO2x
- +Kt02QhORC2DQjYR/OHcVuULbS/yMdQBN1fEc7VCmGyfDOpE0+lqSW+QX33vHRHi45Jb
- 7ucdN7UjUbvCluDekCx63sWJIBh3C4uU1Opn42UDWlB4RTnJ0lx/OmxPZ5vvaUuMk1J4
- jrRUVGhk3D0Vt8mm5rTmZw84qRQqZQ5534wT1846hhnKQJQbEoty/DsiNIPj8PLtj949 dw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3th1cy0cyp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 08:45:45 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3948jiPB021039
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 4 Oct 2023 08:45:44 GMT
-Received: from [10.218.47.181] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 4 Oct
- 2023 01:45:39 -0700
-Message-ID: <23dd01f1-a772-475f-aa0b-cb4cf34f39e3@quicinc.com>
-Date:   Wed, 4 Oct 2023 14:15:36 +0530
+        Wed, 4 Oct 2023 04:45:51 -0400
+Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44C9A7
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:45:47 -0700 (PDT)
+Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-3af609cb0afso2685545b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:45:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696409147; x=1697013947;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2LXOqdL09PdEzf2Z1P9MseJKNWEnjUR6MgaW5Ba4b4k=;
+        b=SXWCJDzdgaZwBCyoe1R3yh5RVisnE9QoAUIx9tznXijunKQkb2kJhXJCauj8dj9UjK
+         8EIpiMLdszHWjwAzVLxAZtdsblnak99//tqG3dwnC7RPGcwiM9Vv7RdTh3Q5cGMHm27p
+         7+z25CagYyQQlC8yxxwaqatZhWpkYQYZYG/9j/ri0J3T9v3lvzTW8C0JLWUlSMDdQyxO
+         1PBYEpANaFZNr1Fs9Sz6hdqbSqeZjQM4yN5JSgOIz22OxVKNu/Jik4TAoWeROzWLvX0+
+         E867qchjH8rxEmXrH6CSl2BniwJmXAb44zaQsepBcKf/eqvL7sv43J/jNLbbYqIfObnn
+         EcQA==
+X-Gm-Message-State: AOJu0YwyR+37X8HRo2m67TfmIv/9Fr0BJx+RCqdP6JYAmeCLpU4u3ucc
+        C24wKr9ghlyHGYazoXE4PffINz6Y3gOlDYqaZjss2T2EQIZT
+X-Google-Smtp-Source: AGHT+IEWHp6cZMFHBw7kmkOx2YxIFrzIHl4HLYaXzfrBPgZGJg8qTVWaj9fO4RD6PsRAIDixFw9mWzpyJokD1Sg8QvuLcge10uZY
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/5] crypto: qcom-rng - Add hw_random interface support
-Content-Language: en-US
-To:     <neil.armstrong@linaro.org>, Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>
-References: <20231003-topic-sm8550-rng-v4-0-255e4d0ba08e@linaro.org>
- <20231003-topic-sm8550-rng-v4-3-255e4d0ba08e@linaro.org>
-From:   Om Prakash Singh <quic_omprsing@quicinc.com>
-In-Reply-To: <20231003-topic-sm8550-rng-v4-3-255e4d0ba08e@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Sb9CQg0oKJwqCZuG5s89SYkHX-DMCkJT
-X-Proofpoint-GUID: Sb9CQg0oKJwqCZuG5s89SYkHX-DMCkJT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_01,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- clxscore=1015 malwarescore=0 phishscore=0 adultscore=0 bulkscore=0
- lowpriorityscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310040061
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Received: by 2002:a05:6808:23d0:b0:3a8:74ff:6c01 with SMTP id
+ bq16-20020a05680823d000b003a874ff6c01mr1053711oib.5.1696409147021; Wed, 04
+ Oct 2023 01:45:47 -0700 (PDT)
+Date:   Wed, 04 Oct 2023 01:45:46 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009a1d4a0606e008dc@google.com>
+Subject: [syzbot] [fbdev?] general protection fault in bit_putcs
+From:   syzbot <syzbot+524697c54d6e7ec67cf2@syzkaller.appspotmail.com>
+To:     daniel@ffwll.ch, deller@gmx.de, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,179 +55,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    2e530aeb342b Merge branch 'for-next/core', remote-tracking..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=121c1fe6680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5cc95add722fb0c1
+dashboard link: https://syzkaller.appspot.com/bug?extid=524697c54d6e7ec67cf2
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b93281680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1076e749680000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2468ab4c933e/disk-2e530aeb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/bd3708bf8a20/vmlinux-2e530aeb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/86bc7d3468f9/Image-2e530aeb.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+524697c54d6e7ec67cf2@syzkaller.appspotmail.com
+
+Unable to handle kernel paging request at virtual address dfff800000000040
+KASAN: null-ptr-deref in range [0x0000000000000200-0x0000000000000207]
+Mem abort info:
+  ESR = 0x0000000096000005
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x05: level 1 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[dfff800000000040] address between user and kernel address ranges
+Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 0 PID: 6015 Comm: syz-executor865 Not tainted 6.6.0-rc3-syzkaller-g2e530aeb342b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : __fb_pad_aligned_buffer include/linux/fb.h:629 [inline]
+pc : bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
+pc : bit_putcs+0x958/0xe30 drivers/video/fbdev/core/bitblit.c:185
+lr : __fb_pad_aligned_buffer include/linux/fb.h:626 [inline]
+lr : bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
+lr : bit_putcs+0x93c/0xe30 drivers/video/fbdev/core/bitblit.c:185
+sp : ffff800096a974a0
+x29: ffff800096a976b0 x28: 0000000000000200 x27: ffff0000c8fb9010
+x26: ffff0000c8fb9010 x25: 000000000000000f x24: dfff800000000000
+x23: 0000000000000080 x22: 0000000000000000 x21: 0000000000000000
+x20: ffff0000c0032440 x19: 0000000000000200 x18: ffff800096a96dc0
+x17: ffff80008e19d000 x16: ffff80008a576f00 x15: 0000000000000009
+x14: 1ffff00012d52ec1 x13: 0000000000000000 x12: 00000000ffffffff
+x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
+x8 : 0000000000000040 x7 : 0000000000000000 x6 : 0000000000000007
+x5 : 0000000000000000 x4 : 0000000000000008 x3 : ffff8000831e57e8
+x2 : 0000000000000800 x1 : 0000000000000010 x0 : 0000000000000000
+Call trace:
+ __fb_pad_aligned_buffer include/linux/fb.h:629 [inline]
+ bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
+ bit_putcs+0x958/0xe30 drivers/video/fbdev/core/bitblit.c:185
+ fbcon_putcs+0x318/0x4e8 drivers/video/fbdev/core/fbcon.c:1282
+ do_update_region+0x42c/0x5f8 drivers/tty/vt/vt.c:623
+ redraw_screen+0x82c/0xd54 drivers/tty/vt/vt.c:983
+ fbcon_modechanged+0x9f4/0x1090 drivers/video/fbdev/core/fbcon.c:2703
+ fbcon_update_vcs+0x3c/0x4c drivers/video/fbdev/core/fbcon.c:2748
+ do_fb_ioctl+0xa68/0xd24 drivers/video/fbdev/core/fb_chrdev.c:92
+ fb_ioctl+0xec/0x134 drivers/video/fbdev/core/fb_chrdev.c:169
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+Code: 51000679 aa1c03f3 d343fe68 12000a69 (38f86908) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	51000679 	sub	w25, w19, #0x1
+   4:	aa1c03f3 	mov	x19, x28
+   8:	d343fe68 	lsr	x8, x19, #3
+   c:	12000a69 	and	w9, w19, #0x7
+* 10:	38f86908 	ldrsb	w8, [x8, x24] <-- trapping instruction
 
 
-On 10/3/2023 12:40 PM, neil.armstrong@linaro.org wrote:
-> From: Om Prakash Singh <quic_omprsing@quicinc.com>
-> 
-> Add hw_random interface support in qcom-rng driver as new IP block
-> in Qualcomm SoC has inbuilt NIST SP800 90B compliant entropic source
-> to generate true random number.
-> 
-> Keeping current rng_alg interface as well for random number generation
-> using Kernel Crypto API.
-> 
-> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
-> Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Acked-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
->   drivers/crypto/qcom-rng.c | 65 ++++++++++++++++++++++++++++++++++++++++++-----
->   1 file changed, 58 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/crypto/qcom-rng.c b/drivers/crypto/qcom-rng.c
-> index 825a729f205e..8b506abb934c 100644
-> --- a/drivers/crypto/qcom-rng.c
-> +++ b/drivers/crypto/qcom-rng.c
-> @@ -7,6 +7,7 @@
->   #include <linux/acpi.h>
->   #include <linux/clk.h>
->   #include <linux/crypto.h>
-> +#include <linux/hw_random.h>
->   #include <linux/io.h>
->   #include <linux/iopoll.h>
->   #include <linux/kernel.h>
-> @@ -28,17 +29,25 @@
->   
->   #define WORD_SZ			4
->   
-> +#define QCOM_TRNG_QUALITY	1024
-> +
->   struct qcom_rng {
->   	struct mutex lock;
->   	void __iomem *base;
->   	struct clk *clk;
-> -	unsigned int skip_init;
-> +	struct hwrng hwrng;
-> +	struct qcom_rng_of_data *of_data;
->   };
->   
->   struct qcom_rng_ctx {
->   	struct qcom_rng *rng;
->   };
->   
-> +struct qcom_rng_of_data {
-> +	bool skip_init;
-> +	bool hwrng_support;
-> +};
-> +
->   static struct qcom_rng *qcom_rng_dev;
->   
->   static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
-> @@ -66,11 +75,11 @@ static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
->   		} else {
->   			/* copy only remaining bytes */
->   			memcpy(data, &val, max - currsize);
-> -			break;
-> +			currsize = max;
->   		}
->   	} while (currsize < max);
->   
-> -	return 0;
-> +	return currsize;
->   }
->   
->   static int qcom_rng_generate(struct crypto_rng *tfm,
-> @@ -92,6 +101,9 @@ static int qcom_rng_generate(struct crypto_rng *tfm,
->   	mutex_unlock(&rng->lock);
->   	clk_disable_unprepare(rng->clk);
->   
-> +	if (ret >= 0)
-> +		ret = 0;
-> +
->   	return ret;
->   }
->   
-> @@ -101,6 +113,13 @@ static int qcom_rng_seed(struct crypto_rng *tfm, const u8 *seed,
->   	return 0;
->   }
->   
-> +static int qcom_hwrng_read(struct hwrng *hwrng, void *data, size_t max, bool wait)
-> +{
-> +	struct qcom_rng *qrng = container_of(hwrng, struct qcom_rng, hwrng);
-> +
-> +	return qcom_rng_read(qrng, data, max);
-> +}
-> +
->   static int qcom_rng_enable(struct qcom_rng *rng)
->   {
->   	u32 val;
-> @@ -136,7 +155,7 @@ static int qcom_rng_init(struct crypto_tfm *tfm)
->   
->   	ctx->rng = qcom_rng_dev;
->   
-> -	if (!ctx->rng->skip_init)
-> +	if (!ctx->rng->of_data->skip_init)
->   		return qcom_rng_enable(ctx->rng);
->   
->   	return 0;
-> @@ -177,15 +196,31 @@ static int qcom_rng_probe(struct platform_device *pdev)
->   	if (IS_ERR(rng->clk))
->   		return PTR_ERR(rng->clk);
->   
-> -	rng->skip_init = (unsigned long)device_get_match_data(&pdev->dev);
-> +	rng->of_data = (struct qcom_rng_of_data *)of_device_get_match_data(&pdev->dev);
->   
->   	qcom_rng_dev = rng;
->   	ret = crypto_register_rng(&qcom_rng_alg);
->   	if (ret) {
->   		dev_err(&pdev->dev, "Register crypto rng failed: %d\n", ret);
->   		qcom_rng_dev = NULL;
-> +		return ret;
-> +	}
-> +
-> +	if (rng->of_data->hwrng_support) {
-> +		rng->hwrng.name = "qcom_hwrng";
-> +		rng->hwrng.read = qcom_hwrng_read;
-> +		rng->hwrng.quality = QCOM_TRNG_QUALITY;
-> +		ret = devm_hwrng_register(&pdev->dev, &rng->hwrng);
-> +		if (ret) {
-> +			dev_err(&pdev->dev, "Register hwrng failed: %d\n", ret);
-> +			qcom_rng_dev = NULL;
-> +			goto fail;
-> +		}
->   	}
->   
-> +	return ret;
-> +fail:
-> +	crypto_unregister_rng(&qcom_rng_alg);
->   	return ret;
->   }
->   
-> @@ -198,6 +233,21 @@ static int qcom_rng_remove(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> +struct qcom_rng_of_data qcom_prng_of_data = {
-> +	.skip_init = false,
-> +	.hwrng_support = false,
-> +};
-> +
-> +struct qcom_rng_of_data qcom_prng_ee_of_data = {
-> +	.skip_init = true,
-> +	.hwrng_support = false,
-> +};
-> +
-> +struct qcom_rng_of_data qcom_trng_of_data = {
-> +	.skip_init = true,
-> +	.hwrng_support = true,
-> +};
-> +
->   static const struct acpi_device_id __maybe_unused qcom_rng_acpi_match[] = {
->   	{ .id = "QCOM8160", .driver_data = 1 },
->   	{}
-> @@ -205,8 +255,9 @@ static const struct acpi_device_id __maybe_unused qcom_rng_acpi_match[] = {
->   MODULE_DEVICE_TABLE(acpi, qcom_rng_acpi_match);
->   
->   static const struct of_device_id __maybe_unused qcom_rng_of_match[] = {
-> -	{ .compatible = "qcom,prng", .data = (void *)0},
-> -	{ .compatible = "qcom,prng-ee", .data = (void *)1},
-> +	{ .compatible = "qcom,prng", .data = &qcom_prng_of_data },
-> +	{ .compatible = "qcom,prng-ee", .data = &qcom_prng_ee_of_data },
-> +	{ .compatible = "qcom,trng", .data = &qcom_trng_of_data },
->   	{}
->   };
->   MODULE_DEVICE_TABLE(of, qcom_rng_of_match);
-> 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
