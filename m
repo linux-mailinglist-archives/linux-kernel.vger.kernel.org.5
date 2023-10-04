@@ -2,55 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2077B7649
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 03:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA707B764B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 03:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239641AbjJDB1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 21:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42026 "EHLO
+        id S239730AbjJDBbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 21:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232430AbjJDB13 (ORCPT
+        with ESMTP id S230274AbjJDBbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 21:27:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EF3AB
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 18:27:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E20F2C433C7;
-        Wed,  4 Oct 2023 01:27:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696382845;
-        bh=yTvWR13RSP/MZoj7Q5M+5eAsbvb/Cb/re1TdaZF6QWU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vHH6otbNjUX0863bHcWAejSkNzIOQ4rj+9+2Vtwj1mlrLp3WIsZ133c/rfOuX9c4C
-         l2tS3XKKzC/44nAb34iTO9c4lLOYFIoe8/AxMxqPhfCfuDK0KfAV6YYqjt1ft99Rte
-         QHvr3FgHJgnTtkONH/hyDj1Om9EMzDLsMYfcYtYqzCpQ6gi7USBYoZQPSW+V0Tf/Xa
-         4srsD8x5VNqxa2/xQYBhBlNSrezvf6bBOB37XkUZVnR3f0jQTDcIzN2m/hBOHBhp/z
-         JihsP5EKpk8Ag1/druZzyAQrUDIg0XMaNmYrOXHIJbHlRHWvgQ61AQYi8f7UsPb9XQ
-         at2st+eLwJ4Vg==
-Date:   Wed, 4 Oct 2023 10:27:22 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH -fixes] riscv: Fix ftrace syscall handling which are now
- prefixed with __riscv_
-Message-Id: <20231004102722.7baddc2a0e4969afffb55eed@kernel.org>
-In-Reply-To: <20231003182407.32198-1-alexghiti@rivosinc.com>
-References: <20231003182407.32198-1-alexghiti@rivosinc.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Tue, 3 Oct 2023 21:31:35 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7113AF;
+        Tue,  3 Oct 2023 18:31:31 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-452749f6c47so832460137.1;
+        Tue, 03 Oct 2023 18:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696383091; x=1696987891; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cV+BD3Itq4BhCRKPqTWiBEJr03DwuwhyYqtmmv79ESo=;
+        b=G3mIOH7lIRS7RSIElh4st2pGyWz//e8YWlKlKPlyLFp4SRm9RpH7aQHQgE5n+Pqm2H
+         NGbXx/sxseUsb8pPfB9P1xl67wmHy78joNLHirqp9+ilvexiAAX9sOEOyjsBSAsctQk4
+         8GCxQdltR5l8xRydUGzj8CcGHtupCLYvCcvzCOEQ3IPAJoRuqrpK+l8AViy1Cgf2bPWR
+         DHtMGUOWPoneUWLpC/gDTFsW2Qc38MTZ02Updf1Dig8PVDAjc81dcvduI3+WGtkez7cL
+         WZPqHNk071HSP6x4IyYMZvn88hcl7AcvZHvT5B/+WpDHpJbU0bavH33PEPkqjxc6dsGM
+         4zLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696383091; x=1696987891;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cV+BD3Itq4BhCRKPqTWiBEJr03DwuwhyYqtmmv79ESo=;
+        b=SPskSCW8sxE1kPkJoi6v72axO9EPik0PI9Ujc0r+bRbiiuatJTsvTuoczwTjmwCluJ
+         7JOoLFeSPxjj0jexTdaqKaHlLTlhSB20ol8oNPuyf31XIrWieyptgWlvjoarR24Ffudl
+         mb6LYIgmFM2rFZcBomDSJaqtECiqaNsE7DysL0TTYncWF326XFDHGcN8+ONKKUmqONx4
+         Bz18978O2LyANgnR8Vo9c7jd12VrsmKI3Ud+kYQRvvRtKhRmWZ8vZSI8b0IG3oQ8jIit
+         pAt9WcA4ri9XhE3dB+puSr8GQ8GSVBeyEtJCSuBez2uA/NRIYrl5Vn310jOn4boBUk7q
+         mhQA==
+X-Gm-Message-State: AOJu0Yy8MuS5J0ifpF73jPZ3OckkdRiMvhdT+cOpnb9RdirwGjh7k0ZB
+        dryqFUdRuR4IT7UxfOP0MlHDuYOr8OY=
+X-Google-Smtp-Source: AGHT+IGeMBp6m0rTIjRjsfd6YmID2UUcreTdFzgykDkyk+nBYzn3upz1wYDiVgyaAg8QD0xn8mp6ig==
+X-Received: by 2002:a05:6102:14d:b0:452:bfe3:8941 with SMTP id a13-20020a056102014d00b00452bfe38941mr955351vsr.21.1696383090722;
+        Tue, 03 Oct 2023 18:31:30 -0700 (PDT)
+Received: from localhost ([2607:fb90:bea0:d290:37ee:5c3d:1002:8e75])
+        by smtp.gmail.com with ESMTPSA id b20-20020ab00854000000b007ab975b8eb9sm373678uaf.10.2023.10.03.18.31.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 18:31:30 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 18:31:28 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Tariq Toukan <ttoukan.linux@gmail.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Maher Sanalla <msanalla@nvidia.com>,
+        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Pawel Chmielewski <pawel.chmielewski@intel.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Yury Norov <ynorov@nvidia.com>
+Subject: Re: [PATCH 1/4] net: mellanox: drop mlx5_cpumask_default_spread()
+Message-ID: <ZRzAcJInEJtYuOKi@yury-ThinkPad>
+References: <20230925020528.777578-1-yury.norov@gmail.com>
+ <20230925020528.777578-2-yury.norov@gmail.com>
+ <2fd12c42d3dd60b2e9b56e9f7dd37d5f994fd9ac.camel@redhat.com>
+ <ZRwbKRnnKY/tDqCF@yury-ThinkPad>
+ <20231003152030.6615437c@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003152030.6615437c@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,68 +93,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  3 Oct 2023 20:24:07 +0200
-Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
-
-> ftrace creates entries for each syscall in the tracefs but has failed
-> since commit 08d0ce30e0e4 ("riscv: Implement syscall wrappers") which
-> prefixes all riscv syscalls with __riscv_.
+On Tue, Oct 03, 2023 at 03:20:30PM -0700, Jakub Kicinski wrote:
+> On Tue, 3 Oct 2023 06:46:17 -0700 Yury Norov wrote:
+> > Can you elaborate on the conflicts you see? For me it applies cleanly
+> > on current master, and with some 3-way merging on latest -next...
 > 
-> So fix this by implementing arch_syscall_match_sym_name() which allows us
-> to ignore this prefix.
+> We're half way thru the release cycle the conflicts can still come in.
 > 
-> And also ignore compat syscalls like x86/arm64 by implementing
-> arch_trace_is_compat_syscall().
-> 
+> There's no dependency for the first patch. The most normal way to
+> handle this would be to send patch 1 to the networking tree and send
+> the rest in the subsequent merge window.
 
-Looks good to me,
+Ah, I understand now. I didn't plan to move it in current merge
+window. In fact, I'll be more comfortable to keep it in -next for
+longer and merge it in v6.7.
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+But it's up to you. If you think it's better, I can resend 1st patch
+separately.
 
-Thank you,
-
-> Fixes: 08d0ce30e0e4 ("riscv: Implement syscall wrappers")
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
->  arch/riscv/include/asm/ftrace.h | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
-> index 740a979171e5..2b2f5df7ef2c 100644
-> --- a/arch/riscv/include/asm/ftrace.h
-> +++ b/arch/riscv/include/asm/ftrace.h
-> @@ -31,6 +31,27 @@ static inline unsigned long ftrace_call_adjust(unsigned long addr)
->  	return addr;
->  }
->  
-> +/*
-> + * Let's do like x86/arm64 and ignore the compat syscalls.
-> + */
-> +#define ARCH_TRACE_IGNORE_COMPAT_SYSCALLS
-> +static inline bool arch_trace_is_compat_syscall(struct pt_regs *regs)
-> +{
-> +	return is_compat_task();
-> +}
-> +
-> +#define ARCH_HAS_SYSCALL_MATCH_SYM_NAME
-> +static inline bool arch_syscall_match_sym_name(const char *sym,
-> +					       const char *name)
-> +{
-> +	/*
-> +	 * Since all syscall functions have __riscv_ prefix, we must skip it.
-> +	 * However, as we described above, we decided to ignore compat
-> +	 * syscalls, so we don't care about __riscv_compat_ prefix here.
-> +	 */
-> +	return !strcmp(sym + 8, name);
-> +}
-> +
->  struct dyn_arch_ftrace {
->  };
->  #endif
-> -- 
-> 2.39.2
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Thanks,
+Yury
