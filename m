@@ -2,153 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF027B7ECB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57D67B7ECE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242316AbjJDMKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 08:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
+        id S242322AbjJDMMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 08:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242313AbjJDMKq (ORCPT
+        with ESMTP id S232919AbjJDMMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 08:10:46 -0400
-Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2329C9;
-        Wed,  4 Oct 2023 05:10:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kernkonzept.com; s=mx1; h=Cc:To:Message-Id:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Subject:Date:From:References:In-Reply-To:Reply-To:
-        Content-ID:Content-Description;
-        bh=SmL8ximB3jmibA5ut1EhfI+VT8YUU8o3eptjGal/v/8=; b=dTCUotHndBZzy055HBmkMgW8Jm
-        7PPB9RGNMRO1nXirwbGtECWdOLx0WIetYONPfmMbo90+gSbBQbkAU4U6OInftVy0P+86DMd0UNNly
-        9/wcR5OJXGw2JxBqr22k6IxmiWW7ACc8jiGb0eVPH8hFl3FLWMhVluGG10gb9sU02j3F/uV28vaF2
-        btk3tBNOTKtBBwW6CLfkzY/9D0laZA6oiHTTwi6W11K3CgC2O4OzHQeIEd+iY/ZT60QPgk49RXlbT
-        8frjXUjoEn+a//YGSnkRJUT2jQFAN5aXk9CX4iVzfNVQl+JGjPfM99acVm1zd78AcncjIRuwBH/DJ
-        2B9FUzcg==;
-Received: from [10.22.3.24] (helo=serv1.dd1.int.kernkonzept.com)
-        by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
-        id 1qo0i5-0070GG-12;
-        Wed, 04 Oct 2023 14:10:37 +0200
-From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Date:   Wed, 04 Oct 2023 14:10:34 +0200
-Subject: [PATCH v2] clk: qcom: smd: Disable unused clocks
+        Wed, 4 Oct 2023 08:12:17 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C555A9;
+        Wed,  4 Oct 2023 05:12:13 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 394CC2Ha058447;
+        Wed, 4 Oct 2023 07:12:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696421522;
+        bh=2U6X4ob8Upv4VW4rnfSzUjHvNGpb82svTBKA67ZIUPw=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=n7N3Du2uuoeDUrp36mBcNPMVmZZ1Kz2i2cLdpjW7/2IzG97cBZzXzpJ2ShOeWAG3e
+         k48ZhXxwtN+B31HOG9kYxZy9CqVXUupyVBdO8CfvzUcIPVsX+XXud0Y/74JeGvlfik
+         mDd8/b8sdFWQjLeNvT4W89AaK1KJtay3YjwtufTM=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 394CC2VO025067
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 4 Oct 2023 07:12:02 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 4
+ Oct 2023 07:12:02 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 4 Oct 2023 07:12:02 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 394CC2I8061790;
+        Wed, 4 Oct 2023 07:12:02 -0500
+Date:   Wed, 4 Oct 2023 07:12:02 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Nitin Yadav <n-yadav@ti.com>
+CC:     <vigneshr@ti.com>, <rogerq@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <conor+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] arm64: dts: ti: Add GPMC support for AM62x LP SK
+Message-ID: <20231004121202.rqrpp6izwcpdggm5@obtrusive>
+References: <20231004111238.3968984-1-n-yadav@ti.com>
+ <20231004111238.3968984-2-n-yadav@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231004-clk-qcom-smd-rpm-unused-v2-1-9a5281f324dc@kernkonzept.com>
-X-B4-Tracking: v=1; b=H4sIADlWHWUC/zWNQQ6CMBAAv0L27JLdilI8+Q/jAekCjVBwC8aE8
- HcbE49zmJkNoqiXCJdsA5W3j34KCcwhg6avQyfoXWIwZI5MVGAzPPHVTCPG0aHOI65hjeLwUVa
- OiI2xzJDsWaX1n1/5dk/canKWXqX+94gsl1xQRTZne6rKMzLGReb0vXai/TS4PMgC+/4FA3ZKe
- KcAAAA=
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231004111238.3968984-2-n-yadav@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the moment, clk-smd-rpm forces all clocks on at probe time (for
-"handoff"). However, it does not make the clk core aware of that.
+On 16:42-20231004, Nitin Yadav wrote:
+> Add gpmc0 and elm0 nodes in k3-am62-main. Add GPMC0_CFG and
 
-This means that the clocks stay enabled forever if they are not used
-by anything. We can easily disable them again after bootup has been
-completed, by making the clk core aware of the state. This is
-implemented by returning the current state of the clock in
-is_prepared().
+s/gpmc0/GPMC and elm0/ELM
+Also a oneliner as to what GPMC and ELM are will be helpful.
 
-Checking the SPMI clock registers reveals that this allows the RPM to
-disable unused BB/RF clocks. This reduces the power consumption quite
-significantly and is also needed to allow entering low-power states.
+> GPMC0_DATA entry in cbass_main node.
+> 
+> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 29 ++++++++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-am62.dtsi      |  2 ++
+>  2 files changed, 31 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> index ac760d9b831d..f854369dfc27 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> @@ -965,4 +965,33 @@ mcasp2: audio-controller@2b20000 {
+>  		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
+>  		status = "disabled";
+>  	};
+> +	gpmc0: memory-controller@3b000000 {
+> +		compatible = "ti,am64-gpmc";
+> +		reg = <0x00 0x03b000000 0x00 0x400>,
+> +		      <0x00 0x050000000 0x00 0x8000000>;
+> +		reg-names = "cfg", "data";
+> +		interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&k3_clks 80 0>;
+> +		clock-names = "fck";
+> +		power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
+> +		gpmc,num-cs = <3>;
+> +		gpmc,num-waitpins = <2>;
+> +		#address-cells = <2>;
+> +		#size-cells = <1>;
+> +		interrupt-controller;
+> +		#interrupt-cells = <2>;
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +		status = "disabled";
 
-As of commit d6edc31f3a68 ("clk: qcom: smd-rpm: Separate out
-interconnect bus clocks") the interconnect-related clocks are no longer
-managed/exposed by clk-smd-rpm. Also the BI_TCXO_AO clock is now
-critical (and never disabled).
+As mentioned - document why disabled by default.
 
-There is still a slight chance that this change will break boot on some
-devices. However, this will be most likely caused by actual mistakes in
-the device tree (where required clocks were not actually specified).
+> +	};
+> +
+> +	elm0: ecc@25010000 {
+> +		compatible = "ti,am3352-elm";
+> +		reg = <0x00 0x25010000 0x00 0x2000>;
+> +		interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&k3_clks 54 0>;
+> +		clock-names = "fck";
+> +		power-domains = <&k3_pds 54 TI_SCI_PD_EXCLUSIVE>;
+> +		status = "disabled";
 
-Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
----
-Changes in v2:
-- Rebase on latest qcom/for-next, update commit message with other recent
-  related changes
-- Link to v1: https://lore.kernel.org/linux-arm-msm/20200817140908.185976-1-stephan@gerhold.net/
----
-Keeping all unused clocks on makes it very easy to forget to enable
-actually required clocks. [1] is one example of that, where the crypto
-engine worked fine without any clocks. IMHO we should try to get this
-change in sooner than later to avoid introducing more new mistakes.
+As mentioned - document why disabled by default.
+> +	};
+>  };
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62.dtsi b/arch/arm64/boot/dts/ti/k3-am62.dtsi
+> index f1e15206e1ce..b9b1e522d74c 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62.dtsi
+> @@ -77,6 +77,8 @@ cbass_main: bus@f0000 {
+>  			 <0x00 0x70000000 0x00 0x70000000 0x00 0x00010000>, /* OCSRAM */
+>  			 <0x01 0x00000000 0x01 0x00000000 0x00 0x00310000>, /* A53 PERIPHBASE */
+>  			 <0x05 0x00000000 0x05 0x00000000 0x01 0x00000000>, /* FSS0 DAT3 */
+> +			 <0x00 0x3b000000 0x00 0x3b000000 0x00 0x00000400>, /* GPMC0 CFG */
+> +			 <0x00 0x50000000 0x00 0x50000000 0x00 0x08000000>, /* GPMC0 DATA */
 
-[1]: https://lore.kernel.org/linux-arm-msm/ZGdLCdSof027mk5u@gerhold.net/
----
- drivers/clk/qcom/clk-smd-rpm.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Why not keep it sorted?
+>  
+>  			 /* MCU Domain Range */
+>  			 <0x00 0x04000000 0x00 0x04000000 0x00 0x01ff1400>,
+> -- 
+> 2.25.1
+> 
 
-diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
-index 0191fc0dd7da..eba650ad7291 100644
---- a/drivers/clk/qcom/clk-smd-rpm.c
-+++ b/drivers/clk/qcom/clk-smd-rpm.c
-@@ -335,6 +335,13 @@ static void clk_smd_rpm_unprepare(struct clk_hw *hw)
- 	mutex_unlock(&rpm_smd_clk_lock);
- }
- 
-+static int clk_smd_rpm_is_prepared(struct clk_hw *hw)
-+{
-+	struct clk_smd_rpm *r = to_clk_smd_rpm(hw);
-+
-+	return r->enabled;
-+}
-+
- static int clk_smd_rpm_set_rate(struct clk_hw *hw, unsigned long rate,
- 				unsigned long parent_rate)
- {
-@@ -431,6 +438,7 @@ static int clk_smd_rpm_enable_scaling(void)
- static const struct clk_ops clk_smd_rpm_ops = {
- 	.prepare	= clk_smd_rpm_prepare,
- 	.unprepare	= clk_smd_rpm_unprepare,
-+	.is_prepared	= clk_smd_rpm_is_prepared,
- 	.set_rate	= clk_smd_rpm_set_rate,
- 	.round_rate	= clk_smd_rpm_round_rate,
- 	.recalc_rate	= clk_smd_rpm_recalc_rate,
-@@ -439,6 +447,7 @@ static const struct clk_ops clk_smd_rpm_ops = {
- static const struct clk_ops clk_smd_rpm_branch_ops = {
- 	.prepare	= clk_smd_rpm_prepare,
- 	.unprepare	= clk_smd_rpm_unprepare,
-+	.is_prepared	= clk_smd_rpm_is_prepared,
- 	.recalc_rate	= clk_smd_rpm_recalc_rate,
- };
- 
-@@ -1279,6 +1288,9 @@ static int rpm_smd_clk_probe(struct platform_device *pdev)
- 		ret = clk_smd_rpm_handoff(rpm_smd_clks[i]);
- 		if (ret)
- 			goto err;
-+
-+		/* During handoff we force all clocks on */
-+		rpm_smd_clks[i]->enabled = true;
- 	}
- 
- 	for (i = 0; i < desc->num_icc_clks; i++) {
-
----
-base-commit: 870b5222204243ee6dbeada9ad1b90cda9ecb4da
-change-id: 20231004-clk-qcom-smd-rpm-unused-b79d00122811
-
-Best regards,
 -- 
-Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Kernkonzept GmbH at Dresden, Germany, HRB 31129, CEO Dr.-Ing. Michael Hohmuth
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
