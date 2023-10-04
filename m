@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C695D7B7F3B
+	by mail.lfdr.de (Postfix) with ESMTP id 7900D7B7F3A
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242373AbjJDMfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 08:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
+        id S242452AbjJDMfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 08:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242362AbjJDMfd (ORCPT
+        with ESMTP id S242369AbjJDMfe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 08:35:33 -0400
+        Wed, 4 Oct 2023 08:35:34 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A438193
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:35:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49125BF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:35:31 -0700 (PDT)
 From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1696422929;
@@ -22,21 +22,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=W54m7rvqf/KqCMpTV79oOtmZr9LItvdWHEN45lcUeaw=;
-        b=Efrc1xoorJOzy8tsALP1Bhr1M7Nxl+bJb/TLuAn1JJNB+EXwQE2BEjWHaW9r482myE0wWL
-        uyLPSjVJw/V3m5a2xAAfe0w7iX/ytMsCbLv2tlTECGXATITJthK/1y6An9HyHv+7ky8UNx
-        fnHJSOY2T7+agSXCrPYFIOj9ItFLcUo0G7iR/mN98qfQSUB2Ws3EteNzW/outR2GYMFdcx
-        ZFt0ZjSVe6aKa5SGx5o1vMRv+CpHEF2kFZa1OL6kuHQgkcL0dIRC0Sc9kL61V9WnqSZppx
-        f6yrhTvO2oWkhTA1l9pdm8ybiwUDZcfyp9uv9BD0L4FC9nMTEMZCKyY5jcB3Pw==
+        bh=TACaL1lFRKPWpkhfzVfD3M8bG5zQsJmcuSPp/gOAMUM=;
+        b=LW5O10L3K/13uU8Y/WizuaxwUjNbbEFTne4OjEEzLrAOTlX0f5E1sU9zYiEDesd9RStzju
+        rcdIC9V+wKtNSFXHSiKXzApMmy4s0mz3BSHlJCEF7yyClrGObOgR5wRIDVVRu29cA9OGER
+        4bZaDCZgHutQ6vKti5lxrmQJPtJVHx/sA1V5jaPVPU+ruJsQrsjZrkobBWNVIRHbkaP+ba
+        vo3F2FnwjvkuFSxEkxrSg7lhbUkKBGNh0rjeyRE3E9+EvEnXoqMmLIHQA7CoM4scSouyM7
+        57E4l5kJU7wTMQdxf6lZwGRmH2tQ57seDXgvk/DIueRaDeJBCZD3N0TfKoEhDg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1696422929;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=W54m7rvqf/KqCMpTV79oOtmZr9LItvdWHEN45lcUeaw=;
-        b=HnIgZMU7Y2g9X5WBxvEHh86H4zJMqVCS4RU8TGz0WgX52KTUJ1COlkvacxUBh/tihoDYYG
-        6WDL1TBNzELczOCg==
+        bh=TACaL1lFRKPWpkhfzVfD3M8bG5zQsJmcuSPp/gOAMUM=;
+        b=f/cvwydXPVYbloV/MLHuClxhZ4pur5aHlYO74vCB/JxgoWTJfTrH14sdSnUTBJu/CdxMxy
+        AqNgfFlMXVer0rAw==
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         John Stultz <jstultz@google.com>,
@@ -55,9 +55,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
         K Prateek Nayak <kprateek.nayak@amd.com>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v8 06/25] timers: Split out forward timer base functionality
-Date:   Wed,  4 Oct 2023 14:34:35 +0200
-Message-Id: <20231004123454.15691-7-anna-maria@linutronix.de>
+Subject: [PATCH v8 07/25] timers: Use already existing function for forwarding timer base
+Date:   Wed,  4 Oct 2023 14:34:36 +0200
+Message-Id: <20231004123454.15691-8-anna-maria@linutronix.de>
 In-Reply-To: <20231004123454.15691-1-anna-maria@linutronix.de>
 References: <20231004123454.15691-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
@@ -71,67 +71,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Forwarding timer base is done when the next expiry value is calculated and
-when a new timer is enqueued. When the next expiry value is calculated the
-jiffies value is already available and does not need to be reread a second
-time.
+There is an already existing function for forwarding the timer
+base. Forwarding the timer base is implemented directly in
+get_next_timer_interrupt() as well.
 
-Splitting out the forward timer base functionality to make it executable
-via both contextes - those where jiffies are already known and those, where
-jiffies need to be read.
-
-No functional change.
+To avoid code duplication, replace implementation for forwarding timer base
+with the direct call to the already existing function.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 ---
- kernel/time/timer.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ kernel/time/timer.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 31aed8353db1..2f6afd1da891 100644
+index 2f6afd1da891..dc58c479d35a 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -939,30 +939,34 @@ get_target_base(struct timer_base *base, unsigned tflags)
- 	return get_timer_this_cpu_base(tflags);
- }
- 
--static inline void forward_timer_base(struct timer_base *base)
-+static inline void __forward_timer_base(struct timer_base *base,
-+					unsigned long basej)
- {
--	unsigned long jnow = READ_ONCE(jiffies);
--
- 	/*
- 	 * Check whether we can forward the base. We can only do that when
- 	 * @basej is past base->clk otherwise we might rewind base->clk.
- 	 */
--	if (time_before_eq(jnow, base->clk))
-+	if (time_before_eq(basej, base->clk))
- 		return;
+@@ -1939,15 +1939,9 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
  
  	/*
- 	 * If the next expiry value is > jiffies, then we fast forward to
- 	 * jiffies otherwise we forward to the next expiry value.
+ 	 * We have a fresh next event. Check whether we can forward the
+-	 * base. We can only do that when @basej is past base->clk
+-	 * otherwise we might rewind base->clk.
++	 * base.
  	 */
--	if (time_after(base->next_expiry, jnow)) {
--		base->clk = jnow;
-+	if (time_after(base->next_expiry, basej)) {
-+		base->clk = basej;
- 	} else {
- 		if (WARN_ON_ONCE(time_before(base->next_expiry, base->clk)))
- 			return;
- 		base->clk = base->next_expiry;
- 	}
-+
- }
+-	if (time_after(basej, base->clk)) {
+-		if (time_after(nextevt, basej))
+-			base->clk = basej;
+-		else if (time_after(nextevt, base->clk))
+-			base->clk = nextevt;
+-	}
++	__forward_timer_base(base, basej);
  
-+static inline void forward_timer_base(struct timer_base *base)
-+{
-+	__forward_timer_base(base, READ_ONCE(jiffies));
-+}
- 
- /*
-  * We are using hashed locking: Holding per_cpu(timer_bases[x]).lock means
+ 	if (time_before_eq(nextevt, basej)) {
+ 		expires = basem;
 -- 
 2.39.2
 
