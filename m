@@ -2,56 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 171777B81A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948757B81A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242729AbjJDODJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        id S242741AbjJDODf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242645AbjJDODI (ORCPT
+        with ESMTP id S242696AbjJDODe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:03:08 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F58A1
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:03:05 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qo2Si-0007mV-CC; Wed, 04 Oct 2023 16:02:52 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qo2Sh-00B3H0-R7; Wed, 04 Oct 2023 16:02:51 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qo2Sh-0090zY-Hq; Wed, 04 Oct 2023 16:02:51 +0200
-Date:   Wed, 4 Oct 2023 16:02:51 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pwm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: pwm: Add T-HEAD PWM controller
-Message-ID: <20231004140251.smwazlizo5nmpz2a@pengutronix.de>
-References: <20231004092731.1362-1-jszhang@kernel.org>
- <20231004092731.1362-2-jszhang@kernel.org>
+        Wed, 4 Oct 2023 10:03:34 -0400
+Received: from alerce.blitiri.com.ar (alerce.blitiri.com.ar [IPv6:2001:bc8:228b:9000::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FBCAB
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:03:29 -0700 (PDT)
+Received: from [IPV6:2a02:8109:aa40:4e0:b5c6:9671:3477:8fde]
+        by sdfg.com.ar (chasquid) with ESMTPSA
+        tls TLS_AES_128_GCM_SHA256
+        (over submission+TLS, TLS-1.3, envelope from "rodrigo@sdfg.com.ar")
+        ; Wed, 04 Oct 2023 14:03:25 +0000
+Message-ID: <14c52402-ebc8-4425-9871-1663a87182ef@sdfg.com.ar>
+Date:   Wed, 4 Oct 2023 16:03:24 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yyfa3baivxpuqfl7"
-Content-Disposition: inline
-In-Reply-To: <20231004092731.1362-2-jszhang@kernel.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/2] seccomp: Split set filter into two steps
+To:     Hengqi Chen <hengqi.chen@gmail.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     keescook@chromium.org, luto@amacapital.net, wad@chromium.org,
+        alexyonghe@tencent.com,
+        Alban Crequy <albancrequy@linux.microsoft.com>
+References: <20231003083836.100706-1-hengqi.chen@gmail.com>
+Content-Language: en-US
+From:   Rodrigo Campos <rodrigo@sdfg.com.ar>
+In-Reply-To: <20231003083836.100706-1-hengqi.chen@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,40 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/3/23 10:38, Hengqi Chen wrote:
+> This patchset introduces two new operations which essentially
+> splits the SECCOMP_SET_MODE_FILTER process into two steps:
+> SECCOMP_LOAD_FILTER and SECCOMP_ATTACH_FILTER.
+> 
+> The SECCOMP_LOAD_FILTER loads the filter and returns a fd
+> which can be pinned to bpffs. This extends the lifetime of the
+> filter and thus can be reused by different processes.
 
---yyfa3baivxpuqfl7
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A quick question to see if handling something else too is 
+possible/reasonable to do here too.
 
-Hello,
+Let me explain our use case first.
 
-On Wed, Oct 04, 2023 at 05:27:30PM +0800, Jisheng Zhang wrote:
-> +  "#pwm-cells":
-> +    const: 2
+For us (Alban in cc) it would be great if we can extend the lifetime of 
+the fd returned, so the process managing a seccomp notification in 
+userspace can easly crash or be updated. Today, if the agent that got 
+the fd crashes, all the "notify-syscalls" return ENOSYS in the target 
+process.
 
-Please make this a 3.
+Our use case is we created a seccomp agent to use in Kubernetes 
+(github.com/kinvolk/seccompagent) and we need to handle either the agent 
+crashing or upgrading it. We were thinking tricks to have another 
+container that just stores fds and make sure that never crashes, but it 
+is not ideal (we checked tricks to use systemd to store our fds, but it 
+is not simpler either to use from containers).
 
-Best regards
-Uwe
+If the agent crashes today, all the syscalls return ENOSYS. It will be 
+great if we can make the process doing the syscall just wait until a new 
+process to handle the notifications is up and the syscalls done in the 
+meantime are just queued. A mode of saying "if the agent crashes, just 
+queue notifications, one agent to pick them up will come back soon" (we 
+can of course limit reasonably the notification queue).
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+It seems the split here would not just work for that use case. I think 
+we would need to pin the attachment.
 
---yyfa3baivxpuqfl7
-Content-Type: application/pgp-signature; name="signature.asc"
+Do you think handling that is something reasonable to do in this series too?
 
------BEGIN PGP SIGNATURE-----
+I'll be afk until end next week. I'll catch up as soon as I'm back with 
+internet :)
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUdcIUACgkQj4D7WH0S
-/k4h8Qf+Ia6dnze4AFsN9pYFc9wi8+dnrkfW8vPHngsUX7UMRjp24RuetCeLpPNf
-zdAp8DHO10gQMncXwM/JXMlLg+OC7PJ3YhdFLq6HZbLrvwO0sOITHr5q087tpaRN
-h27NkHMGILH3rYFSqni0nRxNCH+gwbrZ8OpAyCO1XjwtCYWTBpp/E+V+VZAxQUyd
-Q8j2aoCE9p4+vJvCYoUomWm9S3b0UT/6Odw/mAbrghFXaTx+8YUDznQPuQx+pBQB
-H4ZFpmHmkTJ42/cU6Q2yGxwmjkmhWyPfusUesmbOpV9QKj7aGuFXBE5N6PZ2Uu3I
-KaxuEG8+CwEWzxuQDssUrTrXf8JGpQ==
-=2coh
------END PGP SIGNATURE-----
 
---yyfa3baivxpuqfl7--
+
+Best,
+Rodrigo
