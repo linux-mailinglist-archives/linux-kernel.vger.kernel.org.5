@@ -2,130 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8276B7B88DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F907B8921
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243927AbjJDSUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 14:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
+        id S244110AbjJDSW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 14:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243886AbjJDSUL (ORCPT
+        with ESMTP id S244117AbjJDSW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 14:20:11 -0400
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5573A98
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 11:20:07 -0700 (PDT)
+        Wed, 4 Oct 2023 14:22:57 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18759C9
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 11:22:52 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-49d8fbd307fso75264e0c.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 11:22:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=XhGwfSSppENigG2XAqHhSEMEgjyPf1EhBAKqmgBZLgs=;
-  b=lRNyWXw9UO1Xs9GRXQUMDYB93ePQGOQ9sEVHXNcNZrrRLVuA1UyoTvuo
-   BHdi8D3a2qqLeCiNbBOU92CWbKaOYcin72dYuROSCIVcuTaNur2Y3hvny
-   lwOwNqLnsOOzMe9MzrtvC9gUO0E8XrucLmCAstcmdW0wLMpxJzRYnkBNn
-   A=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,201,1694728800"; 
-   d="scan'208";a="67788713"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 20:20:06 +0200
-Date:   Wed, 4 Oct 2023 20:20:05 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Ingo Molnar <mingo@kernel.org>
-cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: EEVDF and NUMA balancing
-In-Reply-To: <ZR2rrixNEjrYiaYi@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2310042019470.3108@hadrien>
-References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien> <20231003215159.GJ1539@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041358420.3108@hadrien> <20231004120544.GA6307@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
- <ZR2rrixNEjrYiaYi@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696443771; x=1697048571; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=93ffs6Ol2kMcPT/3DmQKAdiDLS9hn1pGsiSqatK8OJs=;
+        b=QX8u5bIBIm77lZwle8EKqVte+Um4sgbLiC27cdfDk8Lpq9oZWaskA13unqAFvs+2n/
+         pMrrEj6M5LiUKDuxbitr6hrVii29XJZku55RVANvhaUR94+VEsYOBn0/a1Cu+Pj4i3ui
+         cTLDs1hTe2dwFzzpIW5UvjGM9cF/q5/O6d/hehXXp9xpuQAy5omhNJnwOyxfkDCThGqy
+         360uqpLFbQd2Kaq28pkMjsXgpt74WL5jE5xNJ9UcYjx0ebSKvW/6LmH5MoulLVCuBzXz
+         h4dxjPRKYsFcIYSBDxh2osRZiDJLYojdh7hLEzhEuEPuFdyBJR5UnWbEURcPxfG19eGy
+         VzpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696443771; x=1697048571;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=93ffs6Ol2kMcPT/3DmQKAdiDLS9hn1pGsiSqatK8OJs=;
+        b=O/cWmvsJcR5YW9iBX9VpeciXXb5UiEs8NsbzecAdgtkYYsm8+1QmH1zWb2qV+XJoh4
+         fGezWD0o8VyByf2MJ+84cUyOc4DljEXzYrgIp/fbJhMqr7XgquKHplpZL6Br90arM7LX
+         u3aArIRfqjbN9v/Oqlaq4lLpczeMcPFxgtiULD8WPfCqRkhGL45sdvpqxm2zBPXOuXUt
+         mPlPdGNvqZNUr1pyUjjWGoEx+9CdsgEo3pO7mlndNrHad+SAu9zoEotDjieF76YUflK2
+         9Bahk5dtqX+4uiSFwyiPP9iN3Drsn8nAYJlJPdxrtv8E0btWM95UxFtpTYgep+uAWUzU
+         bhDw==
+X-Gm-Message-State: AOJu0YxiFs8UQqS26O/xSDQVZHABUzTy5feoGZJQgnYGBBEEgfpXWqOb
+        ZndhGvQDpzmGytK1aropPkyetns/wpJRK9gFn23NhQ==
+X-Google-Smtp-Source: AGHT+IH5gfj/VOy9TkmlkSdFeXfKzCyMWsO4ud+J31ASiJwEdF+EsTzjobW7bcCpu3bJnjcZ82GU/waoIOzaJPaa1A0=
+X-Received: by 2002:a1f:ca83:0:b0:495:c464:a2fe with SMTP id
+ a125-20020a1fca83000000b00495c464a2femr2877473vkg.2.1696443771162; Wed, 04
+ Oct 2023 11:22:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230926145943.42814-1-brgl@bgdev.pl> <e6817d30-b443-1a73-efae-84415604b19f@redhat.com>
+ <CACMJSetWH=Z5ubHb33W0mYvpqkU7vv=nKNBSa9eLmAi94NyrgA@mail.gmail.com> <29764d46-8d3d-9794-bbde-d7928a91cbb5@redhat.com>
+In-Reply-To: <29764d46-8d3d-9794-bbde-d7928a91cbb5@redhat.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 4 Oct 2023 20:22:39 +0200
+Message-ID: <CAMRc=MfM+2MoeUvqGMJ3hjpg0Y1jHH2FwMTEN3o-JiCugiDXTA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] platform/x86: int3472: don't use gpiod_toggle_active_low()
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Mark Gross <markgross@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 4, 2023 at 6:30=E2=80=AFPM Hans de Goede <hdegoede@redhat.com> =
+wrote:
+>
+> Hi Bart,
+>
+> On 9/28/23 20:40, Bartosz Golaszewski wrote:
+> > On Thu, 28 Sept 2023 at 14:40, Hans de Goede <hdegoede@redhat.com> wrot=
+e:
+> >>
+> >> Hi All,
+> >>
+> >> Here is a v2 of Bartosz' "don't use gpiod_toggle_active_low()" series.
+> >>
+> >> New in v2:
+> >> - Rework to deal with ACPI path vs gpiod_lookup.key differences:
+> >>   acpi_get_handle(path) -> acpi_fetch_acpi_dev(handle) -> acpi_dev_nam=
+e(adev)
+> >>
+> >> Regards,
+> >>
+> >> Hans
+> >>
+> >>
+> >> Bartosz Golaszewski (2):
+> >>   platform/x86: int3472: Add new
+> >>     skl_int3472_gpiod_get_from_temp_lookup() helper
+> >>   gpio: acpi: remove acpi_get_and_request_gpiod()
+> >>
+> >> Hans de Goede (3):
+> >>   platform/x86: int3472: Add new skl_int3472_fill_gpiod_lookup() helpe=
+r
+> >>   platform/x86: int3472: Stop using gpiod_toggle_active_low()
+> >>   platform/x86: int3472: Switch to devm_get_gpiod()
+> >>
+> >>  drivers/gpio/gpiolib-acpi.c                   |  28 -----
+> >>  .../x86/intel/int3472/clk_and_regulator.c     |  54 ++--------
+> >>  drivers/platform/x86/intel/int3472/common.h   |   7 +-
+> >>  drivers/platform/x86/intel/int3472/discrete.c | 101 ++++++++++++++---=
+-
+> >>  drivers/platform/x86/intel/int3472/led.c      |  24 +----
+> >>  include/linux/gpio/consumer.h                 |   8 --
+> >>  6 files changed, 93 insertions(+), 129 deletions(-)
+> >>
+> >> --
+> >> 2.41.0
+> >>
+> >
+> > Thanks Hans, this looks good to me. I'd let it sit on the list for a
+> > week. After that, do you want to take patches 1-4 and provide me with
+> > another tag?
+>
+> I have just send out a v3 to address Andy's remark about me
+> somehow resetting the authorship to me on 2 patches from Bartosz.
+>
+> While working on this I noticed (and fixed) a bug in:
+>
+> [RFT PATCH 1/4] platform/x86: int3472: provide a helper for getting GPIOs=
+ from lookups
+> https://lore.kernel.org/all/20230926145943.42814-2-brgl@bgdev.pl/
+>
+>         struct gpiod_lookup_table *lookup __free(kfree) =3D
+>                         kzalloc(struct_size(lookup, table, 1), GFP_KERNEL=
+);
+>
+> You are allocating an entry for the temp lookup, but the gpiolib
+> core expects lookup tables to be terminated with an entry lookup,
+> so this should alloc space for 2 entries:
+>
+>         struct gpiod_lookup_table *lookup __free(kfree) =3D
+>                         kzalloc(struct_size(lookup, table, 2), GFP_KERNEL=
+);
+>
+> Despite this already being fixed now I wanted to explicitly point
+> this out in case you have used the same construct elsewhere during
+> your recent gpiolib cleanup efforts ?
+>
+> As for your request for a tag for the 4st 4 patches for you to merge
+> into gpiolib. I'll go and work work on that. I need to coordinate
+> this with Ilpo, with whom I now co-maintain pdx86 .
+>
+> Regards,
+>
+> Hans
+>
+>
 
+Gah, thank you for bringing this up, I need one fix for a SPI driver.
 
-On Wed, 4 Oct 2023, Ingo Molnar wrote:
-
->
-> * Julia Lawall <julia.lawall@inria.fr> wrote:
->
-> >
-> >
-> > On Wed, 4 Oct 2023, Peter Zijlstra wrote:
-> >
-> > > On Wed, Oct 04, 2023 at 02:01:26PM +0200, Julia Lawall wrote:
-> > > >
-> > > >
-> > > > On Tue, 3 Oct 2023, Peter Zijlstra wrote:
-> > > >
-> > > > > On Tue, Oct 03, 2023 at 10:25:08PM +0200, Julia Lawall wrote:
-> > > > > > Is it expected that the commit e8f331bcc270 should have an impact on the
-> > > > > > frequency of NUMA balancing?
-> > > > >
-> > > > > Definitely not expected. The only effect of that commit was supposed to
-> > > > > be the runqueue order of tasks. I'll go stare at it in the morning --
-> > > > > definitely too late for critical thinking atm.
-> > > >
-> > > > Maybe it's just randomly making a bad situation worse rather than directly
-> > > > introduing a problem.  There is a high standard deviatind in the
-> > > > performance.  Here are some results with hyperfine.  The general trends
-> > > > are reproducible.
-> > >
-> > > OK,. I'm still busy trying to bring a 4 socket machine up-to-date...
-> > > gawd I hate the boot times on those machines :/
-> > >
-> > > But yeah, I was thinking similar things, I really can't spot an obvious
-> > > fail in that commit.
-> > >
-> > > I'll go have a poke once the darn machine is willing to submit :-)
-> >
-> > I tried a two-socket machine, but in 50 runs the problem doesn't show up.
-> >
-> > The commit e8f331bcc270 starts with
-> >
-> > -       if (sched_feat(PLACE_LAG) && cfs_rq->nr_running > 1) {
-> > +       if (sched_feat(PLACE_LAG) && cfs_rq->nr_running) {
-> >
-> > This seemed like a big change - cfs_rq->nr_running > 1 should be rarely
-> > true in ua, while cfs_rq->nr_running should always be true.  Adding back
-> > the > 1 and simply replacing the test by 0 both had no effect, though.
->
-> BTW., in terms of statistical reliability, one of the biggest ...
-> stochastic elements of scheduler balancing is wakeup-preemption - which
-> you can turn off via:
->
->    echo NO_WAKEUP_PREEMPTION > /debug/sched/features
->
-> or:
->
->    echo NO_WAKEUP_PREEMPTION > /sys/kernel/debug/sched/features
->
-> If you can measure a performance regression with WAKEUP_PREEMPTION turned
-> off in *both* kernels, there's likely a material change (regression) in the
-> quality of NUMA load-balancing.
->
-> If it goes away or changes dramatically with WAKEUP_PREEMPTION off, then
-> I'd pin this effect to EEVDF causing timing changes that are subtly
-> shifting NUMA & SMP balancing decisions past some critical threshold that
-> is detrimental to this particular workload.
->
-> ( Obviously both are regressions we care about - but doing this test would
->   help categorize the nature of the regression. )
-
-Thanks for the suggestion.  I will try that,
-
-julia
+Bart
