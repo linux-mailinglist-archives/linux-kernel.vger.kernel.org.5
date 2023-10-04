@@ -2,92 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6967B86FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512B67B8701
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233826AbjJDRwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 13:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
+        id S243535AbjJDRxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 13:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233325AbjJDRwb (ORCPT
+        with ESMTP id S233325AbjJDRxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 13:52:31 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C6EA6;
-        Wed,  4 Oct 2023 10:52:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=mo3SyRE4KU0QzJxDQXUPBvxPA9G+jjLznhNMOrDLoDM=; b=3oPq2TOpYHgcYcsR7E5Nqtt1vb
-        T+i6KveGE0ktmSIadiY0DVB5ch9450DddZ4PdOqS+iDOcflTW9MTdMbG2C9YxRpIRmujoHdyPPjPw
-        /O7lOjglJY+zq6RK08F7n54ZIaftQQDDOhmMuhktVpOSRLs/VohqILMBaF0R4HUGqBdpq425dOOux
-        XcqG4QYfjj+FqCZv8aoWbPJIRZuGxs9RefI/o/spj1wMzqg9Upun3oVoElRDgpRXva+S2VOR7lcA2
-        Igd0LyObVOa33uIY7JTQl0zRXQociPYtkdOH7Mzb0yKGkuv8jo4psZcwa8lreWLg8edPkVQmUa7Bq
-        gKqQ9xFQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qo62q-000dsZ-24;
-        Wed, 04 Oct 2023 17:52:24 +0000
-Message-ID: <2d690a95-67c6-45cb-91a1-4fbac09e1224@infradead.org>
-Date:   Wed, 4 Oct 2023 10:52:23 -0700
+        Wed, 4 Oct 2023 13:53:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81969E;
+        Wed,  4 Oct 2023 10:53:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1398FC43395;
+        Wed,  4 Oct 2023 17:53:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696441998;
+        bh=LTu2Bz+uaRRsDt3o9GbnxUenQJtJb+UgTi4E6dBfxU0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZPNJbm1lU6aKZP+vpkX2TCKRzT1EefnCdRlKE6Fv/SZg07H2c5mwjDO2qPP8ynpWg
+         iaz5b0mXFeSLuYGXxtoFehSLf2LkYDhZYdGUwp46zI1WAbC7AnWXsgS8w+49QkAhWQ
+         jnPLY5Db8CDQ/z49mkZsTXcJgcKU4FGDymy8bQJLpN1L2rhgN6p0kgzVPWGWe83Y3t
+         Rcq223xAwhoPjbgytffWIB33zCBdgZBFoRcJL8eut97zVES1EGrniVy0KCvXZ2ausB
+         qpaXvTYWYRG8oobDp9lenu7my+uGE5SBebJWrbUJep3e2khdvWgNWp0nLCsxdxW2/p
+         UnQf/K1MTBGsw==
+Date:   Wed, 4 Oct 2023 10:53:17 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Simon Horman <horms@kernel.org>
+Cc:     Chengfeng Ye <dg573847474@gmail.com>, jreuter@yaina.de,
+        ralf@linux-mips.org, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, linux-hams@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ax25: Fix potential deadlock on &ax25_list_lock
+Message-ID: <20231004105317.212f1207@kernel.org>
+In-Reply-To: <20230930161434.GC92317@kernel.org>
+References: <20230926105732.10864-1-dg573847474@gmail.com>
+        <20230930161434.GC92317@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] kernel/config: Introduce CONFIG_DEBUG_INFO_IKCONFIG
-Content-Language: en-US
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-debuggers@vger.kernel.org
-References: <20231004165804.659482-1-stephen.s.brennan@oracle.com>
- <20231004165804.659482-2-stephen.s.brennan@oracle.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231004165804.659482-2-stephen.s.brennan@oracle.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/4/23 09:58, Stephen Brennan wrote:
-> The option CONFIG_IKCONFIG allows the gzip compressed kernel
-> configuration to be included into vmlinux or a module. In these cases,
-> debuggers can access the config data and use it to adjust their behavior
-> according to the configuration. However, distributions rarely enable
-> this, likely because it uses a fair bit of kernel memory which cannot be
-> swapped out.
-
-x86_64 allmodconfig is 91 KB gzipped... oh well.
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-> This means that in practice, the kernel configuration is rarely
-> available to debuggers.
+On Sat, 30 Sep 2023 18:14:34 +0200 Simon Horman wrote:
+> And as a fix this patch should probably have a Fixes tag.
+> This ones seem appropriate to me, but I could be wrong.
 > 
-> So, introduce an alternative, CONFIG_DEBUG_INFO_IKCONFIG. This strategy,
-> which is only available if IKCONFIG is not already built-in, adds a
-> section ".debug_linux_ikconfig", to the vmlinux ELF. It will be stripped
-> out of the final images, but will remain in the debuginfo files. So
-> debuggers which rely on vmlinux debuginfo can have access to the kernel
-> configuration, without incurring a cost to the kernel at runtime.
-> 
-> Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
-> ---
->  include/asm-generic/vmlinux.lds.h |  3 ++-
->  kernel/Makefile                   |  1 +
->  kernel/configs-debug.S            | 18 ++++++++++++++++++
->  lib/Kconfig.debug                 | 14 ++++++++++++++
->  4 files changed, 35 insertions(+), 1 deletion(-)
->  create mode 100644 kernel/configs-debug.S
+> Fixes: c070e51db5e2 ("ice: always add legacy 32byte RXDID in supported_rxdids")
 
+You must have mis-pasted this Fixes tag :)
 
+Chengfend, please find the right Fixes tag and repost.
 -- 
-~Randy
+pw-bot: cr
