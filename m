@@ -2,185 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2297B8E30
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7D37B8E31
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233332AbjJDUiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 16:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
+        id S233481AbjJDUjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 16:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjJDUiN (ORCPT
+        with ESMTP id S231429AbjJDUjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 16:38:13 -0400
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2049.outbound.protection.outlook.com [40.107.100.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA026AD
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:38:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AaU8Griqzo0sPMVliAkIq8qsuN1atf+if25hZGJyBIprpAvJGdLth4LkspJZ78901JsAaeyR6eaPeHtLPKQhFZTlaTnVxbSw6PZudlbQjsUdYCwl+2BIZlx+UJuhbHK3hYjTpy6AFzbst+HPCOx4ZLUV/F08dE404PJkXkEJ/DKkx0LvYF0ylIz1qcRh+6AV/jC/BewkyJ1DuTyL9UMS+mbESascnwLIbbA7rC3X2zBQ4t98DiJ2BLhgNY3Rx/XCASqMNOS/BSSbG9dBWDs4JTbtFkDVVtvmvutMfUfFb+SHB0Dp+mv5oBYl5s8/gbbM6U2B1SYGG7g7d18p6FCvZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L8gcxKQOMsl+3C97OLuR1M6qiLqxigDXnQu7Sej+WRo=;
- b=iJ33hcdA45uobU5kQo0THXdciSJVydyeMNtDs4rGfGGAKXMD4zCZsoAZ1WmtZLZSZu1UcmwpSyU60gvKCxriJNy5sQ9RHeXhYawRGnjz2lnxVVuaLAoJBbtrR0EIuZKPLhGvi5glmm7GciUIbi7zLSFVfO3JgUTiI83fVDcXlUTrgGCR8bJMGWVnJV/WhsO/NYovVcOtuPGzLlV+4PHvP8FeWK0rT/ShyTbv+oKFVBzymyMZy2vjTeh4OzBOrPUC8q0Sh9nAF2baUYi6/nunw4fVcL3LChnOo4aTRm8w94kiIspKiWX3PjXXI/G/X+JMhz54fD+vMNGv74KCq6w5Ow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L8gcxKQOMsl+3C97OLuR1M6qiLqxigDXnQu7Sej+WRo=;
- b=YZglqtlVu+T088yk3RYwqtT5x7E4WrhCdPt/R6zb1e61mgbWxQ7tRrK7TZDrXCGChXAruJu44a5AkI048G5vpTEHWJuwYTWR/KAuPakY2xbDedG0/dKzcsQc9dZVd4DbUFH27XQQlPocuOJ6tiYtn3xOCDwiVzUfJaCJqizZ2t4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by MW4PR12MB6777.namprd12.prod.outlook.com (2603:10b6:303:1e9::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Wed, 4 Oct
- 2023 20:38:07 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::b5d1:8b74:fe73:bd39]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::b5d1:8b74:fe73:bd39%6]) with mapi id 15.20.6838.033; Wed, 4 Oct 2023
- 20:38:07 +0000
-Message-ID: <b31e1fd2-31b6-4240-94e7-870bcfd51754@amd.com>
-Date:   Wed, 4 Oct 2023 15:38:03 -0500
-User-Agent: Mozilla Thunderbird
-From:   "Moger, Babu" <babu.moger@amd.com>
-Subject: Re: [PATCH v6 09/24] x86/resctrl: Use set_bit()/clear_bit() instead
- of open coding
-Reply-To: babu.moger@amd.com
-To:     James Morse <james.morse@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        carl@os.amperecomputing.com, lcherian@marvell.com,
-        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-        xingxin.hx@openanolis.org, baolin.wang@linux.alibaba.com,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-        dfustini@baylibre.com, amitsinght@marvell.com
-References: <20230914172138.11977-1-james.morse@arm.com>
- <20230914172138.11977-10-james.morse@arm.com>
-Content-Language: en-US
-In-Reply-To: <20230914172138.11977-10-james.morse@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM5PR08CA0053.namprd08.prod.outlook.com
- (2603:10b6:4:60::42) To MW3PR12MB4553.namprd12.prod.outlook.com
- (2603:10b6:303:2c::19)
+        Wed, 4 Oct 2023 16:39:52 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DEEAD
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:39:47 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231004203943euoutp02823d29479a5c25c6459c74aaa8a19b04~LAhdVD9JA2370523705euoutp02i
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 20:39:43 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231004203943euoutp02823d29479a5c25c6459c74aaa8a19b04~LAhdVD9JA2370523705euoutp02i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1696451983;
+        bh=MnqIjZyECIksFDvy7lSFMyxKTSSdk4y3paA1+9xTP3A=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=os4VFBQusJr7bhzBNDkJxv1dHpfaL8uoTaThn+6wt79I9KJhUTTmyCAC0K+mDqm02
+         AMa25HFq+2sPlg1urWoNlA4aJTik9oldizhFKyTUBssoaxret9t9XxDNWu8scisbTt
+         hloJvUmiVFLbOWau0gkNhjfsd+CWD2tFqjYMGi/I=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20231004203942eucas1p1b524dd06b9ff71c01574881c5d47ff41~LAhb5X7FO1051010510eucas1p1n;
+        Wed,  4 Oct 2023 20:39:42 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 7A.67.42423.E8DCD156; Wed,  4
+        Oct 2023 21:39:42 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231004203940eucas1p2f73b017497d1f4239a6e236fdb6019e2~LAhapkkOC2221222212eucas1p2Z;
+        Wed,  4 Oct 2023 20:39:40 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231004203940eusmtrp1f3adbf9e57a5d47c495f257219781bd2~LAhaneyqz2916129161eusmtrp1U;
+        Wed,  4 Oct 2023 20:39:40 +0000 (GMT)
+X-AuditID: cbfec7f2-a51ff7000002a5b7-b8-651dcd8ef698
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 30.B6.10549.C8DCD156; Wed,  4
+        Oct 2023 21:39:40 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231004203939eusmtip23428b65bde6661176144a416debbcd47~LAhZDqQN82278422784eusmtip2p;
+        Wed,  4 Oct 2023 20:39:39 +0000 (GMT)
+Message-ID: <c92bc8a6-225d-4fd2-88b5-8994090fb2de@samsung.com>
+Date:   Wed, 4 Oct 2023 22:39:39 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|MW4PR12MB6777:EE_
-X-MS-Office365-Filtering-Correlation-Id: 92e2fd09-9edf-481c-9cb5-08dbc519d0a6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fqhB8PTdBiMTXpKGb8w0zS2HwJdo/bsaLSCq1z0AtBmvAmhe/ozknbmx4HflGdfdE7aEobjuRUxM8mcRDR3gv1PuOrZwpj3p7KdMAj+d3bejAnEvQtPaRn8DY4B4vCXUdWqev7SgNxPCqVTMEZBzzest4NPCCt2XOWpseKYhWHY18e0YAuQj+EjR0SQHfrAhLg3+GaWs8ea0+uxjCFpIUxR2FAaisZYLbkwkXaL51NuPX7gNiUuOWEpnejhkxYNyCfkxFQz5nmNF/fpc+PxLEbV728qCvaQ2PQqciedWDFspgjI3wnOCH0yTN2ET2QF8j5gKtxXaT+wgTHQAXtlNurz93PLTfGl4SfZJk5JOApwzWQCoKu0u53tNc8BUE0o2thms5BbPk7vFn616kyGJjsNYOaOQBAFeOr9l1xAme0/w2r7lcKH86QtU5usZjVYdTXhKfByGOFQuDUc2ZiKgSue3sKFTL46wl/91g/R4hPB0JQhTvx2PxFoEUzpcelZAD2zOBQyviw+DmUddBfzebCF5SjzGUUCLtWUFTtsOB3gG+X1lxQ2jLuH6/lELPQ/vG7HFmg8pABPPhApZrMpSRRTXi1s9+Ru+IWlokT3NsmroVR7MffT1fNcJQQ/wk6S0s8hbo5dBUtR9hhVOnyvO/Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(396003)(376002)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(31686004)(2616005)(6512007)(6506007)(53546011)(86362001)(31696002)(38100700002)(36756003)(26005)(7416002)(2906002)(3450700001)(6486002)(6666004)(478600001)(83380400001)(8676002)(4326008)(41300700001)(316002)(8936002)(5660300002)(66556008)(66476007)(66946007)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L3pnWEswenBSQzJ2bXh1Z2N4QkVJd21HSGg4ZHUyaHFKcGo5UUhPUHBQbDB2?=
- =?utf-8?B?cjdXOU14ZVBySCtvSkp5T0VCdkZ0eldTZFVSclhTWmlzUnVCaVJXTlVBSWd1?=
- =?utf-8?B?ek5tOTM0QXJsWlNaQ09DaHFJZEpvZU5pa1diZDhSaDNqclVLelhpejdGOU92?=
- =?utf-8?B?bEY1SzltNjh1OUJ2MkozS3JWRks3UEE2em5rcjVJaGdwbXRQS0JBRmhWUzJn?=
- =?utf-8?B?Vmg4ejhNQlQ2d1hDdEE5YjVOaHZ5czRPaGJnalhTSFdxWVBveE5YUW5DVFhL?=
- =?utf-8?B?Zm5pN1dncTdNbUVOaC9GSmIyZDZnVjFQSDd6WG15K1hoTEJDNUxuM2ZTcmtP?=
- =?utf-8?B?Nm96STBTZ0JPV090OHl5NzgvUExxQUhkTHRDTUFKOG5EU0VJUWQ0NXpGQS9Q?=
- =?utf-8?B?b285eTRaUVpPWE0za1VzcWptbG5obWYzeXVmMGQ4T1hCWm5TMFZzaStQWGdj?=
- =?utf-8?B?UVo2T0h1NDV1c0d5STRCQzR4MmNXaHA0WWNHb3lacnRMZWpkSmJ0b3I5WVA3?=
- =?utf-8?B?em5JQ1o3Nk5DOTFJcTVzbjh6c0doWVQyZERMY1BzQWVnbVB0MUkxazZrRUdD?=
- =?utf-8?B?djNRODkzRWxPVlVJaXhSem5tR2JPUkFnbGE1STlDRndrbDRXRlNOYTBjaU9E?=
- =?utf-8?B?dWpyOVlTcU5JOFhSdFBwYi83Q0FTUFRrcG1wNnhTN0xnN2YrZENpSWpFNEUx?=
- =?utf-8?B?QmJGQUFPSjdyYVVWSGhsbXNGdHUwNHluZlVvcTlGQlI2dHJleXIweXlCMEM2?=
- =?utf-8?B?MTUveGtGQWk1TEtzY2JtQXlUekhHaUlRdHBZTWc4VDE2VHJ6bWNaUUF3dmJQ?=
- =?utf-8?B?N2I4M2V1blkxRnMrS2U2alBSV2pXNThIU1hpK1pLbVNvcTd5M01vY0h3a09S?=
- =?utf-8?B?enlXYWlzRUdUaTBLTGpTUk5uRnVuTk5IcS91V3psSU41czBtek1GVGo4d1ZC?=
- =?utf-8?B?L0lqb2dGam1mbGVGZUhSOGhlVjZkVElBYk9JOVhKQ05NakNaUzA2cmdpb0No?=
- =?utf-8?B?Z0RaV0g3cEJ5L3c5VzlHRFBQc3ZmT3plSUxtaHZzelNNdWhLRVE5amRMTTkv?=
- =?utf-8?B?QzV6c2dCOWZjWjRIcVp5SDZkRkUzWit3WEhWQ3lNU04rK3AzZFRPNCtNdVlQ?=
- =?utf-8?B?amRwdFlPOGpiVEdwUi9TendwRTNxeTA1Q0FYak5ENWQwcXZ3OUw4ZzdsL2Rl?=
- =?utf-8?B?aFI5bGNiUCtiUjZBalk4NmptL1RvdWlERStmVUo0THFoRi90bGVscEZMSDBR?=
- =?utf-8?B?YUFxSTE5WkFCRSsyamZhd3BDN0NQbnFGYlJSMnhnZWwzQWZTMEtvcXgvNWpV?=
- =?utf-8?B?YUd4M0xCZ04wRTFsWnNmMUlyWHorZ0ZQOTlyV0x5Z0lMQ2ltQVlZMkVVcE9N?=
- =?utf-8?B?NWk5Q2I5RmYwTkIydkh6TllqakpQR1Z1aGJLZ2hiUjdHUm14VzNPSzBIeWxo?=
- =?utf-8?B?ck0rODdLUko5SWtRQWE2TzFSaDdiODdtSkYySXB2SjZHM2EwMEN3Tno0WXVT?=
- =?utf-8?B?cWlWQ0diTG9HUHZQN2NkMDBjejI5R3ZXMGQzOGJOclpZQnEvR0JuUHRselBn?=
- =?utf-8?B?STlSbXhJNGNpK1VMMW83Y1hRd0VpUWYvMWROZnFvMXp5YzliSE04bXQvY2Zq?=
- =?utf-8?B?YzgzL1hXRktEV0tiUDRQZEFYMkU1Qzh1LzlxOStWcnBkNUNIVEdGcFlyNnhO?=
- =?utf-8?B?VzFEejQ5aUJWQWt2dmtrcDEwVkREUGJaVlgxSE96a0ZlV1FMdFBvN25uY2Rr?=
- =?utf-8?B?MHRyUGJEQUxYVmRCUFJpMmlqcHpzVUpWem9STGlWSmVDZ2ZTYmhOQ3JwaFpD?=
- =?utf-8?B?clZhQXVYdG9sVzVheXc2T2Qrb1BWMnZGQnprd1pUKzlyaXpQNzY1bkl4eUYz?=
- =?utf-8?B?OFhlUENKdVFLMDY3ZHV1ODZFWGpJYWowUnB6WVZWWElBc2ljL3VMUnBhZmxB?=
- =?utf-8?B?WFBRb094aXJXWlpYTXZOd1d4cHIxb1FUZ0hXNWxSaGVqVDNCbFVlNjJ4WkJo?=
- =?utf-8?B?czE2SFBYL0l0OGdQQnhydVUrUzI5VzVQMi9IYldZMW1Yb0tJK21zUzlLbGxR?=
- =?utf-8?B?SVlOYnlmTGdyL0dKWmJQMWJzQ1pmYkYycUk4dnBuZmd4VXpScUxYa2o0T3Qv?=
- =?utf-8?Q?R/sE=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 92e2fd09-9edf-481c-9cb5-08dbc519d0a6
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 20:38:06.9781
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zJ0jP4BUZad5OSiY/OkHb4Z0LlCKyPuKXdtG97e+r7vNkKoolnW0S+zt/3wsrsLv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6777
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct
+ se
+Content-Language: en-US
+To:     Benjamin Segall <bsegall@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
+        bristot@redhat.com, corbet@lwn.net, qyousef@layalina.io,
+        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
+        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
+        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
+        yu.c.chen@intel.com, youssefesmat@chromium.org,
+        joel@joelfernandes.org, efault@gmx.de, tglx@linutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <xm261qego72d.fsf_-_@google.com>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SfUxbVRz19r2+PirFtzLDDbAQq0PBrIgfy1W3OZIpz8REFjK/Fp0NfQGk
+        QNfCnGYxZUBp6z4KjA3ajTEqW8HyYfkIqw0CbkBhAyxhYgPCbB0WKVoQNt2gUl6m/HfO757z
+        O/fcXBITthCRZGZOHqPIkchEBB/v6Pt7ZMepm9uY587bQpHTPU6gc94CHK00lhHI010C0K/6
+        dgxZ5l04KjQ1E+iyajvyzwvQ1OkKHK1qk9CY7TyByhfuAPT12iBAVwZbCDQ1eJ1A/Se7Oehq
+        vZmLblg7cOTTPuCiLs0MB7VaKzB0q+wigUbXvsGR5toKhsaKSjHkPR6/N4oudq4StKXaAmij
+        6gec/tP/Ea0+u5Mu6nLx6BprPt1qjqdNdi+HvrS4zKWtDVqC9hgucejJW3aCXhge5tHVjv30
+        dxcsvJSID/i7pIws8wijSNjzMT/DtHZEPpt0dNF/n6sCvpd1IISE1Iuw80ERpgN8UkiZAXSv
+        jhMs+QvARb2ZG1QJqSUA693JDx3e6lrAiq4AWHKiFmeJH8ACUx0eVAmoPfDnvh833Dj1FFxq
+        nQXsfAt0VHk2NI9TMXDaVckL4nDqbWhXD2BBjFER0OW5yAnirdR+WPe9iRsMwKgBHPrL/RtL
+        CSoR6nw6IohDqB3QfaOOYM0xsLDduFEIUu18aLzduZ5MrpN9sHEljq0QDuf623gsjoZD5Sdw
+        Vl8CYM39aQ5L9ACqZl2AVb0KJ4f/IYKLMCoONtsS2HES/GruDI/dHwYnfFvYO4TBso5zGDsW
+        QI1ayKpjoaG/6b/YnlEnpgciw6ZnMWyqb9jUxvB/bg3AG0AEk6/MTmeUiTnMp2KlJFuZn5Mu
+        TsvNtoL1Tz201r/YCS7M+cW9gEOCXgBJTLRVkK6KZoQCqeSzzxlF7iFFvoxR9oIoEhdFCJ7d
+        7UgTUumSPCaLYeSM4uEphwyJVHEYayD06TdOLZOhvvK+PFfI69q989KZu0vZM1nTTxxQNtaX
+        Thx6RzNxW7xz5I8SvuiYgV88mSt5pqsnWf6YtiDhPX3xtZ4BokqW0R0u7ZKR3Uppk9qdEYiO
+        q3Lr+FUO4+6XFlJ5v5TGj/a23muTl9I3vW96ZQf9bRGmL7Jnfl89hsKeL3xr6fqXPdTJSo8t
+        6pN5T/NyX31LJDNmoe2PzMqPGgbFlzuMsZ7l7YG0pBdSk6EyNW3quOn0o1I+3lDT8mHiwW/d
+        KQGbIIDOTGle26W2j40PNd2pFJlXRq4e+KliW+zdJycUnHczDzsdo/sqY2LczsO1obVhgVfe
+        /y0rBdwT4coMSWI8plBK/gVVkL8CQwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCKsWRmVeSWpSXmKPExsVy+t/xe7o9Z2VTDVbsMbG49Pgqm8X0l40s
+        Ft/WTmKzeHKgndHi6YStzBZr3txisWhevJ7NYlmDqsXHN7wWd/unslj87XS0uLxrDpvF5HfP
+        GC1W/zvFaLH81AY2i7unjrJZHO89wGSxc+UKVoszm7axWLzt/MNqsa/jAZPF5k1TmS2uTZrP
+        ZnHh30YWi44j35gtLrdMZLZ42aTlIO3Reukvm8eaeWsYPWY3XGTx+PAxzqNtmplHy75b7B4L
+        NpV6bF6h5bF4z0smj4WfvrJ6bFrVyebxZNZCJo871/awebw7d47dY97JQI/9c9ewB4hH6dkU
+        5ZeWpCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp29mkpOZklqUW6dsl6GUs/ldW8Nyx
+        4tPH36wNjG8tuxg5OSQETCRezlvE2MXIxSEksJRRouvvJlaIhIzEyWkNULawxJ9rXWwQRe8Z
+        JS5s3MwMkuAVsJO4d+w6WBGLgIrE583PGSHighInZz5hAbFFBeQl7t+awQ5iCwv4SqxvnQLW
+        yywgLnHryXwmEFtEIFDi6edXYFcwC5xgkTg/Zyk7xLYGRome+Q1gHWwChhJdb0HO4OTgFNCV
+        eHxmKRvEJDOJrq1djBC2vETz1tnMExiFZiE5ZBaShbOQtMxC0rKAkWUVo0hqaXFuem6xoV5x
+        Ym5xaV66XnJ+7iZGYHLaduzn5h2M81591DvEyMTBeIhRgoNZSYQ3vUEmVYg3JbGyKrUoP76o
+        NCe1+BCjKTA0JjJLiSbnA9NjXkm8oZmBqaGJmaWBqaWZsZI4r2dBR6KQQHpiSWp2ampBahFM
+        HxMHp1QDk9jP3SzVKp1GoUk/JyrPdWIxYG0Un7Mus3Ile8quZs31BYl+/lt9WIM9F13sPRzI
+        86x+6bWZMvbGtUu+Ni5LzmRbcPRFw2KdqKdtFvtSmb+6P4he7ROm6aHvxfx54v9LVf5REpqX
+        jqq3vbljaiC1aMbiqzn3Drgop3/IVH+lLGPUZxR67eH3ubcu1yT8mGDgeaXNodRVYnMyQx7j
+        jii5JxkSrxcwxblvf+H88VOFjseZjqYpq8zNlrEuONh0+4Luv7sdydf6Vk/WEWqtWJakc4zt
+        Z554XFLNO46SGSVca2yOC/Xf6nkVk2Ud0mCvu7PqkVHMk54pZotmBTzZxcpzf03I+ekKMrIZ
+        pQKrlLcosRRnJBpqMRcVJwIANwJnsdcDAAA=
+X-CMS-MailID: 20231004203940eucas1p2f73b017497d1f4239a6e236fdb6019e2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231004203940eucas1p2f73b017497d1f4239a6e236fdb6019e2
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231004203940eucas1p2f73b017497d1f4239a6e236fdb6019e2
+References: <20230531115839.089944915@infradead.org>
+        <20230531124603.931005524@infradead.org> <xm261qego72d.fsf_-_@google.com>
+        <CGME20231004203940eucas1p2f73b017497d1f4239a6e236fdb6019e2@eucas1p2.samsung.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Hi,
 
-On 9/14/23 12:21, James Morse wrote:
-> The resctrl CLOSID allocator uses a single 32bit word to track which
-> CLOSID are free. The setting and clearing of bits is open coded.
-> 
-> A subsequent patch adds resctrl_closid_is_free(), which adds more open
-> coded bitmaps operations. These will eventually need changing to use
-> the bitops helpers so that a CLOSID bitmap of the correct size can be
-> allocated dynamically.
-> 
-> Convert the existing open coded bit manipulations of closid_free_map
-> to use set_bit() and friends.
-> 
-> Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-> Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-> Tested-By: Peter Newman <peternewman@google.com>
-> Signed-off-by: James Morse <james.morse@arm.com>
+On 30.09.2023 02:09, Benjamin Segall wrote:
+> The old pick_eevdf could fail to find the actual earliest eligible
+> deadline when it descended to the right looking for min_deadline, but it
+> turned out that that min_deadline wasn't actually eligible. In that case
+> we need to go back and search through any left branches we skipped
+> looking for the actual best _eligible_ min_deadline.
+>
+> This is more expensive, but still O(log n), and at worst should only
+> involve descending two branches of the rbtree.
+>
+> I've run this through a userspace stress test (thank you
+> tools/lib/rbtree.c), so hopefully this implementation doesn't miss any
+> corner cases.
+>
+> Fixes: 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling policy")
+> Signed-off-by: Ben Segall <bsegall@google.com>
+
+This patch landed in today's linux-next as commit 561c58efd239 
+("sched/fair: Fix pick_eevdf()"). Surprisingly it introduced a warning 
+about circular locking dependency. It can be easily observed during boot 
+from time to time on on qemu/arm64 'virt' machine:
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.6.0-rc4+ #7222 Not tainted
+------------------------------------------------------
+systemd-udevd/1187 is trying to acquire lock:
+ffffbcc2be0c4de0 (console_owner){..-.}-{0:0}, at: 
+console_flush_all+0x1b0/0x500
+
+but task is already holding lock:
+ffff5535ffdd2b18 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0xe0/0xc40
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #4 (&rq->__lock){-.-.}-{2:2}:
+        _raw_spin_lock_nested+0x44/0x5c
+        raw_spin_rq_lock_nested+0x24/0x40
+        task_fork_fair+0x3c/0xac
+        sched_cgroup_fork+0xe8/0x14c
+        copy_process+0x11c4/0x1a14
+        kernel_clone+0x8c/0x400
+        user_mode_thread+0x70/0x98
+        rest_init+0x28/0x190
+        arch_post_acpi_subsys_init+0x0/0x8
+        start_kernel+0x594/0x684
+        __primary_switched+0xbc/0xc4
+
+-> #3 (&p->pi_lock){-.-.}-{2:2}:
+        _raw_spin_lock_irqsave+0x60/0x88
+        try_to_wake_up+0x58/0x468
+        default_wake_function+0x14/0x20
+        woken_wake_function+0x20/0x2c
+        __wake_up_common+0x94/0x170
+        __wake_up_common_lock+0x7c/0xcc
+        __wake_up+0x18/0x24
+        tty_wakeup+0x34/0x70
+        tty_port_default_wakeup+0x20/0x38
+        tty_port_tty_wakeup+0x18/0x24
+        uart_write_wakeup+0x18/0x28
+        pl011_tx_chars+0x140/0x2b4
+        pl011_start_tx+0xe8/0x190
+        serial_port_runtime_resume+0x90/0xc0
+        __rpm_callback+0x48/0x1a8
+        rpm_callback+0x6c/0x78
+        rpm_resume+0x438/0x6d8
+        pm_runtime_work+0x84/0xc8
+        process_one_work+0x1ec/0x53c
+        worker_thread+0x298/0x408
+        kthread+0x124/0x128
+        ret_from_fork+0x10/0x20
+
+-> #2 (&tty->write_wait){....}-{2:2}:
+        _raw_spin_lock_irqsave+0x60/0x88
+        __wake_up_common_lock+0x5c/0xcc
+        __wake_up+0x18/0x24
+        tty_wakeup+0x34/0x70
+        tty_port_default_wakeup+0x20/0x38
+        tty_port_tty_wakeup+0x18/0x24
+        uart_write_wakeup+0x18/0x28
+        pl011_tx_chars+0x140/0x2b4
+        pl011_start_tx+0xe8/0x190
+        serial_port_runtime_resume+0x90/0xc0
+        __rpm_callback+0x48/0x1a8
+        rpm_callback+0x6c/0x78
+        rpm_resume+0x438/0x6d8
+        pm_runtime_work+0x84/0xc8
+        process_one_work+0x1ec/0x53c
+        worker_thread+0x298/0x408
+        kthread+0x124/0x128
+        ret_from_fork+0x10/0x20
+
+-> #1 (&port_lock_key){..-.}-{2:2}:
+        _raw_spin_lock+0x48/0x60
+        pl011_console_write+0x13c/0x1b0
+        console_flush_all+0x20c/0x500
+        console_unlock+0x6c/0x130
+        vprintk_emit+0x228/0x3a0
+        vprintk_default+0x38/0x44
+        vprintk+0xa4/0xc0
+        _printk+0x5c/0x84
+        register_console+0x1f4/0x420
+        serial_core_register_port+0x5a4/0x5d8
+        serial_ctrl_register_port+0x10/0x1c
+        uart_add_one_port+0x10/0x1c
+        pl011_register_port+0x70/0x12c
+        pl011_probe+0x1bc/0x1fc
+        amba_probe+0x110/0x1c8
+        really_probe+0x148/0x2b4
+        __driver_probe_device+0x78/0x12c
+        driver_probe_device+0xd8/0x160
+        __device_attach_driver+0xb8/0x138
+        bus_for_each_drv+0x84/0xe0
+        __device_attach+0xa8/0x1b0
+        device_initial_probe+0x14/0x20
+        bus_probe_device+0xb0/0xb4
+        device_add+0x574/0x738
+        amba_device_add+0x40/0xac
+        of_platform_bus_create+0x2b4/0x378
+        of_platform_populate+0x50/0xfc
+        of_platform_default_populate_init+0xd0/0xf0
+        do_one_initcall+0x74/0x2f0
+        kernel_init_freeable+0x28c/0x4dc
+        kernel_init+0x24/0x1dc
+        ret_from_fork+0x10/0x20
+
+-> #0 (console_owner){..-.}-{0:0}:
+        __lock_acquire+0x1318/0x20c4
+        lock_acquire+0x1e8/0x318
+        console_flush_all+0x1f8/0x500
+        console_unlock+0x6c/0x130
+        vprintk_emit+0x228/0x3a0
+        vprintk_default+0x38/0x44
+        vprintk+0xa4/0xc0
+        _printk+0x5c/0x84
+        pick_next_task_fair+0x28c/0x498
+        __schedule+0x164/0xc40
+        do_task_dead+0x54/0x58
+        do_exit+0x61c/0x9e8
+        do_group_exit+0x34/0x90
+        __wake_up_parent+0x0/0x30
+        invoke_syscall+0x48/0x114
+        el0_svc_common.constprop.0+0x40/0xe0
+        do_el0_svc_compat+0x1c/0x38
+        el0_svc_compat+0x48/0xb4
+        el0t_32_sync_handler+0x90/0x140
+        el0t_32_sync+0x194/0x198
+
+other info that might help us debug this:
+
+Chain exists of:
+   console_owner --> &p->pi_lock --> &rq->__lock
+
+  Possible unsafe locking scenario:
+
+        CPU0                    CPU1
+        ----                    ----
+   lock(&rq->__lock);
+                                lock(&p->pi_lock);
+                                lock(&rq->__lock);
+   lock(console_owner);
+
+  *** DEADLOCK ***
+
+3 locks held by systemd-udevd/1187:
+  #0: ffff5535ffdd2b18 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0xe0/0xc40
+  #1: ffffbcc2be0c4c30 (console_lock){+.+.}-{0:0}, at: 
+vprintk_emit+0x11c/0x3a0
+  #2: ffffbcc2be0c4c88 (console_srcu){....}-{0:0}, at: 
+console_flush_all+0x7c/0x500
+
+stack backtrace:
+CPU: 1 PID: 1187 Comm: systemd-udevd Not tainted 6.6.0-rc4+ #7222
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+  dump_backtrace+0x98/0xf0
+  show_stack+0x18/0x24
+  dump_stack_lvl+0x60/0xac
+  dump_stack+0x18/0x24
+  print_circular_bug+0x290/0x370
+  check_noncircular+0x15c/0x170
+  __lock_acquire+0x1318/0x20c4
+  lock_acquire+0x1e8/0x318
+  console_flush_all+0x1f8/0x500
+  console_unlock+0x6c/0x130
+  vprintk_emit+0x228/0x3a0
+  vprintk_default+0x38/0x44
+  vprintk+0xa4/0xc0
+  _printk+0x5c/0x84
+  pick_next_task_fair+0x28c/0x498
+  __schedule+0x164/0xc40
+  do_task_dead+0x54/0x58
+  do_exit+0x61c/0x9e8
+  do_group_exit+0x34/0x90
+  __wake_up_parent+0x0/0x30
+  invoke_syscall+0x48/0x114
+  el0_svc_common.constprop.0+0x40/0xe0
+  do_el0_svc_compat+0x1c/0x38
+  el0_svc_compat+0x48/0xb4
+  el0t_32_sync_handler+0x90/0x140
+  el0t_32_sync+0x194/0x198
+
+The problem is probably elsewhere, but this scheduler change only 
+revealed it in a fully reproducible way. Reverting $subject on top of 
+linux-next hides the problem deep enough that I was not able to 
+reproduce it. Let me know if there is anything I can do to help fixing 
+this issue.
+
 > ---
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index ac1a6437469f..fa449ee0d1a7 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -106,7 +106,7 @@ void rdt_staged_configs_clear(void)
->   * - Our choices on how to configure each resource become progressively more
->   *   limited as the number of resources grows.
->   */
-> -static int closid_free_map;
-> +static unsigned long closid_free_map;
->  static int closid_free_map_len;
->  
->  int closids_supported(void)
-> @@ -126,7 +126,7 @@ static void closid_init(void)
->  	closid_free_map = BIT_MASK(rdt_min_closid) - 1;
->  
->  	/* CLOSID 0 is always reserved for the default group */
-> -	closid_free_map &= ~1;
-> +	clear_bit(0, &closid_free_map);
+>   kernel/sched/fair.c | 72 ++++++++++++++++++++++++++++++++++++---------
+>   1 file changed, 58 insertions(+), 14 deletions(-)
+>
+> ...
 
-How about using RESCTRL_RESERVED_CLOSID instead of 0 here?
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-Thanks
-Babu Moger
