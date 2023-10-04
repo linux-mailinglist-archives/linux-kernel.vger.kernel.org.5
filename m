@@ -2,73 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D587B98F8
+	by mail.lfdr.de (Postfix) with ESMTP id B32917B98F9
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244029AbjJDXzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 19:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48106 "EHLO
+        id S244136AbjJDXzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 19:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244108AbjJDXz3 (ORCPT
+        with ESMTP id S240836AbjJDXzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 19:55:29 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DE8FF;
-        Wed,  4 Oct 2023 16:55:21 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6c6591642f2so70354a34.1;
-        Wed, 04 Oct 2023 16:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696463721; x=1697068521; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jdaw17TPVHGyiD6Tf0no/oLm7Yt30YHHY3DBw59SSIQ=;
-        b=YYd4n2ynZn5qBiLgpNmfFY1UGdWB5gWI/eURgD+2VQ7o/a8F9fL75IFzYIdx/q6llX
-         94r3xcmB9qQUuJssNwKkcZbFgSfHtFppaUH3MMfyUGLi+X3/vRkEz1nicPhb5Q4/8Xdg
-         nH4BP5s1Zu8ChyLu0x/3ADtVoUMu0h8WyvhQ+ev27tXhs5kNEir1SCFXkDC+QT9lcXtK
-         r6gMZxq/sBahBWMYWcr/PcWA8+sEX+m5f/GuOUloMwH1RD5ZB6wDFpGGnikT6peLdhvh
-         /+EWB7bWY+A6aBQkyLBQDifRqZ0WC4NvAECtUDHC6+9QoRof4dQ37e2sTUWISjL8lAaS
-         0AVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696463721; x=1697068521;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jdaw17TPVHGyiD6Tf0no/oLm7Yt30YHHY3DBw59SSIQ=;
-        b=n4Zv84plgZgQN5R7rfBjKe9j6wjYaOGNSK7jx1rQSyDUuY4TV6n7er6qWE9HGUXMBq
-         E6iMFEvinx3lUKqIYzWy6Zc2BPxyqwcCf011gq1VdHvbKl3Lax4oNCSYvBwkExiNRuY1
-         7JxmWG3117d4+uK58clfUaIS556O/28r8PqVhlG4qmJc5eYX/a3FHLTr3kp+oYiE+EDS
-         zLJ1OXwTk7t+CrjRRRlTNhAzo9BW/V6ssv5fcTmCjLjD/FXUUN3WjZmSm8rz5mBb2ypT
-         TVt4F9BFZB+Qx0/8fopNIOyABmZPhOTK97fjOjjL4thrgorkIidwxWpHqgdjvWmshTUi
-         Qf9w==
-X-Gm-Message-State: AOJu0YwGBQJjB4cF9XDCuxKOxDr3bb7/RO9UKnRxOgnCr9EvzmXI4e3x
-        +KWSureXaTtzTaToWenC4TM6oDxJ4ENcOF1TYVZgYirsq8Q=
-X-Google-Smtp-Source: AGHT+IGu+C6bXd32JPd8K3bHik/ZwSwKR6Kd0CF97BR3ckZJlN+4uKlr1OG6TaNIANLEdoYDeQTdNIzlsAe0ZuO4BgE=
-X-Received: by 2002:a05:6359:639d:b0:14d:2d2a:97f9 with SMTP id
- sg29-20020a056359639d00b0014d2d2a97f9mr3653612rwb.1.1696463720943; Wed, 04
- Oct 2023 16:55:20 -0700 (PDT)
+        Wed, 4 Oct 2023 19:55:18 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780A0D7
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 16:55:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 508CFC433C8;
+        Wed,  4 Oct 2023 23:55:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696463713;
+        bh=MleeiaAqgiqyp0slPvMHrGbe3LZ4PVPcbqFmsHInq1o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WUQD1uhqJdbp1DL+fDexe55XPnUwjMyjzExEYA+GaYLbjw6SHhgsFT9hnSPlkC/di
+         YW8nF+JawSZvij+OiIl3fG7apa9tiD2+oLap4G/YTb1kGB5OuF52SiMjmCEr9+yJ74
+         FlC3c4aeglAI0kdXWXgeraz4irl450EfQiXIRaP6aStqvu+z9d89V+g2cdVhIP//T8
+         XgZYMOxd5q2NynxP8rtIlU65lCtktJloBTeNjsys+87aTFVVCvz+8IRWkc22Do8m0a
+         9c4Sl9g/n1znh91amC12ApHZKPsVu36L+M7NEb/okTXd4Fq+whtORudeKkWDO4Wihi
+         cIoh9TZX7sBDA==
+Date:   Wed, 4 Oct 2023 16:55:11 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [PATCH] f2fs-tools: use proper address entry count for direct
+ nodes
+Message-ID: <ZR37Xyr9HcVuLqxx@google.com>
+References: <20231003230155.355807-1-daeho43@gmail.com>
+ <ZR30mNQEyRjzr0jm@google.com>
+ <CACOAw_zSvAPTREb0dSv6srRuxuKxDZp4rMhLyWTk+uJ3WKSWKA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231004230159.33527-1-aford173@gmail.com> <20231004230159.33527-2-aford173@gmail.com>
-In-Reply-To: <20231004230159.33527-2-aford173@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 4 Oct 2023 20:55:09 -0300
-Message-ID: <CAOMZO5BaxoQ9YcFyzVuhoUsLO=wXpMtZDwrGd-XoCaH9-rj3hg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: imx8mn: Add sound-dai-cells to micfil node
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACOAw_zSvAPTREb0dSv6srRuxuKxDZp4rMhLyWTk+uJ3WKSWKA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,13 +54,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 8:02=E2=80=AFPM Adam Ford <aford173@gmail.com> wrote=
-:
->
-> Per the DT bindings, the micfil node should have a sound-dai-cells
-> entry.
->
-> Fixes: cca69ef6eba5 ("arm64: dts: imx8mn: Add support for micfil")
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+On 10/04, Daeho Jeong wrote:
+> On Wed, Oct 4, 2023 at 4:26 PM Jaegeuk Kim <jaegeuk@kernel.org> wrote:
+> >
+> > On 10/03, Daeho Jeong wrote:
+> > > From: Daeho Jeong <daehojeong@google.com>
+> > >
+> > > For direct nodes, we have to use DEF_ADDRS_PER_BLOCK.
+> > >
+> > > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> > > ---
+> > >  fsck/fsck.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/fsck/fsck.c b/fsck/fsck.c
+> > > index 78ffdb6..56a7d31 100644
+> > > --- a/fsck/fsck.c
+> > > +++ b/fsck/fsck.c
+> > > @@ -2894,7 +2894,7 @@ static void fsck_failed_reconnect_file_dnode(struct f2fs_sb_info *sbi,
+> > >       fsck->chk.valid_blk_cnt--;
+> > >       f2fs_clear_main_bitmap(sbi, ni.blk_addr);
+> > >
+> > > -     for (i = 0; i < ADDRS_PER_BLOCK(&node->i); i++) {
+> > > +     for (i = 0; i < DEF_ADDRS_PER_BLOCK; i++) {
+> >
+> > It seems we need to use the inode block passing by fsck_failed_reconnect_file().
+> 
+> This function is for direct nodes. Is it correct to use inode block here?
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+ 523 unsigned int addrs_per_block(struct f2fs_inode *i)
+ 524 {
+ 525         if (!LINUX_S_ISREG(le16_to_cpu(i->i_mode)) ||
+ 526                         !(le32_to_cpu(i->i_flags) & F2FS_COMPR_FL))
+ 527                 return DEF_ADDRS_PER_BLOCK;
+ 528         return ALIGN_DOWN(DEF_ADDRS_PER_BLOCK, 1 << i->i_log_cluster_size);
+ 529 }
+
+If the inode is compressed, it seems it has to be aligned to cluster size.
+
+> 
+> >
+> > >               addr = le32_to_cpu(node->dn.addr[i]);
+> > >               if (!addr)
+> > >                       continue;
+> >
+> > 3012                         fsck->chk.valid_blk_cnt--;
+> > 3013                         if (addr == NEW_ADDR)
+> >
+> > And, we also need to skip if addr == COMPRESS_ADDR here?
+> >
+> > 3014                                 continue;
+> > 3015                         f2fs_clear_main_bitmap(sbi, addr);
+> > 3016                 }
+> >
+> > > --
+> > > 2.42.0.582.g8ccd20d70d-goog
