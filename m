@@ -2,135 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C39217B7C5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182F07B7C5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242055AbjJDJiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
+        id S242033AbjJDJjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242018AbjJDJiI (ORCPT
+        with ESMTP id S233011AbjJDJjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:38:08 -0400
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7ACBB;
-        Wed,  4 Oct 2023 02:38:04 -0700 (PDT)
-Received: from [192.168.42.20] (unknown [91.22.66.69])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by mail.tuxedocomputers.com (Postfix) with ESMTPSA id D0AF02FC0010;
-        Wed,  4 Oct 2023 11:38:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-        s=default; t=1696412282;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9EHI8fHLnGoVd2F2Ocb2wELrRiN7lJQWOBGnepKa2sM=;
-        b=HeIJy8femgJ2hQmkH3yfw7h1BlAmQrTVdUZFsPT4vK/KN3okjt+Dk5xXHaBerYgQ8/jTg0
-        wn8h0uA/vev4YGP05v8/BSfMZFaOIDsM1yhXtSc1M5Ryn/ClJENEnrU++eOKwchB7clOsj
-        gGBikXsCqGLOl5uCmpO3EuygaoaQ6ac=
-Authentication-Results: mail.tuxedocomputers.com;
-        auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <5d82fcac-a360-2d8b-8f6a-9b5cecb08ca2@tuxedocomputers.com>
-Date:   Wed, 4 Oct 2023 11:38:02 +0200
+        Wed, 4 Oct 2023 05:39:17 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9949DB4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:39:12 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-7ab9f1efecfso837783241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:39:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696412351; x=1697017151; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OZIppNZc8WtckvOq4XHwl7wWpDkGe48vm+frvcoMRE0=;
+        b=oywUPUMUCHnPRhT+CKik9GL4nPbSniV2Y2uDtnk+0SQdwA04Ey/qCPSJ5IVc2Ff6uR
+         XWfxrEDKXVVmu8n8b/1AGd06fX2ciBBvH28eRmnkIjpb6agZZt9IND1YXGRq5Lw2d2t2
+         nIMAYtdkj4JaHeTnQq70u4c3BBj9tZMLl2zN0Mr2COmY7/u3MaKocutj+Y9VuvglxTws
+         lx5PzCgvTKjuL1lY9lFlO+xXTh0xXJ0iIf6thSmfhav6uTLKTfMDo2S+7JZmLTvuW2ky
+         LpugL8hlVkOjhQhkdqpzo0htE/anPxKZ6RvTX+64EpqdyMcGVOfa1EDUa5+m2Wr1GghX
+         pC6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696412351; x=1697017151;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OZIppNZc8WtckvOq4XHwl7wWpDkGe48vm+frvcoMRE0=;
+        b=vg6z6in/yr49Idd/UXZbnC7bYKUyD5mFzAav+hCbEG6BxZb57erBVSWzgIHCiDjtWD
+         FBtwWpXsoTWYTCOWd2OXonfKSAVBvZcW4Oew0ZfyVXVIYfGPczkp310KSkq0v5lzHsew
+         XPIeLREJGEgWEPFBlcn6ux1836TACLNsxpRTS4rccghWnbEsgwDBi7HKKWa/Ub/hRD+f
+         Q2Nvgh8KiFK7FCqaUy8e/0cisYxTYe9YONIJp8I6WXxRlBPdh8PZxY7gTZgdF2Z3p912
+         acXgouvVaE3lk5aodlI0W2tXUJaVb8S0Z24+Pj3BGep4qsG+kiT44K+3LvSf/LOSSvTs
+         SZ/A==
+X-Gm-Message-State: AOJu0Yy3o0iF9oTw2nqVgZjdowp2UW05Zubck/T4y44LOVurvdEeJ9mx
+        vfcvrniHNVBssJvHU1s+bwS7TSXIsY8o3+eWt5mLR8bg4UwbwIPE
+X-Google-Smtp-Source: AGHT+IEBbSFgRD3egaNvVX6F9D/Pu3JQtH65YLzuTkw3ULEH94k0aQ44z2vNlfxJuboKh3EeYfBRh42T0UVLWx1zTrc=
+X-Received: by 2002:a67:ee48:0:b0:44e:a9b6:5290 with SMTP id
+ g8-20020a67ee48000000b0044ea9b65290mr1624229vsp.19.1696412351698; Wed, 04 Oct
+ 2023 02:39:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] ACPI: resource: Do IRQ override on TongFang GMxXGxx
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230929134010.25644-1-wse@tuxedocomputers.com>
- <CAJZ5v0iH4PGaCdSuQ-4Pu7oXbzrw+zLxpEqMjtMgcNFextgfqw@mail.gmail.com>
-Content-Language: en-US
-From:   Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <CAJZ5v0iH4PGaCdSuQ-4Pu7oXbzrw+zLxpEqMjtMgcNFextgfqw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231003145114.21637-1-brgl@bgdev.pl> <20231003145114.21637-19-brgl@bgdev.pl>
+ <CAJM55Z8S_4OGM_-iEACLzZgwt6_KoYr56RbPn+4kx7Beu2WjUg@mail.gmail.com>
+In-Reply-To: <CAJM55Z8S_4OGM_-iEACLzZgwt6_KoYr56RbPn+4kx7Beu2WjUg@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 4 Oct 2023 11:39:00 +0200
+Message-ID: <CAMRc=MeEKuSDRs2GjgFFYH2fAqr2KGhnoEGq7Jgh0S1DdqaoTg@mail.gmail.com>
+Subject: Re: [PATCH 18/36] pinctrl: starfive: use new pinctrl GPIO helpers
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        Hal Feng <hal.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Oct 4, 2023 at 11:37=E2=80=AFAM Emil Renner Berthing
+<emil.renner.berthing@canonical.com> wrote:
+>
+> Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Replace the pinctrl helpers taking the global GPIO number as argument
+> > with the improved variants that instead take a pointer to the GPIO chip
+> > and the controller-relative offset.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > ---
+> >  drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c | 4 ++--
+> >  drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c | 4 ++--
+> >  2 files changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c b/drive=
+rs/pinctrl/starfive/pinctrl-starfive-jh7100.c
+> > index 530fe340a9a1..22a2db8fa315 100644
+> > --- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
+> > +++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
+> > @@ -918,12 +918,12 @@ static struct pinctrl_desc starfive_desc =3D {
+> >
+> >  static int starfive_gpio_request(struct gpio_chip *gc, unsigned int gp=
+io)
+> >  {
+> > -     return pinctrl_gpio_request(gc->base + gpio);
+> > +     return pinctrl_gpio_request_new(gc, gpio);
+> >  }
+> >
+> >  static void starfive_gpio_free(struct gpio_chip *gc, unsigned int gpio=
+)
+> >  {
+> > -     pinctrl_gpio_free(gc->base + gpio);
+> > +     pinctrl_gpio_free_new(gc, gpio);
+>
+> Hi Bartosz,
+>
+> Thank you for the patch. These new pinctrl_gpio_*_new() functions now see=
+m to
+> have the same signature as the starfive_gpio_*() functions. Is there a re=
+ason
+> they can't be used as callbacks directly so we could just delete the
+> starfive_gpio_*() wrapppers?
 
-Am 03.10.23 um 20:39 schrieb Rafael J. Wysocki:
-> On Fri, Sep 29, 2023 at 3:40 PM Werner Sembach <wse@tuxedocomputers.com> wrote:
->> The TongFang GMxXGxx/TUXEDO Stellaris/Pollaris Gen5 needs IRQ overriding
->> for the keyboard to work. Adding an entry for this laptop to the
->> override_table makes the internal keyboard functional again.
-> You said "again", so it used to work.  Do you know which commit broke it?
-
-Sorry that "again" is a bit misleading. I Copied it from here: 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7592b79ba4a9
-
-I actually only tested the direct predecessor of this Notebook on older kernels: 
-https://bugzilla.kernel.org/show_bug.cgi?id=216698
-
-I suspected that it's the same issue and since the same fix worked I now even 
-more believe so, but I actually never tested a kernel before the breaking change.
+Ha! Make sense and it'll probably apply to more users.
 
 >
->> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
->> Cc: <stable@vger.kernel.org>
-> What's the oldest kernel version you want this to be applied to?
-
-5.15 because Ubuntu 22.04
-
-Kind regards,
-
-Werner Sembach
-
+> Also it'd be great to be to be CC'd on at least the first generic patches=
+ where
+> the new functions are introduced to have some context without having to l=
+ook it
+> up on lore.
 >
->> ---
->>   drivers/acpi/resource.c | 16 ++++++++++++++--
->>   1 file changed, 14 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
->> index 32cfa3f4efd3d..3aff81820e321 100644
->> --- a/drivers/acpi/resource.c
->> +++ b/drivers/acpi/resource.c
->> @@ -470,13 +470,25 @@ static const struct dmi_system_id asus_laptop[] = {
->>          { }
->>   };
->>
->> -static const struct dmi_system_id tongfang_gm_rg[] = {
->> +static const struct dmi_system_id tongfang_gm[] = {
->>          {
->>                  .ident = "TongFang GMxRGxx/XMG CORE 15 (M22)/TUXEDO Stellaris 15 Gen4 AMD",
->>                  .matches = {
->>                          DMI_MATCH(DMI_BOARD_NAME, "GMxRGxx"),
->>                  },
->>          },
->> +       {
->> +               .ident = "TongFang GMxXGxx/TUXEDO Polaris 15 Gen5 AMD",
->> +               .matches = {
->> +                       DMI_MATCH(DMI_BOARD_NAME, "GMxXGxx"),
->> +               },
->> +       },
->> +       {
->> +               .ident = "TongFang GM6XGxX/TUXEDO Stellaris 16 Gen5 AMD",
->> +               .matches = {
->> +                       DMI_MATCH(DMI_BOARD_NAME, "GM6XGxX"),
->> +               },
->> +       },
->>          { }
->>   };
->>
->> @@ -536,7 +548,7 @@ struct irq_override_cmp {
->>   static const struct irq_override_cmp override_table[] = {
->>          { medion_laptop, 1, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_LOW, 0, false },
->>          { asus_laptop, 1, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_LOW, 0, false },
->> -       { tongfang_gm_rg, 1, ACPI_EDGE_SENSITIVE, ACPI_ACTIVE_LOW, 1, true },
->> +       { tongfang_gm, 1, ACPI_EDGE_SENSITIVE, ACPI_ACTIVE_LOW, 1, true },
->>          { maingear_laptop, 1, ACPI_EDGE_SENSITIVE, ACPI_ACTIVE_LOW, 1, true },
->>          { pcspecialist_laptop, 1, ACPI_EDGE_SENSITIVE, ACPI_ACTIVE_LOW, 1, true },
->>          { lg_laptop, 1, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_LOW, 0, false },
->> --
->> 2.34.1
->>
+
+I wanted to reduce noise for maintainers but ended up introducing
+confusion. I will probably just send the v2 to everyone so proper
+context.
+
+Bart
+
+> /Emil
+>
+> >  }
+> >
+> >  static int starfive_gpio_get_direction(struct gpio_chip *gc, unsigned =
+int gpio)
+> > diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c b/drive=
+rs/pinctrl/starfive/pinctrl-starfive-jh7110.c
+> > index 640f827a9b2c..5557ef3fbeb2 100644
+> > --- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
+> > +++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
+> > @@ -547,12 +547,12 @@ static const struct pinconf_ops jh7110_pinconf_op=
+s =3D {
+> >
+> >  static int jh7110_gpio_request(struct gpio_chip *gc, unsigned int gpio=
+)
+> >  {
+> > -     return pinctrl_gpio_request(gc->base + gpio);
+> > +     return pinctrl_gpio_request_new(gc, gpio);
+> >  }
+> >
+> >  static void jh7110_gpio_free(struct gpio_chip *gc, unsigned int gpio)
+> >  {
+> > -     pinctrl_gpio_free(gc->base + gpio);
+> > +     pinctrl_gpio_free_new(gc, gpio);
+> >  }
+> >
+> >  static int jh7110_gpio_get_direction(struct gpio_chip *gc,
+> > --
+> > 2.39.2
