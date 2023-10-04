@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 575D97B82CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219557B82D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243016AbjJDO4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
+        id S243022AbjJDO4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243013AbjJDO4A (ORCPT
+        with ESMTP id S243007AbjJDO4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:56:00 -0400
+        Wed, 4 Oct 2023 10:56:07 -0400
 Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E969DCE
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:55:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9D5CE
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:56:01 -0700 (PDT)
 From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     Maarten Lankhorst <dev@lankhorst.se>,
@@ -31,9 +31,9 @@ Cc:     Maarten Lankhorst <dev@lankhorst.se>,
         Daniel Baluta <daniel.baluta@nxp.com>,
         linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH v6 01/12] ASoC: SOF: core: Ensure sof_ops_free() is still called when probe never ran.
-Date:   Wed,  4 Oct 2023 16:55:29 +0200
-Message-Id: <20231004145540.32321-2-maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v6 02/12] ASoC: SOF: core: Add probe_early and remove_late callbacks
+Date:   Wed,  4 Oct 2023 16:55:30 +0200
+Message-Id: <20231004145540.32321-3-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
 References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
@@ -48,44 +48,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In an effort to not call sof_ops_free twice, we stopped running it when
-probe was aborted.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Check the result of cancel_work_sync to see if this was the case.
+The existing DSP probe may be handled in a workqueue to allow for
+extra time, typically for the i915 request_module and HDAudio codec
+handling.
 
-Fixes: 31bb7bd9ffee ("ASoC: SOF: core: Only call sof_ops_free() on remove if the probe was successful")
-Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+With the upcoming changes for i915/Xe driver relying on the
+-EPROBE_DEFER mechanism, we need to have a first pass of the probe
+which cannot be pushed to a workqueue. Introduce 2 new optional
+callbacks.
+
+probe_early is called before the workqueue runs. remove_late may be
+called from the workqueue if load is unsuccesful, but will otherwise
+be called on module unload.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Acked-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/sof/core.c     | 11 +++++++++++
+ sound/soc/sof/ops.h      | 16 ++++++++++++++++
+ sound/soc/sof/sof-priv.h |  2 ++
+ 3 files changed, 29 insertions(+)
 
 diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 2d1616b81485..0938b259f703 100644
+index 0938b259f703..d7b090224f1b 100644
 --- a/sound/soc/sof/core.c
 +++ b/sound/soc/sof/core.c
-@@ -459,9 +459,10 @@ int snd_sof_device_remove(struct device *dev)
- 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
- 	struct snd_sof_pdata *pdata = sdev->pdata;
- 	int ret;
-+	bool aborted = false;
+@@ -327,6 +327,7 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+ dsp_err:
+ 	snd_sof_remove(sdev);
+ probe_err:
++	snd_sof_remove_late(sdev);
+ 	sof_ops_free(sdev);
  
- 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
--		cancel_work_sync(&sdev->probe_work);
-+		aborted = cancel_work_sync(&sdev->probe_work);
+ 	/* all resources freed, update state to match */
+@@ -436,6 +437,14 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
  
- 	/*
- 	 * Unregister any registered client device first before IPC and debugfs
-@@ -487,6 +488,9 @@ int snd_sof_device_remove(struct device *dev)
+ 	sof_set_fw_state(sdev, SOF_FW_BOOT_NOT_STARTED);
+ 
++	/*
++	 * first pass of probe which isn't allowed to run in a work-queue,
++	 * typically to rely on -EPROBE_DEFER dependencies
++	 */
++	ret = snd_sof_probe_early(sdev);
++	if (ret < 0)
++		return ret;
++
+ 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)) {
+ 		INIT_WORK(&sdev->probe_work, sof_probe_work);
+ 		schedule_work(&sdev->probe_work);
+@@ -487,9 +496,11 @@ int snd_sof_device_remove(struct device *dev)
+ 		snd_sof_ipc_free(sdev);
  		snd_sof_free_debug(sdev);
  		snd_sof_remove(sdev);
++		snd_sof_remove_late(sdev);
  		sof_ops_free(sdev);
-+	} else if (aborted) {
-+		/* probe_work never ran */
-+		sof_ops_free(sdev);
+ 	} else if (aborted) {
+ 		/* probe_work never ran */
++		snd_sof_remove_late(sdev);
+ 		sof_ops_free(sdev);
  	}
  
- 	/* release firmware */
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+index 9ab7b9be765b..3ebcfc237385 100644
+--- a/sound/soc/sof/ops.h
++++ b/sound/soc/sof/ops.h
+@@ -38,6 +38,14 @@ static inline void sof_ops_free(struct snd_sof_dev *sdev)
+ /* Mandatory operations are verified during probing */
+ 
+ /* init */
++static inline int snd_sof_probe_early(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->probe_early)
++		return sof_ops(sdev)->probe_early(sdev);
++
++	return 0;
++}
++
+ static inline int snd_sof_probe(struct snd_sof_dev *sdev)
+ {
+ 	return sof_ops(sdev)->probe(sdev);
+@@ -51,6 +59,14 @@ static inline int snd_sof_remove(struct snd_sof_dev *sdev)
+ 	return 0;
+ }
+ 
++static inline int snd_sof_remove_late(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->remove_late)
++		return sof_ops(sdev)->remove_late(sdev);
++
++	return 0;
++}
++
+ static inline int snd_sof_shutdown(struct snd_sof_dev *sdev)
+ {
+ 	if (sof_ops(sdev)->shutdown)
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index d4f6702e93dc..e73a92189fe1 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -165,8 +165,10 @@ struct sof_firmware {
+ struct snd_sof_dsp_ops {
+ 
+ 	/* probe/remove/shutdown */
++	int (*probe_early)(struct snd_sof_dev *sof_dev); /* optional */
+ 	int (*probe)(struct snd_sof_dev *sof_dev); /* mandatory */
+ 	int (*remove)(struct snd_sof_dev *sof_dev); /* optional */
++	int (*remove_late)(struct snd_sof_dev *sof_dev); /* optional */
+ 	int (*shutdown)(struct snd_sof_dev *sof_dev); /* optional */
+ 
+ 	/* DSP core boot / reset */
 -- 
 2.40.1
 
