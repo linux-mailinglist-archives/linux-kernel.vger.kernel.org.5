@@ -2,48 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6357B8E9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 23:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062BA7B8EB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 23:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233813AbjJDVUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 17:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35118 "EHLO
+        id S233811AbjJDVVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 17:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233760AbjJDVU3 (ORCPT
+        with ESMTP id S233594AbjJDVVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 17:20:29 -0400
+        Wed, 4 Oct 2023 17:21:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1098DBF;
-        Wed,  4 Oct 2023 14:20:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 86C55C433C8;
-        Wed,  4 Oct 2023 21:20:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A3CBF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 14:21:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 441B6C433C7;
+        Wed,  4 Oct 2023 21:21:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696454425;
-        bh=vCDsYJ5xVt4Ez1p0mhyJNNL2hHtuRq9Cdm7oVL9/si4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Vr7s+8HYyFIb18fcAc+MHva+cwZWo8xcMCMK2/9jmbFz+0Ua1wTo2XWy4OcoRrb6P
-         XIjz6m35VpZF0bA2IL4GhUyf4jQhupzmSntEE8xue7j7+9RrmnwEsbCDfZm6SIMIBI
-         kcji3HiB+KRfXhqsao2Oqn58R/WIZdOAAV8Jw/59DzgQHtf5HycBgair0uzT41coyK
-         oig2HWVbnQO1xv1j8DovY0VeoK0zNPNoxeEMzTMUDUj670gppBirCe4kSTTlpkpNQ7
-         FZ9hsgVbBrLp1c2bLvS69/kTtUdCKRF8+ZB+7jRYILuvNZHF/Fvm/WgM/IwLTw5uIk
-         NcbkUUhmqIJAg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6B61FE632D7;
-        Wed,  4 Oct 2023 21:20:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1696454474;
+        bh=+mnPw2cgov2C697kC7dBfIcSrWXIS18s9CkSLWTJFzY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g4Dz0nCiTVV25EjY4hEX57MOTtJjWHhUrSuqFmQil9U+FS5Zm7uOkasKgh17Tz/vY
+         2KQrMNIAGP0wDYXYNulB8TDNA2HqA5ouSTJbmoXBLZc2ogeFG0ITgzj998iXNbbMEX
+         +Ai/iOQNBwfUxTvSPMicE/9u8WS2rd6zkfmSvp2Amq6dtrL4hNIUj4tYXUd7jD9GEp
+         1NeZpQbpWzNHeQCLwfc7Tw0fel1sz2hw021b/LjruBBLwmjIpTsW1DQoZzBZT2HrDk
+         t51qVgTldNS4OrMbJV/iOv2+qqEbdqr6vJfBIuvBr1Tr2iVJtcmTGWEu1JVj1UmjAk
+         PeHDDmbPz1fYw==
+Date:   Wed, 4 Oct 2023 14:21:13 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Simon Horman <horms@kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
+Subject: Re: [PATCH] net: skbuff: fix kernel-doc typos
+Message-ID: <20231004142113.71b19c16@kernel.org>
+In-Reply-To: <ZRvwn8lTaFxJ83X/@kernel.org>
+References: <20231001003846.29541-1-rdunlap@infradead.org>
+        <20231001003846.29541-2-rdunlap@infradead.org>
+        <ZRvwn8lTaFxJ83X/@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] [net-next] sctp: Spelling s/preceeding/preceding/g
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169645442543.1877.367473311797088363.git-patchwork-notify@kernel.org>
-Date:   Wed, 04 Oct 2023 21:20:25 +0000
-References: <663b14d07d6d716ddc34482834d6b65a2f714cfb.1695903447.git.geert+renesas@glider.be>
-In-Reply-To: <663b14d07d6d716ddc34482834d6b65a2f714cfb.1695903447.git.geert+renesas@glider.be>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     marcelo.leitner@gmail.com, lucien.xin@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, linux-sctp@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -53,26 +52,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Thu, 28 Sep 2023 14:17:48 +0200 you wrote:
-> Fix a misspelling of "preceding".
+On Tue, 3 Oct 2023 12:44:47 +0200 Simon Horman wrote:
+> > - * so we also check that this didnt happen.
+> > + * so we also check that this didn't happen.  
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  net/sctp/sm_make_chunk.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> At the risk of bikeshedding (let's not) perhaps "this" can be dropped
+> from the line above?
 
-Here is the summary with links:
-  - [net-next] sctp: Spelling s/preceeding/preceding/g
-    https://git.kernel.org/netdev/net-next/c/2b464cc2fd57
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
++1, since we're touching the line we can as well..
