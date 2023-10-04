@@ -2,157 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 855227B77D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5B57B77DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241378AbjJDGdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 02:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46532 "EHLO
+        id S241377AbjJDGfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 02:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbjJDGdp (ORCPT
+        with ESMTP id S231894AbjJDGfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 02:33:45 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2063.outbound.protection.outlook.com [40.107.93.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7B9AD;
-        Tue,  3 Oct 2023 23:33:42 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LQY0rX4+inENYfgTOAcMH2cw/ZRnVnM/q6GGaPIvUmCm4WAYqyjt2+AJpQgHIHIk5+Y8Qhkt1210WoWso6dcuJfkhnU5Ovii0a276lvOxtHQtE4XvJ0tfaw4KuESrsu77v132jSNi1oW5o82h35M2NjEAziQFxMr818C4byuPuRCLKmscMGaQWBcovMFYi3XDtVvVZP8Ua2m2z2vU2jU+hM83I4eGIE9DpfrufUnHa2fs6P9ph7N5niw3ooAkXSNZdq1RnBc/jicuRN0jUT4Bv5jc1Od+vsZGbKUqGsWUeEUc+I9r3hr0Rtiswgo881rrrF/3A+oEroVs+VZuEX/Mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ycS5XG8eIhFuyjR0N5qhGQ2FeSgALcMcFjMIn/MXtVU=;
- b=Q3lm4lIfb+ba8MZ7BDsdy7Jvd4SP2cvxyJRYI0e9YPohYhZM9Wz7S8CVTYSuDnCvo/1g6vIoH5gzwDO+jaZUjiS3GQ6iIJkmfF0oIBTV55YdM2j0Qr3W0B+deozusKD046j2ofPJA9AiZ6ag0vmVorKtXp5Y6KYc5uhFsi2GMWdtOrM8JFSEuEx/HlNz1MMjQe77cEuTmhsAQSYxoyKjVrGuzMQfMbREhHP9fT7EYJRXjc8PP3A6GgS7cxSU2TNI18QlVWSmor+Z3anoCKyU627WrkQSNSi6QFw7HY5cXB6tIbbiTIfViwG1qV1ypWUdjcj3uxo5hq+Qxdm2sadlmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ycS5XG8eIhFuyjR0N5qhGQ2FeSgALcMcFjMIn/MXtVU=;
- b=lOLNO7niwP+ADNitwUXrLx84vNG5zSD7yqJPDdOTZWXa0u0VGjrlgDCXN029ClaCzY+MoJE8GBTyoJj18+GKu6e30EmhIVD18BkqixZfStLrtxYiwO/7gMkTYsJOZK6YEU3JfqCulOjzhJ1OOoy9a8DRDge55QiXDkyKXFDKKUvX9wTyHZLcToyVDhxbUWUlE35DVzgx7tZSMztDRlu+cXfTkV6bf0e6O1efsGO+4XgPgobFXu8Yp/TDgL7nHi0cb67XILAz36IkCLHRlfZfvnZhSOwu7qEQfVc6j6HuANwqpL2z4H3i0GI/p9HGGMflgOTAMqwSSONNIOfqmT+92w==
-Received: from LV3PR12MB9404.namprd12.prod.outlook.com (2603:10b6:408:219::9)
- by DM4PR12MB5376.namprd12.prod.outlook.com (2603:10b6:5:39f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Wed, 4 Oct
- 2023 06:33:40 +0000
-Received: from LV3PR12MB9404.namprd12.prod.outlook.com
- ([fe80::74fa:9ccf:a8e4:2e79]) by LV3PR12MB9404.namprd12.prod.outlook.com
- ([fe80::74fa:9ccf:a8e4:2e79%7]) with mapi id 15.20.6813.017; Wed, 4 Oct 2023
- 06:33:38 +0000
-From:   Chaitanya Kulkarni <chaitanyak@nvidia.com>
-To:     Kees Cook <keescook@chromium.org>,
-        James Smart <james.smart@broadcom.com>
-CC:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: Re: [PATCH] nvmet-fc: Annotate struct nvmet_fc_tgt_queue with
- __counted_by
-Thread-Topic: [PATCH] nvmet-fc: Annotate struct nvmet_fc_tgt_queue with
- __counted_by
-Thread-Index: AQHZ9lDgqNhZI9r33kumVu66D6XHHrA5LMeA
-Date:   Wed, 4 Oct 2023 06:33:37 +0000
-Message-ID: <8338ab4d-1c43-5530-ccf5-1bf808faaaef@nvidia.com>
-References: <20231003232511.work.459-kees@kernel.org>
-In-Reply-To: <20231003232511.work.459-kees@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LV3PR12MB9404:EE_|DM4PR12MB5376:EE_
-x-ms-office365-filtering-correlation-id: b8aa0ae0-8d30-40f9-5f2f-08dbc4a3d7ac
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ogE7JZBY06Pu16gKrvVCDtasZ/Fm1qPDjRdqb5SknS2/Saa0DkM5NIpX6lFmmtCT+ZukCMkeRCWt/hcWaOJwO9MsLrCRK5QezWfuxnquhmzKZQbJQOnzUQ3xmpB+GG248otbP0ALQbZJUobaHbpVeEAKH3GVhwNx+23lbzSMAJZ9ZFAeWMbhhWRQUsf2JWH1tSvO2fregbxEmGyJUJPrU+McIZ1i3+1Ab75wLEqiC2RO4CcWALRiAPAdozllWTo/LRetOPD9NZutaFAiwpoildkWk8sniFbqOgDSsJTC7Du3CTi4rvRZ9uZ6+rvsRzUgcpmUZ9mbxQtnc9JhyL7g1nWCAEkp/p6PeTz6nymU2Tc4fL19mvX2CK4L9kDwMN5o7GQllOLTfKPAgPszpLDfpzDr3eCL6EXS9rlhm6TCpMV8X32XdgJ4EgaJ7Ih27cIKYxmr/9JVB2tLdXZNG3I/hbdCJ8B97ZDeX9O6z9zczeSOIVPxlktl0S1E0YpU/aY5cgV6aaPM8oU+SBHe2J9NKrkid63rR0VPwBJG+xgw12je0qEGN+/lXIqLVExGaE9C5I12UjoxHXxqm/41tr5Af+vx0hSFHUf23YJmUq8rhPOqvFlT1vn9wSDwqutEqK+HDHIcaD65Sj8C8NK6k1s34NHm5dphSyHb8Vm5UZdtVewvIAuD3hK4AkiyDjNs9Xl3Ds8Rsp7eLwSknHLL1DeXrc3zw0XWEtBLs4luyZLkimg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR12MB9404.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(136003)(396003)(366004)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(41300700001)(110136005)(91956017)(6486002)(2616005)(966005)(66946007)(53546011)(6506007)(6512007)(316002)(66446008)(66556008)(64756008)(66476007)(76116006)(54906003)(8676002)(4326008)(8936002)(5660300002)(478600001)(31686004)(71200400001)(7416002)(2906002)(4744005)(83380400001)(38070700005)(122000001)(36756003)(38100700002)(31696002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Y3V5TDhWWTZZVHVVMzBaMDZsNVYrbEd1bDJvcFl2MlpIME1hTk9hc0RkcnhT?=
- =?utf-8?B?SENjYkl2eUNNVUJmSGdYT2ZjcU1tZHpKOVFGcXYwTzZqa3ZhMjZWNVhYd0dQ?=
- =?utf-8?B?RVlWMDhHQlRNeFRXT3grTHZvVFZJVnZEc2JqblQyd1VLRFNXUnNOT0VwM2Fj?=
- =?utf-8?B?S3J3QkVSdlJJK0p6cFhsZ0dkRnZQKzdLLzlOUGxseU5YR1lNZUd5NGFETXFY?=
- =?utf-8?B?ZHU2TGpKRmlhcHdBaXduSjZza1MwaFpFMTJpQnNoMnA1czM2YW9EeExPejI2?=
- =?utf-8?B?TTZuRm1yQnhJWXZMem5MdjVCQjVDWmNadVU0azZudFBrdCtPYzRXalZ2ZTdI?=
- =?utf-8?B?L2ZoQ3N3TW5UUmt5aFJGQTBnZm03cWd4aUdnU2ZqZmhudFFyelFub2kyN25a?=
- =?utf-8?B?MGZ5ZDRYR09jUnZ5dDQvMStlbUp1dXhydDFUQjZPZm55V0dFNEppc1NHcll1?=
- =?utf-8?B?V3FLckxyYThYci9nZVFtVVlRenVPQTZqdXBWb0daOG44VCtnU21DWXkvWVdx?=
- =?utf-8?B?eXR6UmtYS3hha2xHQ3pUeVpQK3AxU1IzdllzbFMyZUpsbnBUYlk2Mld5WmJs?=
- =?utf-8?B?ZU9lb1A3ZUpNckxNbmR1NDd5NW55d3JDc2RJQllJZGdZRUJ1eUFmNjRhdzlI?=
- =?utf-8?B?c1FEeVNaWXFBclordWIyOXdNSGJNVGhWUGlkcVpxNllvSVQ4dzhmWkd3WXBI?=
- =?utf-8?B?OGVjN2Q1ZTB6bjB1RlF3Z3FNR1pZYXYyL3BzM0ZISDFhN3pwQjl2Vk91eTJm?=
- =?utf-8?B?OUd2aWNkVnpNV0Q1YzkxZi9NLy8vM2ZmczREUGFCalRHQU1jeitGa3diWERK?=
- =?utf-8?B?blRtSDlZUURZK3VXcFJQOXJ1SitWNzJmZWMxeXZDQjgza2RXdTlRclZQYzEr?=
- =?utf-8?B?cllxTzRPbkQxZkhwVE04M3h1RmtxTDNoakpHeC9wU1FsNkp1Nk9ua21VaVJK?=
- =?utf-8?B?blQ5KzVrUUxJTVU0NTB3M09oWlJTVGtWVk1hS0NPY0RtSVgwZmEwT05UWGhJ?=
- =?utf-8?B?bnF2OTRwaEFqTm81NmNPcm9vV1B4dk1LUlBqQ0tLb1VnLzU3QXkvRjMraTA2?=
- =?utf-8?B?NFV6eGV6eHpBc1NjTnF0RXBmZ2hjWmZRSFlNbzJEbWVoWWx5a3lWZjZIVXp5?=
- =?utf-8?B?ZFBtUWtDK0hZMmphQ2hFck5wbUNhNUNsUC9PK1lDWjYrdTVoUHlNMnoyWU9t?=
- =?utf-8?B?VEI2RHp2K1R0RHpKSTkvY0hjcjUwdlJ2dkZ3TDZVcTRTbStONVRqWFhFcE4x?=
- =?utf-8?B?Ynhhalg5MnQxNCtJb1B2Z0FOQSt0c1N3VkNpZENrRHZ6TXJTUXdZOXlpb0J0?=
- =?utf-8?B?NVNRWnkvVlRwMUhmQ1piMEVwdXNMYWJWaWtjc3hmVmJaeUpsbEJpb0d5YnBN?=
- =?utf-8?B?V2ZKaUhOM1VCMm1VQVprZ2RwWVJJOUJjWmY3cmo4RXJkU3lzNnp0ZWJPNWFI?=
- =?utf-8?B?aW1ZSTN1cHdpWlhHUkxTWWwxdUpvcnRmekQvMzJlVVF6WXlnZjNhZm5rbVd1?=
- =?utf-8?B?dGo1aHMvN2drdWxSblk2b0UxNzZtRmY0L0ZyaWozemV5QVhpWTFEOS9KTUlY?=
- =?utf-8?B?MG13QmxyK0dpbmtTc1huZTNqMjQ5K1NldUpsSzFLcStKOE13ZTl4dEpUOEtp?=
- =?utf-8?B?eUYxRjZGOUJGU20xMnAvMEIrUkZ4V3lRM1d4TFh2dDZ3MkVLbVhvTlIxVWd1?=
- =?utf-8?B?N2ZFdVZxWWNjMzR2eStJMjNqRXRYbnlXY3daM0I2TkxLbmtjQ3pkY1ZqejlW?=
- =?utf-8?B?c0hEZkRVU1daZ1BKanFtSDQyZFEyT1MyQWVzL3Jma3AzSUdmVkFLYjhrVXdk?=
- =?utf-8?B?K244S1hGYnhWdWRCZ0JobmRrU0tEbVpVelo5aDA0NjNoU3FwMkpYY2l3VXpm?=
- =?utf-8?B?eGFMams3cVI5Y3lNQjJxaWhVVFlhTEVTc200YytvbXpyQW1CUkhFYWdGV0RL?=
- =?utf-8?B?ZUo2UGFLMzJ5ZmpPRExFTjgrSENiczJSREhidDFZZnpZb1VGZFkzVFpQRHh3?=
- =?utf-8?B?eWJmbm1iMlhtb3RYMkp0NHFnWXdPTS9UcTNnZmZEWUdXRitPY3c4SkpkYzRq?=
- =?utf-8?B?WGpMNmZHMWljMTVkWVNDU0JEalpMa04rc2RNWnNCMEI0ZGRTMFlucWtOdG5p?=
- =?utf-8?B?ZVBLVFZuR0Q5UDZtSnRnWVp0d202VnRvb0huUU5Pc05aS1E1VGYxempmQVQz?=
- =?utf-8?Q?wegQ1pAVYxEd5tzXDnsiSnFX/UKAQFbby/m7Fg0HjSc4?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B3646057087D4C449B4AF022771EF916@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 4 Oct 2023 02:35:09 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7FFA6;
+        Tue,  3 Oct 2023 23:35:05 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qnvTG-000313-TH; Wed, 04 Oct 2023 08:34:58 +0200
+Message-ID: <fbac1212-7206-4fe5-9c28-7372e95f8575@leemhuis.info>
+Date:   Wed, 4 Oct 2023 08:34:58 +0200
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR12MB9404.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8aa0ae0-8d30-40f9-5f2f-08dbc4a3d7ac
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Oct 2023 06:33:37.9833
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 97/HbSL1LIAw6wAvTGVBBHErNpx2f72OSyrfr1g/5mk8S2mctJkyIdgBZZrVV4oCNfOnQQMv6TDoa8ZaFGBYHg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5376
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Input: elantech - fix fast_reconnect callback in ps2 mode
+Content-Language: en-US, de-DE
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jeffery Miller <jefferymiller@google.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        regressions@lists.linux.dev, benjamin.tissoires@redhat.com,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Andrew Duggan <andrew@duggan.us>, loic.poulain@linaro.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231004005729.3943515-1-jefferymiller@google.com>
+ <2023100418-clapping-driven-bc09@gregkh>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <2023100418-clapping-driven-bc09@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1696401306;bf33fed2;
+X-HE-SMSGID: 1qnvTG-000313-TH
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTAvMy8yMyAxNjoyNSwgS2VlcyBDb29rIHdyb3RlOg0KPiBQcmVwYXJlIGZvciB0aGUgY29t
-aW5nIGltcGxlbWVudGF0aW9uIGJ5IEdDQyBhbmQgQ2xhbmcgb2YgdGhlIF9fY291bnRlZF9ieQ0K
-PiBhdHRyaWJ1dGUuIEZsZXhpYmxlIGFycmF5IG1lbWJlcnMgYW5ub3RhdGVkIHdpdGggX19jb3Vu
-dGVkX2J5IGNhbiBoYXZlDQo+IHRoZWlyIGFjY2Vzc2VzIGJvdW5kcy1jaGVja2VkIGF0IHJ1bi10
-aW1lIHZpYSBDT05GSUdfVUJTQU5fQk9VTkRTIChmb3INCj4gYXJyYXkgaW5kZXhpbmcpIGFuZCBD
-T05GSUdfRk9SVElGWV9TT1VSQ0UgKGZvciBzdHJjcHkvbWVtY3B5LWZhbWlseQ0KPiBmdW5jdGlv
-bnMpLg0KPg0KPiBBcyBmb3VuZCB3aXRoIENvY2NpbmVsbGVbMV0sIGFkZCBfX2NvdW50ZWRfYnkg
-Zm9yIHN0cnVjdCBudm1ldF9mY190Z3RfcXVldWUuDQo+DQo+IENjOiBKYW1lcyBTbWFydCA8amFt
-ZXMuc21hcnRAYnJvYWRjb20uY29tPg0KPiBDYzogQ2hyaXN0b3BoIEhlbGx3aWcgPGhjaEBsc3Qu
-ZGU+DQo+IENjOiBTYWdpIEdyaW1iZXJnIDxzYWdpQGdyaW1iZXJnLm1lPg0KPiBDYzogQ2hhaXRh
-bnlhIEt1bGthcm5pIDxrY2hAbnZpZGlhLmNvbT4NCj4gQ2M6IGxpbnV4LW52bWVAbGlzdHMuaW5m
-cmFkZWFkLm9yZw0KPiBMaW5rOiBodHRwczovL2dpdGh1Yi5jb20va2Vlcy9rZXJuZWwtdG9vbHMv
-YmxvYi90cnVuay9jb2NjaW5lbGxlL2V4YW1wbGVzL2NvdW50ZWRfYnkuY29jY2kgWzFdDQo+IFNp
-Z25lZC1vZmYtYnk6IEtlZXMgQ29vayA8a2Vlc2Nvb2tAY2hyb21pdW0ub3JnPg0KPiAtLS0NCj4g
-ICANCg0KTG9va3MgZ29vZC4NCg0KUmV2aWV3ZWQtYnk6IENoYWl0YW55YSBLdWxrYXJuaSA8a2No
-QG52aWRpYS5jb20+DQoNCi1jaw0KDQoNCg==
+On 04.10.23 08:19, Greg Kroah-Hartman wrote:
+> On Tue, Oct 03, 2023 at 07:57:24PM -0500, Jeffery Miller wrote:
+>> Make `elantech_setup_ps2` set a compatible fast_reconnect pointer
+>> when its ps2 mode is used.
+>>
+>> When an SMBus connection is attempted and fails `psmouse_smbus_init`
+>> sets fast_reconnect to `psmouse_smbus_reconnect`.
+>> `psmouse_smbus_reconnect` expects `psmouse->private` to be
+>> `struct psmouse_smbus_dev` but `elantech_setup_ps2` replaces
+>> it with its private data. This was causing an issue on resume
+>> since psmouse_smbus_reconnect was being called while in ps2, not SMBus
+>> mode.
+>>
+>> This was uncovered by commit 92e24e0e57f7 ("Input: psmouse - add delay when
+>> deactivating for SMBus mode")
+>>
+>> Closes:
+>> Link:https://lore.kernel.org/all/ca0109fa-c64b-43c1-a651-75b294d750a1@leemhuis.info/
+>> Reported-by: Thorsten Leemhuis <linux@leemhuis.info>
+>>
+>> Signed-off-by: Jeffery Miller <jefferymiller@google.com>
+>> ---
+>>
+>> The other callbacks set in psmouse_smbus_init are already replaced.
+>> Should fast_reconnect be set to `elantech_reconnect` instead?
+> 
+> What commit id does this fix? 
+
+Good point, yes, it also needs this:
+
+Fixes: 92e24e0e57f72e ("Input: psmouse - add delay when deactivating for
+SMBus mode")
+
+> Should it also have a cc: stable tag?
+
+Not that I can see, as that commit was merged for 6.6 and not backported
+(no idea why Jeffery CCed the stable list, maybe I'm missing something)
+
+Ciao, Thorsten
