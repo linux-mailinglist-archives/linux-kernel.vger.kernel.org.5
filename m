@@ -2,170 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F757B8D82
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2404C7B8D8A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243638AbjJDTiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 15:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54216 "EHLO
+        id S243391AbjJDTjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 15:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233578AbjJDTh7 (ORCPT
+        with ESMTP id S233651AbjJDTi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 15:37:59 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB46598
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 12:37:55 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d84c24a810dso240441276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 12:37:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1696448275; x=1697053075; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mQGn2Phe0RwYW5SGubGGOv+c/hAGSSs2LrA09w+wOG8=;
-        b=TilTgkhZouIPuv7GuwoG4+G6t7andK6GaOW7wftIFaIREBfgJYPJjkN6KSK+Avay1v
-         okj2r3PfUPtWwxcVfYzuc5MIEkhfTszqWOo4sILSQ+TwvnDqz3vm/FRq/pTgPApIJcuR
-         xeu8lYuf4TL5C3DOHXnWsxMwLmJ8NFRWzBd9dMgzmLbzx2UVGMEkHFAy7LdbgWhwznu9
-         q4MPPTMc+XkAxik+CKCeMKAMl6Ppmmh6L4Fb2iaAJqVXH69Q8w9yDfPkAQh5pDn7RGoo
-         QKUSyOL5Kit6+OQz+MneFcrB66bi0fLGTNflIfkoKvSCaS7dbthDD6qpSpwI/e+ED9en
-         /4fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696448275; x=1697053075;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mQGn2Phe0RwYW5SGubGGOv+c/hAGSSs2LrA09w+wOG8=;
-        b=C5Fjcm9Eky2WEh1UPgwxkOd+m8kYWv8VW1KRxe2OnQuiAkHhneVwq9sT9Wfd8sW791
-         cysbtCIWSpjAmgssPVHS4TgdvtSqm2U6ZQ7HwrYBvZaU1bcszHfazl9aQwMGdr2DabVv
-         OsKaUaNOSgc40da47FUiJ0ENGgT32/WG89iiGmApklzt7bTnq3z8yFA70iO2omwunkde
-         +XHDXf7OuExDLnXm9Vhv7O0s+gtcfbLP9y4QaE6Hf5S0cK3ZJ0NVauInTnpGQt+UHLkr
-         SqiAK9kUrrivoYQE91UV990L8e8JPtbhHOjrD5T8dRgl7GUa2a+ytIwUC46Hm0vax2tC
-         0QsA==
-X-Gm-Message-State: AOJu0Yz9xQS5q8F4A54I86T+V8hwEwv7mGqElJKwmiYtXxGisPcShEG4
-        6LgRGmNYMG5Fwbf1XzrW7Qm50UaWO6FvuD0WPa7Y
-X-Google-Smtp-Source: AGHT+IF/30kkFHZBZjg3KbcOdEkEVasuK1il9LqueAt4mYRrIgMYFlqbwoL44JXav1232SSuhV3Vc5nqAWjjxjk5xw0=
-X-Received: by 2002:a05:6902:18c9:b0:d1a:955f:304d with SMTP id
- ck9-20020a05690218c900b00d1a955f304dmr3631465ybb.64.1696448274671; Wed, 04
- Oct 2023 12:37:54 -0700 (PDT)
+        Wed, 4 Oct 2023 15:38:58 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EFD31AB;
+        Wed,  4 Oct 2023 12:38:52 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BC50C15;
+        Wed,  4 Oct 2023 12:39:31 -0700 (PDT)
+Received: from [10.57.67.242] (unknown [10.57.67.242])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 89C933F762;
+        Wed,  4 Oct 2023 12:38:47 -0700 (PDT)
+Message-ID: <498ffcef-2ff9-495b-8544-b87c5c2eb6e1@arm.com>
+Date:   Wed, 4 Oct 2023 20:38:39 +0100
 MIME-Version: 1.0
-References: <20230928130147.564503-1-mszeredi@redhat.com> <20230928130147.564503-5-mszeredi@redhat.com>
-In-Reply-To: <20230928130147.564503-5-mszeredi@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 4 Oct 2023 15:37:43 -0400
-Message-ID: <CAHC9VhQD9r+Qf5Vz1XmxUdJJJO7HNTKdo8Ux=n+xkxr=JGFMrw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] add listmount(2) syscall
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/6] RISC-V: Add eMMC support for TH1520 boards
+Content-Language: en-GB
+To:     Samuel Holland <samuel.holland@sifive.com>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Drew Fustini <dfustini@baylibre.com>,
+        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        Guo Ren <guoren@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-riscv@lists.infradead.org, Christoph Hellwig <hch@lst.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Fabrizio Castro <fabrizio.castro@bp.renesas.com>,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Arnd Bergmann <arnd@arndb.de>, Han Gao <gaohan@iscas.ac.cn>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        linux-mmc@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Conor Dooley <conor@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Xi Ruoyao <xry111@xry111.site>, Fu Wei <wefu@redhat.com>
+References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
+ <CAOCHtYhnx1EpBM+o3xhdsicx5uqLidojK3f0HQ+VfyVv1ZXnVQ@mail.gmail.com>
+ <CAOCHtYi5Ab5ppCmaQV3QuKQcpmJX+sHdAmtuEXhfq8xf5fFCYQ@mail.gmail.com>
+ <ZRuamJuShOnvP1pr@x1> <ZR1M3FcdXrDmIGu2@xhacker>
+ <CA+V-a8ugwqkQxnX-wwWCHVtBBtG=aVv=MZTc53LbpxtFA=N1_A@mail.gmail.com>
+ <bc2b0b30-ab37-f336-c90e-eab570d393a2@arm.com>
+ <c2ea3f34bb919293b850fab6ed42b61e3517ba35.camel@icenowy.me>
+ <a568a9dd-bab2-1e23-c4d5-9f6475bdcc3b@arm.com>
+ <CA+V-a8s1S4yTH19PVNSznAgUFoHRNoye9CfwjW6iy6PbQ9thew@mail.gmail.com>
+ <CA+V-a8vbWW6=HTfR+FCPOB0bAa8M3Bbm_k=7+XbjOc3ybo6VNQ@mail.gmail.com>
+ <20075b03-e3b0-4f29-9ba1-98eed361a44f@sifive.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20075b03-e3b0-4f29-9ba1-98eed361a44f@sifive.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 9:04=E2=80=AFAM Miklos Szeredi <mszeredi@redhat.com=
-> wrote:
->
-> Add way to query the children of a particular mount.  This is a more
-> flexible way to iterate the mount tree than having to parse the complete
-> /proc/self/mountinfo.
->
-> Lookup the mount by the new 64bit mount ID.  If a mount needs to be queri=
-ed
-> based on path, then statx(2) can be used to first query the mount ID
-> belonging to the path.
->
-> Return an array of new (64bit) mount ID's.  Without privileges only mount=
-s
-> are listed which are reachable from the task's root.
->
-> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-> ---
->  arch/x86/entry/syscalls/syscall_32.tbl |  1 +
->  arch/x86/entry/syscalls/syscall_64.tbl |  1 +
->  fs/namespace.c                         | 69 ++++++++++++++++++++++++++
->  include/linux/syscalls.h               |  3 ++
->  include/uapi/asm-generic/unistd.h      |  5 +-
->  include/uapi/linux/mount.h             |  3 ++
->  6 files changed, 81 insertions(+), 1 deletion(-)
+On 2023-10-04 19:49, Samuel Holland wrote:
+> On 2023-10-04 12:16 PM, Lad, Prabhakar wrote:
+>> On Wed, Oct 4, 2023 at 5:03 PM Lad, Prabhakar
+>> <prabhakar.csengg@gmail.com> wrote:
+>>>
+>>> On Wed, Oct 4, 2023 at 3:18 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>>>>
+>>>> On 04/10/2023 3:02 pm, Icenowy Zheng wrote:
+>>>> [...]
+>>>>>>>> I believe commit 484861e09f3e ("soc: renesas: Kconfig: Select the
+>>>>>>>> required configs for RZ/Five SoC") can cause regression on all
+>>>>>>>> non-dma-coherent riscv platforms with generic defconfig. This is
+>>>>>>>> a common issue. The logic here is: generic riscv defconfig
+>>>>>>>> selects
+>>>>>>>> ARCH_R9A07G043 which selects DMA_GLOBAL_POOL, which assumes all
+>>>>>>>> non-dma-coherent riscv platforms have a dma global pool, this
+>>>>>>>> assumption
+>>>>>>>> seems not correct. And I believe DMA_GLOBAL_POOL should not be
+>>>>>>>> selected by ARCH_SOCFAMILIY, instead, only ARCH under some
+>>>>>>>> specific
+>>>>>>>> conditions can select it globaly, for example NOMMU ARM and so
+>>>>>>>> on.
+>>>>>>>>
+>>>>>>>> Since this is a regression, what's proper fix? any suggestion is
+>>>>>>>> appreciated.
+>>>>>>
+>>>>>> I think the answer is to not select DMA_GLOBAL_POOL, since that is
+>>>>>> only
+>>>>>
+>>>>> Well I think for RISC-V, it's not NOMMU only but applicable for every
+>>>>> core that does not support Svpbmt or vendor-specific alternatives,
+>>>>> because the original RISC-V priv spec does not define memory attributes
+>>>>> in page table entries.
+>>>>>
+>>>>> For the Renesas/Andes case I think a pool is set by OpenSBI with
+>>>>> vendor-specific M-mode facility and then passed in DT, and the S-mode
+>>>>> (which MMU is enabled in) just sees fixed memory attributes, in this
+>>>>> case I think DMA_GLOBAL_POOL is needed.
+>>>>
+>>>> Oh wow, is that really a thing? In that case, either you just can't
+>>>> support this platform in a multi-platform kernel, or someone needs to do
+>>>> some fiddly work in dma-direct to a) introduce the notion of an optional
+>>>> global pool,
+>>> Looking at the code [0] we do have compile time check for
+>>> CONFIG_DMA_GLOBAL_POOL irrespective of this being present in DT or
+>>> not, instead if we make it compile time and runtime check ie either
+>>> check for DT node or see if pool is available and only then proceed
+>>> for allocation form this pool.
+>>>
+>>> What are your thoughts on this?
+>>>
+>> Something like the below:
+>>
+>> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+>> index f2fc203fb8a1..7bf41a4634a4 100644
+>> --- a/include/linux/dma-map-ops.h
+>> +++ b/include/linux/dma-map-ops.h
+>> @@ -198,6 +198,7 @@ int dma_release_from_global_coherent(int order,
+>> void *vaddr);
+>>   int dma_mmap_from_global_coherent(struct vm_area_struct *vma, void *cpu_addr,
+>>                  size_t size, int *ret);
+>>   int dma_init_global_coherent(phys_addr_t phys_addr, size_t size);
+>> +bool dma_global_pool_available(void);
+>>   #else
+>>   static inline void *dma_alloc_from_global_coherent(struct device *dev,
+>>                  ssize_t size, dma_addr_t *dma_handle)
+>> @@ -213,6 +214,10 @@ static inline int
+>> dma_mmap_from_global_coherent(struct vm_area_struct *vma,
+>>   {
+>>          return 0;
+>>   }
+>> +static inline bool dma_global_pool_available(void)
+>> +{
+>> +       return false;
+>> +}
+>>   #endif /* CONFIG_DMA_GLOBAL_POOL */
+>>
+>>   /*
+>> diff --git a/kernel/dma/coherent.c b/kernel/dma/coherent.c
+>> index c21abc77c53e..605f243b8262 100644
+>> --- a/kernel/dma/coherent.c
+>> +++ b/kernel/dma/coherent.c
+>> @@ -277,6 +277,14 @@ int dma_mmap_from_dev_coherent(struct device
+>> *dev, struct vm_area_struct *vma,
+>>   #ifdef CONFIG_DMA_GLOBAL_POOL
+>>   static struct dma_coherent_mem *dma_coherent_default_memory __ro_after_init;
+>>
+>> +bool dma_global_pool_available(void)
+>> +{
+>> +       if (!dma_coherent_default_memory)
+>> +               return false;
+>> +
+>> +       return true;
+>> +}
+>> +
+>>   void *dma_alloc_from_global_coherent(struct device *dev, ssize_t size,
+>>                                       dma_addr_t *dma_handle)
+>>   {
+>> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+>> index 9596ae1aa0da..a599bb731ceb 100644
+>> --- a/kernel/dma/direct.c
+>> +++ b/kernel/dma/direct.c
+>> @@ -235,7 +235,7 @@ void *dma_direct_alloc(struct device *dev, size_t size,
+>>                   * If there is a global pool, always allocate from it for
+>>                   * non-coherent devices.
+>>                   */
+>> -               if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL))
+>> +               if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
+>> dma_global_pool_available())
+>>                          return dma_alloc_from_global_coherent(dev, size,
+>>                                          dma_handle);
+> 
+> dma_alloc_from_global_coherent() already checks dma_coherent_default_memory, so
+> the solution could be even simpler:
+> 
+> --- a/kernel/dma/direct.c
+> +++ b/kernel/dma/direct.c
+> @@ -232,12 +232,12 @@ void *dma_direct_alloc(struct device *dev, size_t size,
+>   					      attrs);
+> 
+>   		/*
+> -		 * If there is a global pool, always allocate from it for
+> +		 * If there is a global pool, always try to allocate from it for
+>   		 * non-coherent devices.
+>   		 */
+> -		if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL))
+> -			return dma_alloc_from_global_coherent(dev, size,
+> -					dma_handle);
+> +		ret = dma_alloc_from_global_coherent(dev, size, dma_handle);
+> +		if (ret)
+> +			return ret;
 
-...
+So if allocation fails because the pool is full, we should go ahead and 
+remap something that can't work? ;)
 
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index 3326ba2b2810..050e2d2af110 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -4970,6 +4970,75 @@ SYSCALL_DEFINE4(statmount, const struct __mount_ar=
-g __user *, req,
->         return ret;
->  }
->
-> +static long do_listmount(struct vfsmount *mnt, u64 __user *buf, size_t b=
-ufsize,
-> +                        const struct path *root, unsigned int flags)
-> +{
-> +       struct mount *r, *m =3D real_mount(mnt);
-> +       struct path rootmnt =3D {
-> +               .mnt =3D root->mnt,
-> +               .dentry =3D root->mnt->mnt_root
-> +       };
-> +       long ctr =3D 0;
-> +       bool reachable_only =3D true;
-> +       int err;
-> +
-> +       err =3D security_sb_statfs(mnt->mnt_root);
-> +       if (err)
-> +               return err;
-> +
-> +       if (flags & LISTMOUNT_UNREACHABLE) {
-> +               if (!capable(CAP_SYS_ADMIN))
-> +                       return -EPERM;
-> +               reachable_only =3D false;
-> +       }
-> +
-> +       if (reachable_only && !is_path_reachable(m, mnt->mnt_root, &rootm=
-nt))
-> +               return capable(CAP_SYS_ADMIN) ? 0 : -EPERM;
-> +
-> +       list_for_each_entry(r, &m->mnt_mounts, mnt_child) {
-> +               if (reachable_only &&
-> +                   !is_path_reachable(r, r->mnt.mnt_root, root))
-> +                       continue;
+The dma_global_pool_available() idea sort of works, but I'm still 
+concerned about the case where it *should* have been available but the 
+platform has been misconfigured, so again we fall through to 
+DMA_DIRECT_REMAP "successfully" returning a coherent buffer that isn't, 
+and the user's filesystem gets corrupted. Or at best, they get confused 
+by weird errors from random devices going wrong. That's why I said it 
+would be fiddly - the current state of DMA_GLOBAL_POOL as a binary 
+arch-wide thing is relatively robust and easy to reason about, but 
+attempting to generalise it further is... less so.
 
-I believe we would want to move the security_sb_statfs() call from
-above to down here; something like this I think ...
+Thanks,
+Robin.
 
-  err =3D security_sb_statfs(r->mnt.mnt_root);
-  if (err)
-    /* if we can't access the mount, pretend it doesn't exist */
-    continue;
-
-> +               if (ctr >=3D bufsize)
-> +                       return -EOVERFLOW;
-> +               if (put_user(r->mnt_id_unique, buf + ctr))
-> +                       return -EFAULT;
-> +               ctr++;
-> +               if (ctr < 0)
-> +                       return -ERANGE;
-> +       }
-> +       return ctr;
-> +}
-
---=20
-paul-moore.com
+> 
+>   		/*
+>   		 * Otherwise remap if the architecture is asking for it.  But
+> 
+> Regards,
+> Samuel
+> 
