@@ -2,112 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C08F7B80A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C3E7B80A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242577AbjJDNSW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 09:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48594 "EHLO
+        id S242591AbjJDNTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 09:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233134AbjJDNSU (ORCPT
+        with ESMTP id S233096AbjJDNTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:18:20 -0400
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F369E;
-        Wed,  4 Oct 2023 06:18:17 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-59c268676a9so25262317b3.0;
-        Wed, 04 Oct 2023 06:18:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696425496; x=1697030296;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/wMp+Vg307cSobQ6lm2WKyfxk9n+yqBtBGToupSFTGM=;
-        b=misch/BJVoWoaIq2vp15aDmvzrFy0U7a5fO8B/2Wl0/a/GxKCAQFyxcOQVfsfBB3tW
-         pWNTab4AH9kvqKqir+8OoAgxI3GKE5V32f81itWfNs2Ju6/91L6NKwHTF0sDsjyYYcSe
-         ywN41ADhMthIm13PmqexFHNCfdXeKDVHSJDuNYYVenIvNdkptIu8kFDcO5Qsju+jsLOo
-         oUtjeD7xtB/20F98l3pAKkPvzCKnLZgqJPL/XERAp2YO3qqjnT4mFAaMPVeQWfyS4c26
-         SIDushCEhA5F61jsJV8gCW5Rszw02fmOprGehWFy9klC6rMckK+Ic2dIifB97WNH/OPp
-         Ms5A==
-X-Gm-Message-State: AOJu0YxTRNHjcNaVvpMfNaKwRlVw2IfLqn9sQ1RnbIopCXVpqHpNNo3F
-        BWIK/2gaIH+braaXjUsRZgGMZckZUJEOvA==
-X-Google-Smtp-Source: AGHT+IFjpDJ/TWx4mYP1vTavRlFj+pulva715y9H09RW7jK91X92kkZz4JebvV1USCCHTPWyZrqxgA==
-X-Received: by 2002:a81:5c57:0:b0:561:a123:1041 with SMTP id q84-20020a815c57000000b00561a1231041mr2480757ywb.29.1696425496426;
-        Wed, 04 Oct 2023 06:18:16 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id n16-20020a819e50000000b005837633d9cbsm1114124ywj.64.2023.10.04.06.18.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 06:18:16 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5a229ac185aso25149567b3.1;
-        Wed, 04 Oct 2023 06:18:15 -0700 (PDT)
-X-Received: by 2002:a81:4811:0:b0:5a1:eec1:b42e with SMTP id
- v17-20020a814811000000b005a1eec1b42emr2615702ywa.0.1696425495727; Wed, 04 Oct
- 2023 06:18:15 -0700 (PDT)
+        Wed, 4 Oct 2023 09:19:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E3298
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:19:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39850C433C7;
+        Wed,  4 Oct 2023 13:19:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696425584;
+        bh=bhclEsddtPiCxtYvFgBUs63/P/GoHLqamR5MHHrkOGs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eVTuL3hok71ptrABuk/GXY5dSnBMUIKIyxTpnstpH8KlEo3/1n+GA9pCZ+P8NioaB
+         psPOxIbZ4ATGY7Rje6IKtCBcGebBP9mM1GJVfeEgXh2L3epgTG+wZAa5HF14Wh4VZV
+         HMriNU1ynrdrLKC6RMJY8C3llX6ylefeuA0w03lNzJtERXE87MbWAz4NPMlrOURBqP
+         64Cu/tLWsjFM+6kC2Nber7j6EwoCpYrYdqCYTYp5cmWJSpn+fAi6vZT8KCxfGDD+gG
+         PMH0Lkdi59RLj9f8MAJ9hx2l919azOpWDb4JNwBZ+WyVLihiNDpEWosfqgkY6f7SVd
+         k0m7kvHd+8zLw==
+Date:   Wed, 4 Oct 2023 15:19:37 +0200
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: [PATCH v2] net: sched: cls_u32: Fix allocation size in u32_init()
+Message-ID: <ZR1maZoAh2W/0Vw6@work>
 MIME-Version: 1.0
-References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com> <20230929053915.1530607-18-claudiu.beznea@bp.renesas.com>
-In-Reply-To: <20230929053915.1530607-18-claudiu.beznea@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 4 Oct 2023 15:18:03 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX+3PinKKrWbtnaGGJZcARSyMewQR6QvYVGnM7NT0ObXQ@mail.gmail.com>
-Message-ID: <CAMuHMdX+3PinKKrWbtnaGGJZcARSyMewQR6QvYVGnM7NT0ObXQ@mail.gmail.com>
-Subject: Re: [PATCH v2 17/28] pinctrl: renesas: rzg2l: move ds and oi to SoC
- specific configuration
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, magnus.damm@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
-        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 7:39 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Move drive strength and output impedance values to SoC specific
-> configuration data structure (struct rzg2l_hwcfg). This allows extending
-> the drive strength support for RZ/G3S. Along with this the DS values
-> were converted to uA for simple integration with RZ/G3S support.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->
-> Changes in v2:
-> - s/indexes/indices in code documentation
-> - s/micro amps/uA in code documentation
-> - added RZG2L_IOLH_MAX_DS_ENTRIES for "+ 4" statements in code
-> - changed struct rzg2l_hwcfg::iolh_groupb_oi[] size to 4 to avoid
->   oversize it in next commits when RZG2L_IOLH_IDX_MAX will be increased
->   and thus avoiding issues when executing
->   "if (index == ARRAY_SIZE(hwcfg->iolh_groupb_oi))" in
->   rzg2l_pinctrl_pinconf_set()
-> - collected tags
+commit d61491a51f7e ("net/sched: cls_u32: Replace one-element array
+with flexible-array member") incorrecly replaced an instance of
+`sizeof(*tp_c)` with `struct_size(tp_c, hlist->ht, 1)`. This results
+in a an over-allocation of 8 bytes.
 
-Thanks, will queue in renesas-pinctrl-for-v6.7.
+This change is wrong because `hlist` in `struct tc_u_common` is a
+pointer:
 
-Gr{oetje,eeting}s,
+net/sched/cls_u32.c:
+struct tc_u_common {
+        struct tc_u_hnode __rcu *hlist;
+        void                    *ptr;
+        int                     refcnt;
+        struct idr              handle_idr;
+        struct hlist_node       hnode;
+        long                    knodes;
+};
 
-                        Geert
+So, the use of `struct_size()` makes no sense: we don't need to allocate
+any extra space for a flexible-array member. `sizeof(*tp_c)` is just fine.
 
+So, `struct_size(tp_c, hlist->ht, 1)` translates to:
+
+sizeof(*tp_c) + sizeof(tp_c->hlist->ht) ==
+sizeof(struct tc_u_common) + sizeof(struct tc_u_knode *) ==
+						144 + 8  == 0x98 (byes)
+						     ^^^
+						      |
+						unnecessary extra
+						allocation size
+
+$ pahole -C tc_u_common net/sched/cls_u32.o
+struct tc_u_common {
+	struct tc_u_hnode *        hlist;                /*     0     8 */
+	void *                     ptr;                  /*     8     8 */
+	int                        refcnt;               /*    16     4 */
+
+	/* XXX 4 bytes hole, try to pack */
+
+	struct idr                 handle_idr;           /*    24    96 */
+	/* --- cacheline 1 boundary (64 bytes) was 56 bytes ago --- */
+	struct hlist_node          hnode;                /*   120    16 */
+	/* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
+	long int                   knodes;               /*   136     8 */
+
+	/* size: 144, cachelines: 3, members: 6 */
+	/* sum members: 140, holes: 1, sum holes: 4 */
+	/* last cacheline: 16 bytes */
+};
+
+And with `sizeof(*tp_c)`, we have:
+
+	sizeof(*tp_c) == sizeof(struct tc_u_common) == 144 == 0x90 (bytes)
+
+which is the correct and original allocation size.
+
+Fix this issue by replacing `struct_size(tp_c, hlist->ht, 1)` with
+`sizeof(*tp_c)`, and avoid allocating 8 too many bytes.
+
+The following difference in binary output is expected and reflects the
+desired change:
+
+| net/sched/cls_u32.o
+| @@ -6148,7 +6148,7 @@
+| include/linux/slab.h:599
+|     2cf5:      mov    0x0(%rip),%rdi        # 2cfc <u32_init+0xfc>
+|                        2cf8: R_X86_64_PC32     kmalloc_caches+0xc
+|-    2cfc:      mov    $0x98,%edx
+|+    2cfc:      mov    $0x90,%edx
+
+Reported-by: Alejandro Colomar <alx@kernel.org>
+Closes: https://lore.kernel.org/lkml/09b4a2ce-da74-3a19-6961-67883f634d98@kernel.org/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Update subject line.
+ - Update changelog text.
+
+v1:
+ - Link: https://lore.kernel.org/linux-hardening/ZN5DvRyq6JNz20l1@work/
+
+ net/sched/cls_u32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
+index da4c179a4d41..6663e971a13e 100644
+--- a/net/sched/cls_u32.c
++++ b/net/sched/cls_u32.c
+@@ -366,7 +366,7 @@ static int u32_init(struct tcf_proto *tp)
+ 	idr_init(&root_ht->handle_idr);
+ 
+ 	if (tp_c == NULL) {
+-		tp_c = kzalloc(struct_size(tp_c, hlist->ht, 1), GFP_KERNEL);
++		tp_c = kzalloc(sizeof(*tp_c), GFP_KERNEL);
+ 		if (tp_c == NULL) {
+ 			kfree(root_ht);
+ 			return -ENOBUFS;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.34.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
