@@ -2,132 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 997297B98E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B0F7B98E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243611AbjJDXse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 19:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42972 "EHLO
+        id S244045AbjJDXtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 19:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240956AbjJDXsd (ORCPT
+        with ESMTP id S243199AbjJDXs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 19:48:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2BBC0;
-        Wed,  4 Oct 2023 16:48:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696463307; x=1727999307;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DeciXl2Atu8VXCLj4G2OA73SHmItxg7YaDBUu5u+dHo=;
-  b=cgNT7l6wwMBlJXw//weht6hNDUUip/HMyxeuXHlN598s+mmnzw6dd8IC
-   zE4Bu9GHPUkgW0ZpFN9W0MmayoObPgdOxwe2SvA6CrVIUbMMcSlSrD3YW
-   kKZ2wPAWiHWtL9RungMkjSmO7AEvo0eOLHOj8HCEOPWL6x50ZtbHkYHMx
-   iO10Zpr1jyMQ9Exw/gL8DCp2m1JV8ANPgzBob5vRs7p6CReUbT49T0I3L
-   HEjkDUnlv/ibe/S4PdXdUs1PSKstyY1TO7etCiq9BZw0X/pD0DaZAD703
-   FDs8snIZcW+MJ5f2auRXUs5vPJnupVzSvi3VrIOFbgScQEz3CWkphsPuJ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="414312014"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="414312014"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 16:48:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="998710851"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="998710851"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 04 Oct 2023 16:48:23 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoBbI-000Kll-2c;
-        Wed, 04 Oct 2023 23:48:20 +0000
-Date:   Thu, 5 Oct 2023 07:47:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Justin Lai <justinlai0215@realtek.com>, kuba@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        andrew@lunn.ch, pkshih@realtek.com, larry.chiu@realtek.com,
-        Justin Lai <justinlai0215@realtek.com>
-Subject: Re: [PATCH net-next v9 12/13] net:ethernet:realtek: Update the
- Makefile and Kconfig in the realtek folder
-Message-ID: <202310050703.fr8Txbrs-lkp@intel.com>
-References: <20230928104920.113511-13-justinlai0215@realtek.com>
+        Wed, 4 Oct 2023 19:48:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E09CE;
+        Wed,  4 Oct 2023 16:48:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5EAFC433C7;
+        Wed,  4 Oct 2023 23:48:53 +0000 (UTC)
+Date:   Wed, 4 Oct 2023 19:50:01 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Dan Raymond <raymod2@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-serial <linux-serial@vger.kernel.org>,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, peterz@infradead.org,
+        andriy.shevchenko@linux.intel.com, quic_saipraka@quicinc.com
+Subject: Re: [PATCH v3] arch/x86: port I/O tracing on x86
+Message-ID: <20231004195001.76a57417@gandalf.local.home>
+In-Reply-To: <94e2b77c-9cc4-534f-e650-06d7e0697f9f@gmail.com>
+References: <b8eae358-a3b3-fd68-82f1-b2c53534b922@gmail.com>
+        <2023100344-dart-jailbreak-c371@gregkh>
+        <94e2b77c-9cc4-534f-e650-06d7e0697f9f@gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230928104920.113511-13-justinlai0215@realtek.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Justin,
+On Wed, 4 Oct 2023 16:54:20 -0600
+Dan Raymond <raymod2@gmail.com> wrote:
 
-kernel test robot noticed the following build warnings:
+> With one exception io.h is included from boot.h or misc.h which is where
+> the include guards are defined:
+> 
+> # find arch/x86/boot -type f -print0 | xargs -0 grep "#include.*[^a-z]io\.h"
+> arch/x86/boot/boot.h:#include "io.h"
+> arch/x86/boot/compressed/misc.h:#include "../io.h"
+> arch/x86/boot/compressed/tdx.c:#include "../io.h"
+> arch/x86/boot/io.h:#include <asm/shared/io.h>
+> 
+> I agree this is fragile but the problem is not confined to this patch.
+> If I add a call to rdmsr() or wrmsr() in arch/x86/boot/compressed/misc.c
+> I get the same compiler error.  It has something to do with the inline
+> assembly inside arch/x86/include/asm/jump_label.h.
 
-[auto build test WARNING on net-next/main]
+Doesn't arch/x86/boot/* code create an image that is separate from the core
+vmlinux? That is, that code doesn't implement jump label logic nor sections.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Justin-Lai/net-ethernet-realtek-rtase-Add-pci-table-supported-in-this-module/20230928-185229
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20230928104920.113511-13-justinlai0215%40realtek.com
-patch subject: [PATCH net-next v9 12/13] net:ethernet:realtek: Update the Makefile and Kconfig in the realtek folder
-config: i386-randconfig-061-20231005 (https://download.01.org/0day-ci/archive/20231005/202310050703.fr8Txbrs-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310050703.fr8Txbrs-lkp@intel.com/reproduce)
+> 
+> I've copied Steven Rostedt who is the maintainer of tracefs to see if he
+> has any comment.  I just noticed arch/x86/boot/msr.h and I see that it
+> redefines rdmsr() and wrmsr() and omits the tracepoints.  A comment there
+> explains:
+> 
+> /*
+>  * The kernel proper already defines rdmsr()/wrmsr(), but they are not for the
+>  * boot kernel since they rely on tracepoint/exception handling infrastructure
+>  * that's not available here.
+>  */
+> 
+> We could do something similar for inb()/outb() and redefine them in
+> arch/x86/boot/io.h instead of including <asm/shared/io.h> there.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310050703.fr8Txbrs-lkp@intel.com/
+That would be a saner approach.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/net/ethernet/realtek/rtase/rtase_main.c:203:20: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le64 [usertype] addr @@     got long long @@
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:203:20: sparse:     expected restricted __le64 [usertype] addr
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:203:20: sparse:     got long long
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:362:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le64 [usertype] addr @@     got long long @@
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:362:29: sparse:     expected restricted __le64 [usertype] addr
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:362:29: sparse:     got long long
->> drivers/net/ethernet/realtek/rtase/rtase_main.c:686:37: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:687:37: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:692:19: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:694:37: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:708:27: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:710:27: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:727:35: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:729:35: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:732:35: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:734:35: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:1580:19: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:1584:37: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:1614:29: sparse: sparse: cast to restricted __le64
->> drivers/net/ethernet/realtek/rtase/rtase_main.c:1614:29: sparse: sparse: cast from restricted __le32
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:1615:36: sparse: sparse: cast to restricted __le64
->> drivers/net/ethernet/realtek/rtase/rtase_main.c:1615:36: sparse: sparse: cast from restricted __le16
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:1616:35: sparse: sparse: cast to restricted __le64
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:1616:35: sparse: sparse: cast from restricted __le16
+-- Steve
 
-vim +203 drivers/net/ethernet/realtek/rtase/rtase_main.c
-
-1f431ee317f33f Justin Lai 2023-09-28  195  
-29576bc3be86aa Justin Lai 2023-09-28  196  static void rtase_unmap_tx_skb(struct pci_dev *pdev, u32 len,
-29576bc3be86aa Justin Lai 2023-09-28  197  			       struct tx_desc *desc)
-29576bc3be86aa Justin Lai 2023-09-28  198  {
-29576bc3be86aa Justin Lai 2023-09-28  199  	dma_unmap_single(&pdev->dev, le64_to_cpu(desc->addr), len,
-29576bc3be86aa Justin Lai 2023-09-28  200  			 DMA_TO_DEVICE);
-29576bc3be86aa Justin Lai 2023-09-28  201  	desc->opts1 = cpu_to_le32(RTK_OPTS1_DEBUG_VALUE);
-29576bc3be86aa Justin Lai 2023-09-28  202  	desc->opts2 = 0x00;
-29576bc3be86aa Justin Lai 2023-09-28 @203  	desc->addr = RTK_MAGIC_NUMBER;
-29576bc3be86aa Justin Lai 2023-09-28  204  }
-29576bc3be86aa Justin Lai 2023-09-28  205  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
