@@ -2,132 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EB17B7C8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD757B7C91
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242077AbjJDJqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
+        id S242072AbjJDJrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:47:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbjJDJqH (ORCPT
+        with ESMTP id S232904AbjJDJq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:46:07 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A288CAF;
-        Wed,  4 Oct 2023 02:46:01 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3947m4A7003310;
-        Wed, 4 Oct 2023 09:45:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Sl8iYN0t1lulbY2SJQrh/y+Ci1QKo3Vf0tBZD83VA5I=;
- b=HJgRF9ft8COG7dIf14efTpYQT3xQFmIvJGcE7UHBMcoVViUZ9effD73PtXgEnASOSA5K
- 9aktT9HORYBn2FPKyCO8nSy9JbSZo+/0sArHg72RuMQOULY0zkhWpIcD5LUYiF/YbrON
- 0BCmWY0yHwjX8FRuStkhayHD55HaBKl8v4HrPmnZS1BztLAyl0oW883qjmpLDBPxn9By
- 3Kav91FS/Kb0lGhNclFWRCL9Vo7rGSR/BxBLNrucVxZ3JrcrW89REbqOgxO/wpDJSMZ1
- DX4YoofQaWfgKllDxB/uH3jzJLr39MXJt7vDk5sbmQ0MeF3Nv2mlKBLqGhoNkw4fidCl Lw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3th1cy0gb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 09:45:48 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3949jP1N023626
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 4 Oct 2023 09:45:25 GMT
-Received: from [10.216.40.132] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 4 Oct
- 2023 02:45:19 -0700
-Message-ID: <f1e9f12d-5b40-0e08-3b67-94cfb0130bc5@quicinc.com>
-Date:   Wed, 4 Oct 2023 15:15:16 +0530
+        Wed, 4 Oct 2023 05:46:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F586A7;
+        Wed,  4 Oct 2023 02:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696412815; x=1727948815;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=n1lhfxc/wP5roOkvPQmjjy/QM7cgipKqKy8XywFw8h8=;
+  b=EadL71nBlYV4cMO+jWihQowkOGvpKgVgh+cSsB0x8fuk6Ph7GScQnwQp
+   7htftLEDT0H3dAjZ9fn1HZaW5MVU4q9wOr95Li7TMytdsbn8WRPxw2Y7y
+   2t4QiRH7ARp2bhEZkkJ/llJrRZFqUbuBx1edHbdxqT60d7iH1aNtXFNNt
+   nAs4cVTNQnE+4XFvueaDLO6nNYMEfIUS3J8HyXJRfwKSCyjkJoI8RvNza
+   /IFk2Oi6qnh95ii49OGzQ8SVGZIMiDZ4pOJGZGEeCV/qt54ZZ5YrlK17D
+   pnJa1pnsxbrEyGO9ESgaA/qLlgtvUrUMNn976OsrQ1Ru17fBbMHZqiL8w
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="447290952"
+X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
+   d="scan'208";a="447290952"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 02:46:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="894861717"
+X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
+   d="scan'208";a="894861717"
+Received: from cyrillet-mobl.ger.corp.intel.com ([10.252.55.203])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 02:45:26 -0700
+Date:   Wed, 4 Oct 2023 12:46:49 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+cc:     =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [UPDATE][PATCH] platform/x86/intel-uncore-freq: Conditionally
+ create attribute for read frequency
+In-Reply-To: <ab0ab04980b07e2893d9672b96311230ac981e40.camel@linux.intel.com>
+Message-ID: <b7fd5b52-9d91-cfe-e011-522160947115@linux.intel.com>
+References: <20231002131817.1590966-1-srinivas.pandruvada@linux.intel.com>  <6c59be5-1ff1-d0b1-5960-3789fe10c692@linux.intel.com> <ab0ab04980b07e2893d9672b96311230ac981e40.camel@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V13 4/4] arm64: dts: ipq6018: add pwm node
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <thierry.reding@gmail.com>, <ndesaulniers@google.com>,
-        <trix@redhat.com>, <baruch@tkos.co.il>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>
-References: <20231004090449.256229-1-quic_devipriy@quicinc.com>
- <20231004090449.256229-5-quic_devipriy@quicinc.com>
- <bcc7ba00-8a45-4ba6-8691-6420782054ff@linaro.org>
-From:   Devi Priya <quic_devipriy@quicinc.com>
-In-Reply-To: <bcc7ba00-8a45-4ba6-8691-6420782054ff@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: DZiJwyAXB4MmJvS0cIUJRL6BY088r7TT
-X-Proofpoint-GUID: DZiJwyAXB4MmJvS0cIUJRL6BY088r7TT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_01,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- clxscore=1015 malwarescore=0 phishscore=0 adultscore=0 bulkscore=0
- lowpriorityscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310040070
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-667317560-1696412813=:1931"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
+--8323329-667317560-1696412813=:1931
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-On 10/4/2023 3:13 PM, Krzysztof Kozlowski wrote:
-> On 04/10/2023 11:04, Devi Priya wrote:
->> Describe the PWM block on IPQ6018.
->>
->> The PWM is in the TCSR area. Make &tcsr "simple-mfd" compatible, and add
->> &pwm as child of &tcsr.
->>
+On Tue, 3 Oct 2023, srinivas pandruvada wrote:
+> On Tue, 2023-10-03 at 16:10 +0300, Ilpo Järvinen wrote:
+> > On Mon, 2 Oct 2023, Srinivas Pandruvada wrote:
+> > 
+> > > When the current uncore frequency can't be read, don't create
+> > > attribute
+> > > "current_freq_khz" as any read will fail later. Some user space
+> > > applications like turbostat fail to continue with the failure. So,
+> > > check
+> > > error during attribute creation.
+> > > 
+> > > Fixes: 8a54e2253e4c ("platform/x86/intel-uncore-freq: Uncore
+> > > frequency control via TPMI")
+> > 
+> > Hi,
+> > 
+> > Thanks for the update but that commit id looks bogus, or where the
+> > value 
+> > is used w/o error check?
 > 
-> ...
+> commit 8a54e2253e4c25e5b61c9a9bee157bb52da5d432
+> Author: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Date:   Thu Apr 20 15:05:14 2023 -0700
 > 
->> v3: s/qcom,pwm-ipq6018/qcom,ipq6018-pwm/ (Rob Herring)
->>
->>   arch/arm64/boot/dts/qcom/ipq6018.dtsi | 15 ++++++++++++++-
->>   1 file changed, 14 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
->> index e59b9df96c7e..429ad7cb681c 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
->> @@ -390,8 +390,21 @@ tcsr_mutex: hwlock@1905000 {
->>   		};
->>   
->>   		tcsr: syscon@1937000 {
->> -			compatible = "qcom,tcsr-ipq6018", "syscon";
->> +			compatible = "qcom,tcsr-ipq6018", "syscon", "simple-mfd";
->>   			reg = <0x0 0x01937000 0x0 0x21000>;
->> +			#address-cells = <1>;
->> +			#size-cells = <1>;
->> +			ranges = <0x0 0x0 0x01937000 0x21000>;
+>     platform/x86/intel-uncore-freq: Uncore frequency control via TPMI
 > 
-> Please put ranges just after reg.
-Sure, okay
 > 
-> With that:
+> This is the commit exposed the issue. This is not the commit which
+> changed the code in question. 
 > 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Thank you!
+> 
+> I can add also
+> Fixes: dbce412a7733 ("platform/x86/intel-uncore-freq: Split common and
+> enumeration part")
+> 
+> But the change even before that as this commit just reorganized code
+> but because of change of folders, that will look like correct commit.
 
-Regards,
-Devi Priya
-> 
-> Best regards,
-> Krzysztof
-> 
+I never thought dbce412a7733 is being fixed here, it's just a refactor 
+moving code around like you say.
+
+But how about 414eef27283a ("platform/x86/intel/uncore-freq: Display 
+uncore current frequency") which actually adds the code line you're now 
+fixing. What was broken before it? All I see is the one call in
+show_perf_status_freq_khz() but that's checking for errors.
+
+-- 
+ i.
+
+--8323329-667317560-1696412813=:1931--
