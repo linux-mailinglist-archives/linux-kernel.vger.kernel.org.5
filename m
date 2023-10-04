@@ -2,630 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAF37B8114
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D8B7B8117
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242644AbjJDNgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39250 "EHLO
+        id S233382AbjJDNgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 09:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242477AbjJDNgM (ORCPT
+        with ESMTP id S232786AbjJDNgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:36:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F3CAB
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696426522;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ORQDcr70YGNo+ZQcxSesakbtmJulbXWtki8WFW4pJD0=;
-        b=R9MgnLh7Q3veznUbF6Mv2rULd3K7bF4u0DnB4PL/+7SseMos+zinjRx7yEV+J3cM41/6xt
-        jWZJNXTLenTHj9E2/hWaMQed4V3Blz0Mvfms24KzyDcIfgU+RhAiNNGQVh2XEE3g3Ow+AK
-        t9iXpyvIWsn8onTFdwGSmvHs7jzv3vs=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-558-9cHJFWbzOTWHpx6yx7h9tQ-1; Wed, 04 Oct 2023 09:35:10 -0400
-X-MC-Unique: 9cHJFWbzOTWHpx6yx7h9tQ-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9b95fa56bd5so15337566b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 06:35:10 -0700 (PDT)
+        Wed, 4 Oct 2023 09:36:41 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEC2AB;
+        Wed,  4 Oct 2023 06:36:37 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7b07548b084so952152241.1;
+        Wed, 04 Oct 2023 06:36:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696426597; x=1697031397; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E4Ks2PjBL4OJU3bHqNPd4WVt3w4kWj3L9isol3Hj0ew=;
+        b=MW+4aBE4ax7VptULbKomIteOJTdzLk13y/IKaFcxRHsQ6woLSNA3pg+WzbljIZ2NMy
+         Nr6jV4Bc3Tykslm9hqOkvITUOw0hgnTAqQ58V13AslKQgwp/tHr7rkG4KF1bJNVOw3An
+         Ea6wVeAsJxM94oQgWi8ERMS6cgk7zwMIK4p/r3y/VdKzJDYPXAtC6m4e7Oi0P003KUzY
+         fcfKwZpb1WAroWJ1CSMFEi2fQTrI1aQNKwEQqEKF/yqNdE5wzpMkr66QA34UsdLXRqDF
+         BfKy900kFgqTzGWLhLhZTEhKvm07vWwj5QgkdJfycvR/+Osd27GvGX+ljBdWdVRgU16Z
+         GG3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696426510; x=1697031310;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ORQDcr70YGNo+ZQcxSesakbtmJulbXWtki8WFW4pJD0=;
-        b=BemjVLylzNTkXEcfPKMIkeykf940bz8GlWKDB7CSQdHSjhmgH/T5RCnOlhphFf14QQ
-         YdLLITAiit7n173UvxTh2cczCizTFeLg6imIlgDtj2rM+yqPREPCmm73JwMCNJDO39IT
-         Vkx97Iq8q3mS87rih5B5mDsC56ZPLBAiinLv0foXr6V4zRLwiJ8d32GThjTufCbqO5ld
-         M7E+BBdo12fbZp/EX4MXDZe8RAEWiV1sjtXdeRUuPjNibUbyggplvXtUJuB3TSUZKk1Y
-         42eQJhbCrnXf65voh/VqTBZastYbLlgkdGu2hfgsmL4evuZ9TF3gehzmNtILIwBJlXzG
-         PmPg==
-X-Gm-Message-State: AOJu0YxyYjoDH/E5G3rVlVJh4HXNnOY+RnKFhz9JmTVbaFIgpcfTj8Yz
-        1bxoYccHohNK2a+olpngV+dQ6oq9PP23gOei70tF6SdW68vzCsph52YTT9YkAOFDL8a2knCBd8c
-        FT16/sTltc0WUvqiBvg2MZWxn
-X-Received: by 2002:a17:906:5188:b0:9a5:c9a4:ba1b with SMTP id y8-20020a170906518800b009a5c9a4ba1bmr2481592ejk.8.1696426509635;
-        Wed, 04 Oct 2023 06:35:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGOXBMF56DjhgkeBjB0zpiCqMDV1wGsez80FaOzIRmVjuZ7EFQd+BxHQ704QiClL4DJ2V0Sdw==
-X-Received: by 2002:a17:906:5188:b0:9a5:c9a4:ba1b with SMTP id y8-20020a170906518800b009a5c9a4ba1bmr2481561ejk.8.1696426509135;
-        Wed, 04 Oct 2023 06:35:09 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id l5-20020a1709061c4500b0099ce025f8ccsm2811629ejg.186.2023.10.04.06.35.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 06:35:08 -0700 (PDT)
-Message-ID: <05d4115c-3329-1044-6066-f7020695c4ca@redhat.com>
-Date:   Wed, 4 Oct 2023 15:35:07 +0200
+        d=1e100.net; s=20230601; t=1696426597; x=1697031397;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E4Ks2PjBL4OJU3bHqNPd4WVt3w4kWj3L9isol3Hj0ew=;
+        b=iqxoLJtbfZ77eRhPDm3NxDxAdLdQN+jTL7Lg0bIF7gp9cVZ0XjiuIdpdgksXMpsdD3
+         ZvrQr0/OvFmzarVXyuYzpPTDA9+KbVqBV68AeqDYDELCkAnHAWPwRwotcHQ8tOojVIHU
+         nETXpji/o9h0X8JXfpMvLLCNADS9PJ+OpqPwzqMzTBsOBUd0XAlglKUmHW1x4UxRmHut
+         Y7fbPfYxfaVomHrC4pcRv3cR5dXQZ/dRmrVLxWg0Qta/cqYALFz1J3fsOZh88ShhI0p9
+         LpNxA9gEtISCUjSaTKrmg94hOf6623Mz1GSEJSkzK5NukjnskSg9LQt13pQyjyHFIV4e
+         3xvA==
+X-Gm-Message-State: AOJu0YzHoY1+hf6V3bBOJSxqMkkiw/1qgSrRYgU0ooop5rKzHSCpxHrg
+        V9I4r5GkCGY/7hzc4ZlGHa1ZHzwdSka82QFK1Jk=
+X-Google-Smtp-Source: AGHT+IFHDPf+INRWuqoTwIsxfN/eEIHL3n2OW9WPmXvPKEvGbcbr5cg+410k/W3lyEWEnFqkcsQlP58hj9SD94LNaPw=
+X-Received: by 2002:a1f:6d84:0:b0:496:1bc2:ddf with SMTP id
+ i126-20020a1f6d84000000b004961bc20ddfmr2060602vkc.8.1696426596882; Wed, 04
+ Oct 2023 06:36:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate
- external/evicted objects
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     matthew.brost@intel.com, sarah.walker@imgtec.com,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, faith@gfxstrand.net,
-        donald.robson@imgtec.com, christian.koenig@amd.com
-References: <20230928191624.13703-1-dakr@redhat.com>
- <20230928191624.13703-5-dakr@redhat.com>
- <e4e68970-c7c9-55e2-9483-01252f38c956@linux.intel.com>
- <20231003120554.547090bc@collabora.com>
- <f551ee9059e52d46343f5fa997b7d9f8ab6654d9.camel@linux.intel.com>
- <20231003162143.490e3ef0@collabora.com> <ZRxHcwYUbp5/fS+v@pollux>
- <02ed9fce1f9e37c7f9f3a16943871b5bfe491c8a.camel@linux.intel.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <02ed9fce1f9e37c7f9f3a16943871b5bfe491c8a.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230102221815.273719-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20230102221815.273719-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20230102221815.273719-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Wed, 4 Oct 2023 14:35:42 +0100
+Message-ID: <CA+V-a8u5DY49cetvjgLttGsj7OyYvn_rj3PToGZvVB=BE37A9A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] dt-bindings: interrupt-controller:
+ renesas,rzg2l-irqc: Document RZ/G2UL SoC
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 19:37, Thomas Hellström wrote:
-> Hi, Danilo
-> 
-> On Tue, 2023-10-03 at 18:55 +0200, Danilo Krummrich wrote:
->> It seems like we're mostly aligned on this series, except for the key
->> controversy we're discussing for a few versions now: locking of the
->> internal
->> lists. Hence, let's just re-iterate the options we have to get this
->> out of the
->> way.
->>
->> (1) The spinlock dance. This basically works for every use case,
->> updating the VA
->>      space from the IOCTL, from the fence signaling path or anywhere
->> else.
->>      However, it has the downside of requiring spin_lock() /
->> spin_unlock() for
->>      *each* list element when locking all external objects and
->> validating all
->>      evicted objects. Typically, the amount of extobjs and evicted
->> objects
->>      shouldn't be excessive, but there might be exceptions, e.g. Xe.
->>
->> (2) The dma-resv lock dance. This is convinient for drivers updating
->> the VA
->>      space from a VM_BIND ioctl() and is especially efficient if such
->> drivers
->>      have a huge amount of external and/or evicted objects to manage.
->> However,
->>      the downsides are that it requires a few tricks in drivers
->> updating the VA
->>      space from the fence signaling path (e.g. job_run()). Design
->> wise, I'm still
->>      skeptical that it is a good idea to protect internal data
->> structures with
->>      external locks in a way that it's not clear to callers that a
->> certain
->>      function would access one of those resources and hence needs
->> protection.
->>      E.g. it is counter intuitive that drm_gpuvm_bo_put() would
->> require both the
->>      dma-resv lock of the corresponding object and the VM's dma-resv
->> lock held.
->>      (Additionally, there were some concerns from amdgpu regarding
->> flexibility in
->>      terms of using GPUVM for non-VM_BIND uAPIs and compute, however,
->> AFAICS
->>      those discussions did not complete and to me it's still unclear
->> why it
->>      wouldn't work.)
->>
->> (3) Simply use an internal mutex per list. This adds a tiny (IMHO
->> negligible)
->>      overhead for drivers updating the VA space from a VM_BIND
->> ioctl(), namely
->>      a *single* mutex_lock()/mutex_unlock() when locking all external
->> objects
->>      and validating all evicted objects. And it still requires some
->> tricks for
->>      drivers updating the VA space from the fence signaling path.
->> However, it's
->>      as simple as it can be and hence way less error prone as well as
->>      self-contained and hence easy to use. Additionally, it's flexible
->> in a way
->>      that we don't have any expections on drivers to already hold
->> certain locks
->>      that the driver in some situation might not be able to acquire in
->> the first
->>      place.
-> 
-> Such an overhead is fully OK IMO, But didn't we conclude at some point
-> that using a mutex in this way isn't possible due to the fact that
-> validate() needs to be able to lock dma_resv, and then we have
-> dma_resv()->mutex->dma_resv()?
+Hi Marc,
 
-Oh, yes. I already forgot about it. I think it would work for protecting the
-evicted list. But it breaks with the external object list, because we'd hold
-the mutex while acquiring the dma-resv locks. Hence, there'd be a potential
-lock inversion when drm_gpuvm_bo_put() is called with the corrsponding
-dma-resv lock held. Then this option is indeed gone as well, unfortunately.
+On Mon, Jan 2, 2023 at 10:18=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
+om> wrote:
+>
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Document RZ/G2UL (R9A07G043U) IRQC bindings. The IRQC block on RZ/G2UL So=
+C
+> is almost identical to one found on the RZ/G2L SoC the only difference
+> being it can support BUS_ERR_INT for which it has additional registers.
+> Hence new generic compatible string "renesas,r9a07g043u-irqc" is added
+> for RZ/G2UL SoC.
+>
+> Now that we have additional interrupt for RZ/G2UL and RZ/Five SoC
+> interrupt-names property is added so that we can parse them based on
+> names.
+>
+> While at it updated the example node to four spaces and added
+> interrupt-names property.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+> v2->v3
+> * Dropped RZ/G2UL specific string
+>
+> v1- > v2
+> * Dropped RB tags
+> * Added generic compatible string for rzg2ul
+> * Added interrupt-names
+> * Added checks for RZ/G2UL to make sure interrupts are 42 and interrupt-n=
+ames
+> * Updated example node with interrupt-names
+> * Used 4 spaces for example node
+> ---
+>  .../renesas,rzg2l-irqc.yaml                   | 225 +++++++++++++-----
+>  1 file changed, 170 insertions(+), 55 deletions(-)
+>
+Looks like this patch got missed. Could you pick this one up or shall
+I just resend this patch.
 
-> 
-> 
->>
->> (4) Arbitrary combinations of the above. For instance, the current V5
->> implements
->>      both (1) and (2) (as either one or the other). But also (1) and
->> (3) (as in
->>      (1) additionally to (3)) would be an option, where a driver could
->> opt-in for
->>      the spinlock dance in case it updates the VA space from the fence
->> signaling
->>      path.
->>
->> I also considered a few other options as well, however, they don't
->> seem to be
->> flexible enough. For instance, as by now we could use SRCU for the
->> external
->> object list. However, this falls apart once a driver wants to remove
->> and re-add
->> extobjs for the same VM_BO instance. (For the same reason it wouldn't
->> work for
->> evicted objects.)
->>
->> Personally, after seeing the weird implications of (1), (2) and a
->> combination of
->> both, I tend to go with (3). Optionally, with an opt-in for (1). The
->> reason for
->> the latter is that with (3) the weirdness of (1) by its own mostly
->> disappears.
->>
->> Please let me know what you think, and, of course, other ideas than
->> the
->> mentioned ones above are still welcome.
-> 
-> Personally, after converting xe to version 5, I think it's pretty
-> convenient for the driver, (although had to add the evict trick), so I
+Cheers,
+Prabhakar
 
-With evict trick you mean a field drm_gpuvm_bo::evicted? I think we don't
-need it necessarily (see my previous reply). But I agree it'd be a bit
-cleaner locking wise.
-
-My only concern with that is that it would restrict the context in which
-the evict list is useful, because it implies that in order to even see the
-actual state of the evict list all external objects must be locked first.
-
-What if a driver wants to only lock and validate only a certain range of
-the VA space? Surely, it can just call validate() for each drm_gpuva's BO,
-but depending on the size of the range we might still want to accelerate
-it using the evicted list.
-
-Honestly, I don't know if there are drivers having this need, but Christians
-concerns about this way of updating the evict list seemed to go in this
-direction.
-
-> think I'd vote for this, even if not currently using the opt-in for
-> (1).
-
-Yeah, also due to the lack of other options, I think we need to stick with
-what V5 already does. Either with or without drm_gpuvm_bo::evicted field.
-
-Keeping the dma-resv locking scheme, I think we'd want some helpers around
-drm_gpuvm_bo_put() for the drm_exec dance that is required for external
-objects. Maybe add a drm_gpuvm_bo_put_locked() which can be called with the
-dma-resv locks held and let drm_gpuvm_bo_put() do the drm_exec dance?
-
-> 
-> /Thomas
-> 
-> 
->>
->> - Danilo
->>
->> On Tue, Oct 03, 2023 at 04:21:43PM +0200, Boris Brezillon wrote:
->>> On Tue, 03 Oct 2023 14:25:56 +0200
->>> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
->>>
->>>>>>> +/**
->>>>>>> + * get_next_vm_bo_from_list() - get the next vm_bo element
->>>>>>> + * @__gpuvm: The GPU VM
->>>>>>> + * @__list_name: The name of the list we're iterating on
->>>>>>> + * @__local_list: A pointer to the local list used to
->>>>>>> store
->>>>>>> already iterated items
->>>>>>> + * @__prev_vm_bo: The previous element we got from
->>>>>>> drm_gpuvm_get_next_cached_vm_bo()
->>>>>>> + *
->>>>>>> + * This helper is here to provide lockless list iteration.
->>>>>>> Lockless as in, the
->>>>>>> + * iterator releases the lock immediately after picking
->>>>>>> the
->>>>>>> first element from
->>>>>>> + * the list, so list insertion deletion can happen
->>>>>>> concurrently.
->>>>>>> + *
->>>>>>> + * Elements popped from the original list are kept in a
->>>>>>> local
->>>>>>> list, so removal
->>>>>>> + * and is_empty checks can still happen while we're
->>>>>>> iterating
->>>>>>> the list.
->>>>>>> + */
->>>>>>> +#define get_next_vm_bo_from_list(__gpuvm, __list_name,
->>>>>>> __local_list, __prev_vm_bo)     \
->>>>>>> +       ({
->>>>>>>        
->>>>>>>                         \
->>>>>>> +               struct drm_gpuvm_bo *__vm_bo =
->>>>>>> NULL;                                    \
->>>>>>> +
->>>>>>>        
->>>>>>>                         \
->>>>>>> +               drm_gpuvm_bo_put(__prev_vm_bo);
->>>>>>>        
->>>>>>>                         \
->>>>>>> +
->>>>>>>        
->>>>>>>                         \
->>>>>>> +               spin_lock(&(__gpuvm)-
->>>>>>>> __list_name.lock);                                \
->>>>>>
->>>>>> Here we unconditionally take the spinlocks while iterating,
->>>>>> and the
->>>>>> main
->>>>>> point of DRM_GPUVM_RESV_PROTECTED was really to avoid that?
->>>>>>
->>>>>>    
->>>>>>> +               if (!(__gpuvm)-
->>>>>>>> __list_name.local_list)                                 \
->>>>>>>>    
->>>>>>> +                       (__gpuvm)->__list_name.local_list =
->>>>>>> __local_list;               \
->>>>>>> +               else
->>>>>>>        
->>>>>>>                         \
->>>>>>> +                       WARN_ON((__gpuvm)-
->>>>>>>> __list_name.local_list
->>>>>>> != __local_list);     \
->>>>>>> +
->>>>>>>        
->>>>>>>                         \
->>>>>>> +               while (!list_empty(&(__gpuvm)-
->>>>>>>> __list_name.list))
->>>>>>> {                     \
->>>>>>> +                       __vm_bo =
->>>>>>> list_first_entry(&(__gpuvm)-
->>>>>>>> __list_name.list,        \
->>>>>>> +                                                  struct
->>>>>>> drm_gpuvm_bo,                 \
->>>>>>> +
->>>>>>> list.entry.__list_name);             \
->>>>>>> +                       if (kref_get_unless_zero(&__vm_bo-
->>>>>>>> kref))
->>>>>>> {
->>>>>> And unnecessarily grab a reference in the RESV_PROTECTED
->>>>>> case.
->>>>>>>                          \
->>>>>>> +                               list_move_tail(&(__vm_bo)-
->>>>>>>> list.entry.__list_name,      \
->>>>>>> +
->>>>>>> __local_list);                           \
->>>>>>> +                               break;
->>>>>>>        
->>>>>>>                         \
->>>>>>> +                       } else
->>>>>>> {                                                        \
->>>>>>> +                               list_del_init(&(__vm_bo)-
->>>>>>>> list.entry.__list_name);      \
->>>>>>> +                               __vm_bo =
->>>>>>> NULL;                                         \
->>>>>>> +                       }
->>>>>>>        
->>>>>>>                         \
->>>>>>> +               }
->>>>>>>        
->>>>>>>                         \
->>>>>>> +               spin_unlock(&(__gpuvm)-
->>>>>>>> __list_name.lock);                              \
->>>>>>> +
->>>>>>>        
->>>>>>>                         \
->>>>>>> +               __vm_bo;
->>>>>>>        
->>>>>>>                         \
->>>>>>> +       })
->>>>>>
->>>>>> IMHO this lockless list iteration looks very complex and
->>>>>> should be
->>>>>> pretty difficult to maintain while moving forward, also since
->>>>>> it
->>>>>> pulls
->>>>>> the gpuvm_bos off the list, list iteration needs to be
->>>>>> protected by
->>>>>> an
->>>>>> outer lock anyway.
->>>>>
->>>>> As being partly responsible for this convoluted list iterator,
->>>>> I must
->>>>> say I agree with you. There's so many ways this can go wrong if
->>>>> the
->>>>> user doesn't call it the right way, or doesn't protect
->>>>> concurrent
->>>>> list
->>>>> iterations with a separate lock (luckily, this is a private
->>>>> iterator). I
->>>>> mean, it works, so there's certainly a way to get it right, but
->>>>> gosh,
->>>>> this is so far from the simple API I had hoped for.
->>>>>    
->>>>>> Also from what I understand from Boris, the extobj
->>>>>> list would typically not need the fine-grained locking; only
->>>>>> the
->>>>>> evict
->>>>>> list?
->>>>>
->>>>> Right, I'm adding the gpuvm_bo to extobj list in the ioctl
->>>>> path, when
->>>>> the GEM and VM resvs are held, and I'm deferring the
->>>>> drm_gpuvm_bo_put()
->>>>> call to a work that's not in the dma-signalling path. This
->>>>> being
->>>>> said,
->>>>> I'm still not comfortable with the
->>>>>
->>>>> gem = drm_gem_object_get(vm_bo->gem);
->>>>> dma_resv_lock(gem->resv);
->>>>> drm_gpuvm_bo_put(vm_bo);
->>>>> dma_resv_unlock(gem->resv);
->>>>> drm_gem_object_put(gem);
->>>>>
->>>>> dance that's needed to avoid a UAF when the gpuvm_bo is the
->>>>> last GEM
->>>>> owner, not to mention that drm_gpuva_unlink() calls
->>>>> drm_gpuvm_bo_put()
->>>>> after making sure the GEM gpuvm_list lock is held, but this
->>>>> lock
->>>>> might
->>>>> differ from the resv lock (custom locking so we can call
->>>>> gpuvm_unlink() in the dma-signalling path). So we now have
->>>>> paths
->>>>> where
->>>>> drm_gpuvm_bo_put() are called with the resv lock held, and
->>>>> others
->>>>> where
->>>>> they are not, and that only works because we're relying on the
->>>>> the
->>>>> fact
->>>>> those drm_gpuvm_bo_put() calls won't make the refcount drop to
->>>>> zero,
->>>>> because the deferred vm_bo_put() work still owns a vm_bo ref.
->>>>
->>>> I'm not sure I follow to 100% here, but in the code snippet above
->>>> it's
->>>> pretty clear to me that it needs to hold an explicit gem object
->>>> reference when calling dma_resv_unlock(gem->resv). Each time you
->>>> copy a
->>>> referenced pointer (here from vm_bo->gem to gem) you need to up
->>>> the
->>>> refcount unless you make sure (by locks or other means) that the
->>>> source
->>>> of the copy has a strong refcount and stays alive, so that's no
->>>> weird
->>>> action to me. Could possibly add a drm_gpuvm_bo_get_gem() to
->>>> access the
->>>> gem member (and that also takes a refcount) for driver users to
->>>> avoid
->>>> the potential pitfall.
->>>
->>> Except this is only needed because of the GEM-resv-must-be-held
->>> locking
->>> constraint that was added on vm_bo_put(). I mean, the usual way we
->>> do
->>> object un-referencing is by calling _put() and letting the internal
->>> logic undo things when the refcount drops to zero. If the object
->>> needs
->>> to be removed from some list, it's normally the responsibility of
->>> the
->>> destruction method to lock the list, remove the object and unlock
->>> the
->>> list. Now, we have a refcounted object that's referenced by vm_bo,
->>> and
->>> whose lock needs to be taken when the destruction happens, which
->>> leads
->>> to this weird dance described above, when, in normal situations,
->>> we'd
->>> just call drm_gpuvm_bo_put(vm_bo) and let drm_gpuvm do its thing.
->>>
->>>>
->>>>>
->>>>> All these tiny details add to the overall complexity of this
->>>>> common
->>>>> layer, and to me, that's not any better than the
->>>>> get_next_vm_bo_from_list() complexity you were complaining
->>>>> about
->>>>> (might
->>>>> be even worth, because this sort of things leak to users).
->>>>>
->>>>> Having an internal lock partly solves that, in that the locking
->>>>> of
->>>>> the
->>>>> extobj list is now entirely orthogonal to the GEM that's being
->>>>> removed
->>>>> from this list, and we can lock/unlock internally without
->>>>> forcing the
->>>>> caller to take weird actions to make sure things don't explode.
->>>>> Don't
->>>>> get me wrong, I get that this locking overhead is not
->>>>> acceptable for
->>>>> Xe, but I feel like we're turning drm_gpuvm into a white
->>>>> elephant
->>>>> that
->>>>> only few people will get right.
->>>>
->>>> I tend to agree, but to me the big complication comes from the
->>>> async
->>>> (dma signalling path) state updates.
->>>
->>> I don't deny updating the VM state from the dma signalling path
->>> adds
->>> some amount of complexity, but the fact we're trying to use
->>> dma_resv
->>> locks for everything, including protection of internal datasets
->>> doesn't
->>> help. Anyway, I think both of us are biased when it comes to
->>> judging
->>> which approach adds the most complexity :P.
->>>
->>> Also note that, right now, the only thing I'd like to be able to
->>> update
->>> from the dma signalling path is the VM mapping tree. Everything
->>> else
->>> (drm_gpuva_[un]link(), add/remove extobj), we could do outside this
->>> path:
->>>
->>> - for MAP operations, we could call drm_gpuva_link() in the ioctl
->>> path
->>>    (we'd just need to initialize the drm_gpuva object)
->>> - for MAP operations, we're already calling drm_gpuvm_bo_obtain()
->>> from
->>>    the ioctl path
->>> - for UNMAP operations, we could add the drm_gpuva_unlink() call to
->>> the
->>>    VM op cleanup worker
->>>
->>> The only problem we'd have is that drm_gpuva_link() needs to be
->>> called
->>> inside drm_gpuvm_ops::sm_step_remap() when a remap with next/prev
->>> !=
->>> NULL occurs, otherwise we lose track of these mappings.
->>>
->>>>
->>>> Let's say for example we have a lower level lock for the gem
->>>> object's
->>>> gpuvm_bo list. Some drivers grab it from the dma fence signalling
->>>> path,
->>>> other drivers need to access all vm's of a bo to grab their
->>>> dma_resv
->>>> locks using a WW transaction. There will be problems, although
->>>> probably
->>>> solveable.
->>>
->>> To me, the gpuvm extobj vm_bo list is just an internal list and has
->>> an
->>> internal lock associated. The lock that's protecting the GEM vm_bo
->>> list
->>> is a bit different in that the driver gets to decide when a vm_bo
->>> is
->>> inserted/removed by calling drm_gpuvm_[un]link(), and can easily
->>> make
->>> sure the lock is held when this happens, while the gpuvm internal
->>> lists
->>> are kinda transparently updated (for instance, the first caller of
->>> drm_gpuvm_bo_obtain() adds the vm_bo to the extobj and the last
->>> vm_bo
->>> owner calling drm_gpuvm_bo_put() removes it from this list, which
->>> is
->>> certainly not obvious based on the name of these functions).
->>>
->>> If we want to let drivers iterate over the extobj/evict lists, and
->>> assuming they are considered internal lists maintained by the core
->>> and
->>> protected with an internal lock, we should indeed provide iteration
->>> helpers that:
->>>
->>> 1/ make sure all the necessary external locks are held (VM resv, I
->>>     guess)
->>> 2/ make sure the internal lock is not held during iteration (the
->>> sort
->>>     of snapshot list trick you're using for the evict list in Xe)
->>>
->>>>>> Also it seems that if we are to maintain two modes here, for
->>>>>> reasonably clean code we'd need two separate instances of
->>>>>> get_next_bo_from_list().
->>>>>>
->>>>>> For the !RESV_PROTECTED case, perhaps one would want to
->>>>>> consider
->>>>>> the
->>>>>> solution used currently in xe, where the VM maintains two
->>>>>> evict
->>>>>> lists.
->>>>>> One protected by a spinlock and one protected by the VM resv.
->>>>>> When
->>>>>> the
->>>>>> VM resv is locked to begin list traversal, the spinlock is
->>>>>> locked
->>>>>> *once*
->>>>>> and the spinlock-protected list is looped over and copied
->>>>>> into the
->>>>>> resv
->>>>>> protected one. For traversal, the resv protected one is
->>>>>> used.
->>>>>
->>>>> Oh, so you do have the same sort of trick where you move the
->>>>> entire
->>>>> list to another list, such that you can let other paths update
->>>>> the
->>>>> list
->>>>> while you're iterating your own snapshot. That's
->>>>> interesting...
->>>>
->>>> Yes, it's instead of the "evicted" bool suggested here. I thought
->>>> the
->>>> latter would be simpler. Although that remains to be seen after
->>>> all
->>>> use-cases are implemented.
->>>>
->>>> But in general I think the concept of copying from a staging list
->>>> to
->>>> another with different protection rather than traversing the
->>>> first list
->>>> and unlocking between items is a good way of solving the locking
->>>> inversion problem with minimal overhead. We use it also for O(1)
->>>> userptr validation.
->>>
->>> That's more or less the idea behind get_next_vm_bo_from_list()
->>> except
->>> it's dequeuing one element at a time, instead of moving all items
->>> at
->>> once. Note that, if you allow concurrent removal protected only by
->>> the
->>> spinlock, you still need to take/release this spinlock when
->>> iterating
->>> over elements of this snapshot list, because all the remover needs
->>> to
->>> remove an element is the element itself, and it doesn't care in
->>> which
->>> list it's currently inserted (real or snapshot/staging list), so
->>> you'd
->>> be iterating over a moving target if you don't protect the
->>> iteration
->>> with the spinlock.
->>>
->>
-> 
-
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/renes=
+as,rzg2l-irqc.yaml b/Documentation/devicetree/bindings/interrupt-controller=
+/renesas,rzg2l-irqc.yaml
+> index 33b90e975e33..fc900ce2fe0a 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2=
+l-irqc.yaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2=
+l-irqc.yaml
+> @@ -19,13 +19,11 @@ description: |
+>      - NMI edge select (NMI is not treated as NMI exception and supports =
+fall edge and
+>        stand-up edge detection interrupts)
+>
+> -allOf:
+> -  - $ref: /schemas/interrupt-controller.yaml#
+> -
+>  properties:
+>    compatible:
+>      items:
+>        - enum:
+> +          - renesas,r9a07g043u-irqc   # RZ/G2UL
+>            - renesas,r9a07g044-irqc    # RZ/G2{L,LC}
+>            - renesas,r9a07g054-irqc    # RZ/V2L
+>        - const: renesas,rzg2l-irqc
+> @@ -44,7 +42,96 @@ properties:
+>      maxItems: 1
+>
+>    interrupts:
+> -    maxItems: 41
+> +    minItems: 41
+> +    items:
+> +      - description: NMI interrupt
+> +      - description: IRQ0 interrupt
+> +      - description: IRQ1 interrupt
+> +      - description: IRQ2 interrupt
+> +      - description: IRQ3 interrupt
+> +      - description: IRQ4 interrupt
+> +      - description: IRQ5 interrupt
+> +      - description: IRQ6 interrupt
+> +      - description: IRQ7 interrupt
+> +      - description: GPIO interrupt, TINT0
+> +      - description: GPIO interrupt, TINT1
+> +      - description: GPIO interrupt, TINT2
+> +      - description: GPIO interrupt, TINT3
+> +      - description: GPIO interrupt, TINT4
+> +      - description: GPIO interrupt, TINT5
+> +      - description: GPIO interrupt, TINT6
+> +      - description: GPIO interrupt, TINT7
+> +      - description: GPIO interrupt, TINT8
+> +      - description: GPIO interrupt, TINT9
+> +      - description: GPIO interrupt, TINT10
+> +      - description: GPIO interrupt, TINT11
+> +      - description: GPIO interrupt, TINT12
+> +      - description: GPIO interrupt, TINT13
+> +      - description: GPIO interrupt, TINT14
+> +      - description: GPIO interrupt, TINT15
+> +      - description: GPIO interrupt, TINT16
+> +      - description: GPIO interrupt, TINT17
+> +      - description: GPIO interrupt, TINT18
+> +      - description: GPIO interrupt, TINT19
+> +      - description: GPIO interrupt, TINT20
+> +      - description: GPIO interrupt, TINT21
+> +      - description: GPIO interrupt, TINT22
+> +      - description: GPIO interrupt, TINT23
+> +      - description: GPIO interrupt, TINT24
+> +      - description: GPIO interrupt, TINT25
+> +      - description: GPIO interrupt, TINT26
+> +      - description: GPIO interrupt, TINT27
+> +      - description: GPIO interrupt, TINT28
+> +      - description: GPIO interrupt, TINT29
+> +      - description: GPIO interrupt, TINT30
+> +      - description: GPIO interrupt, TINT31
+> +      - description: Bus error interrupt
+> +
+> +  interrupt-names:
+> +    minItems: 41
+> +    items:
+> +      - const: nmi
+> +      - const: irq0
+> +      - const: irq1
+> +      - const: irq2
+> +      - const: irq3
+> +      - const: irq4
+> +      - const: irq5
+> +      - const: irq6
+> +      - const: irq7
+> +      - const: tint0
+> +      - const: tint1
+> +      - const: tint2
+> +      - const: tint3
+> +      - const: tint4
+> +      - const: tint5
+> +      - const: tint6
+> +      - const: tint7
+> +      - const: tint8
+> +      - const: tint9
+> +      - const: tint10
+> +      - const: tint11
+> +      - const: tint12
+> +      - const: tint13
+> +      - const: tint14
+> +      - const: tint15
+> +      - const: tint16
+> +      - const: tint17
+> +      - const: tint18
+> +      - const: tint19
+> +      - const: tint20
+> +      - const: tint21
+> +      - const: tint22
+> +      - const: tint23
+> +      - const: tint24
+> +      - const: tint25
+> +      - const: tint26
+> +      - const: tint27
+> +      - const: tint28
+> +      - const: tint29
+> +      - const: tint30
+> +      - const: tint31
+> +      - const: bus-err
+>
+>    clocks:
+>      maxItems: 2
+> @@ -72,6 +159,23 @@ required:
+>    - power-domains
+>    - resets
+>
+> +allOf:
+> +  - $ref: /schemas/interrupt-controller.yaml#
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: renesas,r9a07g043u-irqc
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          minItems: 42
+> +        interrupt-names:
+> +          minItems: 42
+> +      required:
+> +        - interrupt-names
+> +
+>  unevaluatedProperties: false
+>
+>  examples:
+> @@ -80,55 +184,66 @@ examples:
+>      #include <dt-bindings/clock/r9a07g044-cpg.h>
+>
+>      irqc: interrupt-controller@110a0000 {
+> -            compatible =3D "renesas,r9a07g044-irqc", "renesas,rzg2l-irqc=
+";
+> -            reg =3D <0x110a0000 0x10000>;
+> -            #interrupt-cells =3D <2>;
+> -            #address-cells =3D <0>;
+> -            interrupt-controller;
+> -            interrupts =3D <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 444 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 445 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 446 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 447 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 448 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 449 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 450 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 451 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 452 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 453 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 454 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 455 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 456 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 457 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 458 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 459 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 460 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 461 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 462 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 463 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 464 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 465 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 466 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 467 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 468 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 469 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 470 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 471 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 472 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 473 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>;
+> -            clocks =3D <&cpg CPG_MOD R9A07G044_IA55_CLK>,
+> -                     <&cpg CPG_MOD R9A07G044_IA55_PCLK>;
+> -            clock-names =3D "clk", "pclk";
+> -            power-domains =3D <&cpg>;
+> -            resets =3D <&cpg R9A07G044_IA55_RESETN>;
+> +        compatible =3D "renesas,r9a07g044-irqc", "renesas,rzg2l-irqc";
+> +        reg =3D <0x110a0000 0x10000>;
+> +        #interrupt-cells =3D <2>;
+> +        #address-cells =3D <0>;
+> +        interrupt-controller;
+> +        interrupts =3D <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 444 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 445 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 446 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 447 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 448 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 449 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 450 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 451 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 452 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 453 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 454 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 455 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 456 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 457 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 458 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 459 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 460 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 461 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 462 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 463 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 464 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 465 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 466 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 467 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 468 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 469 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 470 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 471 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 472 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 473 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>;
+> +        interrupt-names =3D "nmi",
+> +                          "irq0", "irq1", "irq2", "irq3",
+> +                          "irq4", "irq5", "irq6", "irq7",
+> +                          "tint0", "tint1", "tint2", "tint3",
+> +                          "tint4", "tint5", "tint6", "tint7",
+> +                          "tint8", "tint9", "tint10", "tint11",
+> +                          "tint12", "tint13", "tint14", "tint15",
+> +                          "tint16", "tint17", "tint18", "tint19",
+> +                          "tint20", "tint21", "tint22", "tint23",
+> +                          "tint24", "tint25", "tint26", "tint27",
+> +                          "tint28", "tint29", "tint30", "tint31";
+> +        clocks =3D <&cpg CPG_MOD R9A07G044_IA55_CLK>,
+> +                 <&cpg CPG_MOD R9A07G044_IA55_PCLK>;
+> +        clock-names =3D "clk", "pclk";
+> +        power-domains =3D <&cpg>;
+> +        resets =3D <&cpg R9A07G044_IA55_RESETN>;
+>      };
+> --
+> 2.25.1
+>
