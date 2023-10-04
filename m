@@ -2,58 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E32E7B7D16
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E21CB7B7D1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242176AbjJDK0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
+        id S242181AbjJDK1c convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 06:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232895AbjJDK0N (ORCPT
+        with ESMTP id S242187AbjJDK12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:26:13 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B64A95
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:26:10 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qnz4n-0007NJ-8z; Wed, 04 Oct 2023 12:25:57 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qnz4m-00B0Xz-M8; Wed, 04 Oct 2023 12:25:56 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 4E5AE22ED1E;
-        Wed,  4 Oct 2023 10:25:56 +0000 (UTC)
-Date:   Wed, 4 Oct 2023 12:25:55 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     socketcan@hartkopp.net, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] can: raw: Remove NULL check before dev_{put, hold}
-Message-ID: <20231004-shield-accurate-6b875651801b-mkl@pengutronix.de>
-References: <20230825064656.87751-1-jiapeng.chong@linux.alibaba.com>
+        Wed, 4 Oct 2023 06:27:28 -0400
+Received: from esa2.hc5620-63.iphmx.com (esa2.hc5620-63.iphmx.com [68.232.149.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB904C6
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:27:22 -0700 (PDT)
+X-CSE-ConnectionGUID: DhT7jHAnRjSFjfRaoa6tNg==
+X-CSE-MsgGUID: tCCMv1+bSb2aolUjxhgYEw==
+Message-Id: <bc8e20$rdte@esa2.hc5620-63.iphmx.com>
+X-IronPort-RemoteIP: 185.225.73.120
+X-IronPort-MID: 898990
+X-IronPort-Reputation: -5.6
+X-IronPort-Listener: MailFlow
+X-IronPort-SenderGroup: RELAY_O365
+X-IronPort-MailFlowPolicy: $RELAYED
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from unknown (HELO [185.225.73.120]) ([185.225.73.120])
+  by esa2.hc5620-63.iphmx.com with ESMTP; 04 Oct 2023 06:27:16 -0400
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7n5eokfyo5pa3sfp"
-Content-Disposition: inline
-In-Reply-To: <20230825064656.87751-1-jiapeng.chong@linux.alibaba.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: business reminder please call me +2378124804975
+To:     Recipients <test@mail2world.com>
+From:   "Mr. mohd" <test@mail2world.com>
+Date:   Wed, 04 Oct 2023 03:27:11 -0700
+Reply-To: mohamedabdulahmed1950@gmail.com
+X-Spam-Status: Yes, score=6.7 required=5.0 tests=BAYES_50,FREEMAIL_FROM,
+        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,HK_NAME_FM_MR_MRS,
+        MSGID_FROM_MTA_HEADER,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL,SPF_FAIL,
+        SPF_HELO_PASS,SPOOFED_FREEMAIL,SPOOFED_FREEM_REPTO,
+        TO_EQ_FM_DOM_SPF_FAIL,TO_EQ_FM_SPF_FAIL autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [68.232.149.158 listed in list.dnswl.org]
+        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *      [185.225.73.120 listed in zen.spamhaus.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [test[at]mail2world.com]
+        *  0.0 SPF_FAIL SPF: sender does not match SPF record (fail)
+        *      [SPF failed: Please see http://www.openspf.org/Why?s=mfrom;id=test%40mail2world.com;ip=68.232.149.158;r=lindbergh.monkeyblade.net]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [mohamedabdulahmed1950[at]gmail.com]
+        * -0.0 SPF_HELO_PASS SPF: HELO matches SPF record
+        *  1.5 HK_NAME_FM_MR_MRS No description available.
+        *  0.0 MSGID_FROM_MTA_HEADER Message-Id was added by a relay
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.0 TO_EQ_FM_DOM_SPF_FAIL To domain == From domain and external SPF
+        *       failed
+        *  0.0 TO_EQ_FM_SPF_FAIL To == From and external SPF failed
+        *  2.0 SPOOFED_FREEMAIL No description available.
+        *  1.0 SPOOFED_FREEM_REPTO Forged freemail sender with freemail
+        *      reply-to
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,47 +79,12 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---7n5eokfyo5pa3sfp
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Dear
+My name is Mohamed Abdul I have the capacity to inject a considerable
+amount of capital in any viable project 
+1,cell phone number 
+2,full name
 
-On 25.08.2023 14:46:56, Jiapeng Chong wrote:
-> The call netdev_{put, hold} of dev_{put, hold} will check NULL, so there
-> is no need to check before using dev_{put, hold}, remove it to silence
-> the warning:
->=20
-> ./net/can/raw.c:497:2-9: WARNING: NULL check before dev_{put, hold} funct=
-ions is not needed.
->=20
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D6231
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Applied to linux-can-next/testing.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---7n5eokfyo5pa3sfp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmUdPbEACgkQvlAcSiqK
-BOhaJAf8CJS4q8gjgzgbvGEY1oFdsFx5AOdvsIgFL4F3pg+7AjMNRXIX+CyDnGlf
-8tmSvh/3670c5pL8EN5ptuvlUVlJDVOhiH4/28FCC+7zkoWRtEOu4U6v4Uz2onGB
-d2FSb0cx7ifFIjrr6IOsBa67lPO5GD2AXXED8uyiE42K6cWYnpVqS6t48YDle5j2
-u76Q97bvL2TGI1sh3FWKtrsSpgYKcRiKDW9BxodrQrboRqeUMyqfq5OMnn76bc0r
-EyPe0zGVVE2peGfAWhdN1IC/5u7kuhPoB8WdymLnM99pSGeMVrPcvZ+vufB/hM3K
-UnMXGbHpmSlZ18a4oJZuyYTQJaSQnQ==
-=nayZ
------END PGP SIGNATURE-----
-
---7n5eokfyo5pa3sfp--
+yours truly
+Mohamed Abdul Ahmed
