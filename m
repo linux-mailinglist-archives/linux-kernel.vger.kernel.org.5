@@ -2,257 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8217B85FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BEC7B8606
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243534AbjJDQ7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
+        id S243556AbjJDRA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 13:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbjJDQ7w (ORCPT
+        with ESMTP id S243574AbjJDRA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:59:52 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2053.outbound.protection.outlook.com [40.107.243.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEB8A7
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:59:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WK1ht/KeyVUSrFaSj680f6jo/n5SsnbZyD4FfMsIquZRyKQ/UsQXCH6JE0Yrn7zUgNMh+3q9llQ5Bg2ibUiVxcEUOPPdl6HG6PImNomkcZHHYL6sSlJGXKKhNZxDYFfXud6O3q4i39FGKE7N0kcXyciV4Zt2siQ/Mews1+0NIO/5QdLPOYEpJDhJMgGkpTaM5dnFeynjIH19pOyYcYx2YuRzWFj/0OVTBaJ8juqTuvAccOuPHGfGa5YChMZ3ypXIK6rqQArrMIvLmtliQNV7EB1x8UwUR/EepDMMj88XKjPrN6VQOuZTDatAz6nIBWdiVGzcdphZQvBZAzfGubDdLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kiu85Cg1dUpSq3ISZ8eSTdrDvZLpVAtG9jI30+T33NY=;
- b=jUWJS+pvR7YVbyLWX6CLx4P5EIy0cgFnV1vSN2nBWj7GTdFyr/mNmfuxmvaCa2QsEmjVcBkbvkWFHv/sH4jG4EzZ2MTB4Kt8A1cqvsBFYjcNCr2EVAud4wfnSmvGV7LmlNLH57ySqLc1SaQfQR5+3HFl2x3Rcr5h5QUYJOyzAOAWwKkd6D/+iQPVmZDFyFfxcTLi9+9OvtcsN7pCZ02QtXFSMmCtymAyxXLh8eKYp5tbJ2P9xxQGZcSi1ArYSnUvTV/LHFPjgi24z8o/SM5j8UzhfKPvJGbJ3+9eZpmzU+AHDVXQTNmuCDIsaN15u8iSnZiZAWlujIHxhjioXcFoJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kiu85Cg1dUpSq3ISZ8eSTdrDvZLpVAtG9jI30+T33NY=;
- b=FBFCz0KlmMW05ayVxT9f26sDlCsRLpJBcZuRQGl04atAF04ZE163jR9Jnt/Ywaga0Thnm5dEgzKfAgX+Eg/Rx3YvNYv9j58817lvPk9VL3WINTGwC7NNMOidvXIzMfWsdnEqHxCbhcAHnP57MveJBtVWa4EQP47i85OTdsLzWaw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
- by PH7PR12MB7162.namprd12.prod.outlook.com (2603:10b6:510:201::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.35; Wed, 4 Oct
- 2023 16:59:45 +0000
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::2e40:ffd7:e752:644f]) by BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::2e40:ffd7:e752:644f%6]) with mapi id 15.20.6838.033; Wed, 4 Oct 2023
- 16:59:45 +0000
-Message-ID: <c0d6ea10-b648-4f44-8ce6-156aefe556f9@amd.com>
-Date:   Wed, 4 Oct 2023 12:59:43 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] drm/amdkfd: get doorbell's absolute offset based
- on the db size
-Content-Language: en-US
-To:     Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
-        alexander.deucher@amd.com, shashank.sharma@amd.com,
-        Mukul.Joshi@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231004161652.3082-1-Arvind.Yadav@amd.com>
- <20231004161652.3082-3-Arvind.Yadav@amd.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Organization: AMD Inc.
-In-Reply-To: <20231004161652.3082-3-Arvind.Yadav@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQZPR01CA0072.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:88::26) To BN9PR12MB5115.namprd12.prod.outlook.com
- (2603:10b6:408:118::14)
+        Wed, 4 Oct 2023 13:00:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72E5E4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 10:00:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A667AC433C7;
+        Wed,  4 Oct 2023 17:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696438817;
+        bh=KxobSUMg1rt6ffq3jOXrRjFXKWaC8yDqN/GRlH/RhbU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=eHHxGslhcn/F6x7OMgav3hUp2/iuk6S+vwIZZI2Mhjnv+Zs7BKcJU4Z0sHYuRhvop
+         52f6cn5z4ersd0wPqX4eV66/S1n211XoMydLRI2FRdtuA7t6xHYbdts26/Kut7AVQ8
+         x/E12kodmiXyyP7LRIrAau7/MQk0nRv0unkQpxUhy2vv0WbLOXtab5G1sBWio93tw/
+         DQkwwU60L1kXk2+BLEH7SIzdQpfiNeZR14EAOtDiyaKxxASz6sZIj9AeApWIUofg7K
+         NVGc9KvZrgKJyEsnirRregQuOjL9UUG8lMHr6M7v+/QTy+yECzLC/fvXAe9b6jvMrg
+         /6/1nvrJTNBnw==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     =?utf-8?Q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     =?utf-8?Q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Evan Green <evan@rivosinc.com>,
+        =?utf-8?Q?Bj=C3=B6rn?= Topel <bjorn@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ron Minnich <rminnich@gmail.com>,
+        Daniel Maslowski <cyrevolt@googlemail.com>,
+        Conor Dooley <conor@kernel.org>
+Subject: Re: [PATCH v2 2/8] riscv: add support for misaligned trap handling
+ in S-mode
+In-Reply-To: <20231004151405.521596-3-cleger@rivosinc.com>
+References: <20231004151405.521596-1-cleger@rivosinc.com>
+ <20231004151405.521596-3-cleger@rivosinc.com>
+Date:   Wed, 04 Oct 2023 19:00:14 +0200
+Message-ID: <871qeagw69.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|PH7PR12MB7162:EE_
-X-MS-Office365-Filtering-Correlation-Id: bcd20be0-652c-42c9-dd1d-08dbc4fb4faf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yHRdyYULdlFtBc4PT4Vdy2pYSlPcOTwqe7rSvv/VjJTguaI3vdXsQ/afpQucPg/jHPTna/3j/OyhvV7mUlcU7nEPykuNgiNN+qTwVWL0YpB6+uUGMFfcMk0A9xDI3+t9pZsWqnP6zSCdOFVYCkhsv6wyrLWAymIOCO6GcUEUwGjEY4Vz5GZyzFd2BRQdMyKvsR8VE0FbKPZDkUcC7arv+lPq5q3eZOoCclFraQ/+O7ODdTaypfLK3AUf2OoYfJjtOaM5I6anWIg3c+XMdGSBartj6hDLLqRZrHZePrtYfwVgjiJeBg8jxdfSvQSz3ZdzXPIrYMDpgInIkHN+1UIvrdS5CDd/8mVq2INVPmVh53mihb6hgTlBmvnzHMdjK/3BMX/FwhlBT84wecN4coAXQMx5HRU+5kLQC17/8MYqDEd4xeyfXv1YdnRreK2gT9NScjIpUd5jMcYPZWdlnz0os2qwnB9cowTY8m84cHZHbiZ8P/45mOpaZNde2Tx5L8KHfp3svczr2QdLIJWJbBs8bsHaLJvbS8i7lnKgbMmHBx1rvolkalUiUM+1DzDSx7XPpdEZtASvxjn9Oo5NXnOWsHIo14fYxYOuLfbBdGYlagpq+03rgYEXAm3aPzeriiWNXE8dXMwMhcDNfyZcalONLQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(136003)(39860400002)(396003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(31686004)(6512007)(53546011)(6506007)(36916002)(478600001)(6486002)(38100700002)(86362001)(31696002)(2906002)(316002)(83380400001)(26005)(2616005)(36756003)(66556008)(66476007)(66946007)(44832011)(5660300002)(4326008)(8936002)(8676002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ems3cVVwQTBQcjVGemJhVm1ZQnRURERaTklYR3NoVnd5bDJJdURkd3dqTEVs?=
- =?utf-8?B?aEtwUWFGMzcyMkdzVUl0dXVBOVY3Z1FDc1d1WXIyYk9pRGQ0V09UbzU0Q0Fm?=
- =?utf-8?B?bWQ0UFlzNkF6QzRiZTNleFl4amcvd0lWZFh5RTFLVCtaZ2pHM3VyT3ltNGFw?=
- =?utf-8?B?SjY0anZqMlhKbzdGcnpnUGNHOHQrc1hCOVhHTFBOWGFEWFkyK1ZaVktNU0g0?=
- =?utf-8?B?MWxFL3pXSkJZbWFQODlqeHZmZFJ0VTlKemdvUlZnY1czVmRaVzlJNlR1R1JH?=
- =?utf-8?B?aWNoQThDVGEzSzhEREtGa2FiaitCcWRhaVRkZEdGS2VYZ1BxSGs3c1luWm93?=
- =?utf-8?B?UTdxdG5FK3Q1clBpWjNhdWNJWmMrZXNEMEtEVUdxREdLeFlMTFlvUnRwV1F4?=
- =?utf-8?B?bGJFZ2xUQUNINUJvVXFMMkE4Q3Z4aFNsa3VJRk5UUmlmdzdjSEllb2tjOXVw?=
- =?utf-8?B?blpFR3kwTFJ1NWpYcmZVdWhBdzRLRThweXd2UEZoUWp6dHpscml6dzNiM2hG?=
- =?utf-8?B?WVpzNlhDUUR4ZGpCeXBnWTE2RjZrc1pzT3NMZ1JZa2l1QzlkUVZWQjVJdkdM?=
- =?utf-8?B?QTNFbTBaK2F5a2NHK05vNjNrZ1Y2Vkx6c3UwVzNXRnVLVFBNOEFBV3VZZ2Ju?=
- =?utf-8?B?MHFJeHJyY2kwaDdVaWIzbFhVZGxNbjIrT1I5R01YSHFXRjg4V1VzLzRPTTNi?=
- =?utf-8?B?eTVRMUtJcTMzamVGVExSck9kOWsyM04xejhTOGFNNDRDUUxNcVVHS1BsejZl?=
- =?utf-8?B?cXVBbEJVWVRVRytpUG9MeURQdTRIRkVTVmEycUM0MGJmSmtpQ3NENmtqakZl?=
- =?utf-8?B?bnliV3dyUFVPMXpJTzlqTll4MHBPRU5sWUQwcUtQckRTYVh0Q3dCRDBWNEJv?=
- =?utf-8?B?Si9CekFVa252NlcwRjFyYlhaMWltQlMyVzRvS29WaDE4dXBNM0g5V01BRlcw?=
- =?utf-8?B?cjBlcmJKbFV0eW5qK3NNNFZNQWw4YzBMeEk5U2NiaG1QTHJVWEZYL3RLY1J4?=
- =?utf-8?B?SDNIWXRLaGdaQTllbVVaOEhiTTBjcXErODZqeUpCSk1aQ2ZQb0dLRjZmUGJ0?=
- =?utf-8?B?WG9XMzREbzRoUmMxSlhVUzBGY0srMmQ4MEVNaFpiZE1zbUQ2WEtjTVZyTFRw?=
- =?utf-8?B?VTBGbXlTb3NtKzBBSmVTLzhCYVB6NTFQYjF2M0d1UzUzUWVuVHJwS0h5dHFH?=
- =?utf-8?B?S0NqSlhzd0ROVkpnKzhraG5BNk53Ti9LNDA0VGlaK1BCa3FpVjh4bWtkdExn?=
- =?utf-8?B?b240QjZtNzk3T0tOUmhKMVpaNkZmZlRVcG96cU5MRm1ZK3lSWlpnVTZvdzJO?=
- =?utf-8?B?ZE03N3F4S2M4ckQ5Q2ZEUTkybVNzUWpnMS9hV1p6ZlNiVHNTeU1YUlJiZWs4?=
- =?utf-8?B?aUROcmtIYXVIVzlHOFVFOElwZDRQdHBqd2RQY3RVT3R3aWx2dnJQL3BwOHZ0?=
- =?utf-8?B?T1VOZlFZWHloL3czUjVtMUh2V1hxQnovcTdCOTdPVVBiTis5S2lIa1NMckF0?=
- =?utf-8?B?aXlKQnI0SWczUGpiaGpDbWtseGo2K2RabWJUVWZKT2VwTTUyK1JocC9DZ2cw?=
- =?utf-8?B?b3lra2dWVkhkZ2FxUUM0SFlBK284YVY5U01SNmJhUkxzczhFeHk0Y0kydnVL?=
- =?utf-8?B?RTVTTTRtWkNNbG02akZtSXA1cExRMCsrL1krUmgrRGFKOC9rY0dBcmp2S0d2?=
- =?utf-8?B?MWdqRlZpeVBWZzJUUWUreVZCQnRlekxlNU9EcFR4STcxTk9taGpzMkp1N2py?=
- =?utf-8?B?c0p0QTZMMnhKOVJYb3RrVXF6QjRWcTQvajE5OEhnQUFiMU1GYlY5dWJ3VVY1?=
- =?utf-8?B?T1FKK0pBdDJqNDVRbm9zWmxiaGxNYWVqdysxTHoybnJXajE2bjdvZVdEQng5?=
- =?utf-8?B?WHBWYktqYmFHa05ybTAyVklBblNDQklFaHNUb1BhQ25uUmlsRVoxR2ZLTjVN?=
- =?utf-8?B?K2xvVVNoZU1DcUNIUTR5b3h6NmNOTWRJdExPWEg0VG5KSkE2czRVWmVmcE9t?=
- =?utf-8?B?S245Q1U1L1BscXBsbG5xckNtTnlUTmZmdFd2anVMVXdEMjN2eTVxMUk1LzBr?=
- =?utf-8?B?Sm9RT25IZmNBc0FmY1JpZTJOZ3IrN1A3S1NMeTJPVDhuRjMwZnpxdDR4eWk3?=
- =?utf-8?Q?lsv5F6mZMJIAZEwoY2nS7QpR9?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bcd20be0-652c-42c9-dd1d-08dbc4fb4faf
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 16:59:45.7620
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: z8BtvchYB00oFbq0/KGts+8tejq/QpvPvGlOVLnknwWnbvt0D8lRDZ6iDvlC1Oub89YQBtQ0NWPHk4SMbGFvdg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7162
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com> writes:
 
-On 2023-10-04 12:16, Arvind Yadav wrote:
-> This patch is to align the absolute doorbell offset
-> based on the doorbell's size. So that doorbell offset
-> will be aligned for both 32 bit and 64 bit.
+> Misalignment trap handling is only supported for M-mode and uses direct
+> accesses to user memory. In S-mode, when handling usermode fault, this
+> requires to use the get_user()/put_user() accessors. Implement
+> load_u8(), store_u8() and get_insn() using these accessors for
+> userspace and direct text access for kernel.
 >
-> v2:
-> - Addressed the review comment from Felix.
-> v3:
-> - Adding doorbell_size as parameter to get db absolute offset.
->
-> Cc: Christian Koenig <christian.koenig@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
-> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
-
-The final result looks good to me. But please squash the two patches 
-into one. The first patch on its own breaks the build, and that's 
-something we don't want to commit to the branch history as it makes 
-tracking regressions (e.g. with git bisect) very hard or impossible.
-
-More nit-picks inline.
-
-
+> Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
 > ---
->   .../gpu/drm/amd/amdkfd/kfd_device_queue_manager.c   |  6 +++++-
->   drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c           | 13 +++++++++++--
->   .../gpu/drm/amd/amdkfd/kfd_process_queue_manager.c  |  4 +++-
->   3 files changed, 19 insertions(+), 4 deletions(-)
+>  arch/riscv/Kconfig                    |   8 ++
+>  arch/riscv/include/asm/entry-common.h |  14 +++
+>  arch/riscv/kernel/Makefile            |   2 +-
+>  arch/riscv/kernel/traps.c             |   9 --
+>  arch/riscv/kernel/traps_misaligned.c  | 119 +++++++++++++++++++++++---
+>  5 files changed, 129 insertions(+), 23 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> index 0d3d538b64eb..690ff131fe4b 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> @@ -346,6 +346,7 @@ static int allocate_doorbell(struct qcm_process_device *qpd,
->   			     uint32_t const *restore_id)
->   {
->   	struct kfd_node *dev = qpd->dqm->dev;
-> +	uint32_t doorbell_size;
->   
->   	if (!KFD_IS_SOC15(dev)) {
->   		/* On pre-SOC15 chips we need to use the queue ID to
-> @@ -405,9 +406,12 @@ static int allocate_doorbell(struct qcm_process_device *qpd,
->   		}
->   	}
->   
-> +	doorbell_size = dev->kfd->device_info.doorbell_size;
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index d607ab0f7c6d..6e167358a897 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -636,6 +636,14 @@ config THREAD_SIZE_ORDER
+>  	  Specify the Pages of thread stack size (from 4KB to 64KB), which also
+>  	  affects irq stack size, which is equal to thread stack size.
+>=20=20
+> +config RISCV_MISALIGNED
+> +	bool "Support misaligned load/store traps for kernel and userspace"
+> +	default y
+> +	help
+> +	  Say Y here if you want the kernel to embed support for misaligned
+> +	  load/store for both kernel and userspace. When disable, misaligned
+> +	  accesses will generate SIGBUS in userspace and panic in kernel.
 > +
->   	q->properties.doorbell_off = amdgpu_doorbell_index_on_bar(dev->adev,
->   								  qpd->proc_doorbells,
-> -								  q->doorbell_id);
-> +								  q->doorbell_id,
-> +								  doorbell_size);
-
-You don't need a local variable for doorbell size that's only used once. 
-Just pass dev->kfd->device_info.doorbell_size directly.
-
-
->   	return 0;
->   }
->   
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c b/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
-> index 7b38537c7c99..59dd76c4b138 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
-> @@ -161,7 +161,10 @@ void __iomem *kfd_get_kernel_doorbell(struct kfd_dev *kfd,
->   	if (inx >= KFD_MAX_NUM_OF_QUEUES_PER_PROCESS)
->   		return NULL;
->   
-> -	*doorbell_off = amdgpu_doorbell_index_on_bar(kfd->adev, kfd->doorbells, inx);
-> +	*doorbell_off = amdgpu_doorbell_index_on_bar(kfd->adev,
-> +						     kfd->doorbells,
-> +						     inx,
-> +						     kfd->device_info.doorbell_size);
->   	inx *= 2;
->   
->   	pr_debug("Get kernel queue doorbell\n"
-> @@ -233,6 +236,7 @@ phys_addr_t kfd_get_process_doorbells(struct kfd_process_device *pdd)
->   {
->   	struct amdgpu_device *adev = pdd->dev->adev;
->   	uint32_t first_db_index;
-> +	uint32_t doorbell_size;
->   
->   	if (!pdd->qpd.proc_doorbells) {
->   		if (kfd_alloc_process_doorbells(pdd->dev->kfd, pdd))
-> @@ -240,7 +244,12 @@ phys_addr_t kfd_get_process_doorbells(struct kfd_process_device *pdd)
->   			return 0;
->   	}
->   
-> -	first_db_index = amdgpu_doorbell_index_on_bar(adev, pdd->qpd.proc_doorbells, 0);
-> +	doorbell_size = pdd->dev->kfd->device_info.doorbell_size;
+>  endmenu # "Platform type"
+>=20=20
+>  menu "Kernel features"
+> diff --git a/arch/riscv/include/asm/entry-common.h b/arch/riscv/include/a=
+sm/entry-common.h
+> index 6e4dee49d84b..7ab5e34318c8 100644
+> --- a/arch/riscv/include/asm/entry-common.h
+> +++ b/arch/riscv/include/asm/entry-common.h
+> @@ -8,4 +8,18 @@
+>  void handle_page_fault(struct pt_regs *regs);
+>  void handle_break(struct pt_regs *regs);
+>=20=20
+> +#ifdef CONFIG_RISCV_MISALIGNED
+> +int handle_misaligned_load(struct pt_regs *regs);
+> +int handle_misaligned_store(struct pt_regs *regs);
+> +#else
+> +static inline int handle_misaligned_load(struct pt_regs *regs)
+> +{
+> +	return -1;
+> +}
+> +static inline int handle_misaligned_store(struct pt_regs *regs)
+> +{
+> +	return -1;
+> +}
+> +#endif
 > +
-> +	first_db_index = amdgpu_doorbell_index_on_bar(adev,
-> +						      pdd->qpd.proc_doorbells,
-> +						      0,
-> +						      doorbell_size);
+>  #endif /* _ASM_RISCV_ENTRY_COMMON_H */
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index 95cf25d48405..0d874fb24b51 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -59,7 +59,7 @@ obj-y	+=3D patch.o
+>  obj-y	+=3D probes/
+>  obj-$(CONFIG_MMU) +=3D vdso.o vdso/
+>=20=20
+> -obj-$(CONFIG_RISCV_M_MODE)	+=3D traps_misaligned.o
+> +obj-$(CONFIG_RISCV_MISALIGNED)	+=3D traps_misaligned.o
+>  obj-$(CONFIG_FPU)		+=3D fpu.o
+>  obj-$(CONFIG_RISCV_ISA_V)	+=3D vector.o
+>  obj-$(CONFIG_SMP)		+=3D smpboot.o
+> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> index 19807c4d3805..d69779e4b967 100644
+> --- a/arch/riscv/kernel/traps.c
+> +++ b/arch/riscv/kernel/traps.c
+> @@ -179,14 +179,6 @@ asmlinkage __visible __trap_section void do_trap_ins=
+n_illegal(struct pt_regs *re
+>=20=20
+>  DO_ERROR_INFO(do_trap_load_fault,
+>  	SIGSEGV, SEGV_ACCERR, "load access fault");
+> -#ifndef CONFIG_RISCV_M_MODE
+> -DO_ERROR_INFO(do_trap_load_misaligned,
+> -	SIGBUS, BUS_ADRALN, "Oops - load address misaligned");
+> -DO_ERROR_INFO(do_trap_store_misaligned,
+> -	SIGBUS, BUS_ADRALN, "Oops - store (or AMO) address misaligned");
+> -#else
+> -int handle_misaligned_load(struct pt_regs *regs);
+> -int handle_misaligned_store(struct pt_regs *regs);
+>=20=20
+>  asmlinkage __visible __trap_section void do_trap_load_misaligned(struct =
+pt_regs *regs)
+>  {
+> @@ -229,7 +221,6 @@ asmlinkage __visible __trap_section void do_trap_stor=
+e_misaligned(struct pt_regs
+>  		irqentry_nmi_exit(regs, state);
+>  	}
+>  }
+> -#endif
+>  DO_ERROR_INFO(do_trap_store_fault,
+>  	SIGSEGV, SEGV_ACCERR, "store (or AMO) access fault");
+>  DO_ERROR_INFO(do_trap_ecall_s,
+> diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/tra=
+ps_misaligned.c
+> index e7bfb33089c1..9daed7d756ae 100644
+> --- a/arch/riscv/kernel/traps_misaligned.c
+> +++ b/arch/riscv/kernel/traps_misaligned.c
+> @@ -12,6 +12,7 @@
+>  #include <asm/processor.h>
+>  #include <asm/ptrace.h>
+>  #include <asm/csr.h>
+> +#include <asm/entry-common.h>
+>=20=20
+>  #define INSN_MATCH_LB			0x3
+>  #define INSN_MASK_LB			0x707f
+> @@ -151,21 +152,25 @@
+>  #define PRECISION_S 0
+>  #define PRECISION_D 1
+>=20=20
+> -static inline u8 load_u8(const u8 *addr)
+> +#ifdef CONFIG_RISCV_M_MODE
+> +static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_va=
+l)
+>  {
+>  	u8 val;
+>=20=20
+>  	asm volatile("lbu %0, %1" : "=3D&r" (val) : "m" (*addr));
+> +	*r_val =3D val;
+>=20=20
+> -	return val;
+> +	return 0;
+>  }
+>=20=20
+> -static inline void store_u8(u8 *addr, u8 val)
+> +static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
+>  {
+>  	asm volatile ("sb %0, %1\n" : : "r" (val), "m" (*addr));
+> +
+> +	return 0;
+>  }
+>=20=20
+> -static inline ulong get_insn(ulong mepc)
+> +static inline int get_insn(struct pt_regs *regs, ulong mepc, ulong *r_in=
+sn)
+>  {
+>  	register ulong __mepc asm ("a2") =3D mepc;
+>  	ulong val, rvc_mask =3D 3, tmp;
+> @@ -194,9 +199,87 @@ static inline ulong get_insn(ulong mepc)
+>  	: [addr] "r" (__mepc), [rvc_mask] "r" (rvc_mask),
+>  	  [xlen_minus_16] "i" (XLEN_MINUS_16));
+>=20=20
+> -	return val;
+> +	*r_insn =3D val;
+> +
+> +	return 0;
+> +}
+> +#else
+> +static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_va=
+l)
+> +{
+> +	if (user_mode(regs)) {
+> +		return __get_user(*r_val, addr);
+> +	} else {
+> +		*r_val =3D *addr;
+> +		return 0;
+> +	}
 
-Same as above, no local variable needed.
+One nit (...well two) ;-)
+
+If you're respinning I'd get rid of the "inlines", and personally I
+think early exit is easier to read. Applies to the whole patch.
+
+  | {
+  | 	if (user_mode(regs))
+  | 		return __get_user(*r_val, addr);
+  |=20
+  |         *r_val =3D *addr;
+  | 	return 0;
+  | }
 
 
->   	return adev->doorbell.base + first_db_index * sizeof(uint32_t);
->   }
->   
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
-> index adb5e4bdc0b2..010cd8e8e6a1 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
-> @@ -375,9 +375,11 @@ int pqm_create_queue(struct process_queue_manager *pqm,
->   		 * relative doorbell index = Absolute doorbell index -
->   		 * absolute index of first doorbell in the page.
->   		 */
-> +		uint32_t doorbell_size = pdd->dev->kfd->device_info.doorbell_size;
->   		uint32_t first_db_index = amdgpu_doorbell_index_on_bar(pdd->dev->adev,
->   								       pdd->qpd.proc_doorbells,
-> -								       0);
-> +								       0,
-> +								       doorbell_size);
+Regardless if you change or not,
 
-No local variable needed.
-
-Regards,
-   Felix
-
-
->   
->   		*p_doorbell_offset_in_process = (q->properties.doorbell_off
->   						- first_db_index) * sizeof(uint32_t);
+Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
