@@ -2,53 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B72717B828D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038C57B828B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242899AbjJDOmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:42:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
+        id S242888AbjJDOle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:41:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233097AbjJDOmB (ORCPT
+        with ESMTP id S233097AbjJDOlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:42:01 -0400
-Received: from mail.thorsis.com (mail.thorsis.com [92.198.35.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E901C6;
-        Wed,  4 Oct 2023 07:41:57 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 16:40:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thorsis.com; s=default;
-        t=1696430515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ktweLAm+dxlHaKntbD6u/jS8CnTcc3wre+3ER7F49m8=;
-        b=aRguEn4Pv/E+1o0CSenNMFi2CqdX1ZU/GjpIuvn5iEHMC3VRlGaY2Vu4r+hzYVeqQ7SS7m
-        bgGWVJDiG1IiuySZt+R+rAVCXOKo3Ap2L4SxFCOpjbqnjJ6kxCLWidiDSpEpJizrKGBkVY
-        F8F7aWrUTwHHlHd7bxtyo1Ytqp6wx21WtEBlfPKFKOeZX1z9N2R6lP5ZeXm1pl3eRRZQvm
-        DJ986Pb+pmzjsme/OcRtAZ0vdnoJ6qu2XxQhlKI3YSK5Azu0foiijGYcJBX4y66VSq3tLF
-        U5WctFw4UpO59EsbbiIzLU4ia+S5+SCSOFCtIqGaXokCXPacXutpFdx2G8gz7A==
-From:   Alexander Dahl <ada@thorsis.com>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: Re: [PATCH v2] docs: submitting-patches: encourage direct
- notifications to commenters
-Message-ID: <20231004-handbrake-unrelated-9e2ece2002cf@ifak-system.com>
-Mail-Followup-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jani Nikula <jani.nikula@intel.com>
-References: <20231003-docs-cc-reviewer-v2-1-f93fb946e21e@weissschuh.net>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231003-docs-cc-reviewer-v2-1-f93fb946e21e@weissschuh.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        Wed, 4 Oct 2023 10:41:32 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A23FC0;
+        Wed,  4 Oct 2023 07:41:28 -0700 (PDT)
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394ArQHU024373;
+        Wed, 4 Oct 2023 16:41:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=KPQruG3VfMmKQVdEVQ7aQu3ubE96ICMR1N0cn0SYCOI=; b=4S
+        M7JDlOvwkA8lz+wS51Xd5ASNYCGrt56H+5c2GdEWIGo0Qi+AbfUA59bjKhEHsatM
+        38rsxgm0bFyo3qYV30v5KBk7SE+LBJ1z4JDhv1c2IQ7hz3Wrb7HpZ/ZMT/pA2mwR
+        4GLDK7N/QhGqcJpIi7Sj1Oo9wWOpAbtSrzgaMARfL16t67kYpc4tWKJW0eRH4Brh
+        abMx7Bu+TAXrHHktZ/G/vEQZ7Ao5qZqsCpi66vkDUwzeZmCVMvDXoBwmouLNrErl
+        /xw8fD5SrdKwR6azuCGX6FCnI5eYC3QDhRs2m5HpJoJVi4Efzexw+HmUSOLnIPRb
+        nX0Dz/rBg9+5A2Cj3xvQ==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3te8t51t9w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Oct 2023 16:41:18 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 336C3100053;
+        Wed,  4 Oct 2023 16:41:17 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1039925225D;
+        Wed,  4 Oct 2023 16:41:17 +0200 (CEST)
+Received: from [10.201.20.38] (10.201.20.38) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 4 Oct
+ 2023 16:41:16 +0200
+Message-ID: <7754c3e4-fdb9-0976-9b91-97f0938d7afa@foss.st.com>
+Date:   Wed, 4 Oct 2023 16:41:15 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 29/36] pinctrl: st: use new pinctrl GPIO helpers
+Content-Language: en-US
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>
+CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20231003145114.21637-1-brgl@bgdev.pl>
+ <20231003145114.21637-30-brgl@bgdev.pl>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+In-Reply-To: <20231003145114.21637-30-brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.20.38]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-04_07,2023-10-02_01,2023-05-22_02
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,60 +79,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas,
 
-Am Tue, Oct 03, 2023 at 08:30:03AM +0200 schrieb Thomas Weiﬂschuh:
-> Commenters may not receive new versions of patches via the lists.
-> Without a directed notification to them they might miss those new
-> versions.
+
+On 10/3/23 16:51, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> This is frustrating for the patch developers as they don't receive their
-> earned Reviewed-by.
-> It is also frustrating for the commenters, as they might think their
-> review got ignored or they have to dig up new versions from the archive
-> manually.
+> Replace the pinctrl helpers taking the global GPIO number as argument
+> with the improved variants that instead take a pointer to the GPIO chip
+> and the controller-relative offset.
 > 
-> So encourage patch submitters to make sure that all commenters get
-> notified also when no Reviewed-by was issued yet.
-
-Appreciate your suggestion.  Not sure if every commenter would like to
-be included in follow up iterations of a patch series, but for the few
-things I comment on, I would be interested.
-
-> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > ---
-> Changes in v2:
-> - s/reviewer/commenter/ to avoid ambiguity (Christoph)
-> - Link to v1: https://lore.kernel.org/r/20230927-docs-cc-reviewer-v1-1-2af46ceb2d3c@weissschuh.net
-> ---
->  Documentation/process/submitting-patches.rst | 2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/pinctrl/pinctrl-st.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-> index efac910e2659..3245b7b38b98 100644
-> --- a/Documentation/process/submitting-patches.rst
-> +++ b/Documentation/process/submitting-patches.rst
-> @@ -327,6 +327,8 @@ politely and address the problems they have pointed out.  When sending a next
->  version, add a ``patch changelog`` to the cover letter or to individual patches
->  explaining difference against previous submission (see
->  :ref:`the_canonical_patch_format`).
-> +Notify people that commented on your patch about new versions by adding them to
-> +the patches CC list.
-
-Acked-by: Alexander Dahl <ada@thorsis.com>
-
-Greets
-Alex
-
+> diff --git a/drivers/pinctrl/pinctrl-st.c b/drivers/pinctrl/pinctrl-st.c
+> index c1f36b164ea5..ec763572ab3e 100644
+> --- a/drivers/pinctrl/pinctrl-st.c
+> +++ b/drivers/pinctrl/pinctrl-st.c
+> @@ -719,7 +719,7 @@ static void st_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
 >  
->  See Documentation/process/email-clients.rst for recommendations on email
->  clients and mailing list etiquette.
-> 
-> ---
-> base-commit: 633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
-> change-id: 20230926-docs-cc-reviewer-023b3730af23
-> 
-> Best regards,
-> -- 
-> Thomas Weiﬂschuh <linux@weissschuh.net>
-> 
+>  static int st_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
+>  {
+> -	pinctrl_gpio_direction_input(chip->base + offset);
+> +	pinctrl_gpio_direction_input_new(chip, offset);
+>  
+>  	return 0;
+>  }
+> @@ -730,7 +730,7 @@ static int st_gpio_direction_output(struct gpio_chip *chip,
+>  	struct st_gpio_bank *bank = gpiochip_get_data(chip);
+>  
+>  	__st_gpio_set(bank, offset, value);
+> -	pinctrl_gpio_direction_output(chip->base + offset);
+> +	pinctrl_gpio_direction_output_new(chip, offset);
+>  
+>  	return 0;
+>  }
+
+Reviewed-by: Patrice Chotard <patrice.chotard@foss.st.com>
+
+Thanks
+Patrice
