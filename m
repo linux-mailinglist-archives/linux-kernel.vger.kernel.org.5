@@ -2,69 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7B87B8E3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08B07B8E45
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbjJDUlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 16:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
+        id S233243AbjJDUoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 16:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233243AbjJDUlL (ORCPT
+        with ESMTP id S243721AbjJDUn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 16:41:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787139B
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:41:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 650C3C433C8;
-        Wed,  4 Oct 2023 20:41:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696452068;
-        bh=72lPpExPa7/l8tL0qUn7j7l+TWc7n+AL+YkQK0hH4Rs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=atmaCxJFjkuoGabbdB9Yr5oZJNjn/Bdzqi3HITjYF6aqnSMDpHMH5bfp99hp4hu9S
-         ZLej3ZVqDIlgcOCVWEh/z1TfL0JlJy7ejY/tVkUEWh1lkzML859fY26D21NbzrJ6oS
-         mZcJ+vs7HWLQWYMCkiilFAeuUE/i91yUMQRGVUSmATPRArfZ/68UMXOIcLCjXFgITR
-         wVUTJ633op4v50sGt+9IYH/R3RFQhOsfrKs39O9GDD2IyBBuYeIH5PxlHeeAI3bdao
-         DlShNOOgHT0wJGGHJbTENeMzo8Da3kPKTYi2A+7IvcTnZxvavLahGW7enZIs7mVro3
-         9tzhl8wqhc7fQ==
-Date:   Wed, 4 Oct 2023 13:41:06 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-Cc:     <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <michal.simek@amd.com>,
-        <linux@armlinux.org.uk>, <f.fainelli@gmail.com>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <git@amd.com>,
-        "Sarath Babu Naidu Gaddam" <sarath.babu.naidu.gaddam@amd.com>
-Subject: Re: [PATCH net-next v7 2/3] net: axienet: Preparatory changes for
- dmaengine support
-Message-ID: <20231004134106.7779c29c@kernel.org>
-In-Reply-To: <1695843151-1919509-3-git-send-email-radhey.shyam.pandey@amd.com>
-References: <1695843151-1919509-1-git-send-email-radhey.shyam.pandey@amd.com>
-        <1695843151-1919509-3-git-send-email-radhey.shyam.pandey@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 4 Oct 2023 16:43:58 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6B3D7
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:43:55 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f53027158so2739737b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:43:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696452234; x=1697057034; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=raoMQ3SQ/7ZFelkz0l8EiT5sUCvEdkA2km5MKOLJhzo=;
+        b=ZruWNVAfzd3QgvkZtWTdyvtnZEJ/B7pM4jN0z0HZxlWk+mwvz7456s9KFrrQPQRHOk
+         LTa6ERqV72R5E/BXJd9g5pz14+Gc1jJWyG4+7MALIHuECmS5Bj/Hxr56ANyfylSrtbvF
+         HIGw0U0HgxCYVKMufVSRhcadxW9hix1r3dcJvgEJQIfSRGQMbXp2UD2/Fdy5wNgarMMJ
+         ozKLY9bQ7+GkT0uZGY9Ev62GIFzhcbVEIK8gFo6UQdgKGdplu3o2HFIOEui4gKPNOzGS
+         yzY07PMQpHMRRB4hTi4xRSQr76P7N32kUaR9XM5pQkHa3j2SoqQzB1gPDGg64+HTspM1
+         Dgiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696452234; x=1697057034;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=raoMQ3SQ/7ZFelkz0l8EiT5sUCvEdkA2km5MKOLJhzo=;
+        b=RWmEc/nmOJ9eiWPki3VOSGws4MdpCuBbnwnf5Y4KXwvP/LfBcZjbnNGSxJ1HiIc7mD
+         349Gy3hcHQMh4fyGfT8eMTHYgd/5CkbtlnE+rYuaereqXgtsnbQt8n50esC3aBOgYdyH
+         gDJDNET3fPW0D38DzeZzEapYfk4l0n3KY/KX61UtcN7KpVh+5AQF2Sk+VaV74ZLpg0TE
+         Ytq0QQh2B1sDYarT/OkXqZYS75VI9GCqYeCJmHIk3rMqAdDet7JtypIzq7MtFCyGt8jp
+         ZHjNl08idbu4OqRnu83weH/4YNvIgRNbXzw7j+v088HxOUeF0YiGyaojYKQiQdZ/6Efb
+         GlWQ==
+X-Gm-Message-State: AOJu0YzRv55S5FXiuOc7jNQqoNvDSKPaEwy5fQdPy4qPxdJWlHAyxI01
+        T9GUfVoR92Zl6SmI5jAhQrA68jQYdGjC
+X-Google-Smtp-Source: AGHT+IHOTTSKdRgnVHjbgvjquFSKOS4KvwkFUDh31IJpUYqwHfKeHqaIlVYt9UxjR55jvbhdZjGcx1Y3S2fA
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f42:a09e:8ee2:1491])
+ (user=irogers job=sendgmr) by 2002:a81:b3c3:0:b0:59b:f863:6f60 with SMTP id
+ r186-20020a81b3c3000000b0059bf8636f60mr58579ywh.4.1696452234270; Wed, 04 Oct
+ 2023 13:43:54 -0700 (PDT)
+Date:   Wed,  4 Oct 2023 13:43:33 -0700
+Message-Id: <20231004204334.3465116-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+Subject: [PATCH v3 1/2] bpftool: Align output skeleton ELF code
+From:   Ian Rogers <irogers@google.com>
+To:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ian Rogers <irogers@google.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sep 2023 01:02:30 +0530 Radhey Shyam Pandey wrote:
->   */
-> -static int axienet_open(struct net_device *ndev)
-> +
+libbpf accesses the ELF data requiring at least 8 byte alignment,
+however, the data is generated into a C string that doesn't guarantee
+alignment. Fix this by assigning to an aligned char array. Use sizeof
+on the array, less one for the \0 terminator, rather than generating a
+constant.
 
-nit: spurious new line
+Fixes: a6cc6b34b93e ("bpftool: Provide a helper method for accessing skeleton's embedded ELF data")
+Signed-off-by: Ian Rogers <irogers@google.com>
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ tools/bpf/bpftool/gen.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-> +static inline int axienet_init_legacy_dma(struct net_device *ndev)
-
-nit: no need for the inline, it has one caller and isn't on the fast
-path
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 2883660d6b67..b8ebcee9bc56 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -1209,7 +1209,7 @@ static int do_skeleton(int argc, char **argv)
+ 	codegen("\
+ 		\n\
+ 									    \n\
+-			s->data = (void *)%2$s__elf_bytes(&s->data_sz);	    \n\
++			s->data = (void *)%1$s__elf_bytes(&s->data_sz);	    \n\
+ 									    \n\
+ 			obj->skeleton = s;				    \n\
+ 			return 0;					    \n\
+@@ -1218,12 +1218,12 @@ static int do_skeleton(int argc, char **argv)
+ 			return err;					    \n\
+ 		}							    \n\
+ 									    \n\
+-		static inline const void *%2$s__elf_bytes(size_t *sz)	    \n\
++		static inline const void *%1$s__elf_bytes(size_t *sz)	    \n\
+ 		{							    \n\
+-			*sz = %1$d;					    \n\
+-			return (const void *)\"\\			    \n\
+-		"
+-		, file_sz, obj_name);
++			static const char data[] __attribute__((__aligned__(8))) = \"\\\n\
++		",
++		obj_name
++	);
+ 
+ 	/* embed contents of BPF object file */
+ 	print_hex(obj_data, file_sz);
+@@ -1231,6 +1231,9 @@ static int do_skeleton(int argc, char **argv)
+ 	codegen("\
+ 		\n\
+ 		\";							    \n\
++									    \n\
++			*sz = sizeof(data) - 1;				    \n\
++			return (const void *)data;			    \n\
+ 		}							    \n\
+ 									    \n\
+ 		#ifdef __cplusplus					    \n\
+-- 
+2.42.0.609.gbb76f46606-goog
 
