@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A847B78E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51447B78E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241535AbjJDHk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
+        id S232766AbjJDHlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232766AbjJDHkz (ORCPT
+        with ESMTP id S241543AbjJDHlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:40:55 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076FCA7
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 00:40:53 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id 98e67ed59e1d1-27758c8f579so1211922a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 00:40:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696405252; x=1697010052; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5fUH5S4uz1EWWFstq5oEXMZSXkqH1sqcQ+Nf7tmZbwI=;
-        b=lAsRhhXPnuCUvf+HYC2VvZYoaUGmP4X8KP1K3rZef7tfG0FQuAP896a+wpLLarZXLa
-         v09Y9wPdj/Ap8I53bfoiPg1jzRv6m+zm6Y94SB3mVi1qxHi5xnz1Bv8O0pzSCvqyAyJk
-         /ErdCKkp/IQlplqB8MX0dwBpVDv83imSo6cMKt8vyvR5fz8H85fcpd2ylCUmaz1JkYbD
-         DARLrpqiQgvex5vPMDdWy9v6yYMUw6boBvtJvL8HLuYhSdKLtB9GJ3NXC5WMy64mJ9Os
-         fpaObpXTXJ3VFLrjmR1FxdY79TZ3KqXE7CGK89Ej6xKPi1lQxqutrnVivkBVfk54+0VO
-         YFNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696405252; x=1697010052;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5fUH5S4uz1EWWFstq5oEXMZSXkqH1sqcQ+Nf7tmZbwI=;
-        b=iQHgzgeejD5UTXO3n3FkL6tcdjytoF4oEpHYYZYCXTOkieseWZL9JHXcuRkcCesCUs
-         EIbx7tK75agGgaDz6OStj+tyCrmNm8jM8sPmvgIpffP7bre0ANMM4+t9SLEdTBbjVm87
-         uNwLRbUNsV22YD/6vnbFtc0iCTiMjqqrPPVWQiJZLPlOYk1u4cgXA+8NUGxFuYLw/HFe
-         cwvP/3rmmXA3Q1Pqzae9JplgzmSGpY2tuMnB7oxEbHaed0sZPNJA6BWukwE4ztG9J2++
-         DX7iWwdo2ed2BylXUmbZBpgby2cfw3MY6KdtZV8T5WW0/trAEvnLNDt0HHKKI56E57AD
-         nj4w==
-X-Gm-Message-State: AOJu0YzEzpuhnyGtAEfcSw8gjXsFCwAy2blb+YrsvEIqmtT1x8HJiPcq
-        41Nx4WLECWT2IhVCHhtn7B4=
-X-Google-Smtp-Source: AGHT+IHZ6NRVZIFRqS3Cq1TdvSNu0HELw/5i7B3boICHTTeSqupmrGFgyK8BXOHgZtJ89wiytpIPNQ==
-X-Received: by 2002:a17:90a:3f16:b0:279:1367:b9a3 with SMTP id l22-20020a17090a3f1600b002791367b9a3mr1447237pjc.4.1696405252410;
-        Wed, 04 Oct 2023 00:40:52 -0700 (PDT)
-Received: from manas-VirtualBox.iitr.ac.in ([103.37.201.173])
-        by smtp.gmail.com with ESMTPSA id 20-20020a17090a199400b0026b12768e46sm894332pji.42.2023.10.04.00.40.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 00:40:51 -0700 (PDT)
-From:   Manas Ghandat <ghandatmanas@gmail.com>
-To:     dave.kleikamp@oracle.com, shaggy@kernel.org
-Cc:     Manas Ghandat <ghandatmanas@gmail.com>,
-        Linux-kernel-mentees@lists.linuxfoundation.org,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        syzbot+79d792676d8ac050949f@syzkaller.appspotmail.com
-Subject: [PATCH v2] jfs: fix array-index-out-of-bounds in diAlloc
-Date:   Wed,  4 Oct 2023 13:10:40 +0530
-Message-Id: <20231004074040.12233-1-ghandatmanas@gmail.com>
-X-Mailer: git-send-email 2.37.2
+        Wed, 4 Oct 2023 03:41:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C128AD;
+        Wed,  4 Oct 2023 00:41:11 -0700 (PDT)
+Date:   Wed, 04 Oct 2023 07:41:08 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696405269;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=N3DAeRCTXgcmL6wGVPGeNq0prqCeKyw0QqbONR1xZzA=;
+        b=Q+wQZ0+kZ+Df3U8BgTnZQUMdhZE3NH1TUEbqHW/kRE/0PeUE1ueE734AyeBuuVELApI8Yf
+        eObZh6nDTDMxCCWvrAomMqgvlGCiu7T7P6B8+ljoR4xEwQS4k9mX9x/hG1o2InJ0qA4hd8
+        +pKt1UdZfPgKeuYHi2xCzQsSaYx29d5h6Vow2xAND9EHI3PhW0ht3O6BH8H2LHHyjbRLJn
+        6xYobE47r5Y+F+4aDxRRvjBM/cH3wuF6QPnaiPJRW9+8doGF6ZwcY+U5zxI8/OTEqJfCW5
+        5ri7rtAzAV6AOfg2jAZdAF4jmPDdOBZeUJ+UkHGMSNZMK04qB47LBPkW1shosQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696405269;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=N3DAeRCTXgcmL6wGVPGeNq0prqCeKyw0QqbONR1xZzA=;
+        b=YziiVtxsZ1a8Jf5cVXyQ7mu4FCn3bG8pZhRWIt7QOBXwC9SjsDEtR9IRdm2KqO7ZNHpv87
+        b1fNN8FaqoCt/VDQ==
+From:   "tip-bot2 for Justin Stitt" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/mm] x86/tdx: Replace deprecated strncpy() with strtomem_pad()
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231003-strncpy-arch-x86-coco-tdx-tdx-c-v2-1-0bd21174a217@google.com>
+References: <20231003-strncpy-arch-x86-coco-tdx-tdx-c-v2-1-0bd21174a217@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <169640526821.3135.14252605949556446798.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently there is not check against the agno of the iag while
-allocating new inodes to avoid fragmentation problem. Added the check
-which is required.
+The following commit has been merged into the x86/mm branch of tip:
 
-Reported-by: syzbot+79d792676d8ac050949f@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=79d792676d8ac050949f
-Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
+Commit-ID:     c9babd5d95abf3fae6e798605ce5cac98e08daf9
+Gitweb:        https://git.kernel.org/tip/c9babd5d95abf3fae6e798605ce5cac98e08daf9
+Author:        Justin Stitt <justinstitt@google.com>
+AuthorDate:    Tue, 03 Oct 2023 21:54:59 
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 04 Oct 2023 09:34:07 +02:00
+
+x86/tdx: Replace deprecated strncpy() with strtomem_pad()
+
+strncpy() works perfectly here in all cases, however, it is deprecated and
+as such we should prefer more robust and less ambiguous string APIs:
+
+    https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+
+Let's use strtomem_pad() as this matches the functionality of strncpy()
+and is _not_ deprecated.
+
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://github.com/KSPP/linux/issues/90
+Link: https://lore.kernel.org/r/20231003-strncpy-arch-x86-coco-tdx-tdx-c-v2-1-0bd21174a217@google.com
 ---
-V1 -> V2 : Added check for higher bound of agno
- fs/jfs/jfs_imap.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/x86/coco/tdx/tdx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
-index 799d3837e7c2..c0cf74e7392b 100644
---- a/fs/jfs/jfs_imap.c
-+++ b/fs/jfs/jfs_imap.c
-@@ -1319,7 +1319,7 @@ diInitInode(struct inode *ip, int iagno, int ino, int extno, struct iag * iagp)
- int diAlloc(struct inode *pip, bool dir, struct inode *ip)
- {
- 	int rc, ino, iagno, addext, extno, bitno, sword;
--	int nwords, rem, i, agno;
-+	int nwords, rem, i, agno, dn_numag;
- 	u32 mask, inosmap, extsmap;
- 	struct inode *ipimap;
- 	struct metapage *mp;
-@@ -1355,6 +1355,9 @@ int diAlloc(struct inode *pip, bool dir, struct inode *ip)
+diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+index 1d6b863..2e1be59 100644
+--- a/arch/x86/coco/tdx/tdx.c
++++ b/arch/x86/coco/tdx/tdx.c
+@@ -119,7 +119,7 @@ static void __noreturn tdx_panic(const char *msg)
+ 	} message;
  
- 	/* get the ag number of this iag */
- 	agno = BLKTOAG(JFS_IP(pip)->agstart, JFS_SBI(pip->i_sb));
-+	dn_numag = JFS_SBI(pip->i_sb)->bmap->db_numag;
-+	if (agno < 0 || agno > dn_numag)
-+		return -EIO;
+ 	/* VMM assumes '\0' in byte 65, if the message took all 64 bytes */
+-	strncpy(message.str, msg, 64);
++	strtomem_pad(message.str, msg, '\0');
  
- 	if (atomic_read(&JFS_SBI(pip->i_sb)->bmap->db_active[agno])) {
- 		/*
--- 
-2.37.2
-
+ 	args.r8  = message.r8;
+ 	args.r9  = message.r9;
