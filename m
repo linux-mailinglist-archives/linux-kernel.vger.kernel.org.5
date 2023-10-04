@@ -2,115 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B28887B77C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95DC7B77B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241379AbjJDG0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 02:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
+        id S232820AbjJDGRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 02:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241352AbjJDG0g (ORCPT
+        with ESMTP id S232537AbjJDGRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 02:26:36 -0400
-Received: from smtp.inaport4.co.id (mta-2.inaport4.co.id [103.219.76.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14194B0
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 23:26:30 -0700 (PDT)
+        Wed, 4 Oct 2023 02:17:14 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EC5DCAF;
+        Tue,  3 Oct 2023 23:17:10 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by smtp.inaport4.co.id (Postfix) with ESMTP id 0CC7985C9ADC;
-        Wed,  4 Oct 2023 14:16:12 +0800 (WITA)
-Received: from smtp.inaport4.co.id ([127.0.0.1])
-        by localhost (mta-2.inaport4.co.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id fwx_SUg6jzl5; Wed,  4 Oct 2023 14:16:11 +0800 (WITA)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.inaport4.co.id (Postfix) with ESMTP id B8B2285C9ACB;
-        Wed,  4 Oct 2023 14:16:09 +0800 (WITA)
-DKIM-Filter: OpenDKIM Filter v2.10.3 smtp.inaport4.co.id B8B2285C9ACB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inaport4.co.id;
-        s=67133E3A-D729-11EC-9A3E-209BEC03DFB2; t=1696400171;
-        bh=+OpVF14sCn4z3UgNS8jJHJB2yZ6ydPdoPxuVM0dOK/g=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=39zIZvmCBbXLDFgCt74k8bnV9m9hfYGj7YE+P2X7wVIJ8298dq4rB6P8OByh1AAa4
-         qaYXMft1USJVcag6nfy/RtfTsMaCvh+1cPrCI44o/6VvG+HH3tMlTlQrlKYULX3d0K
-         6/rjjk3rKrJYLInaCl5qyUfxF+0PMpbpflYrav52T2xobM4YzhVSPSh/envbX44L00
-         ifE+w8JlRpFUcFG8z8qT1p+J1atulxjC8QWRxhZCnrbynk89XBaEcUroS+/9cEQTKl
-         i5hBopJ18Okdpe+vNDwLfsAnB5oU6yVABjvNF65flOSWHVqz6gktxBz8bsZoC1Otkg
-         S8S5SZ/ymKsrA==
-X-Amavis-Modified: Mail body modified (using disclaimer) -
-        mta-2.inaport4.co.id
-X-Virus-Scanned: amavisd-new at 
-Received: from smtp.inaport4.co.id ([127.0.0.1])
-        by localhost (mta-2.inaport4.co.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id oNPxRdG7dbQf; Wed,  4 Oct 2023 14:16:08 +0800 (WITA)
-Received: from [100.122.60.88] (unknown [117.98.22.7])
-        by smtp.inaport4.co.id (Postfix) with ESMTPSA id 9631C85B8DCA;
-        Wed,  4 Oct 2023 14:15:50 +0800 (WITA)
-Content-Type: text/plain; charset="iso-8859-1"
+        by muru.com (Postfix) with ESMTPS id E9E7C80A7;
+        Wed,  4 Oct 2023 06:17:09 +0000 (UTC)
+Date:   Wed, 4 Oct 2023 09:17:08 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-omap@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v12 1/1] serial: core: Start managing serial controllers
+ to enable runtime PM
+Message-ID: <20231004061708.GD34982@atomide.com>
+References: <20230525113034.46880-1-tony@atomide.com>
+ <62d3678a-a23d-4619-95de-145026629ba8@gmail.com>
+ <20231003121455.GB34982@atomide.com>
+ <20231003122137.GC34982@atomide.com>
+ <dc7af79d-bca8-4967-80fe-e90907204932@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?b?QVRFTsOHw4NP?=
-To:     Recipients <bisman.fajrih@inaport4.co.id>
-From:   Administrador de Sistemas <bisman.fajrih@inaport4.co.id>
-Date:   Wed, 04 Oct 2023 11:45:30 +0530
-Reply-To: sistemassadmins@mail2engineer.com
-Message-Id: <20231004061550.9631C85B8DCA@smtp.inaport4.co.id>
-X-Spam-Status: Yes, score=6.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,URI_PHISH
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
-        *      blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [URIs: inaport4.co.id]
-        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [103.219.76.7 listed in list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-        *  3.7 URI_PHISH Phishing using web form
-X-Spam-Level: ******
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dc7af79d-bca8-4967-80fe-e90907204932@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ATEN=C7=C3O;
+* Maximilian Luz <luzmaximilian@gmail.com> [231003 22:09]:
+> On 10/3/23 14:21, Tony Lindgren wrote:
+> > * Tony Lindgren <tony@atomide.com> [231003 12:15]:
+> > > Hi,
+> > > 
+> > > * Maximilian Luz <luzmaximilian@gmail.com> [231003 11:57]:
+> > > > A bad workaround is to disable runtime PM, e.g. via
+> > > > 
+> > > >    echo on > /sys/bus/serial-base/devices/dw-apb-uart.4:0/dw-apb-uart.4:0.0/power/control
+> > > 
+> > > If the touchscreen controller driver(s) are using serdev they are
+> > > children of the dw-apb-uart.4:0.0 and can use runtime PM calls to
+> > > block the parent device from idling as necessary. The hierarchy
+> > > unless changed using ignore_children.
+> > 
+> > Sorry about all the typos, I meant "the hierarchy works unless changed"
+> > above. The rest of the typos are easier to decipher probably :)
+> 
+> Unfortunately that doesn't quite line up with what I can see on v6.5.5. The
+> serdev controller seems to be a child of dw-apb-uart.4, a platform device. The
+> serial-base and serdev devices are siblings. According to sysfs:
+> 
+>     /sys/bus/platform/devices/dw-apb-uart.4
+>     ├── driver -> ../../../../bus/platform/drivers/dw-apb-uart
+>     ├── subsystem -> ../../../../bus/platform
+>     │
+>     ├── dw-apb-uart.4:0
+>     │  ├── driver -> ../../../../../bus/serial-base/drivers/ctrl
+>     │  ├── subsystem -> ../../../../../bus/serial-base
+>     │  │
+>     │  └── dw-apb-uart.4:0.0
+>     │     ├── driver -> ../../../../../../bus/serial-base/drivers/port
+>     │     └── subsystem -> ../../../../../../bus/serial-base
+>     │
+>     └── serial0
+>        ├── subsystem -> ../../../../../bus/serial
+>        │
+>        └── serial0-0
+>           ├── driver -> ../../../../../../bus/serial/drivers/surface_serial_hub
+>           └── subsystem -> ../../../../../../bus/serial
 
-Sua caixa de correio excedeu o limite de armazenamento, que =E9 de 5 GB com=
-o definido pelo administrador, que est=E1 atualmente em execu=E7=E3o no 10.=
-9GB, voc=EA pode n=E3o ser capaz de enviar ou receber novas mensagens at=E9=
- que voc=EA re-validar a sua caixa de correio. Para revalidar sua caixa de =
-correio, envie os seguintes dados abaixo:
+The hierachy above is correct. Looks like I pasted the wrong device above,
+I meant dw-apb-uart.4, sorry about the extra confusion added. Eventually
+the serdev device could be a child of dw-apb-uart.4:0.0 at some point as
+it's specific to a serial port instance, but for now that should not be
+needed.
 
-nome:
-Nome de usu=E1rio:
-senha:
-Confirme a Senha :
-Endere=E7o de e-mail:
-Telefone:
+If serial0-0 is runtime PM active, then dw-apb-uart.4 is runtime PM active
+also unless ingore_children is set.
 
-Se voc=EA n=E3o conseguir revalidar sua caixa de correio, sua caixa postal =
-vai ser desativado!
+> Runtime suspend on serial0-0 is disabled/not set up at all. So I assume that if
+> it were a descendent of dw-apb-uart.4:0.0, things should have worked
+> out-of-the-box.
 
-Lamentamos o inconveniente.
-C=F3digo de verifica=E7=E3o:@ADMIN.WEBMAI @BR.WEBADMIN.COM.BR
-Correio T=E9cnico Suporte =A92023
+Hmm yes so maybe the issue is not with surface_serial_hub, but with serial
+port device being nable to resume after __device_suspend_late() has
+disabled runtime PM like you've been saying.
 
-obrigado
-Administrador de Sistemas
+If the issue is with the serial port not being able to runtime resume, then
+the patch below should help. Care to give it a try?
 
+Regards,
 
+Tony
+
+8< ------------------
+diff --git a/drivers/tty/serial/serial_port.c b/drivers/tty/serial/serial_port.c
+--- a/drivers/tty/serial/serial_port.c
++++ b/drivers/tty/serial/serial_port.c
+@@ -46,8 +46,27 @@ static int serial_port_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static DEFINE_RUNTIME_DEV_PM_OPS(serial_port_pm,
+-				 NULL, serial_port_runtime_resume, NULL);
++/*
++ * Allow serdev devices to talk to hardware during system suspend.
++ * Assumes the serial port hardware controller device driver calls
++ * pm_runtime_force_suspend() and pm_runtime_force_resume() for
++ * system suspend as needed.
++ */
++static int serial_port_prepare(struct device *dev)
++{
++	return pm_runtime_resume_and_get(dev);
++}
++
++static void serial_port_complete(struct device *dev)
++{
++	pm_runtime_put_sync(dev);
++}
++
++static const struct dev_pm_ops __maybe_unused serial_port_pm = {
++	SET_RUNTIME_PM_OPS(NULL, serial_port_runtime_resume, NULL)
++	.prepare = serial_port_prepare,
++	.complete = serial_port_complete,
++};
+ 
+ static int serial_port_probe(struct device *dev)
+ {
+-- 
+2.42.0
