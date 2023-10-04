@@ -2,128 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5961C7B8B01
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39507B8B04
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244543AbjJDSor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 14:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
+        id S244542AbjJDSpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 14:45:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244257AbjJDSoo (ORCPT
+        with ESMTP id S244257AbjJDSpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 14:44:44 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7880AD;
-        Wed,  4 Oct 2023 11:44:40 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-405361bb94eso1298305e9.0;
-        Wed, 04 Oct 2023 11:44:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696445079; x=1697049879; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5tfYIyhWueFbCoEaQL/520GF8dZ83yLjHCABvjZmLrM=;
-        b=NDAhlM+5QwLGZXX4drZiTs8e5tQCqIpzdEAUgfQxtMbRaJ41BPzR1/7a6j0eH2CcMu
-         GGg3Cm78unSElocPXmtuCYbs+j/lkW9XnwgfxXAw5eoKWrqvHLvKqFUW1kGYKMZvlCNZ
-         s8zXJ95i4KEgpkaqX1nkezNc3/2V5TynZkBpdBeIrbXiFrxwOBcz/q2aueW1V4OAjCCp
-         i0/xbauk0BmmuXClxRlnVpWkK3CReXaqX4kqqbrAjnASD5hZ6Y7Ry5l5vCVLz8wNo0cA
-         MY+L9pfpq0cuUdenOwZDKtaK4Fhlmst/Je2P4xeod7Um6VEAc0fBRwDudUv4miUm4rLz
-         Jn+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696445079; x=1697049879;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5tfYIyhWueFbCoEaQL/520GF8dZ83yLjHCABvjZmLrM=;
-        b=dK2cChRPLB/PoJfUAUcWgcRut/Uy6V1C/LTc/rJyxFx9Hp7hRSbY8Rr5UJT5MydxW3
-         MMsgIN+WKdlwyZD/rAC8nWbLlfGxBwD91U+bf7o0OZF2dr+6s/KXGK0Zw00A/FABeiXF
-         x/wVaBq9XsXZVGCYsYl1Yo+p1ddXyRP4ikrw/2HZp05cDNNXjXgnGjPPZ5sEpIHa/hv5
-         oarKwDYbz4rnQXCNiGzKo7vtPh6JtXjrpReBoDCJcsxKbbGZOLWkrkWS/QibGa576jmK
-         yzyGD5DpFPJMDJ0xgIAo4cj8oZ16/Vx7f5KnHf+uBc48o5coG7thT/wI2gvdEYdeqOB+
-         GmAA==
-X-Gm-Message-State: AOJu0Yw2x6m0w5+EjMyTqtEU1eKxWDVLhq+ZXYgLqeclft52APeWoSPw
-        H/DVxXc8igtROLmZFHlr+2s=
-X-Google-Smtp-Source: AGHT+IGcvTOOCiGFLsDoCW+bXZevP/p0GFjlKvQanj1WARFpwmRsrR6hDhrNzxd1opInApWpYYIw/A==
-X-Received: by 2002:a7b:c8d6:0:b0:402:f55e:ac11 with SMTP id f22-20020a7bc8d6000000b00402f55eac11mr3289607wml.20.1696445078851;
-        Wed, 04 Oct 2023 11:44:38 -0700 (PDT)
-Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id l34-20020a05600c1d2200b003fef5e76f2csm176843wms.0.2023.10.04.11.44.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 11:44:38 -0700 (PDT)
-Message-ID: <1431f5b4-fb39-483b-9314-ed2b7c118c11@gmail.com>
-Date:   Wed, 4 Oct 2023 20:44:36 +0200
+        Wed, 4 Oct 2023 14:45:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743D9C0;
+        Wed,  4 Oct 2023 11:44:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7350DC433C7;
+        Wed,  4 Oct 2023 18:44:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696445096;
+        bh=kMdSleGdDSkNeDkcR8NOit5Qc/BamxxI/xtLxfY4N7s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gvBSh8+d3KS95DWmkQU5S8YVC+ZI3O+PTcEZCLG5tn4cSI9ZlVpg/QlKMjI9qr1af
+         W/UIXvUhfw+qogfjtZypafxFlHUHilDm0Jk9S6tOmvbdgEG2EtDZy8qCoi9EssSORJ
+         lLrVyegmxtJ4obzy8MGR356nWOdRGcW6RPquak3X4gpUNMJPKv8PbWtAn7az9kaiXU
+         UZKnNiQTI/M3AHuyEwqiFIt8+NTFJuf/+oYTlIsbdkxq/lX4ddY/HTZT9PZgk7sRX3
+         PX5Zn8tGWJ5JUQXTvUOuJPQuMmDdxZQrjivfV1eFnCqWUh8HiCeOiYu7cDPZpff5vI
+         b4bzATHFmvxYw==
+Date:   Wed, 4 Oct 2023 21:44:52 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] net/mlx5: Annotate struct mlx5_fc_bulk with __counted_by
+Message-ID: <20231004184452.GF51282@unreal>
+References: <20231003231718.work.679-kees@kernel.org>
+ <CAFhGd8p_o5xtmrV+Vm0JUR5VQmMenqtm3xbJuE0TSj-_4Bthfw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 1/1] serial: core: Start managing serial controllers
- to enable runtime PM
-Content-Language: en-US
-To:     Tony Lindgren <tony@atomide.com>, Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-omap@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20230525113034.46880-1-tony@atomide.com>
- <62d3678a-a23d-4619-95de-145026629ba8@gmail.com>
- <20231003121455.GB34982@atomide.com> <20231003122137.GC34982@atomide.com>
- <dc7af79d-bca8-4967-80fe-e90907204932@gmail.com>
- <20231004061708.GD34982@atomide.com> <ZR0Q7YUwgQV5TLhQ@hovoldconsulting.com>
- <20231004090320.GE34982@atomide.com> <ZR0s7dEh19lTid6-@hovoldconsulting.com>
- <20231004100123.GH34982@atomide.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-In-Reply-To: <20231004100123.GH34982@atomide.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFhGd8p_o5xtmrV+Vm0JUR5VQmMenqtm3xbJuE0TSj-_4Bthfw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/23 12:01, Tony Lindgren wrote:
-> * Johan Hovold <johan@kernel.org> [231004 09:14]:
->> On Wed, Oct 04, 2023 at 12:03:20PM +0300, Tony Lindgren wrote:
->>> The serial port device and serdev device are siblings of the physical
->>> serial port controller device as seen in the hierarcy printed out by
->>> Maximilian.
->>
->> Yeah, and that's precisely the broken part. Keeping the serdev
->> controller active is supposed to keep the serial controller active. Your
->> serial core rework appears to have broken just that.
-> 
-> Hmm OK good point, tx can currently have an extra delay if a serdev
-> device is active, and the serial port controller device is not active.
-> 
-> So we can check for active port->dev instead of &port_dev->dev though
-> to know when when start_tx() is safe to do as below.
-
-I can confirm that this works as well.
+On Tue, Oct 03, 2023 at 04:21:05PM -0700, Justin Stitt wrote:
+> On Tue, Oct 3, 2023 at 4:17 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > Prepare for the coming implementation by GCC and Clang of the __counted_by
+> > attribute. Flexible array members annotated with __counted_by can have
+> > their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> > array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> > functions).
+> >
+> > As found with Coccinelle[1], add __counted_by for struct mlx5_fc_bulk.
+> >
+> > Cc: Saeed Mahameed <saeedm@nvidia.com>
+> > Cc: Leon Romanovsky <leon@kernel.org>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Eric Dumazet <edumazet@google.com>
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Cc: Paolo Abeni <pabeni@redhat.com>
+> > Cc: netdev@vger.kernel.org
+> > Cc: linux-rdma@vger.kernel.org
+> > Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
 
 Thanks,
-Max
-
-> 8< -----------------
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-> index 6207f0051f23d..defecc5b04422 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -156,7 +156,7 @@ static void __uart_start(struct uart_state *state)
->   	 * enabled, serial_port_runtime_resume() calls start_tx() again
->   	 * after enabling the device.
->   	 */
-> -	if (pm_runtime_active(&port_dev->dev))
-> +	if (!pm_runtime_enabled(port->dev) || pm_runtime_active(port->dev))
->   		port->ops->start_tx(port);
->   	pm_runtime_mark_last_busy(&port_dev->dev);
->   	pm_runtime_put_autosuspend(&port_dev->dev);
-> 
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
