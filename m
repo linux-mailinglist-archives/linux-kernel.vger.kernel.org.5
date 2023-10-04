@@ -2,313 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 161097B81B3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD6D7B81AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242762AbjJDOEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36292 "EHLO
+        id S242766AbjJDOEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242770AbjJDOEj (ORCPT
+        with ESMTP id S242758AbjJDOEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:04:39 -0400
-Received: from sender3-op-o17.zoho.com (sender3-op-o17.zoho.com [136.143.184.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C05BF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:04:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1696428194; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=htY/wMSm8p5yOySCFhqa3AixtriFzYJljC9Xt5ZgC+gBFjrOokXJaZMfffRHj0RwddItBtQVcvw//Kn7f2l640u9tw/Y06DV7k6yFGRZU6fq78QYZfA+0u2+PnTPG1J1XzL4maOvZBQGeg7I+UWxJbOSQouvXlx+O7jYSeL9Lf0=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1696428194; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=lfdKBiEfg7M6MID6J3Whfh516eqSiysLzgdeOPdxLNo=; 
-        b=hkkRE6KV9t1KaXMoYj2CIxqpb7UEVOwthTAOEMjKsXeMfeTVF02YFDsfbKmC98yih+SevSonzQ0VtqL2LN2opV4KbEsOShk5Z1viHZTligl/jTQpLgna6v2gCUvOjn9nS/yZyiKaswaL1cEpx7XZhbplGDqd9FkfHP6XO1i2Yys=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=icenowy.me;
-        spf=pass  smtp.mailfrom=uwu@icenowy.me;
-        dmarc=pass header.from=<uwu@icenowy.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1696428194;
-        s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
-        h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
-        bh=lfdKBiEfg7M6MID6J3Whfh516eqSiysLzgdeOPdxLNo=;
-        b=jy8qBi1ka9ufG3CGbI7zefjIAOFCPfybagWCJ2Bm46BnaquEmcDcR6E8FW6Buz7a
-        Qer6p4hsooPZ8X9tKsq4Al+ZjYg0vc3WBZTmRL/I5V02D5JM36JkkpIOKSy8Anh0RU3
-        t90csO4+uDHgmxdW03FHDdLaasKAgVwG2ZARWHNVSe5HPqu4RTx4PBv2mG+6nZHvDbo
-        XK6+SFzMTR4cOLJsCWlm17+W5q33FScXNC75Tw2ih7zMIG+aMVXhMV9xVMkpLgMWBLg
-        Tl9yTMvHpEKNZDSXOT49lAmtncep6Vb87oPMzu+Ph7cx7SuFAKbFXR8jiq7rK3rEWc9
-        hlayoPbKAg==
-Received: from edelgard.fodlan.icenowy.me (120.85.98.65 [120.85.98.65]) by mx.zohomail.com
-        with SMTPS id 1696428191465788.6446738676636; Wed, 4 Oct 2023 07:03:11 -0700 (PDT)
-Message-ID: <c2ea3f34bb919293b850fab6ed42b61e3517ba35.camel@icenowy.me>
-Subject: Re: [PATCH 0/6] RISC-V: Add eMMC support for TH1520 boards
-From:   Icenowy Zheng <uwu@icenowy.me>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>
-Cc:     Drew Fustini <dfustini@baylibre.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Linux-MM <linux-mm@kvack.org>
-Date:   Wed, 04 Oct 2023 22:02:56 +0800
-In-Reply-To: <bc2b0b30-ab37-f336-c90e-eab570d393a2@arm.com>
-References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
-         <CAOCHtYhnx1EpBM+o3xhdsicx5uqLidojK3f0HQ+VfyVv1ZXnVQ@mail.gmail.com>
-         <CAOCHtYi5Ab5ppCmaQV3QuKQcpmJX+sHdAmtuEXhfq8xf5fFCYQ@mail.gmail.com>
-         <ZRuamJuShOnvP1pr@x1> <ZR1M3FcdXrDmIGu2@xhacker>
-         <CA+V-a8ugwqkQxnX-wwWCHVtBBtG=aVv=MZTc53LbpxtFA=N1_A@mail.gmail.com>
-         <bc2b0b30-ab37-f336-c90e-eab570d393a2@arm.com>
-Organization: Anthon Open-Source Community
+        Wed, 4 Oct 2023 10:04:37 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E32A1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:04:34 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-533d9925094so3818414a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 07:04:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696428272; x=1697033072; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ih3CfAMz92qznR9krJdX9z6vkwyBn8t8x+cmpetFh0c=;
+        b=dLytbwgM52DZKBegKBt34M93sndiSKahBPIcqjBr4gWDnSMixrLSCf8VMulGL0meJ8
+         wM+dYJ6aATwJxiPVc+MTpI45kX0o1LOk4A6x/kf4XhYtdfmprmjvUUYaM6MW94v7wqX8
+         Zr8H5W1S6sBDcmx0+Z5w62iDY0cHJQAuazFUA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696428272; x=1697033072;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ih3CfAMz92qznR9krJdX9z6vkwyBn8t8x+cmpetFh0c=;
+        b=M/Vod8g264xXsF9Ie9EQgR59rZNmWTqP6os1W2arAsQ4poy5rpQnoyfF5uMUIyDXZz
+         8AQujyK4M020ya7OZ2qnlSFBi2Flbm8cOdlTGBtEEAl0RCImQIYIl4mHq/IWOuIcdp4v
+         sXA0ZOEMmU0+tlPj+maQTGfWArN+/43VBTPrcPNmy26EzG5IFCamVr0foTTGJ9IGmkdT
+         8/EDLi67DkcJUTeUvQL31QxajzgR4nOqjhbReQ//fwtL3Jd5WcQ4pwWudn8hG7KUdMVM
+         a2qABsRkC6sgdfa6a0COCa9d94ryr5N+0a08F8TgLJyAu3/X+j+gaqRDLCQMkKAzefT6
+         FqOw==
+X-Gm-Message-State: AOJu0Yy5cJX3f+Oww/yI9fod9wdOEBarR+OawsbUSQqfd0eBlFwilIRP
+        dd5OdRm52uvt6Qfdo3vWyscM30M5YzZwO8LLo6ykn7gs
+X-Google-Smtp-Source: AGHT+IGMr1Z/gnWuemi2C/K8Qa6hUsQs+11jLdyw6viQKCO5P/c6IkkrLyLTVZmpByJ29CiYsaK0CQ==
+X-Received: by 2002:a05:6402:160b:b0:530:bad5:248e with SMTP id f11-20020a056402160b00b00530bad5248emr2265155edv.3.1696428268936;
+        Wed, 04 Oct 2023 07:04:28 -0700 (PDT)
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com. [209.85.128.44])
+        by smtp.gmail.com with ESMTPSA id x15-20020aa7dacf000000b005224f840130sm2483503eds.60.2023.10.04.07.04.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 07:04:28 -0700 (PDT)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-405459d9a96so88965e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 07:04:27 -0700 (PDT)
+X-Received: by 2002:a05:600c:438a:b0:400:46db:1bf2 with SMTP id
+ e10-20020a05600c438a00b0040046db1bf2mr101611wmn.2.1696428267648; Wed, 04 Oct
+ 2023 07:04:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231002094526.1.Ie8f760213053e3d11592f892b30912dbac6b8b48@changeid>
+ <ZRr8r7XMoyDKaitd@FVFF77S0Q05N.cambridge.arm.com> <CAD=FV=UeeL9uycVeKpOm+eDm3xHrOnKi2frt6a1qFG1HX9yEUg@mail.gmail.com>
+ <ZRwJKBZaYwF1rrur@FVFF77S0Q05N> <CAD=FV=WASz1uvTgwsu3H3cTr3smHk+E_XNUVnjoPpttwv095rQ@mail.gmail.com>
+ <ZRxCCZxZWCG0NBur@FVFF77S0Q05N> <CAD=FV=Xk-OMKQPXxU9Z9HOcWwUxxrmLZ4vD0u5ouZRW_zDFDPg@mail.gmail.com>
+ <ZR03liCodnTQWs7s@FVFF77S0Q05N> <86jzs2ofqs.wl-maz@kernel.org>
+In-Reply-To: <86jzs2ofqs.wl-maz@kernel.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 4 Oct 2023 07:04:12 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XasZR6dhKBjpbYfby4F1Nu_bsq1m_HP+NpufjsJi0COg@mail.gmail.com>
+Message-ID: <CAD=FV=XasZR6dhKBjpbYfby4F1Nu_bsq1m_HP+NpufjsJi0COg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: smp: Fix pseudo NMI issues w/ broken Mediatek FW
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Misono Tomohiro <misono.tomohiro@fujitsu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 
-MIME-Version: 1.0
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=E5=9C=A8 2023-10-04=E6=98=9F=E6=9C=9F=E4=B8=89=E7=9A=84 14:49 +0100=EF=BC=
-=8CRobin Murphy=E5=86=99=E9=81=93=EF=BC=9A
-> On 04/10/2023 2:02 pm, Lad, Prabhakar wrote:
-> > + CC linux-mm and Robin Murphy
-> >=20
-> > On Wed, Oct 4, 2023 at 12:42=E2=80=AFPM Jisheng Zhang <jszhang@kernel.o=
-rg>
-> > wrote:
-> > >=20
-> > > On Mon, Oct 02, 2023 at 09:37:44PM -0700, Drew Fustini wrote:
-> > > > On Fri, Sep 22, 2023 at 05:48:21PM -0500, Robert Nelson wrote:
-> > > > > On Fri, Sep 22, 2023 at 2:08=E2=80=AFPM Robert Nelson
-> > > > > <robertcnelson@gmail.com> wrote:
-> > > > > >=20
-> > > > > > On Thu, Sep 21, 2023 at 8:51=E2=80=AFPM Drew Fustini
-> > > > > > <dfustini@baylibre.com> wrote:
-> > > > > > >=20
-> > > > > > > This series adds support for the eMMC on the BeagleV
-> > > > > > > Ahead and the
-> > > > > > > Sipeed LicheePi 4A. This allows the kernel to boot with
-> > > > > > > the rootfs on
-> > > > > > > eMMC.
-> > > > > > >=20
-> > > > > > > I tested on top of v6.6-rc2 with this config [1]. I was
-> > > > > > > able to boot
-> > > > > > > both the Ahead [2] and LPi4a [3] from eMMC. The following
-> > > > > > > prerequisites
-> > > > > > > are required:
-> > > > > > >=20
-> > > > > > > =C2=A0=C2=A0 [PATCH v2] riscv: dts: thead: set dma-noncoheren=
-t to
-> > > > > > > soc bus [4]
-> > > > > > >=20
-> > > > > > > I pushed a branch [5] with this patch series and the
-> > > > > > > above patch for
-> > > > > > > those that find a git branch easier to test.
-> > > > > > >=20
-> > > > > > > Please note that only the MMC controller connected to the
-> > > > > > > eMMC device
-> > > > > > > is enabled in the device trees for these two boards. I
-> > > > > > > did not yet
-> > > > > > > attempt to configure and use the microSD card slot. My
-> > > > > > > preference is to
-> > > > > > > address that in a future patch series.
-> > > > > > >=20
-> > > > > > > References:
-> > > > > > > [1]
-> > > > > > > https://gist.github.com/pdp7/5fbdcf2a65eb1abdd3a29d519c19cdd2
-> > > > > > > [2]
-> > > > > > > https://gist.github.com/pdp7/91a801a5f8d1070c53509eda9800ad78
-> > > > > > > [3]
-> > > > > > > https://gist.github.com/pdp7/1445c3c991e88fd69c60165cef65726a
-> > > > > > > [4]
-> > > > > > > https://lore.kernel.org/linux-riscv/20230912072232.2455-1-jsz=
-hang@kernel.org/
-> > > > > > > [5] https://github.com/pdp7/linux/tree/b4/th1520-mmc
-> > > > > >=20
-> > > > > > This patchset came out very nice!
-> > > > > >=20
-> > > > > > v6.6-rc2 with Last RFC v2:
-> > > > > >=20
-> > > > > > [=C2=A0=C2=A0=C2=A0 4.066630] mmc0: SDHCI controller on ffe7080=
-000.mmc
-> > > > > > [ffe7080000.mmc] using PIO
-> > > > > >=20
-> > > > > > debian@BeagleV:~$ sudo hdparm -tT /dev/mmcblk0
-> > > > > >=20
-> > > > > > /dev/mmcblk0:
-> > > > > > =C2=A0 Timing cached reads:=C2=A0=C2=A0 1516 MB in=C2=A0 2.00 s=
-econds =3D 758.09
-> > > > > > MB/sec
-> > > > > > =C2=A0 Timing buffered disk reads:=C2=A0 84 MB in=C2=A0 3.01 se=
-conds =3D=C2=A0
-> > > > > > 27.94 MB/sec
-> > > > > >=20
-> > > > > > vs v6.6-rc2 with this patchset:
-> > > > > >=20
-> > > > > > =C2=A0 [=C2=A0=C2=A0=C2=A0 4.096837] mmc0: SDHCI controller on =
-ffe7080000.mmc
-> > > > > > [ffe7080000.mmc] using DMA
-> > > > > >=20
-> > > > > > debian@BeagleV:~$ sudo hdparm -tT /dev/mmcblk0
-> > > > > >=20
-> > > > > > /dev/mmcblk0:
-> > > > > > =C2=A0 Timing cached reads:=C2=A0=C2=A0 1580 MB in=C2=A0 2.00 s=
-econds =3D 790.97
-> > > > > > MB/sec
-> > > > > > =C2=A0 Timing buffered disk reads: 418 MB in=C2=A0 3.00 seconds=
- =3D
-> > > > > > 139.11 MB/sec
-> > > > >=20
-> > > > > Drew pointed out on Slack, this was not quite right.. After
-> > > > > more
-> > > > > digging by Drew, CONFIG_DMA_GLOBAL_POOL is causing a DMA
-> > > > > limitation
-> > > > > with the multiplatform defconfig. so with,
-> > > > >=20
-> > > > > ./scripts/config --disable CONFIG_ARCH_R9A07G043
-> > > > >=20
-> > > > > (to remove CONFIG_DMA_GLOBAL_POOL)... another 2x in buffered
-> > > > > reads..
-> > > > >=20
-> > > > > [=C2=A0=C2=A0=C2=A0 4.059242] mmc0: SDHCI controller on ffe708000=
-0.mmc
-> > > > > [ffe7080000.mmc] using ADMA 64-bit
-> > > > >=20
-> > > > > debian@BeagleV:~$ sudo hdparm -tT /dev/mmcblk0
-> > > > >=20
-> > > > > /dev/mmcblk0:
-> > > > > =C2=A0 Timing cached reads:=C2=A0=C2=A0 1600 MB in=C2=A0 2.00 sec=
-onds =3D 800.93
-> > > > > MB/sec
-> > > > > =C2=A0 Timing buffered disk reads: 892 MB in=C2=A0 3.00 seconds =
-=3D
-> > > > > 297.06 MB/sec
-> > > >=20
-> > > > It seems CONFIG_DMA_GLOBAL_POOL=3Dy causes ADMA buffer alloc to
-> > > > fail [1]:
-> > > >=20
-> > > > =C2=A0=C2=A0 mmc0: Unable to allocate ADMA buffers - falling back t=
-o
-> > > > standard DMA
-> > > >=20
-> > > > Prabhakar's AX45MP non-coherent DMA support [2] series
-> > > > introduced the
-> > > > selection of DMA_GLOBAL_POOL for ARCH_R9A07G043 and the riscv
-> > > > defconfig
-> > > > selects ARCH_R9A07G043.
-> > > >=20
-> > > > Patch 5 in the series [3] states that:
-> > > >=20
-> > > > =C2=A0=C2=A0 With DMA_GLOBAL_POOL enabled all DMA allocations happe=
-n from
-> > > > this
-> > > > =C2=A0=C2=A0 region and synchronization callbacks are implemented t=
-o
-> > > > synchronize
-> > > > =C2=A0=C2=A0 when doing DMA transactions.
-> > > >=20
-> > > > This example of a "shared-dma-pool" node was given:
-> > > >=20
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pma_resv0@58000000=
- {
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 compatible =3D "shared-dma-pool";
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 reg =3D <0x0 0x58000000 0x0 0x08000000>;
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 no-map;
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 linux,dma-default;
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 };
-> > > >=20
-> > > > I've copied that to th1520-beaglev-ahead.dts. The address of
-> > > > 0x58000000
-> > > > has no significance on th1520, but the existence of shared-dma-
-> > > > pool
-> > > > seems to fix the problem. ADMA mode [4] is now working even
-> > > > though
-> > > > CONFIG_DMA_GLOBAL_POOL=3Dy.
-> > >=20
-> > > + Christoph, Lad
-> > >=20
-> > > IMHO, this is not TH1520 specific but a generic issue.
-> > >=20
-> > > I believe commit 484861e09f3e ("soc: renesas: Kconfig: Select the
-> > > required configs for RZ/Five SoC") can cause regression on all
-> > > non-dma-coherent riscv platforms with generic defconfig. This is
-> > > a common issue. The logic here is: generic riscv defconfig
-> > > selects
-> > > ARCH_R9A07G043 which selects DMA_GLOBAL_POOL, which assumes all
-> > > non-dma-coherent riscv platforms have a dma global pool, this
-> > > assumption
-> > > seems not correct. And I believe DMA_GLOBAL_POOL should not be
-> > > selected by ARCH_SOCFAMILIY, instead, only ARCH under some
-> > > specific
-> > > conditions can select it globaly, for example NOMMU ARM and so
-> > > on.
-> > >=20
-> > > Since this is a regression, what's proper fix? any suggestion is
-> > > appreciated.
->=20
-> I think the answer is to not select DMA_GLOBAL_POOL, since that is
-> only=20
+Hi,
 
-Well I think for RISC-V, it's not NOMMU only but applicable for every
-core that does not support Svpbmt or vendor-specific alternatives,
-because the original RISC-V priv spec does not define memory attributes
-in page table entries.
+On Wed, Oct 4, 2023 at 3:15=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Wed, 04 Oct 2023 10:59:50 +0100,
+> Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > Given you haven't seen any issues, I suspect those are getting reset to=
+ fixed
+> > values that happens to work out for us, but it is a bit worrisome more
+> > generally (e.g. the LPI case above).
+>
+> It is likely that these SoCs don't even have an ITS.
 
-For the Renesas/Andes case I think a pool is set by OpenSBI with
-vendor-specific M-mode facility and then passed in DT, and the S-mode
-(which MMU is enabled in) just sees fixed memory attributes, in this
-case I think DMA_GLOBAL_POOL is needed.
+Right. That was what we decided [1] when Marc pointed this out earlier.
 
-> designed for nommu cases where non-cacheable memory lives in a fixed=20
-> place in the physical address map, and regular kernel pages can't be=20
-> remapped. As far as I'm aware, RISCV_DMA_NONCOHERENT is the thing you
-> want, such that DMA_DIRECT_REMAP can dynamically provide non-
-> cacheable=20
-> coherent buffers for non-hardware-coherent devices.
->=20
-> Thanks,
-> Robin.
->=20
-> > >=20
-> > > Thanks
-> > >=20
-> > > >=20
-> > > > Thanks,
-> > > > Drew
-> > > >=20
-> > > > [1]
-> > > > https://gist.github.com/pdp7/73041ed808bbc7dd445836fb90574979
-> > > > [2]
-> > > > https://lore.kernel.org/linux-riscv/20230818135723.80612-1-prabhaka=
-r.mahadev-lad.rj@bp.renesas.com/
-> > > > [3]
-> > > > https://lore.kernel.org/linux-riscv/20230818135723.80612-6-prabhaka=
-r.mahadev-lad.rj@bp.renesas.com/
-> > > > [4]
-> > > > https://gist.github.com/pdp7/91e72a663d3bb73eb28182337ad8bbcb
+Overall: we know that this firmware behavior is not good but we're
+stuck with it. :( At the very least, any new devices coming out will
+have this fixed. Presumably if old devices are working OK enough today
+(as long as you don't enable pseudo-NMI) then they can be made to keep
+working?
 
+So circling back: what patch should we actually land? As of right now
+only pseudo-NMI is broken, but it would be good to make sure that if
+the kernel later adds other features that would be broken on this
+hardware that it gets handled properly...
+
+[1] https://issuetracker.google.com/issues/281831288#comment4
