@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB017B82B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 472D27B82B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242989AbjJDOwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
+        id S242996AbjJDOwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242996AbjJDOwE (ORCPT
+        with ESMTP id S242977AbjJDOwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Oct 2023 10:52:04 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9670DC6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:51:55 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso402147466b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 07:51:55 -0700 (PDT)
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C5FCE
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:51:56 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a6190af24aso405625866b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 07:51:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696431114; x=1697035914; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696431115; x=1697035915; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rS7jRVcQ6NtK3qXxw1G/jurrddIxGHuAxg9jtCM/lIk=;
-        b=hEvEaQ/TjwxTkVH8XajpzZMZcV5LJZ/bYasUSJHG+bT6LK6Pt8zKIBBjGfmTwKBSqq
-         7idqEM3Y6rkH4s2AxzTLtMIiOUMaSaGd71askTHDUL0FNR2sioc8WP2f0jXoNF2Y0Uy2
-         XDN+aoPKj6/3eGb2ukDnLUEGzc5LLl49uCbcH+b0GZyv10uaE5Guc7syajVQS3rXnRXh
-         cLrNH5t2oPvE5eSfh7U2eptJAo5e2OmRrHLiajnVdM8Z3Rl/Sa8jeTtjzBnCJW75tbhY
-         l+ZpILOrZKTw7s3yX6/Wt9K2ADjhcMtkGkR0Jp/Ny4F8t8yxVTNPRwtF4cLQZIGMuJgP
-         taIA==
+        bh=jISPkvnxHNZ9YOvTMmU4+FmuVTZn4CUvBaU3KXe/pp4=;
+        b=KqQhbewGXZw9JCQ10SBY8ctvjbp36URcRYlvjQa/LO6JA47730TRn9Em6cQ6gcuNgm
+         jI+mpbosxKDCmt/KrBjdd9Ev3l+FsP7FyZYfeffu02dgYYJzaTKreUAZAzYj4CqSm6Nc
+         9uOme2h91TqPWOtmFT9VLSJ3x0mhonCd/xNPOm1AXbfbdtlZGme7OOcYITyXO2rrInZs
+         tPskQIbbvxdakTx+4bbkzj5hOJkCNjGFa047Pfm5sAHkHbIJGW4jAsu4Ogvu2z0DNsBS
+         6LX/xH1RtebUtoL1Qam+DWXxpljZlHY6S6rsrkX6429E19WjWX7BDJbxIbjdjpq424W0
+         KbCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696431114; x=1697035914;
+        d=1e100.net; s=20230601; t=1696431115; x=1697035915;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rS7jRVcQ6NtK3qXxw1G/jurrddIxGHuAxg9jtCM/lIk=;
-        b=sdKis0gCQTD9VVJU5sLOM0E5vmt2hDrQ7sCrPtYOvnk5yr6UjWOIs9i/yRWfbbW5ir
-         qtLdjupBaA9R6a0ogAIu+Sil0uwMRUJ6Emamj93hF6ZbCtF1LHNMI0bHapXQtSMMYQBp
-         Q0Qa4fVWDZ0+jxV8yt5dhSJHPGPzFx6tRBKiFn2QLWRjQSLh4aNSL650LbBZ+wsq6KpF
-         pp792ZEsZ7OaFYje1/bjVVuifmb1STCADjqQZ1MBOmfJYjPa2bZxHl0urwHFfL+Jga2k
-         VchS9Z61EaUi9/5i3UNCgLcbTx3cUElamhATu5pm/epZwEEwTvQ4tQKD66K6pjMjhW5X
-         36YQ==
-X-Gm-Message-State: AOJu0YzjELVRvaTOrXR27+LCZUpIDoL8PB6DsK0ed7nEDz2C/NLXeEIa
-        mfAKMsLs5dfMMv6PaTmo2nY=
-X-Google-Smtp-Source: AGHT+IE3parCnIxf0SHOxHOiyORZpdUFJSWEXx9I29gog/A9cdz/kPesZTNRnVQoQckOAAg+qQ4CjA==
-X-Received: by 2002:a17:906:30cd:b0:9ad:e20f:142f with SMTP id b13-20020a17090630cd00b009ade20f142fmr2206389ejb.22.1696431113785;
-        Wed, 04 Oct 2023 07:51:53 -0700 (PDT)
+        bh=jISPkvnxHNZ9YOvTMmU4+FmuVTZn4CUvBaU3KXe/pp4=;
+        b=XZ/tDAaRnEr/FpYAxVCJ7Nz17S4KrgqAZAgh4d3sAC3oUE6cX6lLcXq9qBRZSRQz1I
+         wx+t+Bxmc34u+5qjWMmzqDuyxc5BmAc1cb63rXW3MlKIHZb4SjvIXyTa19K0JwbrVi8l
+         9noewd1cfhHn3A2PBbgWT6ol9y3jJkFnEOlWhovJV/cGjP2UM/F22M8NAl8d48i8KvKe
+         5qhIflxSAtSZIenKFRcQ3qiySnPF5HVPDGD3/4vhyjAN18V59IGfY1U4D8QmnmWVrHM2
+         2ID71DQKRd8kIzJ3SNcmMyT8CMXIE6Le74itvqnZbUz8+JbewcoTwwtddgEkhiwUVSht
+         CUrw==
+X-Gm-Message-State: AOJu0Yy17VRdmvGmrws54/5w6fwDpHC4k/Fo54szB/mhT3vbppkfIVJ4
+        Zcn7ebgtbTtxQtjlL8Yfocw=
+X-Google-Smtp-Source: AGHT+IGiD96DBTsW21prvGETGFZNjtbK94NpmrUYyzEZ/qvPHgfOmlZ3XPFsUvGnPRcVmnTm9gw+rw==
+X-Received: by 2002:a17:906:305a:b0:9ae:5487:c71c with SMTP id d26-20020a170906305a00b009ae5487c71cmr2098120ejd.49.1696431114973;
+        Wed, 04 Oct 2023 07:51:54 -0700 (PDT)
 Received: from localhost.localdomain ([46.248.82.114])
         by smtp.gmail.com with ESMTPSA id j26-20020a1709064b5a00b009a16975ee5asm2906307ejv.169.2023.10.04.07.51.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 07:51:53 -0700 (PDT)
+        Wed, 04 Oct 2023 07:51:54 -0700 (PDT)
 From:   Uros Bizjak <ubizjak@gmail.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
 Cc:     Uros Bizjak <ubizjak@gmail.com>, Andy Lutomirski <luto@kernel.org>,
@@ -62,9 +62,9 @@ Cc:     Uros Bizjak <ubizjak@gmail.com>, Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@alien8.de>,
         Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH 3/4] x86/percpu: Use compiler segment prefix qualifier
-Date:   Wed,  4 Oct 2023 16:49:43 +0200
-Message-ID: <20231004145137.86537-4-ubizjak@gmail.com>
+Subject: [PATCH 4/4] x86/percpu: Use C for percpu read/write accessors
+Date:   Wed,  4 Oct 2023 16:49:44 +0200
+Message-ID: <20231004145137.86537-5-ubizjak@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231004145137.86537-1-ubizjak@gmail.com>
 References: <20231004145137.86537-1-ubizjak@gmail.com>
@@ -80,22 +80,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+The percpu code mostly uses inline assembly. Using segment qualifiers
+allows to use C code instead, which enables the compiler to perform
+various optimizations (e.g. propagation of memory arguments). Convert
+percpu read and write accessors to C code, so the memory argument can
+be propagated to the instruction that uses this argument.
 
-Using a segment prefix qualifier is cleaner than using a segment prefix
-in the inline assembly, and provides the compiler with more information,
-telling it that __seg_gs:[addr] is different than [addr] when it
-analyzes data dependencies. It also enables various optimizations that
-will be implemented in the next patches.
+Some examples of propagations:
 
-Use segment prefix qualifiers when they are supported. Unfortunately,
-gcc does not provide a way to remove segment qualifiers, which is needed
-to use typeof() to create local instances of the per-cpu variable. For
-this reason, do not use the segment qualifier for per-cpu variables, and
-do casting using the segment qualifier instead.
+a) into sign/zero extensions:
 
-Uros: Improve compiler support detection and update the patch
-to the current mainline.
+ 110b54:       65 0f b6 05 00 00 00    movzbl %gs:0x0(%rip),%eax
+ 11ab90:       65 0f b6 15 00 00 00    movzbl %gs:0x0(%rip),%edx
+ 14484a:       65 0f b7 35 00 00 00    movzwl %gs:0x0(%rip),%esi
+ 1a08a9:       65 0f b6 43 78          movzbl %gs:0x78(%rbx),%eax
+ 1a08f9:       65 0f b6 43 78          movzbl %gs:0x78(%rbx),%eax
+
+ 4ab29a:       65 48 63 15 00 00 00    movslq %gs:0x0(%rip),%rdx
+ 4be128:       65 4c 63 25 00 00 00    movslq %gs:0x0(%rip),%r12
+ 547468:       65 48 63 1f             movslq %gs:(%rdi),%rbx
+ 5474e7:       65 48 63 0a             movslq %gs:(%rdx),%rcx
+ 54d05d:       65 48 63 0d 00 00 00    movslq %gs:0x0(%rip),%rcx
+
+b) into compares:
+
+ b40804:       65 f7 05 00 00 00 00    testl  $0xf0000,%gs:0x0(%rip)
+ b487e8:       65 f7 05 00 00 00 00    testl  $0xf0000,%gs:0x0(%rip)
+ b6f14c:       65 f6 05 00 00 00 00    testb  $0x1,%gs:0x0(%rip)
+ bac1b8:       65 f6 05 00 00 00 00    testb  $0x1,%gs:0x0(%rip)
+ df2244:       65 f7 05 00 00 00 00    testl  $0xff00,%gs:0x0(%rip)
+
+ 9a7517:       65 80 3d 00 00 00 00    cmpb   $0x0,%gs:0x0(%rip)
+ b282ba:       65 44 3b 35 00 00 00    cmp    %gs:0x0(%rip),%r14d
+ b48f61:       65 66 83 3d 00 00 00    cmpw   $0x8,%gs:0x0(%rip)
+ b493fe:       65 80 38 00             cmpb   $0x0,%gs:(%rax)
+ b73867:       65 66 83 3d 00 00 00    cmpw   $0x8,%gs:0x0(%rip)
+
+c) into other insns:
+
+ 65ec02:       65 0f 44 15 00 00 00    cmove  %gs:0x0(%rip),%edx
+ 6c98ac:       65 0f 44 15 00 00 00    cmove  %gs:0x0(%rip),%edx
+ 9aafaf:       65 0f 44 15 00 00 00    cmove  %gs:0x0(%rip),%edx
+ b45868:       65 0f 48 35 00 00 00    cmovs  %gs:0x0(%rip),%esi
+ d276f8:       65 0f 44 15 00 00 00    cmove  %gs:0x0(%rip),%edx
+
+The above propagations result in the following code size
+improvements for current mainline kernel (with the default config),
+compiled with
+
+gcc (GCC) 12.3.1 20230508 (Red Hat 12.3.1-1)
+
+   text    data     bss     dec     hex filename
+25508862        4386540  808388 30703790        1d480ae vmlinux-vanilla.o
+25500922        4386532  808388 30695842        1d461a2 vmlinux-new.o
+
+The conversion of other read-modify-write instructions does not bring us any
+benefits, the compiler has some problems when constructing RMW instructions
+from the generic code and easily misses some opportunities.
 
 Cc: Andy Lutomirski <luto@kernel.org>
 Cc: Ingo Molnar <mingo@kernel.org>
@@ -108,205 +149,116 @@ Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Borislav Petkov <bp@alien8.de>
 Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Co-developed-by: Nadav Amit <namit@vmware.com>
 Signed-off-by: Nadav Amit <namit@vmware.com>
 Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 ---
- arch/x86/include/asm/percpu.h  | 68 +++++++++++++++++++++++-----------
- arch/x86/include/asm/preempt.h |  2 +-
- 2 files changed, 47 insertions(+), 23 deletions(-)
+ arch/x86/include/asm/percpu.h | 65 +++++++++++++++++++++++++++++------
+ 1 file changed, 54 insertions(+), 11 deletions(-)
 
 diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index 20624b80f890..da451202a1b9 100644
+index da451202a1b9..60ea7755c0fe 100644
 --- a/arch/x86/include/asm/percpu.h
 +++ b/arch/x86/include/asm/percpu.h
-@@ -28,26 +28,50 @@
- #include <linux/stringify.h>
+@@ -400,13 +400,66 @@ do {									\
+ #define this_cpu_read_stable_8(pcp)	percpu_stable_op(8, "mov", pcp)
+ #define this_cpu_read_stable(pcp)	__pcpu_size_call_return(this_cpu_read_stable_, pcp)
  
- #ifdef CONFIG_SMP
++#ifdef CONFIG_USE_X86_SEG_SUPPORT
 +
-+#ifdef CONFIG_CC_HAS_NAMED_AS
++#define __raw_cpu_read(qual, pcp)					\
++({									\
++	*(qual __my_cpu_type(pcp) *)__my_cpu_ptr(&(pcp));		\
++})
++
++#define __raw_cpu_write(qual, pcp, val)					\
++do {									\
++	*(qual __my_cpu_type(pcp) *)__my_cpu_ptr(&(pcp)) = (val);	\
++} while (0)
++
++#define raw_cpu_read_1(pcp)		__raw_cpu_read(, pcp)
++#define raw_cpu_read_2(pcp)		__raw_cpu_read(, pcp)
++#define raw_cpu_read_4(pcp)		__raw_cpu_read(, pcp)
++#define raw_cpu_write_1(pcp, val)	__raw_cpu_write(, pcp, val)
++#define raw_cpu_write_2(pcp, val)	__raw_cpu_write(, pcp, val)
++#define raw_cpu_write_4(pcp, val)	__raw_cpu_write(, pcp, val)
++
++#define this_cpu_read_1(pcp)		__raw_cpu_read(volatile, pcp)
++#define this_cpu_read_2(pcp)		__raw_cpu_read(volatile, pcp)
++#define this_cpu_read_4(pcp)		__raw_cpu_read(volatile, pcp)
++#define this_cpu_write_1(pcp, val)	__raw_cpu_write(volatile, pcp, val)
++#define this_cpu_write_2(pcp, val)	__raw_cpu_write(volatile, pcp, val)
++#define this_cpu_write_4(pcp, val)	__raw_cpu_write(volatile, pcp, val)
 +
 +#ifdef CONFIG_X86_64
-+#define __percpu_seg_override	__seg_gs
-+#else
-+#define __percpu_seg_override	__seg_fs
++#define raw_cpu_read_8(pcp)		__raw_cpu_read(, pcp)
++#define raw_cpu_write_8(pcp, val)	__raw_cpu_write(, pcp, val)
++
++#define this_cpu_read_8(pcp)		__raw_cpu_read(volatile, pcp)
++#define this_cpu_write_8(pcp, val)	__raw_cpu_write(volatile, pcp, val)
 +#endif
 +
-+#define __percpu_prefix		""
++#else /* CONFIG_USE_X86_SEG_SUPPORT */
 +
-+#else /* CONFIG_CC_HAS_NAMED_AS */
+ #define raw_cpu_read_1(pcp)		percpu_from_op(1, , "mov", pcp)
+ #define raw_cpu_read_2(pcp)		percpu_from_op(2, , "mov", pcp)
+ #define raw_cpu_read_4(pcp)		percpu_from_op(4, , "mov", pcp)
+-
+ #define raw_cpu_write_1(pcp, val)	percpu_to_op(1, , "mov", (pcp), val)
+ #define raw_cpu_write_2(pcp, val)	percpu_to_op(2, , "mov", (pcp), val)
+ #define raw_cpu_write_4(pcp, val)	percpu_to_op(4, , "mov", (pcp), val)
 +
-+#define __percpu_seg_override
- #define __percpu_prefix		"%%"__stringify(__percpu_seg)":"
++#define this_cpu_read_1(pcp)		percpu_from_op(1, volatile, "mov", pcp)
++#define this_cpu_read_2(pcp)		percpu_from_op(2, volatile, "mov", pcp)
++#define this_cpu_read_4(pcp)		percpu_from_op(4, volatile, "mov", pcp)
++#define this_cpu_write_1(pcp, val)	percpu_to_op(1, volatile, "mov", (pcp), val)
++#define this_cpu_write_2(pcp, val)	percpu_to_op(2, volatile, "mov", (pcp), val)
++#define this_cpu_write_4(pcp, val)	percpu_to_op(4, volatile, "mov", (pcp), val)
 +
-+#endif /* CONFIG_CC_HAS_NAMED_AS */
++#ifdef CONFIG_X86_64
++#define raw_cpu_read_8(pcp)		percpu_from_op(8, , "mov", pcp)
++#define raw_cpu_write_8(pcp, val)	percpu_to_op(8, , "mov", (pcp), val)
 +
-+#define __force_percpu_prefix	"%%"__stringify(__percpu_seg)":"
- #define __my_cpu_offset		this_cpu_read(this_cpu_off)
++#define this_cpu_read_8(pcp)		percpu_from_op(8, volatile, "mov", pcp)
++#define this_cpu_write_8(pcp, val)	percpu_to_op(8, volatile, "mov", (pcp), val)
++#endif
++
++#endif /* CONFIG_USE_X86_SEG_SUPPORT */
++
+ #define raw_cpu_add_1(pcp, val)		percpu_add_op(1, , (pcp), val)
+ #define raw_cpu_add_2(pcp, val)		percpu_add_op(2, , (pcp), val)
+ #define raw_cpu_add_4(pcp, val)		percpu_add_op(4, , (pcp), val)
+@@ -432,12 +485,6 @@ do {									\
+ #define raw_cpu_xchg_2(pcp, val)	raw_percpu_xchg_op(pcp, val)
+ #define raw_cpu_xchg_4(pcp, val)	raw_percpu_xchg_op(pcp, val)
  
- /*
-  * Compared to the generic __my_cpu_offset version, the following
-  * saves one instruction and avoids clobbering a temp register.
+-#define this_cpu_read_1(pcp)		percpu_from_op(1, volatile, "mov", pcp)
+-#define this_cpu_read_2(pcp)		percpu_from_op(2, volatile, "mov", pcp)
+-#define this_cpu_read_4(pcp)		percpu_from_op(4, volatile, "mov", pcp)
+-#define this_cpu_write_1(pcp, val)	percpu_to_op(1, volatile, "mov", (pcp), val)
+-#define this_cpu_write_2(pcp, val)	percpu_to_op(2, volatile, "mov", (pcp), val)
+-#define this_cpu_write_4(pcp, val)	percpu_to_op(4, volatile, "mov", (pcp), val)
+ #define this_cpu_add_1(pcp, val)	percpu_add_op(1, volatile, (pcp), val)
+ #define this_cpu_add_2(pcp, val)	percpu_add_op(2, volatile, (pcp), val)
+ #define this_cpu_add_4(pcp, val)	percpu_add_op(4, volatile, (pcp), val)
+@@ -476,8 +523,6 @@ do {									\
+  * 32 bit must fall back to generic operations.
   */
--#define arch_raw_cpu_ptr(ptr)				\
--({							\
--	unsigned long tcp_ptr__;			\
--	asm ("add " __percpu_arg(1) ", %0"		\
--	     : "=r" (tcp_ptr__)				\
--	     : "m" (this_cpu_off), "0" (ptr));		\
--	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;	\
-+#define arch_raw_cpu_ptr(ptr)					\
-+({								\
-+	unsigned long tcp_ptr__;				\
-+	asm ("add " __percpu_arg(1) ", %0"			\
-+	     : "=r" (tcp_ptr__)					\
-+	     : "m" (__my_cpu_var(this_cpu_off)), "0" (ptr));	\
-+	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;		\
- })
--#else
-+#else /* CONFIG_SMP */
-+#define __percpu_seg_override
- #define __percpu_prefix		""
--#endif
-+#define __force_percpu_prefix	""
-+#endif /* CONFIG_SMP */
+ #ifdef CONFIG_X86_64
+-#define raw_cpu_read_8(pcp)			percpu_from_op(8, , "mov", pcp)
+-#define raw_cpu_write_8(pcp, val)		percpu_to_op(8, , "mov", (pcp), val)
+ #define raw_cpu_add_8(pcp, val)			percpu_add_op(8, , (pcp), val)
+ #define raw_cpu_and_8(pcp, val)			percpu_to_op(8, , "and", (pcp), val)
+ #define raw_cpu_or_8(pcp, val)			percpu_to_op(8, , "or", (pcp), val)
+@@ -486,8 +531,6 @@ do {									\
+ #define raw_cpu_cmpxchg_8(pcp, oval, nval)	percpu_cmpxchg_op(8, , pcp, oval, nval)
+ #define raw_cpu_try_cmpxchg_8(pcp, ovalp, nval)	percpu_try_cmpxchg_op(8, , pcp, ovalp, nval)
  
-+#define __my_cpu_type(var)	typeof(var) __percpu_seg_override
-+#define __my_cpu_ptr(ptr)	(__my_cpu_type(*ptr) *)(uintptr_t)(ptr)
-+#define __my_cpu_var(var)	(*__my_cpu_ptr(&var))
- #define __percpu_arg(x)		__percpu_prefix "%" #x
-+#define __force_percpu_arg(x)	__force_percpu_prefix "%" #x
- 
- /*
-  * Initialized pointers to per-cpu variables needed for the boot
-@@ -107,14 +131,14 @@ do {									\
- 		(void)pto_tmp__;					\
- 	}								\
- 	asm qual(__pcpu_op2_##size(op, "%[val]", __percpu_arg([var]))	\
--	    : [var] "+m" (_var)						\
-+	    : [var] "+m" (__my_cpu_var(_var))				\
- 	    : [val] __pcpu_reg_imm_##size(pto_val__));			\
- } while (0)
- 
- #define percpu_unary_op(size, qual, op, _var)				\
- ({									\
- 	asm qual (__pcpu_op1_##size(op, __percpu_arg([var]))		\
--	    : [var] "+m" (_var));					\
-+	    : [var] "+m" (__my_cpu_var(_var)));				\
- })
- 
- /*
-@@ -144,14 +168,14 @@ do {									\
- 	__pcpu_type_##size pfo_val__;					\
- 	asm qual (__pcpu_op2_##size(op, __percpu_arg([var]), "%[val]")	\
- 	    : [val] __pcpu_reg_##size("=", pfo_val__)			\
--	    : [var] "m" (_var));					\
-+	    : [var] "m" (__my_cpu_var(_var)));				\
- 	(typeof(_var))(unsigned long) pfo_val__;			\
- })
- 
- #define percpu_stable_op(size, op, _var)				\
- ({									\
- 	__pcpu_type_##size pfo_val__;					\
--	asm(__pcpu_op2_##size(op, __percpu_arg(P[var]), "%[val]")	\
-+	asm(__pcpu_op2_##size(op, __force_percpu_arg(P[var]), "%[val]")	\
- 	    : [val] __pcpu_reg_##size("=", pfo_val__)			\
- 	    : [var] "p" (&(_var)));					\
- 	(typeof(_var))(unsigned long) pfo_val__;			\
-@@ -166,7 +190,7 @@ do {									\
- 	asm qual (__pcpu_op2_##size("xadd", "%[tmp]",			\
- 				     __percpu_arg([var]))		\
- 		  : [tmp] __pcpu_reg_##size("+", paro_tmp__),		\
--		    [var] "+m" (_var)					\
-+		    [var] "+m" (__my_cpu_var(_var))			\
- 		  : : "memory");					\
- 	(typeof(_var))(unsigned long) (paro_tmp__ + _val);		\
- })
-@@ -187,7 +211,7 @@ do {									\
- 				    __percpu_arg([var]))		\
- 		  "\n\tjnz 1b"						\
- 		  : [oval] "=&a" (pxo_old__),				\
--		    [var] "+m" (_var)					\
-+		    [var] "+m" (__my_cpu_var(_var))			\
- 		  : [nval] __pcpu_reg_##size(, pxo_new__)		\
- 		  : "memory");						\
- 	(typeof(_var))(unsigned long) pxo_old__;			\
-@@ -204,7 +228,7 @@ do {									\
- 	asm qual (__pcpu_op2_##size("cmpxchg", "%[nval]",		\
- 				    __percpu_arg([var]))		\
- 		  : [oval] "+a" (pco_old__),				\
--		    [var] "+m" (_var)					\
-+		    [var] "+m" (__my_cpu_var(_var))			\
- 		  : [nval] __pcpu_reg_##size(, pco_new__)		\
- 		  : "memory");						\
- 	(typeof(_var))(unsigned long) pco_old__;			\
-@@ -221,7 +245,7 @@ do {									\
- 		  CC_SET(z)						\
- 		  : CC_OUT(z) (success),				\
- 		    [oval] "+a" (pco_old__),				\
--		    [var] "+m" (_var)					\
-+		    [var] "+m" (__my_cpu_var(_var))			\
- 		  : [nval] __pcpu_reg_##size(, pco_new__)		\
- 		  : "memory");						\
- 	if (unlikely(!success))						\
-@@ -244,7 +268,7 @@ do {									\
- 									\
- 	asm qual (ALTERNATIVE("call this_cpu_cmpxchg8b_emu",		\
- 			      "cmpxchg8b " __percpu_arg([var]), X86_FEATURE_CX8) \
--		  : [var] "+m" (_var),					\
-+		  : [var] "+m" (__my_cpu_var(_var)),			\
- 		    "+a" (old__.low),					\
- 		    "+d" (old__.high)					\
- 		  : "b" (new__.low),					\
-@@ -276,7 +300,7 @@ do {									\
- 			      "cmpxchg8b " __percpu_arg([var]), X86_FEATURE_CX8) \
- 		  CC_SET(z)						\
- 		  : CC_OUT(z) (success),				\
--		    [var] "+m" (_var),					\
-+		    [var] "+m" (__my_cpu_var(_var)),			\
- 		    "+a" (old__.low),					\
- 		    "+d" (old__.high)					\
- 		  : "b" (new__.low),					\
-@@ -313,7 +337,7 @@ do {									\
- 									\
- 	asm qual (ALTERNATIVE("call this_cpu_cmpxchg16b_emu",		\
- 			      "cmpxchg16b " __percpu_arg([var]), X86_FEATURE_CX16) \
--		  : [var] "+m" (_var),					\
-+		  : [var] "+m" (__my_cpu_var(_var)),			\
- 		    "+a" (old__.low),					\
- 		    "+d" (old__.high)					\
- 		  : "b" (new__.low),					\
-@@ -345,7 +369,7 @@ do {									\
- 			      "cmpxchg16b " __percpu_arg([var]), X86_FEATURE_CX16) \
- 		  CC_SET(z)						\
- 		  : CC_OUT(z) (success),				\
--		    [var] "+m" (_var),					\
-+		    [var] "+m" (__my_cpu_var(_var)),			\
- 		    "+a" (old__.low),					\
- 		    "+d" (old__.high)					\
- 		  : "b" (new__.low),					\
-@@ -494,7 +518,7 @@ static inline bool x86_this_cpu_variable_test_bit(int nr,
- 	asm volatile("btl "__percpu_arg(2)",%1"
- 			CC_SET(c)
- 			: CC_OUT(c) (oldbit)
--			: "m" (*(unsigned long __percpu *)addr), "Ir" (nr));
-+			: "m" (*__my_cpu_ptr((unsigned long __percpu *)(addr))), "Ir" (nr));
- 
- 	return oldbit;
- }
-diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
-index 2d13f25b1bd8..e25b95e7cf82 100644
---- a/arch/x86/include/asm/preempt.h
-+++ b/arch/x86/include/asm/preempt.h
-@@ -92,7 +92,7 @@ static __always_inline void __preempt_count_sub(int val)
-  */
- static __always_inline bool __preempt_count_dec_and_test(void)
- {
--	return GEN_UNARY_RMWcc("decl", pcpu_hot.preempt_count, e,
-+	return GEN_UNARY_RMWcc("decl", __my_cpu_var(pcpu_hot.preempt_count), e,
- 			       __percpu_arg([var]));
- }
- 
+-#define this_cpu_read_8(pcp)			percpu_from_op(8, volatile, "mov", pcp)
+-#define this_cpu_write_8(pcp, val)		percpu_to_op(8, volatile, "mov", (pcp), val)
+ #define this_cpu_add_8(pcp, val)		percpu_add_op(8, volatile, (pcp), val)
+ #define this_cpu_and_8(pcp, val)		percpu_to_op(8, volatile, "and", (pcp), val)
+ #define this_cpu_or_8(pcp, val)			percpu_to_op(8, volatile, "or", (pcp), val)
 -- 
 2.41.0
 
