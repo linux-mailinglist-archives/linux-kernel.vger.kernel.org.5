@@ -2,171 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E237B82DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5685D7B82DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243124AbjJDO4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53296 "EHLO
+        id S243148AbjJDO4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243082AbjJDO4Z (ORCPT
+        with ESMTP id S243132AbjJDO41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:56:25 -0400
-Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B743AD9
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:56:15 -0700 (PDT)
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Maarten Lankhorst <dev@lankhorst.se>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH v6 12/12] ALSA: hda: i915: Remove extra argument from snd_hdac_i915_init
-Date:   Wed,  4 Oct 2023 16:55:40 +0200
-Message-Id: <20231004145540.32321-13-maarten.lankhorst@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
-References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+        Wed, 4 Oct 2023 10:56:27 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016641A3;
+        Wed,  4 Oct 2023 07:56:19 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 945C73200AB0;
+        Wed,  4 Oct 2023 10:56:15 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 04 Oct 2023 10:56:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ftml.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1696431375; x=1696517775; bh=E81iGMeNa+pNgKEkt1KkyiV7Sh5faYo5JX4
+        pY/PFDew=; b=lpTrPM7sGkdmKIxZMmVxe6Eij5ocLE05ifOF7+fTaJoqwmaR9DC
+        3omv1FtZIMcv0Q4KeKkXYfUh3bnHqwEZQO+4RmN8BWgd7HcQ8eNX8rsZOHD9UAJE
+        5Hn4FGqRQOKxKDaIKZzDkcEJ+Y3OKSPUbTwFNRaA8ZTxSsjPFdUYwQpQ/II9nWrg
+        i/hmeIqWrviPO0zwHsWOsnzoB5LBypT8kWLIHM6ehEqkrNGllczhwF9cq2MHywnT
+        Lt6AKvnaN2gzA4Yb42pgSHlz6Xc3RjSHvbD4bTcywff1HGQ/SitCKQ/pmTUyoPku
+        KI2Jg8VAv9JZvxBZqC0MqafNjKkerQn1lSg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1696431375; x=1696517775; bh=E81iGMeNa+pNgKEkt1KkyiV7Sh5faYo5JX4
+        pY/PFDew=; b=Wv464ROziTRdG3i/7r2TG9cDUxlYV//R+b+h9c6Grk03YU5IwdG
+        SegVxKIsosXLXyxdYoGXhwqTD770uMrOzo7duqeyK6cuf4wYoweNBpLrZLNKuLje
+        I3Tb8CoikGOBgbPRPkLw7hZsqX9AhK4CwWnKLKzbGWbgXLG1PsG/8eCTvqWuXvIk
+        i2ZBNaB6RrXUsUlta4RGR1NuA3I1KjTrQXoIPQMZGpGsnwvTo6epr0P5Ab9/vZLT
+        hzmfVXyzgJvk/+/xEssxunwAAp/uTBGY04SbT6QFtxsCsBg22ggLRVpUtxx0Y+MC
+        scAnPDpuLvInDjWK0kp7n6MpI2VZgNYNr9A==
+X-ME-Sender: <xms:Dn0dZbFCaZchcZYIU3KBL-MUPPbpt77PJ4TTEDrskT02FC4uuwvj_g>
+    <xme:Dn0dZYWH3kpKQGmY3LqLSg0QBYhqo09fYzkSmM34A6KnWRYeTYcPsoxb5hNHI69Nd
+    49_KGewoj9W2DW2zMI>
+X-ME-Received: <xmr:Dn0dZdKJfQrXebTf12W_DSd0Vwc_0bJiYEM-WllMkfpodLcvKSlW3BkJ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgedvgdekudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpegggfgtfffkhffuvefvofhfjgesthhqredtredtjeenucfhrhhomhepfdfmohhn
+    shhtrghnthhinhcuufhhvghlvghkhhhinhdfuceokhdrshhhvghlvghkhhhinhesfhhtmh
+    hlrdhnvghtqeenucggtffrrghtthgvrhhnpeelhfdttdekudekffeuffektddvueeuffeh
+    ieelffdufedvvefftdefffeggfelgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpehkrdhshhgvlhgvkhhhihhnsehfthhmlhdrnhgvth
+X-ME-Proxy: <xmx:Dn0dZZHGwa9BC2mZsTBLoU3G1blVi8VAOQkCP0v_t8y1mEHFxL_ouA>
+    <xmx:Dn0dZRWW1_Vpe7KGYzez018EFqOVmDbXbJ6bFYECZPxrFQj4lFnRrQ>
+    <xmx:Dn0dZUNh5G8WnO4rXlwRnRFzCqS5lUoZhQAUNbzonL9hqsI6STCuJw>
+    <xmx:D30dZWUo1NrCSmYHmMyJ0DjZro079xydoLj-qbkY9lCgqqiogPVsyQ>
+Feedback-ID: ib7794740:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 4 Oct 2023 10:56:12 -0400 (EDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 04 Oct 2023 17:56:09 +0300
+Message-Id: <CVZQQCDA444R.KWA6OPEZRIBG@ftml.net>
+From:   "Konstantin Shelekhin" <k.shelekhin@ftml.net>
+Subject: Re: [PATCH v4 7/7] rust: workqueue: add examples
+Cc:     "Alice Ryhl" <aliceryhl@google.com>, <alex.gaynor@gmail.com>,
+        <benno.lossin@proton.me>, <bjorn3_gh@protonmail.com>,
+        <gary@garyguo.net>, <jiangshanlai@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <nmi@metaspace.dk>,
+        <ojeda@kernel.org>, <patches@lists.linux.dev>,
+        <rust-for-linux@vger.kernel.org>, <tj@kernel.org>,
+        <wedsonaf@gmail.com>, <yakoyoku@gmail.com>
+To:     "Boqun Feng" <boqun.feng@gmail.com>
+X-Mailer: aerc 0.15.2.r182.g389d89a
+References: <CVZ2KU4KK5YH.2HVL1F6X93YLL@pogg>
+ <20231003222947.374039-1-aliceryhl@google.com>
+ <CVZLU74VWMKA.GQXYH7WUNPS4@pogg> <ZR144pugIJQRAFjj@boqun-archlinux>
+In-Reply-To: <ZR144pugIJQRAFjj@boqun-archlinux>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that all drivers have moved from modprobe loading to
-handling -EPROBE_DEFER, we can remove the argument again.
+> This is not a problem until nvmet actually uses/switches to Rust, right?
+> ;-) We can certainly improve the API when a real user needs something.
+> Or you know someone is already working on this?
 
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- include/sound/hda_i915.h        |  4 ++--
- sound/hda/hdac_i915.c           | 14 +++-----------
- sound/pci/hda/hda_intel.c       |  2 +-
- sound/soc/intel/avs/core.c      |  2 +-
- sound/soc/intel/skylake/skl.c   |  2 +-
- sound/soc/sof/intel/hda-codec.c |  2 +-
- 6 files changed, 9 insertions(+), 17 deletions(-)
+Nope, not at this moment. I have an itch to experiment with Rust and
+iSCSI, but that's my personal toy without any plans to at least propose
+it to the subsystem maintainers yet.
 
-diff --git a/include/sound/hda_i915.h b/include/sound/hda_i915.h
-index f91bd6636086..6b79614a893b 100644
---- a/include/sound/hda_i915.h
-+++ b/include/sound/hda_i915.h
-@@ -9,12 +9,12 @@
- 
- #ifdef CONFIG_SND_HDA_I915
- void snd_hdac_i915_set_bclk(struct hdac_bus *bus);
--int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe);
-+int snd_hdac_i915_init(struct hdac_bus *bus);
- #else
- static inline void snd_hdac_i915_set_bclk(struct hdac_bus *bus)
- {
- }
--static inline int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
-+static inline int snd_hdac_i915_init(struct hdac_bus *bus)
- {
- 	return -ENODEV;
- }
-diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-index 0765e5350e7b..365c36fdf205 100644
---- a/sound/hda/hdac_i915.c
-+++ b/sound/hda/hdac_i915.c
-@@ -156,7 +156,7 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
-  *
-  * Returns zero for success or a negative error code.
-  */
--int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
-+int snd_hdac_i915_init(struct hdac_bus *bus)
- {
- 	struct drm_audio_component *acomp;
- 	int err;
-@@ -172,18 +172,10 @@ int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
- 	acomp = bus->audio_component;
- 	if (!acomp)
- 		return -ENODEV;
--	if (allow_modprobe && !acomp->ops) {
--		if (!IS_ENABLED(CONFIG_MODULES) ||
--		    !request_module("i915")) {
--			/* 60s timeout */
--			wait_for_completion_killable_timeout(&acomp->master_bind_complete,
--							     msecs_to_jiffies(60 * 1000));
--		}
--	}
- 	if (!acomp->ops) {
--		int err = allow_modprobe ? -ENODEV : -EPROBE_DEFER;
- 		snd_hdac_acomp_exit(bus);
--		return dev_err_probe(bus->dev, err, "couldn't bind with audio component\n");
-+		return dev_err_probe(bus->dev, -EPROBE_DEFER,
-+				     "couldn't bind with audio component\n");
- 	}
- 	return 0;
- }
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 5cf7676114dc..5255df16fbac 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2138,7 +2138,7 @@ static int azx_probe(struct pci_dev *pci,
- #ifdef CONFIG_SND_HDA_I915
- 	/* bind with i915 if needed */
- 	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
--		err = snd_hdac_i915_init(azx_bus(chip), false);
-+		err = snd_hdac_i915_init(azx_bus(chip));
- 		if (err < 0) {
- 			/* if the controller is bound only with HDMI/DP
- 			 * (for HSW and BDW), we need to abort the probe;
-diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
-index 8a2063958248..33044f353575 100644
---- a/sound/soc/intel/avs/core.c
-+++ b/sound/soc/intel/avs/core.c
-@@ -461,7 +461,7 @@ static int avs_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
- 	pci_set_drvdata(pci, bus);
- 	device_disable_async_suspend(dev);
- 
--	ret = snd_hdac_i915_init(bus, false);
-+	ret = snd_hdac_i915_init(bus);
- 	if (ret == -EPROBE_DEFER)
- 		goto err_i915_init;
- 	else if (ret < 0)
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 24bdbe2a53be..f46f109d5856 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -1056,7 +1056,7 @@ static int skl_probe(struct pci_dev *pci,
- 	}
- 
- 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		err = snd_hdac_i915_init(bus, false);
-+		err = snd_hdac_i915_init(bus);
- 		if (err < 0)
- 			goto out_dmic_unregister;
- 	}
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index f1fd5b44aaac..8a5e99a898ec 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
- 		return 0;
- 
- 	/* i915 exposes a HDA codec for HDMI audio */
--	ret = snd_hdac_i915_init(bus, true);
-+	ret = snd_hdac_i915_init(bus);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-2.40.1
+> All of your suggestions make senses to me, but because we don't have
+> many users right now, it's actually hard to determine a "best" API. I
+> like what we have right now because it's explicit: people won't need to
+> learn much about procedure macros to understand how it works, and it
+> also provides better opportunities for people who's yet not familiar
+> with Rust to give some reviews. So starting with something relatively
+> simple and verbose may not be a bad idea ;-)
+>
+> Again, I like your idea, we need to explore that direction, but one
+> dragon at a time ;-)
 
+Oh yeah, completely understand :)
