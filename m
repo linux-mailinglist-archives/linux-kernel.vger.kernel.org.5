@@ -2,327 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA7A7B7963
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B067B7970
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241645AbjJDIAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
+        id S241268AbjJDIDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232790AbjJDIAq (ORCPT
+        with ESMTP id S229613AbjJDIDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:00:46 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25A2A6;
-        Wed,  4 Oct 2023 01:00:41 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 50736100092; Wed,  4 Oct 2023 09:00:40 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1696406440; bh=P20aLjHrAhxgrHuMg5QiYe89UaZY0Q7KPEktQsHBWbw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EOb32D1N7cSgQhfuBPmdlTKM1M1+qzZuckJKWMgvV0ihbUTUhCTDCujRDhcALai2T
-         YmvmX26bydxbj8ugrakJj9r2w9Tj3El5yh4+naVLQxGt840a0CBJmLL+vOmhqvEV4y
-         poANJliqvHngN8FgxmKMhGXfxfH/yI9kN7/9YQrbogzxE3J8ulXNOaRvdgLz7nP6Af
-         Xyh5uONDIqtbI6tQpeFitM5/Xyg8AMJT/l/HtSyTkkBBBtHToEDz/M4CmpJvJfbhw3
-         ly81lqVVT7VYdK6wAQvO0eBs6H4VKtmuBnc65rse0uR8JxrfPfJ/d6knVIm0DGzh9l
-         SFo8VwtNmL8iQ==
-Date:   Wed, 4 Oct 2023 09:00:40 +0100
-From:   Sean Young <sean@mess.org>
-To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 2/2] media: pwm-ir-tx: trigger edges from hrtimer
- interrupt context
-Message-ID: <ZR0bqBbvM+hHOPXX@gofer.mess.org>
-References: <cover.1696156485.git.sean@mess.org>
- <7efe4229514001b835fa70d51973cd3306dc0b04.1696156485.git.sean@mess.org>
- <1647d018-cb4e-7c4a-c80f-c726b1ea3628@gmail.com>
+        Wed, 4 Oct 2023 04:03:43 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CC7A7
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:03:38 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a9f139cd94so302329566b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696406617; x=1697011417; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eLN3YMd6CT22tWM20pImL4XGhG7GHBb9qZ2LV6tnqrE=;
+        b=nNmHeDA6vAeTVcQcT1acInMYEqMFEr/oGWTK/7EhAdE2NQPDZiPpBw8ANYZECpWTu7
+         6Uhu0nDjppVmjODJYGN5aiMsQRfxZqCR7FN4YPYWRp0mIhB14N6Gqhbf77hT5IeFco71
+         nAg/cJfwRdGKPzGXvkzF61drunhMIxXOwzDy3RlGN4c9iHJK+lIIWjaSOCX5dbkr4iLi
+         2opYT6siLlz7KoQ6fMBZOggxcj2f5qFgeyuyrWbJbhRik997w6QNbaMSZiD27FKL+QuO
+         3baeM/6zrzb6NcXRtRUPhe6NVlndPF89sIKT+ajzTNHR5k/oDz/aEWMj+MKOK1YUr7AP
+         dJ9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696406617; x=1697011417;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eLN3YMd6CT22tWM20pImL4XGhG7GHBb9qZ2LV6tnqrE=;
+        b=pvWEOrclSgClALUZFphmRBiDs9Q7lIOjHkBeNMAJUk1Uqf7axDXae6O3izw+v8Z6lD
+         N/Yl/GDkNj7XMXJ/XlbGxvT7s0e0n0uVyJoK++Wb75kRnDwdWIIbZmAujTnMQTH18/MG
+         cDrU6Re5H8YFuDLvytnVIJp2dHL2K+WxTukwqjQH7P6lUrSDY4e2u222clJAZ66A1/as
+         xjdku9Vy4nfB+OPQtmZGb9DIlUZDQ3WkB0uVaqAlU6yPolNikO5zHsnAOqyCDlaZZwbA
+         ctLIOvrfvKUw/E3S/l41Zqv+xzBoPaeW6PwqeG7EBR6gYlH7WWWqjA94953B7vwDN6kp
+         Lcdw==
+X-Gm-Message-State: AOJu0YzMZ7Ax7NfhpX1OyemdwfljWcw+x0WPfFuxChREHymQwondOH7U
+        Uzno5CPIpcxE9llhekyOJ1j8jw==
+X-Google-Smtp-Source: AGHT+IGWB6/WHk2xtPh/icUapO409yUJMC0JV+MOc+E0lUPW7YYPGSxmERovok8WmZMUvpYuWw6vAg==
+X-Received: by 2002:a17:907:7ea0:b0:9a5:9038:b1e7 with SMTP id qb32-20020a1709077ea000b009a59038b1e7mr1507149ejc.36.1696406617319;
+        Wed, 04 Oct 2023 01:03:37 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id lf17-20020a170906ae5100b0099d45ed589csm2318542ejb.125.2023.10.04.01.03.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 01:03:36 -0700 (PDT)
+Message-ID: <25e8c953-8bf1-4107-9531-263d68c41128@linaro.org>
+Date:   Wed, 4 Oct 2023 10:03:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1647d018-cb4e-7c4a-c80f-c726b1ea3628@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/3] dt-bindings: usb: ci-hdrc-usb2: add npcm750 and
+ npcm845 compatible
+Content-Language: en-US
+To:     Tomer Maimon <tmaimon77@gmail.com>, peter.chen@kernel.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, xu.yang_2@nxp.com,
+        peng.fan@nxp.com, avifishman70@gmail.com, tali.perry1@gmail.com,
+        joel@jms.id.au, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com, j.neuschaefer@gmx.net
+Cc:     openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20231003110130.229711-1-tmaimon77@gmail.com>
+ <20231003110130.229711-3-tmaimon77@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231003110130.229711-3-tmaimon77@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 03/10/2023 13:01, Tomer Maimon wrote:
+> Add a compatible string for Nuvoton BMC NPCM750 and Nuvoton BMC NPCM845.
+> 
+> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
+> index 1394557517b1..a9e173432002 100644
+> --- a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
+> +++ b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
+> @@ -16,6 +16,8 @@ properties:
+>        - enum:
+>            - chipidea,usb2
+>            - lsi,zevio-usb
+> +          - nuvoton,npcm750-udc
+> +          - nuvoton,npcm845-udc
 
-On Mon, Oct 02, 2023 at 09:16:53AM +0300, Ivaylo Dimitrov wrote:
-> On 1.10.23 г. 13:40 ч., Sean Young wrote:
-> > The pwm-ir-tx driver has to turn the pwm signal on and off, and suffers
-> > from delays as this is done in process context. Make this work in atomic
-> > context.
-> > 
-> > This makes the driver much more precise.
-> > 
-> > Signed-off-by: Sean Young <sean@mess.org>
-> > Cc: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-> > ---
-> >   drivers/media/rc/pwm-ir-tx.c | 79 ++++++++++++++++++++++++++++--------
-> >   1 file changed, 63 insertions(+), 16 deletions(-)
-> > 
-> 
-> what about the following patch(not a proper one, just RFC)? It achieves the
-> same (if not better) precision (on n900 at least) without using atomic pwm.
-> What it does is: create a fifo thread in which we swicth pwm on/off, start
-> hrtimer that is used to signal thread when to switch pwm.
-> As signal comes earlier than needed(because hrtimer runs async to the
-> thread), we do a busy loop wait for the precise time to switch the pwm. At
-> least on n900, this busy loop is less than 200 us per switch(worst case,
-> usually it is less than 100 us). That way, even if we have some latency
-> spike, it is covered by not doing busy loop for that particular pwm switch
-> and we keep the precise timing.
+Your driver clearly suggests these are compatible. If they are not, why
+commit msg does no explain anything here?
 
-I think this is a good idea.
+Best regards,
+Krzysztof
 
-> Maybe we shall merge both patches so fifo thread to be used for sleeping
-> pwms and hrtimer for atomic. I can do that and test it here if you think
-> that approach makes sense.
-
-Let's try and merge this patch for the next merge window, and worry about
-the atomic version after that. We've already queued the ir-rx51 removal
-patches to media_stage so it would be nice to have to revert these patches,
-and improve pwm-ir-tx for the next kernel release.
-
-I'll test your patch, in the mean time would you mind posting this patch
-as a proper patch (with review comments below addressed)?
-
-Thanks,
-
-Sean
-
-
-> 
-> Regards,
-> Ivo
-> 
-> PS: I have a patch that converts timer-ti-dm to non-sleeping one, will send
-> it when it comes to it.
-> 
-> diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
-> index 105a9c24f1e3..e8b620f53056 100644
-> --- a/drivers/media/rc/pwm-ir-tx.c
-> +++ b/drivers/media/rc/pwm-ir-tx.c
-> @@ -4,6 +4,7 @@
->   */
-> 
->  #include <linux/kernel.h>
-> +#include <linux/kthread.h>
->  #include <linux/module.h>
->  #include <linux/pwm.h>
->  #include <linux/delay.h>
-> @@ -17,8 +18,16 @@
-> 
->  struct pwm_ir {
->  	struct pwm_device *pwm;
-> +	struct hrtimer timer;
-> +	struct task_struct *tx_thread;
-> +	wait_queue_head_t tx_wq;
-> +	struct completion tx_done;
-> +	struct completion edge;
->  	unsigned int carrier;
->  	unsigned int duty_cycle;
-> +	unsigned int *txbuf;
-> +	unsigned int count;
-> +	unsigned int index;
->  };
-> 
->  static const struct of_device_id pwm_ir_of_match[] = {
-> @@ -48,35 +57,103 @@ static int pwm_ir_set_carrier(struct rc_dev *dev, u32
-> carrier)
->  	return 0;
->  }
-> 
-> -static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
-> -		     unsigned int count)
-> +static enum hrtimer_restart pwm_ir_timer_cb(struct hrtimer *timer)
-> +{
-> +	struct pwm_ir *pwm_ir = container_of(timer, struct pwm_ir, timer);
-> +	ktime_t now;
-> +
-> +	/*
-> +	 * If we happen to hit an odd latency spike, loop through the
-> +	 * pulses until we catch up.
-> +	 */
-> +	do {
-> +		u64 edge;
-> +
-> +		if (pwm_ir->index >= pwm_ir->count)
-> +			goto out;
-
-Might as well avoid the goto and put the complete and return in the body of
-the if.
-
-> +
-> +		complete(&pwm_ir->edge);
-> +
-> +		edge = US_TO_NS(pwm_ir->txbuf[pwm_ir->index]);
-> +		hrtimer_add_expires_ns(timer, edge);
-> +
-> +		pwm_ir->index++;
-> +
-> +		now = timer->base->get_time();
-> +
-> +	} while (hrtimer_get_expires_tv64(timer) < now);
-> +
-> +	return HRTIMER_RESTART;
-> +out:
-> +	complete(&pwm_ir->edge);
-> +
-> +	return HRTIMER_NORESTART;
-> +}
-> +
-> +static void _pwm_ir_tx(struct pwm_ir *pwm_ir)
->  {
-> -	struct pwm_ir *pwm_ir = dev->priv;
-> -	struct pwm_device *pwm = pwm_ir->pwm;
->  	struct pwm_state state;
->  	int i;
->  	ktime_t edge;
->  	long delta;
-> 
-> -	pwm_init_state(pwm, &state);
-> +	pwm_init_state(pwm_ir->pwm, &state);
-> 
->  	state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
->  	pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
-> 
-> +	hrtimer_start(&pwm_ir->timer, 0, HRTIMER_MODE_REL);
-> +	wait_for_completion(&pwm_ir->edge);
->  	edge = ktime_get();
-> 
-> -	for (i = 0; i < count; i++) {
-> +	for (i = 0; i < pwm_ir->count; i++) {
->  		state.enabled = !(i % 2);
-> -		pwm_apply_state(pwm, &state);
-> +		pwm_apply_state(pwm_ir->pwm, &state);
-> +
-> +		edge = ktime_add_us(edge, pwm_ir->txbuf[i]);
-> +		wait_for_completion(&pwm_ir->edge);
-> 
-> -		edge = ktime_add_us(edge, txbuf[i]);
->  		delta = ktime_us_delta(edge, ktime_get());
-> +
->  		if (delta > 0)
-> -			usleep_range(delta, delta + 10);
-> +			udelay(delta);
->  	}
-> 
->  	state.enabled = false;
-> -	pwm_apply_state(pwm, &state);
-> +	pwm_apply_state(pwm_ir->pwm, &state);
-> +
-> +	pwm_ir->count = 0;
-> +}
-> +
-> +static int pwm_ir_thread(void *data)
-> +{
-> +	struct pwm_ir *pwm_ir = data;
-> +
-> +	for (;;) {
-> +		wait_event_idle(pwm_ir->tx_wq,
-> +				kthread_should_stop() || pwm_ir->count);
-> +
-> +		if (kthread_should_stop())
-> +			break;
-> +
-> +		_pwm_ir_tx(pwm_ir);
-> +		complete(&pwm_ir->tx_done);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
-> +		     unsigned int count)
-> +{
-> +	struct pwm_ir *pwm_ir = dev->priv;
-> +
-> +	pwm_ir->txbuf = txbuf;
-> +	pwm_ir->count = count;
-> +	pwm_ir->index = 0;
-> +
-> +	wake_up(&pwm_ir->tx_wq);
-> +	wait_for_completion(&pwm_ir->tx_done);
-> 
->  	return count;
->  }
-> @@ -91,12 +168,24 @@ static int pwm_ir_probe(struct platform_device *pdev)
->  	if (!pwm_ir)
->  		return -ENOMEM;
-> 
-> +	platform_set_drvdata(pdev, pwm_ir);
-> +
-> +	pwm_ir->count = 0;
-> +
->  	pwm_ir->pwm = devm_pwm_get(&pdev->dev, NULL);
->  	if (IS_ERR(pwm_ir->pwm))
->  		return PTR_ERR(pwm_ir->pwm);
-> 
-> -	pwm_ir->carrier = 38000;
-> +	init_waitqueue_head(&pwm_ir->tx_wq);
-> +	init_completion(&pwm_ir->edge);
-> +	init_completion(&pwm_ir->tx_done);
-> +
-> +	hrtimer_init(&pwm_ir->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-> +	pwm_ir->timer.function = pwm_ir_timer_cb;
-> +
->  	pwm_ir->duty_cycle = 50;
-> +	pwm_ir->carrier = DIV_ROUND_CLOSEST_ULL(pwm_get_period(pwm_ir->pwm),
-> +						NSEC_PER_SEC);
-> 
->  	rcdev = devm_rc_allocate_device(&pdev->dev, RC_DRIVER_IR_RAW_TX);
->  	if (!rcdev)
-> @@ -109,15 +198,38 @@ static int pwm_ir_probe(struct platform_device *pdev)
->  	rcdev->s_tx_duty_cycle = pwm_ir_set_duty_cycle;
->  	rcdev->s_tx_carrier = pwm_ir_set_carrier;
-> 
-> +	pwm_ir->tx_thread = kthread_create(pwm_ir_thread, pwm_ir, "%s/tx",
-> +					   dev_name(&pdev->dev));
-> +	if (IS_ERR(pwm_ir->tx_thread))
-> +		return PTR_ERR(pwm_ir->tx_thread);
-> +
-> +	sched_set_fifo(pwm_ir->tx_thread);
-> +	wake_up_process(pwm_ir->tx_thread);
-
-This means the thread is always around. How about creating the thread 
-per-tx?
-
-> +
->  	rc = devm_rc_register_device(&pdev->dev, rcdev);
-> -	if (rc < 0)
-> +	if (rc < 0) {
-> +		kthread_stop(pwm_ir->tx_thread);
->  		dev_err(&pdev->dev, "failed to register rc device\n");
-> +	}
-> 
->  	return rc;
->  }
-> 
-> +static int pwm_ir_remove(struct platform_device *pdev)
-> +{
-> +	struct pwm_ir *pwm_ir = platform_get_drvdata(pdev);
-> +
-> +	if (pwm_ir->tx_thread) {
-> +		kthread_stop(pwm_ir->tx_thread);
-> +		pwm_ir->tx_thread = NULL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static struct platform_driver pwm_ir_driver = {
->  	.probe = pwm_ir_probe,
-> +	.remove = pwm_ir_remove,
->  	.driver = {
->  		.name	= DRIVER_NAME,
->  		.of_match_table = of_match_ptr(pwm_ir_of_match),
