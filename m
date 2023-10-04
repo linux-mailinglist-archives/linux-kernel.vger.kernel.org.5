@@ -2,216 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEB97B8D36
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22397B8D32
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244976AbjJDTKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 15:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38504 "EHLO
+        id S245579AbjJDTIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 15:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245453AbjJDTJ4 (ORCPT
+        with ESMTP id S245502AbjJDTIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 15:09:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899B62719;
-        Wed,  4 Oct 2023 12:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696446516; x=1727982516;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=kWf97kMoKdrkVJpwjQMu+QVoyLKkxZoWflLolvd5MLk=;
-  b=dYCw69ZJdA35dJUmshcyiaHzvWcdNzImHtjn1mUs3x4+GM3Zena2T41A
-   Sc+Mh1dKefY5qXdbELx0cKd0FfMYwr7GUQgv15Mj2c8CA19D3J+aT0kd5
-   usgJ5UVr0hlYKl1r7zVa5cIlUG/aZJdDthLT9AzFZXW37Wn/KmhzqpMwk
-   37vETq3oR3puTAd/y3+UtrxgtIFmXJwIyHT8e2tjWbB2I8HmHXft8jzun
-   JYzjgbsrqmKCjfjTLHMRGRmkpYpO8OfkmW2YRM5U+AnZl8nBDqV5WRYB/
-   gMWB9daSARn8eCkExJWUnhJVlBTnax7RuCv1nXfW4hq6pEDJOFvA4Ha21
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="362630006"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="362630006"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 12:08:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="867528566"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="867528566"
-Received: from jithujos.sc.intel.com ([172.25.103.66])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 12:08:35 -0700
-From:   Jithu Joseph <jithu.joseph@intel.com>
-To:     hdegoede@redhat.com, markgross@kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        rostedt@goodmis.org, jithu.joseph@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
-        ravi.v.shankar@intel.com, pengfei.xu@intel.com,
-        ilpo.jarvinen@linux.intel.com
-Subject: [PATCH v3 9/9] platform/x86/intel/ifs: ARRAY BIST for Sierra Forest
-Date:   Wed,  4 Oct 2023 12:04:32 -0700
-Message-Id: <20231004190432.3028599-1-jithu.joseph@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <b92b44ed-19a7-aec2-615b-1b1755dafdac@linux.intel.com>
-References: <b92b44ed-19a7-aec2-615b-1b1755dafdac@linux.intel.com>
+        Wed, 4 Oct 2023 15:08:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD713AAF;
+        Wed,  4 Oct 2023 12:04:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65DF5C433C8;
+        Wed,  4 Oct 2023 19:04:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696446279;
+        bh=FOugjPZCYbC6WkKaxY/8HY2+LvaEd3TPVgFIsSpXr24=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=cRutD2LzikJC6PvYyFmcgbzU23EDNbIdZ8ON2fYHiUi5wg8ZZ4VkfXx62LCVWIIL/
+         LEUHPTInUrhUWMFPWyeD+gOuMMa24oyUADQ8jtgH5ruwbz73eKPoq0gqILrbvZQMKX
+         Z6sglB54DxsVxpcNaJvfUdA3OOP0AiKOXAZzE+EZJU+BWXMYl0nEuXrVboQYpbCH/p
+         7/5SOwanq/MiZGRDeRuCRVJFlscMKpksJEwwKK62LP07Q1DpIjyR9Cfmfhn4pfHqw8
+         ShijCM5sP8YTQNwy59xtFE0Rb/4n7yyo9BDYbiIsH25T5n7xPgLCji5y6keVPfMWzC
+         CTaoyQW/A89SQ==
+Date:   Wed, 4 Oct 2023 21:04:36 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Martino Fontana <tinozzo123@gmail.com>
+cc:     djogorchock@gmail.com, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] HID: nintendo: reinitialize USB Pro Controller after
+ resuming from suspend
+In-Reply-To: <20230924140927.9844-2-tinozzo123@gmail.com>
+Message-ID: <nycvar.YFH.7.76.2310042104270.3534@cbobk.fhfr.pm>
+References: <20230924140927.9844-2-tinozzo123@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Array BIST MSR addresses, bit definition and semantics are different for
-Sierra Forest. Branch into a separate Array BIST flow on Sierra Forest
-when user invokes Array Test.
+On Sun, 24 Sep 2023, Martino Fontana wrote:
 
-Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Tested-by: Pengfei Xu <pengfei.xu@intel.com>
----
- - Add #define for Array generation (Ilpo Järvinen)
+> When suspending the computer, a Switch Pro Controller connected via USB will
+> lose its internal status. However, because the USB connection was technically
+> never lost, when resuming the computer, the driver will attempt to communicate
+> with the controller as if nothing happened (and fail).
+> Because of this, the user was forced to manually disconnect the controller
+> (or to press the sync button on the controller to power it off), so that it
+> can be re-initialized.
+> 
+> With this patch, the controller will be automatically re-initialized after
+> resuming from suspend.
+> 
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=216233
+> 
+> Signed-off-by: Martino Fontana <tinozzo123@gmail.com>
 
- drivers/platform/x86/intel/ifs/ifs.h     |  7 +++++
- drivers/platform/x86/intel/ifs/core.c    | 15 +++++-----
- drivers/platform/x86/intel/ifs/runtest.c | 37 +++++++++++++++++++++++-
- 3 files changed, 51 insertions(+), 8 deletions(-)
+Applied, thanks.
 
-diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
-index f0dd849b3400..2dd5e3406dac 100644
---- a/drivers/platform/x86/intel/ifs/ifs.h
-+++ b/drivers/platform/x86/intel/ifs/ifs.h
-@@ -137,6 +137,8 @@
- #define MSR_CHUNKS_AUTHENTICATION_STATUS	0x000002c5
- #define MSR_ACTIVATE_SCAN			0x000002c6
- #define MSR_SCAN_STATUS				0x000002c7
-+#define MSR_ARRAY_TRIGGER			0x000002d6
-+#define MSR_ARRAY_STATUS			0x000002d7
- #define MSR_SAF_CTRL				0x000004f0
- 
- #define SCAN_NOT_TESTED				0
-@@ -146,6 +148,9 @@
- #define IFS_TYPE_SAF			0
- #define IFS_TYPE_ARRAY_BIST		1
- 
-+#define ARRAY_GEN_0			0
-+#define ARRAY_GEN_1			1
-+
- /* MSR_SCAN_HASHES_STATUS bit fields */
- union ifs_scan_hashes_status {
- 	u64	data;
-@@ -272,6 +277,7 @@ struct ifs_test_caps {
-  * @cur_batch: number indicating the currently loaded test file
-  * @generation: IFS test generation enumerated by hardware
-  * @chunk_size: size of a test chunk
-+ * @array_gen: test generation of array test
-  */
- struct ifs_data {
- 	int	loaded_version;
-@@ -283,6 +289,7 @@ struct ifs_data {
- 	u32	cur_batch;
- 	u32	generation;
- 	u32	chunk_size;
-+	u32	array_gen;
- };
- 
- struct ifs_work {
-diff --git a/drivers/platform/x86/intel/ifs/core.c b/drivers/platform/x86/intel/ifs/core.c
-index 0c8927916373..0a872b874af8 100644
---- a/drivers/platform/x86/intel/ifs/core.c
-+++ b/drivers/platform/x86/intel/ifs/core.c
-@@ -11,16 +11,16 @@
- 
- #include "ifs.h"
- 
--#define X86_MATCH(model)				\
-+#define X86_MATCH(model, array_gen)				\
- 	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(INTEL, 6,	\
--		INTEL_FAM6_##model, X86_FEATURE_CORE_CAPABILITIES, NULL)
-+		INTEL_FAM6_##model, X86_FEATURE_CORE_CAPABILITIES, array_gen)
- 
- static const struct x86_cpu_id ifs_cpu_ids[] __initconst = {
--	X86_MATCH(SAPPHIRERAPIDS_X),
--	X86_MATCH(EMERALDRAPIDS_X),
--	X86_MATCH(GRANITERAPIDS_X),
--	X86_MATCH(GRANITERAPIDS_D),
--	X86_MATCH(ATOM_CRESTMONT_X),
-+	X86_MATCH(SAPPHIRERAPIDS_X, ARRAY_GEN_0),
-+	X86_MATCH(EMERALDRAPIDS_X, ARRAY_GEN_0),
-+	X86_MATCH(GRANITERAPIDS_X, ARRAY_GEN_0),
-+	X86_MATCH(GRANITERAPIDS_D, ARRAY_GEN_0),
-+	X86_MATCH(ATOM_CRESTMONT_X, ARRAY_GEN_1),
- 	{}
- };
- MODULE_DEVICE_TABLE(x86cpu, ifs_cpu_ids);
-@@ -100,6 +100,7 @@ static int __init ifs_init(void)
- 			continue;
- 		ifs_devices[i].rw_data.generation = FIELD_GET(MSR_INTEGRITY_CAPS_SAF_GEN_MASK,
- 							      msrval);
-+		ifs_devices[i].rw_data.array_gen = (u32)m->driver_data;
- 		ret = misc_register(&ifs_devices[i].misc);
- 		if (ret)
- 			goto err_exit;
-diff --git a/drivers/platform/x86/intel/ifs/runtest.c b/drivers/platform/x86/intel/ifs/runtest.c
-index 4fe544d79946..9ac75420c15e 100644
---- a/drivers/platform/x86/intel/ifs/runtest.c
-+++ b/drivers/platform/x86/intel/ifs/runtest.c
-@@ -329,6 +329,38 @@ static void ifs_array_test_core(int cpu, struct device *dev)
- 		ifsd->status = SCAN_TEST_PASS;
- }
- 
-+#define ARRAY_GEN1_TEST_ALL_ARRAYS	0x0ULL
-+#define ARRAY_GEN1_STATUS_FAIL		0x1ULL
-+
-+static int do_array_test_gen1(void *status)
-+{
-+	int cpu = smp_processor_id();
-+	int first;
-+
-+	first = cpumask_first(cpu_smt_mask(cpu));
-+
-+	if (cpu == first) {
-+		wrmsrl(MSR_ARRAY_TRIGGER, ARRAY_GEN1_TEST_ALL_ARRAYS);
-+		rdmsrl(MSR_ARRAY_STATUS, *((u64 *)status));
-+	}
-+
-+	return 0;
-+}
-+
-+static void ifs_array_test_gen1(int cpu, struct device *dev)
-+{
-+	struct ifs_data *ifsd = ifs_get_data(dev);
-+	u64 status = 0;
-+
-+	stop_core_cpuslocked(cpu, do_array_test_gen1, &status);
-+	ifsd->scan_details = status;
-+
-+	if (status & ARRAY_GEN1_STATUS_FAIL)
-+		ifsd->status = SCAN_TEST_FAIL;
-+	else
-+		ifsd->status = SCAN_TEST_PASS;
-+}
-+
- /*
-  * Initiate per core test. It wakes up work queue threads on the target cpu and
-  * its sibling cpu. Once all sibling threads wake up, the scan test gets executed and
-@@ -356,7 +388,10 @@ int do_core_test(int cpu, struct device *dev)
- 		ifs_test_core(cpu, dev);
- 		break;
- 	case IFS_TYPE_ARRAY_BIST:
--		ifs_array_test_core(cpu, dev);
-+		if (ifsd->array_gen == ARRAY_GEN_0)
-+			ifs_array_test_core(cpu, dev);
-+		else
-+			ifs_array_test_gen1(cpu, dev);
- 		break;
- 	default:
- 		return -EINVAL;
 -- 
-2.25.1
+Jiri Kosina
+SUSE Labs
 
