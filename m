@@ -2,86 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB0C7B85B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306457B85B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243453AbjJDQt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51146 "EHLO
+        id S243471AbjJDQv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233607AbjJDQt0 (ORCPT
+        with ESMTP id S233485AbjJDQvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:49:26 -0400
+        Wed, 4 Oct 2023 12:51:55 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FDAA7
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:49:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78E14C433C7;
-        Wed,  4 Oct 2023 16:49:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29819B
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:51:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04B86C433C8;
+        Wed,  4 Oct 2023 16:51:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696438162;
-        bh=Pl/CyWpmpy67oQBOmr7t29W7B7Izi7OrIHxghbevJRk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cMIgUHUKAG/BKID844uIM19QNSFWgjecnw37K3KYEWUhfHIATrrS4AKHU2uCG4yAB
-         lGlikiB+BbezByQJbPoJqpDYaadKfan/yQPB6hecDK3UwTByjGQn1gRr7jhW7nIRnj
-         th44BQAaKPj2shPBdX/UWckF7VzZLCb1aHGR1vAj7rJG+Vu2dg+vkSJtr1k3ztnCmV
-         gTk/KcNEaIr3PM2WgV0yNR7mNk0vjfHTE/fqPfzLEU1HQhk7L7k69WoADgtjpCGo5t
-         v4Y9NQs74thC5IirzuQ5Xaf1KWS6VD/Tbk7HRonfKncJxC+E4PfqkyN8pjaCvScsaE
-         aumGo5Q58dFrg==
-From:   Will Deacon <will@kernel.org>
-To:     lenb@kernel.org, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        sudeep.holla@arm.com, Oza Pawandeep <quic_poza@quicinc.com>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v10] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
-Date:   Wed,  4 Oct 2023 17:49:15 +0100
-Message-Id: <169643348853.2504487.15808600653362880318.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231003173333.2865323-1-quic_poza@quicinc.com>
-References: <20231003173333.2865323-1-quic_poza@quicinc.com>
+        s=k20201202; t=1696438311;
+        bh=8Q4QopUgWo8aKbA+HXXLKdUEg6EbLI8JyQNYO6KZYoE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=av2hGOlj3qAsSnrueTTJhKBE6PxCl//Zeuh3VoO/XfdvnzQf4ElpbWiVioyKym912
+         2wNq2wRpALOw0C4+aFyLNXq1+E5/t5PjmVOWgYZUYqHxnWdx3OlItAMIbZPzcxnayy
+         i+s7LRfYPiJM/UtUqeO2b0ZhixyI/nUolKM0t6Oyw61eAHZ900r7+sXn2I7lny412q
+         PsyaDz/Ey6ecMa6rWEmf0UkUTrpFiWMkbVf8U8ITB4ErYK5MrXNkii0ZiUX7aCNfQL
+         rpMrDNVxi09+zgmQJUObmc/ljp6wvb34uzkDksZOfi+m38zyudH5I/EmRuhmdaegEW
+         b6o8l7E2kjLGA==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     =?utf-8?Q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     =?utf-8?Q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Evan Green <evan@rivosinc.com>,
+        =?utf-8?Q?Bj=C3=B6rn?= Topel <bjorn@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ron Minnich <rminnich@gmail.com>,
+        Daniel Maslowski <cyrevolt@googlemail.com>,
+        Conor Dooley <conor@kernel.org>
+Subject: Re: [PATCH v2 1/8] riscv: remove unused functions in
+ traps_misaligned.c
+In-Reply-To: <20231004151405.521596-2-cleger@rivosinc.com>
+References: <20231004151405.521596-1-cleger@rivosinc.com>
+ <20231004151405.521596-2-cleger@rivosinc.com>
+Date:   Wed, 04 Oct 2023 18:51:48 +0200
+Message-ID: <877co2gwkb.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Oct 2023 10:33:33 -0700, Oza Pawandeep wrote:
-> Arm® Functional Fixed Hardware Specification defines LPI states,
-> which provide an architectural context loss flags field that can
-> be used to describe the context that might be lost when an LPI
-> state is entered.
-> 
-> - Core context Lost
->         - General purpose registers.
->         - Floating point and SIMD registers.
->         - System registers, include the System register based
->         - generic timer for the core.
->         - Debug register in the core power domain.
->         - PMU registers in the core power domain.
->         - Trace register in the core power domain.
-> - Trace context loss
-> - GICR
-> - GICD
-> 
-> [...]
+Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com> writes:
 
-Applied to arm64 (for-next/fixes), thanks!
+> Replace macros by the only two function calls that are done from this
+> file, store_u8() and load_u8().
+>
+> Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
+> ---
+>  arch/riscv/kernel/traps_misaligned.c | 46 +++++-----------------------
+>  1 file changed, 7 insertions(+), 39 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/tra=
+ps_misaligned.c
+> index 378f5b151443..e7bfb33089c1 100644
+> --- a/arch/riscv/kernel/traps_misaligned.c
+> +++ b/arch/riscv/kernel/traps_misaligned.c
+> @@ -151,51 +151,19 @@
+>  #define PRECISION_S 0
+>  #define PRECISION_D 1
+>=20=20
+> -#define DECLARE_UNPRIVILEGED_LOAD_FUNCTION(type, insn)			\
+> -static inline type load_##type(const type *addr)			\
+> -{									\
+> -	type val;							\
+> -	asm (#insn " %0, %1"						\
+> -	: "=3D&r" (val) : "m" (*addr));					\
+> -	return val;							\
+> -}
+> +static inline u8 load_u8(const u8 *addr)
 
-[1/1] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
-      https://git.kernel.org/arm64/c/4785aa802853
+Really a nit, and applies to the whole file: "static inline" in a .c
+file is just useless.
 
-Cheers,
--- 
-Will
+> +{
+> +	u8 val;
+>=20=20
+> -#define DECLARE_UNPRIVILEGED_STORE_FUNCTION(type, insn)			\
+> -static inline void store_##type(type *addr, type val)			\
+> -{									\
+> -	asm volatile (#insn " %0, %1\n"					\
+> -	: : "r" (val), "m" (*addr));					\
+> -}
+> +	asm volatile("lbu %0, %1" : "=3D&r" (val) : "m" (*addr));
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+Why do you need early clobber here?
+
+
+Bj=C3=B6rn
