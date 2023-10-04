@@ -2,208 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E327B783E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967B37B7843
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241455AbjJDG6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 02:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57960 "EHLO
+        id S241464AbjJDG6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 02:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232647AbjJDG57 (ORCPT
+        with ESMTP id S237746AbjJDG6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 02:57:59 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD86DAD
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 23:57:56 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso314873166b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 23:57:56 -0700 (PDT)
+        Wed, 4 Oct 2023 02:58:18 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23648AF;
+        Tue,  3 Oct 2023 23:58:15 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3ae2ec1a222so1160245b6e.2;
+        Tue, 03 Oct 2023 23:58:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696402675; x=1697007475; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CF4RDfNCn+9e+cjFufKsFSZHZrUim5RqQgYIMHa5ioI=;
-        b=Qb0R4h8tCI4Vnxv7W2d7IbaY1CqGHVIuVfaysp8N2QPt6YDglvqj0b1d0FDFQpIzUN
-         0ek7vWPH5nRY0jQewhvBuWGyXcjcrvgsJ6oC321HhJou9PlKB0Nc5N0B4FowM3ZCGuXQ
-         J55AXmXzxJSHeHclL8KuXKslmQ8a0fqX5/tvNwsHgJdzG9vh3Pli19tsjDb1otzaycf3
-         U0wUB5uGcADGRutwYOp5N8oIdu06zQJJSv9WIChBE3ZPbD0HW73W54s/D3mt7qrSGXFh
-         oBSPuhp+lORUumuBd5v9/1Z1E1W6zzufLdiaNIZV80nE3vE942XNRAfjALn9OeF4Zujw
-         bF4w==
+        d=gmail.com; s=20230601; t=1696402694; x=1697007494; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nXwmR+/3Lhqmxga+S8/sE/k6mhMWvQB9Ir68rrB9KbI=;
+        b=fcV6NPSpwgTUxwOq4K3l2Y97PI0lILIkzDTLERWsZ5BYR8JxKnKyThMXSqj4ZOl9B2
+         J55Q8xZbWGACNgTS0FMtcvk7X9C19JwAHCEXUyXA8LqSaKQSNj5ZfC7pKHzmSPAj+9Fu
+         q1Zl11CzcTH9LkA0izhWk07ElaO5DiNgS/yNvK2plGVwyoTNaBHEnpsH3J066ozC1me/
+         +ybnCVv45caqMUASmymRgPOomV73FNEkunXjM+xeNBbqov1Fz5c7qdLh4GCWFnU801CM
+         PyTCEoBJgLGOrNKdjxVNqQsncdMMLC13pNebC17Sf3HF3shihiaelEzxt/D/H0lAjVXi
+         bWCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696402675; x=1697007475;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CF4RDfNCn+9e+cjFufKsFSZHZrUim5RqQgYIMHa5ioI=;
-        b=uXcQ87m5RC5bqx5iI4SEIZNMqUFqW0cZUHXOTjRoipn/wZ3fFQyZjBeF5Ir0bkjwL2
-         iYCCr1ggzLL4bk48KswwUwkWt2eXeUFlCtk4f2bQZ2uxznXMhb2nRaHS8Pf3k/uLHtGa
-         OuIvPk+UU5FqDWibosRtQcjaHaQaCy+3ZtbAXnyAocVfJLB3y4FYQ1KsvKPMvhO/CNyB
-         j+LvT6NDr0+/dS8jkvzP1j0NOL2altZ8zOwo5H+4gYzLnOWEF+4vn/qGa/6zKSDYOmP9
-         uUjcLD0juF/CC0dA5YgoR5E+XiVJICOWr/g3jLNrca+VDUImCbIBL6M7FewD+ZId/gvS
-         gnpg==
-X-Gm-Message-State: AOJu0YyVO15sRZLJDXZfiMQ3QuK5BHicPeG4es8dq7zib2+86/wpheeh
-        xyFAFy23guRo+KLhMJGOyzUaOw==
-X-Google-Smtp-Source: AGHT+IGvPWefRX5GARibwaZdS5nMYXVCAuJNaKgUnSAc3Se8Io0NhobmVCEIi+yTOToBHoWkjTTInw==
-X-Received: by 2002:a17:906:6a19:b0:9a5:a0c6:9e8e with SMTP id qw25-20020a1709066a1900b009a5a0c69e8emr1576297ejc.31.1696402675070;
-        Tue, 03 Oct 2023 23:57:55 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id b25-20020a170906195900b0099cc3c7ace2sm2274362eje.140.2023.10.03.23.57.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 23:57:54 -0700 (PDT)
-Message-ID: <4bc021c1-0198-41a4-aa73-bf0cf0c0420a@linaro.org>
-Date:   Wed, 4 Oct 2023 08:57:52 +0200
+        d=1e100.net; s=20230601; t=1696402694; x=1697007494;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nXwmR+/3Lhqmxga+S8/sE/k6mhMWvQB9Ir68rrB9KbI=;
+        b=jCc1uMhNBEPRNrRCOZOo2wtnWkTgCS522ptNEj+qt7ofXcGuyJTJlF7ki1iiatulUj
+         DOwJlojdIBe3CF5Rma3PkukZ/Z+PNTYoFdnjj0aJLczsphZ68fHvK1HsRBViTzaBLD5s
+         w5Wnbl2u7d6baoRONs0v9xwzmTchmUzMSy5axKiW4Iwu++ljYf3+MIQxeBGoDu0AjrXF
+         sBQWrMlk/F0nitSSwDW8OMJzwA7qtO9PaoqI2eCsOiI+26Esfuq3akeu4oSlCFw+udTK
+         ws4Pkb2YkP/h6e9g3hL5QVIAVYS0E6aCzwVQ6A5v231Vf0lT9kUgzsS5EgVUCjt02Kld
+         t3mA==
+X-Gm-Message-State: AOJu0YwGrSNJ/NFqH1QJ3Mpq/5dor5e4/rqJuY0TdyKUCK483gH74Jq+
+        /yapNOXfNea5BbSJIrVbRmw=
+X-Google-Smtp-Source: AGHT+IGqsgWDkSM7doaaePtiYpnvMHIiKZHVQq+DdlenyLQukhdNxnwcflE6mDXiyk6HB9DH39hqoQ==
+X-Received: by 2002:a05:6808:1506:b0:3ae:5e0e:1667 with SMTP id u6-20020a056808150600b003ae5e0e1667mr2115336oiw.43.1696402694356;
+        Tue, 03 Oct 2023 23:58:14 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id bt8-20020a632908000000b0056b27af8715sm2466712pgb.43.2023.10.03.23.58.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 23:58:13 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id E8AC981A7EC4; Wed,  4 Oct 2023 13:58:00 +0700 (WIB)
+Date:   Wed, 4 Oct 2023 13:58:00 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Eric Whitney <enwlinux@gmail.com>,
+        Linux ext4 <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Filesystems Development <linux-fsdevel@vger.kernel.org>
+Cc:     Jan Kara <jack@suse.com>, Baokun Li <libaokun1@huawei.com>
+Subject: Re: probable quota bug introduced in 6.6-rc1
+Message-ID: <ZR0M-CFmh567Ogyg@debian.me>
+References: <ZRytn6CxFK2oECUt@debian-BULLSEYE-live-builder-AMD64>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: phy: qcom,uniphy-pcie: Document PCIe
- uniphy
-Content-Language: en-US
-To:     Nitheesh Sekar <quic_nsekar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org,
-        mani@kernel.org, p.zabel@pengutronix.de, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, quic_ipkumar@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org
-References: <20231003120846.28626-1-quic_nsekar@quicinc.com>
- <20231003120846.28626-2-quic_nsekar@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231003120846.28626-2-quic_nsekar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="VKPvnRvQ0Pv/ixYX"
+Content-Disposition: inline
+In-Reply-To: <ZRytn6CxFK2oECUt@debian-BULLSEYE-live-builder-AMD64>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 14:08, Nitheesh Sekar wrote:
-> Document the Qualcomm UNIPHY PCIe 28LP present in IPQ5018.
-> 
-> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
 
-Thank you for your patch. There is something to discuss/improve.
+--VKPvnRvQ0Pv/ixYX
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Oct 03, 2023 at 08:11:11PM -0400, Eric Whitney wrote:
+> When run on my test hardware, generic/270 triggers hung task timeouts when
+> run on a 6.6-rc1 (or -rc2, -rc3, -rc4) kernel with kvm-xfstests using the
+> nojournal test scenario.  The test always passes, but about 60% of the ti=
+me
+> the running time of the test increases by an order of magnitude or more a=
+nd
+> one or more of the hung task timeout warnings included below can be found=
+ in
+> the log.
+>=20
+> This does not reproduce on 6.5.  Bisection leads to this patch:
+>=20
+> dabc8b207566 ("quota: fix dqput() to follow the guarantees dquot_srcu sho=
+uld
+> provide")
 
-> ---
->  .../bindings/phy/qcom,uniphy-pcie-28lp.yaml   | 77 +++++++++++++++++++
->  1 file changed, 77 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/qcom,uniphy-pcie-28lp.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/qcom,uniphy-pcie-28lp.yaml b/Documentation/devicetree/bindings/phy/qcom,uniphy-pcie-28lp.yaml
-> new file mode 100644
-> index 000000000000..6b2574f9532e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/qcom,uniphy-pcie-28lp.yaml
+Can you revert the culprit to see if it helps?
 
-Filename should match compatibles and they do not use 28lp.
+>=20
+> >From the log:
+>=20
+> generic/270 306s ...  [20:08:45][  311.322318] run fstests generic/270 at=
+ 2023-10-03 20:08:45
+> [  311.579641] EXT4-fs (vdc): mounted filesystem d0e542a0-3342-4d43-aa1f-=
+c918cc92aafa r/w without journal. Quota mode: writeback.
+> [  311.587978] EXT4-fs (vdc): re-mounted d0e542a0-3342-4d43-aa1f-c918cc92=
+aafa ro. Quota mode: writeback.
+> [  311.592725] EXT4-fs (vdc): re-mounted d0e542a0-3342-4d43-aa1f-c918cc92=
+aafa r/w. Quota mode: writeback.
+> [  335.491107] 270 (3092): drop_caches: 3
+> [  491.167988] INFO: task quotaon:3450 blocked for more than 122 seconds.
+> [  491.168334]       Not tainted 6.4.0+ #13
+> [  491.168544] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disable=
+s this message.
+> [  491.168936] task:quotaon         state:D stack:0     pid:3450  ppid:30=
+92   flags:0x00004000
+> [  491.169363] Call Trace:
+> [  491.169503]  <TASK>
+> [  491.169620]  __schedule+0x394/0xd40
+> [  491.169813]  schedule+0x5d/0xd0
+> [  491.169981]  schedule_timeout+0x1a7/0x1c0
+> [  491.170191]  ? lock_release+0x139/0x280
+> [  491.170395]  ? lock_acquire+0xb9/0x180
+> [  491.170605]  ? do_raw_spin_unlock+0x4b/0xa0
+> [  491.170837]  __wait_for_common+0xb6/0x1e0
+> [  491.171046]  ? __pfx_schedule_timeout+0x10/0x10
+> [  491.171324]  __flush_work+0x2da/0x430
+> [  491.171517]  ? __pfx_wq_barrier_func+0x10/0x10
+> [  491.171747]  ? 0xffffffff81000000
+> [  491.171932]  dquot_disable+0x3e5/0x670
+> [  491.172134]  ext4_quota_off+0x50/0x1a0
+> [  491.172332]  __x64_sys_quotactl+0x87/0x1c0
+> [  491.172545]  do_syscall_64+0x38/0x90
+> [  491.172731]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [  491.172990] RIP: 0033:0x7f3c7c79eada
+> [  491.173176] RSP: 002b:00007ffed2ff4478 EFLAGS: 00000246 ORIG_RAX: 0000=
+0000000000b3
+> [  491.173558] RAX: ffffffffffffffda RBX: 000055886a3997d0 RCX: 00007f3c7=
+c79eada
+> [  491.173915] RDX: 0000000000000000 RSI: 000055886bf43de0 RDI: 000000008=
+0000301
+> [  491.174271] RBP: 000055886bf43de0 R08: 0000000000000001 R09: 000000000=
+0000002
+> [  491.174657] R10: 0000000000000000 R11: 0000000000000246 R12: 000000000=
+0000002
+> [  491.175014] R13: 000055886bf43ea0 R14: 0000000000000001 R15: 000000000=
+0000000
+> [  491.175373]  </TASK>
+> [  491.175491]=20
+> [  491.175491] Showing all locks held in the system:
+> [  491.176706] 1 lock held by rcu_tasks_kthre/12:
+> [  491.178126]  #0: ffffffff82763970 (rcu_tasks.tasks_gp_mutex){....}-{3:=
+3}, at: rcu_tasks_one_gp+0x30/0x3f0
+> [  491.180955] 1 lock held by rcu_tasks_rude_/13:
+> [  491.182394]  #0: ffffffff827636f0 (rcu_tasks_rude.tasks_gp_mutex){....=
+}-{3:3}, at: rcu_tasks_one_gp+0x30/0x3f0
+> [  491.194388] 1 lock held by khungtaskd/26:
+> [  491.196153]  #0: ffffffff82764020 (rcu_read_lock){....}-{1:2}, at: deb=
+ug_show_all_locks+0xe/0x110
+> [  491.199676] 2 locks held by kworker/u4:4/59:
+> [  491.200722]  #0: ffff88800385cd38 ((wq_completion)events_unbound){....=
+}-{0:0}, at: process_one_work+0x1f6/0x550
+> [  491.201600]  #1: ffffc90000513e80 ((quota_release_work).work){....}-{0=
+:0}, at: process_one_work+0x1f6/0x550
+> [  491.202746] 1 lock held by quotaon/3450:
+> [  491.203184]  #0: ffff88800afd60e0 (&type->s_umount_key#33){....}-{3:3}=
+, at: user_get_super+0xd3/0x100
+> [  491.204217]=20
+> [  491.204373] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>=20
 
-> @@ -0,0 +1,77 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/phy/qcom,uniphy-pcie-28lp.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm UNIPHY PCIe 28LP PHY driver
+Anyway, thanks for the regression report. I'm adding it to regzbot:
 
-Driver as Linux driver? Drop. Describe the hardware instead.
+#regzbot ^introduced: dabc8b20756601
+#regzbot title: dqput() fix causes kvm-xfstests nojournal test time longer
 
-> +
-> +maintainers:
-> +  - Nitheesh Sekar <quic_nsekar@quicinc.com>
-> +  - Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,ipq5018-uniphy-pcie-gen2x1
-> +      - qcom,ipq5018-uniphy-pcie-gen2x2
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pipe_clk
+--=20
+An old man doll... just what I always wanted! - Clara
 
-Drop _clk... or even drop entire clock-names. Not needed for one entry.
+--VKPvnRvQ0Pv/ixYX
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +
-> +  resets:
-> +    maxItems: 2
-> +
-> +  reset-names:
-> +    items:
-> +      - const: phy
-> +      - const: phy_phy
+-----BEGIN PGP SIGNATURE-----
 
-These are absolutely terrible names. If you have third one, it would be
-"phy_phy_phy"? Drop or provide something useful.
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZR0M8wAKCRD2uYlJVVFO
+o0YAAQCXj/x0ivIXS36slQzBtYpiBrScim99oNIsooNjGAJE+QD/Y0Q3eCfSCDAr
+4Ox1OjcO2vxK3v/Otsa9cVU7kfNarg4=
+=K0YG
+-----END PGP SIGNATURE-----
 
-> +
-> +  "#phy-cells":
-> +    const: 0
-> +
-> +  "#clock-cells":
-> +    const: 0
-> +
-> +  clock-output-names:
-> +    maxItems: 1
-
-Best regards,
-Krzysztof
-
+--VKPvnRvQ0Pv/ixYX--
