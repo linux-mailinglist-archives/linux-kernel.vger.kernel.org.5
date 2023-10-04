@@ -2,68 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E45EB7B7666
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 03:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CA57B766E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 03:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240261AbjJDBsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 21:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44552 "EHLO
+        id S240501AbjJDBzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 21:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbjJDBsS (ORCPT
+        with ESMTP id S231384AbjJDBzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 21:48:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFD99E
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 18:48:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696384095; x=1727920095;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8hRoB7Ji9kQMjDy58VNJhecx+hI0XkSOAYoPGbCHTYs=;
-  b=GYVc+Dm7nC/JEVhhYSaKENPKBZD4ZRO2fwuyixRuUIYMAxQbksLMbLJA
-   ph059jehd9PI+pV9C0xU0Ms8PUWcsLwmENG+fpyYQzvyx6TDhXyMUFzAR
-   CY5A8c8j7ebpuWWB+P7CC0Z/LptncmBUwnzqRnBmtuFD49e/Z5QZzVmWV
-   KKojt1mu3ZuP98LFSdRJFJBO+QB9gHglywSDyvNFh3b2yvcSl5Z9GLQMa
-   SKwOAheRb0NJ/WMhpsX+gIAxZOUqTLEP1wIzEwM++LX2NfpnVJdrtP/sV
-   rwsn4/dmNrjyw4m1npRYSDlN6tXQzRor/wzhFNMyYLf0I//Q3ZbrByI+d
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="382930856"
-X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
-   d="scan'208";a="382930856"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 18:48:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="727827146"
-X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
-   d="scan'208";a="727827146"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 03 Oct 2023 18:48:12 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qnqzi-000AGn-1X;
-        Wed, 04 Oct 2023 01:48:10 +0000
-Date:   Wed, 4 Oct 2023 09:47:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Etienne Carriere <etienne.carriere@foss.st.com>,
-        linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org,
-        Jerome Forissier <jerome.forissier@linaro.org>,
-        Etienne Carriere <etienne.carriere@foss.st.com>
-Subject: Re: [PATCH v10 1/4] tee: optee: system call property
-Message-ID: <202310040951.IEVtCbbL-lkp@intel.com>
-References: <20231003140637.31346-2-etienne.carriere@foss.st.com>
+        Tue, 3 Oct 2023 21:55:44 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5668DA1;
+        Tue,  3 Oct 2023 18:55:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696384534;
+        bh=vQQTOrIQzcTUloKrntqCTEdQlI8w03nmxcjn2ljn8Ik=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RKK5X73jiLVO7FdZpClX+prqHXs27/uzXcJwD58M9CYacouNjEVh5zWAEaFDWSHIm
+         4d9EIa2nk23iRR59ZmFbTziM6tv+WMLmDlWHOwUgjlKwyJrBFobAkyzG38Kd2wUmXX
+         w30hdv3Nhj4eYcIU3GOY278poiIvjQnChWSNZ8sbb5eLghVhBGqLvSRr5bVNRIfBFR
+         q0DbOVKcJv1YpK8+8V83H6cvjSAKQdrFwOzp/B5xA5NGUr4pB1A5oZq3AfTszt7NCt
+         nUGj0RnJsaam8Ss5I14/GHUqtvhAhnc6vGUxFTOZedQq8FOHgPvYamDbTDxX0dkNSP
+         MVNMkyCUQsLBg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S0d7T3ZPJz4xQT;
+        Wed,  4 Oct 2023 12:55:33 +1100 (AEDT)
+Date:   Wed, 4 Oct 2023 12:55:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: linux-next: manual merge of the tty tree with the tty.current tree
+Message-ID: <20231004125531.0c61a99d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003140637.31346-2-etienne.carriere@foss.st.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: multipart/signed; boundary="Sig_/1COJnRVI20WB+o=31CaQAmw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,88 +55,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Etienne,
+--Sig_/1COJnRVI20WB+o=31CaQAmw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-kernel test robot noticed the following build warnings:
+Hi all,
 
-[auto build test WARNING on soc/for-next]
-[also build test WARNING on linus/master v6.6-rc4 next-20231003]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Today's linux-next merge of the tty tree got a conflict in:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Etienne-Carriere/tee-optee-system-call-property/20231003-220916
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-patch link:    https://lore.kernel.org/r/20231003140637.31346-2-etienne.carriere%40foss.st.com
-patch subject: [PATCH v10 1/4] tee: optee: system call property
-config: arm-allyesconfig (https://download.01.org/0day-ci/archive/20231004/202310040951.IEVtCbbL-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231004/202310040951.IEVtCbbL-lkp@intel.com/reproduce)
+  drivers/tty/serial/serial_core.c
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310040951.IEVtCbbL-lkp@intel.com/
+between commit:
 
-All warnings (new ones prefixed by >>):
+  8679328eb859 ("serial: Reduce spinlocked portion of uart_rs485_config()")
 
->> drivers/tee/optee/ffa_abi.c:618: warning: Function parameter or member 'system_thread' not described in 'optee_ffa_do_call_with_arg'
---
-   drivers/tee/optee/smc_abi.c:818: warning: Function parameter or member 'rpc_arg' not described in 'optee_handle_rpc'
->> drivers/tee/optee/smc_abi.c:890: warning: Function parameter or member 'system_thread' not described in 'optee_smc_do_call_with_arg'
+from the tty.current tree and commit:
 
+  559c7ff4e324 ("serial: core: Use port lock wrappers")
 
-vim +618 drivers/tee/optee/ffa_abi.c
+from the tty tree.
 
-4615e5a34b95e0 Jens Wiklander   2021-07-21  602  
-4615e5a34b95e0 Jens Wiklander   2021-07-21  603  /**
-4615e5a34b95e0 Jens Wiklander   2021-07-21  604   * optee_ffa_do_call_with_arg() - Do a FF-A call to enter OP-TEE in secure world
-4615e5a34b95e0 Jens Wiklander   2021-07-21  605   * @ctx:	calling context
-4615e5a34b95e0 Jens Wiklander   2021-07-21  606   * @shm:	shared memory holding the message to pass to secure world
-5b4018b959149e Jens Wiklander   2022-01-25  607   * @offs:	offset of the message in @shm
-4615e5a34b95e0 Jens Wiklander   2021-07-21  608   *
-4615e5a34b95e0 Jens Wiklander   2021-07-21  609   * Does a FF-A call to OP-TEE in secure world and handles eventual resulting
-4615e5a34b95e0 Jens Wiklander   2021-07-21  610   * Remote Procedure Calls (RPC) from OP-TEE.
-4615e5a34b95e0 Jens Wiklander   2021-07-21  611   *
-4615e5a34b95e0 Jens Wiklander   2021-07-21  612   * Returns return code from FF-A, 0 is OK
-4615e5a34b95e0 Jens Wiklander   2021-07-21  613   */
-4615e5a34b95e0 Jens Wiklander   2021-07-21  614  
-4615e5a34b95e0 Jens Wiklander   2021-07-21  615  static int optee_ffa_do_call_with_arg(struct tee_context *ctx,
-8f8e909e5204c3 Etienne Carriere 2023-10-03  616  				      struct tee_shm *shm, u_int offs,
-8f8e909e5204c3 Etienne Carriere 2023-10-03  617  				      bool system_thread)
-4615e5a34b95e0 Jens Wiklander   2021-07-21 @618  {
-4615e5a34b95e0 Jens Wiklander   2021-07-21  619  	struct ffa_send_direct_data data = {
-4615e5a34b95e0 Jens Wiklander   2021-07-21  620  		.data0 = OPTEE_FFA_YIELDING_CALL_WITH_ARG,
-4615e5a34b95e0 Jens Wiklander   2021-07-21  621  		.data1 = (u32)shm->sec_world_id,
-4615e5a34b95e0 Jens Wiklander   2021-07-21  622  		.data2 = (u32)(shm->sec_world_id >> 32),
-5b4018b959149e Jens Wiklander   2022-01-25  623  		.data3 = offs,
-4615e5a34b95e0 Jens Wiklander   2021-07-21  624  	};
-4064c461148ab1 Jens Wiklander   2021-12-28  625  	struct optee_msg_arg *arg;
-4064c461148ab1 Jens Wiklander   2021-12-28  626  	unsigned int rpc_arg_offs;
-4064c461148ab1 Jens Wiklander   2021-12-28  627  	struct optee_msg_arg *rpc_arg;
-4064c461148ab1 Jens Wiklander   2021-12-28  628  
-a639b2b18a240d Jens Wiklander   2022-01-12  629  	/*
-a639b2b18a240d Jens Wiklander   2022-01-12  630  	 * The shared memory object has to start on a page when passed as
-a639b2b18a240d Jens Wiklander   2022-01-12  631  	 * an argument struct. This is also what the shm pool allocator
-a639b2b18a240d Jens Wiklander   2022-01-12  632  	 * returns, but check this before calling secure world to catch
-a639b2b18a240d Jens Wiklander   2022-01-12  633  	 * eventual errors early in case something changes.
-a639b2b18a240d Jens Wiklander   2022-01-12  634  	 */
-a639b2b18a240d Jens Wiklander   2022-01-12  635  	if (shm->offset)
-a639b2b18a240d Jens Wiklander   2022-01-12  636  		return -EINVAL;
-a639b2b18a240d Jens Wiklander   2022-01-12  637  
-5b4018b959149e Jens Wiklander   2022-01-25  638  	arg = tee_shm_get_va(shm, offs);
-4064c461148ab1 Jens Wiklander   2021-12-28  639  	if (IS_ERR(arg))
-4064c461148ab1 Jens Wiklander   2021-12-28  640  		return PTR_ERR(arg);
-4064c461148ab1 Jens Wiklander   2021-12-28  641  
-4064c461148ab1 Jens Wiklander   2021-12-28  642  	rpc_arg_offs = OPTEE_MSG_GET_ARG_SIZE(arg->num_params);
-5b4018b959149e Jens Wiklander   2022-01-25  643  	rpc_arg = tee_shm_get_va(shm, offs + rpc_arg_offs);
-4064c461148ab1 Jens Wiklander   2021-12-28  644  	if (IS_ERR(rpc_arg))
-4064c461148ab1 Jens Wiklander   2021-12-28  645  		return PTR_ERR(rpc_arg);
-4615e5a34b95e0 Jens Wiklander   2021-07-21  646  
-8f8e909e5204c3 Etienne Carriere 2023-10-03  647  	return optee_ffa_yielding_call(ctx, &data, rpc_arg, system_thread);
-4615e5a34b95e0 Jens Wiklander   2021-07-21  648  }
-4615e5a34b95e0 Jens Wiklander   2021-07-21  649  
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/tty/serial/serial_core.c
+index ca26a8aef2cb,b32bbd7aa3d3..000000000000
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@@ -1413,9 -1409,7 +1413,9 @@@ static int uart_rs485_config(struct uar
+  	uart_sanitize_serial_rs485(port, rs485);
+  	uart_set_rs485_termination(port, rs485);
+ =20
+- 	spin_lock_irqsave(&port->lock, flags);
+++	uart_port_lock_irqsave(port, flags);
+  	ret =3D port->rs485_config(port, NULL, rs485);
+- 	spin_unlock_irqrestore(&port->lock, flags);
+++	uart_port_unlock_irqrestore(port, flags);
+  	if (ret)
+  		memset(rs485, 0, sizeof(*rs485));
+ =20
+@@@ -2480,12 -2474,13 +2480,12 @@@ int uart_resume_port(struct uart_drive
+  			if (ret =3D=3D 0) {
+  				if (tty)
+  					uart_change_line_settings(tty, state, NULL);
+ +				uart_rs485_config(uport);
+- 				spin_lock_irq(&uport->lock);
++ 				uart_port_lock_irq(uport);
+  				if (!(uport->rs485.flags & SER_RS485_ENABLED))
+  					ops->set_mctrl(uport, uport->mctrl);
+ -				else
+ -					uart_rs485_config(uport);
+  				ops->start_tx(uport);
+- 				spin_unlock_irq(&uport->lock);
++ 				uart_port_unlock_irq(uport);
+  				tty_port_set_initialized(port, true);
+  			} else {
+  				/*
+@@@ -2592,10 -2587,10 +2592,10 @@@ uart_configure_port(struct uart_driver=20
+  		port->mctrl &=3D TIOCM_DTR;
+  		if (!(port->rs485.flags & SER_RS485_ENABLED))
+  			port->ops->set_mctrl(port, port->mctrl);
+- 		spin_unlock_irqrestore(&port->lock, flags);
+ -		else
+ -			uart_rs485_config(port);
++ 		uart_port_unlock_irqrestore(port, flags);
+ =20
+ +		uart_rs485_config(port);
+ +
+  		/*
+  		 * If this driver supports console, and it hasn't been
+  		 * successfully registered yet, try to re-register it.
+
+--Sig_/1COJnRVI20WB+o=31CaQAmw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUcxhMACgkQAVBC80lX
+0Gx/1Qf+IH/807Us8iFKamkJHnuRTu4LR700iLVA7WiCxCGOEXLFYIDDFruSxehM
+8HXyGY59fReiBOfT1uRpjDvlSmUNtIKTRvJ1WpIoK3b8XM608SvcmrRkzQtpwhhq
+ZPyWq4itskPnYs1zq5QPbAq7X2jQ/7qkNlzdYzwJTJIyeCIPo5g947CVcFm7ftQp
+0493MvstYKkaTf8PqxWKYM23uCAkwVEFDGi7IDFb90Md95oJcjKUVxV+EpbzLxsy
+s9tRxfupgnvm0gLOvGSykWk/8C3VHIeE+QnGszJ5CKfuIjoe9wt6IdQQNuwzcM6o
+6qmlEJJz06VvPSRr5HpF9/QjqN013A==
+=G/xV
+-----END PGP SIGNATURE-----
+
+--Sig_/1COJnRVI20WB+o=31CaQAmw--
