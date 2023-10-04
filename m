@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C285A7B80F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF707B80FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242690AbjJDNbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35686 "EHLO
+        id S242712AbjJDNcj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 09:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242594AbjJDNbw (ORCPT
+        with ESMTP id S242710AbjJDNce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:31:52 -0400
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B111A1;
-        Wed,  4 Oct 2023 06:31:48 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 1252D381;
-        Wed,  4 Oct 2023 13:31:47 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1252D381
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1696426307; bh=sC0LHUI2i/VOkBSihVVbnuIN3LRhiyHfuQI+/ge6LnQ=;
-        h=From:To:Subject:In-Reply-To:References:Date:From;
-        b=gPerOzCb2TxaxqtLNVmpTmHrfVXfZPgs4plx0KBo4VM5iu9HsCU/GD+XeDa1ZwifI
-         cMK/+tF5afJWcVsp30wR/qQ4S+xX4JUdwBZEHXTX+bTSAmZndhyaEYGuqTt6NKd1u/
-         gLDhgdTdcUToRJLrwQipPLu3/zmDx3FwRYpbVhA4/LGnAM45fkjbmJTTope5LetHfj
-         EbBIU+VJMyITt9JR9pw5Fl+JgY1D8p31zWpzocL4TyyHK1REr2cb6yKKRsOXkWq1AH
-         u3P4l6AiXH4xZpcFcyMArEqQP4U6aHLkUPXrWfAetx/VQ4AAcuQt0hzDfyFsAUlS+w
-         bgsKJhbxbWONQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Michael Ellerman <michael@ellerman.id.au>,
-        Costa Shulyupin <costa.shul@redhat.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Linas Vepstas <linasvepstas@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        "Manoj N. Kumar" <manoj@linux.ibm.com>,
-        "Matthew R. Ochs" <mrochs@linux.ibm.com>,
-        Uma Krishnan <ukrishn@linux.ibm.com>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        Nicholas Miehlbradt <nicholas@linux.ibm.com>,
-        Benjamin Gray <bgray@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Rohan McLure <rmclure@linux.ibm.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Sathvika Vasireddy <sv@linux.ibm.com>,
-        Laurent Dufour <laurent.dufour@fr.ibm.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Brian King <brking@linux.vnet.ibm.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH] docs: move powerpc under arch
-In-Reply-To: <46705070-17B2-4BDA-9524-1BB2F7BDBACA@ellerman.id.au>
-References: <169052340516.4355.10339828466636149348@legolas.ozlabs.org>
- <20230826165737.2101199-1-costa.shul@redhat.com>
- <87cyxvelnn.fsf@meer.lwn.net>
- <46705070-17B2-4BDA-9524-1BB2F7BDBACA@ellerman.id.au>
-Date:   Wed, 04 Oct 2023 07:31:46 -0600
-Message-ID: <878r8i4ipp.fsf@meer.lwn.net>
+        Wed, 4 Oct 2023 09:32:34 -0400
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EC8D7;
+        Wed,  4 Oct 2023 06:32:31 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5a229ac185aso25343277b3.1;
+        Wed, 04 Oct 2023 06:32:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696426350; x=1697031150;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pMucO+yN7Gt13UiaJENaqz62Z68eTMF8lPfTcKOke+k=;
+        b=oRLPNvXuqmede9FU9mBxdgq2RhtW2RJbjuTOqxBx4c2Il4KphckXqPC/K93VcyZ0FV
+         SXtawQqJh/6XL96u9jz+wTpkuzjY2Km//O8M/JVIFUsC0y+EZVN1CIWcaX2OpqMUzzeW
+         rkqBzKg0/1fQEQtkduVuUFt0UEXUBei0mHPtTs50criJewdMgB09zLCzu2K/nBi8TePO
+         kDWdvudL4IulYKbz3DX53p1xnILiqV3BwhOjlRM22CbzmiHgCcRiE43V36CpEDjysUOG
+         ei/NoKhBAx9Iq9VjTXemtnYIx31j53f0zQjrRRy2r+c017Cq/pJAdyRW5my5pBCQvV3p
+         jUYQ==
+X-Gm-Message-State: AOJu0YwDcnlTjWlL88acVsD19+e7vLjqkl+5gxya3GCdI6fEE+FTL8hT
+        MvguyymqNnJ+K8z3N9duXlAwkYJnDnMIFw==
+X-Google-Smtp-Source: AGHT+IGvPTSRsbjDZGMcZ/3KloGs0hp2+x7zOKMCqouJzG+ZiwJSBoLSFzoyPUsNhZriDroTGviqag==
+X-Received: by 2002:a81:49d8:0:b0:55a:574f:327c with SMTP id w207-20020a8149d8000000b0055a574f327cmr2808275ywa.13.1696426350500;
+        Wed, 04 Oct 2023 06:32:30 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id i127-20020a0dc685000000b0058e37788bf7sm1145364ywd.72.2023.10.04.06.32.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 06:32:29 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-d865c441a54so2251184276.1;
+        Wed, 04 Oct 2023 06:32:29 -0700 (PDT)
+X-Received: by 2002:a05:6902:1890:b0:d89:4368:aa1 with SMTP id
+ cj16-20020a056902189000b00d8943680aa1mr2554867ybb.53.1696426349589; Wed, 04
+ Oct 2023 06:32:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com> <20230929053915.1530607-27-claudiu.beznea@bp.renesas.com>
+In-Reply-To: <20230929053915.1530607-27-claudiu.beznea@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 4 Oct 2023 15:32:17 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXqUNNbwV_SVqT+WAJVm6C1XgeFOpWDsBeYHxvp1hUxvw@mail.gmail.com>
+Message-ID: <CAMuHMdXqUNNbwV_SVqT+WAJVm6C1XgeFOpWDsBeYHxvp1hUxvw@mail.gmail.com>
+Subject: Re: [PATCH v2 26/28] dt-bindings: arm: renesas: document SMARC
+ Carrier-II EVK
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, magnus.damm@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
+        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Ellerman <michael@ellerman.id.au> writes:
+On Fri, Sep 29, 2023 at 7:40 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Document Renesas SMARC Carrier-II EVK board which is based on RZ/G3S
+> SMARC SoM. The SMARC Carrier-II EVK consists of RZ/G3S SoM module and
+> SMARC Carrier-II carrier board, the SoM module sits on top of carrier
+> board.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>
+> Changes in v2:
+> - this patch is new in v2
 
-> On October 4, 2023 3:05:48 AM GMT+11:00, Jonathan Corbet <corbet@lwn.net> wrote:
->>Costa Shulyupin <costa.shul@redhat.com> writes:
->>
->>> and fix all in-tree references.
->>>
->>> Architecture-specific documentation is being moved into Documentation/arch/
->>> as a way of cleaning up the top-level documentation directory and making
->>> the docs hierarchy more closely match the source hierarchy.
->>>
->>> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
->>
->>So this patch appears to have not been picked up, and to have received
->>no comments.  I'll happily carry it in docs-next, but it would be nice
->>to have an ack from the powerpc folks...?
->
-> I acked it a few months back, and said I assumed you were merging it:
->
-> https://lore.kernel.org/linuxppc-dev/87bkfwem93.fsf@mail.lhotse/
->
-> I don't mind who merges it, I figured you merging it would generate fewer conflicts, but I'm happy to take it if you think that would be better.
->
-> Anyway here's another:
->
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v6.7.
 
-OK, sorry, somehow I missed that.  I'll apply it shortly.
+Gr{oetje,eeting}s,
 
-Thanks,
+                        Geert
 
-jon
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
