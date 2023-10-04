@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B71CB7B8603
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57AAA7B865B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243570AbjJDRAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 13:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
+        id S233436AbjJDRWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 13:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243543AbjJDQ7z (ORCPT
+        with ESMTP id S243587AbjJDRFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:59:55 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE009B;
-        Wed,  4 Oct 2023 09:59:51 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394FB8v3001211;
-        Wed, 4 Oct 2023 16:59:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=9WxrQs2qZgO3q9GeP0KZrPxayPz5KdCbKHg0xT93Fxw=;
- b=cq0voKoaKB9yIWnoWsLVkRUWD+Id1/811r3fpsECeWyzDkpYqrzPOSMV4FUdkgnvf4hn
- d6iZY2aPnilN02I0IJvMvfeOofMZ7P+8Y6+3vN5ptdTENMuPF2pziu8liHSTdvSd42np
- YTBxemwFSaCb2RuqLYLlpNG5IPRUMmA419ydF7acupeT+yKsM/eloaAeZJ9E9ZG+gidG
- iEvwUSAiaWW6k3S8CEAo4oQolAl5xDpfxrVw9xZNQ7NSGnghUwgutz0D5cpPBZQFR5U+
- l1MK5uPHW7dqTV60Kc8gZvtW0fZrBK179vVfTi5UQdikvbnX7tWWOxAgPt6gFsvvukB9 fw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgr9mjjx0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 16:59:46 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 394GxjSN032106
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 4 Oct 2023 16:59:45 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 4 Oct 2023 09:59:42 -0700
-From:   Krishna Kurapati <quic_kriskura@quicinc.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <andersson@kernel.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
-        <quic_jackp@quicinc.com>,
-        Krishna Kurapati <quic_kriskura@quicinc.com>,
-        "Bjorn Andersson" <quic_bjorande@quicinc.com>
-Subject: [PATCH v12 3/3] usb: dwc3: qcom: Add helper function to request threaded IRQ
-Date:   Wed, 4 Oct 2023 22:29:22 +0530
-Message-ID: <20231004165922.25642-4-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231004165922.25642-1-quic_kriskura@quicinc.com>
-References: <20231004165922.25642-1-quic_kriskura@quicinc.com>
+        Wed, 4 Oct 2023 13:05:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA3BAD
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 10:05:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696439115; x=1727975115;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=BPrbOdjfDQnlu7PBBE6jMSOGqJlteSEMb7Ixz8XIRgc=;
+  b=FNXt+Yt0epE2UKq9LF2EgNLw+/iTBNTGj7cuGBogulwDRkRZIRugyVzE
+   Ufh2WK6CGyDLpOEDw2sGGcdGgAMDQfHrtNF9aTfDB/AHy6MKxDMvAPLVD
+   bUGi8k7MI6H7M4cOHZlOz1lyumf95FxF72n774a0RJK2cp3DYLtJLKhKm
+   x3aa7C3C57dGaJaSjHXZ6sM2WXhgQHU+PPxoWY7/f5ZztIMXlUalAa+v6
+   8Mco/x1BCO6qqiEqZjB3j+GHFmpCgwVuGBaNvwgRNDP5zIEJWj2s7fOMt
+   KQ8j9raMgFM7rZfYM26EcNxDKpO09Tcd0bfJH5Ii95aWRTMbTLGJBFVOY
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="383138204"
+X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
+   d="scan'208";a="383138204"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 10:03:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="755023978"
+X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
+   d="scan'208";a="755023978"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 10:03:55 -0700
+Date:   Wed, 4 Oct 2023 19:59:42 +0300 (EEST)
+From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+cc:     Alsa-devel <alsa-devel@alsa-project.org>,
+        Maarten Lankhorst <dev@lankhorst.se>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH v6 11/12] ASoC: SOF: Intel: Move binding to display driver
+ outside of deferred probe
+In-Reply-To: <20231004145540.32321-12-maarten.lankhorst@linux.intel.com>
+Message-ID: <alpine.DEB.2.22.394.2310041953090.3390143@eliteleevi.tm.intel.com>
+References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com> <20231004145540.32321-12-maarten.lankhorst@linux.intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 1-rm1IhHl040xUaLlW7UrkkD4Z6gkptG
-X-Proofpoint-ORIG-GUID: 1-rm1IhHl040xUaLlW7UrkkD4Z6gkptG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_08,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 adultscore=0 clxscore=1015
- mlxlogscore=647 phishscore=0 suspectscore=0 priorityscore=1501 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310040123
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,114 +76,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cleanup setup irq call by implementing a new prep_irq helper function
-and using it to request threaded IRQ's.
+Hi,
 
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
- drivers/usb/dwc3/dwc3-qcom.c | 59 ++++++++++++++++--------------------
- 1 file changed, 26 insertions(+), 33 deletions(-)
+I'm good with rest of the series, but one patch requires work.
 
-diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-index 3de43df6bbe8..ef2006db7601 100644
---- a/drivers/usb/dwc3/dwc3-qcom.c
-+++ b/drivers/usb/dwc3/dwc3-qcom.c
-@@ -535,6 +535,24 @@ static int dwc3_qcom_get_irq(struct platform_device *pdev,
- 	return ret;
+On Wed, 4 Oct 2023, Maarten Lankhorst wrote:
+
+> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+> the snd_hdac_i915_init into a workqueue.
+> 
+> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
+> probe function.
+> 
+> The previously added probe_early can be used for this,
+> and we also use the newly added remove_late for unbinding afterwards.
+[...]
+> --- a/sound/soc/sof/intel/hda-common-ops.c
+> +++ b/sound/soc/sof/intel/hda-common-ops.c
+> @@ -19,6 +19,7 @@ struct snd_sof_dsp_ops sof_hda_common_ops = {
+>  	.probe_early	= hda_dsp_probe_early,
+>  	.probe		= hda_dsp_probe,
+>  	.remove		= hda_dsp_remove,
+> +	.remove_late	= hda_dsp_remove_late,
+>  
+>  	/* Register IO uses direct mmio */
+>  
+> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+> index 86a2571488bc..4eb7f04b8ae1 100644
+> --- a/sound/soc/sof/intel/hda.c
+> +++ b/sound/soc/sof/intel/hda.c
+> @@ -1160,6 +1160,7 @@ int hda_dsp_probe_early(struct snd_sof_dev *sdev)
+>  		return -ENOMEM;
+>  	sdev->pdata->hw_pdata = hdev;
+>  	hdev->desc = chip;
+> +	ret = hda_init(sdev);
+>  
+>  err:
+>  	return ret;
+
+I don't think this works. The hda_codec_i915_init() errors are ignored in 
+hda_init() so this never returns -EPROBE_DEFER.
+
+So something like this is needed on top (tested quickly on one SOF 
+machine and this blocks SOF load until i915 or xe driver is loaded):
+
+--cut--
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 9025bfaf6a7e..8b17c82dcc89 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -863,13 +863,20 @@ static int hda_init(struct snd_sof_dev *sdev)
+        /* init i915 and HDMI codecs */
+        ret = hda_codec_i915_init(sdev);
+        if (ret < 0)
+-               dev_warn(sdev->dev, "init of i915 and HDMI codec 
+failed\n");
++               dev_warn(sdev->dev, "init of i915 and HDMI codec failed 
+(%d)\n", ret);
++
++       if (ret < 0 && ret != -ENODEV)
++               goto out;
+ 
+        /* get controller capabilities */
+        ret = hda_dsp_ctrl_get_caps(sdev);
+        if (ret < 0)
+                dev_err(sdev->dev, "error: get caps error\n");
+ 
++out:
++       if (ret < 0)
++               iounmap(sof_to_bus(sdev)->remap_addr);
++
+        return ret;
  }
- 
-+static int dwc3_qcom_prep_irq(struct dwc3_qcom *qcom, char *irq_name,
-+				char *disp_name, int irq)
-+{
-+	int ret;
-+
-+	/* Keep wakeup interrupts disabled until suspend */
-+	irq_set_status_flags(irq, IRQ_NOAUTOEN);
-+	ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
-+					qcom_dwc3_resume_irq,
-+					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-+					disp_name, qcom);
-+
-+	if (ret)
-+		dev_err(qcom->dev, "%s failed: %d\n", irq_name, ret);
-+
-+	return ret;
-+}
-+
- static int dwc3_qcom_setup_irq(struct platform_device *pdev)
- {
- 	struct dwc3_qcom *qcom = platform_get_drvdata(pdev);
-@@ -545,61 +563,36 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
- 	irq = dwc3_qcom_get_irq(pdev, "hs_phy_irq",
- 				pdata ? pdata->hs_phy_irq_index : -1);
- 	if (irq > 0) {
--		/* Keep wakeup interrupts disabled until suspend */
--		irq_set_status_flags(irq, IRQ_NOAUTOEN);
--		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
--					qcom_dwc3_resume_irq,
--					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
--					"qcom_dwc3 HS", qcom);
--		if (ret) {
--			dev_err(qcom->dev, "hs_phy_irq failed: %d\n", ret);
-+		ret = dwc3_qcom_prep_irq(qcom, "hs_phy_irq", "qcom_dwc3 HS", irq);
-+		if (ret)
- 			return ret;
--		}
- 		qcom->hs_phy_irq = irq;
- 	}
- 
- 	irq = dwc3_qcom_get_irq(pdev, "dp_hs_phy_irq",
- 				pdata ? pdata->dp_hs_phy_irq_index : -1);
- 	if (irq > 0) {
--		irq_set_status_flags(irq, IRQ_NOAUTOEN);
--		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
--					qcom_dwc3_resume_irq,
--					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
--					"qcom_dwc3 DP_HS", qcom);
--		if (ret) {
--			dev_err(qcom->dev, "dp_hs_phy_irq failed: %d\n", ret);
-+		ret = dwc3_qcom_prep_irq(qcom, "dp_hs_phy_irq", "qcom_dwc3 DP_HS", irq);
-+		if (ret)
- 			return ret;
--		}
- 		qcom->dp_hs_phy_irq = irq;
- 	}
- 
- 	irq = dwc3_qcom_get_irq(pdev, "dm_hs_phy_irq",
- 				pdata ? pdata->dm_hs_phy_irq_index : -1);
- 	if (irq > 0) {
--		irq_set_status_flags(irq, IRQ_NOAUTOEN);
--		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
--					qcom_dwc3_resume_irq,
--					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
--					"qcom_dwc3 DM_HS", qcom);
--		if (ret) {
--			dev_err(qcom->dev, "dm_hs_phy_irq failed: %d\n", ret);
-+		ret = dwc3_qcom_prep_irq(qcom, "dm_hs_phy_irq", "qcom_dwc3 DM_HS", irq);
-+		if (ret)
- 			return ret;
--		}
- 		qcom->dm_hs_phy_irq = irq;
- 	}
- 
- 	irq = dwc3_qcom_get_irq(pdev, "ss_phy_irq",
- 				pdata ? pdata->ss_phy_irq_index : -1);
- 	if (irq > 0) {
--		irq_set_status_flags(irq, IRQ_NOAUTOEN);
--		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
--					qcom_dwc3_resume_irq,
--					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
--					"qcom_dwc3 SS", qcom);
--		if (ret) {
--			dev_err(qcom->dev, "ss_phy_irq failed: %d\n", ret);
-+		ret = dwc3_qcom_prep_irq(qcom, "ss_phy_irq", "qcom_dwc3 SS", irq);
-+		if (ret)
- 			return ret;
--		}
- 		qcom->ss_phy_irq = irq;
- 	}
- 
--- 
-2.42.0
+--cut--
 
+Br, Kai
