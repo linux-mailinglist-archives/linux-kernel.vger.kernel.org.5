@@ -2,109 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A71FE7B775D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 07:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7965D7B7761
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 07:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241329AbjJDFIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 01:08:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43578 "EHLO
+        id S241328AbjJDFNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 01:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241305AbjJDFIM (ORCPT
+        with ESMTP id S231154AbjJDFNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 01:08:12 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B78B8
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 22:08:09 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-277550774e5so1129785a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 22:08:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696396089; x=1697000889; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l70770mdgEqUwhT+u6LTLNseo5sG7DB+hxhiyDsd/dM=;
-        b=lalaXWNN6G/+ussoKHa0tlKqAzdQGMP40YRA6EU4scjzjg5jdWb+eSLhBsfW5rzWKU
-         wxd6mv700AIgbn9o8s7NgAj0n/VT1/lnqsUhnr+NRbTON2CRrd0S1M4G+0QP2Lv/lCcM
-         9EoYCJ6fowPqRdRzaaDl7UeWO9/3W8SDTW8fMBcXJ4T0rkDPyY33sU0iSZe8l1qMnY5y
-         Z4TNu+YaQERN0uzkX3fnUwflbIKBQ6NNWmh1IQQENCIt6GOovxbcjzuiXg8MIS5t7Riv
-         4reu5ZEz5Qd+/moN1VaKshbE8+wFl01Hu74z2Naj9gMHhed5ro6hZNe11J+j+ZOLywkI
-         +cZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696396089; x=1697000889;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l70770mdgEqUwhT+u6LTLNseo5sG7DB+hxhiyDsd/dM=;
-        b=wofXYYVF176ECHcBpv6K8DSZt/0PPQpTzAK83PwHcB0Hi9cssZKzsAaMUSnYzrAaPd
-         qoyDQr9mpwOa39ZWMTJZWyjLyNH2HiFWNIPW6/CptQbtBO90+J1kwMlXQq7/WDdotu4n
-         90NTNr43Q2MBL8dexL0H6yvERAXWhxuQHQUR6Dej1DkEV8pOgAYGOqRANnBvMQUTGDk7
-         GjjGux1ZPEOYhnSjiUS8DI0tayJQlDUhPDyuBSj+lAy2CNIOBQZsGGyxcXbCPpfLJuWD
-         BAguQz/NwJc3dNqzPs6rSAATOXSuhmXuU3b8suUGJ6ef1JOLWb5xgadMfRkKh+UbWik5
-         UTRQ==
-X-Gm-Message-State: AOJu0Ywm6E4ge/eiH3DSkM6he3PRh4AIFDDkNStriNNfxLVKm+fIKyWr
-        /e0x6x7RYiObIgNEnhaPp1CdnQ==
-X-Google-Smtp-Source: AGHT+IFVUCtdnYnN6+YUF/T1crN40uC5L3x/cA+kDoZ1KyDgCWYiDQ10r1/zEGI9NcSWUh0c5LCPfQ==
-X-Received: by 2002:a17:90a:348d:b0:273:e8c0:f9b with SMTP id p13-20020a17090a348d00b00273e8c00f9bmr1166418pjb.15.1696396088622;
-        Tue, 03 Oct 2023 22:08:08 -0700 (PDT)
-Received: from localhost ([122.172.81.92])
-        by smtp.gmail.com with ESMTPSA id fs14-20020a17090af28e00b0026b3ed37ddcsm512206pjb.32.2023.10.03.22.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 22:08:08 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 10:38:06 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 9/9] firmware: arm_scmi: Add generic OPP support to the
- SCMI performance domain
-Message-ID: <20231004050806.sba3ogq76yiylrro@vireshk-i7>
-References: <20230925131715.138411-1-ulf.hansson@linaro.org>
- <20230925131715.138411-10-ulf.hansson@linaro.org>
- <20230929162522.zjoh5d2tqspzm3nc@bogus>
- <20231003082133.xyu46szs3jfm6fks@vireshk-i7>
- <20231003112647.bbqwnre5bzijw5sg@bogus>
+        Wed, 4 Oct 2023 01:13:06 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC4890;
+        Tue,  3 Oct 2023 22:13:02 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39456UMb029838;
+        Wed, 4 Oct 2023 05:12:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=9oXZNhn6w+pg5hULt5s1+fcnfjNHQQlRIHLopRjYlqo=;
+ b=K1MLwyCVZM7DFSZulbMUZVQDUPV5Tnusq586Zhsl9Z8D25gRdP2lb1R5JTz2ZuCfz4+Z
+ z2DZxzfKlqGwAOX5vSBkwJaHAJm4gSV4tL6buZU77YH4LZeqkzu38OHWd0RH3y9K/33E
+ Pc465HLhDKNpJnrbPiM8cDBqhNHuAaMDy5H7ADh/tTvnSsh05OMTytLIootRTh8JwPou
+ nTsDiso2sywz0IFbuicdcRTREQ44z5VDxijt1oZ4a8ema7LvgXZUzFq0BzF7zOh/2AS1
+ O7CXrSeiFkP8QJJeDLJNqcdzJHQ0AyALQZSKby0h0H/fb9Fa/ewhOT9avvNZuUJrt1sx aw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3th0y290c0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Oct 2023 05:12:26 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39456X66030400;
+        Wed, 4 Oct 2023 05:12:26 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3th0y290bs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Oct 2023 05:12:26 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3944Qi3j010941;
+        Wed, 4 Oct 2023 05:12:25 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tf0q1qyf0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Oct 2023 05:12:25 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3945CN8W23397092
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 4 Oct 2023 05:12:23 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7F06A20043;
+        Wed,  4 Oct 2023 05:12:23 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2738220040;
+        Wed,  4 Oct 2023 05:12:21 +0000 (GMT)
+Received: from [9.109.212.144] (unknown [9.109.212.144])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  4 Oct 2023 05:12:20 +0000 (GMT)
+Message-ID: <6e636e70-cbe5-45a7-8918-abdf196d5437@linux.ibm.com>
+Date:   Wed, 4 Oct 2023 10:42:20 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/2] dax/kmem: allow kmem to add memory with
+ memmap_on_memory
+Content-Language: en-US
+To:     "Verma, Vishal L" <vishal.l.verma@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Cc:     "Hocko, Michal" <mhocko@suse.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "Jonathan.Cameron@Huawei.com" <Jonathan.Cameron@Huawei.com>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jmoyer@redhat.com" <jmoyer@redhat.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>
+References: <20230928-vv-kmem_memmap-v4-0-6ff73fec519a@intel.com>
+ <20230928-vv-kmem_memmap-v4-2-6ff73fec519a@intel.com>
+ <73bdc58d-edc1-4344-b42a-4b83ca885329@linux.ibm.com>
+ <e1600e8d3986b1ed371847d4863628b8d7ad2091.camel@intel.com>
+From:   Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>
+In-Reply-To: <e1600e8d3986b1ed371847d4863628b8d7ad2091.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: lwr6gmcUVDz9kvKRX2_JLfm8fM4InJpt
+X-Proofpoint-ORIG-GUID: q9xukhjGvTEJd5H1i7EYqmnB_Vay5YoE
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003112647.bbqwnre5bzijw5sg@bogus>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-04_01,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=664 malwarescore=0 impostorscore=0 adultscore=0 bulkscore=0
+ suspectscore=0 clxscore=1015 mlxscore=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310040035
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-10-23, 12:26, Sudeep Holla wrote:
-> On Tue, Oct 03, 2023 at 01:51:33PM +0530, Viresh Kumar wrote:
-> > On 29-09-23, 17:25, Sudeep Holla wrote:
-> > > On Mon, Sep 25, 2023 at 03:17:15PM +0200, Ulf Hansson wrote:
-> > > > To allow a consumer driver to use the OPP library to scale the performance
-> > > > for its device, let's dynamically add the OPP table when the device gets
-> > > > attached to its SCMI performance domain.
-> > > >
-> > > 
-> > > The SCMI changes(patches 7-9) look fine to me. Rafael was fine with genpd
-> > > changes, Viresh if you are OK with OPP changes I can take it via SCMI as
-> > > there are some dependent patches as Ulf has pointed out in the cover letter.
-> > 
-> > I would like to take OPP patches via my tree as there are some changes in my
-> > tree and I plan to add some more changes on top of this. I can give an immutable
-> > branch though.
-> >
+On 10/4/23 5:18 AM, Verma, Vishal L wrote:
+> On Tue, 2023-10-03 at 09:34 +0530, Aneesh Kumar K V wrote:
+>> On 9/29/23 2:00 AM, Vishal Verma wrote:
+>>> Large amounts of memory managed by the kmem driver may come in via CXL,
+>>> and it is often desirable to have the memmap for this memory on the new
+>>> memory itself.
+>>>
+>>> Enroll kmem-managed memory for memmap_on_memory semantics if the dax
+>>> region originates via CXL. For non-CXL dax regions, retain the existing
+>>> default behavior of hot adding without memmap_on_memory semantics.
+>>>
+>>
+>> Are we not looking at doing altmap space for CXL DAX regions? Last discussion around
+>> this was suggesting we look at doing this via altmap reservation so that
+>> we get contigous space for device memory enabling us to map them
+>> via 1G direct mapping entries? 
+>>
+> Hey Aneesh - was this on a previous posting or something - do you have
+> a link so I can refresh myself on what the discussion was?
 > 
-> Works for me. Please do share it once you have it ready.
+> If it is enabling something in CXL similar to the --map=mem mode for
+> pmem + device dax, that could be incremental to this.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git opp/pm-domain-scmi
+Yes. Agree that we can do that incremental to this. 
 
--- 
-viresh
+https://lore.kernel.org/linux-mm/b6753402-2de9-25b2-36e9-eacd49752b19@redhat.com
+
+-aneesh
