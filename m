@@ -2,115 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 961FA7B8365
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1097B8339
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243175AbjJDPRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
+        id S243092AbjJDPLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233553AbjJDPRt (ORCPT
+        with ESMTP id S233438AbjJDPLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:17:49 -0400
-Received: from smtp.inaport4.co.id (mta-2.inaport4.co.id [103.219.76.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0FC4BD
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:17:43 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.inaport4.co.id (Postfix) with ESMTP id B24B1873D0DB;
-        Wed,  4 Oct 2023 23:12:24 +0800 (WITA)
-Received: from smtp.inaport4.co.id ([127.0.0.1])
-        by localhost (mta-2.inaport4.co.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id FXkN6dU-d5Sd; Wed,  4 Oct 2023 23:12:24 +0800 (WITA)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.inaport4.co.id (Postfix) with ESMTP id 26EB68734C53;
-        Wed,  4 Oct 2023 23:12:24 +0800 (WITA)
-DKIM-Filter: OpenDKIM Filter v2.10.3 smtp.inaport4.co.id 26EB68734C53
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inaport4.co.id;
-        s=67133E3A-D729-11EC-9A3E-209BEC03DFB2; t=1696432344;
-        bh=+OpVF14sCn4z3UgNS8jJHJB2yZ6ydPdoPxuVM0dOK/g=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=tqgcRq9ltIpfdVheLUHECFM/9udfH6TmIrb7U3ZgWlNF0mVI8TBAa3aerJF7hfK4f
-         N7swmbTqdgUUUjHRvCu4YRbuXNUWio+JhQzJJgEtWYp5cKBtmhRl00kpX8bpEzsM4k
-         7lx26OHcCq+rwFoLxhwPvZIRC+OAnYKvBrPCJPPNXcxhaTjLgs6jDYpgO2xjrZ/oJh
-         fESeJYUc+4d1y0Zwyl0qNmTnkjXxBFlTPh681N2b/eLT/O3yzy6TAEwUNTdaEk4Ipo
-         AqNnSefivMVIwgrMjqIewLz0FaSlyRYRMyMhQa+BmKLe5Utmng1PLydPAgF3a6lfrd
-         mAeki+O2LiFUg==
-X-Amavis-Modified: Mail body modified (using disclaimer) -
-        mta-2.inaport4.co.id
-X-Virus-Scanned: amavisd-new at 
-Received: from smtp.inaport4.co.id ([127.0.0.1])
-        by localhost (mta-2.inaport4.co.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id yHpyPV61Pe4T; Wed,  4 Oct 2023 23:12:23 +0800 (WITA)
-Received: from [100.122.60.88] (unknown [117.98.22.7])
-        by smtp.inaport4.co.id (Postfix) with ESMTPSA id 167FB873D0DB;
-        Wed,  4 Oct 2023 23:11:40 +0800 (WITA)
-Content-Type: text/plain; charset="iso-8859-1"
+        Wed, 4 Oct 2023 11:11:31 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F90993
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:11:27 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 284E9C15;
+        Wed,  4 Oct 2023 08:12:05 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F7873F762;
+        Wed,  4 Oct 2023 08:11:25 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 16:11:23 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Coboy Chen <coboy.chen@mediatek.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Olivier Deprez <olivier.deprez@arm.com>
+Subject: Re: [PATCH v3 07/17] firmware: arm_ffa: Implement the
+ NOTIFICATION_INFO_GET interface
+Message-ID: <20231004151123.z4w5u3j7a743bmdq@bogus>
+References: <20230929-ffa_v1-1_notif-v3-0-c8e4f15190c8@arm.com>
+ <20230929-ffa_v1-1_notif-v3-7-c8e4f15190c8@arm.com>
+ <20231004091021.GA1091193@rayden>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?b?QVRFTsOHw4NPIA==?=
-To:     Recipients <celsiusantoni@inaport4.co.id>
-From:   Administrador de Sistemas <celsiusantoni@inaport4.co.id>
-Date:   Wed, 04 Oct 2023 20:41:14 +0530
-Reply-To: sistemassadmins@mail2engineer.com
-Message-Id: <20231004151141.167FB873D0DB@smtp.inaport4.co.id>
-X-Spam-Status: Yes, score=5.7 required=5.0 tests=BAYES_40,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,URI_PHISH
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
-        *      blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [URIs: inaport4.co.id]
-        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [103.219.76.7 listed in list.dnswl.org]
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3754]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-        *  3.8 URI_PHISH Phishing using web form
-X-Spam-Level: *****
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231004091021.GA1091193@rayden>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ATEN=C7=C3O;
+On Wed, Oct 04, 2023 at 11:10:21AM +0200, Jens Wiklander wrote:
+> On Fri, Sep 29, 2023 at 04:02:56PM +0100, Sudeep Holla wrote:
+> > The receiver’s scheduler uses the FFA_NOTIFICATION_INFO_GET interface
+> > to retrieve the list of endpoints that have pending notifications and
+> > must be run. A notification could be signaled by a sender in the secure
+> > world to a VM. The Hypervisor needs to determine which VM and vCPU
+> > (in case a per-vCPU notification is signaled) has a pending notification
+> > in this scenario. It must obtain this information through an invocation
+> > of the FFA_NOTIFICATION_INFO_GET.
+> > 
+> > Add the implementation of the NOTIFICATION_INFO_GET interface
+> > and prepare to use this to handle the schedule receiver interrupt.
+> > Implementation of handling notifications will be added later.
+> > 
+> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > ---
+> >  drivers/firmware/arm_ffa/driver.c | 70 +++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 70 insertions(+)
+> > 
+> > diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
+> > index 02eedb7bc171..dfeeb751bebe 100644
+> > --- a/drivers/firmware/arm_ffa/driver.c
+> > +++ b/drivers/firmware/arm_ffa/driver.c
+> > @@ -602,6 +602,13 @@ static int ffa_notification_bitmap_destroy(void)
+> >  	(FIELD_PREP(RECEIVER_VCPU_MASK, (vcpu_r)) | \
+> >  	 FIELD_PREP(RECEIVER_ID_MASK, (r)))
+> >  
+> > +#define NOTIFICATION_INFO_GET_MORE_PEND_MASK	BIT(0)
+> > +#define NOTIFICATION_INFO_GET_ID_COUNT		GENMASK(11, 7)
+> > +#define ID_LIST_MASK_64				GENMASK(51, 12)
+> > +#define ID_LIST_MASK_32				GENMASK(31, 12)
+> > +#define MAX_IDS_64				20
+> > +#define MAX_IDS_32				10
+> > +
+> >  static int ffa_notification_bind_common(u16 dst_id, u64 bitmap,
+> >  					u32 flags, bool is_bind)
+> >  {
+> > @@ -673,6 +680,69 @@ static int ffa_notification_get(u32 flags, struct ffa_notify_bitmaps *notify)
+> >  	return 0;
+> >  }
+> >  
+> > +static void __do_sched_recv_cb(u16 partition_id, u16 vcpu, bool is_per_vcpu)
+> > +{
+> > +	pr_err("Callback for partition 0x%x failed.\n", partition_id);
+> > +}
+> > +
+> > +static void ffa_notification_info_get(bool is_64b)
+> > +{
+> > +	int idx, list, max_ids, lists_cnt, ids_processed, ids_count[MAX_IDS_64];
+> > +	ffa_value_t ret;
+> > +	u64 id_list;
+> > +
+> > +	do {
+> > +		invoke_ffa_fn((ffa_value_t){
+> > +			  .a0 = FFA_FN_NATIVE(NOTIFICATION_INFO_GET),
+> > +			  }, &ret);
+> > +
+> > +		if (ret.a0 != FFA_FN_NATIVE(SUCCESS)) {
+> 
+> The specification doesn't require a response using 64-bit SMCCC, it is
+> valid to respond using 32-bit SMCCC too.
+>
 
-Sua caixa de correio excedeu o limite de armazenamento, que =E9 de 5 GB com=
-o definido pelo administrador, que est=E1 atualmente em execu=E7=E3o no 10.=
-9GB, voc=EA pode n=E3o ser capaz de enviar ou receber novas mensagens at=E9=
- que voc=EA re-validar a sua caixa de correio. Para revalidar sua caixa de =
-correio, envie os seguintes dados abaixo:
+Do you mean to say the we need to support 64b NOTIFICATION_INFO_GET
+returning 32b FFA_SUCCESS ? If so do we need to assume only 32bits are
+used in the result. As per the specification,
 
-nome:
-Nome de usu=E1rio:
-senha:
-Confirme a Senha :
-Endere=E7o de e-mail:
-Telefone:
+"0xC4000061(FFA_FN64_SUCCESS): This function ID is used only if any result
+ register encodes a 64-bit parameter."
 
-Se voc=EA n=E3o conseguir revalidar sua caixa de correio, sua caixa postal =
-vai ser desativado!
+My question is what that means allowing 32bit FFA_SUCCESS here?
 
-Lamentamos o inconveniente.
-C=F3digo de verifica=E7=E3o:@ADMIN.WEBMAI @BR.WEBADMIN.COM.BR
-Correio T=E9cnico Suporte =A92023
-
-obrigado
-Administrador de Sistemas
-
-
+-- 
+Regards,
+Sudeep
