@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E38F87B80E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD687B80E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242578AbjJDNa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37286 "EHLO
+        id S242637AbjJDNbD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 09:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233096AbjJDNa1 (ORCPT
+        with ESMTP id S242618AbjJDNbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:30:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D97AD;
-        Wed,  4 Oct 2023 06:30:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA32BC433C8;
-        Wed,  4 Oct 2023 13:30:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696426224;
-        bh=aJVniq+g35ZseQJZAGkIBzb7ufaQ4aP0ZCjtBHrm/hE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JHyi7tX99vVdzsJMQXpWs9xJM8JqAe8UVCFgCr1+jn8VyY9G7ZUiy2OMV99FyYbI/
-         9D/91JmtqIi3B5u2Bgfl++OVCgNrrB1kL1PCnn0xfEQg3Iw9Ycy+B8XQrfPhDPsval
-         fWbtbwurTKuZLbkDHw5iCoy1DfuhBafozyS8z9IYqIOG5J/jAJFo+PbtcnN/whIVjP
-         hQb/YK/DAOI1qHF7czLo+bo5IedvtDwQXidg4sMhVQx/R/XTUCcw6I0B9dZvTyPDSc
-         kNiDk/2ZGTHfCupwaaKbZ0KouUMZuGwGksHBjpByPDO9f0392I495pyCfgqJtxuq/r
-         jGLtT3L8mNT9w==
-Received: (nullmailer pid 2755166 invoked by uid 1000);
-        Wed, 04 Oct 2023 13:30:21 -0000
-Date:   Wed, 4 Oct 2023 08:30:21 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     shravan chippa <shravan.chippa@microchip.com>
-Cc:     green.wan@sifive.com, vkoul@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, conor+dt@kernel.org,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nagasuresh.relli@microchip.com, praveen.kumar@microchip.com,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v2 2/4] dt-bindings: dma: sf-pdma: add new compatible name
-Message-ID: <20231004133021.GB2743005-robh@kernel.org>
-References: <20231003042215.142678-1-shravan.chippa@microchip.com>
- <20231003042215.142678-3-shravan.chippa@microchip.com>
+        Wed, 4 Oct 2023 09:31:01 -0400
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A71A1;
+        Wed,  4 Oct 2023 06:30:57 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59f57ad6126so24384717b3.3;
+        Wed, 04 Oct 2023 06:30:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696426256; x=1697031056;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y7Wkcd61aZ3jx46S8NbMXaS0P3NM67mT91+N7Httj6U=;
+        b=LcEWNdvY0o3uLzl7oQrMxsqzN+SMqmLSJE4yGFGlLDxxnnHdp5Qbrf+ZbsOZSVyX0q
+         Xgi/vi1/Jc06+SCwX2ACMzbhK285Hpwniwez2LVn1j0PdgNzcqg79ncN+cMo+75tFn/1
+         eO28TrtyoLKeT7vpV+onipqGlZAUNxm6SMnz+cAnS8QTp2hW85kXLgLvfdj02emMs9bw
+         F0XlGvNGycrv0Lmt7/Rsbdj78j2aRDWoyXfyscsEKYR+7w8D6yeJlCuW2FNfI5RBRLeJ
+         +tQKWq0tPMTOm+D3tHWqEabgRqvKLPoQXXxWZnEHB+9ZEgVweTZJK8fdL6ia38cIz4U7
+         07gg==
+X-Gm-Message-State: AOJu0YwTAP3ToWAkaWvpOKPQ3S4nPtI4Xj46LvhB/fpPNCX2y3nDcqGT
+        w2S4FLfDIkOuQIjn1Tk/sHxM6+SEX7skpA==
+X-Google-Smtp-Source: AGHT+IGqd5/WCAgdgySwo808CKYbEaXFHFhB0XNnubuw2hyQTkVCJsWOeht2BYUyJ3ZOn71ylngK6g==
+X-Received: by 2002:a81:8742:0:b0:59f:6675:7771 with SMTP id x63-20020a818742000000b0059f66757771mr2200602ywf.35.1696426256252;
+        Wed, 04 Oct 2023 06:30:56 -0700 (PDT)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id d5-20020a81ab45000000b005a1f7231cf5sm1115151ywk.142.2023.10.04.06.30.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 06:30:55 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5a22f9e2f40so24506887b3.1;
+        Wed, 04 Oct 2023 06:30:55 -0700 (PDT)
+X-Received: by 2002:a81:a24a:0:b0:59f:7f8e:dc4a with SMTP id
+ z10-20020a81a24a000000b0059f7f8edc4amr2987098ywg.22.1696426255356; Wed, 04
+ Oct 2023 06:30:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003042215.142678-3-shravan.chippa@microchip.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com> <20230929053915.1530607-25-claudiu.beznea@bp.renesas.com>
+In-Reply-To: <20230929053915.1530607-25-claudiu.beznea@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 4 Oct 2023 15:30:44 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVcGxFCiw9dTkpMHzz2rBZ0Lc7RZrsKtYys=QksMYVgWg@mail.gmail.com>
+Message-ID: <CAMuHMdVcGxFCiw9dTkpMHzz2rBZ0Lc7RZrsKtYys=QksMYVgWg@mail.gmail.com>
+Subject: Re: [PATCH v2 24/28] arm64: dts: renesas: rzg3l-smarc-som: add
+ initial support for RZ/G3S SMARC SoM
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, magnus.damm@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
+        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 09:52:13AM +0530, shravan chippa wrote:
-> From: Shravan Chippa <shravan.chippa@microchip.com>
-> 
-> Add new compatible name microchip,mpfs-pdma to support
-> out of order dma transfers
-> 
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
+On Fri, Sep 29, 2023 at 7:40 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Add initial support for RZ/G3S SMARC SoM. The following devices available
+> on SoM were added to this initial device tree:
+>
+> - RZ/G3S SoC: Renesas R9A08G045S33GBG
+> - Clock Generator (only 24MHz output): Renesas 5L35023B
+> - 1GiB LPDDR4 SDRAM: Micron MT53D512M16D1DS-046
+> - 64GB eMMC Flash (though SD ch0): Micron MTFC64GBCAQTC
+>
+> SD channel 0 of RZ/G3S is connected to an uSD card interface
+> and an eMMC. The selection b/w them is done though a hardware switch.
+> The DT will select b/w uSD and eMMC though SW_SD0_DEV_SEL build flag.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > ---
->  .../bindings/dma/sifive,fu540-c000-pdma.yaml         | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml b/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
-> index a1af0b906365..974467c4bacb 100644
-> --- a/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
-> +++ b/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
-> @@ -27,10 +27,14 @@ allOf:
->  
->  properties:
->    compatible:
-> -    items:
-> -      - enum:
-> -          - sifive,fu540-c000-pdma
-> -      - const: sifive,pdma0
-> +    oneOf:
-> +      - items:
-> +          - const: microchip,mpfs-pdma # Microchip out of order DMA transfer
-> +          - const: sifive,fu540-c000-pdma # Sifive in-order DMA transfer
+>
+> Changes in v2:
+> - s/Carrier-II SoM/SoM in patch title
+> - listed in commit description only devices addressed by this initial dtsi
+> - s/8G LPDDR4/1GiB LPDDR4 in commit description
+> - removed sd0-pwr-en-hog node and use specific GPIO in vcc_sdhi0 regulator
+> - added SoM compatible:
+>   compatible = "renesas,rzg3s-smarcm", "renesas,r9a08g045s33", "renesas,r9a08g045";
 
-This doesn't really make sense. microchip,mpfs-pdma is compatible with 
-sifive,fu540-c000-pdma and sifive,fu540-c000-pdma is compatible with 
-sifive,pdma0, but microchip,mpfs-pdma is not compatible with 
-sifive,pdma0? (Or replace "compatible with" with "a superset of")
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v6.7.
 
-Any fallback is only useful if an OS only understanding the fallback 
-will work with the h/w. Does this h/w work without the driver changes?
+Gr{oetje,eeting}s,
 
-Rob
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
