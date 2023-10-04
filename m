@@ -2,102 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1807B85EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961D17B85F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243540AbjJDQzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
+        id S243484AbjJDQ5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:57:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243538AbjJDQzA (ORCPT
+        with ESMTP id S233437AbjJDQ5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:55:00 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FE8AD
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:54:57 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f7d109926so33353577b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 09:54:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696438497; x=1697043297; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=v1SpCSVBVkGWfR+UVpLKMyMdKYaLIo/4ycal5KL0JmU=;
-        b=BQCb8ij3zdhky/1vgEEKMhtBMsgfFAo6jps8xVr3wBICqOF/kjqhXaqdElAK2xI1bS
-         U3cgOrlMvtFG5ECDU0wbJX7io9/m+60G84oEVcyPXvW5l+c99C+nkhMcjqMG06lAs64J
-         JcsUd5KjOhbY3t9S2KlFc2Lqnf54zyOA4NMnRme9qoOxHc56ihSYzPgiCfXS1KTOHRLQ
-         7vqXSS9ZrMAqfViGVSYkaeO1rOdjaapK3UjLBKajtx9Ig7L9WIYQPNjuJczk7iHBYs5+
-         7Bb3NbuRQ1K4k+rGFvupZ64bfmUnyG8EH0+/Tr4Rp2z2ywod6gN4uoG6+3Y42syQheqN
-         al7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696438497; x=1697043297;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v1SpCSVBVkGWfR+UVpLKMyMdKYaLIo/4ycal5KL0JmU=;
-        b=bTsQPLfVHuHTmDiqG0Cjd6H+rKo8p9fgmGLU6pGR9DLdQBtLZp9MgiZD6kBRKKRhWs
-         SR80qs2eU5sMy0wQXCW3iIzmafsJ2WXCtOxQpEIoLRCAyj59DUV0z+4aAvKAludI4ohQ
-         nKqzkK42InH+IppQPZpEE6N7F4GG+sACqwW/TiyRWU9+o0EoqF9T6YR2OkilhyhHPa0Q
-         /YGlE0b2IarKIa5YcfRanx/cBNkoNM6AlzD6kWx/9MdyMBulW6QOvoF4MIGbI7yyE16w
-         lNRF1/flenLWxPN/2W8Us5qP0ALXBPCQszBdCTUzeRSyil4k8x+sSr6mc92WdNL4FyCK
-         vwww==
-X-Gm-Message-State: AOJu0Yy5qq4vR6u08nOEKKAWaJbkFwUO2K8JeaQBaMPiRNdgU9N1wlaB
-        fxZLMiiJK/a/3mSrtHSm9ZtYjSGEdXo=
-X-Google-Smtp-Source: AGHT+IF4i+oQKJd8u1V+TB1VPIOAogrhPtMWZdEvSZy8rU+jM1S65yQ94jKQ9NyvjRiXgJ/MLji9dcyTwZ4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:a909:0:b0:59b:e97e:f7e3 with SMTP id
- g9-20020a81a909000000b0059be97ef7e3mr53564ywh.2.1696438496733; Wed, 04 Oct
- 2023 09:54:56 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 09:54:55 -0700
-In-Reply-To: <ZR2EyUULbRpXW8wK@luigi.stachecki.net>
-Mime-Version: 1.0
-References: <20230928001956.924301-1-seanjc@google.com> <ZR0QOGo5DftkRWsr@redhat.com>
- <ZR1Yt6Z+dhMbn/FJ@luigi.stachecki.net> <ZR175enUCh3KkAU6@google.com> <ZR2EyUULbRpXW8wK@luigi.stachecki.net>
-Message-ID: <ZR2Y34hFpLmCYsUr@google.com>
-Subject: Re: [PATCH 0/5] KVM: x86: Fix breakage in KVM_SET_XSAVE's ABI
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tyler Stachecki <stachecki.tyler@gmail.com>
-Cc:     Leonardo Bras <leobras@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 4 Oct 2023 12:57:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5204E95;
+        Wed,  4 Oct 2023 09:57:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2D6BC433C7;
+        Wed,  4 Oct 2023 16:57:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696438659;
+        bh=oSZDjvqYhDHr1ipQjmGHoEablNA8bA4SA3srh9BeWao=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Vlg4ukKHeFrorl1scPAtQX7kMo3D1kQenxM3SX5wDvnT9sGBOoUl/CjU7XrL1mc7j
+         8LGFhN41LIeVKDVcMNR82YYk82OSi2x1iobevO/suKpJfjRBhDcWan0qQZt/I50GHL
+         kDnmRd4eESqlMr9l4EAnNNxTbfLlZGEPjn90kecnGnC7y3yERvokIssgS6EA9ifVXy
+         W2MzMJM0ijB5TGpQwEUbde+x/ptlaw9c52K4j2iwguQ91wJ2YIwpnvF+6QKsg1EssJ
+         P4l5y69Wa3T5ugdj6io9y39RhKaOFI6SALDAP89hDAhQj3WhLQ4C812r3MDzLwwfqs
+         uyrPccPLI7ySQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 845F7CE0B71; Wed,  4 Oct 2023 09:57:38 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 09:57:38 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 07/10] rcu: Conditionally build CPU-hotplug teardown
+ callbacks
+Message-ID: <85b0010f-8166-4439-b038-22b634a3b8cb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230908203603.5865-1-frederic@kernel.org>
+ <20230908203603.5865-8-frederic@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908203603.5865-8-frederic@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023, Tyler Stachecki wrote:
-> On Wed, Oct 04, 2023 at 07:51:17AM -0700, Sean Christopherson wrote:
- 
-> > It's not about removing features.  The change you're asking for is to have KVM
-> > *silently* drop data.  Aside from the fact that such a change would break KVM's
-> > ABI, silently ignoring data that userspace has explicitly requested be loaded for
-> > a vCPU is incredibly dangerous.
+On Fri, Sep 08, 2023 at 10:36:00PM +0200, Frederic Weisbecker wrote:
+> Among the three CPU-hotplug teardown RCU callbacks, two of them early
+> exit if CONFIG_HOTPLUG_CPU=n, and one is left unchanged. In any case
+> all of them have an implementation when CONFIG_HOTPLUG_CPU=n.
 > 
-> Sorry if it came off that way
+> Align instead with the common way to deal with CPU-hotplug teardown
+> callbacks and provide a proper stub when they are not supported.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-No need to apologise, you got bit by a nasty kernel bug and are trying to find a
-solution.  There's nothing wrong with that.
+Good eyes!
 
-> I fully understand and am resigned to the "you
-> break it, you keep both halves" nature of what I had initially proposed and
-> that it is not a generally tractable solution.
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-Yeah, the crux of the matter is that we have no control or even knowledge of who
-all is using KVM, with what userspace VMM, on what hardware, etc.  E.g. if this
-bug were affecting our fleet and for some reason we couldn't address the problem
-in userspace, carrying a hack in KVM in our internal kernel would probably be a
-viable option because we can do a proper risk assessment.  E.g. we know and control
-exactly what userspace we're running, the underlying hardware in affected pools,
-what features are exposed to the guest, etc.  And we could revert the hack once
-all affected VMs had been sanitized.
+> ---
+>  include/linux/rcutree.h |  11 +++-
+>  kernel/rcu/tree.c       | 114 +++++++++++++++++++---------------------
+>  2 files changed, 63 insertions(+), 62 deletions(-)
+> 
+> diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+> index af6ddbd291eb..7d75066c72aa 100644
+> --- a/include/linux/rcutree.h
+> +++ b/include/linux/rcutree.h
+> @@ -109,9 +109,16 @@ void rcu_all_qs(void);
+>  /* RCUtree hotplug events */
+>  int rcutree_prepare_cpu(unsigned int cpu);
+>  int rcutree_online_cpu(unsigned int cpu);
+> -int rcutree_offline_cpu(unsigned int cpu);
+> +void rcu_cpu_starting(unsigned int cpu);
+> +
+> +#ifdef CONFIG_HOTPLUG_CPU
+>  int rcutree_dead_cpu(unsigned int cpu);
+>  int rcutree_dying_cpu(unsigned int cpu);
+> -void rcu_cpu_starting(unsigned int cpu);
+> +int rcutree_offline_cpu(unsigned int cpu);
+> +#else
+> +#define rcutree_dead_cpu NULL
+> +#define rcutree_dying_cpu NULL
+> +#define rcutree_offline_cpu NULL
+> +#endif
+>  
+>  #endif /* __LINUX_RCUTREE_H */
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 289c51417cbc..875f241db508 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4228,25 +4228,6 @@ static bool rcu_init_invoked(void)
+>  	return !!rcu_state.n_online_cpus;
+>  }
+>  
+> -/*
+> - * Near the end of the offline process.  Trace the fact that this CPU
+> - * is going offline.
+> - */
+> -int rcutree_dying_cpu(unsigned int cpu)
+> -{
+> -	bool blkd;
+> -	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> -	struct rcu_node *rnp = rdp->mynode;
+> -
+> -	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+> -		return 0;
+> -
+> -	blkd = !!(READ_ONCE(rnp->qsmask) & rdp->grpmask);
+> -	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
+> -			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
+> -	return 0;
+> -}
+> -
+>  /*
+>   * All CPUs for the specified rcu_node structure have gone offline,
+>   * and all tasks that were preempted within an RCU read-side critical
+> @@ -4292,23 +4273,6 @@ static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf)
+>  	}
+>  }
+>  
+> -/*
+> - * The CPU has been completely removed, and some other CPU is reporting
+> - * this fact from process context.  Do the remainder of the cleanup.
+> - * There can only be one CPU hotplug operation at a time, so no need for
+> - * explicit locking.
+> - */
+> -int rcutree_dead_cpu(unsigned int cpu)
+> -{
+> -	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+> -		return 0;
+> -
+> -	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> -	// Stop-machine done, so allow nohz_full to disable tick.
+> -	tick_dep_clear(TICK_DEP_BIT_RCU);
+> -	return 0;
+> -}
+> -
+>  /*
+>   * Propagate ->qsinitmask bits up the rcu_node tree to account for the
+>   * first CPU in a given leaf rcu_node structure coming online.  The caller
+> @@ -4461,29 +4425,6 @@ int rcutree_online_cpu(unsigned int cpu)
+>  	return 0;
+>  }
+>  
+> -/*
+> - * Near the beginning of the process.  The CPU is still very much alive
+> - * with pretty much all services enabled.
+> - */
+> -int rcutree_offline_cpu(unsigned int cpu)
+> -{
+> -	unsigned long flags;
+> -	struct rcu_data *rdp;
+> -	struct rcu_node *rnp;
+> -
+> -	rdp = per_cpu_ptr(&rcu_data, cpu);
+> -	rnp = rdp->mynode;
+> -	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> -	rnp->ffmask &= ~rdp->grpmask;
+> -	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> -
+> -	rcutree_affinity_setting(cpu, cpu);
+> -
+> -	// nohz_full CPUs need the tick for stop-machine to work quickly
+> -	tick_dep_set(TICK_DEP_BIT_RCU);
+> -	return 0;
+> -}
+> -
+>  /*
+>   * Mark the specified CPU as being online so that subsequent grace periods
+>   * (both expedited and normal) will wait on it.  Note that this means that
+> @@ -4637,7 +4578,60 @@ void rcutree_migrate_callbacks(int cpu)
+>  		  cpu, rcu_segcblist_n_cbs(&rdp->cblist),
+>  		  rcu_segcblist_first_cb(&rdp->cblist));
+>  }
+> -#endif
+> +
+> +/*
+> + * The CPU has been completely removed, and some other CPU is reporting
+> + * this fact from process context.  Do the remainder of the cleanup.
+> + * There can only be one CPU hotplug operation at a time, so no need for
+> + * explicit locking.
+> + */
+> +int rcutree_dead_cpu(unsigned int cpu)
+> +{
+> +	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> +	// Stop-machine done, so allow nohz_full to disable tick.
+> +	tick_dep_clear(TICK_DEP_BIT_RCU);
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Near the end of the offline process.  Trace the fact that this CPU
+> + * is going offline.
+> + */
+> +int rcutree_dying_cpu(unsigned int cpu)
+> +{
+> +	bool blkd;
+> +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> +	struct rcu_node *rnp = rdp->mynode;
+> +
+> +	blkd = !!(READ_ONCE(rnp->qsmask) & rdp->grpmask);
+> +	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
+> +			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Near the beginning of the process.  The CPU is still very much alive
+> + * with pretty much all services enabled.
+> + */
+> +int rcutree_offline_cpu(unsigned int cpu)
+> +{
+> +	unsigned long flags;
+> +	struct rcu_data *rdp;
+> +	struct rcu_node *rnp;
+> +
+> +	rdp = per_cpu_ptr(&rcu_data, cpu);
+> +	rnp = rdp->mynode;
+> +	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> +	rnp->ffmask &= ~rdp->grpmask;
+> +	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> +
+> +	rcutree_affinity_setting(cpu, cpu);
+> +
+> +	// nohz_full CPUs need the tick for stop-machine to work quickly
+> +	tick_dep_set(TICK_DEP_BIT_RCU);
+> +	return 0;
+> +}
+> +#endif /* #ifdef CONFIG_HOTPLUG_CPU */
+>  
+>  /*
+>   * On non-huge systems, use expedited RCU grace periods to make suspend
+> -- 
+> 2.41.0
+> 
