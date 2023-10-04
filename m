@@ -2,71 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 698247B8362
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78787B836A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243161AbjJDPRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37770 "EHLO
+        id S243204AbjJDPSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242998AbjJDPRG (ORCPT
+        with ESMTP id S233553AbjJDPSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:17:06 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5EEBF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:17:02 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a1ec43870cso27314037b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 08:17:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1696432622; x=1697037422; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IN5WIKysaV095JDrkaH6KFl3bMCNfb4hE0xbNlkR+WI=;
-        b=SLahdtkpCZ9uSW+lkZcC0ktV27g4x3ZaI/QYdA5LOmuNbMVnQmW3kpO3nsZFC5QB5j
-         PeZb209MDBo/EY1t/x+G2MT9I8+/7qEYCRnB7J4jJANnmF0AsYboTrl6PSaSSlLyg5aD
-         82nFzpXWyCTQLeWtj41lT6nagnEgbQOK57lbNS3C8RgO0t2J0ghKKWNvWAhVZwc6F/QZ
-         jfk3kRRwTwImafpER0s5p8cOrh+BTag294qXqagS+RhofuWcsKLdSZKgOfjoN1s8T67o
-         Ps0vnooYJ5FoMVu9/MfRpyJr20qzSIjWIPn1CxIrDgaxyi9BKOPMCoD5woPP8zmi9LO8
-         /o9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696432622; x=1697037422;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IN5WIKysaV095JDrkaH6KFl3bMCNfb4hE0xbNlkR+WI=;
-        b=lDRu6PtxSX/CwLIHBlO6fbYzg/asuPr99y/GA3gqFaIdiNT+4iE2RA8J71X4znoInN
-         4E1bfGdMMR5IhUitKMYg/ds4fc886m3RMouC/bEmHFlaszI8vYIMjuF82x81b9OS2qQy
-         YG3udTGQtOL1DpoMbZ8vxH8O71JaKLwIlMynI2BT7WvtPK0bAWt0ols7w//lRWh2puT1
-         L4vdyf33hw+PQ1M+2HOhrT45kaLTjZPO2/ldeKyVRB/PswMGTdJ2hoO6qYWLE0XGy8Oh
-         wX+9oSDRYRE7sx0N9l8kPcm6GGxXPM6GT73b9LqO1D04dvmjp9q4Nl8FeUjPTMjZU96C
-         /kWQ==
-X-Gm-Message-State: AOJu0YxWgF76op05Orxg74e1yjQzbdq3mMCdNgwqjZUbXXE1x/L1OprE
-        3iuL0r6W9U5R0d2IEKjds8z/gIbxM4JNVsqSMsU8VPu8+ZMM6iRG
-X-Google-Smtp-Source: AGHT+IF3gOIOHwzY/EJ4UEawivz5g6FcqEZ4tBc3cxlP5IfgeoL3y+aonS5/cF9+D+3yxBLVKvrpO4rH7ZRnIHAw2Z4=
-X-Received: by 2002:a05:6902:188e:b0:d78:be:6f02 with SMTP id
- cj14-20020a056902188e00b00d7800be6f02mr2507137ybb.11.1696432622042; Wed, 04
- Oct 2023 08:17:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZR1maZoAh2W/0Vw6@work>
-In-Reply-To: <ZR1maZoAh2W/0Vw6@work>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Wed, 4 Oct 2023 11:16:50 -0400
-Message-ID: <CAM0EoMkMfvpmxkcSyqC0dOLKDH8_JiJ74u06x7sqUHSehgjOtQ@mail.gmail.com>
-Subject: Re: [PATCH v2] net: sched: cls_u32: Fix allocation size in u32_init()
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 4 Oct 2023 11:18:35 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2080.outbound.protection.outlook.com [40.107.21.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF9F93;
+        Wed,  4 Oct 2023 08:18:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ArJrNLZN82j8XZxk+vSxyQ5dTlcVSnu8rz4e+rqMvu2TdwPcefYsDJhAyDM6RwOXuB6VF7hjukSey2uqEMujgIEP7sbbtLH/wTk6wx+pBaqHhlUrqI1bCn2dHzCLa96JFF8j7uHYMtSV66LuGQ3wn3+eKwh7WzK94uiYoiRU0ZpIZ9GN/2y/tGA5iyIfaaoJZR7Qa+xnIOSbZ0PSDgugjAm4kSgegsn6Z1K5CJNM/R+4Ic/monKxt6o+GZb6ABxlOUudnAZT//z/n4OM2vFlLo8jrtzjgX/6jaN04kzJbSdLVos8NrjimAbb36/4MLIgpKwLIh8OSEVXqC9CrQA83w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=h7v6nDhaUwiuENxl9EW1PnekAKk8hpRD9elLSa6/VL8=;
+ b=KK2+RskYVrIvX0PJwrxEixjUPXYS6G27Z3EBy4lEyV0wI8K+dXgnJvIxpcW7ktVivqRij+v8h7mjK5ynxH214SB6yRJhdjTuPINrks+EHNikI+//oIitZVmMK3g/hZ0SmNTaOTUxlevw5FRpZ2L3iuNaoiwiqTmYEjoJ7YNVk1J2qtcmZIkMCVouMaY0kyUI37WTAhZcEJNb2cB5slbKeYqu8M50XevoL8dQSX9AEEHCS8AeqeBV9JH94cERhT+Mx0PLxpwvlb2FFWJpCWP0cehFtqxAUb+OzGjpikLTzMa+yIdCxOF+r6FwN82GbzyJDngcT+2otfKqt1UoYWEEkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
+ header.d=asem.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h7v6nDhaUwiuENxl9EW1PnekAKk8hpRD9elLSa6/VL8=;
+ b=HmrqRzbQjjRD25WELH1UE8JCxhqpD1D1mvQq4xP7PRPOCAh1cgy/IwkgH+YU1CGyUegseTlleM5hKs0Syno8HPktczA2fgxFX8C2O6mwwcko7xPAvizjuOudPx8HWjEwD6y0vpVEek57TQttyHEkADDJFzk1V50myRY82KRpMwY=
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:273::14) by DU2PR01MB8624.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:2fb::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.24; Wed, 4 Oct
+ 2023 15:18:24 +0000
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::ad2b:a1e7:8828:ba2f]) by DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::ad2b:a1e7:8828:ba2f%7]) with mapi id 15.20.6863.024; Wed, 4 Oct 2023
+ 15:18:24 +0000
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+CC:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: RE: [PATCH v3 1/2] dt-bindings: backlight: Add MPS MP3309C
+Thread-Topic: [PATCH v3 1/2] dt-bindings: backlight: Add MPS MP3309C
+Thread-Index: AQHZ76uO1Fb/EPNT/k67j1TrFzld37AtE7aAgAmVcBCAAT5MAIAAXgAggAGFVUA=
+Date:   Wed, 4 Oct 2023 15:18:24 +0000
+Message-ID: <DU2PR01MB8034F17A9C81FE198CCAC5B7F9CBA@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+References: <20230925122609.78849-1-f.suligoi@asem.it>
+ <20230926130113.GB4356@aspen.lan>
+ <DU2PR01MB8034F448F6E66BAC3823CDB1F9C4A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+ <20231003102138.GB69443@aspen.lan>
+ <DU2PR01MB80349344FB8CB1415BFA917DF9C4A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+In-Reply-To: <DU2PR01MB80349344FB8CB1415BFA917DF9C4A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=asem.it;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU2PR01MB8034:EE_|DU2PR01MB8624:EE_
+x-ms-office365-filtering-correlation-id: f1d76810-552f-472c-4d02-08dbc4ed26f1
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /FM81apmaCf7eq3Xyj3bCLMFn/HdrQOTCfahjwIGPF4udy9anHX1ItWkT/YfLIPjxSIMLGhNl0ueZ+Xo/sfs19D7BI7cN2pTQVHlgLKvCRrR7XNjNJLT/zIJyVlJ9Y3LfsTSKCcOABl5mCBLj43ZJjQycaGNYH/duCyV1y9/uuKOuKaxuMdcdQfWd3/+6X1mxOpI9Xmc1gsYJ8YXsN1nF5Vi6kiRYydiMY3TXNCqWag//j7NUn8EzVu3gr7Hg/PmgB4dZNkE/RYUjugWZnc/k70F89nA6++fw58p6dfEECG/U6XY4jsSvZaXdcimKB0WripNgh38ZG2uGtjOdVAsLySB5fPd6QlMVjldlVSalhoEB/Lskjkfb9QJuqWSOKXVDCc7KGICqVuQskykVygIUkYq0CBCnTrd6//1srdA53/a11wOIV0jfb4YeJryMKd/CDpcJTEcNf5lt9m2K3ZsJr05LP7QPN2jclqNh3X7oaruLt2STWiuUQ6xeRPL/PQZzaCRcrYTKhJM4kdhGZHhnWeM5u4AZgI7/fka4p75EXFgWmftCQoeNfIBMfRFjflyKYmKai+aHuNrusn8C9PZygGyVSaO9srTc9M2NEU0naX94dKMsKKfalk435pKRVYM
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR01MB8034.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39840400004)(346002)(366004)(136003)(396003)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(71200400001)(26005)(478600001)(6506007)(7696005)(9686003)(76116006)(7416002)(4326008)(2906002)(8676002)(64756008)(8936002)(54906003)(66556008)(66476007)(52536014)(66446008)(5660300002)(66946007)(316002)(41300700001)(6916009)(122000001)(33656002)(86362001)(38070700005)(55016003)(38100700002)(66899024);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?6UEWUcpwBy8EkfaPEZDemwfL1c/HBfplVlUTc3qG0OvjDRMuUAspoo/R9iDE?=
+ =?us-ascii?Q?UTt+z9yRJXdm/ybTwyWZDmfJdHsQg/Bn94LaYQdsVFdKwKs1yw1vPnyO0sqW?=
+ =?us-ascii?Q?JBk4l2SMEQSTNwQLxT6rKO8SJnpHp2ZbcHxRwz9USkjF5r47YBJhAxD8mgCd?=
+ =?us-ascii?Q?ShSGxXq+hfNv35V3/R0OplzBcK6iHdHNyHWEb5OBEjmoFxn5kLubPmGhJDHN?=
+ =?us-ascii?Q?kh4wMBFr33TefZf617GyztdPUjUgpqCnVxt3jwPCfHJ92keF2hjJmfZH6sRf?=
+ =?us-ascii?Q?EUcOssyNeA7skollrXNR1nThE7t4sj1vHryHr0Cmy6ll2euhZWD+DHaLfYZF?=
+ =?us-ascii?Q?IgFsRWE4VCS5kC3ve5vkz1/TeO30/QvzqrHOhhPWPS6YHtbZNN72yXhMGVMS?=
+ =?us-ascii?Q?1ZH1QX8TwX6xyLRjrnXRoNCGWLdNh5tw8+j9+uJcWvoatRoPyp1niVFVf8fT?=
+ =?us-ascii?Q?rkuZN34YuhBujYpHwXskJD2Y3fsQZ8Bj8IW4g52i8tcfiR9C8ahIIJx4Wgfw?=
+ =?us-ascii?Q?ZM4cQIfPO3T/BfP2v0GoGcauW6I2rEZMCx984XXfwQL9Ubg4AW00UOMsrtIO?=
+ =?us-ascii?Q?EtNuRTqfpGW0mpv4FcrWgSOLe9zl3NTXfg7+3ZPxAnGL5vQbBsskE98pxMbK?=
+ =?us-ascii?Q?7+QSC3TArcog4O5I8SUOY/BPFy937gZfT4nmmle5WSc1V6Df+L1BEdVDlOgV?=
+ =?us-ascii?Q?WMmcOXGiJP9p3B7TmoVuX6R08Nep2LB7DbltpBMwLDebz0BOaMGAt6pn7ID8?=
+ =?us-ascii?Q?/i4d9AytWoFzu6RjKQUO5IVzLnhg++VPd52CTMEViJDfRpi3J/6eR4wGTSNS?=
+ =?us-ascii?Q?J9oG7+BjBMM+7tug5njju8atMy5y3idwbim9sePvB7Ej1uzZNdmAEz9Jqcq1?=
+ =?us-ascii?Q?t4X8wDSvVmusjzVEsdLcW7NWd5EzHa9CsX1L6fOiFNf81k4BEd3EkZs1dkBZ?=
+ =?us-ascii?Q?vt+1wzA07pb5d3i+5l+zaw9U602VMLYu7jbr47dCZfCc+Y/DO33xi9Ezvdd6?=
+ =?us-ascii?Q?CnaLmTUWyLbEccEklh1U1bf352b/2+QW7QwV36nZ61PT2NTecQJQIHIXFq9K?=
+ =?us-ascii?Q?4heqB64ZxikNz+lkBVWTXuefPFj8yTjSUMO/5lrIpgqD8uVQZLaBezr0H8vW?=
+ =?us-ascii?Q?KeBvCnYSP0zoISjeruQSMEjJoL0t0x6Lw8QC6nnfwHYWLZ09yKaeluMIIkoo?=
+ =?us-ascii?Q?lmSknwfS7sdMeNkp8zxgLKlWW5+rQGELEIfX5Hfs/U/YxfIqhPbFxx2nqZou?=
+ =?us-ascii?Q?PCQ76C0ev2v/dFiBZmMD5XqaXTFQ9l+Ss7Na/kJ6A9y0rNbN47us3/8fwubm?=
+ =?us-ascii?Q?SBoFgvhY/5MSl39m+up1Y8hTa/zGgwxVJOCPqMsNOaKcAyzPqyAbdx9C0ROs?=
+ =?us-ascii?Q?ioeR1oRU5Hlsti2nuLxVj2e9o7wwAS5jIR8A9PXIVsQTyX0A5OzJney/X3Fy?=
+ =?us-ascii?Q?vW3cKbT6GPqI7CGwpVpxxdK1WmsVZ0hKQGqznmczLsbQ8QyrBjbu82MU2g0e?=
+ =?us-ascii?Q?oV5FC113sUWzE1x1aMooT2Mryi2RVGqjIFAWN39Yp48qLYuOafsF5Zgf/TtV?=
+ =?us-ascii?Q?yl4/N5RGoRk8YgY8zrs=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+MIME-Version: 1.0
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1d76810-552f-472c-4d02-08dbc4ed26f1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Oct 2023 15:18:24.2081
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: b8Is2HQx+mpw1c858+TDKKPVpMQJ3pBKtFUZ+QCeOR9KL+QwJTygVBfLDXwY/hvbuEn5HbceRA3tk7ZCGX+9EQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR01MB8624
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,122 +128,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 9:19=E2=80=AFAM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> commit d61491a51f7e ("net/sched: cls_u32: Replace one-element array
-> with flexible-array member") incorrecly replaced an instance of
-> `sizeof(*tp_c)` with `struct_size(tp_c, hlist->ht, 1)`. This results
-> in a an over-allocation of 8 bytes.
->
-> This change is wrong because `hlist` in `struct tc_u_common` is a
-> pointer:
->
-> net/sched/cls_u32.c:
-> struct tc_u_common {
->         struct tc_u_hnode __rcu *hlist;
->         void                    *ptr;
->         int                     refcnt;
->         struct idr              handle_idr;
->         struct hlist_node       hnode;
->         long                    knodes;
-> };
->
-> So, the use of `struct_size()` makes no sense: we don't need to allocate
-> any extra space for a flexible-array member. `sizeof(*tp_c)` is just fine=
-.
->
-> So, `struct_size(tp_c, hlist->ht, 1)` translates to:
->
-> sizeof(*tp_c) + sizeof(tp_c->hlist->ht) =3D=3D
-> sizeof(struct tc_u_common) + sizeof(struct tc_u_knode *) =3D=3D
->                                                 144 + 8  =3D=3D 0x98 (bye=
-s)
->                                                      ^^^
->                                                       |
->                                                 unnecessary extra
->                                                 allocation size
->
-> $ pahole -C tc_u_common net/sched/cls_u32.o
-> struct tc_u_common {
->         struct tc_u_hnode *        hlist;                /*     0     8 *=
-/
->         void *                     ptr;                  /*     8     8 *=
-/
->         int                        refcnt;               /*    16     4 *=
-/
->
->         /* XXX 4 bytes hole, try to pack */
->
->         struct idr                 handle_idr;           /*    24    96 *=
-/
->         /* --- cacheline 1 boundary (64 bytes) was 56 bytes ago --- */
->         struct hlist_node          hnode;                /*   120    16 *=
-/
->         /* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
->         long int                   knodes;               /*   136     8 *=
-/
->
->         /* size: 144, cachelines: 3, members: 6 */
->         /* sum members: 140, holes: 1, sum holes: 4 */
->         /* last cacheline: 16 bytes */
-> };
->
-> And with `sizeof(*tp_c)`, we have:
->
->         sizeof(*tp_c) =3D=3D sizeof(struct tc_u_common) =3D=3D 144 =3D=3D=
- 0x90 (bytes)
->
-> which is the correct and original allocation size.
->
-> Fix this issue by replacing `struct_size(tp_c, hlist->ht, 1)` with
-> `sizeof(*tp_c)`, and avoid allocating 8 too many bytes.
->
-> The following difference in binary output is expected and reflects the
-> desired change:
->
-> | net/sched/cls_u32.o
-> | @@ -6148,7 +6148,7 @@
-> | include/linux/slab.h:599
-> |     2cf5:      mov    0x0(%rip),%rdi        # 2cfc <u32_init+0xfc>
-> |                        2cf8: R_X86_64_PC32     kmalloc_caches+0xc
-> |-    2cfc:      mov    $0x98,%edx
-> |+    2cfc:      mov    $0x90,%edx
->
-> Reported-by: Alejandro Colomar <alx@kernel.org>
-> Closes: https://lore.kernel.org/lkml/09b4a2ce-da74-3a19-6961-67883f634d98=
-@kernel.org/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Hi Daniel,
+...
+> ...
+> > > > > +required:
+> > > > > +  - compatible
+> > > > > +  - reg
+> > > > > +  - max-brightness
+> > > >
+> > > > Why is this mandatory?
+> > > >
+> > > > There's no point in setting max-brightness when running in I2C
+> > > > mode
+> > > > (max- brightness should default to 31 in that case).
+> > > >
+> > > >
+> > > > > +  - default-brightness
+> > > >
+> > > > Again. I'm not clear why this needs to be mandatory.
+> > > >
+> > > >
+> > >
+> > > Ok, you are right, I'll remove max-brightness and default-brightness
+> > > from required properties list. I think to change these properties,
+> > > for the pwm dimming, into a clearer:
+> > >
+> > > - brightness-levels (uint32)
+> > > - default-brightness-levels (uint32).
+> > >
+> > > For example:
+> > >
+> > >   brightness-levels:
+> > >     description:
+> > >       Number of brightness levels. The actual brightness
+> > >       level (PWM duty cycle) will be interpolated from 0 to this valu=
+e.
+> > >       0 means a  0% duty cycle (darkest/off), while the
+> > > brightness-levels
+> > represents
+> > >       a 100% duty cycle (brightest).
+> > >     $ref: /schemas/types.yaml#/definitions/uint32
+> > >
+> > >   default-brightness-level:
+> > >     description:
+> > >       The default brightness level (from 0 to brightness-levels)
+> > >     $ref: /schemas/types.yaml#/definitions/uint32
+> > >
+> > > Example:
+> > > brightness-levels =3D <10>;
+> > > default-brightness-level =3D <6>;
+> > >
+> > > What do you think about this solution?
+> >
+> > If you want to introduce a brightness-levels property then I would
+> > expect it to be defined with the same meaning as pwm-backlight (it's
+> > not relevant to the bindings but ideally it would be implemented by
+> > refactoring and reusing the code from pwm_bl.c).
+>=20
+> ok, I'll use the brightness-levels property as used in pwm-backlight
+>=20
+> >
+> > Same with default-brightness-level although I'm not sure why one
+> > wouldn't just use default-brightness for new bindings (doesn't
+> > default-brightness-level simply do exactly the same thing as default-
+> brightness).
+>=20
+> ok for default-brightness instead of default-brightness-level
 
-Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
+Just a question: default-brightness-level is the index into the brightness-=
+levels array.
+But, if I use default-brightness instead of default-brightness-level, =20
+should I consider default-brightness also as an index into brightness-level=
+s array?
+Or, in this case, have the default-brightness to be equal to one of the val=
+ues inside the
+brightness-levels array?
 
-cheers,
-jamal
+>=20
+> >
+> >
+> > Daniel.
+>=20
+> Thanks an best regards,
+> Flavio
 
-> Changes in v2:
->  - Update subject line.
->  - Update changelog text.
->
-> v1:
->  - Link: https://lore.kernel.org/linux-hardening/ZN5DvRyq6JNz20l1@work/
->
->  net/sched/cls_u32.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
-> index da4c179a4d41..6663e971a13e 100644
-> --- a/net/sched/cls_u32.c
-> +++ b/net/sched/cls_u32.c
-> @@ -366,7 +366,7 @@ static int u32_init(struct tcf_proto *tp)
->         idr_init(&root_ht->handle_idr);
->
->         if (tp_c =3D=3D NULL) {
-> -               tp_c =3D kzalloc(struct_size(tp_c, hlist->ht, 1), GFP_KER=
-NEL);
-> +               tp_c =3D kzalloc(sizeof(*tp_c), GFP_KERNEL);
->                 if (tp_c =3D=3D NULL) {
->                         kfree(root_ht);
->                         return -ENOBUFS;
-> --
-> 2.34.1
->
+Thanks,
+
+Flavio
