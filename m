@@ -2,77 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BB17B8148
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F007B814B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242669AbjJDNr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
+        id S242656AbjJDNsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 09:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242652AbjJDNrx (ORCPT
+        with ESMTP id S242684AbjJDNsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:47:53 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5D19B;
-        Wed,  4 Oct 2023 06:47:49 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso387874966b.0;
-        Wed, 04 Oct 2023 06:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696427268; x=1697032068; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I1zr3QyrRab34YjbDoJeZTwZ877wt83ubKCahPs2NWU=;
-        b=lzqMmUI4R+ERWIc7zl1GyhnLuWeI/ZTAUvyejRIEL6jPzshOwy8Rfrfx5h839kJQb7
-         EN02cer0HTBhKm1MS9/wbNv9Utk1+kXiwF8i7hl8jEKbJNV//DPKOjHC7pCzWRoor4Q4
-         w4NRM9h7yleW2/Jj80rHhgrqMl5YYLT6vzEQ98HcPIkNu1bulX9qtTS96cfM/We2hh2D
-         S0XXixR79feHFoqhZtbwNqRqvDarsBkoWcUm0x6Ga/4MJfdb/3VfEzN5c0JRv4UYsxEP
-         8ilG4xUZh4mIhxtB0jvYcSjjUSMtpn5DYu277iJk/+YEA0SqEYV93CgNG/LZ9pfJz/ZM
-         yp6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696427268; x=1697032068;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I1zr3QyrRab34YjbDoJeZTwZ877wt83ubKCahPs2NWU=;
-        b=IHmcaCreh7oZop+6cgpXt8ZE1Xzg1neaU7CLYMtwPNdpvau+icLRyZ4jJqQdZb7Ibk
-         9vKQkCePk+BmtAVUvfvcFeQJTbQpO74moSRh6dYB+UpcOAd4/a2mrPOdkGIVaMOyyr5V
-         PzEb3YaO5Cq0ZLKqVDqu/o8aRJrEqVhY/1PJU9+KbNkkAoeqHdmPES6zoDokdw0lTq4u
-         k4vmrtGEQJO2Pda4MP6wl8xJbLx5exPSNqZUVeZmrT40uoacCQ5pnaa6v/PfuIUZuWSE
-         5ctXEZbjtDjpgu3D5I+UbRim7fcpavwsyce0y5ZWgGenECyRPbgEYPynGsiTclwyBbIW
-         M18g==
-X-Gm-Message-State: AOJu0YyTsXKK8D57uEgam9OQbbTFZeSydofwN+GiHgDW1y8GFlT20JAW
-        cA7Wn3nGiAQp/iJ5zwS+uJamfPqnCgADHw==
-X-Google-Smtp-Source: AGHT+IG1GU5Q6WEANAwSOY2AZD1N1CUddHWMbtHL0AB4CjDFJX6kewEa3vy3b/WzbqjYm9gTewmnTQ==
-X-Received: by 2002:a17:907:2723:b0:9a5:d657:47ee with SMTP id d3-20020a170907272300b009a5d65747eemr1999081ejl.58.1696427267908;
-        Wed, 04 Oct 2023 06:47:47 -0700 (PDT)
-Received: from [127.0.1.1] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
-        by smtp.gmail.com with ESMTPSA id kf1-20020a17090776c100b00992f2befcbcsm2805593ejc.180.2023.10.04.06.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 06:47:47 -0700 (PDT)
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date:   Wed, 04 Oct 2023 15:47:43 +0200
-Subject: [PATCH 3/3] selftests/dmabuf-heaps: add gitignore file
+        Wed, 4 Oct 2023 09:48:10 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E98BA1;
+        Wed,  4 Oct 2023 06:48:07 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7708DDA7;
+        Wed,  4 Oct 2023 06:48:45 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 15BB73F59C;
+        Wed,  4 Oct 2023 06:48:04 -0700 (PDT)
+Message-ID: <9b519a19-548c-dec0-ed69-52695ff12a69@arm.com>
+Date:   Wed, 4 Oct 2023 14:48:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 5/7] coresight: tmc: Add support for reading tracedata
+ from previous boot
+Content-Language: en-US
+From:   James Clark <james.clark@arm.com>
+To:     Linu Cherian <lcherian@marvell.com>, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, sgoutham@marvell.com,
+        gcherian@marvell.com, Anil Kumar Reddy <areddy3@marvell.com>,
+        Tanmay Jagdale <tanmay@marvell.com>
+References: <20230929133754.857678-1-lcherian@marvell.com>
+ <20230929133754.857678-6-lcherian@marvell.com>
+ <acc2a406-2cff-eb3b-7661-1a93d4749bf2@arm.com>
+In-Reply-To: <acc2a406-2cff-eb3b-7661-1a93d4749bf2@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231004-topic-selftest_gitignore-v1-3-40689bcd23e2@gmail.com>
-References: <20231004-topic-selftest_gitignore-v1-0-40689bcd23e2@gmail.com>
-In-Reply-To: <20231004-topic-selftest_gitignore-v1-0-40689bcd23e2@gmail.com>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696427264; l=515;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=Fy8e2jpbkway7o2jXZz31LU68r9YzhJywXlYBNMd5AQ=;
- b=g8xKt1P8ziu97cszgQhL9lABHnX0LODN8p2+cGK2lnngVUPymvVwVS+wiKUsJ3u88vwM6UL7w
- mtdGOlsjjMqClnYnc5PvcdXGpFps8A/sjwdnf1pBrKYQixVyQluWECp
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,21 +53,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dmabuf-heaps builds a dmabuf-heap binary that can be ignored by git.
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- tools/testing/selftests/dmabuf-heaps/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/dmabuf-heaps/.gitignore b/tools/testing/selftests/dmabuf-heaps/.gitignore
-new file mode 100644
-index 000000000000..b500e76b9045
---- /dev/null
-+++ b/tools/testing/selftests/dmabuf-heaps/.gitignore
-@@ -0,0 +1 @@
-+dmabuf-heap
+On 03/10/2023 17:43, James Clark wrote:
+> 
+> 
+> On 29/09/2023 14:37, Linu Cherian wrote:
+>> * Introduce a new mode CS_MODE_READ_PREVBOOT for reading tracedata
+>>   captured in previous boot.
+>>
+>> * Add special handlers for preparing ETR/ETF for this special mode
+>>
+>> * User can read the trace data as below
+>>
+>>   For example, for reading trace data from tmc_etf sink
+>>
+>>   1. cd /sys/bus/coresight/devices/tmc_etfXX/
+>>
+>>   2. Change mode to READ_PREVBOOT
+>>
+>>      #echo 1 > read_prevboot
+>>
+>>   3. Dump trace buffer data to a file,
+>>
+>>      #dd if=/dev/tmc_etrXX of=~/cstrace.bin
+>>
+>>   4. Reset back to normal mode
+>>
+>>      #echo 0 > read_prevboot
+>>
+>> Signed-off-by: Anil Kumar Reddy <areddy3@marvell.com>
+>> Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
+>> Signed-off-by: Linu Cherian <lcherian@marvell.com>
+>> ---
+>>  .../coresight/coresight-etm4x-core.c          |   1 +
+>>  .../hwtracing/coresight/coresight-tmc-core.c  |  81 +++++++++-
+>>  .../hwtracing/coresight/coresight-tmc-etf.c   |  62 ++++++++
+>>  .../hwtracing/coresight/coresight-tmc-etr.c   | 145 +++++++++++++++++-
+>>  drivers/hwtracing/coresight/coresight-tmc.h   |   6 +
+>>  include/linux/coresight.h                     |  13 ++
+>>  6 files changed, 306 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> index 77b0271ce6eb..513baf681280 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> @@ -1010,6 +1010,7 @@ static void etm4_disable(struct coresight_device *csdev,
+>>  
+>>  	switch (mode) {
+>>  	case CS_MODE_DISABLED:
+>> +	case CS_MODE_READ_PREVBOOT:
+>>  		break;
+>>  	case CS_MODE_SYSFS:
+>>  		etm4_disable_sysfs(csdev);
+>> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+>> index 6658ce76777b..65c15c9f821b 100644
+>> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+>> @@ -103,6 +103,45 @@ u32 tmc_get_memwidth_mask(struct tmc_drvdata *drvdata)
+>>  	return mask;
+>>  }
+>>  
+>> +int tmc_read_prepare_prevboot(struct tmc_drvdata *drvdata)
+>> +{
+>> +	int ret = 0;
+>> +	struct tmc_register_snapshot *reg_ptr;
+>> +	struct coresight_device *csdev = drvdata->csdev;
+>> +
+>> +	if (!drvdata->metadata.vaddr) {
+>> +		ret = -ENOMEM;
+>> +		goto out;
+>> +	}
+>> +
+>> +	reg_ptr = drvdata->metadata.vaddr;
+>> +	if (!reg_ptr->valid) {
+>> +		dev_err(&drvdata->csdev->dev,
+>> +			"Invalid metadata captured from previous boot\n");
+>> +		ret = -EINVAL;
+>> +		goto out;
+>> +	}
+> 
+> I'm wondering if a more robust check is needed than the valid flag, like
+> a checksum or something. I didn't debug it yet but I ended up with an
+> invalid set of metadata after a panic reboot, see below. I'm not sure if
+> it's just a logic bug or something got lost during the reboot, I didn't
+> debug it yet. But I suppose unless you assume the panic didn't affect
+> writing the metadata, then it could be partially written and shouldn't
+> be trusted?
+> 
+> [...]
+>> +
+>> +static int tmc_etr_sync_prevboot_buf(struct tmc_drvdata *drvdata)
+>> +{
+>> +	u32 status;
+>> +	u64 rrp, rwp, dba;
+>> +	struct tmc_register_snapshot *reg_ptr;
+>> +	struct etr_buf *etr_buf = drvdata->prevboot_buf;
+>> +
+>> +	reg_ptr = drvdata->metadata.vaddr;
+>> +
+>> +	rrp = reg_ptr->rrp;
+>> +	rwp = reg_ptr->rwp;
+>> +	dba = reg_ptr->dba;
+>> +	status = reg_ptr->sts;
+>> +
+>> +	etr_buf->full = !!(status & TMC_STS_FULL);
+>> +
+>> +	/* Sync the buffer pointers */
+>> +	etr_buf->offset = rrp - dba;
+>> +	if (etr_buf->full)
+>> +		etr_buf->len = etr_buf->size;
+>> +	else
+>> +		etr_buf->len = rwp - rrp;
+>> +
+>> +	/* Sanity checks for validating metadata */
+>> +	if ((etr_buf->offset > etr_buf->size) ||
+>> +	    (etr_buf->len > etr_buf->size))
+>> +		return -EINVAL;
+> 
+> The values I got here are 0x781b67182aa346f9 0x8000000 0x8000000 for
+> offset, size and len respectively. This fails the first check. It would
+> also be nice to have a dev_dbg here as well, it's basically the same as
+> the valid check above which does have one.
+> 
 
--- 
-2.39.2
+So I debugged it and the issue is that after the panic I was doing a
+cold boot rather than a warm boot and the memory was being randomised.
+
+The reason that 0x8000000 seemed to be initialised is because they are
+based on the reserved region size, rather than anything from the
+metadata. When I examined the metadata it was all randomised.
+
+That leads me to think that the single bit for 'valid' is insufficient.
+There is a simple hashing function in include/linux/stringhash.h that we
+could use on the whole metadata struct, but that specifically says:
+
+ * These hash functions are NOT GUARANTEED STABLE between kernel
+ * versions, architectures, or even repeated boots of the same kernel.
+ * (E.g. they may depend on boot-time hardware detection or be
+ * deliberately randomized.)
+
+Although I'm not sure how true the repeated boots of the same kernel
+part is.
+
+Maybe something in include/crypto/hash.h could be used instead, or make
+our own simple hash.
 
