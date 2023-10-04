@@ -2,122 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB117B7848
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969E77B784A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241470AbjJDG7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 02:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
+        id S241472AbjJDHBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232647AbjJDG7s (ORCPT
+        with ESMTP id S232647AbjJDHBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 02:59:48 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB02B4
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 23:59:45 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bdcade7fbso307588166b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 23:59:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696402784; x=1697007584; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=thrSc5rKrJp9MHTbS/L/Xu/dKYxXxvLXx/M6k3LPsYU=;
-        b=WwQuYQTGL+P6HFEZxdds0eUXOPjRhqptY1XYGtuoYUPsQsKiM9/SebBRehwNZf4x6Q
-         NdPGaVfKUfLMFZx8tbxZMenuJ2sjG1VybhfyFKmGPUn+ha3mPS68pOmqsfmMt2bQM0Qg
-         EfHfkIpO5p05oHz6YOI4KZNYNtVrICyhGQOLk5jiu8mGkGzvfy78yuosv2IAQV27n0sx
-         PKr8znnA80/2PsdE7yY3548WH5ZOHCWVzlJvvYfjIEYN1ZVuwzbS8hLwrcZauoCwINT/
-         UOenckgZi4P/CYfEAlCmVw0fGk40iFjMMsXmttw8SY3XcgdZ9RtBaxRCkLFbKmxw+SoM
-         iDWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696402784; x=1697007584;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=thrSc5rKrJp9MHTbS/L/Xu/dKYxXxvLXx/M6k3LPsYU=;
-        b=eYwO8EKP9LASTpJCC4gNnfb3ha7SIlZNuVWp32EAnkoV9elamUbXiZUyuyIUZPXHMv
-         jpSV/a8h4HjGAfl4bZ3JgcKn6sBj4Ys12UbYr7tTVMWOK3ZZrO90o/WJKklH4pGfDYUq
-         pau9Wrn/B5M62AonxeJMD77w9UA3q+3rem419J56ul/GiKOTYQxEZOcvvCcilAbP0Nnl
-         Jezwx4Y8WHiX4lMEX+0vqdJEnkEuQxIM3t4zQnVsDFtMQC/rTXJHPWDWCYyRM5mmRmJn
-         MBh8V1KAqxozdWr05GRxidVyHzzxb7lLaftIbOHAjGEZoZsh0qj3h0PNfxhAE3Sm+4iE
-         Tzkg==
-X-Gm-Message-State: AOJu0YxeDQFXIcm39OUCnGK7dGHPg9ttus1J8p0s/IKQJ+VbyhxIGgtb
-        znI0gEGJ6iQ/dQnX8WZvAAdgdQ==
-X-Google-Smtp-Source: AGHT+IGfIY0O71410pxZ9HzYqgSmZTnCmsDyWFAtPGIDwsnSL1OkI/mbzdGJH0K5EVZ3WLZsVuTAgQ==
-X-Received: by 2002:a17:907:75cf:b0:9a1:b144:30f0 with SMTP id jl15-20020a17090775cf00b009a1b14430f0mr1070360ejc.53.1696402783629;
-        Tue, 03 Oct 2023 23:59:43 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id j11-20020a170906410b00b00982a92a849asm2239079ejk.91.2023.10.03.23.59.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 23:59:43 -0700 (PDT)
-Message-ID: <b56d9d8f-c893-46b9-9f1c-bdcd50c63209@linaro.org>
-Date:   Wed, 4 Oct 2023 08:59:41 +0200
+        Wed, 4 Oct 2023 03:01:22 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6240AB
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 00:01:18 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 051C840E01AE;
+        Wed,  4 Oct 2023 07:01:17 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id RIDc3lHE68r0; Wed,  4 Oct 2023 07:01:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1696402874; bh=bsHdMgmkYQMK2TFiy3Hx4BW+BGLq8oQTxKGgK6wIGjE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YNnDMW/syvY4FQeiBdoAYjYaoTBSzrb6Qeveo3rQF+rMz3YPLtLI3+9IjoeQFVqjK
+         l4H/MUltLUruTaYYwM9ysD+JgX++w/T01987eavgSDPuRmnQ4p4z6AkGfIHakU+wvP
+         XXd5qZQ1QeK92vcDlItj0EvAhsWu4C0c6GF+Kz1OOut/B2mejimGUriL45JZmy1mpl
+         DplQZu71YJygfLoym6xagZCqd6un7fOqwY1uTm0fWOoJaRUaTGXYrECjaqKsSSUK2T
+         wkD72NGzG/WsSL5ZKCjprg0sNxgtLiGyHVdMgTDKFmEniOb22XqxUTojcu3cjG3XvT
+         x8hLcbbdKUQiDM0cVW1RqYfyJa2WDilSp/NBkDLp9RsyxOUR1qzq69mDe9CwgVpfrZ
+         Sfo7lmqA0xT5ui7JSCmYY+hrJmj6WAgVDJkW6LJ8+16ZLeRNkTZnGI5s7dSVjyHRjU
+         L4bfOGDpmtGm9FoAfg0L2my9UiuhNlB8jjXTFEDqAsnsYTvdnSfFEz2dc8Jhzr5O4M
+         /Oj+uqTY2efr0zXcdOUevgkNxnfkHXiW1MjAgs0y7qWV/sl7cptiIrbmRqbKgE5fPC
+         xm+BR5LT5TO/U38m2z94eBEfbs4U04ZJG3Dqlga2VfoV5XcUpmp1i99jgUPzHFD0JW
+         c0dpHugDDiajnhCgyo/VAUIE=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7E6F840E0176;
+        Wed,  4 Oct 2023 07:01:06 +0000 (UTC)
+Date:   Wed, 4 Oct 2023 09:01:00 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Nikunj A. Dadhania" <nikunj@amd.com>
+Cc:     thomas.lendacky@amd.com, x86@kernel.org, dionnaglaze@google.com,
+        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/14] Add Secure TSC support for SNP guests
+Message-ID: <20231004070100.GAZR0NrFSIDKPSQIjA@fat_crate.local>
+References: <20230814055222.1056404-1-nikunj@amd.com>
+ <f200403b-c460-5ebb-fec5-c5caf0cdb006@amd.com>
+ <9a6af215-e696-5091-69fa-1cbebe772471@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] dt-bindings: PCI: qcom: Add IPQ5108 SoC
-Content-Language: en-US
-To:     Nitheesh Sekar <quic_nsekar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org,
-        mani@kernel.org, p.zabel@pengutronix.de, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, quic_ipkumar@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org
-References: <20231003120846.28626-1-quic_nsekar@quicinc.com>
- <20231003120846.28626-3-quic_nsekar@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231003120846.28626-3-quic_nsekar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <9a6af215-e696-5091-69fa-1cbebe772471@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -126,30 +69,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 14:08, Nitheesh Sekar wrote:
-> Add support for the PCIe controller on the Qualcomm
-> IPQ5108 SoC to the bindings.
+On Wed, Oct 04, 2023 at 11:05:14AM +0530, Nikunj A. Dadhania wrote:
+> On 8/28/2023 9:17 AM, Nikunj A. Dadhania wrote:
+> > On 8/14/2023 11:22 AM, Nikunj A Dadhania wrote:
+> >> Secure TSC allows guests to securely use RDTSC/RDTSCP instructions as the
+> >> parameters being used cannot be changed by hypervisor once the guest is
+> >> launched. More details in the AMD64 APM Vol 2, Section "Secure TSC".
+> >>
+> ...
+> >>
+> >> Changelog:
+> >> ----------
+> >> v4:
+> >> * Drop handle_guest_request() and handle_guest_request_ext()
+> >> * Drop NULL check for key
+> >> * Corrected commit subject
+> >> * Added Reviewed-by from Tom
+> > 
+> > A gentle reminder.
 > 
+> 
+> Ping ?
 
+Pong.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+How about you find other SEV patches on LKML which are waiting for
+review and review them, while waiting for yours?
 
----
+Thx.
 
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
+-- 
+Regards/Gruss,
+    Boris.
 
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-
-Best regards,
-Krzysztof
-
+https://people.kernel.org/tglx/notes-about-netiquette
