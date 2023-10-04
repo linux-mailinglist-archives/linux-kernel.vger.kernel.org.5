@@ -2,152 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265547B8289
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFDB7B8288
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242894AbjJDOjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36974 "EHLO
+        id S242886AbjJDOjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242899AbjJDOjv (ORCPT
+        with ESMTP id S232925AbjJDOjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:39:51 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63370DC;
-        Wed,  4 Oct 2023 07:39:46 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-533c4d20b33so2303043a12.0;
-        Wed, 04 Oct 2023 07:39:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696430385; x=1697035185; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1pU3vRG3ujzAmgHVGQIt+s362G2AfPzTmLtCuEhE6Us=;
-        b=f+k5RaLfnkiYeU46AHqTDsadglAdTCgZbfydnp4RpQssiD9dXwlZUkZC6o82aQLTOc
-         YGhtGSUtm1cP6attY64/YG3qjCjMdeZIU7EWOYrC6a0V+7iyuIRlBsUG+3+U+x9Lt+CB
-         3VdvEc+VykeDtAI92uWw4xrPQ5LryC6MgOfbCxm1AMYJwQx/KmpPj3IX6zK/oVQNlUEh
-         wHKg9OnSlzHtkQk6zGWxqa/U/ZCDvHM9A6YM4HEFE10ulnkQs3lEtDH97FUkCLXrv7t+
-         6j/B2+GmpEuAl/baqk7VLE4YkhGF2b7OSIql4GY7uJdbS+no6MEn+y57ZBxvrR8b5u41
-         zcxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696430385; x=1697035185;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1pU3vRG3ujzAmgHVGQIt+s362G2AfPzTmLtCuEhE6Us=;
-        b=DfAqp2d4q509mkqNevVv92NzvGel2cHdL/6rVuQlHX3meojLrMg4UXYOuoZ/7MGpav
-         SfzOkASpWPidbq+D8YpZlCq1j7vRPOz3CLAOWCun9BWeJTovHCFxPcp2Q1g2/8WYo2ET
-         QUxEGRxNtdcYLkBf/W6SJ+1kIjdaAjTOuxz0x+hik0tXqgbHkBKzCld/RA7xphKm8uCc
-         6kDKhefUPRKzK6cdxKzVKIs4vOjStLfSXDcg/UH8Y+NMuCWG6UcvRKbP986rtndOk71L
-         H/XMmw62LNbM310XY228Gax90Ui7vGf6s3n5Q5/upqtGUyhiyC8/APWSkFiJdT7fvGfR
-         3LVQ==
-X-Gm-Message-State: AOJu0YySNHkncEEeW2/WTRpDhE2FLXfvJhNEhBSGkPrFD6Rjdw7zpsif
-        5PsCundM8x17sXfayG7F9tv+Lp7+r6jMZf7xtKy6G9m4zc8=
-X-Google-Smtp-Source: AGHT+IH5P777m9cFUf1YjDSL5NN4UxVbTGYZoF0GPQeAlvVxn8WDXu7OxuqKQhlOF2XGW2ZtpFvIWN641iz3NDKBzl8=
-X-Received: by 2002:aa7:d5c6:0:b0:522:b876:9ef5 with SMTP id
- d6-20020aa7d5c6000000b00522b8769ef5mr2127589eds.8.1696430384499; Wed, 04 Oct
- 2023 07:39:44 -0700 (PDT)
+        Wed, 4 Oct 2023 10:39:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348BFC1;
+        Wed,  4 Oct 2023 07:39:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28B3BC433C8;
+        Wed,  4 Oct 2023 14:39:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696430379;
+        bh=U1NGLITL8Rf5crY2/ZChUEDsdN/rfYafMwCe01hDqrM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mbx+7rdw5z7ej9ZE0HDGdXN+9m4YPieLkiCAUhg4dVbfqSzn883zLJtkYOmWqtnQt
+         mo1JiH5gPe9pp/2bSpW+OHWTwuwMJ0UT2CHZc6732OCqngpcFWYqXE1rVP/JeGXRRQ
+         pVsV90YHhI7LNRYhSK4lMfJWeuSL8I8z15RJDBnkZ2xhu+tu8zYjQ0WsB8TxMgrH+k
+         JQF0poq0QHSIzfF+jpn3T8QO+B0HoY1tUt39OiF9+wq79srYvi1zso8yvpY9QmSc9+
+         YJYmuV7LdT/pQy+6C71boqEHMaq66WsKJ3bkcQlc2ouOHH2Ea/blRvtcSgcEQdgjIs
+         yud/XLSc28Z4A==
+Received: (nullmailer pid 3103312 invoked by uid 1000);
+        Wed, 04 Oct 2023 14:39:37 -0000
+Date:   Wed, 4 Oct 2023 09:39:37 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        =?utf-8?B?77+9aXByYWdh?= <alsi@bang-olufsen.dk>,
+        Rabeeh Khoury <rabeeh@solid-run.com>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/4] dt-bindings: clock: si5351: convert to yaml
+Message-ID: <20231004143937.GA3091822-robh@kernel.org>
+References: <20231004063712.3348978-1-alvin@pqrs.dk>
+ <20231004063712.3348978-2-alvin@pqrs.dk>
 MIME-Version: 1.0
-References: <20231002144149.1325-1-Nicholas.Lowell@gmail.com> <20231003223003.675bd888@gandalf.local.home>
-In-Reply-To: <20231003223003.675bd888@gandalf.local.home>
-From:   Nick Lowell <nicholas.lowell@gmail.com>
-Date:   Wed, 4 Oct 2023 10:39:33 -0400
-Message-ID: <CAFEqNJ2=rt5KaDaAah1t8gGbLViW7VZEDq+81drvuWUz4CKR2w@mail.gmail.com>
-Subject: Re: [PATCH v2] trace: tracing_event_filter: fast path when no
- subsystem filters
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Nicholas Lowell <nlowell@lexmark.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231004063712.3348978-2-alvin@pqrs.dk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 10:29=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Mon,  2 Oct 2023 10:41:48 -0400
-> Nicholas Lowell <nicholas.lowell@gmail.com> wrote:
->
-> > @@ -2411,7 +2418,12 @@ int apply_subsystem_event_filter(struct trace_su=
-bsystem_dir *dir,
-> >       }
-> >
-> >       if (!strcmp(strstrip(filter_string), "0")) {
-> > -             filter_free_subsystem_preds(dir, tr);
-> > +             /* If nothing was freed, we do not need to sync */
-> > +             if (!filter_free_subsystem_preds(dir, tr)) {
-> > +                     if(!(WARN_ON_ONCE(system->filter)))
-> > +                             goto out_unlock;
-> > +             }
-> > +
-> >               remove_filter_string(system->filter);
-> >               filter =3D system->filter;
-> >               system->filter =3D NULL;
-> > --
->
-> This is why I asked for the warning:
->
-> trace-cmd record -o /tmp/trace.dat -e sched -f "(common_pid =3D=3D $$) ||=
- ((common_pid > 10) && common_pid < 100) || (common_pid >=3D 1000 && common=
-_pid <=3D 1050) || (common_pid > 10000 && common_pid < 20000)" sleep 5
->
->
-> Causes:
->
-> ------------[ cut here ]------------
->  WARNING: CPU: 5 PID: 944 at kernel/trace/trace_events_filter.c:2423 appl=
-y_subsystem_event_filter+0x18c/0x5e0
->  Modules linked in:
->  CPU: 5 PID: 944 Comm: trace-cmd Not tainted 6.6.0-rc4-test-00009-gff7cd7=
-446fe5 #102
->  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1=
-.16.2-1 04/01/2014
->  RIP: 0010:apply_subsystem_event_filter+0x18c/0x5e0
->  Code: 44 24 08 00 00 00 00 48 8b 6d 00 4c 39 f5 75 bc 48 8b 44 24 18 4c =
-8b 60 18 4c 89 e5 45 84 ff 75 14 48 85 ed 0f 84 37 ff ff ff <0f> 0b eb 10 e=
-8 4b be fd ff eb b0 4d 85 e4 0f 84 a3 02 00 00 48 8b
->  RSP: 0018:ffff9b4941607db8 EFLAGS: 00010286
->  RAX: ffff8b2780a77280 RBX: ffff8b2780a77400 RCX: 0000000000000000
->  RDX: 0000000000000000 RSI: ffff8b2781c11c38 RDI: ffff8b2781c11c38
->  RBP: ffff8b28df449030 R08: ffff8b2781c11c38 R09: 0000000000000000
->  R10: ffff8b2781c11c38 R11: 0000000000000000 R12: ffff8b28df449030
->  R13: ffffffffaaf64de0 R14: ffffffffaaf66bb8 R15: 0000000000000000
->  FS:  00007fd221def3c0(0000) GS:ffff8b28f7d40000(0000) knlGS:000000000000=
-0000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 000056117c93e160 CR3: 000000010173a003 CR4: 0000000000170ee0
->  Call Trace:
->   <TASK>
->   ? apply_subsystem_event_filter+0x18c/0x5e0
->   ? __warn+0x81/0x130
->   ? apply_subsystem_event_filter+0x18c/0x5e0
->   ? report_bug+0x191/0x1c0
->   ? handle_bug+0x3c/0x80
->   ? exc_invalid_op+0x17/0x70
->   ? asm_exc_invalid_op+0x1a/0x20
->   ? apply_subsystem_event_filter+0x18c/0x5e0
->   ? apply_subsystem_event_filter+0x5b/0x5e0
->   ? __check_object_size+0x25b/0x2c0
->   subsystem_filter_write+0x41/0x70
->   vfs_write+0xf2/0x440
->   ? kmem_cache_free+0x22/0x350
->   ksys_write+0x6f/0xf0
->   do_syscall_64+0x3f/0xc0
->   entry_SYSCALL_64_after_hwframe+0x6e/0xd8
->  RIP: 0033:0x7fd221ee7ae0
->
-> -- Steve
+On Wed, Oct 04, 2023 at 08:35:27AM +0200, Alvin Šipraga wrote:
+> From: Alvin Šipraga <alsi@bang-olufsen.dk>
+> 
+> The following additional properties are described:
+> 
+>   - clock-names
+>   - clock-frequency of the clkout child nodes
+> 
+> In order to suppress warnings from the DT schema validator, the clkout
+> child nodes are prescribed names clkout@[0-7] rather than clkout[0-7].
+> The latter form is still admissible but the example has been changed to
+> use the former.
+> 
+> The example is refined as follows:
+> 
+>   - correct the usage of property pll-master -> silabs,pll-master
+>   - give an example of how the silabs,pll-reset property can be used
+> 
+> I made myself maintainer of the file as I cannot presume that anybody
+> else wants the responsibility.
+> 
+> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+> Cc: Rabeeh Khoury <rabeeh@solid-run.com>
+> Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+> ---
+>  .../bindings/clock/silabs,si5351.txt          | 126 ---------
+>  .../bindings/clock/silabs,si5351.yaml         | 253 ++++++++++++++++++
+>  2 files changed, 253 insertions(+), 126 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/clock/silabs,si5351.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/silabs,si5351.yaml
 
-Is this just informative indicating that there are issues with how
-filters are being used or are you saying there is something else I
-need to do before this patch is approved?
-What version of trace-cmd is that using?
+[...]
+
+> diff --git a/Documentation/devicetree/bindings/clock/silabs,si5351.yaml b/Documentation/devicetree/bindings/clock/silabs,si5351.yaml
+> new file mode 100644
+> index 000000000000..400c8cec2a3a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/silabs,si5351.yaml
+> @@ -0,0 +1,253 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/silabs,si5351.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Silicon Labs Si5351A/B/C programmable I2C clock generators
+> +
+> +description: |
+> +  The Silicon Labs Si5351A/B/C are programmable I2C clock generators with up to
+> +  8 outputs. Si5351A also has a reduced pin-count package (10-MSOP) where only 3
+> +  output clocks are accessible. The internal structure of the clock generators
+> +  can be found in [1].
+> +
+> +  [1] Si5351A/B/C Data Sheet
+> +      https://www.skyworksinc.com/-/media/Skyworks/SL/documents/public/data-sheets/Si5351-B.pdf
+> +
+> +maintainers:
+> +  - Alvin Šipraga <alsi@bang-olufsen.dk>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - silabs,si5351a      # Si5351A, 20-QFN package
+> +      - silabs,si5351a-msop # Si5351A, 10-MSOP package
+> +      - silabs,si5351b      # Si5351B, 20-QFN package
+> +      - silabs,si5351c      # Si5351C, 20-QFN package
+> +
+> +  reg:
+> +    enum:
+> +      - 0x60
+> +      - 0x61
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  "#clock-cells":
+> +    const: 1
+> +
+> +  silabs,pll-source:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> +    description: |
+> +      A list of cell pairs containing a PLL index and its source. Allows to
+> +      overwrite clock source of the internal PLLs.
+> +    minItems: 1
+
+The minimum is 1 by default (can't have 0).
+
+> +    items:
+> +      items:
+> +        - description: PLL A (0) or PLL B (1)
+> +          enum: [ 0, 1 ]
+> +        - description: PLL source, XTAL (0) or CLKIN (1, Si5351C only).
+> +          enum: [ 0, 1 ]
+> +
+> +patternProperties:
+> +  "^clkout@[0-7]$":
+> +    type: object
+> +
+> +    properties:
+> +      reg:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+
+reg already has a type. Drop.
+
+> +        description: Clock output number.
+> +
+> +      clock-frequency: true
+> +
+> +      silabs,clock-source:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: |
+> +          Source clock of the this output's divider stage.
+> +
+> +          0 - use multisynth N for this output, where N is the output number
+> +          1 - use either multisynth 0 (if output number is 0-3) or multisynth 4
+> +              (otherwise) for this output
+> +          2 - use XTAL for this output
+> +          3 - use CLKIN for this output (Si5351C only)
+> +
+> +      silabs,drive-strength:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        enum: [ 2, 4, 6, 8 ]
+> +        description: Output drive strength in mA.
+> +
+> +      silabs,multisynth-source:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        enum: [ 0, 1 ]
+> +        description: |
+
+Don't need '|' if no formatting to preserve.
+
+> +          Source PLL A (0) or B (1) for the corresponding multisynth divider.
+> +
+> +      silabs,pll-master:
+> +        type: boolean
+> +        description: |
+> +          The frequency of the source PLL is allowed to be changed by the
+> +          multisynth when setting the rate of this clock output.
+> +
+> +      silabs,pll-reset:
+> +        type: boolean
+> +        description: Reset the source PLL when enabling this clock output.
+> +
+> +      silabs,disable-state:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        enum: [ 0, 1, 2, 3 ]
+> +        description: |
+> +          Clock output disable state. The state can be one of:
+> +
+> +          0 - clock output is driven LOW when disabled
+> +          1 - clock output is driven HIGH when disabled
+> +          2 - clock output is FLOATING (HIGH-Z) when disabled
+> +          3 - clock output is never disabled
+> +
+> +    allOf:
+> +      - if:
+> +          properties:
+> +            compatible:
+> +              contains:
+> +                const: silabs,si5351a-msop
+> +        then:
+> +          properties:
+> +            reg:
+> +              minimum: 0
+
+The minimum is already 0. Drop.
+
+> +              maximum: 2
+> +        else:
+> +          properties:
+> +            reg:
+> +              minimum: 0
+> +              maximum: 7
+> +
+> +      - if:
+> +          properties:
+> +            compatible:
+> +              contains:
+> +                const: silabs,si5351c
+> +        then:
+> +          properties:
+> +            silabs,clock-source:
+> +              enum: [ 0, 1, 2, 3 ]
+> +        else:
+> +          properties:
+> +            silabs,clock-source:
+> +              enum: [ 0, 1, 2 ]
+> +    required:
+> +      - reg
+> +
+> +    additionalProperties: false
+
+Move this next to 'type: object'
+
+> +
+> +allOf:
+> +  - $ref: /schemas/clock/clock.yaml
+
+Don't need this.
+
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - silabs,si5351a
+> +              - silabs,si5351a-msop
+> +              - silabs,si5351b
+
+Isn't this just the 'else' for the next one? Or more parts are coming?
+
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 1
+> +          maxItems: 1
+> +        clock-names:
+> +          items:
+> +            - const: xtal
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: silabs,si5351c
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 1
+> +          maxItems: 2
+> +        clock-names:
+> +          minItems: 1
+> +          items:
+> +            - const: xtal
+> +            - const: clkin
+
+Define clocks and clock-names at the top level and just use 
+minItems/maxItems in the if/then schemas.
+
+> +
+> +required:
+> +  - reg
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - "#clock-cells"
+> +  - clocks
+> +  - clock-names
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      clock-generator@60 {
+> +        compatible = "silabs,si5351a-msop";
+> +        reg = <0x60>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        #clock-cells = <1>;
+> +
+> +        /* Connect XTAL input to 25MHz reference */
+> +        clocks = <&ref25>;
+> +        clock-names = "xtal";
+> +
+> +        /* Use XTAL input as source of PLL0 and PLL1 */
+> +        silabs,pll-source = <0 0>, <1 0>;
+> +
+> +        /*
+> +         * Overwrite CLK0 configuration with:
+> +         * - 8 mA output drive strength
+> +         * - PLL0 as clock source of multisynth 0
+> +         * - Multisynth 0 as clock source of output divider
+> +         * - Multisynth 0 can change PLL0
+> +         * - Set initial clock frequency of 74.25MHz
+> +         */
+> +        clkout@0 {
+> +          reg = <0>;
+> +          silabs,drive-strength = <8>;
+> +          silabs,multisynth-source = <0>;
+> +          silabs,clock-source = <0>;
+> +          silabs,pll-master;
+> +          clock-frequency = <74250000>;
+> +        };
+> +
+> +        /*
+> +         * Overwrite CLK1 configuration with:
+> +         * - 4 mA output drive strength
+> +         * - PLL1 as clock source of multisynth 1
+> +         * - Multisynth 1 as clock source of output divider
+> +         * - Multisynth 1 can change PLL1
+> +         * - Reset PLL1 when enabling this clock output
+> +         */
+> +        clkout@1 {
+> +          reg = <1>;
+> +          silabs,drive-strength = <4>;
+> +          silabs,multisynth-source = <1>;
+> +          silabs,clock-source = <0>;
+> +          silabs,pll-master;
+> +          silabs,pll-reset;
+> +        };
+> +
+> +        /*
+> +         * Overwrite CLK2 configuration with:
+> +         * - XTAL as clock source of output divider
+> +         */
+> +        clkout@2 {
+> +          reg = <2>;
+> +          silabs,clock-source = <2>;
+> +        };
+> +      };
+> +    };
+> -- 
+> 2.42.0
+> 
