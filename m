@@ -2,112 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B461E7B7B76
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8A17B7B81
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241893AbjJDJNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41700 "EHLO
+        id S241914AbjJDJOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbjJDJNa (ORCPT
+        with ESMTP id S241894AbjJDJOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:13:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA4C98;
-        Wed,  4 Oct 2023 02:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696410807; x=1727946807;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=engroHUsDMpbS7kZWKn5ek1QdOf+4p0c/Cv494z9tME=;
-  b=iwgbZaEcCL4EDdQ+DHlxAexvnMzvwQ1GuqJ8dbSrWXLNCq8xzMwSBtEY
-   T9Xh1O2inNYpP3bRWObNYNNdIrzOedu2zoGbxA1eL5WGWnvXYjTOStys+
-   iUIl7ToXgsrArZT/gRVP1dZYeX2jMtBNAGDU8knZH+FOWVu51td+/SHRh
-   hV6jVTtYkZmKfHUoTe1sX//S2QTuJohC4rG6YYD3NkJhSciewSXa4AoF6
-   TICTraRJfh1DpOIkCLSW5PKbQFr54RoFhbBNdsxJZfNAIaVgQEjOUl5gm
-   nGBeKhb6e0n307K4d0+blgxoZifMI41LnOwV+S/JdE4Yy1faBjjqmn8wB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="469382303"
-X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
-   d="scan'208";a="469382303"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 02:13:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="894855817"
-X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
-   d="scan'208";a="894855817"
-Received: from cyrillet-mobl.ger.corp.intel.com ([10.252.55.203])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 02:11:58 -0700
-Date:   Wed, 4 Oct 2023 12:13:21 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Tony Lindgren <tony@atomide.com>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>
-Subject: Re: [PATCH] serial: 8250: Check for valid console index
-In-Reply-To: <20231004090859.GF34982@atomide.com>
-Message-ID: <375d54d0-f874-92d5-91c5-c7ff2b33daff@linux.intel.com>
-References: <20231004085511.42645-1-tony@atomide.com> <1fc2dc1d-33f2-6d65-6bdb-d4c7421cbc57@linux.intel.com> <20231004090859.GF34982@atomide.com>
+        Wed, 4 Oct 2023 05:14:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D5CC6
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:14:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72259C433C8;
+        Wed,  4 Oct 2023 09:13:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696410842;
+        bh=I3rYMvIf1yUhwIUhj4haJHoCCJeIHZ/4+nUAtJSqCwY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qblW5PF6iKaPu4EmaMW7svIY6XFDdJYCqwKfbHgKUn6UeeVOJT9SzYlGpnuTA/7+Q
+         GEAPVTYd/Cg/tzlT47L8wzc4rRN2VnKBRyiLDzjxHjd96FSwPfxUf+AnJAwSaRmQ5h
+         g6sQ4+9maMPGxan8QG278OiX8OaIz6jOU4tw5iauwZGa6PUa9cpR6PJX5Th83l9BKU
+         QQ7sr1a8pnq/8KrO/fv5dHHcFgu/3K+zyUb5Bfju5brp2z6fF85FCsBLRTTIZuVV9A
+         2OWthjUMhBK2TXOg1H0eSupPxtJe7NR1TbetpxpHCkUdRoiMuxKrxQro9N/i5MPJT5
+         blEaBOfgQBtVA==
+Date:   Wed, 4 Oct 2023 10:13:56 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Chen Wang <unicorn_wang@outlook.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com
+Subject: Re: [PATCH 4/5] riscv: dts: sophgo: add initial CV1800B SoC device
+ tree
+Message-ID: <20231004-caregiver-deserve-71849c94dcfb@spud>
+References: <20230930123937.1551-1-jszhang@kernel.org>
+ <20230930123937.1551-5-jszhang@kernel.org>
+ <MA0P287MB033277186E21A09127407452FECBA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+ <37021ef8-55e2-4116-8201-2ab7df9e0fc1@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1096096951-1696410806=:1931"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="66OQDBUK+rriTk/K"
+Content-Disposition: inline
+In-Reply-To: <37021ef8-55e2-4116-8201-2ab7df9e0fc1@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-1096096951-1696410806=:1931
+--66OQDBUK+rriTk/K
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 4 Oct 2023, Tony Lindgren wrote:
+On Wed, Oct 04, 2023 at 09:57:33AM +0200, Krzysztof Kozlowski wrote:
+> On 04/10/2023 09:23, Chen Wang wrote:
+> >=20
+> > =E5=9C=A8 2023/9/30 20:39, Jisheng Zhang =E5=86=99=E9=81=93:
+> >> Add initial device tree for the CV1800B RISC-V SoC by SOPHGO.
+> >>
+> >> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> >> ---
+> >>   arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 117 ++++++++++++++++++++++=
+++
+> >>   1 file changed, 117 insertions(+)
+> >>   create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> >=20
+> > Hi, Jisheng, as far as I know, sg2042 and cv180x are now tracked by=20
+> > different people and even in sophgo, they are two independent=20
+> > projects(sg2042 is target for HPC and cv180x is target for embeded=20
+> > device). To facilitate future management and review, I recommend=20
+> > registering the maintainer information in two entries in MAINTAINERS.=
+=20
+> > The example is as follows:
+> >=20
+> > ```
+> >=20
+> > SOPHGO CV180X DEVICETREES
+> > M:=C2=A0 Jisheng Zhang <jszhang@kernel.org>
+> > F:=C2=A0 arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
+> > F:=C2=A0 arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> >=20
+> > SOPHGO SG2042 DEVICETREES
+> > M:=C2=A0 Chao Wei <chao.wei@sophgo.com>
+> > M:=C2=A0 Chen Wang <unicornxw@gmail.com>
+> > S:=C2=A0 Maintained
+> > F:=C2=A0 arch/riscv/boot/dts/sophgo/Makefile
+> > F:=C2=A0 arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi
+> > F:=C2=A0 arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
+> > F:=C2=A0 arch/riscv/boot/dts/sophgo/sg2042.dtsi
+> > F:=C2=A0 Documentation/devicetree/bindings/riscv/sophgo.yaml
+> > ```
+> >=20
+> > For Makefile and sophgo.yaml such common files, just keep in sg2042=20
+> > entry should be fine.
+> >=20
+> > @Conor, what do you think?
+>=20
+> We do no have usually per-board maintainer entries (with few
+> exceptions). I strongly prefer this one instead:
+>=20
+> https://lore.kernel.org/all/829b122da52482707b783dc3d93d3ff0179cb0ca.came=
+l@perches.com/
 
-> * Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> [231004 09:05]:
-> > On Wed, 4 Oct 2023, Tony Lindgren wrote:
-> > 
-> > > Let's not allow negative numbers for console index.
-> > > 
-> > > Signed-off-by: Tony Lindgren <tony@atomide.com>
-> > > ---
-> > >  drivers/tty/serial/8250/8250_core.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
-> > > --- a/drivers/tty/serial/8250/8250_core.c
-> > > +++ b/drivers/tty/serial/8250/8250_core.c
-> > > @@ -611,7 +611,7 @@ static int univ8250_console_setup(struct console *co, char *options)
-> > >  	 * if so, search for the first available port that does have
-> > >  	 * console support.
-> > >  	 */
-> > > -	if (co->index >= UART_NR)
-> > > +	if (co->index < 0 || co->index >= UART_NR)
-> > >  		co->index = 0;
-> > 
-> > The inconsistencies how different serial drivers handle this situation 
-> > seem staggering. Perhaps there should be some effort to make the behavior
-> > uniform across them?
-> 
-> Hmm yeah we should just have them all check for co->index < 0.
+I don't like the suggestion here for a different reason! While I'm fine
+with having some per-board SoC maintainers, esp. since the cv1800 stuff
+is very different to the sg2042, I want to see someone step up to apply
+the patches for the whole arch/riscv/boot/dts/sophgo/ directory once more
+comfortable with the process, not reduce the entry to cover just the 64
+core SoC.
 
-Right but it's only about that, some return -Exx codes (more than one -Exx 
-variant) and some do assign just 0 like here.
+Thanks,
+Conor.
 
--- 
- i.
+--66OQDBUK+rriTk/K
+Content-Type: application/pgp-signature; name="signature.asc"
 
---8323329-1096096951-1696410806=:1931--
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZR0s1AAKCRB4tDGHoIJi
+0pFWAQC2S8NStFU1aqWXOgFsaLD+fuUqSrLo19BriwGjhzQBLwEA4yklbNzUEuka
+cPQh/dVGLRADBdz0AYcCDK/AuYgTWgc=
+=Xy+m
+-----END PGP SIGNATURE-----
+
+--66OQDBUK+rriTk/K--
