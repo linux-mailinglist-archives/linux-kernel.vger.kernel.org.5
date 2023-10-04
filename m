@@ -2,102 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6E67B7C73
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1298D7B7C75
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242023AbjJDJmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33708 "EHLO
+        id S233011AbjJDJmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232952AbjJDJmC (ORCPT
+        with ESMTP id S232973AbjJDJmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:42:02 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DD1B4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:41:56 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4053c6f0db8so18019175e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:41:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696412514; x=1697017314; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+xtvpjCwqzQ0mhQ9TCxc82QEvIPANtYiI2zXvvtKXYM=;
-        b=rJxoMJ1RtB9ElSWPu1lrtx28REFXrQiNqYuGUFBlbWwzATJn/WanQIXLE8UArPbs2u
-         2gOYK5CNUr/0ByfULIoQpL0Am141sKpS+OXyz2v3UQf4XJYMWoVF7z5M4b+DeqQj744d
-         ktoP4aIUx14Pe74D2BIqy6XZfTfnLcN1ml+RrZvpBR7OqeY5nkqzqOT9iAnHv4JQWBpA
-         WebT5i1moBsa51J1950tPGcKyBArLsPLxrgAmA9P/iHF1ccxaSvI+UrKv2BeIHS1Ds2Z
-         IUtjtKsqaW0oFgoFn4S8dHIfd/68fkOfuJNTMp6csb68ubJLY7c8iQf/0kZJaQ6tWzOZ
-         O1kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696412514; x=1697017314;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+xtvpjCwqzQ0mhQ9TCxc82QEvIPANtYiI2zXvvtKXYM=;
-        b=afIAC6OYYPGGcx69XcvTPjizDvVFtiOPbKM3zM2nYVi9g1/HONyQY1alErOYWCZm6a
-         2vESTJaqNj2m1Jq7oF/Ko0XcmDLto/7Q9agVNbgxHxi2yrp9Jc+1iFu/Vt6SWHCnoyd0
-         S/9+9lRv6mTOGRhIL4ggmyLYqU0bXtOLUGdejgKpHIkpKpwwReDzgQLx4WZPgJc9rQvi
-         1V+ha6K6HevPB14molGtQa+X4F8GYgglOPgHVRiYUAx+yyNH211M+XDBWRd4hL6uwZTc
-         xetF4FyHP3Hjt4SZpOa0FY3PatUaojdyOViTgLWKTOEPqxr7BUNd3O4h1okFOMATLPj9
-         KAaw==
-X-Gm-Message-State: AOJu0YzTeyoGgq44eGBo5t3nhBa71HcQC++9lmWeEMi9GqYJziZLGc5U
-        4gEK6wULv6QPlgfHy191Ub58dg==
-X-Google-Smtp-Source: AGHT+IHYxD5P/qk5Dm3MNVUTPpqCq5PdSTeOkWPu5LFjS4FauJW+b3DDoYldNbq4SSygCnqFsG8eNg==
-X-Received: by 2002:a05:600c:28c:b0:405:e492:8aef with SMTP id 12-20020a05600c028c00b00405e4928aefmr1749551wmk.40.1696412514571;
-        Wed, 04 Oct 2023 02:41:54 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:a496:68ab:9165:6f16? ([2a05:6e02:1041:c10:a496:68ab:9165:6f16])
-        by smtp.googlemail.com with ESMTPSA id r2-20020a05600c320200b0040641ce36a8sm1349744wmp.1.2023.10.04.02.41.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 02:41:54 -0700 (PDT)
-Message-ID: <5ea12cc8-dca8-ed6a-8fa2-9b011131bf00@linaro.org>
-Date:   Wed, 4 Oct 2023 11:41:53 +0200
+        Wed, 4 Oct 2023 05:42:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADE5C1;
+        Wed,  4 Oct 2023 02:42:06 -0700 (PDT)
+Date:   Wed, 04 Oct 2023 09:42:03 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696412524;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NJiYFrvJON8gK8MTHd3O+emlPsMk3TFaqei9zpHXqGo=;
+        b=fV7c0KiLnsz1pHeFI4BM0+mYXlB6FRZWfzrc6/wcOyZeKG2Ka6IoVpPEB9jyrbAdf/Z/CC
+        pr9ma7Ue1Jl1DoUqvJaAcMo9k38fA5JLa5sszAsoXtiuxOnPSO/JXxts2AgBfJcg1R6Okf
+        bxncTNkv+0ureqc8+7+i8QBfGlXeKJXR2TBXSS8sQ425Nq7hs3fE+sOuZpgS5Ew2agxT8W
+        dGcC9w1UebR9TPmlrssUI0mAQxqpSlFR+z9UZAIuFuxykvLXO+Pm6TslYnu/vNUUH2Flb0
+        Xd4kHy1+x2KI3z+f1LfkT3HOLKI6LtK5dH/4eR8W9EBumZydUBbhgA+lDq52qw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696412524;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NJiYFrvJON8gK8MTHd3O+emlPsMk3TFaqei9zpHXqGo=;
+        b=Dam5xGTfsBGdUENbBg7ocpHBDm3wzZdyfqMZ0QC6eWFGPUZf0BMBvwMxdEVCA5lnmOHKZ7
+        8Q2nCfPTowyrJICw==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/core: Update stale comment in try_to_wake_up()
+Cc:     Zhang Qiao <zhangqiao22@huawei.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230731085759.11443-1-zhangqiao22@huawei.com>
+References: <20230731085759.11443-1-zhangqiao22@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/6] ACPI: thermal: Move get_active_temp()
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <4846448.GXAFRqVoOG@kreacher> <2913298.e9J7NaK4W3@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <2913298.e9J7NaK4W3@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Message-ID: <169641252378.3135.1619855657721221590.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 15:18, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Put the get_active_temp() function next to the analogous
-> get_passive_temp() one to allow subsequent changes to be easier to
-> follow.
-> 
-> No functional impact.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+The following commit has been merged into the sched/core branch of tip:
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Commit-ID:     bdf85bec2b1ea852daf415cf6f1c9ef7d584c8c5
+Gitweb:        https://git.kernel.org/tip/bdf85bec2b1ea852daf415cf6f1c9ef7d584c8c5
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Wed, 04 Oct 2023 11:33:36 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 04 Oct 2023 11:34:34 +02:00
 
+sched/core: Update stale comment in try_to_wake_up()
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+The following commit:
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+  9b3c4ab3045e ("sched,rcu: Rework try_invoke_on_locked_down_task()")
 
+... renamed try_invoke_on_locked_down_task() to task_call_func(),
+but forgot to update the comment in try_to_wake_up().
+
+But it turns out that the smp_rmb() doesn't live in task_call_func()
+either, it was moved to __task_needs_rq_lock() in:
+
+  91dabf33ae5d ("sched: Fix race in task_call_func()")
+
+Fix that now.
+
+Also fix the s/smb/smp typo while at it.
+
+Reported-by: Zhang Qiao <zhangqiao22@huawei.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20230731085759.11443-1-zhangqiao22@huawei.com
+---
+ kernel/sched/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 65e10ac..f5783cb 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4237,7 +4237,7 @@ int try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 		 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+ 		 * __schedule().  See the comment for smp_mb__after_spinlock().
+ 		 *
+-		 * A similar smb_rmb() lives in try_invoke_on_locked_down_task().
++		 * A similar smp_rmb() lives in __task_needs_rq_lock().
+ 		 */
+ 		smp_rmb();
+ 		if (READ_ONCE(p->on_rq) && ttwu_runnable(p, wake_flags))
