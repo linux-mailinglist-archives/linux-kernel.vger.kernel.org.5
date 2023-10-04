@@ -2,142 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E77C7B87CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DF57B8815
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243870AbjJDSJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 14:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
+        id S243957AbjJDSMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 14:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243869AbjJDSJJ (ORCPT
+        with ESMTP id S243966AbjJDSMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 14:09:09 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1546E5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 11:09:05 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52fe27898e9so132864a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 11:09:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696442944; x=1697047744; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=w5W+DRsl6OjglAC7XyeJBSxFDq32iO4B/LzeqS+l/1s=;
-        b=aa9wCVS2i5XUdXgaQDFA6kDjW/L00W/8n1tNM9VBP4BHS/p7IuhrwERB/HLZ75Babt
-         emhPvL0eFVI+XaPfT8gR7VHkOOUO6Bv157gumpDmFngXYzHanZrFVUUG0pJhwwGM31H4
-         fsNOmLS/9YfuyWR99zt5bNwvuW1MNEm4SMrHE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696442944; x=1697047744;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w5W+DRsl6OjglAC7XyeJBSxFDq32iO4B/LzeqS+l/1s=;
-        b=E/3Hr2DcHDyc5llSHCVt8pQFFv1mp8D/YuigMF+kagLHcTOA4xWxs3HZU6U3xGLOCJ
-         hckmWN2UvNdSOYnGIGNK9WQsOkZw9V93JjtDcQiyOnfIl2I5ju/2lSFUiT+/HhZBy5s6
-         xgYoFWsrktDgC+vZeuArhwGfrO2Oa5NouRBP2W9bgCHQHQTRujWeKtkfoA1wL3Lpv7t1
-         1yKqkfRv3CuwMONvlKPTSPdpS/ZnfWUgGwz8HaiVDCPLsUzbZ3c+QfQOpP9KeKTNz8Ia
-         5JA4ER8Ul5RJ469yBzGV2wfQWwcNUNszITGBKGDxwAnMbbROI9QsGmKs7rOE3Bps0CJU
-         YqGQ==
-X-Gm-Message-State: AOJu0YySsA0TnTHVozUqMoHp5XNQ/wJ6JVzwqczEYvcXVogU2oDUDmVK
-        OZFWc3r4yEPRGgBpwbGFBcEYjgrpkxi40Pr+Dj0/qQ==
-X-Google-Smtp-Source: AGHT+IHJlWNCUprSTsy/mi7E27yDL7LOdfmyTuqtZ+hKQqyfalMc4s2i7/u3zX2OuEnZBbKnARbShh/CVYkbdMcM8rE=
-X-Received: by 2002:a17:907:7f26:b0:99d:ddae:f5d4 with SMTP id
- qf38-20020a1709077f2600b0099dddaef5d4mr3289336ejc.44.1696442943851; Wed, 04
- Oct 2023 11:09:03 -0700 (PDT)
+        Wed, 4 Oct 2023 14:12:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90859100
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 11:11:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696443119; x=1727979119;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=n4HyfSA5w24SFcZe2aU+tZ+XRrIqdPWBEKVvtjaa8iQ=;
+  b=L/TtXsfo8CsHHDkD5Dnx7qQLWCfmCUGOLmxdnRY5PXgIgD8GKR5JiO/Q
+   6EGe32aHwwRmhoyOKVZrqBq91zDujW+w+Ao7DxXJh1ws6xIKWb0+526IR
+   NkB3OySSTGXsCjjAgYHbWy9WTU5Jn2RFQsfvC/zFs7+aQHioOC9xvJBlO
+   YA5yIhhjdffDlqvByVxty48mK88SxipCTRGPODVr3nO2s0SrGLcfRlamk
+   ON2Ru6PmVBXITJWjMy64gMBJoi8sC//Nl7OPdLW+d8nRrXXGYE/EgSPcD
+   UzI39vK5ImpBluUKpV/qPy2OpchcvZSIEWNVl4Kvst/PX6S5lZsVbGXY4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="383162303"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="383162303"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 11:11:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="895085121"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="895085121"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Oct 2023 11:10:29 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qo6Li-000KU6-09;
+        Wed, 04 Oct 2023 18:11:54 +0000
+Date:   Thu, 5 Oct 2023 02:11:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Naresh Solanki <naresh.solanki@9elements.com>, broonie@kernel.org,
+        zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Naresh Solanki <Naresh.Solanki@9elements.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] regulator: userspace-consumer: Retrieve supplies
+ from DT
+Message-ID: <202310050133.mv0eecfC-lkp@intel.com>
+References: <20231004121010.1192344-2-naresh.solanki@9elements.com>
 MIME-Version: 1.0
-References: <20231004093620.2b1d6917@xps-13> <20231004113458.531124-1-mwalle@kernel.org>
- <CAPnjgZ2hWE6Sc=rg55W=-r-TnoWP7Y5gSpn41kwoyja-AMVw+w@mail.gmail.com> <9e588e3ec8c0c321a2861723d0d42b9a@kernel.org>
-In-Reply-To: <9e588e3ec8c0c321a2861723d0d42b9a@kernel.org>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Wed, 4 Oct 2023 12:08:52 -0600
-Message-ID: <CAPnjgZ20ezipPWAj6bUM9_oCTcX1XzuLqQ7b7-nKjXf1t4p9-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: fixed-partitions: Add binman compatible
-To:     Michael Walle <mwalle@kernel.org>
-Cc:     miquel.raynal@bootlin.com, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        ptyadav@amazon.de, rafal@milecki.pl, richard@nod.at,
-        robh+dt@kernel.org, robh@kernel.org, trini@konsulko.com,
-        u-boot@lists.denx.de, vigneshr@ti.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231004121010.1192344-2-naresh.solanki@9elements.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Hi Naresh,
 
-On Wed, 4 Oct 2023 at 11:17, Michael Walle <mwalle@kernel.org> wrote:
->
-> Hi,
->
-> >> >> Add a compatible string for binman, so we can extend fixed-partitions
-> >> >> in various ways.
-> >> >
-> >> > I've been thinking at the proper way to describe the binman partitions.
-> >> > I am wondering if we should really extend the fixed-partitions
-> >> > schema. This description is really basic and kind of supposed to remain
-> >> > like that. Instead, I wonder if we should not just keep the binman
-> >> > compatible alone, like many others already. This way it would be very clear
-> >> > what is expected and allowed in both cases. I am thinking about
-> >> > something like that:
-> >> >
-> >> >       Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml
-> >> >
-> >> > this file is also referenced there (but this patch does the same, which
-> >> > is what I'd expect):
-> >> >
-> >> >       Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-> >> >
-> >> > I'll let the binding maintainers judge whether they think it's
-> >> > relevant, it's not a strong opposition.
-> >>
-> >> What is the overall goal here? To replace the current binman node
-> >> which is
-> >> usually contained in the -u-boot.dtsi files? If one is using binman to
-> >> create an image, is it expected that one needs to adapt the DT in
-> >> linux?
-> >> Or will it still be a seperate -u-boot.dtsi? > Because in the latter
-> >> case
-> >> I see that there will be conflicts because you have to overwrite the
-> >> flash node. Or will it be a seperate node with all the information
-> >> duplicated?
-> >
-> > The goal is simply to have a full binding for firmware layout, such
-> > that firmware images can be created, examined and updated. The
-> > -u-boot.dtsi files are a stopgap while we sort out a real binding.
-> > They should eventually go away.
->
-> You haven't answered whether this node should be a seperate binman
-> node - or if you'll reuse the existing flash (partitions) node(s) and
-> add any missing property there. If it's the latter, I don't think
-> compatible = "binman", "fixed-partitions"; is correct.
+kernel test robot noticed the following build errors:
 
-My intent is to make it compatible, so wouldn't it make sense to have
-binman as the first compatible, then falling back to fixed-partitions
-as the second?
+[auto build test ERROR on f9a1d31874c383f58bb4f89bfe79b764682cd026]
 
->
-> >> Maybe (a more complete) example would be helpful.
-> >
-> > Can you please be a bit more specific? What is missing from the
-> > example?
->
-> Like a complete (stripped) DTS. Right now I just see how the individual
-> node looks like. But with a complete example DTS, my question from above
-> would have been answered.
->
-> What if a board uses eMMC to store the firmware binaries? Will that then
-> be a subnode to the eMMC device?
+url:    https://github.com/intel-lab-lkp/linux/commits/Naresh-Solanki/regulator-userspace-consumer-Retrieve-supplies-from-DT/20231004-201151
+base:   f9a1d31874c383f58bb4f89bfe79b764682cd026
+patch link:    https://lore.kernel.org/r/20231004121010.1192344-2-naresh.solanki%409elements.com
+patch subject: [PATCH v2 2/3] regulator: userspace-consumer: Retrieve supplies from DT
+config: i386-buildonly-randconfig-003-20231004 (https://download.01.org/0day-ci/archive/20231005/202310050133.mv0eecfC-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310050133.mv0eecfC-lkp@intel.com/reproduce)
 
-I thought there was a way to link the partition nodes and the device
-using a property, without having the partition info as a subnode of
-the device. But I may have imagined it as I cannot find it now. So
-yes, it will be a subnode of the eMMC device.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310050133.mv0eecfC-lkp@intel.com/
 
-Regards,
-Simon
+All error/warnings (new ones prefixed by >>):
+
+   drivers/regulator/userspace-consumer.c: In function 'get_num_supplies':
+>> drivers/regulator/userspace-consumer.c:139:9: error: implicit declaration of function 'for_each_property_of_node'; did you mean 'for_each_child_of_node'? [-Werror=implicit-function-declaration]
+     139 |         for_each_property_of_node(pdev->dev.of_node, prop) {
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~
+         |         for_each_child_of_node
+>> drivers/regulator/userspace-consumer.c:139:59: error: expected ';' before '{' token
+     139 |         for_each_property_of_node(pdev->dev.of_node, prop) {
+         |                                                           ^~
+         |                                                           ;
+   drivers/regulator/userspace-consumer.c:137:13: warning: unused variable 'num_supplies' [-Wunused-variable]
+     137 |         int num_supplies = 0;
+         |             ^~~~~~~~~~~~
+   drivers/regulator/userspace-consumer.c:144:1: error: no return statement in function returning non-void [-Werror=return-type]
+     144 | }
+         | ^
+   drivers/regulator/userspace-consumer.c: In function 'regulator_userspace_consumer_probe':
+   drivers/regulator/userspace-consumer.c:170:67: error: expected ';' before '{' token
+     170 |                 for_each_property_of_node(pdev->dev.of_node, prop) {
+         |                                                                   ^~
+         |                                                                   ;
+   drivers/regulator/userspace-consumer.c: At top level:
+>> drivers/regulator/userspace-consumer.c:121:15: warning: 'prop_supply_name' defined but not used [-Wunused-function]
+     121 | static size_t prop_supply_name(char *prop_name)
+         |               ^~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +139 drivers/regulator/userspace-consumer.c
+
+   120	
+ > 121	static size_t prop_supply_name(char *prop_name)
+   122	{
+   123		int len = strlen(prop_name);
+   124	
+   125		if (len <= SUPPLY_SUFFIX_LEN)
+   126			return 0;
+   127	
+   128		if (strcmp(prop_name + len - SUPPLY_SUFFIX_LEN, SUPPLY_SUFFIX) == 0)
+   129			return len - SUPPLY_SUFFIX_LEN;
+   130	
+   131		return 0;
+   132	}
+   133	
+   134	static int get_num_supplies(struct platform_device *pdev)
+   135	{
+   136		struct  property *prop;
+   137		int num_supplies = 0;
+   138	
+ > 139		for_each_property_of_node(pdev->dev.of_node, prop) {
+   140			if (prop_supply_name(prop->name))
+   141				num_supplies++;
+   142		}
+   143		return num_supplies;
+   144	}
+   145	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
