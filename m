@@ -2,125 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9546D7B807A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9437B808D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242586AbjJDNPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:15:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        id S242556AbjJDNQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 09:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242551AbjJDNPe (ORCPT
+        with ESMTP id S232819AbjJDNQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:15:34 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46628A9
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:15:31 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9b27bc8b65eso360042866b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 06:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696425329; x=1697030129; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wM2BQu3GXs7kSU47P46x4m5YPszlj9YFexa8DKIyaQQ=;
-        b=igC9Y7oVeJXCee0jvnujfeB/wRubO0Yp8zbs6DxiGxPXo2zXpFaMstWVi3BEHE6PmJ
-         R/sdfzRzYbDs2M376rFbW8e+TgkvYbXYtP7zQU620PLTaHFGJKPSV9dJ3DMjhA1jAZ61
-         UundCNpBrqs+vEhrnirI6pAEX36Xv8eASiWPoYO+ryH4XulItSuiuRTpfvDRPXUu9u0t
-         Q1egl6vwphKSP4MtS0Wg/UqpDY6C8d7+2krfxO5TszMMTDEiogk45+nWI5hne1JXp+Uo
-         PUHKmOfotlbpEnBeqxgORIeOsc4VJihd3tbon8VAdruYmBsorgOTgscNwQn0BOSXvlTK
-         mWRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696425329; x=1697030129;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wM2BQu3GXs7kSU47P46x4m5YPszlj9YFexa8DKIyaQQ=;
-        b=ht3kBo5aw9wEtl/zK0LwfhHPayrg9EbiAmISNX4O9Ky9y5MyN1m7YagCsujl6UAQt+
-         rb1IRzX0hGigardi8K/xp9Rc4S8foaG8cuNSKcMPdtKzgF4c8i3hJZm15bYIzfWIL2Ov
-         1r2FN4mv42tc1ZbA52wFuxUIHhIVWVCKN6wcayPKnJalTmv8bFIWagXNC1wB3jO9KJ1D
-         F2Xao8GrZoypVg+QB2V+hosyyhOc9LzaGRhJ3gyEIpd7n6SE3z9JAzDGUyl4NhSqKxOr
-         BSdj5fBkcfTCR7xeD0odiQHdCiG8maRjsHYdzeeo37wJF0iwCV3e64m8L9SAuWNdsfRO
-         WSbQ==
-X-Gm-Message-State: AOJu0YwRcBx9kg4MG9mlY4EUqKsW+Ko/QRu2nJJF60W8/ZbEBS8pVvdk
-        3p4VE0vtKWzwZOy0c/Fj/XOLcQ==
-X-Google-Smtp-Source: AGHT+IE2JrmL+OuDmloItoA+vG37SFu+A5RBeGMcXmvS5vGg+fihw/PEgCfQjs4lMSSpfQWZ6MOcVQ==
-X-Received: by 2002:a17:906:9a:b0:9b2:b149:b818 with SMTP id 26-20020a170906009a00b009b2b149b818mr2096123ejc.70.1696425329455;
-        Wed, 04 Oct 2023 06:15:29 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id h14-20020a17090634ce00b0099b6becb107sm2808888ejb.95.2023.10.04.06.15.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 06:15:28 -0700 (PDT)
-Message-ID: <b98594aa-faa3-4623-8f8b-35e89af51137@linaro.org>
-Date:   Wed, 4 Oct 2023 15:15:26 +0200
+        Wed, 4 Oct 2023 09:16:34 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2076.outbound.protection.outlook.com [40.107.243.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC495A1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:16:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dZKfAC3mR9J5zBys/sbjolHXbX9viSmtpUSdp0LUkuv+0V3DLKJ4DMQBkqd4NCF7SQD0cjqCohOQUkoPKKi1+Q/N2+25fMmuauskCk4TS0HnRDDxqoT2zY8HmrOgunShEzrslAjyB0NJUWqWt4MiE8+swY6XdPagOmFL2ce0IjiF54Oksjtj3LHPYpqSN+ZlJKYKJ2gK2YeqHnwRAFq1GofdoVz2s93Uh3EhLDsVx9lRtkHH7cq91pT4SzBteayZLtlXhH8AvwuckmzaffqP+FfugU7TsmZsTZZ5I/vjITUTCJ6pKlM10YNhqw0HzE2jiNSuWTIn9gxKOJLroLV9gg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Lc8UW6Q+hEQYC7ZZNFUr/pCOi4WUmhXGDUqnfjNRLIU=;
+ b=MJZTsY2pFfmSnwGoVptOk2LqOGH3rPJ9KnVpytN4gsqRi29BrmzCWkzYSvc6FydRzzgC5+s8UC5qppbGwSlEzIADQmTvJI0DAVPqpbIEd2cRMHGNqSmI0BRpppLwmZAbdsFt7ijeCAtijmWnhO0919ZV8fFOsKP+Y33wNUOPJafw42n3LQjf84sWILGEyAkkHJq6Ug06eHxnTqDxkZamXdAGXWtUeLY1ruKAf2HiysKwlofDlVmjj7Yp3jurba4HSBsPFm9JubLZaeVpUQPT24/oig+dGIKR3IeKk+kEt9hOBzbz2kWq2ErDC0M8/6hm+Za8xrUfrjEeg+vJqIn/Lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Lc8UW6Q+hEQYC7ZZNFUr/pCOi4WUmhXGDUqnfjNRLIU=;
+ b=iA37NX5Yrtqcl7SfzLelw74sLNvuW+ZfO4sosTcDdNiJF5Zb9zJWLkeI3uVqoVFljmCy3wVbzz0NMErfjWRBQa4W4t5AMFAqj+GojxPOLmZfkiqtzVzibaSxQX3CbjEANQzP7pMn+K/wMTDGvGsqY5av88JEZscFcHP4WvZHPGs=
+Received: from PR1P264CA0175.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:344::14)
+ by DM4PR12MB5913.namprd12.prod.outlook.com (2603:10b6:8:66::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.30; Wed, 4 Oct
+ 2023 13:16:21 +0000
+Received: from SA2PEPF000015C6.namprd03.prod.outlook.com
+ (2603:10a6:102:344:cafe::f8) by PR1P264CA0175.outlook.office365.com
+ (2603:10a6:102:344::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.22 via Frontend
+ Transport; Wed, 4 Oct 2023 13:16:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SA2PEPF000015C6.mail.protection.outlook.com (10.167.241.196) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Wed, 4 Oct 2023 13:16:20 +0000
+Received: from [192.168.137.2] (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 4 Oct
+ 2023 08:16:15 -0500
+Message-ID: <48bc9520-fd5f-43fc-9adf-2a9e0493109a@amd.com>
+Date:   Wed, 4 Oct 2023 15:16:15 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soundwire: fix initializing sysfs for same devices on
- different buses
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20231004130243.493617-1-krzysztof.kozlowski@linaro.org>
- <2023100426-purebred-cabbie-ae19@gregkh>
+Subject: Re: [PATCH v2 6/6] drivers: soc: xilinx: update maintainer of event
+ manager driver
 Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <2023100426-purebred-cabbie-ae19@gregkh>
-Content-Type: text/plain; charset=UTF-8
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Jay Buddhabhatti <jay.buddhabhatti@amd.com>
+CC:     <tanmay.shah@amd.com>, <nava.kishore.manne@amd.com>,
+        <ben.levinsky@amd.com>, <robh@kernel.org>, <dhaval.r.shah@amd.com>,
+        <marex@denx.de>, <izhar.ameer.shaikh@amd.com>, <arnd@arndb.de>,
+        <ruanjinjie@huawei.com>, <mathieu.poirier@linaro.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20231004094116.27128-1-jay.buddhabhatti@amd.com>
+ <20231004094116.27128-7-jay.buddhabhatti@amd.com>
+ <2023100446-jokester-uncrushed-c9b2@gregkh>
+From:   Michal Simek <michal.simek@amd.com>
+Autocrypt: addr=michal.simek@amd.com; keydata=
+ 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
+ 3i3l5DA=
+In-Reply-To: <2023100446-jokester-uncrushed-c9b2@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015C6:EE_|DM4PR12MB5913:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8deffc9d-383c-4f51-0ec0-08dbc4dc1980
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QxJ71brmBHp1qfYw92IVMo2scJMjJKMDAkiMgWQaXPzpNg+8Zd2SkaAAToAr/n2yLzuQztBWOFnjtq51SVtz/S+eqUYst4PjQDS68TZ0oe8syGyMBLYrzuKvHccU5M5MoP+jUxeNMzka3uuORppzhRhDg7vDpeO1lD8mvh8xIRgQ01UpMCQ8/4if9gx3l2gmtCw45OZC+U414FcE8QoNxqtiDNu9e8fw/qNueGDn/C2inFlhkJrDGHegmQ4RBKjcqfqA+AEDAi6pOVnRT5zogYYZluVNrdfzCInWBkczK0sFgzduhMHgbVoHFdgrlH1kMJdAz87nIl7mFAaYimCrzDuV2TTCCObM08CHKZvtYyq7GZrQ7unJ3U0rcZMmJIMIi5Le52j5ra+2wVCzDJBaMZGmS689AgWsvxFfSJfeEdYtWE7gWJfZZwR4k/nVoTKfhPwisHk4cAsqSaMpOU396qfK+yDSgEPKlKwa1KlGDbjSMzLQMllmkSlKdrDLty76Uq6wM4o8erR5wYBkEuZGmPQ2PMDSWvuOJ82Y41rdizht/6CxLRkx+VIIDxhed+IlIEsEof2LGo88PtI1D/Qww4WTXWkR4o2JQzvU6h+BiGshMemcBmlhYv7lxXY8YTeleF4vAeQxSFmc5OTjzbslG7N2SVPXcl+RhJbCW2h65b6QIHg9jlOpiErShaN3oPG0lIIFA8i8dRsTMdlMrLypi/k7mt9MqciWieFtoW/PuDYRVRQXRF6TZDsWASSv3uc47HPCYB9AGcKSrvdiJvBqjCckTqd9wgXpwE0Gl3+LcZ9GpwkU5ZtTDzj+NFmtxL+I
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(136003)(346002)(39860400002)(230922051799003)(186009)(451199024)(1800799009)(82310400011)(64100799003)(36840700001)(46966006)(40470700004)(83380400001)(40480700001)(2616005)(53546011)(26005)(41300700001)(44832011)(16526019)(2906002)(4744005)(47076005)(5660300002)(8936002)(70586007)(4326008)(70206006)(110136005)(6636002)(16576012)(54906003)(8676002)(426003)(316002)(336012)(478600001)(40460700003)(31696002)(86362001)(356005)(81166007)(36756003)(82740400003)(36860700001)(31686004)(43740500002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 13:16:20.2104
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8deffc9d-383c-4f51-0ec0-08dbc4dc1980
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015C6.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5913
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -128,38 +153,33 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 04/10/2023 15:11, Greg Kroah-Hartman wrote:
->>  	if (id->unique_id == SDW_IGNORED_UNIQUE_ID) {
->> -		/* name shall be sdw:link:mfg:part:class */
->> -		dev_set_name(&slave->dev, "sdw:%01x:%04x:%04x:%02x",
->> -			     bus->link_id, id->mfg_id, id->part_id,
->> +		/* name shall be sdw:bus:link:mfg:part:class */
->> +		dev_set_name(&slave->dev, "sdw:%01x:%01x:%04x:%04x:%02x",
->> +			     bus->id, bus->link_id, id->mfg_id, id->part_id,
->>  			     id->class_id);
->>  	} else {
->> -		/* name shall be sdw:link:mfg:part:class:unique */
->> -		dev_set_name(&slave->dev, "sdw:%01x:%04x:%04x:%02x:%01x",
->> -			     bus->link_id, id->mfg_id, id->part_id,
->> +		/* name shall be sdw:bus:link:mfg:part:class:unique */
->> +		dev_set_name(&slave->dev, "sdw:%01x:%01x:%04x:%04x:%02x:%01x",
->> +			     bus->id, bus->link_id, id->mfg_id, id->part_id,
+
+On 10/4/23 14:17, Greg KH wrote:
+> On Wed, Oct 04, 2023 at 02:41:16AM -0700, Jay Buddhabhatti wrote:
+>> Added Michal as a maintainer of event manager driver as Abhyuday is no
+>> longer in AMD-Xilinx.
+>>
+>> Signed-off-by: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
+>> Acked-by: Michal Simek <michal.simek@amd.com>
+>> ---
+>>   MAINTAINERS | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 35977b269d5e..f36fefd7032b 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -23672,7 +23672,7 @@ F:	Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+>>   F:	drivers/net/can/xilinx_can.c
+>>   
+>>   XILINX EVENT MANAGEMENT DRIVER
+>> -M:	Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
+>> +M:	Michal Simek <michal.simek@amd.com>
 > 
-> Shouldn't some documenation also be changed somewhere that describes the
-> device id?
+> For obvious reasons, we need an ack from Abhyuday.
 
+He no longer works for Xilinx/AMD but I have asked him on side channel to reply 
+and let's see if this is going to happen or not.
 
-+Cc Srini,
-
-The only reference I found is
-Documentation/ABI/testing/sysfs-bus-soundwire-slave [1] and it did not
-specify the format of each device name entry.
-
-Vinod, Srini, Pierre-Louis,
-Any hints from your side if we have it documented anywhere else?
-
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/ABI/testing/sysfs-bus-soundwire-slave?h=v6.6-rc4
-
-Best regards,
-Krzysztof
+Thanks,
+Michal
