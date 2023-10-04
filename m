@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F637B97EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 00:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1DA7B97ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 00:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234617AbjJDWXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 18:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
+        id S237231AbjJDWXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 18:23:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237463AbjJDWXn (ORCPT
+        with ESMTP id S233278AbjJDWXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 18:23:43 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CB310FC
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 15:23:26 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d865f1447a2so592380276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 15:23:26 -0700 (PDT)
+        Wed, 4 Oct 2023 18:23:45 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE8010D
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 15:23:29 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d86766bba9fso455648276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 15:23:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696458206; x=1697063006; darn=vger.kernel.org;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=raoMQ3SQ/7ZFelkz0l8EiT5sUCvEdkA2km5MKOLJhzo=;
-        b=QYfC+wRugJ4lQvqgBCiqmcgXHB6ESxeWYPtjzQSoBgY8qUxYUMV3L0OGnyhLxVaOsr
-         cxsqzQ/YEGh7N8UldMs/u2nV20Kr+nvcsiokgQPUdT3xNyLYy+DdZBs6BEiB+Rs7ucLj
-         LMKfYgoIWNgmLYHuIOaEPYtqwtdcjSe9duR2Bu4C2dQz2h3wERt1NbRupbCPadAYuYGB
-         qu/+m9oX+SJRad8fShgk+yHFuVdJvVQssA0AOmvKhDlnn+IAztWjw9gkAA0STxN5cc0N
-         FHOFYKtItacqE/0RgR05bzroVIuuYZzGo3qkRNAJOMC0/HBncopjRm3VtlGu+IPwu2XO
-         /PtA==
+        d=google.com; s=20230601; t=1696458208; x=1697063008; darn=vger.kernel.org;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LzX5wmLYyGVenVJvmQO+om+eWA+EBs8Xg6bCWmXIBDQ=;
+        b=1p1zilIWrwSNTANPn5G0v5HRoO9ieIdCyRoZ2y5TUs4Zoj/KYvQPn5DRdzJ+y+HqEn
+         PEot3QoYi9lkp0CkZRMVEsDqyXVs1jwRDaqbW6rPNVbljYsGZiKFsJaRJRS5sgXPdmz1
+         bnTGa8kl1/WHAXgepXDpkmnV/W59yKpHJ2qcMHseoFiw7TYekiAlM2GrOYkp+Y+bAPK5
+         sunIZL8eCph5unFqJX2M0wMILp0yvCLG0y5iEXtXwFinvbTWFQd8Z/e+wZdblcMTfGrd
+         832u5tudEExvzGxhHW6RSycKL0jsHbKdCevJm5T8azlYuV15MfcqLaVABM/VGUXTMzVB
+         erNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696458206; x=1697063006;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=raoMQ3SQ/7ZFelkz0l8EiT5sUCvEdkA2km5MKOLJhzo=;
-        b=o3503Bj/EuUoHw6qrclge/wYWJqKJmsjZ71wicH5Y0CxO0pXYKLmGSQAksBOa4e9KC
-         a3wCg/GG6ycJosCM8OkoX15wAHIUw1UKTa8jOwgotw7NmRaxuE3F1wm13KJNvTBMjOYW
-         Ml7UemuCMWmjrDbe+pC/0JZ72CIAdrSRsbSm88d6WlMWB5zYGcdyXqW/yIruCht6+goF
-         14Ot60OuRn4O2BCa+ypQ0PS8w0C/14f09cmzB6hbLmwNhB7ayuukzEswKAWqOtx0FaYR
-         J4/+Jz0h6cxyz5DHw/QDrh5J7ZPy8KK+o7qd5K1iU0zejnPx9WMUCTx4JJWi07bSAw+K
-         0QzA==
-X-Gm-Message-State: AOJu0Yyee9X5ZzHkyyT6iJRRRDdB3seEx/0C2Hd6pP5QPVJGw+oSDH7R
-        MdqGj+LdTMkBACHzUgt9o2/LmOjhLpJJ
-X-Google-Smtp-Source: AGHT+IHuWIDrX75i83mVKUxiuU6q58yAN8CALuDciPIg46gAx0U1ncoVbvRysJAxkkItHi9M7Z9Ux8p3GNvU
+        d=1e100.net; s=20230601; t=1696458208; x=1697063008;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LzX5wmLYyGVenVJvmQO+om+eWA+EBs8Xg6bCWmXIBDQ=;
+        b=oHRtiZbqQxtHTlmdTXSkM06E66Pp8A9ij9/cToOp26MXjHJFOQl71A9E1fdvq1zn4u
+         g7xyFozws4o7CjkWlWNcdDqC9XRUuuL6PESelwQDh7GKZZ5Tv1zAEJ+25V3wLzuetd2V
+         HwKhJJKHJS/1+zP+vct3X24unrhCXYTKtP2AZnaulDsA2NrqIPu4SO76wxPu56ujl8ka
+         ttbLCx8nT4H3pUY2lBBm3lIz3/zEiYDY28+iRCInod3GpoDs2cH20W9QskPnWZiiAOzT
+         +gGtvu/4ThEeCrukYV1n0qrP7ytBTaW8vH/Ud6Srs7EofSSlvdmLu1SpsssK3XFgGBPE
+         T8/Q==
+X-Gm-Message-State: AOJu0Yz0EdAIzfJPkObchi5PWnWwYF0hfARJxFYkih1jV+wyACAFi4A2
+        gWwSV092wHi9m4SrYlYeZIMjVa21tKYg
+X-Google-Smtp-Source: AGHT+IHvF9BgEMqd3YfEZKmvnvOMOqNldSm6WrYskTN1Aec+uolfJJ3OTjlsrxKR9NYynPcHuWje6mMl7RUT
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f42:a09e:8ee2:1491])
- (user=irogers job=sendgmr) by 2002:a25:3442:0:b0:d0e:e780:81b3 with SMTP id
- b63-20020a253442000000b00d0ee78081b3mr48786yba.2.1696458206114; Wed, 04 Oct
- 2023 15:23:26 -0700 (PDT)
-Date:   Wed,  4 Oct 2023 15:23:22 -0700
-Message-Id: <20231004222323.3503030-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a25:dc51:0:b0:d7a:bd65:18ba with SMTP id
+ y78-20020a25dc51000000b00d7abd6518bamr52326ybe.3.1696458208397; Wed, 04 Oct
+ 2023 15:23:28 -0700 (PDT)
+Date:   Wed,  4 Oct 2023 15:23:23 -0700
+In-Reply-To: <20231004222323.3503030-1-irogers@google.com>
+Message-Id: <20231004222323.3503030-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20231004222323.3503030-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v4 1/2] bpftool: Align output skeleton ELF code
+Subject: [PATCH v4 2/2] bpftool: Align bpf_load_and_run_opts insns and data
 From:   Ian Rogers <irogers@google.com>
 To:     Quentin Monnet <quentin@isovalent.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -64,73 +66,116 @@ To:     Quentin Monnet <quentin@isovalent.com>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>,
-        Alan Maguire <alan.maguire@oracle.com>
+Cc:     Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-libbpf accesses the ELF data requiring at least 8 byte alignment,
-however, the data is generated into a C string that doesn't guarantee
-alignment. Fix this by assigning to an aligned char array. Use sizeof
-on the array, less one for the \0 terminator, rather than generating a
-constant.
+A C string lacks alignment so use aligned arrays to avoid potential
+alignment problems. Switch to using sizeof (less 1 for the \0
+terminator) rather than a hardcode size constant.
 
-Fixes: a6cc6b34b93e ("bpftool: Provide a helper method for accessing skeleton's embedded ELF data")
 Signed-off-by: Ian Rogers <irogers@google.com>
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- tools/bpf/bpftool/gen.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ tools/bpf/bpftool/gen.c | 47 ++++++++++++++++++++++-------------------
+ 1 file changed, 25 insertions(+), 22 deletions(-)
 
 diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 2883660d6b67..b8ebcee9bc56 100644
+index b8ebcee9bc56..7a545dcabe38 100644
 --- a/tools/bpf/bpftool/gen.c
 +++ b/tools/bpf/bpftool/gen.c
-@@ -1209,7 +1209,7 @@ static int do_skeleton(int argc, char **argv)
+@@ -408,8 +408,8 @@ static void codegen(const char *template, ...)
+ 		/* skip baseline indentation tabs */
+ 		for (n = skip_tabs; n > 0; n--, src++) {
+ 			if (*src != '\t') {
+-				p_err("not enough tabs at pos %td in template '%s'",
+-				      src - template - 1, template);
++				p_err("not enough tabs at pos %td in template '%s'\n'%s'",
++					src - template - 1, template, src);
+ 				free(s);
+ 				exit(-1);
+ 			}
+@@ -708,17 +708,22 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
+ 
+ 		codegen("\
+ 		\n\
+-			skel->%1$s = skel_prep_map_data((void *)\"\\	    \n\
+-		", ident);
++			{						    \n\
++				static const char data[] __attribute__((__aligned__(8))) = \"\\\n\
++		");
+ 		mmap_data = bpf_map__initial_value(map, &mmap_size);
+ 		print_hex(mmap_data, mmap_size);
+ 		codegen("\
+ 		\n\
+-		\", %1$zd, %2$zd);					    \n\
+-			if (!skel->%3$s)				    \n\
+-				goto cleanup;				    \n\
+-			skel->maps.%3$s.initial_value = (__u64) (long) skel->%3$s;\n\
+-		", bpf_map_mmap_sz(map), mmap_size, ident);
++		\";							    \n\
++									    \n\
++				skel->%1$s = skel_prep_map_data((void *)data, %2$zd,\n\
++								sizeof(data) - 1);\n\
++				if (!skel->%1$s)			    \n\
++					goto cleanup;			    \n\
++				skel->maps.%1$s.initial_value = (__u64) (long) skel->%1$s;\n\
++			}						    \n\
++			", ident, bpf_map_mmap_sz(map));
+ 	}
  	codegen("\
  		\n\
- 									    \n\
--			s->data = (void *)%2$s__elf_bytes(&s->data_sz);	    \n\
-+			s->data = (void *)%1$s__elf_bytes(&s->data_sz);	    \n\
- 									    \n\
- 			obj->skeleton = s;				    \n\
- 			return 0;					    \n\
-@@ -1218,12 +1218,12 @@ static int do_skeleton(int argc, char **argv)
- 			return err;					    \n\
- 		}							    \n\
- 									    \n\
--		static inline const void *%2$s__elf_bytes(size_t *sz)	    \n\
-+		static inline const void *%1$s__elf_bytes(size_t *sz)	    \n\
+@@ -733,32 +738,30 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
  		{							    \n\
--			*sz = %1$d;					    \n\
--			return (const void *)\"\\			    \n\
--		"
--		, file_sz, obj_name);
-+			static const char data[] __attribute__((__aligned__(8))) = \"\\\n\
-+		",
-+		obj_name
-+	);
- 
- 	/* embed contents of BPF object file */
- 	print_hex(obj_data, file_sz);
-@@ -1231,6 +1231,9 @@ static int do_skeleton(int argc, char **argv)
+ 			struct bpf_load_and_run_opts opts = {};		    \n\
+ 			int err;					    \n\
+-									    \n\
+-			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
+-			opts.data_sz = %2$d;				    \n\
+-			opts.data = (void *)\"\\			    \n\
++			static const char opts_data[] __attribute__((__aligned__(8))) = \"\\\n\
+ 		",
+-		obj_name, opts.data_sz);
++		obj_name);
+ 	print_hex(opts.data, opts.data_sz);
+ 	codegen("\
+ 		\n\
+ 		\";							    \n\
++			static const char opts_insn[] __attribute__((__aligned__(8))) = \"\\\n\
+ 		");
+-
+-	codegen("\
+-		\n\
+-			opts.insns_sz = %d;				    \n\
+-			opts.insns = (void *)\"\\			    \n\
+-		",
+-		opts.insns_sz);
+ 	print_hex(opts.insns, opts.insns_sz);
  	codegen("\
  		\n\
  		\";							    \n\
 +									    \n\
-+			*sz = sizeof(data) - 1;				    \n\
-+			return (const void *)data;			    \n\
- 		}							    \n\
- 									    \n\
- 		#ifdef __cplusplus					    \n\
++			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
++			opts.data_sz = sizeof(opts_data) - 1;		    \n\
++			opts.data = (void *)opts_data;			    \n\
++			opts.insns_sz = sizeof(opts_insn) - 1;		    \n\
++			opts.insns = (void *)opts_insn;			    \n\
++									    \n\
+ 			err = bpf_load_and_run(&opts);			    \n\
+ 			if (err < 0)					    \n\
+ 				return err;				    \n\
+-		", obj_name);
++		");
+ 	bpf_object__for_each_map(map, obj) {
+ 		const char *mmap_flags;
+ 
 -- 
 2.42.0.609.gbb76f46606-goog
 
