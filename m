@@ -2,400 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F04F7B7703
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 06:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397997B7705
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 06:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbjJDEIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 00:08:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
+        id S232686AbjJDELJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 00:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232115AbjJDEIw (ORCPT
+        with ESMTP id S229887AbjJDELI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 00:08:52 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C375AC;
-        Tue,  3 Oct 2023 21:08:48 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-7741b18a06aso122683985a.1;
-        Tue, 03 Oct 2023 21:08:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696392527; x=1696997327; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=KXzJ3D1GcfX5orm7vFTwCo+aKz92sYx9472yuyz2s0A=;
-        b=hfpHsL+YO9QlKhejhemHYaS4ulZmaiAl6sBSeOwsskUES9PVVkEKJmVk5YTNSP/n0w
-         s+N8d+95oz/oRweP4/3IVhRFnyNUUyRzH95M5kgKt+/BJVEU7qEwRKQ8nen5Fg+u4czm
-         rd2I19cJApd9fJmPdgdPF0mdCBNK5TTTEhYJ4w5Dg7+gr/r+2PmHNp+Viszkjkdg5sOF
-         R1e1Knr6TTRaXHVOFXFXU74YMjev3FnjQD9yTT/OshRcfBISNsR6SqBukWngWdP0Ws9b
-         8kcx1Hvn19LqAs6uvN1MJm81Y5azhXhxPiAeEEpsF/1Nmhm1H4Cg8h8ZECsikErwBEPg
-         EFIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696392527; x=1696997327;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KXzJ3D1GcfX5orm7vFTwCo+aKz92sYx9472yuyz2s0A=;
-        b=XOxXApaQAlye+4ssaf7WXp5Ba4/m76sbahbRHhAFAND62WmaCsGWJq62zSoj8oDKYc
-         2psPmQMN3DK/qAx2zgCn3yFE9sRAlyv3BGN0ze2uHG7rWYQGP0ul8e6Y9+IUAWpxHwuA
-         OLm8PTOTk1pXXqyDsuQLFNfXqgsqfU3l+BOiNyk20M/hLHqsXVu+810PRjMbLessdjvz
-         K3FlflJXLwoHRSvgPhBypS968OPSCgnZXgyAgfATIaf86cnYW+EEpQW+gw+3VCxaWZ8c
-         JFdCVubM9YkDDbH4rkwGIfwHXkBC2tqH68TQw3VH3mj9zBUsM4fkUXduT7gWC/jBOUgr
-         TmrA==
-X-Gm-Message-State: AOJu0YxFxUhPHJOMvXwEpHsQWyplNQZYC2IvOB3A/wuLAG8i/PNmNBSh
-        tbAs0APjL7tz56zFY4GCHBnS0x5eHmg=
-X-Google-Smtp-Source: AGHT+IGPMHYCR7h93PO9ZD6gYYUFohsnwrzn92/mLsBUapIdoIEH9SH2K+EKpKx/SBcji3M/oAblHg==
-X-Received: by 2002:a05:620a:2950:b0:76f:2f7b:cf61 with SMTP id n16-20020a05620a295000b0076f2f7bcf61mr1465437qkp.61.1696392527084;
-        Tue, 03 Oct 2023 21:08:47 -0700 (PDT)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:cb85:e14:b63a:6d8d])
-        by smtp.gmail.com with ESMTPSA id a24-20020a637058000000b00581048ffc13sm2245081pgn.81.2023.10.03.21.08.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 21:08:46 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>, stable@vger.kernel.org
-Subject: [PATCH] perf/core: Introduce cpuctx->cgrp_ctx_list
-Date:   Tue,  3 Oct 2023 21:08:44 -0700
-Message-ID: <20231004040844.797044-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+        Wed, 4 Oct 2023 00:11:08 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2068.outbound.protection.outlook.com [40.107.20.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631F7AC;
+        Tue,  3 Oct 2023 21:11:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mOA1iML0k4sDRFNlgBC7KR8OZ+KxtgoLt2PHc5+Vean4o/lFpMJOn4HbxHYTXJ/Di7uBR92Lj+grTUMMC7CsAMbwLd2RHKRc7tw3K4dJnkOMMkhJLoMIwB7/L7FmHx2gsbOkazreAyf2c1bSJB+FriqUkbNlAWiC6d0dsnIRLrHWr6bO4KxsFzc5rBLRYNe7SfEfyD/u6ibomH7Kz6phAfh4YmqhZ6SrgbQektjHpF1Tvr4/OBWZ5A1lUNAHqJuRSU578zHoeGbhvIAPv5YHeR4gFI/6ZYteuxF0RfR6xxOLBxf48zlLF6EWQ4BDBO3mVV1hRGk8zEz3uk+MSCivpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WS6qMWBAXWqEXvvCOWzZS0T8G87xOX2Gmz1Hj0QfUx4=;
+ b=NNpl12rTOkRuR6htGPGcCK2JBtrm+LE6JnwB5xgmLRYxEN7l0KWhXnAGYtBv6fGgagI9kLq/nNp8EHA65dWyDCj7vk76JPWa8PPD1IKa77XZ/yYSKWJ1TJzAW0YxkHAsrwJRG1FBAvPjj1/iBvbBZ+hkMdS5nW70cLJtLpqqY37d4ITNELnek0+tvaIW/rSwqCqSpxotzmYNtnD9w8F03MNyfj37pra01W9ZXSfA79KT/LNhlCYH/9+jFsX4G4NImWILpydnAvA8xXd/NIyGzCAl4E257XFaAErVgnyI0ENgXE2RrAuabHLMv/68ssoryGjueImoOUUh+Ad9o0eIBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WS6qMWBAXWqEXvvCOWzZS0T8G87xOX2Gmz1Hj0QfUx4=;
+ b=A9G6QyRNfTJfeYPFuDnm9XxVfrlM4TiaRvRTJMhx1PwddQE2Me+TxRPq8AElievOiLGhatysNckAE6e6U51wQRx1g9uX0z9zGZEfB2pL0Qgx1198KgkKtWZS1o9uxvZL7iPAX2S8TGExQQuThMnx2aooKHo2VGZ86VUQ9THWaT4=
+Received: from DU2PR04MB8630.eurprd04.prod.outlook.com (2603:10a6:10:2dd::15)
+ by VI1PR04MB7024.eurprd04.prod.outlook.com (2603:10a6:800:124::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Wed, 4 Oct
+ 2023 04:10:57 +0000
+Received: from DU2PR04MB8630.eurprd04.prod.outlook.com
+ ([fe80::dbc:99b7:7808:f82e]) by DU2PR04MB8630.eurprd04.prod.outlook.com
+ ([fe80::dbc:99b7:7808:f82e%7]) with mapi id 15.20.6838.033; Wed, 4 Oct 2023
+ 04:10:56 +0000
+From:   Pankaj Gupta <pankaj.gupta@nxp.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "clin@suse.com" <clin@suse.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "pierre.gondois@arm.com" <pierre.gondois@arm.com>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Gaurav Jain <gaurav.jain@nxp.com>,
+        "alexander.stein@ew.tq-group.com" <alexander.stein@ew.tq-group.com>,
+        Varun Sethi <V.Sethi@nxp.com>
+Subject: RE: [EXT] Re: [PATCH v6 02/11] dt-bindings: arm: fsl: add imx-se-fw
+ binding doc
+Thread-Topic: [EXT] Re: [PATCH v6 02/11] dt-bindings: arm: fsl: add imx-se-fw
+ binding doc
+Thread-Index: AQHZ8T3cp/FWHmHt10GsVHBXrCASpLAwlzyAgAdf5cA=
+Date:   Wed, 4 Oct 2023 04:10:55 +0000
+Message-ID: <DU2PR04MB8630FF5994D65A5404E8B9B095CBA@DU2PR04MB8630.eurprd04.prod.outlook.com>
+References: <20230927175401.1962733-1-pankaj.gupta@nxp.com>
+ <20230927175401.1962733-3-pankaj.gupta@nxp.com>
+ <20230928185159.GA1035361-robh@kernel.org>
+In-Reply-To: <20230928185159.GA1035361-robh@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU2PR04MB8630:EE_|VI1PR04MB7024:EE_
+x-ms-office365-filtering-correlation-id: 91506adb-95ec-4eb5-2c5c-08dbc48fe86d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oCaoS7KUJWmxlbCDqxYhmblNlg6FQ7VqeXVPUR4E7mCOmqDXjLRgEMTtE1DdqWApKwdixSF5FxHfhH1RqNm5OC4ukgIFtbxOsm/C8kRNY0Wh4KsRbWjIpiTHp7SxOSh1yTPlLWELF6qOA6x4CcAnm6txGAtyRnZSsz4t0pzv5/MgvGTq3etWFcFQseRpfDiBOVK6J1CS3OZWk20YO8NcZU47S1cGP+8Yj0VGYq4A93lDxavC3jIxt8SGlpTJ4EAMYStj3hxO2XZYqleMN7hd5upilyMZZzKaXeqFKjZhhbvC2EvU0EpjRuNMCrvbXIJhNJdFc2ZKA/860didO6xvb6gLs2836nayZAqNq/RS7n6hZD6GlX+R1ZVU7d1LufWFWyVPAclFnmrjXtuqgd37LNYG/NVvKyBZCkCOqBIivdyTLAeEZ2q/DX14wZ8Fw1OW260huPNsqVvHEPNMrBEzRg6ugobTdUvHe7+BF1fck+/XpqgNOqcxfuB6C587NFzqjtZlZwjwYe4j/0HyOiDK0sShHBb0SAP+RyUM8hkz5EONBYCa1UeeAkdtypdYVbMJwW88K3n2d7z7JydKvLrcmF5z0Z6UGEiu8YCDicK9q2Ixhc6CGtrZx2Qavv7vMeBL
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8630.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(136003)(396003)(376002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(33656002)(86362001)(55016003)(54906003)(7696005)(66556008)(71200400001)(52536014)(45080400002)(64756008)(66446008)(4326008)(53546011)(44832011)(66946007)(6506007)(76116006)(9686003)(66476007)(55236004)(8676002)(41300700001)(316002)(6916009)(8936002)(26005)(5660300002)(2906002)(7416002)(478600001)(38100700002)(83380400001)(122000001)(38070700005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?8OA7kaSLDivzDyNmUjOFlLkZTGYMElIMrafUxW1RldIi3Z7gYC6MkUrXqPJb?=
+ =?us-ascii?Q?pt5uLespZYeliTOWjKs+hBVkNUOj/yc6EXbEG7UNj92Jir2hsrQERhyg2Gl4?=
+ =?us-ascii?Q?ol//F/TxQY73//3UZthpZ7/AMprj6u1ol9B079cxi2Z/u/zITexUaxs/Oii5?=
+ =?us-ascii?Q?FZT18vWv2Iqu/Iwsz7KdjE703Wj9dYAzD/xpcgwQmYAA7tRvtZvVbusc8Mg9?=
+ =?us-ascii?Q?oIlgtXCEvsqo9WJB2/dU/xQuhgqKPhiMKkTsjpm4Qwb9VkO+ujS9O/RRpeeG?=
+ =?us-ascii?Q?aoLklJkAOpeeo9HSPVzN0N2nLJbgwDbqC+3oOrChfAimVgS7O/Ix0K/H5d6I?=
+ =?us-ascii?Q?LEFCVF5EjSBql9NBa9ra1iOpFI0PaYIm5GC6HDErCrZnwdViCTARIWHJ8I0j?=
+ =?us-ascii?Q?pe91kmcv2xPIPUJOfmMgr9yd7/EBpsKbI+Ixj0A1/izBpaNGWIFtF5POw2wb?=
+ =?us-ascii?Q?ZiCFX2VzNLznun6ovS1QBsc3e/EY4yctgeuFL5sWechlMRYbGT7JRFiG/keh?=
+ =?us-ascii?Q?iAednByFobEQykLBZvaGt1JF7JUyhHm+uOqcR6cOeQcJ5/gfofyZFeinx7IK?=
+ =?us-ascii?Q?sNLW04o2BX54LiBViSTQxF+XoPcOWYFFTOECeCEHHwI8GBh0JajtlYTFB9aR?=
+ =?us-ascii?Q?/xVJlfcRekoFIjqpwcH2KLoWU0SU+//7JLO4Z1ubf9sjzyrAs1uuTysBTvuR?=
+ =?us-ascii?Q?4Cs0eQpMUteGsxCMDdB9Nuv9XUAa2pgiJQ3ykkS2if8AhbmOhQ5TzGEx80sx?=
+ =?us-ascii?Q?VxS2gnJs8vkCS7jmzr1I4RgLyvUduUt2PB/7PJ1wcWMN7j36MBiZjXDvjgvV?=
+ =?us-ascii?Q?uNp50waEzD2DiecRkme3n5BD1IMqd3pjGoCKK2XO3af7oWHmmT5RnH8bh2Sb?=
+ =?us-ascii?Q?EkpmLuGydPesC4KJXuTUfQ0Hie8Fx7BCFriyXy+lOGE5qmi5cl/sBW594fsG?=
+ =?us-ascii?Q?6T5UNJB61yzRSckBt0g8+Xezg9z9mB1bBeJx25GGSVu6Lvw9JdBGrmv0bI2d?=
+ =?us-ascii?Q?lA4CFYRPwvppmwkxEl+vNYorPKi0MAcppF2IF6IOjgW8fqHwuBV/1ICpp1T0?=
+ =?us-ascii?Q?6KalEJhrkBwCgMMjkZBxU6cG1au6FHuLb+h6SfHndRa4rte5p4+AVa1XfSFe?=
+ =?us-ascii?Q?zrqAZEFzBXtAWrU8DKIpaR/GPQFWyWPWKfOA9Dpp4mXkrmDeUJF3MsjK7Iiy?=
+ =?us-ascii?Q?YDp0Xfy/ahiDPVW6k0mdHCephcKL5jOzgbW3g4fsz+5c5LiYvGhpQYRMDdaU?=
+ =?us-ascii?Q?YEJQ02qILMgQGeU3kf0qD3VBZ2T+UwY2E5rwOA73YEM1BW5E/prbGjtwUP8Q?=
+ =?us-ascii?Q?A5wEmYtHb/rEZzKq2kN1fk6eacDy7DADGzDM0yVhF1S9TRXH05UEY8/0KSH8?=
+ =?us-ascii?Q?dS2M6rIGbMpd1zMMqZdrFNQT2fcMNIdyes1GaFlhoMoBH6sHjUVtbhy8oa/T?=
+ =?us-ascii?Q?JKJYOAyW+EOR6UsIYujN9wmJ4kdn0AcvR3Gh2Vljm7qvaVuj7V20UAhOWaHt?=
+ =?us-ascii?Q?OTJhS33+pIINe4pMiHh5QdUdmi8Z5MPjqqWWIpr4XRy9EVPRV0ERKRLWeVgF?=
+ =?us-ascii?Q?hzj7NlLL/NlTSBCp2swM8mdsEjbYVK2XLJTDl93i?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8630.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91506adb-95ec-4eb5-2c5c-08dbc48fe86d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Oct 2023 04:10:56.1633
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: owIKo2/5y9PLOwZSct81Mo6i5vBZKlOHjS5lTcQXpLtdTq0yWF0mqF1mcfEM/vKI/8+3sica60FP8X+h4Vr10g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7024
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit bd2756811766 ("perf: Rewrite core context handling") removed
-cgrp_cpuctx_list to link active cpu (pmu) contexts together.  It's used
-in the perf_cgroup_switch() to access cgroup events only.
 
-But after the change, it ended up iterating all pmus/events in the cpu
-context if there's a cgroup event somewhere on the cpu context.
-Unfortunately it includes uncore pmus which have much longer latency to
-control.
 
-That regressed some load tests occasionally (only when unrelated perf
-stat with cgroup events and uncore events ran on the same cpu) due to
-increased context switch time.
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Friday, September 29, 2023 12:22 AM
+> To: Pankaj Gupta <pankaj.gupta@nxp.com>
+> Cc: shawnguo@kernel.org; s.hauer@pengutronix.de;
+> kernel@pengutronix.de; clin@suse.com; conor+dt@kernel.org;
+> pierre.gondois@arm.com; festevam@gmail.com; dl-linux-imx <linux-
+> imx@nxp.com>; davem@davemloft.net; krzysztof.kozlowski+dt@linaro.org;
+> linux-arm-kernel@lists.infradead.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Gaurav Jain <gaurav.jain@nxp.com>;
+> alexander.stein@ew.tq-group.com; Varun Sethi <V.Sethi@nxp.com>
+> Subject: [EXT] Re: [PATCH v6 02/11] dt-bindings: arm: fsl: add imx-se-fw
+> binding doc
+>=20
+> Caution: This is an external email. Please take care when clicking links =
+or
+> opening attachments. When in doubt, report the message using the 'Report
+> this email' button
+>=20
+>=20
+> On Wed, Sep 27, 2023 at 11:23:52PM +0530, Pankaj Gupta wrote:
+> > The NXP's i.MX EdgeLock Enclave, a HW IP creating an embedded secure
+> > enclave within the SoC boundary to enable features like
+> > - HSM
+> > - SHE
+> > - V2X
+> >
+> > Communicates via message unit with linux kernel. This driver is
+> > enables communication ensuring well defined message sequence protocol
+> > between Application Core and enclave's firmware.
+> >
+> > Driver configures multiple misc-device on the MU, for multiple
+> > user-space applications can communicate on single MU.
+> >
+> > It exists on some i.MX processors. e.g. i.MX8ULP, i.MX93 etc.
+> >
+> > Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
+> > ---
+> >  .../bindings/firmware/fsl,imx-se-fw.yaml      | 73 +++++++++++++++++++
+> >  1 file changed, 73 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml
+> >
+> > diff --git
+> > a/Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml
+> > b/Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml
+> > new file mode 100644
+> > index 000000000000..d250794432b3
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml
+> > @@ -0,0 +1,73 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
+> > +---
+> > +$id:
+> >
+> +https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fdevi
+> > +cetree.org%2Fschemas%2Ffirmware%2Ffsl%2Cimx-se-
+> fw.yaml%23&data=3D05%7C0
+> >
+> +1%7Cpankaj.gupta%40nxp.com%7C5ec9b97100834814d30608dbc054010a%7
+> C686ea
+> >
+> +1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C638315239256248220%7CUnk
+> nown%7C
+> >
+> +TWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwi
+> LCJXV
+> >
+> +CI6Mn0%3D%7C3000%7C%7C%7C&sdata=3D5%2BuUxUzFCRHsi17vX83tGcJijp
+> HsNAxd5Fu
+> > +Ws4qT9Lw%3D&reserved=3D0
+> > +$schema:
+> >
+> +https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fdevi
+> > +cetree.org%2Fmeta-
+> schemas%2Fcore.yaml%23&data=3D05%7C01%7Cpankaj.gupta%
+> >
+> +40nxp.com%7C5ec9b97100834814d30608dbc054010a%7C686ea1d3bc2b4c6f
+> a92cd9
+> >
+> +9c5c301635%7C0%7C0%7C638315239256248220%7CUnknown%7CTWFpbGZ
+> sb3d8eyJWI
+> >
+> +joiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7
+> C3000%
+> >
+> +7C%7C%7C&sdata=3Do1LjAT7gJVTb66L21HyhfY9dGh8uKIFNHWKg%2FLNBMO
+> 8%3D&reser
+> > +ved=3D0
+> > +
+> > +title: NXP i.MX EdgeLock Enclave Firmware (ELEFW)
+> > +
+> > +maintainers:
+> > +  - Pankaj Gupta <pankaj.gupta@nxp.com>
+> > +
+> > +description:
+>=20
+> Need '|' to preserve formatting.
 
-AFAIK we don't have a tool to measure the context switch overhead
-directly.  (I think I should add one to perf ftrace latency).  But I can
-see it with a simple perf bench command like this.
+Accepted.
+>=20
+> > +  The NXP's i.MX EdgeLock Enclave, a HW IP creating an embedded
+> > + secure enclave within the SoC boundary to enable features like
+> > +  - HSM
+> > +  - SHE
+> > +  - V2X
+> > +
+> > +  It uses message unit to communicate and coordinate to pass messages
+> > + (e.g., data,  status and control) through its interfaces.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - fsl,imx8ulp-se-fw
+> > +      - fsl,imx93-se-fw
+>=20
+> The firmware is not compatible across chips?
+=09
+The secure-enclave hardware varies from one SoC to another.
+Hence, FW varies too, from one SoC, to other.
 
-  $ perf bench sched pipe -l 100000
-  # Running 'sched/pipe' benchmark:
-  # Executed 100000 pipe operations between two processes
+>=20
+> > +
+> > +  mboxes:
+> > +    description:
+> > +      All MU channels must be within the same MU instance. Cross insta=
+nces
+> are
+> > +      not allowed. Users need to ensure that used MU instance does not
+> conflict
+> > +      with other execution environments.
+> > +    items:
+> > +      - description: TX0 MU channel
+> > +      - description: RX0 MU channel
+> > +
+> > +  mbox-names:
+> > +    items:
+> > +      - const: tx
+> > +      - const: rx
+> > +
+> > +  fsl,mu-id:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      Identifier to the message-unit among the multiple message-unit t=
+hat
+> exists on SoC.
+> > +      Per message-unit, multiple misc-devices are created, that are
+> > + used by userspace
+>=20
+> Extra space in there.
 
-       Total time: 0.650 [sec]
+Accepted.
+>=20
+> Wrap lines at 80 unless there's a benefit to going to 100.
+>=20
+Accepted.
 
-         6.505740 usecs/op
-           153710 ops/sec
+> > +      application as logical-waiter and logical-receiver.
+> > +
+> > +  memory-region:
+> > +    items:
+> > +      - description: Reserved memory region that can be accessed by
+> firmware. Used for
+> > +          exchanging the buffers between driver and firmware.
+> > +
+> > +  fsl,sram:
+>=20
+> Just the common 'sram' property.
+Ok
 
-It runs two tasks communicate each other using a pipe so it should
-stress the context switch code.  This is the normal numbers on my
-system.  But after I run these two perf stat commands in background,
-the numbers vary a lot.
+>=20
+> > +    description: Phandle to the device SRAM
+>=20
+> Used for what?
+Accepted and will add the details on the usage.
 
-  $ sudo perf stat -a -e cycles -G user.slice -- sleep 100000 &
-  $ sudo perf stat -a -e uncore_imc/cas_count_read/ -- sleep 10000 &
+>=20
+> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +
+> > +required:
+> > +  - compatible
+> > +  - mboxes
+> > +  - mbox-names
+> > +  - fsl,mu-id
+>=20
+> How is memory-region optional?
+Depending on the type of enclave IP and the FW, memory-region is configured=
+ optionally.
+For i.MX8ULP and i.MX93, it is required. For i.MX8DXL, it is not required.
+>=20
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    ele_fw: se-fw {
+>=20
+> Drop unused labels.
+I am sorry, if I am not able to understand your point here.
+But, all the below labels are getting used.
+I can remove the fsl,mu-id. Will do it in V7.
 
-I will show the last two lines of perf bench sched pipe output for
-three runs.
-
-        58.597060 usecs/op    # run 1
-            17065 ops/sec
-
-        11.329240 usecs/op    # run 2
-            88267 ops/sec
-
-        88.481920 usecs/op    # run 3
-            11301 ops/sec
-
-I think the deviation comes from the fact that uncore events are managed
-a certain number of cpus only.  If the target process runs on a cpu that
-manages uncore pmu, it'd take longer.  Otherwise it won't affect the
-performance much.
-
-To fix the issue, I restored a linked list equivalent to cgrp_cpuctx_list
-in the perf_cpu_context and link perf_cpu_pmu_contexts that have cgroup
-events only.  Also add new helpers to enable/disable and does ctx sched
-in/out for cgroups.
-
-After the change, I got something like this constantly.  It's slightly
-higher than the normal, but it includes actual cgroup event switch time.
-
-         8.970910 usecs/op
-           111471 ops/sec
-
-Fixes: bd2756811766 ("perf: Rewrite core context handling")
-Cc: stable@vger.kernel.org
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- include/linux/perf_event.h |   5 ++
- kernel/events/core.c       | 117 +++++++++++++++++++++++++++++++++----
- 2 files changed, 111 insertions(+), 11 deletions(-)
-
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index e85cd1c0eaf3..7d56d7aa6b34 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -972,6 +972,10 @@ struct perf_cpu_pmu_context {
- 	struct perf_event_pmu_context	epc;
- 	struct perf_event_pmu_context	*task_epc;
- 
-+#ifdef CONFIG_CGROUP_PERF
-+	struct list_head		cgrp_ctx_entry;
-+#endif
-+
- 	struct list_head		sched_cb_entry;
- 	int				sched_cb_usage;
- 
-@@ -994,6 +998,7 @@ struct perf_cpu_context {
- 
- #ifdef CONFIG_CGROUP_PERF
- 	struct perf_cgroup		*cgrp;
-+	struct list_head		cgrp_ctx_list;
- #endif
- 
- 	/*
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 4c72a41f11af..06b39b8066a9 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -700,11 +700,73 @@ static void perf_ctx_enable(struct perf_event_context *ctx)
- 		perf_pmu_enable(pmu_ctx->pmu);
- }
- 
-+static int __ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type);
- static void ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type);
-+static int __ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type);
- static void ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type);
-+static void __pmu_ctx_sched_out(struct perf_event_pmu_context *pmu_ctx,
-+				enum event_type_t event_type);
-+static void ctx_pinned_sched_in(struct perf_event_context *ctx, struct pmu *pmu);
-+static void ctx_flexible_sched_in(struct perf_event_context *ctx, struct pmu *pmu);
- 
- #ifdef CONFIG_CGROUP_PERF
- 
-+static void perf_cgrp_ctx_disable(struct perf_event_context *ctx)
-+{
-+	struct perf_cpu_context *cpuctx;
-+	struct perf_cpu_pmu_context *cpc;
-+
-+	cpuctx = container_of(ctx, struct perf_cpu_context, ctx);
-+	list_for_each_entry(cpc, &cpuctx->cgrp_ctx_list, cgrp_ctx_entry)
-+		perf_pmu_disable(cpc->epc.pmu);
-+}
-+
-+static void perf_cgrp_ctx_enable(struct perf_event_context *ctx)
-+{
-+	struct perf_cpu_context *cpuctx;
-+	struct perf_cpu_pmu_context *cpc;
-+
-+	cpuctx = container_of(ctx, struct perf_cpu_context, ctx);
-+	list_for_each_entry(cpc, &cpuctx->cgrp_ctx_list, cgrp_ctx_entry)
-+		perf_pmu_enable(cpc->epc.pmu);
-+}
-+
-+static void cgrp_ctx_sched_out(struct perf_cpu_context *cpuctx,
-+			       enum event_type_t event_type)
-+{
-+	struct perf_cpu_pmu_context *cpc;
-+	int is_active = __ctx_sched_out(&cpuctx->ctx, event_type);
-+
-+	if (is_active < 0)
-+		return;
-+
-+	list_for_each_entry(cpc, &cpuctx->cgrp_ctx_list, cgrp_ctx_entry)
-+		__pmu_ctx_sched_out(&cpc->epc, is_active);
-+}
-+
-+static void cgrp_ctx_sched_in(struct perf_cpu_context *cpuctx,
-+			      enum event_type_t event_type)
-+{
-+	struct perf_cpu_pmu_context *cpc;
-+	int is_active = __ctx_sched_in(&cpuctx->ctx, event_type);
-+
-+	if (is_active < 0)
-+		return;
-+
-+	list_for_each_entry(cpc, &cpuctx->cgrp_ctx_list, cgrp_ctx_entry) {
-+		/*
-+		 * First go through the list and put on any pinned groups
-+		 * in order to give them the best chance of going on.
-+		 */
-+		if (is_active & EVENT_PINNED)
-+			ctx_pinned_sched_in(&cpuctx->ctx, cpc->epc.pmu);
-+
-+		/* Then walk through the lower prio flexible groups */
-+		if (is_active & EVENT_FLEXIBLE)
-+			ctx_flexible_sched_in(&cpuctx->ctx, cpc->epc.pmu);
-+	}
-+}
-+
- static inline bool
- perf_cgroup_match(struct perf_event *event)
- {
-@@ -856,9 +918,9 @@ static void perf_cgroup_switch(struct task_struct *task)
- 		return;
- 
- 	perf_ctx_lock(cpuctx, cpuctx->task_ctx);
--	perf_ctx_disable(&cpuctx->ctx);
-+	perf_cgrp_ctx_disable(&cpuctx->ctx);
- 
--	ctx_sched_out(&cpuctx->ctx, EVENT_ALL);
-+	cgrp_ctx_sched_out(cpuctx, EVENT_ALL);
- 	/*
- 	 * must not be done before ctxswout due
- 	 * to update_cgrp_time_from_cpuctx() in
-@@ -870,9 +932,9 @@ static void perf_cgroup_switch(struct task_struct *task)
- 	 * perf_cgroup_set_timestamp() in ctx_sched_in()
- 	 * to not have to pass task around
- 	 */
--	ctx_sched_in(&cpuctx->ctx, EVENT_ALL);
-+	cgrp_ctx_sched_in(cpuctx, EVENT_ALL);
- 
--	perf_ctx_enable(&cpuctx->ctx);
-+	perf_cgrp_ctx_enable(&cpuctx->ctx);
- 	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
- }
- 
-@@ -961,6 +1023,7 @@ static inline void
- perf_cgroup_event_enable(struct perf_event *event, struct perf_event_context *ctx)
- {
- 	struct perf_cpu_context *cpuctx;
-+	struct perf_cpu_pmu_context *cpc;
- 
- 	if (!is_cgroup_event(event))
- 		return;
-@@ -975,12 +1038,16 @@ perf_cgroup_event_enable(struct perf_event *event, struct perf_event_context *ct
- 		return;
- 
- 	cpuctx->cgrp = perf_cgroup_from_task(current, ctx);
-+
-+	cpc = container_of(event->pmu_ctx, struct perf_cpu_pmu_context, epc);
-+	list_add(&cpc->cgrp_ctx_entry, &cpuctx->cgrp_ctx_list);
- }
- 
- static inline void
- perf_cgroup_event_disable(struct perf_event *event, struct perf_event_context *ctx)
- {
- 	struct perf_cpu_context *cpuctx;
-+	struct perf_cpu_pmu_context *cpc;
- 
- 	if (!is_cgroup_event(event))
- 		return;
-@@ -995,6 +1062,9 @@ perf_cgroup_event_disable(struct perf_event *event, struct perf_event_context *c
- 		return;
- 
- 	cpuctx->cgrp = NULL;
-+
-+	cpc = container_of(event->pmu_ctx, struct perf_cpu_pmu_context, epc);
-+	list_del(&cpc->cgrp_ctx_entry);
- }
- 
- #else /* !CONFIG_CGROUP_PERF */
-@@ -3238,11 +3308,10 @@ static void __pmu_ctx_sched_out(struct perf_event_pmu_context *pmu_ctx,
- 	perf_pmu_enable(pmu);
- }
- 
--static void
--ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type)
-+static int
-+__ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type)
- {
- 	struct perf_cpu_context *cpuctx = this_cpu_ptr(&perf_cpu_context);
--	struct perf_event_pmu_context *pmu_ctx;
- 	int is_active = ctx->is_active;
- 
- 	lockdep_assert_held(&ctx->lock);
-@@ -3254,7 +3323,7 @@ ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type)
- 		WARN_ON_ONCE(ctx->is_active);
- 		if (ctx->task)
- 			WARN_ON_ONCE(cpuctx->task_ctx);
--		return;
-+		return -1;
- 	}
- 
- 	/*
-@@ -3290,6 +3359,18 @@ ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type)
- 
- 	is_active ^= ctx->is_active; /* changed bits */
- 
-+	return is_active;
-+}
-+
-+static void
-+ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type)
-+{
-+	struct perf_event_pmu_context *pmu_ctx;
-+	int is_active = __ctx_sched_out(ctx, event_type);
-+
-+	if (is_active < 0)
-+		return;
-+
- 	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry)
- 		__pmu_ctx_sched_out(pmu_ctx, is_active);
- }
-@@ -3861,8 +3942,8 @@ static void __pmu_ctx_sched_in(struct perf_event_context *ctx, struct pmu *pmu)
- 	ctx_flexible_sched_in(ctx, pmu);
- }
- 
--static void
--ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type)
-+static int
-+__ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type)
- {
- 	struct perf_cpu_context *cpuctx = this_cpu_ptr(&perf_cpu_context);
- 	int is_active = ctx->is_active;
-@@ -3870,7 +3951,7 @@ ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type)
- 	lockdep_assert_held(&ctx->lock);
- 
- 	if (likely(!ctx->nr_events))
--		return;
-+		return -1;
- 
- 	if (!(is_active & EVENT_TIME)) {
- 		/* start ctx time */
-@@ -3893,6 +3974,17 @@ ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type)
- 
- 	is_active ^= ctx->is_active; /* changed bits */
- 
-+	return is_active;
-+}
-+
-+static void
-+ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type)
-+{
-+	int is_active = __ctx_sched_in(ctx, event_type);
-+
-+	if (is_active < 0)
-+		return;
-+
- 	/*
- 	 * First go through the list and put on any pinned groups
- 	 * in order to give them the best chance of going on.
-@@ -13541,6 +13633,9 @@ static void __init perf_event_init_all_cpus(void)
- 		cpuctx->online = cpumask_test_cpu(cpu, perf_online_mask);
- 		cpuctx->heap_size = ARRAY_SIZE(cpuctx->heap_default);
- 		cpuctx->heap = cpuctx->heap_default;
-+#ifdef CONFIG_CGROUP_PERF
-+		INIT_LIST_HEAD(&cpuctx->cgrp_ctx_list);
-+#endif
- 	}
- }
- 
--- 
-2.42.0.582.g8ccd20d70d-goog
-
+>=20
+> > +      compatible =3D "fsl,imx8ulp-se-fw";
+> > +      mbox-names =3D "tx", "rx";
+> > +      mboxes =3D <&s4muap 0 0>, <&s4muap 1 0>;
+> > +      fsl,mu-id =3D <2>;
+> > +    };
+> > --
+> > 2.34.1
+> >
