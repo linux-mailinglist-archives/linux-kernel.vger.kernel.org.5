@@ -2,94 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4908F7B7E1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248A37B7E1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 13:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232970AbjJDLZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 07:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
+        id S233039AbjJDL0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 07:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232725AbjJDLZS (ORCPT
+        with ESMTP id S229754AbjJDL0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 07:25:18 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A85A6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 04:25:12 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 5b1f17b1804b1-4064876e8b8so20358325e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 04:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696418710; x=1697023510; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:subject:to
-         :reply-to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UeZJyHK/x9TA/rlOy4OI80hx9G/PexI8heXL6spHMG8=;
-        b=Tqv5jEp7GudEUEq+CdrtXSJEZA5mA82DSJpSsR14td4aKaOuKanQ236zYWvfZc+lmx
-         qsVbneN2i2UbcyvlC1UC+hPvP/eRlaBfDbBFf+IwUeqYM59HvVvOYF/6lcZkTA2IJ3lr
-         K7CkYwbjBAGTPmmW83uw58Vk31u17N9niC1AHAQxgzFp2cjtlaASUPGRR/bJaOfnOcNb
-         AhfHUeUzG/lEEpyPyx4dufP7BPFD6xgxgRY4eS4J8ulxKLvDcmnJnt2/l91Swro8ZsVl
-         mThzUfw5Q1vRBd1q6ImS1pnX4g29fCumfJVVWrFm9pAlyiOpke/SgxSOQizpOVX1XU0K
-         JN/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696418710; x=1697023510;
-        h=content-transfer-encoding:mime-version:message-id:subject:to
-         :reply-to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UeZJyHK/x9TA/rlOy4OI80hx9G/PexI8heXL6spHMG8=;
-        b=vBJbI9IN7bUmlrFAaYKK1Wjuy30qc5jTSekPPy5DI9oAUpdKrDgMOCNQgozp2bz9tj
-         yUOD7JRtDC+gcJKZwbWxyEXknkzRV0id4uSxXbIvFlg9qb0ffD7hMVEMa/SE09W2SnP7
-         Nx1Gh52iXS/9eyVV7V1Jm8+E5IFxmIobMWqTxM6fPCQ5cegOFENxq6gGqMbsny5qLFFT
-         8QeJuChcGNeYqN4Lic2bnPc09wmDnxxBK18opXdG5avguB3WdRRwcdhOWmoEIBdA27as
-         XBoKlYZxXoo9CmFLdlJrTcNai2WYHUGFkNngqB+upqxzrOwVKsXWuvdMuIIAnCI0CiWB
-         hgdw==
-X-Gm-Message-State: AOJu0Ywz7cA6WPIn2reLqQcJ87KfKlhMpZ0eGKS+iI7XIH0963r6TUwO
-        qBBaNQLkbrWNddia716Zzwm11K0NwA6nBw==
-X-Google-Smtp-Source: AGHT+IEfmrfK2ak5YRu9Vchf9a5qMFpMRt5bz2h+4dfVo3vdyhZqZjvCgBq8XKQgKTHESDhtHopo2A==
-X-Received: by 2002:adf:cf01:0:b0:323:264d:9cef with SMTP id o1-20020adfcf01000000b00323264d9cefmr1703777wrj.12.1696418710376;
-        Wed, 04 Oct 2023 04:25:10 -0700 (PDT)
-Received: from [105.4.6.164] ([105.4.6.164])
-        by smtp.gmail.com with ESMTPSA id f5-20020a5d50c5000000b003200c918c81sm3757198wrt.112.2023.10.04.04.25.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 04:25:09 -0700 (PDT)
-Date:   Wed, 04 Oct 2023 04:25:09 -0700 (PDT)
-X-Google-Original-Date: 4 Oct 2023 13:25:08 +0200
-From:   Leona Dickmann <lastinlugking00987@gmail.com>
-X-Google-Original-From: Leona Dickmann <leomanndic@gmail.com>
-Reply-To: Leona Dickmann <leomanndic@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Subject: Please Be Honest
-Message-ID: <20231004131301.B7B14909B36333FA@gmail.com>
+        Wed, 4 Oct 2023 07:26:54 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1281A6;
+        Wed,  4 Oct 2023 04:26:50 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 394BQeE6023989;
+        Wed, 4 Oct 2023 06:26:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696418800;
+        bh=fHJ5CeFVeRodYY0BSWWqOQDZtq9BniubrpnSbjm2VXs=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=lM8TgCBgZoQOvS6xls0p5Y+ATFeCz7rZR+100QspJu+ZFf+oGLyT5cH1rFYxUtXkY
+         hspr5WqzaBXndzOegYqicPfTUSbyv56d5iXfdS3pY3eRbiyKXgE/mmooTn/jXPNW7t
+         ltP9pxVMy3IgucBLn1aOx0UQGQyvG06Xou7h4THc=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 394BQeri023881
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 4 Oct 2023 06:26:40 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 4
+ Oct 2023 06:26:40 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 4 Oct 2023 06:26:40 -0500
+Received: from [10.250.135.44] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 394BQXIE108063;
+        Wed, 4 Oct 2023 06:26:34 -0500
+Message-ID: <6ad28b45-815c-723a-117e-84782753a361@ti.com>
+Date:   Wed, 4 Oct 2023 14:26:32 +0300
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=1.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 3/3] arm64: defconfig: Enable GPMC NAND support
+To:     Nitin Yadav <n-yadav@ti.com>, <nm@ti.com>, <vigneshr@ti.com>
+CC:     <kristo@kernel.org>, <robh+dt@kernel.org>, <conor+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231004111238.3968984-1-n-yadav@ti.com>
+ <20231004111238.3968984-4-n-yadav@ti.com>
+Content-Language: en-US
+From:   Roger Quadros <rogerq@ti.com>
+In-Reply-To: <20231004111238.3968984-4-n-yadav@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day
 
-I am 75 years old and was diagnosed with cancer approximately=20
-four years ago, immediately after the death of my husband.
 
-I have been touched to donate from what I have inherited from my=20
-late husband for the good work rather than allowing his relatives=20
-to lavish my husband's hard earned fund.
+On 4.10.2023 14.12, Nitin Yadav wrote:
+> Enable config required to support GPMC NAND on
+> AM62x LP SK and AM64x SKEVM.
+> 
+> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+> ---
+>   arch/arm64/configs/defconfig | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 66bfbef73324..a2758ac73f87 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -270,6 +270,8 @@ CONFIG_MTD_DATAFLASH=y
+>   CONFIG_MTD_SST25L=y
+>   CONFIG_MTD_RAW_NAND=y
+>   CONFIG_MTD_NAND_DENALI_DT=y
+> +CONFIG_MTD_NAND_OMAP2=m
 
-As I lay on my sick bed, I want you to help me in carrying out my=20
-last wishes on earth which will also be very profitable to you. I=20
-want to WILL a total of 5.5M US to you which I want you to=20
-distribute part of it to any charity home for me and the rest for=20
-yourself and your family. I will inform you on how to share it=20
-all.
+If rootfs is required on NAND, it is better to be built-in.
 
-Please for further information contact me ASAP.
+> +CONFIG_MTD_NAND_OMAP_BCH=y
+>   CONFIG_MTD_NAND_MARVELL=y
+>   CONFIG_MTD_NAND_BRCMNAND=m
+>   CONFIG_MTD_NAND_FSL_IFC=y
+> @@ -1357,6 +1359,7 @@ CONFIG_ARM_MEDIATEK_CCI_DEVFREQ=m
+>   CONFIG_EXTCON_PTN5150=m
+>   CONFIG_EXTCON_USB_GPIO=y
+>   CONFIG_EXTCON_USBC_CROS_EC=y
+> +CONFIG_OMAP_GPMC=m
 
-Regards,
-Leona Dickmann
+This is a memory controller so better to be built-in.
+
+>   CONFIG_RENESAS_RPCIF=m
+>   CONFIG_IIO=y
+>   CONFIG_EXYNOS_ADC=y
+
+-- 
+cheers,
+-roger
