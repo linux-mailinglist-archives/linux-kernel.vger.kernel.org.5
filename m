@@ -2,129 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E4E7B7752
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 07:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAB37B7755
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 07:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241239AbjJDFEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 01:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
+        id S241322AbjJDFEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 01:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbjJDFEg (ORCPT
+        with ESMTP id S241314AbjJDFEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 01:04:36 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E189A9
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 22:04:33 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-57bc2c2f13dso958612eaf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 22:04:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696395872; x=1697000672; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=X3bM6BmB8wAop4fny1ZIpU594pRuUpRgSdB0G5Toy4g=;
-        b=q9wtgqhTh18IJ5CuiCtKf6oGiVQAArD9A33ybLLlpgdG3vz1BnYL53VlFTKPztU4RM
-         jgmJrDnMylOWqerQSIHl3UuaJMdlFk6wAM0y8AVFRyCaxVkzygANqfLB4dkdf6BgNo9G
-         AUJElCyuBrb+tuNgD+C0VfapVZ/W/5Ivr89KMuPPiiT5yfD7xw9wfbVH1dZYEoTs/bDZ
-         mld8VQF/oRJxDMpBLDvFK5SFzlO/Kn8Hnl8t2nYGgxzoKhMj/6v+Kp3i0uvRD7DmQOch
-         8crVNNQ4iUYnRXsHPC0meGYJDKH+VnmwNUHZsAV4yMvPFhlaxbfc3XE8WYVNEd/1vGal
-         Ztog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696395872; x=1697000672;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X3bM6BmB8wAop4fny1ZIpU594pRuUpRgSdB0G5Toy4g=;
-        b=A42F9Nv+cERVOCGl3J2CZSFno9gyrZVFm/WBBBUHz56JDIAp2QkyorHZ5CTFlubC+f
-         iHhK1bo4AdOCVfLikggclJMyBb9E3y4dKDAZAczOLhmhU/pp+65+2YjPxAhyBpa7ErS0
-         7jp3eS315id3/fY1/+XK1nKBwDs8ISMGMRBWhNj3+wYqQFvGTtro55PItzwHVfPmE1oo
-         eNUTYIu3o0xWs6M1QiuxGZXl9pjsQEjDjm3M3aXAC0q+YGQN62IseA9Da84L8S35+QqC
-         ZP9pWxcp4qadsB8h5JpZTAW0s651q9LIOjDXgGY4DmKGaFXoYLFOLDcfjbgC1Lz1K4Ec
-         c+Qw==
-X-Gm-Message-State: AOJu0YwOQCqfQvpxSlJ3bCuobwyf0BJB8af8JLvRHDG6WVoa3/7gBCIj
-        e+46rGb9VRkmYK/RXY79Agt3mw==
-X-Google-Smtp-Source: AGHT+IF23zh9SbVmd0VAAnw6RBISSm2ywZgi1InnMQWlvBzNdoiIsiLQlTKM6OKPmbvX/SzgVROxCw==
-X-Received: by 2002:a05:6358:3408:b0:14f:852b:4362 with SMTP id h8-20020a056358340800b0014f852b4362mr1453217rwd.19.1696395872289;
-        Tue, 03 Oct 2023 22:04:32 -0700 (PDT)
-Received: from localhost ([122.172.81.92])
-        by smtp.gmail.com with ESMTPSA id b18-20020a637152000000b005789cbd2cacsm2327910pgn.20.2023.10.03.22.04.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 22:04:31 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 10:34:27 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/9] OPP: Extend support for the opp-level beyond
- required-opps
-Message-ID: <20231004050427.e3aalotrtpvld6rk@vireshk-i7>
-References: <20230925131715.138411-1-ulf.hansson@linaro.org>
- <20230925131715.138411-7-ulf.hansson@linaro.org>
- <CAPDyKFo+XCEtTSNqtA1SeajWo4tuRroA4GrRegta5TsqSGd4eQ@mail.gmail.com>
- <20231003082322.cmok766jxzftsgrg@vireshk-i7>
- <CAPDyKForAJfdqqpkAP0vwZFAtSAtGMyqChLVr96v7PDWRj2qzw@mail.gmail.com>
+        Wed, 4 Oct 2023 01:04:53 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE34B8
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 22:04:49 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qnu3i-0002VK-99; Wed, 04 Oct 2023 07:04:30 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qnu3g-00Ax5H-J1; Wed, 04 Oct 2023 07:04:28 +0200
+Received: from mfe by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qnu3g-00ChlX-Fh; Wed, 04 Oct 2023 07:04:28 +0200
+Date:   Wed, 4 Oct 2023 07:04:28 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v5 4/7] gpio: vf610: add i.MX8ULP of_device_id entry
+Message-ID: <20231004050428.o7l2e23xjcjkzzck@pengutronix.de>
+References: <20231001-vf610-gpio-v5-0-8d873a8f224a@nxp.com>
+ <20231001-vf610-gpio-v5-4-8d873a8f224a@nxp.com>
+ <CAMRc=MdXkFBWMuyr8sbetyP2sJX2QG6Ce=Tsb7RVMguvGdC3TA@mail.gmail.com>
+ <DU0PR04MB9417594B2DFDA6056AEC4CB988C5A@DU0PR04MB9417.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAPDyKForAJfdqqpkAP0vwZFAtSAtGMyqChLVr96v7PDWRj2qzw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DU0PR04MB9417594B2DFDA6056AEC4CB988C5A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-10-23, 14:36, Ulf Hansson wrote:
-> Can you please explain further on this. Rafael has acked those
-> patches, so it should be perfectly fine for you to pick them via your
-> tree too. There is no need to defer them.
+Hi Peng,
 
-Ahh, then it is fine.
-
-> > I will then push out a branch and you can
-> > rebase your patches on top of it ? And then probably Sudeep or someone else can
-> > apply everything ?
+On 23-10-02, Peng Fan wrote:
+> > Subject: Re: [PATCH v5 4/7] gpio: vf610: add i.MX8ULP of_device_id entry
+> > 
+> > On Sun, Oct 1, 2023 at 10:23 AM Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > wrote:
+> > >
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > >
+> > > i.MX8ULP/93 GPIO supports similar feature as i.MX7ULP GPIO, but
+> > > i.MX8ULP is actually not hardware compatible with i.MX7ULP. i.MX8ULP
+> > > only has one register base, not two bases. i.MX8ULP and i.MX93
+> > > actually has two interrupts for each gpio controller, one for
+> > > Trustzone non-secure world, one for secure world.
+> > >
+> > > Although the Linux Kernel driver gpio-vf610.c could work with
+> > > fsl,imx7ulp-gpio compatible, it is based on some tricks did in device
+> > > tree with some offset added to base address.
+> > >
+> > > Add a new of_device_id entry for i.MX8ULP. But to make the driver
+> > > could also support old bindings, check the compatible string first,
+> > > before check the device data.
+> > >
+> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > ---
+> > >  drivers/gpio/gpio-vf610.c | 47
+> > > ++++++++++++++++++++++++++++++++++++++++-------
+> > >  1 file changed, 40 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/drivers/gpio/gpio-vf610.c b/drivers/gpio/gpio-vf610.c
+> > > index dbc7ba0ee72c..8e12706c0b22 100644
+> > > --- a/drivers/gpio/gpio-vf610.c
+> > > +++ b/drivers/gpio/gpio-vf610.c
+> > > @@ -25,6 +25,7 @@
+> > >  struct fsl_gpio_soc_data {
+> > >         /* SoCs has a Port Data Direction Register (PDDR) */
+> > >         bool have_paddr;
+> > > +       bool have_dual_base;
+> > >  };
+> > >
+> > >  struct vf610_gpio_port {
+> > > @@ -60,13 +61,26 @@ struct vf610_gpio_port {
+> > >  #define PORT_INT_EITHER_EDGE   0xb
+> > >  #define PORT_INT_LOGIC_ONE     0xc
+> > >
+> > > +#define IMX8ULP_GPIO_BASE_OFF  0x40
+> > > +#define IMX8ULP_BASE_OFF       0x80
+> > > +
+> > > +static const struct fsl_gpio_soc_data vf610_data = {
+> > > +       .have_dual_base = true,
+> > > +};
+> > > +
+> > >  static const struct fsl_gpio_soc_data imx_data = {
+> > >         .have_paddr = true,
+> > > +       .have_dual_base = true,
+> > > +};
+> > > +
+> > > +static const struct fsl_gpio_soc_data imx8ulp_data = {
+> > > +       .have_paddr = true,
+> > >  };
+> > >
+> > >  static const struct of_device_id vf610_gpio_dt_ids[] = {
+> > > -       { .compatible = "fsl,vf610-gpio",       .data = NULL, },
+> > > +       { .compatible = "fsl,vf610-gpio",       .data = &vf610_data },
+> > >         { .compatible = "fsl,imx7ulp-gpio",     .data = &imx_data, },
+> > > +       { .compatible = "fsl,imx8ulp-gpio",     .data = &imx8ulp_data, },
+> > >         { /* sentinel */ }
+> > >  };
+> > >
+> > > @@ -263,19 +277,38 @@ static int vf610_gpio_probe(struct
+> > platform_device *pdev)
+> > >         struct gpio_irq_chip *girq;
+> > >         int i;
+> > >         int ret;
+> > > +       bool dual_base;
+> > >
+> > >         port = devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
+> > >         if (!port)
+> > >                 return -ENOMEM;
+> > >
+> > >         port->sdata = of_device_get_match_data(dev);
+> > > -       port->base = devm_platform_ioremap_resource(pdev, 0);
+> > > -       if (IS_ERR(port->base))
+> > > -               return PTR_ERR(port->base);
+> > >
+> > > -       port->gpio_base = devm_platform_ioremap_resource(pdev, 1);
+> > > -       if (IS_ERR(port->gpio_base))
+> > > -               return PTR_ERR(port->gpio_base);
+> > > +       dual_base = port->sdata->have_dual_base;
+> > > +
+> > > +       /* support old compatible strings */
+> > > +       if (device_is_compatible(dev, "fsl,imx7ulp-gpio") &&
+> > > +           (device_is_compatible(dev, "fsl,imx93-gpio") ||
+> > 
+> > Why not just add this compatible to vf610_gpio_dt_ids?
 > 
-> Or are you suggesting to just take one of the patches from my series,
-> and then I will re-base everything on top?
+> "fsl,imx93-gpio", "fsl,imx7ulp-gpio" is not a correct entry
+> combination. This is to support legacy old compatible
+> strings.
+
+The "/* support old compatible strings */" may a bit misleading here?
+Should we be a bit more verbose for the reader of the code, e.g.:
+
+		/*
+		 * Handle legacy compatible combinations which used two
+		 * reg values for the i.MX8ULP and i.MX93.
+		 */
+
+Regards,
+  Marco
+
 > 
-> Just trying to understand the way forward. :-)
-
-Applied patches 1-6/9 and the fixed routine looks like this now:
-
-+static int _set_opp_level(struct device *dev, struct opp_table *opp_table,
-+                         struct dev_pm_opp *opp)
-+{
-+       unsigned int level = 0;
-+       int ret = 0;
-+
-+       if (opp) {
-+               if (!opp->level)
-+                       return 0;
-+
-+               level = opp->level;
-+       }
-+
-+       /* Request a new performance state through the device's PM domain. */
-+       ret = dev_pm_domain_set_performance_state(dev, level);
-+       if (ret)
-+               dev_err(dev, "Failed to set performance state %u (%d)\n", level,
-+                       ret);
-+
-+       return ret;
-+}
-
-Does it look okay now ?
-
--- 
-viresh
+> Thanks,
+> Peng.
+> > 
+> > Bart
+> > 
+> > > +           (device_is_compatible(dev, "fsl,imx8ulp-gpio"))))
+> > > +               dual_base = true;
+> > > +
+> > > +       if (dual_base) {
+> > > +               port->base = devm_platform_ioremap_resource(pdev, 0);
+> > > +               if (IS_ERR(port->base))
+> > > +                       return PTR_ERR(port->base);
+> > > +
+> > > +               port->gpio_base = devm_platform_ioremap_resource(pdev, 1);
+> > > +               if (IS_ERR(port->gpio_base))
+> > > +                       return PTR_ERR(port->gpio_base);
+> > > +       } else {
+> > > +               port->base = devm_platform_ioremap_resource(pdev, 0);
+> > > +               if (IS_ERR(port->base))
+> > > +                       return PTR_ERR(port->base);
+> > > +
+> > > +               port->gpio_base = port->base + IMX8ULP_GPIO_BASE_OFF;
+> > > +               port->base = port->base + IMX8ULP_BASE_OFF;
+> > > +       }
+> > >
+> > >         port->irq = platform_get_irq(pdev, 0);
+> > >         if (port->irq < 0)
+> > >
+> > > --
+> > > 2.37.1
+> > >
