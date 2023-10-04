@@ -2,193 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D397B7825
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5DF7B782A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbjJDGub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 02:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
+        id S241448AbjJDGv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 02:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjJDGua (ORCPT
+        with ESMTP id S232744AbjJDGv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 02:50:30 -0400
-Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2053.outbound.protection.outlook.com [40.92.103.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30D3AC;
-        Tue,  3 Oct 2023 23:50:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HhkodXDwy87hFD5VZ4Xc6Jnb0pXTrsCaCW5PXw8Ls3FVOgiVs3bWXKeFcRTEyd/+o9wA9j0vwl5tbAUlGvdrvYgswH/RKWmSiqRmQIQMjdKXx/m/xj0ONFnIooQpv6VBQpkMxgRBfKmm0SEWPC/xI2vl+l2pFrcqC6QyDH1KGJxsGWnkbg5OYjtMnb2xo6Gj659wAtszGHXlUhlE0+oQHdPh6nWPSTfwxaU5sKT2G5LbT0gYIRmoOGnQfMZ16eZsMjDezCP9LP9ezXi2lUWgNPlyXGgpcnzkmbCWBE9LniTi9Bmaogdl7QLukemMwAcrWvGF/Mt4phSPpM4tX5mjkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xEAmoCkEb3uv9hE7547pV45Hn0IwRQxY2PmeftrPutE=;
- b=FKHPL7OPPBJOu5oI17ZV6nlGH7je6PdJ8EYnlG+u9EdX1fD9zEa3J5rHJChTmjq1Frr5ZfQjLzhqia/EQ3xmnwqdHIzPkDycD7vpl8OSKPwdBQ69Qp0E7ey8277wGp+So9rQ+caDA26F6s4zpjF5FH0iU+HlbPZriVeDihsGybwNd+dLPuvXuoiq8sosPcqqCsmMF4SClpshja3ibutlEB8lKVNNboLyjUoTTIzyhQwQE/cGSAU402jXdRShjsk+nP8k6eJluP9RNyw4Ysy4TaxEmxnfclgZWSY1JN0WExjH1GpN0eRA698kHMvLRo/D2h7whRvbAh9auB+UNunfrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xEAmoCkEb3uv9hE7547pV45Hn0IwRQxY2PmeftrPutE=;
- b=WvpuEVxtRLPZY/INlMavWN+7DNW0+9eVa7MvnBeq92IBG7xd0FBtOfzCeR14WPEiQAZnr1l5xGMgntG/sM5QVQ90drPLGiNlzaQMfDGbVG4RvY9NNV/lAgSrlV4eRtBSnFna2DUfrZ9UvWRwkXZqqjEDrsK3P4uhqqCAYh49dXl5mPm3DSJzEzfB+5cqXTN/hPmIX86YpE7MMnLjwYO6kckaFgycuFdJrdxwFEQjSQeg0TamLNoU+ziURo+e8gT4I3nX3sYXZ8uk+xGfTrNRWibZ1Xlxwxi3ORGVSOjVE6ktEsBfq28DsnZp0Mw093QgyPlvQpQfWu8gt3IJBDC+xg==
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
- PN2P287MB1529.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:1b6::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.35; Wed, 4 Oct 2023 06:50:16 +0000
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7%3]) with mapi id 15.20.6838.028; Wed, 4 Oct 2023
- 06:50:16 +0000
-Message-ID: <MA0P287MB0332AF093C75B7712FA8AEA8FECBA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-Date:   Wed, 4 Oct 2023 14:50:12 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] riscv: dts: sophgo: add Milk-V Duo board device tree
-To:     Jisheng Zhang <jszhang@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Anup Patel <anup@brainfault.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
-        xiaoguang.xing@sophgo.com
-References: <20230930123937.1551-1-jszhang@kernel.org>
- <20230930123937.1551-6-jszhang@kernel.org>
-From:   Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <20230930123937.1551-6-jszhang@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN:  [dx3Ypcn0iAHjKS7PQFzamStSi/E20KCb]
-X-ClientProxiedBy: SI2PR01CA0018.apcprd01.prod.exchangelabs.com
- (2603:1096:4:191::7) To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:ab::5)
-X-Microsoft-Original-Message-ID: <87effa78-7d9a-48e3-982d-e30b057f6ead@outlook.com>
+        Wed, 4 Oct 2023 02:51:28 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68EBF9E
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 23:51:21 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b27bc8b65eso295293166b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 23:51:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696402280; x=1697007080; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8Mk4bYYH9dc7V+7DBoYeL/sMRgWjkA5cLv5a6gT9/5g=;
+        b=fJBPWm/p71wCx0XCAYmIolDCS+6dSyb79TqwuWl9wbSwOgpUTT08eyIKUuamJiUEyg
+         FFnmx+F1z7S8+f4mrpmMxFfeG6G/Nsm//ep+tCjtZoh5H5TpbGj94qFoH8bZcskIa6N2
+         U3PRGOYh5jSmVd0ZlFPrqnOhHsrTJdV5OnCi/KRv0PaH0U68UjoPPWkQB5jLTD8jZeJF
+         1KhnzgOLfcKP/xYx2263IeK4VU4K6tAbvp/x/LLopyDc5R8tfJUrj4KXjTzdrNGY6d+V
+         6xOQIKvonaht8Ib090KjobSPaNPc8kwp3fWJyZU+WXxCPdef+j4beGx3Pb44GPLFeFvm
+         CP+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696402280; x=1697007080;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Mk4bYYH9dc7V+7DBoYeL/sMRgWjkA5cLv5a6gT9/5g=;
+        b=TBKU2VcW+wT+cUO+XqaF0IyoVhZJoFAQiE5QUDBJTt+yudkbFNdATnhKKKC94hp3gU
+         QNrq4juyzQ+LaXPcb2BfJPOQbm4bSnxWBuIkOaKdsCiEVpR7Qrsc84FyNduiU6mr1/tw
+         jV8y1g5rGIPK6SCbB+VmOwKSIRInONaJZrBqmZcUeiTzr/qDFt+xcai1Ldw9jeR896nm
+         76UoRzz2x4L11cB7xnejXEyK6Nx28rb15kXxJBTQjWRdhJ3/qIvNNQpAdd/AXvdVCieb
+         4QZi/aA7AWBLg6tJpe5cR6ttMv/7y87MPmVZ6xlOKz6qWLsxIUQvaPgK/f1SABYJDxXe
+         3jxA==
+X-Gm-Message-State: AOJu0Yx91FuSvgBGw57WM58Ort9+8mPeQ+FEiuhDx9nwdRy6QVebwDOm
+        G3UcEoWQd1xE/2GFXZN6O7MQNA==
+X-Google-Smtp-Source: AGHT+IGXfDHPsDpfR1bfQNWb/TJeXEFZoTymWZlmGIZV2KdzQgtX/JdwbEzT0eo5BT4OJWnZJm08aA==
+X-Received: by 2002:a17:906:7496:b0:9ae:72c7:73e6 with SMTP id e22-20020a170906749600b009ae72c773e6mr1250267ejl.10.1696402279819;
+        Tue, 03 Oct 2023 23:51:19 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id r19-20020a170906365300b00985ed2f1584sm2220768ejb.187.2023.10.03.23.51.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Oct 2023 23:51:19 -0700 (PDT)
+Message-ID: <8a936a54-9c20-4a3b-ac2c-ae65cd22698f@linaro.org>
+Date:   Wed, 4 Oct 2023 08:51:17 +0200
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|PN2P287MB1529:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5c27e667-4e23-42e7-ac83-08dbc4a62a66
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 40t5Deb3GZQZt4K2tIqM4zzMeN3Hmbx3b9ZiZMl1+41KK/eg6mXVVN09QyK81kazVs+/X9IqklrJ9PvtxEAE4uQGL1XDE7BpnbSUgKt/QyuXH4FNEOS/H2JBSfFGOKNs1gsiEwuMQwBHX10P9hEpYxpo3khcICFRR3UvBE6r388wP8ITpKuH0KwYoA0IL4mVeSexveMyxkk+8Ad2Cz88zqEik1my0ssBKItkc8V+N/RRcPRHnWEw3CAtmlnbH1CH3sfG6uVHBTujZhjJ/toNT5+EoWpC66kCMWq8jcek8oh1xqobPHhqTrGuj0skZKEtCKfTBTxZxC53Wft77d8ys1lDPK5oOOabtxqD84cS732EBA63xF0fHBGvhM91vwYEqg7FgEThkTtC123XbZCzmr1MQTGO/uVZiekhl+PDb2AuPLyOzNhovujRnayrlmIeu1Vol4rWqnj6k8lHpWpkPxlmj1+RWGyKYtlhtkjD3V/AHWOoc1eGrEeFaqh+rA/bM5VVxJBd+NyLOHXpkp+pokppE1jC88k+F1i/rwLr/ip1mHbTuSPa96D5HAI16CXOuQx0lGduP+0PlXZfSfmqsEcDGh7JzwNIj2sQ4iHYRPU=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VGFLakpITmttM2grYytvd0IvTS9BQThuSFp4SHFFUVVGbTV5L3VhMnFVekNH?=
- =?utf-8?B?UkdLcjBiTnZ4UjEzU3VJVEl1UVl6bjQzQ1ZKU1RaTzZvYkZ3WVJsL3g0cFo0?=
- =?utf-8?B?c0ZWTVg0c3gzUzZQVU9Ja285SHh4SitRWElSV2lVR2xOajkzUjV6YjBIVi84?=
- =?utf-8?B?MUhiVVlzT3JpVnV6czdkSzFjUUhWa3plUmIvdDBkMHMxNk9MWHQ5dVQ5enRO?=
- =?utf-8?B?VGdGN2R4bGJHb2RXMWYxeXdiYVBUMVF4c0F0MXU3NjUxZ1ZiZnV4M0VaR0xZ?=
- =?utf-8?B?LzhuOEJZVWc2WW9TQW1FSkUvdjF0OFFGeVNZUU5CSVA3Z0owME96V3liNEdk?=
- =?utf-8?B?S3hobTFYeUJaN2pmZzdpV3hiZW85NUN0MzdwQW5Xem42cDVucnEzUjZxeFRl?=
- =?utf-8?B?ZkZ5djZyQ2pHbVJWKzZ5Ny9zUllyd2pBSnRxOWFQTkMyK3l6dmN1VzhyOTVK?=
- =?utf-8?B?eC9zWjRhZjRaR3B6ZkI4TGhkeTZPS1JlVGtLOWNTVzExalZ3ZlNra3lxOWZY?=
- =?utf-8?B?WEdUSDFTRm54cXptZ3ZWR2pZRk44QWdWQ08zMTZNV09tQW4xYVR4RFZXMTBC?=
- =?utf-8?B?RmtVN1V5MTFnaWZ1aVFkUS90cS9mam90WGlBa015bDhIYkk3WnlVNkp1bHV6?=
- =?utf-8?B?Y1ZHcXJtS1QzaGt6azFKOG90aFJldjJpaElIbVBVWWxQajZ5Vko5bmlCMWZ4?=
- =?utf-8?B?MWlsR0swWWNqSk5QOUwzK09GTk1SdUhGeFdWenQra2l6TS9weEZadWpNTlJB?=
- =?utf-8?B?bXZYRnlLVEZWM0xBUHBRbHpkM0Rvckc4TDFWbFBIM3lFVUEvbDhEaUZIVDZj?=
- =?utf-8?B?ZWYyUmtEdnZ2KzV1SmM4ajdOblBzYmZSdlV0cDlhV0JHU2daODZmT0VyVEtu?=
- =?utf-8?B?TjVPaDhPVG9HMm80SHREYmVtNWV6M2VrZHJuK2I4YVNFcDFQMi83RVdyRlpT?=
- =?utf-8?B?M2ZzTFVTRDJrTjJIbjlWU0ZjMzJaMlR4Q2w0VDllK3l3VzhHb0R3dmtkMkZi?=
- =?utf-8?B?QXlXcGplTWYycHZWOTRaWXdUVlpCL05pTDFGV0JHV1cxanJDb3d5Ukw0dmYv?=
- =?utf-8?B?dXRLeEJJemxGVFZLN3JnWklaVzNEM1hhVE16bkV4TG5iMkpLTlhiSDdjOXdF?=
- =?utf-8?B?Sk81S2NHWU1COUFaWU1CYzNSSnlCT0pxdXJzZlRNUHZuaDRtSUtKdGtOQ3dG?=
- =?utf-8?B?eFRLaHl3TWl4eW1QdlhaZGVtdnQxUCtSenlmYjZOOEVUSk05UENqKzFiNmZ1?=
- =?utf-8?B?Um1oSXFna3d3b00zY2l0MGhFQ2NzcXJ0b3h6RFNJdHNhUDgyM2MvVWlhMHFk?=
- =?utf-8?B?SnhIWEp1d1RQSjFKU1FQb01mTHpJbVpQY0VqUDdEVzMrclBFS1pLclQzS0RG?=
- =?utf-8?B?WDZ6VGw2ZGxmYWp4ckJiZFlDMjE5NDdSdG1vSElBeHRFdzZhTlo2UkREYkxP?=
- =?utf-8?B?MnFUVG5acTBScFZITnZXMmRhY0tsd01hMlEwMEVvQTJNT3pDd3J1a0UvcE90?=
- =?utf-8?B?Mkt6RWVtUXlLQ0d5ZSsvcmlDZ3VZT3Y2TUdpeGlacnVuTFZnd2puZjFZZ3Nh?=
- =?utf-8?B?OFh2V0dyeDVvbEJrU1kvWGJjV0U2amo4NjFhcnFld3gzdzVISUpWSzRsTjVy?=
- =?utf-8?Q?05jwrgq+JISHlYdOT47up0DVajlFwR4nESDjdt/urkug=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c27e667-4e23-42e7-ac83-08dbc4a62a66
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 06:50:16.2247
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN2P287MB1529
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 1/5] dt-bindings: media: platform: visconti: Add
+ Toshiba Visconti Video Input Interface
+Content-Language: en-US
+To:     yuji2.ishikawa@toshiba.co.jp, hverkuil@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, nobuhiro1.iwamatsu@toshiba.co.jp
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230925232806.950683-1-yuji2.ishikawa@toshiba.co.jp>
+ <20230925232806.950683-2-yuji2.ishikawa@toshiba.co.jp>
+ <c58ffc72-59d9-49f5-be22-18588f7df1e3@linaro.org>
+ <TYAPR01MB6201C2E34B969197C9E9DFB492C4A@TYAPR01MB6201.jpnprd01.prod.outlook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <TYAPR01MB6201C2E34B969197C9E9DFB492C4A@TYAPR01MB6201.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 04/10/2023 01:10, yuji2.ishikawa@toshiba.co.jp wrote:
+>>> +    properties:
+>>> +      endpoint:
+>>> +        $ref: video-interfaces.yaml#
+>>> +        additionalProperties: false
+>>
+>> This is a friendly reminder during the review process.
+>>
+>> It seems my previous comments were not fully addressed. Maybe my feedback
+>> got lost between the quotes, maybe you just forgot to apply it.
+>> Please go back to the previous discussion and either implement all requested
+>> changes or keep discussing them.
+>>
+>> Thank you.
+> 
+> I'm very sorry that I misunderstood the intent of the last conversion.
+> https://lore.kernel.org/all/0aa471ce-da83-172d-d870-1ec7a562baf7@linaro.org/
+> I thought "additionalProperties: false" can be used and "xxx:true" should stay.
+> 
+> Let me confirm your intentions:
+>   - "unevaluatedProperties: false" should be used instead of "additionalProperties: false"
+>   - All of "xxx: true" should be removed
+> Are these two correct understandings?
 
-在 2023/9/30 20:39, Jisheng Zhang 写道:
-> Milk-V Duo[1] board is an embedded development platform based on the
-> CV1800B chip. Add minimal device tree files for the development board.
->
-> Support basic uart drivers, so supports booting to a basic shell.
->
-> Link: https://milkv.io/duo [1]
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->   arch/riscv/boot/dts/sophgo/Makefile           |  2 +-
->   .../boot/dts/sophgo/cv1800b-milkv-duo.dts     | 38 +++++++++++++++++++
->   2 files changed, 39 insertions(+), 1 deletion(-)
->   create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
->
-> diff --git a/arch/riscv/boot/dts/sophgo/Makefile b/arch/riscv/boot/dts/sophgo/Makefile
-> index 5a471b19df22..5ea9ce398ff6 100644
-> --- a/arch/riscv/boot/dts/sophgo/Makefile
-> +++ b/arch/riscv/boot/dts/sophgo/Makefile
-> @@ -1,3 +1,3 @@
->   # SPDX-License-Identifier: GPL-2.0
->   dtb-$(CONFIG_ARCH_SOPHGO) += sg2042-milkv-pioneer.dtb
-> -
-> +dtb-$(CONFIG_ARCH_SOPHGO) += cv1800b-milkv-duo.dtb
-Please adjust it in alphabetical order.
-> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-> new file mode 100644
-> index 000000000000..3af9e34b3bc7
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-> @@ -0,0 +1,38 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "cv1800b.dtsi"
-> +
-> +/ {
-> +	model = "Milk-V Duo";
-> +	compatible = "milkv,duo", "sophgo,cv1800b";
-> +
-> +	aliases {
-> +		serial0 = &uart0;
-> +		serial1 = &uart1;
-> +		serial2 = &uart2;
-> +		serial3 = &uart3;
-> +		serial4 = &uart4;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	memory@80000000 {
-> +		device_type = "memory";
-> +		reg = <0x80000000 0x3f40000>;
-> +	};
-> +};
-> +
-> +&osc {
-> +	clock-frequency = <25000000>;
-> +};
-> +
-> +&uart0 {
-> +	status = "okay";
-> +};
+Ah, true, I missed that. It is indeed fine, apologies.
+
+> 
+>>
+>>> +
+>>> +        required:
+>>> +          - clock-noncontinuous
+>>> +          - link-frequencies
+>>> +          - remote-endpoint
+>>> +          - data-lanes
+>>
+>> Not much improved here. required goes after properties, always. I pointed you
+>> last time the file which you should use as an example.
+> 
+> I'll check the overall structure of renesas,rzg2l-csi2.yaml.
+
+This needs to be fixed.
+
+> 
+>>> +
+>>> +        properties:
+>>> +          data-lanes:
+>>> +            description: VIIF supports 1, 2, 3 or 4 data lanes
+>>> +            minItems: 1
+>>> +            items:
+>>> +              - const: 1
+>>> +              - const: 2
+>>> +              - const: 3
+>>> +              - const: 4
+>>> +
+>>> +          clock-noncontinuous: true
+>>
+>> Drop
+
+This and further can be ignored.
+
+Best regards,
+Krzysztof
+
