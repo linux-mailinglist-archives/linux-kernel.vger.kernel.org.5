@@ -2,162 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D74B7B89AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96DC7B89BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244245AbjJDS2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 14:28:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
+        id S244267AbjJDS2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 14:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244235AbjJDS2B (ORCPT
+        with ESMTP id S244210AbjJDS2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 14:28:01 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0055198;
-        Wed,  4 Oct 2023 11:27:57 -0700 (PDT)
-Received: from [10.0.0.178] (c-76-135-56-23.hsd1.wa.comcast.net [76.135.56.23])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CA79020B74C0;
-        Wed,  4 Oct 2023 11:27:56 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CA79020B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1696444077;
-        bh=H3hpMWGvjGtlXIXotdjlxYcAB+MUrjLHbNTb9FjcgmM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=E2F9qALpVjKLHPt1qgbv6o+F2urPzDJk9C0SK7tHGJgziy2Xd+HvQ7t2Fz4EUlsOI
-         /I01+rs+iUyXP9YNe6t2U0mQTx3zz0+vNEaFzjubblqGCdCOOn3JmzAiqzHzoLEcrX
-         Ha+iNvKWADExxT2I7VlTuwbBJkw9wzTIoNOJUw2E=
-Message-ID: <c79ee00f-253d-40d5-9ed6-0f156dc4ebb1@linux.microsoft.com>
-Date:   Wed, 4 Oct 2023 11:27:56 -0700
+        Wed, 4 Oct 2023 14:28:36 -0400
+Received: from mx3.wp.pl (mx3.wp.pl [212.77.101.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EE49E
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 11:28:30 -0700 (PDT)
+Received: (wp-smtpd smtp.wp.pl 34923 invoked from network); 4 Oct 2023 20:28:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1696444107; bh=9WqA8RBus0lT/tlmpFJJ73tod3YptX81Tc2dYpc1LK4=;
+          h=From:To:Cc:Subject;
+          b=h3Fqop8Q6R+02M6NAU7WmxsvBqSVKRWybFa4bVqNvp8gmCfipWX6UD+KJsDnzZGbL
+           HlA8bbigIsqnvpHJ3pFfMuA5731n3g67RC6UZaL1bHsR1nAdbDGlFDOZWZpYbb+26X
+           4c/PWDoFdCtktw/GOYywu07X0TLQSX3JCjYaWJ+o=
+Received: from 89-64-13-175.dynamic.chello.pl (HELO localhost) (stf_xl@wp.pl@[89.64.13.175])
+          (envelope-sender <stf_xl@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <enc0der@gmail.com>; 4 Oct 2023 20:28:27 +0200
+Date:   Wed, 4 Oct 2023 20:28:26 +0200
+From:   Stanislaw Gruszka <stf_xl@wp.pl>
+To:     enc0der <enc0der@gmail.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Wireless <linux-wireless@vger.kernel.org>
+Subject: Re: rt8000usb driver issue (maybe interaction with other drivers)
+Message-ID: <20231004182826.GA411448@wp.pl>
+References: <CAEXpi5Rd6Y4umKOWRsCjX0kit=W5ZrVhn=MuRkyvJPwmjjDVnA@mail.gmail.com>
+ <ZRj_ovMi-Xbb8i-D@debian.me>
+ <20231002185053.GB402943@wp.pl>
+ <CAEXpi5StYwujiTaH2_5PE9Hg_cgzAEtBuFxfgVxEJvbqRNv_4A@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 09/15] Drivers: hv: Introduce hv_output_arg_exists in
- hv_common.c
-Content-Language: en-US
-To:     Alex Ionescu <aionescu@gmail.com>,
-        Dexuan Cui <decui@microsoft.com>, longli@microsoft.com,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        gregkh@linuxfoundation.org, haiyangz@microsoft.com,
-        decui@microsoft.com, apais@linux.microsoft.com,
-        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
-        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
-        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
-        catalin.marinas@arm.com
-References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1696010501-24584-10-git-send-email-nunodasneves@linux.microsoft.com>
- <CAJ-90N+A-wS-Uwrs_2WVL86Uo3qzQ1czxm-u9vDj3UuOwjhLdQ@mail.gmail.com>
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-In-Reply-To: <CAJ-90N+A-wS-Uwrs_2WVL86Uo3qzQ1czxm-u9vDj3UuOwjhLdQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAEXpi5StYwujiTaH2_5PE9Hg_cgzAEtBuFxfgVxEJvbqRNv_4A@mail.gmail.com>
+X-WP-MailID: f0179e23565c96ae6547a30aa0eda1e9
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [IYOV]                               
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/2023 12:29 PM, Alex Ionescu wrote:
-> Hi Nuno,
+Hi
+
+On Tue, Oct 03, 2023 at 09:34:32PM -0400, enc0der wrote:
+> Hello Stanislaw!
 > 
-> Is it possible to simply change to always allocating the output page?
-> For example, the output page could be needed in scenarios where Linux
-> is not running as the root partition, since certain hypercalls that a
-> guest can make will still require one (I realize that's not the case
-> _today_, but I don't believe this optimization buys much).
-
-I agree - it would indeed simplify the code, and guests will probably
-make use of it sooner or later.
-
-Happy to make that change if Hyper-V guest maintainers agree.
-Long, Dexuan, Michael, what do you think?
-
-Thanks,
-Nuno
-
-> Best regards,
-> Alex Ionescu
+> On Mon, Oct 2, 2023 at 2:50 PM Stanislaw Gruszka <stf_xl@wp.pl> wrote:
+> >
+> > Is possible that this is rt2800usb or usb host driver issue. But without
+> > full logs we can not be sure.
 > 
-> 
-> On Fri, Sep 29, 2023 at 2:02 PM Nuno Das Neves
-> <nunodasneves@linux.microsoft.com> wrote:
->>
->> This is a more flexible approach for determining whether to allocate the
->> output page.
->>
->> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
->> Acked-by: Wei Liu <wei.liu@kernel.org>
->> ---
->>   drivers/hv/hv_common.c | 21 +++++++++++++++++----
->>   1 file changed, 17 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
->> index 39077841d518..3f6f23e4c579 100644
->> --- a/drivers/hv/hv_common.c
->> +++ b/drivers/hv/hv_common.c
->> @@ -58,6 +58,14 @@ EXPORT_SYMBOL_GPL(hyperv_pcpu_input_arg);
->>   void * __percpu *hyperv_pcpu_output_arg;
->>   EXPORT_SYMBOL_GPL(hyperv_pcpu_output_arg);
->>
->> +/*
->> + * Determine whether output arg is needed
->> + */
->> +static inline bool hv_output_arg_exists(void)
->> +{
->> +       return hv_root_partition ? true : false;
->> +}
->> +
->>   static void hv_kmsg_dump_unregister(void);
->>
->>   static struct ctl_table_header *hv_ctl_table_hdr;
->> @@ -342,10 +350,12 @@ int __init hv_common_init(void)
->>          hyperv_pcpu_input_arg = alloc_percpu(void  *);
->>          BUG_ON(!hyperv_pcpu_input_arg);
->>
->> -       /* Allocate the per-CPU state for output arg for root */
->> -       if (hv_root_partition) {
->> +       if (hv_output_arg_exists()) {
->>                  hyperv_pcpu_output_arg = alloc_percpu(void *);
->>                  BUG_ON(!hyperv_pcpu_output_arg);
->> +       }
->> +
->> +       if (hv_root_partition) {
->>                  hv_synic_eventring_tail = alloc_percpu(u8 *);
->>                  BUG_ON(hv_synic_eventring_tail == NULL);
->>          }
->> @@ -375,7 +385,7 @@ int hv_common_cpu_init(unsigned int cpu)
->>          u8 **synic_eventring_tail;
->>          u64 msr_vp_index;
->>          gfp_t flags;
->> -       int pgcount = hv_root_partition ? 2 : 1;
->> +       int pgcount = hv_output_arg_exists() ? 2 : 1;
->>          void *mem;
->>          int ret;
->>
->> @@ -393,9 +403,12 @@ int hv_common_cpu_init(unsigned int cpu)
->>                  if (!mem)
->>                          return -ENOMEM;
->>
->> -               if (hv_root_partition) {
->> +               if (hv_output_arg_exists()) {
->>                          outputarg = (void **)this_cpu_ptr(hyperv_pcpu_output_arg);
->>                          *outputarg = (char *)mem + HV_HYP_PAGE_SIZE;
->> +               }
->> +
->> +               if (hv_root_partition) {
->>                          synic_eventring_tail = (u8 **)this_cpu_ptr(hv_synic_eventring_tail);
->>                          *synic_eventring_tail = kcalloc(HV_SYNIC_SINT_COUNT, sizeof(u8),
->>                                                          flags);
->> --
->> 2.25.1
->>
->>
+> Okay, I was able to use dmesg -w before it kernel panic'd to grab some
+> additional details, first this is when I plug in th USB WiFi adapter
+> but I have it not automatically connect.  In this state, it will not
+> kernel panic:
 
+<snip>
+> [ 1542.242112] BUG: scheduling while atomic: ksoftirqd/3/29/0x00000103
+> [ 1542.248587] Modules linked in: rt2800usb(E) rt2x00usb(E)
+> rt2800lib(E) rt2x00lib(E) mac80211(E) cfg80211(E) nvidia_modeset(OE)
+> fuse(E) lzo_rle(E) lzo_compress(E) zram(E) ramoops(E) reed_solomon(E)
+> loop(E) snd_soc_tegra186_asrc(E) snd_soc_tegra210_ope(E)
+> snd_soc_tegra186_arad(E) snd_soc_tegra186_dspk(E)
+> snd_soc_tegra210_iqc(E) aes_ce_blk(E) crypto_simd(E) cryptd(E)
+> snd_soc_tegra210_mvc(E) snd_soc_tegra210_afc(E) aes_ce_cipher(E)
+> snd_soc_tegra210_dmic(E) snd_soc_tegra210_adx(E) ghash_ce(E)
+> snd_soc_tegra210_amx(E) sha2_ce(E) snd_soc_tegra210_i2s(E)
+> snd_soc_tegra210_mixer(E) snd_soc_tegra210_admaif(E) sha256_arm64(E)
+> snd_soc_tegra210_sfc(E) snd_soc_tegra_pcm(E) hid_ite(E) sha1_ce(E)
+> input_leds(E) spidev(E) snd_soc_tegra210_adsp(E)
+> snd_soc_tegra_machine_driver(E) snd_soc_spdif_tx(E)
+> snd_soc_tegra_utils(E) snd_soc_simple_card_utils(E)
+> snd_hda_codec_hdmi(E) snd_soc_tegra210_ahub(E) nvadsp(E)
+> userspace_alert(E) snd_hda_tegra(E) tegra_bpmp_thermal(E)
+> tegra210_adma(E) nv_imx219(E) snd_hda_codec(E)
+> [ 1542.248665]  snd_hda_core(E) spi_tegra114(E) nvidia(OE)
+> binfmt_misc(E) ina3221(E) pwm_fan(E) nvgpu(E) nvmap(E) ip_tables(E)
+> x_tables(E) [last unloaded: mtd]
+> [ 1542.248686] CPU: 3 PID: 29 Comm: ksoftirqd/3 Tainted: G        W
+> OE     5.10.120-tegra #1
+> [ 1542.248687] Hardware name: Unknown NVIDIA Orin Nano Developer
+> Kit/NVIDIA Orin Nano Developer Kit, BIOS 4.1-33958178 08/01/2023
+> [ 1542.248690] Call trace:
+> [ 1542.248702]  dump_backtrace+0x0/0x1d0
+> [ 1542.248705]  show_stack+0x30/0x40
+> [ 1542.248712]  dump_stack+0xd8/0x138
+> [ 1542.248717]  __schedule_bug+0x78/0x90
+> [ 1542.248722]  __schedule+0x844/0x910
+> [ 1542.248724]  schedule+0x78/0x110
+> [ 1542.248727]  schedule_timeout+0x184/0x340
+> [ 1542.248731]  nvhost_syncpt_wait_timeout+0x450/0x720
+> [ 1542.248733]  nvhost_syncpt_wait_timeout_ext+0xf4/0x120
+> [ 1542.248738]  tegra_se_channel_submit_gather.isra.0+0x160/0x440
+> [ 1542.248740]  tegra_se_ccm_compute_auth+0x2d8/0x650
+> [ 1542.248743]  tegra_se_aes_ccm_encrypt+0x6c/0x150
+> [ 1542.248746]  crypto_aead_encrypt+0x38/0x50
+> [ 1542.248768]  aead_encrypt+0x130/0x180 [mac80211]
+> [ 1542.248782]  ieee80211_crypto_ccmp_encrypt+0x1f8/0x270 [mac80211]
+> [ 1542.248793]  ieee80211_txq_schedule_start+0xae4/0xc10 [mac80211]
+Here is the issue. We send the frames with spin_lock taken, in such
+case no sleep (i.e. schedule() call) is allowed. Some function from 
+tegra/nvhost is actually sleeping, hence the bug.
+
+As already pointed Thorsten, those tegra_/nvhost_ are proprietary functions,
+which are not included in the upstream linux kernel, so we can not fix them.
+
+However I can advice you to detach those from crypto_aead_encrypt,
+this should be doable. At worst your will need to  recompile your
+kernel with those crypto offload engines disabled, but perhaps
+this can be configured dynamically.
+
+Regards
+Stanislaw
