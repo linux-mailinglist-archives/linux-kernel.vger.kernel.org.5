@@ -2,178 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AB67B7C02
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F807B7C09
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241787AbjJDJYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38844 "EHLO
+        id S241798AbjJDJZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232947AbjJDJYv (ORCPT
+        with ESMTP id S241784AbjJDJZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:24:51 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D751CAC;
-        Wed,  4 Oct 2023 02:24:47 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3946vqNe014209;
-        Wed, 4 Oct 2023 09:24:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=CPKY0KHDc27eErZGiD+w0+dVq/2NlzHvFtu3lSawsVg=;
- b=SiNN/LXxJCPGICklCDS1k169miOBJF0eQmwDg13SdQqNZi0cre4dnqcgQDxv0IOX0zcK
- px5Xxsoi6oVprCzDqQ9uLHfQwJSDfwOcGYZvJUAT/HBmoHijr3lNM62ILJ6OP7EpGr1V
- jGfde1inx1qps3ma7TbwbhJDJsimuaV7/xLTxWL9mnbKLa9G1ypuHy0qNhPRn0gK7xKu
- 1LUKVKyhx0x5QELRnKwb3x6K7o0giPWNh97xfzxpjHWKbge7cg5DKv7Srkbd3iZTJVYk
- gMCe4z0peQ/HDDC5PSkZDNWrHLg9odpu2lhPKvsQ+BNYgr58YZNsquVWMc5CBmsuKSlV nQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3th2gq0bux-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 09:24:14 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3949NtFc005407
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 4 Oct 2023 09:23:55 GMT
-Received: from [10.216.40.132] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 4 Oct
- 2023 02:23:49 -0700
-Message-ID: <5d31facd-8942-d159-a1f1-cd7cae6c09a5@quicinc.com>
-Date:   Wed, 4 Oct 2023 14:53:45 +0530
+        Wed, 4 Oct 2023 05:25:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05026AB;
+        Wed,  4 Oct 2023 02:25:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EC61C433C8;
+        Wed,  4 Oct 2023 09:25:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696411536;
+        bh=ZzTWSABeD4wFE2m9mjmYRRB/7+UvIZBGEIN6sgQ0kb4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SvXVBh51nCLP8HhQ7mLu03TGsMQLe1lTiMyPIJXL2ED7e7tHUGkGWCZn4B2RRkEcj
+         mfjs8Y+5HnQ79cWOddLLyDLVw/I0YpoYiqkvaoMVDrS4O8eIvlbeM+iOJvPL/fj2fV
+         Ay2+TGteENtSmTN3aduCBaE3yQBT8H+2yKs0+UZZYByBcIfkDpZ9jNtop3lEb0Dkck
+         yxFVlQBqJxdS5vBKpMITUE3zFCpHVyzDAZS6IJYFrc7bcXKFRSNAODn3fDi1TxoNF/
+         s9DEBErlkSZ4HmDSXRAPPVb/VMRv1nsFYROjvqgvOX4mCKbxpdtDk/gJiXcdPz/RK7
+         rxdDmcMli831A==
+Date:   Wed, 4 Oct 2023 11:25:33 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Yong He <zhuangel570@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/5] srcu fixes
+Message-ID: <ZR0vjdp+BNiFm46+@lothringen>
+References: <20231003232903.7109-1-frederic@kernel.org>
+ <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V13 3/4] dt-bindings: mfd: qcom,tcsr: Add simple-mfd
- support for IPQ6018
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <thierry.reding@gmail.com>, <ndesaulniers@google.com>,
-        <trix@redhat.com>, <baruch@tkos.co.il>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>
-References: <20231004090449.256229-1-quic_devipriy@quicinc.com>
- <20231004090449.256229-4-quic_devipriy@quicinc.com>
- <60da3633-61f6-49c1-b656-2804c35d3e82@linaro.org>
-From:   Devi Priya <quic_devipriy@quicinc.com>
-In-Reply-To: <60da3633-61f6-49c1-b656-2804c35d3e82@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: poa95C6L0UdTS1Fdu1GyMSQWiZJbkn-7
-X-Proofpoint-ORIG-GUID: poa95C6L0UdTS1Fdu1GyMSQWiZJbkn-7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_01,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0
- malwarescore=0 suspectscore=0 clxscore=1015 bulkscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310040067
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 03, 2023 at 05:35:31PM -0700, Paul E. McKenney wrote:
+> On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
+> > Hi,
+> > 
+> > This contains a fix for "SRCU: kworker hung in synchronize_srcu":
+> > 
+> > 	http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
+> > 
+> > And a few cleanups.
+> > 
+> > Passed 50 hours of SRCU-P and SRCU-N.
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > 	srcu/fixes
+> > 
+> > HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
+> > 
+> > Thanks,
+> > 	Frederic
+> 
+> Very good, and a big "Thank You!!!" to all of you!
+> 
+> I queued this series for testing purposes, and have started a bunch of
+> SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
+> SRCU-N on another system, but with both scenarios resized to 40 CPU each.
+> 
+> While that is in flight, a few questions:
+> 
+> o	Please check the Co-developed-by rules.  Last I knew, it was
+> 	necessary to have a Signed-off-by after each Co-developed-by.
 
+Indeed! I'll try to collect the three of them within a few days. If some
+are missing, I'll put a Reported-by instead.
 
-On 10/4/2023 2:50 PM, Krzysztof Kozlowski wrote:
-> On 04/10/2023 11:04, Devi Priya wrote:
->> Update the binding to include pwm as the child node to TCSR block and
->> add simple-mfd support for IPQ6018.
->>
->> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
->> ---
 > 
-> Thank you for your patch. There is something to discuss/improve.
-> 
-> 
->>     reg:
->>       maxItems: 1
->>   
->> +  ranges: true
->> +
->> +  "#address-cells":
->> +    const: 1
->> +
->> +  "#size-cells":
->> +    const: 1
->> +
->> +patternProperties:
->> +  "pwm@[a-f0-9]+$":
-> 
-> type: object
-Okay
-> 
->> +    $ref: ../pwm/qcom,ipq6018-pwm.yaml
-> 
-> This should be full patch, so:
-> $ref: /schemas/pwm/qcom.......
-okay
-> 
-> 
->> +
->>   required:
->>     - compatible
->>     - reg
-> 
-> After required (but before additionalProperties), please add:
-> 
-> allOf:if:then: for other compatible (so use keyword "not:") which will
-> disallow pwm for them. Disallowing is via:
-> 
->      patternProperties:
->        "pwm@[a-f0-9]+$": false
-> 
-> See   Documentation/devicetree/bindings/interconnect/qcom,rpm.yaml
-> around line 240. We need something similar.
-Sure, will add!
-> 
-> 
->> @@ -57,8 +74,29 @@ required:
->>   additionalProperties: false
->>   
->>   examples:
->> +  # Example 1 - Syscon node found on MSM8960
->>     - |
->>       syscon@1a400000 {
->>           compatible = "qcom,tcsr-msm8960", "syscon";
->>           reg = <0x1a400000 0x100>;
->>       };
->> +  # Example 2 - Syscon node found on IPQ6018
->> +  - |
->> +    #include <dt-bindings/clock/qcom,gcc-ipq6018.h>
->> +
->> +    syscon@1937000 {
->> +        compatible = "qcom,tcsr-ipq6018", "syscon", "simple-mfd";
->> +        reg = <0x01937000 0x21000>;
->> +        #address-cells = <1>;
->> +        #size-cells = <1>;
->> +        ranges = <0 0x1937000 0x21000>;
-> 
-> Please put ranges just after reg.
-Sure,okay
+> o	Is it possible to get a Tested-by from the original reporter?
+> 	Or is this not reproducible?
 
-Thanks,
-Devi Priya
+It seems that the issue would trigger rarely. But I hope we can get one.
+
 > 
->> +
->> +        pwm: pwm@a010 {
->> +            compatible = "qcom,ipq6018-pwm";
->> +            reg = <0xa010 0x20>;
+> o	Is it possible to convince rcutorture to find this sort of
+> 	bug?  Seems like it should be, but easy to say...
+
+So at least the part where advance/accelerate fail is observed from time
+to time. But then we must meet two more rare events:
+
+1) The CPU failing to ACC/ADV must also fail to start the grace period because
+  another CPU was faster.
+
+2) The callbacks invocation must not run until that grace period has ended (even
+  though we had a previous one completed with callbacks ready).
+
+  Or it can run after all but at least the acceleration part of it has to
+  happen after the end of the new grace period.
+
+Perhaps all these conditions can me met more often if we overcommit the number
+of vCPU. For example run 10 SRCU-P instances within 3 real CPUs. This could
+introduce random breaks within the torture writers...
+
+Just an idea...
+
 > 
-> Best regards,
-> Krzysztof
+> o	Frederic, would you like to include this in your upcoming
+> 	pull request?  Or does it need more time?
+
+At least the first patch yes. It should be easily backported and
+it should be enough to solve the race. I'll just wait a bit to collect
+more tags.
+
+Thanks!
+
 > 
+> 						Thanx, Paul
+> 
+> > ---
+> > 
+> > Frederic Weisbecker (5):
+> >       srcu: Fix callbacks acceleration mishandling
+> >       srcu: Only accelerate on enqueue time
+> >       srcu: Remove superfluous callbacks advancing from srcu_start_gp()
+> >       srcu: No need to advance/accelerate if no callback enqueued
+> >       srcu: Explain why callbacks invocations can't run concurrently
+> > 
+> > 
+> >  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++---------------
+> >  1 file changed, 39 insertions(+), 16 deletions(-)
