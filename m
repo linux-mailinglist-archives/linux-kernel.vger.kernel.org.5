@@ -2,73 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F607B7C15
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4AD7B7C17
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241801AbjJDJ1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35604 "EHLO
+        id S241804AbjJDJ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232947AbjJDJ1o (ORCPT
+        with ESMTP id S241803AbjJDJ1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:27:44 -0400
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B67B4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:27:39 -0700 (PDT)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3af7219c67fso2732650b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:27:39 -0700 (PDT)
+        Wed, 4 Oct 2023 05:27:47 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23828A7
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:27:44 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-313e742a787so402434f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:27:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696411662; x=1697016462; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GV07epPUhdpXIZJvIiHNiYuLVJzB4+rIWncb07cQYck=;
+        b=MRZnoeQ+khQZhRHvI1Se/LvEa/r8QQl4OqSpf71hRo+OpzJPATmQE27WyOaTVvyqNA
+         O02KiZsP+8JLcTjs2O97d4mLOPUIFL9MwfwkR8phSAuBByV2lzxclUQAzVhKbbW07iaQ
+         WK5IYHLAjs9Teo4oSrqL8JuCvZuH6WCjEIjpJQR/zxgb2BJu6tekENLbDLfwlK0X8cGM
+         hm77yLP9pMUyvp44R3YjTJape2xDVPNLBco1ldfpK3hgYlSChX+3hqDU7Bk2+WsWUJME
+         rM85lAmZ8kb9RbbrIe2V8cThQ2MfkPnSpktCvsyAE/cOPI92WPIVViZCKo/NMoS63T3+
+         s3sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696411658; x=1697016458;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1696411662; x=1697016462;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ib8OsmN+l9hS4WSHapHdz4QJybGsr7F93ZbuDJEM+s=;
-        b=Wbd82Qw0aAzvr7+Q7OwwHX9yRNyHtL4WNTvNjcfbQLBk4NTdEUMTiGXly0GmAEyoSY
-         I4iFNjMeQesxfhjSBOwc94+C7pJxtoUcz+wFnj+FTmOEs1/Pkf7jryapgxUfHXYP3hTn
-         wNm6C1qFAWUy00HxJYkCogzPpNRRlq15oOK3YRuwy7+nSeQebL1VMqpYYENABEwzNaxJ
-         iHElDaAGDsLqzujELaRmuqjJdcWresffjpSW+n3TNQl77iy6S9YDYUHDsW+UBuVWYhQm
-         nMcibuZuZPyjN55nF2w8SHOumVQ1wlJP5I8viWiHyzpdz4L8MGSFFXO1872RDN2rZ0IU
-         7y3A==
-X-Gm-Message-State: AOJu0YwE9ryLTDwAUMFs61PmZJvf8yjdevKHepfVARHABTpuLpnRUDdk
-        oKmAxmtC8QB3Nxlo717tn9j3lRqxdF8L1adcbdHewc/5NDuu
-X-Google-Smtp-Source: AGHT+IHYOL1M7N9QCiQZReshAhpID17SJ9puzwNce1bM91QoH83bG82Scl1CikhTsvyf8LmwZ/1iSfGTqpR59YVOaViugKL0+ZRT
+        bh=GV07epPUhdpXIZJvIiHNiYuLVJzB4+rIWncb07cQYck=;
+        b=ILfaoTkWlQrIUXBrTM1CLLYmg4hiyKgDuhikjbbxN2BKvR8nfaP5pwkgA1a9u0sahY
+         tZ3VLkBLF4TmDc088FCEamuGrVfmbU4JSQBVEkSVKanA+8sZawV3HvKwDNsnwJhpjFj8
+         rIb+INW6fujYq48TCsfLLw+Ke7ApUIx7hy6mvU3F7p41WjNI93J12zZzur0rl2qqQe9A
+         5C4NYN5XVzqsGjofcSyRYCdPSD9NAGM162BPgxbgNNsq7RsHAkpUUUmq0dNmfBueyEE4
+         CFSeZxAIgOyPTGAQzTed/tFVUaSaTYxqWwOYzSmcFF2AoSBqlPQ8EgAdod3USujnzzkt
+         NzFg==
+X-Gm-Message-State: AOJu0YzaAn1lcOCSfBbAZyP8sSrLooDWoCjnNBBxHFycWysv3qwza2RQ
+        7ys/kWhsztPY858PXrmGTNvQaA==
+X-Google-Smtp-Source: AGHT+IEhGkRm0jB/vOVqBUcw85K/yXWd9yl+QL/eAUriv9nNYkaNvnaOfk3tmGC0ovEn+CPTO1Vprg==
+X-Received: by 2002:a5d:4691:0:b0:31f:335b:f436 with SMTP id u17-20020a5d4691000000b0031f335bf436mr4531952wrq.22.1696411662543;
+        Wed, 04 Oct 2023 02:27:42 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:a496:68ab:9165:6f16? ([2a05:6e02:1041:c10:a496:68ab:9165:6f16])
+        by smtp.googlemail.com with ESMTPSA id f8-20020adfdb48000000b0031ff89af0e4sm3526249wrj.99.2023.10.04.02.27.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 02:27:42 -0700 (PDT)
+Message-ID: <264060f0-0cbc-d9ef-cc4f-cd327d5725b1@linaro.org>
+Date:   Wed, 4 Oct 2023 11:27:41 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:f8e:b0:3ae:17ed:fdc9 with SMTP id
- o14-20020a0568080f8e00b003ae17edfdc9mr975891oiw.9.1696411658456; Wed, 04 Oct
- 2023 02:27:38 -0700 (PDT)
-Date:   Wed, 04 Oct 2023 02:27:38 -0700
-In-Reply-To: <20231004090157.1850-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004b95d80606e09ee6@google.com>
-Subject: Re: [syzbot] [mm?] WARNING in copy_hugetlb_page_range
-From:   syzbot <syzbot+ec78016e3d67860eec28@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 5/6] thermal: core: Drop thermal_zone_device_exec()
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+References: <4846448.GXAFRqVoOG@kreacher> <7586518.EvYhyI6sBW@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <7586518.EvYhyI6sBW@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 03/10/2023 15:25, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Because thermal_zone_device_exec() has no users any more and there are
+> no plans to use it anywhere, revert commit 9a99a996d1ec ("thermal: core:
+> Introduce thermal_zone_device_exec()") that introduced it.
+> 
+> No functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-Reported-and-tested-by: syzbot+ec78016e3d67860eec28@syzkaller.appspotmail.com
 
-Tested on:
+> ---
+> 
+> v1 -> v2: No changes
+> 
+> ---
+>   drivers/thermal/thermal_core.c |   19 -------------------
+>   include/linux/thermal.h        |    4 ----
+>   2 files changed, 23 deletions(-)
+> 
+> Index: linux-pm/drivers/thermal/thermal_core.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_core.c
+> +++ linux-pm/drivers/thermal/thermal_core.c
+> @@ -493,25 +493,6 @@ void thermal_zone_device_update(struct t
+>   }
+>   EXPORT_SYMBOL_GPL(thermal_zone_device_update);
+>   
+> -/**
+> - * thermal_zone_device_exec - Run a callback under the zone lock.
+> - * @tz: Thermal zone.
+> - * @cb: Callback to run.
+> - * @data: Data to pass to the callback.
+> - */
+> -void thermal_zone_device_exec(struct thermal_zone_device *tz,
+> -			      void (*cb)(struct thermal_zone_device *,
+> -					 unsigned long),
+> -			      unsigned long data)
+> -{
+> -	mutex_lock(&tz->lock);
+> -
+> -	cb(tz, data);
+> -
+> -	mutex_unlock(&tz->lock);
+> -}
+> -EXPORT_SYMBOL_GPL(thermal_zone_device_exec);
+> -
+>   static void thermal_zone_device_check(struct work_struct *work)
+>   {
+>   	struct thermal_zone_device *tz = container_of(work, struct
+> Index: linux-pm/include/linux/thermal.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/thermal.h
+> +++ linux-pm/include/linux/thermal.h
+> @@ -340,10 +340,6 @@ int thermal_zone_unbind_cooling_device(s
+>   				       struct thermal_cooling_device *);
+>   void thermal_zone_device_update(struct thermal_zone_device *,
+>   				enum thermal_notify_event);
+> -void thermal_zone_device_exec(struct thermal_zone_device *tz,
+> -			      void (*cb)(struct thermal_zone_device *,
+> -					 unsigned long),
+> -			      unsigned long data);
+>   
+>   struct thermal_cooling_device *thermal_cooling_device_register(const char *,
+>   		void *, const struct thermal_cooling_device_ops *);
+> 
+> 
+> 
 
-commit:         c9f2baaa Add linux-next specific files for 20231003
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=15545321680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3fe9c462fee1649f
-dashboard link: https://syzkaller.appspot.com/bug?extid=ec78016e3d67860eec28
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=152b55b2680000
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Note: testing is done by a robot and is best-effort only.
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
