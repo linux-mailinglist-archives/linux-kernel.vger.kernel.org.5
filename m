@@ -2,122 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE4D7B8D95
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F8D7B8D96
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243908AbjJDTpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 15:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42714 "EHLO
+        id S233888AbjJDTpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 15:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233784AbjJDTpN (ORCPT
+        with ESMTP id S233505AbjJDTpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 15:45:13 -0400
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718E7D9
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 12:45:09 -0700 (PDT)
-Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
-        by cmsmtp with ESMTP
-        id nydyqJ0ZqnGhUo7nwq4t8M; Wed, 04 Oct 2023 19:45:08 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id o7nvqQtCJ2fRco7nvqHe0b; Wed, 04 Oct 2023 19:45:08 +0000
-X-Authority-Analysis: v=2.4 cv=BcnLb5h2 c=1 sm=1 tr=0 ts=651dc0c4
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=Dx1Zrv+1i3YEdDUMOX3koA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=1XWaLZrsAAAA:8 a=cm27Pg_UAAAA:8 a=gDw6DpxkxgdD51dURPUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=anYsrMBVpJk91YyTJNycNRtxZORGmKUYN5KZZKzlb0o=; b=Kap34x0o9igNLIQhVI90uQhneJ
-        Sg2O9YfHoeuLC0SvUZQXEvWFfs9iHUnHa5+fvByNoJHS4Ncu9dcLwfcApr+JTi/ddpBQDrk9JKsmD
-        X9YpSAIEh5SEtRWMFHM3ZPcUKem1aBFs3oJzJp/gc8mR4tt6vfscGpIEwdSk6lsHv+0NJUg0PxVR9
-        Yw6xiLHzNBQoKUXpYPEv/cE84AyizKwtceGiyTqXd6f6oZs/7zuJfwSYqAbVp0CzkS7pTtsBylR5z
-        7A/PZhbkPClxffo3ASexlioRZECxa9S0NZv+Jcv6LHtwMdIZehxKt75mQoIauDbbkyD1diOJkPygj
-        VJ6kt+7w==;
-Received: from 94-238-9-39.abo.bbox.fr ([94.238.9.39]:53198 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.1)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qo7nv-002Qsv-0B;
-        Wed, 04 Oct 2023 14:45:07 -0500
-Message-ID: <0cae6f7e-845f-f76b-1594-46df17cf20be@embeddedor.com>
-Date:   Wed, 4 Oct 2023 21:45:03 +0200
+        Wed, 4 Oct 2023 15:45:12 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B54AA9;
+        Wed,  4 Oct 2023 12:45:08 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c724577e1fso1236005ad.0;
+        Wed, 04 Oct 2023 12:45:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696448708; x=1697053508; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dyUM37CKgXrMLT04cPOBLc8ziCR9vdEGhysDHWiFSLc=;
+        b=KPkcvk5ty0ou/a3iijoX8Yz9LJPzwDwW1cbgksy4WO4xfSqq+z/XYtrtc3S2zdzJwU
+         D+fgc1nObfGOKuEVmC9DdPPDIIVfMT0B4lX8EuD48gvMjkwswNr0dxpX0dyLd/Vmaz7c
+         sOOLcjFrv+GRZ7HBhSRMo+VtJUVCQ4atikX0as/fCiht0JcFSs9pgEQoFNNLjNaD+yR3
+         Xbi81c0xTYpqXvnjrHgU4FcIh5G3sWifoI4Ogz0dmxUVC5FN0c8VsKPXkroFhSlTdpEl
+         OjhNU/v0JSl9SEKqIoxukld1Lbg4jM+4j+XtHCbn4Ck8Q4PgVdkSqAHelm8SPofGe5gF
+         d+4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696448708; x=1697053508;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dyUM37CKgXrMLT04cPOBLc8ziCR9vdEGhysDHWiFSLc=;
+        b=RgrPNOCwlHYXQesrS/isSqLHthXxrnKcYCZzXmrvwsqRl8TMHeT3eQeiw1dCxU1wuL
+         r+qhTRTC/wOdpfKq38/TrVjp0d9p5l2nKpPtye636V4cKaoMc6/gLSZUvQ/BrJePFQqv
+         OqV7gQ4oYTnTx0HtJ/FOZgGVnyCkpfZwEzrhgrXhzFTIgx81XydLUnF9XcTQAH/T9JxL
+         Ng6mknZMkLzVaph5oLLEDZFrMSl2ufwKCGXJ90yr/VTVUXNX+qp/Wva0d/vvvJ62fjOp
+         Uh5FHlSvlwTzKXo4Fuj4KOt67O3OjeCF3jkRI3CQKGbMnH/tU6Kc7h3e5Gk5Ft84ydJw
+         Lr8A==
+X-Gm-Message-State: AOJu0YzTpTuz1QfYj5CBvixxMG5jrCemvX6WHgLIRZ+G7iCrtYsyBIUS
+        +cV/U4vZ0njlXfdt62twSiw=
+X-Google-Smtp-Source: AGHT+IEDXow3A1fp9kd0BwC4Z4+/Sc9FxJhrMtWKD/ySWkG+I+nY8g90SQBAt1MveEvPzTZEsXyCiQ==
+X-Received: by 2002:a17:902:db0d:b0:1bf:8779:e045 with SMTP id m13-20020a170902db0d00b001bf8779e045mr3805106plx.50.1696448707904;
+        Wed, 04 Oct 2023 12:45:07 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-014.fbsv.net. [2a03:2880:ff:e::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ij25-20020a170902ab5900b001c73eace0fesm4188137plb.157.2023.10.04.12.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 12:45:07 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH v3 2/3] hugetlb: memcg: account hugetlb-backed memory in memory controller (fix)
+Date:   Wed,  4 Oct 2023 12:45:06 -0700
+Message-Id: <20231004194506.946908-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231003001828.2554080-3-nphamcs@gmail.com>
+References: <20231003001828.2554080-3-nphamcs@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] MAINTAINERS: Include additional ASoC paths
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20231004193441.work.109-kees@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20231004193441.work.109-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.238.9.39
-X-Source-L: No
-X-Exim-ID: 1qo7nv-002Qsv-0B
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 94-238-9-39.abo.bbox.fr ([192.168.1.98]) [94.238.9.39]:53198
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfH/phRpjUsp//MId+4Ak6nKW02oJI97XkWTPdXQ2Kp4BnpyrxJLo/wQzaV3Lb8lMq/vcJIu+Vk7qV+aEvrvf077qnYflmvg3NjWj4YGM4jvpWraId7Gl
- pXec3nnYSWAjoFp+VnFhGIWACyUXjElD+V2jcopn90ylokoYgmf1XXVXRm6/fUS8q40V7zujZL/mvasS3dVYHLfFy9X58pfDOd91rQ3V6OUMa0RUUzX7oO9k
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ensure hugetlb folio migration also transfers the memcg metadata.
 
+This fixlet should be squashed to the following patch:
+https://lore.kernel.org/lkml/20231003001828.2554080-3-nphamcs@gmail.com/
+hugetlb: memcg: account hugetlb-backed memory in memory controller
 
-On 10/4/23 21:34, Kees Cook wrote:
-> Make sure a few other paths are correctly sent to the ASoC maintainers.
-> 
-> Link: https://lore.kernel.org/lkml/63dd3676.170a0220.1f1b2.3244@mx.google.com/
-> Cc: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+---
+ mm/migrate.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks!
---
-Gustavo
-
-> ---
->   MAINTAINERS | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 5f18ed0fbd42..585a13b9b52a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -20116,6 +20116,8 @@ F:	Documentation/devicetree/bindings/sound/
->   F:	Documentation/sound/soc/
->   F:	include/dt-bindings/sound/
->   F:	include/sound/soc*
-> +F:	include/sound/sof/
-> +F:	include/uapi/sound/asoc.h
->   F:	sound/soc/
->   
->   SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 7d1804c4a5d9..6034c7ed1d65 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -633,8 +633,7 @@ void folio_migrate_flags(struct folio *newfolio, struct folio *folio)
+ 
+ 	folio_copy_owner(newfolio, folio);
+ 
+-	if (!folio_test_hugetlb(folio))
+-		mem_cgroup_migrate(folio, newfolio);
++	mem_cgroup_migrate(folio, newfolio);
+ }
+ EXPORT_SYMBOL(folio_migrate_flags);
+ 
+-- 
+2.34.1
