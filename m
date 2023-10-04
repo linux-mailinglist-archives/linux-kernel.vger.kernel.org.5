@@ -2,142 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E12D37B832D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E2E7B8330
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242870AbjJDPHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
+        id S243050AbjJDPIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232995AbjJDPHH (ORCPT
+        with ESMTP id S232995AbjJDPIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:07:07 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA91AB
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:07:04 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a21c283542so32575027b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 08:07:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696432023; x=1697036823; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+eVgljSrAaP4g9db6ArVQwSMJVgICRyWVUAk78dKeWs=;
-        b=S7QcEe+nGvfXl3YC5lbQ6Nqx7TNFcssVdM/Pk2rh8feEgGakzccv0v6F04TbOEobFB
-         +z05k439al5OFrHa+wALunwfqy7uEjVw3Z54+o81NB2dlEXVm/A71cfqgFOoRtxuWk9M
-         x8OVvENTVosc00bgHjGu+XLpz+oXiX6r7+b3u681drD0ySNQc3o58LM9V1mQ3pfXwcb0
-         eeVi/aX5VrbGSDdBJNiKvm5RpGa2Uy9+UTyagw1uAdfzlDMEpE2G08/gSaJCrigSO0Os
-         OR5MNW22XmwuwtvjvRP9RL7NDN2M+WvEHfpRMdRQRZPPpjZUdO6lkvob1ZHHPjIn5cUK
-         BRQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696432023; x=1697036823;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+eVgljSrAaP4g9db6ArVQwSMJVgICRyWVUAk78dKeWs=;
-        b=Yv+lbCXWa4xKuEeN2FBn+bO23Hp2WSpYCC8xURxpojAHa08ohFncjy7C8x594U1zjP
-         9VmqovcBeV6nkYfWaWpDVVjQB8Lxg3SxOsYKmAPA/ArqADfRTG2cLS/A9MLk/e9WQwxD
-         iFbeP/O8jrFnxJcTYrMae2h5cOZ0B5ZwNLiYQkHkt5EVpARaoqmdI58Dk9Kwguq3Ywni
-         0VZxW7MKWZQImmyponK5pxIPwjUlCcNG0AYDf+oTFX09/BkGE3xuUSD/yvherf5sXYmM
-         f9kdKDIrkO4j8efCBwN+c9qraJ5pjFDA+XEM2RG1mTZPrPafBLOVFAkSENitrMRATXp8
-         G++w==
-X-Gm-Message-State: AOJu0YwHUcOsG8VPm2qfUgNk31H+9cGG4ndy0TARAjfbFEsX1gf4bhj2
-        E44vsO4KT0HQ14zqzUj9ZCDeR8awJYo=
-X-Google-Smtp-Source: AGHT+IE/Q16oJvQguIZWdE2Ej77em6srkLwhWrMzXqQpR51O7yNiLgubhFBrSB9xOzQlVEy+ZcDow4PEi88=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:b61a:0:b0:59b:e86f:ed2d with SMTP id
- u26-20020a81b61a000000b0059be86fed2dmr48698ywh.5.1696432023672; Wed, 04 Oct
- 2023 08:07:03 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 08:07:02 -0700
-In-Reply-To: <20231004133827.107-1-julian.stecklina@cyberus-technology.de>
-Mime-Version: 1.0
-References: <20231004133827.107-1-julian.stecklina@cyberus-technology.de>
-Message-ID: <ZR1_lizQd14pbXbg@google.com>
-Subject: Re: [PATCH 1/2] KVM: x86: Fix partially uninitialized integer in emulate_pop
-From:   Sean Christopherson <seanjc@google.com>
-To:     Julian Stecklina <julian.stecklina@cyberus-technology.de>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Wed, 4 Oct 2023 11:08:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B72BAB;
+        Wed,  4 Oct 2023 08:07:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E45EBC433C8;
+        Wed,  4 Oct 2023 15:07:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696432077;
+        bh=Y5zy75t86c7p9cSZYuR4myWn71kdv7zk6WSRuY/yi70=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ce1gg4PsElaaWDOjFq5MbANyHN9jnSvSgiKmKaHFY07okOGDOdCjtNz/9DIzcajIH
+         tYz7u0j4NoFIncrNUumckrrLKO+Pjn9TqLigAv/u+KpqqYrc19FWWVCtq22GToN+Pb
+         Y4cG8n6yuGik7UO0S2TKpW6kRS0Mn538qhzGuI4PPfizyz1NNNIz2YVxrHblKrELbo
+         wJl/bGuodTO/oR7uTMrMS8hcSi6TKPoiu6WQ6MF0gVpZrAqLTZyBifLsCxxHhErOoz
+         E4YtchTIzlm8kGDRBm+ga2HckD8C77GN8zHCOQMcrIv44N41MM9Z9CmbwxOyCnT8G9
+         WRxu5mvH2O7Wg==
+Received: (nullmailer pid 3140478 invoked by uid 1000);
+        Wed, 04 Oct 2023 15:07:55 -0000
+Date:   Wed, 4 Oct 2023 10:07:55 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pwm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: pwm: Add T-HEAD PWM controller
+Message-ID: <169643207539.3140422.9692233405638400871.robh@kernel.org>
+References: <20231004092731.1362-1-jszhang@kernel.org>
+ <20231004092731.1362-2-jszhang@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231004092731.1362-2-jszhang@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023, Julian Stecklina wrote:
-> Most code gives a pointer to an uninitialized unsigned long as dest in
-> emulate_pop. len is usually the word width of the guest.
-> 
-> If the guest runs in 16-bit or 32-bit modes, len will not cover the
-> whole unsigned long and we end up with uninitialized data in dest.
-> 
-> Looking through the callers of this function, the issue seems
-> harmless, but given that none of this is performance critical, there
-> should be no issue with just always initializing the whole value.
-> 
-> Fix this by explicitly requiring a unsigned long pointer and
-> initializing it with zero in all cases.
 
-NAK, this will break em_leave() as it will zero RBP regardless of how many bytes
-are actually supposed to be written.  Specifically, KVM would incorrectly clobber
-RBP[31:16] if LEAVE is executed with a 16-bit stack.
-
-I generally like defense-in-depth approaches, but zeroing data that the caller
-did not ask to be written is not a net positive.
-
-> Signed-off-by: Julian Stecklina <julian.stecklina@cyberus-technology.de>
+On Wed, 04 Oct 2023 17:27:30 +0800, Jisheng Zhang wrote:
+> T-HEAD SoCs such as the TH1520 contain a PWM controller used
+> to control the LCD backlight, fan and so on.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 > ---
->  arch/x86/kvm/emulate.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
+>  .../bindings/pwm/thead,th1520-pwm.yaml        | 44 +++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/thead,th1520-pwm.yaml
 > 
-> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> index 2673cd5c46cb..fc4a365a309f 100644
-> --- a/arch/x86/kvm/emulate.c
-> +++ b/arch/x86/kvm/emulate.c
-> @@ -1838,18 +1838,24 @@ static int em_push(struct x86_emulate_ctxt *ctxt)
->  }
->  
->  static int emulate_pop(struct x86_emulate_ctxt *ctxt,
-> -		       void *dest, int len)
-> +		       unsigned long *dest, u8 op_bytes)
->  {
->  	int rc;
->  	struct segmented_address addr;
->  
-> +	/*
-> +	 * segmented_read below will only partially initialize dest when
-> +	 * we are not in 64-bit mode.
-> +	 */
-> +	*dest = 0;
-> +
->  	addr.ea = reg_read(ctxt, VCPU_REGS_RSP) & stack_mask(ctxt);
->  	addr.seg = VCPU_SREG_SS;
-> -	rc = segmented_read(ctxt, addr, dest, len);
-> +	rc = segmented_read(ctxt, addr, dest, op_bytes);
->  	if (rc != X86EMUL_CONTINUE)
->  		return rc;
->  
-> -	rsp_increment(ctxt, len);
-> +	rsp_increment(ctxt, op_bytes);
->  	return rc;
->  }
->  
-> @@ -1999,7 +2005,7 @@ static int em_popa(struct x86_emulate_ctxt *ctxt)
->  {
->  	int rc = X86EMUL_CONTINUE;
->  	int reg = VCPU_REGS_RDI;
-> -	u32 val;
-> +	unsigned long val;
->  
->  	while (reg >= VCPU_REGS_RAX) {
->  		if (reg == VCPU_REGS_RSP) {
-> -- 
-> 2.40.1
-> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
