@@ -2,153 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 511747B7880
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8F37B7886
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241372AbjJDHQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40620 "EHLO
+        id S241493AbjJDHTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjJDHQr (ORCPT
+        with ESMTP id S229577AbjJDHTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:16:47 -0400
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8E5AB
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 00:16:43 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:7e5d:5300::2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id DAF71DD9;
-        Wed,  4 Oct 2023 00:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1696403803;
-        bh=yFCKItcXGPE1Q+oFb43qALwVs7ooi/Pj1fioqFcF6gw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hadfSUMfsGJ2vkIP/x8ARWUdzgF/1O22W2p3kl7aFETYKCgQYjqWYD8dd+u5IMAAb
-         QwIJfiO2YOrAUYq9LkkngRKjaINpWN+x9ECkRf7URPtuomY/zTeiNAxm2O2wvooZcE
-         b7E7qQkbbCzfQW+29dD3HVZmiKypiBPXXo7HwIbY=
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Andrew Jeffery <andrew@codeconstruct.com.au>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Joel Stanley <joel@jms.id.au>, linux-aspeed@lists.ozlabs.org
-Cc:     Zev Weiss <zev@bewilderbeest.net>, openbmc@lists.ozlabs.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] pinctrl: aspeed: Allow changing hardware strap defaults
-Date:   Wed,  4 Oct 2023 00:16:06 -0700
-Message-ID: <20231004071605.21323-2-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.42.0
+        Wed, 4 Oct 2023 03:19:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA97CAB;
+        Wed,  4 Oct 2023 00:18:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFAF7C433C8;
+        Wed,  4 Oct 2023 07:18:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696403938;
+        bh=8bZfjHBVUvb/Wl7uG7Uwj/fc/hoDrcF4sN+aBtnDong=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XntmGuuWL5fmFoR3Lrr0s/mXf5L03xYPMppcKrdCaYlP/4jGzQBIuU8DhUUSvOAq7
+         7yAlVTTSaI0jO9lzQtX2rTKGhyIbMNvZ/16ZGPGfKVcpGC97FWLxWjkZhEtUk7pgdm
+         3L72+ewaSKd9cdYg7KPnPGtAlhTc4G+HFEgw5EA1ITKbo8L4NxidwxcHTp+jgtwtrD
+         jCIT9l3ZJdnNV68BfC75eD8vIFnShetOZTIeAbGw2+hUXuv2OS+CM7e82tRoovNGMP
+         OqXRaKbwZbj3HeVBML19fnq5pUIXKqoiiUfaPqgO8HJZ+8tkeWlP88B6G2sLUDJeMJ
+         3KGJGHdQsXJuQ==
+Date:   Wed, 4 Oct 2023 12:48:54 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Frank Li <frank.li@nxp.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [EXT] Re: linux-next: build failure after merge of the dmaengine
+ tree
+Message-ID: <ZR0R3rM1G0nOL3jM@matsya>
+References: <20230929131324.6bb84292@canb.auug.org.au>
+ <ZRrrToewRnOYGOD3@matsya>
+ <AM6PR04MB48382B21C39B68B933E9A38B88C5A@AM6PR04MB4838.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM6PR04MB48382B21C39B68B933E9A38B88C5A@AM6PR04MB4838.eurprd04.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously we've generally assumed that the defaults in the hardware
-strapping register are in fact appropriate for the system and thus
-have avoided making any changes to its contents (with the exception of
-the bits controlling the GPIO passthrough feature).
+Hello Frank,
 
-Unfortunately, on some platforms corrections from software are
-required as the hardware strapping is simply incorrect for the system
-(such as the SPI1 interface being configured for passthrough mode when
-master mode is in fact the only useful configuration for it).  We thus
-remove the checks preventing changes to the strap register so that the
-pinctrl subsystem can be used for such corrections.
+On 02-10-23, 16:26, Frank Li wrote:
+> > On 29-09-23, 13:13, Stephen Rothwell wrote:
+> > > Hi all,
+> > >
+> > > After merging the dmaengine tree, today's linux-next build (powerpc
+> > > ppc64_defconfig) failed like this:
+> > >
+> > > ld: warning: discarding dynamic section .glink
+> > > ld: warning: discarding dynamic section .plt
+> > > ld: linkage table error against `ioread64'
+> > > ld: stubs don't match calculated size
+> > > ld: can not build stubs: bad value
+> > > ld: fs/debugfs/file.o: in function `debugfs_print_regs':
+> > > file.c:(.text+0xee8): undefined reference to `ioread64be'
+> > > ld: file.c:(.text+0xf50): undefined reference to `ioread64'
+> > >
+> > > Caused by commit
+> > >
+> > >   09289d0ad122 ("debugfs_create_regset32() support 8/16/64 bit width
+> > registers")
+> > >
+> > > I have used the dmaengine tree from next-20230928 for today.
+> > 
+> > Thanks for report, I have dropped offending commits for now.
+> 
+> Fixed patch already post at
+> https://lore.kernel.org/dmaengine/20231002145737.538934-1-Frank.Li@nxp.com/T/#u
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
----
- drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c | 21 ---------------------
- drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c | 21 ---------------------
- drivers/pinctrl/aspeed/pinmux-aspeed.h     |  3 ---
- 3 files changed, 45 deletions(-)
+I am not sure of this fix, someone has to pick this. let this get fixed
+first and we can always pick back these patches.
 
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
-index bfed0e274643..7ecfe3e4280e 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
-@@ -2556,27 +2556,6 @@ static int aspeed_g4_sig_expr_set(struct aspeed_pinmux_data *ctx,
- 		if (!ctx->maps[desc->ip])
- 			return -ENODEV;
- 
--		/*
--		 * Strap registers are configured in hardware or by early-boot
--		 * firmware. Treat them as read-only despite that we can write
--		 * them. This may mean that certain functions cannot be
--		 * deconfigured and is the reason we re-evaluate after writing
--		 * all descriptor bits.
--		 *
--		 * Port D and port E GPIO loopback modes are the only exception
--		 * as those are commonly used with front-panel buttons to allow
--		 * normal operation of the host when the BMC is powered off or
--		 * fails to boot. Once the BMC has booted, the loopback mode
--		 * must be disabled for the BMC to control host power-on and
--		 * reset.
--		 */
--		if (desc->ip == ASPEED_IP_SCU && desc->reg == HW_STRAP1 &&
--		    !(desc->mask & (BIT(21) | BIT(22))))
--			continue;
--
--		if (desc->ip == ASPEED_IP_SCU && desc->reg == HW_STRAP2)
--			continue;
--
- 		ret = regmap_update_bits(ctx->maps[desc->ip], desc->reg,
- 					 desc->mask, val);
- 
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
-index 4c0d26606b6c..3e57e76c2eb7 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
-@@ -2735,27 +2735,6 @@ static int aspeed_g5_sig_expr_set(struct aspeed_pinmux_data *ctx,
- 			return PTR_ERR(map);
- 		}
- 
--		/*
--		 * Strap registers are configured in hardware or by early-boot
--		 * firmware. Treat them as read-only despite that we can write
--		 * them. This may mean that certain functions cannot be
--		 * deconfigured and is the reason we re-evaluate after writing
--		 * all descriptor bits.
--		 *
--		 * Port D and port E GPIO loopback modes are the only exception
--		 * as those are commonly used with front-panel buttons to allow
--		 * normal operation of the host when the BMC is powered off or
--		 * fails to boot. Once the BMC has booted, the loopback mode
--		 * must be disabled for the BMC to control host power-on and
--		 * reset.
--		 */
--		if (desc->ip == ASPEED_IP_SCU && desc->reg == HW_STRAP1 &&
--		    !(desc->mask & (BIT(21) | BIT(22))))
--			continue;
--
--		if (desc->ip == ASPEED_IP_SCU && desc->reg == HW_STRAP2)
--			continue;
--
- 		/* On AST2500, Set bits in SCU70 are cleared from SCU7C */
- 		if (desc->ip == ASPEED_IP_SCU && desc->reg == HW_STRAP1) {
- 			u32 value = ~val & desc->mask;
-diff --git a/drivers/pinctrl/aspeed/pinmux-aspeed.h b/drivers/pinctrl/aspeed/pinmux-aspeed.h
-index aaa78a613196..e9068acd5879 100644
---- a/drivers/pinctrl/aspeed/pinmux-aspeed.h
-+++ b/drivers/pinctrl/aspeed/pinmux-aspeed.h
-@@ -16,9 +16,6 @@
-  * bits. Some difficulty arises as the pin's function bit masks for each
-  * priority level are frequently not the same (i.e. cannot just flip a bit to
-  * change from a high to low priority signal), or even in the same register.
-- * Further, not all signals can be unmuxed, as some expressions depend on
-- * values in the hardware strapping register (which may be treated as
-- * read-only).
-  *
-  * SoC Multi-function Pin Expression Examples
-  * ------------------------------------------
+My tree was broken meanwhile impacting others, so it was better to drop
+for now.
+
+Thanks for you understanding
+
 -- 
-2.42.0
-
+~Vinod
