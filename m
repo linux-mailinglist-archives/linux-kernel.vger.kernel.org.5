@@ -2,49 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8701B7B79D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F247B79E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241577AbjJDIOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58982 "EHLO
+        id S241575AbjJDISL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJDIOG (ORCPT
+        with ESMTP id S229712AbjJDISK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:14:06 -0400
+        Wed, 4 Oct 2023 04:18:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F718A6;
-        Wed,  4 Oct 2023 01:14:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CD46C433C7;
-        Wed,  4 Oct 2023 08:13:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21619A6;
+        Wed,  4 Oct 2023 01:18:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8864C433C7;
+        Wed,  4 Oct 2023 08:18:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696407242;
-        bh=UPqOSLYhH7npzWNNSeA82XKeFXdrUVJstVbJYeo2EaA=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=uYuHGwrE5OxB82TgQSr5LMX4noPjfoLvkxmKL8OrfQkG+7N5uXHIZtAhHMPnlbV5B
-         Fx0MgdGd1Vj94JYaFk7zvtk0c1Z7S/N9Zokz0DEqxn7v0LexXaZvSkGZXqOsq0zUOg
-         GvBJTpTYyfoOcD6aj1gt2ECThArU3Au5y9TcxJ2tyOgO8Drw9QgZqg3crNTAdWEE28
-         eqLYE0WyskczES/GsoIPjPknXtBIQgoxM9dcv8kNzTxYAHNen7iSjwFykpgf2z3GWU
-         c1npePM7PD+txXmFftPA0e3vXTMa05KfkXpt3Ib31Ys2cwOqSNWlmI4xPDQKmkel7n
-         RuTIGY+SvY8Ow==
-Message-ID: <959363c6-9ecb-4e5f-960d-65dd23b74ce2@kernel.org>
-Date:   Wed, 4 Oct 2023 10:13:52 +0200
+        s=k20201202; t=1696407486;
+        bh=vQFPg6PA6WrMnXAY1PY7xlQzGKPRe88hSEWvcIqGGLE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=h+1ABKoh9sVQArHfErOER+r1zQroHl5optg7U+U/veYLL913BqEdKUPuk1K98ULmR
+         Y3OWeV2g3kCfwrdFXzZ/i6zruJLfc2H7S3Q4m8oC7pqym5Ot3sqhI96P5ICGsq/HDv
+         jYHBof86l57qaLWNPDia4Ub2MbOpPsZjZQPO4367US1/ArMRr4OXmEZBFZOq5Yr/pT
+         NXxZjiOOfHekOeVXT6H5OCR+hF8nI64rYI1IwoiMA/3I1bfjvfiVN/kPJCUJQvXGFA
+         r5w9+1otsSGFZMK+bnvFA3kVK9fgGwJKG9It+VQ4coRED44w7iYkQ4CK7mQzng9Y3O
+         ZOyWiUYxdH4iw==
+Message-ID: <76d1e643-9b81-4c23-8f46-73fe59913600@kernel.org>
+Date:   Wed, 4 Oct 2023 10:18:01 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/6] phy: qcom: Introduce PCIe UNIPHY 28LP driver
+Subject: Re: [PATCH v1 1/1] pinctrl: denverton: Enable platform device in the
+ absence of ACPI enumeration
 Content-Language: en-US
-To:     Nitheesh Sekar <quic_nsekar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org,
-        mani@kernel.org, p.zabel@pengutronix.de, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, quic_ipkumar@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org
-References: <20231003120846.28626-1-quic_nsekar@quicinc.com>
- <20231003120846.28626-4-quic_nsekar@quicinc.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Takashi Iwai <tiwai@suse.com>
+References: <20230926190818.931951-1-andriy.shevchenko@linux.intel.com>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -89,7 +85,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231003120846.28626-4-quic_nsekar@quicinc.com>
+In-Reply-To: <20230926190818.931951-1-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -102,82 +98,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 14:08, Nitheesh Sekar wrote:
-> Add Qualcomm PCIe UNIPHY 28LP driver support present
-> in Qualcomm IPQ5018 SoC and the phy init sequence.
+On 26/09/2023 21:08, Andy Shevchenko wrote:
+> This is to cater the need for non-ACPI system whereby
+> a platform device has to be created in order to bind
+> with the Denverton pinctrl platform driver.
 > 
-> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
-
-...
-
-> +static int qcom_uniphy_pcie_probe(struct platform_device *pdev)
-> +{
-> +	struct qcom_uniphy_pcie *phy;
-> +	int ret;
-> +	struct phy *generic_phy;
-> +	struct phy_provider *phy_provider;
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *np = of_node_get(dev->of_node);
-> +
-> +	phy = devm_kzalloc(&pdev->dev, sizeof(*phy), GFP_KERNEL);
-> +	if (!phy)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, phy);
-> +	phy->dev = &pdev->dev;
-> +
-> +	phy->data = of_device_get_match_data(dev);
-> +	if (!phy->data)
-> +		return -EINVAL;
-> +
-> +	ret = qcom_uniphy_pcie_get_resources(pdev, phy);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "failed to get resources: %d\n", ret);
-> +		return ret;
-
-Syntax is:
-return dev_err_probe()
-
-
-> +	}
-> +
-> +	ret = phy_pipe_clk_register(phy, np);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "failed to register phy pipe clk\n");
-> +
-> +	generic_phy = devm_phy_create(phy->dev, NULL, &pcie_ops);
-> +	if (IS_ERR(generic_phy))
-> +		return PTR_ERR(generic_phy);
-> +
-> +	phy_set_drvdata(generic_phy, phy);
-> +	phy_provider = devm_of_phy_provider_register(phy->dev,
-> +						     of_phy_simple_xlate);
-> +	if (IS_ERR(phy_provider))
-> +		return PTR_ERR(phy_provider);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver qcom_uniphy_pcie_driver = {
-> +	.probe		= qcom_uniphy_pcie_probe,
-> +	.driver		= {
-> +		.name	= "qcom-uniphy-pcie",
-> +		.owner	= THIS_MODULE,
-
-Run coccinelle/coccicheck.
-
-> +		.of_match_table = qcom_uniphy_pcie_id_table,
-> +	},
+>  drivers/pinctrl/intel/pinctrl-denverton.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/pinctrl/intel/pinctrl-denverton.c b/drivers/pinctrl/intel/pinctrl-denverton.c
+> index 0c4694cfa594..a1a7242e0451 100644
+> --- a/drivers/pinctrl/intel/pinctrl-denverton.c
+> +++ b/drivers/pinctrl/intel/pinctrl-denverton.c
+> @@ -257,6 +257,11 @@ static const struct acpi_device_id dnv_pinctrl_acpi_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(acpi, dnv_pinctrl_acpi_match);
+>  
+> +static const struct platform_device_id dnv_pinctrl_platform_ids[] = {
+> +	{ "denverton-pinctrl", (kernel_ulong_t)&dnv_soc_data },
+> +	{ }
 > +};
 > +
-> +module_platform_driver(qcom_uniphy_pcie_driver);
-> +
-> +MODULE_ALIAS("platform:qcom-uniphy-pcie");
+>  static struct platform_driver dnv_pinctrl_driver = {
+>  	.probe = intel_pinctrl_probe_by_hid,
+>  	.driver = {
+> @@ -264,6 +269,7 @@ static struct platform_driver dnv_pinctrl_driver = {
+>  		.acpi_match_table = dnv_pinctrl_acpi_match,
+>  		.pm = &dnv_pinctrl_pm_ops,
+>  	},
+> +	.id_table = dnv_pinctrl_platform_ids,
+>  };
+>  
+>  static int __init dnv_pinctrl_init(void)
+> @@ -281,4 +287,5 @@ module_exit(dnv_pinctrl_exit);
+>  MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
+>  MODULE_DESCRIPTION("Intel Denverton SoC pinctrl/GPIO driver");
+>  MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("platform:denverton-pinctrl");
 
-You should not need MODULE_ALIAS() in normal cases. If you need it,
-usually it means your device ID table is wrong.
-
+Why do you need the alias? It's the same as ID table. You most likely
+miss MODULE_DEVICE_TABLE() or your table is just wrong.
 
 Best regards,
 Krzysztof
