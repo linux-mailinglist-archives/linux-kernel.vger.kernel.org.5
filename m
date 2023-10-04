@@ -2,121 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 382C07B7C34
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05A87B7C3A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242004AbjJDJfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
+        id S242024AbjJDJgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232951AbjJDJfo (ORCPT
+        with ESMTP id S242006AbjJDJgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:35:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5379DAF;
-        Wed,  4 Oct 2023 02:35:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CD13C433C7;
-        Wed,  4 Oct 2023 09:35:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696412139;
-        bh=1R9YOdaJktjKuIY0sIzrtibQpIhkJLVi71eZB9MeRoQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kriT3b7GrQIO2kqlaSBdwUndtbVFlihm8jcYQZ4ZxHHDbCH6zPwJsQ4yam0Zgj4bo
-         R1XxoBoawvue2kagsNOIwWrobqkfj7VCsaRqXmZR+LaMV0RTqqtAEt67HS4XVMUsQF
-         um0z42AgZgxrAeEHdQ/JNmrmy4fQ+ICBBpyH4KIlkB+nHwElLhhW/9RFLKamlZX4So
-         lZMEZC+iEZqszL6yaejOw6AbtB4dhCT8F1wJtTy8fLhwKqAy0tCSPMP8gRrE1EPeuF
-         DAf1wFGFUhVgbXiOmToF5Xqc25t5C7libtA6t1sAvRy2tYkIJgmtdNOJVNYUjsULUT
-         /U+hBYGHehYDw==
-Date:   Wed, 4 Oct 2023 11:35:36 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Yong He <zhuangel570@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/5] srcu fixes
-Message-ID: <ZR0x6NK03A5F1yNW@lothringen>
-References: <20231003232903.7109-1-frederic@kernel.org>
- <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
- <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
+        Wed, 4 Oct 2023 05:36:09 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBABB4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:36:05 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qnyIR-0008EB-Mz; Wed, 04 Oct 2023 11:35:59 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qnyIR-00AztC-AH; Wed, 04 Oct 2023 11:35:59 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qnyIR-008tcd-0w; Wed, 04 Oct 2023 11:35:59 +0200
+Date:   Wed, 4 Oct 2023 11:35:58 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Young <sean@mess.org>
+Cc:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 2/2] media: pwm-ir-tx: trigger edges from hrtimer
+ interrupt context
+Message-ID: <20231004093558.bt7gf3m6erxxpaie@pengutronix.de>
+References: <cover.1696156485.git.sean@mess.org>
+ <7efe4229514001b835fa70d51973cd3306dc0b04.1696156485.git.sean@mess.org>
+ <5982681d-4fb5-0271-fdc5-712d6c8512e3@gmail.com>
+ <ZRp9RE2jOZdL0+1/@gofer.mess.org>
+ <7075cfd7-847e-8d28-72be-93761b36b0e0@gmail.com>
+ <ZR0Xue8Mu8VZIxm5@gofer.mess.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pe6ujpvp227ivopk"
 Content-Disposition: inline
-In-Reply-To: <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZR0Xue8Mu8VZIxm5@gofer.mess.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 08:21:42PM -0700, Paul E. McKenney wrote:
-> On Tue, Oct 03, 2023 at 05:35:31PM -0700, Paul E. McKenney wrote:
-> > On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
-> > > Hi,
-> > > 
-> > > This contains a fix for "SRCU: kworker hung in synchronize_srcu":
-> > > 
-> > > 	http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
-> > > 
-> > > And a few cleanups.
-> > > 
-> > > Passed 50 hours of SRCU-P and SRCU-N.
-> > > 
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> > > 	srcu/fixes
-> > > 
-> > > HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
-> > > 
-> > > Thanks,
-> > > 	Frederic
-> > 
-> > Very good, and a big "Thank You!!!" to all of you!
-> > 
-> > I queued this series for testing purposes, and have started a bunch of
-> > SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
-> > SRCU-N on another system, but with both scenarios resized to 40 CPU each.
-> > 
-> > While that is in flight, a few questions:
-> > 
-> > o	Please check the Co-developed-by rules.  Last I knew, it was
-> > 	necessary to have a Signed-off-by after each Co-developed-by.
-> > 
-> > o	Is it possible to get a Tested-by from the original reporter?
-> > 	Or is this not reproducible?
-> > 
-> > o	Is it possible to convince rcutorture to find this sort of
-> > 	bug?  Seems like it should be, but easy to say...
-> 
-> And one other thing...
-> 
-> o	What other bugs like this one are hiding elsewhere
-> 	in RCU?
 
-Hmm, yesterday I thought RCU would be fine because it has a tick polling
-on callbacks anyway. But I'm not so sure, I'll check for real...
+--pe6ujpvp227ivopk
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+Hello,
 
-> 
-> > o	Frederic, would you like to include this in your upcoming
-> > 	pull request?  Or does it need more time?
-> 
-> 						Thanx, Paul
-> 
-> > > ---
-> > > 
-> > > Frederic Weisbecker (5):
-> > >       srcu: Fix callbacks acceleration mishandling
-> > >       srcu: Only accelerate on enqueue time
-> > >       srcu: Remove superfluous callbacks advancing from srcu_start_gp()
-> > >       srcu: No need to advance/accelerate if no callback enqueued
-> > >       srcu: Explain why callbacks invocations can't run concurrently
-> > > 
-> > > 
-> > >  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++---------------
-> > >  1 file changed, 39 insertions(+), 16 deletions(-)
+On Wed, Oct 04, 2023 at 08:43:53AM +0100, Sean Young wrote:
+> On Mon, Oct 02, 2023 at 12:52:00PM +0300, Ivaylo Dimitrov wrote:
+> > On 2.10.23 =D0=B3. 11:20 =D1=87., Sean Young wrote:
+> > > Requires a copy of pwm_state in pwm_ir, not a huge difference (copy o=
+f 28
+> > > bytes vs keeping it around).
+> >=20
+> > see my previous comment re struct var. Also, look at the overhead:
+> > https://elixir.bootlin.com/linux/v6.6-rc3/source/include/linux/pwm.h#L3=
+49 -
+> > you call pwm_get_state() for every edge.
+>=20
+> That's the 28 bytes copy I was talking about.
+
+Note that pwm_get_state() also has (IMHO) confusing semantics. It gives
+you (most of the time) the state that was last pwm_state_apply()d and
+not the state the hardware is currently in. In my book keeping the
+pwm_state around is the nicer approach that often is also simpler ...
+
+> However keeping a pointer in struct pwm_ir is a good compromise and makes
+> the rest of the code cleaner.
+
+=2E.. which seems to apply here, too.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--pe6ujpvp227ivopk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUdMf4ACgkQj4D7WH0S
+/k4a8ggAg6OI8IGWfsLy664bxwFXr17DZ7mff8aWmCNyTuzenyyn1ztaclxH9LDA
+90+B2fbt/XxWJzt5pX+OU6wcGDMMmsVQdv87X4ACZBkhQ0k89TJ40SbVNFXoDLUa
+BTjQsYPqOxYUIS7AsGh2NRW1gIwL0ITcVdeaw/jZSc5gtYM/hc8HYzvPsL7V8Rom
+IGRNU0saEMLKiIcXObvQMAoLG4S6YPE0GKiOQZee2BQiEtF0uvfhHRSDcaEybMIg
+uyWqbJqS2i0dW6xsG+sp9ySpxPd9osh5LYhwxa9Xr/a0JPx+fjzTBt8RAefz1qWA
+KyU5n3RpaHKDe3p7eXq8U9HhzEm66A==
+=/8+M
+-----END PGP SIGNATURE-----
+
+--pe6ujpvp227ivopk--
