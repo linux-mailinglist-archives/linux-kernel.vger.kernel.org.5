@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3467B82CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575D97B82CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbjJDOz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
+        id S243016AbjJDO4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242977AbjJDOz5 (ORCPT
+        with ESMTP id S243013AbjJDO4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:55:57 -0400
+        Wed, 4 Oct 2023 10:56:00 -0400
 Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29532BF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:55:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E969DCE
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:55:56 -0700 (PDT)
 From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     Maarten Lankhorst <dev@lankhorst.se>,
@@ -29,13 +29,15 @@ Cc:     Maarten Lankhorst <dev@lankhorst.se>,
         Kai Vehmanen <kai.vehmanen@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
         Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: [PATCH v6 00/12] sound: Use -EPROBE_DEFER instead of i915 module loading.
-Date:   Wed,  4 Oct 2023 16:55:28 +0200
-Message-Id: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v6 01/12] ASoC: SOF: core: Ensure sof_ops_free() is still called when probe never ran.
+Date:   Wed,  4 Oct 2023 16:55:29 +0200
+Message-Id: <20231004145540.32321-2-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
+References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -46,71 +48,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maarten Lankhorst <dev@lankhorst.se>
+In an effort to not call sof_ops_free twice, we stopped running it when
+probe was aborted.
 
-Explicitly loading i915 becomes a problem when upstreaming the new intel driver
-for Tiger Lake and higher graphics (xe). By loading i915, it doesn't wait for
-driver load of xe, and will fail completely before it loads.
+Check the result of cancel_work_sync to see if this was the case.
 
--EPROBE_DEFER has to be returned before any device is created in probe(),
-otherwise the removal of the device will cause EPROBE_DEFER to try again
-in an infinite loop.
-
-The conversion is done in gradual steps. First I add an argument to
-snd_hdac_i915_init to allow for -EPROBE_DEFER so I can convert each driver
-separately. Then I convert each driver to move snd_hdac_i915_init out of the
-workqueue. Finally I drop the ability to choose modprobe behavior after the
-last user is converted.
-
-Compared to previous version, I added a fix for sof_ops_free() missing call,
-renamed probe_no_wq and remove_no_wq to probe_early/probe_late, and fixed
-the resulting fallout.
-
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Fixes: 31bb7bd9ffee ("ASoC: SOF: core: Only call sof_ops_free() on remove if the probe was successful")
 Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
-Cc: sound-open-firmware@alsa-project.org
+Acked-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sof/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Maarten Lankhorst (10):
-  ASoC: SOF: core: Ensure sof_ops_free() is still called when probe
-    never ran.
-  ALSA: hda: Intel: Fix error handling in azx_probe()
-  ALSA: hda: i915: Allow override of gpu binding.
-  ALSA: hda: i915: Add an allow_modprobe argument to snd_hdac_i915_init
-  ALSA: hda: i915: Allow xe as match for i915_component_master_match
-  ASoC: Intel: avs: Move snd_hdac_i915_init to before probe_work.
-  ALSA: hda: Intel: Move snd_hdac_i915_init to before probe_work.
-  ASoC: Intel: Skylake: Move snd_hdac_i915_init to before probe_work.
-  ASoC: SOF: Intel: Move binding to display driver outside of deferred
-    probe
-  ALSA: hda: i915: Remove extra argument from snd_hdac_i915_init
-
-Pierre-Louis Bossart (2):
-  ASoC: SOF: core: Add probe_early and remove_late callbacks
-  ASoC: SOF: Intel: hda: start splitting the probe
-
- sound/hda/hdac_i915.c                | 24 ++++++-----
- sound/pci/hda/hda_intel.c            | 60 ++++++++++++++--------------
- sound/soc/intel/avs/core.c           | 13 ++++--
- sound/soc/intel/skylake/skl.c        | 31 +++++---------
- sound/soc/sof/core.c                 | 17 +++++++-
- sound/soc/sof/intel/hda-common-ops.c |  2 +
- sound/soc/sof/intel/hda.c            | 32 ++++++++-------
- sound/soc/sof/intel/hda.h            |  2 +
- sound/soc/sof/ops.h                  | 16 ++++++++
- sound/soc/sof/sof-priv.h             |  2 +
- 10 files changed, 118 insertions(+), 81 deletions(-)
-
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 2d1616b81485..0938b259f703 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -459,9 +459,10 @@ int snd_sof_device_remove(struct device *dev)
+ 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+ 	struct snd_sof_pdata *pdata = sdev->pdata;
+ 	int ret;
++	bool aborted = false;
+ 
+ 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
+-		cancel_work_sync(&sdev->probe_work);
++		aborted = cancel_work_sync(&sdev->probe_work);
+ 
+ 	/*
+ 	 * Unregister any registered client device first before IPC and debugfs
+@@ -487,6 +488,9 @@ int snd_sof_device_remove(struct device *dev)
+ 		snd_sof_free_debug(sdev);
+ 		snd_sof_remove(sdev);
+ 		sof_ops_free(sdev);
++	} else if (aborted) {
++		/* probe_work never ran */
++		sof_ops_free(sdev);
+ 	}
+ 
+ 	/* release firmware */
 -- 
 2.40.1
 
