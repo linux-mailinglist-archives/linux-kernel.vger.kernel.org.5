@@ -2,120 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A340E7B8360
+	by mail.lfdr.de (Postfix) with ESMTP id 0376A7B835E
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243152AbjJDPQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:16:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
+        id S243125AbjJDPQk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 11:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243116AbjJDPQk (ORCPT
+        with ESMTP id S233648AbjJDPQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:16:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C8D93;
-        Wed,  4 Oct 2023 08:16:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696432597; x=1727968597;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=vH2FpBp/Jh+emhQL+yQf5eMDW7Ker5BK1A4xOIPfb8c=;
-  b=e7RNUZ42PYiIA633DOjjbHCO0xrlys0Dp0wv0AOiis/Lm4mCVou1H7Hh
-   6h9pEQ2HoGAYrXlxFAtOEy5ixN3LQJxdzSIs0gvjEX3PCfFmk8Q2oNawl
-   JdJQOzuqpo7OkGLpsMIs6sRZtaNKYXR0Srx7+iUrq5qXKyw+2cHoRwLqR
-   lYo3hcjB5lUPMW+OGfVqIW/YuCrZhl8P25APNHfz1dCAZHovIj2HIikZP
-   gdiIgpq1326hm2TuyZbp6teJdDf8SxSshGicChpZOyRUCMLsoXFfz0M9f
-   px7/KoIJVLHSup85kQD/dKSg0rKQkEnoAKXot7ZwSrW5djTFV6JGGmE+M
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="383101087"
-X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
-   d="scan'208";a="383101087"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 08:16:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="751336493"
-X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
-   d="scan'208";a="751336493"
-Received: from mfmousa-mobl1.amr.corp.intel.com (HELO [10.212.98.56]) ([10.212.98.56])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 08:16:11 -0700
-Message-ID: <04c5911a-a894-44b3-9f0e-fe9e6de203f2@linux.intel.com>
-Date:   Wed, 4 Oct 2023 11:16:09 -0400
+        Wed, 4 Oct 2023 11:16:34 -0400
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6D893
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:16:31 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5a22eaafd72so27408267b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 08:16:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696432590; x=1697037390;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t7G20iG4+lwdklDLeClOvf8KvH9MnEYm7S2jmZ9HxqQ=;
+        b=Sl7bCAN6yss+XhcjxgTsbmrfG/52P2TlwX9D9gWxNELGvJ55DphduGSLKZU50PcJqa
+         s7VdN+cqIuE1NUI5eLDnjOMyZyseHuucJEueDNT6yOQpmlUabM6jw2CbeBfB6dNVg3z4
+         oPFLztM+N8PQPtza9PZ30XWL4aGl8XiZoKtFT7Zc06lfBRQ5shDIkJPDY3HoGW8QhBUu
+         IHzaJ0Qx+jdJYd2YZ2wWxzjTysa9m3inTJCJBoR9qC0+BPVgnfI85FSJ2fSSmAfbxAfA
+         ZmaAfllJZ/953uYbuBj06j5kxzkpMt4FL+sG2+0TH+p/1i1f1s4808CH9ZCKwoSMV7M6
+         4n7A==
+X-Gm-Message-State: AOJu0YzPPPipiEJrM1fZisoUS/v9eUZEgpY+aJ7u8lzqnoFAu/PxOGRh
+        QkWCKOUk3nGuLDwjffXV2+mBeTCbk5rNqQ==
+X-Google-Smtp-Source: AGHT+IEHTU9z5CN3wrZaIha3wx0MJ1oDSvn5hekAd1d2bMGwILWkyALxuZ0ivWMIertxQKN+0nIIfw==
+X-Received: by 2002:a0d:ca4a:0:b0:58d:70b4:233a with SMTP id m71-20020a0dca4a000000b0058d70b4233amr2841610ywd.37.1696432589132;
+        Wed, 04 Oct 2023 08:16:29 -0700 (PDT)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
+        by smtp.gmail.com with ESMTPSA id j13-20020a81920d000000b0059f61be458esm1198271ywg.82.2023.10.04.08.16.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 08:16:29 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5a22eaafd72so27407947b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 08:16:28 -0700 (PDT)
+X-Received: by 2002:a81:4ed1:0:b0:58f:c452:74da with SMTP id
+ c200-20020a814ed1000000b0058fc45274damr2777522ywb.42.1696432588431; Wed, 04
+ Oct 2023 08:16:28 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soundwire: fix initializing sysfs for same devices on
- different buses
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-References: <20231004130243.493617-1-krzysztof.kozlowski@linaro.org>
- <6628a5f6-ed22-4039-b5c2-2301c05c7e3e@linux.intel.com>
- <2023100453-perfected-palm-3503@gregkh>
- <624b044a-1f0f-4961-8b57-cb5346e7b0d3@linux.intel.com>
- <2023100452-craziness-unpopular-7d97@gregkh>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <2023100452-craziness-unpopular-7d97@gregkh>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <5971770.lOV4Wx5bFT@eto.sf-tec.de>
+In-Reply-To: <5971770.lOV4Wx5bFT@eto.sf-tec.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 4 Oct 2023 17:16:15 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUP_GqT49hMWxz=oSOc8S5PcpYPuvAAOdae4rd1zWV6Ow@mail.gmail.com>
+Message-ID: <CAMuHMdUP_GqT49hMWxz=oSOc8S5PcpYPuvAAOdae4rd1zWV6Ow@mail.gmail.com>
+Subject: Re: [PATCH] m68k: add missing types to asm/irq.h
+To:     Rolf Eike Beer <eike-kernel@sf-tec.de>
+Cc:     Simon Horman <horms@kernel.org>, linux-m68k@lists.linux-m68k.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rolf,
 
->>>>> If same devices with same device IDs are present on different soundwire
->>>>> buses, the probe fails due to conflicting device names and sysfs
->>>>> entries:
->>>>>
->>>>>   sysfs: cannot create duplicate filename '/bus/soundwire/devices/sdw:0:0217:0204:00:0'
->>>>>
->>>>> The link ID is 0 for both devices, so they should be differentiated by
->>>>> bus ID.  Add the bus ID so, the device names and sysfs entries look
->>>>> like:
->>>>
->>>> I am pretty sure this will break Intel platforms by changing the device
->>>> names.
->>>>
->>>> sof_sdw.c:      else if (is_unique_device(adr_link, sdw_version, mfg_id,
->>>> part_id,
->>>> sof_sdw.c:
->>>> "sdw:%01x:%04x:%04x:%02x", link_id,
->>>> sof_sdw.c:
->>>> "sdw:%01x:%04x:%04x:%02x:%01x", link_id,
->>>
->>> device id name changes shouldn't break things, what is requring them to
->>> look a specific way?
->>
->> it's the ASoC dailink creation that relies on strings, we have similar
->> cases for I2C.
->>
->> There's no requirement that the name follows any specific convention,
->> just that when you want to rely on a specific device for an ASoC card
->> you need to use the string that matches its device name.
-> 
-> matching the name is fine (if you are matching it against an existing
-> name) but expecting the name to be anything specific is not going to
-> work as the name is dynamic and can/will change each boot.
+Thanks for your patch!
 
-Not following, sorry.
+On Sun, Sep 17, 2023 at 11:18 AM Rolf Eike Beer <eike-kernel@sf-tec.de> wrote:
+> As reported in f8b648bf6628 ("net: sunhme: move asm includes to below linux
+> includes") when including this <asm/*> header before the needed <linux/*>
+> headers the compilation will fail because of missing types.
 
-In the SoundWire context, the device name directly follows the ACPI or
-Device Tree information, I don't really see how its name could change on
-each boot (assuming no DSDT override or overlays of course). The
-platform descriptors are pretty much fixed, aren't they?
+    arch/m68k/include/asm/irq.h:66:20: warning: ‘struct pt_regs’
+declared inside parameter list will not be visible outside of this
+definition or declaration
+       66 |             struct pt_regs *));
+          |                    ^~~~~~~
+    arch/m68k/include/asm/irq.h:78:11: error: expected ‘;’ before ‘void’
+       78 | asmlinkage void do_IRQ(int irq, struct pt_regs *regs);
+          |           ^~~~~
+          |           ;
+    arch/m68k/include/asm/irq.h:78:40: warning: ‘struct pt_regs’
+declared inside parameter list will not be visible outside of this
+definition or declaration
+       78 | asmlinkage void do_IRQ(int irq, struct pt_regs *regs);
+          |                                        ^~~~~~~
+    arch/m68k/include/asm/irq.h:79:8: error: unknown type name ‘atomic_t’
+       79 | extern atomic_t irq_err_count;
+          |        ^~~~~~~~
 
-Intel and AMD make such assumptions on names for pretty much all machine
-drivers, it's not really something new - probably 15+ years? Adding Mark
-Brown in CC: to make sure he's aware of this thread.
+> Signed-off-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
+
+> --- a/arch/m68k/include/asm/irq.h
+> +++ b/arch/m68k/include/asm/irq.h
+> @@ -2,6 +2,8 @@
+>  #ifndef _M68K_IRQ_H_
+>  #define _M68K_IRQ_H_
+>
+> +#include <linux/types.h>
+
+When just including this file, that still leads to:
+
+    arch/m68k/include/asm/irq.h:82:11: error: expected ‘;’ before ‘void’
+       82 | asmlinkage void do_IRQ(int irq, struct pt_regs *regs);
+          |           ^~~~~
+          |           ;
+
+Instead, you want:
+
+    #include <linux/atomic.h>
+    #include <linux/linkage.h>
+
+> +
+>  /*
+>   * This should be the same as the max(NUM_X_SOURCES) for all the
+>   * different m68k hosts compiled into the kernel.
+> @@ -59,6 +61,7 @@
+>  struct irq_data;
+>  struct irq_chip;
+>  struct irq_desc;
+> +struct pt_regs;
+
+OK
+
+>  extern unsigned int m68k_irq_startup(struct irq_data *data);
+>  extern unsigned int m68k_irq_startup_irq(unsigned int irq);
+>  extern void m68k_irq_shutdown(struct irq_data *data);
+
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v6.7 branch, with the above fixed.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
