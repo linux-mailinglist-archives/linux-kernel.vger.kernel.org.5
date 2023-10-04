@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0902B7B82DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE2D7B82F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243106AbjJDO4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53278 "EHLO
+        id S243167AbjJDO46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243048AbjJDO4Q (ORCPT
+        with ESMTP id S243046AbjJDO4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:56:16 -0400
-Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3335D8
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:56:12 -0700 (PDT)
+        Wed, 4 Oct 2023 10:56:19 -0400
+Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD15101
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:56:14 -0700 (PDT)
 From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     Maarten Lankhorst <dev@lankhorst.se>,
@@ -30,17 +30,14 @@ Cc:     Maarten Lankhorst <dev@lankhorst.se>,
         Mark Brown <broonie@kernel.org>,
         Daniel Baluta <daniel.baluta@nxp.com>,
         linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH v6 10/12] ASoC: Intel: Skylake: Move snd_hdac_i915_init to before probe_work.
-Date:   Wed,  4 Oct 2023 16:55:38 +0200
-Message-Id: <20231004145540.32321-11-maarten.lankhorst@linux.intel.com>
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v6 11/12] ASoC: SOF: Intel: Move binding to display driver outside of deferred probe
+Date:   Wed,  4 Oct 2023 16:55:39 +0200
+Message-Id: <20231004145540.32321-12-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
 References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -52,80 +49,112 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-the snd_hdac_i915_init into a workqueue. It's likely the whole workqueue
-can be destroyed, but I don't have the means to test this.
+the snd_hdac_i915_init into a workqueue.
 
-Removing the workqueue would simplify init even further, but is left
-as exercise for the reviewer.
+Use the -EPROBE_DEFER mechanism instead, which must be returned in the
+probe function.
+
+The previously added probe_early can be used for this,
+and we also use the newly added remove_late for unbinding afterwards.
 
 Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Acked-by: Mark Brown <broonie@kernel.org>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 31 +++++++++----------------------
- 1 file changed, 9 insertions(+), 22 deletions(-)
+ sound/soc/sof/intel/hda-common-ops.c |  1 +
+ sound/soc/sof/intel/hda.c            | 18 ++++++------------
+ sound/soc/sof/intel/hda.h            |  1 +
+ 3 files changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 4f7acb4f6680..24bdbe2a53be 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -783,23 +783,6 @@ static void skl_codec_create(struct hdac_bus *bus)
- 	}
- }
+diff --git a/sound/soc/sof/intel/hda-common-ops.c b/sound/soc/sof/intel/hda-common-ops.c
+index 1cc18fb2b75b..26105d8f1bdc 100644
+--- a/sound/soc/sof/intel/hda-common-ops.c
++++ b/sound/soc/sof/intel/hda-common-ops.c
+@@ -19,6 +19,7 @@ struct snd_sof_dsp_ops sof_hda_common_ops = {
+ 	.probe_early	= hda_dsp_probe_early,
+ 	.probe		= hda_dsp_probe,
+ 	.remove		= hda_dsp_remove,
++	.remove_late	= hda_dsp_remove_late,
  
--static int skl_i915_init(struct hdac_bus *bus)
--{
--	int err;
--
--	/*
--	 * The HDMI codec is in GPU so we need to ensure that it is powered
--	 * up and ready for probe
--	 */
--	err = snd_hdac_i915_init(bus, true);
--	if (err < 0)
--		return err;
--
--	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
--
--	return 0;
--}
--
- static void skl_probe_work(struct work_struct *work)
+ 	/* Register IO uses direct mmio */
+ 
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 86a2571488bc..4eb7f04b8ae1 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -1160,6 +1160,7 @@ int hda_dsp_probe_early(struct snd_sof_dev *sdev)
+ 		return -ENOMEM;
+ 	sdev->pdata->hw_pdata = hdev;
+ 	hdev->desc = chip;
++	ret = hda_init(sdev);
+ 
+ err:
+ 	return ret;
+@@ -1169,7 +1170,6 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
  {
- 	struct skl_dev *skl = container_of(work, struct skl_dev, probe_work);
-@@ -807,11 +790,8 @@ static void skl_probe_work(struct work_struct *work)
- 	struct hdac_ext_link *hlink;
- 	int err;
+ 	struct pci_dev *pci = to_pci_dev(sdev->dev);
+ 	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
+-	struct hdac_bus *bus;
+ 	int ret = 0;
  
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		err = skl_i915_init(bus);
--		if (err < 0)
--			return;
--	}
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+ 	hdev->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
+@@ -1193,12 +1193,6 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 	if (sdev->dspless_mode_selected)
+ 		hdev->no_ipc_position = 1;
  
- 	skl_init_pci(skl);
- 	skl_dum_set(bus);
-@@ -1075,10 +1055,17 @@ static int skl_probe(struct pci_dev *pci,
- 		goto out_dsp_free;
- 	}
+-	/* set up HDA base */
+-	bus = sof_to_bus(sdev);
+-	ret = hda_init(sdev);
+-	if (ret < 0)
+-		goto hdac_bus_unmap;
+-
+ 	if (sdev->dspless_mode_selected)
+ 		goto skip_dsp_setup;
  
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
-+		err = snd_hdac_i915_init(bus, false);
-+		if (err < 0)
-+			goto out_dmic_unregister;
-+	}
- 	schedule_work(&skl->probe_work);
+@@ -1307,8 +1301,6 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 		iounmap(sdev->bar[HDA_DSP_BAR]);
+ hdac_bus_unmap:
+ 	platform_device_unregister(hdev->dmic_dev);
+-	iounmap(bus->remap_addr);
+-	hda_codec_i915_exit(sdev);
+ 
+ 	return ret;
+ }
+@@ -1317,7 +1309,6 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
+ {
+ 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
+ 	const struct sof_intel_dsp_desc *chip = hda->desc;
+-	struct hdac_bus *bus = sof_to_bus(sdev);
+ 	struct pci_dev *pci = to_pci_dev(sdev->dev);
+ 	struct nhlt_acpi_table *nhlt = hda->nhlt;
+ 
+@@ -1368,10 +1359,13 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
+ 	if (!sdev->dspless_mode_selected)
+ 		iounmap(sdev->bar[HDA_DSP_BAR]);
+ 
+-	iounmap(bus->remap_addr);
++	return 0;
++}
+ 
++int hda_dsp_remove_late(struct snd_sof_dev *sdev)
++{
++	iounmap(sof_to_bus(sdev)->remap_addr);
+ 	sof_hda_bus_exit(sdev);
+-
+ 	hda_codec_i915_exit(sdev);
  
  	return 0;
- 
-+out_dmic_unregister:
-+	skl_dmic_device_unregister(skl);
- out_dsp_free:
- 	skl_free_dsp(skl);
- out_clk_free:
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index e13cdc933ca6..8e846684279e 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -576,6 +576,7 @@ struct sof_intel_hda_stream {
+ int hda_dsp_probe_early(struct snd_sof_dev *sdev);
+ int hda_dsp_probe(struct snd_sof_dev *sdev);
+ int hda_dsp_remove(struct snd_sof_dev *sdev);
++int hda_dsp_remove_late(struct snd_sof_dev *sdev);
+ int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask);
+ int hda_dsp_core_run(struct snd_sof_dev *sdev, unsigned int core_mask);
+ int hda_dsp_enable_core(struct snd_sof_dev *sdev, unsigned int core_mask);
 -- 
 2.40.1
 
