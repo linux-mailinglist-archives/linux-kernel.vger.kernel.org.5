@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 882CB7B75C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 02:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6677B75C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 02:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238847AbjJDAVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 20:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58448 "EHLO
+        id S238828AbjJDAXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 20:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238557AbjJDAVO (ORCPT
+        with ESMTP id S238406AbjJDAXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 20:21:14 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38988A7
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 17:21:11 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a22eb73cb3so23503757b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 17:21:11 -0700 (PDT)
+        Tue, 3 Oct 2023 20:23:34 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A2C9B
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 17:23:30 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1dd26c41fc8so255480fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 17:23:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696378870; x=1696983670; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xgPwohGXCtmI6X+8NYz58Cu3MtfPGyJKCVYsJcgu7r0=;
-        b=skz6FcOuiY5MvlXPfa2GeYSxiEPaFAB1bY874odJJtLPDCWj4dYojpOoz8V4014leb
-         6ZkGgJdM0zt18nVMIi1e49HBVb4WbxZap9s/dbwKUH3y7MMQgyZdJSMTe70V41B0MCFK
-         /AqsKl3Ega/WGWdXyZ1kxBjBO3xHEk8WsanhCHIH1GFUJuHj+w+eiGgHacRHVzJ2a6ne
-         87WkCk6oAtigIZycEgoolmcd5tgtGRjMyJpHqH1MEeAP9OYuMgMwfY+fO1lg21HiPGCd
-         vgZt4d0LcW6tqKQmoIzxg+aPf2LZRWmciMF25PRPM6eOmid0gWuPtENQfMk/5nWDI6JJ
-         1ADA==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696379010; x=1696983810; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ez26gy9c2AmSrsb9lxv7cbyOXUyAR+EWcPzvcDK4+/Q=;
+        b=k6Hk7RYRluehQ/L1AGA5Owg/2NyTDLgpuKvzty9uPFr1C9nBE6zs7QoQsgXHVjCrp6
+         Phi9BbG/IVeGs6hPWqJePPk0fEKhhIVpPj+Fq3N2r9nHk28/7vRpTCeoncRVevp3YB80
+         nutPpuDZIt2g/oWmpWnbqDE3P6fsUQ4n0T9WC77v6pAI7e8SUW7BhAjjYV1aBlgsvAjU
+         yKOhWA6gJBL0bLS09jpOAyqVEnr0j+sMhZsOiVHhTT+ixmfzfbgw+pKiILJ/ZQvy+RpJ
+         8l1ZtwmiV7goNTVQ/wiFsBWdaUHKP8W0C+fUwV0PS8v/TogX5TPWlAR1gwfuFHdgR+YS
+         6hlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696378870; x=1696983670;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xgPwohGXCtmI6X+8NYz58Cu3MtfPGyJKCVYsJcgu7r0=;
-        b=hqVbycEbpzfgEctaUK0eXRF3VtmbgYaRahL2kIvyzoUiyhoHKPGWlzGisNIxOO+8g6
-         CZrU/0uKRKr0E34yQvPn3WpSnfmWR5pKb83olQ0FxujKfatdXMLR9oGLLo1X0sGkg/3l
-         VWoNIxpnoeyqjiOtYPirGmvuzDhxX3xnqwFT2Rnyv8b62Mk0KAvT1V68j1GT0jogyizr
-         hDbAhDNtQVz6YJoNzKcgN/8/AylYv8QcYlzaZy0o1+nHt8O8GLa/zXkyNUnvhle1lPIk
-         9AApalyg+kpIrK3Lw48hGOxKEUvtUTCO4uPGXIuUMMGDMjhaLKgNQiSk+vvCmXZphogN
-         dBew==
-X-Gm-Message-State: AOJu0YzRedjTjPNEvphyZsyW1DA61hkMMGZstaIOkHX50MS7grU9MUaD
-        J5+zSXCAyqN2qaj1S7PDzHo8GLXUwtySGA==
-X-Google-Smtp-Source: AGHT+IGZOolNXNZMg3/qqiGOW15TwcOLWHbp980C5EtVlDTVP6T5L3RJV+dtT4EkQyzAFq9Nc35Fb0zOXgDYRQ==
-X-Received: from loggerhead.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:29a])
- (user=jmattson job=sendgmr) by 2002:a81:7609:0:b0:59b:f3a2:cd79 with SMTP id
- r9-20020a817609000000b0059bf3a2cd79mr18329ywc.8.1696378870385; Tue, 03 Oct
- 2023 17:21:10 -0700 (PDT)
-Date:   Tue,  3 Oct 2023 17:20:38 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20231004002038.907778-1-jmattson@google.com>
-Subject: [PATCH] x86: KVM: Add feature flag for AMD's FsGsKernelGsBaseNonSerializing
-From:   Jim Mattson <jmattson@google.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jim Mattson <jmattson@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696379010; x=1696983810;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ez26gy9c2AmSrsb9lxv7cbyOXUyAR+EWcPzvcDK4+/Q=;
+        b=RaeTV//zW9alTRRKl3JG7QA6wqN4V6MK5IKTd4Zalvu+oK0XYWLQaGz5Mfa4UOdemM
+         5lYLZGavcXonMjwLkgKil/bpFaefZO+t3qLd0URGcA/+dHsWUpawLJ6LxVFPK3cFg4Gh
+         IMzSAZx7vHzLV+oNAyc6kWlsY0mqj7O7JIZehdLL5XU2miMu8kUa1DDEPn00oaF0XyLE
+         ecmgx/7X7wCUvspkir8n22lt705gxwtkS0Od/RoHVf65POfEWCIJAi+8W63HPS1Jf6u8
+         XHvJLeWTLrJeDoagG01b4F7uEH95q0rj88s4KKkxhFY+2/h0PIlD4ZkiSrhHUM6+8VuJ
+         rdfg==
+X-Gm-Message-State: AOJu0Yyw7dBqlc70HPW4gr6EPqWAZamZ6/TgQFqWwKZevJqpoNTyvZXU
+        lITBdHys2x0yX10r5SutSp5QXA==
+X-Google-Smtp-Source: AGHT+IEDW1m23bvF/k1OZ9I6cWgVW5H46waJxGasAHFfhJcL1Wwh8860VLpbRJWvqimsjoNJe/QKjw==
+X-Received: by 2002:a05:6358:830d:b0:15e:5391:f1e7 with SMTP id i13-20020a056358830d00b0015e5391f1e7mr522434rwk.3.1696379010016;
+        Tue, 03 Oct 2023 17:23:30 -0700 (PDT)
+Received: from [127.0.0.1] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id z11-20020a6552cb000000b00578afd8e012sm1721966pgp.92.2023.10.03.17.23.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 17:23:29 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>
+In-Reply-To: <20230919-strncpy-drivers-block-null_blk-main-c-v3-1-10cf0a87a2c3@google.com>
+References: <20230919-strncpy-drivers-block-null_blk-main-c-v3-1-10cf0a87a2c3@google.com>
+Subject: Re: [PATCH v3] null_blk: replace strncpy with strscpy
+Message-Id: <169637900876.2061762.14731877442734988774.b4-ty@kernel.dk>
+Date:   Tue, 03 Oct 2023 18:23:28 -0600
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define an X86_FEATURE_* flag for
-CPUID.80000021H:EAX.FsGsKernelGsBaseNonSerializing[bit 1], and
-advertise the feature to userspace via KVM_GET_SUPPORTED_CPUID.
 
-This feature is not yet documented in the APM. See AMD's "Processor
-Programming Reference (PPR) for AMD Family 19h Model 61h, Revision B1
-Processors (56713-B1-PUB)."
+On Tue, 19 Sep 2023 05:30:35 +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> 
+> We should favor a more robust and less ambiguous interface.
+> 
+> We expect that both `nullb->disk_name` and `disk->disk_name` be
+> NUL-terminated:
+> |     snprintf(nullb->disk_name, sizeof(nullb->disk_name),
+> |              "%s", config_item_name(&dev->group.cg_item));
+> ...
+> |       pr_info("disk %s created\n", nullb->disk_name);
+> 
+> [...]
 
-Signed-off-by: Jim Mattson <jmattson@google.com>
----
- arch/x86/include/asm/cpufeatures.h | 1 +
- arch/x86/kvm/cpuid.c               | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+Applied, thanks!
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 58cb9495e40f..b53951c83d1d 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -443,6 +443,7 @@
- 
- /* AMD-defined Extended Feature 2 EAX, CPUID level 0x80000021 (EAX), word 20 */
- #define X86_FEATURE_NO_NESTED_DATA_BP	(20*32+ 0) /* "" No Nested Data Breakpoints */
-+#define X86_FEATURE_BASES_NON_SERIAL	(20*32+ 1) /* "" FSBASE, GSBASE, and KERNELGSBASE are non-serializing */
- #define X86_FEATURE_LFENCE_RDTSC	(20*32+ 2) /* "" LFENCE always serializing / synchronizes RDTSC */
- #define X86_FEATURE_NULL_SEL_CLR_BASE	(20*32+ 6) /* "" Null Selector Clears Base */
- #define X86_FEATURE_AUTOIBRS		(20*32+ 8) /* "" Automatic IBRS */
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 0544e30b4946..5e776e8619be 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -761,7 +761,8 @@ void kvm_set_cpu_caps(void)
- 
- 	kvm_cpu_cap_mask(CPUID_8000_0021_EAX,
- 		F(NO_NESTED_DATA_BP) | F(LFENCE_RDTSC) | 0 /* SmmPgCfgLock */ |
--		F(NULL_SEL_CLR_BASE) | F(AUTOIBRS) | 0 /* PrefetchCtlMsr */
-+		F(NULL_SEL_CLR_BASE) | F(AUTOIBRS) | 0 /* PrefetchCtlMsr */ |
-+		F(BASES_NON_SERIAL)
- 	);
- 
- 	if (cpu_feature_enabled(X86_FEATURE_SRSO_NO))
+[1/1] null_blk: replace strncpy with strscpy
+      commit: e1f2760ba3478fa3f8c48db8e91fbe3df8bea2f8
+
+Best regards,
 -- 
-2.42.0.582.g8ccd20d70d-goog
+Jens Axboe
+
+
 
