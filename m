@@ -2,68 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6557B8183
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B513E7B8184
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242732AbjJDN6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
+        id S242727AbjJDN7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 09:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242722AbjJDN6a (ORCPT
+        with ESMTP id S242720AbjJDN7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:58:30 -0400
+        Wed, 4 Oct 2023 09:59:13 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765DFA1
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:58:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A2DBC433BA;
-        Wed,  4 Oct 2023 13:58:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B07EBD
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:59:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25B68C433C8;
+        Wed,  4 Oct 2023 13:59:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696427907;
-        bh=A2wSvAtglc0Xbc7LGJotQhQdmM583IU5oJ9LjFKKIu4=;
+        s=k20201202; t=1696427949;
+        bh=tR/blQVmBHFjAjxnaR7NyR3h9L36b0Qdfy89nt8BsCM=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XMUoiT4+427ztGhRxk115JYCnj0NYYS5KaPouxlDY2jkbexB3TxuttvTRJ8xJh/RT
-         REuqKr2zlup7x12KVOnxGLThyv0tmPRFlygQGe2NFUh+B9eVAbFC5BRZWdiWXpRcjS
-         tQ4Geoh6wOC47VKnYt2qS+qKd+qlIZlXMnsu8U4BjrsZuri/VFpEG/OEjoY23qpb2V
-         8sJRMFNONtutiz+SNKVHVJIi5oOdncUphCJgUIMIA7+cNwJ05n1QXCEVbyOG/WBY3O
-         o7ir1F2mKTRcqOBHMOrYUJ2Xvp1SvcgutbXAaIUguhkWrmMZHrVsv5f8G1DQEkaaj3
-         eR7jrU9emW33w==
+        b=vCh5yoE+m179CttfO8uiDuD19AQDLgi53fq1HuD0YUlslCPcN8U2tmhzR9uSbfQqX
+         H++WWrBWseurcNBVKUcYnwB719bU3E1nAnjtY0u3DbZrtM72u7HrejB/sfg/5qVV4u
+         0mHreRypMD7ehG9PrtSgt3wgjRcAho6ppTFLsxpLMlgUlSlfoIDSJSQ9X467T3QKIG
+         JFMDP1/G4lFdW8zBffJ2dSII6p/+Hq2kkjKUOc+IykRT2cXxHwI21KhXnflu/zQ8SX
+         uCatHGSbygrrDMNYWZFqg4trdY1PPsYMMIPhDG8pUZdvnhS0RCBB3VyFMpzZzlkDZA
+         MH7yl7+SFi6tA==
 Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.95)
         (envelope-from <maz@kernel.org>)
-        id 1qo2OO-0014oA-Fx;
-        Wed, 04 Oct 2023 14:58:24 +0100
-Date:   Wed, 04 Oct 2023 14:58:22 +0100
-Message-ID: <86h6n6o5fl.wl-maz@kernel.org>
+        id 1qo2Oz-0014pT-K5;
+        Wed, 04 Oct 2023 14:59:01 +0100
+Date:   Wed, 04 Oct 2023 14:59:00 +0100
+Message-ID: <86fs2qo5ej.wl-maz@kernel.org>
 From:   Marc Zyngier <maz@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Kristina Martsenko <kristina.martsenko@arm.com>,
-        kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+To:     Kristina Martsenko <kristina.martsenko@arm.com>
+Cc:     kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        Oliver Upton <oliver.upton@linux.dev>,
         James Morse <james.morse@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
         Vladimir Murzin <vladimir.murzin@arm.com>,
         Colton Lewis <coltonlewis@google.com>,
-        linux-kernel@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>
-Subject: Re: [PATCH v2 1/2] KVM: arm64: Add handler for MOPS exceptions
-In-Reply-To: <ZRwlVgWTqtCRi/jz@arm.com>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] KVM: arm64: Support for Arm v8.8 memcpy instructions in KVM guests
+In-Reply-To: <20230922112508.1774352-1-kristina.martsenko@arm.com>
 References: <20230922112508.1774352-1-kristina.martsenko@arm.com>
-        <20230922112508.1774352-2-kristina.martsenko@arm.com>
-        <87sf734ofv.wl-maz@kernel.org>
-        <9f731870-ed36-d2e4-378b-f7fbf338ebd6@arm.com>
-        <ZRPnpHwiRhrYwfSM@linux.dev>
-        <87h6ndmixh.wl-maz@kernel.org>
-        <0f99fa65-c8c1-5d5c-d9b0-5436b7592656@arm.com>
-        <86ttr9nkey.wl-maz@kernel.org>
-        <ZRwlVgWTqtCRi/jz@arm.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
  FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
  (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: catalin.marinas@arm.com, kristina.martsenko@arm.com, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org, vladimir.murzin@arm.com, coltonlewis@google.com, linux-kernel@vger.kernel.org, oliver.upton@linux.dev
+X-SA-Exim-Rcpt-To: kristina.martsenko@arm.com, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, vladimir.murzin@arm.com, coltonlewis@google.com, linux-kernel@vger.kernel.org
 X-SA-Exim-Mail-From: maz@kernel.org
 X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -76,39 +69,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 03 Oct 2023 15:29:42 +0100,
-Catalin Marinas <catalin.marinas@arm.com> wrote:
+On Fri, 22 Sep 2023 12:25:06 +0100,
+Kristina Martsenko <kristina.martsenko@arm.com> wrote:
 > 
-> The way the architecture works, either with or without Kristina's
-> single-step change, a debugger would get confused. At least for EL0, I
-> find the proposed (well, upstreamed) approach more predictable - it
-> always restarts from the prologue in case of migration between CPUs with
-> different MOPS implementation (which is not just theoretical AFAIK).
-> It's more like these three instructions are a bigger CISC one ;) (though
-> the CPU can step through its parts).
+> Hi,
 > 
-> A more transparent approach would have been to fully emulate the
-> instructions in the kernel and advance the PC as expected but I don't
-> think that's even possible. An implementation may decide to leave some
-> bytes to be copied by the epilogue but we can't know that in software,
-> it's a microarchitecture thing.
+> This is v2 of the series to allow using the new Arm memory copy instructions
+> in KVM guests. See v1 for more information [1].
 > 
-> There is the case of EL1 debugging itself (kgdb) and it triggers a MOPS
-> exception to EL2. It would look weird for the guest but I guess the only
-> other option is to disable MCE2 and let EL1 handle the mismatch MOPS
-> option itself (assuming it knows how to; it should be fine for Linux). I
-> think I still prefer Kristina's proposal for KVM as more generic, with
-> the downside of breaking less usual cases like the kernel
-> single-stepping itself.
+> Changes in v2:
+>  - Dropped HCRX_EL2 vcpu field
+>  - Rebased onto v6.6-rc2
 
-I don't disagree at all.
+FWIW, and despite my misgivings about the architecture:
 
-My issue isn't with Kristina's patches, which are absolutely fine. It
-has more to do with the shape of the FEAT_MOPS extension itself, which
-exposes uarch details to SW instead of abstracting them.
-
-But I've now ranted about it for close to two weeks, and it is time
-for me to move on... ;-)
+Reviewed-by: Marc Zyngier <maz@kernel.org>
 
 	M.
 
