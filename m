@@ -2,166 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F907B8921
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0EC7B895E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244110AbjJDSW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 14:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
+        id S244170AbjJDSZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 14:25:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244117AbjJDSW5 (ORCPT
+        with ESMTP id S244168AbjJDSZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 14:22:57 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18759C9
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 11:22:52 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-49d8fbd307fso75264e0c.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 11:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696443771; x=1697048571; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=93ffs6Ol2kMcPT/3DmQKAdiDLS9hn1pGsiSqatK8OJs=;
-        b=QX8u5bIBIm77lZwle8EKqVte+Um4sgbLiC27cdfDk8Lpq9oZWaskA13unqAFvs+2n/
-         pMrrEj6M5LiUKDuxbitr6hrVii29XJZku55RVANvhaUR94+VEsYOBn0/a1Cu+Pj4i3ui
-         cTLDs1hTe2dwFzzpIW5UvjGM9cF/q5/O6d/hehXXp9xpuQAy5omhNJnwOyxfkDCThGqy
-         360uqpLFbQd2Kaq28pkMjsXgpt74WL5jE5xNJ9UcYjx0ebSKvW/6LmH5MoulLVCuBzXz
-         h4dxjPRKYsFcIYSBDxh2osRZiDJLYojdh7hLEzhEuEPuFdyBJR5UnWbEURcPxfG19eGy
-         VzpA==
+        Wed, 4 Oct 2023 14:25:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A2C98
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 11:24:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696443865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9SOmUjy4ewgil/vdpgmMKA0zu4u1oLN4xpKp5BP8Qhk=;
+        b=Mmc+/XH8AJn3mn7Sz4kbCtOibFQyPy9TUgw/i/fmhZfgubyeXMjxjRKyeNFAOEnBaf6V3+
+        FhbF3m3XzIsreKkzOGnpmXE3WQC9CKi/vsUUrIA/EmHsZlXGrMejLhhAKVDjgGBjt3pM8P
+        v5Db/tDUlVVxZZtDYLXGYswHbChA5Rg=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-336-WeAlo18QOtqYGyCsBPJvQw-1; Wed, 04 Oct 2023 14:24:23 -0400
+X-MC-Unique: WeAlo18QOtqYGyCsBPJvQw-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9b95fa56bd5so11453766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 11:24:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696443771; x=1697048571;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=93ffs6Ol2kMcPT/3DmQKAdiDLS9hn1pGsiSqatK8OJs=;
-        b=O/cWmvsJcR5YW9iBX9VpeciXXb5UiEs8NsbzecAdgtkYYsm8+1QmH1zWb2qV+XJoh4
-         fGezWD0o8VyByf2MJ+84cUyOc4DljEXzYrgIp/fbJhMqr7XgquKHplpZL6Br90arM7LX
-         u3aArIRfqjbN9v/Oqlaq4lLpczeMcPFxgtiULD8WPfCqRkhGL45sdvpqxm2zBPXOuXUt
-         mPlPdGNvqZNUr1pyUjjWGoEx+9CdsgEo3pO7mlndNrHad+SAu9zoEotDjieF76YUflK2
-         9Bahk5dtqX+4uiSFwyiPP9iN3Drsn8nAYJlJPdxrtv8E0btWM95UxFtpTYgep+uAWUzU
-         bhDw==
-X-Gm-Message-State: AOJu0YxiFs8UQqS26O/xSDQVZHABUzTy5feoGZJQgnYGBBEEgfpXWqOb
-        ZndhGvQDpzmGytK1aropPkyetns/wpJRK9gFn23NhQ==
-X-Google-Smtp-Source: AGHT+IH5gfj/VOy9TkmlkSdFeXfKzCyMWsO4ud+J31ASiJwEdF+EsTzjobW7bcCpu3bJnjcZ82GU/waoIOzaJPaa1A0=
-X-Received: by 2002:a1f:ca83:0:b0:495:c464:a2fe with SMTP id
- a125-20020a1fca83000000b00495c464a2femr2877473vkg.2.1696443771162; Wed, 04
- Oct 2023 11:22:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696443862; x=1697048662;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9SOmUjy4ewgil/vdpgmMKA0zu4u1oLN4xpKp5BP8Qhk=;
+        b=n7oGu5wnitoidsnRX9N5fq7iuiPtOvl7ThSFamvL+M7y8jliUY/M5YORVWNiJlQUWT
+         0V+CQyU44B4j11II5anrpPpzaLzURE/L59cHXO09L1yZpMh4LnAGMOF9JPohIMY1XDmM
+         44HKgaEZuRrmY4XA4JrOXywwmDFx1MX9lilYxEOmCAzqKtIY8Y54pUFzRgal5dBHgbLt
+         Ov/sDV33DRXQr3tnYouoM9DuIr7AmuzfabVjUKpijWgNZoVeaP0K6+N7032w0NuWGmoj
+         3fGdZKguq2onL98qaZMGzQSdx4euhpwtj5F2LysUO8L/vFg3YXZsPn6eWjPdP7blXfDs
+         kf8g==
+X-Gm-Message-State: AOJu0YzJn7pvd0H6eQEha6gSd6EXuAIoiheWPUGIhNmijyhtXVEzFOyL
+        XUPcd3mAfAJwjPCBNQUX7UpQpH7t7gRQd6+jKkVbF4CQnUBgglacyOWRlb4k4RQ0/pA1DTGAU2S
+        qRviqoQwAYlv0mfWWDJ3/7lD5
+X-Received: by 2002:a17:907:75f4:b0:9ae:699d:8a2f with SMTP id jz20-20020a17090775f400b009ae699d8a2fmr2872321ejc.2.1696443862638;
+        Wed, 04 Oct 2023 11:24:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHaTGauzrgPDJoqH5o5zYkXK0yLuoPnRy4442MLPXXORZIQSn/BCnR2Wnhe+SJ2XqN1OnbK0g==
+X-Received: by 2002:a17:907:75f4:b0:9ae:699d:8a2f with SMTP id jz20-20020a17090775f400b009ae699d8a2fmr2872308ejc.2.1696443862329;
+        Wed, 04 Oct 2023 11:24:22 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
+        by smtp.gmail.com with ESMTPSA id jw21-20020a17090776b500b009786c8249d6sm3256405ejc.175.2023.10.04.11.24.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 11:24:21 -0700 (PDT)
+Message-ID: <cdb528b1-b53f-bff6-fdf9-260ee4bd897a@redhat.com>
+Date:   Wed, 4 Oct 2023 20:24:20 +0200
 MIME-Version: 1.0
-References: <20230926145943.42814-1-brgl@bgdev.pl> <e6817d30-b443-1a73-efae-84415604b19f@redhat.com>
- <CACMJSetWH=Z5ubHb33W0mYvpqkU7vv=nKNBSa9eLmAi94NyrgA@mail.gmail.com> <29764d46-8d3d-9794-bbde-d7928a91cbb5@redhat.com>
-In-Reply-To: <29764d46-8d3d-9794-bbde-d7928a91cbb5@redhat.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 4 Oct 2023 20:22:39 +0200
-Message-ID: <CAMRc=MfM+2MoeUvqGMJ3hjpg0Y1jHH2FwMTEN3o-JiCugiDXTA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] platform/x86: int3472: don't use gpiod_toggle_active_low()
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Mark Gross <markgross@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate
+ external/evicted objects
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith@gfxstrand.net
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230928191624.13703-1-dakr@redhat.com>
+ <20230928191624.13703-5-dakr@redhat.com>
+ <e4e68970-c7c9-55e2-9483-01252f38c956@linux.intel.com>
+ <6b16ab6f-b1a2-efdb-04bf-5af4c3de381b@linux.intel.com>
+ <6489f31f-8929-3e59-fbef-a22049cccbe3@redhat.com>
+ <36233651a7675ab894134e41fc711fdcc71eefec.camel@linux.intel.com>
+ <74d79ced-e811-bed9-6fb0-db694428c10f@redhat.com>
+ <bbb235037b02336a8c69271d5ff97c69b2e8b597.camel@linux.intel.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <bbb235037b02336a8c69271d5ff97c69b2e8b597.camel@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 6:30=E2=80=AFPM Hans de Goede <hdegoede@redhat.com> =
-wrote:
->
-> Hi Bart,
->
-> On 9/28/23 20:40, Bartosz Golaszewski wrote:
-> > On Thu, 28 Sept 2023 at 14:40, Hans de Goede <hdegoede@redhat.com> wrot=
-e:
-> >>
-> >> Hi All,
-> >>
-> >> Here is a v2 of Bartosz' "don't use gpiod_toggle_active_low()" series.
-> >>
-> >> New in v2:
-> >> - Rework to deal with ACPI path vs gpiod_lookup.key differences:
-> >>   acpi_get_handle(path) -> acpi_fetch_acpi_dev(handle) -> acpi_dev_nam=
-e(adev)
-> >>
-> >> Regards,
-> >>
-> >> Hans
-> >>
-> >>
-> >> Bartosz Golaszewski (2):
-> >>   platform/x86: int3472: Add new
-> >>     skl_int3472_gpiod_get_from_temp_lookup() helper
-> >>   gpio: acpi: remove acpi_get_and_request_gpiod()
-> >>
-> >> Hans de Goede (3):
-> >>   platform/x86: int3472: Add new skl_int3472_fill_gpiod_lookup() helpe=
-r
-> >>   platform/x86: int3472: Stop using gpiod_toggle_active_low()
-> >>   platform/x86: int3472: Switch to devm_get_gpiod()
-> >>
-> >>  drivers/gpio/gpiolib-acpi.c                   |  28 -----
-> >>  .../x86/intel/int3472/clk_and_regulator.c     |  54 ++--------
-> >>  drivers/platform/x86/intel/int3472/common.h   |   7 +-
-> >>  drivers/platform/x86/intel/int3472/discrete.c | 101 ++++++++++++++---=
--
-> >>  drivers/platform/x86/intel/int3472/led.c      |  24 +----
-> >>  include/linux/gpio/consumer.h                 |   8 --
-> >>  6 files changed, 93 insertions(+), 129 deletions(-)
-> >>
-> >> --
-> >> 2.41.0
-> >>
-> >
-> > Thanks Hans, this looks good to me. I'd let it sit on the list for a
-> > week. After that, do you want to take patches 1-4 and provide me with
-> > another tag?
->
-> I have just send out a v3 to address Andy's remark about me
-> somehow resetting the authorship to me on 2 patches from Bartosz.
->
-> While working on this I noticed (and fixed) a bug in:
->
-> [RFT PATCH 1/4] platform/x86: int3472: provide a helper for getting GPIOs=
- from lookups
-> https://lore.kernel.org/all/20230926145943.42814-2-brgl@bgdev.pl/
->
->         struct gpiod_lookup_table *lookup __free(kfree) =3D
->                         kzalloc(struct_size(lookup, table, 1), GFP_KERNEL=
-);
->
-> You are allocating an entry for the temp lookup, but the gpiolib
-> core expects lookup tables to be terminated with an entry lookup,
-> so this should alloc space for 2 entries:
->
->         struct gpiod_lookup_table *lookup __free(kfree) =3D
->                         kzalloc(struct_size(lookup, table, 2), GFP_KERNEL=
-);
->
-> Despite this already being fixed now I wanted to explicitly point
-> this out in case you have used the same construct elsewhere during
-> your recent gpiolib cleanup efforts ?
->
-> As for your request for a tag for the 4st 4 patches for you to merge
-> into gpiolib. I'll go and work work on that. I need to coordinate
-> this with Ilpo, with whom I now co-maintain pdx86 .
->
-> Regards,
->
-> Hans
->
->
 
-Gah, thank you for bringing this up, I need one fix for a SPI driver.
 
-Bart
+On 10/4/23 19:57, Thomas Hellström wrote:
+> On Wed, 2023-10-04 at 19:17 +0200, Danilo Krummrich wrote:
+>> On 10/4/23 17:29, Thomas Hellström wrote:
+>>>
+>>> On Wed, 2023-10-04 at 14:57 +0200, Danilo Krummrich wrote:
+>>>> On 10/3/23 11:11, Thomas Hellström wrote:
+>>>>
+>>>> <snip>
+>>>>
+>>>>>>> +
+>>>>>>> +/**
+>>>>>>> + * drm_gpuvm_bo_evict() - add / remove a &drm_gpuvm_bo to
+>>>>>>> /
+>>>>>>> from the &drm_gpuvms
+>>>>>>> + * evicted list
+>>>>>>> + * @vm_bo: the &drm_gpuvm_bo to add or remove
+>>>>>>> + * @evict: indicates whether the object is evicted
+>>>>>>> + *
+>>>>>>> + * Adds a &drm_gpuvm_bo to or removes it from the
+>>>>>>> &drm_gpuvms
+>>>>>>> evicted list.
+>>>>>>> + */
+>>>>>>> +void
+>>>>>>> +drm_gpuvm_bo_evict(struct drm_gpuvm_bo *vm_bo, bool evict)
+>>>>>>> +{
+>>>>>>> +    struct drm_gem_object *obj = vm_bo->obj;
+>>>>>>> +
+>>>>>>> +    dma_resv_assert_held(obj->resv);
+>>>>>>> +
+>>>>>>> +    /* Always lock list transactions, even if
+>>>>>>> DRM_GPUVM_RESV_PROTECTED is
+>>>>>>> +     * set. This is required to protect multiple
+>>>>>>> concurrent
+>>>>>>> calls to
+>>>>>>> +     * drm_gpuvm_bo_evict() with BOs with different
+>>>>>>> dma_resv.
+>>>>>>> +     */
+>>>>>>
+>>>>>> This doesn't work. The RESV_PROTECTED case requires the
+>>>>>> evicted
+>>>>>> flag we discussed before. The list is either protected by the
+>>>>>> spinlock or the resv. Otherwise a list add could race with a
+>>>>>> list
+>>>>>> removal elsewhere.
+>>>>
+>>>> I think it does unless I miss something, but it might be a bit
+>>>> subtle
+>>>> though.
+>>>>
+>>>> Concurrent drm_gpuvm_bo_evict() are protected by the spinlock.
+>>>> Additionally, when
+>>>> drm_gpuvm_bo_evict() is called we hold the dma-resv of the
+>>>> corresponding GEM object.
+>>>>
+>>>> In drm_gpuvm_validate() I assert that we hold *all* dma-resv,
+>>>> which
+>>>> implies that no
+>>>> one can call drm_gpuvm_bo_evict() on any of the VM's objects and
+>>>> no
+>>>> one can add a new
+>>>> one and directly call drm_gpuvm_bo_evict() on it either.
+>>>
+>>> But translated into how the data (the list in this case) is
+>>> protected
+>>> it becomes
+>>>
+>>> "Either the spinlock and the bo resv of a single list item OR the
+>>> bo
+>>> resvs of all bos that can potentially be on the list",
+>>>
+>>> while this is certainly possible to assert, any new / future code
+>>> that
+>>> manipulates the evict list will probably get this wrong and as a
+>>> result
+>>> the code becomes pretty fragile. I think drm_gpuvm_bo_destroy()
+>>> already
+>>> gets it wrong in that it, while holding a single resv, doesn't take
+>>> the
+>>> spinlock.
+>>
+>> That's true and I don't like it either. Unfortunately, with the dma-
+>> resv
+>> locking scheme we can't really protect the evict list without the
+>> drm_gpuvm_bo::evicted trick properly.
+>>
+>> But as pointed out in my other reply, I'm a bit worried about the
+>> drm_gpuvm_bo::evicted trick being too restrictive, but maybe it's
+>> fine
+>> doing it in the RESV_PROTECTED case.
+> 
+> Ah, indeed. I misread that as discussing the current code rather than
+> the drm_gpuvm_bo::evicted trick. If validating only a subset, or a
+> range, then with the drm_gpuvm_bo::evicted trick would be valid only
+> for that subset.
+> 
+> But the current code would break because the condition of locking "the
+> resvs of all bos that can potentially be on the list" doesn't hold
+> anymore, and you'd get list corruption.
+> 
+> What *would* work, though, is the solution currently in xe, The
+> original evict list, and a staging evict list whose items are copied
+> over on validation. The staging evict list being protected by the
+> spinlock, the original evict list by the resv, and they'd use separate
+> list heads in the drm_gpuvm_bo, but that is yet another complication.
+> 
+> But I think if this becomes an issue, those VMs (perhaps OpenGL UMD
+> VMs) only wanting to validate a subset, would simply initially rely on
+> the current non-RESV solution. It looks like it's only a matter of
+> flipping the flag on a per-vm basis.
+
+If such a driver locks a range it can also just validate all locked
+objects I guess.
+
+And for everything else, we still have the spinlock protected variant,
+where drivers can freely move things around by just taking the spinlock.
+
+I think I will go ahead and add drm_gpuvm_bo::evicted, plus the helpers
+I mentioned.
+
+> 
+> /Thomas
+> 
+> 
+>>
+>>>
+>>> So I think that needs fixing, and if keeping that protection I
+>>> think it
+>>> needs to be documented with the list member and ideally an assert.
+>>> But
+>>> also note that lockdep_assert_held will typically give false true
+>>> for
+>>> dma_resv locks; as long as the first dma_resv lock locked in a
+>>> drm_exec
+>>> sequence  remains locked, lockdep thinks *all* dma_resv locks are
+>>> held.
+>>> (or something along those lines), so the resv lockdep asserts are
+>>> currently pretty useless.
+>>>
+>>> /Thomas
+>>>
+>>>
+>>>
+>>>>
+>>>>>>
+>>>>>> Thanks,
+>>>>>>
+>>>>>> Thomas
+>>>>>>
+>>>>>>
+>>>>>
+>>>>
+>>>
+>>
+> 
+
