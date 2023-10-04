@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C23D7B8D7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F757B8D82
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbjJDTgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 15:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
+        id S243638AbjJDTiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 15:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243494AbjJDTg1 (ORCPT
+        with ESMTP id S233578AbjJDTh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 15:36:27 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF28598;
-        Wed,  4 Oct 2023 12:36:23 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-2792d70ae25so129526a91.0;
-        Wed, 04 Oct 2023 12:36:23 -0700 (PDT)
+        Wed, 4 Oct 2023 15:37:59 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB46598
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 12:37:55 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d84c24a810dso240441276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 12:37:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696448183; x=1697052983; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oxe/lUUklxbHu0vEIlUOVm4PBVuobqclnUB653St8qw=;
-        b=KIFgDUGVqY3JVs3jmQR+xmEBsSoH2cZO1u2R/HJTQFwOPyMKL+RGlvI0Z+yddqFrHe
-         sZ8XjingvA8bXgbhUeOju6jr+sNldAfWX87IOmxSKcCggXZioQT1LCNzAiOxmxFmuD9f
-         cH+6RaiEeAHeRhQvJ7t8E+p3Pg1+t4XmkIS3tQo05lHUBaLTKwTLl9bpstakg05EMLGQ
-         FaXI9qCRr4lzdS6Pd9fYGffK4OyaTFb2vorKp3lZeiEMYL1wMp/f//O0+JHbk2qHOxqN
-         r9Il1J07YomaW3drqhwqCIO2Z5yPFM0bXuQGWEGVEL4ArktdwQgpsIyxcYSDYHjh9Ah9
-         RckQ==
+        d=paul-moore.com; s=google; t=1696448275; x=1697053075; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mQGn2Phe0RwYW5SGubGGOv+c/hAGSSs2LrA09w+wOG8=;
+        b=TilTgkhZouIPuv7GuwoG4+G6t7andK6GaOW7wftIFaIREBfgJYPJjkN6KSK+Avay1v
+         okj2r3PfUPtWwxcVfYzuc5MIEkhfTszqWOo4sILSQ+TwvnDqz3vm/FRq/pTgPApIJcuR
+         xeu8lYuf4TL5C3DOHXnWsxMwLmJ8NFRWzBd9dMgzmLbzx2UVGMEkHFAy7LdbgWhwznu9
+         q4MPPTMc+XkAxik+CKCeMKAMl6Ppmmh6L4Fb2iaAJqVXH69Q8w9yDfPkAQh5pDn7RGoo
+         QKUSyOL5Kit6+OQz+MneFcrB66bi0fLGTNflIfkoKvSCaS7dbthDD6qpSpwI/e+ED9en
+         /4fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696448183; x=1697052983;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Oxe/lUUklxbHu0vEIlUOVm4PBVuobqclnUB653St8qw=;
-        b=tkWlUYnBM38kL5GiLZ2Fxb9IRCbqN0nbnOthAnPlc0w4vaTINDjkUCvgyKutlsxHT8
-         HbhIf3l56VP7ky2IF24EvIiTTDVZ/qaFaFnfKxiv3Y98eNjigEL88vKHsnyyisU83CHj
-         9n3JavJUF1dePjqtUi3v5o+ono6toqtvDaQu73QZH1rqJMagcZhtoQHJKq3xjZniDQb1
-         f4ncBpu4Oj+YN4otuwkMW9GSl868nSrpHdh/SihedREmZH1rXZ1/gbsEfy1q/ax5nhz7
-         so/2aV2e0HXqqbgI1adZWu5Fh3KXMOAqCKXVduvzk8DIp+9TJpl1wBADKUH7c793Y40r
-         fSvQ==
-X-Gm-Message-State: AOJu0Yz79e4mzdagHgBtDSEv/rr8WjXL+3aE9jCuWkD3JpAgXsyKrP1e
-        OqCqFj+bNls5mF/ViAkPAng=
-X-Google-Smtp-Source: AGHT+IGC2IF1Rwb6lyP1BbCO/xIxVJzbxzbXytefjWzvm4+Km4BvCbHu0QkrrRljkhcMchfRMGJoEA==
-X-Received: by 2002:a17:90a:ce92:b0:274:6135:8363 with SMTP id g18-20020a17090ace9200b0027461358363mr2908761pju.33.1696448183010;
-        Wed, 04 Oct 2023 12:36:23 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-113.fbsv.net. [2a03:2880:ff:71::face:b00c])
-        by smtp.gmail.com with ESMTPSA id bv6-20020a17090af18600b002630c9d78aasm1961226pjb.5.2023.10.04.12.36.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 12:36:22 -0700 (PDT)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH v2] memcontrol: only transfer the memcg data for migration
-Date:   Wed,  4 Oct 2023 12:36:22 -0700
-Message-Id: <20231004193622.900383-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1696448275; x=1697053075;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mQGn2Phe0RwYW5SGubGGOv+c/hAGSSs2LrA09w+wOG8=;
+        b=C5Fjcm9Eky2WEh1UPgwxkOd+m8kYWv8VW1KRxe2OnQuiAkHhneVwq9sT9Wfd8sW791
+         cysbtCIWSpjAmgssPVHS4TgdvtSqm2U6ZQ7HwrYBvZaU1bcszHfazl9aQwMGdr2DabVv
+         OsKaUaNOSgc40da47FUiJ0ENGgT32/WG89iiGmApklzt7bTnq3z8yFA70iO2omwunkde
+         +XHDXf7OuExDLnXm9Vhv7O0s+gtcfbLP9y4QaE6Hf5S0cK3ZJ0NVauInTnpGQt+UHLkr
+         SqiAK9kUrrivoYQE91UV990L8e8JPtbhHOjrD5T8dRgl7GUa2a+ytIwUC46Hm0vax2tC
+         0QsA==
+X-Gm-Message-State: AOJu0Yz9xQS5q8F4A54I86T+V8hwEwv7mGqElJKwmiYtXxGisPcShEG4
+        6LgRGmNYMG5Fwbf1XzrW7Qm50UaWO6FvuD0WPa7Y
+X-Google-Smtp-Source: AGHT+IF/30kkFHZBZjg3KbcOdEkEVasuK1il9LqueAt4mYRrIgMYFlqbwoL44JXav1232SSuhV3Vc5nqAWjjxjk5xw0=
+X-Received: by 2002:a05:6902:18c9:b0:d1a:955f:304d with SMTP id
+ ck9-20020a05690218c900b00d1a955f304dmr3631465ybb.64.1696448274671; Wed, 04
+ Oct 2023 12:37:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230928130147.564503-1-mszeredi@redhat.com> <20230928130147.564503-5-mszeredi@redhat.com>
+In-Reply-To: <20230928130147.564503-5-mszeredi@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 4 Oct 2023 15:37:43 -0400
+Message-ID: <CAHC9VhQD9r+Qf5Vz1XmxUdJJJO7HNTKdo8Ux=n+xkxr=JGFMrw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] add listmount(2) syscall
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Matthew House <mattlloydhouse@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,147 +79,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For most migration use cases, only transfer the memcg data from the old
-folio to the new folio, and clear the old folio's memcg data. No
-charging and uncharging will be done.
+On Thu, Sep 28, 2023 at 9:04=E2=80=AFAM Miklos Szeredi <mszeredi@redhat.com=
+> wrote:
+>
+> Add way to query the children of a particular mount.  This is a more
+> flexible way to iterate the mount tree than having to parse the complete
+> /proc/self/mountinfo.
+>
+> Lookup the mount by the new 64bit mount ID.  If a mount needs to be queri=
+ed
+> based on path, then statx(2) can be used to first query the mount ID
+> belonging to the path.
+>
+> Return an array of new (64bit) mount ID's.  Without privileges only mount=
+s
+> are listed which are reachable from the task's root.
+>
+> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+> ---
+>  arch/x86/entry/syscalls/syscall_32.tbl |  1 +
+>  arch/x86/entry/syscalls/syscall_64.tbl |  1 +
+>  fs/namespace.c                         | 69 ++++++++++++++++++++++++++
+>  include/linux/syscalls.h               |  3 ++
+>  include/uapi/asm-generic/unistd.h      |  5 +-
+>  include/uapi/linux/mount.h             |  3 ++
+>  6 files changed, 81 insertions(+), 1 deletion(-)
 
-This shaves off some work on the migration path, and avoids the
-temporary double charging of a folio during its migration.
+...
 
-The only exception is replace_page_cache_folio(), which will use the old
-mem_cgroup_migrate() (now renamed to mem_cgroup_replace_folio). In that
-context, the isolation of the old page isn't quite as thorough as with
-migration, so we cannot use our new implementation directly.
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index 3326ba2b2810..050e2d2af110 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -4970,6 +4970,75 @@ SYSCALL_DEFINE4(statmount, const struct __mount_ar=
+g __user *, req,
+>         return ret;
+>  }
+>
+> +static long do_listmount(struct vfsmount *mnt, u64 __user *buf, size_t b=
+ufsize,
+> +                        const struct path *root, unsigned int flags)
+> +{
+> +       struct mount *r, *m =3D real_mount(mnt);
+> +       struct path rootmnt =3D {
+> +               .mnt =3D root->mnt,
+> +               .dentry =3D root->mnt->mnt_root
+> +       };
+> +       long ctr =3D 0;
+> +       bool reachable_only =3D true;
+> +       int err;
+> +
+> +       err =3D security_sb_statfs(mnt->mnt_root);
+> +       if (err)
+> +               return err;
+> +
+> +       if (flags & LISTMOUNT_UNREACHABLE) {
+> +               if (!capable(CAP_SYS_ADMIN))
+> +                       return -EPERM;
+> +               reachable_only =3D false;
+> +       }
+> +
+> +       if (reachable_only && !is_path_reachable(m, mnt->mnt_root, &rootm=
+nt))
+> +               return capable(CAP_SYS_ADMIN) ? 0 : -EPERM;
+> +
+> +       list_for_each_entry(r, &m->mnt_mounts, mnt_child) {
+> +               if (reachable_only &&
+> +                   !is_path_reachable(r, r->mnt.mnt_root, root))
+> +                       continue;
 
-This patch is the result of the following discussion on the new hugetlb
-memcg accounting behavior:
+I believe we would want to move the security_sb_statfs() call from
+above to down here; something like this I think ...
 
-https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
+  err =3D security_sb_statfs(r->mnt.mnt_root);
+  if (err)
+    /* if we can't access the mount, pretend it doesn't exist */
+    continue;
 
-This should be added as the second prep patch in the following series:
-https://lore.kernel.org/all/20231003001828.2554080-1-nphamcs@gmail.com/
-(hugetlb memcg accounting)
+> +               if (ctr >=3D bufsize)
+> +                       return -EOVERFLOW;
+> +               if (put_user(r->mnt_id_unique, buf + ctr))
+> +                       return -EFAULT;
+> +               ctr++;
+> +               if (ctr < 0)
+> +                       return -ERANGE;
+> +       }
+> +       return ctr;
+> +}
 
-and should go right before the following patch:
-hugetlb: memcg: account hugetlb-backed memory in memory controller
-
-Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
-Closes: https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- include/linux/memcontrol.h |  7 ++++++
- mm/filemap.c               |  2 +-
- mm/memcontrol.c            | 45 +++++++++++++++++++++++++++++++++++---
- 3 files changed, 50 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 42bf7e9b1a2f..5daf14da3759 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -708,6 +708,8 @@ static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
- 
- void mem_cgroup_cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages);
- 
-+void mem_cgroup_replace_folio(struct folio *old, struct folio *new);
-+
- void mem_cgroup_migrate(struct folio *old, struct folio *new);
- 
- /**
-@@ -1285,6 +1287,11 @@ static inline void mem_cgroup_cancel_charge(struct mem_cgroup *memcg,
- {
- }
- 
-+static inline void mem_cgroup_replace_folio(struct folio *old,
-+		struct folio *new)
-+{
-+}
-+
- static inline void mem_cgroup_migrate(struct folio *old, struct folio *new)
- {
- }
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 9481ffaf24e6..673745219c82 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -819,7 +819,7 @@ void replace_page_cache_folio(struct folio *old, struct folio *new)
- 	new->mapping = mapping;
- 	new->index = offset;
- 
--	mem_cgroup_migrate(old, new);
-+	mem_cgroup_replace_folio(old, new);
- 
- 	xas_lock_irq(&xas);
- 	xas_store(&xas, new);
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0219befeae38..2ccf0a53cd71 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7281,16 +7281,17 @@ void __mem_cgroup_uncharge_list(struct list_head *page_list)
- }
- 
- /**
-- * mem_cgroup_migrate - Charge a folio's replacement.
-+ * mem_cgroup_replace_folio - Charge a folio's replacement.
-  * @old: Currently circulating folio.
-  * @new: Replacement folio.
-  *
-  * Charge @new as a replacement folio for @old. @old will
-- * be uncharged upon free.
-+ * be uncharged upon free. This is only used by the page cache
-+ * (in replace_page_cache_folio()).
-  *
-  * Both folios must be locked, @new->mapping must be set up.
-  */
--void mem_cgroup_migrate(struct folio *old, struct folio *new)
-+void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
- {
- 	struct mem_cgroup *memcg;
- 	long nr_pages = folio_nr_pages(new);
-@@ -7329,6 +7330,44 @@ void mem_cgroup_migrate(struct folio *old, struct folio *new)
- 	local_irq_restore(flags);
- }
- 
-+/**
-+ * mem_cgroup_migrate - Transfer the memcg data from the old to the new folio.
-+ * @old: Currently circulating folio.
-+ * @new: Replacement folio.
-+ *
-+ * Transfer the memcg data from the old folio to the new folio for migration.
-+ * The old folio's data info will be cleared. Note that the memory counters
-+ * will remain unchanged throughout the process.
-+ *
-+ * Both folios must be locked, @new->mapping must be set up.
-+ */
-+void mem_cgroup_migrate(struct folio *old, struct folio *new)
-+{
-+	struct mem_cgroup *memcg;
-+
-+	VM_BUG_ON_FOLIO(!folio_test_locked(old), old);
-+	VM_BUG_ON_FOLIO(!folio_test_locked(new), new);
-+	VM_BUG_ON_FOLIO(folio_test_anon(old) != folio_test_anon(new), new);
-+	VM_BUG_ON_FOLIO(folio_nr_pages(old) != folio_nr_pages(new), new);
-+
-+	if (mem_cgroup_disabled())
-+		return;
-+
-+	memcg = folio_memcg(old);
-+	/*
-+	 * Note that it is normal to see !memcg for a hugetlb folio.
-+	 * For e.g, itt could have been allocated when memory_hugetlb_accounting
-+	 * was not selected.
-+	 */
-+	VM_WARN_ON_ONCE_FOLIO(!folio_test_hugetlb(old) && !memcg, old);
-+	if (!memcg)
-+		return;
-+
-+	/* Transfer the charge and the css ref */
-+	commit_charge(new, memcg);
-+	old->memcg_data = 0;
-+}
-+
- DEFINE_STATIC_KEY_FALSE(memcg_sockets_enabled_key);
- EXPORT_SYMBOL(memcg_sockets_enabled_key);
- 
--- 
-2.34.1
+--=20
+paul-moore.com
