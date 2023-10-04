@@ -2,230 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FB37B83F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0051C7B83FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbjJDPpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57682 "EHLO
+        id S242936AbjJDPqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233600AbjJDPpQ (ORCPT
+        with ESMTP id S233616AbjJDPqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:45:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF1ABF;
-        Wed,  4 Oct 2023 08:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696434312; x=1727970312;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=R3WnGCcHkT1lyLmM5v4NwuNwkg5B7PuvL34RS8utXYc=;
-  b=ffFJ1VyY30iJgxlT6itISvEMkhgihPIM4wW2ZOXqMmTc5wjdCA/gRERP
-   YkjiZWruDmm1ZkCynPE99SjaY1MkJu2rLc5QqbRqRv/X/NCT94IweMPXU
-   a5JwwC4n/6m3wYh20WjMK9L9rqKK/3n+znhJbtXaMkYIyvO9P71RRjZdM
-   8NgfOtHqx6zXy6rcXxRoskN/TOGLcJ0YrzouFcAK8qdttKAAU+MqWSCs1
-   IulwbNig9y0TtlKyFaUgB9EbojSGv4OorIyRXiNfwsP5KP/B+qgPQRjv8
-   Gji+TDwXfzq2r5QghyYHSRA4dAJydIVNljOcGn2y/KlDUpHLDQzEc4sP8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="382068935"
-X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
-   d="scan'208";a="382068935"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 08:45:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="745027765"
-X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
-   d="scan'208";a="745027765"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 04 Oct 2023 08:45:09 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>, dave.hansen@linux.intel.com,
-        tj@kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        sohil.mehta@intel.com
-Cc:     zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
-        zhanb@microsoft.com, anakrish@microsoft.com,
-        mikko.ylinen@linux.intel.com, yangjie@microsoft.com
-Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for CSS
- events
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-2-haitao.huang@linux.intel.com>
- <CVS5XFKKTTUZ.XRMYK1ADHSPG@suppilovahvero>
- <op.2buytfetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <CVSVH3ARQBRC.1QUTEQE3YNN5T@qgv27q77ld-mac>
- <CVSVJ8DYAME8.SMTH7VYG7ER@qgv27q77ld-mac>
- <op.2bwqct0rwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <CVYBI76N4PTF.38BQ9KIBIOGEH@seitikki> <CVYBO2F1D1NC.1N7LNWPTDRG04@seitikki>
-Date:   Wed, 04 Oct 2023 10:45:08 -0500
+        Wed, 4 Oct 2023 11:46:06 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546BEC9
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:46:02 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-34f69780037so2443505ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 08:46:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1696434361; x=1697039161; darn=vger.kernel.org;
+        h=subject:from:cc:to:content-language:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=AXYm9qlPqfGMDrbCLiqmg1WtFNwa/hRn8nsfWqfPLRA=;
+        b=L2PxXbFR0QeGuknLFZqknB8rDLW6ubvuGnpder4Jcfb8hongDaxATPZE8SVYA3PWgb
+         zfxqXlHe2MUPGAb+7vM24vQA/WjBjNxitpIn/XWy2In8Slm2GTwQVZLxNBpJU2psBW+Q
+         gDk487SVHtlNo6k0FACUUfNecLPd3qRnrpoWw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696434361; x=1697039161;
+        h=subject:from:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AXYm9qlPqfGMDrbCLiqmg1WtFNwa/hRn8nsfWqfPLRA=;
+        b=jlqFqZgLzStIH6NHW43HLhKXE9QFPtXvM78QuUKw7C9yyJGEg3bBKuUvYzohyRplsP
+         p1e6XhKf+795GwjhKBPFwV/t4jdQheGtvGNKvyQpEmJ6PRPLCjW6mM9DE2py3ZkHxbRB
+         MTieUN+gZYeQADz8IJwy5ejMQt+K7zuW9TR11yLJHtjZez+0oWTgm1N44jXmaoHn6/kP
+         /rjJodFw9zeadRcE0s9NKBeRMuvMVNWxskOMBeBIKfYcxUXniVY8x2H5rWDA3T+j+xAd
+         ATOVCRm+Nryj1ReoeA3FNYHcRnDbISm8CrhD2RwO5soq6DusPBMU9R2dNXLDjYp+Ux8a
+         frow==
+X-Gm-Message-State: AOJu0YwW+i7v0Cweij6E4+eygc0/CTKwcDGJKFiCD8NfM05FWVs2Ph0x
+        EAcbyAnbkzGONGTZ+K3Y8Gk5Ug==
+X-Google-Smtp-Source: AGHT+IHeNDp7yEG0k0Lc85/gMUIbPakw8qrxT/YwwfmgUA7suxBA8/8NkXnftDMybcZh2Ya324rq/Q==
+X-Received: by 2002:a05:6602:1a07:b0:79d:1c65:9bde with SMTP id bo7-20020a0566021a0700b0079d1c659bdemr3076401iob.1.1696434361658;
+        Wed, 04 Oct 2023 08:46:01 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id m20-20020a056638225400b00430245071ddsm1037451jas.176.2023.10.04.08.46.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 08:46:01 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------KkiqCNpQAN7nqMAgjL3oZSax"
+Message-ID: <e9f9ee91-9e18-4a00-90a0-19b8ac47bbb3@linuxfoundation.org>
+Date:   Wed, 4 Oct 2023 09:46:00 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2cardibgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <CVYBO2F1D1NC.1N7LNWPTDRG04@seitikki>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     shuah <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] Kselftest fixes update for Linux 6.6-rc5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jarkko
+This is a multi-part message in MIME format.
+--------------KkiqCNpQAN7nqMAgjL3oZSax
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 02 Oct 2023 17:55:14 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
-...
->> > >> I noticed this one later:
->> > >>
->> > >> It would better to create a separate ops struct and declare the  
->> instance
->> > >> as const at minimum.
->> > >>
->> > >> Then there is no need for dynamic assigment of ops and all that is  
->> in
->> > >> rodata. This is improves both security and also allows static  
->> analysis
->> > >> bit better.
->> > >>
->> > >> Now you have to dynamically trace the struct instance, e.g. in  
->> case of
->> > >> a bug. If this one done, it would be already in the vmlinux.
->> > >I.e. then in the driver you can have static const struct declaration
->> > > with *all* pointers pre-assigned.
->> > >
->> > > Not sure if cgroups follows this or not but it is *objectively*
->> > > better. Previous work is not always best possible work...
->> > >
->> >
->> > IIUC, like vm_ops field in vma structs. Although function pointers in
->> > vm_ops are assigned statically, but you still need dynamically assign
->> > vm_ops for each instance of vma.
->> >
->> > So the code will look like this:
->> >
->> > if (parent_cg->res[i].misc_ops && parent_cg->res[i].misc_ops->alloc)
->> > {
->> > ...
->> > }
->> >
->> > I don't see this is the pattern used in cgroups and no strong opinion
->> > either way.
->> >
->> > TJ, do you have preference on this?
->>
->> I do have strong opinion on this. In the client side we want as much
->> things declared statically as we can because it gives more tools for
->> statical analysis.
->>
->> I don't want to see dynamic assignments in the SGX driver, when they
->> are not actually needed, no matter things are done in cgroups.
->
-> I.e. I don't really even care what crazy things cgroups subsystem
-> might do or not do. It's not my problem.
->
-> All I care is that we *do not* have any use for assigning those
-> pointers at run-time. So do whatever you want with cgroups side
-> as long as this is not the case.
->
+Hi Linus,
 
+Please pull the following Kselftest fixes update for Linux 6.6-rc5.
 
-So I will update to something like following. Let me know if that's  
-correct understanding.
-@tj, I'd appreciate for your input on whether this is acceptable from  
-cgroups side.
+This kselftest fixes update for Linux 6.6-rc5 consists of one single
+fix to Makefile to fix the incorrect TARGET name for uevent test.
 
---- a/include/linux/misc_cgroup.h
-+++ b/include/linux/misc_cgroup.h
-@@ -31,22 +31,26 @@ struct misc_cg;
+diff is attached.
 
-  #include <linux/cgroup.h>
+thanks.
+-- Shuah
 
-+/* per resource callback ops */
-+struct misc_operations_struct {
-+       int (*alloc)(struct misc_cg *cg);
-+       void (*free)(struct misc_cg *cg);
-+       void (*max_write)(struct misc_cg *cg);
-+};
-  /**
-   * struct misc_res: Per cgroup per misc type resource
-   * @max: Maximum limit on the resource.
-   * @usage: Current usage of the resource.
-   * @events: Number of times, the resource limit exceeded.
-+ * @priv: resource specific data.
-+ * @misc_ops: resource specific operations.
-   */
-  struct misc_res {
-         u64 max;
-         atomic64_t usage;
-         atomic64_t events;
-         void *priv;
--
--       /* per resource callback ops */
--       int (*alloc)(struct misc_cg *cg);
--       void (*free)(struct misc_cg *cg);
--       void (*max_write)(struct misc_cg *cg);
-+       const struct misc_operations_struct *misc_ops;
-  };
+----------------------------------------------------------------
+The following changes since commit 8ed99af4a266a3492d773b5d85c3f8e9f81254b6:
 
-...
-diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-index 4633b8629e63..500415087643 100644
---- a/kernel/cgroup/misc.c
-+++ b/kernel/cgroup/misc.c
-@@ -277,8 +277,8 @@ static ssize_t misc_cg_max_write(struct  
-kernfs_open_file *of, char *buf,
+   selftests/user_events: Fix to unmount tracefs when test created mount (2023-09-18 11:04:52 -0600)
 
-         if (READ_ONCE(misc_res_capacity[type])) {
-                 WRITE_ONCE(cg->res[type].max, max);
--               if (cg->res[type].max_write)
--                       cg->res[type].max_write(cg);
-+               if (cg->res[type].misc_ops &&  
-cg->res[type].misc_ops->max_write)
-+                       cg->res[type].misc_ops->max_write(cg);
+are available in the Git repository at:
 
-[skip other similar changes in misc.c]
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-6.6-rc5
 
-And on SGX side, it'll be updated like this:
+for you to fetch changes up to 6f874fa021dfc7bf37f4f37da3a5aaa41fe9c39c:
 
---- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-+++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-@@ -376,6 +376,14 @@ static void sgx_epc_cgroup_max_write(struct misc_cg  
-*cg)
-         queue_work(sgx_epc_cg_wq, &rc.epc_cg->reclaim_work);
-  }
+   selftests: Fix wrong TARGET in kselftest top level Makefile (2023-09-26 18:47:37 -0600)
 
-+static int sgx_epc_cgroup_alloc(struct misc_cg *cg);
-+
-+const struct misc_operations_struct sgx_epc_cgroup_ops = {
-+        .alloc = sgx_epc_cgroup_alloc,
-+        .free = sgx_epc_cgroup_free,
-+        .max_write = sgx_epc_cgroup_max_write,
-+};
-+
-  static int sgx_epc_cgroup_alloc(struct misc_cg *cg)
-  {
-         struct sgx_epc_cgroup *epc_cg;
-@@ -386,12 +394,7 @@ static int sgx_epc_cgroup_alloc(struct misc_cg *cg)
+----------------------------------------------------------------
+linux-kselftest-fixes-6.6-rc5
 
-         sgx_lru_init(&epc_cg->lru);
-         INIT_WORK(&epc_cg->reclaim_work, sgx_epc_cgroup_reclaim_work_func);
--       cg->res[MISC_CG_RES_SGX_EPC].alloc = sgx_epc_cgroup_alloc;
--       cg->res[MISC_CG_RES_SGX_EPC].free = sgx_epc_cgroup_free;
--       cg->res[MISC_CG_RES_SGX_EPC].max_write = sgx_epc_cgroup_max_write;
--       cg->res[MISC_CG_RES_SGX_EPC].priv = epc_cg;
--       epc_cg->cg = cg;
--
-+       cg->res[MISC_CG_RES_SGX_EPC].misc_ops = &sgx_epc_cgroup_ops;
-         return 0;
-  }
+This kselftest fixes update for Linux 6.6-rc5 consists of one single
+fix to Makefile to fix the incorrect TARGET name for uevent test.
 
+----------------------------------------------------------------
+Juntong Deng (1):
+       selftests: Fix wrong TARGET in kselftest top level Makefile
 
-Thanks again to all of you for feedback.
+  tools/testing/selftests/Makefile | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+----------------------------------------------------------------
+--------------KkiqCNpQAN7nqMAgjL3oZSax
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux-kselftest-fixes-6.6-rc5.diff"
+Content-Disposition: attachment; filename="linux-kselftest-fixes-6.6-rc5.diff"
+Content-Transfer-Encoding: base64
 
-Haitao
+ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL01ha2VmaWxlIGIvdG9vbHMv
+dGVzdGluZy9zZWxmdGVzdHMvTWFrZWZpbGUKaW5kZXggNDI4MDZhZGQwMTE0Li4xYTIxZDZi
+ZWViYzYgMTAwNjQ0Ci0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL01ha2VmaWxlCisr
+KyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL01ha2VmaWxlCkBAIC05Miw3ICs5Miw3IEBA
+IGVuZGlmCiBUQVJHRVRTICs9IHRtcGZzCiBUQVJHRVRTICs9IHRwbTIKIFRBUkdFVFMgKz0g
+dHR5Ci1UQVJHRVRTICs9IHVldmVudHMKK1RBUkdFVFMgKz0gdWV2ZW50CiBUQVJHRVRTICs9
+IHVzZXIKIFRBUkdFVFMgKz0gdXNlcl9ldmVudHMKIFRBUkdFVFMgKz0gdkRTTwo=
+
+--------------KkiqCNpQAN7nqMAgjL3oZSax--
