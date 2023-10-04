@@ -2,135 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3647B8099
+	by mail.lfdr.de (Postfix) with ESMTP id 9F03C7B8098
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242573AbjJDNQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55602 "EHLO
+        id S242597AbjJDNR2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 09:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242568AbjJDNQ5 (ORCPT
+        with ESMTP id S233183AbjJDNRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:16:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BDFE4;
-        Wed,  4 Oct 2023 06:16:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696425410; x=1727961410;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=J7FWRujScPWtK9aYMSMLSqxeUcL9YGPo2NYKLZhT1DU=;
-  b=ZhcgB74gh0utddU/FTDvguZr1Am7Hm2j4lIiKjP193R46WU9YH/fvK3I
-   IXzy2RbqOiK9GclYtuuRaZlFqLRYWPqfZ8M41/ob2VG1fB8/mw6tM8LfQ
-   xsTfDJDWgH66zYLPLRRpDB6TyeqCAss7VGJjw2tQUNEDAEItcMRPdiI98
-   Ti9BIbB3d0Ah8LetRbJ+nXCe1rQvof8vgjtzym1UyABUjwZY6HLeQWRiF
-   NDhw0ORJdWhP8fPi9gSMxAMai5Q6gXI2Pueqk6Bq+LDoDoDu8tUlGQVnW
-   WmSg5Zu5nZ7RcPGcgLGhTUQcXOj/a3MOWxk2ntuqJKDklint56qQzqktF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="383069838"
-X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
-   d="scan'208";a="383069838"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 06:16:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="821664266"
-X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
-   d="scan'208";a="821664266"
-Received: from mfmousa-mobl1.amr.corp.intel.com (HELO [10.212.98.56]) ([10.212.98.56])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 06:16:48 -0700
-Message-ID: <6628a5f6-ed22-4039-b5c2-2301c05c7e3e@linux.intel.com>
-Date:   Wed, 4 Oct 2023 09:16:47 -0400
+        Wed, 4 Oct 2023 09:17:24 -0400
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4F6A1;
+        Wed,  4 Oct 2023 06:17:16 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59f6e6b7600so23836977b3.3;
+        Wed, 04 Oct 2023 06:17:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696425436; x=1697030236;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uGCiimfEoMn7BwF0dkBNPoxRRWXYUsk5xphqS0fx1Zs=;
+        b=pmftTRs9yg13wYfqEi3xHf6r+HxRpGy4O5YVagFhg1i96J5qhh/6JcRtvn2LbxbIwN
+         F+0P0hM0MTLXfIdhh+dLODJTc5FE0TO0NfhN9j+7ol1PsnoMOi++vK7DzkwnfGp8mXIJ
+         RpJ4NKufDpKyncZnyBpRtyuEzoh3pxpD0gF46iFPRT5GeAtqbyscx9oXr5DcElRAanmI
+         TiqXVohf/mYwKbzJc8TQOJhNjS1j3hPuD1xZhI3eX/GP+1MvKrZPQw/2hEai5QEiLyDg
+         h+swYN2rYHjV+C2aC4wz9fZMzSSe8FR4JylJKsdP7jwe+EYI7XzqkoLVpfPNlENWb924
+         tr7Q==
+X-Gm-Message-State: AOJu0YwrVtryNR8U85OhsGlJvBW4kSghXUZL5xeOmrXb/eu/+0eNe+mJ
+        yoXSQS+vhTqn4AfOaGP4BO+t3dI88w3y9Q==
+X-Google-Smtp-Source: AGHT+IF1p/Zbf6Wq9uQaPabygz0Yf0ZM6sayx2JMhwEmXMGeuNjvphiSnLO+qJMk924f1uFnZcJpWA==
+X-Received: by 2002:a0d:d482:0:b0:59b:5231:50d7 with SMTP id w124-20020a0dd482000000b0059b523150d7mr2442405ywd.10.1696425435724;
+        Wed, 04 Oct 2023 06:17:15 -0700 (PDT)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id y128-20020a0dd686000000b0057087e7691bsm1150942ywd.56.2023.10.04.06.17.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 06:17:15 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59f7f46b326so24075247b3.0;
+        Wed, 04 Oct 2023 06:17:15 -0700 (PDT)
+X-Received: by 2002:a0d:e8c5:0:b0:56d:3b91:7e78 with SMTP id
+ r188-20020a0de8c5000000b0056d3b917e78mr2377307ywe.20.1696425435071; Wed, 04
+ Oct 2023 06:17:15 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soundwire: fix initializing sysfs for same devices on
- different buses
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-References: <20231004130243.493617-1-krzysztof.kozlowski@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20231004130243.493617-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com> <20230929053915.1530607-19-claudiu.beznea@bp.renesas.com>
+In-Reply-To: <20230929053915.1530607-19-claudiu.beznea@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 4 Oct 2023 15:17:02 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWQVtroKntVamANrWiheDYa6+=L8K53__1WUZg3bF8EFQ@mail.gmail.com>
+Message-ID: <CAMuHMdWQVtroKntVamANrWiheDYa6+=L8K53__1WUZg3bF8EFQ@mail.gmail.com>
+Subject: Re: [PATCH v2 18/28] pinctrl: renesas: rzg2l: add support for
+ different ds values on different groups
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
+        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/4/23 09:02, Krzysztof Kozlowski wrote:
-> If same devices with same device IDs are present on different soundwire
-> buses, the probe fails due to conflicting device names and sysfs
-> entries:
-> 
->   sysfs: cannot create duplicate filename '/bus/soundwire/devices/sdw:0:0217:0204:00:0'
-> 
-> The link ID is 0 for both devices, so they should be differentiated by
-> bus ID.  Add the bus ID so, the device names and sysfs entries look
-> like:
-
-I am pretty sure this will break Intel platforms by changing the device
-names.
-
-sof_sdw.c:      else if (is_unique_device(adr_link, sdw_version, mfg_id,
-part_id,
-sof_sdw.c:
-"sdw:%01x:%04x:%04x:%02x", link_id,
-sof_sdw.c:
-"sdw:%01x:%04x:%04x:%02x:%01x", link_id,
-
-> 
->   sdw:1:0:0217:0204:00:0 -> ../../../devices/platform/soc@0/6ab0000.soundwire-controller/sdw-master-1/sdw:1:0:0217:0204:00:0
->   sdw:3:0:0217:0204:00:0 -> ../../../devices/platform/soc@0/6b10000.soundwire-controller/sdw-master-3/sdw:3:0:0217:0204:00:0
-> 
-> Fixes: 7c3cd189b86d ("soundwire: Add Master registration")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
+On Fri, Sep 29, 2023 at 7:39 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> RZ/G3S supports different drive strength values for different power sources
+> and pin groups (A, B, C). On each group there could be up to 4 drive
+> strength values per power source. Available power sources are 1v8, 2v5,
+> 3v3. Drive strength values are fine tuned than what was previously
+> available on the driver thus the necessity of having micro-amp support.
+> As drive strength and power source values are linked together the
+> hardware setup for these was moved at the end of
+> rzg2l_pinctrl_pinconf_set() to ensure proper validation of the new
+> values.
+>
+> The drive strength values are expected to be initialized though SoC
+> specific hardware configuration data structure.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > ---
-> 
-> Sending as RFT, because I did not test it on that many devices and
-> user-spaces.
-> ---
->  drivers/soundwire/slave.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-> index c1c1a2ac293a..4db43ea53d47 100644
-> --- a/drivers/soundwire/slave.c
-> +++ b/drivers/soundwire/slave.c
-> @@ -39,14 +39,14 @@ int sdw_slave_add(struct sdw_bus *bus,
->  	slave->dev.fwnode = fwnode;
->  
->  	if (id->unique_id == SDW_IGNORED_UNIQUE_ID) {
-> -		/* name shall be sdw:link:mfg:part:class */
-> -		dev_set_name(&slave->dev, "sdw:%01x:%04x:%04x:%02x",
-> -			     bus->link_id, id->mfg_id, id->part_id,
-> +		/* name shall be sdw:bus:link:mfg:part:class */
-> +		dev_set_name(&slave->dev, "sdw:%01x:%01x:%04x:%04x:%02x",
-> +			     bus->id, bus->link_id, id->mfg_id, id->part_id,
->  			     id->class_id);
->  	} else {
-> -		/* name shall be sdw:link:mfg:part:class:unique */
-> -		dev_set_name(&slave->dev, "sdw:%01x:%04x:%04x:%02x:%01x",
-> -			     bus->link_id, id->mfg_id, id->part_id,
-> +		/* name shall be sdw:bus:link:mfg:part:class:unique */
-> +		dev_set_name(&slave->dev, "sdw:%01x:%01x:%04x:%04x:%02x:%01x",
-> +			     bus->id, bus->link_id, id->mfg_id, id->part_id,
->  			     id->class_id, id->unique_id);
->  	}
->  
+>
+> Changes in v2:
+> - s/strenght/strength, s/togheter/together in commit description
+> - got rid of RZG2L_INVALID_IOLH_VAL macro and consider zero as invalid
+>   value for entries in struct rzg2l_hwcfg::iolh_group[abc]_ua[] arrays
+> - removed spinlock in rzg2l_[sg]et_power_source()
+> - introduced caps_to_pwr_reg() and simplified the code in
+>   rzg2l_[sg]et_power_source()
+> - changed return type of rzg2l_iolh_ua_to_val() to int and return
+>   -EINVAL on failure cases
+> - s/rzg2l_ds_supported/rzg2l_ds_is_supported
+> - inverted the logic in rzg2l_pinctrl_pinconf_set() when applying drive
+>   strength and power source to hardware registers and thus simplified the
+>   code
+> - used devm_kcalloc() instead of devm_kzalloc()
+> - adderessed the rest of the review comments
+
+Thanks, will queue in renesas-pinctrl-for-v6.7, with Paul's comment
+addresses.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
