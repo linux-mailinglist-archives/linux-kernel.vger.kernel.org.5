@@ -2,460 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A0E7B7B50
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6BF7B7B4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241931AbjJDJLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44778 "EHLO
+        id S241973AbjJDJKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241914AbjJDJKq (ORCPT
+        with ESMTP id S241966AbjJDJKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:10:46 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACD2A6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:10:21 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c63164a2b6so5569745ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:10:21 -0700 (PDT)
+        Wed, 4 Oct 2023 05:10:30 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F16BB
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:10:25 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-533c8f8f91dso3247145a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:10:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1696410621; x=1697015421; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rKJAwIYAUhDqBrrCvu2WwShRLzJ5jUywMV1ELPZIW+U=;
-        b=CR32OaFHCNxRoGwUBrXsm7vvA6J2x+P4jOYlqIA9HbGFW96ZaG4BmYILSqGxvKZPtR
-         e7olA4vGs/H8/EDlPF0VUdGQYwtyV7nMpi/M3t2ONnEvaiw4B4YIomvexPqTUTJMnQgp
-         GPJGlfFHD+5z4UzSLGMWOZ+o3L/hZvZqSmxWfstOhKWnAiLyn5FF4QFxp3GCThUKMn6V
-         wJ1iXnsmtJo9kSwlllGIIu2F+iIKXPkVXgToyGPSPq+E/G22bGCRyCzbku5YwOv6dBGZ
-         zu3AChE12aqttcYhh13jucgqu5rFSRE6eG21a7O9e10tk0ABMjveZn9g8wXJpsjkGCZ9
-         Mp7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696410621; x=1697015421;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+        d=linaro.org; s=google; t=1696410624; x=1697015424; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=rKJAwIYAUhDqBrrCvu2WwShRLzJ5jUywMV1ELPZIW+U=;
-        b=O/53dO/Kxvb4BwZeLbMwg1GWeTDgAnss0EL720VE5h487+LJOVlTw2Vt/U3M8ws0mW
-         hzVibQ2PoeI39a9xGaBrPszob9svbMv2YwZcsqYnSktBpSjx8JCdvssyYvzF3Wet5AgF
-         QVdccXWjtdgYg2VNTNDSyEggImCuYiQWMZ+OmjsdGnjRnqdv79t6oIe5vVXcnRVzi0OJ
-         Ocr/Lo622Sex2/W8WeJ+B6x1az6kc+ZE2sOJTK34iCB9zkQEFOKS82/tgirz2FgnoxHE
-         R5Rgi/kNJVdWq7CSYL6fXdNkA55aNRdkzpQu+eo5Rg0e1EHKvI43lc257LI2Bq4BF1AR
-         PNOg==
-X-Gm-Message-State: AOJu0YxEtu8DnHDRMlfytmLm4uBDG2Yu+5pEMqS/W7OPJPj5hTvyR6BA
-        nk51HVGuiCKtBoVWH3FnlD5k4A==
-X-Google-Smtp-Source: AGHT+IH+2ztlmD8iaFNKs4yOGEQavd7SBWvqEEZakwnzE699TvF3bs7LYI7CQ0CZ36qHVaEX6KMesw==
-X-Received: by 2002:a17:902:c9c5:b0:1c3:b268:ecba with SMTP id q5-20020a170902c9c500b001c3b268ecbamr5890215pld.18.1696410620906;
-        Wed, 04 Oct 2023 02:10:20 -0700 (PDT)
-Received: from [10.254.225.239] ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id p5-20020a170902bd0500b001b9f032bb3dsm3103724pls.3.2023.10.04.02.10.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 02:10:20 -0700 (PDT)
-Message-ID: <58ec7a15-6983-d199-bc1a-6161c3b75e0f@bytedance.com>
-Date:   Wed, 4 Oct 2023 17:10:13 +0800
+        bh=9T6JjI7drWgvRRXYPgb2KLbZPlJFvP44AhAzPqww2Ls=;
+        b=cVkFfrzWdXjMqFW7fFQ9UsmjyxTzxkmIe0k+aPUtF+RftYVMjHtkU6WrfN1BPH6ihC
+         XpP2S8uaTtx0oYQYTImAZYqnM+sO6jPehcgYDiaYBojm+ZJosIJp8S4ANO7WFJnw9Epa
+         Pc0CvXDCpuJgf8GLCI+q9NjIxw2G80IbVQoFYbDmjLthB0py17SwCuYO4+VUpfY0SiBW
+         aoSR5GrvP9CaQt+JinDaA63COJ0fUXoR3zyRPkCWInQN/3MUpA4SgiRzfD68dGRZFFfc
+         Rn2OlhSdN0yeZqD8lWxWB4tsCy+BCpmvaoqqbDz0GwrWYndLjUH2jBjCrOZnSyaNyxqw
+         9SDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696410624; x=1697015424;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9T6JjI7drWgvRRXYPgb2KLbZPlJFvP44AhAzPqww2Ls=;
+        b=wYXRCWloD8lioLdC7Rv8k+KsedCUsvWwu5Mu49890X3AasF873H1sN7dj/XKDNCysS
+         C+l6CpSrzVYpadQFmHyMFX4hZEf65YT7SREWYcS8ctTqQ3CCw2QfpioPtHWO/0KuYRHx
+         VQTqU05FfV94BfNk0SmI3vQEs/cX+6Ag8Vyh79Urw644xEDUwRbttVyJgA9wura0rydO
+         11sYVBuwgMI6jZuTPLde/nIDbPs2snWvtgzK5OGEKgDw8G7jzabysAlpgWGW2oKXrdxy
+         a8WwccdkdJx65PB+OJRT34liqjjnsT837Y8gyAUJIDDY7giBWtfLEhMntq0AA1VjPy++
+         2Sew==
+X-Gm-Message-State: AOJu0YwCQyXZ2wZlXHKPodMyD3+4hMoZMRkt6TZtb8dUhx46kNsP0jqH
+        bfKEVOeVgd9QRjpBH+b7V/1gUg==
+X-Google-Smtp-Source: AGHT+IFWb2wXrOaI1fLRqOC3q72ZyvU7YPqW/UnhUc0jcobnUQSs+t4/GnxNr9CRVEfecMe3eKL5RA==
+X-Received: by 2002:aa7:cfd2:0:b0:534:6668:605b with SMTP id r18-20020aa7cfd2000000b005346668605bmr1407846edy.22.1696410623755;
+        Wed, 04 Oct 2023 02:10:23 -0700 (PDT)
+Received: from rayden (h-46-59-78-111.A175.priv.bahnhof.se. [46.59.78.111])
+        by smtp.gmail.com with ESMTPSA id d18-20020a50fb12000000b0053801ca9a09sm2110849edq.33.2023.10.04.02.10.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 02:10:23 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 11:10:21 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Coboy Chen <coboy.chen@mediatek.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Olivier Deprez <olivier.deprez@arm.com>
+Subject: Re: [PATCH v3 07/17] firmware: arm_ffa: Implement the
+ NOTIFICATION_INFO_GET interface
+Message-ID: <20231004091021.GA1091193@rayden>
+References: <20230929-ffa_v1-1_notif-v3-0-c8e4f15190c8@arm.com>
+ <20230929-ffa_v1-1_notif-v3-7-c8e4f15190c8@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-Subject: Re: [PATCH v3 9/9] fork: Use __mt_dup() to duplicate maple tree in
- dup_mmap()
-To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-Cc:     corbet@lwn.net, akpm@linux-foundation.org, willy@infradead.org,
-        brauner@kernel.org, surenb@google.com, michael.christie@oracle.com,
-        mjguzik@gmail.com, mathieu.desnoyers@efficios.com,
-        npiggin@gmail.com, peterz@infradead.org, oliver.sang@intel.com,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Peng Zhang <zhangpeng.00@bytedance.com>
-References: <20230925035617.84767-1-zhangpeng.00@bytedance.com>
- <20230925035617.84767-10-zhangpeng.00@bytedance.com>
- <20231003184634.bbb5c5ezkvi6tkdv@revolver>
-In-Reply-To: <20231003184634.bbb5c5ezkvi6tkdv@revolver>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230929-ffa_v1-1_notif-v3-7-c8e4f15190c8@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/10/4 02:46, Liam R. Howlett 写道:
-> * Peng Zhang <zhangpeng.00@bytedance.com> [230924 23:58]:
->> In dup_mmap(), using __mt_dup() to duplicate the old maple tree and then
->> directly replacing the entries of VMAs in the new maple tree can result
->> in better performance. __mt_dup() uses DFS pre-order to duplicate the
->> maple tree, so it is very efficient. The average time complexity of
->> duplicating VMAs is reduced from O(n * log(n)) to O(n). The optimization
->> effect is proportional to the number of VMAs.
+On Fri, Sep 29, 2023 at 04:02:56PM +0100, Sudeep Holla wrote:
+> The receiver’s scheduler uses the FFA_NOTIFICATION_INFO_GET interface
+> to retrieve the list of endpoints that have pending notifications and
+> must be run. A notification could be signaled by a sender in the secure
+> world to a VM. The Hypervisor needs to determine which VM and vCPU
+> (in case a per-vCPU notification is signaled) has a pending notification
+> in this scenario. It must obtain this information through an invocation
+> of the FFA_NOTIFICATION_INFO_GET.
 > 
-> I am not confident in the big O calculations here.  Although the addition
-> of the tree is reduced, adding a VMA still needs to create the nodes
-> above it - which are a function of n.  How did you get O(n * log(n)) for
-> the existing fork?
+> Add the implementation of the NOTIFICATION_INFO_GET interface
+> and prepare to use this to handle the schedule receiver interrupt.
+> Implementation of handling notifications will be added later.
 > 
-> I would think your new algorithm is n * log(n/16), while the
-> previous was n * log(n/16) * f(n).  Where f(n) would be something
-> to do with the decision to split/rebalance in bulk insert mode.
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  drivers/firmware/arm_ffa/driver.c | 70 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 70 insertions(+)
 > 
-> It's certainly a better algorithm to duplicate trees, but I don't think
-> it is O(n).  Can you please explain?
+> diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
+> index 02eedb7bc171..dfeeb751bebe 100644
+> --- a/drivers/firmware/arm_ffa/driver.c
+> +++ b/drivers/firmware/arm_ffa/driver.c
+> @@ -602,6 +602,13 @@ static int ffa_notification_bitmap_destroy(void)
+>  	(FIELD_PREP(RECEIVER_VCPU_MASK, (vcpu_r)) | \
+>  	 FIELD_PREP(RECEIVER_ID_MASK, (r)))
+>  
+> +#define NOTIFICATION_INFO_GET_MORE_PEND_MASK	BIT(0)
+> +#define NOTIFICATION_INFO_GET_ID_COUNT		GENMASK(11, 7)
+> +#define ID_LIST_MASK_64				GENMASK(51, 12)
+> +#define ID_LIST_MASK_32				GENMASK(31, 12)
+> +#define MAX_IDS_64				20
+> +#define MAX_IDS_32				10
+> +
+>  static int ffa_notification_bind_common(u16 dst_id, u64 bitmap,
+>  					u32 flags, bool is_bind)
+>  {
+> @@ -673,6 +680,69 @@ static int ffa_notification_get(u32 flags, struct ffa_notify_bitmaps *notify)
+>  	return 0;
+>  }
+>  
+> +static void __do_sched_recv_cb(u16 partition_id, u16 vcpu, bool is_per_vcpu)
+> +{
+> +	pr_err("Callback for partition 0x%x failed.\n", partition_id);
+> +}
+> +
+> +static void ffa_notification_info_get(bool is_64b)
+> +{
+> +	int idx, list, max_ids, lists_cnt, ids_processed, ids_count[MAX_IDS_64];
+> +	ffa_value_t ret;
+> +	u64 id_list;
+> +
+> +	do {
+> +		invoke_ffa_fn((ffa_value_t){
+> +			  .a0 = FFA_FN_NATIVE(NOTIFICATION_INFO_GET),
+> +			  }, &ret);
+> +
+> +		if (ret.a0 != FFA_FN_NATIVE(SUCCESS)) {
 
-The following is a non-professional analysis of the algorithm.
+The specification doesn't require a response using 64-bit SMCCC, it is
+valid to respond using 32-bit SMCCC too.
 
-Let's first analyze the average time complexity of the new algorithm, as
-it is relatively easy to analyze. The maximum number of branches for
-internal nodes in a maple tree in allocation mode is 10. However, to
-simplify the analysis, we will not consider this case and assume that
-all nodes have a maximum of 16 branches.
+Thanks,
+Jens
 
-The new algorithm assumes that there is no case where a VMA with the
-VM_DONTCOPY flag is deleted. If such a case exists, this analysis cannot
-be applied.
-
-The operations of the new algorithm consist of three parts:
-
-1. DFS traversal of each node in the source tree
-2. For each node in the source tree, create a copy and construct a new
-    node
-3. Traverse the new tree using mas_find() and replace each element
-
-If there are a total of n elements in the maple tree, we can conclude
-that there are n/16 leaf nodes. Regarding the second-to-last level, we
-can conclude that there are n/16^2 nodes. The total number of nodes in
-the entire tree is given by the sum of n/16 + n/16^2 + n/16^3 + ... + 1.
-This is a geometric progression with a total of log base 16 of n terms.
-According to the formula for the sum of a geometric progression, the sum
-is (n-1)/15. So, this tree has a total of (n-1)/15 nodes and
-(n-1)/15 - 1 edges.
-
-For the operations in the first part of this algorithm, since DFS
-traverses each edge twice, the time complexity would be
-2*((n-1)/15 - 1).
-
-For the second part, each operation involves copying a node and making
-necessary modifications. Therefore, the time complexity is
-16*(n-1)/15.
-
-For the third part, we use mas_find() to traverse and replace each
-element, which is essentially similar to the combination of the first
-and second parts. mas_find() traverses all nodes and within each node,
-it iterates over all elements and performs replacements. The time
-complexity of traversing the nodes is 2*((n-1)/15 - 1), and for all
-nodes, the time complexity of replacing all their elements is
-16*(n-1)/15.
-
-By ignoring all constant factors, each of the three parts of the
-algorithm has a time complexity of O(n). Therefore, this new algorithm
-is O(n).
-
-The exact time complexity of the old algorithm is difficult to analyze.
-I can only provide an upper bound estimation. There are two possible
-scenarios for each insertion:
-
-1. Appending at the end of a node.
-2. Splitting nodes multiple times.
-
-For the first scenario, the individual operation has a time complexity
-of O(1). As for the second scenario, it involves node splitting. The
-challenge lies in determining which insertions trigger splits and how
-many splits occur each time, which is difficult to calculate. In the
-worst-case scenario, each insertion requires splitting the tree's height
-log(n) times. Assuming every insertion is in the worst-case scenario,
-the time complexity would be n*log(n). However, not every insertion
-requires splitting, and the number of splits each time may not
-necessarily be log(n). Therefore, this is an estimation of the upper
-bound.
+> +			if (ret.a2 != FFA_RET_NO_DATA)
+> +				pr_err("Notification Info fetch failed: 0x%lx (0x%lx)",
+> +				       ret.a0, ret.a2);
+> +			return;
+> +		}
+> +
+> +		ids_processed = 0;
+> +		lists_cnt = FIELD_GET(NOTIFICATION_INFO_GET_ID_COUNT, ret.a2);
+> +		if (is_64b) {
+> +			max_ids = MAX_IDS_64;
+> +			id_list = FIELD_GET(ID_LIST_MASK_64, ret.a2);
+> +		} else {
+> +			max_ids = MAX_IDS_32;
+> +			id_list = FIELD_GET(ID_LIST_MASK_32, ret.a2);
+> +		}
+> +
+> +		for (idx = 0; idx < lists_cnt; idx++, id_list >>= 2)
+> +			ids_count[idx] = (id_list & 0x3) + 1;
+> +
+> +		/* Process IDs */
+> +		for (list = 0; list < lists_cnt; list++) {
+> +			u16 vcpu_id, part_id, *packed_id_list = (u16 *)&ret.a3;
+> +
+> +			if (ids_processed >= max_ids - 1)
+> +				break;
+> +
+> +			part_id = packed_id_list[++ids_processed];
+> +
+> +			if (!ids_count[list]) { /* Global Notification */
+> +				__do_sched_recv_cb(part_id, 0, false);
+> +				continue;
+> +			}
+> +
+> +			/* Per vCPU Notification */
+> +			for (idx = 0; idx < ids_count[list]; idx++) {
+> +				if (ids_processed >= max_ids - 1)
+> +					break;
+> +
+> +				vcpu_id = packed_id_list[++ids_processed];
+> +
+> +				__do_sched_recv_cb(part_id, vcpu_id, true);
+> +			}
+> +		}
+> +	} while (ret.a2 & NOTIFICATION_INFO_GET_MORE_PEND_MASK);
+> +}
+> +
+>  static int ffa_run(struct ffa_device *dev, u16 vcpu)
+>  {
+>  	ffa_value_t ret;
 > 
->>
->> As the entire maple tree is duplicated using __mt_dup(), if dup_mmap()
->> fails, there will be a portion of VMAs that have not been duplicated in
->> the maple tree. This makes it impossible to unmap all VMAs in exit_mmap().
->> To solve this problem, undo_dup_mmap() is introduced to handle the failure
->> of dup_mmap(). I have carefully tested the failure path and so far it
->> seems there are no issues.
->>
->> There is a "spawn" in byte-unixbench[1], which can be used to test the
->> performance of fork(). I modified it slightly to make it work with
->> different number of VMAs.
->>
->> Below are the test results. By default, there are 21 VMAs. The first row
->> shows the number of additional VMAs added on top of the default. The last
->> two rows show the number of fork() calls per ten seconds. The test results
->> were obtained with CPU binding to avoid scheduler load balancing that
->> could cause unstable results. There are still some fluctuations in the
->> test results, but at least they are better than the original performance.
->>
->> Increment of VMAs: 0      100     200     400     800     1600    3200    6400
->> next-20230921:     112326 75469   54529   34619   20750   11355   6115    3183
->> Apply this:        116505 85971   67121   46080   29722   16665   9050    4805
->>                     +3.72% +13.92% +23.09% +33.11% +43.24% +46.76% +48.00% +50.96%
->>
->> [1] https://github.com/kdlucas/byte-unixbench/tree/master
->>
->> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
->> ---
->>   include/linux/mm.h |  1 +
->>   kernel/fork.c      | 34 ++++++++++++++++++++----------
->>   mm/internal.h      |  3 ++-
->>   mm/memory.c        |  7 ++++---
->>   mm/mmap.c          | 52 ++++++++++++++++++++++++++++++++++++++++++++--
->>   5 files changed, 80 insertions(+), 17 deletions(-)
->>
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index 1f1d0d6b8f20..10c59dc7ffaa 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -3242,6 +3242,7 @@ extern void unlink_file_vma(struct vm_area_struct *);
->>   extern struct vm_area_struct *copy_vma(struct vm_area_struct **,
->>   	unsigned long addr, unsigned long len, pgoff_t pgoff,
->>   	bool *need_rmap_locks);
->> +extern void undo_dup_mmap(struct mm_struct *mm, struct vm_area_struct *vma_end);
->>   extern void exit_mmap(struct mm_struct *);
->>   
->>   static inline int check_data_rlimit(unsigned long rlim,
->> diff --git a/kernel/fork.c b/kernel/fork.c
->> index 7ae36c2e7290..2f3d83e89fe6 100644
->> --- a/kernel/fork.c
->> +++ b/kernel/fork.c
->> @@ -650,7 +650,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>   	int retval;
->>   	unsigned long charge = 0;
->>   	LIST_HEAD(uf);
->> -	VMA_ITERATOR(old_vmi, oldmm, 0);
->>   	VMA_ITERATOR(vmi, mm, 0);
->>   
->>   	uprobe_start_dup_mmap();
->> @@ -678,16 +677,25 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>   		goto out;
->>   	khugepaged_fork(mm, oldmm);
->>   
->> -	retval = vma_iter_bulk_alloc(&vmi, oldmm->map_count);
->> -	if (retval)
->> +	/* Use __mt_dup() to efficiently build an identical maple tree. */
->> +	retval = __mt_dup(&oldmm->mm_mt, &mm->mm_mt, GFP_KERNEL);
->> +	if (unlikely(retval))
->>   		goto out;
->>   
->>   	mt_clear_in_rcu(vmi.mas.tree);
->> -	for_each_vma(old_vmi, mpnt) {
->> +	for_each_vma(vmi, mpnt) {
->>   		struct file *file;
->>   
->>   		vma_start_write(mpnt);
->>   		if (mpnt->vm_flags & VM_DONTCOPY) {
->> +			mas_store_gfp(&vmi.mas, NULL, GFP_KERNEL);
->> +
->> +			/* If failed, undo all completed duplications. */
->> +			if (unlikely(mas_is_err(&vmi.mas))) {
->> +				retval = xa_err(vmi.mas.node);
->> +				goto loop_out;
->> +			}
->> +
->>   			vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
->>   			continue;
->>   		}
->> @@ -749,9 +757,11 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>   		if (is_vm_hugetlb_page(tmp))
->>   			hugetlb_dup_vma_private(tmp);
->>   
->> -		/* Link the vma into the MT */
->> -		if (vma_iter_bulk_store(&vmi, tmp))
->> -			goto fail_nomem_vmi_store;
->> +		/*
->> +		 * Link the vma into the MT. After using __mt_dup(), memory
->> +		 * allocation is not necessary here, so it cannot fail.
->> +		 */
->> +		mas_store(&vmi.mas, tmp);
->>   
->>   		mm->map_count++;
->>   		if (!(tmp->vm_flags & VM_WIPEONFORK))
->> @@ -760,15 +770,19 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>   		if (tmp->vm_ops && tmp->vm_ops->open)
->>   			tmp->vm_ops->open(tmp);
->>   
->> -		if (retval)
->> +		if (retval) {
->> +			mpnt = vma_next(&vmi);
->>   			goto loop_out;
->> +		}
->>   	}
->>   	/* a new mm has just been created */
->>   	retval = arch_dup_mmap(oldmm, mm);
->>   loop_out:
->>   	vma_iter_free(&vmi);
->> -	if (!retval)
->> +	if (likely(!retval))
->>   		mt_set_in_rcu(vmi.mas.tree);
->> +	else
->> +		undo_dup_mmap(mm, mpnt);
->>   out:
->>   	mmap_write_unlock(mm);
->>   	flush_tlb_mm(oldmm);
->> @@ -778,8 +792,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>   	uprobe_end_dup_mmap();
->>   	return retval;
->>   
->> -fail_nomem_vmi_store:
->> -	unlink_anon_vmas(tmp);
->>   fail_nomem_anon_vma_fork:
->>   	mpol_put(vma_policy(tmp));
->>   fail_nomem_policy:
->> diff --git a/mm/internal.h b/mm/internal.h
->> index 7a961d12b088..288ec81770cb 100644
->> --- a/mm/internal.h
->> +++ b/mm/internal.h
->> @@ -111,7 +111,8 @@ void folio_activate(struct folio *folio);
->>   
->>   void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>   		   struct vm_area_struct *start_vma, unsigned long floor,
->> -		   unsigned long ceiling, bool mm_wr_locked);
->> +		   unsigned long ceiling, unsigned long tree_end,
->> +		   bool mm_wr_locked);
->>   void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte);
->>   
->>   struct zap_details;
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 983a40f8ee62..1fd66a0d5838 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -362,7 +362,8 @@ void free_pgd_range(struct mmu_gather *tlb,
->>   
->>   void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>   		   struct vm_area_struct *vma, unsigned long floor,
->> -		   unsigned long ceiling, bool mm_wr_locked)
->> +		   unsigned long ceiling, unsigned long tree_end,
->> +		   bool mm_wr_locked)
->>   {
->>   	do {
->>   		unsigned long addr = vma->vm_start;
->> @@ -372,7 +373,7 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>   		 * Note: USER_PGTABLES_CEILING may be passed as ceiling and may
->>   		 * be 0.  This will underflow and is okay.
->>   		 */
->> -		next = mas_find(mas, ceiling - 1);
->> +		next = mas_find(mas, tree_end - 1);
->>   
->>   		/*
->>   		 * Hide vma from rmap and truncate_pagecache before freeing
->> @@ -393,7 +394,7 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>   			while (next && next->vm_start <= vma->vm_end + PMD_SIZE
->>   			       && !is_vm_hugetlb_page(next)) {
->>   				vma = next;
->> -				next = mas_find(mas, ceiling - 1);
->> +				next = mas_find(mas, tree_end - 1);
->>   				if (mm_wr_locked)
->>   					vma_start_write(vma);
->>   				unlink_anon_vmas(vma);
->> diff --git a/mm/mmap.c b/mm/mmap.c
->> index 2ad950f773e4..daed3b423124 100644
->> --- a/mm/mmap.c
->> +++ b/mm/mmap.c
->> @@ -2312,7 +2312,7 @@ static void unmap_region(struct mm_struct *mm, struct ma_state *mas,
->>   	mas_set(mas, mt_start);
->>   	free_pgtables(&tlb, mas, vma, prev ? prev->vm_end : FIRST_USER_ADDRESS,
->>   				 next ? next->vm_start : USER_PGTABLES_CEILING,
->> -				 mm_wr_locked);
->> +				 tree_end, mm_wr_locked);
->>   	tlb_finish_mmu(&tlb);
->>   }
->>   
->> @@ -3178,6 +3178,54 @@ int vm_brk(unsigned long addr, unsigned long len)
->>   }
->>   EXPORT_SYMBOL(vm_brk);
->>   
->> +void undo_dup_mmap(struct mm_struct *mm, struct vm_area_struct *vma_end)
->> +{
->> +	unsigned long tree_end;
->> +	VMA_ITERATOR(vmi, mm, 0);
->> +	struct vm_area_struct *vma;
->> +	unsigned long nr_accounted = 0;
->> +	int count = 0;
->> +
->> +	/*
->> +	 * vma_end points to the first VMA that has not been duplicated. We need
->> +	 * to unmap all VMAs before it.
->> +	 * If vma_end is NULL, it means that all VMAs in the maple tree have
->> +	 * been duplicated, so setting tree_end to 0 will overflow to ULONG_MAX
->> +	 * when using it.
->> +	 */
->> +	if (vma_end) {
->> +		tree_end = vma_end->vm_start;
->> +		if (tree_end == 0)
->> +			goto destroy;
->> +	} else
->> +		tree_end = 0;
->> +
->> +	vma = mas_find(&vmi.mas, tree_end - 1);
->> +
->> +	if (vma) {
->> +		arch_unmap(mm, vma->vm_start, tree_end);
->> +		unmap_region(mm, &vmi.mas, vma, NULL, NULL, 0, tree_end,
->> +			     tree_end, true);
-> 
-> next is vma_end, as per your comment above.  Using next = vma_end allows
-> you to avoid adding another argument to free_pgtables().
-Unfortunately, it cannot be done this way. I fell into this trap before,
-and it caused incomplete page table cleanup. To solve this problem, the
-only solution I can think of right now is to add an additional
-parameter.
-
-free_pgtables() will be called in unmap_region() to free the page table,
-like this:
-
-free_pgtables(&tlb, mas, vma, prev ? prev->vm_end : FIRST_USER_ADDRESS,
-		next ? next->vm_start : USER_PGTABLES_CEILING,
-		mm_wr_locked);
-
-The problem is with 'next'. Our 'vma_end' does not exist in the actual
-mmap because it has not been duplicated and cannot be used as 'next'.
-If there is a real 'next', we can use 'next->vm_start' as the ceiling,
-which is not a problem. If there is no 'next' (next is 'vma_end'), we
-can only use 'USER_PGTABLES_CEILING' as the ceiling. Using
-'vma_end->vm_start' as the ceiling will cause the page table not to be
-fully freed, which may be related to alignment in 'free_pgd_range()'. To
-solve this problem, we have to introduce 'tree_end', and separating
-'tree_end' and 'ceiling' can solve this problem.
-
-> 
->> +
->> +		mas_set(&vmi.mas, vma->vm_end);
->> +		do {
->> +			if (vma->vm_flags & VM_ACCOUNT)
->> +				nr_accounted += vma_pages(vma);
->> +			remove_vma(vma, true);
->> +			count++;
->> +			cond_resched();
->> +			vma = mas_find(&vmi.mas, tree_end - 1);
->> +		} while (vma != NULL);
->> +
->> +		BUG_ON(count != mm->map_count);
->> +
->> +		vm_unacct_memory(nr_accounted);
->> +	}
->> +
->> +destroy:
->> +	__mt_destroy(&mm->mm_mt);
->> +}
->> +
->>   /* Release all mmaps. */
->>   void exit_mmap(struct mm_struct *mm)
->>   {
->> @@ -3217,7 +3265,7 @@ void exit_mmap(struct mm_struct *mm)
->>   	mt_clear_in_rcu(&mm->mm_mt);
->>   	mas_set(&mas, vma->vm_end);
->>   	free_pgtables(&tlb, &mas, vma, FIRST_USER_ADDRESS,
->> -		      USER_PGTABLES_CEILING, true);
->> +		      USER_PGTABLES_CEILING, USER_PGTABLES_CEILING, true);
->>   	tlb_finish_mmu(&tlb);
->>   
->>   	/*
->> -- 
->> 2.20.1
->>
+> -- 
+> 2.42.0
 > 
