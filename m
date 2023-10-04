@@ -2,133 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF12A7B9861
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 00:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C177B9865
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 00:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238754AbjJDWuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 18:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
+        id S239163AbjJDWue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 18:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236558AbjJDWuF (ORCPT
+        with ESMTP id S236558AbjJDWud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 18:50:05 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EC7D7;
-        Wed,  4 Oct 2023 15:49:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=vWfPBmVLeQXvNBaHWwvs1Vm71L3cF8pziV6NRFnEObE=; b=gcc5n7j+Yv+2SUrlKRcu6xvT+w
-        zwEaP4tXzG3Afc7t9d1u/W/fwVD8Ultjk1EF87hBBruppP4bAeil+GlOYsalD/j5eB3d5MgReC0CI
-        ZJv7w7k1ZeTsSJWuRlgYAooBjwK388v6IndPZhSgbx5RLEMIsm1M3Dn+oRUEwPcecw/l3vUIr6umv
-        4wu1VfqblEgnqC3QSEQZUyLuJm7/8sfqQQyrKtAD/og2eiQMBNPrPD4GtqFxUmePjiWsCZQfR6jUz
-        VTE1ePaX/a7fuzOTg+DfyBry3M+3QPPasnqM+HxXj8HKG75nNKSGlX1xP5ZVpUDkFYSqXBzlP3qb0
-        pm5PY9fQ==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qoAgG-000AyU-Hq; Thu, 05 Oct 2023 00:49:24 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qoAgF-000Dwl-Su; Thu, 05 Oct 2023 00:49:23 +0200
-Subject: Re: [PATCH net-next v2] net/xdp: fix zero-size allocation warning in
- xskq_create()
-To:     Andrew Kanner <andrew.kanner@gmail.com>, bjorn@kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        jonathan.lemon@gmail.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, aleksander.lobakin@intel.com,
-        xuanzhuo@linux.alibaba.com, ast@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com
-References: <20231002222939.1519-1-andrew.kanner@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2f5abbf8-8d50-3deb-19cd-9bfd654e1ceb@iogearbox.net>
-Date:   Thu, 5 Oct 2023 00:49:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Wed, 4 Oct 2023 18:50:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04C73C9
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 15:50:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 96C0CC433C8;
+        Wed,  4 Oct 2023 22:50:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696459829;
+        bh=29qFIdltgl6F0PKskAEDQDppIMvIB/Uobyguual+LQg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=LEmpmqIlpgtWsaiXKVqzHc4G0I3TbO96VrUbSHaL0oeWWqWihAN0y2vaYQLoL/5pc
+         FqNWOByLj+tTstlBaAf7AJIdyl0kUY3fsr884/RytG+u+Z76Zdfg31ZAcqDy31ROMY
+         /fQxpefVfwO1lB/rxR8torCl0v5e/h643xIYz3B6X6huf67kwEpC2j2MN0nVwWxMdi
+         lRvVtl7X67gGmOnKFhhGiyLSm6Tngrq8Ax2K253XVVSZoy11zewSd/qMDUKQS86/e8
+         mM4Uu77Ng8b30wBFUDDDpC9XREAzQ+7ms7bRJHCyBz/3/MrHdpC+I0RGs/Ropu1LR/
+         S5P2QKs+M6hFQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 78DADE632D6;
+        Wed,  4 Oct 2023 22:50:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20231002222939.1519-1-andrew.kanner@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27051/Wed Oct  4 09:39:04 2023)
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 0/5] chelsio: Annotate structs with __counted_by
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169645982948.18987.9169162380776342631.git-patchwork-notify@kernel.org>
+Date:   Wed, 04 Oct 2023 22:50:29 +0000
+References: <20230929181042.work.990-kees@kernel.org>
+In-Reply-To: <20230929181042.work.990-kees@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     rajur@chelsio.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, gustavoars@kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 12:29 AM, Andrew Kanner wrote:
-> Syzkaller reported the following issue:
->   ------------[ cut here ]------------
->   WARNING: CPU: 0 PID: 2807 at mm/vmalloc.c:3247 __vmalloc_node_range (mm/vmalloc.c:3361)
->   Modules linked in:
->   CPU: 0 PID: 2807 Comm: repro Not tainted 6.6.0-rc2+ #12
->   Hardware name: Generic DT based system
->   unwind_backtrace from show_stack (arch/arm/kernel/traps.c:258)
->   show_stack from dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1))
->   dump_stack_lvl from __warn (kernel/panic.c:633 kernel/panic.c:680)
->   __warn from warn_slowpath_fmt (./include/linux/context_tracking.h:153 kernel/panic.c:700)
->   warn_slowpath_fmt from __vmalloc_node_range (mm/vmalloc.c:3361 (discriminator 3))
->   __vmalloc_node_range from vmalloc_user (mm/vmalloc.c:3478)
->   vmalloc_user from xskq_create (net/xdp/xsk_queue.c:40)
->   xskq_create from xsk_setsockopt (net/xdp/xsk.c:953 net/xdp/xsk.c:1286)
->   xsk_setsockopt from __sys_setsockopt (net/socket.c:2308)
->   __sys_setsockopt from ret_fast_syscall (arch/arm/kernel/entry-common.S:68)
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri, 29 Sep 2023 11:11:44 -0700 you wrote:
+> Hi,
 > 
-> xskq_get_ring_size() uses struct_size() macro to safely calculate the
-> size of struct xsk_queue and q->nentries of desc members. But the
-> syzkaller repro was able to set q->nentries with the value initially
-> taken from copy_from_sockptr() high enough to return SIZE_MAX by
-> struct_size(). The next PAGE_ALIGN(size) is such case will overflow
-> the size_t value and set it to 0. This will trigger WARN_ON_ONCE in
-> vmalloc_user() -> __vmalloc_node_range().
+> This annotates several chelsio structures with the coming __counted_by
+> attribute for bounds checking of flexible arrays at run-time. For more details,
+> see commit dd06e72e68bc ("Compiler Attributes: Add __counted_by macro").
 > 
-> The issue is reproducible on 32-bit arm kernel.
+> Thanks!
 > 
-> Reported-and-tested-by: syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/000000000000c84b4705fb31741e@google.com/T/
-> Link: https://syzkaller.appspot.com/bug?extid=fae676d3cf469331fc89
-> Fixes: 9f78bf330a66 ("xsk: support use vaddr as ring")
-> Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
+> [...]
 
-I guess also:
+Here is the summary with links:
+  - [1/5] chelsio/l2t: Annotate struct l2t_data with __counted_by
+    https://git.kernel.org/netdev/net-next/c/3bbae5f1c651
+  - [2/5] cxgb4: Annotate struct clip_tbl with __counted_by
+    https://git.kernel.org/netdev/net-next/c/c3db467b0822
+  - [3/5] cxgb4: Annotate struct cxgb4_tc_u32_table with __counted_by
+    https://git.kernel.org/netdev/net-next/c/157c56a4fede
+  - [4/5] cxgb4: Annotate struct sched_table with __counted_by
+    https://git.kernel.org/netdev/net-next/c/ceba9725fb45
+  - [5/5] cxgb4: Annotate struct smt_data with __counted_by
+    https://git.kernel.org/netdev/net-next/c/1508cb7e0752
 
-Reported-by: syzbot+b132693e925cbbd89e26@syzkaller.appspotmail.com
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Moreover, this fix is needed in bpf/net tree (as opposed to *-next tree), right?
-
->   net/xdp/xsk_queue.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
-> index f8905400ee07..b03d1bfb6978 100644
-> --- a/net/xdp/xsk_queue.c
-> +++ b/net/xdp/xsk_queue.c
-> @@ -34,6 +34,9 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
->   	q->ring_mask = nentries - 1;
->   
->   	size = xskq_get_ring_size(q, umem_queue);
-> +	if (unlikely(size == SIZE_MAX))
-> +		return NULL;
-
-Doesn't this leak q here ?
-
->   	size = PAGE_ALIGN(size);
->   
->   	q->ring = vmalloc_user(size);
-> 
 
