@@ -2,73 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B7B7B7FFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC897B8000
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242492AbjJDM57 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 08:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
+        id S242426AbjJDM6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 08:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242325AbjJDM54 (ORCPT
+        with ESMTP id S242354AbjJDM6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 08:57:56 -0400
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA67C9;
-        Wed,  4 Oct 2023 05:57:52 -0700 (PDT)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d9191f0d94cso747192276.3;
-        Wed, 04 Oct 2023 05:57:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696424272; x=1697029072;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nNWbuPqGRcDinjfq6bAk+Y11zIkNJyvZkAmw9q5qsww=;
-        b=Ap1xCr5/lhNzhs2f7YCyAnn4I74pbz66+Dcit47dWg4d0XNqDEA5EIrpXILox6Xru9
-         bNs+QibL5/LWXzHP0e3u5zrB/x9hilhiXykGYd9nQSlH0JZE50SeD+DpoweBmTQo1QOB
-         Aj0sPpudR4rXTBqg1CFB7fk4FI7aIyurIERsTiC1yzupMf3875KZv+/LTktQXJ7iqmlp
-         2LFTOTAN+bhx5IQH2vbjSYnf5vGgM04EQJJyHFb4wwYSqNVCp+n2MoOeUVZbeQkp2bdV
-         Jv4Hschz+lpAJUqvRyVP963wqJKkxQJRJ4K0+2vRHhJh8InI0zHblH8fYGB1vc71H0Fy
-         Jd9g==
-X-Gm-Message-State: AOJu0Yy0exjksxBwnrGZAydmmuSlenbl8u6A57rKhtZ9GOkf1WM554SH
-        tpGFzqq12gX8UwVF94A2/cWGwlOC9oOiUQ==
-X-Google-Smtp-Source: AGHT+IFlI7GrP4XnGy9To4+xeIAvkni+tRCqK79kL7PecDcxv0beM5Q3akBlUZPKMCgklB6n6C31nw==
-X-Received: by 2002:a5b:e8b:0:b0:d85:ae5c:527a with SMTP id z11-20020a5b0e8b000000b00d85ae5c527amr2037242ybr.10.1696424271990;
-        Wed, 04 Oct 2023 05:57:51 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id l14-20020a5b0b8e000000b00d8679407796sm1009449ybq.48.2023.10.04.05.57.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 05:57:51 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-59bbdb435bfso25087257b3.3;
-        Wed, 04 Oct 2023 05:57:51 -0700 (PDT)
-X-Received: by 2002:a0d:df12:0:b0:59f:4bea:512f with SMTP id
- i18-20020a0ddf12000000b0059f4bea512fmr2537506ywe.15.1696424271499; Wed, 04
- Oct 2023 05:57:51 -0700 (PDT)
+        Wed, 4 Oct 2023 08:58:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634D1DC;
+        Wed,  4 Oct 2023 05:58:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B91CC433C8;
+        Wed,  4 Oct 2023 12:58:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696424283;
+        bh=sWP2Ntp9DcBxpiuxS4XRjZnJcYZJ+LQRso0hX8SK6OE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d7sT6GWXNBxb7Txv/otjKxL6J9JMmbE7bWzzXKFrD7kvj39jdbrM41xvR/ta+oRSm
+         4bFrbL2PW2+Q5cnajaUwJOEtogybJeKBv9gMLzrvO3s0U4Iriv6lXyxfcbm8qNNT+L
+         0eRc6vobJX+tpFesBEOlNMBk5/IZx0kZwf6hXBUuorTQ9JV16tfSVWFS9bcZMpV4Ad
+         kxl61vqu/Wi7s5qltq0VoLjAWRjQNX3S6h64vE675VyFuGQqrdjahbGYV3GC4gslsi
+         iIwCDyoapuQjxUAFz49DY4e1sooGW1euSwAjTSy16d5GDcVq+ArxlSLB92knD3woHc
+         3xoU7UEH1xAiQ==
+Date:   Wed, 4 Oct 2023 13:57:58 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Daniel Starke <daniel.starke@siemens.com>,
+        Fedor Pchelkin <pchelkin@ispras.ru>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org,
+        syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com
+Subject: Re: [PATCH 1/1] tty: n_gsm: Avoid sleeping during .write() whilst
+ atomic
+Message-ID: <20231004125758.GB83257@google.com>
+References: <20231003170020.830242-1-lee@kernel.org>
+ <2023100320-immorally-outboard-573a@gregkh>
+ <20231003185500.GD8453@google.com>
+ <2023100457-entail-freefall-06fd@gregkh>
+ <20231004090918.GB9374@google.com>
+ <2023100425-unwieldy-reaffirm-2a1b@gregkh>
 MIME-Version: 1.0
-References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com> <20230929053915.1530607-16-claudiu.beznea@bp.renesas.com>
-In-Reply-To: <20230929053915.1530607-16-claudiu.beznea@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 4 Oct 2023 14:57:39 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUC+-=ni44+1UQyEgSvwOVa2pb_TVyWjM-5BrTGjVChuA@mail.gmail.com>
-Message-ID: <CAMuHMdUC+-=ni44+1UQyEgSvwOVa2pb_TVyWjM-5BrTGjVChuA@mail.gmail.com>
-Subject: Re: [PATCH v2 15/28] pinctrl: renesas: rzg2l: adapt for different
- SD/PWPR register offsets
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, magnus.damm@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
-        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2023100425-unwieldy-reaffirm-2a1b@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,30 +60,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 7:39 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> SD, PWPR power registers have different offsets b/w RZ/G2L and RZ/G3S.
-> Commit adds a per SoC configuration data structure that is initialized with
-> proper register offset for individual SoCs. The struct rzg2l_hwcfg will be
-> further extended in next commits.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->
-> Changes in v2:
-> - collected tags
+On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
 
-Thanks, will queue in renesas-pinctrl-for-v6.7.
+> On Wed, Oct 04, 2023 at 10:09:18AM +0100, Lee Jones wrote:
+> > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
+> > 
+> > > On Tue, Oct 03, 2023 at 07:55:00PM +0100, Lee Jones wrote:
+> > > > On Tue, 03 Oct 2023, Greg Kroah-Hartman wrote:
+> > > > 
+> > > > > On Tue, Oct 03, 2023 at 06:00:20PM +0100, Lee Jones wrote:
+> > > > > > The important part of the call stack being:
+> > > > > > 
+> > > > > >   gsmld_write()             # Takes a lock and disables IRQs
+> > > > > >     con_write()
+> > > > > >       console_lock()
+> > > > > 
+> > > > > Wait, why is the n_gsm line discipline being used for a console?
+> > > > > 
+> > > > > What hardware/protocol wants this to happen?
+> > > > > 
+> > > > > gsm I thought was for a very specific type of device, not a console.
+> > > > > 
+> > > > > As per:
+> > > > > 	https://www.kernel.org/doc/html/v5.9/driver-api/serial/n_gsm.html
+> > > > > this is a specific modem protocol, why is con_write() being called?
+> > > > 
+> > > > What it's meant for and what random users can make it do are likely to
+> > > > be quite separate questions.  This scenario is user driven and can be
+> > > > replicated simply by issuing a few syscalls (open, ioctl, write).
+> > > 
+> > > I would recommend that any distro/system that does not want to support
+> > > this specific hardware protocol, just disable it for now (it's marked as
+> > > experimental too), if they don't want to deal with the potential
+> > > sleep-while-atomic issue.
+> > 
+> > n_gsm is available on all the systems I have available.  The mention of
+> > 'EXPERIMENTAL' in the module description appears to have zero effect on
+> > whether distros choose to make it available or not.  If you're saying
+> > that we know this module is BROKEN however, then perhaps we should mark
+> > it as such.
+> 
+> Also, I think this requires root to set this line discipline to the
+> console, right?  A normal user can't do that, or am I missing a code
+> path here?
 
-Gr{oetje,eeting}s,
+I haven't been testing long, but yes, early indications show that root
+is required.
 
-                        Geert
+> Is there a reproducer somewhere for this issue that runs as a normal
+> user?  I couldn't find one in the syzbot listings but I might have been
+> not looking deep enough.
+
+https://syzkaller.appspot.com/text?tag=ReproC&x=15578d8fa80000
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Lee Jones [李琼斯]
