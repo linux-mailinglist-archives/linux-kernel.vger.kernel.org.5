@@ -2,107 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E33E7B7D91
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C547B7D93
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233080AbjJDKxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
+        id S233142AbjJDKzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232814AbjJDKxs (ORCPT
+        with ESMTP id S232814AbjJDKzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:53:48 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB98A1;
-        Wed,  4 Oct 2023 03:53:44 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394AjGSG025031;
-        Wed, 4 Oct 2023 10:53:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=9R2nYmUlbsMTQaQ62JQ6OiRNY2PCc78P2XH8kTRAImk=;
- b=J9OUa3voShEuUbgQJqtiI3vEwXY/EzRVV9aUP3fk0LBZ4JHuEMY/cMDIvup4N02lPnf3
- HyTHk+L9gmklZE1Fi4w/PWMVUh2vTzu8RT88Gw7VDtNvGUaW+KVkFdprG1Ifp4jdqSne
- YFHag250vlnEmXbO7azFpsCx04hY1y+KRIAsrBn+/sTZsHB4vQrGZomqmC8PWnMSVa+H
- 9feqilJQ4Oq0YG6tokevymYKh2Ay0f0fggvqnP6YcSneV8c1ngl+7tfK12yg6vNwu6mI
- C7XL92/83VNAX6nc+EsJTN5jLV1lZWJVUiqKiHaR59SYyKnD0yGsgH+e9SzyXnb9JY3q Ow== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3th18jgn33-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 10:53:38 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 394ArbJV025477
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 4 Oct 2023 10:53:37 GMT
-Received: from [10.217.218.207] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 4 Oct
- 2023 03:53:32 -0700
-Message-ID: <de91353f-41b7-414d-9ae2-51cbc7615411@quicinc.com>
-Date:   Wed, 4 Oct 2023 16:23:28 +0530
+        Wed, 4 Oct 2023 06:55:18 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81D9A6
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:55:14 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5384975e34cso3531292a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 03:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1696416913; x=1697021713; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t2VXnYJg94PLYA3o5E07f9bhB1wUV4CKoPvKaIfev68=;
+        b=GY7oC6tpbUFJOdfavcXig+E8uZZHjKwd0MQGbzfMTsN4nNtkqKSWx/XP3DWgrOHSAl
+         TMmHxDrCfXk1Z4eX5Gd8AkERRzoLDO0in/1ISByP7em8qFPsyeuad4FXzPn5nYBuE3Y5
+         ZB/C8EZevpIM3lL7ZZKhHGKdPYAryaA+W/kUV6fsGFzVpm/jIpsQ57WqUoGr4UbXPsmb
+         LIgvv0QSuPe7hwC5mfbz9snbC+19TjoxHPXVAcXniTMUChA7NJTVqPbe9C3LEVvi+OXu
+         1bKyel/0qyb/WcDzXbVcYM+YDIv7ifClcJLcOU0N3peEhERN3q7W0TdBluPAqJXD7vAZ
+         ZVuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696416913; x=1697021713;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t2VXnYJg94PLYA3o5E07f9bhB1wUV4CKoPvKaIfev68=;
+        b=aGoIBImpE14AjV/9+CYTfVr9OuzEkLyoJAUnW27vno82RdxjfftCpdsOWhAB6wCyE7
+         t/SqpcyY2RT775/0ejK/ftaF5oMJEvQ97tyQShCkX4Hjvry8reHEduMTS97b5ebIYg5K
+         C7LteY07MWdsT1dGbbSaJs8gabvsGQQf5QnawRQ6KSF2ooXEnPpI/vxsdV5CLeB0UCSS
+         TWiQXgUxyxYc5ib+sSZIkTy4H8CaabbEGOPFYQFN+VVWj8HtO1gdHzCc/izKcAu21PDX
+         cMoG9Vm9fbXQUCvGsIP600eTG8x80G2hNgCNC/xZ44r6bLrrt5M96Hk1Pbw0TRBQ+KU4
+         Hk9Q==
+X-Gm-Message-State: AOJu0YwnGkanzdOGk2GlUtxpT1CAlJOKn2T25AxGrxEKK/HkikjzMbyA
+        Z0NHUUbqHUJ7Rr8raeXpzvo+bNy08PbTdPoA4JOM
+X-Google-Smtp-Source: AGHT+IGNcJxvBSYK1LygnepuAKeRGJ/0cm0JFbFY/8bUlp026J70lx7B8yJdfksuozxGMuEFX6TVOyulBh6RqPkte+o=
+X-Received: by 2002:aa7:c74c:0:b0:522:1d1d:1de8 with SMTP id
+ c12-20020aa7c74c000000b005221d1d1de8mr1516760eds.2.1696416913180; Wed, 04 Oct
+ 2023 03:55:13 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/2] mmc: sdhci-msm: Enable MMC_CAP2_SLEEP_AWAKE for
- Qualcomm controllers
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>
-CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <quic_rampraka@quicinc.com>,
-        <quic_pragalla@quicinc.com>, <quic_sayalil@quicinc.com>,
-        <quic_nitirawa@quicinc.com>, <quic_sachgupt@quicinc.com>,
-        <quic_bhaskarv@quicinc.com>, <quic_narepall@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-References: <20230929102831.9702-1-quic_sartgarg@quicinc.com>
- <20230929102831.9702-3-quic_sartgarg@quicinc.com>
- <7db0a714-de18-4644-84d1-a5d543af5693@linaro.org>
-From:   Sarthak Garg <quic_sartgarg@quicinc.com>
-In-Reply-To: <7db0a714-de18-4644-84d1-a5d543af5693@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JG7f_JF-X9IZ763baualsDqRYvjOQp5E
-X-Proofpoint-ORIG-GUID: JG7f_JF-X9IZ763baualsDqRYvjOQp5E
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_02,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=611 bulkscore=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310040078
+References: <20230915154856.1896062-1-lb@semihalf.com> <CAJfuBxyFYyGCtr5i=P7N=1oX3J=jmdp1VLGLt+z1fAnuvGK2aA@mail.gmail.com>
+ <CAK8ByeJBrPEQSgUc91LQO9Krzjh2pauhMTjEC82M8ozayE76Yg@mail.gmail.com>
+ <CAJfuBxxmL-GtBgt=033F9UNeLCreFbJh3HrQQN2nYKwR_0uTbg@mail.gmail.com>
+ <20231003155810.6df9de16@gandalf.local.home> <CAJfuBxyJyFbFEhRxrtxJ_RazaTODV6Gg64b1aiNEzt6_iE4=Og@mail.gmail.com>
+In-Reply-To: <CAJfuBxyJyFbFEhRxrtxJ_RazaTODV6Gg64b1aiNEzt6_iE4=Og@mail.gmail.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Date:   Wed, 4 Oct 2023 12:55:01 +0200
+Message-ID: <CAK8ByeLNc9UbTNG4x=40AxYqjjRCsvBNtNFai0PMveM2X4XCow@mail.gmail.com>
+Subject: Re: [PATCH v1] dynamic_debug: add support for logs destination
+To:     jim.cromie@gmail.com
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/29/2023 5:17 PM, Konrad Dybcio wrote:
-> On 29.09.2023 12:28, Sarthak Garg wrote:
->> Enable MMC_CAP2_SLEEP_AWAKE for Qualcomm controllers to let them use
->> sleep/awake functionality for faster eMMC resume instead of
->> doing full initialization.
->>
->> Signed-off-by: Sarthak Garg <quic_sartgarg@quicinc.com>
->> ---
-> Will this work on all SoCs from MSM8974 to SM8550 inclusive?
+wt., 3 pa=C5=BA 2023 o 22:54 <jim.cromie@gmail.com> napisa=C5=82(a):
 >
-> Such changes affect all users of this driver.
+> On Tue, Oct 3, 2023 at 1:57=E2=80=AFPM Steven Rostedt <rostedt@goodmis.or=
+g> wrote:
+> >
+> > On Mon, 2 Oct 2023 14:49:20 -0600
+> > jim.cromie@gmail.com wrote:
+> >
+> > > hi Lukasz,
+> > >
+> > > sorry my kernel-time has been in my own trees.
+> > >
+> > > What I dont understand is why +T is insufficient.
+> > >
+
+We would like to be able to separate debug logs from different
+subsystem (e.g. thunderbolt and usbcore).
+With +T it is not possible because all debug logs will land in the same buc=
+ket.
+
+> > > IIUC, tracefs is intended for production use.
+> > > thats why each event can be enabled / disabled
+> > > - to select and minimize whats traced, and not impact the system
+> > >
+> > > and +T  can forward all pr_debugs to trace,
+> > > (by 1-few trace events defined similarly to others)
+> > > or very few, giving yet another selection mechanism
+> > > to choose or eliminate specific pr-debugs and reduce traffic to
+> > > interesting stuff.
+> > >
+> > > Once your debug is in the trace-buf,
+> > > shouldnt user-space be deciding what to do with it ?
+> > > a smart daemon could leverage tracefs to good effect.
+> > >
+
+Yes, a daemon could separate the debug logs but IMHO it is much
+easier to separate logs by sending them directly from a given subsystem
+to a separate trace instance. My proposal allows to configure different
+trace instance as destination for each callsite.
+
+> > > IMO the main value of +T is that it allows feeding existing pr_debugs
+> > > into the place where other trace-data is already integrated and manag=
+ed.
+> > >
+> > > At this point, I dont see any extra destination handling as prudent.
+> > >
+> >
+> >
+> > I'm fine with either approach. I kind of like the creation of the insta=
+nce,
+> > as that allows the user to keep this debug separate from other tracing
+> > going on. We are starting to have multiple applications using the traci=
+ng
+> > buffer (although most are using instances, which is why I'm trying to m=
+ake
+> > them lighter weight with the eventfs code).
+> >
+> > -- Steve
+> >
+
+Steve, thanks for commenting from the trace perspective.
+
 >
-> Konrad
+>
+> Ok Im starting to grasp that multiple instances are good
+> (and wondering how I didnt notice)
+>
+> What doesnt thrill me is the new _ddebug field, it enlarges the footprint=
+.
+>
 
+Yes it increases _ddebug structure by a pointer size.
 
-Yes it will work on all SOC's as its an eMMC card specific feature and 
-where the underlying eMMC card supports sleep/awake commands.
+> can you make it go away ?
 
+I implemented my proposal with flexibility in mind so that if someone
+would like to add
+another destination in the future it should be easy to do. I
+understand that adding a pointer
+to the _ddebug structure increases footprint size that's why I also
+added CONFIG_DYNAMIC_DEBUG_DST
+kernel configuration option in order to enable/disable this functionality.
 
+> I have some thoughts ..
+
+Please share your thoughts. I'm sure we can come to an agreement how
+to incorporate both +T and my proposal.
+
+Thanks,
+Lukasz
