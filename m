@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E5E7B83EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AA47B83EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243042AbjJDPnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
+        id S243166AbjJDPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242943AbjJDPnk (ORCPT
+        with ESMTP id S233616AbjJDPn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:43:40 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AC3BD;
-        Wed,  4 Oct 2023 08:43:37 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-57bc2c2f13dso1275490eaf.2;
-        Wed, 04 Oct 2023 08:43:37 -0700 (PDT)
+        Wed, 4 Oct 2023 11:43:58 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761EABD;
+        Wed,  4 Oct 2023 08:43:55 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3af5fda8f6fso1506294b6e.3;
+        Wed, 04 Oct 2023 08:43:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696434216; x=1697039016; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696434235; x=1697039035; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hHNexQjEWqwmHrfiry0buaBQbrLt3wpcuExz+BRupW0=;
-        b=RGe8Bj3soUScS1IDg7Le2LCbewwmiNWE7lvQbnc9vCjDPGqPrj9aaHVS2wE4GNqS5/
-         3tVlRf/0gI7WwYmi0861fSM0D+G5FECU4pe3Cuj2F/aN0nXbA++odzkBLO3zRQSQXnKR
-         ABoOF0HmmbSaUC/ThPS0GKA4Ac2t0Lz0WeGkN5gjMnU0dfRxSgt5rYuzQsc+5jvVK1x8
-         0JVPLwuHTku0YTmVHiMQQdoaPGFARNFLzcHwdr5PpR3nszs40aZgodUZtlm9s2mx7uUh
-         SaApmmsPrKvf4ZCHGJefa8iopTk+9BeIscPnMybBxDjDV7yhWM4doDwrkOL3wf44P3ZZ
-         ASng==
+        bh=s2EWhyzfVF0SlezT75W8p2BMfVzvHlK5TEMrrV+47aA=;
+        b=MjxyCQxwEcFAAyRNO1QPHonIpp3UW393FmR724nIzEbV/9m+ReOiCIE2n621QJHKfS
+         KPgLRl8FLlQUcdD+oAhazJozqpqDJKCn5fR5zIUPc+KS2Fs+7xDhkcljHWqWwGxA6GUe
+         9G9cXIuT4uTyfv7bjjnndCjpUwfHKMMYm+J8XW9qLIyC76d6w1AknKnzi0zlanZ7ac1L
+         9NlcpTEkmMIF8SWxl76bLVhdoj02EuxCqgN6dHGo3oVkkbmPKuKZxzmfN+7FCvgRJf7t
+         HAQj8sjObXzg9izh4sWlyWiT3BHs5AkLexl7p0IcxVl39RN3paI0uHQRBeCGij9lkA+x
+         LYHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696434216; x=1697039016;
+        d=1e100.net; s=20230601; t=1696434235; x=1697039035;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hHNexQjEWqwmHrfiry0buaBQbrLt3wpcuExz+BRupW0=;
-        b=WebXiz4fqxYH6Ocj6swYb4NVQbdPWDlao4RC46xWsQHfgjn7NmStt69SJAH2fOgBqT
-         oMK6rkjKoGpFRdPxZFbfRmhWTlHa51fdZBCClawoA25a/WZQI7eteKYoutG+v/NU1ICo
-         B4rJbZg7HcxcqWABA4ArV5uPIlr6Eu3fa0D8Hi0OVMwE0WKYERbcJsNoy9swmp04tVmu
-         a4rdwfw3CGcQzUw0V8SoNnh3NPC9+gxLfG+TfAbUT95BSsyfcvSYdRsA5JnuiIAv3BSZ
-         rB05nrHmiB6XwYqPy616qZiVDQgN1z8WFqbtO8NlgAWEfdv8in/n+Q6NwCD8oGvowQwp
-         1HRA==
-X-Gm-Message-State: AOJu0YzKCSN+U57xxYM/5jP2vA7BbuxCsj3BMNtEzBDsCTEsQ9N643zu
-        +//l4NDcvARr/lVcGJ3GaN0=
-X-Google-Smtp-Source: AGHT+IF6r0Nf92b8yMVSXzfb//2cKp9M6wexeSeiIG3LAk4U7LnHo3090pI0Juj4ICyo7zS2BWchyQ==
-X-Received: by 2002:a4a:d2dc:0:b0:571:1a1d:f230 with SMTP id j28-20020a4ad2dc000000b005711a1df230mr2546119oos.9.1696434216397;
-        Wed, 04 Oct 2023 08:43:36 -0700 (PDT)
+        bh=s2EWhyzfVF0SlezT75W8p2BMfVzvHlK5TEMrrV+47aA=;
+        b=j6f7utBMKTfP7DdPGNnlpeuqn8Ko/PO6Y6Jf3BzviwjdUHNd/jbgd860SvkMQWP9o8
+         q2YWSVnBBJhB/hc5ay2HI/7g+VW2BZfCousaBI5ud6mZkh0XBFcz/MGBBAAT9c6SkMi2
+         ARQUbCyrUrEbb4X8lBJs5Nq13cgwI3zA4JDw2oVWH1nlrDdaf5US6ZLRpjqxvzUfg4HP
+         GyWiedcrhyZURC6wmzgpKiiB2gEdg+KxKN/sJevhs+/QJgnAmBjdU0PU4TZafjLFwUVY
+         mSKRIy0JYSJX1xBrpetJoBqgfU2iKz0fimJ05SCxfeoUq2Q/0NyMXCQOnadjcHs6US57
+         sOGw==
+X-Gm-Message-State: AOJu0YxyOHLICfeOfIusPAwBgrN5mKaJGGUzlES7sg/4a5f903blkpa3
+        Ic4+MEPPxxskwEwMNMFT0no=
+X-Google-Smtp-Source: AGHT+IGwkJtwzLLVYekkJ9/PQRsEmxCyJwvLSlS+rvJ2gPE/qFblO0doSz/FckJv67w4WvQe5Y+C6Q==
+X-Received: by 2002:a05:6808:9a2:b0:3ad:f6ad:b9d2 with SMTP id e2-20020a05680809a200b003adf6adb9d2mr2679866oig.16.1696434234754;
+        Wed, 04 Oct 2023 08:43:54 -0700 (PDT)
 Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id m1-20020a4aab81000000b00573fb6178a6sm654637oon.44.2023.10.04.08.43.35
+        by smtp.gmail.com with ESMTPSA id s14-20020a05680810ce00b003af5f6e40d7sm537597ois.15.2023.10.04.08.43.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 08:43:36 -0700 (PDT)
+        Wed, 04 Oct 2023 08:43:54 -0700 (PDT)
 From:   Chen Wang <unicornxw@gmail.com>
 To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
         devicetree@vger.kernel.org, guoren@kernel.org, jszhang@kernel.org,
@@ -59,9 +59,9 @@ To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
         xiaoguang.xing@sophgo.com, apatel@ventanamicro.com
 Cc:     Inochi Amaoto <inochiama@outlook.com>,
         Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH v4 06/10] dt-bindings: timer: Add Sophgo sg2042 CLINT timer
-Date:   Wed,  4 Oct 2023 23:43:28 +0800
-Message-Id: <6e48cbe5e60f9ada2fd1fe58e803e127f1a678e5.1696433229.git.unicorn_wang@outlook.com>
+Subject: [PATCH v4 07/10] dt-bindings: interrupt-controller: Add Sophgo sg2042 CLINT mswi
+Date:   Wed,  4 Oct 2023 23:43:47 +0800
+Message-Id: <1f6b82a1864477a51db33d3f295889ff985b497b.1696433229.git.unicorn_wang@outlook.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1696433229.git.unicorn_wang@outlook.com>
 References: <cover.1696433229.git.unicorn_wang@outlook.com>
@@ -88,15 +88,15 @@ If we use the same compatible string for mswi and timer of the sg2042
 clint like sifive,clint, the DT may be like this:
 
 mswi: interrupt-controller@94000000 {
-	compatible = "sophgo,sg2042-clint", "thead,c900-clint";
-	interrupts-extended = <&cpu1intc 3>;
-	reg = <0x94000000 0x00010000>;
+        compatible = "sophgo,sg2042-clint", "thead,c900-clint";
+        interrupts-extended = <&cpu1intc 3>;
+        reg = <0x94000000 0x00010000>;
 };
 
 timer: timer@ac000000 {
-	compatible = "sophgo,sg2042-clint", "thead,c900-clint";
-	interrupts-extended = <&cpu1intc 7>;
-	reg = <0xac000000 0x00010000>;
+        compatible = "sophgo,sg2042-clint", "thead,c900-clint";
+        interrupts-extended = <&cpu1intc 7>;
+        reg = <0xac000000 0x00010000>;
 };
 
 Since the address of mswi and timer are different, it is hard to merge
@@ -113,29 +113,29 @@ future.
 So it is not the time to add ACLINT spec in the kernel bindings. Instead,
 using vendor bindings is more acceptable.
 
-Add new vendor specific compatible strings to identify timer of sg2042
+Add new vendor specific compatible strings to identify mswi of sg2042
 clint.
 
 Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
 Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
 ---
- .../timer/thead,c900-aclint-mtimer.yaml       | 43 +++++++++++++++++++
+ .../thead,c900-aclint-mswi.yaml               | 43 +++++++++++++++++++
  1 file changed, 43 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/thead,c900-aclint-mswi.yaml
 
-diff --git a/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/thead,c900-aclint-mswi.yaml b/Documentation/devicetree/bindings/interrupt-controller/thead,c900-aclint-mswi.yaml
 new file mode 100644
-index 000000000000..fbd235650e52
+index 000000000000..065f2544b63b
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/thead,c900-aclint-mswi.yaml
 @@ -0,0 +1,43 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/timer/thead,c900-aclint-mtimer.yaml#
++$id: http://devicetree.org/schemas/interrupt-controller/thead,c900-aclint-mswi.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Sophgo CLINT Timer
++title: Sophgo sg2042 CLINT Machine-level Software Interrupt Device
 +
 +maintainers:
 +  - Inochi Amaoto <inochiama@outlook.com>
@@ -144,8 +144,8 @@ index 000000000000..fbd235650e52
 +  compatible:
 +    items:
 +      - enum:
-+          - sophgo,sg2042-aclint-mtimer
-+      - const: thead,c900-aclint-mtimer
++          - sophgo,sg2042-aclint-mswi
++      - const: thead,c900-aclint-mswi
 +
 +  reg:
 +    maxItems: 1
@@ -163,13 +163,13 @@ index 000000000000..fbd235650e52
 +
 +examples:
 +  - |
-+    timer@ac000000 {
-+      compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
-+      interrupts-extended = <&cpu1intc 7>,
-+                            <&cpu2intc 7>,
-+                            <&cpu3intc 7>,
-+                            <&cpu4intc 7>;
-+      reg = <0xac000000 0x00010000>;
++    interrupt-controller@94000000 {
++      compatible = "sophgo,sg2042-aclint-mswi", "thead,c900-aclint-mswi";
++      interrupts-extended = <&cpu1intc 3>,
++                            <&cpu2intc 3>,
++                            <&cpu3intc 3>,
++                            <&cpu4intc 3>;
++      reg = <0x94000000 0x00010000>;
 +    };
 +...
 -- 
