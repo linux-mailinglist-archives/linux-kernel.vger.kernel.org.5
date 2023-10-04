@@ -2,236 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 338B37B847E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089617B8480
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243227AbjJDQGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
+        id S243237AbjJDQHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233451AbjJDQGi (ORCPT
+        with ESMTP id S233451AbjJDQHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:06:38 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ADE3EC9;
-        Wed,  4 Oct 2023 09:06:34 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11DB2C15;
-        Wed,  4 Oct 2023 09:07:13 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E57103F762;
-        Wed,  4 Oct 2023 09:06:32 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 17:06:30 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Nikunj Kela <quic_nkela@quicinc.com>
-Cc:     cristian.marussi@arm.com, robh+dt@kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] firmware: arm_scmi: Add qcom hvc/shmem transport
- support
-Message-ID: <20231004160630.pxspafszlt6o7oj6@bogus>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20230911194359.27547-1-quic_nkela@quicinc.com>
- <20230911194359.27547-5-quic_nkela@quicinc.com>
- <20231003111914.63z35sn3r3k7drtp@bogus>
- <6246714a-3b40-e1b6-640e-560ba55b6436@quicinc.com>
+        Wed, 4 Oct 2023 12:07:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00ECABF;
+        Wed,  4 Oct 2023 09:06:58 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 18:06:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696435617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=/mvQ3LQWM+yhOAQ4tE2ke6BtCBZK3qVmsmkWeNUxwjU=;
+        b=D834bHwVbxR9ipp3ib+2LAiFv+XvppnnkH5+kDBspJWd5betvqnDysg3oT17dsy7V4LjJ0
+        9XcBdqcDcjJYxsO6EgSbdKd/B2LT02lACYA/zebQhFE+yRk+fcAvvpNEhxhkVbPjjsBxPV
+        awPuMIMnOhA3p0dGW3PvxDUT9a4y4bAGExhqqOT3eFQuuZS5R8lX2ISW357PxNE2fU10eI
+        RwLpFrksxyVlKhTXLkfgsDQkotZEK3+YASP+XL2xrVW9HDU4QxhhuYts1ziH6Se7qKI13Q
+        KF3ptUGZr9rs82jnyzhzcf7/WytnrisZJwP6ihTOCqQ5nAijyNRB3fEJF8l/uw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696435617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=/mvQ3LQWM+yhOAQ4tE2ke6BtCBZK3qVmsmkWeNUxwjU=;
+        b=gY3oPh0wfRPWSdir5KxH2LBvmzM4d7LbHt98ze07+k9pT6yQZc5kaD8E7s0Cuy9f6j3Oa5
+        S72kTuAgvRp+u5AQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v6.6-rc4-rt7
+Message-ID: <20231004160655.0D-7XFo_@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6246714a-3b40-e1b6-640e-560ba55b6436@quicinc.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 09:16:27AM -0700, Nikunj Kela wrote:
-> 
-> On 10/3/2023 4:19 AM, Sudeep Holla wrote:
-> > On Mon, Sep 11, 2023 at 12:43:59PM -0700, Nikunj Kela wrote:
-> > > This change adds the support for SCMI message exchange on Qualcomm
-> > > virtual platforms.
-> > > 
-> > > The hypervisor associates an object-id also known as capability-id
-> > > with each hvc doorbell object. The capability-id is used to identify the
-> > > doorbell from the VM's capability namespace, similar to a file-descriptor.
-> > > 
-> > > The hypervisor, in addition to the function-id, expects the capability-id
-> > > to be passed in x1 register when HVC call is invoked.
-> > > 
-> > > The function-id & capability-id are allocated by the hypervisor on bootup
-> > > and are stored in the shmem region by the firmware before starting Linux.
-> > > 
-> > > Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
-> > > ---
-> > >   drivers/firmware/arm_scmi/driver.c |  1 +
-> > >   drivers/firmware/arm_scmi/smc.c    | 47 ++++++++++++++++++++++++++----
-> > >   2 files changed, 43 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> > > index 87383c05424b..ea344bc6ae49 100644
-> > > --- a/drivers/firmware/arm_scmi/driver.c
-> > > +++ b/drivers/firmware/arm_scmi/driver.c
-> > > @@ -2915,6 +2915,7 @@ static const struct of_device_id scmi_of_match[] = {
-> > >   #ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC
-> > >   	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
-> > >   	{ .compatible = "arm,scmi-smc-param", .data = &scmi_smc_desc},
-> > > +	{ .compatible = "qcom,scmi-hvc-shmem", .data = &scmi_smc_desc},
-> > >   #endif
-> > >   #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
-> > >   	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
-> > > diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
-> > > index 0a0b7e401159..94ec07fdc14a 100644
-> > > --- a/drivers/firmware/arm_scmi/smc.c
-> > > +++ b/drivers/firmware/arm_scmi/smc.c
-> > > @@ -50,6 +50,9 @@
-> > >    * @func_id: smc/hvc call function id
-> > >    * @param_page: 4K page number of the shmem channel
-> > >    * @param_offset: Offset within the 4K page of the shmem channel
-> > > + * @cap_id: hvc doorbell's capability id to be used on Qualcomm virtual
-> > > + *	    platforms
-> > > + * @qcom_xport: Flag to indicate the transport on Qualcomm virtual platforms
-> > >    */
-> > >   struct scmi_smc {
-> > > @@ -63,6 +66,8 @@ struct scmi_smc {
-> > >   	u32 func_id;
-> > >   	u32 param_page;
-> > >   	u32 param_offset;
-> > > +	u64 cap_id;
-> > Can it be unsigned long instead so that it just works for both 32 and 64 bit.
-> 
-> My first version of this patch was ulong but Bjorn suggested to make this
-> structure size fixed i.e. architecture independent. Hence changed it to u64.
-> If you are ok with ulong, I can change it back to ulong.
->
+Dear RT folks!
 
-SMCCC pre-v1.2 used the common structure in that way. I don't see any issue
-with that. I haven't followed Bjorn suggestions/comments though.
+I'm pleased to announce the v6.6-rc4-rt7 patch set. 
 
-> 
-> > 
-> > > +	bool qcom_xport;
-> > Do we really need this ?
-> 
-> Not if we initialize it with a negative value since 0 is a valid value for
-> cap-id.
->
+Changes since v6.6-rc4-rt6:
 
-Fine with negative value(-EINVAL may be).
+  - Lockdep complained about SRCU locking if printk was used from NMI.
 
-> > >   	int ret;
-> > >   	if (!tx)
-> > > @@ -158,9 +164,34 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
-> > >   		return -EADDRNOTAVAIL;
-> > >   	}
-> > > -	ret = of_property_read_u32(dev->of_node, "arm,smc-id", &func_id);
-> > > -	if (ret < 0)
-> > > -		return ret;
-> > > +	if (of_device_is_compatible(dev->of_node, "qcom,scmi-hvc-shmem")) {
-> > > +		scmi_info->qcom_xport = true;
-> > > +
-> > > +		/* The func-id & capability-id are kept in last 16 bytes of shmem.
-> > > +		 *     +-------+
-> > > +		 *     |       |
-> > > +		 *     | shmem |
-> > > +		 *     |       |
-> > > +		 *     |       |
-> > > +		 *     +-------+ <-- (size - 16)
-> > > +		 *     | funcId|
-> > > +		 *     +-------+ <-- (size - 8)
-> > > +		 *     | capId |
-> > > +		 *     +-------+ <-- size
-> > > +		 */
-> > > +
-> > > +		func_id = readl((void __iomem *)(scmi_info->shmem) + size - 16);
-> > So unlike 'arm,scmi-smc', you don't want 'arm,smc-id' in the DT ? Any
-> > particular reason ? Just to get both FID and cap ID from shmem ?
->
+  - The i915 driver could create a locking related splat during suspend/
+    resume. Reported by John B. Wyatt IV.
 
-I am fine either way. If you use from DT(via arm,smc-id), then "qcom,scmi"
-can be just addition compatible that expects you to read cap-id from the
-shmem. May need adjustment in the binding as you allow both
-"qcom,scmi-smc", "arm,scmi-smc". I will leave the details to you.
+  - A new version of printk. This is an update to the current
+    development version. Large patch series provided by John Ogness.
 
-> I could use smc-id binding for func-id, it's just two parameters will come
-> from two different places so thought of keeping everything at one place to
-> maintain consistency.  Since DT can't take cap-id, I decided to move
-> func-id. I am fine if you want me to use smc-id binding.
->
+Known issues
+     None
 
-Up to you. If you want to make "qcom,scmi-smc" and "arm,scmi-smc"
-compatible in way in that way or you can keep it incompatible as you have
-proposed in this patch set.
+The delta patch against v6.6-rc4-rt6 is not appended below due to its
+size. It and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/incr/patch-6.6-rc4-rt6-rt7.patch.xz
 
-> 
-> > > +#ifdef CONFIG_ARM64
-> > I would rather make this arch agnostic using CONFIG_64BIT
-> ok.
-> > 
-> > > +		cap_id = readq((void __iomem *)(scmi_info->shmem) + size - 8);
-> > Do you need __iomem typecast here ? Is scmi_info->shmem not already __iomem ?
-> > Also scmi_info->shmem is ioremapped just few steps above and you are using
-> > read* here, is that safe ?
-> 
-> I saw some compilation warnings without __iomem. I will use ioread* API
-> instead of read*.
->
+and as web based diff:
+     
+     https://git.kernel.org/rt/linux-rt-devel/d/v6.6-rc4-rt7/v6.6-rc4-rt6
 
-That was the clue that you were using __iomem with read* calls IMO.
+You can get this release via the git tree at:
 
-> 
-> > 
-> > > +#else
-> > > +		/* capability-id is 32 bit wide on 32bit machines */
-> > > +		cap_id = rieadl((void __iomem *)(scmi_info->shmem) + size - 8);
-> > Other thought once you move for u64 to unsigned long you need not have
-> > #ifdeffery, just do copy of sizeof(unsigned long)
-> Right, my first version was like that only.
+    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.6-rc4-rt7
 
-OK
+The RT patch against v6.6-rc4 can be found here:
 
-> > 
-> > > +#endif
-> > > +	} else {
-> > > +		ret = of_property_read_u32(dev->of_node, "arm,smc-id", &func_id);
-> > > +		if (ret < 0)
-> > > +			return ret;
-> > > +	}
-> > >   	if (of_device_is_compatible(dev->of_node, "arm,scmi-smc-param")) {
-> > >   		scmi_info->param_page = SHMEM_PAGE(res.start);
-> > > @@ -184,6 +215,7 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
-> > >   	}
-> > >   	scmi_info->func_id = func_id;
-> > > +	scmi_info->cap_id = cap_id;
-> > >   	scmi_info->cinfo = cinfo;
-> > >   	smc_channel_lock_init(scmi_info);
-> > >   	cinfo->transport_info = scmi_info;
-> > > @@ -213,6 +245,7 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
-> > >   	struct arm_smccc_res res;
-> > >   	unsigned long page = scmi_info->param_page;
-> > >   	unsigned long offset = scmi_info->param_offset;
-> > > +	unsigned long cap_id = (unsigned long)scmi_info->cap_id;
-> > >   	/*
-> > >   	 * Channel will be released only once response has been
-> > > @@ -222,8 +255,12 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
-> > >   	shmem_tx_prepare(scmi_info->shmem, xfer, cinfo);
-> > > -	arm_smccc_1_1_invoke(scmi_info->func_id, page, offset, 0, 0, 0, 0, 0,
-> > > -			     &res);
-> > > +	if (scmi_info->qcom_xport)
-> > Just make sure cap_id is set only for qcom and just use that as your flag.
-> > No point in setting always true scmi_info->qcom_xport and using it here.
-> ok, I can remove that. Though 0 is a valid value for cap-id so will have to
-> init cap-id with a negative value.
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patch-6.6-rc4-rt7.patch.xz
 
-Yes as mentioned above.
+The split quilt queue is available at:
 
--- 
-Regards,
-Sudeep
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patches-6.6-rc4-rt7.tar.xz
+
+Sebastian
