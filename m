@@ -2,102 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D03E7B9884
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830D87B9890
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240430AbjJDXCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 19:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
+        id S240426AbjJDXJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 19:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236558AbjJDXC1 (ORCPT
+        with ESMTP id S236558AbjJDXJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 19:02:27 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB45CAD;
-        Wed,  4 Oct 2023 16:02:24 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7a2cc9ee64cso17026639f.1;
-        Wed, 04 Oct 2023 16:02:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696460544; x=1697065344; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TLNVk+qvr8aflFPQ/PSFQrVVk8m9AYioDN8iHQp7XvY=;
-        b=kl4RCUdpYDYqSW+7WIcqhpov1hkfV44JcSS7RJF9dmwY8RlX7WhHEC0gDDUv4/dyno
-         iOUBeWNHG/lU3JSRKERKswwE6F0KkWyvnMSAZoAOs6aYzYQFxVUDXeD03z9H0id/u9KP
-         5WIb4khSzYY4u/GLyNrfIKm6VxXmPNdUraTXsWKe3RWes6VQDzNQBDOfeyo3+RnHe1Ea
-         HmOLfdN+pVRf4y2EqP0bSQ8hyMZtYlllllvYL7d9Dp8y7b4CFHfeFAk+An/ag9XzeTb8
-         h9zcuneAt2JtYNv8a73Rc8UkyL0O3aJ02inoKIBR0/K2ghxpWHhUf2KY1+bpgiO0Am75
-         yTnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696460544; x=1697065344;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TLNVk+qvr8aflFPQ/PSFQrVVk8m9AYioDN8iHQp7XvY=;
-        b=v0zsHvOkRX6rIa3Ixc6JwNba81VKjlhNGEJty6a/li9DKVql0rDaSs1/4XiqZoVlWL
-         X523/i2wOr6yJvu157m2+lqV7U8cDIlBGHyNBffJS6pQSN2p3D0vGafhERdDx/+Lwd8m
-         CxjRzKXs7GDF0iLdKhsPFMKSI2ON1lGr+JFGgeUQz/ywOC8PAOtehof2ed9MsCRRlXGb
-         RYNwUjqeGyCiiV8SRbJv7wNd9w+kKzSp5p6+WeDk97Txt9OqnTSSNGr68s2+Yn9er3+r
-         ydrMVYjv19nXYZurMXk71/f0KN4YLt3fZZGoOObK2OQxlyXiSHr7C+0s1vNemqSb7T5j
-         oyww==
-X-Gm-Message-State: AOJu0Yw5uZWPGASFmg4VsJSNlJe4YVXpbva5ddJF9Eqza1J5AoT3LkiZ
-        HevhzTM5PvNR4njAi48N0Q8=
-X-Google-Smtp-Source: AGHT+IFJKg+S+wNiDZTF3lLLtAruDx2X4H03Kq/vYLX5Hc/bga8woWphFW86af2SSaZy61JsclM9dw==
-X-Received: by 2002:a5d:904b:0:b0:792:70c2:9db1 with SMTP id v11-20020a5d904b000000b0079270c29db1mr4307131ioq.1.1696460544209;
-        Wed, 04 Oct 2023 16:02:24 -0700 (PDT)
-Received: from aford-System-Version.lan (c-75-72-166-104.hsd1.mn.comcast.net. [75.72.166.104])
-        by smtp.gmail.com with ESMTPSA id u25-20020a02cbd9000000b0042b3bb542aesm82688jaq.168.2023.10.04.16.02.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 16:02:23 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: imx8mn: Add sound-dai-cells to micfil node
-Date:   Wed,  4 Oct 2023 18:01:59 -0500
-Message-Id: <20231004230159.33527-2-aford173@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231004230159.33527-1-aford173@gmail.com>
-References: <20231004230159.33527-1-aford173@gmail.com>
+        Wed, 4 Oct 2023 19:09:55 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99261C0;
+        Wed,  4 Oct 2023 16:09:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696460986;
+        bh=mCF3g0jquxEL+pwxpJMLbfQmMd435GQolk4LT94nhT8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=nQn2tPl+5GuHnR89ZLjroihIy1eSaqjG1tSqI1FfAnH+wiYPjl8/kma2GYtsCaMUN
+         F1liNxo9BXYcr+MD3tPnzaR33yd8shuCWkzpc8zhBRa7SzhU0UwGjZkEYfXdtAfF8m
+         tDrKCohOP7HJReYR2jod54jek/yvRzVqbfJ6nVuPHU8tcm+Ayy6xCPXpj71ERxqK5j
+         SPz5o6Yww8KNetwpFhKLM8vwpFg77HRjdDnjxtzSgU+5godHB+PqsaoPqp7Ff5Mm/h
+         6iqzYQqlFSUyYP5lIB/ezlpCgki1IlDRUd1xN7Rk+A67uAxXPWzaGMt3kYiwQweEvj
+         ajgS/uzzUe4Pg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S19Pk09rWz4xLy;
+        Thu,  5 Oct 2023 10:09:45 +1100 (AEDT)
+Date:   Thu, 5 Oct 2023 10:09:32 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     David Sterba <dsterba@suse.com>, Filipe Manana <fdmanana@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the btrfs tree with the btrfs-fixes
+ tree
+Message-ID: <20231005100932.53c35f2c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/H93Sqh0F6fw6Oc5b84TQeVD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per the DT bindings, the micfil node should have a sound-dai-cells
-entry.
+--Sig_/H93Sqh0F6fw6Oc5b84TQeVD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: cca69ef6eba5 ("arm64: dts: imx8mn: Add support for micfil")
-Signed-off-by: Adam Ford <aford173@gmail.com>
+Hi all,
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index aa38dd6dc9ba..1bb1d0c1bae4 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -371,6 +371,7 @@ micfil: audio-controller@30080000 {
- 						      "pll8k", "pll11k", "clkext3";
- 					dmas = <&sdma2 24 25 0x80000000>;
- 					dma-names = "rx";
-+					#sound-dai-cells = <0>;
- 					status = "disabled";
- 				};
- 
--- 
-2.40.1
+Today's linux-next merge of the btrfs tree got a conflict in:
 
+  fs/btrfs/transaction.h
+
+between commit:
+
+  f8d1b011ca8c ("btrfs: always print transaction aborted messages with an e=
+rror level")
+
+from the btrfs-fixes tree and commit:
+
+  5483af73c851 ("btrfs: rename errno identifiers to error")
+
+from the btrfs tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/btrfs/transaction.h
+index 93869cda6af9,de58776de307..000000000000
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@@ -213,15 -216,15 +216,15 @@@ do {							=09
+  	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
+  			&((trans)->fs_info->fs_state))) {	\
+  		first =3D true;					\
+- 		if (WARN(abort_should_print_stack(errno),	\
++ 		if (WARN(abort_should_print_stack(error),	\
+  			KERN_ERR				\
+  			"BTRFS: Transaction aborted (error %d)\n",	\
+- 			(errno))) {					\
++ 			(error))) {					\
+  			/* Stack trace printed. */			\
+  		} else {						\
+ -			btrfs_debug((trans)->fs_info,			\
+ -				    "Transaction aborted (error %d)", \
+ +			btrfs_err((trans)->fs_info,			\
+ +				  "Transaction aborted (error %d)",	\
+- 				  (errno));			\
++ 				  (error));			\
+  		}						\
+  	}							\
+  	__btrfs_abort_transaction((trans), __func__,		\
+
+--Sig_/H93Sqh0F6fw6Oc5b84TQeVD
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUd8KwACgkQAVBC80lX
+0GyY2gf/cFoHnUUaAoG++VOskX/gdqgV2nTtk5H5fQWf2uN+yfYSLCp0eofjmT5n
+wpeVYzWxvAc8h/cy9gpU1zf7fCoGKKhqHQjOXGxWqXK+odcsCG2aW7U+idEb1kxb
+YHAye6G6QVo1l8wtMtk68b/+9StY+hpBjXQ21cu5WhcBA7ZjkxOtLKDjoPAA1jj6
+KwM8RqCrDwwhu5D7ywH4vfDudMUyEZnZoOHqwwO1toOBSQrV4wvMpna7nqXL1nUg
+99TJV6bO1VrkhbAP06k/CiOV/a7v+cKFDoq0tJ0EEMJnndOCLrbtbWPuI7FsYj5h
+mAjAk1TR8a2ijCskygxZzvuDV1CH/Q==
+=uhFb
+-----END PGP SIGNATURE-----
+
+--Sig_/H93Sqh0F6fw6Oc5b84TQeVD--
