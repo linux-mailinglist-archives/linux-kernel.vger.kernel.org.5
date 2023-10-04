@@ -2,134 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 734847B8CD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEB97B8D36
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245485AbjJDTHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 15:07:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47496 "EHLO
+        id S244976AbjJDTKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 15:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343901AbjJDTHZ (ORCPT
+        with ESMTP id S245453AbjJDTJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 15:07:25 -0400
-Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7DF30F4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 12:03:19 -0700 (PDT)
-Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
-        id 0F49CD08C004; Wed,  4 Oct 2023 12:03:03 -0700 (PDT)
-From:   Stefan Roesch <shr@devkernel.io>
-To:     kernel-team@fb.com
-Cc:     shr@devkernel.io, akpm@linux-foundation.org, david@redhat.com,
-        hannes@cmpxchg.org, riel@surriel.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v1 4/4] mm/ksm: document ksm advisor and its sysfs knobs
-Date:   Wed,  4 Oct 2023 12:02:49 -0700
-Message-Id: <20231004190249.829015-5-shr@devkernel.io>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231004190249.829015-1-shr@devkernel.io>
-References: <20231004190249.829015-1-shr@devkernel.io>
+        Wed, 4 Oct 2023 15:09:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899B62719;
+        Wed,  4 Oct 2023 12:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696446516; x=1727982516;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=kWf97kMoKdrkVJpwjQMu+QVoyLKkxZoWflLolvd5MLk=;
+  b=dYCw69ZJdA35dJUmshcyiaHzvWcdNzImHtjn1mUs3x4+GM3Zena2T41A
+   Sc+Mh1dKefY5qXdbELx0cKd0FfMYwr7GUQgv15Mj2c8CA19D3J+aT0kd5
+   usgJ5UVr0hlYKl1r7zVa5cIlUG/aZJdDthLT9AzFZXW37Wn/KmhzqpMwk
+   37vETq3oR3puTAd/y3+UtrxgtIFmXJwIyHT8e2tjWbB2I8HmHXft8jzun
+   JYzjgbsrqmKCjfjTLHMRGRmkpYpO8OfkmW2YRM5U+AnZl8nBDqV5WRYB/
+   gMWB9daSARn8eCkExJWUnhJVlBTnax7RuCv1nXfW4hq6pEDJOFvA4Ha21
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="362630006"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="362630006"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 12:08:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="867528566"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="867528566"
+Received: from jithujos.sc.intel.com ([172.25.103.66])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 12:08:35 -0700
+From:   Jithu Joseph <jithu.joseph@intel.com>
+To:     hdegoede@redhat.com, markgross@kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        rostedt@goodmis.org, jithu.joseph@intel.com, ashok.raj@intel.com,
+        tony.luck@intel.com, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
+        ravi.v.shankar@intel.com, pengfei.xu@intel.com,
+        ilpo.jarvinen@linux.intel.com
+Subject: [PATCH v3 9/9] platform/x86/intel/ifs: ARRAY BIST for Sierra Forest
+Date:   Wed,  4 Oct 2023 12:04:32 -0700
+Message-Id: <20231004190432.3028599-1-jithu.joseph@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <b92b44ed-19a7-aec2-615b-1b1755dafdac@linux.intel.com>
+References: <b92b44ed-19a7-aec2-615b-1b1755dafdac@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,HELO_MISC_IP,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_NEUTRAL,
-        TVD_RCVD_IP autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This documents the KSM advisor and its new knobs in /sys/fs/kernel/mm.
+Array BIST MSR addresses, bit definition and semantics are different for
+Sierra Forest. Branch into a separate Array BIST flow on Sierra Forest
+when user invokes Array Test.
 
-Signed-off-by: Stefan Roesch <shr@devkernel.io>
+Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 ---
- Documentation/admin-guide/mm/ksm.rst | 45 ++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ - Add #define for Array generation (Ilpo Järvinen)
 
-diff --git a/Documentation/admin-guide/mm/ksm.rst b/Documentation/admin-g=
-uide/mm/ksm.rst
-index e59231ac6bb7..8de93650d3b0 100644
---- a/Documentation/admin-guide/mm/ksm.rst
-+++ b/Documentation/admin-guide/mm/ksm.rst
-@@ -164,6 +164,25 @@ smart_scan
-         optimization is enabled.  The ``pages_skipped`` metric shows how
-         effective the setting is.
-=20
-+advisor_mode
-+        The ``advisor_mode`` selects the current advisor. Two modes are
-+        supported: 0 (None) and 1 (Scan time). The default is None. By
-+        setting ``advisor_mode`` to 1, the scan time advisor is enabled.
-+        The section about ``advisor`` explains in detail how the scan ti=
-me
-+        advisor works.
+ drivers/platform/x86/intel/ifs/ifs.h     |  7 +++++
+ drivers/platform/x86/intel/ifs/core.c    | 15 +++++-----
+ drivers/platform/x86/intel/ifs/runtest.c | 37 +++++++++++++++++++++++-
+ 3 files changed, 51 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
+index f0dd849b3400..2dd5e3406dac 100644
+--- a/drivers/platform/x86/intel/ifs/ifs.h
++++ b/drivers/platform/x86/intel/ifs/ifs.h
+@@ -137,6 +137,8 @@
+ #define MSR_CHUNKS_AUTHENTICATION_STATUS	0x000002c5
+ #define MSR_ACTIVATE_SCAN			0x000002c6
+ #define MSR_SCAN_STATUS				0x000002c7
++#define MSR_ARRAY_TRIGGER			0x000002d6
++#define MSR_ARRAY_STATUS			0x000002d7
+ #define MSR_SAF_CTRL				0x000004f0
+ 
+ #define SCAN_NOT_TESTED				0
+@@ -146,6 +148,9 @@
+ #define IFS_TYPE_SAF			0
+ #define IFS_TYPE_ARRAY_BIST		1
+ 
++#define ARRAY_GEN_0			0
++#define ARRAY_GEN_1			1
 +
-+advisor_min_pages
-+        specifies the lower limit of the ``pages_to_scan`` parameter of =
-the
-+        scan time advisor. The default is 500.
+ /* MSR_SCAN_HASHES_STATUS bit fields */
+ union ifs_scan_hashes_status {
+ 	u64	data;
+@@ -272,6 +277,7 @@ struct ifs_test_caps {
+  * @cur_batch: number indicating the currently loaded test file
+  * @generation: IFS test generation enumerated by hardware
+  * @chunk_size: size of a test chunk
++ * @array_gen: test generation of array test
+  */
+ struct ifs_data {
+ 	int	loaded_version;
+@@ -283,6 +289,7 @@ struct ifs_data {
+ 	u32	cur_batch;
+ 	u32	generation;
+ 	u32	chunk_size;
++	u32	array_gen;
+ };
+ 
+ struct ifs_work {
+diff --git a/drivers/platform/x86/intel/ifs/core.c b/drivers/platform/x86/intel/ifs/core.c
+index 0c8927916373..0a872b874af8 100644
+--- a/drivers/platform/x86/intel/ifs/core.c
++++ b/drivers/platform/x86/intel/ifs/core.c
+@@ -11,16 +11,16 @@
+ 
+ #include "ifs.h"
+ 
+-#define X86_MATCH(model)				\
++#define X86_MATCH(model, array_gen)				\
+ 	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(INTEL, 6,	\
+-		INTEL_FAM6_##model, X86_FEATURE_CORE_CAPABILITIES, NULL)
++		INTEL_FAM6_##model, X86_FEATURE_CORE_CAPABILITIES, array_gen)
+ 
+ static const struct x86_cpu_id ifs_cpu_ids[] __initconst = {
+-	X86_MATCH(SAPPHIRERAPIDS_X),
+-	X86_MATCH(EMERALDRAPIDS_X),
+-	X86_MATCH(GRANITERAPIDS_X),
+-	X86_MATCH(GRANITERAPIDS_D),
+-	X86_MATCH(ATOM_CRESTMONT_X),
++	X86_MATCH(SAPPHIRERAPIDS_X, ARRAY_GEN_0),
++	X86_MATCH(EMERALDRAPIDS_X, ARRAY_GEN_0),
++	X86_MATCH(GRANITERAPIDS_X, ARRAY_GEN_0),
++	X86_MATCH(GRANITERAPIDS_D, ARRAY_GEN_0),
++	X86_MATCH(ATOM_CRESTMONT_X, ARRAY_GEN_1),
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(x86cpu, ifs_cpu_ids);
+@@ -100,6 +100,7 @@ static int __init ifs_init(void)
+ 			continue;
+ 		ifs_devices[i].rw_data.generation = FIELD_GET(MSR_INTEGRITY_CAPS_SAF_GEN_MASK,
+ 							      msrval);
++		ifs_devices[i].rw_data.array_gen = (u32)m->driver_data;
+ 		ret = misc_register(&ifs_devices[i].misc);
+ 		if (ret)
+ 			goto err_exit;
+diff --git a/drivers/platform/x86/intel/ifs/runtest.c b/drivers/platform/x86/intel/ifs/runtest.c
+index 4fe544d79946..9ac75420c15e 100644
+--- a/drivers/platform/x86/intel/ifs/runtest.c
++++ b/drivers/platform/x86/intel/ifs/runtest.c
+@@ -329,6 +329,38 @@ static void ifs_array_test_core(int cpu, struct device *dev)
+ 		ifsd->status = SCAN_TEST_PASS;
+ }
+ 
++#define ARRAY_GEN1_TEST_ALL_ARRAYS	0x0ULL
++#define ARRAY_GEN1_STATUS_FAIL		0x1ULL
 +
-+adivsor_max_pages
-+        specifies the upper limit of the ``pages_to_scan`` parameter of =
-the
-+        scan time advisor. The default is 5000.
++static int do_array_test_gen1(void *status)
++{
++	int cpu = smp_processor_id();
++	int first;
 +
-+advisor_target_scan_time
-+        specifies the target scan time in seconds to scan all the candid=
-ate
-+        pages. The default value is 200 seconds.
++	first = cpumask_first(cpu_smt_mask(cpu));
 +
- The effectiveness of KSM and MADV_MERGEABLE is shown in ``/sys/kernel/mm=
-/ksm/``:
-=20
- general_profit
-@@ -263,6 +282,32 @@ ksm_swpin_copy
- 	note that KSM page might be copied when swapping in because do_swap_pag=
-e()
- 	cannot do all the locking needed to reconstitute a cross-anon_vma KSM p=
-age.
-=20
-+Advisor
-+=3D=3D=3D=3D=3D=3D=3D
++	if (cpu == first) {
++		wrmsrl(MSR_ARRAY_TRIGGER, ARRAY_GEN1_TEST_ALL_ARRAYS);
++		rdmsrl(MSR_ARRAY_STATUS, *((u64 *)status));
++	}
 +
-+The number of candidate pages for KSM is dynamic. It can be often observ=
-ed
-+that during the startup of an application more candidate pages need to b=
-e
-+processed. Without an advisor the ``pages_to_scan`` parameter needs to b=
-e
-+sized for the maximum number of candidate pages. The scan time advisor c=
-an
-+changes the ``pages_to_scan`` parameter based on demand.
++	return 0;
++}
 +
-+The advisor can be enabled so KSM can automatically adapt to changes in =
-the
-+number of candidate pages to scan. Two advisors are implemented: 0 (None=
-) and
-+1 (Scan time). With None no advisor is enabled. The default is None.
++static void ifs_array_test_gen1(int cpu, struct device *dev)
++{
++	struct ifs_data *ifsd = ifs_get_data(dev);
++	u64 status = 0;
 +
-+The Scan time advisor changes the ``pages_to_scan`` parameter based on t=
-he
-+observed scan times. The possible values for the ``pages_to_scan`` param=
-eter is
-+limited by the ``advisor_min_pages`` and ``advisor_max_pages`` parameter=
-s. In
-+addition there is also the ``advisor_target_scan_time`` parameter. This
-+parameter sets the target time to scan all the KSM candidate pages. The
-+parameter ``advisor_target_scan_time`` decides how aggressive the scan t=
-ime
-+advisor scans candidate pages. Lower values make the scan time advisor t=
-o scan
-+more aggresively. This is the most important parameter for the configura=
-tion of
-+the scan time advisor.
++	stop_core_cpuslocked(cpu, do_array_test_gen1, &status);
++	ifsd->scan_details = status;
 +
-+The ``pages_to_scan`` parameter is re-calculated after a scan has been c=
-ompleted.
++	if (status & ARRAY_GEN1_STATUS_FAIL)
++		ifsd->status = SCAN_TEST_FAIL;
++	else
++		ifsd->status = SCAN_TEST_PASS;
++}
 +
-+
- --
- Izik Eidus,
- Hugh Dickins, 17 Nov 2009
---=20
-2.39.3
+ /*
+  * Initiate per core test. It wakes up work queue threads on the target cpu and
+  * its sibling cpu. Once all sibling threads wake up, the scan test gets executed and
+@@ -356,7 +388,10 @@ int do_core_test(int cpu, struct device *dev)
+ 		ifs_test_core(cpu, dev);
+ 		break;
+ 	case IFS_TYPE_ARRAY_BIST:
+-		ifs_array_test_core(cpu, dev);
++		if (ifsd->array_gen == ARRAY_GEN_0)
++			ifs_array_test_core(cpu, dev);
++		else
++			ifs_array_test_gen1(cpu, dev);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-- 
+2.25.1
 
