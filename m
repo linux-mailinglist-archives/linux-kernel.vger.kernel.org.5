@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C977B806B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9A47B806C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242605AbjJDNN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
+        id S242615AbjJDNOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 09:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242592AbjJDNN6 (ORCPT
+        with ESMTP id S242601AbjJDNN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Oct 2023 09:13:58 -0400
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958E9C6
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A8DD8
         for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:13:54 -0700 (PDT)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3ae5e567e06so1051014b6e.0
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6bf0d513257so2555468a34.1
         for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 06:13:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1696425234; x=1697030034;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=DrcW4OMT1QMOjaQ9UXk5pKoLRn9s24eN4xvLuRY+D14=;
-        b=IYQbDNNAlMqCmd2AYggh0dybnwbcSG1FqqUsVSrjHQV6y5Q2NIJ0mwAePzZoRF5094
-         fVHWv9QR9oafkE7arjvPNiaiymbWFG7hZrAn4EgMmmTIQdtuhtLNwi2yva6ThmvdAfdZ
-         vjGSworIaEve+ZyXsBPWs4kS8UmN+TUtna5mrOX3g2lYoAIAFFoycyUzk+/W/g4GLiDh
-         3GjGpVuFIqxodeQ9N1MrzOrckmKsVqTs2nFv+Y1fEA4MyAuoAf/dnIrWGt8vtQ1scr04
-         y98kjwz+ChtNrqWXXI3AcRcO6a63+tFHS2N1lCwvruQqSgQGe1dYH3g7+yX5ubYEB3he
-         lIlw==
-X-Gm-Message-State: AOJu0Yy7GSgLMh97/mrW1eY/ZPlojiU2rmUQ6MQk2RTjdniL1tVxY4z/
-        lr9EAbGZgkyA0LQ4V2kVm1AY7Copq6X8r6pC1d1A//jzS7tU
-X-Google-Smtp-Source: AGHT+IHfDRUg7LqJhb2wepdOvTrAtQ+X55IqtXgukamAoigNDNBji4oayVC5qOh3f/D4cqZ9GElXomYojFteURQoI/PzFNA0sUfH
+        bh=WnT9mm81EGurra3sbmIkgyRkR1mbNMjC0mH42Ehxctc=;
+        b=oojVTeeE0p9GWNduV23uwR4RBGERw+Rz3Hw41IfFdPsc7vJwzBFYl5v+Y5QuLQPX9t
+         dcBI6Wr2+Z48+8uuIHjOcKz1yegMi/lkAyqOEJ+THubiHBU+8mVkpF4epzBQ8V7m6qZ3
+         dcaewcz0X66JIZvv1km0+aNYlSfp8EGLk0o5tzHKNZz7MTfXCArjG5LJLlTEAhJwwlDu
+         PqXk83Szc+gBibiMaYX924OwloDDU6GvMNMIlfJyFXFu5zHHHxfoO/h52nj5EXcgxslQ
+         SQiP0A2sfAUyINDylFOXiJIdNAMhzG+2DboFnPkFBzl1c5vnjn/r0Lnsx++RZU0KsUo4
+         edog==
+X-Gm-Message-State: AOJu0YwC8rDSGhJjaVhJBk4cqfPir8b2NHp4mM+u9E3a2CubmXmSRMl0
+        iUkh2Ri/JhTocx9SfTf1iqX1QW+cyvGNT8m1ySn+dKuh80wt
+X-Google-Smtp-Source: AGHT+IGUAofh+8r+Oh0/Def6ijScSV5T+rXKZ1byN0sspuCtt3jKMjaAac5Opyu0n9CfSLMyLrKcuanu0px3GQjZ5OBYLrh7g3u7
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:159e:b0:3a8:45f0:b83a with SMTP id
- t30-20020a056808159e00b003a845f0b83amr1015537oiw.5.1696425234065; Wed, 04 Oct
- 2023 06:13:54 -0700 (PDT)
+X-Received: by 2002:a05:6870:3a18:b0:1dd:39ce:e252 with SMTP id
+ du24-20020a0568703a1800b001dd39cee252mr1011367oab.0.1696425234278; Wed, 04
+ Oct 2023 06:13:54 -0700 (PDT)
 Date:   Wed, 04 Oct 2023 06:13:54 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000076edef0606e3c739@google.com>
-Subject: [syzbot] Monthly hfs report (Oct 2023)
-From:   syzbot <syzbot+listd1c4248b878628705b59@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+Message-ID: <0000000000007a31ca0606e3c7b4@google.com>
+Subject: [syzbot] Monthly ntfs report (Oct 2023)
+From:   syzbot <syzbot+list840e3c8e5a11b542fa0b@syzkaller.appspotmail.com>
+To:     anton@tuxera.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
         syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello hfs maintainers/developers,
+Hello ntfs maintainers/developers,
 
-This is a 31-day syzbot report for the hfs subsystem.
+This is a 31-day syzbot report for the ntfs subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/hfs
+https://syzkaller.appspot.com/upstream/s/ntfs
 
-During the period, 4 new issues were detected and 0 were fixed.
-In total, 44 issues are still open and 12 have been fixed so far.
+During the period, 1 new issues were detected and 1 were fixed.
+In total, 24 issues are still open and 8 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref  Crashes Repro Title
-<1>  5228    Yes   possible deadlock in hfsplus_file_truncate
-                   https://syzkaller.appspot.com/bug?extid=6030b3b1b9bf70e538c4
-<2>  5043    Yes   possible deadlock in hfsplus_file_extend
-                   https://syzkaller.appspot.com/bug?extid=325b61d3c9a17729454b
-<3>  4160    Yes   possible deadlock in hfsplus_get_block
-                   https://syzkaller.appspot.com/bug?extid=b7ef7c0c8d8098686ae2
-<4>  2205    Yes   KMSAN: uninit-value in hfs_revalidate_dentry
-                   https://syzkaller.appspot.com/bug?extid=3ae6be33a50b5aae4dab
-<5>  1178    Yes   kernel BUG in __hfsplus_setxattr
-                   https://syzkaller.appspot.com/bug?extid=1107451c16b9eb9d29e6
-<6>  831     Yes   KASAN: slab-out-of-bounds Read in hfsplus_uni2asc
-                   https://syzkaller.appspot.com/bug?extid=076d963e115823c4b9be
-<7>  660     Yes   KMSAN: uninit-value in hfsplus_delete_cat
-                   https://syzkaller.appspot.com/bug?extid=fdedff847a0e5e84c39f
-<8>  637     Yes   kernel BUG in hfs_write_inode
-                   https://syzkaller.appspot.com/bug?extid=97e301b4b82ae803d21b
-<9>  458     Yes   general protection fault in hfs_find_init
-                   https://syzkaller.appspot.com/bug?extid=7ca256d0da4af073b2e2
-<10> 438     Yes   WARNING in hfs_bnode_create
-                   https://syzkaller.appspot.com/bug?extid=a19ca73b21fe8bc69101
+<1>  4008    Yes   possible deadlock in ntfs_read_folio
+                   https://syzkaller.appspot.com/bug?extid=8ef76b0b1f86c382ad37
+<2>  3219    Yes   kernel BUG at fs/ntfs/aops.c:LINE!
+                   https://syzkaller.appspot.com/bug?extid=6a5a7672f663cce8b156
+<3>  1420    Yes   kernel BUG in __ntfs_grab_cache_pages
+                   https://syzkaller.appspot.com/bug?extid=01b3ade7c86f7dd584d7
+<4>  638     Yes   possible deadlock in map_mft_record
+                   https://syzkaller.appspot.com/bug?extid=cb1fdea540b46f0ce394
+<5>  396     Yes   KASAN: slab-out-of-bounds Read in ntfs_readdir
+                   https://syzkaller.appspot.com/bug?extid=d36761079ac1b585a6df
+<6>  232     No    possible deadlock in __ntfs_clear_inode
+                   https://syzkaller.appspot.com/bug?extid=5ebb8d0e9b8c47867596
+<7>  37      Yes   kernel BUG in ntfs_iget
+                   https://syzkaller.appspot.com/bug?extid=d62e6bd2a2d05103d105
+<8>  36      Yes   kernel BUG in ntfs_lookup_inode_by_name
+                   https://syzkaller.appspot.com/bug?extid=d532380eef771ac0034b
+<9>  15      Yes   KASAN: use-after-free Read in ntfs_attr_find (2)
+                   https://syzkaller.appspot.com/bug?extid=ef50f8eb00b54feb7ba2
+<10> 13      Yes   KASAN: use-after-free Read in ntfs_lookup_inode_by_name
+                   https://syzkaller.appspot.com/bug?extid=3625b78845a725e80f61
 
 ---
 This report is generated by a bot. It may contain errors.
