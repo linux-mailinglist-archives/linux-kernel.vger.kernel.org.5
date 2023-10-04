@@ -2,174 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C51AF7B837E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAE47B837C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243234AbjJDPYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
+        id S243210AbjJDPYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243227AbjJDPYt (ORCPT
+        with ESMTP id S233553AbjJDPYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:24:49 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93DEE4;
-        Wed,  4 Oct 2023 08:24:44 -0700 (PDT)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394F9boO015563;
-        Wed, 4 Oct 2023 15:24:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=GFyP5o3xvbVlfmnDgUr1efCm0HaxPLwAX8TPbMyMOZg=;
- b=iFO9ot2MxMFdy8D0wOpJg+czG5xCKEf/vfa9i0QNNQyb2K+4EWo4VC0p1JT4NxBuDDy+
- Yorzm1FhTd2TUoQOwU2I0sO9fOMSN5aR4PQDkzC+nR4xT+0rDZXCnMPksEFn/qYhTRkW
- NFx+YFI1iW6HaqJvFOW39QaHxIlGVD4kKtaxPYFCTJL1nWkDyGi1buGKBMkump1l90nG
- 7dAiuLMs6L9E6kqBF4hfFVj8i/Cf+gLaGqxEM3CU2PgeFFJwuOJSjFMHJUP6Zsl7TWTU
- yYR5h81pkFFK8tI2T/4Nq0cY00WpHuHFpQPuqmDpIPNsWYkg7bbZFdSBGl75wdhw2eSB cA== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3th9ax2uas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 15:24:35 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 394F7P9W010892;
-        Wed, 4 Oct 2023 15:24:34 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tf0q1xg5s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 15:24:34 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 394FOX2e7340790
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 4 Oct 2023 15:24:33 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E16E65806E;
-        Wed,  4 Oct 2023 15:24:32 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 05A2158063;
-        Wed,  4 Oct 2023 15:24:32 +0000 (GMT)
-Received: from [9.61.106.119] (unknown [9.61.106.119])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  4 Oct 2023 15:24:31 +0000 (GMT)
-Message-ID: <33d32a0a-26bb-6bdf-e07c-79b6ac84a032@linux.ibm.com>
-Date:   Wed, 4 Oct 2023 11:24:31 -0400
+        Wed, 4 Oct 2023 11:24:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C04C1;
+        Wed,  4 Oct 2023 08:24:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3A8FC433C8;
+        Wed,  4 Oct 2023 15:24:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696433075;
+        bh=n0H7/Psf0fODRTKy54MzEd1WPTPAzjMxhN4tqDhoar4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=l4kLS2zxmM18mPmycnHt1XibkBoU3LnmPSx51IYeQYlAFfffF+Fd6AzxGoJQfNR3y
+         WK/0KcOyBYFFHGVhoC8RHgemFJc9Mapxd7ztr3TKebP3OUZNX3eNZMmi1ans5wV/tA
+         lB3uWgoAgJcxxoNwwcdFUOyIWXArhxIat+fIpoGNH2Uu8B6N5gh+08rpYqrDsILT1X
+         63940l3nt++3yRP2b9/XSBLo9YpNe0laa3YlD8fvjmvIK0nkC+47c662AhBWMJGwCq
+         u5jryzwPDqXkzWLempQlhwdKkBjhCo5fWCGYa6vbd+mc3lsmmdQziADZCS5ThtsiKu
+         iKozNtE698TNg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3B4EFCE04F2; Wed,  4 Oct 2023 08:24:35 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 08:24:35 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     RCU <rcu@vger.kernel.org>, quic_neeraju@quicinc.com,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v2 1/1] rcu: Reduce synchronize_rcu() waiting time
+Message-ID: <c22dfd1e-a0e5-4b86-8eac-e5a3d74d714e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231003180403.58576-1-urezki@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] s390/pci: Fix reset of IOMMU software counters
-Content-Language: en-US
-To:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Gerd Bayer <gbayer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Joerg Roedel <jroedel@suse.de>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev
-References: <20231004-dma_iommu_fix-v1-1-129777cd8232@linux.ibm.com>
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-In-Reply-To: <20231004-dma_iommu_fix-v1-1-129777cd8232@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 1Vp-N0tXhCwsMgyRJpbRd_5qC2CasJzP
-X-Proofpoint-ORIG-GUID: 1Vp-N0tXhCwsMgyRJpbRd_5qC2CasJzP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_07,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1011 adultscore=0 malwarescore=0
- mlxlogscore=933 spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310040108
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003180403.58576-1-urezki@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/23 4:56 AM, Niklas Schnelle wrote:
-> Together with enabling the Function Measurement Block
-> zpci_fmb_enable_device() also resets the software counters. This allows
-> to use "echo 0 > /sys/kernel/debug/pci/<dev>/statistics" followed by
-> echo "1 > /../statistics" to reset all counters. In commit c76c067e488c
-> ("s390/pci: Use dma-iommu layer") this use of the now obsolete counters
-> in struct zpci_device was missed as was their removal. Fix this by
-> resetting the new counters and removing the old ones.
+On Tue, Oct 03, 2023 at 08:04:03PM +0200, Uladzislau Rezki (Sony) wrote:
+> A call to a synchronize_rcu() can be optimized from time point of
+> view. Different workloads can be affected by this especially the
+> ones which use this API in its time critical sections.
 > 
-> Fixes: c76c067e488c ("s390/pci: Use dma-iommu layer")
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-
-Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
-
-Verified that I could reproduce the initial issue + tested the fix using NVMe and mlx devices
-
-> ---
-> Note: This is based on and references commit IDs from Joerg Roedel's
-> iommu/next branch and should go in via the iommu tree.
-> ---
->  arch/s390/include/asm/pci.h |  4 ----
->  arch/s390/pci/pci.c         | 13 ++++++++++---
->  2 files changed, 10 insertions(+), 7 deletions(-)
+> For example if CONFIG_RCU_NOCB_CPU is set, the wakeme_after_rcu()
+> callback can be delayed and such delay depends on where in a nocb
+> list it is located.
 > 
-> diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
-> index 3f74f1cf37df..e91cd6bbc330 100644
-> --- a/arch/s390/include/asm/pci.h
-> +++ b/arch/s390/include/asm/pci.h
-> @@ -173,10 +173,6 @@ struct zpci_dev {
->  	struct zpci_fmb *fmb;
->  	u16		fmb_update;	/* update interval */
->  	u16		fmb_length;
-> -	/* software counters */
-> -	atomic64_t allocated_pages;
-> -	atomic64_t mapped_pages;
-> -	atomic64_t unmapped_pages;
+> 1. On our Android devices i can easily trigger the scenario when
+> it is a last in the list out of ~3600 callbacks:
+> 
+> <snip>
+>   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
+> ...
+>   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
+>   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
+> <snip>
+> 
+> 2. On our Android devices we use cpuset/cgroup to classify tasks
+> and assign them into different cgroups. For example "backgrond"
+> group which binds tasks only to little CPUs or "foreground" that
+> binds to all CPUs, i.e. tasks can be migrated between groups.
+> 
+> See below an example of how "surfaceflinger" task is migrated.
+> Initially it is located in the "system-background" cgroup which
+> allows to run only on little cores. In order to speedup it up
+> it can be temporary moved into "foreground" cgroup which allows
+> to use big CPUs:
+> 
+> cgroup_attach_task():
+>  -> cgroup_migrate_execute()
+>    -> cpuset_can_attach()
+>      -> percpu_down_write()
+>        -> rcu_sync_enter()
+>          -> synchronize_rcu()
+>    -> now move tasks to the new cgroup.
+>  -> cgroup_migrate_finish()
+> 
+> <snip>
+>          rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
+>     PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
+>     PERFD-SERVER-1855    [000] d..1.  7030.530383: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
+>    TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
+> <snip>
+> 
+> from this example it is clear that "a moving time" also depends
+> on how fast synchronize_rcu() completes.
+> 
+> 3. This patch improves the synchronize_rcu() approximately by 30%-50%
+> on synthetic tests. Apart of that i have tested app launch of camera
+> app where i also see better perf. figures:
+> 
+> 542 vs 489 diff: 9%
+> 540 vs 466 diff: 13%
+> 518 vs 468 diff: 9%
+> 531 vs 457 diff: 13%
+> 548 vs 475 diff: 13%
+> 509 vs 484 diff: 4%
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  kernel/rcu/tree.c     | 151 +++++++++++++++++++++++++++++++++++++++++-
+>  kernel/rcu/tree_exp.h |   2 +-
+>  2 files changed, 151 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 78554e7181dd..a347c1f98f11 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1384,6 +1384,122 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
+>  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  }
 >  
->  	u8		version;
->  	enum pci_bus_speed max_bus_speed;
-> diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-> index 563cb72d9ed0..63fd9e1d9f22 100644
-> --- a/arch/s390/pci/pci.c
-> +++ b/arch/s390/pci/pci.c
-> @@ -157,6 +157,7 @@ int zpci_unregister_ioat(struct zpci_dev *zdev, u8 dmaas)
->  int zpci_fmb_enable_device(struct zpci_dev *zdev)
->  {
->  	u64 req = ZPCI_CREATE_REQ(zdev->fh, 0, ZPCI_MOD_FC_SET_MEASURE);
-> +	struct zpci_iommu_ctrs *ctrs;
->  	struct zpci_fib fib = {0};
->  	u8 cc, status;
->  
-> @@ -169,9 +170,15 @@ int zpci_fmb_enable_device(struct zpci_dev *zdev)
->  	WARN_ON((u64) zdev->fmb & 0xf);
->  
->  	/* reset software counters */
-> -	atomic64_set(&zdev->allocated_pages, 0);
-> -	atomic64_set(&zdev->mapped_pages, 0);
-> -	atomic64_set(&zdev->unmapped_pages, 0);
-> +	ctrs = zpci_get_iommu_ctrs(zdev);
-> +	if (ctrs) {
-> +		atomic64_set(&ctrs->mapped_pages, 0);
-> +		atomic64_set(&ctrs->unmapped_pages, 0);
-> +		atomic64_set(&ctrs->global_rpcits, 0);
-> +		atomic64_set(&ctrs->sync_map_rpcits, 0);
-> +		atomic64_set(&ctrs->sync_rpcits, 0);
+> +/*
+> + * There are three lists for handling synchronize_rcu() users.
+> + * A first list corresponds to new coming users, second for users
+> + * which wait for a grace period and third is for which a grace
+> + * period is passed.
+> + */
+> +static struct sr_normal_state {
+> +	struct llist_head curr;	/* request a GP users. */
+> +	struct llist_head wait;	/* wait for GP users. */
+> +	struct llist_head done;	/* ready for GP users. */
+> +	struct llist_node *curr_tail;
+> +	struct llist_node *wait_tail;
+> +	atomic_t active;
+> +} sr;
+> +
+> +/* Enable it by default. */
+> +static int rcu_normal_wake_from_gp = 1;
+> +module_param(rcu_normal_wake_from_gp, int, 0644);
+
+Nice!
+
+But could you please make this default to zero in order to avoid
+surprising people for whom the old way works better?
+
+							Thanx, Paul
+
+> +static void rcu_sr_normal_complete(struct llist_node *node)
+> +{
+> +	struct rcu_synchronize *rs = container_of(
+> +		(struct rcu_head *) node, struct rcu_synchronize, head);
+> +	unsigned long oldstate = (unsigned long) rs->head.func;
+> +
+> +	if (!poll_state_synchronize_rcu(oldstate))
+> +		WARN_ONCE(1, "A full grace period is not passed yet: %lu",
+> +			rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
+> +
+> +	/* Finally. */
+> +	complete(&rs->completion);
+> +}
+> +
+> +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> +{
+> +	struct llist_node *done, *rcu, *next;
+> +
+> +	done = llist_del_all(&sr.done);
+> +	if (!done)
+> +		return;
+> +
+> +	llist_for_each_safe(rcu, next, done)
+> +		rcu_sr_normal_complete(rcu);
+> +}
+> +static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
+> +
+> +/*
+> + * Helper function for rcu_gp_cleanup().
+> + */
+> +static void rcu_sr_normal_gp_cleanup(void)
+> +{
+> +	struct llist_node *first, *tail;
+> +
+> +	tail = READ_ONCE(sr.wait_tail);
+> +	first = llist_del_all(&sr.wait);
+> +	if (!first)
+> +		return;
+> +
+> +	/* Only one user? */
+> +	if (!first->next) {
+> +		rcu_sr_normal_complete(first);
+> +		return;
 > +	}
 > +
+> +	/* Can be not empty. */
+> +	llist_add_batch(first, tail, &sr.done);
+> +	queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
+> +}
+> +
+> +/*
+> + * Helper function for rcu_gp_init().
+> + */
+> +static void rcu_sr_normal_gp_init(void)
+> +{
+> +	struct llist_node *llnode, *rcu;
+> +	int ret;
+> +
+> +	if (llist_empty(&sr.curr))
+> +		return;
+> +
+> +	/*
+> +	 * A waiting list of GP should be empty on this step,
+> +	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+> +	 * rolls it over. If not, it is a BUG, warn a user.
+> +	 */
+> +	WARN_ON_ONCE(!llist_empty(&sr.wait));
+> +
+> +	/*
+> +	 * Obtain a tail of current active users. It is guaranteed
+> +	 * that if we are only one active user and the list is not
+> +	 * empty, the tail has already been updated.
+> +	 */
+> +	ret = atomic_inc_return(&sr.active);
+> +	WRITE_ONCE(sr.wait_tail, (ret == 1) ? READ_ONCE(sr.curr_tail):NULL);
+> +	llnode = llist_del_all(&sr.curr);
+> +	atomic_dec(&sr.active);
+> +
+> +	if (ret != 1) {
+> +		llist_for_each(rcu, llnode) {
+> +			if (!rcu->next)
+> +				WRITE_ONCE(sr.wait_tail, rcu);
+> +		}
+> +	}
+> +
+> +	llist_add_batch(llnode, READ_ONCE(sr.wait_tail), &sr.wait);
+> +}
+> +
+> +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+> +{
+> +	atomic_inc(&sr.active);
+> +	if (llist_add((struct llist_node *) &rs->head, &sr.curr))
+> +		/* Set the tail. Only first and one user can do that. */
+> +		WRITE_ONCE(sr.curr_tail, (struct llist_node *) &rs->head);
+> +	atomic_dec(&sr.active);
+> +}
+> +
+>  /*
+>   * Initialize a new grace period.  Return false if no grace period required.
+>   */
+> @@ -1420,6 +1536,7 @@ static noinline_for_stack bool rcu_gp_init(void)
+>  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+>  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+>  	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+> +	rcu_sr_normal_gp_init();
+>  	raw_spin_unlock_irq_rcu_node(rnp);
 >  
->  	fib.fmb_addr = virt_to_phys(zdev->fmb);
->  	fib.gd = zdev->gisa;
+>  	/*
+> @@ -1787,6 +1904,9 @@ static noinline void rcu_gp_cleanup(void)
+>  	}
+>  	raw_spin_unlock_irq_rcu_node(rnp);
+>  
+> +	// Make synchronize_rcu() users aware of the end of old grace period.
+> +	rcu_sr_normal_gp_cleanup();
+> +
+>  	// If strict, make all CPUs aware of the end of the old grace period.
+>  	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
+>  		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
+> @@ -3500,6 +3620,35 @@ static int rcu_blocking_is_gp(void)
+>  	return true;
+>  }
+>  
+> +/*
+> + * Helper function for the synchronize_rcu() API.
+> + */
+> +static void synchronize_rcu_normal(void)
+> +{
+> +	struct rcu_synchronize rs;
+> +
+> +	if (READ_ONCE(rcu_normal_wake_from_gp)) {
+> +		init_rcu_head_on_stack(&rs.head);
+> +		init_completion(&rs.completion);
+> +
+> +		/*
+> +		 * This code might be preempted, therefore take a GP
+> +		 * snapshot before adding a request.
+> +		 */
+> +		rs.head.func = (void *) get_state_synchronize_rcu();
+> +		rcu_sr_normal_add_req(&rs);
+> +
+> +		/* Kick a GP and start waiting. */
+> +		(void) start_poll_synchronize_rcu();
+> +
+> +		/* Now we can wait. */
+> +		wait_for_completion(&rs.completion);
+> +		destroy_rcu_head_on_stack(&rs.head);
+> +	} else {
+> +		wait_rcu_gp(call_rcu_hurry);
+> +	}
+> +}
+> +
+>  /**
+>   * synchronize_rcu - wait until a grace period has elapsed.
+>   *
+> @@ -3551,7 +3700,7 @@ void synchronize_rcu(void)
+>  		if (rcu_gp_is_expedited())
+>  			synchronize_rcu_expedited();
+>  		else
+> -			wait_rcu_gp(call_rcu_hurry);
+> +			synchronize_rcu_normal();
+>  		return;
+>  	}
+>  
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> index 6d7cea5d591f..279a37beb05a 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -987,7 +987,7 @@ void synchronize_rcu_expedited(void)
+>  
+>  	/* If expedited grace periods are prohibited, fall back to normal. */
+>  	if (rcu_gp_is_normal()) {
+> -		wait_rcu_gp(call_rcu_hurry);
+> +		synchronize_rcu_normal();
+>  		return;
+>  	}
+>  
+> -- 
+> 2.30.2
 > 
-> ---
-> base-commit: 8e5ab3f54a1061c2be3e1fbcda01fbe604c3450e
-> change-id: 20231002-dma_iommu_fix-0a5397992f15
-> 
-> Best regards,
-
