@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EC97B840D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC537B8410
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242909AbjJDPrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34936 "EHLO
+        id S242961AbjJDPr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233658AbjJDPrS (ORCPT
+        with ESMTP id S233769AbjJDPrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:47:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12CE8BF;
+        Wed, 4 Oct 2023 11:47:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E196BCE;
         Wed,  4 Oct 2023 08:47:15 -0700 (PDT)
-Date:   Wed, 04 Oct 2023 15:47:12 -0000
+Date:   Wed, 04 Oct 2023 15:47:13 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696434433;
+        s=2020; t=1696434434;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IY/4LSYrmKOjHyh4TuahT+p2n+E3pAPQMItJAR6DqwI=;
-        b=LyX4a0wUqwbipqCJ5uofwV+d+o7XBm9jiOkxLECAOYxr2YD2N5Ls4+j+rETZy64WX0Tgca
-        zCX24rOzOLNgXOumFYjcU1T6pwu13QV/d7dNjlleMn2jHQxUG7Evu7xRVrXn1ml1VMfMyI
-        PjU/5KJ6rrSD9vpYL5aCidxZMIX7ATBwCqUXwqeugm1ko0uDaGxKGeAmCK6mVr2cSPXxik
-        X53M1viUKEPgGDgx91CKEfmG3jOt8+/SA7DdjZmm/AdLIEUmQgDMiiewYoiiiH50mfTLcI
-        Q6e1ZpGFvnFMsXzoDQA1F+wvLuYTu05sw09Sto+OY7rhJkU1jsCX7j8EL6NnHw==
+        bh=nH6tE9EI7ysD4tR/3JJt9rHH0u9Mq170wLjzJ0gD99U=;
+        b=ujWZsBHxjEcAYyt5AIlbDWAoi6BSFH3jKCRLMu298spiQFv8K8BF1rTiwgC8fQk0VtwRCi
+        CWXjwHjTwz57xcDM19eRXuxxC50OxXee+YuHTxg0/NPvFgeeihxVyXW7ZmgyVwQSJ+MFIh
+        EqYd4pVXb2rI3Q5rbcpQ6MijTGi4kx9cSHqwMJ83jnBoGi2FU55YA5wAJv+vrMVOvogos5
+        StFoLqs/v5C4cgOU161XFil286a5LaL5BiLEbuLoSx8xDGCIKoJCm35TCgtFOjDBDXG5J3
+        24ztEdBYheL58dKhv/CViPCKVlmCipvbYLk4PNrzPQj7HFEIrrsBNttX/4MbfQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696434433;
+        s=2020e; t=1696434434;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IY/4LSYrmKOjHyh4TuahT+p2n+E3pAPQMItJAR6DqwI=;
-        b=4/M8TnT1w6l6kTvMlFKc5AZIPUPvFLYyoDZyH2YTCwMxTo1kt5VAFoqwSEOWCM5Hwi4upM
-        a51pLxi+DFZ2IdDQ==
+        bh=nH6tE9EI7ysD4tR/3JJt9rHH0u9Mq170wLjzJ0gD99U=;
+        b=qVGwlninWedfbjs2YE+fdTnL94uhqCI+HFW2U3Mio+B2h8t+X3Z08RpioJwIdZ006CU0cP
+        n5rxgUzAyvoGPVAg==
 From:   "tip-bot2 for Waiman Long" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] x86/idle: Disable IBRS when CPU is offline to
- improve single-threaded performance
-Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+Subject: [tip: sched/core] x86/speculation: Add __update_spec_ctrl() helper
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230727184600.26768-3-longman@redhat.com>
-References: <20230727184600.26768-3-longman@redhat.com>
+In-Reply-To: <20230727184600.26768-2-longman@redhat.com>
+References: <20230727184600.26768-2-longman@redhat.com>
 MIME-Version: 1.0
-Message-ID: <169643443299.3135.10404749389371354446.tip-bot2@tip-bot2>
+Message-ID: <169643443360.3135.5068891650571884994.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -69,75 +70,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     8c7a9b1bb45060b6e67456c3cf28475f6e0bd65d
-Gitweb:        https://git.kernel.org/tip/8c7a9b1bb45060b6e67456c3cf28475f6e0bd65d
+Commit-ID:     aaa3e6678978b5e2b5c6e80e439fc4db9bbdb375
+Gitweb:        https://git.kernel.org/tip/aaa3e6678978b5e2b5c6e80e439fc4db9bbdb375
 Author:        Waiman Long <longman@redhat.com>
-AuthorDate:    Thu, 27 Jul 2023 14:45:58 -04:00
+AuthorDate:    Thu, 27 Jul 2023 14:45:57 -04:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Wed, 04 Oct 2023 13:48:48 +02:00
 
-x86/idle: Disable IBRS when CPU is offline to improve single-threaded performance
+x86/speculation: Add __update_spec_ctrl() helper
 
-Commit bf5835bcdb96 ("intel_idle: Disable IBRS during long idle")
-disables IBRS when the CPU enters long idle. However, when a CPU
-becomes offline, the IBRS bit is still set when X86_FEATURE_KERNEL_IBRS
-is enabled. That will impact the performance of a sibling CPU. Mitigate
-this performance impact by clearing all the mitigation bits in SPEC_CTRL
-MSR when offline. When the CPU is online again, it will be re-initialized
-and so restoring the SPEC_CTRL value isn't needed.
+Add a new __update_spec_ctrl() helper which is a variant of
+update_spec_ctrl() that can be used in a noinstr function.
 
-Add a comment to say that native_play_dead() is a __noreturn function,
-but it can't be marked as such to avoid confusion about the missing
-MSR restoration code.
-
-When DPDK is running on an isolated CPU thread processing network packets
-in user space while its sibling thread is idle. The performance of the
-busy DPDK thread with IBRS on and off in the sibling idle thread are:
-
-                                IBRS on         IBRS off
-                                -------         --------
-  packets/second:                  7.8M           10.4M
-  avg tsc cycles/packet:         282.26          209.86
-
-This is a 25% performance degradation. The test system is a Intel Xeon
-4114 CPU @ 2.20GHz.
-
-[ mingo: Extended the changelog with performance data from the 0/4 mail. ]
-
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Waiman Long <longman@redhat.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20230727184600.26768-3-longman@redhat.com
+Link: https://lore.kernel.org/r/20230727184600.26768-2-longman@redhat.com
 ---
- arch/x86/kernel/smpboot.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/x86/include/asm/spec-ctrl.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 48e0406..02765d9 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -87,6 +87,7 @@
- #include <asm/hw_irq.h>
- #include <asm/stackprotector.h>
- #include <asm/sev.h>
-+#include <asm/spec-ctrl.h>
+diff --git a/arch/x86/include/asm/spec-ctrl.h b/arch/x86/include/asm/spec-ctrl.h
+index cb0386f..c648502 100644
+--- a/arch/x86/include/asm/spec-ctrl.h
++++ b/arch/x86/include/asm/spec-ctrl.h
+@@ -4,6 +4,7 @@
  
- /* representing HT siblings of each logical CPU */
- DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
-@@ -1623,8 +1624,15 @@ void __noreturn hlt_play_dead(void)
- 		native_halt();
+ #include <linux/thread_info.h>
+ #include <asm/nospec-branch.h>
++#include <asm/msr.h>
+ 
+ /*
+  * On VMENTER we must preserve whatever view of the SPEC_CTRL MSR
+@@ -76,6 +77,16 @@ static inline u64 ssbd_tif_to_amd_ls_cfg(u64 tifn)
+ 	return (tifn & _TIF_SSBD) ? x86_amd_ls_cfg_ssbd_mask : 0ULL;
  }
  
 +/*
-+ * native_play_dead() is essentially a __noreturn function, but it can't
-+ * be marked as such as the compiler may complain about it.
++ * This can be used in noinstr functions & should only be called in bare
++ * metal context.
 + */
- void native_play_dead(void)
- {
-+	if (cpu_feature_enabled(X86_FEATURE_KERNEL_IBRS))
-+		__update_spec_ctrl(0);
++static __always_inline void __update_spec_ctrl(u64 val)
++{
++	__this_cpu_write(x86_spec_ctrl_current, val);
++	native_wrmsrl(MSR_IA32_SPEC_CTRL, val);
++}
 +
- 	play_dead_common();
- 	tboot_shutdown(TB_SHUTDOWN_WFS);
- 
+ #ifdef CONFIG_SMP
+ extern void speculative_store_bypass_ht_init(void);
+ #else
