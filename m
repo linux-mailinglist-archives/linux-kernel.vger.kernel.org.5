@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5167B8E04
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8037B8E0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243946AbjJDU27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 16:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
+        id S244067AbjJDU3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 16:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbjJDU24 (ORCPT
+        with ESMTP id S233332AbjJDU3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 16:28:56 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638F993
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:28:53 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-79fb8f60374so2714739f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:28:53 -0700 (PDT)
+        Wed, 4 Oct 2023 16:29:35 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3481C93
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:29:32 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-502f29ed596so1577e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:29:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696451333; x=1697056133; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=21cBEUSjF4TZhsDOLZLhdwXsG9t3AJsN/zN+Wwuijrc=;
-        b=iNQChHV5T/CHEshLWavEPjwVYgN7joApUKBQw5QjJXJwv2cbQiZzV7JeTrpSQLDtWr
-         xotZRQ61F8iIVJZAiIZwQTpi1sM7fG8wPE/jG6cFrCnsyb0irH7eFrB2YyE5Zuhy8ekN
-         zI5te5lSEW++ea7So7iMd2bALval9dd1M6SVLIWB+H9V0WKsqagFRkjEd0qGElKnBsoh
-         Y62SOQD7DVeAvof9TYGd+hs9i9W6bK9MiWjk7C5/JVVT2nRsxV9Q7me7lPAG7WZGASDy
-         7sxTb5IdLovYckPnBxCDY14UE/CoGD+q6jntvXKENwDjffqXU71qhqz6rce7Qtr/d1ew
-         98ZA==
+        d=google.com; s=20230601; t=1696451370; x=1697056170; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ULcbPeVXF1YZ+PSpdpBI4ln4bPTinWz7u+G6K/2zwK0=;
+        b=26GqU3ytQmiEs5cmGlgk5+IGkzW5jTio9t5V3W2QwVWIL3wDelSHGnKAvus1APDTfw
+         rv5CFTO7UDLd5umIndG7ATXGbKy/VVueysmZdjaOjfef/5smNCLUHJggzGNxjebg4vwE
+         2mYNXv3/pZtaIkU6QGXyQxdhjgVZkN+tOToWrOUHXSje24+KmiSiG/uYhggr17l/rGrz
+         z1gYOmW+qsB9/y6E80jc+HMu/W3mCDm4G58hTp2h3jdtPJc5W22Q+l2nU9/LU9fdw0bC
+         4iNtnE42xCZoEtIHsT/JV8FTGM1tJaCKOfNnzdzSOhBz1OLQWicqM9YeKY6+sHJ7Q6BT
+         EDlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696451333; x=1697056133;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=21cBEUSjF4TZhsDOLZLhdwXsG9t3AJsN/zN+Wwuijrc=;
-        b=Z97f6XnLN38Phx6ZfZQxi0g3aQckmBJCnFBlYUb2C+yddV1opbmHYxFitCDC5X3kiM
-         dZRrmxtBFl6XK1i9iFwS9t9NQfUwzxpkUU/mN9BHqifrHoseAfty3fUhW8GYmPOsjA/O
-         05l8/fWWSWraybyRxDfAw2j6rcvd009OMpCT0CW1UWGTcWJujqTZqkJFy6iHeSEbUdl2
-         zxEZn0MgkrBBOwiLxx3gTqE5mdmZ6oXLI3Ph+5cngbFR9kwCZdU459gkJyEZktnu1ENp
-         8TWHCajUgc1s7dph+/ZMwtvyaayqBjAJTnHRt5KEKl5fLlD9OuhMIV4AKkHqvQB2SPOf
-         ZqoA==
-X-Gm-Message-State: AOJu0YwtadbLXGyQ3uhxK3iQcvvLGNWd5B4j1bUqYAq9kT1Bpb00U/oq
-        gXJD5uVrjCyiiShbXnJnWxiBXlzC9nXwn/JQSak=
-X-Google-Smtp-Source: AGHT+IGnED8kVpBtGrfQrHoqH87z4y55vamJMb4nxM1//BpBi7Lotw0mZly67kx58aeD6ggT+yLUgg==
-X-Received: by 2002:a05:6602:3a05:b0:792:6be4:3dcb with SMTP id by5-20020a0566023a0500b007926be43dcbmr3319534iob.2.1696451332812;
-        Wed, 04 Oct 2023 13:28:52 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id j29-20020a02cb1d000000b00439fa6ff6a9sm13989jap.70.2023.10.04.13.28.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 13:28:52 -0700 (PDT)
-Message-ID: <43b1a228-9a60-40ef-936b-c8a062d7eb21@kernel.dk>
-Date:   Wed, 4 Oct 2023 14:28:51 -0600
+        d=1e100.net; s=20230601; t=1696451370; x=1697056170;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ULcbPeVXF1YZ+PSpdpBI4ln4bPTinWz7u+G6K/2zwK0=;
+        b=D4KQ9UD9pG6Yq2s4dzIvtpvNmqvZ5koYobTZpudC/bZjoHkHfkWeBxzSdL9gfzD7NM
+         POKyj0+aNzkbu2BRl8uRy2RHsl3npKap0aElL2qGTd2EXeq2jc0Q+fSYAeR9n03cJcYo
+         3TpXdEH9Hnopm+Q1qXVYxxJtd1pTRrbaJPPHD2E1KaNyliNdXTf9iZU/V1ORSgmwLAyY
+         MOTaVgYjfvbUIsTc8MiwGerJSqFTr/LHxLHN1OCbRZdoOqqcQY6E+DLVsFwS/KFjwfj+
+         loQW4qUhv5Fp5lahcoqqqqEpQyEnUU0qLd+XbNp97ukJlvIRuaOhdvBM1fG2GiV7Kzf2
+         6dvw==
+X-Gm-Message-State: AOJu0YwkfePk6o8nGACEhARf3lp+B9hZPK/OR2+uha61X9SyasUloenr
+        Bx9ijdnAzu+RsTxUmg+Jq3hWxvfkvfkqRdPSajVk8klVSfmM0pnuME0=
+X-Google-Smtp-Source: AGHT+IHzJtM7k+kUTGyXAWVzPEzSaQ1kE5vqmOg+cGd45iBE1Lgxpx9c3I5fBCW0FMS138wNvOmmuyOL9idRGF7p4uk=
+X-Received: by 2002:ac2:5142:0:b0:502:dc15:7fb with SMTP id
+ q2-20020ac25142000000b00502dc1507fbmr100lfd.5.1696451369919; Wed, 04 Oct 2023
+ 13:29:29 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] block: Fix regression in sed-opal for a saved key.
-Content-Language: en-US
-To:     Milan Broz <gmazyland@gmail.com>, linux-block@vger.kernel.org
-Cc:     gjoyce@linux.vnet.ibm.com, jonathan.derrick@linux.dev,
-        linux-kernel@vger.kernel.org, Ondrej Kozina <okozina@redhat.com>
-References: <20231003100209.380037-1-gmazyland@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20231003100209.380037-1-gmazyland@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231004002038.907778-1-jmattson@google.com> <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
+ <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com> <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
+In-Reply-To: <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 4 Oct 2023 13:29:15 -0700
+Message-ID: <CALMp9eQN9_OK6oE9tEz_DW4ZBwWEB_JJJdjKsQoLyh9tGWNfYw@mail.gmail.com>
+Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's FsGsKernelGsBaseNonSerializing
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Dave Hansen <dave.hansen@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,22 +80,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 4:02 AM, Milan Broz wrote:
-> The commit 3bfeb61256643281ac4be5b8a57e9d9da3db4335
-> introduced the use of keyring for sed-opal.
-> 
-> Unfortunately, there is also a possibility to save
-> the Opal key used in opal_lock_unlock().
-> 
-> This patch switches the order of operation, so the cached
-> key is used instead of failure for opal_get_key.
-> 
-> The problem was found by the cryptsetup Opal test recently
-> added to the cryptsetup tree.
+On Wed, Oct 4, 2023 at 12:59=E2=80=AFAM Borislav Petkov <bp@alien8.de> wrot=
+e:
+>
+> On Tue, Oct 03, 2023 at 07:44:51PM -0700, Jim Mattson wrote:
+> > The business of declaring breaking changes to the architectural
+> > specification in a CPUID bit has never made much sense to me.
+>
+> How else should they be expressed then?
+>
+> In some flaky PDF which changes URLs whenever the new corporate CMS gets
+> installed?
+>
+> Or we should do f/m/s matching which doesn't make any sense for VMs?
+>
+> When you think about it, CPUID is the best thing we have.
+>
+> > No one is likely to query CPUID.80000021H.EAX[bit 21] today, but if
+> > someone does query the bit in the future, they can reasonably expect
+> > that WRMSR({FS,GS,KERNELGS}_BASE) is a serializing operation whenever
+> > this bit is clear. Therefore, any hypervisor that doesn't pass the bit
+> > through is broken. Sadly, this also means that for a heterogenous
+> > migration pool, the hypervisor must set this bit in the guest CPUID if
+> > it is set on any host in the pool. Yes, that means that the legacy
+> > behavior may sometimes be present in a VM that enumerates the CPUID
+> > bit, but that's the best we can do.
+>
+> Yes, add this to your commit message.
+>
+> > I'm a little surprised at the pushback, TBH. Are you implying that
+> > there is some advantage to *not* passing this bit through?
+>
+> We don't add stuff which is not worth adding. There has to be *at*
+> *least* some justification for it.
 
-Greg, please review this.
+Let me propose the following axiom as justification:
 
--- 
-Jens Axboe
+KVM_GET_SUPPORTED_CPUID must pass through any defeature bits that are
+set on the host, unless KVM is prepared to emulate the missing
+feature.
 
+Here, a defeature bit is any CPUID bit where a value of '1' indicates
+the absence of a feature.
 
+> Thx.
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
