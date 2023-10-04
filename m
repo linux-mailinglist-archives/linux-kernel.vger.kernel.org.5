@@ -2,117 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 672227B84BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFEA7B84C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243258AbjJDQRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        id S243253AbjJDQRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:17:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233125AbjJDQRI (ORCPT
+        with ESMTP id S243254AbjJDQRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:17:08 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B389B
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:17:02 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-278f0f565e2so1666898a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 09:17:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696436221; x=1697041021; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l56tjqksVWp6wv2PmyLDMNPHdSGvwNmWmknUMmlQiXs=;
-        b=4UqYEP3+iaNiHYrnkWxFJlEmp3/7YgEJMVi+uex6DVd5tD6tpgeb7T80jqogjDcFTh
-         9BPDQ63pIQ2v/6x7U7ANIWy+xMb7pzc8GSIMNxB/cXJz6FvwmAhy3F5/n4JzoSl7jDnK
-         Fou3YBTh0Wy5mr7zeLgn8gwYSdc3D/ZjeeYTJXoct3xB6XwLQbJxRWiNlcoOpw+jpJfH
-         6hx03wJ+xo6UpNnkyD5g6YCHD3DPR4BE7E4l2p4nwmYcxsikbHdDrTJS5e4QjNGtrtzF
-         gPTlURkSwodBrKfhMCMX7c9XVq4ajYR8ro5VS/PU+P9SSGSR59DQw8+4pPv0oy0ME1SX
-         9g2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696436221; x=1697041021;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l56tjqksVWp6wv2PmyLDMNPHdSGvwNmWmknUMmlQiXs=;
-        b=s6X+Nor0/p3522EZvZSOwgliDaePXE91fbr//IZsQwXxPorECGm5h2+l/L5wylnKKS
-         CdzxBT/ZOlUg9pkyxhJhto4MNa6x//QTHylhVYkjBvDdiHo221bWl0WSjZmC2dYzTKzp
-         dDu3h2YCqcHyOSAXwrMcUlJEJC6Y3a8spC7ZAgJ59A2I4bJJgIL72vU2wDTF5OWjj2EY
-         DjxJ4RNLTEsrNOsI8FLn0eNr0L3d2QNJlo+Vs53YwYw7r7W+aifFP26OyuyhidXoOKOm
-         33mVNXRKZJOB0FhMtXxnTrNqXwPFdKAfza4/Oog1TGmkAvD8Kyf1KlXu+hBw25GWoheR
-         2NBQ==
-X-Gm-Message-State: AOJu0Yz0bmZWUfu1B0IWHZAZ1U16acNDBA2KiFKofVm48JDxjtri1VdH
-        ZrFYFf4DSvfxKNrpHqVUPM6fzW66CT5BjTWn5fa03w==
-X-Google-Smtp-Source: AGHT+IEwGlZz8RYNoPzpL93uJpWD2NnHtQ9VCh2yefPkGMWhot686Gc4NY94WGG1Az3RlhWC3haErjmYaDtp3KasRZE=
-X-Received: by 2002:a17:90b:3843:b0:273:e42b:34c1 with SMTP id
- nl3-20020a17090b384300b00273e42b34c1mr2382003pjb.42.1696436221456; Wed, 04
- Oct 2023 09:17:01 -0700 (PDT)
+        Wed, 4 Oct 2023 12:17:39 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2051.outbound.protection.outlook.com [40.107.96.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DF49B
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:17:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Joys1rGl8BZmyW+xKNLhCExnqS6U5zA5JclnD7nvbHZVF6oj9SiPDHpYtGJp83sgdmswhGUudsHsmgoqzAIoIrBnx8CFwjTXqP2Y7FHbvSHx6qFeM/sU3g/acCQ/ovniO97buZ8CshYrYgvHDOcJBE/++tWBktxiQJDtpHrzRy3BmUFTLENCg2JhwO3yUzvGTW1xeZ4vMlg13DqZ/92Yu0p2adB+1+BLnJE0m5lHoi9WZHPWHDM3jKJXIcwj4QEF3NYngF9bMcqu9uDnvFiizQrT9s8SjFCjzI5rOaN0jW6XmnblD2wKkEwexIl/lECF1ETr60rhXdStr/pSdUmPqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rX1EN9nNYf/4oQMY5d601+RqZkkxVjliIB5bgOAX/Cs=;
+ b=FDO8IyYp+9WT3zg0kwHoS8zgOFPZBzQkzqypYhQCNvnWsla7OI3/Xf+UJmwlEiw2r55QKt0QPOzThkkdy0r3I/0waTVmVqyp8Um6a5sijjX+BQs3uaxJTSKmNIM4EOG1CPNE4xZGx5JKpF291IWq8EqMr8KKosuEDD0raZRcmvmBDg7QPsqrMCqcyXUBJNu5Y09R9SySO6OQ4lS9P9FRZrrEM9+QokPXrPyb0UgvKK2Lp1FHziwHWic1kYh6tq+zDry/ByI8UXXDt5el6PRyLQ5YEGOGFcjcBfSeF+0rlyQJ8xNdJHqkHH5HOwjaLzeEju0irqNsQ9eEffj969M0gQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rX1EN9nNYf/4oQMY5d601+RqZkkxVjliIB5bgOAX/Cs=;
+ b=0SmI/SYUF1H0Oab+spKVBYatx6wIOONTe85lb7xStBZS8TOS+hjLsgsYYTRr/Icr2PoNDBSnQFjaWrfYEx+DCqrGmyVoQPMGyBKzmfM9ZrSIx8fxYeCVVN0M5ZuwoGWxZxR9oenbLztR0vIzJsQ5KNXCmMzjCi6xhoZjgUHKRBE=
+Received: from PA7P264CA0531.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:3db::12)
+ by CH3PR12MB9218.namprd12.prod.outlook.com (2603:10b6:610:19f::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.31; Wed, 4 Oct
+ 2023 16:17:33 +0000
+Received: from SA2PEPF00001509.namprd04.prod.outlook.com
+ (2603:10a6:102:3db:cafe::76) by PA7P264CA0531.outlook.office365.com
+ (2603:10a6:102:3db::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.27 via Frontend
+ Transport; Wed, 4 Oct 2023 16:17:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SA2PEPF00001509.mail.protection.outlook.com (10.167.242.41) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Wed, 4 Oct 2023 16:17:31 +0000
+Received: from rtg-Artic.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 4 Oct
+ 2023 11:17:27 -0500
+From:   Arvind Yadav <Arvind.Yadav@amd.com>
+To:     <Christian.Koenig@amd.com>, <alexander.deucher@amd.com>,
+        <shashank.sharma@amd.com>, <Felix.Kuehling@amd.com>,
+        <Mukul.Joshi@amd.com>, <Xinhui.Pan@amd.com>, <airlied@gmail.com>,
+        <daniel@ffwll.ch>
+CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>,
+        Arvind Yadav <Arvind.Yadav@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Subject: [PATCH v3 1/2] drm/amdgpu: Adding db_size to get doorbell absolute offset
+Date:   Wed, 4 Oct 2023 21:46:51 +0530
+Message-ID: <20231004161652.3082-2-Arvind.Yadav@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231004161652.3082-1-Arvind.Yadav@amd.com>
+References: <20231004161652.3082-1-Arvind.Yadav@amd.com>
 MIME-Version: 1.0
-References: <CABCjUKBXPLNaBjELHqz=Oke_JsxXLQauTWrsNmTp3KToW3-9MQ@mail.gmail.com>
- <CABCjUKCRXeT2eExm6+y7cZCX4yEbj5MbjFnCHv4xvRPL5ce13g@mail.gmail.com> <CAJWu+opvq3dTk4dQmmR+7fs2KcrMELvt0iJcDeRQ9o9cnAVHWA@mail.gmail.com>
-In-Reply-To: <CAJWu+opvq3dTk4dQmmR+7fs2KcrMELvt0iJcDeRQ9o9cnAVHWA@mail.gmail.com>
-From:   Joel Fernandes <joelaf@google.com>
-Date:   Wed, 4 Oct 2023 12:16:50 -0400
-Message-ID: <CAJWu+or4yNoX3Dd=hCKbgM=JbVjzjV4M3o8Y6ihhJ_JLThEbFg@mail.gmail.com>
-Subject: Re: NOHZ interaction between IPI-less kick_ilb() and nohz_csd_func().
-To:     Suleiman Souhlal <suleiman@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@google.com>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Youssef Esmat <youssefesmat@google.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001509:EE_|CH3PR12MB9218:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1950236f-51ed-4962-3b50-08dbc4f56970
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yNgef7cRXNypLxyfTN9onIO9MF8BIOjOYqgFyzHD8jajtRYSVy+lrbCWG4Cu+lEBhE3QHFbe9WPZWfk3CAYFZffv6vJl5MbkD+JxiscB2hoO53D9XqJUSC2sq4DX95xsCfGxWqtLJOtShEO66I4z8uce2VOWWDdXvKyYTGpfaFWmSMo4WNDRxHmPEYqANRyza4J7btsCJhuYGSAg0nLF27o+KYyy2WrkSXGHtvYNNJS9S3Mu2K6tQ/eRdbBgo0608CguiXktZKYYVSsyGUMKFLjo6tL2ULiOmqiV4RqUvtJDBwS51P/jWzF/FaZsAWDO1H0U0lOvB36VX2auC0SD0R+CtIafgxRguwwYvOuC4q80TOKWpTOWfBbMbxb4Sxfb705D+gYy/wriW5B2R6w6UV+5mViG1sXGHeH3gY21cJI84IniZr7TyhAlyzqo/TpwH5NgUpYON9QBV3jS3cA0GInZFk5vMaqpqhGI2fPnj0qzzGMJK+Tt+v2cY0/DjZaSmUjvwGDVhPjW7/e3IVOEJzaBhbzyzMAmLdLSQLsNSmIGcSaDrKKcpq4PGRbegQM6lcxJYjIZwpsHDRUGQ3g7go4H2m48431IVo2QMupAX92ly4ylvYdNqLUtyO1GWvFuolWvTSZi6crgMLopdcVGtJHK2El+44fr7aA9hzUaMWrxYwmUM1FEY/a/1ZNUDeb9IcBBXl+ChHUi5DXs7A0Ll1xaoBtWcPZQRZ2WtAmy4jVR8Dwu4BV9HgRqEw6636DF0Janl/Ucrg+nHdIoGWKdhQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(396003)(39860400002)(346002)(230922051799003)(64100799003)(82310400011)(186009)(1800799009)(451199024)(46966006)(40470700004)(36840700001)(16526019)(83380400001)(110136005)(316002)(70206006)(54906003)(70586007)(26005)(1076003)(336012)(40480700001)(6666004)(81166007)(36756003)(7696005)(82740400003)(2616005)(86362001)(356005)(47076005)(36860700001)(478600001)(40460700003)(2906002)(426003)(8936002)(8676002)(41300700001)(4326008)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 16:17:31.7426
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1950236f-51ed-4962-3b50-08dbc4f56970
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001509.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9218
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 12:09=E2=80=AFPM Joel Fernandes <joelaf@google.com> =
-wrote:
->
-> +Frederic Weisbecker
->
-> On Wed, Sep 13, 2023 at 10:32=E2=80=AFAM Suleiman Souhlal <suleiman@googl=
-e.com> wrote:
-> >
-> > (I forgot to also add Vincent...)
-> >
-> > On Wed, Sep 13, 2023 at 9:49=E2=80=AFPM Suleiman Souhlal <suleiman@goog=
-le.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > I noticed that on x86 machines that have MWAIT, with NOHZ, when the
-> > > kernel decides to kick the idle load balance on another CPU in
-> > > kick_ilb(), there's an optimization that makes it avoid using an IPI
-> > > and instead exploit the fact that the remote CPU is MWAITing on the
-> > > thread_info flags, by just setting TIF_NEED_RESCHED, in
-> > > call_function_single_prep_ipi().
-> > > However, on the remote CPU, in nohz_csd_func(), we end up not raising
-> > > the sched softirq due to NEED_RESCHED being set, so the ILB doesn't
-> > > end up getting done.
-> > >
-> > > Is this intended?
+Here, passing db_size in byte to find the doorbell's
+absolute offset for both 32-bit and 64-bit doorbell sizes.
+So that doorbell offset will be aligned based on the doorbell
+size.
 
-Just thinking out loud I was wondering how nohz-ILB really matters if
-based on what Suleiman is saying - it is not even triggering on x86
-due to the mwait optimization. And if it does matter, how much
-improvement will fixing this bug give. I think at least on ARM, I
-remember it matters.
+v3:
+- Adding db_size as parameter to get db absolute offset.
 
-I am meanwhile looking at it more closely...
+Cc: Christian Koenig <christian.koenig@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
+Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h     |  5 +++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c | 13 +++++++++----
+ 2 files changed, 12 insertions(+), 6 deletions(-)
 
-thanks,
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h
+index 09f6727e7c73..4a8b33f55f6b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h
+@@ -357,8 +357,9 @@ int amdgpu_doorbell_init(struct amdgpu_device *adev);
+ void amdgpu_doorbell_fini(struct amdgpu_device *adev);
+ int amdgpu_doorbell_create_kernel_doorbells(struct amdgpu_device *adev);
+ uint32_t amdgpu_doorbell_index_on_bar(struct amdgpu_device *adev,
+-				       struct amdgpu_bo *db_bo,
+-				       uint32_t doorbell_index);
++				      struct amdgpu_bo *db_bo,
++				      uint32_t doorbell_index,
++				      uint32_t db_size);
+ 
+ #define RDOORBELL32(index) amdgpu_mm_rdoorbell(adev, (index))
+ #define WDOORBELL32(index, v) amdgpu_mm_wdoorbell(adev, (index), (v))
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
+index da4be0bbb446..6690f5a72f4d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
+@@ -114,19 +114,24 @@ void amdgpu_mm_wdoorbell64(struct amdgpu_device *adev, u32 index, u64 v)
+  * @adev: amdgpu_device pointer
+  * @db_bo: doorbell object's bo
+  * @db_index: doorbell relative index in this doorbell object
++ * @db_size: doorbell size is in byte
+  *
+  * returns doorbell's absolute index in BAR
+  */
+ uint32_t amdgpu_doorbell_index_on_bar(struct amdgpu_device *adev,
+-				       struct amdgpu_bo *db_bo,
+-				       uint32_t doorbell_index)
++				      struct amdgpu_bo *db_bo,
++				      uint32_t doorbell_index,
++				      uint32_t db_size)
+ {
+ 	int db_bo_offset;
+ 
+ 	db_bo_offset = amdgpu_bo_gpu_offset_no_check(db_bo);
+ 
+-	/* doorbell index is 32 bit but doorbell's size is 64-bit, so *2 */
+-	return db_bo_offset / sizeof(u32) + doorbell_index * 2;
++	/* doorbell index is 32 bit but doorbell's size can be 32 bit
++	 * or 64 bit, so *db_size(in byte)/4 for alignment.
++	 */
++	return db_bo_offset / sizeof(u32) + doorbell_index *
++	       DIV_ROUND_UP(db_size, 4);
+ }
+ 
+ /**
+-- 
+2.34.1
 
- - Joel
