@@ -2,191 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F40D77B9895
+	by mail.lfdr.de (Postfix) with ESMTP id 53B497B9893
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240531AbjJDXKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 19:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40084 "EHLO
+        id S233634AbjJDXKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 19:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240519AbjJDXKL (ORCPT
+        with ESMTP id S240627AbjJDXKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 19:10:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFC3D8;
-        Wed,  4 Oct 2023 16:10:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A01CEC433C7;
-        Wed,  4 Oct 2023 23:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696461006;
-        bh=sr3ifcYlnQGpK7RnHCI5qP/JfUY4gY6cRzG0hwZktu8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CIyVh30kCx/E3HkEEl2nSJkUfwb0kjb3KXI8ARak+kw+rvNQCmJglP/CtQEaDBYOP
-         UmJgRx1niIHuZVu4fiOMIgM/xdw8s/DHLyfteoAF9i91+74oPnxgaSVFgPqxVQxweM
-         XYaRLUNX1C6k4R5n9S0lI0bCMK2o5Ck45irETSBscxPno1fsrsFattKipt61D0NwG9
-         x1ocuKJBWNjJjS/B14TN+SU3kAuHDrUgdr1cKqJskBA/uaVMKgNZx0tQ+j1gdrZIhg
-         9WIc2//ILIuhU4N2mnGJh+bVkeVx82YFrXhrsvuPZPhJllvTE7UZ3YBIekGloVb7sc
-         O/MzMZwgP7sYw==
-Received: by mercury (Postfix, from userid 1000)
-        id B812E106052D; Thu,  5 Oct 2023 01:10:03 +0200 (CEST)
-Date:   Thu, 5 Oct 2023 01:10:03 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     amd-gfx@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jun.ma2@amd.com
-Subject: Re: [PATCH 2/3] power: supply: Don't count 'unknown' scope power
- supplies
-Message-ID: <20231004231003.z55btgajmixxadqo@mercury.elektranox.org>
-References: <20230926225955.386553-1-mario.limonciello@amd.com>
- <20230926225955.386553-3-mario.limonciello@amd.com>
- <20230930201826.biy27esyw4ttxt4p@mercury.elektranox.org>
- <8d4e4b74-4477-41e0-a690-8b9f38907a7b@amd.com>
+        Wed, 4 Oct 2023 19:10:14 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3EAE4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 16:10:11 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-694ed84c981so269937b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 16:10:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696461010; x=1697065810; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pBCvMKFa+vcZnG26/JeWxeoSgocrNcnNb84l5SDtiC0=;
+        b=JYaT0TWedclRbg6rhIKg0EkHmJaXOUcskCIaj1ApK0GoaKeIQIK+OXwH2UHFzMXhRL
+         ROskWE9YtFNENPQsoaw/RG68F06iHOBsm1R7tqxp7w5y6qbHUPf6rQ74puaK5UhaDwmj
+         C9icbukZ++CmH/qStRLyzoz9NTxs6fVSnJKcTH+tZUrEW3DWWxUYdjmvldG4S6zG/GVC
+         e3Fx1p+TMiniDlrGDoAvb53Qv2dHj+6pTxr1rXD25lhtt75CMTmyM6ULMBJs6tVAfaSQ
+         dd9uxYhx3rowJOitpiDxbpp1Bqt5JaEN9+TBeR3MsYxL4RI6BM5eDh79SGldIjvGj6Nb
+         Q7Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696461010; x=1697065810;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pBCvMKFa+vcZnG26/JeWxeoSgocrNcnNb84l5SDtiC0=;
+        b=SwqVzRTRa/ybP0jHW3QA1/YGJpE40wTKNUtdQJYGE0orOhTrfdtJD2GHFzL5UGJX8U
+         yCuus3ReVj1esiyTlUKnJDI+G6/ENo6sW0+t34EhgJlFgFuYaYcslkYDOfmL5d9cnNGC
+         UeCIAJlcoIfMkvHzknF/yk+SMBh7zwlnxxZR3iY1rULFxYfSPAJFutfKtljTehkLxvW/
+         mIzZ2Zbb9eoKoRNW2hGOXMw4G24uMLnvw52ALmcwABW1okJTy+7TlFAuJCxwZKRVinCO
+         aJZuCFrS5HAr1N1WZOUSYn5m/ehRYKp+o617mFs5t5eQP+bRI7RQDP8iT6bmRe2nNVA6
+         vlog==
+X-Gm-Message-State: AOJu0YzUvtVgl9+mre01VR+H9vGAHJrc4FtdTO/0BM73wER3E7STb0W3
+        04HUBvbq5FfcYsQk0MrjdnAtFA==
+X-Google-Smtp-Source: AGHT+IEzCkW3N7WbBiXE2690U1CrRQ58ztSV2yenmMp5uTGEVYjAPVvffGppyu1YjwxFATJTBrrj0A==
+X-Received: by 2002:a05:6a20:9698:b0:15d:624c:6e43 with SMTP id hp24-20020a056a20969800b0015d624c6e43mr3049725pzc.3.1696461010435;
+        Wed, 04 Oct 2023 16:10:10 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id x3-20020a170902ea8300b001bdb8c0b578sm100725plb.192.2023.10.04.16.10.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 16:10:08 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qoB0H-009XMo-3D;
+        Thu, 05 Oct 2023 10:10:06 +1100
+Date:   Thu, 5 Oct 2023 10:10:05 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Maiolino <cem@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 8/8] shmem,percpu_counter: add _limited_add(fbc, limit,
+ amount)
+Message-ID: <ZR3wzVJ019gH0DvS@dread.disaster.area>
+References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
+ <bb817848-2d19-bcc8-39ca-ea179af0f0b4@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mavrvis2xy3vzwff"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8d4e4b74-4477-41e0-a690-8b9f38907a7b@amd.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <bb817848-2d19-bcc8-39ca-ea179af0f0b4@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 29, 2023 at 08:42:45PM -0700, Hugh Dickins wrote:
+> Percpu counter's compare and add are separate functions: without locking
+> around them (which would defeat their purpose), it has been possible to
+> overflow the intended limit.  Imagine all the other CPUs fallocating
+> tmpfs huge pages to the limit, in between this CPU's compare and its add.
+> 
+> I have not seen reports of that happening; but tmpfs's recent addition
+> of dquot_alloc_block_nodirty() in between the compare and the add makes
+> it even more likely, and I'd be uncomfortable to leave it unfixed.
+> 
+> Introduce percpu_counter_limited_add(fbc, limit, amount) to prevent it.
+> 
+> I believe this implementation is correct, and slightly more efficient
+> than the combination of compare and add (taking the lock once rather
+> than twice when nearing full - the last 128MiB of a tmpfs volume on a
+> machine with 128 CPUs and 4KiB pages); but it does beg for a better
+> design - when nearing full, there is no new batching, but the costly
+> percpu counter sum across CPUs still has to be done, while locked.
+> 
+> Follow __percpu_counter_sum()'s example, including cpu_dying_mask as
+> well as cpu_online_mask: but shouldn't __percpu_counter_compare() and
+> __percpu_counter_limited_add() then be adding a num_dying_cpus() to
+> num_online_cpus(), when they calculate the maximum which could be held
+> across CPUs?  But the times when it matters would be vanishingly rare.
+> 
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Cc: Tim Chen <tim.c.chen@intel.com>
+> Cc: Dave Chinner <dchinner@redhat.com>
+> Cc: Darrick J. Wong <djwong@kernel.org>
+> ---
+> Tim, Dave, Darrick: I didn't want to waste your time on patches 1-7,
+> which are just internal to shmem, and do not affect this patch (which
+> applies to v6.6-rc and linux-next as is): but want to run this by you.
 
---mavrvis2xy3vzwff
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hmmmm. IIUC, this only works for addition that approaches the limit
+from below?
 
-Hi,
+So if we are approaching the limit from above (i.e. add of a
+negative amount, limit is zero) then this code doesn't work the same
+as the open-coded compare+add operation would?
 
-On Sun, Oct 01, 2023 at 07:00:11PM -0500, Mario Limonciello wrote:
-> Let me try to add more detail.
->=20
-> This is an OEM system that has 3 USB type C ports.  It's an Intel system,
-> but this doesn't matter for the issue.
-> * when ucsi_acpi is not loaded there are no power supplies in the system =
-and
-> it reports power_supply_is_system_supplied() as AC.
-> * When ucsi_acpi is loaded 3 power supplies will be registered.
-> power_supply_is_system_supplied() reports as DC.
->=20
-> Now when you add in a Navi3x AMD dGPU to the system the power supplies do=
-n't
-> change.  This particular dGPU model doesn't contain a USB-C port, so there
-> is no UCSI power supply registered.
->=20
-> As amdgpu is loaded it looks at device initialization whether the system =
-is
-> powered by AC or DC.  Here is how it looks:
->=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/dri=
-vers/gpu/drm/amd/amdgpu/amdgpu_device.c?h=3Dlinux-6.5.y#n3834
->=20
-> On the OEM system if amdgpu loads before the ucsi_acpi driver (such as in
-> the initramfs) then the right value is returned for
-> power_supply_is_system_supplied() - AC.
->=20
-> If amdgpu is loaded after the ucsi_acpi driver, the wrong value is return=
-ed
-> for power_supply_is_system_supplied() - DC.
->=20
-> This value is very important to set up the dGPU properly.  If the wrong
-> value is returned, the wrong value will be notified to the hardware and t=
-he
-> hardware will not behave properly.  On the OEM system this is a "black
-> screen" at bootup along with RAS errors emitted by the dGPU.
->=20
-> With no changes to a malfunctioning kernel or initramfs binaries I can add
-> modprobe.blacklist=3Ducsi_acpi to kernel command line avoid registering t=
-hose
-> 3 power supplies and the system behaves properly.
->=20
-> So I think it's inappropriate for "UNKNOWN" scope power supplies to be
-> registered and treated as system supplies, at least as it pertains to
-> power_supply_is_system_supplied().
+Hence I think this looks like a "add if result is less than"
+operation, which is distinct from then "add if result is greater
+than" operation that we use this same pattern for in XFS and ext4.
+Perhaps a better name is in order?
 
-So the main issue is, that the ucsi_acpi registers a bunch of
-power-supply chargers with unknown scope on a desktop systems
-and that results in the system assumed to be supplied from battery.
+I'm also not a great fan of having two
+similar-but-not-quite-the-same implementations for the two
+comparisons, but unless we decide to convert the XFs slow path to
+this it doesn't matter that much at the moment....
 
-The problem with your change is, that many of the charger drivers
-don't set a scope at all (and thus report unknown scope). Those
-obviously should not be skipped. Probably most of these drivers
-could be changed to properly set the scope, but it needs to be
-checked on a case-by-case basis. With your current patch they would
-regress in the oposite direction of your use-case.
+Implementation seems OK at a quick glance, though.
 
-Ideally ucsi is changed to properly describe the scope, but I
-suppose this information is not available in ACPI?
+Cheers,
 
-Assuming that the above are not solvable easily, my idea would be to
-only count the number of POWER_SUPPLY_TYPE_BATTERY device, which have
-!POWER_SUPPLY_SCOPE_DEVICE and exit early if there are none.
-Basically change __power_supply_is_system_supplied(), so that it
-looks like this:
-
-=2E..
-	if (!psy->desc->get_property(psy, POWER_SUPPLY_PROP_SCOPE, &ret))
-		if (ret.intval =3D=3D POWER_SUPPLY_SCOPE_DEVICE)
-			return 0;
-
-	if (psy->desc->type =3D=3D POWER_SUPPLY_TYPE_BATTERY)
-			(*count)++;
-    else
-		if (!psy->desc->get_property(psy, POWER_SUPPLY_PROP_ONLINE,
-					&ret))
-			return ret.intval;
-=2E..
-
-That should work in both cases.
-
--- Sebastian
-
-> > >   drivers/power/supply/power_supply_core.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power=
-/supply/power_supply_core.c
-> > > index d325e6dbc770..3de6e6d00815 100644
-> > > --- a/drivers/power/supply/power_supply_core.c
-> > > +++ b/drivers/power/supply/power_supply_core.c
-> > > @@ -349,7 +349,7 @@ static int __power_supply_is_system_supplied(stru=
-ct device *dev, void *data)
-> > >   	unsigned int *count =3D data;
-> > >   	if (!psy->desc->get_property(psy, POWER_SUPPLY_PROP_SCOPE, &ret))
-> > > -		if (ret.intval =3D=3D POWER_SUPPLY_SCOPE_DEVICE)
-> > > +		if (ret.intval !=3D POWER_SUPPLY_SCOPE_SYSTEM)
-> > >   			return 0;
-> > >   	(*count)++;
-> > > --=20
-> > > 2.34.1
-> > >=20
->=20
-
---mavrvis2xy3vzwff
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUd8McACgkQ2O7X88g7
-+poWjA/9HdkzUe4iv3N7kLQ1MX8LLpg04IlI4kPsSscO2XL8B9FQgQVSaVaH8bSc
-IB0/8clq1dhPvpsC2lZBKGxEnzm1DA3Q97UZ+i+pO2yCeYB2b/I5dnXLYr5m3teZ
-prHUSgoGMNF3lc5QeLO7hc/RT4pKbk7eme3geqCj8Z1JDRUnJLychMMhtzqRch7k
-14ZZWZ3e93vDs6J0Kz5/MT4ws/4m831MzA9sbXK2qRtugV259jeEw/6UtUIdyp8V
-QK2/P9k6ZXfcZjzkm0JVm19lWvyF3YM2WzeoLLeYE8bz6BIBQauw/DyTknKFDmQx
-3ftwFyd6fbnfOfKRgXac2zlrG5W1v1y6Xs8GfMvrWf1KxvXNrpzU8VBCArJk67k3
-CP2s6f7CvFxe9XrMinsge58mraayaqSUmc9QeM/tKuBNpUGglUJo/FFFHMBfITqb
-M1zll2uGFGajOfEpiI9pHIIVWhXzVCoYUdvu3KJsmTciuqSX2qJWY/76P6YdVLXR
-JT1i64+6ca7VklC5PWgG98s2xoGHYowVmGSChtEkYvAD8GpR+CQELBj8R6xcApAu
-njA+xFNG6ZvP8BSLYUd5Qon+EHqHmBA70oj9FkZueKie1+YLSlH4prMn5aQqThkP
-WZodfhxa5KMbzTbnsd62i4yZkfbU1uKFsgYPXDCA/feQeuQLLwE=
-=/PRi
------END PGP SIGNATURE-----
-
---mavrvis2xy3vzwff--
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
