@@ -2,221 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD927B8C79
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821DC7B8CBA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 21:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245636AbjJDTLC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 15:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49804 "EHLO
+        id S244984AbjJDTND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 15:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245573AbjJDTKt (ORCPT
+        with ESMTP id S245671AbjJDTLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 15:10:49 -0400
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B14898;
-        Wed,  4 Oct 2023 12:09:30 -0700 (PDT)
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-57c0775d4fcso28363eaf.0;
-        Wed, 04 Oct 2023 12:09:30 -0700 (PDT)
+        Wed, 4 Oct 2023 15:11:22 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CB2199D;
+        Wed,  4 Oct 2023 12:10:51 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4066241289bso1510365e9.0;
+        Wed, 04 Oct 2023 12:10:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696446650; x=1697051450; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HTfZ0jAUK4N4Sk3VAwhje24Zb8gHtlaGWhfpDbGXJfs=;
+        b=Dz5wGefEStr0F0+2IuAPbVW+rW4moWydvtXFU2lDMCnlc4VTL5AS5RI3Nm6t3DCPrT
+         VO+7/pcxCWFiTCo6hIb6x88t0CbGz2DNKi8WUF+udK6i0Tr4RqRN7+QwdJHVKlUJIBcU
+         +28883nQxrgGXPbnWWGPmXIBC1O7Z0I1liTu5xRZ4NYleLwp/Yj85H1ibwko0d3KbhhF
+         pT/oxi8z/LO2BuwAcyCeDSYc8S1hbrYG4GwSh7NXQH/fOtIHlHV3xRy0ti3DEMbDxObY
+         qzSFPmtGw5d4k9vm1/MbhaoquHc5TJ36sLdwO6XY0//8DJ9K01RTuQthKSr8QekZVhrz
+         aAYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696446569; x=1697051369;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NIRRcUEkY2QwDUo2YxYjdPZlFGlVEIduNYlZzLi872Y=;
-        b=aTt6MaNwRZ5Z9Chrk7xdu5VHwzcjJa6gRVUnOB51GGNGB+fCvDikkSzPG/SGb7iW0a
-         bYvHAdd5/tTPRPBwGYae/aow+o/GblOvAD7/GZpsJW1Ow9C23HOMWTP4KZeGMyiQdBSj
-         JyNL4+SOl8d2DP1iyLTupzNK1ik0jKGJJbEQL8aYJaDDZ1PIiSvDS4g6HTtQFi1JyvXo
-         BZDCOc/mQHe2B4+KWpsSDJ1p3GMkbT/bsR7b3LKkrLEGbD5FbotEbpKlnHvENHWBGu9+
-         r4XjUhlSLrdJe2hHgOjRFDxOTLfbrPq+ChfbQDDqBwXRT7i/SyZShcq4Zdes81g/r2Ac
-         dRdA==
-X-Gm-Message-State: AOJu0YxGC4wCP9VIUGpXXzDjGcWeWv8pN75Fc3m5EjjglEZwKcQxFoDf
-        jr9Ad+aC21gYfSo8FY/z+eHUzk3o22lq4aCmWV4=
-X-Google-Smtp-Source: AGHT+IEoiOp7mEVinpVKZsIBFCfod83bd7/eQFof7tFvi/KF10mIwMRAx6EP0sSZomQ/E9+6rGDV6xxCflMP4uLidoI=
-X-Received: by 2002:a4a:d097:0:b0:57b:7e31:c12 with SMTP id
- i23-20020a4ad097000000b0057b7e310c12mr3211586oor.1.1696446569455; Wed, 04 Oct
- 2023 12:09:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696446650; x=1697051450;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HTfZ0jAUK4N4Sk3VAwhje24Zb8gHtlaGWhfpDbGXJfs=;
+        b=WcEJZTpdAG+k5CxYAYmZISRjJKGvz159Cg83ye2vTvBfCrYt/RWpXHgs8UpnY8G+jO
+         fONLYKdomAEn8ub5cIZEYreUUHz/zZ0y44me5/OJgvB8L9zD7DCNwoqETDVBi3t2pev3
+         SrFTA6KBmij3lml9XDjM2sj7MOpCpDZhs0HsA5vPbtcM71n1nqM40WrD1JKVqFg4xbue
+         Mr4PJMeyaBgIuq2qH2mtP4fXGXc+NSd9PBPQH497TjibEJplnlqUfhMRzaDws9rrfcC/
+         DlNGA+2oxi83hMDg5yjYFuiKRMcETjwYUZmQsnW2pd6jcqnOvRAHNiwB9xl4euH1SDq7
+         OlpA==
+X-Gm-Message-State: AOJu0Yzr3p2jzbeVQ2ipDzX5W2Un9+bfA3ADMwKoXyHlGWyExqIRlhNK
+        E4xGnYqM51QeRkJh4yqSEWo=
+X-Google-Smtp-Source: AGHT+IFMNzPekvjGkugECc2AlNI4n9INyxPua5xpX8Fgx52IuCkzeF8SstaPUeXyg7/COCzk8cdBjA==
+X-Received: by 2002:a5d:6091:0:b0:317:5747:b955 with SMTP id w17-20020a5d6091000000b003175747b955mr2576936wrt.17.1696446649516;
+        Wed, 04 Oct 2023 12:10:49 -0700 (PDT)
+Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
+        by smtp.gmail.com with ESMTPSA id p15-20020a05600c468f00b004051f8d6207sm2221281wmo.6.2023.10.04.12.10.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 12:10:48 -0700 (PDT)
+Message-ID: <25ba48de-2ab6-4a4e-a290-891398710931@gmail.com>
+Date:   Wed, 4 Oct 2023 21:10:47 +0200
 MIME-Version: 1.0
-References: <20230925144842.586829-1-michal.wilczynski@intel.com> <20230925144842.586829-2-michal.wilczynski@intel.com>
-In-Reply-To: <20230925144842.586829-2-michal.wilczynski@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 4 Oct 2023 21:09:18 +0200
-Message-ID: <CAJZ5v0jyjH48XZ6vytncodYhsS6ODYg2yaZBPfRWb_qm99FMuA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/9] ACPI: bus: Make notify wrappers more generic
-To:     Michal Wilczynski <michal.wilczynski@intel.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nvdimm@lists.linux.dev, rafael.j.wysocki@intel.com,
-        andriy.shevchenko@intel.com, lenb@kernel.org,
-        dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        ira.weiny@intel.com, rui.zhang@intel.com,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] firmware: qcom: qseecom: add missing include guards
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20231004185732.98621-1-brgl@bgdev.pl>
+Content-Language: en-US
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+In-Reply-To: <20231004185732.98621-1-brgl@bgdev.pl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 6:31 PM Michal Wilczynski
-<michal.wilczynski@intel.com> wrote:
->
-> acpi_dev_install_notify_handler() and acpi_dev_remove_notify_handler()
-> are wrappers around ACPICA installers. They are meant to save some
-> duplicated code from drivers. However as we're moving towards drivers
-> operating on platform_device they become a bit inconvenient to use as
-> inside the driver code we mostly want to use driver data of platform
-> device instead of ACPI device.
+On 10/4/23 20:57, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> The qseecom header does not contain ifdef guards against multiple
+> inclusion. Add them.
+> 
+> Fixes: 00b1248606ba ("firmware: qcom_scm: Add support for Qualcomm Secure Execution Environment SCM interface")
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-That's fair enough, but ->
+Oh, thanks for spotting and fixing that.
 
-> Make notify handlers installer wrappers more generic, while still
-> saving some code that would be duplicated otherwise.
->
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
+
+PS: I haven't forgotten about your SHM Bridge patches. Testing those is
+now next up on my kernel TODO list. Unfortunately, it might take a
+couple more days until I can get around to do it properly.
+
 > ---
->
-> Notes:
->     So one solution could be to just replace acpi_device with
->     platform_device as an argument in those functions. However I don't
->     believe this is a correct solution, as it is very often the case that
->     drivers declare their own private structures which gets allocated during
->     the .probe() callback, and become the heart of the driver. When drivers
->     do that it makes much more sense to just pass the private structure
->     to the notify handler instead of forcing user to dance with the
->     platform_device or acpi_device.
->
->  drivers/acpi/ac.c         |  6 +++---
->  drivers/acpi/acpi_video.c |  6 +++---
->  drivers/acpi/battery.c    |  6 +++---
->  drivers/acpi/bus.c        | 14 ++++++--------
->  drivers/acpi/hed.c        |  6 +++---
->  drivers/acpi/nfit/core.c  |  6 +++---
->  drivers/acpi/thermal.c    |  6 +++---
->  include/acpi/acpi_bus.h   |  9 ++++-----
->  8 files changed, 28 insertions(+), 31 deletions(-)
->
-> diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
-> index 225dc6818751..0b245f9f7ec8 100644
-> --- a/drivers/acpi/ac.c
-> +++ b/drivers/acpi/ac.c
-> @@ -256,8 +256,8 @@ static int acpi_ac_add(struct acpi_device *device)
->         ac->battery_nb.notifier_call = acpi_ac_battery_notify;
->         register_acpi_notifier(&ac->battery_nb);
->
-> -       result = acpi_dev_install_notify_handler(device, ACPI_ALL_NOTIFY,
-> -                                                acpi_ac_notify);
-> +       result = acpi_dev_install_notify_handler(device->handle, ACPI_ALL_NOTIFY,
-> +                                                acpi_ac_notify, device);
->         if (result)
->                 goto err_unregister;
->
-> @@ -306,7 +306,7 @@ static void acpi_ac_remove(struct acpi_device *device)
->
->         ac = acpi_driver_data(device);
->
-> -       acpi_dev_remove_notify_handler(device, ACPI_ALL_NOTIFY,
-> +       acpi_dev_remove_notify_handler(device->handle, ACPI_ALL_NOTIFY,
->                                        acpi_ac_notify);
->         power_supply_unregister(ac->charger);
->         unregister_acpi_notifier(&ac->battery_nb);
-> diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
-> index 948e31f7ce6e..025c17890127 100644
-> --- a/drivers/acpi/acpi_video.c
-> +++ b/drivers/acpi/acpi_video.c
-> @@ -2059,8 +2059,8 @@ static int acpi_video_bus_add(struct acpi_device *device)
->
->         acpi_video_bus_add_notify_handler(video);
->
-> -       error = acpi_dev_install_notify_handler(device, ACPI_DEVICE_NOTIFY,
-> -                                               acpi_video_bus_notify);
-> +       error = acpi_dev_install_notify_handler(device->handle, ACPI_DEVICE_NOTIFY,
-> +                                               acpi_video_bus_notify, device);
->         if (error)
->                 goto err_remove;
->
-> @@ -2092,7 +2092,7 @@ static void acpi_video_bus_remove(struct acpi_device *device)
->
->         video = acpi_driver_data(device);
->
-> -       acpi_dev_remove_notify_handler(device, ACPI_DEVICE_NOTIFY,
-> +       acpi_dev_remove_notify_handler(device->handle, ACPI_DEVICE_NOTIFY,
->                                        acpi_video_bus_notify);
->
->         mutex_lock(&video_list_lock);
-> diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
-> index 969bf81e8d54..45dae32a8646 100644
-> --- a/drivers/acpi/battery.c
-> +++ b/drivers/acpi/battery.c
-> @@ -1213,8 +1213,8 @@ static int acpi_battery_add(struct acpi_device *device)
->
->         device_init_wakeup(&device->dev, 1);
->
-> -       result = acpi_dev_install_notify_handler(device, ACPI_ALL_NOTIFY,
-> -                                                acpi_battery_notify);
-> +       result = acpi_dev_install_notify_handler(device->handle, ACPI_ALL_NOTIFY,
-> +                                                acpi_battery_notify, device);
->         if (result)
->                 goto fail_pm;
->
-> @@ -1241,7 +1241,7 @@ static void acpi_battery_remove(struct acpi_device *device)
->
->         battery = acpi_driver_data(device);
->
-> -       acpi_dev_remove_notify_handler(device, ACPI_ALL_NOTIFY,
-> +       acpi_dev_remove_notify_handler(device->handle, ACPI_ALL_NOTIFY,
->                                        acpi_battery_notify);
->
->         device_init_wakeup(&device->dev, 0);
-> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-> index f41dda2d3493..479fe888d629 100644
-> --- a/drivers/acpi/bus.c
-> +++ b/drivers/acpi/bus.c
-> @@ -554,14 +554,13 @@ static void acpi_device_remove_notify_handler(struct acpi_device *device,
->         acpi_os_wait_events_complete();
->  }
->
-> -int acpi_dev_install_notify_handler(struct acpi_device *adev,
-> -                                   u32 handler_type,
-> -                                   acpi_notify_handler handler)
-> +int acpi_dev_install_notify_handler(acpi_handle handle, u32 handler_type,
-> +                                   acpi_notify_handler handler, void *context)
->  {
->         acpi_status status;
->
-> -       status = acpi_install_notify_handler(adev->handle, handler_type,
-> -                                            handler, adev);
-> +       status = acpi_install_notify_handler(handle, handler_type,
-> +                                            handler, context);
-
-The wrapper now takes exactly the same arguments as the wrapped
-function, so what exactly is the point of having it?  The return value
-type?
-
->         if (ACPI_FAILURE(status))
->                 return -ENODEV;
->
-> @@ -569,11 +568,10 @@ int acpi_dev_install_notify_handler(struct acpi_device *adev,
->  }
->  EXPORT_SYMBOL_GPL(acpi_dev_install_notify_handler);
->
-> -void acpi_dev_remove_notify_handler(struct acpi_device *adev,
-> -                                   u32 handler_type,
-> +void acpi_dev_remove_notify_handler(acpi_handle handle, u32 handler_type,
->                                     acpi_notify_handler handler)
->  {
-> -       acpi_remove_notify_handler(adev->handle, handler_type, handler);
-> +       acpi_remove_notify_handler(handle, handler_type, handler);
->         acpi_os_wait_events_complete();
-
-Here at least there is the extra workqueues synchronization point.
-
-That said, why exactly is it better to use acpi_handle instead of a
-struct acpi_device pointer?
-
-Realistically, in a platform driver you'll need the latter to obtain
-the former anyway.
+>   include/linux/firmware/qcom/qcom_qseecom.h | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/include/linux/firmware/qcom/qcom_qseecom.h b/include/linux/firmware/qcom/qcom_qseecom.h
+> index b531547e1dc9..5c28298a98be 100644
+> --- a/include/linux/firmware/qcom/qcom_qseecom.h
+> +++ b/include/linux/firmware/qcom/qcom_qseecom.h
+> @@ -5,6 +5,10 @@
+>    *
+>    * Copyright (C) 2023 Maximilian Luz <luzmaximilian@gmail.com>
+>    */
+> +
+> +#ifndef __QCOM_QSEECOM_H
+> +#define __QCOM_QSEECOM_H
+> +
+>   #include <linux/auxiliary_bus.h>
+>   #include <linux/types.h>
+>   
+> @@ -44,3 +48,5 @@ static inline int qcom_qseecom_app_send(struct qseecom_client *client, void *req
+>   {
+>   	return qcom_scm_qseecom_app_send(client->app_id, req, req_size, rsp, rsp_size);
+>   }
+> +
+> +#endif /* __QCOM_QSEECOM_H */
