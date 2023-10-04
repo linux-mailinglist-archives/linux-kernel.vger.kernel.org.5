@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 116A67B83B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78207B83B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233738AbjJDPfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41368 "EHLO
+        id S233679AbjJDPgW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 11:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233692AbjJDPfm (ORCPT
+        with ESMTP id S233473AbjJDPgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:35:42 -0400
-Received: from out-203.mta1.migadu.com (out-203.mta1.migadu.com [IPv6:2001:41d0:203:375::cb])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF83FCE
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:35:38 -0700 (PDT)
-Message-ID: <a1fe7d7d-3521-648e-baeb-5cf8e2a8ae3a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696433736;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4sRnG2yg4I61J1F96z6/qMAsZlsk2UA4qVDxZItMXbI=;
-        b=ajupj+mSkKwsdquRS64v2Myg5+yUBTjoB4o2b0tk8+3jf60EDCB3kwQPr4RrwoPLMGCKrh
-        kkuxKyEXa0rFrleqFP7GvunVjH0SlbWIYA+jYrdmXfGe/u1DS3m9JHqGZdg4yjxVCJyRI5
-        /ZwGctS4isFv8tDGs5lUojdozRWCUIA=
-Date:   Wed, 4 Oct 2023 23:35:26 +0800
+        Wed, 4 Oct 2023 11:36:21 -0400
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D842198;
+        Wed,  4 Oct 2023 08:36:18 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59c215f2f4aso27690447b3.1;
+        Wed, 04 Oct 2023 08:36:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696433778; x=1697038578;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E1DdlhuqR3JN6uSIXuCO9eqHb8GCx2/yO+mSSn2zYgQ=;
+        b=srLs/8yCgUxhMAURFDVfU0+2pRt+lSkNUJ1n7XOhc/YVwU7RX0jq8cU9dz91cLEjZk
+         KcVo7mI9JqWmqbv9cB1nWz+blOMBRxc8ayu/qu0EItR44ekBq6bspHT2kXX+2EIxFiaP
+         BGZNebQuAUYvtY9fDRxxlUuAyU4KHjWmDhPc5t2+OL1OT0ZJOgYW9fdTWzIbzWfHqYyc
+         2C2KLrar8cTtTNfGEEBZQv6aXhVxjmDXEXbzzi1dDK59xWjtkUdjFCmjkXwYpVTNB0/q
+         PQHIjjvLOXtRCq2s5MO2TG/Dk/+87AULBP8QLvZC80t6XfGDgNInpOBnA0ElOqWGLz5q
+         Jt5g==
+X-Gm-Message-State: AOJu0YznlqqFF5sfCuBYbJ69tB7X3IpWcIguqMqHLyMRlgw9K7AR2sJd
+        Zy/Nn3nkNOx7we2ZyObT21fzI6bB/zEUuw==
+X-Google-Smtp-Source: AGHT+IFJN/pUOe7Ed9W2W6RxupIa7W9uDqUAVG6lZqDx/bM0qOOjQXQX8RRhZoMDk0ZAOWpBMVS1dw==
+X-Received: by 2002:a0d:f645:0:b0:59f:761a:fe70 with SMTP id g66-20020a0df645000000b0059f761afe70mr3041092ywf.19.1696433777861;
+        Wed, 04 Oct 2023 08:36:17 -0700 (PDT)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id t130-20020a818388000000b0058ddb62f99bsm1235589ywf.38.2023.10.04.08.36.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 08:36:17 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5a24b03e22eso27837227b3.0;
+        Wed, 04 Oct 2023 08:36:17 -0700 (PDT)
+X-Received: by 2002:a0d:cad2:0:b0:59b:f744:f158 with SMTP id
+ m201-20020a0dcad2000000b0059bf744f158mr3013260ywd.15.1696433777258; Wed, 04
+ Oct 2023 08:36:17 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v4] sched/rt: move back to RT_GROUP_SCHED and rename it
- child
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-References: <20230803050317.2240948-1-yajun.deng@linux.dev>
- <ZRvkM1lxsTrHb2Ox@gmail.com> <93aa2ee6-3ee4-0129-7160-d3684ba67f56@linux.dev>
- <20231003163719.GG1539@noisy.programming.kicks-ass.net>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <20231003163719.GG1539@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231002165957.11388-1-wsa+renesas@sang-engineering.com>
+ <CAMuHMdU+1ox_6e65YQ0bCQMbqtWkYzsE2S88-En7OnYvomfJ2Q@mail.gmail.com> <ZR2DQYvwTbADM0zX@ninjato>
+In-Reply-To: <ZR2DQYvwTbADM0zX@ninjato>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 4 Oct 2023 17:36:06 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW7xYh7EFczC3OBFDCRCa5OhW50iLhC2f3p00goetoTHQ@mail.gmail.com>
+Message-ID: <CAMuHMdW7xYh7EFczC3OBFDCRCa5OhW50iLhC2f3p00goetoTHQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: renesas: r8a77990: document Ebisu-4D support
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Wolfram,
 
-On 2023/10/4 00:37, Peter Zijlstra wrote:
-> On Tue, Oct 03, 2023 at 10:55:50PM +0800, Yajun Deng wrote:
+On Wed, Oct 4, 2023 at 5:22 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> > Ebisu-4D has a different part number: RTP0RC77990SEB0020S.
 >
->> @Peter, I think I split up this patch into 2 separate patches:
->>
->>           sched/rt: Introduce for_each_sched_rt_entity_back() & use it
-> Why ?? Having that macro makes no sense what so ever. You can't use it,
-> unless you set up the back pointers first. It is not a self contained
-> piece of functionality.
+> Oh, then the elinux wiki entry is at least vague [1]. I checked against
+> it and it says "This is the Wiki for the Renesas Ebisu (Ebisu-4D,
+> RTP0RC77990SEB0010S) board," which I read that the the 4D is 10S.
 
+Yesterday, I checked the schematics.
+I guess I created the wiki page based on the DT bindings doc.
 
-The 2nd patch rely on this patch. It will be used in dequeue_rt_stack. 
-We need to add a macro first,
+> But I'll fix according to your information.
 
-because the 'back' will be not exist after the 2nd patch when disable 
-CONFIG_RT_GROUP_SCHED.
+Thanks!
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 88fc98601413..0b6b4a715d6e 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -520,6 +520,9 @@ static inline struct task_group 
-*next_task_group(struct task_group *tg)
-  #define for_each_sched_rt_entity(rt_se) \
-      for (; rt_se; rt_se = rt_se->parent)
+> [1] https://elinux.org/R-Car/Boards/Ebisu
 
-+#define for_each_sched_rt_back(rt_se) \
-+    for (; rt_se; rt_se = rt_se->back)
-+
-  static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
-  {
-      return rt_se->my_q;
-@@ -625,6 +628,9 @@ typedef struct rt_rq *rt_rq_iter_t;
-  #define for_each_sched_rt_entity(rt_se) \
-      for (; rt_se; rt_se = NULL)
+I updated the wiki page.
 
-+#define for_each_sched_rt_entity_back(rt_se) \
-+    for_each_sched_rt_entity(rt_se)
-+
-  static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
-  {
-      return NULL;
-@@ -1445,7 +1451,8 @@ static void dequeue_rt_stack(struct 
-sched_rt_entity *rt_se, unsigned int flags)
+Gr{oetje,eeting}s,
 
-      rt_nr_running = rt_rq_of_se(back)->rt_nr_running;
+                        Geert
 
--    for (rt_se = back; rt_se; rt_se = rt_se->back) {
-+    rt_se = back;
-+    for_each_sched_rt_entity_back(rt_se) {
-          if (on_rt_rq(rt_se))
-              __dequeue_rt_entity(rt_se, flags);
-      }
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
->
->>          sched/rt: Move sched_rt_entity::back to under the
->> CONFIG_RT_GROUP_SCHED block
-> This one sure.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
