@@ -2,260 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EB67B7CC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A767B7CC9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241776AbjJDKAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50244 "EHLO
+        id S242084AbjJDKBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232984AbjJDKAE (ORCPT
+        with ESMTP id S241789AbjJDKBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:00:04 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A869383
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:00:00 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E89ACDA7;
-        Wed,  4 Oct 2023 03:00:38 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.95.70])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 56DB53F5A1;
-        Wed,  4 Oct 2023 02:59:57 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 10:59:50 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        D Scott Phillips <scott@os.amperecomputing.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Misono Tomohiro <misono.tomohiro@fujitsu.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/2] arm64: smp: Fix pseudo NMI issues w/ broken Mediatek
- FW
-Message-ID: <ZR03liCodnTQWs7s@FVFF77S0Q05N>
-References: <20231002094526.1.Ie8f760213053e3d11592f892b30912dbac6b8b48@changeid>
- <ZRr8r7XMoyDKaitd@FVFF77S0Q05N.cambridge.arm.com>
- <CAD=FV=UeeL9uycVeKpOm+eDm3xHrOnKi2frt6a1qFG1HX9yEUg@mail.gmail.com>
- <ZRwJKBZaYwF1rrur@FVFF77S0Q05N>
- <CAD=FV=WASz1uvTgwsu3H3cTr3smHk+E_XNUVnjoPpttwv095rQ@mail.gmail.com>
- <ZRxCCZxZWCG0NBur@FVFF77S0Q05N>
- <CAD=FV=Xk-OMKQPXxU9Z9HOcWwUxxrmLZ4vD0u5ouZRW_zDFDPg@mail.gmail.com>
+        Wed, 4 Oct 2023 06:01:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4980783;
+        Wed,  4 Oct 2023 03:01:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mKZfk9dExAUUC077XqB6w3KkofOx01OKC4IDxqrVFkQ=; b=T4vUpgmKnp+MYh1cVwFoOhwS6p
+        OMBcJeTYsDzPfiefVSwrEFnxdQZcrK1vdTX88k9BP9YYSXIZ6mq4nDbAtt56ci/BS7gqEZS+YzVNP
+        vN9xzv2l8GSut99oAD1ApUlCOwU/kQ8P6todNb9aNivKO6Vfo0u4zOC0U7BY2KvINX29zjKE4xQOs
+        bilWddscOTgJlT5krzapcE9nYygkvukLntleAgm95PHZyRS7e4rVU5o7pYxYdcesPqew3xrlaJXFZ
+        qy9wW1FjPn2ZvWGDQ9nReo5CFw9GkpbUZO6x9IHlGBWWV6Im6senAxDcf9m0JVg4MfqUXtIFX4+28
+        qjHU1MAQ==;
+Received: from [2001:8b0:10b:5:3189:f402:1b52:3ed] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qnygq-002kjc-T4; Wed, 04 Oct 2023 10:01:13 +0000
+Message-ID: <d6dc1242ff731cf0f2826760816081674ade9ff9.camel@infradead.org>
+Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock
+ periodically
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com
+Date:   Wed, 04 Oct 2023 11:01:12 +0100
+In-Reply-To: <ZRysGAgk6W1bpXdl@google.com>
+References: <20230926230649.67852-1-dongli.zhang@oracle.com>
+         <377d9706-cc10-dfb8-5326-96c83c47338d@oracle.com>
+         <36f3dbb1-61d7-e90a-02cf-9f151a1a3d35@oracle.com>
+         <ZRWnVDMKNezAzr2m@google.com>
+         <a461bf3f-c17e-9c3f-56aa-726225e8391d@oracle.com>
+         <884aa233ef46d5209b2d1c92ce992f50a76bd656.camel@infradead.org>
+         <ZRrxtagy7vJO5tgU@google.com>
+         <52a3cea2084482fc67e35a0bf37453f84dcd6297.camel@infradead.org>
+         <ZRtl94_rIif3GRpu@google.com>
+         <9975969725a64c2ba2b398244dba3437bff5154e.camel@infradead.org>
+         <ZRysGAgk6W1bpXdl@google.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-Swc1exz6ZDF5Fy67W8Wb"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=Xk-OMKQPXxU9Z9HOcWwUxxrmLZ4vD0u5ouZRW_zDFDPg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 12:32:39PM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Tue, Oct 3, 2023 at 9:32 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > On Tue, Oct 03, 2023 at 06:43:07AM -0700, Doug Anderson wrote:
-> > > Hi,
-> > >
-> > > On Tue, Oct 3, 2023 at 5:29 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > >
-> > > > On Mon, Oct 02, 2023 at 12:16:17PM -0700, Doug Anderson wrote:
-> > > > > Hi,
-> > > > >
-> > > > > On Mon, Oct 2, 2023 at 10:24 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > > > >
-> > > > > > On Mon, Oct 02, 2023 at 09:45:29AM -0700, Douglas Anderson wrote:
-> > > > > > > Some mediatek devices have the property
-> > > > > > > "mediatek,broken-save-restore-fw" in their GIC. This means that,
-> > > > > > > although the hardware supports pseudo-NMI, the firmware has a bug
-> > > > > > > that blocks enabling it. When we're in this state,
-> > > > > > > system_uses_irq_prio_masking() will return true but we'll fail to
-> > > > > > > actually enable the IRQ in the GIC.
-> > > > > > >
-> > > > > > > Let's make the code handle this. We'll detect that we failed to
-> > > > > > > request an IPI as NMI and fallback to requesting it normally. Though
-> > > > > > > we expect that either all of our requests will fail or all will
-> > > > > > > succeed, it's just as cheap to keep a per-IPI bitmap and that keeps us
-> > > > > > > robust.
-> > > > > > >
-> > > > > > > Fixes: 331a1b3a836c ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
-> > > > > > > Reported-by: Chen-Yu Tsai <wenst@chromium.org>
-> > > > > > > Closes: https://issuetracker.google.com/issues/197061987#comment68
-> > > > > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > > > > > ---
-> > > > > > >
-> > > > > > >  arch/arm64/kernel/smp.c | 19 ++++++++++++-------
-> > > > > > >  1 file changed, 12 insertions(+), 7 deletions(-)
-> > > > > >
-> > > > > > I'm not too keen on falling back here when we have no idea why the request failed.
-> > > > > >
-> > > > > > I'd prefer if we could check the `supports_pseudo_nmis` static key directly to
-> > > > > > account for the case of broken FW, e.g. as below.
-> > > > > >
-> > > > > > Mark.
-> > > > > >
-> > > > > > ---->8----
-> > > > > > From 72fdec05c64a74f21871b44c7c760bbe07cac044 Mon Sep 17 00:00:00 2001
-> > > > > > From: Mark Rutland <mark.rutland@arm.com>
-> > > > > > Date: Mon, 2 Oct 2023 18:00:36 +0100
-> > > > > > Subject: [PATCH] arm64: smp: avoid NMI IPIs with broken MediaTek FW
-> > > > > >
-> > > > > > Some MediaTek devices have broken firmware which corrupts some GICR
-> > > > > > registers behind the back of the OS, and pseudo-NMIs cannot be used on
-> > > > > > these devices. For more details see commit:
-> > > > > >
-> > > > > >   44bd78dd2b8897f5 ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware issues")
-> > > > > >
-> > > > > > We did not take this problem into account in commit:
-> > > > > >
-> > > > > >   331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
-> > > > > >
-> > > > > > Since that commit arm64's SMP code will try to setup some IPIs as
-> > > > > > pseudo-NMIs, even on systems with broken FW. The GICv3 code will
-> > > > > > (rightly) reject attempts to request interrupts as pseudo-NMIs,
-> > > > > > resulting in boot-time failures.
-> > > > > >
-> > > > > > Avoid the problem by taking the broken FW into account when deciding to
-> > > > > > request IPIs as pseudo-NMIs. The GICv3 driver maintains a static_key
-> > > > > > named "supports_pseudo_nmis" which is false on systems with broken FW,
-> > > > > > and we can consult this within ipi_should_be_nmi().
-> > > > > >
-> > > > > > Fixes: 331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
-> > > > > > Reported-by: Chen-Yu Tsai <wenst@chromium.org>
-> > > > > > Closes: https://issuetracker.google.com/issues/197061987#comment68
-> > > > > > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > > > > > Cc: Douglas Anderson <dianders@chromium.org>
-> > > > > > Cc: Marc Zyngier <maz@kernel.org>
-> > > > > > ---
-> > > > > >  arch/arm64/kernel/smp.c      | 5 ++++-
-> > > > > >  drivers/irqchip/irq-gic-v3.c | 2 +-
-> > > > > >  2 files changed, 5 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > Sure, this is OK w/ me as long as folks don't mind accessing the
-> > > > > global here, it's OK w/ me:
-> > > > >
-> > > > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > > > >
-> > > > > It seems to work for me, thus:
-> > > > >
-> > > > > Tested-by: Douglas Anderson <dianders@chromium.org>
-> > > > >
-> > > > >
-> > > > > > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> > > > > > index 814d9aa93b21b..061c69160f90f 100644
-> > > > > > --- a/arch/arm64/kernel/smp.c
-> > > > > > +++ b/arch/arm64/kernel/smp.c
-> > > > > > @@ -964,7 +964,10 @@ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
-> > > > > >
-> > > > > >  static bool ipi_should_be_nmi(enum ipi_msg_type ipi)
-> > > > > >  {
-> > > > > > -       if (!system_uses_irq_prio_masking())
-> > > > > > +       DECLARE_STATIC_KEY_FALSE(supports_pseudo_nmis);
-> > > > > > +
-> > > > > > +       if (!system_uses_irq_prio_masking() ||
-> > > > > > +           !static_branch_likely(&supports_pseudo_nmis))
-> > > > >
-> > > > > One thought, actually, is whether we should actually change
-> > > > > system_uses_irq_prio_masking() to return the correct value. What do
-> > > > > you think?
-> > > >
-> > > > I don't think we should add this to system_uses_irq_prio_masking(); that's used
-> > > > by the low-level flags manipulation code that gets inlined all over the place,
-> > > > and that code will work regarldess of whether we actually use NMI priorities.
-> > > >
-> > > > If we want to avoid using PMR masking *at all* on these platforms, we'd need to
-> > > > detect that within can_use_gic_priorities() or early_enable_pseudo_nmi().
-> > >
-> > > I suspect that anyone trying to use PMR masking on these systems for
-> > > any purpose will be unhappy. The issue is talked about in:
-> > >
-> > > https://issuetracker.google.com/281831288
-> > >
-> > > ...where you can see that the firmware on these systems isn't properly
-> > > saving/restoring some registers, including GICR_IPRIORITYR.
-> >
-> > Ok, then that's a latent bug even before the IPI changes, going back to the
-> > original workaround in commit:
-> >
-> >   44bd78dd2b8897f5 ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware issues")
-> >
-> > For the sake of those reading the archive, can we have a better description of
-> > what exactly happens on these boards?
-> >
-> > IIUC on these boards the firmware fails to save+restore (some?) GICR registers
-> > across (some?) PSCI CPU_SUSPEND idle states.
-> >
-> > Which registers does it save+restore?
-> >
-> > Does it reset other registers into a specific state?
-> 
-> Though I'm not an expert in this area, my understanding is that in
-> some of the deeper idle states then GICR registers are lost. That
-> matches a thread [0] I found. In early investigation I found that I
-> could comment out `cpu-idle-states` in the device tree to avoid the
-> problems [1]. I believe this is fully expected which is why firmware
-> is supposed to save/restore these registers whenever a low power is
-> entered/exited. I'd presume that any register not properly
-> saved/restored comes up in whatever its default state is.
-> 
-> As far as pseudo-NMI was concerned, all I really needed to
-> save/restore was "GICR_NUM_IPRIORITYR" [2], but Marc Zyngier looked at
-> the code and identified [3] at least these in addition:
-> * GICR_CTLR
-> * GICR_ISPENDR0
-> * GICR_ISACTIVER0
-> * GICR_NSACR
 
-Looking at the GIC spec (Arm IHI 0069H), page 12-673, I see for all of the
-GICR_IPRIORITYR<n>.Priority_offset_*B fields:
+--=-Swc1exz6ZDF5Fy67W8Wb
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-| The reset behavior of this field is:
-| • On a GIC reset, this field resets to an architecturally UNKNOWN value.
+T24gVHVlLCAyMDIzLTEwLTAzIGF0IDE3OjA0IC0wNzAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
+b3RlOgo+IE9uIFR1ZSwgT2N0IDAzLCAyMDIzLCBEYXZpZCBXb29kaG91c2Ugd3JvdGU6Cj4gPiBP
+biBNb24sIDIwMjMtMTAtMDIgYXQgMTc6NTMgLTA3MDAsIFNlYW4gQ2hyaXN0b3BoZXJzb24gd3Jv
+dGU6Cj4gPiA+IAo+ID4gPiBUaGUgdHdvIGRvbWFpbnMgdXNlIHRoZSBzYW1lICJjbG9jayIgKGNv
+bnN0YW50IFRTQyksIGJ1dCBkaWZmZXJlbnQgbWF0aCB0byBjb21wdXRlCj4gPiA+IG5hbm9zZWNv
+bmRzIGZyb20gYSBnaXZlbiBUU0MgdmFsdWUuwqAgRm9yIGRlY2VudGx5IGxhcmdlIFRTQyB2YWx1
+ZXMsIHRoaXMgcmVzdWx0cwo+ID4gPiBpbiBDTE9DS19NT05PVE9OSUNfUkFXIGFuZCBrdm1jbG9j
+ayBjb21wdXRpbmcgdHdvIGRpZmZlcmVudCB0aW1lcyBpbiBuYW5vc2Vjb25kcy4KPiA+IAo+ID4g
+VGhpcyBpcyB0aGUgYml0IEknbSBzdGlsbCBjb25mdXNlZCBhYm91dCwgYW5kIGl0IHNlZW1zIHRv
+IGJlIHRoZSByb290Cj4gPiBvZiBhbGwgdGhlIG90aGVyIHByb2JsZW1zLgo+ID4gCj4gPiBCb3Ro
+IENMT0NLX01PTk9UT05JQ19SQVcgYW5kIGt2bWNsb2NrIGhhdmUgKm9uZSogam9iOiB0byBjb252
+ZXJ0IGEKPiA+IG51bWJlciBvZiB0aWNrcyBvZiB0aGUgVFNDIHJ1bm5pbmcgYXQgYSBjb25zdGFu
+dCBrbm93biBmcmVxdWVuY3ksIHRvIGEKPiA+IG51bWJlciBvZiBuYW5vc2Vjb25kcy4KPiA+IAo+
+ID4gU28gaG93IGluIHRoZSBuYW1lIG9mIGFsbCB0aGF0IGlzIGhvbHkgZG8gdGhleSBtYW5hZ2Ug
+dG8gZ2V0Cj4gPiAqZGlmZmVyZW50KiBhbnN3ZXJzPwo+ID4gCj4gPiBJIGdldCB0aGF0IHRoZSBt
+dWx0L3NoaWZ0IHRoaW5nIGNhcnJpZXMgc29tZSBpbXByZWNpc2lvbiwgYnV0IGlzIHRoYXQKPiA+
+IGFsbCBpdCBpcz8gCj4gCj4gWWVwLCBwcmV0dHkgc3VyZSB0aGF0J3MgaXQuwqAgSXQncyBsaWtl
+IHRoZSBwbG90IGZyb20gT2ZmaWNlIFNwYWNlIC8gU3VwZXJtYW4gSUlJLgo+IFRob3NlIGxpdHRs
+ZSByb3VuZGluZyBlcnJvcnMgYWRkIHVwIG92ZXIgdGltZS4KPiAKPiBQViBjbG9jazoKPiAKPiDC
+oCBuYW5vc2Vjb25kcyA9ICgoVFNDID4+IHNoaWZ0KSAqIG11bHQpID4+IDMyCj4gCj4gb3IgCj4g
+Cj4gwqAgbmFub3NlY29uZHMgPSAoKFRTQyA8PCBzaGlmdCkgKiBtdWx0KSA+PiAzMgo+IAo+IHZl
+cnN1cyB0aW1la2VlcGluZyAobW9zdGx5KQo+IAo+IMKgIG5hbm9zZWNvbmRzID0gKFRTQyAqIG11
+bHQpID4+IHNoaWZ0Cj4gCj4gVGhlIG1vcmUgSSBsb29rIGF0IHRoZSBQViBjbG9jayBzdHVmZiwg
+dGhlIG1vcmUgSSBhZ3JlZSB3aXRoIFBldGVyOiBpdCdzIGdhcmJhZ2UuCj4gU2hpZnRpbmcgYmVm
+b3JlIG11bHRpcGx5aW5nIGlzIGd1YXJhbnRlZWQgdG8gaW50cm9kdWNlIGVycm9yLsKgIFNoaWZ0
+aW5nIHJpZ2h0IGRyb3BzCj4gZGF0YSwgYW5kIHNoaWZ0aW5nIGxlZnQgaW50cm9kdWNlcyB6ZXJv
+cy4KPiAKPiA+IENhbid0IHdlIGVuc3VyZSB0aGF0IHRoZSBrdm1jbG9jayB1c2VzIHRoZSAqc2Ft
+ZSogYWxnb3JpdGhtLAo+ID4gcHJlY2lzZWx5LCBhcyBDTE9DS19NT05PVE9OSUNfUkFXPwo+IAo+
+IFllcz/CoCBBdCBsZWFzdCBmb3Igc2FuZSBoYXJkd2FyZSwgYWZ0ZXIgbXVjaCBzdGFyaW5nLCBJ
+IHRoaW5rIGl0J3MgcG9zc2libGUuCj4gCj4gSXQncyB0cmlja3kgYmVjYXVzZSB0aGUgdHdvIGFs
+Z29yaXRobXMgYXJlIHdpZXJkbHkgZGlmZmVyZW50LCB0aGUgUFYgY2xvY2sgYWxnb3JpdGhtCj4g
+aXMgQUJJIGFuZCB0aHVzIGltbXV0YWJsZSwgYW5kIFRob21hcyBhbmQgdGhlIHRpbWVrZWVwaW5n
+IGZvbGtzIHdvdWxkIHJpZ2h0bHkgbGF1Z2gKPiBhdCB1cyBmb3Igc3VnZ2VzdGluZyB0aGF0IHdl
+IHRyeSB0byBzaG92ZSB0aGUgcHZjbG9jayBhbGdvcml0aG0gaW50byB0aGUga2VybmVsLgo+IAo+
+IFRoZSBoYXJkY29kZWQgc2hpZnQgcmlnaHQgMzIgaW4gUFYgY2xvY2sgaXMgYW5ub3lpbmcsIGJ1
+dCBub3QgdGhlIGVuZCBvZiB0aGUgd29ybGQuCj4gCj4gQ29tcGlsZSB0ZXN0ZWQgb25seSwgYnV0
+IEkgYmVsaWV2ZSB0aGlzIG1hdGggaXMgY29ycmVjdC7CoCBBbmQgSSdtIGd1ZXNzaW5nIHdlJ2QK
+PiB3YW50IHNvbWUgc2FmZWd1YXJkcyBhZ2FpbnN0IG92ZXJmbG93LCBlLmcuIGR1ZSB0byBhIG11
+bHRpcGxpZXIgdGhhdCBpcyB0b28gYmlnLgo+IAo+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9rdm0v
+eDg2LmMgYi9hcmNoL3g4Ni9rdm0veDg2LmMKPiBpbmRleCA2NTczYzg5YzM1YTkuLmFlOTI3NWMz
+ZDU4MCAxMDA2NDQKPiAtLS0gYS9hcmNoL3g4Ni9rdm0veDg2LmMKPiArKysgYi9hcmNoL3g4Ni9r
+dm0veDg2LmMKPiBAQCAtMzIxMiw5ICszMjEyLDE5IEBAIHN0YXRpYyBpbnQga3ZtX2d1ZXN0X3Rp
+bWVfdXBkYXRlKHN0cnVjdCBrdm1fdmNwdSAqdikKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCB2LT5hcmNoLmwxX3RzY19zY2FsaW5nX3JhdGlvKTsKPiDCoAo+IMKgwqDCoMKgwqDCoMKg
+IGlmICh1bmxpa2VseSh2Y3B1LT5od190c2Nfa2h6ICE9IHRndF90c2Nfa2h6KSkgewo+IC3CoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGt2bV9nZXRfdGltZV9zY2FsZShOU0VDX1BFUl9TRUMs
+IHRndF90c2Nfa2h6ICogMTAwMExMLAo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgJnZjcHUtPmh2X2Nsb2NrLnRzY19z
+aGlmdCwKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgICZ2Y3B1LT5odl9jbG9jay50c2NfdG9fc3lzdGVtX211bCk7Cj4g
+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdTMyIHNoaWZ0LCBtdWx0Owo+ICsKPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjbG9ja3NfY2FsY19tdWx0X3NoaWZ0KCZtdWx0LCAm
+c2hpZnQsIHRndF90c2Nfa2h6LCBOU0VDX1BFUl9NU0VDLCA2MDApOwo+ICsKPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoc2hpZnQgPD0gMzIpIHsKPiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdmNwdS0+aHZfY2xvY2sudHNjX3NoaWZ0ID0g
+MDsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdmNwdS0+
+aHZfY2xvY2sudHNjX3RvX3N5c3RlbV9tdWwgPSBtdWx0ICogQklUKDMyIC0gc2hpZnQpOwo+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0gZWxzZSB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGt2bV9nZXRfdGltZV9zY2FsZShOU0VDX1BFUl9T
+RUMsIHRndF90c2Nfa2h6ICogMTAwMExMLAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICZ2
+Y3B1LT5odl9jbG9jay50c2Nfc2hpZnQsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgJnZj
+cHUtPmh2X2Nsb2NrLnRzY190b19zeXN0ZW1fbXVsKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCB9Cj4gKwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB2Y3B1LT5od190
+c2Nfa2h6ID0gdGd0X3RzY19raHo7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGt2
+bV94ZW5fdXBkYXRlX3RzY19pbmZvKHYpOwo+IMKgwqDCoMKgwqDCoMKgIH0KPiAKCkkgZ2F2ZSB0
+aGF0IGEgZ28gb24gbXkgdGVzdCBib3gsIGFuZCBmb3IgYSBUU0MgZnJlcXVlbmN5IG9mIDI1OTM5
+OTIga0h6Cml0IGdvdCBtdWx0PTE2NTU3MzY1MjMsIHNoaWZ0PTMyIGFuZCB0b29rIHRoZSAnaGFw
+cHknIHBhdGggaW5zdGVhZCBvZgpmYWxsaW5nIGJhY2suCgpJdCBzdGlsbCBkcmlmdHMgYWJvdXQg
+dGhlIHNhbWUgdGhvdWdoLCB1c2luZyB0aGUgc2FtZSB0ZXN0IGFzIGJlZm9yZToKaHR0cHM6Ly9n
+aXQuaW5mcmFkZWFkLm9yZy91c2Vycy9kd213Mi9saW51eC5naXQvc2hvcnRsb2cvcmVmcy9oZWFk
+cy9rdm1jbG9jawoKCkkgd2FzIGdvaW5nIHRvIGZhY2V0aW91c2x5IHN1Z2dlc3QgdGhhdCBwZXJo
+YXBzIHRoZSBrdm1jbG9jayBzaG91bGQKaGF2ZSBsZWFwIG5hbm9zZWNvbmRzLi4uIGJ1dCB0aGVu
+IHJlYWxpc2VkIHRoYXQgdGhhdCdzIGJhc2ljYWxseSB3aGF0CkRvbmdsaSdzIHBhdGNoIGlzICpk
+b2luZyouIE1heWJlIHdlIGp1c3QgbmVlZCB0byAqcmVjb2duaXNlKiB0aGF0LCBzbwpyYXRoZXIg
+dGhhbiBoYXZpbmcgYSB1c2VyLWNvbmZpZ3VyZWQgcGVyaW9kIGZvciB0aGUgdXBkYXRlLCBLVk0g
+Y291bGQKY2FsY3VsYXRlIHRoZSBmcmVxdWVuY3kgZm9yIHRoZSB1cGRhdGVzIGJhc2VkIG9uIHRo
+ZSByYXRlIGF0IHdoaWNoIHRoZQpjbG9ja3Mgd291bGQgb3RoZXJ3aXNlIGRyaWZ0LCBhbmQgYSBt
+YXhpbXVtIGRlbHRhPyBOb3QgbXkgZmF2b3VyaXRlCm9wdGlvbiwgYnV0IHBlcmhhcHMgYmV0dGVy
+IHRoYW4gbm90aGluZz8gCg==
 
-... so at least per the architecture these could be reset to arbitrary values,
 
-and that priority might permit SGI/PPIs to be taken IRQs are priority-masked,
-or to prevent SGI/PPIs to be taken when priority-unmasked.
+--=-Swc1exz6ZDF5Fy67W8Wb
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-I also see for GICR_CTLR that EnableLPIs would be reset to 0, and IIUC that
-means LPIs won't work on these parts, which seems like a problem.
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDA0MTAwMTEyWjAvBgkqhkiG9w0BCQQxIgQgWg+cCm62
+F+0GssFy+lad157NG9pI8yXzdpHfOmJQ9EIwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBQpLXo+/6u35Xog3/5UyzxTaDGuyTDQEPa
+fS607Cimy/jF2iBHfsUa65hsPcodrN61bn5Cz8UoPaWEHx9l6xyEa8lE3yOAROfvBRZ3TbBDkT9G
+fh6R661JfNH01YDN14BjUTfxSCcFDQsgUAMBLHCTrxTRK4aPUvXc4tweMK7OJcdpgA4xH3ipifTf
+vUPQXz9ghneVHbwXR5PTckID/js7ZgNfiIlUsebRs7JmXFPNyo3sDEuCXRmbY1jAMrLvZTimkw4z
+/mmKHzgdmepnjyd/PyN62hsBrgvE6s1UEZR2I5CgXQkQPdWsglI7ztDJ2+MFhR3Vf0Eqv1YCxKmF
+Z3c8TS4iaBsEdJd/ZeaFH4z3bmrKA41nXl4mTl8RCSUwjTDghN0GTdxvzEmqgKd1MFTwBc2mUfk0
+pqW8awXfBaiAvZHz9d/tCa+7haRM5KA00xSNffnSkGIqaAg1y3onglbjEwbvrcrtsWyl3Rh8/lOA
+wj5BYRBxDIYDBNW3Hh1J0j1IduaXHtw+jITxMWf7CQjaKPtynjoeLv+KfCsJqxIctE7r9gV9M5Fz
+D1IC4by8q0F7EV9fQZsPFQHFA0Xz/BNZmlhrBbuSHHGqhwDsMrjZyAMSEzT9+BBU/oCdai+v1c95
+2r9wIHkiw8aUXsOtut0CFAt7AaPD0DRwz2ABvEGJIgAAAAAAAA==
 
-> That list seems to match the Arm Trusted Firmware patch that fixed the
-> issue [4]. ...but it will be impossible to ever get the fix rolled out
-> to all devices. Even if we could get firmware spins Qualified for
-> every device there will still be cases where we'll boot with the old
-> firmware. Since we _don't_ bundle the device tree with the firmware,
-> we believe that the quirk mechanism that we came up with (add a quirk
-> in never device trees and firmware removes the quirk when we have a
-> fix) is at least a robust/reliable way to detect the issue.
-> 
-> The whole issue seems rather concerning, but (apparently) it never
-> caused issues in the kernel until we tried to use pseudo-NMI.
 
-Given you haven't seen any issues, I suspect those are getting reset to fixed
-values that happens to work out for us, but it is a bit worrisome more
-generally (e.g. the LPI case above).
-
-Mark.
-
-> 
-> [0] https://github.com/ARM-software/tf-issues/issues/464
-> [1] https://issuetracker.google.com/issues/197061987#comment27
-> [2] https://crrev.com/c/4519877
-> [3] https://issuetracker.google.com/issues/281831288#comment5
-> [4] https://github.com/ARM-software/arm-trusted-firmware/commit/1c62cc7fbdf2ec2a7e69b3c027d507fcafdcaa12
+--=-Swc1exz6ZDF5Fy67W8Wb--
