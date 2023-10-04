@@ -2,195 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6007B8704
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD9E7B870D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 19:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243546AbjJDRyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 13:54:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
+        id S233938AbjJDR5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 13:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233149AbjJDRyX (ORCPT
+        with ESMTP id S233386AbjJDR5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 13:54:23 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DA09E
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 10:54:19 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c6219307b2so152605ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 10:54:19 -0700 (PDT)
+        Wed, 4 Oct 2023 13:57:18 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E82CFA7;
+        Wed,  4 Oct 2023 10:57:14 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394FJ00p026776;
+        Wed, 4 Oct 2023 17:56:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=+Fi6dVKWp5ogqnRE4kjSyfPLcHlofmCzf1sAU+IxH3c=;
+ b=4ACHlcIDSsWkB1tegbghA1O+0O87qnOqk2ABOX5cVTn0GBgOXdlZHvN2Q6F0SXZPJWZM
+ 87N0swV7MN//KONkAttyT0ihqR/f+vgxxwc1KNxoy+xMxLp5bf/Jr4XHmURgOc2x8fuS
+ VxPDK7BgQ6yZvYwXqa+UT0rDzEv2lO0MzltPlUjkAS0FeNYsS/8YcB2jvXSMbQBsM2NH
+ hX3f2kV+1Z4ODcRNntYp2UkDHC9ctkw2JTupEdHMcOJOXrGe1CzipeV/iu1b6Egkjg5q
+ yBi9m0nqOuK1v76yPutYbvqJzqugClxkuzrIpt0UDKKEDUlPN4ByUPITwNiORkApNyqV QQ== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tea3efqab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 04 Oct 2023 17:56:50 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 394GY2G4000364;
+        Wed, 4 Oct 2023 17:56:50 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tea47v1x5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 04 Oct 2023 17:56:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mGOXq1h5jyhmaca7G/ABTUG8IDTaJx5Mf91PEQX5NKl+i8OusecDO39jMAaZ4PWU9pmbZmpyEVI91WfRzq7ywEhGUX6jHBQbDKxnC9zdZFDsmDnBu+LEmUUJ5eTQBIFJ45G5A88who7J74QyN20WI7/wtv7gwX1poOdfpd9Vlrpj7pGqtBNbRNoNa/7HLFtA+qT6anpGIMSlGocOrCzrWIejLBxUccmuYXFtSAY2E1NvdDQIDiXo5q1yvPUIvZB/7yb20AgPktZFKF8F6n6hOBfMg7C0hlbpkLv/EoW0gxsFPtadlt5CXJc6yv4vmCTDOJGKPuvJZvDuoYOvnRtTwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+Fi6dVKWp5ogqnRE4kjSyfPLcHlofmCzf1sAU+IxH3c=;
+ b=GAdhv/0lwVM31OwrZFdsecsy2VGWBYxiIZ40ZHpA0IYkZgJ68tTXQlEIpbXr9Ddref+fH2p6cLiyCb/u3ziEUvdVAtNzpl42gFbqkqPBmKulrDhOnK9FTIZUYjNNDFxt67zy61/3LHse9/ml0oappsLYcXMSBggl6ysVgfXP4DDwc8L+BNyxozULBDg3Fq8uldLLtnCLs0E2F704YSZdlYf87UAbku0aHQTJ+cPSIMGtzqvJKtf2bauZw1DZjqJ+PtxVQ5ikRiezAnO8pMzL+jCm9DmEdss7MDcaTqtADBP86pZmOfa1UJem7hcnvWrMZgjDGMKL+nvrGoQ9n1FRNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1696442059; x=1697046859; darn=vger.kernel.org;
-        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FFfm8ArjM+x2wcc8brMUA0lCTR62EjvsgnqA1tXi/ak=;
-        b=GljeX4Oz4PNMy1BYv0N0GjE64MfJb4IE7cZY+YrDgNtt9xIxr1saleuldcudSLmcm1
-         UncVrFrOD/uRgdQWiBhAS4ObxLhRaBHwdopFHWnhUfqSp6U1gC1VrIunr4BL2SAaMtWK
-         cBUZL1uQYbXDfWpqUXr9h5TsQQJ90S3/8bRDg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696442059; x=1697046859;
-        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FFfm8ArjM+x2wcc8brMUA0lCTR62EjvsgnqA1tXi/ak=;
-        b=dMnS8dNHGvBZi69ZVNZ8uhRk9hRXlxb9oYzW4Wxz4SzfuyOKN4o5OQ/4wbXpmoeojD
-         Hb7+E/VnKhsz11qXxB+WsG5JEVAFlJMFfSW4oLHIJnyVxBCMExHwGTth1JgVyjpL4RHf
-         +JxZc3RMe677xS4UXvuiKOS+1pTUB2GWSOK6xB7DhSncvtlqANQ/qzSbgWwCHHq/IdPq
-         dSoNeI44+HzZgc0Lvch/S7Z56iABt8yGBc6y4DafjZMtM4z7luo5rnk1x+kCG1GVVsjf
-         tYqkdYBRifjFtffyzoa9Pa0jHUtsfsPoUd/Z92RTLLl1NSNd0N83FRNkG2nQZhoVP2V3
-         s/5w==
-X-Gm-Message-State: AOJu0YzcYj9+uBMkvwsjlE4wnqBj487IP5LlHvAchBn7teXlPaggGunQ
-        XM9yMyXvdi2U9pfoPr6dQS/fJkDDJ6mQHp7VaIA=
-X-Google-Smtp-Source: AGHT+IEDGkz49afCA7loanGGtOjk/7qRD4MRj4Kjf1x5HLRaOMqIYVelZjMDkh7Q2JMQ2Rn8r0newQ==
-X-Received: by 2002:a17:902:ce8b:b0:1bc:7441:d81a with SMTP id f11-20020a170902ce8b00b001bc7441d81amr3597033plg.6.1696442059415;
-        Wed, 04 Oct 2023 10:54:19 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id g6-20020a170902c38600b001b567bbe82dsm4008921plg.150.2023.10.04.10.54.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 10:54:18 -0700 (PDT)
-From:   Florian Fainelli <florian.fainelli@broadcom.com>
-To:     linux-pwm@vger.kernel.org
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX
-        ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] pwm: brcmstb: Utilize appropriate clock APIs in suspend/resume
-Date:   Wed,  4 Oct 2023 10:54:14 -0700
-Message-Id: <20231004175414.1738475-1-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.34.1
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+Fi6dVKWp5ogqnRE4kjSyfPLcHlofmCzf1sAU+IxH3c=;
+ b=eAcUAHh9mwwLaj6YwVuMyHJo35Bsl8eaimLAi7hIOX6fcQ9sBn0JzpfcUZU75zIfNffQcB8ClIeCxM4YUgVYWQR17kXn7ES18bvF+I9+luL30Rknmyu1yZbfpR6lPZRddROzbl4MRqBvhcHNlOvvdgpEL7y78GN71hiXI5IGojs=
+Received: from PH8PR10MB6597.namprd10.prod.outlook.com (2603:10b6:510:226::20)
+ by PH0PR10MB4405.namprd10.prod.outlook.com (2603:10b6:510:40::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.31; Wed, 4 Oct
+ 2023 17:56:47 +0000
+Received: from PH8PR10MB6597.namprd10.prod.outlook.com
+ ([fe80::35e3:7e4c:72b2:cf74]) by PH8PR10MB6597.namprd10.prod.outlook.com
+ ([fe80::35e3:7e4c:72b2:cf74%7]) with mapi id 15.20.6792.026; Wed, 4 Oct 2023
+ 17:56:46 +0000
+From:   Stephen Brennan <stephen.s.brennan@oracle.com>
+To:     Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-debuggers@vger.kernel.org
+Subject: Re: [PATCH 1/1] kernel/config: Introduce CONFIG_DEBUG_INFO_IKCONFIG
+In-Reply-To: <2d690a95-67c6-45cb-91a1-4fbac09e1224@infradead.org>
+References: <20231004165804.659482-1-stephen.s.brennan@oracle.com>
+ <20231004165804.659482-2-stephen.s.brennan@oracle.com>
+ <2d690a95-67c6-45cb-91a1-4fbac09e1224@infradead.org>
+Date:   Wed, 04 Oct 2023 10:56:42 -0700
+Message-ID: <87jzs26zl1.fsf@oracle.com>
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR05CA0021.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::34) To PH8PR10MB6597.namprd10.prod.outlook.com
+ (2603:10b6:510:226::20)
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000005a54150606e7b2c4"
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6597:EE_|PH0PR10MB4405:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0eae3066-e874-4c92-9d12-08dbc50346e5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hW7HuzDEWjmepuAOk4dIIbmGayhQtlH90uSzdUVz6kn7awQbDICkIPR4opCfz/5kM8sFn6QUVZWitMG5TYGFap5xLcTK/tLsUqSl3au2JJ2FZ0MAKuWhKj8TuhM8ZZXlbjJzM/4tHEUAlLSsx1/iRyw7wvnIJHmgEtaBensQwWnSCs7LoqnxAiJko+Vw8Xy2W2ePkIFYeTKycLcRnqPqgAnWEiv2rar3ABobZ2NaNY2xJ9fqtcGJ70JTc//Eoc2+8MOZVEDDbBZ62vG/80+w2Fne3rfAVp5fJ2LLdxSAPIfGWrfKJ3bQnQ8icSX9NTGCmfitOMJ+5wukx5yyuQfzlfteUC5V0C0edpRWDTz5L1c7glHsdWNd3x90TBJ2v9GMJDTUiJu5CFUf9mRHOyh1Jbqqihw/gIZO9RPyX7hArkzbBF77q6x8onA1v3ZqHFhIFku7pcnHC6qIFa67aeewBSfqcAywPt910KyTzJfGkZvrElf4vvM7XMwMKQxjd/c5k4BUjN+U1MekiS/c/0lDq9Vqqw7hHL8AI+I2UMqPbp/ZoLDx5NUHUi8XwrWfJUor
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6597.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(346002)(136003)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(6512007)(316002)(2906002)(83380400001)(41300700001)(5660300002)(36756003)(4326008)(8676002)(8936002)(66556008)(6666004)(110136005)(66476007)(53546011)(6506007)(2616005)(6486002)(478600001)(38100700002)(66946007)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FlDgRkWw+XIQFwjIc2j4MfUY62z3Epvsmx2UR0/SBlNPzJBNNKn6WEO7tJRi?=
+ =?us-ascii?Q?XC7UAo8Z/R8nLyIOLXOSMNAZEbfPUWN5r+/TWFca0NIzGtnndDsOvdPlY6zO?=
+ =?us-ascii?Q?hgpD5rTLJXheuQi1+BeTckDWuaNMW+PtEPkcytJ3EuAaOf8Ep/kTqJuUJ6Ln?=
+ =?us-ascii?Q?rSKuvZBteNVNu+mjoJSy3Znm+AkHJsDn2a0G2DD5Fp1cPgMVVy7XXgVmfrkH?=
+ =?us-ascii?Q?pAH7xgglGl4m3HcMMZNbMTZbYwSzhHHMvZzWLQ/c+gE/yowsUioTb5gf5gGf?=
+ =?us-ascii?Q?ivnDQ9cAycwB2u90AWPoFQq3p3K0gPzGQHvUrJAQz2hV+Ib06bvp3/GGX5HB?=
+ =?us-ascii?Q?Zi8ZvIgQ5GjKSntff2mvKiwA2DJffltCAqDHssNJmEFCBb6xdAsCV/wAgI0Y?=
+ =?us-ascii?Q?OfKN8eSSxhPXXaGKser/SIn0VM4yXbUyq6o4uruC8lebvOqHKkap+YnYTbk9?=
+ =?us-ascii?Q?HLPnzJ6Qb/g2pRXOgHfRhUxm27MYviYTshGwRfHZ9AIjZvJgKd2f6H/Iua9W?=
+ =?us-ascii?Q?XN3RcQDcPHccFHp+fLXvZIJGJ2BmUEW5BCH7umx7FBLeeXRKnQRdmFW7Gy2t?=
+ =?us-ascii?Q?DH9l4pGHD+bN5IzETrRIjq8OxyUA7AeXbZK1a0kmt4GNpUzl5mjo/sLhIuXm?=
+ =?us-ascii?Q?+4lqfge/jHSL5sknV2LAlJWN4x/EYUkvjFrfvJISCLKF+7AQc3sqAyZUtEjA?=
+ =?us-ascii?Q?cNSGUaeZKTI+7xqO4o9SfPpvi4XMZmB/LLLHoblCmSoa4lfw7PYGn3l6j2N6?=
+ =?us-ascii?Q?FIyz16wuA00g9O5KzIVfGoD0aEJeOZRTnOy69abyunGOLiVDFDqoFl98Drf7?=
+ =?us-ascii?Q?Jvu2TgOJo97ZiF5HAltfd+ACoYHnQ5Ci2szVBkQjsKbiuGzF2FK+pIge8Sub?=
+ =?us-ascii?Q?2PnaAQBKiBpamPZPFuCoAAOZYHXv+ukqiz0sTTv2ogtx6XurQa6aAMRlHcvY?=
+ =?us-ascii?Q?LL1Yn3Q70+VUlH7gID8pgPlL4REljh6Njd8gwHjprY+f9r78F2IYotSzzdUT?=
+ =?us-ascii?Q?y/sDIGpXCvSOwP2rOFDi0tYiYt58Xa4CDsdUlAbYKEM8nyFdoc5M6Qz2ApNz?=
+ =?us-ascii?Q?1IeNrnRsIFRRPS3jX3EvOVVORNNfWjm2Czt6RpEvxx5ccD6mUCBCoh8E0PxU?=
+ =?us-ascii?Q?tQno06kODZyaJnb8VcPrSGfVr6OVf4Dd8fwysZI7Dk8n/ljUjjY8xEH5n2YW?=
+ =?us-ascii?Q?R69C+O0IGrLCpkvygTUHKtYHM1ho2b6br73saqf+jcIycNWuifITLlYLrkU1?=
+ =?us-ascii?Q?OV9zz2mgc6HE4S5GinE+Opejr6W+seDWzHfdewF/9fJSyxv+5uLUOm36Eyio?=
+ =?us-ascii?Q?/9n3ewsFBQA1ihCunxpRAhjkyQ1w8ZMhfYcljwvz4Gx8q5nHzOsuQMeIQyC/?=
+ =?us-ascii?Q?dis2dr/Rz0HzeVG7Xn4/O1bf2UnzeWN2QrZFe8T65dmfnC9p6s+DsoZLs31B?=
+ =?us-ascii?Q?jFMzgaH2WEPGnJXXr/xXr0ORn0WmR3Jd5vPbxektrbRp46mMP+RII7tAq+oD?=
+ =?us-ascii?Q?o2CgiU0Pxncvs5hW1G8XhtomFOjfaEdXUFy10dm1TvYPCW8LeeHBu37DE0Av?=
+ =?us-ascii?Q?wVkRXIfnKh/Xrz+2CFxG/lWsb9h5b0qWkZS250MC3RuF2tMmKn2vW1nQnA2m?=
+ =?us-ascii?Q?CmwuX8lK2NHbIRPinGY4ewuO1gHbvtK3au+OP5hFg5r2?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: +xxe2D2YpURhEVjfZP4szJGOdc8j6Sl3UB/cGnfwbJGrgYa4X4mu53y+Ni2wCNYUnpmJA5TwrmhoJxM8THGmy73/+eYbhyjzdVodiFClyUvfxU8awrovIPOmUGa1LuW5Rvz+xh1+wUlRest72FeClUNn4rIF3me5LofOES63jcRGFWIuCqRGv4jo0OaVpJwYKndQflmwxTdHE4LLU0GS8nusAlDX7SNL+8zxahFAf0tG5GilwoR/U8vTxoCPRPaAoSiTHZ5ddRxDBFZVnEIaIU53gwDJUGGsqBTEyBu3ofOFU4379FFpuOQg7j+30C8NhmI4S2vrm+hG326V70p588BTTsaG8b2nC1xCB8kcI8GrWisKcjyrQ9QbSoiTs5S9xW2QdKoy6vSxQTjClyjFJbMURuyVBMsMlerW56cPY/ctTWD7GrkGjC/rEgTkPe6diz1p9SOGUMYL/m5eBTkQGRPj8C1uLDzfpUd/sE1jY5BGNN40ubaTqpmjIwsHH7w7FHAepz1/+z/IA/rNtC4pAxfsJXYrJfqs0eX4S+qlguMOjrBGGnMjF2bVZ1nFOJXa+jIVuHxhTUPh7tbISzRST3VGll3BVMnpjFU/vSh2eECB8TuHFmJqwYX5yvtZ3Zune0yUg7F2w7c0MlITQEI9GRJUYn+ZoyiBAb+WOI89/8axlydNCmwFovdZNWZuECq74F1OMv9i29O8WGbz6iWbfifl3bNq0om0xWsVAyF1X10f3vU21NfhUPM9UV7h9xOxnMZGyj2TpXqBj6t2T4RcRaLaIbLV4dg74FeDP/RpPrHYTJitpl3LaOYtD7OOiJdv
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0eae3066-e874-4c92-9d12-08dbc50346e5
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6597.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 17:56:46.9588
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8BoUg4xNMWKOLnUcpGeM/T62HanBQzQvSDX9m+egmVhxEL09fl6pIVsCF2DjuvvivWE3fJZTAjGrf2dklbfMWUv4enQNoD00mSU4wdWZP+0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4405
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-04_10,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ adultscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310040130
+X-Proofpoint-ORIG-GUID: QcXSzGWyknPWztiLhTXgiboe_cUI-E4Z
+X-Proofpoint-GUID: QcXSzGWyknPWztiLhTXgiboe_cUI-E4Z
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000005a54150606e7b2c4
-Content-Transfer-Encoding: 8bit
+Randy Dunlap <rdunlap@infradead.org> writes:
+> Hi,
+>
+> On 10/4/23 09:58, Stephen Brennan wrote:
+>> The option CONFIG_IKCONFIG allows the gzip compressed kernel
+>> configuration to be included into vmlinux or a module. In these cases,
+>> debuggers can access the config data and use it to adjust their behavior
+>> according to the configuration. However, distributions rarely enable
+>> this, likely because it uses a fair bit of kernel memory which cannot be
+>> swapped out.
+>
+> x86_64 allmodconfig is 91 KB gzipped... oh well.
 
-The suspend/resume functions currently utilize
-clk_disable()/clk_enable() respectively which may be no-ops with certain
-clock providers such as SCMI. Fix this to use clk_disable_unprepare()
-and clk_prepare_enable() respectively as we should.
+Yeah, and info like BTF is much larger, yet this is the config setting
+that gets trimmed out by distros :(
 
-Fixes: 3a9f5957020f ("pwm: Add Broadcom BCM7038 PWM controller support")
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
----
- drivers/pwm/pwm-brcmstb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+(This is not a criticism of BTF, just an observation)
 
-diff --git a/drivers/pwm/pwm-brcmstb.c b/drivers/pwm/pwm-brcmstb.c
-index a3faa9a3de7c..a7d529bf76ad 100644
---- a/drivers/pwm/pwm-brcmstb.c
-+++ b/drivers/pwm/pwm-brcmstb.c
-@@ -288,7 +288,7 @@ static int brcmstb_pwm_suspend(struct device *dev)
- {
- 	struct brcmstb_pwm *p = dev_get_drvdata(dev);
- 
--	clk_disable(p->clk);
-+	clk_disable_unprepare(p->clk);
- 
- 	return 0;
- }
-@@ -297,7 +297,7 @@ static int brcmstb_pwm_resume(struct device *dev)
- {
- 	struct brcmstb_pwm *p = dev_get_drvdata(dev);
- 
--	clk_enable(p->clk);
-+	clk_prepare_enable(p->clk);
- 
- 	return 0;
- }
--- 
-2.34.1
+Unfortunately I don't control it and am just trying to work around it :)
 
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
---0000000000005a54150606e7b2c4
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Thanks!
+Stephen
 
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGYxcY+FhYO6r54Z
-9fuQqxYuCCl1rdZb0OKzvgFBNoVkMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMTAwNDE3NTQxOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDg64uaZ4jBNVHS1lEOaTdvxseHfkBibo6x
-DyPoaTPazpzmaOUsdDK/OVKY/CdADpPtsE+HhbwheDFaXw2hegwvRVFvbU5kGiDBD9C/FIn4cDOc
-gEBAA6EwNFEcIBqvjsMxVW6+yj8S17vqY7fAz8Rmy4yzi5feoIxPbQEf8CrsvsYw1gO55Hy4jbAq
-5qLHvr0jTF0hWyZAeCNNWSaXvj8FhZg3AjRaWw/mdbkQTirS/+LXAaVshjYBu9NkxUl/ZzgjuNep
-Y4ghNHO23gZp37EaoXl8RyEw4HxWkrGnjLrqgbwIjygdcGGo3uavMVffHvBhj3Npp9bWW7NrtUeg
-4FKm
---0000000000005a54150606e7b2c4--
+>> This means that in practice, the kernel configuration is rarely
+>> available to debuggers.
+>> 
+>> So, introduce an alternative, CONFIG_DEBUG_INFO_IKCONFIG. This strategy,
+>> which is only available if IKCONFIG is not already built-in, adds a
+>> section ".debug_linux_ikconfig", to the vmlinux ELF. It will be stripped
+>> out of the final images, but will remain in the debuginfo files. So
+>> debuggers which rely on vmlinux debuginfo can have access to the kernel
+>> configuration, without incurring a cost to the kernel at runtime.
+>> 
+>> Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+>> ---
+>>  include/asm-generic/vmlinux.lds.h |  3 ++-
+>>  kernel/Makefile                   |  1 +
+>>  kernel/configs-debug.S            | 18 ++++++++++++++++++
+>>  lib/Kconfig.debug                 | 14 ++++++++++++++
+>>  4 files changed, 35 insertions(+), 1 deletion(-)
+>>  create mode 100644 kernel/configs-debug.S
+>
+>
+> -- 
+> ~Randy
