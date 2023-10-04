@@ -2,100 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 099D77B8581
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543667B85A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243455AbjJDQjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58914 "EHLO
+        id S243518AbjJDQrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243442AbjJDQjj (ORCPT
+        with ESMTP id S233112AbjJDQrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:39:39 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE980C0;
-        Wed,  4 Oct 2023 09:39:34 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C8488240002;
-        Wed,  4 Oct 2023 16:39:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696437573;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MoL7tK/sFHlVwmkaF58wS2KqlyZYUgDZWDR3PVlkupE=;
-        b=EeIP1pmbPB4UEYGgstYTh/lmdthejHe4/FFLflsZRL+bQMujIgkkiA5LkFtc1qnlK11wjZ
-        n/THbQQkDOa88yXwfGKTa1fQbZKoHcze/VmgaCP/Rtw58Y9/3sTNbaM0Tooy6nn86su1F/
-        C4iNR3Vz/wB22JnadJdYpeOM4JhhON1crG3J6DMHaxBPIccUp5ToUBOrQf25bzwBhEflaH
-        SD13HVFaWua+Futq9F5QRi8pe1/vHKBhFjKbsYm1Z3cuDI8fsLR46Sz2+RXc5BdAQf4SUN
-        2sVnc/1HqBgwg6kgMfpNTJn/AEUZIY1f8YCgvs4UtIELD9MQfMZyfO8d3bEnUQ==
-From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date:   Wed, 04 Oct 2023 18:39:28 +0200
-Subject: [PATCH 2/2] iio: accel: mxc4005: allow module autoloading via OF
- compatible
+        Wed, 4 Oct 2023 12:47:02 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CA69B;
+        Wed,  4 Oct 2023 09:46:57 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id C16B9100005;
+        Wed,  4 Oct 2023 19:46:55 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru C16B9100005
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1696438015;
+        bh=z9bJz6Un0b+xRYiJskf4ArUids1aiUycXAy7dlAeGms=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=bIBDiAFliX1Kty1JVnA6RmpxObV1AE32UvLZTt8zGD8qUSOntUBK3hiAIMr151ve8
+         D0m3Ur5tfAcbDEDe5PzA3asK2azmf/Rl8SLT5ekT3JKV5uGC4w0VmA1C/Zx/8GAXYU
+         BRvsWKnv8oVYF0aDGhaiULQrJbsJGGd8pqGqlVnrBQo+TIE56iqs/zJnFULF4+Wa/n
+         vyv9sbA5/QwzGJpRS1T67cBFlpPaaxKoDnkL1MwE9vpfi6RKo+UzsAOH7Ijt3S2Bu9
+         gPVqzMJYbloAEfY3xU72LEUFELIwlwEZ99vUL/05/m1agnha6gbWGP8SX7TQwxNton
+         MqQFbWfkODmjw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed,  4 Oct 2023 19:46:55 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 4 Oct 2023 19:46:55 +0300
+Message-ID: <3b7fa94a-3cee-8bec-ce43-b61d893e05d8@salutedevices.com>
+Date:   Wed, 4 Oct 2023 19:40:03 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231004-mxc4005-device-tree-support-v1-2-e7c0faea72e4@bootlin.com>
-References: <20231004-mxc4005-device-tree-support-v1-0-e7c0faea72e4@bootlin.com>
-In-Reply-To: <20231004-mxc4005-device-tree-support-v1-0-e7c0faea72e4@bootlin.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>
-X-Mailer: b4 0.12.3
-X-GND-Sasl: luca.ceresoli@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next v2 00/12] vsock/virtio: continue MSG_ZEROCOPY
+ support
+Content-Language: en-US
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20230930210308.2394919-1-avkrasnov@salutedevices.com>
+ <4nwo6nd2ihjqsoqnjdjhuucqyc4fhfhxk52q6ulrs6sd2fmf7z@24hi65hbpl4i>
+ <aef9a438-3c61-44ec-688f-ed89eb886bfd@salutedevices.com>
+ <5ae3b08d-bcbb-514c-856a-94c538796714@salutedevices.com>
+ <zilryvqespe5k4d3xjer2fcrseqo3yu3lvairvobvop6shqvsz@gzdmzpujxzkx>
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <zilryvqespe5k4d3xjer2fcrseqo3yu3lvairvobvop6shqvsz@gzdmzpujxzkx>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180363 [Oct 04 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;lore.kernel.org:7.1.1;git.kernel.org:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/10/04 12:21:00
+X-KSMG-LinksScanning: Clean, bases: 2023/10/04 14:53:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/04 15:39:00 #22058417
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add OF device table with compatible strings to allow automatic module
-loading.
 
-Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
----
- drivers/iio/accel/mxc4005.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/iio/accel/mxc4005.c b/drivers/iio/accel/mxc4005.c
-index 75d142bc14b4..41182531feb5 100644
---- a/drivers/iio/accel/mxc4005.c
-+++ b/drivers/iio/accel/mxc4005.c
-@@ -476,6 +476,13 @@ static const struct acpi_device_id mxc4005_acpi_match[] = {
- };
- MODULE_DEVICE_TABLE(acpi, mxc4005_acpi_match);
- 
-+static const struct of_device_id mxc4005_of_match[] = {
-+	{ .compatible = "memsic,mxc4005", },
-+	{ .compatible = "memsic,mxc6655", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, mxc4005_of_match);
-+
- static const struct i2c_device_id mxc4005_id[] = {
- 	{"mxc4005",	0},
- 	{"mxc6655",	0},
-@@ -487,6 +494,7 @@ static struct i2c_driver mxc4005_driver = {
- 	.driver = {
- 		.name = MXC4005_DRV_NAME,
- 		.acpi_match_table = ACPI_PTR(mxc4005_acpi_match),
-+		.of_match_table = mxc4005_of_match,
- 	},
- 	.probe		= mxc4005_probe,
- 	.id_table	= mxc4005_id,
+On 04.10.2023 19:42, Stefano Garzarella wrote:
+> On Wed, Oct 04, 2023 at 07:22:04PM +0300, Arseniy Krasnov wrote:
+>>
+>>
+>> On 04.10.2023 08:25, Arseniy Krasnov wrote:
+>>>
+>>>
+>>> On 03.10.2023 19:26, Stefano Garzarella wrote:
+>>>> Hi Arseniy,
+>>>>
+>>>> On Sun, Oct 01, 2023 at 12:02:56AM +0300, Arseniy Krasnov wrote:
+>>>>> Hello,
+>>>>>
+>>>>> this patchset contains second and third parts of another big patchset
+>>>>> for MSG_ZEROCOPY flag support:
+>>>>> https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
+>>>>>
+>>>>> During review of this series, Stefano Garzarella <sgarzare@redhat.com>
+>>>>> suggested to split it for three parts to simplify review and merging:
+>>>>>
+>>>>> 1) virtio and vhost updates (for fragged skbs) (merged to net-next, see
+>>>>>   link below)
+>>>>> 2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
+>>>>>   tx completions) and update for Documentation/. <-- this patchset
+>>>>> 3) Updates for tests and utils. <-- this patchset
+>>>>>
+>>>>> Part 1) was merged:
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=71b263e79370348349553ecdf46f4a69eb436dc7
+>>>>>
+>>>>> Head for this patchset is:
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=236f3873b517acfaf949c23bb2d5dec13bfd2da2
+>>>>>
+>>>>> Link to v1:
+>>>>> https://lore.kernel.org/netdev/20230922052428.4005676-1-avkrasnov@salutedevices.com/
+>>>>>
+>>>>> Changelog:
+>>>>> v1 -> v2:
+>>>>> * Patchset rebased and tested on new HEAD of net-next (see hash above).
+>>>>> * See per-patch changelog after ---.
+>>>>
+>>>> Thanks for this new version.
+>>>> I started to include vsock_uring_test in my test suite and tests are
+>>>> going well.
+>>>>
+>>>> I reviewed code patches, I still need to review the tests.
+>>>> I'll do that by the end of the week, but they looks good!
+>>>
+>>> Thanks for review! Ok, I'll wait for tests review, and then send next
+>>> version.
+>>
+>> Got your comments from review. I'll update patches by:
+>> 1) Trying to avoid touching util.c/util.h
+> 
+> I mean, we can touch it ;-) but for this case it looks like we don't
+> need most of that functions to be there.
+> 
+> At least for now. If we need them to be used in more places, then it
+> makes sense.
 
--- 
-2.34.1
+Yes, I mean touching without need :)
 
+> 
+>> 2) Add new header with functions shared between util vsock_perf and
+>> tests
+> 
+> We can do this also later in another PR as cleanup if you prefer.
+> 
+> Thanks,
+> Stefano
+> 
