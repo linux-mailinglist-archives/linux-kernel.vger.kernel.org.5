@@ -2,180 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847E17B7614
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 03:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0881D7B761A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 03:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbjJDBEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 21:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        id S238800AbjJDBGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 21:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbjJDBEi (ORCPT
+        with ESMTP id S232262AbjJDBGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 21:04:38 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7250CA9
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 18:04:35 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50348c54439so1424e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 18:04:35 -0700 (PDT)
+        Tue, 3 Oct 2023 21:06:12 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE584B7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 18:06:04 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-4526a936dcaso817591137.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 18:06:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696381474; x=1696986274; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WDROeYS7kKQ9JBkO/Lcgw1FtJFr3f8I5Bb8UdoQeU9E=;
-        b=4iNDhCJXerx0tDlyemthkgWRxboelcftjUXqifWJEw9a11Kix612e7SkmzKpFylv6e
-         x6EUvAZGrP/FjAAwtU0FKXeVHP5i+FZVDgt5SURini50IC/rFwcI5v2y4FS0TrO6DJSm
-         Ebbp4FlFbdg05hOtmkLd4M49lpr2snvpi59ABpAkJt/JoSQu+KhcGXzff8PqRv3mO/oj
-         MCbgP36uIozbZzsjnf1L1LHH0TpRrrklRkSmNw/yTAaoocIQZrnb78fePsKtzRggln+/
-         Pk/D/laQF2+LkGQuY84ObuLU5skAbneRS7gDtIis8A927kKVFlG+g2ULz5EKlxCLFvxR
-         z6Cw==
+        d=linaro.org; s=google; t=1696381564; x=1696986364; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FD7N4+ki8yTbIdFjxebxQX9Pl+69rX6n0uIJQxEwL/U=;
+        b=JqGEHJcwTtp/zESninS3W1haptLQU+5+Hap5MsNpkIIQ7Uz0X+TaV11BE7c1TAcpw9
+         yAtjKrChRbrS3oD55MYbFOljdWkGfPlk3/hRWV45SlXpRjMbxTR/rOB0Od0Xs/6A9TNS
+         MV/YmjLH8QZCYzlgNHXh5a0XgNvHSc86yAlPdTufbE2yZBurmz4J7ANIPvBsRNROEsz9
+         SW+ZOlj+uzYtGm8RQageeG2N1Wd7zYTuv+IwsYC0sM5ls/bKRhGOOArpZj0VWUyw1Xia
+         eKFoo0hyDBUBXvSoPMIufvb3Q0YepIMqGOF3QMCP5ETU1wd/EQs7WPzYOngFyX/TJLlF
+         C1jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696381474; x=1696986274;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WDROeYS7kKQ9JBkO/Lcgw1FtJFr3f8I5Bb8UdoQeU9E=;
-        b=BBZGbQR2IHszZ5X2vie/pI0ewpfmKcyYmeXYI0Ws0yfhXaWNRW3upysKDYgWRRBkZz
-         qkxtsu5tLY0CVecVZKRYoMKVfXWcZ+F44G3wBjgdKzKqVhnrYzEj7O7uZ/fpKsfLeYNU
-         aAlfFCo2ZPhdoUSK0P1noKPAAPDgZ4vbiD+AHkIt6glAhGC9hBvlvFIbrO670ExPbaHZ
-         qTmjU+8d0DlkDl2IkCIbuG+oSxIEV+CFE6zpvsbTEjsaK6ArVrDWnaCcklfCH/Z0964j
-         GKzqbdTTkuzEfbUHqGsR8kimw+e2/Yujr0PwonakMKNsa/BNByW3gDt+vaC7HB/jThq5
-         O2EA==
-X-Gm-Message-State: AOJu0Yw3+EoO6N8pNobS/goMv5m9H8pfWEK+fKokVMu1G2w6uAM9sMre
-        kKV8c4tp7MfRf335fJf52FLMqYin8+OJ4nzop40g+A==
-X-Google-Smtp-Source: AGHT+IFuf7Tmw3woGvoApNA+OPt8erI0o1qzHN6zXADXVzDaRrfxrRqUc0JVHyx1dBdDnEk0rOqIl/3eM0GTqkcWZQI=
-X-Received: by 2002:ac2:44d1:0:b0:505:6e12:9e70 with SMTP id
- d17-20020ac244d1000000b005056e129e70mr32852lfm.6.1696381473439; Tue, 03 Oct
- 2023 18:04:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696381564; x=1696986364;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FD7N4+ki8yTbIdFjxebxQX9Pl+69rX6n0uIJQxEwL/U=;
+        b=FY8yXwAXEgGBu8KeqTeJ8p+f0/HGvuSRaM1x8TrrNy8krPq0LhQHUUOrbyTcv2bgk0
+         9jW0uOFiu4qi0o/RtQzyFCc0HZfWip1pBD7bd8YgwDoCcmcAvSHnLbUmJWPyysrc8AFt
+         ytdFk3dT2T+vgnBJg8gy035GfpPB+iWCX8XWvT8AUPaOvVgsKAYw7StF/oHJEDms9P0G
+         FO+6w9Ee8UV60HFXdACsPzri5l2a/ShkdVyuI+AbXNTzDpDaStZ+l+9i/rTWqcepGZAV
+         nAsDrN6hBOnj2mvO1bMNfVdK4ZOriWtCyOlmnLycsMZ37kP91pQz9GYTlaYhHRVQoqbs
+         VFBA==
+X-Gm-Message-State: AOJu0Yxvhirfn40QwdybOfuD/Pl++rtv9IdeGizYboHOYyECP5tcPQiG
+        eJOT8cDVus1h6CJ8drRlFzLing==
+X-Google-Smtp-Source: AGHT+IGYmIVwKRybktecfaCThlChpL8Li43s8SGPeblCnhS/dSopbmKh5eEzTeCOe+/o6Pgb7hDS5g==
+X-Received: by 2002:a67:f65a:0:b0:44d:3f96:6c61 with SMTP id u26-20020a67f65a000000b0044d3f966c61mr895407vso.30.1696381563938;
+        Tue, 03 Oct 2023 18:06:03 -0700 (PDT)
+Received: from fedora (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id h1-20020ab04701000000b007aba00406a4sm369973uac.7.2023.10.03.18.06.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 18:06:03 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 21:06:00 -0400
+From:   William Breathitt Gray <william.gray@linaro.org>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc:     lee@kernel.org, alexandre.torgue@foss.st.com,
+        linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/8] tools/counter: add a flexible watch events tool
+Message-ID: <ZRy6eCSE7PhTTyvN@fedora>
+References: <20230829134029.2402868-1-fabrice.gasnier@foss.st.com>
+ <20230829134029.2402868-4-fabrice.gasnier@foss.st.com>
+ <ZQdOcDQR6qONmmnR@fedora>
+ <7aa66ac8-eceb-2f6e-960b-2c4dac9f595e@foss.st.com>
 MIME-Version: 1.0
-References: <20231003191412.3171385-1-irogers@google.com> <CAEf4BzYiayepsmABmVjhCgYoy4VZMFya6vYOhWQqx4Zt5+w+Sg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYiayepsmABmVjhCgYoy4VZMFya6vYOhWQqx4Zt5+w+Sg@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 3 Oct 2023 18:04:22 -0700
-Message-ID: <CAP-5=fWh+_be34JpaLYFTHwHOp67ttQh3TtWEjZ-JyKRdSwHpg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] bpftool: Align output skeleton ELF code
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jZtSijHBWetMsQRX"
+Content-Disposition: inline
+In-Reply-To: <7aa66ac8-eceb-2f6e-960b-2c4dac9f595e@foss.st.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 5:20=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Oct 3, 2023 at 12:15=E2=80=AFPM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > libbpf accesses the ELF data requiring at least 8 byte alignment,
-> > however, the data is generated into a C string that doesn't guarantee
-> > alignment. Fix this by assigning to an aligned char array. Use sizeof
-> > on the array, less one for the \0 terminator, rather than generating a
-> > constant.
-> >
-> > Fixes: a6cc6b34b93e ("bpftool: Provide a helper method for accessing sk=
-eleton's embedded ELF data")
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> > ---
->
-> See CI failures ([0]). You messed up tabs somewhere.
->
->   [0] https://github.com/kernel-patches/bpf/actions/runs/6397510833/job/1=
-7365616392?pr=3D5756
 
-Thanks, I messed up (also) somewhere else in patch 2/2 as I broke some
-Google code. Working on a v3.
+--jZtSijHBWetMsQRX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ian
+On Tue, Sep 19, 2023 at 05:37:34PM +0200, Fabrice Gasnier wrote:
+> On 9/17/23 21:07, William Breathitt Gray wrote:
+> > On Tue, Aug 29, 2023 at 03:40:24PM +0200, Fabrice Gasnier wrote:
+> >> This adds a new counter tool to be able to test various watch events.
+> >> A flexible watch array can be populated from command line, each field
+> >> may be tuned with a dedicated command line argument.
+> >> Each argument can be repeated several times: each time it gets repeate=
+d,
+> >> a corresponding new watch element is allocated.
+> >>
+> >> It also comes with a simple default watch (to monitor overflows), used
+> >> when no watch parameters are provided.
+> >>
+> >> The print_usage() routine proposes another example, from the command l=
+ine,
+> >> which generates a 2 elements watch array, to monitor:
+> >> - overflow events
+> >> - capture events, on channel 3, that reads read captured data by
+> >>   specifying the component id (capture3_component_id being 7 here).
+> >>
+> >> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
->
-> >  tools/bpf/bpftool/gen.c | 15 +++++++++------
-> >  1 file changed, 9 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> > index 2883660d6b67..b8ebcee9bc56 100644
-> > --- a/tools/bpf/bpftool/gen.c
-> > +++ b/tools/bpf/bpftool/gen.c
-> > @@ -1209,7 +1209,7 @@ static int do_skeleton(int argc, char **argv)
-> >         codegen("\
-> >                 \n\
-> >                                                                        =
-     \n\
-> > -                       s->data =3D (void *)%2$s__elf_bytes(&s->data_sz=
-);     \n\
-> > +                       s->data =3D (void *)%1$s__elf_bytes(&s->data_sz=
-);     \n\
-> >                                                                        =
-     \n\
-> >                         obj->skeleton =3D s;                           =
-       \n\
-> >                         return 0;                                      =
-     \n\
-> > @@ -1218,12 +1218,12 @@ static int do_skeleton(int argc, char **argv)
-> >                         return err;                                    =
-     \n\
-> >                 }                                                      =
-     \n\
-> >                                                                        =
-     \n\
-> > -               static inline const void *%2$s__elf_bytes(size_t *sz)  =
-     \n\
-> > +               static inline const void *%1$s__elf_bytes(size_t *sz)  =
-     \n\
-> >                 {                                                      =
-     \n\
-> > -                       *sz =3D %1$d;                                  =
-       \n\
-> > -                       return (const void *)\"\\                      =
-     \n\
-> > -               "
-> > -               , file_sz, obj_name);
-> > +                       static const char data[] __attribute__((__align=
-ed__(8))) =3D \"\\\n\
-> > +               ",
-> > +               obj_name
-> > +       );
-> >
-> >         /* embed contents of BPF object file */
-> >         print_hex(obj_data, file_sz);
-> > @@ -1231,6 +1231,9 @@ static int do_skeleton(int argc, char **argv)
-> >         codegen("\
-> >                 \n\
-> >                 \";                                                    =
-     \n\
-> > +                                                                      =
-     \n\
-> > +                       *sz =3D sizeof(data) - 1;                      =
-       \n\
-> > +                       return (const void *)data;                     =
-     \n\
-> >                 }                                                      =
-     \n\
-> >                                                                        =
-     \n\
-> >                 #ifdef __cplusplus                                     =
-     \n\
-> > --
-> > 2.42.0.582.g8ccd20d70d-goog
-> >
+Fabrice,
+
+Sorry for the delay, I'm currently working through my backlog. I see you
+have already submitted a version 2 of this patchset, so I'll continue my
+review there but I do want to make some direct replys here below as
+well.
+
+> > This is a new tool, so would you add a MAINTAINERS entry for the
+> > counter_watch_events.c file?
+>=20
+> I haven't thought about it.
+> I can add a MAINTAINERS entry, yes!
+> Who would you suggest ?
+
+Typically the author of the initial patch will also maintain what they
+are introducing, but an alternative person is acceptable to serve as
+maintainer if that's the plan that's agreed upon. I assume you're
+introducing this tool because you're using it internally at ST for
+testing, so I suppose the intention is not to get this merged upstream
+just to abandon it (i.e. you intend to keep using and improving it). Is
+the plan for you to maintain this utility, or is someone else at ST
+interested in it?
+
+> >> +	}
+> >> +
+> >> +	/* fallback to number */
+> >=20
+> > I'm not sure it makes sense to support numbers. Although it's true that
+> > the component type, component scope, and event type are passed as __u8
+> > values, users are expected to treat those values are opaque and pass
+> > them via the respective enum constants. Since we don't guarantee that
+> > the specific enum constant values will remain consistent between kernel
+> > versions, I don't think it's a good idea to give to users that sort of
+> > implication by allowing them to use raw numbers for configuration
+> > selection.
+>=20
+> Ack, I can remove this.
+>=20
+> I'm a bit surprised by this statement. I may be wrong... I'd expect a
+> userland binary to be compatible when updating to a newer kernel: e.g.
+> user API (ABI?) definitions to be stable (including enum constants) ?
+
+I was wrong in my previous reply. You're absolutely correct[^1] that
+userspace ABI must be consistent ("Breaking user programs simply isn't
+acceptable"[^2]) so the specific values must remain the same between
+kernel versions.
+
+Regardless, I don't think raw numbers provide much benefit for the
+use-case of this particular utility; users are testing watch
+configurations for a particular device, not the specific constant values
+in the data structures. So in the end I still think the raw numbers
+code path should be removed.
+
+[^1] Well technically Linux kernel ABI README documentation file
+     (Documentation/ABI/README) states that backwards compatibility for
+     stable interfaces is only guaranteed for at least 2 years, but in
+     practice we strive to never change the user-facing ABI.
+[^2] https://yarchive.net/comp/linux/gcc_vs_kernel_stability.html
+
+William Breathitt Gray
+
+--jZtSijHBWetMsQRX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZRy6eAAKCRC1SFbKvhIj
+K9STAP95tTRE+0GzRVXB8MfYNUgv5OwuwuDTLlkR6iV5UAPp3gEA1+ZCNsosBzzF
+Lbr/PCTCJRifx7T+S4h36fLilUjYaAE=
+=C8xr
+-----END PGP SIGNATURE-----
+
+--jZtSijHBWetMsQRX--
