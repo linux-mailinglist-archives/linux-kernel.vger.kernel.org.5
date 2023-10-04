@@ -2,181 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5337B7CE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E907B7CE9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242064AbjJDKN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
+        id S242103AbjJDKPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232895AbjJDKNZ (ORCPT
+        with ESMTP id S242062AbjJDKP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:13:25 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42989E
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:13:21 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-79f95cd15dfso72001439f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 03:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1696414401; x=1697019201; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=naQ12yZY9bgpmnWgAWPGFuKak0Xrn0cHsB8SeG3i588=;
-        b=Nyxc6dnU3QMl/pHc5kV/9b5JF64rxD5/Z3dhLn30RJ0rpcSP8WSzbO6CIo2oczD/eI
-         IQrVmqzOyoMQhX6pCB0Pz9Na+sezwT2BdT9nBBWT/HNoIShMMwkodoxjHbdAlC9hkl7I
-         LZzKA9RQ1pMKCdop+5PErXsxDsMByZWK0lfZlMENhHmaTqPKRLso9g9JX4RCuDo5DV5S
-         qba1CERsHjXp3FUwM6mpIO/M2i8VB44IpQIYAYpJoxJX1vSmuAmvR6wsoLs9tEIOpavB
-         1CCHey7DpG2Zy/524b9UiHTGA/PXIwdBh8av0lJF1RU3DL7avw0QjDX2uLSxybfyX7C2
-         UilA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696414401; x=1697019201;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=naQ12yZY9bgpmnWgAWPGFuKak0Xrn0cHsB8SeG3i588=;
-        b=a5yvOEyB/er9Y2W+8zA7myX9V1Xca5sKNAbfrcaFUe3shbyxneadGeXqO8CTIz67LP
-         cYkMMvLXFfI7xMoeKrFxqzdPvtFbsJ3u97tgAi7IHDuyTD/c6TGhiMvfrxRauEeg8DNK
-         GriMAaVByXWdKCqQI8wvgY9YQy65x7Rs6yy3LKqy06wXKZxDer/e6H7iO/wxFdf20wq7
-         C2u16m0xMwhA0qBchp53R8tHa6OFt4VfL+acduQPsNeFeWvHW5VDQpZkDbcVEE9jSUp9
-         q2RKwYfCkxM+YlTSEHQIaew0ayVOYyl3E1ML0otuXJOo59aLoKFyxW2gbco8NRgIAf6/
-         PmLg==
-X-Gm-Message-State: AOJu0YwuTFDIQYk2VGo3f7ResywV12ZEokrto6D2YstT30YrKUywi9NH
-        MuMrk5m/i8opGd/lP1Pv8ghezg==
-X-Google-Smtp-Source: AGHT+IEbM48u0GUrbP675tX7PYXIUL94dARAyy9rnprgPNaHW3R5wUSTDSKo4NbADnyrnWBlyy8OOg==
-X-Received: by 2002:a6b:7b05:0:b0:791:280:839e with SMTP id l5-20020a6b7b05000000b007910280839emr1987378iop.16.1696414401162;
-        Wed, 04 Oct 2023 03:13:21 -0700 (PDT)
-Received: from sunil-laptop ([106.51.188.78])
-        by smtp.gmail.com with ESMTPSA id ep10-20020a0566384e0a00b0042b09bde126sm861366jab.165.2023.10.04.03.13.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 03:13:20 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 15:43:07 +0530
-From:   Sunil V L <sunilvl@ventanamicro.com>
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Samuel Holland <samuel.holland@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Atish Kumar Patra <atishp@rivosinc.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v2 -next 3/4] RISC-V: cacheflush: Initialize CBO
- variables on ACPI systems
-Message-ID: <ZR06s5ZvK1S5XtIJ@sunil-laptop>
-References: <20230927170015.295232-1-sunilvl@ventanamicro.com>
- <20230927170015.295232-4-sunilvl@ventanamicro.com>
- <f4ab7464-3dfb-4d10-8bed-76e7084abd3e@sifive.com>
- <ZRzof1sH/GJNQp4V@sunil-laptop>
- <20231004-58af76b11b3db2e64a93fd55@orel>
+        Wed, 4 Oct 2023 06:15:29 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2080.outbound.protection.outlook.com [40.107.243.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A9690;
+        Wed,  4 Oct 2023 03:15:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LcUvHfdjv94aqXtNryDCXUW3pU1eanDe62SgF3KAojdDlFgUmEhtHw40+Nh1e0mCKqObntZ0RK2yfzu+spyzwdy0vxopIMvzqEtEuySKMIS2OAQ0NLI9GQ34CXHzmzHxalOiLOUWA1bHHzPl3eb5GTG44UaREDLb1p24rnHjRL/LmNdDBWLPREN/SXe+ehbNlDDVYRMSinpdUfu8bPNtEg8Jl8wLVstb6TWL3O94bTQB0FueIFE9m1qTGE+1w/zFwWd5x+8NXyu2H8NAFiAAAfL4dXnuTsqcKTitZmR6eShL0vS7J0ywzNTNeJ//YmE9TcIUBjY4qurnBFSRDDvaSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YN/BEqbbuu2dme09mMaR6jP2r3CprAjGRjRs0WNAOSo=;
+ b=j0HWaM/U4wJmgfdnJhlYzw9utirLE8EDddnK/eyPgJ5/QF6cSkc8a/t9gdttgEZRf12gLTJPmkxPhCySUt4Q+in/maEJO46OeoDSi8A/+8c8bRHxNZQjn/UBmXu3dcjqB7Ou7h6Vx1mhYWENn5mp/9NCFwfaWZNq8pL4whfTpkQHQgTMBXWPWgRf8IG4BC+Bgx09jKE5Ro0cWgDjNrORgHZ0rDJUJlq/Yv6vjrcvSneJ+IdhMKTGfk6WCLQGRYMCpiwjXZ/IVGXu09IVIITHpvleegxsV2OKRGCvv5rRqa+8C6kIBITBrYm0CuvVzVif5ZvXVNjDOfi5LV0GRK59Sg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YN/BEqbbuu2dme09mMaR6jP2r3CprAjGRjRs0WNAOSo=;
+ b=TL1yt3xDSbMncnzXnS+O1vcGoaTDEPanCbHW2vPnutLpMzlWTMLusbSnGgOnv5SOpTbIFliOQSSqTQPm4KvcGsDLmtVEyEEpr/RBKI9Xbt1zK+Wxj09biJvH6tFbyQKHKDC7TcZycifCAzHlGrV7RnoliXjSNWsdKY8eGEKDvDkSjNYrbvb9v16mLdQq5ZmL4xSCLskxbctmF7BFSVSuN6qVmoYIvQTwuLZKDNMKLHCoy2vdJ4UcSCjRMbrfJ8Kx8R9zyKZViwbvYgWFOGe3cUWV7QhDeCoPG4s0nakkjiNNv+yflEudTZG7Wp4uOjCfaxkXa7tVbBc++w1Yqq2Flg==
+Received: from MN2PR22CA0029.namprd22.prod.outlook.com (2603:10b6:208:238::34)
+ by DM3PR12MB9349.namprd12.prod.outlook.com (2603:10b6:0:49::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.28; Wed, 4 Oct
+ 2023 10:15:22 +0000
+Received: from MN1PEPF0000ECDA.namprd02.prod.outlook.com
+ (2603:10b6:208:238:cafe::a5) by MN2PR22CA0029.outlook.office365.com
+ (2603:10b6:208:238::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.26 via Frontend
+ Transport; Wed, 4 Oct 2023 10:15:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ MN1PEPF0000ECDA.mail.protection.outlook.com (10.167.242.134) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.14 via Frontend Transport; Wed, 4 Oct 2023 10:15:22 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 4 Oct 2023
+ 03:15:11 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Wed, 4 Oct 2023 03:15:11 -0700
+Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Wed, 4 Oct 2023 03:15:10 -0700
+Date:   Wed, 4 Oct 2023 03:15:09 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Sasha Levin <sashal@kernel.org>
+CC:     <stable@vger.kernel.org>, <will@kernel.org>,
+        <robin.murphy@arm.com>, <joro@8bytes.org>, <jgg@nvidia.com>,
+        <jean-philippe@linaro.org>, <baolu.lu@linux.intel.com>,
+        <apopple@nvidia.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>
+Subject: Re: [PATCH][6.5, 6.1, 5.15] iommu/arm-smmu-v3: Fix soft lockup
+ triggered by arm_smmu_mm_invalidate_range
+Message-ID: <ZR07LWh9JqnHc4v2@Asurada-Nvidia>
+References: <20231003233549.33678-1-nicolinc@nvidia.com>
+ <ZR05sWtiMmM0w2sb@sashalap>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231004-58af76b11b3db2e64a93fd55@orel>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZR05sWtiMmM0w2sb@sashalap>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECDA:EE_|DM3PR12MB9349:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9793d3c8-1b07-456f-addc-08dbc4c2d1b4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nVAECBPsa3nF92PYBmHlsv7qoRafOmdhyPIqxirlHi3RRYygvKLPjD2LB9r8ikuV/jh1P6I8pFLOqEajWXk+3uSgzsQC/Z1g2sF8EJn5ucL7Hf4YsFvw/ynm/0C0VK5gXfd1/6zvq4uh+biSUWjslhXsV0DUtmJ0/QQOt19MZYOo+xKrz16wJifVpRJ5hbL6NVhWNGTLr8/wWCVQEsZGVuhywBSFnmHw1AqupDi08Ny4IZHm0bp7DCyNl9LI9OnmLQAMflZC2zS869ae+G/DcEB/KXy0PpnlRhSBbdUYOJfxwnqOc5iJ8DEY8BSrU215NyxI7fVh3bEaTCbbH3Cfa5EvcPZsvZyXsj3/LEnZFbU2B+Ywt6DTWdKvUzxyQ+GsbqZmFGSODrvxZSdSDmvpqzp98Ix9H9VUzDGdryCAIIHwZ3VSifOzP8WJ8SazpEfP5lbNvOPgFRJ5smJc/POWzh+ZsWApj8TH0Mz47g1zvv8QeocfJqLE1g89B+Sg6GxARQVEj8Tl3uSa+mpvjwAHfsaL8STXSogOaKtPyDqyuplf+B9NGzEYbO6JDx1ursDbS+xxC0F01tpiI6I/PuTxlWbdtH1ZSAbmefVH+X1o3lyyJPAngWAY9WH3s9c0K8PMGBZOGdivsCLiX0g/JUgjSjceWWzl3jUVUOOit1WMvzQmyQ4AFUVe++JNk439SVxtIodBsiNSAnGRT1XQIetqxv0i5s97iWs9I2aCjamsIlmfNb8yJ6+r7UPY3NhgcMmO
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(136003)(376002)(346002)(230922051799003)(186009)(64100799003)(82310400011)(451199024)(1800799009)(40470700004)(46966006)(36840700001)(336012)(426003)(9686003)(478600001)(47076005)(6916009)(36860700001)(8676002)(8936002)(70206006)(70586007)(54906003)(316002)(4326008)(26005)(41300700001)(82740400003)(5660300002)(86362001)(7416002)(7636003)(4744005)(356005)(2906002)(40460700003)(40480700001)(55016003)(33716001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 10:15:22.2004
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9793d3c8-1b07-456f-addc-08dbc4c2d1b4
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000ECDA.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR12MB9349
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 10:33:31AM +0200, Andrew Jones wrote:
-> On Wed, Oct 04, 2023 at 09:52:23AM +0530, Sunil V L wrote:
-> > On Tue, Oct 03, 2023 at 02:50:02PM -0500, Samuel Holland wrote:
-> > > On 2023-09-27 12:00 PM, Sunil V L wrote:
-> > > > Using new interface to get the CBO block size information in RHCT,
-> > > > initialize the variables on ACPI platforms.
-> > > > 
-> > > > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> > > > ---
-> > > >  arch/riscv/mm/cacheflush.c | 37 +++++++++++++++++++++++++++++++------
-> > > >  1 file changed, 31 insertions(+), 6 deletions(-)
-> > > > 
-> > > > diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> > > > index f1387272a551..8e59644e473c 100644
-> > > > --- a/arch/riscv/mm/cacheflush.c
-> > > > +++ b/arch/riscv/mm/cacheflush.c
-> > > > @@ -3,7 +3,9 @@
-> > > >   * Copyright (C) 2017 SiFive
-> > > >   */
-> > > >  
-> > > > +#include <linux/acpi.h>
-> > > >  #include <linux/of.h>
-> > > > +#include <asm/acpi.h>
-> > > >  #include <asm/cacheflush.h>
-> > > >  
-> > > >  #ifdef CONFIG_SMP
-> > > > @@ -124,15 +126,38 @@ void __init riscv_init_cbo_blocksizes(void)
-> > > >  	unsigned long cbom_hartid, cboz_hartid;
-> > > >  	u32 cbom_block_size = 0, cboz_block_size = 0;
-> > > >  	struct device_node *node;
-> > > > +	struct acpi_table_header *rhct;
-> > > > +	acpi_status status;
-> > > > +	unsigned int cpu;
-> > > > +
-> > > > +	if (!acpi_disabled) {
-> > > > +		status = acpi_get_table(ACPI_SIG_RHCT, 0, &rhct);
-> > > > +		if (ACPI_FAILURE(status))
-> > > > +			return;
-> > > > +	}
-> > > >  
-> > > > -	for_each_of_cpu_node(node) {
-> > > > -		/* set block-size for cbom and/or cboz extension if available */
-> > > > -		cbo_get_block_size(node, "riscv,cbom-block-size",
-> > > > -				   &cbom_block_size, &cbom_hartid);
-> > > > -		cbo_get_block_size(node, "riscv,cboz-block-size",
-> > > > -				   &cboz_block_size, &cboz_hartid);
-> > > > +	for_each_possible_cpu(cpu) {
-> > > > +		if (acpi_disabled) {
-> > > > +			node = of_cpu_device_node_get(cpu);
-> > > > +			if (!node) {
-> > > > +				pr_warn("Unable to find cpu node\n");
-> > > > +				continue;
-> > > > +			}
-> > > > +
-> > > > +			/* set block-size for cbom and/or cboz extension if available */
-> > > > +			cbo_get_block_size(node, "riscv,cbom-block-size",
-> > > > +					   &cbom_block_size, &cbom_hartid);
-> > > > +			cbo_get_block_size(node, "riscv,cboz-block-size",
-> > > > +					   &cboz_block_size, &cboz_hartid);
-> > > 
-> > > This leaks a reference to the device node.
-> > > 
-> > Yep!. I missed of_node_put(). Let me add in next revision. Thanks!
-> > 
-> > > > +		} else {
-> > > > +			acpi_get_cbo_block_size(rhct, cpu, &cbom_block_size,
-> > > > +						&cboz_block_size, NULL);
-> > > 
-> > > This function loops through the whole RHCT already. Why do we need to call it
-> > > for each CPU? Can't we just call it once, and have it do the same consistency
-> > > checks as cbo_get_block_size()?
-> > > 
-> > > In that case, the DT path could keep the for_each_of_cpu_node() loop.
-> > > 
-> > I kept the same logic as DT. Basically, by passing the cpu node, we
-> > will fetch the exact CPU's CBO property from RHCT. It is not clear to me
-> > why we overwrite the same variable with value from another cpu and
-> > whether we can return as soon as we get the CBO size for one CPU.
-> > 
-> > Drew, can we exit the loop if we get the CBO size for one CPU?
+On Wed, Oct 04, 2023 at 06:08:49AM -0400, Sasha Levin wrote:
+ 
+> On Tue, Oct 03, 2023 at 04:35:49PM -0700, Nicolin Chen wrote:
+> > commit d5afb4b47e13161b3f33904d45110f9e6463bad6 upstream.
 > 
-> We want to compare the values for each CPU with the first one we find in
-> order to ensure they are consistent. I think Samuel is suggesting that
-> we leave the DT path here the same, i.e. keep the for_each_of_cpu_node()
-> loop, and then change acpi_get_cbo_block_size() to *not* take a cpu as
-> input, but rather follow the same pattern as DT, which is to loop over
-> all cpus doing a consistency check against the first cpu's CBO info.
+> Queued up, thanks!
 > 
-Ahh OK. Thanks Drew and Samuel. Let me update as you suggested.
+> We don't need the addition of a stable tag here as the bot suggests,
+> it's just being silly... 
 
-Thanks!
-Sunil
+I see. Will ignore next time. Thanks!
+
+Nicolin
