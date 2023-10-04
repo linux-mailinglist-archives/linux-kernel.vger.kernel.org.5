@@ -2,38 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEF87B7EDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DD47B7EE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233244AbjJDMQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 08:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
+        id S242294AbjJDMSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 08:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242335AbjJDMQ3 (ORCPT
+        with ESMTP id S232919AbjJDMSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 08:16:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E306A9
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:16:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87602C433C8;
-        Wed,  4 Oct 2023 12:16:24 +0000 (UTC)
-Date:   Wed, 4 Oct 2023 08:17:31 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3] tracing/timerlat: Hotplug support for the user-space
- interface
-Message-ID: <20231004081731.141dfb99@gandalf.local.home>
-In-Reply-To: <3fbe67a4-225c-14c1-cb5a-3f667ad80b0e@kernel.org>
-References: <a1bbd57692c1a59458c4ee99999b7f83a29bc3c5.1695999408.git.bristot@kernel.org>
-        <20231003210309.4335307d@gandalf.local.home>
-        <3fbe67a4-225c-14c1-cb5a-3f667ad80b0e@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 4 Oct 2023 08:18:06 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B30793
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 05:18:03 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40684f53ef3so5640965e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 05:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696421881; x=1697026681; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jx809ZZPmQX9bCss2qHfga4iHIHABGn3+dRnDoOEwBM=;
+        b=2XlPwNz70UbgcPHNh9U92lNSn/Kd4wvmk+CoOCtCspI+gQyMTXiehZgXxM+bCR5LOg
+         yCDiRABRk7itxak11OylJMpZrTO/hx4ZjB4qIJW55kndS5tDILDmzqhkG2ouS+iApxs3
+         9/CBR8cLgwSRWxMsBx8dQ+2sefuOHRdhhniVxTzlwRNb8ar5VJprY6voOPyhHNifj7L1
+         xQKiSq4Sz/I2CzgUVk0BSNoCaomooznkKOSzZzExPNrEGreCaGVBIVufTMHI7QpMIGbR
+         WoK0GSuKeVZ+V0n/k+0OB9MZ6d8SivkbtjpBwZjMbwrXDuhZvDPYfyn4Rq7GYYqQBtGp
+         dpgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696421881; x=1697026681;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jx809ZZPmQX9bCss2qHfga4iHIHABGn3+dRnDoOEwBM=;
+        b=PQFoAlMWvnG/YU7jiC1xCZs4fpRpbFrzHA3SsSwlJMmqyXvgGECYce6NybJssyXNsy
+         dzrYEvyA5DYKHxoZyNKzDY8B/D8ot3sbXbvy4ujMZwgaCKJqHZ8jW0gkw+lltNStCFBr
+         afkdyLJH8dy56SIey3ox3xTXCo59p/lDgNFIjY6OHw4mcUJ7LBaEmI5zrkjcvP/7fHEe
+         kGq/X3sX/igkgXVKQFCfQjYn4FcUVqclO7i6guqWudlRzeb381ZcVUlbutQchkwmDL4j
+         gKaOvpoH70D90ltOppV6zzIOCyIOccrCf2MbyYhdNm6eznoFOliNYoZDhkE/BiS129b3
+         +CHw==
+X-Gm-Message-State: AOJu0YzthwYoFN/eGBn/bP0ydbCyUvvHIYbGMHabWUIyQsXv2HPsdye4
+        YKruNPgfdMD4TQ5+FUVAt1dSug==
+X-Google-Smtp-Source: AGHT+IE3PlonxvNG9K0O/ooQBE2t08mHBkDvaao/sVglxJTmwYrc4biZ9IOQj1rAv7vYdVx+kMu1lA==
+X-Received: by 2002:a7b:ce98:0:b0:3fc:dd9:91fd with SMTP id q24-20020a7bce98000000b003fc0dd991fdmr2062644wmj.40.1696421881447;
+        Wed, 04 Oct 2023 05:18:01 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id o4-20020a1c7504000000b00405588aa40asm1375832wmc.24.2023.10.04.05.18.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 05:18:01 -0700 (PDT)
+Message-ID: <9420885b-784f-5f80-e273-7bade6285676@baylibre.com>
+Date:   Wed, 4 Oct 2023 14:18:00 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/nqQqZZJ_PrnKA=0=TSK/aS5"
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] MAINTAINERS: Add Angelo as MediaTek SoC co-maintainer
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+Cc:     nfraprado@collabora.com, wenst@chromium.org, robh@kernel.org,
+        arnd@arndb.de
+References: <20230929082009.71843-1-angelogioacchino.delregno@collabora.com>
+ <d26ee3f8-d5d3-e46d-4d79-098992d13790@gmail.com>
+ <77bfcbca-e7fe-49e1-952a-c99596160c0f@collabora.com>
+Content-Language: en-US
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <77bfcbca-e7fe-49e1-952a-c99596160c0f@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,123 +79,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/nqQqZZJ_PrnKA=0=TSK/aS5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hi,
 
-On Wed, 4 Oct 2023 12:02:52 +0200
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+Happy to see you back and fine Matthias !
 
-> On 10/4/23 03:03, Steven Rostedt wrote:
-> > On Fri, 29 Sep 2023 17:02:46 +0200
-> > Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
-> >   
-> >> The osnoise/per_cpu/CPU$/timerlat_fd is create for each possible
-> >> CPU, but it might create confusion if the CPU is not online.
-> >>
-> >> Create the file only for online CPUs, also follow hotplug by
-> >> creating and deleting as CPUs come and go.
-> >>
-> >> Fixes: e88ed227f639 ("tracing/timerlat: Add user-space interface")  
-> > 
-> > Is this a fix that needs to go in now and Cc'd to stable? Or is this
-> > something that can wait till the next merge window?  
-> 
-> We can wait for the next merge window... it is a non-trivial fix.
-> 
+Also, I'm happy to see the Angelo's step-up welcomed by everybody,
+it's a great news !!!
 
-A requirement is if it's a fix, not really how "trivial" it is.
+Feel free to ask me if you need help.
 
-That said, I'm able to consistently triggered this:
-
-BUG: kernel NULL pointer dereference, address: 00000000000000a0
- #PF: supervisor write access in kernel mode
- #PF: error_code(0x0002) - not-present page
- PGD 0 P4D 0 
- Oops: 0002 [#1] PREEMPT SMP PTI
- CPU: 1 PID: 20 Comm: cpuhp/1 Not tainted 6.6.0-rc4-test-00008-g2df8f295b0e2 #103
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
- RIP: 0010:down_write+0x23/0x70
- Code: 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 53 48 89 fb e8 2e bc ff ff bf 01 00 00 00 e8 24 14 31 ff 31 c0 ba 01 00 00 00 <f0> 48 0f b1 13 75 33 65 48 8b 04 25 00 36 03 00 48 89 43 08 bf 01
- RSP: 0018:ffffb17f800e3d98 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: 00000000000000a0 RCX: ffffff8100000000
- RDX: 0000000000000001 RSI: 0000000000000064 RDI: ffffffffb6edd5cc
- RBP: ffffb17f800e3df8 R08: ffff8c6237c61188 R09: 000000008020001b
- R10: ffff8c6237c61160 R11: 0000000000000001 R12: 000000000002da30
- R13: 0000000000000000 R14: ffffffffb6314080 R15: ffff8c6237c61188
- FS:  0000000000000000(0000) GS:ffff8c6237c40000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 00000000000000a0 CR3: 0000000102412001 CR4: 0000000000170ee0
- Call Trace:
-  <TASK>
-  ? __die+0x23/0x70
-  ? page_fault_oops+0x17d/0x4c0
-  ? exc_page_fault+0x7f/0x180
-  ? asm_exc_page_fault+0x26/0x30
-  ? __pfx_osnoise_cpu_die+0x10/0x10
-  ? down_write+0x1c/0x70
-  ? down_write+0x23/0x70
-  ? down_write+0x1c/0x70
-  simple_recursive_removal+0xef/0x280
-  ? __pfx_remove_one+0x10/0x10
-  ? __pfx_osnoise_cpu_die+0x10/0x10
-  tracefs_remove+0x44/0x70
-  timerlat_rm_per_cpu_interface+0x28/0x70
-  osnoise_cpu_die+0xf/0x20
-  cpuhp_invoke_callback+0xf8/0x460
-  ? __pfx_smpboot_thread_fn+0x10/0x10
-  cpuhp_thread_fun+0xf3/0x190
-  smpboot_thread_fn+0x18c/0x230
-  kthread+0xf7/0x130
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork+0x34/0x50
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork_asm+0x1b/0x30
-  </TASK>
- Modules linked in:
- CR2: 00000000000000a0
- ---[ end trace 0000000000000000 ]---
- RIP: 0010:down_write+0x23/0x70
- Code: 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 53 48 89 fb e8 2e bc ff ff bf 01 00 00 00 e8 24 14 31 ff 31 c0 ba 01 00 00 00 <f0> 48 0f b1 13 75 33 65 48 8b 04 25 00 36 03 00 48 89 43 08 bf 01
- RSP: 0018:ffffb17f800e3d98 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: 00000000000000a0 RCX: ffffff8100000000
- RDX: 0000000000000001 RSI: 0000000000000064 RDI: ffffffffb6edd5cc
- RBP: ffffb17f800e3df8 R08: ffff8c6237c61188 R09: 000000008020001b
- R10: ffff8c6237c61160 R11: 0000000000000001 R12: 000000000002da30
- R13: 0000000000000000 R14: ffffffffb6314080 R15: ffff8c6237c61188
- FS:  0000000000000000(0000) GS:ffff8c6237c40000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 00000000000000a0 CR3: 0000000102412001 CR4: 0000000000170ee0
- note: cpuhp/1[20] exited with irqs disabled
- note: cpuhp/1[20] exited with preempt_count 1
+Alex
 
 
-With running the attached script as:
-
- # ./ftrace-test-tracers sleep 1
-
--- Steve
-
---MP_/nqQqZZJ_PrnKA=0=TSK/aS5
-Content-Type: application/octet-stream; name=ftrace-test-tracers
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=ftrace-test-tracers
-
-IyEvYmluL2Jhc2gKCmZpbmRfZGVidWdmcygpIHsKICAgIGRlYnVnZnM9YGNhdCAvcHJvYy9tb3Vu
-dHMgfCB3aGlsZSByZWFkIG1vdW50IGRpciB0eXBlIG9wdHMgYSBiOyBkbwoJaWYgWyAkbW91bnQg
-PT0gImRlYnVnZnMiIF07IHRoZW4KCSAgICBlY2hvICRkaXI7CgkgICAgYnJlYWsKCWZpCiAgICBk
-b25lYAogICAgaWYgWyAteiAiJGRlYnVnZnMiIF07IHRoZW4KCWlmICEgbW91bnQgLXQgZGVidWdm
-cyBub2RldiAvc3lzL2tlcm5lbC9kZWJ1ZzsgdGhlbgoJICAgIGVjaG8gIkZBSUxFRCB0byBtb3Vu
-dCBkZWJ1Z2ZzIgoJICAgIGV4aXQgLTEKCWZpCgllY2hvICIvc3lzL2tlcm5lbC9kZWJ1ZyIKICAg
-IGVsc2UKCWVjaG8gJGRlYnVnZnMKICAgIGZpCn0KCmRlYnVnZnM9YGZpbmRfZGVidWdmc2AKdHJh
-Y2VkaXI9IiRkZWJ1Z2ZzL3RyYWNpbmciCgphcmc9InNsZWVwIDEwIgppZiBbICQjIC1ndCAwIF07
-IHRoZW4KCWFyZz0iJEAiCmZpCgpmb3IgdHJhY2VyIGluIGBjYXQgJHRyYWNlZGlyL2F2YWlsYWJs
-ZV90cmFjZXJzYDsgZG8KCWlmIFsgJHRyYWNlciA9PSAibm9wIiBdOyB0aGVuCgkJY29udGludWU7
-CglmaQoJZWNobyAiVGVzdGluZyB0cmFjZXIgJHRyYWNlciIKCWVjaG8gJHRyYWNlciA+ICR0cmFj
-ZWRpci9jdXJyZW50X3RyYWNlcgoJZWNobyAicnVubmluZyAkYXJnIgoJJGFyZwoJZWNobyAwID4g
-JHRyYWNlZGlyL3RyYWNpbmdfb24KCWNhdCAkdHJhY2VkaXIvdHJhY2UKCWVjaG8gbm9wID4gJHRy
-YWNlZGlyL2N1cnJlbnRfdHJhY2VyCgllY2hvIDEgPiAkdHJhY2VkaXIvdHJhY2luZ19vbgpkb25l
-Cg==
-
---MP_/nqQqZZJ_PrnKA=0=TSK/aS5--
