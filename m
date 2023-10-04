@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1421E7B8278
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D20B7B8279
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242910AbjJDOfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
+        id S242442AbjJDOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242867AbjJDOez (ORCPT
+        with ESMTP id S242814AbjJDOey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:34:55 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22906C6
+        Wed, 4 Oct 2023 10:34:54 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12DCCE
         for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:34:50 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4053e6e8ca7so5615325e9.1
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4053e6e8ca7so5615385e9.1
         for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 07:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1696430088; x=1697034888; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1696430089; x=1697034889; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D3YF5WNle5WpS70J/C6Gc27a4yBxFn8dy6pHVVBXBUQ=;
-        b=nRHBWLD2BeVsjKK5IK+4w2nw3Xcmd5InkpiYdvBHxWAvTdSR0H7mLrad7F2boeNqfv
-         3F6cScUSKN6Au2l3K8rl+zW9Ygtl99QOUNxb59C49ofNNpNS0xRtRZlD92HOOFATEjfm
-         fF1cGaMBGrIJAvup1b25GhNrumCwBfWP8ix1AjjrO0cWGD68yKgowlBYUISkxkT066Am
-         sMDaGsX//zKl3HZDzdoPK0z6AcQSb3G2ysLXDMGfJfqcswaqeTIx57Lz9BO5MQ0JilsW
-         G0EnSHKfBJrvQKi6dsdF61STbyE2/wfxeJgxp4N2taU9OlXXpClcOHmQCX2KeVoVFneC
-         Infw==
+        bh=OyQJmck1/pI5OX/IX07IDtTyF+FKPIka6gVUOADEZr8=;
+        b=HuiX6L5hojurAbfmxheJJzTFOLB3kiq38MPPBpO6IIf2HKgom5FfHDxWnDnQ7HkUgz
+         DRlnzfQeDaFmqGom0Jy4ZaSvdNnbQ5dqftYwklkcJJQUmGr84CJtE9kz/5om9oEwmQV2
+         s1N3K6HVmcb7pzY3wPXY07Ne3VMsiHfl4TWQYaWjWfevxmD2mJsFF+9wqG7zsb4sDJV7
+         kK9jTH9IzwsH088wAgCXrrdPxq45zLaGvmWeKKZ4rTg04p6t3gbrTFEn4NPXAbiML69x
+         eij7XkZ5ISob9947THJfb5fbmWny1J6+6FkEHX9uAH+0lXS+kQEGdkDloiNkVqPGOFKr
+         W5Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696430088; x=1697034888;
+        d=1e100.net; s=20230601; t=1696430089; x=1697034889;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=D3YF5WNle5WpS70J/C6Gc27a4yBxFn8dy6pHVVBXBUQ=;
-        b=bECxuwMA6C/hrnm1kDQEzZKS8q2qyqeyBvgUqr+jd8IM5nrmyr+d4laB97ejf4Kpf2
-         x9U33gVd5ocDr7KX2n1Ouul5zyXrlSKscUUQuySQE2K1yyiriyKIYe0W2bRL75I2QrjL
-         AthKNdpfX4pZc/+2rV52QuIblV6BxPFh8RJ9a4SrXnPY6yQQ0mXphqyR0MHhE+epQxGO
-         HUqZ5f6IoHjYsTk6ZvMrsVvTy0Riw3zmmi1TQh4nCyhH6s1zyudHqvcHZhtmTJo2GdOG
-         NruNfiwXl0U0Sql+vlCuwEqLWa/YsI73TA4vq0WlMBZDZwGf4X61NLAL5fSQ4LWgGlHU
-         KDXA==
-X-Gm-Message-State: AOJu0Yw1J5iow2QyA5Tn5eD/NxIsmVDXzwJ4deFYWNFduSNID/Kx7kqE
-        SclpPww7D4VIXPRnE+ilua5Anw==
-X-Google-Smtp-Source: AGHT+IGG8Kcx0OpDIRRrfevcHI4+l//9I5GBAldHw3+cp6ZLo6USiLMAAmHvXUqVSmuiNG9ieb8B4A==
-X-Received: by 2002:a05:600c:511d:b0:401:b53e:6c3e with SMTP id o29-20020a05600c511d00b00401b53e6c3emr2517778wms.1.1696430088453;
-        Wed, 04 Oct 2023 07:34:48 -0700 (PDT)
+        bh=OyQJmck1/pI5OX/IX07IDtTyF+FKPIka6gVUOADEZr8=;
+        b=ZIRyB0mHqhg+cHVyvUBCN6Lbc4YxPNYd6K8KyVJ0Jo7wXRTSZ4YD1k84CTuR3Yj3Kf
+         MUzyRCDen9isK+ZOlMByTp26l3RTNSQhsQ0DIzyp79KRCVQFEu2oFhekeqKRl+JUzONP
+         cIk+dYnVIVNlxi4QLSbQT8XLz5cr44bfDHF2DArq+0uNLqgYRPl2D11pxkwLqJz7UWME
+         X/Oy9/miLbd1WjhgLzM4oypAPJd2xF8ow597Hb5ceTTN3wVyDCF2Sh05UtyLRgxwVu9D
+         24a4wLfj6W2aqy8w5ldqYSVi2JIUcUSFf0izC8p4STZRNC5Uvg8It5qgDjVe5HASCj+A
+         LJLQ==
+X-Gm-Message-State: AOJu0YxDHQA6ijJZIvsdYcbr1n6YSwbKRHBimutQpn4wJxTMWUIhBBFs
+        GzS8d8iLSYjMm93m1QGR6NDj2g==
+X-Google-Smtp-Source: AGHT+IGzp/S6AMTHi02JDakLFsQHybTWZ0pEAN4ECemzds5xOO34p1aXoKuAUJwbGsZ5rcqs2qdXOQ==
+X-Received: by 2002:adf:ecc3:0:b0:31f:edc3:c5fb with SMTP id s3-20020adfecc3000000b0031fedc3c5fbmr2087729wro.5.1696430089475;
+        Wed, 04 Oct 2023 07:34:49 -0700 (PDT)
 Received: from carbon-x1.. ([2a01:e0a:999:a3a0:9474:8d75:5115:42cb])
-        by smtp.gmail.com with ESMTPSA id t20-20020a1c7714000000b00401e32b25adsm1686205wmi.4.2023.10.04.07.34.47
+        by smtp.gmail.com with ESMTPSA id t20-20020a1c7714000000b00401e32b25adsm1686205wmi.4.2023.10.04.07.34.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 07:34:48 -0700 (PDT)
+        Wed, 04 Oct 2023 07:34:49 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -59,9 +59,9 @@ To:     Paul Walmsley <paul.walmsley@sifive.com>,
 Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         kvm@vger.kernel.org, kvm-riscv@lists.infradead.org
-Subject: [PATCH 4/5] riscv: kvm: Use SYM_*() assembly macros instead of deprecated ones
-Date:   Wed,  4 Oct 2023 16:30:53 +0200
-Message-ID: <20231004143054.482091-5-cleger@rivosinc.com>
+Subject: [PATCH 5/5] riscv: kvm: use ".L" local labels in assembly when applicable
+Date:   Wed,  4 Oct 2023 16:30:54 +0200
+Message-ID: <20231004143054.482091-6-cleger@rivosinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231004143054.482091-1-cleger@rivosinc.com>
 References: <20231004143054.482091-1-cleger@rivosinc.com>
@@ -77,103 +77,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ENTRY()/END()/WEAK() macros are deprecated and we should make use of the
-new SYM_*() macros [1] for better annotation of symbols. Replace the
-deprecated ones with the new ones and fix wrong usage of END()/ENDPROC()
-to correctly describe the symbols.
-
-[1] https://docs.kernel.org/core-api/asm-annotations.html
+For the sake of coherency, use local labels in assembly when
+applicable. This also avoid kprobes being confused when applying a
+kprobe since the size of function is computed by checking where the
+next visible symbol is located. This might end up in computing some
+function size to be way shorter than expected and thus failing to apply
+kprobes to the specified offset.
 
 Signed-off-by: Clément Léger <cleger@rivosinc.com>
 ---
- arch/riscv/kvm/vcpu_switch.S | 28 ++++++++++++----------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
+ arch/riscv/kvm/vcpu_switch.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/kvm/vcpu_switch.S b/arch/riscv/kvm/vcpu_switch.S
-index d74df8eb4d71..8b18473780ac 100644
+index 8b18473780ac..0c26189aa01c 100644
 --- a/arch/riscv/kvm/vcpu_switch.S
 +++ b/arch/riscv/kvm/vcpu_switch.S
-@@ -15,7 +15,7 @@
- 	.altmacro
- 	.option norelax
+@@ -45,7 +45,7 @@ SYM_FUNC_START(__kvm_riscv_switch_to)
+ 	REG_L	t0, (KVM_ARCH_GUEST_SSTATUS)(a0)
+ 	REG_L	t1, (KVM_ARCH_GUEST_HSTATUS)(a0)
+ 	REG_L	t2, (KVM_ARCH_GUEST_SCOUNTEREN)(a0)
+-	la	t4, __kvm_switch_return
++	la	t4, .Lkvm_switch_return
+ 	REG_L	t5, (KVM_ARCH_GUEST_SEPC)(a0)
  
--ENTRY(__kvm_riscv_switch_to)
-+SYM_FUNC_START(__kvm_riscv_switch_to)
- 	/* Save Host GPRs (except A0 and T0-T6) */
- 	REG_S	ra, (KVM_ARCH_HOST_RA)(a0)
- 	REG_S	sp, (KVM_ARCH_HOST_SP)(a0)
-@@ -208,9 +208,9 @@ __kvm_switch_return:
+ 	/* Save Host and Restore Guest SSTATUS */
+@@ -113,7 +113,7 @@ SYM_FUNC_START(__kvm_riscv_switch_to)
  
- 	/* Return to C code */
- 	ret
--ENDPROC(__kvm_riscv_switch_to)
-+SYM_FUNC_END(__kvm_riscv_switch_to)
+ 	/* Back to Host */
+ 	.align 2
+-__kvm_switch_return:
++.Lkvm_switch_return:
+ 	/* Swap Guest A0 with SSCRATCH */
+ 	csrrw	a0, CSR_SSCRATCH, a0
  
--ENTRY(__kvm_riscv_unpriv_trap)
-+SYM_CODE_START(__kvm_riscv_unpriv_trap)
- 	/*
- 	 * We assume that faulting unpriv load/store instruction is
- 	 * 4-byte long and blindly increment SEPC by 4.
-@@ -231,12 +231,10 @@ ENTRY(__kvm_riscv_unpriv_trap)
- 	csrr	a1, CSR_HTINST
- 	REG_S	a1, (KVM_ARCH_TRAP_HTINST)(a0)
- 	sret
--ENDPROC(__kvm_riscv_unpriv_trap)
-+SYM_CODE_END(__kvm_riscv_unpriv_trap)
- 
- #ifdef	CONFIG_FPU
--	.align 3
--	.global __kvm_riscv_fp_f_save
--__kvm_riscv_fp_f_save:
-+SYM_FUNC_START(__kvm_riscv_fp_f_save)
- 	csrr t2, CSR_SSTATUS
- 	li t1, SR_FS
- 	csrs CSR_SSTATUS, t1
-@@ -276,10 +274,9 @@ __kvm_riscv_fp_f_save:
- 	sw t0, KVM_ARCH_FP_F_FCSR(a0)
- 	csrw CSR_SSTATUS, t2
- 	ret
-+SYM_FUNC_END(__kvm_riscv_fp_f_save)
- 
--	.align 3
--	.global __kvm_riscv_fp_d_save
--__kvm_riscv_fp_d_save:
-+SYM_FUNC_START(__kvm_riscv_fp_d_save)
- 	csrr t2, CSR_SSTATUS
- 	li t1, SR_FS
- 	csrs CSR_SSTATUS, t1
-@@ -319,10 +316,9 @@ __kvm_riscv_fp_d_save:
- 	sw t0, KVM_ARCH_FP_D_FCSR(a0)
- 	csrw CSR_SSTATUS, t2
- 	ret
-+SYM_FUNC_END(__kvm_riscv_fp_d_save)
- 
--	.align 3
--	.global __kvm_riscv_fp_f_restore
--__kvm_riscv_fp_f_restore:
-+SYM_FUNC_START(__kvm_riscv_fp_f_restore)
- 	csrr t2, CSR_SSTATUS
- 	li t1, SR_FS
- 	lw t0, KVM_ARCH_FP_F_FCSR(a0)
-@@ -362,10 +358,9 @@ __kvm_riscv_fp_f_restore:
- 	fscsr t0
- 	csrw CSR_SSTATUS, t2
- 	ret
-+SYM_FUNC_END(__kvm_riscv_fp_f_restore)
- 
--	.align 3
--	.global __kvm_riscv_fp_d_restore
--__kvm_riscv_fp_d_restore:
-+SYM_FUNC_START(__kvm_riscv_fp_d_restore)
- 	csrr t2, CSR_SSTATUS
- 	li t1, SR_FS
- 	lw t0, KVM_ARCH_FP_D_FCSR(a0)
-@@ -405,4 +400,5 @@ __kvm_riscv_fp_d_restore:
- 	fscsr t0
- 	csrw CSR_SSTATUS, t2
- 	ret
-+SYM_FUNC_END(__kvm_riscv_fp_d_restore)
- #endif
 -- 
 2.42.0
 
