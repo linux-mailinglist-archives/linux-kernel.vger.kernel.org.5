@@ -2,138 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 596C87B8075
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9AD7B8070
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233131AbjJDNPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:15:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
+        id S242598AbjJDNOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 09:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233003AbjJDNPT (ORCPT
+        with ESMTP id S242603AbjJDNOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:15:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F421A1
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 06:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696425264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CKB87bTajQH/5HfXBd7T/7DKZGQoywxxIms8WQ1l3Bc=;
-        b=Gk2TpchBvbG7Ok8DRKAogY/mgsbwkh4M9SIDJos4H7vlhRCLY206SDZ7K49ZweTUycH5Mp
-        2fXshYD64k0JqeBPrRmIqSFrhul+Mobeag3THWofroqz/BzSeoMNIbtJ7045uIPw2Tx/vK
-        Rgz+qnxR9ZRZHKBG7QaIP+3DzHMfkNI=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-541-mz8YbnRuPyOK0Tr-WDtI0g-1; Wed, 04 Oct 2023 09:14:06 -0400
-X-MC-Unique: mz8YbnRuPyOK0Tr-WDtI0g-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9ae0bf9c0a9so177698466b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 06:14:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696425245; x=1697030045;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CKB87bTajQH/5HfXBd7T/7DKZGQoywxxIms8WQ1l3Bc=;
-        b=JVoa0fWVnL8Sx2tjCqmVejaKPwzSLQAF0hzFYnia+I5RMobnenlWR8OQngtpwAz0dO
-         7kAzprca37WWkhfTqQr2cWruoHqPh5nX6w5aq3tq1Ny9IIpNGJ5kVsosy1NfPGsSJkfh
-         ilbI52LPtJNNy8aNC7FYCTDxhXyrGFT/6+m8poCK8FPxxO+uB+DM43e4nPZ6U/Jxxbt4
-         Y0Z2TuuZybTWE0aOwvTv9MHW27PHJml7s1faHKuEx4Xo18KFiFvVzZELkiAO8vxkoGnH
-         V0H5Y77ZGVR2G+E8WUEvsSCMIThzOynTqtx+O7rJYJ+UvB64xgTdhzzM6qMTHGptfF8U
-         vR8Q==
-X-Gm-Message-State: AOJu0YzwUcA2MmiQYiuo/1LzTimT2uELMv9etDsqJxk6DTFCVlFapPLV
-        2+G09RnwDIc6Rtekbb7DM35NnM9iAM8srsFiud8o94I/Qv+FS98Ccaxk+7hi0xizFzOUkb68hiJ
-        oRAkpJfpRaAXcDQ/o5fWDCp6d
-X-Received: by 2002:a17:907:2cf1:b0:9ae:513d:de22 with SMTP id hz17-20020a1709072cf100b009ae513dde22mr1648385ejc.56.1696425245064;
-        Wed, 04 Oct 2023 06:14:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEC30AVKWCM9IrhyyL18ynsqE9iCne0MTdbHhx8Q+RGfk5sKrumzX45E7UuQGRJoR3t6l1Fjw==
-X-Received: by 2002:a17:907:2cf1:b0:9ae:513d:de22 with SMTP id hz17-20020a1709072cf100b009ae513dde22mr1648367ejc.56.1696425244676;
-        Wed, 04 Oct 2023 06:14:04 -0700 (PDT)
-Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id f3-20020a170906048300b009b2ca104988sm2824343eja.98.2023.10.04.06.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 06:14:04 -0700 (PDT)
-Message-ID: <1d6044e0d71cd95c477e319d7e47819eee61a8fc.camel@redhat.com>
-Subject: Re: [PATCH v3 0/4] Allow AVIC's IPI virtualization to be optional
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-        Paolo Bonzini <pbonzini@redhat.com>
-Date:   Wed, 04 Oct 2023 16:14:01 +0300
-In-Reply-To: <ZRsYNnYEEaY1gMo5@google.com>
-References: <20231002115723.175344-1-mlevitsk@redhat.com>
-         <ZRsYNnYEEaY1gMo5@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 4 Oct 2023 09:14:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38875D8;
+        Wed,  4 Oct 2023 06:14:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71130C433C7;
+        Wed,  4 Oct 2023 13:14:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696425247;
+        bh=KcAoOcXrCySTDo2pwJ14tM1LxCs9TqonwzLxAT7mYQ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wo7YI5voIsgcHyd1dDgO6qDYsZlKelvwQgEJEAXzgl9Px0vQ16t1Ju0p8N+nwttPv
+         MJKN08Th53vNf9fz+WxwEKRyxn9cjaAFARtyOqQ5/Zj5w1RgskGuaIWD3FSgqaY6FN
+         njLsB7/QFF6WiWoHJpB2uxb7UAlqoMDugx3qwF6g=
+Date:   Wed, 4 Oct 2023 15:14:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee@kernel.org>
+Cc:     "Starke, Daniel" <daniel.starke@siemens.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Fedor Pchelkin <pchelkin@ispras.ru>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com" 
+        <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
+Subject: Re: [PATCH 1/1] tty: n_gsm: Avoid sleeping during .write() whilst
+ atomic
+Message-ID: <2023100435-xerox-idiocy-5cf0@gregkh>
+References: <20231003170020.830242-1-lee@kernel.org>
+ <2023100320-immorally-outboard-573a@gregkh>
+ <DB9PR10MB588170E923A6ED8B3D6D9613E0CBA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM>
+ <2023100421-negotiate-stammer-1b35@gregkh>
+ <20231004085720.GA9374@google.com>
+ <2023100448-cotton-safehouse-aca2@gregkh>
+ <20231004125704.GA83257@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231004125704.GA83257@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-У пн, 2023-10-02 у 12:21 -0700, Sean Christopherson пише:
-> On Mon, Oct 02, 2023, Maxim Levitsky wrote:
-> > Hi!
+On Wed, Oct 04, 2023 at 01:57:04PM +0100, Lee Jones wrote:
+> On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
+> 
+> > On Wed, Oct 04, 2023 at 09:57:20AM +0100, Lee Jones wrote:
+> > > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
+> > > 
+> > > > On Wed, Oct 04, 2023 at 05:59:09AM +0000, Starke, Daniel wrote:
+> > > > > > Daniel, any thoughts?
+> > > > > 
+> > > > > Our application of this protocol is only with specific modems to enable
+> > > > > circuit switched operation (handling calls, selecting/querying networks,
+> > > > > etc.) while doing packet switched communication (i.e. IP traffic over PPP).
+> > > > > The protocol was developed for such use cases.
+> > > > > 
+> > > > > Regarding the issue itself:
+> > > > > There was already an attempt to fix all this by switching from spinlocks to
+> > > > > mutexes resulting in ~20% performance loss. However, the patch was reverted
+> > > > > as it did not handle the T1 timer leading into sleep during atomic within
+> > > > > gsm_dlci_t1() on every mutex lock there.
+> > > 
+> > > That's correct.  When I initially saw this report, my initial thought
+> > > was to replace the spinlocks with mutexts, but having read the previous
+> > > accepted attempt and it's subsequent reversion I started to think of
+> > > other ways to solve this issue.  This solution, unlike the last, does
+> > > not involve adding sleep inducing locks into atomic contexts, nor
+> > > should it negatively affect performance.
+> > > 
+> > > > > There was also a suggestion to fix this in do_con_write() as
+> > > > > tty_operations::write() appears to be documented as "not allowed to sleep".
+> > > > > The patch for this was rejected. It did not fix the issue within n_gsm.
+> > > > > 
+> > > > > Link: https://lore.kernel.org/all/20221203215518.8150-1-pchelkin@ispras.ru/
+> > > > > Link: https://lore.kernel.org/all/20221212023530.2498025-1-zengheng4@huawei.com/
+> > > > > Link: https://lore.kernel.org/all/5a994a13-d1f2-87a8-09e4-a877e65ed166@kernel.org/
+> > > > 
+> > > > Ok, I thought I remembered this, I'll just drop this patch from my
+> > > > review queue and wait for a better solution if it ever comes up as this
+> > > > isn't a real issue that people are seeing on actual systems, but just a
+> > > > syzbot report.
+> > > 
+> > > What does the "better solution" look like?
 > > 
-> > This patch allows AVIC's ICR emulation to be optional and thus allows
-> > to workaround AVIC's errata #1235 by disabling this portion of the feature.
-> > 
-> > This is v3 of my patch series 'AVIC bugfixes and workarounds' including
-> > review feedback.
+> > One that actually fixes the root problem here (i.e. does not break the
+> > recursion loop, or cause a performance decrease for normal users, or
+> > prevent this from being bound to the console).
 > 
-> Please respond to my idea[*] instead of sending more patches. 
+> Does this solution break the recursion loop or affect performance?
 
-Hi,
+This solution broke the recursion by returning an error, right?
 
-For the v2 of the patch I was already on the fence if to do it this way or to refactor
-the code, and back when I posted it, I decided still to avoid the refactoring.
+The performance one was by using mutexes as in previous attempts.
 
-However, your idea of rewriting this patch, while it does change less lines of code,
-is even less obvious and consequently required you to write even longer comment to 
-justify it which is not a good sign.
+thanks,
 
-In particular I don't want someone to find out later, and in the hard way that sometimes
-real physid table is accessed, and sometimes a fake copy of it is.
-
-So I decided to fix the root cause by not reading the physid table back,
-which made the code cleaner, and even with the workaround the code 
-IMHO is still simpler than it was before.
-
-About the added 'vcpu->loaded' variable, I added it also because it is something that is 
-long overdue to be added, I remember that in IPIv code there was also a need for this, 
-and probalby more places in KVM can be refactored to take advantage of it,
-instead of various hacks.
-
-I did adopt your idea of using 'enable_ipiv', although I am still not 100% sure that this
-is more readable than 'avic_zen2_workaround'.
-
-Best regards,
-	Maxim Levitsky
-
->  I'm not opposed to
-> a different approach, but we need to have an actual discussion around the pros and
-> cons, and hopefully come to an agreement.  This cover letter doesn't even acknowledge
-> that there is an alternative proposal, let alone justify why the vcpu->loaded
-> approach was taken.
-> 
-> [*] https://lore.kernel.org/all/ZRYxPNeq1rnp-M0f@google.com
-> 
-
-
+greg k-h
