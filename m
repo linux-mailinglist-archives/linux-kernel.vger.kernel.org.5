@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F37CE7B7A90
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDDE7B7A99
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241817AbjJDIro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
+        id S241715AbjJDItl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241761AbjJDIrn (ORCPT
+        with ESMTP id S232650AbjJDItk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:47:43 -0400
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C26B8
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:47:36 -0700 (PDT)
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6c4e17f37acso2235840a34.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:47:36 -0700 (PDT)
+        Wed, 4 Oct 2023 04:49:40 -0400
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AB4A6
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:49:37 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-49d0f24a815so837025e0c.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:49:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696409376; x=1697014176; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O+YzNfqTip4SK0su8p8tGtqQX78FmAMwOHUKfII9CPQ=;
+        b=j8E1xbCC2TqSQ77FFnCZw67BzRUnDR/bApmGCqaoi25r3wUR8wyaIUvz5e2/CTHi6A
+         ol/SZxzCJBPtoZiMolyn/F7YSQ8aQbdEhriMrcd5g/O0s+vw9RbeiFlN68Qa/jD7zLW2
+         WorID5g79y97l2scWkvkR65l/31wCA+OUpHBOGqfj3PYwA0EU1744lg4C5D+HykbBtTs
+         XAtCfLB8kzuXX0JILuWNipRUQZ+XuOflPk7BeLT4FO97/w7pOskkV2fTjcbvyyKdOPXI
+         ggqq2zkWAXOQv+Ebw73wbEkUSjhmDYPVD6n+JrDpDMK5bMOJ7AGLwQTx9HAXhbK5zC2I
+         bssg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696409256; x=1697014056;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-        b=oVCHUEkPHbfv+MkQdTIXJzR9HxmfI1lgbIFWD+ygzJj6KE6VXpfBDz3dWyL02UhhlZ
-         eRuVnowEt0QEbnovStUspWyq7phOTJ8Y9rTFy1bpE4phTOlqF5Ip/VywDQCYRiuxWznX
-         s9YH8VUwcjwpcugp4rIW+okE/F2v7K8EXWEB+dK6Dh15Q1CKMXb0Hj7q9qauV6Dfp/TY
-         Kn9MvjCiT5fkHNbgdiVhM2zX8rbAHeIhJmp4EHso0E5Ncdkco8pTN9zru0xZgZhWBE5y
-         QvkEeepX8XY6NelCBdT6nc0V+dOMhvkLVvDqpeneQgztvnv/u8c+ViScertsxJHELdDU
-         ig+Q==
-X-Gm-Message-State: AOJu0Yx05XdrjaIDk7LbHs4HokgBQSPFJWEavV+MIDAhGXSLx+5GXHlj
-        EXT0SAErkL6Hov35nkFVOwSrabMwCaDQDqgArvcHn4swwiTU
-X-Google-Smtp-Source: AGHT+IGb62ThBprNm5GhWjOOfTldkHlPz22Bc7sz14cZhd28gohTSBMPcReUTxIpvz5bBMRuXmxnjm36cU8y7SlkilB18jdpr+RG
+        d=1e100.net; s=20230601; t=1696409376; x=1697014176;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O+YzNfqTip4SK0su8p8tGtqQX78FmAMwOHUKfII9CPQ=;
+        b=uEPRXDDbZZvL9sKalE0QiXVnNeNDl9tl/MiYO/+bCX/ql+SRtqh/JaMvck85D68YK7
+         gBsx4zndyZBJ96uQVPAwf6NE1Xv67lpeDQFChWC8X6sEjlWj5BCPZw4kE9Pl5Fjm6/B/
+         vNQcqOF0DrY2KPuqCile/XqqNxlcS2eu+Yw8KswU3wexaM6ithkZ3kAe3NccWaSEZkm8
+         DybfkwKqu4SdjH5U7JZ5eBRsf0bNMIjRoLi4JbgBz7PFamxNV2vF4ED84sn70XYv040b
+         z0OdC5Fvc2KoTNd49F0bTA6NlaBB/OGeIS5wpGgTfQnMMjVw2WWdQ+Go/JUKOA5kQVWT
+         qMfg==
+X-Gm-Message-State: AOJu0YyKBJARCMGMmSNUS2+7f9Ibg3UgXKtZeh32E5haoRXrFBV0RL1H
+        RwxvtEIMfU0tPoOSM2iyfayxOAGThD8F83iXA3HpuA==
+X-Google-Smtp-Source: AGHT+IGVSiuefKeZd7FIOAhYAf7Wpjqc00O/2UC1iG6D/ByEXO64AiPAIYZUseotQx4KRq096ulaIxS4u6diKf2a61w=
+X-Received: by 2002:a1f:4887:0:b0:493:3491:ce89 with SMTP id
+ v129-20020a1f4887000000b004933491ce89mr1155527vka.14.1696409376342; Wed, 04
+ Oct 2023 01:49:36 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:11c7:b0:6c4:f28f:1fad with SMTP id
- v7-20020a05683011c700b006c4f28f1fadmr455032otq.1.1696409256111; Wed, 04 Oct
- 2023 01:47:36 -0700 (PDT)
-Date:   Wed, 04 Oct 2023 01:47:36 -0700
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001ab3e00606e00fea@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
-From:   syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+References: <20231003145114.21637-1-brgl@bgdev.pl> <20231003145114.21637-31-brgl@bgdev.pl>
+ <CAHp75VdvUUw77MuuhY3Ts9L0ezOdakyppQcnikpYCu672Ghb9Q@mail.gmail.com>
+In-Reply-To: <CAHp75VdvUUw77MuuhY3Ts9L0ezOdakyppQcnikpYCu672Ghb9Q@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 4 Oct 2023 10:49:25 +0200
+Message-ID: <CAMRc=MdtdS6+8TL1edRzu_=ZT3mgfRud1YEx9ZAQcYprUj+yew@mail.gmail.com>
+Subject: Re: [PATCH 30/36] pinctrl: remove old GPIO helpers
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+On Tue, Oct 3, 2023 at 5:21=E2=80=AFPM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Tue, Oct 3, 2023 at 5:51=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
+> >
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Old variants of pinctrl GPIO helpers are no longer used. Let's remove
+> > them as well as convert all static functions in pinctrl/core.c that
+> > still deal with global GPIO numbers to using the gpio_chip + offset
+> > pairs.
+>
+> This patch does three thighs as I see it.
+>
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+I'd argue it just fold the code that lived in old functions into the new on=
+es...
 
-#syz fix: exact-commit-title
+> First of all, it silently converts to RAII. Please, do this separately.
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+... and while at it, it already switches to SBRM because why copy outdated =
+code.
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+> Second, it shuffles a lot of code between old and new implementations.
+> What I prefer to see is what the subject tells: only "-" (minus)
+> lines.
+> Third, it will become easier if you name the "new" functions better to
+> begin with, it will help a lot here.
+>
 
----
-[1] I expect the commit to be present in:
+I'll wait for Linus to tell me if he prefers one big squashed commit
+or a fine-grained history (I prefer the latter) before spending time
+splitting this commit.
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+Bart
 
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+> --
+> With Best Regards,
+> Andy Shevchenko
