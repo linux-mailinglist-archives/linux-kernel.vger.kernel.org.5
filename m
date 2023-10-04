@@ -2,147 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1961A7B8206
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A850C7B8212
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242874AbjJDOR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58686 "EHLO
+        id S242881AbjJDOSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242770AbjJDOR0 (ORCPT
+        with ESMTP id S242870AbjJDOSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:17:26 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFF2C0
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:17:22 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-7743448d88eso150621185a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 07:17:22 -0700 (PDT)
+        Wed, 4 Oct 2023 10:18:10 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D08DC6
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:18:03 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3af5fcb5e37so1416131b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 07:18:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696429041; x=1697033841; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0iVKRRlivbZawLpQE+aqhCrFfCHAJWFRH4b1xYHHXmU=;
-        b=Uen7Uk+OcZfpZ6NOOR/CtLouBvKuDLkL6h8xwIoLLP0AGP0SztviHiyReGovSM0ChO
-         OKaUwFlIZpHQBfmAC+cVABbNwf3z7vDWdme8oLUAlgiJVADLkO7y9/bLsZEFmUFk6/yr
-         /6U0ze/AsCJ0YnMvWgYSUbQ0KWaC29CjGlWGd/5VVgIshzon5YffLqZI0O4VbveobISn
-         bwKnRKlu+XX7S39ZvTlgz7wWzJJcLy35tXa/BGQGyHjaI5ls1S7lkygPk53EwcYOU6VX
-         YsapwNZRtocPIFQU7gVrKZdiV4Wjr3v21kcwJyn14tkcVpmksMAAxN19w2BgrslkGy99
-         G3qw==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696429083; x=1697033883; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R6/TWL/5A64z3k0Lwl1E33nP72so44fTzxRPPV1CpcA=;
+        b=IBdP0jUYj4jZAgYuXmVD15BLL9LpAM28u30yQXTukgswU49v3Csy9bJz7wuhSxseWT
+         yAZk6PryErWmkMBNFPzR9AW4V4tbAEE13/NSRsRl1cMvF5mi80/WmLYyUaKB9ekkzBUW
+         VePUqa3BYCA0Ie0cR6WE3SkXBSylLKnaPCCUxRLs3/Vo0V++gLdF+gTw6uJEastwvRpK
+         HlOXvmRneZCZWEAp5e3xh6xjpg9tVeKFmEmY5wbj6ulXQrneKT/MQnKyTbCEzo64ZLvx
+         zQa0Vqtna+2ViI5eu2Zl/8hIKXE8jp/pQeuPa7RAmh7G0Pp3LgXqf12OnyW30H9fIHr8
+         GhLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696429041; x=1697033841;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0iVKRRlivbZawLpQE+aqhCrFfCHAJWFRH4b1xYHHXmU=;
-        b=FSkMPU8ymFVrok/8rsb66dZX8R899D057eFvccGED9Xchzl+wKGr7NhMmJNMe7HL9c
-         RT2Pqc9z3gXb9U04Be3p79UC+eAC2WABPKo4B9gwbMKYUtv4FGEheOqkgHUr13AqTMBo
-         +dVwi5CsOXN3tpzZJL2OGlTH06d3UcpzIlQLaLP8xJDLTbnmAD5SvQeicP5vHdKeg+0a
-         9J/5fbOjoZikIf0cZl8DQlALBCbnnWOI/+Qgs6Yxd+h8spnNCLwsNVToEDtuZdOHzIRh
-         U300MG6djPX3WSIv7p2sIXcIaTts6kke4ed0Vi5gOoUSatoaHg9/NVHff9vgooV/F6mw
-         EkDw==
-X-Gm-Message-State: AOJu0YxuFiOiIxUXVROJQjOYhcbahhi/4b9iVjOc7PFHMse9CT89WvnS
-        RLE4KQqqhTBAhqFHuJKPCjKufA==
-X-Google-Smtp-Source: AGHT+IHwbweLrbblB6DFXPXXebkAKQNIMi3Tti+rzdpJw79HDk06ZZMQubaZZkRYtiU5APTTeVDCUg==
-X-Received: by 2002:a05:620a:454c:b0:773:b623:72f7 with SMTP id u12-20020a05620a454c00b00773b62372f7mr3286274qkp.50.1696429041546;
-        Wed, 04 Oct 2023 07:17:21 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:753d])
-        by smtp.gmail.com with ESMTPSA id g23-20020a05620a109700b007756736aee0sm1280773qkk.115.2023.10.04.07.17.21
+        d=1e100.net; s=20230601; t=1696429083; x=1697033883;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R6/TWL/5A64z3k0Lwl1E33nP72so44fTzxRPPV1CpcA=;
+        b=NaaNbVAGZ6/8EX8ScX1LMPoDqX6YA1wC61dQaL8xtTZ9nCLPe0ELGwWeIdENLLh8as
+         YatZUUCG2Jns5Qy2unoItKRL4sviFMGFMySyo9KHe5WQOuCfEQkV4E9mnweRODY0hRSu
+         QRI1vK1EvqPHsBwPAc6fqQ29qqAG1sgHWNNyd3AfWerLv+MqXNfen2cQgWC9DW5sSghb
+         PDIsE4+pPzqTnytSdE6uIXbSnOPNdena1aYVVaZNaQEf7rOfhxSFk7J/A+SiLHXGaRuU
+         G7nB8Jz6X0DywuTIQsry3SLCxuWbUMv5euC/0g26S5uMriZFsuwCP9ZbQZn38Ez8Q/FT
+         FmRw==
+X-Gm-Message-State: AOJu0Yxd7ThkvrzEXCjAz/a0YEBhR5IrKXpwUG0YicgnR8VendN6mgvF
+        WwiAU4TZqTJN3AInyxx2NAhQAg==
+X-Google-Smtp-Source: AGHT+IFZdENtnTfT/79Al2GkgFgZYzcroccNCoL23QouRO9oJfO6wYPYPzottJe9QhfLXLLHF1SUOA==
+X-Received: by 2002:a05:6808:23cd:b0:3a3:b39d:a8bf with SMTP id bq13-20020a05680823cd00b003a3b39da8bfmr3100444oib.45.1696429082602;
+        Wed, 04 Oct 2023 07:18:02 -0700 (PDT)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id dz14-20020a056808438e00b003a78d196acasm523761oib.32.2023.10.04.07.18.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 07:17:21 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 10:17:20 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, riel@surriel.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] memcontrol: only transfer the memcg data for migration
-Message-ID: <20231004141720.GA35281@cmpxchg.org>
-References: <20231003171329.GB314430@monkey>
- <20231003231422.4046187-1-nphamcs@gmail.com>
+        Wed, 04 Oct 2023 07:18:02 -0700 (PDT)
+From:   David Lechner <dlechner@baylibre.com>
+To:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev
+Cc:     David Lechner <dlechner@baylibre.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH] staging: iio: resolver: ad2s1210: fix return with lock held
+Date:   Wed,  4 Oct 2023 09:17:26 -0500
+Message-ID: <20231004-staging-iio-resolver-ad2s1210-fix-return-with-lock-held-v1-1-812b932997bd@baylibre.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003231422.4046187-1-nphamcs@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.12.3
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 04:14:22PM -0700, Nhat Pham wrote:
-> For most migration use cases, only transfer the memcg data from the old
-> folio to the new folio, and clear the old folio's memcg data. No
-> charging and uncharging will be done. These use cases include the new
-> hugetlb memcg accounting behavior (which was not previously handled).
-> 
-> This shaves off some work on the migration path, and avoids the
-> temporary double charging of a folio during its migration.
-> 
-> The only exception is replace_page_cache_folio(), which will use the old
-> mem_cgroup_migrate() (now renamed to mem_cgroup_replace_folio). In that
-> context, the isolation of the old page isn't quite as thorough as with
-> migration, so we cannot use our new implementation directly.
-> 
-> This patch is the result of the following discussion on the new hugetlb
-> memcg accounting behavior:
-> 
-> https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
-> 
-> Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Closes: https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+We missed a return statement in ad2s1210_initial() that would cause
+the lock to be held when returning an error.
 
-For squashing, the patch title should be:
+This is fixed by replacing the return with a goto to release the lock
+before returning.
 
-hugetlb: memcg: account hugetlb-backed memory in memory controller fix
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/r/202310030222.iokamE9T-lkp@intel.com/
+Fixes: 0d03d0e65846 ("staging: iio: resolver: ad2s1210: rework gpios")
+Signed-off-by: David Lechner <dlechner@baylibre.com>
+---
+ drivers/staging/iio/resolver/ad2s1210.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-However, I think this should actually be split out. It changes how all
-pages are cgroup-migrated, which is a bit too large of a side effect
-for the hugetlb accounting patch itself. Especially because the
-reasoning outlined above will get lost once this fixup is folded.
+diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
+index 98afd2e9ea41..67d8af0dd7ae 100644
+--- a/drivers/staging/iio/resolver/ad2s1210.c
++++ b/drivers/staging/iio/resolver/ad2s1210.c
+@@ -555,7 +555,7 @@ static int ad2s1210_initial(struct ad2s1210_state *st)
+ 	mutex_lock(&st->lock);
+ 	ret = ad2s1210_set_resolution_gpios(st, st->resolution);
+ 	if (ret < 0)
+-		return ret;
++		goto error_ret;
+ 
+ 	/* Use default config register value plus resolution from devicetree. */
+ 	data = FIELD_PREP(AD2S1210_PHASE_LOCK_RANGE_44, 1);
 
-IOW, send one prep patch, to go before the series, which splits
-mem_cgroup_replace_folio() and does the mem_cgroup_migrate()
-optimization() with the above explanation.
-
-Then send a fixlet for the hugetlb accounting patch that removes the
-!hugetlb-conditional for the mem_cgroup_migrate() call.
-
-If you're clear in the queueing instructions for both patches, Andrew
-can probably do it in-place without having to resend everything :)
-
-> +void mem_cgroup_migrate(struct folio *old, struct folio *new)
-> +{
-> +	struct mem_cgroup *memcg;
-> +
-> +	VM_BUG_ON_FOLIO(!folio_test_locked(old), old);
-> +	VM_BUG_ON_FOLIO(!folio_test_locked(new), new);
-> +	VM_BUG_ON_FOLIO(folio_test_anon(old) != folio_test_anon(new), new);
-> +	VM_BUG_ON_FOLIO(folio_nr_pages(old) != folio_nr_pages(new), new);
-> +
-> +	if (mem_cgroup_disabled())
-> +		return;
-> +
-> +	memcg = folio_memcg(old);
-> +	/*
-> +	 * Note that it is normal to see !memcg for a hugetlb folio.
-> +	 * It could have been allocated when memory_hugetlb_accounting was not
-> +	 * selected, for e.g.
-
-Is that sentence truncated?
-
-> +	 */
-> +	VM_WARN_ON_ONCE_FOLIO(!memcg, old);
-> +	if (!memcg)
-> +		return;
-
-If this is expected to happen, it shouldn't warn:
-
-VM_WARN_ON_ONCE(!folio_test_hugetlb(old) && !memcg, old);
+---
+base-commit: a533eeaef80e879b3ad1937eee7a43d1f9961c5d
+change-id: 20231004-staging-iio-resolver-ad2s1210-fix-return-with-lock-held-f547ce6fae49
