@@ -2,169 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 177617B8E43
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851597B8E47
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233727AbjJDUn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 16:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
+        id S233605AbjJDUop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 16:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233243AbjJDUn4 (ORCPT
+        with ESMTP id S233548AbjJDUon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 16:43:56 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CE5B8
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:43:53 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f7d109926so3333917b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:43:53 -0700 (PDT)
+        Wed, 4 Oct 2023 16:44:43 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FBAC6
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 13:44:40 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-41983b83e53so1320511cf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:44:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696452232; x=1697057032; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wlxMyVNfjSoRd0rBi0mcIrA81XFNXKxdXgwPCPKKi+c=;
-        b=H3oNnDSb1ptmSWlR1eGP4UzY4jKXo+IhvD8pqUNFPMBByPe825qdI2i05focHY1HCk
-         9YNkeCO6VtciiEAzWZ+peisMwXCu3jUWThy8DExH6SWBzRMp8SBXFI36LDjvJL04Ux6P
-         efXOsdwcfN4WhgeLvvZVmBqMGZFHqrp5cu2YlWn9lh3b3GxfRxvRHRNucaD9AcyhqvrC
-         F2zzubenazDDfJfdi3sPi4NtFZQdYFEYvMKjPNAN5T+uGqOXgeyu5ssEH8/mssUPEftM
-         O78pk3a8gXvcrKmrwX9KAetSYBk3JknJakBY55EAXzHBhIG9jc1bPX9unQxSvsfQmdQ6
-         WfmA==
+        d=chromium.org; s=google; t=1696452279; x=1697057079; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OsTHf1RxRwyrCT7iXJgHTlu9ULLERBCmiy3t5RYublw=;
+        b=ejpowT72cbHCwTCoyvwcjZx8IdYjV2Amscu1qZ3Nn7yKaLvTSp/2yYv9eJICAarjgh
+         ul1YFeWMCtKS9e6tJbz1/EGW8xjp9AsTAYO5E8Pk+Kad/U2P1psPbvuv+KUPipDXc7ca
+         A7xhTdF94WlCzlVhsgpUf7B5ezCaC/P29gYwA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696452232; x=1697057032;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wlxMyVNfjSoRd0rBi0mcIrA81XFNXKxdXgwPCPKKi+c=;
-        b=ZOjEUWyekY8nXN5Fe300eqqGAULA9m8KanyJlQQ0HSQSUMD3+R2Ver8VqLaET6eFnV
-         McHk5R7vFiApM9x0ZBYIY97GNbyOSYGvFlsPTKdd0h05fZaJciq0qR77fzgT92gvlN3Q
-         cjDR12fBjCbS1pPIfIpLauF80SNOA5STEvzz6JbQinlDQa0nTIvZKAiel/dlvp/uGVPL
-         mLTIUukfKo74JMKwDCD++m8Tz+z1pAn6txP3RaUUvDIW0AJaRugx0VmQSPnNZaIDsIKw
-         +e+wBL1FszX1rraqjqqmXMB/npiL+urlCeTp3V5F5QwATHvBzAzxe/w0mrUFSzkp6p0N
-         qTgg==
-X-Gm-Message-State: AOJu0Yz6+aOhp0jYpXcXCqDV6Uu0WF2ynBXw5GKX6EPdUAtYbLWrqYcl
-        2ik647zJA+W1HXyWNq1PV27ztPlfjK4=
-X-Google-Smtp-Source: AGHT+IG2BxIFzc18lhT+t5otGKsS7OX2vGezvKCEpmxGtv1UbKYti1bZa4/a2NuIvrXiOGhPcEgq5gnEBhw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:a909:0:b0:59b:e97e:f7e3 with SMTP id
- g9-20020a81a909000000b0059be97ef7e3mr63909ywh.2.1696452232294; Wed, 04 Oct
- 2023 13:43:52 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 13:43:50 -0700
-In-Reply-To: <CAL715WLbAnnGUiTdHPO0L7v2FHGa5qmTnWJDi8k9qVkGry5GGQ@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230927113312.GD21810@noisy.programming.kicks-ass.net>
- <ZRRl6y1GL-7RM63x@google.com> <20230929115344.GE6282@noisy.programming.kicks-ass.net>
- <ZRbxb15Opa2_AusF@google.com> <20231002115718.GB13957@noisy.programming.kicks-ass.net>
- <ZRrF38RGllA04R8o@gmail.com> <ZRroQg6flyGBtZTG@google.com>
- <20231002204017.GB27267@noisy.programming.kicks-ass.net> <ZRtmvLJFGfjcusQW@google.com>
- <CAL715WLbAnnGUiTdHPO0L7v2FHGa5qmTnWJDi8k9qVkGry5GGQ@mail.gmail.com>
-Message-ID: <ZR3Ohk50rSofAnSL@google.com>
-Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics event
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <likexu@tencent.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Lv Zhiyuan <zhiyuan.lv@intel.com>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Dunn <daviddunn@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="utf-8"
+        d=1e100.net; s=20230601; t=1696452279; x=1697057079;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OsTHf1RxRwyrCT7iXJgHTlu9ULLERBCmiy3t5RYublw=;
+        b=dvEgKKbinxyLn3Qr4aQD+H3p097c+M4Xc7HBnp9LNp4GwQ0awzv33ZrK/r9k+ptmMo
+         YTUGmy5qR3R37h/V263y1cK9LNmE4Vi3EFJQvQmNTshPALl+jl6QnMU3hRjMSvzLJDpG
+         U8ypuIkhug6BC7qJ0CDkO1zwjaVhX8cwW3Ocl0AHm8P5QfhwAW7FH8rfivgtQUwP0Mqg
+         z0rVnsKKVQe+RQxpLO+fPtw4T2qNhRECt72oD3b06mjbkpkUXASgjPmk7E4lguN+Ooq/
+         Vzv3X3ahRETxmMqlekyu9bJQUsdqz25A5PaTrjCCBrA+sN0OjzxT0CsgNqrgqXUorG97
+         GQ0A==
+X-Gm-Message-State: AOJu0YxXA59+boV3cqxduzPJ/dvsE2V5Op8fqDnm8yc2fXPKaT2nF24h
+        OIit49f+F7LnnpRPccN6MfID8IxSQUSQmsa5hUaYAg==
+X-Google-Smtp-Source: AGHT+IHc7TqC5oKuPmbxt1kOS8T9mt08qtsrKtF4I/TQ9q59kAv7XXZDPGfZr2V4UU7oH/oOurE+ww==
+X-Received: by 2002:a05:622a:548:b0:417:b45b:84c3 with SMTP id m8-20020a05622a054800b00417b45b84c3mr3723369qtx.65.1696452278792;
+        Wed, 04 Oct 2023 13:44:38 -0700 (PDT)
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com. [209.85.160.174])
+        by smtp.gmail.com with ESMTPSA id w28-20020a05620a149c00b0076ef29f3429sm1525839qkj.120.2023.10.04.13.44.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 13:44:37 -0700 (PDT)
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-419768e69dfso100171cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 13:44:37 -0700 (PDT)
+X-Received: by 2002:a05:622a:100e:b0:417:5a8c:a104 with SMTP id
+ d14-20020a05622a100e00b004175a8ca104mr69912qte.26.1696452277267; Wed, 04 Oct
+ 2023 13:44:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230928015858.1809934-1-linan666@huaweicloud.com>
+In-Reply-To: <20230928015858.1809934-1-linan666@huaweicloud.com>
+From:   Khazhy Kumykov <khazhy@chromium.org>
+Date:   Wed, 4 Oct 2023 13:44:26 -0700
+X-Gmail-Original-Message-ID: <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
+Message-ID: <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
+Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
+ throttle is enabled
+To:     linan666@huaweicloud.com
+Cc:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+        yukuai3@huawei.com, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linan122@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
+        yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023, Mingwei Zhang wrote:
-> On Mon, Oct 2, 2023 at 5:56=E2=80=AFPM Sean Christopherson <seanjc@google=
-.com> wrote:
-> > The "when" is what's important.   If KVM took a literal interpretation =
-of
-> > "exclude guest" for pass-through MSRs, then KVM would context switch al=
-l those
-> > MSRs twice for every VM-Exit=3D>VM-Enter roundtrip, even when the VM-Ex=
-it isn't a
-> > reschedule IRQ to schedule in a different task (or vCPU).  The overhead=
- to save
-> > all the host/guest MSRs and load all of the guest/host MSRs *twice* for=
- every
-> > VM-Exit would be a non-starter.  E.g. simple VM-Exits are completely ha=
-ndled in
-> > <1500 cycles, and "fastpath" exits are something like half that.  Switc=
-hing all
-> > the MSRs is likely 1000+ cycles, if not double that.
->=20
-> Hi Sean,
->=20
-> Sorry, I have no intention to interrupt the conversation, but this is
-> slightly confusing to me.
->=20
-> I remember when doing AMX, we added gigantic 8KB memory in the FPU
-> context switch. That works well in Linux today. Why can't we do the
-> same for PMU? Assuming we context switch all counters, selectors and
-> global stuff there?
+On Wed, Sep 27, 2023 at 7:05=E2=80=AFPM <linan666@huaweicloud.com> wrote:
+>
+> From: Li Nan <linan122@huawei.com>
+>
+> When the throttle of bps is not enabled, tg_bps_limit() returns U64_MAX,
+> which is be used in calculate_bytes_allowed(), and divide 0 error will
+> happen.
+>
+> To fix it, only calculate allowed value when the throttle of bps/iops is
+> enabled and the value will be used.
+>
+> Fixes: e8368b57c006 ("blk-throttle: use calculate_io/bytes_allowed() for =
+throtl_trim_slice()")
+> Reported-by: Changhui Zhong <czhong@redhat.com>
+> Closes: https://lore.kernel.org/all/CAGVVp+Vt6idZtxfU9jF=3DVSbu145Wi-d-Wn=
+AZx_hEfOL8yLZgBA@mail.gmail.com
+> Signed-off-by: Li Nan <linan122@huawei.com>
+> ---
+>  block/blk-throttle.c | 19 ++++++++++++-------
+>  1 file changed, 12 insertions(+), 7 deletions(-)
+>
+> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+> index 38a881cf97d0..3c9a74ab9f0e 100644
+> --- a/block/blk-throttle.c
+> +++ b/block/blk-throttle.c
+> @@ -730,8 +730,10 @@ static u64 calculate_bytes_allowed(u64 bps_limit, un=
+signed long jiffy_elapsed)
+>  static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
+>  {
+>         unsigned long time_elapsed;
+> -       long long bytes_trim;
+> -       int io_trim;
+> +       long long bytes_trim =3D 0;
+> +       int io_trim =3D 0;
+> +       u64 bps_limit;
+> +       u32 iops_limit;
+>
+>         BUG_ON(time_before(tg->slice_end[rw], tg->slice_start[rw]));
+>
+> @@ -758,11 +760,14 @@ static inline void throtl_trim_slice(struct throtl_=
+grp *tg, bool rw)
+>         if (!time_elapsed)
+>                 return;
+>
+> -       bytes_trim =3D calculate_bytes_allowed(tg_bps_limit(tg, rw),
+> -                                            time_elapsed) +
+> -                    tg->carryover_bytes[rw];
+> -       io_trim =3D calculate_io_allowed(tg_iops_limit(tg, rw), time_elap=
+sed) +
+> -                 tg->carryover_ios[rw];
+> +       bps_limit =3D tg_bps_limit(tg, rw);
+> +       iops_limit =3D tg_iops_limit(tg, rw);
+> +       if (tg->bytes_disp[rw] > 0 && bps_limit !=3D U64_MAX)
+I don't think this change is sufficient to prevent kernel crash, as a
+"clever" user could still set the bps_limit to U64_MAX - 1 (or another
+large value), which probably would still result in the same crash. The
+comment in mul_u64_u64_div_u64 suggests there's something we can do to
+better handle the overflow case, but I'm not sure what it's referring
+to. ("Will generate an #DE when the result doesn't fit u64, could fix
+with an __ex_table[] entry when it becomes an issue.") Otherwise, we
+probably need to remove the mul_u64_u64_div_u64 and check for
+overflow/potential overflow ourselves?
 
-That's what we (Google folks) are proposing.  However, there are significan=
-t
-side effects if KVM context switches PMU outside of vcpu_run(), whereas the=
- FPU
-doesn't suffer the same problems.
-
-Keeping the guest FPU resident for the duration of vcpu_run() is, in terms =
-of
-functionality, completely transparent to the rest of the kernel.  From the =
-kernel's
-perspective, the guest FPU is just a variation of a userspace FPU, and the =
-kernel
-is already designed to save/restore userspace/guest FPU state when the kern=
-el wants
-to use the FPU for whatever reason.  And crucially, kernel FPU usage is exp=
-licit
-and contained, e.g. see kernel_fpu_{begin,end}(), and comes with mechanisms=
- for
-KVM to detect when the guest FPU needs to be reloaded (see TIF_NEED_FPU_LOA=
-D).
-
-The PMU is a completely different story.  PMU usage, a.k.a. perf, by design=
- is
-"always running".  KVM can't transparently stop host usage of the PMU, as d=
-isabling
-host PMU usage stops perf events from counting/profiling whatever it is the=
-y're
-supposed to profile.
-
-Today, KVM minimizes the "downtime" of host PMU usage by context switching =
-PMU
-state at VM-Enter and VM-Exit, or at least as close as possible, e.g. for L=
-BRs
-and Intel PT.
-
-What we are proposing would *significantly* increase the downtime, to the p=
-oint
-where it would almost be unbounded in some paths, e.g. if KVM faults in a p=
-age,
-gup() could go swap in memory from disk, install PTEs, and so on and so for=
-th.
-If the host is trying to profile something related to swap or memory manage=
-ment,
-they're out of luck.
+Khazhy
+> +               bytes_trim =3D calculate_bytes_allowed(bps_limit,
+> +                            time_elapsed) + tg->carryover_bytes[rw];
+> +       if (tg->io_disp[rw] > 0 && iops_limit !=3D UINT_MAX)
+> +               io_trim =3D calculate_io_allowed(iops_limit, time_elapsed=
+) +
+> +                         tg->carryover_ios[rw];
+>         if (bytes_trim <=3D 0 && io_trim <=3D 0)
+>                 return;
+>
+> --
+> 2.39.2
+>
