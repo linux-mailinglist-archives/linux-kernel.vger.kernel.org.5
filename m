@@ -2,53 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0757B7B20
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FC07B7B26
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241977AbjJDJGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
+        id S241943AbjJDJHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242170AbjJDJGh (ORCPT
+        with ESMTP id S241959AbjJDJHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:06:37 -0400
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072DF1732;
-        Wed,  4 Oct 2023 02:06:06 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VtMf2lx_1696410362;
-Received: from 30.13.48.40(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VtMf2lx_1696410362)
-          by smtp.aliyun-inc.com;
-          Wed, 04 Oct 2023 17:06:03 +0800
-Message-ID: <e3819550-7b10-4f9c-7347-dcf1f97b8e6b@linux.alibaba.com>
-Date:   Wed, 4 Oct 2023 17:05:57 +0800
+        Wed, 4 Oct 2023 05:07:36 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A158EBD
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:07:30 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d857c8a1d50so1924072276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:07:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696410450; x=1697015250; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=30QXTNHFmVF6SpQ7YlpsZSTCTRsGylbFUGk24eHz+aQ=;
+        b=reY45Im0qe7C1p0eVqG+uAf8Q0mGZz8Tu4etEToNSRtmPT1rjkrQvifGEd7LN6eYIt
+         H2nam9SpXVBMoGWFfJUqcAkyplULzZtIMc9fR/QOzWa4ecHl/Ty3fTSsxBSX5Vp+DJqE
+         6Tv5Kl8hf5RuZW7Jmhwal20VrDh4yUQ2UfA8p/UN5qUwpeX2tgGLcRa4PikgcI6n/MSq
+         f3a6qO5bLt3x1JGJyZkEPSS8xLAoeHkPTaaDbhd3D+3tk4MQk6z9vCq6Scay5aFIWnql
+         sHoX/gxXm15/swdfTVC1qZegqJ5Yi8I02n0R61MLUjhYD6sX5DtoYdHcQWzPBO/N67+t
+         VwDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696410450; x=1697015250;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=30QXTNHFmVF6SpQ7YlpsZSTCTRsGylbFUGk24eHz+aQ=;
+        b=grQlZnjHpyoYp6dFzTBolz0cfC3q7EWQGPOE9wqS7XY+fMJt/orWp0eqZzKKlnCE7o
+         AnVAeBFlcv0keBgpE69+pqyU5VIIfn29CV8Ka8gyeJPslE9vPsbUifvd9uC6tOPnCthw
+         ashUqL86jMAQS7W388OMvueQ34DbCMBJ+bfU5WbCk+8ByOIa9bfVV/l03rOVuKFsmJTQ
+         N/1OIcG81U5uY2/wD0B+GcSalea4IJzMJkaPtaErbCeIeAFXuKmNVpF7GJSYHD0HClGk
+         eCxMSGGDwdHIl+TcmXx1c1O/d68VhiXcnKJ66vZPL7OwQFpGi+MVsIJtyVEhrbnRbVaw
+         C5ZA==
+X-Gm-Message-State: AOJu0YxHm/oKuST6BqqE+D2/rudo9aTvLW0YqIfjQNB6/1mkXI+gQkWI
+        v29ZPvfDvIajUkJDY4LgGGblQh0h86EfIvXhcIJh4g==
+X-Google-Smtp-Source: AGHT+IEmqGv1gndYtcBCVwRO6QrBOeQP+Ksc6AKOg+uW2eEpuec3RZTc95O8aRBvCaLdNmMa4e+UfMJSQ1UENi56gtM=
+X-Received: by 2002:a25:dbc2:0:b0:d84:90c5:4e1f with SMTP id
+ g185-20020a25dbc2000000b00d8490c54e1fmr1433778ybf.63.1696410449825; Wed, 04
+ Oct 2023 02:07:29 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v4 09/18] net/smc: introduce SMC-D loopback
- device
-To:     Alexandra Winter <wintera@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>, dust.li@linux.alibaba.com,
-        kgraul@linux.ibm.com, wenjia@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     schnelle@linux.ibm.com, gbayer@linux.ibm.com, pasic@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+References: <20230925131715.138411-1-ulf.hansson@linaro.org>
+ <20230925131715.138411-7-ulf.hansson@linaro.org> <CAPDyKFo+XCEtTSNqtA1SeajWo4tuRroA4GrRegta5TsqSGd4eQ@mail.gmail.com>
+ <20231003082322.cmok766jxzftsgrg@vireshk-i7> <CAPDyKForAJfdqqpkAP0vwZFAtSAtGMyqChLVr96v7PDWRj2qzw@mail.gmail.com>
+ <20231004050427.e3aalotrtpvld6rk@vireshk-i7>
+In-Reply-To: <20231004050427.e3aalotrtpvld6rk@vireshk-i7>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 4 Oct 2023 11:06:53 +0200
+Message-ID: <CAPDyKFqDKtCDVMFa=Man1EOEkXt8COg4cRcVStdKfUFOTG9BdA@mail.gmail.com>
+Subject: Re: [PATCH 6/9] OPP: Extend support for the opp-level beyond required-opps
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
- <1695568613-125057-10-git-send-email-guwen@linux.alibaba.com>
- <3febdf3e-e213-7acf-7dd4-75d177676c3e@linux.ibm.com>
- <20230925151816.GC92403@linux.alibaba.com>
- <3f71928e-157a-748e-42ee-4de3c80ed109@linux.ibm.com>
- <e85fe903-a025-a693-906b-834ff2a2a812@linux.ibm.com>
- <22858b56-dee0-e65f-a698-b0f2090a872d@linux.alibaba.com>
- <c2117ecb-466c-cc45-04c5-f12adedec217@linux.ibm.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <c2117ecb-466c-cc45-04c5-f12adedec217@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,126 +78,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 4 Oct 2023 at 07:04, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 03-10-23, 14:36, Ulf Hansson wrote:
+> > Can you please explain further on this. Rafael has acked those
+> > patches, so it should be perfectly fine for you to pick them via your
+> > tree too. There is no need to defer them.
+>
+> Ahh, then it is fine.
+>
+> > > I will then push out a branch and you can
+> > > rebase your patches on top of it ? And then probably Sudeep or someone else can
+> > > apply everything ?
+> >
+> > Or are you suggesting to just take one of the patches from my series,
+> > and then I will re-base everything on top?
+> >
+> > Just trying to understand the way forward. :-)
+>
+> Applied patches 1-6/9 and the fixed routine looks like this now:
+>
+> +static int _set_opp_level(struct device *dev, struct opp_table *opp_table,
+> +                         struct dev_pm_opp *opp)
+> +{
+> +       unsigned int level = 0;
+> +       int ret = 0;
+> +
+> +       if (opp) {
+> +               if (!opp->level)
+> +                       return 0;
+> +
+> +               level = opp->level;
+> +       }
+> +
+> +       /* Request a new performance state through the device's PM domain. */
+> +       ret = dev_pm_domain_set_performance_state(dev, level);
+> +       if (ret)
+> +               dev_err(dev, "Failed to set performance state %u (%d)\n", level,
+> +                       ret);
+> +
+> +       return ret;
+> +}
+>
+> Does it look okay now ?
 
-On 2023/9/29 22:08, Alexandra Winter wrote:
-> 
-> 
-> On 28.09.23 20:35, Wen Gu wrote:
->>
->>
->> On 2023/9/28 11:16, Jan Karcher wrote:
->>>
->>>
->>> On 26/09/2023 09:24, Alexandra Winter wrote:
->>>>
->>>>
->>>> On 25.09.23 17:18, Dust Li wrote:
->>>>>> Hello Wen Gu,
->>>>>>
->>>>>> thank you for adding the Kconfig, so the distributions can decide when to offer this feature.
->>>>>>
->>>>>> I propose you add some kind of runtime switch as well. Not every user who loads the SMC module
->>>>>> may want to exploit smcd-loopback. Especially in native environements without containers.
->>>>>>
->>>>>> If no RoCE interfaces or no ISM interfaces exist, the respective handling is skipped in SMC.
->>>>>> If loopback is always created unconditionally, there is no way to opt-out.
->>>>> Hi Sandy,
->>>>>
->>>>> After talking to Wen Gu offline, I think the real issue here might be
->>>>> we don't have an abstract layer in SMC, something like net/core/dev.c
->>>>>
->>>>> Without this, we cannot do:
->>>>>
->>>>> 1. Enable/disable those devices dynamically
->>>>>      Currently, If we want to disable a SMC-R device to communicate with
->>>>>      others, we need to refer to 'ip link set dev xxx down' to disable the
->>>>>      netdevice, then Infiniband subsystem will notify SMC that the state of
->>>>>      the IB device has changed. We cannot explicitly choose not to use some
->>>>>      specific IB/RoCE devices without disable totally.
->>>>>      If the loopback device need to support enable/disable itself, I
->>>>>      think it might be better to enable this feature for all SMC devices.
->>>>>
->>>>> 2. Do statistics per device
->>>>>      Now, we have to relay on IB/RoCE devices' hardware statistics to see
->>>>>      how many packets/bytes we have sent through this device.
->>>>>
->>>>> Both the above issues get worse when the IB/RoCE device is shared by SMC
->>>>> and userspace RDMA applications. If SMC-R and userspace RDMA applications
->>>>> run at the same time, we can't enable the device to run userspace RDMA
->>>>> applications while block it from running SMC. For statistics, we cannot
->>>>> tell how many packets/bytes were sent by SMC and how many were sent by
->>>>> userspace RDMA applications.
->>>>>
->>>>> So I think those are better to support in the SMC layer.
->>>>>
->>>>> Best regards!
->>>>> Dust
->>>>
->>>> Thank you very much for your considerations. I also think a generic handling
->>>> of these requirements in the smc layer would be best. Especially, if we want
->>>> to add virtio-ism support soon. There we will face the same issues again.
->>>> Let's hear what others think about this.
->>>>
->>>>
->>>
->>> Thanks you Sandy for bringing it up and Dust Li & Wen Gu for your thoughts.
->>> I agree that such a runtime switch is needed and also that this generic handling would be good in the smc layer.
->>
->> Right. runtime switch is necessary. I'm trying some ways to see which one is more suitable.
->>
->>
->> As for implementing a abstract layer that capable of handling 1) enable/disable SMC usage of
->> RDMA/ISM devices. 2) count packets/bytes of RDMA/ISM devices that generated/consumed by SMC,
->> I believe it would be helpful, and IMHO its architecture may be:
->>
->> ----------------------------------------------
->>                    SMC protocol
->>      (af_smc.c / smc_core.c / smc_clc.c ...)
->> ----------------------------------------------
->>            Abstract layer of SMC device
->>        (define SMC device common operations)
->> ----------------------------------------------
->>    RDMA device |        (virt) ISM device
->>    (smc_ib.c)  |   (smc_ism.c / smc_loopback.c)
->> ----------------------------------------------
->>
->> But I also believe this may require a lot of works and may be a long-term job.
->>
-> 
-> I like that concept a lot. If we can agree on a direction, we can define
-> meaningful pieces and approach it piece by piece.
-> 
+Yes, perfect! Thanks for helping out!
 
-Yes. It can be added to our interlock's backup list.
-
-> 
->> If only for the virtual ISM device, e.g.loopback-ism, I am considering adding it to the Linux
->> device tree (/sys/devices/virtual/) to make it more 'device-like', and controlling its
->> enable/disable and get the statistics through some files, such as
->> echo 1 > /sys/devices/virtual/loopback-ism/alive
->> or
->> cat /sys/devices/virtual/loopback-ism/statistics/{rx|tx}_{bytes|packets}
->> (similar to what tcp lo have in /sys/devices/virtual/net/lo)
->>
->> What are your thoughts on it? Thanks.
->>
-> 
-> Makes sense to me, but I don't have too much experience in that area.
-> I have never seen an attribute called 'alive' before.
-> I think attributes like 'power', 'enable' or 'online' are used for other device types.
-> 
-
-Thanks. I will refer to existing devices for reference.
-
->>
->> -- 
->> A little off-topic, it's currently China's National Day holiday, which lasts for about a week,
->> so we are now on vacation. As a result, my responses might be a bit slower, but I will still
->> make time to check/reply the mail and prepare for my new version. Thank you all very much!
->>
->> Regards,
->> Wen Gu
-> 
-> Next week is Germany's national holiday, so many of us are out as well.
-
-Have a nice holiday! :)
+Kind regards
+Uffe
