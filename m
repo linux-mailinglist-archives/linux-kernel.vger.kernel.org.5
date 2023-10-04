@@ -2,107 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 250647B83DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345107B83E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242970AbjJDPmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
+        id S242942AbjJDPmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242939AbjJDPmH (ORCPT
+        with ESMTP id S233775AbjJDPmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:42:07 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97969C4;
-        Wed,  4 Oct 2023 08:42:03 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso4317502a12.3;
-        Wed, 04 Oct 2023 08:42:03 -0700 (PDT)
+        Wed, 4 Oct 2023 11:42:16 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07752D7;
+        Wed,  4 Oct 2023 08:42:13 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-57b74782be6so1294919eaf.2;
+        Wed, 04 Oct 2023 08:42:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696434122; x=1697038922; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OvjVzPTGCtL4oqLjVzkbN/IxKpJGIvUtgYCPF8tas/Y=;
-        b=aCDp8/DjCA1fhiF4Kxe9okno+cYJ3o7ATaG8McEbdBefziLj0n5X+aEZ5aw7FCU+wB
-         CY3M2kpuB6jcnv92f2v5qHQqWOYOhs7JlJUMMdeY8x2a++ABbsFCproMVAbzjWtrDXtB
-         Ps+wCnmhV+2PhEJvWKwLl47fDaTZSgK3aR8nKCLY5Elp4LtjbhiDLOQN3Ax/LcWLEf4g
-         Y9aHLlIKF76wolSMBI+nRKgfXiuhWsOQAjJSCgvL1fikWd1FAFre0whl+ihTN5zDiD9R
-         YOFbBdfPK4UVsTHFMBiT67R0KZh/OjSqJF5CtD84BtcThLEx7Z07KECxRrJzm29oUh/N
-         2TeQ==
+        d=gmail.com; s=20230601; t=1696434132; x=1697038932; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WnxaBYdRGKVgJldzBvlLszd95TgiOglWQuyS4MNphf0=;
+        b=JkLUUjhU0GuUBAvofFTHDBuggUKVXkr9S8Z8+QJ4bo57dtuKA3b5KYCnV359GKtceo
+         4xPeHnk6HXwqUxjL+u2Ff4veQHMY/8kwIqQveUnzi+9gKz54MGzH0CIW9enrZYDUU++q
+         g1xY5NpBRsSc6n1zQAPJxr0JEnoGxlV2o0ehToxIQ9OaMeNRSWOeYbNRLvvzrH6+Qjkc
+         GNrHGTbWrbFklwyY2IgAr+BaaPQGjdhHLUTESBy85U159TWZCOmR7C/0lK2ijKp0wQ2R
+         qc56yPTx4uWtTVwReVhGs4Y+xUdDDzfT3TgFCzggJQVsqkxZxF+HzYMN8EByGD8gk1DV
+         CLJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696434122; x=1697038922;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696434132; x=1697038932;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OvjVzPTGCtL4oqLjVzkbN/IxKpJGIvUtgYCPF8tas/Y=;
-        b=SALC5b6x2zM9gLPlBcKAZjYgDGGODYo5HUw8pQejtTMbq7pkL/KPS3JyK3I9HD448R
-         lp2WPq4suYtfculq1m2XCfG59YttUNzJczOmguYHPxV0hqudEIynZpuDrq6UkjWMRooV
-         3J9U44Wmw89Jbffeld0MU3sy2GkDgi+BrEFes4IPXh6NUDv0WY0Tl3B/kVggPosWE2yz
-         mUfBnZsns2CxsD2QN0jDYS0SMvV1YkT4dC6wSrJyjFjK9FMK3pvq5AfplyQLVFc591jP
-         jTzOtiC+kbbZfJULD8P5cN1+MkWdZXn2OSiKk2J626JJXX7Ca68jHa+GG2eMSILsRWgU
-         jIGg==
-X-Gm-Message-State: AOJu0YwAYaJn156JpZJHi2l+CCEBjCe/xuhR6t+Y8AC+rlA1Tp2O++Nv
-        VdC7B2c5Q4KimMgE1em1Z7c=
-X-Google-Smtp-Source: AGHT+IGfJFMYoivdUNueBocO55E3i4Zz7heVKHr5RK9bEhFnP8nhzI0EgR5qAPSBRSDPWCwTb+ikrg==
-X-Received: by 2002:a05:6402:350:b0:534:1e2a:d966 with SMTP id r16-20020a056402035000b005341e2ad966mr2549746edw.11.1696434121765;
-        Wed, 04 Oct 2023 08:42:01 -0700 (PDT)
-Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
-        by smtp.gmail.com with ESMTPSA id g20-20020aa7d1d4000000b00536159c6c45sm43431edp.15.2023.10.04.08.42.00
+        bh=WnxaBYdRGKVgJldzBvlLszd95TgiOglWQuyS4MNphf0=;
+        b=hZ5483NRBzJufhDjXuMc5efDiCJMZjSEt160p+OghrTd/suK5KEXXrw+vVKQ0uaP7/
+         EPHiamkyIXo5VXCNIGoeO/x5sl1wPFHLc0iRysXUEBIlJEHgE6R92LgP/LvDwAo0AjLB
+         hfI53R0262Nq3Lefw1EnZIWiINXJo36SEuU3Z/NRj7/gonHOzWo8q/WxkCddfVOpmTmL
+         3O/VbWUGk6EjMcsAwJTV1GY1UjTCtD/IO3EU4zEiEuz0Cn1MROtOXRz7sX6tgaIiIRKg
+         p7npFF6MIt56SFi0HtghpBsj1EaKOqK7UFYztVs09luM7F+E5rQnJz7gDu20JVNg8O8R
+         BwKw==
+X-Gm-Message-State: AOJu0YyDXHdIGXprGEy0Hmksapjz5XGULSzCsqGabYhdJqOJjQSolkLX
+        MBibWem8L0Ed+nCgaAhjJ5JMOpsvW/izdA==
+X-Google-Smtp-Source: AGHT+IEQbM2bZQBMikxUSN8+tNBqkEpBzn/Q1qrIXW/53+hljMBT5wP0e0XQ6KwfcYnOIkCY6UfnuA==
+X-Received: by 2002:a05:6820:220e:b0:56c:cd0c:1d67 with SMTP id cj14-20020a056820220e00b0056ccd0c1d67mr2315269oob.7.1696434131744;
+        Wed, 04 Oct 2023 08:42:11 -0700 (PDT)
+Received: from localhost.localdomain ([122.8.183.87])
+        by smtp.gmail.com with ESMTPSA id f65-20020a4a5844000000b0057dd74ad3casm672580oob.41.2023.10.04.08.42.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 08:42:01 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 4 Oct 2023 17:41:59 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jianlin Li <ljianlin99@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patch in the tip tree
-Message-ID: <ZR2Hx7ILfxU3q/E+@gmail.com>
-References: <20231004133306.3285d8de@canb.auug.org.au>
- <874jj64iol.fsf@meer.lwn.net>
+        Wed, 04 Oct 2023 08:42:11 -0700 (PDT)
+From:   Chen Wang <unicornxw@gmail.com>
+To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+        devicetree@vger.kernel.org, guoren@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, apatel@ventanamicro.com
+Cc:     Chen Wang <unicorn_wang@outlook.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 03/10] dt-bindings: riscv: add sophgo sg2042 bindings
+Date:   Wed,  4 Oct 2023 23:42:03 +0800
+Message-Id: <c8107a1ef18071ee6555a2368567f3554a673f97.1696433229.git.unicorn_wang@outlook.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1696433229.git.unicorn_wang@outlook.com>
+References: <cover.1696433229.git.unicorn_wang@outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874jj64iol.fsf@meer.lwn.net>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Chen Wang <unicorn_wang@outlook.com>
 
-* Jonathan Corbet <corbet@lwn.net> wrote:
+Add DT binding documentation for the SOPHGO's SG2042 Soc [1] and the
+Milk-V Pioneer board [2].
 
-> Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> 
-> > Hi all,
-> >
-> > The following commit is also in the jc_docs tree as a different commit
-> > (but the same patch):
-> >
-> >   c53cbc54ccff ("x86/iommu/docs: Update AMD IOMMU specification document URL")
-> >
-> > This is commit
-> >
-> >   73c5f76ecbdb ("x86/iommu/docs: Update AMD IOMMU specification document URL")
-> >
-> > in the jc_docs tree.
-> 
-> Hmm...I thought I even checked for that.  No worries, I can drop my
-> copy.
+Link: https://en.sophgo.com/product/introduce/sg2042.html [1]
+Link: https://milkv.io/pioneer [2]
 
-I'm pretty sure it was me who added the duplicate - sorry about that!
+Acked-by: Chao Wei <chao.wei@sophgo.com>
+Reviewed-by: Guo Ren <guoren@kernel.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
+---
+ .../devicetree/bindings/riscv/sophgo.yaml     | 28 +++++++++++++++++++
+ MAINTAINERS                                   |  6 ++++
+ 2 files changed, 34 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/riscv/sophgo.yaml
 
-Thanks,
+diff --git a/Documentation/devicetree/bindings/riscv/sophgo.yaml b/Documentation/devicetree/bindings/riscv/sophgo.yaml
+new file mode 100644
+index 000000000000..8adb5f39ca53
+--- /dev/null
++++ b/Documentation/devicetree/bindings/riscv/sophgo.yaml
+@@ -0,0 +1,28 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/riscv/sophgo.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Sophgo SoC-based boards
++
++maintainers:
++  - Chao Wei <chao.wei@sophgo.com>
++  - Chen Wang <unicorn_wang@outlook.com>
++
++description:
++  Sophgo SoC-based boards
++
++properties:
++  $nodename:
++    const: '/'
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - milkv,pioneer
++          - const: sophgo,sg2042
++
++additionalProperties: true
++
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 90f13281d297..97cb8abcfeee 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -20063,6 +20063,12 @@ F:	drivers/char/sonypi.c
+ F:	drivers/platform/x86/sony-laptop.c
+ F:	include/linux/sony-laptop.h
+ 
++SOPHGO DEVICETREES
++M:	Chao Wei <chao.wei@sophgo.com>
++M:	Chen Wang <unicorn_wang@outlook.com>
++S:	Maintained
++F:	Documentation/devicetree/bindings/riscv/sophgo.yaml
++
+ SOUND
+ M:	Jaroslav Kysela <perex@perex.cz>
+ M:	Takashi Iwai <tiwai@suse.com>
+-- 
+2.25.1
 
-	Ingo
