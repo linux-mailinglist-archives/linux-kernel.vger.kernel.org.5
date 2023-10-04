@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D677B7D50
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0637B7D4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241906AbjJDKh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
+        id S242129AbjJDKiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232879AbjJDKh5 (ORCPT
+        with ESMTP id S232982AbjJDKh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Oct 2023 06:37:57 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515D4AF;
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3917BA1;
         Wed,  4 Oct 2023 03:37:53 -0700 (PDT)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 394AEoCZ026784;
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 394A3870022388;
         Wed, 4 Oct 2023 12:37:30 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=selector1; bh=CpI7neB
-        XhCSjFx6tMjeMOMf+DEVU5RTw/WINZZr8x8k=; b=FqfspHoPTMg+H9TBxgX/CzP
-        VNndxrfDVRa6vRMPU6nwgIXSd+U8PcGRsqkPZHK5dFOzoMmyflPjedA2mgruxcJZ
-        pYvUIj5V+k97SEde0mkLRy32PHpx+ZSBgsE5s0V5n2xcM4ncc0wXPYX96HY5Pp6i
-        sCp/JCVyyITge+04lBPa1sKNYuq2NJ3eK6xCcvnsl2ixgg5mcM+Rcbxbuse8T2Us
-        YaV94BKrXQn+AiOmPs1kdCnkIhbovL2GI6aeBKiaeldxJOeBY3akHUohKj5zx0so
-        e0EYyVN9DpdL1pBiPVJmljU6T8ePUo/J5a0/DJqSIKiNWzWNRDyc7fK84hrxuag=
-        =
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        selector1; bh=z7mZwxfo000nV9RjYsAl7O2aw4iXhCX5I97+YBsYwPk=; b=Lb
+        XHaCkrv+OuptTlA+Ed2/zsXTOrN+/DtLmmYC9+H6Dd2FvZymJbRO0bN9vfulyAru
+        O36EwPE5rjPq4D3h0Ih1snITE6Qn42Fs0yDZMEV0iqkPufIwX7sYaxhz3u3ZF/io
+        GBhJlaotuagSrapkia8OZuXRjTnAihouHFVMnAHLdIneMFDFKYrggAoU90l60eA4
+        N0uCDtvXI+XS8LgJD/jDdQuQdowkXv53yBemMF0cX1XGfgORWNc93rWMgDkjoB69
+        K+OCmZ+Lbu5tPi/j+rYekeks9wXQIn/N1GqzPg1OQ9GIHM+e1IsGSXw9rl6hw5fg
+        ftQxKQrze7J1w2pQCOew==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tew80p71d-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3texmj69fe-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 12:37:29 +0200 (MEST)
+        Wed, 04 Oct 2023 12:37:30 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1C0B1100053;
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EFDF9100057;
         Wed,  4 Oct 2023 12:37:28 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0CDEC231510;
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E36E7231518;
         Wed,  4 Oct 2023 12:37:28 +0200 (CEST)
 Received: from localhost (10.201.20.120) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 4 Oct
- 2023 12:37:27 +0200
+ 2023 12:37:28 +0200
 From:   Hugues Fruchet <hugues.fruchet@foss.st.com>
 To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
         Philipp Zabel <p.zabel@pengutronix.de>,
@@ -69,10 +69,12 @@ To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
 CC:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
         Marco Felsch <m.felsch@pengutronix.de>,
         Adam Ford <aford173@gmail.com>
-Subject: [RFC 0/6] VP8 H1 stateless encoding
-Date:   Wed, 4 Oct 2023 12:37:14 +0200
-Message-ID: <20231004103720.3540436-1-hugues.fruchet@foss.st.com>
+Subject: [RFC 1/6] media: uapi: Add VP8 stateless encoder controls
+Date:   Wed, 4 Oct 2023 12:37:15 +0200
+Message-ID: <20231004103720.3540436-2-hugues.fruchet@foss.st.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231004103720.3540436-1-hugues.fruchet@foss.st.com>
+References: <20231004103720.3540436-1-hugues.fruchet@foss.st.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -82,8 +84,8 @@ X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-04_02,2023-10-02_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,67 +93,223 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-Here is an RFC to support VP8 encoding using Hantro H1 hardware
-of STM32MP25 SoCs (Verisilicon VC8000NanoE IP).
-This work is derived from work done to support Rockchip RK3399
-VPU2 in RFC [1] with a reshuffling of registers to match H1
-register set.
+Add uAPI for stateless VP8 encoders.
 
-This has been tested on STM32MP257F-EV1 evaluation board using
-GStreamer userspace [2]:
-gst-launch-1.0 videotestsrc num-buffers=500 ! video/x-raw,width=640,height=480 \
-! v4l2slvp8enc ! queue ! matroskamux ! filesink location=test_vp8.mkv
+Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+---
+ drivers/media/v4l2-core/v4l2-ctrls-core.c | 13 ++++
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c |  5 ++
+ include/media/v4l2-ctrls.h                |  2 +
+ include/uapi/linux/v4l2-controls.h        | 91 +++++++++++++++++++++++
+ include/uapi/linux/videodev2.h            |  3 +
+ 5 files changed, 114 insertions(+)
 
-For the sake of simplicity I have embedded here the RFC [1] before the
-changes related to this exact RFC, all rebased on v6.6 + STM32MP25
-hardware codecs support [3].
-
-[1] https://lwn.net/ml/linux-media/20230309125651.23911-1-andrzej.p@collabora.com/
-[2] https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3736
-[3] https://patchwork.kernel.org/project/linux-media/list/?series=789861
-
-Best regards,
-Hugues.
-
-
-Andrzej Pietrasiewicz (2):
-  media: uapi: Add VP8 stateless encoder controls
-  media: hantro: add VP8 encode support for Rockchip RK3399 VPU2
-
-Hugues Fruchet (4):
-  media: hantro: add h1 vp8 encode support
-  media: hantro: add VP8 encode support for STM32MP25 VENC
-  media: hantro: h1: NV12 single-plane support
-  media: hantro: add NV12 single-plane support for STM32MP25 VENC
-
- drivers/media/platform/verisilicon/Makefile   |    3 +
- drivers/media/platform/verisilicon/hantro.h   |   10 +
- .../platform/verisilicon/hantro_boolenc.c     |   69 +
- .../platform/verisilicon/hantro_boolenc.h     |   21 +
- .../media/platform/verisilicon/hantro_drv.c   |   15 +-
- .../platform/verisilicon/hantro_h1_jpeg_enc.c |   42 +-
- .../platform/verisilicon/hantro_h1_regs.h     |   71 +-
- .../platform/verisilicon/hantro_h1_vp8_enc.c  | 1589 +++++++++++++++++
- .../media/platform/verisilicon/hantro_hw.h    |   93 +
- .../media/platform/verisilicon/hantro_v4l2.c  |    5 +-
- .../media/platform/verisilicon/hantro_vp8.c   |  118 ++
- .../verisilicon/rockchip_vpu2_hw_vp8_enc.c    | 1574 ++++++++++++++++
- .../platform/verisilicon/rockchip_vpu2_regs.h |    1 +
- .../platform/verisilicon/rockchip_vpu_hw.c    |   23 +-
- .../platform/verisilicon/stm32mp25_venc_hw.c  |   35 +-
- drivers/media/v4l2-core/v4l2-ctrls-core.c     |   13 +
- drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    5 +
- include/media/v4l2-ctrls.h                    |    2 +
- include/uapi/linux/v4l2-controls.h            |   91 +
- include/uapi/linux/videodev2.h                |    3 +
- 20 files changed, 3755 insertions(+), 28 deletions(-)
- create mode 100644 drivers/media/platform/verisilicon/hantro_boolenc.c
- create mode 100644 drivers/media/platform/verisilicon/hantro_boolenc.h
- create mode 100644 drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
- create mode 100644 drivers/media/platform/verisilicon/rockchip_vpu2_hw_vp8_enc.c
-
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+index a662fb60f73f..c7799ceb3d6d 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+@@ -811,6 +811,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+ 	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+ 	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
+ 	struct v4l2_ctrl_hevc_decode_params *p_hevc_decode_params;
++	struct v4l2_ctrl_vp8_encode_params *p_vp8_encode_params;
+ 	struct v4l2_area *area;
+ 	void *p = ptr.p + idx * ctrl->elem_size;
+ 	unsigned int i;
+@@ -1047,6 +1048,15 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+ 		zero_padding(p_vp8_frame->coder_state);
+ 		break;
+ 
++	case V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS:
++		p_vp8_encode_params = p;
++		if (p_vp8_encode_params->loop_filter_level > 63)
++			return -EINVAL;
++
++		if (p_vp8_encode_params->sharpness_level > 7)
++			return -EINVAL;
++		break;
++
+ 	case V4L2_CTRL_TYPE_HEVC_SPS:
+ 		p_hevc_sps = p;
+ 
+@@ -1868,6 +1878,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+ 	case V4L2_CTRL_TYPE_AREA:
+ 		elem_size = sizeof(struct v4l2_area);
+ 		break;
++	case V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS:
++		elem_size = sizeof(struct v4l2_ctrl_vp8_encode_params);
++		break;
+ 	default:
+ 		if (type < V4L2_CTRL_COMPOUND_TYPES)
+ 			elem_size = sizeof(s32);
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+index 8696eb1cdd61..bd26f1d89bd5 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+@@ -1236,6 +1236,8 @@ const char *v4l2_ctrl_get_name(u32 id)
+ 	case V4L2_CID_STATELESS_AV1_TILE_GROUP_ENTRY:		return "AV1 Tile Group Entry";
+ 	case V4L2_CID_STATELESS_AV1_FRAME:			return "AV1 Frame Parameters";
+ 	case V4L2_CID_STATELESS_AV1_FILM_GRAIN:			return "AV1 Film Grain";
++	case V4L2_CID_STATELESS_VP8_ENCODE_PARAMS:		return "VP8 Encode Parameters";
++	case V4L2_CID_STATELESS_VP8_ENCODE_QP:			return "VP8 Encode QP";
+ 
+ 	/* Colorimetry controls */
+ 	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
+@@ -1592,6 +1594,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+ 	case V4L2_CID_STATELESS_AV1_FILM_GRAIN:
+ 		*type = V4L2_CTRL_TYPE_AV1_FILM_GRAIN;
+ 		break;
++	case V4L2_CID_STATELESS_VP8_ENCODE_PARAMS:
++		*type = V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS;
++		break;
+ 	case V4L2_CID_UNIT_CELL_SIZE:
+ 		*type = V4L2_CTRL_TYPE_AREA;
+ 		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
+index 59679a42b3e7..a165719e1139 100644
+--- a/include/media/v4l2-ctrls.h
++++ b/include/media/v4l2-ctrls.h
+@@ -56,6 +56,7 @@ struct video_device;
+  * @p_av1_tile_group_entry:	Pointer to an AV1 tile group entry structure.
+  * @p_av1_frame:		Pointer to an AV1 frame structure.
+  * @p_av1_film_grain:		Pointer to an AV1 film grain structure.
++ * @p_vp8_encode_params:	Pointer to a VP8 encode parameter structure.
+  * @p:				Pointer to a compound value.
+  * @p_const:			Pointer to a constant compound value.
+  */
+@@ -89,6 +90,7 @@ union v4l2_ctrl_ptr {
+ 	struct v4l2_ctrl_av1_tile_group_entry *p_av1_tile_group_entry;
+ 	struct v4l2_ctrl_av1_frame *p_av1_frame;
+ 	struct v4l2_ctrl_av1_film_grain *p_av1_film_grain;
++	struct v4l2_ctrl_vp8_encode_params *p_vp8_encode_params;
+ 	void *p;
+ 	const void *p_const;
+ };
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index c3604a0a3e30..fdec5764e09c 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -3479,6 +3479,97 @@ struct v4l2_ctrl_av1_film_grain {
+ 	__u8 reserved[4];
+ };
+ 
++#define V4L2_CID_STATELESS_VP8_ENCODE_PARAMS	(V4L2_CID_CODEC_STATELESS_BASE + 601)
++
++#define V4L2_VP8_FRAME_FLAG_SHOWFRAME			0x1
++#define V4L2_VP8_FRAME_FLAG_GOLDEN_REFRESH		0x2
++#define V4L2_VP8_FRAME_FLAG_ALTREF_REFRESH		0x4
++#define V4L2_VP8_FRAME_FLAG_SEGMENT_ENABLED		0x8
++#define V4L2_VP8_FRAME_FLAG_LOOP_FILTER_ADJ_ENABLED	0x10
++#define V4L2_VP8_FRAME_FLAG_REFRESH_ENTROPY_PROBS	0x20
++
++#define V4L2_VP8_FRAME_TYPE_KEYFRAME	0
++#define V4L2_VP8_FRAME_TYPE_INTER	1
++
++#define V4L2_VP8_FRAME_COLOR_SPACE_YUV		0
++#define V4L2_VP8_FRAME_COLOR_SPACE_RESERVED	1
++
++#define V4L2_VP8_FRAME_CLAMPING_REQUIRED	0
++#define V4L2_VP8_FRAME_CLAMPING_NO		1
++
++#define V4L2_VP8_FRAME_FILTER_TYPE_NORMAL	0
++#define V4L2_VP8_FRAME_FILTER_TYPE_SIMPLE	1
++
++#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_1	0
++#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_2	1
++#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_4	2
++#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_8	3
++
++#define V4L2_VP8_FRAME_GOLDEN_KEEP		0
++#define V4L2_VP8_FRAME_GOLDEN_LASTFRAME		1
++#define V4L2_VP8_FRAME_GOLDEN_ALTREF		2
++
++#define V4L2_VP8_FRAME_ALTREF_KEEP		0
++#define V4L2_VP8_FRAME_ALTREF_LASTFRAME		1
++#define V4L2_VP8_FRAME_ALTREF_GOLDEN		2
++
++#define V4L2_VP8_FRAME_REF_LAST		0
++#define V4L2_VP8_FRAME_REF_GOLDEN	1
++#define V4L2_VP8_FRAME_REF_ALT		2
++
++/**
++ * struct v4l2_ctrl_vp8_encode_params - VP8 encode parameters
++ * @flags: combination of V4L2_VP8_FRAME_FLAG_{} flags.
++ * @frame_type: specifies the frame type (key or inter).
++ *		Set to one of V4L2_VP8_FRAME_TYPE_{}.
++ * @color_space: defines the YUV color space of the sequence.
++ *		 V4L2_VP8_FRAME_TYPE_INTER frames shall set this field to zero.
++ *		 Set to one of V4L2_VP8_FRAME_COLOR_SPACE_{}.
++ * @clamping_type: defines pixel value clamping type.
++ *		   V4L2_VP8_FRAME_TYPE_INTER frames shall set this field to zero.
++ *		   Set to one of V4L2_VP8_FRAME_CLAMPING_{}.
++ * @loop_filter_type: selects the type of loop filter applied.
++ *		      Set to one of V4L2_VP8_FRAME_FILTER_TYPE_{}.
++ * @loop_filter_level: sets the strength of the applied loop filter.
++ *		       Set to a value from the rage 0..63.
++ * @sharpness_level: sets the sharpness of the applied loop filter.
++ *		     Set to a value from the range 0..7.
++ * @log2_nbr_of_dct_partitions: determines the number of separate partitions
++ *				containing the DCT coefficients of macroblocks.
++ *				Set to one of V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_{}.
++ * @prob_intra: indicates the probability of an intra macroblock.
++ *		Set to a value from the range 0..255.
++ * @prob_last: indicates the probability that the last reference frame is used for inter-prediction.
++ *	       Set to a value from the range 0..255.
++ * @prob_gf: indicates the probability that the golden reference frame is used for inter-prediction.
++ *	     Set to a value from the range 0..255.
++ * @copy_buffer_to_golden: specifies the golden frame refresh strategy.
++ *			   Set to one of V4L2_VP8_FRAME_FLAG_GOLDEN_{}.
++ * @copy_buffer_to_alternate: specifies the atlref frame refresh strategy.
++ *			      Set to one of V4L2_VP8_FRAME_FLAG_ALTREF_{}.
++ * @reference_type: specifies what kind of reference to use for current inter frame.
++ *		    V4L2_VP8_FRAME_TYPE_KEYFRAME shall set this field to zero.
++ *		    Set to one of V4L2_VP8_FRAME_REF_{}.
++ */
++struct v4l2_ctrl_vp8_encode_params {
++	__u32 flags;
++	__u8 frame_type;
++	__u8 color_space;
++	__u8 clamping_type;
++	__u8 loop_filter_type;
++	__u8 loop_filter_level;
++	__u8 sharpness_level;
++	__u8 log2_nbr_of_dct_partitions;
++	__u8 prob_intra;
++	__u8 prob_last;
++	__u8 prob_gf;
++	__u8 copy_buffer_to_golden;
++	__u8 copy_buffer_to_alternate;
++	__u8 reference_type;
++};
++
++#define V4L2_CID_STATELESS_VP8_ENCODE_QP	(V4L2_CID_CODEC_STATELESS_BASE + 602)
++
+ /* MPEG-compression definitions kept for backwards compatibility */
+ #ifndef __KERNEL__
+ #define V4L2_CTRL_CLASS_MPEG            V4L2_CTRL_CLASS_CODEC
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index 78260e5d9985..b3cbdc60b82c 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -1836,6 +1836,7 @@ struct v4l2_ext_control {
+ 		struct v4l2_ctrl_av1_tile_group_entry __user *p_av1_tile_group_entry;
+ 		struct v4l2_ctrl_av1_frame __user *p_av1_frame;
+ 		struct v4l2_ctrl_av1_film_grain __user *p_av1_film_grain;
++		struct v4l2_ctrl_vp8_encode_params __user *p_vp8_encode_params;
+ 		void __user *ptr;
+ 	};
+ } __attribute__ ((packed));
+@@ -1914,6 +1915,8 @@ enum v4l2_ctrl_type {
+ 	V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY = 0x281,
+ 	V4L2_CTRL_TYPE_AV1_FRAME	    = 0x282,
+ 	V4L2_CTRL_TYPE_AV1_FILM_GRAIN	    = 0x283,
++
++	V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS	= 0x0290,
+ };
+ 
+ /*  Used in the VIDIOC_QUERYCTRL ioctl for querying controls */
 -- 
 2.25.1
 
