@@ -2,215 +2,464 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4477B7D68
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2457B7D73
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233263AbjJDKkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43778 "EHLO
+        id S233064AbjJDKmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233004AbjJDKkX (ORCPT
+        with ESMTP id S232814AbjJDKmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:40:23 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2046.outbound.protection.outlook.com [40.107.244.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DEBA1;
-        Wed,  4 Oct 2023 03:40:19 -0700 (PDT)
+        Wed, 4 Oct 2023 06:42:09 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC4EA1;
+        Wed,  4 Oct 2023 03:42:05 -0700 (PDT)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3948baLg000457;
+        Wed, 4 Oct 2023 06:41:11 -0400
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2170.outbound.protection.outlook.com [104.47.73.170])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3tgtsjm56t-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Oct 2023 06:41:10 -0400 (EDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=crHPGvzKwOz2d8Qm2JwM/Z3Mu2ZRWZBtF8x2qHYLW/bXsJcggP88tcQ57k6FA3mciXAWMCacJZrPpTxffk9kXXn4UltpAOQuL42VOl1SuSgD4qzBJWLC/CX7Q0d+un597Vfkm9tbDDlZPJdZYIl32mAfGn+ARerbITnvOOEIAiVUwZp68OpbgKAXAeF6LEaVPkq4M4dCGY/g/3I7Pp7uu7FOQfsypRfS+FnZZCzqqZy8ufjxtTWgw/jfYNhaIpjHfIwoRAJljEPqytmaLHuXryt/rX/QZMYfvTtvmHzr0COXJ35Wp+mi4a4bf9Ir3hCh4jVkZV6OMS7CFCSea5azWg==
+ b=DRyAz8HRDIWSeyVrWtP8W8fH4m7DMXUFr469FN/IlS6l5wirVOJ4+9WbXEbeFKz6IUZDpH0p7IgEYraAft/7iuy/8DR92aPZ78h1YDP8k1bZcvtsZUEj0MrZ1dsA1tvFHHDkdUgjA7qdN1k7Uu0eg9lFLywlz21Kj41Fq6YzgU82yIXpaJgkZ3sckX9S68dhhSh/IeM56pDz9NDAet76plGK5T4YqHWMRYtd6C1R0O/pKZ0xqv+XwIl1fZFBS7nH137KIwSiH9d2JPD/iXz3PC6YoPk907yAjlSO2wiFWkO4JbOS3PCyTOdhhNRagxOsDfVUtiRU5XPyCP80RyArGA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lp+Zv/GKdZI02VWUYQ4IrUCsl3bPo2OnLfSoCzPXpfc=;
- b=gd4gSGZBIoTWyizNJAID4FITcPAzzmb42bl+v40c+asH2rHDDAoFSxqrC80dVDlF2m4rYDTI4MAcCKaH+DrwtkYCXIb0LFDCGd6fHwDNa1cUK+r1WZQOykuZ+M67zPBw4GXNptjZa7wCyyaSA5pkAoQU82Mtb6LfXSLSEhhS5GLr9YecXvVmiK+XbZrzFhIQyAW7sN3KapOUwvthZ0EYFmRtSW5GbhqNRmc69/pUbJ5a4/OXGYBSh1uVIlSEkOwxAWiTxOxqe0U9ZSyLRhj1uS/8syiicXYMfS1EnH89pg8DjG1NzwUZxMjcyqBLPJQIRCC0m8buqL8CBv/X+0ap5A==
+ bh=3gt3vyLJiXhPPsZavIzdHhpYBmtV+X03RkxXMpuMlCY=;
+ b=eHmGD1C/zS8Le6Z3du6xO0mMQpqIKvf1S8p3pO2auK2b7jfy2Thd+/2lsuYPlkRU1LQhVwf70c+rEe1Xcy1y35mp0dqCRCs6U1piY06pqN3q+pfVL+rjp+GYgLx3YqBdv+u3UyK8xRbMgaBIbsLd4G8KJmY/j+T3lK3hQ/hzNxrzlKvLmacsvLQvOs0Ge17JXRYFGK/MPPUN1YETEMJmLzLZdZm91odxWZKflPeit6CZUuwUjDRxGiZ96mJZ+f/hkLL2tma7PDVm8MkXATlxQtbjOk4jzvsxukIwvw9nAoCCYV94sOrrrMd18MM8TY9X/wPFzaINoztuU0pYWuSbdw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lp+Zv/GKdZI02VWUYQ4IrUCsl3bPo2OnLfSoCzPXpfc=;
- b=h8sdFA54x3h9Ehnn5mZ1zcRX4emWll99hN8+Vwn+d11NqVgvjLCNF7f97r0Kd3/tWCBVSkF5tUn75ba5NsvJMdL/9OU9mxZuFD/CDeDWRQ/JgAhUHjYEasqmpfyxP0Ojl7XRmkNWn5cHGlGJAVWEZyCYymPCgI0/UXKnt4IO1LY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=silabs.com;
-Received: from IA1PR11MB7773.namprd11.prod.outlook.com (2603:10b6:208:3f0::21)
- by IA1PR11MB8248.namprd11.prod.outlook.com (2603:10b6:208:447::13) with
+ bh=3gt3vyLJiXhPPsZavIzdHhpYBmtV+X03RkxXMpuMlCY=;
+ b=7iGNztM3+uevyBb7u/E9tL3EYKiWjFjhe0Zz9/pUqCCgnnaLTwGvBlYU1Lro3avtURx4BEEXiIfrZ+lDZ9Cuh5KaMkwxZjLOPiuRC7JRgNncYPMDe8y4r5Fnrs00aUYwHbSosGbKwGlqUjGA86juSmRro3auKMWgGewNHs4VLuU=
+Received: from SN7PR03MB7132.namprd03.prod.outlook.com (2603:10b6:806:352::6)
+ by BY5PR03MB4967.namprd03.prod.outlook.com (2603:10b6:a03:1e2::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25; Wed, 4 Oct
- 2023 10:40:17 +0000
-Received: from IA1PR11MB7773.namprd11.prod.outlook.com
- ([fe80::d6c8:4cb6:2594:d8f3]) by IA1PR11MB7773.namprd11.prod.outlook.com
- ([fe80::d6c8:4cb6:2594:d8f3%4]) with mapi id 15.20.6838.030; Wed, 4 Oct 2023
- 10:40:17 +0000
-From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/9] wifi: wfx: add placeholders for remain_on_channel feature
-Date:   Wed, 04 Oct 2023 12:40:13 +0200
-Message-ID: <16472781.hlxOUv9cDv@pc-42>
-Organization: Silicon Labs
-In-Reply-To: <87pm1uhejh.fsf@kernel.org>
-References: <20230927163257.568496-1-jerome.pouiller@silabs.com>
- <20230927163257.568496-6-jerome.pouiller@silabs.com>
- <87pm1uhejh.fsf@kernel.org>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.34; Wed, 4 Oct
+ 2023 10:41:07 +0000
+Received: from SN7PR03MB7132.namprd03.prod.outlook.com
+ ([fe80::b34d:a248:7b9a:c625]) by SN7PR03MB7132.namprd03.prod.outlook.com
+ ([fe80::b34d:a248:7b9a:c625%5]) with mapi id 15.20.6838.016; Wed, 4 Oct 2023
+ 10:41:07 +0000
+From:   "Hennerich, Michael" <Michael.Hennerich@analog.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        David Lechner <dlechner@baylibre.com>
+CC:     "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        David Lechner <david@lechnology.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Sa, Nuno" <Nuno.Sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Apelete Seketeli <aseketeli@baylibre.com>
+Subject: RE: [PATCH v3 01/27] dt-bindings: iio: resolver: add devicetree
+ bindings for ad2s1210
+Thread-Topic: [PATCH v3 01/27] dt-bindings: iio: resolver: add devicetree
+ bindings for ad2s1210
+Thread-Index: AQHZ8voiHr0CPygis0qlB8JK4Lezn7AzcHuAgAYH0hA=
+Date:   Wed, 4 Oct 2023 10:41:06 +0000
+Message-ID: <SN7PR03MB7132D8899A862B7D4D475F848ECBA@SN7PR03MB7132.namprd03.prod.outlook.com>
+References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
+        <20230929-ad2s1210-mainline-v3-1-fa4364281745@baylibre.com>
+ <20230930153429.0387ab8c@jic23-huawei>
+In-Reply-To: <20230930153429.0387ab8c@jic23-huawei>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbWhlbm5lcmlc?=
+ =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
+ =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy04MmM5YjA3OS02MmEyLTExZWUtYjgxZS1iY2Yx?=
+ =?us-ascii?Q?NzFjNDc2MTZcYW1lLXRlc3RcODJjOWIwN2ItNjJhMi0xMWVlLWI4MWUtYmNm?=
+ =?us-ascii?Q?MTcxYzQ3NjE2Ym9keS50eHQiIHN6PSIxOTAxNCIgdD0iMTMzNDA4ODk2NjQ0?=
+ =?us-ascii?Q?ODM5OTMxIiBoPSJzeVd4bzVqOTJHSUlJZWRpVjNjS2t6MDhkNW89IiBpZD0i?=
+ =?us-ascii?Q?IiBibD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFFb0NB?=
+ =?us-ascii?Q?QUQ3ZVdSR3IvYlpBVWNXMDZoYndhV2ZSeGJUcUZ2QnBaOERBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBSEFBQUFEYUFRQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBRUFBUUFCQUFBQWxHVEdWZ0FBQUFBQUFBQUFBQUFBQUo0QUFBQmhBR1FB?=
+ =?us-ascii?Q?YVFCZkFITUFaUUJqQUhVQWNnQmxBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQnpB?=
+ =?us-ascii?Q?RjhBWmdCaEFHd0Fjd0JsQUY4QVpnQnZBSE1BYVFCMEFHa0FkZ0JsQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdFQVpBQnBBRjhBY3dCbEFHTUFk?=
+ =?us-ascii?Q?UUJ5QUdVQVh3QndBSElBYndCcUFHVUFZd0IwQUhNQVh3QjBBR2tBWlFCeUFE?=
+ =?us-ascii?Q?RUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNB?=
+ =?us-ascii?Q?QUFBQUFDZUFBQUFZUUJrQUdrQVh3QnpBR1VBWXdCMUFISUFaUUJmQUhBQWNn?=
+ =?us-ascii?Q?QnZBR29BWlFCakFIUUFjd0JmQUhRQWFRQmxBSElBTWdBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBQT09Ii8+PC9t?=
+ =?us-ascii?Q?ZXRhPg=3D=3D?=
+x-dg-rorf: true
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN7PR03MB7132:EE_|BY5PR03MB4967:EE_
+x-ms-office365-filtering-correlation-id: ac7d5923-4d8f-4ecd-1cbe-08dbc4c66a45
+x-ld-processed: eaa689b4-8f87-40e0-9c6f-7228de4d754a,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Gm5sE6xFKhg2qRQMPG6XXjO4cULvMqoQc6lHCexrcdD74PVbieMk5oqaLtmd0fAkT9KylobeW3HTcoHdZo0FHZIHY4KXqu5QL3kQhD5DdSI0Fv3OPSWjN6ljVzjQqVANYaRscq1gMap+lNimH/h2bQqBmJHUFxCyDY+MUvwo+5vXDjcnVIusQQxmFtmfZa8r8brooQVsMRZDfWC1Flw0vAipfG6d+qjDSke/t6/2SuxNQ2+gBh8bi7Wesfllyh3eV599TFeddrW70u/K/OGBdM17a+CYgn4aKPke8t6Z9IKrBDjPwNvEeGF2zbRXsqQQG8tWytw9cL4x369E//yst7MOVMNdQtaUysOd3xc/nQQ/pLstbTRPt/7gqJ4MhgHhqrjdV0wS7BfhTWB0fG+wkO+kdQxl+hG7hvW/pANIDWmettqKF9Yi6OI3cq2VKrSj+bRnePhvOcg9UJ7bNupE4xLfOucJx462jLMT1fKIycH5loJtYETM178GxxVTIt3YYKBYLHJdlRDv2yMXUm5mxfSeqovfYrNPTfVEZy+6NIfydPjRxl0O7CkVGkpaQm2Jesmfh1wrDDxeiaI8dIcxRFhcyzJFSC3GFEVo/1Nd32I8xf+ILdPmp8rK0IxY1j1CJfgIh8QQCN6fQc4yXIdkp5YWzZH4ZvX5Q/ZhB4lcfsA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR03MB7132.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(39860400002)(136003)(396003)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(2906002)(83380400001)(66899024)(7416002)(38070700005)(86362001)(33656002)(38100700002)(122000001)(55016003)(53546011)(316002)(66476007)(54906003)(76116006)(66446008)(66556008)(64756008)(9686003)(6506007)(7696005)(66946007)(110136005)(41300700001)(966005)(478600001)(52536014)(71200400001)(4326008)(8676002)(5660300002)(26005)(8936002)(138113003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?7eQtH6knqCGDJ6xoBrNtgOxPock4vzcgaLP2SaB/AMGg8aPKIh29i7SGAmPz?=
+ =?us-ascii?Q?qVUlocJ9jxA3Lc/dQPlYq24NOstGAgVYNd1zLAf82comD2AvvpwcQy1/GCUb?=
+ =?us-ascii?Q?nlFnebgj+5uSaHcyYDY82b7Z4FbVrv60BPLdgPfbqOyjFIVlQIM5hn1uM9O0?=
+ =?us-ascii?Q?dWq+09IcbZe/cUu0p7vkOSn0tGrLUq2kCEdvkWdhqAe3mloKCAPATtKZQJ5r?=
+ =?us-ascii?Q?5p2mdrJV/8qnAEph3PhRk8M7lbDRH+Co7yJIOCXbAE85DdrTtxeill1MT9gE?=
+ =?us-ascii?Q?pHKSrRjJxBoV8k2ADZv1OtrA7ucqlxPgyze0XPIksvLzNvJO/pHMDcjxt/iW?=
+ =?us-ascii?Q?k0Y1G68w00m5DB3Vxorv56womEzkAd9sJFef3FF8xJsMRT1MwrvjD97IASGC?=
+ =?us-ascii?Q?+I2R0D4Qq1pehtzKVZuUcmy0ZGxqgO2Snf+BceiENXbWVXb+MUg4lgoaX8EZ?=
+ =?us-ascii?Q?+LYcnyeDwHWO75enk6k49ijmlxcoMOv0Z8jmy5yVQAl6S/s3+gzcsONJmmTX?=
+ =?us-ascii?Q?QyBjfxYeE/4nyFqfC/2PjR3W/iceji8fnGQNhkWX/PQXOQzv6fhbz1/Nzhzl?=
+ =?us-ascii?Q?rndoR9rgorzXzJBGFD0sSKY5B8oZm0RRXzQ/o/5PM1V2VrbMPuA4EuNsoFSg?=
+ =?us-ascii?Q?SXF6GRLeSTGbjEUFvE+kGNvd+PS809PrQbnJpqgL9EzaYVMogSM1ukVncPWc?=
+ =?us-ascii?Q?UfqhnIZNJOb/CFfEJ4VBydASPMNYfJffOCmGitPMDThcIytWDai7SEmRZNGI?=
+ =?us-ascii?Q?J8Cny9Qu14lt/b2C//eqrIxWKudPYaYAilW2dtEsdSY2iIKy8tTRiSkrl3Yf?=
+ =?us-ascii?Q?uBIdsZwHr0l3a2k+WJDNC3u/iUhf9mLlWrhT7/77iGKyrIPrZytyioXRJ0gp?=
+ =?us-ascii?Q?RxaVim2NsdNeamXhDCGy86vvn9v3IaqrY2jK+B81IVjuD6fESvg8SaOlKhG+?=
+ =?us-ascii?Q?AUE2y6nDmKm1EYY1x2zLBtJNLPmqmMSu0yChxSM6AExXROrCnfzW4ePc+m8Z?=
+ =?us-ascii?Q?iyjH4Y5x9/L2LBw+gOtRDVgTbLRCI+maxy/z6sRL2sEHElP2X2XoWU7/PIVx?=
+ =?us-ascii?Q?wUronu3HgS38glR1VVjdktc9ngtSr0l5w+cKcOoNsgu0gDYQ7hxZanhsMZ/T?=
+ =?us-ascii?Q?9Jz6WZnBd5Z7gWMJebZZE7eTmw1ewNaVz45XO/UEHdjmwGmDHKuAMr5KGLtt?=
+ =?us-ascii?Q?yNloJSROiD5uKcMptvKCp+SJBvvBpHXj39Dp5wCNAZ2KlbttZP2vhfmoLHzX?=
+ =?us-ascii?Q?0Be6C4VfogiwrCqQG2nJ0PmGengKZG6F9ENdZz1i6sANa2MXVmAfdveuhfL+?=
+ =?us-ascii?Q?nwInwTc3CbvWgkUW0ZR6VcfMYjYLpvpqkRAV6LK+TnUOvB3Hhlj9pIxJD8PQ?=
+ =?us-ascii?Q?tHzaj5gvzq6dpGOwFwdiaRyO6ZOmdaRchYqL2nfFYHL7sn3HvyY5QmdnWsfS?=
+ =?us-ascii?Q?EGSIdyjTwNVyEvqlbtZ/6H+qCiOoTLo4F0CEgNmeXRH16Q1h1pe5vzdYUwi/?=
+ =?us-ascii?Q?TH0mjowuB6pECrGtp1ukjM0R1egDPjXQJiyIaeCq+UUnHp1nno9WZyHdKKnB?=
+ =?us-ascii?Q?IBRBlccJaHHxa6oB6frtpA1wOeQmFQXbsr9NKkBcJS5L1qXerIa+pYvDKzUL?=
+ =?us-ascii?Q?GQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-ClientProxiedBy: PR0P264CA0083.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:18::23) To IA1PR11MB7773.namprd11.prod.outlook.com
- (2603:10b6:208:3f0::21)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR11MB7773:EE_|IA1PR11MB8248:EE_
-X-MS-Office365-Filtering-Correlation-Id: d63158d9-cc8f-416e-6a07-08dbc4c64ccc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Hij1ZTkdUnYQMy3sNamCllRrc1eN5PTbBhF0tOcl/LOII3oe3mcZrC6DlSmGaW/u/UDYCsqTxoOJH8rXslqthrTVjErGqIlRVNbdn3tjLMaakIEJNxCuxOJPt4ofPsha4qfe1tahjZeplG9iq9TC4B73QvOMhg+c5mAD5xZJhL+8Gy+hYOg/Fna5c7iZIPx3N5hLUJZxPtrHm4x8gHpSn2qPUmUaZnvcpSn/ieEXL/2wJVDtsdRc3/weL5QvLjP8Ty1vhfxKOrIlx67sdl1Bu0Nf8FcAoZUmxO9ult2VFRsjCMYjqOcPT7SV8lPOomOy0F4vLtS4Cq4eyEGiLHCRsuAwt2vfLnyjcUhxzSYUo2PpYrsIw7ELx36grLF19lOqTpMr35FQ5Wqt1HsubGuEnXwGftiPeDKor1wvToYcRui6NsWSVwbbhP+LugccV4gGmg5b9iVmTfERh4dOTFoYWh8P5cs9V0Y2Gr0QBNW6YIK/j5Ogy66FiCx153AHvMCQGSGB7VnC5PJfwdLC9qKdHedxRooCW+FRskvRsRAYEVkpJ1vshEXRE2xRlIPKepbxwNB1waLbdBvUBfsgfDnnekcArBrP/o2qGsmAYoNkNvDjXhlBGn6I3z7qnBUkrLJb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB7773.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39850400004)(366004)(346002)(376002)(136003)(396003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(52116002)(36916002)(6666004)(9686003)(2906002)(8936002)(41300700001)(316002)(8676002)(5660300002)(4326008)(66946007)(38100700002)(86362001)(33716001)(6512007)(6506007)(66556008)(66574015)(6916009)(66476007)(478600001)(6486002)(83380400001)(39026012);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?QVMfNlql/zbthAORldPy3fS3eyy3WNyk4SpJUnIs3Kyzz/q3MMtMziIrGd?=
- =?iso-8859-1?Q?O9xS9B/z+eFw9EbyVVNmYzF+ulJRMcXAUnK+gyRgYTkdVA5Xn47tmB1k3Y?=
- =?iso-8859-1?Q?tCOn7U4Nm1K0dG8tGpu4wUURaFMnvSmFc5eGeW0dXEuJ9i2CNYH5t7wMXh?=
- =?iso-8859-1?Q?IefIjz7W1iBQZO9+e+of+A0ll87yk7xRmtpqfQpKlJ+9sVPK3WxWsfrmy/?=
- =?iso-8859-1?Q?IsFjfy8EB/1o9jO0LrtAbaIM0d5j9w+B1NYWZhEtlZJ681N7bPzGqT3QpR?=
- =?iso-8859-1?Q?TfadXi64LRted5YofChmXfay2K69wjqm5kd9ruEpWPYjZFzQ/p0INmlZtg?=
- =?iso-8859-1?Q?nptn4rE6NkR65o1FHZjxsmXNlv0829Y/oi8pxEKcumLJlicGDn4ci5Oaf2?=
- =?iso-8859-1?Q?d16oO/zyyaYZoEjA1mCt9HloVNrngi3qPPLwUtiyqV/Fi94n3qjbs5ALj4?=
- =?iso-8859-1?Q?mhl4Z8fmseOaCvTAIEibMV8qgzJVNVsAeXql08K0Vx+USMqqIA2AwTeedz?=
- =?iso-8859-1?Q?kA1W6dgAJgvYR4MmiKHRRLUT1H9Juxcersev960mJY5RwipOgS6soZVCbV?=
- =?iso-8859-1?Q?llQz8IVnKgxHzdVypHNdd1i1f6LdX1h0OeBowQWU4lOwIoU2S4saljui91?=
- =?iso-8859-1?Q?kRKX1RCTnLVCSjQnjsF8dfP4r1GWHA8MbwKl57Lmapeq0PVPkQ9e7qO2sd?=
- =?iso-8859-1?Q?uJxWlotWWj23Q0mF9egK1WJcYKRMLKgURHYSnlajGfYbW772/iOuy4HXZO?=
- =?iso-8859-1?Q?y1WrHzY64NH93u0YTHrcGh2svH5nDlSuwpSKDxCjsJGekOS6NywlhzbPYB?=
- =?iso-8859-1?Q?3dRTcxVSHUyDWbALDCv8lvlDlKAZEuUvZr8d/ASwaURGEiPVFSJIjemnGn?=
- =?iso-8859-1?Q?LnFCCXwbQGZCO5/iZUE05XaXw8uWQQW7dAjJIO07sqwrGlnCNmAt44zbSB?=
- =?iso-8859-1?Q?Y32ZG1jGG5vbKkBfU3Opi+xpWLyOOPEt5TlfWCiaJKfz0wC6tlKeNKb8Di?=
- =?iso-8859-1?Q?SgQi/gsvX9NWw5cpLuvutIRmTt3Xcw8NeQFabVnPF3SGzUN2w44KI3o3bI?=
- =?iso-8859-1?Q?6WOQEy2E8IJ+dUgWx/0FFUgYvir+T6CJ0iCqnyMUb5H3baC0NRuE++ALyU?=
- =?iso-8859-1?Q?nGKvYMIRBRJ4JdF73e9bhSAgI7dfORqk7naxYxzEpDorXaFUlWmPPtlTpG?=
- =?iso-8859-1?Q?7lhDJzmXlSPQ3ki41WrK6NwAbRNChihGqJRrYyW1t9SKHwqrhQ0RIg/+jf?=
- =?iso-8859-1?Q?/YXWNNmlMZc1K6/+CpjsXIEYAs4LRhngSLBpcrPK1dJR1UMYmk0yhAjyoe?=
- =?iso-8859-1?Q?VR7LdEFkOyYRyAm85SQtGLMCC3Ua3N0GmRI3hQUG1KGqn0ugs7DrewGVCn?=
- =?iso-8859-1?Q?Pxi81X5aqgaDeonXMQBZAHirr7v2nvE9J2PDyd6VYB8dgs9hmLsF2AO+lN?=
- =?iso-8859-1?Q?lsUFJjhdjYnYxjSJlWSfh4cfkE4gXrZK1OgGO7xC0hKOHfso6tVi/0vz6y?=
- =?iso-8859-1?Q?zdwdoCEujeKjx1DcJfJbB684W6muPYdTyJT7HAZknfzPV5gC4aUmwrfQ8C?=
- =?iso-8859-1?Q?4hmV3gdonAaPDExFoYtmW5K7VJWtiCYyuf8smm/BT+Ms62DBkAuQVXK0LA?=
- =?iso-8859-1?Q?924ti3tVqcmg+l8eDpyvOQoCzYmebUHk7nXChtLicyhmT7+1acTpUMU1sj?=
- =?iso-8859-1?Q?W/RnzZqFYuVYxm5rbEl1MD1yqC693AhV47I1n2vG?=
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d63158d9-cc8f-416e-6a07-08dbc4c64ccc
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB7773.namprd11.prod.outlook.com
+X-OriginatorOrg: analog.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 10:40:17.5318
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR03MB7132.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac7d5923-4d8f-4ecd-1cbe-08dbc4c66a45
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Oct 2023 10:41:06.8424
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pnBNUWYiM24gSh0Yztl9MT9sArHOCYR079ljt1jbRHsXbxu8dWfS/CoSggDgoDkkZo2gbUu9RerQBfrOmhWmNA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB8248
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ddPuBs3XuKzr2+uvBJjUU23JLlaJRFzzY8/ZAwf0mg2lwWhT2GHpfitmklQgOmW8IAFwtWdUdfC2+OCNV7l7KQibjRWm4+djF/J+2tBqaaA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR03MB4967
+X-Proofpoint-GUID: 71mZCSyTGx9YT4Kf8PWjSsYF1WQF9bAP
+X-Proofpoint-ORIG-GUID: 71mZCSyTGx9YT4Kf8PWjSsYF1WQF9bAP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-04_02,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
+ impostorscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2309180000 definitions=main-2310040076
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 4 October 2023 12:23:30 CEST Kalle Valo wrote:
-> J=E9r=F4me Pouiller <jerome.pouiller@silabs.com> writes:
+
+
+> -----Original Message-----
+> From: Jonathan Cameron <jic23@kernel.org>
+> Sent: Samstag, 30. September 2023 16:34
+> To: David Lechner <dlechner@baylibre.com>
+> Cc: linux-iio@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> staging@lists.linux.dev; David Lechner <david@lechnology.com>; Rob Herrin=
+g
+> <robh+dt@kernel.org>; Krzysztof Kozlowski
+> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
+> Hennerich, Michael <Michael.Hennerich@analog.com>; Sa, Nuno
+> <Nuno.Sa@analog.com>; Axel Haslam <ahaslam@baylibre.com>; Philip Molloy
+> <pmolloy@baylibre.com>; linux-kernel@vger.kernel.org; Apelete Seketeli
+> <aseketeli@baylibre.com>
+> Subject: Re: [PATCH v3 01/27] dt-bindings: iio: resolver: add devicetree
+> bindings for ad2s1210
 >=20
-> > First step to implement remain_on_channel.
+>=20
+> On Fri, 29 Sep 2023 12:23:06 -0500
+> David Lechner <dlechner@baylibre.com> wrote:
+>=20
+> > From: David Lechner <david@lechnology.com>
 > >
-> > Signed-off-by: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
+> > From: David Lechner <dlechner@baylibre.com>
+> >
+> > This adds new DeviceTree bindings for the Analog Devices, Inc.
+> > AD2S1210 resolver-to-digital converter.
+> >
+> > Co-developed-by: Apelete Seketeli <aseketeli@baylibre.com>
+> > Signed-off-by: Apelete Seketeli <aseketeli@baylibre.com>
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>
+>=20
+> Michael, ideally I'd like your ack on this given it volunteers you as mai=
+ntainer. If
+> I don't hear I'm fine with leaving Michael listed because he's in MAINTAI=
+NERS
+> anyway covering these bindings via a wild card entry:
+
+Acked-by: Michael Hennerich <michael.hennerich@analog.com>
+
+>=20
+> ANALOG DEVICES INC IIO DRIVERS
+> M:	Lars-Peter Clausen <lars@metafoo.de>
+> M:	Michael Hennerich <Michael.Hennerich@analog.com>
+> ...
+> F:	Documentation/devicetree/bindings/iio/*/adi,*
+>=20
+> So any queries should hit Michael anyway.
+>=20
+> LGTM but I'll also want the dt binding maintainers input before picking t=
+his up.
+>=20
+> Jonathan
+>=20
 > > ---
-> >  drivers/net/wireless/silabs/wfx/main.c |  3 +++
-> >  drivers/net/wireless/silabs/wfx/scan.c | 12 ++++++++++++
-> >  drivers/net/wireless/silabs/wfx/scan.h |  5 +++++
-> >  3 files changed, 20 insertions(+)
 > >
-> > diff --git a/drivers/net/wireless/silabs/wfx/main.c b/drivers/net/wirel=
-ess/silabs/wfx/main.c
-> > index ede822d771aaf..31f6e0d3dc089 100644
-> > --- a/drivers/net/wireless/silabs/wfx/main.c
-> > +++ b/drivers/net/wireless/silabs/wfx/main.c
-> > @@ -151,6 +151,8 @@ static const struct ieee80211_ops wfx_ops =3D {
-> >       .change_chanctx          =3D wfx_change_chanctx,
-> >       .assign_vif_chanctx      =3D wfx_assign_vif_chanctx,
-> >       .unassign_vif_chanctx    =3D wfx_unassign_vif_chanctx,
-> > +     .remain_on_channel       =3D wfx_remain_on_channel,
-> > +     .cancel_remain_on_channel =3D wfx_cancel_remain_on_channel,
-> >  };
+> > v3 changes:
+> > * Expanded top-level description of A0/A1 lines.
+> > * Added required voltage -supply properties. (I did not pick up Rob's
+> >   Reviewed-by since I wasn't sure if this was trivial enough.)
 > >
-> >  bool wfx_api_older_than(struct wfx_dev *wdev, int major, int minor)
-> > @@ -288,6 +290,7 @@ struct wfx_dev *wfx_init_common(struct device *dev,=
- const struct wfx_platform_da
-> >       hw->wiphy->features |=3D NL80211_FEATURE_AP_SCAN;
-> >       hw->wiphy->flags |=3D WIPHY_FLAG_AP_PROBE_RESP_OFFLOAD;
-> >       hw->wiphy->flags |=3D WIPHY_FLAG_AP_UAPSD;
-> > +     hw->wiphy->max_remain_on_channel_duration =3D 5000;
-> >       hw->wiphy->max_ap_assoc_sta =3D HIF_LINK_ID_MAX;
-> >       hw->wiphy->max_scan_ssids =3D 2;
-> >       hw->wiphy->max_scan_ie_len =3D IEEE80211_MAX_DATA_LEN;
-> > diff --git a/drivers/net/wireless/silabs/wfx/scan.c b/drivers/net/wirel=
-ess/silabs/wfx/scan.c
-> > index 16f619ed22e00..51338fd43ae4f 100644
-> > --- a/drivers/net/wireless/silabs/wfx/scan.c
-> > +++ b/drivers/net/wireless/silabs/wfx/scan.c
-> > @@ -145,3 +145,15 @@ void wfx_scan_complete(struct wfx_vif *wvif, int n=
-b_chan_done)
-> >       wvif->scan_nb_chan_done =3D nb_chan_done;
-> >       complete(&wvif->scan_complete);
-> >  }
-> > +
-> > +int wfx_remain_on_channel(struct ieee80211_hw *hw, struct ieee80211_vi=
-f *vif,
-> > +                       struct ieee80211_channel *chan, int duration,
-> > +                       enum ieee80211_roc_type type)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> > +int wfx_cancel_remain_on_channel(struct ieee80211_hw *hw, struct ieee8=
-0211_vif *vif)
-> > +{
-> > +     return 0;
-> > +}
-> > diff --git a/drivers/net/wireless/silabs/wfx/scan.h b/drivers/net/wirel=
-ess/silabs/wfx/scan.h
-> > index 78e3b984f375c..2f8361769303e 100644
-> > --- a/drivers/net/wireless/silabs/wfx/scan.h
-> > +++ b/drivers/net/wireless/silabs/wfx/scan.h
-> > @@ -19,4 +19,9 @@ int wfx_hw_scan(struct ieee80211_hw *hw, struct ieee8=
-0211_vif *vif,
-> >  void wfx_cancel_hw_scan(struct ieee80211_hw *hw, struct ieee80211_vif =
-*vif);
-> >  void wfx_scan_complete(struct wfx_vif *wvif, int nb_chan_done);
+> > v2 changes:
+> > * Add Co-developed-by:
+> > * Remove extraneous quotes on strings
+> > * Remove extraneous pipe on some multi-line descriptions
 > >
-> > +int wfx_remain_on_channel(struct ieee80211_hw *hw, struct ieee80211_vi=
-f *vif,
-> > +                       struct ieee80211_channel *chan, int duration,
-> > +                       enum ieee80211_roc_type type);
-> > +int wfx_cancel_remain_on_channel(struct ieee80211_hw *hw, struct ieee8=
-0211_vif *vif);
+> >  .../bindings/iio/resolver/adi,ad2s1210.yaml        | 177
+> +++++++++++++++++++++
+> >  1 file changed, 177 insertions(+)
+> >
+> > diff --git
+> > a/Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml
+> > b/Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml
+> > new file mode 100644
+> > index 000000000000..8980b3cd8337
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/resolver/adi,ad2s1210.yaml
+> > @@ -0,0 +1,177 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
+> > +---
+> > +$id:
+> > +https://urldefense.com/v3/__http://devicetree.org/schemas/iio/resolve
+> >
+> +r/adi,ad2s1210.yaml*__;Iw!!A3Ni8CS0y2Y!_mSGRdlDHlqAKev0r38paa3K51l2k
+> G
+> > +o8bShqK2TH4nAF_cYu2WixIa62xv0p-A70086DQmj4oN9FWvOlk78$
+> > +$schema:
+> > +https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.y
+> >
+> +aml*__;Iw!!A3Ni8CS0y2Y!_mSGRdlDHlqAKev0r38paa3K51l2kGo8bShqK2TH4n
+> AF_c
+> > +Yu2WixIa62xv0p-A70086DQmj4oN9FWzdE10U$
 > > +
-> >  #endif
->=20
-> I'm not really seeing the point of this patch. I would expect that once
-> .remain_on_channel is assign the feature will work without issues, for
-> example otherwise git bisect will not work correctly.
->=20
-> What about folding patches 5 and 6 into one patch? And then moving that
-> patch as the last to make sure that the feature is enabled on the driver
-> only after it works correctly?
-
-Ok.
-
-I think I will have to reword a bit the commit logs but the reordering shou=
-ld
-not be difficult.
-
-
---=20
-J=E9r=F4me Pouiller
-
+> > +title: Analog Devices AD2S1210 Resolver-to-Digital Converter
+> > +
+> > +maintainers:
+> > +  - Michael Hennerich <michael.hennerich@analog.com>
+> > +
+> > +description: |
+> > +  The AD2S1210 is a complete 10-bit to 16-bit resolution tracking
+> > +  resolver-to-digital converter, integrating an on-board programmable
+> > +  sinusoidal oscillator that provides sine wave excitation for
+> > +  resolvers.
+> > +
+> > +  The AD2S1210 allows the user to read the angular position or the
+> > + angular velocity data directly from the parallel outputs or through
+> > + the serial interface.
+> > +
+> > +  The mode of operation of the communication channel (parallel or
+> > + serial) is  selected by the A0 and A1 input pins. In normal mode,
+> > + data is latched by  toggling the SAMPLE line and can then be read
+> > + directly. In configuration mode,  data is read or written using a
+> > + register access scheme (address byte with  read/write flag and data b=
+yte).
+> > +
+> > +    A1  A0  Result
+> > +     0   0  Normal mode - position output
+> > +     0   1  Normal mode - velocity output
+> > +     1   0  Reserved
+> > +     1   1  Configuration mode
+> > +
+> > +  In normal mode, the resolution of the digital output is selected
+> > + using  the RES0 and RES1 input pins. In configuration mode, the
+> > + resolution is  selected by setting the RES0 and RES1 bits in the cont=
+rol
+> register.
+> > +
+> > +  RES1  RES0  Resolution (Bits)
+> > +     0     0  10
+> > +     0     1  12
+> > +     1     0  14
+> > +     1     1  16
+> > +
+> > +  Note on SPI connections: The CS line on the AD2S1210 should
+> > + hard-wired to  logic low and the WR/FSYNC line on the AD2S1210
+> > + should be connected to the  SPI CSn output of the SPI controller.
+> > +
+> > +  Datasheet:
+> > +
+> > + https://www.analog.com/media/en/technical-documentation/data-sheets/
+> > + ad2s1210.pdf
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: adi,ad2s1210
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  spi-max-frequency:
+> > +    maximum: 25000000
+> > +
+> > +  spi-cpha: true
+> > +
+> > +  avdd-supply:
+> > +    description:
+> > +      A 4.75 to 5.25 V regulator that powers the Analog Supply Voltage
+> (AVDD)
+> > +      pin.
+> > +
+> > +  dvdd-supply:
+> > +    description:
+> > +      A 4.75 to 5.25 V regulator that powers the Digital Supply Voltag=
+e (DVDD)
+> > +      pin.
+> > +
+> > +  vdrive-supply:
+> > +    description:
+> > +      A 2.3 to 5.25 V regulator that powers the Logic Power Supply Inp=
+ut
+> > +      (VDrive) pin.
+> > +
+> > +  clocks:
+> > +    maxItems: 1
+> > +    description: External oscillator clock (CLKIN).
+> > +
+> > +  reset-gpios:
+> > +    description:
+> > +      GPIO connected to the /RESET pin. As the line needs to be low fo=
+r the
+> > +      reset to be active, it should be configured as GPIO_ACTIVE_LOW.
+> > +    maxItems: 1
+> > +
+> > +  sample-gpios:
+> > +    description:
+> > +      GPIO connected to the /SAMPLE pin. As the line needs to be low t=
+o
+> trigger
+> > +      a sample, it should be configured as GPIO_ACTIVE_LOW.
+> > +    maxItems: 1
+> > +
+> > +  mode-gpios:
+> > +    description:
+> > +      GPIO lines connected to the A0 and A1 pins. These pins select th=
+e data
+> > +      transfer mode.
+> > +    minItems: 2
+> > +    maxItems: 2
+> > +
+> > +  resolution-gpios:
+> > +    description:
+> > +      GPIO lines connected to the RES0 and RES1 pins. These pins selec=
+t the
+> > +      resolution of the digital output. If omitted, it is assumed that=
+ the
+> > +      RES0 and RES1 pins are hard-wired to match the assigned-resoluti=
+on-bits
+> > +      property.
+> > +    minItems: 2
+> > +    maxItems: 2
+> > +
+> > +  fault-gpios:
+> > +    description:
+> > +      GPIO lines connected to the LOT and DOS pins. These pins combine=
+d
+> indicate
+> > +      the type of fault present, if any. As these pins a pulled low to=
+ indicate
+> > +      a fault condition, they should be configured as GPIO_ACTIVE_LOW.
+> > +    minItems: 2
+> > +    maxItems: 2
+> > +
+> > +  adi,fixed-mode:
+> > +    description:
+> > +      This is used to indicate the selected mode if A0 and A1 are hard=
+-wired
+> > +      instead of connected to GPIOS (i.e. mode-gpios is omitted).
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    enum: [config, velocity, position]
+> > +
+> > +  assigned-resolution-bits:
+> > +    description:
+> > +      Resolution of the digital output required by the application. Th=
+is
+> > +      determines the precision of the angle and/or the maximum speed t=
+hat
+> can
+> > +      be measured. If resolution-gpios is omitted, it is assumed that =
+RES0 and
+> > +      RES1 are hard-wired to match this value.
+> > +    enum: [10, 12, 14, 16]
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - spi-cpha
+> > +  - avdd-supply
+> > +  - dvdd-supply
+> > +  - vdrive-supply
+> > +  - clocks
+> > +  - sample-gpios
+> > +  - assigned-resolution-bits
+> > +
+> > +oneOf:
+> > +  - required:
+> > +      - mode-gpios
+> > +  - required:
+> > +      - adi,fixed-mode
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +
+> > +    spi {
+> > +        #address-cells =3D <1>;
+> > +        #size-cells =3D <0>;
+> > +
+> > +        resolver@0 {
+> > +            compatible =3D "adi,ad2s1210";
+> > +            reg =3D <0>;
+> > +            spi-max-frequency =3D <20000000>;
+> > +            spi-cpha;
+> > +            avdd-supply =3D <&avdd_regulator>;
+> > +            dvdd-supply =3D <&dvdd_regulator>;
+> > +            vdrive-supply =3D <&vdrive_regulator>;
+> > +            clocks =3D <&ext_osc>;
+> > +            sample-gpios =3D <&gpio0 90 GPIO_ACTIVE_LOW>;
+> > +            mode-gpios =3D <&gpio0 86 0>, <&gpio0 87 0>;
+> > +            resolution-gpios =3D <&gpio0 88 0>, <&gpio0 89 0>;
+> > +            assigned-resolution-bits =3D <16>;
+> > +        };
+> > +    };
+> >
 
