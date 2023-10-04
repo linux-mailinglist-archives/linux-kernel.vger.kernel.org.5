@@ -2,145 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F247B79E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C48A07B79E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241575AbjJDISL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54214 "EHLO
+        id S241516AbjJDITg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJDISK (ORCPT
+        with ESMTP id S229712AbjJDITe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:18:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21619A6;
-        Wed,  4 Oct 2023 01:18:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8864C433C7;
-        Wed,  4 Oct 2023 08:18:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696407486;
-        bh=vQFPg6PA6WrMnXAY1PY7xlQzGKPRe88hSEWvcIqGGLE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=h+1ABKoh9sVQArHfErOER+r1zQroHl5optg7U+U/veYLL913BqEdKUPuk1K98ULmR
-         Y3OWeV2g3kCfwrdFXzZ/i6zruJLfc2H7S3Q4m8oC7pqym5Ot3sqhI96P5ICGsq/HDv
-         jYHBof86l57qaLWNPDia4Ub2MbOpPsZjZQPO4367US1/ArMRr4OXmEZBFZOq5Yr/pT
-         NXxZjiOOfHekOeVXT6H5OCR+hF8nI64rYI1IwoiMA/3I1bfjvfiVN/kPJCUJQvXGFA
-         r5w9+1otsSGFZMK+bnvFA3kVK9fgGwJKG9It+VQ4coRED44w7iYkQ4CK7mQzng9Y3O
-         ZOyWiUYxdH4iw==
-Message-ID: <76d1e643-9b81-4c23-8f46-73fe59913600@kernel.org>
-Date:   Wed, 4 Oct 2023 10:18:01 +0200
+        Wed, 4 Oct 2023 04:19:34 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F20783
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:19:31 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4054496bde3so17911505e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:19:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696407570; x=1697012370; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8z/4YehLMwn0d5/6ji2uFPyw6gM7Nr4mX0lM3QuniaI=;
+        b=IOKooFediiWxAacIeNiKMXdLvpLokTM+IgYo9nY26NF+C6W3XgtqjYVaMWqSbGsejq
+         VVaywXi8djUuhSVGVlhbjTyjlMszS1XBKdTViMuMDUOAIwSel+Gjbz8NWB8uzHDpp1Mo
+         C6ibbWiJn0H2Q274kHxq82MhE0SRMasE4P2foyQF1O9BvUanqHkHrJdUxBHQZK8FD9VJ
+         NmcmsU31soUYVu0NDVMzmQ6jLkf9jXMkz+D6paLitQqg+s6rHQ8xR8pw5/KxhBVAQxbP
+         5XMLkA15KzRt/g6JVO2vDWdfkTqTbO+5/NPVBS3JAPnQ1N8hVPNNIgZraWoIktihAbRm
+         5vjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696407570; x=1697012370;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8z/4YehLMwn0d5/6ji2uFPyw6gM7Nr4mX0lM3QuniaI=;
+        b=bogZEb2IJH7ztStYHujs8+ydrbGfl9p9F+mt3sPDmKF10aJIa5esHgZG/8UeHUjb0w
+         N/I9DiPA6nRzuOC9HXFW/ZQsYDz3dmF76rTTTv4GHno9Ih7Kh21ImqPf4lYh/d7DYyxe
+         Jl6HlrIIy43VLcCuMH92PAQr/aMJEp6tA5MwTwnedT+VDdX9TDBt7/JViYpRe4QsvHBN
+         wSFmY9ShtyMGm8q5ZvQp+gE4Dt/CLDlzhI3NDvVFnVeCSWIZxFuIE7Kx5vIqYAGsgBA0
+         x3JxgcD0Q/bfS6flFy0jL8aqHiRZqGPWU1HVY4D0e7U4SC6ds+dar/OUOR+x1PS4EV9q
+         JX9A==
+X-Gm-Message-State: AOJu0Yymy0mAHUyxA7lEmLOMikVOhoLFUglx03k7sCch5AHe7Iytssge
+        N+pGkFGhvzD9j58GKEXjsy8lFdQy2phYLF2YxMM=
+X-Google-Smtp-Source: AGHT+IFK4nCCGrfSXMqGa0esse8M51syZ49qBeOft1p8FRmhLG4m7dAiNa1K2GCEy+d277Nub/Qn+w==
+X-Received: by 2002:a7b:cc8f:0:b0:401:dc7e:b688 with SMTP id p15-20020a7bcc8f000000b00401dc7eb688mr1540088wma.6.1696407570013;
+        Wed, 04 Oct 2023 01:19:30 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id z9-20020a7bc7c9000000b004060f0a0fd5sm892268wmk.13.2023.10.04.01.19.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 01:19:29 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 11:19:26 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] staging: rtl8192e: Remove unused functions related
+ to removed reset
+Message-ID: <755719c2-c42c-426e-8e2d-09ffefd9e028@kadam.mountain>
+References: <cover.1696266964.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] pinctrl: denverton: Enable platform device in the
- absence of ACPI enumeration
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Takashi Iwai <tiwai@suse.com>
-References: <20230926190818.931951-1-andriy.shevchenko@linux.intel.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20230926190818.931951-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1696266964.git.philipp.g.hortmann@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/09/2023 21:08, Andy Shevchenko wrote:
-> This is to cater the need for non-ACPI system whereby
-> a platform device has to be created in order to bind
-> with the Denverton pinctrl platform driver.
+On Mon, Oct 02, 2023 at 07:53:01PM +0200, Philipp Hortmann wrote:
+> Remove unused functions rtl92e_dm_backup_state(), 
+> rtl92e_dm_restore_state() and rtl92e_cam_restore(). Remove unused
+> variables. Most parts are leftover from the previous patch series.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/pinctrl/intel/pinctrl-denverton.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+> Tested with rtl8192e (WLL6130-D99) in Mode n (12.5 MB/s)
+> Transferred this patch over wlan connection of rtl8192e.
 > 
-> diff --git a/drivers/pinctrl/intel/pinctrl-denverton.c b/drivers/pinctrl/intel/pinctrl-denverton.c
-> index 0c4694cfa594..a1a7242e0451 100644
-> --- a/drivers/pinctrl/intel/pinctrl-denverton.c
-> +++ b/drivers/pinctrl/intel/pinctrl-denverton.c
-> @@ -257,6 +257,11 @@ static const struct acpi_device_id dnv_pinctrl_acpi_match[] = {
->  };
->  MODULE_DEVICE_TABLE(acpi, dnv_pinctrl_acpi_match);
->  
-> +static const struct platform_device_id dnv_pinctrl_platform_ids[] = {
-> +	{ "denverton-pinctrl", (kernel_ulong_t)&dnv_soc_data },
-> +	{ }
-> +};
-> +
->  static struct platform_driver dnv_pinctrl_driver = {
->  	.probe = intel_pinctrl_probe_by_hid,
->  	.driver = {
-> @@ -264,6 +269,7 @@ static struct platform_driver dnv_pinctrl_driver = {
->  		.acpi_match_table = dnv_pinctrl_acpi_match,
->  		.pm = &dnv_pinctrl_pm_ops,
->  	},
-> +	.id_table = dnv_pinctrl_platform_ids,
->  };
->  
->  static int __init dnv_pinctrl_init(void)
-> @@ -281,4 +287,5 @@ module_exit(dnv_pinctrl_exit);
->  MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
->  MODULE_DESCRIPTION("Intel Denverton SoC pinctrl/GPIO driver");
->  MODULE_LICENSE("GPL v2");
-> +MODULE_ALIAS("platform:denverton-pinctrl");
+> Philipp Hortmann (8):
+>   staging: rtl8192e: Remove unused function rtl92e_dm_backup_state()
+>   staging: rtl8192e: Remove unused function rtl92e_dm_restore_state()
+>   staging: rtl8192e: Remove unused function rtl92e_cam_restore()
+>   staging: rtl8192e: Remove unused variable last_ratr
+>   staging: rtl8192e: Remove unused variable rate_adaptive_disabled
+>   staging: rtl8192e: Remove unused variable rfc_txpowertrackingindex
+>   staging: rtl8192e: Remove unused/constant parameter mesh_flag and
+>     shutdown
+>   staging: rtl8192e: Remove constant parameter from
+>     rtllib_stop_protocol()
+> 
 
-Why do you need the alias? It's the same as ID table. You most likely
-miss MODULE_DEVICE_TABLE() or your table is just wrong.
+These all look good.
 
-Best regards,
-Krzysztof
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+
+regards,
+dan carpenter
 
