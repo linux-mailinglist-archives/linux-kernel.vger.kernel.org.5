@@ -2,137 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5017B884D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C60D7B885E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244019AbjJDSOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 14:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42334 "EHLO
+        id S244034AbjJDSPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 14:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244008AbjJDSOr (ORCPT
+        with ESMTP id S244028AbjJDSPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 14:14:47 -0400
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FE6AD;
-        Wed,  4 Oct 2023 11:14:43 -0700 (PDT)
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-57ba2cd3507so48374eaf.2;
-        Wed, 04 Oct 2023 11:14:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696443282; x=1697048082;
+        Wed, 4 Oct 2023 14:15:19 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034789E
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 11:15:15 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-98377c5d53eso25319366b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 11:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696443313; x=1697048113; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6nCGy29qXBi+ptXe1DWiTKziKMJYl0S7yqrhbrtMgRk=;
-        b=Yg4jfZB1D6M+H8/YJER0nPtdjX+UDnUHAmgqeIG4xHbo8XhudT/PB4ZzXBSnJ+4V2N
-         hBepuB6cVH07ehtsJ/+dVkaIuG19wqlw2vKY8F3LzyA0RvvAojxDOUVuDfuVbftIHgI1
-         j5acvbqZuzUm6l1e8DVxzMqvrPLllwCvRZDM4vtHLAgjbEsH3Y2QJ3tQnvS4FMCGrWbl
-         JGeqcq4+qZR/8KeI+vDd/zm9mpDsGc+ebxwuuvW//oXq5XBhC2nbvWvk4l7tvds812X+
-         3Asptx8pW7RbbxOcCnpzOJUjXKgjbwwYQAbmMdSqQFwtjXrYIboZfXrYmT+/gVWDkY47
-         TXPQ==
-X-Gm-Message-State: AOJu0YxLhTAoveFyYSijaSUb7saTLirl2owgHE3oYhhT+8AzBazI04wU
-        dopDWaxWvwr4TcgNFe4WFxU=
-X-Google-Smtp-Source: AGHT+IG7EHbaeeYSQWuYVxJewBVTKh+hSRaSfAIMnjP6jTwYH5NMi2y1YeijxB0WtRbsPtXrqTnwuw==
-X-Received: by 2002:a05:6358:5e12:b0:139:d5b9:87d3 with SMTP id q18-20020a0563585e1200b00139d5b987d3mr2311233rwn.5.1696443282278;
-        Wed, 04 Oct 2023 11:14:42 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id v7-20020a170902b7c700b001c627413e87sm4013296plz.290.2023.10.04.11.14.41
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a1N1m6C2ZJv5jGP2wdjxZsch8T9RQRLRWPKB+sdu5Zw=;
+        b=B+nnlbgW3mi4V6w35Kq8ERb8nkRCgmSU05+4rkFRR/7mXsY3YM6LzlLx3rlBGdKqFR
+         ssxZUqhDawFf8ae3y4bFMluAHgn1FqdzYJSMpOf1q7y7iqNGzxy+VDqh8NujnfaOITEF
+         O7MTOYLalr2xMnxz+DhoJezEXd2WTaRuJmd0KcZXMIn3uq4crrLCGHAkR7PN85stifEn
+         XNctOhsXNs5NPjus1KhgNhwWWIJSALtWHFP5K/e2swuqMNHW59UBm6j7J0I9dHCRV3rB
+         skrUwd7fqraps4FUFWiD7+jmEnSVA6fEdAuoxd+oYB8YioWHCjfkZxmxDKptnTs/Tyln
+         pmEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696443313; x=1697048113;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a1N1m6C2ZJv5jGP2wdjxZsch8T9RQRLRWPKB+sdu5Zw=;
+        b=JEjh4pTuvYdM92jmbqLPKHyzDTh953ZsH/1hn+pnniOIyi3WQ7MUO2q97i3TlsjINY
+         cBGrt+wh4ea+TN1JWBVYICXjB8aRUBK9pTjUb5KweIC9qPGRW2uSc/kaNmaDgihmZmWr
+         +o9JvdZfV3z7hVOohWJK9r15/A1Lx0G0AQ0E85fL1FcTpKMTYC6fIm02wLUT/79PNb8K
+         Lk+Sh/jZvoQKlVrTYA6C/BCDmVk55J0G+ULZ4VhcQKqwHFDKf+0daBU83WqF8tGj0kEb
+         V1EysYVz3VakoGlu1/YXrHT8So177WsWf2ZfFzNGo9j3hdWlv/KKv38tTdGpiFHRVej0
+         zlRg==
+X-Gm-Message-State: AOJu0Yyqv7ojj6og0I9ndtq2VB2eqw/kgtwD2uasFMhLSlgLukZyP2Lf
+        E7Cefr7fofIURGcVe0xJlzc=
+X-Google-Smtp-Source: AGHT+IEOS6YUN5E3lLEsLCMH3IPbtiYdYNQd/UwGpE8DHCDlh3CUL7d5AK6GfLnMcVj0OSoVACWNjA==
+X-Received: by 2002:a17:906:7496:b0:9b2:93f2:71b0 with SMTP id e22-20020a170906749600b009b293f271b0mr2939008ejl.38.1696443313006;
+        Wed, 04 Oct 2023 11:15:13 -0700 (PDT)
+Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
+        by smtp.gmail.com with ESMTPSA id mf24-20020a170906cb9800b009ae3d711fd9sm3138223ejb.69.2023.10.04.11.15.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 11:14:41 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 18:14:40 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
-        decui@microsoft.com, apais@linux.microsoft.com,
-        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
-        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
-        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
-        catalin.marinas@arm.com
-Subject: Re: [PATCH v4 13/15] uapi: hyperv: Add mshv driver headers defining
- hypervisor ABIs
-Message-ID: <ZR2rkNYnQds1MGZ0@liuwe-devbox-debian-v2>
-References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1696010501-24584-14-git-send-email-nunodasneves@linux.microsoft.com>
- <2023093057-eggplant-reshoot-8513@gregkh>
- <ZRia1uyFfEkSqmXw@liuwe-devbox-debian-v2>
- <2023100154-ferret-rift-acef@gregkh>
- <ZRyj5kJJYaBu22O3@liuwe-devbox-debian-v2>
- <2023100458-confusing-carton-3302@gregkh>
+        Wed, 04 Oct 2023 11:15:12 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 4 Oct 2023 20:15:10 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: EEVDF and NUMA balancing
+Message-ID: <ZR2rrixNEjrYiaYi@gmail.com>
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
+ <20231003215159.GJ1539@noisy.programming.kicks-ass.net>
+ <alpine.DEB.2.22.394.2310041358420.3108@hadrien>
+ <20231004120544.GA6307@noisy.programming.kicks-ass.net>
+ <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2023100458-confusing-carton-3302@gregkh>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
 
-On Wed, Oct 04, 2023 at 08:11:13AM +0200, Greg KH wrote:
-> On Tue, Oct 03, 2023 at 11:29:42PM +0000, Wei Liu wrote:
-> > > > > > diff --git a/include/uapi/hyperv/hvgdk.h b/include/uapi/hyperv/hvgdk.h
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..9bcbb7d902b2
-> > > > > > --- /dev/null
-> > > > > > +++ b/include/uapi/hyperv/hvgdk.h
-> > > > > > @@ -0,0 +1,41 @@
-> > > > > > +/* SPDX-License-Identifier: MIT */
-> > > > > 
-> > > > > That's usually not a good license for a new uapi .h file, why did you
-> > > > > choose this one?
-> > > > > 
-> > > > 
-> > > > This is chosen so that other Microsoft developers who don't normally
-> > > > work on Linux can review this code.
-> > > 
-> > > Sorry, but that's not how kernel development is done.  Please fix your
-> > > internal review processes and use the correct uapi header file license.
-> > > 
-> > > If your lawyers insist on this license, that's fine, but please have
-> > > them provide a signed-off-by on the patch that adds it and have it
-> > > documented why it is this license in the changelog AND in a comment in
-> > > the file so we can understand what is going on with it.
-> > > 
-> > 
-> > We went through an internal review with our legal counsel regarding the
-> > MIT license. We have an approval from them.
-> > 
-> > Let me ask if using something like "GPL-2.0 WITH Linux-syscall-note OR
-> > MIT" is possible.
+* Julia Lawall <julia.lawall@inria.fr> wrote:
+
 > 
-> That marking makes no sense from a legal point of view, please work with
-> your lawyers as it seems they do not understand license descriptions
-> very well :(
 > 
+> On Wed, 4 Oct 2023, Peter Zijlstra wrote:
+> 
+> > On Wed, Oct 04, 2023 at 02:01:26PM +0200, Julia Lawall wrote:
+> > >
+> > >
+> > > On Tue, 3 Oct 2023, Peter Zijlstra wrote:
+> > >
+> > > > On Tue, Oct 03, 2023 at 10:25:08PM +0200, Julia Lawall wrote:
+> > > > > Is it expected that the commit e8f331bcc270 should have an impact on the
+> > > > > frequency of NUMA balancing?
+> > > >
+> > > > Definitely not expected. The only effect of that commit was supposed to
+> > > > be the runqueue order of tasks. I'll go stare at it in the morning --
+> > > > definitely too late for critical thinking atm.
+> > >
+> > > Maybe it's just randomly making a bad situation worse rather than directly
+> > > introduing a problem.  There is a high standard deviatind in the
+> > > performance.  Here are some results with hyperfine.  The general trends
+> > > are reproducible.
+> >
+> > OK,. I'm still busy trying to bring a 4 socket machine up-to-date...
+> > gawd I hate the boot times on those machines :/
+> >
+> > But yeah, I was thinking similar things, I really can't spot an obvious
+> > fail in that commit.
+> >
+> > I'll go have a poke once the darn machine is willing to submit :-)
+> 
+> I tried a two-socket machine, but in 50 runs the problem doesn't show up.
+> 
+> The commit e8f331bcc270 starts with
+> 
+> -       if (sched_feat(PLACE_LAG) && cfs_rq->nr_running > 1) {
+> +       if (sched_feat(PLACE_LAG) && cfs_rq->nr_running) {
+> 
+> This seemed like a big change - cfs_rq->nr_running > 1 should be rarely
+> true in ua, while cfs_rq->nr_running should always be true.  Adding back
+> the > 1 and simply replacing the test by 0 both had no effect, though.
 
-Do you mean "GPL-2.0 WITH Linux-syscall-note OR MIT" doesn't make sense?
+BTW., in terms of statistical reliability, one of the biggest ... 
+stochastic elements of scheduler balancing is wakeup-preemption - which 
+you can turn off via:
 
-Why is that? I see that in various UAPI headers.
+   echo NO_WAKEUP_PREEMPTION > /debug/sched/features
 
-include/uapi/drm/lima_drm.h:1:/* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR MIT */
-include/uapi/linux/io_uring.h:1:/* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR MIT */
-include/uapi/linux/kfd_sysfs.h:1:/* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR MIT */
-include/uapi/linux/rkisp1-config.h:1:/* SPDX-License-Identifier: ((GPL-2.0+ WITH Linux-syscall-note) OR MIT) */
-include/uapi/linux/wireguard.h:1:/* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR MIT */
-include/uapi/xen/evtchn.h:1:/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR MIT) */
-include/uapi/xen/gntdev.h:1:/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR MIT) */
-include/uapi/xen/privcmd.h:1:/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR MIT) */
+or:
+
+   echo NO_WAKEUP_PREEMPTION > /sys/kernel/debug/sched/features
+
+If you can measure a performance regression with WAKEUP_PREEMPTION turned 
+off in *both* kernels, there's likely a material change (regression) in the 
+quality of NUMA load-balancing.
+
+If it goes away or changes dramatically with WAKEUP_PREEMPTION off, then 
+I'd pin this effect to EEVDF causing timing changes that are subtly 
+shifting NUMA & SMP balancing decisions past some critical threshold that 
+is detrimental to this particular workload.
+
+( Obviously both are regressions we care about - but doing this test would 
+  help categorize the nature of the regression. )
 
 Thanks,
-Wei.
 
-> thanks,
-> 
-> greg k-h
+	Ingo
