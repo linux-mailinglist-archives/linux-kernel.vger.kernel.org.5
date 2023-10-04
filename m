@@ -2,144 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D40457B7CFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057647B7D0E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242120AbjJDKVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
+        id S242174AbjJDKYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242090AbjJDKVR (ORCPT
+        with ESMTP id S242163AbjJDKYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:21:17 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09581AF;
-        Wed,  4 Oct 2023 03:21:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEC47C433C8;
-        Wed,  4 Oct 2023 10:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696414873;
-        bh=6p2OVd380km5MkF+sPFxwvvVTm86zMW8H5cFQGmcdVY=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Wi/yGkS0T9C5bWzFr6HuIzQ51P1LBReYCW//EaJLFya6h0iAhKklLYCz98A/RlMRL
-         Keuh5hIfEzqYtyXAteyIiEWFlZIpoYHdhpbjuokfpks4GIwrkHWg4XFlG17IALN9dg
-         NKcei5S7jJxIl0gDtGw9CaXs4d3izjpZ4+VOfI2cehdDCkcCdMG9UJtcSxUz2JGEaZ
-         ykFXmqJZC2Gq7PC1TUvUSvJorCW5Ag6m5S7jYIhy2s8A30GpmImPzXXgt4Do8GzvCW
-         lJ2fK189Zn3CvY72AjOpZbYob5T56jihV/VsyD+CFH2upaIwQksK0kF28mWSjqmtdu
-         gGngJcnOkhd0A==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/9] wifi: wfx: add placeholders for
- remain_on_channel feature
-References: <20230927163257.568496-1-jerome.pouiller@silabs.com>
-        <20230927163257.568496-6-jerome.pouiller@silabs.com>
-Date:   Wed, 04 Oct 2023 13:23:30 +0300
-In-Reply-To: <20230927163257.568496-6-jerome.pouiller@silabs.com>
- (=?utf-8?B?IkrDqXLDtG1l?=
-        Pouiller"'s message of "Wed, 27 Sep 2023 18:32:53 +0200")
-Message-ID: <87pm1uhejh.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 4 Oct 2023 06:24:01 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6324E6
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:23:55 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qnz2g-00075J-Tj; Wed, 04 Oct 2023 12:23:46 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qnz2g-00B0Xh-2u; Wed, 04 Oct 2023 12:23:46 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id C502222ED16;
+        Wed,  4 Oct 2023 10:23:45 +0000 (UTC)
+Date:   Wed, 4 Oct 2023 12:23:45 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     John Watts <contact@jookia.org>
+Cc:     linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] can: sun4i_can: Only show Kconfig if ARCH_SUNXI is set
+Message-ID: <20231004-icky-contempt-b46d6bb68918-mkl@pengutronix.de>
+References: <20230905231342.2042759-2-contact@jookia.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="z3zhqjwthn6wlylc"
+Content-Disposition: inline
+In-Reply-To: <20230905231342.2042759-2-contact@jookia.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
 
-> First step to implement remain_on_channel.
->
-> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> ---
->  drivers/net/wireless/silabs/wfx/main.c |  3 +++
->  drivers/net/wireless/silabs/wfx/scan.c | 12 ++++++++++++
->  drivers/net/wireless/silabs/wfx/scan.h |  5 +++++
->  3 files changed, 20 insertions(+)
->
-> diff --git a/drivers/net/wireless/silabs/wfx/main.c b/drivers/net/wireles=
-s/silabs/wfx/main.c
-> index ede822d771aaf..31f6e0d3dc089 100644
-> --- a/drivers/net/wireless/silabs/wfx/main.c
-> +++ b/drivers/net/wireless/silabs/wfx/main.c
-> @@ -151,6 +151,8 @@ static const struct ieee80211_ops wfx_ops =3D {
->  	.change_chanctx          =3D wfx_change_chanctx,
->  	.assign_vif_chanctx      =3D wfx_assign_vif_chanctx,
->  	.unassign_vif_chanctx    =3D wfx_unassign_vif_chanctx,
-> +	.remain_on_channel       =3D wfx_remain_on_channel,
-> +	.cancel_remain_on_channel =3D wfx_cancel_remain_on_channel,
->  };
->=20=20
->  bool wfx_api_older_than(struct wfx_dev *wdev, int major, int minor)
-> @@ -288,6 +290,7 @@ struct wfx_dev *wfx_init_common(struct device *dev, c=
-onst struct wfx_platform_da
->  	hw->wiphy->features |=3D NL80211_FEATURE_AP_SCAN;
->  	hw->wiphy->flags |=3D WIPHY_FLAG_AP_PROBE_RESP_OFFLOAD;
->  	hw->wiphy->flags |=3D WIPHY_FLAG_AP_UAPSD;
-> +	hw->wiphy->max_remain_on_channel_duration =3D 5000;
->  	hw->wiphy->max_ap_assoc_sta =3D HIF_LINK_ID_MAX;
->  	hw->wiphy->max_scan_ssids =3D 2;
->  	hw->wiphy->max_scan_ie_len =3D IEEE80211_MAX_DATA_LEN;
-> diff --git a/drivers/net/wireless/silabs/wfx/scan.c b/drivers/net/wireles=
-s/silabs/wfx/scan.c
-> index 16f619ed22e00..51338fd43ae4f 100644
-> --- a/drivers/net/wireless/silabs/wfx/scan.c
-> +++ b/drivers/net/wireless/silabs/wfx/scan.c
-> @@ -145,3 +145,15 @@ void wfx_scan_complete(struct wfx_vif *wvif, int nb_=
-chan_done)
->  	wvif->scan_nb_chan_done =3D nb_chan_done;
->  	complete(&wvif->scan_complete);
->  }
-> +
-> +int wfx_remain_on_channel(struct ieee80211_hw *hw, struct ieee80211_vif =
-*vif,
-> +			  struct ieee80211_channel *chan, int duration,
-> +			  enum ieee80211_roc_type type)
-> +{
-> +	return 0;
-> +}
-> +
-> +int wfx_cancel_remain_on_channel(struct ieee80211_hw *hw, struct ieee802=
-11_vif *vif)
-> +{
-> +	return 0;
-> +}
-> diff --git a/drivers/net/wireless/silabs/wfx/scan.h b/drivers/net/wireles=
-s/silabs/wfx/scan.h
-> index 78e3b984f375c..2f8361769303e 100644
-> --- a/drivers/net/wireless/silabs/wfx/scan.h
-> +++ b/drivers/net/wireless/silabs/wfx/scan.h
-> @@ -19,4 +19,9 @@ int wfx_hw_scan(struct ieee80211_hw *hw, struct ieee802=
-11_vif *vif,
->  void wfx_cancel_hw_scan(struct ieee80211_hw *hw, struct ieee80211_vif *v=
-if);
->  void wfx_scan_complete(struct wfx_vif *wvif, int nb_chan_done);
->=20=20
-> +int wfx_remain_on_channel(struct ieee80211_hw *hw, struct ieee80211_vif =
-*vif,
-> +			  struct ieee80211_channel *chan, int duration,
-> +			  enum ieee80211_roc_type type);
-> +int wfx_cancel_remain_on_channel(struct ieee80211_hw *hw, struct ieee802=
-11_vif *vif);
-> +
->  #endif
+--z3zhqjwthn6wlylc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm not really seeing the point of this patch. I would expect that once
-.remain_on_channel is assign the feature will work without issues, for
-example otherwise git bisect will not work correctly.
+On 06.09.2023 09:13:43, John Watts wrote:
+> When adding the RISCV option I didn't gate it behind ARCH_SUNXI.
+> As a result this option shows up with Allwinner support isn't enabled.
+> Fix that by requiring ARCH_SUNXI to be set if RISCV is set.
+>=20
+> Fixes: 8abb95250ae6 ("can: sun4i_can: Add support for the Allwinner D1")
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Closes: https://lore.kernel.org/linux-sunxi/CAMuHMdV2m54UAH0X2dG7stEg=3Dg=
+rFihrdsz4+o7=3D_DpBMhjTbkw@mail.gmail.com/
+> Signed-off-by: John Watts <contact@jookia.org>
 
-What about folding patches 5 and 6 into one patch? And then moving that
-patch as the last to make sure that the feature is enabled on the driver
-only after it works correctly?
+Applied to linux-can/testing.
+
+regards,
+Marc
 
 --=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+--z3zhqjwthn6wlylc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmUdPS4ACgkQvlAcSiqK
+BOhU5wf/dWWTRwtQpRT5Pz70QGC+v3K6sLXPZfBgh7btGZOF7Icwh3w4GGbx4RTA
+k1lx2Brcq6tPO3MsdqJRgp4CSpOrDlvuwIG51mA/UfFjRSbBYfpbdVkYjBJ7UdiK
+VUBUiHfv9W7IUon50lb0SFUREQ/wnaCgfoorQ+tPC0lhPhOAsR14/pk3xu5snmcH
+VUgJZobxei+Dvs6OfWcVt34+OeBwD28v60NNhVKR7lcVVB8pGsOs7zNM4R/d6N7f
+rXPxbs2SJi2hiT0+87c9p5AvwxslNDOq5SMhXUGtFfNDBByOnvfLBeLo5xC5Rs3k
+60tmdWRPZRMQ9uBkCvFItxgM2c4YcA==
+=HeNY
+-----END PGP SIGNATURE-----
+
+--z3zhqjwthn6wlylc--
