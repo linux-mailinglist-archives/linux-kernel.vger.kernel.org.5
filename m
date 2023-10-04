@@ -2,109 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7247B8573
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AB97B8582
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 18:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243424AbjJDQiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 12:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59778 "EHLO
+        id S243443AbjJDQkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 12:40:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233684AbjJDQix (ORCPT
+        with ESMTP id S243450AbjJDQkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:38:53 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0537395
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:38:50 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-35264dff796so64245ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 09:38:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1696437529; x=1697042329; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PGk4OygiRC4+9EnUwXytnNTCJzDue1dLt499Je8Nhm4=;
-        b=cWF5Hn1k1oRtPOwEOGRI/hzYgx+vFF3/dy1XTDzG4Pl2GfgYsN4EpqO28WgB0JpMiU
-         QYWKx+Pyh0qpvhgfsxS0RkijrOwXn4R0kkJc3fJQItoNPqWSzGGwfLF3UzYD4O+PBZ8r
-         Xm5nIQ+GA1hJxFc+p5em46NmQ9ISI+pSRrilQ=
+        Wed, 4 Oct 2023 12:40:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DF8C9
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 09:39:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696437555;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9YIAoi2N6jKSNdTGNnxQ4r70nxai8Q1Dqlauk6QORHI=;
+        b=e/lwVFgJ46ZIXoqVUUExJ+TnCFp5b1qefIF7hPTTUa/uuZjsQXlRhqDvs0f2S9GIwYrMco
+        kY/VsbrBQh9POvI4SGD34vMvRH4xJ2zCzfJ61vF9ycC9K3ABz6l4Kp0yzePgt091hxChC+
+        9K3yda03zTPuufhBgxOT+eoN2XH8y7Q=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-167-rw0IxPkyPWCDwbrSWc7Siw-1; Wed, 04 Oct 2023 12:39:14 -0400
+X-MC-Unique: rw0IxPkyPWCDwbrSWc7Siw-1
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35143053d55so70565ab.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 09:39:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696437529; x=1697042329;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PGk4OygiRC4+9EnUwXytnNTCJzDue1dLt499Je8Nhm4=;
-        b=vvfSnRSqN8taf1947f4s7a9VcabeaIkGMLwsnH9xy2JRUwrQx5uhTc4USCU7dNjaxd
-         cBZBnQII3oPPwkOYa+9USYBk6KijxSKNijlYBypV4YCfg5HQ1Ysi8lcHNPcC6E57rqvm
-         3B7py5AL6/W0nV2kPDE5bRhCrzizZ9tCTDnYd1ftGxegrr0fOIPyfIHl8fvNzfQbs9x8
-         Dk5stdLOiUJWqKtnIJHp49V6Em5wyiyjYSj7LcnQukswZgOZYRRu+v70aAcuTkkAhyMu
-         afKUiL9FEYz2IGwgdHzCFbinn0ea9saaKKz4yVM+5xSZvK2pL9FQF4V+ppJ1UBAc7vx2
-         kdIw==
-X-Gm-Message-State: AOJu0Yw94VfQuRsXU7JaG0coEKHGl2MDHWjeb4nZpgEB5/Bgch7Fe0+l
-        otLBUES0XSTJQdC0kjQpkq4jgQ==
-X-Google-Smtp-Source: AGHT+IENPHYySv5Kh5MjoQRAQmmVHJ9bE59p45Yzdue9AOoI7LQyNhgRZcRxILlPOTiWQlZwJqu43w==
-X-Received: by 2002:a92:dcce:0:b0:351:54db:c1bb with SMTP id b14-20020a92dcce000000b0035154dbc1bbmr2957911ilr.0.1696437529374;
-        Wed, 04 Oct 2023 09:38:49 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id r2-20020a92ce82000000b0034ff58af12dsm22584ilo.77.2023.10.04.09.38.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 09:38:49 -0700 (PDT)
-Message-ID: <55213463-8834-4ed6-b0a2-1be69dd838d2@linuxfoundation.org>
-Date:   Wed, 4 Oct 2023 10:38:48 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] selftests/user_events: Fix abi_test for BE archs
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Beau Belgrave <beaub@linux.microsoft.com>, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        cleger@rivosinc.com, linux-kselftest@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230925230829.341-1-beaub@linux.microsoft.com>
- <20230925230829.341-3-beaub@linux.microsoft.com>
- <20231003205908.391d17f5@gandalf.local.home>
- <4cc400c9-f4ad-4a30-a5fe-d02a6a4bcec0@linuxfoundation.org>
- <20231004111437.47c80c81@gandalf.local.home>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231004111437.47c80c81@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        d=1e100.net; s=20230601; t=1696437553; x=1697042353;
+        h=content-transfer-encoding:mime-version:references:in-reply-to:from
+         :subject:cc:to:message-id:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9YIAoi2N6jKSNdTGNnxQ4r70nxai8Q1Dqlauk6QORHI=;
+        b=E8WjJJwn0VyigPbm92JXuKVXHQIzCnI+oCxDsz4ZiPoeR2GfLQlfMciQyeG4icLufj
+         OoOuyIvkYN+vYRd6A8DmeWKBZaeakhRduLgr7OOBa3bQsN/EpKjh6UHtw1K/Vh6HyFFX
+         dXFMUKNxJhy2VDvqm+R8rWrzzOf4u2xNSAbYJhjh0E3ptyQUGcR5X9gzpBO2pJ9hzJNh
+         FXRNfDi4dZoaurAJsnukk6Igncr/QLEoJinrhIfnJXx7huPk3Ro65EKRTLZbDh5176na
+         Zk1ahy25t5sST+hWI0EkFFFTHuRUZIsorpkWMFfiIFyuKCdVth3Dme716Weav5hbAUMC
+         Q4tQ==
+X-Gm-Message-State: AOJu0Yz1DnkCHp5B1S03u0owVkgXo8UXFCldIq8aXz98DhMH3lhcznQN
+        g3oCwEPYJd6s8fUGp7cNwz7wSJhfZ+DE0cIZQXgowxl4MDNnlF/xUq8N38Sct6f1/QOatTLiwM+
+        sV3BsD6Qv7a9CIlUwdFvwCdNbf1iCasOMOB4=
+X-Received: by 2002:a05:6e02:164f:b0:351:57d5:51bb with SMTP id v15-20020a056e02164f00b0035157d551bbmr3716949ilu.16.1696437553514;
+        Wed, 04 Oct 2023 09:39:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFytBl337LJl7fnH1tEMNvTVvdRyzepj/SY9LKBkr/2JIKcfKvUBQL/k9u0YI41kDHAabFHUw==
+X-Received: by 2002:a05:6e02:164f:b0:351:57d5:51bb with SMTP id v15-20020a056e02164f00b0035157d551bbmr3716932ilu.16.1696437553292;
+        Wed, 04 Oct 2023 09:39:13 -0700 (PDT)
+Received: from localhost ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
+        by smtp.gmail.com with ESMTPSA id m19-20020a638c13000000b0057411f9a516sm3584673pgd.7.2023.10.04.09.39.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 09:39:12 -0700 (PDT)
+Date:   Thu, 05 Oct 2023 01:39:09 +0900 (JST)
+Message-Id: <20231005.013909.1713937955475096940.syoshida@redhat.com>
+To:     jmaloy@redhat.com, pabeni@redhat.com
+Cc:     ying.xue@windriver.com, netdev@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        syzbot+5138ca807af9d2b42574@syzkaller.appspotmail.com
+Subject: Re: [PATCH] tipc: Fix uninit-value access in
+ tipc_nl_node_reset_link_stats()
+From:   Shigeru Yoshida <syoshida@redhat.com>
+In-Reply-To: <3666c3b4628d6d82ccff593d051706db3896e5af.camel@redhat.com>
+References: <20230924060325.3779150-1-syoshida@redhat.com>
+        <3666c3b4628d6d82ccff593d051706db3896e5af.camel@redhat.com>
+X-Mailer: Mew version 6.9 on Emacs 28.2
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/23 09:14, Steven Rostedt wrote:
-> On Wed, 4 Oct 2023 09:10:52 -0600
-> Shuah Khan <skhan@linuxfoundation.org> wrote:
+On Tue, 03 Oct 2023 10:58:54 +0200, Paolo Abeni wrote:
+> On Sun, 2023-09-24 at 15:03 +0900, Shigeru Yoshida wrote:
+>> syzbot reported the following uninit-value access issue:
+>> 
+>> =====================================================
+>> BUG: KMSAN: uninit-value in strlen lib/string.c:418 [inline]
+>> BUG: KMSAN: uninit-value in strstr+0xb8/0x2f0 lib/string.c:756
+>>  strlen lib/string.c:418 [inline]
+>>  strstr+0xb8/0x2f0 lib/string.c:756
+>>  tipc_nl_node_reset_link_stats+0x3ea/0xb50 net/tipc/node.c:2595
+>>  genl_family_rcv_msg_doit net/netlink/genetlink.c:971 [inline]
+>>  genl_family_rcv_msg net/netlink/genetlink.c:1051 [inline]
+>>  genl_rcv_msg+0x11ec/0x1290 net/netlink/genetlink.c:1066
+>>  netlink_rcv_skb+0x371/0x650 net/netlink/af_netlink.c:2545
+>>  genl_rcv+0x40/0x60 net/netlink/genetlink.c:1075
+>>  netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+>>  netlink_unicast+0xf47/0x1250 net/netlink/af_netlink.c:1368
+>>  netlink_sendmsg+0x1238/0x13d0 net/netlink/af_netlink.c:1910
+>>  sock_sendmsg_nosec net/socket.c:730 [inline]
+>>  sock_sendmsg net/socket.c:753 [inline]
+>>  ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2541
+>>  ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2595
+>>  __sys_sendmsg net/socket.c:2624 [inline]
+>>  __do_sys_sendmsg net/socket.c:2633 [inline]
+>>  __se_sys_sendmsg net/socket.c:2631 [inline]
+>>  __x64_sys_sendmsg+0x307/0x490 net/socket.c:2631
+>>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>>  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>> 
+>> Uninit was created at:
+>>  slab_post_alloc_hook+0x12f/0xb70 mm/slab.h:767
+>>  slab_alloc_node mm/slub.c:3478 [inline]
+>>  kmem_cache_alloc_node+0x577/0xa80 mm/slub.c:3523
+>>  kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:559
+>>  __alloc_skb+0x318/0x740 net/core/skbuff.c:650
+>>  alloc_skb include/linux/skbuff.h:1286 [inline]
+>>  netlink_alloc_large_skb net/netlink/af_netlink.c:1214 [inline]
+>>  netlink_sendmsg+0xb34/0x13d0 net/netlink/af_netlink.c:1885
+>>  sock_sendmsg_nosec net/socket.c:730 [inline]
+>>  sock_sendmsg net/socket.c:753 [inline]
+>>  ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2541
+>>  ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2595
+>>  __sys_sendmsg net/socket.c:2624 [inline]
+>>  __do_sys_sendmsg net/socket.c:2633 [inline]
+>>  __se_sys_sendmsg net/socket.c:2631 [inline]
+>>  __x64_sys_sendmsg+0x307/0x490 net/socket.c:2631
+>>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>>  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>> 
+>> Link names must be null-terminated strings. If a link name which is not
+>> null-terminated is passed through netlink, strstr() and similar functions
+>> can cause buffer overrun. This causes the above issue.
+>> 
+>> This patch fixes this issue by returning -EINVAL if a non-null-terminated
+>> link name is passed.
+>> 
+>> Fixes: ae36342b50a9 ("tipc: add link stat reset to new netlink api")
+>> Reported-and-tested-by: syzbot+5138ca807af9d2b42574@syzkaller.appspotmail.com
+>> Closes: https://syzkaller.appspot.com/bug?extid=5138ca807af9d2b42574
+>> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+>> ---
+>>  net/tipc/node.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>> 
+>> diff --git a/net/tipc/node.c b/net/tipc/node.c
+>> index 3105abe97bb9..f167bdafc034 100644
+>> --- a/net/tipc/node.c
+>> +++ b/net/tipc/node.c
+>> @@ -2586,6 +2586,10 @@ int tipc_nl_node_reset_link_stats(struct sk_buff *skb, struct genl_info *info)
+>>  
+>>  	link_name = nla_data(attrs[TIPC_NLA_LINK_NAME]);
+>>  
+>> +	if (link_name[strnlen(link_name,
+>> +			      nla_len(attrs[TIPC_NLA_LINK_NAME]))] != '\0')
+>> +		return -EINVAL;
 > 
->> On 10/3/23 18:59, Steven Rostedt wrote:
->>>
->>> Note, this doesn't seem to apply to my tree so I only added the first
->>> patch. I think this needs to go through Shuah's tree.
->>>
->>> -- Steve
->>>
->>>    
->>
->> Yes. I sent a fix up for rc4 - I can pull these two patches into
->> linux-kselftest next
->>
->> Steve! Does that work for you?
->>
+> I have the same comment as for the other tipc patch, please use
+> nla_strscpy instead, thanks!
+
+Thank you for your comment.  I'll send a v2 patch using nla_strscpy()
+and check if other usage of TIPC_NLA_LINK_NAME have the same issue.
+
+Thanks,
+Shigeru
+
 > 
-> I applied the first patch to my tree, I think the second patch is fine to go
-> separately through your tree.
+> Paolo
 > 
-
-
-Yes I will apply this to linux-kselftest fixes branch once my PR
-clears.
-
-thanks,
--- Shuah
 
