@@ -2,160 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEA67B8292
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A712A7B829C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242938AbjJDOmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
+        id S242793AbjJDOqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242935AbjJDOmL (ORCPT
+        with ESMTP id S232630AbjJDOqa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:42:11 -0400
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E993C1;
-        Wed,  4 Oct 2023 07:42:07 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 4CE17100092; Wed,  4 Oct 2023 15:42:05 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1696430525; bh=Fa78l7qohJHkl5Gw25F2o3ZIf+b/JdBvbj8O9ydf7rY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c3TwoBRUOdAHj5cmBTelMsfPgYqzxQrEeL1W2Qpug1KgC5dL//JYVI9eEwNU136//
-         ng2ABitSd5qrvWK9S3NTrt0wBBuD293PgVjLX0K5EBBQoGA9ygGfCQDLRrCO6njLDh
-         ByIfh+4k5Dy749UkkCNoQwwBBnO0MqzQdTxo6MMYtOkZf4OikisclIz2Sg1VCJkH9g
-         ObfUjV8SXX7t9j98FiYmTYZwmjC/Rn+G67j8wi8xVdfcgo0YJn/zJIDLSmWQ/fexok
-         hQV1yZjpJbFIEBOmK14Zzav0Ts9OUjzAfv6MjneQKHjw+fNt27WIieHKDdmcyZNhdX
-         8j/ZcISlS3zTw==
-Date:   Wed, 4 Oct 2023 15:42:05 +0100
-From:   Sean Young <sean@mess.org>
-To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 2/2] media: pwm-ir-tx: trigger edges from hrtimer
- interrupt context
-Message-ID: <ZR15vc0chl/gMDgV@gofer.mess.org>
-References: <cover.1696156485.git.sean@mess.org>
- <7efe4229514001b835fa70d51973cd3306dc0b04.1696156485.git.sean@mess.org>
- <1647d018-cb4e-7c4a-c80f-c726b1ea3628@gmail.com>
- <ZR0bqBbvM+hHOPXX@gofer.mess.org>
- <1c96b6f1-bb88-0027-a7a0-ec85768c6b90@gmail.com>
+        Wed, 4 Oct 2023 10:46:30 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1E1C0
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:46:27 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id 71dfb90a1353d-49a885c5961so881168e0c.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 07:46:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696430787; x=1697035587; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lwBDdPFutp4Wns+Ibf/M2e9ggWldvEkzAnfrfphtpkQ=;
+        b=zI1E9XL6fpf2dHV/3SM+HVULvHPRd0qtUyg0M4TOTTCqQdzdL6IJrGo4pDmEwhvncG
+         5WC5FJyJ3dCNGHgThuU1fNmGWqsbXnXOW0fAsr2MPkb0uNqHQd9FTZEFOmjugAEMVT1D
+         VWhg486DeVrLxUT04FY5ZLzMclBDvo647ipw817mI0XTP6IkEkRn02FsQ1Ap2Kut2K85
+         EUoUCSPH4amoXpu1IhU2Wa7IOR85lMCrvwGeugIo7Avr+ZJ/szMtVrSSWOdMBVEOl9SB
+         RlponTZhzd/WhYw9SjKQD/TKEOsVxWjNud+LyhzpLiw7U2JNMZfR3xR3HODjguxYVUef
+         8aaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696430787; x=1697035587;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lwBDdPFutp4Wns+Ibf/M2e9ggWldvEkzAnfrfphtpkQ=;
+        b=qThEGswR9Qw186fp9QzG6TjYXK0JoVjGid3jFbPfBEBDdckp+5DVFaTgkGbblBiHNd
+         26g9n+wOhN97ORTa2qoGviMU1Ks9R5I4LS4j+OCqmuV/eaAdZ/0CUB01xewPKGesaLSE
+         /XrH7LJSyIt6iQ+4BjSCvdXPlFXbAGi/YXeC7Gu6XZMgeJ2gH3Am49oOaAQsOz/xSu1x
+         LY9RFJBKVkO7jLl4gerALw8ov7obXjNjXVFITD8dhdonYLBnkfE3oom/cUb85BS6dBvT
+         QPPqYlRC/QYbVYwQkLnik4Y2Lg1dkikgttXDFqjKGBET95APmxRgVrqTWFliRYJjb0yG
+         X8wQ==
+X-Gm-Message-State: AOJu0YwTSDQ5kLfAa/HWJEpTRBreaCmGh1Z25bDqUKwqUYnChEaSI1ea
+        EJtCMbn2o+2nzzkXFzErtCFA9/uWfjnAs2EQKWEbIQ==
+X-Google-Smtp-Source: AGHT+IHowxYAlXaEo2LUwPOEzCMcE6e7W0t3/FURLEvqnOYDOVy4PsXfH6M8PFHYIPU8w4fvmpLliGDweCQVD9riZhA=
+X-Received: by 2002:a1f:4ec1:0:b0:49a:3537:881c with SMTP id
+ c184-20020a1f4ec1000000b0049a3537881cmr1960484vkb.14.1696430786959; Wed, 04
+ Oct 2023 07:46:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1c96b6f1-bb88-0027-a7a0-ec85768c6b90@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231003145114.21637-1-brgl@bgdev.pl> <20231003145114.21637-35-brgl@bgdev.pl>
+ <CAHp75VexazbYskr2pxOPzZe8q=o4ZCHnhcN6U1XX=Th8sxXCgQ@mail.gmail.com>
+ <CAMRc=Mf9O0MKHKM0v3tongx+Aj3wxUaDcvSdNC+FZdXD3C_P0A@mail.gmail.com>
+ <ZR1fb/nwg58AZ0y9@smile.fi.intel.com> <ZR1gOKF/laH05Clc@smile.fi.intel.com>
+In-Reply-To: <ZR1gOKF/laH05Clc@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 4 Oct 2023 16:46:16 +0200
+Message-ID: <CAMRc=Mc-LQs1md91Q7Ld3tmRcd=N97Ry_RRgZEYBW6671EDdMA@mail.gmail.com>
+Subject: Re: [PATCH 34/36] treewide: rename pinctrl_gpio_direction_input_new()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 03:54:32PM +0300, Ivaylo Dimitrov wrote:
-> On 4.10.23 г. 11:00 ч., Sean Young wrote:
-> > On Mon, Oct 02, 2023 at 09:16:53AM +0300, Ivaylo Dimitrov wrote:
-> > > On 1.10.23 г. 13:40 ч., Sean Young wrote:
-> > > > The pwm-ir-tx driver has to turn the pwm signal on and off, and suffers
-> > > > from delays as this is done in process context. Make this work in atomic
-> > > > context.
-> > > > 
-> > > > This makes the driver much more precise.
-> > > > 
-> > > > Signed-off-by: Sean Young <sean@mess.org>
-> > > > Cc: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-> > > > ---
-> > > >    drivers/media/rc/pwm-ir-tx.c | 79 ++++++++++++++++++++++++++++--------
-> > > >    1 file changed, 63 insertions(+), 16 deletions(-)
-> > > > 
-> > > 
-> > > what about the following patch(not a proper one, just RFC)? It achieves the
-> > > same (if not better) precision (on n900 at least) without using atomic pwm.
-> > > What it does is: create a fifo thread in which we swicth pwm on/off, start
-> > > hrtimer that is used to signal thread when to switch pwm.
-> > > As signal comes earlier than needed(because hrtimer runs async to the
-> > > thread), we do a busy loop wait for the precise time to switch the pwm. At
-> > > least on n900, this busy loop is less than 200 us per switch(worst case,
-> > > usually it is less than 100 us). That way, even if we have some latency
-> > > spike, it is covered by not doing busy loop for that particular pwm switch
-> > > and we keep the precise timing.
-> > 
-> > I think this is a good idea.
-> > 
-> > > Maybe we shall merge both patches so fifo thread to be used for sleeping
-> > > pwms and hrtimer for atomic. I can do that and test it here if you think
-> > > that approach makes sense.
-> > 
-> > Let's try and merge this patch for the next merge window, and worry about
-> > the atomic version after that. We've already queued the ir-rx51 removal
-> > patches to media_stage so it would be nice to have to revert these patches,
-> > and improve pwm-ir-tx for the next kernel release.
-> > 
-> 
-> ir-rx51 is broken without
-> https://www.spinics.net/lists/kernel/msg4953300.html, it is also missing a
-> call to init_waitqueue_head() in the probe() function. So I have no strong
-> opinion on what shall be done with it.
+On Wed, Oct 4, 2023 at 2:53=E2=80=AFPM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Wed, Oct 04, 2023 at 03:49:52PM +0300, Andy Shevchenko wrote:
+> > On Tue, Oct 03, 2023 at 09:08:41PM +0200, Bartosz Golaszewski wrote:
+> > > On Tue, Oct 3, 2023 at 5:16=E2=80=AFPM Andy Shevchenko
+> > > <andy.shevchenko@gmail.com> wrote:
+> > > > On Tue, Oct 3, 2023 at 5:51=E2=80=AFPM Bartosz Golaszewski <brgl@bg=
+dev.pl> wrote:
+> > > > >
+> > > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > > >
+> > > > > Now that pinctrl_gpio_direction_input() is no longer used, let's =
+drop the
+> > > > > '_new' suffix from its improved variant.
+> > > >
+> > > > This and other "treewide" patches in the series are redundant. Just
+> > > > name the functions better to begin with.
+> > >
+> > > I don't want to rename these functions. They have perfectly fine
+> > > names. I want to change their signatures and the renaming part is
+> > > there only to make the reviewing easier.
+> >
+> > So, then you can make them macros and based on the type of the first ar=
+gument
+> > use either old or new API, which you then make public. The all noise wi=
+th
+> > "_new" is not needed, really.
+>
+> To elaborate:
+>
+> First patch splits existing functions to the macros that use _Generic(), =
+and
+> old ones become renamed only on the implementation side (to _old or whate=
+ver).
+> Then you add a new ones and apply them to these macros as a second (defau=
+lt?)
+> choice. Then you convert users one-by-one or whatever preference is, and =
+at
+> the end you kill macros with old functions and rename "_new" again in a s=
+ingle
+> place (pinctrl core).
+>
 
-Sure, ok. I guess the pwm-ir-tx driver is less broken in that regard.
+At which point do we go from "unsigned gpio" to "struct gpio_chip *gc,
+unsigned int offset" as arguments here?
 
-In that case I propose we merge the ir-rx51 for the next merge window,
-and further fixes to pwm-ir-tx go in when they're ready.
-
-> > This means the thread is always around. How about creating the thread
-> > per-tx?
-> > 
-> 
-> Yes, that can be done, just not sure what the overhead would be.
-> 
-> Also, I think we shall reconsider the way the driver works:
-> 
-> Imagine we have to pretend we are TV remote that supports NEC protocol (for
-> example), especially the "REPEAT CODES" part. Currently, no matter what we
-> do, there is no way to get the timings even remotely right, as we have no
-> idea what the "warmup" and "complete" delays are. Like, starting thread (if
-> needed), hrtimer setup time, completions waiting, contexts switching, etc.
-
-It's not perfect, but the assumption is that those times are going to be
-the same or very similar for each tx. So, if the setup/warmup time is the same
-and if there is no complete delay, then using usleep() between two txs 
-works fine. I think in reality the setup/complete times are extremely
-short (time to send usb packet or so), and compared to IR timings this is
-insignificant.
-
-Having said that, maybe a different scheme would be nice, which could offer
-better precision.
- 
-> So, I think the correct thing to do is to copy txbuf (as a list of txbufs)
-> into pwm_ir in tx function, start pulses generation and return from
-> pwm_ir_tx() *immediately*, without waiting for tx to finish. If userspace
-> requests submission of another set of pulses while we are still sending the
-> current one, well, we accept it, add it to the list and delay the sending
-> until the current one is finished. When there is nothing more to send (the
-> list is empty), stop the hrtimer (and perhaps the thread)
-> 
-> I think that way userspace will be able to append as many "repeat" pulses
-> with proper timings as it wants (with some sane limits ofc).
-> 
-> Unless we somehow have API restriction that we shall not return until tx is
-> finished.
-> 
-> Does that make any sense to you?
-
-Two problems:
-
-It's a breaking uapi change: for example lircd and ir-ctl use this for 
-calculating the gap between transmits. If we start returning early then
-things break.
-
-Secondly, not all drivers can support this, or they would need to support
-it using a thread or so, which makes the driver code much more complicated
-and we'd have to change nearly every driver.
-
-
-Sean
+Bart
