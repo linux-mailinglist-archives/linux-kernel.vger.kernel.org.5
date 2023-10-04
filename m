@@ -2,384 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D3F7B78EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 274127B78EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241543AbjJDHn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59612 "EHLO
+        id S241563AbjJDHoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232761AbjJDHnz (ORCPT
+        with ESMTP id S232761AbjJDHn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:43:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3D99B;
-        Wed,  4 Oct 2023 00:43:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D76DEC433C7;
-        Wed,  4 Oct 2023 07:43:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696405431;
-        bh=HfgYTp0WssHEnePmDkQCGt5XcFpdT2hvV0snW81vExs=;
+        Wed, 4 Oct 2023 03:43:59 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317599B;
+        Wed,  4 Oct 2023 00:43:55 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 2A5EB100092; Wed,  4 Oct 2023 08:43:53 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+        t=1696405433; bh=1nteSVKD+/K8wn+sogKzmMSMVdu1ePZDwxTQ14oQaVI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bXPCIXQqmxiDqSEwBLhtixM/suy318GVMRJ6EGuhPk1PnYSGAmkDDPIMJWPfN27pF
-         U5LY9+sywq7Emw7feUDXBeMaD4hSGs6HAgDBgKaJhaL25Wv3t5M8vgcKqaJn7RWOT7
-         oAZPadzYPulUBsoEJZGj2zwfW9XTqWJuih/5Jp4L+uXlR/WoSvYPiDzaB/pltBLfo4
-         d9UoNx0EO+x4NzNm744oFmDisOggRVwgAm2otbs2tY6knjZaWkTQKzl+6JFvXCUTGb
-         RHByqlw0miOJpeCdHCbBhot6BVmwyO13QQcIunviXxGry09JzUeIv4j/dv9C1NZHg+
-         EOzJewi7K5Zww==
-Date:   Wed, 4 Oct 2023 13:13:47 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH v5 2/2] dmaengine: Loongson1: Add Loongson1 dmaengine
- driver
-Message-ID: <ZR0Xs1IGA3v+EJE/@matsya>
-References: <20230928121953.524608-1-keguang.zhang@gmail.com>
- <20230928121953.524608-3-keguang.zhang@gmail.com>
+        b=DA3Ii5GqPrIMzCb7NZBj2Sx80QP4HbbpMwtL6rl6spGihosQ42euaxqsJuHG+Noo8
+         IkHd9lxkA+HiLy6Ycj7TRg5hL6YGUeLgppeYC41/Hi/x/tKQ5PsW4YvUhQW7F6C2UC
+         U+oBgJBiaobkDNjtY9wBHklcoaZyEaz9hJKRmTbX8rLw+PGH+T/hGZKq9Wa14rvsL0
+         E7jvYMUW1b7oKx+zovAl6TH4CndJAmyY+MS5FR+GE1ZgErGxLGfelPA3o2HZqbhVwn
+         I3pxsrVMDwJ30cjWWYFcYcCOOyFmHDkITr5f9ehiyMeqY9wcMqDlOxWhAEE+wKWHN+
+         HoaagrFpd2Y+w==
+Date:   Wed, 4 Oct 2023 08:43:53 +0100
+From:   Sean Young <sean@mess.org>
+To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 2/2] media: pwm-ir-tx: trigger edges from hrtimer
+ interrupt context
+Message-ID: <ZR0Xue8Mu8VZIxm5@gofer.mess.org>
+References: <cover.1696156485.git.sean@mess.org>
+ <7efe4229514001b835fa70d51973cd3306dc0b04.1696156485.git.sean@mess.org>
+ <5982681d-4fb5-0271-fdc5-712d6c8512e3@gmail.com>
+ <ZRp9RE2jOZdL0+1/@gofer.mess.org>
+ <7075cfd7-847e-8d28-72be-93761b36b0e0@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230928121953.524608-3-keguang.zhang@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7075cfd7-847e-8d28-72be-93761b36b0e0@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-09-23, 20:19, Keguang Zhang wrote:
-> This patch adds DMA Engine driver for Loongson1 SoCs.
-> 
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> ---
-> V4 -> V5:
->    Add DT support
->    Use DT data instead of platform data
->    Use chan_id of struct dma_chan instead of own id
->    Use of_dma_xlate_by_chan_id() instead of ls1x_dma_filter()
->    Update the author information to my official name
-> V3 -> V4:
->    Use dma_slave_map to find the proper channel.
->    Explicitly call devm_request_irq() and tasklet_kill().
->    Fix namespace issue.
->    Some minor fixes and cleanups.
-> V2 -> V3:
->    Rename ls1x_dma_filter_fn to ls1x_dma_filter.
-> V1 -> V2:
->    Change the config from 'DMA_LOONGSON1' to 'LOONGSON1_DMA',
->    and rearrange it in alphabetical order in Kconfig and Makefile.
->    Fix comment style.
-> 
->  drivers/dma/Kconfig         |   9 +
->  drivers/dma/Makefile        |   1 +
->  drivers/dma/loongson1-dma.c | 492 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 502 insertions(+)
->  create mode 100644 drivers/dma/loongson1-dma.c
-> 
-> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-> index 4ccae1a3b884..0b0d5c61b4a0 100644
-> --- a/drivers/dma/Kconfig
-> +++ b/drivers/dma/Kconfig
-> @@ -369,6 +369,15 @@ config K3_DMA
->  	  Support the DMA engine for Hisilicon K3 platform
->  	  devices.
->  
-> +config LOONGSON1_DMA
-> +	tristate "Loongson1 DMA support"
-> +	depends on MACH_LOONGSON32
-> +	select DMA_ENGINE
-> +	select DMA_VIRTUAL_CHANNELS
-> +	help
-> +	  This selects support for the DMA controller in Loongson1 SoCs,
-> +	  which is required by Loongson1 NAND and AC97 support.
-> +
->  config LPC18XX_DMAMUX
->  	bool "NXP LPC18xx/43xx DMA MUX for PL080"
->  	depends on ARCH_LPC18XX || COMPILE_TEST
-> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-> index 83553a97a010..887103db5ee3 100644
-> --- a/drivers/dma/Makefile
-> +++ b/drivers/dma/Makefile
-> @@ -47,6 +47,7 @@ obj-$(CONFIG_INTEL_IDMA64) += idma64.o
->  obj-$(CONFIG_INTEL_IOATDMA) += ioat/
->  obj-y += idxd/
->  obj-$(CONFIG_K3_DMA) += k3dma.o
-> +obj-$(CONFIG_LOONGSON1_DMA) += loongson1-dma.o
->  obj-$(CONFIG_LPC18XX_DMAMUX) += lpc18xx-dmamux.o
->  obj-$(CONFIG_MILBEAUT_HDMAC) += milbeaut-hdmac.o
->  obj-$(CONFIG_MILBEAUT_XDMAC) += milbeaut-xdmac.o
-> diff --git a/drivers/dma/loongson1-dma.c b/drivers/dma/loongson1-dma.c
-> new file mode 100644
-> index 000000000000..b589103d5ae0
-> --- /dev/null
-> +++ b/drivers/dma/loongson1-dma.c
-> @@ -0,0 +1,492 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * DMA Driver for Loongson-1 SoC
-> + *
-> + * Copyright (C) 2015-2023 Keguang Zhang <keguang.zhang@gmail.com>
-> + */
-> +
-> +#include <linux/dmapool.h>
-> +#include <linux/init.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_dma.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +
-> +#include "dmaengine.h"
-> +#include "virt-dma.h"
-> +
-> +/* Loongson 1 DMA Register Definitions */
-> +#define LS1X_DMA_CTRL		0x0
-> +
-> +/* DMA Control Register Bits */
-> +#define LS1X_DMA_STOP		BIT(4)
-> +#define LS1X_DMA_START		BIT(3)
-> +
-> +#define LS1X_DMA_ADDR_MASK	GENMASK(31, 6)
-> +
-> +/* DMA Command Register Bits */
-> +#define LS1X_DMA_RAM2DEV		BIT(12)
-> +#define LS1X_DMA_TRANS_OVER		BIT(3)
-> +#define LS1X_DMA_SINGLE_TRANS_OVER	BIT(2)
-> +#define LS1X_DMA_INT			BIT(1)
-> +#define LS1X_DMA_INT_MASK		BIT(0)
-> +
-> +#define LS1X_DMA_MAX_CHANNELS	3
-> +
-> +struct ls1x_dma_lli {
-> +	u32 next;		/* next descriptor address */
-> +	u32 saddr;		/* memory DMA address */
-> +	u32 daddr;		/* device DMA address */
-> +	u32 length;
-> +	u32 stride;
-> +	u32 cycles;
-> +	u32 cmd;
-> +} __aligned(64);
-> +
-> +struct ls1x_dma_hwdesc {
-> +	struct ls1x_dma_lli *lli;
-> +	dma_addr_t phys;
-> +};
-> +
-> +struct ls1x_dma_desc {
-> +	struct virt_dma_desc vdesc;
-> +	struct ls1x_dma_chan *chan;
-> +
-> +	enum dma_transfer_direction dir;
-> +	enum dma_transaction_type type;
-> +
-> +	unsigned int nr_descs;	/* number of descriptors */
-> +	unsigned int nr_done;	/* number of completed descriptors */
-> +	struct ls1x_dma_hwdesc hwdesc[];	/* DMA coherent descriptors */
-> +};
-> +
-> +struct ls1x_dma_chan {
-> +	struct virt_dma_chan vchan;
-> +	struct dma_pool *desc_pool;
-> +	struct dma_slave_config cfg;
-> +
-> +	void __iomem *reg_base;
-> +	int irq;
-> +
-> +	struct ls1x_dma_desc *desc;
-> +};
-> +
-> +struct ls1x_dma {
-> +	struct dma_device ddev;
-> +	void __iomem *reg_base;
-> +
-> +	unsigned int nr_chans;
-> +	struct ls1x_dma_chan chan[];
-> +};
-> +
-> +#define to_ls1x_dma_chan(dchan)		\
-> +	container_of(dchan, struct ls1x_dma_chan, vchan.chan)
-> +
-> +#define to_ls1x_dma_desc(vdesc)		\
-> +	container_of(vdesc, struct ls1x_dma_desc, vdesc)
-> +
-> +/* macros for registers read/write */
-> +#define chan_readl(chan, off)		\
-> +	readl((chan)->reg_base + (off))
-> +
-> +#define chan_writel(chan, off, val)	\
-> +	writel((val), (chan)->reg_base + (off))
-> +
-> +static inline struct device *chan2dev(struct dma_chan *chan)
-> +{
-> +	return &chan->dev->device;
-> +}
-> +
-> +static void ls1x_dma_free_chan_resources(struct dma_chan *dchan)
-> +{
-> +	struct ls1x_dma_chan *chan = to_ls1x_dma_chan(dchan);
-> +
-> +	vchan_free_chan_resources(&chan->vchan);
-> +	dma_pool_destroy(chan->desc_pool);
-> +	chan->desc_pool = NULL;
-> +}
-> +
-> +static int ls1x_dma_alloc_chan_resources(struct dma_chan *dchan)
-> +{
-> +	struct ls1x_dma_chan *chan = to_ls1x_dma_chan(dchan);
-> +
-> +	chan->desc_pool = dma_pool_create(dma_chan_name(dchan),
-> +					  dchan->device->dev,
-> +					  sizeof(struct ls1x_dma_lli),
-> +					  __alignof__(struct ls1x_dma_lli), 0);
-> +	if (!chan->desc_pool)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
-> +static void ls1x_dma_free_desc(struct virt_dma_desc *vdesc)
-> +{
-> +	struct ls1x_dma_desc *desc = to_ls1x_dma_desc(vdesc);
-> +
-> +	if (desc->nr_descs) {
-> +		unsigned int i = desc->nr_descs;
-> +		struct ls1x_dma_hwdesc *hwdesc;
-> +
-> +		do {
-> +			hwdesc = &desc->hwdesc[--i];
-> +			dma_pool_free(desc->chan->desc_pool, hwdesc->lli,
-> +				      hwdesc->phys);
-> +		} while (i);
-> +	}
-> +
-> +	kfree(desc);
-> +}
-> +
-> +static struct ls1x_dma_desc *ls1x_dma_alloc_desc(struct ls1x_dma_chan *chan,
-> +						 int sg_len)
-> +{
-> +	struct ls1x_dma_desc *desc;
-> +
-> +	desc = kzalloc(struct_size(desc, hwdesc, sg_len), GFP_NOWAIT);
+Hi,
 
-why do you need a helper to do kzalloc?
+On Mon, Oct 02, 2023 at 12:52:00PM +0300, Ivaylo Dimitrov wrote:
+> On 2.10.23 г. 11:20 ч., Sean Young wrote:
+> > On Mon, Oct 02, 2023 at 08:49:47AM +0300, Ivaylo Dimitrov wrote:
+> > > On 1.10.23 г. 13:40 ч., Sean Young wrote:
+> > > > The pwm-ir-tx driver has to turn the pwm signal on and off, and suffers
+> > > > from delays as this is done in process context. Make this work in atomic
+> > > > context.
+> > > > 
+> > > > This makes the driver much more precise.
+> > > > 
+> > > > Signed-off-by: Sean Young <sean@mess.org>
+> > > > Cc: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+> > > > ---
+> > > >    drivers/media/rc/pwm-ir-tx.c | 79 ++++++++++++++++++++++++++++--------
+> > > >    1 file changed, 63 insertions(+), 16 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
+> > > > index c5f37c03af9c..557725a07a67 100644
+> > > > --- a/drivers/media/rc/pwm-ir-tx.c
+> > > > +++ b/drivers/media/rc/pwm-ir-tx.c
+> > > > @@ -10,6 +10,8 @@
+> > > >    #include <linux/slab.h>
+> > > >    #include <linux/of.h>
+> > > >    #include <linux/platform_device.h>
+> > > > +#include <linux/hrtimer.h>
+> > > > +#include <linux/completion.h>
+> > > >    #include <media/rc-core.h>
+> > > >    #define DRIVER_NAME	"pwm-ir-tx"
+> > > > @@ -17,8 +19,13 @@
+> > > >    struct pwm_ir {
+> > > >    	struct pwm_device *pwm;
+> > > > -	unsigned int carrier;
+> > > > -	unsigned int duty_cycle;
+> > > > +	struct hrtimer timer;
+> > > > +	struct completion completion;
+> > > > +	uint carrier;
+> > > > +	uint duty_cycle;
+> > > > +	uint *txbuf;
+> > > > +	uint txbuf_len;
+> > > > +	uint txbuf_index;
+> > > >    };
+> > > >    static const struct of_device_id pwm_ir_of_match[] = {
+> > > > @@ -55,33 +62,65 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+> > > >    	struct pwm_ir *pwm_ir = dev->priv;
+> > > >    	struct pwm_device *pwm = pwm_ir->pwm;
+> > > >    	struct pwm_state state;
+> > > > -	int i;
+> > > > -	ktime_t edge;
+> > > > -	long delta;
+> > > > +
+> > > > +	reinit_completion(&pwm_ir->completion);
+> > > 
+> > > You should not need that.
+> > 
+> > It does not work without it - the process doing the 2nd tx hangs indefinitely.
+> > 
+> 
+> that means your calls to wait_for_completion() / complete() do not match. I
+> think you should check why.
 
-> +
-> +	return desc;
-> +}
-> +
-> +static struct dma_async_tx_descriptor *
-> +ls1x_dma_prep_slave_sg(struct dma_chan *dchan, struct scatterlist *sgl,
-> +		       unsigned int sg_len,
-> +		       enum dma_transfer_direction direction,
-> +		       unsigned long flags, void *context)
-> +{
-> +	struct ls1x_dma_chan *chan = to_ls1x_dma_chan(dchan);
-> +	struct dma_slave_config *cfg = &chan->cfg;
-> +	struct ls1x_dma_desc *desc;
-> +	struct scatterlist *sg;
-> +	unsigned int dev_addr, bus_width, cmd, i;
-> +
-> +	if (!is_slave_direction(direction)) {
-> +		dev_err(chan2dev(dchan), "invalid DMA direction!\n");
-> +		return NULL;
-> +	}
-> +
-> +	dev_dbg(chan2dev(dchan), "sg_len=%d, dir=%s, flags=0x%lx\n", sg_len,
-> +		direction == DMA_MEM_TO_DEV ? "to device" : "from device",
-> +		flags);
-> +
-> +	switch (direction) {
-> +	case DMA_MEM_TO_DEV:
-> +		dev_addr = cfg->dst_addr;
-> +		bus_width = cfg->dst_addr_width;
-> +		cmd = LS1X_DMA_RAM2DEV | LS1X_DMA_INT;
-> +		break;
-> +	case DMA_DEV_TO_MEM:
-> +		dev_addr = cfg->src_addr;
-> +		bus_width = cfg->src_addr_width;
-> +		cmd = LS1X_DMA_INT;
-> +		break;
-> +	default:
-> +		dev_err(chan2dev(dchan),
-> +			"unsupported DMA transfer direction! %d\n", direction);
-> +		return NULL;
-> +	}
-> +
-> +	/* allocate DMA descriptor */
-> +	desc = ls1x_dma_alloc_desc(chan, sg_len);
-> +	if (!desc)
-> +		return NULL;
-> +
-> +	for_each_sg(sgl, sg, sg_len, i) {
-> +		dma_addr_t buf_addr = sg_dma_address(sg);
-> +		size_t buf_len = sg_dma_len(sg);
-> +		struct ls1x_dma_hwdesc *hwdesc = &desc->hwdesc[i];
-> +		struct ls1x_dma_lli *lli;
-> +
-> +		if (!is_dma_copy_aligned(dchan->device, buf_addr, 0, buf_len)) {
-> +			dev_err(chan2dev(dchan), "%s: buffer is not aligned!\n",
-> +				__func__);
-> +			goto err;
-> +		}
-> +
-> +		/* allocate HW DMA descriptors */
-> +		lli = dma_pool_alloc(chan->desc_pool, GFP_NOWAIT,
-> +				     &hwdesc->phys);
-> +		if (!lli) {
-> +			dev_err(chan2dev(dchan),
-> +				"%s: failed to alloc HW DMA descriptor!\n",
-> +				__func__);
-> +			goto err;
-> +		}
-> +		hwdesc->lli = lli;
-> +
-> +		/* config HW DMA descriptors */
-> +		lli->saddr = buf_addr;
-> +		lli->daddr = dev_addr;
-> +		lli->length = buf_len / bus_width;
-> +		lli->stride = 0;
-> +		lli->cycles = 1;
-> +		lli->cmd = cmd;
-> +		lli->next = 0;
-> +
-> +		if (i)
-> +			desc->hwdesc[i - 1].lli->next = hwdesc->phys;
-> +
-> +		dev_dbg(chan2dev(dchan),
-> +			"hwdesc=%px, saddr=%08x, daddr=%08x, length=%u\n",
-> +			hwdesc, buf_addr, dev_addr, buf_len);
-> +	}
-> +
-> +	/* config DMA descriptor */
-> +	desc->chan = chan;
-> +	desc->dir = direction;
-> +	desc->type = DMA_SLAVE;
-> +	desc->nr_descs = sg_len;
-> +	desc->nr_done = 0;
-> +
-> +	return vchan_tx_prep(&chan->vchan, &desc->vdesc, flags);
-> +err:
-> +	desc->nr_descs = i;
-> +	ls1x_dma_free_desc(&desc->vdesc);
-> +	return NULL;
-> +}
-> +
-> +static int ls1x_dma_slave_config(struct dma_chan *dchan,
-> +				 struct dma_slave_config *config)
-> +{
-> +	struct ls1x_dma_chan *chan = to_ls1x_dma_chan(dchan);
-> +
-> +	chan->cfg = *config;
+I've had a deeper look and you're right. Thanks!
 
-You are using only addr and width, why keep full structure?
--- 
-~Vinod
+> > > >    	pwm_init_state(pwm, &state);
+> > > >    	state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
+> > > >    	pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
+> > > > +	state.enabled = false;
+> > > > -	edge = ktime_get();
+> > > > +	pwm_ir->txbuf = txbuf;
+> > > > +	pwm_ir->txbuf_len = count;
+> > > > +	pwm_ir->txbuf_index = 0;
+> > > > -	for (i = 0; i < count; i++) {
+> > > > -		state.enabled = !(i % 2);
+> > > > -		pwm_apply_state(pwm, &state);
+> > > > +	pwm_apply_state(pwm, &state);
+> > > 
+> > > ditto, first pwm control should be in the timer function
+> > 
+> > This requires keeping a copy of pwm_state in pwm_ir but does avoid the extra
+> > call to pwm_apply_state() here.
+> > 
+> 
+> not really, you can have pwm_state * pwm_ir member and pass pointer to the
+> stack variable.
+
+Ah, good point, I had not thought of that :)
+
+> > Having said that, the extra call to pwm_apply_state() may have benefits,
+> > see this comment in the pwm-sifive driver:
+> > 
+> >   * - When changing both duty cycle and period, we cannot prevent in
+> >   *   software that the output might produce a period with mixed
+> >   *   settings (new period length and old duty cycle).
+> > 
+> > So setting the duty cycle and period once with enabled = false prevents a
+> > first period with mixed settings (i.e. bogus).
+> > 
+> 
+> Who will enable pwm if not in tx? Like, doesn't the driver have exclusive
+> ownership of the pwm? Also, every transmission ends up wit pwm disabled, so
+> disabling it once again does not make sense to me.
+
+My only point was that if the period/duty cycle have changed, then the extra
+disable may set up the parameters in the pwm hardware correctly (according
+to this comment). Uwe has already responded saying this is not going to work,
+so this can be ignored.
+
+> > > > -		edge = ktime_add_us(edge, txbuf[i]);
+> > > > -		delta = ktime_us_delta(edge, ktime_get());
+> > > > -		if (delta > 0)
+> > > > -			usleep_range(delta, delta + 10);
+> > > > -	}
+> > > > +	hrtimer_start(&pwm_ir->timer, 1000, HRTIMER_MODE_REL);
+> > > 
+> > > why not just call it with 0 time?
+> > 
+> > Otherwise the timings are a little off for the first edge - hrtimer setup
+> > time, I think. I can experiment again.
+> > 
+> 
+> Why is that? Edge start is controlled by the calls in timer function, it
+> should not matter when it is called for the first time.
+
+Again, you're right.
+
+> > > > -	state.enabled = false;
+> > > > -	pwm_apply_state(pwm, &state);
+> > > > +	wait_for_completion(&pwm_ir->completion);
+> > > >    	return count;
+> > > >    }
+> > > > +static enum hrtimer_restart pwm_ir_timer(struct hrtimer *timer)
+> > > > +{
+> > > > +	struct pwm_ir *pwm_ir = container_of(timer, struct pwm_ir, timer);
+> > > > +	ktime_t now;
+> > > > +
+> > > > +	/*
+> > > > +	 * If we happen to hit an odd latency spike, loop through the
+> > > > +	 * pulses until we catch up.
+> > > > +	 */
+> > > > +	do {
+> > > > +		u64 ns;
+> > > > +
+> > > > +		if (pwm_ir->txbuf_index >= pwm_ir->txbuf_len) {
+> > > > +			/* Stop TX here */
+> > > > +			pwm_disable(pwm_ir->pwm);
+> > > > +
+> > > > +			complete(&pwm_ir->completion);
+> > > > +
+> > > > +			return HRTIMER_NORESTART;
+> > > > +		}
+> > > > +
+> > > > +		if (pwm_ir->txbuf_index % 2)
+> > > > +			pwm_disable(pwm_ir->pwm);
+> > > > +		else
+> > > > +			pwm_enable(pwm_ir->pwm);
+> > > > +
+> > > 
+> > > pwm_ir->pwm->state.enabled = !(pwm_ir->txbuf_index % 2);
+> > > pwm_apply_state(pwm_ir->pwm, pwm_ir->state);
+> > 
+> > Requires a copy of pwm_state in pwm_ir, not a huge difference (copy of 28
+> > bytes vs keeping it around).
+> 
+> see my previous comment re struct var. Also, look at the overhead:
+> https://elixir.bootlin.com/linux/v6.6-rc3/source/include/linux/pwm.h#L349 -
+> you call pwm_get_state() for every edge.
+
+That's the 28 bytes copy I was talking about.
+
+However keeping a pointer in struct pwm_ir is a good compromise and makes
+the rest of the code cleaner.
+
+> > > > +		ns = US_TO_NS(pwm_ir->txbuf[pwm_ir->txbuf_index]);
+> > > > +		hrtimer_add_expires_ns(timer, ns);
+> > > > +
+> > > > +		pwm_ir->txbuf_index++;
+> > > > +
+> > > > +		now = timer->base->get_time();
+> > > > +	} while (hrtimer_get_expires_tv64(timer) < now);
+> > > > +
+> > > > +	return HRTIMER_RESTART;
+> > > > +}
+> > > > +
+> > > >    static int pwm_ir_probe(struct platform_device *pdev)
+> > > >    {
+> > > >    	struct pwm_ir *pwm_ir;
+> > > > @@ -96,8 +135,16 @@ static int pwm_ir_probe(struct platform_device *pdev)
+> > > >    	if (IS_ERR(pwm_ir->pwm))
+> > > >    		return PTR_ERR(pwm_ir->pwm);
+> > > > +	if (pwm_can_sleep(pwm_ir->pwm)) {
+> > > > +		dev_err(&pdev->dev, "unsupported pwm device: driver can sleep\n");
+> > > > +		return -ENODEV;
+> > > > +	}
+> > > > +
+> > > 
+> > > I think we shall not limit, but use high priority thread to support those
+> > > drivers. I have that working on n900 with current (sleeping) pwm, see my
+> > > reply on the other mail. Maybe we can combine both patches in a way to
+> > > support both atomic and sleeping pwm drivers.
+> > 
+> > If the ir-rx51 driver uses a sleeping pwm then that's broken and only works
+> > by accident - the current driver is broken then.
+> > 
+> 
+> Yes, and I stated that couple of times in my previous emails :)
+> 
+> > Spinning for longer periods (e.g. 100us) does not play well with RT. Would
+> > make more sense to fix the pwm driver to non-sleeping when a pwm driver
+> > is used for pwm-ir-tx?
+> > 
+> 
+> Sure, and I have a patch for n900 that does this, however, for your i2c case
+> there is no solution. Also, we may play smart and dynamically decrease sleep
+> time (by adjusting edge by lets say 5-10 us every pulse until we have some
+> sane value) if we see it is too long. No strong preferences here, it is just
+> that I have code that works.
+
+So in order to get everything in order for atomic pwm, we need a few patches
+to land. Let's try to get your patch merged for the next release cycle, so
+that at least tx on the n900 works and there is improved tx for other devices
+(although not the most efficient).
+
+Thanks,
+Sean
