@@ -2,150 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C60D7B885E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA14F7B8879
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 20:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244034AbjJDSPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 14:15:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
+        id S244058AbjJDSQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 14:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244028AbjJDSPT (ORCPT
+        with ESMTP id S244243AbjJDSQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 14:15:19 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034789E
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 11:15:15 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-98377c5d53eso25319366b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 11:15:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696443313; x=1697048113; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=a1N1m6C2ZJv5jGP2wdjxZsch8T9RQRLRWPKB+sdu5Zw=;
-        b=B+nnlbgW3mi4V6w35Kq8ERb8nkRCgmSU05+4rkFRR/7mXsY3YM6LzlLx3rlBGdKqFR
-         ssxZUqhDawFf8ae3y4bFMluAHgn1FqdzYJSMpOf1q7y7iqNGzxy+VDqh8NujnfaOITEF
-         O7MTOYLalr2xMnxz+DhoJezEXd2WTaRuJmd0KcZXMIn3uq4crrLCGHAkR7PN85stifEn
-         XNctOhsXNs5NPjus1KhgNhwWWIJSALtWHFP5K/e2swuqMNHW59UBm6j7J0I9dHCRV3rB
-         skrUwd7fqraps4FUFWiD7+jmEnSVA6fEdAuoxd+oYB8YioWHCjfkZxmxDKptnTs/Tyln
-         pmEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696443313; x=1697048113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a1N1m6C2ZJv5jGP2wdjxZsch8T9RQRLRWPKB+sdu5Zw=;
-        b=JEjh4pTuvYdM92jmbqLPKHyzDTh953ZsH/1hn+pnniOIyi3WQ7MUO2q97i3TlsjINY
-         cBGrt+wh4ea+TN1JWBVYICXjB8aRUBK9pTjUb5KweIC9qPGRW2uSc/kaNmaDgihmZmWr
-         +o9JvdZfV3z7hVOohWJK9r15/A1Lx0G0AQ0E85fL1FcTpKMTYC6fIm02wLUT/79PNb8K
-         Lk+Sh/jZvoQKlVrTYA6C/BCDmVk55J0G+ULZ4VhcQKqwHFDKf+0daBU83WqF8tGj0kEb
-         V1EysYVz3VakoGlu1/YXrHT8So177WsWf2ZfFzNGo9j3hdWlv/KKv38tTdGpiFHRVej0
-         zlRg==
-X-Gm-Message-State: AOJu0Yyqv7ojj6og0I9ndtq2VB2eqw/kgtwD2uasFMhLSlgLukZyP2Lf
-        E7Cefr7fofIURGcVe0xJlzc=
-X-Google-Smtp-Source: AGHT+IEOS6YUN5E3lLEsLCMH3IPbtiYdYNQd/UwGpE8DHCDlh3CUL7d5AK6GfLnMcVj0OSoVACWNjA==
-X-Received: by 2002:a17:906:7496:b0:9b2:93f2:71b0 with SMTP id e22-20020a170906749600b009b293f271b0mr2939008ejl.38.1696443313006;
-        Wed, 04 Oct 2023 11:15:13 -0700 (PDT)
-Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
-        by smtp.gmail.com with ESMTPSA id mf24-20020a170906cb9800b009ae3d711fd9sm3138223ejb.69.2023.10.04.11.15.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 11:15:12 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 4 Oct 2023 20:15:10 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: EEVDF and NUMA balancing
-Message-ID: <ZR2rrixNEjrYiaYi@gmail.com>
-References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
- <20231003215159.GJ1539@noisy.programming.kicks-ass.net>
- <alpine.DEB.2.22.394.2310041358420.3108@hadrien>
- <20231004120544.GA6307@noisy.programming.kicks-ass.net>
- <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
+        Wed, 4 Oct 2023 14:16:51 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E076A7;
+        Wed,  4 Oct 2023 11:16:48 -0700 (PDT)
+Received: from [10.0.0.178] (c-76-135-56-23.hsd1.wa.comcast.net [76.135.56.23])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D440620B74C2;
+        Wed,  4 Oct 2023 11:16:46 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D440620B74C2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1696443407;
+        bh=cb3Cn5uFmmhvezEjsgPr/7TAsXnOt8mw0WVyDVVkoNA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hQ5yb0Z3u+VTo0KbZX//PdVbLhCSFC3mhN67YsPEJy0IakC7G13dj12ECZ/+iFXKL
+         5RmIamHk1JCosfQJxlUOL/PeHl/M+f68XzUQyqtoNaGuXMdH370qibhMf07jSTguq9
+         WauZnyAwIRzLwbbRJO2zePDtjT9w415VjegYCqqo=
+Message-ID: <e960ffec-f367-4180-b857-4aceedb7cd89@linux.microsoft.com>
+Date:   Wed, 4 Oct 2023 11:16:46 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 13/15] uapi: hyperv: Add mshv driver headers defining
+ hypervisor ABIs
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Dexuan Cui <decui@microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "apais@linux.microsoft.com" <apais@linux.microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        MUKESH RATHOR <mukeshrathor@microsoft.com>,
+        "stanislav.kinsburskiy@gmail.com" <stanislav.kinsburskiy@gmail.com>,
+        "jinankjain@linux.microsoft.com" <jinankjain@linux.microsoft.com>,
+        vkuznets <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>
+References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1696010501-24584-14-git-send-email-nunodasneves@linux.microsoft.com>
+ <2023093057-eggplant-reshoot-8513@gregkh>
+ <ZRia1uyFfEkSqmXw@liuwe-devbox-debian-v2>
+ <2023100154-ferret-rift-acef@gregkh>
+ <dd5159fe-5337-44ed-bf1b-58220221b597@linux.microsoft.com>
+ <2023100443-wrinkly-romp-79d9@gregkh>
+ <SA1PR21MB1335F5145ACB0ED4F378105ABFCBA@SA1PR21MB1335.namprd21.prod.outlook.com>
+ <2023100415-diving-clapper-a2a7@gregkh>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+In-Reply-To: <2023100415-diving-clapper-a2a7@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/4/2023 10:50 AM, Greg KH wrote:
+> On Wed, Oct 04, 2023 at 05:36:32PM +0000, Dexuan Cui wrote:
+>>> From: Greg KH <gregkh@linuxfoundation.org>
+>>> Sent: Tuesday, October 3, 2023 11:10 PM
+>>> [...]
+>>> On Tue, Oct 03, 2023 at 04:37:01PM -0700, Nuno Das Neves wrote:
+>>>> On 9/30/2023 11:19 PM, Greg KH wrote:
+>>>>> On Sat, Sep 30, 2023 at 10:01:58PM +0000, Wei Liu wrote:
+>>>>>> On Sat, Sep 30, 2023 at 08:09:19AM +0200, Greg KH wrote:
+>>>>>>> On Fri, Sep 29, 2023 at 11:01:39AM -0700, Nuno Das Neves wrote:
+>>>>>>>> +/* Define connection identifier type. */
+>>>>>>>> +union hv_connection_id {
+>>>>>>>> +   __u32 asu32;
+>>>>>>>> +   struct {
+>>>>>>>> +           __u32 id:24;
+>>>>>>>> +           __u32 reserved:8;
+>>>>>>>> +   } __packed u;
+>>
+>> IMO the "__packed" is unnecessary.
+>>
+>>>>>>> bitfields will not work properly in uapi .h files, please never do that.
+>>>>>>
+>>>>>> Can you clarify a bit more why it wouldn't work? Endianess? Alignment?
+>>>>>
+>>>>> Yes to both.
+>>>>>
+>>>>> Did you all read the documentation for how to write a kernel api?  If
+>>>>> not, please do so.  I think it mentions bitfields, but it not, it really
+>>>>> should as of course, this will not work properly with different endian
+>>>>> systems or many compilers.
+>>>>
+>>>> Yes, in
+>>> https://docs.k/
+>>> ernel.org%2Fdriver-
+>>> api%2Fioctl.html&data=05%7C01%7Cdecui%40microsoft.com%7Ce404769e0f
+>>> 85493f0aa108dbc4a08a27%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C
+>>> 0%7C638319966071263290%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLj
+>>> AwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%
+>>> 7C%7C&sdata=RiLNA5DRviWBQK6XXhxC4m77raSDBb%2F0BB6BDpFPUJY%3D
+>>> &reserved=0 it says that it is
+>>>> "better to avoid" bitfields.
+>>>>
+>>>> Unfortunately bitfields are used in the definition of the hypervisor
+>>>> ABI. We import these definitions directly from the hypervisor code.
+>>>
+>>> So why do you feel you have to use this specific format for your
+>>> user/kernel api?  That is not what is going to the hypervisor.
+>>
+These *are* going to the hypervisor - we use these same definitions in
+our driver for the kernel/hypervisor API. This is so we don't have to
+maintain two separate definitions for user/kernel and kernel/hypervisor
+APIs.
 
-* Julia Lawall <julia.lawall@inria.fr> wrote:
-
+>> If it's hard to avoid bitfield here, maybe we can refer to the definition of
+>> struct iphdr in include/uapi/linux/ip.h
 > 
+> It is not hard to avoid using bitfields, just use the proper definitions
+> to make this portable for all compilers.  And ick, ip.h is not a good
+> thing to follow :)
 > 
-> On Wed, 4 Oct 2023, Peter Zijlstra wrote:
-> 
-> > On Wed, Oct 04, 2023 at 02:01:26PM +0200, Julia Lawall wrote:
-> > >
-> > >
-> > > On Tue, 3 Oct 2023, Peter Zijlstra wrote:
-> > >
-> > > > On Tue, Oct 03, 2023 at 10:25:08PM +0200, Julia Lawall wrote:
-> > > > > Is it expected that the commit e8f331bcc270 should have an impact on the
-> > > > > frequency of NUMA balancing?
-> > > >
-> > > > Definitely not expected. The only effect of that commit was supposed to
-> > > > be the runqueue order of tasks. I'll go stare at it in the morning --
-> > > > definitely too late for critical thinking atm.
-> > >
-> > > Maybe it's just randomly making a bad situation worse rather than directly
-> > > introduing a problem.  There is a high standard deviatind in the
-> > > performance.  Here are some results with hyperfine.  The general trends
-> > > are reproducible.
-> >
-> > OK,. I'm still busy trying to bring a 4 socket machine up-to-date...
-> > gawd I hate the boot times on those machines :/
-> >
-> > But yeah, I was thinking similar things, I really can't spot an obvious
-> > fail in that commit.
-> >
-> > I'll go have a poke once the darn machine is willing to submit :-)
-> 
-> I tried a two-socket machine, but in 50 runs the problem doesn't show up.
-> 
-> The commit e8f331bcc270 starts with
-> 
-> -       if (sched_feat(PLACE_LAG) && cfs_rq->nr_running > 1) {
-> +       if (sched_feat(PLACE_LAG) && cfs_rq->nr_running) {
-> 
-> This seemed like a big change - cfs_rq->nr_running > 1 should be rarely
-> true in ua, while cfs_rq->nr_running should always be true.  Adding back
-> the > 1 and simply replacing the test by 0 both had no effect, though.
+Greg, there is nothing making us use bitfields. It just makes the work
+of porting the hypervisor definitions to Linux easier - aided by the
+fact that in practice, all the compilers in our stack produce the same
+code for these.
 
-BTW., in terms of statistical reliability, one of the biggest ... 
-stochastic elements of scheduler balancing is wakeup-preemption - which 
-you can turn off via:
+If that stops being true, or we need to support some other scenario,
+then I can see the value in changing it. Right now it just feels like
+pointless work.
 
-   echo NO_WAKEUP_PREEMPTION > /debug/sched/features
+Just a reminder - we are the only consumers of this code right now; no
+one else can meaningfully use this interface yet.
 
-or:
-
-   echo NO_WAKEUP_PREEMPTION > /sys/kernel/debug/sched/features
-
-If you can measure a performance regression with WAKEUP_PREEMPTION turned 
-off in *both* kernels, there's likely a material change (regression) in the 
-quality of NUMA load-balancing.
-
-If it goes away or changes dramatically with WAKEUP_PREEMPTION off, then 
-I'd pin this effect to EEVDF causing timing changes that are subtly 
-shifting NUMA & SMP balancing decisions past some critical threshold that 
-is detrimental to this particular workload.
-
-( Obviously both are regressions we care about - but doing this test would 
-  help categorize the nature of the regression. )
+That all said, if you really insist on changing it, then please say so.
+And please point to an example of how it should be done so there is no
+confusion on the best path forward.
 
 Thanks,
+Nuno
 
-	Ingo
+> thanks,
+> 
+> greg k-h
+
