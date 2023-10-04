@@ -2,108 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 057647B7D0E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4639A7B7D10
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242174AbjJDKYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36806 "EHLO
+        id S242173AbjJDKZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242163AbjJDKYB (ORCPT
+        with ESMTP id S242116AbjJDKZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:24:01 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6324E6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:23:55 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qnz2g-00075J-Tj; Wed, 04 Oct 2023 12:23:46 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qnz2g-00B0Xh-2u; Wed, 04 Oct 2023 12:23:46 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id C502222ED16;
-        Wed,  4 Oct 2023 10:23:45 +0000 (UTC)
-Date:   Wed, 4 Oct 2023 12:23:45 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     John Watts <contact@jookia.org>
-Cc:     linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] can: sun4i_can: Only show Kconfig if ARCH_SUNXI is set
-Message-ID: <20231004-icky-contempt-b46d6bb68918-mkl@pengutronix.de>
-References: <20230905231342.2042759-2-contact@jookia.org>
+        Wed, 4 Oct 2023 06:25:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702DCB4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:25:11 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696415109;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JTyylAzC8frK5geYcRE1ljeQ4FXoAjG7xVcVT7SH0zc=;
+        b=cGGqmAWcYEV9nAldg4P7m8UdpFr/96/n5vkWSAp9ph6995vvwEGv41zhYACTC8KUjktW61
+        jVnzjPMF8h+a0ZpTXtSp+3c6ZyfgsfI9QnLVgwSA30wiJT6GZxC8MqZsFr8xlTPrfyrs5m
+        UMt2Yf6uGlcosgMvMS4PyiTRzRGvcFvhMB2IwjW80coc2a9tXUi/y+FqibE/jLWapU9On6
+        ai+/eIxgPVEOhBrNfm0q0kpzobZa61Cn3eP8sdKsb15RaiOCZmH07j659Kq8ksJJuCgL/q
+        g4BroMK4H7xdzBA/732Kx3IcpiDWynyyG+vGl9I+0J5WvmXhKCr7+rK/kB7SoA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696415109;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JTyylAzC8frK5geYcRE1ljeQ4FXoAjG7xVcVT7SH0zc=;
+        b=xJihxi2knh20Hh/jP24o5YtEkJB1V02mdU2zU2a+RL8wRc6LT7Bw34vjtArWLEx/5kZju0
+        dKM7fROtLSaJJ5Dg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Todd Brandt <todd.e.brandt@intel.com>
+Subject: Re: [PATCH printk] printk: flush consoles before checking progress
+In-Reply-To: <ZRrAFS3cELj1DDN2@alley>
+References: <20230929113233.863824-1-john.ogness@linutronix.de>
+ <ZRrAFS3cELj1DDN2@alley>
+Date:   Wed, 04 Oct 2023 12:31:07 +0206
+Message-ID: <87h6n64rcs.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="z3zhqjwthn6wlylc"
-Content-Disposition: inline
-In-Reply-To: <20230905231342.2042759-2-contact@jookia.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-10-02, Petr Mladek <pmladek@suse.com> wrote:
+> I was about to push this patch and ran checkpatch.pl. It warned about
+>
+> WARNING: msleep < 20ms can sleep for up to 20ms; see Documentation/timers/timers-howto.rst
+> #73: FILE: kernel/printk/printk.c:3782:
+> +               msleep(1);
+>
+> And indeed, Documentation/timers/timers-howto.rst says that msleep()
+> might sleep longer that expected for <20ms delays. I guess that
+> it is somehow related to jiffies, HZ, and load on the system.
+>
+> I think that we need to count jiffies here.
 
---z3zhqjwthn6wlylc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Agreed. The @timeout_ms parameter should be respected.
 
-On 06.09.2023 09:13:43, John Watts wrote:
-> When adding the RISCV option I didn't gate it behind ARCH_SUNXI.
-> As a result this option shows up with Allwinner support isn't enabled.
-> Fix that by requiring ARCH_SUNXI to be set if RISCV is set.
->=20
-> Fixes: 8abb95250ae6 ("can: sun4i_can: Add support for the Allwinner D1")
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Closes: https://lore.kernel.org/linux-sunxi/CAMuHMdV2m54UAH0X2dG7stEg=3Dg=
-rFihrdsz4+o7=3D_DpBMhjTbkw@mail.gmail.com/
-> Signed-off-by: John Watts <contact@jookia.org>
+> Something like:
+>
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index db81b68d7f14..6ea500d95fd9 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -3723,7 +3723,8 @@ late_initcall(printk_late_init);
+>  /* If @con is specified, only wait for that console. Otherwise wait for all. */
+>  static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progress)
+>  {
+> -	int remaining = timeout_ms;
+> +	unsigned long timeout_jiffies = msecs_to_jiffies(timeout_ms);
+> +	unsigned_long timeout_end = jiffies + timeout_jiffies;
+>  	struct console *c;
+>  	u64 last_diff = 0;
+>  	u64 printk_seq;
+> @@ -3772,24 +3773,19 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
+>  		console_srcu_read_unlock(cookie);
+>  
+>  		if (diff != last_diff && reset_on_progress)
+> -			remaining = timeout_ms;
+> +			timeout_end = jiffies + timeout_jiffies;
+>  
+>  		console_unlock();
+>  
+>  		/* Note: @diff is 0 if there are no usable consoles. */
+> -		if (diff == 0 || remaining == 0)
+> +		if (diff == 0)
+>  			break;
+>  
+> -		if (remaining < 0) {
+> -			/* no timeout limit */
+> -			msleep(100);
+> -		} else if (remaining < 100) {
+> -			msleep(remaining);
+> -			remaining = 0;
+> -		} else {
+> -			msleep(100);
+> -			remaining -= 100;
+> -		}
+> +		/* Negative timeout means an infinite wait. */
+> +		if (timeout_ms >= 0 && time_after_eq(jiffies, timeout_end))
+> +			break;
+> +
+> +		msleep(2000 / HZ);
 
-Applied to linux-can/testing.
+Is there really any advantage to this? I would just do msleep(1) and let
+msleep round up. Everything else (tracking via jiffies) looks fine to me.
 
-regards,
-Marc
+>  		last_diff = diff;
+>  	}
+>
+> And we should do this in a separate patch. It seems that sleeping
+> is a bigger magic than I expected.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+Agreed.
 
---z3zhqjwthn6wlylc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmUdPS4ACgkQvlAcSiqK
-BOhU5wf/dWWTRwtQpRT5Pz70QGC+v3K6sLXPZfBgh7btGZOF7Icwh3w4GGbx4RTA
-k1lx2Brcq6tPO3MsdqJRgp4CSpOrDlvuwIG51mA/UfFjRSbBYfpbdVkYjBJ7UdiK
-VUBUiHfv9W7IUon50lb0SFUREQ/wnaCgfoorQ+tPC0lhPhOAsR14/pk3xu5snmcH
-VUgJZobxei+Dvs6OfWcVt34+OeBwD28v60NNhVKR7lcVVB8pGsOs7zNM4R/d6N7f
-rXPxbs2SJi2hiT0+87c9p5AvwxslNDOq5SMhXUGtFfNDBByOnvfLBeLo5xC5Rs3k
-60tmdWRPZRMQ9uBkCvFItxgM2c4YcA==
-=HeNY
------END PGP SIGNATURE-----
-
---z3zhqjwthn6wlylc--
+John
