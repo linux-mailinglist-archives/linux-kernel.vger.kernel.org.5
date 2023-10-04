@@ -2,153 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 582627B7A06
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A6F7B7A08
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241681AbjJDI2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:28:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44502 "EHLO
+        id S241673AbjJDI3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232596AbjJDI2S (ORCPT
+        with ESMTP id S232596AbjJDI3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:28:18 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E83883;
-        Wed,  4 Oct 2023 01:28:15 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31f71b25a99so1807353f8f.2;
-        Wed, 04 Oct 2023 01:28:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696408094; x=1697012894; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R2yRwJ/7iREzqBe4BdcV/tJQGnF/hrf8riPhHgSOhEw=;
-        b=WD9ZQZI7WBN5r8Y6gItR+IEq/sBg/xMiuoYLfPimuyp0RWIwfERDcCmnMAYbkFPNog
-         Xm2Gh4uoM0uyueXbI3ziQK7V7yWWfYXsBug4fkEHQfSJDL+KS1SbS6fPufB6bEN9j3pl
-         TuZfR/HCk0EjKZTCV1EOKrNIAWj7Y3VzlBhCR2wS6khZuxkzAxfd+opWmI9npU5qt4Xx
-         8jtgootzP2vfKeTfDnzrp/QWz7d6VfWjajDbkAOTbKD6ZqRLIRmRJSXYlr7hSimFx7PW
-         lA0sNnfohDCHw5KRJF8mp6oflZ5Gecz5J9eAk3+VXCQaviKDaxAfDQ1L8ulmWKjBorw5
-         7ejw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696408094; x=1697012894;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R2yRwJ/7iREzqBe4BdcV/tJQGnF/hrf8riPhHgSOhEw=;
-        b=ROIdAjDjbsQyLLnGd8FqAqUwOPN9u3rFgFW3a1sfYVYSX67C+DnY+vbBIftq86Tw9S
-         hCTFCLAR/sE0mnARGqgBPxVc7F/Q2pYCnKeJWevpxP4vospWc4kQPYNZ1K3kSlHuZkJS
-         iFqJrWZ5Hj8zv2JTDIZwYd/aArrEXaKv5fMnZWHDPyN4l6xISj0nlIGn5zMIt6XtECiz
-         +9sjbgGZ3apQPGjZhYwOkaecNbPPFLLR8/OqCBwMkcop2cNavxKCLlD511fza7gNrt6d
-         t5a/1uJrIK9vQQ5CxepodlN1O5SDn1SpIqVFLaAt5NxetgsqKbdGE3/cyjj4TatiMoOV
-         XIKw==
-X-Gm-Message-State: AOJu0YyhFWaSRvKDU9JAqLLEJMqQYmqMqHIoNs6d5nsnljLg/IHBcrwF
-        7GbUB/49Dbxbf1ia24E5qkE=
-X-Google-Smtp-Source: AGHT+IFxQd2U1GXGAXigVpqGDqbCkb54Gqt1CaOxUHcHY0qZp3vpcOLh5uMbRNt0Tm7+Xvt6dWYbcg==
-X-Received: by 2002:a5d:61ce:0:b0:31a:d8c0:cb8b with SMTP id q14-20020a5d61ce000000b0031ad8c0cb8bmr1522942wrv.25.1696408093617;
-        Wed, 04 Oct 2023 01:28:13 -0700 (PDT)
-Received: from PCBABN.skidata.net ([91.230.2.244])
-        by smtp.gmail.com with ESMTPSA id r2-20020a5d4982000000b00323330edbc7sm3432701wrq.20.2023.10.04.01.28.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 01:28:13 -0700 (PDT)
-From:   Benjamin Bara <bbara93@gmail.com>
-To:     alexander.stein@ew.tq-group.com
-Cc:     abelvesa@kernel.org, aford173@gmail.com, bbara93@gmail.com,
-        benjamin.bara@skidata.com, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, festevam@gmail.com, frank@oltmanns.dev,
-        kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-        l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        mripard@kernel.org, mturquette@baylibre.com, peng.fan@nxp.com,
-        robh+dt@kernel.org, s.hauer@pengutronix.de, sboyd@kernel.org,
-        shawnguo@kernel.org
-Subject: Re: [PATCH 00/13] imx8mp: first clock propagation attempt (for LVDS)
-Date:   Wed,  4 Oct 2023 10:28:06 +0200
-Message-Id: <20231004082806.2895789-1-bbara93@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <12810050.O9o76ZdvQC@steina-w>
-References: <12810050.O9o76ZdvQC@steina-w>
+        Wed, 4 Oct 2023 04:29:03 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A1983
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:28:59 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39461f0t031953;
+        Wed, 4 Oct 2023 03:28:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=cx4j1u2cB/RSNNO
+        JLWI4IUS4jJGgAFRWe5mxjA6ot+c=; b=Zf52U4la5q2cEqwx8LAAg9AOofwWtxa
+        O4pL/S3x8TsZ8CtRsOzvuVoPev/mbHhok8mD019Jl2+qdO2ZE47LaKkErdFF4sYY
+        FDZ5nQKIpIKk3yXoZz+UrsSjy1aeWFoklvMOEMC/zO45nmDjV2s2lms82pubMSff
+        gDE/wHZ12uJz4cAeIvXZWKzKrKa/PD850ya3x2+WunxJ/8svDeTFvvF4uIhH1Go1
+        sMiNiFZakFQr7/uEazajymhaT5pzW6YUuHrWf6z2t33RyQMrIKOUdSK3JhX2qcSp
+        UnvIdF3zjlk4YDyd+qcMryEKAVaho9NoZgY9HclQ3fgeax2jR5x8oZg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3th2dt85hf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Oct 2023 03:28:38 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 4 Oct
+ 2023 09:28:36 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Wed, 4 Oct 2023 09:28:36 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6973611AA;
+        Wed,  4 Oct 2023 08:28:36 +0000 (UTC)
+Date:   Wed, 4 Oct 2023 08:28:36 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Peter Rosin <peda@axentia.se>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Shenghao Ding <shenghao-ding@ti.com>,
+        Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Kiseok Jo <kiseok.jo@irondevice.com>,
+        Kevin Cernekee <cernekee@chromium.org>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Ban Tao <fengzheng923@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Jarkko Nikula <jarkko.nikula@bitmer.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <r.anjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>, <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 1/5] ASoC: Explicitly include correct DT includes
+Message-ID: <20231004082836.GP103419@ediswmail.ad.cirrus.com>
+References: <20231003-dt-asoc-header-cleanups-v1-0-308666806378@kernel.org>
+ <20231003-dt-asoc-header-cleanups-v1-1-308666806378@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231003-dt-asoc-header-cleanups-v1-1-308666806378@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: jEULMgwzMkTC_DEUuufa0o2tsqWlPrbB
+X-Proofpoint-GUID: jEULMgwzMkTC_DEUuufa0o2tsqWlPrbB
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam, Alexander!
+On Tue, Oct 03, 2023 at 11:43:07AM -0500, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it was merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
-On Wed, 4 Oct 2023 at 10:04, Alexander Stein <alexander.stein@ew.tq-group.com> wrote:
-> Am Dienstag, 3. Oktober 2023, 15:28:05 CEST schrieb Adam Ford:
-> > On Sun, Sep 17, 2023 at 5:40 PM Benjamin Bara <bbara93@gmail.com> wrote:
-> > > Hi!
-> > >
-> > > Target of this series is to dynamically set the rate of video_pll1 to
-> > > the required LVDS clock rate(s), which are configured by the panel, and
-> > > the lvds-bridge respectively.
-> > >
-> > > Some background:
-> > > The LVDS panel requires two clocks: the crtc clock and the lvds clock.
-> > > The lvds rate is always 7x the crtc rate. On the imx8mp, these are
-> > > assigned to media_disp2_pix and media_ldb, which are both
-> >
-> > Could the LDB driver be updated to take in the crtc clock as a
-> > parameter, then set the media_ldb to 7x crct clock.  I wonder if that
-> > might simplify the task a bit.
->
-> I'm not sure if you had something different in mind, but I guess this happens
-> already in fsl_ldb_atomic_enable(), although using the mode clock.
-> As this might not always be possible, commit bd43a9844bc6f ("drm: bridge: ldb:
-> Warn if LDB clock does not match requested link frequency") was added to
-> indicate something might be wrong.
-> The main problem here is that both media_ldb and crct clock are not in a
-> parent<->child relationship, but are siblings, configurable individually.
+For the Wolfson/Cirrus bits:
 
-Yes, this already happens. First, the mode is set (which sets the CRTC
-rate). Next, LDB sets the LVDS rate. Both do not have "access" to the
-PLL, because the clocks haven't configured CLK_SET_RATE_PARENT. What
-might be a working (but IMHO dirty) hack, is to give the LDB the PLL
-clock as input too. Then it could set the PLL, LDB, CRTC rate (CRTC rate
-must be set again after PLL is set!).
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-> > I still have concerns that the CLK_SET_RATE_PARENT may break the
-> > media_disp1_pix if media_disp2_pix is changing it.
-> > I think we should consider adding some sort of configurable flag to
-> > the CCM that lets people choose  if CLK_SET_RATE_PARENT should be set
-> > or not in the device tree instead of hard-coding it either on or off.
-> > This would give people the flexibility of stating whether
-> > media_disp1_pix, media_disp2_pix, both or neither could set
-> > CLK_SET_RATE_PARENT.
-
-Probably we could do that (for now) by adding a second (optional) clock
-to LDB. If it is set, the LDB driver should also set the LVDS rate on
-this clock. This would then be set to the parent PLL.
-
-> > I believe the imx8mp-evk can support both LVDS-> HDMI and DSI->HDMI
-> > bridges, and I fear that if they are trying to both set different
-> > clock rates, this may break something and the clocks need to be
-> > selected in advance to give people a bunch of HDMI options as well as
-> > being able to divide down to support the LVDS.
-> >
-> > I think some of the displays could be tied to one of the Audio PLL's,
-> > so I might experiment with splitting the media_disp1_pix and
-> > media_disp2_pix from each other to see how well .
-
-Yes, you probably could also tie them to one of the other available
-PLLs. We "could" also do that automatically, by not setting
-CLK_SET_RATE_REPARENT and adapting the clk-divider driver to look for a
-better suitable parent. However, I guess the outcome is currently quite
-unpredictable, so this would require a lot of additional work. Just to
-mention it here too: I created a small spin-off of this series[1] with
-the changes of this series which affect the core.
-
-Probably using the optional clock for LDB is a suitable short-term
-solution?
-
-Regards
-Benjamin
+Thanks,
+Charles
