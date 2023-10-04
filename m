@@ -2,93 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D680A7B7C18
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE4F7B7C1F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241805AbjJDJ2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:28:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
+        id S241937AbjJDJbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241784AbjJDJ2W (ORCPT
+        with ESMTP id S241800AbjJDJbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:28:22 -0400
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE38A7;
-        Wed,  4 Oct 2023 02:28:20 -0700 (PDT)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1dd5b98d9aeso385511fac.0;
-        Wed, 04 Oct 2023 02:28:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696411697; x=1697016497; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KRXKpGBes2rUzzjaWR4OqYKNQnz+8sTz34lO9NeNuWM=;
-        b=armtjL6daOW85htO6dmVOZ0cMkZT5KMwj1b0JmzXfEYZUh0eBW/mKBjVM73hwZF/kR
-         wNdAoMd++OhPVW0gFJpkR0TzAd7mEZxuOspo0q8Gf1MSdkiYymD+ahYFuTncFuVjoZ4I
-         jQ/Py5gd/K4hlxh7gFLSEGT1XfwXiUvFnEFtlb5IN8rkzD7kBtBr96A4oLGR+eVvNw3Z
-         RDBYht/2otzL2J2ZkqnOmRsdeeSuNG3/EOp5rJNIkD0bYYO8WRgyO9Tcv+mPOflKkuT4
-         6qngFtiNWJMaMFnO3Hj8Qy7t3xgjRrqTdkGdPtb52AD6K9GH/k3KHu0PM00mNHsGptrp
-         yFOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696411697; x=1697016497;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KRXKpGBes2rUzzjaWR4OqYKNQnz+8sTz34lO9NeNuWM=;
-        b=rub+VUfwFkDzY23Wny3X/fYbSI3uSqozTo3WbH0PiT548UVluFbLRmp2jqRk2jM5oC
-         +LL29PXZc+pabzbcZ11keX9BDQPCk0vBRvinZjEQiDtI/JfhHpQ+UziQIipBB4Is1rse
-         w7np3VmJUTff6BKk0qQLpA54PdEpj2cxoBBQ0YKkUz0QBRBIW5z+PeOKfJQzXoUpw4WH
-         09Oo7vPN4idMaXyRRtIvT70ymiskB2ApD2ZCqX8dkBwQ8tJLMvSp4uIaETbEBFLjog6i
-         DfNAy9oxbKiAdyKqyZf3vwacNYP1eMf+oEAZ5uTnrSrYEdGH2/At8xoePPODEmbpK+GN
-         +xhg==
-X-Gm-Message-State: AOJu0Yzga2EWNL/Ech3ZaBoKtqiYMUAgiXajUmzjUpJI+bvhRLfyAEHI
-        HYk27/wB6zGINtjtv8uJu4lYQ8l1DVUk4A2bkRw=
-X-Google-Smtp-Source: AGHT+IFvdOBdsYNhOUttsn0uChqCkcyiqSqrVLc5oVDHEWUWQ6pwuH1wuPuYjvMDfA1PVVmCgzo3kWlzVPmosvtDX+E=
-X-Received: by 2002:a05:6870:8a12:b0:1dd:611e:d404 with SMTP id
- p18-20020a0568708a1200b001dd611ed404mr3009612oaq.21.1696411697471; Wed, 04
- Oct 2023 02:28:17 -0700 (PDT)
+        Wed, 4 Oct 2023 05:31:40 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A46AAB;
+        Wed,  4 Oct 2023 02:31:36 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3949R3bN026887;
+        Wed, 4 Oct 2023 09:30:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=gjwpo7lC09458NWPJEtYmjKkWWJRSyPQaso/gCQe69k=;
+ b=bPjcpIiowGTGMUVnyxtD83aFYXl3uGQ41l98+hPM5x2fNOdzKp+p/rSjVD1Usqj0E0GW
+ jH+hLJK4PdO4T8a4xW+COMWQTpJbxsb+J7wKWVOPZGouNzVEk+wvXlU15V7WKConkrnS
+ wHPsEU8O7zF3LxtzrDqEPk6TVKM+JLNjH6VFvK2S+JBZIh0eGeSyVEHlphBvWYE8mqlf
+ S/yhh/RPIL9TTH1ePCjSMfBFP41QaAkX89TgdrKioghJJGxe4WFA5JoGjgMwRyD+r0X3
+ 7tKi77DzClg943GdmiYbpbZ8ASI9xlYY4ulWMGaD7xkkHyXHCfJO1f4vbHr4Wti0pVCd 1g== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tghsjtghb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Oct 2023 09:30:58 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3949Uvbo005583
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 4 Oct 2023 09:30:57 GMT
+Received: from hu-nprakash-blr.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Wed, 4 Oct 2023 02:30:50 -0700
+From:   Nikhil V <quic_nprakash@quicinc.com>
+To:     Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     Nikhil V <quic_nprakash@quicinc.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Tejun Heo <tj@kernel.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
+        <quic_kprasan@quicinc.com>, <quic_mpilaniy@quicinc.com>,
+        <quic_shrekk@quicinc.com>, <mpleshivenkov@google.com>,
+        <ericyin@google.com>
+Subject: [PATCH 0/4] PM: hibernate: LZ4 compression support
+Date:   Wed, 4 Oct 2023 15:00:13 +0530
+Message-ID: <cover.1696410298.git.quic_nprakash@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20231003130142.2936503-1-andriy.shevchenko@linux.intel.com> <202310031638.D39E80C32B@keescook>
-In-Reply-To: <202310031638.D39E80C32B@keescook>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 4 Oct 2023 12:27:41 +0300
-Message-ID: <CAHp75VeqvxjqXjmF8ymEYevJkCoQVnkJiuBkccHuGsU_E14LzA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] kernel.h: Move lib/cmdline.c prototypes to string.h
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Andy Shevchenko <andy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: KE-ZLKf0s4nz6dpU_WwvhWBcz4pZyiAR
+X-Proofpoint-ORIG-GUID: KE-ZLKf0s4nz6dpU_WwvhWBcz4pZyiAR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-04_01,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 bulkscore=0 impostorscore=0 adultscore=0 clxscore=1015
+ spamscore=0 suspectscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310040067
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 2:39=E2=80=AFAM Kees Cook <keescook@chromium.org> wr=
-ote:
->
-> On Tue, Oct 03, 2023 at 04:01:42PM +0300, Andy Shevchenko wrote:
-> > The lib/cmdline.c is basically a set of some small string parsers
-> > which are wide used in the kernel. Their prototypes belong to the
-> > string.h rather then kernel.h.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> I think these should live in string_helpers.h not string.h (which is, in
-> theory, supposed to be used for the standard C string library functions,
-> though that's not 100% currently)...
+This patch series covers the following:
+1. Renaming lzo* to generic names, except for lzo_xxx() APIs. This is
+used in the next patch where we move to crypto based APIs for
+compression. There are no functional changes introduced by this
+approach.
 
-These are being used in the early stages where usually we have
-string.h. So, I would argue, but if you insist, I can move them. What
-about lib/argv_slit.c then? Because semantically it's quite close to
-what the lib/cmdline.c is doing.
 
---=20
-With Best Regards,
-Andy Shevchenko
+2. Replace LZO library calls with crypto generic APIs
+
+Currently for hibernation, LZO is the only compression algorithm
+available and uses the existing LZO library calls. However, there
+is no flexibility to switch to other algorithms which provides better
+results. The main idea is that different compression algorithms have
+different characteristics and hibernation may benefit when it uses
+alternate algorithms.
+
+By moving to crypto based APIs, it lays a foundation to use other
+compression algorithms for hibernation.
+
+
+3. LZ4 compression
+Extend the support for LZ4 compression to be used with hibernation.
+The main idea is that different compression algorithms
+have different characteristics and hibernation may benefit when it uses
+any of these algorithms: a default algorithm, having higher
+compression rate but is slower(compression/decompression) and a
+secondary algorithm, that is faster(compression/decompression) but has
+lower compression rate.
+
+LZ4 algorithm has better decompression speeds over LZO. This reduces
+the hibernation image restore time.
+As per test results:
+                                    LZO             LZ4
+Size before Compression(bytes)   682696704       682393600
+Size after Compression(bytes)    146502402       155993547
+Decompression Rate               335.02 MB/s     501.05 MB/s
+Restore time                       4.4s             3.8s
+
+LZO is the default compression algorithm used for hibernation. Enable
+CONFIG_HIBERNATION_DEF_COMP_LZ4 to set the default compressor as LZ4.
+
+Compression Benchmarks: https://github.com/lz4/lz4
+
+
+4. Support to select compression algorithm
+
+Currently the default compression algorithm is selected based on
+Kconfig. Introduce a kernel command line parameter "hib_compression" to
+override this behaviour.
+
+Users can set "hib_compression" command line parameter to specify
+the algorithm.
+Usage:
+    LZO: hib_compression=lzo
+    LZ4: hib_compression=lz4
+LZO is the default compression algorithm used with hibernation.
+
+Nikhil V (4):
+  PM: hibernate: Rename lzo* to make it generic
+  PM: hibernate: Move to crypto APIs for LZO compression
+  PM: hibernate: Add support for LZ4 compression for hibernation
+  PM: hibernate: Support to select compression algorithm
+
+ .../admin-guide/kernel-parameters.txt         |   6 +
+ kernel/power/Kconfig                          |  25 ++-
+ kernel/power/hibernate.c                      |  85 +++++++-
+ kernel/power/power.h                          |  19 ++
+ kernel/power/swap.c                           | 189 +++++++++++-------
+ 5 files changed, 250 insertions(+), 74 deletions(-)
+
+-- 
+2.17.1
+
