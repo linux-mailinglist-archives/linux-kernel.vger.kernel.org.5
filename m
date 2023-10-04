@@ -2,122 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD757B7C91
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1264F7B7CBA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242072AbjJDJrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
+        id S233005AbjJDJ7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbjJDJq6 (ORCPT
+        with ESMTP id S232862AbjJDJ67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:46:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F586A7;
-        Wed,  4 Oct 2023 02:46:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696412815; x=1727948815;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=n1lhfxc/wP5roOkvPQmjjy/QM7cgipKqKy8XywFw8h8=;
-  b=EadL71nBlYV4cMO+jWihQowkOGvpKgVgh+cSsB0x8fuk6Ph7GScQnwQp
-   7htftLEDT0H3dAjZ9fn1HZaW5MVU4q9wOr95Li7TMytdsbn8WRPxw2Y7y
-   2t4QiRH7ARp2bhEZkkJ/llJrRZFqUbuBx1edHbdxqT60d7iH1aNtXFNNt
-   nAs4cVTNQnE+4XFvueaDLO6nNYMEfIUS3J8HyXJRfwKSCyjkJoI8RvNza
-   /IFk2Oi6qnh95ii49OGzQ8SVGZIMiDZ4pOJGZGEeCV/qt54ZZ5YrlK17D
-   pnJa1pnsxbrEyGO9ESgaA/qLlgtvUrUMNn976OsrQ1Ru17fBbMHZqiL8w
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="447290952"
-X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
-   d="scan'208";a="447290952"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 02:46:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="894861717"
-X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
-   d="scan'208";a="894861717"
-Received: from cyrillet-mobl.ger.corp.intel.com ([10.252.55.203])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 02:45:26 -0700
-Date:   Wed, 4 Oct 2023 12:46:49 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-cc:     =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [UPDATE][PATCH] platform/x86/intel-uncore-freq: Conditionally
- create attribute for read frequency
-In-Reply-To: <ab0ab04980b07e2893d9672b96311230ac981e40.camel@linux.intel.com>
-Message-ID: <b7fd5b52-9d91-cfe-e011-522160947115@linux.intel.com>
-References: <20231002131817.1590966-1-srinivas.pandruvada@linux.intel.com>  <6c59be5-1ff1-d0b1-5960-3789fe10c692@linux.intel.com> <ab0ab04980b07e2893d9672b96311230ac981e40.camel@linux.intel.com>
+        Wed, 4 Oct 2023 05:58:59 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8DAA7
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:58:55 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50567477b29so2252422e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:58:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696413534; x=1697018334; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=2zQurfJPbiuUjWnuhOpNrLMV2pgMXd/ebBa042cwmYc=;
+        b=ssznBkeL/RtBv2O86Jzp7gM4CHOPBqfAjN34MlY19kgtSgGWZjBXllFFsgGQDBOCA2
+         F3olrFY6DYdYUho5Q+ce6CRl9WqSToVLcN1Rc4jacv84tTE4PrRCl93ZXxOlaXSqlFfl
+         AZUlRJJV/L8+uHAdfp/9BPGXjwlaEltpw6Z2lek500lrSEdWfOsaqf7D5vIWCsYreZ5z
+         5HF0vZ87+g7wVXRbvGfd8YzzZ172+bJDVlZ6yBsEOonPDFbgwRNHHQ71NIKKfniJBfdt
+         4tJBUf8PqObkc8KF/5pNByTUs1TBQrRIgREiisD5wCzFf4g2hsNqdQ7up+G3Jmqowmnb
+         zWcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696413534; x=1697018334;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2zQurfJPbiuUjWnuhOpNrLMV2pgMXd/ebBa042cwmYc=;
+        b=BInMkn51BocTh4c8QXwqTdf6NRNvdQtg6GIeoOQjSscK/sNPXV+hb24BjhMdV+B+6G
+         7UKrC+Mr2c7IOmCtPtJkpMomFhxTujpdxvdTG0eUlOGOGgyGSjzbuRolnvFrN0V+MInA
+         7y7QxzCj4YTtUk3/LCxhd4VtLnTFOhaq7iYTTSo666bFi3tgSmt+MzH6sW0hqU4bZoTz
+         UT5FHT9glCUeUoTWcmVxj4w6BoqpH9G5A+M09lerIsI+JlMV4hHe88c2CreeaM6wWrjz
+         GRQnq7Q7LeUo7ktndhAJ0SPdZI+ym4Vq90kBP03CDMAofcMJI82/+xIEkWzEjwdyHATu
+         0eoQ==
+X-Gm-Message-State: AOJu0YxcTDSLlfX4PayGulLuxh/TOJNIrbCA8651gNdGSUNj3vtSwJxe
+        GTnanIiV/Ym9AvttjFFKqPfCFw==
+X-Google-Smtp-Source: AGHT+IEVyhw3oWGM3Jb/CM0G2T6xFOUfrj2mUvQvjyxBjBNYvCMW2izu2JSFSPd2ut8kSsupybhWPg==
+X-Received: by 2002:a05:6512:1052:b0:503:fee:5849 with SMTP id c18-20020a056512105200b005030fee5849mr1827173lfb.53.1696413533806;
+        Wed, 04 Oct 2023 02:58:53 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:d9fc:647c:aca8:fc21])
+        by smtp.gmail.com with ESMTPSA id x2-20020a1c7c02000000b003fe23b10fdfsm1086938wmc.36.2023.10.04.02.58.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 02:58:53 -0700 (PDT)
+References: <20231002141020.2403652-1-jbrunet@baylibre.com>
+ <20231002141020.2403652-3-jbrunet@baylibre.com>
+ <2248b34e-d755-4142-986c-0ead80796e13@linaro.org>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Kevin Hilman <khilman@baylibre.com>, Da Xue <da.xue@libretech.co>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH 2/2] arm64: dts: amlogic: add libretech cottonwood support
+Date:   Wed, 04 Oct 2023 11:49:00 +0200
+In-reply-to: <2248b34e-d755-4142-986c-0ead80796e13@linaro.org>
+Message-ID: <1jleciyahv.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-667317560-1696412813=:1931"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-667317560-1696412813=:1931
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+On Wed 04 Oct 2023 at 11:20, Neil Armstrong <neil.armstrong@linaro.org> wrote:
 
-On Tue, 3 Oct 2023, srinivas pandruvada wrote:
-> On Tue, 2023-10-03 at 16:10 +0300, Ilpo Järvinen wrote:
-> > On Mon, 2 Oct 2023, Srinivas Pandruvada wrote:
-> > 
-> > > When the current uncore frequency can't be read, don't create
-> > > attribute
-> > > "current_freq_khz" as any read will fail later. Some user space
-> > > applications like turbostat fail to continue with the failure. So,
-> > > check
-> > > error during attribute creation.
-> > > 
-> > > Fixes: 8a54e2253e4c ("platform/x86/intel-uncore-freq: Uncore
-> > > frequency control via TPMI")
-> > 
-> > Hi,
-> > 
-> > Thanks for the update but that commit id looks bogus, or where the
-> > value 
-> > is used w/o error check?
-> 
-> commit 8a54e2253e4c25e5b61c9a9bee157bb52da5d432
-> Author: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Date:   Thu Apr 20 15:05:14 2023 -0700
-> 
->     platform/x86/intel-uncore-freq: Uncore frequency control via TPMI
-> 
-> 
-> This is the commit exposed the issue. This is not the commit which
-> changed the code in question. 
-> 
-> 
-> I can add also
-> Fixes: dbce412a7733 ("platform/x86/intel-uncore-freq: Split common and
-> enumeration part")
-> 
-> But the change even before that as this commit just reorganized code
-> but because of change of folders, that will look like correct commit.
+> On 02/10/2023 16:10, Jerome Brunet wrote:
+>> Add support for the Libretech cottonwood board family.
+>> These 2 boards are based on the same PCB, with an RPi B form factor.
+>> The "Alta" board uses an a311d while the "Solitude" variant uses an
+>> s905d3.
+>> Co-developed-by: Da Xue <da.xue@libretech.co>
+>> Signed-off-by: Da Xue <da.xue@libretech.co>
+>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+>> ---
+>>   arch/arm64/boot/dts/amlogic/Makefile          |   2 +
+>>   .../amlogic/meson-g12b-a311d-libretech-cc.dts | 133 ++++
+>>   .../amlogic/meson-libretech-cottonwood.dtsi   | 610 ++++++++++++++++++
+>>   .../amlogic/meson-sm1-s905d3-libretech-cc.dts |  89 +++
+>>   4 files changed, 834 insertions(+)
+>>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
+>>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
+>>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts
+>> 
+>
+> <snip>
+>
+>> +
+>> +	leds-pwm {
+>> +		compatible = "pwm-leds";
+>> +
+>> +		led-green {
+>> +			color = <LED_COLOR_ID_GREEN>;
+>> +			function = LED_FUNCTION_STATUS;
+>> +			linux,default-trigger = "default-on";
+>> +			panic-indicator;
+>> +			max-brightness = <255>;
+>> +			pwms = <&pwm_cd 1 1250 0>;
+>> +			active-low;
+>> +		};
+>> +
+>> +		led-blue {
+>> +			color = <LED_COLOR_ID_BLUE>;
+>> +			function = LED_FUNCTION_ACTIVITY;
+>> +			linux,default-trigger = "activity";
+>
+> "activity" isn't documented, perhaps heartbeat instead ?
+>
 
-I never thought dbce412a7733 is being fixed here, it's just a refactor 
-moving code around like you say.
+The trigger does exist though. The other way is to extend the DT doc.
+I don't really care one way or the other
 
-But how about 414eef27283a ("platform/x86/intel/uncore-freq: Display 
-uncore current frequency") which actually adds the code line you're now 
-fixing. What was broken before it? All I see is the one call in
-show_perf_status_freq_khz() but that's checking for errors.
+I'll defer to Da on this one
 
--- 
- i.
+>> +			max-brightness = <255>;
+>> +			pwms = <&pwm_ab 1 1250 0>;
+>> +			active-low;
+>> +		};
+>
+> leds subnodes should be named as led(-[0-9a-f]+)
+>
+> see Documentation/devicetree/bindings/leds/leds-pwm.yaml
 
---8323329-667317560-1696412813=:1931--
+That I do care. The schematics refer to the leds by name. There is no
+number assigned, much less hex. Making one up makes no sense.
+
+User should be able to quickly (and easily) link  what they see in the
+schematics with DT.
+
+So I'd prefer to submit a change for the regex rather than changing this
+
+>
+>> +	};
+>> +
+>> +	leds-gpio {
+>> +		compatible = "gpio-leds";
+>> +
+>> +		led-orange {
+>> +			color = <LED_COLOR_ID_AMBER>;
+>> +			function = LED_FUNCTION_STANDBY;
+>> +			gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
+>> +		};
+>
+> Ditto, but you can simply use "led" since it's the only one.
+>
+> See Documentation/devicetree/bindings/leds/leds-gpio.yaml
+>
+> Neil
+>
+>
+> <snip>
+
