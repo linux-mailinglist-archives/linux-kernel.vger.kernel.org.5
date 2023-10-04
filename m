@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2EE7B82AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA777B824E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242642AbjJDOu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37738 "EHLO
+        id S233465AbjJDO3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:29:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233270AbjJDOuz (ORCPT
+        with ESMTP id S242685AbjJDO3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:50:55 -0400
-Received: from mailo.com (msg-4.mailo.com [213.182.54.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5230DB8;
-        Wed,  4 Oct 2023 07:50:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=triplefau.lt; s=mailo;
-        t=1696429806; bh=TedzwPwzm/uvapENYRqWPjouS2zTRkOVHGvUyrv0Vbg=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=rpv5KxdgDOusiTO9ZZC61winbmtp7SfZHExdR2ZIYw9LCALQbncIIkuHmpH/5sg/I
-         1TnE238b7YHEyy1YvC/GqBrZmOaafysjte8Cu1hVsWgSgB/VOkJotvsfjx2zOUjdIe
-         NstFlxLnKmF3GoJGXXUCeXN9lTgX50Au+YqODEo4=
-Received: by b221-2.in.mailobj.net [192.168.90.22] with ESMTP
-        via ip-20.mailobj.net [213.182.54.20]
-        Wed,  4 Oct 2023 16:30:05 +0200 (CEST)
-X-EA-Auth: FZCFa3GRQPbutha7o0M0ykDKPqM2F0qO6GzRNQf8jrVWg2fNZYwzAaVwjbw+R+Ys40IIDryL2fxYpvG/N0MKlGn1EYhErdyE2yIID/PZCJM=
-Date:   Wed, 4 Oct 2023 16:29:06 +0200
-From:   Remi Pommarel <repk@triplefau.lt>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Paolo Abeni <pabeni@redhat.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] net: stmmac: remove unneeded
- stmmac_poll_controller
-Message-ID: <ZR12sux0vN5YXIYk@pilgrim>
-References: <20230906091330.6817-1-repk@triplefau.lt>
- <626de62327fa25706ab1aaab32d7ba3a93ab26e4.camel@redhat.com>
- <ZRKozLps8dmDmQgc@pilgrim>
- <20231002133759.133d8a97@kernel.org>
+        Wed, 4 Oct 2023 10:29:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2498BE5;
+        Wed,  4 Oct 2023 07:29:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A804FC433CA;
+        Wed,  4 Oct 2023 14:29:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696429753;
+        bh=G2t/tELToH3tlrri1yGgmWDNrvWlh8vra9XR/FFSihE=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=SxKbuo1GUGKibRkX1BxYVjaWa5l/peCkNxLGuIPWMVyvlQzf+bVj5sOzVRjpKN0Ex
+         DVIuJHU+LQ+H9WJeoayZIkVUf0v6M5xqlvpMbvj5PVfDhfZF+Xto/5Ho977Dpbznin
+         Y2gKrgPxP2iqmSBT7dfbluUIRZ/t28UZFeKAyhfGTwyCTZLhJTjbJ2K4wDLVeMq74l
+         A2ykhqNvVUlqLsr6xRUuz8heegou3Q/OeTDZRUl+PDPGkiMuV2vvJ50kYxEXB6PQ0U
+         QxM8U+taq7mFJSBilh4X1nyQ/KvB41P3YsLu44qRhPYNEIC7nFd0UcCfN8KsMkiQBR
+         wVDT+HrDp2Fug==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sinan Kaya <okaya@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andi Shyti <andi.shyti@kernel.org>
+In-Reply-To: <20230810100000.123515-1-krzysztof.kozlowski@linaro.org>
+References: <20230810100000.123515-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/2] dmaengine: qcom: fix Wvoid-pointer-to-enum-cast
+ warning
+Message-Id: <169642975023.440009.5007970606847296155.b4-ty@kernel.org>
+Date:   Wed, 04 Oct 2023 19:59:10 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231002133759.133d8a97@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 01:37:59PM -0700, Jakub Kicinski wrote:
-> On Tue, 26 Sep 2023 11:47:56 +0200 Remi Pommarel wrote:
-> > > I'm sorry for the incremental feedback, but we also need a suitable
-> > > Fixes tag, thanks!  
-> > 
-> > I didn't include Fixes tag because it would go back up to the initial
-> > driver support commit [0]. I can't be sure that this commit includes
-> > necessary NAPI implementation to be able to get rid of
-> > .ndo_poll_controller callback back then. And I am not able to test it on
-> > older version than 5.15.x hence I only included the 5.15.x Cc tag
-> > version prerequisite.
-> > 
-> > But I surely can add a Fixed tag if it is ok for it to be [0].
-> > 
-> > Also sorry for the long replying delay.
-> > 
-> > [0] commit 47dd7a540b8a ("net: add support for STMicroelectronics Ethernet controllers")
+
+On Thu, 10 Aug 2023 11:59:59 +0200, Krzysztof Kozlowski wrote:
+> 'cap' is an enum, thus cast of pointer on 64-bit compile test with W=1
+> causes:
 > 
-> AFAIU the Fixes tag only indicates where the bug was present,
-> no guarantees on whether the fix can be backported as far back.
-> IOW I think [0] as Fixes tag will be perfectly correct, please
-> repost with it included?
+>   hidma.c:748:8: error: cast to smaller integer type 'enum hidma_cap' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+> 
+> 
 
-Ok that makes sense, thanks. Will resend with Fixes tag.
+Applied, thanks!
 
+[1/2] dmaengine: qcom: fix Wvoid-pointer-to-enum-cast warning
+      commit: 9a2136b60cc1a5ba9c5878f08a41f41271c4cd17
+[2/2] dmaengine: mmp: fix Wvoid-pointer-to-enum-cast warning
+      commit: 094f9ee5fb547c31486801a017a07d7f1c1e7881
+
+Best regards,
 -- 
-Remi
+~Vinod
 
 
