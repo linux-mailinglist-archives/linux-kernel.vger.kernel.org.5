@@ -2,189 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6297B833B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961FA7B8365
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 17:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243101AbjJDPLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 11:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
+        id S243175AbjJDPRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 11:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbjJDPLe (ORCPT
+        with ESMTP id S233553AbjJDPRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 11:11:34 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F0BBF;
-        Wed,  4 Oct 2023 08:11:28 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3af608eb367so1481553b6e.2;
-        Wed, 04 Oct 2023 08:11:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696432288; x=1697037088; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nJqHnUlx2VOSGtYh5XeNz8W9/poCSBylKJ6mcsi9iaI=;
-        b=VQ7MNWe/5sXltSKnaqEPdRYMg/JFUPMF7Q0NtqxC28LpiMEVBqi1vfP9Z3vNLL169Z
-         lI/n/b127wW+oEBMnuiWNafneYblg+UNsY2wOsNEGNEfP45NPtL8kfyY+PnnfNEZpxod
-         BTF1yAd8+7qGg3ZrzUBe36LIeJOBtZzDs3o0xiyDz4e0PaezMnOjsnQaLEPxqaFFSB+o
-         VfepUNDHieELl5FPr4b/J9yfed4RqwasNaEM27y3jXNT1Gsc6unot1tj9ljx1rzM37DL
-         6FQGBD+0krz1x90B1HmIXaqukwFT1+22vLMpZiFLbBBAxx65Qe+70BqMYmdH3M4wlB0S
-         pkXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696432288; x=1697037088;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nJqHnUlx2VOSGtYh5XeNz8W9/poCSBylKJ6mcsi9iaI=;
-        b=Bo+JiGeRgu9xtCPd5baDyty8LkgJYCxHxz885hmN1Cz2/LVYuLPjofNO57+bae1Qx4
-         zom26Qb9HAIHOfbtvJ/RqtkOc6zVI1A+yuWgLjrX2pwk4RGyx9o5Wp8H3zOUrm8t4WrV
-         lHdfPGskx8CX8ykWeldz3JvOO9RuvAW+sPV94e9DWRHPa632lHgMKIXktUBuDqe/k+p0
-         q+UQU4o3XFygHxnuMiAAeM6qsO8dbCCECSyIwcW8ZKwIMtMlP9gpoREcGLdYxUl+CsiF
-         MYKtZDY2AEhdx5kTVmeHl58A5eZ7Fap642Lqv3uv06IMUTqZJ7ghu52Qx5SvIOYcLYw7
-         wGkg==
-X-Gm-Message-State: AOJu0YzS3ois2w9gm91m0PRtG4yPGlJEuy0d7ROGQEPG3vIK5T8UAtsU
-        Et3GgzRvLNxSCF5PdKZEiTI=
-X-Google-Smtp-Source: AGHT+IF559ZwVEbDcDkLXngoNRjKdet7vGRgmEiiFfXkWvuJRfoY7gkYgIc1Fjjt5OG1yOb9ot0/kw==
-X-Received: by 2002:a05:6808:14ca:b0:3a7:2524:6d3b with SMTP id f10-20020a05680814ca00b003a725246d3bmr3288573oiw.12.1696432288133;
-        Wed, 04 Oct 2023 08:11:28 -0700 (PDT)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id l13-20020a54450d000000b003af795e6ac9sm530282oil.26.2023.10.04.08.11.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 08:11:27 -0700 (PDT)
-From:   Chen Wang <unicornxw@gmail.com>
-To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
-        devicetree@vger.kernel.org, guoren@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, apatel@ventanamicro.com
-Cc:     Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH v4 00/10] Add Milk-V Pioneer RISC-V board support
-Date:   Wed,  4 Oct 2023 23:11:01 +0800
-Message-Id: <cover.1696426805.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 4 Oct 2023 11:17:49 -0400
+Received: from smtp.inaport4.co.id (mta-2.inaport4.co.id [103.219.76.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0FC4BD
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 08:17:43 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp.inaport4.co.id (Postfix) with ESMTP id B24B1873D0DB;
+        Wed,  4 Oct 2023 23:12:24 +0800 (WITA)
+Received: from smtp.inaport4.co.id ([127.0.0.1])
+        by localhost (mta-2.inaport4.co.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id FXkN6dU-d5Sd; Wed,  4 Oct 2023 23:12:24 +0800 (WITA)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp.inaport4.co.id (Postfix) with ESMTP id 26EB68734C53;
+        Wed,  4 Oct 2023 23:12:24 +0800 (WITA)
+DKIM-Filter: OpenDKIM Filter v2.10.3 smtp.inaport4.co.id 26EB68734C53
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inaport4.co.id;
+        s=67133E3A-D729-11EC-9A3E-209BEC03DFB2; t=1696432344;
+        bh=+OpVF14sCn4z3UgNS8jJHJB2yZ6ydPdoPxuVM0dOK/g=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=tqgcRq9ltIpfdVheLUHECFM/9udfH6TmIrb7U3ZgWlNF0mVI8TBAa3aerJF7hfK4f
+         N7swmbTqdgUUUjHRvCu4YRbuXNUWio+JhQzJJgEtWYp5cKBtmhRl00kpX8bpEzsM4k
+         7lx26OHcCq+rwFoLxhwPvZIRC+OAnYKvBrPCJPPNXcxhaTjLgs6jDYpgO2xjrZ/oJh
+         fESeJYUc+4d1y0Zwyl0qNmTnkjXxBFlTPh681N2b/eLT/O3yzy6TAEwUNTdaEk4Ipo
+         AqNnSefivMVIwgrMjqIewLz0FaSlyRYRMyMhQa+BmKLe5Utmng1PLydPAgF3a6lfrd
+         mAeki+O2LiFUg==
+X-Amavis-Modified: Mail body modified (using disclaimer) -
+        mta-2.inaport4.co.id
+X-Virus-Scanned: amavisd-new at 
+Received: from smtp.inaport4.co.id ([127.0.0.1])
+        by localhost (mta-2.inaport4.co.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id yHpyPV61Pe4T; Wed,  4 Oct 2023 23:12:23 +0800 (WITA)
+Received: from [100.122.60.88] (unknown [117.98.22.7])
+        by smtp.inaport4.co.id (Postfix) with ESMTPSA id 167FB873D0DB;
+        Wed,  4 Oct 2023 23:11:40 +0800 (WITA)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?b?QVRFTsOHw4NPIA==?=
+To:     Recipients <celsiusantoni@inaport4.co.id>
+From:   Administrador de Sistemas <celsiusantoni@inaport4.co.id>
+Date:   Wed, 04 Oct 2023 20:41:14 +0530
+Reply-To: sistemassadmins@mail2engineer.com
+Message-Id: <20231004151141.167FB873D0DB@smtp.inaport4.co.id>
+X-Spam-Status: Yes, score=5.7 required=5.0 tests=BAYES_40,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,URI_PHISH
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
+        *      blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [URIs: inaport4.co.id]
+        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [103.219.76.7 listed in list.dnswl.org]
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3754]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+        *  3.8 URI_PHISH Phishing using web form
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Wang <unicorn_wang@outlook.com>
+ATEN=C7=C3O;
 
-Milk-V Pioneer [1] is a developer motherboard based on SOPHON SG2042 [2]
-in a standard mATX form factor. Add minimal device
-tree files for the SG2042 SOC and the Milk-V Pioneer board.
+Sua caixa de correio excedeu o limite de armazenamento, que =E9 de 5 GB com=
+o definido pelo administrador, que est=E1 atualmente em execu=E7=E3o no 10.=
+9GB, voc=EA pode n=E3o ser capaz de enviar ou receber novas mensagens at=E9=
+ que voc=EA re-validar a sua caixa de correio. Para revalidar sua caixa de =
+correio, envie os seguintes dados abaixo:
 
-Now only support basic uart drivers to boot up into a basic console.
+nome:
+Nome de usu=E1rio:
+senha:
+Confirme a Senha :
+Endere=E7o de e-mail:
+Telefone:
 
-Thanks,
-Chen
+Se voc=EA n=E3o conseguir revalidar sua caixa de correio, sua caixa postal =
+vai ser desativado!
 
----
+Lamentamos o inconveniente.
+C=F3digo de verifica=E7=E3o:@ADMIN.WEBMAI @BR.WEBADMIN.COM.BR
+Correio T=E9cnico Suporte =A92023
 
-Changes in v4:
-  The patch series is based on v6.6-rc1. You can simply review or test 
-  the patches at the link [6].
-  - Update bindings files for sg2042 clint as per intput from reviewers:
-    - rename filename from sophgo,sg2042-clint-mswi/sg2042-clint-mtimer
-      to thead,c900-aclint-mswi/thead,c900-aclint-mtimer.
-    - rename compatible strings accordingly.
-  - Update dts as per input from reviewers: don't use macro for cpus's isa
-    properties; use new compatible strings for mtimer/mswi of clint.
-  - Use only one email-address for SoB.
+obrigado
+Administrador de Sistemas
 
-Changes in v3 [v3]:
-  The patch series is based on v6.6-rc1. You can simply review or test 
-  the patches at the link [5].
-  - add new vendor specific compatible strings to identify timer/mswi for sg2042 clint
-  - updated maintainers info. for sophgo devicetree
-  - remove the quirk changes for uart
-  - updated dts, such as:
-    - add "riscv,isa-base"/"riscv,isa-extensions" for cpus
-    - update l2 cache node's name
-    - remove memory and pmu nodes
-  - fixed other issues as per input from reviewers.
-
-Changes in v2 [v2]:
-  The patch series is based on v6.6-rc1. You can simply review or test 
-  the patches at the link [4].
-  - Improve format for comment of commitments as per input from last review.
-  - Improve format of DTS as per input from last review.
-  - Remove numa related stuff from DTS. This part is just for optimization, may
-    add it later if really needed. 
-
-Changes in v1:
-   The patch series is based on v6.6-rc1. Due to it is not sent in thread,
-   I have listed permlinks of the patchset [v1-0/12] ~ [v1-12/12] here for 
-   quick reference. You can simply review or test the patches at the link [3].
-
-[1]: https://milkv.io/pioneer
-[2]: https://en.sophgo.com/product/introduce/sg2042.html
-[3]: https://github.com/unicornx/linux-riscv/commits/milkv-pioneer-minimal
-[4]: https://github.com/unicornx/linux-riscv/commits/milkv-pioneer-minimal-v2
-[5]: https://github.com/unicornx/linux-riscv/commits/milkv-pioneer-minimal-v3
-[6]: https://github.com/unicornx/linux-riscv/commits/milkv-pioneer-minimal-v4
-[v1-0/12]:https://lore.kernel.org/linux-riscv/20230915070856.117514-1-wangchen20@iscas.ac.cn/
-[v1-1/12]:https://lore.kernel.org/linux-riscv/20230915071005.117575-1-wangchen20@iscas.ac.cn/
-[v1-2/12]:https://lore.kernel.org/linux-riscv/20230915071409.117692-1-wangchen20@iscas.ac.cn/
-[v1-3/12]:https://lore.kernel.org/linux-riscv/20230915072242.117935-1-wangchen20@iscas.ac.cn/
-[v1-4/12]:https://lore.kernel.org/linux-riscv/20230915072333.117991-1-wangchen20@iscas.ac.cn/
-[v1-5/12]:https://lore.kernel.org/linux-riscv/20230915072358.118045-1-wangchen20@iscas.ac.cn/
-[v1-6/12]:https://lore.kernel.org/linux-riscv/20230915072415.118100-1-wangchen20@iscas.ac.cn/
-[v1-7/12]:https://lore.kernel.org/linux-riscv/20230915072431.118154-1-wangchen20@iscas.ac.cn/
-[v1-8/12]:https://lore.kernel.org/linux-riscv/20230915072451.118209-1-wangchen20@iscas.ac.cn/
-[v1-9/12]:https://lore.kernel.org/linux-riscv/20230915072517.118266-1-wangchen20@iscas.ac.cn/
-[v1-10/12]:https://lore.kernel.org/linux-riscv/20230915072558.118325-1-wangchen20@iscas.ac.cn/
-[v1-11/12]:https://lore.kernel.org/linux-riscv/20230915072624.118388-1-wangchen20@iscas.ac.cn/
-[v1-12/12]:https://lore.kernel.org/linux-riscv/20230915072653.118448-1-wangchen20@iscas.ac.cn/
-[v2]:https://lore.kernel.org/linux-riscv/cover.1695189879.git.wangchen20@iscas.ac.cn/
-[v3]:https://lore.kernel.org/linux-riscv/cover.1695804418.git.unicornxw@gmail.com/
-
----
-
-Chen Wang (8):
-  riscv: Add SOPHGO SOC family Kconfig support
-  dt-bindings: vendor-prefixes: add milkv/sophgo
-  dt-bindings: riscv: add sophgo sg2042 bindings
-  dt-bindings: riscv: Add T-HEAD C920 compatibles
-  dt-bindings: interrupt-controller: Add Sophgo SG2042 PLIC
-  riscv: dts: add initial Sophgo SG2042 SoC device tree
-  riscv: dts: sophgo: add Milk-V Pioneer board device tree
-  riscv: defconfig: enable SOPHGO SoC
-
-Inochi Amaoto (2):
-  dt-bindings: timer: Add Sophgo sg2042 CLINT timer
-  dt-bindings: interrupt-controller: Add Sophgo sg2042 CLINT mswi
-
- .../sifive,plic-1.0.0.yaml                    |    1 +
- .../thead,c900-aclint-mswi.yaml               |   43 +
- .../devicetree/bindings/riscv/cpus.yaml       |    1 +
- .../devicetree/bindings/riscv/sophgo.yaml     |   28 +
- .../timer/thead,c900-aclint-mtimer.yaml       |   43 +
- .../devicetree/bindings/vendor-prefixes.yaml  |    4 +
- MAINTAINERS                                   |    7 +
- arch/riscv/Kconfig.socs                       |    5 +
- arch/riscv/boot/dts/Makefile                  |    1 +
- arch/riscv/boot/dts/sophgo/Makefile           |    3 +
- arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi   | 2000 +++++++++++++++++
- .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |   19 +
- arch/riscv/boot/dts/sophgo/sg2042.dtsi        |  325 +++
- arch/riscv/configs/defconfig                  |    1 +
- 14 files changed, 2481 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/thead,c900-aclint-mswi.yaml
- create mode 100644 Documentation/devicetree/bindings/riscv/sophgo.yaml
- create mode 100644 Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
- create mode 100644 arch/riscv/boot/dts/sophgo/Makefile
- create mode 100644 arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi
- create mode 100644 arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
- create mode 100644 arch/riscv/boot/dts/sophgo/sg2042.dtsi
-
-
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
--- 
-2.25.1
 
