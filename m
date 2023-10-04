@@ -2,104 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AD27B7A2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15C77B7A34
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241721AbjJDIgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
+        id S241737AbjJDIhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241626AbjJDIga (ORCPT
+        with ESMTP id S241730AbjJDIhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:36:30 -0400
-Received: from mxout70.expurgate.net (mxout70.expurgate.net [194.37.255.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57557AD;
-        Wed,  4 Oct 2023 01:36:27 -0700 (PDT)
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <prvs=8655c94f36=fe@dev.tdt.de>)
-        id 1qnxMa-001bp2-Al; Wed, 04 Oct 2023 10:36:12 +0200
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <fe@dev.tdt.de>)
-        id 1qnxMZ-00GJIj-DL; Wed, 04 Oct 2023 10:36:11 +0200
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 0A0B224004B;
-        Wed,  4 Oct 2023 10:36:11 +0200 (CEST)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 5DD97240040;
-        Wed,  4 Oct 2023 10:36:10 +0200 (CEST)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id B023132186;
-        Wed,  4 Oct 2023 10:36:09 +0200 (CEST)
+        Wed, 4 Oct 2023 04:37:00 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6121E83;
+        Wed,  4 Oct 2023 01:36:56 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4060b623e64so3761945e9.0;
+        Wed, 04 Oct 2023 01:36:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696408615; x=1697013415; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RkfAdr3F5jJkOyznGJa/M5SZW3t5nD9ld59JmHneym0=;
+        b=YDjDZJfAJCH3BcaPs570WA9qoZ5XKQP9ubMdbJX5athTtjPVLYyhx3NQ/Msau6EVRy
+         GeORU3vvrAJ61K1qaSxTvlWX14BJQNUY9JOTZ02Rf7zs/OIKN+JG4PsQKzfLTEkDuvhd
+         s0p+z8XHryXWtjMSaO+mqtp2zZG+mKuM5owcgBbBcTTtT48kE97Fco/ltVtHjkI8hJoI
+         a+Gt+8C/zqJCPeY3V8x+1HMhm1dc6GbazWW+R38VQuzGaJXVOXxrR46TL7mj4aD6NC7A
+         U48VEZ0QoQiCt7Dfq++/UjpKCR7i5J3gqRMTid0rG0Wr/v6bX/Yt+goix25kvbLL73pD
+         vZmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696408615; x=1697013415;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RkfAdr3F5jJkOyznGJa/M5SZW3t5nD9ld59JmHneym0=;
+        b=BrCMTfDE4UwrGng17rBWYsx9aYdWXrTlZw3gt/A6Qe43uirNRChY5FrygchaWJ+awO
+         anEqQfCrNQsVRMhKiWdRnU0AtSJrnSZ4kYkBZh7rDd6XH9LARqnNEJnqYQ0abKblMxRm
+         K3sfiC3eNttxfUbrRQC+YnrmVx7ohyvzwzVCkxsk4Xw+gRtXmT0/NjkmUDGuNL4QRk1E
+         egpexhEBEFZ70nIlh8/iXRQhNoTrGRJwX6jONtOr9ZCd3rniFoJiiQA23h2UCqo6w+XN
+         YiQQmW7Wj8P/FB+5MCwAh+SExt1EkTAsUrZRKtqIwi2D80kKk9QmwrXbvfCAVOVaUOxa
+         XL0g==
+X-Gm-Message-State: AOJu0YxdS8d2/hiXeUJ4fUrU/NVwaTe0DEaLHXxBtk4EgMGOltTm8ks6
+        FmcetHzyMNmfya/Z+vqMrKc=
+X-Google-Smtp-Source: AGHT+IEjoO8o6Ujp6u7Rku5wwKxupS9sA4x8/wplpXvxlJ/7kFVD2nsNBV21tG3XuLT18o/k1a2lYA==
+X-Received: by 2002:a05:600c:b8d:b0:401:609f:7f9a with SMTP id fl13-20020a05600c0b8d00b00401609f7f9amr4275071wmb.8.1696408614641;
+        Wed, 04 Oct 2023 01:36:54 -0700 (PDT)
+Received: from PCBABN.skidata.net ([91.230.2.244])
+        by smtp.gmail.com with ESMTPSA id l16-20020a7bc450000000b0040536dcec17sm918596wmi.27.2023.10.04.01.36.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 01:36:54 -0700 (PDT)
+From:   Benjamin Bara <bbara93@gmail.com>
+To:     aford173@gmail.com
+Cc:     abelvesa@kernel.org, bbara93@gmail.com, benjamin.bara@skidata.com,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        festevam@gmail.com, frank@oltmanns.dev, kernel@pengutronix.de,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        linux@armlinux.org.uk, mripard@kernel.org, mturquette@baylibre.com,
+        peng.fan@nxp.com, robh+dt@kernel.org, s.hauer@pengutronix.de,
+        sboyd@kernel.org, shawnguo@kernel.org
+Subject: Re: [PATCH 02/13] arm64: dts: imx8mp: re-parent IMX8MP_CLK_MEDIA_MIPI_PHY1_REF
+Date:   Wed,  4 Oct 2023 10:36:39 +0200
+Message-Id: <20231004083639.2895890-1-bbara93@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <CAHCN7x+TCxbaE7Y41Yn5SpG0G5V57hwXQ7HX_ExLF1EXKtZs4w@mail.gmail.com>
+References: <CAHCN7x+TCxbaE7Y41Yn5SpG0G5V57hwXQ7HX_ExLF1EXKtZs4w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 04 Oct 2023 10:36:09 +0200
-From:   Florian Eckert <fe@dev.tdt.de>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Lee Jones <lee@kernel.org>, Eckert.Florian@googlemail.com,
-        gregkh@linuxfoundation.org, pavel@ucw.cz, kabel@kernel.org,
-        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-leds@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2 3/4] trigger: ledtrig-tty: move variable definition to
- the top
-In-Reply-To: <05b03f3e-5863-4d33-8c70-03be7d7e972f@kernel.org>
-References: <20230928132632.200263-1-fe@dev.tdt.de>
- <20230928132632.200263-4-fe@dev.tdt.de> <20231002140559.GB8453@google.com>
- <acda5dc4-e6d3-4870-929f-fb91636b5649@kernel.org>
- <59cc4073a94edbdec5d77f8457ed4f73@dev.tdt.de>
- <05b03f3e-5863-4d33-8c70-03be7d7e972f@kernel.org>
-Message-ID: <d59855493baa936485a2b00aa29d0449@dev.tdt.de>
-X-Sender: fe@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.17
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-purgate: clean
-X-purgate-type: clean
-X-purgate-ID: 151534::1696408572-7EFD07FE-61C52306/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Adam,
 
+thanks for the feedback!
 
->> I decided to move the variable definition with a separate commit
->> to the top of the function, to make the build robot happy. After that
->> I made my changes for v2 to the ledtrig-tty to add the feature.
->> 
->>> Ah, lkp, then also the Closes: line as it suggests.
->> 
->> Sorry I do not understand your statement
-> 
-> The link you pasted above states:
-> =======
-> If you fix the issue in a separate patch/commit (i.e. not just a new 
-> version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes:
-> https://lore.kernel.org/oe-kbuild-all/202309270440.IJB24Xap-lkp@intel.com/
-> =======
-> 
-> So please follow that suggestion ;).
+On Tue, 3 Oct 2023 at 15:02, Adam Ford <aford173@gmail.com> wrote:
+> From what I can see, it looks like the IMX8MP_CLK_MEDIA_MIPI_PHY1_REF
+> parent is being set to IMX8MP_CLK_24M.  Isn't that the default? I also
+> don't think we need to set a 24MHz clock to 24MHz if that's the
+> default.
 
-Ok, I understand, thanks will to this on a v3 patchset.
-I will now wait for the comments of my changes in ledtrig-tty from the 
-led subsystem.
-And then I will send a new patch set with the requested changes.
+I can retry (have the patch applied since then), but as far as I
+remember, it was not. What was even funnier was that media_mipi_phy1_ref
+hat a divider != 1 set (it is a composite), so it wasn't sufficient to
+just re-parent it to OSC_24M - probably because set_rate() was called
+before it was re-parented to OSC_24M. But thanks for the catch, I will
+take a look again and adapt it if possible.
 
-Sorry for the silly question. But do I have to send this patch again for 
-a v3?
-https://lore.kernel.org/linux-leds/f41dc1e1-6d34-48b2-97dd-ba67df6003c6@kernel.org/T/#u
-It was already marked by you with a `Reviewed-by:` from you?
+Regards
+Benjamin
 
---
-Best regards
-Florian
+> If that is the case, I would suggest we try to remove the assignment
+> altogether to make the device tree simpler and less to untangle if a
+> board needs to manually manipulate the clocks for some specific
+> reason.
+>
+> adam
+>
+> >
+> > Cc: Adam Ford <aford173@gmail.com>
+> > Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
+> > ---
+> >  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 14 ++++++--------
+> >  1 file changed, 6 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > index c946749a3d73..9539d747e28e 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > @@ -1640,11 +1640,6 @@ mipi_dsi: dsi@32e60000 {
+> >                                 clocks = <&clk IMX8MP_CLK_MEDIA_APB_ROOT>,
+> >                                          <&clk IMX8MP_CLK_MEDIA_MIPI_PHY1_REF>;
+> >                                 clock-names = "bus_clk", "sclk_mipi";
+> > -                               assigned-clocks = <&clk IMX8MP_CLK_MEDIA_APB>,
+> > -                                                 <&clk IMX8MP_CLK_MEDIA_MIPI_PHY1_REF>;
+> > -                               assigned-clock-parents = <&clk IMX8MP_SYS_PLL1_800M>,
+> > -                                                        <&clk IMX8MP_CLK_24M>;
+> > -                               assigned-clock-rates = <200000000>, <24000000>;
+> >                                 samsung,pll-clock-frequency = <24000000>;
+> >                                 interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
+> >                                 power-domains = <&media_blk_ctrl IMX8MP_MEDIABLK_PD_MIPI_DSI_1>;
+> > @@ -1747,13 +1742,16 @@ media_blk_ctrl: blk-ctrl@32ec0000 {
+> >                                                   <&clk IMX8MP_CLK_MEDIA_APB>,
+> >                                                   <&clk IMX8MP_CLK_MEDIA_DISP1_PIX>,
+> >                                                   <&clk IMX8MP_CLK_MEDIA_DISP2_PIX>,
+> > -                                                 <&clk IMX8MP_VIDEO_PLL1>;
+> > +                                                 <&clk IMX8MP_VIDEO_PLL1>,
+> > +                                                 <&clk IMX8MP_CLK_MEDIA_MIPI_PHY1_REF>;
+> >                                 assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_1000M>,
+> >                                                          <&clk IMX8MP_SYS_PLL1_800M>,
+> >                                                          <&clk IMX8MP_VIDEO_PLL1_OUT>,
+> > -                                                        <&clk IMX8MP_VIDEO_PLL1_OUT>;
+> > +                                                        <&clk IMX8MP_VIDEO_PLL1_OUT>,
+> > +                                                        <&clk IMX8MP_CLK_24M>;
+> >                                 assigned-clock-rates = <500000000>, <200000000>,
+> > -                                                      <0>, <0>, <1039500000>;
+> > +                                                      <0>, <0>, <1039500000>,
+> > +                                                      <24000000>;
+> >                                 #power-domain-cells = <1>;
+> >
+> >                                 lvds_bridge: bridge@5c {
+> >
+> > --
+> > 2.34.1
+> >
