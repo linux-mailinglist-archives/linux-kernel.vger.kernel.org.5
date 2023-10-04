@@ -2,128 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 830D87B9890
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40D77B9895
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 01:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240426AbjJDXJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 19:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55930 "EHLO
+        id S240531AbjJDXKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 19:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236558AbjJDXJz (ORCPT
+        with ESMTP id S240519AbjJDXKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 19:09:55 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99261C0;
-        Wed,  4 Oct 2023 16:09:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696460986;
-        bh=mCF3g0jquxEL+pwxpJMLbfQmMd435GQolk4LT94nhT8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nQn2tPl+5GuHnR89ZLjroihIy1eSaqjG1tSqI1FfAnH+wiYPjl8/kma2GYtsCaMUN
-         F1liNxo9BXYcr+MD3tPnzaR33yd8shuCWkzpc8zhBRa7SzhU0UwGjZkEYfXdtAfF8m
-         tDrKCohOP7HJReYR2jod54jek/yvRzVqbfJ6nVuPHU8tcm+Ayy6xCPXpj71ERxqK5j
-         SPz5o6Yww8KNetwpFhKLM8vwpFg77HRjdDnjxtzSgU+5godHB+PqsaoPqp7Ff5Mm/h
-         6iqzYQqlFSUyYP5lIB/ezlpCgki1IlDRUd1xN7Rk+A67uAxXPWzaGMt3kYiwQweEvj
-         ajgS/uzzUe4Pg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S19Pk09rWz4xLy;
-        Thu,  5 Oct 2023 10:09:45 +1100 (AEDT)
-Date:   Thu, 5 Oct 2023 10:09:32 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     David Sterba <dsterba@suse.com>, Filipe Manana <fdmanana@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the btrfs tree with the btrfs-fixes
- tree
-Message-ID: <20231005100932.53c35f2c@canb.auug.org.au>
+        Wed, 4 Oct 2023 19:10:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFC3D8;
+        Wed,  4 Oct 2023 16:10:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A01CEC433C7;
+        Wed,  4 Oct 2023 23:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696461006;
+        bh=sr3ifcYlnQGpK7RnHCI5qP/JfUY4gY6cRzG0hwZktu8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CIyVh30kCx/E3HkEEl2nSJkUfwb0kjb3KXI8ARak+kw+rvNQCmJglP/CtQEaDBYOP
+         UmJgRx1niIHuZVu4fiOMIgM/xdw8s/DHLyfteoAF9i91+74oPnxgaSVFgPqxVQxweM
+         XYaRLUNX1C6k4R5n9S0lI0bCMK2o5Ck45irETSBscxPno1fsrsFattKipt61D0NwG9
+         x1ocuKJBWNjJjS/B14TN+SU3kAuHDrUgdr1cKqJskBA/uaVMKgNZx0tQ+j1gdrZIhg
+         9WIc2//ILIuhU4N2mnGJh+bVkeVx82YFrXhrsvuPZPhJllvTE7UZ3YBIekGloVb7sc
+         O/MzMZwgP7sYw==
+Received: by mercury (Postfix, from userid 1000)
+        id B812E106052D; Thu,  5 Oct 2023 01:10:03 +0200 (CEST)
+Date:   Thu, 5 Oct 2023 01:10:03 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     amd-gfx@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jun.ma2@amd.com
+Subject: Re: [PATCH 2/3] power: supply: Don't count 'unknown' scope power
+ supplies
+Message-ID: <20231004231003.z55btgajmixxadqo@mercury.elektranox.org>
+References: <20230926225955.386553-1-mario.limonciello@amd.com>
+ <20230926225955.386553-3-mario.limonciello@amd.com>
+ <20230930201826.biy27esyw4ttxt4p@mercury.elektranox.org>
+ <8d4e4b74-4477-41e0-a690-8b9f38907a7b@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/H93Sqh0F6fw6Oc5b84TQeVD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mavrvis2xy3vzwff"
+Content-Disposition: inline
+In-Reply-To: <8d4e4b74-4477-41e0-a690-8b9f38907a7b@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/H93Sqh0F6fw6Oc5b84TQeVD
-Content-Type: text/plain; charset=US-ASCII
+
+--mavrvis2xy3vzwff
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Hi,
 
-Today's linux-next merge of the btrfs tree got a conflict in:
+On Sun, Oct 01, 2023 at 07:00:11PM -0500, Mario Limonciello wrote:
+> Let me try to add more detail.
+>=20
+> This is an OEM system that has 3 USB type C ports.  It's an Intel system,
+> but this doesn't matter for the issue.
+> * when ucsi_acpi is not loaded there are no power supplies in the system =
+and
+> it reports power_supply_is_system_supplied() as AC.
+> * When ucsi_acpi is loaded 3 power supplies will be registered.
+> power_supply_is_system_supplied() reports as DC.
+>=20
+> Now when you add in a Navi3x AMD dGPU to the system the power supplies do=
+n't
+> change.  This particular dGPU model doesn't contain a USB-C port, so there
+> is no UCSI power supply registered.
+>=20
+> As amdgpu is loaded it looks at device initialization whether the system =
+is
+> powered by AC or DC.  Here is how it looks:
+>=20
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/dri=
+vers/gpu/drm/amd/amdgpu/amdgpu_device.c?h=3Dlinux-6.5.y#n3834
+>=20
+> On the OEM system if amdgpu loads before the ucsi_acpi driver (such as in
+> the initramfs) then the right value is returned for
+> power_supply_is_system_supplied() - AC.
+>=20
+> If amdgpu is loaded after the ucsi_acpi driver, the wrong value is return=
+ed
+> for power_supply_is_system_supplied() - DC.
+>=20
+> This value is very important to set up the dGPU properly.  If the wrong
+> value is returned, the wrong value will be notified to the hardware and t=
+he
+> hardware will not behave properly.  On the OEM system this is a "black
+> screen" at bootup along with RAS errors emitted by the dGPU.
+>=20
+> With no changes to a malfunctioning kernel or initramfs binaries I can add
+> modprobe.blacklist=3Ducsi_acpi to kernel command line avoid registering t=
+hose
+> 3 power supplies and the system behaves properly.
+>=20
+> So I think it's inappropriate for "UNKNOWN" scope power supplies to be
+> registered and treated as system supplies, at least as it pertains to
+> power_supply_is_system_supplied().
 
-  fs/btrfs/transaction.h
+So the main issue is, that the ucsi_acpi registers a bunch of
+power-supply chargers with unknown scope on a desktop systems
+and that results in the system assumed to be supplied from battery.
 
-between commit:
+The problem with your change is, that many of the charger drivers
+don't set a scope at all (and thus report unknown scope). Those
+obviously should not be skipped. Probably most of these drivers
+could be changed to properly set the scope, but it needs to be
+checked on a case-by-case basis. With your current patch they would
+regress in the oposite direction of your use-case.
 
-  f8d1b011ca8c ("btrfs: always print transaction aborted messages with an e=
-rror level")
+Ideally ucsi is changed to properly describe the scope, but I
+suppose this information is not available in ACPI?
 
-from the btrfs-fixes tree and commit:
+Assuming that the above are not solvable easily, my idea would be to
+only count the number of POWER_SUPPLY_TYPE_BATTERY device, which have
+!POWER_SUPPLY_SCOPE_DEVICE and exit early if there are none.
+Basically change __power_supply_is_system_supplied(), so that it
+looks like this:
 
-  5483af73c851 ("btrfs: rename errno identifiers to error")
+=2E..
+	if (!psy->desc->get_property(psy, POWER_SUPPLY_PROP_SCOPE, &ret))
+		if (ret.intval =3D=3D POWER_SUPPLY_SCOPE_DEVICE)
+			return 0;
 
-from the btrfs tree.
+	if (psy->desc->type =3D=3D POWER_SUPPLY_TYPE_BATTERY)
+			(*count)++;
+    else
+		if (!psy->desc->get_property(psy, POWER_SUPPLY_PROP_ONLINE,
+					&ret))
+			return ret.intval;
+=2E..
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+That should work in both cases.
 
---=20
-Cheers,
-Stephen Rothwell
+-- Sebastian
 
-diff --cc fs/btrfs/transaction.h
-index 93869cda6af9,de58776de307..000000000000
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@@ -213,15 -216,15 +216,15 @@@ do {							=09
-  	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
-  			&((trans)->fs_info->fs_state))) {	\
-  		first =3D true;					\
-- 		if (WARN(abort_should_print_stack(errno),	\
-+ 		if (WARN(abort_should_print_stack(error),	\
-  			KERN_ERR				\
-  			"BTRFS: Transaction aborted (error %d)\n",	\
-- 			(errno))) {					\
-+ 			(error))) {					\
-  			/* Stack trace printed. */			\
-  		} else {						\
- -			btrfs_debug((trans)->fs_info,			\
- -				    "Transaction aborted (error %d)", \
- +			btrfs_err((trans)->fs_info,			\
- +				  "Transaction aborted (error %d)",	\
-- 				  (errno));			\
-+ 				  (error));			\
-  		}						\
-  	}							\
-  	__btrfs_abort_transaction((trans), __func__,		\
+> > >   drivers/power/supply/power_supply_core.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >=20
+> > > diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power=
+/supply/power_supply_core.c
+> > > index d325e6dbc770..3de6e6d00815 100644
+> > > --- a/drivers/power/supply/power_supply_core.c
+> > > +++ b/drivers/power/supply/power_supply_core.c
+> > > @@ -349,7 +349,7 @@ static int __power_supply_is_system_supplied(stru=
+ct device *dev, void *data)
+> > >   	unsigned int *count =3D data;
+> > >   	if (!psy->desc->get_property(psy, POWER_SUPPLY_PROP_SCOPE, &ret))
+> > > -		if (ret.intval =3D=3D POWER_SUPPLY_SCOPE_DEVICE)
+> > > +		if (ret.intval !=3D POWER_SUPPLY_SCOPE_SYSTEM)
+> > >   			return 0;
+> > >   	(*count)++;
+> > > --=20
+> > > 2.34.1
+> > >=20
+>=20
 
---Sig_/H93Sqh0F6fw6Oc5b84TQeVD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--mavrvis2xy3vzwff
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUd8KwACgkQAVBC80lX
-0GyY2gf/cFoHnUUaAoG++VOskX/gdqgV2nTtk5H5fQWf2uN+yfYSLCp0eofjmT5n
-wpeVYzWxvAc8h/cy9gpU1zf7fCoGKKhqHQjOXGxWqXK+odcsCG2aW7U+idEb1kxb
-YHAye6G6QVo1l8wtMtk68b/+9StY+hpBjXQ21cu5WhcBA7ZjkxOtLKDjoPAA1jj6
-KwM8RqCrDwwhu5D7ywH4vfDudMUyEZnZoOHqwwO1toOBSQrV4wvMpna7nqXL1nUg
-99TJV6bO1VrkhbAP06k/CiOV/a7v+cKFDoq0tJ0EEMJnndOCLrbtbWPuI7FsYj5h
-mAjAk1TR8a2ijCskygxZzvuDV1CH/Q==
-=uhFb
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUd8McACgkQ2O7X88g7
++poWjA/9HdkzUe4iv3N7kLQ1MX8LLpg04IlI4kPsSscO2XL8B9FQgQVSaVaH8bSc
+IB0/8clq1dhPvpsC2lZBKGxEnzm1DA3Q97UZ+i+pO2yCeYB2b/I5dnXLYr5m3teZ
+prHUSgoGMNF3lc5QeLO7hc/RT4pKbk7eme3geqCj8Z1JDRUnJLychMMhtzqRch7k
+14ZZWZ3e93vDs6J0Kz5/MT4ws/4m831MzA9sbXK2qRtugV259jeEw/6UtUIdyp8V
+QK2/P9k6ZXfcZjzkm0JVm19lWvyF3YM2WzeoLLeYE8bz6BIBQauw/DyTknKFDmQx
+3ftwFyd6fbnfOfKRgXac2zlrG5W1v1y6Xs8GfMvrWf1KxvXNrpzU8VBCArJk67k3
+CP2s6f7CvFxe9XrMinsge58mraayaqSUmc9QeM/tKuBNpUGglUJo/FFFHMBfITqb
+M1zll2uGFGajOfEpiI9pHIIVWhXzVCoYUdvu3KJsmTciuqSX2qJWY/76P6YdVLXR
+JT1i64+6ca7VklC5PWgG98s2xoGHYowVmGSChtEkYvAD8GpR+CQELBj8R6xcApAu
+njA+xFNG6ZvP8BSLYUd5Qon+EHqHmBA70oj9FkZueKie1+YLSlH4prMn5aQqThkP
+WZodfhxa5KMbzTbnsd62i4yZkfbU1uKFsgYPXDCA/feQeuQLLwE=
+=/PRi
 -----END PGP SIGNATURE-----
 
---Sig_/H93Sqh0F6fw6Oc5b84TQeVD--
+--mavrvis2xy3vzwff--
