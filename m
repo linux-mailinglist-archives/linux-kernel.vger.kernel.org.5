@@ -2,132 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4639A7B7D10
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E32E7B7D16
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242173AbjJDKZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
+        id S242176AbjJDK0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:26:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242116AbjJDKZO (ORCPT
+        with ESMTP id S232895AbjJDK0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:25:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702DCB4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:25:11 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696415109;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JTyylAzC8frK5geYcRE1ljeQ4FXoAjG7xVcVT7SH0zc=;
-        b=cGGqmAWcYEV9nAldg4P7m8UdpFr/96/n5vkWSAp9ph6995vvwEGv41zhYACTC8KUjktW61
-        jVnzjPMF8h+a0ZpTXtSp+3c6ZyfgsfI9QnLVgwSA30wiJT6GZxC8MqZsFr8xlTPrfyrs5m
-        UMt2Yf6uGlcosgMvMS4PyiTRzRGvcFvhMB2IwjW80coc2a9tXUi/y+FqibE/jLWapU9On6
-        ai+/eIxgPVEOhBrNfm0q0kpzobZa61Cn3eP8sdKsb15RaiOCZmH07j659Kq8ksJJuCgL/q
-        g4BroMK4H7xdzBA/732Kx3IcpiDWynyyG+vGl9I+0J5WvmXhKCr7+rK/kB7SoA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696415109;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JTyylAzC8frK5geYcRE1ljeQ4FXoAjG7xVcVT7SH0zc=;
-        b=xJihxi2knh20Hh/jP24o5YtEkJB1V02mdU2zU2a+RL8wRc6LT7Bw34vjtArWLEx/5kZju0
-        dKM7fROtLSaJJ5Dg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Todd Brandt <todd.e.brandt@intel.com>
-Subject: Re: [PATCH printk] printk: flush consoles before checking progress
-In-Reply-To: <ZRrAFS3cELj1DDN2@alley>
-References: <20230929113233.863824-1-john.ogness@linutronix.de>
- <ZRrAFS3cELj1DDN2@alley>
-Date:   Wed, 04 Oct 2023 12:31:07 +0206
-Message-ID: <87h6n64rcs.fsf@jogness.linutronix.de>
+        Wed, 4 Oct 2023 06:26:13 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B64A95
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:26:10 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qnz4n-0007NJ-8z; Wed, 04 Oct 2023 12:25:57 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qnz4m-00B0Xz-M8; Wed, 04 Oct 2023 12:25:56 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 4E5AE22ED1E;
+        Wed,  4 Oct 2023 10:25:56 +0000 (UTC)
+Date:   Wed, 4 Oct 2023 12:25:55 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     socketcan@hartkopp.net, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH] can: raw: Remove NULL check before dev_{put, hold}
+Message-ID: <20231004-shield-accurate-6b875651801b-mkl@pengutronix.de>
+References: <20230825064656.87751-1-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7n5eokfyo5pa3sfp"
+Content-Disposition: inline
+In-Reply-To: <20230825064656.87751-1-jiapeng.chong@linux.alibaba.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-02, Petr Mladek <pmladek@suse.com> wrote:
-> I was about to push this patch and ran checkpatch.pl. It warned about
->
-> WARNING: msleep < 20ms can sleep for up to 20ms; see Documentation/timers/timers-howto.rst
-> #73: FILE: kernel/printk/printk.c:3782:
-> +               msleep(1);
->
-> And indeed, Documentation/timers/timers-howto.rst says that msleep()
-> might sleep longer that expected for <20ms delays. I guess that
-> it is somehow related to jiffies, HZ, and load on the system.
->
-> I think that we need to count jiffies here.
 
-Agreed. The @timeout_ms parameter should be respected.
+--7n5eokfyo5pa3sfp
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Something like:
->
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index db81b68d7f14..6ea500d95fd9 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3723,7 +3723,8 @@ late_initcall(printk_late_init);
->  /* If @con is specified, only wait for that console. Otherwise wait for all. */
->  static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progress)
->  {
-> -	int remaining = timeout_ms;
-> +	unsigned long timeout_jiffies = msecs_to_jiffies(timeout_ms);
-> +	unsigned_long timeout_end = jiffies + timeout_jiffies;
->  	struct console *c;
->  	u64 last_diff = 0;
->  	u64 printk_seq;
-> @@ -3772,24 +3773,19 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
->  		console_srcu_read_unlock(cookie);
->  
->  		if (diff != last_diff && reset_on_progress)
-> -			remaining = timeout_ms;
-> +			timeout_end = jiffies + timeout_jiffies;
->  
->  		console_unlock();
->  
->  		/* Note: @diff is 0 if there are no usable consoles. */
-> -		if (diff == 0 || remaining == 0)
-> +		if (diff == 0)
->  			break;
->  
-> -		if (remaining < 0) {
-> -			/* no timeout limit */
-> -			msleep(100);
-> -		} else if (remaining < 100) {
-> -			msleep(remaining);
-> -			remaining = 0;
-> -		} else {
-> -			msleep(100);
-> -			remaining -= 100;
-> -		}
-> +		/* Negative timeout means an infinite wait. */
-> +		if (timeout_ms >= 0 && time_after_eq(jiffies, timeout_end))
-> +			break;
-> +
-> +		msleep(2000 / HZ);
+On 25.08.2023 14:46:56, Jiapeng Chong wrote:
+> The call netdev_{put, hold} of dev_{put, hold} will check NULL, so there
+> is no need to check before using dev_{put, hold}, remove it to silence
+> the warning:
+>=20
+> ./net/can/raw.c:497:2-9: WARNING: NULL check before dev_{put, hold} funct=
+ions is not needed.
+>=20
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D6231
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Is there really any advantage to this? I would just do msleep(1) and let
-msleep round up. Everything else (tracking via jiffies) looks fine to me.
+Applied to linux-can-next/testing.
 
->  		last_diff = diff;
->  	}
->
-> And we should do this in a separate patch. It seems that sleeping
-> is a bigger magic than I expected.
+regards,
+Marc
 
-Agreed.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-John
+--7n5eokfyo5pa3sfp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmUdPbEACgkQvlAcSiqK
+BOhaJAf8CJS4q8gjgzgbvGEY1oFdsFx5AOdvsIgFL4F3pg+7AjMNRXIX+CyDnGlf
+8tmSvh/3670c5pL8EN5ptuvlUVlJDVOhiH4/28FCC+7zkoWRtEOu4U6v4Uz2onGB
+d2FSb0cx7ifFIjrr6IOsBa67lPO5GD2AXXED8uyiE42K6cWYnpVqS6t48YDle5j2
+u76Q97bvL2TGI1sh3FWKtrsSpgYKcRiKDW9BxodrQrboRqeUMyqfq5OMnn76bc0r
+EyPe0zGVVE2peGfAWhdN1IC/5u7kuhPoB8WdymLnM99pSGeMVrPcvZ+vufB/hM3K
+UnMXGbHpmSlZ18a4oJZuyYTQJaSQnQ==
+=nayZ
+-----END PGP SIGNATURE-----
+
+--7n5eokfyo5pa3sfp--
