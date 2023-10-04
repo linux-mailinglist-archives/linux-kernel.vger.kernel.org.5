@@ -2,215 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDF37B7A21
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147A17B7A23
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241704AbjJDIen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
+        id S241713AbjJDIfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241688AbjJDIem (ORCPT
+        with ESMTP id S241688AbjJDIfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:34:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D945AA7
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:34:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 018C5C433C8;
-        Wed,  4 Oct 2023 08:34:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696408478;
-        bh=MS6eVdU/ecL57/ElNUj1x5YXHRLiQNWPGabx9+f+Ksk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ImT0ZF/w6Vu7BVGrLdeMj7FeACfBWlEEc+wyyTgeP2pLRa24N8nyEtQ3DWJiDN35e
-         EV+2hZlKkxlNUz+gcHRwTaqFAW8dtUQ0uVYNN1bzKlHgwpHiy0S2EpW2YQKUWvvTzW
-         pnSnu9TwDF8nZWq69IHBRan2SWfm9WGx6F0dEB0cAunUqI0RFZWVWO5ItuL1ACrNXn
-         9wnlLxh6xZlQfUjyXf6lieKxLnQm6zZmcUaW+JLO3K8pWkzu9M96OzhpkYGgv/tL4y
-         RJyyrwzTcnkiwaRvG6Ccl4YyL2aArjXI341WuJ1MD3sdccsAF0uk5hmjNAskYedRsz
-         ajWLlwlFA/5hQ==
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Xie XiuQi <xiexiuqi@huawei.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: [GIT PULL] rtla: Fixes for 6.6
-Date:   Wed,  4 Oct 2023 10:34:28 +0200
-Message-ID: <20231004083428.51747-1-bristot@kernel.org>
-X-Mailer: git-send-email 2.41.0
+        Wed, 4 Oct 2023 04:35:22 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86969A7
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:35:18 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a2478862dbso22660817b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:35:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696408517; x=1697013317; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V9Pvz5wjW4nQEQ8U042AuTMhwGm2vJJWl+JdrrFRANE=;
+        b=mOp6+SvvY1EPvyAmrP0haBzCOHQTDIV2iQyA6NxNWzZBRqFsLTRbkuUV9Cr60uliXn
+         z8YIx4lW/6DaL17qylB0Kv+lXip64aEMiKrGyDbl3VFSBdgxujoZO0NE7VVKZrBgW7kp
+         DFWhxJenY0juQNs0L9xbvs0EGaoJT+y3KUR4ccdQbyZ33WMl3YVJVgQoYM+AF6QCZDxK
+         Rc7H6rNcF3qgZpW6ysEoDREtyLh1dnwP8WoitzfglPCwG7oQVO+BfFQGEw/6ErfV8hWc
+         PXIiiYXGc0uRXdwhT2UfB4ez5Mi/iBp64HYVf6/UJ4z/dWgRHOSz2hm9zbMicMGZffnn
+         snzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696408517; x=1697013317;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V9Pvz5wjW4nQEQ8U042AuTMhwGm2vJJWl+JdrrFRANE=;
+        b=IB8M6FZDRE5hkXuLTKat4G/wamg1kb5eh/D/rc6BOdQo9/teGyqPiydUjqH52YUHjN
+         BIyoYZftj9Qkr+KAOxiB/0mkiEnXiTM4O25FXcR8ilqKoEuVLEmELjtHurcxmN6CMNOk
+         PaTTSKgw0SJAOsvdhduQxGjcXWlNHU+V6ADG9y0o7G8rrOppVlyK61ZXg1fWpMnz3g1I
+         oJz8xNOAt/1b71CmiVDEOqeGHu9qcZsFwTDn6oBv99ZfuQvHCSzi/WLn2iHtlvn/kL1U
+         alYaDaXgSoHXGlU9foWqiLAZDKfbnEZCGPgHqwtqct0lihKserdlH7Q5gv2y8pQSQO7V
+         OhPA==
+X-Gm-Message-State: AOJu0YwCdGf+JNzSG0bzx0+tSugeYQHwTtJvDzlBwl0sIIrtlhtLnugP
+        f8KjTcSRk+VbDP1A3VZW5m0R/aSiU4Mq2m0tJphE/A==
+X-Google-Smtp-Source: AGHT+IH5ngf97qNt6bu22r6TovmZpeCObZ1P4vs+ZHMOMTu1yaL2qGufLWfX5gIBKVU2oIFa2UbP+oCYEwSXWYxeI0o=
+X-Received: by 2002:a0d:d203:0:b0:58d:7ec3:16c4 with SMTP id
+ u3-20020a0dd203000000b0058d7ec316c4mr1815920ywd.34.1696408517703; Wed, 04 Oct
+ 2023 01:35:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231002021602.260100-1-takahiro.akashi@linaro.org>
+ <20231002021602.260100-4-takahiro.akashi@linaro.org> <CACRpkdZojfC2qr7gfzL9fj=DEYJcuPR=a1+zVWTMysK9BH_m_Q@mail.gmail.com>
+ <ZR0L5Oe9oT/sEF2p@octopus>
+In-Reply-To: <ZR0L5Oe9oT/sEF2p@octopus>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 4 Oct 2023 10:35:05 +0200
+Message-ID: <CACRpkdY=5hYONDcXW4omcX7=r-JtH=AvOSVMkj72LKiaF_wJuA@mail.gmail.com>
+Subject: Re: [RFC 3/4] gpio: scmi: add SCMI pinctrl based gpio driver
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>, sudeep.holla@arm.com,
+        cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        Oleksii_Moisieiev@epam.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steven,
+Hi Takahiro,
 
-Timerlat auto-analysis:
+I see you are on track with this!
 
-  - Timerlat is reporting thread interference time without thread noise
-    events occurrence. It was caused because the thread interference variable
-    was not reset after the analysis of a timerlat activation that did not
-    hit the threshold.
+Some clarifications:
 
-  - The IRQ handler delay is estimated from the delta of the IRQ latency
-    reported by timerlat, and the timestamp from IRQ handler start event.
-    If the delta is near-zero, the drift from the external clock and the
-    trace event and/or the overhead can cause the value to be negative.
-    If the value is negative, print a zero-delay.
+On Wed, Oct 4, 2023 at 8:53=E2=80=AFAM AKASHI Takahiro
+<takahiro.akashi@linaro.org> wrote:
 
-  - IRQ handlers happening after the timerlat thread event but before
-    the stop tracing were being reported as IRQ that happened before the
-    *current* IRQ occurrence. Ignore Previous IRQ noise in this condition
-    because they are valid only for the *next* timerlat activation.
+> I'm still not sure whether my approach can be applied to any other
+> pinctrl-based gpio drivers, in which extra (driver-specific) operations
+> might be needed around the generic pinctrl_gpio helpers (i.e. gpiolib.c).
+> For instance, look at gpio-tegra.c:
 
-Timerlat user-space:
+Yeah, it kind of requires a "pure" pin controller underneath that don't
+want to do anything else on any operations, otherwise we are back
+to a per-soc pin control driver.
 
-  - Timerlat is stopping all user-space thread if a CPU becomes
-    offline. Do not stop the entire tool if a CPU is/become offline,
-    but only the thread of the unavailable CPU. Stop the tool only,
-    if all threads leave because the CPUs become/are offline.
+But I think it is appropriate for abstractions that strive to provide
+"total abstraction behind a firmware", so such as SCMI or ACPI (heh).
 
-man-pages:
+> > Skip this, let's use device properties instead. They will anyways just =
+translate
+> > to OF properties in the OF case.
+>
+> Okay, I don't know how device properties work, though.
 
-  - Fix command line example in timerlat hist man page.
+They are pretty much 1-to-1 slot-ins for the corresponding of_*
+functions, passing struct device * instead of struct device_node *,
+if you look in include/linux/property.h you will feel at home very
+quickly.
 
+> > > +static int scmi_gpio_get_direction(struct gpio_chip *chip, unsigned =
+int offset)
+> >
+> > Rename all functions pinctrl_gpio_*
+>
+> Well, this change will result in name conflicts against existing
+> pinctrl_gpio_direction_[in|out]out(). So use "pin_control_gpio_" prefix.
 
-Please pull the latest rtla-v6.6-fixes tree, which can be found at:
+Yeah that works, or pincontro_by_gpio_ or such.
 
+> Not sure how the last case (in_en && out_en && DRIVE_OPEN_DRAIN) works.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/bristot/linux.git
-rtla-v6.6-fixes
+I wrote some documentation! But it is hidden deep in the docs:
+https://docs.kernel.org/driver-api/gpio/driver.html#gpio-lines-with-open-dr=
+ain-source-support
 
-Tag SHA1: 6a0df51b5c0a075a553a5ad73b1fd421f559eb6b
-Head SHA1: 81ec384b80ffbda752c230778d39ea620c7e3bcf
+> In order to be able to read a value as an input pin, I think, we need
+> to set the output status to Hi-Z. Then we should recognize it as "INPUT"?
+> In this case, however, we cannot distinguish the other case where we want
+> to use the pin as OUTPUT and drive it to (active) high.
 
+With open drain, on GPIO controllers that do not support a native
+open drain mode, we emulate open drain output high by switching
+the line into input mode. The line in this case has a pull-up resistor
+(internal or external) and as input mode is high-Z the pull up resistor
+will pull the signal high, to any level - could be e.g 48V which is
+helpful for some serial links.
 
-Daniel Bristot de Oliveira (4):
-      rtla/timerlat_aa: Zero thread sum after every sample analysis
-      rtla/timerlat_aa: Fix negative IRQ delay
-      rtla/timerlat_aa: Fix previous IRQ delay for IRQs that happens after thread sample
-      rtla/timerlat: Do not stop user-space if a cpu is offline
+But this case is really tricky so it can be hard to get things right,
+I get a bit confused and so we need to think about it a few times.
 
-Xie XiuQi (1):
-      rtla: fix a example in rtla-timerlat-hist.rst
+> > > +static void scmi_gpio_set(struct gpio_chip *chip, unsigned int offse=
+t, int val)
+> >
+> > static int?
+>
+> Unfortunately, the function prototype of "set" in struct gpio_device is
+>         void (*set)(struct gpio_chip *gc, unsigned int offset, int value)=
+;
+>
+> So we cannot propagate an error to the caller.
 
-----
- Documentation/tools/rtla/rtla-timerlat-hist.rst |  4 ++--
- tools/tracing/rtla/src/timerlat_aa.c            | 32 ++++++++++++++++++++-----
- tools/tracing/rtla/src/timerlat_u.c             |  6 +++--
- 3 files changed, 32 insertions(+), 10 deletions(-)
----------------------------
-diff --git a/Documentation/tools/rtla/rtla-timerlat-hist.rst b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-index 057db78d4095..03b7f3deb069 100644
---- a/Documentation/tools/rtla/rtla-timerlat-hist.rst
-+++ b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-@@ -36,11 +36,11 @@ EXAMPLE
- In the example below, **rtla timerlat hist** is set to run for *10* minutes,
- in the cpus *0-4*, *skipping zero* only lines. Moreover, **rtla timerlat
- hist** will change the priority of the *timerlat* threads to run under
--*SCHED_DEADLINE* priority, with a *10us* runtime every *1ms* period. The
-+*SCHED_DEADLINE* priority, with a *100us* runtime every *1ms* period. The
- *1ms* period is also passed to the *timerlat* tracer. Auto-analysis is disabled
- to reduce overhead ::
- 
--  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms --no-aa
-+  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1000 --no-aa
-   # RTLA timerlat histogram
-   # Time unit is microseconds (us)
-   # Duration:   0 00:10:00
-diff --git a/tools/tracing/rtla/src/timerlat_aa.c b/tools/tracing/rtla/src/timerlat_aa.c
-index e0ffe69c271c..7093fd5333be 100644
---- a/tools/tracing/rtla/src/timerlat_aa.c
-+++ b/tools/tracing/rtla/src/timerlat_aa.c
-@@ -159,6 +159,7 @@ static int timerlat_aa_irq_latency(struct timerlat_aa_data *taa_data,
- 	taa_data->thread_nmi_sum = 0;
- 	taa_data->thread_irq_sum = 0;
- 	taa_data->thread_softirq_sum = 0;
-+	taa_data->thread_thread_sum = 0;
- 	taa_data->thread_blocking_duration = 0;
- 	taa_data->timer_irq_start_time = 0;
- 	taa_data->timer_irq_duration = 0;
-@@ -337,7 +338,23 @@ static int timerlat_aa_irq_handler(struct trace_seq *s, struct tep_record *recor
- 		taa_data->timer_irq_start_time = start;
- 		taa_data->timer_irq_duration = duration;
- 
--		taa_data->timer_irq_start_delay = taa_data->timer_irq_start_time - expected_start;
-+		/*
-+		 * We are dealing with two different clock sources: the
-+		 * external clock source that timerlat uses as a reference
-+		 * and the clock used by the tracer. There are also two
-+		 * moments: the time reading the clock and the timer in
-+		 * which the event is placed in the buffer (the trace
-+		 * event timestamp). If the processor is slow or there
-+		 * is some hardware noise, the difference between the
-+		 * timestamp and the external clock read can be longer
-+		 * than the IRQ handler delay, resulting in a negative
-+		 * time. If so, set IRQ start delay as 0. In the end,
-+		 * it is less relevant than the noise.
-+		 */
-+		if (expected_start < taa_data->timer_irq_start_time)
-+			taa_data->timer_irq_start_delay = taa_data->timer_irq_start_time - expected_start;
-+		else
-+			taa_data->timer_irq_start_delay = 0;
- 
- 		/*
- 		 * not exit from idle.
-@@ -528,7 +545,7 @@ static int timerlat_aa_kworker_start_handler(struct trace_seq *s, struct tep_rec
- static void timerlat_thread_analysis(struct timerlat_aa_data *taa_data, int cpu,
- 				     int irq_thresh, int thread_thresh)
- {
--	unsigned long long exp_irq_ts;
-+	long long exp_irq_ts;
- 	int total;
- 	int irq;
- 
-@@ -545,12 +562,15 @@ static void timerlat_thread_analysis(struct timerlat_aa_data *taa_data, int cpu,
- 
- 	/*
- 	 * Expected IRQ arrival time using the trace clock as the base.
-+	 *
-+	 * TODO: Add a list of previous IRQ, and then run the list backwards.
- 	 */
- 	exp_irq_ts = taa_data->timer_irq_start_time - taa_data->timer_irq_start_delay;
--
--	if (exp_irq_ts < taa_data->prev_irq_timstamp + taa_data->prev_irq_duration)
--		printf("  Previous IRQ interference:	\t\t up to  %9.2f us\n",
--			ns_to_usf(taa_data->prev_irq_duration));
-+	if (exp_irq_ts < taa_data->prev_irq_timstamp + taa_data->prev_irq_duration) {
-+		if (taa_data->prev_irq_timstamp < taa_data->timer_irq_start_time)
-+			printf("  Previous IRQ interference:	\t\t up to  %9.2f us\n",
-+				ns_to_usf(taa_data->prev_irq_duration));
-+	}
- 
- 	/*
- 	 * The delay that the IRQ suffered before starting.
-diff --git a/tools/tracing/rtla/src/timerlat_u.c b/tools/tracing/rtla/src/timerlat_u.c
-index 05e310696dd5..01dbf9a6b5a5 100644
---- a/tools/tracing/rtla/src/timerlat_u.c
-+++ b/tools/tracing/rtla/src/timerlat_u.c
-@@ -45,7 +45,7 @@ static int timerlat_u_main(int cpu, struct timerlat_u_params *params)
- 
- 	retval = sched_setaffinity(gettid(), sizeof(set), &set);
- 	if (retval == -1) {
--		err_msg("Error setting user thread affinity\n");
-+		debug_msg("Error setting user thread affinity %d, is the CPU online?\n", cpu);
- 		exit(1);
- 	}
- 
-@@ -193,7 +193,9 @@ void *timerlat_u_dispatcher(void *data)
- 					procs_count--;
- 				}
- 			}
--			break;
-+
-+			if (!procs_count)
-+				break;
- 		}
- 
- 		sleep(1);
+Grrr that must be my fault. Sorry about not fixing this :(
+
+> > No need to add & 0x01, the gpiolib core already does this.
+>
+> Which part of gpiolib core?
+
+chip->set =3D scmi_gpio_set; gets called like this in gpiolib:
+
+ gpiod_direction_output_raw_commit(..., int value)
+{
+    int val =3D !!value;
+(...)
+    gc->set(gc, gpio_chip_hwgpio(desc), val);
+
+Notice clamping int val =3D !!value; will make the passed val 0 or 1.
+
+> > > +static u16 sum_up_ngpios(struct gpio_chip *chip)
+> > > +{
+> > > +       struct gpio_pin_range *range;
+> > > +       struct gpio_device *gdev =3D chip->gpiodev;
+> > > +       u16 ngpios =3D 0;
+> > > +
+> > > +       list_for_each_entry(range, &gdev->pin_ranges, node) {
+> > > +               ngpios +=3D range->range.npins;
+> > > +       }
+> >
+> > This works but isn't really the intended use case of the ranges.
+> > Feel a bit uncertain about it, but I can't think of anything better.
+> > And I guess these come directly out of SCMI so it's first hand
+> > information about all GPIOs.
+>
+> I don't get your point.
+> However many pins SCMI firmware (or other normal pin controllers) might
+> expose, the total number of pins available by this driver is limited by
+> "gpio-ranges" property.
+> So the sum as "ngpios" should make sense unless a user accidentally
+> specifies a wrong range of pins.
+
+Yes.
+
+And it is this fact that the same number need to appear in two places
+and double-specification will sooner or later bring us to the situation
+where the two do not agree, and what do we do then?
+
+If the ranges come from firmware, which is subject to change such
+as "oops we forgot this pin", the GPIO number will just insert itself
+among the already existing ones: say we have two ranges:
+
+1: 0..5
+2: 6..9
+
+Ooops forgot a GPIO in the first range, it has to be bumped to
+0..6.
+
+But somewhere in the device tree there is:
+
+foo-gpios =3D <&scmi_gpio 7 GPIO_OUT_LOW>;
+
+So now this is wrong (need to be changed to 8) and we have zero tooling
+to detect this, the author just has to be very careful all the time.
+
+But I honestly do not know any better way.
+
+> > which in turn becomes just pinctrl_gpio_set_config(), which
+> > is what we want.
+> >
+> > The second cell in two-cell GPIOs already supports passing
+> > GPIO_PUSH_PULL, GPIO_OPEN_DRAIN, GPIO_OPEN_SOURCE,
+> > GPIO_PULL_UP, GPIO_PULL_DOWN, GPIO_PULL_DISABLE,
+> > which you can this way trivially pass down to the pin control driver.
+> >
+> > NB: make sure the scmi pin control driver returns error for
+> > unknown configs.
+>
+> Well, the error will be determined by SCMI firmware(server)
+> not the driver itself :)
+
+Hehe, I think it is good that the SCMI firmware gets some exercise
+from day 1!
+
+Yours,
+Linus Walleij
