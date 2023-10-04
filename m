@@ -2,105 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF457B79C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC847B79D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241657AbjJDILc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 04:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
+        id S241578AbjJDIMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241613AbjJDILa (ORCPT
+        with ESMTP id S232828AbjJDIMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:11:30 -0400
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01A4A6;
-        Wed,  4 Oct 2023 01:11:27 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59e77e4f707so22540467b3.0;
-        Wed, 04 Oct 2023 01:11:27 -0700 (PDT)
+        Wed, 4 Oct 2023 04:12:36 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC270A7
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:12:32 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-4529d1238a9so926713137.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696407152; x=1697011952; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/mSb+SIJ1kznY7Jji6Vr2AJRvHPkHGWmS9RZs4FnxRA=;
+        b=QUyuH5A6/gWrhvnEBSFipLbJe9XXiZkO4a5I9t8vgRnLs4rRuKlP1JpZ4xw1ayzgiO
+         +23tteumyfNCijHkbaZ5nCelHCnD0mPMkuxOyFgbyQ2Yefs0DDL3SBvmRYuGD9qjf2EM
+         gxutl7ReOLEoGtqH3s2dqs3f3ksurR9DuzhPCfgjFIvoQHloEJvRsbEGBxCvjJzhG3MV
+         qMpuEgIK4dH2XjVy+1zNPRHMQpdNJ7O5RgmO7fFoBDnt9sClGGuiqo6jKzwPVNybjKpi
+         E0VQnWpPoB45m3KmkB0sxxnrnGCgSoDZLrTFnLGaLCSZHXHbRWFV3nZEhx7dB10FpQH1
+         jMvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696407087; x=1697011887;
+        d=1e100.net; s=20230601; t=1696407152; x=1697011952;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VNgqb3ogEHljK/s/zCJeiDzbGvte6UXqv8/D2qJ2ym4=;
-        b=ZYK5m64MOnGA8YTAeV2tiORL9AdLx+4BXWrpEWgCPvGU1iFdKoTSHRV8jLvzlLSWLq
-         LLfTGWFxXqh5vjm8fw69MPC0XJkLEI3Ig5V21BIdk3BA1T9CIs4VxwE9+UdyZCNpfi+A
-         zs09hajQpWTwDVY+vdKZFqlDQJI3oYwR+yXBd9KtgOatUkapR1bMWi8P9p0eRNIlBrm8
-         Ea3pWSDExvuXZjnJub+dXDCS4NZzYNXrUtx/KUkoZebs3S9qAhnBeGIAk6l3zoVqMNzC
-         LLOYWGj3Nh6QzABN3WXGquzF2o+sILLslqrptA5AwVFOvV7R2pg3zN/v76agdAm6Ae+F
-         1LYw==
-X-Gm-Message-State: AOJu0YwY5mCRbNBSyEGQpnYEUuoUK2nLzETetO/ssUue5KuB04T6GIQP
-        BKgt0oiSkVXQwuJA2ak0/42A/2e7wIWPDA==
-X-Google-Smtp-Source: AGHT+IFeroNisVnSgtZNX1YFfffHyQZ0Z4NTkeg2rgkAf7MQgLzryT6LktpCzDxf7u83desFvnesWQ==
-X-Received: by 2002:a81:a008:0:b0:59f:5041:bedb with SMTP id x8-20020a81a008000000b0059f5041bedbmr1838913ywg.8.1696407086812;
-        Wed, 04 Oct 2023 01:11:26 -0700 (PDT)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id a74-20020a0dd84d000000b005a20ab8a184sm995752ywe.31.2023.10.04.01.11.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 01:11:26 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-59e77e4f707so22540287b3.0;
-        Wed, 04 Oct 2023 01:11:26 -0700 (PDT)
-X-Received: by 2002:a0d:d7cc:0:b0:584:4bbb:963b with SMTP id
- z195-20020a0dd7cc000000b005844bbb963bmr1795264ywd.15.1696407085921; Wed, 04
- Oct 2023 01:11:25 -0700 (PDT)
+        bh=/mSb+SIJ1kznY7Jji6Vr2AJRvHPkHGWmS9RZs4FnxRA=;
+        b=QzJlDp+Y74//UstxtZMeIFHNWjoC5WHvOuJ1AgV4LZvxLb9aIcQRIMxEHgjQ6PVIUL
+         wUyaTIJsQdiuc4IxHxaWm/+S3hLCRPzI1VHWU6H0ohxloaWxdnF2rqOjclibvj1jAbvG
+         drTNYulBvwAjeqaXIqDo6mqBb+8i9xjrXsFng2iv7quCDICt3ktApW1Dq0l09qvAPqy8
+         EcAsJZ/XTIx4JgEMQxgoScsS3E16K/v1UquMQQp6AhFcaohPwCUysDz7jxYxempTxVUA
+         dhb5Os395seHah9ltV6T3SxfTj+hAfCKGnjbH6vRcGwOuTz9piWJ8KeNXbtMPaDx5BFl
+         4QTQ==
+X-Gm-Message-State: AOJu0YxWOAhmlfqcb0/mj60BMPwBJBcY6Vw1vAZdru4qzfsRz7DV2N38
+        0QRJw2COtFUfzokNQQk4eIcXq6C1Fj0zPuyKiC8Z3w==
+X-Google-Smtp-Source: AGHT+IGrYgDVrxDoJMZJVhHVecsbpjwYyRMPanYYZQkNEn6NEyoB0KCjHZhQaLxV5l8xsEO72zVxSlFYG3tXVGQD3xE=
+X-Received: by 2002:a67:f9c4:0:b0:452:8ce2:5149 with SMTP id
+ c4-20020a67f9c4000000b004528ce25149mr1417255vsq.12.1696407151799; Wed, 04 Oct
+ 2023 01:12:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com> <20230929053915.1530607-7-claudiu.beznea@bp.renesas.com>
-In-Reply-To: <20230929053915.1530607-7-claudiu.beznea@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 4 Oct 2023 10:11:13 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUgVfxWrVP51b3nbeDThedjzWGJb95-oU5bdPeTTjWu8Q@mail.gmail.com>
-Message-ID: <CAMuHMdUgVfxWrVP51b3nbeDThedjzWGJb95-oU5bdPeTTjWu8Q@mail.gmail.com>
-Subject: Re: [PATCH v2 06/28] clk: renesas: rzg2l: remove critical area
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, magnus.damm@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
-        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20231003145114.21637-1-brgl@bgdev.pl> <CACRpkdY03QUkHcmyfTTfvVFbmNujW3qg5GcNJ-=8zj_zvGqDeg@mail.gmail.com>
+In-Reply-To: <CACRpkdY03QUkHcmyfTTfvVFbmNujW3qg5GcNJ-=8zj_zvGqDeg@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 4 Oct 2023 10:12:20 +0200
+Message-ID: <CAMRc=Md7QKYqRaytw2xG8hqTmEDmZGxFfDyGZqoE96h-CvmJcw@mail.gmail.com>
+Subject: Re: [PATCH 00/36] pinctrl: don't use GPIOLIB global numberspace in helpers
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 7:39 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On Tue, Oct 3, 2023 at 11:51=E2=80=AFPM Linus Walleij <linus.walleij@linaro=
+.org> wrote:
 >
-> spinlock in rzg2l_mod_clock_endisable() is intended to protect the accesses
-> to hardware register. There is no need to protect the instructions that set
-> temporary variable which will be then written to register. With this only
-> one write to one clock register is executed thus locking/unlocking rmw_lock
-> is removed.
+> On Tue, Oct 3, 2023 at 4:51=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
 >
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > We have a set of pinctrl helpers for GPIOLIB drivers that take a number
+> > from the global GPIO numberspace as argument. We are trying to get rid
+> > of this global numbering. Let's rework these helpers to use the
+> > recommended gpio_chip + controller-relative offset instead.
+> >
+> > This work is split into phases: first let's introduce the new variants
+> > of the helpers. Next: let's convert all users one-by-one for easier
+> > review. Finally let's remove the old helpers and rename the new variant=
+s
+> > to take the place of the old ones.
 >
-> Changes in v2:
-> - removed also the spinlock
-> - s/reduce/remove in patch title
+> Almost too good attention to process here, I hope you used some
+> tooling and didn't do all this by hand...
+>
+> I reviewed it by applying the lot with b4 on a branch off
+> my devel branch, and
+>
+> git diff devel..HEAD
+>
+> which shows what the goal of the patches is and since the
+> kernel clearly looks better after than before the patches:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Or I can just merge this branch into my devel (for v6.7)
+> branch, and offer you the same as immutable.
+> Which is my plan.
+>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-clk-for-v6.7.
+I'll need to send a v2 because there was an issue with one of the stub
+declarations and I think we should let it rest on the list for a week
+but eventually I think you should just pick up the entire series and
+if anything new for the GPIO tree conflicts then we can deal with
+immutable tags.
 
-Gr{oetje,eeting}s,
+What is your view on Andy's and Kent's issues with the _new() name
+suffix? My argument is that it's just temporary and will be gone once
+you apply the entire series. Bikeshedding about a temp name is just
+unnecessary churn and _new() is as good as anything else.
 
-                        Geert
+Bart
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Shall I just do it?
+>
+> Yours,
+> Linus Walleij
