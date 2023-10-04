@@ -2,180 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1DA7B97ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 00:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E847B97F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 00:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237231AbjJDWXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 18:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56816 "EHLO
+        id S233781AbjJDWYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 18:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233278AbjJDWXp (ORCPT
+        with ESMTP id S231651AbjJDWYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 18:23:45 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE8010D
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 15:23:29 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d86766bba9fso455648276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 15:23:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696458208; x=1697063008; darn=vger.kernel.org;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LzX5wmLYyGVenVJvmQO+om+eWA+EBs8Xg6bCWmXIBDQ=;
-        b=1p1zilIWrwSNTANPn5G0v5HRoO9ieIdCyRoZ2y5TUs4Zoj/KYvQPn5DRdzJ+y+HqEn
-         PEot3QoYi9lkp0CkZRMVEsDqyXVs1jwRDaqbW6rPNVbljYsGZiKFsJaRJRS5sgXPdmz1
-         bnTGa8kl1/WHAXgepXDpkmnV/W59yKpHJ2qcMHseoFiw7TYekiAlM2GrOYkp+Y+bAPK5
-         sunIZL8eCph5unFqJX2M0wMILp0yvCLG0y5iEXtXwFinvbTWFQd8Z/e+wZdblcMTfGrd
-         832u5tudEExvzGxhHW6RSycKL0jsHbKdCevJm5T8azlYuV15MfcqLaVABM/VGUXTMzVB
-         erNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696458208; x=1697063008;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LzX5wmLYyGVenVJvmQO+om+eWA+EBs8Xg6bCWmXIBDQ=;
-        b=oHRtiZbqQxtHTlmdTXSkM06E66Pp8A9ij9/cToOp26MXjHJFOQl71A9E1fdvq1zn4u
-         g7xyFozws4o7CjkWlWNcdDqC9XRUuuL6PESelwQDh7GKZZ5Tv1zAEJ+25V3wLzuetd2V
-         HwKhJJKHJS/1+zP+vct3X24unrhCXYTKtP2AZnaulDsA2NrqIPu4SO76wxPu56ujl8ka
-         ttbLCx8nT4H3pUY2lBBm3lIz3/zEiYDY28+iRCInod3GpoDs2cH20W9QskPnWZiiAOzT
-         +gGtvu/4ThEeCrukYV1n0qrP7ytBTaW8vH/Ud6Srs7EofSSlvdmLu1SpsssK3XFgGBPE
-         T8/Q==
-X-Gm-Message-State: AOJu0Yz0EdAIzfJPkObchi5PWnWwYF0hfARJxFYkih1jV+wyACAFi4A2
-        gWwSV092wHi9m4SrYlYeZIMjVa21tKYg
-X-Google-Smtp-Source: AGHT+IHvF9BgEMqd3YfEZKmvnvOMOqNldSm6WrYskTN1Aec+uolfJJ3OTjlsrxKR9NYynPcHuWje6mMl7RUT
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f42:a09e:8ee2:1491])
- (user=irogers job=sendgmr) by 2002:a25:dc51:0:b0:d7a:bd65:18ba with SMTP id
- y78-20020a25dc51000000b00d7abd6518bamr52326ybe.3.1696458208397; Wed, 04 Oct
- 2023 15:23:28 -0700 (PDT)
-Date:   Wed,  4 Oct 2023 15:23:23 -0700
-In-Reply-To: <20231004222323.3503030-1-irogers@google.com>
-Message-Id: <20231004222323.3503030-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20231004222323.3503030-1-irogers@google.com>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v4 2/2] bpftool: Align bpf_load_and_run_opts insns and data
-From:   Ian Rogers <irogers@google.com>
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 4 Oct 2023 18:24:30 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B45EC;
+        Wed,  4 Oct 2023 15:24:24 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 070B720003;
+        Wed,  4 Oct 2023 22:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696458263;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rZEPDMNKYxxc1y/Lg8uXbOfwUDjfLMxGlYiDmv2DKy0=;
+        b=F5MZyLh50CqykMPgDt4SoT8jABGpLvGTQmWqAH1oKxPi9ISbpZ1bcQhF8L82NNNCZUF4td
+        STe03+qh1fT6FcGgGLxf2XMhEmQDqksoXUidjFwK6rIxQi4DxtPI7CiFCj5nomM+yI9mK7
+        Lms3vpQ58rf4An1FIeFQGmagLIod3PLuEx9x1yydigKLXKrmKgOyCHjbP3Z6pF1GHFZsEI
+        aP/o4+huX6Vm0bHF4pqKY3bp5t8kZNlpezxh56xhq7P6uwSJcH0Y+EgPmcJiZlWNFoA1eu
+        tU4Hjbzb3QhpPvCEFP1Rs4xs4B11bepJNjp91M2sl0vY5rStDv7pZyGXMdBkGg==
+Date:   Thu, 5 Oct 2023 00:24:20 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Ralph Siemsen <ralph.siemsen@linaro.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: renesas: rzn1: enable PINMUX
+Message-ID: <20231005002420.7d03bbd8@xps-13>
+In-Reply-To: <20231004200008.1306798-1-ralph.siemsen@linaro.org>
+References: <20231004200008.1306798-1-ralph.siemsen@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A C string lacks alignment so use aligned arrays to avoid potential
-alignment problems. Switch to using sizeof (less 1 for the \0
-terminator) rather than a hardcode size constant.
+Hi Ralph,
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/bpf/bpftool/gen.c | 47 ++++++++++++++++++++++-------------------
- 1 file changed, 25 insertions(+), 22 deletions(-)
+ralph.siemsen@linaro.org wrote on Wed,  4 Oct 2023 16:00:08 -0400:
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index b8ebcee9bc56..7a545dcabe38 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -408,8 +408,8 @@ static void codegen(const char *template, ...)
- 		/* skip baseline indentation tabs */
- 		for (n = skip_tabs; n > 0; n--, src++) {
- 			if (*src != '\t') {
--				p_err("not enough tabs at pos %td in template '%s'",
--				      src - template - 1, template);
-+				p_err("not enough tabs at pos %td in template '%s'\n'%s'",
-+					src - template - 1, template, src);
- 				free(s);
- 				exit(-1);
- 			}
-@@ -708,17 +708,22 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 
- 		codegen("\
- 		\n\
--			skel->%1$s = skel_prep_map_data((void *)\"\\	    \n\
--		", ident);
-+			{						    \n\
-+				static const char data[] __attribute__((__aligned__(8))) = \"\\\n\
-+		");
- 		mmap_data = bpf_map__initial_value(map, &mmap_size);
- 		print_hex(mmap_data, mmap_size);
- 		codegen("\
- 		\n\
--		\", %1$zd, %2$zd);					    \n\
--			if (!skel->%3$s)				    \n\
--				goto cleanup;				    \n\
--			skel->maps.%3$s.initial_value = (__u64) (long) skel->%3$s;\n\
--		", bpf_map_mmap_sz(map), mmap_size, ident);
-+		\";							    \n\
-+									    \n\
-+				skel->%1$s = skel_prep_map_data((void *)data, %2$zd,\n\
-+								sizeof(data) - 1);\n\
-+				if (!skel->%1$s)			    \n\
-+					goto cleanup;			    \n\
-+				skel->maps.%1$s.initial_value = (__u64) (long) skel->%1$s;\n\
-+			}						    \n\
-+			", ident, bpf_map_mmap_sz(map));
- 	}
- 	codegen("\
- 		\n\
-@@ -733,32 +738,30 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 		{							    \n\
- 			struct bpf_load_and_run_opts opts = {};		    \n\
- 			int err;					    \n\
--									    \n\
--			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
--			opts.data_sz = %2$d;				    \n\
--			opts.data = (void *)\"\\			    \n\
-+			static const char opts_data[] __attribute__((__aligned__(8))) = \"\\\n\
- 		",
--		obj_name, opts.data_sz);
-+		obj_name);
- 	print_hex(opts.data, opts.data_sz);
- 	codegen("\
- 		\n\
- 		\";							    \n\
-+			static const char opts_insn[] __attribute__((__aligned__(8))) = \"\\\n\
- 		");
--
--	codegen("\
--		\n\
--			opts.insns_sz = %d;				    \n\
--			opts.insns = (void *)\"\\			    \n\
--		",
--		opts.insns_sz);
- 	print_hex(opts.insns, opts.insns_sz);
- 	codegen("\
- 		\n\
- 		\";							    \n\
-+									    \n\
-+			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
-+			opts.data_sz = sizeof(opts_data) - 1;		    \n\
-+			opts.data = (void *)opts_data;			    \n\
-+			opts.insns_sz = sizeof(opts_insn) - 1;		    \n\
-+			opts.insns = (void *)opts_insn;			    \n\
-+									    \n\
- 			err = bpf_load_and_run(&opts);			    \n\
- 			if (err < 0)					    \n\
- 				return err;				    \n\
--		", obj_name);
-+		");
- 	bpf_object__for_each_map(map, obj) {
- 		const char *mmap_flags;
- 
--- 
-2.42.0.609.gbb76f46606-goog
+> Enable pin muxing (eg. programmable function), so that the RZN1 GPIO
+> pins will be configured as specified by the pinmux in the DTS.
+>=20
+> This used to be enabled implicitly via CONFIG_GENERIC_PINMUX_FUNCTIONS,
+> however that was removed in 308fb4e4eae14e6189dece3b7cf5b5f453c5d02
+> since the rzn1 driver does not call any of the generic pinmux functions.
+>=20
+> Signed-off-by: Ralph Siemsen <ralph.siemsen@linaro.org>
 
+You probably need to point at this commit with a Fixes and possibly Cc
+this to stable. Also you should use proper formatting for the commit
+(12 digits sha then the text inside ("...")).
+
+With this added:
+
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+> ---
+>  drivers/pinctrl/renesas/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/pinctrl/renesas/Kconfig b/drivers/pinctrl/renesas/Kc=
+onfig
+> index 77730dc548ed..0ad8e14ccc52 100644
+> --- a/drivers/pinctrl/renesas/Kconfig
+> +++ b/drivers/pinctrl/renesas/Kconfig
+> @@ -234,6 +234,7 @@ config PINCTRL_RZN1
+>  	bool "pin control support for RZ/N1"
+>  	depends on OF
+>  	depends on ARCH_RZN1 || COMPILE_TEST
+> +	select PINMUX
+>  	select GENERIC_PINCONF
+>  	help
+>  	  This selects pinctrl driver for Renesas RZ/N1 devices.
+
+
+Thanks,
+Miqu=C3=A8l
