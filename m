@@ -2,63 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A627B79EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC35D7B79EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 10:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241610AbjJDIWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 04:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
+        id S241667AbjJDIWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 04:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232743AbjJDIWp (ORCPT
+        with ESMTP id S241628AbjJDIWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 04:22:45 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C2DA6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:22:42 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57be3d8e738so1036291eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:22:42 -0700 (PDT)
+        Wed, 4 Oct 2023 04:22:52 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC001AD
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 01:22:47 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-406650da82bso17210945e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 01:22:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1696407761; x=1697012561; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PJhWTahwPzFcO3iUw842eEfYD0v/m2gKJpoeejD6OZM=;
-        b=RG6LGWbavshJ7SFvqsHY6+Q81+OWBMzzUepbBjNTYYUoBkRdbBAqG1rBlZBFlXddwc
-         bHXZArqE6cXslAuLWVwMQIN/L+22D/R5DQ5yAsdeHQHtOw155KDDJuQn6Xihl75v05Rk
-         zPGCGriVwp2z5Yj0OBA90Od4Q4TNve3waTeZWGpAHVq6n3sgCY7fHgb8iKWsbtjIw9cr
-         YdgGClltdSgMvTQUIBpMorhfPGDYeFcDwnxv8JV2ZVqgsHsmpXgF0xxf6pfE8vXjrtrx
-         qPnl2Dt1zjoM6EuAyopHWIm9vB0pv9XmQ2kOVwft45haBVlbhtoDAtBWe9epNuVH/ZLA
-         j/3A==
+        d=linaro.org; s=google; t=1696407766; x=1697012566; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7lASRZKty5ExpIf8a7SkpCZKAXewoWwnd7oDE42K+tI=;
+        b=YN4gWZp4rC21wuVYgVLqAdH5ZzG7GiAVyZp22nipmZu7X8HIdiHzKW3hbTgwxlQ1gC
+         enYgp/b+Jga8lHsmSqnMfSDTkqfCgFuVyX34iJ1PEvWITyNAxehwzPycPl9asJEtpqLH
+         7bk06O8tPLLoCQTfX6CUp+2W88/kC8VdRGs2iVKsbcgsxzkIBhGV//pmLQ97LHRjJtq+
+         +f8sGekmRF3CRuHCzUxVjnlLz0QgcjcJX05sQybxwI+Gt5K7R5dIjoRgzvMHDSU4x7uv
+         /skgW0IGHuIYQlquI70zuqfH2cqYXCQo07VhJf+IVP6LPlnW6gDnyx4xEy5t58TAka8i
+         C8Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696407761; x=1697012561;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1696407766; x=1697012566;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=PJhWTahwPzFcO3iUw842eEfYD0v/m2gKJpoeejD6OZM=;
-        b=ZyDdid5I370Z0cJBMQdhXRT/L0llpwC4vaECEpd6x4gEQKFRYML+g+ZQ+zcwryh97z
-         B16El6cJOO5c+16lpiQzghEc1tw+iYF4BcTgfPMC1ys0CIbXYqwTNdgz3HKsL+MvUC4H
-         q1AWyEKHL+WW6kyMyLPGpVONr+EeJxugThfY43y0k2n7SCGRXS3Mmqe/c3G0n2cxzuo8
-         uK34/on+i0LQxK6MiTfKuUdP3aqJewu6AyZ8CtN9TfMMtRxEP3A2krUe76vVOWpskSKD
-         vAsewWs9bPiTGPD8r8LER5JpfXanb/USTtr6XmHFtLL1jYjq0w16hZhrLCEOTyP4tN5o
-         cr4A==
-X-Gm-Message-State: AOJu0YxcHekyhxTPd2DxA2CKoLETVldmTZWxKQwmZvXeV1h5ICq0ZWyC
-        QVgWOFnXuO0Afp6fdcTD2A2A4onFh54L2ntU9/2FfXsqoDOK3sVt81k=
-X-Google-Smtp-Source: AGHT+IHqP3gZ1v8UjWse496ioyNyDRr9Q18xYYHrvnlwMPL+uHQjCBUqa75yp5tcgVSppEo0NVCOJmbPTsq0VmUnlng=
-X-Received: by 2002:a05:6358:720f:b0:143:5697:b682 with SMTP id
- h15-20020a056358720f00b001435697b682mr2250793rwa.24.1696407761303; Wed, 04
- Oct 2023 01:22:41 -0700 (PDT)
+        bh=7lASRZKty5ExpIf8a7SkpCZKAXewoWwnd7oDE42K+tI=;
+        b=LZ3Cfn4B8DX+izl0Zx/Z44qAOcSEpvDMQgxzFvzi/5BqIGIJRx0z/H6XZske7E7TM+
+         8RI7TlZZkWyeWE/uBXaLMLGYF6dDczI1KrnlweXOebxBY5L0PfYMpnwWET1yaKBk8Jdx
+         mlOCAvpblzGDThDOPlmOTnj2fpBY4RqJJJ4HTwXEUR83NaLAeFmDh4UWo5Edw3hxlz/V
+         2+N4PSeL/Vn8pCCLdVP9jEaj4v/ECx27BhORgQxrft99lS6yjMe2jzbEeCV4igSzclIe
+         2SAt4H3AAvibGeidvRgL6dzvqPPcm9H/YpwW2823t3l1NStZXwYXuHO2u/CbHUxifd87
+         hWbQ==
+X-Gm-Message-State: AOJu0Yye4bsVmA4VQ58piiSEzRPRrTwkHv5ecdb3AEIIA3zK9yjJ0gRd
+        nYmCmCQN2eV1Wo/nKOSlk2EWVQ==
+X-Google-Smtp-Source: AGHT+IFotsPOvnw4M9o3Z4Nbt8NwHjr923dBWIoUmKFWH9Seq4US3CR732X8UO2cZe90jcCzi/nZ2w==
+X-Received: by 2002:a1c:7910:0:b0:401:c0ef:c287 with SMTP id l16-20020a1c7910000000b00401c0efc287mr1875403wme.27.1696407766324;
+        Wed, 04 Oct 2023 01:22:46 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id k10-20020a7bc40a000000b003fc06169ab3sm900469wmi.20.2023.10.04.01.22.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 01:22:45 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 11:22:43 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     oe-kbuild@lists.linux.dev, Dan Williams <dan.j.williams@intel.com>,
+        linux-coco@lists.linux.dev
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        Borislav Petkov <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
+        peterz@infradead.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        dave.hansen@linux.intel.com
+Subject: Re: [PATCH v4 5/6] virt: sevguest: Add TSM_REPORTS support for
+ SNP_{GET, GET_EXT}_REPORT
+Message-ID: <6cc8a021-a32a-4732-b7a0-eb3a6dbb5ee2@kadam.mountain>
 MIME-Version: 1.0
-References: <20230919054824.3368656-1-naresh.solanki@9elements.com> <6b7e00e6-c7ff-4bd7-a7b3-81f914ba3031@roeck-us.net>
-In-Reply-To: <6b7e00e6-c7ff-4bd7-a7b3-81f914ba3031@roeck-us.net>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Wed, 4 Oct 2023 13:52:30 +0530
-Message-ID: <CABqG17hv9VTus_Zdf6t4pYJFc1uk5sk+6AQA46RDf6bXhvb=Sg@mail.gmail.com>
-Subject: Re: [PATCH v4] regulator (max5970): Add hwmon support
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     broonie@kernel.org, zev@bewilderbeest.net,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169570184829.596431.15991881056638719011.stgit@dwillia2-xfh.jf.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -69,241 +78,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+Hi Dan,
 
+kernel test robot noticed the following build warnings:
 
-On Wed, 27 Sept 2023 at 01:06, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Tue, Sep 19, 2023 at 07:48:23AM +0200, Naresh Solanki wrote:
-> > Utilize the integrated 10-bit ADC in Max5970/Max5978 to enable voltage
-> > and current monitoring. This feature is seamlessly integrated through
-> > the hwmon subsystem.
-> >
-> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> > ---
-> > Changes in V4:
-> > - Use IS_REACHABLE
-> > - Use rdevs array for hwmon ops.
-> > - Remove duplicate i2c_set_clientdata
-> > Changes in V3:
-> > - Update signed-off
-> > - Add break
-> > - Update hwmon dev register name to max5970
-> > - Remove changes in Kconfig.
-> > Changes in V2:
-> > - default case added for switch statement
-> > - Add dependency on HWMON
-> > ---
-> >  drivers/regulator/max5970-regulator.c | 138 +++++++++++++++++++++++++-
-> >  1 file changed, 136 insertions(+), 2 deletions(-)
-> >
-> >
-> > base-commit: 41f02a383ac652f1a0b5538c5901b7ec93e37290
-> >
-> > diff --git a/drivers/regulator/max5970-regulator.c b/drivers/regulator/max5970-regulator.c
-> > index b56a174cde3d..06168fe1dadd 100644
-> > --- a/drivers/regulator/max5970-regulator.c
-> > +++ b/drivers/regulator/max5970-regulator.c
-> > @@ -10,6 +10,7 @@
-> >  #include <linux/bitops.h>
-> >  #include <linux/device.h>
-> >  #include <linux/err.h>
-> > +#include <linux/hwmon.h>
-> >  #include <linux/module.h>
-> >  #include <linux/io.h>
-> >  #include <linux/of.h>
-> > @@ -32,6 +33,128 @@ enum max597x_regulator_id {
-> >       MAX597X_SW1,
-> >  };
-> >
-> > +static int max5970_read_adc(struct regmap *regmap, int reg, long *val)
-> > +{
-> > +     u8 reg_data[2];
-> > +     int ret;
-> > +
-> > +     ret = regmap_bulk_read(regmap, reg, &reg_data[0], 2);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     *val = (reg_data[0] << 2) | (reg_data[1] & 3);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int max5970_read(struct device *dev, enum hwmon_sensor_types type,
-> > +                     u32 attr, int channel, long *val)
-> > +{
-> > +     struct regulator_dev **rdevs = dev_get_drvdata(dev);
-> > +     struct max5970_regulator *ddata = rdev_get_drvdata(rdevs[channel]);
-> > +     struct regmap *regmap = ddata->regmap;
-> > +     int ret;
-> > +
-> > +     switch (type) {
-> > +     case hwmon_curr:
-> > +             switch (attr) {
-> > +             case hwmon_curr_input:
-> > +                     ret = max5970_read_adc(regmap, MAX5970_REG_CURRENT_H(channel), val);
-> > +                     /*
-> > +                      * Calculate current from ADC value, IRNG range & shunt resistor value.
-> > +                      * ddata->irng holds the voltage corresponding to the maximum value the
-> > +                      * 10-bit ADC can measure.
-> > +                      * To obtain the output, multiply the ADC value by the IRNG range (in
-> > +                      * millivolts) and then divide it by the maximum value of the 10-bit ADC.
-> > +                      */
-> > +                     *val = (*val * ddata->irng) >> 10;
-> > +                     /* Convert the voltage meansurement across shunt resistor to current */
-> > +                     *val = (*val * 1000) / ddata->shunt_micro_ohms;
-> > +                     return ret;
-> > +             default:
-> > +                     return -EOPNOTSUPP;
-> > +             }
-> > +
-> > +     case hwmon_in:
-> > +             switch (attr) {
-> > +             case hwmon_in_input:
-> > +                     ret = max5970_read_adc(regmap, MAX5970_REG_VOLTAGE_H(channel), val);
-> > +                     /*
-> > +                      * Calculate voltage from ADC value and MON range.
-> > +                      * ddata->mon_rng holds the voltage corresponding to the maximum value the
-> > +                      * 10-bit ADC can measure.
-> > +                      * To obtain the output, multiply the ADC value by the MON range (in
-> > +                      * microvolts) and then divide it by the maximum value of the 10-bit ADC.
-> > +                      */
-> > +                     *val = mul_u64_u32_shr(*val, ddata->mon_rng, 10);
-> > +                     /* uV to mV */
-> > +                     *val = *val / 1000;
-> > +                     return ret;
-> > +             default:
-> > +                     return -EOPNOTSUPP;
-> > +             }
-> > +     default:
-> > +             return -EOPNOTSUPP;
-> > +     }
-> > +}
-> > +
-> > +static umode_t max5970_is_visible(const void *data,
-> > +                               enum hwmon_sensor_types type,
-> > +                               u32 attr, int channel)
-> > +{
-> > +     struct regulator_dev **rdevs = (struct regulator_dev **)data;
-> > +     struct max5970_regulator *ddata;
-> > +
-> > +     if (!rdevs || !rdevs[channel])
->
-> How can rdevs be NULL here ? Unless I am missing something, that can
-> only happen if its allocation in the probe function failed, but then
-> the system would long since have crashed before it gets here.
->
-> Also, rdevs[] only has as many entries as there are switches. That can
-> be 1 or 2. However, the hwmon subsystem will always assume that there are
-> two channels, because it is told so, and it will thus try to access rdevs[1]
-> even if only a single channel was allocated.
-Yes. Will update to:
-if (!rdevs[channel])
-        return 0;
-Also will simplify memory allocation to have two element array.
->
-> > +             return 0;
-> > +
-> > +     ddata = rdev_get_drvdata(rdevs[channel]);
->
-> With the above in mind, I wonder what that points to if channel == 1 and
-> ddata->num_switches == 1.
-This can be avoided with memory allocation simplification & previous
-if condition check.
->
-> > +
-> > +     if (!ddata || channel >= ddata->num_switches)
-> > +             return 0;
-> > +
-> > +     switch (type) {
-> > +     case hwmon_in:
-> > +             switch (attr) {
-> > +             case hwmon_in_input:
-> > +                     return 0444;
-> > +             default:
-> > +                     break;
-> > +             }
-> > +             break;
-> > +     case hwmon_curr:
-> > +             switch (attr) {
-> > +             case hwmon_curr_input:
-> > +                     /* Current measurement requires knowledge of the shunt resistor value. */
-> > +                     if (ddata->shunt_micro_ohms)
-> > +                             return 0444;
-> > +                     break;
-> > +             default:
-> > +                     break;
-> > +             }
-> > +             break;
-> > +     default:
-> > +             break;
-> > +     }
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct hwmon_ops max5970_hwmon_ops = {
-> > +     .is_visible = max5970_is_visible,
-> > +     .read = max5970_read,
-> > +};
-> > +
-> > +static const struct hwmon_channel_info *max5970_info[] = {
-> > +     HWMON_CHANNEL_INFO(in, HWMON_I_INPUT, HWMON_I_INPUT),
-> > +     HWMON_CHANNEL_INFO(curr, HWMON_C_INPUT, HWMON_C_INPUT),
-> > +     NULL
-> > +};
-> > +
-> > +static const struct hwmon_chip_info max5970_chip_info = {
-> > +     .ops = &max5970_hwmon_ops,
-> > +     .info = max5970_info,
-> > +};
-> > +
-> >  static int max597x_uvp_ovp_check_mode(struct regulator_dev *rdev, int severity)
-> >  {
-> >       int ret, reg;
-> > @@ -431,7 +554,8 @@ static int max597x_regulator_probe(struct platform_device *pdev)
-> >       struct i2c_client *i2c = to_i2c_client(pdev->dev.parent);
-> >       struct regulator_config config = { };
-> >       struct regulator_dev *rdev;
-> > -     struct regulator_dev *rdevs[MAX5970_NUM_SWITCHES];
-> > +     struct regulator_dev **rdevs = NULL;
-> > +     struct device *hwmon_dev;
-> >       int num_switches;
-> >       int ret, i;
-> >
-> > @@ -451,9 +575,10 @@ static int max597x_regulator_probe(struct platform_device *pdev)
-> >       else
-> >               return -ENODEV;
-> >
-> > -     i2c_set_clientdata(i2c, max597x);
-> >       num_switches = max597x->num_switches;
-> >
-> > +     rdevs = devm_kcalloc(&i2c->dev, num_switches, sizeof(struct regulator_dev *), GFP_KERNEL);
-> > +
->
-> What if devm_kcalloc() returns NULL ?
-Will add error checking here.
->
-> >       for (i = 0; i < num_switches; i++) {
-> >               data =
-> >                   devm_kzalloc(&i2c->dev, sizeof(struct max5970_regulator),
-> > @@ -485,6 +610,15 @@ static int max597x_regulator_probe(struct platform_device *pdev)
-> >               max597x->shunt_micro_ohms[i] = data->shunt_micro_ohms;
-> >       }
-> >
-> > +     if (IS_REACHABLE(CONFIG_HWMON)) {
-> > +             hwmon_dev = devm_hwmon_device_register_with_info(&i2c->dev, "max5970", rdevs,
-> > +                                                              &max5970_chip_info, NULL);
-> > +             if (IS_ERR(hwmon_dev)) {
-> > +                     return dev_err_probe(&i2c->dev, PTR_ERR(hwmon_dev),
-> > +                                          "Unable to register hwmon device\n");
-> > +             }
-> > +     }
-> > +
-> >       if (i2c->irq) {
-> >               ret =
-> >                   max597x_setup_irq(&i2c->dev, i2c->irq, rdevs, num_switches,
+url:    https://github.com/intel-lab-lkp/linux/commits/Dan-Williams/virt-coco-Add-a-coco-Makefile-and-coco-Kconfig/20230926-121843
+base:   6465e260f48790807eef06b583b38ca9789b6072
+patch link:    https://lore.kernel.org/r/169570184829.596431.15991881056638719011.stgit%40dwillia2-xfh.jf.intel.com
+patch subject: [PATCH v4 5/6] virt: sevguest: Add TSM_REPORTS support for SNP_{GET, GET_EXT}_REPORT
+config: x86_64-randconfig-161-20231002 (https://download.01.org/0day-ci/archive/20231003/202310030341.zaOu0ew0-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231003/202310030341.zaOu0ew0-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202310030341.zaOu0ew0-lkp@intel.com/
 
-Regards,
-Naresh
+smatch warnings:
+drivers/virt/coco/sev-guest/sev-guest.c:853 sev_report_new() error: uninitialized symbol 'certs_size'.
+
+vim +/certs_size +853 drivers/virt/coco/sev-guest/sev-guest.c
+
+80013405d5b7c6 Dan Williams 2023-09-25  778  static int sev_report_new(struct tsm_report *report, void *data)
+80013405d5b7c6 Dan Williams 2023-09-25  779  {
+80013405d5b7c6 Dan Williams 2023-09-25  780  	static const struct snp_msg_cert_entry zero_ent = { 0 };
+80013405d5b7c6 Dan Williams 2023-09-25  781  	struct tsm_desc *desc = &report->desc;
+80013405d5b7c6 Dan Williams 2023-09-25  782  	struct snp_guest_dev *snp_dev = data;
+80013405d5b7c6 Dan Williams 2023-09-25  783  	struct snp_msg_report_resp_hdr hdr;
+80013405d5b7c6 Dan Williams 2023-09-25  784  	const int report_size = SZ_4K;
+80013405d5b7c6 Dan Williams 2023-09-25  785  	const int ext_size = SZ_16K;
+80013405d5b7c6 Dan Williams 2023-09-25  786  	int ret, size = report_size + ext_size;
+80013405d5b7c6 Dan Williams 2023-09-25  787  	int certs_size, cert_count, i, offset;
+80013405d5b7c6 Dan Williams 2023-09-25  788  	u8 *certs_address;
+80013405d5b7c6 Dan Williams 2023-09-25  789  
+80013405d5b7c6 Dan Williams 2023-09-25  790  	if (desc->inblob_len != 64)
+80013405d5b7c6 Dan Williams 2023-09-25  791  		return -EINVAL;
+80013405d5b7c6 Dan Williams 2023-09-25  792  
+80013405d5b7c6 Dan Williams 2023-09-25  793  	void *buf __free(kvfree) = kvzalloc(size, GFP_KERNEL);
+80013405d5b7c6 Dan Williams 2023-09-25  794  	if (!buf)
+80013405d5b7c6 Dan Williams 2023-09-25  795  		return -ENOMEM;
+80013405d5b7c6 Dan Williams 2023-09-25  796  
+80013405d5b7c6 Dan Williams 2023-09-25  797  	guard(mutex)(&snp_cmd_mutex);
+
+Hoho.  Need guard stuff and no warnings generated.  Perhaps I have added
+all the new unlock functions.  :)
+
+80013405d5b7c6 Dan Williams 2023-09-25  798  	certs_address = buf + report_size;
+80013405d5b7c6 Dan Williams 2023-09-25  799  	struct snp_ext_report_req ext_req = {
+80013405d5b7c6 Dan Williams 2023-09-25  800  		.data = { .vmpl = desc->privlevel },
+80013405d5b7c6 Dan Williams 2023-09-25  801  		.certs_address = (__u64)certs_address,
+80013405d5b7c6 Dan Williams 2023-09-25  802  		.certs_len = ext_size,
+80013405d5b7c6 Dan Williams 2023-09-25  803  	};
+80013405d5b7c6 Dan Williams 2023-09-25  804  	memcpy(&ext_req.data.user_data, desc->inblob, desc->inblob_len);
+80013405d5b7c6 Dan Williams 2023-09-25  805  
+80013405d5b7c6 Dan Williams 2023-09-25  806  	struct snp_guest_request_ioctl input = {
+80013405d5b7c6 Dan Williams 2023-09-25  807  		.msg_version = 1,
+80013405d5b7c6 Dan Williams 2023-09-25  808  		.req_data = (__u64)&ext_req,
+80013405d5b7c6 Dan Williams 2023-09-25  809  		.resp_data = (__u64)buf,
+80013405d5b7c6 Dan Williams 2023-09-25  810  	};
+80013405d5b7c6 Dan Williams 2023-09-25  811  	struct snp_req_resp io = {
+80013405d5b7c6 Dan Williams 2023-09-25  812  		.req_data = KERNEL_SOCKPTR(&ext_req),
+80013405d5b7c6 Dan Williams 2023-09-25  813  		.resp_data = KERNEL_SOCKPTR(buf),
+80013405d5b7c6 Dan Williams 2023-09-25  814  	};
+80013405d5b7c6 Dan Williams 2023-09-25  815  
+80013405d5b7c6 Dan Williams 2023-09-25  816  	ret = get_ext_report(snp_dev, &input, &io);
+80013405d5b7c6 Dan Williams 2023-09-25  817  
+80013405d5b7c6 Dan Williams 2023-09-25  818  	if (ret)
+80013405d5b7c6 Dan Williams 2023-09-25  819  		return ret;
+80013405d5b7c6 Dan Williams 2023-09-25  820  
+80013405d5b7c6 Dan Williams 2023-09-25  821  	memcpy(&hdr, buf, sizeof(hdr));
+80013405d5b7c6 Dan Williams 2023-09-25  822  	if (hdr.status == SNP_REPORT_INVALID_PARAM)
+80013405d5b7c6 Dan Williams 2023-09-25  823  		return -EINVAL;
+80013405d5b7c6 Dan Williams 2023-09-25  824  	if (hdr.status == SNP_REPORT_INVALID_KEY_SEL)
+80013405d5b7c6 Dan Williams 2023-09-25  825  		return -EINVAL;
+80013405d5b7c6 Dan Williams 2023-09-25  826  	if (hdr.status)
+80013405d5b7c6 Dan Williams 2023-09-25  827  		return -ENXIO;
+80013405d5b7c6 Dan Williams 2023-09-25  828  	if ((hdr.report_size + sizeof(hdr)) > report_size)
+80013405d5b7c6 Dan Williams 2023-09-25  829  		return -ENOMEM;
+80013405d5b7c6 Dan Williams 2023-09-25  830  
+80013405d5b7c6 Dan Williams 2023-09-25  831  	void *rbuf __free(kvfree) = kvzalloc(hdr.report_size, GFP_KERNEL);
+80013405d5b7c6 Dan Williams 2023-09-25  832  	if (!rbuf)
+80013405d5b7c6 Dan Williams 2023-09-25  833  		return -ENOMEM;
+80013405d5b7c6 Dan Williams 2023-09-25  834  
+80013405d5b7c6 Dan Williams 2023-09-25  835  	memcpy(rbuf, buf + sizeof(hdr), hdr.report_size);
+80013405d5b7c6 Dan Williams 2023-09-25  836  	report->outblob = no_free_ptr(rbuf);
+80013405d5b7c6 Dan Williams 2023-09-25  837  	report->outblob_len = hdr.report_size;
+80013405d5b7c6 Dan Williams 2023-09-25  838  
+80013405d5b7c6 Dan Williams 2023-09-25  839  	for (i = 0; i < ext_size / sizeof(struct snp_msg_cert_entry); i++) {
+80013405d5b7c6 Dan Williams 2023-09-25  840  		struct snp_msg_cert_entry *certs = buf + report_size;
+80013405d5b7c6 Dan Williams 2023-09-25  841  
+80013405d5b7c6 Dan Williams 2023-09-25  842  		if (memcmp(&certs[i], &zero_ent, sizeof(zero_ent)) == 0)
+80013405d5b7c6 Dan Williams 2023-09-25  843  			break;
+80013405d5b7c6 Dan Williams 2023-09-25  844  		certs_size += certs[i].length;
+
+certs_size needs to be initialized to zero.
+
+80013405d5b7c6 Dan Williams 2023-09-25  845  	}
+80013405d5b7c6 Dan Williams 2023-09-25  846  	cert_count = i;
+80013405d5b7c6 Dan Williams 2023-09-25  847  
+80013405d5b7c6 Dan Williams 2023-09-25  848  	/* No certs to report */
+80013405d5b7c6 Dan Williams 2023-09-25  849  	if (cert_count == 0)
+80013405d5b7c6 Dan Williams 2023-09-25  850  		return 0;
+80013405d5b7c6 Dan Williams 2023-09-25  851  
+80013405d5b7c6 Dan Williams 2023-09-25  852  	/* sanity check that the entire certs table with metadata fits */
+80013405d5b7c6 Dan Williams 2023-09-25 @853  	if ((cert_count + 1) * sizeof(zero_ent) + certs_size > ext_size)
+80013405d5b7c6 Dan Williams 2023-09-25  854  		return -ENXIO;
+80013405d5b7c6 Dan Williams 2023-09-25  855  
+80013405d5b7c6 Dan Williams 2023-09-25  856  	void *cbuf __free(kvfree) = kvzalloc(certs_size, GFP_KERNEL);
+80013405d5b7c6 Dan Williams 2023-09-25  857  	if (!cbuf)
+80013405d5b7c6 Dan Williams 2023-09-25  858  		return -ENOMEM;
+80013405d5b7c6 Dan Williams 2023-09-25  859  
+80013405d5b7c6 Dan Williams 2023-09-25  860  	/* Concatenate returned certs */
+80013405d5b7c6 Dan Williams 2023-09-25  861  	for (i = 0, offset = 0; i < cert_count; i++) {
+80013405d5b7c6 Dan Williams 2023-09-25  862  		struct snp_msg_cert_entry *certs = buf + report_size;
+80013405d5b7c6 Dan Williams 2023-09-25  863  
+80013405d5b7c6 Dan Williams 2023-09-25  864  		memcpy(cbuf + offset, certs_address + certs[i].offset, certs[i].length);
+80013405d5b7c6 Dan Williams 2023-09-25  865  		offset += certs[i].length;
+80013405d5b7c6 Dan Williams 2023-09-25  866  	}
+80013405d5b7c6 Dan Williams 2023-09-25  867  
+80013405d5b7c6 Dan Williams 2023-09-25  868  	report->certs = no_free_ptr(cbuf);
+80013405d5b7c6 Dan Williams 2023-09-25  869  	report->certs_len = certs_size;
+80013405d5b7c6 Dan Williams 2023-09-25  870  
+80013405d5b7c6 Dan Williams 2023-09-25  871  	return 0;
+80013405d5b7c6 Dan Williams 2023-09-25  872  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
