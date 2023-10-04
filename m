@@ -1,128 +1,134 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8033C7B985F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 00:49:31 +0200 (CEST)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id EF12A7B9861
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 00:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238215AbjJDWsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 18:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        id S238754AbjJDWuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 18:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236796AbjJDWsb (ORCPT
+        with ESMTP id S236558AbjJDWuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 18:48:31 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE0A90
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 15:48:28 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-69101d33315so269567b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 15:48:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696459708; x=1697064508; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+A41qc5nnmnXCGqzGK/2/pzW8O1/gqRl39Ug/MmsPjY=;
-        b=k04h216BWDygbKaOY92AakISD4ZjtzPmUdiyg+0v6kZZdAgcbedC5zjHM/KOiNGGMv
-         ZY43AwHTXutqIkxE14K0BJwfp22ZjZqVLPYbeF6hxDovxr71k3N/Wi9nIgmm56Mqcfdj
-         0rQbnpADW1bOs9DnwdWAnJWIdMm2UmIaesPpuxvAGu8EuWQUIsioZuOJrb9lNUkeFu6p
-         W/Eh9AL0MhD/qYc0ydlX1rAL3/iaC0XORBeerCOB4rMMMYjLGa18j61u0rV0k3CSNxpD
-         1VEsO7cFnyRSRY+1EUare54vimTaLYtlhl4yClKdH9/DfEStcvK0N8JhzXAOUTfV0AUB
-         bplA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696459708; x=1697064508;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+A41qc5nnmnXCGqzGK/2/pzW8O1/gqRl39Ug/MmsPjY=;
-        b=qvSYtC5vEkO8UYdj9bhHk8KgavuA3mzLeJOG+XSl+j2YE6HnoKRg3aA3MWEQTveUBW
-         1SAhkIHcOkEGVq1NhZ2SmjIKOpQJUZ7ablCGamlbupfEGDCwAzML183uCfFTFMOXyH/u
-         jcDCWUR+FNmIAaGifH+Vi5OG424K+cV3nLYatxNMFNUW98u+TRscX62eZgd2Ms6YIzp5
-         wVGdr3aKO4nst4s0HzlTITmwiYKrwyR4cWqTOcW2WBlxb884Zc4JIxzlgosDS3OcSBUi
-         RNc5tNNO+1nDoTPZz3ohCatkFVEa7Pk51FomghO9hcYLXVyhPNb5S8oAsHjdy1OeTpim
-         VinQ==
-X-Gm-Message-State: AOJu0YzngzghomsU9QxsZ5oha3lPUVXRPdh/XPOVD3U9yeo7gFplLaCP
-        rVXxBOPAr5arYbTaADFJcOsZVQ==
-X-Google-Smtp-Source: AGHT+IHTMmCgJaPPPebL/z6ptP+ioTw9on4mYiswrAi8Kcue6f5UNTVBPQhGJAi31/XYj6jO6KbLMg==
-X-Received: by 2002:a05:6a00:2406:b0:690:d620:7801 with SMTP id z6-20020a056a00240600b00690d6207801mr3836132pfh.11.1696459707926;
-        Wed, 04 Oct 2023 15:48:27 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id y22-20020aa78056000000b00692b6fe1c7asm32069pfm.179.2023.10.04.15.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 15:48:27 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qoAfI-009Wtm-33;
-        Thu, 05 Oct 2023 09:48:24 +1100
-Date:   Thu, 5 Oct 2023 09:48:24 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, martin.petersen@oracle.com,
-        djwong@kernel.org, himanshu.madhani@oracle.com
-Subject: Re: [PATCH 2/4] readv.2: Document RWF_ATOMIC flag
-Message-ID: <ZR3ruIg5tpKSG0mp@dread.disaster.area>
-References: <20230929093717.2972367-1-john.g.garry@oracle.com>
- <20230929093717.2972367-3-john.g.garry@oracle.com>
- <9ba10b14-931b-42db-b7c2-e6f9aa95e477@acm.org>
- <dee45e9a-6a45-e949-2b46-1373fea8dcda@oracle.com>
+        Wed, 4 Oct 2023 18:50:05 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EC7D7;
+        Wed,  4 Oct 2023 15:49:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=vWfPBmVLeQXvNBaHWwvs1Vm71L3cF8pziV6NRFnEObE=; b=gcc5n7j+Yv+2SUrlKRcu6xvT+w
+        zwEaP4tXzG3Afc7t9d1u/W/fwVD8Ultjk1EF87hBBruppP4bAeil+GlOYsalD/j5eB3d5MgReC0CI
+        ZJv7w7k1ZeTsSJWuRlgYAooBjwK388v6IndPZhSgbx5RLEMIsm1M3Dn+oRUEwPcecw/l3vUIr6umv
+        4wu1VfqblEgnqC3QSEQZUyLuJm7/8sfqQQyrKtAD/og2eiQMBNPrPD4GtqFxUmePjiWsCZQfR6jUz
+        VTE1ePaX/a7fuzOTg+DfyBry3M+3QPPasnqM+HxXj8HKG75nNKSGlX1xP5ZVpUDkFYSqXBzlP3qb0
+        pm5PY9fQ==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qoAgG-000AyU-Hq; Thu, 05 Oct 2023 00:49:24 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qoAgF-000Dwl-Su; Thu, 05 Oct 2023 00:49:23 +0200
+Subject: Re: [PATCH net-next v2] net/xdp: fix zero-size allocation warning in
+ xskq_create()
+To:     Andrew Kanner <andrew.kanner@gmail.com>, bjorn@kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        jonathan.lemon@gmail.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, aleksander.lobakin@intel.com,
+        xuanzhuo@linux.alibaba.com, ast@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com
+References: <20231002222939.1519-1-andrew.kanner@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2f5abbf8-8d50-3deb-19cd-9bfd654e1ceb@iogearbox.net>
+Date:   Thu, 5 Oct 2023 00:49:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dee45e9a-6a45-e949-2b46-1373fea8dcda@oracle.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231002222939.1519-1-andrew.kanner@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27051/Wed Oct  4 09:39:04 2023)
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 09:47:24AM +0100, John Garry wrote:
-> On 03/10/2023 20:25, Bart Van Assche wrote:
-> > On 9/29/23 02:37, John Garry wrote:
-> > > +.BR RWF_ATOMIC " (since Linux 6.7)"
-> > > +Allows block-based filesystems to indicate that write operations
-> > > will be issued
-> > > +with torn-write protection. Torn-write protection means that for a
-> > > power or any
-> > > +other hardware failure, all or none of the data from the write will
-> > > be stored,
-> > > +but never a mix of old and new data. This flag is meaningful only for
-> > > +.BR pwritev2 (),
-> > > +and its effect applies only to the data range written by the system
-> > > call.
-> > > +The total write length must be power-of-2 and must be sized between
-> > > +stx_atomic_write_unit_min and stx_atomic_write_unit_max, both
-> > > inclusive. The
-> > > +write must be at a natural offset within the file with respect to
-> > > the total
-> > > +write length. Torn-write protection only works with
-> > > +.B O_DIRECT
-> > > +flag, i.e. buffered writes are not supported. To guarantee
-> > > consistency from
-> > > +the write between a file's in-core state with the storage device,
-> > 
-> > It seems wrong to me to start the first sentence with "Allows". Atomic
-> > behavior should be mandatory if RWF_ATOMIC has been set.
+On 10/3/23 12:29 AM, Andrew Kanner wrote:
+> Syzkaller reported the following issue:
+>   ------------[ cut here ]------------
+>   WARNING: CPU: 0 PID: 2807 at mm/vmalloc.c:3247 __vmalloc_node_range (mm/vmalloc.c:3361)
+>   Modules linked in:
+>   CPU: 0 PID: 2807 Comm: repro Not tainted 6.6.0-rc2+ #12
+>   Hardware name: Generic DT based system
+>   unwind_backtrace from show_stack (arch/arm/kernel/traps.c:258)
+>   show_stack from dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1))
+>   dump_stack_lvl from __warn (kernel/panic.c:633 kernel/panic.c:680)
+>   __warn from warn_slowpath_fmt (./include/linux/context_tracking.h:153 kernel/panic.c:700)
+>   warn_slowpath_fmt from __vmalloc_node_range (mm/vmalloc.c:3361 (discriminator 3))
+>   __vmalloc_node_range from vmalloc_user (mm/vmalloc.c:3478)
+>   vmalloc_user from xskq_create (net/xdp/xsk_queue.c:40)
+>   xskq_create from xsk_setsockopt (net/xdp/xsk.c:953 net/xdp/xsk.c:1286)
+>   xsk_setsockopt from __sys_setsockopt (net/socket.c:2308)
+>   __sys_setsockopt from ret_fast_syscall (arch/arm/kernel/entry-common.S:68)
 > 
-> Yes, I agree that this has been poorly worded. Flag RWF_ATOMIC does not
-> indicate anything. I will fix it.
+> xskq_get_ring_size() uses struct_size() macro to safely calculate the
+> size of struct xsk_queue and q->nentries of desc members. But the
+> syzkaller repro was able to set q->nentries with the value initially
+> taken from copy_from_sockptr() high enough to return SIZE_MAX by
+> struct_size(). The next PAGE_ALIGN(size) is such case will overflow
+> the size_t value and set it to 0. This will trigger WARN_ON_ONCE in
+> vmalloc_user() -> __vmalloc_node_range().
 > 
-> > 
-> > Additionally, shouldn't it be documented what value will be stored in
-> > errno if the atomic write has been rejected?
+> The issue is reproducible on 32-bit arm kernel.
 > 
-> So I was treating all atomic writes errors which don't follow the "rules" as
-> low-level I/O errors, which is -EIO. However, yes, I can document this.
-> Further to that, based on description of an error for O_DIRECT, which is to
-> return -EINVAL for misaligned, I think that -EINVAL may be better for any
-> atomic write rule violations. OK?
+> Reported-and-tested-by: syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000c84b4705fb31741e@google.com/T/
+> Link: https://syzkaller.appspot.com/bug?extid=fae676d3cf469331fc89
+> Fixes: 9f78bf330a66 ("xsk: support use vaddr as ring")
+> Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
 
-Agreed - I was going to make that comment myself about using EINVAL
-instead of EIO...
+I guess also:
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Reported-by: syzbot+b132693e925cbbd89e26@syzkaller.appspotmail.com
+
+Moreover, this fix is needed in bpf/net tree (as opposed to *-next tree), right?
+
+>   net/xdp/xsk_queue.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
+> index f8905400ee07..b03d1bfb6978 100644
+> --- a/net/xdp/xsk_queue.c
+> +++ b/net/xdp/xsk_queue.c
+> @@ -34,6 +34,9 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
+>   	q->ring_mask = nentries - 1;
+>   
+>   	size = xskq_get_ring_size(q, umem_queue);
+> +	if (unlikely(size == SIZE_MAX))
+> +		return NULL;
+
+Doesn't this leak q here ?
+
+>   	size = PAGE_ALIGN(size);
+>   
+>   	q->ring = vmalloc_user(size);
+> 
+
