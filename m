@@ -2,79 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A5E7B7930
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010457B7939
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241647AbjJDH4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
+        id S241600AbjJDH5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:57:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232790AbjJDH4b (ORCPT
+        with ESMTP id S241516AbjJDH5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:56:31 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E10A7;
-        Wed,  4 Oct 2023 00:56:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1696406188; x=1727942188;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=dfxEmiitU7sG/JHVT8Owzk/9e9RSoVO37pAJFjGfI8U=;
-  b=fDU1qJh99wywnS1oE8VmnXI8zLvC3TuRr3M89Ko41hokpojP//DBvowX
-   q+4S9XbLxySboYB54uryrKhHK6Rpy0KrtzgHCfGMbAbMk3v3VY2bZeITd
-   aAv7DRCwjPEshv1NDIgFt56OWWUSyEEe5SSed6tZ+DToc6/Cr2QR4sO7T
-   Osqxl3qIHOsGLKeRx3YyRERq0ZI4Qz3/o87J0d9gO87+uP4C7+Bsv8HRQ
-   67rW0rO6qB90jOiBaUzFacalh4cheSvGvsv/koID3Ic3l4HXjhn25Yslu
-   sa76YHeegHMGMTQVlyWE/EP/Hsqave3pgjdkkTbDTfuUIcdkE+XFMKr0+
-   Q==;
-X-CSE-ConnectionGUID: SONxoOqNTSiNChR+QWqYmw==
-X-CSE-MsgGUID: CsyGpB5VQryE5hgB4ycYKA==
-X-IronPort-AV: E=Sophos;i="6.03,199,1694707200"; 
-   d="scan'208";a="351024176"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Oct 2023 15:56:27 +0800
-IronPort-SDR: KJYwXBMtsvDy2SLJtp0BEncQKjTzJfMK1Xz9fYmsUcivFm9YnykudaecVRnkd8Vm6cd0PU4FLV
- KLv01gZDf17otO6VTOwB7cYUN+5AZ/u4eCi3eJFKt/aMedWg1qEHUp35AwG1y1eRNQJBlXf9qp
- xSJKfS6rghsIXoCMyIqGgzhTOgKVWAwxZOSZrsv1BH4inJSzB8CMSLEDA+oGSPpqRVz4ZDwDth
- D//GNVgFa2Q7xQqQvuRn+fTSfszHIwR481Hwywsg0ZhkbTgE2pk9CY5ogK9KxsxGSbIva0M7Hv
- JEg=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Oct 2023 00:03:06 -0700
-IronPort-SDR: 88I+pvM7gpFB+3mWbzpar/sEOU2uc5ulMuQCzqyPrRtyCzCxsojQtmbRKuWHM3zxjamBZXcdpt
- a33m9yWOOdhBCOBACh8DYRtDwAH3NMK+O97rUQqn4BfYUZsxmm5QFJeQgB1BY8l5L7+cPyZ0NC
- Sc3nqrWLJw6x+yKLPjOHTF7bgouZHClg4n7GEe7EgSANWJPQksKkeSJOfxLgnJC1z8J9jS7FXN
- PoVAn5LCv2QDGJw7oK2MJuXMwsHPJwE3NxSYVwHTTHzR5U0zjQM+Tu3Z6Ma1VVK/iVTK42pyvE
- eZc=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip01.wdc.com with ESMTP; 04 Oct 2023 00:56:27 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Date:   Wed, 04 Oct 2023 00:56:19 -0700
-Subject: [PATCH v3 4/4] btrfs: remove stride length from on-disk format
+        Wed, 4 Oct 2023 03:57:42 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011A1AC
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 00:57:37 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9adca291f99so317829866b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 00:57:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696406256; x=1697011056; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ay5Vsk+ralU3n0O47rCc8tQOr+v7R/FfrmtlL/DaMB0=;
+        b=EMrjUsf/SmZizdAQbZBlEv8lpn8B9VyDyKo82uPSmTKOjxQGmVTZgYMNTiprhH+bT8
+         RPAg704wXBopMZtLSh3fxGfAB/UZM2lGOpvtXo9oP3GMrrqRfCS7SLQxn9YhpH62lJ8C
+         Z3ln7E/Y2jCFUIcZDQxu95pIWxKHm2OQrca1lQj4SMWWzdANXWVsZdGqF58B//y42x5b
+         OA/zgF2OArH7yNZiDIxUy/bCZkYkaaxDHgJYN3Fph54RM3d+eBDIGwUzmB7SWna1eV8W
+         32wStvm1vjTxwQCvdLr5SAJelTgiyfzBtpZ+cJ1Vv63vuUrzWaig+Fie4LYhG6qJAvJo
+         FVUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696406256; x=1697011056;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ay5Vsk+ralU3n0O47rCc8tQOr+v7R/FfrmtlL/DaMB0=;
+        b=DCjo+2WapwZGiMzGu4pyMHmqPOWcC0xKM3o0v4PspGw7vCDNDhE633VteEDVh2zQ/p
+         llWW8HKAx3z/xdrzHHeC++Xb50lS23IqQCS/y6W4JP9rjeyg0cDVvPfVHzsBjl8AS8IW
+         EXiAbVpUMbN9cwh3Knz8BRrS4189e07YwmKR+5Q2NaUPbdsT1fFm0zOGMAOWgVCbZWJe
+         iZBOGk/vlhynSQ03IDplIbq5AiF7cq1R2k7Vvfmvpfze2KfnyHdQEpGmb3FFZKnT3uWu
+         djECvnLMiUmVjA19/+ts6pi/M2twH0YNYEY1X9jVTi0YkAgVQQ2ryTzfe8Z2nt1qt8B5
+         ZEDg==
+X-Gm-Message-State: AOJu0Yz75j3pAgMphrseidN3/Xo2aL+pcP0xbaBXlfgg8t3x/DrTRfxv
+        l7I33FeTyFwO91ZKdW0I7ZTojg==
+X-Google-Smtp-Source: AGHT+IExVkG9sutLmv2CCXRkGqFp0eb0ufokjcEUXnRDnQiLLWYXIXB4c/UKg9ZAA39UsmVzRmv4+w==
+X-Received: by 2002:a17:906:4496:b0:9b2:babd:cd51 with SMTP id y22-20020a170906449600b009b2babdcd51mr1192483ejo.5.1696406256379;
+        Wed, 04 Oct 2023 00:57:36 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id s3-20020aa7d783000000b0053404772535sm1975565edq.81.2023.10.04.00.57.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 00:57:35 -0700 (PDT)
+Message-ID: <37021ef8-55e2-4116-8201-2ab7df9e0fc1@linaro.org>
+Date:   Wed, 4 Oct 2023 09:57:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231004-rst-updates-v3-4-7729c4474ade@wdc.com>
-References: <20231004-rst-updates-v3-0-7729c4474ade@wdc.com>
-In-Reply-To: <20231004-rst-updates-v3-0-7729c4474ade@wdc.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Qu Wenru <wqu@suse.com>, Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696406180; l=1791;
- i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
- bh=dfxEmiitU7sG/JHVT8Owzk/9e9RSoVO37pAJFjGfI8U=;
- b=s6VAEOI6hGci33EzTXGqgS6KT3PosuQjrI0B71UqwFPeITDPjpcu89WQNJjMWdbvYyu3BQoAc
- EeB+Sie1ELjAaA+sDBZ9QPjAt7yrcs0v/B6yW9hXGGQgV9+CLW7n5NT
-X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
- pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/5] riscv: dts: sophgo: add initial CV1800B SoC device
+ tree
+Content-Language: en-US
+To:     Chen Wang <unicorn_wang@outlook.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Anup Patel <anup@brainfault.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com
+References: <20230930123937.1551-1-jszhang@kernel.org>
+ <20230930123937.1551-5-jszhang@kernel.org>
+ <MA0P287MB033277186E21A09127407452FECBA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <MA0P287MB033277186E21A09127407452FECBA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,43 +134,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/accessors.h            | 2 --
- include/uapi/linux/btrfs_tree.h | 2 --
- 2 files changed, 4 deletions(-)
+On 04/10/2023 09:23, Chen Wang wrote:
+> 
+> 在 2023/9/30 20:39, Jisheng Zhang 写道:
+>> Add initial device tree for the CV1800B RISC-V SoC by SOPHGO.
+>>
+>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+>> ---
+>>   arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 117 ++++++++++++++++++++++++
+>>   1 file changed, 117 insertions(+)
+>>   create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> 
+> Hi, Jisheng, as far as I know, sg2042 and cv180x are now tracked by 
+> different people and even in sophgo, they are two independent 
+> projects(sg2042 is target for HPC and cv180x is target for embeded 
+> device). To facilitate future management and review, I recommend 
+> registering the maintainer information in two entries in MAINTAINERS. 
+> The example is as follows:
+> 
+> ```
+> 
+> SOPHGO CV180X DEVICETREES
+> M:  Jisheng Zhang <jszhang@kernel.org>
+> F:  arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
+> F:  arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> 
+> SOPHGO SG2042 DEVICETREES
+> M:  Chao Wei <chao.wei@sophgo.com>
+> M:  Chen Wang <unicornxw@gmail.com>
+> S:  Maintained
+> F:  arch/riscv/boot/dts/sophgo/Makefile
+> F:  arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi
+> F:  arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
+> F:  arch/riscv/boot/dts/sophgo/sg2042.dtsi
+> F:  Documentation/devicetree/bindings/riscv/sophgo.yaml
+> ```
+> 
+> For Makefile and sophgo.yaml such common files, just keep in sg2042 
+> entry should be fine.
+> 
+> @Conor, what do you think?
 
-diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-index b780d9087490..aa0844535644 100644
---- a/fs/btrfs/accessors.h
-+++ b/fs/btrfs/accessors.h
-@@ -309,12 +309,10 @@ BTRFS_SETGET_STACK_FUNCS(stack_timespec_nsec, struct btrfs_timespec, nsec, 32);
- BTRFS_SETGET_FUNCS(stripe_extent_encoding, struct btrfs_stripe_extent, encoding, 8);
- BTRFS_SETGET_FUNCS(raid_stride_devid, struct btrfs_raid_stride, devid, 64);
- BTRFS_SETGET_FUNCS(raid_stride_physical, struct btrfs_raid_stride, physical, 64);
--BTRFS_SETGET_FUNCS(raid_stride_length, struct btrfs_raid_stride, length, 64);
- BTRFS_SETGET_STACK_FUNCS(stack_stripe_extent_encoding,
- 			 struct btrfs_stripe_extent, encoding, 8);
- BTRFS_SETGET_STACK_FUNCS(stack_raid_stride_devid, struct btrfs_raid_stride, devid, 64);
- BTRFS_SETGET_STACK_FUNCS(stack_raid_stride_physical, struct btrfs_raid_stride, physical, 64);
--BTRFS_SETGET_STACK_FUNCS(stack_raid_stride_length, struct btrfs_raid_stride, length, 64);
- 
- /* struct btrfs_dev_extent */
- BTRFS_SETGET_FUNCS(dev_extent_chunk_tree, struct btrfs_dev_extent, chunk_tree, 64);
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index 9fafcaebf44d..c25fc9614594 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -737,8 +737,6 @@ struct btrfs_raid_stride {
- 	__le64 devid;
- 	/* The physical location on disk. */
- 	__le64 physical;
--	/* The length of stride on this disk. */
--	__le64 length;
- } __attribute__ ((__packed__));
- 
- /* The stripe_extent::encoding, 1:1 mapping of enum btrfs_raid_types. */
+We do no have usually per-board maintainer entries (with few
+exceptions). I strongly prefer this one instead:
 
--- 
-2.41.0
+https://lore.kernel.org/all/829b122da52482707b783dc3d93d3ff0179cb0ca.camel@perches.com/
+
+Best regards,
+Krzysztof
 
