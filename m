@@ -2,146 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8B77B7FF8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B7B7B7FFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 14:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242515AbjJDM53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 08:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
+        id S242492AbjJDM57 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 08:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242505AbjJDM51 (ORCPT
+        with ESMTP id S242325AbjJDM54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 08:57:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D916798;
-        Wed,  4 Oct 2023 05:57:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCFC4C433C7;
-        Wed,  4 Oct 2023 12:57:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696424243;
-        bh=ectF9UM9nsuyhPQEzGjpDSsG7n+9AFSouVvBvBRz4RU=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=aWYNO4ih2/gLk3G6T2FcpuBf9c0kV2zijLkIMF9GTTQ+nepdEMGBdrvfmFYWFhRUW
-         KVRDHP7aFL9dv9Lpxp0FxDQ/2EnVhHsKAAB2VwwjCdgy5wnut2pHjpvxPGTZeAFQDH
-         dx3Ofes5pgXTfpQpA+49sMtyVkJ6wUe9nt7h00/0Tpa4gxY+gTTXr1y0nZKaKDh7RT
-         qN8W7ur4vnfKDJ4kOnzxobzVRviDf6TDCnfv1GD2dRoq6TeFgSAIHqeXzMQlavsBvb
-         lWldeHfhdjuv1mXF9zoGO2eE5MpCaETqwWDx9UwtRdisxi7UpFY614fbhZ52U42njQ
-         DHldIsd1FJBWA==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felix Fietkau <nbd@nbd.name>,
-        Felipe Negrelli Wolter <felipe.negrelliwolter@silabs.com>,
-        Olivier Souloumiac <olivier.souloumiac@silabs.com>,
-        Alexandr Suslenko <suslenko.o@ajax.systems>
-Subject: Re: [PATCH v2] wifi: wfx: fix case where rates are out of order
-References: <20231004123039.157112-1-jerome.pouiller@silabs.com>
-Date:   Wed, 04 Oct 2023 15:57:19 +0300
-In-Reply-To: <20231004123039.157112-1-jerome.pouiller@silabs.com>
- (=?utf-8?B?IkrDqXLDtG1l?=
-        Pouiller"'s message of "Wed, 4 Oct 2023 14:30:39 +0200")
-Message-ID: <8734yq7dg0.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 4 Oct 2023 08:57:56 -0400
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA67C9;
+        Wed,  4 Oct 2023 05:57:52 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d9191f0d94cso747192276.3;
+        Wed, 04 Oct 2023 05:57:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696424272; x=1697029072;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nNWbuPqGRcDinjfq6bAk+Y11zIkNJyvZkAmw9q5qsww=;
+        b=Ap1xCr5/lhNzhs2f7YCyAnn4I74pbz66+Dcit47dWg4d0XNqDEA5EIrpXILox6Xru9
+         bNs+QibL5/LWXzHP0e3u5zrB/x9hilhiXykGYd9nQSlH0JZE50SeD+DpoweBmTQo1QOB
+         Aj0sPpudR4rXTBqg1CFB7fk4FI7aIyurIERsTiC1yzupMf3875KZv+/LTktQXJ7iqmlp
+         2LFTOTAN+bhx5IQH2vbjSYnf5vGgM04EQJJyHFb4wwYSqNVCp+n2MoOeUVZbeQkp2bdV
+         Jv4Hschz+lpAJUqvRyVP963wqJKkxQJRJ4K0+2vRHhJh8InI0zHblH8fYGB1vc71H0Fy
+         Jd9g==
+X-Gm-Message-State: AOJu0Yy0exjksxBwnrGZAydmmuSlenbl8u6A57rKhtZ9GOkf1WM554SH
+        tpGFzqq12gX8UwVF94A2/cWGwlOC9oOiUQ==
+X-Google-Smtp-Source: AGHT+IFlI7GrP4XnGy9To4+xeIAvkni+tRCqK79kL7PecDcxv0beM5Q3akBlUZPKMCgklB6n6C31nw==
+X-Received: by 2002:a5b:e8b:0:b0:d85:ae5c:527a with SMTP id z11-20020a5b0e8b000000b00d85ae5c527amr2037242ybr.10.1696424271990;
+        Wed, 04 Oct 2023 05:57:51 -0700 (PDT)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id l14-20020a5b0b8e000000b00d8679407796sm1009449ybq.48.2023.10.04.05.57.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 05:57:51 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-59bbdb435bfso25087257b3.3;
+        Wed, 04 Oct 2023 05:57:51 -0700 (PDT)
+X-Received: by 2002:a0d:df12:0:b0:59f:4bea:512f with SMTP id
+ i18-20020a0ddf12000000b0059f4bea512fmr2537506ywe.15.1696424271499; Wed, 04
+ Oct 2023 05:57:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com> <20230929053915.1530607-16-claudiu.beznea@bp.renesas.com>
+In-Reply-To: <20230929053915.1530607-16-claudiu.beznea@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 4 Oct 2023 14:57:39 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUC+-=ni44+1UQyEgSvwOVa2pb_TVyWjM-5BrTGjVChuA@mail.gmail.com>
+Message-ID: <CAMuHMdUC+-=ni44+1UQyEgSvwOVa2pb_TVyWjM-5BrTGjVChuA@mail.gmail.com>
+Subject: Re: [PATCH v2 15/28] pinctrl: renesas: rzg2l: adapt for different
+ SD/PWPR register offsets
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, magnus.damm@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
+        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
-
-> From: Felipe Negrelli Wolter <felipe.negrelliwolter@silabs.com>
+On Fri, Sep 29, 2023 at 7:39 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >
-> When frames are sent over the air, the device always applies the data
-> rates in descending order. The driver assumed Minstrel also provided
-> rate in descending order.
+> SD, PWPR power registers have different offsets b/w RZ/G2L and RZ/G3S.
+> Commit adds a per SoC configuration data structure that is initialized with
+> proper register offset for individual SoCs. The struct rzg2l_hwcfg will be
+> further extended in next commits.
 >
-> However, in some cases, Minstrel can a choose a fallback rate greater
-> than the primary rate. In this case, the two rates was inverted, the
-> device try highest rate first and we get many retries.
->
-> Since the device always applies rates in descending order, the
-> workaround is to drop the rate when it higher than its predecessor in
-> the rate list. Thus [ 4, 5, 3 ] becomes [ 4, 3 ].
->
-> This patch has been tested in isolated room with a series of
-> attenuators. Here are the Minstrel statistics with 80dBm of attenuation:
->
->   Without the fix:
->
->                   best    ____________rate__________    ____statistics___=
-    _____last____    ______sum-of________
->     mode guard #  rate   [name   idx airtime  max_tp]  [avg(tp) avg(prob)=
-]  [retry|suc|att]  [#success | #attempts]
->     HT20  LGI  1       S  MCS0     0    1477     5.6       5.2      82.7 =
-      3     0 0             3   4
->     HT20  LGI  1          MCS1     1     738    10.6       0.0       0.0 =
-      0     0 0             0   1
->     HT20  LGI  1     D    MCS2     2     492    14.9      13.5      81.5 =
-      5     0 0             5   9
->     HT20  LGI  1    C     MCS3     3     369    18.8      17.6      84.3 =
-      5     0 0            76   96
->     HT20  LGI  1  A   P   MCS4     4     246    25.4      22.4      79.5 =
-      5     0 0         11268   14026
->     HT20  LGI  1   B   S  MCS5     5     185    30.7      19.7      57.7 =
-      5     8 9          3918   9793
->     HT20  LGI  1          MCS6     6     164    33.0       0.0       0.0 =
-      5     0 0             6   102
->     HT20  LGI  1          MCS7     7     148    35.1       0.0       0.0 =
-      0     0 0             0   44
->
->   With the fix:
->
->                   best    ____________rate__________    ____statistics___=
-    _____last____    ______sum-of________
->     mode guard #  rate   [name   idx airtime  max_tp]  [avg(tp) avg(prob)=
-]  [retry|suc|att]  [#success | #attempts]
->     HT20  LGI  1       S  MCS0     0    1477     5.6       1.8      28.6 =
-      1     0 0             1   5
->     HT20  LGI  1     DP   MCS1     1     738    10.6       9.7      82.6 =
-      4     0 0            14   34
->     HT20  LGI  1          MCS2     2     492    14.9       9.2      55.4 =
-      5     0 0            52   77
->     HT20  LGI  1   B   S  MCS3     3     369    18.8      15.6      74.9 =
-      5     1 1           417   554
->     HT20  LGI  1  A       MCS4     4     246    25.4      16.7      59.2 =
-      5     1 1         13812   17951
->     HT20  LGI  1    C  S  MCS5     5     185    30.7      14.0      41.0 =
-      5     1 5            57   640
->     HT20  LGI  1          MCS6     6     164    33.0       0.0       0.0 =
-      0     0 1             0   48
->     HT20  LGI  1       S  MCS7     7     148    35.1       0.0       0.0 =
-      0     0 0             0   36
->
-> We can notice the device try now to send with lower rates (and high
-> success rates). At the end, we measured 20-25% better throughput with
-> this patch.
->
-> Fixes: 9bca45f3d692 ("staging: wfx: allow to send 802.11 frames")
-> Tested-by: Olivier Souloumiac <olivier.souloumiac@silabs.com>
-> Tested-by: Alexandr Suslenko <suslenko.o@ajax.systems>
-> Reported-by: Alexandr Suslenko <suslenko.o@ajax.systems>
-> Co-developed-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> Signed-off-by: Felipe Negrelli Wolter <felipe.negrelliwolter@silabs.com>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
-> v2:
->   - Fix malformed tags in commit body. (checkpatch still complains about
->     missing Close tag, but the bug tracker is not public and I don't have
->     the exact URL)
+>
+> Changes in v2:
+> - collected tags
 
-Just out of curiosity why does the checkpatch complain about a missing
-Close tag? I don't get it why there should be one.
+Thanks, will queue in renesas-pinctrl-for-v6.7.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+Gr{oetje,eeting}s,
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
