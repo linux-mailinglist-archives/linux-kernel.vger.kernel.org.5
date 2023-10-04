@@ -2,47 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 401A67B7B05
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE8D7B7B09
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241898AbjJDJFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
+        id S241886AbjJDJFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241884AbjJDJFb (ORCPT
+        with ESMTP id S241916AbjJDJFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:05:31 -0400
+        Wed, 4 Oct 2023 05:05:39 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B6CEBA6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:05:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 85E24D8;
+        Wed,  4 Oct 2023 02:05:33 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1ADBE150C;
-        Wed,  4 Oct 2023 02:06:06 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D96EF1515;
+        Wed,  4 Oct 2023 02:06:11 -0700 (PDT)
 Received: from e130256.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14E823F59C;
-        Wed,  4 Oct 2023 02:05:25 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6ADB83F59C;
+        Wed,  4 Oct 2023 02:05:31 -0700 (PDT)
 From:   Hongyan Xia <Hongyan.Xia2@arm.com>
 To:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
 Cc:     Qais Yousef <qyousef@layalina.io>,
         Morten Rasmussen <morten.rasmussen@arm.com>,
         Lukasz Luba <lukasz.luba@arm.com>,
         Christian Loehle <christian.loehle@arm.com>,
-        linux-kernel@vger.kernel.org, Hongyan Xia <hongyan.xia2@arm.com>
-Subject: [RFC PATCH 2/6] sched/uclamp: Simulate PELT decay in util_avg_uclamp
-Date:   Wed,  4 Oct 2023 10:04:50 +0100
-Message-Id: <d73fc3e9a02f047902fdd5e4c07402452d6e0590.1696345700.git.Hongyan.Xia2@arm.com>
+        linux-kernel@vger.kernel.org, Hongyan Xia <hongyan.xia2@arm.com>,
+        linux-pm@vger.kernel.org
+Subject: [RFC PATCH 3/6] sched/fair: Use CFS util_avg_uclamp for utilization and frequency
+Date:   Wed,  4 Oct 2023 10:04:51 +0100
+Message-Id: <b2fc40b143f90ce652a02950503cbe744bc1d112.1696345700.git.Hongyan.Xia2@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1696345700.git.Hongyan.Xia2@arm.com>
 References: <cover.1696345700.git.Hongyan.Xia2@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -51,266 +54,380 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hongyan Xia <hongyan.xia2@arm.com>
 
-Because util_avg_uclamp is not directly managed by PELT, it lacks the
-nice property of slowly decaying to a lower value, resulting in
-performance degredation due to premature frequency drops.
+Switch to the new util_avg_uclamp for task and runqueue utilization.
+Since util_est() calls task_util(), this means util_est is now also a
+clamped value.
 
-Add functions to decay root cfs utilization and tasks that are not on
-the rq. This way, we get the benefits of PELT while still maintaining
-uclamp. The rules are simple:
+Now that we have the sum aggregated CFS util value, we do not need to
+consult uclamp buckets to know how the frequency should be clamped. We
+simply look at the aggregated top level root_cfs_util_uclamp to know
+what frequency to choose. Because we simulate PELT decay in
+root_cfs_util_uclamp anyway, there's no need in cpufreq_schedutil.c to
+avoid premature frequency drops.
 
-1. When task is se->on_rq, enforce its util_avg_uclamp within uclamp
-   range.
-2. When task is !se->on_rq, PELT decay its util_avg_uclamp.
-3. When the root CFS util drops, PELT decay to the target frequency
-   instead of immediately dropping to a lower target frequency.
+Consequently, there is no need for uclamp_rq_util_with(). This function
+takes the un-clamped util value and sends it through various clamping
+filters to get the final value. However, util_avg_uclamp is propagated
+with clamping in mind already, so it does not need to be clamped again.
 
-TODO: Can we somehow integrate this uclamp sum aggregation directly into
-util_avg, so that we don't need to introduce a new util_avg_uclamp
-signal and don't need to simulate PELT decay?
+TODO: There are two major caveats in this patch.
+1. At the moment sum aggregation does not consider RT tasks. The avg_rt
+   signal considers all RT tasks on this rq as a single entity, which
+   means the utilization of individual RT tasks is not tracked
+   separately. If we want to use sum aggregation, we might have to track
+   utilization of RT tasks individually.
+2. Busy time accounting in compute_energy() now takes the uclamp'ed
+   value. Ideally, it should reflect reality and use the un-clamp'ed
+   values. However, that would require maintaining both the normal and
+   uclamp'ed values for util_est. This needs to be revisited if it
+   causes real problems in practice.
 
 Signed-off-by: Hongyan Xia <hongyan.xia2@arm.com>
 ---
- kernel/sched/fair.c  |  20 +++++++++
- kernel/sched/pelt.c  | 103 ++++++++++++++++++++++++++++++++++++++++---
- kernel/sched/sched.h |   2 +
- 3 files changed, 119 insertions(+), 6 deletions(-)
+ kernel/sched/core.c              |  10 +--
+ kernel/sched/cpufreq_schedutil.c |  19 +++---
+ kernel/sched/fair.c              |  38 +++++------
+ kernel/sched/sched.h             | 106 +++++++++----------------------
+ 4 files changed, 59 insertions(+), 114 deletions(-)
 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index efe3848978a0..32511ee63f01 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7402,10 +7402,12 @@ int sched_core_idle_cpu(int cpu)
+  * The DL bandwidth number otoh is not a measured metric but a value computed
+  * based on the task model parameters and gives the minimal utilization
+  * required to meet deadlines.
++ *
++ * The util_cfs parameter has already taken uclamp into account (unless uclamp
++ * support is not compiled in).
+  */
+ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+-				 enum cpu_util_type type,
+-				 struct task_struct *p)
++				 enum cpu_util_type type)
+ {
+ 	unsigned long dl_util, util, irq, max;
+ 	struct rq *rq = cpu_rq(cpu);
+@@ -7439,8 +7441,6 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+ 	 * frequency will be gracefully reduced with the utilization decay.
+ 	 */
+ 	util = util_cfs + cpu_util_rt(rq);
+-	if (type == FREQUENCY_UTIL)
+-		util = uclamp_rq_util_with(rq, util, p);
+ 
+ 	dl_util = cpu_util_dl(rq);
+ 
+@@ -7493,7 +7493,7 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+ 
+ unsigned long sched_cpu_util(int cpu)
+ {
+-	return effective_cpu_util(cpu, cpu_util_cfs(cpu), ENERGY_UTIL, NULL);
++	return effective_cpu_util(cpu, cpu_util_cfs(cpu), ENERGY_UTIL);
+ }
+ #endif /* CONFIG_SMP */
+ 
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 4492608b7d7f..6e63952b8063 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -159,8 +159,7 @@ static void sugov_get_util(struct sugov_cpu *sg_cpu)
+ 	struct rq *rq = cpu_rq(sg_cpu->cpu);
+ 
+ 	sg_cpu->bw_dl = cpu_bw_dl(rq);
+-	sg_cpu->util = effective_cpu_util(sg_cpu->cpu, util,
+-					  FREQUENCY_UTIL, NULL);
++	sg_cpu->util = effective_cpu_util(sg_cpu->cpu, util, FREQUENCY_UTIL);
+ }
+ 
+ /**
+@@ -282,7 +281,11 @@ static void sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time,
+ 	 * into the same scale so we can compare.
+ 	 */
+ 	boost = (sg_cpu->iowait_boost * max_cap) >> SCHED_CAPACITY_SHIFT;
+-	boost = uclamp_rq_util_with(cpu_rq(sg_cpu->cpu), boost, NULL);
++	/*
++	 * TODO: Investigate what should be done here. In sum aggregation there
++	 * is no such thing as uclamp_max on a rq, so how do we cap the boost
++	 * value, or do we want to cap the boost frequency here at all?
++	 */
+ 	if (sg_cpu->util < boost)
+ 		sg_cpu->util = boost;
+ }
+@@ -346,11 +349,8 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
+ 	/*
+ 	 * Do not reduce the frequency if the CPU has not been idle
+ 	 * recently, as the reduction is likely to be premature then.
+-	 *
+-	 * Except when the rq is capped by uclamp_max.
+ 	 */
+-	if (!uclamp_rq_is_capped(cpu_rq(sg_cpu->cpu)) &&
+-	    sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
++	if (sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
+ 		next_f = sg_policy->next_freq;
+ 
+ 		/* Restore cached freq as next_freq has changed */
+@@ -399,11 +399,8 @@ static void sugov_update_single_perf(struct update_util_data *hook, u64 time,
+ 	/*
+ 	 * Do not reduce the target performance level if the CPU has not been
+ 	 * idle recently, as the reduction is likely to be premature then.
+-	 *
+-	 * Except when the rq is capped by uclamp_max.
+ 	 */
+-	if (!uclamp_rq_is_capped(cpu_rq(sg_cpu->cpu)) &&
+-	    sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
++	if (sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
+ 		sg_cpu->util = prev_util;
+ 
+ 	cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->bw_dl),
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 33e5a6e751c0..420af57d01ee 100644
+index 420af57d01ee..31004aae5f09 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -4311,17 +4311,22 @@ static inline int
- update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
- {
- 	unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
-+	unsigned int removed_root_util = 0;
- 	struct sched_avg *sa = &cfs_rq->avg;
- 	int decayed = 0;
+@@ -4572,10 +4572,17 @@ static inline unsigned long cfs_rq_load_avg(struct cfs_rq *cfs_rq)
  
- 	if (cfs_rq->removed.nr) {
- 		unsigned long r;
-+		struct rq *rq = rq_of(cfs_rq);
- 		u32 divider = get_pelt_divider(&cfs_rq->avg);
+ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf);
  
- 		raw_spin_lock(&cfs_rq->removed.lock);
- 		swap(cfs_rq->removed.util_avg, removed_util);
- 		swap(cfs_rq->removed.load_avg, removed_load);
- 		swap(cfs_rq->removed.runnable_avg, removed_runnable);
 +#ifdef CONFIG_UCLAMP_TASK
-+		swap(rq->root_cfs_util_uclamp_removed, removed_root_util);
-+#endif
- 		cfs_rq->removed.nr = 0;
- 		raw_spin_unlock(&cfs_rq->removed.lock);
- 
-@@ -4346,6 +4351,12 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
- 		 *    util_avg * minimum possible divider
- 		 */
- 		sa->util_sum = max_t(u32, sa->util_sum, sa->util_avg * PELT_MIN_DIVIDER);
-+#ifdef CONFIG_UCLAMP_TASK
-+		r = removed_root_util;
-+		sub_positive(&rq->root_cfs_util_uclamp, r);
-+		rq->root_cfs_util_uclamp =
-+			max(rq->root_cfs_util_uclamp, rq->cfs.avg.util_avg_uclamp);
-+#endif
- 
- 		r = removed_runnable;
- 		sub_positive(&sa->runnable_avg, r);
-@@ -4527,6 +4538,7 @@ static void sync_entity_load_avg(struct sched_entity *se)
- static void remove_entity_load_avg(struct sched_entity *se)
- {
- 	struct cfs_rq *cfs_rq = cfs_rq_of(se);
-+	struct rq *rq = rq_of(cfs_rq);
- 	unsigned long flags;
- 
- 	/*
-@@ -4542,6 +4554,9 @@ static void remove_entity_load_avg(struct sched_entity *se)
- 	cfs_rq->removed.util_avg	+= se->avg.util_avg;
- 	cfs_rq->removed.load_avg	+= se->avg.load_avg;
- 	cfs_rq->removed.runnable_avg	+= se->avg.runnable_avg;
-+#ifdef CONFIG_UCLAMP_TASK
-+	rq->root_cfs_util_uclamp_removed += se->avg.util_avg_uclamp;
-+#endif
- 	raw_spin_unlock_irqrestore(&cfs_rq->removed.lock, flags);
- }
- 
-@@ -6462,6 +6477,11 @@ static void update_se_chain(struct task_struct *p)
- 		struct cfs_rq *cfs_rq = cfs_rq_of(se);
- 
- 		___update_util_avg_uclamp(&cfs_rq->avg, se);
-+		if (&rq->cfs == cfs_rq) {
-+			rq->root_cfs_util_uclamp = max(rq->root_cfs_util_uclamp,
-+						       cfs_rq->avg.util_avg_uclamp);
-+			cfs_rq_util_change(cfs_rq, 0);
-+		}
- 	}
- #endif
- }
-diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
-index c656e4dcb1d1..83d5ac7e7ddb 100644
---- a/kernel/sched/pelt.c
-+++ b/kernel/sched/pelt.c
-@@ -267,6 +267,57 @@ ___update_load_avg(struct sched_avg *sa, unsigned long load)
- }
- 
- #ifdef CONFIG_UCLAMP_TASK
-+static void ___decay_util_avg_uclamp_towards(u64 now,
-+					     u64 last_update_time,
-+					     u32 period_contrib,
-+					     unsigned int *old,
-+					     unsigned int new_val)
++static inline unsigned long task_util(struct task_struct *p)
 +{
-+	unsigned int old_val = READ_ONCE(*old);
-+	u64 delta, periods;
-+
-+	if (old_val <= new_val) {
-+		WRITE_ONCE(*old, new_val);
-+		return;
-+	}
-+
-+	if (!last_update_time)
-+		return;
-+	delta = now - last_update_time;
-+	if ((s64)delta < 0)
-+		return;
-+	delta >>= 10;
-+	if (!delta)
-+		return;
-+
-+	delta += period_contrib;
-+	periods = delta / 1024;
-+	if (periods) {
-+		u64 diff = old_val - new_val;
-+
-+		/*
-+		 * Let's assume 3 tasks, A, B and C. A is still on rq but B and
-+		 * C have just been dequeued. The cfs.avg.util_avg_uclamp has
-+		 * become A but root_cfs_util_uclamp just starts to decay and is
-+		 * now still A + B + C.
-+		 *
-+		 * After p periods with y being the decay factor, the new
-+		 * root_cfs_util_uclamp should become
-+		 *
-+		 * A + B * y^p + C * y^p == A + (A + B + C - A) * y^p
-+		 *     == cfs.avg.util_avg_uclamp +
-+		 *        (root_cfs_util_uclamp_at_the_start - cfs.avg.util_avg_uclamp) * y^p
-+		 *     == cfs.avg.util_avg_uclamp + diff * y^p
-+		 *
-+		 * So, instead of summing up each individual decayed values, we
-+		 * could just decay the diff and not bother with the summation
-+		 * at all. This is why we decay the diff here.
-+		 */
-+		diff = decay_load(diff, periods);
-+		WRITE_ONCE(*old, new_val + diff);
-+	}
++	return READ_ONCE(p->se.avg.util_avg_uclamp);
 +}
-+
- /* avg must belong to the queue this se is on. */
- void ___update_util_avg_uclamp(struct sched_avg *avg, struct sched_entity *se)
++#else
+ static inline unsigned long task_util(struct task_struct *p)
  {
-@@ -336,17 +387,33 @@ ___update_util_avg_uclamp(struct sched_avg *avg, struct sched_entity *se)
- 
- int __update_load_avg_blocked_se(u64 now, struct sched_entity *se)
- {
-+	u64 last_update_time = se->avg.last_update_time;
-+	u32 period_contrib = se->avg.period_contrib;
-+	int ret = 0;
-+
- 	if (___update_load_sum(now, &se->avg, 0, 0, 0)) {
- 		___update_load_avg(&se->avg, se_weight(se));
- 		trace_pelt_se_tp(se);
--		return 1;
-+		ret = 1;
- 	}
- 
--	return 0;
-+#ifdef CONFIG_UCLAMP_TASK
-+	if (entity_is_task(se))
-+		___decay_util_avg_uclamp_towards(now,
-+						 last_update_time,
-+						 period_contrib,
-+						 &se->avg.util_avg_uclamp,
-+						 0);
+ 	return READ_ONCE(p->se.avg.util_avg);
+ }
 +#endif
-+	return ret;
+ 
+ static inline unsigned long _task_util_est(struct task_struct *p)
+ {
+@@ -4589,22 +4596,6 @@ static inline unsigned long task_util_est(struct task_struct *p)
+ 	return max(task_util(p), _task_util_est(p));
  }
  
- int __update_load_avg_se(u64 now, struct cfs_rq *cfs_rq, struct sched_entity *se)
+-#ifdef CONFIG_UCLAMP_TASK
+-static inline unsigned long uclamp_task_util(struct task_struct *p,
+-					     unsigned long uclamp_min,
+-					     unsigned long uclamp_max)
+-{
+-	return clamp(task_util_est(p), uclamp_min, uclamp_max);
+-}
+-#else
+-static inline unsigned long uclamp_task_util(struct task_struct *p,
+-					     unsigned long uclamp_min,
+-					     unsigned long uclamp_max)
+-{
+-	return task_util_est(p);
+-}
+-#endif
+-
+ static inline void util_est_enqueue(struct cfs_rq *cfs_rq,
+ 				    struct task_struct *p)
  {
-+	u64 last_update_time = se->avg.last_update_time;
-+	u32 period_contrib = se->avg.period_contrib;
-+	int ret = 0;
-+
- 	if (___update_load_sum(now, &se->avg, !!se->on_rq, se_runnable(se),
- 				cfs_rq->curr == se)) {
+@@ -7468,11 +7459,13 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ static unsigned long
+ cpu_util(int cpu, struct task_struct *p, int dst_cpu, int boost)
+ {
+-	struct cfs_rq *cfs_rq = &cpu_rq(cpu)->cfs;
+-	unsigned long util = READ_ONCE(cfs_rq->avg.util_avg);
++	struct rq *rq = cpu_rq(cpu);
++	struct cfs_rq *cfs_rq = &rq->cfs;
++	unsigned long util = root_cfs_util(rq);
++	bool capped = uclamp_rq_is_capped(rq);
+ 	unsigned long runnable;
  
-@@ -354,14 +421,26 @@ int __update_load_avg_se(u64 now, struct cfs_rq *cfs_rq, struct sched_entity *se
- 		___update_util_avg_uclamp(&cfs_rq->avg, se);
- 		cfs_se_util_change(&se->avg);
- 		trace_pelt_se_tp(se);
--		return 1;
-+		ret = 1;
+-	if (boost) {
++	if (boost && !capped) {
+ 		runnable = READ_ONCE(cfs_rq->avg.runnable_avg);
+ 		util = max(util, runnable);
+ 	}
+@@ -7629,7 +7622,7 @@ static inline void eenv_pd_busy_time(struct energy_env *eenv,
+ 	for_each_cpu(cpu, pd_cpus) {
+ 		unsigned long util = cpu_util(cpu, p, -1, 0);
+ 
+-		busy_time += effective_cpu_util(cpu, util, ENERGY_UTIL, NULL);
++		busy_time += effective_cpu_util(cpu, util, ENERGY_UTIL);
  	}
  
--	return 0;
-+#ifdef CONFIG_UCLAMP_TASK
-+	if (!se->on_rq && entity_is_task(se))
-+		___decay_util_avg_uclamp_towards(now,
-+						 last_update_time,
-+						 period_contrib,
-+						 &se->avg.util_avg_uclamp,
-+						 0);
-+#endif
-+	return ret;
- }
+ 	eenv->pd_busy_time = min(eenv->pd_cap, busy_time);
+@@ -7650,7 +7643,6 @@ eenv_pd_max_util(struct energy_env *eenv, struct cpumask *pd_cpus,
+ 	int cpu;
  
- int __update_load_avg_cfs_rq(u64 now, struct cfs_rq *cfs_rq)
- {
-+	u64 last_update_time = cfs_rq->avg.last_update_time;
-+	u32 period_contrib = cfs_rq->avg.period_contrib;
-+	int ret = 0;
-+
- 	if (___update_load_sum(now, &cfs_rq->avg,
- 				scale_load_down(cfs_rq->load.weight),
- 				cfs_rq->h_nr_running,
-@@ -369,10 +448,22 @@ int __update_load_avg_cfs_rq(u64 now, struct cfs_rq *cfs_rq)
+ 	for_each_cpu(cpu, pd_cpus) {
+-		struct task_struct *tsk = (cpu == dst_cpu) ? p : NULL;
+ 		unsigned long util = cpu_util(cpu, p, dst_cpu, 1);
+ 		unsigned long eff_util;
  
- 		___update_load_avg(&cfs_rq->avg, 1);
- 		trace_pelt_cfs_tp(cfs_rq);
--		return 1;
-+		ret = 1;
+@@ -7661,7 +7653,7 @@ eenv_pd_max_util(struct energy_env *eenv, struct cpumask *pd_cpus,
+ 		 * NOTE: in case RT tasks are running, by default the
+ 		 * FREQUENCY_UTIL's utilization can be max OPP.
+ 		 */
+-		eff_util = effective_cpu_util(cpu, util, FREQUENCY_UTIL, tsk);
++		eff_util = effective_cpu_util(cpu, util, FREQUENCY_UTIL);
+ 		max_util = max(max_util, eff_util);
  	}
  
--	return 0;
-+#ifdef CONFIG_UCLAMP_TASK
-+	if (&rq_of(cfs_rq)->cfs == cfs_rq) {
-+		unsigned int target = READ_ONCE(cfs_rq->avg.util_avg_uclamp);
-+
-+		___decay_util_avg_uclamp_towards(now,
-+				last_update_time,
-+				period_contrib,
-+				&rq_of(cfs_rq)->root_cfs_util_uclamp,
-+				target);
-+	}
-+#endif
-+
-+	return ret;
- }
+@@ -7758,7 +7750,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ 	target = prev_cpu;
  
- /*
+ 	sync_entity_load_avg(&p->se);
+-	if (!uclamp_task_util(p, p_util_min, p_util_max))
++	if (!task_util_est(p))
+ 		goto unlock;
+ 
+ 	eenv_task_busy_time(&eenv, p, prev_cpu);
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 2eefcdb0c3b0..98fa5e79f4e9 100644
+index 98fa5e79f4e9..e73aedd9a76b 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -992,6 +992,8 @@ struct rq {
- 	/* Utilization clamp values based on CPU's RUNNABLE tasks */
- 	struct uclamp_rq	uclamp[UCLAMP_CNT] ____cacheline_aligned;
- 	unsigned int		uclamp_flags;
-+	unsigned int		root_cfs_util_uclamp;
-+	unsigned int		root_cfs_util_uclamp_removed;
- #define UCLAMP_FLAG_IDLE 0x01
- #endif
+@@ -2997,8 +2997,7 @@ enum cpu_util_type {
+ };
  
+ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+-				 enum cpu_util_type type,
+-				 struct task_struct *p);
++				 enum cpu_util_type type);
+ 
+ /*
+  * Verify the fitness of task @p to run on @cpu taking into account the
+@@ -3055,85 +3054,44 @@ static inline bool uclamp_rq_is_idle(struct rq *rq)
+ 	return rq->uclamp_flags & UCLAMP_FLAG_IDLE;
+ }
+ 
+-/**
+- * uclamp_rq_util_with - clamp @util with @rq and @p effective uclamp values.
+- * @rq:		The rq to clamp against. Must not be NULL.
+- * @util:	The util value to clamp.
+- * @p:		The task to clamp against. Can be NULL if you want to clamp
+- *		against @rq only.
+- *
+- * Clamps the passed @util to the max(@rq, @p) effective uclamp values.
+- *
+- * If sched_uclamp_used static key is disabled, then just return the util
+- * without any clamping since uclamp aggregation at the rq level in the fast
+- * path is disabled, rendering this operation a NOP.
++/*
++ * When uclamp is compiled in, the aggregation at rq level is 'turned off'
++ * by default in the fast path and only gets turned on once userspace performs
++ * an operation that requires it.
+  *
+- * Use uclamp_eff_value() if you don't care about uclamp values at rq level. It
+- * will return the correct effective uclamp value of the task even if the
+- * static key is disabled.
++ * Returns true if userspace opted-in to use uclamp and aggregation at rq level
++ * hence is active.
+  */
+-static __always_inline
+-unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
+-				  struct task_struct *p)
++static inline bool uclamp_is_used(void)
+ {
+-	unsigned long min_util = 0;
+-	unsigned long max_util = 0;
+-
+-	if (!static_branch_likely(&sched_uclamp_used))
+-		return util;
+-
+-	if (p) {
+-		min_util = uclamp_eff_value(p, UCLAMP_MIN);
+-		max_util = uclamp_eff_value(p, UCLAMP_MAX);
+-
+-		/*
+-		 * Ignore last runnable task's max clamp, as this task will
+-		 * reset it. Similarly, no need to read the rq's min clamp.
+-		 */
+-		if (uclamp_rq_is_idle(rq))
+-			goto out;
+-	}
+-
+-	min_util = max_t(unsigned long, min_util, uclamp_rq_get(rq, UCLAMP_MIN));
+-	max_util = max_t(unsigned long, max_util, uclamp_rq_get(rq, UCLAMP_MAX));
+-out:
+-	/*
+-	 * Since CPU's {min,max}_util clamps are MAX aggregated considering
+-	 * RUNNABLE tasks with _different_ clamps, we can end up with an
+-	 * inversion. Fix it now when the clamps are applied.
+-	 */
+-	if (unlikely(min_util >= max_util))
+-		return min_util;
++	return static_branch_likely(&sched_uclamp_used);
++}
+ 
+-	return clamp(util, min_util, max_util);
++static inline unsigned long root_cfs_util(struct rq *rq)
++{
++	return READ_ONCE(rq->root_cfs_util_uclamp);
+ }
+ 
+ /* Is the rq being capped/throttled by uclamp_max? */
+ static inline bool uclamp_rq_is_capped(struct rq *rq)
+ {
+-	unsigned long rq_util;
+-	unsigned long max_util;
++	unsigned long uclamp_util, real_util;
+ 
+-	if (!static_branch_likely(&sched_uclamp_used))
++	if (!uclamp_is_used())
+ 		return false;
+ 
+-	rq_util = cpu_util_cfs(cpu_of(rq)) + cpu_util_rt(rq);
+-	max_util = READ_ONCE(rq->uclamp[UCLAMP_MAX].value);
+-
+-	return max_util != SCHED_CAPACITY_SCALE && rq_util >= max_util;
+-}
++	/*
++	 * At the moment there's no such thing as uclamp_max for RT tasks, so
++	 * we only see if CFS is capped.
++	 *
++	 * TODO: Implement uclamp sum aggregation for RT.
++	 */
++	uclamp_util = root_cfs_util(rq);
++	real_util = READ_ONCE(rq->cfs.avg.util_avg);
+ 
+-/*
+- * When uclamp is compiled in, the aggregation at rq level is 'turned off'
+- * by default in the fast path and only gets turned on once userspace performs
+- * an operation that requires it.
+- *
+- * Returns true if userspace opted-in to use uclamp and aggregation at rq level
+- * hence is active.
+- */
+-static inline bool uclamp_is_used(void)
+-{
+-	return static_branch_likely(&sched_uclamp_used);
++	/* XXX: The 80 margin here isn't backed by science. */
++	return uclamp_util < SCHED_CAPACITY_SCALE &&
++		real_util > uclamp_util + 80;
+ }
+ 
+ static inline void enqueue_util_avg_uclamp(struct cfs_rq *cfs_rq,
+@@ -3172,13 +3130,6 @@ static inline unsigned long uclamp_eff_value(struct task_struct *p,
+ 	return SCHED_CAPACITY_SCALE;
+ }
+ 
+-static inline
+-unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
+-				  struct task_struct *p)
+-{
+-	return util;
+-}
+-
+ static inline bool uclamp_rq_is_capped(struct rq *rq) { return false; }
+ 
+ static inline bool uclamp_is_used(void)
+@@ -3205,6 +3156,11 @@ static inline bool uclamp_rq_is_idle(struct rq *rq)
+ 	return false;
+ }
+ 
++static inline unsigned long root_cfs_util(struct rq *rq)
++{
++	return READ_ONCE(rq->cfs.avg.util_avg);
++}
++
+ static inline void enqueue_util_avg_uclamp(struct cfs_rq *cfs_rq,
+ 					   struct sched_entity *se)
+ {
 -- 
 2.34.1
 
