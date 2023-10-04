@@ -2,121 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E69C7B8231
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81137B8233
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbjJDOYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50666 "EHLO
+        id S233169AbjJDOY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbjJDOYK (ORCPT
+        with ESMTP id S233122AbjJDOYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:24:10 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2074.outbound.protection.outlook.com [40.107.22.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C02AB;
-        Wed,  4 Oct 2023 07:24:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oRZMpaw/kuK1k+D4VE/ERX9mhfK1sVm50ErwUg5G+xkCNU6kktM7yw/SBXDVtiRCzbgANtcbiiLSqxVcyEqUD2KAP0Z5WSA+ANVhrtgBGpZsvdCRGhPwrtZ6PNneSJtTdy6a7JbZOy7IRWE4AX+hAhAEpv0CeeSKl2LnBgxlosvU2BXxUp3n1HPXbaTvXmvYUWCnmQ1C99eWQKrsWWK8Q2b9yEBEIYIm+D8QEZDUxwfp4PSzkMO9lHRZl07G2TbaX2lJUr1tHXxqxo0pnSuU8pwee4fuODPW+RVknmBdePX6PLN2n4PI3Fqh0NUlyPPBo6uNYdwGperwtCNbh2l+tA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JYtu2oeC9KXNKCx3UoYi6l/fMlPWlLTDGlkVBfmcCi8=;
- b=hBWOwudo08hUooZEeh8FlYgWVppDYJq5+5jKars/YzkwgaoBQgBMXp2NTlvNcrLgDGa1tIsyhDZC9yAjVpuLlk3KaAVvCEONeCXB+aPatR959ACA8sZf1RruCM4iEE4YKcwpCTTfSOuLnCWzN983e8fa6jrxT5ulp74we26EFBbAsXIHofolDmfw7DGVNMYy4vVz5UWmsmzg3n/1Z0UhalStSKaVvAaBJjKcANtnLnD83D1htI+JvHZx8mpdHhFn5MdKwuese6u39w+anpkQFLOHzGjHUqlMIccC8Mdhix2Jok48hLA80gct5ZL9xC1xOM19mIjX4FkTPz63Mdge2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JYtu2oeC9KXNKCx3UoYi6l/fMlPWlLTDGlkVBfmcCi8=;
- b=P5ZJWILLR8PHD9cIMsZwK8LduWLE6O+s6NQoT4fVGHanxYnDhv8eAwRGMKF8b4h2M9wIr12rLkdwkxNddFAPTDe3jbWzxnwhox/WpTmSRemnn0toSrRT+1BW2/Sar44nBi3rSubNalwTGFLoHUQWpxiOgjOR/ggkq2LeD5XmF28=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by PR3PR04MB7483.eurprd04.prod.outlook.com (2603:10a6:102:86::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Wed, 4 Oct
- 2023 14:24:04 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6813.027; Wed, 4 Oct 2023
- 14:24:04 +0000
-Date:   Wed, 4 Oct 2023 10:23:51 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-pci@vger.kernel.org>,
-        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     imx@lists.linux.dev
-Subject: Re: [PATCH 2/3] PCI: layerscape: add suspend/resume for ls1021a
-Message-ID: <ZR10SVVBYvfMJPv1@lizhi-Precision-Tower-5810>
-References: <20230915184306.2374670-1-Frank.Li@nxp.com>
- <20230915184306.2374670-2-Frank.Li@nxp.com>
+        Wed, 4 Oct 2023 10:24:54 -0400
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8B7BD;
+        Wed,  4 Oct 2023 07:24:51 -0700 (PDT)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1e12f41e496so1414413fac.3;
+        Wed, 04 Oct 2023 07:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696429490; x=1697034290; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dVKBCcPpDCxr3rhiKMsHdrcSvEVmztxq1sjsldYXfrQ=;
+        b=DitIJBY294iqw8zGSR5iwh/A/SWmvZUljGl/iMIdgjUed8f3feaFzjRVQQka7sbNaK
+         r7p0GRbQAXV10tun+tTaXlJvum1xXNeSK5WWFZKR/cu2NLvnHeoPhRGfvq+1EhQdlpho
+         oZUmLxo8fU1b0ufRYliEtEBmGpXRK0cuvLhhR/O/vQqo/jsOyL1vXIQaB8w9I+XlZl1v
+         Lcu3RyW0fzrUzFfDEn+V9oCiKeYWI1oHzYJEHuHLJdA2HaYBs/2ZxpWivy/fj5bNkgCU
+         WophQg9Znj00/fSq/x0vb+RuTaf3ruEyplMPTR76I6GC0KVuqYnXrnUO6lSkxQLynN4f
+         NGzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696429490; x=1697034290;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dVKBCcPpDCxr3rhiKMsHdrcSvEVmztxq1sjsldYXfrQ=;
+        b=Q7hf3oe32tlXbQZpsJD/VMrsH4M0Uxffn2PG5C2CQexbdnnsRIdS0zPXuQrYNpd9T7
+         +AwpzyF0Z+sEa5NlFhKdAONyUwAC9VRouu25REMSBjq/YHbd9RP7LbU9f3GS5utuRJ58
+         J4PeGzGGDG5/sP7FqXEcehiHQX57Ih6ss3nrPoH5PHaaLPjKCHueLqGkVMMt0EOxILjm
+         UNvZjtyuD6ySjQd7cYZfG2dtjl90EiOzZ3LGDmkNf3etgVSF1Yo3JD6haQw2AN0BEhvN
+         8nEofIojYXDVC3vjTbnJCT6jcs9MzqhBbo7f9qY1GynDevSCf572Am2OABuuEwKXMPZF
+         JqZw==
+X-Gm-Message-State: AOJu0Ywbx3oto7cEO3VmvA0dbAwnnTIiF4ru/9fkIEslaH2bcG3qKfA4
+        TdcHr5NXYQkZ+SAnWqVObpU=
+X-Google-Smtp-Source: AGHT+IENLCcZQM08V9aEbkBamP9+BDNu4+V22aNgfg7SblU8BFGUGKFUS9UTOVLWbZKtDRg8lZq6SQ==
+X-Received: by 2002:a05:6870:f708:b0:1d6:567b:7a93 with SMTP id ej8-20020a056870f70800b001d6567b7a93mr2700648oab.11.1696429490127;
+        Wed, 04 Oct 2023 07:24:50 -0700 (PDT)
+Received: from penguin ([205.220.129.20])
+        by smtp.gmail.com with ESMTPSA id x1-20020a0ce241000000b0065d89f4d537sm1353689qvl.45.2023.10.04.07.24.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 07:24:49 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 07:24:20 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Szilard Fabian <szfabian@bluemarch.art>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: Re: [PATCH] Input: i8042 - add Fujitsu Lifebook E5411 to i8042 quirk
+ table
+Message-ID: <ZR11lNAxw9yQ6shj@penguin>
+References: <20231004011749.101789-1-szfabian@bluemarch.art>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230915184306.2374670-2-Frank.Li@nxp.com>
-X-ClientProxiedBy: BY3PR05CA0054.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::29) To AM6PR04MB4839.eurprd04.prod.outlook.com
- (2603:10a6:20b:10::17)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PR3PR04MB7483:EE_
-X-MS-Office365-Filtering-Correlation-Id: 52641c2f-17eb-458e-f17d-08dbc4e58f09
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PB9uNBKGObXc1WVWCKN30PEYP/UPu/6CrEaIMt/OtgnIVM33EftaqoQvgcDTjVWitrwWnySSf9KuFiWGciDnn4JxGWSlX86mu8TvhQk1LIAr+xX6R/5JmNU98RN5q6SSmtGRR41WfzoU7lMCekC+ARgKozJa5+gi1Rphe7R4f3WcFetknU0810O0LqMxjrhp9HVsp0o/RP/Ht85cBmUA3svEtceCA0aBBFkpQHWQxZCIR5smWoZ2IWG1j1hsqLANVnwX8D/YY9AAEh4gvWpim+FZwOFV3Ous1rxsGtnJkMvrvRa4Fk4Ismkay8ipGAygmoph5IixJtXRiraIK/gt4u4IIrTWYQ1SsVe/relOTpaxJXCwFSfP09Xb3lIkn9Q+/uuKHYjxuVlV8HiE36X3ffOsLK5MZGMbw1AK7Vy+n1letwC4FOxb+8jLiWUbSTK6iyaCiSKbmYroLvHLwEbUCF1xHFZfAogenmMM4af7U4HG0+PddqhHtMStxMcIsevqIBcs5rKEOk1Ml+UFd72THhbssgQQngPiazY1hqDtSRAxr18vyh1u9pGp0wTSRNz0dsqRUIvJTYfxbakv2k476sPFnY4J61elh3N/Mcvl7Laq0IiSYM80RKqmEL4D/5aYEvGWlaFjLZWvrTN+fLnK0w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(136003)(366004)(396003)(39860400002)(346002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(921005)(83380400001)(26005)(38350700002)(86362001)(38100700002)(9686003)(66946007)(110136005)(6512007)(52116002)(66556008)(6666004)(6486002)(6506007)(2906002)(41300700001)(5660300002)(8676002)(4326008)(8936002)(15650500001)(478600001)(33716001)(66476007)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rNvXiN6wplQsfWqS1E02Hd8gLapLEBrfzkN3S+u2bZJ+amKrP81bn+mc0LKB?=
- =?us-ascii?Q?fZnzrZbSuYVBsfLnMmNPVpyG435yaXV9ttaeJLIgMfyQ8tweJ/zpmwXk5MDv?=
- =?us-ascii?Q?cOt8lL5hUTvdq58gKGQiOHAvr4/t86+kubgWAdDqd0VtgKVEIiGMECDcDj30?=
- =?us-ascii?Q?9NYGjO3Xo1VVDM07DK56PePA4p5tiHqp3WZH9gnIbSH6UUuJJPX1bYopv9fa?=
- =?us-ascii?Q?Cc0w6d/yACLgclLSLmYSyykoFcii8SyO3Nh4QyJiYm6MrzTL21yBrnFEHnTL?=
- =?us-ascii?Q?2HE0c4WdMAca74xebjrnTbImBmbaLH7smGISO5g/0LJAXkp0tkbEIAruKI+j?=
- =?us-ascii?Q?co+IuDHMaL1aM/5faO6kLrNUOTkKTWZt/SFh1r3arccszAFDMS2zTba8tsNH?=
- =?us-ascii?Q?80mxbDlGN1pPVhe4ulTM7hzQu2qqdpNmF3116v0/qqzZHfAwv0nCpo8GMZSe?=
- =?us-ascii?Q?8XilVoPdxZpYhXs77oVolohYlcMYPZvVGJ45H6lroseMPapneYl9Gq1VW4SQ?=
- =?us-ascii?Q?Mhx9g+qp6C+kqxYJn7YuET8WfivGp0bkOLrQGUKFHQER1n2aC9eZhl1Ix1ym?=
- =?us-ascii?Q?J5TBs1saa5FCdlr+gKsfyZyJzZpnhR7AI1v4oxTCY+dGrkm0HPrI7VwNO6pj?=
- =?us-ascii?Q?12pAanlQA8UI36O8oD0iO8SNcr1naEfGeH3/QJWgIqYlnBx4M8amaH3e7stT?=
- =?us-ascii?Q?EGV7ZXUn/N1EKjg2GDLx4AXhvxqxcSTCS9s0AmVwesn5acgfdE7F22x6jz/0?=
- =?us-ascii?Q?qIyCZtpVzYKlkw39u3NIH5p5i6m2z606iBy5cdmEIF1cOQ9M5ubZ5OBNH19x?=
- =?us-ascii?Q?z9wxSgPZRKDoQQxS8YmbcRtuNe2E8vXAhXFhCUz621y/xApbsx56WtSK+0oc?=
- =?us-ascii?Q?IUIfnDnV4hZVSNnap1P3o9StvFb3JG898ox+jDWaM3O5gZNCbUMV3VibSZ6N?=
- =?us-ascii?Q?lmyCwVecrYKURBly3RbttubDoJR1huvdwq70vIAjQCt1FzKhWPEXdlqD3yDi?=
- =?us-ascii?Q?KfffMIa5PHcD9h2hVkVkrXUu52hhjLWUpHgZcoARJLsLdIyMiZlSweXzWfq8?=
- =?us-ascii?Q?SeMUkB15zpA0rAac31hmJaOOsC6qjpixCooVURkGKCcwSoGlnLasUDuiX3Ae?=
- =?us-ascii?Q?eY3x+ckvOXP3GXoOFVupwZx59SX9Wa4jmpBrNi3o0E82sqnQyjiAdAC6EAko?=
- =?us-ascii?Q?xJZ7t3Zh7p0kyY76dQtxszOcJdRqSG9FTrm2y+ysrrSuFd8vu6liAivBN1aE?=
- =?us-ascii?Q?slumjkq9tjnI5FF4WPIAshdPaBHNKQPtDDtp9op5AYIooc6taN48HgBz6H4/?=
- =?us-ascii?Q?J2WYOEwd2+BjY70rrJJGLqyYSfMQ9jspT1Mmh2djHYvDmfQS2q4Sj80Vb3nh?=
- =?us-ascii?Q?bs0q9yuewqPrEeabQEvPFGlc/No+g8TYC3RAp7IOYStCViYyLvxIRBkhleVj?=
- =?us-ascii?Q?mUJN8fwWbwX4auEh9dbt35tQ/Gf2XP3So3WjXLQzIpx6A4ZNmuiMHwoWPgvd?=
- =?us-ascii?Q?pXLfa5nSD73fi+FKjiJX6xZMSFUTxA9FRWACdeWQts1yj1hfAo49vpifHtjI?=
- =?us-ascii?Q?YDcT9M9lUYH4Ymxp8/GBtDphT5ZmHigujIM09BiA?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52641c2f-17eb-458e-f17d-08dbc4e58f09
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4839.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2023 14:24:03.7995
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: D1w8ekDqpzt0/MveuGgwH6oOd40ghieNZHnhEvcdSDuKLpNZjVy+ZXZu5fAXhe6EVIL3MwuTZ33Wn7ex6RdoDA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7483
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+In-Reply-To: <20231004011749.101789-1-szfabian@bluemarch.art>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,138 +71,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 02:43:05PM -0400, Frank Li wrote:
-> ls1021a add suspend/resume support.
+On Wed, Oct 04, 2023 at 01:17:54AM +0000, Szilard Fabian wrote:
+> In the initial boot stage the integrated keyboard of Fujitsu Lifebook E5411
+> refuses to work and it's not possible to type for example a dm-crypt
+> passphrase without the help of an external keyboard.
 > 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-
-ping
-
-Frank
-
->  drivers/pci/controller/dwc/pci-layerscape.c | 88 ++++++++++++++++++++-
->  1 file changed, 87 insertions(+), 1 deletion(-)
+> i8042.nomux kernel parameter resolves this issue but using that a PS/2
+> mouse is detected. This input device is unused even when the i2c-hid-acpi
+> kernel module is blacklisted making the integrated ELAN touchpad
+> (04F3:308A) not working at all.
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> index 20c48c06e2248..bc5a8ff1a26ce 100644
-> --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> @@ -35,6 +35,12 @@
->  #define PF_MCR_PTOMR		BIT(0)
->  #define PF_MCR_EXL2S		BIT(1)
->  
-> +/* LS1021A PEXn PM Write Control Register */
-> +#define SCFG_PEXPMWRCR(idx)	(0x5c + (idx) * 0x64)
-> +#define PMXMTTURNOFF		BIT(31)
-> +#define SCFG_PEXSFTRSTCR	0x190
-> +#define PEXSR(idx)		BIT(idx)
-> +
->  #define PCIE_IATU_NUM		6
->  
->  struct ls_pcie_drvdata {
-> @@ -48,6 +54,8 @@ struct ls_pcie {
->  	struct dw_pcie *pci;
->  	const struct ls_pcie_drvdata *drvdata;
->  	void __iomem *pf_base;
-> +	struct regmap *scfg;
-> +	int index;
->  	bool big_endian;
->  };
->  
-> @@ -170,13 +178,91 @@ static int ls_pcie_host_init(struct dw_pcie_rp *pp)
->  	return 0;
->  }
->  
-> +static void ls1021a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> +	u32 val;
-> +
-> +	if (!pcie->scfg) {
-> +		dev_dbg(pcie->pci->dev, "SYSCFG is NULL\n");
-> +		return;
-> +	}
-> +
-> +	/* Send Turn_off message */
-> +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-> +	val |= PMXMTTURNOFF;
-> +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-> +
-> +	/* There are not register to check ACK, so wait PCIE_PME_TO_L2_TIMEOUT_US */
-> +	mdelay(PCIE_PME_TO_L2_TIMEOUT_US/1000);
-> +
-> +	/* Clear Turn_off message */
-> +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-> +	val &= ~PMXMTTURNOFF;
-> +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-> +}
-> +
-> +static void ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> +	u32 val;
-> +
-> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> +	val |= PEXSR(pcie->index);
-> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> +
-> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> +	val &= ~PEXSR(pcie->index);
-> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> +}
-> +
-> +static int ls1021a_pcie_host_init(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> +	struct device *dev = pcie->pci->dev;
-> +	u32 index[2];
-> +	int ret;
-> +
-> +	ret = ls_pcie_host_init(pp);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pcie->scfg = syscon_regmap_lookup_by_phandle(dev->of_node, "fsl,pcie-scfg");
-> +	if (IS_ERR(pcie->scfg)) {
-> +		ret = PTR_ERR(pcie->scfg);
-> +		dev_err(dev, "No syscfg phandle specified\n");
-> +		pcie->scfg = NULL;
-> +		return ret;
-> +	}
-> +
-> +	ret = of_property_read_u32_array(dev->of_node, "fsl,pcie-scfg", index, 2);
-> +	if (ret) {
-> +		pcie->scfg = NULL;
-> +		return ret;
-> +	}
-> +
-> +	pcie->index = index[1];
-> +
-> +	return ret;
-> +}
-> +
->  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
->  	.host_init = ls_pcie_host_init,
->  	.pme_turn_off = ls_pcie_send_turnoff_msg,
->  };
->  
-> +static const struct dw_pcie_host_ops ls1021a_pcie_host_ops = {
-> +	.host_init = ls1021a_pcie_host_init,
-> +	.pme_turn_off = ls1021a_pcie_send_turnoff_msg,
-> +};
-> +
->  static const struct ls_pcie_drvdata ls1021a_drvdata = {
-> -	.pm_support = false,
-> +	.pm_support = true,
-> +	.ops = &ls1021a_pcie_host_ops,
-> +	.exit_from_l2 = ls1021a_pcie_exit_from_l2,
->  };
->  
->  static const struct ls_pcie_drvdata layerscape_drvdata = {
-> -- 
-> 2.34.1
+> Since the integrated touchpad is managed by the i2c_designware input
+> driver in the Linux kernel and you can't find a PS/2 mouse port on the
+> computer I think it's safe to not use the PS/2 mouse port at all.
 > 
+> Signed-off-by: Szilard Fabian <szfabian@bluemarch.art>
+
+Applied, thank you.
+
+-- 
+Dmitry
