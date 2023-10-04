@@ -2,166 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1264F7B7CBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FE77B7C97
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 11:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233005AbjJDJ7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 05:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
+        id S232981AbjJDJuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 05:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232862AbjJDJ67 (ORCPT
+        with ESMTP id S232889AbjJDJuP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:58:59 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8DAA7
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 02:58:55 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50567477b29so2252422e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 02:58:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696413534; x=1697018334; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=2zQurfJPbiuUjWnuhOpNrLMV2pgMXd/ebBa042cwmYc=;
-        b=ssznBkeL/RtBv2O86Jzp7gM4CHOPBqfAjN34MlY19kgtSgGWZjBXllFFsgGQDBOCA2
-         F3olrFY6DYdYUho5Q+ce6CRl9WqSToVLcN1Rc4jacv84tTE4PrRCl93ZXxOlaXSqlFfl
-         AZUlRJJV/L8+uHAdfp/9BPGXjwlaEltpw6Z2lek500lrSEdWfOsaqf7D5vIWCsYreZ5z
-         5HF0vZ87+g7wVXRbvGfd8YzzZ172+bJDVlZ6yBsEOonPDFbgwRNHHQ71NIKKfniJBfdt
-         4tJBUf8PqObkc8KF/5pNByTUs1TBQrRIgREiisD5wCzFf4g2hsNqdQ7up+G3Jmqowmnb
-         zWcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696413534; x=1697018334;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2zQurfJPbiuUjWnuhOpNrLMV2pgMXd/ebBa042cwmYc=;
-        b=BInMkn51BocTh4c8QXwqTdf6NRNvdQtg6GIeoOQjSscK/sNPXV+hb24BjhMdV+B+6G
-         7UKrC+Mr2c7IOmCtPtJkpMomFhxTujpdxvdTG0eUlOGOGgyGSjzbuRolnvFrN0V+MInA
-         7y7QxzCj4YTtUk3/LCxhd4VtLnTFOhaq7iYTTSo666bFi3tgSmt+MzH6sW0hqU4bZoTz
-         UT5FHT9glCUeUoTWcmVxj4w6BoqpH9G5A+M09lerIsI+JlMV4hHe88c2CreeaM6wWrjz
-         GRQnq7Q7LeUo7ktndhAJ0SPdZI+ym4Vq90kBP03CDMAofcMJI82/+xIEkWzEjwdyHATu
-         0eoQ==
-X-Gm-Message-State: AOJu0YxcTDSLlfX4PayGulLuxh/TOJNIrbCA8651gNdGSUNj3vtSwJxe
-        GTnanIiV/Ym9AvttjFFKqPfCFw==
-X-Google-Smtp-Source: AGHT+IEVyhw3oWGM3Jb/CM0G2T6xFOUfrj2mUvQvjyxBjBNYvCMW2izu2JSFSPd2ut8kSsupybhWPg==
-X-Received: by 2002:a05:6512:1052:b0:503:fee:5849 with SMTP id c18-20020a056512105200b005030fee5849mr1827173lfb.53.1696413533806;
-        Wed, 04 Oct 2023 02:58:53 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:d9fc:647c:aca8:fc21])
-        by smtp.gmail.com with ESMTPSA id x2-20020a1c7c02000000b003fe23b10fdfsm1086938wmc.36.2023.10.04.02.58.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 02:58:53 -0700 (PDT)
-References: <20231002141020.2403652-1-jbrunet@baylibre.com>
- <20231002141020.2403652-3-jbrunet@baylibre.com>
- <2248b34e-d755-4142-986c-0ead80796e13@linaro.org>
-User-agent: mu4e 1.8.13; emacs 29.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Kevin Hilman <khilman@baylibre.com>, Da Xue <da.xue@libretech.co>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH 2/2] arm64: dts: amlogic: add libretech cottonwood support
-Date:   Wed, 04 Oct 2023 11:49:00 +0200
-In-reply-to: <2248b34e-d755-4142-986c-0ead80796e13@linaro.org>
-Message-ID: <1jleciyahv.fsf@starbuckisacylon.baylibre.com>
+        Wed, 4 Oct 2023 05:50:15 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26734B4;
+        Wed,  4 Oct 2023 02:50:12 -0700 (PDT)
+Date:   Wed, 04 Oct 2023 09:50:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696413010;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bvb8b/giLe1+Ig6ztHhXVSzK4lYodlkVlqCESw+5lJk=;
+        b=PfJpwrDAF5lPyLxRmRCB86YssF3ZIV5sMrER0muv9YSmqNydIJ0iIb1rvyp2vSUx+LQSdd
+        sFLqSI719wZHqEA0F5BaxfJ6hzXyE6VcEiLKmQ4r06egOPNAOCupmEzX6wNzWqLdGLWXr3
+        KxpZGpMOLybSPf0Vo5zKhZEDu6ikvsSUSrBPC93Di/DurL7QHH1PErFUOYyGKRPdnIwB9v
+        UGdpwQmrVVQa+Y8U3BUWE+jx+VFJk1InS+o6QHamG7Sv3UIEEdvKVHTgrCiA7oUdHwRcJi
+        /EVYzMZl5Ug8lbs5E+MXZK5q+fONJYQhEi8DOjv+BZzxbP5RcBReXmS9TOTNOg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696413010;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bvb8b/giLe1+Ig6ztHhXVSzK4lYodlkVlqCESw+5lJk=;
+        b=S0twSuhVr0q6fHhplA+dqmy7oYPPafIYVCDxviNTKtEjz1Z/bjn1hrXysufVvI5qvK1kDq
+        FfFzHzIbF0hpbyAQ==
+From:   "tip-bot2 for Tom Lendacky" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/sev: Change npages to unsigned long in
+ snp_accept_memory()
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, <stable@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3C6d511c25576494f682063c9fb6c705b526a3757e=2E16874?=
+ =?utf-8?q?41505=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
+References: =?utf-8?q?=3C6d511c25576494f682063c9fb6c705b526a3757e=2E168744?=
+ =?utf-8?q?1505=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Message-ID: <169641301005.3135.2308946231716648881.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/urgent branch of tip:
 
-On Wed 04 Oct 2023 at 11:20, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+Commit-ID:     62d5e970d022ef4bde18948dd67247c3194384c1
+Gitweb:        https://git.kernel.org/tip/62d5e970d022ef4bde18948dd67247c3194384c1
+Author:        Tom Lendacky <thomas.lendacky@amd.com>
+AuthorDate:    Thu, 22 Jun 2023 08:45:05 -05:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Mon, 02 Oct 2023 14:55:41 +02:00
 
-> On 02/10/2023 16:10, Jerome Brunet wrote:
->> Add support for the Libretech cottonwood board family.
->> These 2 boards are based on the same PCB, with an RPi B form factor.
->> The "Alta" board uses an a311d while the "Solitude" variant uses an
->> s905d3.
->> Co-developed-by: Da Xue <da.xue@libretech.co>
->> Signed-off-by: Da Xue <da.xue@libretech.co>
->> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
->> ---
->>   arch/arm64/boot/dts/amlogic/Makefile          |   2 +
->>   .../amlogic/meson-g12b-a311d-libretech-cc.dts | 133 ++++
->>   .../amlogic/meson-libretech-cottonwood.dtsi   | 610 ++++++++++++++++++
->>   .../amlogic/meson-sm1-s905d3-libretech-cc.dts |  89 +++
->>   4 files changed, 834 insertions(+)
->>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
->>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
->>   create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts
->> 
->
-> <snip>
->
->> +
->> +	leds-pwm {
->> +		compatible = "pwm-leds";
->> +
->> +		led-green {
->> +			color = <LED_COLOR_ID_GREEN>;
->> +			function = LED_FUNCTION_STATUS;
->> +			linux,default-trigger = "default-on";
->> +			panic-indicator;
->> +			max-brightness = <255>;
->> +			pwms = <&pwm_cd 1 1250 0>;
->> +			active-low;
->> +		};
->> +
->> +		led-blue {
->> +			color = <LED_COLOR_ID_BLUE>;
->> +			function = LED_FUNCTION_ACTIVITY;
->> +			linux,default-trigger = "activity";
->
-> "activity" isn't documented, perhaps heartbeat instead ?
->
+x86/sev: Change npages to unsigned long in snp_accept_memory()
 
-The trigger does exist though. The other way is to extend the DT doc.
-I don't really care one way or the other
+In snp_accept_memory(), the npages variables value is calculated from
+phys_addr_t variables but is an unsigned int. A very large range passed
+into snp_accept_memory() could lead to truncating npages to zero. This
+doesn't happen at the moment but let's be prepared.
 
-I'll defer to Da on this one
+Fixes: 6c3211796326 ("x86/sev: Add SNP-specific unaccepted memory support")
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Cc: <stable@kernel.org>
+Link: https://lore.kernel.org/r/6d511c25576494f682063c9fb6c705b526a3757e.1687441505.git.thomas.lendacky@amd.com
+---
+ arch/x86/kernel/sev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
->> +			max-brightness = <255>;
->> +			pwms = <&pwm_ab 1 1250 0>;
->> +			active-low;
->> +		};
->
-> leds subnodes should be named as led(-[0-9a-f]+)
->
-> see Documentation/devicetree/bindings/leds/leds-pwm.yaml
-
-That I do care. The schematics refer to the leds by name. There is no
-number assigned, much less hex. Making one up makes no sense.
-
-User should be able to quickly (and easily) link  what they see in the
-schematics with DT.
-
-So I'd prefer to submit a change for the regex rather than changing this
-
->
->> +	};
->> +
->> +	leds-gpio {
->> +		compatible = "gpio-leds";
->> +
->> +		led-orange {
->> +			color = <LED_COLOR_ID_AMBER>;
->> +			function = LED_FUNCTION_STANDBY;
->> +			gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
->> +		};
->
-> Ditto, but you can simply use "led" since it's the only one.
->
-> See Documentation/devicetree/bindings/leds/leds-gpio.yaml
->
-> Neil
->
->
-> <snip>
-
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 2787826..d8c1e3b 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -868,8 +868,7 @@ void snp_set_memory_private(unsigned long vaddr, unsigned long npages)
+ 
+ void snp_accept_memory(phys_addr_t start, phys_addr_t end)
+ {
+-	unsigned long vaddr;
+-	unsigned int npages;
++	unsigned long vaddr, npages;
+ 
+ 	if (!cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
+ 		return;
