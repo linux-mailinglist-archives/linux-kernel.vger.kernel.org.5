@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 490F57B77E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C427B77FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 08:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241414AbjJDGhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 02:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
+        id S241438AbjJDGh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 02:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241415AbjJDGhA (ORCPT
+        with ESMTP id S232734AbjJDGht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 02:37:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77757BF;
-        Tue,  3 Oct 2023 23:36:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9356EC433C8;
-        Wed,  4 Oct 2023 06:36:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696401416;
-        bh=pa7PlYE1f7PRJnLxkIzhxGZmwYROa1YY5M3fNWKm49w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oeDiCfkA6r/wSRXjjzfbJh5Nvt3ZVWZQVDAMOnPgQD2hIP8PL3m85ZEqpwwU6vXHV
-         hppiah+BeLZB5G3+T3AF3O6oFt+SgrXxwOP4kQOq9bhL9zAvJAmTLnA4L/U/Ne8xo2
-         v4XjZyo75kC7/eKfaj2AjZZY88dg0mfvXIdl5Pcs=
-Date:   Wed, 4 Oct 2023 08:36:52 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Woo-kwang Lee <wookwang.lee@samsung.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, sj1557.seo@samsung.com
-Subject: Re: [PATCH] usb: core: add bos NULL pointer checking condition
-Message-ID: <2023100439-king-salute-5cd5@gregkh>
-References: <CGME20231004062700epcas1p16fe36bf6b6a6e5d9d4adeaef32937480@epcas1p1.samsung.com>
- <20231004062642.16431-1-wookwang.lee@samsung.com>
+        Wed, 4 Oct 2023 02:37:49 -0400
+Received: from mxout70.expurgate.net (mxout70.expurgate.net [91.198.224.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C047DD9;
+        Tue,  3 Oct 2023 23:37:43 -0700 (PDT)
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <prvs=8655c94f36=fe@dev.tdt.de>)
+        id 1qnvVj-00GrEg-CB; Wed, 04 Oct 2023 08:37:31 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <fe@dev.tdt.de>)
+        id 1qnvVi-006jS9-94; Wed, 04 Oct 2023 08:37:30 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id D864E240049;
+        Wed,  4 Oct 2023 08:37:29 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 39A7E240040;
+        Wed,  4 Oct 2023 08:37:29 +0200 (CEST)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id A38DB32F62;
+        Wed,  4 Oct 2023 08:37:28 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004062642.16431-1-wookwang.lee@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 04 Oct 2023 08:37:28 +0200
+From:   Florian Eckert <fe@dev.tdt.de>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Lee Jones <lee@kernel.org>, Eckert.Florian@googlemail.com,
+        gregkh@linuxfoundation.org, pavel@ucw.cz, kabel@kernel.org,
+        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-leds@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2 3/4] trigger: ledtrig-tty: move variable definition to
+ the top
+In-Reply-To: <acda5dc4-e6d3-4870-929f-fb91636b5649@kernel.org>
+References: <20230928132632.200263-1-fe@dev.tdt.de>
+ <20230928132632.200263-4-fe@dev.tdt.de> <20231002140559.GB8453@google.com>
+ <acda5dc4-e6d3-4870-929f-fb91636b5649@kernel.org>
+Message-ID: <59cc4073a94edbdec5d77f8457ed4f73@dev.tdt.de>
+X-Sender: fe@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.17
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-ID: 151534::1696401451-B1C31B19-0543AF23/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 03:26:42PM +0900, Woo-kwang Lee wrote:
-> This issue occurs when connecting Galaxy S22 and abnormal SEC Dex Adapter.
-> When the abnormal adapter is connected, kernel panic always occurs after a
-> few seconds.
-> This occurs due to unable to get BOS descriptor, usb_release_bos_descriptor
-> set dev->bos = NULL.
-> 
-> - usb_reset_and_verify_device
->   - hub_port_init
->   - usb_release_bos_descriptor
->     - dev->bos = NULL;
-> 
-> hub_port_connect_change() calls portspeed(), and portspeed() calls hub_is_s
-> uperspeedplus().
-> Finally, hub_is_superspeedplus() calls hdev->bos->ssp_cap.
-> It needs to check hdev->bos is NULL to prevent a kernel panic.
-> 
-> usb 3-1: new SuperSpeed Gen 1 USB device number 16 using xhci-hcd-exynos
-> usb 3-1: unable to get BOS descriptor set
-> usb 3-1: Product: USB3.0 Hub
-> Unable to handle kernel NULL pointer dereference at virtual address 0000018
-> 
-> Call trace:
->  hub_port_connect_change+0x8c/0x538
->  port_event+0x244/0x764
->  hub_event+0x158/0x474
->  process_one_work+0x204/0x550
->  worker_thread+0x28c/0x580
->  kthread+0x13c/0x178
->  ret_from_fork+0x10/0x30
-> 
-> - hub_port_connect_change
->   - portspeed
->     - hub_is_superspeedplus
-> 
-> Fixes: 0cdd49a1d1a4 ("usb: Support USB 3.1 extended port status request")
-> Signed-off-by: Woo-kwang Lee <wookwang.lee@samsung.com>
-> ---
->  drivers/usb/core/hub.h | 2 ++
->  1 file changed, 2 insertions(+)
+On 2023-10-03 07:00, Jiri Slaby wrote:
+> On 02. 10. 23, 16:05, Lee Jones wrote:
+>> On Thu, 28 Sep 2023, Florian Eckert wrote:
+>> 
+>>> The Intel build robot has complained about this. Hence move the 
+>>> commit
+>>> of the variable definition to the beginning of the function.
 
-Are you sure this isn't already fixed by commit f74a7afc224a ("usb: hub:
-Guard against accesses to uninitialized BOS descriptors") in linux-next?
+>> Please copy the robot's error message into the commit message.
 
-thanks,
+For a v3 patch-set I will add the error message from build robot.
 
-greg k-h
+Build robot output of my v1 change:
+https://lore.kernel.org/linux-leds/20230926093607.59536-1-fe@dev.tdt.de/T/#m777371c5de8fadc505a833139b8ae69ac7fa8dab
+
+I decided to move the variable definition with a separate commit
+to the top of the function, to make the build robot happy. After that
+I made my changes for v2 to the ledtrig-tty to add the feature.
+
+> Ah, lkp, then also the Closes: line as it suggests.
+
+Sorry I do not understand your statement
+
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Signed-off-by: Florian Eckert <fe@dev.tdt.de>
+>>> ---
+>>>   drivers/leds/trigger/ledtrig-tty.c | 3 +--
+>>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>> 
+>>> diff --git a/drivers/leds/trigger/ledtrig-tty.c 
+>>> b/drivers/leds/trigger/ledtrig-tty.c
+>>> index 8ae0d2d284af..1c6fadf0b856 100644
+>>> --- a/drivers/leds/trigger/ledtrig-tty.c
+>>> +++ b/drivers/leds/trigger/ledtrig-tty.c
+>>> @@ -82,6 +82,7 @@ static void ledtrig_tty_work(struct work_struct 
+>>> *work)
+>>>   {
+>>>   	struct ledtrig_tty_data *trigger_data =
+>>>   		container_of(work, struct ledtrig_tty_data, dwork.work);
+>>> +	unsigned long interval = LEDTRIG_TTY_INTERVAL;
+>>>   	struct serial_icounter_struct icount;
+>>>   	int ret;
+>>>   @@ -124,8 +125,6 @@ static void ledtrig_tty_work(struct work_struct 
+>>> *work)
+>>>     	if (icount.rx != trigger_data->rx ||
+>>>   	    icount.tx != trigger_data->tx) {
+>>> -		unsigned long interval = LEDTRIG_TTY_INTERVAL;
+>>> -
+>>>   		led_blink_set_oneshot(trigger_data->led_cdev, &interval,
+>>>   				      &interval, 0);
+>>>   -- 2.30.2
+>>> 
+>> 
