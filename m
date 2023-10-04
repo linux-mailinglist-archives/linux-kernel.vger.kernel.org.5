@@ -2,163 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0482D7B765F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 03:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E457B75A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 02:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240149AbjJDBq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 21:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
+        id S238504AbjJDAEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 20:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240261AbjJDBqZ (ORCPT
+        with ESMTP id S230503AbjJDAEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 21:46:25 -0400
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D68EAF;
-        Tue,  3 Oct 2023 18:46:21 -0700 (PDT)
-Received: from eig-obgw-5009a.ext.cloudfilter.net ([10.0.29.176])
-        by cmsmtp with ESMTP
-        id nn1gqEITbQUgRnqxxq06Ja; Wed, 04 Oct 2023 01:46:21 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id nqxwqmFPtmWDSnqxwqBPQS; Wed, 04 Oct 2023 01:46:21 +0000
-X-Authority-Analysis: v=2.4 cv=HY0H8wI8 c=1 sm=1 tr=0 ts=651cc3ed
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=Dx1Zrv+1i3YEdDUMOX3koA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=pGLkceISAAAA:8
- a=VwQbUJbxAAAA:8 a=iox4zFpeAAAA:8 a=foHCeV_ZAAAA:8 a=NEAV23lmAAAA:8
- a=cm27Pg_UAAAA:8 a=IaUvMuFcDdv1ADpriA4A:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=WzC6qhA0u3u7Ye7llzcV:22 a=h8a9FgHX5U4dIE3jaWyr:22
- a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=aQi0SGsm4QcdWyVW84ENcOXnkIwO2ZFqykwHJAizI1E=; b=XuCfZVCHbScmtR2kQ4l5F7QEDn
-        1b9GaD3yZIMP5D0CMaFKITWP0XiYORZxwgp/8Jxv35THpGlLIZcGjnCmiaPXGaWP2v+3MnGUaYPBM
-        CZrXxEc0MJEkvZXo0RlKsyOEnSJVZsgg0qIfr5FcyfY3QQmWkSgnn/xJszygyvzY1PLioQsXtZPP2
-        ih0r21z9/IKDJSoZMipJLMrqnBaLQJ/SQXh5axKVRgWnDn1PByJl7fOuB8KAH6qY9bvmJ20E7F3kN
-        O0R+BULFU6YlGEo7aTpmv1JVfzqD979j6GvbIauu5+44+Aey0xPeDcxerCkeBtsB12AHwTVc4pgVP
-        KoxDlzoQ==;
-Received: from 94-238-9-39.abo.bbox.fr ([94.238.9.39]:48880 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qnp2w-001ZYs-1Y;
-        Tue, 03 Oct 2023 18:43:22 -0500
-Message-ID: <509b7545-ca05-b806-2874-a38cbdbfe732@embeddedor.com>
-Date:   Wed, 4 Oct 2023 01:43:17 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] ASoC: soc-dapm: Annotate struct snd_soc_dapm_widget_list
- with __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-References: <20231003232852.work.257-kees@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20231003232852.work.257-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.238.9.39
-X-Source-L: No
-X-Exim-ID: 1qnp2w-001ZYs-1Y
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 94-238-9-39.abo.bbox.fr ([192.168.1.98]) [94.238.9.39]:48880
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 0
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfDURYyS3O0Q+b8EUMp6b97ao0u1POcswz2QTnDQv0/4wWrZLJyTtF4Ecwyax9n7mW6rhUJJSMtjaF5xDGM+g9CwBTX7T5mLCb4rkKfctWKoTil9L32tQ
- ROFT4nNFwcnFaZcWL0CZaRevRhGp3k+l0dq4hEaJjZHCo5fJNpvGuvcNsM3XCSLYM9+Mh1Iz1k/Of+Gwx5sre4NKkoV61W5H8sTL3O+gtrLclmZ0i3sv4tbU
- Mf4ZyMvkQlcA9TdDkJVabrg6TEcojsBZ+l8AkC/CRws=
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 3 Oct 2023 20:04:45 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1BCA7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 17:04:42 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-2773ced5d40so1198051a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 17:04:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696377882; x=1696982682; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I6lu9ryrsr8Moak960ZZ9AGY/M//ntgV58bCer0QLBQ=;
+        b=ShHzTr2rZ5163hXr7SezhX3n+DIzpaaG6f/5X3hJyeYwQPW3CFLdOzmOHHO9jVPAny
+         5igOyRExNRfX7qS69pPyPMxPzGdHQmQdqi4SLIRLuVXrRntySFKMhSWZZEBznGm8o8Z+
+         8I/Kdqs4uqfwEf205Ar777Lj8yZsIIHgwa1BKjwczH9ukWlGTAUrExbyYxSk6OmcNIn3
+         EFhcmmBzFiPVAt7cwtwVYORVxtDqktz+leK/yXtM0G+wj9sYW2lXB5DtC4WYgZDgHdoE
+         NrudWtV03YmBjV5E1KlCJKOYTQM/2Dt0AVaRJO48oDHQZgSd/MOfq4Q72e+n63qbXGA3
+         lyhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696377882; x=1696982682;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=I6lu9ryrsr8Moak960ZZ9AGY/M//ntgV58bCer0QLBQ=;
+        b=CGbDGEbFSo3/KO6QVPNdAn7jD9luH+xNxcQA9ugjJ98j+rRbloiPLj+ZCv6LYQN08f
+         5nA+2eB2uDpBsWKHsHur9ADJ8iy4Y45g5hjFVcc2W2pwUOViILOjghG79GU7bMMsncw2
+         IR3a0F2+6xhQFGlo1I+C/xJTt3YUsWyApj/StXDrbjlEdLgFHCsghCNXhgc7pjPawZ2n
+         aEredOlxd4ZQ5eK3BiNvOWx1il0PqO2XjjIs3djiYzPSCofGGhZGOskSTG4VmWpVBqtW
+         1QCNIBjfpwwNlscpL97XJI3RQhDswkiMApEPkdLuNfLmgG2LBblCCLV4SQlJzzDtJYno
+         sJXQ==
+X-Gm-Message-State: AOJu0Yx9cp8MX6z0Xadd1s+NsJb5aKUftzhVP71jTcMzhaf5xJa9qxJ8
+        OrmC9FIH061ZEcekLqASnugoXoIUvNQ=
+X-Google-Smtp-Source: AGHT+IGwfQdgydEfqcPxox0VvjWXWW479tAIdyyr9BYEWCUwp9fRRSTjD0DFk5jsrAndRDgeT6+Sxl2w1XM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:8501:b0:274:8e74:2607 with SMTP id
+ l1-20020a17090a850100b002748e742607mr13630pjn.3.1696377881881; Tue, 03 Oct
+ 2023 17:04:41 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 17:04:40 -0700
+In-Reply-To: <9975969725a64c2ba2b398244dba3437bff5154e.camel@infradead.org>
+Mime-Version: 1.0
+References: <20230926230649.67852-1-dongli.zhang@oracle.com>
+ <377d9706-cc10-dfb8-5326-96c83c47338d@oracle.com> <36f3dbb1-61d7-e90a-02cf-9f151a1a3d35@oracle.com>
+ <ZRWnVDMKNezAzr2m@google.com> <a461bf3f-c17e-9c3f-56aa-726225e8391d@oracle.com>
+ <884aa233ef46d5209b2d1c92ce992f50a76bd656.camel@infradead.org>
+ <ZRrxtagy7vJO5tgU@google.com> <52a3cea2084482fc67e35a0bf37453f84dcd6297.camel@infradead.org>
+ <ZRtl94_rIif3GRpu@google.com> <9975969725a64c2ba2b398244dba3437bff5154e.camel@infradead.org>
+Message-ID: <ZRysGAgk6W1bpXdl@google.com>
+Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock periodically
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 03, 2023, David Woodhouse wrote:
+> On Mon, 2023-10-02 at 17:53 -0700, Sean Christopherson wrote:
+> >=20
+> > The two domains use the same "clock" (constant TSC), but different math=
+ to compute
+> > nanoseconds from a given TSC value.=C2=A0 For decently large TSC values=
+, this results
+> > in CLOCK_MONOTONIC_RAW and kvmclock computing two different times in na=
+noseconds.
+>=20
+> This is the bit I'm still confused about, and it seems to be the root
+> of all the other problems.
+>=20
+> Both CLOCK_MONOTONIC_RAW and kvmclock have *one* job: to convert a
+> number of ticks of the TSC running at a constant known frequency, to a
+> number of nanoseconds.
+>=20
+> So how in the name of all that is holy do they manage to get
+> *different* answers?
+>=20
+> I get that the mult/shift thing carries some imprecision, but is that
+> all it is?=20
 
+Yep, pretty sure that's it.  It's like the plot from Office Space / Superma=
+n III.
+Those little rounding errors add up over time.
 
-On 10/4/23 01:28, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct snd_soc_dapm_widget_list.
-> Additionally, since the element count member must be set before accessing
-> the annotated flexible array member, move its initialization earlier.
-> 
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-hardening@vger.kernel.org
-> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+PV clock:
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+  nanoseconds =3D ((TSC >> shift) * mult) >> 32
 
-Thanks
---
-Gustavo
+or=20
 
-> ---
->   include/sound/soc-dapm.h | 2 +-
->   sound/soc/soc-dapm.c     | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-> index d2faec9a323e..51516c93916e 100644
-> --- a/include/sound/soc-dapm.h
-> +++ b/include/sound/soc-dapm.h
-> @@ -717,7 +717,7 @@ struct snd_soc_dapm_context {
->   /* A list of widgets associated with an object, typically a snd_kcontrol */
->   struct snd_soc_dapm_widget_list {
->   	int num_widgets;
-> -	struct snd_soc_dapm_widget *widgets[];
-> +	struct snd_soc_dapm_widget *widgets[] __counted_by(num_widgets);
->   };
->   
->   #define for_each_dapm_widgets(list, i, widget)				\
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index 2512aadf95f7..2e3df47c9cf3 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -497,8 +497,8 @@ static int dapm_kcontrol_add_widget(struct snd_kcontrol *kcontrol,
->   	if (!new_wlist)
->   		return -ENOMEM;
->   
-> -	new_wlist->widgets[n - 1] = widget;
->   	new_wlist->num_widgets = n;
-> +	new_wlist->widgets[n - 1] = widget;
->   
->   	data->wlist = new_wlist;
->   
+  nanoseconds =3D ((TSC << shift) * mult) >> 32
+
+versus timekeeping (mostly)
+
+  nanoseconds =3D (TSC * mult) >> shift
+
+The more I look at the PV clock stuff, the more I agree with Peter: it's ga=
+rbage.
+Shifting before multiplying is guaranteed to introduce error.  Shifting rig=
+ht drops
+data, and shifting left introduces zeros.
+
+> Can't we ensure that the kvmclock uses the *same* algorithm,
+> precisely, as CLOCK_MONOTONIC_RAW?
+
+Yes?  At least for sane hardware, after much staring, I think it's possible=
+.
+
+It's tricky because the two algorithms are wierdly different, the PV clock =
+algorithm
+is ABI and thus immutable, and Thomas and the timekeeping folks would right=
+ly laugh
+at us for suggesting that we try to shove the pvclock algorithm into the ke=
+rnel.
+
+The hardcoded shift right 32 in PV clock is annoying, but not the end of th=
+e world.
+
+Compile tested only, but I believe this math is correct.  And I'm guessing =
+we'd
+want some safeguards against overflow, e.g. due to a multiplier that is too=
+ big.
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 6573c89c35a9..ae9275c3d580 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3212,9 +3212,19 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+                                            v->arch.l1_tsc_scaling_ratio);
+=20
+        if (unlikely(vcpu->hw_tsc_khz !=3D tgt_tsc_khz)) {
+-               kvm_get_time_scale(NSEC_PER_SEC, tgt_tsc_khz * 1000LL,
+-                                  &vcpu->hv_clock.tsc_shift,
+-                                  &vcpu->hv_clock.tsc_to_system_mul);
++               u32 shift, mult;
++
++               clocks_calc_mult_shift(&mult, &shift, tgt_tsc_khz, NSEC_PER=
+_MSEC, 600);
++
++               if (shift <=3D 32) {
++                       vcpu->hv_clock.tsc_shift =3D 0;
++                       vcpu->hv_clock.tsc_to_system_mul =3D mult * BIT(32 =
+- shift);
++               } else {
++                       kvm_get_time_scale(NSEC_PER_SEC, tgt_tsc_khz * 1000=
+LL,
++                                          &vcpu->hv_clock.tsc_shift,
++                                          &vcpu->hv_clock.tsc_to_system_mu=
+l);
++               }
++
+                vcpu->hw_tsc_khz =3D tgt_tsc_khz;
+                kvm_xen_update_tsc_info(v);
+        }
+
