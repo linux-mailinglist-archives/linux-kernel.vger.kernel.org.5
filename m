@@ -2,276 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D5F7B8E52
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5407B8E4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 22:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243881AbjJDUsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 16:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
+        id S242584AbjJDUrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 16:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233286AbjJDUsE (ORCPT
+        with ESMTP id S233286AbjJDUrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 16:48:04 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8400BF;
-        Wed,  4 Oct 2023 13:48:00 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-49d45964fcaso916735e0c.1;
-        Wed, 04 Oct 2023 13:48:00 -0700 (PDT)
+        Wed, 4 Oct 2023 16:47:47 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DCF9B;
+        Wed,  4 Oct 2023 13:47:43 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-692d2e8c003so1096891b3a.1;
+        Wed, 04 Oct 2023 13:47:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696452480; x=1697057280; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HfMc2o3aeaMtgo1tIGkp8mKMdGYs27vkJXRJNkCUQ0A=;
-        b=gtaAswo8hQfyNdz0TsBfYA1dZ/cinoQwqTodnlwWfIkqJ/yJZys/YfWKh8hWMRBnRP
-         Kk0tAoxPtQEGaSSBWiw1JaF7iXDjjs5A8os5Yoj2LP1yVdBq8YsjXOK764QsiHYPx6Y7
-         /CqlfON3kgNETZYRjj4BNkO3IgC8WGauFrjnIrtY5gwoz8aWUTq0TNCN+o+P2BjF14ER
-         XovCoSNEZ/BEtRFVqgSKcWVd39htGYGx2i817rhIDQF58LRW6agAOOfxgyD1kpRs5pfs
-         bNKAaH7TterUEJHOFeonofRoadxP7YlBITcGhxSoflxVxeAcYdzWkLYizkRSCOD0ISMT
-         HPAg==
+        d=gmail.com; s=20230601; t=1696452463; x=1697057263; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qe7AYgbbCr6h7nPpRbjMws5d7g3FTU6k23yCXjc41mQ=;
+        b=je6Ilf2KnFZ4xyDmYyBYESmE7B/dLksrNTD6hTA408+Qbx611zJeWSvL4/AkG3u6PS
+         4l4x8eyF6AnPAIZ9xXdbo7Yvtb24n98y4ysE6KtV1dNuHZ6KRqFe9yVIcGFtB/OoVKO0
+         Tz4+nvH7FDOvLI8LoqCcMQu/IOxifxZ+OD4MqeuTBzKlsq49ZpqO3Xe2slPTSPXvJBXT
+         RIsvG2NsU1aLZHkQ3xD/eKYG+ACPoLTjHFLq+1OsDauWf54Blg5hxXDPTKOxdZAOmtKC
+         NModpyyIRCLt80iQ9vZS0NRsDybQICM60BpqCiSQMMXdSHDOcioSZfnumKo1El5htjr/
+         Mxtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696452480; x=1697057280;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HfMc2o3aeaMtgo1tIGkp8mKMdGYs27vkJXRJNkCUQ0A=;
-        b=Zy8iHRWu6lSPcDU9DyxmIglgwyhPhtKaPK0r0n1qoSzI2XOyiZyTcUmiwUvFIVV/LI
-         NBRAarlIz0W82DD8PS3eaXONSl+Q39+fYiPBdaxMhM1GPswFQsjpaxu2OlZ0MlG40U3Y
-         jYaEqdpwwEoAe+tPTLK+q3VIKXKmb0VwbNvkxzeASgZ4fE1J51Juzjy6lQyn/gWx5dmP
-         wx4oTD/NFYOyOmInOrmDTuMhjBVCbzStBhbaLdnUhZvZI3cXIOIgvtd7Fn9MCK7yOscq
-         vYuUKOoslfUdigCJjff2KiOb16AH5g7id+oPZ5PM79lB/tDyYMw8PoF0SzeQJb7d3VUR
-         t8kw==
-X-Gm-Message-State: AOJu0YxmRPyknXFtn5JE0u7a0H/gmF2lkT9uWTvtIa+nXuVQHcAC1u7L
-        AxGEj40igiiONwimTQf6uPGeap+LkMG+KhrEfuw=
-X-Google-Smtp-Source: AGHT+IGz+I4KR7M4OtZmQSMxVqj0EW9sFvCy2VD93W9/vEp7JtwUuQn+RAVp3yVHNE7MpbzIb/Ew4ddKR/ZMgWxfe9A=
-X-Received: by 2002:a05:6122:178a:b0:495:f495:bab1 with SMTP id
- o10-20020a056122178a00b00495f495bab1mr442731vkf.0.1696452478361; Wed, 04 Oct
- 2023 13:47:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696452463; x=1697057263;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qe7AYgbbCr6h7nPpRbjMws5d7g3FTU6k23yCXjc41mQ=;
+        b=wnp3KFFCdPOBzlNVI+WxCBdcsMEFqfuhxFXJlXfLS3z7uZSk4ZoiIgjk3ST0xbMWe0
+         x1VkSoeYgGZROC8I4Ki9w44PhvbGBBAKqLrn7iX0/jqtwvH75/2zvE37tSnPeOjWKqIi
+         U/rs2Ro0TxB9eCud/SL9HU9jCqDXuhyosPFS/ImwF5Iu7cz/IbAzCDI6f8KCUKE5tTq8
+         /KS9sfS/du38lYThzjPq5veLVTpkn8f5V8Tgufj5hnz2/NI0zBo2BTDTNB/YADrzCcbC
+         Ek4k8c+7cFI1zYjSBlHU5xXpt6ka6uM8yLgHbzDK0YAfaEsIOA8sisOEbdUfdhOC4sL3
+         Veow==
+X-Gm-Message-State: AOJu0YwaWr2PCo9uwMWi+WM5vxd3zzaxkLTxRXu8D2ruN1VJYoUxGw19
+        /Z1GBqZvmbI2m6jeEx6KfRw=
+X-Google-Smtp-Source: AGHT+IE+Sh4y+Vgw4K099B0kmwjW51RSzabx95V9+meTncqsjlspCxUjB13TaVl5Vk7q5jfQpYSZaA==
+X-Received: by 2002:a05:6a20:1456:b0:134:73f6:5832 with SMTP id a22-20020a056a20145600b0013473f65832mr1044930pzi.16.1696452463269;
+        Wed, 04 Oct 2023 13:47:43 -0700 (PDT)
+Received: from bangji.corp.google.com ([2620:15c:2c0:5:2489:7e4:8212:9753])
+        by smtp.gmail.com with ESMTPSA id a24-20020aa78658000000b00694f14a7851sm3622061pfo.43.2023.10.04.13.47.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 13:47:42 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH] perf bench sched pipe: Add -G/--cgroups option
+Date:   Wed,  4 Oct 2023 13:47:41 -0700
+Message-ID: <20231004204741.985422-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
 MIME-Version: 1.0
-References: <20230921-th1520-mmc-v1-0-49f76c274fb3@baylibre.com>
- <CAOCHtYhnx1EpBM+o3xhdsicx5uqLidojK3f0HQ+VfyVv1ZXnVQ@mail.gmail.com>
- <CAOCHtYi5Ab5ppCmaQV3QuKQcpmJX+sHdAmtuEXhfq8xf5fFCYQ@mail.gmail.com>
- <ZRuamJuShOnvP1pr@x1> <ZR1M3FcdXrDmIGu2@xhacker> <CA+V-a8ugwqkQxnX-wwWCHVtBBtG=aVv=MZTc53LbpxtFA=N1_A@mail.gmail.com>
- <bc2b0b30-ab37-f336-c90e-eab570d393a2@arm.com> <c2ea3f34bb919293b850fab6ed42b61e3517ba35.camel@icenowy.me>
- <a568a9dd-bab2-1e23-c4d5-9f6475bdcc3b@arm.com> <CA+V-a8s1S4yTH19PVNSznAgUFoHRNoye9CfwjW6iy6PbQ9thew@mail.gmail.com>
- <CA+V-a8vbWW6=HTfR+FCPOB0bAa8M3Bbm_k=7+XbjOc3ybo6VNQ@mail.gmail.com>
- <20075b03-e3b0-4f29-9ba1-98eed361a44f@sifive.com> <498ffcef-2ff9-495b-8544-b87c5c2eb6e1@arm.com>
-In-Reply-To: <498ffcef-2ff9-495b-8544-b87c5c2eb6e1@arm.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 4 Oct 2023 21:47:03 +0100
-Message-ID: <CA+V-a8u3+k3c6RQsmSVH+iQkFo3s_iwAZS_OFBvGpxzx_i_Ftw@mail.gmail.com>
-Subject: Re: [PATCH 0/6] RISC-V: Add eMMC support for TH1520 boards
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Samuel Holland <samuel.holland@sifive.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Drew Fustini <dfustini@baylibre.com>,
-        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        Guo Ren <guoren@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-riscv@lists.infradead.org, Christoph Hellwig <hch@lst.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Fabrizio Castro <fabrizio.castro@bp.renesas.com>,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Arnd Bergmann <arnd@arndb.de>, Han Gao <gaohan@iscas.ac.cn>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        linux-mmc@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Conor Dooley <conor@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Xi Ruoyao <xry111@xry111.site>, Fu Wei <wefu@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 8:38=E2=80=AFPM Robin Murphy <robin.murphy@arm.com> =
-wrote:
->
-> On 2023-10-04 19:49, Samuel Holland wrote:
-> > On 2023-10-04 12:16 PM, Lad, Prabhakar wrote:
-> >> On Wed, Oct 4, 2023 at 5:03=E2=80=AFPM Lad, Prabhakar
-> >> <prabhakar.csengg@gmail.com> wrote:
-> >>>
-> >>> On Wed, Oct 4, 2023 at 3:18=E2=80=AFPM Robin Murphy <robin.murphy@arm=
-.com> wrote:
-> >>>>
-> >>>> On 04/10/2023 3:02 pm, Icenowy Zheng wrote:
-> >>>> [...]
-> >>>>>>>> I believe commit 484861e09f3e ("soc: renesas: Kconfig: Select th=
-e
-> >>>>>>>> required configs for RZ/Five SoC") can cause regression on all
-> >>>>>>>> non-dma-coherent riscv platforms with generic defconfig. This is
-> >>>>>>>> a common issue. The logic here is: generic riscv defconfig
-> >>>>>>>> selects
-> >>>>>>>> ARCH_R9A07G043 which selects DMA_GLOBAL_POOL, which assumes all
-> >>>>>>>> non-dma-coherent riscv platforms have a dma global pool, this
-> >>>>>>>> assumption
-> >>>>>>>> seems not correct. And I believe DMA_GLOBAL_POOL should not be
-> >>>>>>>> selected by ARCH_SOCFAMILIY, instead, only ARCH under some
-> >>>>>>>> specific
-> >>>>>>>> conditions can select it globaly, for example NOMMU ARM and so
-> >>>>>>>> on.
-> >>>>>>>>
-> >>>>>>>> Since this is a regression, what's proper fix? any suggestion is
-> >>>>>>>> appreciated.
-> >>>>>>
-> >>>>>> I think the answer is to not select DMA_GLOBAL_POOL, since that is
-> >>>>>> only
-> >>>>>
-> >>>>> Well I think for RISC-V, it's not NOMMU only but applicable for eve=
-ry
-> >>>>> core that does not support Svpbmt or vendor-specific alternatives,
-> >>>>> because the original RISC-V priv spec does not define memory attrib=
-utes
-> >>>>> in page table entries.
-> >>>>>
-> >>>>> For the Renesas/Andes case I think a pool is set by OpenSBI with
-> >>>>> vendor-specific M-mode facility and then passed in DT, and the S-mo=
-de
-> >>>>> (which MMU is enabled in) just sees fixed memory attributes, in thi=
-s
-> >>>>> case I think DMA_GLOBAL_POOL is needed.
-> >>>>
-> >>>> Oh wow, is that really a thing? In that case, either you just can't
-> >>>> support this platform in a multi-platform kernel, or someone needs t=
-o do
-> >>>> some fiddly work in dma-direct to a) introduce the notion of an opti=
-onal
-> >>>> global pool,
-> >>> Looking at the code [0] we do have compile time check for
-> >>> CONFIG_DMA_GLOBAL_POOL irrespective of this being present in DT or
-> >>> not, instead if we make it compile time and runtime check ie either
-> >>> check for DT node or see if pool is available and only then proceed
-> >>> for allocation form this pool.
-> >>>
-> >>> What are your thoughts on this?
-> >>>
-> >> Something like the below:
-> >>
-> >> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
-> >> index f2fc203fb8a1..7bf41a4634a4 100644
-> >> --- a/include/linux/dma-map-ops.h
-> >> +++ b/include/linux/dma-map-ops.h
-> >> @@ -198,6 +198,7 @@ int dma_release_from_global_coherent(int order,
-> >> void *vaddr);
-> >>   int dma_mmap_from_global_coherent(struct vm_area_struct *vma, void *=
-cpu_addr,
-> >>                  size_t size, int *ret);
-> >>   int dma_init_global_coherent(phys_addr_t phys_addr, size_t size);
-> >> +bool dma_global_pool_available(void);
-> >>   #else
-> >>   static inline void *dma_alloc_from_global_coherent(struct device *de=
-v,
-> >>                  ssize_t size, dma_addr_t *dma_handle)
-> >> @@ -213,6 +214,10 @@ static inline int
-> >> dma_mmap_from_global_coherent(struct vm_area_struct *vma,
-> >>   {
-> >>          return 0;
-> >>   }
-> >> +static inline bool dma_global_pool_available(void)
-> >> +{
-> >> +       return false;
-> >> +}
-> >>   #endif /* CONFIG_DMA_GLOBAL_POOL */
-> >>
-> >>   /*
-> >> diff --git a/kernel/dma/coherent.c b/kernel/dma/coherent.c
-> >> index c21abc77c53e..605f243b8262 100644
-> >> --- a/kernel/dma/coherent.c
-> >> +++ b/kernel/dma/coherent.c
-> >> @@ -277,6 +277,14 @@ int dma_mmap_from_dev_coherent(struct device
-> >> *dev, struct vm_area_struct *vma,
-> >>   #ifdef CONFIG_DMA_GLOBAL_POOL
-> >>   static struct dma_coherent_mem *dma_coherent_default_memory __ro_aft=
-er_init;
-> >>
-> >> +bool dma_global_pool_available(void)
-> >> +{
-> >> +       if (!dma_coherent_default_memory)
-> >> +               return false;
-> >> +
-> >> +       return true;
-> >> +}
-> >> +
-> >>   void *dma_alloc_from_global_coherent(struct device *dev, ssize_t siz=
-e,
-> >>                                       dma_addr_t *dma_handle)
-> >>   {
-> >> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> >> index 9596ae1aa0da..a599bb731ceb 100644
-> >> --- a/kernel/dma/direct.c
-> >> +++ b/kernel/dma/direct.c
-> >> @@ -235,7 +235,7 @@ void *dma_direct_alloc(struct device *dev, size_t =
-size,
-> >>                   * If there is a global pool, always allocate from it=
- for
-> >>                   * non-coherent devices.
-> >>                   */
-> >> -               if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL))
-> >> +               if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
-> >> dma_global_pool_available())
-> >>                          return dma_alloc_from_global_coherent(dev, si=
-ze,
-> >>                                          dma_handle);
-> >
-> > dma_alloc_from_global_coherent() already checks dma_coherent_default_me=
-mory, so
-> > the solution could be even simpler:
-> >
-> > --- a/kernel/dma/direct.c
-> > +++ b/kernel/dma/direct.c
-> > @@ -232,12 +232,12 @@ void *dma_direct_alloc(struct device *dev, size_t=
- size,
-> >                                             attrs);
-> >
-> >               /*
-> > -              * If there is a global pool, always allocate from it for
-> > +              * If there is a global pool, always try to allocate from=
- it for
-> >                * non-coherent devices.
-> >                */
-> > -             if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL))
-> > -                     return dma_alloc_from_global_coherent(dev, size,
-> > -                                     dma_handle);
-> > +             ret =3D dma_alloc_from_global_coherent(dev, size, dma_han=
-dle);
-> > +             if (ret)
-> > +                     return ret;
->
-> So if allocation fails because the pool is full, we should go ahead and
-> remap something that can't work? ;)
->
-> The dma_global_pool_available() idea sort of works, but I'm still
-> concerned about the case where it *should* have been available but the
-> platform has been misconfigured, so again we fall through to
->
-If the platform is misconfigured it is bound to fail anyway so should
-we consider that as a valid case?
+The -G/--cgroups option is to put sender and receiver in different
+cgroups in order to measure cgroup context switch overheads.
 
-> DMA_DIRECT_REMAP "successfully" returning a coherent buffer that isn't,
-> and the user's filesystem gets corrupted. Or at best, they get confused
-> by weird errors from random devices going wrong. That's why I said it
-> would be fiddly - the current state of DMA_GLOBAL_POOL as a binary
-> arch-wide thing is relatively robust and easy to reason about, but
-> attempting to generalise it further is... less so.
->
-> Thanks,
-> Robin.
->
+Users need to make sure the cgroups exist and accessible.
 
-Cheers,
-Prabhakar
+  # perf stat -e context-switches,cgroup-switches \
+  > taskset -c 0 perf bench sched pipe -l 10000 > /dev/null
+
+   Performance counter stats for 'taskset -c 0 perf bench sched pipe -l 10000':
+
+              20,001      context-switches
+                   2      cgroup-switches
+
+         0.053449651 seconds time elapsed
+
+         0.011286000 seconds user
+         0.041869000 seconds sys
+
+  # perf stat -e context-switches,cgroup-switches \
+  > taskset -c 0 perf bench sched pipe -l 10000 -G AAA,BBB > /dev/null
+
+   Performance counter stats for 'taskset -c 0 perf bench sched pipe -l 10000 -G AAA,BBB':
+
+              20,001      context-switches
+              20,001      cgroup-switches
+
+         0.052768627 seconds time elapsed
+
+         0.006284000 seconds user
+         0.046266000 seconds sys
+
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/Documentation/perf-bench.txt | 19 +++++
+ tools/perf/bench/sched-pipe.c           | 93 +++++++++++++++++++++++++
+ 2 files changed, 112 insertions(+)
+
+diff --git a/tools/perf/Documentation/perf-bench.txt b/tools/perf/Documentation/perf-bench.txt
+index ca5789625cd2..8331bd28b10e 100644
+--- a/tools/perf/Documentation/perf-bench.txt
++++ b/tools/perf/Documentation/perf-bench.txt
+@@ -124,6 +124,14 @@ Options of *pipe*
+ --loop=::
+ Specify number of loops.
+ 
++-G::
++--cgroups=::
++Names of cgroups for sender and receiver, separated by a comma.
++This is useful to check cgroup context switching overhead.
++Note that perf doesn't create nor delete the cgroups, so users should
++make sure that the cgroups exist and are accessible before use.
++
++
+ Example of *pipe*
+ ^^^^^^^^^^^^^^^^^
+ 
+@@ -141,6 +149,17 @@ Example of *pipe*
+         Total time:0.016 sec
+                 16.948000 usecs/op
+                 59004 ops/sec
++
++% perf bench sched pipe -G AAA,BBB
++(executing 1000000 pipe operations between cgroups)
++# Running 'sched/pipe' benchmark:
++# Executed 1000000 pipe operations between two processes
++
++     Total time: 6.886 [sec]
++
++       6.886208 usecs/op
++         145217 ops/sec
++
+ ---------------------
+ 
+ SUITES FOR 'syscall'
+diff --git a/tools/perf/bench/sched-pipe.c b/tools/perf/bench/sched-pipe.c
+index a960e7a93aec..1103fd658d5d 100644
+--- a/tools/perf/bench/sched-pipe.c
++++ b/tools/perf/bench/sched-pipe.c
+@@ -11,6 +11,7 @@
+  */
+ #include <subcmd/parse-options.h>
+ #include "bench.h"
++#include "util/cgroup.h"
+ 
+ #include <unistd.h>
+ #include <stdio.h>
+@@ -19,6 +20,7 @@
+ #include <sys/wait.h>
+ #include <string.h>
+ #include <errno.h>
++#include <fcntl.h>
+ #include <assert.h>
+ #include <sys/time.h>
+ #include <sys/types.h>
+@@ -40,9 +42,55 @@ static	int			loops = LOOPS_DEFAULT;
+ /* Use processes by default: */
+ static bool			threaded;
+ 
++static struct cgroup *cgrp_send = NULL;
++static struct cgroup *cgrp_recv = NULL;
++
++static int parse_two_cgroups(const struct option *opt __maybe_unused,
++			     const char *str, int unset __maybe_unused)
++{
++	char *p = strdup(str);
++	char *q;
++	int ret = -1;
++
++	if (p == NULL) {
++		fprintf(stderr, "memory allocation failure");
++		return -1;
++	}
++
++	q = strchr(p, ',');
++	if (q == NULL) {
++		fprintf(stderr, "it should have two cgroup names: %s", p);
++		goto out;
++	}
++	*q = '\0';
++
++	cgrp_send = cgroup__new(p, /*do_open=*/true);
++	if (cgrp_send == NULL) {
++		fprintf(stderr, "cannot open sender cgroup: %s", p);
++		goto out;
++	}
++
++	/* skip ',' */
++	q++;
++
++	cgrp_recv = cgroup__new(q, /*do_open=*/true);
++	if (cgrp_recv == NULL) {
++		fprintf(stderr, "cannot open receiver cgroup: %s", q);
++		goto out;
++	}
++	ret = 0;
++
++out:
++	free(p);
++	return ret;
++}
++
+ static const struct option options[] = {
+ 	OPT_INTEGER('l', "loop",	&loops,		"Specify number of loops"),
+ 	OPT_BOOLEAN('T', "threaded",	&threaded,	"Specify threads/process based task setup"),
++	OPT_CALLBACK('G', "cgroups", NULL, "SEND,RECV",
++		     "Put sender and receivers in given cgroups",
++		     parse_two_cgroups),
+ 	OPT_END()
+ };
+ 
+@@ -51,12 +99,54 @@ static const char * const bench_sched_pipe_usage[] = {
+ 	NULL
+ };
+ 
++static void enter_cgroup(struct cgroup *cgrp)
++{
++	char buf[32];
++	int fd, len;
++	pid_t pid;
++
++	if (cgrp == NULL)
++		return;
++
++	if (threaded)
++		pid = syscall(__NR_gettid);
++	else
++		pid = getpid();
++
++	snprintf(buf, sizeof(buf), "%d\n", pid);
++	len = strlen(buf);
++
++	/* try cgroup v2 interface first */
++	if (threaded)
++		fd = openat(cgrp->fd, "cgroup.procs", O_WRONLY);
++	else
++		fd = openat(cgrp->fd, "cgroup.threads", O_WRONLY);
++
++	/* try cgroup v1 if failed */
++	if (fd < 0)
++		fd = openat(cgrp->fd, "tasks", O_WRONLY);
++
++	if (fd < 0) {
++		printf("failed to open cgroup file in %s\n", cgrp->name);
++		return;
++	}
++
++	if (write(fd, buf, len) != len)
++		printf("cannot enter to cgroup: %s\n", cgrp->name);
++	close(fd);
++}
++
+ static void *worker_thread(void *__tdata)
+ {
+ 	struct thread_data *td = __tdata;
+ 	int m = 0, i;
+ 	int ret;
+ 
++	if (td->nr)
++		enter_cgroup(cgrp_send);
++	else
++		enter_cgroup(cgrp_recv);
++
+ 	for (i = 0; i < loops; i++) {
+ 		if (!td->nr) {
+ 			ret = read(td->pipe_read, &m, sizeof(int));
+@@ -147,6 +237,9 @@ int bench_sched_pipe(int argc, const char **argv)
+ 	gettimeofday(&stop, NULL);
+ 	timersub(&stop, &start, &diff);
+ 
++	cgroup__put(cgrp_send);
++	cgroup__put(cgrp_recv);
++
+ 	switch (bench_format) {
+ 	case BENCH_FORMAT_DEFAULT:
+ 		printf("# Executed %d pipe operations between two %s\n\n",
+-- 
+2.42.0.609.gbb76f46606-goog
+
