@@ -2,165 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 872357B815B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A747B815D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 15:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242662AbjJDNvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 09:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        id S242704AbjJDNvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 09:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242594AbjJDNvI (ORCPT
+        with ESMTP id S233368AbjJDNvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 09:51:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075C8A1;
-        Wed,  4 Oct 2023 06:51:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3EC3C433C8;
-        Wed,  4 Oct 2023 13:51:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696427464;
-        bh=5dxwRtP0WUsm4uqALVgMvEmHcGfySQY48FXS22qdXnA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iq5KLCxXupKp+Y3rbet2SD1FP/DSA2ynwy90znIO2JhCclGmP/8wtqZdSaZNIfE1o
-         KxpCnJb8rBrSmLUTpl9R4Qqp0LWHDmylUP/L2LQMYbKwuNfawq84z/q1YEws5sL3BY
-         lWMnJPhn1BhZpx2GI7Il8QTHKjK6Bp44Ry3+EUrpw/fBpkAkEr2WxO/Dfl+xqybz31
-         49MuogcugaZC9FwlklYR+5VFQOpqtnatb+pTwRtr4ZwPg5dyV53od0FBcXaxDmIeT0
-         48oOiPvZOtJUdy59Ptesgs5Hej8VJGGSFAeZRmyH5IYAYkxvCh8Ij7QKthKF+uUeG0
-         iChVYAvDiqLYA==
-Date:   Wed, 4 Oct 2023 19:21:00 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Jai Luthra <j-luthra@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Benoit Parrot <bparrot@ti.com>,
-        Vaishnav Achath <vaishnav.a@ti.com>, nm@ti.com,
-        devarsht@ti.com, a-bhatia1@ti.com,
-        Martyn Welch <martyn.welch@collabora.com>,
-        Julien Massot <julien.massot@collabora.com>
-Subject: Re: [PATCH v9 13/13] media: ti: Add CSI2RX support for J721E
-Message-ID: <ZR1txMVk+4oHLEKU@matsya>
-References: <20230811-upstream_csi-v9-0-8943f7a68a81@ti.com>
- <20230811-upstream_csi-v9-13-8943f7a68a81@ti.com>
- <ad042065-33a2-d42e-ce2e-628464102fc3@ideasonboard.com>
- <wgkjek77bolf5wabki7uhm6cxjy5g5z2ncoc6urr7dv5y6wnaw@yfh7ccogxfea>
- <20230829155513.GG6477@pendragon.ideasonboard.com>
+        Wed, 4 Oct 2023 09:51:17 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B69CA1;
+        Wed,  4 Oct 2023 06:51:13 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 394Dp9Ug082441;
+        Wed, 4 Oct 2023 08:51:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696427469;
+        bh=sDX674YVDpcJ9C64VYaIERStKJa6MZgCxWcYILeJiJA=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=Va+S6yX6BjnokyETkvOkHPNuPSjydnAj2tQMaLabRRabLUni3tLJuxBn/NpZfYwBv
+         rTg1tRczCn1SfR03wYaddz4feHcjN4+hZEbCbhecpr2c8pCcapi7PSzqNckyRMeLLV
+         o6ve5wel/Wosn0oQHuJQtHJR8SSe4dZYR4SuiUts=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 394Dp90o110458
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 4 Oct 2023 08:51:09 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 4
+ Oct 2023 08:51:09 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 4 Oct 2023 08:51:09 -0500
+Received: from [10.24.69.34] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 394Dp6C5026023;
+        Wed, 4 Oct 2023 08:51:06 -0500
+Message-ID: <6605ac2e-6217-e554-2456-20f35500683d@ti.com>
+Date:   Wed, 4 Oct 2023 19:21:05 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829155513.GG6477@pendragon.ideasonboard.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] remoteproc: k3-r5: Wait for core0 power-up before
+ powering up core1
+Content-Language: en-US
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Nishanth Menon <nm@ti.com>, Bjorn Andersson <andersson@kernel.org>,
+        Suman Anna <s-anna@ti.com>, <linux-remoteproc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Devarsh Thakkar <devarsht@ti.com>,
+        Hari Nagalla <hnagalla@ti.com>, Udit Kumar <u-kumar1@ti.com>
+References: <20230906124756.3480579-1-a-nandan@ti.com> <ZP9ELdOQ9WMj2Rxd@p14s>
+From:   Apurva Nandan <a-nandan@ti.com>
+In-Reply-To: <ZP9ELdOQ9WMj2Rxd@p14s>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-08-23, 18:55, Laurent Pinchart wrote:
-> Hi Jai,
-> 
-> (CC'ing Vinod, the maintainer of the DMA engine subsystem, for a
-> question below)
+Hi Mathieu,
 
-Sorry this got lost
-
-> 
-> On Fri, Aug 18, 2023 at 03:55:06PM +0530, Jai Luthra wrote:
-> > On Aug 15, 2023 at 16:00:51 +0300, Tomi Valkeinen wrote:
-> > > On 11/08/2023 13:47, Jai Luthra wrote:
-> > > > From: Pratyush Yadav <p.yadav@ti.com>
-> 
-> [snip]
-> 
-> > > > +static int ti_csi2rx_start_streaming(struct vb2_queue *vq, unsigned int count)
-> > > > +{
-> > > > +	struct ti_csi2rx_dev *csi = vb2_get_drv_priv(vq);
-> > > > +	struct ti_csi2rx_dma *dma = &csi->dma;
-> > > > +	struct ti_csi2rx_buffer *buf;
-> > > > +	unsigned long flags;
-> > > > +	int ret = 0;
-> > > > +
-> > > > +	spin_lock_irqsave(&dma->lock, flags);
-> > > > +	if (list_empty(&dma->queue))
-> > > > +		ret = -EIO;
-> > > > +	spin_unlock_irqrestore(&dma->lock, flags);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > > +
-> > > > +	dma->drain.len = csi->v_fmt.fmt.pix.sizeimage;
-> > > > +	dma->drain.vaddr = dma_alloc_coherent(csi->dev, dma->drain.len,
-> > > > +					      &dma->drain.paddr, GFP_KERNEL);
-> > > > +	if (!dma->drain.vaddr)
-> > > > +		return -ENOMEM;
-> > > 
-> > > This is still allocating a large buffer every time streaming is started (and
-> > > with streams support, a separate buffer for each stream?).
-> > > 
-> > > Did you check if the TI DMA can do writes to a constant address? That would
-> > > be the best option, as then the whole buffer allocation problem goes away.
-> > 
-> > I checked with Vignesh, the hardware can support a scenario where we 
-> > flush out all the data without allocating a buffer, but I couldn't find 
-> > a way to signal that via the current dmaengine framework APIs. Will look 
-> > into it further as it will be important for multi-stream support.
-> 
-> That would be the best option. It's not immediately apparent to me if
-> the DMA engine API supports such a use case.
-> dmaengine_prep_interleaved_dma() gives you finer grain control on the
-> source and destination increments, but I haven't seen a way to instruct
-> the DMA engine to direct writes to /dev/null (so to speak). Vinod, is
-> this something that is supported, or could be supported ?
-
-Write to a dummy buffer could have the same behaviour, no?
-
-> 
-> > > Alternatively, can you flush the buffers with multiple one line transfers?
-> > > The flushing shouldn't be performance critical, so even if that's slower
-> > > than a normal full-frame DMA, it shouldn't matter much. And if that can be
-> > > done, a single probe time line-buffer allocation should do the trick.
-> > 
-> > There will be considerable overhead if we queue many DMA transactions 
-> > (in the order of 1000s or even 100s), which might not be okay for the 
-> > scenarios where we have to drain mid-stream. Will have to run some 
-> > experiments to see if that is worth it.
-> > 
-> > But one optimization we can for sure do is re-use a single drain buffer 
-> > for all the streams. We will need to ensure to re-allocate the buffer 
-> > for the "largest" framesize supported across the different streams at 
-> > stream-on time.
-> 
-> If you implement .device_prep_interleaved_dma() in the DMA engine driver
-> you could write to a single line buffer, assuming that the hardware would
-> support so in a generic way.
-> 
-> > My guess is the endpoint is not buffering a full-frame's worth of data, 
-> > I will also check if we can upper bound that size to something feasible.
-> > 
-> > > Other than this drain buffer topic, I think this looks fine. So, I'm going
-> > > to give Rb, but I do encourage you to look more into optimizing this drain
-> > > buffer.
-> > 
-> > Thank you!
-> > 
-> > > Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
-
--- 
-~Vinod
+On 11/09/23 22:15, Mathieu Poirier wrote:
+> Hi Apurva,
+>
+> On Wed, Sep 06, 2023 at 06:17:56PM +0530, Apurva Nandan wrote:
+>> PSC controller has a limitation that it can only power-up the second core
+>> when the first core is in ON state. Power-state for core0 should be equal
+>> to or higher than core1, else the kernel is seen hanging during rproc
+>> loading.
+>>
+>> Make the powering up of cores sequential, by waiting for the current core
+>> to power-up before proceeding to the next core, with a timeout of 2sec.
+>> Add a wait queue event in k3_r5_cluster_rproc_init call, that will wait
+>> for the current core to be released from reset before proceeding with the
+>> next core.
+>>
+>> Fixes: 6dedbd1d5443 ("remoteproc: k3-r5: Add a remoteproc driver for R5F subsystem")
+>>
+>> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+>> ---
+>>
+>>   kpv report: https://gist.githubusercontent.com/apurvanandan1997/feb3b304121c265b7827be43752b7ae8/raw
+>>
+>>   drivers/remoteproc/ti_k3_r5_remoteproc.c | 23 +++++++++++++++++++++++
+>>   1 file changed, 23 insertions(+)
+>>
+>> diff --git a/drivers/remoteproc/ti_k3_r5_remoteproc.c b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+>> index ad3415a3851b..ba5e503f7c9c 100644
+>> --- a/drivers/remoteproc/ti_k3_r5_remoteproc.c
+>> +++ b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+>> @@ -103,12 +103,14 @@ struct k3_r5_soc_data {
+>>    * @dev: cached device pointer
+>>    * @mode: Mode to configure the Cluster - Split or LockStep
+>>    * @cores: list of R5 cores within the cluster
+>> + * @core_transition: wait queue to sync core state changes
+>>    * @soc_data: SoC-specific feature data for a R5FSS
+>>    */
+>>   struct k3_r5_cluster {
+>>   	struct device *dev;
+>>   	enum cluster_mode mode;
+>>   	struct list_head cores;
+>> +	wait_queue_head_t core_transition;
+>>   	const struct k3_r5_soc_data *soc_data;
+>>   };
+>>   
+>> @@ -128,6 +130,7 @@ struct k3_r5_cluster {
+>>    * @atcm_enable: flag to control ATCM enablement
+>>    * @btcm_enable: flag to control BTCM enablement
+>>    * @loczrama: flag to dictate which TCM is at device address 0x0
+>> + * @released_from_reset: flag to signal when core is out of reset
+>>    */
+>>   struct k3_r5_core {
+>>   	struct list_head elem;
+>> @@ -144,6 +147,7 @@ struct k3_r5_core {
+>>   	u32 atcm_enable;
+>>   	u32 btcm_enable;
+>>   	u32 loczrama;
+>> +	bool released_from_reset;
+>>   };
+>>   
+>>   /**
+>> @@ -460,6 +464,8 @@ static int k3_r5_rproc_prepare(struct rproc *rproc)
+>>   			ret);
+>>   		return ret;
+>>   	}
+>> +	core->released_from_reset = true;
+>> +	wake_up_interruptible(&cluster->core_transition);
+>>   
+>>   	/*
+>>   	 * Newer IP revisions like on J7200 SoCs support h/w auto-initialization
+>> @@ -1140,6 +1146,7 @@ static int k3_r5_rproc_configure_mode(struct k3_r5_rproc *kproc)
+>>   		return ret;
+>>   	}
+>>   
+>> +	core->released_from_reset = c_state;
+>>   	ret = ti_sci_proc_get_status(core->tsp, &boot_vec, &cfg, &ctrl,
+>>   				     &stat);
+>>   	if (ret < 0) {
+>> @@ -1280,6 +1287,21 @@ static int k3_r5_cluster_rproc_init(struct platform_device *pdev)
+>>   		    cluster->mode == CLUSTER_MODE_SINGLECPU ||
+>>   		    cluster->mode == CLUSTER_MODE_SINGLECORE)
+>>   			break;
+>> +
+>> +		/* R5 cores require to be powered on sequentially, core0
+>> +		 * should be in higher power state than core1 in a cluster
+>> +		 * So, wait for current core to power up before proceeding
+>> +		 * to next core and put timeout of 2sec for each core.
+>> +		 */
+> Wrong multi-line comment format.
+Okay will fix this.
+>> +		ret = wait_event_interruptible_timeout(cluster->core_transition,
+>> +						       core->released_from_reset,
+>> +						       msecs_to_jiffies(2000));
+>> +		if (ret <= 0) {
+>> +			dev_err(dev,
+>> +				"Timed out waiting for %s core to power up!\n",
+>> +				rproc->name);
+>> +			return ret;
+>> +		}
+>  From my perspective, this is needed because rproc_auto_boot_callback() for core1
+> can be called before core0 due to thread execution order.  Am I correct?
+Yes
+> If so please add this explanation to the comment you have above.  Also, let's
+> say a user decides to switch both cores off after reboot.  At that time, what
+> prevents a user from switching on core1 before core0 via sysfs?
+Okay, will add the explanation.
+Currently, adding support for graceful shutdown is in progress. As of 
+now in order
+to stop/start core or change firmware, we recommend users to restart the 
+OS.
+> Thanks,
+> Mathieu
+>
+>>   	}
+>>   
+>>   	return 0;
+>> @@ -1709,6 +1731,7 @@ static int k3_r5_probe(struct platform_device *pdev)
+>>   	cluster->dev = dev;
+>>   	cluster->soc_data = data;
+>>   	INIT_LIST_HEAD(&cluster->cores);
+>> +	init_waitqueue_head(&cluster->core_transition);
+>>   
+>>   	ret = of_property_read_u32(np, "ti,cluster-mode", &cluster->mode);
+>>   	if (ret < 0 && ret != -EINVAL) {
+>> -- 
+>> 2.34.1
+>>
