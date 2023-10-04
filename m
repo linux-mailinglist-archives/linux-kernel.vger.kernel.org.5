@@ -2,113 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B16B87B820B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1961A7B8206
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 16:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242890AbjJDORk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 10:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
+        id S242874AbjJDOR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 10:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242880AbjJDORb (ORCPT
+        with ESMTP id S242770AbjJDOR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 10:17:31 -0400
-Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5421BBD;
-        Wed,  4 Oct 2023 07:17:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kernkonzept.com; s=mx1; h=Cc:To:In-Reply-To:References:Message-Id:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
-        Reply-To:Content-ID:Content-Description;
-        bh=uGFUKnshKK/Dlrx7eSaJi3UN15UGXc4Ye0y6BgFwE70=; b=mcndqaF/9YtRUFqpPsJk35hOjM
-        ssdRCGiQRptp2Mz9hSJoC9ceNzNnFVX7rU3X2vCznKlRa20t5axk4+9w1KYS2AJnf5G+kV5Sp8w2m
-        nsnBkhJLiNVv2U1cyj8wzbOpWopwDszXGdCxzxGRihGf80lMpvoXi7jlVEX3EPBqlQcIYbaiFWRDj
-        qw3b8W3M/r7XSOkeQO6X6bWQgEp0r8pZW19fsVnHK6qOXiUpyF6g5A5WYbCFfZarXAIY61mBT88gS
-        33Fj7IaVRnTJRmJx6wPWoG263EUDVqgVKI/furH2T2IjWSehykKB2ykrNXMI2M1VBhmIfOkD77Jq8
-        JVKqIm2g==;
-Received: from [10.22.3.24] (helo=serv1.dd1.int.kernkonzept.com)
-        by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
-        id 1qo2gl-0071hO-1J;
-        Wed, 04 Oct 2023 16:17:23 +0200
-From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Date:   Wed, 04 Oct 2023 16:17:18 +0200
-Subject: [PATCH RFC 2/2] regulator: qcom_smd: Disable unused regulators
+        Wed, 4 Oct 2023 10:17:26 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFF2C0
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 07:17:22 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-7743448d88eso150621185a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 07:17:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696429041; x=1697033841; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0iVKRRlivbZawLpQE+aqhCrFfCHAJWFRH4b1xYHHXmU=;
+        b=Uen7Uk+OcZfpZ6NOOR/CtLouBvKuDLkL6h8xwIoLLP0AGP0SztviHiyReGovSM0ChO
+         OKaUwFlIZpHQBfmAC+cVABbNwf3z7vDWdme8oLUAlgiJVADLkO7y9/bLsZEFmUFk6/yr
+         /6U0ze/AsCJ0YnMvWgYSUbQ0KWaC29CjGlWGd/5VVgIshzon5YffLqZI0O4VbveobISn
+         bwKnRKlu+XX7S39ZvTlgz7wWzJJcLy35tXa/BGQGyHjaI5ls1S7lkygPk53EwcYOU6VX
+         YsapwNZRtocPIFQU7gVrKZdiV4Wjr3v21kcwJyn14tkcVpmksMAAxN19w2BgrslkGy99
+         G3qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696429041; x=1697033841;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0iVKRRlivbZawLpQE+aqhCrFfCHAJWFRH4b1xYHHXmU=;
+        b=FSkMPU8ymFVrok/8rsb66dZX8R899D057eFvccGED9Xchzl+wKGr7NhMmJNMe7HL9c
+         RT2Pqc9z3gXb9U04Be3p79UC+eAC2WABPKo4B9gwbMKYUtv4FGEheOqkgHUr13AqTMBo
+         +dVwi5CsOXN3tpzZJL2OGlTH06d3UcpzIlQLaLP8xJDLTbnmAD5SvQeicP5vHdKeg+0a
+         9J/5fbOjoZikIf0cZl8DQlALBCbnnWOI/+Qgs6Yxd+h8spnNCLwsNVToEDtuZdOHzIRh
+         U300MG6djPX3WSIv7p2sIXcIaTts6kke4ed0Vi5gOoUSatoaHg9/NVHff9vgooV/F6mw
+         EkDw==
+X-Gm-Message-State: AOJu0YxuFiOiIxUXVROJQjOYhcbahhi/4b9iVjOc7PFHMse9CT89WvnS
+        RLE4KQqqhTBAhqFHuJKPCjKufA==
+X-Google-Smtp-Source: AGHT+IHwbweLrbblB6DFXPXXebkAKQNIMi3Tti+rzdpJw79HDk06ZZMQubaZZkRYtiU5APTTeVDCUg==
+X-Received: by 2002:a05:620a:454c:b0:773:b623:72f7 with SMTP id u12-20020a05620a454c00b00773b62372f7mr3286274qkp.50.1696429041546;
+        Wed, 04 Oct 2023 07:17:21 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:753d])
+        by smtp.gmail.com with ESMTPSA id g23-20020a05620a109700b007756736aee0sm1280773qkk.115.2023.10.04.07.17.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 07:17:21 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 10:17:20 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     akpm@linux-foundation.org, riel@surriel.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] memcontrol: only transfer the memcg data for migration
+Message-ID: <20231004141720.GA35281@cmpxchg.org>
+References: <20231003171329.GB314430@monkey>
+ <20231003231422.4046187-1-nphamcs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231004-reg-smd-unused-v1-2-5d682493d555@kernkonzept.com>
-References: <20231004-reg-smd-unused-v1-0-5d682493d555@kernkonzept.com>
-In-Reply-To: <20231004-reg-smd-unused-v1-0-5d682493d555@kernkonzept.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003231422.4046187-1-nphamcs@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RPM firmware on Qualcomm platforms does not provide a way to check
-if a regulator is on during boot using the SMD interface. If the
-regulators are already on during boot and Linux does not make use of
-them they will currently stay enabled forever. The regulator core does
-not know these regulators are on and cannot clean them up together with
-the other unused regulators.
+On Tue, Oct 03, 2023 at 04:14:22PM -0700, Nhat Pham wrote:
+> For most migration use cases, only transfer the memcg data from the old
+> folio to the new folio, and clear the old folio's memcg data. No
+> charging and uncharging will be done. These use cases include the new
+> hugetlb memcg accounting behavior (which was not previously handled).
+> 
+> This shaves off some work on the migration path, and avoids the
+> temporary double charging of a folio during its migration.
+> 
+> The only exception is replace_page_cache_folio(), which will use the old
+> mem_cgroup_migrate() (now renamed to mem_cgroup_replace_folio). In that
+> context, the isolation of the old page isn't quite as thorough as with
+> migration, so we cannot use our new implementation directly.
+> 
+> This patch is the result of the following discussion on the new hugetlb
+> memcg accounting behavior:
+> 
+> https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
+> 
+> Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Closes: https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 
-Fix this by setting the initial enable state to -EINVAL similar to
-qcom-rpmh-regulator.c. The regulator core will then also explicitly
-disable all unused regulators with unknown status.
+For squashing, the patch title should be:
 
-Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
----
-NOTE: This has a slight potential of breaking boards that rely on having
-unused regulators permanently enabled (without regulator-always-on).
-However, this is always a mistake in the device tree so it's probably
-better to risk some breakage now, add the missing regulators and avoid
-this problem for all future boards.
----
- drivers/regulator/qcom_smd-regulator.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+hugetlb: memcg: account hugetlb-backed memory in memory controller fix
 
-diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
-index f53ada076252..0bbfba2e17ff 100644
---- a/drivers/regulator/qcom_smd-regulator.c
-+++ b/drivers/regulator/qcom_smd-regulator.c
-@@ -53,14 +53,14 @@ static int rpm_reg_write_active(struct qcom_rpm_reg *vreg)
- 		reqlen++;
- 	}
- 
--	if (vreg->uv_updated && vreg->is_enabled) {
-+	if (vreg->uv_updated && vreg->is_enabled > 0) {
- 		req[reqlen].key = cpu_to_le32(RPM_KEY_UV);
- 		req[reqlen].nbytes = cpu_to_le32(sizeof(u32));
- 		req[reqlen].value = cpu_to_le32(vreg->uV);
- 		reqlen++;
- 	}
- 
--	if (vreg->load_updated && vreg->is_enabled) {
-+	if (vreg->load_updated && vreg->is_enabled > 0) {
- 		req[reqlen].key = cpu_to_le32(RPM_KEY_MA);
- 		req[reqlen].nbytes = cpu_to_le32(sizeof(u32));
- 		req[reqlen].value = cpu_to_le32(vreg->load / 1000);
-@@ -1377,6 +1377,7 @@ static int rpm_regulator_init_vreg(struct qcom_rpm_reg *vreg, struct device *dev
- 	vreg->rpm	= rpm;
- 	vreg->type	= rpm_data->type;
- 	vreg->id	= rpm_data->id;
-+	vreg->is_enabled = -EINVAL;
- 
- 	memcpy(&vreg->desc, rpm_data->desc, sizeof(vreg->desc));
- 	vreg->desc.name = rpm_data->name;
+However, I think this should actually be split out. It changes how all
+pages are cgroup-migrated, which is a bit too large of a side effect
+for the hugetlb accounting patch itself. Especially because the
+reasoning outlined above will get lost once this fixup is folded.
 
--- 
-2.39.2
+IOW, send one prep patch, to go before the series, which splits
+mem_cgroup_replace_folio() and does the mem_cgroup_migrate()
+optimization() with the above explanation.
 
+Then send a fixlet for the hugetlb accounting patch that removes the
+!hugetlb-conditional for the mem_cgroup_migrate() call.
+
+If you're clear in the queueing instructions for both patches, Andrew
+can probably do it in-place without having to resend everything :)
+
+> +void mem_cgroup_migrate(struct folio *old, struct folio *new)
+> +{
+> +	struct mem_cgroup *memcg;
+> +
+> +	VM_BUG_ON_FOLIO(!folio_test_locked(old), old);
+> +	VM_BUG_ON_FOLIO(!folio_test_locked(new), new);
+> +	VM_BUG_ON_FOLIO(folio_test_anon(old) != folio_test_anon(new), new);
+> +	VM_BUG_ON_FOLIO(folio_nr_pages(old) != folio_nr_pages(new), new);
+> +
+> +	if (mem_cgroup_disabled())
+> +		return;
+> +
+> +	memcg = folio_memcg(old);
+> +	/*
+> +	 * Note that it is normal to see !memcg for a hugetlb folio.
+> +	 * It could have been allocated when memory_hugetlb_accounting was not
+> +	 * selected, for e.g.
+
+Is that sentence truncated?
+
+> +	 */
+> +	VM_WARN_ON_ONCE_FOLIO(!memcg, old);
+> +	if (!memcg)
+> +		return;
+
+If this is expected to happen, it shouldn't warn:
+
+VM_WARN_ON_ONCE(!folio_test_hugetlb(old) && !memcg, old);
