@@ -2,120 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BEC7B7CD2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A0F7B7CD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 12:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242111AbjJDKGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 06:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58306 "EHLO
+        id S242070AbjJDKIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 06:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242107AbjJDKGi (ORCPT
+        with ESMTP id S232746AbjJDKI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 06:06:38 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE4783
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:06:34 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-533c4d20b33so1665257a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 03:06:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696413993; x=1697018793; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PM69tFgEPO7655wzYmJMaVk1yqJloza2q3J/vZtUffQ=;
-        b=ghaF8cWMdHNwwcEesKLWa5lBY0QidrlFeKd0RRpV6USlYtYX+zQRwICxWFmFtOUVyB
-         sKExHiA7gE5oEl6QxwZF69OuD8PvzVfCG1q+XsCTgZOHL8D64xBz1T4m/FIVYUy05mE1
-         /J12Emms1xIB8UonRM8CW/6Ebl++5DWLR1U5A4d6Z/j739ZkWxwC3L9NBwU7DP0nd+wK
-         yJ9AIYIQqBTw8Z2ClZE38aJnkujy5YrYOkhFKDChhgwfF9yfJk3UrmpECvMa2ghPJSar
-         cFyGO4n6UXa72DlbtpAuGMoae+vP39kB0/X3qGn4zTvFzc53vOZ2gfKTvMMoWerxOC7R
-         qgBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696413993; x=1697018793;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PM69tFgEPO7655wzYmJMaVk1yqJloza2q3J/vZtUffQ=;
-        b=cZeRrSXCdDQvSu7y5X/0qdat0DwO6CxGcuqfVgETyHJ0o9HVAYDSx27s7ZZ74PiZDA
-         P6aEwX3xJIj+hwLorB3CC0m+W7dDemLk4qis38BbygqveywAHOIMly84JRWd51thS4NY
-         hUo1WmcZMmf+bVpD6ZeAcVeDz3Q/5Usc8VGbqTRQ8ya+FOJCgLwLBOUgp/ZBGzrYhoCO
-         EEInVQ2Zt7sPhshNt+OzifAFit9Fm/d1RxMaAEljKJYw5t8IzFOMOblw4nG95Dp/7blK
-         VZ6Vr14utlmiw7HEVUQYSdEAxoJsSkGJLcleVufzSyPVfo+qpgTGXctQvJkz/siwGX5V
-         yXlg==
-X-Gm-Message-State: AOJu0YxG9LphNrg4gpnVxlR4Fw/6p2usfRCklDXHJLpx9ZB4hp/ldva9
-        EwGyXK31oaF2TqugQM5q6KI=
-X-Google-Smtp-Source: AGHT+IGbAvGs/S9XG9MlO6xBzP7eFSrCrHQCxUL3VpAgIUtfQ9mKBBq1ARzZ4K0rkKG2RWeWJX3CAg==
-X-Received: by 2002:a05:6402:330:b0:52f:86a1:3861 with SMTP id q16-20020a056402033000b0052f86a13861mr1641160edw.7.1696413992798;
-        Wed, 04 Oct 2023 03:06:32 -0700 (PDT)
-Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
-        by smtp.gmail.com with ESMTPSA id s22-20020aa7cb16000000b00532eba07773sm2153740edt.25.2023.10.04.03.06.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 03:06:32 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 4 Oct 2023 12:06:29 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>
-Subject: Re: [PATCH v4] sched/core: Use zero length to reset cpumasks in
- sched_setaffinity()
-Message-ID: <ZR05JXPgOXb4kuHl@gmail.com>
-References: <20231003205735.2921964-1-longman@redhat.com>
- <20231004083648.GI27267@noisy.programming.kicks-ass.net>
- <ZR0vHXDeGi+iVogR@gmail.com>
- <20231004094330.GL1539@noisy.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004094330.GL1539@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Wed, 4 Oct 2023 06:08:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483F083
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 03:08:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C75C7C433C7;
+        Wed,  4 Oct 2023 10:08:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696414105;
+        bh=6qYp2LojNwwY4f+xcvEJJ2LuWLAJTtJzHufvOhFm4/w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XLoXlDhR9ul8ZdEa9doNURyGHAVujrshxTfWf5blahBr9mLLkLXB5SIi3hovPQ5tR
+         U+AZ1nb5JChZKwrFRnB0HA8Ao41WMlG6DoJ+N186slwsM0JNkUjyNYL5m2ZBLqHbAn
+         dTvc8LaIGN+MTE/k3NAUI465+hJfVZcBsZnSbx1LuIiWw5MKWi4dRQI9ZoLjMFfs8v
+         QePWLKw+hlohM2vusVmniLK8kI7zBjiPQz2uYgC0Y/7x1xd2V93Nzq7/p23oD+9Guj
+         KiN8OQT92J4ALOEvvl/spLDsCdVurpchZ46MNxd3q0pq1IqGlMEk24ZO82oqvjUV9v
+         +/mQ0qWF22Arw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qnynn-0010u0-Ca;
+        Wed, 04 Oct 2023 11:08:23 +0100
+Date:   Wed, 04 Oct 2023 11:08:23 +0100
+Message-ID: <86leciog2w.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Coboy Chen <coboy.chen@mediatek.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Olivier Deprez <olivier.deprez@arm.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH v3 14/17] KVM: arm64: FFA: Remove access of endpoint memory access descriptor array
+In-Reply-To: <20230929-ffa_v1-1_notif-v3-14-c8e4f15190c8@arm.com>
+References: <20230929-ffa_v1-1_notif-v3-0-c8e4f15190c8@arm.com>
+        <20230929-ffa_v1-1_notif-v3-14-c8e4f15190c8@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, marc.bonnici@arm.com, jens.wiklander@linaro.org, coboy.chen@mediatek.com, lpieralisi@kernel.org, olivier.deprez@arm.com, oliver.upton@linux.dev, will@kernel.org, qperret@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Wed, Oct 04, 2023 at 11:23:41AM +0200, Ingo Molnar wrote:
+On Fri, 29 Sep 2023 16:03:03 +0100,
+Sudeep Holla <sudeep.holla@arm.com> wrote:
 > 
-> > >  	if (user_mask) {
-> > > -		cpumask_copy(user_mask, in_mask);
-> > > +		/*
-> > > +		 * All-set user cpumask resets affinity and drops the explicit
-> > > +		 * user mask.
-> > > +		 */
-> > > +		cpumask_and(user_mask, in_mask, cpu_possible_mask);
-> > > +		if (cpumask_equal(user_mask, cpu_possible_mask)) {
-> > > +			kfree(user_mask);
-> > > +			user_mask = NULL;
-> > > +		}
-> > 
-> > Question: is there any observable behavioral difference between current 
-> > (old) all-set cpumask calls and the patched (new) one?
+> FF-A v1.1 removes the fixed location of endpoint memory access descriptor
+> array within the memory transaction descriptor structure. In preparation
+> to remove the ep_mem_access member from the ffa_mem_region structure,
+> provide the accessor to fetch the offset and use the same in FF-A proxy
+> implementation.
 > 
-> Very little I think -- the main difference is that we no longer carry
-> the ->user_cpus_ptr mask around, and that saves a little masking.
+> The accessor take the boolean argument that indicates if the memory access
+> descriptor versions is v1(old format) or not. Currently it is set true as
+> FF-A proxy supports only v1.0
+> 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Oliver Upton <oliver.upton@linux.dev>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Quentin Perret <qperret@google.com>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  arch/arm64/kvm/hyp/nvhe/ffa.c | 8 ++++++--
+>  include/linux/arm_ffa.h       | 6 ++++++
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/hyp/nvhe/ffa.c b/arch/arm64/kvm/hyp/nvhe/ffa.c
+> index 6e4dba9eadef..5f956f53e6bf 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/ffa.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/ffa.c
+> @@ -423,6 +423,7 @@ static __always_inline void do_ffa_mem_xfer(const u64 func_id,
+>  	DECLARE_REG(u32, fraglen, ctxt, 2);
+>  	DECLARE_REG(u64, addr_mbz, ctxt, 3);
+>  	DECLARE_REG(u32, npages_mbz, ctxt, 4);
+> +	struct ffa_mem_region_attributes *ep_mem_access;
+>  	struct ffa_composite_mem_region *reg;
+>  	struct ffa_mem_region *buf;
+>  	u32 offset, nr_ranges;
+> @@ -452,7 +453,8 @@ static __always_inline void do_ffa_mem_xfer(const u64 func_id,
+>  	buf = hyp_buffers.tx;
+>  	memcpy(buf, host_buffers.tx, fraglen);
+>  
+> -	offset = buf->ep_mem_access[0].composite_off;
+> +	ep_mem_access = (void *)buf + ffa_mem_desc_offset(buf, 0, true);
+> +	offset = ep_mem_access->composite_off;
+>  	if (!offset || buf->ep_count != 1 || buf->sender_id != HOST_FFA_ID) {
+>  		ret = FFA_RET_INVALID_PARAMETERS;
+>  		goto out_unlock;
+> @@ -504,6 +506,7 @@ static void do_ffa_mem_reclaim(struct arm_smccc_res *res,
+>  	DECLARE_REG(u32, handle_lo, ctxt, 1);
+>  	DECLARE_REG(u32, handle_hi, ctxt, 2);
+>  	DECLARE_REG(u32, flags, ctxt, 3);
+> +	struct ffa_mem_region_attributes *ep_mem_access;
+>  	struct ffa_composite_mem_region *reg;
+>  	u32 offset, len, fraglen, fragoff;
+>  	struct ffa_mem_region *buf;
+> @@ -528,7 +531,8 @@ static void do_ffa_mem_reclaim(struct arm_smccc_res *res,
+>  	len = res->a1;
+>  	fraglen = res->a2;
+>  
+> -	offset = buf->ep_mem_access[0].composite_off;
+> +	ep_mem_access = (void *)buf + ffa_mem_desc_offset(buf, 0, true);
+> +	offset = ep_mem_access->composite_off;
+>  	/*
+>  	 * We can trust the SPMD to get this right, but let's at least
+>  	 * check that we end up with something that doesn't look _completely_
+> diff --git a/include/linux/arm_ffa.h b/include/linux/arm_ffa.h
+> index 748d0a83a4bc..7be240e37f36 100644
+> --- a/include/linux/arm_ffa.h
+> +++ b/include/linux/arm_ffa.h
+> @@ -357,6 +357,12 @@ struct ffa_mem_region {
+>  #define CONSTITUENTS_OFFSET(x)	\
+>  	(offsetof(struct ffa_composite_mem_region, constituents[x]))
+>  
+> +static inline u32
+> +ffa_mem_desc_offset(struct ffa_mem_region *buf, int count, bool mem_desc_v1)
+> +{
+> +	return COMPOSITE_OFFSET(0);
+> +}
 
-So calling with a full mask would actually work fine on 'old' kernels too,
-as it's a 'reset' event in essence. (With a bit of allocation & masking
-overhead.)
+If the goal of this patch is to introduce some versioning, why not
+define this last parameter as an actual version number, PSCI style
+(with a minor and major, each on a 16bit field)?
 
-This pretty unambiguously marks the full-mask solution as the superior ABI ...
+Even the name is pretty misleading, as both FFA versions are v1 (v1.0
+vs v1.1...).
 
 Thanks,
 
-	Ingo
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
