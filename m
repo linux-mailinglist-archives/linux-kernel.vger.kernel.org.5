@@ -2,127 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 747FD7B78F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6477B78F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241562AbjJDHqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52450 "EHLO
+        id S241593AbjJDHqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241550AbjJDHqM (ORCPT
+        with ESMTP id S241576AbjJDHqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:46:12 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E69A7
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 00:46:06 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E3E3166003B9;
-        Wed,  4 Oct 2023 08:46:01 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696405564;
-        bh=ku+zyo46eqKv4QZhaKGAo3CfhTU6izXHMTzSvBZUa5A=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=BfnzWpQcqx9aKFfD6X4ZcKr+0q/QdheNYqpDPu507utiRdyQz/OzQHny5eYOI30LO
-         0aJeUiYtM69PctbjaQvvDCkk/OzXtTaBIxSINo5g4S3gaWc3JehBfG82GkReuH65nd
-         4buV7XqbO784BTa9gw4/I07qXJUaLiPh7eJb9td5GHcB+TDUO4L+NfFJCEjARgGCaj
-         UUB5GVFYQC3BjXg73Yzb0hqDOOEMuFB3+q+PeJEeB1lPOhK+Twp5xFjtCqnw7HMyLL
-         TfIJbrgVTeZfETYgnqW3yaxwlDfP/HPnkhRre7ha+Iv6Qc8N/+BV0iWVOSYtvd1si2
-         tYIJZp3KbfxEA==
-Message-ID: <7e4916ba-caf0-b751-fc6e-5f740082f654@collabora.com>
-Date:   Wed, 4 Oct 2023 09:45:59 +0200
+        Wed, 4 Oct 2023 03:46:18 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61582AC;
+        Wed,  4 Oct 2023 00:46:14 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DBC48C0012;
+        Wed,  4 Oct 2023 07:46:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696405572;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8pVUUQ+7DMEkzQuJdwWGeYNzfoadiG6zJza5DvYnmG8=;
+        b=oiA1C0pBlt+IQPi0goIxyfvjDFJFrr+isK4UXLcwYxtmOqnUTRUml2vjBSct47qwKPEtF7
+        Jctboom4Bioobo62cvePSiwLycC0dtvKCMv49jA0dG/BBWTUdd7ssDcIPp41jy89ajASOf
+        xeqdfl0UcLVQ1iBco0UmH/8nZ6ffbnlyfP7hFkyBc+hSE7RDWUzr+b4UVtMYRhluvg96wG
+        VEacVQzvYWioBkA6BKbcZm120MoORQEBAY+Y6k48LVpBFSCDZianxlgmDAL0i82SxgOAtT
+        HbEfFQ7TqyFBfeE3sAnKxUGZDqqhA3VvKxpHiPXVSJft1xSlGbB72o2qOUOo6A==
+Date:   Wed, 4 Oct 2023 09:46:09 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Lizhi Hou <lizhi.hou@amd.com>, Brian Xu <brian.xu@amd.com>,
+        Raj Kumar Rampelli <raj.kumar.rampelli@amd.com>,
+        Michal Simek <michal.simek@amd.com>, dmaengine@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dmaengine: xilinx: xdma: Support cyclic
+ transfers
+Message-ID: <20231004094609.2b1ea0c5@xps-13>
+In-Reply-To: <ZR0UVYAKgix2nRrb@matsya>
+References: <20230922162056.594933-1-miquel.raynal@bootlin.com>
+        <20230922162056.594933-3-miquel.raynal@bootlin.com>
+        <ZRVbZwQz13hL2QfY@matsya>
+        <20231003110256.44286fcd@xps-13>
+        <ZR0UVYAKgix2nRrb@matsya>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/5] ASoC: Explicitly include correct DT includes
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Peter Rosin <peda@axentia.se>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        =?UTF-8?Q?Nuno_S=c3=a1?= <nuno.sa@analog.com>,
-        James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Shenghao Ding <shenghao-ding@ti.com>,
-        Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Kiseok Jo <kiseok.jo@irondevice.com>,
-        Kevin Cernekee <cernekee@chromium.org>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Ban Tao <fengzheng923@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com, linuxppc-dev@lists.ozlabs.org
-References: <20231003-dt-asoc-header-cleanups-v1-0-308666806378@kernel.org>
- <20231003-dt-asoc-header-cleanups-v1-1-308666806378@kernel.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231003-dt-asoc-header-cleanups-v1-1-308666806378@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 03/10/23 18:43, Rob Herring ha scritto:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it was merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Hi Vinod,
 
-for MediaTek:
+vkoul@kernel.org wrote on Wed, 4 Oct 2023 12:59:25 +0530:
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> On 03-10-23, 11:02, Miquel Raynal wrote:
+> > Hi Vinod,
+> >=20
+> > Thanks for the feedback.
+> >=20
+> > vkoul@kernel.org wrote on Thu, 28 Sep 2023 16:24:31 +0530:
+> >  =20
+> > > On 22-09-23, 18:20, Miquel Raynal wrote:
+> > >  =20
+> > > > @@ -583,7 +690,36 @@ static int xdma_alloc_chan_resources(struct dm=
+a_chan *chan)
+> > > >  static enum dma_status xdma_tx_status(struct dma_chan *chan, dma_c=
+ookie_t cookie,
+> > > >  				      struct dma_tx_state *state)
+> > > >  {
+> > > > -	return dma_cookie_status(chan, cookie, state);
+> > > > +	struct xdma_chan *xdma_chan =3D to_xdma_chan(chan);
+> > > > +	struct xdma_desc *desc =3D NULL;
+> > > > +	struct virt_dma_desc *vd;
+> > > > +	enum dma_status ret;
+> > > > +	unsigned long flags;
+> > > > +	unsigned int period_idx;
+> > > > +	u32 residue =3D 0;
+> > > > +
+> > > > +	ret =3D dma_cookie_status(chan, cookie, state);
+> > > > +	if (ret =3D=3D DMA_COMPLETE)
+> > > > +		return ret;
+> > > > +
+> > > > +	spin_lock_irqsave(&xdma_chan->vchan.lock, flags);
+> > > > +
+> > > > +	vd =3D vchan_find_desc(&xdma_chan->vchan, cookie);
+> > > > +	if (vd)
+> > > > +		desc =3D to_xdma_desc(vd);   =20
+> > >=20
+> > > vd is not used in below check, so should be done after below checks, =
+why
+> > > do this for cyclic case? =20
+> >=20
+> > I'm not sure I get this comment. vd is my way to get the descriptor,
+> > and I need the descriptor to know whether we are in a cyclic transfer
+> > or not. If the transfer is not cyclic, I just return the value from
+> > dma_cookie_status() like before, otherwise I update the residue based
+> > on the content of desc.
+> >=20
+> > Maybe I don't understand what you mean, would you mind explaining it
+> > again? =20
+>=20
+> Sorry I am not sure what I was thinking, this looks fine, we need the
+> lock to get the desc and use it
 
+Ah ok, no problem :) I'll send the v3 with the missing kernel doc line
+(kernel test robot report).
 
+Thanks,
+Miqu=C3=A8l
