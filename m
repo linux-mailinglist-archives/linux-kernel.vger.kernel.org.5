@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B86AB7B78C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626497B78CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 09:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241555AbjJDHdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 03:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
+        id S241530AbjJDHde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 03:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241535AbjJDHdG (ORCPT
+        with ESMTP id S232672AbjJDHdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 03:33:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1663C98;
-        Wed,  4 Oct 2023 00:33:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B4E4C433C8;
-        Wed,  4 Oct 2023 07:33:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696404781;
-        bh=Q5Yvrxk9uP3w/sec70NuRnAW8kUBSmlRnZ+J/yHoJLk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dNE+PJI5CYiE/MZbcfodrX7lU2FEsLx6aiKFdFMJemCoOos8rIn6EzEYFa0+Q2JMR
-         srgMsQckngMh01CLwvaI8LyaZoUmD/+XY9gyq/H9b3D+zCZ055CC/ZebiJOKylcq6d
-         VIrKpAeN3akIFJethC/sxpwi09LzgLJlIQUBlOHjgZnOuqEGdt/9M9YOrdUuFJs8/Y
-         QfN2HtxrzzQ6Gl/8S7Z8yZZ68ZLom2auGJas79szmhRw5FAZkaI/Bs59GmhfaPQ+oB
-         0bKt7HQbod4ZPf1iQVgWJZl2av25NTDtKus+k4SOCompBykDl/S0jggC87tV/wwubz
-         ugO7ObYqEyNQA==
-Date:   Wed, 4 Oct 2023 13:02:57 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     "open list:FREESCALE eDMA DRIVER" <imx@lists.linux.dev>,
-        "open list:FREESCALE eDMA DRIVER" <dmaengine@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] dmaengine: fsl-edma: fix all channels requested when
- call fsl_edma3_xlate()
-Message-ID: <ZR0VKS2VoocrTzWY@matsya>
-References: <20230914222204.2336508-1-Frank.Li@nxp.com>
- <ZRWLSkl/QzBtls+T@lizhi-Precision-Tower-5810>
+        Wed, 4 Oct 2023 03:33:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9242C98;
+        Wed,  4 Oct 2023 00:33:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696404810; x=1727940810;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VxsBh94/6HFHWLxU3WZGgHuTWLtLFHHNHDR9jDrMeXg=;
+  b=JgGKNvHdOCesSQ6DjmAR7RywxahLuIJD1icqESXLvulIwHQSTpqKE0Eu
+   rUSeHLjpo1bGl2oI4ZHJ2sQLebtIbzzJ8Zgs//OUnXUQ6p6IGRltW62nU
+   96emRmC8xPVT1RgarKHUErcaBSnuzlEcyfRyT7JA2nQr9+tbIwUltf6Em
+   g5l+xW+V69FJ6p/fA6JqnVqgLJhoJf1yRGhBpNnGIRLip5PEIhd2Ttru4
+   d2uXNzy+JjRih2DjT243tbA4HaU9xKEy+OkxMWTE9DQp1q6ul62j5LHvo
+   Zpe9ncPnWVI92SUo0S+lHTAadPth/e+zifxO1C/xw5KA7DlNY/orCFXAp
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="386955055"
+X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
+   d="scan'208";a="386955055"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 00:33:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="1082363378"
+X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
+   d="scan'208";a="1082363378"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 04 Oct 2023 00:33:27 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 3400D204; Wed,  4 Oct 2023 10:33:25 +0300 (EEST)
+Date:   Wed, 4 Oct 2023 10:33:25 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 28/36] pinctrl: intel: use new pinctrl GPIO helpers
+Message-ID: <20231004073325.GJ3208943@black.fi.intel.com>
+References: <20231003145114.21637-1-brgl@bgdev.pl>
+ <20231003145114.21637-29-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZRWLSkl/QzBtls+T@lizhi-Precision-Tower-5810>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231003145114.21637-29-brgl@bgdev.pl>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-09-23, 10:18, Frank Li wrote:
-> On Thu, Sep 14, 2023 at 06:22:04PM -0400, Frank Li wrote:
-> > dma_get_slave_channel() increases client_count for all channels. It should
-> > only be called when a matched channel is found in fsl_edma3_xlate().
-> > 
-> > Move dma_get_slave_channel() after checking for a matched channel.
+On Tue, Oct 03, 2023 at 04:51:06PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> @Vinod
-> 	ping
+> Replace the pinctrl helpers taking the global GPIO number as argument
+> with the improved variants that instead take a pointer to the GPIO chip
+> and the controller-relative offset.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Can you please resend
-
--- 
-~Vinod
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
