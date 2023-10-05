@@ -2,128 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C64647BA3AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69407B9F85
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238058AbjJEP6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
+        id S233923AbjJEOZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233815AbjJEP4n (ORCPT
+        with ESMTP id S233876AbjJEOWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:56:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467335253;
-        Thu,  5 Oct 2023 06:52:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E89CDC116B6;
-        Thu,  5 Oct 2023 09:03:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696496596;
-        bh=Oh6z41EHlAHzegiycj3Z6oYPy1RmyXl7393yq+axU3s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UR6p4R+erialbPxyVBaJL+VX62WIR8Bz2v9JB71U/XVJSIIQNHrns0+nTXBeM8g/T
-         OGobN5quUApdhCidM5WG1cGtuaVNuyZm1hgS0ooqQeBuMocA3OIyhrif+bhiZA9VK4
-         UzRz3RrM8dyxiqc0zwCiXekiZ/6GkQB4rV7UykluYzCVh2JpW9/WzkI7qyRrKhNPqa
-         rewZKIro45kQa8b7gAmzOPI55uN/c6gMX7gj3QZw5XjQaUW9nz1seXnl36NdPyU6xB
-         a+SY1heOfrZEAtGvJ8GDdhUZqaBYEe/G6YOizxJSyvh5idHP3xKofDFx4KlCcvm5DJ
-         xvmaIT3sCP3Og==
-Date:   Thu, 5 Oct 2023 10:03:11 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Starke, Daniel" <daniel.starke@siemens.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Fedor Pchelkin <pchelkin@ispras.ru>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com" 
-        <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
-Subject: Re: [PATCH 1/1] tty: n_gsm: Avoid sleeping during .write() whilst
- atomic
-Message-ID: <20231005090311.GD83257@google.com>
-References: <20231003170020.830242-1-lee@kernel.org>
- <2023100320-immorally-outboard-573a@gregkh>
- <DB9PR10MB588170E923A6ED8B3D6D9613E0CBA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM>
- <2023100421-negotiate-stammer-1b35@gregkh>
- <20231004085720.GA9374@google.com>
- <2023100448-cotton-safehouse-aca2@gregkh>
- <20231004125704.GA83257@google.com>
- <2023100435-xerox-idiocy-5cf0@gregkh>
+        Thu, 5 Oct 2023 10:22:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFD927B3F;
+        Thu,  5 Oct 2023 06:44:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696513470; x=1728049470;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FKCtbN7+J1DFK4Wis91OM2jfqlmQHuZrK9CqwaCbtBg=;
+  b=K4RNaZ1Fl3Yxi4bjM6GMuqaoaNJMQGhR0h0ruSSuib0ySaKpUTArK/PE
+   wZCLu/bKPAuplja7F5qDgvuoGG1v2rd0YKNGHC57MUSsDZA+gjt0CKcrl
+   18zdhbcMO6sh2o17QT/99EKnTY7Q4ZblWYzMvL1LDjLJdkkZQDMyjAJyV
+   6e8ZOmE2PBIotJiXB28O0fd6kOPskPVsNn+UTvWtlcR1fevHWsN7aovHe
+   tfVaDZDswNqk2IMIa4yOtYqG85BAXI+ecNXq7A5e5xZjymIXFzet59e6E
+   Ig/xW2/ZliIvjjqgjFTgbQQUNzaTN7pvc4CXuzoJIhGAZTAKh0fOjB324
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="387321291"
+X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
+   d="scan'208";a="387321291"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 02:03:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="701591191"
+X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
+   d="scan'208";a="701591191"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 02:03:33 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qoKGY-00000002yxu-1DYA;
+        Thu, 05 Oct 2023 12:03:30 +0300
+Date:   Thu, 5 Oct 2023 12:03:30 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] serial: 8250_omap: Drop pm_runtime_irq_safe()
+Message-ID: <ZR574o7etTozvhzt@smile.fi.intel.com>
+References: <20231004062650.64487-1-tony@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023100435-xerox-idiocy-5cf0@gregkh>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231004062650.64487-1-tony@atomide.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
-
-> On Wed, Oct 04, 2023 at 01:57:04PM +0100, Lee Jones wrote:
-> > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
-> > 
-> > > On Wed, Oct 04, 2023 at 09:57:20AM +0100, Lee Jones wrote:
-> > > > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
-> > > > 
-> > > > > On Wed, Oct 04, 2023 at 05:59:09AM +0000, Starke, Daniel wrote:
-> > > > > > > Daniel, any thoughts?
-> > > > > > 
-> > > > > > Our application of this protocol is only with specific modems to enable
-> > > > > > circuit switched operation (handling calls, selecting/querying networks,
-> > > > > > etc.) while doing packet switched communication (i.e. IP traffic over PPP).
-> > > > > > The protocol was developed for such use cases.
-> > > > > > 
-> > > > > > Regarding the issue itself:
-> > > > > > There was already an attempt to fix all this by switching from spinlocks to
-> > > > > > mutexes resulting in ~20% performance loss. However, the patch was reverted
-> > > > > > as it did not handle the T1 timer leading into sleep during atomic within
-> > > > > > gsm_dlci_t1() on every mutex lock there.
-> > > > 
-> > > > That's correct.  When I initially saw this report, my initial thought
-> > > > was to replace the spinlocks with mutexts, but having read the previous
-> > > > accepted attempt and it's subsequent reversion I started to think of
-> > > > other ways to solve this issue.  This solution, unlike the last, does
-> > > > not involve adding sleep inducing locks into atomic contexts, nor
-> > > > should it negatively affect performance.
-> > > > 
-> > > > > > There was also a suggestion to fix this in do_con_write() as
-> > > > > > tty_operations::write() appears to be documented as "not allowed to sleep".
-> > > > > > The patch for this was rejected. It did not fix the issue within n_gsm.
-> > > > > > 
-> > > > > > Link: https://lore.kernel.org/all/20221203215518.8150-1-pchelkin@ispras.ru/
-> > > > > > Link: https://lore.kernel.org/all/20221212023530.2498025-1-zengheng4@huawei.com/
-> > > > > > Link: https://lore.kernel.org/all/5a994a13-d1f2-87a8-09e4-a877e65ed166@kernel.org/
-> > > > > 
-> > > > > Ok, I thought I remembered this, I'll just drop this patch from my
-> > > > > review queue and wait for a better solution if it ever comes up as this
-> > > > > isn't a real issue that people are seeing on actual systems, but just a
-> > > > > syzbot report.
-> > > > 
-> > > > What does the "better solution" look like?
-> > > 
-> > > One that actually fixes the root problem here (i.e. does not break the
-> > > recursion loop, or cause a performance decrease for normal users, or
-> > > prevent this from being bound to the console).
-> > 
-> > Does this solution break the recursion loop or affect performance?
+On Wed, Oct 04, 2023 at 09:26:48AM +0300, Tony Lindgren wrote:
+> Let's drop the use of pm_runtime_irq_safe() for 8250_omap. The use of
+> pm_runtime_irq_safe() is not nice as it takes a permanent usage count on
+> the parent device.
 > 
-> This solution broke the recursion by returning an error, right?
+> We can finally drop pm_runtime_irq_safe() safely as the kernel now knows
+> when the uart port tx is active. This changed with commit 84a9582fd203
+> ("serial: core: Start managing serial controllers to enable runtime PM").
+> 
+> For serial port rx, we already use Linux generic wakeirqs for 8250_omap.
+> 
+> To drop pm_runtime_irq_safe(), we need to add handling for shallow idle
+> state where the port hardware may already be awake and an IO interrupt
+> happens. We also need to replace the serial8250_rpm sync calls in the
+> interrupt handlers with async runtime PM calls.
+> 
+> Note that omap8250_irq() calls omap_8250_dma_handle_irq(), so we don't
+> need separate runtime PM calls in omap_8250_dma_handle_irq().
+> 
+> While at it, let's also add the missing line break to the end of
+> omap8250_runtime_resume() to group the calls.
 
-This is the part I was least sure about.
-
-If this was considered valid and we were to go forward with a solution
-like this, what would a quality improvement look like?  Should we have
-stayed in this function and waited for the previous occupant to leave
-before continuing through ->write()?
-
-> The performance one was by using mutexes as in previous attempts.
-
-Right.  This solution was designed to avoid that.
+Yoo-hoo! A few years only to get to the point :-)
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
 -- 
-Lee Jones [李琼斯]
+With Best Regards,
+Andy Shevchenko
+
+
