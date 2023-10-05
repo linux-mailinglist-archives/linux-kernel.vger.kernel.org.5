@@ -2,53 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B44DE7B9F08
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336577B9F36
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbjJEORD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43554 "EHLO
+        id S234179AbjJEOTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233815AbjJEOO7 (ORCPT
+        with ESMTP id S231175AbjJEOR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:14:59 -0400
-X-Greylist: delayed 379 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Oct 2023 04:32:42 PDT
-Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AE124E9D
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 04:32:42 -0700 (PDT)
-Message-ID: <ee92964c-c277-a258-5081-cf0a19ccff79@lankhorst.se>
-Date:   Thu, 5 Oct 2023 13:26:18 +0200
+        Thu, 5 Oct 2023 10:17:26 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7E124E8C;
+        Thu,  5 Oct 2023 04:26:57 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9b2cee40de8so196387866b.1;
+        Thu, 05 Oct 2023 04:26:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696505216; x=1697110016; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+DmKqCIULKrNCF4CdnTVqFVH0GO4tyriLLf0pJhJwn8=;
+        b=c8QMNDHBvspat2uzGkqpylt6eI5eKmwpZdEUgeW1P3d9/qEdr4ks0i8EHcEmJoRfmc
+         WNrIPWIqGOF9idTc0wbJkTBZG8o4H1KZni2I72O4Kl65nq/giDF5WswlwbIXrF+FyCJM
+         HxlRav71tu76r0eTOL3WEjt1592f/9YQ+q9arHBJhysSdEqDAyKpaNni5n2MgogXyCEW
+         TA29UVIizTaPKj/rRhGz6bL5Hod3c5f643epJRbt9UAIeRil/Ip4XEsqXsencLpjC1ey
+         Nze+19KcibFr0K6LZx2Gx8Xp8Cl4xJt+FCTeZqBmsDfutHRGW7wLPPQ6y18NDJyIy8rm
+         zupQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696505216; x=1697110016;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+DmKqCIULKrNCF4CdnTVqFVH0GO4tyriLLf0pJhJwn8=;
+        b=nmInUbCianuIFNgzkoIDlKyrZnp8XwGgYm3rXJVK+WE0D4FsBv1UYgdg2k0nogxbt8
+         OjptI7XgINB3Nrijpa+oXcWrxN6VQNErD0wNBuwfAYpFTvSBJf77SWGF33yrK4BWteKe
+         zDEB/UtjgEQ/JmknS+8G3brsC+qkKPlb1e5fO6+y+d4QQJmG6DKRNs8jHUZxVwNqE41Z
+         mPg8e6mfP4yhpFfE4/kzMoREeMzOFQS6vygcNi/VQMOvJ2h0ksh1WGyRLEwBF1NiVlBf
+         1RDgVTNxDom1/s29mRaddJT4x0AhLBnP/kU8zytCTLifOQZ4aAyYqTbkligSvApBzAjN
+         zXbQ==
+X-Gm-Message-State: AOJu0YyNAxDKFKzDU12if1U8eUpulqrBB3fS2KyVt7HmxylhpQ6p/UDP
+        AWv3xpdpyOz3Me0noB7Gq3I=
+X-Google-Smtp-Source: AGHT+IGe57gqy2qwMkBLLrtA1T4Sr1o8fvynFQHz8ttqGVxzU1bwRTsfe9BIaT5YiwTSBH7iHBJvxg==
+X-Received: by 2002:a17:907:7291:b0:9ad:8641:e91b with SMTP id dt17-20020a170907729100b009ad8641e91bmr1018565ejc.11.1696505216033;
+        Thu, 05 Oct 2023 04:26:56 -0700 (PDT)
+Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
+        by smtp.gmail.com with ESMTPSA id rn4-20020a170906d92400b0099bc038eb2bsm1025054ejb.58.2023.10.05.04.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 04:26:55 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 5 Oct 2023 13:26:50 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Xuewen Yan <xuewen.yan@unisoc.com>
+Cc:     rafael@kernel.org, viresh.kumar@linaro.org, mingo@redhat.com,
+        peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        guohua.yan@unisoc.com, qyousef@layalina.io,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: schedutil: next_freq need update when
+ cpufreq_limits changed
+Message-ID: <ZR6delkbZxl31zuY@gmail.com>
+References: <20230719130527.8074-1-xuewen.yan@unisoc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v6 11/12] ASoC: SOF: Intel: Move binding to display driver
- outside of deferred probe
-To:     =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc:     Alsa-devel <alsa-devel@alsa-project.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
- <20231004145540.32321-12-maarten.lankhorst@linux.intel.com>
- <alpine.DEB.2.22.394.2310041953090.3390143@eliteleevi.tm.intel.com>
- <b4a010aa-b547-42ad-844f-849f287abd54@linux.intel.com>
-Content-Language: en-US
-From:   Maarten Lankhorst <dev@lankhorst.se>
-In-Reply-To: <b4a010aa-b547-42ad-844f-849f287abd54@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719130527.8074-1-xuewen.yan@unisoc.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -56,71 +79,62 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+* Xuewen Yan <xuewen.yan@unisoc.com> wrote:
 
-On 2023-10-05 12:58, Péter Ujfalusi wrote:
+> When cpufreq's policy is single, there is a scenario that will
+> cause sg_policy's next_freq to be unable to update.
 > 
+> When the cpu's util is always max, the cpufreq will be max,
+> and then if we change the policy's scaling_max_freq to be a
+> lower freq, indeed, the sg_policy's next_freq need change to
+> be the lower freq, however, because the cpu_is_busy, the next_freq
+> would keep the max_freq.
 > 
-> On 04/10/2023 19:59, Kai Vehmanen wrote:
->> Hi,
->>
->> I'm good with rest of the series, but one patch requires work.
->>
->> On Wed, 4 Oct 2023, Maarten Lankhorst wrote:
->>
->>> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
->>> the snd_hdac_i915_init into a workqueue.
->>>
->>> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
->>> probe function.
->>>
->>> The previously added probe_early can be used for this,
->>> and we also use the newly added remove_late for unbinding afterwards.
->> [...]
->>> --- a/sound/soc/sof/intel/hda-common-ops.c
->>> +++ b/sound/soc/sof/intel/hda-common-ops.c
->>> @@ -19,6 +19,7 @@ struct snd_sof_dsp_ops sof_hda_common_ops = {
->>>   	.probe_early	= hda_dsp_probe_early,
->>>   	.probe		= hda_dsp_probe,
->>>   	.remove		= hda_dsp_remove,
->>> +	.remove_late	= hda_dsp_remove_late,
->>>   
->>>   	/* Register IO uses direct mmio */
->>>   
->>> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
->>> index 86a2571488bc..4eb7f04b8ae1 100644
->>> --- a/sound/soc/sof/intel/hda.c
->>> +++ b/sound/soc/sof/intel/hda.c
->>> @@ -1160,6 +1160,7 @@ int hda_dsp_probe_early(struct snd_sof_dev *sdev)
->>>   		return -ENOMEM;
->>>   	sdev->pdata->hw_pdata = hdev;
->>>   	hdev->desc = chip;
->>> +	ret = hda_init(sdev);
->>>   
->>>   err:
->>>   	return ret;
->>
->> I don't think this works. The hda_codec_i915_init() errors are ignored in
->> hda_init() so this never returns -EPROBE_DEFER.
->>
->> So something like this is needed on top (tested quickly on one SOF
->> machine and this blocks SOF load until i915 or xe driver is loaded):
->>
->> --cut--
->> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
->> index 9025bfaf6a7e..8b17c82dcc89 100644
->> --- a/sound/soc/sof/intel/hda.c
->> +++ b/sound/soc/sof/intel/hda.c
->> @@ -863,13 +863,20 @@ static int hda_init(struct snd_sof_dev *sdev)
->>          /* init i915 and HDMI codecs */
->>          ret = hda_codec_i915_init(sdev);
->>          if (ret < 0)
->> -               dev_warn(sdev->dev, "init of i915 and HDMI codec
->> failed\n");
->> +               dev_warn(sdev->dev, "init of i915 and HDMI codec failed
->> (%d)\n", ret);
+> For example:
+> The cpu7 is single cpu:
 > 
-> we should not print anything or maximum dev_dbg in case of EPROBE_DEFER.
-There's dev_err_probe, which is dev_err on error, or sets the reason for 
-deferred probe to the arguments if the error is -EPROBE_DEFER.
+> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # while true;do done&
+> [1] 4737
+> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # taskset -p 80 4737
+> pid 4737's current affinity mask: ff
+> pid 4737's new affinity mask: 80
+> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
+> 2301000
+> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_cur_freq
+> 2301000
+> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # echo 2171000 > scaling_max_freq
+> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
+> 2171000
+> 
+> At this time, the sg_policy's next_freq would keep 2301000.
+> 
+> To prevent the case happen, add the judgment of the need_freq_update flag.
+> 
+> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> Co-developed-by: Guohua Yan <guohua.yan@unisoc.com>
+> Signed-off-by: Guohua Yan <guohua.yan@unisoc.com>
+> ---
+>  kernel/sched/cpufreq_schedutil.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> index 4492608b7d7f..458d359f5991 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -350,7 +350,8 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
+>  	 * Except when the rq is capped by uclamp_max.
+>  	 */
+>  	if (!uclamp_rq_is_capped(cpu_rq(sg_cpu->cpu)) &&
+> -	    sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
+> +	    sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq &&
+> +	    !sg_policy->need_freq_update) {
+>  		next_f = sg_policy->next_freq;
+>  
+>  		/* Restore cached freq as next_freq has changed */
 
-~Maarten
+Just wondering about the status of this fix - is it pending in
+some tree, or should we apply it to the scheduler tree?
+
+Thanks,
+
+	Ingo
