@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 430D77BA6F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927347BA482
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbjJEQnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
+        id S240307AbjJEQGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230452AbjJEQlk (ORCPT
+        with ESMTP id S234395AbjJEQEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:41:40 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FC219AD;
-        Thu,  5 Oct 2023 09:26:33 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395GPped012144;
-        Thu, 5 Oct 2023 16:26:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=/SvxsxPLgknsUyoedy05iuyDbiMbvNzgf2Sdg8OQ5vc=;
- b=kpwyEuQTNKHl4i9kI2Uao574UivqcsmalwdAnCqwzptqBg2UL45chZ2oB2k+nUgP3RQH
- UW4Yu2kpHM0av7YpoDXnxGY0PsigcYs26kXqBsH8qF4lRjGvioUUTA4wca0irtc372R6
- 4bM1p0VVTxI3XWWK8N3Dxz660GfF5uuotyudq9eYAa+NqCXQVUvcp40TRhqftqBvR4vH
- hMEC1kI4IYNAhPIAwIKFX2ShpLgfIw1nLEdH/hEnWbDd/7wDTtkBq+qQ7JlWEYjxCGu1
- 4jin10fH47g6UvdCxU3rj5cDJZGl95vCnMzqdrbYkz18ABz/ZKu34Bbxbf1BUaJ6BLUe 0g== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj0ndg1gm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 16:26:30 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 395EU1hb007447;
-        Thu, 5 Oct 2023 15:13:16 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3teygm4gd2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 15:13:16 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 395FDDvo41222626
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Oct 2023 15:13:13 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F2152004B;
-        Thu,  5 Oct 2023 15:13:13 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 929142004D;
-        Thu,  5 Oct 2023 15:13:12 +0000 (GMT)
-Received: from [9.179.14.29] (unknown [9.179.14.29])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  5 Oct 2023 15:13:12 +0000 (GMT)
-Message-ID: <bd38baa8-7b9d-4d89-9422-7e943d626d6e@linux.ibm.com>
-Date:   Thu, 5 Oct 2023 17:12:54 +0200
+        Thu, 5 Oct 2023 12:04:11 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E951687E;
+        Thu,  5 Oct 2023 08:13:23 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 395FDBQx044781;
+        Thu, 5 Oct 2023 10:13:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696518791;
+        bh=O9FhfvATundeGpAaMYwp4zaxW3D2P8Zjw0rWxeEZ63A=;
+        h=From:To:CC:Subject:Date;
+        b=Pd1xVOjXLqSJs10Mv/iPGrmQuDlTBj1p+RllitBUFUN7F3it0rB8HCf8IdExuStgN
+         i19juVbEZTpoiaB5F9p8CcWh4SZ1JRF3FNQSWvMMUKNbBWg/PT4ukPv/TC5BPuC1UO
+         01u2dV0OmzCbd8R+XwrBoXqw95Zv8g44vTvRfiIY=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 395FDBxc105345
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Oct 2023 10:13:11 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 5
+ Oct 2023 10:13:11 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 5 Oct 2023 10:13:11 -0500
+Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 395FD7Pb027216;
+        Thu, 5 Oct 2023 10:13:08 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/2] arm64: dts: ti: Use simple-bus wherever possible
+Date:   Thu, 5 Oct 2023 20:43:00 +0530
+Message-ID: <20231005151302.1290363-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] s390/cio: Fix a memleak in css_alloc_subchannel
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230921071412.13806-1-dinghao.liu@zju.edu.cn>
-Content-Language: en-US
-From:   Peter Oberparleiter <oberpar@linux.ibm.com>
-In-Reply-To: <20230921071412.13806-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: aNR7iEgwscrZ82l9-nm77TT6FXdyvJGN
-X-Proofpoint-ORIG-GUID: aNR7iEgwscrZ82l9-nm77TT6FXdyvJGN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_11,2023-10-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- impostorscore=0 phishscore=0 clxscore=1011 mlxscore=0 lowpriorityscore=0
- suspectscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=633
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310050128
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.09.2023 09:14, Dinghao Liu wrote:
-> When dma_set_coherent_mask() fails, sch->lock has not been
-> freed, which is allocated in css_sch_create_locks(), leading
-> to a memleak.
-> 
-> Fixes: 4520a91a976e ("s390/cio: use dma helpers for setting masks")
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+This series coverts simple-mfd to simple-bus for segments housing Data
+movement related IPs (DMASS on AM64/AM62 and AM62A), NAVSS on the rest)
 
-Looks good to me.
+Boot tested on all K3 SoCs. excerised DMA by using ethernet and OSPI for
+sanity.
 
-Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+Vignesh Raghavendra (2):
+  arm64: dts: ti: k3-*: Convert DMSS to simple-bus
+  arm64: dts: ti: k3-*: Convert NAVSS to simple-bus
+
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi         | 2 +-
+ arch/arm64/boot/dts/ti/k3-am62p-main.dtsi        | 2 +-
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi         | 2 +-
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi         | 2 +-
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi          | 2 +-
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi        | 2 +-
+ arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi  | 2 +-
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi        | 2 +-
+ arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi  | 2 +-
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi       | 2 +-
+ arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi | 2 +-
+ 11 files changed, 11 insertions(+), 11 deletions(-)
 
 -- 
-Peter Oberparleiter
-Linux on IBM Z Development - IBM Germany R&D
+2.42.0
 
