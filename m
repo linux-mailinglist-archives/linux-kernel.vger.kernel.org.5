@@ -2,211 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FD57BADA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4B07BADA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbjJEVdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 17:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
+        id S230140AbjJEVf1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Oct 2023 17:35:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbjJEVdi (ORCPT
+        with ESMTP id S229750AbjJEVfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 17:33:38 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A14100;
-        Thu,  5 Oct 2023 14:33:34 -0700 (PDT)
-Received: from msexch01.omp.ru (10.188.4.12) by msexch02.omp.ru (10.188.4.13)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Fri, 6 Oct 2023
- 00:33:30 +0300
-Received: from msexch01.omp.ru ([fe80::4020:d881:621a:6b6b]) by
- msexch01.omp.ru ([fe80::4020:d881:621a:6b6b%5]) with mapi id 15.02.0986.014;
- Fri, 6 Oct 2023 00:33:30 +0300
-From:   Denis Glazkov <d.glazkov@omp.ru>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-CC:     Jarkko Sakkinen <jarkko@kernel.org>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Sergey Shtylyov" <s.shtylyov@omp.ru>,
-        Denis Glazkov <d.glazkov@omp.ru>
-Subject: Re: [PATCH v3] certs: Add option to disallow non-CA certificates in
- secondary trusted keying
-Thread-Topic: [PATCH v3] certs: Add option to disallow non-CA certificates in
- secondary trusted keying
-Thread-Index: AQHZ9R25FRQFBB8VuUOFgsWwTdSR3rA2+cGAgAFCf4CAA05lgA==
-Date:   Thu, 5 Oct 2023 21:33:30 +0000
-Message-ID: <8e60632f20f94d45b39cda95218fac11ac962f91.camel@omp.ru>
-References: <CVS5MB3X82Q8.8KDB4346ROR5@suppilovahvero>
-         <20231002104525.7631-1-d.glazkov@omp.ru>
-         <CVYCTWRQAXDF.2HY5028ZT9FEC@seitikki>
-         <4A271804-9481-4454-A371-3A7CA26F40D9@oracle.com>
-In-Reply-To: <4A271804-9481-4454-A371-3A7CA26F40D9@oracle.com>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.188.4.41]
-x-kse-serverinfo: msexch02.omp.ru, 9
-x-kse-attachmentfiltering-interceptor-info: protection disabled
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: Clean, bases: 7/15/2023 3:35:00 AM
-x-kse-bulkmessagesfiltering-scan-result: sender external
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BDEDCBCE7B831D4DA83AA5D4B94EF7B2@omp.ru>
-Content-Transfer-Encoding: base64
+        Thu, 5 Oct 2023 17:35:24 -0400
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA0B95
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 14:35:23 -0700 (PDT)
+Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay10.hostedemail.com (Postfix) with ESMTP id D3538C044C;
+        Thu,  5 Oct 2023 21:35:21 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id E1CCC60018;
+        Thu,  5 Oct 2023 21:35:18 +0000 (UTC)
+Message-ID: <01fe46f0c58aa8baf92156ae2bdccfb2bf0cb48e.camel@perches.com>
+Subject: [PATCH] get_maintainer: add --keywords-in-file option
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 05 Oct 2023 14:35:17 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
+X-Rspamd-Queue-Id: E1CCC60018
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Stat-Signature: znaudhuzqxb7bcm3zyebt8hx47tdeup6
+X-Rspamd-Server: rspamout08
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+fFSt0IL88q4Ibii+0k4u3v7SsGFFw49k=
+X-HE-Tag: 1696541718-941851
+X-HE-Meta: U2FsdGVkX1+4d9ajuY2KehV0iygo73eUFfl/0sGlPh3p27Q/AXFVh65dIIuRefmqGoJHbkVr+K4jg/FRhR2x7A2YMQor9GIGiVYmHgdIEeD0TmtuYib6Dlj2g73hY/Qcq8M7Ii/LbbeG4RFyE7Hk6LOor2+DIX+yCZIxBBNyouNbUR3185I8VYe4bdvFIlwP2sH74aZtA2yi3xQYEdfUkVjtvegkkvAfcPEViE/BgMpBHkTr7azUyiWNa+gU1MrnvZzq2mOzt1wMMWb0H6xlT8HE4wfNX5GaWbdSqcAmQWeDs/Y5iTjsfD/FomnliXf0PJ3XTxCHT8DWGNijgbT8pZ4IM/RYkDTdQ5nNRILMXcyjVKl4AtJI9k7M5eON6jjab38zYukUIUjxuE4yvPJFNZvoGb1XmuTa5+3YUEIMsA3KaBEdpN/UI4n3X2t4uBDPVZSNJ5IzKO63ke/K9GXPUAGlExhRgiR+J11jtGd4G6P2J99ce3d1rvX/FSCpk2vlsmMUhIxZJgoEbySvIYj8+VWslZEtKJPSEqrTcTPriZNmZDUqbmb+/klfRHPTmDSbwZwwgpBIWgGoPtqxV6pwcg==
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCBPY3QgMyAyMDIzIGF0IDA3OjA0IFBNICswMDAwLCBFcmljIFNub3diZXJnIHdyb3Rl
-Og0KPiANCj4gPiBPbiBPY3QgMiwgMjAyMywgYXQgNTo0OSBQTSwgSmFya2tvIFNha2tpbmVuIDxq
-YXJra29Aa2VybmVsLm9yZz4gd3JvdGU6DQo+ID4gDQo+ID4gT24gTW9uIE9jdCAyLCAyMDIzIGF0
-IDE6NDYgUE0gRUVTVCwgRGVuaXMgR2xhemtvdiB3cm90ZToNCj4gPiA+IFRoZSBMaW51eCBrZXJu
-ZWwgaGFzIGFuIElNQSAoSW50ZWdyaXR5IE1lYXN1cmVtZW50IEFyY2hpdGVjdHVyZSkNCj4gPiA+
-IHN1YnN5c3RlbSB0byBjaGVjayB0aGUgaW50ZWdyaXR5IG9mIHRoZSBmaWxlIHN5c3RlbSBiYXNl
-ZCBvbiBkaWdpdGFsDQo+ID4gPiBzaWduYXR1cmVzLiBJTUEgdXNlcyBjZXJ0aWZpY2F0ZXMgaW4g
-YC5pbWFgIGtleWluZyB0byBjaGVjayBpbnRlZ3JpdHkuDQo+ID4gPiANCj4gPiA+IE9ubHkgY2Vy
-dGlmaWNhdGVzIGlzc3VlZCBieSBvbmUgb2YgdGhlIHRydXN0ZWQgQ0EgKENlcnRpZmljYXRlIEF1
-dGhvcml0eSkNCj4gPiA+IGNlcnRpZmljYXRlcyBjYW4gYmUgYWRkZWQgdG8gdGhlIGAuaW1hYCBr
-ZXlpbmcuDQo+ID4gPiANCj4gPiA+IFRoZSBMaW51eCBrZXJuZWwgbm93IGhhcyBhIHNlY29uZGFy
-eSB0cnVzdGVkIGtleWluZyB0byB3aGljaCB0cnVzdGVkDQo+ID4gPiBjZXJ0aWZpY2F0ZXMgZnJv
-bSB1c2VyIHNwYWNlIGNhbiBiZSBhZGRlZCBpZiB5b3UgaGF2ZSBzdXBlcnVzZXINCj4gPiA+IHBy
-aXZpbGVnZXMuIFByZXZpb3VzbHksIGFsbCB0cnVzdGVkIGNlcnRpZmljYXRlcyB3ZXJlIGluIHRo
-ZSBidWlsdC1pbg0KPiA+ID4gdHJ1c3RlZCBrZXlpbmcsIHdoaWNoIGNvdWxkIG5vdCBiZSBtb2Rp
-ZmllZCBmcm9tIHVzZXIgc3BhY2UuDQo+ID4gPiBUcnVzdGVkIGNlcnRpZmljYXRlcyB3ZXJlIHBs
-YWNlZCBpbiB0aGUgYnVpbHQtaW4gdHJ1c3RlZCBrZXlpbmcgYXQNCj4gPiA+IGtlcm5lbCBjb21w
-aWxlIHRpbWUuDQo+ID4gPiANCj4gPiA+IFRoZSBzZWNvbmRhcnkgdHJ1c3RlZCBrZXlpbmcgaXMg
-ZGVzaWduZWQgc28gdGhhdCBhbnkgY2VydGlmaWNhdGVzIHRoYXQNCj4gPiA+IGFyZSBzaWduZWQg
-Ynkgb25lIG9mIHRoZSB0cnVzdGVkIENBIGNlcnRpZmljYXRlcyBpbiB0aGUgYnVpbHQtaW4gb3IN
-Cj4gPiA+IHNlY29uZGFyeSB0cnVzdGVkIGtleXJpbmcgY2FuIGJlIGFkZGVkIHRvIGl0Lg0KPiA+
-ID4gDQo+ID4gPiBMZXQncyBpbWFnaW5lIHRoYXQgd2UgaGF2ZSB0aGUgZm9sbG93aW5nIGNlcnRp
-ZmljYXRlIHRydXN0IGNoYWluOg0KPiA+ID4gDQo+ID4gPiAgICAgICAgICAgICAg4pSM4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSs4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQDQo+ID4gPiAgICAgICAgICAgICAg4pSCICAg
-ICAgICAgICAgICAgICAgICAgICAgICAg4pSCICAgICDilIzilIDilIDilIDilIDilIDilIDilIDi
-lJAgICAgICAg4pSCDQo+ID4gPiAgICAgICAgICAgICAg4pSCICAgICAgICAgICAgICAgICAgICAg
-ICAgICAg4pSCICAgICDilIIgICAgICAg4pSCICAgICAgIOKUgg0KPiA+ID4g4pSM4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pa84pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQ
-ICAgIOKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKWvOKUgOKUgOKU
-gOKUgOKUgOKWvOKUgOKUgOKUgOKUgOKUkCAg4pSCIOKUjOKUgOKUgOKUgOKUgOKUgOKUtOKUgOKU
-gOKUgOKUgOKUgOKUkA0KPiA+ID4g4pSCLmJ1aWx0aW5fdHJ1c3RlZF9rZXlz4pSC4peE4pSA4pSA
-4pSA4pSkLnNlY29uZGFyeV90cnVzdGVkX2tleXMg4pSc4pSA4pSA4pSYIOKUgiAgIC5pbWEgICAg
-4pSCDQo+ID4gPiDilJzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilKQgICAg4pSc4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSkICAgIOKUnOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUpA0KPiA+ID4g4pSCICAgICBSb290IENB
-IENlcnQgICAg4pSCLS0tLS3ilrogSW50ZXJtZWRpYXRlIENBIENlcnQgIOKUgi0tLS0t4pa6IElN
-QSBDZXJ0IOKUgg0KPiA+ID4g4pSU4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSYICAgIOKUlOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmCAg
-ICDilJTilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilJgNCj4gPiA+IA0KPiA+ID4g
-ICAgICAgICAgICAgICAgSXNzdWVzICAgICAgICAgICAgICAgICAgUmVzdHJpY3RlZCBieQ0KPiA+
-ID4gICAgICAgICAgICAtLS0tLS0tLS0tLS0t4pa6ICAgICAgICAgICAgIOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKWug0KPiA+ID4gDQo+ID4gPiBTaW5jZSB0aGUg
-SU1BIGNlcnRpZmljYXRlIGlzIHNpZ25lZCBieSBhIENBIGNlcnRpZmljYXRlIGZyb20gYSBzZWNv
-bmRhcnkNCj4gPiA+IHRydXN0ZWQga2V5aW5nLCBhbiBhdHRhY2tlciB3aXRoIHN1cGVydXNlciBw
-cml2aWxlZ2VzIHdpbGwgYmUgYWJsZSB0bw0KPiA+ID4gYWRkIHRoZSBJTUEgY2VydGlmaWNhdGUg
-dG8gdGhlIHNlY29uZGFyeSB0cnVzdGVkIGtleWluZy4gVGhhdCBpcywgdGhlIElNQQ0KPiA+ID4g
-Y2VydGlmaWNhdGUgd2lsbCBiZWNvbWUgdHJ1c3RlZC4NCj4gPiA+IA0KPiA+ID4gU2luY2UsIHdp
-dGggYENPTkZJR19NT0RVTEVfU0lHYCBvcHRpb24gZW5hYmxlZCwgbW9kdWxlcyBjYW4gb25seSBi
-ZQ0KPiA+ID4gbG9hZGVkIGludG8ga2VybmVsIHNwYWNlIGlmIHRoZXkgYXJlIHNpZ25lZCB3aXRo
-IG9uZSBvZiB0aGUgdHJ1c3RlZA0KPiA+ID4gY2VydGlmaWNhdGVzLCBhbiBhdHRhY2tlciBjb3Vs
-ZCBzaWduIHVudHJ1c3RlZCBrZXJuZWwgbW9kdWxlcyB3aXRoDQo+ID4gPiB0aGUgcHJpdmF0ZSBr
-ZXkgY29ycmVzcG9uZGluZyB0byB0aGUgSU1BIGNlcnRpZmljYXRlIGFuZCBzdWNjZXNzZnVsbHkN
-Cj4gPiA+IGxvYWQgdGhlIHVudHJ1c3RlZCBtb2R1bGVzIGludG8ga2VybmVsIHNwYWNlLg0KPiA+
-ID4gDQo+ID4gPiBUaGlzIHBhdGNoIHdhcyBjcmVhdGVkIG5vdCB0byBzb2x2ZSBvbmx5IHRoZSBw
-cm9ibGVtIG9mIGxvYWRpbmcNCj4gPiA+IHVudHJ1c3RlZCBrZXJuZWwgbW9kdWxlcywgYnV0IHRv
-IG1ha2UgaXQgcG9zc2libGUgdG8gdXNlIGEgc2Vjb25kYXJ5DQo+ID4gPiB0cnVzdGVkIGtleWlu
-ZyBvbmx5IGFzIGEgcGFydCBvZiBhIGNoYWluIG9mIHRydXN0IGNvbnRhaW5pbmcgb25seQ0KPiA+
-ID4gQ0EgY2VydGlmaWNhdGVzIHdpdGggbm8gZGlnaXRhbCBzaWduYXR1cmUgY2FwYWJpbGl0eS4g
-VGhpcyB3aWxsDQo+ID4gPiBoZWxwIGF2b2lkIHNpbWlsYXIgcHJvYmxlbXMgd2hlbiBuZXcgZmVh
-dHVyZXMgYXBwZWFyIGluIHRoZSBsaW51eA0KPiA+ID4ga2VybmVsIHRoYXQgYXJlIHNpbWlsYXIg
-dG8ga2VybmVsIG1vZHVsZXMgaW4gdGVybXMgb2YgdGhlaXIgaW1wYWN0DQo+ID4gPiBvbiBzeXN0
-ZW0gc2VjdXJpdHksIHdoaWNoIHdpbGwgYWxzbyB1c2UgdHJ1c3RlZCBjZXJ0aWZpY2F0ZXMgZm9y
-DQo+ID4gPiBzaWduYXR1cmUgdmVyaWZpY2F0aW9uLg0KPiA+ID4gDQo+ID4gPiBUaGlzIHBhdGNo
-IGFkZHMgdGhlIGNvbmZpZ3VyYXRpb24gdGhhdCBvbmNlIGVuYWJsZWQsIG9ubHkNCj4gPiA+IGNl
-cnRpZmljYXRlcyB0aGF0IG1lZXQgdGhlIGZvbGxvd2luZyByZXF1aXJlbWVudHMgY2FuIGJlIGFk
-ZGVkDQo+ID4gPiB0byB0aGUgc2Vjb25kYXJ5IHRydXN0ZWQga2V5aW5nOg0KPiA+ID4gDQo+ID4g
-PiAxLiBUaGUgY2VydGlmaWNhdGUgaXMgYSBDQSAoQ2VydGlmaWNhdGUgQXV0aG9yaXR5KQ0KPiA+
-ID4gMi4gVGhlIGNlcnRpZmljYXRlIG11c3QgYmUgdXNlZCBmb3IgdmVyaWZ5aW5nIGEgQ0EncyBz
-aWduYXR1cmVzDQo+ID4gPiAzLiBUaGUgY2VydGlmaWNhdGUgbXVzdCBub3QgYmUgdXNlZCBmb3Ig
-ZGlnaXRhbCBzaWduYXR1cmVzDQo+ID4gPiANCj4gPiA+IFNpZ25lZC1vZmYtYnk6IERlbmlzIEds
-YXprb3YgPGQuZ2xhemtvdkBvbXAucnU+DQo+ID4gPiAtLS0NCj4gPiA+IHYxIC0+IHYyOg0KPiA+
-ID4gLSBSZWJhc2UgdGhlIHBhdGNoIGZyb20gYGxpbnV4LW5leHRgIHRvIHRoZSBtYWluIGBsaW51
-eGAgcmVwbyBtYXN0ZXIgYnJhbmNoDQo+ID4gPiAtIE1ha2UgdGhlIGNvbW1pdCBtZXNzYWdlIG1v
-cmUgZGV0YWlsZWQNCj4gPiA+IC0gTW92ZSB0aGUgdmFyaWFibGUgZGVjbGFyYXRpb24gdG8gdGhl
-IGBpZmAgYmxvY2sNCj4gPiA+IC0gUmVwbGFjZSBgI2lmZGVmYCB3aXRoIGBJU19FTkFCTEVEYCBt
-YWNybw0KPiA+ID4gDQo+ID4gPiB2MiAtPiB2MzoNCj4gPiA+IC0gQWRkIHRoZSBwdXJwb3NlIGFu
-ZCBnb2FsIG9mIHRoZSBwYXRjaCB0byB0aGUgY29tbWl0IG1lc3NhZ2UNCj4gPiA+IC0tLQ0KPiA+
-ID4gY2VydHMvS2NvbmZpZyAgICAgICAgICB8ICA5ICsrKysrKysrKw0KPiA+ID4gY2VydHMvc3lz
-dGVtX2tleXJpbmcuYyB8IDE2ICsrKysrKysrKysrKysrKysNCj4gPiA+IDIgZmlsZXMgY2hhbmdl
-ZCwgMjUgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gDQo+ID4gPiBkaWZmIC0tZ2l0IGEvY2VydHMvS2Nv
-bmZpZyBiL2NlcnRzL0tjb25maWcNCj4gPiA+IGluZGV4IDFmMTA5YjA3MDg3Ny4uNGE0ZGM4YWFi
-ODkyIDEwMDY0NA0KPiA+ID4gLS0tIGEvY2VydHMvS2NvbmZpZw0KPiA+ID4gKysrIGIvY2VydHMv
-S2NvbmZpZw0KPiA+ID4gQEAgLTkwLDYgKzkwLDE1IEBAIGNvbmZpZyBTRUNPTkRBUllfVFJVU1RF
-RF9LRVlSSU5HDQo+ID4gPiAJICB0aG9zZSBrZXlzIGFyZSBub3QgYmxhY2tsaXN0ZWQgYW5kIGFy
-ZSB2b3VjaGVkIGZvciBieSBhIGtleSBidWlsdA0KPiA+ID4gCSAgaW50byB0aGUga2VybmVsIG9y
-IGFscmVhZHkgaW4gdGhlIHNlY29uZGFyeSB0cnVzdGVkIGtleXJpbmcuDQo+ID4gPiANCj4gPiA+
-ICtjb25maWcgU0VDT05EQVJZX1RSVVNURURfS0VZUklOR19GT1JfQ0FfQ0VSVElGSUNBVEVTX09O
-TFkNCj4gPiA+ICsJYm9vbCAiQWxsb3cgb25seSBDQSBjZXJ0aWZpY2F0ZXMgdG8gYmUgYWRkZWQg
-dG8gdGhlIHNlY29uZGFyeSB0cnVzdGVkIGtleXJpbmciDQo+ID4gPiArCWRlcGVuZHMgb24gU0VD
-T05EQVJZX1RSVVNURURfS0VZUklORw0KPiA+ID4gKwloZWxwDQo+ID4gPiArCSAgSWYgc2V0LCBv
-bmx5IENBIGNlcnRpZmljYXRlcyBjYW4gYmUgYWRkZWQgdG8gdGhlIHNlY29uZGFyeSB0cnVzdGVk
-IGtleXJpbmcuDQo+ID4gPiArCSAgQW4gYWNjZXB0YWJsZSBDQSBjZXJ0aWZpY2F0ZSBtdXN0IGlu
-Y2x1ZGUgdGhlIGBrZXlDZXJ0U2lnbmAgdmFsdWUgaW4NCj4gPiA+ICsJICB0aGUgYGtleVVzYWdl
-YCBmaWVsZC4gQ0EgY2VydGlmaWNhdGVzIHRoYXQgaW5jbHVkZSB0aGUgYGRpZ2l0YWxTaWduYXR1
-cmVgDQo+ID4gPiArCSAgdmFsdWUgaW4gdGhlIGBrZXlVc2FnZWAgZmllbGQgd2lsbCBub3QgYmUg
-YWNjZXB0ZWQuDQo+ID4gPiArDQo+ID4gPiBjb25maWcgU1lTVEVNX0JMQUNLTElTVF9LRVlSSU5H
-DQo+ID4gPiAJYm9vbCAiUHJvdmlkZSBzeXN0ZW0td2lkZSByaW5nIG9mIGJsYWNrbGlzdGVkIGtl
-eXMiDQo+ID4gPiAJZGVwZW5kcyBvbiBLRVlTDQo+ID4gPiBkaWZmIC0tZ2l0IGEvY2VydHMvc3lz
-dGVtX2tleXJpbmcuYyBiL2NlcnRzL3N5c3RlbV9rZXlyaW5nLmMNCj4gPiA+IGluZGV4IDlkZTYx
-MGJmMWY0Yi4uZWUxNDQ0NzM3NGU3IDEwMDY0NA0KPiA+ID4gLS0tIGEvY2VydHMvc3lzdGVtX2tl
-eXJpbmcuYw0KPiA+ID4gKysrIGIvY2VydHMvc3lzdGVtX2tleXJpbmcuYw0KPiA+ID4gQEAgLTk5
-LDYgKzk5LDIyIEBAIGludCByZXN0cmljdF9saW5rX2J5X2J1aWx0aW5fYW5kX3NlY29uZGFyeV90
-cnVzdGVkKA0KPiA+ID4gCQkvKiBBbGxvdyB0aGUgYnVpbHRpbiBrZXlyaW5nIHRvIGJlIGFkZGVk
-IHRvIHRoZSBzZWNvbmRhcnkgKi8NCj4gPiA+IAkJcmV0dXJuIDA7DQo+ID4gPiANCj4gPiA+ICsJ
-aWYgKElTX0VOQUJMRUQoQ09ORklHX1NFQ09OREFSWV9UUlVTVEVEX0tFWVJJTkdfRk9SX0NBX0NF
-UlRJRklDQVRFU19PTkxZKSAmJg0KPiA+ID4gKwkgICAgZGVzdF9rZXlyaW5nID09IHNlY29uZGFy
-eV90cnVzdGVkX2tleXMpIHsNCj4gPiA+ICsJCWNvbnN0IHN0cnVjdCBwdWJsaWNfa2V5ICpwdWIg
-PSBwYXlsb2FkLT5kYXRhW2FzeW1fY3J5cHRvXTsNCj4gPiA+ICsNCj4gPiA+ICsJCWlmICh0eXBl
-ICE9ICZrZXlfdHlwZV9hc3ltbWV0cmljKQ0KPiA+ID4gKwkJCXJldHVybiAtRU9QTk9UU1VQUDsN
-Cj4gPiA+ICsJCWlmICghcHViKQ0KPiA+ID4gKwkJCXJldHVybiAtRU5PUEtHOw0KPiA+ID4gKwkJ
-aWYgKCF0ZXN0X2JpdChLRVlfRUZMQUdfQ0EsICZwdWItPmtleV9lZmxhZ3MpKQ0KPiA+ID4gKwkJ
-CXJldHVybiAtRVBFUk07DQo+ID4gPiArCQlpZiAoIXRlc3RfYml0KEtFWV9FRkxBR19LRVlDRVJU
-U0lHTiwgJnB1Yi0+a2V5X2VmbGFncykpDQo+ID4gPiArCQkJcmV0dXJuIC1FUEVSTTsNCj4gPiA+
-ICsJCWlmICh0ZXN0X2JpdChLRVlfRUZMQUdfRElHSVRBTFNJRywgJnB1Yi0+a2V5X2VmbGFncykp
-DQo+ID4gPiArCQkJcmV0dXJuIC1FUEVSTTsNCj4gPiA+ICsJfQ0KPiA+ID4gKw0KPiA+ID4gCXJl
-dHVybiByZXN0cmljdF9saW5rX2J5X3NpZ25hdHVyZShkZXN0X2tleXJpbmcsIHR5cGUsIHBheWxv
-YWQsDQo+ID4gPiAJCQkJCSAgc2Vjb25kYXJ5X3RydXN0ZWRfa2V5cyk7DQo+ID4gPiB9DQo+ID4g
-PiAtLSANCj4gPiA+IDIuMzQuMQ0KPiA+IA0KPiA+IEkgZG9uJ3QgdGhpbmsgdGhpcyBkb2VzIGFu
-eSBoYXJtLg0KPiANCj4gUmlnaHQgb3Igd3JvbmcsIHRoZXJlIGRvIHNlZW0gdG8gYmUgSW50ZXJt
-ZWRpYXRlIENB4oCZcyB0aGF0IGhhdmUgdGhlIA0KPiBkaWdpdGFsIHNpZ25hdHVyZSB1c2FnZSBz
-ZXQgWzFdLg0KPiANCj4gMS4gaHR0cHM6Ly93d3cuZGlnaWNlcnQuY29tL2tiL2RpZ2ljZXJ0LXJv
-b3QtY2VydGlmaWNhdGVzLmh0bSNpbnRlcm1lZGlhdGVzDQoNCkkgd2FzIHN1cnByaXNlZCB0byBz
-ZWUgdGhhdCBpbnRlcm1lZGlhdGUgQ0EgY2VydGlmaWNhdGVzIGlzc3VlZCBieQ0KRGlnaUNlcnQg
-Y2FuIGJlIHVzZWQgZm9yIGRpZ2l0YWwgc2lnbmF0dXJlLiBTaW5jZSBpbiBpZGVhIGFsbCB0aGF0
-DQppcyByZXF1aXJlZCBmcm9tIGludGVybWVkaWF0ZSBDQSBjZXJ0aWZpY2F0ZXMgaXMgdG8gYmUg
-YSBtZW1iZXIgb2YNCnRoZSBjaGFpbiBvZiB0cnVzdCBhbmQgdG8gaXNzdWUgZW5kLXVzZXIgY2Vy
-dGlmaWNhdGVzIHRoYXQgc2hvdWxkDQpiZSB1c2VkIGZvciBkaWdpdGFsIHNpZ25hdHVyZXMuDQoN
-CkluIG15IG9waW5pb24gZm9yIHRoZXNlIHR3byBwdXJwb3NlcyB0aGVyZSBpcyBubyBuZWVkIHRv
-IGFkZCBkaWdpdGFsDQpzaWduYXR1cmUgcmlnaHRzIHRvIHRoZSBpbnRlcm1lZGlhdGUgQ0EgY2Vy
-dGlmaWNhdGUuIFRoaXMgaXMgcHJvYmFibHkNCmJlY2F1c2UgbW9zdCBvZiB0aGVzZSBpbnRlcm1l
-ZGlhdGUgQ0EgY2VydGlmaWNhdGVzIGFyZSB1c2VkIG9uIHRoZQ0Kd2ViLCB3aGVyZSB0aGV5IG1v
-c3QgbGlrZWx5IGhhdmUgYWRkaXRpb25hbCB1c2UgY2FzZXMuDQoNCkl0IGlzIGRpZmZpY3VsdCBm
-b3IgbWUgdG8gaW1hZ2luZSB1c2luZyBzdWNoIGludGVybWVkaWF0ZSBDQQ0KY2VydGlmaWNhdGVz
-IGluIExpbnV4IHRydXN0ZWQga2V5cmluZ3MsIHNpbmNlIHRoZXkgYXJlIHByYWN0aWNhbGx5DQpu
-byBkaWZmZXJlbnQgZnJvbSBlbmQtdXNlciBjZXJ0aWZpY2F0ZXMsIHdoaWNoIGNhbiBiZSB1c2Vk
-IHRvDQp2ZXJpZnkgbW9kdWxlIHNpZ25hdHVyZXMuDQoNClRoYXQncyB3aHkgdGhpcyBwYXRjaCBp
-bmNsdWRlcyBhbiBhZGRpdGlvbmFsIGNoZWNrIHRvIG1ha2Ugc3VyZSB0aGF0DQp0aGUgY2VydGlm
-aWNhdGUgZG9lcyBub3QgaGF2ZSBkaWdpdGFsIHNpZ25hdHVyZSByaWdodHMsIHdoaWNoIHdpbGwN
-CnByb3RlY3QgdGhlIHNlY29uZGFyeSB0cnVzdGVkIGtleXJpbmcgZnJvbSB0aGUgc2NlbmFyaW8g
-ZGVzY3JpYmVkIGluDQp0aGUgY29tbWl0IG1lc3NhZ2UuDQoNCkJSLCBEZW5pcw==
+There were some recent attempts [1] [2] to make the K: field less noisy
+and its behavior more obvious. Ultimately, a shift in the default
+behavior and an associated command line flag is the best choice.
+
+Currently, K: will match keywords found in both patches and files.
+
+Matching content from entire files is (while documented) not obvious
+behavior and is usually not wanted by maintainers.
+
+Now only patch content will be matched against unless --keywords-in-file
+is also provided as an argument to get_maintainer.
+
+Add the actual keyword matched to the role or rolestats as well.
+
+For instance given the diff below that removes clang:
+
+   diff --git a/drivers/hid/bpf/entrypoints/README b/drivers/hid/bpf/entrypoints/README
+   index 147e0d41509f..f88eb19e8ef2 100644
+   --- a/drivers/hid/bpf/entrypoints/README
+   +++ b/drivers/hid/bpf/entrypoints/README
+   @@ -1,4 +1,4 @@
+    WARNING:
+    If you change "entrypoints.bpf.c" do "make -j" in this directory to rebuild "entrypoints.skel.h".
+   -Make sure to have clang 10 installed.
+   +Make sure to have 10 installed.
+    See Documentation/bpf/bpf_devel_QA.rst
+
+The new role/rolestats output includes ":Keyword:\b(?i:clang|llvm)\b"
+
+$ git diff drivers/hid/bpf/entrypoints/README | .scripts/get_maintainer.pl
+Jiri Kosina <jikos@kernel.org> (maintainer:HID CORE LAYER,commit_signer:1/1=100%)
+Benjamin Tissoires <benjamin.tissoires@redhat.com> (maintainer:HID CORE LAYER,commit_signer:1/1=100%,authored:1/1=100%,added_lines:4/4=100%)
+Nathan Chancellor <nathan@kernel.org> (supporter:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
+Nick Desaulniers <ndesaulniers@google.com> (supporter:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
+Tom Rix <trix@redhat.com> (reviewer:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> (commit_signer:1/1=100%)
+linux-input@vger.kernel.org (open list:HID CORE LAYER)
+linux-kernel@vger.kernel.org (open list)
+llvm@lists.linux.dev (open list:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
+
+Link: https://lore.kernel.org/r/20231004-get_maintainer_change_k-v1-1-ac7ced18306a@google.com
+Link: https://lore.kernel.org/all/20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com
+Link: https://lore.kernel.org/all/3dca40b677dd2fef979a5a581a2db91df2c21801.camel@perches.com
+Original-patch-by: Justin Stitt <justinstitt@google.com>
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ scripts/get_maintainer.pl | 38 ++++++++++++++++++++------------------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
+
+diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
+index ab123b498fd9..16d8ac6005b6 100755
+--- a/scripts/get_maintainer.pl
++++ b/scripts/get_maintainer.pl
+@@ -57,6 +57,7 @@ my $subsystem = 0;
+ my $status = 0;
+ my $letters = "";
+ my $keywords = 1;
++my $keywords_in_file = 0;
+ my $sections = 0;
+ my $email_file_emails = 0;
+ my $from_filename = 0;
+@@ -272,6 +273,7 @@ if (!GetOptions(
+ 		'letters=s' => \$letters,
+ 		'pattern-depth=i' => \$pattern_depth,
+ 		'k|keywords!' => \$keywords,
++		'kf|keywords-in-file!' => \$keywords_in_file,
+ 		'sections!' => \$sections,
+ 		'fe|file-emails!' => \$email_file_emails,
+ 		'f|file' => \$from_filename,
+@@ -318,6 +320,7 @@ if ($sections || $letters ne "") {
+     $subsystem = 0;
+     $web = 0;
+     $keywords = 0;
++    $keywords_in_file = 0;
+     $interactive = 0;
+ } else {
+     my $selections = $email + $scm + $status + $subsystem + $web;
+@@ -548,16 +551,14 @@ foreach my $file (@ARGV) {
+ 	$file =~ s/^\Q${cur_path}\E//;	#strip any absolute path
+ 	$file =~ s/^\Q${lk_path}\E//;	#or the path to the lk tree
+ 	push(@files, $file);
+-	if ($file ne "MAINTAINERS" && -f $file && $keywords) {
++	if ($file ne "MAINTAINERS" && -f $file && $keywords && $keywords_in_file) {
+ 	    open(my $f, '<', $file)
+ 		or die "$P: Can't open $file: $!\n";
+ 	    my $text = do { local($/) ; <$f> };
+ 	    close($f);
+-	    if ($keywords) {
+-		foreach my $line (keys %keyword_hash) {
+-		    if ($text =~ m/$keyword_hash{$line}/x) {
+-			push(@keyword_tvi, $line);
+-		    }
++	    foreach my $line (keys %keyword_hash) {
++		if ($text =~ m/$keyword_hash{$line}/x) {
++		    push(@keyword_tvi, $line);
+ 		}
+ 	    }
+ 	}
+@@ -919,7 +920,7 @@ sub get_maintainers {
+ 	}
+ 
+ 	foreach my $line (sort {$hash{$b} <=> $hash{$a}} keys %hash) {
+-	    add_categories($line);
++	    add_categories($line, "");
+ 	    if ($sections) {
+ 		my $i;
+ 		my $start = find_starting_index($line);
+@@ -947,7 +948,7 @@ sub get_maintainers {
+     if ($keywords) {
+ 	@keyword_tvi = sort_and_uniq(@keyword_tvi);
+ 	foreach my $line (@keyword_tvi) {
+-	    add_categories($line);
++	    add_categories($line, ":Keyword:$keyword_hash{$line}");
+ 	}
+     }
+ 
+@@ -1076,6 +1077,7 @@ Output type options:
+ Other options:
+   --pattern-depth => Number of pattern directory traversals (default: 0 (all))
+   --keywords => scan patch for keywords (default: $keywords)
++  --keywords-in-file => scan file for keywords (default: $keywords_in_file)
+   --sections => print all of the subsystem sections with pattern matches
+   --letters => print all matching 'letter' types from all matching sections
+   --mailmap => use .mailmap file (default: $email_use_mailmap)
+@@ -1086,7 +1088,7 @@ Other options:
+ 
+ Default options:
+   [--email --tree --nogit --git-fallback --m --r --n --l --multiline
+-   --pattern-depth=0 --remove-duplicates --rolestats]
++   --pattern-depth=0 --remove-duplicates --rolestats --keywords]
+ 
+ Notes:
+   Using "-f directory" may give unexpected results:
+@@ -1312,7 +1314,7 @@ sub get_list_role {
+ }
+ 
+ sub add_categories {
+-    my ($index) = @_;
++    my ($index, $suffix) = @_;
+ 
+     my $i;
+     my $start = find_starting_index($index);
+@@ -1342,7 +1344,7 @@ sub add_categories {
+ 			if (!$hash_list_to{lc($list_address)}) {
+ 			    $hash_list_to{lc($list_address)} = 1;
+ 			    push(@list_to, [$list_address,
+-					    "subscriber list${list_role}"]);
++					    "subscriber list${list_role}" . $suffix]);
+ 			}
+ 		    }
+ 		} else {
+@@ -1352,12 +1354,12 @@ sub add_categories {
+ 				if ($email_moderated_list) {
+ 				    $hash_list_to{lc($list_address)} = 1;
+ 				    push(@list_to, [$list_address,
+-						    "moderated list${list_role}"]);
++						    "moderated list${list_role}" . $suffix]);
+ 				}
+ 			    } else {
+ 				$hash_list_to{lc($list_address)} = 1;
+ 				push(@list_to, [$list_address,
+-						"open list${list_role}"]);
++						"open list${list_role}" . $suffix]);
+ 			    }
+ 			}
+ 		    }
+@@ -1365,19 +1367,19 @@ sub add_categories {
+ 	    } elsif ($ptype eq "M") {
+ 		if ($email_maintainer) {
+ 		    my $role = get_maintainer_role($i);
+-		    push_email_addresses($pvalue, $role);
++		    push_email_addresses($pvalue, $role . $suffix);
+ 		}
+ 	    } elsif ($ptype eq "R") {
+ 		if ($email_reviewer) {
+ 		    my $subsystem = get_subsystem_name($i);
+-		    push_email_addresses($pvalue, "reviewer:$subsystem");
++		    push_email_addresses($pvalue, "reviewer:$subsystem" . $suffix);
+ 		}
+ 	    } elsif ($ptype eq "T") {
+-		push(@scm, $pvalue);
++		push(@scm, $pvalue . $suffix);
+ 	    } elsif ($ptype eq "W") {
+-		push(@web, $pvalue);
++		push(@web, $pvalue . $suffix);
+ 	    } elsif ($ptype eq "S") {
+-		push(@status, $pvalue);
++		push(@status, $pvalue . $suffix);
+ 	    }
+ 	}
+     }
+
