@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B121F7BA149
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1567BA217
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239117AbjJEOlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
+        id S232430AbjJEPNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236990AbjJEOhj (ORCPT
+        with ESMTP id S233541AbjJEPMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:37:39 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AC783E5;
-        Thu,  5 Oct 2023 07:03:23 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3955buOu012274;
-        Thu, 5 Oct 2023 07:36:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=D8BC3BO3azckk+Ehrf8XzxN2xBK3e06fHyqblWk1k/I=;
- b=X75GR4wzkbqXeGM0oJnfHW2IK106HRJRgI3R5yrGLPC2NhseK4QLVKpMiy+LirA+JNXF
- QdzgRTJQqMEz1KLtFRJ1UxEoDHuV2ZxM0uOoetbuDIBUOQH9Ai/wZ8hmkXaWJPPO+4oI
- HQxgIZBnXOfltTtgPz7NsFGrUpmEFbxhNBYWZxl9ncsZNwVRH2ECBc+mFVbuw9eQxU21
- 1CoUjteGyYxq1STjhmsz5SHQ3NUugZeignhMoWWAE1Dv68NML1VP2qikdGNEoiH0bCAW
- QBKs9CQqlpuTRkoIBkFHmCNxJxpPfDZou5qRcSqwffj/1S9NcnIqdIjqN5wciL0RodKP uQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3thn058c5s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 07:36:40 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3957adOs003567
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Oct 2023 07:36:39 GMT
-Received: from [10.216.40.132] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 5 Oct
- 2023 00:36:32 -0700
-Message-ID: <cc5fef7a-d4d1-d725-36a5-86183bacc5a0@quicinc.com>
-Date:   Thu, 5 Oct 2023 13:06:27 +0530
+        Thu, 5 Oct 2023 11:12:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECB19EE3
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:43:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696516984;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DHM0xHF2kv3BLjLoSwriKAoHSAm/JAv+ui/sTdWa+9U=;
+        b=T9PhZ/m+s7jLKFTBAvB6Q4+6ChGyzBdclVHrm8M5tpvf5T4paiQ9j0QvCZhlmWLlV98x46
+        7A1H2e42FIk3VSqxEIYJWN+Nac5FwB3eNuyQDL+jLLxSvR6KYh0NB97qrY+K+TIABuPc+l
+        efD+HmZu154zyHV6s2K5nmj76BqKRdQ=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-190-aqeGIM6iMrWDArgiBGZpQQ-1; Thu, 05 Oct 2023 03:37:25 -0400
+X-MC-Unique: aqeGIM6iMrWDArgiBGZpQQ-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9ae6afce33fso17550766b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 00:37:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696491444; x=1697096244;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DHM0xHF2kv3BLjLoSwriKAoHSAm/JAv+ui/sTdWa+9U=;
+        b=gkPbp/CcucLzfdvEAVwi8oPTvrRpxTxLMAzDMj5rpVwMqtHL+bF0FVHQzbecandJCn
+         5B7DZfZ3oZ0FOd72L6rtWFCzSPWOI39Mm3IKlASuv/NS0KH6G4R6cNAZEbu9B+FHW1ed
+         ozYdPH/I76CG6xwADFkj1snX5NyeXDS4yW+fyglOczD8Yj4uDFRJmtGLoc4WlFB+/8m7
+         4fi49joQApwwbnPdFJ02gxi1poo9uqSyu9ARKzF24tNvT0kJIX6YV0BzVP1pp2ISSygq
+         4MLF+DqBPSMTsZNwEx7I28vCdzkELNmexPU5lmBf/AVV96cr2SIxh5Y8bvIQBslo8SZM
+         AATA==
+X-Gm-Message-State: AOJu0Yz1g2HsbBuMQSDU4s+XXOeNDKFn2/oEyuLPpnjrB8+Sx9OwkfDn
+        k70fvwfwmOIKZisdu3dGta0FHUrwf7rrDfAUxoWR84V5Vx7GNVMaRN1poQ+gj1Y17LMWC1ghMN4
+        uTWU6vVXjEwALwmoc+DK8jlFT
+X-Received: by 2002:a17:906:7389:b0:9ae:2f35:442a with SMTP id f9-20020a170906738900b009ae2f35442amr4002373ejl.5.1696491444122;
+        Thu, 05 Oct 2023 00:37:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFGdFCAAdCKfZyRjyhsGRK+djz3pK0cRwljeBcUUAtdaOoJFV7XbegYiGlFskH2Ho7U/h+CKg==
+X-Received: by 2002:a17:906:7389:b0:9ae:2f35:442a with SMTP id f9-20020a170906738900b009ae2f35442amr4002357ejl.5.1696491443781;
+        Thu, 05 Oct 2023 00:37:23 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-237-55.dyn.eolo.it. [146.241.237.55])
+        by smtp.gmail.com with ESMTPSA id lr5-20020a170906fb8500b009adcb6c0f0esm689732ejb.193.2023.10.05.00.37.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 00:37:23 -0700 (PDT)
+Message-ID: <0c0b0fade091a701624379d91813cfb9f30a5111.camel@redhat.com>
+Subject: Re: [PATCH net-next] net: ixp4xx_eth: Specify min/max MTU
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        patchwork-bot+netdevbpf@kernel.org
+Cc:     khalasa@piap.pl, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 05 Oct 2023 09:37:21 +0200
+In-Reply-To: <CACRpkdacagNg8EA54_9euW8M4WHivLb01C7yEubAreNan06sGA@mail.gmail.com>
+References: <20230923-ixp4xx-eth-mtu-v1-1-9e88b908e1b2@linaro.org>
+         <169632602529.26043.5537275057934582250.git-patchwork-notify@kernel.org>
+         <CACRpkdacagNg8EA54_9euW8M4WHivLb01C7yEubAreNan06sGA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V14 3/4] dt-bindings: mfd: qcom,tcsr: Add simple-mfd
- support for IPQ6018
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <thierry.reding@gmail.com>, <ndesaulniers@google.com>,
-        <trix@redhat.com>, <baruch@tkos.co.il>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>
-CC:     <linux-pwm@vger.kernel.org>, <u.kleine-koenig@pengutronix.de>,
-        <nathan@kernel.org>
-References: <20231005033053.2626465-1-quic_devipriy@quicinc.com>
- <20231005033053.2626465-4-quic_devipriy@quicinc.com>
- <cfbc4805-c2e8-4dee-92bc-14d805dc2320@linaro.org>
-From:   Devi Priya <quic_devipriy@quicinc.com>
-In-Reply-To: <cfbc4805-c2e8-4dee-92bc-14d805dc2320@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 6-_sl-_tzVzavNW99DG16uhxP881mC0P
-X-Proofpoint-GUID: 6-_sl-_tzVzavNW99DG16uhxP881mC0P
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_04,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- impostorscore=0 bulkscore=0 spamscore=0 mlxlogscore=644 priorityscore=1501
- mlxscore=0 malwarescore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310050057
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,23 +83,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2023-10-03 at 23:54 +0200, Linus Walleij wrote:
+> On Tue, Oct 3, 2023 at 11:40=E2=80=AFAM <patchwork-bot+netdevbpf@kernel.o=
+rg> wrote:
+>=20
+> > This patch was applied to netdev/net-next.git (main)
+> > by Paolo Abeni <pabeni@redhat.com>:
+>=20
+> Sorry Paolo, this is the latest version of this patch, which sadly change=
+d
+> Subject in the process:
+> https://lore.kernel.org/netdev/20230928-ixp4xx-eth-mtu-v3-1-cb18eaa0edb9@=
+linaro.org/
 
+Ouch, my bad :(
 
-On 10/5/2023 1:04 PM, Krzysztof Kozlowski wrote:
-> On 05/10/2023 05:30, Devi Priya wrote:
->> Update the binding to include pwm as the child node to TCSR block and
->> add simple-mfd support for IPQ6018.
->>
->> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
-> 
-> Why did you send it twice? It's just brings confusion...
+The change of subject baffled both me and patchwork. As I process the
+backlog fifo, and was unable to reach the most recent versions due to
+the backlog size, I missed the newer revisions.
 
-Sorry, kindly ignore. As the patches were not delivered to the list,
-tried sending it again.
+In the future, please try to avoid subject change. If the subject chane
+is needed, please explicitly mark the old version as superseded, it
+will help us a lot, thanks!
 
-Regards,
-Devi priya
-> 
-> Best regards,
-> Krzysztof
-> 
+Paolo
+
