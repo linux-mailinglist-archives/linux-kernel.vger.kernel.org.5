@@ -2,198 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C64C7BA0A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3D27BA070
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238560AbjJEOkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
+        id S234059AbjJEOke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236232AbjJEOhD (ORCPT
+        with ESMTP id S236150AbjJEOhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Oct 2023 10:37:03 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0B73F016;
-        Thu,  5 Oct 2023 07:02:52 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 08D525C025F;
-        Thu,  5 Oct 2023 00:23:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 05 Oct 2023 00:23:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1696479821; x=1696566221; bh=Z9/BddHtqtTSTcngqikz3LcXGL1B2ri4Bu8
-        DyrtBFpA=; b=ZATk2PEGSVbByPxxMHhCET54U+sK7GsAptaPN938K3RVWhuGZ5y
-        1MPF+9p64wEAdmCwLrRQXrxD/Z8DVIFcnUnqWreXfhPid6+S7dKJ/TEGIN/wGi+b
-        w7UeuMfX/bLTSQO+fVc34VBq1wO1dUgJOvxF0tpJTnyQf5cE3IPdC2sYfKA0jAjG
-        5+IYUWyKC3qnAOwJfJdm5vsBkqiziGe+7EGb5i4r5JXCRTl9hWca88GkjTghPVez
-        acMX6X1LbL2muWnR1934QI1V9CGQfyDgJAgufvqQ2Kw6mzMfrzzzygVbLH2Ee0dr
-        54v+p6eYw+ouexAq5fVz/hwiI28hqHXDmsQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1696479821; x=1696566221; bh=Z9/BddHtqtTSTcngqikz3LcXGL1B2ri4Bu8
-        DyrtBFpA=; b=l1tqXNRK10fDiiVcNwtJA0uOc/5R0o5gnOO61e6/GXPLBmaxAmP
-        Oes8qYtqeVZfnPgVVCdc+RXPh8Gw9bfax7tqiszQxZsc85fSVpprBRMLvFkJmvnH
-        AhuqzooUTZ3Ah1sL4WvIfKU7IApqwjqXF/qoM9FYe9hU9wotxuQwckbMOMgEs8JM
-        TWOrzse4ZMt0lJw+bjUgBvNWj8zsbaiaoj4aFj16uOh6cmN1xnxFqsMEU0vEg1qx
-        BnLb9yq7cETJbSx70aGg7piPq5Ve5NY2TfQmWSplWeVPXzqFIsG5cJ8txrx7Ofi+
-        zpApTEwfl5TEODfW27Y5c9DHpS3Oza52BjQ==
-X-ME-Sender: <xms:SzoeZVQem9RMqeDhYeJaTvhJcFyq8Erl84K7YNXvrekTeVeuRl77JQ>
-    <xme:SzoeZex9sfi01AN7RobO41A27ETMlq08vkJbH__Szc2EzG4-TijY3Rs1Donu3wGlw
-    2oRFxP9O-RN>
-X-ME-Received: <xmr:SzoeZa39pA9oM1GJ4l2oTNh7mzcWmIitokwjaPOcg3v-vpVeSsY8LGcWiTNs_xPb6X8aH0DdfOhih5BftqSNWevnZ0dPSJDOjZDm1mo-eBNYrvT9r9S8pdCg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgeefgdekvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuvfevfhfhjggtgfesthekredttdefjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    egvdetvedvfeeivdeuueejgeetvdehlefhheethfekgfejueffgeeugfekudfhjeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:SzoeZdDciAtZwRk0Yzved4E9M2AnwsGT0W61S7IhiM0cqL1pTlvSgQ>
-    <xmx:SzoeZeiorAuaxLm_o3gm8qM5bD_cHVJOcDx1E1A_txs2tFOUDKYmXg>
-    <xmx:SzoeZRr3Cn8PLYe1aG08RrTR45DiIX7qCZO690Qp2De1v4Np-NTcwg>
-    <xmx:TToeZe5FzehY4x2bDePAxtenrqdu9Dbp12yeuFC_F0HeclaNBJgGDg>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 5 Oct 2023 00:23:33 -0400 (EDT)
-Message-ID: <a25f2736-1837-f4ca-b401-85db24f46452@themaw.net>
-Date:   Thu, 5 Oct 2023 12:23:29 +0800
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D734F07B;
+        Thu,  5 Oct 2023 07:02:49 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3953shNd003958;
+        Thu, 5 Oct 2023 04:31:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=H8Wr2XjEs5oHuA9SGyGdCEHWKMZtg85Nl/LHRslFifI=;
+ b=hehHETMlVrTZWnAyRycCJEBk1939LNg5tLlo1n7Mqf1QPzJ574dKder4EGSyQQoEDQhw
+ gDTM6tM/HXy2EfkemKtTt4MSa6U9HLAkfKJ02HuXDzh2NwOQOy2lhX5+wJQwn3LYCQyE
+ 1HC6MMeO+EMFRAxQghNy/vsavbwylyegGAqg4GIvp/bOcmkjKbosc+zrIdkqxzgIYGgp
+ 6vm3KibuDn5FAtaeCysp4QfQMUW2JZ5TCle1qDNp/fqfAJ6S05GZR5qLv5+HhMwRRJ60
+ axI5XQ07ltDI1WpaGXl0LHaFPwvDLuSIivoMT+uaKDD1eDKTVlOowRKob7YmntUpsjGR Zw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgynhb4ac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 04:31:46 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3954VjL0031892
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 5 Oct 2023 04:31:45 GMT
+Received: from hu-devipriy-blr.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Wed, 4 Oct 2023 21:31:39 -0700
+From:   Devi Priya <quic_devipriy@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <thierry.reding@gmail.com>, <ndesaulniers@google.com>,
+        <trix@redhat.com>, <baruch@tkos.co.il>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>
+CC:     <linux-pwm@vger.kernel.org>, <u.kleine-koenig@pengutronix.de>,
+        <nathan@kernel.org>
+Subject: [PATCH V14 0/4] Add PWM support for IPQ chipsets 
+Date:   Thu, 5 Oct 2023 10:01:23 +0530
+Message-ID: <20231005043127.2690639-1-quic_devipriy@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 4/4] add listmount(2) syscall
-To:     Miklos Szeredi <miklos@szeredi.hu>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20230928130147.564503-1-mszeredi@redhat.com>
- <20230928130147.564503-5-mszeredi@redhat.com>
- <CAHC9VhQD9r+Qf5Vz1XmxUdJJJO7HNTKdo8Ux=n+xkxr=JGFMrw@mail.gmail.com>
- <CAJfpegsPbDgaz46x4Rr9ZgCpF9rohVHsvuWtQ5LNAdiYU_D4Ww@mail.gmail.com>
-Content-Language: en-US
-From:   Ian Kent <raven@themaw.net>
-In-Reply-To: <CAJfpegsPbDgaz46x4Rr9ZgCpF9rohVHsvuWtQ5LNAdiYU_D4Ww@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: cD2-C3Mm6cNGDwF9ERfa-e35sLhrlgAm
+X-Proofpoint-ORIG-GUID: cD2-C3Mm6cNGDwF9ERfa-e35sLhrlgAm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-05_01,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 mlxscore=0
+ mlxlogscore=671 clxscore=1015 adultscore=0 lowpriorityscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310050037
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/23 12:01, Miklos Szeredi wrote:
-> On Wed, 4 Oct 2023 at 21:38, Paul Moore <paul@paul-moore.com> wrote:
->> On Thu, Sep 28, 2023 at 9:04 AM Miklos Szeredi <mszeredi@redhat.com> wrote:
->>> Add way to query the children of a particular mount.  This is a more
->>> flexible way to iterate the mount tree than having to parse the complete
->>> /proc/self/mountinfo.
->>>
->>> Lookup the mount by the new 64bit mount ID.  If a mount needs to be queried
->>> based on path, then statx(2) can be used to first query the mount ID
->>> belonging to the path.
->>>
->>> Return an array of new (64bit) mount ID's.  Without privileges only mounts
->>> are listed which are reachable from the task's root.
->>>
->>> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
->>> ---
->>>   arch/x86/entry/syscalls/syscall_32.tbl |  1 +
->>>   arch/x86/entry/syscalls/syscall_64.tbl |  1 +
->>>   fs/namespace.c                         | 69 ++++++++++++++++++++++++++
->>>   include/linux/syscalls.h               |  3 ++
->>>   include/uapi/asm-generic/unistd.h      |  5 +-
->>>   include/uapi/linux/mount.h             |  3 ++
->>>   6 files changed, 81 insertions(+), 1 deletion(-)
->> ...
->>
->>> diff --git a/fs/namespace.c b/fs/namespace.c
->>> index 3326ba2b2810..050e2d2af110 100644
->>> --- a/fs/namespace.c
->>> +++ b/fs/namespace.c
->>> @@ -4970,6 +4970,75 @@ SYSCALL_DEFINE4(statmount, const struct __mount_arg __user *, req,
->>>          return ret;
->>>   }
->>>
->>> +static long do_listmount(struct vfsmount *mnt, u64 __user *buf, size_t bufsize,
->>> +                        const struct path *root, unsigned int flags)
->>> +{
->>> +       struct mount *r, *m = real_mount(mnt);
->>> +       struct path rootmnt = {
->>> +               .mnt = root->mnt,
->>> +               .dentry = root->mnt->mnt_root
->>> +       };
->>> +       long ctr = 0;
->>> +       bool reachable_only = true;
->>> +       int err;
->>> +
->>> +       err = security_sb_statfs(mnt->mnt_root);
->>> +       if (err)
->>> +               return err;
->>> +
->>> +       if (flags & LISTMOUNT_UNREACHABLE) {
->>> +               if (!capable(CAP_SYS_ADMIN))
->>> +                       return -EPERM;
->>> +               reachable_only = false;
->>> +       }
->>> +
->>> +       if (reachable_only && !is_path_reachable(m, mnt->mnt_root, &rootmnt))
->>> +               return capable(CAP_SYS_ADMIN) ? 0 : -EPERM;
->>> +
->>> +       list_for_each_entry(r, &m->mnt_mounts, mnt_child) {
->>> +               if (reachable_only &&
->>> +                   !is_path_reachable(r, r->mnt.mnt_root, root))
->>> +                       continue;
->> I believe we would want to move the security_sb_statfs() call from
->> above to down here; something like this I think ...
->>
->>    err = security_sb_statfs(r->mnt.mnt_root);
->>    if (err)
->>      /* if we can't access the mount, pretend it doesn't exist */
->>      continue;
-> Hmm.  Why is this specific to listing mounts (i.e. why doesn't readdir
-> have a similar filter)?
->
-> Also why hasn't this come up with regards to the proc interfaces that
-> list mounts?
+Add PWM driver and binding support for IPQ chipsets.
+Also, add support for pwm node in ipq6018.
 
-The proc interfaces essentially use <mount namespace>->list to provide
+V14:
+Detailed Change logs are added to the respective patches.
 
-the mounts that can be seen so it's filtered by mount namespace of the
+V13 can be found at:
+https://lore.kernel.org/linux-arm-msm/20231004090449.256229-1-quic_devipriy@quicinc.com/
 
-task that's doing the open().
+Devi Priya (4):
+  pwm: driver for qualcomm ipq6018 pwm block
+  dt-bindings: pwm: add IPQ6018 binding
+  dt-bindings: mfd: qcom,tcsr: Add simple-mfd support for IPQ6018
+  arm64: dts: qcom: ipq6018: add pwm node
 
+ .../devicetree/bindings/mfd/qcom,tcsr.yaml    | 112 +++++--
+ .../bindings/pwm/qcom,ipq6018-pwm.yaml        |  45 +++
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi         |  15 +-
+ drivers/pwm/Kconfig                           |  12 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-ipq.c                         | 282 ++++++++++++++++++
+ 6 files changed, 435 insertions(+), 32 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
+ create mode 100644 drivers/pwm/pwm-ipq.c
 
-See fs/namespace.c:mnt_list_next() and just below the m_start(), m_next(),
+-- 
+2.34.1
 
-etc.
-
-
-Ian
-
->
-> I just want to understand the big picture here.
->
-> Thanks,
-> Miklos
