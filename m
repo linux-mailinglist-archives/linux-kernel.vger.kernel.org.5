@@ -2,99 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BDD7BA3FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932E17BA2AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjJEQC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
+        id S234035AbjJEPpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237812AbjJEQB1 (ORCPT
+        with ESMTP id S232999AbjJEPoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:01:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62544270F;
-        Thu,  5 Oct 2023 06:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696513855; x=1728049855;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=BFr4H6MozJ7QEfc0QO/jO0A3h1tNpq51OwhnmLN17pY=;
-  b=WpM6FGW7Mn2RnTJ/LLGPLp6yOpohZbxwTrAX93vPPlgKWOAXjGE+VFrM
-   /WwnG/Qv3Kw/sd5/bMz0nMGR2Wp1AhM+dCEEef54SwccHD9rfEg2y5d3k
-   TUpNy8IZ1kFCBYtfZ6CitNURiKrCjYYONalpEqMeb3c6dMSvrNO6CvQgX
-   7/EvvbOIThJxXqCSlmSVqT6lYYY8V6DLAPpcRcZbQmOMFH7Z+ZJmB+h63
-   mpPXV9nbRO9YdAslepqxwXJpRe7xbwbvsK75wD8h3vDewoP3x38DWX9Sm
-   7xhvPMH+2WgE5D8eQhuHkpVJbO2O7rKyJmMOmwnS5bhGXG8UzlI2gNEdW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="368538983"
-X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
-   d="scan'208";a="368538983"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 03:51:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="781204465"
-X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
-   d="scan'208";a="781204465"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO ijarvine-mobl2.mshome.net) ([10.237.66.45])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 03:51:31 -0700
-Date:   Thu, 5 Oct 2023 13:51:29 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "Joseph, Jithu" <jithu.joseph@intel.com>
-cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        rostedt@goodmis.org, ashok.raj@intel.com, tony.luck@intel.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
-        ravi.v.shankar@intel.com, pengfei.xu@intel.com
-Subject: Re: [PATCH v3 0/9] IFS support for GNR and SRF
-In-Reply-To: <19a7d055-bb19-f3e3-1447-7238d14a2138@intel.com>
-Message-ID: <41f82af1-d08d-8f6-e642-93abf8531fc8@linux.intel.com>
-References: <20230922232606.1928026-1-jithu.joseph@intel.com> <20230929202436.2850388-1-jithu.joseph@intel.com> <19a7d055-bb19-f3e3-1447-7238d14a2138@intel.com>
+        Thu, 5 Oct 2023 11:44:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB4B13C80;
+        Thu,  5 Oct 2023 07:32:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5903BC32782;
+        Thu,  5 Oct 2023 10:54:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696503274;
+        bh=r9QAN25ECg8YV7rovLkgwPyjjglMxbc27XwhgPj0p2k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jylTMHbvJxFAMVfEx+/VTWJ5qLSXYONVK3QwgUliTNxTLcVa8fp1LiFRhv8pXAEiG
+         c6IiyFrR/PMIZPxfaWHGeiEjHY7WqILh+Dz+ukbT78vExFr+jS34I+5LH3isMfZ44S
+         qJKlRR8+urhiXnx8GpuqU0JHlw2ssmvVraMs/zIj7WyVlj3504YyoTfBlXUEIySbmG
+         7SRdbQEUn0OJ7UxE9O9zzI0SzobLyNc1nPSIQU4xE3oVxKEOkYDjFgN/iuu3G0Cxqh
+         H/3Q+LOeLDOYEiQ3Jx6lKEWtH40Fo7GS0K4LLz7c4KaAka3U16sUdq0wM80Xwsg+9q
+         9RYFeYnWmN0Zw==
+Date:   Thu, 5 Oct 2023 11:54:29 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     shravan chippa <shravan.chippa@microchip.com>,
+        green.wan@sifive.com, vkoul@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, conor+dt@kernel.org,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nagasuresh.relli@microchip.com, praveen.kumar@microchip.com,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v2 2/4] dt-bindings: dma: sf-pdma: add new compatible name
+Message-ID: <20231005-wanted-plausible-71dae05ccc7b@spud>
+References: <20231003042215.142678-1-shravan.chippa@microchip.com>
+ <20231003042215.142678-3-shravan.chippa@microchip.com>
+ <20231004133021.GB2743005-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="FXxfjJNs6siMoTeZ"
+Content-Disposition: inline
+In-Reply-To: <20231004133021.GB2743005-robh@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Oct 2023, Joseph, Jithu wrote:
 
-> 
-> 
-> On 9/29/2023 1:24 PM, Jithu Joseph wrote:
-> > Changes in v3
-> >    Ilpo Jarvinen
-> >     - Added Reviewed-by tags wherever provided
-> >     - In function validate_ifs_metadata() (patch 6)
-> >         - Add != 0 to next line for clarity
-> >     - In function ifs_load_firmware() (patch 5)
-> >         - return -EINVAL instead of -BADFD
-> >     - In function ifs_test_core() (patch 4)
-> >         - initialize activate.gen0.rsvd = 0
-> >         - use if instead of conditional operator
-> >     - alignment change in ifs_scan_hashes_status_gen2 (patch 3)
-> > 
-> 
-> Since the suggested changes from v3 are minimal, I am sending just the 3 modified patches
-> in this v3 thread itself.
-> 
-> Hans let me know if you want me to send a v4.
+--FXxfjJNs6siMoTeZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm taking care of 6.7 cycle (or begun from -rc3 onwards to be precise), 
-not Hans.
+On Wed, Oct 04, 2023 at 08:30:21AM -0500, Rob Herring wrote:
+> On Tue, Oct 03, 2023 at 09:52:13AM +0530, shravan chippa wrote:
+> > From: Shravan Chippa <shravan.chippa@microchip.com>
+> >=20
+> > Add new compatible name microchip,mpfs-pdma to support
+> > out of order dma transfers
+> >=20
+> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
+> > ---
+> >  .../bindings/dma/sifive,fu540-c000-pdma.yaml         | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pd=
+ma.yaml b/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
+> > index a1af0b906365..974467c4bacb 100644
+> > --- a/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
+> > +++ b/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
+> > @@ -27,10 +27,14 @@ allOf:
+> > =20
+> >  properties:
+> >    compatible:
+> > -    items:
+> > -      - enum:
+> > -          - sifive,fu540-c000-pdma
+> > -      - const: sifive,pdma0
+> > +    oneOf:
+> > +      - items:
+> > +          - const: microchip,mpfs-pdma # Microchip out of order DMA tr=
+ansfer
+> > +          - const: sifive,fu540-c000-pdma # Sifive in-order DMA transf=
+er
 
-Please send a full v4 please because I want to give lkp an opportunity to 
-test the whole series (even if I think the patches look okay).
+IIRC I asked for the comments here to be removed on the previous
+version, and my r-b was conditional on that.
+The device specific compatible has merit outside of the ordering, which
+may just be a software policy decision.
 
+> This doesn't really make sense. microchip,mpfs-pdma is compatible with=20
+> sifive,fu540-c000-pdma and sifive,fu540-c000-pdma is compatible with=20
+> sifive,pdma0, but microchip,mpfs-pdma is not compatible with=20
+> sifive,pdma0? (Or replace "compatible with" with "a superset of")
 
--- 
- i.
+TBH, I am not sure why it was done this way. Probably because the driver
+contains both sifive,pdma0 and sifive,fu540-c000-pdma. Doing
+compatible =3D "microchip,mpfs-pdma", "sifive,fu540-c000-pdma", "sifive,pdm=
+a0";
+thing would be fine.
 
+> Any fallback is only useful if an OS only understanding the fallback=20
+> will work with the h/w. Does this h/w work without the driver changes?
+
+Yes.=20
+I've been hoping that someone from SiFive would come along, and in
+response to this patchset, tell us _why_ the driver does not make use of
+out-of-order transfers to begin with.
+
+Thanks,
+Conor.
+
+--FXxfjJNs6siMoTeZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZR6V5AAKCRB4tDGHoIJi
+0oX1AP4gvbx/YYM63FggUSYmU1/62CsJzHKn0+mB5T85IMCFwgD/cOxS4ARE5fEz
+L4ddVpARkl5OfnTsKxySy+l9cZjbFgc=
+=hzTR
+-----END PGP SIGNATURE-----
+
+--FXxfjJNs6siMoTeZ--
