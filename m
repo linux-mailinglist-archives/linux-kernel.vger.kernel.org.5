@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB337B9E29
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9B47B9DDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 15:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbjJEN75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 09:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
+        id S231346AbjJEN4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 09:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjJEN5x (ORCPT
+        with ESMTP id S243557AbjJENsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 09:57:53 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346F71BF5;
-        Wed,  4 Oct 2023 20:55:47 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id a1e0cc1a2514c-7b07548b085so215384241.2;
-        Wed, 04 Oct 2023 20:55:47 -0700 (PDT)
+        Thu, 5 Oct 2023 09:48:45 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0324C2121;
+        Wed,  4 Oct 2023 21:04:41 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-57b5ef5b947so348656eaf.0;
+        Wed, 04 Oct 2023 21:04:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696478146; x=1697082946; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lA6+xMHo1V0jyHxa3B2EhwgcTn/GiHjuNP/IimGuAGY=;
-        b=lSSKUsH6kUaZ71cGYKmxXa1PTFl6zXqTT8y7mWegBA4WslgxEpZCvx9AhmYr79iMjH
-         47ma2Z0+uCd3jG7j9nCzhwNUcSOEgInEc2uh0dXXA84bR8WpL9Yk3KGk/kbgy/6MvzKB
-         g28BUGTYjdegL/YhP7i6MFTBKx2K9YEseE5/rYh/0OQQTgZw9STFwMVoKM2snFzN0Ve9
-         +GnB+miKYgP/uo+I+8s0tLyLDUQPCts9eAvw6nH2a4oiIh4nUSW4fywp37pD1mzOzIKs
-         MNr5rUYddExHHoBJw3Zo4awJfjdyUQUHLuEQrdqxgzoLGCQJqrGSveXne6cxQtcRY1/s
-         cEEA==
+        d=gmail.com; s=20230601; t=1696478680; x=1697083480; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RMXyEVE2i3k4dLTGe3l+U9bUqIsZ76xJBWfzrLVaQIU=;
+        b=Wm1u5H4KnZ2BcGiNq5rxay7XPL2F2qcQX4SFZO10xeBaOvnb4y7nCnf08TE7Slhd/o
+         i7pmoS6T1vqDcHaoCxVYkl0ZvFq9AC24oae+why40PoPKb8XYnIQ0IRqm64QsbWfDEqN
+         yePEkk1q+AN9yEKKC7xk1SDekNByu7igp+IW1f1J66MGjkl1INT5rknTiQ+X+jgEBkYQ
+         3QEV0frWbTo5fZdVNsu0dTvgM/WpTsMLiplpZzpJ8V6UMjp6VNoMTjsxP4ccapAWhOrE
+         8spb4zB2G7pr4XeDyuDn/THNKFVhc2OjnJ+KIvAJtdz9CetDPdDNrS7+62G1l7+ineZM
+         GL2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696478146; x=1697082946;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lA6+xMHo1V0jyHxa3B2EhwgcTn/GiHjuNP/IimGuAGY=;
-        b=Bz5Vn/xZGaD140JWgTQ9ChRgYY6czdnU6UpzIHp4cY4XVKLXKWjM4Uc4z5lq+Wgftv
-         xNnTEmHep3ttld/75bTfeQ7dkGzYrV+Wu1Hwd4levGjxD+SYGKoxC90MKv4bDmraOQf6
-         2a2muzPB5ioGt5uU66eKfU83g1KnqP3uEo6ez/zAvtvojvVw1K1qgYAW9OlGcQDjYDCc
-         GZE8QH6vEKqWPIe+uS9A3XH0cutC7SWjxsOpTr+R1dUXacygegu5EVg75Xwy8LtXk8k0
-         Lsdlcqw0cjcK6nwQEEGwxSx0lLc/4hRvhR+X7GHQXMSoEbloP8tRf/FrY5Sw8HREN4w7
-         CWjA==
-X-Gm-Message-State: AOJu0YxeYDTytnjwxHB7MBgMq2PIuljvNHPFUDhDqBgWYVOJwuFWNRHb
-        dzHyQxihaxRPE/fLLahBVMii2/Hfmz2jfT/1J3E=
-X-Google-Smtp-Source: AGHT+IGhutk41Atirdz72BPO6mypjapbxNvc/HY4PfmO7Owm2/7cVPrCtcBwal6aAUk8eOP9WsgTpAJvtiDPFJqJ2v4=
-X-Received: by 2002:a67:f7cf:0:b0:452:c3a4:1f99 with SMTP id
- a15-20020a67f7cf000000b00452c3a41f99mr3820165vsp.4.1696478146227; Wed, 04 Oct
- 2023 20:55:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696478680; x=1697083480;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RMXyEVE2i3k4dLTGe3l+U9bUqIsZ76xJBWfzrLVaQIU=;
+        b=XHIh/UlxEyYC/I+vTe46B6Cafm6MiG+PuzqeS9TfDFA5LIcMRGNnUyWhx7b7r7iAGT
+         6jSEgvVm8VSeHGyRRgNkqdmqnaKvqGJzhEujN0+ogK5M8kp+COtmrDpMpxsqSjqt1rpy
+         P4XSi1Nuu8dpWRIF9FQoWfBOwirQquJyPmDvmGrf8pMDtmuhzBNmG58O46Captypk/ah
+         Q2VyHUOf6akQG/NaXlkSDlrjX2BC8Vv5D5e9E/0sOxMQEoZu7yX2JuC3BX2Wp+xpyGOe
+         MszN6/2YIygaJOQMBs3Q/eOdogBdnPu/a37bfY5TcmVUHoware3jt0FB3qL3W9VM3nBX
+         9Ajg==
+X-Gm-Message-State: AOJu0Yw7czGpdjQuG43Cd0mHh7PPI52Qy/XNSIUM2SFsOj3xZMsjJETI
+        CRqEvnzat1cF0jOIK23kUGQ=
+X-Google-Smtp-Source: AGHT+IGSkWOYk4DqwbRQRHzJ3jU+JRLaveKGsN/Rmc1OJnWzSjkTWWfAwyvTJOtRG6XzehfYWnpG7g==
+X-Received: by 2002:a05:6358:988d:b0:143:723:8f89 with SMTP id q13-20020a056358988d00b0014307238f89mr4897551rwa.4.1696478680192;
+        Wed, 04 Oct 2023 21:04:40 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id x6-20020a17090a9dc600b0026b12768e46sm412448pjv.42.2023.10.04.21.04.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 21:04:38 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 0786484462F3; Thu,  5 Oct 2023 11:04:33 +0700 (WIB)
+Date:   Thu, 5 Oct 2023 11:04:33 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.5 000/321] 6.5.6-rc1 review
+Message-ID: <ZR410XeUZfIVaflc@debian.me>
+References: <20231004175229.211487444@linuxfoundation.org>
 MIME-Version: 1.0
-References: <CACsaVZ+LkHwTKO4XE_FFM62SbF3gGD4DZyse-9Y1UbJUgrhvfA@mail.gmail.com>
- <ZQPxuZ2tifa9bQKJ@gcabiddu-mobl1.ger.corp.intel.com>
-In-Reply-To: <ZQPxuZ2tifa9bQKJ@gcabiddu-mobl1.ger.corp.intel.com>
-From:   Kyle Sanderson <kyle.leet@gmail.com>
-Date:   Wed, 4 Oct 2023 20:55:34 -0700
-Message-ID: <CACsaVZJYcGv26gM=Kcm2R3-A7Yqc9Jc1cd8TchA0POpxx1NHow@mail.gmail.com>
-Subject: Re: Linux 6.1.52 regression: Intel QAT kernel panic (memory corruption)
-To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Cc:     Linux-Kernal <linux-kernel@vger.kernel.org>, qat-linux@intel.com,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UsH318AZCdPlllMP"
+Content-Disposition: inline
+In-Reply-To: <20231004175229.211487444@linuxfoundation.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 10:55=E2=80=AFPM Giovanni Cabiddu
-<giovanni.cabiddu@intel.com> wrote:
->
-> On Thu, Sep 14, 2023 at 10:27:22PM -0700, Kyle Sanderson wrote:
-> > Hello Intel QAT Maintainers,
-> >
-> > It looks like QAT has regressed again. The present symptom is just
-> > straight up memory corruption. I was running Canonical 6.1.0-1017-oem
-> > and it doesn't happen, with 6.1.0-1020-oem and 6.1.0-1021-oem it does.
-> > I don't know what these map to upstream, however with NixOS installed
-> > the same corruption failure occurs on 6.1.52.
-> This is probably be related to [1].
-> Versions from 6.1.39 to 6.1.52 are affected. Fixed in v6.1.53.
->
-> [1] https://www.spinics.net/lists/stable/msg678947.html
->
-> Regards,
->
-> --
-> Giovanni
 
-Thank you Giovanni - that appears to have been it. Ubuntu
-6.1.0-1023-oem (v6.1.53) no longer reproduces the issue.
+--UsH318AZCdPlllMP
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-K.
+On Wed, Oct 04, 2023 at 07:52:25PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.5.6 release.
+> There are 321 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
 
-On Thu, Sep 14, 2023 at 10:55=E2=80=AFPM Giovanni Cabiddu
-<giovanni.cabiddu@intel.com> wrote:
->
-> On Thu, Sep 14, 2023 at 10:27:22PM -0700, Kyle Sanderson wrote:
-> > Hello Intel QAT Maintainers,
-> >
-> > It looks like QAT has regressed again. The present symptom is just
-> > straight up memory corruption. I was running Canonical 6.1.0-1017-oem
-> > and it doesn't happen, with 6.1.0-1020-oem and 6.1.0-1021-oem it does.
-> > I don't know what these map to upstream, however with NixOS installed
-> > the same corruption failure occurs on 6.1.52. The stack traces give
-> > illegal instructions and all kinds of badness across all modules when
-> > the device is simply present on the system, resulting in a hung
-> > system, or a multitude of processes crashing and the system failing to
-> > start. Disabling the device in the system BIOS results in a working
-> > system, and no extreme corruption. kmem_cache_alloc_node is the common
-> > fixture in the traces (I don't have a serial line), but I suspect
-> > that's not where the problem is. The corruption this time happens
-> > without block crypto being involved, and simply booting the installer
-> > from a USB stick.
-> This is probably be related to [1].
-> Versions from 6.1.39 to 6.1.52 are affected. Fixed in v6.1.53.
->
-> [1] https://www.spinics.net/lists/stable/msg678947.html
->
-> Regards,
->
-> --
-> Giovanni
+Successfully compiled and installed bindeb-pkgs on my computer (Acer
+Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--UsH318AZCdPlllMP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZR41yQAKCRD2uYlJVVFO
+o2jLAQCcDpwnr/d3rHimS9StGzwJjBbtqH7B6sZCbbOZ+ywhIgD9FdAMSztvx21C
+hdzoPWYfxAUqkWC9EpKQ1zrL2odaEww=
+=lDbM
+-----END PGP SIGNATURE-----
+
+--UsH318AZCdPlllMP--
