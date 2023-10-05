@@ -2,174 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9217BA147
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C146F7B9EE7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236648AbjJEOmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
+        id S233181AbjJEOOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237035AbjJEOhy (ORCPT
+        with ESMTP id S233196AbjJEOMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:37:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5A54F6FE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:02:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696514482;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eB/s9Y6w4YeBVavpvimiNB3pmiRKF4zEjUazPrN+Ua0=;
-        b=UyzrTGH8BWwbVjcM0DunBnfO6iCEFNDgLrvNgR1665PPPY+AxPjzBc3TPtry6dI2OpvpC2
-        p7NGUIJF4LPZWyXPMWLbH9rUA2pxVCVQINluRvYcVj/bZvoN2VYG6ZeXj875t+JPrrO8Ir
-        BoWsL2i4l8RKJSCZ11UxzF30MoCWU+w=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-218-cW2HcnPaNmGIeC8Q3MwCcg-1; Thu, 05 Oct 2023 08:59:46 -0400
-X-MC-Unique: cW2HcnPaNmGIeC8Q3MwCcg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-323306960e3so678256f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 05:59:46 -0700 (PDT)
+        Thu, 5 Oct 2023 10:12:30 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0FC26FC4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:01:25 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9adca291f99so166399766b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 06:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1696510884; x=1697115684; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JnG0sR/xGQYYsyFaEt/vfjkPa8+Rqti/iCkeoYG1xiY=;
+        b=OcVh4o85DKq0RIi0L2YWQQ5/omCian82i8NVwd2fWWeLZKuQ1S3xNvPbCrVIaL3aR+
+         gESPkq87ecsbi+XSqzcVrOljqPY2ZHcS7DrtNpiHvIHf/tnwHrdsiQy1dZKXbbnRMyNT
+         9BPqHbf6CWGd5u07MeLMIfGC94iRnS6rcswgG44g7cxCzaUpCr8Ex/1LQ3xxYqvPlI2P
+         b52JIv/Xj9s+cRDT9SJLmrC/nJxcw4M9jVo6/7afRd8SOaUU2174e/bSOWt2kYEkh/I3
+         wY0ioOOIqthdnAuksgtOKxLO5clVyUe2pAh03CfdIy1pwEGwCYszISFMxlSXj4qqKHVF
+         Fc2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696510785; x=1697115585;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eB/s9Y6w4YeBVavpvimiNB3pmiRKF4zEjUazPrN+Ua0=;
-        b=pzqHvS8Owlwy4zIQhRJokIo+HnWJrgn5MtyL9BzLfySDoUNMNoQYKXAdBjrmsLvNL4
-         pVGh1RXdx5pArhCAn4rXSHhDOsrik/QOd8bI2/sUlELypteTf5NKBmZT6ur1PkpSD5Vd
-         Zloou4E0ywrevf8/EL4vX0VAFmOkBndkYmia7cd+zU8gd5FNxhvGA/shoAotwkbZ6ni4
-         Quc8fgc0DTkkuaPtr7tHHw4a7ANAfb+MDXDNtGYIUFomFS+XQhMdgWoV8KtDwpp0jD0I
-         clqlpOrAk/To6AN64890z4Zde3pX1q5vINSSmCJw3NQQFp/U1hQQTtWpQ0Yq2b3592j6
-         J/gA==
-X-Gm-Message-State: AOJu0YyXN/Ts7Q0wiJfjPoaV3GVhnwr+e/h7hSxvY4vV8ryfsu/HraOT
-        qtcuuTBS8+fl5ychHYeJaDxpBF+DMPejNjfiW6PvFadwjHj2HH2/FHrwxajLGY0ehFNK6DM+cEm
-        bHn3v24yMcRa+ahAVZgO7kVkG
-X-Received: by 2002:adf:cd0a:0:b0:31f:f72c:df95 with SMTP id w10-20020adfcd0a000000b0031ff72cdf95mr4843464wrm.21.1696510785515;
-        Thu, 05 Oct 2023 05:59:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHvEI5pQfZk4ZhyDAwt1LECiXblBVoH3ImmjiThxEXrj19IR2Tsvu0M7XCB7fYKnjR2dSYpvA==
-X-Received: by 2002:adf:cd0a:0:b0:31f:f72c:df95 with SMTP id w10-20020adfcd0a000000b0031ff72cdf95mr4843445wrm.21.1696510785139;
-        Thu, 05 Oct 2023 05:59:45 -0700 (PDT)
-Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id z2-20020a5d6542000000b003196b1bb528sm1752733wrv.64.2023.10.05.05.59.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 05:59:44 -0700 (PDT)
-Message-ID: <b52c3e6a5df217b529565eae6e15c3fe246e2c5d.camel@redhat.com>
-Subject: Re: [PATCH 10/10] KVM: SVM: Rename "avic_physical_id_cache" to
- "avic_physical_id_entry"
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 05 Oct 2023 15:59:43 +0300
-In-Reply-To: <20230815213533.548732-11-seanjc@google.com>
-References: <20230815213533.548732-1-seanjc@google.com>
-         <20230815213533.548732-11-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1696510884; x=1697115684;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=JnG0sR/xGQYYsyFaEt/vfjkPa8+Rqti/iCkeoYG1xiY=;
+        b=L94zi5DmeZ3WZpaq8G7+HDEFUt0mEfurCa2JZ+sbfCJ0mz86GQWYa9Jhh2psEHsgIs
+         j5LK0QJTVS19FXc0C0avbHWltCHhVtiUPj9Oa811043qNVB9ZAtbii0qp13BnKnXttJS
+         9nQO6hYiNcNvX/wScWU7Qf+1IVfb5xlMIY3zPaq1wuC/7GhF6XjQN1l6UP5bgwa9Al30
+         vuGiZdHfw1SyFNKRGkCIivQP3XfTo8HxEQb0xyI9e2Xv54KpUX3EkSon8fUWmgwtsnV+
+         eyqoibm6qRPHmm42uDBcqd0TrajWfVTwqYGnJw7VxTF1cydTgDft1rTydJfQiqYKaGNR
+         Fiqw==
+X-Gm-Message-State: AOJu0YwgHHAqvkVb4okXMffClCgOV0tkqOIXfUfOyk4EUA8KCncGozD7
+        cKqT36bPFwagVSWEvmC86BBL0A==
+X-Google-Smtp-Source: AGHT+IFG8s+97gnXPNAdl7stS8nrro27q9Tek5RX5a8f1kLRhXzS+/P1ypSsYAbnG7kRBJjHdTyusg==
+X-Received: by 2002:a17:907:6c14:b0:9a5:cf6f:3efc with SMTP id rl20-20020a1709076c1400b009a5cf6f3efcmr3536424ejc.77.1696510883979;
+        Thu, 05 Oct 2023 06:01:23 -0700 (PDT)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id o6-20020a17090611c600b009ad875d12d7sm1149455eja.210.2023.10.05.06.01.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 06:01:23 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 05 Oct 2023 15:01:22 +0200
+Message-Id: <CW0IX09PNB86.36RDKF8LNWIBM@fairphone.com>
+Cc:     <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH V4 2/4] arm64: dts: qcom: sc7280: Add UFS nodes for
+ sc7280 soc
+From:   "Luca Weiss" <luca.weiss@fairphone.com>
+To:     "Nitin Rawat" <quic_nitirawa@quicinc.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mani@kernel.org>, <alim.akhtar@samsung.com>, <bvanassche@acm.org>,
+        <avri.altman@wdc.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>
+X-Mailer: aerc 0.15.2
+References: <20230929131936.29421-1-quic_nitirawa@quicinc.com>
+ <20230929131936.29421-3-quic_nitirawa@quicinc.com>
+In-Reply-To: <20230929131936.29421-3-quic_nitirawa@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-У вт, 2023-08-15 у 14:35 -0700, Sean Christopherson пише:
-> Rename the vCPU's pointer to its AVIC Physical ID entry from "cache" to
-> "entry".  While the field technically caches the result of the pointer
-> calculation, it's all too easy to misinterpret the name and think that
-> the field somehow caches the _data_ in the table.
+On Fri Sep 29, 2023 at 3:19 PM CEST, Nitin Rawat wrote:
+> Add UFS host controller and PHY nodes for sc7280 soc.
 
-I also strongly dislike the 'avic_physical_id_cache', but if you are refactoring
-it, IMHO the 'avic_physical_id_entry' is just as confusing since its a pointer
-to an entry and not the entry itself.
+Hi Nitin,
 
-At least a comment to explain where this pointer points, or maybe (not sure)
-drop the avic_physical_id_cache completely and calculate it every time
-(I doubt that there is any perf loss due to this)
+I left some comments for v3 that maybe you missed before sending v4:
+https://lore.kernel.org/linux-arm-msm/CVVA1OVF4W9E.380D6QC1K9GD6@otso/
 
-Best regards,
-	Maxim Levitsky
+At least the clock part should definitely be fixed, ICE we can do later.
 
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Regards
+Luca
+
+>
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
 > ---
->  arch/x86/kvm/svm/avic.c | 10 +++++-----
->  arch/x86/kvm/svm/svm.h  |  2 +-
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-> index 6803e2d7bc22..8d162ff83aa8 100644
-> --- a/arch/x86/kvm/svm/avic.c
-> +++ b/arch/x86/kvm/svm/avic.c
-> @@ -310,7 +310,7 @@ static int avic_init_backing_page(struct kvm_vcpu *vcpu)
->  		    AVIC_PHYSICAL_ID_ENTRY_VALID_MASK;
->  	WRITE_ONCE(table[id], new_entry);
->  
-> -	svm->avic_physical_id_cache = &table[id];
-> +	svm->avic_physical_id_entry = &table[id];
->  
->  	return 0;
->  }
-> @@ -1028,14 +1028,14 @@ void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
->  	if (kvm_vcpu_is_blocking(vcpu))
->  		return;
->  
-> -	entry = READ_ONCE(*(svm->avic_physical_id_cache));
-> +	entry = READ_ONCE(*(svm->avic_physical_id_entry));
->  	WARN_ON_ONCE(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK);
->  
->  	entry &= ~AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK;
->  	entry |= (h_physical_id & AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK);
->  	entry |= AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
->  
-> -	WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
-> +	WRITE_ONCE(*(svm->avic_physical_id_entry), entry);
->  	avic_update_iommu_vcpu_affinity(vcpu, h_physical_id, true);
->  }
->  
-> @@ -1046,7 +1046,7 @@ void avic_vcpu_put(struct kvm_vcpu *vcpu)
->  
->  	lockdep_assert_preemption_disabled();
->  
-> -	entry = READ_ONCE(*(svm->avic_physical_id_cache));
-> +	entry = READ_ONCE(*(svm->avic_physical_id_entry));
->  
->  	/* Nothing to do if IsRunning == '0' due to vCPU blocking. */
->  	if (!(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK))
-> @@ -1055,7 +1055,7 @@ void avic_vcpu_put(struct kvm_vcpu *vcpu)
->  	avic_update_iommu_vcpu_affinity(vcpu, -1, 0);
->  
->  	entry &= ~AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
-> -	WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
-> +	WRITE_ONCE(*(svm->avic_physical_id_entry), entry);
->  }
->  
->  void avic_refresh_virtual_apic_mode(struct kvm_vcpu *vcpu)
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 8b798982e5d0..4362048493d1 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -261,7 +261,7 @@ struct vcpu_svm {
->  
->  	u32 ldr_reg;
->  	u32 dfr_reg;
-> -	u64 *avic_physical_id_cache;
-> +	u64 *avic_physical_id_entry;
->  
->  	/*
->  	 * Per-vcpu list of struct amd_svm_iommu_ir:
-
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 66 ++++++++++++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/q=
+com/sc7280.dtsi
+> index 66f1eb83cca7..163e3df60966 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -3353,6 +3353,72 @@
+>  			};
+>  		};
+>
+> +		ufs_mem_hc: ufs@1d84000 {
+> +			compatible =3D "qcom,sc7280-ufshc", "qcom,ufshc",
+> +				     "jedec,ufs-2.0";
+> +			reg =3D <0x0 0x01d84000 0x0 0x3000>;
+> +			interrupts =3D <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
+> +			phys =3D <&ufs_mem_phy>;
+> +			phy-names =3D "ufsphy";
+> +			lanes-per-direction =3D <2>;
+> +			#reset-cells =3D <1>;
+> +			resets =3D <&gcc GCC_UFS_PHY_BCR>;
+> +			reset-names =3D "rst";
+> +
+> +			power-domains =3D <&gcc GCC_UFS_PHY_GDSC>;
+> +			required-opps =3D <&rpmhpd_opp_nom>;
+> +
+> +			iommus =3D <&apps_smmu 0x80 0x0>;
+> +			dma-coherent;
+> +
+> +			interconnects =3D <&aggre1_noc MASTER_UFS_MEM 0 &mc_virt SLAVE_EBI1 0=
+>,
+> +					<&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_UFS_MEM_CFG 0>;
+> +
+> +			clocks =3D <&gcc GCC_UFS_PHY_AXI_CLK>,
+> +				 <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
+> +				 <&gcc GCC_UFS_PHY_AHB_CLK>,
+> +				 <&gcc GCC_UFS_PHY_UNIPRO_CORE_CLK>,
+> +				 <&rpmhcc RPMH_CXO_CLK>,
+> +				 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
+> +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
+> +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
+> +			clock-names =3D "core_clk",
+> +				      "bus_aggr_clk",
+> +				      "iface_clk",
+> +				      "core_clk_unipro",
+> +				      "ref_clk",
+> +				      "tx_lane0_sync_clk",
+> +				      "rx_lane0_sync_clk",
+> +				      "rx_lane1_sync_clk";
+> +			freq-table-hz =3D
+> +				<75000000 300000000>,
+> +				<0 0>,
+> +				<0 0>,
+> +				<75000000 300000000>,
+> +				<0 0>,
+> +				<0 0>,
+> +				<0 0>,
+> +				<0 0>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		ufs_mem_phy: phy@1d87000 {
+> +			compatible =3D "qcom,sc7280-qmp-ufs-phy";
+> +			reg =3D <0x0 0x01d87000 0x0 0xe00>;
+> +			clocks =3D <&rpmhcc RPMH_CXO_CLK>,
+> +				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
+> +				 <&gcc GCC_UFS_1_CLKREF_EN>;
+> +			clock-names =3D "ref", "ref_aux", "qref";
+> +
+> +			resets =3D <&ufs_mem_hc 0>;
+> +			reset-names =3D "ufsphy";
+> +
+> +			#clock-cells =3D <1>;
+> +			#phy-cells =3D <0>;
+> +
+> +			status =3D "disabled";
+> +		};
+> +
+>  		usb_1_hsphy: phy@88e3000 {
+>  			compatible =3D "qcom,sc7280-usb-hs-phy",
+>  				     "qcom,usb-snps-hs-7nm-phy";
+> --
+> 2.17.1
 
