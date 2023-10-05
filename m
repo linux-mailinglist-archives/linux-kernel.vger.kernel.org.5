@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 447537BA757
+	by mail.lfdr.de (Postfix) with ESMTP id 915B57BA758
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjJERJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56698 "EHLO
+        id S229927AbjJERJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbjJERIL (ORCPT
+        with ESMTP id S230423AbjJERIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:08:11 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E6E47BA
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:53:37 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b59e1ac70so17631937b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696524816; x=1697129616; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WgW7kVDuz2dwRfbyuaJkQrKoMU08UEVmYCgpM2nqKLU=;
-        b=2NLuRkaNvG+LG3R0vE3dkIbJsBZZ0g2ahux+W5dhb9EVNAtJ6napyF+d9C4d7N3Fva
-         PhEg4mLjxz65SJ+H5IK9JkNlMwVjyVZrrRu2Dj0LBcNQAL3Mv/AgnlIe0ir8eP6nXYW/
-         DPWfEscxTMLcYnFQW2+urjtm+PilbgdVkH48rjOev34DWXg1RZjd2owM2rzrjVKTjJI2
-         Ei3PMBQGW3HiR8cbAdTd3Q0VElWiB7iA3HJx9GoGVnxfeMx6bB21OWaW+4sip62qcvC9
-         i1+LV3KZ6pLjoVgmokUpaPj3g514vkSpaFJfGCI+gQWoB8Q8AH1QSS8G4LBOWCCqUpjX
-         PdjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696524816; x=1697129616;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WgW7kVDuz2dwRfbyuaJkQrKoMU08UEVmYCgpM2nqKLU=;
-        b=M7FTcULfpK8icgEKTOL7w/ndSDRQQ7tyRbhFNGSowYaptwwr63AB/iAYtPaFzIdk/E
-         FVhcoCExGVPIDQnEIV8KkfWMCFHHNyD7wclw2BjLPGLsuDhQRfIaKXLYKSzJmxhUPFRB
-         q1+JgN6mEsh5uB7+gT4cvs/wZ5m+ohp1d/yS8lL7uTkBLq1CO5GdMlbrFTGo57hBQNy2
-         UcPF4sfcZSSCmj6QfGW65MjNovcZa/uNm7gY8d8S8Mh6MzgT3faj0I1qgDemT9Ibg6Se
-         wReHDs5w+f3Lb42bWZLifD+cHU5/vSmJedcKQ22JprlZ9DdJNB0K9U6EH6lzztMFGASq
-         41yg==
-X-Gm-Message-State: AOJu0Yw6nofw34gYBKeet/wlsKLb6veBWBSlNXPtB/oqaispaDbc7zFx
-        IPaahaVsbevGUsKLXNOl6WWOLxE=
-X-Google-Smtp-Source: AGHT+IHztXCCIAMUhHtWjKjtB1IfIfbYVA+Qw3NnRFPC8dPmFb8jyAPyiWc851i2XRuEVTAMqONHNKw=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a81:bd4e:0:b0:576:af04:3495 with SMTP id
- n14-20020a81bd4e000000b00576af043495mr98619ywk.9.1696524816321; Thu, 05 Oct
- 2023 09:53:36 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 09:53:34 -0700
-In-Reply-To: <20231005072137.29870-1-akihiko.odaki@daynix.com>
-Mime-Version: 1.0
-References: <20231005072137.29870-1-akihiko.odaki@daynix.com>
-Message-ID: <ZR7qDgEZ9pyFDZ3K@google.com>
-Subject: Re: [PATCH] bpf: Fix the comment for bpf_restore_data_end()
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 5 Oct 2023 13:08:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4AF49FE;
+        Thu,  5 Oct 2023 09:54:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A81CEC433C7;
+        Thu,  5 Oct 2023 16:54:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696524852;
+        bh=AgguJfMtwK8c/3uwNKFmoA5/NNLqG6ARHOdwutqovnE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=roGUcmOToDAKl9V2dkTOMYuTOSR7NOQ2e9LTXH65zfZzsZpNYvZbidDEeGMvjfxXc
+         3MRfvreNmABas+w2vCJWo/dxe18loFIBOfzHrhupfhKjXs0L7Zvb6iEzIKsGuPT6uZ
+         OUHo9Rv+rgYBzJ6BZi3I+gOZJ3mw+DE7IR/C5ej0sTokr6mOlPA2e1jbiOIXNvtOpX
+         goYtsX+nzYTziIVp74lFZxYOjZBk0CmCVijiEzgFdiTCKrBnPoniVplczh2FFyKZmP
+         ++cYc7NYGtKll2yhmmisbJUIqLSUz8ElP2c4aVAX8HWQI7AXTufLLDhr/6U6M531u6
+         0RTWx64nhjgTg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4D7F0CE0869; Thu,  5 Oct 2023 09:54:12 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 09:54:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Yong He <zhuangel570@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/5] srcu fixes
+Message-ID: <5a37a92f-2f3c-467a-83db-b2e2df22557b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231003232903.7109-1-frederic@kernel.org>
+ <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
+ <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
+ <811d08e3-efb8-4398-8fbc-6b5d030afb15@paulmck-laptop>
+ <ZR0yMdyoA5biYYxg@lothringen>
+ <77322b72-1d95-46c6-9837-1d811b36336c@paulmck-laptop>
+ <02d3ae63-8e52-4931-acf6-32ef69a6511a@paulmck-laptop>
+ <ZR3YwR4FriKP_Pab@localhost.localdomain>
+ <b8f2e454-f188-4603-b410-9b28fcbb148c@paulmck-laptop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b8f2e454-f188-4603-b410-9b28fcbb148c@paulmck-laptop>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/05, Akihiko Odaki wrote:
-> The comment used to say:
-> > Restore data saved by bpf_compute_data_pointers().
+On Wed, Oct 04, 2023 at 02:54:57PM -0700, Paul E. McKenney wrote:
+> On Wed, Oct 04, 2023 at 11:27:29PM +0200, Frederic Weisbecker wrote:
+> > Le Wed, Oct 04, 2023 at 09:47:04AM -0700, Paul E. McKenney a écrit :
+> > > > The 10-hour 40-CPU SRCU-P run and pair of 10-hour 16-CPU SRCU-N runs
+> > > > completed without failure.  The others had some failures, but I need
+> > > > to look and see if any were unexpected.  In the meantime, I started a
+> > > > two-hour 40-CPU SRCU-P run and a pair of one-hour 16-CPU SRCU-N runs on
+> > > > just that first commit.  Also servicing SIGSHOWER and SIGFOOD.  ;-)
+> > > 
+> > > And the two-hour 40-CPU SRCU-P run and a pair of two-hour 16-CPU SRCU-N
+> > > runs (on only the first commit) completed without incident.
+> > > 
+> > > The other set of overnight full-stack runs had only tick-stop errors,
+> > > so I started a two-hour set on the first commit.
+> > > 
+> > > So far so good!
+> > 
+> > Very nice!
+> > 
+> > As for the tick-stop error, see the upstream fix:
+> > 
+> >    1a6a46477494 ("timers: Tag (hr)timer softirq as hotplug safe")
 > 
-> But bpf_compute_data_pointers() does not save the data;
-> bpf_compute_and_save_data_end() does.
+> Got it, thank you!
 > 
-> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+> And the two-hour set of 200*SRCU-N and 100*SRCU-P had only tick-stop
+> errors.  I am refreshing the test grid, and will run overnight.
 
-Please use [PATCH bpf-next] (or bpf, depending on the tree) for bpf
-patches in the future.
+And the ten-hour test passed with only the tick-stop errors, representing
+2000 hours of SRCU-N and 1000 hours of SRCU-P.  (I ran the exact same
+stack, without the rebased fix you call out above.)
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
+Looking good!
+
+							Thanx, Paul
