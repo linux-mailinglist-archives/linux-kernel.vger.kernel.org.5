@@ -2,582 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B067BA471
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110547BA5AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237819AbjJEQFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
+        id S242750AbjJEQS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjJEQDU (ORCPT
+        with ESMTP id S235846AbjJEQPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:03:20 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAE97FF2B
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 08:56:23 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-690bccb0d8aso956788b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 08:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1696521382; x=1697126182; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a3FzNmt2Pp89JMPeuTaQSjhdRYVegTP8bI9PQ5clgP0=;
-        b=G8bvmaeD1US6ruIPlnElfTLOYJ4EttR0I2wPK2qwQ/XQzg4h2Flm/p5B+JJtZEPOpe
-         MNApFf4C629ZtWDTwyTvaVjwIlSLTRIfaYa7mOoWFMeu52jDtFzSlmScZHXJlQCJrulJ
-         WS3Lne19K0atfSi2tTgcTsCoVjclNzVe7/IdoaxZMcCyzM3YnQYaN40caYfJl8mBfMPT
-         9zDXLTDW2njumIYys20fbd2p5pDeRg8zEsfGfdBdxfCrjEXSXI3n1T9WuBO8EivwPzVW
-         SwcWzz+fM9b5mwc8JQbTcSkF6tKFMxHq8FgcjhrO95tZTE35VqyRjDkzOezibV0LWY+q
-         o0Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696521382; x=1697126182;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=a3FzNmt2Pp89JMPeuTaQSjhdRYVegTP8bI9PQ5clgP0=;
-        b=rlHAYmZLm2rTGk+YnttJaQhbHLZiTi8QmTKSINNc4OPOOETJa7GaaJYkiHduZBybof
-         c/sjHkg+XHT96SXuXm+1WWpWf+wNP57oDGKMUkKAnep7KzWr9B1Rwp+Oa4iYiaNMalii
-         pPrjH5aTvWHLsbUOcTgqGjLFVHdK38kSjOp/MFrEMnfzEy6CC0QDMf+ZIaruk8QoLM4d
-         6/1na2sqUvlp/xDubYXeCzRdQX+b1mHi9uJKIL+aywm4OeK8n8jFdXVaYHXj4V2lEuUN
-         EXdCYCOV1Qnmy2UFDVqbe4lBcFtx6R/unuCy0fxPZ29EixWFe0itigrqUBwh/Pht/rz2
-         8G2w==
-X-Gm-Message-State: AOJu0YxRz8gptpZzrLLbYeUS7W5lx7IfhakK+RbMiXa3gXMcON6roPhf
-        e4IXwpI96lzL4DJNkrGomddB3w==
-X-Google-Smtp-Source: AGHT+IHUIrzD6Z6uwn7HkSoIVOasWBOdfoWVMWHla9a4ezKj61J+oDISp/7K40rI6YHIqt3VP1hFHQ==
-X-Received: by 2002:a05:6a20:9384:b0:15d:facd:f20c with SMTP id x4-20020a056a20938400b0015dfacdf20cmr6804129pzh.41.1696521382153;
-        Thu, 05 Oct 2023 08:56:22 -0700 (PDT)
-Received: from [10.254.225.239] ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id m10-20020a170902768a00b001c631236505sm1872060pll.228.2023.10.05.08.56.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 08:56:21 -0700 (PDT)
-Message-ID: <785511a6-8636-04e5-c002-907443b34dad@bytedance.com>
-Date:   Thu, 5 Oct 2023 23:56:14 +0800
+        Thu, 5 Oct 2023 12:15:17 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744A98C21;
+        Thu,  5 Oct 2023 08:59:14 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 247EF1BF20E;
+        Thu,  5 Oct 2023 15:59:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696521551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xm4Wx/6Mlre7HBOv1y73fYdaPWmn9CyAXUbuHr8uTdo=;
+        b=Ex+cT3Wf8JWJOybPy+8uTW3z1aeFcknj4KRfO3Nwth8jzYv6RWx0l437XTujsAr9JbGk+I
+        p8kRntIbtuMeNfk5SalYJPAGiR634NDrAKFKI3nOBdbdjA0xjf6S1igQfBE7Rcp00uTTRc
+        kGbubZ1g64OCpiU+E6C0HhdbojcD8a3QzHMxT+IRcAM2B6QrZyNVivLy0q6ZlnThm72F1J
+        pIdswoorcnx8wLvZnRot/wg13Ln5PT6jNdniQ12QZ1LacHyAQhuhYUrUvjXikQXpL9xtzk
+        OVGq9aR2JrXm1DmtS3runRQBSLxdF85eVD33wkbK1A9SnF1nkngiedmAqXLiUw==
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Michael Walle <michael@walle.cc>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, <linux-kernel@vger.kernel.org>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v12 0/7] NVMEM cells in sysfs
+Date:   Thu,  5 Oct 2023 17:59:00 +0200
+Message-Id: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-Subject: Re: [PATCH v3 9/9] fork: Use __mt_dup() to duplicate maple tree in
- dup_mmap()
-To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-Cc:     Peng Zhang <zhangpeng.00@bytedance.com>, corbet@lwn.net,
-        akpm@linux-foundation.org, willy@infradead.org, brauner@kernel.org,
-        surenb@google.com, michael.christie@oracle.com, mjguzik@gmail.com,
-        mathieu.desnoyers@efficios.com, npiggin@gmail.com,
-        peterz@infradead.org, oliver.sang@intel.com,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20230925035617.84767-1-zhangpeng.00@bytedance.com>
- <20230925035617.84767-10-zhangpeng.00@bytedance.com>
- <20231003184634.bbb5c5ezkvi6tkdv@revolver>
- <58ec7a15-6983-d199-bc1a-6161c3b75e0f@bytedance.com>
- <20231004195347.yggeosopqwb6ftos@revolver>
-In-Reply-To: <20231004195347.yggeosopqwb6ftos@revolver>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+As part of a previous effort, support for dynamic NVMEM layouts was
+brought into mainline, helping a lot in getting information from NVMEM
+devices at non-static locations. One common example of NVMEM cell is the
+MAC address that must be used. Sometimes the cell content is mainly (or
+only) useful to the kernel, and sometimes it is not. Users might also
+want to know the content of cells such as: the manufacturing place and
+date, the hardware version, the unique ID, etc. Two possibilities in
+this case: either the users re-implement their own parser to go through
+the whole device and search for the information they want, or the kernel
+can expose the content of the cells if deemed relevant. This second
+approach sounds way more relevant than the first one to avoid useless
+code duplication, so here is a series bringing NVMEM cells content to
+the user through sysfs.
 
-在 2023/10/5 03:53, Liam R. Howlett 写道:
-> * Peng Zhang <zhangpeng.00@bytedance.com> [231004 05:10]:
->>
->>
->> 在 2023/10/4 02:46, Liam R. Howlett 写道:
->>> * Peng Zhang <zhangpeng.00@bytedance.com> [230924 23:58]:
->>>> In dup_mmap(), using __mt_dup() to duplicate the old maple tree and then
->>>> directly replacing the entries of VMAs in the new maple tree can result
->>>> in better performance. __mt_dup() uses DFS pre-order to duplicate the
->>>> maple tree, so it is very efficient. The average time complexity of
->>>> duplicating VMAs is reduced from O(n * log(n)) to O(n). The optimization
->>>> effect is proportional to the number of VMAs.
->>>
->>> I am not confident in the big O calculations here.  Although the addition
->>> of the tree is reduced, adding a VMA still needs to create the nodes
->>> above it - which are a function of n.  How did you get O(n * log(n)) for
->>> the existing fork?
->>>
->>> I would think your new algorithm is n * log(n/16), while the
->>> previous was n * log(n/16) * f(n).  Where f(n) would be something
->>> to do with the decision to split/rebalance in bulk insert mode.
->>>
->>> It's certainly a better algorithm to duplicate trees, but I don't think
->>> it is O(n).  Can you please explain?
->>
->> The following is a non-professional analysis of the algorithm.
->>
->> Let's first analyze the average time complexity of the new algorithm, as
->> it is relatively easy to analyze. The maximum number of branches for
->> internal nodes in a maple tree in allocation mode is 10. However, to
->> simplify the analysis, we will not consider this case and assume that
->> all nodes have a maximum of 16 branches.
->>
->> The new algorithm assumes that there is no case where a VMA with the
->> VM_DONTCOPY flag is deleted. If such a case exists, this analysis cannot
->> be applied.
->>
->> The operations of the new algorithm consist of three parts:
->>
->> 1. DFS traversal of each node in the source tree
->> 2. For each node in the source tree, create a copy and construct a new
->>     node
->> 3. Traverse the new tree using mas_find() and replace each element
->>
->> If there are a total of n elements in the maple tree, we can conclude
->> that there are n/16 leaf nodes. Regarding the second-to-last level, we
->> can conclude that there are n/16^2 nodes. The total number of nodes in
->> the entire tree is given by the sum of n/16 + n/16^2 + n/16^3 + ... + 1.
->> This is a geometric progression with a total of log base 16 of n terms.
->> According to the formula for the sum of a geometric progression, the sum
->> is (n-1)/15. So, this tree has a total of (n-1)/15 nodes and
->> (n-1)/15 - 1 edges.
->>
->> For the operations in the first part of this algorithm, since DFS
->> traverses each edge twice, the time complexity would be
->> 2*((n-1)/15 - 1).
->>
->> For the second part, each operation involves copying a node and making
->> necessary modifications. Therefore, the time complexity is
->> 16*(n-1)/15.
->>
->> For the third part, we use mas_find() to traverse and replace each
->> element, which is essentially similar to the combination of the first
->> and second parts. mas_find() traverses all nodes and within each node,
->> it iterates over all elements and performs replacements. The time
->> complexity of traversing the nodes is 2*((n-1)/15 - 1), and for all
->> nodes, the time complexity of replacing all their elements is
->> 16*(n-1)/15.
->>
->> By ignoring all constant factors, each of the three parts of the
->> algorithm has a time complexity of O(n). Therefore, this new algorithm
->> is O(n).
-> 
-> Thanks for the detailed analysis!  I didn't mean to cause so much work
-> with this question.  I wanted to know so that future work could rely on
-> this calculation to demonstrate if it is worth implementing without
-> going through the effort of coding and benchmarking - after all, this
-> commit message will most likely be examined during that process.
-> 
-> I asked because O(n) vs O(n*log(n)) doesn't seem to fit with your
-> benchmarking.
-It may not be well reflected in the benchmarking of fork() because all
-the aforementioned time complexity analysis is related to the part
-involving the maple tree, specifically the time complexity of
-constructing a new maple tree. However, fork() also includes many other
-behaviors.
-> 
->>
->> The exact time complexity of the old algorithm is difficult to analyze.
->> I can only provide an upper bound estimation. There are two possible
->> scenarios for each insertion:
->>
->> 1. Appending at the end of a node.
->> 2. Splitting nodes multiple times.
->>
->> For the first scenario, the individual operation has a time complexity
->> of O(1). As for the second scenario, it involves node splitting. The
->> challenge lies in determining which insertions trigger splits and how
->> many splits occur each time, which is difficult to calculate. In the
->> worst-case scenario, each insertion requires splitting the tree's height
->> log(n) times. Assuming every insertion is in the worst-case scenario,
->> the time complexity would be n*log(n). However, not every insertion
->> requires splitting, and the number of splits each time may not
->> necessarily be log(n). Therefore, this is an estimation of the upper
->> bound.
-> 
-> Saying every insert causes a split and adding in n*log(n) is more than
-> an over estimation.  At worst there is some n + n/16 * log(n) going on
-> there.
-> 
-> During the building of a tree, we are in bulk insert mode.  This favours
-> balancing the tree to the left to maximize the number of inserts being
-> append operations.  The algorithm inserts as many to the left as we can
-> leaving the minimum number on the right.
-> 
-> We also reduce the number of splits by pushing data to the left whenever
-> possible, at every level.
-Yes, but I don't think pushing data would occur when inserting in
-ascending order in bulk mode because the left nodes are all full, while
-there are no nodes on the right side. However, I'm not entirely certain
-about this since I only briefly looked at the implementation of this
-part.
-> 
-> 
->>>
->>>>
->>>> As the entire maple tree is duplicated using __mt_dup(), if dup_mmap()
->>>> fails, there will be a portion of VMAs that have not been duplicated in
->>>> the maple tree. This makes it impossible to unmap all VMAs in exit_mmap().
->>>> To solve this problem, undo_dup_mmap() is introduced to handle the failure
->>>> of dup_mmap(). I have carefully tested the failure path and so far it
->>>> seems there are no issues.
->>>>
->>>> There is a "spawn" in byte-unixbench[1], which can be used to test the
->>>> performance of fork(). I modified it slightly to make it work with
->>>> different number of VMAs.
->>>>
->>>> Below are the test results. By default, there are 21 VMAs. The first row
->>>> shows the number of additional VMAs added on top of the default. The last
->>>> two rows show the number of fork() calls per ten seconds. The test results
->>>> were obtained with CPU binding to avoid scheduler load balancing that
->>>> could cause unstable results. There are still some fluctuations in the
->>>> test results, but at least they are better than the original performance.
->>>>
->>>> Increment of VMAs: 0      100     200     400     800     1600    3200    6400
->>>> next-20230921:     112326 75469   54529   34619   20750   11355   6115    3183
->>>> Apply this:        116505 85971   67121   46080   29722   16665   9050    4805
->>>>                      +3.72% +13.92% +23.09% +33.11% +43.24% +46.76% +48.00% +50.96%
->               delta       4179   10502   12592   11461    8972    5310   2935    1622
-> 
-> Looking at this data, it is difficult to see what is going on because
-> there is a doubling of the VMAs per fork per column while the count is
-> forks per 10 seconds.  So this table is really a logarithmic table with
-> increases growing by 10%.  Adding the delta row makes it seem like the
-> number are not growing apart as I would expect.
-> 
-> If we normalize this to VMAs per second by dividing the forks by 10,
-> then multiplying by the number of VMAs we get this:
-> 
-> VMA Count:           21       121       221       421       821      1621       3221      6421
-> log(VMA)           1.32      2.00      2.30      2.60      2.90      3.20       3.36      3.81
-> next-20230921: 258349.8  928268.7 1215996.7 1464383.7 1707725.0 1842916.5  1420514.5 2044440.9
-> this:          267961.5 1057443.3 1496798.3 1949184.0 2446120.6 2704729.5  2102315.0 3086251.5
-> delta            9611.7  129174.6  280801.6  484800.3  738395.6  861813.0   681800.5 1041810.6
-> 
-> The first thing that I noticed was that we hit some dip in the numbers
-> at 3221.  I first thought that might be something else running on the
-> host machine, but both runs are affected by around the same percent.
-> 
-> Here, we do see the delta growing apart, but peaking in growth around
-> 821 VMAs.  Again that 3221 number is out of line.
-> 
-> If we discard 21 and anything above 1621, we still see both lines are
-> asymptotic curves.  I would expect that the new algorithm would be more
-> linear to represent O(n), but there is certainly a curve when graphed
-> with a normalized X-axis.  The older algorithm, O(n*log(n)) should be
-> the opposite curve all together, and with a diminishing return, but it
-> seems the more elements we have, the more operations we can perform in a
-> second.
-Thank you for your detailed analysis.
+Here is a real life example with a Marvell Armada 7040 TN48m switch:
 
-So, are you expecting the transformed data to be close to a constant
-value?
-Please note that besides constructing a new maple tree, there are many
-other operations in fork(). As the number of VMAs increases, the number
-of fork() calls decreases. Therefore, the overall cost spent on other
-operations becomes smaller, while the cost spent on duplicating VMAs
-increases. That's why this data grows with the increase of VMAs. I
-speculate that if the number of VMAs is large enough to neglect the time
-spent on other operations in fork(), this data will approach a constant
-value.
+$ nvmem=/sys/bus/nvmem/devices/1-00563/
+$ for i in `ls -1 $nvmem/cells/*`; do basename $i; hexdump -C $i | head -n1; done
+country-code@77
+00000000  54 57                                             |TW|
+crc32@88
+00000000  bb cd 51 98                                       |..Q.|
+device-version@49
+00000000  02                                                |.|
+diag-version@80
+00000000  56 31 2e 30 2e 30                                 |V1.0.0|
+label-revision@4c
+00000000  44 31                                             |D1|
+mac-address@2c
+00000000  18 be 92 13 9a 00                                 |......|
+manufacture-date@34
+00000000  30 32 2f 32 34 2f 32 30  32 31 20 31 38 3a 35 39  |02/24/2021 18:59|
+manufacturer@72
+00000000  44 4e 49                                          |DNI|
+num-macs@6e
+00000000  00 40                                             |.@|
+onie-version@61
+00000000  32 30 32 30 2e 31 31 2d  56 30 31                 |2020.11-V01|
+platform-name@50
+00000000  38 38 46 37 30 34 30 2f  38 38 46 36 38 32 30     |88F7040/88F6820|
+product-name@d
+00000000  54 4e 34 38 4d 2d 50 2d  44 4e                    |TN48M-P-DN|
+serial-number@19
+00000000  54 4e 34 38 31 50 32 54  57 32 30 34 32 30 33 32  |TN481P2TW2042032|
+vendor@7b
+00000000  44 4e 49                                          |DNI|
 
-If we want to achieve the expected curve, I think we should simulate the
-process of constructing the maple tree in user space to avoid the impact
-of other operations in fork(), just like in the current bench_forking().
-> 
-> Thinking about what is going on here, I cannot come up with a reason
-> that there would be a curve to the line at all.  If we took more
-> measurements, I would think the samples would be an ever-increasing line
-> with variability for some function of 16 - a saw toothed increasing
-> line. At least, until an upper limit is reached.  We can see that the
-> upper limit was still not achieved at 1621 since 6421 is higher for both
-> runs, but a curve is evident on both methods, which suggests something
-> else is a significant contributor.
-> 
-> I would think each VMA requires the same amount of work, so a constant.
-> The allocations would again, be some function that would linearly
-> increase with the existing method over-estimating by a huge number of
-> nodes.
-> 
-> I'm not trying to nitpick here, but it is important to be accurate in
-> the statements because it may alter choices on how to proceed in
-> improving this performance later.  It may be others looking through
-> these commit messages to see if something can be improved.
-Thank you for pointing that out. I will try to describe it more
-accurately in the commit log and see if I can measure the expected curve
-in user space.
-> 
-> I also feel like your notes on your algorithm are worth including in the
-> commit because it could prove rather valuable if we revisit forking in
-> the future.
-Do you mean that I should write the analysis of the time complexity of
-the new algorithm in the commit log?
-> 
-> The more I look at this, the more questions I have that I cannot answer.
-> One thing we can see is that the new method is faster in this
-> micro-benchmark.
-Yes. It should be noted that in the field of computer science, if the
-test results don't align with the expected mathematical calculations,
-it indicates an error in the calculations. This is because accurate
-calculations will always be reflected in the test results. 😂
-> 
->>>>
->>>> [1] https://github.com/kdlucas/byte-unixbench/tree/master
->>>>
->>>> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
->>>> ---
->>>>    include/linux/mm.h |  1 +
->>>>    kernel/fork.c      | 34 ++++++++++++++++++++----------
->>>>    mm/internal.h      |  3 ++-
->>>>    mm/memory.c        |  7 ++++---
->>>>    mm/mmap.c          | 52 ++++++++++++++++++++++++++++++++++++++++++++--
->>>>    5 files changed, 80 insertions(+), 17 deletions(-)
->>>>
->>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
->>>> index 1f1d0d6b8f20..10c59dc7ffaa 100644
->>>> --- a/include/linux/mm.h
->>>> +++ b/include/linux/mm.h
->>>> @@ -3242,6 +3242,7 @@ extern void unlink_file_vma(struct vm_area_struct *);
->>>>    extern struct vm_area_struct *copy_vma(struct vm_area_struct **,
->>>>    	unsigned long addr, unsigned long len, pgoff_t pgoff,
->>>>    	bool *need_rmap_locks);
->>>> +extern void undo_dup_mmap(struct mm_struct *mm, struct vm_area_struct *vma_end);
->>>>    extern void exit_mmap(struct mm_struct *);
->>>>    static inline int check_data_rlimit(unsigned long rlim,
->>>> diff --git a/kernel/fork.c b/kernel/fork.c
->>>> index 7ae36c2e7290..2f3d83e89fe6 100644
->>>> --- a/kernel/fork.c
->>>> +++ b/kernel/fork.c
->>>> @@ -650,7 +650,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>>>    	int retval;
->>>>    	unsigned long charge = 0;
->>>>    	LIST_HEAD(uf);
->>>> -	VMA_ITERATOR(old_vmi, oldmm, 0);
->>>>    	VMA_ITERATOR(vmi, mm, 0);
->>>>    	uprobe_start_dup_mmap();
->>>> @@ -678,16 +677,25 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>>>    		goto out;
->>>>    	khugepaged_fork(mm, oldmm);
->>>> -	retval = vma_iter_bulk_alloc(&vmi, oldmm->map_count);
->>>> -	if (retval)
->>>> +	/* Use __mt_dup() to efficiently build an identical maple tree. */
->>>> +	retval = __mt_dup(&oldmm->mm_mt, &mm->mm_mt, GFP_KERNEL);
->>>> +	if (unlikely(retval))
->>>>    		goto out;
->>>>    	mt_clear_in_rcu(vmi.mas.tree);
->>>> -	for_each_vma(old_vmi, mpnt) {
->>>> +	for_each_vma(vmi, mpnt) {
->>>>    		struct file *file;
->>>>    		vma_start_write(mpnt);
->>>>    		if (mpnt->vm_flags & VM_DONTCOPY) {
->>>> +			mas_store_gfp(&vmi.mas, NULL, GFP_KERNEL);
->>>> +
->>>> +			/* If failed, undo all completed duplications. */
->>>> +			if (unlikely(mas_is_err(&vmi.mas))) {
->>>> +				retval = xa_err(vmi.mas.node);
->>>> +				goto loop_out;
->>>> +			}
->>>> +
->>>>    			vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
->>>>    			continue;
->>>>    		}
->>>> @@ -749,9 +757,11 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>>>    		if (is_vm_hugetlb_page(tmp))
->>>>    			hugetlb_dup_vma_private(tmp);
->>>> -		/* Link the vma into the MT */
->>>> -		if (vma_iter_bulk_store(&vmi, tmp))
->>>> -			goto fail_nomem_vmi_store;
->>>> +		/*
->>>> +		 * Link the vma into the MT. After using __mt_dup(), memory
->>>> +		 * allocation is not necessary here, so it cannot fail.
->>>> +		 */
->>>> +		mas_store(&vmi.mas, tmp);
->>>>    		mm->map_count++;
->>>>    		if (!(tmp->vm_flags & VM_WIPEONFORK))
->>>> @@ -760,15 +770,19 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>>>    		if (tmp->vm_ops && tmp->vm_ops->open)
->>>>    			tmp->vm_ops->open(tmp);
->>>> -		if (retval)
->>>> +		if (retval) {
->>>> +			mpnt = vma_next(&vmi);
->>>>    			goto loop_out;
->>>> +		}
->>>>    	}
->>>>    	/* a new mm has just been created */
->>>>    	retval = arch_dup_mmap(oldmm, mm);
->>>>    loop_out:
->>>>    	vma_iter_free(&vmi);
->>>> -	if (!retval)
->>>> +	if (likely(!retval))
->>>>    		mt_set_in_rcu(vmi.mas.tree);
->>>> +	else
->>>> +		undo_dup_mmap(mm, mpnt);
->>>>    out:
->>>>    	mmap_write_unlock(mm);
->>>>    	flush_tlb_mm(oldmm);
->>>> @@ -778,8 +792,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>>>    	uprobe_end_dup_mmap();
->>>>    	return retval;
->>>> -fail_nomem_vmi_store:
->>>> -	unlink_anon_vmas(tmp);
->>>>    fail_nomem_anon_vma_fork:
->>>>    	mpol_put(vma_policy(tmp));
->>>>    fail_nomem_policy:
->>>> diff --git a/mm/internal.h b/mm/internal.h
->>>> index 7a961d12b088..288ec81770cb 100644
->>>> --- a/mm/internal.h
->>>> +++ b/mm/internal.h
->>>> @@ -111,7 +111,8 @@ void folio_activate(struct folio *folio);
->>>>    void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>>>    		   struct vm_area_struct *start_vma, unsigned long floor,
->>>> -		   unsigned long ceiling, bool mm_wr_locked);
->>>> +		   unsigned long ceiling, unsigned long tree_end,
->>>> +		   bool mm_wr_locked);
->>>>    void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte);
->>>>    struct zap_details;
->>>> diff --git a/mm/memory.c b/mm/memory.c
->>>> index 983a40f8ee62..1fd66a0d5838 100644
->>>> --- a/mm/memory.c
->>>> +++ b/mm/memory.c
->>>> @@ -362,7 +362,8 @@ void free_pgd_range(struct mmu_gather *tlb,
->>>>    void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>>>    		   struct vm_area_struct *vma, unsigned long floor,
->>>> -		   unsigned long ceiling, bool mm_wr_locked)
->>>> +		   unsigned long ceiling, unsigned long tree_end,
->>>> +		   bool mm_wr_locked)
->>>>    {
->>>>    	do {
->>>>    		unsigned long addr = vma->vm_start;
->>>> @@ -372,7 +373,7 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>>>    		 * Note: USER_PGTABLES_CEILING may be passed as ceiling and may
->>>>    		 * be 0.  This will underflow and is okay.
->>>>    		 */
->>>> -		next = mas_find(mas, ceiling - 1);
->>>> +		next = mas_find(mas, tree_end - 1);
->>>>    		/*
->>>>    		 * Hide vma from rmap and truncate_pagecache before freeing
->>>> @@ -393,7 +394,7 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>>>    			while (next && next->vm_start <= vma->vm_end + PMD_SIZE
->>>>    			       && !is_vm_hugetlb_page(next)) {
->>>>    				vma = next;
->>>> -				next = mas_find(mas, ceiling - 1);
->>>> +				next = mas_find(mas, tree_end - 1);
->>>>    				if (mm_wr_locked)
->>>>    					vma_start_write(vma);
->>>>    				unlink_anon_vmas(vma);
->>>> diff --git a/mm/mmap.c b/mm/mmap.c
->>>> index 2ad950f773e4..daed3b423124 100644
->>>> --- a/mm/mmap.c
->>>> +++ b/mm/mmap.c
->>>> @@ -2312,7 +2312,7 @@ static void unmap_region(struct mm_struct *mm, struct ma_state *mas,
->>>>    	mas_set(mas, mt_start);
->>>>    	free_pgtables(&tlb, mas, vma, prev ? prev->vm_end : FIRST_USER_ADDRESS,
->>>>    				 next ? next->vm_start : USER_PGTABLES_CEILING,
->>>> -				 mm_wr_locked);
->>>> +				 tree_end, mm_wr_locked);
->>>>    	tlb_finish_mmu(&tlb);
->>>>    }
->>>> @@ -3178,6 +3178,54 @@ int vm_brk(unsigned long addr, unsigned long len)
->>>>    }
->>>>    EXPORT_SYMBOL(vm_brk);
->>>> +void undo_dup_mmap(struct mm_struct *mm, struct vm_area_struct *vma_end)
->>>> +{
->>>> +	unsigned long tree_end;
->>>> +	VMA_ITERATOR(vmi, mm, 0);
->>>> +	struct vm_area_struct *vma;
->>>> +	unsigned long nr_accounted = 0;
->>>> +	int count = 0;
->>>> +
->>>> +	/*
->>>> +	 * vma_end points to the first VMA that has not been duplicated. We need
->>>> +	 * to unmap all VMAs before it.
->>>> +	 * If vma_end is NULL, it means that all VMAs in the maple tree have
->>>> +	 * been duplicated, so setting tree_end to 0 will overflow to ULONG_MAX
->>>> +	 * when using it.
->>>> +	 */
->>>> +	if (vma_end) {
->>>> +		tree_end = vma_end->vm_start;
->>>> +		if (tree_end == 0)
->>>> +			goto destroy;
->>>> +	} else
->>>> +		tree_end = 0;
->>>> +
->>>> +	vma = mas_find(&vmi.mas, tree_end - 1);
->>>> +
->>>> +	if (vma) {
->>>> +		arch_unmap(mm, vma->vm_start, tree_end);
->>>> +		unmap_region(mm, &vmi.mas, vma, NULL, NULL, 0, tree_end,
->>>> +			     tree_end, true);
->>>
->>> next is vma_end, as per your comment above.  Using next = vma_end allows
->>> you to avoid adding another argument to free_pgtables().
->> Unfortunately, it cannot be done this way. I fell into this trap before,
->> and it caused incomplete page table cleanup. To solve this problem, the
->> only solution I can think of right now is to add an additional
->> parameter.
->>
->> free_pgtables() will be called in unmap_region() to free the page table,
->> like this:
->>
->> free_pgtables(&tlb, mas, vma, prev ? prev->vm_end : FIRST_USER_ADDRESS,
->> 		next ? next->vm_start : USER_PGTABLES_CEILING,
->> 		mm_wr_locked);
->>
->> The problem is with 'next'. Our 'vma_end' does not exist in the actual
->> mmap because it has not been duplicated and cannot be used as 'next'.
->> If there is a real 'next', we can use 'next->vm_start' as the ceiling,
->> which is not a problem. If there is no 'next' (next is 'vma_end'), we
->> can only use 'USER_PGTABLES_CEILING' as the ceiling. Using
->> 'vma_end->vm_start' as the ceiling will cause the page table not to be
->> fully freed, which may be related to alignment in 'free_pgd_range()'. To
->> solve this problem, we have to introduce 'tree_end', and separating
->> 'tree_end' and 'ceiling' can solve this problem.
-> 
-> Can you just use ceiling?  That is, just not pass in next and keep the
-> code as-is?  This is how exit_mmap() does it and should avoid any
-> alignment issues.  I assume you tried that and something went wrong as
-> well?
-I tried that, but it didn't work either. In free_pgtables(), the
-following line of code is used to iterate over VMAs:
-mas_find(mas, ceiling - 1);
-If next is passed as NULL, ceiling will be 0, resulting in iterating
-over all the VMAs in the maple tree, including the last portion that was
-not duplicated.
-> 
->>
->>>
->>>> +
->>>> +		mas_set(&vmi.mas, vma->vm_end);
->>>> +		do {
->>>> +			if (vma->vm_flags & VM_ACCOUNT)
->>>> +				nr_accounted += vma_pages(vma);
->>>> +			remove_vma(vma, true);
->>>> +			count++;
->>>> +			cond_resched();
->>>> +			vma = mas_find(&vmi.mas, tree_end - 1);
->>>> +		} while (vma != NULL);
->>>> +
->>>> +		BUG_ON(count != mm->map_count);
->>>> +
->>>> +		vm_unacct_memory(nr_accounted);
->>>> +	}
->>>> +
->>>> +destroy:
->>>> +	__mt_destroy(&mm->mm_mt);
->>>> +}
->>>> +
->>>>    /* Release all mmaps. */
->>>>    void exit_mmap(struct mm_struct *mm)
->>>>    {
->>>> @@ -3217,7 +3265,7 @@ void exit_mmap(struct mm_struct *mm)
->>>>    	mt_clear_in_rcu(&mm->mm_mt);
->>>>    	mas_set(&mas, vma->vm_end);
->>>>    	free_pgtables(&tlb, &mas, vma, FIRST_USER_ADDRESS,
->>>> -		      USER_PGTABLES_CEILING, true);
->>>> +		      USER_PGTABLES_CEILING, USER_PGTABLES_CEILING, true);
->>>>    	tlb_finish_mmu(&tlb);
->>>>    	/*
->>>> -- 
->>>> 2.20.1
->>>>
->>>
->>
-> 
+Current support does not include:
+* The knowledge of the type of data (binary vs. ASCII), so by default
+  all cells are exposed in binary form.
+* Write support.
+
+Changes in v12:
+* Fixed the issues reported by kernel test robot.
+* Reworked even deeper the registration of layout devices and dropped
+  all the research and matching code that was previously needed as
+  suggested by Srinivas. This way, we no longer use the notifiers.
+
+Changes in v11:
+* The nvmem layouts are now regular devices and not platform devices
+  anymore. They are registered into the nvmem-layout bus (so there is a
+  new /sysfs/bus/nvmem-layouts entry that gets created. All the code for
+  this new bus is located under drivers/nvmem/layouts.c and is part of
+  the main core. The core device-driver logic applies without too much
+  additional code besides the registration of the bus and a bit of
+  glue. I see no need for more detailed structures for now but this can
+  be improved later as needed.
+
+Changes in v10:
+* All preparation patches have been picked-up by Srinivas.
+* Rebased on top of v6.6-rc1.
+* Fix an error path in the probe due to the recent additions.
+
+Changes in v9:
+* Hopefully fixed the creation of sysfs entries when describing the
+  cells using the legacy layout, as reported by Chen-Yu.
+* Dropped the nvmem-specific device list and used the driver core list
+  instead as advised by Greg.
+
+Changes in v8:
+* Fix a compilation warning whith !CONFIG_NVMEM_SYSFS.
+* Add a patch to return NULL when no layout is found (reported by Dan
+  Carpenter).
+* Fixed the documentation as well as the cover letter regarding the
+  addition of addresses in the cell names.
+
+Changes in v7:
+* Rework the layouts registration mechanism to use the platform devices
+  logic.
+* Fix the two issues reported by Daniel Golle and Chen-Yu Tsai, one of
+  them consist in suffixing '@<offset>' to the cell name to create the
+  sysfs files in order to be sure they are all unique.
+* Update the doc.
+
+Changes in v6:
+* ABI documentation style fixes reported by Randy Dunlap:
+  s|cells/ folder|"cells" folder|
+  Missing period at the end of the final note.
+  s|Ex::|Example::|
+* Remove spurious patch from the previous resubmission.
+
+Resending v5:
+* I forgot the mailing list in my former submission, both are absolutely
+  identical otherwise.
+
+Changes in v5:
+* Rebased on last -rc1, fixing a conflict and skipping the first two
+patches already taken by Greg.
+* Collected tags from Greg.
+* Split the nvmem patch into two, one which just moves the cells
+  creation and the other which adds the cells.
+
+Changes in v4:
+* Use a core helper to count the number of cells in a list.
+* Provide sysfs attributes a private member which is the entry itself to
+  avoid the need for looking up the nvmem device and then looping over
+  all the cells to find the right one.
+
+Changes in v3:
+* Patch 1 is new: fix a style issue which bothered me when reading the
+  core.
+* Patch 2 is new: Don't error out when an attribute group does not
+  contain any attributes, it's easier for developers to handle "empty"
+  directories this way. It avoids strange/bad solutions to be
+  implemented and does not cost much.
+* Drop the is_visible hook as it is no longer needed.
+* Stop allocating an empty attribute array to comply with the sysfs core
+  checks (this check has been altered in the first commits).
+* Fix a missing tab in the ABI doc.
+
+Changes in v2:
+* Do not mention the cells might become writable in the future in the
+  ABI documentation.
+* Fix a wrong return value reported by Dan and kernel test robot.
+* Implement .is_bin_visible().
+* Avoid overwriting the list of attribute groups, but keep the cells
+  attribute group writable as we need to populate it at run time.
+* Improve the commit messages.
+* Give a real life example in the cover letter.
+
+Miquel Raynal (7):
+  of: device: Export of_device_make_bus_id()
+  nvmem: Clarify the situation when there is no DT node available
+  nvmem: Move of_nvmem_layout_get_container() in another header
+  nvmem: Create a header for internal sharing
+  nvmem: core: Rework layouts to become regular devices
+  ABI: sysfs-nvmem-cells: Expose cells through sysfs
+  nvmem: core: Expose cells through sysfs
+
+ Documentation/ABI/testing/sysfs-nvmem-cells |  21 ++
+ drivers/nvmem/Makefile                      |   2 +-
+ drivers/nvmem/core.c                        | 288 +++++++++++---------
+ drivers/nvmem/internals.h                   |  58 ++++
+ drivers/nvmem/layouts.c                     | 201 ++++++++++++++
+ drivers/nvmem/layouts/onie-tlv.c            |  36 ++-
+ drivers/nvmem/layouts/sl28vpd.c             |  36 ++-
+ drivers/of/device.c                         |  41 +++
+ drivers/of/platform.c                       |  40 ---
+ include/linux/nvmem-consumer.h              |   7 -
+ include/linux/nvmem-provider.h              |  39 ++-
+ include/linux/of_device.h                   |   6 +
+ 12 files changed, 581 insertions(+), 194 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-nvmem-cells
+ create mode 100644 drivers/nvmem/internals.h
+ create mode 100644 drivers/nvmem/layouts.c
+
+-- 
+2.34.1
+
