@@ -2,165 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 617B77BA648
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867867BA52E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbjJEQdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
+        id S241343AbjJEQOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235720AbjJEQc3 (ORCPT
+        with ESMTP id S238453AbjJEQMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:32:29 -0400
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D93E8A63
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 01:26:17 -0700 (PDT)
-Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-495c10cec8aso285232e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 01:26:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696494376; x=1697099176; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wu34Y5Uk7m/dwq+bUXLfA0oFG0rxnym2Ri9SezksNJI=;
-        b=VUEEnWSVqa9xxze/PoT41G+0XRhy4/zzHBnveDM/NlTMDTJeaD296Ybc0WRi1BN1GI
-         Tp+vJADTxeSGHtqWAQ90iESvtUeU70x8t3e9M0VWW1JFxoVEsVa0ApNLsOvwtCJsbz98
-         KVtegdj7bqyPoKGQRn7pEn9fIXG8kkGDvfb71Xy0gLIPZerquxkueYmauRMjY+K3NG1U
-         IXMKzn9YbPGr1XrtDQ93DEUZYhbH6X/LkmD+Ju3K82pKOjlNlL0qaEJnh6lci2x7OV7O
-         BlbFZVLLe2gwBlsDawEPMvj6a4AVxeBv1GeHIjecx0vjkuwJaimY5P5z6HpiSpSxl1+e
-         F+NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696494376; x=1697099176;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wu34Y5Uk7m/dwq+bUXLfA0oFG0rxnym2Ri9SezksNJI=;
-        b=i/xUIZmcjel2K+Z2wrH7vu2ZJY/RIg1uPMjlpB3gtOwDbA+0BUhIbXD/5I2BAZXku3
-         g8jIyXxUg55xcMvFjIw89yMzXbFTLivqMjW+hTLGTcPKPNfPEH5YVKUAGP/0YBO+Ege+
-         tJMpLSAws3ZWTVJWvtwxp7i0iXst0ObxoxIM9uaAI+pabmiNz9FmsZaycc19II6HwB1I
-         OAGkBG0WtI473cs7PegMk2VHS6SkQXJbulezJBwLQodfcSYOfai1T4f4msjDC2GRmsFP
-         ipllLbAAqRKbksbyyTOWDTD7XESo8jJyv1rbVy+9IC5Ewb+dDYizEnrGXefWktT/B9gI
-         HOhA==
-X-Gm-Message-State: AOJu0YyKjzVrsA84EWBOhD/EqBGit/a/6YO0JiCCjGQiMx6z7im2Iz0Z
-        0dvbRiUCn1yeRhkTrzSAiv7LMEfwHDD/zPs38bX1/6pUHQOKrg==
-X-Google-Smtp-Source: AGHT+IH91h/0wFFtByhJgTE2boW4aB3prn7JVRy76cCLxfhOYQAam2XmIZ9Slh4BkeC4r1XLdHzw7nkVWi8b1RyK5fg=
-X-Received: by 2002:a1f:d803:0:b0:495:dcd2:d12a with SMTP id
- p3-20020a1fd803000000b00495dcd2d12amr4528807vkg.9.1696494376216; Thu, 05 Oct
- 2023 01:26:16 -0700 (PDT)
+        Thu, 5 Oct 2023 12:12:22 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7215E8A6B;
+        Thu,  5 Oct 2023 01:28:38 -0700 (PDT)
+Date:   Thu, 05 Oct 2023 08:28:36 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696494516;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kQYKZeQP8pm0NjRWo5780Kw8NMCt/BBjxkH5yR+PxPw=;
+        b=kbiPrJx1bvBuyseYnFTGoQF+55CE9AnAKQB+xVEo1EYYhegUW8amTYnZlKbtzhpGRfszSX
+        fJhdsdyElQX8umq5olyDov7OyILJN6eqxX+3JdpVq9uSfM5RniKcNzVQRwz5sFPpXRwGRK
+        Ubh5MiXs5tlO16hfCoTi0IsGgt8jejoTLbyu5EZBN2xssSoj0aXDBWEf5tZ1NxIXZ1FJAr
+        ricHYpoYKiad6N6CjreWVhTqyHVnIF1HeW8X1Wc5Z27uIQnuyit8Qy6FhEkCQjl11ZWHTc
+        LWx6k9JV0VAdfjmMZbraD9rg4d3luieqeCZ9c9tdubx5lUsYX+bv8TFjNyOTVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696494516;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kQYKZeQP8pm0NjRWo5780Kw8NMCt/BBjxkH5yR+PxPw=;
+        b=LrXa3UOustYww++UDMFKZ7OOPP9T2KHeEkE8fDsMWEskHaKxs4s2b80JSp56A56MJIboA+
+        V6m+6P0Pv3Po8ECg==
+From:   "tip-bot2 for Brian Gerst" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/entry] x86/entry/compat: Combine return value test from
+ syscall handler
+Cc:     Brian Gerst <brgerst@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230721161018.50214-4-brgerst@gmail.com>
+References: <20230721161018.50214-4-brgerst@gmail.com>
 MIME-Version: 1.0
-References: <CAHk-=wjrZgxjHZuXwrGeFnng_whUmtToCWE5GQ+HORhGSeiX8g@mail.gmail.com>
- <ZRhKq6e5nF/4ZIV1@fedora> <CAB=+i9QiJ=BXkQuCFJTh3dMXrkKQvVA2EM51Mj6SsDMimWQ71g@mail.gmail.com>
- <20231002104056.GA13957@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231002104056.GA13957@noisy.programming.kicks-ass.net>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Thu, 5 Oct 2023 17:26:04 +0900
-Message-ID: <CAB=+i9RCCxHH755gWm+Y=3xdpXoRWbz1nwO3_CKDM8Vdmki0dA@mail.gmail.com>
-Subject: Re: Linux 6.6-rc3 (DEBUG_VIRTUAL is unhappy on x86)
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Kaplan <David.Kaplan@amd.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Message-ID: <169649451603.3135.3339730852325076665.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 7:41=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
-> wrote:
->
-> On Sun, Oct 01, 2023 at 11:17:21PM +0900, Hyeonggon Yoo wrote:
->
-> > OK, I looked into this a little bit, and it turns out that the problema=
-tic
-> > address here is from cleanup_trusted() in
-> > security/keys/trusted-keys/trusted_core.c.
-> > (and it's builtin due to CONFIG_TRUSTED_KEYS=3Dy)
->
-> That code is insane.. wth would you want to use an explicit
-> static_call() in either __init or __exit ?!?
->
-> I think the reason we support init was because it was just really hard
-> to avoid throughout the abstraction layers etc.. But this seems to be
-> the only __exit user, and it is really quite daft.
+The following commit has been merged into the x86/entry branch of tip:
 
-Actually that's a good point (that static call in __exit is a bit insane).
-One thing I still wonder is,  will the alternative instructions functionali=
-ty be
-affected in the same way as static calls? Because it's just another way to =
-patch
-kernel code at runtime.
+Commit-ID:     eec62f61e134d6711f98d4005c6439f24d03d54f
+Gitweb:        https://git.kernel.org/tip/eec62f61e134d6711f98d4005c6439f24d03d54f
+Author:        Brian Gerst <brgerst@gmail.com>
+AuthorDate:    Fri, 21 Jul 2023 12:10:14 -04:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 05 Oct 2023 10:06:42 +02:00
 
-> > The function is marked as __exit, so it does not fall within the
-> > 'core kernel text address range,' which is between _stext and _etext
-> > (or between _sinittext and _einittext). and thus __text_poke() thinks t=
-hat
-> > it's vmalloc/module area.
-> >
-> > I think __text_poke() should be taught that functions marked as __exit
-> > also belong to kernel code just like __init.
->
-> Should we not do something like:
->
-> #ifdef MODULE
-> #define __exit __section(".exit.text") __exitused __cold notrace
-> #else
-> #define __exit __section(".discard.exit.text")
-> #endif
->
-> It's not like that code should ever be ran or referenced when built-in.
+x86/entry/compat: Combine return value test from syscall handler
 
-It looked fine to me, but with a quick testing my linker seems to be unhapp=
-y
-(removed duplicate lines):
+Move the sysret32_from_system_call label to remove a duplicate test of
+the return value from the syscall handler.
 
-$ make -j12 bzImage
-  DESCEND objtool
-  DESCEND bpf/resolve_btfids
-make[4]: 'install_headers' is up to date.
-  CALL    scripts/checksyscalls.sh
-  UPD     include/generated/utsversion.h
-  CC      init/version-timestamp.o
-  LD      .tmp_vmlinux.btf
-`.discard.exit.text' referenced in section `__mcount_loc' of
-vmlinux.o: defined in discarded section `.discard.exit.text' of
-vmlinux.o
-`.discard.exit.text' referenced in section `.smp_locks' of vmlinux.o:
-defined in discarded section `.discard.exit.text' of vmlinux.o
-`.discard.exit.text' referenced in section `__bug_table' of vmlinux.o:
-defined in discarded section `.discard.exit.text' of vmlinux.o
-`.discard.exit.text' referenced in section `__jump_table' of
-vmlinux.o: defined in discarded section `.discard.exit.text' of
-vmlinux.o
-`.discard.exit.text' referenced in section `.static_call_sites' of
-vmlinux.o: defined in discarded section `.discard.exit.text' of
-vmlinux.o
-`.discard.exit.text' referenced in section `.retpoline_sites' of
-vmlinux.o: defined in discarded section `.discard.exit.text' of
-vmlinux.o
-`.discard.exit.text' referenced in section `.return_sites' of
-vmlinux.o: defined in discarded section `.discard.exit.text' of
-vmlinux.o
-`.discard.exit.text' referenced in section `.call_sites' of vmlinux.o:
-defined in discarded section `.discard.exit.text' of vmlinux.o
-`.discard.exit.text' referenced in section `.ibt_endbr_seal' of
-vmlinux.o: defined in discarded section `.discard.exit.text' of
-vmlinux.o
-  BTF     .btf.vmlinux.bin.o
-pahole: .tmp_vmlinux.btf: Invalid argument
-  LD      .tmp_vmlinux.kallsyms1
-.btf.vmlinux.bin.o: file not recognized: file format not recognized
-make[2]: *** [scripts/Makefile.vmlinux:36: vmlinux] Error 1
-make[1]: *** [/home/hyeyoo/Desktop/linux/Makefile:1165: vmlinux] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
+Signed-off-by: Brian Gerst <brgerst@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20230721161018.50214-4-brgerst@gmail.com
+---
+ arch/x86/entry/entry_64_compat.S |  9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---
-Hyeonggon
+diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
+index 7015029..b162723 100644
+--- a/arch/x86/entry/entry_64_compat.S
++++ b/arch/x86/entry/entry_64_compat.S
+@@ -118,9 +118,6 @@ SYM_INNER_LABEL(entry_SYSENTER_compat_after_hwframe, SYM_L_GLOBAL)
+ 
+ 	movq	%rsp, %rdi
+ 	call	do_SYSENTER_32
+-	/* XEN PV guests always use IRET path */
+-	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
+-		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
+ 	jmp	sysret32_from_system_call
+ 
+ .Lsysenter_fix_flags:
+@@ -212,13 +209,15 @@ SYM_INNER_LABEL(entry_SYSCALL_compat_after_hwframe, SYM_L_GLOBAL)
+ 
+ 	movq	%rsp, %rdi
+ 	call	do_fast_syscall_32
++
++sysret32_from_system_call:
+ 	/* XEN PV guests always use IRET path */
+ 	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
+ 		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
+ 
+-	/* Opportunistic SYSRET */
+-sysret32_from_system_call:
+ 	/*
++	 * Opportunistic SYSRET
++	 *
+ 	 * We are not going to return to userspace from the trampoline
+ 	 * stack. So let's erase the thread stack right now.
+ 	 */
