@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9F17BA3EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359A57BA55E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235245AbjJEQAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50818 "EHLO
+        id S233245AbjJEQP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:15:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236665AbjJEP7L (ORCPT
+        with ESMTP id S237601AbjJEQNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:59:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1950B59E4;
-        Thu,  5 Oct 2023 08:19:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696519195; x=1728055195;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rHv1yZ3QlkVxPZXwJjb2AlmfazUnbbUhKxhZTvKFYsw=;
-  b=bfB5r88Q3jWfIWKDXgq2nsB4B1n6slDoQDronDZAleA4utKiVc3pAMHc
-   Fb4qrqW7MzH+uHR/PEV5sMKgJL4rQb3PCsUfnNQkDTEQ5iRPEJQdS4tZ7
-   Vw7UIaNnEaRTbyWqHzEsuQ/poTUkj+tIaQrfpcNPnG8quXxUkU/abre05
-   j/Lrq99CynT0/GDXUuTrVNTw4sV8JzzdIHGY8BQCn+ifirP+bN0TOptRa
-   EgyZZABrN2WjJid9gU+76fEr7vRZpTJFx0CypY7KL00TrrUl3+NVOnkCX
-   gkmcQ3nN7xhjcr+x58tVYoCi5XeeEFh2nRUiofmwyvJLP4Si7KNjMDr49
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="386358273"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="386358273"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 08:19:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="875583433"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="875583433"
-Received: from yklum-mobl.gar.corp.intel.com (HELO intel.com) ([10.215.244.7])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 08:19:46 -0700
-Date:   Thu, 5 Oct 2023 17:19:38 +0200
-From:   Andi Shyti <andi.shyti@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Cooper <alcooperx@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andi Shyti <andi.shyti@linux.intel.com>
-Subject: Re: [PATCH v2 1/1] serial: 8250_bcm7271: Use
- devm_clk_get_optional_enabled()
-Message-ID: <ZR7UCtRKrycMD5d5@ashyti-mobl2.lan>
-References: <20231005124550.3607234-1-andriy.shevchenko@linux.intel.com>
+        Thu, 5 Oct 2023 12:13:09 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E4812A
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 19:58:43 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c737d61a00so3547075ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 19:58:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696474723; x=1697079523; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0kNnoNX+VycKJxCFVsIPAbCtAe5boObmTDcjKlCDp2k=;
+        b=i4L/3Aj8ygTjSUp9/p9XDWPSBBKIRjWIC5psTSo5nX3ZwidzXnhiCBlczgVVI2zjpZ
+         9XWh+QJWSXuMiPpDWrlgZpJl/Z8tuZxCXx3YMi3JB62A4zXJlhkRATn11k3SCHNFLDbf
+         Tk89LjB5wR/1YdxTpbiNiRU0F/Rvj9JM4j2NY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696474723; x=1697079523;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0kNnoNX+VycKJxCFVsIPAbCtAe5boObmTDcjKlCDp2k=;
+        b=W6XzE1yZIhRp44jPBIXFASlU1WycAAMg+VxZxeR9T5PLRPAyP0z/hntTVnGh4SZfSi
+         0VjhWXPuvGFSggKdh0WunLwNmoGOZgZgGFM7p41S0ch3uQlFkHYQFYrFCmQd/OHmSl2n
+         LoW3sb63XBySfAIWuxy7nEcP1rJXRQXDnd83Hf95Hy899FAJ4mQDSr6bGDw6teXX50M+
+         GR3OURZ7Yd7fht6OjSiy8YwUCNrFjGOZeKNEnQ2VONX6yKbyxcIvuZ2UA8XBmw6f3zWX
+         qK5OCuXt1kCvcznEehzWZrS9AH1/Cj6dfj4UhboPkgk6+gUD31yUXvn5adcKnxTHV1iL
+         sgZQ==
+X-Gm-Message-State: AOJu0YxYGzNmggpcrYtNMBiPjJI64co/dKkkGI1aOPpoGLZL+Shn3e0X
+        uOp14tUJoOELxRMpaOwI0DG2xA==
+X-Google-Smtp-Source: AGHT+IEuvtkB5cCQbgCWYrRd54NAG8rv4yhh7aSFHMbN97v3p48aULxm0ARxKFDY+QpqB2XuHsjBOg==
+X-Received: by 2002:a17:903:1cc:b0:1c7:2661:91e1 with SMTP id e12-20020a17090301cc00b001c7266191e1mr3864559plh.15.1696474722969;
+        Wed, 04 Oct 2023 19:58:42 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id p10-20020a170902eaca00b001b8a85489a3sm313410pld.262.2023.10.04.19.58.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 19:58:42 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 19:58:39 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] can: peak_pci: replace deprecated strncpy with strscpy
+Message-ID: <202310041958.12F8A261A@keescook>
+References: <20231005-strncpy-drivers-net-can-sja1000-peak_pci-c-v1-1-c36e1702cd56@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231005124550.3607234-1-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231005-strncpy-drivers-net-can-sja1000-peak_pci-c-v1-1-c36e1702cd56@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Thu, Oct 05, 2023 at 12:05:35AM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> NUL-padding is not required since card is already zero-initialized:
+> |       card = kzalloc(sizeof(*card), GFP_KERNEL);
+> 
+> A suitable replacement is `strscpy` [2] due to the fact that it
+> guarantees NUL-termination on the destination buffer without
+> unnecessarily NUL-padding.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-[...]
+Yup, this looks like a standard direct replacement.
 
-> -	baud_mux_clk = devm_clk_get(dev, "sw_baud");
-> -	if (IS_ERR(baud_mux_clk)) {
-> -		if (PTR_ERR(baud_mux_clk) == -EPROBE_DEFER) {
-> -			ret = -EPROBE_DEFER;
-> -			goto release_dma;
-> -		}
-> -		dev_dbg(dev, "BAUD MUX clock not specified\n");
-> -	} else {
-> +	baud_mux_clk = devm_clk_get_optional_enabled(dev, "sw_baud");
-> +	ret = PTR_ERR_OR_ZERO(baud_mux_clk);
-> +	if (ret)
-> +		goto release_dma;
-> +	if (baud_mux_clk) {
->  		dev_dbg(dev, "BAUD MUX clock found\n");
-> -		ret = clk_prepare_enable(baud_mux_clk);
-> -		if (ret)
-> -			goto release_dma;
-> +
->  		priv->baud_mux_clk = baud_mux_clk;
->  		init_real_clk_rates(dev, priv);
->  		clk_rate = priv->default_mux_rate;
-> +	} else {
-> +		dev_dbg(dev, "BAUD MUX clock not specified\n");
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-little behavioral change here, but I don't think this is a
-problem.
-
-Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com> 
-
-Thanks,
-Andi
+-- 
+Kees Cook
