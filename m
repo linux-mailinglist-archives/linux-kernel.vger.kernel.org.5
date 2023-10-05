@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDA67BA544
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BEC7BA55D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239568AbjJEQPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
+        id S240554AbjJEQQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240476AbjJEQNH (ORCPT
+        with ESMTP id S240576AbjJEQNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:13:07 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EA123537
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 03:59:03 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-27763c2c22eso557228a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 03:59:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696503543; x=1697108343; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JNyCQ67xdT96qFsLCo+WWGtR8HPuUjeLj+uqNqnLI8g=;
-        b=Tp5lTQkkRcFT7HVAS5m2wq+oEvkf5NYnCcmBwt8gRlk9H1wsDQNU25D+f+rb7CI8IQ
-         XCEjaSXvf9YjMufPTULOByVskjvlLsrut9vlPCVLibdzaEvLOA/Ryucsjfv3JE2QC3DB
-         4+4dcq4mVaWK3h6hNG50FVCFQfbntE1WVnfGZqoKOBCeNqNxtypBfCsFtGb2tkArW9Gr
-         ZLfGpgt2TAS6S1jCp+cAvgqs+UlgNtoD7da/rAd1N9o4wIe95joiHqz9qaat6tE5HIsW
-         tKJLsjkYP6sFWpEvIjvAZpth91OPynBqQoUABQhyLhXhxm7/CR4g8OCvbv7r2vXlF9Jk
-         E68Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696503543; x=1697108343;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JNyCQ67xdT96qFsLCo+WWGtR8HPuUjeLj+uqNqnLI8g=;
-        b=cz3CWCvdNIVb6IaYN4tKV0jGh+66TlGRDunzFfM5zkjvZx75XR8vn0Uoi91EwWDWhz
-         tVaOwl0pG+92EVbAfEKq+3EgBXhy4bwUIdlLFYxGyZMNczZyOtsqFLTQyKhCpjKgKQlX
-         zF63ijbg+ketjpPIzm5phlkM/t324zjFrwgzmIheaLY8wcS/7KsV4GQ4ReykX8ht64Cn
-         duoBY39Hfo51pianVZ81YKd9EefLKHNVKEhgXrnZFpFpFzUQWM1abYUXaeaq0YxE00XR
-         fRGPGrZydFiqe/GPXa8KSHtX8M258XMVwlZopj4xqKhD6WYUQf7ZECQP4gqgi/AAzJeN
-         5Y3w==
-X-Gm-Message-State: AOJu0Ywox2Tx6kEz8wyE4aF5l/1teYVlfP3mWi7PCSltK4L6gjK8VhCD
-        S7KSoW6XQNOWpWr4pzcP/8lyjA==
-X-Google-Smtp-Source: AGHT+IEqVdlbNS4vW9mOpsOKz3y7xe+62W+DJy82LP+RQC3oEmT65otErnMxK2N9X98S9Eq1rXS2Yw==
-X-Received: by 2002:a17:90a:850b:b0:274:3d7d:e793 with SMTP id l11-20020a17090a850b00b002743d7de793mr4575546pjn.47.1696503543399;
-        Thu, 05 Oct 2023 03:59:03 -0700 (PDT)
-Received: from localhost ([122.172.81.92])
-        by smtp.gmail.com with ESMTPSA id g4-20020a17090ace8400b00274b9dd8519sm1254350pju.35.2023.10.05.03.59.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 03:59:02 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 16:29:00 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Liao Chang <liaochang1@huawei.com>
-Cc:     rafael@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: conservative: Simplify the condition of storing
- 'down_threshold'
-Message-ID: <20231005105900.uctt4jna4wovt5g6@vireshk-i7>
-References: <20230912060942.2516761-1-liaochang1@huawei.com>
+        Thu, 5 Oct 2023 12:13:08 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BF224868;
+        Thu,  5 Oct 2023 04:17:15 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:7e5d:5300::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 5F022AE8;
+        Thu,  5 Oct 2023 04:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1696504632;
+        bh=+QvPDf6laDoyUA3qVW9l7YF9DF+U8wakjINq8xl+7A8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=THrE/kJt+qUUemMdOCjsTm0Ih9z6M8yAaBTeXhcI31NxW11TrRFJBDG+4EwpO3ZYs
+         FY1pO8SUDuTt5EpVqWJj/xazDuWM7NaKB6c+TyivvAzLcTvaeLYWDMyJT6H/by/5Xi
+         lC7GaMsuiGlUQhR43qYV4YncCOJbFtYvo9bpsbNQ=
+Date:   Thu, 5 Oct 2023 04:17:10 -0700
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     Rob Herring <robh@kernel.org>, broonie@kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: regulator: regulator-output: Multiple
+ supplies
+Message-ID: <c486c7dd-add2-45db-8fbc-94391f79a374@hatter.bewilderbeest.net>
+References: <20231004120529.1155700-1-naresh.solanki@9elements.com>
+ <20231004151433.GA3145438-robh@kernel.org>
+ <CABqG17in=LKwsDoPRmN5NMNiZ3wU=bbWiyPdunpwph7hgPSxEw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20230912060942.2516761-1-liaochang1@huawei.com>
+In-Reply-To: <CABqG17in=LKwsDoPRmN5NMNiZ3wU=bbWiyPdunpwph7hgPSxEw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-09-23, 06:09, Liao Chang wrote:
-> The governor currently checks if the input new down_threshold is less
-> than 100 before storing it. However, the up_threshold field of dbs_data
-> structure is also limited to be less than 100, so this check is
-> unnecessary and remove it.
-> 
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> ---
->  drivers/cpufreq/cpufreq_conservative.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/cpufreq_conservative.c b/drivers/cpufreq/cpufreq_conservative.c
-> index b6bd0ff35323..56500b25d77c 100644
-> --- a/drivers/cpufreq/cpufreq_conservative.c
-> +++ b/drivers/cpufreq/cpufreq_conservative.c
-> @@ -187,8 +187,7 @@ static ssize_t down_threshold_store(struct gov_attr_set *attr_set,
->  	ret = sscanf(buf, "%u", &input);
->  
->  	/* cannot be lower than 1 otherwise freq will not fall */
-> -	if (ret != 1 || input < 1 || input > 100 ||
-> -			input >= dbs_data->up_threshold)
-> +	if (ret != 1 || input < 1 || input >= dbs_data->up_threshold)
->  		return -EINVAL;
->  
->  	cs_tuners->down_threshold = input;
+On Thu, Oct 05, 2023 at 12:46:31AM PDT, Naresh Solanki wrote:
+>Hi Rob,
+>
+>
+>On Wed, 4 Oct 2023 at 20:44, Rob Herring <robh@kernel.org> wrote:
+>>
+>> On Wed, Oct 04, 2023 at 02:05:26PM +0200, Naresh Solanki wrote:
+>> > Add support for multiple supplies.
+>>
+>> Why?
+>1. Driver is already capable of that using platform data. Hence added
+>support to read DT property & initialize the same for multiple
+>supplies instead of being limited to one.
+>2. This is particularly useful in cases wherein 2 or more regulators
+>are coupled together, for example in a PCIe connector having 3.3V &
+>12V.
+>
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Hmm -- apologies if I pointed you in the wrong direction here on the 
+last revision (or should have considered this earlier), but is there a 
+particular need for this arrangement to be described by a single 
+regulator-output DT node instead of just having one node per supply?  If 
+they're independently-controlled voltage outputs, treating them as two 
+separate things instead of a single ganged one seems like it might be 
+more appropriate anyway...
 
--- 
-viresh
+
+Zev
+
