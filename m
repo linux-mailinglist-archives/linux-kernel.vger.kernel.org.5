@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C56287BAED9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718C97BAEDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbjJEWge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 18:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
+        id S230518AbjJEWis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 18:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbjJEWga (ORCPT
+        with ESMTP id S229865AbjJEWir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 18:36:30 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE35DB
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:36:29 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c5bf7871dcso12697315ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:36:29 -0700 (PDT)
+        Thu, 5 Oct 2023 18:38:47 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C407D6
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:38:46 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3af86819ba9so938942b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:38:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696545389; x=1697150189; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1696545525; x=1697150325; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=i/b9hklvRBoRTstYlGluSwicXQ/mlPMQJmwe6lDAUVA=;
-        b=hebOhCTkv1KhysnfJ+tbzWfuRopHgJvp6zzNJhHoCx3DLUyA2vR10bYPwP5FWd7Tve
-         FrBuiXaKhpN107so5pWbiEt9Gpq5bE9u/zpVzvqzm4o/1QZxYrG8ZaKfjIbuS5JXOwdd
-         yuVDTeAidj2WMqdMC9Ecg0ec5ABKHFJrOOFxo=
+        bh=qCvaeX0CsYspblE1+MkdIoTCFcfiCufJXgkcxqp2cOI=;
+        b=T+dSRjNDAqjyNc9LC+1nxTaNhjpn7Bl2UlHySWTrUWH8/CdAKaa7H4oI0pStp+9IfW
+         5EfqZYcZDZTHhggN7byGFcN9IykKHFAWlxlCYxYWsT1N5ha52/OrTiOSfATofYwvrsrm
+         ef19CvBwcN3Xgq1/ZCKTUDTnNx7mS+NNzN3ho=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696545389; x=1697150189;
+        d=1e100.net; s=20230601; t=1696545525; x=1697150325;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i/b9hklvRBoRTstYlGluSwicXQ/mlPMQJmwe6lDAUVA=;
-        b=SfwG6pPRju/Xm7GCF2i4JGXV5u3OAIWaWGCvBhWQrHOLYJnzHcAd9czzCMVghEHdKw
-         o20gqrU37nxDgGEjNYR9QlVOIP7wPJJFjJ2Xi9ciZIL7HeoXXrQw7SGAISQ6f+W+vW6O
-         zuw3kvBKR1G+XZIMUTvGGBOBU5S1rUo6Aw0+vu0swzGAiqkuptY33J0HnPQxVxc/XuBz
-         GpISiXWhYm0HNPY3mN7JzsNscQ2OZbvxLnqjFOooWNBdNwHzltFMTpqXDEGqTFBFp0C1
-         lB2TUQFLrLb8oMYuCwUj0JPYQo4YqRluL4Pyb2CLAwyrQpXzIbBuOKwiml+NOBsa1WkK
-         7Ing==
-X-Gm-Message-State: AOJu0YzxBz44MeTpFK9bggTdrr3p4yhuTTzYWm7NJalPNy/xHdbMVpaT
-        5a4HmeMI2jmTSQV/aDV9t/loOg==
-X-Google-Smtp-Source: AGHT+IHks10yDYEfCTUn0LTjg6G11Q867vQ86Z3yTk/vFhiVyJ6GELi4GUrsYZLPbuQ7Vkt963dGUA==
-X-Received: by 2002:a17:902:c3d1:b0:1c5:6f4d:d6cc with SMTP id j17-20020a170902c3d100b001c56f4dd6ccmr5622471plj.22.1696545388810;
-        Thu, 05 Oct 2023 15:36:28 -0700 (PDT)
+        bh=qCvaeX0CsYspblE1+MkdIoTCFcfiCufJXgkcxqp2cOI=;
+        b=lcOXnd78Z8XUZGAvbwsDEppin5hLjGAmqvPvLAeGl3P/QKvAiMTWyXfAm852H8RdFw
+         IUkyBIQ9b8VtbSWxu4SOXswV4/1asMI3z5q4hC7DYo3o0B2y8NJfvK/fpoMWbuKlHE7a
+         OV0NLvtNoTtPescswsw5QbLvfmSuRUEw6xezz3j0Wd0Zl0fw/owtiVBtiF9Sv2S6NMAB
+         AUyLodr+y4wPzONBZgynGUC3tWPbW7KCrCMC+74SnVkgASerzh4zu+TyfI454M9UllHq
+         hEtx/y3PrkT8zExC2BOYeNwXGY32cQ/BUYIHWRSYhAl6ZK04oOWmk40rJWWpFi9r/Wwo
+         tgPw==
+X-Gm-Message-State: AOJu0YzRMslO3oOI/7Tvo7J5Mvv6J6+tQ71Av1bNKXuo4n6RcVXXPNw8
+        xTKwytobuvXuhGUUU2xvmVnudQ==
+X-Google-Smtp-Source: AGHT+IFQMXs5moBfjlFoe1sQrtvG11uI/l0FcV/F9HrUl4XBxcLiN8EVE2FuJfy8YnL0Y52eJZCnbA==
+X-Received: by 2002:a05:6808:d54:b0:3af:b467:88b4 with SMTP id w20-20020a0568080d5400b003afb46788b4mr5803947oik.35.1696545525651;
+        Thu, 05 Oct 2023 15:38:45 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u10-20020a170902b28a00b001c60a2b5c61sm2269196plr.134.2023.10.05.15.36.27
+        by smtp.gmail.com with ESMTPSA id v9-20020a63b649000000b00577bc070c6bsm1715923pgt.68.2023.10.05.15.38.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 15:36:28 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 15:36:26 -0700
+        Thu, 05 Oct 2023 15:38:45 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 15:38:43 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] get_maintainer: add --keywords-in-file option
-Message-ID: <202310051535.D3F6A925@keescook>
-References: <01fe46f0c58aa8baf92156ae2bdccfb2bf0cb48e.camel@perches.com>
+To:     "Kiyanovski, Arthur" <akiyano@amazon.com>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        "Agroskin, Shay" <shayagr@amazon.com>,
+        "Arinzon, David" <darinzon@amazon.com>,
+        "Dagan, Noam" <ndagan@amazon.com>,
+        "Bshara, Saeed" <saeedb@amazon.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH] net: ena: replace deprecated strncpy with strscpy
+Message-ID: <202310051537.7C5CEE6E@keescook>
+References: <20231005-strncpy-drivers-net-ethernet-amazon-ena-ena_netdev-c-v1-1-ba4879974160@google.com>
+ <fe65f57f91f342c7a173891b84cda37b@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <01fe46f0c58aa8baf92156ae2bdccfb2bf0cb48e.camel@perches.com>
+In-Reply-To: <fe65f57f91f342c7a173891b84cda37b@amazon.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
@@ -70,54 +79,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 02:35:17PM -0700, Joe Perches wrote:
-> There were some recent attempts [1] [2] to make the K: field less noisy
-> and its behavior more obvious. Ultimately, a shift in the default
-> behavior and an associated command line flag is the best choice.
+On Thu, Oct 05, 2023 at 10:25:08PM +0000, Kiyanovski, Arthur wrote:
+> > -----Original Message-----
+> > From: Justin Stitt <justinstitt@google.com>
+> > Sent: Thursday, October 5, 2023 3:56 AM
+> > To: Agroskin, Shay <shayagr@amazon.com>; Kiyanovski, Arthur
+> > <akiyano@amazon.com>; Arinzon, David <darinzon@amazon.com>; Dagan,
+> > Noam <ndagan@amazon.com>; Bshara, Saeed <saeedb@amazon.com>; David
+> > S. Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>;
+> > Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>
+> > Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
+> > hardening@vger.kernel.org; Justin Stitt <justinstitt@google.com>
+> > Subject: [EXTERNAL] [PATCH] net: ena: replace deprecated strncpy with strscpy
+> > 
+> > CAUTION: This email originated from outside of the organization. Do not click
+> > links or open attachments unless you can confirm the sender and know the
+> > content is safe.
+> > 
+> > 
+> > 
+> > `strncpy` is deprecated for use on NUL-terminated destination strings [1] and as
+> > such we should prefer more robust and less ambiguous string interfaces.
+> > 
+> > NUL-padding is not necessary as host_info is initialized to `ena_dev-
+> > >host_attr.host_info` which is ultimately zero-initialized via
+> > alloc_etherdev_mq().
+> > 
+> > A suitable replacement is `strscpy` [2] due to the fact that it guarantees NUL-
+> > termination on the destination buffer without unnecessarily NUL-padding.
+> > 
+> > Link:
+> > https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-
+> > nul-terminated-strings [1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+> > [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> > Note: build-tested only.
+> > ---
+> >  drivers/net/ethernet/amazon/ena/ena_netdev.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> > b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> > index f955bde10cf9..3118a617c9b6 100644
+> > --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> > +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> > @@ -3276,8 +3276,8 @@ static void ena_config_host_info(struct
+> > ena_com_dev *ena_dev, struct pci_dev *pd
+> >         strscpy(host_info->kernel_ver_str, utsname()->version,
+> >                 sizeof(host_info->kernel_ver_str) - 1);
+> >         host_info->os_dist = 0;
+> > -       strncpy(host_info->os_dist_str, utsname()->release,
+> > -               sizeof(host_info->os_dist_str) - 1);
+> > +       strscpy(host_info->os_dist_str, utsname()->release,
+> > +               sizeof(host_info->os_dist_str));
+> >         host_info->driver_version =
+> >                 (DRV_MODULE_GEN_MAJOR) |
+> >                 (DRV_MODULE_GEN_MINOR <<
+> > ENA_ADMIN_HOST_INFO_MINOR_SHIFT) |
+> > 
+> > ---
+> > base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+> > change-id: 20231005-strncpy-drivers-net-ethernet-amazon-ena-ena_netdev-c-
+> > 6c4804466aa7
+> > 
+> > Best regards,
+> > --
+> > Justin Stitt <justinstitt@google.com>
+> > 
 > 
-> Currently, K: will match keywords found in both patches and files.
+> Thanks for submitting this change.
 > 
-> Matching content from entire files is (while documented) not obvious
-> behavior and is usually not wanted by maintainers.
+> The change looks good but the sentence "NUL-padding is not necessary as
+> host_info is initialized to `ena_dev->host_attr.host_info` which is ultimately
+> zero-initialized via alloc_etherdev_mq()." is inaccurate. 
 > 
-> Now only patch content will be matched against unless --keywords-in-file
-> is also provided as an argument to get_maintainer.
+> host_info allocation is done in ena_com_allocate_host_info() via 
+> dma_alloc_coherent() and is not zero initialized by alloc_etherdev_mq().
 > 
-> Add the actual keyword matched to the role or rolestats as well.
+> I looked at both the documentation of dma_alloc_coherent() in 
+> https://www.kernel.org/doc/Documentation/DMA-API.txt
+> as well as the code itself, and (maybe I'm wrong but) I didn't see 100%
+> guarantees the that the memory is zero-initialized.
 > 
-> For instance given the diff below that removes clang:
-> 
->    diff --git a/drivers/hid/bpf/entrypoints/README b/drivers/hid/bpf/entrypoints/README
->    index 147e0d41509f..f88eb19e8ef2 100644
->    --- a/drivers/hid/bpf/entrypoints/README
->    +++ b/drivers/hid/bpf/entrypoints/README
->    @@ -1,4 +1,4 @@
->     WARNING:
->     If you change "entrypoints.bpf.c" do "make -j" in this directory to rebuild "entrypoints.skel.h".
->    -Make sure to have clang 10 installed.
->    +Make sure to have 10 installed.
->     See Documentation/bpf/bpf_devel_QA.rst
-> 
-> The new role/rolestats output includes ":Keyword:\b(?i:clang|llvm)\b"
-> 
-> $ git diff drivers/hid/bpf/entrypoints/README | .scripts/get_maintainer.pl
-> Jiri Kosina <jikos@kernel.org> (maintainer:HID CORE LAYER,commit_signer:1/1=100%)
-> Benjamin Tissoires <benjamin.tissoires@redhat.com> (maintainer:HID CORE LAYER,commit_signer:1/1=100%,authored:1/1=100%,added_lines:4/4=100%)
-> Nathan Chancellor <nathan@kernel.org> (supporter:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
-> Nick Desaulniers <ndesaulniers@google.com> (supporter:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
-> Tom Rix <trix@redhat.com> (reviewer:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> (commit_signer:1/1=100%)
-> linux-input@vger.kernel.org (open list:HID CORE LAYER)
-> linux-kernel@vger.kernel.org (open list)
-> llvm@lists.linux.dev (open list:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
-> 
-> Link: https://lore.kernel.org/r/20231004-get_maintainer_change_k-v1-1-ac7ced18306a@google.com
-> Link: https://lore.kernel.org/all/20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com
-> Link: https://lore.kernel.org/all/3dca40b677dd2fef979a5a581a2db91df2c21801.camel@perches.com
-> Original-patch-by: Justin Stitt <justinstitt@google.com>
-> Signed-off-by: Joe Perches <joe@perches.com>
+> However zero initialization of the destination doesn't matter in this case,
+> because strscpy() guarantees a NULL termination.
 
-Thank you! This will make things nicer. :)
+If this is in DMA memory, should the string buffer be %NUL-padded? (Or
+is it consumed strictly as a %NUL-terminated string?)
 
 -Kees
 
