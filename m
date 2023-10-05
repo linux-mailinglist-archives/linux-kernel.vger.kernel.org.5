@@ -2,70 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF40B7BA5BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8287BA6FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242799AbjJEQTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
+        id S229741AbjJEQoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240476AbjJEQPi (ORCPT
+        with ESMTP id S233281AbjJEQm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:15:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF62223D17
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:38:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 211F2C43395;
-        Thu,  5 Oct 2023 14:38:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696516683;
-        bh=4mqxa2ktT8CFymqIv3kIpTC7CvQWNMevyIZrBFyjsSc=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=rEt0h0H8VCdGv6rTXJ5/ofeuFwlqNnDYR0yEjFXpqD5zZ3XnnblXLq1TQi/3X6cbA
-         c8BcCLo1HLARdIstcze2jGoQ9AkR277+lN+IZFkTuJdx/Tx9doHuEhUSmQJXVyyFvV
-         l1f7xYD0/Y/M82AOHHPo+120u+lsQwfy1P7Onlyxj6vsJjtLQ7hHU/sU2XxTvDI8Xm
-         UBKyGMSV3rWnKkonTbFicRIOm2qttzuY0ETRJZGMBoEvxrf8w+jAHrQxD/fj47AsX6
-         bQnXG6fezqHQXgWgNSCRK5oeyU+Mez2deyH6RBIeFEU7EUJn46uu0lHar0OB47a6zJ
-         FYD2MIaHya8YA==
-From:   Lee Jones <lee@kernel.org>
-To:     Lee Jones <lee@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <20231001-mfd-maxim-maple-v1-0-cdfeb48a4d15@kernel.org>
-References: <20231001-mfd-maxim-maple-v1-0-cdfeb48a4d15@kernel.org>
-Subject: Re: [PATCH 0/3] mfd: maxim: Convert to use maple tree cache
-Message-Id: <169651668186.798961.17779128112478172086.b4-ty@kernel.org>
-Date:   Thu, 05 Oct 2023 15:38:01 +0100
+        Thu, 5 Oct 2023 12:42:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C4427562
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:38:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696516737;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7fRALsU5S6eLAjk1M7NePd5tc1bB04QjkR7XwRkL9gc=;
+        b=E91tY47NOVMJdqNsm8ogzd8Uek1wQGBp3G+xbczcH8Nv/7gocaY0hgEWpifWqbOvt8VNVI
+        MTZvO1MN0cjk4uIBmaHJmxoijgjZfRbpSeEOD4WNtGDvPLJurqJEyQM1QUoI/Imk9Bm1ac
+        pbZ4o3zc4/uYjUzWY4y83oMI/HGnpe8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-104-N2YAPGxPOrWyAqCYBD00Ag-1; Thu, 05 Oct 2023 10:38:44 -0400
+X-MC-Unique: N2YAPGxPOrWyAqCYBD00Ag-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C227C8115DC;
+        Thu,  5 Oct 2023 14:38:43 +0000 (UTC)
+Received: from thuth-p1g4.redhat.com (unknown [10.39.192.168])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 936C040C6EA8;
+        Thu,  5 Oct 2023 14:38:42 +0000 (UTC)
+From:   Thomas Huth <thuth@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 1/7] KVM: selftests: x86: sync_regs_test: Use vcpu_run() where appropriate
+Date:   Thu,  5 Oct 2023 16:38:33 +0200
+Message-ID: <20231005143839.365297-2-thuth@redhat.com>
+In-Reply-To: <20231005143839.365297-1-thuth@redhat.com>
+References: <20231005143839.365297-1-thuth@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 01 Oct 2023 00:47:04 +0100, Mark Brown wrote:
-> The maple tree register cache is a more modern replacement for the
-> rbtree cache, the data structure and surrounding implementation
-> decisions are more modern.  Convert the Maxim MFDs to use maple tree.
-> 
-> 
+In the spots where we are expecting a successful run, we should
+use vcpu_run() instead of _vcpu_run() to make sure that the run
+did not fail.
 
-Applied, thanks!
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Thomas Huth <thuth@redhat.com>
+---
+ tools/testing/selftests/kvm/x86_64/sync_regs_test.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-[1/3] mfd: max77620: Convert to use maple tree register cache
-      commit: 966f92187485bf43edd76b7c53781cafa20cf808
-[2/3] mfd: max77686: Convert to use maple tree register cache
-      commit: ce828b9f04ba338ed3a1fb8d5137a0a66973b479
-[3/3] mfd: max8907: Convert to use maple tree register cache
-      commit: 58704298aa29615108e2dd33f88b31ae38609096
-
---
-Lee Jones [李琼斯]
+diff --git a/tools/testing/selftests/kvm/x86_64/sync_regs_test.c b/tools/testing/selftests/kvm/x86_64/sync_regs_test.c
+index 00965ba33f730..8c3898cf79b31 100644
+--- a/tools/testing/selftests/kvm/x86_64/sync_regs_test.c
++++ b/tools/testing/selftests/kvm/x86_64/sync_regs_test.c
+@@ -259,7 +259,7 @@ int main(int argc, char *argv[])
+ 	/* Request and verify all valid register sets. */
+ 	/* TODO: BUILD TIME CHECK: TEST_ASSERT(KVM_SYNC_X86_NUM_FIELDS != 3); */
+ 	run->kvm_valid_regs = TEST_SYNC_FIELDS;
+-	rv = _vcpu_run(vcpu);
++	vcpu_run(vcpu);
+ 	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
+ 
+ 	vcpu_regs_get(vcpu, &regs);
+@@ -278,7 +278,7 @@ int main(int argc, char *argv[])
+ 
+ 	run->kvm_valid_regs = TEST_SYNC_FIELDS;
+ 	run->kvm_dirty_regs = KVM_SYNC_X86_REGS | KVM_SYNC_X86_SREGS;
+-	rv = _vcpu_run(vcpu);
++	vcpu_run(vcpu);
+ 	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
+ 	TEST_ASSERT(run->s.regs.regs.rbx == 0xBAD1DEA + 1,
+ 		    "rbx sync regs value incorrect 0x%llx.",
+@@ -302,7 +302,7 @@ int main(int argc, char *argv[])
+ 	run->kvm_valid_regs = TEST_SYNC_FIELDS;
+ 	run->kvm_dirty_regs = 0;
+ 	run->s.regs.regs.rbx = 0xDEADBEEF;
+-	rv = _vcpu_run(vcpu);
++	vcpu_run(vcpu);
+ 	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
+ 	TEST_ASSERT(run->s.regs.regs.rbx != 0xDEADBEEF,
+ 		    "rbx sync regs value incorrect 0x%llx.",
+@@ -317,7 +317,7 @@ int main(int argc, char *argv[])
+ 	run->s.regs.regs.rbx = 0xAAAA;
+ 	regs.rbx = 0xBAC0;
+ 	vcpu_regs_set(vcpu, &regs);
+-	rv = _vcpu_run(vcpu);
++	vcpu_run(vcpu);
+ 	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
+ 	TEST_ASSERT(run->s.regs.regs.rbx == 0xAAAA,
+ 		    "rbx sync regs value incorrect 0x%llx.",
+@@ -334,7 +334,7 @@ int main(int argc, char *argv[])
+ 	run->kvm_valid_regs = 0;
+ 	run->kvm_dirty_regs = TEST_SYNC_FIELDS;
+ 	run->s.regs.regs.rbx = 0xBBBB;
+-	rv = _vcpu_run(vcpu);
++	vcpu_run(vcpu);
+ 	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
+ 	TEST_ASSERT(run->s.regs.regs.rbx == 0xBBBB,
+ 		    "rbx sync regs value incorrect 0x%llx.",
+-- 
+2.41.0
 
