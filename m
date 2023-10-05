@@ -2,138 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EBA7B996E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 03:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB877B997A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 03:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244274AbjJEBGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 21:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
+        id S244268AbjJEBNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 21:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244263AbjJEBGa (ORCPT
+        with ESMTP id S243808AbjJEBNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 21:06:30 -0400
-Received: from mail-oo1-xc49.google.com (mail-oo1-xc49.google.com [IPv6:2607:f8b0:4864:20::c49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96998BF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 18:06:27 -0700 (PDT)
-Received: by mail-oo1-xc49.google.com with SMTP id 006d021491bc7-57deaca4fc5so450956eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 18:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696467987; x=1697072787; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mQB1kQKW7T3L2uUwJbrYDEYlgsQvJV2Fhw2l/EpdGY8=;
-        b=jeNnjCtdHLuLsynqL4oh+npAEvtBgPjHank4TqpJbRb4TxBqdqwAERymPM6sxtNrzQ
-         GzysA0923XVu5ujPwcmw1C2ThxA/KUc0aNFthbQjeMddty13dI7FP97/FbfrNWdu25Cz
-         WL0SdVTUYycCrZQG56AlWMsBG7bPxNfpfApAQNdjuovayB/RTZPnTmXHsR0b4t5vuRmA
-         GRuNWLe7naVXB5JEv8vPuMJ0ZaDKfVl7BG6zc2HhQnF0iuCHNqULS9XJ+7jCSnSHbW1H
-         0C3+HaqyWqIhGAivnj/bNt0IHJQgdF24DH+DTkmsDQPVPO9OMcxeyClR/yNlhYNk68Ct
-         r6og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696467987; x=1697072787;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mQB1kQKW7T3L2uUwJbrYDEYlgsQvJV2Fhw2l/EpdGY8=;
-        b=b/YqGbz4IPBb3CN7EqdRtriZIYKlulNktdj1CRfw6hfX09+vu77ubnMqlxpcLKTlFO
-         5hCgKop9E7tRI9Xlo9X8LDqjqlQm4SSAPQRYHGj5tTJ2J/m1vlS3mRlEPPNcW1upsmHd
-         DqLTKiV/m8DkNnDDDKQLNcgisAByQBsaD9gVojemhEZjrpu8Z4RwMemWkeIjmYXny/Wr
-         VyU6A1XyU/6cAUXwfrns25lUSgasRiTG1m2Nm8FPUobteqnzL62HA5Q5eiF3YfD5Tl0P
-         dLopf92qFEOkyT8isOSt0WXX59e3Agz5fSD9PePzHLUyxKZdEP/o5Y9ce8C3/nGtyPob
-         jm5g==
-X-Gm-Message-State: AOJu0YwH1rapQqpjXoADnxmEvkq1Q83gWZH03TH5FJwLzbY7XX4GiIJ1
-        b8sbEZ0lmThQoNZolmLA2qjozCbSNNJgGyoQEA==
-X-Google-Smtp-Source: AGHT+IEqGC2JyZf/APfbf0G671YQ1tje4obvLe/vw3B4Fz5AgOLZt88OOLHuFWH9gu/s7epBrRmuCxPyCtNJYZQx7A==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a4a:3757:0:b0:57b:7849:1a4d with SMTP
- id r84-20020a4a3757000000b0057b78491a4dmr1189222oor.0.1696467986905; Wed, 04
- Oct 2023 18:06:26 -0700 (PDT)
-Date:   Thu, 05 Oct 2023 01:06:26 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIABEMHmUC/x2NywrCMBAAf6Xs2YU00kf8FSkSk61dkLTshhIp/
- Xejt5nLzAFKwqRwaw4Q2ll5TVXaSwNh8elFyLE6WGOvrTEdapYUtg9G4Z1EMVFGygvJD7xyQV/ GcXB9ePAa8hsDdr2frXkO0TkLNbwJzVz+0/t0nl81i6Z8hAAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696467985; l=2198;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=4MvL6upoNfTxK6wWGQu8y1cwwP7D33deQUgMGbxdScE=; b=H6NNTKVD4o6W+AmJyuzhgFGH552jbnH7scuh9fE3Q3Rj/0lixzMLTRS+2RM1KIzJtorlUJjDb
- zbBS3JJriDvBUHdkIghsUKKjQZHTJ8tkt5gBcyUxz548oJpIhh+D8K9
-X-Mailer: b4 0.12.3
-Message-ID: <20231005-strncpy-drivers-net-ethernet-asix-ax88796c_ioctl-c-v1-1-6fafdc38b170@google.com>
-Subject: [PATCH] net: ax88796c: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     "=?utf-8?q?=C5=81ukasz_Stelmach?=" <l.stelmach@samsung.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Wed, 4 Oct 2023 21:13:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4899CCE;
+        Wed,  4 Oct 2023 18:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696468381; x=1728004381;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VVynd+E2oXjDW4eXcmQeX+pxzwLJmpuXmxCEdtwoB5c=;
+  b=VXHGi3H6aEouyCzzJbvcQOavccVoRbQQyXH8jPZFoXBlexwJYED9hny3
+   +ODQtC0wY9Y6Oy43UzJm+oiTuL3uEmqjD8CheG6otNbi9kE7ZLf6mvhvh
+   iwXan6/K6MnTEWup4EUmxCsedK0tEd+QtfVp0mgLhYBCTeVlXaVkMiukX
+   9pWpS1c5wSQiO86daqRwLVdCGorsafpjBAfa5iSB7J7exsrEiRx2QmXpH
+   bouHpbOMiBIabedEfZsTDL/ZFaIRWw7gdIcw86lyRLBeHC5F2I3X8uTuV
+   ewYGqpDT76ewsAHY1SQTVVrY+lqARquuvSt4B/SHrxlz7N/TaSijjUoS3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="387236015"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="387236015"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 18:13:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="745231792"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="745231792"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 04 Oct 2023 18:12:58 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qoCum-000Kpc-1g;
+        Thu, 05 Oct 2023 01:12:45 +0000
+Date:   Thu, 5 Oct 2023 09:11:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Shawn Anastasio <sanastasio@raptorengineering.com>,
+        devicetree@vger.kernel.org, lee@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Timothy Pearson <tpearson@raptorengineering.com>,
+        linux-kernel@vger.kernel.org,
+        Georgy Yakovlev <Georgy.Yakovlev@sony.com>,
+        Shawn Anastasio <sanastasio@raptorengineering.com>
+Subject: Re: [PATCH 3/3] mfd: sie-cronos-cpld: Add driver for SIE cronos CPLD
+Message-ID: <202310050807.eDZkgFy5-lkp@intel.com>
+References: <2e9763cb4fa258fe11769a4ff1544d96c536a4a2.1696285339.git.sanastasio@raptorengineering.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e9763cb4fa258fe11769a4ff1544d96c536a4a2.1696285339.git.sanastasio@raptorengineering.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+Hi Shawn,
 
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on the destination buffer without
-unnecessarily NUL-padding.
+kernel test robot noticed the following build warnings:
 
-It should be noted that there doesn't currently exist a bug here as
-DRV_NAME is a small string literal which means no overread bugs are
-present.
+[auto build test WARNING on lee-mfd/for-mfd-next]
+[also build test WARNING on robh/for-next linus/master v6.6-rc4 next-20231004]
+[cannot apply to lee-leds/for-leds-next lee-mfd/for-mfd-fixes]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Also to note, other ethernet drivers are using strscpy in a similar
-pattern:
-|       dec/tulip/tulip_core.c
-|       861:    strscpy(info->driver, DRV_NAME, sizeof(info->driver));
-|
-|       8390/ax88796.c
-|       582:    strscpy(info->driver, DRV_NAME, sizeof(info->driver));
-|
-|       dec/tulip/dmfe.c
-|       1077:   strscpy(info->driver, DRV_NAME, sizeof(info->driver));
-|
-|       8390/etherh.c
-|       558:    strscpy(info->driver, DRV_NAME, sizeof(info->driver));
+url:    https://github.com/intel-lab-lkp/linux/commits/Shawn-Anastasio/dt-bindings-mfd-sie-cronos-cpld-Add-initial-DT-binding/20231003-073243
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git for-mfd-next
+patch link:    https://lore.kernel.org/r/2e9763cb4fa258fe11769a4ff1544d96c536a4a2.1696285339.git.sanastasio%40raptorengineering.com
+patch subject: [PATCH 3/3] mfd: sie-cronos-cpld: Add driver for SIE cronos CPLD
+config: i386-randconfig-063-20231005 (https://download.01.org/0day-ci/archive/20231005/202310050807.eDZkgFy5-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310050807.eDZkgFy5-lkp@intel.com/reproduce)
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
----
- drivers/net/ethernet/asix/ax88796c_ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310050807.eDZkgFy5-lkp@intel.com/
 
-diff --git a/drivers/net/ethernet/asix/ax88796c_ioctl.c b/drivers/net/ethernet/asix/ax88796c_ioctl.c
-index 916ae380a004..7d2fe2e5af92 100644
---- a/drivers/net/ethernet/asix/ax88796c_ioctl.c
-+++ b/drivers/net/ethernet/asix/ax88796c_ioctl.c
-@@ -24,7 +24,7 @@ static void
- ax88796c_get_drvinfo(struct net_device *ndev, struct ethtool_drvinfo *info)
- {
- 	/* Inherit standard device info */
--	strncpy(info->driver, DRV_NAME, sizeof(info->driver));
-+	strscpy(info->driver, DRV_NAME, sizeof(info->driver));
- }
- 
- static u32 ax88796c_get_msglevel(struct net_device *ndev)
+All warnings (new ones prefixed by >>):
 
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231005-strncpy-drivers-net-ethernet-asix-ax88796c_ioctl-c-56af20b7d992
+>> drivers/mfd/sie-cronos-cpld.c:509:34: warning: 'cronos_cpld_dt_ids' defined but not used [-Wunused-const-variable=]
+     509 | static const struct of_device_id cronos_cpld_dt_ids[] = {
+         |                                  ^~~~~~~~~~~~~~~~~~
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
 
+vim +/cronos_cpld_dt_ids +509 drivers/mfd/sie-cronos-cpld.c
+
+   508	
+ > 509	static const struct of_device_id cronos_cpld_dt_ids[] = {
+   510		{ .compatible = "sie,cronos-cpld", },
+   511		{ }
+   512	};
+   513	MODULE_DEVICE_TABLE(of, cronos_cpld_dt_ids);
+   514	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
