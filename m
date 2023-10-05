@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EFC7BA54E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7C77BA641
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241012AbjJEQPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
+        id S234430AbjJEQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240543AbjJEQNH (ORCPT
+        with ESMTP id S232127AbjJEQcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:13:07 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8CB2066F;
-        Thu,  5 Oct 2023 03:20:39 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B58C7660731C;
-        Thu,  5 Oct 2023 11:20:37 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696501238;
-        bh=gtShXwSvNgcZvx08zMfHtG7ILqlH7jFASuzzPiQpLPw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=LmyoZxlvxhWUxUVTDQnppkA5Iu3cWn6/tGSFPwsUJHX8fLXTfRmxOLlVBuF9h9vLf
-         +iM0l0oQw1B8URqd7+da9jI8QgpgVfPOk0X57GSH0ADILQfC/Hl9GHzbPaTcuI0vha
-         9GVotVohyea8Q6E+cx9n3Pm288TFIbbavhipoZ+YcKRedXsXoBuzx8tTTok6/nweFN
-         bsMLVtIWuLqUjZt61Spps4t2XPOM1gJPhs2byvSJR6xw1IB2G/FK9/uo6hcpHsWtr5
-         W67BfPbHUaHxy6zBJWj++QKvwYtByXi09WhpKxvE2f16miqVx93Rc1j3wH+JIP2nY9
-         /Bp8h6B0PSRIw==
-Message-ID: <12c2a112-b69a-99ce-227a-eb1e8c539a44@collabora.com>
-Date:   Thu, 5 Oct 2023 12:20:35 +0200
+        Thu, 5 Oct 2023 12:32:17 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA9020E43
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 03:25:18 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-691c05bc5aaso681890b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 03:25:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696501518; x=1697106318; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KWho0skhSMaRa5vCqQiBImFsTWWtuPWOPJgKv2q/8Qk=;
+        b=hA/xL0iIrvnt1RXTv9JK4ZdJMFI6RgChT6ejXg3G9b60q1J+YKdAXGNxRXUBVp2AVo
+         em2EW8vY2lmNS7y9/TTh3rMf4pgX56mxHx1pSSjGhVszv9ahzpYPCWIASXuQBThJGF1d
+         63/4EP+1XG5v6AkUeS8esOukhGJLTYA+8DBN+KuInN0frNzetk2Hc08Dnu9bQ19fmzYq
+         CoLDmG5qbT0RuTMD2ite8F/3BsUQoer8C+M/oTwcMMVhf63XhBasUpq+T7+hpME6qQMG
+         5q50qE/U7MNiPZC5WBcd3TodQS+ot10kohjx0erimOP3gtRgg+MOoYSTJ6mH57QhoQ2p
+         kL7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696501518; x=1697106318;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KWho0skhSMaRa5vCqQiBImFsTWWtuPWOPJgKv2q/8Qk=;
+        b=AOzGtuGcAidd48Rap9HLhg+URotO8WMSDzQA3U3e6AOd58BbbgpFkSugxn4VQserik
+         YBmgcbRd1HDA/+1DLxnB46HbtAI0Qhe8fTVJVcV8RYuNhoenc0fPHUppEZmvb+gxcMND
+         Zsbi4++LcI2pKtHPTYMroyhf6ZJS7cW/913B7/p66BjhXqzv4w/x1q9TGi6k2i6Pho3g
+         QspBnlJx8RXqe0kK1QCMlZM82uIhXlZ+DP1IggESAQHDGXqtdk3qPvSR0a79UA4Ty2o3
+         S/sj4emRf5F2EmEhnBLBYhf915SWtjAmA9HuTaIU/IeQDn/ioNKKbwRjsAAfsHKQFe6i
+         zK7A==
+X-Gm-Message-State: AOJu0YxNeqSjLHip4PZnXdYuWtNvPKubSP3jRIcWaxPIQm+2X3pQQztA
+        vhXyqeFmGvXz/UZs3ghdhwuLAg==
+X-Google-Smtp-Source: AGHT+IFlvWBBJ3Zh3r7swaT7Jp7XiXCsFpaOJuViBtve0Y9fYaexTcbODWL0r8ZJ90UPDzLaoMipNA==
+X-Received: by 2002:a05:6a20:3d1b:b0:12e:4d86:c017 with SMTP id y27-20020a056a203d1b00b0012e4d86c017mr5640315pzi.10.1696501517838;
+        Thu, 05 Oct 2023 03:25:17 -0700 (PDT)
+Received: from localhost ([122.172.81.92])
+        by smtp.gmail.com with ESMTPSA id j4-20020a170902c3c400b001c61bde04a7sm1269088plj.276.2023.10.05.03.25.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 03:25:17 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        Erik Schilling <erik.schilling@linaro.org>,
+        Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+Subject: [PATCH V2 0/2] xen: privcmd: Add ioeventfd support
+Date:   Thu,  5 Oct 2023 15:55:10 +0530
+Message-Id: <cover.1696500578.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v8 0/8] soc: mediatek: MT8365 power support
-Content-Language: en-US
-To:     Markus Schneider-Pargmann <msp@baylibre.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alexandre Mergnat <amergnat@baylibre.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        Tinghan Shen <tinghan.shen@mediatek.com>,
-        Fabien Parent <parent.f@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230918093751.1188668-1-msp@baylibre.com>
- <06f8a769-1845-ea87-dcc4-37dd5ad255ed@collabora.com>
- <20231005094316.nj5w6cmefvc36tbl@blmsp>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231005094316.nj5w6cmefvc36tbl@blmsp>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 05/10/23 11:43, Markus Schneider-Pargmann ha scritto:
-> Hi Angelo,
-> 
-> On Thu, Oct 05, 2023 at 10:54:16AM +0200, AngeloGioacchino Del Regno wrote:
->> Il 18/09/23 11:37, Markus Schneider-Pargmann ha scritto:
->>> Hi,
->>>
->>> no real changes in this update. Rebase to v6.6-rc2 and according change
->>> of directory.
->>
->> Since the driver changed to pmdomain/mediatek, can you please change the commit
->> titles for the driver commits?
-> 
-> As far as I understand Ulf applied the series today and changed the
-> title as well:
-> https://lore.kernel.org/lkml/CAPDyKFrUbWBQgMm6wYwFfybiRQKhBpwH7wwcXaT+KrQJLevq3w@mail.gmail.com/
-> 
+Hello,
 
-Whoops! I didn't notice that, sorry!
+Now that irqfd support (backend to guest interrupt) is already merged, this
+series solves the other part of the problem, i.e. ioeventfd (guest to backend
+interrupt).
 
-Cheers,
-Angelo
+More details inside the commits.
+
+--
+Viresh
+
+V1->V2:
+- Increment irq_info refcnt only for valid info.
+- Use u64 type for addr.
+- Add comments for use of barriers.
+- Use spin lock instead of mutex as we need to use them in irq handler.
+- Add a warning when kioreq is getting freed and ioeventfds list isn't empty.
+- Use struct_size().
+- Validate number of vcpus as well.
+
+Viresh Kumar (2):
+  xen: evtchn: Allow shared registration of IRQ handers
+  xen: privcmd: Add support for ioeventfd
+
+ drivers/xen/Kconfig               |   8 +-
+ drivers/xen/events/events_base.c  |   3 +-
+ drivers/xen/evtchn.c              |   2 +-
+ drivers/xen/privcmd.c             | 398 +++++++++++++++++++++++++++++-
+ include/uapi/xen/privcmd.h        |  18 ++
+ include/xen/interface/hvm/ioreq.h |  51 ++++
+ 6 files changed, 472 insertions(+), 8 deletions(-)
+ create mode 100644 include/xen/interface/hvm/ioreq.h
+
+-- 
+2.31.1.272.g89b43f80a514
 
