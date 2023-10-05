@@ -2,193 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DD77B993F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 02:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079437B9943
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 02:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233865AbjJEAaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 20:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
+        id S233617AbjJEAa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 20:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233742AbjJEAaB (ORCPT
+        with ESMTP id S239117AbjJEAaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 20:30:01 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184E7AD
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 17:29:58 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-27731a63481so329154a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 17:29:58 -0700 (PDT)
+        Wed, 4 Oct 2023 20:30:24 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D527C1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 17:30:20 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a1f12cf1ddso13067707b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 17:30:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696465797; x=1697070597; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:reply-to:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HP82+f2LW6og6nQMkdcaVuem0dmBP2uW2zMzUlSKFRQ=;
-        b=imJGrfrSMe5fW+gOt1/z+NlKJkfFdy4a4Uv4N0mbip6T87AseqQvFkdczhffRQhpEE
-         TovjWNNhqucSugBbWcy9AogsMuQU83AKeb/gjOx6B7e7Orf945vIFmbA57tg1PldAU4Q
-         QDSK7LPE/03UWAoC7zrg1qJsc2ENn6Ic2XwFt+kdylVn/zav8WQ8xtSErlpqTXGeYYHN
-         Ut43HbhWyVSj33O45g22UqiUrOKecoQ898kNC2Uu5+fRf1iGmx9VEJFSaUHZ6OvJuvDf
-         9ZxQfjPpB9P/1xayzE9072dJD+1oFktH2ApSLz9w1cD6SwKiK+iFVn8kA4YCIj8wajPN
-         5hCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696465797; x=1697070597;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:reply-to:x-gm-message-state:from:to:cc:subject
+        d=google.com; s=20230601; t=1696465819; x=1697070619; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=HP82+f2LW6og6nQMkdcaVuem0dmBP2uW2zMzUlSKFRQ=;
-        b=eFqSdhvyktnlKNx2mP4UMHO0C0jJjuUQCAXvwjCpXzYZha6D3WT5T9s7VUN46YOr72
-         WiWr4Z6JV6CBj+M+gmcsqauJy691CCYvwLwfPoL5obcluOk50eWEm94YePPeY1z1OYzm
-         nORiDuRS5vxD0on4DJRIof19T9V8jTGnlWJGpeDsrfdOK80qYzE4lXrUO397ushG9gHC
-         CFysM1fXuIDCV5iPgoiSxD3EFXlnUgbny1r+0pSmTwowQWbpm/7Sev6BR9o6rfQepJVo
-         gAvz92AHDIH5QCe8Vhx9lPhWAOE+wGwWwng+ldr7gk02vcO8AeBzfrPKI4KUVZEfHkpv
-         tgeA==
-X-Gm-Message-State: AOJu0YzmUu909Sucx6dzkSUBXawBJjGimMR2EsKpYi7p46o6xejMrKsI
-        S5loZiKvqmnmQi0lewq970uuUPyQZB4=
-X-Google-Smtp-Source: AGHT+IGjuzVmG4VrIEg6onoQka9/53erdP0YimQdq07KZJ4spZD7LQ7Lg79Ey1OYCRt1OWkHM4AxCAz5QWk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:a393:b0:274:90a4:f29 with SMTP id
- x19-20020a17090aa39300b0027490a40f29mr61931pjp.1.1696465797603; Wed, 04 Oct
- 2023 17:29:57 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  4 Oct 2023 17:29:54 -0700
+        bh=z9CoIYBwy9paxLnmDstL0tKAJy9h7YqHeLlFxLDJHMU=;
+        b=JEP1Q4ODGE5fcLMCkUqZ0c1QuktvoQvuYVTsfhSiG4KidVawy7KKL3FptUsFCE77XV
+         kuNwTnsXqWoW4IxZzhw8DfIAUxRNU6XY4pzURg40OSBI2GSBXq/xVY1BieRJ2pMTC12h
+         MGZN4X6zTNgaq1NEpdrJzLhLe0iIQ/DD3hR0HJnCDm2l2rL0RdodaOWkBKlPcNMsrVzs
+         Fv8EoVVKKkeht2Ei+cmOUKLaq6GO0J1Rtg6nRYJRG42CjKp5kvlLQtSfdZ1WQJ2E0Zr1
+         B8XJxHCToyJ7wN6qNNs0eHNdC+al1kHx54iHfvtBCMSLdA5a71FhrD7JHTQTWYcJA9Of
+         rFzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696465819; x=1697070619;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z9CoIYBwy9paxLnmDstL0tKAJy9h7YqHeLlFxLDJHMU=;
+        b=Ij6RKJ1H9ihyozSZWZXbhmEBtUxh8aYh6r6wc4fSqR6a6Yy9MxubsUPK0UReA6I2AX
+         O6xowtu4RuvWSoExsvLALpPgIZP+M58J8to2jOuTjkH9CitLjY/u6gbCwkhX0o6ZuCFO
+         CnVuLZrmfAW2PfqKSvnJQIt6c5dA+Kh7XdtY5nWyVOnXjZ26woVXHQFzGlCfM9jXfylS
+         KqiaDLHSd7ul0BOZnlfmlCyT7fY4KUSTkYqchELDf17YIwBBtaZooE2SMtck2VZK8G6r
+         Xpaja1DobKWdPR2q8hVxnUctHlAEaOfmO82lbeklWsKP5EK31w9ZObddYYBlM1OocZ5+
+         uoow==
+X-Gm-Message-State: AOJu0YwQ7WsTghfgOk4FHwrqr9zSWw9ROTX3WIEA/KmPv180zg9kHA00
+        zaBqd+9intQEQ2958lG1dP4+HE17BpaUSwHT5A==
+X-Google-Smtp-Source: AGHT+IG0es9PxjtNd90XgRPnwu44HS8DYm3gD4DhHoBDUsXrvHL8ssHqt8naJhqssuQu0/Hywy4s6PDhIf5KwkbN6A==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:690c:c04:b0:595:7304:68e5 with
+ SMTP id cl4-20020a05690c0c0400b00595730468e5mr25561ywb.0.1696465819306; Wed,
+ 04 Oct 2023 17:30:19 -0700 (PDT)
+Date:   Thu, 05 Oct 2023 00:30:18 +0000
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20231005002954.2887098-1-seanjc@google.com>
-Subject: [PATCH] KVM: selftests: Zero-initialize entire test_result in memslot
- perf test
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>,
-        Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-B4-Tracking: v=1; b=H4sIAJkDHmUC/x3NwQrCMAyA4VcZORvoWjqqryIeSho1INlIxpiMv
+ bvF43f5/wOcTdjhNhxgvInLrB3jZQB6V30xSuuGGGIaQ8joqyktX2wmG5uj8orNK36qXlNISLM xEk6pTCUXzhQj9Nhi/JT9P7o/zvMHaoGrR3gAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696465818; l=1658;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=bsKNbLzu3Ry5CEVwYR5pkDz3ZbDhkIowy3jtYMWC4UU=; b=ibUfNayaIATafgTAMuJ6HX3fgX+SPnajRCu3PTyOpaKrLLvonFUzzZJj5z8G4VBo1QBRXRPfx
+ GxtwDu8o5ulDTLISW/SBzvFSNNvL/dlNf+TQdK8bXC5sCzPDKsDoyae
+X-Mailer: b4 0.12.3
+Message-ID: <20231005-strncpy-drivers-net-dsa-lan9303-core-c-v1-1-5a66c538147e@google.com>
+Subject: [PATCH] net: dsa: lan9303: replace deprecated strncpy with memcpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zero-initialize the entire test_result structure used by memslot_perf_test
-instead of zeroing only the fields used to guard the pr_info() calls.
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous
+interfaces.
 
-gcc 13.2.0 is a bit overzealous and incorrectly thinks that rbestslottim's
-slot_runtime may be used uninitialized.
+Let's opt for memcpy as we are copying strings into slices of length
+`ETH_GSTRING_LEN` within the `data` buffer. Other similar get_strings()
+implementations [2] [3] use memcpy().
 
-  In file included from memslot_perf_test.c:25:
-  memslot_perf_test.c: In function =E2=80=98main=E2=80=99:
-  include/test_util.h:31:22: error: =E2=80=98rbestslottime.slot_runtime.tv_=
-nsec=E2=80=99 may be used uninitialized [-Werror=3Dmaybe-uninitialized]
-     31 | #define pr_info(...) printf(__VA_ARGS__)
-        |                      ^~~~~~~~~~~~~~~~~~~
-  memslot_perf_test.c:1127:17: note: in expansion of macro =E2=80=98pr_info=
-=E2=80=99
-   1127 |                 pr_info("Best slot setup time for the whole test =
-area was %ld.%.9lds\n",
-        |                 ^~~~~~~
-  memslot_perf_test.c:1092:28: note: =E2=80=98rbestslottime.slot_runtime.tv=
-_nsec=E2=80=99 was declared here
-   1092 |         struct test_result rbestslottime;
-        |                            ^~~~~~~~~~~~~
-  include/test_util.h:31:22: error: =E2=80=98rbestslottime.slot_runtime.tv_=
-sec=E2=80=99 may be used uninitialized [-Werror=3Dmaybe-uninitialized]
-     31 | #define pr_info(...) printf(__VA_ARGS__)
-        |                      ^~~~~~~~~~~~~~~~~~~
-  memslot_perf_test.c:1127:17: note: in expansion of macro =E2=80=98pr_info=
-=E2=80=99
-   1127 |                 pr_info("Best slot setup time for the whole test =
-area was %ld.%.9lds\n",
-        |                 ^~~~~~~
-  memslot_perf_test.c:1092:28: note: =E2=80=98rbestslottime.slot_runtime.tv=
-_sec=E2=80=99 was declared here
-   1092 |         struct test_result rbestslottime;
-        |                            ^~~~~~~~~~~~~
-
-That can't actually happen, at least not without the "result" structure in
-test_loop() also being used uninitialized, which gcc doesn't complain
-about, as writes to rbestslottime are all-or-nothing, i.e. slottimens can't
-be non-zero without slot_runtime being written.
-
-	if (!data->mem_size &&
-	    (!rbestslottime->slottimens ||
-	     result.slottimens < rbestslottime->slottimens))
-		*rbestslottime =3D result;
-
-Zero-initialize the structures to make gcc happy even though this is
-likely a compiler bug.  The cost to do so is negligible, both in terms of
-code and runtime overhead.  The only downside is that the compiler won't
-warn about legitimate usage of "uninitialized" data, e.g. the test could
-end up consuming zeros instead of useful data.  However, given that the
-test is quite mature and unlikely to see substantial changes, the odds of
-introducing such bugs are relatively low, whereas being able to compile
-KVM selftests with -Werror detects issues on a regular basis.
-
-Cc: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://elixir.bootlin.com/linux/v6.3/source/drivers/infiniband/ulp/opa_vnic/opa_vnic_ethtool.c#L167 [2]
+Link: https://elixir.bootlin.com/linux/v6.3/source/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c#L137 [3]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
+Note: build-tested only.
+---
+ drivers/net/dsa/lan9303-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I don't like papering over compiler bugs, but this is causing me quite a bi=
-t of
-pain, and IMO the long-term downsides are quite minimal.  And I already spe=
-nt
-way too much time trying to figure out if there is some bizarre edge case t=
-hat
-gcc is detecting :-/
+diff --git a/drivers/net/dsa/lan9303-core.c b/drivers/net/dsa/lan9303-core.c
+index ee67adeb2cdb..665d69384b62 100644
+--- a/drivers/net/dsa/lan9303-core.c
++++ b/drivers/net/dsa/lan9303-core.c
+@@ -1013,8 +1013,8 @@ static void lan9303_get_strings(struct dsa_switch *ds, int port,
+ 		return;
+ 
+ 	for (u = 0; u < ARRAY_SIZE(lan9303_mib); u++) {
+-		strncpy(data + u * ETH_GSTRING_LEN, lan9303_mib[u].name,
+-			ETH_GSTRING_LEN);
++		memcpy(data + u * ETH_GSTRING_LEN, lan9303_mib[u].name,
++		       ETH_GSTRING_LEN);
+ 	}
+ }
+ 
 
- tools/testing/selftests/kvm/memslot_perf_test.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231005-strncpy-drivers-net-dsa-lan9303-core-c-6386858e5c22
 
-diff --git a/tools/testing/selftests/kvm/memslot_perf_test.c b/tools/testin=
-g/selftests/kvm/memslot_perf_test.c
-index 20eb2e730800..8698d1ab60d0 100644
---- a/tools/testing/selftests/kvm/memslot_perf_test.c
-+++ b/tools/testing/selftests/kvm/memslot_perf_test.c
-@@ -1033,9 +1033,8 @@ static bool test_loop(const struct test_data *data,
- 		      struct test_result *rbestruntime)
- {
- 	uint64_t maxslots;
--	struct test_result result;
-+	struct test_result result =3D {};
-=20
--	result.nloops =3D 0;
- 	if (!test_execute(targs->nslots, &maxslots, targs->seconds, data,
- 			  &result.nloops,
- 			  &result.slot_runtime, &result.guest_runtime)) {
-@@ -1089,7 +1088,7 @@ int main(int argc, char *argv[])
- 		.seconds =3D 5,
- 		.runs =3D 1,
- 	};
--	struct test_result rbestslottime;
-+	struct test_result rbestslottime =3D {};
- 	int tctr;
-=20
- 	if (!check_memory_sizes())
-@@ -1098,11 +1097,10 @@ int main(int argc, char *argv[])
- 	if (!parse_args(argc, argv, &targs))
- 		return -1;
-=20
--	rbestslottime.slottimens =3D 0;
- 	for (tctr =3D targs.tfirst; tctr <=3D targs.tlast; tctr++) {
- 		const struct test_data *data =3D &tests[tctr];
- 		unsigned int runctr;
--		struct test_result rbestruntime;
-+		struct test_result rbestruntime =3D {};
-=20
- 		if (tctr > targs.tfirst)
- 			pr_info("\n");
-@@ -1110,7 +1108,6 @@ int main(int argc, char *argv[])
- 		pr_info("Testing %s performance with %i runs, %d seconds each\n",
- 			data->name, targs.runs, targs.seconds);
-=20
--		rbestruntime.runtimens =3D 0;
- 		for (runctr =3D 0; runctr < targs.runs; runctr++)
- 			if (!test_loop(data, &targs,
- 				       &rbestslottime, &rbestruntime))
-
-base-commit: 013858c6fc2491c70640556385d5af123d1596c5
---=20
-2.42.0.582.g8ccd20d70d-goog
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
