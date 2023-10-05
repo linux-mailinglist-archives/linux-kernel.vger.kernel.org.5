@@ -2,149 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 862227BA65B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A27D7BA497
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbjJEQdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
+        id S237549AbjJEQHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbjJEQch (ORCPT
+        with ESMTP id S237979AbjJEQFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:32:37 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EA121D20;
-        Thu,  5 Oct 2023 02:48:21 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c752caeaa6so5564995ad.1;
-        Thu, 05 Oct 2023 02:48:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696499301; x=1697104101; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QcyG87vnGIKlXKSx5LziVXN0LYxk39g/b0gLezLySXE=;
-        b=PylU08CQs8icxPqED8Ff+QQ4pSWtPCGBq9g5Cb3tzv1K1vTYAPfbaqjAtGc8RprwrL
-         jNaQpBO6gtXAOEbnOo8g8QKFPPEPSPBhnzLJgmgXbQXfwI3ZpKmJ37bCT+xKIWrKZPVz
-         KpWhp6IuQo3bwuDvGkcVJBvWTKvdSoEo5/FFvGjYlzEjZyHssfMbD6J31t/pFqDMIvNg
-         ErLMK8QXycqN3crrt82l+/SaQgT6fdzhz77qVyLBEC6WQamTWR3tNWh5DSmjoj3Ca9lg
-         HvMzehZlEC+AhufJRCM+eAkcfsKPIpd5roozpuYYrKXv4hSeSg1149ga136Zlu0b0jqW
-         1ICg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696499301; x=1697104101;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QcyG87vnGIKlXKSx5LziVXN0LYxk39g/b0gLezLySXE=;
-        b=c2RZBpWRaHWGlnKZ3VnNlVz/t/jE7Ud/Fw330voyQY0qJxXR1UaCIMmyUUGpfGBmda
-         goJLJPeA26dAQtq9prkqMz865d1G28JZuL3drZipj4wA91hhuqupzaI+bAe/iUGB7ifB
-         +hj/ld3xQlb51yPW/Z6EITyKQpGtCnAQ7ItCRZvRK9bXphxr+Vq5bTnuSwPaEEKcK91x
-         uTTGi8C4Z3e5CKgcJqhSGWfs6ejQWki4zm38CikeeBhG7wf0sMB0TvSVvaeCTctP9peF
-         1tBwZ6lvjQiRs6Svg3nxL+TqqbjIZwLP/1sRAKP1tjS76cT0jsBys41/FuAjyTu8zvAu
-         zgrw==
-X-Gm-Message-State: AOJu0YzXBkVT+J0hoVkkkWQjh76Uf/8CG+G4tUqP+57f3iau7eNYm/W9
-        TZcjfIhWYltQpxxQj8ifvJR26uRNxGSNkg==
-X-Google-Smtp-Source: AGHT+IFHteCKHlFnIrAXryMfRgG8kLNi9ULfUt0La9S8bxQi1xPwievTd5m2v28x0y6Gsz7yvjUaUw==
-X-Received: by 2002:a17:902:e881:b0:1c4:4c10:6ae3 with SMTP id w1-20020a170902e88100b001c44c106ae3mr6150889plg.23.1696499300891;
-        Thu, 05 Oct 2023 02:48:20 -0700 (PDT)
-Received: from [172.16.116.58] ([103.15.228.93])
-        by smtp.gmail.com with ESMTPSA id a4-20020a170902ecc400b001c74df14e6esm1189773plh.51.2023.10.05.02.48.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 02:48:20 -0700 (PDT)
-Message-ID: <795ee959-abdd-02c5-40b9-b7bb0d54c2f7@gmail.com>
-Date:   Thu, 5 Oct 2023 15:18:15 +0530
+        Thu, 5 Oct 2023 12:05:36 -0400
+X-Greylist: delayed 4165 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Oct 2023 08:54:29 PDT
+Received: from a1712.mx.srv.dfn.de (a1712.mx.srv.dfn.de [194.95.232.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BECC194;
+        Thu,  5 Oct 2023 08:54:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        uniklinik-freiburg.de; h=mime-version:content-transfer-encoding
+        :content-id:content-type:content-type:content-language
+        :accept-language:in-reply-to:references:message-id:date:date
+        :subject:subject:from:from:received:received:received; s=s1; t=
+        1696499748; x=1698314149; bh=lKcngNkNaJ2ZDxjfFkR58Vb8y7czhkiNh4X
+        i9DQEKJ8=; b=RNwuOCJBvaCCe6DAQSnKXYMYYGYTK3A/UCkvo4ZdmXogen8DtQf
+        9/V57bB9rE/uT8kb+OloNheioZUQRTPUTlPM/ju/e9zFevYHfyscYNDBJuAjFYnr
+        O4lLh59Hfk330BG7hXKIUQK2/fl7eKuG2iQXHtczRqOZRoTetikbVOUk=
+Received: from ukl-fm1.ukl.uni-freiburg.de (ukl-fm-ha.ukl.uni-freiburg.de [193.196.199.18])
+        by a1712.mx.srv.dfn.de (Postfix) with ESMTPS id D112538010B;
+        Thu,  5 Oct 2023 11:55:48 +0200 (CEST)
+Received: from UKL-EX3.ad.uniklinik-freiburg.de (xxx53.ukl.uni-freiburg.de [193.196.253.53])
+        by ukl-fm1.ukl.uni-freiburg.de  with ESMTPS id 3959tfPs008803-3959tfPu008803
+        (version=TLSv1.2 cipher=AES256-SHA256 bits=256 verify=OK);
+        Thu, 5 Oct 2023 11:55:41 +0200
+Received: from UKL-EX4.ad.uniklinik-freiburg.de (193.196.253.54) by
+ UKL-EX3.ad.uniklinik-freiburg.de (193.196.253.53) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 5 Oct 2023 11:55:41 +0200
+Received: from UKL-EX4.ad.uniklinik-freiburg.de ([fe80::6c6e:c675:beef:7071])
+ by UKL-EX4.ad.uniklinik-freiburg.de ([fe80::6c6e:c675:beef:7071%5]) with mapi
+ id 15.01.2507.032; Thu, 5 Oct 2023 11:55:41 +0200
+From:   "Dr. Bernd Feige" <bernd.feige@uniklinik-freiburg.de>
+To:     "tom@talpey.com" <tom@talpey.com>,
+        "smfrench@gmail.com" <smfrench@gmail.com>,
+        "paul@darkrain42.org" <paul@darkrain42.org>
+CC:     "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        "pc@manguebit.com" <pc@manguebit.com>,
+        "ronniesahlberg@gmail.com" <ronniesahlberg@gmail.com>,
+        "nspmangalore@gmail.com" <nspmangalore@gmail.com>,
+        "brian.pardy@gmail.com" <brian.pardy@gmail.com>,
+        "bharathsm@microsoft.com" <bharathsm@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS share
+ is mounted (cifsd-cfid-laundromat in"D" state)
+Thread-Topic: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS
+ share is mounted (cifsd-cfid-laundromat in"D" state)
+Thread-Index: AQHZ92+sm0zmujZcU0uXcBrFhineoLA608yA
+Date:   Thu, 5 Oct 2023 09:55:41 +0000
+Message-ID: <85d538fec5a086acf62d5a803056586a6c00e4bd.camel@uniklinik-freiburg.de>
+References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com>
+         <ZPfPfyIoVxw5L6El@debian.me>
+         <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
+         <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com>
+         <CAH2r5mtUedfLSv81Z-Yb3_=AbD_QpT3tVbU1PRzMTituaw7bgA@mail.gmail.com>
+         <CAH2r5mt6YzapEKDo=hQ64yvBn7=jwMmY1c85NOABKcMPKPp3KA@mail.gmail.com>
+         <CAO+kfxQtOKoKdb+LtMeFxgu8VXa73nbmTPSfscbdwjUXM7ME_A@mail.gmail.com>
+         <CAH2r5msNf9WDHrBZSi5FhHDSewSNxMAuXTetMJDnoNh3CF_oMA@mail.gmail.com>
+         <a895f860-11fa-e6d9-d042-a32bd08f9e9d@talpey.com>
+         <CAH2r5mszCxPtdURenMVgeVDX5zc8knumH=ASXyUufPa7SxbJBw@mail.gmail.com>
+         <ZRN9MtBqYnT6oX60@vaarsuvius>
+In-Reply-To: <ZRN9MtBqYnT6oX60@vaarsuvius>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [193.196.253.71]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <68FBD33032B9744A8A19C5C1FDCA7193@ad.uniklinik-freiburg.de>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 2/3] greybus: Add BeaglePlay Linux Driver
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     greybus-dev@lists.linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vaishnav@beagleboard.org,
-        jkridner@beagleboard.org, nm@ti.com,
-        krzysztof.kozlowski+dt@linaro.org, johan@kernel.org,
-        elder@kernel.org
-References: <20231004184639.462510-1-ayushdevel1325@gmail.com>
- <20231004184639.462510-3-ayushdevel1325@gmail.com>
- <2023100501-siesta-dictate-132e@gregkh>
-From:   Ayush Singh <ayushdevel1325@gmail.com>
-In-Reply-To: <2023100501-siesta-dictate-132e@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-FEAS-Client-IP: 193.196.253.53
+X-FE-Last-Public-Client-IP: 193.196.253.53
+X-FE-Policy-ID: 1:4:1:SYSTEM
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/5/23 14:38, Greg KH wrote:
-> On Thu, Oct 05, 2023 at 12:16:37AM +0530, Ayush Singh wrote:
->> Add the Greybus host driver for BeaglePlay board by BeagleBoard.org.
->>
->> The current greybus setup involves running SVC in a user-space
->> application (GBridge) and using netlink to communicate with kernel
->> space. GBridge itself uses wpanusb kernel driver, so the greybus messages
->> travel from kernel space (gb_netlink) to user-space (GBridge) and then
->> back to kernel space (wpanusb) before reaching CC1352.
->>
->> This driver directly communicates with CC1352 (running SVC Zephyr
->> application). Thus, it simplifies the complete greybus setup eliminating
->> user-space GBridge.
->>
->> This driver is responsible for the following:
->> - Start SVC (CC1352) on driver load.
->> - Send/Receive Greybus messages to/from CC1352 using HDLC over UART.
->> - Print Logs from CC1352.
->> - Stop SVC (CC1352) on driver load.
->>
->> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
->> ---
->>   MAINTAINERS                     |   1 +
->>   drivers/greybus/Kconfig         |  10 +
->>   drivers/greybus/Makefile        |   2 +
->>   drivers/greybus/gb-beagleplay.c | 501 ++++++++++++++++++++++++++++++++
->>   4 files changed, 514 insertions(+)
->>   create mode 100644 drivers/greybus/gb-beagleplay.c
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 5467669d7963..d87e30626a6a 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -8974,6 +8974,7 @@ M:	Ayush Singh <ayushdevel1325@gmail.com>
->>   L:	greybus-dev@lists.linaro.org (moderated for non-subscribers)
->>   S:	Maintained
->>   F:	Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
->> +F:	drivers/greybus/gb-beagleplay.c
->>   
->>   GREYBUS SUBSYSTEM
->>   M:	Johan Hovold <johan@kernel.org>
->> diff --git a/drivers/greybus/Kconfig b/drivers/greybus/Kconfig
->> index 78ba3c3083d5..fd4f26d09c53 100644
->> --- a/drivers/greybus/Kconfig
->> +++ b/drivers/greybus/Kconfig
->> @@ -17,6 +17,16 @@ menuconfig GREYBUS
->>   
->>   if GREYBUS
->>   
->> +config GREYBUS_BEAGLEPLAY
->> +	tristate "Greybus BeaglePlay driver"
->> +	depends on TTY
-> What you want to depend on here is serdev, not tty, right?  Or am I
-> mis-reading the code requirements?
->
-> thanks,
->
-> greg k-h
-
-Yes, it was dependent on tty in the past, but not anymore. I think it 
-should be changed to `SERIAL_DEV_BUS` now?
-
-
-Sincerely,
-
-Ayush Singh
-
+QW0gRGllbnN0YWcsIGRlbSAyNi4wOS4yMDIzIHVtIDE3OjU0IC0wNzAwIHNjaHJpZWIgUGF1bCBB
+dXJpY2g6DQo+IFBlcmhhcHMgdGhlIGxhdW5kcm9tYXQgdGhyZWFkIHNob3VsZCBiZSB1c2luZyBt
+c2xlZXBfaW50ZXJydXB0aWJsZSgpPw0KPiANCj4gVXNpbmcgYW4gaW50ZXJydXB0aWJsZSBzbGVl
+cCBhcHBlYXJzIHRvIHByZXZlbnQgdGhlIHRocmVhZCBmcm9tDQo+IGNvbnRyaWJ1dGluZyANCj4g
+dG8gdGhlIGxvYWQgYXZlcmFnZSwgYW5kIGhhcyB0aGUgaGFwcHkgc2lkZS1lZmZlY3Qgb2YgcmVt
+b3ZpbmcgdGhlDQo+IHVwLXRvLTFzIGRlbGF5IA0KPiB3aGVuIHRlYXJpbmcgZG93biB0aGUgdGNv
+biAoc2luY2UgYTdjMDFmYTkzYWUsIGt0aHJlYWRfc3RvcCgpIHdpbGwNCj4gcmV0dXJuIA0KPiBl
+YXJseSB0cmlnZ2VyZWQgYnkga3RocmVhZF9zdG9wKS4NCg0KU29ycnkgZm9yIGNoaW1pbmcgaW4g
+c28gbGF0ZSAtIEknbSBhbHNvIG9uIGdlbnRvbyAoa2VybmVsIDYuNS41LQ0KZ2VudG9vKSwgYnV0
+IGFzIGEgY2xpZW50IG9mIFdpbmRvd3MgQUQuDQoNCkp1c3Qgd2FudCB0byBlbXBoYXNpemUgdGhh
+dCB1c2luZyB1bmludGVycnVwdGlibGUgc2xlZXAgaGFzIG5vdCBqdXN0DQp1bmhhcHB5IGJ1dCBk
+ZXZhc3RhdGluZyBzaWRlLWVmZmVjdHMuDQoNCkkgaGF2ZSA4IHByb2Nlc3NvcnMgYW5kIDE2IGNp
+ZnNkLWNmaWQtbGF1bmRyb21hdCBwcm9jZXNzZXMsIHNvDQovcHJvYy9sb2FkYXZnIHJlcG9ydHMg
+YSBsb2FkIGF2ZXJhZ2Ugb2YgMTYgb24gYSB0b3RhbGx5IGlkbGUgc3lzdGVtLg0KDQpUaGlzIG1l
+YW5zIHRoYXQgbG9hZC1iYWxhbmNpbmcgc29mdHdhcmUgd2lsbCBuZXZlciBzdGFydCBhZGRpdGlv
+bmFsDQp0YXNrcyBvbiB0aGlzIHN5c3RlbSAtICJtYWtlIC1sIiBidXQgYWxzbyBhbnkgb3RoZXIg
+bG9hZC1kZXBlbmRlbnQNCnN5c3RlbS4gSnVzdCByZWR1Y2luZyB0aGUgbnVtYmVyIG9mIGNpZnNk
+LWNmaWQtbGF1bmRyb21hdCBwcm9jZXNzZXMNCmRvZXMgbm90IGZpeCB0aGlzIC0gZXZlbiBhIHNp
+bmdsZSBvbmUgbWFrZXMgbG9hZGF2ZyByZXBvcnQgYSB3cm9uZw0KcmVzdWx0IGZvciBsb2FkIGJh
+bGFuY2luZy4NCg0KU28sIGlmIGNpZnNkLWNmaWQtbGF1bmRyb21hdCBtdXN0IHJlYWxseSBiZSB1
+bmludGVycnVwdGlibGUsIHRoZSBvbmx5DQpzb2x1dGlvbiB3b3VsZCBiZSB0byBjaGFuZ2UgdGhl
+IHdheSBsb2FkYXZnIGlzIGNvbXB1dGVkIGJ5IHRoZSBrZXJuZWwNCnRvIGV4Y2x1ZGUgdW5pbnRl
+cnJ1cHRpYmxlIGJ1dCBzbGVlcGluZyBwcm9jZXNzZXMuIEJ1dCBtdXN0IGl0IGJlDQp1bmludGVy
+cnVwdGlibGU/DQoNClRoYW5rcyBhbmQgYmVzdCByZWdhcmRzLA0KQmVybmQNCg==
