@@ -2,170 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 067287BAECF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B7B7BAED1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbjJEW2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 18:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33424 "EHLO
+        id S231529AbjJEWdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 18:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjJEW2s (ORCPT
+        with ESMTP id S229530AbjJEWdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 18:28:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F13F95
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:28:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696544927; x=1728080927;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3ak/CqPJFuvAGz1nL0ORtkufKNGBvhTu0OaUcGSyyRI=;
-  b=NQDAL77cxVWjqS0QEh9xfZYC2CSjJedtz4Pwek6IwrL/17DcsTS1gON3
-   1ZDxwJ5dg0vklw2Hxv1Kesgc3bodm/Cz7KZ2HlM9/52I6o5urYMEcxJbh
-   mWru4VTxHsTfcL+ajbgemCCUhyPRvnmA3WOIU3p4r3L0JQXwfr1nuwwHX
-   yT+sGs47w2MhM4roDqPhZQzBZCeSnYQN1Ew3UgnkkV/3NWq0hzy0Y8ieN
-   c3ec2hMMZfT3tGI46gncUDAnAKwlooDDiTKI62YwVZ8AuJ4EvM270tpFf
-   M8ZLa6bJxqMxyKWW1eVBjqIY8txfUn/vMfS7FYesynebqU/ZuKX5FlCFO
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="5195866"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="5195866"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 15:28:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="817796476"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="817796476"
-Received: from kvsudesh-mobl1.gar.corp.intel.com (HELO box.shutemov.name) ([10.251.222.76])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 15:28:43 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id BFE0B10A12D; Fri,  6 Oct 2023 01:28:39 +0300 (+03)
-Date:   Fri, 6 Oct 2023 01:28:39 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/13] x86/tdx: Convert shared memory back to private on
- kexec
-Message-ID: <20231005222839.jt2du72xogg3c5ny@box>
-References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
- <20231005131402.14611-11-kirill.shutemov@linux.intel.com>
- <8d0e4e71-0614-618a-0f84-55eeb6d27a6d@amd.com>
- <20231005212828.veeekxqc7rwvrbig@box>
- <e0459b50-7e21-7548-8151-9010ee88b0a6@amd.com>
+        Thu, 5 Oct 2023 18:33:33 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE95DB;
+        Thu,  5 Oct 2023 15:33:32 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395MSP5j009713;
+        Thu, 5 Oct 2023 22:33:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=6g9Cyjl5K6OG1jkcqwrpcexPvXh/RcSiBX825pOgneQ=;
+ b=gQh1G/y9mUJFUoQgZK/H8e1Y/Q6hSsUHp5u0VMTmfMLqJB4vtfJVo+c+FqIRZwif46U6
+ KEJ8SPGnm6JvOw8Yy/lrLKHHqA4cCRRxNSphq05XsyJSanSiTy0C85na3jIQCjccMCia
+ tLhdaFzacbv3KlsbQ5rv9oytCorAHsNNokBw29QGERufl1p/rLA9rrGoT79oQhCz435u
+ 1fj5wlnh2WqxlvWkiFSMfWvPtg0/KtHotCOA40/7YwJWv75ZJmwfu4ZaBkXyJmUrmtcG
+ zRoAWtEXnKy7q3JnJ+T4SzYIQ0lRI/jRU8SO1cXhqcfF5TeAeWl7S/rxmsqCthIPJ+lf yQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3th8e1v2js-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 22:33:16 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 395MXGXg028924
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 5 Oct 2023 22:33:16 GMT
+Received: from [10.110.20.163] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 5 Oct
+ 2023 15:33:15 -0700
+Message-ID: <69b8ded0-7648-80bd-c41b-c591b0f861ef@quicinc.com>
+Date:   Thu, 5 Oct 2023 15:33:14 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e0459b50-7e21-7548-8151-9010ee88b0a6@amd.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v4 4/4] firmware: arm_scmi: Add qcom hvc/shmem transport
+ support
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-5-quic_nkela@quicinc.com>
+ <20231003111914.63z35sn3r3k7drtp@bogus>
+ <6246714a-3b40-e1b6-640e-560ba55b6436@quicinc.com>
+ <20231004160630.pxspafszlt6o7oj6@bogus>
+ <20231005222016.GI3553829@hu-bjorande-lv.qualcomm.com>
+Content-Language: en-US
+From:   Nikunj Kela <quic_nkela@quicinc.com>
+In-Reply-To: <20231005222016.GI3553829@hu-bjorande-lv.qualcomm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: zWNE7LW-QekoHznHQ7t6FM-CyQDjR4op
+X-Proofpoint-ORIG-GUID: zWNE7LW-QekoHznHQ7t6FM-CyQDjR4op
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-05_17,2023-10-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ adultscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310050171
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 05:01:23PM -0500, Kalra, Ashish wrote:
-> On 10/5/2023 4:28 PM, Kirill A. Shutemov wrote:
-> > On Thu, Oct 05, 2023 at 01:41:38PM -0500, Kalra, Ashish wrote:
-> > > > +static void unshare_all_memory(bool unmap)
-> > > > +{
-> > > > +	unsigned long addr, end;
-> > > > +	long found = 0, shared;
-> > > > +
-> > > > +	/*
-> > > > +	 * Walk direct mapping and convert all shared memory back to private,
-> > > > +	 */
-> > > > +
-> > > > +	addr = PAGE_OFFSET;
-> > > > +	end  = PAGE_OFFSET + get_max_mapped();
-> > > > +
-> > > > +	while (addr < end) {
-> > > > +		unsigned long size;
-> > > > +		unsigned int level;
-> > > > +		pte_t *pte;
-> > > > +
-> > > > +		pte = lookup_address(addr, &level);
-> > > 
-> > > IIRC, you were earlier walking the direct mapping using
-> > > walk_page_range_novma(), any particular reason to use lookup_address()
-> > > instead ?
-> > 
-> > walk_page_range_novma() wants mmap lock to be taken, but it is tricky as
-> > we run here from atomic context in case of crash.
-> > 
-> > I considered using trylock to bypass the limitation, but it is a hack.
-> > 
-> > > 
-> > > > +		size = page_level_size(level);
-> > > > +
-> > > > +		if (pte && pte_decrypted(*pte)) {
-> > > 
-> > > Additionally need to add check for pte_none() here to handle physical memory
-> > > holes in direct mapping.
-> > 
-> > lookup_address() returns NULL for none entries.
-> > 
-> 
-> Looking at lookup_address_in_pgd(), at pte level it is simply returning
-> pte_offset_kernel() and there does not seem to be a check for returning NULL
-> if pte_none() ?
 
-Hm. You are right.
+On 10/5/2023 3:20 PM, Bjorn Andersson wrote:
+> On Wed, Oct 04, 2023 at 05:06:30PM +0100, Sudeep Holla wrote:
+>> On Tue, Oct 03, 2023 at 09:16:27AM -0700, Nikunj Kela wrote:
+>>> On 10/3/2023 4:19 AM, Sudeep Holla wrote:
+>>>> On Mon, Sep 11, 2023 at 12:43:59PM -0700, Nikunj Kela wrote:
+>>>>> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+> [..]
+>>>>> @@ -63,6 +66,8 @@ struct scmi_smc {
+>>>>>    	u32 func_id;
+>>>>>    	u32 param_page;
+>>>>>    	u32 param_offset;
+>>>>> +	u64 cap_id;
+>>>> Can it be unsigned long instead so that it just works for both 32 and 64 bit.
+>>> My first version of this patch was ulong but Bjorn suggested to make this
+>>> structure size fixed i.e. architecture independent. Hence changed it to u64.
+>>> If you are ok with ulong, I can change it back to ulong.
+>>>
+>> SMCCC pre-v1.2 used the common structure in that way. I don't see any issue
+>> with that. I haven't followed Bjorn suggestions/comments though.
+>>
+> My request was that funcId and capId is an ABI between the firmware and
+> the OS, so I'd like for that to use well defined, fixed sized, data
+> types - if nothing else just for documentation purpose.
+>
+> These values will be truncated when passed to arm_smccc_1_1_invoke()
+> anyways, so I don't have any opinion against using unsigned long here...
+>
+>
+> PS. I understand why func_id is u32, but why are param_page and
+> param_offset u32?
 
-I think it yet another quirk in how lookup_address() implemented. We need
-to make it straight too.
+That was done to keep it uniform across smc32/smc64 conventions.
 
-There's two options: either make lookup_address() return pointer for entry
-even if it is NULL, or add check for pte_none() after pte_offset_kernel()
-and return NULL if it is true.
-
-I like the first option more as it allows caller to populate the entry if
-it wants.
-
-> > > > +			int pages = size / PAGE_SIZE;
-> > > > +
-> > > > +			/*
-> > > > +			 * Touching memory with shared bit set triggers implicit
-> > > > +			 * conversion to shared.
-> > > > +			 *
-> > > > +			 * Make sure nobody touches the shared range from
-> > > > +			 * now on.
-> > > > +			 *
-> > > > +			 * Bypass unmapping for crash scenario. Unmapping
-> > > > +			 * requires sleepable context, but in crash case kernel
-> > > > +			 * hits the code path with interrupts disabled.
-> > > 
-> > > In case of SNP we will need to temporarily enable interrupts during this
-> > > unsharing as we invoke set_memory_encrypted() which then hits a BUG_ON() in
-> > > cpa_flush() if interrupts are disabled.
-> > 
-> > Do you really need full set_memory_encrypted()? Can't you do something
-> > ligher?
-> > 
-> We need to modify the PTE for setting c-bit to 1 so that will require
-> cpa_flush(), though probably can add something lighter to do
-> clflush_cache_range() directly ?
-
-For TDX, I don't touch shared bit as nobody suppose to touch the memory
-after the point (ans set_memory_np() enforces it for !crash case).
-
-Can't SNP do the same?
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+>
+> Regards,
+> Bjorn
