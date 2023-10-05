@@ -2,143 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 473047BA9C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50117BA898
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbjJETJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
+        id S231281AbjJESEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 14:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjJETI7 (ORCPT
+        with ESMTP id S230525AbjJESEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 15:08:59 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2065.outbound.protection.outlook.com [40.107.223.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97405E7;
-        Thu,  5 Oct 2023 12:08:58 -0700 (PDT)
+        Thu, 5 Oct 2023 14:04:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5D690
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 11:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696529076; x=1728065076;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=wssx7RA1uFWjcwqFDvO1D3Ds5C9Kd4vcRcLkk1fYr6c=;
+  b=WX4/UaZqIYnHquRtIrn8zavPZkE3PeNErhk3K/RxtmU+Som9fyrMbAGu
+   PQqUmji9vOgRY17JgbXb2LOdxEWd/XyuO+T/HUt5orA13+nJLDoTQe+t6
+   8EVGj+O61SKuVFWceak3kXKbB6gl6zGFg7ciZTD06DvELPSh3Zo9XxMNO
+   TWdsAEQAfocA64aDgA69DpfVktqZpqlxVfwF37/HAyqVH49P90ZW7wJqO
+   96iPrapskie6pp0PwCbZZYhgcHbkPQakz6ysSXEqq8QRX3ZJVImNuVK3C
+   U3Hu9H1RSncrS0eKir068yknE6D32yayyVTtcPw/e25m6I7O330czxCMz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="469848825"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="469848825"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 11:04:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="868007309"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="868007309"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Oct 2023 11:04:34 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 5 Oct 2023 11:04:33 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 5 Oct 2023 11:04:33 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 5 Oct 2023 11:04:33 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.46) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 5 Oct 2023 11:04:32 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=guAZ9Fk/tqpF7OlArAfrOJqYURhojkYhvefRLxB5gD7dXPRjfT2w+Gd3Wb5JA1p0RWCtpmqeOcZDOnV7dJVy+C04jXDOWdARVTNCPdi3s6AsmyEW8G4uYl4rnBmLhb6E9cLxZXWvpFJNSCbiU4uPRHVM8bHeJImadmMGVMgaomICygfkfdcnOlicJHuHHHtcVK+P5CUynDyvcNRcpO3nhW+vwAqwbGYUG57rh31SfkJHZAD/I/G5O8vAus+Mdqk6uUGyb9RtotSsFsFArTVdOk7bI+Ru36M9TAvoI8aRDcGXnHu3p3B8vyuIKxid2NURWaZ4GtQcg3De2YRTIEDYUQ==
+ b=kShSRF/92Wmf7Hh4Nr3e23BjvXMb99JiRW4Zq40QpCSGfdzyQqzCV6p3+0Bdjcl5fF05gI/gfcaXQ8ToeH9A5zkDU9zDPf6QD/FBOpojegfr3nx2C3Xn1R6iEtDHM0DLlfz6StzA537RC0ZiAr6LZoVP3cWe6hlINxNMbYrIvXuuoba6yO8J9Pin94+ZuhOTL6NS1gJ3LJzwoH5rbPAhjlz9CO182PtP+By/DSWpBKwyhoQtxMfinpxB1wT7p0ht1yvtno1IYtUovXPRTd2oeC/c+HnQYBRV3YqWiJdR6df0d8LTEvtQcDeR08Lcsfr+fTlLfdUxJhRSGGY7FG31zQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=n/XMCJxftJEDKpTeT04yXzq+yXfO/JwuB/WNJvDBs74=;
- b=KTMW12DcOnJtSsOIkNq7idVLF+Jr+OGNoCJs8YUjxC7lj52zh0NMo2Chr/PdJuTEW9Uhiq/aUGrjqN200QIY82ps0D0i20r/jkJtda/DIgsOsRuCCFpgMTAPVLYMC25pVS0BpQi4HCahrz1StkBnqxumNN7AWqSdk6PTlc12Rs5YMbWQiv75PXbpkRyxJXTSx5hgluPkaYH/+MZVWaTqAUHt8gLRPbf+nY3vXimVkvxroG1ndIc8nIc0xRXTb1e2ST8GQa64bI2ZL2KPy9tTF1N10cCeQk03EtYDe2EKXJTLRoX3PCZxjClbehPxeGg5gR184wJFTd0a4KEs4SD6hA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n/XMCJxftJEDKpTeT04yXzq+yXfO/JwuB/WNJvDBs74=;
- b=BdJvYhO7N0oLJ61rGSnLmooHqrCBOerS6dSdHfM1bVMSeXvQX6jAVj8Xjd5ElqgRL5Ol9Iyg2idQ01BvQsRi6lXuPLGvTLmUfnA1iKtGx/f9JyeymlbWpvOMb0Cy3XBxfO/DAsSv4kSJUhvXc0y5AEdyvUGr4sOqqPxnjGqs2fA=
-Received: from SA1PR04CA0017.namprd04.prod.outlook.com (2603:10b6:806:2ce::22)
- by PH0PR12MB7863.namprd12.prod.outlook.com (2603:10b6:510:28b::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.31; Thu, 5 Oct
- 2023 19:08:55 +0000
-Received: from SN1PEPF00026368.namprd02.prod.outlook.com
- (2603:10b6:806:2ce:cafe::18) by SA1PR04CA0017.outlook.office365.com
- (2603:10b6:806:2ce::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.29 via Frontend
- Transport; Thu, 5 Oct 2023 19:08:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF00026368.mail.protection.outlook.com (10.167.241.133) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Thu, 5 Oct 2023 19:08:55 +0000
-Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 5 Oct
- 2023 14:08:54 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        "Sebastian Reichel" <sebastian.reichel@collabora.com>
-CC:     Alex Deucher <alexander.deucher@amd.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <amd-gfx@lists.freedesktop.org>,
-        "Mario Limonciello" <mario.limonciello@amd.com>
-Subject: [PATCH v2 2/2] Revert "drm/amd/pm: workaround for the wrong ac power detection on smu 13.0.0"
-Date:   Thu, 5 Oct 2023 12:52:30 -0500
-Message-ID: <20231005175230.232764-3-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231005175230.232764-1-mario.limonciello@amd.com>
-References: <20231005175230.232764-1-mario.limonciello@amd.com>
+ bh=vfsUoEM+YxRdzYyuBrdvBmFxn7KFD5fyhlCUZPluVx0=;
+ b=X9bb5qh38w0/0gC+4lHfHXK7ionx0c5JBVVyn8mr7fvN1V3FSV+1htPHBqi9HABXwOzW0sXTkRX2UAUvsFiEpPLRxoXWsz0+i5s9aAnCSbbYB8Ymvujn1HsO5RvftWUHI+OqOPr7H9iymMg0gYPMAqiqfwfB/C2d/JIwCJ+x9+xLsyScjLsl+htxIAdjN2bToWOZXMDcH3swZU3uV58IqDY9wdvMJQguaQBmszcucRSMChjf6IT7WRb9J4y4zhTEuUSMJQG+xkgojkGwCyahZOJHSDRWnPfSqeU8WZgvwHxk6m1OiETBGl3KMhjYOyVqVHgKVDk6WbabSd3TNPNboA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by DS0PR11MB7904.namprd11.prod.outlook.com (2603:10b6:8:f8::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.31; Thu, 5 Oct 2023 18:04:31 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
+ 18:04:30 +0000
+Message-ID: <7b793937-ab79-48be-8f82-4bfcfc464045@intel.com>
+Date:   Thu, 5 Oct 2023 11:04:27 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 02/24] x86/resctrl: kfree() rmid_ptrs from
+ rdtgroup_exit()
+Content-Language: en-US
+To:     James Morse <james.morse@arm.com>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        <carl@os.amperecomputing.com>, <lcherian@marvell.com>,
+        <bobo.shaobowang@huawei.com>, <tan.shaopeng@fujitsu.com>,
+        <xingxin.hx@openanolis.org>, <baolin.wang@linux.alibaba.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, <peternewman@google.com>,
+        <dfustini@baylibre.com>, <amitsinght@marvell.com>
+References: <20230914172138.11977-1-james.morse@arm.com>
+ <20230914172138.11977-3-james.morse@arm.com>
+ <9606020e-c322-fb6a-a6ca-96ade7aecf17@intel.com>
+ <550fe399-8904-c515-f556-3536ebe2e9a3@arm.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <550fe399-8904-c515-f556-3536ebe2e9a3@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0184.namprd04.prod.outlook.com
+ (2603:10b6:303:86::9) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF00026368:EE_|PH0PR12MB7863:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5f382354-9212-4671-dd41-08dbc5d68591
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DS0PR11MB7904:EE_
+X-MS-Office365-Filtering-Correlation-Id: 06f4a58c-6d83-40f5-3135-08dbc5cd85d3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CxaP7d9V6q3cCkN3wGWaW3MEz/835PtXNagTveR+cnkTBJbB2MzzkKsVLd9tMUHXdEjzSsAV2s8MUZT1/hzcNNsV5rGOlfLAs5NhSd7Wta5KubBHWFpcIPxiUuqwK2uM1BkHUZhhQ/o07r1uYWqtrsLAbZ0a85DBI3Ph2k7O74WX6i64lw9cxGlpmRAy2TQukJ575ih1jnz29B8lD4qxiq1GBntIm5yzuOvb1h2VKN+r1Ou6Gul5ICUx43Fw1lUSZHusSICj+go3mlX0Ok+WN0amRYnjdcZ8X+oBfzZi6wwJpiNokdUASRJnLaZHTBvUxxGq0qKJaOmrxaTe9Cz9zJ2+A58DEH9JC7UEs9Y6QFU6mzdoKu7tsi+Rw+/EF4ltZIbiI22p4F/YoHvSJgX9orn+17UbMEIWXDsw7oaZirz3hludJk0gTU9d588JtwROGrGQK+JeKplVYpqJ/M4hrOUj54X/9HIzDnXrNK9RhSKH5Lw67zDuK7Oug9MoVbnl5GsU76MIahLHfHtzJxf9H2k378QCeKOfvQrq5ZYx1AalqEW4C8+n7BCV6CrFX2vBzokadFYVjEXREXHcj4p1+jUWMvshKKWRNdQY3d7VQma3qatQaISAFLgVoZTZWh+0ehNzi8yWUmtBvBX+yCUNoVnixl2H9qi+iOwGA0tQ+RN1tioHozixkLpVGmegRr5n2zWu4OgjKVH7f7p3BWDj10eLaVMNDz/0tT6JOvPXLxagbYP8fVutODHSzDlRYHt2KAJg8x9qQnS+U9dp9/9xng==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(451199024)(82310400011)(1800799009)(64100799003)(186009)(40470700004)(46966006)(36840700001)(36860700001)(40460700003)(40480700001)(6666004)(82740400003)(81166007)(356005)(478600001)(8676002)(70586007)(5660300002)(44832011)(4326008)(54906003)(316002)(110136005)(8936002)(70206006)(83380400001)(7696005)(41300700001)(16526019)(1076003)(26005)(336012)(426003)(36756003)(2616005)(66574015)(2906002)(47076005)(86362001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 19:08:55.7034
+X-Microsoft-Antispam-Message-Info: rCmUm7ug2px1BE1i0uQBoVCgc1eDGgEe8FPN4qZ7ebgAtBX+SUGDhzvRglCn4f4L2TiU9EjTiBF5iKctaZo8TppWY5iuhmEomabln4/mVl8DlSidiAjIX+yfz/qbZ6A0iDpREfsB3V8fg8QT/WRp5wLc5VMAPZK5s036JT+i/Gz82oWvd1hWwUBxn9D8+OJoMWukDJod0wh2QGKUFZRz5B02EdwXnHkaLO54esCzyP2RD4aSUjjIqffMUPLUUefGMDNCvelz1dnBY3cgJtS5kWCA95iPCkH8qo7M9nAlgk5sDZtldxFUVVW3h5fP7TYgr1jKsXF2hixdIq5l6iMt3m/jQNvuPFpLU14gj9AxHy17EBEJpbb+PCOAJz4wgZNsXu3ZCOji19qT2zWRZSdQ/uV7MYPd9rxFAmRQOhk/0w/aNX4r1ijLoVMzdHqMnG6CeboZOYXQwDZA1USu3JwwFwRkh/nasOF0wGnX07oCq7K372Um3DR0TkpclORfsjciNW4XI+OvFfB6GGMATa07UEpU7Z4pi+gWn0TWh/f7xGehE4W22R4l+cgq+LCn7BbUkn27qisg+pY27Q04krtSU1zEycJ8BgwDCCoIGbZTQhvHptNhiBwmCWtv7aJAzPELirjFon+rsst9KevLJH1t5g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(366004)(346002)(376002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(2906002)(6486002)(6506007)(6666004)(53546011)(478600001)(83380400001)(6512007)(4326008)(2616005)(26005)(7416002)(41300700001)(5660300002)(316002)(8676002)(54906003)(66556008)(66946007)(66476007)(8936002)(44832011)(36756003)(31696002)(82960400001)(38100700002)(86362001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bnFpZmdVaTNCQVl6cStoSzgxWUorZW5ER2N4SklPYjFjOVFzeEtjTHdCTXVK?=
+ =?utf-8?B?eFZWazVBTVZWU3lPVWJuQktnR2ZGMWw1dis0bHlqQjhId1RtMlgyUHE3SUtB?=
+ =?utf-8?B?bHRFTnNFNDFKVi9nci9NQ0F1ZEVsODdUbzRLYXlYNHI3eVhXWnpyVHh0QUJW?=
+ =?utf-8?B?NnAybFJOZVVWNWFXMElQcDR6TDZiUXpaTnVrSjh6cFNHUXFwZ2VDR2k3OW5I?=
+ =?utf-8?B?UHdvdHNHbklTQ0szV3lxRmpsUmVVaDhhVk51QXVFQnFqM3lpMkJVZmk4dUFz?=
+ =?utf-8?B?VGZFUXQwUWNPU3N4cTFhbnl3Z3RheDd4MGJwYUNhVmVMckpZWlVTTldWcDNx?=
+ =?utf-8?B?ek1adGFnUGdNUk9VNzBaSExPWm5VYVRranJWSlVjN1VQaG1MZlRMempEN3E4?=
+ =?utf-8?B?ZUlKaTRHeU93SUpDN2pxaUJWbmttUjEwWVhKdDJpRHJHMm1ZUFZZbkNRK2Nl?=
+ =?utf-8?B?K0lsMk9ZYWNqOHl4YUxNeWR2TWo3R1JpLzRmNitWRFdIRlY5dGpHTTRpZE8x?=
+ =?utf-8?B?cEtNVjZWTlp4MkxhcElMY0xUR0YxWDdPYytsNTRXUEppOU1JQ0hiUzB0RnhS?=
+ =?utf-8?B?YkdpUnd4WVZHenYwTzNpUVBuNEF2b3orajgwZE9nUmsrMUZ5S2ZITkdQVmtr?=
+ =?utf-8?B?ZXNDRHNUV0ZxaDIyS2NHOHh0QUQrQ3FLemlaZm1sbnFiOWlvalRMUzk3bHZr?=
+ =?utf-8?B?MGlETXJWc0UwT0krNXlHV1N2d3dnWXVhNjNyNTV3aHVTbEdYWnhkcjhIdXl5?=
+ =?utf-8?B?N0xpdGxNaEVvdDRqai9MVk5DNXFXMG1HazhRK0c3WFpNNDZyYUh2dEZGMGkx?=
+ =?utf-8?B?RUZwemorZGR4bG1xcjJZY2dEM0tOU01MUHQ4empMUHVSOEQxbVZ3bmUybmoz?=
+ =?utf-8?B?c3dkaU1TaFhYZURCVEdGWWNLNjZnNllXZi9LWkNVVWg1K2xLT0FQZjlLMndL?=
+ =?utf-8?B?amlrL1gvNG8xQ1RYQkxXK0xKWVp4QW5tSWZyYmE1Qi9STVBGaGlRVC8xdUND?=
+ =?utf-8?B?Q2tseTEvMzdBQmtNQlJWMjJSMHVqOGNzWFFzWkMvbEZCMm51emVmTHlFclZC?=
+ =?utf-8?B?VkNseXUzRk8vbC90QzJBY09SdnZDMUcrajNCWE1jN1kxb2VDYTVOWCtUVjNJ?=
+ =?utf-8?B?M1lVSWJ0elp5TDBhT0M0cklqcEFPYjBrcEk4dTFoY3pSSDAvWEx5bk8vMG5D?=
+ =?utf-8?B?WTBWdjFZUEp4dmVpd3hPSm02aXV5a3hHYm56cWh5Y1dvbHZOdkZodHgvVGIr?=
+ =?utf-8?B?ckRJcHZzYndOblZ2Mk9ySkRTeTFuZXNDT28xODVHR0twMXB3TitxeVdhenBY?=
+ =?utf-8?B?aUJad3RCcXc3MVdmUUxwQ3RjaHJ1ZGVzbG9OcnlDV1lLdk94Y1FKQ3JRRkY2?=
+ =?utf-8?B?V0J3Q1dRZ3Q3bElRUXBjNW1Yem4xVXQ3K0Fva3JXbVNFMEFpUnJpMzBrQWEr?=
+ =?utf-8?B?THQ1czFMTGNXekpzMGhHdTdqTHRBbFArZmhBdlQ5NmljbW9jeGt3cGJCVW5P?=
+ =?utf-8?B?RUd4L2hjc3lFSGw4RUt4aGswMVVnbXU4c3ByVmx3YXRtQ2Z3VjY5dTI3cGJ0?=
+ =?utf-8?B?elFPS1B5U0FzSFRnOVZ6anM5YXNKcnhsRmw2bkJrejR3VDdLeGlsditLcnBI?=
+ =?utf-8?B?WnNiWTRsZjQwSFJha1RsZTN0RGdhdjRnVUVVS1B5YWhZSStXbWFwSURvS1hp?=
+ =?utf-8?B?V0t3a2NVRWJxUWNHZVhpNlp1VTVFS2hsTCt6MjJXWGVqSzRXem9IVGp2Z1Q4?=
+ =?utf-8?B?cGdBaHZIUURWWWY5OWt6L1Buakc4V0ZrU3R4UFg5YlpBbW9JTEhzdDVPYnl3?=
+ =?utf-8?B?bmxNNkUyODByZm95UiszbVhrVnBPVmdqODVoZXhHNStqQmtQZVp3N2g4cjJB?=
+ =?utf-8?B?RmN5aWQ4T0lMWEl6Yms2NFV1OUJHajd2QkZwUE1ITWpEQnpDRDY4dCszTXJQ?=
+ =?utf-8?B?QkIxWmE5T1ZlaithcXgvcUZ3akRGaXNVd2lnd1A0cXMyclJES2ZvdkVIaVFH?=
+ =?utf-8?B?NjNyekNjZE1FOWFCSERYUVhLR3dicENVUHB3MFdHby9uazhJcGxhL2lrWlRK?=
+ =?utf-8?B?WEQ5U2FDRkJKaDRvUTBjWWdZS3NOekVKRnAvbU15N1ZWSVJCcVNTSlBTVUV6?=
+ =?utf-8?B?MzQ2eEpDbURqa1B6NisxSWRMdkhHSGtsc0lweGRYVkUyV1UzZWFLaDNDVDNs?=
+ =?utf-8?B?bXc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06f4a58c-6d83-40f5-3135-08dbc5cd85d3
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 18:04:30.8996
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f382354-9212-4671-dd41-08dbc5d68591
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF00026368.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7863
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zXeQSQuN5yuyy+mTyrQAwaby+NpZIl2T6ailgIeBrfPFOhW6QWwxM5CnOT8Ii36rkKvfxNJ9nBXjiOwDU1ki6J01F2rNekGwGcfLi5yQhas=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7904
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 0e5e1a84f0b8c814d502a135824244127fed8f23.
+Hi James,
 
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c       | 3 ++-
- drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+On 10/5/2023 10:05 AM, James Morse wrote:
+> On 02/10/2023 18:00, Reinette Chatre wrote:
+>> On 9/14/2023 10:21 AM, James Morse wrote:
+>>> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>>> index 725344048f85..a2158c266e41 100644
+>>> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>>> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>>> @@ -3867,6 +3867,11 @@ int __init rdtgroup_init(void)
+>>>  
+>>>  void __exit rdtgroup_exit(void)
+>>>  {
+>>> +	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
+>>> +
+>>> +	if (r->mon_capable)
+>>> +		resctrl_exit_mon_l3_config(r);
+>>> +
+>>>  	debugfs_remove_recursive(debugfs_resctrl);
+>>>  	unregister_filesystem(&rdt_fs_type);
+>>>  	sysfs_remove_mount_point(fs_kobj, "resctrl");
+>>
+>> You did not respond to me when I requested that this be done differently [1].
+>> Without a response letting me know the faults of my proposal or following the
+>> recommendation I conclude that my feedback was ignored. 
+> 
+> Not so - I just trimmed the bits that didn't need a response. I can respond 'Yes' to each
+> one if you prefer, but I find that adds more noise than signal.
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-index 08cb9f8ce64e..9b62b45ebb7f 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-@@ -1026,7 +1026,8 @@ static int smu_v13_0_process_pending_interrupt(struct smu_context *smu)
- {
- 	int ret = 0;
- 
--	if (smu_cmn_feature_is_enabled(smu, SMU_FEATURE_ACDC_BIT))
-+	if (smu->dc_controlled_by_gpio &&
-+	    smu_cmn_feature_is_enabled(smu, SMU_FEATURE_ACDC_BIT))
- 		ret = smu_v13_0_allow_ih_interrupt(smu);
- 
- 	return ret;
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
-index 07df5be063e2..0fb6be11a0cc 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
-@@ -2662,6 +2662,7 @@ static const struct pptable_funcs smu_v13_0_0_ppt_funcs = {
- 	.enable_mgpu_fan_boost = smu_v13_0_0_enable_mgpu_fan_boost,
- 	.get_power_limit = smu_v13_0_0_get_power_limit,
- 	.set_power_limit = smu_v13_0_set_power_limit,
-+	.set_power_source = smu_v13_0_set_power_source,
- 	.get_power_profile_mode = smu_v13_0_0_get_power_profile_mode,
- 	.set_power_profile_mode = smu_v13_0_0_set_power_profile_mode,
- 	.run_btc = smu_v13_0_run_btc,
--- 
-2.34.1
+I do not expect a response to every review feedback but no response
+is assumed to mean that you agree with the feedback.
 
+> 
+> This is my attempt at 'doing the cleanup properly', which is what you said your preference
+> was. (no machine on the planet can ever run this code, the __exit section is always
+> discarded by the linker).
+> 
+> Reading through again, I missed that you wanted this called from resctrl_exit(). (The
+
+Right. And not responding to that created expectation that you agreed with the
+request.
+
+> naming suggests I did this originally, but it didn't work out).
+> I don't think this works as the code in resctrl_exit() remains part of the arch code after
+> the move, but allocating rmid_ptrs[] stays part of the fs code.
+> 
+> resctrl_exit() in core.c gets renamed as resctrl_arch_exit(), and rdtgroup_exit() takes on
+> the name resctrl_exit() as its part of the exposed interface.
+
+I expect memory allocation/free to be symmetrical. Doing otherwise
+complicates the code. Having this memory freed in rdtgroup_exit() only
+seems appropriate if it is allocated from rdtgroup_init().
+Neither rmid_ptrs[] nor closid_num_dirty_rmid are allocated in
+rdtgroup_init() so freeing it in rdtgroup_exit() is not appropriate.
+
+If you are planning to move resctrl_exit() to be arch code then I expect
+resctrl_late_init() to be split with the rmid_ptrs[]/closid_num_dirty_rmid
+allocation moving to fs code. Freeing that memory can follow at that time.
+
+Reinette
