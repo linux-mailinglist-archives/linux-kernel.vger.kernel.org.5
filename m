@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EFC7BAC15
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77057BAC16
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbjJEVax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 17:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
+        id S230228AbjJEVbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 17:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231722AbjJEVat (ORCPT
+        with ESMTP id S231862AbjJEVa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 17:30:49 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D287495;
-        Thu,  5 Oct 2023 14:30:47 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c61bde0b4bso12081785ad.3;
-        Thu, 05 Oct 2023 14:30:47 -0700 (PDT)
+        Thu, 5 Oct 2023 17:30:57 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338A7F1
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 14:30:55 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-34f69780037so1735725ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 14:30:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696541447; x=1697146247; darn=vger.kernel.org;
+        d=linuxfoundation.org; s=google; t=1696541454; x=1697146254; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=eEZ6HGHY7M39jHS8HQsMgoR34dJ/9xEfGiox94C3KTE=;
-        b=IByvvbL4w91DZXPVd8WXRcz9EG2WizQdpa07B17CkeWSSVR5eUMDvNJbRv3ybrLKEU
-         /Wu6naF5Ln4+T5jvuN5YC5Q5+rBWKHAxZ9ic/3Y8EDd+wjXXURiKSQvp7sxdjgmN6B6g
-         by8WolHyy+LqmckpwgIxYPX9O+u317DvkQwe0EAXgy583PnvubnwR9ptF3iS+IVBZ1RH
-         PB2OvbJv4TzbG0qSqzlvVR7ksubQ4iNSnkEx5pVjnPL9UhYMO6smmhFL/C5B86soSOL/
-         bWEpx7rO3tNnFYPsALXjBEV4JxDBExYYrtxLFNZyKJw6qFrAdMWFTr9l6hreqtqmHTZu
-         7aFw==
+        bh=2wtvd/NT5fubZPAQqwZjwRoUSmNGluwrC24Hnx9YW2g=;
+        b=Ie7odg7/rUejjJ7e7meT2e4UGZGZzCZZDabY3siNLpaYNQSM92R8ZcamVwfIkb5216
+         ajUeZHejxJQraupNv46LwAjrWll9edqncomjN/m/36F2iUGQHOErE1J0mmpSF854wZk4
+         quNGnSA52eSa2nrFVS2CnrJfTIoxIs6Lus4OY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696541447; x=1697146247;
+        d=1e100.net; s=20230601; t=1696541454; x=1697146254;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eEZ6HGHY7M39jHS8HQsMgoR34dJ/9xEfGiox94C3KTE=;
-        b=qHdwun21qPivFcdUiwiBVZX2aZ4DAkWjZLA66lp3AhInRsOFnjkDso0erpjB6AszJj
-         AdHhRDVDdKORqyHRhEH2SyTgtk1XMXsw0fINTKui6ul4o9codshlD9kamM6Cd6JR/FNB
-         6SwtrcaqGmu4yc16KiwS9cdTP8zD51xUHUrdRKsnzfRqk3x6bmYp/sqkT7i0ikiMo6nq
-         ofAo668OSkqhDeh6XxWdekg9m+LU1KVvFBbL9fefClZ7cdtHYcgmdq84pvGBteFWzb09
-         LHwY+9++HqDfInzTuk4YNxZoj2LFNwh27pb+Y9qlI07SFdmWsHhLZ3dU+/wJfTq44qmd
-         NrcA==
-X-Gm-Message-State: AOJu0Ywd7txs49jwSuvml8jW3p1r6+dP9AVae+G6bJStYf1sqiDmn1k9
-        ZAAo+37xisSp64otYB2HZ/c=
-X-Google-Smtp-Source: AGHT+IEAAKJOemdFQh6i8JbzDMBhV0u3VP1X20yG7F/HYr2B1uqkkb3aY/7Qb20W548P94yx10rOFQ==
-X-Received: by 2002:a17:902:e84a:b0:1c2:218c:3754 with SMTP id t10-20020a170902e84a00b001c2218c3754mr7419410plg.53.1696541447132;
-        Thu, 05 Oct 2023 14:30:47 -0700 (PDT)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id l7-20020a170903244700b001b8a00d4f7asm2230148pls.9.2023.10.05.14.30.43
+        bh=2wtvd/NT5fubZPAQqwZjwRoUSmNGluwrC24Hnx9YW2g=;
+        b=WV+NIAdRRs2yMqnJFMpjFmOCFe0cVq0YNxWQWpWiN5V40+xa2GwtSKLWvVHLiDdq7B
+         uXxugkqxQLxYf+EjR/4sWPaKPHSb8OUYOmfgT64StuV1yAN1GqGqO4zKfjqMLeV9DNu8
+         RMhDWGG8n1pID2G9+TL5wDEoyxYysn1u8n4Rf5BqFx9fXcVLfTC9alHXZzoFAPYQveCm
+         uoSGoqZBaLqgtXznY7HKRkmDf8S1eSfv+/ai1NUxP53Stk26mU8hzrNPZYitk+AzMY+e
+         V4Df1filsWTtiTQ4xeNongi8ykxSy+KmkAgQy1EHpoMeOi0qVBriklyu0agjBOhbh/BS
+         fdZA==
+X-Gm-Message-State: AOJu0Yy1X2gHUqBBmaIAfN3kqmBd1LKTEKnhOs3ZGthQisZ1UV6UgE+n
+        hTb1NaXT9IPgOKm1Eu5ZPtQ1EA==
+X-Google-Smtp-Source: AGHT+IHDdolaT/fVTZ8ZW/7dWjUagJktiL5D7qNx/o3X69KZFsAgNNdJkGFhbq/ro6RUXS5UOaHCNQ==
+X-Received: by 2002:a6b:5d01:0:b0:794:cbb8:725e with SMTP id r1-20020a6b5d01000000b00794cbb8725emr6117719iob.2.1696541454380;
+        Thu, 05 Oct 2023 14:30:54 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id gn6-20020a0566382c0600b0043a1fe337b9sm14831jab.170.2023.10.05.14.30.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 14:30:46 -0700 (PDT)
-Message-ID: <7a98dc62-924c-4b6a-844d-d6db2b9e5a3b@gmail.com>
-Date:   Thu, 5 Oct 2023 18:30:21 -0300
+        Thu, 05 Oct 2023 14:30:53 -0700 (PDT)
+Message-ID: <696fc488-63d3-444c-a9f2-14d7a7379143@linuxfoundation.org>
+Date:   Thu, 5 Oct 2023 15:30:52 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] rust: upgrade to Rust 1.73.0
+Subject: Re: nolibc changes since 6.6-rc1 for linux-next
 Content-Language: en-US
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev, Jonathan Corbet <corbet@lwn.net>,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20231005210556.466856-1-ojeda@kernel.org>
- <20231005210556.466856-4-ojeda@kernel.org>
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20231005210556.466856-4-ojeda@kernel.org>
+To:     paulmck@kernel.org,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     Shuah Khan <shuah@kernel.org>, Willy Tarreau <w@1wt.eu>,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <11a790c0-f9c0-49eb-b14f-56b962af6d2d@t-8ch.de>
+ <dcfa99da-eb3e-4c85-9e7f-092bbb1be801@linuxfoundation.org>
+ <48c01af3-d373-4546-a8f2-d81fa447eaaa@t-8ch.de>
+ <25382680-956a-4612-b930-f6823c71cf8d@paulmck-laptop>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <25382680-956a-4612-b930-f6823c71cf8d@paulmck-laptop>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,92 +76,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/23 18:05, Miguel Ojeda wrote:
-> This is the next upgrade to the Rust toolchain, from 1.72.1 to 1.73.0
-> (i.e. the latest) [1].
+On 10/5/23 14:58, Paul E. McKenney wrote:
+> On Thu, Oct 05, 2023 at 10:28:05PM +0200, Thomas Weißschuh wrote:
+>> On 2023-10-05 14:15:31-0600, Shuah Khan wrote:
+>>> Hi Thomas,
+>>>
+>>> On 10/5/23 11:00, Thomas Weißschuh wrote:
+>>>> Hi Shuah,
+>>>>
+>>>> I'd like to test the current state of nolibc in linux-next.
+>>>> Could pull the request below into your nolibc branch?
+>>>>
+>>>> I'll do some manual tests this weekend, too.
+>>>>
+>>>>
+>>>> Thanks,
+>>>> Thomas
+>>>>
+>>>>
+>>>> The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+>>>>
+>>>>     Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+>>>>
+>>>> are available in the Git repository at:
+>>>>
+>>>>     https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git nolibc/next
+>>>>
+>>>> for you to fetch changes up to ab663cc32912914258bc8a2fbd0e753f552ee9d8:
+>>>>
+>>>>     tools/nolibc: automatically detect necessity to use pselect6 (2023-09-28 09:20:35 +0200)
+>>>
+>>> Absolutely. Do you mind tagging and pushing the tag and send
+>>> pull request with the tag?
+>>
+>> Sure, here it is:
+>>
+>>
+>> The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+>>
+>>    Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+>>
+>> are available in the Git repository at:
+>>
+>>    https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git nolibc-next.2023.10.05a
+>>
+>> for you to fetch changes up to ab663cc32912914258bc8a2fbd0e753f552ee9d8:
+>>
+>>    tools/nolibc: automatically detect necessity to use pselect6 (2023-09-28 09:20:35 +0200)
 > 
-> See the upgrade policy [2] and the comments on the first upgrade in
-> commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
+> Looks good on my laptop:
 > 
-> # Unstable features
+> make run:
 > 
-> No unstable features (that we use) were stabilized.
+> 	160 test(s): 160 passed,   0 skipped,   0 failed => status: success
 > 
-> Therefore, the only unstable feature allowed to be used outside
-> the `kernel` crate is still `new_uninit`, though other code to be
-> upstreamed may increase the list.
+> make run-user:
 > 
-> Please see [3] for details.
+> 	160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
 > 
-> # Required changes
+> Shuah, I can take nolibc for the upcoming merge window (I believe that
+> it is my turn to do so), but if you would prefer to take them, that also
+> works for me.  Either way, just let me know.
 > 
-> For the upgrade, the following changes are required:
-> 
->    - Allow `internal_features` for `feature(compiler_builtins)` since
->      now Rust warns about using internal compiler and standard library
->      features (similar to how it also warns about incomplete ones) [4].
-> 
->    - A cleanup for a documentation link thanks to a new `rustdoc` lint.
->      See previous commits for details.
-> 
->    - A need to make an intra-doc link to a macro explicit, due to a
->      change in behavior in `rustdoc`. See previous commits for details.
-> 
-> # `alloc` upgrade and reviewing
-> 
-> The vast majority of changes are due to our `alloc` fork being upgraded
-> at once.
-> 
-> There are two kinds of changes to be aware of: the ones coming from
-> upstream, which we should follow as closely as possible, and the updates
-> needed in our added fallible APIs to keep them matching the newer
-> infallible APIs coming from upstream.
-> 
-> Instead of taking a look at the diff of this patch, an alternative
-> approach is reviewing a diff of the changes between upstream `alloc` and
-> the kernel's. This allows to easily inspect the kernel additions only,
-> especially to check if the fallible methods we already have still match
-> the infallible ones in the new version coming from upstream.
-> 
-> Another approach is reviewing the changes introduced in the additions in
-> the kernel fork between the two versions. This is useful to spot
-> potentially unintended changes to our additions.
-> 
-> To apply these approaches, one may follow steps similar to the following
-> to generate a pair of patches that show the differences between upstream
-> Rust and the kernel (for the subset of `alloc` we use) before and after
-> applying this patch:
-> 
->      # Get the difference with respect to the old version.
->      git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
->      git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
->          cut -d/ -f3- |
->          grep -Fv README.md |
->          xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
->      git -C linux diff --patch-with-stat --summary -R > old.patch
->      git -C linux restore rust/alloc
-> 
->      # Apply this patch.
->      git -C linux am rust-upgrade.patch
-> 
->      # Get the difference with respect to the new version.
->      git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
->      git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
->          cut -d/ -f3- |
->          grep -Fv README.md |
->          xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
->      git -C linux diff --patch-with-stat --summary -R > new.patch
->      git -C linux restore rust/alloc
-> 
-> Now one may check the `new.patch` to take a look at the additions (first
-> approach) or at the difference between those two patches (second
-> approach). For the latter, a side-by-side tool is recommended.
-> 
-> Link: https://github.com/rust-lang/rust/blob/stable/RELEASES.md#version-1730-2023-10-05 [1]
-> Link: https://rust-for-linux.com/rust-version-policy [2]
-> Link: https://github.com/Rust-for-Linux/linux/issues/2 [3]
-> Link: https://github.com/rust-lang/compiler-team/issues/596 [4]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
-> [...]
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+
+Yes it is your turn. Please go ahead and take them.
+
+I will pull and do testing and update you on how it went.
+
+thanks,
+-- Shuah
+
