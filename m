@@ -2,112 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BEF7BA70C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2AD7BA71E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbjJEQr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37834 "EHLO
+        id S231480AbjJEQuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:50:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233356AbjJEQqm (ORCPT
+        with ESMTP id S230378AbjJEQs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:46:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4037F2707;
-        Thu,  5 Oct 2023 09:40:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 95214C433CA;
-        Thu,  5 Oct 2023 16:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696524025;
-        bh=o7kiTe0OXPEOLZf74e9pOzyCSg3hSTh4aw0DUkNUZK8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Rw9sF5G5dpA34C4+BwnzaHUbjEuNXTaFeNYAgR4b0/NERJITwSmOUoCiK8GkFKpt9
-         wNNjkxKkE/snQEGCnuLKYQ8TX6xH2K+zeV5uBliupFN1Q2047ym5laAJlfADte69Xi
-         tLnpXb8E0k+7+hAW2Kx6LtGH1tv5s2ahMcT+4KOUu/Z4EONGeHGdvCiGvIXmRdesB6
-         qHm+61eb3b7eVVmxPAR4FxUoo+pXMkcYOd+ekY3Ts0vAm89hgX2k0dsAhKrG6RnQSj
-         W+rGrnqyKXuVqU2pY9FGfb+Wc1ySbb7aMpErR7qn4S0Ond3pU+dO6ApMfOa5V2fiLR
-         ioWa40CXbrVvg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 73685E632D7;
-        Thu,  5 Oct 2023 16:40:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 5 Oct 2023 12:48:59 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2084.outbound.protection.outlook.com [40.107.101.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AB2A6;
+        Thu,  5 Oct 2023 09:41:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CDT7PPEHwFeBNYWbzscAt95VPGKoTEjHZqZVgGa9D4RvjQrHIA/ur3WDKq5zLwzKEIaNjFzltgrh76NznhgleTz0zTM6xtZB10mFFkT28+nJuC+BBYZna/8ObGzTT6cpfo1t4P6aoQ+YrJFDGla2v+yflCbBkDifBD+aLnzFJGi1s5qStITddZOj3I+FN7AJRZ8CmYjU6YiZetP8+/DvOgCC7ECWYfTkCFDPWbIcVMHoxD4XhkaIxWshR8N1alVd9MMAsfydmkbPkaYhhmOWwWEuWpxWbyTK7cXKg12tRJfL7U7nL9ZIq+HWrCY2i8TD8VQ/MlDiPL1fERL9G4eQig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pDp1xSqJUy/X3KgfO2i7a/7rznbyqcW3efpc1pzhCAA=;
+ b=PotOJMU8i3aoVROGSG1HcymnJWJUv+aKEmmlzM1KK6BICHRQd9j9wTUaK50zAQG+VTHmArZDaEvOVDwDGkfugcMjHjzgsfHDHunxAaU4BaLrSBR99ZcW8bVeD+kBf3xzwM9JuO1s+1jK//4xg1oWEuN4PdyqO9SqXYpWwBFb/4tg4yfMLVQJQA08+vDIBiu2mQHKocRwSGVNwQJjk71YXFtBE+CimRG6fSwQfzcYwV/Y/8raeYwBG/ftMzujYkVy5TWXDYLwJ4wemHBt3tKB06nLu6z0GLLobiMVysZtzhyoGBlPsADBjzzoG7Bzb3bzmcSV5fUNKIH7L1cIyjciDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pDp1xSqJUy/X3KgfO2i7a/7rznbyqcW3efpc1pzhCAA=;
+ b=kg8KlkaVTj1GF0wfuaYquAcgHeG4kWvaG1++ETZLcmJUgsOtsFCUiV3gICokm9iO/qP7OaP5OLhNDGdZ2SAzaFf96+4li11Q8INI0MjusrrZtoiWmrsBkqHHT1DdHokRi8UJ6Rk3bD9rTP0IF2xY21n6yU1TEGpyH0BO/kIzhL0=
+Received: from DS7P222CA0013.NAMP222.PROD.OUTLOOK.COM (2603:10b6:8:2e::22) by
+ SA1PR12MB8841.namprd12.prod.outlook.com (2603:10b6:806:376::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.33; Thu, 5 Oct 2023 16:41:53 +0000
+Received: from DS3PEPF000099D6.namprd04.prod.outlook.com
+ (2603:10b6:8:2e:cafe::cb) by DS7P222CA0013.outlook.office365.com
+ (2603:10b6:8:2e::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.37 via Frontend
+ Transport; Thu, 5 Oct 2023 16:41:52 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ DS3PEPF000099D6.mail.protection.outlook.com (10.167.17.7) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Thu, 5 Oct 2023 16:41:52 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 5 Oct
+ 2023 11:41:52 -0500
+Received: from xhdthippesw40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Thu, 5 Oct 2023 11:41:49 -0500
+From:   Thippeswamy Havalige <thippeswamy.havalige@amd.com>
+To:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <michal.simek@amd.com>,
+        <bharat.kumar.gogada@amd.com>,
+        Thippeswamy Havalige <thippeswamy.havalige@amd.com>
+Subject: [PATCH v5 RESEND 0/4] ncrease ecam size value to discover 256 buses during
+Date:   Thu, 5 Oct 2023 22:10:47 +0530
+Message-ID: <20231005164051.984254-1-thippeswamy.havalige@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v3] net: stmmac: remove unneeded stmmac_poll_controller
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169652402546.29548.6404027864255533481.git-patchwork-notify@kernel.org>
-Date:   Thu, 05 Oct 2023 16:40:25 +0000
-References: <1c156a6d8c9170bd6a17825f2277115525b4d50f.1696429960.git.repk@triplefau.lt>
-In-Reply-To: <1c156a6d8c9170bd6a17825f2277115525b4d50f.1696429960.git.repk@triplefau.lt>
-To:     Remi Pommarel <repk@triplefau.lt>
-Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, mcoquelin.stm32@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099D6:EE_|SA1PR12MB8841:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0b205d80-53c2-4a7d-1d30-08dbc5c1fab8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dnxP2bIq7omJ1yo9T86PcCJ2H04IBYLGe9ccojepafgxlWwIQVrWsppVc9BXM0+QjfxBL+OYdWlJWwuLDWkWldE3MGxrU0+Dwfge+UJ6WPT7VX+ihH/KhobMtTSeKgjBOKUWlaCVV932OICpQZ/1qiuJMUwvjpYGfu2wTKjDsVheB4/y0S+d4QhMjb0pvUwSIt3/Qk+55y9zfK4SyIYbGeRtHEcoviZP/NQlvENfVhbUYeHLcakketjphuP0qSoRpcTEdn+n466tf4m7Me5mwvOLlFllkjthinuUlFwuzvGGfg0nSHo5HD5zIWB+ectLa/0YDPkiQPVt898srccH21gJxjkgVAQMqhtww2asr4NxcKAueFh9pbfTLn8fFpHADhRQ3u86TNSKTGJM8/NB5FTImWABBYQbflVvWdSImbC3c7ZDc39U5/5Fd1OmuwCBUoyQVsd7p6PIwfdqpiLyw4B3ZdllrDRjMvL3kdihvOpVw9vRqG1ptt7kxEji1AywQ9P6F1ExAa9gKqQh40M32j4fydzWsur62OC75ySbXyLMHRAi3j6H/jf0E7iaL+pMQbYpPyebDZ92P8uULjk2W0Shvh8QUhl4rGPCiEbgYm/AqiEyjHdMuqpUfJYV5d84opDZlSNvwrSlruv024Ai+dWFdoTw3YXqB/+IleUWhwxi9/hK03/vI0k//LWCbazQgnU3dBbc5jAAHj9U3/xwYt0s7itpLZQDP0lcAHGla0vPPXhaAQwQCZrlHBcQVJxLt0RlMn9OI9riv6nJppQlKtE2L30ncItNwDLO99Wy/Fk=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(346002)(376002)(136003)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(82310400011)(36840700001)(46966006)(40470700004)(4744005)(47076005)(2906002)(83380400001)(40460700003)(7416002)(82740400003)(86362001)(81166007)(36756003)(356005)(36860700001)(40480700001)(54906003)(316002)(70586007)(110136005)(70206006)(41300700001)(1076003)(2616005)(336012)(478600001)(426003)(4326008)(44832011)(8676002)(5660300002)(26005)(8936002)(36900700001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 16:41:52.8005
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b205d80-53c2-4a7d-1d30-08dbc5c1fab8
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099D6.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8841
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Current driver is supports up to 16 buses. The following code fixes 
+to support up to 256 buses.
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+update "NWL_ECAM_VALUE_DEFAULT " to 16  can access up to 256MB ECAM
+region to detect 256 buses.
 
-On Wed,  4 Oct 2023 16:33:56 +0200 you wrote:
-> Using netconsole netpoll_poll_dev could be called from interrupt
-> context, thus using disable_irq() would cause the following kernel
-> warning with CONFIG_DEBUG_ATOMIC_SLEEP enabled:
-> 
->   BUG: sleeping function called from invalid context at kernel/irq/manage.c:137
->   in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 10, name: ksoftirqd/0
->   CPU: 0 PID: 10 Comm: ksoftirqd/0 Tainted: G        W         5.15.42-00075-g816b502b2298-dirty #117
->   Hardware name: aml (r1) (DT)
->   Call trace:
->    dump_backtrace+0x0/0x270
->    show_stack+0x14/0x20
->    dump_stack_lvl+0x8c/0xac
->    dump_stack+0x18/0x30
->    ___might_sleep+0x150/0x194
->    __might_sleep+0x64/0xbc
->    synchronize_irq+0x8c/0x150
->    disable_irq+0x2c/0x40
->    stmmac_poll_controller+0x140/0x1a0
->    netpoll_poll_dev+0x6c/0x220
->    netpoll_send_skb+0x308/0x390
->    netpoll_send_udp+0x418/0x760
->    write_msg+0x118/0x140 [netconsole]
->    console_unlock+0x404/0x500
->    vprintk_emit+0x118/0x250
->    dev_vprintk_emit+0x19c/0x1cc
->    dev_printk_emit+0x90/0xa8
->    __dev_printk+0x78/0x9c
->    _dev_warn+0xa4/0xbc
->    ath10k_warn+0xe8/0xf0 [ath10k_core]
->    ath10k_htt_txrx_compl_task+0x790/0x7fc [ath10k_core]
->    ath10k_pci_napi_poll+0x98/0x1f4 [ath10k_pci]
->    __napi_poll+0x58/0x1f4
->    net_rx_action+0x504/0x590
->    _stext+0x1b8/0x418
->    run_ksoftirqd+0x74/0xa4
->    smpboot_thread_fn+0x210/0x3c0
->    kthread+0x1fc/0x210
->    ret_from_fork+0x10/0x20
-> 
-> [...]
+Update ecam size to 256MB in device tree binding example.
 
-Here is the summary with links:
-  - [net,v3] net: stmmac: remove unneeded stmmac_poll_controller
-    https://git.kernel.org/netdev/net/c/3eef85558910
+Remove unwanted code.
 
-You are awesome, thank you!
+Thippeswamy Havalige (4):
+  PCI: xilinx-nwl: Remove unnecessary code which updates primary,
+    secondary and sub-ordinate bus numbers
+  dt-bindings: PCI: xilinx-nwl: Modify ECAM size in example
+  PCI: xilinx-nwl: Rename ECAM size default macro
+  PCI: xilinx-nwl: Increase ECAM size to accommodate 256 buses
+
+ .../devicetree/bindings/pci/xlnx,nwl-pcie.yaml |  2 +-
+ drivers/pci/controller/pcie-xilinx-nwl.c       | 18 +++---------------
+ 2 files changed, 4 insertions(+), 16 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
