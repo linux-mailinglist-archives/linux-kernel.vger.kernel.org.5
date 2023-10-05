@@ -2,85 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F41137BA490
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCCD7BA50D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239510AbjJEQHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
+        id S241064AbjJEQNg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Oct 2023 12:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239294AbjJEQEm (ORCPT
+        with ESMTP id S240855AbjJEQMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:04:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7E65C69C;
-        Thu,  5 Oct 2023 07:50:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 950B1C116D3;
-        Thu,  5 Oct 2023 10:00:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696500025;
-        bh=EEdWp/Ry3IlTSHH5W4iQK0g3V2xPwp6PsEmr0L7SbPA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Wh24q8085oThfBu4okUkjzAOz2rCv38txL0DojMdjiSx3+4w9BDu3PuKT+AOVHJDR
-         LPagfyMwuaX/L50KJTR5EJ5gzB/f66qPC6qUQO3DjuWgWOiJbmWPq6rjUQoI6WXW/R
-         LsU85lT1mcB6H9OMj3P3oXO8LMl31elssfFP0uD6yIdlZiGvbvcXtGxkX8swnukc1v
-         2EG17HvqBq/biFVKnotqLBHAJdKhVJ0aCdo4LDuMAno7nWgxRB8ol7s+j3M992rrhQ
-         ncD2XclK7nSeMhSW91rIQoCEs/0RX9t+rxzE/cbFwJ28sjOC3Y8cA5cWp1l9V6ka1i
-         X+1mB7AYYfHvQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 778F6E632D8;
-        Thu,  5 Oct 2023 10:00:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 5 Oct 2023 12:12:17 -0400
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACAFCAD37;
+        Thu,  5 Oct 2023 08:30:42 -0700 (PDT)
+Received: from i53875a3c.versanet.de ([83.135.90.60] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1qoLAi-0004BA-Lx; Thu, 05 Oct 2023 12:01:32 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Shih <vincent.sunplus@gmail.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Lala Lin <lala.lin@mediatek.com>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>,
+        Kumar Thella <sthella@codeaurora.org>,
+        Keiji Hayashibara <hayashibara.keiji@socionext.com>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, asahi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH V2] dt-bindings: nvmem: move deprecated cells binding to its own
+ file
+Date:   Thu, 05 Oct 2023 12:01:30 +0200
+Message-ID: <2829805.88bMQJbFj6@diego>
+In-Reply-To: <20231003064018.7502-1-zajec5@gmail.com>
+References: <20231003064018.7502-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net,v2, 0/3] net: mana: Fix some TX processing bugs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169650002548.27211.13692825610419255584.git-patchwork-notify@kernel.org>
-Date:   Thu, 05 Oct 2023 10:00:25 +0000
-References: <1696020147-14989-1-git-send-email-haiyangz@microsoft.com>
-In-Reply-To: <1696020147-14989-1-git-send-email-haiyangz@microsoft.com>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
-        paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
-        davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
-        longli@microsoft.com, ssengar@linux.microsoft.com,
-        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-        sharmaajay@microsoft.com, hawk@kernel.org, tglx@linutronix.de,
-        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Fri, 29 Sep 2023 13:42:24 -0700 you wrote:
-> Fix TX processing bugs on error handling, tso_bytes calculation,
-> and sge0 size.
+Am Dienstag, 3. Oktober 2023, 08:40:18 CEST schrieb Rafał Miłecki:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> Haiyang Zhang (3):
->   net: mana: Fix TX CQE error handling
->   net: mana: Fix the tso_bytes calculation
->   net: mana: Fix oversized sge0 for GSO packets
+> Support for old NVMEM fixed cells was deprecated in favour of
+> "fixed-layout". It's still part of the nvmem.yaml though and may be
+> unknowingly used by new bindings added without much of analyze.
 > 
-> [...]
+> To make it more difficult to accidentally support old syntax move its
+> binding to separated file with "deprecated" in its name.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+> V2: Fix path to nvmem-deprecated-cells.yaml in amlogic,meson6-rtc.yaml
+> 
 
-Here is the summary with links:
-  - [net,v2,1/3] net: mana: Fix TX CQE error handling
-    https://git.kernel.org/netdev/net/c/b2b000069a4c
-  - [net,v2,2/3] net: mana: Fix the tso_bytes calculation
-    https://git.kernel.org/netdev/net/c/7a54de926574
-  - [net,v2,3/3] net: mana: Fix oversized sge0 for GSO packets
-    https://git.kernel.org/netdev/net/c/a43e8e9ffa0d
+>  .../bindings/nvmem/rockchip,otp.yaml          |  1 +
+>  .../bindings/nvmem/rockchip-efuse.yaml        |  1 +
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> diff --git a/Documentation/devicetree/bindings/nvmem/rockchip,otp.yaml b/Documentation/devicetree/bindings/nvmem/rockchip,otp.yaml
+> index 9c6eff788928..a44d44b32809 100644
+> --- a/Documentation/devicetree/bindings/nvmem/rockchip,otp.yaml
+> +++ b/Documentation/devicetree/bindings/nvmem/rockchip,otp.yaml
+> @@ -49,6 +49,7 @@ required:
+>  
+>  allOf:
+>    - $ref: nvmem.yaml#
+> +  - $ref: nvmem-deprecated-cells.yaml#
+>  
+>    - if:
+>        properties:
+> diff --git a/Documentation/devicetree/bindings/nvmem/rockchip-efuse.yaml b/Documentation/devicetree/bindings/nvmem/rockchip-efuse.yaml
+> index c5403e149080..b80fd8d1ae5b 100644
+> --- a/Documentation/devicetree/bindings/nvmem/rockchip-efuse.yaml
+> +++ b/Documentation/devicetree/bindings/nvmem/rockchip-efuse.yaml
+> @@ -11,6 +11,7 @@ maintainers:
+>  
+>  allOf:
+>    - $ref: nvmem.yaml#
+> +  - $ref: nvmem-deprecated-cells.yaml#
+>  
+>  properties:
+>    compatible:
+
+For Rockchip OTP and Efuse bindngs:
+Acked-by: Heiko Stuebner <heiko@sntech.de>
 
 
