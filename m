@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9B37BAEAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F26C7BAEB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbjJEWNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 18:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
+        id S230149AbjJEWQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 18:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjJEWNw (ORCPT
+        with ESMTP id S229453AbjJEWQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 18:13:52 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103389E
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:13:51 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-502f29ed596so2288e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:13:50 -0700 (PDT)
+        Thu, 5 Oct 2023 18:16:21 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A72C9E;
+        Thu,  5 Oct 2023 15:16:21 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6c7b3adbeb6so1037938a34.0;
+        Thu, 05 Oct 2023 15:16:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696544029; x=1697148829; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+b693Y1Dasdqb+Bvft8PNzQSfqB0Z0L3RovrSOC+5XI=;
-        b=sCLwAeaz0t9ZjGeS6R9zkR2xjglgBaa07fBOA3jdnfyFwNwfMs9N3rp8DTF0+3ITwe
-         tP8W3cwBEW2vY95SCt6k5nkC+5mEkN+yGLuokbLLNbqxvyk+fTo81/bCePqTZ1Dgvof0
-         AbJm7Lc98b7upM8f7FCp4SXHlGEk00bHJe5lUcpMUtw7jEZ1doUgWKz9u/6RHnIJrFze
-         b5ApZ1zBWVD3OHw8J2x/WB2LiUm2bPCa4wpvlAa/WZsBxWvRkrBAyLNmcBao6w5eNmo0
-         pNhFvLehK9Qfqsid+9ApsLKr89jASI4BBI781BqZzLfzoEACtdMQq4G0/bFPo3Z+xRVT
-         bBcg==
+        d=gmail.com; s=20230601; t=1696544180; x=1697148980; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2CLq7Ru6JO/XafGfaqX2puFSQKrvbgIFrK81byfRpEo=;
+        b=KHfcGq/rY9BdaK1fLy43ICzGVHeMwWEDylzuaJU/gP4caIGLqFPj2udH9Imvb+JZIq
+         MWDT7qCPK+uX7eRvB5U7i5U4HKJesdJltLS+an1OFD71u8b400+0rTjRQZozbOXr3HxP
+         RbwZuP/DNa8KcdOseYd9A8iG/N/jT5KAyGFdzv8RC1ZpnFK6mU23eV+GR5MdlkrPIWbY
+         XjBBGym6iJHr7f2ZoA8okNLKgRpl/1tA9uCW/az75vH+UsW0oturb41DG1g575LdEiRw
+         hqkyRqdlWNfQX+M4aEh3nQZNHVNjLDoi7COkqSYTvm+7QBmybKjyMNSQkuqqsVQHQGxN
+         gZkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696544029; x=1697148829;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+b693Y1Dasdqb+Bvft8PNzQSfqB0Z0L3RovrSOC+5XI=;
-        b=dfbcbla83Nz56NZMzoY9QZPlz9fxpQEqcg8aKpeMlo3x2XA5nBfWxGPGPKQ5eYXsGG
-         JfqQvCqmlZs/2O58cxIelmpboidn5B6hqxmFImpsPq0tDNI+Pj/+ByCxSoxtnFnvSsoK
-         Yelp0k49OPnVV5rWSs4GVYNn/YEEMQ4Xh3/bQgSTqJlL15rGleuWMepFXqYEYb0PpsTg
-         my5aHtlj89ojaqbJJhvkw6KKHF/knffrSW6CYdkmvsq+CJWJ4Lygn03gCTIBuOOpufPA
-         YAuTTPLILDQhVsIzOINBgZSFXt/jb0QYNuSWLiPEpL2bUbSZ7r9xIWKncrRaCzPz79y8
-         zqeA==
-X-Gm-Message-State: AOJu0YxR1RbMjwtW0iaybrc8lCi2CbRS5uBpCYlEugE66o7YFY0TUjBA
-        sdZcN9NBuJIiGZA0CG5iBNJPnqN7k+O77syqOyNQSQ==
-X-Google-Smtp-Source: AGHT+IG8HhLz8amGBqIHMMBtl0b/29dYhbEuhdIISKcNvI4MG0ZYoDVF8mHIW7OiuKwFk+16uSpRmWRSqtNc5nTXsEI=
-X-Received: by 2002:ac2:59c2:0:b0:501:b029:1a47 with SMTP id
- x2-20020ac259c2000000b00501b0291a47mr84104lfn.1.1696544029164; Thu, 05 Oct
- 2023 15:13:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696544180; x=1697148980;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2CLq7Ru6JO/XafGfaqX2puFSQKrvbgIFrK81byfRpEo=;
+        b=BMN7pkrqb1MlJH40DQDjJA086ybQ/EeF12aY1DluaTByKeCG4MFgP7HYKiuuBRNARK
+         nD02TJQ5hQdLC/NgQK/0C19hOFBEo4CrsjRNk9e6LI/pETH2tR0KNam/CKNLydeukh/Y
+         +wOK5Ovz/KjBt6ZLqGIl5FCk3JQTLwuzvTD5yCCVRQrg+zfxq6IuK3UtEUo7XgP8C4XJ
+         TsO7zTBgD1xHcVw7T43vHzgykXd8ptuC4JQXyXU/NqhmDdh7Uey9JRZbfuAXPHbCrkFa
+         VTfHY10rO2c5aTuY5HLmVgvPnoCGQNBeYoR1Lul+WyoduWCihWZoHQEqKM0bd19GPLb4
+         flrA==
+X-Gm-Message-State: AOJu0YxEBFhcNOmkv4OkYcZSv4xoh9qNKmYDng1WRhkbL0iznbOUq/53
+        VRR6lfEYsZaQsjMyV5wzHto=
+X-Google-Smtp-Source: AGHT+IH98BqVGyK/k/oU7Mne+jf+9iNkFlEiTtZVtuB6Ggmo93JAZng1BoL01sTi3Kvov6V5PrYkIA==
+X-Received: by 2002:a05:6358:938f:b0:139:5a46:ea7e with SMTP id h15-20020a056358938f00b001395a46ea7emr6326524rwb.28.1696544180255;
+        Thu, 05 Oct 2023 15:16:20 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id w25-20020a639359000000b00553dcfc2179sm1950515pgm.52.2023.10.05.15.16.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 15:16:19 -0700 (PDT)
+Message-ID: <fe189597-7cd5-493c-ac10-082ff50b3a1a@gmail.com>
+Date:   Thu, 5 Oct 2023 19:16:14 -0300
 MIME-Version: 1.0
-References: <20230928004431.1926969-1-irogers@google.com>
-In-Reply-To: <20230928004431.1926969-1-irogers@google.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 5 Oct 2023 15:13:37 -0700
-Message-ID: <CAP-5=fW6dBQQ7XnDm+Ye7R2bksNrWWwZJ+X33QnDvcjqjgtU5Q@mail.gmail.com>
-Subject: Re: [PATCH v1] perf parse-events: Fix for term values that are raw events
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] rust: Respect HOSTCC when linking for host
+Content-Language: en-US
+To:     Matthew Maurer <mmaurer@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
+References: <20231005214057.759089-1-mmaurer@google.com>
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20231005214057.759089-1-mmaurer@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,91 +86,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 5:44=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
->
-> Raw events can be strings like 'r0xead' but the 0x is optional so they
-> can also be 'read'. On IcelakeX uncore_imc_free_running has an event
-> called 'read' which may be programmed as:
-> ```
-> $ perf stat -e 'uncore_imc_free_running/event=3Dread/' -a sleep 1
-> ```
-> However, the PE_RAW type isn't allowed on the right of a term, even
-> though in this case we just want to interpret it as a string. This
-> leads to the following error on IcelakeX:
-> ```
-> $ perf stat -e 'uncore_imc_free_running/event=3Dread/' -a sleep 1
-> event syntax error: '..nning/event=3Dread/'
->                                   \___ parser error
-> Run 'perf list' for a list of valid events
->
->  Usage: perf stat [<options>] [<command>]
->
->     -e, --event <event> event selector. use 'perf list' to list available=
- events
-> ```
-> Fix this by allowing raw types on the right of terms and treat them as
-> strings, just as is already done for PE_LEGACY_CACHE. Make this
-> consistent by just entirely removing name_or_legacy and always using
-> name_or_raw that covers all three cases.
->
-> Fixes: 6fd1e5191591 ("perf parse-events: Support PMUs for legacy cache ev=
-ents")
-> Signed-off-by: Ian Rogers <irogers@google.com>
-
-Ping. As this is affecting IcelakeX, Kan?
-
-Thanks,
-Ian
-
+On 10/5/23 18:39, Matthew Maurer wrote:
+> Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined,
+> resulting in build failures in hermetic environments where `cc` does not
+> exist. This includes both hostprogs and proc-macros.
+> 
+> Since we are setting the linker to `HOSTCC`, we set the linker flavor to
+> `gcc` explicitly. The linker-flavor selects both which linker to search
+> for if the linker is unset, and which kind of linker flags to pass.
+> Without this flag, `rustc` would attempt to determine which flags to
+> pass based on the name of the binary passed as `HOSTCC`. `gcc` is the
+> name of the linker-flavor used by `rustc` for all C compilers, including
+> both `gcc` and `clang`.
+> 
+> Signed-off-by: Matthew Maurer <mmaurer@google.com>
 > ---
->  tools/perf/util/parse-events.y | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-event=
-s.y
-> index 4d9f3922a33d..de098caf0c1c 100644
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -78,7 +78,7 @@ static void free_list_evsel(struct list_head* list_evse=
-l)
->  %type <str> PE_MODIFIER_BP
->  %type <str> PE_EVENT_NAME
->  %type <str> PE_DRV_CFG_TERM
-> -%type <str> name_or_raw name_or_legacy
-> +%type <str> name_or_raw
->  %destructor { free ($$); } <str>
->  %type <term> event_term
->  %destructor { parse_events_term__delete ($$); } <term>
-> @@ -669,8 +669,6 @@ event_term
->
->  name_or_raw: PE_RAW | PE_NAME | PE_LEGACY_CACHE
->
-> -name_or_legacy: PE_NAME | PE_LEGACY_CACHE
-> -
->  event_term:
->  PE_RAW
->  {
-> @@ -685,7 +683,7 @@ PE_RAW
->         $$ =3D term;
->  }
->  |
-> -name_or_raw '=3D' name_or_legacy
-> +name_or_raw '=3D' name_or_raw
->  {
->         struct parse_events_term *term;
->         int err =3D parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE=
-_USER, $1, $3, &@1, &@3);
-> @@ -765,7 +763,7 @@ PE_TERM_HW
->         $$ =3D term;
->  }
->  |
-> -PE_TERM '=3D' name_or_legacy
-> +PE_TERM '=3D' name_or_raw
->  {
->         struct parse_events_term *term;
->         int err =3D parse_events_term__str(&term, $1, /*config=3D*/NULL, =
-$3, &@1, &@3);
-> --
-> 2.42.0.515.g380fc7ccd1-goog
->
+> [...]
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
