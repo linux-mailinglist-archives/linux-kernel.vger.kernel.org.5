@@ -2,53 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A017BA3C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0997BA350
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238417AbjJEP6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50766 "EHLO
+        id S235622AbjJEPxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:53:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234521AbjJEP4u (ORCPT
+        with ESMTP id S232953AbjJEPv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:56:50 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 78FF859D3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:53:19 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E034F15A1;
-        Thu,  5 Oct 2023 05:59:43 -0700 (PDT)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 71A7C3F641;
-        Thu,  5 Oct 2023 05:59:02 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, broonie@kernel.org, maz@kernel.org,
-        suzuki.poulose@arm.com
-Cc:     James Clark <james.clark@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Fuad Tabba <tabba@google.com>,
-        Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] coresight: Pass guest TRFCR value to KVM
-Date:   Thu,  5 Oct 2023 13:57:54 +0100
-Message-Id: <20231005125757.649345-7-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231005125757.649345-1-james.clark@arm.com>
-References: <20231005125757.649345-1-james.clark@arm.com>
+        Thu, 5 Oct 2023 11:51:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282774DF63
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:02:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696514416;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/r6/vxDZ7SlHr2MUNh2FMyN5pOqeM6f7KWklCXeGbBg=;
+        b=hQxz9iUoKr24M6Pziq/5HfgHT1KWoefDsfpw7MbK+M+A2tOPoWE4x+j1OOE9HW5nl6xraO
+        rFAfsnPcdsMMF4rs1PDav7ybDb61hBdXYycB9TP8RCwwhzkD+pSkWE8BMP+z1Kp7/okDyW
+        JwgZ4ixzUPONA4iEQ5Bu1qpbzFLoPXY=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-516-9DSwtSxtOe2DBJXPh0G_HQ-1; Thu, 05 Oct 2023 08:58:33 -0400
+X-MC-Unique: 9DSwtSxtOe2DBJXPh0G_HQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40540179bcdso5961455e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 05:58:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696510712; x=1697115512;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/r6/vxDZ7SlHr2MUNh2FMyN5pOqeM6f7KWklCXeGbBg=;
+        b=Bg/4LBhCEJF52FRpgXS2DpLulNF4ViQKAUyCI/XuOd9z7YCVqIwuUKfsqlX2Uo1jP+
+         05xlfktCbR0j0on8wbyYgcYotp72VoFfxGxdGbs8RHxc3QRQOXaZIpy4L0eFF1K84WTx
+         eV5DP8hmiObDqd7A6G8l53Y+yvvUvTEckNw3q0iGTSOBkKrRE2ul1UMCMFJAvxOcNJCC
+         NCe3BnUReCRD4r5nCtc2BM+EkHDWuSYGkqqJnLEgdUv4OaMtXpbXZtS4gdfl+j1cZBTx
+         x9rSqhPoRiXgVse6Tcw6vYRsWhDNCSzs0dsv73NXjblULQ7IagTiSay1Cgnsx1E8ufDD
+         /a0Q==
+X-Gm-Message-State: AOJu0YzHgZbeUVfunK071+DMENd3ntCROxmnU9UYbKZCds3Jl3vs+oHZ
+        ETJPEfU68QbVwtwjVz9l4fCWxreweTdOMWKwIvNZy1RH+NY/afMsYeAUcRBFC0xWAoiTfX19AgB
+        iXb5HdwEbcHiL6cDM8X4W4G2t
+X-Received: by 2002:a1c:7914:0:b0:401:1b58:72f7 with SMTP id l20-20020a1c7914000000b004011b5872f7mr4896064wme.38.1696510712648;
+        Thu, 05 Oct 2023 05:58:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH7lzNVbgVxPFaaWui24YMcE2z6WO73JBOPVtj5jYlX2YjQWj64rpJKORnSmCPW9jT0XGo+RA==
+X-Received: by 2002:a1c:7914:0:b0:401:1b58:72f7 with SMTP id l20-20020a1c7914000000b004011b5872f7mr4896043wme.38.1696510712176;
+        Thu, 05 Oct 2023 05:58:32 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id y24-20020a7bcd98000000b004064741f855sm1453766wmj.47.2023.10.05.05.58.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 05:58:31 -0700 (PDT)
+Message-ID: <b61bcea5033edfbc558637edb6cb3bbf690b3cf6.camel@redhat.com>
+Subject: Re: [PATCH 09/10] KVM: SVM: Drop redundant check in AVIC code on ID
+ during vCPU creation
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 05 Oct 2023 15:58:30 +0300
+In-Reply-To: <20230815213533.548732-10-seanjc@google.com>
+References: <20230815213533.548732-1-seanjc@google.com>
+         <20230815213533.548732-10-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,164 +83,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the userspace and kernel filters for guests are never set, so
-no trace will be generated for them. Add support for tracing guests by
-passing the desired TRFCR value to KVM so it can be applied to the
-guest.
+У вт, 2023-08-15 у 14:35 -0700, Sean Christopherson пише:
+> Drop avic_get_physical_id_entry()'s compatibility check on the incoming
+> ID, as its sole caller, avic_init_backing_page(), performs the exact same
+> check.  Drop avic_get_physical_id_entry() entirely as the only remaining
+> functionality is getting the address of the Physical ID table, and
+> accessing the array without an immediate bounds check is kludgy.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/svm/avic.c | 28 ++++++----------------------
+>  1 file changed, 6 insertions(+), 22 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+> index 3b2d00d9ca9b..6803e2d7bc22 100644
+> --- a/arch/x86/kvm/svm/avic.c
+> +++ b/arch/x86/kvm/svm/avic.c
+> @@ -263,26 +263,12 @@ void avic_init_vmcb(struct vcpu_svm *svm, struct vmcb *vmcb)
+>  		avic_deactivate_vmcb(svm);
+>  }
+>  
+> -static u64 *avic_get_physical_id_entry(struct kvm_vcpu *vcpu,
+> -				       unsigned int index)
+> -{
+> -	u64 *avic_physical_id_table;
+> -	struct kvm_svm *kvm_svm = to_kvm_svm(vcpu->kvm);
+> -
+> -	if ((!x2avic_enabled && index > AVIC_MAX_PHYSICAL_ID) ||
+> -	    (index > X2AVIC_MAX_PHYSICAL_ID))
+> -		return NULL;
 
-By writing either E1TRE or E0TRE, filtering on either guest kernel or
-guest userspace is also supported. And if both E1TRE and E0TRE are
-cleared when exclude_guest is set, that option is supported too. This
-change also brings exclude_host support which is difficult to add as a
-separate commit without excess churn and resulting in no trace at all.
+While removing this code doesn't introduce a bug, it does make it less safe,
+because new code just blindly trusts that vcpu_id will never be out of bounds
+of the physical id table.
 
-Testing
-=======
+Bugs happen and that can and will someday happen.
 
-The addresses were counted with the following:
+> -
+> -	avic_physical_id_table = page_address(kvm_svm->avic_physical_id_table_page);
+> -
+> -	return &avic_physical_id_table[index];
+> -}
+> -
+>  static int avic_init_backing_page(struct kvm_vcpu *vcpu)
+>  {
+> -	u64 *entry, new_entry;
+> +	struct kvm_svm *kvm_svm = to_kvm_svm(vcpu->kvm);
+> +	struct vcpu_svm *svm = to_svm(vcpu);
+> +	u64 *table, new_entry;
+>  	int id = vcpu->vcpu_id;
+> -	struct vcpu_svm *svm = to_svm(vcpu);
+>  
+>  	/*
+>  	 * Inhibit AVIC if the vCPU ID is bigger than what is supported by AVIC
+> @@ -318,15 +304,13 @@ static int avic_init_backing_page(struct kvm_vcpu *vcpu)
+>  	}
+>  
+>  	/* Setting AVIC backing page address in the phy APIC ID table */
+> -	entry = avic_get_physical_id_entry(vcpu, id);
+> -	if (!entry)
+> -		return -EINVAL;
+> +	table = page_address(kvm_svm->avic_physical_id_table_page);
+>  
+>  	new_entry = avic_get_backing_page_address(svm) |
+>  		    AVIC_PHYSICAL_ID_ENTRY_VALID_MASK;
+> -	WRITE_ONCE(*entry, new_entry);
 
-  $ perf report -D | grep -Eo 'EL2|EL1|EL0' | sort | uniq -c
+Here I prefer to at least have an assert that id is in bounds of a page 
+(at least less than 512) so that a bug will not turn into a security
+issue by overflowing the buffer.
 
-Guest kernel only:
+> +	WRITE_ONCE(table[id], new_entry);
+>  
+> -	svm->avic_physical_id_cache = entry;
+> +	svm->avic_physical_id_cache = &table[id];
+>  
+>  	return 0;
+>  }
 
-  $ perf record -e cs_etm//Gk -a -- true
-    535 EL1
-      1 EL2
-
-Guest user only (only 5 addresses because the guest runs slowly in the
-model):
-
-  $ perf record -e cs_etm//Gu -a -- true
-    5 EL0
-
-Host kernel only:
-
-  $  perf record -e cs_etm//Hk -a -- true
-   3501 EL2
-
-Host userspace only:
-
-  $  perf record -e cs_etm//Hu -a -- true
-    408 EL0
-      1 EL2
-
-Signed-off-by: James Clark <james.clark@arm.com>
----
- .../coresight/coresight-etm4x-core.c          | 42 ++++++++++++++++---
- drivers/hwtracing/coresight/coresight-etm4x.h |  2 +-
- drivers/hwtracing/coresight/coresight-priv.h  |  3 ++
- 3 files changed, 40 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 77b0271ce6eb..292f9da6aeaf 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -6,6 +6,7 @@
- #include <linux/acpi.h>
- #include <linux/bitops.h>
- #include <linux/kernel.h>
-+#include <linux/kvm_host.h>
- #include <linux/moduleparam.h>
- #include <linux/init.h>
- #include <linux/types.h>
-@@ -271,9 +272,22 @@ static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
- 	/* If the CPU doesn't support FEAT_TRF, nothing to do */
- 	if (!drvdata->trfcr)
- 		return;
-+	kvm_etm_set_guest_trfcr(0);
- 	cpu_prohibit_trace();
- }
- 
-+static u64 etm4x_get_kern_user_filter(struct etmv4_drvdata *drvdata)
-+{
-+	u64 trfcr = drvdata->trfcr;
-+
-+	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
-+		trfcr &= ~TRFCR_ELx_ExTRE;
-+	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
-+		trfcr &= ~TRFCR_ELx_E0TRE;
-+
-+	return trfcr;
-+}
-+
- /*
-  * etm4x_allow_trace - Allow CPU tracing in the respective ELs,
-  * as configured by the drvdata->config.mode for the current
-@@ -286,18 +300,28 @@ static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
-  */
- static void etm4x_allow_trace(struct etmv4_drvdata *drvdata)
- {
--	u64 trfcr = drvdata->trfcr;
-+	u64 trfcr;
- 
- 	/* If the CPU doesn't support FEAT_TRF, nothing to do */
--	if (!trfcr)
-+	if (!drvdata->trfcr)
- 		return;
- 
--	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
--		trfcr &= ~TRFCR_ELx_ExTRE;
--	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
--		trfcr &= ~TRFCR_ELx_E0TRE;
-+	if (drvdata->config.mode & ETM_MODE_EXCL_HOST)
-+		trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
-+	else
-+		trfcr = etm4x_get_kern_user_filter(drvdata);
- 
- 	write_trfcr(trfcr);
-+
-+	/* Set filters for guests and pass to KVM */
-+	if (drvdata->config.mode & ETM_MODE_EXCL_GUEST)
-+		trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
-+	else
-+		trfcr = etm4x_get_kern_user_filter(drvdata);
-+
-+	/* TRFCR_EL1 doesn't have CX so mask it out. */
-+	trfcr &= ~TRFCR_EL2_CX;
-+	kvm_etm_set_guest_trfcr(trfcr);
- }
- 
- #ifdef CONFIG_ETM4X_IMPDEF_FEATURE
-@@ -655,6 +679,12 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
- 	if (attr->exclude_user)
- 		config->mode = ETM_MODE_EXCL_USER;
- 
-+	if (attr->exclude_host)
-+		config->mode |= ETM_MODE_EXCL_HOST;
-+
-+	if (attr->exclude_guest)
-+		config->mode |= ETM_MODE_EXCL_GUEST;
-+
- 	/* Always start from the default config */
- 	etm4_set_default_config(config);
- 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-index 20e2e4cb7614..3f170599822f 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.h
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-@@ -841,7 +841,7 @@ enum etm_impdef_type {
-  * @s_ex_level: Secure ELs where tracing is supported.
-  */
- struct etmv4_config {
--	u32				mode;
-+	u64				mode;
- 	u32				pe_sel;
- 	u32				cfg;
- 	u32				eventctrl0;
-diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-index 767076e07970..727dd27ba800 100644
---- a/drivers/hwtracing/coresight/coresight-priv.h
-+++ b/drivers/hwtracing/coresight/coresight-priv.h
-@@ -39,6 +39,9 @@
- 
- #define ETM_MODE_EXCL_KERN	BIT(30)
- #define ETM_MODE_EXCL_USER	BIT(31)
-+#define ETM_MODE_EXCL_HOST	BIT(32)
-+#define ETM_MODE_EXCL_GUEST	BIT(33)
-+
- struct cs_pair_attribute {
- 	struct device_attribute attr;
- 	u32 lo_off;
--- 
-2.34.1
+Best regards,
+	Maxim Levitsky
 
