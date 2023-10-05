@@ -2,133 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF05C7BA880
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D6B7BA750
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjJERzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
+        id S229721AbjJERIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231282AbjJERzL (ORCPT
+        with ESMTP id S229705AbjJERHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:55:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EA83C3F
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:52:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696524733;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hfBa2PBztZPefecPJI7ke3UbcZNr/dJZxdjNyd6oBXc=;
-        b=dr7dtT+XaZ1GUUCCB9ks+MMH4V+SSCfdswXfmbzA8abA0Pe2hgAFRZOwleEjc9EOO77Dv2
-        mU7J22iDc/BoUIzAIakM+viR1kjHUKjqKeFr47AQ+BFUVMJmbaCfVLLKBvvZ264EfqXvj9
-        vV2mkncMSgBH6WDk9v8PmGw0HQIlHGM=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-636-5crtaUypNbaoZEqs-Fu0xg-1; Thu, 05 Oct 2023 12:52:02 -0400
-X-MC-Unique: 5crtaUypNbaoZEqs-Fu0xg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9ae0601d689so95212066b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:52:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696524721; x=1697129521;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hfBa2PBztZPefecPJI7ke3UbcZNr/dJZxdjNyd6oBXc=;
-        b=sZl/FKhbbyg9Fbffh4ORvmW1Fae3PZEuvCvWCco6hKLggOdyLxhN58GQdF/30xs6aj
-         0tY91eWnIEnDyRPU5mQUobIQifALiLKqC1pCpuF30re997eIiVsJ8alQuH2Cqw9l2Vqg
-         cngJXYTWL+4W7pBpExOvspzGv29UWkNbnReDUMGoRM1jmdrUW5PuOkonXSTwSn63AKvG
-         CClDn6wZyudzXWQofVe92Xx+6C1EfRHOlm+tmj6zQe4uqUbD8zYhAn/fXJMRqo/AVZxr
-         JV2tnOvJzc4bSG4LeOzVAs/beCPeXQUjLbrX0ylz9663HU8N+XbcfYausPFkpQfB0mWf
-         pmLg==
-X-Gm-Message-State: AOJu0Yz+kg7wqHwzZuM/xGCfrQ/dWamXJtjzgZuXYG5caCMSO1HoAfKt
-        impikg+RBNXTQsNuqe/EZFgs+D+0w7MQLOqZBZGsl2S2QaU3uNdmfa3GQGdouQHM1qTNFP/qI38
-        srzeFzpDqiWIjpyWT5CxAXt+F
-X-Received: by 2002:a17:907:271a:b0:9b9:ed52:8213 with SMTP id w26-20020a170907271a00b009b9ed528213mr2108071ejk.54.1696524720980;
-        Thu, 05 Oct 2023 09:52:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHgssYgHWHZZXyp1cFbR2loPbqq9hiLlw7Dc8A83s5u0YNtnV3XNQusYBiNSkut41GTr1E/UQ==
-X-Received: by 2002:a17:907:271a:b0:9b9:ed52:8213 with SMTP id w26-20020a170907271a00b009b9ed528213mr2108053ejk.54.1696524720646;
-        Thu, 05 Oct 2023 09:52:00 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id j18-20020a170906411200b0099ccee57ac2sm1465845ejk.194.2023.10.05.09.51.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 09:51:59 -0700 (PDT)
-Message-ID: <4318facf-df2d-7658-39d2-d2dce1ec77d9@redhat.com>
-Date:   Thu, 5 Oct 2023 18:51:58 +0200
+        Thu, 5 Oct 2023 13:07:21 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 802778868;
+        Thu,  5 Oct 2023 09:52:35 -0700 (PDT)
+Received: from DESKTOP-4OLSCEK. (unknown [76.135.27.212])
+        by linux.microsoft.com (Postfix) with ESMTPSA id AE48420B74C0;
+        Thu,  5 Oct 2023 09:52:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AE48420B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1696524754;
+        bh=nu/UF4tVeZdNh5zANFjJV4boSta2pdlQy3eaAPdXjzo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mDAJmhEhR63hv1BYXNbRzNGsWppiNDqBV8kQmdBvkw1/ccD18Xbk7ScyNv8d91iid
+         229ZANuRIOSXI1AaAIMuRcvTqIYK0XP7cf44LnVzAjLI1Qb20tPGTePruxXUjIV+V+
+         v6C/fIWkfDaATNYXovpb0IfLATUQWR4POoOGhR/Y=
+Date:   Thu, 5 Oct 2023 09:52:30 -0700
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        cleger@rivosinc.com, linux-kselftest@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH 2/2] selftests/user_events: Fix abi_test for BE archs
+Message-ID: <20231005165230.GA1247-beaub@linux.microsoft.com>
+References: <20230925230829.341-1-beaub@linux.microsoft.com>
+ <20230925230829.341-3-beaub@linux.microsoft.com>
+ <20231003205908.391d17f5@gandalf.local.home>
+ <4cc400c9-f4ad-4a30-a5fe-d02a6a4bcec0@linuxfoundation.org>
+ <20231004111437.47c80c81@gandalf.local.home>
+ <55213463-8834-4ed6-b0a2-1be69dd838d2@linuxfoundation.org>
+ <c6ddb83d-acd8-47d0-8946-5a9b64c65d03@linuxfoundation.org>
+ <20231005110816.4b68453d@gandalf.local.home>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     Jim Mattson <jmattson@google.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20231004002038.907778-1-jmattson@google.com>
- <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
- <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com>
- <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
- <CALMp9eT2qHSig-ptP461GbLSfg86aCRjoxzK9Q7dc6yXSpPn7A@mail.gmail.com>
- <ef665e55-7604-e167-7c49-739c284c248c@intel.com>
- <CALMp9eQL4m6PVVhntG9-RbY6w60pxka2tpCvTi01dQXPJ7QEJA@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's
- FsGsKernelGsBaseNonSerializing
-In-Reply-To: <CALMp9eQL4m6PVVhntG9-RbY6w60pxka2tpCvTi01dQXPJ7QEJA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231005110816.4b68453d@gandalf.local.home>
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/23 18:41, Jim Mattson wrote:
->> I hope I'm not throwing stones from a glass house here...
->>
->> But I'm struggling to think of cases where Intel has read-only
->> "defeature bits" like this one.  There are certainly things like
->> MSR_IA32_MISC_ENABLE_FAST_STRING that can be toggled, but read-only
->> indicators of a departure from established architecture seems ...
->> suboptimal.
->>
->> It's arguable that TDX changed a bunch of architecture like causing
->> exceptions on CPUID and MSRs that never caused exceptions before and
->> _that_  constitutes a defeature.  But that's the least of the problems
->> for a TDX VM. 😄
->>
->> (Seriously, I'm not trying to shame Intel's x86 fellow travelers here,
->>   just trying to make sure I'm not missing something).
-> Intel's defeature bits that I know of are:
+On Thu, Oct 05, 2023 at 11:08:15AM -0400, Steven Rostedt wrote:
+> On Thu, 5 Oct 2023 08:48:14 -0600
+> Shuah Khan <skhan@linuxfoundation.org> wrote:
 > 
-> CPUID.(EAX=7,ECX=0):EBX[bit 13] (Haswell) - "Deprecates FPU CS and FPU
-> DS values if 1."
-> CPUID.(EAX=7,ECX=0):EBX[bit 6] (Skylake) - "FDP_EXCPTN_ONLY. x87 FPU
-> Data Pointer updated only on x87 exceptions if 1."
+> > Hmm. Which tree is this patch based on? This doesn't apply to
+> > linux-kselftest fixes - I thought this was based on top of fixes
+> > since I sent in a fix for Linux 6.6-rc4 for user_events
+> > 
+> > Beau, Please rebase to the correct tree/branch and send v2 for
+> > this patch.
+> 
+> Hmm, so this didn't apply to my tree nor yours.
+> 
+> Beau, can you verify which tree this goes to?
+> 
+> -- Steve
 
-And for AMD, to get the full landscape:
+It was based on tracing/for-next.
 
-- CPUID(EAX=8000_0021h).EAX[0], "Processor ignores nested data breakpoints"
+I'll get a v2 out rebased upon linux-kselftest, does that work?
 
-- CPUID(EAX=8000_0021h).EAX[9], "SMM_CTL MSR is not present" (the MSR 
-used to be always present if SVM is available)
-
-AMD had a few processors without X86_BUG_NULL_SEG that do not expose 
-X86_FEATURE_NULL_SEL_CLR_BASE, but that's conservative so not a big deal.
-
-Paolo
-
+Thanks,
+-Beau
