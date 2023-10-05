@@ -2,69 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1552F7B9F83
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34717BA083
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233754AbjJEOZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51630 "EHLO
+        id S236499AbjJEOgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjJEOW4 (ORCPT
+        with ESMTP id S236118AbjJEOej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:22:56 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A0A27B0D
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:35:28 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d8198ca891fso1094783276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 06:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1696512927; x=1697117727; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tBt77iv+i6yUV6sl6438k+nP1DNpZDLg/0Q4EcZ/2kY=;
-        b=tocAmFF79bgN1NtDUPmMPH+qjf7RMA3Fx8BYewELiJSodBUdmb+sUIKA9LNqhNAR2T
-         s7u2yBKUykrifgsbFHGwkTsmeIe53Bt4KFPVXXzAPYezB+Gbv9uN46gs14iy1w1oJ5AB
-         pEBYsBiU8rocwXF6cTbuzlE/GO4nTqX4C57PWvbfUKp0mY0k62183PFYeqPaAthZ4xqT
-         HEDJBMuDjAg/jrmOLLqC3kAa3SfY8Xws2Cs2JfCkXbSDlmP6PWuvPaRbDcMiFjl6QdRM
-         BfaqDLy8wxVz+Zp1ELBS5TzBikqZ94IcFLnOyHcWDgkU5KAu43rN0KQqDbPies6Cqvdj
-         5Raw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696512927; x=1697117727;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tBt77iv+i6yUV6sl6438k+nP1DNpZDLg/0Q4EcZ/2kY=;
-        b=ShmmG2iF9SYmoaubuoQLREWI+MQoIxEeqdjjTx5rFJ5sDRVmq4YA1CUXHplz0zFdIU
-         ecO81chZCas70/xm+Z0SO+lbJAoeqNMCyaxqd3oS45L8omCpPIna2lawtJWCkYgjxNIG
-         +3SXp4hO+U3DYYzT6S7szzq28kQxm1oyLwEoNcGb7Bi41LcLRcGR+RkFyH4zI5qHbyEs
-         fxE2oM7jWjaFpTuWV12zfaNrregUsBrPqQBnkDtwqJNphyAmZGVtKqcHcy+Aa3Glueqt
-         tr3wiZpyBbmitoY2w5XS6IH4tOwp1ZtzJiX5BnAOYsrxR/NrFvshz0XZG0hRxakJliEy
-         MLWg==
-X-Gm-Message-State: AOJu0YwWTrHsK6RJfN0gDipfrwdzM0osHyKLUbT5VxIyrjxMgM3ZOH5W
-        cMxXHr2UQ4Cqi4uaEi92muhT9YPDleDtp28VJfYo4oSa9TTXVR4/
-X-Google-Smtp-Source: AGHT+IEilDB2SWaF2YfLIJ5wnpnhZFHNJl9unsnwBv7BHZq2V2+NiDoG7LsGUJMOOgZULV9uQUbjcpAGKVo6jsKQVDU=
-X-Received: by 2002:a25:3210:0:b0:d93:97e8:97ac with SMTP id
- y16-20020a253210000000b00d9397e897acmr264008yby.38.1696512927631; Thu, 05 Oct
- 2023 06:35:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230921131201.157767-1-lma@semihalf.com> <20230922063410.23626-1-lma@semihalf.com>
- <CADmiTCTHn+XaNqkAZjLmaYUy+6bsb5chue97g3n0bKP7Lcf9_w@mail.gmail.com>
-In-Reply-To: <CADmiTCTHn+XaNqkAZjLmaYUy+6bsb5chue97g3n0bKP7Lcf9_w@mail.gmail.com>
-From:   Lukasz Majczak <lma@semihalf.com>
-Date:   Thu, 5 Oct 2023 15:35:16 +0200
-Message-ID: <CAFJ_xboEqNFyG6+F0EkXq32X0Y8pPEWYFw9+7JJye42SrrOkWw@mail.gmail.com>
-Subject: Re: [PATCH v3] drm/dp_mst: Fix NULL deref in get_mst_branch_device_by_guid_helper()
-To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Cc:     =?UTF-8?Q?Rados=C5=82aw_Biernacki?= <rad@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>, upstream@semihalf.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+        Thu, 5 Oct 2023 10:34:39 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D16527A;
+        Thu,  5 Oct 2023 06:52:38 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395DQhjE031548;
+        Thu, 5 Oct 2023 13:41:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=R/QTM1fzVv6cm+wswFVzDr/m9+FgX0LQuY8/jeKmhko=;
+ b=cuCVAU6kZBORw4kNzQM8QhKATzaQYQx9sq9VyXtyAcbUjSJlu2csv9UKwRsMdWToW/kZ
+ 0C0RhlLfSx4clzeAM9kri0/U0zoNlTG8RblVDlrVkUr8EElTobyZsMXrLACmhgSCyeNj
+ mwc7IV+kj/e+X5u63Eo6l2E8JPclAG8R1FP1Mai2lrKjyos0n24UwIr+NGmFo5l/dmCQ
+ dGyPtibDLCjR17Zb0bp+IBJPg1LpSIU+tL/CMmv8D5xPmvorNRdNYuKpBMJSXVYh1+lJ
+ yx7r7YcPGH6+f/EQTT0ey3+nrJjVS9Dgplu6YZos1rGIOPl3jrrD8md/aNUQm4O8WJSh nw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3thq9k02u9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 13:41:49 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 395DR6nD000477;
+        Thu, 5 Oct 2023 13:36:47 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3thq9jywwj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 13:36:47 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 395BKrDl017644;
+        Thu, 5 Oct 2023 13:35:43 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tey0nuqkf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 13:35:43 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 395DZgnd64356738
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Oct 2023 13:35:42 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F204A58051;
+        Thu,  5 Oct 2023 13:35:41 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4CBCF5805C;
+        Thu,  5 Oct 2023 13:35:41 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.90.188])
+        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  5 Oct 2023 13:35:41 +0000 (GMT)
+Message-ID: <97be76d94fdacf369a324b6122d5f5bc19a3838c.camel@linux.ibm.com>
+Subject: Re: [syzbot] [integrity] [overlayfs] possible deadlock in
+ mnt_want_write (2)
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     hdanton@sina.com, linux-fsdevel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, mszeredi@redhat.com,
+        syzbot@syzkalhler.appspotmail.com, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Date:   Thu, 05 Oct 2023 09:35:40 -0400
+In-Reply-To: <CAOQ4uxgfJ4owqzh99t65MyT5A99BbwkLQ-sHumCUWyqSw-Rd5g@mail.gmail.com>
+References: <CAOQ4uxhbNyDzf0_fFh1Yy5Kz2Coz=gTrfOtsmteE0=ncibBnpw@mail.gmail.com>
+         <0000000000001081fc0606f52ed9@google.com>
+         <CAOQ4uxjw_XztGxrhR9LWtz_SszdURkM+Add2q8A9BAt0z901kA@mail.gmail.com>
+         <25f6950a67be079e32ad5b4139b1e89e367a91ba.camel@linux.ibm.com>
+         <CAOQ4uxgfJ4owqzh99t65MyT5A99BbwkLQ-sHumCUWyqSw-Rd5g@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: SRYz0AUECWsolMMPvJe_2XVNQ0vgpjPQ
+X-Proofpoint-ORIG-GUID: 2cgjxh7a4g6A1IxuXODZIVABZC_A6upp
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-05_08,2023-10-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=642 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310050107
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,89 +102,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wt., 26 wrz 2023 o 16:01 Rados=C5=82aw Biernacki <rad@chromium.org> napisa=
-=C5=82(a):
->
-> On Fri, Sep 22, 2023 at 8:34=E2=80=AFAM Lukasz Majczak <lma@semihalf.com>=
- wrote:
+On Thu, 2023-10-05 at 16:22 +0300, Amir Goldstein wrote:
+> On Thu, Oct 5, 2023 at 4:14 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
 > >
-> > As drm_dp_get_mst_branch_device_by_guid() is called from
-> > drm_dp_get_mst_branch_device_by_guid(), mstb parameter has to be checke=
-d,
-> > otherwise NULL dereference may occur in the call to
-> > the memcpy() and cause following:
+> > On Thu, 2023-10-05 at 13:26 +0300, Amir Goldstein wrote:
+> > > On Thu, Oct 5, 2023 at 12:59 PM syzbot
+> > > <syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > > syzbot tried to test the proposed patch but the build/boot failed:
+> > >
+> > > My mistake. Please try again:
+> > >
+> > > #syz test: https://github.com/amir73il/linux ima-ovl-fix
 > >
-> > [12579.365869] BUG: kernel NULL pointer dereference, address: 000000000=
-0000049
-> > [12579.365878] #PF: supervisor read access in kernel mode
-> > [12579.365880] #PF: error_code(0x0000) - not-present page
-> > [12579.365882] PGD 0 P4D 0
-> > [12579.365887] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> > ...
-> > [12579.365895] Workqueue: events_long drm_dp_mst_up_req_work
-> > [12579.365899] RIP: 0010:memcmp+0xb/0x29
-> > [12579.365921] Call Trace:
-> > [12579.365927] get_mst_branch_device_by_guid_helper+0x22/0x64
-> > [12579.365930] drm_dp_mst_up_req_work+0x137/0x416
-> > [12579.365933] process_one_work+0x1d0/0x419
-> > [12579.365935] worker_thread+0x11a/0x289
-> > [12579.365938] kthread+0x13e/0x14f
-> > [12579.365941] ? process_one_work+0x419/0x419
-> > [12579.365943] ? kthread_blkcg+0x31/0x31
-> > [12579.365946] ret_from_fork+0x1f/0x30
+> > Thanks, Amir.   "mutext_init(&iint->mutex); moved, but the status
+> > initialization lines 161-166 were dropped.   They're needed by IMA-
+> > appraisal for signature verification.
 > >
-> > As get_mst_branch_device_by_guid_helper() is recursive, moving conditio=
-n
-> > to the first line allow to remove a similar one for step over of NULL e=
-lements
-> > inside a loop.
+> >         iint->ima_file_status = INTEGRITY_UNKNOWN;
+> >         iint->ima_mmap_status = INTEGRITY_UNKNOWN;
+> >         iint->ima_bprm_status = INTEGRITY_UNKNOWN;
+> >         iint->ima_read_status = INTEGRITY_UNKNOWN;
+> >         iint->ima_creds_status = INTEGRITY_UNKNOWN;
+> >         iint->evm_status = INTEGRITY_UNKNOWN;
 > >
-> > Fixes: 5e93b8208d3c ("drm/dp/mst: move GUID storage from mgr, port to o=
-nly mst branch")
-> > Cc: <stable@vger.kernel.org> # 4.14+
-> > Signed-off-by: Lukasz Majczak <lma@semihalf.com>
-> > ---
-> >
-> > v2->v3:
-> > * Fixed patch description.
-> >
-> >  drivers/gpu/drm/display/drm_dp_mst_topology.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/display/drm_dp_mst_topology.c b/drivers/gp=
-u/drm/display/drm_dp_mst_topology.c
-> > index ed96cfcfa304..8c929ef72c72 100644
-> > --- a/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> > +++ b/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> > @@ -2574,14 +2574,14 @@ static struct drm_dp_mst_branch *get_mst_branch=
-_device_by_guid_helper(
-> >         struct drm_dp_mst_branch *found_mstb;
-> >         struct drm_dp_mst_port *port;
-> >
-> > +       if (!mstb)
-> > +               return NULL;
-> > +
-> >         if (memcmp(mstb->guid, guid, 16) =3D=3D 0)
-> >                 return mstb;
-> >
-> >
-> >         list_for_each_entry(port, &mstb->ports, next) {
-> > -               if (!port->mstb)
-> > -                       continue;
-> > -
-> >                 found_mstb =3D get_mst_branch_device_by_guid_helper(por=
-t->mstb, guid);
-> >
-> >                 if (found_mstb)
-> > --
-> > 2.42.0.515.g380fc7ccd1-goog
-> >
->
-> Reviewed-by: Radoslaw Biernacki <rad@chromium.org>
+> 
+> They are dropped from iint_init_once()
+> They are not needed there because there are now set
+> in every iint allocation in iint_init_always()
+> instead of being set in iint_free()
 
-Hi,
+I was only looking at the patch and noticed the removal.  Thanks, this
+looks good.
 
-Is there anything more I should do with this patch?
+Mimi
 
-Thanks,
-Lukasz
