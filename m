@@ -2,161 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F17747BA532
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DC87BA56D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241514AbjJEQO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
+        id S241839AbjJEQQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236149AbjJEQMZ (ORCPT
+        with ESMTP id S241112AbjJEQNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:12:25 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2962B25721
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:38:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1696516709; x=1728052709;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=tJbtQ1MlE1W9rRSJGxdgP3sxAM2uACs3ZmeI+EII/UM=;
-  b=M6uDePpudlR3c2ET0G4xmaeiKalq3ZKk+KWWBss1+Ko/Er5cbzWc6eyH
-   W7POtcX2p6uSiYBjFVn09XHxTHYouzJD0NQnAd4CplciWIelKnn5zDVyj
-   Qd2QcUaZK9a23x9M1k/14iuIr61xtO98poqNlWGztAWQGuEIDlMjYZrol
-   /S9/aUmgv2wTIDVAKd24xZ8i8fV+44T46/svh2aopK5LviCYXcvwxO3u8
-   sVlpHGU6Mk115w4fKzG7VqnaBs4pPbamUB4Zw7QOjyF+cj2LGk0yUSiWj
-   INUfmTw9NOpRCWpo8OYw2HC1ZFbFAf1sCtVnLSpgRPLt8Z4ctXq5Eqigv
-   Q==;
-X-CSE-ConnectionGUID: pNqRUMmsQ46P00UoeOunFg==
-X-CSE-MsgGUID: z1nv3CqUSoywBv3Qj0wD/Q==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
-   d="scan'208";a="8182740"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Oct 2023 02:30:21 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 5 Oct 2023 02:30:12 -0700
-Received: from che-lt-i67131.microchip.com (10.10.85.11) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Thu, 5 Oct 2023 02:30:05 -0700
-From:   Manikandan Muralidharan <manikandan.m@microchip.com>
-To:     <sam@ravnborg.org>, <bbrezillon@kernel.org>, <airlied@gmail.com>,
-        <daniel@ffwll.ch>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <lee@kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <Hari.PrasathGE@microchip.com>,
-        <Balamanikandan.Gunasundar@microchip.com>,
-        <Durai.ManickamKR@microchip.com>, <Nayabbasha.Sayed@microchip.com>,
-        <Dharma.B@microchip.com>, <Varshini.Rajendran@microchip.com>,
-        <Balakrishnan.S@microchip.com>,
-        Manikandan Muralidharan <manikandan.m@microchip.com>
-Subject: [PATCH v7 1/7] drm: atmel-hlcdc: add flag and driver ops to differentiate XLCDC and HLCDC IP
-Date:   Thu, 5 Oct 2023 14:59:48 +0530
-Message-ID: <20231005092954.881059-2-manikandan.m@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231005092954.881059-1-manikandan.m@microchip.com>
-References: <20231005092954.881059-1-manikandan.m@microchip.com>
+        Thu, 5 Oct 2023 12:13:40 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CADAD17;
+        Thu,  5 Oct 2023 02:36:16 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7b07c3eaf9bso291393241.3;
+        Thu, 05 Oct 2023 02:36:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696498575; x=1697103375; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=miaHJCTsklS6Zbf74LdxRTHsnukEGfuauknHlldmnMc=;
+        b=N4af9kbi6Y+6dW9LsItj5fS5+DyE6zDpoaXlRE63hcUqzTAjlFVy++6BlgMNLc7eoc
+         9aEa02NdBFigDUFax26K4zjqVc1R9QevHORZNCEceZgUNfBD1PoKFZXlmUsuKvcLJB2z
+         Wzq25anMl7eXz6LpGSIH0XC1N/yUmNm0EjsFMP+KHLm7UWHZRh9zSI0p3N9zEQZ5T2pR
+         jH1t6eglUTla2oo0U+yFQhjcilqGxdoULd5rEZUjwZ4FX+CfYcsYszoomCu0204u545P
+         Qb/9Kwa9NQ6OpKIeEhQ8uk5o6pzGL3Q4OAVhpR88DQEJOju8mPcHgkmd00fDwrjBGC1S
+         gpEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696498575; x=1697103375;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=miaHJCTsklS6Zbf74LdxRTHsnukEGfuauknHlldmnMc=;
+        b=QFvdY/FyxkbAHDFTe1d61HEPBpvKjezRu16VHZ1FP1fyDKMAWt83XyBW9xdUAkDVMj
+         ucMPRNA+c3b6g2G37Yd6WOGa0fnzrs80dP1WOPrxzb+dZ7x7zPDDWSa6yIx9joVLJ/QK
+         i4g00/bNMTce7wD4UbcH068mTjj+CppEbfVleN9x3P+H+zshm9b2EOLRSDvOZhrVvbKF
+         xMNcM3ZBckOF8jrS6J4qMLGqjOA298urN61hUZ5d98tb7i2iHI6Vrqb6xbh7pIw3R5q7
+         KiNcTC7MCaYHwdwGx4HQZ0OOsTYld6EKj/F/nd4CtRIlq/nofxCN7OUVGiCNTj5krigO
+         Yerw==
+X-Gm-Message-State: AOJu0YyLqGrprqjZuIxtUDycFcIjMJ0drgO0UZTB6ivbyzVEi4eo+C3i
+        IgxweggwkHEHPOg5r2ppndtAk2CBYx7YCtTLmSw=
+X-Google-Smtp-Source: AGHT+IHEmB4hPkLYLPKiUKYdFA8EWWzm/1bKRsSKow5Ph7YiXuo2ENvDu/sgoJxWbdjYFoZ5NkuSiVgyiunS+gZFpDQ=
+X-Received: by 2002:a67:f4c9:0:b0:44d:3aba:b03d with SMTP id
+ s9-20020a67f4c9000000b0044d3abab03dmr4641256vsn.17.1696498575187; Thu, 05 Oct
+ 2023 02:36:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <00000000000067d24205c4d0e599@google.com> <000000000000accfd30606e6bcd0@google.com>
+In-Reply-To: <000000000000accfd30606e6bcd0@google.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 5 Oct 2023 12:36:04 +0300
+Message-ID: <CAOQ4uxhbNyDzf0_fFh1Yy5Kz2Coz=gTrfOtsmteE0=ncibBnpw@mail.gmail.com>
+Subject: Re: [syzbot] [integrity] [overlayfs] possible deadlock in
+ mnt_want_write (2)
+To:     syzbot <syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com>
+Cc:     hdanton@sina.com, linux-fsdevel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, mszeredi@redhat.com,
+        syzbot@syzkalhler.appspotmail.com, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, zohar@us.ibm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add is_xlcdc flag and LCD IP specific ops in driver data to differentiate
-XLCDC and HLCDC code within the atmel-hlcdc driver files.
+On Wed, Oct 4, 2023 at 7:45=E2=80=AFPM syzbot
+<syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com> wrote:
+>
+> syzbot has bisected this issue to:
+>
+> commit 708fa01597fa002599756bf56a96d0de1677375c
+> Author: Miklos Szeredi <mszeredi@redhat.com>
+> Date:   Mon Apr 12 10:00:37 2021 +0000
+>
+>     ovl: allow upperdir inside lowerdir
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17ad11b268=
+0000
+> start commit:   3aba70aed91f Merge tag 'gpio-fixes-for-v6.6-rc3' of git:/=
+/..
+> git tree:       upstream
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D146d11b268=
+0000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D106d11b268000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3De4ca82a1bedd3=
+7e4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Db42fe626038981f=
+b7bfa
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1304fba6680=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D13cec0dc68000=
+0
+>
+> Reported-by: syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com
+> Fixes: 708fa01597fa ("ovl: allow upperdir inside lowerdir")
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
 
-Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
----
- drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h | 37 ++++++++++++++++++++
- 1 file changed, 37 insertions(+)
-
-diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-index 5b5c774e0edf..d5e01ff8c7f9 100644
---- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-+++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-@@ -177,6 +177,9 @@ struct atmel_hlcdc_layer_cfg_layout {
- 	int csc;
- };
- 
-+struct atmel_hlcdc_plane_state;
-+struct atmel_hlcdc_dc;
-+
- /**
-  * Atmel HLCDC DMA descriptor structure
-  *
-@@ -288,6 +291,36 @@ atmel_hlcdc_layer_to_plane(struct atmel_hlcdc_layer *layer)
- 	return container_of(layer, struct atmel_hlcdc_plane, layer);
- }
- 
-+/**
-+ * struct atmel_lcdc_dc_ops - describes atmel_lcdc ops group
-+ * to differentiate HLCDC and XLCDC IP code support.
-+ * @plane_setup_scaler: update the vertical and horizontal scaling factors
-+ * @update_lcdc_buffers: update the each LCDC layers DMA registers.
-+ * @lcdc_atomic_disable: disable LCDC interrupts and layers
-+ * @lcdc_update_general_settings: update each LCDC layers general
-+ * confiugration register.
-+ * @lcdc_atomic_update: enable the LCDC layers and interrupts.
-+ * @lcdc_csc_init: update the color space conversion co-efficient of
-+ * High-end overlay register.
-+ * @lcdc_irq_dbg: to raise alert incase of interrupt overrun in any LCDC layer.
-+ */
-+struct atmel_lcdc_dc_ops {
-+	void (*plane_setup_scaler)(struct atmel_hlcdc_plane *plane,
-+				   struct atmel_hlcdc_plane_state *state);
-+	void (*update_lcdc_buffers)(struct atmel_hlcdc_plane *plane,
-+				    struct atmel_hlcdc_plane_state *state,
-+				    u32 sr, int i);
-+	void (*lcdc_atomic_disable)(struct atmel_hlcdc_plane *plane);
-+	void (*lcdc_update_general_settings)(struct atmel_hlcdc_plane *plane,
-+					     struct atmel_hlcdc_plane_state *state);
-+	void (*lcdc_atomic_update)(struct atmel_hlcdc_plane *plane,
-+				   struct atmel_hlcdc_dc *dc);
-+	void (*lcdc_csc_init)(struct atmel_hlcdc_plane *plane,
-+			      const struct atmel_hlcdc_layer_desc *desc);
-+	void (*lcdc_irq_dbg)(struct atmel_hlcdc_plane *plane,
-+			     const struct atmel_hlcdc_layer_desc *desc);
-+};
-+
- /**
-  * Atmel HLCDC Display Controller description structure.
-  *
-@@ -304,8 +337,10 @@ atmel_hlcdc_layer_to_plane(struct atmel_hlcdc_layer *layer)
-  * @conflicting_output_formats: true if RGBXXX output formats conflict with
-  *				each other.
-  * @fixed_clksrc: true if clock source is fixed
-+ * @is_xlcdc: true if XLCDC IP is supported
-  * @layers: a layer description table describing available layers
-  * @nlayers: layer description table size
-+ * @ops: atmel lcdc dc ops
-  */
- struct atmel_hlcdc_dc_desc {
- 	int min_width;
-@@ -317,8 +352,10 @@ struct atmel_hlcdc_dc_desc {
- 	int max_hpw;
- 	bool conflicting_output_formats;
- 	bool fixed_clksrc;
-+	bool is_xlcdc;
- 	const struct atmel_hlcdc_layer_desc *layers;
- 	int nlayers;
-+	const struct atmel_lcdc_dc_ops *ops;
- };
- 
- /**
--- 
-2.25.1
-
+#syz test: https://github.com/amir73il/linux ima-ovl-fix
