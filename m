@@ -2,201 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A767BA74B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899687BA707
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjJERHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46538 "EHLO
+        id S230170AbjJEQqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbjJERGl (ORCPT
+        with ESMTP id S232823AbjJEQqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:06:41 -0400
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BA0207B;
-        Thu,  5 Oct 2023 09:39:36 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-99bdcade7fbso211219866b.1;
-        Thu, 05 Oct 2023 09:39:36 -0700 (PDT)
+        Thu, 5 Oct 2023 12:46:00 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E451BE2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:40:09 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-4528cba7892so592723137.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696524009; x=1697128809; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2thL5ZLQW73WF1UYkoIC5cbGYf0wYlLtd79y60/Ixhs=;
+        b=e4yZiz67HhuDRw1vnyA4bGdG6v4KhgCFoVasy9wATe8d1VF6kFqMX9mHMpqDOW5Z2g
+         hpV6NKOyOlSXxKwvLVdgFe2w7HSuqAouj1/5Az9f/zth18W5ImF/y6ShYFLp6BOsPNB6
+         qQgKMVFzegPKoN8maMOPQb38dfSpzVx5kcOJ7/WubMxth7WqZSRl3AXBWzAxpAl0JreE
+         Yh7tkjbrkYqlcRoRqFlIVSunEmFsSYZTHAp7xQBAn2qF7SccE81h/eD0NyvTWSx3WeF5
+         lXeWwNp1Q9CAisI7IjT4x6pAa4UohKGggk/4EgZ/+yUBi8FIYim+G5asijGD8tL5byB1
+         ZyiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696523975; x=1697128775;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696524009; x=1697128809;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aeCkyhaoVtwv2wfDF/uieHTmRe6erji0RQ2H7V1G/pc=;
-        b=CLw9XcKUTcoR9FNDESw3k0ELvfHePCiAn9UfPvIdrswW7yHR321+2KywQNGU6uEAob
-         Rb4BeWafDXt2gR2ruaF+KiT0FuxHBSjO7R/TNIeKx5GaKwAKWORgd4JbmImr2bkxCef8
-         S2WGjkl1xXomCnysijRtoPiXupaH5D6/YkoDP2oqZWSeGdb19AFPt6T5ylzEyl0RoWKb
-         P83cElJkGVFbhrE9mNhEVF3WF+ZItEvyesmvaLEK0aYqTBUeUVRCJ5iqAS726kJOGLBn
-         0WpSu7rkyWFVPFxAOhyR043PtNFf9eSH8n2I0yl2UfozBfgBhNQdGYxA4mobJh/Hg8+9
-         ytDQ==
-X-Gm-Message-State: AOJu0Yzh7735sb/9Y4uNpdwlqVtbhgW5a0mcvSdM8p6knfJLodH7B+11
-        A59KqAkcI8865ikCUF2inis=
-X-Google-Smtp-Source: AGHT+IFXpAGpAAJi5gJLJd/ylndngGVZYM9m0IP6Ma0EXz8nnBppGgbm8KmKKvk2XKyTTj6Y5Uz/ww==
-X-Received: by 2002:a17:906:cc2:b0:9ae:5db5:149 with SMTP id l2-20020a1709060cc200b009ae5db50149mr5073326ejh.35.1696523974869;
-        Thu, 05 Oct 2023 09:39:34 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-021.fbsv.net. [2a03:2880:31ff:15::face:b00c])
-        by smtp.gmail.com with ESMTPSA id w13-20020a170906480d00b0099b76c3041csm1447289ejq.7.2023.10.05.09.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 09:39:34 -0700 (PDT)
-From:   Breno Leitao <leitao@debian.org>
-To:     mike.kravetz@oracle.com, muchun.song@linux.dev,
-        akpm@linux-foundation.org, Shuah Khan <shuah@kernel.org>
-Cc:     linux-mm@kvack.org, riel@surriel.com,
-        linux-kernel@vger.kernel.org (open list),
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
-Subject: [PATCH v2 2/2] selftests/mm: Add a new test for madv and hugetlb
-Date:   Thu,  5 Oct 2023 09:39:22 -0700
-Message-Id: <20231005163922.87568-3-leitao@debian.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231005163922.87568-1-leitao@debian.org>
-References: <20231005163922.87568-1-leitao@debian.org>
+        bh=2thL5ZLQW73WF1UYkoIC5cbGYf0wYlLtd79y60/Ixhs=;
+        b=D9cAOvz+Q2XrWOINbszPA1VWQs504nT3SYgCBRQhDJ/jVXN7DUPMSUFTk4ZiVP8JIO
+         stJ1BsTPXuD3Nuc+6fj8INIF3OXetpHnvc4754C37vz9Aot+jfi5YE7lrqV79VRdtrKc
+         1Qj/mLgQANYCb+kk/CxPD5ZFCC5d0xf3vKce1J8ZDsNXqlM8IcK0s23VA1OPGxH6dGzE
+         nVxrZNczDGrwxobl1N5taaz/RsQnLVSZj+2TIHcKc/MWXK2HfmvN2X+vAAGh2KB52MkV
+         1UBle6qZQyHFPYlv6DgMO9EBaxYGYtol95E6MEuwFX3Z7QksNmCEl3hdQTFla8tn53Jr
+         n4Bw==
+X-Gm-Message-State: AOJu0YyzqiWxGXglF+V1srOF/0lsRW354IPjmPrL83Vuv1qdepMPpLUx
+        cujK5Sv/iNRM2IsGm4+xHis09A4GsgY54O0X8mfXPg==
+X-Google-Smtp-Source: AGHT+IGp+XVpQcjXnNjDev251fg85e0y40eaefH6LoORjDhsnCDOKiusiRkHPjF3o1dfGTYNLNGXfSFV1bgrV6Sbzd8=
+X-Received: by 2002:a67:ea4f:0:b0:44d:626b:94da with SMTP id
+ r15-20020a67ea4f000000b0044d626b94damr4990497vso.32.1696524008739; Thu, 05
+ Oct 2023 09:40:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231004175217.404851126@linuxfoundation.org>
+In-Reply-To: <20231004175217.404851126@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 5 Oct 2023 22:09:57 +0530
+Message-ID: <CA+G9fYsqbZhSQnEi-qSc7n+4d7nPap8HWcdbZGWLfo3mTH-L7A@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/259] 6.1.56-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-nfs@vger.kernel.org
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, Olga Kornievskaia <kolga@netapp.com>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        LTP List <ltp@lists.linux.it>, Petr Vorel <pvorel@suse.cz>,
+        Richard Palethorpe <rpalethorpe@suse.com>,
+        Eryu Guan <eguan@redhat.com>, chrubis <chrubis@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a selftest that exercises the race between page faults and
-madvise(MADV_DONTNEED) in the same huge page. Do it by running two
-threads that touches the huge page and madvise(MADV_DONTNEED) at the same
-time.
+On Wed, 4 Oct 2023 at 23:41, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.56 release.
+> There are 259 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.1.56-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-In case of a SIGBUS coming at pagefault, the test should fail, since we
-hit the bug.
+Results from Linaro=E2=80=99s test farm.
+Regressions on arm64 bcm2711-rpi-4-b device running LTP dio tests on
+NFS mounted rootfs.
+and LTP hugetlb hugemmap11 test case failed on x86 and arm64 bcm2711-rpi-4-=
+b.
 
-The test doesn't have a signal handler, and if it fails, it fails like
-the following
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-  ----------------------------------
-  running ./hugetlb_fault_after_madv
-  ----------------------------------
-  ./run_vmtests.sh: line 186: 595563 Bus error    (core dumped) "$@"
-  [FAIL]
+LTP hugetlb tests failed log
+  tst_hugepage.c:83: TINFO: 1 hugepage(s) reserved
+  tst_test.c:1558: TINFO: Timeout per run is 0h 05m 00s
+  hugemmap11.c:47: TFAIL: Memory mismatch after Direct-IO write
 
-This selftest goes together with the fix of the bug[1] itself.
+LTP dio tests failed log
+  compare_file: char mismatch: infile offset 4096: 0x01 .   outfile
+offset 4096: 0x00 .
+  diotest01    1  TFAIL  :  diotest1.c:158: file compare failed for
+infile and outfile
 
-[1] https://lore.kernel.org/all/20231001005659.2185316-1-riel@surriel.com/#r
+## Build
+* kernel: 6.1.56-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.1.y
+* git commit: 0353a7bfd2b60c5e42c8651eb3fa4cc48159db5f
+* git describe: v6.1.55-260-g0353a7bfd2b6
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.5=
+5-260-g0353a7bfd2b6
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- tools/testing/selftests/mm/Makefile           |  1 +
- .../selftests/mm/hugetlb_fault_after_madv.c   | 73 +++++++++++++++++++
- tools/testing/selftests/mm/run_vmtests.sh     |  4 +
- 3 files changed, 78 insertions(+)
- create mode 100644 tools/testing/selftests/mm/hugetlb_fault_after_madv.c
+## Test Regressions (compared to v6.1.55)
+* x86_64-clang, ltp-hugetlb
+* bcm2711-rpi-4-b, ltp-hugetlb
+* bcm2711-rpi-4-b-clang, ltp-hugetlb
+* bcm2711-rpi-4-b-64k_page_size, ltp-hugetlb
+  - hugemmap11
 
-diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
-index 6a9fc5693145..e71ec9910c62 100644
---- a/tools/testing/selftests/mm/Makefile
-+++ b/tools/testing/selftests/mm/Makefile
-@@ -68,6 +68,7 @@ TEST_GEN_FILES += split_huge_page_test
- TEST_GEN_FILES += ksm_tests
- TEST_GEN_FILES += ksm_functional_tests
- TEST_GEN_FILES += mdwe_test
-+TEST_GEN_FILES += hugetlb_fault_after_madv
- 
- ifneq ($(ARCH),arm64)
- TEST_GEN_PROGS += soft-dirty
-diff --git a/tools/testing/selftests/mm/hugetlb_fault_after_madv.c b/tools/testing/selftests/mm/hugetlb_fault_after_madv.c
-new file mode 100644
-index 000000000000..73b81c632366
---- /dev/null
-+++ b/tools/testing/selftests/mm/hugetlb_fault_after_madv.c
-@@ -0,0 +1,73 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <pthread.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+#include "vm_util.h"
-+#include "../kselftest.h"
-+
-+#define MMAP_SIZE (1 << 21)
-+#define INLOOP_ITER 100
-+
-+char *huge_ptr;
-+
-+/* Touch the memory while it is being madvised() */
-+void *touch(void *unused)
-+{
-+	char *ptr = (char *)huge_ptr;
-+
-+	for (int i = 0; i < INLOOP_ITER; i++)
-+		ptr[0] = '.';
-+
-+	return NULL;
-+}
-+
-+void *madv(void *unused)
-+{
-+	usleep(rand() % 10);
-+
-+	for (int i = 0; i < INLOOP_ITER; i++)
-+		madvise(huge_ptr, MMAP_SIZE, MADV_DONTNEED);
-+
-+	return NULL;
-+}
-+
-+int main(void)
-+{
-+	unsigned long free_hugepages;
-+	pthread_t thread1, thread2;
-+	/*
-+	 * On kernel 6.4, we are able to reproduce the problem with ~1000
-+	 * interactions
-+	 */
-+	int max = 10000;
-+
-+	srand(getpid());
-+
-+	free_hugepages = get_free_hugepages();
-+	if (free_hugepages != 1) {
-+		ksft_exit_skip("This test needs one and only one page to execute. Got %lu\n",
-+			       free_hugepages);
-+	}
-+
-+	while (max--) {
-+		huge_ptr = mmap(NULL, MMAP_SIZE, PROT_READ | PROT_WRITE,
-+				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-+				-1, 0);
-+
-+		if ((unsigned long)huge_ptr == -1)
-+			ksft_exit_skip("Failed to allocated huge page\n");
-+
-+		pthread_create(&thread1, NULL, madv, NULL);
-+		pthread_create(&thread2, NULL, touch, NULL);
-+
-+		pthread_join(thread1, NULL);
-+		pthread_join(thread2, NULL);
-+		munmap(huge_ptr, MMAP_SIZE);
-+	}
-+
-+	return KSFT_PASS;
-+}
-diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-index 3e2bc818d566..9f53f7318a38 100755
---- a/tools/testing/selftests/mm/run_vmtests.sh
-+++ b/tools/testing/selftests/mm/run_vmtests.sh
-@@ -221,6 +221,10 @@ CATEGORY="hugetlb" run_test ./hugepage-mremap
- CATEGORY="hugetlb" run_test ./hugepage-vmemmap
- CATEGORY="hugetlb" run_test ./hugetlb-madvise
- 
-+# For this test, we need one and just one huge page
-+echo 1 > /proc/sys/vm/nr_hugepages
-+CATEGORY="hugetlb" run_test ./hugetlb_fault_after_madv
-+
- if test_selected "hugetlb"; then
- 	echo "NOTE: These hugetlb tests provide minimal coverage.  Use"
- 	echo "      https://github.com/libhugetlbfs/libhugetlbfs.git for"
--- 
-2.34.1
+Test log:
+--------
+  tst_hugepage.c:83: TINFO: 1 hugepage(s) reserved
+  tst_test.c:1558: TINFO: Timeout per run is 0h 05m 00s
+  hugemmap11.c:47: TFAIL: Memory mismatch after Direct-IO write
 
+Links:
+  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6=
+.1.55-260-g0353a7bfd2b6/testrun/20259639/suite/ltp-hugetlb/test/hugemmap11/=
+log
+  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6=
+.1.55-260-g0353a7bfd2b6/testrun/20260457/suite/ltp-hugetlb/test/hugemmap11/=
+history/
+
+* bcm2711-rpi-4-b, ltp-dio
+* bcm2711-rpi-4-b-clang, ltp-dio
+* bcm2711-rpi-4-b-64k_page_size, ltp-dio
+  - dio01
+  - dio02
+  - dio03
+  - dio05
+  - dio06
+  - dio07
+  - dio08
+  - dio09
+  - dio11
+
+Test log:
+--------
+  compare_file: char mismatch: infile offset 4096: 0x01 .   outfile
+offset 4096: 0x00 .
+  diotest01    1  TFAIL  :  diotest1.c:158: file compare failed for
+infile and outfile
+  bufcmp: offset 0: Expected: 0x1, got 0x0
+  bufcmp: offset 0: Expected: 0x1, got 0x0
+  diotest02    1  TPASS  :  Read with Direct IO, Write without
+  diotest02    2  TFAIL  :  diotest2.c:119: read/write comparision failed
+  diotest02    3  TFAIL  :  diotest2.c:210: Write with Direct IO, Read with=
+out
+  diotest02    4  TFAIL  :  diotest2.c:119: read/write comparision failed
+  diotest02    5  TFAIL  :  diotest2.c:231: Read, Write with Direct IO
+  diotest02    0  TINFO  :  2/3 testblocks failed
+  bufcmp: offset 0: Expected: 0x1, got 0x0
+  diotest03    1  TPASS  :  Read with Direct IO, Write without
+  diotest03    2  TFAIL  :  diotest3.c:136: comparsion failed; child=3D0 of=
+fset=3D0
+  diotest03    3  TFAIL  :  diotest3.c:189: Write Direct-child 0 failed
+  bufcmp: offset 0: Expected: 0x1, got 0x0
+  diotest03    1  TPASS  :  Read with Direct IO, Write without
+  diotest03    2  TFAIL  :  diotest3.c:306: Write with Direct IO, Read with=
+out
+  diotest03    3  TFAIL  :  diotest3.c:136: comparsion failed; child=3D0 of=
+fset=3D0
+  diotest03    4  TFAIL  :  diotest3.c:210: RDWR Direct-child 0 failed
+  diotest03    1  TPASS  :  Read with Direct IO, Write without
+  diotest03    2  TFAIL  :  diotest3.c:306: Write with Direct IO, Read with=
+out
+  diotest03    3  TFAIL  :  diotest3.c:323: Read, Write with Direct IO
+  ...
+  diotest05    1  TPASS  :  Read with Direct IO, Write without
+  diotest05    2  TFAIL  :  diotest5.c:141: readv/writev comparision failed
+  diotest05    3  TFAIL  :  diotest5.c:250: Write with Direct IO, Read with=
+out
+  diotest05    4  TFAIL  :  diotest5.c:141: readv/writev comparision failed
+  diotest05    5  TFAIL  :  diotest5.c:271: Read, Write with Direct IO
+  diotest05    0  TINFO  :  2/3 testblocks failed
+
+Links:
+  - https://lkft.validation.linaro.org/scheduler/job/6842177#L1666
+  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6=
+.1.55-260-g0353a7bfd2b6/testrun/20260389/suite/ltp-dio/test/dio01/history/
+
+## Metric Regressions (compared to v6.1.55)
+
+## Test Fixes (compared to v6.1.55)
+
+## Metric Fixes (compared to v6.1.55)
+
+## Test result summary
+total: 121166, pass: 102582, fail: 2234, skip: 16177, xfail: 173
+
+## Build Summary
+* arc: 4 total, 4 passed, 0 failed
+* arm: 140 total, 140 passed, 0 failed
+* arm64: 49 total, 49 passed, 0 failed
+* i386: 33 total, 33 passed, 0 failed
+* mips: 24 total, 24 passed, 0 failed
+* parisc: 3 total, 3 passed, 0 failed
+* powerpc: 34 total, 34 passed, 0 failed
+* riscv: 12 total, 12 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sh: 11 total, 11 passed, 0 failed
+* sparc: 6 total, 6 passed, 0 failed
+* x86_64: 40 total, 40 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
