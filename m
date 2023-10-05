@@ -2,187 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDCD7BA878
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EACD87BA7D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbjJERwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
+        id S231234AbjJERWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231673AbjJERwq (ORCPT
+        with ESMTP id S231794AbjJERVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:52:46 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB195585
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:14:37 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so2050255a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 10:14:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1696526076; x=1697130876; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P3jOJ9y4m0qNvfGlNMEwsIKM+Ht48cxLl39lUm8RL8s=;
-        b=QaNSoEp2rACavVX9r/B2SzhumdWsNADP8WTOrOg5CZk7OYw2RrLagzPqBcRD4eHwNu
-         PxPO/R0I3AGFcsq7IIhMTEzmcL0K8/GMtc/gtr0g5XGa8djxCD8e75LSQTdUorg7p4Y2
-         yjpb9x496FdWlByeguJZP3mLbnAZFcQv3o+1D8G42/vMipfEfMi4WFyaeyd5dSKPMgDN
-         /6NSqOZZO5pp3fVwFidwbHpGYuc6eVUjv7e0aUaOhaUsJUBfiDTihD1PSXBWEoRkx8+b
-         bXUJRl1Ro092Cq5dWm7PBhIpwZBTWtzaR+P84n+h+EuiIkKIhCYkgP+LltdtAtwmLFnR
-         Qv1A==
+        Thu, 5 Oct 2023 13:21:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4BB5598
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696526087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vi28Kgz7Bt6IAfBqCstGNVn22DgimJfRwJGSiXFrw5Y=;
+        b=Y7ZbYbcre98zJOak0nDl73jgZgU627P6AlDv1DGsK7m9bz75zyRw+M7VWkwWZx1l2FdzX8
+        x7uSy8Vh7KjnatzZRtHM5nrcvJj3nfzS5uMpbndj9Tm1D3HWnhrBrK0KxLzmsudwcpn87y
+        cAIi4Hp6GuQlxiwfbVqQ7DPDrmTWXzE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-632-jFKQcAp8N_yqzfXExKAYHw-1; Thu, 05 Oct 2023 13:14:46 -0400
+X-MC-Unique: jFKQcAp8N_yqzfXExKAYHw-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-534695ab33eso1109180a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 10:14:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696526076; x=1697130876;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P3jOJ9y4m0qNvfGlNMEwsIKM+Ht48cxLl39lUm8RL8s=;
-        b=VcPXu/U20cZ1Lse66kc870+ivQxGJrc8PXS6T+aY01QMvIgnO+fOrRF8QuZpHkqUtp
-         W0Q1fapLEorknKT3DRdc0JBczkYPVkYKIaEaVEOH/CwFa9m1FDJ8eUR1cF/1cwb9yD7P
-         pMM4X9bCTEX9d+9AmWMz8uUpoa9e/YZnvFTomlxBjf4SkGy9QM+F77okqCWMEQrzVIwv
-         SpFEzhCUXQEjuuSnb3CjLyjB9PIlXcrAJfq4e+UOvehZQx364/Eg8JL3BIrLMriPzqof
-         FUdvr2ORIAl7L4b/iuDZKqwjVVoUl9IsklT1kkLoCWtUY+7swaz5WpI9ylUv9Vd0L60H
-         2gdg==
-X-Gm-Message-State: AOJu0Yxm3LjIwWX4k+7tHluR954A5cs6WGijKdc6CtB1aS9Vez0rQRTg
-        xQqya1eFWltGmv5wb5BE/UxbNrVs64L24vMszV6/
-X-Google-Smtp-Source: AGHT+IEBE+8FnUNXghQ8T604xAr48cXK+thAS03ZFKqTukQoCtv5xOF22IcYWMBbXkvPTSZam56COONlQgZuEoOqcv0=
-X-Received: by 2002:aa7:dc0f:0:b0:52c:b469:bafd with SMTP id
- b15-20020aa7dc0f000000b0052cb469bafdmr5143303edu.41.1696526076018; Thu, 05
- Oct 2023 10:14:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696526085; x=1697130885;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vi28Kgz7Bt6IAfBqCstGNVn22DgimJfRwJGSiXFrw5Y=;
+        b=RHyUSzFwVsVO7nYTTqF6RPXuMwF6dTLmq2+u8mjoy5+7mFOvY9cHSJoVCbkMNI0XUG
+         qX0saa1X6UlQHRp+iJMtNmJ3hclE0QDEM9IeMOIEiv7OjYOwWdKXHS2qPestWqHJZPlW
+         cJnzR0l1nNFIug5LS592ypczcJTqIuuuc8U1WEtxka8txn9oRNFl+rhQb/Fi8AMYp2rm
+         9RmpL5wHpuaXzASMwWNa08p8QmuPJ8aCN75bvJ01QkTC6/UEBGd2AV4333s/whYKAZTe
+         ugJE6+gGb6CbMSKqjpgrCngC8cC9ISQz0t85AAG24M5GeormtrXpl6IPYTlBYOSqQoA9
+         5kwg==
+X-Gm-Message-State: AOJu0YyyksiKld9F7X4ByNcvj2kulZAgtxFbh3zlSEwgrKpMi2gPjQ37
+        zIp8SAzJdtBQvQwgyHRc/kC3xxwEpSe9Xyvm59msSy+SQHZB4zCeSzMucpRzKz7QyDMRkTL7nWL
+        LRpLosrOvrC0HqGj/gK40eKj8
+X-Received: by 2002:a05:6402:2031:b0:52b:d169:b37a with SMTP id ay17-20020a056402203100b0052bd169b37amr5609272edb.28.1696526085553;
+        Thu, 05 Oct 2023 10:14:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFId0jiqDyGCMVktBZoQhEqwkRkqAWSARMsu87vlS5RLXeAUAMy7IzXrPw+Tx2bjAQ6BpjDiQ==
+X-Received: by 2002:a05:6402:2031:b0:52b:d169:b37a with SMTP id ay17-20020a056402203100b0052bd169b37amr5609258edb.28.1696526085273;
+        Thu, 05 Oct 2023 10:14:45 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
+        by smtp.googlemail.com with ESMTPSA id f17-20020a056402161100b00537666d307csm1351182edv.32.2023.10.05.10.14.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 10:14:44 -0700 (PDT)
+Message-ID: <b9a454c9-e8aa-02f0-29d5-57753d797cfb@redhat.com>
+Date:   Thu, 5 Oct 2023 19:14:43 +0200
 MIME-Version: 1.0
-References: <20230915154856.1896062-1-lb@semihalf.com> <CAJfuBxyFYyGCtr5i=P7N=1oX3J=jmdp1VLGLt+z1fAnuvGK2aA@mail.gmail.com>
- <CAK8ByeJBrPEQSgUc91LQO9Krzjh2pauhMTjEC82M8ozayE76Yg@mail.gmail.com>
- <CAJfuBxxmL-GtBgt=033F9UNeLCreFbJh3HrQQN2nYKwR_0uTbg@mail.gmail.com>
- <20231003155810.6df9de16@gandalf.local.home> <CAJfuBxyJyFbFEhRxrtxJ_RazaTODV6Gg64b1aiNEzt6_iE4=Og@mail.gmail.com>
- <CAK8ByeLNc9UbTNG4x=40AxYqjjRCsvBNtNFai0PMveM2X4XCow@mail.gmail.com>
-In-Reply-To: <CAK8ByeLNc9UbTNG4x=40AxYqjjRCsvBNtNFai0PMveM2X4XCow@mail.gmail.com>
-From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Date:   Thu, 5 Oct 2023 19:14:24 +0200
-Message-ID: <CAK8ByeKKYFP6yZsy3-7iU2O5sC5gEPkNeYn-=XN3sBDZEBNPmA@mail.gmail.com>
-Subject: Re: [PATCH v1] dynamic_debug: add support for logs destination
-To:     jim.cromie@gmail.com
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@google.com>,
-        Yaniv Tzoreff <yanivt@google.com>,
-        Benson Leung <bleung@google.com>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's
+ FsGsKernelGsBaseNonSerializing
+Content-Language: en-US
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20231004002038.907778-1-jmattson@google.com>
+ <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
+ <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com>
+ <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
+ <8c810f89-43f3-3742-60b8-1ba622321be8@redhat.com>
+ <CALMp9eR=URBsz1qmTcDU5ixncUTkNgxJahLbfyZXYr-2RkBPng@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <CALMp9eR=URBsz1qmTcDU5ixncUTkNgxJahLbfyZXYr-2RkBPng@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jim,
+On 10/5/23 19:06, Jim Mattson wrote:
+> On Thu, Oct 5, 2023 at 9:39 AM Paolo Bonzini<pbonzini@redhat.com>  wrote:
+> 
+>> I agree with Jim that it would be nice to have some bits from Intel, and
+>> some bits from AMD, that current processors always return as 1.  Future
+>> processors can change those to 0 as desired.
+> That's not quite what I meant.
+> 
+> I'm suggesting a leaf devoted to single bit negative features. If a
+> bit is set in hardware, it means that something has been taken away.
+> Hypervisors don't need to know exactly what was taken away. For this
+> leaf only, hypervisors will always pass through a non-zero bit, even
+> if they have know idea what it means.
 
-Just one more thought. If you review my patch then we could move into
-discussing the details.
+Understood, but I'm suggesting that these might even have the right 
+polarity: if a bit is set it means that something is there and might not 
+in the future, even if we don't know exactly what.  We can pass through 
+the bit, we can AND bits across the migration pool to define what to 
+pass to the guest, we can force-set the leaves to zero (feature 
+removed).  Either way, the point is to group future defeatures together.
 
-Thanks,
-Lukasz
+That said, these bits are only for documentation/debugging purposes 
+anyway.  So I like the idea because it would educate the architects 
+about this issue, more than because it is actually useful...
 
-=C5=9Br., 4 pa=C5=BA 2023 o 12:55 =C5=81ukasz Bartosik <lb@semihalf.com> na=
-pisa=C5=82(a):
->
-> wt., 3 pa=C5=BA 2023 o 22:54 <jim.cromie@gmail.com> napisa=C5=82(a):
-> >
-> > On Tue, Oct 3, 2023 at 1:57=E2=80=AFPM Steven Rostedt <rostedt@goodmis.=
-org> wrote:
-> > >
-> > > On Mon, 2 Oct 2023 14:49:20 -0600
-> > > jim.cromie@gmail.com wrote:
-> > >
-> > > > hi Lukasz,
-> > > >
-> > > > sorry my kernel-time has been in my own trees.
-> > > >
-> > > > What I dont understand is why +T is insufficient.
-> > > >
->
-> We would like to be able to separate debug logs from different
-> subsystem (e.g. thunderbolt and usbcore).
-> With +T it is not possible because all debug logs will land in the same b=
-ucket.
->
-> > > > IIUC, tracefs is intended for production use.
-> > > > thats why each event can be enabled / disabled
-> > > > - to select and minimize whats traced, and not impact the system
-> > > >
-> > > > and +T  can forward all pr_debugs to trace,
-> > > > (by 1-few trace events defined similarly to others)
-> > > > or very few, giving yet another selection mechanism
-> > > > to choose or eliminate specific pr-debugs and reduce traffic to
-> > > > interesting stuff.
-> > > >
-> > > > Once your debug is in the trace-buf,
-> > > > shouldnt user-space be deciding what to do with it ?
-> > > > a smart daemon could leverage tracefs to good effect.
-> > > >
->
-> Yes, a daemon could separate the debug logs but IMHO it is much
-> easier to separate logs by sending them directly from a given subsystem
-> to a separate trace instance. My proposal allows to configure different
-> trace instance as destination for each callsite.
->
-> > > > IMO the main value of +T is that it allows feeding existing pr_debu=
-gs
-> > > > into the place where other trace-data is already integrated and man=
-aged.
-> > > >
-> > > > At this point, I dont see any extra destination handling as prudent=
-.
-> > > >
-> > >
-> > >
-> > > I'm fine with either approach. I kind of like the creation of the ins=
-tance,
-> > > as that allows the user to keep this debug separate from other tracin=
-g
-> > > going on. We are starting to have multiple applications using the tra=
-cing
-> > > buffer (although most are using instances, which is why I'm trying to=
- make
-> > > them lighter weight with the eventfs code).
-> > >
-> > > -- Steve
-> > >
->
-> Steve, thanks for commenting from the trace perspective.
->
-> >
-> >
-> > Ok Im starting to grasp that multiple instances are good
-> > (and wondering how I didnt notice)
-> >
-> > What doesnt thrill me is the new _ddebug field, it enlarges the footpri=
-nt.
-> >
->
-> Yes it increases _ddebug structure by a pointer size.
->
-> > can you make it go away ?
->
-> I implemented my proposal with flexibility in mind so that if someone
-> would like to add
-> another destination in the future it should be easy to do. I
-> understand that adding a pointer
-> to the _ddebug structure increases footprint size that's why I also
-> added CONFIG_DYNAMIC_DEBUG_DST
-> kernel configuration option in order to enable/disable this functionality=
-.
->
-> > I have some thoughts ..
->
-> Please share your thoughts. I'm sure we can come to an agreement how
-> to incorporate both +T and my proposal.
->
-> Thanks,
-> Lukasz
+Paolo
+
