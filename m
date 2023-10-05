@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E67247BA194
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAE57BA0B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235344AbjJEOmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
+        id S235253AbjJEOlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237048AbjJEOh5 (ORCPT
+        with ESMTP id S236846AbjJEOhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:37:57 -0400
+        Thu, 5 Oct 2023 10:37:11 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07FF4788B;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6144788D;
         Thu,  5 Oct 2023 07:02:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE1E1C4167D;
-        Thu,  5 Oct 2023 08:03:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5A15C4166B;
+        Thu,  5 Oct 2023 08:04:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696492995;
-        bh=KPcsr8XqpbliBlKBPCcy5Hq2QiFVd1C2DY5JYyEzUlQ=;
+        s=korg; t=1696493052;
+        bh=bhrFsDpbzXSbshflQPJ73aE6VYGi2Pa16fWZ0LDK9cA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xqMrGdRZjefjkoDX+uLyUyc4vTxSFrrACPkJoZRaixGShQastWySJ0hAkcvZL6hIw
-         +CqrL1aIdDTQHDqaIa57Xpys7Mg2izH/rD1v4A/AbVoDb2byyxBJyTmtFSOx7pPYjt
-         KpH7ADhN9TDhDwDKQLQwwpFetiaXsBKph2/HaBCw=
-Date:   Thu, 5 Oct 2023 10:03:12 +0200
+        b=FBfUn83j17Q26OciLdhKLUQDfdTu7vc998nDCD56wiDoRzUXMkv7OgqEmf2h6uVbW
+         DZ7dxiWo1Dsgxjfn7ToPkm9PDfnS9FYaDtTJ8SNRri2Ox+RxFkgQqy/IM98hqfJjWT
+         KPWljbuB0/iLQSGu1vHCUENWxzuJEnAuVmbZqI2M=
+Date:   Thu, 5 Oct 2023 10:04:09 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Umang Jain <umang.jain@ideasonboard.com>
 Cc:     linux-staging@lists.linux.dev,
@@ -38,15 +38,15 @@ Cc:     linux-staging@lists.linux.dev,
         Dave Stevenson <dave.stevenson@raspberrypi.com>,
         Kieran Bingham <kieran.bingham@ideasonboard.com>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v12 3/6] staging: vc04_services: vchiq_arm: Add new bus
- type and device type
-Message-ID: <2023100525-deflator-procedure-8d96@gregkh>
+Subject: Re: [PATCH v12 5/6] staging: bcm2835-camera: Register bcm2835-camera
+ with vchiq_bus_type
+Message-ID: <2023100542-gluten-rally-5a96@gregkh>
 References: <20230923143200.268063-1-umang.jain@ideasonboard.com>
- <20230923143200.268063-4-umang.jain@ideasonboard.com>
+ <20230923143200.268063-6-umang.jain@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230923143200.268063-4-umang.jain@ideasonboard.com>
+In-Reply-To: <20230923143200.268063-6-umang.jain@ideasonboard.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -57,130 +57,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 08:01:57PM +0530, Umang Jain wrote:
-> The devices that the vchiq interface registers (bcm2835-audio,
-> bcm2835-camera) are implemented and exposed by the VC04 firmware.
-> The device tree describes the VC04 itself with the resources required
-> to communicate with it through a mailbox interface. However, the
-> vchiq interface registers these devices as platform devices. This
-> also means the specific drivers for these devices are getting
-> registered as platform drivers. This is not correct and a blatant
-> abuse of platform device/driver.
+On Sat, Sep 23, 2023 at 08:01:59PM +0530, Umang Jain wrote:
+> Register the bcm2835-camera with the vchiq_bus_type instead of using
+> platform driver/device.
 > 
-> Add a new bus type, vchiq_bus_type and device type (struct vchiq_device)
-> which will be used to migrate child devices that the vchiq interfaces
-> creates/registers from the platform device/driver.
+> Since we moved away bcm2835-camera from platform driver/device,
+> we have to set the DMA mask explicitly. Set the DMA mask at probe
+> time.
+> 
+> Also the VCHIQ firmware doesn't support device enumeration, hence
+> one has to maintain a list of devices to be registered in the interface.
 > 
 > Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
 > ---
->  drivers/staging/vc04_services/Makefile        |   1 +
->  .../interface/vchiq_arm/vchiq_bus.c           | 100 ++++++++++++++++++
->  .../interface/vchiq_arm/vchiq_bus.h           |  54 ++++++++++
->  3 files changed, 155 insertions(+)
->  create mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_bus.c
->  create mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_bus.h
+>  .../bcm2835-camera/bcm2835-camera.c           | 21 ++++++++++---------
+>  .../interface/vchiq_arm/vchiq_arm.c           | 11 +++++++---
+>  2 files changed, 19 insertions(+), 13 deletions(-)
 > 
-> diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
-> index 44794bdf6173..e8b897a7b9a6 100644
-> --- a/drivers/staging/vc04_services/Makefile
-> +++ b/drivers/staging/vc04_services/Makefile
-> @@ -4,6 +4,7 @@ obj-$(CONFIG_BCM2835_VCHIQ)	+= vchiq.o
->  vchiq-objs := \
->     interface/vchiq_arm/vchiq_core.o  \
->     interface/vchiq_arm/vchiq_arm.o \
-> +   interface/vchiq_arm/vchiq_bus.o \
->     interface/vchiq_arm/vchiq_debugfs.o \
->     interface/vchiq_arm/vchiq_connected.o \
+> diff --git a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
+> index fcad5118f3e8..c873eace1437 100644
+> --- a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
+> +++ b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
+> @@ -11,6 +11,7 @@
+>   *          Luke Diamand @ Broadcom
+>   */
 >  
-> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_bus.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_bus.c
-> new file mode 100644
-> index 000000000000..4ac3491efe45
-> --- /dev/null
-> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_bus.c
-> @@ -0,0 +1,100 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * vchiq_device.c - VCHIQ generic device and bus-type
-> + *
-> + * Copyright (c) 2023 Ideas On Board Oy
-> + */
-> +
-> +#include <linux/device/bus.h>
 > +#include <linux/dma-mapping.h>
-> +#include <linux/of_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/string.h>
-> +
-> +#include "vchiq_bus.h"
-> +
-> +static int vchiq_bus_type_match(struct device *dev, struct device_driver *drv)
-> +{
-> +	if (dev->bus == &vchiq_bus_type &&
-> +	    strcmp(dev_name(dev), drv->name) == 0)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +static int vchiq_bus_uevent(const struct device *dev, struct kobj_uevent_env *env)
-> +{
-> +	const struct vchiq_device *device = container_of_const(dev, struct vchiq_device, dev);
-> +
-> +	return add_uevent_var(env, "MODALIAS=%s", dev_name(&device->dev));
-> +}
-> +
-> +static int vchiq_bus_probe(struct device *dev)
-> +{
-> +	struct vchiq_device *device = to_vchiq_device(dev);
-> +	struct vchiq_driver *driver = to_vchiq_driver(dev->driver);
-> +
-> +	return driver->probe(device);
-> +}
-> +
-> +struct bus_type vchiq_bus_type = {
-> +	.name   = "vchiq-bus",
-> +	.match  = vchiq_bus_type_match,
-> +	.uevent = vchiq_bus_uevent,
-> +	.probe  = vchiq_bus_probe,
-> +};
-> +
-> +static void vchiq_device_release(struct device *dev)
-> +{
-> +	struct vchiq_device *device = to_vchiq_device(dev);
-> +
-> +	kfree(device);
-> +}
-> +
-> +struct vchiq_device *
-> +vchiq_device_register(struct device *parent, const char *name)
-> +{
-> +	struct vchiq_device *device;
-> +	int ret;
-> +
-> +	device = kzalloc(sizeof(*device), GFP_KERNEL);
-> +	if (!device)
-> +		return NULL;
-> +
-> +	device->dev.init_name = name;
-> +	device->dev.parent = parent;
-> +	device->dev.bus = &vchiq_bus_type;
-> +	device->dev.dma_mask = &device->dev.coherent_dma_mask;
-> +	device->dev.release = vchiq_device_release;
-> +
-> +	of_dma_configure(&device->dev, parent->of_node, true);
-> +
-> +	ret = device_register(&device->dev);
-> +	if (ret) {
-> +		dev_err(parent, "Cannot register %s: %d\n", name, ret);
-> +		put_device(&device->dev);
-> +		kfree(device);
+>  #include <linux/errno.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> @@ -24,8 +25,8 @@
+>  #include <media/v4l2-event.h>
+>  #include <media/v4l2-common.h>
+>  #include <linux/delay.h>
+> -#include <linux/platform_device.h>
+>  
+> +#include "../interface/vchiq_arm/vchiq_bus.h"
+>  #include "../vchiq-mmal/mmal-common.h"
+>  #include "../vchiq-mmal/mmal-encodings.h"
+>  #include "../vchiq-mmal/mmal-vchiq.h"
+> @@ -1841,7 +1842,7 @@ static struct v4l2_format default_v4l2_format = {
+>  	.fmt.pix.sizeimage = 1024 * 768,
+>  };
+>  
+> -static int bcm2835_mmal_probe(struct platform_device *pdev)
+> +static int bcm2835_mmal_probe(struct vchiq_device *device)
+>  {
+>  	int ret;
+>  	struct bcm2835_mmal_dev *dev;
+> @@ -1852,9 +1853,9 @@ static int bcm2835_mmal_probe(struct platform_device *pdev)
+>  	unsigned int resolutions[MAX_BCM2835_CAMERAS][2];
+>  	int i;
+>  
+> -	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+> +	ret = dma_set_mask_and_coherent(&device->dev, DMA_BIT_MASK(32));
+>  	if (ret) {
+> -		dev_err(&pdev->dev, "dma_set_mask_and_coherent failed: %d\n", ret);
+> +		dev_err(&device->dev, "dma_set_mask_and_coherent failed: %d\n", ret);
+>  		return ret;
+>  	}
+>  
+> @@ -1902,7 +1903,7 @@ static int bcm2835_mmal_probe(struct platform_device *pdev)
+>  						       &camera_instance);
+>  		ret = v4l2_device_register(NULL, &dev->v4l2_dev);
+>  		if (ret) {
+> -			dev_err(&pdev->dev, "%s: could not register V4L2 device: %d\n",
+> +			dev_err(&device->dev, "%s: could not register V4L2 device: %d\n",
+>  				__func__, ret);
+>  			goto free_dev;
+>  		}
+> @@ -1982,7 +1983,7 @@ static int bcm2835_mmal_probe(struct platform_device *pdev)
+>  	return ret;
+>  }
+>  
+> -static void bcm2835_mmal_remove(struct platform_device *pdev)
+> +static void bcm2835_mmal_remove(struct vchiq_device *device)
+>  {
+>  	int camera;
+>  	struct vchiq_mmal_instance *instance = gdev[0]->instance;
+> @@ -1994,17 +1995,17 @@ static void bcm2835_mmal_remove(struct platform_device *pdev)
+>  	vchiq_mmal_finalise(instance);
+>  }
+>  
+> -static struct platform_driver bcm2835_camera_driver = {
+> +static struct vchiq_driver bcm2835_camera_driver = {
+>  	.probe		= bcm2835_mmal_probe,
+> -	.remove_new	= bcm2835_mmal_remove,
+> +	.remove		= bcm2835_mmal_remove,
+>  	.driver		= {
+>  		.name	= "bcm2835-camera",
+>  	},
+>  };
+>  
+> -module_platform_driver(bcm2835_camera_driver)
+> +module_vchiq_driver(bcm2835_camera_driver)
+>  
+>  MODULE_DESCRIPTION("Broadcom 2835 MMAL video capture");
+>  MODULE_AUTHOR("Vincent Sanders");
+>  MODULE_LICENSE("GPL");
+> -MODULE_ALIAS("platform:bcm2835-camera");
+> +MODULE_ALIAS("bcm2835-camera");
 
-As per the documentation for the device_register() call, this kfree()
-will crash.  The call to put_device() is all you need here to free the
-memory.
-
-I'll take this series as it's been reviewed and tested, but can you send
-a follow-on patch for this?
+Now that you are on your own bus, why do you need the MODULE_ALIAS()
+line at all?
 
 thanks,
 
