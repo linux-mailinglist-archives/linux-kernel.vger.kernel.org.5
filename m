@@ -2,211 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A6C7B9E33
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B2D7B9E01
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbjJEN7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 09:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54702 "EHLO
+        id S232468AbjJEN6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 09:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231882AbjJEN5J (ORCPT
+        with ESMTP id S231289AbjJEN4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 09:57:09 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F49628126;
-        Thu,  5 Oct 2023 06:45:51 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3952Wv5l000725;
-        Thu, 5 Oct 2023 04:31:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=aNc/qQqVLrd5xCqMkKsIbyqjupUyO0PkNQXzy7ahMHA=;
- b=T2bMfJeSlP+bWY+aPttMPiUF7rC/gMuqJ42qsO0bYvxjWrEz+mLZyWkEEY+cX+wi1cP/
- 0C4YVlBpN1JId0nBVc8wW7tU8X4BBpcppHnrZUVX7TPT3ppG6ORaX4ST64kDVuSLRqT9
- GzH3d0/5gJw4i9e4GOO818F6POEqb4X6xIfbIr1M/8E3Xu6688pY94DeRR3vtOJNv5ZB
- ql+6RpO77DOOcHgpgtvr/PLhM39tCzSab2M9OpFhb9mnfM9sSSDTsC+NQSWyGur98gNu
- 1LD38eK/P5fhD4JCtSAQoK1gJLgsgnQYvR3QDZzbc8k17U9BnYwz71Jmy+GSQ9++hgdi CA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgqth3th1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 04:31:58 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3954VvpI011499
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Oct 2023 04:31:57 GMT
-Received: from hu-devipriy-blr.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 4 Oct 2023 21:31:51 -0700
-From:   Devi Priya <quic_devipriy@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <thierry.reding@gmail.com>, <ndesaulniers@google.com>,
-        <trix@redhat.com>, <baruch@tkos.co.il>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>
-CC:     <linux-pwm@vger.kernel.org>, <u.kleine-koenig@pengutronix.de>,
-        <nathan@kernel.org>
-Subject: [PATCH V14 2/4] dt-bindings: pwm: add IPQ6018 binding
-Date:   Thu, 5 Oct 2023 10:01:25 +0530
-Message-ID: <20231005043127.2690639-3-quic_devipriy@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231005043127.2690639-1-quic_devipriy@quicinc.com>
-References: <20231005043127.2690639-1-quic_devipriy@quicinc.com>
+        Thu, 5 Oct 2023 09:56:19 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B434693
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 21:55:50 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3aec067556dso373438b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 21:55:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696481749; x=1697086549; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+qTkmLJbkNoH1DEt071Z4Lj6n0F0uZ101JE698BdGD4=;
+        b=WnudJe1bYEmqh6BpAvVgjxOCcYYaNDC48bvl4Byn5OG7VzY1wDDFbdVqvBnGqTpuhF
+         WYKtiSLBdwoIgYq3DAFJ6DETUj260vaG5bDR/pkhwhYGvWG/zFka+8jgI2lW40HI33V0
+         PlDmcbMs9G11G9G7y5FP2QcJXRBwgxWKUFu8Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696481749; x=1697086549;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+qTkmLJbkNoH1DEt071Z4Lj6n0F0uZ101JE698BdGD4=;
+        b=mrzEJlCybaeosBJh2sYqEMSDMMZQSJB4y5oZAv469j5rA0TAYd33zOdqwPjCPGXS2g
+         WHDnnylbgyIXI0AU19iyM9FZzggX0A60U/9bPV2zl8eK6siqmlal0O90aPCujINFgQTD
+         1sERmVPwNQZrLNK7n9EjK9lse1EE1bsaJ4K/nyW/GD1Vus7d19WuwyVzvDQdPIQ9obkS
+         Dgmw2f1R2o/+zxvSvELXmDiZlqkv5+4NrGqv5+oOckZ3vIxdWgZUO5QWM7g2AH1cpecZ
+         S+F36Az6ZM7RmHqSbZdAY4cRUsZbBUPs5Ub2EF0Va0WHikmW1c/mC/5caZLbe5J+3cmk
+         LOwQ==
+X-Gm-Message-State: AOJu0Yz0eqFvV+ixaI78eFaeX7Q2TkLbYWg0iHy1D5X5R8iL2iXyNe9h
+        sEFFu22vJttcRO8R+JgGUdWTlA==
+X-Google-Smtp-Source: AGHT+IHoPEyS18WZeo7CvnM9KyZsJnDedFeLw5UokGAmsFPXerM25wZNgmkPytL1cmoHB1Stp2V7dw==
+X-Received: by 2002:a54:4e8c:0:b0:3ae:5e0e:1671 with SMTP id c12-20020a544e8c000000b003ae5e0e1671mr4451630oiy.4.1696481749435;
+        Wed, 04 Oct 2023 21:55:49 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g12-20020a63be4c000000b00577e62e13c5sm369420pgo.32.2023.10.04.21.55.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 21:55:48 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 21:55:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] net: ax88796c: replace deprecated strncpy with strscpy
+Message-ID: <202310042155.BDF8674@keescook>
+References: <20231005-strncpy-drivers-net-ethernet-asix-ax88796c_ioctl-c-v1-1-6fafdc38b170@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: lhP7K0QSAbvAMaOZtoyHr8rw6AgOtNox
-X-Proofpoint-GUID: lhP7K0QSAbvAMaOZtoyHr8rw6AgOtNox
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_01,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999
- impostorscore=0 bulkscore=0 clxscore=1015 malwarescore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310050037
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231005-strncpy-drivers-net-ethernet-asix-ax88796c_ioctl-c-v1-1-6fafdc38b170@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DT binding for the PWM block in Qualcomm IPQ6018 SoC.
+On Thu, Oct 05, 2023 at 01:06:26AM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> A suitable replacement is `strscpy` [2] due to the fact that it
+> guarantees NUL-termination on the destination buffer without
+> unnecessarily NUL-padding.
+> 
+> It should be noted that there doesn't currently exist a bug here as
+> DRV_NAME is a small string literal which means no overread bugs are
+> present.
+> 
+> Also to note, other ethernet drivers are using strscpy in a similar
+> pattern:
+> |       dec/tulip/tulip_core.c
+> |       861:    strscpy(info->driver, DRV_NAME, sizeof(info->driver));
+> |
+> |       8390/ax88796.c
+> |       582:    strscpy(info->driver, DRV_NAME, sizeof(info->driver));
+> |
+> |       dec/tulip/dmfe.c
+> |       1077:   strscpy(info->driver, DRV_NAME, sizeof(info->driver));
+> |
+> |       8390/etherh.c
+> |       558:    strscpy(info->driver, DRV_NAME, sizeof(info->driver));
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Co-developed-by: Baruch Siach <baruch.siach@siklu.com>
-Signed-off-by: Baruch Siach <baruch.siach@siklu.com>
-Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
----
-v14:
+Yeah, this looks like the others.
 
-  Picked up the R-b tag
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-v13:
-
-  Updated the file name to match the compatible
-  
-  Sorted the properties and updated the order in the required field
-
-  Dropped the syscon node from examples
-
-v12:
-
-  Picked up the R-b tag
-
-v11:
-
-  No change
-
-v10:
-
-  No change
-
-v9:
-
-  Add 'ranges' property to example (Rob)
-
-  Drop label in example (Rob)
-
-v8:
-
-  Add size cell to 'reg' (Rob)
-
-v7:
-
-  Use 'reg' instead of 'offset' (Rob)
-
-  Drop 'clock-names' and 'assigned-clock*' (Bjorn)
-
-  Use single cell address/size in example node (Bjorn)
-
-  Move '#pwm-cells' lower in example node (Bjorn)
-
-  List 'reg' as required
-
-v6:
-
-  Device node is child of TCSR; remove phandle (Rob Herring)
-
-  Add assigned-clocks/assigned-clock-rates (Uwe Kleine-König)
-
-v5: Use qcom,pwm-regs for phandle instead of direct regs (Bjorn
-    Andersson, Kathiravan T)
-
-v4: Update the binding example node as well (Rob Herring's bot)
-
-v3: s/qcom,pwm-ipq6018/qcom,ipq6018-pwm/ (Rob Herring)
-
-v2: Make #pwm-cells const (Rob Herring)
-
- .../bindings/pwm/qcom,ipq6018-pwm.yaml        | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
-
-diff --git a/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml b/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
-new file mode 100644
-index 000000000000..6d0d7ed271f7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pwm/qcom,ipq6018-pwm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm IPQ6018 PWM controller
-+
-+maintainers:
-+  - Baruch Siach <baruch@tkos.co.il>
-+
-+properties:
-+  compatible:
-+    const: qcom,ipq6018-pwm
-+
-+  reg:
-+    description: Offset of PWM register in the TCSR block.
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  "#pwm-cells":
-+    const: 2
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - "#pwm-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,gcc-ipq6018.h>
-+
-+    pwm: pwm@a010 {
-+        compatible = "qcom,ipq6018-pwm";
-+        reg = <0xa010 0x20>;
-+        clocks = <&gcc GCC_ADSS_PWM_CLK>;
-+        assigned-clocks = <&gcc GCC_ADSS_PWM_CLK>;
-+        assigned-clock-rates = <100000000>;
-+        #pwm-cells = <2>;
-+    };
 -- 
-2.34.1
-
+Kees Cook
