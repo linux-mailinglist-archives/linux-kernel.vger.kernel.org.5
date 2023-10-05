@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F597BA582
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5F27BA57B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237727AbjJEQRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36116 "EHLO
+        id S242291AbjJEQRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240861AbjJEQOH (ORCPT
+        with ESMTP id S240874AbjJEQOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Oct 2023 12:14:07 -0400
-Received: from icts-p-cavuit-3.kulnet.kuleuven.be (icts-p-cavuit-3.kulnet.kuleuven.be [134.58.240.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1608B2C287;
-        Thu,  5 Oct 2023 08:39:04 -0700 (PDT)
+Received: from icts-p-cavuit-4.kulnet.kuleuven.be (icts-p-cavuit-4.kulnet.kuleuven.be [134.58.240.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AB32C29D;
+        Thu,  5 Oct 2023 08:39:11 -0700 (PDT)
 X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: E614A20052.A8F73
+X-KULeuven-ID: 5D5172E.A8248
 X-KULeuven-Information: Katholieke Universiteit Leuven
 Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:213:242:ac11:64])
-        by icts-p-cavuit-3.kulnet.kuleuven.be (Postfix) with ESMTP id E614A20052;
-        Thu,  5 Oct 2023 17:38:59 +0200 (CEST)
+        by icts-p-cavuit-4.kulnet.kuleuven.be (Postfix) with ESMTP id 5D5172E;
+        Thu,  5 Oct 2023 17:39:00 +0200 (CEST)
 BCmilterd-Mark-Subject: no
 BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#OURIPS#-35.00
+BCmilterd-Report: SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_VALID#0.00,SA-HVU#OURIPS#-35.00
 X-CAV-Cluster: smtps
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1696520339;
-        bh=BlYdRr32xxxqfktzP+vlGnAtIlq3iaZb2FkzpNho4RU=;
+        s=cav; t=1696520340;
+        bh=NdUR+7nosFPVu+HpEjxUpAINbu4PmwNYym3jDerAKxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=NsrzLZIvKDVW64ti2b9bCgqmSt1V8BZwkfdiNoFW+XLpqhKdF8VXSgl4pp2x/75LH
-         3BhQX88eSKbbv3H0zu3QnzXAgFwboWZVm6HN1wX1i+XGZV1ES5ixnk21fyX+PIYm5l
-         owpaoPmIfDw5xkLSXOdEHYB4Gqz4BhJimPZpiwWA=
+        b=AcmelvGYuvNwmZT6FggOGzeIhUZ2WFfhEhBTUaLV08nxhe6krjT8b2PjM6KMkGoik
+         2udXzMA/db7zUoFnWUpzNAP+P9fS9zedbrdJOH9qUfrDzj/fnvrA89iCY2bGdITf72
+         KfEV2zJOlB8QJXidxvATzXLrKcTp5XOuBWzqF9as=
 Received: from librem.dyn.cs.kuleuven.be (unknown [IPv6:2a02:2c40:500:a006:548e:e4dd:76a4:afd8])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id BDD0FD4F34F1A;
+        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id EA78CD4F34F1A;
         Thu,  5 Oct 2023 17:38:59 +0200 (CEST)
 X-Kuleuven: This mail passed the K.U.Leuven mailcluster
 From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
@@ -49,9 +49,9 @@ To:     jarkko@kernel.org, kai.huang@intel.com, linux-sgx@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     dave.hansen@linux.intel.com,
         Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Subject: [PATCH v7 02/13] selftests/sgx: Fix uninitialized pointer dereferences in encl_get_entry
-Date:   Thu,  5 Oct 2023 17:38:43 +0200
-Message-Id: <20231005153854.25566-3-jo.vanbulck@cs.kuleuven.be>
+Subject: [PATCH v7 03/13] selftests/sgx: Include memory clobber for inline asm in test enclave
+Date:   Thu,  5 Oct 2023 17:38:44 +0200
+Message-Id: <20231005153854.25566-4-jo.vanbulck@cs.kuleuven.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231005153854.25566-1-jo.vanbulck@cs.kuleuven.be>
 References: <20231005153854.25566-1-jo.vanbulck@cs.kuleuven.be>
@@ -63,48 +63,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ensure sym_tab and sym_names are zero-initialized and add an early-out
-condition in the unlikely (erroneous) case that the enclave ELF file would
-not contain a symbol table.
+Add the "memory" clobber to the EMODPE and EACCEPT asm blocks to tell the
+compiler the assembly code accesses to the secinfo struct. This ensures
+the compiler treats the asm block as a memory barrier and the write to
+secinfo will be visible to ENCLU.
 
-This addresses -Werror=maybe-uninitialized compiler warnings for gcc -O2.
-
-Fixes: 33c5aac3bf32 ("selftests/sgx: Test complete changing of page type flow")
+Fixes: 20404a808593 ("selftests/sgx: Add test for EPCM permission changes")
 Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Reviewed-by: Kai Huang <kai.huang@intel.com>
 Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
- tools/testing/selftests/sgx/load.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ tools/testing/selftests/sgx/test_encl.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/sgx/load.c b/tools/testing/selftests/sgx/load.c
-index 94bdeac1cf04..c9f658e44de6 100644
---- a/tools/testing/selftests/sgx/load.c
-+++ b/tools/testing/selftests/sgx/load.c
-@@ -136,11 +136,11 @@ static bool encl_ioc_add_pages(struct encl *encl, struct encl_segment *seg)
-  */
- uint64_t encl_get_entry(struct encl *encl, const char *symbol)
- {
-+	Elf64_Sym *symtab = NULL;
-+	char *sym_names = NULL;
- 	Elf64_Shdr *sections;
--	Elf64_Sym *symtab;
- 	Elf64_Ehdr *ehdr;
--	char *sym_names;
--	int num_sym;
-+	int num_sym = 0;
- 	int i;
+diff --git a/tools/testing/selftests/sgx/test_encl.c b/tools/testing/selftests/sgx/test_encl.c
+index c0d6397295e3..ae791df3e5a5 100644
+--- a/tools/testing/selftests/sgx/test_encl.c
++++ b/tools/testing/selftests/sgx/test_encl.c
+@@ -24,10 +24,11 @@ static void do_encl_emodpe(void *_op)
+ 	secinfo.flags = op->flags;
  
- 	ehdr = encl->bin;
-@@ -161,6 +161,9 @@ uint64_t encl_get_entry(struct encl *encl, const char *symbol)
- 		}
- 	}
+ 	asm volatile(".byte 0x0f, 0x01, 0xd7"
+-				:
++				: /* no outputs */
+ 				: "a" (EMODPE),
+ 				  "b" (&secinfo),
+-				  "c" (op->epc_addr));
++				  "c" (op->epc_addr)
++				: "memory" /* read from secinfo pointer */);
+ }
  
-+	if (!symtab || !sym_names)
-+		return 0;
-+
- 	for (i = 0; i < num_sym; i++) {
- 		Elf64_Sym *sym = &symtab[i];
+ static void do_encl_eaccept(void *_op)
+@@ -42,7 +43,8 @@ static void do_encl_eaccept(void *_op)
+ 				: "=a" (rax)
+ 				: "a" (EACCEPT),
+ 				  "b" (&secinfo),
+-				  "c" (op->epc_addr));
++				  "c" (op->epc_addr)
++				: "memory" /* read from secinfo pointer */);
  
+ 	op->ret = rax;
+ }
 -- 
 2.25.1
 
