@@ -2,141 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4CD7BA914
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447A67BA91B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbjJES30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 14:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41526 "EHLO
+        id S230087AbjJESa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 14:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbjJES3Y (ORCPT
+        with ESMTP id S229826AbjJESaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 14:29:24 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEEA90
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 11:29:22 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-538e8eca9c1so2289264a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 11:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1696530561; x=1697135361; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aAPCOlOeIttr2KomN5sigTojx4YhzVJLuuUcz+l6ZkU=;
-        b=acDwDm0LglTFnHjnlbIJbgJ0F6scUXGHFHaiviFrT/uVt212RQeaIg4iwocUml6FJz
-         +u05kzsiy1CDffHPqzVQthCM07W5a4RBD00yW8VhtZmhTV6g8nZ6iMlGZ8BCnr80FubS
-         U6anaG0mVAy5lgJe82FcHsW2lbB+InRszpNzY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696530561; x=1697135361;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aAPCOlOeIttr2KomN5sigTojx4YhzVJLuuUcz+l6ZkU=;
-        b=l3A6eWsAMhdCHOBOTmZyYaul0IB1CmE19h4YKWJplaIiEe7rMKAE0KEB2v0xHTAZ70
-         tF3EYgzUpj16RKMVlM1DVDU1IW6kT4xMWrrw6pmoKwz1r1957vSXfZqjk8BiOCmA6njI
-         9OuyeVDLZP10e8IISgI1WcG+lC5ORHsP0/zLKRIkHu1UH1E48WxxewySqaR3QkGxDDEH
-         yu7+8/tIYgdWF+J3xYEEbyAQW65/wDX2oZP54fYoDRmBAHFpOg6Qq2ft/Ui+0LtQF1pI
-         dS8wVBqxDpIaT5JxmvsX5oJoQdrv5R1Etsnn3vbIGpEj7SEGPixiDb3clhhO2ucI2pyz
-         gsvw==
-X-Gm-Message-State: AOJu0YxXfiBN0iJ1dKCurL7VZIEhKTm5TI7X8ZfqXje0eD6/NxZzkQiW
-        Ct49ErgH0QZ0LzQuroIbF0M4mnvGiSjXobVdW/rMNA==
-X-Google-Smtp-Source: AGHT+IGvbxj+WNkZWLf/Kd9W6U6hVmbkWDw5z1yJ2NMsSKuitlupdyLifNRgtITVxIqe/k/1zqFVvA==
-X-Received: by 2002:aa7:cd79:0:b0:522:564d:6de with SMTP id ca25-20020aa7cd79000000b00522564d06demr5706399edb.36.1696530561011;
-        Thu, 05 Oct 2023 11:29:21 -0700 (PDT)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id k18-20020a05640212d200b00537fa467ddasm1427614edx.65.2023.10.05.11.29.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 11:29:20 -0700 (PDT)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-533c8f8f91dso2333537a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 11:29:20 -0700 (PDT)
-X-Received: by 2002:aa7:c6c4:0:b0:532:ec54:bfff with SMTP id
- b4-20020aa7c6c4000000b00532ec54bfffmr5269546eds.16.1696530559930; Thu, 05 Oct
- 2023 11:29:19 -0700 (PDT)
+        Thu, 5 Oct 2023 14:30:25 -0400
+X-Greylist: delayed 60 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Oct 2023 11:30:22 PDT
+Received: from smtpdh17-2.aruba.it (smtpdh17-2.aruba.it [62.149.155.117])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474CCAD
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 11:30:22 -0700 (PDT)
+Received: from localhost.localdomain ([146.241.127.78])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id oT65qaKjjlbdkoT66q4pRP; Thu, 05 Oct 2023 20:29:19 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1696530559; bh=uoy8unYGf/PDL0QHgI1ou/VGwV3b2picokEMkywfe4c=;
+        h=From:To:Subject:Date:MIME-Version;
+        b=UIlXd+h/1mkhskfL0e2yKPV8D4ZtTTeR/Yb/I+K0Y0UIoKneDtsmBJRU8lTw6Y01n
+         Pgtf7XahkysJonv0ahJpf6IrU4yq0CE2aPIQaHUeYZuidTiNuOFOLZ4rProxDfAgqZ
+         zU0BJbQfaZU4Hgnmzn18FpphC/LjQV0ZHJEQE087Mup4a5q7Glil9tQ6RmBqdlZdmn
+         MREI1eGMZp8xhK2gnztI4/Kh2okx0M4i8/nVe/N7TayKZRCcSw1It0/fnrEkUBfwW8
+         Zwx1nxEcZMgjkypMA1FU/GuTyZEnAEjhJwwD264q/MmT2t8lI5eBHImFHl3gpFiLvt
+         TlbYHN6pETHGA==
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>,
+        Jim Reinhart <jimr@tekvox.com>,
+        James Autry <jautry@tekvox.com>,
+        Matthew Maron <matthewm@tekvox.com>
+Subject: [PATCH v4] net: phy: broadcom: add support for BCM5221 phy
+Date:   Thu,  5 Oct 2023 20:29:15 +0200
+Message-Id: <20231005182915.153815-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230628142129.2468174-1-leitao@debian.org> <ZRV1bIuSXjZ+uPKB@gmail.com>
- <20231005162545.GFZR7jiUNyNkscijUl@fat_crate.local>
-In-Reply-To: <20231005162545.GFZR7jiUNyNkscijUl@fat_crate.local>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 5 Oct 2023 11:29:02 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjTHeQjsqtHcBGvy9TaJQ5uAm5HrCDuOD9v7qA9U1Xr4w@mail.gmail.com>
-Message-ID: <CAHk-=wjTHeQjsqtHcBGvy9TaJQ5uAm5HrCDuOD9v7qA9U1Xr4w@mail.gmail.com>
-Subject: Re: [PATCH v3] x86/bugs: Add a separate config for each mitigation
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Breno Leitao <leitao@debian.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfKZbZhtWqTGveJJPZrOv/DcPQmYEvNLwV0Z3/lp78N5WSSl2Zc8AapeMLbcF0AmY3RrTuoi3gTq3Bb8ee9tPoJ7qUOAglg1frdARobNBSBJPDk/Nsew+
+ DnJ70WzpC4WpHanbD4Fcn3H20To6NpBM4jAWluRFp5sbSmNX/HSTThWMfvOOPrOSPfyK6989rRo1/5OP+m8ULx/ss9Lxp3INqjA5nIw1jE+fA1yqR/FbdNbk
+ 2101lo3jljIDZbAVCEBdv6A4qdE+bCpdNi3iHJoxi4RrcVQkokljrn8LQ1DR4oPusIj3vImUc8fFlTf5zAbsS1YgC4hr5+JgVN0gWq7qMLGf0eakzHw9R9rF
+ +aW2Ubf/1rlkKMN8WpyZppIppeHSu5L5lSQk0rjvxnA5qhaKWUB+QtC9lsq1uDxydqOzHmmD9Vnr+230tZuYrwLKArdjQxfXNgFeH5tTE9Z1yv6z0vYD73DH
+ 5wN1awebaCYRjutdGT19Pf8mF6MDWA2MKSr4X1uUgxEz50OJEp29uyoEF7lTZoYPTYFkP6pNU8I2NsDFXpGQrzIL/9sqtHq1B3astp7+cP8kULmOaD1+QbhX
+ LO6+tGJ21sihnPAmtbTApbkttsI4oloEv9do75UJiqp2SbOLix7KA0kkhvfm7KiPIqw7WHiUXdlliBUvra7v52yPO5Uze4rmNA/9RRgLHoaAT48b4PMLZ7jc
+ uWdSuxEo3kE=
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Oct 2023 at 09:26, Borislav Petkov <bp@alien8.de> wrote:
->
-> I happen to know that Linus wanted those per mitigation, perhaps to be
-> able to disable only a subset of them.
+From: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
 
-Partly for that - some of them are more obnoxious than others, and
-cause more changes to code generation.
+This patch adds the BCM5221 PHY support by reusing brcm_fet_*()
+callbacks and adding quirks for BCM5221 when needed.
 
-And partly I want separate configs for just source code readability,
-so that we see *which* butt-ugly piece of crap code is for what
-reason.
+Cc: Jim Reinhart <jimr@tekvox.com>
+Cc: James Autry <jautry@tekvox.com>
+Cc: Matthew Maron <matthewm@tekvox.com>
+Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+---
+V1->V2:
+Suggested by Andrew Lunn:
+* handle mdix_ctrl adding bcm5221_config_aneg() and bcm5221_read_status()
+* reorder PHY_ID_BCM5241 in broadcom_tbl[]
+Suggested by Russell King:
+* add comment on phy_read(..., MII_BRCM_FET_INTREG)
+* lock mdio bus when in shadow mode
+Suggested by Florian Fainelli:
+* reuse brcm_fet_*() callbacks checking for phy_id == PHY_ID_BCM5221
 
-> Linus, what are you thoughts on it, should we continue with a Kconfig
-> option per mitigation or should we hide them all behind a single Kconfig
-> option - which would be a lot simpler and easier?
->
-> Apparently people want to completely remove the mitigations crap for
-> some configurations at build time already.
+V2->V3:
+* rebase on master branch
 
-I'd be perfectly happy with a top-level Kconfig question for "enable
-mitigations", which could be a config with three values ("all", "none"
-and "finegrained").
+V3->V4:
+Suggested by Russell King:
+* improve code style
+---
+ drivers/net/phy/broadcom.c | 154 +++++++++++++++++++++++++++++--------
+ include/linux/brcmphy.h    |  10 +++
+ 2 files changed, 131 insertions(+), 33 deletions(-)
 
-But see above (particularly the second thing) on why I want us to
-still have individual config options for each individual issue. I'm
-not convinced a lot of people *care* about the "finegrained" case of
-enabling/disabling each mitigation at build time), but I do use it
-myself because some of the mitigations end up changing code generation
-*so* much that it gets hard to even read the generated assembly (ie
-all the retpoline crap looks *horrendous* if what you actually want to
-do is check that some change helps code generation and want to
-actually look at the resulting *.s files).
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index 04b2e6eeb195..3a627105675a 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -704,16 +704,21 @@ static int brcm_fet_config_init(struct phy_device *phydev)
+ 	if (err < 0 && err != -EIO)
+ 		return err;
+ 
++	/* Read to clear status bits */
+ 	reg = phy_read(phydev, MII_BRCM_FET_INTREG);
+ 	if (reg < 0)
+ 		return reg;
+ 
+ 	/* Unmask events we are interested in and mask interrupts globally. */
+-	reg = MII_BRCM_FET_IR_DUPLEX_EN |
+-	      MII_BRCM_FET_IR_SPEED_EN |
+-	      MII_BRCM_FET_IR_LINK_EN |
+-	      MII_BRCM_FET_IR_ENABLE |
+-	      MII_BRCM_FET_IR_MASK;
++	if (phydev->phy_id == PHY_ID_BCM5221)
++		reg = MII_BRCM_FET_IR_ENABLE |
++		      MII_BRCM_FET_IR_MASK;
++	else
++		reg = MII_BRCM_FET_IR_DUPLEX_EN |
++		      MII_BRCM_FET_IR_SPEED_EN |
++		      MII_BRCM_FET_IR_LINK_EN |
++		      MII_BRCM_FET_IR_ENABLE |
++		      MII_BRCM_FET_IR_MASK;
+ 
+ 	err = phy_write(phydev, MII_BRCM_FET_INTREG, reg);
+ 	if (err < 0)
+@@ -726,42 +731,49 @@ static int brcm_fet_config_init(struct phy_device *phydev)
+ 
+ 	reg = brcmtest | MII_BRCM_FET_BT_SRE;
+ 
+-	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
+-	if (err < 0)
+-		return err;
++	phy_lock_mdio_bus(phydev);
+ 
+-	/* Set the LED mode */
+-	reg = phy_read(phydev, MII_BRCM_FET_SHDW_AUXMODE4);
+-	if (reg < 0) {
+-		err = reg;
+-		goto done;
++	err = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
++	if (err < 0) {
++		phy_unlock_mdio_bus(phydev);
++		return err;
+ 	}
+ 
+-	reg &= ~MII_BRCM_FET_SHDW_AM4_LED_MASK;
+-	reg |= MII_BRCM_FET_SHDW_AM4_LED_MODE1;
++	if (phydev->phy_id != PHY_ID_BCM5221) {
++		/* Set the LED mode */
++		reg = __phy_read(phydev, MII_BRCM_FET_SHDW_AUXMODE4);
++		if (reg < 0) {
++			err = reg;
++			goto done;
++		}
+ 
+-	err = phy_write(phydev, MII_BRCM_FET_SHDW_AUXMODE4, reg);
+-	if (err < 0)
+-		goto done;
++		err = __phy_modify(phydev, MII_BRCM_FET_SHDW_AUXMODE4,
++				   MII_BRCM_FET_SHDW_AM4_LED_MASK,
++				   MII_BRCM_FET_SHDW_AM4_LED_MODE1);
++		if (err < 0)
++			goto done;
+ 
+-	/* Enable auto MDIX */
+-	err = phy_set_bits(phydev, MII_BRCM_FET_SHDW_MISCCTRL,
+-			   MII_BRCM_FET_SHDW_MC_FAME);
+-	if (err < 0)
+-		goto done;
++		/* Enable auto MDIX */
++		err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_MISCCTRL,
++				     MII_BRCM_FET_SHDW_MC_FAME);
++		if (err < 0)
++			goto done;
++	}
+ 
+ 	if (phydev->dev_flags & PHY_BRCM_AUTO_PWRDWN_ENABLE) {
+ 		/* Enable auto power down */
+-		err = phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXSTAT2,
+-				   MII_BRCM_FET_SHDW_AS2_APDE);
++		err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXSTAT2,
++				     MII_BRCM_FET_SHDW_AS2_APDE);
+ 	}
+ 
+ done:
+ 	/* Disable shadow register access */
+-	err2 = phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
++	err2 = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
+ 	if (!err)
+ 		err = err2;
+ 
++	phy_unlock_mdio_bus(phydev);
++
+ 	return err;
+ }
+ 
+@@ -840,23 +852,86 @@ static int brcm_fet_suspend(struct phy_device *phydev)
+ 
+ 	reg = brcmtest | MII_BRCM_FET_BT_SRE;
+ 
+-	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
+-	if (err < 0)
++	phy_lock_mdio_bus(phydev);
++
++	err = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
++	if (err < 0) {
++		phy_unlock_mdio_bus(phydev);
+ 		return err;
++	}
++
++	if (phydev->phy_id == PHY_ID_BCM5221)
++		/* Force Low Power Mode with clock enabled */
++		reg = BCM5221_SHDW_AM4_EN_CLK_LPM | BCM5221_SHDW_AM4_FORCE_LPM;
++	else
++		/* Set standby mode */
++		reg = MII_BRCM_FET_SHDW_AM4_STANDBY;
+ 
+-	/* Set standby mode */
+-	err = phy_modify(phydev, MII_BRCM_FET_SHDW_AUXMODE4,
+-			 MII_BRCM_FET_SHDW_AM4_STANDBY,
+-			 MII_BRCM_FET_SHDW_AM4_STANDBY);
++	err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXMODE4, reg);
+ 
+ 	/* Disable shadow register access */
+-	err2 = phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
++	err2 = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
+ 	if (!err)
+ 		err = err2;
+ 
++	phy_unlock_mdio_bus(phydev);
++
+ 	return err;
+ }
+ 
++static int bcm5221_config_aneg(struct phy_device *phydev)
++{
++	int ret, val;
++
++	ret = genphy_config_aneg(phydev);
++	if (ret)
++		return ret;
++
++	switch (phydev->mdix_ctrl) {
++	case ETH_TP_MDI:
++		val = BCM5221_AEGSR_MDIX_DIS;
++		break;
++	case ETH_TP_MDI_X:
++		val = BCM5221_AEGSR_MDIX_DIS | BCM5221_AEGSR_MDIX_MAN_SWAP;
++		break;
++	case ETH_TP_MDI_AUTO:
++		val = 0;
++		break;
++	default:
++		return 0;
++	}
++
++	return phy_modify(phydev, BCM5221_AEGSR, BCM5221_AEGSR_MDIX_MAN_SWAP |
++						 BCM5221_AEGSR_MDIX_DIS,
++						 val);
++}
++
++static int bcm5221_read_status(struct phy_device *phydev)
++{
++	int ret;
++
++	/* Read MDIX status */
++	ret = phy_read(phydev, BCM5221_AEGSR);
++	if (ret < 0)
++		return ret;
++
++	if (ret & BCM5221_AEGSR_MDIX_DIS) {
++		if (ret & BCM5221_AEGSR_MDIX_MAN_SWAP)
++			phydev->mdix_ctrl = ETH_TP_MDI_X;
++		else
++			phydev->mdix_ctrl = ETH_TP_MDI;
++	} else {
++		phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
++	}
++
++	if (ret & BCM5221_AEGSR_MDIX_STATUS)
++		phydev->mdix = ETH_TP_MDI_X;
++	else
++		phydev->mdix = ETH_TP_MDI;
++
++	return genphy_read_status(phydev);
++}
++
+ static void bcm54xx_phy_get_wol(struct phy_device *phydev,
+ 				struct ethtool_wolinfo *wol)
+ {
+@@ -1221,6 +1296,18 @@ static struct phy_driver broadcom_drivers[] = {
+ 	.handle_interrupt = brcm_fet_handle_interrupt,
+ 	.suspend	= brcm_fet_suspend,
+ 	.resume		= brcm_fet_config_init,
++}, {
++	.phy_id		= PHY_ID_BCM5221,
++	.phy_id_mask	= 0xfffffff0,
++	.name		= "Broadcom BCM5221",
++	/* PHY_BASIC_FEATURES */
++	.config_init	= brcm_fet_config_init,
++	.config_intr	= brcm_fet_config_intr,
++	.handle_interrupt = brcm_fet_handle_interrupt,
++	.suspend	= brcm_fet_suspend,
++	.resume		= brcm_fet_config_init,
++	.config_aneg	= bcm5221_config_aneg,
++	.read_status	= bcm5221_read_status,
+ }, {
+ 	.phy_id		= PHY_ID_BCM5395,
+ 	.phy_id_mask	= 0xfffffff0,
+@@ -1296,6 +1383,7 @@ static struct mdio_device_id __maybe_unused broadcom_tbl[] = {
+ 	{ PHY_ID_BCM50610M, 0xfffffff0 },
+ 	{ PHY_ID_BCM57780, 0xfffffff0 },
+ 	{ PHY_ID_BCMAC131, 0xfffffff0 },
++	{ PHY_ID_BCM5221, 0xfffffff0 },
+ 	{ PHY_ID_BCM5241, 0xfffffff0 },
+ 	{ PHY_ID_BCM5395, 0xfffffff0 },
+ 	{ PHY_ID_BCM53125, 0xfffffff0 },
+diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
+index c55810a43541..1394ba302367 100644
+--- a/include/linux/brcmphy.h
++++ b/include/linux/brcmphy.h
+@@ -11,6 +11,7 @@
+ 
+ #define PHY_ID_BCM50610			0x0143bd60
+ #define PHY_ID_BCM50610M		0x0143bd70
++#define PHY_ID_BCM5221			0x004061e0
+ #define PHY_ID_BCM5241			0x0143bc30
+ #define PHY_ID_BCMAC131			0x0143bc70
+ #define PHY_ID_BCM5481			0x0143bca0
+@@ -331,6 +332,15 @@
+ 
+ #define BCM54XX_WOL_INT_STATUS		(MII_BCM54XX_EXP_SEL_WOL + 0x94)
+ 
++/* BCM5221 Registers */
++#define BCM5221_AEGSR			0x1C
++#define BCM5221_AEGSR_MDIX_STATUS	BIT(13)
++#define BCM5221_AEGSR_MDIX_MAN_SWAP	BIT(12)
++#define BCM5221_AEGSR_MDIX_DIS		BIT(11)
++
++#define BCM5221_SHDW_AM4_EN_CLK_LPM	BIT(2)
++#define BCM5221_SHDW_AM4_FORCE_LPM	BIT(1)
++
+ /*****************************************************************************/
+ /* Fast Ethernet Transceiver definitions. */
+ /*****************************************************************************/
+-- 
+2.34.1
 
-Same goes for some perf runs, so this is not *just* "I do a build and
-look at the result" - I want to be able to run it too.
-
-So I'll keep the mitigations that don't f*ck up my system too much,
-and then because I actually do look at the generated code when I match
-up source and result (ie the whole "annotate" thing in perf), things
-like retpoline really do end up screwing things up horrendously, in
-ways that some of the other mitigations don't.
-
-Maybe I'm odd in the above "disable some mitigations to see the code
-generation", but the source-level "readability", and the "this crazy
-code is because of this mitigation" is still important, I feel.
-
-I do *not* want to live in a world where we have random crazy code and
-just a "#ifdef CONFIG_MITIGATIONS" around it. Those
-
-    IS_ENABLED(CONFIG_RETPOLINE) || IS_ENABLED(CONFIG_SLS))
-
-"complex" conditionals may also be annoying, but dammit, they are
-important documentation about why we do those things, and unlike just
-comments that will inevitably bit-rot, they have semantics and get
-tested.
-
-                  Linus
