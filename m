@@ -2,105 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0DB7BA04E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF0D7BA211
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235624AbjJEOft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:35:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
+        id S232089AbjJEPMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:12:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235373AbjJEOeQ (ORCPT
+        with ESMTP id S235267AbjJEPMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:34:16 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4FD24876
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 04:20:52 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-5041d6d8b10so1121995e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 04:20:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696504850; x=1697109650; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AfjjBx8bRosL03zIEqb5fC4vsYyRufBl5/7gyLY5YvY=;
-        b=pVXUvDcxNUXW6+THwL9jZb+yNvyRIIPsCJDfdl47zAG0kTrjnhCvDX5K+zS+Zhs+ui
-         tRDkiUaCK2W4pFN0R2jc2dT+Aj7BjpUmT6Tqhh6/UMoCpIUmvsqDggo8aQ8u2bvkc7qF
-         sv1p1cnUoUUWwCLyQFMvMJndP1PcnYxgdOkpj3uPkDBigp2qFkdrYsgK3KYDBeElxQXs
-         hKZvK4vlhUNdFJIS6y5c7VzLeO9c4G5TsSx40Vpyo2OJXApZGFwd50hkfh8ww0Dm3gmm
-         jV+RcmqPdFLS8fC0ROj8eyZj3xq7h9T1/OUDUG5S78KivRYfMHRa86VNcdksxuGjzIj7
-         xEZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696504850; x=1697109650;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AfjjBx8bRosL03zIEqb5fC4vsYyRufBl5/7gyLY5YvY=;
-        b=u1mK0RILZjzgYfluLkjU1UStnOSWJJxdwqtv4nZhNTTKSg/eNVSobjOKjQHhyyCbRS
-         BXIJim15HNc1KP7qXaBvb3unbJH0qyALiZGX4Me7p+UqTPyRZFVsVX+XWwNWvrVC0Vle
-         LNO0pBkEfLUMIaAKhQjImqyfpBp8e6nJbNC54iRnaC5Kj3xbPy38pf7fGLMUL0kyjs6q
-         krplvspJmTbl4ba2aM/KSwlTwv6QmpsBUQwlRO/QuzvKRV24wtzG1yWbfqPXzpQzlr/R
-         S48yPboMQuhvLMvYtmUSMsGb0tl2yUSTJvFXvWgDPC0WFMTKFB38PrI0KD+lzsBWrOZa
-         ksEQ==
-X-Gm-Message-State: AOJu0YwPTPD80d63jf8zhJYnjY64cKKvUI1cusL7RNKppTuqrm04FMKL
-        5tkXOnV4QIYnYheJqOMXoDwiHeHV80j/dZuniVU=
-X-Google-Smtp-Source: AGHT+IF8iEf39U3EvChPzm6UH7GQU2jK7ervLMhE6RcloOs8ZvA9CjMZCrFvVxd2JoT2k/lXG3kZhg==
-X-Received: by 2002:a19:8c0e:0:b0:500:bc14:3e06 with SMTP id o14-20020a198c0e000000b00500bc143e06mr4555039lfd.44.1696504849804;
-        Thu, 05 Oct 2023 04:20:49 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:8bb6:12b3:863a:e5dd? ([2a05:6e02:1041:c10:8bb6:12b3:863a:e5dd])
-        by smtp.googlemail.com with ESMTPSA id hn8-20020a05600ca38800b00405959bbf4fsm1297865wmb.19.2023.10.05.04.20.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 04:20:49 -0700 (PDT)
-Message-ID: <3620cb02-c6af-cd65-439c-92ea9c369174@linaro.org>
-Date:   Thu, 5 Oct 2023 13:20:48 +0200
+        Thu, 5 Oct 2023 11:12:00 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED518C17;
+        Thu,  5 Oct 2023 07:41:22 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3959P2ic025839;
+        Thu, 5 Oct 2023 13:21:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=oOAMUa8QHt1EayBhxponDpCbVvi1SUCV24Wc/HHeOKY=; b=0f
+        cywv3obWAgJQBYEXI4/dgQLqEjH1oy533VfjoI+gYBgTLtAf6qFRJVxNNKjFKepR
+        8zzC8g/Y9YI/KFHVM5G6vxtuYZz4V4S1Q8t6GRCzrtvc0nK5XTR4giRrvrsqHR7I
+        EI3F+rNwk1bq353Ky6z4CkrgW0h8eWolja6fQm4hQ+ABqyXKw+MJwLj4JihHcGKx
+        KrG+2lVhytLQNUjcpZT1Eg4n6FkpEv0tH1OoLvMDEVig9Up2v+fKZejUBs30BABs
+        a7/KYwl4PqvPl7fvK4DvTu9mp5TipcT9JuOIPYDZz3YsYl8cYvMwullXtOyEEyrQ
+        G9TgL9qXzaRhvIALSGLg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3thtg7gg7j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 13:21:43 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 21D3510005C;
+        Thu,  5 Oct 2023 13:21:41 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CBA6423C695;
+        Thu,  5 Oct 2023 13:21:41 +0200 (CEST)
+Received: from [10.252.31.76] (10.252.31.76) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 5 Oct
+ 2023 13:21:38 +0200
+Message-ID: <c8bc893c-cb86-6de5-4346-fe48be6ebe86@foss.st.com>
+Date:   Thu, 5 Oct 2023 13:21:38 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 4/6] ACPI: thermal: Use thermal_zone_for_each_trip()
- for updating trips
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 08/12] net: ethernet: stmmac: stm32: support the
+ phy-supply regulator binding
 Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <4846448.GXAFRqVoOG@kreacher> <1954465.PYKUYFuaPT@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <1954465.PYKUYFuaPT@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230928122427.313271-1-christophe.roullier@foss.st.com>
+ <20230928122427.313271-9-christophe.roullier@foss.st.com>
+ <12332a87-e8c3-4cf3-849a-080e4e3f4521@lunn.ch>
+From:   Christophe ROULLIER <christophe.roullier@foss.st.com>
+In-Reply-To: <12332a87-e8c3-4cf3-849a-080e4e3f4521@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.252.31.76]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-05_08,2023-10-05_01,2023-05-22_02
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 15:24, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Rearrange the code handling notifications from the platform firmware
-> regarding trip point updates to carry out one loop over trip points
-> instead of two of them by using thermal_zone_for_each_trip() for that,
-> which is more straightforward than using a combination of
-> thermal_zone_device_exec() and for_each_thermal_trip(), each with its
-> own callback function.
-> 
-> No intentional functional impact.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+On 9/28/23 19:53, Andrew Lunn wrote:
+>> +static int phy_power_on(struct stm32_dwmac *bsp_priv, bool enable)
+> I find this function name confusing, since 50% of the time it does not
+> actually power the PHY on. You never call it with anything other than
+> a static true/false value. So it might was well be two functions,
+> phy_power_on() and phy_power_off().
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Hi,
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+I wanted to keep same implementation of all others Ethernet glues 
+(dwmac-rk.c ...) to be consistent.
+
+>> +{
+>> +	int ret;
+>> +	struct device *dev = bsp_priv->dev;
+>> +
+>> +	if (!bsp_priv->regulator)
+>> +		return 0;
+>> +
+>> +	if (enable) {
+>> +		ret = regulator_enable(bsp_priv->regulator);
+>> +		if (ret)
+>> +			dev_err(dev, "fail to enable phy-supply\n");
+> Not all PHYs are usable in 0 picoseconds. You probably want a delay
+> here. Otherwise the first few accesses to it might not work.
+>
+>        Andrew
+
+You're right I will add a delay.
+
+Thanks
+
+Christophe
 
