@@ -2,104 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9339D7BA6BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E297BA6C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbjJEQlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
+        id S233756AbjJEQlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235355AbjJEQj2 (ORCPT
+        with ESMTP id S232409AbjJEQj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:39:28 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B574236A5
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:23:02 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40662119cd0so87195e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696522981; x=1697127781; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pzyAiWhvPRkAaSX04taWxyRaF35/7oPd53VXghDgNwg=;
-        b=GVagLX8V3wo4J8tN9/raqI5+A44kv2gtYr/noRXWFtzp0Juowt0R+n+xThn+7cu65h
-         Cr/GYr1Xb8J60TX4ZLhtQmxaFOpZDkRAAShAV9L1SUxZTe8goRQy/YmjFBBJ9eXtDVoS
-         OTWIFCTqE0odBSHEzQS4uG0RXNCducYzGqQRe78mcMhBVDNii/RdWa9StUH7f3prWfnA
-         Flu2Hke6yWaYOPA7PMPt03G+KS4FHC9cnB351khpoybUe3HQKDlYkiTCRX078G3U8AQ5
-         CmO+9Ojr5mVYlrXq5EsX3Ia6zTljK9kB679RokhD1DyYD9Va34Wd/exOZQjP3VIrpn0D
-         IOxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696522981; x=1697127781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pzyAiWhvPRkAaSX04taWxyRaF35/7oPd53VXghDgNwg=;
-        b=Ir0bb7dEgswmqItwc8/5M32MQaj34QH9tn7U5tzn0+jBJ07IWp63nPk/JnVj+3Y7V+
-         d+VGXgZoM/3OzPjLNrbachyieB5UCF6lOv4ND28ECQ+vJCzAlknCBvCLFc7RD9RYAQSE
-         xn0j4Q78mwkZfu0UYWhavXkyxZbGltKYaug1QO6VXa061s9o5gGZslqfnmPO+vCAeIhM
-         Je9ftdXfct5iYZiyeZKRN2/CH9FCRurY6sayebtYoS7ZBI+TFxe/juU1vOoNt71nJsT4
-         l0px0RIv/nnm5qEzfHinndVn9RE4uGm/5jDj7GYrBTPzo9ZbY7FmyRdOAd8WUOZLFwWt
-         gT4g==
-X-Gm-Message-State: AOJu0YyF9TpvxZtPCp7jY9xXKngsgCGCOD0d4FiQeDxx6zaXmUAHD2m0
-        S/uptHIsdAxNtX4DePpu4pfCMWAAP3lXAZW1+mXTbQ==
-X-Google-Smtp-Source: AGHT+IFNO9qGrQUgXzJ/X1z/NsSmH5wKOMIFOjmbUOxeOunMIpw7ug3LlS+y1sx2UukRlZboK4+RxhX2g+VL0uIbgWg=
-X-Received: by 2002:a05:600c:3414:b0:3f4:fb7:48d4 with SMTP id
- y20-20020a05600c341400b003f40fb748d4mr66710wmp.3.1696522981030; Thu, 05 Oct
- 2023 09:23:01 -0700 (PDT)
+        Thu, 5 Oct 2023 12:39:58 -0400
+Received: from out-196.mta1.migadu.com (out-196.mta1.migadu.com [95.215.58.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4AC204F
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:23:38 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696523016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yC6D3i3jig2GyzUXuhIeWlA/aD4BBPaKKdQ3mOuig0o=;
+        b=q7JydKkWVxDOqEumo0+HHW6e98K99TlfpQTisybmzkBpdV9tlNO0Oc6eoM7K5o5ga4vsuv
+        rWQLgrPs8xIAlCZfY3+XFCnGu3qRYqbnsedHD3t3lsBYUtKXkakIjh8dUGw7GWGrb7fydk
+        DTh6pOZTWFsnev6TZgzTUFyPV+JK20Q=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH 0/2] Move sched_rt_entity::back to RT_GROUP_SCHED
+Date:   Fri,  6 Oct 2023 00:23:15 +0800
+Message-Id: <20231005162317.3343678-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-References: <20231004002038.907778-1-jmattson@google.com> <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
- <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com> <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
-In-Reply-To: <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 5 Oct 2023 09:22:44 -0700
-Message-ID: <CALMp9eT2qHSig-ptP461GbLSfg86aCRjoxzK9Q7dc6yXSpPn7A@mail.gmail.com>
-Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's FsGsKernelGsBaseNonSerializing
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Dave Hansen <dave.hansen@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 12:59=E2=80=AFAM Borislav Petkov <bp@alien8.de> wrot=
-e:
->
-> On Tue, Oct 03, 2023 at 07:44:51PM -0700, Jim Mattson wrote:
-> > The business of declaring breaking changes to the architectural
-> > specification in a CPUID bit has never made much sense to me.
->
-> How else should they be expressed then?
->
-> In some flaky PDF which changes URLs whenever the new corporate CMS gets
-> installed?
->
-> Or we should do f/m/s matching which doesn't make any sense for VMs?
->
-> When you think about it, CPUID is the best thing we have.
+The member back in struct sched_rt_entity only related to RT_GROUP_SCHED,
+it should not place out of RT_GROUP_SCHED, move back to RT_GROUP_SCHED.
+It will save a few bytes.
 
-Every time a new defeature bit is introduced, it breaks existing
-hypervisors, because no one can predict ahead of time that these bits
-have to be passed through.
+The 1st patch is introduce for_each_sched_rt_entity_back() & use it.
+it no functional changes.
+The 2nd patch is move sched_rt_entity::back to under the
+CONFIG_RT_GROUP_SCHED block, it will save a few bytes.
 
-I wonder if we could convince x86 CPU vendors to put all defeature
-bits under a single leaf, so that we can just set the entire leaf to
-all 1's in KVM_GET_SUPPORTED_CPUID.
+Yajun Deng (2):
+  sched/rt: Introduce for_each_sched_rt_entity_back() & use it
+  sched/rt: Move sched_rt_entity::back to under the
+    CONFIG_RT_GROUP_SCHED block
+
+ include/linux/sched.h |  2 +-
+ kernel/sched/rt.c     | 25 ++++++++++++++++---------
+ 2 files changed, 17 insertions(+), 10 deletions(-)
+
+-- 
+2.25.1
+
