@@ -2,65 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 773C67B9EC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357687BA240
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbjJEOMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        id S233344AbjJEPXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjJEOLI (ORCPT
+        with ESMTP id S233375AbjJEPXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:11:08 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A33307AA1;
-        Thu,  5 Oct 2023 00:23:58 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3af5fd13004so467753b6e.0;
-        Thu, 05 Oct 2023 00:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696490638; x=1697095438; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3SpoM/4Lw1qX7rpq90xB1eHbXwAM5dafArV69o28vkw=;
-        b=DEW7mgEckJHtCv2eqywyAkRvJp8xY/oqyB8XZ6LYVvoutK5smitjfGubQ05Ktte4fK
-         vauwBBToJJvgnO7DbYEYI+39uEh3juooRIQVM8Z1pOn5JIixp4P4IG3NiDcD6o++vG99
-         jxz57FHtteWRcwtPvRfCP0GgEEA8drXJiWJkeSwEO7jVeWwWoHZPLx2isPr5iF4529xr
-         J1hvWszSNy1Yd34CydZrR/UeFbrtM/ZgAA7K/WYqPGVXglXHcqgXHx6POZiDj0wMDG1T
-         ENp6vNdvECj7wAxfJpbidydyypqcQiLoVDnLOFhd0+6uDswDX67PXtRjh3pDnCB1yMYO
-         gi2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696490638; x=1697095438;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3SpoM/4Lw1qX7rpq90xB1eHbXwAM5dafArV69o28vkw=;
-        b=EcG9yE/QdHVRuuy7CiqcCTJhLpittFapPQNn+d36a+sj8PDaXIZgqHtiTtgYdMOxGn
-         TZynIk0v/QGWXKfooKgal2Wd7G/+LsVghQ8hBWurU6iOAo7+J867GFHVuzYbrZMnRiuF
-         OAqK634crNpD7Yx/dQjVuDtpw+PB+MJ8CP+wqTXvXXQqJIwp3tyxanuJcXiUNWlIVLDr
-         Ldgiayk+Bol1hIpPYvW4eITQ9qnWEhk9/rssibVquEPa58VSVy/ekw7OV0xSg8jABEZ/
-         HTlbz17P5JOVj8yIkvV4AaYd+KTzSL49ku48XXFixH5th/x3+XH3aVGoJZOFetW2OPbz
-         zoAw==
-X-Gm-Message-State: AOJu0YxrHuVf1wCVeeuGzmetIAu+PFRdKHYXGpicEfUi83bpLEIaxKF2
-        PURW1918T4F3q9BdNFhjmNo=
-X-Google-Smtp-Source: AGHT+IGU6DTqrzxv4ZgtgQ+QjS2xKrEKNu/SzTA8HhxBtlXWXaA4RrEI9a6v6iwWleFijvzR0xUBoA==
-X-Received: by 2002:a05:6808:1594:b0:3ae:1254:ea8a with SMTP id t20-20020a056808159400b003ae1254ea8amr5773030oiw.41.1696490637874;
-        Thu, 05 Oct 2023 00:23:57 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id g2-20020a63ad02000000b00584d035c08asm763911pgf.24.2023.10.05.00.23.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 00:23:57 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     jreuter@yaina.de, ralf@linux-mips.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        horms@kernel.org
-Cc:     linux-hams@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH V2] ax25: Fix potential deadlock on &ax25_list_lock
-Date:   Thu,  5 Oct 2023 07:23:49 +0000
-Message-Id: <20231005072349.52602-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        Thu, 5 Oct 2023 11:23:16 -0400
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4C8F3DD
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:33:37 -0700 (PDT)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 01B862C80;
+        Thu,  5 Oct 2023 09:23:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 01B862C80
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1696490636; bh=5tUjAAffC21PeqN5RCHFtO+dCZ7ZbDslD8JvlTNPOHk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=RMC/XdI+giZhjrbO60WuxY5G65Nvhs8t+MbQCl/unIEbm48UuP4o9PE3o+/LjD5ZY
+         d7RwtIL/oz1qE8tFe9EeW9swhH4BRxUozQ45FjA9lZZrA5DIK878YGn9dSECse2xZo
+         POvFdJkqYUojdZO8pOdxvrQmBLybjEfowmTkZWMc=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Thu,  5 Oct 2023 09:23:51 +0200 (CEST)
+Message-ID: <b9b2ea05-9d10-d263-f08a-5e3cf1f33a9d@perex.cz>
+Date:   Thu, 5 Oct 2023 09:23:51 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] ALSA: aloop: Add support for the non-interleaved
+ access mode
+Content-Language: en-US
+To:     Ivan Orlov <ivan.orlov0322@gmail.com>, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20230927113555.14877-1-ivan.orlov0322@gmail.com>
+From:   Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20230927113555.14877-1-ivan.orlov0322@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,53 +57,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Timer interrupt ax25_ds_timeout() could introduce double locks on
-&ax25_list_lock.
+On 27. 09. 23 13:35, Ivan Orlov wrote:
+> The current version of the loopback driver supports interleaved access
+> mode only. This patch introduces support for the non-interleaved
+> access mode.
+> 
+> When in the interleaved mode, the 'copy_play_buf' function copies data
+> from the playback to the capture buffer using one memcpy call. This call
+> copies samples for multiple, interleaved channels.
+> 
+> In the non-interleaved mode we have multiple channel buffers, so we have
+> to perform multiple memcpy calls to copy samples channel after channel.
+> 
+> Add new function called 'copy_play_buf_part_n', which copies a part of
+> each channel buffer from playback to capture. Modify the 'copy_play_buf'
+> to use the corresponding memory copy function(just memcpy /
+> copy_play_buf_part_n) depending on the access mode.
+> 
+> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
 
-ax25_ioctl()
---> ax25_ctl_ioctl()
---> ax25_dama_off()
---> ax25_dev_dama_off()
---> ax25_check_dama_slave()
---> spin_lock(&ax25_list_lock)
-<timer interrupt>
-   --> ax25_ds_timeout()
-   --> spin_lock(&ax25_list_lock)
+Nice extension. Thank you.
 
-This flaw was found by an experimental static analysis tool I am
-developing for irq-related deadlock.
+> +static void copy_play_buf_part_n(struct loopback_pcm *play, struct loopback_pcm *capt,
+> +				 unsigned int size, unsigned int src_off, unsigned int dst_off)
 
-To prevent the potential deadlock, the patch use spin_lock_bh()
-on &ax25_list_lock inside ax25_check_dama_slave().
+I would probably prefer to have dst,src,size arguments to follow memcpy, but 
+it's really nitpicking.
 
-Fixes: c19c4b9c9acb ("[AX.25]: Optimize AX.25 socket list lock")
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
----
-V2: add fixes tag
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
 
- net/ax25/ax25_ds_subr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+					Jaroslav
 
-diff --git a/net/ax25/ax25_ds_subr.c b/net/ax25/ax25_ds_subr.c
-index f00e27df3c76..010b11303d32 100644
---- a/net/ax25/ax25_ds_subr.c
-+++ b/net/ax25/ax25_ds_subr.c
-@@ -156,13 +156,13 @@ static int ax25_check_dama_slave(ax25_dev *ax25_dev)
- 	ax25_cb *ax25;
- 	int res = 0;
- 
--	spin_lock(&ax25_list_lock);
-+	spin_lock_bh(&ax25_list_lock);
- 	ax25_for_each(ax25, &ax25_list)
- 		if (ax25->ax25_dev == ax25_dev && (ax25->condition & AX25_COND_DAMA_MODE) && ax25->state > AX25_STATE_1) {
- 			res = 1;
- 			break;
- 		}
--	spin_unlock(&ax25_list_lock);
-+	spin_unlock_bh(&ax25_list_lock);
- 
- 	return res;
- }
 -- 
-2.17.1
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 
