@@ -2,49 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1ED47BAE3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F4B7BAE40
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231908AbjJEV5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 17:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
+        id S231708AbjJEV6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 17:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJEV5T (ORCPT
+        with ESMTP id S229537AbjJEV6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 17:57:19 -0400
+        Thu, 5 Oct 2023 17:58:40 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7A1DB;
-        Thu,  5 Oct 2023 14:57:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2377FC433C7;
-        Thu,  5 Oct 2023 21:57:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDF995;
+        Thu,  5 Oct 2023 14:58:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44926C433C8;
+        Thu,  5 Oct 2023 21:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696543036;
-        bh=vaHJxIHe4zRt2ghkUleXPakGs+EDbrcTc1rXqc3MsKg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=KAE6vQh542k4VeuofajcdFNi7UAR0AHGTAwk6fcvUpWM5DwqusqTcyZnRQoWRSIR0
-         wYjFVNuURnB1QjY/Qb9DF6Diq7rsAUmimE/zSlLYtW3USLdRgg3FEQIf6bVS/XGpfO
-         I3WqidB3O7HNh59ixD49Rii8SrxWj9EhBNVYvMMhwFTMyWgl96grV8AbY0IkP+GTR+
-         jU+Fo0j6zuMdYCTgMoYsXStu3ZbFLm8B7bomR77EVstC3H4dxtITqujpsNzF8Gf/D4
-         hH+2Q9BqVILErLxtzHhW2TlCJLG7E/Z7A4yUhP7cErgkT0vFZqzp1dSM9sBTqlO04S
-         +7f70D4DMQ42A==
-Date:   Thu, 5 Oct 2023 16:57:14 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        David Airlie <airlied@redhat.com>
-Subject: Re: [-next 4/5] drm/virgpu: Switch to pci_is_vga()
-Message-ID: <20231005215714.GA792609@bhelgaas>
+        s=k20201202; t=1696543119;
+        bh=wg9da7L1CQtw+tuYOmZfz5J+NgLFvScI+3C0EoG/geo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lG/Y1i8OpAQPQat88kfyzi7NWqcNQ9Cz13NjQkWCQDOP2ullmbktnb7+j7T7OUkOb
+         f5JlDNF7/gNrGv6WsIbY9PvLXmfivEukYrAgLUezsgB+ory5ukH15S8Xv4FryuoHvm
+         cV6XP4Z6Hh8AKexq5/ZCHA5kDyDTcR1bhFJGILAMXqivj54d0rEwKfK6rNAAZDIKju
+         4UmdJQrB8vGY0vpbClN4hFjfJpvZNUa0FqIuD82KqRjuSbdHiAIHw7AxVLYJ98X3s9
+         Ahf54l68UPAnMvovAyIJZLRuXff0bqHURlk7YlgOcDStezWyy6odd8F6NpHTigPFWo
+         88Q1dlHsLuGAw==
+Date:   Thu, 5 Oct 2023 23:58:32 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     gregory.clement@bootlin.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        pierre.gondois@arm.com, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] i2c: mv64xxx: add support for FSM based recovery
+Message-ID: <20231005215832.p4mxov6occzqmj2k@zenone.zhora.eu>
+References: <20230926234801.4078042-1-chris.packham@alliedtelesis.co.nz>
+ <20230926234801.4078042-4-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230830111532.444535-5-sui.jingfeng@linux.dev>
+In-Reply-To: <20230926234801.4078042-4-chris.packham@alliedtelesis.co.nz>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,43 +51,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In subject: "drm/virtio" to match previous history.
+Hi Chris,
 
-On Wed, Aug 30, 2023 at 07:15:31PM +0800, Sui Jingfeng wrote:
-> From: Sui Jingfeng <suijingfeng@loongson.cn>
-> 
-> Should be no functional change, just for cleanup purpose.
-> 
-> Cc: David Airlie <airlied@redhat.com>
-> Cc: Gerd Hoffmann <kraxel@redhat.com>
-> Cc: Gurchetan Singh <gurchetansingh@chromium.org>
-> Cc: Chia-I Wu <olvaffe@gmail.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
-> ---
->  drivers/gpu/drm/virtio/virtgpu_drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.c b/drivers/gpu/drm/virtio/virtgpu_drv.c
-> index add075681e18..3a368304475a 100644
-> --- a/drivers/gpu/drm/virtio/virtgpu_drv.c
-> +++ b/drivers/gpu/drm/virtio/virtgpu_drv.c
-> @@ -51,7 +51,7 @@ static int virtio_gpu_pci_quirk(struct drm_device *dev)
->  {
->  	struct pci_dev *pdev = to_pci_dev(dev->dev);
->  	const char *pname = dev_name(&pdev->dev);
-> -	bool vga = (pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA;
-> +	bool vga = pci_is_vga(pdev);
+Looks good, just a few questions.
 
-This *is* a functional change: Previously "vga" was only true for
-PCI_CLASS_DISPLAY_VGA (0x0300).  Now it will be true for both
-PCI_CLASS_DISPLAY_VGA (0x0300) and PCI_CLASS_DISPLAY_OTHER (0x0380).
+> +static int
+> +mv64xxx_i2c_recover_bus(struct i2c_adapter *adap)
+> +{
+> +	struct mv64xxx_i2c_data *drv_data = i2c_get_adapdata(adap);
+> +	int ret;
+> +	u32 val;
+> +
+> +	dev_dbg(&adap->dev, "Trying i2c bus recovery\n");
+> +	writel(MV64XXX_I2C_UNSTUCK_TRIGGER, drv_data->unstuck_reg);
+> +	ret = readl_poll_timeout_atomic(drv_data->unstuck_reg, val,
+> +					!(val & MV64XXX_I2C_UNSTUCK_INPROGRESS),
+> +					1000, 5000);
 
-Is that desirable?  I can't tell.  Maybe the GPU folks will chime in.
+here you are busy looping for 1ms between reads which is a long
+time. Why not using read_poll_timeout() instead?
 
->  	int ret;
+> +	if (ret) {
+> +		dev_err(&adap->dev, "recovery timeout\n");
+> +		return ret;
+> +	}
+> +
+> +	if (val & MV64XXX_I2C_UNSTUCK_ERROR) {
+> +		dev_err(&adap->dev, "recovery failed\n");
+> +		return -EBUSY;
+> +	}
+> +
+> +	dev_info(&adap->dev, "recovery complete after %d pulses\n", MV64XXX_I2C_UNSTUCK_COUNT(val));
+
+dev_dbg?
+
+> +	return 0;
+> +}
+> +
+
+[...]
+
+> -	if (of_device_is_compatible(np, "marvell,mv78230-a0-i2c")) {
+> +	if (of_device_is_compatible(np, "marvell,mv78230-a0-i2c") ||
+> +	    of_device_is_compatible(np, "marvell,armada-8k-i2c")) {
+
+should this be part of a different patch?
+
+>  		drv_data->offload_enabled = false;
+>  		/* The delay is only needed in standard mode (100kHz) */
+>  		if (bus_freq <= I2C_MAX_STANDARD_MODE_FREQ)
+> @@ -936,8 +973,21 @@ mv64xxx_of_config(struct mv64xxx_i2c_data *drv_data,
+>  }
+>  #endif /* CONFIG_OF */
 >  
->  	DRM_INFO("pci: %s detected at %s\n",
-> -- 
-> 2.34.1
-> 
+> -static int mv64xxx_i2c_init_recovery_info(struct mv64xxx_i2c_data *drv_data,
+> -					  struct device *dev)
+> +static int mv64xxx_i2c_init_fsm_recovery_info(struct mv64xxx_i2c_data *drv_data,
+> +					      struct device *dev)
+> +{
+> +	struct i2c_bus_recovery_info *rinfo = &drv_data->rinfo;
+> +
+> +	dev_info(dev, "using FSM for recovery\n");
+
+dev_dbg?
+
+> +	rinfo->recover_bus = mv64xxx_i2c_recover_bus;
+> +	drv_data->adapter.bus_recovery_info = rinfo;
+> +
+> +	return 0;
+> +
+> +}
+> +
+
+[...]
+
+> +	/* optional unstuck support */
+> +	res = platform_get_resource(pd, IORESOURCE_MEM, 1);
+> +	if (res) {
+> +		drv_data->unstuck_reg = devm_ioremap_resource(&pd->dev, res);
+> +		if (IS_ERR(drv_data->unstuck_reg))
+> +			return PTR_ERR(drv_data->unstuck_reg);
+
+OK, we failed to ioremap... but instead of returning an error,
+wouldn't it be better to just set unstuck_reg to NULL and move
+forward without unstuck support?
+
+Maybe you will stil crash later because something might have
+happened, but failing on purpose on an optional feature looks a
+bit too drastic to me. What do you think?
+
+Thanks,
+Andi
