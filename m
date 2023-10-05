@@ -2,194 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B64DA7B9F0B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A376D7BA1A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbjJEORL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43614 "EHLO
+        id S236986AbjJEOpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231830AbjJEOPD (ORCPT
+        with ESMTP id S238872AbjJEOlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:15:03 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB697DA9;
-        Thu,  5 Oct 2023 00:44:45 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 587E71F8C1;
-        Thu,  5 Oct 2023 07:44:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1696491884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=6Fiw1QxWqAmbnUUUEcuKx0CG3fBEsJS495hprxqjYac=;
-        b=xAOCwKzdRrM6ImgS0E70wSwEHxqJGNvgkx4MdGrA9CkgoYf5HayXu4l7mDt9wRSfB4XeCQ
-        RUZdMdwXr6vUNGX69TmatzjZeq8V1/DTKRpZ5FgePbIsy7D3pKMOXhcU7vHQalwoADV9qH
-        LuS8u6/8qbED3lvZ1cxYc8aWTMeK++k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1696491884;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=6Fiw1QxWqAmbnUUUEcuKx0CG3fBEsJS495hprxqjYac=;
-        b=VUcRuG66ejbNj2wAGn4YE9vaLEmeZ3HJoA3RXBglmQ3wGkpGkgpOir3jBfaGYaeeGlGeiJ
-        vGZRk7lrcfZ+/DCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E6D8A139C2;
-        Thu,  5 Oct 2023 07:44:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iXn5M2tpHmWbRAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 05 Oct 2023 07:44:43 +0000
-Message-ID: <fed1cbf3-0926-4895-a8ba-d6fa9fd53dbe@suse.de>
-Date:   Thu, 5 Oct 2023 09:44:42 +0200
+        Thu, 5 Oct 2023 10:41:17 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD4E22E0F;
+        Thu,  5 Oct 2023 07:15:43 -0700 (PDT)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 394NxwVc016445;
+        Thu, 5 Oct 2023 09:44:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=uPeJe/ujiHjKK9NWuZX2rXwLdsc4nIHY6JTK7vpJxH4=; b=pX
+        q0UHCc1ado2QV7WtnmdeB804HXe3FijBSoA9psMDkYnF0uIh0WKNYRPoWZIB+rsh
+        gReFnz5YcLFnD6seqZ1iaNsRJsypo6VayiyWgAw49j0rMEOz/lF7ws/vAag7QQYd
+        oT68cFTQ8EQPTpkb14dR3TU1g4bS9zRIwJYYUE1EFMJPI+pUDhIH88dUyHiSC2TZ
+        EJUsOHYuDlLMspH1Fx3gkPDTAWzvCcXJNwlmGf6n21I7hwX4CR+mMO3/djlZZ9ad
+        OC7oVV1Fujd0O48ZVoWOidNBEDF1cHl6v6l1y4F93HSueEETu7Uon+Oud4tChzC7
+        mJiJhrVj2VzEZI1GnBPg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3thj7e9ehw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 09:44:50 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4D859100053;
+        Thu,  5 Oct 2023 09:44:49 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 406DD21ED32;
+        Thu,  5 Oct 2023 09:44:49 +0200 (CEST)
+Received: from [10.201.20.120] (10.201.20.120) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 5 Oct
+ 2023 09:44:48 +0200
+Message-ID: <866fd143-a290-63ec-103c-b49368d9dc03@foss.st.com>
+Date:   Thu, 5 Oct 2023 09:44:47 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] BUG: KFENCE: memory corruption in
- drm_gem_put_pages+0x186/0x250
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 3/7] dt-bindings: media: Document STM32MP25 VENC video
+ encoder
 Content-Language: en-US
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Linux Regressions <regressions@lists.linux.dev>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        linaro-mm-sig@lists.linaro.org, linux-mm@kvack.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-media@vger.kernel.org
-References: <13360591.uLZWGnKmhe@natalenko.name>
- <2300189.ElGaqSPkdT@natalenko.name> <ZRrUjcWqtmzPV3Fs@casper.infradead.org>
- <2160215.irdbgypaU6@natalenko.name>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <2160215.irdbgypaU6@natalenko.name>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------72PmBn0Mbk7dBZYhSA00TrME"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+To:     Adam Ford <aford173@gmail.com>
+CC:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        <linux-media@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+References: <20231004091552.3531659-1-hugues.fruchet@foss.st.com>
+ <20231004091552.3531659-4-hugues.fruchet@foss.st.com>
+ <CAHCN7xKrriTPaRMJ-r86cSgFDUUP1At08imLBr_zEP0g3fga_g@mail.gmail.com>
+From:   Hugues FRUCHET <hugues.fruchet@foss.st.com>
+In-Reply-To: <CAHCN7xKrriTPaRMJ-r86cSgFDUUP1At08imLBr_zEP0g3fga_g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.201.20.120]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-05_04,2023-10-02_01,2023-05-22_02
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------72PmBn0Mbk7dBZYhSA00TrME
-Content-Type: multipart/mixed; boundary="------------irKYM1Z83udZBdlPGECxWYUo";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Oleksandr Natalenko <oleksandr@natalenko.name>,
- Matthew Wilcox <willy@infradead.org>
-Cc: Linux Regressions <regressions@lists.linux.dev>,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- linaro-mm-sig@lists.linaro.org, linux-mm@kvack.org,
- Maxime Ripard <mripard@kernel.org>, Bagas Sanjaya <bagasdotme@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Sumit Semwal <sumit.semwal@linaro.org>, linux-media@vger.kernel.org
-Message-ID: <fed1cbf3-0926-4895-a8ba-d6fa9fd53dbe@suse.de>
-Subject: Re: [REGRESSION] BUG: KFENCE: memory corruption in
- drm_gem_put_pages+0x186/0x250
-References: <13360591.uLZWGnKmhe@natalenko.name>
- <2300189.ElGaqSPkdT@natalenko.name> <ZRrUjcWqtmzPV3Fs@casper.infradead.org>
- <2160215.irdbgypaU6@natalenko.name>
-In-Reply-To: <2160215.irdbgypaU6@natalenko.name>
+Hi Adam,
 
---------------irKYM1Z83udZBdlPGECxWYUo
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Thanks for review,
 
-SGkNCg0KQW0gMDIuMTAuMjMgdW0gMTc6Mzggc2NocmllYiBPbGVrc2FuZHIgTmF0YWxlbmtv
-Og0KPiBPbiBwb25kxJtsw60gMi4gxZnDrWpuYSAyMDIzIDE2OjMyOjQ1IENFU1QgTWF0dGhl
-dyBXaWxjb3ggd3JvdGU6DQo+PiBPbiBNb24sIE9jdCAwMiwgMjAyMyBhdCAwMTowMjo1MlBN
-ICswMjAwLCBPbGVrc2FuZHIgTmF0YWxlbmtvIHdyb3RlOg0KPj4+Pj4+PiBCVUc6IEtGRU5D
-RTogbWVtb3J5IGNvcnJ1cHRpb24gaW4gZHJtX2dlbV9wdXRfcGFnZXMrMHgxODYvMHgyNTAN
-Cj4+Pj4+Pj4NCj4+Pj4+Pj4gQ29ycnVwdGVkIG1lbW9yeSBhdCAweDAwMDAwMDAwZTE3M2Ey
-OTQgWyAhICEgISAhICEgISAhICEgISAhICEgISAhICEgISAhIF0gKGluIGtmZW5jZS0jMTA4
-KToNCj4+Pj4+Pj4gICBkcm1fZ2VtX3B1dF9wYWdlcysweDE4Ni8weDI1MA0KPj4+Pj4+PiAg
-IGRybV9nZW1fc2htZW1fcHV0X3BhZ2VzX2xvY2tlZCsweDQzLzB4YzANCj4+Pj4+Pj4gICBk
-cm1fZ2VtX3NobWVtX29iamVjdF92dW5tYXArMHg4My8weGUwDQo+Pj4+Pj4+ICAgZHJtX2dl
-bV92dW5tYXBfdW5sb2NrZWQrMHg0Ni8weGIwDQo+Pj4+Pj4+ICAgZHJtX2ZiZGV2X2dlbmVy
-aWNfaGVscGVyX2ZiX2RpcnR5KzB4MWRjLzB4MzEwDQo+Pj4+Pj4+ICAgZHJtX2ZiX2hlbHBl
-cl9kYW1hZ2Vfd29yaysweDk2LzB4MTcwDQo+Pj4NCj4+PiBNYXR0aGV3LCBiZWZvcmUgSSBz
-dGFydCBkYW5jaW5nIGFyb3VuZCwgZG8geW91IHRoaW5rIF5eIGNvdWxkIGhhdmUgdGhlIHNh
-bWUgY2F1c2UgYXMgMGI2MmFmMjhmMjQ5YjljNDAzNmEwNWFjZmIwNTMwNThkYzAyZTJlMiB3
-aGljaCBnb3QgZml4ZWQgYnkgODYzYThlYjNmMjcwOThiNDI3NzJmNjY4ZTM5NzdmZjRjYWUx
-MGIwND8NCj4+DQo+PiBZZXMsIGVudGlyZWx5IHBsYXVzaWJsZS4gIEkgdGhpbmsgeW91IGhh
-dmUgdHdvIHVzZWZ1bCBwb2ludHMgdG8gbG9vayBhdA0KPj4gYmVmb3JlIGRlbHZpbmcgaW50
-byBhIGZ1bGwgYmlzZWN0IC0tIDg2M2E4ZSBhbmQgdGhlIHBhcmVudCBvZiAwYjYyYWYuDQo+
-PiBJZiBlaXRoZXIgb2YgdGhlbSB3b3JrLCBJIHRoaW5rIHlvdSBoYXZlIG5vIG1vcmUgd29y
-ayB0byBkby4NCj4gDQo+IE9LLCBJJ3ZlIGRpZCB0aGlzIGFnYWluc3QgdjYuNS41Og0KPiAN
-Cj4gYGBgDQo+IGdpdCBsb2cgLS1vbmVsaW5lIEhFQUR+My4uDQo+IDdjMWU3Njk1Y2E5Yjgg
-KEhFQUQgLT4gdGVzdCkgUmV2ZXJ0ICJtbTogcmVtb3ZlIHN0cnVjdCBwYWdldmVjIg0KPiA4
-ZjJhZDUzYjZlYWM2IFJldmVydCAibW06IHJlbW92ZSBjaGVja19tb3ZlX3VuZXZpY3RhYmxl
-X3BhZ2VzKCkiDQo+IGZhMWUzYzBiNTQ1M2MgUmV2ZXJ0ICJkcm06IGNvbnZlcnQgZHJtX2dl
-bV9wdXRfcGFnZXMoKSB0byB1c2UgYSBmb2xpb19iYXRjaCINCj4gYGBgDQo+IA0KPiB0aGVu
-IHJlYm9vdGVkIHRoZSBob3N0IG11bHRpcGxlIHRpbWVzLCBhbmQgdGhlIGlzc3VlIGlzIG5v
-dCBzZWVuIGFueSBtb3JlLg0KPiANCj4gU28gSSBndWVzcyAzMjkxZTA5YTQ2Mzg3MDYxMGI4
-MjI3ZjMyYjE2YjE5YTU4N2VkZjMzIGlzIHRoZSBjdWxwcml0Lg0KDQpJZ25vcmUgbXkgb3Ro
-ZXIgZW1haWwuIEl0J3MgYXBwYXJlbnRseSBiZWVuIGZpeGVkIGFscmVhZHkuIFRoYW5rcyEN
-Cg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiANCj4gVGhhbmtzLg0KPiANCg0KLS0gDQpU
-aG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0
-d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpGcmFua2Vuc3RyYXNzZSAxNDYsIDkwNDYx
-IE51ZXJuYmVyZywgR2VybWFueQ0KR0Y6IEl2byBUb3RldiwgQW5kcmV3IE15ZXJzLCBBbmRy
-ZXcgTWNEb25hbGQsIEJvdWRpZW4gTW9lcm1hbg0KSFJCIDM2ODA5IChBRyBOdWVybmJlcmcp
-DQo=
+On 10/5/23 01:41, Adam Ford wrote:
+> On Wed, Oct 4, 2023 at 4:16 AM Hugues Fruchet
+> <hugues.fruchet@foss.st.com> wrote:
+>>
+>> Add STM32MP25 VENC video encoder bindings.
+>>
+>> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+>> ---
+>>   .../bindings/media/st,stm32mp25-venc.yaml     | 56 +++++++++++++++++++
+>>   1 file changed, 56 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml b/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
+>> new file mode 100644
+>> index 000000000000..c69e0a34f675
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
+>> @@ -0,0 +1,56 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/media/st,stm32mp25-venc.yaml#
+> 
+> Can this dt-binding be made more generic, like something like
+> hantro-h1 or VC8000NanoE?
+> 
+> I think there will be more boards that may incorporate the Hantro-H1
+> or a VC8000 in the future, because I don't think this IP is unique to
+> the STM32MP25.
 
---------------irKYM1Z83udZBdlPGECxWYUo--
+This is already the case, check variants in hantro_drv.c.
+Several SoCs are sharing this IP but each IP slightly differs because of
+supported resolution, codec, preprocessing features, ...
+There are also some differences on how clock, interrupt, reset are 
+hardware mapped: shared or not by decoder and encoder for ex.
 
---------------72PmBn0Mbk7dBZYhSA00TrME
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+> 
+> adam
+> 
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: STMicroelectronics STM32MP25 VENC video encoder
+>> +
+>> +maintainers:
+>> +  - Hugues Fruchet <hugues.fruchet@foss.st.com>
+>> +
+>> +description:
+>> +  The STMicroelectronics STM32MP25 SOCs embeds a VENC video hardware encoder
+>> +  peripheral based on Verisilicon VC8000NanoE IP (former Hantro H1).
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: st,stm32mp25-venc
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  interrupt-names:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +
+>> +  clock-names:
+>> +    maxItems: 1
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - interrupts
+>> +  - interrupt-names
+>> +  - clocks
+>> +  - clock-names
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +    venc: venc@580e0000 {
+>> +        compatible = "st,stm32mp25-venc";
+>> +        reg = <0x580e0000 0x800>;
+>> +        interrupts = <GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH>;
+>> +        interrupt-names = "venc";
+> 
+> 
+> Is the interrupt-names needed if there is only one?
+> 
 
------BEGIN PGP SIGNATURE-----
+Not really, could be dropped.
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUeaWsFAwAAAAAACgkQlh/E3EQov+C8
-IQ//f7UtB0BiFOP/urp8ifj2BA++IH7AahthXC/eA6+2pPwYjw/fe9YrnNsXHKZkmRoa+txpuWSO
-IqfBW945oex2UlDLbj1vlaZ4aGlPDxnRwcGbabDtsZ6G/tGVquNiLTSmetw/tigqXEIoH1w75zdS
-zUBPyCLzeyfjHEdEu6A/HbaP7jhr7+ueRJxx9r2EVyP4CEZ4RI4ZepOMf0DuANhXUZ1Cu0ut3KiU
-ncNevZo+WHor0sZq1bNWzJ9CUgNk0sqZux8KPnd5kOxzK3BiTivKoLJGOmjA3SeanTipgLEu+aK+
-Dyjm/v211t64CXuw0pAaGG0Ha/moJ9XSd/r9NiKFxfvs1tsV/+vFjiXZbInjzIj43YhNpywfMcGF
-MzV+hmEhMqugK0P/Holb1s5MQJbR6Bq8FE8lMeK3lxC3c0/71hcGyK/PwPJXLXinFmVIGw74Qg7E
-jVKHdCxgM1Q/gbPuaeX+o4xD+DbJlqYofv+XBMpOJtcPQ/OsdGGW1+S/fR33yNwJ11k3E/Nphji/
-Amv1gluY6iTqaHmIJfnsBAA+Z0Q6dgTKhue771qOyYu4uIoK6bFnv7yx9iXBe9khb3LOIIlselMZ
-CQoPI57RQr1N8QA3UZ3VYC4NqTRgNcXhAxNVLpwVlNrGjIm17nrbB/BlC0NlrBHLkNeRE7lck58Z
-rRo=
-=C3sp
------END PGP SIGNATURE-----
+>> +        clocks = <&ck_icn_p_venc>;
+>> +        clock-names = "venc-clk";
+> 
+> Same thing for the clock.  if there is only one clock, doe they need names?
+> 
+Not really, could be dropped.
 
---------------72PmBn0Mbk7dBZYhSA00TrME--
+> adam
+>> +    };
+>> --
+>> 2.25.1
+>>
+
+BR,
+Hugues.
