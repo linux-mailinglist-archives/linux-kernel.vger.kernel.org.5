@@ -2,126 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DE57BAF5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB497BAF62
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbjJEXiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 19:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41554 "EHLO
+        id S229580AbjJEXkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 19:40:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjJEXhG (ORCPT
+        with ESMTP id S229445AbjJEXje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 19:37:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0095119;
-        Thu,  5 Oct 2023 16:36:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB365C433C7;
-        Thu,  5 Oct 2023 23:36:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696548996;
-        bh=jM/w3fzfVHdmadDXFozFx6NFKuTnREVwExPWlfdgFgc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nUcWtuyeYhbG07u6HpTAvW7DOS7G42XnmLKPctw9KA5fA7aKTjvKyKRAyWtmTUAQ0
-         Szi4wmKMm8XKxe4YfpLFwtXgKjj9Pc4uCHAeZOLMwzngDZ9rQQ9oJTko1XtWa0fSXn
-         7PyMBndfHG799/tObcqH35jZBPOWOyCyjlmIo64FZMwCsNs4aKV0IRU4SjNv40tsra
-         Y06D0H2PIHB0Xaxl8t8w9upqskBQH3vAHCHylSPya38VP7cBy8tPkmNkTPTKSKHlv4
-         0FP/FVMx56J+3Y/rl3LCXkyvdE/erFhPPVhPx+D8dh84tYl4d3C4ZoXdOLDOGpU4+n
-         5pSr3IZIZGfEg==
-Date:   Fri, 6 Oct 2023 00:36:30 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     mchehab@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        matthias.bgg@gmail.com, moudy.ho@mediatek.com,
-        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
-        u.kleine-koenig@pengutronix.de, linqiheng@huawei.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com,
-        wenst@chromium.org
-Subject: Re: [PATCH v2 1/2] media: dt-bindings: mediatek: Add phandle to
- mediatek,scp on MDP3 RDMA
-Message-ID: <20231006-jinx-playing-261e5f41ff7f@spud>
-References: <20231005104905.120544-1-angelogioacchino.delregno@collabora.com>
- <20231005104905.120544-2-angelogioacchino.delregno@collabora.com>
+        Thu, 5 Oct 2023 19:39:34 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF59116;
+        Thu,  5 Oct 2023 16:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696549171;
+        bh=W4CzBrXIZfoFxDzwDzpUKkmGPcZbwFXTX4PF7psd/3U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qKQdSheofcQIGSCDXjiVqQhqzvLuu6/7SC69nW8btUIMyr+IZnd4p484qDf+qbW6i
+         BHegnvIjon6dS/EErONfP4XrQKiPnL6NUpzt480Z9DEtyP/XdbXaQWgXwEDldLQwAb
+         Kg1ZHZUJnCj9Q6UK1ramSog8xg9SL4cDqeD7uBC7lIx3l0CL8FuG7pNMldMHaIWvOj
+         VjNF5jx2nzF7YUyeva2C3c0vTVXmtPqM/h0uiOZdRG2JCu4EMtxsxtcmMrfmTe6yCa
+         80nXrmNVdd3Jc4effQ4RC8Db1xZC75jDlQYZh1qIsO0dEItyrBK72Fb4lI8SSPiCNp
+         3IxBnBq3kxPmg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S1p1b4KDtz4x5k;
+        Fri,  6 Oct 2023 10:39:31 +1100 (AEDT)
+Date:   Fri, 6 Oct 2023 10:39:29 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the scmi tree
+Message-ID: <20231006103929.4c56edb3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gIB/z/xC+ykFsm7t"
-Content-Disposition: inline
-In-Reply-To: <20231005104905.120544-2-angelogioacchino.delregno@collabora.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/nPc_8xk77m/.M5evTqA8giC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---gIB/z/xC+ykFsm7t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/nPc_8xk77m/.M5evTqA8giC
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 05, 2023 at 12:49:04PM +0200, AngeloGioacchino Del Regno wrote:
-> The MDP3 RDMA needs to communicate with the SCP remote processor: allow
-> specifying a phandle to a SCP core.
->=20
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
-> ---
->=20
-> v2: I've dropped Conor and Chen-Yu's Reviewed-by tags because I have chan=
-ged
->     the description (so, the patch actually changed a bit).
+Hi all,
 
-I dunno, you made it more informative so you could probably have kept
-mine at least.
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+After merging the scmi tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-Thanks,
-Conor.
+In file included from drivers/tee/optee/ffa_abi.c:8:
+include/linux/arm_ffa.h: In function 'ffa_mem_desc_offset':
+include/linux/arm_ffa.h:105:10: error: implicit declaration of function 'FI=
+ELD_PREP' [-Werror=3Dimplicit-function-declaration]
+  105 |         (FIELD_PREP(FFA_MAJOR_VERSION_MASK, (major)) |          \
+      |          ^~~~~~~~~~
+include/linux/arm_ffa.h:107:33: note: in expansion of macro 'FFA_PACK_VERSI=
+ON_INFO'
+  107 | #define FFA_VERSION_1_0         FFA_PACK_VERSION_INFO(1, 0)
+      |                                 ^~~~~~~~~~~~~~~~~~~~~
+include/linux/arm_ffa.h:368:28: note: in expansion of macro 'FFA_VERSION_1_=
+0'
+  368 |         if (ffa_version <=3D FFA_VERSION_1_0)
+      |                            ^~~~~~~~~~~~~~~
 
->=20
->  .../devicetree/bindings/media/mediatek,mdp3-rdma.yaml     | 8 ++++++++
->  1 file changed, 8 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.y=
-aml b/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
-> index 7032c7e15039..59dcea797b71 100644
-> --- a/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
-> +++ b/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
-> @@ -45,6 +45,14 @@ properties:
->        include/dt-bindings/gce/<chip>-gce.h of each chips.
->      $ref: /schemas/types.yaml#/definitions/uint32-array
-> =20
-> +  mediatek,scp:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to the System Control Processor (SCP) used for initializing
-> +      and stopping the MDP3, for sending frame data locations to the MDP=
-3's
-> +      VPU and to install Inter-Processor Interrupt handlers to control
-> +      processing states.
-> +
->    power-domains:
->      maxItems: 1
-> =20
-> --=20
-> 2.42.0
->=20
+Exposed by commit
 
---gIB/z/xC+ykFsm7t
-Content-Type: application/pgp-signature; name="signature.asc"
+  0624de756f75 ("firmware: arm_ffa: Update memory descriptor to support v1.=
+1 format")
+
+This has been possible for a while, and arm_ffa.h needs to include
+linus/bitfoeld.h ...
+
+I have used the scmi tree from next-20231005 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/nPc_8xk77m/.M5evTqA8giC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZR9IfgAKCRB4tDGHoIJi
-0mYNAP94jJiEEICc5tNh0nDrkI4gQqpKlFv0/+qx4Ml3g4MyRwD/bq/qU6AsenA0
-urxwY3sdNT0Qa5qIFRnbeDawGz/Y9gE=
-=bidF
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUfSTEACgkQAVBC80lX
+0GwZIAf/eKN4PbTQKD/opx6+HlOC5J3bf5Jm1Z7THWV8iCzELwJtSdImmzt8CEkh
+E9GJEKB1LLW/7+/eGo2G6bpiuzs0s2f/MryzYSjQaLyLitBqNQVDItOjL7+62I1e
+2akQLA39qCJA5XvHqMP0fgmMaGQ4CGdS07pZm58IMcLpIewnYW5SGrPXr/6g4H6w
+5Op+jxQ6EK7vYOkbm6u90/YtY6Wk0kSqw/MLs0xJ5yiMQJPngpCl098ffBVVmMRG
+4E7Mel1ZVKaLe50W6FutqFadSe0hEte5LTpkVhhOQAtb21YBGNGgq2NSpOg9Gvtc
+oaCkfPy9xz6eOXZVwDeKYuqga+nY5A==
+=lpIV
 -----END PGP SIGNATURE-----
 
---gIB/z/xC+ykFsm7t--
+--Sig_/nPc_8xk77m/.M5evTqA8giC--
