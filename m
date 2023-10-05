@@ -2,66 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BCF7BA1E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418237BA035
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbjJEPBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
+        id S234922AbjJEOe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233778AbjJEPAb (ORCPT
+        with ESMTP id S234102AbjJEOcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:00:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96F616AA4;
-        Thu,  5 Oct 2023 07:37:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FBAFC32784;
-        Thu,  5 Oct 2023 10:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696503589;
-        bh=UBDFLeY+PPEBJKSf7kZcYghS/Q9ycdJpp2P0dOU7MX0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bHf+IaimHmjzXHj+umSI5gqnp+F5ATSlb291+Lg68bU6aTrVR2AOORQde80aTEtaj
-         DxbB+OjPUgEzFbqtjtWt8O+Q8m+28sjEc2VsvYAEWUN/0n6JNnT8Gmfw6H3cOy8ter
-         MFJkBgRiZSqwdEI8xdfvB64npda56x4HenxGybY7I3Sh/fPinivGTb92LMM8Hk3eUE
-         CVvK7Z3DgIosM8SU24Vz90u4w1esQa8sBKSEgzvheHNhQ6Q1LGaNcsccTBcb3cAZ8T
-         Aq9bP2eMUu4vzk+GAjF3lMmXaSw7w8/gfTkEq2o2FT2T1YvJyUZInuQ8fjVXUVlPeV
-         4cbNyH7WOsLYQ==
-Date:   Thu, 5 Oct 2023 11:59:42 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Hugues Fruchet <hugues.fruchet@foss.st.com>
-Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Adam Ford <aford173@gmail.com>
-Subject: Re: [RFC 0/6] VP8 H1 stateless encoding
-Message-ID: <20231005-bleach-unknotted-9b11443959b1@spud>
-References: <20231004103720.3540436-1-hugues.fruchet@foss.st.com>
+        Thu, 5 Oct 2023 10:32:52 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA3623D07;
+        Thu,  5 Oct 2023 04:01:29 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E6FF01F88E;
+        Thu,  5 Oct 2023 11:01:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1696503687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7NjnAGUAmem/kqOMgVtFmu0AGdXvG/f+8Nh1NHfQyLU=;
+        b=vGNBq7rBxWcCqtWjExzPmjqa/TSh3EUe6CGNetLtP3UHmNbie6H07wdNIaKT1Qjf/vmp76
+        qrZZqmuoiHZ8Q4GLq9AiS0hpHxioWKoiKKi/RYIydlfBRpGfiEg84aSBzQxGsFbvv2Tijh
+        SheD31iTgCNNcpz0v/oyTLXjJ8qEnys=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1696503687;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7NjnAGUAmem/kqOMgVtFmu0AGdXvG/f+8Nh1NHfQyLU=;
+        b=XKSEKTZ4n40WHUCBZgL1GHMxEUaHRddk9m8e617O5UQdT5VgBNEs/O99/WY0gg1FJsjeI6
+        lubq7NMc0dWjDvDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8D10413438;
+        Thu,  5 Oct 2023 11:01:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id MfhVIYeXHmUFNwAAMHmgww
+        (envelope-from <jroedel@suse.de>); Thu, 05 Oct 2023 11:01:27 +0000
+Date:   Thu, 5 Oct 2023 13:01:26 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Gerd Bayer <gbayer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev
+Subject: Re: [PATCH] s390/pci: Fix reset of IOMMU software counters
+Message-ID: <ZR6XhkCzYMJRTT06@suse.de>
+References: <20231004-dma_iommu_fix-v1-1-129777cd8232@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Ia4S0Q4OBDpOeXiU"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231004103720.3540436-1-hugues.fruchet@foss.st.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231004-dma_iommu_fix-v1-1-129777cd8232@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,98 +81,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 04, 2023 at 10:56:12AM +0200, Niklas Schnelle wrote:
+>  arch/s390/include/asm/pci.h |  4 ----
+>  arch/s390/pci/pci.c         | 13 ++++++++++---
+>  2 files changed, 10 insertions(+), 7 deletions(-)
 
---Ia4S0Q4OBDpOeXiU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied, thanks.
 
-On Wed, Oct 04, 2023 at 12:37:14PM +0200, Hugues Fruchet wrote:
-> Hi all,
->=20
-> Here is an RFC to support VP8 encoding using Hantro H1 hardware
-> of STM32MP25 SoCs (Verisilicon VC8000NanoE IP).
-> This work is derived from work done to support Rockchip RK3399
-> VPU2 in RFC [1] with a reshuffling of registers to match H1
-> register set.
->=20
-> This has been tested on STM32MP257F-EV1 evaluation board using
-> GStreamer userspace [2]:
-> gst-launch-1.0 videotestsrc num-buffers=3D500 ! video/x-raw,width=3D640,h=
-eight=3D480 \
-> ! v4l2slvp8enc ! queue ! matroskamux ! filesink location=3Dtest_vp8.mkv
->=20
-> For the sake of simplicity I have embedded here the RFC [1] before the
-> changes related to this exact RFC, all rebased on v6.6 + STM32MP25
-> hardware codecs support [3].
+-- 
+Jörg Rödel
+jroedel@suse.de
 
-I don't see any bindings etc here, what is it that you think I would
-care about looking at in this RFC series?
+SUSE Software Solutions Germany GmbH
+Frankenstraße 146
+90461 Nürnberg
+Germany
 
-Thanks,
-Conor.
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
 
->=20
-> [1] https://lwn.net/ml/linux-media/20230309125651.23911-1-andrzej.p@colla=
-bora.com/
-> [2] https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3=
-736
-> [3] https://patchwork.kernel.org/project/linux-media/list/?series=3D789861
->=20
-> Best regards,
-> Hugues.
->=20
->=20
-> Andrzej Pietrasiewicz (2):
->   media: uapi: Add VP8 stateless encoder controls
->   media: hantro: add VP8 encode support for Rockchip RK3399 VPU2
->=20
-> Hugues Fruchet (4):
->   media: hantro: add h1 vp8 encode support
->   media: hantro: add VP8 encode support for STM32MP25 VENC
->   media: hantro: h1: NV12 single-plane support
->   media: hantro: add NV12 single-plane support for STM32MP25 VENC
->=20
->  drivers/media/platform/verisilicon/Makefile   |    3 +
->  drivers/media/platform/verisilicon/hantro.h   |   10 +
->  .../platform/verisilicon/hantro_boolenc.c     |   69 +
->  .../platform/verisilicon/hantro_boolenc.h     |   21 +
->  .../media/platform/verisilicon/hantro_drv.c   |   15 +-
->  .../platform/verisilicon/hantro_h1_jpeg_enc.c |   42 +-
->  .../platform/verisilicon/hantro_h1_regs.h     |   71 +-
->  .../platform/verisilicon/hantro_h1_vp8_enc.c  | 1589 +++++++++++++++++
->  .../media/platform/verisilicon/hantro_hw.h    |   93 +
->  .../media/platform/verisilicon/hantro_v4l2.c  |    5 +-
->  .../media/platform/verisilicon/hantro_vp8.c   |  118 ++
->  .../verisilicon/rockchip_vpu2_hw_vp8_enc.c    | 1574 ++++++++++++++++
->  .../platform/verisilicon/rockchip_vpu2_regs.h |    1 +
->  .../platform/verisilicon/rockchip_vpu_hw.c    |   23 +-
->  .../platform/verisilicon/stm32mp25_venc_hw.c  |   35 +-
->  drivers/media/v4l2-core/v4l2-ctrls-core.c     |   13 +
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    5 +
->  include/media/v4l2-ctrls.h                    |    2 +
->  include/uapi/linux/v4l2-controls.h            |   91 +
->  include/uapi/linux/videodev2.h                |    3 +
->  20 files changed, 3755 insertions(+), 28 deletions(-)
->  create mode 100644 drivers/media/platform/verisilicon/hantro_boolenc.c
->  create mode 100644 drivers/media/platform/verisilicon/hantro_boolenc.h
->  create mode 100644 drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
->  create mode 100644 drivers/media/platform/verisilicon/rockchip_vpu2_hw_v=
-p8_enc.c
->=20
-> --=20
-> 2.25.1
->=20
-
---Ia4S0Q4OBDpOeXiU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZR6XHgAKCRB4tDGHoIJi
-0sjvAP0ZC5KOCGnycz1ccSYrmARfxdHqtXmmmQJpUOyX3kDeCwD/Q0VKIfCKL28d
-bB3btsN54UkoHILpiUtId0zm3X7Q6gU=
-=90H2
------END PGP SIGNATURE-----
-
---Ia4S0Q4OBDpOeXiU--
