@@ -2,81 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC637BA11B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CE97B9FDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235458AbjJEOph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55950 "EHLO
+        id S233975AbjJEOaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238539AbjJEOkk (ORCPT
+        with ESMTP id S234136AbjJEO2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:40:40 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACA477644;
-        Thu,  5 Oct 2023 07:12:58 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3958A1lg012152;
-        Thu, 5 Oct 2023 09:57:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=TULmcO8l188rP5vtjqFrkpttdGmBezWswKLwM6tqT+k=;
- b=Qj7I3eeKQbICxxNLcDf5mcOHdj3UtQIdHYHW2wnUCyZU6x6xlHzHPqqBsPyfiY3rOw9A
- 0b03WbvtDQ3foBmuYteEiAO4in9C/+s9ZBh/4D9ICpLfNdRljEkkN1OEanDWjzgsel8z
- iOS/6pFb3Tdht6vV4XSmSWp91aKKZos440p/+oTTJhIDQ6VMhhgAjtNNq1oHIqIk6B93
- iCfHE3/F6fwZpB8mi7iRyRs86dQGDqc7MSmKTViYighBvUG19YiOAhqV5cliyTt0oYKD
- GJau/y+OshTswMi4sZMfaI8RLcyJCpK5o6/k7tgysj3CB8AbYw8FLeVcE9qd5TKZmyPv mA== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3th8e1teue-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 09:57:56 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3959vtAJ028265
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Oct 2023 09:57:55 GMT
-Received: from varda-linux.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 5 Oct 2023 02:57:49 -0700
-Date:   Thu, 5 Oct 2023 15:27:45 +0530
-From:   Varadarajan Narayanan <quic_varada@quicinc.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <ilia.lin@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <rafael@kernel.org>,
-        <viresh.kumar@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <quic_kathirav@quicinc.com>, <linux-pm@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v1 07/10] arm64: dts: qcom: ipq5332: populate the opp
- table based on the eFuse
-Message-ID: <20231005095744.GA29795@varda-linux.qualcomm.com>
-References: <cover.1693996662.git.quic_varada@quicinc.com>
- <a6d12e3b253d6a55d85f66979ba8b7d9c9ff6072.1693996662.git.quic_varada@quicinc.com>
- <CAA8EJppNsgUNgwadq9oM0_KyORNR5PBZGVZukN6MzAm2KPzC9g@mail.gmail.com>
+        Thu, 5 Oct 2023 10:28:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73CF1F757;
+        Thu,  5 Oct 2023 02:59:35 -0700 (PDT)
+From:   Benedikt Spranger <b.spranger@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696499973;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3Yg/WhHpaQNIRqvSGsa5f/WE6yXRFzSVBafLf2ZRuh8=;
+        b=WUTzOHOsOUGPF+kaPiD4pPQ0Yxr+DHHn0124BSw+j3ykiDvmrS2iMxSNnoy6/pG3TJOvvJ
+        6/IRDtVFFNYAzIJU0o0WJNHW5tcBUJEW4S8C/fhRa88K2r6OGtYEV1w2s9VjdJjPSWMd9B
+        EeDrUa+5+jFCqFsw/gtKpPrPJCQcWoNIpyYS8oRY/GYhk8Zf+hWOnRg7O77c+97+EjlApg
+        D8qNR0dOCczitxaR2OIBK1tu6ws/78awFm1e9pVzJW6dgbejp5+sKNMWtx88Pl7Sl3Gr7u
+        TNUf/5OWFmPKF8J9MupE5Ek7B0VJjbw2VaJjYqupMCEVEhAJB8RoR4ksp7JtGA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696499973;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3Yg/WhHpaQNIRqvSGsa5f/WE6yXRFzSVBafLf2ZRuh8=;
+        b=FrVErenItllRBa/Uhu5rymcSxkX7LwQ4Gt7U1rYiYckHVblupsFWLPbKWRVBJgWne0FXao
+        FR/GCqHqk5eIl9BA==
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-clk@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Subject: [PATCH 0/1] Broken serial console on Altera Cyclon V board
+Date:   Thu,  5 Oct 2023 11:59:26 +0200
+Message-ID: <20231005095927.12398-1-b.spranger@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAA8EJppNsgUNgwadq9oM0_KyORNR5PBZGVZukN6MzAm2KPzC9g@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: oIcgO5TZ66_7muH1tFN8rHdOi-fpZKDV
-X-Proofpoint-ORIG-GUID: oIcgO5TZ66_7muH1tFN8rHdOi-fpZKDV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_06,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- adultscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310050077
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,105 +54,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 04:59:28PM +0300, Dmitry Baryshkov wrote:
-> On Thu, 7 Sept 2023 at 08:23, Varadarajan Narayanan
-> <quic_varada@quicinc.com> wrote:
-> >
-> > IPQ53xx have different OPPs available for the CPU based on
-> > SoC variant. This can be determined through use of an eFuse
-> > register present in the silicon.
-> >
-> > Add support to read the eFuse and populate the OPPs based on it.
-> >
-> > Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
-> > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> > ---
-> >  arch/arm64/boot/dts/qcom/ipq5332.dtsi | 34 +++++++++++++++++++++++++++++++---
-> >  1 file changed, 31 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> > index 82761ae..3ca3f34 100644
-> > --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> > @@ -91,11 +91,34 @@
-> >         };
-> >
-> >         cpu_opp_table: opp-table-cpu {
-> > -               compatible = "operating-points-v2";
-> > +               compatible = "operating-points-v2-kryo-cpu";
-> >                 opp-shared;
-> > +               nvmem-cells = <&cpu_speed_bin>;
-> > +               nvmem-cell-names = "speed_bin";
-> > +
-> > +               /*
-> > +                * Listed all supported CPU frequencies and opp-supported-hw
-> > +                * values to select CPU frequencies based on the limits fused.
-> > +                * ------------------------------------------------------------
-> > +                * Frequency     BIT3   BIT2   BIT1    BIT0    opp-supported-hw
-> > +                *              1.0GHz 1.2GHz 1.5GHz No Limit
-> > +                * ------------------------------------------------------------
-> > +                * 1100000000     1      1      1       1            0xF
-> > +                * 1500000000     0      0      1       1            0x3
-> > +                * -----------------------------------------------------------
-> > +                */
->
-> This can probably go to the commit message instead.
+Hi,
 
-Ok
+trying to boot e recent Kernel on a Altera Cyclone V based board I
+faced a broken serial console. The "real" baudrate is half of the set
+baudrate i.e. 57600 instead of configured 115200. Traking down the issue
+let to commit 9607beb917df ("clk: socfpga: gate: Add a determine_rate hook").
 
-> > +
-> > +               opp-1100000000 {
-> > +                       opp-hz = /bits/ 64 <1100000000>;
->
-> But your table shows 1.0 GHz and 1.2 GHz instead of 1.1 GHz
+Change the determine_rate hook to fix the issue.
 
-Will update it.
+Regards
+    Benedikt Spranger
 
-> > +                       opp-microvolt = <850000>;
-> > +                       opp-supported-hw = <0xF>;
-> > +                       clock-latency-ns = <200000>;
-> > +               };
-> >
-> > -               opp-1488000000 {
-> > -                       opp-hz = /bits/ 64 <1488000000>;
-> > +               opp-1500000000 {
-> > +                       opp-hz = /bits/ 64 <1500000000>;
->
-> So, 1.488 GHz or 1.5 GHz?
+Benedikt Spranger (1):
+  clk: socfpga: gate: Fix of by factor 2 for serial console
 
-1.5 GHz
+ drivers/clk/socfpga/clk-gate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > +                       opp-microvolt = <950000>;
->
-> Which regulator is controlled by this microvolt?
+-- 
+2.42.0
 
-Based on the SKU, the XBL sets up the regulator to provide 950000uV
-on CPUs capable of running 1.5G and 850000uV on other SKUs. Linux
-doesn't control it.
-
-Thanks
-Varada
-> > +                       opp-supported-hw = <0x3>;
-> >                         clock-latency-ns = <200000>;
-> >                 };
-> >         };
-> > @@ -150,6 +173,11 @@
-> >                         reg = <0x000a4000 0x721>;
-> >                         #address-cells = <1>;
-> >                         #size-cells = <1>;
-> > +
-> > +                       cpu_speed_bin: cpu_speed_bin@1d {
-> > +                               reg = <0x1d 0x2>;
-> > +                               bits = <7 2>;
-> > +                       };
-> >                 };
-> >
-> >                 rng: rng@e3000 {
-> > --
-> > 2.7.4
-> >
->
->
-> --
-> With best wishes
-> Dmitry
