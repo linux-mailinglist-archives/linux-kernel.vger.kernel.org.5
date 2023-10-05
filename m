@@ -2,243 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4B07BADA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3707BADAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbjJEVf1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Oct 2023 17:35:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
+        id S231704AbjJEVgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 17:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjJEVfY (ORCPT
+        with ESMTP id S229750AbjJEVgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 17:35:24 -0400
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA0B95
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 14:35:23 -0700 (PDT)
-Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay10.hostedemail.com (Postfix) with ESMTP id D3538C044C;
-        Thu,  5 Oct 2023 21:35:21 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id E1CCC60018;
-        Thu,  5 Oct 2023 21:35:18 +0000 (UTC)
-Message-ID: <01fe46f0c58aa8baf92156ae2bdccfb2bf0cb48e.camel@perches.com>
-Subject: [PATCH] get_maintainer: add --keywords-in-file option
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 05 Oct 2023 14:35:17 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 5 Oct 2023 17:36:35 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F36095
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 14:36:32 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-536ef8a7dcdso4675a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 14:36:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696541791; x=1697146591; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VWddOZrmmasiWu5O0KWGa9lmgFQoWcrVlIGB6YyWgVs=;
+        b=4bJSH3eKN6MBY0Fpg0QIuGImOmRogXegcl4rJtKoq4BHU191C99zCRMoMz55rlPTTl
+         IdHXlJVarO7ktFPAKrq3G7RTTRSApiidYU7KAPTnxItPPINLAXJyOUMlL8+Pz5mc2y3t
+         bVWTXXqLg/nk+Cv1NEIIyPzU+lyR3WWwNWaWLXcBy75kL27BFIKk9zEopXfA67pc1YbM
+         YjCWjQIMKGFuW8qy+s43YvrtMUtbuCRKAH2LItQ06bKkezqTHj5kV+oWlzTXHgXRXZ+i
+         69hnaLjLeqjU2lrsmnGh8Ssdbgw4E9umxVYCnk78nEFjBRnNoAbQRJa+83Ke/zVUaTxb
+         TdJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696541791; x=1697146591;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VWddOZrmmasiWu5O0KWGa9lmgFQoWcrVlIGB6YyWgVs=;
+        b=g3KTNQwkqnsL+ax18S3OcICO8f7V+AoiXjVQYyF8R1SR62lYOmUWUuEkoNQopv3+sf
+         1quXUlffB7rTLyP0nBtYxW7T5fPsNqtg8Nzk4rjaxu90QAXgfTkAePBQi8lpiO6H2ov7
+         PISJtoeA4ikegxEF84EEL3UIjYiE9IAMdh+7a6WAeeB2mAypxhK+cYF/hqyXaMMScShH
+         L1cd1nMyCFGcMFxSYDziAhXybKMXt6C/3+EiELDPh81BcRM4D0D6ROuv7ObKHxbcBEPk
+         NdOD1V9Y56ukmmuvzfjo33TAOFF+l2THH604mPeS0tKo0HvYstZ+mED5f7AQUBJOSnJ2
+         22lg==
+X-Gm-Message-State: AOJu0Yzfj2Xo8w3orUO/WMSR78HvmlwqJ0C2saqAoNEiJCfYlCNQYxVL
+        JWZ3P9Fd0lUDTNychD+653q+rtDRAqXebAtdgvBQJQ==
+X-Google-Smtp-Source: AGHT+IGlPnoq0UGE7DkoUzQp1yA5leDO8Cu3vmPbEmr9NZ49zBh/WWSakqyb4sccb/9wcCnTmo4j2D3js6AfFSbidkA=
+X-Received: by 2002:a50:9f67:0:b0:522:4741:d992 with SMTP id
+ b94-20020a509f67000000b005224741d992mr121564edf.4.1696541790666; Thu, 05 Oct
+ 2023 14:36:30 -0700 (PDT)
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: E1CCC60018
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Stat-Signature: znaudhuzqxb7bcm3zyebt8hx47tdeup6
-X-Rspamd-Server: rspamout08
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+fFSt0IL88q4Ibii+0k4u3v7SsGFFw49k=
-X-HE-Tag: 1696541718-941851
-X-HE-Meta: U2FsdGVkX1+4d9ajuY2KehV0iygo73eUFfl/0sGlPh3p27Q/AXFVh65dIIuRefmqGoJHbkVr+K4jg/FRhR2x7A2YMQor9GIGiVYmHgdIEeD0TmtuYib6Dlj2g73hY/Qcq8M7Ii/LbbeG4RFyE7Hk6LOor2+DIX+yCZIxBBNyouNbUR3185I8VYe4bdvFIlwP2sH74aZtA2yi3xQYEdfUkVjtvegkkvAfcPEViE/BgMpBHkTr7azUyiWNa+gU1MrnvZzq2mOzt1wMMWb0H6xlT8HE4wfNX5GaWbdSqcAmQWeDs/Y5iTjsfD/FomnliXf0PJ3XTxCHT8DWGNijgbT8pZ4IM/RYkDTdQ5nNRILMXcyjVKl4AtJI9k7M5eON6jjab38zYukUIUjxuE4yvPJFNZvoGb1XmuTa5+3YUEIMsA3KaBEdpN/UI4n3X2t4uBDPVZSNJ5IzKO63ke/K9GXPUAGlExhRgiR+J11jtGd4G6P2J99ce3d1rvX/FSCpk2vlsmMUhIxZJgoEbySvIYj8+VWslZEtKJPSEqrTcTPriZNmZDUqbmb+/klfRHPTmDSbwZwwgpBIWgGoPtqxV6pwcg==
+References: <20230928194801.2278999-1-mmaurer@google.com> <CAK7LNAQP9FVCArnw=JDBbtbu-3bxx162kqT24bUbffPtwE18uA@mail.gmail.com>
+In-Reply-To: <CAK7LNAQP9FVCArnw=JDBbtbu-3bxx162kqT24bUbffPtwE18uA@mail.gmail.com>
+From:   Matthew Maurer <mmaurer@google.com>
+Date:   Thu, 5 Oct 2023 14:36:19 -0700
+Message-ID: <CAGSQo01=UxFmPRo6OTU1443izumvF+Z0fevgdWVdHK6DGTehCQ@mail.gmail.com>
+Subject: Re: [PATCH v3] rust: Respect HOSTCC when linking for host
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There were some recent attempts [1] [2] to make the K: field less noisy
-and its behavior more obvious. Ultimately, a shift in the default
-behavior and an associated command line flag is the best choice.
-
-Currently, K: will match keywords found in both patches and files.
-
-Matching content from entire files is (while documented) not obvious
-behavior and is usually not wanted by maintainers.
-
-Now only patch content will be matched against unless --keywords-in-file
-is also provided as an argument to get_maintainer.
-
-Add the actual keyword matched to the role or rolestats as well.
-
-For instance given the diff below that removes clang:
-
-   diff --git a/drivers/hid/bpf/entrypoints/README b/drivers/hid/bpf/entrypoints/README
-   index 147e0d41509f..f88eb19e8ef2 100644
-   --- a/drivers/hid/bpf/entrypoints/README
-   +++ b/drivers/hid/bpf/entrypoints/README
-   @@ -1,4 +1,4 @@
-    WARNING:
-    If you change "entrypoints.bpf.c" do "make -j" in this directory to rebuild "entrypoints.skel.h".
-   -Make sure to have clang 10 installed.
-   +Make sure to have 10 installed.
-    See Documentation/bpf/bpf_devel_QA.rst
-
-The new role/rolestats output includes ":Keyword:\b(?i:clang|llvm)\b"
-
-$ git diff drivers/hid/bpf/entrypoints/README | .scripts/get_maintainer.pl
-Jiri Kosina <jikos@kernel.org> (maintainer:HID CORE LAYER,commit_signer:1/1=100%)
-Benjamin Tissoires <benjamin.tissoires@redhat.com> (maintainer:HID CORE LAYER,commit_signer:1/1=100%,authored:1/1=100%,added_lines:4/4=100%)
-Nathan Chancellor <nathan@kernel.org> (supporter:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
-Nick Desaulniers <ndesaulniers@google.com> (supporter:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
-Tom Rix <trix@redhat.com> (reviewer:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> (commit_signer:1/1=100%)
-linux-input@vger.kernel.org (open list:HID CORE LAYER)
-linux-kernel@vger.kernel.org (open list)
-llvm@lists.linux.dev (open list:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
-
-Link: https://lore.kernel.org/r/20231004-get_maintainer_change_k-v1-1-ac7ced18306a@google.com
-Link: https://lore.kernel.org/all/20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com
-Link: https://lore.kernel.org/all/3dca40b677dd2fef979a5a581a2db91df2c21801.camel@perches.com
-Original-patch-by: Justin Stitt <justinstitt@google.com>
-Signed-off-by: Joe Perches <joe@perches.com>
----
- scripts/get_maintainer.pl | 38 ++++++++++++++++++++------------------
- 1 file changed, 20 insertions(+), 18 deletions(-)
-
-diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-index ab123b498fd9..16d8ac6005b6 100755
---- a/scripts/get_maintainer.pl
-+++ b/scripts/get_maintainer.pl
-@@ -57,6 +57,7 @@ my $subsystem = 0;
- my $status = 0;
- my $letters = "";
- my $keywords = 1;
-+my $keywords_in_file = 0;
- my $sections = 0;
- my $email_file_emails = 0;
- my $from_filename = 0;
-@@ -272,6 +273,7 @@ if (!GetOptions(
- 		'letters=s' => \$letters,
- 		'pattern-depth=i' => \$pattern_depth,
- 		'k|keywords!' => \$keywords,
-+		'kf|keywords-in-file!' => \$keywords_in_file,
- 		'sections!' => \$sections,
- 		'fe|file-emails!' => \$email_file_emails,
- 		'f|file' => \$from_filename,
-@@ -318,6 +320,7 @@ if ($sections || $letters ne "") {
-     $subsystem = 0;
-     $web = 0;
-     $keywords = 0;
-+    $keywords_in_file = 0;
-     $interactive = 0;
- } else {
-     my $selections = $email + $scm + $status + $subsystem + $web;
-@@ -548,16 +551,14 @@ foreach my $file (@ARGV) {
- 	$file =~ s/^\Q${cur_path}\E//;	#strip any absolute path
- 	$file =~ s/^\Q${lk_path}\E//;	#or the path to the lk tree
- 	push(@files, $file);
--	if ($file ne "MAINTAINERS" && -f $file && $keywords) {
-+	if ($file ne "MAINTAINERS" && -f $file && $keywords && $keywords_in_file) {
- 	    open(my $f, '<', $file)
- 		or die "$P: Can't open $file: $!\n";
- 	    my $text = do { local($/) ; <$f> };
- 	    close($f);
--	    if ($keywords) {
--		foreach my $line (keys %keyword_hash) {
--		    if ($text =~ m/$keyword_hash{$line}/x) {
--			push(@keyword_tvi, $line);
--		    }
-+	    foreach my $line (keys %keyword_hash) {
-+		if ($text =~ m/$keyword_hash{$line}/x) {
-+		    push(@keyword_tvi, $line);
- 		}
- 	    }
- 	}
-@@ -919,7 +920,7 @@ sub get_maintainers {
- 	}
- 
- 	foreach my $line (sort {$hash{$b} <=> $hash{$a}} keys %hash) {
--	    add_categories($line);
-+	    add_categories($line, "");
- 	    if ($sections) {
- 		my $i;
- 		my $start = find_starting_index($line);
-@@ -947,7 +948,7 @@ sub get_maintainers {
-     if ($keywords) {
- 	@keyword_tvi = sort_and_uniq(@keyword_tvi);
- 	foreach my $line (@keyword_tvi) {
--	    add_categories($line);
-+	    add_categories($line, ":Keyword:$keyword_hash{$line}");
- 	}
-     }
- 
-@@ -1076,6 +1077,7 @@ Output type options:
- Other options:
-   --pattern-depth => Number of pattern directory traversals (default: 0 (all))
-   --keywords => scan patch for keywords (default: $keywords)
-+  --keywords-in-file => scan file for keywords (default: $keywords_in_file)
-   --sections => print all of the subsystem sections with pattern matches
-   --letters => print all matching 'letter' types from all matching sections
-   --mailmap => use .mailmap file (default: $email_use_mailmap)
-@@ -1086,7 +1088,7 @@ Other options:
- 
- Default options:
-   [--email --tree --nogit --git-fallback --m --r --n --l --multiline
--   --pattern-depth=0 --remove-duplicates --rolestats]
-+   --pattern-depth=0 --remove-duplicates --rolestats --keywords]
- 
- Notes:
-   Using "-f directory" may give unexpected results:
-@@ -1312,7 +1314,7 @@ sub get_list_role {
- }
- 
- sub add_categories {
--    my ($index) = @_;
-+    my ($index, $suffix) = @_;
- 
-     my $i;
-     my $start = find_starting_index($index);
-@@ -1342,7 +1344,7 @@ sub add_categories {
- 			if (!$hash_list_to{lc($list_address)}) {
- 			    $hash_list_to{lc($list_address)} = 1;
- 			    push(@list_to, [$list_address,
--					    "subscriber list${list_role}"]);
-+					    "subscriber list${list_role}" . $suffix]);
- 			}
- 		    }
- 		} else {
-@@ -1352,12 +1354,12 @@ sub add_categories {
- 				if ($email_moderated_list) {
- 				    $hash_list_to{lc($list_address)} = 1;
- 				    push(@list_to, [$list_address,
--						    "moderated list${list_role}"]);
-+						    "moderated list${list_role}" . $suffix]);
- 				}
- 			    } else {
- 				$hash_list_to{lc($list_address)} = 1;
- 				push(@list_to, [$list_address,
--						"open list${list_role}"]);
-+						"open list${list_role}" . $suffix]);
- 			    }
- 			}
- 		    }
-@@ -1365,19 +1367,19 @@ sub add_categories {
- 	    } elsif ($ptype eq "M") {
- 		if ($email_maintainer) {
- 		    my $role = get_maintainer_role($i);
--		    push_email_addresses($pvalue, $role);
-+		    push_email_addresses($pvalue, $role . $suffix);
- 		}
- 	    } elsif ($ptype eq "R") {
- 		if ($email_reviewer) {
- 		    my $subsystem = get_subsystem_name($i);
--		    push_email_addresses($pvalue, "reviewer:$subsystem");
-+		    push_email_addresses($pvalue, "reviewer:$subsystem" . $suffix);
- 		}
- 	    } elsif ($ptype eq "T") {
--		push(@scm, $pvalue);
-+		push(@scm, $pvalue . $suffix);
- 	    } elsif ($ptype eq "W") {
--		push(@web, $pvalue);
-+		push(@web, $pvalue . $suffix);
- 	    } elsif ($ptype eq "S") {
--		push(@status, $pvalue);
-+		push(@status, $pvalue . $suffix);
- 	    }
- 	}
-     }
-
+On Fri, Sep 29, 2023 at 10:59=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.=
+org> wrote:
+>
+> On Fri, Sep 29, 2023 at 4:48=E2=80=AFAM Matthew Maurer <mmaurer@google.co=
+m> wrote:
+> >
+> > Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined=
+,
+> > resulting in build failures in hermetic environments where `cc` does no=
+t
+> > exist. This includes both hostprogs and proc-macros.
+> >
+> > Since we are setting the linker to `HOSTCC`, we set the linker flavor t=
+o
+> > `gcc` explicitly. The linker-flavor selects both which linker to search
+> > for if the linker is unset, and which kind of linker flags to pass.
+> > Without this flag, `rustc` would attempt to determine which flags to
+> > pass based on the name of the binary passed as `HOSTCC`. `gcc` is the
+> > name of the linker-flavor used by `rustc` for all C compilers, includin=
+g
+> > both `gcc` and `clang`.
+> >
+> > Signed-off-by: Matthew Maurer <mmaurer@google.com>
+> > ---
+> >  rust/Makefile         | 2 ++
+> >  scripts/Makefile.host | 2 ++
+> >  2 files changed, 4 insertions(+)
+> >
+> > diff --git a/rust/Makefile b/rust/Makefile
+> > index 87958e864be0..da664d7aed51 100644
+> > --- a/rust/Makefile
+> > +++ b/rust/Makefile
+> > @@ -383,6 +383,8 @@ $(obj)/exports_kernel_generated.h: $(obj)/kernel.o =
+FORCE
+> >  quiet_cmd_rustc_procmacro =3D $(RUSTC_OR_CLIPPY_QUIET) P $@
+> >        cmd_rustc_procmacro =3D \
+> >         $(RUSTC_OR_CLIPPY) $(rust_common_flags) \
+> > +               -Clinker-flavor=3Dgcc -Clinker=3D$(HOSTCC) \
+> > +               -Clink-args=3D'$(subst ','\'',$(KBUILD_HOSTLDFLAGS))' \
+>
+>
+>
+> Why not consistently use the escsq macro here too ?
+>
+>
+I didn't use it in rust/Makefile because that makefile doesn't
+directly import scripts/Kbuild.include, and I was under the mistaken
+impression that scripts/ was supposed to be its own namespace, even if
+Make wasn't enforcing it. Inspecting other functions in
+scripts/Kbuild.include though, it's clear they're called elsewhere, so
+I'll upload another version of the patch using escsq here as well.
+>
+>
+>
+>
+> >                 --emit=3Ddep-info=3D$(depfile) --emit=3Dlink=3D$@ --ext=
+ern proc_macro \
+> >                 --crate-type proc-macro \
+> >                 --crate-name $(patsubst lib%.so,%,$(notdir $@)) $<
+> > diff --git a/scripts/Makefile.host b/scripts/Makefile.host
+> > index 8f7f842b54f9..08d83d9db31a 100644
+> > --- a/scripts/Makefile.host
+> > +++ b/scripts/Makefile.host
+> > @@ -91,6 +91,8 @@ hostcxx_flags  =3D -Wp,-MMD,$(depfile) \
+> >  # current working directory, which may be not accessible in the out-of=
+-tree
+> >  # modules case.
+> >  hostrust_flags =3D --out-dir $(dir $@) --emit=3Ddep-info=3D$(depfile) =
+\
+> > +                -Clinker-flavor=3Dgcc -Clinker=3D$(HOSTCC) \
+> > +                -Clink-args=3D'$(call escsq,$(KBUILD_HOSTLDFLAGS))' \
+> >                   $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
+> >                   $(HOSTRUSTFLAGS_$(target-stem))
+> >
+> > --
+> > 2.42.0.582.g8ccd20d70d-goog
+> >
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
