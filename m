@@ -2,129 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B88F27B9E7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1034C7BA2EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbjJEOGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53202 "EHLO
+        id S234636AbjJEPtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbjJEOEX (ORCPT
+        with ESMTP id S233690AbjJEPsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:04:23 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2061d.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5a::61d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8853C2754B;
-        Thu,  5 Oct 2023 06:11:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gJ9cNH3O0DX0e3VvJnIzbvaZFW9/XTP4LIp4IsM7GHBWDrF5t6iQXlHATvZFZUtLRsiwqVDCUzUpVOn8HolvP9zPFpfIFAdD7dao16+YuYTbuxIOEbPGMtYNla2jvu/6N6AJiEuokS4Rl4qeDGZ2jgrlUqSl2AjnYqQrYn9ShU8vPZrDTz9bd2ofFY2ReAME8YFrZ10fHYz7O8naGvjPw+N8rtlF+lj2i+ww66Sp0e/18EKcA4Ce28ur0Tm38aG3TztfmmiWFOCfPRGIVrNmGVp4lbjyGmQnRA0pRyFYBVaJTH8fUKfMhyKJ691b7nxy6o+Ewj8f4ze8VfoZ12ATdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hnX3GY+UMWUJ7I9J9bGhVbe0a7Xsp9/YkMeWG4j92cI=;
- b=hXZ0Haw5XsdExQvr/xjSRqzEsY9tXH7wkQJGFN4khJR8ZJecns55Q5q+qbCA8P3MT/vPwiIw2e3SzB7qVNZZr/4EQyuBFmXekrFEGi5O/Nqi6eZA2zHI5eFMFmudzPjW5YE1FFpgD8PBWvoB/2ga7DMZUlo1KUmVCLvye0LRaF9yw7JtNhKH8FW5Yr1KS8iNVa0EK4n9KbfkDpUlAjmaURfCaUiUBxmGJ1NgyNF1MjH3HexNUHomuD7w7rIo20JOkEzMaQTmieOurCHBZ/c1xRvr4yWB7QXbg5P2npoGRfMM+ybNb0VRPVJCeL69iCWKG42yZA3wH0AuqZ8RNZnE9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=davemloft.net smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hnX3GY+UMWUJ7I9J9bGhVbe0a7Xsp9/YkMeWG4j92cI=;
- b=2Qn3soMe5t4ztdgSmedTSqgfiwsbCebtkf/bsRJ8uagpA4CnHoYbBb9LE4Bb4JvvoEz/3iZ7ljWoa8qpngj7fK2Q9ZvxH7jMC/pLL8mbwgMPAdJBH7XX5Nc2SQa51d2HdpAbY+ufz2WFqplSfMlp//PdVSazel9CREeS5pHof9o=
-Received: from MW4PR04CA0373.namprd04.prod.outlook.com (2603:10b6:303:81::18)
- by DM4PR12MB8475.namprd12.prod.outlook.com (2603:10b6:8:190::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.22; Thu, 5 Oct
- 2023 13:11:04 +0000
-Received: from MWH0EPF000989E7.namprd02.prod.outlook.com
- (2603:10b6:303:81:cafe::f6) by MW4PR04CA0373.outlook.office365.com
- (2603:10b6:303:81::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.37 via Frontend
- Transport; Thu, 5 Oct 2023 13:11:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000989E7.mail.protection.outlook.com (10.167.241.134) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Thu, 5 Oct 2023 13:11:03 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 5 Oct
- 2023 08:11:01 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 5 Oct
- 2023 08:10:44 -0500
-Received: from xhdharinik40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Thu, 5 Oct 2023 08:10:40 -0500
-From:   Harini Katakam <harini.katakam@amd.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <edumazet@google.com>,
-        <pabeni@redhat.com>, <esben@geanix.com>, <jsc@umbraculum.org>,
-        <christophe.jaillet@wanadoo.fr>
-CC:     <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <harinikatakamlinux@gmail.com>,
-        <michal.simek@amd.com>, <harini.katakam@amd.com>,
-        <radhey.shyam.pandey@amd.com>
-Subject: [PATCH net-next] MAINTAINERS: Update LL TEMAC entry to Orphan
-Date:   Thu, 5 Oct 2023 18:40:39 +0530
-Message-ID: <20231005131039.25881-1-harini.katakam@amd.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 5 Oct 2023 11:48:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BDD2D0E1
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:28:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696516083; x=1728052083;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=i4Xa4F7uUkCS1mkKe4lLewio/lYLvcRYrhAlHsNksI8=;
+  b=NfDvADeo8xVCK4C9FOEJ68MBwh6VKpC0V22h5jKgCIOdvcqz/d0NXMP3
+   hAjXVAgZYGvWnQcmso0qsEiMRDRYiuvyOdVkEisr/5aVsJ3a/7fWpjoMQ
+   0gfGPF1BGDVyQ3rDRxEV1K/0QdOrsdfRQzK+1O3ZxxaTLOFCLeioChNsx
+   HxwXuHDRCtozqFXBwN33nT2ZDBo41Uoww9SD1CdwOqd7KdvCubc5siR9C
+   2HZIRBlIcBvCCB/4ugN6P5xMC0N8Qv5oi13IPBF5pJFetirKsBq2j4XbG
+   tMoC+lXKAQUT8CB7ne6NagnyWAmwj6OSINmXEeYz5g39AWV0PFnLaaoO8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="2092168"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="2092168"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 06:11:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="842372662"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="842372662"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Oct 2023 06:11:53 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qoO8t-000LPy-1O;
+        Thu, 05 Oct 2023 13:11:51 +0000
+Date:   Thu, 5 Oct 2023 21:11:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ajay Singh <ajay.kathat@microchip.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Kalle Valo <kvalo@kernel.org>
+Subject: drivers/net/wireless/microchip/wilc1000/cfg80211.c:361:42: sparse:
+ sparse: incorrect type in assignment (different base types)
+Message-ID: <202310052127.fOKunDCP-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989E7:EE_|DM4PR12MB8475:EE_
-X-MS-Office365-Filtering-Correlation-Id: 259475cb-6751-46a2-73d5-08dbc5a48727
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4PKvaW5IGuG6Pwt4xw8tau0cEKh4yivPWdwi33GWJavJbW62zwigBCAS0eBiv8yJYEPFW7Zq4sbsANc2+uMKIJijYve94xfWHVmTw0uMnGGETqAaAmopdAhkHkb51oXTK6ucXKMEbulAsOaOAC8O0RsYgrB9lq1Ek8zyCdXiDRRfDs5SmisP2lErmjwEEgX22IzX8LMsBHn+DsG5/8XuXKDkvpiPFo2GrTHG3bPRAyGKUMYRqfcI5pDl5TTRYxJZkdNFAjYdNdKaBFmLm1s6HywLzR9/huOG54k6Xn6wqIOi0hwaiIK5pGQi8UhdWTE4n6Nu90MhMCI5ck2CqpNR5xYvu7VFC912rSopyj32k90JMiSWJwBwm6aESqOVjSp9HOPNx75HenjapDWULhMOhMvMnsajd3H6FPAVyoWNsOIM3VgoWPuASOrBozTWS4o3tdUApWQ/dkeLqKQ0NHDL3B3o0s0AtQvXwc/nDL2OTApTWFRKTgf05cNDFcTHfTwNZ8uS+nW56lXabnFeC8sm+yiPNx4prkHOFNJ+gTZSRBEeb1SGhBkKxTFSHk/FfbPoVtqbWqEwWUuBRuuzH35U2fcNtnNBmufT/a71G0uLg30f8oDs4AoiHehHGA29BompIrTlSgSgNAoholv1Yzw4Dj0WjxxnuPLu6GRfx/0dNBcdlGOifI3XOCa94f8RpZ90txFCgndZYxKxRdBmTRi6AC5Va81PG4Nu2vXOL3gpnVrB/8lct6/fcW8bQQ5RWD4l3Wjs7KWCKllV5hhEHAO5oQ==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(136003)(396003)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(82310400011)(46966006)(36840700001)(40470700004)(40460700003)(83380400001)(4744005)(2906002)(1076003)(86362001)(26005)(36756003)(40480700001)(336012)(2616005)(426003)(478600001)(82740400003)(41300700001)(316002)(47076005)(44832011)(5660300002)(36860700001)(8676002)(54906003)(4326008)(70206006)(8936002)(7416002)(110136005)(81166007)(356005)(70586007)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 13:11:03.4312
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 259475cb-6751-46a2-73d5-08dbc5a48727
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989E7.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8475
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since there's no alternate driver, change this entry from obsolete
-to orphan.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3006adf3be79cde4d14b1800b963b82b6e5572e0
+commit: c5b331d4f550fb78bf1a553b2517616a5ea913d6 wifi: wilc1000: add WPA3 SAE support
+date:   1 year, 4 months ago
+config: i386-randconfig-063-20231005 (https://download.01.org/0day-ci/archive/20231005/202310052127.fOKunDCP-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310052127.fOKunDCP-lkp@intel.com/reproduce)
 
-Signed-off-by: Harini Katakam <harini.katakam@amd.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310052127.fOKunDCP-lkp@intel.com/
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 03011d7ee087..4fa34902d379 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -23698,7 +23698,7 @@ F:	drivers/gpio/gpio-zynq.c
- 
- XILINX LL TEMAC ETHERNET DRIVER
- L:	netdev@vger.kernel.org
--S:	Obsolete
-+S:	Orphan
- F:	drivers/net/ethernet/xilinx/ll_temac*
- 
- XILINX PWM DRIVER
+sparse warnings: (new ones prefixed by >>)
+>> drivers/net/wireless/microchip/wilc1000/cfg80211.c:361:42: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int key_mgmt_suite @@     got restricted __be32 [usertype] @@
+   drivers/net/wireless/microchip/wilc1000/cfg80211.c:361:42: sparse:     expected unsigned int key_mgmt_suite
+   drivers/net/wireless/microchip/wilc1000/cfg80211.c:361:42: sparse:     got restricted __be32 [usertype]
+
+vim +361 drivers/net/wireless/microchip/wilc1000/cfg80211.c
+
+   300	
+   301	static int connect(struct wiphy *wiphy, struct net_device *dev,
+   302			   struct cfg80211_connect_params *sme)
+   303	{
+   304		struct wilc_vif *vif = netdev_priv(dev);
+   305		struct wilc_priv *priv = &vif->priv;
+   306		struct host_if_drv *wfi_drv = priv->hif_drv;
+   307		int ret;
+   308		u32 i;
+   309		u8 security = WILC_FW_SEC_NO;
+   310		enum authtype auth_type = WILC_FW_AUTH_ANY;
+   311		u32 cipher_group;
+   312		struct cfg80211_bss *bss;
+   313		void *join_params;
+   314		u8 ch;
+   315	
+   316		vif->connecting = true;
+   317	
+   318		cipher_group = sme->crypto.cipher_group;
+   319		if (cipher_group != 0) {
+   320			if (sme->crypto.wpa_versions & NL80211_WPA_VERSION_2) {
+   321				if (cipher_group == WLAN_CIPHER_SUITE_TKIP)
+   322					security = WILC_FW_SEC_WPA2_TKIP;
+   323				else
+   324					security = WILC_FW_SEC_WPA2_AES;
+   325			} else if (sme->crypto.wpa_versions & NL80211_WPA_VERSION_1) {
+   326				if (cipher_group == WLAN_CIPHER_SUITE_TKIP)
+   327					security = WILC_FW_SEC_WPA_TKIP;
+   328				else
+   329					security = WILC_FW_SEC_WPA_AES;
+   330			} else {
+   331				ret = -ENOTSUPP;
+   332				netdev_err(dev, "%s: Unsupported cipher\n",
+   333					   __func__);
+   334				goto out_error;
+   335			}
+   336		}
+   337	
+   338		if ((sme->crypto.wpa_versions & NL80211_WPA_VERSION_1) ||
+   339		    (sme->crypto.wpa_versions & NL80211_WPA_VERSION_2)) {
+   340			for (i = 0; i < sme->crypto.n_ciphers_pairwise; i++) {
+   341				u32 ciphers_pairwise = sme->crypto.ciphers_pairwise[i];
+   342	
+   343				if (ciphers_pairwise == WLAN_CIPHER_SUITE_TKIP)
+   344					security |= WILC_FW_TKIP;
+   345				else
+   346					security |= WILC_FW_AES;
+   347			}
+   348		}
+   349	
+   350		switch (sme->auth_type) {
+   351		case NL80211_AUTHTYPE_OPEN_SYSTEM:
+   352			auth_type = WILC_FW_AUTH_OPEN_SYSTEM;
+   353			break;
+   354	
+   355		case NL80211_AUTHTYPE_SAE:
+   356			auth_type = WILC_FW_AUTH_SAE;
+   357			if (sme->ssid_len) {
+   358				memcpy(vif->auth.ssid.ssid, sme->ssid, sme->ssid_len);
+   359				vif->auth.ssid.ssid_len = sme->ssid_len;
+   360			}
+ > 361			vif->auth.key_mgmt_suite = cpu_to_be32(sme->crypto.akm_suites[0]);
+   362			ether_addr_copy(vif->auth.bssid, sme->bssid);
+   363			break;
+   364	
+   365		default:
+   366			break;
+   367		}
+   368	
+   369		if (sme->crypto.n_akm_suites) {
+   370			if (sme->crypto.akm_suites[0] == WLAN_AKM_SUITE_8021X)
+   371				auth_type = WILC_FW_AUTH_IEEE8021;
+   372			else if (sme->crypto.akm_suites[0] == WLAN_AKM_SUITE_PSK_SHA256)
+   373				auth_type = WILC_FW_AUTH_OPEN_SYSTEM_SHA256;
+   374			else if (sme->crypto.akm_suites[0] == WLAN_AKM_SUITE_8021X_SHA256)
+   375				auth_type = WILC_FW_AUTH_IEE8021X_SHA256;
+   376		}
+   377	
+   378		if (wfi_drv->usr_scan_req.scan_result) {
+   379			netdev_err(vif->ndev, "%s: Scan in progress\n", __func__);
+   380			ret = -EBUSY;
+   381			goto out_error;
+   382		}
+   383	
+   384		bss = cfg80211_get_bss(wiphy, sme->channel, sme->bssid, sme->ssid,
+   385				       sme->ssid_len, IEEE80211_BSS_TYPE_ANY,
+   386				       IEEE80211_PRIVACY(sme->privacy));
+   387		if (!bss) {
+   388			ret = -EINVAL;
+   389			goto out_error;
+   390		}
+   391	
+   392		if (ether_addr_equal_unaligned(vif->bssid, bss->bssid)) {
+   393			ret = -EALREADY;
+   394			goto out_put_bss;
+   395		}
+   396	
+   397		join_params = wilc_parse_join_bss_param(bss, &sme->crypto);
+   398		if (!join_params) {
+   399			netdev_err(dev, "%s: failed to construct join param\n",
+   400				   __func__);
+   401			ret = -EINVAL;
+   402			goto out_put_bss;
+   403		}
+   404	
+   405		ch = ieee80211_frequency_to_channel(bss->channel->center_freq);
+   406		vif->wilc->op_ch = ch;
+   407		if (vif->iftype != WILC_CLIENT_MODE)
+   408			vif->wilc->sta_ch = ch;
+   409	
+   410		wilc_wlan_set_bssid(dev, bss->bssid, WILC_STATION_MODE);
+   411	
+   412		wfi_drv->conn_info.security = security;
+   413		wfi_drv->conn_info.auth_type = auth_type;
+   414		wfi_drv->conn_info.ch = ch;
+   415		wfi_drv->conn_info.conn_result = cfg_connect_result;
+   416		wfi_drv->conn_info.arg = priv;
+   417		wfi_drv->conn_info.param = join_params;
+   418	
+   419		ret = wilc_set_join_req(vif, bss->bssid, sme->ie, sme->ie_len);
+   420		if (ret) {
+   421			netdev_err(dev, "wilc_set_join_req(): Error\n");
+   422			ret = -ENOENT;
+   423			if (vif->iftype != WILC_CLIENT_MODE)
+   424				vif->wilc->sta_ch = WILC_INVALID_CHANNEL;
+   425			wilc_wlan_set_bssid(dev, NULL, WILC_STATION_MODE);
+   426			wfi_drv->conn_info.conn_result = NULL;
+   427			kfree(join_params);
+   428			goto out_put_bss;
+   429		}
+   430		kfree(join_params);
+   431		vif->bss = bss;
+   432		cfg80211_put_bss(wiphy, bss);
+   433		return 0;
+   434	
+   435	out_put_bss:
+   436		cfg80211_put_bss(wiphy, bss);
+   437	
+   438	out_error:
+   439		vif->connecting = false;
+   440		return ret;
+   441	}
+   442	
+
 -- 
-2.17.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
