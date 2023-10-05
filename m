@@ -2,212 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA467BA8BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F167BA8B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbjJESJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 14:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
+        id S231406AbjJESJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 14:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbjJESI1 (ORCPT
+        with ESMTP id S231284AbjJESIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 14:08:27 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04465112
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 11:08:19 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f53027158so17128027b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 11:08:18 -0700 (PDT)
+        Thu, 5 Oct 2023 14:08:30 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94510124
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 11:08:21 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-56f75e70190so940023a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 11:08:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696529298; x=1697134098; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696529301; x=1697134101; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cGPEr42+ZwCTP+CEzEnFhGGfenBhCq6NKh2BAUdeTck=;
-        b=1UAjV89+aPiZ6PfduyoOx/FVGFc1vjlm+88m960GJqSnjXrtwwqMI/qL9rcKTal9Ub
-         YIqcddmQ0iGpp62XKF8UMBXnaUPqhfb8S26Tl+GctNI2A6S/6pLse//oqYHj7ArjLtG7
-         cSWvr1cPkExnnrBrBZ/H6a2hQm7RnRmg+2w6iSMNOCfkLl3uGuoWnakFuRmFfpCbRJsJ
-         rGu5SJX9mBB4oU4EunUppIJO+Jb4Z80VaEZ+YX4b11S5Q9eqRMxFQ2u8T3SZKBacjDFT
-         FE6huwNN5AFa7B4v8BhQBOwf9DT6jrhbu2NoyZCOcR1OK7Ce0cVArtbGlcX9GY8tVA0B
-         rUDQ==
+        bh=IkpdLXIt9+7FxRDrbqZkUhDTP8vYUcMsBTcxO7grRS4=;
+        b=ovGOLpxhv3kCLd0KOhKHtNXY/UcTgYeJIW5drJhk4Gieo4TeUirKDioDoUM4iIYHAo
+         UqDB61bKMFL7vXMsX2QN2od4kFicnrNGyEQ4kgkmckYE2JqIcrI2aK5v0wj6RQwbL4Xr
+         /a/Ary9xWJSbUpn9dpv9iqvqQM2Sl+Xpu095XOIO9plnihPl8ZFhKnzxQRuH7tquPUxZ
+         YqxjXlQMQydgQO3oznOjFKLIZ1z4tw6dBMq2csmCGaFuaofnwoe7zQdQfvzXiOL5KHay
+         sX0VtFSXkaiVmL3GAUuzw/0JJJNfoU49RZ26MPbWsTBRCtcxCvQi6zAxj4ifOr84J+Gy
+         yKkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696529298; x=1697134098;
+        d=1e100.net; s=20230601; t=1696529301; x=1697134101;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cGPEr42+ZwCTP+CEzEnFhGGfenBhCq6NKh2BAUdeTck=;
-        b=TSzg2jQYbuRak7km3UDj39aLu8uPNz3ytSBOON+iHJbK0p55+GkbKWW9uqCQ749N3k
-         J+E1myE1bgxr4l0vmjsv2VJG9lVR68BqJqefd1Ut5iPGa4HpgF0ucFnCSo/PMw9iIIda
-         eh7lF2SgdnG1rRY9V6FRM6D8keahoEPbMH4Q6dUejPQX+EsYCc7ujqYVhoh2ArC68Vop
-         12W5lot0nL6tG+sdw2qRvNCa3/3/CRB8OWnYSVz5h/R4Htk5cuNwPcN/MGHnLT1SMWfA
-         dfKtYB4Fj4MZuZYqlbm0u4jfBE2EH/lct8SnTW9m5B9Sh5lJd0TF9UbEQdTQ3K7d8HPd
-         8jHA==
-X-Gm-Message-State: AOJu0YwjpM37cOCXUSbJy1mQfMVevAzNNDBwcSsQVsk0usLrtSLMV1kK
-        amr5AFwjNT7Gumi/YUMIuGyB+8qyYM4y
-X-Google-Smtp-Source: AGHT+IGohbK75EVXkfCZDbTpCYdI4cTufrVSsHUE2OXMHhyT7A/XkqzRLLmcg1lhHIXwLzwe32LvY3mmUFFy
+        bh=IkpdLXIt9+7FxRDrbqZkUhDTP8vYUcMsBTcxO7grRS4=;
+        b=Ar0lb0Fk5Sa1o4D9+CVAUv7pF5qkXIm7RqdSNPXvCU/inFh3uu8qg4NwbzoFImM9yL
+         sjfDQjGKhjFANcPy6kYkEPk3WOYfI3bt+1CwiNWVpy3u5c8oN9MRzE+18i6Xi1oUoRN8
+         rjnaxf73jA6kYR3g9aONSH82HZ6Igiqb5HWHzNrItwn7EXgQmZw3hMHwJ4PrTwgxctGA
+         CZbT9Xn7DXTbIk9GsGJ4M9oDerDcHCUKCJ6m+wMA83pXEblxX/7Dovc6ni2ooJ121BO8
+         i63+NXn4GGmv4W9rA7RGtZCwyxZ6uvkRmRMPlPhNwFZDN9/2rU4L7Gf4OrS+xzXn9iza
+         e3pw==
+X-Gm-Message-State: AOJu0YxAD/5CbfRaUNbt8TvDvw/ETW1qTR4eJKaisxUoDlXISzs3cmNF
+        je+xX388rnQGwElmBoSkVFEzy04qfUdS
+X-Google-Smtp-Source: AGHT+IH213TFECOejx1F7cJTbvghqy0D8oRoVL733NVY02HU1dFc0Xk6yqI9KiscnQOlVOhWaCUKLrus0GG1
 X-Received: from hi-h2o-specialist.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:3cef])
- (user=arakesh job=sendgmr) by 2002:a5b:5c9:0:b0:d8b:737f:8240 with SMTP id
- w9-20020a5b05c9000000b00d8b737f8240mr103527ybp.0.1696529298114; Thu, 05 Oct
- 2023 11:08:18 -0700 (PDT)
-Date:   Thu,  5 Oct 2023 11:08:12 -0700
-In-Reply-To: <20230930184821.310143-1-arakesh@google.com>
+ (user=arakesh job=sendgmr) by 2002:a63:3ecd:0:b0:585:554c:27b1 with SMTP id
+ l196-20020a633ecd000000b00585554c27b1mr80021pga.7.1696529301045; Thu, 05 Oct
+ 2023 11:08:21 -0700 (PDT)
+Date:   Thu,  5 Oct 2023 11:08:13 -0700
+In-Reply-To: <20231005180814.3278050-1-arakesh@google.com>
 Mime-Version: 1.0
-References: <20230930184821.310143-1-arakesh@google.com>
+References: <20230930184821.310143-1-arakesh@google.com> <20231005180814.3278050-1-arakesh@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Message-ID: <20231005180814.3278050-1-arakesh@google.com>
-Subject: [PATCH v3 1/3] usb: gadget: uvc: prevent use of disabled endpoint
+Message-ID: <20231005180814.3278050-2-arakesh@google.com>
+Subject: [PATCH v3 2/3] usb: gadget: uvc: Allocate uvc_requests one at a time
 From:   Avichal Rakesh <arakesh@google.com>
 To:     arakesh@google.com, dan.scally@ideasonboard.com,
         gregkh@linuxfoundation.org, laurent.pinchart@ideasonboard.com,
         m.grzeschik@pengutronix.de
 Cc:     etalvala@google.com, jchowdhary@google.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Michael Grzeschik <mgr@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the set_alt callback immediately disables the endpoint and queues
-the v4l2 streamoff event. However, as the streamoff event is processed
-asynchronously, it is possible that the video_pump thread attempts to queue
-requests to an already disabled endpoint.
+Currently, the uvc gadget driver allocates all uvc_requests as one array
+and deallocates them all when the video stream stops. This includes
+de-allocating all the usb_requests associated with those uvc_requests.
+This can lead to use-after-free issues if any of those de-allocated
+usb_requests were still owned by the usb controller.
 
-This change moves disabling usb endpoint to the end of streamoff event
-callback. To be consistent with the actual streaming state, uvc->state
-is now toggled between CONNECTED and STREAMING from the v4l2 event
-callback only.
+This patch is 1 of 2 patches addressing the use-after-free issue.
+Instead of bulk allocating all uvc_requests as an array, this patch
+allocates uvc_requests one at a time, which should allows for similar
+granularity when deallocating the uvc_requests. This patch has no
+functional changes other than allocating each uvc_request separately,
+and similarly freeing each of them separately.
 
-Link: https://lore.kernel.org/20230615171558.GK741@pendragon.ideasonboard.com/
-Link: https://lore.kernel.org/20230531085544.253363-1-dan.scally@ideasonboard.com/
+Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
+Suggested-by: Michael Grzeschik <mgr@pengutronix.de>
 Signed-off-by: Avichal Rakesh <arakesh@google.com>
 ---
-v1 -> v2: Rebased to ToT and reworded commit message.
-v2 -> v3: Fix email threading goof-up
+v1 -> v2: Rebased to ToT
+V2 -> V3: Fix email threading goof-up
 
- drivers/usb/gadget/function/f_uvc.c    | 11 +++++------
- drivers/usb/gadget/function/f_uvc.h    |  2 +-
- drivers/usb/gadget/function/uvc.h      |  2 +-
- drivers/usb/gadget/function/uvc_v4l2.c | 21 ++++++++++++++++++---
- 4 files changed, 25 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
-index faa398109431..75c9f9a3f884 100644
---- a/drivers/usb/gadget/function/f_uvc.c
-+++ b/drivers/usb/gadget/function/f_uvc.c
-@@ -263,10 +263,13 @@ uvc_function_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
- 	return 0;
- }
-
--void uvc_function_setup_continue(struct uvc_device *uvc)
-+void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep)
- {
- 	struct usb_composite_dev *cdev = uvc->func.config->cdev;
-
-+	if (disable_ep && uvc->video.ep) {
-+		usb_ep_disable(uvc->video.ep);
-+	}
- 	usb_composite_setup_continue(cdev);
- }
-
-@@ -337,15 +340,11 @@ uvc_function_set_alt(struct usb_function *f, unsigned interface, unsigned alt)
- 		if (uvc->state != UVC_STATE_STREAMING)
- 			return 0;
-
--		if (uvc->video.ep)
--			usb_ep_disable(uvc->video.ep);
--
- 		memset(&v4l2_event, 0, sizeof(v4l2_event));
- 		v4l2_event.type = UVC_EVENT_STREAMOFF;
- 		v4l2_event_queue(&uvc->vdev, &v4l2_event);
-
--		uvc->state = UVC_STATE_CONNECTED;
--		return 0;
-+		return USB_GADGET_DELAYED_STATUS;
-
- 	case 1:
- 		if (uvc->state != UVC_STATE_CONNECTED)
-diff --git a/drivers/usb/gadget/function/f_uvc.h b/drivers/usb/gadget/function/f_uvc.h
-index 1db972d4beeb..e7f9f13f14dc 100644
---- a/drivers/usb/gadget/function/f_uvc.h
-+++ b/drivers/usb/gadget/function/f_uvc.h
-@@ -11,7 +11,7 @@
-
- struct uvc_device;
-
--void uvc_function_setup_continue(struct uvc_device *uvc);
-+void uvc_function_setup_continue(struct uvc_device *uvc, int disale_ep);
-
- void uvc_function_connect(struct uvc_device *uvc);
+ drivers/usb/gadget/function/uvc.h       |  3 +-
+ drivers/usb/gadget/function/uvc_video.c | 90 ++++++++++++++-----------
+ 2 files changed, 51 insertions(+), 42 deletions(-)
 
 diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
-index 6751de8b63ad..989bc6b4e93d 100644
+index 989bc6b4e93d..993694da0bbc 100644
 --- a/drivers/usb/gadget/function/uvc.h
 +++ b/drivers/usb/gadget/function/uvc.h
-@@ -177,7 +177,7 @@ struct uvc_file_handle {
-  * Functions
+@@ -81,6 +81,7 @@ struct uvc_request {
+ 	struct sg_table sgt;
+ 	u8 header[UVCG_REQUEST_HEADER_LEN];
+ 	struct uvc_buffer *last_buf;
++	struct list_head list;
+ };
+
+ struct uvc_video {
+@@ -102,7 +103,7 @@ struct uvc_video {
+
+ 	/* Requests */
+ 	unsigned int req_size;
+-	struct uvc_request *ureq;
++	struct list_head ureqs; /* all uvc_requests allocated by uvc_video */
+ 	struct list_head req_free;
+ 	spinlock_t req_lock;
+
+diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+index 97d875c27dcf..3c4d286d81c0 100644
+--- a/drivers/usb/gadget/function/uvc_video.c
++++ b/drivers/usb/gadget/function/uvc_video.c
+@@ -227,6 +227,23 @@ uvc_video_encode_isoc(struct usb_request *req, struct uvc_video *video,
+  * Request handling
   */
 
--extern void uvc_function_setup_continue(struct uvc_device *uvc);
-+extern void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep);
- extern void uvc_function_connect(struct uvc_device *uvc);
- extern void uvc_function_disconnect(struct uvc_device *uvc);
-
-diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget/function/uvc_v4l2.c
-index 3f0a9795c0d4..3d3469883ed0 100644
---- a/drivers/usb/gadget/function/uvc_v4l2.c
-+++ b/drivers/usb/gadget/function/uvc_v4l2.c
-@@ -451,7 +451,7 @@ uvc_v4l2_streamon(struct file *file, void *fh, enum v4l2_buf_type type)
- 	 * Complete the alternate setting selection setup phase now that
- 	 * userspace is ready to provide video frames.
- 	 */
--	uvc_function_setup_continue(uvc);
-+	uvc_function_setup_continue(uvc, 0);
- 	uvc->state = UVC_STATE_STREAMING;
-
- 	return 0;
-@@ -463,11 +463,19 @@ uvc_v4l2_streamoff(struct file *file, void *fh, enum v4l2_buf_type type)
- 	struct video_device *vdev = video_devdata(file);
- 	struct uvc_device *uvc = video_get_drvdata(vdev);
- 	struct uvc_video *video = &uvc->video;
-+	int ret = 0;
-
- 	if (type != video->queue.queue.type)
- 		return -EINVAL;
-
--	return uvcg_video_enable(video, 0);
-+	uvc->state = UVC_STATE_CONNECTED;
-+	ret = uvcg_video_enable(video, 0);
-+	if (ret < 0) {
-+		return ret;
++static void uvc_video_free_request(struct uvc_request *ureq, struct usb_ep *ep)
++{
++	sg_free_table(&ureq->sgt);
++	if (ureq->req && ep) {
++		usb_ep_free_request(ep, ureq->req);
++		ureq->req = NULL;
 +	}
 +
-+	uvc_function_setup_continue(uvc, 1);
-+	return 0;
- }
-
- static int
-@@ -500,6 +508,14 @@ uvc_v4l2_subscribe_event(struct v4l2_fh *fh,
- static void uvc_v4l2_disable(struct uvc_device *uvc)
++	kfree(ureq->req_buffer);
++	ureq->req_buffer = NULL;
++
++	if (!list_empty(&ureq->list))
++		list_del_init(&ureq->list);
++
++	kfree(ureq);
++}
++
+ static int uvcg_video_ep_queue(struct uvc_video *video, struct usb_request *req)
  {
- 	uvc_function_disconnect(uvc);
-+	if (uvc->state == UVC_STATE_STREAMING) {
-+		/*
-+		 * Drop uvc->state to CONNECTED if it was streaming before.
-+		 * This ensures that the usb_requests are no longer queued
-+		 * to the controller.
-+		 */
-+		uvc->state = UVC_STATE_CONNECTED;
-+	}
- 	uvcg_video_enable(&uvc->video, 0);
- 	uvcg_free_buffers(&uvc->video.queue);
- 	uvc->func_connected = false;
-@@ -647,4 +663,3 @@ const struct v4l2_file_operations uvc_v4l2_fops = {
- 	.get_unmapped_area = uvcg_v4l2_get_unmapped_area,
- #endif
- };
+ 	int ret;
+@@ -299,27 +316,13 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
+ static int
+ uvc_video_free_requests(struct uvc_video *video)
+ {
+-	unsigned int i;
 -
+-	if (video->ureq) {
+-		for (i = 0; i < video->uvc_num_requests; ++i) {
+-			sg_free_table(&video->ureq[i].sgt);
+-
+-			if (video->ureq[i].req) {
+-				usb_ep_free_request(video->ep, video->ureq[i].req);
+-				video->ureq[i].req = NULL;
+-			}
++	struct uvc_request *ureq, *temp;
+
+-			if (video->ureq[i].req_buffer) {
+-				kfree(video->ureq[i].req_buffer);
+-				video->ureq[i].req_buffer = NULL;
+-			}
+-		}
+-
+-		kfree(video->ureq);
+-		video->ureq = NULL;
++	list_for_each_entry_safe(ureq, temp, &video->ureqs, list) {
++		uvc_video_free_request(ureq, video->ep);
+ 	}
+
++	INIT_LIST_HEAD(&video->ureqs);
+ 	INIT_LIST_HEAD(&video->req_free);
+ 	video->req_size = 0;
+ 	return 0;
+@@ -328,6 +331,7 @@ uvc_video_free_requests(struct uvc_video *video)
+ static int
+ uvc_video_alloc_requests(struct uvc_video *video)
+ {
++	struct uvc_request *ureq;
+ 	unsigned int req_size;
+ 	unsigned int i;
+ 	int ret = -ENOMEM;
+@@ -338,29 +342,31 @@ uvc_video_alloc_requests(struct uvc_video *video)
+ 		 * max_t(unsigned int, video->ep->maxburst, 1)
+ 		 * (video->ep->mult);
+
+-	video->ureq = kcalloc(video->uvc_num_requests, sizeof(struct uvc_request), GFP_KERNEL);
+-	if (video->ureq == NULL)
+-		return -ENOMEM;
+-
+-	for (i = 0; i < video->uvc_num_requests; ++i) {
+-		video->ureq[i].req_buffer = kmalloc(req_size, GFP_KERNEL);
+-		if (video->ureq[i].req_buffer == NULL)
++	INIT_LIST_HEAD(&video->ureqs);
++	for (i = 0; i < video->uvc_num_requests; i++) {
++		ureq = kzalloc(sizeof(struct uvc_request), GFP_KERNEL);
++		if (ureq == NULL)
+ 			goto error;
++		INIT_LIST_HEAD(&ureq->list);
++		list_add_tail(&ureq->list, &video->ureqs);
++	}
+
+-		video->ureq[i].req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
+-		if (video->ureq[i].req == NULL)
++	list_for_each_entry(ureq, &video->ureqs, list) {
++		ureq->req_buffer = kmalloc(req_size, GFP_KERNEL);
++		if (ureq->req_buffer == NULL)
+ 			goto error;
+-
+-		video->ureq[i].req->buf = video->ureq[i].req_buffer;
+-		video->ureq[i].req->length = 0;
+-		video->ureq[i].req->complete = uvc_video_complete;
+-		video->ureq[i].req->context = &video->ureq[i];
+-		video->ureq[i].video = video;
+-		video->ureq[i].last_buf = NULL;
+-
+-		list_add_tail(&video->ureq[i].req->list, &video->req_free);
++		ureq->req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
++		if (ureq->req == NULL)
++			goto error;
++		ureq->req->buf = ureq->req_buffer;
++		ureq->req->length = 0;
++		ureq->req->complete = uvc_video_complete;
++		ureq->req->context = ureq;
++		ureq->video = video;
++		ureq->last_buf = NULL;
++		list_add_tail(&ureq->req->list, &video->req_free);
+ 		/* req_size/PAGE_SIZE + 1 for overruns and + 1 for header */
+-		sg_alloc_table(&video->ureq[i].sgt,
++		sg_alloc_table(&ureq->sgt,
+ 			       DIV_ROUND_UP(req_size - UVCG_REQUEST_HEADER_LEN,
+ 					    PAGE_SIZE) + 2, GFP_KERNEL);
+ 	}
+@@ -504,7 +510,7 @@ static void uvcg_video_pump(struct work_struct *work)
+ int uvcg_video_enable(struct uvc_video *video, int enable)
+ {
+ 	struct uvc_device *uvc = video->uvc;
+-	unsigned int i;
++	struct uvc_request *ureq;
+ 	int ret;
+
+ 	if (video->ep == NULL) {
+@@ -519,9 +525,10 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
+ 		cancel_work_sync(&video->pump);
+ 		uvcg_queue_cancel(&video->queue, 0);
+
+-		for (i = 0; i < video->uvc_num_requests; ++i)
+-			if (video->ureq && video->ureq[i].req)
+-				usb_ep_dequeue(video->ep, video->ureq[i].req);
++		list_for_each_entry(ureq, &video->ureqs, list) {
++			if (ureq->req)
++				usb_ep_dequeue(video->ep, ureq->req);
++		}
+
+ 		uvc_video_free_requests(video);
+ 		uvcg_queue_enable(&video->queue, 0);
+@@ -555,6 +562,7 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
+  */
+ int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
+ {
++	INIT_LIST_HEAD(&video->ureqs);
+ 	INIT_LIST_HEAD(&video->req_free);
+ 	spin_lock_init(&video->req_lock);
+ 	INIT_WORK(&video->pump, uvcg_video_pump);
 --
 2.42.0.609.gbb76f46606-goog
