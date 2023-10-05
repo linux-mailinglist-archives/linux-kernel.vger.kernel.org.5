@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF18A7B992A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 02:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E00A7B992C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 02:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244191AbjJEAN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 20:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45962 "EHLO
+        id S244224AbjJEANn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 20:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbjJEAN2 (ORCPT
+        with ESMTP id S244205AbjJEANm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 20:13:28 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC3FD8;
-        Wed,  4 Oct 2023 17:13:24 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-692c02adeefso324927b3a.3;
-        Wed, 04 Oct 2023 17:13:24 -0700 (PDT)
+        Wed, 4 Oct 2023 20:13:42 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F47E8
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 17:13:38 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50302e8fca8so2487e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 17:13:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696464804; x=1697069604; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nqakhanUkyXE0xPicMEDIve3RCLeYDmd6tYI+qxvuGI=;
-        b=jQCxzsZFDI/kG0/1a1abjao+wn3b3n5FL0E06jkXNvgj/HeYUayTgWWNUU0AhKBP62
-         iH94Kn2rDJlwiat3xA17SUuJ3BBVRVS76VYLJXUZI1QI5c3KN3tjEf1yUG9Q6eN7V3VI
-         bhB0GIvll114RHUuuURieo5zRs90+n5aAiw4hBi2UzhyFdgTQwWPdpxkEabz8Vct4kUZ
-         C/Z3vk111e5TfpfQCRaUdtjL01auQMuMUPOYL2cGX5zOWdzCQPlAIcumFiaX2Dn2f+lp
-         dsn8QJbdENYtzN/V2g2E+Ut8M3L7W1NN+uRZ4IXe+FsT1CB3Vf+LLrTQcAMbJ8wO7u2r
-         l5+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696464804; x=1697069604;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1696464816; x=1697069616; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nqakhanUkyXE0xPicMEDIve3RCLeYDmd6tYI+qxvuGI=;
-        b=VfFaO08zInF5GnPFF+EHeemTWbOQ34IKHJS+0AOTOTmXK3CSjs1Gsgjh1bMgcg2qvR
-         5C8a7LW2Vpx4t8t1w+8oEGf9O6BV08gXUMVSvKbwnNjEWEYLfIM/nn4+ED+R2067CvOH
-         CYkOtfcIWT1wXnunnhf9GyKDrbMQyybTQFzZd1oSgZTdCINfE1KG1cxtg+t1dObd1UQJ
-         54tYeJWJebKIYhqH66gPLkqFK9DsTvp8RQcidC9zFIEA9lzt0tAJ3FCdIDaZ0ysm2LZ/
-         N7FMJBiobFMuTwIHgybXWWv0hAmTaFZY1z/ZO4JyL7i8xGQZfyI/zORSSQfizJLxT+8o
-         TTYw==
-X-Gm-Message-State: AOJu0YxCZQSWiG2wQu7zeyHJKNSv5UyRGf0E6zifcnVHdG6pX0oVjC38
-        4gQ7H2iqH4zpdXdhjHVLMJWsXYkIbVk=
-X-Google-Smtp-Source: AGHT+IHIwFlvB45+yzceWHMTWIgLMaG0BJtUWIPRq5vAnAJGf8k4ZlJVldPc1gAL5tyGmDlxeKYlBw==
-X-Received: by 2002:a05:6a20:32aa:b0:15e:10e:2cc3 with SMTP id g42-20020a056a2032aa00b0015e010e2cc3mr2952450pzd.60.1696464803576;
-        Wed, 04 Oct 2023 17:13:23 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id l2-20020a170903244200b001b891259eddsm154267pls.197.2023.10.04.17.13.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 17:13:22 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 4E388A6F5E91; Thu,  5 Oct 2023 07:13:19 +0700 (WIB)
-Date:   Thu, 5 Oct 2023 07:13:18 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     "KaiLong Wang" <wangkailong@jari.cn>, arnd@arndb.de
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vmlinux.lds.h: Clean up errors in vmlinux.lds.h
-Message-ID: <ZR3_nt646ijkV3UJ@debian.me>
-References: <72e80688.8a8.18ad9bba905.Coremail.wangkailong@jari.cn>
+        bh=vRF+vIlJA3ZehEMRKa/evOkO3sf/u/GsKZC4fdcnalA=;
+        b=ZmI/mrHVP85i4YI8gJizJqD2zA296qfmmnX5RqwO71rE6I1rGR+W+NZE7tn2WFxCQq
+         /G/NkgTQ7VDt+msZOSEdZZ2ykmWzlFA3/9yv/mK41ixVRjx4C1QGxgSC01hAriA22XM8
+         AdW2t8wyUDy4IdAoNcO1EPxWC/0KaBj+nj2DwOHDtpFwz9nj7UFQLHz736Tf/IPtqKTy
+         Dc6TbqElB3FY9ZNpNd4UaqC4nS/TdEpcOLQezLUxuoD3NhOjjG9VsPO4SHcaoDiXuvSJ
+         p+f2MEupoqQ5HbwGoD48kquCu4ZfkA5Ljn6cOl1N6EuSNYcQe/dDusrrN8+WNz25QlVy
+         fIfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696464816; x=1697069616;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vRF+vIlJA3ZehEMRKa/evOkO3sf/u/GsKZC4fdcnalA=;
+        b=B+jHXPu8FzOgIr3PLY4E3iOPt6J8sfqpUqHZejXRooJbPu61G/IR8Pn696FHJzvE4E
+         8K050abJE/UeSDHN18ubnMonITAQR5pLeozUz9xDByF8QJJgwVPvi01mRggEVMIyHcBU
+         jndL+WH5I+yivU4L3mN+1Qu+1v8W0PjxDtnXaRfdDCTJTWVpAfnUsER9KHLKy0LdQgXn
+         ruMBk3aqgdrXyC6q3SFhuPcHkB2JRzWe7HneJCcUw31+suUGb9lqTfUV8prnglY8V0Dc
+         wc/CtlGhb2X8cxyHgT6ruzl3ErCET2OfV1IdrT3EDOeEp1rVhkkHPLo4GANdE5hee6zX
+         VJ3w==
+X-Gm-Message-State: AOJu0Yxe+3UD6LyTUajZ1Lzp9Ga1xFJX34Lr0/UvygftB+yDJUAoNS/N
+        8BrKO7xT/DcDt8br2jAJoTFvnZ+TVCbIwb1XHWBDTQ==
+X-Google-Smtp-Source: AGHT+IG24SY+AmaIc+GhrEz329Y4vBmKjCMcDq+rUUT0zgxupE8c2rrSkXUVRsTg1cVaRBl7z6gixwGZa6VYIoacwHE=
+X-Received: by 2002:ac2:5d67:0:b0:502:932e:2e36 with SMTP id
+ h7-20020ac25d67000000b00502932e2e36mr31850lft.2.1696464816245; Wed, 04 Oct
+ 2023 17:13:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bEqKWIA1685n+LKp"
-Content-Disposition: inline
-In-Reply-To: <72e80688.8a8.18ad9bba905.Coremail.wangkailong@jari.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231004005729.3943515-1-jefferymiller@google.com> <ZR1yUFJ8a9Zt606N@penguin>
+In-Reply-To: <ZR1yUFJ8a9Zt606N@penguin>
+From:   Jeffery Miller <jefferymiller@google.com>
+Date:   Wed, 4 Oct 2023 19:13:24 -0500
+Message-ID: <CAAzPG9Pp6mHfEziJiUuhDRmkKMfiiPD6axtfAMaCJcEAcuQPiA@mail.gmail.com>
+Subject: Re: [PATCH] Input: elantech - fix fast_reconnect callback in ps2 mode
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     regressions@lists.linux.dev, benjamin.tissoires@redhat.com,
+        linux@leemhuis.info, Andrew Duggan <aduggan@synaptics.com>,
+        Andrew Duggan <andrew@duggan.us>, loic.poulain@linaro.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,121 +73,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dmitry,
 
---bEqKWIA1685n+LKp
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 4, 2023 at 9:11=E2=80=AFAM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> In fact, now that I think about it more, we should rework the original
+> patch that added the delay, so that we do not wait these 30 msec in the
+> "fast" reconnect handler. It turns out your original approach was
+> better, but we should not be using retries, but rather the existing
+> reset_delay_ms already defined in rmi platform data. I would appreciate
+> if you try the draft patch at the end of this email (to be applied after
+> reverting your original one adding the delay in psmouse-smbus.c).
 
-On Thu, Sep 28, 2023 at 11:01:08AM +0800, KaiLong Wang wrote:
-> Fix the following errors reported by checkpatch:
->=20
-> ERROR: spaces required around that ':' (ctx:WxV)
-> ERROR: space required after that ',' (ctx:VxO)
-> ERROR: need consistent spacing around '*' (ctx:VxW)
->=20
-> Signed-off-by: KaiLong Wang <wangkailong@jari.cn>
-> ---
->  include/asm-generic/vmlinux.lds.h | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
->=20
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmli=
-nux.lds.h
-> index 9c59409104f6..9e19234bbf97 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -63,8 +63,8 @@
->   * up in the PT_NOTE Program Header.
->   */
->  #ifdef EMITS_PT_NOTE
-> -#define NOTES_HEADERS		:text :note
-> -#define NOTES_HEADERS_RESTORE	__restore_ph : { *(.__restore_ph) } :text
-> +#define NOTES_HEADERS : text : note
-> +#define NOTES_HEADERS_RESTORE	__restore_ph : { *(.__restore_ph) } : text
+I tested the draft patch and it works. I did revert the previous delay
+patch while testing it.
 
-Personally I prefer macro arguments to be aligned.
+>
+> I think we need a similar change in synaptics.c as that one also can
+> fall back to PS/2 mode.
+>
+Ah, good point, yes it does appear this needs to be done as well.
+I have tested and will post an new version of the patch to include
+the fix in synaptics.c as well.
 
->  #else
->  #define NOTES_HEADERS
->  #define NOTES_HEADERS_RESTORE
-> @@ -98,10 +98,10 @@
->   */
->  #if defined(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION) || defined(CONFIG_LTO_=
-CLANG)
->  #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
-> -#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundlit=
-eral* .data.$__unnamed_* .data.$L*
-> +#define DATA_MAIN .data .data.[0-9a-zA-Z_] * .data..L * .data..compoundl=
-iteral * .data.$__unnamed_ * .data.$L*
->  #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
-> -#define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
-> -#define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
-> +#define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_] * .rodata..L*
-> +#define BSS_MAIN .bss .bss.[0-9a-zA-Z_] * .bss..compoundliteral*
->  #define SBSS_MAIN .sbss .sbss.[0-9a-zA-Z_]*
-
-Is it taking a pointer or changing to multiplication?
-
->  #else
->  #define TEXT_MAIN .text
-> @@ -462,7 +462,7 @@
->  	. =3D ALIGN((align));						\
->  	.rodata           : AT(ADDR(.rodata) - LOAD_OFFSET) {		\
->  		__start_rodata =3D .;					\
-> -		*(.rodata) *(.rodata.*)					\
-> +		*(.rodata) * (.rodata.*)					\
->  		SCHED_DATA						\
->  		RO_AFTER_INIT_DATA	/* Read only after init */	\
->  		. =3D ALIGN(8);						\
-> @@ -494,28 +494,28 @@
->  	/* Kernel symbol table: Normal symbols */			\
->  	__ksymtab         : AT(ADDR(__ksymtab) - LOAD_OFFSET) {		\
->  		__start___ksymtab =3D .;					\
-> -		KEEP(*(SORT(___ksymtab+*)))				\
-> +		KEEP(*(SORT(___ksymtab+ *)))				\
->  		__stop___ksymtab =3D .;					\
->  	}								\
->  									\
->  	/* Kernel symbol table: GPL-only symbols */			\
->  	__ksymtab_gpl     : AT(ADDR(__ksymtab_gpl) - LOAD_OFFSET) {	\
->  		__start___ksymtab_gpl =3D .;				\
-> -		KEEP(*(SORT(___ksymtab_gpl+*)))				\
-> +		KEEP(*(SORT(___ksymtab_gpl+ *)))			\
->  		__stop___ksymtab_gpl =3D .;				\
->  	}								\
->  									\
->  	/* Kernel symbol table: Normal symbols */			\
->  	__kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET) {		\
->  		__start___kcrctab =3D .;					\
-> -		KEEP(*(SORT(___kcrctab+*)))				\
-> +		KEEP(*(SORT(___kcrctab+ *)))				\
->  		__stop___kcrctab =3D .;					\
->  	}								\
->  									\
->  	/* Kernel symbol table: GPL-only symbols */			\
->  	__kcrctab_gpl     : AT(ADDR(__kcrctab_gpl) - LOAD_OFFSET) {	\
->  		__start___kcrctab_gpl =3D .;				\
-> -		KEEP(*(SORT(___kcrctab_gpl+*)))				\
-> +		KEEP(*(SORT(___kcrctab_gpl+ *)))			\
->  		__stop___kcrctab_gpl =3D .;				\
->  	}								\
-
-Same here.
-
-Confused...
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---bEqKWIA1685n+LKp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZR3/mAAKCRD2uYlJVVFO
-oxvuAQCkXx9+njnvII0+xKHGRERMrYm8sxrQQXTQ3J6EHyC8dQEAlc3kXaAJwrV9
-I8WIium3NvzhTHvv8hayacA5UwGjgAA=
-=dqD1
------END PGP SIGNATURE-----
-
---bEqKWIA1685n+LKp--
+Thanks,
+Jeff
