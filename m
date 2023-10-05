@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CAC7BAF3A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A027BAF30
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjJEXML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 19:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
+        id S229630AbjJEXMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 19:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjJEXJz (ORCPT
+        with ESMTP id S229635AbjJEXJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 19:09:55 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FA310C3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 16:09:40 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f8188b718so22137617b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 16:09:40 -0700 (PDT)
+        Thu, 5 Oct 2023 19:09:40 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76897D5E
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 16:09:27 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c60778a3bfso12438685ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 16:09:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696547379; x=1697152179; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wfL4FLU++s9CKjil59t6XdpqiER2jatUC+zl7nbhx6Q=;
-        b=aFrkysO+gaNCXmgevliCscZ/ljl+qyLGxh4dkDOE8MXHBtBSjaflkaNqf2jTG4i5MD
-         QtJwYlUVzJGLFXYJeZ9yJS3xK449JhO48JT8wJ/tKK35WVBEm7gtvtrRIKJd2rVXJtLO
-         g2HLvywtsp55v2tSZ2083iBvgZgZBcwkM6CxQ+xGntrWJifs4LlmqTIWbWxKqY+vj0im
-         PAC6FeLuZn6ZHpcRxe1YAlbr+xT9mxYJJZnB4osUIzw90DTyqF8NO9Na5inVskaKuxVs
-         JG4gVSQty7O5rVwbeI/Uj4la9jQAU4m5H05vmWXCJnFAHhjRkP88CPBK+X+HW6J/LANl
-         Q3aA==
+        d=chromium.org; s=google; t=1696547367; x=1697152167; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DoiIVSH2H/7Ehkj4/Ha1iKcbnVhKAH6CyOO+EjLparg=;
+        b=ZTUg87L3qbyY/YdSC6Uv7LNgY63RUIaMacDUOJOoCzkdsw6c4iIwqfpyFRD9hSlsAp
+         GrRihCD7NLnNKPkWWlz5TmNeOoN1cqBr4wxyNVsi4j/AoALqQ48jGzWJ0h2wgQFEEC9O
+         lqpwzvT9FASKKWWYpk/corpZu6Hou9HK24jGc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696547379; x=1697152179;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wfL4FLU++s9CKjil59t6XdpqiER2jatUC+zl7nbhx6Q=;
-        b=OHzSJsatQJ/0NOHQsjn8xlNN6hAH5fCJkw5V2E8IpJAYRahkJkpNAb7u57F7dX3s6B
-         r3Vv35mbExcdJx3dD1aN+zaiRgf+f3xof7Iku5DwWv4d2ObyY/GDTVDInGWcaNBwgwqs
-         Wdf5f1rtr5p92MrQbrnwcUx78X0Ryr5dFqW7Zrnz2W0HahBJMrDOm+ess51tgYWVXPHE
-         OwRPOtKcAtzd6kytAY+eQLaJ5h00szsUkgFLU9UmFhLJmesdN3EtQNEmf3vj66g5VlQ/
-         2yDd/GtM9i5ZJKY7osJpTmZlD2BFh60Upp9zb4BHOslngy90ApjLEoJjhc0Yqa1K2+6/
-         vcLQ==
-X-Gm-Message-State: AOJu0Yy0tDgoNKpPLVdRbT6JhXK/IptsFtoYkgnZ6oJKQZnKYkYZTuC7
-        qRG0DBR+3Y4E1kPupvnpvHmscIFXYtCA
-X-Google-Smtp-Source: AGHT+IHgsU7WqtGzIXgNXr1P8QSditE9WLikTdLCJCQWnQLq+FpPEmuFYiUkFS5RxrsXiCHqXCKcfq5Bkre2
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7449:56a1:2b14:305b])
- (user=irogers job=sendgmr) by 2002:a25:586:0:b0:d7e:dff4:b0fe with SMTP id
- 128-20020a250586000000b00d7edff4b0femr96767ybf.7.1696547379763; Thu, 05 Oct
- 2023 16:09:39 -0700 (PDT)
-Date:   Thu,  5 Oct 2023 16:08:51 -0700
-In-Reply-To: <20231005230851.3666908-1-irogers@google.com>
-Message-Id: <20231005230851.3666908-19-irogers@google.com>
-Mime-Version: 1.0
-References: <20231005230851.3666908-1-irogers@google.com>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v2 18/18] perf bpf_counter: Fix a few memory leaks
-From:   Ian Rogers <irogers@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Yuan Can <yuancan@huawei.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        James Clark <james.clark@arm.com>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1696547367; x=1697152167;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DoiIVSH2H/7Ehkj4/Ha1iKcbnVhKAH6CyOO+EjLparg=;
+        b=EiRCuTiJ6CgiVMWAwyxU7cvTBUJ2n48piG48GkrU3PMwv2KbN5MpUYelGm3n9Y0Snu
+         2t0uI+m3r58FmQSfj4CJ/bpGynz+csBk0X+1W/OmiPFxRDU5824Fn6MQAdGM+FLfcJET
+         b1HR62PbkRnMl5NtzwOp3exq9su+C3oshVodviWaXK/9dAncAgrqFa+6KiA2zJLeQW/w
+         bHBu2vaYN2zUp1y/4xOUF1wgD/44S5Fkb9ViK1f90C8hZR4qF15Au4qQAZMpVFAppkTD
+         BKetACBLwsizhMMbYZRX8GP2YqDeca4aCCCWfx8tztCaubo/DAYGBEXXKrQD3uZPS0eT
+         i0KA==
+X-Gm-Message-State: AOJu0YyB0MGSAquOgoYjbvqrRgQBu5cat7wrd0cF357w6dK6utmHuJPt
+        WKA/tXyVmkhNdiKu1nEKvm75Iw==
+X-Google-Smtp-Source: AGHT+IHcq5uCc483ikwSlkpjgM2nwnjHkpTW/XMhjMaTpuHs/FjHne5CGBFVVASfL01xWH04NCQt/g==
+X-Received: by 2002:a17:903:22c3:b0:1c3:cee1:cc8e with SMTP id y3-20020a17090322c300b001c3cee1cc8emr7994677plg.68.1696547366933;
+        Thu, 05 Oct 2023 16:09:26 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id ja14-20020a170902efce00b001bd62419744sm2318235plb.147.2023.10.05.16.09.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 16:09:26 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 16:09:23 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] bna: replace deprecated strncpy with strscpy
+Message-ID: <202310051549.D76C508541@keescook>
+References: <20231005-strncpy-drivers-net-ethernet-brocade-bna-bfa_ioc-c-v1-1-8dfd30123afc@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231005-strncpy-drivers-net-ethernet-brocade-bna-bfa_ioc-c-v1-1-8dfd30123afc@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,47 +74,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory leaks were detected by clang-tidy.
+On Thu, Oct 05, 2023 at 09:05:42PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> bfa_ioc_get_adapter_manufacturer() simply copies a string literal into
+> `manufacturer`.
+> 
+> NUL-padding is not needed because bfa_ioc_get_adapter_manufacturer()'s
+> only caller passes `ad_attr` (which is from ioc_attr) which is then
+> memset to 0.
+>  bfa_nw_ioc_get_attr() ->
+>    bfa_ioc_get_adapter_attr() ->
+>      bfa_nw_ioc_get_attr() ->
+>        memset((void *)ioc_attr, 0, sizeof(struct bfa_ioc_attr));
+> 
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: build-tested only.
+> ---
+>  drivers/net/ethernet/brocade/bna/bfa_ioc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/brocade/bna/bfa_ioc.c b/drivers/net/ethernet/brocade/bna/bfa_ioc.c
+> index b07522ac3e74..497cb65f2d06 100644
+> --- a/drivers/net/ethernet/brocade/bna/bfa_ioc.c
+> +++ b/drivers/net/ethernet/brocade/bna/bfa_ioc.c
+> @@ -2839,7 +2839,7 @@ bfa_ioc_get_adapter_optrom_ver(struct bfa_ioc *ioc, char *optrom_ver)
+>  static void
+>  bfa_ioc_get_adapter_manufacturer(struct bfa_ioc *ioc, char *manufacturer)
+>  {
+> -	strncpy(manufacturer, BFA_MFG_NAME, BFA_ADAPTER_MFG_NAME_LEN);
+> +	strscpy(manufacturer, BFA_MFG_NAME, sizeof(manufacturer));
+>  }
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/bpf_counter.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+tl;dr: please use:
 
-diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-index 6732cbbcf9b3..7f9b0e46e008 100644
---- a/tools/perf/util/bpf_counter.c
-+++ b/tools/perf/util/bpf_counter.c
-@@ -104,7 +104,7 @@ static int bpf_program_profiler_load_one(struct evsel *evsel, u32 prog_id)
- 	struct bpf_prog_profiler_bpf *skel;
- 	struct bpf_counter *counter;
- 	struct bpf_program *prog;
--	char *prog_name;
-+	char *prog_name = NULL;
- 	int prog_fd;
- 	int err;
- 
-@@ -155,10 +155,12 @@ static int bpf_program_profiler_load_one(struct evsel *evsel, u32 prog_id)
- 	assert(skel != NULL);
- 	counter->skel = skel;
- 	list_add(&counter->list, &evsel->bpf_counter_list);
-+	free(prog_name);
- 	close(prog_fd);
- 	return 0;
- err_out:
- 	bpf_prog_profiler_bpf__destroy(skel);
-+	free(prog_name);
- 	free(counter);
- 	close(prog_fd);
- 	return -1;
-@@ -180,6 +182,7 @@ static int bpf_program_profiler__load(struct evsel *evsel, struct target *target
- 		    (*p != '\0' && *p != ',')) {
- 			pr_err("Failed to parse bpf prog ids %s\n",
- 			       target->bpf_str);
-+			free(bpf_str_);
- 			return -1;
- 		}
- 
+	strscpy_pad(manufacturer, BFA_MFG_NAME, BFA_ADAPTER_MFG_NAME_LEN);
+
+sizeof() will not work correctly here -- manufacturer is a char *,
+so this will always be sizeof(unsigned long). Which begs the question,
+why is an unbounded string being passed here? Yay fragile API.
+
+I notice bfa_ioc_get_adapter_manufacturer() in drivers/scsi/bfa/bfa_ioc.c
+does this:
+
+        memset((void *)manufacturer, 0, BFA_ADAPTER_MFG_NAME_LEN);
+        strscpy(manufacturer, BFA_MFG_NAME, BFA_ADAPTER_MFG_NAME_LEN);
+
+So, I think we should follow suit (but use strscpy_pad() instead to
+avoid the partially redundant memset).
+
+I also note that the "manufacturer" argument comes from many possible
+structs, not just struct bfa_adapter_attr:
+
+drivers/net/ethernet/brocade/bna/bfa_ioc.c:2761:        bfa_ioc_get_adapter_manufacturer(ioc, ad_attr->manufacturer);
+
+	struct bfa_adapter_attr {
+	        char            manufacturer[BFA_ADAPTER_MFG_NAME_LEN];
+
+drivers/scsi/bfa/bfa_ioc.c:2698:        bfa_ioc_get_adapter_manufacturer(ioc, ad_attr->manufacturer);
+
+	struct bfa_adapter_attr_s {
+	        char            manufacturer[BFA_ADAPTER_MFG_NAME_LEN];
+
+drivers/scsi/bfa/bfa_fcs_lport.c:2630:  bfa_ioc_get_adapter_manufacturer(&port->fcs->bfa->ioc,
+
+	struct bfa_fcs_fdmi_hba_attr_s {
+		...
+	        u8         manufacturer[64];
+
+This is unexpectedly large... I was expecting either 8 or
+BFA_ADAPTER_MFG_NAME_LEN:
+
+drivers/net/ethernet/brocade/bna/bfa_defs.h:31: BFA_ADAPTER_MFG_NAME_LEN    = 8,   /*!< manufacturer name length */
+drivers/scsi/bfa/bfa_defs.h:259:        BFA_ADAPTER_MFG_NAME_LEN    = 8,   /*  manufacturer name length */
+
+(But it seems not a problem, since it's memset() before...)
+
+And there are more that I've check, since I also found this macro:
+
+#define bfa_get_adapter_manufacturer(__bfa, __manufacturer)             \
+        bfa_ioc_get_adapter_manufacturer(&(__bfa)->ioc, __manufacturer)
+
+And there are multiple implementations of bfa_ioc_get_adapter_manufacturer(), it seems.
+
 -- 
-2.42.0.609.gbb76f46606-goog
-
+Kees Cook
