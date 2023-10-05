@@ -2,156 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67DC77BAB6B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 22:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF857BAB6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 22:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbjJEUZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 16:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
+        id S231308AbjJEU01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 16:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjJEUZJ (ORCPT
+        with ESMTP id S230020AbjJEU0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 16:25:09 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0EC93;
-        Thu,  5 Oct 2023 13:25:07 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b2f73e3af3so244795666b.3;
-        Thu, 05 Oct 2023 13:25:07 -0700 (PDT)
+        Thu, 5 Oct 2023 16:26:25 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAB69F
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 13:26:23 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a50756542cso16831027b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 13:26:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696537506; x=1697142306; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EORYdYRX/JTnSaEVrtfXCtgRXALsCRav/4X7zISoiUk=;
-        b=jdQXfinYMSKHBtT8lzxRP9izf/vqD6bFmE2Fm8l+ODEN1tySYjZnrtX86rWlXbgjFl
-         HFZK26/R/roxn6L1Jcjg2CU34gZvzUCkDXYWkV1Jwr1Opkkaf+3AWENodsmGNIqVtg/4
-         q3ZXWRLQ1eAp+GK/YDjl+it5hhMp/f+oJUQ7Tm/FyRl3v0ORJ14Mg5fICvM8XPeB540W
-         0B8wxcY/2VDJtSw4TbqTcWlVRS2+trJG62BPT4w6AIJ8ONX+Vyb6pYIQH7lOC6sx7LxU
-         c39TnxeV1+i4WpMtUvvUTuQ9pjgg6CLX5pmajhqeSIIV+Zg7I3K32uZDPpoCeFEJ1fPL
-         SIqg==
+        d=linaro.org; s=google; t=1696537582; x=1697142382; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x+vFXwmp+9tswjf710RHJJtAQWo4CXzsbf/R25OOJto=;
+        b=HCKnPK1fVFM2Fy0yEDomfm4PnWgHeKspsIxXI2vr07ZBFJgNesdQr8NErgrCKrfLN+
+         RFnA/X3eHHgNaRXpgfNgFsFHjFwPJWyW3jVpeVuod+/PomNT6foiqcwUGqfaUnB9GWax
+         CLbUHwWu3jgaL3y+aD7PGOBV3r3ov69rPI96fH1lHoo+605aVgnykNNZvdZ9ovSNSpbh
+         DI8o6vYcWXoEj5BPdySBJyo3qnkNggpWdi9DzMjmUxx1YJRd/sPGCunWHKKY0+2YwSmm
+         ZWSg5sXCY4KTdYkzU2SE9GdmYzfW8zXWSiZZCCfn7vIG72H9/jL0fHDDfYpIAioTHLeQ
+         /4JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696537506; x=1697142306;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696537582; x=1697142382;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EORYdYRX/JTnSaEVrtfXCtgRXALsCRav/4X7zISoiUk=;
-        b=EL+HE6/Gh5mO1E/FPTtZnroin5u3OzddlRZaETO+d/K+mv1EkL0IZIhUanD20hQZx+
-         5XfPrN7Ip82nkkMsjMxW1pk/GJwcd5UiEjaBsmeo68bX/5l2HTWDWx5A+WvIC6/Gg0yp
-         hyRgtZ4AoiUli/KITYjUlY/zVdM60h/T0x88/gLy1CJgXJztdHVMIEA9dZPSbqbz9hZ2
-         VyTSXr+CkrcnMUNMf7BH2vWJXsbHYv9KHD7ZtsahbIWzhfFnIBz8ASOeq0tXAzJ2Ml0u
-         9L/wpaN1FnvDA3sG04PdKee3vW37QZT064uTiisAsGXDTPg5YX7RqNSepPQh8qZO+2BI
-         cVHw==
-X-Gm-Message-State: AOJu0YyRLBPVKRW/IQ7wkWQdrV4AptrX6ukcWB9ERFWRSav8zninMykl
-        eicuZiTTeezweBgxZGczg4A=
-X-Google-Smtp-Source: AGHT+IFyAxqoz8J0hULZYn3nhcRDJnm/wfuQPF9QsNUKR5ot3ZLP61hz+DMOvNKFcKftnj45ewyybA==
-X-Received: by 2002:a17:906:53d2:b0:9b2:c1bb:a695 with SMTP id p18-20020a17090653d200b009b2c1bba695mr5588533ejo.13.1696537505921;
-        Thu, 05 Oct 2023 13:25:05 -0700 (PDT)
-Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
-        by smtp.gmail.com with ESMTPSA id a9-20020a170906244900b0099bd86f9248sm1708486ejb.63.2023.10.05.13.25.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 13:25:05 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 5 Oct 2023 22:25:03 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-        Shuah Khan <shuah@kernel.org>, kernel@collabora.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 6/6] selftests: futex: remove duplicate unneeded defines
-Message-ID: <ZR8bn/UDLypbUhJT@gmail.com>
-References: <20230805073809.1753462-1-usama.anjum@collabora.com>
- <20230805073809.1753462-6-usama.anjum@collabora.com>
- <ZRvU8DXRWL9sgKug@gmail.com>
- <51273ffa-e323-44e8-8a93-bc04ee356df0@collabora.com>
+        bh=x+vFXwmp+9tswjf710RHJJtAQWo4CXzsbf/R25OOJto=;
+        b=B0uNEwUJ/7IKyIiYsebIkdaHfpYnWlxENUS9qUl6EKfmQh1GJqjlFn0JgB6q83Akwm
+         gdpsBAH1A20HS2EBbf5P/OYMYPCvZYisvSLbQxDPcM/XAENRS2kYI0ZyMOVWmucuMUWI
+         WPy2oPoxx4xQX5chE82KE8qiVCiDgBIXDaRCqUQh71Eol3LF1tQ8YKgwXJX10AXd84ku
+         2EFComfx7VXzuu/bj0pCQQLLL2ZlCScvR7GCndqtmFwmD1Y82WMNYdnPGchVdG2693bk
+         f/F/nL1fI7UsqPD41IVlkwZQJnCWDOs3BEawikOjq0ADbmGhqyHhedfgCFhQ7NzcukD7
+         pW9w==
+X-Gm-Message-State: AOJu0YyRAiMKzZ5nzP3CUfgthdQvsggf9ZAKpmAAurQJhRqYvs1D7IxE
+        7Yv45b42Dw9TZ8TaqwEK/k65j1F8W1eOeJEGPvq8pw==
+X-Google-Smtp-Source: AGHT+IEGpzdAhuxSYuqOwe4aCJHv9kTL7tagkbcdujS4GlykXJh/4hKMn94/znw1qMEseb/YeerBjXKnmSgSFHqsr4g=
+X-Received: by 2002:a0d:f783:0:b0:58c:b8b4:2785 with SMTP id
+ h125-20020a0df783000000b0058cb8b42785mr5719790ywf.45.1696537582399; Thu, 05
+ Oct 2023 13:26:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51273ffa-e323-44e8-8a93-bc04ee356df0@collabora.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230923-ixp4xx-eth-mtu-v1-1-9e88b908e1b2@linaro.org>
+ <169632602529.26043.5537275057934582250.git-patchwork-notify@kernel.org>
+ <CACRpkdacagNg8EA54_9euW8M4WHivLb01C7yEubAreNan06sGA@mail.gmail.com> <0c0b0fade091a701624379d91813cfb9f30a5111.camel@redhat.com>
+In-Reply-To: <0c0b0fade091a701624379d91813cfb9f30a5111.camel@redhat.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 5 Oct 2023 22:26:11 +0200
+Message-ID: <CACRpkdZU6hxqftMmNyu68iVJDmftDYe9tYk7+1bZ4_Ne7CevCw@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: ixp4xx_eth: Specify min/max MTU
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     patchwork-bot+netdevbpf@kernel.org, khalasa@piap.pl,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 5, 2023 at 9:37=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wrot=
+e:
 
-* Muhammad Usama Anjum <usama.anjum@collabora.com> wrote:
+> > Sorry Paolo, this is the latest version of this patch, which sadly chan=
+ged
+> > Subject in the process:
+> > https://lore.kernel.org/netdev/20230928-ixp4xx-eth-mtu-v3-1-cb18eaa0edb=
+9@linaro.org/
+>
+> Ouch, my bad :(
 
-> On 10/3/23 1:46 PM, Ingo Molnar wrote:
-> > 
-> > * Muhammad Usama Anjum <usama.anjum@collabora.com> wrote:
-> > 
-> >> Kselftests are kernel tests and must be build with kernel headers from
-> >> same source version. These duplicate defines should automatically
-> >> picked up from kernel headers. Use KHDR_INCLUDES to add kernel header
-> >> files.
-> >>
-> >> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> >> ---
-> >>  .../selftests/futex/include/futextest.h       | 22 -------------------
-> >>  1 file changed, 22 deletions(-)
-> >>
-> >> diff --git a/tools/testing/selftests/futex/include/futextest.h b/tools/testing/selftests/futex/include/futextest.h
-> >> index ddbcfc9b7bac4..59f66af3a6d10 100644
-> >> --- a/tools/testing/selftests/futex/include/futextest.h
-> >> +++ b/tools/testing/selftests/futex/include/futextest.h
-> >> @@ -25,28 +25,6 @@
-> >>  typedef volatile u_int32_t futex_t;
-> >>  #define FUTEX_INITIALIZER 0
-> >>  
-> >> -/* Define the newer op codes if the system header file is not up to date. */
-> >> -#ifndef FUTEX_WAIT_BITSET
-> >> -#define FUTEX_WAIT_BITSET		9
-> >> -#endif
-> >> -#ifndef FUTEX_WAKE_BITSET
-> >> -#define FUTEX_WAKE_BITSET		10
-> >> -#endif
-> >> -#ifndef FUTEX_WAIT_REQUEUE_PI
-> >> -#define FUTEX_WAIT_REQUEUE_PI		11
-> >> -#endif
-> >> -#ifndef FUTEX_CMP_REQUEUE_PI
-> >> -#define FUTEX_CMP_REQUEUE_PI		12
-> >> -#endif
-> >> -#ifndef FUTEX_WAIT_REQUEUE_PI_PRIVATE
-> >> -#define FUTEX_WAIT_REQUEUE_PI_PRIVATE	(FUTEX_WAIT_REQUEUE_PI | \
-> >> -					 FUTEX_PRIVATE_FLAG)
-> >> -#endif
-> >> -#ifndef FUTEX_REQUEUE_PI_PRIVATE
-> >> -#define FUTEX_CMP_REQUEUE_PI_PRIVATE	(FUTEX_CMP_REQUEUE_PI | \
-> >> -					 FUTEX_PRIVATE_FLAG)
-> >> -#endif
-> > 
-> > AFAICT I cannot really pick this up into the locking tree as-is, as this patch
-> > relies on the KHDR_INCLUDES change in patch #1, so that all self-tests get the
-> > kernel headers included, correct?
-> No this patch is self contained and doesn't depend on the patch #1.
-> KHDR_INCLUDES was included several releases back in kselftest's Makefile
-> and in kselftests of futex. Correct headers are being included already. In
-> this patch, I'm removing just the un-needed dead code. Other patches were
-> already picked up by other maintainers.
 
-So the changelog does not match that characterization, it talks about 
-KHDR_INCLUDES in the present tense, and patch #1 adds the KHDR_INCLUDES, 
-which further suggested a dependency to me:
+It's chill, I already rebased and resent the patch, it's life.
 
-> >> Kselftests are kernel tests and must be build with kernel headers from
-> >> same source version. These duplicate defines should automatically
-> >> picked up from kernel headers. Use KHDR_INCLUDES to add kernel header
-                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> >> files.
-     ^^^^^^
+> The change of subject baffled both me and patchwork. As I process the
+> backlog fifo, and was unable to reach the most recent versions due to
+> the backlog size, I missed the newer revisions.
+>
+> In the future, please try to avoid subject change. If the subject chane
+> is needed, please explicitly mark the old version as superseded, it
+> will help us a lot, thanks!
 
-Could you please re-send it with the changelog updated that makes it clear 
-that this patch works fine standalone against current mainline kernels?
+OK in patchwork I guess, I don't understand that tool very well otherwise
+I would have done it right, I'll try not to confuse it more.
 
-Thanks,
-
-	Ingo
+BR
+Linus Walleij
