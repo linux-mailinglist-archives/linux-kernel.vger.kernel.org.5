@@ -2,124 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D81657BA2F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BFC7BA335
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235171AbjJEPtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
+        id S236102AbjJEPwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233313AbjJEPsM (ORCPT
+        with ESMTP id S234221AbjJEPvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:48:12 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF1E826D1;
-        Thu,  5 Oct 2023 07:16:59 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 395DHZAG123978;
-        Thu, 5 Oct 2023 08:17:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696511855;
-        bh=KD+7zlq75ALxwrYJZRVC4LR58yxzi4RfU5hU9XkaJsI=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=YT/XxjEKBvqXxNOGvNy1FBjSCwE4u4FJLpUpZ1Y66WgI0xK91X88ZHTYMnPpPCYnu
-         4zee9ETdzOFd7mm7iLXQ1gTAQaa4/rlAQK8wqCHk3uPI6CFIn/PpjTygcEqh9sf8Xs
-         33wZwUD2CAWyd7hiXDsGUTykr1BOXIyKRrC9mzek=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 395DHZUK008994
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 5 Oct 2023 08:17:35 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 5
- Oct 2023 08:17:35 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 5 Oct 2023 08:17:35 -0500
-Received: from [10.249.136.52] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 395DHTaj118229;
-        Thu, 5 Oct 2023 08:17:30 -0500
-Message-ID: <3037051e-9665-4174-b545-5a91d146fb54@ti.com>
-Date:   Thu, 5 Oct 2023 18:47:28 +0530
+        Thu, 5 Oct 2023 11:51:02 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EC527561;
+        Thu,  5 Oct 2023 06:22:32 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7abe4fa15ceso641635241.1;
+        Thu, 05 Oct 2023 06:22:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696512152; x=1697116952; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UgIhftH4G92rOIHpCooz7/tVkwHfE/wjVpyKVopiGpI=;
+        b=ntcgJJ1UNSxJGXx6LBJ/OsMYY2jFeoJxeNiZeTCdNgTCd2qapsg3UTRAob6ViImc8i
+         L57KWropAC/BWrXzX0istrLxOPSZKQV+Plog0HGevXapNYQ3nZXayP3Xo49YWd8UAYes
+         OLYR5SZUIwa26OmbVuGo/zqH25egNSI72zCnpP6vIV5t9yVoEsSSk6PdQROTm33zCtXP
+         LnwYUqMYpl7IHLjkSG+t78LsLHihoAvHjYJLslxhTFkkMUzvryfziX9PMAWCE+UG79Pw
+         m6TP715KmeTAiRqrSopjBkuMonXFGGcSgVL1ceCSF33jzZu1POXAya8S8O+GwBc+UH7i
+         qvHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696512152; x=1697116952;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UgIhftH4G92rOIHpCooz7/tVkwHfE/wjVpyKVopiGpI=;
+        b=pyHY07xj79IwqF2iZzUEIEAjGz39SF/dIDjF41p2MK5IRZqns3JdqhZSyG8/XkqNlc
+         ik8zsWHjJx/ptnqefXbSYppTy1O+H95eLhncPPRXOixvKNHyqmdsbD8PDRG2zdW+ye5q
+         j4KfywSReHNjjmx6qQI2FEqFNuxEqc/7GbVjjcNPwc4KKBIIGnMXdthJfPHicg0SDgv8
+         gOw+R9vd9khpRY4g21yxHuc2hX4XjRJ71l/LF/L1Uqh7VF79hIbdKMTprSuaJAZRJ4pq
+         YriGSVCZKFrxn4WCAeqEcqpvsVMN5RN4aHSrawSxXqVthGggVKiHkCTSw9XqVsx+EbxG
+         6DyQ==
+X-Gm-Message-State: AOJu0Yx5pMlQQLuZgWDjhMD8qZjC5w3kCxZTK4DGsOSGC9QVvrcoWXnA
+        3jj+4evGWbrPun1T+AyI+6Y2CpiGtIJD6Yl9a0Q=
+X-Google-Smtp-Source: AGHT+IEAaoXvXyAHbtej0tnlxnEefZxsl35/d3/bkcRzxXHlDTbd63Hu1Wx/seqMYJSPAmspgFgWwlCBgqV9VufIEb4=
+X-Received: by 2002:a05:6122:1817:b0:496:80b6:2fd1 with SMTP id
+ ay23-20020a056122181700b0049680b62fd1mr807887vkb.5.1696512151811; Thu, 05 Oct
+ 2023 06:22:31 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 0/5] Enable Display for J784S4 and AM69-SK platform
-To:     <nm@ti.com>, <vigneshr@ti.com>, <a-bhatia1@ti.com>
-CC:     <afd@ti.com>, <rogerq@kernel.org>, <s-vadapalli@ti.com>,
-        <conor+dt@kernel.org>, <r-ravikumar@ti.com>, <sabiya.d@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20231005100027.228806-1-j-choudhary@ti.com>
-Content-Language: en-US
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-In-Reply-To: <20231005100027.228806-1-j-choudhary@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CAOQ4uxhbNyDzf0_fFh1Yy5Kz2Coz=gTrfOtsmteE0=ncibBnpw@mail.gmail.com>
+ <0000000000001081fc0606f52ed9@google.com> <CAOQ4uxjw_XztGxrhR9LWtz_SszdURkM+Add2q8A9BAt0z901kA@mail.gmail.com>
+ <25f6950a67be079e32ad5b4139b1e89e367a91ba.camel@linux.ibm.com>
+In-Reply-To: <25f6950a67be079e32ad5b4139b1e89e367a91ba.camel@linux.ibm.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 5 Oct 2023 16:22:20 +0300
+Message-ID: <CAOQ4uxgfJ4owqzh99t65MyT5A99BbwkLQ-sHumCUWyqSw-Rd5g@mail.gmail.com>
+Subject: Re: [syzbot] [integrity] [overlayfs] possible deadlock in
+ mnt_want_write (2)
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     syzbot <syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com>,
+        hdanton@sina.com, linux-fsdevel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, mszeredi@redhat.com,
+        syzbot@syzkalhler.appspotmail.com, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 5, 2023 at 4:14=E2=80=AFPM Mimi Zohar <zohar@linux.ibm.com> wro=
+te:
+>
+> On Thu, 2023-10-05 at 13:26 +0300, Amir Goldstein wrote:
+> > On Thu, Oct 5, 2023 at 12:59=E2=80=AFPM syzbot
+> > <syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot tried to test the proposed patch but the build/boot failed:
+> >
+> > My mistake. Please try again:
+> >
+> > #syz test: https://github.com/amir73il/linux ima-ovl-fix
+>
+> Thanks, Amir.   "mutext_init(&iint->mutex); moved, but the status
+> initialization lines 161-166 were dropped.   They're needed by IMA-
+> appraisal for signature verification.
+>
+>         iint->ima_file_status =3D INTEGRITY_UNKNOWN;
+>         iint->ima_mmap_status =3D INTEGRITY_UNKNOWN;
+>         iint->ima_bprm_status =3D INTEGRITY_UNKNOWN;
+>         iint->ima_read_status =3D INTEGRITY_UNKNOWN;
+>         iint->ima_creds_status =3D INTEGRITY_UNKNOWN;
+>         iint->evm_status =3D INTEGRITY_UNKNOWN;
+>
 
+They are dropped from iint_init_once()
+They are not needed there because there are now set
+in every iint allocation in iint_init_always()
+instead of being set in iint_free()
 
-On 05/10/23 15:30, Jayesh Choudhary wrote:
-> This series adds support for:
-> - DisplayPort for J784S4-EVM
-> - Displayport and HDMI for AM69-SK platform
-> 
+This is the standard practice for slab objects.
+See inode_init_once()/inode_init_always().
 
-
-[...]
-
-Oops! I faced some issue with my mailing server while sending these
-patches. So had to send 4/5 patches again as '--in-reply-to' but
-the hierarchy is off on mailing list. Will RESEND the series.
-
-Please IGNORE this series.
-
-Sorry for the noise!!!
-
-Warm Regards,
-Jayesh
-
-> 
-> Changelog v10->v11:
-> - Added comment for disabling serdes-refclk (according to comments of v5)
-> - Update commit message to document why serdes, wiz nodes (2/5) and mhdp-
->    bridge, tidss nodes (3/5) are disabled.
-> - Keep only ports in board files and move common properties to main file
->    and document why ports are kept empty.
-> 
-> v10: https://lore.kernel.org/all/20230927121157.278592-1-j-choudhary@ti.com/
-> 
-
-
-[...]
-
-> 
-> Dasnavis Sabiya (1):
->    arm64: dts: ti: k3-am69-sk: Add DP and HDMI support
-> 
-> Rahul T R (2):
->    arm64: dts: ti: k3-j784s4-main: Add DSS and DP-bridge node
->    arm64: dts: ti: k3-j784s4-evm: Enable DisplayPort-0
-> 
-> Siddharth Vadapalli (2):
->    arm64: dts: ti: k3-j784s4-main: Add system controller and SERDES lane
->      mux
->    arm64: dts: ti: k3-j784s4-main: Add WIZ and SERDES PHY nodes
-> 
->   arch/arm64/boot/dts/ti/k3-am69-sk.dts      | 229 +++++++++++++++++
->   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts   | 119 +++++++++
->   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 276 +++++++++++++++++++++
->   3 files changed, 624 insertions(+)
-> 
+Thanks,
+Amir.
