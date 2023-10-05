@@ -2,72 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 179027B9F14
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB9B7B9F0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbjJEORY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51678 "EHLO
+        id S232417AbjJEOR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjJEOPr (ORCPT
+        with ESMTP id S231175AbjJEOPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Oct 2023 10:15:47 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2572902C
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 01:46:43 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9a9f139cd94so116895466b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 01:46:43 -0700 (PDT)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99A0902D
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 01:47:24 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-534659061afso1100714a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 01:47:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696495602; x=1697100402; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1696495643; x=1697100443; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=0nyIvbFflBK7dDTk3DAm+L6H3Nw9v1atRiGVXX/kVj4=;
-        b=afKepIY8+7oz+Qc5LGPizvA+bqHXRrASaueXPtwB63Y4CysoYxOd13WviH/pv9z0vz
-         TRNYV1dfl2LU7JEPVAdWoHqM3Uhwa7UH3ubF/Ww7p0S0SsIFpbcVUxghEaqZeoFu/RzF
-         1Li4+Ey5+0z5WvP1NjtEgcs8tUYvtOq4ik5lh5YXF57xkRoIBKEsLela1Tsiva4XzJow
-         wxKTtZi/koLTrKPF4b9h2H/hGRfr7Fb+bW4n3RGnccyishyoA/g2J0uW6cWJvJU0b92V
-         kiplXsYPb6tiwqghW3Ofdjm0/sIMEfmROzMwSo2C+bX2yGjm0kY6JkWMah0vFMapvElm
-         4Y3g==
+        bh=hD29T/lNAZ/QXmGwMrZ1x3g2jDcpF7q49U192S8uJFo=;
+        b=lsQNuKsJVy+XPtiCITALaWpCvQLvvXHP4eQsqCypPyRDCyoG6BSmEemyAs7kdMhk/t
+         kt0B55GzYDKGLVIU85PPg5vohlfa1katKpoorrNuacg0FeNupK/MfNy6uWpPGytrhzp1
+         qrDMJSvGuk6+mHHk7xEMUOcMob7QCgsjXsLcB9CYTIUCEd2sV+18KhSwi3GLISnLhL0k
+         flHwr8KH48W3RD3vhwVQsAC4GbwHStBiUz5F0NW1gZEkX4DB+ik0KMIFGqTGNdJ764en
+         LAXemJU/FTNJV75eM3VrU3K5oYL0CDUgdeLW77wSsgSoO+a6cuQM5hhQFDHPaA1xssFJ
+         xoBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696495602; x=1697100402;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1696495643; x=1697100443;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0nyIvbFflBK7dDTk3DAm+L6H3Nw9v1atRiGVXX/kVj4=;
-        b=A/e5aclHMCLfCWAuFPR/uxFGn4JLEeBUJIU3EtmuAWMZ91qyoOM0wjMdQq51XkewUs
-         YxzcEXFDnjTLwN+riXbT0Uvhs+9fLsrx+l/RTHV06tSycpfehhvLL1g9Jl2CDgKD3ojB
-         cRI2/xLBrAX1j1w84EenZSRMeoevB1sHds1rNH/QHCl3LfAUUkjKV4QMrXaAxhULs/FI
-         nB2gnwtJXztTXWQK9GLTj9IhHfYP1UGubCPes+4BsuET9F6GnRQR1Y6Toa25NBv2yzw0
-         4a0Out5Y9NVs2ltmhbXbpST7gnuYkTJTorTBTx18jkGzBIuQqFZhkUIi2uj2fKLVwKgB
-         bQGw==
-X-Gm-Message-State: AOJu0YzVabFy27XJatrPwL59+49B+Zb6+2qH0NcJowN+obrpW3p6eMV3
-        hwrDh0guLKVsQeIQ1Fcd1RVBQQ==
-X-Google-Smtp-Source: AGHT+IF8ci2GbVdbSryu4l0b197rHPAynt/HopFOKnfXezpREucBtdwtxt/eQu+zv7Ve8Bf9l7iuaw==
-X-Received: by 2002:a17:907:7603:b0:9ae:381a:6c55 with SMTP id jx3-20020a170907760300b009ae381a6c55mr4385292ejc.15.1696495602340;
-        Thu, 05 Oct 2023 01:46:42 -0700 (PDT)
+        bh=hD29T/lNAZ/QXmGwMrZ1x3g2jDcpF7q49U192S8uJFo=;
+        b=Ibnebvwp5pdnqxmwGXGYKySVj9ZrfGt/urlMlCaQ255T3qwuahOROPlxBfzJFS/1MR
+         G5I8HcNuSTQZ6A+NGuXrWaEXFlh7zFDXx0hddCgsMuESRXPDYAS6LZK9cCR0KcbhX8XX
+         goz2SrUeWWqPVFv/LDC6rQ/3M+Ux0KE2OfAmxqtnRVRvJwUJw6tKRjOCtXaicpIjlEG3
+         ROdp8/MeFO58XLU5kv5vh9WzFJfSsjJwl0rGqcm8siKOU/oNTg2Bk3jfS7vFdOtxsP5a
+         jhfQrwsNy07YqWa1WAgwzrqL7Dae9yNUv5il3h7AumO2BIygreqI+L6V5qjXVzj0k8eX
+         pYyg==
+X-Gm-Message-State: AOJu0YzI8fdMuiQey0VcoIkWU+tVBzJ0N/eMCJ0w/FuTwKi7gmIB6X6o
+        sADem+Ie05onUGTMlW/mCg4Otg==
+X-Google-Smtp-Source: AGHT+IHoI73LDoSrX3Gv9DQxUZNSzP3ZoUFcKOfRokgWvrTjGiN0gthxYBek7Z+baJjgCuDr2rd82A==
+X-Received: by 2002:a17:906:105e:b0:9ae:654d:5105 with SMTP id j30-20020a170906105e00b009ae654d5105mr4915001ejj.47.1696495642975;
+        Thu, 05 Oct 2023 01:47:22 -0700 (PDT)
 Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id a1-20020a1709064a4100b009b65a698c5csm815655ejv.57.2023.10.05.01.46.40
+        by smtp.gmail.com with ESMTPSA id a1-20020a1709064a4100b009b65a698c5csm815655ejv.57.2023.10.05.01.47.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 01:46:41 -0700 (PDT)
-Message-ID: <c569f808-cdaa-4470-9a80-93714651a5b7@linaro.org>
-Date:   Thu, 5 Oct 2023 10:46:40 +0200
+        Thu, 05 Oct 2023 01:47:22 -0700 (PDT)
+Message-ID: <6b4968d9-80d3-4a5a-b42e-3982825e45e9@linaro.org>
+Date:   Thu, 5 Oct 2023 10:47:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] arm64: dts: qcom: sc8280xp: Add in CAMCC for
- sc8280xp
+Subject: Re: [PATCH v2] ARM: dts: omap4-embt2ws: Add Bluetooth
 Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        dmitry.baryshkov@linaro.org, robh+dt@kernel.org,
+To:     Andreas Kemnade <andreas@kemnade.info>, bcousson@baylibre.com,
+        tony@atomide.com, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jonathan@marek.ca, quic_tdas@quicinc.com,
-        vladimir.zapolskiy@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231004161853.86382-1-bryan.odonoghue@linaro.org>
- <20231004161853.86382-5-bryan.odonoghue@linaro.org>
+        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231004070309.2408745-1-andreas@kemnade.info>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -113,7 +107,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231004161853.86382-5-bryan.odonoghue@linaro.org>
+In-Reply-To: <20231004070309.2408745-1-andreas@kemnade.info>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -126,12 +120,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2023 18:18, Bryan O'Donoghue wrote:
-> Add in CAMCC for sc8280xp. The sc8280xp Camera Clock Controller looks
-> similar to most of the sdmX, smX and now scX controllers.
+On 04/10/2023 09:03, Andreas Kemnade wrote:
+> Since the required clock is now available, add bluetooth.
 > 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Suggested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Note: Firmware (bts file) from device vendor reroutes tx for some time
+> during initialisation and later put it back, producing timeouts in
+> bluetooth initialisation but ignoring that command leads to proper
+> initialisation.
+> 
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
 > ---
 
 
