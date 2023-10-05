@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B14D7BAF49
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E427BAF31
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbjJEXW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 19:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
+        id S229637AbjJEXMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 19:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbjJEXUm (ORCPT
+        with ESMTP id S229639AbjJEXJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 19:20:42 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB0B19B
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 16:09:26 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f7d4bbfc7so22026157b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 16:09:26 -0700 (PDT)
+        Thu, 5 Oct 2023 19:09:45 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F271DD67
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 16:09:28 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f4f2b6de8so23690777b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 16:09:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696547366; x=1697152166; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696547368; x=1697152168; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=uSqAvWdBbUtQxC7pnyJJtR4WVxr7hcg6OVnTaxh+F6M=;
-        b=AqNhgrFbRKtUQdWQjxRR5EHYfMMb4DG7jZ19gCcE2xsMbDVRxvMRvV3uQm8kEO0/n9
-         cvwinzb6BPcWY6ewNPjPyu2Sb6s5j+LsUrcuuv2i6JgKzd7GU0bayM6KhdV5l3nmfFY2
-         Ox9N1RhODCo7vjmHbsW1t+5XX3riysjwC55idTsfAdcp7A84jggSp/2VzdvdyLzUl4Lb
-         VUr5WIjeyZt91oKbAshQ3V85qHwFNlW4CMj6FVa1lzlSoqtkr+w+m1bB45g7OrQjD9t7
-         368B3Xurb29JH/Z/asL0n7/I6bwqChboHNOJB2wqUtt22LskCAnRDoJPVGiOLMGSsytI
-         h94A==
+        bh=3q7J1zaKrxcJsN5cKPHsdKPNVlGGTILkxMs0fP/b8pI=;
+        b=th/zkdUVIH9RNTZAxrSbaoNWz9FU7rplWE/5lMyqV9j6eK94Xs8BYTH0egZpLx5m/0
+         Uv/SHZJTdT5NFRxBcipJKQaM6joZ0nancKx2wFtQomGJ9cDUbgP7TrqSqNM2+VHTue7F
+         SPHtbuJPSedwcCcVlm2xqRHu65Zv86ZYPnN7Tbl/c5sWgS6xUEbrmfmA3f19P9eXKFex
+         5RQYTfc5PvE18ZMNNhYzfGqJuL6FAoJ+vyagfyk9nfpJBdz0s24E3yf2hZjgHTmA+513
+         49Lhsg40XkF1tdZhmhIpQwae9c/7sEMuKpqTqHhPQftTeuSJMVWJeo14InAbLRRdFT33
+         UZXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696547366; x=1697152166;
+        d=1e100.net; s=20230601; t=1696547368; x=1697152168;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uSqAvWdBbUtQxC7pnyJJtR4WVxr7hcg6OVnTaxh+F6M=;
-        b=UKBQxC9F4V9OUk6IHfZBzOIxnOREXyvdS/DIknKieA3UC0u8B53THwowmlmsnHNpIv
-         J0x4lyNIgjcbQs0Ti34JmLZ4r58Lyp9zQatkBUa9b0Tt+9AlhT6E7HbZ2vOk9+UwuGWH
-         L2cx0infXhcvAlN1RNnLuEOmvOxfaIE8A7xuCJEYJ6/Zb06eJKGoUm0F/2zSVK/GO9Ha
-         gAousE1sNsEZY2KR3VEpyBYzav5dfWK1IQD1gK1Q/DGPGQCkFFFcuKq79Pxg8eo1rxj0
-         OcftzTQlQYCby+mSsmK4PVeaPp697RX1bltuAkpwTAaspZRzTNpv6QywMD3cgeqLEQxA
-         YvXA==
-X-Gm-Message-State: AOJu0YzfBN2NU2D06n3mmoSErceW0KXHmLq4t7NUBovNnhXmIGf5TCfe
-        59cVHge46dCR6fyaP6oHiatK72u57Kf8
-X-Google-Smtp-Source: AGHT+IEYRgFM2NV2BQHADakfTQjBrB/7bt9C3vOnga95X2gYJqpyJ21VOHkHsl8QQL8bn7YhF9HuuYUts//N
+        bh=3q7J1zaKrxcJsN5cKPHsdKPNVlGGTILkxMs0fP/b8pI=;
+        b=Ad4omQVV+31v4e53lEiQ1xUtHScCRVoF2q/D8EOiheuhzUOYimf+PeitfZAt2W1CbB
+         dm72ZwkmMNOr2xjtviNUugQfeeY+V3Dad2EhMaPOBiGhdB/8h/SUGZmF2/ae5EXacfJh
+         QIQOGfJ0+mH4HnipVVWBCLbMWHSBwFjh7bx9hv7p7XpNOIX8cEI2blSmGl/GRMrJiDIu
+         8sV6Ny3RvpN76M4nq75MbQPyL9bucoqBuF0nc+CuAhaJLRZtPQb9Gp2WDfAl9cVddB5N
+         3+COZBrEVJ7gK5UKfwCPCZt2onsXHjxh5BMQeTsmYg7SOUPvEa/0x/ftako/SjLJpmMr
+         kQiA==
+X-Gm-Message-State: AOJu0YzI9ayaSVpfx5K/a8jPpSKmQnx8HA3HYVLv2MqcpvWZkA3kGpKv
+        6OkaXbWsQ7kyFl4rVl4poGSgB/q6/gcy
+X-Google-Smtp-Source: AGHT+IEV9eKUl8jHouya/2mrGEIvTy7eAbccM7CjR+efeiDf6wWkcXilTE2icrLHqdeRcbaf181kT4qfwnl5
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7449:56a1:2b14:305b])
- (user=irogers job=sendgmr) by 2002:a05:6902:181a:b0:d89:3ed5:6042 with SMTP
- id cf26-20020a056902181a00b00d893ed56042mr106147ybb.11.1696547365955; Thu, 05
- Oct 2023 16:09:25 -0700 (PDT)
-Date:   Thu,  5 Oct 2023 16:08:45 -0700
+ (user=irogers job=sendgmr) by 2002:a81:a8c8:0:b0:592:7bc7:b304 with SMTP id
+ f191-20020a81a8c8000000b005927bc7b304mr115386ywh.8.1696547368133; Thu, 05 Oct
+ 2023 16:09:28 -0700 (PDT)
+Date:   Thu,  5 Oct 2023 16:08:46 -0700
 In-Reply-To: <20231005230851.3666908-1-irogers@google.com>
-Message-Id: <20231005230851.3666908-13-irogers@google.com>
+Message-Id: <20231005230851.3666908-14-irogers@google.com>
 Mime-Version: 1.0
 References: <20231005230851.3666908-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v2 12/18] perf hists browser: Avoid potential NULL dereference
+Subject: [PATCH v2 13/18] perf svghelper: Avoid memory leak
 From:   Ian Rogers <irogers@google.com>
 To:     Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
@@ -91,27 +91,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On other code paths browser->he_selection is NULL checked, add a
-missing case reported by clang-tidy.
+On success path the sib_core and sib_thr values weren't being
+freed. Detected by clang-tidy.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/ui/browsers/hists.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/builtin-lock.c   | 1 +
+ tools/perf/util/svghelper.c | 5 +++--
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/ui/browsers/hists.c b/tools/perf/ui/browsers/hists.c
-index f02ee605bbce..f4812b226818 100644
---- a/tools/perf/ui/browsers/hists.c
-+++ b/tools/perf/ui/browsers/hists.c
-@@ -3302,7 +3302,7 @@ static int evsel__hists_browse(struct evsel *evsel, int nr_events, const char *h
- 							&options[nr_options],
- 							&bi->to.ms,
- 							bi->to.al_addr);
--		} else {
-+		} else if (browser->he_selection) {
- 			nr_options += add_annotate_opt(browser,
- 						       &actions[nr_options],
- 						       &options[nr_options],
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index d4b22313e5fc..1b40b00c9563 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -2463,6 +2463,7 @@ static int parse_call_stack(const struct option *opt __maybe_unused, const char
+ 		entry = malloc(sizeof(*entry) + strlen(tok) + 1);
+ 		if (entry == NULL) {
+ 			pr_err("Memory allocation failure\n");
++			free(s);
+ 			return -1;
+ 		}
+ 
+diff --git a/tools/perf/util/svghelper.c b/tools/perf/util/svghelper.c
+index 0e4dc31c6c9c..1892e9b6aa7f 100644
+--- a/tools/perf/util/svghelper.c
++++ b/tools/perf/util/svghelper.c
+@@ -754,6 +754,7 @@ int svg_build_topology_map(struct perf_env *env)
+ 	int i, nr_cpus;
+ 	struct topology t;
+ 	char *sib_core, *sib_thr;
++	int ret = -1;
+ 
+ 	nr_cpus = min(env->nr_cpus_online, MAX_NR_CPUS);
+ 
+@@ -799,11 +800,11 @@ int svg_build_topology_map(struct perf_env *env)
+ 
+ 	scan_core_topology(topology_map, &t, nr_cpus);
+ 
+-	return 0;
++	ret = 0;
+ 
+ exit:
+ 	zfree(&t.sib_core);
+ 	zfree(&t.sib_thr);
+ 
+-	return -1;
++	return ret;
+ }
 -- 
 2.42.0.609.gbb76f46606-goog
 
