@@ -2,293 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9C47BA76B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99EB67BA76C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbjJEROZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
+        id S230010AbjJERO2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Oct 2023 13:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbjJERN1 (ORCPT
+        with ESMTP id S231151AbjJERN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:13:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3B119D;
-        Thu,  5 Oct 2023 10:03:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696525430; x=1728061430;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jhekV1Te52jzHcPHzuEyyPysifIs0kcosnjo4YGqqRA=;
-  b=jl+k1h1s55R/0Z/xIwsxvt63R3wpnNTaRb3dGGm6fOYzby8gsJhg1wNI
-   +yWn1nuS0arS+deF+snsuuhuEuhkYpA1Y8kChp3J0jZV1VigQtg87riCo
-   xAWuu4AfKI3QeGWa/uYgT88WlqEg7YJtI6wpZ1kU5azPb5oVbEmvS1bP6
-   7LazvCxTC3x1kJ2h/bdWHDnv4vDww2NP6M3EAlAKSs03PohwnDAWHbPia
-   nbmN0jWNduUcsVo56caotDQfq2gb296vvXleXH8I4Yqs0v0JJIaE6pu5Z
-   zq2anHAg+hLhRdsGVcM7IHfgTU/MEWUKsERQ3rGaFGEiauG1arQvu/yR0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="373912266"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="373912266"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 10:03:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="745528483"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="745528483"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 05 Oct 2023 10:03:41 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoRlD-000Lgi-1l;
-        Thu, 05 Oct 2023 17:03:39 +0000
-Date:   Fri, 6 Oct 2023 01:02:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_parass@quicinc.com,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Subject: Re: [PATCH] bus: mhi: host: Add tracing support
-Message-ID: <202310060033.Z0Ojejxe-lkp@intel.com>
-References: <20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com>
+        Thu, 5 Oct 2023 13:13:28 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803C5100;
+        Thu,  5 Oct 2023 10:03:54 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id ed5fc6d05de824cd; Thu, 5 Oct 2023 19:03:52 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id E7D13665C7F;
+        Thu,  5 Oct 2023 19:03:51 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     "Wilczynski, Michal" <michal.wilczynski@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev, rafael.j.wysocki@intel.com,
+        andriy.shevchenko@intel.com, lenb@kernel.org,
+        dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        ira.weiny@intel.com, rui.zhang@intel.com,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v1 1/9] ACPI: bus: Make notify wrappers more generic
+Date:   Thu, 05 Oct 2023 19:03:51 +0200
+Message-ID: <12310703.O9o76ZdvQC@kreacher>
+In-Reply-To: <CAJZ5v0jSa7FpJKsDRAhVMGy=pTi-aD5JPU4K3Rb-G3igrd6WRQ@mail.gmail.com>
+References: <20230925144842.586829-1-michal.wilczynski@intel.com> <86a68f57-0e5e-4a92-8cfe-93249ba78a72@intel.com> <CAJZ5v0jSa7FpJKsDRAhVMGy=pTi-aD5JPU4K3Rb-G3igrd6WRQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeggddutdegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtqhertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepkeeileehffelfefggfdtjedvkeettdejfeevueegfedvhffgudeuteeigfeileetnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopedugedprhgtphhtthhopehmihgthhgrlhdrfihilhgtiiihnhhskhhisehinhhtvghlrdgtohhmpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghr
+ rdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvhguihhmmheslhhishhtshdrlhhinhhugidruggvvhdprhgtphhtthhopehrrghfrggvlhdrjhdrfiihshhotghkihesihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=14 Fuz1=14 Fuz2=14
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krishna,
+On Thursday, October 5, 2023 5:30:59 PM CEST Rafael J. Wysocki wrote:
+> On Thu, Oct 5, 2023 at 2:05 PM Wilczynski, Michal
+> <michal.wilczynski@intel.com> wrote:
+> > On 10/5/2023 12:57 PM, Rafael J. Wysocki wrote:
+> > > On Thu, Oct 5, 2023 at 10:10 AM Wilczynski, Michal
+> > > <michal.wilczynski@intel.com> wrote:
+> 
+> [cut]
+> 
+> > >>>
+> > >>> That said, why exactly is it better to use acpi_handle instead of a
+> > >>> struct acpi_device pointer?
+> > >> I wanted to make the wrapper as close as possible to the wrapped function.
+> > >> This way it would be easier to remove it in the future i.e if we ever deem
+> > >> extra synchronization not worth it etc. What the ACPICA function need to
+> > >> install a wrapper is a handle not a pointer to a device.
+> > >> So there is no need for a middle man.
+> > > Taking a struct acpi_device pointer as the first argument is part of
+> > > duplication reduction, however, because in the most common case it
+> > > saves the users of it the need to dereference the struct acpi_device
+> > > they get from ACPI_COMPANION() in order to obtain the handle.
+> >
+> > User don't even have to use acpi device anywhere, as he can choose
+> > to use ACPI_HANDLE() instead on 'struct device*' and never interact
+> > with acpi device directly.
+> 
+> Have you actually looked at this macro?  It is a wrapper around
+> ACPI_COMPANION().
+> 
+> So they may think that they don't use struct acpi_device pointers, but
+> in fact they do.
+> 
+> > >
+> > > Arguably, acpi_handle is an ACPICA concept and it is better to reduce
+> > > its usage outside ACPICA.
+> >
+> > Use of acpi_handle is deeply entrenched in the kernel. There is even
+> > a macro ACPI_HANDLE() that returns acpi_handle. I would say it's
+> > way too late to limit it to ACPICA internal code.
+> 
+> So there is a difference between "limiting to ACPICA" and "reducing".
+> It cannot be limited to ACPICA, because the code outside ACPICA needs
+> to evaluate ACPI objects sometimes and ACPI handles are needed for
+> that.
+> 
+> And this observation doesn't invalidate the point.
+> 
+> > >
+> > >>> Realistically, in a platform driver you'll need the latter to obtain
+> > >>> the former anyway.
+> > >> I don't want to introduce arbitrary limitations where they are not necessary.
+> > > I'm not sure what you mean.  This patch is changing existing functions.
+> >
+> > That's true, but those functions aren't yet deeply entrenched in the
+> > kernel yet, so in my view how they should look like should still be
+> > a subject for discussion, as for now they're only used locally in
+> > drivers/acpi, and my next patchset, that would remove .notify in
+> > platform directory would spread them more, and would
+> > make them harder to change. For now we can change how they
+> > work pretty painlessly.
+> 
+> I see no particular reason to do that, though.
+> 
+> What specifically is a problem with passing struct acpi_device
+> pointers to the wrappers?  I don't see any TBH.
+> 
+> > >
+> > >> It is often the case that driver allocates it's own private struct using kmalloc
+> > >> family of functions, and that structure already contains everything that is
+> > >> needed to remove the handler, so why force ? There are already examples
+> > >> in the drivers that do that i.e in acpi_video the function
+> > >> acpi_video_dev_add_notify_handler() uses raw ACPICA handler to install
+> > >> a notify handler and it passes private structure there.
+> > >> So there is value in leaving the choice of an actual type to the user of the
+> > >> API.
+> > > No, if the user has a pointer to struct acpi_device already, there is
+> > > no difference between passing this and passing the acpi_handle from it
+> > > except for the extra dereference in the latter case.
+> >
+> > Dereference would happen anyway in the wrapper, and it doesn't cause
+> > any harm anyway for readability in my opinion. And of course you don't
+> > have to use acpi device at all, you can use ACPI_HANDLE() macro.
+> 
+> So one can use ACPI_COMPANION() just as well and it is slightly less overhead.
+> 
+> > >
+> > > If the user doesn't have a struct acpi_device pointer, let them use
+> > > the raw ACPICA handler directly and worry about the synchronization
+> > > themselves.
+> >
+> > As mentioned acpi_device pointer is not really required to use the wrapper.
+> > Instead we can use ACPI_HANDLE() macro directly. Look at the usage of
+> > the wrapper in the AC driver [1].
+> 
+> You don't really have to repeat the same argument  several times and I
+> know how ACPI_HANDLE() works.  Also I don't like some of the things
+> done by this patch.
+> 
+> Whoever uses ACPI_HANDLE(), they also use ACPI_COMPANION() which is
+> hidden in the former.
+> 
+> If they don't need to store either the acpi_handle or the struct
+> acpi_device pointer, there is no reason at all to use the former
+> instead of the latter.
+> 
+> If they get an acpi_handle from somewhere else than ACPI_HANDLE(),
+> then yes, they would need to get the ACPI devices from there (which is
+> possible still), but they may be better off by using the raw ACPICA
+> interface for events in that case.
+> 
+> > -static void acpi_ac_remove(struct acpi_device *device)
+> > +static void acpi_ac_remove(struct platform_device *pdev)
+> >  {
+> > -       struct acpi_ac *ac = acpi_driver_data(device);
+> > +      struct acpi_ac *ac = platform_get_drvdata(pdev);
+> >
+> > -       acpi_dev_remove_notify_handler(device->handle, ACPI_ALL_NOTIFY,
+> > +       acpi_dev_remove_notify_handler(ACPI_HANDLE(ac->dev),
+> > +                                                                     ACPI_ALL_NOTIFY,
+> >                                                                        acpi_ac_notify);
+> >
+> >
+> >
+> > [1] - https://lore.kernel.org/all/20230925144842.586829-1-michal.wilczynski@intel.com/T/#mff1e8ce1e548b3252d896b56d3be0b1028b7402e
+> >
+> > >
+> > > The wrappers are there to cover the most common case, not to cover all cases.
+> >
+> > In general all drivers that I'm modifying would benefit from not using direct ACPICA
+> > installers/removers by saving that extra synchronization code that would need to be
+> > provided otherwise, and not having to deal with acpi_status codes.
+> 
+> Yes, that's the common case.
+> 
+> >
+> > >
+> > >> To summarize:
+> > >> I would say the wrappers are mostly unnecessary, but they actually save
+> > >> some duplicate code in the drivers, so I decided to leave them, as I don't
+> > >> want to introduce duplicate code if I can avoid that.
+> > > What duplicate code do you mean, exactly?
+> >
+> > I would need to declare extra acpi_status variable and use ACPI_FAILURE macro
+> > in each usage of the direct ACPICA installer. Also I would need to call
+> > acpi_os_wait_events_complete() after calling each direct remove.
+> 
+> I thought you meant some code duplication related to passing struct
+> acpi_device pointers to the wrappers, but we agree that the wrappers
+> are generally useful.
+> 
+> > >
+> > > IMV you haven't really explained why this particular patch is
+> > > necessary or even useful.
+> >
+> > Maybe using an example would better illustrate my point.
+> > Consider using NFIT driver modification later in this series as an example:
+> >
+> > 1) With old wrapper it would look:
+> >
+> >  static void acpi_nfit_notify(acpi_handle handle, u32 event, void *data)
+> > {
+> >     struct acpi_device *adev = data;
+> >     /* Now we need to figure how to get a 'struct device*' from an acpi_device.
+> >          Mind this we can't just do &adev->dev, as we're not using that device anymore.
+> >          We need to get a struct device that's embedded in the platform_device that the
+> >          driver was instantiated with.
+> >          Not sure how it would look like, but it would require are least one extra line here.
+> >      */
+> >     device_lock(dev);
+> >     __acpi_nfit_notify(dev, handle, event);
+> >     device_unlock(dev);
+> > }
+> >
+> > 2) With new wrapper:
+> >
+> > static void acpi_nfit_notify(acpi_handle handle, u32 event, void *data)
+> > {
+> >     struct device *dev = data;
+> >
+> >     device_lock(dev);
+> >     __acpi_nfit_notify(dev, handle, event);
+> >     device_unlock(dev);
+> > }
+> >
+> >
+> > So essentially arbitrarily forcing user to use wrapper that takes acpi device
+> > as an argument may unnecessarily increase drivers complexity, and if we
+> > can help with then we should. That's why this commit exists.
+> 
+> Well, I know what's going on now.
+> 
+> You really want to add a context argument to
+> acpi_dev_install_notify_handler(), which is quite reasonable, but then
+> you don't have to change the first argument of it.
+> 
+> I'll send you my version of this patch later today and we'll see.
 
-kernel test robot noticed the following build warnings:
+See below.
 
-[auto build test WARNING on 3006adf3be79cde4d14b1800b963b82b6e5572e0]
+It just adds a context argument to acpi_dev_install_notify_handler() without
+making the other changes made by the original patch that are rather pointless
+IMO.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/bus-mhi-host-Add-tracing-support/20231005-231430
-base:   3006adf3be79cde4d14b1800b963b82b6e5572e0
-patch link:    https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49%40quicinc.com
-patch subject: [PATCH] bus: mhi: host: Add tracing support
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231006/202310060033.Z0Ojejxe-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231006/202310060033.Z0Ojejxe-lkp@intel.com/reproduce)
+---
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Subject: [PATCH v1 1/9] ACPI: bus: Add context argument to acpi_dev_install_notify_handler()
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310060033.Z0Ojejxe-lkp@intel.com/
+Add void *context arrgument to the list of arguments of
+acpi_dev_install_notify_handler() and modify it to pass that argument
+as context to acpi_install_notify_handler() instead of its first
+argument which is problematic in general (for example, if platform
+drivers used it, they would rather get struct platform_device pointers
+or pointers to their private data from the context arguments of their
+notify handlers).
 
-All warnings (new ones prefixed by >>):
+Make all of the current callers of acpi_dev_install_notify_handler()
+take this change into account so as to avoid altering the general
+functionality.
 
-   drivers/bus/mhi/host/main.c: In function 'mhi_process_ctrl_ev_ring':
->> drivers/bus/mhi/host/main.c:834:74: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-     834 |                 trace_mhi_process_ctrl_ev_ring(mhi_cntrl->mhi_dev->name, (u64)(local_rp),
-         |                                                                          ^
-   drivers/bus/mhi/host/main.c: In function 'mhi_gen_tre':
-   drivers/bus/mhi/host/main.c:1245:69: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    1245 |         trace_mhi_gen_tre(mhi_cntrl->mhi_dev->name, mhi_chan->chan, (u64)(mhi_tre),
-         |                                                                     ^
---
-   drivers/bus/mhi/host/pm.c: In function 'mhi_pm_st_worker':
->> drivers/bus/mhi/host/pm.c:758:24: warning: unused variable 'dev' [-Wunused-variable]
-     758 |         struct device *dev = &mhi_cntrl->mhi_dev->dev;
-         |                        ^~~
+Co-developed-by: Michal Wilczynski <michal.wilczynski@intel.com>
+Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/ac.c         |    2 +-
+ drivers/acpi/acpi_video.c |    2 +-
+ drivers/acpi/battery.c    |    2 +-
+ drivers/acpi/bus.c        |    4 ++--
+ drivers/acpi/hed.c        |    2 +-
+ drivers/acpi/nfit/core.c  |    2 +-
+ drivers/acpi/thermal.c    |    2 +-
+ include/acpi/acpi_bus.h   |    2 +-
+ 8 files changed, 9 insertions(+), 9 deletions(-)
+
+Index: linux-pm/drivers/acpi/ac.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/ac.c
++++ linux-pm/drivers/acpi/ac.c
+@@ -257,7 +257,7 @@ static int acpi_ac_add(struct acpi_devic
+ 	register_acpi_notifier(&ac->battery_nb);
+ 
+ 	result = acpi_dev_install_notify_handler(device, ACPI_ALL_NOTIFY,
+-						 acpi_ac_notify);
++						 acpi_ac_notify, device);
+ 	if (result)
+ 		goto err_unregister;
+ 
+Index: linux-pm/drivers/acpi/acpi_video.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/acpi_video.c
++++ linux-pm/drivers/acpi/acpi_video.c
+@@ -2062,7 +2062,7 @@ static int acpi_video_bus_add(struct acp
+ 		goto err_del;
+ 
+ 	error = acpi_dev_install_notify_handler(device, ACPI_DEVICE_NOTIFY,
+-						acpi_video_bus_notify);
++						acpi_video_bus_notify, device);
+ 	if (error)
+ 		goto err_remove;
+ 
+Index: linux-pm/drivers/acpi/battery.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/battery.c
++++ linux-pm/drivers/acpi/battery.c
+@@ -1214,7 +1214,7 @@ static int acpi_battery_add(struct acpi_
+ 	device_init_wakeup(&device->dev, 1);
+ 
+ 	result = acpi_dev_install_notify_handler(device, ACPI_ALL_NOTIFY,
+-						 acpi_battery_notify);
++						 acpi_battery_notify, device);
+ 	if (result)
+ 		goto fail_pm;
+ 
+Index: linux-pm/drivers/acpi/bus.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/bus.c
++++ linux-pm/drivers/acpi/bus.c
+@@ -556,12 +556,12 @@ static void acpi_device_remove_notify_ha
+ 
+ int acpi_dev_install_notify_handler(struct acpi_device *adev,
+ 				    u32 handler_type,
+-				    acpi_notify_handler handler)
++				    acpi_notify_handler handler, void *context)
+ {
+ 	acpi_status status;
+ 
+ 	status = acpi_install_notify_handler(adev->handle, handler_type,
+-					     handler, adev);
++					     handler, context);
+ 	if (ACPI_FAILURE(status))
+ 		return -ENODEV;
+ 
+Index: linux-pm/drivers/acpi/hed.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/hed.c
++++ linux-pm/drivers/acpi/hed.c
+@@ -57,7 +57,7 @@ static int acpi_hed_add(struct acpi_devi
+ 	hed_handle = device->handle;
+ 
+ 	err = acpi_dev_install_notify_handler(device, ACPI_DEVICE_NOTIFY,
+-					      acpi_hed_notify);
++					      acpi_hed_notify, device);
+ 	if (err)
+ 		hed_handle = NULL;
+ 
+Index: linux-pm/drivers/acpi/nfit/core.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/nfit/core.c
++++ linux-pm/drivers/acpi/nfit/core.c
+@@ -3391,7 +3391,7 @@ static int acpi_nfit_add(struct acpi_dev
+ 		return rc;
+ 
+ 	rc = acpi_dev_install_notify_handler(adev, ACPI_DEVICE_NOTIFY,
+-					     acpi_nfit_notify);
++					     acpi_nfit_notify, adev);
+ 	if (rc)
+ 		return rc;
+ 
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -936,7 +936,7 @@ static int acpi_thermal_add(struct acpi_
+ 		acpi_device_bid(device), deci_kelvin_to_celsius(tz->temp_dk));
+ 
+ 	result = acpi_dev_install_notify_handler(device, ACPI_DEVICE_NOTIFY,
+-						 acpi_thermal_notify);
++						 acpi_thermal_notify, device);
+ 	if (result)
+ 		goto flush_wq;
+ 
+Index: linux-pm/include/acpi/acpi_bus.h
+===================================================================
+--- linux-pm.orig/include/acpi/acpi_bus.h
++++ linux-pm/include/acpi/acpi_bus.h
+@@ -601,7 +601,7 @@ int acpi_bus_attach_private_data(acpi_ha
+ void acpi_bus_detach_private_data(acpi_handle);
+ int acpi_dev_install_notify_handler(struct acpi_device *adev,
+ 				    u32 handler_type,
+-				    acpi_notify_handler handler);
++				    acpi_notify_handler handler, void *context);
+ void acpi_dev_remove_notify_handler(struct acpi_device *adev,
+ 				    u32 handler_type,
+ 				    acpi_notify_handler handler);
 
 
-vim +834 drivers/bus/mhi/host/main.c
 
-   799	
-   800	int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
-   801				     struct mhi_event *mhi_event,
-   802				     u32 event_quota)
-   803	{
-   804		struct mhi_ring_element *dev_rp, *local_rp;
-   805		struct mhi_ring *ev_ring = &mhi_event->ring;
-   806		struct mhi_event_ctxt *er_ctxt =
-   807			&mhi_cntrl->mhi_ctxt->er_ctxt[mhi_event->er_index];
-   808		struct mhi_chan *mhi_chan;
-   809		struct device *dev = &mhi_cntrl->mhi_dev->dev;
-   810		u32 chan;
-   811		int count = 0;
-   812		dma_addr_t ptr = le64_to_cpu(er_ctxt->rp);
-   813	
-   814		/*
-   815		 * This is a quick check to avoid unnecessary event processing
-   816		 * in case MHI is already in error state, but it's still possible
-   817		 * to transition to error state while processing events
-   818		 */
-   819		if (unlikely(MHI_EVENT_ACCESS_INVALID(mhi_cntrl->pm_state)))
-   820			return -EIO;
-   821	
-   822		if (!is_valid_ring_ptr(ev_ring, ptr)) {
-   823			dev_err(&mhi_cntrl->mhi_dev->dev,
-   824				"Event ring rp points outside of the event ring\n");
-   825			return -EIO;
-   826		}
-   827	
-   828		dev_rp = mhi_to_virtual(ev_ring, ptr);
-   829		local_rp = ev_ring->rp;
-   830	
-   831		while (dev_rp != local_rp) {
-   832			enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
-   833	
- > 834			trace_mhi_process_ctrl_ev_ring(mhi_cntrl->mhi_dev->name, (u64)(local_rp),
-   835						       local_rp->ptr, local_rp->dword[0],
-   836						       local_rp->dword[1],
-   837						       mhi_state_str(MHI_TRE_GET_EV_STATE(local_rp)));
-   838	
-   839			switch (type) {
-   840			case MHI_PKT_TYPE_BW_REQ_EVENT:
-   841			{
-   842				struct mhi_link_info *link_info;
-   843	
-   844				link_info = &mhi_cntrl->mhi_link_info;
-   845				write_lock_irq(&mhi_cntrl->pm_lock);
-   846				link_info->target_link_speed =
-   847					MHI_TRE_GET_EV_LINKSPEED(local_rp);
-   848				link_info->target_link_width =
-   849					MHI_TRE_GET_EV_LINKWIDTH(local_rp);
-   850				write_unlock_irq(&mhi_cntrl->pm_lock);
-   851				dev_dbg(dev, "Received BW_REQ event\n");
-   852				mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_BW_REQ);
-   853				break;
-   854			}
-   855			case MHI_PKT_TYPE_STATE_CHANGE_EVENT:
-   856			{
-   857				enum mhi_state new_state;
-   858	
-   859				new_state = MHI_TRE_GET_EV_STATE(local_rp);
-   860	
-   861				dev_dbg(dev, "State change event to state: %s\n",
-   862					mhi_state_str(new_state));
-   863	
-   864				switch (new_state) {
-   865				case MHI_STATE_M0:
-   866					mhi_pm_m0_transition(mhi_cntrl);
-   867					break;
-   868				case MHI_STATE_M1:
-   869					mhi_pm_m1_transition(mhi_cntrl);
-   870					break;
-   871				case MHI_STATE_M3:
-   872					mhi_pm_m3_transition(mhi_cntrl);
-   873					break;
-   874				case MHI_STATE_SYS_ERR:
-   875				{
-   876					enum mhi_pm_state pm_state;
-   877	
-   878					dev_dbg(dev, "System error detected\n");
-   879					write_lock_irq(&mhi_cntrl->pm_lock);
-   880					pm_state = mhi_tryset_pm_state(mhi_cntrl,
-   881								MHI_PM_SYS_ERR_DETECT);
-   882					write_unlock_irq(&mhi_cntrl->pm_lock);
-   883					if (pm_state == MHI_PM_SYS_ERR_DETECT)
-   884						mhi_pm_sys_err_handler(mhi_cntrl);
-   885					break;
-   886				}
-   887				default:
-   888					dev_err(dev, "Invalid state: %s\n",
-   889						mhi_state_str(new_state));
-   890				}
-   891	
-   892				break;
-   893			}
-   894			case MHI_PKT_TYPE_CMD_COMPLETION_EVENT:
-   895				mhi_process_cmd_completion(mhi_cntrl, local_rp);
-   896				break;
-   897			case MHI_PKT_TYPE_EE_EVENT:
-   898			{
-   899				enum dev_st_transition st = DEV_ST_TRANSITION_MAX;
-   900				enum mhi_ee_type event = MHI_TRE_GET_EV_EXECENV(local_rp);
-   901	
-   902				dev_dbg(dev, "Received EE event: %s\n",
-   903					TO_MHI_EXEC_STR(event));
-   904				switch (event) {
-   905				case MHI_EE_SBL:
-   906					st = DEV_ST_TRANSITION_SBL;
-   907					break;
-   908				case MHI_EE_WFW:
-   909				case MHI_EE_AMSS:
-   910					st = DEV_ST_TRANSITION_MISSION_MODE;
-   911					break;
-   912				case MHI_EE_FP:
-   913					st = DEV_ST_TRANSITION_FP;
-   914					break;
-   915				case MHI_EE_RDDM:
-   916					mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_EE_RDDM);
-   917					write_lock_irq(&mhi_cntrl->pm_lock);
-   918					mhi_cntrl->ee = event;
-   919					write_unlock_irq(&mhi_cntrl->pm_lock);
-   920					wake_up_all(&mhi_cntrl->state_event);
-   921					break;
-   922				default:
-   923					dev_err(dev,
-   924						"Unhandled EE event: 0x%x\n", type);
-   925				}
-   926				if (st != DEV_ST_TRANSITION_MAX)
-   927					mhi_queue_state_transition(mhi_cntrl, st);
-   928	
-   929				break;
-   930			}
-   931			case MHI_PKT_TYPE_TX_EVENT:
-   932				chan = MHI_TRE_GET_EV_CHID(local_rp);
-   933	
-   934				WARN_ON(chan >= mhi_cntrl->max_chan);
-   935	
-   936				/*
-   937				 * Only process the event ring elements whose channel
-   938				 * ID is within the maximum supported range.
-   939				 */
-   940				if (chan < mhi_cntrl->max_chan) {
-   941					mhi_chan = &mhi_cntrl->mhi_chan[chan];
-   942					if (!mhi_chan->configured)
-   943						break;
-   944					parse_xfer_event(mhi_cntrl, local_rp, mhi_chan);
-   945				}
-   946				break;
-   947			default:
-   948				dev_err(dev, "Unhandled event type: %d\n", type);
-   949				break;
-   950			}
-   951	
-   952			mhi_recycle_ev_ring_element(mhi_cntrl, ev_ring);
-   953			local_rp = ev_ring->rp;
-   954	
-   955			ptr = le64_to_cpu(er_ctxt->rp);
-   956			if (!is_valid_ring_ptr(ev_ring, ptr)) {
-   957				dev_err(&mhi_cntrl->mhi_dev->dev,
-   958					"Event ring rp points outside of the event ring\n");
-   959				return -EIO;
-   960			}
-   961	
-   962			dev_rp = mhi_to_virtual(ev_ring, ptr);
-   963			count++;
-   964		}
-   965	
-   966		read_lock_bh(&mhi_cntrl->pm_lock);
-   967	
-   968		/* Ring EV DB only if there is any pending element to process */
-   969		if (likely(MHI_DB_ACCESS_VALID(mhi_cntrl)) && count)
-   970			mhi_ring_er_db(mhi_event);
-   971		read_unlock_bh(&mhi_cntrl->pm_lock);
-   972	
-   973		return count;
-   974	}
-   975	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
