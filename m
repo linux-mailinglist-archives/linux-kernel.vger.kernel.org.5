@@ -2,62 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A097BA30C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82027BA3FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234953AbjJEPvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
+        id S234343AbjJEQDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233571AbjJEPux (ORCPT
+        with ESMTP id S234043AbjJEQCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:50:53 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1DD83673B
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:08:17 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F9CE1570;
-        Thu,  5 Oct 2023 05:50:13 -0700 (PDT)
-Received: from [10.1.39.183] (XHFQ2J9959.cambridge.arm.com [10.1.39.183])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B86D43F641;
-        Thu,  5 Oct 2023 05:49:31 -0700 (PDT)
-Message-ID: <7631d121-e207-4612-9e22-ce027c8414b7@arm.com>
-Date:   Thu, 5 Oct 2023 13:49:30 +0100
+        Thu, 5 Oct 2023 12:02:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0DE2122
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:50:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696513830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fN4rywtIClGLgr9iO8QvKioIZUSwe1mYyPLau7XRIeI=;
+        b=ZaT/wV4keqoJiv7ZR9uxY87N4c1mOTYxSComltJQE/2uaAvXuGBz1JREdy98yKC+hE77Tm
+        4uU5GycwGKdwQtKSxXD6Vq44FW7Obyyl6BTfcDXTGTGSrQlNBePQC0hYuA3QGBTmcsxutN
+        IUBvw8fvs7+s28MvW+ob8dvDiWibiOQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-587-DyPEsIwQO_S7u8cHfGORCQ-1; Thu, 05 Oct 2023 08:50:06 -0400
+X-MC-Unique: DyPEsIwQO_S7u8cHfGORCQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40524bc3c5cso5772175e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 05:50:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696510205; x=1697115005;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fN4rywtIClGLgr9iO8QvKioIZUSwe1mYyPLau7XRIeI=;
+        b=D1tjMRLc2Ev+0BUsvnRh3F795mFmxVpLI/p/YWhcqmk2UkVHnV3Xci9lw0u/eofhfY
+         jr2GRXB7COQ+hHe4iVk8cd/bKZaJ8+m28i+Uej7AOrF6QnIvoUaFeW08AnY7ZhbrE8AG
+         PebQz1e97qty3sTHNvrektxP9n883pqXw0HRgFSiJ1DX229pLxDF4jsZsx1cYQBamKQw
+         ro//hVa/ZZjFXweDcXIZrE1b/MypCf2PJUCn+q4LTZFJUREfNbdKYGc4gLRW/x1HFtNK
+         2bG1ex+IC2CoMDC70nO+nsEWMj/OLFrxYdlPaGTcS19FgUfGnk3lpIJcrxA9DwxPFgV2
+         hHZQ==
+X-Gm-Message-State: AOJu0YwAHBSX9YBhlz5t8MhwnAbORdLzpjxH7goPDSMspwqji+3oiPgi
+        PyWdZvHq6HgP3ph7SV7hC176m+dXtF9ic5/WQieAQvk787d0jjE90mPqz9OT5BphSTkMd/gz2B1
+        n17/GRbvqMHRwVD3S+5hONKDB
+X-Received: by 2002:a7b:c45a:0:b0:403:e21:1355 with SMTP id l26-20020a7bc45a000000b004030e211355mr5037545wmi.36.1696510205647;
+        Thu, 05 Oct 2023 05:50:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEpBIBRsUtXmd1zuy28OswvBTug2UVeZ6ce+whr/gNXaKYzhXK2GemstswBPWAEP8JlWWGstQ==
+X-Received: by 2002:a7b:c45a:0:b0:403:e21:1355 with SMTP id l26-20020a7bc45a000000b004030e211355mr5037533wmi.36.1696510205379;
+        Thu, 05 Oct 2023 05:50:05 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id x13-20020a1c7c0d000000b00402f7b50517sm1450210wmc.40.2023.10.05.05.50.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 05:50:05 -0700 (PDT)
+Message-ID: <69584e11f9340e1420a47fc266eb7816139b294f.camel@redhat.com>
+Subject: Re: [PATCH 03/10] KVM: SVM: Drop pointless masking of kernel page
+ pa's with "AVIC's" HPA mask
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 05 Oct 2023 15:50:03 +0300
+In-Reply-To: <20230815213533.548732-4-seanjc@google.com>
+References: <20230815213533.548732-1-seanjc@google.com>
+         <20230815213533.548732-4-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 5/9] mm: thp: Extend THP to allocate anonymous large
- folios
-Content-Language: en-GB
-To:     Daniel Gomez <da.gomez@samsung.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <20230929114421.3761121-6-ryan.roberts@arm.com>
- <CGME20231005120507eucas1p13f50fa99f52808818840ee7db194e12e@eucas1p1.samsung.com>
- <20231005120305.vf4oxniflrfiavqf@sarkhan>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20231005120305.vf4oxniflrfiavqf@sarkhan>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,277 +83,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2023 13:05, Daniel Gomez wrote:
-> On Fri, Sep 29, 2023 at 12:44:16PM +0100, Ryan Roberts wrote:
-> 
-> Hi Ryan,
->> Introduce the logic to allow THP to be configured (through the new
->> anon_orders interface we just added) to allocate large folios to back
->> anonymous memory, which are smaller than PMD-size (for example order-2,
->> order-3, order-4, etc).
->>
->> These THPs continue to be PTE-mapped, but in many cases can still
->> provide similar benefits to traditional PMD-sized THP: Page faults are
->> significantly reduced (by a factor of e.g. 4, 8, 16, etc. depending on
->> the configured order), but latency spikes are much less prominent
->> because the size of each page isn't as huge as the PMD-sized variant and
->> there is less memory to clear in each page fault. The number of per-page
->> operations (e.g. ref counting, rmap management, lru list management) are
->> also significantly reduced since those ops now become per-folio.
->>
->> Some architectures also employ TLB compression mechanisms to squeeze
->> more entries in when a set of PTEs are virtually and physically
->> contiguous and approporiately aligned. In this case, TLB misses will
->> occur less often.
->>
->> The new behaviour is disabled by default because the anon_orders
->> defaults to only enabling PMD-order, but can be enabled at runtime by
->> writing to anon_orders (see documentation in previous commit). The long
->> term aim is to default anon_orders to include suitable lower orders, but
->> there are some risks around internal fragmentation that need to be
->> better understood first.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>  Documentation/admin-guide/mm/transhuge.rst |   9 +-
->>  include/linux/huge_mm.h                    |   6 +-
->>  mm/memory.c                                | 108 +++++++++++++++++++--
->>  3 files changed, 111 insertions(+), 12 deletions(-)
->>
->> diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
->> index 9f954e73a4ca..732c3b2f4ba8 100644
->> --- a/Documentation/admin-guide/mm/transhuge.rst
->> +++ b/Documentation/admin-guide/mm/transhuge.rst
->> @@ -353,7 +353,9 @@ anonymous transparent huge pages, it is necessary to read
->>  ``/proc/PID/smaps`` and count the AnonHugePages and AnonHugePteMap
->>  fields for each mapping. Note that in both cases, AnonHugePages refers
->>  only to PMD-mapped THPs. AnonHugePteMap refers to THPs that are mapped
->> -using PTEs.
->> +using PTEs. This includes all THPs whose order is smaller than
->> +PMD-order, as well as any PMD-order THPs that happen to be PTE-mapped
->> +for other reasons.
->>
->>  The number of file transparent huge pages mapped to userspace is available
->>  by reading ShmemPmdMapped and ShmemHugePages fields in ``/proc/meminfo``.
->> @@ -367,6 +369,11 @@ frequently will incur overhead.
->>  There are a number of counters in ``/proc/vmstat`` that may be used to
->>  monitor how successfully the system is providing huge pages for use.
->>
->> +.. note::
->> +   Currently the below counters only record events relating to
->> +   PMD-order THPs. Events relating to smaller order THPs are not
->> +   included.
->> +
->>  thp_fault_alloc
->>  	is incremented every time a huge page is successfully
->>  	allocated to handle a page fault.
->> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->> index 2e7c338229a6..c4860476a1f5 100644
->> --- a/include/linux/huge_mm.h
->> +++ b/include/linux/huge_mm.h
->> @@ -68,9 +68,11 @@ extern struct kobj_attribute shmem_enabled_attr;
->>  #define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
->>
->>  /*
->> - * Mask of all large folio orders supported for anonymous THP.
->> + * Mask of all large folio orders supported for anonymous THP; all orders up to
->> + * and including PMD_ORDER, except order-0 (which is not "huge") and order-1
->> + * (which is a limitation of the THP implementation).
->>   */
->> -#define THP_ORDERS_ALL_ANON	BIT(PMD_ORDER)
->> +#define THP_ORDERS_ALL_ANON	((BIT(PMD_ORDER + 1) - 1) & ~(BIT(0) | BIT(1)))
->>
->>  /*
->>   * Mask of all large folio orders supported for file THP.
->> diff --git a/mm/memory.c b/mm/memory.c
->> index b5b82fc8e164..92ed9c782dc9 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -4059,6 +4059,87 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>  	return ret;
->>  }
->>
->> +static bool vmf_pte_range_changed(struct vm_fault *vmf, int nr_pages)
->> +{
->> +	int i;
->> +
->> +	if (nr_pages == 1)
->> +		return vmf_pte_changed(vmf);
->> +
->> +	for (i = 0; i < nr_pages; i++) {
->> +		if (!pte_none(ptep_get_lockless(vmf->pte + i)))
->> +			return true;
->> +	}
->> +
->> +	return false;
->> +}
->> +
->> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->> +static struct folio *alloc_anon_folio(struct vm_fault *vmf)
->> +{
->> +	gfp_t gfp;
->> +	pte_t *pte;
->> +	unsigned long addr;
->> +	struct folio *folio;
->> +	struct vm_area_struct *vma = vmf->vma;
->> +	unsigned int orders;
->> +	int order;
->> +
->> +	/*
->> +	 * If uffd is active for the vma we need per-page fault fidelity to
->> +	 * maintain the uffd semantics.
->> +	 */
->> +	if (userfaultfd_armed(vma))
->> +		goto fallback;
->> +
->> +	/*
->> +	 * Get a list of all the (large) orders below PMD_ORDER that are enabled
->> +	 * for this vma. Then filter out the orders that can't be allocated over
->> +	 * the faulting address and still be fully contained in the vma.
->> +	 */
->> +	orders = hugepage_vma_check(vma, vma->vm_flags, false, true, true,
->> +				    BIT(PMD_ORDER) - 1);
->> +	orders = transhuge_vma_suitable(vma, vmf->address, orders);
->> +
->> +	if (!orders)
->> +		goto fallback;
->> +
->> +	pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
->> +	if (!pte)
->> +		return ERR_PTR(-EAGAIN);
->> +
->> +	order = first_order(orders);
->> +	while (orders) {
->> +		addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
->> +		vmf->pte = pte + pte_index(addr);
->> +		if (!vmf_pte_range_changed(vmf, 1 << order))
->> +			break;
->> +		order = next_order(&orders, order);
->> +	}
->> +
->> +	vmf->pte = NULL;
->> +	pte_unmap(pte);
->> +
->> +	gfp = vma_thp_gfp_mask(vma);
->> +
->> +	while (orders) {
->> +		addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
->> +		folio = vma_alloc_folio(gfp, order, vma, addr, true);
-> 
-> I was checking your series and noticed about the hugepage flag. I think
-> you've changed it from v1 -> v2 from being false to true when orders >=2
-> but I'm not sure about the reasoning. Is this because of your statement
-> in the cover letter [1]?
+У вт, 2023-08-15 у 14:35 -0700, Sean Christopherson пише:
+> Drop AVIC_HPA_MASK and all its users, the mask is just the 4KiB-aligned
+> maximum theoretical physical address for x86-64 CPUs. 
 
-That hugepage flags is spec'ed as follows:
+Typo: you mean 'current max theoretical physical address' because it might increase
+the future again (Intel already did increase it, couple of times).
 
- * @hugepage: For hugepages try only the preferred node if possible.
 
-The intent of passing true for orders higher than 0, is that we would prefer to
-allocate a smaller order folio that is on the preferred node than a higher order
-folio that is not on the preferred node. The assumption is that the on-going
-cost of accessing the memory on the non-preferred node will outweigh the benefit
-of allocating it as a high order folio.
+>  All usage in KVM
+> masks the result of page_to_phys(), which on x86-64 is guaranteed to be
+> 4KiB aligned and a legal physical address; if either of those requirements
+> doesn't hold true, KVM has far bigger problems.
 
-Thanks,
-Ryan
+I do think that a build time assert that max physical address is as expected
+by AVIC, is needed.
+
+Consider this: intel/amd releases yet another extension of the max physical address,
+the kernel gets updated, but for CPUs which lack this extension the max physical
+address will still be 52 bit and should still be respected.
+
+My CPU for example has 48 bits in max physical address, while the kernel
+thinks that max valid physical address is 52 bit.
+
+I understand that this is a theoretical problem but at least a build time
+assert that kernel max physical address matches avic's should be done.
+
+Especially if we consider the fact that this patch also fixes a purely theoretical
+problem as well.
+
+I do agree that masking output of page_to_phys is pointless and even dangerous,
+but asserting that we are not trying to use address which is 
+outside of AVIC's capabilities is a good thing to have, instead of relying blindly
+on the kernel to do the right thing.
 
 
 > 
-> [1] cover letter snippet:
+> The unnecessarily masking in avic_init_vmcb() also incorrectly assumes
+> that SME's C-bit resides between bits 51:11; that holds true for current
+> CPUs, but isn't required by AMD's architecture:
 > 
-> "to implement variable order, large folios for anonymous memory.
-> (previously called ..., but now exposed as an extension to THP;
-> "small-order THP")"
+>   In some implementations, the bit used may be a physical address bit
 > 
-> Thanks,
-> Daniel
+> Key word being "may".
 > 
->> +		if (folio) {
->> +			clear_huge_page(&folio->page, addr, 1 << order);
->> +			return folio;
->> +		}
->> +		order = next_order(&orders, order);
->> +	}
->> +
->> +fallback:
->> +	return vma_alloc_zeroed_movable_folio(vma, vmf->address);
->> +}
->> +#else
->> +#define alloc_anon_folio(vmf) \
->> +		vma_alloc_zeroed_movable_folio((vmf)->vma, (vmf)->address)
->> +#endif
->> +
->>  /*
->>   * We enter with non-exclusive mmap_lock (to exclude vma changes,
->>   * but allow concurrent faults), and pte mapped but not yet locked.
->> @@ -4066,6 +4147,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>   */
->>  static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->>  {
->> +	int i;
->> +	int nr_pages = 1;
->> +	unsigned long addr = vmf->address;
->>  	bool uffd_wp = vmf_orig_pte_uffd_wp(vmf);
->>  	struct vm_area_struct *vma = vmf->vma;
->>  	struct folio *folio;
->> @@ -4110,10 +4194,15 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->>  	/* Allocate our own private page. */
->>  	if (unlikely(anon_vma_prepare(vma)))
->>  		goto oom;
->> -	folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
->> +	folio = alloc_anon_folio(vmf);
->> +	if (IS_ERR(folio))
->> +		return 0;
->>  	if (!folio)
->>  		goto oom;
->>
->> +	nr_pages = folio_nr_pages(folio);
->> +	addr = ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
->> +
->>  	if (mem_cgroup_charge(folio, vma->vm_mm, GFP_KERNEL))
->>  		goto oom_free_page;
->>  	folio_throttle_swaprate(folio, GFP_KERNEL);
->> @@ -4130,12 +4219,12 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->>  	if (vma->vm_flags & VM_WRITE)
->>  		entry = pte_mkwrite(pte_mkdirty(entry), vma);
->>
->> -	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
->> -			&vmf->ptl);
->> +	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, addr, &vmf->ptl);
->>  	if (!vmf->pte)
->>  		goto release;
->> -	if (vmf_pte_changed(vmf)) {
->> -		update_mmu_tlb(vma, vmf->address, vmf->pte);
->> +	if (vmf_pte_range_changed(vmf, nr_pages)) {
->> +		for (i = 0; i < nr_pages; i++)
->> +			update_mmu_tlb(vma, addr + PAGE_SIZE * i, vmf->pte + i);
->>  		goto release;
->>  	}
->>
->> @@ -4150,16 +4239,17 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->>  		return handle_userfault(vmf, VM_UFFD_MISSING);
->>  	}
->>
->> -	inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
->> -	folio_add_new_anon_rmap(folio, vma, vmf->address);
->> +	folio_ref_add(folio, nr_pages - 1);
->> +	add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
->> +	folio_add_new_anon_rmap(folio, vma, addr);
->>  	folio_add_lru_vma(folio, vma);
->>  setpte:
->>  	if (uffd_wp)
->>  		entry = pte_mkuffd_wp(entry);
->> -	set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
->> +	set_ptes(vma->vm_mm, addr, vmf->pte, entry, nr_pages);
->>
->>  	/* No need to invalidate - it was non-present before */
->> -	update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
->> +	update_mmu_cache_range(vmf, vma, addr, vmf->pte, nr_pages);
->>  unlock:
->>  	if (vmf->pte)
->>  		pte_unmap_unlock(vmf->pte, vmf->ptl);
->> --
->> 2.25.1
->>
+> Opportunistically use the GENMASK_ULL() version for
+> AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK, which is far more readable
+> than a set of repeating Fs.  Keep the macro even though it's unused, and
+> will likely never be used, as it helps visualize the layout of an entry.
+
+
+
+
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/include/asm/svm.h |  6 +-----
+>  arch/x86/kvm/svm/avic.c    | 11 +++++------
+>  2 files changed, 6 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+> index 609c9b596399..df644ca3febe 100644
+> --- a/arch/x86/include/asm/svm.h
+> +++ b/arch/x86/include/asm/svm.h
+> @@ -250,7 +250,7 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
+>  #define AVIC_LOGICAL_ID_ENTRY_VALID_MASK		(1 << 31)
+>  
+>  #define AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK	GENMASK_ULL(11, 0)
+> -#define AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK	(0xFFFFFFFFFFULL << 12)
+> +#define AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK	GENMASK_ULL(51, 12)
+>  #define AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK		(1ULL << 62)
+>  #define AVIC_PHYSICAL_ID_ENTRY_VALID_MASK		(1ULL << 63)
+>  #define AVIC_PHYSICAL_ID_TABLE_SIZE_MASK		(0xFFULL)
+> @@ -284,10 +284,6 @@ enum avic_ipi_failure_cause {
+>  static_assert((AVIC_MAX_PHYSICAL_ID & AVIC_PHYSICAL_MAX_INDEX_MASK) == AVIC_MAX_PHYSICAL_ID);
+>  static_assert((X2AVIC_MAX_PHYSICAL_ID & AVIC_PHYSICAL_MAX_INDEX_MASK) == X2AVIC_MAX_PHYSICAL_ID);
+>  
+> -#define AVIC_HPA_MASK	~((0xFFFULL << 52) | 0xFFF)
+> -static_assert(AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK == AVIC_HPA_MASK);
+> -static_assert(AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK == GENMASK_ULL(51, 12));
+> -
+>  #define SVM_SEV_FEAT_DEBUG_SWAP                        BIT(5)
+>  
+>  struct vmcb_seg {
+> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+> index 442c58ef8158..b8313f2d88fa 100644
+> --- a/arch/x86/kvm/svm/avic.c
+> +++ b/arch/x86/kvm/svm/avic.c
+> @@ -248,9 +248,9 @@ void avic_init_vmcb(struct vcpu_svm *svm, struct vmcb *vmcb)
+>  	phys_addr_t lpa = __sme_set(page_to_phys(kvm_svm->avic_logical_id_table_page));
+>  	phys_addr_t ppa = __sme_set(page_to_phys(kvm_svm->avic_physical_id_table_page));
+>  
+> -	vmcb->control.avic_backing_page = bpa & AVIC_HPA_MASK;
+> -	vmcb->control.avic_logical_id = lpa & AVIC_HPA_MASK;
+> -	vmcb->control.avic_physical_id = ppa & AVIC_HPA_MASK;
+> +	vmcb->control.avic_backing_page = bpa;
+> +	vmcb->control.avic_logical_id = lpa;
+> +	vmcb->control.avic_physical_id = ppa;
+>  	vmcb->control.avic_vapic_bar = APIC_DEFAULT_PHYS_BASE;
+>  
+>  	if (kvm_apicv_activated(svm->vcpu.kvm))
+> @@ -308,7 +308,7 @@ static int avic_init_backing_page(struct kvm_vcpu *vcpu)
+>  	if (!entry)
+>  		return -EINVAL;
+>  
+> -	new_entry = __sme_set(page_to_phys(svm->avic_backing_page) & AVIC_HPA_MASK) |
+> +	new_entry = __sme_set(page_to_phys(svm->avic_backing_page)) |
+>  		    AVIC_PHYSICAL_ID_ENTRY_VALID_MASK;
+>  	WRITE_ONCE(*entry, new_entry);
+>  
+> @@ -917,8 +917,7 @@ int avic_pi_update_irte(struct kvm *kvm, unsigned int host_irq,
+>  			struct amd_iommu_pi_data pi;
+>  
+>  			/* Try to enable guest_mode in IRTE */
+> -			pi.base = __sme_set(page_to_phys(svm->avic_backing_page) &
+> -					    AVIC_HPA_MASK);
+> +			pi.base = __sme_set(page_to_phys(svm->avic_backing_page));
+>  			pi.ga_tag = AVIC_GATAG(to_kvm_svm(kvm)->avic_vm_id,
+>  						     svm->vcpu.vcpu_id);
+>  			pi.is_guest_mode = true;
+
+
+
 
