@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCC67BA0F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943B57BA3B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240025AbjJEOot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
+        id S238241AbjJEP6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:58:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238453AbjJEOk0 (ORCPT
+        with ESMTP id S234237AbjJEP4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:40:26 -0400
+        Thu, 5 Oct 2023 11:56:43 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFF04696;
-        Thu,  5 Oct 2023 07:12:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87B76C4AF1E;
-        Thu,  5 Oct 2023 13:17:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E83158F9;
+        Thu,  5 Oct 2023 06:57:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EB11C4AF6B;
+        Thu,  5 Oct 2023 13:17:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696511856;
-        bh=ZwEQQmVK4H+n0kW8nvtsgTP5t8H63QSZoM2++l8ORYY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=m0lFGNiYYtQacsuitgnC26c/xEIuGTF/d6mEg7LZMwELnEp3XYveg4lfDBtdX2+j2
-         d7B8QrU/W3DMi2xCWjB/9uI7Dkryi+iLeXYy0JWjn2rHv/jmhsvCGYF/zO6krKtwcy
-         8DwMpxMvpIiFEMlrQUwymiCvcPd9E9l+DMvBW7FFVpYGdV550bPgIWYhp775uhf/+X
-         bja4ti7neGfPaLxCxXH069V/YM+kK22qms2sb7Z56wMva1jMbOAEPQTHGVRaCsph+W
-         Mw+7PC1Zji87wvazHUlRfbPRBX5XQatdaN1RKilOXxi/FtWpjlyRLin1LlcdlucBCL
-         QJIt99BtOQk2A==
+        s=k20201202; t=1696511860;
+        bh=FvFYza5x9SIIDMnc6LuiyfJJi2ON+p3o+hoKtpoSL5I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Qi5hmaZIDtPlhx2c4ALDQ6HJp7a6DS5QaACOaPvXm9Peip64ktVO7rkq7sY2CqBLH
+         3jhSX7WGpwuu/CeP5gJMMec9URMsQS1vHw+aeLnGPuQMN5OPgiQe7H1/q2Q+FcGCVA
+         tPpIPk780sm0c0ffpNso4bodCzRqQs5DO7KygBy4di0vd8D5FUfdH71YXKpgdSQ2PF
+         l9wNoJRynwa13m9nISzrrenPgZINkDcbosYmPMdpKfuyWIBK37dCoJ0FZyBf8Z3mfZ
+         d8DzQCpSkWnppxRoKJ8+qoJRNkZw2wIXuqT65slTyuz+SpqEeZa4T+TE+R9IKYDYS9
+         jqDcq92N4O8Qw==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
@@ -35,65 +35,86 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Conor Dooley <conor+dt@kernel.org>,
         Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>
 Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH v3 0/2] pwm: add driver for T-THEAD TH1520 SoC
-Date:   Thu,  5 Oct 2023 21:05:17 +0800
-Message-Id: <20231005130519.3864-1-jszhang@kernel.org>
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 1/2] dt-bindings: pwm: Add T-HEAD PWM controller
+Date:   Thu,  5 Oct 2023 21:05:18 +0800
+Message-Id: <20231005130519.3864-2-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20231005130519.3864-1-jszhang@kernel.org>
+References: <20231005130519.3864-1-jszhang@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T-HEAD SoCs such as the TH1520 contain a PWM controller used to
-control the LCD backlight, fan and so on. Add the PWM driver support
-for it.
+T-HEAD SoCs such as the TH1520 contain a PWM controller used
+to control the LCD backlight, fan and so on.
 
-Since the clk part isn't mainlined, so SoC dts(i) changes are not
-included in this series. However, it can be tested by using fixed-clock.
-
-since v2:
- - collect Reviewed-by tag
- - add CTRL_ prefix for THEAD_PWM_CTRL register bit macros
- - use pm_runtime_resume_and_get() instead of pm_runtime_get_sync() and
-   check its return value.
- - remove unnecessary casts
- - call pm_runtime_put_sync() when pwm channel is disabled
- - use devm_pm_runtime_enable() and then drop .remove()
- - properly consider if pwm is programmed by bootloader or other
-   pre-linux env.
- - simplify thead_pwm_runtime_resume() code as Uwe suggested
- - bool ever_started -> u8 channel_ever_started since we have 6 channels
- - use 3 for #pwm-cells 
-
-since v1:
- - update commit msg and yaml filename to address Conor's comment
- - use devm_clk_get_enabled() and devm_pwmchip_add()
- - implement .get_state()
- - properly handle overflow
- - introduce thead_pwm_from_chip() inline function
- - document Limitations
- - address pm_runtime_get/put pingpong comment
-
-
-Jisheng Zhang (2):
-  dt-bindings: pwm: Add T-HEAD PWM controller
-  pwm: add T-HEAD PWM driver
-
- .../bindings/pwm/thead,th1520-pwm.yaml        |  44 +++
- drivers/pwm/Kconfig                           |  11 +
- drivers/pwm/Makefile                          |   1 +
- drivers/pwm/pwm-thead.c                       | 270 ++++++++++++++++++
- 4 files changed, 326 insertions(+)
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/pwm/thead,th1520-pwm.yaml        | 44 +++++++++++++++++++
+ 1 file changed, 44 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/pwm/thead,th1520-pwm.yaml
- create mode 100644 drivers/pwm/pwm-thead.c
 
+diff --git a/Documentation/devicetree/bindings/pwm/thead,th1520-pwm.yaml b/Documentation/devicetree/bindings/pwm/thead,th1520-pwm.yaml
+new file mode 100644
+index 000000000000..e75d8e9f24c5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pwm/thead,th1520-pwm.yaml
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pwm/thead,th1520-pwm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: T-HEAD TH1520 PWM
++
++maintainers:
++  - Jisheng Zhang <jszhang@kernel.org>
++
++allOf:
++  - $ref: pwm.yaml#
++
++properties:
++  compatible:
++    enum:
++      - thead,th1520-pwm
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  "#pwm-cells":
++    const: 3
++
++required:
++  - compatible
++  - reg
++  - clocks
++
++additionalProperties: false
++
++examples:
++  - |
++
++    pwm@ec01c000 {
++        compatible = "thead,th1520-pwm";
++        reg = <0xec01c000 0x1000>;
++        clocks = <&clk 1>;
++        #pwm-cells = <3>;
++    };
 -- 
 2.40.1
 
