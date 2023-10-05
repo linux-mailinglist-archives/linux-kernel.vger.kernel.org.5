@@ -2,172 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1B17BAED4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313657BAEDA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbjJEWfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 18:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48680 "EHLO
+        id S231124AbjJEWgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 18:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjJEWfY (ORCPT
+        with ESMTP id S229530AbjJEWg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 18:35:24 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D993D6
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:35:21 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5032a508e74so1017e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:35:21 -0700 (PDT)
+        Thu, 5 Oct 2023 18:36:29 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15663E4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:36:28 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-578e33b6fb7so1055643a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:36:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696545320; x=1697150120; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OKaIQ8Zyh16/tVcnFuQ7sDuazPniKY0bHDKBdsLSgQk=;
-        b=eh+J96NBuFviMzGYQlf4gKBBEneDV9hiuYpnxbID13tIz/GUaGyVD2AtxSLHbKZ2YT
-         zPgv1xGYVrkxBefoN08PQaUANOZGLHmJf1wdHVMu8Bd9uJ/HlbToiAbPTQu8iGYaQV1t
-         pdTP/+58ifJeJaIcvJSaBC9hzmDBZSY5KZw5W7m9PRfvFTzH860suvBOKm2XoWem68Oc
-         KJ0IvE6D/U6OAWdaj35peKV8AMGp5RD+vHyynr4vgRNbtzr9UJ63Pxi0TI6uynZtQ0V5
-         XmH7mpoZGBAXxqJ67AXpFRYxNm4SJ+UX7xhRpXcG1vkyUZPAgcsvg1UVnkjvqpJLSnHn
-         rF6Q==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696545387; x=1697150187; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b2tQ3RBiSUcSSCDIGm1AqxO9GDksjubSbZBBLyz+/c8=;
+        b=REhiCFVhABsJ2q1jPxHObTX6y84Tz2iTSR6iSkdrBM8Hsi+tc+MX6HtHS+ktP+h56f
+         CvWqHZsqOaXtYLJ1QqEDS2JjQrJ7seEe4+D9rYAvbq5mcoBtjcnc1i/Q3k+IWcDgbAMh
+         92TFvO2l/kNKi566QIqjeD+fdcKq7MHxuhbrstbYcm+q/Qq7ifN955l5YyUQkDv+QUlk
+         N8A/gM1KmbpnupgOVyklj9vtP5OqW9RSxFLf3uN06GXn4aWhf6OVjziy55LbjINGimYD
+         TSInO6f0KTTlV8D6BMo9rgT2MOUGrFtGNxTTfGQCKEVh0q0oum7k5oADeCJWQEos65bH
+         ySwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696545320; x=1697150120;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OKaIQ8Zyh16/tVcnFuQ7sDuazPniKY0bHDKBdsLSgQk=;
-        b=lgmQIWU9UStl6agDvUDfgHXksLgDCMekAUcO99xOBOVnBCk+x4VFI1QQWn/Nx8zzDP
-         D5DILKFYMpTj/4bX4V5s2Yld2e7Sj1Pm3n7nFM0FfYIYkH7F+lAElXlFSfMdJ5zLHJUV
-         wLodHa68wJoDnzmWyDfXWRoCKyQa9meUDGbURPiH3v3WxQCJlIbTVUW2O5oTLKbmjDAU
-         ybj/PlX0qNK1PIvFvAIrWU8I4MWc8u3glY34WYg67GXvr3sNxnW6htM8HiQx6qqWewmB
-         dstKodYUKL5v0n7lQh4reoU7YH+ts0Ielw3v1eDNEVKDheplSny5mgWcbfmCqCV4Hc89
-         kBaw==
-X-Gm-Message-State: AOJu0YxCH4nOwhJI/L4FwxXV8iNxEUXlm9Px4qzUyVguddeActrN1Mnm
-        OMH7zH8B5F796UTBf4adumvnXcN/Vz2Ga1wl2svJiw==
-X-Google-Smtp-Source: AGHT+IFqiQSTSTwPTJ61CESf8GdTp78bw4W7PrhxaBvAYX3nwWRy9q/Us0yHiv3NoCGSa/fT9UUpSF7pItxtBuBJLKY=
-X-Received: by 2002:a19:7006:0:b0:502:dc15:7fb with SMTP id
- h6-20020a197006000000b00502dc1507fbmr90726lfc.5.1696545319446; Thu, 05 Oct
- 2023 15:35:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696545387; x=1697150187;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b2tQ3RBiSUcSSCDIGm1AqxO9GDksjubSbZBBLyz+/c8=;
+        b=cac+AIlSchbMJPUtNjH/JGq2LaFZh4WAET/yubGzvIltEnvVxR+T6t423Zo2AuD5vn
+         T6I+8JSkQpJuSQQ6sVPhzZUwTtvEi+GMxtLS+FChsDrX4okQHIm/yFouZHNZezwMViS2
+         kTrTJn/79awhAESOqJesia8m7s6AknVJi3m4egELI2HqmBK+CWgmnr2uKNiJh5UbF6gR
+         rSt5bNBwn0dLRmn54DqH1kE2IRxKyTFPBk5HHC5xdxQDzs+w58jMo3cLiYjMZQX2dVdG
+         0V9tyJMkQZ88+XXinVrTus3Ulc0C9sE24FWFbmKg3tYa/RsAxsaoTs9pmMGjEGiIh3Wc
+         Q8Zw==
+X-Gm-Message-State: AOJu0Yz2bRujw/LpMuZDyrJn/q2scZLEeaAXMclMsDsvSufdLar4T0V6
+        fvB3xm7O/qk3EwCmHfR4ML+fR5kIBUjbtHVCZs8=
+X-Google-Smtp-Source: AGHT+IHkj05WtFRnB1/6TCdC5uNJ+qJuxlAMKS08tzhEQ93tj2n+6Zd7zWsUmCjHAtuzu3cQRcYWSg==
+X-Received: by 2002:a17:90a:2cc4:b0:271:7cd6:165d with SMTP id n62-20020a17090a2cc400b002717cd6165dmr6401433pjd.26.1696545387428;
+        Thu, 05 Oct 2023 15:36:27 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id 30-20020a17090a005e00b002776350b50dsm4406336pjb.29.2023.10.05.15.36.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 15:36:26 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qoWxD-009xqX-3D;
+        Fri, 06 Oct 2023 09:36:24 +1100
+Date:   Fri, 6 Oct 2023 09:36:23 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
+        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH 10/21] block: Add fops atomic write support
+Message-ID: <ZR86Z1OcO52a4BtH@dread.disaster.area>
+References: <20230929102726.2985188-11-john.g.garry@oracle.com>
+ <17ee1669-5830-4ead-888d-a6a4624b638a@acm.org>
+ <5d26fa3b-ec34-bc39-ecfe-4616a04977ca@oracle.com>
+ <b7a6f380-c6fa-45e0-b727-ba804c6684e4@acm.org>
+ <yq1lecktuoo.fsf@ca-mkp.ca.oracle.com>
+ <db6a950b-1308-4ca1-9f75-6275118bdcf5@acm.org>
+ <yq1h6n7rume.fsf@ca-mkp.ca.oracle.com>
+ <34c08488-a288-45f9-a28f-a514a408541d@acm.org>
+ <yq1ttr6qoqp.fsf@ca-mkp.ca.oracle.com>
+ <a2077ddf-9a8f-4101-aeb9-605d6dee3c6e@acm.org>
 MIME-Version: 1.0
-References: <20230923053515.535607-1-irogers@google.com> <20230923053515.535607-2-irogers@google.com>
- <CAKwvOdmHg_43z_dTZrOLGubuBBvmHdPxSFjOWa3oWkbOp2qWWg@mail.gmail.com>
- <CAP-5=fV6c1tWAd2GjMwn4PQN=3BXNQGz=vbonHSjRjQ3fbEL+g@mail.gmail.com>
- <ZRWMWcNKvZMgiAMR@bergen.fjasle.eu> <CAK7LNASuOWtd-iv2C3HLWr1oq9gD8BiP4B=8wRUo81CSK=g5Yw@mail.gmail.com>
-In-Reply-To: <CAK7LNASuOWtd-iv2C3HLWr1oq9gD8BiP4B=8wRUo81CSK=g5Yw@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 5 Oct 2023 15:35:07 -0700
-Message-ID: <CAP-5=fVz-Yqb_AnkJkoBAO8id7m2f0qaU_VnFVDoAXagwHfz6A@mail.gmail.com>
-Subject: Re: [PATCH v1 01/18] gen_compile_commands: Allow the line prefix to
- still be cmd_
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nicolas Schier <nicolas@fjasle.eu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Yuan Can <yuancan@huawei.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        James Clark <james.clark@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a2077ddf-9a8f-4101-aeb9-605d6dee3c6e@acm.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 7:31=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.or=
-g> wrote:
->
-> On Thu, Sep 28, 2023 at 11:26=E2=80=AFPM Nicolas Schier <nicolas@fjasle.e=
-u> wrote:
-> >
-> > On Mon, 25 Sep 2023 09:06:11 -0700, Ian Rogers wrote:
-> > > On Mon, Sep 25, 2023 at 8:49=E2=80=AFAM Nick Desaulniers
-> > > <ndesaulniers@google.com> wrote:
-> > > >
-> > > > On Fri, Sep 22, 2023 at 10:35=E2=80=AFPM Ian Rogers <irogers@google=
-.com> wrote:
-> > > > >
-> > > > > Builds in tools still use the cmd_ prefix in .cmd files, so don't
-> > > > > require the saved part. Name the groups in the line pattern match=
- so
-> > > >
-> > > > Is that something that can be changed in the tools/ Makefiles?
-> > > >
-> > > > I'm fine with this change, just curious where the difference comes
-> > > > from precisely.
-> > > > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> > >
-> > > I agree. The savedcmd_ change came from Masahiro in:
-> > > https://lore.kernel.org/lkml/20221229091501.916296-1-masahiroy@kernel=
-.org/
-> > > I was reluctant to change the build logic in tools/ because of the
-> > > potential to break things. Maybe Masahiro/Nicolas know of issues?
-> >
-> > I haven't seen any issues related to the introduction of savedcmd_; and
-> > roughly searching through tools/ I cannot find a rule that matches the
-> > pattern Masahiro described in commit 92215e7a801d ("kbuild: rename
-> > cmd_$@ to savedcmd_$@ in *.cmd files", 2022-12-29).  For consistency,
-> > I'd like to see the build rules in tools/ re-use the ones from scripts/
-> > but as of now I don't see any necessity to introduce savedcmd in
-> > tools/, yet.
-> >
-> > Kind regards,
-> > Nicolas
->
->
-> tools/build/Build.include mimics scripts/Kbuild.include
->
-> That should be changed in the same way.
+On Thu, Oct 05, 2023 at 10:10:45AM -0700, Bart Van Assche wrote:
+> On 10/4/23 11:17, Martin K. Petersen wrote:
+> > 
+> > Hi Bart!
+> > 
+> > > In other words, also for the above example it is guaranteed that
+> > > writes of a single logical block (512 bytes) are atomic, no matter
+> > > what value is reported as the ATOMIC TRANSFER LENGTH GRANULARITY.
+> > 
+> > There is no formal guarantee that a disk drive sector read-modify-write
+> > operation results in a readable sector after a power failure. We have
+> > definitely seen blocks being mangled in the field.
+> 
+> Aren't block devices expected to use a capacitor that provides enough
+> power to handle power failures cleanly?
 
-Thanks Masahiro,
+Nope.
 
-I support that as a goal, I'm not sure I want to embrace it here. For
-example, in tools/build/Build.include there is:
-```
-# Echo command
-# Short version is used, if $(quiet) equals `quiet_', otherwise full one.
-echo-cmd =3D $(if $($(quiet)cmd_$(1)),\
-           echo '  $(call escsq,$($(quiet)cmd_$(1)))';)
-```
+Any block device that says it operates in writeback cache mode (i.e.
+almost every single consumer SATA and NVMe drive ever made) has a
+volatile write back cache and so does not provide any power fail
+data integrity guarantees. Simple to check, my less-than-1-yr-old
+workstation tells me:
 
-This is relevant given the use of cmd_ and not savedcmd_. In
-scripts/Kbuild.include there is no equivalent, nor is there in
-scripts. So do I dig into the history of echo-cmd unfork that, and
-then go to the next thing? I find a lot of things like
-tools/selftests/bpf won't build for me. When I debug a failure is it
-because of a change or a pre-existing issue? Given the scope of the
-Build.include unification problem, and this 4 line change, I hope we
-can move forward with this and keep unification as a separate problem
-(I totally support solving that problem).
+$ lspci |grep -i nvme
+03:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
+06:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
+$ cat /sys/block/nvme*n1/queue/write_cache
+write back
+write back
+$
 
-Thanks,
-Ian
+That they have volatile writeback caches....
 
-> --
-> Best Regards
-> Masahiro Yamada
+> How about blacklisting block devices that mangle blocks if a power
+> failure occurs? I think such block devices are not compatible with
+> journaling filesystems nor with log-structured filesystems.
+
+Statements like this from people working on storage hardware really
+worry me. It demonstrates a lack of understanding of how filesystems
+actually work, not to mention the fact that this architectural
+problem (i.e. handling volatile device write caches correctly) was
+solved in the Linux IO stack a couple of decades ago. This isn't
+even 'state of the art' knowledge - this is foundational knowlege
+that everyone working on storage should know.
+
+The tl;dr summary is that filesystems will issue a cache flush
+request (REQ_PREFLUSH) and/or write-through to stable storage
+semantics (REQ_FUA) for any data, metadata or journal IO that has
+data integrity and/or ordering requirements associated with it. The
+block layer will then do the most optimal correct thing with that
+request (e.g. ignore them for IO being directed at WC disabled
+devices), but it guarantees the flush/fua semantics for those IOs
+will be provided by all layers in the stack right down to the
+persistent storage media itself. Hence all the filesystem has to do
+is get it's IO and cache flush ordering correct, and everything
+just works regardless of the underlying storage capabilities.
+
+And, yes, any storage device with volatile caches that doesn't
+implement cache flushes correctly is considered broken and will get
+black listed....
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
