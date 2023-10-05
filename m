@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4C37BA642
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EC17BA539
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234509AbjJEQc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        id S236364AbjJEQP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234577AbjJEQc1 (ORCPT
+        with ESMTP id S240502AbjJEQNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:32:27 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A868222C9A;
-        Thu,  5 Oct 2023 03:46:15 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c12ae20a5cso9758871fa.2;
-        Thu, 05 Oct 2023 03:46:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696502774; x=1697107574; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tD4m0iMVb4bl/p6r/AX6bYY/PolPxwjEJ+dZDSZwBHQ=;
-        b=GC9kMnuUoMy7iKlaeGE/ul+ghEz/ntWBcFdY0pOlQXy7+DcqkgOF5IgYrn071Dx0jx
-         ODON18gPYqIXgR1Hj8h8CFtDeRiyCKTfkGDqj+rUgZihIHTVKvInxCg24wZfpwG7khyk
-         KRFYGQsR8eZPS/ouu+6Kk1Pd2vzBEjTNXnnU7bV7ProGNlnGYSWTD39YjLmGCmTbBQbU
-         rifmustdlP/8d2U6xD4jCkqLZWHFtECJnZLFP1Tn0XO2X+TtveI6evB+daeQ9uTLJuTx
-         0U39uiMa4KYqOf7Ms2uPyQzvQURhOk7sJpEh1HEeM5p6Jxqag+jcv8rWjpAuW89ZYiWm
-         c5hA==
+        Thu, 5 Oct 2023 12:13:05 -0400
+Received: from mail-ot1-x345.google.com (mail-ot1-x345.google.com [IPv6:2607:f8b0:4864:20::345])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4DD22CA0
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 03:46:29 -0700 (PDT)
+Received: by mail-ot1-x345.google.com with SMTP id 46e09a7af769-6c4f235ee22so993923a34.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 03:46:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696502774; x=1697107574;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tD4m0iMVb4bl/p6r/AX6bYY/PolPxwjEJ+dZDSZwBHQ=;
-        b=wWiXnEKD1qGdshAET/vURgdAoaLAU4MAxKFAzquSZ24c/qF5+FhRssfXWbYjxbOe7W
-         rXBQ6hnY9I/aUkYU1b46GzUueTP34xNbr/XxLAwIyo5SepA9biP+Z/9cZZPMA8ZXR+QI
-         /nBOhaITXU5vVKkxfdDZdyLPjlMHtIFKXzM4X22Amtw5XwSMkOmiABK7Y26m9UfCPVC+
-         y56saNiEFMEgk6Uu5/RLHNC86kpavm3JI/NzrQLQZ2NU78FZnOgHLi95mU6t2oXiEoy4
-         EjL1NQkPAQlv6vqhfd5pvHUpbkJe4zp1DinVyPLF+XSOCyiw+r/lj3tzxbv04QH7YFNP
-         Xfbw==
-X-Gm-Message-State: AOJu0YwBNm+TimJ6/+/tQijioAv3nrBAgsC9izdtYvW9wm3GdTATlAOJ
-        OOh/i/Y0oig4nOu2zs5riptTeAUkaO582U02cb0=
-X-Google-Smtp-Source: AGHT+IEStT65q1wnfYcU7aKZf01nOo1p1LQWPYHAgwHMmL8hEGmDyGD/+zh/g1iKp/Mz0aAqs1/CD+KqWZXYU8bZAMM=
-X-Received: by 2002:a2e:9794:0:b0:2b9:e1dd:5756 with SMTP id
- y20-20020a2e9794000000b002b9e1dd5756mr4574929lji.45.1696502773682; Thu, 05
- Oct 2023 03:46:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696502789; x=1697107589;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BGwGxlTuATRVWE5UT3ZKJoT5MpU675X68ZbpYCN+7kY=;
+        b=vzEDpSlTElDTwiOpNJmqj9W7HnetW0sgPy3icAiFrxpUlQSvFP8jKr6nA72jNKOg1K
+         O52+x5OF/P7ftKI5ghAJO7I+Bz5+hDstDPwbWr02AtZfYWPt04C9GzN34jxgIKnDkNLr
+         LOdUL0cT8r/5leR4IUQqWLfXvQe4kWWqskPJvvDhtTir+xke6eQMhZq6Od4MQe51ZCaL
+         hrf2jSnk5odb5365YwB4Zul7oqnGhwKHQnIo+FcUiCAC449m2G1qNNrancrdIJ9B85se
+         p3N9kZ7Q1oW/QLlR4ek3LBgnU+pyMjo7k2pSRNO7LUPZGwkqaw9iol5BiP7ZtR+39evL
+         HVsA==
+X-Gm-Message-State: AOJu0Yw3jaoQxhkEulCzc60mGcv+qx55/n0fuSvNcKiyc8QQHkvMgbxD
+        48vZnjqaHdElR0NXPSqO9gK/VnZ8hnAQqn9KH2I4gc96X+yj
+X-Google-Smtp-Source: AGHT+IF6NXpW2zd+hCeIzElnwrg53MI5PnCCJL42D9bvk43rwJ1rmAHq/sIWi88y/rKUpfhhxrW+Yd6VgiNDyLe+SSuoEVFU4PnF
 MIME-Version: 1.0
-References: <20231003110130.229711-1-tmaimon77@gmail.com> <20231003110130.229711-3-tmaimon77@gmail.com>
- <25e8c953-8bf1-4107-9531-263d68c41128@linaro.org>
-In-Reply-To: <25e8c953-8bf1-4107-9531-263d68c41128@linaro.org>
-From:   Tomer Maimon <tmaimon77@gmail.com>
-Date:   Thu, 5 Oct 2023 13:46:02 +0300
-Message-ID: <CAP6Zq1gwbYfE4xg0-TCC+Wfoo_1omdsWukupJqpZekMem0xeMA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] dt-bindings: usb: ci-hdrc-usb2: add npcm750 and
- npcm845 compatible
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     peter.chen@kernel.org, gregkh@linuxfoundation.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        xu.yang_2@nxp.com, peng.fan@nxp.com, avifishman70@gmail.com,
-        tali.perry1@gmail.com, joel@jms.id.au, venture@google.com,
-        yuenn@google.com, benjaminfair@google.com, j.neuschaefer@gmx.net,
-        openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+X-Received: by 2002:a05:6870:1987:b0:1dc:768d:bf6b with SMTP id
+ v7-20020a056870198700b001dc768dbf6bmr1900344oam.11.1696502788922; Thu, 05 Oct
+ 2023 03:46:28 -0700 (PDT)
+Date:   Thu, 05 Oct 2023 03:46:28 -0700
+In-Reply-To: <CAOQ4uxjw_XztGxrhR9LWtz_SszdURkM+Add2q8A9BAt0z901kA@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001824660606f5d6ac@google.com>
+Subject: Re: [syzbot] [integrity] [overlayfs] possible deadlock in
+ mnt_want_write (2)
+From:   syzbot <syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com>
+To:     amir73il@gmail.com, hdanton@sina.com,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
+        mszeredi@redhat.com, syzbot@syzkalhler.appspotmail.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        zohar@linux.ibm.com, zohar@us.ibm.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Hello,
 
-Thanks for your comment
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On Wed, 4 Oct 2023 at 11:03, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 03/10/2023 13:01, Tomer Maimon wrote:
-> > Add a compatible string for Nuvoton BMC NPCM750 and Nuvoton BMC NPCM845.
-> >
-> > Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
-> > index 1394557517b1..a9e173432002 100644
-> > --- a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
-> > @@ -16,6 +16,8 @@ properties:
-> >        - enum:
-> >            - chipidea,usb2
-> >            - lsi,zevio-usb
-> > +          - nuvoton,npcm750-udc
-> > +          - nuvoton,npcm845-udc
->
-> Your driver clearly suggests these are compatible. If they are not, why
-> commit msg does no explain anything here?
-Do you mean to add nuvoton,npcmxxx-udc as described below to the end
-of the compatible property?
-      - items:
-          - enum:
-              - nuvoton,npcm845-udc
-          - const: nuvoton,npcm750-udc
->
-> Best regards,
-> Krzysztof
->
+Reported-and-tested-by: syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com
 
-Best regards,
+Tested on:
 
-Tomer
+commit:         42555f30 ima: annotate iint mutex to avoid lockdep fal..
+git tree:       https://github.com/amir73il/linux ima-ovl-fix
+console output: https://syzkaller.appspot.com/x/log.txt?x=16889486680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=57da1ac039c4c78a
+dashboard link: https://syzkaller.appspot.com/bug?extid=b42fe626038981fb7bfa
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
