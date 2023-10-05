@@ -2,114 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC0A7B9F06
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282057BA216
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233469AbjJEOQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
+        id S232295AbjJEPNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232736AbjJEOOu (ORCPT
+        with ESMTP id S233471AbjJEPMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:14:50 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B035727B20;
-        Thu,  5 Oct 2023 06:40:48 -0700 (PDT)
-Received: from jupiter.universe (dyndsl-091-248-132-024.ewe-ip-backbone.de [91.248.132.24])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2DBB86607095;
-        Thu,  5 Oct 2023 14:40:47 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696513247;
-        bh=fy7VVRBs6A2jxo/gpDryg++0jHo03JHrW/ne6C5QiYc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=S3XCJIwwPsuNoewiFnufSQAGElj4CMtY2XClZ1GZV1ufg9KwRksfX/l9WoOfHC1Pq
-         Z6XIK7hQvwgc3cJ9odXEluDxUaK4TfkVRMNIHayJ+WfuPFyifW6yPa97/jafb8wazU
-         DqXdjzlyyPJlgjlOv30dYtxS/UZT4OhGRWj0bYF7OJcI4/Ow/RbJW8z6Jt4GG06PHc
-         ml/fdQ5L7AEFUTfhc0doAtMHtkYRZdK+FbVlopTyWQcHNgNNVTI+hzdEDl2lCWCFxs
-         fwGncbyLPEo96ooNFf/ktgORQU4gCKGEssiodhYeCFIqY2k7q1SRN8tvMX78DcnAFJ
-         UXX3ZJgcuCNRw==
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id DEF134800C3; Thu,  5 Oct 2023 15:40:44 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH v1 1/1] arm64: dts: rockchip: add status LED to rock-5b
-Date:   Thu,  5 Oct 2023 15:40:37 +0200
-Message-Id: <20231005134037.33231-1-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.40.1
+        Thu, 5 Oct 2023 11:12:15 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6A9C9194;
+        Thu,  5 Oct 2023 06:48:18 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DA30168F;
+        Thu,  5 Oct 2023 06:42:06 -0700 (PDT)
+Received: from e126645.arm.com (e126645.nice.arm.com [10.34.100.116])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B6CBD3F641;
+        Thu,  5 Oct 2023 06:41:25 -0700 (PDT)
+From:   Pierre Gondois <pierre.gondois@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Pierre Gondois <pierre.gondois@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v2] cpufreq: Rebuild sched-domains when removing cpufreq driver
+Date:   Thu,  5 Oct 2023 15:41:20 +0200
+Message-Id: <20231005134120.1217829-1-pierre.gondois@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe the Rock 5B status LED in its device tree.
+The Energy Aware Scheduler (EAS) relies on the schedutil governor.
+When moving to/from the schedutil governor, sched domains must be
+rebuilt to allow re-evaluating the enablement conditions of EAS.
+This is done through sched_cpufreq_governor_change().
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Having a cpufreq governor assumes a cpufreq driver is running.
+Inserting/removing a cpufreq driver should trigger a re-evaluation
+of EAS enablement conditions, avoiding to see EAS enabled when
+removing a running cpufreq driver.
+
+Rebuild the sched domains in schedutil's sugov_init()/sugov_exit(),
+allowing to check EAS's enablement condition whenever schedutil
+governor is initialized/exited from.
+Move relevant code up in schedutil.c to avoid a split and conditional
+function declaration.
+Rename sched_cpufreq_governor_change() to sugov_eas_rebuild_sd().
+
+Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- .../boot/dts/rockchip/rk3588-rock-5b.dts      | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/cpufreq/cpufreq.c        |  3 +-
+ include/linux/cpufreq.h          |  8 -----
+ kernel/sched/cpufreq_schedutil.c | 55 +++++++++++++++++---------------
+ 3 files changed, 30 insertions(+), 36 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-index 8618887899d9..3f0bea1f5053 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-@@ -3,6 +3,7 @@
- /dts-v1/;
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index 60ed89000e82..4bc15634d49c 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -1544,7 +1544,7 @@ static int cpufreq_online(unsigned int cpu)
  
- #include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
- #include "rk3588.dtsi"
+ 		/*
+ 		 * Register with the energy model before
+-		 * sched_cpufreq_governor_change() is called, which will result
++		 * sugov_eas_rebuild_sd() is called, which will result
+ 		 * in rebuilding of the sched domains, which should only be done
+ 		 * once the energy model is properly initialized for the policy
+ 		 * first.
+@@ -2652,7 +2652,6 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
+ 		ret = cpufreq_start_governor(policy);
+ 		if (!ret) {
+ 			pr_debug("governor change\n");
+-			sched_cpufreq_governor_change(policy, old_gov);
+ 			return 0;
+ 		}
+ 		cpufreq_exit_governor(policy);
+diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+index 71d186d6933a..1c5ca92a0555 100644
+--- a/include/linux/cpufreq.h
++++ b/include/linux/cpufreq.h
+@@ -1193,14 +1193,6 @@ static inline int of_perf_domain_get_sharing_cpumask(int pcpu, const char *list_
+ }
+ #endif
  
- / {
-@@ -37,6 +38,19 @@ analog-sound {
- 		pinctrl-0 = <&hp_detect>;
- 	};
+-#if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
+-void sched_cpufreq_governor_change(struct cpufreq_policy *policy,
+-			struct cpufreq_governor *old_gov);
+-#else
+-static inline void sched_cpufreq_governor_change(struct cpufreq_policy *policy,
+-			struct cpufreq_governor *old_gov) { }
+-#endif
+-
+ extern unsigned int arch_freq_get_on_cpu(int cpu);
  
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&led_rgb_b>;
+ #ifndef arch_set_freq_scale
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 4492608b7d7f..901cada51ba7 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -555,6 +555,31 @@ static const struct kobj_type sugov_tunables_ktype = {
+ 
+ /********************** cpufreq governor interface *********************/
+ 
++#ifdef CONFIG_ENERGY_MODEL
++static void rebuild_sd_workfn(struct work_struct *work)
++{
++	rebuild_sched_domains_energy();
++}
 +
-+		led_rgb_b {
-+			function = LED_FUNCTION_STATUS;
-+			color = <LED_COLOR_ID_BLUE>;
-+			gpios = <&gpio0 RK_PB7 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
++static DECLARE_WORK(rebuild_sd_work, rebuild_sd_workfn);
 +
- 	fan: pwm-fan {
- 		compatible = "pwm-fan";
- 		cooling-levels = <0 95 145 195 255>;
-@@ -300,6 +314,12 @@ hym8563_int: hym8563-int {
- 		};
- 	};
++/*
++ * EAS shouldn't be attempted without sugov, so rebuild the sched_domains
++ * on governor changes to make sure the scheduler knows about it.
++ */
++static void sugov_eas_rebuild_sd(void)
++{
++	/*
++	 * When called from the cpufreq_register_driver() path, the
++	 * cpu_hotplug_lock is already held, so use a work item to
++	 * avoid nested locking in rebuild_sched_domains().
++	 */
++	schedule_work(&rebuild_sd_work);
++}
++#else
++static inline void sugov_eas_rebuild_sd(void) { };
++#endif
++
+ struct cpufreq_governor schedutil_gov;
  
-+	leds {
-+		led_rgb_b: led-rgb-b {
-+			rockchip,pins = <0 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
+ static struct sugov_policy *sugov_policy_alloc(struct cpufreq_policy *policy)
+@@ -709,6 +734,8 @@ static int sugov_init(struct cpufreq_policy *policy)
+ 	if (ret)
+ 		goto fail;
+ 
++	sugov_eas_rebuild_sd();
 +
- 	sound {
- 		hp_detect: hp-detect {
- 			rockchip,pins = <1 RK_PD5 RK_FUNC_GPIO &pcfg_pull_none>;
+ out:
+ 	mutex_unlock(&global_tunables_lock);
+ 	return 0;
+@@ -750,6 +777,8 @@ static void sugov_exit(struct cpufreq_policy *policy)
+ 	sugov_kthread_stop(sg_policy);
+ 	sugov_policy_free(sg_policy);
+ 	cpufreq_disable_fast_switch(policy);
++
++	sugov_eas_rebuild_sd();
+ }
+ 
+ static int sugov_start(struct cpufreq_policy *policy)
+@@ -838,29 +867,3 @@ struct cpufreq_governor *cpufreq_default_governor(void)
+ #endif
+ 
+ cpufreq_governor_init(schedutil_gov);
+-
+-#ifdef CONFIG_ENERGY_MODEL
+-static void rebuild_sd_workfn(struct work_struct *work)
+-{
+-	rebuild_sched_domains_energy();
+-}
+-static DECLARE_WORK(rebuild_sd_work, rebuild_sd_workfn);
+-
+-/*
+- * EAS shouldn't be attempted without sugov, so rebuild the sched_domains
+- * on governor changes to make sure the scheduler knows about it.
+- */
+-void sched_cpufreq_governor_change(struct cpufreq_policy *policy,
+-				  struct cpufreq_governor *old_gov)
+-{
+-	if (old_gov == &schedutil_gov || policy->governor == &schedutil_gov) {
+-		/*
+-		 * When called from the cpufreq_register_driver() path, the
+-		 * cpu_hotplug_lock is already held, so use a work item to
+-		 * avoid nested locking in rebuild_sched_domains().
+-		 */
+-		schedule_work(&rebuild_sd_work);
+-	}
+-
+-}
+-#endif
 -- 
-2.40.1
+2.25.1
 
