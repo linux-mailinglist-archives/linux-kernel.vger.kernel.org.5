@@ -2,231 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACEE7BA742
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF05C7BA880
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbjJEREh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
+        id S229578AbjJERzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbjJERDs (ORCPT
+        with ESMTP id S231282AbjJERzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:03:48 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706D22052
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:50:31 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53639fb0ba4so2138574a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:50:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696524630; x=1697129430; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DVP62JidTEWtgdpmasWslCtMYx2nHdn78C2J70yw09Q=;
-        b=bkTZB0yS7hobifDyhk3CxAgTg1hSRbMqdBqvkJB+wXVDQZM1MqwURrpQs8BJoGd+vb
-         SNqr4F4YlrtR6vHRTOELO7wWGOZ36Ve5UIqEKRLEHTq/dmTmbLEQHL+t22In9nyvF3HA
-         vVBTzUkGMMLbhBaqiiusaIQXOJWGwDgY5HAd5GPBJ2kBGTwvtdfPoUVMNq1zdl3jIBVy
-         7f+8YSiuENUk8vIcFr9z68WF8+bdStQ3+vqumSHALuASomFI/pWs3H8U2a+rBfUYrzvF
-         3jHMMU4UX6Mla5e/DEtNUhW+VpwPEE2oJHYZtIybfRrJ8EdWoMI54CFm39JSXRk7eK1W
-         vbSQ==
+        Thu, 5 Oct 2023 13:55:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EA83C3F
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:52:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696524733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hfBa2PBztZPefecPJI7ke3UbcZNr/dJZxdjNyd6oBXc=;
+        b=dr7dtT+XaZ1GUUCCB9ks+MMH4V+SSCfdswXfmbzA8abA0Pe2hgAFRZOwleEjc9EOO77Dv2
+        mU7J22iDc/BoUIzAIakM+viR1kjHUKjqKeFr47AQ+BFUVMJmbaCfVLLKBvvZ264EfqXvj9
+        vV2mkncMSgBH6WDk9v8PmGw0HQIlHGM=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-636-5crtaUypNbaoZEqs-Fu0xg-1; Thu, 05 Oct 2023 12:52:02 -0400
+X-MC-Unique: 5crtaUypNbaoZEqs-Fu0xg-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9ae0601d689so95212066b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:52:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696524630; x=1697129430;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1696524721; x=1697129521;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DVP62JidTEWtgdpmasWslCtMYx2nHdn78C2J70yw09Q=;
-        b=I02TZ5CtD3NBxR/vTiZ+IJPH8trucIi0XLVvNdBKZl3h2RDqkUGucKK7V/3PVCmvkn
-         Pwalx0S95PisoP0GcB5acwFDY/0fQ9blenaIp7GTW7DgyT2DKXHMmSm0F52daVH6S5m+
-         1NHAS2GGS4lWse3S4GFS13cSI00Y93OHFQukMA3YBDgE4ixjDU/XsHiEIWc53/koEzjT
-         XpMOFjVBFq/DTBerRXZcO0rkQut5j78RgSWI8xyRtTLB6at/XnjRStddsXBmKxKZaUTe
-         GuA8YSAiFimnLsU/V65fp+TNkGd+n/B54m4XCYsPaUtWXotSq0ntvnjwpold74un+Ee/
-         R58g==
-X-Gm-Message-State: AOJu0YwmaXlgQ+ty21CWxB7X1TZBqMHH98ojlOppSw7EikzB622n6U6f
-        VjOPF2zuxMP6Q7gIEdYA1dEo36WZVQ==
-X-Google-Smtp-Source: AGHT+IEwq07zIWtyOfxelS1GZD8CWHbODSAxUc+2ZLBuheWhfxtqbvmpqX/KRl574o9V7D0WIjfd4g==
-X-Received: by 2002:a17:906:1ba1:b0:9a2:1d09:4eee with SMTP id r1-20020a1709061ba100b009a21d094eeemr5741848ejg.49.1696524629414;
-        Thu, 05 Oct 2023 09:50:29 -0700 (PDT)
-Received: from p183 ([46.53.253.206])
-        by smtp.gmail.com with ESMTPSA id v19-20020a1709064e9300b00988e953a586sm1454268eju.61.2023.10.05.09.50.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 09:50:29 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 19:50:27 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: [PATCH v2] auto: add and use "auto" keyword (alias for __auto_type)
-Message-ID: <d4f87590-6cbb-4ee9-bead-7d958fc1fa83@p183>
+        bh=hfBa2PBztZPefecPJI7ke3UbcZNr/dJZxdjNyd6oBXc=;
+        b=sZl/FKhbbyg9Fbffh4ORvmW1Fae3PZEuvCvWCco6hKLggOdyLxhN58GQdF/30xs6aj
+         0tY91eWnIEnDyRPU5mQUobIQifALiLKqC1pCpuF30re997eIiVsJ8alQuH2Cqw9l2Vqg
+         cngJXYTWL+4W7pBpExOvspzGv29UWkNbnReDUMGoRM1jmdrUW5PuOkonXSTwSn63AKvG
+         CClDn6wZyudzXWQofVe92Xx+6C1EfRHOlm+tmj6zQe4uqUbD8zYhAn/fXJMRqo/AVZxr
+         JV2tnOvJzc4bSG4LeOzVAs/beCPeXQUjLbrX0ylz9663HU8N+XbcfYausPFkpQfB0mWf
+         pmLg==
+X-Gm-Message-State: AOJu0Yz+kg7wqHwzZuM/xGCfrQ/dWamXJtjzgZuXYG5caCMSO1HoAfKt
+        impikg+RBNXTQsNuqe/EZFgs+D+0w7MQLOqZBZGsl2S2QaU3uNdmfa3GQGdouQHM1qTNFP/qI38
+        srzeFzpDqiWIjpyWT5CxAXt+F
+X-Received: by 2002:a17:907:271a:b0:9b9:ed52:8213 with SMTP id w26-20020a170907271a00b009b9ed528213mr2108071ejk.54.1696524720980;
+        Thu, 05 Oct 2023 09:52:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHgssYgHWHZZXyp1cFbR2loPbqq9hiLlw7Dc8A83s5u0YNtnV3XNQusYBiNSkut41GTr1E/UQ==
+X-Received: by 2002:a17:907:271a:b0:9b9:ed52:8213 with SMTP id w26-20020a170907271a00b009b9ed528213mr2108053ejk.54.1696524720646;
+        Thu, 05 Oct 2023 09:52:00 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
+        by smtp.googlemail.com with ESMTPSA id j18-20020a170906411200b0099ccee57ac2sm1465845ejk.194.2023.10.05.09.51.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 09:51:59 -0700 (PDT)
+Message-ID: <4318facf-df2d-7658-39d2-d2dce1ec77d9@redhat.com>
+Date:   Thu, 5 Oct 2023 18:51:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To:     Jim Mattson <jmattson@google.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20231004002038.907778-1-jmattson@google.com>
+ <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
+ <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com>
+ <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
+ <CALMp9eT2qHSig-ptP461GbLSfg86aCRjoxzK9Q7dc6yXSpPn7A@mail.gmail.com>
+ <ef665e55-7604-e167-7c49-739c284c248c@intel.com>
+ <CALMp9eQL4m6PVVhntG9-RbY6w60pxka2tpCvTi01dQXPJ7QEJA@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's
+ FsGsKernelGsBaseNonSerializing
+In-Reply-To: <CALMp9eQL4m6PVVhntG9-RbY6w60pxka2tpCvTi01dQXPJ7QEJA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has similar semantics to "auto" keyword from a language
-which can not be named on this mailing list, in particular:
+On 10/5/23 18:41, Jim Mattson wrote:
+>> I hope I'm not throwing stones from a glass house here...
+>>
+>> But I'm struggling to think of cases where Intel has read-only
+>> "defeature bits" like this one.  There are certainly things like
+>> MSR_IA32_MISC_ENABLE_FAST_STRING that can be toggled, but read-only
+>> indicators of a departure from established architecture seems ...
+>> suboptimal.
+>>
+>> It's arguable that TDX changed a bunch of architecture like causing
+>> exceptions on CPUID and MSRs that never caused exceptions before and
+>> _that_  constitutes a defeature.  But that's the least of the problems
+>> for a TDX VM. 😄
+>>
+>> (Seriously, I'm not trying to shame Intel's x86 fellow travelers here,
+>>   just trying to make sure I'm not missing something).
+> Intel's defeature bits that I know of are:
+> 
+> CPUID.(EAX=7,ECX=0):EBX[bit 13] (Haswell) - "Deprecates FPU CS and FPU
+> DS values if 1."
+> CPUID.(EAX=7,ECX=0):EBX[bit 6] (Skylake) - "FDP_EXCPTN_ONLY. x87 FPU
+> Data Pointer updated only on x87 exceptions if 1."
 
-	{
-		int a;
-		const auto b = a; // const int b = a;
-		b = 1;	// compile error
-	}
-	{
-		char a;
-		auto b = a; // char b = a;
-		// no integer promotions
-		static_assert(sizeof(b) == 1);
-	}
-	{
-		int a;
-		const auto p = &a; // int *const p = &a;
-		*p = 1;	// OK, const is applied to top-level only
-	}
+And for AMD, to get the full landscape:
 
-It can be used to save on macroexpansion inside macro forests which
-use typeof() somewhere deep enough. It is cool regardless.
+- CPUID(EAX=8000_0021h).EAX[0], "Processor ignores nested data breakpoints"
 
-gcc 5.1 supports __auto_type.
+- CPUID(EAX=8000_0021h).EAX[9], "SMM_CTL MSR is not present" (the MSR 
+used to be always present if SVM is available)
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+AMD had a few processors without X86_BUG_NULL_SEG that do not expose 
+X86_FEATURE_NULL_SEL_CLR_BASE, but that's conservative so not a big deal.
 
- Documentation/process/coding-style.rst |   31 +++++++++++++++++++++++++------
- arch/nios2/include/asm/uaccess.h       |    4 ++--
- arch/x86/include/asm/bug.h             |    2 +-
- include/linux/cleanup.h                |    2 +-
- include/linux/compiler_types.h         |    2 ++
- 5 files changed, 31 insertions(+), 10 deletions(-)
+Paolo
 
---- a/Documentation/process/coding-style.rst
-+++ b/Documentation/process/coding-style.rst
-@@ -1018,7 +1018,26 @@ result.  Typical examples would be functions that return pointers; they use
- NULL or the ERR_PTR mechanism to report failure.
- 
- 
--17) Using bool
-+17) Using auto
-+--------------
-+
-+Use ``auto`` macro-keyword (alias for ``__auto_type`` extension) in macros
-+with "evaluate argument once" idiom:
-+
-+.. code-block:: c
-+
-+        #define min2(a, b)              \
-+        ({                              \
-+                auto a_ = (a);          \
-+                auto b_ = (b);          \
-+                a_ < b_ ? a_ : b_;      \
-+        })
-+
-+Read https://gcc.gnu.org/onlinedocs/gcc/Typeof.html before using ``auto`` or
-+changing anything with ``auto`` in it.
-+
-+
-+18) Using bool
- --------------
- 
- The Linux kernel bool type is an alias for the C99 _Bool type. bool values can
-@@ -1048,7 +1067,7 @@ readable alternative if the call-sites have naked true/false constants.
- Otherwise limited use of bool in structures and arguments can improve
- readability.
- 
--18) Don't re-invent the kernel macros
-+19) Don't re-invent the kernel macros
- -------------------------------------
- 
- The header file include/linux/kernel.h contains a number of macros that
-@@ -1071,7 +1090,7 @@ need them.  Feel free to peruse that header file to see what else is already
- defined that you shouldn't reproduce in your code.
- 
- 
--19) Editor modelines and other cruft
-+20) Editor modelines and other cruft
- ------------------------------------
- 
- Some editors can interpret configuration information embedded in source files,
-@@ -1105,7 +1124,7 @@ own custom mode, or may have some other magic method for making indentation
- work correctly.
- 
- 
--20) Inline assembly
-+21) Inline assembly
- -------------------
- 
- In architecture-specific code, you may need to use inline assembly to interface
-@@ -1137,7 +1156,7 @@ the next instruction in the assembly output:
- 	     : /* outputs */ : /* inputs */ : /* clobbers */);
- 
- 
--21) Conditional Compilation
-+22) Conditional Compilation
- ---------------------------
- 
- Wherever possible, don't use preprocessor conditionals (#if, #ifdef) in .c
-@@ -1186,7 +1205,7 @@ expression used.  For instance:
- 	#endif /* CONFIG_SOMETHING */
- 
- 
--22) Do not crash the kernel
-+23) Do not crash the kernel
- ---------------------------
- 
- In general, the decision to crash the kernel belongs to the user, rather
---- a/arch/nios2/include/asm/uaccess.h
-+++ b/arch/nios2/include/asm/uaccess.h
-@@ -172,14 +172,14 @@ do {									\
- 
- #define __put_user(x, ptr)						\
- ({									\
--	__auto_type __pu_ptr = (ptr);					\
-+	auto __pu_ptr = (ptr);						\
- 	typeof(*__pu_ptr) __pu_val = (typeof(*__pu_ptr))(x);		\
- 	__put_user_common(__pu_val, __pu_ptr);				\
- })
- 
- #define put_user(x, ptr)						\
- ({									\
--	__auto_type __pu_ptr = (ptr);					\
-+	auto __pu_ptr = (ptr);						\
- 	typeof(*__pu_ptr) __pu_val = (typeof(*__pu_ptr))(x);		\
- 	access_ok(__pu_ptr, sizeof(*__pu_ptr)) ?			\
- 		__put_user_common(__pu_val, __pu_ptr) :			\
---- a/arch/x86/include/asm/bug.h
-+++ b/arch/x86/include/asm/bug.h
-@@ -78,7 +78,7 @@ do {								\
-  */
- #define __WARN_FLAGS(flags)					\
- do {								\
--	__auto_type __flags = BUGFLAG_WARNING|(flags);		\
-+	auto __flags = BUGFLAG_WARNING|(flags);			\
- 	instrumentation_begin();				\
- 	_BUG_FLAGS(ASM_UD2, __flags, ASM_REACHABLE);		\
- 	instrumentation_end();					\
---- a/include/linux/cleanup.h
-+++ b/include/linux/cleanup.h
-@@ -40,7 +40,7 @@
- #define __free(_name)	__cleanup(__free_##_name)
- 
- #define no_free_ptr(p) \
--	({ __auto_type __ptr = (p); (p) = NULL; __ptr; })
-+	({ auto __ptr = (p); (p) = NULL; __ptr; })
- 
- #define return_ptr(p)	return no_free_ptr(p)
- 
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -76,6 +76,8 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
- 
- #ifdef __KERNEL__
- 
-+#define auto __auto_type
-+
- /* Attributes */
- #include <linux/compiler_attributes.h>
- 
