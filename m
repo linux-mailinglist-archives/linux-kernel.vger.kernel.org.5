@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BFA7B999C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 03:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FC77B99A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 03:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244277AbjJEBam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 21:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33902 "EHLO
+        id S244316AbjJEBbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 21:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244241AbjJEBak (ORCPT
+        with ESMTP id S244140AbjJEBbF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 21:30:40 -0400
+        Wed, 4 Oct 2023 21:31:05 -0400
 Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E667E4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 18:30:36 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f4f2b6de8so6603827b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 18:30:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CB9DC
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 18:31:02 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59bdb9fe821so6242777b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 18:31:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696469435; x=1697074235; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696469461; x=1697074261; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yyTN+qkVdkyhFjuVhvjIxhpoA2iARGd0cRVG+kwHwfs=;
-        b=d3DYXTDq144go9qdMLRb2WtT4bl0zJbqchDPhNnydrZCiq0YucJLqgCEpR9U3XhesC
-         eRSmQHuT6TQBKM9y5fvw/TrlmYxbIgUYm7qYm9ggdRJNPtAmPvdv8u/wlKhWWqo0fM+a
-         k4RCXlEygsejCIH/Uwwhw0cj1UYuYTby+K5Hnj4mpfIJky1dV2mgQi7H+VChI19Ga7lA
-         3PhgwhGNba3cNuWjGDheY7SOeckWUP+NJyQEFsOrbr6ahdL5+seiTFVofyeBXeNfWuTB
-         6oWqn7tPXRvkXvbelA3PYwgdrMN5UzbLAEkyec908EzqyOkySxQIlhVX478MySkWtQVw
-         wnYQ==
+        bh=n4rUp4ycIq42eNA+TiEjWeknoevELPustb2kr/eeWpE=;
+        b=qFYX/33gZkpFdN2cZeP4/FpuO+hIRx7KRmgp5rQnZYJx1yzB8prMntf6xqAbofALTU
+         IHLP7PMAStE1XI0/x+aQsoCbI6yATyIYp0Bwx9BIAo6lJq60x4OIalJNiGn04OQJ+yuy
+         ZQn21qCavd/cPk9kB/bGle8WURpjrrWcmKQEL1rBVScapMAAF63JMzMDSuwULWiXdmeh
+         WNWtUYki7v6UyqfVS9JeNVaGgULfz9LBMj/ARTN7UxASqTQjJBQztbNcCqldLKE9/D6d
+         L44KPEXF3UTIG0QGSHHgdSc2X+vAJRM65GEBMtj6XyvH1Nqqw1U0dLZiPexyr+XTigUS
+         4thw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696469435; x=1697074235;
+        d=1e100.net; s=20230601; t=1696469461; x=1697074261;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yyTN+qkVdkyhFjuVhvjIxhpoA2iARGd0cRVG+kwHwfs=;
-        b=Wm/5SGZLgvr91orbjYAv0T0XA2AXGWy3XyBkHi2nCbTwRjILK0ggq5+pMb/6RTIlSi
-         +/QPdUoJ9HNkPxoapQ8hpoXPthKl/VLl4BKvWvWWUdKrDOWn9I/OsJEHfovgeisljuaj
-         paGR9v/xoNRGcZe21Pk/MdT9MZH897YfpkHeYjCSghT0Vs+rEh1okv+TWe9ArxVtAnsw
-         lcMU0L6NSndgz9pDMjWZGiZnz17YrAiFgE2jGE8ZEO1y9JyXd6Midsx81zWAkHt2oH/p
-         9EEGCiOntUoEz6O4OwKG9uwdRDYj4gqeXxJT4d7aWwEUJGxl9IjM38mffdkVdDn4mO31
-         Wz9g==
-X-Gm-Message-State: AOJu0YyAp8fC1ep/QOR6/2zFFDLZxjqI0xgaC16OT/G0TlObgCW0PGtR
-        4MliP5OcmdPeRMzn6eEC6wR7H0ifu6k=
-X-Google-Smtp-Source: AGHT+IGY6yEMBX9mXtpeLecbgnz08C0zwKtPsTMIMZJZvm4kie1vwCN1GKQ2rpKWddHNl8JZvF425XPjs4w=
+        bh=n4rUp4ycIq42eNA+TiEjWeknoevELPustb2kr/eeWpE=;
+        b=NuZMn6vd1ZmJHicYqfYuzAvZ2Qi1bg39tXxzQ0+0AnvX4hOyCnvgCT2NpUozH3Mtwo
+         Du3+iHVbHImeEzyHGnW05+Eia2f/dbi8BvFwpGT+bmyii9IOAru+JQfd/NwiHCovBn8E
+         69IN3nt0Fjoc577Gxz4we+nTzDlPD3XT42tZMPDrg1SEwpBdyDiaaFPrC1boxQgt8a9t
+         ILe9ID4koSVrG/sIa4ZnEbZow6q1gdSqeQYu8P+3G7YmnMIn7DTKe4VzJc4CSFWWuhV8
+         w2u5BZ1Ja3A3G8cuaY4VwuE3ktRCYoM/pbgIOamvyMHcTC0PqO7w7+IntWX9072by0dJ
+         YDbQ==
+X-Gm-Message-State: AOJu0YzrBeRljkPLo+Olx9BIH2GijWJoFVKWEhNOxGVaxAlaKD2FXOi8
+        jNvC8CpN8WIX2aBLCoDCuIMifm/dTq8=
+X-Google-Smtp-Source: AGHT+IGEGdjaYi0uhAKU0dgOZv9UropbH1j3a8mHl2nLotZXWoY+6JAiTu0z3FrhAbKy13iKfeyOLNoughI=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:4086:b0:5a4:f657:36d9 with SMTP id
- gb6-20020a05690c408600b005a4f65736d9mr50665ywb.9.1696469435343; Wed, 04 Oct
- 2023 18:30:35 -0700 (PDT)
-Date:   Wed,  4 Oct 2023 18:29:25 -0700
-In-Reply-To: <cover.1692919072.git.jpoimboe@kernel.org>
+ (user=seanjc job=sendgmr) by 2002:a25:d389:0:b0:d80:19e5:76c8 with SMTP id
+ e131-20020a25d389000000b00d8019e576c8mr52218ybf.12.1696469461343; Wed, 04 Oct
+ 2023 18:31:01 -0700 (PDT)
+Date:   Wed,  4 Oct 2023 18:29:27 -0700
+In-Reply-To: <20230714064656.20147-1-yan.y.zhao@intel.com>
 Mime-Version: 1.0
-References: <cover.1692919072.git.jpoimboe@kernel.org>
+References: <20230714064656.20147-1-yan.y.zhao@intel.com>
 X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <169645800680.2819931.7059133962967630371.b4-ty@google.com>
-Subject: Re: [PATCH v2 00/23] SRSO fixes/cleanups
+Message-ID: <169644820856.2740703.143177409737251106.b4-ty@google.com>
+Subject: Re: [PATCH v4 00/12] KVM: x86/mmu: refine memtype related mmu zap
 From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, David.Kaplan@amd.com,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+To:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>
+Cc:     pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        robert.hoo.linux@gmail.com, yuan.yao@linux.intel.com
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Aug 2023 00:01:31 -0700, Josh Poimboeuf wrote:
-> v2:
-> - reorder everything: fixes/functionality before cleanups
-> - split up KVM patch, add Sean's changes
-> - add patch to support live migration
-> - remove "default:" case for enums throughout bugs.c
-> - various minor tweaks based on v1 discussions with Boris
-> - add Reviewed-by's
+On Fri, 14 Jul 2023 14:46:56 +0800, Yan Zhao wrote:
+> This series refines mmu zap caused by EPT memory type update when guest
+> MTRRs are honored.
+> 
+> Patches 1-5 revolve around utilizing helper functions to check if
+> KVM TDP honors guest MTRRs, TDP zaps and page fault max_level reduction
+> are now only targeted to TDPs that honor guest MTRRs.
 > 
 > [...]
 
-Applied the KVM patches to kvm-x86 misc, thanks!  (I still haven't posted the
-KVM-Unit-Test patches, *sigh*)
+Applied 1-5 and 7 to kvm-x86 mmu.  I squashed 1 and 2 as introducing helpers to
+consolidate existing code without converting the existing code is wierd and
+makes it unnecessarily impossible to properly test the helpers when they're
+added.
 
-[4/23] KVM: x86: Add IBPB_BRTYPE support
-       https://github.com/kvm-x86/linux/commit/6f0f23ef76be
-[5/23] KVM: x86: Add SBPB support
-       https://github.com/kvm-x86/linux/commit/e47d86083c66
+I skipped 6, "move TDP zaps from guest MTRRs update to CR0.CD toggling", for
+now as your performance numbers showed that it slowed down the guest even
+though the number of zaps went down.  I'm definitely not against the patch, I
+just don't want to risk regressing guest performance, i.e. I don't wantt to
+take it without the rest of the series that takes advantage of the change.
+
+I massaged a few shortlogs and changelogs, but didn't touch any code.  Holler
+if anything looks funky.
+
+Thanks much!
+
+[1/5] KVM: x86/mmu: Add helpers to return if KVM honors guest MTRRs
+      https://github.com/kvm-x86/linux/commit/6590a37e7ec6
+[2/5] KVM: x86/mmu: Zap SPTEs when CR0.CD is toggled iff guest MTRRs are honored
+      https://github.com/kvm-x86/linux/commit/c0ad4a14c5af
+[3/5] KVM: x86/mmu: Zap SPTEs on MTRR update iff guest MTRRs are honored
+      https://github.com/kvm-x86/linux/commit/a1596812cce1
+[4/5] KVM: x86/mmu: Xap KVM TDP when noncoherent DMA assignment starts/stops
+      https://github.com/kvm-x86/linux/commit/3c4955c04b95
+[5/5] KVM: VMX: drop IPAT in memtype when CD=1 for KVM_X86_QUIRK_CD_NW_CLEARED
+      https://github.com/kvm-x86/linux/commit/f7b4bcd501ef
 
 --
 https://github.com/kvm-x86/linux/tree/next
