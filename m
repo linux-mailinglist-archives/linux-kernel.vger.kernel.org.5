@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A989C7BA59D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9197BA58F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242634AbjJEQSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
+        id S241229AbjJEQSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241463AbjJEQO2 (ORCPT
+        with ESMTP id S241078AbjJEQOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:14:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A1D7A88;
-        Thu,  5 Oct 2023 00:20:21 -0700 (PDT)
-Date:   Thu, 05 Oct 2023 07:20:18 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696490418;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gTTaaaHUArHDIckU4VjtEm1/89+COnB9H9apqfgESMg=;
-        b=LHoilc1NEVEyzWv2dAp99zCSgkT5FDatf1kPASupwJya2U1ecXsG2mv+Xm1zeGJgHXld0L
-        hZ8tZKfA3Bzr5py0I9asKc14QiRFkrtBebcbKI0t+S024DeA2EbKpDOsatN8tFM3lst0rj
-        bsLCmojiIr2skLUO+50pNYfds3iyIAKyDj7i1X6yven7s1fx52GQkHcMGXcma5WuBQadKj
-        rGcmX3u7NbnfTTSed3kAlIPB+NgANGc2SXOqrd/eQc5p8Igzsuwz/zvkYxm0xDQ3+U7vJV
-        ZmYQmEZoSdDtVluHCLKS/uy3YFbsRu31lqVb8MShIT9G7+v0wTWb7lEi+dwvwA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696490418;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gTTaaaHUArHDIckU4VjtEm1/89+COnB9H9apqfgESMg=;
-        b=dUcnnAkk+dSBMVDqDyF+Bw+bMgw4Trfl+s8413XpT92kBhhyFWQmmlAkT1TQjHjPD+ghyR
-        nnB9SxZBVOgivJDg==
-From:   "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/percpu] x86/percpu: Enable named address spaces with known
- compiler version
-Cc:     Uros Bizjak <ubizjak@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231004145137.86537-3-ubizjak@gmail.com>
-References: <20231004145137.86537-3-ubizjak@gmail.com>
+        Thu, 5 Oct 2023 12:14:12 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51ADF7AA2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 00:21:45 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-690bf8fdd1aso559863b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 00:21:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1696490505; x=1697095305; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bhehRkAcisDo+pGOQLMRxqAGq1y9OCFtpvbtY4rto2E=;
+        b=J0JYLqSpzkCZ6BdEnoa/liu+LPdyncdMwXtORUAHCTgtF9y1ukvFH2a/3hIsR5kk99
+         CulV63SjxX33xXR4k7f7jafPelz0m+6fgzaE689tUCBGn8LmH43LTyurDvZz9wD/zZwL
+         e7BJeDBc9A7Kunv3JWnHKBDb9vzPrsqUkKp0yVCe3cv+z786ahRbxZFgw+bhcZMDK004
+         xxwMlNbkDENZtrNfadB3TS+i58CmHjGx3sXHPwC8X8CNGFY7E75LFf+0J26uampkCEDv
+         l2g9YZ3e/uZPLHD6dx7IueyZPg+AlDy+sNbCqPmuVb3b3UoXU4Ex+FVK0SyDwvmVvycJ
+         7FXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696490505; x=1697095305;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bhehRkAcisDo+pGOQLMRxqAGq1y9OCFtpvbtY4rto2E=;
+        b=tc4S2b1cqo2yuHO/dP9442xuZXWnVnBVZVcQzluD29IV1Qxsc8x1QItvIGkHTeuVsI
+         +RSRnSxOFkCbRCqGXZZk4P1Ub7XTo6MVoyD9xY8iq58aLRullTemS/EtKZVSSBINf+7m
+         lRY59N9rRe0ks+3bycC8esDQDRcKyQe9uxT0yNWJ4n+ysj0jLIyws6dw70l1WYydPR2U
+         NmPfwt8IE2oKNHdUWvBeHHnX2VZuf3ueALGUChNLlXK/AcQ5vnFlIdJusSWfoaI60hPE
+         yLZoBdVJ1k/QBd4rsgrFGJ2hUf5HF+RnrEZsvG5d66ZiHtzNFrt5QNMr01HbF5cQ1DhM
+         HJog==
+X-Gm-Message-State: AOJu0YwZeIotaHQCGho0nHvcbr1e+BURcFHTIHVCjhVrWC644r7VEMng
+        tKH8nIAo7mwxUCw9Xd8PCPHzVw==
+X-Google-Smtp-Source: AGHT+IFhMnVxhJdAb97D0VwgSzeh+kZhImxe5gU+SeW/JS015eMWW9pRON/b9es2e93+oeGFnvtWUQ==
+X-Received: by 2002:a05:6a00:1d8e:b0:690:41a1:9b64 with SMTP id z14-20020a056a001d8e00b0069041a19b64mr3737258pfw.1.1696490504720;
+        Thu, 05 Oct 2023 00:21:44 -0700 (PDT)
+Received: from localhost ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
+        by smtp.gmail.com with UTF8SMTPSA id j10-20020aa783ca000000b0068ff267f092sm663033pfn.216.2023.10.05.00.21.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 00:21:44 -0700 (PDT)
+From:   Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akihiko Odaki <akihiko.odaki@daynix.com>
+Subject: [PATCH] bpf: Fix the comment for bpf_restore_data_end()
+Date:   Thu,  5 Oct 2023 16:21:36 +0900
+Message-ID: <20231005072137.29870-1-akihiko.odaki@daynix.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Message-ID: <169649041819.3135.15323683986344973215.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/percpu branch of tip:
+The comment used to say:
+> Restore data saved by bpf_compute_data_pointers().
 
-Commit-ID:     1ca3683cc6d2c2ce4204df519c4e4730d037905a
-Gitweb:        https://git.kernel.org/tip/1ca3683cc6d2c2ce4204df519c4e4730d037905a
-Author:        Uros Bizjak <ubizjak@gmail.com>
-AuthorDate:    Wed, 04 Oct 2023 16:49:42 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 05 Oct 2023 09:01:52 +02:00
+But bpf_compute_data_pointers() does not save the data;
+bpf_compute_and_save_data_end() does.
 
-x86/percpu: Enable named address spaces with known compiler version
-
-Enable named address spaces with known compiler versions
-(GCC 12.1 and later) in order to avoid possible issues with named
-address spaces with older compilers. Set CC_HAS_NAMED_AS when the
-compiler satisfies version requirements and set USE_X86_SEG_SUPPORT
-to signal when segment qualifiers could be used.
-
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Brian Gerst <brgerst@gmail.com>
-Cc: Denys Vlasenko <dvlasenk@redhat.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lore.kernel.org/r/20231004145137.86537-3-ubizjak@gmail.com
+Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
 ---
- arch/x86/Kconfig | 7 +++++++
- 1 file changed, 7 insertions(+)
+ include/linux/filter.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 982b777..ecb2569 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2388,6 +2388,13 @@ source "kernel/livepatch/Kconfig"
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 761af6b3cf2b..bf7ad887943c 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -694,7 +694,7 @@ static inline void bpf_compute_and_save_data_end(
+ 	cb->data_end  = skb->data + skb_headlen(skb);
+ }
  
- endmenu
- 
-+config CC_HAS_NAMED_AS
-+	def_bool CC_IS_GCC && GCC_VERSION >= 120100
-+
-+config USE_X86_SEG_SUPPORT
-+	def_bool y
-+	depends on CC_HAS_NAMED_AS && SMP
-+
- config CC_HAS_SLS
- 	def_bool $(cc-option,-mharden-sls=all)
- 
+-/* Restore data saved by bpf_compute_data_pointers(). */
++/* Restore data saved by bpf_compute_and_save_data_end(). */
+ static inline void bpf_restore_data_end(
+ 	struct sk_buff *skb, void *saved_data_end)
+ {
+-- 
+2.42.0
+
