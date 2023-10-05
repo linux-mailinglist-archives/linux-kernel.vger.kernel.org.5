@@ -2,218 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC487BA87A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DEA7BA87B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbjJERx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
+        id S229745AbjJERyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbjJERxA (ORCPT
+        with ESMTP id S231828AbjJERxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:53:00 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2074.outbound.protection.outlook.com [40.107.94.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BD5DD;
-        Thu,  5 Oct 2023 10:52:57 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MuXmqZjxPcdRI3DFhZtNmyLyCrxYUPNpOlhyRo1ZV2pgHS6l00DXQie7ypIKlOG2kxBvfHYWtbJwEizCT9ZSQGPvZiuyxI7wAJNQgxfV3HPcZ8nBaDYRVySuQSCVzyeEfIrpDOu+7fvVjFjKzUUVWITnnY/cndshBv4J0lRyGzo6TRF8ZAT1OEld6LsS7lDHdy77l7IYZBEoFEkp4t1C328kFoX8hF9p/pAA9dJYbKgCYNjb9v4kNtUdgP5IZvowJBI3xmnrWDKJDBNu+g/ahSuPXTDBi3DN7HJY8c7XVu91tmcD2aHC7mXkag4YajH9H3mFBlnemQgCgwJE1/SVRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JH30AXY8RydZr5SMo+4uSNARyDUbHggctPWCrhVPBLM=;
- b=XAlqlkFa585C023f1v/w4r45t/8T31wpL7Vh0NQEpYHitqppG91/ZMu1VdixXktnXXXRaUl+nYvrsOvkDDQbwvZcmBfJ2D8p6Gqy2ya2p5j3kfBAtTFZHTef/dpXHCpI2Q1Djdi3YUfdklgNRCNwdjEp7ok2C9AAzxqWwH3tgLB8IK9nka8Ta8PwwjjWbyeBIidh90V/0RK3jhTAtx8HoGQulpGZAhe7Tzz939EDPoJtBaf3RDrNJqT3z1sSTwkoIW7ClHH9SDhCxU7jKEybV1/J8qk7sTOb5hoqC9TCzWJ6HFw2LXiU2EFFsh6B1C1AEBoxvBA0qJSfywDgVeC8fw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JH30AXY8RydZr5SMo+4uSNARyDUbHggctPWCrhVPBLM=;
- b=4hkAS2PpVvVpqN20KiDyqEEBxV7WJVivk5dTRF3ebzAduoRgCQRQZ6Zk3u+AfBUFG12s7WP1ECqhMoAxsEaFh3Upaavw+ra5qSFq1fiusFPlpFQqJK4Noxd5uKgMWBJoQ89wqV+MoKzeAJ6BRB+JFTjvOwSayUlIKWooQTk7/MY=
-Received: from BL1PR13CA0339.namprd13.prod.outlook.com (2603:10b6:208:2c6::14)
- by CO6PR12MB5443.namprd12.prod.outlook.com (2603:10b6:303:13a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Thu, 5 Oct
- 2023 17:52:54 +0000
-Received: from BL6PEPF0001AB76.namprd02.prod.outlook.com
- (2603:10b6:208:2c6:cafe::61) by BL1PR13CA0339.outlook.office365.com
- (2603:10b6:208:2c6::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.26 via Frontend
- Transport; Thu, 5 Oct 2023 17:52:54 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB76.mail.protection.outlook.com (10.167.242.169) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Thu, 5 Oct 2023 17:52:54 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 5 Oct
- 2023 12:52:53 -0500
-Date:   Thu, 5 Oct 2023 12:52:38 -0500
-From:   Michael Roth <michael.roth@amd.com>
-To:     Sean Christopherson <seanjc@google.com>
-CC:     <isaku.yamahata@intel.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <isaku.yamahata@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, <erdemaktas@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, <chen.bo@intel.com>,
-        <linux-coco@lists.linux.dev>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, <wei.w.wang@intel.com>,
-        Fuad Tabba <tabba@google.com>
-Subject: Re: [RFC PATCH v2 1/6] KVM: gmem: Truncate pages on punch hole
-Message-ID: <20231005175238.7bb2zut4fb7ebdqc@amd.com>
-References: <cover.1695327124.git.isaku.yamahata@intel.com>
- <f987dcde3b051371b496847282022c679e9402e4.1695327124.git.isaku.yamahata@intel.com>
- <ZQypbSuMrbJpJBER@google.com>
- <ZQy29msIoAGQUGR2@google.com>
+        Thu, 5 Oct 2023 13:53:48 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02B419E
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:53:46 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50481a0eee7so2984015e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 10:53:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1696528425; x=1697133225; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uKYaIARFEHct9CVHZeyqf+F/1xbWs2LD32sLXu6T+FA=;
+        b=GjdEszC1C2/i8P4d099aYUJWfQnPDhcG9ojlUxGpCItBI864nnKUgZSL2FKCrSmhDL
+         QHKVYK3m8ToDYIYEw8ucXXR2Wjdm1dsHKqh3Cl/W3AMWDLvXDatF+8dADyWGkpvBRUiu
+         G8lebHZ+uZOSrbguKwygQCIAtcCdBoxQHUO4A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696528425; x=1697133225;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uKYaIARFEHct9CVHZeyqf+F/1xbWs2LD32sLXu6T+FA=;
+        b=syX6Y6z36i2fyiPA1RD6TJisndjIP6SLZfUG/OWwPU85c0Y+fyqgeiHfxyZuovMrXs
+         vx/hLk65QcVqxNFwICT/wl4cVIKpO+pgTEMj/xjbIxsO2KNpE3T1ksT8UZJ6ZrWzA05x
+         AG5LKcS7W4AcHU6fVpiRzMiFl+a3n0ouZctCVGuqXhIlestDE8zJKVKYNB4AweiKLM7R
+         QeWWMPHZdxS8CNaDRfFvcZfRCngKOWpbg/l875dg3tFmks5WmemsHwgRwhM2ts2ZqlHJ
+         xN1sgey1BPU8TnZ6kH3EqtFc730fNDR9JSFn4LcejmSaewIrrEQydzxguaHG8XPpVAtC
+         5jYQ==
+X-Gm-Message-State: AOJu0YwdS8wqz3wPllPtdaWqVmD1te15UYq5l3au1LC/QXeysIaWBzYx
+        nMZqkXQosDOKsICKWHHgAgtt/ngs/ZzpSgz8ANG1SQ==
+X-Google-Smtp-Source: AGHT+IE+nKp6u2xQlMCLIYdXSvea40FK/8KdOR5CHdelJl5+REPEc4OEbU0z2VI9tHkaTWRjsvK/o8fCOLI3IK85a2A=
+X-Received: by 2002:a19:520c:0:b0:502:a964:84b1 with SMTP id
+ m12-20020a19520c000000b00502a96484b1mr2566000lfb.25.1696528424986; Thu, 05
+ Oct 2023 10:53:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZQy29msIoAGQUGR2@google.com>
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB76:EE_|CO6PR12MB5443:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99806d05-a96a-41eb-2064-08dbc5cbe6c0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +lST2BjvAYwIdQUoW6IeujKoMqwdoVt/8QV3I/Uo6L8ZhzuX4DKK8X9AEwL406SNct1FAfe+OqOgmwThseSE0J9ME8bEztMikMn434Z026wiRQVnHyZk5YlGTKcDtrPkopdNkppQGre2Qf4xf4t9Lg4A4cxkbXoyUb4k18AZGcEzm5BOWQtbj0UL/vX8eEdhhzBuTEYDu/Ud8hEGzTHvcQhnqoUZ0WiMBHgn/KOj4J/VSLiFcCquMd4D+enjDDlS5g7R+OcrUWjzmmpKRIo6+S8OBQuZQU+ZCRAdVHgqxYNmppEX1vkvsfK7m9lEwh2ydy5IRdkHXOtBmfxOybYG/akUWEObPXo8+xPIG5w5MGsb9lTolkWi5ZajztZJ79cRChlyPJwip0iI69S11mirL6lXjKWRTUTbRn7BvSu7m/cnzb/fIAjgmmKn6kflzUoCgKrec8tfKzKohZJAosQ1B068CGhzO+dhwi7HKqbqWDEgUdfyOq+iR7PVIzPipeSOG+CIqdgM6PSgIemk5FDO2Feyl88pGnTypfunYnzg+XFGKWSzEylldMf+RpOmNlkl3OMbj130WMP7sqPJsGpg8BmBXIRjRfvA2eBtL3vRcDcdSVtx6EojyhUfatCgW+o4ZoCmTjbCo7FBeOgrNau/64W/T4zH4HJ6z9wEUlyaDXJHBRrANsiEDYICD/7+p0zaub2uSXJX1jBhhhsa1EN0LFwmLvFoBXCwebLiP618LSLn2tgAvz1wUGLSyi84/Tv63Vd4dybBb+XLiSLgkTt5fQ==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(396003)(376002)(346002)(230922051799003)(82310400011)(64100799003)(1800799009)(451199024)(186009)(46966006)(40470700004)(36840700001)(478600001)(70586007)(2616005)(966005)(426003)(44832011)(8936002)(83380400001)(26005)(2906002)(16526019)(1076003)(54906003)(41300700001)(7416002)(336012)(6916009)(70206006)(5660300002)(316002)(4326008)(36756003)(47076005)(82740400003)(81166007)(36860700001)(8676002)(356005)(86362001)(6666004)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 17:52:54.2972
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99806d05-a96a-41eb-2064-08dbc5cbe6c0
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB76.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5443
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20230926175208.9298-1-james.quinlan@broadcom.com>
+ <20230926175208.9298-2-james.quinlan@broadcom.com> <CACRpkdYGPpUUCqmJLT4t+6CNOOmRAh_vYPSPK1SWy+tNycnSqQ@mail.gmail.com>
+ <20231002061628.GC911@lst.de>
+In-Reply-To: <20231002061628.GC911@lst.de>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Thu, 5 Oct 2023 13:53:33 -0400
+Message-ID: <CA+-6iNy79pLgACMGXxRkPuVkXca0VyLis+jQcRmCwtBvEfFzgw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] ARM: Select DMA_DIRECT_REMAP to fix restricted DMA
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000255cea0606fbcea2"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 02:34:46PM -0700, Sean Christopherson wrote:
-> On Thu, Sep 21, 2023, Sean Christopherson wrote:
-> > On Thu, Sep 21, 2023, isaku.yamahata@intel.com wrote:
-> > > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > 
-> > > Although kvm_gmem_punch_hole() keeps all pages in mapping on punching hole,
-> > > it's common expectation that pages are truncated.  Truncate pages on
-> > > punching hole.  As page contents can be encrypted, avoid zeroing partial
-> > > folio by refusing partial punch hole.
-> > > 
-> > > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > ---
-> > >  virt/kvm/guest_mem.c | 14 ++++++++++++--
-> > >  1 file changed, 12 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
-> > > index a819367434e9..01fb4ca861d0 100644
-> > > --- a/virt/kvm/guest_mem.c
-> > > +++ b/virt/kvm/guest_mem.c
-> > > @@ -130,22 +130,32 @@ static void kvm_gmem_invalidate_end(struct kvm_gmem *gmem, pgoff_t start,
-> > >  static long kvm_gmem_punch_hole(struct inode *inode, loff_t offset, loff_t len)
-> > >  {
-> > >  	struct list_head *gmem_list = &inode->i_mapping->private_list;
-> > > +	struct address_space *mapping  = inode->i_mapping;
-> > >  	pgoff_t start = offset >> PAGE_SHIFT;
-> > >  	pgoff_t end = (offset + len) >> PAGE_SHIFT;
-> > >  	struct kvm_gmem *gmem;
-> > >  
-> > > +	/*
-> > > +	 * punch hole may result in zeroing partial area.  As pages can be
-> > > +	 * encrypted, prohibit zeroing partial area.
-> > > +	 */
-> > > +	if (offset & ~PAGE_MASK || len & ~PAGE_MASK)
-> > > +		return -EINVAL;
-> > 
-> > This should be unnecessary, kvm_gmem_fallocate() does
-> > 
-> > 	if (!PAGE_ALIGNED(offset) || !PAGE_ALIGNED(len))
-> > 		return -EINVAL;
-> > 
-> > before invoking kvm_gmem_punch_hole().  If that's not working, i.e. your test
-> > fails, then that code needs to be fixed.  I'll run your test to double-check,
-> > but AFAICT this is unnecesary.
-> 
-> I confirmed that the testcase passes without the extra checks.  Just to close the
-> loop, what prompted adding more checks to kvm_gmem_punch_hole()?
+--000000000000255cea0606fbcea2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I don't know if it's the same issue that Isaku ran into, but for SNP we
-hit a similar issue with the truncate_inode_pages_range(lstart, lend) call.
+On Mon, Oct 2, 2023 at 2:16=E2=80=AFAM Christoph Hellwig <hch@lst.de> wrote=
+:
+>
+> On Thu, Sep 28, 2023 at 01:10:27AM +0200, Linus Walleij wrote:
+> > (...)
+> > > +       select DMA_DIRECT_REMAP
+> >
+> > Christoph invented that symbol so he can certainly
+> > explain what is missing to use this on ARM.
+> >
+> > This looks weird to me, because:
+> > > git grep atomic_pool_init
+> > arch/arm/mm/dma-mapping.c:static int __init atomic_pool_init(void)
+> > kernel/dma/pool.c:static int __init dma_atomic_pool_init(void)
+> >
+> > Now you have two atomic DMA pools in the kernel,
+> > and a lot more than that is duplicated. I'm amazed that it
+> > compiles at all.
+> >
+> > Clearly if you want to do this, surely the ARM-specific
+> > arch/arm/mm/dma-mapping.c and arch/arm/mm/dma-mapping-nommu.c
+> > needs to be removed at the same time?
+> >
+> > However I don't think it's that simple, because Christoph would surely
+> > had done this a long time ago if it was that simple.
+>
+> Yes, DMA_DIRECT_REMAP should only be used for platforms using the
+> generic generic remap that plus straight into dma-direct and
+> bypasses arch_dma_alloc.
+>
+> ARM first needs support to directly set the uncached/wc bits on
+> the direct mapping for CMA, which should be fairly simple but require
+> wide spread testing.
+>
+> I'd be happy to work with anyone who wants to look into this.
+I'd like to look into this and help make it work for ARCH=3Darm but you
+seem to be saying that you also need help from ARM the company?
 
-The issue in that case was a bit more subtle:
+Thanks,
+Jim Quinlan
+Broadcom STB/CM
 
-  - userspace does a hole-punch on a 4K range of its gmem FD, which happens
-    to be backed by a 2MB folio.
-  - truncate_inode_pages_range() gets called for that 4K range
-  - truncate_inode_pages_range() does special handling on the folios at the
-    start/end of the range in case they are partial and passes these to
-    truncate_inode_partial_folio(folio, lstart, lend). In this case, there's
-    just the 1 backing folio. But it *still* gets the special treatment, and
-    so gets passed to truncate_inode_partial_folio().
-  - truncate_inode_partial_folio() will then zero that 4K range, even though
-    it is page-aligned, based on the following rationale in the comments:
+--000000000000255cea0606fbcea2
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-        /*
-         * We may be zeroing pages we're about to discard, but it avoids
-         * doing a complex calculation here, and then doing the zeroing
-         * anyway if the page split fails.
-         */
-        folio_zero_range(folio, offset, length);
-
-  - after that, .invalidate_folio callback is issued, then the folio is split,
-    and the caller (truncate_inode_pages_range()) does another pass through
-	the whole range and can free the now-split folio then .free_folio callbacks
-    are issued.
-
-Because of that, we can't rely on .invalidate_folio/.free_folio to handle
-putting the page back into a normal host-accessible state, because the
-zero'ing will happen beforehand. That's why we ended up needing to do this
-for SNP patches to make sure arch-specific invalidation callbacks are issued 
-before the truncation occurs:
-
-  https://github.com/mdroth/linux/commit/4ebcc04b84dd691fc6daccb9b7438402520b0704#diff-77306411fdaeb7f322a1ca756dead9feb75363aa6117b703ac118576153ddb37R233
-
-I'd planned to post those as a separate RFC to discuss, but when I came across
-this it seemed like it might be relevant to what the TDX folks might ran into
-here.
-
-If not for the zero'ing logic mentioned above, for SNP at least, the
-.free_folio() ends up working pretty nicely for both truncation and fput(),
-and even plays nicely with live update use-case where the destination gmem
-instance shares the inode->i_mapping, since iput() won't trigger the
-truncate_inode_pages_final() until the last reference goes away so we don't
-have to do anything special in kvm_gmem_release() to determine when we
-should/shouldn't issue the arch-invalidations to clean up things like the
-RMP table.
-
-It seems like the above zero'ing logic could be reworked to only zero non-page
-aligned ranges (as the comments above truncate_inode_pages_range() claim
-should be the case), which would avoid the issue for the gmem use-case. But I
-wonder if some explicit "dont-zero-these-pages" flag might be more robust.
-
-Or maybe there's some other way we should be going about this?
+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
+mOAplh6h3nMZUZxBguxG3g2p3iD4EgibUYneEzqOQafIQB/naf2uetKb8y9jKgWJxq2Y4y8Jqg2u
+uVIO1AyOJjWwqdgN+QhuIlat+qZd03P48Gim9ZPEMDUCAwEAAaOCAdswggHXMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJQYDVR0R
+BB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQwHwYD
+VR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFGx/E27aeGBP2eJktrILxlhK
+z8f6MA0GCSqGSIb3DQEBCwUAA4IBAQBdQQukiELsPfse49X4QNy/UN43dPUw0I1asiQ8wye3nAuD
+b3GFmf3SZKlgxBTdWJoaNmmUFW2H3HWOoQBnTeedLtV9M2Tb9vOKMncQD1f9hvWZR6LnZpjBIlKe
++R+v6CLF07qYmBI6olvOY/Rsv9QpW9W8qZYk+2RkWHz/fR5N5YldKlJHP0NDT4Wjc5fEzV+mZC8A
+AlT80qiuCVv+IQP08ovEVSLPhUp8i1pwsHT9atbWOfXQjbq1B/ditFIbPzwmwJPuGUc7n7vpmtxB
+75sSFMj27j4JXl5W9vORgHR2YzuPBzfzDJU1ul0DIofSWVF6E1dx4tZohRED1Yl/T/ZGMYICbTCC
+AmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UE
+AxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMSO43VW7D5NP1X/KD
+MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCA9Epkq50/BU8wvLtP6bXw1Nj1iCh69
+XHg2uQNGqr9KkzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMzEw
+MDUxNzUzNDVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
+hkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQME
+AgEwDQYJKoZIhvcNAQEBBQAEggEABqeJb6kes/KUqLjH2Q230su/y2vvfxz+IzwAUAHDNDfN/rdv
+kFJtfZwpGBZ1ISPi1l5ZISLw4UXypOJb9G8JyJA+I3pJDGgX1bHT6DLLr/ulCRwvX1C9LRdtV55O
+9Dz4fbVv89f2ZbpqeuwjUs7m7uFH0/dNiYA68eYy0gdxzP/9AeSN87GGeWaLkLAyBPENZ3RzXuke
++XXo9W2hJLykVuIplu1YiFKzOc6Xx6h9+8NFzIknEI+7KMubxdBNaKmRkbpqdQFBokZj/nbSGkav
+V5YshqQ8OlzWYjiBJRopbh6zlnr0Fy8dRoGLA16WTcAGxASrG2bRdW2EV0mPfqWz3w==
+--000000000000255cea0606fbcea2--
