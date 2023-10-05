@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB2E7B9F07
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B617BA07F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233487AbjJEOQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
+        id S237405AbjJEOjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbjJEOOy (ORCPT
+        with ESMTP id S235999AbjJEOg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:14:54 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5F2FE10D;
-        Thu,  5 Oct 2023 06:48:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D1FB1688;
-        Thu,  5 Oct 2023 06:38:51 -0700 (PDT)
-Received: from [10.34.100.116] (e126645.nice.arm.com [10.34.100.116])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 353C13F641;
-        Thu,  5 Oct 2023 06:38:12 -0700 (PDT)
-Message-ID: <375571ff-c63e-9045-81ff-dc93bcade8ee@arm.com>
-Date:   Thu, 5 Oct 2023 15:38:06 +0200
+        Thu, 5 Oct 2023 10:36:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A542570A;
+        Thu,  5 Oct 2023 06:59:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7C49C4AF73;
+        Thu,  5 Oct 2023 13:38:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696513089;
+        bh=IHjcJEdzOn5XpuR4rXMoCHN3hdl6l6qbxCqy3uQRR68=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hdhzp6tQXl6tvjcq1x6OfQN/c974rRNvEZaKS4R2RpqKqYifvkLl1kGaRhD9rvTWZ
+         ga2o1a64DLAey6jhLH1efLIVZcJHzJVYtHSbSBDeeDLl0dXGd/ZS7Ygvj8zyhp2RAW
+         x+wXEqby0DQ5y+eMWs3uRzwYGu4Ih4nuE+Y+rcnvbcwXqb1D4Im5BcZJ6epVdP3Bdl
+         sc9A9slKc5hXs8qQY85LP0eHqVN/TW0AoYE+g0tYBo9R/THyvGAAJxt/RsuTDTAlg4
+         s165+CJNCUAcAv+zB8o7RtfsIo3Oip1XoIuBKen59qYNX95pHYqnyK18ENhmkZ7k6n
+         7AvPCNpAyslzQ==
+Date:   Thu, 5 Oct 2023 14:38:12 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        David Lechner <david@lechnology.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 13/27] staging: iio: resolver: ad2s1210: rework gpios
+Message-ID: <20231005143812.42aff573@jic23-huawei>
+In-Reply-To: <20230930155536.5a5e982e@jic23-huawei>
+References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
+        <20230929-ad2s1210-mainline-v3-13-fa4364281745@baylibre.com>
+        <20230930155536.5a5e982e@jic23-huawei>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [ANNOUNCE] v6.6-rc4-rt7
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <20231004160655.0D-7XFo_@linutronix.de>
-Content-Language: en-US
-From:   Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <20231004160655.0D-7XFo_@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sebastian,
-The following happened once [1]. In pl011_console_write() from:
-   commit da042bbb7a3f ("printk: Update the printk series.")
-&uap->port seems to be released, but various paths don't seem
-to acquire the lock,
+On Sat, 30 Sep 2023 15:55:36 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-Regards,
-Pierre
+> On Fri, 29 Sep 2023 12:23:18 -0500
+> David Lechner <dlechner@baylibre.com> wrote:
+> 
+> > From: David Lechner <david@lechnology.com>
+> > 
+> > From: David Lechner <dlechner@baylibre.com>
+> > 
+> > - Remove "adi," prefix from gpio names.
+> > - Sample gpio is now expected to be active low.
+> > - Convert A0 and A1 gpios to "mode-gpios" gpio array.
+> > - Convert RES0 and RES1 gpios to "resolution-gpios" gpio array.
+> > - Remove extraneous lookup tables.
+> > - Remove unused mode field from state struct.
+> > - Swap argument order of ad2s1210_set_mode() while we are touching this.
+> > 
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>  
+> Applied,
+0-day ran smatch on this and it picked up that a log isn't released in
+an error path.  I've fixed that up with a goto error_ret and will push out a
+fresh testing branch for 0-day to take another look at.
 
-[1]
-[...] =====================================
-[...] WARNING: bad unlock balance detected!
-[...] 6.6.0-rc4-rt7-00098-g400db4a2dd90 #1157 Not tainted
-[...] -------------------------------------
-[...] pr/legacy/18 is trying to release lock (&port_lock_key) at:
-[...] pl011_console_write ([path]/drivers/tty/serial/amba-pl011.c:2366)
-[...] but there are no more locks to release!
-[...]
-[...] other info that might help us debug this:
-[...] 2 locks held by pr/legacy/18:
-[...] #0: ffff8000846bc0b8 (console_lock){+.+.}-{0:0}, at: nbcon_legacy_kthread_func ([path]/kernel/printk/printk.c:3052 [path]/kernel/printk/printk.c:3364)
-[...] #1: ffff8000846bc030 (console_srcu){....}-{0:0}, at: console_flush_all ([path]/./include/linux/srcu.h:230 [path]/kernel/printk/printk.c:286 [path]/kernel/printk/printk.c:2971)
-[...]
-[...] stack backtrace:
-[...] CPU: 1 PID: 18 Comm: pr/legacy Not tainted 6.6.0-rc4-rt7-00098-g400db4a2dd90 #1157
-[...] Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development Platform, BIOS EDK II Sep  5 2023
-[...] Call trace:
-[...] dump_backtrace ([path]/arch/arm64/kernel/stacktrace.c:235)
-[...] show_stack ([path]/arch/arm64/kernel/stacktrace.c:242)
-[...] dump_stack_lvl ([path]/lib/dump_stack.c:107)
-[...] dump_stack ([path]/lib/dump_stack.c:114)
-[...] print_unlock_imbalance_bug ([path]/kernel/locking/lockdep.c:5201)
-[...] lock_release ([path]/kernel/locking/lockdep.c:5438 [path]/kernel/locking/lockdep.c:5780)
-[...] rt_spin_unlock ([path]/kernel/locking/spinlock_rt.c:81)
-[...] pl011_console_write ([path]/drivers/tty/serial/amba-pl011.c:2366)
-[...] console_flush_all ([path]/kernel/printk/printk.c:2910 [path]/kernel/printk/printk.c:2992)
-[...] nbcon_legacy_kthread_func ([path]/kernel/printk/printk.c:3053 [path]/kernel/printk/printk.c:3364)
-[...] kthread ([path]/kernel/kthread.c:388)
-[...] ret_from_fork ([path]/arch/arm64/kernel/entry.S:854)
+...
 
+> > @@ -546,7 +537,9 @@ static int ad2s1210_initial(struct ad2s1210_state *st)
+> >  	int ret;
+> >  
+> >  	mutex_lock(&st->lock);
+> > -	ad2s1210_set_resolution_pin(st);
+> > +	ret = ad2s1210_set_resolution_gpios(st, st->resolution);
+> > +	if (ret < 0)
+Exiting with lock held.  There is an error_ret label that releases the lock
+so use that.
 
-On 10/4/23 18:06, Sebastian Andrzej Siewior wrote:
-> Dear RT folks!
-> 
-> I'm pleased to announce the v6.6-rc4-rt7 patch set.
-> 
-> Changes since v6.6-rc4-rt6:
-> 
->    - Lockdep complained about SRCU locking if printk was used from NMI.
-> 
->    - The i915 driver could create a locking related splat during suspend/
->      resume. Reported by John B. Wyatt IV.
-> 
->    - A new version of printk. This is an update to the current
->      development version. Large patch series provided by John Ogness.
-> 
-> Known issues
->       None
-> 
-> The delta patch against v6.6-rc4-rt6 is not appended below due to its
-> size. It and can be found here:
->   
->       https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/incr/patch-6.6-rc4-rt6-rt7.patch.xz
-> 
-> and as web based diff:
->       
->       https://git.kernel.org/rt/linux-rt-devel/d/v6.6-rc4-rt7/v6.6-rc4-rt6
-> 
-> You can get this release via the git tree at:
-> 
->      https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.6-rc4-rt7
-> 
-> The RT patch against v6.6-rc4 can be found here:
-> 
->      https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patch-6.6-rc4-rt7.patch.xz
-> 
-> The split quilt queue is available at:
-> 
->      https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patches-6.6-rc4-rt7.tar.xz
-> 
-> Sebastian
-> 
+> > +		return ret;
+> >  
+> >  	/* Use default config register value plus resolution from devicetree. */
+> >  	data = FIELD_PREP(AD2S1210_PHASE_LOCK_RANGE_44, 1);
