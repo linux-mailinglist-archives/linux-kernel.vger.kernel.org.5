@@ -2,164 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C01257BA530
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9637BA43C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241401AbjJEQOW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Oct 2023 12:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
+        id S239736AbjJEQFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236597AbjJEQMZ (ORCPT
+        with ESMTP id S237488AbjJEQEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:12:25 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361C53242
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:40:28 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-306-jLh_EL-5Md2BLsfBL2-SBA-1; Thu, 05 Oct 2023 12:39:56 +0100
-X-MC-Unique: jLh_EL-5Md2BLsfBL2-SBA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 5 Oct
- 2023 12:39:54 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 5 Oct 2023 12:39:54 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "'linux@rasmusvillemoes.dk'" <linux@rasmusvillemoes.dk>,
-        'Steven Rostedt' <rostedt@goodmis.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "'bvanassche@acm.org'" <bvanassche@acm.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: [PATCH v2 next] compiler.h: Move __is_constexpr() to compiler.h.
-Thread-Topic: [PATCH v2 next] compiler.h: Move __is_constexpr() to compiler.h.
-Thread-Index: Adn3gDrI19XXJwgHQoKm/0Q5RNmGHA==
-Date:   Thu, 5 Oct 2023 11:39:54 +0000
-Message-ID: <2a6680bbe2e84459816a113730426782@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 5 Oct 2023 12:04:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0249D5DFCE;
+        Thu,  5 Oct 2023 07:07:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85BD5C4936D;
+        Thu,  5 Oct 2023 11:41:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696506102;
+        bh=5/c2akYQDQa+5AUEIuaC2Lyms0EC3q6cd/b6zPtv2Oc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IzUJWvyg2uWuoJwnUC4g0aGsoEtxo/jyNhLez+4oqOyCBkFG193DSI8dSz2o3sgnL
+         Uhe1mIFQRX6RO2ROVu4vf1Gh2g7DX4xeq/W95JheoklK/cMH8sB2Agp/fu9BQzDaU3
+         GJ+y2Dh1NH4jiCr4PbcyH8qfF1cxi8itppxJpUgY=
+Date:   Thu, 5 Oct 2023 13:41:38 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Valentine Sinitsyn <valesini@yandex-team.ru>
+Cc:     Tejun Heo <tj@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v9 2/2] PCI: Implement custom llseek for sysfs resource
+ entries
+Message-ID: <2023100503-change-nimbly-8c58@gregkh>
+References: <2023092241-obedient-squirt-966c@gregkh>
+ <20230925084013.309399-2-valesini@yandex-team.ru>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925084013.309399-2-valesini@yandex-team.ru>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prior to f747e6667ebb2 __is_constexpr() was in its only user minmax.h.
-That commit moved it to const.h - but that file just defines ULL(x) and
-  UL(x) so that constants can be defined for .S and .c files.
-So apart from the word 'const' it wasn't really a good location.
-Instead move the definition to compiler.h just before the similar
-  is_signed_type() and is_unsigned_type().
-This may not be a good long-term home, but the three definitions
-  belong together.
+On Mon, Sep 25, 2023 at 11:40:13AM +0300, Valentine Sinitsyn wrote:
+> Since commit 636b21b50152 ("PCI: Revoke mappings like devmem"), mmappable
+> sysfs entries have started to receive their f_mapping from the iomem
+> pseudo filesystem, so that CONFIG_IO_STRICT_DEVMEM is honored in sysfs
+> (and procfs) as well as in /dev/[k]mem.
+> 
+> This resulted in a userspace-visible regression:
+> 
+> 1. Open a sysfs PCI resource file (eg. /sys/bus/pci/devices/*/resource0)
+> 2. Use lseek(fd, 0, SEEK_END) to determine its size
+> 
+> Expected result: a PCI region size is returned.
+> Actual result: 0 is returned.
+> 
+> The reason is that PCI resource files residing in sysfs use
+> generic_file_llseek(), which relies on f_mapping->host inode to get the
+> file size. As f_mapping is now redefined, f_mapping->host points to an
+> anonymous zero-sized iomem_inode which has nothing to do with sysfs file
+> in question.
+> 
+> Implement a custom llseek method for sysfs PCI resources, which is
+> almost the same as proc_bus_pci_lseek() used for procfs entries.
+> 
+> This makes sysfs and procfs entries consistent with regards to seeking,
+> but also introduces userspace-visible changes to seeking PCI resources
+> in sysfs:
+> 
+> - SEEK_DATA and SEEK_HOLE are no longer supported;
+> - Seeking past the end of the file is prohibited while previously
+>   offsets up to MAX_NON_LFS were accepted (reading from these offsets
+>   was always invalid).
+> 
+> Fixes: 636b21b50152 ("PCI: Revoke mappings like devmem")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Valentine Sinitsyn <valesini@yandex-team.ru>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/pci/pci-sysfs.c | 26 +++++++++++++++++++++++++-
+>  1 file changed, 25 insertions(+), 1 deletion(-)
 
-Signed-off-by: David Laight <david.laight@aculab.com>
----
-This makes it possible to use __is_constexpr() inside is_signed_type()
-so that the result is constant integer expression for pointer types.
-In particular (void *)1 isn't constant enough.
+I'll take these now, for 6.7-rc1, but not mark them as fixes or cc:
+stable as this is a new functionality, the code has never worked for
+lseek on these files so it's not like anything was broken :)
 
-v2: Add a copy into tools/linux/compiler.h to fix perf build.
+thanks,
 
- include/linux/compiler.h       | 8 ++++++++
- include/linux/const.h          | 8 --------
- tools/include/linux/compiler.h | 8 ++++++++
- tools/include/linux/const.h    | 8 --------
- 4 files changed, 16 insertions(+), 16 deletions(-)
-
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index d7779a18b24f..2efec9bfcc40 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -230,6 +230,14 @@ static inline void *offset_to_ptr(const int *off)
- /* &a[0] degrades to a pointer: a different type from an array */
- #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
- 
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-+
- /*
-  * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
-  * bool and also pointer types.
-diff --git a/include/linux/const.h b/include/linux/const.h
-index 435ddd72d2c4..81b8aae5a855 100644
---- a/include/linux/const.h
-+++ b/include/linux/const.h
-@@ -3,12 +3,4 @@
- 
- #include <vdso/const.h>
- 
--/*
-- * This returns a constant expression while determining if an argument is
-- * a constant expression, most importantly without evaluating the argument.
-- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-- */
--#define __is_constexpr(x) \
--	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
--
- #endif /* _LINUX_CONST_H */
-diff --git a/tools/include/linux/compiler.h b/tools/include/linux/compiler.h
-index 1684216e826a..7b65566f3e42 100644
---- a/tools/include/linux/compiler.h
-+++ b/tools/include/linux/compiler.h
-@@ -63,6 +63,14 @@
- # define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
- #endif
- 
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-+
- #ifdef __ANDROID__
- /*
-  * FIXME: Big hammer to get rid of tons of:
-diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
-index 435ddd72d2c4..81b8aae5a855 100644
---- a/tools/include/linux/const.h
-+++ b/tools/include/linux/const.h
-@@ -3,12 +3,4 @@
- 
- #include <vdso/const.h>
- 
--/*
-- * This returns a constant expression while determining if an argument is
-- * a constant expression, most importantly without evaluating the argument.
-- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-- */
--#define __is_constexpr(x) \
--	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
--
- #endif /* _LINUX_CONST_H */
--- 
-2.17.1
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+greg k-h
