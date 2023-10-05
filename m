@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6127BAABA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15697BAABC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbjJETww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
+        id S231794AbjJETxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJETwu (ORCPT
+        with ESMTP id S229437AbjJETxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 15:52:50 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B3FCE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:52:48 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso258841466b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696535566; x=1697140366; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FxDtktB+suAurP27xOoQABfqd/VT1E6iw5B33oUMYZQ=;
-        b=Z3VjpX+WiZ31yf3GivCjjyE01cCcmRAKGK9RONxSKea/zlvMzgc2NNuw8iy5DCJ2hW
-         ZM5qh03qAUwAOA/BZBBSmo8K+PaIMOsBGRmyhu0owsWNz4PZKUDxh8PWR+wR0VMRY/Bc
-         0zZs5EFjboWMuANe1vRdDBmuRZSlSoth1XKe7PGs5/4NxhjLHJ0FUeCUoNrVCUIPGiTL
-         rRTGa3E79OW4FxARCoJEeRs9MitzsLp1TKr2/TPHiuWYTYoNwDG96fBX879Q8+yiqFTC
-         835OSQrtXKKxsiaDidzuH2oc0xZBz3yEGmS42lkU9yPjc94x2SpSH/hu1xam7/uMJddf
-         OWuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696535566; x=1697140366;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FxDtktB+suAurP27xOoQABfqd/VT1E6iw5B33oUMYZQ=;
-        b=Lm0BUU+aB35w137M2Fy76J/qAzObBSq1FRsyNEm0l4oe4oOzLYAFacZdVSQFydxOiN
-         IFd6MHpeTXwBhLHkT/ivLgM72FBU5hMUsJ/txIlac0lOsxo+BcNDfQT+/2rAgHAI7AV1
-         XgYLcZKRZQO5D07BsNfCyemDlKhg8NGPfs6evyFMt9swk7aXyI3QQCaTeJteTxOL+Qn0
-         fQ8ZDprTifQv04rYG6eqHpth9XN9apEB121nlk1tsMep+trDQ5eSwc2FWc/ZojA0L1Ru
-         Ylm0z/B5J4+K+0xKEaK4/FDeLi1xIoliieGm1SaKkiU9PrVlE9Sm6iyd4paoFclN2ABC
-         N3Ww==
-X-Gm-Message-State: AOJu0Ywm/WemYd5cTQeMYL1VQ/FBcTB5UlUprWxeSTCU1YIgVe/uCFii
-        hu6SPMiq43yV/NsVlJLtLdB1Usp6duoJUPAEfEeHiw==
-X-Google-Smtp-Source: AGHT+IF0PaeMqn+ciWfpNtRBx9QXyxqaGwKFijUB9k4Kdmi6Psa0Wuzego6ADgpdOKf9zUvQ3l7FTKhkNfHxsZbjyR0=
-X-Received: by 2002:a17:906:3012:b0:9ae:4054:5d2a with SMTP id
- 18-20020a170906301200b009ae40545d2amr5322327ejz.16.1696535566465; Thu, 05 Oct
- 2023 12:52:46 -0700 (PDT)
+        Thu, 5 Oct 2023 15:53:50 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41EBCE;
+        Thu,  5 Oct 2023 12:53:48 -0700 (PDT)
+Received: from [192.168.1.103] (178.176.73.3) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Thu, 5 Oct 2023
+ 22:53:44 +0300
+Subject: Re: [PATCH 4/4] ata: pata_parport: fit3: implement IDE command set
+ registers
+To:     Ondrej Zary <linux@zary.sk>, Damien Le Moal <dlemoal@kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+CC:     Christoph Hellwig <hch@lst.de>, Tim Waugh <tim@cyberelk.net>,
+        <linux-parport@lists.infradead.org>, <linux-ide@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231005192440.4047-1-linux@zary.sk>
+ <20231005192440.4047-5-linux@zary.sk>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <c2e074e0-ad91-e8b4-debf-00661ad5c720@omp.ru>
+Date:   Thu, 5 Oct 2023 22:53:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20231004-get_maintainer_change_k-v1-1-ac7ced18306a@google.com>
- <3dca40b677dd2fef979a5a581a2db91df2c21801.camel@perches.com>
- <CAFhGd8oTHFDQ05M++E3ggAvs0567w5fSxovumX+vs8YXT8VXTA@mail.gmail.com>
- <6e13b9b1a964b49079a2f7814c0d65e767cd010a.camel@perches.com>
- <CAFhGd8rGr3fm-U3XCjRkJQRymvjqGFYzsPu61zbMZCebuN5Rww@mail.gmail.com> <a8b680c03379ed7a07418e471b29dccd801f23cb.camel@perches.com>
-In-Reply-To: <a8b680c03379ed7a07418e471b29dccd801f23cb.camel@perches.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Thu, 5 Oct 2023 12:52:34 -0700
-Message-ID: <CAFhGd8rGZ6w7bz90LRnwd_1K3ibR2KsT6cJ2kiuO5mSAdnWjFw@mail.gmail.com>
-Subject: Re: [PATCH] get_maintainer/MAINTAINERS: confine K content matching to patches
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+In-Reply-To: <20231005192440.4047-5-linux@zary.sk>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.73.3]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 10/05/2023 19:37:08
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 180400 [Oct 05 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.73.3 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.73.3 in (user) dbl.spamhaus.org}
+X-KSE-AntiSpam-Info: omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: FromAlignment: s
+X-KSE-AntiSpam-Info: {rdns complete}
+X-KSE-AntiSpam-Info: {fromrtbl complete}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.73.3
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 10/05/2023 19:40:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 10/5/2023 2:50:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,110 +87,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 11:42=E2=80=AFAM Joe Perches <joe@perches.com> wrote=
-:
->
-> On Thu, 2023-10-05 at 11:30 -0700, Justin Stitt wrote:
-> > On Thu, Oct 5, 2023 at 11:15=E2=80=AFAM Joe Perches <joe@perches.com> w=
-rote:
-> > >
-> > > On Thu, 2023-10-05 at 11:06 -0700, Justin Stitt wrote:
-> > > > On Wed, Oct 4, 2023 at 7:40=E2=80=AFPM Joe Perches <joe@perches.com=
-> wrote:
-> > > > >
-> > > > > On Wed, 2023-10-04 at 21:21 +0000, Justin Stitt wrote:
-> > > > > > The current behavior of K: is a tad bit noisy. It matches again=
-st the
-> > > > > > entire contents of files instead of just against the contents o=
-f a
-> > > > > > patch.
-> > > > > >
-> > > > > > This means that a patch with a single character change (fixing =
-a typo or
-> > > > > > whitespace or something) would still to/cc maintainers and list=
-s if the
-> > > > > > affected file matched against the regex pattern given in K:. Fo=
-r
-> > > > > > example, if a file has the word "clang" in it then every single=
- patch
-> > > > > > touching that file will to/cc Nick, Nathan and some lists.
-> > > > > >
-> > > > > > Let's change this behavior to only content match against patche=
-s
-> > > > > > (subjects, message, diff) as this is what most people expect th=
-e
-> > > > > > behavior already is. Most users of "K:" would prefer patch-only=
- content
-> > > > > > matching. If this is not the case let's add a new matching type=
- as
-> > > > > > proposed in [1].
-> > > > >
-> > > > > I'm glad to know  you are coming around to my suggestion.
-> > > > :)
-> > > >
-> > > > >
-> > > > > I believe the file-based keyword matching should _not_ be
-> > > > > removed and the option should be added for it like I suggested.
-> > > >
-> > > > Having a command line flag allowing get_maintainer.pl
-> > > > users to decide the behavior of K: is weird to me. If I'm a maintai=
-ner setting
-> > > > my K: in MAINTAINERS I want some sort of consistent behavior. Some
-> > > > patches will start hitting mailing list that DO have keywords in th=
-e patch
-> > > > and others, confusingly, not.
-> > >
-> > > Not true.
-> > >
-> > > If a patch contains a keyword match, get_maintainers will _always_
-> > > show the K: keyword maintainers unless --nokeywords is specified
-> > > on the command line.
-> >
-> > ...
-> >
-> > >
-> > > If a file contains a keyword match, it'll only show the K:
-> > > keyword  if --keywords-in-file is set.
-> >
-> > Right, what I'm saying is a patch can arrive in a maintainer's inbox
-> > wherein the patch itself has no mention of the keyword (if
-> > get_maintainer user opted for --keywords-in-file). Just trying to
-> > avoid some cases of the question: "Why is this in my inbox?"
->
-> Because the script user specifically asked for it.
->
-> > > > To note, we get some speed-up here as pattern matching a patch that
-> > > > touches lots of files would result in searching all of them in thei=
-r
-> > > > entirety. Just removing this behavior _might_ have a measurable
-> > > > speed-up for patch series touching dozens of files.
-> > >
-> > > Again, not true.
-> > >
-> > > Patches do _not_ scan the original modified files for keyword matches=
-.
-> > > Only the patch itself is scanned.  That's the current behavior as wel=
-l.
-> > >
-> >
-> > Feel like I'm missing something here. How is K: matching keywords in
-> > files without reading them.
-> >
-> > If my patch touches 10 files then all 10 of those files are scanned for
-> > K: matches right?
->
-> Nope.
->
-> Understand the patches are the input to get_maintainer and not
-> just files.
->
-> If a patch is fed to get_maintainer then any files modified by
-> the patch are _not_ scanned.
->
-> Only the patch _content_ is used for keyword matches.
->
+On 10/5/23 10:24 PM, Ondrej Zary wrote:
 
-Got it. I'll roll your patch into a v3.
+> fit3 protocol driver does not support accessing IDE control registers
+> (device control/altstatus). The DOS driver does not use these registers
+> either (as observed from DOSEMU trace). But the HW seems to be capable
+> of accessing these registers - I simply tried bit 3 and it works!
+> 
+> The control register is required to properly reset ATAPI devices or
+> they will be detected only once (after a power cycle).
+> 
+> Tested with EXP Computer CD-865 with MC-1285B EPP cable and
+> TransDisk 3000.
+> 
+> Signed-off-by: Ondrej Zary <linux@zary.sk>
 
-Thanks
-Justin
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+
+> ---
+>  drivers/ata/pata_parport/fit3.c | 14 ++------------
+>  1 file changed, 2 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/ata/pata_parport/fit3.c b/drivers/ata/pata_parport/fit3.c
+> index bad7aa920cdc..d2b81cf2e16d 100644
+> --- a/drivers/ata/pata_parport/fit3.c
+> +++ b/drivers/ata/pata_parport/fit3.c
+[...]
+> @@ -59,11 +53,7 @@ static int fit3_read_regr(struct pi_adapter *pi, int cont, int regr)
+>  {
+>  	int  a, b;
+>  
+> -	if (cont) {
+> -		if (regr != 6)
+> -			return 0xff;
+> -		regr = 7;
+> -	}
+> +	regr += cont << 3;
+
+   So, is regr == 7 instead of 8 intentional?
+
+[...]
+
+MBR, Sergey
