@@ -2,181 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2FD7BA604
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC517BA6A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243511AbjJEQXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36106 "EHLO
+        id S231869AbjJEQjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242451AbjJEQSB (ORCPT
+        with ESMTP id S234063AbjJEQif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:18:01 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E8D3F025;
-        Thu,  5 Oct 2023 09:06:56 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395CsRur015464;
-        Thu, 5 Oct 2023 16:06:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=NSi6brrY0QDAZ3HzHxPaf2hgz27vKeKX8LZRRHNWQWc=;
- b=bhnUe3rjnlfJlfGglxvqihGmTNQCt2GnP9fbZBkIsYd0LKp5VGtAlA0IYUcwsiTLb7RK
- zTJfR/Llub7KabA70G7qxopCKO0GgBFRq3Xhug1Nnrpr08qcHCrAOSuS16i8viiv5tE/
- Lrn3/Dj59DKIWaBWzrTmI5pK0eLkK0nAPYsTjv03eE8JFtw3M0lHrMQdjuwtpNE7ivjl
- CCkahl9YDirevdy+EdeBg17dBw4R3t/qo+3tDzom1COe5knM5DIJI79fxqY1ueFFOM6D
- D5mVEsufaOcEQFeLv3y7PtEsPTmWdyN2PCiU8GpFFz6KH8iJLyhzHc6o5pItDDupV1EG uQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3thn059cyw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 16:06:41 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 395G6dfE025540
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Oct 2023 16:06:40 GMT
-Received: from hu-devipriy-blr.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 5 Oct 2023 09:06:34 -0700
-From:   Devi Priya <quic_devipriy@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <thierry.reding@gmail.com>, <ndesaulniers@google.com>,
-        <trix@redhat.com>, <baruch@tkos.co.il>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>
-CC:     <linux-pwm@vger.kernel.org>, <u.kleine-koenig@pengutronix.de>,
-        <nathan@kernel.org>
-Subject: [PATCH V15 4/4] arm64: dts: qcom: ipq6018: add pwm node
-Date:   Thu, 5 Oct 2023 21:35:50 +0530
-Message-ID: <20231005160550.2423075-5-quic_devipriy@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231005160550.2423075-1-quic_devipriy@quicinc.com>
-References: <20231005160550.2423075-1-quic_devipriy@quicinc.com>
+        Thu, 5 Oct 2023 12:38:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C944C1E;
+        Thu,  5 Oct 2023 09:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696522147; x=1728058147;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Z6axqSafCG3SFakbUw3zVfXDPE0xVjhwDjcbHzVxyx8=;
+  b=P+HxgzV0x1UVgR9PrUmgl9QtC3dTfpj/jokp5KdbGq+EaSm0fNItslrB
+   poeBmPnCzCA9ZeDEZn/0r4neRDH4Mrj7gjqF96dUHD8+7rGZ5nIFmPCvg
+   BBukPm7KYuBM01cyBOc1+ICxIRfDzOh6ofZx0pZDuyQArYXR7ZpH3XJIw
+   jpRJxCnClZXqnVO48VOYbVAHQ5xVrt+PMZ1eAPGqNulAxV9bidkQCJbHT
+   XrbymJ5Kw8jN7UPmARcubvwRoXwmpu/aZ4JasE90ZMuQO4cwLDmpQs2wX
+   S1Y2Z6g2+Sdi3QS3R5aclo/cP2TJ9FhdrHYpL0OshRw1d6AcL1+2KL0Zf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="383441143"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="383441143"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 09:08:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="787024217"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="787024217"
+Received: from yklum-mobl.gar.corp.intel.com (HELO intel.com) ([10.215.244.7])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 09:08:05 -0700
+Date:   Thu, 5 Oct 2023 18:07:58 +0200
+From:   Andi Shyti <andi.shyti@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Andi Shyti <andi.shyti@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Cooper <alcooperx@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v2 1/1] serial: 8250_bcm7271: Use
+ devm_clk_get_optional_enabled()
+Message-ID: <ZR7fXpps3V2mmiMf@ashyti-mobl2.lan>
+References: <20231005124550.3607234-1-andriy.shevchenko@linux.intel.com>
+ <ZR7UCtRKrycMD5d5@ashyti-mobl2.lan>
+ <ZR7YLI3t2YDBbNbK@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: pbCgYn8v-0OpdxaoHvIbH76mglvWkJsO
-X-Proofpoint-GUID: pbCgYn8v-0OpdxaoHvIbH76mglvWkJsO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_11,2023-10-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- impostorscore=0 bulkscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501
- mlxscore=0 malwarescore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310050125
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZR7YLI3t2YDBbNbK@smile.fi.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe the PWM block on IPQ6018.
+Hi Andy,
 
-The PWM is in the TCSR area. Make &tcsr "simple-mfd" compatible, and add
-&pwm as child of &tcsr.
+On Thu, Oct 05, 2023 at 06:37:16PM +0300, Andy Shevchenko wrote:
+> On Thu, Oct 05, 2023 at 05:19:38PM +0200, Andi Shyti wrote:
+> 
+> [...]
+> 
+> > > -	baud_mux_clk = devm_clk_get(dev, "sw_baud");
+> > > -	if (IS_ERR(baud_mux_clk)) {
+> > > -		if (PTR_ERR(baud_mux_clk) == -EPROBE_DEFER) {
+> > > -			ret = -EPROBE_DEFER;
+> > > -			goto release_dma;
+> > > -		}
+> > > -		dev_dbg(dev, "BAUD MUX clock not specified\n");
+> > > -	} else {
+> > > +	baud_mux_clk = devm_clk_get_optional_enabled(dev, "sw_baud");
+> > > +	ret = PTR_ERR_OR_ZERO(baud_mux_clk);
+> > > +	if (ret)
+> > > +		goto release_dma;
+> > > +	if (baud_mux_clk) {
+> > >  		dev_dbg(dev, "BAUD MUX clock found\n");
+> > > -		ret = clk_prepare_enable(baud_mux_clk);
+> > > -		if (ret)
+> > > -			goto release_dma;
+> > > +
+> > >  		priv->baud_mux_clk = baud_mux_clk;
+> > >  		init_real_clk_rates(dev, priv);
+> > >  		clk_rate = priv->default_mux_rate;
+> > > +	} else {
+> > > +		dev_dbg(dev, "BAUD MUX clock not specified\n");
+> > 
+> > little behavioral change here, but I don't think this is a
+> > problem.
+> 
+> You meant that "if (!x) else" had been changed to "if (x) else" semantics?
+> Otherwise I don't see any difference.
 
-Add also ipq6018 specific compatible string.
+If devm_clk_get() fails with anything but -EPROBE_DEFER
+originally the code was not returning, while now it returns.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Co-developed-by: Baruch Siach <baruch.siach@siklu.com>
-Signed-off-by: Baruch Siach <baruch.siach@siklu.com>
-Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
----
-v15:
+But still... this is perfectly fine.
 
-  Fixed the indentation of pwm node
+Andi
 
-v14:
-
-  Moved ranges just after reg as suggested by Krzysztof
-
-  Picked up the R-b tag
-
-v13:
-
-  No change
-
-v12: 
-
-  No change
-
-v11:
-
-  No change
-
-v10:
-
-  No change
-
-v9:
-
-  Add 'ranges' property (Rob)
-
-v8:
-
-  Add size cell to 'reg' (Rob)
-
-v7:
-
-  Use 'reg' instead of 'offset' (Rob)
-
-  Add qcom,tcsr-ipq6018 (Rob)
-
-  Drop clock-names (Bjorn)
-
-v6:
-
-  Make the PWM node child of TCSR (Rob Herring)
-
-  Add assigned-clocks/assigned-clock-rates (Uwe Kleine-König)
-
-v5: Use qcom,pwm-regs for TCSR phandle instead of direct regs
-
-v3: s/qcom,pwm-ipq6018/qcom,ipq6018-pwm/ (Rob Herring)
-
- arch/arm64/boot/dts/qcom/ipq6018.dtsi | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-index e59b9df96c7e..18f9fffba08b 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-@@ -390,8 +390,21 @@ tcsr_mutex: hwlock@1905000 {
- 		};
- 
- 		tcsr: syscon@1937000 {
--			compatible = "qcom,tcsr-ipq6018", "syscon";
-+			compatible = "qcom,tcsr-ipq6018", "syscon", "simple-mfd";
- 			reg = <0x0 0x01937000 0x0 0x21000>;
-+			ranges = <0x0 0x0 0x01937000 0x21000>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			pwm: pwm@a010 {
-+				compatible = "qcom,ipq6018-pwm";
-+				reg = <0xa010 0x20>;
-+				clocks = <&gcc GCC_ADSS_PWM_CLK>;
-+				assigned-clocks = <&gcc GCC_ADSS_PWM_CLK>;
-+				assigned-clock-rates = <100000000>;
-+				#pwm-cells = <2>;
-+				status = "disabled";
-+			};
- 		};
- 
- 		usb2: usb@70f8800 {
--- 
-2.34.1
-
+> > Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
+> 
+> Thank you!
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
