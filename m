@@ -2,142 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DDD7BA6A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEBF7BA610
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbjJEQjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
+        id S242102AbjJEQXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbjJEQiu (ORCPT
+        with ESMTP id S241473AbjJEQVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:38:50 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E922D65
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:10:01 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-536ef8a7dcdso15576a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:10:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696522200; x=1697127000; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wRCO/tDP4lRLu2OPV/gEOu9clmIfNVaCcbX9ayRgMZQ=;
-        b=sIFf5Zh2sZHqRywywGBF8so85oAW0i5GI0cfRWdSUM8jDcIuCvvr/mdR2e96GGLdfV
-         Gq13bsMyuJsLjtXcYKN1HBsa5ehu+CPd/k5pv9KgHTZrdmCJrA9SjsvkYp5XjmfvQ4im
-         12eztqV2Pz56UGyn/8wKmIPKtvh2SKa7FLlU+18dtVgdKlbrTrs/3E1PybeQdrvC0nVc
-         oGVK1HjcgbBKi2lEbQq2QHHfSB45JcGS7qGwTh32GVgkI+TsiQfEEKyczPIOes6YgeZ3
-         J5DVSgGwxfLVdZl4nP+XOYx2Ho1RU+q95bPKdLh/LqpGgHA5wW67Ym+6Oi9AC84wXiH9
-         M8fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696522200; x=1697127000;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wRCO/tDP4lRLu2OPV/gEOu9clmIfNVaCcbX9ayRgMZQ=;
-        b=Qvh2yuU4GfsgxiEa6jWUlL3xpla1a4/x4GRr/fhIXYyjHng6jJzYF5PEnXnizuwp3V
-         QJdiDy44lQU/A6qWI7WH29FdKDWh7RnXt1Db5Y6+P4ggsUzXFMmI1mwzKT2SeXN/TA8W
-         mBgHFcW+idpU+CsAseBQHx4idrrRV03X6L4Qqzj7gGKn6c3XRBLCZxZ49t1mz3Q02dpo
-         Hv8AAT3qtkideIeO+9Ysl7LOVbeqJTliOdR3UWK8+6mESD6+8R6ocMPWS+c0PuqM7XJh
-         oukXKYmhYc12dtDux50zzzc998JHlUQQj0k2Z9G8MRBU16ER09+Vy88JyAyU/kEpQMR1
-         BEZQ==
-X-Gm-Message-State: AOJu0YwkIcW88XO5zzMo+otojUXlIXl94kBjopNd1mSbottKQI+6fRm3
-        LL41COqAQLF4pcLG9AjcLVRKT50Yjlf/KVV1Dms7eg==
-X-Google-Smtp-Source: AGHT+IFzYlK6nOXqFn3XTRyZ9yDEZC9Bs5FeKRJ0Zfr3978r7XwjxquujorP05hjLrjSFu1gUI2ea386eAkHyH3Ha+s=
-X-Received: by 2002:a50:8d0f:0:b0:538:50e4:5446 with SMTP id
- s15-20020a508d0f000000b0053850e45446mr71813eds.5.1696522199600; Thu, 05 Oct
- 2023 09:09:59 -0700 (PDT)
+        Thu, 5 Oct 2023 12:21:07 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9E71FC19;
+        Thu,  5 Oct 2023 09:10:05 -0700 (PDT)
+Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:4c53:5fd0:f25b:b0dd])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id E8665660733A;
+        Thu,  5 Oct 2023 17:10:03 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696522204;
+        bh=MS3ouzfxPge6VQw34LqgJIvXVcUvybR31bUNy63VMFE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UvRfEuBrzq3bFekdh91Yo8rKZQeI9iC3Ym2AgINk2TWrzuYDtFjVoTWtNK6Eyh8ej
+         xC7DoMMlRR2r15aYl8MLCaIdeIGECTQu9RneHGeY4A+8f8ZeCs3j4TALNxb3xwPHNu
+         66GJDJA6zFjp2LS3KaAERz+tIejMrLsqgcUKj/8Yt6t6COg4TdJOG7Mdp4bzRs8LCR
+         uXe2HtJFr+qVUgNpjgVFngFyGy0kc+lx/Vq0AWc4Svp0gPGFfyceHbKdILR31zym1a
+         VvRh5aPrUH/Q/K8bB28Ss+qLo8CKO8zHnaSL3zeBmQETcOxYRv/CjnAoD+SoyOROrT
+         fe6IKSv4N0jSg==
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, heiko@sntech.de
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCH v2] arm64: dts: rockchip: rk3588s: Add AV1 decoder node
+Date:   Thu,  5 Oct 2023 18:09:57 +0200
+Message-Id: <20231005160957.269202-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20231003145150.2498-1-ansuelsmth@gmail.com>
-In-Reply-To: <20231003145150.2498-1-ansuelsmth@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 5 Oct 2023 18:09:42 +0200
-Message-ID: <CANn89iK5E=SFJoNNTd3SNdT0oPR503dEf_gNfP=Ls3AKS_4F_g@mail.gmail.com>
-Subject: Re: [net-next PATCH v2 1/4] netdev: replace simple
- napi_schedule_prep/__napi_schedule to napi_schedule
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Douglas Miller <dougmill@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nick Child <nnac123@linux.ibm.com>,
-        Haren Myneni <haren@linux.ibm.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Dany Madden <danymadden@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun <haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
-        Ziwei Xiao <ziweixiao@google.com>,
-        Rushil Gupta <rushilg@google.com>,
-        Coco Li <lixiaoyan@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Junfeng Guo <junfeng.guo@intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Yuri Karpov <YKarpov@ispras.ru>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        Lee Jones <lee@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dawei Li <set_pte_at@outlook.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 8:36=E2=80=AFPM Christian Marangi <ansuelsmth@gmail.=
-com> wrote:
->
-> Replace drivers that still use napi_schedule_prep/__napi_schedule
-> with napi_schedule helper as it does the same exact check and call.
->
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+Add node for AV1 video decoder.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+---
+version 2:
+- change node name to video-codec
+- fix typo in commit header
+
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+index 5544f66c6ff4..1a50da77c7c6 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+@@ -2304,6 +2304,20 @@ gpio4: gpio@fec50000 {
+ 			#interrupt-cells = <2>;
+ 		};
+ 	};
++
++	av1d: video-codec@fdc70000 {
++		compatible = "rockchip,rk3588-av1-vpu";
++		reg = <0x0 0xfdc70000 0x0 0x800>;
++		interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH 0>;
++		interrupt-names = "vdpu";
++		clocks = <&cru ACLK_AV1>, <&cru PCLK_AV1>;
++		clock-names = "aclk", "hclk";
++		assigned-clocks = <&cru ACLK_AV1>, <&cru PCLK_AV1>;
++		assigned-clock-rates = <400000000>, <400000000>;
++		resets = <&cru SRST_A_AV1>, <&cru SRST_P_AV1>, <&cru SRST_A_AV1_BIU>, <&cru SRST_P_AV1_BIU>;
++		power-domains = <&power RK3588_PD_AV1>;
++		status = "okay";
++	};
+ };
+ 
+ #include "rk3588s-pinctrl.dtsi"
+-- 
+2.39.2
+
