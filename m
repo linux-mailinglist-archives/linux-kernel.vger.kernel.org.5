@@ -2,141 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 530397B9EA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584CF7BA2A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbjJEOJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40696 "EHLO
+        id S233925AbjJEPpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232778AbjJEOHY (ORCPT
+        with ESMTP id S232943AbjJEPox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:07:24 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCF08A71;
-        Thu,  5 Oct 2023 01:30:38 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id EFC201007F6; Thu,  5 Oct 2023 09:30:32 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1696494632; bh=yTqM0lOviMpVtY3gEC2fnjg+lpnZmaa/xqOOO1oFjzg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hM4/6PU/BVCUmsjcFfLAZHOdsLJZBPi+IERfvAziz3nfnEK4C7KS4IvaOhQF74oUa
-         pm/jySTmFQfMxdTKCSDifYiz+6AUgqHrAipeZA/gPtdfM+zALHVTx2Zc3etj0F8Uvj
-         Z+6+P3UfUXB4S+dg6826xd+d4QJrSOPKQf4pOCA+1cpbIPfgjobt3K8v8W29gu2XFf
-         EozsFhCZzdMkmYxxlZzWuHs3+awRG8hRctGYRXzu5lggSBZ9V8y5NfKjZIp5utFREo
-         m8TSihVOCaoYFaigu8xqW/v53d8h8T2slqaY2mkHTgDaQkYnFk+bb6M8VNQI8mAzW8
-         t0IV4IH911NYA==
-Date:   Thu, 5 Oct 2023 09:30:32 +0100
-From:   Sean Young <sean@mess.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] pwm: make it possible to apply pwm changes in atomic
- context
-Message-ID: <ZR50KCVNzhlLooLW@gofer.mess.org>
-References: <cover.1696156485.git.sean@mess.org>
- <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
- <20231004095920.ne7yrrthow6tnuvg@pengutronix.de>
+        Thu, 5 Oct 2023 11:44:53 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125ED8A78
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 01:33:42 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-27763c2c22eso475859a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 01:33:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1696494821; x=1697099621; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IDS4naPGQ1FxN0B/REXVrwAINqUy2DgeZ+fVL1m8k2o=;
+        b=cggttsFnCUTsEuuVbgzK+zamBA1LzeVLHMiEb72fq23GDIE0OljuPjI482iFp5EeQi
+         mSQ7eVtYZJ6gEeQiUZkooJIxnZXxLkW678/ML/LRcX8Nq3nz08Wi3zrMEN1s5Dwve1Rv
+         MGQv8OJl5WTI0dHofRtRVDUypQL0jIeS0B2fwUbRapfWEvecf6PGF0ChW1tXc7o67Zoj
+         sfW76H6k1Fnl5CHHHTnYvhroPNXdBy4jrdi+kodafLXLtqum31/jacy3rajaw2q6M//A
+         MAHc8cZ4/DSnR2pZOWuaKhG7xDSlLfSYY28SVAtOGqkoSY934xZpOI5r5N8jXL2e8aWV
+         eudA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696494821; x=1697099621;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IDS4naPGQ1FxN0B/REXVrwAINqUy2DgeZ+fVL1m8k2o=;
+        b=NIZu77jX0ilNDAISgeI/2A74tCR7s5EN/ObBtLwBudm5sL3mIVvI92JdlVJQiBNkMd
+         dAvLIy9w6jfLlt8SYubpzWEZA+GnZQkXujkZ3PXcpe/zDTgaD000MD4PT21twLnLKbkV
+         4AMaGIGnbDxJh4JvBY2A2eDYd8goaWeVUX2Bi86RlkDLNK623YtPQuf36iV6+Uqsjyp/
+         HNwxInNPG1HJBOx81L6H+H+DP03NRExFVAkGQckFJqtcWUkMgJWRay8cLumXo3arsp0j
+         RlpN7nJWgg4eP6qaUQg+TPMbW9cPfKOIbVSPYVAhaPceyw66PFfdycESKT9AIaabKf+X
+         KC1g==
+X-Gm-Message-State: AOJu0Ywf+b396fnkelgF2/ObSQ/xu3hRzRIci6WzCWc+rVzVSQAlAzkW
+        uqFp2el5fxeubZVJ6p4RdQd6HIV1e4oKmHRNoeP5lg==
+X-Google-Smtp-Source: AGHT+IH1X4tBIPMw8ecrWuT9gzqCc759cmkKO3BNU5kAKKqTKdTUxzIapzwh0wnQYYQpGr7uXwzXo6pgqqRJv96DJmg=
+X-Received: by 2002:a17:90b:1056:b0:274:67d0:f57 with SMTP id
+ gq22-20020a17090b105600b0027467d00f57mr3666854pjb.48.1696494821447; Thu, 05
+ Oct 2023 01:33:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231004095920.ne7yrrthow6tnuvg@pengutronix.de>
+References: <20230922093117.3030977-2-naresh.solanki@9elements.com> <8ec35702-54a7-ad6e-99c5-7ed49667c94b@axentia.se>
+In-Reply-To: <8ec35702-54a7-ad6e-99c5-7ed49667c94b@axentia.se>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Thu, 5 Oct 2023 14:03:30 +0530
+Message-ID: <CABqG17h2PMunuyeiEPbY4Z6QMZFAmwna2t3AGn5c8YztkzSvNg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v3 2/2] i2c: muxes: pca954x: Enable features on MAX7357/MAX7358
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Uwe,
+Hi Peter,
 
-On Wed, Oct 04, 2023 at 11:59:20AM +0200, Uwe Kleine-König wrote:
-> On Sun, Oct 01, 2023 at 11:40:29AM +0100, Sean Young wrote:
-> > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> > index dc66e3405bf5..d9679ae5b2be 100644
-> > --- a/drivers/pwm/core.c
-> > +++ b/drivers/pwm/core.c
-> > @@ -505,7 +505,7 @@ int pwm_apply_state(struct pwm_device *pwm, const struct pwm_state *state)
-> >  	 * is a bad idea. So make it explicit that calling this function might
-> >  	 * sleep.
-> >  	 */
-> > -	might_sleep();
-> > +	might_sleep_if(pwm_can_sleep(pwm));
-> >  
-> >  	if (!pwm || !state || !state->period ||
-> >  	    state->duty_cycle > state->period)
-> 
-> I'd like to have a mechanism to catch drivers that missed to set
-> .can_sleep. The best idea I currently have for that is to disable
-> preemption if IS_ENABLED(CONFIG_PWM_DEBUG) && !pwm_can_sleep(pwm) while
-> .apply() is running.
+On Fri, 22 Sept 2023 at 16:02, Peter Rosin <peda@axentia.se> wrote:
+>
+> Hi!
+>
+> Sorry for being unresponsive...
+>
+> The subject, description and the bindings patch talk about MAX7358, but
+> since it not actually handled it is misleading for the subject to say
+> that features are enabled on MAX7358.
+Yes will remove reference to max7358.
+>
+> 2023-09-22 at 11:31, Naresh Solanki wrote:
+> > From: Patrick Rudolph <patrick.rudolph@9elements.com>
+> >
+> > Detect that max7357 is being used and run custom init sequence.
+> > Enable additional features based on DT settings and unconditionally
+> > release the shared interrupt pin after 1.6 seconds and allow to use
+> > it as reset.
+> >
+> > These features aren't enabled by default & its up to board designer
+> > to enable the same as it may have unexpected side effects.
+> >
+> > These should be validated for proper functioning & detection of devices
+> > in secondary bus as sometimes it can cause secondary bus being disabled.
+> >
+> > The init sequence is not run for max7358 that needs to be unlocked
+> > first, but that would need the unimplemented function
+> > i2c_probe_func_quick_write().
+>
+> Is that correct? If that is all that missing, why is it not sufficient to
+> open-code it instead?
+>
+>         i2c_smbus_xfer(client->adapter, client->addr, client->flags,
+>                        I2C_SMBUS_WRITE, 0, I2C_SMBUS_QUICK, NULL);
+will drop max7358 for now in this patch series.
+>
+> >
+> > Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> > ---
+> > Changes in V3:
+> > - Delete unused #define
+> > - Update pca954x_init
+> > - Update commit message
+> >
+> > Changes in V2:
+> > - Update comments
+> > - Update check for DT properties
+> > ---
+> >  drivers/i2c/muxes/i2c-mux-pca954x.c | 38 ++++++++++++++++++++++++++++-
+> >  1 file changed, 37 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
+> > index 2219062104fb..91c7c1d13c89 100644
+> > --- a/drivers/i2c/muxes/i2c-mux-pca954x.c
+> > +++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
+> > @@ -57,6 +57,20 @@
+> >
+> >  #define PCA954X_IRQ_OFFSET 4
+> >
+> > +/*
+> > + * MAX7357's configuration register is writeable after POR, but
+> > + * can be locked by setting the basic mode bit. MAX7358 configuration
+> > + * register is locked by default and needs to be unlocked first.
+> > + * The configuration register holds the following settings:
+> > + */
+> > +#define MAX7357_CONF_INT_ENABLE                      BIT(0)
+>
+> This define isn't used.
+Its indirectly used for default POR config. Will use it there.
+>
+> > +#define MAX7357_CONF_FLUSH_OUT                       BIT(1)
+> > +#define MAX7357_CONF_RELEASE_INT             BIT(2)
+> > +#define MAX7357_CONF_DISCON_SINGLE_CHAN              BIT(4)
+> > +#define MAX7357_CONF_PRECONNECT_TEST         BIT(7)
+> > +
+> > +#define MAX7357_POR_DEFAULT_CONF             BIT(0)
+> > +
+> >  enum pca_type {
+> >       max_7356,
+> >       max_7357,
+> > @@ -463,6 +477,7 @@ static void pca954x_cleanup(struct i2c_mux_core *muxc)
+> >
+> >  static int pca954x_init(struct i2c_client *client, struct pca954x *data)
+> >  {
+> > +     u8 conf = MAX7357_POR_DEFAULT_CONF;
+>
+> This line can be moved inside the block below handling max7357. The POR
+> default conf is not the same for max7358 anyway.
+Sure.
+>
+> >       int ret;
+> >
+> >       if (data->idle_state >= 0)
+> > @@ -470,7 +485,28 @@ static int pca954x_init(struct i2c_client *client, struct pca954x *data)
+> >       else
+> >               data->last_chan = 0; /* Disconnect multiplexer */
+> >
+> > -     ret = i2c_smbus_write_byte(client, data->last_chan);
+> > +     if (device_is_compatible(&client->dev, "maxim,max7357") &&
+> > +         i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_WRITE_BYTE_DATA)) {
+>
+> I would have liked a message that any requested extra features cannot
+> be enabled if the chip happens to be connected to a bus not capable of
+> ...write_byte_data(). That might be plenty helpful for anybody who
+> happens to find themself in that hole...
+Sure will add that.
+>
+> > +             /*
+> > +              * The interrupt signal is shared with the reset pin. Release the
+> > +              * interrupt after 1.6 seconds to allow using the pin as reset.
+> > +              * The interrupt isn't serviced yet.
+> > +              */
+> > +             conf |= MAX7357_CONF_RELEASE_INT;
+> > +
+> > +             if (device_property_read_bool(&client->dev, "maxim,isolate-stuck-channel"))
+> > +                     conf |= MAX7357_CONF_DISCON_SINGLE_CHAN;
+> > +             if (device_property_read_bool(&client->dev, "maxim,send-flush-out-sequence"))
+> > +                     conf |= MAX7357_CONF_FLUSH_OUT;
+> > +             if (device_property_read_bool(&client->dev,
+> > +                                           "maxim,preconnection-wiggle-test-enable"))
+> > +                     conf |= MAX7357_CONF_PRECONNECT_TEST;
+> > +
+> > +             ret = i2c_smbus_write_byte_data(client, data->last_chan, conf);
+> > +     } else {
+> > +             ret = i2c_smbus_write_byte(client, data->last_chan);
+> > +     }
+> > +
+> >       if (ret < 0)
+> >               data->last_chan = 0;
+> >
+>
+> Would there be any point in configuring max7357 to be in basic mode?
+If the above features arent needed then basic mode will serve the purpose.
 
-If we have pwm_apply_state_atomic(), then CONFIG_DEBUG_ATOMIC_SLEEP will
-catch them, but only in that code path of course.
-
-How about using non_block_start() and non_block_end() if can_sleep is
-not set?
-
-> > diff --git a/drivers/pwm/pwm-fsl-ftm.c b/drivers/pwm/pwm-fsl-ftm.c
-> > index b7c6045c5d08..b8b9392844e9 100644
-> > --- a/drivers/pwm/pwm-fsl-ftm.c
-> > +++ b/drivers/pwm/pwm-fsl-ftm.c
-> > @@ -405,6 +405,7 @@ static int fsl_pwm_probe(struct platform_device *pdev)
-> >  
-> >  	fpc->soc = of_device_get_match_data(&pdev->dev);
-> >  	fpc->chip.dev = &pdev->dev;
-> > +	fpc->chip.can_sleep = true;
-> 
-> As .apply() being callable in non-sleepable context only depends on
-> .apply() I think a better place for this property is in struct pwm_ops.
-
-That makes sense.
-
-> Also I wonder if the distinction between atomic and sleeping
-> pwm_state_apply() should be more explicit. For GPIOs you have a sleeping
-> variant gpiod_set_value_cansleep() that allows to immediately determine
-> the intended context in the caller. This would allow that programming
-> a PWM stays a preemption point (if possible/desired) even if the
-> underlying hardware/driver is atomic. To not have to touch all consumer
-> drivers, maybe the pair for pwm should better be
-> 
-> 	pwm_apply_state()
-> 	pwm_apply_state_atomic()
-
-Do we need pwm_config_atomic(), pwm_enable_atomic(), and pwm_disable_atomic()
-too? These are just convenience functions, so we can probably do without them.
-
-> instead of a "cansleep" suffix for the sleeping variant? Or maybe it's
-> better to accept touching all consumer drivers to get semantics similar
-> to gpio? I couldn't decide quickly what I really like better here, so
-> that's your chance to comment and influence the outcome :-)
-
-If you expect to have more parameters for pwm_apply_state() then a flags
-argument makes sense.
-
-TBH I like the pwm_apply_state_atomic() option.
-
-
-Sean
+>
+> Cheers,
+> Peter
