@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B15C97BABCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDE87BABCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbjJEVHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 17:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38584 "EHLO
+        id S229921AbjJEVHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 17:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231803AbjJEVHH (ORCPT
+        with ESMTP id S231862AbjJEVHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 17:07:07 -0400
+        Thu, 5 Oct 2023 17:07:08 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4555FE7
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 14:06:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9AC9F
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 14:06:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696540016; x=1728076016;
+  t=1696540018; x=1728076018;
   h=date:from:to:cc:subject:message-id;
-  bh=yD4mSz9O+WSsm39rGvJ22SihbbhfrB3I3pvKI/h8E/8=;
-  b=FJ0dyU3rdeTcoG8Qq04G52rVql2vPqYT3wWzdXQwx89JX0JStH/+bXGF
-   yqaIMFVmCt51vPDQ3Sj+JSyFkGcsvU7vLhT/JHI3Dv+U9VyNWy7s3l2VT
-   u+ooCg597G+xDi67b23DWttTlHkPYlVh7PoECtI5qmGLAnmwe5Bq2rR5V
-   Iqhy2OGh2IOoFO0zznCILvwy7IDOtM+D0LgwdtuLS5HtQfCcIpKd2mz/K
-   1KHPxcJn3J961isJbxHBd4P7Y+A746ZI3fzZCXYrGx/15PjMGk3jtCdLE
-   CGbcrIP5NGaGQcL3EXR7zhd/hTl6zSHS+niBf+r11UiQEe0UDzxvRi3Gh
+  bh=Xd9pCwNWLCjH7gyD054FHoqNReqshmAoAeSabVN5SDQ=;
+  b=MTMETCZwDNT+fcmJeUB2TrHhnT0s1tpTvE/an3sJiu3WdOwUadF8HfIa
+   NMkRuNZgtwRaIy08fX8yapYpx1L13tIsOhYgpRzzrt+pZewjjcQ2UMWN8
+   E+o+6z3y+6gl1yuEhkXwxh2qqv0jWFz8qTDCVXKgprbNQ56cG1kHBF0zr
+   lpHPfq9d3qjuX/CZ3FvHJ7lwf4Doq+j9xR3f+IFfOCE01a+H1zE6Gv2Sn
+   /4+iyzHzHxZCjF/34CWG5nD4MvUe4HbPWKzEynHfvo5hNTkwHIDhvXEh7
+   zWu+LF/19fAkzTxUXIdq+9s5VeCmrrokjBLcqd1lcOHeZJGdlZ4XMiPf1
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="362977706"
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="362977711"
 X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="362977706"
+   d="scan'208";a="362977711"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 14:06:55 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 14:06:57 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="842569237"
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="842569276"
 X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="842569237"
+   d="scan'208";a="842569276"
 Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 05 Oct 2023 14:06:54 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Oct 2023 14:06:56 -0700
 Received: from kbuild by c3b01524d57c with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qoVYR-000LuL-2x;
-        Thu, 05 Oct 2023 21:06:50 +0000
-Date:   Fri, 06 Oct 2023 05:05:04 +0800
+        id 1qoVYa-000LuQ-0J;
+        Thu, 05 Oct 2023 21:06:52 +0000
+Date:   Fri, 06 Oct 2023 05:05:14 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/core] BUILD SUCCESS
- e6814ec3ba1994561db9b1c05a80227d30cc18fa
-Message-ID: <202310060501.t4S1T6dP-lkp@intel.com>
+Subject: [tip:locking/core] BUILD SUCCESS
+ 0cff993e08a7578e2c1df93a95fc5059f447e7ae
+Message-ID: <202310060511.6tO9upLj-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -60,10 +60,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
-branch HEAD: e6814ec3ba1994561db9b1c05a80227d30cc18fa  perf/core: Rename perf_proc_update_handler() -> perf_event_max_sample_rate_handler(), for readability
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
+branch HEAD: 0cff993e08a7578e2c1df93a95fc5059f447e7ae  locking/seqlock: Fix typo in comment
 
-elapsed time: 725m
+elapsed time: 726m
 
 configs tested: 133
 configs skipped: 2
