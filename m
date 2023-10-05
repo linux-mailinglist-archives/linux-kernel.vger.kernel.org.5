@@ -2,517 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 117997BA131
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491697BA3D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237387AbjJEOsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
+        id S237347AbjJEP7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240104AbjJEOoz (ORCPT
+        with ESMTP id S234735AbjJEP4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:44:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678452B910;
-        Thu,  5 Oct 2023 07:22:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CDE2C32774;
-        Thu,  5 Oct 2023 13:05:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696511124;
-        bh=shELxFK0t3LwvCqN1U6OFYPeGm+WwA3tp/gvX8oAO1I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D94BSBdr7sY08VP1z/72KHcCuKatVRlHnw7OPhGylpUYrij5KdM3eeTQc5zSKipOy
-         hcN0EL2x+6NDL4FQhHrPiGikTTycVowCqZRoToptzGzikAtjYDw2co50uObzftiZnw
-         8BNSx7BQeeCwM7X1qVAoaShLb7Xvc4gfIIk/FN4Q=
-Date:   Thu, 5 Oct 2023 15:05:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, lukas@wunner.de,
-        alex.williamson@redhat.com, christian.koenig@amd.com,
-        kch@nvidia.com, logang@deltatee.com, linux-kernel@vger.kernel.org,
-        chaitanyak@nvidia.com, rdunlap@infradead.org,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH v6 2/3] sysfs: Add a attr_is_visible function to
- attribute_group
-Message-ID: <2023100539-playgroup-stoppable-d5d4@gregkh>
-References: <20230817235810.596458-1-alistair.francis@wdc.com>
- <20230817235810.596458-2-alistair.francis@wdc.com>
- <2023081959-spinach-cherisher-b025@gregkh>
- <CAKmqyKM+DNTF1f0FvDEda_db792Ta4w_uAKNTZ6E3NkYoVcPFQ@mail.gmail.com>
- <2023082325-cognitive-dispose-1180@gregkh>
- <CAKmqyKMMKJN7HU_achBc8S6-Jx16owrthwDDRWysMZe=jymnMA@mail.gmail.com>
- <2023083111-impulsive-majestic-24ee@gregkh>
- <2023083139-underling-amuser-772e@gregkh>
- <2023090142-circling-probably-7828@gregkh>
+        Thu, 5 Oct 2023 11:56:52 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED6426FF2;
+        Thu,  5 Oct 2023 06:07:13 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-452b4fd977eso482463137.1;
+        Thu, 05 Oct 2023 06:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696511232; x=1697116032; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5kGRsW3ktDtW6m3KSjx2TUIO0ZRjHIgeK99H149BbmQ=;
+        b=SwB+zmR1nX4yd7qHWNv+ofaQR1t/QcqqKVrcA1uIB2qOPJzsDNQson3xdPaQ4dZ+j/
+         6aH66sAlJhXrH4x8728ZXNKnn66V+JrKsRPRRQIjSry+qXy8xmid7g6VPRPdZcQuke7r
+         LG+fYuJY20XqmH8sEtr0IPDylGOtAu4mPouWU6rLatGk43J0RHPOaTjNrYQE2fbXpNYG
+         8uECy+n6q0mV4e68CRw3GgrE3g0xPIUnqLPqDB58rzB9NGtiryUEIFBfVZuHzNDfPTF9
+         CFZHiyWXWvVjHqRFA/AfeKVqe1DZCiFWSZvXUII72QRvPuzzYHCClfGo9I7PGgOUsKNc
+         Navw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696511232; x=1697116032;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5kGRsW3ktDtW6m3KSjx2TUIO0ZRjHIgeK99H149BbmQ=;
+        b=sEXWNhzcfPWQQHhIYaO86x7FlIi1kMQnVyUvQgB0p/3EeT/f1BnwptqpUm2+u7w2Mk
+         DW0nYY2dLnswNzLe7wALu3jECVWdGMpINxLDUtLLoTFG91FNdO9sbTRh3bmnEeZgtHfj
+         djiZD/asfpD0rj43GiyRDSGHGFDyrKQS3tPvjrIvmSCam7yWZrFHlbrXs/uBTR6Mkk/j
+         rPw7sTy+xCXxJmy9d/95fODu0ZTvQhLrD4w8h2+97JtVAlpgJBYLWrp4RDux0ZCpZb17
+         SvCKP11k+Dq5+c6fea08roX5QSthL507etwO35DvswlV4+rLzP+drmRWtLBf4gtDPU0q
+         kSdA==
+X-Gm-Message-State: AOJu0YyKqE9sqQolDM5/hz2eSd54bV/JCv4bfLcUH1s8kb3L8XsELpx4
+        +HSdSyn+9dLHm+r6W4WvugY+aS4L6vnQv+krU5Y=
+X-Google-Smtp-Source: AGHT+IEvgaY3HCpdmVW9l6pMHlJGhzAF7876u5S5d/QYEoIfrgWHHfOtRETgUihUE1RhZRsLaBMnSk34GujufdtSDPs=
+X-Received: by 2002:a67:f65a:0:b0:44d:3f96:6c61 with SMTP id
+ u26-20020a67f65a000000b0044d3f966c61mr5198137vso.30.1696511232660; Thu, 05
+ Oct 2023 06:07:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023090142-circling-probably-7828@gregkh>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231004185530.82088-1-jlayton@kernel.org> <20231004185530.82088-3-jlayton@kernel.org>
+ <CAOQ4uxgtyaBTM1bOSSGmsk+F4ZwsK+-N5ZZ3wAt_nv_E6G3C7Q@mail.gmail.com> <9af5c896da0c39c66d0555879c04c23fd853c9de.camel@kernel.org>
+In-Reply-To: <9af5c896da0c39c66d0555879c04c23fd853c9de.camel@kernel.org>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 5 Oct 2023 16:07:01 +0300
+Message-ID: <CAOQ4uxhXG=oMKLgCPwnLAToxtF7MCgv7jk72iG9gZ_6B2exbwg@mail.gmail.com>
+Subject: Re: [PATCH v2 89/89] fs: move i_generation into new hole created
+ after timestamp conversion
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 11:00:59PM +0200, Greg KH wrote:
-> On Thu, Aug 31, 2023 at 04:36:13PM +0200, Greg KH wrote:
-> > On Thu, Aug 31, 2023 at 10:31:07AM +0200, Greg KH wrote:
-> > > On Mon, Aug 28, 2023 at 03:05:41PM +1000, Alistair Francis wrote:
-> > > > On Wed, Aug 23, 2023 at 5:02 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Tue, Aug 22, 2023 at 04:20:06PM -0400, Alistair Francis wrote:
-> > > > > > On Sat, Aug 19, 2023 at 6:57 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > > > >
-> > > > > > > On Thu, Aug 17, 2023 at 07:58:09PM -0400, Alistair Francis wrote:
-> > > > > > > > The documentation for sysfs_merge_group() specifically says
-> > > > > > > >
-> > > > > > > >     This function returns an error if the group doesn't exist or any of the
-> > > > > > > >     files already exist in that group, in which case none of the new files
-> > > > > > > >     are created.
-> > > > > > > >
-> > > > > > > > So just not adding the group if it's empty doesn't work, at least not
-> > > > > > > > with the code we currently have. The code can be changed to support
-> > > > > > > > this, but it is difficult to determine how this will affect existing use
-> > > > > > > > cases.
-> > > > > > >
-> > > > > > > Did you try?  I'd really really really prefer we do it this way as it's
-> > > > > > > much simpler overall to have the sysfs core "do the right thing
-> > > > > > > automatically" than to force each and every bus/subsystem to have to
-> > > > > > > manually add this type of attribute.
-> > > > > > >
-> > > > > > > Also, on a personal level, I want this function to work as it will allow
-> > > > > > > us to remove some code in some busses that don't really need to be there
-> > > > > > > (dynamic creation of some device attributes), which will then also allow
-> > > > > > > me to remove some apis in the driver core that should not be used at all
-> > > > > > > anymore (but keep creeping back in as there is still a few users.)
-> > > > > > >
-> > > > > > > So I'll be selfish here and say "please try to get my proposed change to
-> > > > > > > work, it's really the correct thing to do here."
-> > > > > >
-> > > > > > I did try!
-> > > > > >
-> > > > > > This is an attempt:
-> > > > > > https://github.com/alistair23/linux/commit/56b55756a2d7a66f7b6eb8a5692b1b5e2f81a9a9
-> > > > > >
-> > > > > > It is based on your original patch with a bunch of:
-> > > > > >
-> > > > > > if (!parent) {
-> > > > > >     parent = kernfs_create_dir_ns(kobj->sd, grp->name,
-> > > > > >                   S_IRWXU | S_IRUGO | S_IXUGO,
-> > > > > >                   uid, gid, kobj, NULL);
-> > > > > >     ...
-> > > > > >     }
-> > > > > >
-> > > > > >
-> > > > > > added throughout the code base.
-> > > > > >
-> > > > > > Very basic testing shows that it does what I need it to do and I don't
-> > > > > > see any kernel oops on boot.
-> > > > >
-> > > > > Nice!
-> > > > >
-> > > > > Mind if I take it and clean it up a bit and test with it here?  Again, I
-> > > > > need this functionality for other stuff as well, so getting it merged
-> > > > > for your feature is fine with me.
-> > > > 
-> > > > Sure! Go ahead. Sorry I was travelling last week.
-> > > > 
-> > > > >
-> > > > > > I prefer the approach I have in this mailing list patch. But if you
-> > > > > > like the commit mentioned above I can tidy and clean it up and then
-> > > > > > use that instead
-> > > > >
-> > > > > I would rather do it this way.  I can work on this on Friday if you want
-> > > > > me to.
-> > > > 
-> > > > Yeah, that's fine with me. If you aren't able to let me know and I can
-> > > > finish up the patch and send it with this series
-> > > 
-> > > Great, and for the email record, as github links are not stable, here's
-> > > the patch that you have above attached below.  I'll test this out and
-> > > clean it up a bit more and see how it goes...
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > > 
-> > > 
-> > > From 2929d17b58d02dcf52d0345fa966c616e09a5afa Mon Sep 17 00:00:00 2001
-> > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Date: Wed, 24 Aug 2022 15:45:36 +0200
-> > > Subject: [PATCH] sysfs: do not create empty directories if no attributes are
-> > >  present
-> > > 
-> > > When creating an attribute group, if it is named a subdirectory is
-> > > created and the sysfs files are placed into that subdirectory.  If no
-> > > files are created, normally the directory would still be present, but it
-> > > would be empty.  Clean this up by removing the directory if no files
-> > > were successfully created in the group at all.
-> > > 
-> > > Co-developed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Co-developed-by: Alistair Francis <alistair.francis@wdc.com>
-> > > Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+On Thu, Oct 5, 2023 at 3:45=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wro=
+te:
+>
+> On Thu, 2023-10-05 at 08:08 +0300, Amir Goldstein wrote:
+> > On Wed, Oct 4, 2023 at 9:56=E2=80=AFPM Jeff Layton <jlayton@kernel.org>=
+ wrote:
+> > >
+> > > The recent change to use discrete integers instead of struct timespec=
+64
+> > > shaved 8 bytes off of struct inode, but it also moves the i_lock
+> > > into the previous cacheline, away from the fields that it protects.
+> > >
+> > > Move i_generation above the i_lock, which moves the new 4 byte hole t=
+o
+> > > just after the i_fsnotify_mask in my setup.
+> >
+> > Might be good to mention that this hole has a purpose...
+> >
+> > >
+> > > Suggested-by: Amir Goldstein <amir73il@gmail.com>
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
 > > > ---
-> > >  fs/sysfs/file.c  | 14 ++++++++++--
-> > >  fs/sysfs/group.c | 56 ++++++++++++++++++++++++++++++++++++------------
-> > >  2 files changed, 54 insertions(+), 16 deletions(-)
-> > > 
-> > > diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-> > > index a12ac0356c69..7aab6c09662c 100644
-> > > --- a/fs/sysfs/file.c
-> > > +++ b/fs/sysfs/file.c
-> > > @@ -391,8 +391,18 @@ int sysfs_add_file_to_group(struct kobject *kobj,
-> > >  		kernfs_get(parent);
-> > >  	}
-> > >  
-> > > -	if (!parent)
-> > > -		return -ENOENT;
-> > > +	if (!parent) {
-> > > +		parent = kernfs_create_dir_ns(kobj->sd, group,
-> > > +					  S_IRWXU | S_IRUGO | S_IXUGO,
-> > > +					  uid, gid, kobj, NULL);
-> > > +		if (IS_ERR(parent)) {
-> > > +			if (PTR_ERR(parent) == -EEXIST)
-> > > +				sysfs_warn_dup(kobj->sd, group);
-> > > +			return PTR_ERR(parent);
-> > > +		}
-> > > +
-> > > +		kernfs_get(parent);
-> > > +	}
-> > >  
-> > >  	kobject_get_ownership(kobj, &uid, &gid);
-> > >  	error = sysfs_add_file_mode_ns(parent, attr, attr->mode, uid, gid,
-> > > diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
-> > > index 138676463336..013fa333cd3c 100644
-> > > --- a/fs/sysfs/group.c
-> > > +++ b/fs/sysfs/group.c
-> > > @@ -31,12 +31,14 @@ static void remove_files(struct kernfs_node *parent,
-> > >  			kernfs_remove_by_name(parent, (*bin_attr)->attr.name);
-> > >  }
-> > >  
-> > > +/* returns -ERROR if error, or >= 0 for number of files actually created */
-> > >  static int create_files(struct kernfs_node *parent, struct kobject *kobj,
-> > >  			kuid_t uid, kgid_t gid,
-> > >  			const struct attribute_group *grp, int update)
-> > >  {
-> > >  	struct attribute *const *attr;
-> > >  	struct bin_attribute *const *bin_attr;
-> > > +	int files_created = 0;
-> > >  	int error = 0, i;
-> > >  
-> > >  	if (grp->attrs) {
-> > > @@ -65,6 +67,8 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
-> > >  						       gid, NULL);
-> > >  			if (unlikely(error))
-> > >  				break;
-> > > +
-> > > +			files_created++;
-> > >  		}
-> > >  		if (error) {
-> > >  			remove_files(parent, grp);
-> > > @@ -95,12 +99,15 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
-> > >  							   NULL);
-> > >  			if (error)
-> > >  				break;
-> > > +			files_created++;
-> > >  		}
-> > >  		if (error)
-> > >  			remove_files(parent, grp);
-> > >  	}
-> > >  exit:
-> > > -	return error;
-> > > +	if (error)
-> > > +		return error;
-> > > +	return files_created;
-> > >  }
-> > >  
-> > >  
-> > > @@ -130,9 +137,14 @@ static int internal_create_group(struct kobject *kobj, int update,
-> > >  		if (update) {
-> > >  			kn = kernfs_find_and_get(kobj->sd, grp->name);
-> > >  			if (!kn) {
-> > > -				pr_warn("Can't update unknown attr grp name: %s/%s\n",
-> > > -					kobj->name, grp->name);
-> > > -				return -EINVAL;
-> > > +				kn = kernfs_create_dir_ns(kobj->sd, grp->name,
-> > > +							  S_IRWXU | S_IRUGO | S_IXUGO,
-> > > +							  uid, gid, kobj, NULL);
-> > > +				if (IS_ERR(kn)) {
-> > > +					if (PTR_ERR(kn) == -EEXIST)
-> > > +						sysfs_warn_dup(kobj->sd, grp->name);
-> > > +					return PTR_ERR(kn);
-> > > +				}
-> > >  			}
-> > >  		} else {
-> > >  			kn = kernfs_create_dir_ns(kobj->sd, grp->name,
-> > > @@ -150,11 +162,18 @@ static int internal_create_group(struct kobject *kobj, int update,
-> > >  
-> > >  	kernfs_get(kn);
-> > >  	error = create_files(kn, kobj, uid, gid, grp, update);
-> > > -	if (error) {
-> > > +	if (error <= 0) {
-> > > +		/*
-> > > +		 * If an error happened _OR_ if no files were created in the
-> > > +		 * attribute group, and we have a name for this group, delete
-> > > +		 * the name so there's not an empty directory.
-> > > +		 */
-> > >  		if (grp->name)
-> > >  			kernfs_remove(kn);
-> > > +	} else {
-> > > +		error = 0;
-> > > +		kernfs_put(kn);
-> > >  	}
-> > > -	kernfs_put(kn);
-> > >  
-> > >  	if (grp->name && update)
-> > >  		kernfs_put(kn);
-> > > @@ -318,13 +337,12 @@ void sysfs_remove_groups(struct kobject *kobj,
-> > >  EXPORT_SYMBOL_GPL(sysfs_remove_groups);
-> > >  
-> > >  /**
-> > > - * sysfs_merge_group - merge files into a pre-existing attribute group.
-> > > + * sysfs_merge_group - merge files into a attribute group.
-> > >   * @kobj:	The kobject containing the group.
-> > >   * @grp:	The files to create and the attribute group they belong to.
-> > >   *
-> > > - * This function returns an error if the group doesn't exist or any of the
-> > > - * files already exist in that group, in which case none of the new files
-> > > - * are created.
-> > > + * This function returns an error if any of the files already exist in
-> > > + * that group, in which case none of the new files are created.
-> > >   */
-> > >  int sysfs_merge_group(struct kobject *kobj,
-> > >  		       const struct attribute_group *grp)
-> > > @@ -336,12 +354,22 @@ int sysfs_merge_group(struct kobject *kobj,
-> > >  	struct attribute *const *attr;
-> > >  	int i;
-> > >  
-> > > -	parent = kernfs_find_and_get(kobj->sd, grp->name);
-> > > -	if (!parent)
-> > > -		return -ENOENT;
-> > > -
-> > >  	kobject_get_ownership(kobj, &uid, &gid);
-> > >  
-> > > +	parent = kernfs_find_and_get(kobj->sd, grp->name);
-> > > +	if (!parent) {
-> > > +		parent = kernfs_create_dir_ns(kobj->sd, grp->name,
-> > > +					  S_IRWXU | S_IRUGO | S_IXUGO,
-> > > +					  uid, gid, kobj, NULL);
-> > > +		if (IS_ERR(parent)) {
-> > > +			if (PTR_ERR(parent) == -EEXIST)
-> > > +				sysfs_warn_dup(kobj->sd, grp->name);
-> > > +			return PTR_ERR(parent);
-> > > +		}
-> > > +
-> > > +		kernfs_get(parent);
-> > > +	}
-> > > +
-> > >  	for ((i = 0, attr = grp->attrs); *attr && !error; (++i, ++attr))
-> > >  		error = sysfs_add_file_mode_ns(parent, *attr, (*attr)->mode,
-> > >  					       uid, gid, NULL);
-> > > -- 
-> > > 2.42.0
-> > > 
-> > 
-> > And as the 0-day bot just showed, this patch isn't going to work
-> > properly, the uid/gid stuff isn't all hooked up properly, I'll work on
-> > fixing that up when I get some cycles...
-> 
-> Oops, nope, that was my fault in applying this to my tree, sorry for the
-> noise...
+> > >  include/linux/fs.h | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > > index 485b5e21c8e5..686c9f33e725 100644
+> > > --- a/include/linux/fs.h
+> > > +++ b/include/linux/fs.h
+> > > @@ -677,6 +677,7 @@ struct inode {
+> > >         u32                     i_atime_nsec;
+> > >         u32                     i_mtime_nsec;
+> > >         u32                     i_ctime_nsec;
+> > > +       u32                     i_generation;
+> > >         spinlock_t              i_lock; /* i_blocks, i_bytes, maybe i=
+_size */
+> > >         unsigned short          i_bytes;
+> > >         u8                      i_blkbits;
+> > > @@ -733,7 +734,6 @@ struct inode {
+> > >                 unsigned                i_dir_seq;
+> > >         };
+> > >
+> > > -       __u32                   i_generation;
+> > >
+> > >  #ifdef CONFIG_FSNOTIFY
+> > >         __u32                   i_fsnotify_mask; /* all events this i=
+node cares about */
+> >
+> > If you post another version, please leave a comment here
+> >
+> > +         /* 32bit hole reserved for expanding i_fsnotify_mask to 64bit=
+ */
+> >
+>
+> Sure.
+>
+> I suppose we could create a union there too if you really want to
+> reserve it:
+>
+>         union {
+>                 __u32           i_fsnotify_mask;
+>                 __u64           __i_fsnotify_mask_ext;
+>         };
+>
 
-And I just got around to testing this, and it does not boot at all.
-Below is the patch I am using, are you sure you got this to boot for
-you?
+No need.
+I was thinking it is going to be
+      unsigned long i_fsnotify_mask;
 
-thanks,
+on 32bit arch, we either not support the high bitmask events
+or we fold them with the lower 32bit in the inode mask,
+because i_fsnotify_mask is an optimization to avoid going
+into inode marks iteration.
 
-greg k-h
-
-From db537de5a5af649b594604e2de177527f890878d Mon Sep 17 00:00:00 2001
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Wed, 24 Aug 2022 15:45:36 +0200
-Subject: [PATCH] sysfs: do not create empty directories if no attributes are
- present
-
-When creating an attribute group, if it is named a subdirectory is
-created and the sysfs files are placed into that subdirectory.  If no
-files are created, normally the directory would still be present, but it
-would be empty.  Clean this up by removing the directory if no files
-were successfully created in the group at all.
-
-Co-developed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Co-developed-by: Alistair Francis <alistair.francis@wdc.com>
-Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
----
- fs/sysfs/file.c  | 16 +++++++++++---
- fs/sysfs/group.c | 56 ++++++++++++++++++++++++++++++++++++------------
- 2 files changed, 55 insertions(+), 17 deletions(-)
-
-diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-index a12ac0356c69..9f79ec193ffe 100644
---- a/fs/sysfs/file.c
-+++ b/fs/sysfs/file.c
-@@ -391,10 +391,20 @@ int sysfs_add_file_to_group(struct kobject *kobj,
- 		kernfs_get(parent);
- 	}
- 
--	if (!parent)
--		return -ENOENT;
--
- 	kobject_get_ownership(kobj, &uid, &gid);
-+	if (!parent) {
-+		parent = kernfs_create_dir_ns(kobj->sd, group,
-+					  S_IRWXU | S_IRUGO | S_IXUGO,
-+					  uid, gid, kobj, NULL);
-+		if (IS_ERR(parent)) {
-+			if (PTR_ERR(parent) == -EEXIST)
-+				sysfs_warn_dup(kobj->sd, group);
-+			return PTR_ERR(parent);
-+		}
-+
-+		kernfs_get(parent);
-+	}
-+
- 	error = sysfs_add_file_mode_ns(parent, attr, attr->mode, uid, gid,
- 				       NULL);
- 	kernfs_put(parent);
-diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
-index 138676463336..013fa333cd3c 100644
---- a/fs/sysfs/group.c
-+++ b/fs/sysfs/group.c
-@@ -31,12 +31,14 @@ static void remove_files(struct kernfs_node *parent,
- 			kernfs_remove_by_name(parent, (*bin_attr)->attr.name);
- }
- 
-+/* returns -ERROR if error, or >= 0 for number of files actually created */
- static int create_files(struct kernfs_node *parent, struct kobject *kobj,
- 			kuid_t uid, kgid_t gid,
- 			const struct attribute_group *grp, int update)
- {
- 	struct attribute *const *attr;
- 	struct bin_attribute *const *bin_attr;
-+	int files_created = 0;
- 	int error = 0, i;
- 
- 	if (grp->attrs) {
-@@ -65,6 +67,8 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
- 						       gid, NULL);
- 			if (unlikely(error))
- 				break;
-+
-+			files_created++;
- 		}
- 		if (error) {
- 			remove_files(parent, grp);
-@@ -95,12 +99,15 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
- 							   NULL);
- 			if (error)
- 				break;
-+			files_created++;
- 		}
- 		if (error)
- 			remove_files(parent, grp);
- 	}
- exit:
--	return error;
-+	if (error)
-+		return error;
-+	return files_created;
- }
- 
- 
-@@ -130,9 +137,14 @@ static int internal_create_group(struct kobject *kobj, int update,
- 		if (update) {
- 			kn = kernfs_find_and_get(kobj->sd, grp->name);
- 			if (!kn) {
--				pr_warn("Can't update unknown attr grp name: %s/%s\n",
--					kobj->name, grp->name);
--				return -EINVAL;
-+				kn = kernfs_create_dir_ns(kobj->sd, grp->name,
-+							  S_IRWXU | S_IRUGO | S_IXUGO,
-+							  uid, gid, kobj, NULL);
-+				if (IS_ERR(kn)) {
-+					if (PTR_ERR(kn) == -EEXIST)
-+						sysfs_warn_dup(kobj->sd, grp->name);
-+					return PTR_ERR(kn);
-+				}
- 			}
- 		} else {
- 			kn = kernfs_create_dir_ns(kobj->sd, grp->name,
-@@ -150,11 +162,18 @@ static int internal_create_group(struct kobject *kobj, int update,
- 
- 	kernfs_get(kn);
- 	error = create_files(kn, kobj, uid, gid, grp, update);
--	if (error) {
-+	if (error <= 0) {
-+		/*
-+		 * If an error happened _OR_ if no files were created in the
-+		 * attribute group, and we have a name for this group, delete
-+		 * the name so there's not an empty directory.
-+		 */
- 		if (grp->name)
- 			kernfs_remove(kn);
-+	} else {
-+		error = 0;
-+		kernfs_put(kn);
- 	}
--	kernfs_put(kn);
- 
- 	if (grp->name && update)
- 		kernfs_put(kn);
-@@ -318,13 +337,12 @@ void sysfs_remove_groups(struct kobject *kobj,
- EXPORT_SYMBOL_GPL(sysfs_remove_groups);
- 
- /**
-- * sysfs_merge_group - merge files into a pre-existing attribute group.
-+ * sysfs_merge_group - merge files into a attribute group.
-  * @kobj:	The kobject containing the group.
-  * @grp:	The files to create and the attribute group they belong to.
-  *
-- * This function returns an error if the group doesn't exist or any of the
-- * files already exist in that group, in which case none of the new files
-- * are created.
-+ * This function returns an error if any of the files already exist in
-+ * that group, in which case none of the new files are created.
-  */
- int sysfs_merge_group(struct kobject *kobj,
- 		       const struct attribute_group *grp)
-@@ -336,12 +354,22 @@ int sysfs_merge_group(struct kobject *kobj,
- 	struct attribute *const *attr;
- 	int i;
- 
--	parent = kernfs_find_and_get(kobj->sd, grp->name);
--	if (!parent)
--		return -ENOENT;
--
- 	kobject_get_ownership(kobj, &uid, &gid);
- 
-+	parent = kernfs_find_and_get(kobj->sd, grp->name);
-+	if (!parent) {
-+		parent = kernfs_create_dir_ns(kobj->sd, grp->name,
-+					  S_IRWXU | S_IRUGO | S_IXUGO,
-+					  uid, gid, kobj, NULL);
-+		if (IS_ERR(parent)) {
-+			if (PTR_ERR(parent) == -EEXIST)
-+				sysfs_warn_dup(kobj->sd, grp->name);
-+			return PTR_ERR(parent);
-+		}
-+
-+		kernfs_get(parent);
-+	}
-+
- 	for ((i = 0, attr = grp->attrs); *attr && !error; (++i, ++attr))
- 		error = sysfs_add_file_mode_ns(parent, *attr, (*attr)->mode,
- 					       uid, gid, NULL);
--- 
-2.42.0
-
+Thanks,
+Amir.
