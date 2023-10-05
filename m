@@ -2,83 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 505557BA262
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501267BA2C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbjJEPd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
+        id S233079AbjJEPqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:46:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231564AbjJEPcn (ORCPT
+        with ESMTP id S233929AbjJEPpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:32:43 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAAE64D7E;
-        Thu,  5 Oct 2023 07:51:21 -0700 (PDT)
-Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:4c53:5fd0:f25b:b0dd])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 032DB660732D;
-        Thu,  5 Oct 2023 15:49:40 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696517381;
-        bh=CF7/KkgReu8FU2SkL3JEWvn04trO5qgnAMQhy/t48ak=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fkjgfuYInamRq+lbhlWpcBOM/T8jkWBMMsSbwgIzXVaLZlb1uTmcLPA5Fyd5W1760
-         Syk95zka1pYfVE+7VRiLZ/VC5XvJptzGUm8Zb7Rd9meS0KiOAtpSls99L3oYO6TWQS
-         KaCR2DZ1kY/fNQNyMSDdDIfJ2/wWtrLpLCLpmVgZEh3KkAFYOrOfOnFfx3GY5jHesO
-         4VaSJ84386k0Xn3LxGrdeCs2wWsnMLF63JYfMohvzkcKhCkMBkeYhDRadUDBTqOYZC
-         2/hlmFGiYiu2T8Az0eJeEusJmUUy57/MfYY8nWW6nIvYtsFHKqETJOwBWsbiImKR9a
-         Ajqd9z5RU8zjA==
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
-        mchehab@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        heiko@sntech.de
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH] dt-bindings: media: rockchip: Add resets property into decoder node
-Date:   Thu,  5 Oct 2023 16:49:34 +0200
-Message-Id: <20231005144934.169356-1-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 5 Oct 2023 11:45:17 -0400
+X-Greylist: delayed 585 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Oct 2023 08:02:08 PDT
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EEA21D00;
+        Thu,  5 Oct 2023 08:02:07 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp2.kfki.hu (Postfix) with ESMTP id 16261CC02C3;
+        Thu,  5 Oct 2023 16:50:46 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Thu,  5 Oct 2023 16:50:43 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
+        by smtp2.kfki.hu (Postfix) with ESMTP id 52ACACC02C0;
+        Thu,  5 Oct 2023 16:50:42 +0200 (CEST)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+        id 096853431A9; Thu,  5 Oct 2023 16:50:42 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by blackhole.kfki.hu (Postfix) with ESMTP id 076443431A8;
+        Thu,  5 Oct 2023 16:50:42 +0200 (CEST)
+Date:   Thu, 5 Oct 2023 16:50:42 +0200 (CEST)
+From:   Jozsef Kadlecsik <kadlec@netfilter.org>
+To:     Florian Westphal <fw@strlen.de>
+cc:     xiaolinkui <xiaolinkui@126.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        David Miller <davem@davemloft.net>, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, justinstitt@google.com,
+        kuniyu@amazon.com, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Linkui Xiao <xiaolinkui@kylinos.cn>
+Subject: Re: [PATCH] netfilter: ipset: wait for xt_recseq on all cpus
+In-Reply-To: <20231005123107.GB9350@breakpoint.cc>
+Message-ID: <2c9efd36-f1f6-b77b-d4eb-f65932cfaba@netfilter.org>
+References: <20231005115022.12902-1-xiaolinkui@126.com> <20231005123107.GB9350@breakpoint.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RK3588 AV1 decoder hardware block have resets lines and driver code
-already support it.
-Update yaml file to be aligned with this feature.
+On Thu, 5 Oct 2023, Florian Westphal wrote:
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
- Documentation/devicetree/bindings/media/rockchip-vpu.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+> xiaolinkui <xiaolinkui@126.com> wrote:
+> > From: Linkui Xiao <xiaolinkui@kylinos.cn>
+> > 
+> > Before destroying the ipset, take a check on sequence to ensure that the
+> > ip_set_test operation of this ipset has been completed.
+> > 
+> > The code of set_match_v4 is protected by addend=xt_write_recseq_begin() and
+> > xt_write_recseq_end(addend). So we can ensure that the test operation is
+> > completed by reading seqcount.
+> 
+> Nope, please don't do this, the xt_set can also be used from nft_compat
+> which doesn't use the xtables packet traversers.
+> 
+> I'd rather use synchonize_rcu() once in ip_set_destroy(), that will
+> make sure all concurrent traversers are gone.
 
-diff --git a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml b/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
-index 772ec3283bc6..52c7c840455f 100644
---- a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
-+++ b/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
-@@ -68,6 +68,9 @@ properties:
-   iommus:
-     maxItems: 1
- 
-+  resets:
-+    maxItems: 4
-+
- required:
-   - compatible
-   - reg
--- 
-2.39.2
+But ip_set_destroy() can be called only when there's no reference to the 
+set in the kernel and thus there's no ipset function whatsoever in the 
+packet path which would access it.
 
+> That said, I still do not understand this fix, the
+> match / target destroy hooks are called after the table has
+> been completely replaced, i.e., while packets can still be in flight
+> no packets should be within the ipset lookup functions when
+> this happens, and no more packets should be able to enter them.
+> 
+> AFAICS the request to delete the set will fail if its still referenced
+> via any rule. xt_set holds references to the sets.
+> 
+> So:
+> 1. set have dropped all references
+> 2. userspace *can* delete the set
+> 3. we get crash because xt_set was still within a sets eval
+>   function.
+> 
+> I don't see how 3) can happen, xt table replace isn't supposed
+> to call the xt_set destroy functions until after table replace.
+> 
+> We even release the entire x_table blob right afterwards.
+
+I'd expect the author to send patches to netfilter-devel@vger.kernel.org 
+first in order to review netfilter and ipset related patches there.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
