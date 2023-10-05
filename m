@@ -2,264 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 319907BAAAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D4C7BAAAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbjJETsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60894 "EHLO
+        id S230156AbjJETsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbjJETsM (ORCPT
+        with ESMTP id S231671AbjJETsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 15:48:12 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0698AEB
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:48:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qpf1+WmV+JGF4Y+0ho5iyK/Z6DvzFlJqZ0TtxPTJ/LQpWg6okA4r0lY4v7j7uzqfWnDnAe6XdvtjZJS+UFtAKeoYUZ8FzB8E+XQqDNTBWL8n7yqHnz4laETy/TQIEkmkg7zbjmIboK4rp6sNsQNmcnZNgL9KVX9guYHeRTeNLSw0b7trpWGJFv2cHdyl63dfUpxyZGG2Wsk8qwuxM5Q3bMYWTitirNChgRjAtgojMS79xmDekgtQnioUhN9iHmUI6Uc9V9mVQHv6vxQ7kjVql2c99q94t/KeFvPn2yYeq8Kq0bQxy0YyaeB95b6obop0EpSD8ANetbkj7aWK+W2kOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1kDqyYkG0M5sYUrJ+pD4Sm0sR8pMhzC0qzxsYAfpiyY=;
- b=b7aLibb2tuhB42rkOiE69PEsUdsJHcsamBl14AcFLD2Gz8sJLeKRiTErWMAMwMd1l4P++mXKB6kacLLD48Wq3qDGC4SuiN+J1PWczorC6LwJSoYuGK426lJRY9MQjAbftFuuAXV0NrsVFv6H50vVhUWCfvZCf2gBbldvY17S8qn9JnxnOVWO/1VC+TYshrm1dD0WOipQNzIENS9Kn3Oy5wT8Uc0Lfq1zMbBiilAZ4NMx+E6MXJBmDFfWsj02a2tmhFIOA2407o/y0hwVBSFFDh2Px69h6F2Vnq1q+rnWlrh43V4KAzVwwZFI7oBNNVQikNJtzJiXBNgOBKJHon/b8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1kDqyYkG0M5sYUrJ+pD4Sm0sR8pMhzC0qzxsYAfpiyY=;
- b=NZYf2cm5hdc1/2E9Z5fiUMnb7/7PC+iVSdyvh9F+V49Nqa2pjt9aRqKDwtRvD72DHoob069znqXElR0WqrsXajho2dEDdOshD6WBtbiw0343xlpV47n/9N8iDeF/2B7GZ761NfDEeGLngPKyycrL/k65fg16B/rMJL8F+2epQ2A=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
- by BL0PR12MB4867.namprd12.prod.outlook.com (2603:10b6:208:17e::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.35; Thu, 5 Oct
- 2023 19:48:07 +0000
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::2e40:ffd7:e752:644f]) by BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::2e40:ffd7:e752:644f%6]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
- 19:48:07 +0000
-Message-ID: <a6edf388-3000-404a-a4a1-acab7a9df1d9@amd.com>
-Date:   Thu, 5 Oct 2023 15:48:04 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/1] drm/amdkfd: get doorbell's absolute offset based
- on the db_size
-Content-Language: en-US
-To:     Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
-        alexander.deucher@amd.com, shashank.sharma@amd.com,
-        Mukul.Joshi@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231005172011.9271-1-Arvind.Yadav@amd.com>
- <20231005172011.9271-2-Arvind.Yadav@amd.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Organization: AMD Inc.
-In-Reply-To: <20231005172011.9271-2-Arvind.Yadav@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBPR0101CA0147.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:e::20) To BN9PR12MB5115.namprd12.prod.outlook.com
- (2603:10b6:408:118::14)
+        Thu, 5 Oct 2023 15:48:14 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C6ADB
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:48:12 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso258199966b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696535291; x=1697140091; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fx8Fz/0lyiGSr+PU8NVEjUz0QkqFU5udG1VuqQ/XuWw=;
+        b=kookpJBlDxXQoKVHcGiTWYEYH9b58EfqEsTX2/rWpZHIY6wkUGXcl7mTR9ZOEs+r+0
+         DMYlqHCoz419V6RJ+mGCGtwiIm18WFtB2PCPGd6eQYvArh5oUkNSsKgWKldyUa8HYAPg
+         fBz/5M75TRrUm5Su33GIIgRFWKH0x9xorvwKDkMerLMm121u3M63GfKTf9+YHjkAUx9f
+         gdELEXPtpfCYhPL1t4NjRaxojTiAQcX5D8E2b3chSjLeqIS1sfP6cx2XsvQl349FRtQE
+         qrJfl3Y7fYlq6AlKIadraZjhsj1hoqkBX2QEYudpI3K4dya6OVpYUuz5rJ1j3wmhAPqy
+         aV6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696535291; x=1697140091;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fx8Fz/0lyiGSr+PU8NVEjUz0QkqFU5udG1VuqQ/XuWw=;
+        b=WuB16A0TYCfLkWHvGuBmMxEPJ5Dw+z34lTcoPsS8yz/P9XGN8+oPmI5yfBCx/5o4fv
+         KDRM3j30U3+o6sP3tc4ZcdEYcS0jK0BsrcYE8oE7EvU23/VMm6zJ+WlNrbNC7aVQOHtS
+         NP8RucwQmxtjr1hBpHCJ9RYsx8vLhp5YekjDqRZLFYwvfYAMDvfAeGeHXwl8y4P0McLM
+         /kOTOQmt59fUI/IxCzNkQr+wMl23eS/tg9NVNzV5xvenqZt8CyG4+1J37tCUzeSzD3wF
+         DJQTtLg1PCRkkJdL443wd3uUuyempVWl7MNkpvwL9Xmu5S/c8SyB31Zs5SEny5Cla1e4
+         6pDA==
+X-Gm-Message-State: AOJu0Yym9//qkXdHnHn8w4OsmyJQIvj3U9sEaqC5G2ihZrDdu5XoMGsp
+        +Vf4e2KUtS3MniGlUA5J8VAl0g==
+X-Google-Smtp-Source: AGHT+IFdHDziO4Cy3Y/RCvHiCOxki5B3tN3HRkr7Sas3Oe7RRSmcfJSjD299HDC3NaowcZ3PJrUBXQ==
+X-Received: by 2002:a17:906:31d7:b0:9b2:ccd8:2d49 with SMTP id f23-20020a17090631d700b009b2ccd82d49mr4873244ejf.0.1696535291015;
+        Thu, 05 Oct 2023 12:48:11 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id jw5-20020a170906e94500b009ae6a6451fdsm1651578ejb.35.2023.10.05.12.48.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 12:48:10 -0700 (PDT)
+Message-ID: <a8d31c42-1248-4738-b01a-3abeedfd49eb@linaro.org>
+Date:   Thu, 5 Oct 2023 21:48:09 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|BL0PR12MB4867:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7dad04c4-a388-4571-4a5f-08dbc5dbff40
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4OlICpsw8CmzW0+WpVJKZvAQ7LYoM7DUU0AvzSvhmK+p2gl9OAvZQlQUOrzHns+LQ/jQTSsMDmonzxaJLKJ2Nr9qt8OmwVh62536GzOws/k44igoQ3XsQCOOsP3Mtil+a7T/IXSD401BcYzoqpv1HfFPUVxNsscvdWSAUl2uBb9IT6Z+2omhSL1ep6muJf7E++tGZFF6TGUui2PArZdwQVvR9fOI6BgoAG7/JdtEM0BjqTXiQvQLd5/jGeslgna6kaBU/OeHnWG55PFL0DNBw7wtKJvqk5RX5jx7uSziPJkddOF96nzdKfSBTSHiwkYFOGeutKhQnyqxo17+qQiBddWPFhyxWgfBFVun0vjloZB3C6IkbAmTH5NjXSQpsxuTJgUz5IEW/3NGbo0+WyC7T/KbC3JYBvsX3oT+YtPEj9WviUJmj+2K00pD7ekLrbv6zAn944WIgfqqO37JHrJ1LqB5c/w33MGe2+kCNjCSlSqszdd5Wlq7TqYzJENptZhQW7KqqvWFY1p0AHUyOnO+eUA7SzvUeMbp9M5S5DGUXkVyuBjdksb3L54bzBRzTiPixcxBKyvJ1NMPQkqgoLE0b5hpNxg7k5S4Ax5W+mfX3FcPijp8/wZtQiSfBNrstwpwyiALjWgqvcq4yG2uL0otWQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(366004)(136003)(346002)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(53546011)(6512007)(86362001)(31686004)(38100700002)(83380400001)(31696002)(26005)(2616005)(6486002)(478600001)(6506007)(6666004)(36916002)(66476007)(66556008)(66946007)(5660300002)(2906002)(44832011)(36756003)(316002)(41300700001)(8936002)(8676002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?czBua255VGtQakQ3ZHd4OE5FUkNMamJoMXZyTEFkYWI0cDhSSGNZY3hRano2?=
- =?utf-8?B?RlRKcDUzZWt4dTlJZEVWSStaR2FtamxtUFhteG5OOHd5OU4rWkx0T0FQRDRC?=
- =?utf-8?B?UW5ObVZ6Z1lOWTlhVGRnQ3dEVWNiRjB5dWl1WFBlMUNTdHhVaUl1UjZoM3pL?=
- =?utf-8?B?SDNIQjY4V3Z1OEtYNHhWYzljMUpxNDJFWWloeDBXcTZWVVcxcGE5WVE2djJ2?=
- =?utf-8?B?VGtFa3BXVS8xcXE3U2hVR2JtRXNpcjZDRFJ6dzNUOWt4V2Fvd3IvN21BaFBZ?=
- =?utf-8?B?UnFQak5tNVZ2MWFZdWgwODhFN3pXcWlQUnJuaDM3UWZtM0NPclRIWUFsT0hQ?=
- =?utf-8?B?dzJPUTgya3hJWWhYYTZtSUZtUUwySTlzeGxEQ1hZajdNUXhNVjJQN05vQnpy?=
- =?utf-8?B?UmkxVk1lMTd2WHZmM09Mc2g2QnhlM2RoQy9Kcm9iMXFrakpFRXUrRlN4akdE?=
- =?utf-8?B?NUJxY290NnY3TXVadUFzQ1grVzI2bXBheVpmd0kvbFlQYW5Jc0ZLcEtQd1hL?=
- =?utf-8?B?MFhwR2tYUmhHVmlWQWlFc0FlaTFLejY0SjBuZlgyVm9YcTM0U3ZyTDM1TkFa?=
- =?utf-8?B?UkRFdDNGd2FLb1hXRmRPUUxVM1V6Rys2RVYyMEwySXB5cERybEJKQ2kzQzZI?=
- =?utf-8?B?SGpvMldKeVZqU0Y4WTZXZjFUOFNxRU9kcG5TS2pXS1hoaFNDSjVmOWVyRXY2?=
- =?utf-8?B?Wk83bEpCbnEwTlovU3ovdU8rYkQyY1ZuS1IzazNsa0J4dUJ3WTNycDRFRzBN?=
- =?utf-8?B?U1ZqSWlQeVN5bWxzVFF5RjY2c0h6ZU9CZ2x2c21qYzc2V1JiSVpPclcrblNY?=
- =?utf-8?B?OWducVA4RWJjaFV1LzR4TjQzUDNiNFBtL2xXWEQ1aTBoK3JhZ2k5bmtBVzNM?=
- =?utf-8?B?SmJVZHUxN1ZpY1poRGFMREdvdEhoZ0xIY254cjN3T0YxV3ZPZTZNcUwzc3hW?=
- =?utf-8?B?RDE3b1BBMW9IcUlydE9BMnZ5b2xLWmJONUYvSVluRVlORWp6WmVxRmlURzdM?=
- =?utf-8?B?UWJ1d04yMGY2enZoUnFMRlozUExneU1rVDMwckszQlRQbUhwWXcwc2JEcUFX?=
- =?utf-8?B?cUJidXFRTktCak1qdlNVVW85Q3NVclNUcjNxUUFmT2dYcDZ4blFYdHk4MlhJ?=
- =?utf-8?B?WXZxeWgwSWdXQnhXbG5HRGViMkxKWUdGeExLNmpLNFJjOTV4TjZLYzhvdTQ3?=
- =?utf-8?B?L0s5SHpRTmk1c1QyOXNCL3dYd2JzUHZocVVmUXBLdEhlQnRGK1ZiQVM1RnBP?=
- =?utf-8?B?UmZIZWF3dkdvYTdCNU05dnRCcGZuVWh1STVVVDh5cm45bkRHU0JqQnhJa3Rj?=
- =?utf-8?B?YlZPaEhzbisyZWNQVm1Ba0N0bHpUT2R6K0N3QytHMUdDVGlwRjlBdWlTcXNq?=
- =?utf-8?B?dm5OMW0vWllmR096RFpLTTdYNDB1NnI2bU1xUW9OVkQwc1dQYnRxbnNXWDA5?=
- =?utf-8?B?R1lIOFR0QXkvQlE1eXhGSkI1d1gvM2tub05tVHdvc3ozeVVmL09mcitzaXo4?=
- =?utf-8?B?WmVGSEEwR3E4NG9QK2QrUVBHNkVDay9lTTlJR1krRVljayt0c09lc2tlakNG?=
- =?utf-8?B?MjNoRi85Ylc2dDhMRmVadCs4SjVDK1pabjJWZGdhUFo2THhUMFdEaXI3d2l6?=
- =?utf-8?B?Y05pOTZFZ3J0OFZJRTlFY0xkQVIrb1B3a2dZQUZET0RVaTEwQlA0ZmNqbTQw?=
- =?utf-8?B?ZWMvU2VkQWx6VEw0RkRuditwRmdRR0x1SGhVckgxd1RVOElKOXlBU3Zpblda?=
- =?utf-8?B?M2FNLzYzSzhtM2VxaGswb0lWdU1LR2J0N1lSS3d3SnpIenNhV0lLaTlqcVNT?=
- =?utf-8?B?bVEzZGdZOWFVdEtvT2paU2MxN2N5L1dhYWtlUE1nbXlqL0dMV1I5b3lMWFNQ?=
- =?utf-8?B?dG5sYktYYjVUWUtNcHh1aVFlaHRHWW1mSTRWNjRPWVR6VmZiMmU2UFMydGdS?=
- =?utf-8?B?UnMvSGNMajJUNGtCL2ZLZ2lPMzF5K0NWNCtKeUxUbndGZTBuQk12SGlwUS8r?=
- =?utf-8?B?RnBzOC8zM3ZGTERQSVM2czJia2lZeXMwUUJNVnZVb3pJVTl3T3JJc1daOFhE?=
- =?utf-8?B?Y2ZrQUJTT1RWY0tGaWx6aGVpb09DTStYSFdaT2Q4Qit4UXkxS1hKZWxhMjVs?=
- =?utf-8?Q?mE6WdrXqJ+3NI5jb8zDmrsfbX?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7dad04c4-a388-4571-4a5f-08dbc5dbff40
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 19:48:07.6329
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +tAV2J3U9wmHmoV043Lehi/2mA9Q4E9RrCW4Jwv/nInMffZa7kSMN4QV48tbdt32nADDx7KYcVUSds+E5OdazQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4867
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC v2 5/5] dt-bindings: gpio: Add bindings for pinctrl based
+ generic gpio driver
+Content-Language: en-US
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>, sudeep.holla@arm.com,
+        cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linus.walleij@linaro.org
+Cc:     Oleksii_Moisieiev@epam.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+References: <20231005025843.508689-1-takahiro.akashi@linaro.org>
+ <20231005025843.508689-6-takahiro.akashi@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231005025843.508689-6-takahiro.akashi@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-05 13:20, Arvind Yadav wrote:
-> Here, Adding db_size in byte to find the doorbell's
-> absolute offset for both 32-bit and 64-bit doorbell sizes.
-> So that doorbell offset will be aligned based on the doorbell
-> size.
->
-> v2:
-> - Addressed the review comment from Felix.
-> v3:
-> - Adding doorbell_size as parameter to get db absolute offset.
-> v4:
->    Squash the two patches into one.
->
-> Cc: Christian Koenig <christian.koenig@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
-> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
+On 05/10/2023 04:58, AKASHI Takahiro wrote:
+> A dt binding for pin controller based generic gpio driver is defined in
+> this commit. One usable device is Arm's SCMI.
+> 
+> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
 
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> +
+> +required:
+> +  - compatible
+> +  - gpio-controller
+> +  - "#gpio-cells"
+> +  - gpio-ranges
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    gpio0: gpio@0 {
+
+No reg, so no unit address.
+
+Drop also unused label.
 
 
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h        |  5 +++--
->   drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c    | 13 +++++++++----
->   .../gpu/drm/amd/amdkfd/kfd_device_queue_manager.c   |  3 ++-
->   drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c           | 10 ++++++++--
->   .../gpu/drm/amd/amdkfd/kfd_process_queue_manager.c  |  3 ++-
->   5 files changed, 24 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h
-> index 09f6727e7c73..4a8b33f55f6b 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h
-> @@ -357,8 +357,9 @@ int amdgpu_doorbell_init(struct amdgpu_device *adev);
->   void amdgpu_doorbell_fini(struct amdgpu_device *adev);
->   int amdgpu_doorbell_create_kernel_doorbells(struct amdgpu_device *adev);
->   uint32_t amdgpu_doorbell_index_on_bar(struct amdgpu_device *adev,
-> -				       struct amdgpu_bo *db_bo,
-> -				       uint32_t doorbell_index);
-> +				      struct amdgpu_bo *db_bo,
-> +				      uint32_t doorbell_index,
-> +				      uint32_t db_size);
->   
->   #define RDOORBELL32(index) amdgpu_mm_rdoorbell(adev, (index))
->   #define WDOORBELL32(index, v) amdgpu_mm_wdoorbell(adev, (index), (v))
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
-> index da4be0bbb446..6690f5a72f4d 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
-> @@ -114,19 +114,24 @@ void amdgpu_mm_wdoorbell64(struct amdgpu_device *adev, u32 index, u64 v)
->    * @adev: amdgpu_device pointer
->    * @db_bo: doorbell object's bo
->    * @db_index: doorbell relative index in this doorbell object
-> + * @db_size: doorbell size is in byte
->    *
->    * returns doorbell's absolute index in BAR
->    */
->   uint32_t amdgpu_doorbell_index_on_bar(struct amdgpu_device *adev,
-> -				       struct amdgpu_bo *db_bo,
-> -				       uint32_t doorbell_index)
-> +				      struct amdgpu_bo *db_bo,
-> +				      uint32_t doorbell_index,
-> +				      uint32_t db_size)
->   {
->   	int db_bo_offset;
->   
->   	db_bo_offset = amdgpu_bo_gpu_offset_no_check(db_bo);
->   
-> -	/* doorbell index is 32 bit but doorbell's size is 64-bit, so *2 */
-> -	return db_bo_offset / sizeof(u32) + doorbell_index * 2;
-> +	/* doorbell index is 32 bit but doorbell's size can be 32 bit
-> +	 * or 64 bit, so *db_size(in byte)/4 for alignment.
-> +	 */
-> +	return db_bo_offset / sizeof(u32) + doorbell_index *
-> +	       DIV_ROUND_UP(db_size, 4);
->   }
->   
->   /**
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> index 0d3d538b64eb..e07652e72496 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> @@ -407,7 +407,8 @@ static int allocate_doorbell(struct qcm_process_device *qpd,
->   
->   	q->properties.doorbell_off = amdgpu_doorbell_index_on_bar(dev->adev,
->   								  qpd->proc_doorbells,
-> -								  q->doorbell_id);
-> +								  q->doorbell_id,
-> +								  dev->kfd->device_info.doorbell_size);
->   	return 0;
->   }
->   
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c b/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
-> index 7b38537c7c99..05c74887fd6f 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
-> @@ -161,7 +161,10 @@ void __iomem *kfd_get_kernel_doorbell(struct kfd_dev *kfd,
->   	if (inx >= KFD_MAX_NUM_OF_QUEUES_PER_PROCESS)
->   		return NULL;
->   
-> -	*doorbell_off = amdgpu_doorbell_index_on_bar(kfd->adev, kfd->doorbells, inx);
-> +	*doorbell_off = amdgpu_doorbell_index_on_bar(kfd->adev,
-> +						     kfd->doorbells,
-> +						     inx,
-> +						     kfd->device_info.doorbell_size);
->   	inx *= 2;
->   
->   	pr_debug("Get kernel queue doorbell\n"
-> @@ -240,7 +243,10 @@ phys_addr_t kfd_get_process_doorbells(struct kfd_process_device *pdd)
->   			return 0;
->   	}
->   
-> -	first_db_index = amdgpu_doorbell_index_on_bar(adev, pdd->qpd.proc_doorbells, 0);
-> +	first_db_index = amdgpu_doorbell_index_on_bar(adev,
-> +						      pdd->qpd.proc_doorbells,
-> +						      0,
-> +						      pdd->dev->kfd->device_info.doorbell_size);
->   	return adev->doorbell.base + first_db_index * sizeof(uint32_t);
->   }
->   
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
-> index adb5e4bdc0b2..77649392e233 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
-> @@ -377,7 +377,8 @@ int pqm_create_queue(struct process_queue_manager *pqm,
->   		 */
->   		uint32_t first_db_index = amdgpu_doorbell_index_on_bar(pdd->dev->adev,
->   								       pdd->qpd.proc_doorbells,
-> -								       0);
-> +								       0,
-> +								       pdd->dev->kfd->device_info.doorbell_size);
->   
->   		*p_doorbell_offset_in_process = (q->properties.doorbell_off
->   						- first_db_index) * sizeof(uint32_t);
+> +        compatible = "pin-control-gpio";
+> +        gpio-controller;
+
+Best regards,
+Krzysztof
+
