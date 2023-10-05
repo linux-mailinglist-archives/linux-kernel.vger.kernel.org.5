@@ -2,124 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4C37BA493
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BEDC7BA5CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240411AbjJEQHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58084 "EHLO
+        id S235151AbjJEQUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:20:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239567AbjJEQEs (ORCPT
+        with ESMTP id S240754AbjJEQQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:04:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C6C4CFA
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:35:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696516506;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IJEa+gWdlvljcsxPLx3PWHMvt63pRc6Ikwaz2vOfIPg=;
-        b=IrckMHJUYzDlE8vJXwjY5OYAh/vE0BqfsFEyncI4npHdbfqiXlzM2TrQIiK5nQZBgZbiqQ
-        NiV2Vb2owsD9xrtLzaLMcOYkuulMUm9M36HLGUmVe3I6wIb4ZecbYY9ZeaLtNoG54eBAd2
-        E2zIxJqXfY1s6U574y3Z/Hut8yxFLvQ=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-519-B-gBkZ-vP_G1tR-P1LGiVA-1; Thu, 05 Oct 2023 06:34:04 -0400
-X-MC-Unique: B-gBkZ-vP_G1tR-P1LGiVA-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-535445b3e60so91258a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 03:34:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696502043; x=1697106843;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IJEa+gWdlvljcsxPLx3PWHMvt63pRc6Ikwaz2vOfIPg=;
-        b=Wrx7VXfBpy6vY2gYwJr2hUaQtO7OEyDcZIpFgm06XWwajXtUGLpf4O+ug6WsfcYs/H
-         YQMmSTrPIPIVv8/7tcDYjU5puodjU2qZKKvDnduq7lG/EVOgtbdPg1BBshEouqm31/tj
-         7EfSCXWsTpy8bM4oufi4OP7ciJdhj4V2gm725PSnDo8AiwnlthGfnF7WvFVi4p8c9dne
-         c4QFV+WZd++zB11r8VKAhwBfeKi9RZ3nHyHpNfZ7y1nBcGMLDcZYtKccd8zOn5Jw4mTV
-         N2VvjQo4SDST9+6NclC6t4TeV46eMmKDhUPy4MvR5yOeo7uG8SxWUq0s7gw6hfIpqItF
-         r7Ng==
-X-Gm-Message-State: AOJu0YzYcenyKcLuQ+ti2jVitmtOh6uCS4s+qZstMAQE7Ora8jIVO2QH
-        vb/Hk+ihTc9QvAF0wQ0qxJ/vjO0bK8oS8bn9Hb3IZNC0kkT7ouhJtpugy4okvXKkqygJeR2vpss
-        lj0/TR+WTzBDyF115qdwp/ZzC
-X-Received: by 2002:a05:6402:278c:b0:523:2e64:122b with SMTP id b12-20020a056402278c00b005232e64122bmr4222458ede.3.1696502043147;
-        Thu, 05 Oct 2023 03:34:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEBjwOxGN0mroujhop9lSt9BQu5QPOyNH8DNEdnCagtFe3aIYksxxEYiMpkoc5gI5XLXtgVuw==
-X-Received: by 2002:a05:6402:278c:b0:523:2e64:122b with SMTP id b12-20020a056402278c00b005232e64122bmr4222432ede.3.1696502042791;
-        Thu, 05 Oct 2023 03:34:02 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-225-9.dyn.eolo.it. [146.241.225.9])
-        by smtp.gmail.com with ESMTPSA id i13-20020a056402054d00b005231e3d89efsm867932edx.31.2023.10.05.03.34.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 03:34:02 -0700 (PDT)
-Message-ID: <6845daf40e0bd79c9768e83928b308e84459c010.camel@redhat.com>
-Subject: Re: [PATCH v3] net: phy: broadcom: add support for BCM5221 phy
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>,
-        Jim Reinhart <jimr@tekvox.com>,
-        James Autry <jautry@tekvox.com>,
-        Matthew Maron <matthewm@tekvox.com>
-Date:   Thu, 05 Oct 2023 12:34:00 +0200
-In-Reply-To: <20230928185949.1731477-1-giulio.benetti@benettiengineering.com>
-References: <20230928185949.1731477-1-giulio.benetti@benettiengineering.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Thu, 5 Oct 2023 12:16:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE147101BE;
+        Thu,  5 Oct 2023 07:17:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0442CC3277E;
+        Thu,  5 Oct 2023 10:40:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696502444;
+        bh=zG4Uy0wbVjgN17aTIqGgXL6FFxktGI57Cl5UBJTqWsk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cdyW1v9SF2VgC9a4TmbOmocRzolbrpxmNVkrE9kfIn+MQ5QJdbLKT21p1AnOscccW
+         Z9TDm3eRJfphN5+Ivz9zfR4cUetq8CHk/PfFUVEqD9rrzlBep1u/TkG5Oc/6YOg3Hx
+         qbGyY9/pl/m+BpEW6XreGIHUIo7gzyDWuPPMTsuE=
+Date:   Thu, 5 Oct 2023 12:40:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee@kernel.org>
+Cc:     Florian Eckert <fe@dev.tdt.de>, Jiri Slaby <jirislaby@kernel.org>,
+        Eckert.Florian@googlemail.com, pavel@ucw.cz, kabel@kernel.org,
+        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-leds@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2 3/4] trigger: ledtrig-tty: move variable definition to
+ the top
+Message-ID: <2023100524-liftoff-obnoxious-ec1e@gregkh>
+References: <20230928132632.200263-1-fe@dev.tdt.de>
+ <20230928132632.200263-4-fe@dev.tdt.de>
+ <20231002140559.GB8453@google.com>
+ <acda5dc4-e6d3-4870-929f-fb91636b5649@kernel.org>
+ <59cc4073a94edbdec5d77f8457ed4f73@dev.tdt.de>
+ <05b03f3e-5863-4d33-8c70-03be7d7e972f@kernel.org>
+ <d59855493baa936485a2b00aa29d0449@dev.tdt.de>
+ <2023100508-prelaunch-marbled-3a93@gregkh>
+ <20231005101307.GE83257@google.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231005101307.GE83257@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-09-28 at 20:59 +0200, Giulio Benetti wrote:
-> From: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
->=20
-> This patch adds the BCM5221 PHY support by reusing brcm_fet_*()
-> callbacks and adding quirks for BCM5221 when needed.
->=20
-> Cc: Jim Reinhart <jimr@tekvox.com>
-> Cc: James Autry <jautry@tekvox.com>
-> Cc: Matthew Maron <matthewm@tekvox.com>
-> Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.c=
-om>
-> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
-> ---
-> V1->V2:
-> Suggested by Andrew Lunn:
-> * handle mdix_ctrl adding bcm5221_config_aneg() and bcm5221_read_status()
-> * reorder PHY_ID_BCM5241 in broadcom_tbl[]
-> Suggested by Russell King:
-> * add comment on phy_read(..., MII_BRCM_FET_INTREG)
-> * lock mdio bus when in shadow mode
-> Suggested by Florian Fainelli:
-> * reuse brcm_fet_*() callbacks checking for phy_id =3D=3D PHY_ID_BCM5221
->=20
-> V2->V3:
-> * rebase on master branch
+On Thu, Oct 05, 2023 at 11:13:07AM +0100, Lee Jones wrote:
+> On Thu, 05 Oct 2023, Greg KH wrote:
+> 
+> > On Wed, Oct 04, 2023 at 10:36:09AM +0200, Florian Eckert wrote:
+> > > 
+> > > 
+> > > > > I decided to move the variable definition with a separate commit
+> > > > > to the top of the function, to make the build robot happy. After that
+> > > > > I made my changes for v2 to the ledtrig-tty to add the feature.
+> > > > > 
+> > > > > > Ah, lkp, then also the Closes: line as it suggests.
+> > > > > 
+> > > > > Sorry I do not understand your statement
+> > > > 
+> > > > The link you pasted above states:
+> > > > =======
+> > > > If you fix the issue in a separate patch/commit (i.e. not just a new
+> > > > version of
+> > > > the same patch/commit), kindly add following tags
+> > > > | Reported-by: kernel test robot <lkp@intel.com>
+> > > > | Closes:
+> > > > https://lore.kernel.org/oe-kbuild-all/202309270440.IJB24Xap-lkp@intel.com/
+> > > > =======
+> > > > 
+> > > > So please follow that suggestion ;).
+> > > 
+> > > Ok, I understand, thanks will to this on a v3 patchset.
+> > > I will now wait for the comments of my changes in ledtrig-tty from the led
+> > > subsystem.
+> > > And then I will send a new patch set with the requested changes.
+> > > 
+> > > Sorry for the silly question. But do I have to send this patch again for a
+> > > v3?
+> > > https://lore.kernel.org/linux-leds/f41dc1e1-6d34-48b2-97dd-ba67df6003c6@kernel.org/T/#u
+> > > It was already marked by you with a `Reviewed-by:` from you?
+> 
+> Yes please.  I will pick this up as a set once it's ready.
+> 
+> > This series is long gone from my review queue, so a v3 will be needed at
+> > the very least.
+> 
+> Nothing for Greg to worry about here (unless you *want* to review).
 
-LGTM, but waiting an extra bit for explicit ack from Florian.
+Yes, I want to ensure that the tty change is correct, last round I
+didn't think it was...
 
-Cheers,
+thanks,
 
-Paolo
-
+greg k-h
