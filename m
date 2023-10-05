@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B497BA1B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70AA67B9F89
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239527AbjJEOoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49562 "EHLO
+        id S232814AbjJEOZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237355AbjJEOjE (ORCPT
+        with ESMTP id S233255AbjJEOXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:39:04 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D69D55DEC;
-        Thu,  5 Oct 2023 07:05:47 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231005084047euoutp0157366671422ee79fb9d4488c4343312b~LKXBm3CcK0218602186euoutp01D;
-        Thu,  5 Oct 2023 08:40:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231005084047euoutp0157366671422ee79fb9d4488c4343312b~LKXBm3CcK0218602186euoutp01D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1696495247;
-        bh=3m+W8OZ+q7U0Z5Xd3tHyUE/jHnrt0jaco7nrd9bM4bY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R9IKYeScFoZXwjr2IF9SUrMEOhixk6cOMLyr/PJ071E6QDl2N68SjjAemnKbtLIq5
-         npS97x9n8m08e+7ZQebeQ/eZ/6qj9xmfGbnnItS73bd6a5OCSUBQf8XhsezLAN6M8Z
-         oPggeWIXs4GLHKoD1/rdCWq/rGhBUM7GkeTWbQzg=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20231005084047eucas1p1da5e0df7825edbc7344cb463cc3f8a9b~LKXBTTGYc1320813208eucas1p1_;
-        Thu,  5 Oct 2023 08:40:47 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 41.1D.42423.E867E156; Thu,  5
-        Oct 2023 09:40:46 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231005084046eucas1p1a8dcb84361cc0ef1242768ecc1a96664~LKXA8RBwW0854408544eucas1p19;
-        Thu,  5 Oct 2023 08:40:46 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231005084046eusmtrp110d01553a8e57750494a7a7668d25921~LKXA7op2P1084310843eusmtrp1F;
-        Thu,  5 Oct 2023 08:40:46 +0000 (GMT)
-X-AuditID: cbfec7f2-a51ff7000002a5b7-85-651e768e23d3
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id D0.38.25043.E867E156; Thu,  5
-        Oct 2023 09:40:46 +0100 (BST)
-Received: from localhost (unknown [106.120.51.111]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231005084046eusmtip1fb381a4d3621657d165da451e1e6f248~LKXAxc23d0602606026eusmtip1W;
-        Thu,  5 Oct 2023 08:40:46 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] net: ax88796c: replace deprecated strncpy with strscpy
-Date:   Thu, 05 Oct 2023 10:40:46 +0200
-In-Reply-To: <20231005-strncpy-drivers-net-ethernet-asix-ax88796c_ioctl-c-v1-1-6fafdc38b170@google.com>
-        (Justin Stitt's message of "Thu, 05 Oct 2023 01:06:26 +0000")
-Message-ID: <oypijd34yp5unl.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Thu, 5 Oct 2023 10:23:54 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0227900C
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 01:41:49 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b2cee40de8so164232366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 01:41:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696495308; x=1697100108; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mpMZ8XCn+ne5cCWmvcGYC0wPtJ0fj1zQmLPj/s0ZDIo=;
+        b=UBwc19S9LPRkL2+Qasmh6U7/85lx5FlK4xYBs1I/Ltyxw9gJXXisRM0hD+nMu1JWgi
+         pq6VAUq9s7Np2ei58mdoW8e0QNXSLTMe8I0WzR0/pgutoV5q2FCcYcsTeIqGMNSoXEg0
+         msEXyTd0WBy5kgP4bwkApBTZk6fLYEakU1V2b1azsmURi6UEtx2Fg4Hppq21//DTZMbu
+         yADrlcIPgttIVEqbn5q7/Cjd/2Imu6bObXZFV2MkEd/11EWlnGGE+aRwn/pHfMfDAdtT
+         Qo7HtKeWz16T7Z5jKnspo4QmmLikg6MyljqmtQA7ikyQAymSHnaHcAihXyky/n6EcEdA
+         ipPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696495308; x=1697100108;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mpMZ8XCn+ne5cCWmvcGYC0wPtJ0fj1zQmLPj/s0ZDIo=;
+        b=QRyYlQ3r1BA3tB4aDd/hslGcVWLlaEzxmknp2t4y8iJ7Rb5gkDYzangDgjsAxQmi5j
+         XiZZN+MPaM/hbB1/AJazzMZDwokitpnkyYEJtnlLO9j4biWLxMCeQCUXQCxM59n7P9P3
+         MHXK88OP6J01BN9VGYJyxKrvzVHU9EanRxr4kYFgujPO45whxR3fY0W4g2wDKn1EjpHp
+         mr10ZciJUffK/f/IQRro9LIpkm/Vv/5p0p7FJoL8HMm1kC18KxVzF14c7gkMLgniGZQA
+         H9DiiXlS0jf0cfJRho4ZC9egYPp90rO3QssL6gxWaGYJsXuaUy7jgy1cxN3SAgQ4b4rG
+         Z0Wg==
+X-Gm-Message-State: AOJu0YyDB9PtmJixzzF0EsSM4buYWb8hsy+Lc6mxgspBfpYpdy+1jBsV
+        33qIwk7tCNxwDVE/sWZPpKqQxQ==
+X-Google-Smtp-Source: AGHT+IEqiO2d/C02JbBC8s678a5N2GA5Anp+2xpQjHmtznYDpmS779F87xnOUT2mkxIJ+Ats3hMIGA==
+X-Received: by 2002:a17:907:5c1:b0:9b2:b80d:da87 with SMTP id wg1-20020a17090705c100b009b2b80dda87mr686284ejb.16.1696495308326;
+        Thu, 05 Oct 2023 01:41:48 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id o23-20020a17090611d700b009887f4e0291sm803932eja.27.2023.10.05.01.41.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 01:41:47 -0700 (PDT)
+Message-ID: <3e0d9d61-43ab-448a-9c28-59b5d710a151@linaro.org>
+Date:   Thu, 5 Oct 2023 10:41:46 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDKsWRmVeSWpSXmKPExsWy7djP87p9ZXKpBpd+mlvMOd/CYvH02CN2
-        i2mrF7NZXNjWx2oxb/1PRovLu+awWRxbIGbx7fQbRgcOjy0rbzJ5LNhU6rFpVSebx/t9V9k8
-        Pm+SC2CN4rJJSc3JLEst0rdL4MqYteYvY8EUyYrdm7axNTBuFu1i5OSQEDCR6Jh+gbGLkYtD
-        SGAFo8TlE0eZIZwvjBKPlr9ngnA+M0rsPfuFtYuRA6zlyGoHiPhyRok5N95Dtb9glDje/ZQJ
-        pIhNQE9i7doIkBUiApoSZ7dOZAepYQaZ2jOjhRkkISzgLdH6u5kNxGYRUJWYsmYn2CBOkKlt
-        604wgiR4Bcwl+k7+YwGxRQUsJY5vbWeDiAtKnJz5BCzOLJArMfP8G7BmCYEfHBJbjq5jg/jO
-        ReLGv3/MELawxKvjW9ghbBmJ05N7WCAa2hklmq4sZIVwJjBKfO5oYoKospa4c+4X1CRHiS2z
-        Z0ADgE/ixltBiM18EpO2TWeGCPNKdLQJQVSrSKzr38MCYUtJ9L5awQhhe0i07DvJAgmuXYwS
-        byZ0sExgVJiF5KFZSB6aBTSWGRh863fpQ4S1JZYtfM0MYdtKrFv3nmUBI+sqRvHU0uLc9NRi
-        w7zUcr3ixNzi0rx0veT83E2MwER1+t/xTzsY5776qHeIkYmD8RCjClDzow2rLzBKseTl56Uq
-        ifCmN8ikCvGmJFZWpRblxxeV5qQWH2KU5mBREufVtj2ZLCSQnliSmp2aWpBaBJNl4uCUamBy
-        eMEk7vYo39UnOtitpHvLw61WGncempsLRMZmPbHxiDnLc3Ph01DVr/MDVzDHds1ZynFcnnHt
-        KsPHb6ZHTc//+v7x9T6h2cInVouejXhyrbd4621epi+7FWa73m5+mO6w7NfCJV1bnhp+ebe5
-        2mB2UZrBBYvdHl9C2JZdun9ssddKuXUpmcprLY/PtAgIFJRtqVgW8/rRnYnmu7/+WXGjUWPj
-        hQPZV69O/p3clihhFHPlcuU0V0apI68aMqLWnjF6vb2+wiFndmSnQtiWMwJKW7UP+HP8qBC1
-        u7vV7vONKydZn53Vvf5w75UpsUGzTLM/hXfsc5wfeTbwWfbPE+vFavb8FdaUiPun6Zx9zmuP
-        jRJLcUaioRZzUXEiAO0gP1jPAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPIsWRmVeSWpSXmKPExsVy+t/xu7p9ZXKpBosmqVjMOd/CYvH02CN2
-        i2mrF7NZXNjWx2oxb/1PRovLu+awWRxbIGbx7fQbRgcOjy0rbzJ5LNhU6rFpVSebx/t9V9k8
-        Pm+SC2CN0rMpyi8tSVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXSt7NJSc3JLEst0rdL
-        0MuYteYvY8EUyYrdm7axNTBuFu1i5OCQEDCROLLaoYuRk0NIYCmjxNS2KoiwlMTKuekgYQkB
-        YYk/17rYuhi5gEqeMUosOfKDEaSGTUBPYu3aCJAaEQFNibNbJ7KD2MwCXxklGqf4gdjCAt4S
-        rb+b2SDGp0ncf9bHAmKzCKhKTFmzkxFkJqfAckaJtnUnGEESvALmEn0n/4EViQpYShzf2s4G
-        EReUODnzCQvEgmyJr6ufM09gFJiFJDULSWoW0HnMQDet36UPEdaWWLbwNTOEbSuxbt17lgWM
-        rKsYRVJLi3PTc4uN9IoTc4tL89L1kvNzNzECY2vbsZ9bdjCufPVR7xAjEwfjIUYVoM5HG1Zf
-        YJRiycvPS1US4U1vkEkV4k1JrKxKLcqPLyrNSS0+xGgK9NtEZinR5Hxg1OeVxBuaGZgamphZ
-        GphamhkrifN6FnQkCgmkJ5akZqemFqQWwfQxcXBKNTDN4th+dFMt/w8GS5a7p60czLfzu/ff
-        1rxg88XJfe173o17OjTKnsQklU3wnL6lRj96c+zPtInX8u4sMLJJvDDxcVAix8tjGuE7WKf3
-        /M7rv+nwLnwbq/g1KaEHv6YF3jPLXFN87+gaG+7nB5Z95fZSKljhpX4uWvavv/kdw5muPvcD
-        pIPb/qUl6/Sm8MwvX+QvV/N21eXe+EiTuq2pXzbYfJkoqr5AZuOz+M4Tiq5Fj6d7cDad7dp2
-        Nuu/g6I0n8hCpiVb3ALDV23ff8k080t6S+KKP5cNPV7VnTPuW5e78EXcdWZle5n/NTXZ759c
-        XHZATb5cQmDtHYbkCifWnwoBZUlNxf4GWz2nHm6qDVZiKc5INNRiLipOBAB3/X3cQgMAAA==
-X-CMS-MailID: 20231005084046eucas1p1a8dcb84361cc0ef1242768ecc1a96664
-X-Msg-Generator: CA
-X-RootMTR: 20231005084046eucas1p1a8dcb84361cc0ef1242768ecc1a96664
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231005084046eucas1p1a8dcb84361cc0ef1242768ecc1a96664
-References: <20231005-strncpy-drivers-net-ethernet-asix-ax88796c_ioctl-c-v1-1-6fafdc38b170@google.com>
-        <CGME20231005084046eucas1p1a8dcb84361cc0ef1242768ecc1a96664@eucas1p1.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: regulator: regulator-output: Multiple
+ supplies
+Content-Language: en-US
+To:     Naresh Solanki <naresh.solanki@9elements.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     broonie@kernel.org, zev@bewilderbeest.net,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20231004120529.1155700-1-naresh.solanki@9elements.com>
+ <20231004151433.GA3145438-robh@kernel.org>
+ <CABqG17in=LKwsDoPRmN5NMNiZ3wU=bbWiyPdunpwph7hgPSxEw@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CABqG17in=LKwsDoPRmN5NMNiZ3wU=bbWiyPdunpwph7hgPSxEw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,98 +125,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+On 05/10/2023 09:46, Naresh Solanki wrote:
+> Hi Rob,
+> 
+> 
+> On Wed, 4 Oct 2023 at 20:44, Rob Herring <robh@kernel.org> wrote:
+>>
+>> On Wed, Oct 04, 2023 at 02:05:26PM +0200, Naresh Solanki wrote:
+>>> Add support for multiple supplies.
+>>
+>> Why?
+> 1. Driver is already capable of that using platform data. Hence added
+> support to read DT property & initialize the same for multiple
+> supplies instead of being limited to one.
 
-It was <2023-10-05 czw 01:06>, when Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
->
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on the destination buffer without
-> unnecessarily NUL-padding.
->
-> It should be noted that there doesn't currently exist a bug here as
-> DRV_NAME is a small string literal which means no overread bugs are
-> present.
->
-> Also to note, other ethernet drivers are using strscpy in a similar
-> pattern:
-> |       dec/tulip/tulip_core.c
-> |       861:    strscpy(info->driver, DRV_NAME, sizeof(info->driver));
-> |
-> |       8390/ax88796.c
-> |       582:    strscpy(info->driver, DRV_NAME, sizeof(info->driver));
-> |
-> |       dec/tulip/dmfe.c
-> |       1077:   strscpy(info->driver, DRV_NAME, sizeof(info->driver));
-> |
-> |       8390/etherh.c
-> |       558:    strscpy(info->driver, DRV_NAME, sizeof(info->driver));
->
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strn=
-cpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.h=
-tml [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> ---
->  drivers/net/ethernet/asix/ax88796c_ioctl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
+I am not sure that's a valid reason. Bindings focus on the hardware. We
+do not describe here driver capabilities.
 
-Reviewed-by: Lukasz Stelmach <l.stelmach@samsung.com>
+> 2. This is particularly useful in cases wherein 2 or more regulators
+> are coupled together, for example in a PCIe connector having 3.3V &
+> 12V.
 
-> diff --git a/drivers/net/ethernet/asix/ax88796c_ioctl.c b/drivers/net/eth=
-ernet/asix/ax88796c_ioctl.c
-> index 916ae380a004..7d2fe2e5af92 100644
-> --- a/drivers/net/ethernet/asix/ax88796c_ioctl.c
-> +++ b/drivers/net/ethernet/asix/ax88796c_ioctl.c
-> @@ -24,7 +24,7 @@ static void
->  ax88796c_get_drvinfo(struct net_device *ndev, struct ethtool_drvinfo *in=
-fo)
->  {
->  	/* Inherit standard device info */
-> -	strncpy(info->driver, DRV_NAME, sizeof(info->driver));
-> +	strscpy(info->driver, DRV_NAME, sizeof(info->driver));
->  }
->=20=20
->  static u32 ax88796c_get_msglevel(struct net_device *ndev)
->
-> ---
-> base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-> change-id: 20231005-strncpy-drivers-net-ethernet-asix-ax88796c_ioctl-c-56=
-af20b7d992
->
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
->
->
->
+Commit message should explain this. Each commit, when not obvious,
+should say why you are doing things.
 
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
+Best regards,
+Krzysztof
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAmUedo4ACgkQsK4enJil
-gBBtOgf/bIfVw7cQUrX08F5M1kR+r8NPkBJEcRU0/LsDSm7kFknOqcpcT0HY9P4u
-BXSG73gLX18UvSzi+wshSzsDbyGNbwSHtvO3z1ADa1jAfTfKcXjKXPK7A+I9e6FV
-ooqTslmfuO/kTYkwUUSvy//kI7HSL4cmJWFvKridRMhqXmui3UNaRymFCoeUXf1z
-D/Xuf6VgmPEUZ3wZH7UaKi07IgmkryxGz5J3U+XJi8Xk0jg72gALO+6IGmeYyPUu
-jHrj75qYCCoQ4uynjloHO0QlKpfs3Wu46SRdoFQdGNYIGrGdrSNAwGDK/86Z26k4
-Zei/eRNsNhk5YQA2CC67DK/JHM76WA==
-=MNNw
------END PGP SIGNATURE-----
---=-=-=--
