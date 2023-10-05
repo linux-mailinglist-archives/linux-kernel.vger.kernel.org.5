@@ -2,59 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0D17BA5A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 331D87BA678
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241539AbjJEQSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
+        id S236814AbjJEQeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241483AbjJEQO2 (ORCPT
+        with ESMTP id S232905AbjJEQck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:14:28 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3609683FE;
-        Thu,  5 Oct 2023 01:03:54 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3DEF1240003;
-        Thu,  5 Oct 2023 08:03:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696493032;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nWCgRkBzHmBU9mQHZ8RJ874KCeFsXDwO/MzoGa06zI0=;
-        b=Da52x2X7h83zz1KiOdWz2Pa0Gw4mtWUrpO2eSl+yCaWEPo2LglKwUD97DR3QT10zroCNc8
-        gyeLF/Rvz1MVi3QzLlOzUrB/wkP3YNy9l1u7k3Eyw6W0TLRGot9mao9nkb0SH+rIoGKB79
-        g48JfG63T3U2TLujyTp2JqQZGa0c01WZQOtAcvwyvAWgBfkQSS5v+NyhpMeLn7cs8SVuaS
-        lV5863/HmFRj5nHhMEnc4uMAyfxd6yYG8oHa5B+qci8AtvBPtsC5e8YIvPxAsRLV5sixir
-        yfgEIVKYTfrVHZ46ZgNHumO8Ts0MShZSQrT7+my2w19Ei/640thGY6e3z1lRIQ==
-Date:   Thu, 5 Oct 2023 10:03:49 +0200
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Simon Horman <horms@kernel.org>
-Cc:     Michal Kubecek <mkubecek@suse.cz>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        stable@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net 1/1] ethtool: Fix mod state of verbose no_mask
- bitset
-Message-ID: <20231005100349.113f3bf1@kmaincent-XPS-13-7390>
-In-Reply-To: <ZR1HYg2ElUjy2aud@kernel.org>
-References: <20231003085653.3104411-1-kory.maincent@bootlin.com>
-        <ZR1HYg2ElUjy2aud@kernel.org>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 5 Oct 2023 12:32:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DEC428108;
+        Thu,  5 Oct 2023 06:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696513493; x=1728049493;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ZyImFdJkizIIm14WJg2Ixo/pYCP+RotrDcVrOKM9Tvs=;
+  b=Idqv1ZOTfqW0zqVg6akZjPHszoK2dzWHYhB/5F87VJUP9FRAGbkeGiFD
+   8izjsDN+1abRNGAbAMJaEtip3snKnn3fzLTHh28sR8tM0ucrsMqlUEUtm
+   B64Av3/1BSGgcoZf7rj2QATQYqJ1fv4KeMY+7gOtUCzCpCkBXDxJf5tAv
+   adqMMU9X41amWo6YHZcZmJDwBvk3g6U6Ob3bgVheuszyzrStqtLTg7QEx
+   Pe8AM82ES7bV4RJFec7LfU058TQKfIWbg9rA/vIaJxoBIPpg1ebO40ZZx
+   94pOIb1v/hd03nkfZ+XsU5byr/AnhUeIq+NlaYwePtERpHi8UerMI82Jd
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="447616789"
+X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
+   d="scan'208";a="447616789"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 01:04:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="701554854"
+X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
+   d="scan'208";a="701554854"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Oct 2023 01:04:40 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 5 Oct 2023 01:04:39 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 5 Oct 2023 01:04:39 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.170)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 5 Oct 2023 01:04:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OQcoxKp+3OhwfkWxMNLGEph19OuWgCl0j7R8sGFSPfMOT4zqLZNEQCf4v9G2OTla6mPtNceL46EBlfhJT10pF7FJbCp5E1voRz+blJKrJioCqSUgoMwi+LnSDwpMtUrPt8T29Z8XZ/t13WRvKnNR3TebPxCrLl/XC321+/7w3S3GumCBhWtcp58caJVlZEAtihawTwiDnPUmJdtfuKWVvGh/HgwXsGMUisW2kemRfoeS3Wh0CrD8zq2AXIdM4V0qUQEFIP4zss84Ejxqk53jWLyQ1kPRrlC8IFruY8+HSNPKbDjOk5aIFbEdHi5pf8mDVllIZMRkxACUvfpLxYQ6+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZyImFdJkizIIm14WJg2Ixo/pYCP+RotrDcVrOKM9Tvs=;
+ b=Ch6x537W9Ylo5uybToxwAq+mvFzPgj4c2kRK80MAIbaUXTwyTqngbYCgPNOK2CsKME4nyJDKlyXSncocny6zb59yEa74VcWClwlP9c4l7o1MiYaeMR3AMgbv+HzXrI85+ZrbdmfHyuiWi7z/76MGVWdJ4p5Fs2x409grOjGQ8MYwnrLXy0g8PGfH6ursXackwtYSLae7pdk9skcy2ZbfgqqIZjXYQTdBiRfiBvQDheReSERNQx+fLf6Dwl5gWH15QX7Pxyg7Kc79QNMyfUCpv29lDtBnRUO1NYFHq/zN4ESiTA2jh+1EJIRdV2ZNg0gWFu71DP1+ANYisbVBKpwSPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MW4PR11MB6737.namprd11.prod.outlook.com (2603:10b6:303:20d::15)
+ by CO1PR11MB5075.namprd11.prod.outlook.com (2603:10b6:303:9e::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.29; Thu, 5 Oct
+ 2023 08:04:36 +0000
+Received: from MW4PR11MB6737.namprd11.prod.outlook.com
+ ([fe80::1691:ce61:f017:88ae]) by MW4PR11MB6737.namprd11.prod.outlook.com
+ ([fe80::1691:ce61:f017:88ae%5]) with mapi id 15.20.6813.017; Thu, 5 Oct 2023
+ 08:04:36 +0000
+From:   "Li, Xin3" <xin3.li@intel.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Gross, Jurgen" <jgross@suse.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>,
+        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "nik.borisov@suse.com" <nik.borisov@suse.com>
+Subject: RE: [PATCH v12 06/37] Documentation/x86/64: Add a documentation for
+ FRED
+Thread-Topic: [PATCH v12 06/37] Documentation/x86/64: Add a documentation for
+ FRED
+Thread-Index: AQHZ9ca25hed7BrCjUK5e91MqRkFIrA31ScAgAMEFqA=
+Date:   Thu, 5 Oct 2023 08:04:35 +0000
+Message-ID: <MW4PR11MB6737F8C5FEF0291B691F4963A8CAA@MW4PR11MB6737.namprd11.prod.outlook.com>
+References: <20231003062458.23552-1-xin3.li@intel.com>
+ <20231003062458.23552-7-xin3.li@intel.com> <ZRvmGNRZ4IvmguAY@debian.me>
+In-Reply-To: <ZRvmGNRZ4IvmguAY@debian.me>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW4PR11MB6737:EE_|CO1PR11MB5075:EE_
+x-ms-office365-filtering-correlation-id: f17cc11c-148f-440e-84b0-08dbc579b74e
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3d3sXIrwdiGtUsRbglGyoMawkSvYCW9r5uoi7E3LrCJJrsATCwwHm4MvejA9G0o03CB4cjIxeblI/yOq8LH5PMeynVK9uRczJnmEDv/m84UenPMvY1Wk/hc9gzpdaaj3shzzxPc+CK6IdoOlFFWEhiE90VnR6so+pOZYzBhryRm6QxuiOoi7RtPY4l9IHxL8774L9kS73czeza538HUzGUxGq98Btf2g4mZ+yINzXLrprdHH5DEXibSRzj0VfpzK42HJQDZsschEqKWz2+DrcE4xhUGUSlEcfk01KkCsa1tDNDQqRmaG2pddITZRk/M9Triv0SCsHmRUdKDBhC1iyyRWWnfq1Ic7ga4910K/GJcHcE0pbQ7g/klTKBWHTWHQLS5U/sBXZQhik46xNG5nQTz3H2iJQN1gcZCV3tcihNScx+p3dKlQs51h09ghowMu71YCaBBeQMvKuiDJ058wgw4eQkjfXlhjQ/JJXZUfn4gCAG4PUQhm+m3aT5nDK4yKTEFL2z5rCpNCwImnKNgyeX3D/maPH3Hqp+7CfKmQOSgP75Dc29MmHiE6O2MJoruWbkCU/HdZJVqYs4wa4DjS05VhXoUdVNeYlmC0/txz56qWbmtno5immPAxDTLGV/y+
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB6737.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(39860400002)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(66446008)(64756008)(54906003)(66946007)(66556008)(66476007)(316002)(41300700001)(6506007)(9686003)(33656002)(26005)(71200400001)(7696005)(478600001)(38100700002)(38070700005)(86362001)(82960400001)(122000001)(110136005)(76116006)(55016003)(7416002)(2906002)(4744005)(4326008)(8936002)(5660300002)(8676002)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Sks2Q1JncXY4eGUzeTRVWXN6VzFBNE1tdU1BSTYvaTFmYnRHNS9qQjBKdTJW?=
+ =?utf-8?B?WUlPdFZPUHFBQ0hnTkdnMlhUSmREQzNwZmNwbDhZdGZiR3JsMHQyd05lREtU?=
+ =?utf-8?B?UVVMbnRLY29Ydlh1SEZ4U2pXZmtBWk51L2RxalovWkVrSVA0NE5SZ1BpY2w3?=
+ =?utf-8?B?dnhBWjB5bjJpbzVodnVNcjdMMmdvSFcxcVZvb0pLOXJYOVdhTGEvSUlhQlAw?=
+ =?utf-8?B?S0oxNTRWK3F2S2I4UmM2akZHUWlmL2hDVEs0SEpTMkdRaTAwY3pZWm1pVStq?=
+ =?utf-8?B?aG1VUEZ3ZGlyOWgyWUFZMXYzNldXZ2NtYlFwMHdiT2RlNmI2UXhTeHRuaFpY?=
+ =?utf-8?B?OHFvVkVRUndUNHlHV0k2R0VEUzNoTFlMbWN3bFVVdDNFVjdpYjB3RXRaOWVQ?=
+ =?utf-8?B?TVQ1dElEZTFtQ2R0bW14dGF3TjdSMDdCUThYcE9aVGZtMk4rbm5zaUl3MkF3?=
+ =?utf-8?B?cHplb3pxZGZTYnBGNEFObnAxSU1vWVhEMitTcFI3UDFjaHQ5SThOZkpYNTFx?=
+ =?utf-8?B?ZDU2N1BGemwvNm9vYlU2dlFDaVhtMnpUTGc1c1pOdW8zc3BLODFNcTd2Y283?=
+ =?utf-8?B?RE9Jd0pXLzViUklIKysyTzJuZ0RoN3pyVW5VZkVESkJXNkZucmxPMm9qckwz?=
+ =?utf-8?B?Y1lnSVd2K2FwTjlwa25HLzh3YVl6Ri8vMjZHRVJhd29JdXkydDVuV0RCcGk1?=
+ =?utf-8?B?TEk2N1U1ckZLYW5rR3BNWFRDMU8rU3l3YWlnNGt5SGJBNXRPVm9aRDltNFNn?=
+ =?utf-8?B?ejlWZHM2eHZvRmhTQnVUczFZVWZkVG5IQWIyZmxvenRzanBkVTZ4UUFIS3lW?=
+ =?utf-8?B?TXMvQVBsamVqb3F0U2xTNTVxWEpydTJYSnBONCsxV3NCR2FrTzR0bHF2UkRU?=
+ =?utf-8?B?citUaCtkRTBpelhqcjVBeG5Ob204TlN1bVhVR21FYTY2VzRpUzdLSU0vODJX?=
+ =?utf-8?B?WStWQzFBWUV1eWdnSUZDMm5vaU1vZXhOR1lvK0YvTmxDc08yU2FyY0traXkw?=
+ =?utf-8?B?RitmMGFTSk1pTzFPSVZERG1qM09MRVNrYllDUFl5a2dWM1BvaDdQdllGUmZh?=
+ =?utf-8?B?ZUJ5N2N4eldZODROVHJrWEs1Uyt2SmVyLzdtR2hQcmdlUzdaOUxnT2xLeDBy?=
+ =?utf-8?B?VmhhWmJQT1lPdDVHL2Q0WEVWSktVUXIxb2xsR0Q5d1NrRUI3aHdoREJEMWVq?=
+ =?utf-8?B?cGxjR0JRT0o1eFYrVjFtb0t6VCtvbFBNMmxRa2dwM1FlNldPTzhaZVV5L0tx?=
+ =?utf-8?B?UlkvR3EzbVAzbVlKTG5TaXpSdmlHZ3BKV1RTRk1wdE9ISFFVZmw2blN1ODJY?=
+ =?utf-8?B?RUIwa0hkdnhSRlg5cXdVT2dObmhMNDk5bWlzOGpCV1ZDN25BNHBPSVU3Smcw?=
+ =?utf-8?B?bUthei9JZzdvdkwvdzM1K0FablVYbWF3a0R4VVRxZ1FPdWhzY1N0L0l1cVly?=
+ =?utf-8?B?bmhwbWUxUDFya1BHNm5HZTR1aTVMQWVXRkZVbFNOQklxZk03MUZTRGk2bjBN?=
+ =?utf-8?B?YTBFRGFwWGIybHdpOFFsNXZXSG5KM044T3ZBZTZ2S2d2c2JNbGNEY0VabVBW?=
+ =?utf-8?B?S01pbS9qeVVTVGcwa1NMVW83YlFZN28valBRUi9jQlhXSFFOVzltVURsc29U?=
+ =?utf-8?B?Z1J5TmNRb0ZZK3ltZFBpTE04bXJFUzJPNktsSmNwQVQrenlYWjBGRk1mZ29v?=
+ =?utf-8?B?bjY5L2F1eXdsajZPeE96dmttWXRuTlhJeXhMYlU2K3lGK0VQVVVxYWJRY0VB?=
+ =?utf-8?B?TGxtalg5UjJhVS9nL1NselluR0Vsa09NYnRDSnRYaEl2OUdMd1cwWStvOWhY?=
+ =?utf-8?B?TTBCQ2JFYmtuQ2tmUlpzVnRqY1B2TExBVHZhZXVyU2VFZWgxUCtHeEFJSzlm?=
+ =?utf-8?B?eFd4TWUvL2lqNXVHVVdTdzVoeU93RkxydjZ6UmQxcW5mak9LZ2NpOStyUkRP?=
+ =?utf-8?B?aFExUkFzdmcxWGh5dTBjR3dmMFBndE1GaEpWazVFUTJieWt5cysvdWs3eFNq?=
+ =?utf-8?B?RGQrb3R3QlE1d2cwRzMvN3BRUkNzRkN2aEh5Y0lEV2xYQVc2Z0NYaStaeXIw?=
+ =?utf-8?B?OFVPK1dPNDdtelIvMjhLL2FFdms1YnBQMUJyWkk4aUhTdHFYUFlUcUNtWEgr?=
+ =?utf-8?Q?TESY=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB6737.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f17cc11c-148f-440e-84b0-08dbc579b74e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2023 08:04:35.9914
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BSUl0krpto5KpJocefkoJSEcnRV2YXUIxMUvbfa3fmcalT2XKNUH9u91JsV4RoXzIPZsYtZ8p9fzBswT8Lc7Tg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5075
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,65 +179,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Simon,
-
-Thank for your review.
-
-On Wed, 4 Oct 2023 13:07:14 +0200
-Simon Horman <horms@kernel.org> wrote:
-
-> On Tue, Oct 03, 2023 at 10:56:52AM +0200, K=C3=B6ry Maincent wrote:
-> > From: Kory Maincent <kory.maincent@bootlin.com>
->
-> > @@ -448,8 +450,11 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned
-> > int nbits, }
-> > =20
-> >  	no_mask =3D tb[ETHTOOL_A_BITSET_NOMASK];
-> > -	if (no_mask)
-> > -		ethnl_bitmap32_clear(bitmap, 0, nbits, mod);
-> > +	if (no_mask) {
-> > +		tmp =3D kcalloc(nbits, sizeof(u32), GFP_KERNEL);
-> > +		memcpy(tmp, bitmap, nbits); =20
->=20
-> Hi K=C3=B6ry,
->=20
-> I'm no expert on etnhl bitmaps. But the above doesn't seem correct to me.
-> Given that sizeof(u32) =3D=3D 4:
->=20
-> * The allocation is for nbits * 4 bytes
-> * The copy is for its for nbits bytes
-> * I believe that bitmap contains space for the value followed by a mask.
->   So it seems to me the size of bitmap, in words, is
->   DIV_ROUND_UP(nbits, 32) * 2
->   And in bytes: DIV_ROUND_UP(nbits, 32) * 16
->   But perhaps only half is needed if only the value part of tmp is used.
->=20
-> If I'm on the right track here I'd suggest helpers might be in order.
-
-You are right I should use the same alloc as ethnl_update_bitset with tmp
-instead of bitmap32:
-
-        u32 small_bitmap32[ETHNL_SMALL_BITMAP_WORDS];                     =
-=20
-        u32 *bitmap32 =3D small_bitmap32;=20
-        if (nbits > ETHNL_SMALL_BITMAP_BITS) {                            =
-=20
-                unsigned int dst_words =3D DIV_ROUND_UP(nbits, 32);        =
- =20
-                                                                          =
-=20
-                bitmap32 =3D kmalloc_array(dst_words, sizeof(u32), GFP_KERN=
-EL);
-                if (!bitmap32)                                            =
-=20
-                        return -ENOMEM;                                   =
-=20
-        }  =20
-
-But I am still wondering if it needs to be double as you said for the size =
-of
-the value followed by the mask. Not sure about it, as ethnl_update_bitset d=
-oes
-not do it.=20
-
-Regards,
+PiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2FyY2gveDg2L3g4Nl82NC9mcmVkLnJzdA0K
+PiA+IGIvRG9jdW1lbnRhdGlvbi9hcmNoL3g4Ni94ODZfNjQvZnJlZC5yc3QNCj4gPiBuZXcgZmls
+ZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uOWY1N2U3YjkxZjdlDQo+ID4g
+LS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vYXJjaC94ODYveDg2XzY0L2Zy
+ZWQucnN0DQo+ID4gQEAgLTAsMCArMSw5NiBAQA0KPiA+ICsuLiBTUERYLUxpY2Vuc2UtSWRlbnRp
+ZmllcjogR1BMLTIuMA0KPiA+ICsNCj4gPiArPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT0NCj4gPiArRmxleGlibGUgUmV0dXJuIGFuZCBFdmVudCBEZWxpdmVyeSAoRlJF
+RCkNCj4gPiArPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCg0KPiBM
+R1RNLCB0aGFua3MhDQo+IA0KPiBSZXZpZXdlZC1ieTogQmFnYXMgU2FuamF5YSA8YmFnYXNkb3Rt
+ZUBnbWFpbC5jb20+DQoNClRoYW5rcyBhIGxvdCBmb3IgcmV2aWV3aW5nIGl0IQ0KICAgIFhpbg0K
