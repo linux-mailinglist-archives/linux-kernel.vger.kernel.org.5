@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C337BA3E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252637BA014
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239928AbjJEP7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:59:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59080 "EHLO
+        id S235133AbjJEOc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235433AbjJEP5G (ORCPT
+        with ESMTP id S234283AbjJEObZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:57:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3916158FB
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:57:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDC6DC4160E;
-        Thu,  5 Oct 2023 09:08:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696496915;
-        bh=DKlHct01eZZdgFFxoFSnHEvWjamH4HVMNYorMvqVhcM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hl0nRPjTCgvdFsoN+K40ZjBXi7s0IGP49FjOYJUblKJzn2o2mixa+kCOtZsGQUnmh
-         9LCPyBFwDazPYxVpByMCpGSndjCRgc2eks0Ssi/G/hL+/pETpx3iNIofV+7U4GfhvO
-         TKvIS8e0xn6oPJzFpOWsU+8tcb1iqg1IEdQDtGhc=
-Date:   Thu, 5 Oct 2023 11:08:32 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ayush Singh <ayushdevel1325@gmail.com>
-Cc:     greybus-dev@lists.linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vaishnav@beagleboard.org,
-        jkridner@beagleboard.org, nm@ti.com,
-        krzysztof.kozlowski+dt@linaro.org, johan@kernel.org,
-        elder@kernel.org
-Subject: Re: [PATCH v7 2/3] greybus: Add BeaglePlay Linux Driver
-Message-ID: <2023100501-siesta-dictate-132e@gregkh>
-References: <20231004184639.462510-1-ayushdevel1325@gmail.com>
- <20231004184639.462510-3-ayushdevel1325@gmail.com>
+        Thu, 5 Oct 2023 10:31:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7F927B3D;
+        Thu,  5 Oct 2023 06:44:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696513473; x=1728049473;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=R/dDDcKZGfPfb/XVYbaUQl8M19BfdQjLxL+jfR/Q0Vs=;
+  b=YPqctBFks9fMn+kccYkeM1f9cnbHWQVZj8dgHfkvCUnAKeBkGJIA/zdx
+   nRcJgjY6Wp+bYAyY2P4krIZoqrMpyQhiCL/LJcdcyra9oLCM872rcsw4r
+   MV5eJXJvWDqik2giKloqjb9Ix8jis2egk69t3HupicaWpFxZMTIbTGCRP
+   BV76Nh7dI7AFAzV3ZDnPKwRSL1Kr2BBePSR1S7ZXmY/LVhoeQnX8OBgMQ
+   An3WCE1j4PnBuixpJsWW9OKtKnNcd9Soekq5kPC7nqqxMWJ2ytIHTczjV
+   CpqDcAUlhlWK+DKyHVdd7Ei1o2uKJdf9E2B2ScFWHk7jpHaPNx5ADBFns
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="387323339"
+X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
+   d="scan'208";a="387323339"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 02:10:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="701593202"
+X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
+   d="scan'208";a="701593202"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 02:10:18 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qoKN4-00000002z21-44P4;
+        Thu, 05 Oct 2023 12:10:14 +0300
+Date:   Thu, 5 Oct 2023 12:10:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH] spi: bcm2835: add a sentinel at the end of the lookup
+ array
+Message-ID: <ZR59dsxK1QBIJoI3@smile.fi.intel.com>
+References: <20231004183906.97845-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231004184639.462510-3-ayushdevel1325@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231004183906.97845-1-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 12:16:37AM +0530, Ayush Singh wrote:
-> Add the Greybus host driver for BeaglePlay board by BeagleBoard.org.
+On Wed, Oct 04, 2023 at 08:39:06PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> The current greybus setup involves running SVC in a user-space
-> application (GBridge) and using netlink to communicate with kernel
-> space. GBridge itself uses wpanusb kernel driver, so the greybus messages
-> travel from kernel space (gb_netlink) to user-space (GBridge) and then
-> back to kernel space (wpanusb) before reaching CC1352.
-> 
-> This driver directly communicates with CC1352 (running SVC Zephyr
-> application). Thus, it simplifies the complete greybus setup eliminating
-> user-space GBridge.
-> 
-> This driver is responsible for the following:
-> - Start SVC (CC1352) on driver load.
-> - Send/Receive Greybus messages to/from CC1352 using HDLC over UART.
-> - Print Logs from CC1352.
-> - Stop SVC (CC1352) on driver load.
-> 
-> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
-> ---
->  MAINTAINERS                     |   1 +
->  drivers/greybus/Kconfig         |  10 +
->  drivers/greybus/Makefile        |   2 +
->  drivers/greybus/gb-beagleplay.c | 501 ++++++++++++++++++++++++++++++++
->  4 files changed, 514 insertions(+)
->  create mode 100644 drivers/greybus/gb-beagleplay.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 5467669d7963..d87e30626a6a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8974,6 +8974,7 @@ M:	Ayush Singh <ayushdevel1325@gmail.com>
->  L:	greybus-dev@lists.linaro.org (moderated for non-subscribers)
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
-> +F:	drivers/greybus/gb-beagleplay.c
->  
->  GREYBUS SUBSYSTEM
->  M:	Johan Hovold <johan@kernel.org>
-> diff --git a/drivers/greybus/Kconfig b/drivers/greybus/Kconfig
-> index 78ba3c3083d5..fd4f26d09c53 100644
-> --- a/drivers/greybus/Kconfig
-> +++ b/drivers/greybus/Kconfig
-> @@ -17,6 +17,16 @@ menuconfig GREYBUS
->  
->  if GREYBUS
->  
-> +config GREYBUS_BEAGLEPLAY
-> +	tristate "Greybus BeaglePlay driver"
-> +	depends on TTY
+> GPIOLIB expects the array of lookup entries to be terminated with an
+> empty member. We need to increase the size of the variable length array
+> in the lookup table by 1.
 
-What you want to depend on here is serdev, not tty, right?  Or am I
-mis-reading the code requirements?
+Right and seems we (used to?) have the same mistake spread over the kernel.
+Perhaps a helper at some point?
 
-thanks,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-greg k-h
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
