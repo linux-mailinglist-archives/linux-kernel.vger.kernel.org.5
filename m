@@ -2,153 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CCD7B99D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 04:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F9C7B99DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 04:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233044AbjJECEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 22:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
+        id S233179AbjJECPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 22:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjJECEp (ORCPT
+        with ESMTP id S229767AbjJECP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 22:04:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B429AB;
-        Wed,  4 Oct 2023 19:04:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696471481; x=1728007481;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7f2TlIXBIJjbSNeuOq7FE3Xuyd7JTillqKjxVDak1fY=;
-  b=hJLJSK0csq69DUU4LIHCOSiKCkhZrlAodmog5YQEj7rGChJ0ufoTSXNe
-   cwLUgM6eFn1XVxRZaKPfvB+/FPxV6e6W5sJTusef5bcWH4NL78QYbJFE/
-   9w3M69zAYfVODnWKynGXL+6SbD5qWXqy1UkKsl1PA+rkZ2NrZxAtyr0dJ
-   AWmMdAZ/dR2OezPNWvjojgqvatskEY9dDI9IL1CongYOOzvahGCoSKsut
-   xvc48S5n+TZV13Ajowio5H7OxJgr1h9k1F/W4uMyU3pb3SalP2wenUBtB
-   mV2PHzToSQoLdKT+eqVswhucOwNbUYUDEt5YnLF2Rk2jLt5PI3Z/dRFrY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="449865051"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="449865051"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 19:04:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="875366247"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="875366247"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 04 Oct 2023 19:04:37 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoDj9-000Krs-0E;
-        Thu, 05 Oct 2023 02:04:35 +0000
-Date:   Thu, 5 Oct 2023 10:04:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     werneazc@gmail.com, jic23@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        lars@metafoo.de
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andre Werner <andre.werner@systec-electronic.com>
-Subject: Re: [PATCH 2/2] iio: adc: ads7038: Add driver support for 12bit ADC
-Message-ID: <202310050917.qrpQA2nb-lkp@intel.com>
-References: <20231004102330.3713-2-andre.werner@systec-electronic.com>
+        Wed, 4 Oct 2023 22:15:29 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31469C1;
+        Wed,  4 Oct 2023 19:15:25 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394Fdvjh019027;
+        Wed, 4 Oct 2023 19:14:44 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=YB9+Nmw4dr/PPR04PoBlvPvn37t1bScOgxylfQ7VBb4=;
+ b=W+KmyvExwsWP+5lTIXo1rMJMxx6X/doCIKlDDkXCwLoTJy1oS3t/zfN978r1Q8jT3Wjf
+ qWl4fzIwEyWWBrqCMQDzX5kiCv+tg+klOyC/JcCibCaDYG7puTIn3SHx81RJhm8SiN3z
+ lWaPeyUSn23MFz9oA28Tf9jJHAf9uOIws2bD8ZFahow683pudx7d1ZGLTpWHvKure/gT
+ jiwcqf9LvzfK1JQx349HUm+nkk4guPM08MgM2pzUVn20Qes2GehhrUdxuXwRnjZE8pNc
+ rVIG0VH8Sq9uDy5rbQC9w1WT4OZXnogKnU4SmeSZn+e4N/4Ehd1DNC5QyKKfw5m3UXDa ZA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3th29um538-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 04 Oct 2023 19:14:43 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 4 Oct
+ 2023 19:14:41 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Wed, 4 Oct 2023 19:14:41 -0700
+Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
+        by maili.marvell.com (Postfix) with ESMTP id 479BE3F707B;
+        Wed,  4 Oct 2023 19:14:32 -0700 (PDT)
+From:   Ratheesh Kannoth <rkannoth@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <rkannoth@marvell.com>, <hawk@kernel.org>,
+        <alexander.duyck@gmail.com>, <ilias.apalodimas@linaro.org>,
+        <linyunsheng@huawei.com>, <bigeasy@linutronix.de>
+Subject: [PATCH net v1] octeontx2-pf: Fix page pool frag allocation failure.
+Date:   Thu, 5 Oct 2023 07:44:34 +0530
+Message-ID: <20231005021434.3427404-1-rkannoth@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004102330.3713-2-andre.werner@systec-electronic.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: evaUIMMyftB6kJu6KHLG9UfVepScin-n
+X-Proofpoint-ORIG-GUID: evaUIMMyftB6kJu6KHLG9UfVepScin-n
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-04_13,2023-10-02_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Since page pool param's "order" is set to 0, will result
+in below warn message if interface is configured higher
+rx buffer size.
 
-kernel test robot noticed the following build warnings:
+Steps to reproduce the issue.
+1. devlink dev param set pci/0002:04:00.0 name receive_buffer_size \
+   value 8196 cmode runtime
+2. ifconfig eth0 up
 
-[auto build test WARNING on jic23-iio/togreg]
-[also build test WARNING on robh/for-next linus/master v6.6-rc4 next-20231004]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+[   19.901356] ------------[ cut here ]------------
+[   19.901361] WARNING: CPU: 11 PID: 12331 at net/core/page_pool.c:567 page_pool_alloc_frag+0x3c/0x230
+[   19.901449] pstate: 82401009 (Nzcv daif +PAN -UAO +TCO -DIT +SSBS BTYPE=--)
+[   19.901451] pc : page_pool_alloc_frag+0x3c/0x230
+[   19.901453] lr : __otx2_alloc_rbuf+0x60/0xbc [rvu_nicpf]
+[   19.901460] sp : ffff80000f66b970
+[   19.901461] x29: ffff80000f66b970 x28: 0000000000000000 x27: 0000000000000000
+[   19.901464] x26: ffff800000d15b68 x25: ffff000195b5c080 x24: ffff0002a5a32dc0
+[   19.901467] x23: ffff0001063c0878 x22: 0000000000000100 x21: 0000000000000000
+[   19.901469] x20: 0000000000000000 x19: ffff00016f781000 x18: 0000000000000000
+[   19.901472] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+[   19.901474] x14: 0000000000000000 x13: ffff0005ffdc9c80 x12: 0000000000000000
+[   19.901477] x11: ffff800009119a38 x10: 4c6ef2e3ba300519 x9 : ffff800000d13844
+[   19.901479] x8 : ffff0002a5a33cc8 x7 : 0000000000000030 x6 : 0000000000000030
+[   19.901482] x5 : 0000000000000005 x4 : 0000000000000000 x3 : 0000000000000a20
+[   19.901484] x2 : 0000000000001080 x1 : ffff80000f66b9d4 x0 : 0000000000001000
+[   19.901487] Call trace:
+[   19.901488]  page_pool_alloc_frag+0x3c/0x230
+[   19.901490]  __otx2_alloc_rbuf+0x60/0xbc [rvu_nicpf]
+[   19.901494]  otx2_rq_aura_pool_init+0x1c4/0x240 [rvu_nicpf]
+[   19.901498]  otx2_open+0x228/0xa70 [rvu_nicpf]
+[   19.901501]  otx2vf_open+0x20/0xd0 [rvu_nicvf]
+[   19.901504]  __dev_open+0x114/0x1d0
+[   19.901507]  __dev_change_flags+0x194/0x210
+[   19.901510]  dev_change_flags+0x2c/0x70
+[   19.901512]  devinet_ioctl+0x3a4/0x6c4
+[   19.901515]  inet_ioctl+0x228/0x240
+[   19.901518]  sock_ioctl+0x2ac/0x480
+[   19.901522]  __arm64_sys_ioctl+0x564/0xe50
+[   19.901525]  invoke_syscall.constprop.0+0x58/0xf0
+[   19.901529]  do_el0_svc+0x58/0x150
+[   19.901531]  el0_svc+0x30/0x140
+[   19.901533]  el0t_64_sync_handler+0xe8/0x114
+[   19.901535]  el0t_64_sync+0x1a0/0x1a4
+[   19.901537] ---[ end trace 678c0bf660ad8116 ]---
 
-url:    https://github.com/intel-lab-lkp/linux/commits/werneazc-gmail-com/iio-adc-ads7038-Add-driver-support-for-12bit-ADC/20231004-182531
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-patch link:    https://lore.kernel.org/r/20231004102330.3713-2-andre.werner%40systec-electronic.com
-patch subject: [PATCH 2/2] iio: adc: ads7038: Add driver support for 12bit ADC
-config: powerpc64-allyesconfig (https://download.01.org/0day-ci/archive/20231005/202310050917.qrpQA2nb-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310050917.qrpQA2nb-lkp@intel.com/reproduce)
+Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
+Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310050917.qrpQA2nb-lkp@intel.com/
+---
+ChangeLog
 
-All warnings (new ones prefixed by >>):
+v0 -> v1: Used get_order() and PAGE_ALIGN. Fixed commit message
+---
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
->> drivers/iio/adc/ti-ads7038-core.c:46:5: warning: no previous prototype for function 'ads7038_read_raw' [-Wmissing-prototypes]
-      46 | int ads7038_read_raw(struct iio_dev *indio_dev,
-         |     ^
-   drivers/iio/adc/ti-ads7038-core.c:46:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-      46 | int ads7038_read_raw(struct iio_dev *indio_dev,
-         | ^
-         | static 
-   1 warning generated.
-
-
-vim +/ads7038_read_raw +46 drivers/iio/adc/ti-ads7038-core.c
-
-    45	
-  > 46	int ads7038_read_raw(struct iio_dev *indio_dev,
-    47			     struct iio_chan_spec const *chan,
-    48			     int *val, int *val2,
-    49			     long mask)
-    50	{
-    51		unsigned int ret;
-    52		struct ads7038_ch_meas_result tmp_val;
-    53		struct ads7038_data *const data = (struct ads7038_data *)iio_priv(indio_dev);
-    54		struct ads7038_info *const info = (struct ads7038_info *)data->info;
-    55	
-    56		ret = info->read_channel(indio_dev, chan->channel, &tmp_val);
-    57	
-    58		if (ret < 0) {
-    59			dev_err(&indio_dev->dev, "Read channel returned with error %d", ret);
-    60			return ret;
-    61		}
-    62	
-    63		switch (mask) {
-    64		case IIO_CHAN_INFO_RAW:
-    65			*val = tmp_val.raw;
-    66	
-    67			ret = IIO_VAL_INT;
-    68			break;
-    69		case IIO_CHAN_INFO_SCALE:
-    70			ret = regulator_get_voltage(data->reg);
-    71			if (ret < 0)
-    72				break;
-    73	
-    74			*val = ret / 1000;	/* uV -> mV */
-    75			*val2 = (1 << chan->scan_type.realbits) - 1;
-    76	
-    77			ret = IIO_VAL_FRACTIONAL;
-    78			break;
-    79		default:
-    80			ret = -EINVAL;
-    81			break;
-    82		}
-    83	
-    84		return ret;
-    85	}
-    86	
-
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 997fedac3a98..a917577d5092 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -1357,7 +1357,7 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
+ 	struct page_pool_params pp_params = { 0 };
+ 	struct npa_aq_enq_req *aq;
+ 	struct otx2_pool *pool;
+-	int err;
++	int err, sz;
+ 
+ 	pool = &pfvf->qset.pool[pool_id];
+ 	/* Alloc memory for stack which is used to store buffer pointers */
+@@ -1403,6 +1403,8 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
+ 		return 0;
+ 	}
+ 
++	sz = PAGE_ALIGN(ALIGN(SKB_DATA_ALIGN(buf_size), OTX2_ALIGN));
++	pp_params.order = get_order(sz);
+ 	pp_params.flags = PP_FLAG_PAGE_FRAG | PP_FLAG_DMA_MAP;
+ 	pp_params.pool_size = min(OTX2_PAGE_POOL_SZ, numptrs);
+ 	pp_params.nid = NUMA_NO_NODE;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
