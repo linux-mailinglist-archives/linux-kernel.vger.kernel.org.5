@@ -2,128 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B9E7BA1FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1D97BA23D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbjJEPJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
+        id S231782AbjJEPW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234178AbjJEPIQ (ORCPT
+        with ESMTP id S233553AbjJEPWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:08:16 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CDF5B99
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:33:56 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7a24c86aae3so14696939f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 07:33:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1696516435; x=1697121235; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QXhhPLEbAH2Co1vOCJVLpu3VNCebYxHTaxUBPSL3m/A=;
-        b=Fr2fR6/sJIOJCoOuJUi58GJngqPaA/HSFSa0fJhJ0ldiySmGOcjhyPTuaUVI/U5Oz3
-         rYl1vLlsXhNp/pZMBiIupFFan+bOh+xkTqM08MXOQBWjFlimRsqPrdAHQUQ22p33Wtbq
-         kHoNN8ycuVZA6lpw3qhZdgawSzehMgB8tchYk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696516435; x=1697121235;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QXhhPLEbAH2Co1vOCJVLpu3VNCebYxHTaxUBPSL3m/A=;
-        b=R/PXzQq47A2E8UFeWWGxDnzTXItO4CfIDxEHoXWoP3yeBQDd7mwNaJF9s7ZSj/w0f0
-         AnJXUMn3R2Ufc3L459OLqvYqXCYui/zQeYpoFtJmk3f+pyBAgHUr/hDyB0xF45jxvycx
-         +H8e2jPvlBT5P8GF4Upc8xoFssit1UgAqT8VsPhjS06mwIinDoKYe3q3l9tNajEWTmYE
-         61fuxGYb1aSGJIW6r7i8qZ+9XL0z+T8kK8fNquBuehpLRV5rXKd9tkCmBw6RqUpOsSOJ
-         9ygZa6heaiiuDEWK9iDA7jLLD+DeISUwJxAKtRNzPquWSjzaP6HLi64LwbrOG65I6VPM
-         FDQw==
-X-Gm-Message-State: AOJu0YzrM9oZpJxZHVGrUhaJOouLRS4hvkF/kQ4xNIfLbeDLeeynoOWB
-        TUq1ual7iaBs2IVPo0JzfpW9vYo8MGVzVr5kkBE=
-X-Google-Smtp-Source: AGHT+IHO+aFM7ha6XCEPzgrAXCsvNjRwxGCPHmreI2zNmrs7Itj3mlYvL2vecXZPtwUHFZ4V9sHWOw==
-X-Received: by 2002:a05:6602:140c:b0:79f:a8c2:290d with SMTP id t12-20020a056602140c00b0079fa8c2290dmr6926134iov.0.1696516435724;
-        Thu, 05 Oct 2023 07:33:55 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id y10-20020a02bb0a000000b0043e8735ea85sm461243jan.144.2023.10.05.07.33.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 07:33:55 -0700 (PDT)
-Message-ID: <e56353b2-a814-4a81-9516-63736d12abba@linuxfoundation.org>
-Date:   Thu, 5 Oct 2023 08:33:54 -0600
+        Thu, 5 Oct 2023 11:22:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927A165A7;
+        Thu,  5 Oct 2023 07:34:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F308BC433CD;
+        Thu,  5 Oct 2023 14:34:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696516449;
+        bh=5DAflvk7cbMnfEphlkIQb4Pvn2YbEBIrbMQlws3K4as=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=X+3sokucHjrIlIyYRnc9gdfLJNhOAfTzxxTeIfaIREAYKQIme+4rbmr4+YFyClCav
+         /KlagsUdirWgfwRxhBm89m5fNiQ03SSis3/h5lrr1rz/Rlnpn5Z4S3a0rMIn3urAAk
+         bTF3R7VyvRQD+0dpnmphvKXxF8hdsy38tL4rfPoESsD8YZfAYa1Qnr0VmHMcKI/Jm9
+         QZT2zN6z6PWVPHCJsAqD+S5laip19lHiY/cVbHcbGPeuLiu5wM0VP6+wr+OSKd4DEu
+         qsATEHjkL1VcCJMImzFpf0LDgK9GGSQYOAQDm2bqAXsWOS4mwo00J9ScGKE9wmi/m3
+         MGtA3lH3OxMDQ==
+Date:   Thu, 5 Oct 2023 07:34:08 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jinjie Ruan <ruanjinjie@huawei.com>, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Netdev <netdev@vger.kernel.org>, kunit-dev@googlegroups.com,
+        Eric Dumazet <edumazet@google.com>, chuck.lever@oracle.com
+Subject: Re: [PATCH 6.5 000/321] 6.5.6-rc1 review
+Message-ID: <20231005073408.6bb52351@kernel.org>
+In-Reply-To: <CA+G9fYuH90g8jQ5SZHE98k16iQV5n+d2-G64xT9W9wrVmpt_Dg@mail.gmail.com>
+References: <20231004175229.211487444@linuxfoundation.org>
+        <CA+G9fYuH90g8jQ5SZHE98k16iQV5n+d2-G64xT9W9wrVmpt_Dg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] USB: usbip: fix stub_dev hub disconnect
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Jonas Blixt <jonas.blixt@actia.se>
-Cc:     shuah@kernel.org, valentina.manea.m@gmail.com,
-        stern@rowland.harvard.edu, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230615092810.1215490-1-jonas.blixt@actia.se>
- <2023100548-kleenex-deceased-624e@gregkh>
-Content-Language: en-US
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <2023100548-kleenex-deceased-624e@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/23 01:22, Greg KH wrote:
-> On Thu, Jun 15, 2023 at 11:28:10AM +0200, Jonas Blixt wrote:
->> If a hub is disconnected that has device(s) that's attached to the usbip layer
->> the disconnect function might fail because it tries to release the port
->> on an already disconnected hub.
->>
->> Fixes: 6080cd0e9239 ("staging: usbip: claim ports used by shared devices")
->> Signed-off-by: Jonas Blixt <jonas.blixt@actia.se>
->> ---
->> v2:
->>   - Clarify comment
->> v1:
->>   Link to v1: https://lore.kernel.org/linux-usb/20230615092205.GA1212960@W388ANL/T/#m575e37dc404067797eadf4444857366c73ba3420
->> ---
->>   drivers/usb/usbip/stub_dev.c | 9 +++++++--
->>   1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/usb/usbip/stub_dev.c b/drivers/usb/usbip/stub_dev.c
->> index 2305d425e6c9..2170c95c8dab 100644
->> --- a/drivers/usb/usbip/stub_dev.c
->> +++ b/drivers/usb/usbip/stub_dev.c
->> @@ -427,8 +427,13 @@ static void stub_disconnect(struct usb_device *udev)
->>   	/* release port */
->>   	rc = usb_hub_release_port(udev->parent, udev->portnum,
->>   				  (struct usb_dev_state *) udev);
->> -	if (rc) {
->> -		dev_dbg(&udev->dev, "unable to release port\n");
->> +	/*
->> +	 * NOTE: If a HUB disconnect triggered disconnect of the down stream
->> +	 * device usb_hub_release_port will return -ENODEV so we can safely ignore
->> +	 * that error here.
->> +	 */
->> +	if (rc && (rc != -ENODEV)) {
->> +		dev_dbg(&udev->dev, "unable to release port (%i)\n", rc);
->>   		return;
->>   	}
->>   
->> -- 
->> 2.25.1
->>
+It'd probably make sense to run the path to the test that's failing
+thru get_maintainer and throw the right people on the CC. Adding Chuck.
+
+On Thu, 5 Oct 2023 11:25:24 +0530 Naresh Kamboju wrote:
+> On Wed, 4 Oct 2023 at 23:53, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 6.5.6 release.
+> > There are 321 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.6-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h  
 > 
-> Shuah, what ever happened to this change, is it correct or was something
-> else applied to fix it?
+> While running kunit testing on qemu-armv7 following test failures noticed
+> on stable rc 6.5.6-rc1.
 > 
-
-Sorry for the delay. I thought I took care of acking this one. :(
-
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+> # req_destroy works: EXPECTATION FAILED at net/handshake/handshake-test.c:477
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> Test log:
+> ----------
+> <6>[ 1351.687335]     KTAP version 1
+> <6>[ 1351.688300]     # Subtest: Handshake API tests
+> <6>[ 1351.688760]     1..11
+> <6>[ 1351.689362]         KTAP version 1
+> <6>[ 1351.689985]         # Subtest: req_alloc API fuzzing
+> <6>[ 1351.694360]         ok 1 handshake_req_alloc NULL proto
+> <6>[ 1351.705855]         ok 2 handshake_req_alloc CLASS_NONE
+> <6>[ 1351.710878]         ok 3 handshake_req_alloc CLASS_MAX
+> <6>[ 1351.715435]         ok 4 handshake_req_alloc no callbacks
+> <6>[ 1351.722026]         ok 5 handshake_req_alloc no done callback
+> <6>[ 1351.726579]         ok 6 handshake_req_alloc excessive privsize
+> <6>[ 1351.732397]         ok 7 handshake_req_alloc all good
+> <6>[ 1351.732934]     # req_alloc API fuzzing: pass:7 fail:0 skip:0 total:7
+> <6>[ 1351.733586]     ok 1 req_alloc API fuzzing
+> <6>[ 1351.741251]     ok 2 req_submit NULL req arg
+> <6>[ 1351.745979]     ok 3 req_submit NULL sock arg
+> <6>[ 1351.753307]     ok 4 req_submit NULL sock->file
+> <6>[ 1351.763090]     ok 5 req_lookup works
+> <6>[ 1351.770057]     ok 6 req_submit max pending
+> <6>[ 1351.774878]     ok 7 req_submit multiple
+> <6>[ 1351.782411]     ok 8 req_cancel before accept
+> <6>[ 1351.787423]     ok 9 req_cancel after accept
+> <6>[ 1351.795660]     ok 10 req_cancel after done
+> <3>[ 1351.799741]     # req_destroy works: EXPECTATION FAILED at
+> net/handshake/handshake-test.c:477
+> <3>[ 1351.799741]     Expected handshake_req_destroy_test == req, but
+> <3>[ 1351.799741]         handshake_req_destroy_test == 00000000
+> <3>[ 1351.799741]         req == cae22700
+> <6>[ 1351.803368]     not ok 11 req_destroy works
+> <6>[ 1351.804539] # Handshake API tests: pass:10 fail:1 skip:0 total:11
+> <6>[ 1351.805460] # Totals: pass:16 fail:1 skip:0 total:17
+> <6>[ 1351.806276] not ok 95 Handshake API tests
+> 
+> Links:
+>  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.5-322-g9327d0db36be/testrun/20257175/suite/kunit/test/req_alloc/log
+>  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.5-322-g9327d0db36be/testrun/20257175/suite/kunit/test/req_alloc/details/
+>  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WJGlCUgDzR8asQbd2BxMssFcEc/
+>  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WJGlCUgDzR8asQbd2BxMssFcEc/config
+> 
+> Steps to reproduce:
+> # To install tuxrun to your home directory at ~/.local/bin:
+> # pip3 install -U --user tuxrun==0.49.2
+> #
+> # Or install a deb/rpm depending on the running distribution
+> # See https://tuxmake.org/install-deb/ or
+> # https://tuxmake.org/install-rpm/
+> #
+> # See https://tuxrun.org/ for complete documentation.
+> Link to reproducer,
+> https://storage.tuxsuite.com/public/linaro/lkft/builds/2WJGlCUgDzR8asQbd2BxMssFcEc/tuxmake_reproducer.sh
+> 
+> or
+> 
+> tuxrun --runtime podman --device qemu-armv7 --boot-args rw --kernel
+> https://storage.tuxsuite.com/public/linaro/lkft/builds/2WJGlCUgDzR8asQbd2BxMssFcEc/zImage
+> --modules https://storage.tuxsuite.com/public/linaro/lkft/builds/2WJGlCUgDzR8asQbd2BxMssFcEc/modules.tar.xz
+> --rootfs https://storage.tuxboot.com/debian/bookworm/armhf/rootfs.ext4.xz
+> --parameters SKIPFILE=skipfile-lkft.yaml --image
+> docker.io/linaro/tuxrun-dispatcher:v0.49.2 --tests kunit --timeouts
+> boot=30
+> 
+> 
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
+> 
 
