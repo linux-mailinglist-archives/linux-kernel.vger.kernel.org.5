@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B16267BA591
+	by mail.lfdr.de (Postfix) with ESMTP id 598927BA590
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242493AbjJEQSI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Oct 2023 12:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
+        id S242467AbjJEQSF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Oct 2023 12:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241326AbjJEQOP (ORCPT
+        with ESMTP id S241223AbjJEQOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:14:15 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542864490;
-        Wed,  4 Oct 2023 21:44:51 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-27734d76e1bso398184a91.2;
-        Wed, 04 Oct 2023 21:44:51 -0700 (PDT)
+        Thu, 5 Oct 2023 12:14:12 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512324C03;
+        Wed,  4 Oct 2023 22:15:31 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2774874c3daso415951a91.1;
+        Wed, 04 Oct 2023 22:15:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696481087; x=1697085887;
+        d=1e100.net; s=20230601; t=1696482928; x=1697087728;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NSXc66j6KPSxT44QaA3/43T0mBt/pQC0vRdLVYS87ZM=;
-        b=JEGDMaZCoUeoSEqDgVJiEYfwWpINFse1OnRuAHKlWqqieYnFrKCYyNJnmR0NuvyhXa
-         6Bx8ou6gh4AkE7F4nwBUxVyyACB5WDTRu/Kl+AvtC18V1RrEdWY6ukwQs2yXkGFBPO0a
-         RRckQc5yzmsg9/TaluEh1l00E4KZtdWGo/e40IUljH8pPKrbyPya8JViUQ/1Ou52X3hb
-         PsQ9LLJDryd4H1+HCPRl/9SX1ULo/HYlee9zV7/C+9aYW9CyPlfLZ7bwKe4EJirfrINl
-         wLRkHokco7KlzzoLmIPuAHmv0Qt9i1xR0ZW75np81tIUlEah+nbTcI6esi4BnprmTPjp
-         yrhw==
-X-Gm-Message-State: AOJu0YzUrYv4HuyPE7J2rjvCFBdyVUY4et+ysJVxo9vsoMcU/Zapc0WS
-        xpuUAW09RefeQhZyOjlnP0eijcGSTN/eUvj031Q=
-X-Google-Smtp-Source: AGHT+IGo2QtMWpHs+yNK54aIUDzWc4jm4grLLdU6ExjvuYKDCoZf14FvBPctqJn3elwrMGkHvJHDFerV2y0FEiVshrM=
-X-Received: by 2002:a17:90a:9101:b0:273:f584:40ca with SMTP id
- k1-20020a17090a910100b00273f58440camr3999328pjo.16.1696481087457; Wed, 04 Oct
- 2023 21:44:47 -0700 (PDT)
+        bh=nWwQRb/XtfECORlbJaPIokf0S+U6RkqOPHFRazouw+M=;
+        b=gk6ehihyY7L8RWQKVeiLU5hPqOL4VdBoXG4lIe6ICycBvyxQ0HhtrVl8hlSrzLCSXQ
+         t2QxKLvicTx6c2AD8yTG4JRD/bKhAI2rQJ/52mEXHU/GI/ZOqgYa0e3tLBiSb74K9VcW
+         I1j/Ne+lMa5fxFHJzH8inlVtaW4N2QxayTBCqtv2x4+IpycI/5usIos8RFDVTgHzC3Zj
+         68qBZH78N1HI0OORdqy6hzP786SV9LRhamZe/b0+vHU6mfVQ1Gd+ft9OLYjltrFP32qn
+         OgAyjM8R4Rzwxd4+VipW8wIWWodYuI1mxIXrlE2ROtyYA6DnEtmBD4XmqesLmNG2M+GM
+         3THg==
+X-Gm-Message-State: AOJu0YyoO8Cz9iEFwXDY6U/QdP+cd6dST7DUNzNUIrxW4YrQ0FT9o01c
+        kdjh0RSaUxyDiMhbhbnZDyIS8i8g5XPQp3IHRvo=
+X-Google-Smtp-Source: AGHT+IFgLfvo1oegfrzeQvDg8A+plJfnaldXDVwHe7iwyPSK91s2WY58rzBuwDkayDOgh0mRN9ApFzOpeM5z8cMN6CE=
+X-Received: by 2002:a17:90b:3b92:b0:273:cec7:23ee with SMTP id
+ pc18-20020a17090b3b9200b00273cec723eemr4213933pjb.37.1696482927938; Wed, 04
+ Oct 2023 22:15:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231001131047.15176-1-april@acab.dev> <CAM9d7cgB6GfJSQhWJwmi=FodKwsYdVy_FnRJ+jzt1DpmO-J3cg@mail.gmail.com>
-In-Reply-To: <CAM9d7cgB6GfJSQhWJwmi=FodKwsYdVy_FnRJ+jzt1DpmO-J3cg@mail.gmail.com>
+References: <20231004175217.404851126@linuxfoundation.org> <f0115175-975e-4fde-aa69-666568ce5c6a@gmail.com>
+ <CAM9d7chUnxjPdOwZZ0imYs+i8+dd9GL=O3gqJXzaRd1VGZJxBg@mail.gmail.com> <d2b80a6d-63c8-46ec-bf0f-83217a7c517d@gmail.com>
+In-Reply-To: <d2b80a6d-63c8-46ec-bf0f-83217a7c517d@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 4 Oct 2023 21:44:34 -0700
-Message-ID: <CAM9d7cjRxp7zSZ0PFCW6xWvcdJhDHynu-eFkfwYXLPXWRqcthA@mail.gmail.com>
-Subject: Re: [PATCH] /bin/dmesg to dmesg Path
-To:     April John <april@acab.dev>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>
+Date:   Wed, 4 Oct 2023 22:15:16 -0700
+Message-ID: <CAM9d7cjf8uct-xMr0Sj8=3kdcH6mavx5pCCsg+G8v53d+kxWjA@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/259] 6.1.56-rc1 review
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 9:16 PM Namhyung Kim <namhyung@kernel.org> wrote:
+On Wed, Oct 4, 2023 at 5:52 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
 >
-> Hello,
 >
-> On Sun, Oct 1, 2023 at 6:10 AM April John <april@acab.dev> wrote:
-> >
-> > Dmesg is not in every distro at /bin/dmesg, in NixOS for example, this fails,
-> > but the path should in most cases contain dmesg.
-> > This follows the example of replacing /bin/bash with bash Path in the codebase.
-> >
-> > ---
-> > tools/perf/util/evsel.c | 2 +-
-> > 1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> > index a8a5ff87c..aa602aae6 100644
-> > --- a/tools/perf/util/evsel.c
-> > +++ b/tools/perf/util/evsel.c
-> > @@ -3053,7 +3053,7 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
-> >
-> > return scnprintf(msg, size,
-> > "The sys_perf_event_open() syscall returned with %d (%s) for event (%s).\n"
-> > - "/bin/dmesg | grep -i perf may provide additional information.\n",
-> > + "dmesg | grep -i perf may provide additional information.\n",
-> > err, str_error_r(err, sbuf, sizeof(sbuf)), evsel__name(evsel));
-> > }
-> >
-> > --
-> > 2.42.0
-> >
-> > Signed-off-by: April John <april@acab.dev>
 >
-> It is usual to put a tag after the patch, it should be at the end of the
-> commit message.  With that,
+> On 10/4/2023 1:19 PM, Namhyung Kim wrote:
+> > Hello,
+> >
+> > On Wed, Oct 4, 2023 at 12:33 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >>
+> >> +Namhyung, Ian,
+> >>
+> >> On 10/4/23 10:52, Greg Kroah-Hartman wrote:
+> >>> This is the start of the stable review cycle for the 6.1.56 release.
+> >>> There are 259 patches in this series, all will be posted as a response
+> >>> to this one.  If anyone has any issues with these being applied, please
+> >>> let me know.
+> >>>
+> >>> Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+> >>> Anything received after that time might be too late.
+> >>>
+> >>> The whole patch series can be found in one patch at:
+> >>>        https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.56-rc1.gz
+> >>> or in the git tree and branch at:
+> >>>        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> >>> and the diffstat can be found below.
+> >>>
+> >>> thanks,
+> >>>
+> >>> greg k-h
+> >>
+> >> perf fails to build with:
+> >>
+> >> fixdep: error opening depfile:
+> >> /local/users/fainelli/buildroot/output/arm/build/linux-custom/tools/perf/pmu-events/.pmu-events.o.d:
+> >> No such file or directory
+> >> make[5]: *** [pmu-events/Build:33:
+> >> /local/users/fainelli/buildroot/output/arm/build/linux-custom/tools/perf/pmu-events/pmu-events.o]
+> >> Error 2
+> >> make[4]: *** [Makefile.perf:672:
+> >> /local/users/fainelli/buildroot/output/arm/build/linux-custom/tools/perf/pmu-events/pmu-events-in.o]
+> >> Error 2
+> >> make[3]: *** [Makefile.perf:240: sub-make] Error 2
+> >> make[2]: *** [Makefile:70: all] Error 2
+> >> make[1]: *** [package/pkg-generic.mk:294:
+> >> /local/users/fainelli/buildroot/output/arm/build/linux-tools/.stamp_built]
+> >> Error 2
+> >> make: *** [Makefile:27: _all] Error 2
+> >>
+> >> due a80fd00cb1a7793ead4d7c3fa7d3f1e898231c27 ("perf build: Update build
+> >> rule for generated files"). Reverting that commit fixes the build for me
+> >> and then all is good in terms of testing.
+> >
+> > I think it's ok to drop the patches if it's not applied
+> > cleanly.
 >
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> AFAICT the patch applied cleanly. There was some bizarre interplay in
+> stable kernels prior to < 6.1 as reported here:
+>
+> https://lore.kernel.org/all/dcb9997a-2e8a-5eb2-7a34-f8af418d4bf1@gmail.com/
+> https://lore.kernel.org/all/6a577578-8adb-aa70-1bf8-b1a4573152cf@gmail.com/
+>
+> Does this make sense to you that on 6.1 which does have Ian's commit
+> 00facc760903be6675870c2749e2cd72140e396e ("perf jevents: Switch build to
+> use jevents.py") that we would still get this build error somehow?
 
-I've tried to apply the patch but it failed.  It looks broken.
-Have you generated it using git format-patch ?
+You can drop the pmu-events part of the change if possible.
+If not, I'm ok to drop the entire patch as it's intended to fix a
+corner case only.  Normal builds should be fine before and
+after the change.
 
 Thanks,
 Namhyung
-
-
-  Applying: /bin/dmesg to dmesg Path
-  error: corrupt patch at line 11
-  Patch failed at 0001 /bin/dmesg to dmesg Path
