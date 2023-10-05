@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D65B7BA2AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287E97BA2C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbjJEPpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
+        id S233418AbjJEPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233396AbjJEPo6 (ORCPT
+        with ESMTP id S233952AbjJEPpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:44:58 -0400
+        Thu, 5 Oct 2023 11:45:01 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E85E9B48;
-        Thu,  5 Oct 2023 07:32:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0191C43391;
-        Thu,  5 Oct 2023 14:32:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDA685EA;
+        Thu,  5 Oct 2023 07:32:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 315A1C433C9;
+        Thu,  5 Oct 2023 14:32:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696516363;
-        bh=kKHWqAL9V1k3ZHEQ5dtDLEXa6DVZJMGdQmdjAsLw/Gs=;
+        s=k20201202; t=1696516373;
+        bh=sqNEHFjnU+yo6/6MLVYdAK78AIkw6BRdNGoB3PV1jVY=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=hD+kW4nwjLNut17okBC9zLe+N7UJNUaa6k4dZbaa2E4vEw1/1cnqVCBQ974jkKzqE
-         R+Z5exQdYwbqen2Z4cACafR40rBFMpG2pSmXJhPm1pr9J3TJL9G3TpjDQ0N536vKLq
-         etK7R0JMuHHqiJQ7tGab95SFN2xs5ZcEu+9oMd2rmEy6LJCiWZU2AB4l/+JnUGzkFh
-         MzEt481z2t943FxXgkb1kHt4yKk17B8tXQCaYdQ31F5IvidIqFDKdgjSP1EZTFSh0/
-         QPak372IpbJ5erFppGRN3ky7OBnO0PZjxFbAUzV575eV6Aw0QJm0ICccQ7yXdQd6fr
-         orl+I68wrJbIA==
-Message-ID: <63e5048b-094d-42f5-a56d-94969ba0c43e@kernel.org>
-Date:   Thu, 5 Oct 2023 16:32:38 +0200
+        b=TnjvRJ+B4GTnBC/GZrQEDhTQMD4gbtl5u4QDeMSKcpnYWZgHu4UK6ZJhcJKmNLRTB
+         awkDOP0PFDQnFV1qT+8fDwNd7CCXAv2Cgw/YsipUorIUo6zcYtrvXb3tcC4Z1/C4zj
+         Ttnm/kQqEk/9cCDRWsZZrDRMh3eYEpv6C/LHYZSV68R5TQhLLTvjhb0qoq4676SCzl
+         aUTcl3oXyl7g+L5df3gskWaiv68178QRXrFFrd+NjvDkUsppAGpC5sjyiHK8m70SVM
+         99hBLTxOFgCdo5V5C22biclGaLFE8Vkkb6wXRnWC783bICXbG1lhCs6Vb/TJJw2tSu
+         DllIztEV8XDJQ==
+Message-ID: <0a25dad3-85d0-4bb5-8246-093057519e7b@kernel.org>
+Date:   Thu, 5 Oct 2023 16:32:51 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] pinctrl: denverton: Replace MODULE_ALIAS() with
+Subject: Re: [PATCH v1 1/1] pinctrl: broxton: Replace MODULE_ALIAS() with
  MODULE_DEVICE_TABLE()
+Content-Language: en-US
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
         Andy Shevchenko <andy@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>
-References: <20231005135945.3672438-1-andriy.shevchenko@linux.intel.com>
-Content-Language: en-US
+References: <20231005133949.3613943-1-andriy.shevchenko@linux.intel.com>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -84,7 +84,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231005135945.3672438-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231005133949.3613943-1-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -96,7 +96,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2023 15:59, Andy Shevchenko wrote:
+On 05/10/2023 15:39, Andy Shevchenko wrote:
 > As Krzysztof pointed out the better is to use MODULE_DEVICE_TABLE()
 > as it will be consistent with the content of the real ID table of
 > the platform devices.
@@ -104,9 +104,6 @@ On 05/10/2023 15:59, Andy Shevchenko wrote:
 > Suggested-by: Krzysztof Kozlowski <krzk@kernel.org>
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  drivers/pinctrl/intel/pinctrl-denverton.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
 
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
