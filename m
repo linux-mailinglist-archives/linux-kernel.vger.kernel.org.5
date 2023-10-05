@@ -2,133 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BA17BA272
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194AB7B9EE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbjJEPhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
+        id S233798AbjJEOOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbjJEPh3 (ORCPT
+        with ESMTP id S231294AbjJEOMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:37:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0CC35C18;
-        Thu,  5 Oct 2023 07:53:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C1B3C433BF;
-        Thu,  5 Oct 2023 07:46:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696491987;
-        bh=1jTpDnM2GecCVC4qOmqZGahpZXui/D5O8mYTLXlY9MY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=baKb8dI33lKNmtfP0r/aNrrd2keZ5tsQ7Qh58HRXedsgre70GS3XfV3dwuabXHD1a
-         5T5658L4OGPxPwdTsIz8B7UjmZSbtJnhgQ8BHkvj9+mLwfBuFL/lDx7sjDp47HkoPA
-         FBP3c6DhXRJxKH41xHedx/xf32NU4T2UzOnR29lQ=
-Date:   Thu, 5 Oct 2023 09:46:25 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?Q?Rodr=EDguez_Barbarin=2C_Jos=E9?= Javier 
-        <josejavier.rodriguez@duagon.com>
-Cc:     "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "jth@kernel.org" <jth@kernel.org>,
-        =?iso-8859-1?B?U2FuanXhbiBHYXJj7WEs?= Jorge 
-        <Jorge.SanjuanGarcia@duagon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "morbidrsa@gmail.com" <morbidrsa@gmail.com>
-Subject: Re: [PATCH v3 2/2] mcb: use short version for function pointer for
- mcb_free_bus
-Message-ID: <2023100557-mournful-veto-64a2@gregkh>
-References: <20230906114901.63174-1-JoseJavier.Rodriguez@duagon.com>
- <20230906114901.63174-3-JoseJavier.Rodriguez@duagon.com>
- <2023092000-overprice-guileless-e1a3@gregkh>
- <352fb63a17943b974f5bf6eebb4d861ae8307b24.camel@duagon.com>
+        Thu, 5 Oct 2023 10:12:51 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19417DBD
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 00:46:42 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-2774f6943b1so497865a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 00:46:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1696492002; x=1697096802; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gONi3mU2Nao2iYlTM3Z0y9mEcA9yDtJpsS/Q6xea9gg=;
+        b=a33qz0n8Gia6g8tiygzVqJO3XOIqyD1H+EoEFkVNzK73V/FkjKv7fhdGXfWYSgZ0Bs
+         9I3BiYgT1GalnqhUz4EwcrsWJhmIfhcAxexyiMQNzpfZHo8wDIw+eDCvvMyPE9p8nljF
+         SPzZmkjxb9AMuwQ7o8ukNEmU50oexX0RoOneRUF15he9iN3WaR4OtSXLk6sk+1EI/7m3
+         D1aGm0VnY9i75uL72/PqBHcRKH0wg2aRBO2qaWa1lA5hvwCt8sTnV3I6nI2Yt8vWDhl8
+         K8ZX2oZYLXT9/aNkTiA7S/mrFLJn9Fc99jhIv8wPGC+jRrMgVsej2tJlX2XPou3I+yp6
+         4axA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696492002; x=1697096802;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gONi3mU2Nao2iYlTM3Z0y9mEcA9yDtJpsS/Q6xea9gg=;
+        b=l88qozDYX64ReDNRJesR+jTjdzl5MqlES37Sztd+9eYYh1N1TvlMZQyZ/beqzZzRnJ
+         3Aa2dXo5D5nn+GJGqR9tbRQK4AWOHdtIx7w62vjbTc7J25MHbsKtaH2Wd5kJQohtb9j4
+         nbeb0lwQSFREw7rcM0MrpYhMx/tlk3HXsyRh91ZvDYtiaZelv48E0sqBTGASYeCBQauv
+         L30U1NUlcL1h+AIvIEMERX0va3uDIbh9J0092ZRTRyMX+4yVFYbhXVQxYrNaMUrm7d14
+         u4Y13n/KSggbFV9EXFtVZir3WLdi+Kcd4rMXaezcPvPSBv9GPaYyv9rh7ZmkPrx/zK0P
+         9z7A==
+X-Gm-Message-State: AOJu0Yw7kC0MdfbEINtVZmyaH97qg5JSazEXuAEtdVQR1VfGQH3fGKON
+        t1S2qfvoUbX05Gz5mvLuQKeqq9dIy4lWcF9FRcKtjA==
+X-Google-Smtp-Source: AGHT+IGnCQ/MzCTXbm/9BKeoqCiGoah+7aIF31lg8x7PD0677LUDZURnqxgVEDXEnB9+lJS4GNvl8XuU4H7vxTiphyA=
+X-Received: by 2002:a17:90b:374b:b0:26b:4a9e:3c7e with SMTP id
+ ne11-20020a17090b374b00b0026b4a9e3c7emr4348319pjb.4.1696492002069; Thu, 05
+ Oct 2023 00:46:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <352fb63a17943b974f5bf6eebb4d861ae8307b24.camel@duagon.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231004120529.1155700-1-naresh.solanki@9elements.com> <20231004151433.GA3145438-robh@kernel.org>
+In-Reply-To: <20231004151433.GA3145438-robh@kernel.org>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Thu, 5 Oct 2023 13:16:31 +0530
+Message-ID: <CABqG17in=LKwsDoPRmN5NMNiZ3wU=bbWiyPdunpwph7hgPSxEw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: regulator: regulator-output: Multiple supplies
+To:     Rob Herring <robh@kernel.org>
+Cc:     broonie@kernel.org, zev@bewilderbeest.net,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 12:28:14PM +0000, Rodríguez Barbarin, José Javier wrote:
-> On Wed, 2023-09-20 at 15:18 +0200, gregkh@linuxfoundation.org wrote:
-> > On Wed, Sep 06, 2023 at 11:49:28AM +0000, Rodríguez Barbarin, José
-> > Javier wrote:
-> > > From: Jorge Sanjuan Garcia <jorge.sanjuangarcia@duagon.com>
-> > > 
-> > > Just a style change so that the device release callbacks are
-> > > defined
-> > > in the same way for devices in mcb_bus and mcb_device.
-> > > 
-> > > Signed-off-by: Jorge Sanjuan Garcia
-> > > <jorge.sanjuangarcia@duagon.com>
-> > > Co-developed-by: Jose Javier Rodriguez Barbarin
-> > > <JoseJavier.Rodriguez@duagon.com>
-> > > Signed-off-by: Jose Javier Rodriguez Barbarin
-> > > <JoseJavier.Rodriguez@duagon.com>
-> > > ---
-> > >  drivers/mcb/mcb-core.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/mcb/mcb-core.c b/drivers/mcb/mcb-core.c
-> > > index 0cac5bead84f..5c6157b0db75 100644
-> > > --- a/drivers/mcb/mcb-core.c
-> > > +++ b/drivers/mcb/mcb-core.c
-> > > @@ -288,7 +288,7 @@ struct mcb_bus *mcb_alloc_bus(struct device
-> > > *carrier)
-> > >         bus->dev.parent = carrier;
-> > >         bus->dev.bus = &mcb_bus_type;
-> > >         bus->dev.type = &mcb_carrier_device_type;
-> > > -       bus->dev.release = &mcb_free_bus;
-> > > +       bus->dev.release = mcb_free_bus;
-> > 
-> > But you aren't fixing the root cause here of an incorrect pointer
-> > being
-> > passed to this function, right?
-> > 
-> > Yes, removing the single variable is nicer, so the crash doesn't
-> > happen,
-> > but you are still passing the wrong pointer around, so why not fix
-> > that?
-> > 
-> 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> The pointer to struct device in function __mcb_bus_add_devices() always
-> was the correct one. The problem came when calling to function
-> to_mcb_device() which was hapenning even for the case of struct device
-> pointer being a member of struct mcb_bus.
-> 
-> Removing the need for this conversion makes the function generic so
-> that it will work for both mcb_device and mcb_bus structs. This already
-> fixes the crash as no member overlapping will occur (is_added in
-> mcb_device struct and bus_nr in mcb_bus struct).
-> 
-> We belive the pointer is the correct one and this patch series was
-> actually fixing the root cause of the crash. What do you mean by
-> "passing the wrong pointer around"? are we missing something?
+Hi Rob,
 
-Ok, I understand now, yes, this looks correct.
 
-But, the function mcb_bus_add_devices() seems odd to me.  You are
-passing in a parameter that you are never using, so why have it at all?
-You are implying that you only have one bus, yet you are ignoring the
-bus sent to you?
+On Wed, 4 Oct 2023 at 20:44, Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Oct 04, 2023 at 02:05:26PM +0200, Naresh Solanki wrote:
+> > Add support for multiple supplies.
+>
+> Why?
+1. Driver is already capable of that using platform data. Hence added
+support to read DT property & initialize the same for multiple
+supplies instead of being limited to one.
+2. This is particularly useful in cases wherein 2 or more regulators
+are coupled together, for example in a PCIe connector having 3.3V &
+12V.
 
-This still seems wrong.
-
-I'll queue up this series as it obviously fixes a bug, but more needs to
-be done here.
-
-thanks,
-
-greg k-h
+Regards,
+Naresh
+>
+> >
+> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> > ---
+> >  .../devicetree/bindings/regulator/regulator-output.yaml  | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/regulator/regulator-output.yaml b/Documentation/devicetree/bindings/regulator/regulator-output.yaml
+> > index 078b37a1a71a..6d077f123729 100644
+> > --- a/Documentation/devicetree/bindings/regulator/regulator-output.yaml
+> > +++ b/Documentation/devicetree/bindings/regulator/regulator-output.yaml
+> > @@ -21,13 +21,13 @@ properties:
+> >    compatible:
+> >      const: regulator-output
+> >
+> > -  vout-supply:
+> > +patternProperties:
+> > +  ".*-supply":
+> >      description:
+> >        Phandle of the regulator supplying the output.
+> >
+> >  required:
+> >    - compatible
+> > -  - vout-supply
+> >
+> >  additionalProperties: false
+> >
+> > @@ -37,3 +37,8 @@ examples:
+> >            compatible = "regulator-output";
+> >            vout-supply = <&output_reg>;
+> >        };
+> > +      output1 {
+> > +          compatible = "regulator-output";
+> > +          sw0-supply = <&output_reg0>;
+> > +          sw1-supply = <&output_reg2>;
+> > +      };
+> >
+> > base-commit: f9a1d31874c383f58bb4f89bfe79b764682cd026
+> > --
+> > 2.41.0
+> >
