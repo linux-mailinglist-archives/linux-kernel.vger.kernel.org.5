@@ -2,102 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 569247BA7C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDCD7BA878
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjJERSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46090 "EHLO
+        id S230479AbjJERwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:52:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbjJERRt (ORCPT
+        with ESMTP id S231673AbjJERwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:17:49 -0400
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D8F271F;
-        Thu,  5 Oct 2023 10:10:48 -0700 (PDT)
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-694f3444f94so1023701b3a.2;
-        Thu, 05 Oct 2023 10:10:48 -0700 (PDT)
+        Thu, 5 Oct 2023 13:52:46 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB195585
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:14:37 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so2050255a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 10:14:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1696526076; x=1697130876; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P3jOJ9y4m0qNvfGlNMEwsIKM+Ht48cxLl39lUm8RL8s=;
+        b=QaNSoEp2rACavVX9r/B2SzhumdWsNADP8WTOrOg5CZk7OYw2RrLagzPqBcRD4eHwNu
+         PxPO/R0I3AGFcsq7IIhMTEzmcL0K8/GMtc/gtr0g5XGa8djxCD8e75LSQTdUorg7p4Y2
+         yjpb9x496FdWlByeguJZP3mLbnAZFcQv3o+1D8G42/vMipfEfMi4WFyaeyd5dSKPMgDN
+         /6NSqOZZO5pp3fVwFidwbHpGYuc6eVUjv7e0aUaOhaUsJUBfiDTihD1PSXBWEoRkx8+b
+         bXUJRl1Ro092Cq5dWm7PBhIpwZBTWtzaR+P84n+h+EuiIkKIhCYkgP+LltdtAtwmLFnR
+         Qv1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696525848; x=1697130648;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mau3Ytqwy7TZu9wwYpopAHbH4XlNKRL4d1UxE9xBpfw=;
-        b=an0tRdeZR8L82BbTIXPQpuym7qXuraJsgB6jec+r9avljTJrywnf5bxAvKZvN+RaFL
-         1IOxRUHqDNqO0HjCx8a4Cn++qr6f8C47fM+zlrpwQOwxDXF7LKKrlLmYLBLruad+e/4w
-         yChHYbMonF+VPwbrN8Fv7OzbrOyrdKowNaG5ln++F0oPOg9UHpD6YMyt5v2N+DPFyLCx
-         ToR0Fo7Of7qWsS8yxefsnzvb7UWu/QF/KCAywDdJ6t+PbUE5qIil+SyKPbpF4rLLXop7
-         ye/Cp4TBjuTt/V45gJb5nC4VcYuA2olgH2xnew0UphcDHDla+vzsqyLddhGPRo/QZ75n
-         9tBg==
-X-Gm-Message-State: AOJu0YzA3AHjB+UzjywzPsjodr4qGObGPpdsdruSfWx05rf+rt4gxe+g
-        fGX9KWE9PC4KgtOK8CNnEvA=
-X-Google-Smtp-Source: AGHT+IGnVdp8oICK4V8pUUfksO9nmUjiTQt7WLAzT5URUjUrgm7Kl0ihNxBLzaBBJ2yggv4nt+XNYg==
-X-Received: by 2002:a05:6a00:1410:b0:68b:eb3d:8030 with SMTP id l16-20020a056a00141000b0068beb3d8030mr6024179pfu.1.1696525847811;
-        Thu, 05 Oct 2023 10:10:47 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:ca3e:70ef:bad:2f? ([2620:15c:211:201:ca3e:70ef:bad:2f])
-        by smtp.gmail.com with ESMTPSA id t16-20020a63b250000000b00565eb4fa8d1sm1641495pgo.16.2023.10.05.10.10.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 10:10:47 -0700 (PDT)
-Message-ID: <a2077ddf-9a8f-4101-aeb9-605d6dee3c6e@acm.org>
-Date:   Thu, 5 Oct 2023 10:10:45 -0700
+        d=1e100.net; s=20230601; t=1696526076; x=1697130876;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P3jOJ9y4m0qNvfGlNMEwsIKM+Ht48cxLl39lUm8RL8s=;
+        b=VcPXu/U20cZ1Lse66kc870+ivQxGJrc8PXS6T+aY01QMvIgnO+fOrRF8QuZpHkqUtp
+         W0Q1fapLEorknKT3DRdc0JBczkYPVkYKIaEaVEOH/CwFa9m1FDJ8eUR1cF/1cwb9yD7P
+         pMM4X9bCTEX9d+9AmWMz8uUpoa9e/YZnvFTomlxBjf4SkGy9QM+F77okqCWMEQrzVIwv
+         SpFEzhCUXQEjuuSnb3CjLyjB9PIlXcrAJfq4e+UOvehZQx364/Eg8JL3BIrLMriPzqof
+         FUdvr2ORIAl7L4b/iuDZKqwjVVoUl9IsklT1kkLoCWtUY+7swaz5WpI9ylUv9Vd0L60H
+         2gdg==
+X-Gm-Message-State: AOJu0Yxm3LjIwWX4k+7tHluR954A5cs6WGijKdc6CtB1aS9Vez0rQRTg
+        xQqya1eFWltGmv5wb5BE/UxbNrVs64L24vMszV6/
+X-Google-Smtp-Source: AGHT+IEBE+8FnUNXghQ8T604xAr48cXK+thAS03ZFKqTukQoCtv5xOF22IcYWMBbXkvPTSZam56COONlQgZuEoOqcv0=
+X-Received: by 2002:aa7:dc0f:0:b0:52c:b469:bafd with SMTP id
+ b15-20020aa7dc0f000000b0052cb469bafdmr5143303edu.41.1696526076018; Thu, 05
+ Oct 2023 10:14:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/21] block: Add fops atomic write support
-Content-Language: en-US
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
-        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chandan.babu@oracle.com, dchinner@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
- <20230929102726.2985188-11-john.g.garry@oracle.com>
- <17ee1669-5830-4ead-888d-a6a4624b638a@acm.org>
- <5d26fa3b-ec34-bc39-ecfe-4616a04977ca@oracle.com>
- <b7a6f380-c6fa-45e0-b727-ba804c6684e4@acm.org>
- <yq1lecktuoo.fsf@ca-mkp.ca.oracle.com>
- <db6a950b-1308-4ca1-9f75-6275118bdcf5@acm.org>
- <yq1h6n7rume.fsf@ca-mkp.ca.oracle.com>
- <34c08488-a288-45f9-a28f-a514a408541d@acm.org>
- <yq1ttr6qoqp.fsf@ca-mkp.ca.oracle.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <yq1ttr6qoqp.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230915154856.1896062-1-lb@semihalf.com> <CAJfuBxyFYyGCtr5i=P7N=1oX3J=jmdp1VLGLt+z1fAnuvGK2aA@mail.gmail.com>
+ <CAK8ByeJBrPEQSgUc91LQO9Krzjh2pauhMTjEC82M8ozayE76Yg@mail.gmail.com>
+ <CAJfuBxxmL-GtBgt=033F9UNeLCreFbJh3HrQQN2nYKwR_0uTbg@mail.gmail.com>
+ <20231003155810.6df9de16@gandalf.local.home> <CAJfuBxyJyFbFEhRxrtxJ_RazaTODV6Gg64b1aiNEzt6_iE4=Og@mail.gmail.com>
+ <CAK8ByeLNc9UbTNG4x=40AxYqjjRCsvBNtNFai0PMveM2X4XCow@mail.gmail.com>
+In-Reply-To: <CAK8ByeLNc9UbTNG4x=40AxYqjjRCsvBNtNFai0PMveM2X4XCow@mail.gmail.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Date:   Thu, 5 Oct 2023 19:14:24 +0200
+Message-ID: <CAK8ByeKKYFP6yZsy3-7iU2O5sC5gEPkNeYn-=XN3sBDZEBNPmA@mail.gmail.com>
+Subject: Re: [PATCH v1] dynamic_debug: add support for logs destination
+To:     jim.cromie@gmail.com
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/23 11:17, Martin K. Petersen wrote:
-> 
-> Hi Bart!
-> 
->> In other words, also for the above example it is guaranteed that 
->> writes of a single logical block (512 bytes) are atomic, no matter
->> what value is reported as the ATOMIC TRANSFER LENGTH GRANULARITY.
-> 
-> There is no formal guarantee that a disk drive sector 
-> read-modify-write operation results in a readable sector after a 
-> power failure. We have definitely seen blocks being mangled in the 
-> field.
+Jim,
 
-Aren't block devices expected to use a capacitor that provides enough
-power to handle power failures cleanly?
-
-How about blacklisting block devices that mangle blocks if a power
-failure occurs? I think such block devices are not compatible with
-journaling filesystems nor with log-structured filesystems.
+Just one more thought. If you review my patch then we could move into
+discussing the details.
 
 Thanks,
+Lukasz
 
-Bart.
-
+=C5=9Br., 4 pa=C5=BA 2023 o 12:55 =C5=81ukasz Bartosik <lb@semihalf.com> na=
+pisa=C5=82(a):
+>
+> wt., 3 pa=C5=BA 2023 o 22:54 <jim.cromie@gmail.com> napisa=C5=82(a):
+> >
+> > On Tue, Oct 3, 2023 at 1:57=E2=80=AFPM Steven Rostedt <rostedt@goodmis.=
+org> wrote:
+> > >
+> > > On Mon, 2 Oct 2023 14:49:20 -0600
+> > > jim.cromie@gmail.com wrote:
+> > >
+> > > > hi Lukasz,
+> > > >
+> > > > sorry my kernel-time has been in my own trees.
+> > > >
+> > > > What I dont understand is why +T is insufficient.
+> > > >
+>
+> We would like to be able to separate debug logs from different
+> subsystem (e.g. thunderbolt and usbcore).
+> With +T it is not possible because all debug logs will land in the same b=
+ucket.
+>
+> > > > IIUC, tracefs is intended for production use.
+> > > > thats why each event can be enabled / disabled
+> > > > - to select and minimize whats traced, and not impact the system
+> > > >
+> > > > and +T  can forward all pr_debugs to trace,
+> > > > (by 1-few trace events defined similarly to others)
+> > > > or very few, giving yet another selection mechanism
+> > > > to choose or eliminate specific pr-debugs and reduce traffic to
+> > > > interesting stuff.
+> > > >
+> > > > Once your debug is in the trace-buf,
+> > > > shouldnt user-space be deciding what to do with it ?
+> > > > a smart daemon could leverage tracefs to good effect.
+> > > >
+>
+> Yes, a daemon could separate the debug logs but IMHO it is much
+> easier to separate logs by sending them directly from a given subsystem
+> to a separate trace instance. My proposal allows to configure different
+> trace instance as destination for each callsite.
+>
+> > > > IMO the main value of +T is that it allows feeding existing pr_debu=
+gs
+> > > > into the place where other trace-data is already integrated and man=
+aged.
+> > > >
+> > > > At this point, I dont see any extra destination handling as prudent=
+.
+> > > >
+> > >
+> > >
+> > > I'm fine with either approach. I kind of like the creation of the ins=
+tance,
+> > > as that allows the user to keep this debug separate from other tracin=
+g
+> > > going on. We are starting to have multiple applications using the tra=
+cing
+> > > buffer (although most are using instances, which is why I'm trying to=
+ make
+> > > them lighter weight with the eventfs code).
+> > >
+> > > -- Steve
+> > >
+>
+> Steve, thanks for commenting from the trace perspective.
+>
+> >
+> >
+> > Ok Im starting to grasp that multiple instances are good
+> > (and wondering how I didnt notice)
+> >
+> > What doesnt thrill me is the new _ddebug field, it enlarges the footpri=
+nt.
+> >
+>
+> Yes it increases _ddebug structure by a pointer size.
+>
+> > can you make it go away ?
+>
+> I implemented my proposal with flexibility in mind so that if someone
+> would like to add
+> another destination in the future it should be easy to do. I
+> understand that adding a pointer
+> to the _ddebug structure increases footprint size that's why I also
+> added CONFIG_DYNAMIC_DEBUG_DST
+> kernel configuration option in order to enable/disable this functionality=
+.
+>
+> > I have some thoughts ..
+>
+> Please share your thoughts. I'm sure we can come to an agreement how
+> to incorporate both +T and my proposal.
+>
+> Thanks,
+> Lukasz
