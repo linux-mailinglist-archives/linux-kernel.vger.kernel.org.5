@@ -2,171 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C867BA20E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3327BA210
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232927AbjJEPMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
+        id S231803AbjJEPMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbjJEPKv (ORCPT
+        with ESMTP id S234389AbjJEPLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:10:51 -0400
+        Thu, 5 Oct 2023 11:11:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2235E24872;
-        Thu,  5 Oct 2023 07:42:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5E43C116B2;
-        Thu,  5 Oct 2023 08:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696495568;
-        bh=O28cSR7Cr0eaFyJrtrwVYzzFWiveIlOT1XkgOooL/4c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IzRXU9Px5c3n01w2hL6TXrXk0qmB6XiEmc76egnT7MIKU2kJMXj+veSRyx9gk4Nef
-         BxALI5NcIMpUB3Nb9X0XLivJGiGrpTFmGpocJh3NqNLFuODlIT8nwx/zF1T7FOeK0s
-         J9oAGx8xCNAi2qgQ/FuLMRJCvTGsLX3gsaXMlJxqEBJneCO6njbN3SjC2Yl2ze3rCG
-         9wkmiENLlRuX+sSY4jXINvd9d1CkljE0exJU9PCQnJ+tJYFVTZ0cto/uGA7DhekYSr
-         66LoQmvNDibzrqqPyfZluS6pW4QPSrH2ZJgKlDFEJNbKJ4bI5btl0/d5fS96tUkZXP
-         2itiGfBdegm1A==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2c007d6159aso8368701fa.3;
-        Thu, 05 Oct 2023 01:46:08 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy6P0EPJY2s5XILjLj5N5M7XKteYJqK9t3vuqFqPFoPQCbTTU3i
-        CDqxWFY3pAfFxJCbj3cO+3M3RPM3we/2f12X40M=
-X-Google-Smtp-Source: AGHT+IEtADSVn35WZ581174ge4XxOAWcE6fmbw7gaKYUjPnOtoz7NBJuPN55+Y62R/ndYxbc8dOuHuJ5Qfwv9XH3LqU=
-X-Received: by 2002:a2e:b70d:0:b0:2bc:b224:98ac with SMTP id
- j13-20020a2eb70d000000b002bcb22498acmr4498033ljo.31.1696495566957; Thu, 05
- Oct 2023 01:46:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0F88E93;
+        Thu,  5 Oct 2023 07:42:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E053EC116B0;
+        Thu,  5 Oct 2023 08:46:13 +0000 (UTC)
+Message-ID: <ef1d5a63-6a83-46fc-b593-2d507a1ce097@xs4all.nl>
+Date:   Thu, 5 Oct 2023 10:46:12 +0200
 MIME-Version: 1.0
-References: <72e80688.8a8.18ad9bba905.Coremail.wangkailong@jari.cn>
-In-Reply-To: <72e80688.8a8.18ad9bba905.Coremail.wangkailong@jari.cn>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 5 Oct 2023 10:45:55 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEXkVRKf6tq04MvP4FYsTBRPAjHSdgcvvu+NU=vXZpjXA@mail.gmail.com>
-Message-ID: <CAMj1kXEXkVRKf6tq04MvP4FYsTBRPAjHSdgcvvu+NU=vXZpjXA@mail.gmail.com>
-Subject: Re: [PATCH] vmlinux.lds.h: Clean up errors in vmlinux.lds.h
-To:     KaiLong Wang <wangkailong@jari.cn>
-Cc:     arnd@arndb.de, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] media: mediatek: vcodec: Fix encoder access NULL
+ pointer
+Content-Language: en-US, nl
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+To:     Irui Wang <irui.wang@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        angelogioacchino.delregno@collabora.com,
+        nicolas.dufresne@collabora.com,
+        Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Maoguang Meng <maoguang.meng@mediatek.com>
+References: <20230926101909.15030-1-irui.wang@mediatek.com>
+ <36356e37-9abd-4dec-a716-9822b67bd0fa@xs4all.nl>
+ <54962983-fa23-4ecc-9874-f59a1387cf70@xs4all.nl>
+In-Reply-To: <54962983-fa23-4ecc-9874-f59a1387cf70@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sept 2023 at 05:02, KaiLong Wang <wangkailong@jari.cn> wrote:
->
-> Fix the following errors reported by checkpatch:
->
-> ERROR: spaces required around that ':' (ctx:WxV)
-> ERROR: space required after that ',' (ctx:VxO)
-> ERROR: need consistent spacing around '*' (ctx:VxW)
->
-> Signed-off-by: KaiLong Wang <wangkailong@jari.cn>
+On 04/10/2023 08:54, Hans Verkuil wrote:
+> Ping! Is this a fix for 6.6 or not?
+> 
+> Regards,
+> 
+> 	Hans
+> 
+> On 02/10/2023 12:24, Hans Verkuil wrote:
+>> On 26/09/2023 12:19, Irui Wang wrote:
+>>> Need to set the private data with encoder device, or will access
+>>> NULL pointer in encoder handler.
+>>>
+>>> Fixes: 1972e32431ed ("media: mediatek: vcodec: Fix possible invalid memory access for encoder")
+>>>
+>>> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
+>>> ---
+>>>  drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c | 3 ++-
+>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c b/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c
+>>> index d299cc2962a5..ae6290d28f8e 100644
+>>> --- a/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c
+>>> +++ b/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c
+>>> @@ -138,7 +138,8 @@ int vpu_enc_init(struct venc_vpu_inst *vpu)
+>>>  	vpu->ctx->vpu_inst = vpu;
+>>>  
+>>>  	status = mtk_vcodec_fw_ipi_register(vpu->ctx->dev->fw_handler, vpu->id,
+>>> -					    vpu_enc_ipi_handler, "venc", NULL);
+>>> +					    vpu_enc_ipi_handler, "venc",
+>>> +					    vpu->ctx->dev);
+>>>  
+>>>  	if (status) {
+>>>  		mtk_venc_err(vpu->ctx, "vpu_ipi_register fail %d", status);
+>>
+>> Is this a fix that should go to 6.6?
 
-NAK
+This looks like a real bug, so I'll queue this up for 6.6.
 
-Please don't use checkpatch without testing the result. And please
-don't go around running checkpatch on existing source files to
-generate cosmetic patches: checkpatch is useful for new code
-contributions but there is no desire in the community to make the
-entire existing code base checkpatch-clean (and given this broken
-patch, that is not even possible)
+Regards,
 
-checkpatch does not work for linker scripts and this header file is
-#include'd by linker scripts exclusively.
-
-If you are looking for ways to start contributing to the linux kernel,
-have a look at drivers/staging instead of proposing cosmetic 'fixes'
-that break the code.
-
-
-
-> ---
->  include/asm-generic/vmlinux.lds.h | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
->
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index 9c59409104f6..9e19234bbf97 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -63,8 +63,8 @@
->   * up in the PT_NOTE Program Header.
->   */
->  #ifdef EMITS_PT_NOTE
-> -#define NOTES_HEADERS          :text :note
-> -#define NOTES_HEADERS_RESTORE  __restore_ph : { *(.__restore_ph) } :text
-> +#define NOTES_HEADERS : text : note
-> +#define NOTES_HEADERS_RESTORE  __restore_ph : { *(.__restore_ph) } : text
->  #else
->  #define NOTES_HEADERS
->  #define NOTES_HEADERS_RESTORE
-> @@ -98,10 +98,10 @@
->   */
->  #if defined(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION) || defined(CONFIG_LTO_CLANG)
->  #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
-> -#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliteral* .data.$__unnamed_* .data.$L*
-> +#define DATA_MAIN .data .data.[0-9a-zA-Z_] * .data..L * .data..compoundliteral * .data.$__unnamed_ * .data.$L*
->  #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
-> -#define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
-> -#define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
-> +#define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_] * .rodata..L*
-> +#define BSS_MAIN .bss .bss.[0-9a-zA-Z_] * .bss..compoundliteral*
->  #define SBSS_MAIN .sbss .sbss.[0-9a-zA-Z_]*
->  #else
->  #define TEXT_MAIN .text
-> @@ -294,7 +294,7 @@
->  #ifdef CONFIG_SERIAL_EARLYCON
->  #define EARLYCON_TABLE()                                               \
->         . = ALIGN(8);                                                   \
-> -       BOUNDED_SECTION_POST_LABEL(__earlycon_table, __earlycon_table, , _end)
-> +       BOUNDED_SECTION_POST_LABEL(__earlycon_table, __earlycon_table,, _end)
->  #else
->  #define EARLYCON_TABLE()
->  #endif
-> @@ -462,7 +462,7 @@
->         . = ALIGN((align));                                             \
->         .rodata           : AT(ADDR(.rodata) - LOAD_OFFSET) {           \
->                 __start_rodata = .;                                     \
-> -               *(.rodata) *(.rodata.*)                                 \
-> +               *(.rodata) * (.rodata.*)                                        \
->                 SCHED_DATA                                              \
->                 RO_AFTER_INIT_DATA      /* Read only after init */      \
->                 . = ALIGN(8);                                           \
-> @@ -494,28 +494,28 @@
->         /* Kernel symbol table: Normal symbols */                       \
->         __ksymtab         : AT(ADDR(__ksymtab) - LOAD_OFFSET) {         \
->                 __start___ksymtab = .;                                  \
-> -               KEEP(*(SORT(___ksymtab+*)))                             \
-> +               KEEP(*(SORT(___ksymtab+ *)))                            \
->                 __stop___ksymtab = .;                                   \
->         }                                                               \
->                                                                         \
->         /* Kernel symbol table: GPL-only symbols */                     \
->         __ksymtab_gpl     : AT(ADDR(__ksymtab_gpl) - LOAD_OFFSET) {     \
->                 __start___ksymtab_gpl = .;                              \
-> -               KEEP(*(SORT(___ksymtab_gpl+*)))                         \
-> +               KEEP(*(SORT(___ksymtab_gpl+ *)))                        \
->                 __stop___ksymtab_gpl = .;                               \
->         }                                                               \
->                                                                         \
->         /* Kernel symbol table: Normal symbols */                       \
->         __kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET) {         \
->                 __start___kcrctab = .;                                  \
-> -               KEEP(*(SORT(___kcrctab+*)))                             \
-> +               KEEP(*(SORT(___kcrctab+ *)))                            \
->                 __stop___kcrctab = .;                                   \
->         }                                                               \
->                                                                         \
->         /* Kernel symbol table: GPL-only symbols */                     \
->         __kcrctab_gpl     : AT(ADDR(__kcrctab_gpl) - LOAD_OFFSET) {     \
->                 __start___kcrctab_gpl = .;                              \
-> -               KEEP(*(SORT(___kcrctab_gpl+*)))                         \
-> +               KEEP(*(SORT(___kcrctab_gpl+ *)))                        \
->                 __stop___kcrctab_gpl = .;                               \
->         }                                                               \
->                                                                         \
-> --
-> 2.17.1
+	Hans
