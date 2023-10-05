@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 099067BA2C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B9E7BA2CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234296AbjJEPqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51362 "EHLO
+        id S233715AbjJEPrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:47:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233960AbjJEPpG (ORCPT
+        with ESMTP id S234164AbjJEPqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:45:06 -0400
-Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FAC658E;
-        Thu,  5 Oct 2023 08:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1696518098;
-        bh=j7v78EfYr5kWBGVx9Q0yeHqQ9MIDixPPetJ6nvLJ2nc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=Q1EOr3sPF+C02Z9y8KIbwTZOG7fwnZjX9n5Dq2v2HiP7FvMH2e6y01F4d46nYbBRq
-         RmU0WuCxgaFsugA6hmrUewisTEQf2E5scs+XGcRQNzDwS3CEXc1Wu6EUIthmO6Vgro
-         QkhRSqA5VFY/hwCYxKtZG5om5LSSrC89JfBLhGpc=
-Received: from [10.255.87.57] ([122.14.229.252])
-        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-        id 6299CF5; Thu, 05 Oct 2023 23:01:34 +0800
-X-QQ-mid: xmsmtpt1696518094tyxh55cxd
-Message-ID: <tencent_21B5235BC260E91E030A10A8E112D037EC08@qq.com>
-X-QQ-XMAILINFO: N8kVz9D657mRghfTFuheWxMrr0xSlkTJvrM9oKOp5NOWHliJN+ctqLKGt97tFL
-         m3fz4DS2pnsYA+PNV3STpG+lWIHV6mz2eVcyPT+9ZVSohw4YhsVGOVorP60vX9itD6HRWouswlkP
-         uqd+5yAcNqjUdBVs78KFqerqFLjQ2FSNBa10zhueGXzVJL8/OQlfUUg7au0y2QybffnXu0hPhM2D
-         AseFv1dzmfBf/XLrmLBTHB93y02qKt2rBCKfDLJMiPJ8VrO456vwkvyjscNVB3rhk/6UC/44sf/K
-         aVmpVa+Kgi1UUDCTKHTbLoodV5599fXSes7B4vCu30JrrOzugSlXUBcOu89RnvTTAUNzO3TNtslQ
-         tN/JFsRxV7QvmWGXbtWo0lzkNx0xHgq2ydXIeyM/O/Y0v00gG+PtT+VxAIL3xXCeFzOr+KCKsl1r
-         uit6OEIuteYr1LjFseTW2i6q8ih+Enz5kQlZGf6iflGNi4Jwtd6p2doE+5C8FKpfcnLkCdqVLg/8
-         6vjGeuHWSab2VU4uREAq66UhZRHPt8TJqUsPyLkOKDOYXwTdlUji0x+gmfhj/0c0IV/5jkblu5Hl
-         XpcZnjxZw0MUKCgP0DG/DvinadUuCF3AV50GW7so5uCiIAh6BWu61b5NzjfCDwO/CgxPN/xm2haq
-         LBTHzesSnCb6/CwKy4CouVSmftE6Ht59ZGHzXvOHcp3dM+UiQzFutnVNnR2ChydntH2GrtyW5IZQ
-         ZHmU6XkE6zLIJZDCytV0P8OpeA951BDqxY2ZycevqV9bjPRhcWFfrVPjB3x9nWLklFwNmBvjstYS
-         20xYf0e76yFi/knHIwg2fC/7r6W6M+/Bm3MnlSLnzleMX2m25ukWoxqkVcfGLf7fm5MIprDEDiwn
-         DKRAPamy2c6D7bHAKgIAl3XNqPoJFyxzOzc9z5iRB4TBVCLJxe/lPTT7JAbJU2mtql+YnNlA9AZw
-         jNRFrcHZiIeIrrGHVCquNHflmyBM6um1vycxdgyW7+c/3i9WMzKZgDIvlE514MlzI0S/XH/lWq0e
-         NVJX5tdjj9BltgNfA18GRmQAjW2fYhdc98wvQRSH0vEI+i1gMDiRFXqkncaMy104LkRpk45Q==
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-X-OQ-MSGID: <3e289937-f216-4ead-abac-28d35d644f9c@foxmail.com>
-Date:   Thu, 5 Oct 2023 23:01:34 +0800
+        Thu, 5 Oct 2023 11:46:54 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C436C171B;
+        Thu,  5 Oct 2023 08:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iHAf7jWn4AFLuX97gU5Z8DbUhjosgkowpL/+kl6b9d8=; b=L7UDMuAq0V25DfiTfhqwzTuRsT
+        vks+pp9DpR2rykwgFNcaF81HM0np9Z7QSEsuxf2530nG6aJH11nvuO5/wCNCcKDjJAxSEOX4GUlds
+        U10U4HSNcdVtzuc0OFWRYS/EwLyomLn/3yUvx+xkimub3MUwBnLtmWPKEmd1i04KKn0i4zQC5dPr4
+        T7h3oIUEJKjMul4p62hPOS3m3SqxivwYNvwnfkzlZ/GUVEHh4HiAS4iMJlDtUIAvqq9SB9LwK7gWr
+        ogspK9+FUfwEC17r+cR1eGQZ/erc93N8WzxWq8et9ZcI29qAApLYG3+RVgdTlOPN9xkwj9XpuYm4W
+        pYZ/NzHA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qoPsP-00BmXu-0H;
+        Thu, 05 Oct 2023 15:02:58 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 34EB6300451; Thu,  5 Oct 2023 17:02:58 +0200 (CEST)
+Date:   Thu, 5 Oct 2023 17:02:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "chris.hyser@oracle.com" <chris.hyser@oracle.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "efault@gmx.de" <efault@gmx.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "joshdon@google.com" <joshdon@google.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "kprateek.nayak@amd.com" <kprateek.nayak@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "patrick.bellasi@matbug.net" <patrick.bellasi@matbug.net>,
+        Pavel Machek <pavel@ucw.cz>, "pjt@google.com" <pjt@google.com>,
+        "qperret@google.com" <qperret@google.com>,
+        "qyousef@layalina.io" <qyousef@layalina.io>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "timj@gnu.org" <timj@gnu.org>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "youssefesmat@chromium.org" <youssefesmat@chromium.org>,
+        "yu.c.chen@intel.com" <yu.c.chen@intel.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct se
+Message-ID: <20231005150258.GA36277@noisy.programming.kicks-ass.net>
+References: <OS0PR01MB59220AF3959BDC5FEFC0340F86CAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: dwc3: fix possible object reference leak
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Thinh.Nguyen@synopsys.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <tencent_6BA8EA125537CBB5D65B05605E1E960AA708@qq.com>
- <2023100512-crayon-prowess-0f27@gregkh>
-From:   Zhang Shurong <zhang_shurong@foxmail.com>
-In-Reply-To: <2023100512-crayon-prowess-0f27@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OS0PR01MB59220AF3959BDC5FEFC0340F86CAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
-X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I apologize for the poorly formatted patch.
-I will make the necessary revisions and send it to you again.
-Additionally, I thought that it may not be straightforward
-to test but I will try.
+On Thu, Oct 05, 2023 at 07:31:34AM +0000, Biju Das wrote:
 
-Kind regards,
-Shurong
+> [   26.099203] EEVDF scheduling fail, picking leftmost
 
-在 2023/10/5 21:59, Greg KH 写道:
-> On Thu, Oct 05, 2023 at 09:49:46PM +0800, Zhang Shurong wrote:
->> The of_find_device_by_node takes a reference to the struct device
->> when find the match device,we should release it when fail.
->>
->> Fix it by calling by calling platform_device_put when error returns.
->>
->> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
->> ---
-> What commit id does this fix?
->
-> And how did you find this?  How was it tested?
->
-> thanks,
->
-> greg k-h
+This, that the problem.. the rest is just noise because printk stinks.
 
-
+Weirdly have not seen that trigger, and I've been running with this
+patch on for a few days now :/
