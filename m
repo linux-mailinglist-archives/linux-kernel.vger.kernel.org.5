@@ -2,143 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD75E7B9F82
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCC17B9FB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbjJEOZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
+        id S232848AbjJEO1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233792AbjJEOWk (ORCPT
+        with ESMTP id S233946AbjJEOZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:22:40 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6289327B01
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:31:07 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b9ad5760b9so172374766b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 06:31:07 -0700 (PDT)
+        Thu, 5 Oct 2023 10:25:11 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C9027B0A
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:33:30 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c61bde0b4bso7544465ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 06:33:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1696512666; x=1697117466; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696512810; x=1697117610; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IiSMw0DH0YnEshhxsB4lPXfkEW4kd1IPdZ6vz5cekDQ=;
-        b=NYiTR2Xlv2MbjTyZuRmw3riOMm8mWQg96PO9TFNpseIVFUW6eTnlOof/EXtXARzEIz
-         B1cy7EM7M1gLX56GvnEVfGHLLgxV6kcJnaWjuDnwqBpiB/F/E0uCeq9XUESNl/dpQ1rV
-         LB+02q5tG2AD3BsnbhbILTokeIJtjZpSraQ4C/IcchSoyNHt4KRUJx/aXEG0CIm7mEya
-         kyCDcV/cYiFANpIlwhafAFRKGNoqvNU1BElVoc5ThcaVUXRh4tmahARJrKlo/c1ksZeR
-         ohnPmoo/OEIZR0bVPR/ViZWy5EMSS2oll1G0AaHczULSGYaIKHwHV6mImFg0got9mUZF
-         pjGg==
+        bh=rdJwxwbZqQ4I0O4A5YRp1pd8ZcaJivULLGhl6LhxxQE=;
+        b=KxeJN24Nqn4SB6flKWBzUwOL1qceUEZyWxPoBDjilIEBobJIeaDNXAkcmV/T+z9SKl
+         BrbsQuBMR3xg6VybWl5tEd/5KwRFDC5MgdYQArm79Ktm2wDK28Auijypoa1XlLxuTqIv
+         cnC6oUeCb6Uwp+ZlGZ6Ez9EcypIAAxbYCYR0yUBCEhKbHX+kAersLCABNWg0gFsv+Mbb
+         UAH9U+00PEM9ndapvTil37NhH3opjo7UQELGFG4KZ9AAh2aSGCs/mCQ8bln7tFj8Iqsm
+         pJ5MRdodrPZsCEp0YZMhpzWvbxVwNKP+Ex4tIRi0kw3KbzJobDuHFo4ERLGNwPrc/OLH
+         UKXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696512666; x=1697117466;
+        d=1e100.net; s=20230601; t=1696512810; x=1697117610;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=IiSMw0DH0YnEshhxsB4lPXfkEW4kd1IPdZ6vz5cekDQ=;
-        b=ayYMdAUZ2SQ0WTZ360K+Uv6SxIooAKlBWGPbr04QUqb/XLB3ohDQHqyDE3egXE5RwQ
-         rP9koSA+xB8ecaXAnznZUi1k3ObZQRoEVS8s6D4vXdzWPwa+BUHggcO4ToypGQ2PRkl8
-         zM0O4a/pL4WQ67LJi1ZapYisDaRnpdnSGiuEU7zyzFo15Mt+hXFpDJ0m52g1NHU4ZoGF
-         aYPOlC65A99ySlEfOjEMd4uMy/Du7AJnSMmGVY+9nu/HcJLPItERJ6lRq6oBWVksXPZ4
-         fyWjr9Exdu3foWLsLdw5Y7XX2DGVAxUI7ZH7+SES2ZiGxIvaF5r1/L1EL4I/S1b2v1pE
-         Zxrw==
-X-Gm-Message-State: AOJu0YxsWeFfljo3ixoRNESMrdFlEjpmCHdBZPieErXvNTR9059CB72A
-        IadN+Ky2lalkx+DFcc+r3aumuA==
-X-Google-Smtp-Source: AGHT+IFF+IHtQBijr/E+6rOJo7Nutw2oamkEBNk5ppm10rTS/w8e6IY7YfRd2veiQ/BkPBrXBOevOg==
-X-Received: by 2002:a17:906:18a1:b0:9b6:aac1:6fa5 with SMTP id c1-20020a17090618a100b009b6aac16fa5mr4541714ejf.55.1696512665832;
-        Thu, 05 Oct 2023 06:31:05 -0700 (PDT)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id b13-20020a170906d10d00b009930c80b87csm1229561ejz.142.2023.10.05.06.31.04
+        bh=rdJwxwbZqQ4I0O4A5YRp1pd8ZcaJivULLGhl6LhxxQE=;
+        b=tG41OFifj7mtJGKSMu292oTNqYPlk3JzaRUsHB/MeX+jQamHp+nZGl689REv0HjH6N
+         L4XcO8WmVse5TuNOZ3zNhAz6poLz15dZh/P0a/cy10K/pYw9CEWMo+KtT2P2L1Ey/w3E
+         onFo9LMP22Qpe37jLyyqhwyctHVU0PHWFXdTMgbmBshxL3o5WyzvZw5tdDpP8486KCmU
+         gSNTv+Fb1a8IlY/b2kuB3nWpuFxG9JcNRzEjv9Dcg5wSu6vVA9MMpCQ4oMmj3ZKr4sj9
+         DdUS9Ti6mkYB5JsglBVvNMKwusy3W3PXOcMmyBu08KvWBTuk5FdxgMrsa7x5dlqCBnTF
+         STuQ==
+X-Gm-Message-State: AOJu0Yz81RKS7YTzlAkQfK3UeAcgHdKyew6eDqRM8kVwvS3cCbTusNKo
+        iQI6z1CA+UvG3ZUIjrKlayz4PQ==
+X-Google-Smtp-Source: AGHT+IEA4cLHqQcb+MIGG2dpWiFKleSqErzAWsk+2ZAO5zJgG2wamSV90gtm8PK1QSKzQmHiCELlAw==
+X-Received: by 2002:a17:902:e84a:b0:1c2:218c:3754 with SMTP id t10-20020a170902e84a00b001c2218c3754mr5994686plg.53.1696512810281;
+        Thu, 05 Oct 2023 06:33:30 -0700 (PDT)
+Received: from sumit-X1.. ([223.178.210.23])
+        by smtp.gmail.com with ESMTPSA id jw22-20020a170903279600b001b80d399730sm1643640plb.242.2023.10.05.06.33.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 06:31:05 -0700 (PDT)
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-To:     broonie@kernel.org, zev@bewilderbeest.net,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers/regulator: Notify sysfs about status changes
-Date:   Thu,  5 Oct 2023 15:30:58 +0200
-Message-ID: <20231005133059.917577-1-naresh.solanki@9elements.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 05 Oct 2023 06:33:29 -0700 (PDT)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     torvalds@linux-foundation.org, jarkko@kernel.org,
+        peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        jejb@linux.ibm.com, zohar@linux.ibm.com, David.Kaplan@amd.com,
+        bp@alien8.de, mingo@kernel.org, x86@kernel.org,
+        regressions@leemhuis.info, Sumit Garg <sumit.garg@linaro.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: [PATCH] KEYS: trusted: Remove redundant static calls usage
+Date:   Thu,  5 Oct 2023 19:03:06 +0530
+Message-Id: <20231005133306.379718-1-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrick Rudolph <patrick.rudolph@9elements.com>
+Static calls invocations aren't well supported from module __init and
+__exit functions, especially the static call from cleanup_trusted() led
+to a crash on x86 kernel with CONFIG_DEBUG_VIRTUAL=y.
 
-Notify sysfs for state, status & microvolts.
+However, the usage of static call invocations for trusted_key_init()
+and trusted_key_exit() doesn't adds any value neither from performance
+point and nor there is any security benefit. Hence switch to use indirect
+function calls instead.
 
-Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+Note here that although it will fix the current crash reported. But
+ultimately we need fix up static calls infrastructure to either support
+its future usage from module __init and __exit functions or not.
+
+Reported-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Closes: https://lore.kernel.org/lkml/ZRhKq6e5nF%2F4ZIV1@fedora/#t
+Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- drivers/regulator/core.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ security/keys/trusted-keys/trusted_core.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 3137e40fcd3e..ef5fa70ae2f1 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -98,6 +98,10 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
- static void destroy_regulator(struct regulator *regulator);
- static void _regulator_put(struct regulator *regulator);
+diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
+index c6fc50d67214..85fb5c22529a 100644
+--- a/security/keys/trusted-keys/trusted_core.c
++++ b/security/keys/trusted-keys/trusted_core.c
+@@ -44,13 +44,12 @@ static const struct trusted_key_source trusted_key_sources[] = {
+ #endif
+ };
  
-+static struct device_attribute dev_attr_status;
-+static struct device_attribute dev_attr_microvolts;
-+static struct device_attribute dev_attr_state;
-+
- const char *rdev_get_name(struct regulator_dev *rdev)
- {
- 	if (rdev->constraints && rdev->constraints->name)
-@@ -2798,6 +2802,8 @@ static int _regulator_do_enable(struct regulator_dev *rdev)
- 		_regulator_delay_helper(delay);
+-DEFINE_STATIC_CALL_NULL(trusted_key_init, *trusted_key_sources[0].ops->init);
+ DEFINE_STATIC_CALL_NULL(trusted_key_seal, *trusted_key_sources[0].ops->seal);
+ DEFINE_STATIC_CALL_NULL(trusted_key_unseal,
+ 			*trusted_key_sources[0].ops->unseal);
+ DEFINE_STATIC_CALL_NULL(trusted_key_get_random,
+ 			*trusted_key_sources[0].ops->get_random);
+-DEFINE_STATIC_CALL_NULL(trusted_key_exit, *trusted_key_sources[0].ops->exit);
++static void (*trusted_key_exit)(void);
+ static unsigned char migratable;
+ 
+ enum {
+@@ -359,19 +358,16 @@ static int __init init_trusted(void)
+ 		if (!get_random)
+ 			get_random = kernel_get_random;
+ 
+-		static_call_update(trusted_key_init,
+-				   trusted_key_sources[i].ops->init);
+ 		static_call_update(trusted_key_seal,
+ 				   trusted_key_sources[i].ops->seal);
+ 		static_call_update(trusted_key_unseal,
+ 				   trusted_key_sources[i].ops->unseal);
+ 		static_call_update(trusted_key_get_random,
+ 				   get_random);
+-		static_call_update(trusted_key_exit,
+-				   trusted_key_sources[i].ops->exit);
++		trusted_key_exit = trusted_key_sources[i].ops->exit;
+ 		migratable = trusted_key_sources[i].ops->migratable;
+ 
+-		ret = static_call(trusted_key_init)();
++		ret = trusted_key_sources[i].ops->init();
+ 		if (!ret)
+ 			break;
  	}
+@@ -388,7 +384,8 @@ static int __init init_trusted(void)
  
-+	sysfs_notify(&rdev->dev.kobj, NULL, dev_attr_state.attr.name);
-+
- 	trace_regulator_enable_complete(rdev_get_name(rdev));
- 
- 	return 0;
-@@ -2980,6 +2986,8 @@ static int _regulator_do_disable(struct regulator_dev *rdev)
- 	if (rdev->desc->off_on_delay)
- 		rdev->last_off = ktime_get_boottime();
- 
-+	sysfs_notify(&rdev->dev.kobj, NULL, dev_attr_state.attr.name);
-+
- 	trace_regulator_disable_complete(rdev_get_name(rdev));
- 
- 	return 0;
-@@ -4848,8 +4856,21 @@ EXPORT_SYMBOL_GPL(regulator_unregister_notifier);
- static int _notifier_call_chain(struct regulator_dev *rdev,
- 				  unsigned long event, void *data)
+ static void __exit cleanup_trusted(void)
  {
-+	const char *name;
-+	int ret;
-+
- 	/* call rdev chain first */
--	return blocking_notifier_call_chain(&rdev->notifier, event, data);
-+	ret =  blocking_notifier_call_chain(&rdev->notifier, event, data);
-+
-+	if (event & REGULATOR_EVENT_VOLTAGE_CHANGE) {
-+		name = dev_attr_microvolts.attr.name;
-+		sysfs_notify(&rdev->dev.kobj, NULL, name);
-+	} else {
-+		name = dev_attr_status.attr.name;
-+		sysfs_notify(&rdev->dev.kobj, NULL, name);
-+	}
-+
-+	return ret;
+-	static_call_cond(trusted_key_exit)();
++	if (trusted_key_exit)
++		(*trusted_key_exit)();
  }
  
- int _regulator_bulk_get(struct device *dev, int num_consumers,
-
-base-commit: f9a1d31874c383f58bb4f89bfe79b764682cd026
+ late_initcall(init_trusted);
 -- 
-2.41.0
+2.34.1
 
