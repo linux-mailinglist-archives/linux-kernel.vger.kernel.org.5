@@ -2,145 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 031357BAEF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53AC7BAEFB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbjJEWqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 18:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52740 "EHLO
+        id S231927AbjJEWvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 18:51:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjJEWqb (ORCPT
+        with ESMTP id S229527AbjJEWvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 18:46:31 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA285DE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:46:29 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-2773ced5d40so1382508a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:46:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696545989; x=1697150789; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BFNKMdFnPveldc0HQ7aZGfenM2ZrJbvkhgfmrxqt94M=;
-        b=b2ZAAo2RLBA8EGZPw55N+wyoEcba8G77IVJ8ZBcyQp2Dmi36Sn8Py4VOOv/A/7DA8B
-         X4ZrjM15SD3XxzmLK4uTG9GIdFZWKGk0W2mKzCFxX+GyIJn1sastwlYLv6AJa9AwdlCh
-         +t7uFiqtdMObMKKyShosdrvJESkXJBlxV5OUTyVtRbCHGPjPwtciJpxgqLILT4ms5hhm
-         kCUXSEOnrq425/BV/1K4ftRZ/L9CycF7lKGYDceB0+JaNHJpy3I1LJG3GqfPoX55ilJE
-         WibKy2ybISvuBuw4xrbycnIXVQnr9LCBc/E8+l5DsjgDZsfq+e1jGOOZJe7wm00Rnk/M
-         9i5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696545989; x=1697150789;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BFNKMdFnPveldc0HQ7aZGfenM2ZrJbvkhgfmrxqt94M=;
-        b=nKPYWFuXaM/PPYTG2L1x9LhR0KiCke8BYJVTBjeo92tj76GdMH/Sm+yijb+cqj5kKR
-         kMQBKCVFjHPozwlhKYM6VNf/W4pHjs4qSMLL6UmJW7YDGku/RNTVfzDkyz2h4ET5EOh0
-         NwG+VoFtyryjO0pv9da2wLjVbQ/ew86uTFqaNwWs9j50pycPhSlOv8u1U6ySY55fK8gK
-         kQEvVUgV1F/6Uo0odwWj6EPEZGplazqDRQCbqxMR89QFCJSFqrPr7R2NRCG+UETAJnrE
-         laHbSym+IDkddbfg7cWu+kz+et8YIAwsfMPCdHUpPhBnyYIyAmzLF1KVsizwuOgmd4RV
-         LPpw==
-X-Gm-Message-State: AOJu0YzxJP6G6ij0Rkpuc9NjjdL2cKEOl+ed/xeEaqEWlztDCoH/iaCF
-        rWpbbc+dJhOb9KUyJc8L1GNq/2Ah23M=
-X-Google-Smtp-Source: AGHT+IEtahwBg2Zwge0uEd3Ui7DNj7uWo5yXZrXRWofh6Qbm+2xT8gySHKj0YTx2KOHMFuyEUr32wAYCdkY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:e06:b0:279:9aa1:402c with SMTP id
- ge6-20020a17090b0e0600b002799aa1402cmr104744pjb.7.1696545989346; Thu, 05 Oct
- 2023 15:46:29 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 15:46:27 -0700
-In-Reply-To: <CAF7b7mqYr0J-J2oaU=c-dzLys-m6Ttp7ZOb3Em7n1wUj3rhh+A@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-8-seanjc@google.com>
- <117db856-9aec-e91c-b1d4-db2b90ae563d@intel.com> <ZQ3AmLO2SYv3DszH@google.com>
- <CAF7b7mrf-y9DNdsreOAedGJueOThnYE=ascFd4=rvW0Z4rhTQg@mail.gmail.com>
- <ZRtxoaJdVF1C2Mvy@google.com> <CAF7b7mqyU059YpBBVYjTMNXf9VHSc6tbKrQ8avFXYtP6LWMh8Q@mail.gmail.com>
- <ZRyn0nPQpbVpz8ah@google.com> <CAF7b7mqYr0J-J2oaU=c-dzLys-m6Ttp7ZOb3Em7n1wUj3rhh+A@mail.gmail.com>
-Message-ID: <ZR88w9W62qsZDro-@google.com>
-Subject: Re: [RFC PATCH v12 07/33] KVM: Add KVM_EXIT_MEMORY_FAULT exit to
- report faults to userspace
-From:   Sean Christopherson <seanjc@google.com>
-To:     Anish Moorthy <amoorthy@google.com>
-Cc:     Xiaoyao Li <xiaoyao.li@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
-        kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Thu, 5 Oct 2023 18:51:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92D5DE;
+        Thu,  5 Oct 2023 15:51:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C844C433C7;
+        Thu,  5 Oct 2023 22:51:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696546263;
+        bh=6Z+aNRTykgUl2shYjBKN3j99iPvZlR6BDg/SD2cELU8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MNukphMSInGVUe6e01X0aki2ed92AZyanoAXS1Tse2jkA9W3Ip2Vrq3qZXUuWFeAm
+         5THAUEv1ZFV7lRkX73pa5wFZbrMZVnBtOOADNoSVhDoSwvQbgRCf2ReCyg2FU8JDiw
+         hJBi1H9FhrZ6OnSz/lmhK+ZlshRSG+Z1VQ5zHtoIInARuChulTjTyRksLL+HT8wYwb
+         /b2wAQVwnnFrh5H08XEA415LtQagTLgi6HT7mMLSLLrpdJGnm+chWdfYEO2Pvwz94V
+         kz4ubbn+i563g6Wk23YSZYGgBg7iCQAhlJKyFUj281GiAyrIznmNiSXnDuSpnsUr5o
+         bPn9QBR7/7oXQ==
+Date:   Thu, 5 Oct 2023 17:51:01 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+Subject: Re: [-next 1/5] PCI: Add the pci_is_vga() helper
+Message-ID: <20231005225101.GA792747@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230830111532.444535-2-sui.jingfeng@linux.dev>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023, Anish Moorthy wrote:
-> On Tue, Oct 3, 2023 at 4:46=E2=80=AFPM Sean Christopherson <seanjc@google=
-.com> wrote:
-> >
-> > The only way a KVM_EXIT_MEMORY_FAULT that actually reaches userspace co=
-uld be
-> > "unreliable" is if something other than a memory_fault exit clobbered t=
-he union,
-> > but didn't signal its KVM_EXIT_* reason.  And that would be an egregiou=
-s bug that
-> > isn't unique to KVM_EXIT_MEMORY_FAULT, i.e. the same data corruption wo=
-uld affect
-> > each and every other KVM_EXIT_* reason.
->=20
-> Keep in mind the case where an "unreliable" annotation sets up a
-> KVM_EXIT_MEMORY_FAULT, KVM_RUN ends up continuing, then something
-> unrelated comes up and causes KVM_RUN to EFAULT. Although this at
-> least is a case of "outdated" information rather than blatant
-> corruption.
+On Wed, Aug 30, 2023 at 07:15:28PM +0800, Sui Jingfeng wrote:
+> From: Sui Jingfeng <suijingfeng@loongson.cn>
+> 
+> The PCI code and ID assignment specification defined four types of
+> display controllers for the display base class(03h), and the devices
+> with 0x00h sub-class code are VGA devices. VGA devices with programming
 
-Drat, I managed to forget about that.
+I can update this with the spec details (PCI Code and Assignment spec
+r1.15, secs 1.1 and 1.4).
 
-> IIRC the last time this came up we said that there's minimal harm in
-> userspace acting on the outdated info, but it seems like another good
-> argument for just restricting the annotations to paths we know are
-> reliable. What if the second EFAULT above is fatal (as I understand
-> all are today) and sets up subsequent KVM_RUNs to crash and burn
-> somehow? Seems like that'd be a safety issue.
+> interface 0x00 is VGA-compatible, VGA devices with programming interface
+> 0x01 are 8514-compatible controllers. Besides, PCI_CLASS_NOT_DEFINED_VGA
+> is defined to provide backward compatibility for devices that were built
+> before the class code field was defined. Hence, introduce the pci_is_vga()
+> helper, let it handle the details for us. It returns true if the PCI(e)
+> device being tested belongs to the VGA devices category.
+>
+> Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>
+> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+> ---
+>  include/linux/pci.h | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index cf6e0b057752..ace727001911 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -713,6 +713,33 @@ static inline bool pci_is_bridge(struct pci_dev *dev)
+>  		dev->hdr_type == PCI_HEADER_TYPE_CARDBUS;
+>  }
+>  
+> +/**
+> + * The PCI code and ID assignment specification defined four types of
+> + * display controllers for the display base class(03h), and the devices
+> + * with 0x00h sub-class code are VGA devices. VGA devices with programming
+> + * interface 0x00 is VGA-compatible, VGA devices with programming interface
+> + * 0x01 are 8514-compatible controllers. Besides, PCI_CLASS_NOT_DEFINED_VGA
+> + * is defined to provide backward compatibility for devices that were built
+> + * before the class code field was defined. This means that it belong to the
+> + * VGA devices category also.
+> + *
+> + * Returns:
+> + * true if the PCI device is a VGA device, false otherwise.
+> + */
+> +static inline bool pci_is_vga(struct pci_dev *pdev)
+> +{
+> +	if (!pdev)
+> +		return false;
+> +
+> +	if ((pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA)
+> +		return true;
+> +
+> +	if ((pdev->class >> 8) == PCI_CLASS_NOT_DEFINED_VGA)
+> +		return true;
 
-For your series, let's omit=20
+Are you seeing a problem that will be fixed by this series, i.e., a
+PCI_CLASS_NOT_DEFINED_VGA device that we currently don't handle
+correctly?
 
-  KVM: Annotate -EFAULTs from kvm_vcpu_read/write_guest_page
+I think this makes sense per the spec, but there's always a risk of
+breaking something, so it's nice if the change actually *fixes*
+something to make that risk worthwhile.
 
-and just fill memory_fault for the page fault paths.  That will be easier t=
-o
-document too since we can simply say that if the exit reason is KVM_EXIT_ME=
-MORY_FAULT,
-then run->memory_fault is valid and fresh.
-
-Adding a flag or whatever to mark the data as trustworthy would be the alte=
-rnative,
-but that's effectively adding ABI that says "KVM is buggy, sorry".
-
-My dream of having KVM always return useful information for -EFAULT will ha=
-ve to
-wait for another day.
+> +	return false;
+> +}
+> +
+>  #define for_each_pci_bridge(dev, bus)				\
+>  	list_for_each_entry(dev, &bus->devices, bus_list)	\
+>  		if (!pci_is_bridge(dev)) {} else
+> -- 
+> 2.34.1
+> 
