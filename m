@@ -2,290 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF777BAAA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5287BAAA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbjJETrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
+        id S231494AbjJETsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbjJETrU (ORCPT
+        with ESMTP id S229809AbjJETsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 15:47:20 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF684E4
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:47:17 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-7afc13d58c6so578161241.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696535237; x=1697140037; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fLJjywY8LzZjMJ4Ua1HVIFQQKdDKE5FDxSdi//HT1kY=;
-        b=ksipxG7GnTOnJHPTocs8DMa8TTDqe/zqjzlUHoZDTh7o/xP6ti8SfoVP/KqS449Oi+
-         eesDdbM6FsviLCj5O99A5fsw1Y7vXgjWerHoRpBgSSe/5cMkINWDoNfwxTTrX1YFuYs3
-         DBqfPfBbcJrSxvEo94EgRtHOQoY83qsbr5F206p1T2R5QfspgYWvQG0Oci8y+DxZNzej
-         aJmN4hvekDQ33cONcYGoK/g2wJrjlGfjHgz2uFxMYhQZG7DLEyyIp6ZuCCewW1I1G2rh
-         7ZXl39+SlYPgLqq5k0C27L73YNerFgs/cs+GTuX+r7VAXLHQOvHjz/jtIp6ZInH321Mb
-         kIRQ==
+        Thu, 5 Oct 2023 15:48:00 -0400
+Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2292E4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:47:58 -0700 (PDT)
+Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6c6373a4aa7so1806790a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:47:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696535237; x=1697140037;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fLJjywY8LzZjMJ4Ua1HVIFQQKdDKE5FDxSdi//HT1kY=;
-        b=hCRqt17B5Dh03LbQ9bd9c9kU5F/u44Xt7A+PB1KsgBJrmLB+NJDtxhriElPiBlVv5z
-         Py/mlXb8oWnkipnzbi14tczSW0Vkjd1TmwMoWXPpVcCEJVtfp7GsY0CIL4wqGLOf8h8z
-         pfIjYjUi96tYZImzVxwTJVtDbCGSh2/j+C5gwvCT7sJg7mxT2DDbue4sAejPlFqmyVno
-         m1SI21pUunBth0wpst1QHuJ4uMmmEtgCRr8N7Gw+LgvXetjo4RAotscoC39VdONY8Z2b
-         OBFKzuFHgF+h2bIVi7PF4EhQrasCI0iHivlfRRlVrQNUudo/blQ+sTzwNVI2auc6UHfI
-         IDmg==
-X-Gm-Message-State: AOJu0Yx02MRtPT+23iXnepnS0s+ReRy1WSRbO+I3xMfObofPZ7XTNmi4
-        04fsEqswJAk7LzM5XofSAhu0nlH2EBnH2kiu7Xpeng==
-X-Google-Smtp-Source: AGHT+IGeCrpg8IFyQIUwf3s5xsWyEwFqrBJpZnT7s4icsTYPD3Db8KtwxkcdehXnz4szYazm/HNmJ5jwZdPOio+yInU=
-X-Received: by 2002:a67:f65a:0:b0:44d:3f96:6c61 with SMTP id
- u26-20020a67f65a000000b0044d3f966c61mr6494546vso.30.1696535235393; Thu, 05
- Oct 2023 12:47:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696535278; x=1697140078;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+rJYWdpX39fnELsnaA+2kd6nQscj6bBDfjIPgrB9Ju0=;
+        b=us7D5E9qXSP2IrWon0x1ApZMp1ZSzTrCBRxQmXzp9XnSRPyvPSQ4QuGVX/gweecyL0
+         tIfxssLRU6ogTgB+XXyZa7DILkf5SsZcOCf1mxeQP6KGW1cimAP4B49I1D1zHUsM4trt
+         pyyRZes8wHPow+OIKX4RNH8wJis+7vdMhrFwN0z//IN53pr1YZbWs1gf8zUPDRJM1/WJ
+         KeL+5nXYbM3OjT/h0rnAVmE+EzNATMHV0RNl9RT1c1hO0ENysEvNos1i8fo6yQVS+mtM
+         I0x7/z8K13m0OKPPW7Z1LBPA1t6VVz1FQEzuZYAioSMO6KOGDvoNIIgxCjqS8/8jaGnm
+         erng==
+X-Gm-Message-State: AOJu0Yw6Nqzerzj9Zey89I7ULMNw37UIJXk/z0zoxCDgRu1uk0ZqvXin
+        QJSNdVf8LOwINw751ibN/LjgAkkDQNULyO0K/Vrx3dLHPEQm
+X-Google-Smtp-Source: AGHT+IFUijQ5HWSsoSG3N0LC7VwaXmm+icbh/NGey9Tl9HOTXcuEWtAJ9WROrzOwSqClh5RBXfvO6mNgx1M4GTSql85R+ljbkhRO
 MIME-Version: 1.0
-References: <20230905185309.131295-1-brgl@bgdev.pl> <20230905185309.131295-15-brgl@bgdev.pl>
- <CACRpkda9=VULj4Cy_sit-UpUQnVEbS-RJKAeULVCw8ZCRTq1sw@mail.gmail.com>
- <CAMRc=MdTk1B4MEh9C624Upm_EcaQgJd9OU-AGfU0G-DU1+qk6A@mail.gmail.com>
- <36b17290-c643-8d8e-e82b-49afa6b34fbb@nvidia.com> <3624e973-d09a-d211-c6d0-d0ffb8c20c4b@nvidia.com>
- <90b5f887-8af4-a80d-ea4d-cf2199752de4@nvidia.com> <0e7cae42-0b81-c038-8beb-49102feea8a6@nvidia.com>
- <CAMRc=McSG6qajxt6P3vWQEeT63Pk5tggD05pUoMD1zd5ApZxgA@mail.gmail.com>
- <647d3b52-1daf-175d-d5c2-45653dd2604c@nvidia.com> <CAMRc=Mc_+LxcbV+=KPwAh4DinJAAetHrK+W3jbNp4AZBzg63TA@mail.gmail.com>
- <b0f37601-39d6-618e-fa16-3b1c9e7c0e2c@nvidia.com>
-In-Reply-To: <b0f37601-39d6-618e-fa16-3b1c9e7c0e2c@nvidia.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 5 Oct 2023 21:47:04 +0200
-Message-ID: <CAMRc=MdKg8cOvNFw3ay-0XVCagWE7ArS7HgPZk-YrmeDJ4c4cw@mail.gmail.com>
-Subject: Re: [RFT PATCH 14/21] hte: tegra194: don't access struct gpio_chip
-To:     Dipen Patel <dipenp@nvidia.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
-        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+X-Received: by 2002:a9d:7dcf:0:b0:6c4:7e6c:cb4e with SMTP id
+ k15-20020a9d7dcf000000b006c47e6ccb4emr1782895otn.5.1696535278207; Thu, 05 Oct
+ 2023 12:47:58 -0700 (PDT)
+Date:   Thu, 05 Oct 2023 12:47:58 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009b49ce0606fd665a@google.com>
+Subject: [syzbot] [ntfs3?] WARNING in attr_data_get_block (3)
+From:   syzbot <syzbot+a9850b21d99643eadbb8@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com,
+        clang-built-linux@googlegroups.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, ntfs3@lists.linux.dev,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 9:43=E2=80=AFPM Dipen Patel <dipenp@nvidia.com> wrot=
-e:
->
-> On 10/5/23 12:05 PM, Bartosz Golaszewski wrote:
-> > On Thu, Oct 5, 2023 at 8:12=E2=80=AFPM Dipen Patel <dipenp@nvidia.com> =
-wrote:
-> >>
-> >> On 10/5/23 6:48 AM, Bartosz Golaszewski wrote:
-> >>> On Thu, Oct 5, 2023 at 1:52=E2=80=AFAM Dipen Patel <dipenp@nvidia.com=
-> wrote:
-> >>>>
-> >>>> On 10/4/23 3:54 PM, Dipen Patel wrote:
-> >>>>> On 10/4/23 1:33 PM, Dipen Patel wrote:
-> >>>>>> On 10/4/23 1:30 PM, Dipen Patel wrote:
-> >>>>>>> On 10/4/23 5:00 AM, Bartosz Golaszewski wrote:
-> >>>>>>>> On Thu, Sep 7, 2023 at 9:28=E2=80=AFAM Linus Walleij <linus.wall=
-eij@linaro.org> wrote:
-> >>>>>>>>>
-> >>>>>>>>> On Tue, Sep 5, 2023 at 8:53=E2=80=AFPM Bartosz Golaszewski <brg=
-l@bgdev.pl> wrote:
-> >>>>>>>>>
-> >>>>>>>>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >>>>>>>>>>
-> >>>>>>>>>> Using struct gpio_chip is not safe as it will disappear if the
-> >>>>>>>>>> underlying driver is unbound for any reason. Switch to using r=
-eference
-> >>>>>>>>>> counted struct gpio_device and its dedicated accessors.
-> >>>>>>>>>>
-> >>>>>>>>>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro=
-.org>
-> >>>>>>>>>
-> >>>>>>>>> As Andy points out add <linux/cleanup.h>, with that fixed:
-> >>>>>>>>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> >>>>>>>>>
-> >>>>>>>>> I think this can be merged into the gpio tree after leaving som=
-e
-> >>>>>>>>> slack for the HTE maintainer to look at it, things look so much
-> >>>>>>>>> better after this.
-> >>>>>>>>>
-> >>>>>>>>> Yours,
-> >>>>>>>>> Linus Walleij
-> >>>>>>>>
-> >>>>>>>> Dipen,
-> >>>>>>>>
-> >>>>>>>> if you could give this patch a test and possibly ack it for me t=
-o take
-> >>>>>>>> it through the GPIO tree (or go the immutable tag from HTE route=
-) then
-> >>>>>>>> it would be great. This is the last user of gpiochip_find() tree=
-wide,
-> >>>>>>>> so with it we could remove it entirely for v6.7.
-> >>>>>>>
-> >>>>>>> Progress so far for the RFT...
-> >>>>>>>
-> >>>>>>> I tried applying the patch series on 6.6-rc1 and it did not apply=
- cleanly,
-> >>>>>>> some patches I needed to manually apply and correct. With all thi=
-s, it failed
-> >>>>>>> compilation at some spi/spi-bcm2835 driver. I disabled that and w=
-as able to
-> >>>>>>> compile. I thought I should let you know this part.
-> >>>>>>>
-> >>>>>>> Now, I tried to test the hte and it seems to fail finding the gpi=
-o device,
-> >>>>>>> roughly around this place [1]. I thought it would be your patch s=
-eries so
-> >>>>>>> tried to just use 6.6rc1 without your patches and it still failed=
- at the
-> >>>>>>> same place. I have to trace back now from which kernel version it=
- broke.
-> >>>>>>
-> >>>>>> [1].
-> >>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/pateldipen1984/lin=
-ux.git/tree/drivers/hte/hte-tegra194.c?h=3Dfor-next#n781
-> >>>>>>
-> >>>>>> of course with your patches it would fail for the gdev instead of =
-the chip.
-> >>>>>
-> >>>>> Small update:
-> >>>>>
-> >>>>> I put some debugging prints in the gpio match function in the hte-t=
-egra194.c as
-> >>>>> below:
-> >>>>>
-> >>>>> static int tegra_gpiochip_match(struct gpio_chip *chip, void *data)
-> >>>>>  {
-> >>>>> +       struct device_node *node =3D data;
-> >>>>> +       struct fwnode_handle *fw =3D of_node_to_fwnode(data);
-> >>>>> +       if (!fw || !chip->fwnode)
-> >>>>> +               pr_err("dipen patel: fw is null\n");
-> >>>>>
-> >>>>> -       pr_err("%s:%d\n", __func__, __LINE__);
-> >>>>> +       pr_err("dipen patel, %s:%d: %s, %s, %s, match?:%d, fwnode n=
-ame:%s\n",
-> >>>>> __func__, __LINE__, chip->label, node->name, node->full_name, (chip=
-->fwnode =3D=3D
-> >>>>> fw), fw->dev->init_name);
-> >>>>>         return chip->fwnode =3D=3D of_node_to_fwnode(data);
-> >>>>>  }
-> >>>>>
-> >>>>> The output of the printfs looks like below:
-> >>>>> [    3.955194] dipen patel: fw is null -----> this message started =
-appearing
-> >>>>> when I added !chip->fwnode test in the if condition line.
-> >>>>>
-> >>>>> [    3.958864] dipen patel, tegra_gpiochip_match:689: tegra234-gpio=
-, gpio,
-> >>>>> gpio@c2f0000, match?:0, fwnode name:(null)
-> >>>>>
-> >>>>> I conclude that chip->fwnode is empty. Any idea in which conditions=
- that node
-> >>>>> would be empty?
-> >>>>
-> >>>> sorry for spamming, one last message before I sign off for the day..=
-..
-> >>>>
-> >>>> Seems, adding below in the tegra gpio driver resolved the issue I am=
- facing, I
-> >>>> was able to verify your patch series.
-> >>>>
-> >>>> diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra1=
-86.c
-> >>>> index d87dd06db40d..a56c159d7136 100644
-> >>>> --- a/drivers/gpio/gpio-tegra186.c
-> >>>> +++ b/drivers/gpio/gpio-tegra186.c
-> >>>> @@ -989,6 +989,8 @@ static int tegra186_gpio_probe(struct platform_d=
-evice *pdev)
-> >>>>                 offset +=3D port->pins;
-> >>>>         }
-> >>>>
-> >>>> +       gpio->gpio.fwnode =3D of_node_to_fwnode(pdev->dev.of_node);
-> >>>> +
-> >>>>         return devm_gpiochip_add_data(&pdev->dev, &gpio->gpio, gpio)=
-;
-> >>>>  }
-> >>>>
-> >>>> Now, few follow up questions:
-> >>>> 1) is this the correct way of setting the chip fwnode in the gpio dr=
-iver?
-> >>>
-> >>> You shouldn't need this. This driver already does:
-> >>>
-> >>>     gpio->gpio.parent =3D &pdev->dev;
-> >>>
-> >>> so fwnode should be assigned in gpiochip_add_data_with_key(). Can you
-> >>> check why this doesn't happen?
-> >>
-> >> I do not see anywhere chip->fwnode being set in the gpiochip_add_* fun=
-ction.
-> >> The only reference I see is here [1]. Does it mean I need to change my=
- match
-> >> function from:
-> >>
-> >> chip->fwnode =3D=3D of_node_to_fwnode(data)
-> >>
-> >> to:
-> >> dev_fwnode(chip->parent) =3D=3D of_node_to_fwnode(data)?
-> >
-> > No! chip->fwnode is only used to let GPIOLIB know which fwnode to
-> > assign to the GPIO device (struct gpio_device).
-> What do you suggest I should use for the match as I do not see chip->fwno=
-de
-> being set?
->
+Hello,
 
-Andy, Linus,
+syzbot found the following issue on:
 
-Do you think it makes sense to make gpiochip_add_data_with_key()
-assign the chip's fwnode if it's not set by the caller (and instead
-taken from the parent device) for this particular use-case?
+HEAD commit:    e402b08634b3 Merge tag 'soc-fixes-6.6' of git://git.kernel..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=111e0d01680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=12da82ece7bf46f9
+dashboard link: https://syzkaller.appspot.com/bug?extid=a9850b21d99643eadbb8
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12b684e6680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10ede4d6680000
 
-I think it's fine but wanted to run it by you.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/41cd2d7ae4a2/disk-e402b086.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/06c5c0caa862/vmlinux-e402b086.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/483b777ed71c/bzImage-e402b086.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/f17ff5020b6d/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/6aff89451d15/mount_2.gz
 
-Bart
+The issue was bisected to:
 
-> >
-> > Bart
-> >
-> >>
-> >> [1]:
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tre=
-e/drivers/gpio/gpiolib.c?h=3Dv6.6-rc1#n767
-> >>
-> >>>
-> >>> Bart
-> >>>
-> >>>> 2) Or should I use something else in hte matching function instead o=
-f fwnode so
-> >>>> to avoid adding above line in the gpio driver?
-> >>>>
-> >>>>>
-> >>>>>>>
-> >>>>>>>>
-> >>>>>>>> Bart
-> >>>>>>>
-> >>>>>>
-> >>>>>
-> >>>>
-> >>
->
+commit 6e5be40d32fb1907285277c02e74493ed43d77fe
+Author: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Date:   Fri Aug 13 14:21:30 2021 +0000
+
+    fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15f20a7c680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17f20a7c680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f20a7c680000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a9850b21d99643eadbb8@syzkaller.appspotmail.com
+Fixes: 6e5be40d32fb ("fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile")
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5033 at fs/ntfs3/attrib.c:1059 attr_data_get_block+0x1926/0x2da0
+Modules linked in:
+CPU: 1 PID: 5033 Comm: syz-executor106 Not tainted 6.6.0-rc3-syzkaller-00214-ge402b08634b3 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+RIP: 0010:attr_data_get_block+0x1926/0x2da0 fs/ntfs3/attrib.c:1059
+Code: 80 e1 07 80 c1 03 38 c1 0f 8c 48 ff ff ff 48 8d bc 24 e0 01 00 00 e8 19 74 18 ff 48 8b 54 24 58 e9 31 ff ff ff e8 ba 01 be fe <0f> 0b bb ea ff ff ff e9 11 fa ff ff e8 a9 01 be fe e9 0f f9 ff ff
+RSP: 0018:ffffc9000406f6a0 EFLAGS: 00010293
+RAX: ffffffff82d008b6 RBX: 00000000ffffffff RCX: ffff888025380000
+RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 00000000ffffffff
+RBP: ffffc9000406f908 R08: ffffffff82d0038f R09: 1ffffffff20df689
+R10: dffffc0000000000 R11: fffffbfff20df68a R12: 1ffff9200080def4
+R13: 000000000000001c R14: ffff888076620140 R15: dffffc0000000000
+FS:  00007f36f9b9c6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f36f9b9cd58 CR3: 0000000026956000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ntfs_fallocate+0xc6d/0x1100 fs/ntfs3/file.c:610
+ vfs_fallocate+0x551/0x6b0 fs/open.c:324
+ do_vfs_ioctl+0x22da/0x2b40 fs/ioctl.c:850
+ __do_sys_ioctl fs/ioctl.c:869 [inline]
+ __se_sys_ioctl+0x81/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f37091ff5a9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f36f9b9c218 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000000003f RCX: 00007f37091ff5a9
+RDX: 0000000020000780 RSI: 0000000040305828 RDI: 0000000000000004
+RBP: 00007f37092aa6d8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f37092aa6d0
+R13: 00007f3709277a14 R14: 726665646f747561 R15: 61635f6563617073
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
