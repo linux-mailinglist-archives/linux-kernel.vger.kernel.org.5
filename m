@@ -2,285 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C23DF7BA00D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DABB7BA36C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233986AbjJEOcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41964 "EHLO
+        id S236710AbjJEP5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234021AbjJEOaZ (ORCPT
+        with ESMTP id S236722AbjJEP4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:30:25 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD0C27573
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:28:35 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ae75ece209so187264566b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 06:28:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696512514; x=1697117314; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uttje9H76CjAHqDi0nb3p+4z8+RlBcA4fdin0GblyOs=;
-        b=f15GbZD89XPjr4ZKplrmoQgnDHVGSwTs4ag/dxw/7ORMPwEGrvYsh7bco2rqy+2jpv
-         dSTPPiisWdCgr40SRwuKoqWiZbtdU3z/8cJy1MdULbrZ6sqPzZad6/v9J1VpiMCYUUST
-         94D33/pMcgPsNCAm55tBXEauYiOaZDBy//IkA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696512514; x=1697117314;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Uttje9H76CjAHqDi0nb3p+4z8+RlBcA4fdin0GblyOs=;
-        b=wGUykYcIxE+bE97nFzpx2xjfnSwFUOYOEKuF5XVzZirA5xoiLGFlrS9xwsi0VRgqD8
-         teYaZo2o0UfmmIpVEfFt9EpCWkPuZicF7mwSKSPs0GDWGagS1pJvuUcqMVcnXxYHGPs2
-         2BLUu0laYW5CL1kNnX/w9fhQRW8MNpUh2CGyj2IVVvXg1if2pniUoB0BQqodHQEZSRWM
-         Mkg4QXl7meLAbzwrRPJYv51V67aYLfOAPPQYckoLwlWXC/2mm4cUBvRcVadUdrBdKFLa
-         ypKgQNfvT/L0Z9ob8LqKpmrIZM+pNtkLpk8g8M+ohS3DKuU7bwIPucARG5iSMspCYa0/
-         t+UA==
-X-Gm-Message-State: AOJu0YyOIqW4D6aZKDfsNbEOIQWJBtnAROJXi0Tp28QH2fovCTgcOOl5
-        OjwgKGPhulTHW2QcY7Pd9HIFo7KvvQlZKJ9C4abznA==
-X-Google-Smtp-Source: AGHT+IGEm5wF2Q+BhWlWTvL7ZYsdruoCPmp9Uy47bElz9kCchf+LdIy88b0VQuw88Imfh5qH6nm1g3tJn7WJrqlN0EQ=
-X-Received: by 2002:a17:906:224c:b0:9ae:3c2f:5a99 with SMTP id
- 12-20020a170906224c00b009ae3c2f5a99mr5697789ejr.51.1696512513425; Thu, 05 Oct
- 2023 06:28:33 -0700 (PDT)
+        Thu, 5 Oct 2023 11:56:35 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 13C2F59D2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:53:18 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E55931655;
+        Thu,  5 Oct 2023 06:28:58 -0700 (PDT)
+Received: from [10.1.39.183] (XHFQ2J9959.cambridge.arm.com [10.1.39.183])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72E963F7C5;
+        Thu,  5 Oct 2023 06:28:19 -0700 (PDT)
+Message-ID: <465180b5-c365-44e5-840c-a29c285f430e@arm.com>
+Date:   Thu, 5 Oct 2023 14:28:18 +0100
 MIME-Version: 1.0
-References: <20231004093620.2b1d6917@xps-13> <20231004113458.531124-1-mwalle@kernel.org>
- <CAPnjgZ2hWE6Sc=rg55W=-r-TnoWP7Y5gSpn41kwoyja-AMVw+w@mail.gmail.com>
- <9e588e3ec8c0c321a2861723d0d42b9a@kernel.org> <CAPnjgZ20ezipPWAj6bUM9_oCTcX1XzuLqQ7b7-nKjXf1t4p9-Q@mail.gmail.com>
- <a581ef73fa09c6ffeb83a1c1780053bd@kernel.org>
-In-Reply-To: <a581ef73fa09c6ffeb83a1c1780053bd@kernel.org>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Thu, 5 Oct 2023 07:28:15 -0600
-Message-ID: <CAPnjgZ2PnKD5m0EgTdEAf-gcK3wuBZvWw_AO2iehb1dmfdoz3A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: fixed-partitions: Add binman compatible
-To:     Michael Walle <mwalle@kernel.org>
-Cc:     miquel.raynal@bootlin.com, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        ptyadav@amazon.de, rafal@milecki.pl, richard@nod.at,
-        robh+dt@kernel.org, robh@kernel.org, trini@konsulko.com,
-        u-boot@lists.denx.de, vigneshr@ti.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] arm64/mm: Hoist synchronization out of set_ptes() loop
+Content-Language: en-GB
+To:     Steven Price <steven.price@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Collingbourne <pcc@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231003133955.637353-1-ryan.roberts@arm.com>
+ <3e417f1c-faed-45c7-8008-f8525c609e53@arm.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <3e417f1c-faed-45c7-8008-f8525c609e53@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+On 05/10/2023 13:55, Steven Price wrote:
+> On 03/10/2023 14:39, Ryan Roberts wrote:
+>> set_ptes() sets a physically contiguous block of memory (which all
+>> belongs to the same folio) to a contiguous block of ptes. The arm64
+>> implementation of this previously just looped, operating on each
+>> individual pte. But the __sync_icache_dcache() and mte_sync_tags()
+>> operations can both be hoisted out of the loop so that they are
+>> performed once for the contiguous set of pages (which may be less than
+>> the whole folio). This should result in minor performance gains.
+>>
+>> __sync_icache_dcache() already acts on the whole folio, and sets a flag
+>> in the folio so that it skips duplicate calls. But by hoisting the call,
+>> all the pte testing is done only once.
+>>
+>> mte_sync_tags() operates on each individual page with its own loop. But
+>> by passing the number of pages explicitly, we can rely solely on its
+>> loop and do the checks only once. This approach also makes it robust for
+>> the future, rather than assuming if a head page of a compound page is
+>> being mapped, then the whole compound page is being mapped, instead we
+>> explicitly know how many pages are being mapped. The old assumption may
+>> not continue to hold once the "anonymous large folios" feature is
+>> merged.
+>>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>  arch/arm64/include/asm/mte.h     |  4 ++--
+>>  arch/arm64/include/asm/pgtable.h | 27 +++++++++++++++++----------
+>>  arch/arm64/kernel/mte.c          |  4 ++--
+>>  3 files changed, 21 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+>> index 4cedbaa16f41..91fbd5c8a391 100644
+>> --- a/arch/arm64/include/asm/mte.h
+>> +++ b/arch/arm64/include/asm/mte.h
+>> @@ -90,7 +90,7 @@ static inline bool try_page_mte_tagging(struct page *page)
+>>  }
+>>
+>>  void mte_zero_clear_page_tags(void *addr);
+>> -void mte_sync_tags(pte_t pte);
+>> +void mte_sync_tags(pte_t pte, unsigned int nr_pages);
+>>  void mte_copy_page_tags(void *kto, const void *kfrom);
+>>  void mte_thread_init_user(void);
+>>  void mte_thread_switch(struct task_struct *next);
+>> @@ -122,7 +122,7 @@ static inline bool try_page_mte_tagging(struct page *page)
+>>  static inline void mte_zero_clear_page_tags(void *addr)
+>>  {
+>>  }
+>> -static inline void mte_sync_tags(pte_t pte)
+>> +static inline void mte_sync_tags(pte_t pte, unsigned int nr_pages)
+>>  {
+>>  }
+>>  static inline void mte_copy_page_tags(void *kto, const void *kfrom)
+>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+>> index 7f7d9b1df4e5..374c1c1485f9 100644
+>> --- a/arch/arm64/include/asm/pgtable.h
+>> +++ b/arch/arm64/include/asm/pgtable.h
+>> @@ -325,8 +325,7 @@ static inline void __check_safe_pte_update(struct mm_struct *mm, pte_t *ptep,
+>>  		     __func__, pte_val(old_pte), pte_val(pte));
+>>  }
+>>
+>> -static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+>> -				pte_t *ptep, pte_t pte)
+>> +static inline void __sync_cache_and_tags(pte_t pte, unsigned int nr_pages)
+>>  {
+>>  	if (pte_present(pte) && pte_user_exec(pte) && !pte_special(pte))
+>>  		__sync_icache_dcache(pte);
+>> @@ -339,20 +338,18 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+>>  	 */
+>>  	if (system_supports_mte() && pte_access_permitted(pte, false) &&
+>>  	    !pte_special(pte) && pte_tagged(pte))
+>> -		mte_sync_tags(pte);
+>> -
+>> -	__check_safe_pte_update(mm, ptep, pte);
+>> -
+>> -	set_pte(ptep, pte);
+>> +		mte_sync_tags(pte, nr_pages);
+>>  }
+>>
+>>  static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+>>  			      pte_t *ptep, pte_t pte, unsigned int nr)
+>>  {
+>>  	page_table_check_ptes_set(mm, ptep, pte, nr);
+>> +	__sync_cache_and_tags(pte, nr);
+>>
+>>  	for (;;) {
+>> -		__set_pte_at(mm, addr, ptep, pte);
+>> +		__check_safe_pte_update(mm, ptep, pte);
+>> +		set_pte(ptep, pte);
+>>  		if (--nr == 0)
+>>  			break;
+>>  		ptep++;
+>> @@ -531,18 +528,28 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
+>>  #define pud_pfn(pud)		((__pud_to_phys(pud) & PUD_MASK) >> PAGE_SHIFT)
+>>  #define pfn_pud(pfn,prot)	__pud(__phys_to_pud_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
+>>
+>> +static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+>> +				pte_t *ptep, pte_t pte, unsigned int nr)
+>> +{
+>> +	__sync_cache_and_tags(pte, nr);
+>> +	__check_safe_pte_update(mm, ptep, pte);
+>> +	set_pte(ptep, pte);
+>> +}
+>> +
+>>  static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
+>>  			      pmd_t *pmdp, pmd_t pmd)
+>>  {
+>>  	page_table_check_pmd_set(mm, pmdp, pmd);
+>> -	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd));
+>> +	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd),
+>> +						PMD_SHIFT - PAGE_SHIFT);
+> 
+> IIUC the new __set_pte_at takes the number of pages, but PMD_SHIFT -
+> PAGE_SHIFT is the log2 of that. Should this be 1 << (PMD_SHIFT -
+> PAGE_SHIFT)? Same below for pud.
 
-On Thu, 5 Oct 2023 at 02:54, Michael Walle <mwalle@kernel.org> wrote:
->
-> Hi,
->
-> >> >> >> Add a compatible string for binman, so we can extend fixed-partitions
-> >> >> >> in various ways.
-> >> >> >
-> >> >> > I've been thinking at the proper way to describe the binman partitions.
-> >> >> > I am wondering if we should really extend the fixed-partitions
-> >> >> > schema. This description is really basic and kind of supposed to remain
-> >> >> > like that. Instead, I wonder if we should not just keep the binman
-> >> >> > compatible alone, like many others already. This way it would be very clear
-> >> >> > what is expected and allowed in both cases. I am thinking about
-> >> >> > something like that:
-> >> >> >
-> >> >> >       Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml
-> >> >> >
-> >> >> > this file is also referenced there (but this patch does the same, which
-> >> >> > is what I'd expect):
-> >> >> >
-> >> >> >       Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-> >> >> >
-> >> >> > I'll let the binding maintainers judge whether they think it's
-> >> >> > relevant, it's not a strong opposition.
-> >> >>
-> >> >> What is the overall goal here? To replace the current binman node
-> >> >> which is
-> >> >> usually contained in the -u-boot.dtsi files? If one is using binman to
-> >> >> create an image, is it expected that one needs to adapt the DT in
-> >> >> linux?
-> >> >> Or will it still be a seperate -u-boot.dtsi? > Because in the latter
-> >> >> case
-> >> >> I see that there will be conflicts because you have to overwrite the
-> >> >> flash node. Or will it be a seperate node with all the information
-> >> >> duplicated?
-> >> >
-> >> > The goal is simply to have a full binding for firmware layout, such
-> >> > that firmware images can be created, examined and updated. The
-> >> > -u-boot.dtsi files are a stopgap while we sort out a real binding.
-> >> > They should eventually go away.
-> >>
-> >> You haven't answered whether this node should be a seperate binman
-> >> node - or if you'll reuse the existing flash (partitions) node(s) and
-> >> add any missing property there. If it's the latter, I don't think
-> >> compatible = "binman", "fixed-partitions"; is correct.
-> >
-> > My intent is to make it compatible, so wouldn't it make sense to have
-> > binman as the first compatible, then falling back to fixed-partitions
-> > as the second?
->
-> As far as I know, the compatibles should get more specific with each
-> string.
+Ouch - good spot! I'll resubmit a fixed version.
 
-That's the opposite to what I understood.
+> 
+> Steve
+> 
+>>  }
+>>
+>>  static inline void set_pud_at(struct mm_struct *mm, unsigned long addr,
+>>  			      pud_t *pudp, pud_t pud)
+>>  {
+>>  	page_table_check_pud_set(mm, pudp, pud);
+>> -	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud));
+>> +	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud),
+>> +						PUD_SHIFT - PAGE_SHIFT);
+>>  }
+>>
+>>  #define __p4d_to_phys(p4d)	__pte_to_phys(p4d_pte(p4d))
+>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+>> index 4edecaac8f91..2fb5e7a7a4d5 100644
+>> --- a/arch/arm64/kernel/mte.c
+>> +++ b/arch/arm64/kernel/mte.c
+>> @@ -35,10 +35,10 @@ DEFINE_STATIC_KEY_FALSE(mte_async_or_asymm_mode);
+>>  EXPORT_SYMBOL_GPL(mte_async_or_asymm_mode);
+>>  #endif
+>>
+>> -void mte_sync_tags(pte_t pte)
+>> +void mte_sync_tags(pte_t pte, unsigned int nr_pages)
+>>  {
+>>  	struct page *page = pte_page(pte);
+>> -	long i, nr_pages = compound_nr(page);
+>> +	unsigned int i;
+>>
+>>  	/* if PG_mte_tagged is set, tags have already been initialised */
+>>  	for (i = 0; i < nr_pages; i++, page++) {
+>> --
+>> 2.25.1
+>>
+> 
 
-> But "binman" seems to be used as a kind of tag which could be
-> added to any compatible under the flash node. What if one wants to build
-> an image which isn't compatible = "fixed-partitions"? E.g.
-> "linksys,ns-partitions", will it then have
-> compatible = "binman", "linksys,ns-partitions"?
-
-I suppose so.
-
->
->
-> >> >> Maybe (a more complete) example would be helpful.
-> >> >
-> >> > Can you please be a bit more specific? What is missing from the
-> >> > example?
-> >>
-> >> Like a complete (stripped) DTS. Right now I just see how the
-> >> individual
-> >> node looks like. But with a complete example DTS, my question from
-> >> above
-> >> would have been answered.
->
-> So to give an example myself, please correct it if it's wrong. From
-> our board (kontron-sl28):
->
-> &fspi {
->          status = "okay";
->
->          flash@0 {
->                  compatible = "jedec,spi-nor";
->                  m25p,fast-read;
->                  spi-max-frequency = <133000000>;
->                  reg = <0>;
->                  /* The following setting enables 1-1-2 (CMD-ADDR-DATA)
-> mode */
->                  spi-rx-bus-width = <2>; /* 2 SPI Rx lines */
->                  spi-tx-bus-width = <1>; /* 1 SPI Tx line */
->
->                  partitions {
->                          compatible = "fixed-partitions";
->                          #address-cells = <1>;
->                          #size-cells = <1>;
->
->                          partition@0 {
->                                  reg = <0x000000 0x010000>;
->                                  label = "rcw";
->                                  read-only;
->                          };
->
->                          partition@10000 {
->                                  reg = <0x010000 0x1d0000>;
->                                  label = "failsafe bootloader";
->                                  read-only;
->                          };
->
->                          partition@200000 {
->                                  reg = <0x200000 0x010000>;
->                                  label = "configuration store";
->                          };
->
->                          partition@210000 {
->                                  reg = <0x210000 0x1d0000>;
->                                  label = "bootloader";
->                          };
->
->                          partition@3e0000 {
->                                  reg = <0x3e0000 0x020000>;
->                                  label = "bootloader environment";
->                          };
->                  };
->          };
-> };
->
-> In u-boot we use binman, see
-> arch/arm/dts/fsl-ls1028a-kontron-sl28-u-boot.dtsi
-> in the u-boot repository.
->
-> Now to use the new method, am I expected to adapt the dts in the
-> linux kernel? As far as I understand that is the case. So that node
-> from above would look something like the following:
->
-> &fspi {
->          status = "okay";
->
->          flash@0 {
->                  compatible = "jedec,spi-nor";
->                  m25p,fast-read;
->                  spi-max-frequency = <133000000>;
->                  reg = <0>;
->                  /* The following setting enables 1-1-2 (CMD-ADDR-DATA)
-> mode */
->                  spi-rx-bus-width = <2>; /* 2 SPI Rx lines */
->                  spi-tx-bus-width = <1>; /* 1 SPI Tx line */
->
->                  partitions {
->                          compatible = "binman", "fixed-partitions";
->                          #address-cells = <1>;
->                          #size-cells = <1>;
-> [..]
->                          partition@210000 {
->                                  reg = <0x210000 0x1d0000>;
->                                  label = "u-boot"; /* or "u-boot+atf" ?
-> */
->                          };
->
->                          partition@3e0000 {
->                                  reg = <0x3e0000 0x020000>;
->                                  label = "bootloader environment";
->                          };
->                  };
->          };
-> };
->
-> I'm still not sure why that compatible is needed. Also I'd need to
-> change
-> the label which might break user space apps looking for that specific
-> name.
->
-> Also, our board might have u-boot/spl or u-boot/spl/bl31/bl32, right now
-> that's something which depends on an u-boot configuration variable,
-> which
-> then enables or disables binman nodes in the -u-boot.dtsi. So in linux
-> we only have that "bootloader" partition, but there might be either
-> u-boot+spl or u-boot+spl+bl31+bl32.
->
-> Honestly, I'm really not sure this should go into a device tree.
-
-I think we might be getting a bit ahead of ourselves here. I thought
-that the decision was that the label should indicate the contents. If
-you have multiple things in a partition then it would become a
-'section' in Binman's terminology. Either the label programmatically
-describes what is inside or it doesn't. We can't have it both ways.
-What do you suggest?
-
-At present it seems you have the image described in two places - one
-is the binman node and the other is the partitions node. I would like
-to unify these.
-
-What does user space do with the partition labels?
-
->
-> >> What if a board uses eMMC to store the firmware binaries? Will that
-> >> then
-> >> be a subnode to the eMMC device?
-> >
-> > I thought there was a way to link the partition nodes and the device
-> > using a property, without having the partition info as a subnode of
-> > the device. But I may have imagined it as I cannot find it now. So
-> > yes, it will be a subnode of the eMMC device.
->
-> Not sure if that will fly.
-
-I can't find it anyway. There is somelike like that in
-simple-framebuffer with the 'display' property.
-
-Regards,
-SImon
