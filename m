@@ -2,601 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 574827BA0AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CFC7BA1F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238732AbjJEOlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        id S231135AbjJEPIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236779AbjJEOhD (ORCPT
+        with ESMTP id S233471AbjJEPHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:37:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A724787F;
-        Thu,  5 Oct 2023 07:02:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 651F2C4AF74;
-        Thu,  5 Oct 2023 13:37:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696513053;
-        bh=gQO8gzEGdkAvnIig++YIzdt2XSzjnK/sMCovAlXVcec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nsMLk3v9sa0Le4rZCkVPgBBMlnc4tFWpH62qc39eH2N15SCHzvCAvn0vmaUv3/wJB
-         Qyw0rIk9li58oSFclEaRxPe3ynG0NXqU02/w+nt03qU3LdwghdjKZYXRlDMf3sVTgK
-         cfDR049tas6X8DDlAbVSyeePDD+i2PTC1A8gglM5tor1YawSY9TYGGpXm8Zi781UyN
-         NSMkDCoPwlADzc81V9SbuSpDS0FXZTyySoI6MlgZaaEhcQukEbx0aFSA6nILZDikcc
-         Ld8CKaa47X100eCxKqIGJ2Z8ZcGV+bozjHnmpK3mUg0ZrBWoWRfSNg6KgcX+GByLTY
-         0q5vT+j2514DQ==
-Date:   Thu, 5 Oct 2023 14:37:26 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Anjelique Melendez <quic_amelende@quicinc.com>
-Cc:     pavel@ucw.cz, thierry.reding@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org, luca.weiss@fairphone.com,
-        konrad.dybcio@linaro.org, u.kleine-koenig@pengutronix.de,
-        quic_subbaram@quicinc.com, quic_gurus@quicinc.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, kernel@quicinc.com
-Subject: Re: [PATCH v5 4/7] leds: rgb: leds-qcom-lpg: Add support for single
- SDAM PPG
-Message-ID: <20231005133726.GD681678@google.com>
-References: <20230929003901.15086-1-quic_amelende@quicinc.com>
- <20230929003901.15086-5-quic_amelende@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Thu, 5 Oct 2023 11:07:03 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on20612.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eb2::612])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7201927B18;
+        Thu,  5 Oct 2023 06:38:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RSTTp4Enkd9V3ItoVf+lFAzVX3xa4gUw3csJcuSAAMr3XTJJn4T6pjYt6dB29sBdvgCxYbCiHJQqAAfopHaW84PG22+1LEwrTn5h71RkS8KoMtoT6r8mrdABFybDwb6RPH15VKoinwdq5Jhi8rkr+3XtUsNryT0tbwq8IVoW9GhSe6SB/0zHTk9QcBP2Js+1HylILqIAedALvnxcu8gmhFt6gUWQh6mkL5r35semsc3TSGo8YNxDY0gY34SCn8woomGvDwtgYsDEZQJXsYCPVG2rDKVKnBx9Gv4CkIZBAO9L4BHb+if1YQ7SnC84cTQuc1Taqt2TrB0NKWEGga44gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UzmTStI14H8mc6nWA6voZyNOvYrkqmW0XC4GJ5wW1LA=;
+ b=Wov5OrkYvOSjOm7qQQ5Y/MGcJHx4L1neS4CL4XIkBVipD1a9cCNTtoz2tT0/r0vBz45ePCd7EoKTR9vFiKBDxPPx9txphz0tj2/wq2dy8D4/ICp0NbNCRQrIKUrfIARFVBqy0Xq9fN093E2xZ/OzMRFW4PJ0I6b+Gk4JWuuuI0XX3pFbbHj2YOXp4yOdyj+ZoYzOWrOIDCBHykLdMkmCJ/0cQMN6afKSQ2ORgLsMQQOYMjUb645X9ztcGEcGz1PKOJfQdi4vOUHG1cqixEI1bL7jOxMlq9eHcqL+LlHd/MCj5tMldFcLQe0ECpKNrL6KZ60dUxIf2SXAQxP++Cx+gA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UzmTStI14H8mc6nWA6voZyNOvYrkqmW0XC4GJ5wW1LA=;
+ b=qjo4rZIfjruFgGvGzlaNXqgxW024mVfpZxLfKgSqlXYVSbSFYCl7FNuVNidKe4Qc1wigoqvjdEvevhkLjhgVJbnyJ3S8G7fxTk4pbDryI2D0QSn8iEawy6sptXBCU24JYvPu9VSafsFYmuGz2doUOxgQe3Cl+1wHdy3C1uFbK5U=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com (2603:10b6:5:21f::23)
+ by PH8PR12MB6819.namprd12.prod.outlook.com (2603:10b6:510:1ca::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Thu, 5 Oct
+ 2023 13:38:00 +0000
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::1ec:3e1e:98f4:b1b9]) by DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::1ec:3e1e:98f4:b1b9%7]) with mapi id 15.20.6838.029; Thu, 5 Oct 2023
+ 13:38:00 +0000
+Message-ID: <1c8e4e94-8781-7126-2ded-e4198db4129e@amd.com>
+Date:   Thu, 5 Oct 2023 19:07:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] soundwire: fix initializing sysfs for same devices on
+ different buses
+Content-Language: en-US
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mastan Katragadda <Mastan.Katragadda@amd.com>,
+        "Dommati, Sunil-kumar" <Sunil-kumar.Dommati@amd.com>,
+        "Hiregoudar, Basavaraj" <Basavaraj.Hiregoudar@amd.com>,
+        "kondaveeti, Arungopal" <arungopal.kondaveeti@amd.com>
+References: <20231004130243.493617-1-krzysztof.kozlowski@linaro.org>
+ <6628a5f6-ed22-4039-b5c2-2301c05c7e3e@linux.intel.com>
+ <2023100453-perfected-palm-3503@gregkh>
+ <624b044a-1f0f-4961-8b57-cb5346e7b0d3@linux.intel.com>
+ <2023100452-craziness-unpopular-7d97@gregkh>
+ <04c5911a-a894-44b3-9f0e-fe9e6de203f2@linux.intel.com>
+ <d648c3d1-53ac-4021-ac7f-6a81f1a72dd3@sirena.org.uk>
+ <bf4ee895-293f-4bc3-ac4b-30df6361e973@linux.intel.com>
+ <c7fb4ead-13af-438b-a199-c52105545047@linux.intel.com>
+ <c0cf1873-f72d-3cd3-0b70-db70d76546f5@amd.com>
+In-Reply-To: <c0cf1873-f72d-3cd3-0b70-db70d76546f5@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230929003901.15086-5-quic_amelende@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: PN3PR01CA0089.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:9a::7) To DM6PR12MB4123.namprd12.prod.outlook.com
+ (2603:10b6:5:21f::23)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4123:EE_|PH8PR12MB6819:EE_
+X-MS-Office365-Filtering-Correlation-Id: baf0e308-1e0d-48da-6cb1-08dbc5a84a5a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g+HihGqKgzr6fYEOJwcDKbhI3FU5ziJU/txFw+cV4BZ9E6z7DSdbAgqXs1XIp77D74tWq+RxkDsmKW9G3d3vlxVpUoYMQWmonKtgKYM5lENuaLe6vBo8+9Ec7VtqnXchlgbn6Dz4X8Z4k7Xd2L+rE57Egv+CzgsnrYnHELEs21LbYRBN3Nsv0Ty2XS2nV16fCnxDZx312T+22LAiEnj4dR7qjIg1GUJhFYIkFnxLjEmon28DPSv9RKq714IubHIvlYFkIvFruO7+NRn2TzMlwP+8lt2xx1wYthIwhHONkq97MBAja2+Fg62h/Lf3Pgtc1gbSHKCUNMxCFuxwoU3yTDnWQuZHhoTTEdypsQD6Udi0WccJZCdnZq2VxlijP7OFUBD529ClvVxlzJLQJn+g5qhuvOok63hx4QXILdyJMKJ3AOad0su4bJCf1XVZvpSsVQJUM7hY02zB7IuWQbdYTTZXtBbDwtYcZ+CFma9s6/PMga/Ov3qCMEFxEbeMBPtMiTuVi4kkVXdicVXkMA/qYkuROYiGp3GvawdW9KvCyW9MtAWBv++vfHE5trKCQUVDctcOzu1gjrINPxkx4ITqucy4aRWSV17FYb5KHqnPQn7BVNmDfrjDb6TkM891Qaz0trd+S5bNvbWwrEw6OLxrKg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4123.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(136003)(39860400002)(396003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(66556008)(478600001)(54906003)(8676002)(4326008)(26005)(36756003)(316002)(66899024)(2616005)(41300700001)(966005)(86362001)(6486002)(6506007)(6512007)(6666004)(38100700002)(31696002)(53546011)(110136005)(66476007)(66946007)(2906002)(7416002)(8936002)(5660300002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bmFrVzljUi9RNGlaWXkrakRMemc0OTFsYndWQlFFb1lid2FaMWorSEY0VHZI?=
+ =?utf-8?B?dGlDdGJMYzIwNVE4WXVPZDZ3Y2U1VjdiaVZCWURjbExUOGU3a3N0UEh3L0h3?=
+ =?utf-8?B?eG0xSUZBRmdIRm8zeFJVQ2x0aVAyQ1lJRDhzb213ampJRldRMFZlUHlqT2pq?=
+ =?utf-8?B?N1ZORU1WbzJIekhHMmllNXZXcTdsSEdPQndRQ2xudW1ON29VSkdrS1pRZEJj?=
+ =?utf-8?B?YWFMSVNQZ0lJb1pkcWJheXBzUXpPb1hyZXE0ejhGT21EM3JrUG5qcEJkbUJv?=
+ =?utf-8?B?clo4bmNIRWg5bUhoZUZkSnA5S0FxT0Q0ZFRNZEVaMERtQUxkSTBseHdvbmFI?=
+ =?utf-8?B?dzNxdkt6SDRjdHZyVFZ3amhmbHV2SHR0YjBpZWY5ajREV1NNb29BeFNRSWU5?=
+ =?utf-8?B?ZXRiRkowOHQ3UmQ5RDI4bHREc0VLeEx2aGVranJBMHFMOUJKb09lQ1dFZ3RU?=
+ =?utf-8?B?OGh4VjdrWUpMN0RZR3lJUlJiODF1VzdrVmFkVHBJNm5PTWVRc1ZvZHFxbGI3?=
+ =?utf-8?B?aCtvbExjRDM5M2p4aTFvU1dUZGM5TnVjYTdic1RSU2dqTWRIeWluTDNaalp4?=
+ =?utf-8?B?alhLVU1zVmFTcEZjanJEZUEzSENWYURIbEU2SkNpd2J5eXN3dHp0YVhYLzd3?=
+ =?utf-8?B?Y1VFQ3JTVXY3N2NWQU9RcCtiMWpPSTliQ1hCeS9UVGxhakhhaEdtQmVHWmVP?=
+ =?utf-8?B?R2lvRys3OGJaaVVLVWdRVFNObFArZGxaa001bXNudjJsc0dTY0JQUEdoSC9N?=
+ =?utf-8?B?WW44Wm9UYXNTVGh3dWdFb1NRRXV2dkI2UkNnSHRlUVh4K2dmYS9nTE81bHVS?=
+ =?utf-8?B?QS92M0dyVTRBKzlFcSt1Y0FRMlh0blg5MUV1Nm5mbEEwY2duZ2dIMUJIMkIr?=
+ =?utf-8?B?MThYenZBbXNaakk5a1NzdEkyVk1DaVJmZTQ2UnIrN2NlMjdsVXVoam5WZjBo?=
+ =?utf-8?B?TGtFUHp4NEx0WlEyYWlaY2NKbG9keEVlV0R5bnVSTlBmcGQwTUtxTmE3eGVX?=
+ =?utf-8?B?TGZSeTZla1VOY21MbzhlblphaXlENEJMdGNYeU1qVThFQzZodGxkOTZuenVD?=
+ =?utf-8?B?Vk5lMXpDSmk5NmRsdXlvK1RDV2N6OThlbzdLSy9ndEFMSkkwZC9RZ2V2YUpQ?=
+ =?utf-8?B?Wmw2U01GakNoNTRzQ2pURnExYzNyZ3NVOU05WTgxcDhKbytvOWdoOHJrN251?=
+ =?utf-8?B?amNUU1l4QzhScXlhNTZUT0ZZdElFSm4zdVVaelhHU09ISmFqaVVBdzhOVldU?=
+ =?utf-8?B?WEgvMDVoZlIyQWpGRDBzb0xzZnJmMGhzbGkxTXBaNFJlMS92YW9BN0NBUlZK?=
+ =?utf-8?B?QU1sV1RsOW43VXJFam5PckM4OHJ3SWRQbGhBL003VzZGbERQTDRFMXdjanQ5?=
+ =?utf-8?B?QkZkYXVJQzkvSEJuRW9uUi9pZnAwYXlONjNobmtITWpWTWgybWhuNGI3R2xi?=
+ =?utf-8?B?OGpoSXBhclFjeGhjb3hxNStwR3IzemJva3JFOEQ0eEZWdEdlRjd3N3hIRUkv?=
+ =?utf-8?B?eEs5TlVpNHpLKy9sQmVUNEhuOXpkL0NudUxGL1A0RUh4Nk1EbzhnRG9lUHdF?=
+ =?utf-8?B?Ymt1SzllaFEvSnhTM2U4TVRFdG9VRWtWMWhzZWlkQ1d6NlFGNU4zUndSd3hP?=
+ =?utf-8?B?TndCSFdaNWVvMXdqVXE4T0FkVndBT3F5ZUJHU3daK1ZZTmsybkJMU1hSQ0R1?=
+ =?utf-8?B?ejkyL2NycVpYWlFWVEJ6QVRCVWlRMCt3Slh3L0I2RWFZdXhLaWI3TTRuMGV1?=
+ =?utf-8?B?WXQ4Q1ovZ3BVUnhEeTNnenhTbm8zK29QSDJ5QXNlbGxqcWdOeHBBUTdGdXVh?=
+ =?utf-8?B?am9maWJpbnBWWDVxaTA2a2ZYV2pXQ1d3cURKcXNlUlZqYU9nb1FhaThGenpa?=
+ =?utf-8?B?djdVR29NUlRtRE9YSlo5TzB0OGZIajZWNUlpb2ZOTHc3Qy9iQWFkclVnZkQr?=
+ =?utf-8?B?OFBhdDY5WkNzd3ZlOU1hTlhIdjRFMWhjcW9sOUNWb3g4dlVDcUlHWXhNNVBp?=
+ =?utf-8?B?cnVIKzJrU25YblltQ0JNVHZMU3p3U0orcmF0UXFVbDhjYW5wbmZSZnQyVG5m?=
+ =?utf-8?B?eGRiR2RIdDVVSFpDczFTbzg5V0pBbE1GS3lhQ2VibDB5WWJlWS9mZEQ1d01S?=
+ =?utf-8?Q?/K3LN79cMxL20x3UFsp96EMON?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: baf0e308-1e0d-48da-6cb1-08dbc5a84a5a
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4123.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 13:37:59.9308
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MtwO4q7R+JKVlsafuOLSm3iN6LVQroxrWG2vRfyjrw53R6lPacraml3ACEHtTHRuGBEcGtbofbqeDDQFTkCBHQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6819
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sep 2023, Anjelique Melendez wrote:
+On 05/10/23 18:08, Mukunda,Vijendar wrote:
+> On 05/10/23 17:54, Pierre-Louis Bossart wrote:
+>>
+>>> I think we keep circling on the differences between "Controller" and
+>>> "link" (aka bus). A Controller can have one or more links. A system can
+>>> have one or more controllers.
+>>>
+>>> Intel platforms have one controller and 4 or more links.
+>>> QCOM platforms have one or more controllers with one link each.
+>>>
+>>> I am not sure how this IDA-generated bus_id helps deal with these two
+>>> cases, since we can't really make any assumptions on how
+>>> controllers/links will be started and probed.
+>>>
+>>> What we are missing is a hierarchical controller/link definition, IOW a
+>>> controller_id should be given to the master by a higher level instead of
+>>> using an IDA.
+>> Tentative patches to introduce a 'controller_id' that's not an IDA are
+>> here: https://github.com/thesofproject/linux/pull/4616
+>>
+>> Initial results are positive for Intel devices. it *should* work for
+>> other devices but I can't test. If folks at Linaro/Qualcomm and AMD can
+>> give it a try, that would be much appreciated.
+> Will test on AMD platforms and let you know the result.
 
-> In some PMICs like pmi632, the pattern look up table (LUT) and LPG
-> configuration is stored in a single SDAM module instead of LUT
-> peripheral. Currently, PMICs without LUT peripheral will not be
-> able to produce LED patterns.
-> 
-> Add support for PBS Pattern Generation (PPG), which is the feature
-> that allows PMICs without LUT peripherals to produce LED patterns
-> from SDAM module. PPG uses the Qualcomm Programmable Boot
-> Sequencer (PBS) to trigger LED pattern sequences.
-> 
-> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
-> ---
->  drivers/leds/rgb/leds-qcom-lpg.c | 282 ++++++++++++++++++++++++++++---
->  1 file changed, 261 insertions(+), 21 deletions(-)
+"soundwire: bus: introduce controller_id " patch  needs to be modified
+and controller id should be set to zero for amd platforms as we are
+populating multiple links under same controller id.
 
-Looking good.  Just a couple of nits and throughts.
+>
+>> Thanks.
 
-> diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-> index df469aaa7e6e..4d87686f916c 100644
-> --- a/drivers/leds/rgb/leds-qcom-lpg.c
-> +++ b/drivers/leds/rgb/leds-qcom-lpg.c
-> @@ -8,11 +8,13 @@
->  #include <linux/bitfield.h>
->  #include <linux/led-class-multicolor.h>
->  #include <linux/module.h>
-> +#include <linux/nvmem-consumer.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
->  #include <linux/pwm.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
-> +#include <linux/soc/qcom/qcom-pbs.h>
->  
->  #define LPG_SUBTYPE_REG		0x05
->  #define  LPG_SUBTYPE_LPG	0x2
-> @@ -39,6 +41,8 @@
->  #define PWM_SEC_ACCESS_REG	0xd0
->  #define PWM_DTEST_REG(x)	(0xe2 + (x) - 1)
->  
-> +#define SDAM_REG_PBS_SEQ_EN		0x42
-> +
->  #define TRI_LED_SRC_SEL		0x45
->  #define TRI_LED_EN_CTL		0x46
->  #define TRI_LED_ATC_CTL		0x47
-> @@ -48,9 +52,25 @@
->  
->  #define LPG_RESOLUTION_9BIT	BIT(9)
->  #define LPG_RESOLUTION_15BIT	BIT(15)
-> +#define PPG_MAX_LED_BRIGHTNESS	255
-> +
->  #define LPG_MAX_M		7
->  #define LPG_MAX_PREDIV		6
->  
-> +#define DEFAULT_TICK_DURATION_US	7800
-> +#define RAMP_STEP_DURATION(x)		(((x) * 1000 / DEFAULT_TICK_DURATION_US) & 0xff)
-> +
-> +/* LPG common config settings for PPG */
-> +#define SDAM_REG_RAMP_STEP_DURATION		0x47
-> +#define SDAM_LPG_SDAM_LUT_PATTERN_OFFSET	0x80
-> +
-> +/* LPG per channel config settings for PPG */
-> +#define SDAM_LUT_EN_OFFSET			0x0
-> +#define SDAM_PATTERN_CONFIG_OFFSET		0x1
-> +#define SDAM_END_INDEX_OFFSET			0x3
-> +#define SDAM_START_INDEX_OFFSET		0x4
-> +#define SDAM_PBS_SCRATCH_LUT_COUNTER_OFFSET	0x6
-> +
->  struct lpg_channel;
->  struct lpg_data;
->  
-> @@ -64,7 +84,10 @@ struct lpg_data;
->   * @lut_base:	base address of the LUT block (optional)
->   * @lut_size:	number of entries in the LUT block
->   * @lut_bitmap:	allocation bitmap for LUT entries
-> - * @triled_base: base address of the TRILED block (optional)
-> + * @pbs_dev:	PBS device
-> + * @lpg_chan_sdam:	LPG SDAM peripheral device
-> + * @pbs_en_bitmap:	bitmap for tracking PBS triggers
-> + * @triled_base:	base address of the TRILED block (optional)
->   * @triled_src:	power-source for the TRILED
->   * @triled_has_atc_ctl:	true if there is TRI_LED_ATC_CTL register
->   * @triled_has_src_sel:	true if there is TRI_LED_SRC_SEL register
-> @@ -85,6 +108,10 @@ struct lpg {
->  	u32 lut_size;
->  	unsigned long *lut_bitmap;
->  
-> +	struct pbs_dev *pbs_dev;
-> +	struct nvmem_device *lpg_chan_sdam;
-> +	unsigned long pbs_en_bitmap;
-> +
->  	u32 triled_base;
->  	u32 triled_src;
->  	bool triled_has_atc_ctl;
-> @@ -101,6 +128,8 @@ struct lpg {
->   * @triled_mask: mask in TRILED to enable this channel
->   * @lut_mask:	mask in LUT to start pattern generator for this channel
->   * @subtype:	PMIC hardware block subtype
-> + * @sdam_offset:	Channel offset in LPG SDAM
-
-Nit: De-capitalise Channel.
-
-> + * @lpg_idx:	index of the channel
->   * @in_use:	channel is exposed to LED framework
->   * @color:	color of the LED attached to this channel
->   * @dtest_line:	DTEST line for output, or 0 if disabled
-> @@ -112,6 +141,7 @@ struct lpg {
->   * @pre_div_sel: divider selector of the reference clock
->   * @pre_div_exp: exponential divider of the reference clock
->   * @pwm_resolution_sel:	pwm resolution selector
-> + * @pattern_set: true when setting pattern
->   * @ramp_enabled: duty cycle is driven by iterating over lookup table
->   * @ramp_ping_pong: reverse through pattern, rather than wrapping to start
->   * @ramp_oneshot: perform only a single pass over the pattern
-> @@ -129,6 +159,8 @@ struct lpg_channel {
->  	unsigned int triled_mask;
->  	unsigned int lut_mask;
->  	unsigned int subtype;
-> +	u32 sdam_offset;
-> +	u32 lpg_idx;
->  
->  	bool in_use;
->  
-> @@ -146,6 +178,7 @@ struct lpg_channel {
->  	unsigned int pre_div_exp;
->  	unsigned int pwm_resolution_sel;
->  
-> +	bool pattern_set;
->  	bool ramp_enabled;
->  	bool ramp_ping_pong;
->  	bool ramp_oneshot;
-> @@ -180,8 +213,10 @@ struct lpg_led {
->   * struct lpg_channel_data - per channel initialization data
->   * @base:		base address for PWM channel registers
->   * @triled_mask:	bitmask for controlling this channel in TRILED
-> + * @sdam_offset:	Channel offset in LPG SDAM
-
-Nit: Please keep these ordered.
-
->   */
->  struct lpg_channel_data {
-> +	unsigned int sdam_offset;
->  	unsigned int base;
->  	u8 triled_mask;
->  };
-> @@ -206,6 +241,75 @@ struct lpg_data {
->  	const struct lpg_channel_data *channels;
->  };
->  
-> +#define PBS_SW_TRIG_BIT		BIT(0)
-> +
-> +static int lpg_clear_pbs_trigger(struct lpg_channel *chan)
-> +{
-> +	u8 val = 0;
-> +	int rc;
-> +
-> +	clear_bit(chan->lpg_idx, &chan->lpg->pbs_en_bitmap);
-> +	if (!chan->lpg->pbs_en_bitmap) {
-> +		rc = nvmem_device_write(chan->lpg->lpg_chan_sdam, SDAM_REG_PBS_SEQ_EN, 1, &val);
-> +		if (rc < 0)
-> +			return rc;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int lpg_set_pbs_trigger(struct lpg_channel *chan)
-> +{
-> +	u8 val = PBS_SW_TRIG_BIT;
-> +	int rc;
-> +
-> +	if (!chan->lpg->pbs_en_bitmap) {
-> +		rc = nvmem_device_write(chan->lpg->lpg_chan_sdam, SDAM_REG_PBS_SEQ_EN, 1, &val);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = qcom_pbs_trigger_event(chan->lpg->pbs_dev, val);
-> +		if (rc < 0)
-> +			return rc;
-> +	}
-> +	set_bit(chan->lpg_idx, &chan->lpg->pbs_en_bitmap);
-> +
-> +	return 0;
-> +}
-> +
-> +static int lpg_sdam_configure_triggers(struct lpg_channel *chan, bool set_trig)
-> +{
-> +	u32 addr = SDAM_LUT_EN_OFFSET + chan->sdam_offset;
-> +	u8 val;
-> +	int rc;
-> +
-> +	if (chan->lpg->lut_base)
-
-Because?  I think I comment here would be handy.
-
-> +		return 0;
-> +
-> +	if (set_trig) {
-> +		val = 1;
-> +		rc = nvmem_device_write(chan->lpg->lpg_chan_sdam, addr, 1, &val);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = lpg_set_pbs_trigger(chan);
-> +		if (rc < 0)
-> +			return rc;
-> +		chan->pattern_set = false;
-> +	} else {
-> +		val = 0;
-> +		rc = nvmem_device_write(chan->lpg->lpg_chan_sdam, addr, 1, &val);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = lpg_clear_pbs_trigger(chan);
-> +		if (rc < 0)
-> +			return rc;
-
-Nothing to be done for pattern_set?
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int triled_set(struct lpg *lpg, unsigned int mask, unsigned int enable)
->  {
->  	/* Skip if we don't have a triled block */
-> @@ -216,6 +320,41 @@ static int triled_set(struct lpg *lpg, unsigned int mask, unsigned int enable)
->  				  mask, enable);
->  }
->  
-> +static int lpg_lut_store_sdam(struct lpg *lpg, struct led_pattern *pattern,
-> +			 size_t len, unsigned int *lo_idx, unsigned int *hi_idx)
-> +{
-> +	unsigned int idx;
-> +	u8 brightness;
-> +	int i, rc;
-> +	u16 addr;
-> +
-> +	if (len > lpg->lut_size) {
-> +		dev_err(lpg->dev, "Pattern length (%zu) exceeds maximum pattern length (%d)\n",
-> +			len, lpg->lut_size);
-> +		return -EINVAL;
-> +	}
-> +
-> +	idx = bitmap_find_next_zero_area(lpg->lut_bitmap, lpg->lut_size,
-> +					 0, len, 0);
-
-These line wraps are inconsistent with some others.
-
-Pick 80 or 100, but be consistent throughout.
-
-> +	if (idx >= lpg->lut_size)
-> +		return -ENOSPC;
-> +
-> +	for (i = 0; i < len; i++) {
-> +		brightness = pattern[i].brightness;
-> +		addr = SDAM_LPG_SDAM_LUT_PATTERN_OFFSET + i + idx;
-> +		rc = nvmem_device_write(lpg->lpg_chan_sdam, addr, 1, &brightness);
-> +		if (rc < 0)
-> +			return rc;
-> +	}
-> +
-> +	bitmap_set(lpg->lut_bitmap, idx, len);
-> +
-> +	*lo_idx = idx;
-> +	*hi_idx = idx + len - 1;
-> +
-> +	return 0;
-> +}
-> +
->  static int lpg_lut_store(struct lpg *lpg, struct led_pattern *pattern,
->  			 size_t len, unsigned int *lo_idx, unsigned int *hi_idx)
->  {
-> @@ -462,6 +601,28 @@ static void lpg_apply_pwm_value(struct lpg_channel *chan)
->  #define LPG_PATTERN_CONFIG_PAUSE_HI	BIT(1)
->  #define LPG_PATTERN_CONFIG_PAUSE_LO	BIT(0)
->  
-> +static void lpg_sdam_apply_lut_control(struct lpg_channel *chan)
-> +{
-> +	struct nvmem_device *lpg_chan_sdam = chan->lpg->lpg_chan_sdam;
-> +	unsigned int lo_idx = chan->pattern_lo_idx;
-> +	unsigned int hi_idx = chan->pattern_hi_idx;
-> +	u8 val = 0, conf = 0;
-> +
-> +	if (!chan->ramp_enabled || chan->pattern_lo_idx == chan->pattern_hi_idx)
-> +		return;
-> +
-> +	if (!chan->ramp_oneshot)
-> +		conf |= LPG_PATTERN_CONFIG_REPEAT;
-> +
-> +	nvmem_device_write(lpg_chan_sdam, SDAM_PBS_SCRATCH_LUT_COUNTER_OFFSET + chan->sdam_offset, 1, &val);
-> +	nvmem_device_write(lpg_chan_sdam, SDAM_PATTERN_CONFIG_OFFSET + chan->sdam_offset, 1, &conf);
-> +	nvmem_device_write(lpg_chan_sdam, SDAM_END_INDEX_OFFSET + chan->sdam_offset, 1, &hi_idx);
-> +	nvmem_device_write(lpg_chan_sdam, SDAM_START_INDEX_OFFSET + chan->sdam_offset, 1, &lo_idx);
-> +
-> +	val = RAMP_STEP_DURATION(chan->ramp_tick_ms);
-> +	nvmem_device_write(lpg_chan_sdam, SDAM_REG_RAMP_STEP_DURATION, 1, &val);
-> +}
-> +
->  static void lpg_apply_lut_control(struct lpg_channel *chan)
->  {
->  	struct lpg *lpg = chan->lpg;
-> @@ -597,7 +758,10 @@ static void lpg_apply(struct lpg_channel *chan)
->  	lpg_apply_pwm_value(chan);
->  	lpg_apply_control(chan);
->  	lpg_apply_sync(chan);
-> -	lpg_apply_lut_control(chan);
-> +	if (chan->lpg->lpg_chan_sdam)
-> +		lpg_sdam_apply_lut_control(chan);
-> +	else
-> +		lpg_apply_lut_control(chan);
->  	lpg_enable_glitch(chan);
->  }
->  
-> @@ -642,6 +806,9 @@ static void lpg_brightness_set(struct lpg_led *led, struct led_classdev *cdev,
->  		triled_mask |= chan->triled_mask;
->  
->  		lpg_apply(chan);
-> +
-> +		if (chan->pattern_set)
-> +			lpg_sdam_configure_triggers(chan, true);
->  	}
->  
->  	/* Toggle triled lines */
-> @@ -836,18 +1003,24 @@ static int lpg_pattern_set(struct lpg_led *led, struct led_pattern *led_pattern,
->  	 * If the specified pattern is a palindrome the ping pong mode is
->  	 * enabled. In this scenario the delta_t of the middle entry (i.e. the
->  	 * last in the programmed pattern) determines the "high pause".
-> +	 *
-> +	 * SDAM devices supporting LUT do not support "low pause", "high pause"
-> +	 * or "ping pong"
->  	 */
->  
->  	/* Detect palindromes and use "ping pong" to reduce LUT usage */
-> -	for (i = 0; i < len / 2; i++) {
-> -		brightness_a = pattern[i].brightness;
-> -		brightness_b = pattern[len - i - 1].brightness;
-> -
-> -		if (brightness_a != brightness_b) {
-> -			ping_pong = false;
-> -			break;
-> +	if (lpg->lut_base) {
-> +		for (i = 0; i < len / 2; i++) {
-> +			brightness_a = pattern[i].brightness;
-> +			brightness_b = pattern[len - i - 1].brightness;
-> +
-> +			if (brightness_a != brightness_b) {
-> +				ping_pong = false;
-> +				break;
-> +			}
->  		}
-> -	}
-> +	} else
-> +		ping_pong = false;
->  
->  	/* The pattern length to be written to the LUT */
->  	if (ping_pong)
-> @@ -875,12 +1048,27 @@ static int lpg_pattern_set(struct lpg_led *led, struct led_pattern *led_pattern,
->  	if (delta_t >= BIT(9))
->  		goto out_free_pattern;
->  
-> -	/* Find "low pause" and "high pause" in the pattern */
-> -	lo_pause = pattern[0].delta_t;
-> -	hi_pause = pattern[actual_len - 1].delta_t;
-> +	/*
-> +	 * Find "low pause" and "high pause" in the pattern in the LUT case.
-> +	 * LPGs using SDAM for pattern require equal duration of all steps
-> +	 */
-> +	if (lpg->lut_base) {
-> +		lo_pause = pattern[0].delta_t;
-> +		hi_pause = pattern[actual_len - 1].delta_t;
-> +	} else {
-> +		if (delta_t != pattern[0].delta_t ||
-> +		    delta_t != pattern[actual_len - 1].delta_t)
-> +			goto out_free_pattern;
-> +	}
-> +
->  
->  	mutex_lock(&lpg->lock);
-> -	ret = lpg_lut_store(lpg, pattern, actual_len, &lo_idx, &hi_idx);
-> +
-> +	if (lpg->lpg_chan_sdam)
-> +		ret = lpg_lut_store_sdam(lpg, pattern, actual_len, &lo_idx, &hi_idx);
-> +	else
-> +		ret = lpg_lut_store(lpg, pattern, actual_len, &lo_idx, &hi_idx);
-> +
->  	if (ret < 0)
->  		goto out_unlock;
->  
-> @@ -896,6 +1084,8 @@ static int lpg_pattern_set(struct lpg_led *led, struct led_pattern *led_pattern,
->  
->  		chan->pattern_lo_idx = lo_idx;
->  		chan->pattern_hi_idx = hi_idx;
-> +
-
-Why are we spacing them out?  They look related?
-
-> +		chan->pattern_set = true;
->  	}
->  
->  out_unlock:
-> @@ -953,6 +1143,7 @@ static int lpg_pattern_clear(struct lpg_led *led)
->  
->  	for (i = 0; i < led->num_channels; i++) {
->  		chan = led->channels[i];
-> +		lpg_sdam_configure_triggers(chan, false);
->  		chan->pattern_lo_idx = 0;
->  		chan->pattern_hi_idx = 0;
->  	}
-> @@ -1188,8 +1379,8 @@ static int lpg_add_led(struct lpg *lpg, struct device_node *np)
->  		cdev->brightness_set_blocking = lpg_brightness_mc_set;
->  		cdev->blink_set = lpg_blink_mc_set;
->  
-> -		/* Register pattern accessors only if we have a LUT block */
-> -		if (lpg->lut_base) {
-> +		/* Register pattern accessors if we have a LUT block or when using PPG */
-> +		if (lpg->lut_base || lpg->lpg_chan_sdam) {
->  			cdev->pattern_set = lpg_pattern_mc_set;
->  			cdev->pattern_clear = lpg_pattern_mc_clear;
->  		}
-> @@ -1202,15 +1393,19 @@ static int lpg_add_led(struct lpg *lpg, struct device_node *np)
->  		cdev->brightness_set_blocking = lpg_brightness_single_set;
->  		cdev->blink_set = lpg_blink_single_set;
->  
-> -		/* Register pattern accessors only if we have a LUT block */
-> -		if (lpg->lut_base) {
-> +		/* Register pattern accessors if we have a LUT block or when using PPG */
-> +		if (lpg->lut_base || lpg->lpg_chan_sdam) {
->  			cdev->pattern_set = lpg_pattern_single_set;
->  			cdev->pattern_clear = lpg_pattern_single_clear;
->  		}
->  	}
->  
->  	cdev->default_trigger = of_get_property(np, "linux,default-trigger", NULL);
-> -	cdev->max_brightness = LPG_RESOLUTION_9BIT - 1;
-> +
-> +	if (lpg->lpg_chan_sdam)
-> +		cdev->max_brightness = PPG_MAX_LED_BRIGHTNESS;
-> +	else
-> +		cdev->max_brightness = LPG_RESOLUTION_9BIT - 1;
-
-Are these not both 0xff (255)?
-
->  	if (!of_property_read_string(np, "default-state", &state) &&
->  	    !strcmp(state, "on"))
-> @@ -1251,6 +1446,8 @@ static int lpg_init_channels(struct lpg *lpg)
->  		chan->base = data->channels[i].base;
->  		chan->triled_mask = data->channels[i].triled_mask;
->  		chan->lut_mask = BIT(i);
-> +		chan->sdam_offset = data->channels[i].sdam_offset;
-> +		chan->lpg_idx = i;
->  
->  		regmap_read(lpg->map, chan->base + LPG_SUBTYPE_REG, &chan->subtype);
->  	}
-> @@ -1297,11 +1494,12 @@ static int lpg_init_lut(struct lpg *lpg)
->  {
->  	const struct lpg_data *data = lpg->data;
->  
-> -	if (!data->lut_base)
-> +	if (!data->lut_size)
->  		return 0;
->  
-> -	lpg->lut_base = data->lut_base;
->  	lpg->lut_size = data->lut_size;
-> +	if (data->lut_base)
-> +		lpg->lut_base = data->lut_base;
->  
->  	lpg->lut_bitmap = devm_bitmap_zalloc(lpg->dev, lpg->lut_size, GFP_KERNEL);
->  	if (!lpg->lut_bitmap)
-> @@ -1310,6 +1508,44 @@ static int lpg_init_lut(struct lpg *lpg)
->  	return 0;
->  }
->  
-> +static int lpg_init_sdam(struct lpg *lpg)
-> +{
-> +	struct lpg_channel *chan;
-> +	int i, sdam_count, rc;
-> +	u8 val = 0;
-> +
-> +	sdam_count = of_property_count_strings(lpg->dev->of_node, "nvmem-names");
-> +	if (sdam_count <= 0)
-> +		return 0;
-> +
-> +	/* get the SDAM device for LPG/LUT config */
-
-Nit: Start comments with an uppercase char.
-
-> +	lpg->lpg_chan_sdam = devm_nvmem_device_get(lpg->dev, "lpg_chan_sdam");
-> +	if (IS_ERR(lpg->lpg_chan_sdam))
-> +		return dev_err_probe(lpg->dev, PTR_ERR(lpg->lpg_chan_sdam),
-> +				"Failed to get lpg sdam device\n");
-
-Should these abbreviations be capitalised?
-
-> +	lpg->pbs_dev = get_pbs_client_device(lpg->dev);
-> +	if (IS_ERR(lpg->pbs_dev))
-> +		return dev_err_probe(lpg->dev, PTR_ERR(lpg->pbs_dev),
-> +				"Failed to get PBS client device\n");
-> +
-> +	for (i = 0; i < lpg->num_channels; i++) {
-> +		chan = &lpg->channels[i];
-
-Is 'chan' used outside of this for loop?
-
-If not, move the declaration into here.
-
-> +		if (chan->sdam_offset) {
-> +			rc = nvmem_device_write(lpg->lpg_chan_sdam,
-> +				SDAM_PBS_SCRATCH_LUT_COUNTER_OFFSET + chan->sdam_offset, 1, &val);
-> +			if (rc < 0)
-> +				return rc;
-> +
-> +			rc = lpg_sdam_configure_triggers(chan, false);
-> +			if (rc < 0)
-> +				return rc;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int lpg_probe(struct platform_device *pdev)
->  {
->  	struct device_node *np;
-> @@ -1346,6 +1582,10 @@ static int lpg_probe(struct platform_device *pdev)
->  	if (ret < 0)
->  		return ret;
->  
-> +	ret = lpg_init_sdam(lpg);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	ret = lpg_init_lut(lpg);
->  	if (ret < 0)
->  		return ret;
-> -- 
-> 2.41.0
-> 
-
--- 
-Lee Jones [李琼斯]
