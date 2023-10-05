@@ -2,202 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 282057BA216
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CEB7BA3C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbjJEPNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
+        id S236878AbjJEP6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233471AbjJEPMP (ORCPT
+        with ESMTP id S234389AbjJEP4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:12:15 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6A9C9194;
-        Thu,  5 Oct 2023 06:48:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DA30168F;
-        Thu,  5 Oct 2023 06:42:06 -0700 (PDT)
-Received: from e126645.arm.com (e126645.nice.arm.com [10.34.100.116])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B6CBD3F641;
-        Thu,  5 Oct 2023 06:41:25 -0700 (PDT)
-From:   Pierre Gondois <pierre.gondois@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Pierre Gondois <pierre.gondois@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-pm@vger.kernel.org
-Subject: [PATCH v2] cpufreq: Rebuild sched-domains when removing cpufreq driver
-Date:   Thu,  5 Oct 2023 15:41:20 +0200
-Message-Id: <20231005134120.1217829-1-pierre.gondois@arm.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 5 Oct 2023 11:56:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504F25254
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:52:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0FACC32776;
+        Thu,  5 Oct 2023 13:43:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696513439;
+        bh=r+jEdL/TyFNdYoWkAT7QN/Pry5cHlDLJqXIOFwHWmXg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SdNS1OIeXifDyiBMS6Cdtyl+L9k+b71Uu3xq5NohLGCuJTc+NnLTL1mXrq9cVj+X0
+         oLMj6ack8yJX1ZOMyNYFh3QDAwvrKCMSFHKK481CYLorMrnmssGS2L2+jcS5LOrCI8
+         iTCGlE/xi7wJWfIeRk42FxJnha2LXS08S9vDJA3M=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sven Van Asbroeck <TheSven73@gmail.com>
+Subject: [PATCH] staging: fieldbus: make controller_class constant
+Date:   Thu,  5 Oct 2023 15:43:53 +0200
+Message-ID: <2023100552-entrench-dingbat-093a@gregkh>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
+Lines:  64
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2159; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=r+jEdL/TyFNdYoWkAT7QN/Pry5cHlDLJqXIOFwHWmXg=; b=owGbwMvMwCRo6H6F97bub03G02pJDKlye2d+nfegQdpJwC7cK2x6S/zRqSYGZeoTXk6cfOHqR vOrfbPYOmJZGASZGGTFFFm+bOM5ur/ikKKXoe1pmDmsTCBDGLg4BWAiidIMczhYb0fo7Hyg8cHj LfMW3XWn5OuEDzMsWF8r4+soHxd56OpfqTg+8fz8W2+OAQA=
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Energy Aware Scheduler (EAS) relies on the schedutil governor.
-When moving to/from the schedutil governor, sched domains must be
-rebuilt to allow re-evaluating the enablement conditions of EAS.
-This is done through sched_cpufreq_governor_change().
+Now that the driver core allows for struct class to be in read-only
+memory, making all 'class' structures to be declared at build time
+placing them into read-only memory, instead of having to be dynamically
+allocated at load time.
 
-Having a cpufreq governor assumes a cpufreq driver is running.
-Inserting/removing a cpufreq driver should trigger a re-evaluation
-of EAS enablement conditions, avoiding to see EAS enabled when
-removing a running cpufreq driver.
-
-Rebuild the sched domains in schedutil's sugov_init()/sugov_exit(),
-allowing to check EAS's enablement condition whenever schedutil
-governor is initialized/exited from.
-Move relevant code up in schedutil.c to avoid a split and conditional
-function declaration.
-Rename sched_cpufreq_governor_change() to sugov_eas_rebuild_sd().
-
-Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+Cc: Sven Van Asbroeck <TheSven73@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/cpufreq/cpufreq.c        |  3 +-
- include/linux/cpufreq.h          |  8 -----
- kernel/sched/cpufreq_schedutil.c | 55 +++++++++++++++++---------------
- 3 files changed, 30 insertions(+), 36 deletions(-)
+ drivers/staging/fieldbus/anybuss/arcx-anybus.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 60ed89000e82..4bc15634d49c 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -1544,7 +1544,7 @@ static int cpufreq_online(unsigned int cpu)
+diff --git a/drivers/staging/fieldbus/anybuss/arcx-anybus.c b/drivers/staging/fieldbus/anybuss/arcx-anybus.c
+index 6f69758a8b27..34d18b09bedd 100644
+--- a/drivers/staging/fieldbus/anybuss/arcx-anybus.c
++++ b/drivers/staging/fieldbus/anybuss/arcx-anybus.c
+@@ -218,7 +218,10 @@ static const struct regulator_desc can_power_desc = {
+ 	.ops = &can_power_ops,
+ };
  
- 		/*
- 		 * Register with the energy model before
--		 * sched_cpufreq_governor_change() is called, which will result
-+		 * sugov_eas_rebuild_sd() is called, which will result
- 		 * in rebuilding of the sched domains, which should only be done
- 		 * once the energy model is properly initialized for the policy
- 		 * first.
-@@ -2652,7 +2652,6 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
- 		ret = cpufreq_start_governor(policy);
- 		if (!ret) {
- 			pr_debug("governor change\n");
--			sched_cpufreq_governor_change(policy, old_gov);
- 			return 0;
- 		}
- 		cpufreq_exit_governor(policy);
-diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-index 71d186d6933a..1c5ca92a0555 100644
---- a/include/linux/cpufreq.h
-+++ b/include/linux/cpufreq.h
-@@ -1193,14 +1193,6 @@ static inline int of_perf_domain_get_sharing_cpumask(int pcpu, const char *list_
+-static struct class *controller_class;
++static const struct class controller_class = {
++	.name = "arcx_anybus_controller",
++};
++
+ static DEFINE_IDA(controller_index_ida);
+ 
+ static int controller_probe(struct platform_device *pdev)
+@@ -301,7 +304,7 @@ static int controller_probe(struct platform_device *pdev)
+ 		err = -ENOMEM;
+ 		goto out_ida;
+ 	}
+-	cd->class_dev->class = controller_class;
++	cd->class_dev->class = &controller_class;
+ 	cd->class_dev->groups = controller_attribute_groups;
+ 	cd->class_dev->parent = dev;
+ 	cd->class_dev->id = id;
+@@ -351,12 +354,12 @@ static int __init controller_init(void)
+ {
+ 	int err;
+ 
+-	controller_class = class_create("arcx_anybus_controller");
+-	if (IS_ERR(controller_class))
+-		return PTR_ERR(controller_class);
++	err = class_register(&controller_class);
++	if (err)
++		return err;
+ 	err = platform_driver_register(&controller_driver);
+ 	if (err)
+-		class_destroy(controller_class);
++		class_unregister(&controller_class);
+ 
+ 	return err;
  }
- #endif
- 
--#if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
--void sched_cpufreq_governor_change(struct cpufreq_policy *policy,
--			struct cpufreq_governor *old_gov);
--#else
--static inline void sched_cpufreq_governor_change(struct cpufreq_policy *policy,
--			struct cpufreq_governor *old_gov) { }
--#endif
--
- extern unsigned int arch_freq_get_on_cpu(int cpu);
- 
- #ifndef arch_set_freq_scale
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 4492608b7d7f..901cada51ba7 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -555,6 +555,31 @@ static const struct kobj_type sugov_tunables_ktype = {
- 
- /********************** cpufreq governor interface *********************/
- 
-+#ifdef CONFIG_ENERGY_MODEL
-+static void rebuild_sd_workfn(struct work_struct *work)
-+{
-+	rebuild_sched_domains_energy();
-+}
-+
-+static DECLARE_WORK(rebuild_sd_work, rebuild_sd_workfn);
-+
-+/*
-+ * EAS shouldn't be attempted without sugov, so rebuild the sched_domains
-+ * on governor changes to make sure the scheduler knows about it.
-+ */
-+static void sugov_eas_rebuild_sd(void)
-+{
-+	/*
-+	 * When called from the cpufreq_register_driver() path, the
-+	 * cpu_hotplug_lock is already held, so use a work item to
-+	 * avoid nested locking in rebuild_sched_domains().
-+	 */
-+	schedule_work(&rebuild_sd_work);
-+}
-+#else
-+static inline void sugov_eas_rebuild_sd(void) { };
-+#endif
-+
- struct cpufreq_governor schedutil_gov;
- 
- static struct sugov_policy *sugov_policy_alloc(struct cpufreq_policy *policy)
-@@ -709,6 +734,8 @@ static int sugov_init(struct cpufreq_policy *policy)
- 	if (ret)
- 		goto fail;
- 
-+	sugov_eas_rebuild_sd();
-+
- out:
- 	mutex_unlock(&global_tunables_lock);
- 	return 0;
-@@ -750,6 +777,8 @@ static void sugov_exit(struct cpufreq_policy *policy)
- 	sugov_kthread_stop(sg_policy);
- 	sugov_policy_free(sg_policy);
- 	cpufreq_disable_fast_switch(policy);
-+
-+	sugov_eas_rebuild_sd();
+@@ -364,7 +367,7 @@ static int __init controller_init(void)
+ static void __exit controller_exit(void)
+ {
+ 	platform_driver_unregister(&controller_driver);
+-	class_destroy(controller_class);
++	class_unregister(&controller_class);
+ 	ida_destroy(&controller_index_ida);
  }
  
- static int sugov_start(struct cpufreq_policy *policy)
-@@ -838,29 +867,3 @@ struct cpufreq_governor *cpufreq_default_governor(void)
- #endif
- 
- cpufreq_governor_init(schedutil_gov);
--
--#ifdef CONFIG_ENERGY_MODEL
--static void rebuild_sd_workfn(struct work_struct *work)
--{
--	rebuild_sched_domains_energy();
--}
--static DECLARE_WORK(rebuild_sd_work, rebuild_sd_workfn);
--
--/*
-- * EAS shouldn't be attempted without sugov, so rebuild the sched_domains
-- * on governor changes to make sure the scheduler knows about it.
-- */
--void sched_cpufreq_governor_change(struct cpufreq_policy *policy,
--				  struct cpufreq_governor *old_gov)
--{
--	if (old_gov == &schedutil_gov || policy->governor == &schedutil_gov) {
--		/*
--		 * When called from the cpufreq_register_driver() path, the
--		 * cpu_hotplug_lock is already held, so use a work item to
--		 * avoid nested locking in rebuild_sched_domains().
--		 */
--		schedule_work(&rebuild_sd_work);
--	}
--
--}
--#endif
 -- 
-2.25.1
+2.42.0
 
