@@ -2,104 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDD47BA7DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3287BA741
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbjJERXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
+        id S230000AbjJERDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbjJERXF (ORCPT
+        with ESMTP id S229975AbjJERC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:23:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1F82D4F
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:48:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED01DC433C7;
-        Thu,  5 Oct 2023 16:48:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696524517;
-        bh=CQ2O//GYwC5mvy1qRCT49ssKIiGsS8rLXvdx8sZl8yY=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=RsEsZ3/RFK5xfWdrP/s2tB3BdQqazLRDwZz9DQU0D7h0ATTaWh7Xtaw2fxgJZeC03
-         slXoaHSTZYH7zcUYvsuhLx5aHP7utICxbDwqSTRU57p4rw+0g3tZJkKnLvuDngtuve
-         QzRg1FWb262AAve3NySR0Ss5PGfZp5SaX+fP7OjH5eQ+mpBt2sRqaiq0Gpzuq2PYRN
-         epbfg7Ueo7uTx1s39FRzBeCap70+pT+2xkYhgOfTgW+8wa+LaO99R+WDQwq+/KWqHg
-         rX+nMRzBtotCJCwUoVhmK3CLc7+RtAxuDPnmo3+B6Gvfy4gdTKbdD4AceziWu0AAYA
-         dBdbfhjFrj6MA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8173ECE0869; Thu,  5 Oct 2023 09:48:36 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 09:48:36 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Leonardo Bras <leobras@redhat.com>,
-        Imran Khan <imran.f.khan@oracle.com>
-Subject: [PATCH smp,csd] Throw an error if a CSD lock is stuck for too long
-Message-ID: <bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        Thu, 5 Oct 2023 13:02:26 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D592F7DB4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:48:58 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 43D45C15;
+        Thu,  5 Oct 2023 09:49:37 -0700 (PDT)
+Received: from [10.57.2.226] (unknown [10.57.2.226])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD41E3F5A1;
+        Thu,  5 Oct 2023 09:48:55 -0700 (PDT)
+Message-ID: <48aeb132-82bb-1f13-1c12-abf924dbb1d2@arm.com>
+Date:   Thu, 5 Oct 2023 17:48:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v2 3/6] arm64: KVM: Move SPE and trace registers to the
+ sysreg array
+To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        broonie@kernel.org, maz@kernel.org
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Jintack Lim <jintack.lim@linaro.org>,
+        Akihiko Odaki <akihiko.odaki@daynix.com>,
+        Fuad Tabba <tabba@google.com>, Joey Gouly <joey.gouly@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <20231005125757.649345-1-james.clark@arm.com>
+ <20231005125757.649345-4-james.clark@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20231005125757.649345-4-james.clark@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CSD lock seems to get stuck in 2 "modes". When it gets stuck
-temporarily, it usually gets released in a few seconds, and sometimes
-up to one or two minutes.
+On 05/10/2023 13:57, James Clark wrote:
+> pmscr_el1 and trfcr_el1 are currently special cased in the
+> host_debug_state struct, but they're just registers after all so give
+> them entries in the sysreg array and refer to them through the host
+> context.
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-If the CSD lock stays stuck for more than several minutes, it never
-seems to get unstuck, and gradually more and more things in the system
-end up also getting stuck.
+Looks good to me.
 
-In the latter case, we should just give up, so the system can dump out
-a little more information about what went wrong, and, with panic_on_oops
-and a kdump kernel loaded, dump a whole bunch more information about
-what might have gone wrong.
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Question: should this have its own panic_on_ipistall switch in
-/proc/sys/kernel, or maybe piggyback on panic_on_oops in a different
-way than via BUG_ON?
 
-Signed-off-by: Rik van Riel <riel@surriel.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>   arch/arm64/include/asm/kvm_host.h  |  6 ++--
+>   arch/arm64/include/asm/kvm_hyp.h   |  4 +--
+>   arch/arm64/kvm/hyp/nvhe/debug-sr.c | 44 +++++++++++++++---------------
+>   arch/arm64/kvm/hyp/nvhe/switch.c   |  4 +--
+>   4 files changed, 28 insertions(+), 30 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index e36f7e8a76ce..b5200f199692 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -439,6 +439,8 @@ enum vcpu_sysreg {
+>   	CNTHP_CVAL_EL2,
+>   	CNTHV_CTL_EL2,
+>   	CNTHV_CVAL_EL2,
+> +	PMSCR_EL1,	/* Statistical profiling extension */
+> +	TRFCR_EL1,	/* Self-hosted trace filters */
+>   
+>   	NR_SYS_REGS	/* Nothing after this line! */
+>   };
+> @@ -572,10 +574,6 @@ struct kvm_vcpu_arch {
+>   	struct {
+>   		/* {Break,watch}point registers */
+>   		struct kvm_guest_debug_arch regs;
+> -		/* Statistical profiling extension */
+> -		u64 pmscr_el1;
+> -		/* Self-hosted trace */
+> -		u64 trfcr_el1;
+>   	} host_debug_state;
+>   
+>   	/* VGIC state */
+> diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
+> index b7238c72a04c..37e238f526d7 100644
+> --- a/arch/arm64/include/asm/kvm_hyp.h
+> +++ b/arch/arm64/include/asm/kvm_hyp.h
+> @@ -103,8 +103,8 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu);
+>   void __debug_switch_to_host(struct kvm_vcpu *vcpu);
+>   
+>   #ifdef __KVM_NVHE_HYPERVISOR__
+> -void __debug_save_host_buffers_nvhe(struct kvm_vcpu *vcpu);
+> -void __debug_restore_host_buffers_nvhe(struct kvm_vcpu *vcpu);
+> +void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt);
+> +void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt);
+>   #endif
+>   
+>   void __fpsimd_save_state(struct user_fpsimd_state *fp_regs);
+> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> index 89c208112eb7..128a57dddabf 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> @@ -14,12 +14,12 @@
+>   #include <asm/kvm_hyp.h>
+>   #include <asm/kvm_mmu.h>
+>   
+> -static void __debug_save_spe(u64 *pmscr_el1)
+> +static void __debug_save_spe(struct kvm_cpu_context *host_ctxt)
+>   {
+>   	u64 reg;
+>   
+>   	/* Clear pmscr in case of early return */
+> -	*pmscr_el1 = 0;
+> +	ctxt_sys_reg(host_ctxt, PMSCR_EL1) = 0;
+>   
+>   	/*
+>   	 * At this point, we know that this CPU implements
+> @@ -31,7 +31,7 @@ static void __debug_save_spe(u64 *pmscr_el1)
+>   		return;
+>   
+>   	/* Yes; save the control register and disable data generation */
+> -	*pmscr_el1 = read_sysreg_s(SYS_PMSCR_EL1);
+> +	ctxt_sys_reg(host_ctxt, PMSCR_EL1) = read_sysreg_s(SYS_PMSCR_EL1);
+>   	write_sysreg_s(0, SYS_PMSCR_EL1);
+>   	isb();
+>   
+> @@ -39,21 +39,21 @@ static void __debug_save_spe(u64 *pmscr_el1)
+>   	psb_csync();
+>   }
+>   
+> -static void __debug_restore_spe(u64 pmscr_el1)
+> +static void __debug_restore_spe(struct kvm_cpu_context *host_ctxt)
+>   {
+> -	if (!pmscr_el1)
+> +	if (!ctxt_sys_reg(host_ctxt, PMSCR_EL1))
+>   		return;
+>   
+>   	/* The host page table is installed, but not yet synchronised */
+>   	isb();
+>   
+>   	/* Re-enable data generation */
+> -	write_sysreg_s(pmscr_el1, SYS_PMSCR_EL1);
+> +	write_sysreg_s(ctxt_sys_reg(host_ctxt, PMSCR_EL1), SYS_PMSCR_EL1);
+>   }
+>   
+> -static void __debug_save_trace(u64 *trfcr_el1)
+> +static void __debug_save_trace(struct kvm_cpu_context *host_ctxt)
+>   {
+> -	*trfcr_el1 = 0;
+> +	ctxt_sys_reg(host_ctxt, TRFCR_EL1) = 0;
+>   
+>   	/* Check if the TRBE is enabled */
+>   	if (!(read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_EL1_E))
+> @@ -63,30 +63,30 @@ static void __debug_save_trace(u64 *trfcr_el1)
+>   	 * Since access to TRFCR_EL1 is trapped, the guest can't
+>   	 * modify the filtering set by the host.
+>   	 */
+> -	*trfcr_el1 = read_sysreg_s(SYS_TRFCR_EL1);
+> +	ctxt_sys_reg(host_ctxt, TRFCR_EL1) = read_sysreg_s(SYS_TRFCR_EL1);
+>   	write_sysreg_s(0, SYS_TRFCR_EL1);
+>   	isb();
+>   	/* Drain the trace buffer to memory */
+>   	tsb_csync();
+>   }
+>   
+> -static void __debug_restore_trace(u64 trfcr_el1)
+> +static void __debug_restore_trace(struct kvm_cpu_context *host_ctxt)
+>   {
+> -	if (!trfcr_el1)
+> +	if (!ctxt_sys_reg(host_ctxt, TRFCR_EL1))
+>   		return;
+>   
+>   	/* Restore trace filter controls */
+> -	write_sysreg_s(trfcr_el1, SYS_TRFCR_EL1);
+> +	write_sysreg_s(ctxt_sys_reg(host_ctxt, TRFCR_EL1), SYS_TRFCR_EL1);
+>   }
+>   
+> -void __debug_save_host_buffers_nvhe(struct kvm_vcpu *vcpu)
+> +void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt)
+>   {
+>   	/* Disable and flush SPE data generation */
+> -	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_SPE))
+> -		__debug_save_spe(&vcpu->arch.host_debug_state.pmscr_el1);
+> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_SPE))
+> +		__debug_save_spe(host_ctxt);
+>   	/* Disable and flush Self-Hosted Trace generation */
+> -	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))
+> -		__debug_save_trace(&vcpu->arch.host_debug_state.trfcr_el1);
+> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
+> +		__debug_save_trace(host_ctxt);
+>   }
+>   
+>   void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
+> @@ -94,12 +94,12 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
+>   	__debug_switch_to_guest_common(vcpu);
+>   }
+>   
+> -void __debug_restore_host_buffers_nvhe(struct kvm_vcpu *vcpu)
+> +void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt)
+>   {
+> -	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_SPE))
+> -		__debug_restore_spe(vcpu->arch.host_debug_state.pmscr_el1);
+> -	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))
+> -		__debug_restore_trace(vcpu->arch.host_debug_state.trfcr_el1);
+> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_SPE))
+> +		__debug_restore_spe(host_ctxt);
+> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
+> +		__debug_restore_trace(host_ctxt);
+>   }
+>   
+>   void __debug_switch_to_host(struct kvm_vcpu *vcpu)
+> diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
+> index c353a06ee7e6..c8f15e4dab19 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/switch.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/switch.c
+> @@ -276,7 +276,7 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
+>   	 * translation regime to EL2 (via MDCR_EL2_E2PB == 0) and
+>   	 * before we load guest Stage1.
+>   	 */
+> -	__debug_save_host_buffers_nvhe(vcpu);
+> +	__debug_save_host_buffers_nvhe(host_ctxt);
+>   
+>   	/*
+>   	 * We're about to restore some new MMU state. Make sure
+> @@ -343,7 +343,7 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
+>   	 * This must come after restoring the host sysregs, since a non-VHE
+>   	 * system may enable SPE here and make use of the TTBRs.
+>   	 */
+> -	__debug_restore_host_buffers_nvhe(vcpu);
+> +	__debug_restore_host_buffers_nvhe(host_ctxt);
+>   
+>   	if (pmu_switch_needed)
+>   		__pmu_switch_to_host(vcpu);
 
-diff --git a/kernel/smp.c b/kernel/smp.c
-index 8455a53465af..059f1f53fc6b 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -230,6 +230,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
- 	}
- 
- 	ts2 = sched_clock();
-+	/* How long since we last checked for a stuck CSD lock.*/
- 	ts_delta = ts2 - *ts1;
- 	if (likely(ts_delta <= csd_lock_timeout_ns || csd_lock_timeout_ns == 0))
- 		return false;
-@@ -243,9 +244,17 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
- 	else
- 		cpux = cpu;
- 	cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux)); /* Before func and info. */
-+	/* How long since this CSD lock was stuck. */
-+	ts_delta = ts2 - ts0;
- 	pr_alert("csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %llu ns for CPU#%02d %pS(%ps).\n",
--		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts2 - ts0,
-+		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts_delta,
- 		 cpu, csd->func, csd->info);
-+	/*
-+	 * If the CSD lock is still stuck after 5 minutes, it is unlikely
-+	 * to become unstuck. Use a signed comparison to avoid triggering
-+	 * on underflows when the TSC is out of sync between sockets.
-+	 */
-+	BUG_ON((s64)ts_delta > 300000000000LL);
- 	if (cpu_cur_csd && csd != cpu_cur_csd) {
- 		pr_alert("\tcsd: CSD lock (#%d) handling prior %pS(%ps) request.\n",
- 			 *bug_id, READ_ONCE(per_cpu(cur_csd_func, cpux)),
