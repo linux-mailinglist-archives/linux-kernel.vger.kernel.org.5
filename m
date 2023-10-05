@@ -2,203 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EECCF7BA22E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758DE7B9E9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbjJEPTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
+        id S233073AbjJEOJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233685AbjJEPSb (ORCPT
+        with ESMTP id S232122AbjJEOHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:18:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F56B6FC
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:44:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696517049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YVoRkgGhmUcJwfA+XnKJYzROkSlzRQyAzzwt0PEOhp4=;
-        b=T86AB2aDNqhHxLQBkqWyg90tE+7hSClBrDCRfAa6ycXKXtMh/e68IEkNS+0CYRS2lDeWEM
-        jdC7IuQNj1xOawQnSsV8mTC37NeiEKG9e/gXamSP3Mq4Gn4zKdLNDIybmDbWJYNJW0ZDdi
-        WTOpqmnoze3Sd/TZyV/T9x17ZNzMHyw=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-351-6a4xnvTCNvOorcmvNYJhFw-1; Thu, 05 Oct 2023 06:42:25 -0400
-X-MC-Unique: 6a4xnvTCNvOorcmvNYJhFw-1
-Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-5a22029070bso10567167b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 03:42:24 -0700 (PDT)
+        Thu, 5 Oct 2023 10:07:19 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD7822C83
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 03:43:06 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-504a7f9204eso1029635e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 03:43:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696502585; x=1697107385; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YVObFCNLlwBPipdK3H8KmPs3z72Q3xYU1AFPpgt6DIU=;
+        b=AOa420kLUB0ARHlS9yJpUptTHxVGNbSzGIgOS7VLxaQIF8KBR3laYErI29O7I9olPk
+         ZXDBaN38om7wMOQKSGJ2hTWLYVlqHFT77j1CRFxVa1JX2kcxTYOB2KucfF5Ihs6N17EE
+         EmuCk9fyRAi9UqeV88/vaeXUdquTwq8OBtwVI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696502544; x=1697107344;
+        d=1e100.net; s=20230601; t=1696502585; x=1697107385;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YVoRkgGhmUcJwfA+XnKJYzROkSlzRQyAzzwt0PEOhp4=;
-        b=RaOa3adBfX4CFPPnPwXcQxqZ9hc+MF/1tM7F12qesxKypFI4uSSuWybm8c9HdKrtin
-         w8vdvnc66Y2UJe1LVh+xRiXeJLmWHb86SCy89wJ0m71nffn/69cW943YANxgg3zB2JjF
-         Y1K0O34Rhwp0Z0YusMA11VBM+z8jdS/gFA0CEcQl1WwozHeSajntJM2YReS8UMHv3hge
-         VTutBZY6UAMdxeLC8ysbOX4/cMQ7OjK8acQNgsPv5H3NWRMO/owpMhmrE4/nwnEauaXT
-         QUxMr3kfzS9OT39/bzx0K1FO0fsWd0absda1dIWG+2MwMDV/BRD8MRYBViaf/rdODoJZ
-         dYGA==
-X-Gm-Message-State: AOJu0YwivmzLcGqV7dBhBWeNEtogvPvahVJ+EAZPjZVNDCF7WFBN0u0F
-        kfOp5p1xuOj5EvguvZrL+TdtEPBvwcCMTDMMgwJvr+f67+RvpNMwr7h0nCHvFejEoCBSzgceQhL
-        ZlNxc4Qfd+GePmzNxTu2mLKSdZQIoZl/6dKklmEsU
-X-Received: by 2002:a81:840e:0:b0:589:ca07:c963 with SMTP id u14-20020a81840e000000b00589ca07c963mr5237161ywf.42.1696502544468;
-        Thu, 05 Oct 2023 03:42:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHbE0NNvKOgvHC7Av0Oy453lyO3cTTL4OgJznAYB4cPWRliMgoZbdPAxILUssafjugHMsSjdfsuwBx43rlAGK4=
-X-Received: by 2002:a81:840e:0:b0:589:ca07:c963 with SMTP id
- u14-20020a81840e000000b00589ca07c963mr5237154ywf.42.1696502544213; Thu, 05
- Oct 2023 03:42:24 -0700 (PDT)
+        bh=YVObFCNLlwBPipdK3H8KmPs3z72Q3xYU1AFPpgt6DIU=;
+        b=PTcC0k6jy6nyOyDjphRmp9hF+Rww8xqFy47DqUMVhUI0N7dMFjCC9VVVt0f2AYr67t
+         RAVlAeS1oX71H4CNeCVToRaOk+w3d/HWAKW2/Ilphrj7hnpMvPY1SfaFX2sVF3a2JmVr
+         lEzAPWrSpTg3l/qIDmInQQysiL5+bl+blPPi+edAD6rWvVb2uTqhFSIVKgJqEyQArhSc
+         L/c/DbFCkgVMfvu5WYx0HGvWs+NCG7IfEo/bxWhjRyB1JTinacZuyY89PGic8JdMEhPs
+         rcaVRnbyV1VmAz5S9AtAqTDl2RFlQlySSc3lua13ROSDyISQ/pqtAbSfWGR2ju6wDR0r
+         cruw==
+X-Gm-Message-State: AOJu0YyKxsK5LQ/zAErnp/QPM15Hl9vqWpqjNj7cbB/Uy4rHTVBc+wJF
+        i0k+y0nX0xsQ6e3jif2tFtRRXDrX0insQNTJwZBxWA==
+X-Google-Smtp-Source: AGHT+IHq9DTTPcqEv9hIoZgRG2eMrgjishCCWpwEDsoQWepchJMVarAVpJnzNCiyrgnB7Vjj2+qg9uOeeeYiBZ0Vpnw=
+X-Received: by 2002:a19:4f4d:0:b0:500:bff5:54ec with SMTP id
+ a13-20020a194f4d000000b00500bff554ecmr3807702lfk.3.1696502584574; Thu, 05 Oct
+ 2023 03:43:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230928164550.980832-2-dtatulea@nvidia.com> <20230928164550.980832-18-dtatulea@nvidia.com>
-In-Reply-To: <20230928164550.980832-18-dtatulea@nvidia.com>
-From:   Eugenio Perez Martin <eperezma@redhat.com>
-Date:   Thu, 5 Oct 2023 12:41:48 +0200
-Message-ID: <CAJaqyWe9iYnh_DwZbU4986bSAZ0C1=Y9Th6-vv_ZRTTYwQqhYA@mail.gmail.com>
-Subject: Re: [PATCH vhost 16/16] vdpa/mlx5: Update cvq iotlb mapping on ASID change
-To:     Dragos Tatulea <dtatulea@nvidia.com>
-Cc:     gal@nvidia.com, "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
+References: <20231005103041.352478-1-eugen.hristev@collabora.com>
+In-Reply-To: <20231005103041.352478-1-eugen.hristev@collabora.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Thu, 5 Oct 2023 18:42:53 +0800
+Message-ID: <CAGXv+5GRhqC98=PARwbD4ueaWqdWZiYwSPS4F8TEUF57dnH2WQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: mediatek: mt8186: fix clock names for power domains
+To:     Eugen Hristev <eugen.hristev@collabora.com>
+Cc:     matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        allen-kh.cheng@mediatek.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 6:50=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.com=
-> wrote:
+On Thu, Oct 5, 2023 at 6:31=E2=80=AFPM Eugen Hristev
+<eugen.hristev@collabora.com> wrote:
 >
-> For the following sequence:
-> - cvq group is in ASID 0
-> - .set_map(1, cvq_iotlb)
-> - .set_group_asid(cvq_group, 1)
+> Clocks for each power domain are split into big categories: pd clocks
+> and subsys clocks.
+> According to the binding, all clocks which have a dash '-' in their name
+> are treated as subsys clocks, and must be placed at the end of the list.
+> The other clocks which are pd clocks must come first.
+> Fixed the naming and the placing of all clocks in the power domains.
+> For the avoidance of doubt, prefixed all subsys clocks with the 'subsys'
+> prefix. The binding does not enforce strict clock names, the driver
+> uses them in bulk, only making a difference for pd clocks vs subsys clock=
+s.
 >
-> ... the cvq mapping from ASID 0 will be used. This is not always correct
-> behaviour.
->
-> This patch adds support for the above mentioned flow by saving the iotlb
-> on each .set_map and updating the cvq iotlb with it on a cvq group change=
+> The above problem appears to be trivial, however, it leads to incorrect
+> power up and power down sequence of the power domains, because some
+> clocks will be mistakenly taken for subsys clocks and viceversa.
+> One consequence is the fact that if the DIS power domain goes power down
+> and power back up during the boot process, when it comes back up, there
+> are still transactions left on the bus which makes the display inoperable=
 .
 >
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Some of the clocks for the DIS power domain were wrongly using '_' instea=
+d
+> of '-', which again made these clocks being treated as pd clocks instead =
+of
+> subsys clocks.
+>
+> Fixes: d9e43c1e7a38 ("arm64: dts: mt8186: Add power domains controller")
+> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+
+Tested-by: Chen-Yu Tsai <wenst@chromium.org>
+
+This brings the display back to life on my MT8186 device. :D
+Thank you for tracking down the issue!
+
 > ---
->  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  2 ++
->  drivers/vdpa/mlx5/core/mr.c        | 26 ++++++++++++++++++++++++++
->  drivers/vdpa/mlx5/net/mlx5_vnet.c  |  9 ++++++++-
->  3 files changed, 36 insertions(+), 1 deletion(-)
+>  arch/arm64/boot/dts/mediatek/mt8186.dtsi | 42 +++++++++++++++---------
+>  1 file changed, 27 insertions(+), 15 deletions(-)
 >
-> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/=
-mlx5_vdpa.h
-> index ae09296f4270..db988ced5a5d 100644
-> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> @@ -32,6 +32,8 @@ struct mlx5_vdpa_mr {
->         unsigned long num_directs;
->         unsigned long num_klms;
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/d=
+ts/mediatek/mt8186.dtsi
+> index af6f6687de35..7121d4312bee 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+> @@ -924,7 +924,8 @@ power-domain@MT8186_POWER_DOMAIN_CSIRX_TOP {
+>                                         reg =3D <MT8186_POWER_DOMAIN_CSIR=
+X_TOP>;
+>                                         clocks =3D <&topckgen CLK_TOP_SEN=
+INF>,
+>                                                  <&topckgen CLK_TOP_SENIN=
+F1>;
+> -                                       clock-names =3D "csirx_top0", "cs=
+irx_top1";
+> +                                       clock-names =3D "subsys-csirx-top=
+0",
+> +                                                     "subsys-csirx-top1"=
+;
+>                                         #power-domain-cells =3D <0>;
+>                                 };
 >
-> +       struct vhost_iotlb *iotlb;
-> +
->         bool user_mr;
->  };
+> @@ -942,7 +943,8 @@ power-domain@MT8186_POWER_DOMAIN_ADSP_AO {
+>                                         reg =3D <MT8186_POWER_DOMAIN_ADSP=
+_AO>;
+>                                         clocks =3D <&topckgen CLK_TOP_AUD=
+IODSP>,
+>                                                  <&topckgen CLK_TOP_ADSP_=
+BUS>;
+> -                                       clock-names =3D "audioadsp", "ads=
+p_bus";
+> +                                       clock-names =3D "audioadsp",
+> +                                                     "subsys-adsp-bus";
+>                                         #address-cells =3D <1>;
+>                                         #size-cells =3D <0>;
+>                                         #power-domain-cells =3D <1>;
+> @@ -975,8 +977,11 @@ power-domain@MT8186_POWER_DOMAIN_DIS {
+>                                                  <&mmsys CLK_MM_SMI_COMMO=
+N>,
+>                                                  <&mmsys CLK_MM_SMI_GALS>=
+,
+>                                                  <&mmsys CLK_MM_SMI_IOMMU=
+>;
+> -                                       clock-names =3D "disp", "mdp", "s=
+mi_infra", "smi_common",
+> -                                                    "smi_gals", "smi_iom=
+mu";
+> +                                       clock-names =3D "disp", "mdp",
+> +                                                     "subsys-smi-infra",
+> +                                                     "subsys-smi-common"=
+,
+> +                                                     "subsys-smi-gals",
+> +                                                     "subsys-smi-iommu";
+>                                         mediatek,infracfg =3D <&infracfg_=
+ao>;
+>                                         #address-cells =3D <1>;
+>                                         #size-cells =3D <0>;
+> @@ -993,15 +998,17 @@ power-domain@MT8186_POWER_DOMAIN_VDEC {
 >
-> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> index a4135c16b5bf..403c08271489 100644
-> --- a/drivers/vdpa/mlx5/core/mr.c
-> +++ b/drivers/vdpa/mlx5/core/mr.c
-> @@ -499,6 +499,8 @@ static void _mlx5_vdpa_destroy_mr(struct mlx5_vdpa_de=
-v *mvdev, struct mlx5_vdpa_
->                 destroy_user_mr(mvdev, mr);
->         else
->                 destroy_dma_mr(mvdev, mr);
-> +
-> +       vhost_iotlb_free(mr->iotlb);
->  }
+>                                         power-domain@MT8186_POWER_DOMAIN_=
+CAM {
+>                                                 reg =3D <MT8186_POWER_DOM=
+AIN_CAM>;
+> -                                               clocks =3D <&topckgen CLK=
+_TOP_CAM>,
+> -                                                        <&topckgen CLK_T=
+OP_SENINF>,
+> +                                               clocks =3D <&topckgen CLK=
+_TOP_SENINF>,
+>                                                          <&topckgen CLK_T=
+OP_SENINF1>,
+>                                                          <&topckgen CLK_T=
+OP_SENINF2>,
+>                                                          <&topckgen CLK_T=
+OP_SENINF3>,
+> +                                                        <&camsys CLK_CAM=
+2MM_GALS>,
+>                                                          <&topckgen CLK_T=
+OP_CAMTM>,
+> -                                                        <&camsys CLK_CAM=
+2MM_GALS>;
+> -                                               clock-names =3D "cam-top"=
+, "cam0", "cam1", "cam2",
+> -                                                            "cam3", "cam=
+-tm", "gals";
+> +                                                        <&topckgen CLK_T=
+OP_CAM>;
+> +                                               clock-names =3D "cam0", "=
+cam1", "cam2",
+> +                                                             "cam3", "ga=
+ls",
+> +                                                             "subsys-cam=
+-tm",
+> +                                                             "subsys-cam=
+-top";
+>                                                 mediatek,infracfg =3D <&i=
+nfracfg_ao>;
+>                                                 #address-cells =3D <1>;
+>                                                 #size-cells =3D <0>;
+> @@ -1020,9 +1027,9 @@ power-domain@MT8186_POWER_DOMAIN_CAM_RAWA {
 >
->  void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev,
-> @@ -558,6 +560,30 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev=
- *mvdev,
->         else
->                 err =3D create_dma_mr(mvdev, mr);
->
-> +       if (err)
-> +               return err;
-> +
-> +       mr->iotlb =3D vhost_iotlb_alloc(0, 0);
-> +       if (!mr->iotlb) {
-> +               err =3D -ENOMEM;
-> +               goto err_mr;
-> +       }
-> +
-> +       err =3D dup_iotlb(mr->iotlb, iotlb);
-> +       if (err)
-> +               goto err_iotlb;
-> +
-> +       return 0;
-> +
-> +err_iotlb:
-> +       vhost_iotlb_free(mr->iotlb);
-> +
-> +err_mr:
-> +       if (iotlb)
-> +               destroy_user_mr(mvdev, mr);
-> +       else
-> +               destroy_dma_mr(mvdev, mr);
-> +
->         return err;
->  }
->
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
-x5_vnet.c
-> index 46441e41892c..fc5d6b989a5a 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -3154,12 +3154,19 @@ static int mlx5_set_group_asid(struct vdpa_device=
- *vdev, u32 group,
->                                unsigned int asid)
->  {
->         struct mlx5_vdpa_dev *mvdev =3D to_mvdev(vdev);
-> +       int err =3D 0;
->
->         if (group >=3D MLX5_VDPA_NUMVQ_GROUPS || asid >=3D MLX5_VDPA_NUM_=
-AS)
->                 return -EINVAL;
->
->         mvdev->group2asid[group] =3D asid;
-> -       return 0;
-> +
-> +       mutex_lock(&mvdev->mr_mtx);
-> +       if (group =3D=3D MLX5_VDPA_CVQ_GROUP && mvdev->mr[asid])
-> +               err =3D mlx5_vdpa_update_cvq_iotlb(mvdev, mvdev->mr[asid]=
-->iotlb, asid);
-
-Do we need to protect here in case userspace sets the same ASID twice?
-mlx5_vdpa_update_cvq_iotlb shouldn't call dup_iotlb with the same src
-and dst.
-
-Apart from that:
-
-Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
-
-> +       mutex_unlock(&mvdev->mr_mtx);
-> +
-> +       return err;
->  }
->
->  static const struct vdpa_config_ops mlx5_vdpa_ops =3D {
+>                                         power-domain@MT8186_POWER_DOMAIN_=
+IMG {
+>                                                 reg =3D <MT8186_POWER_DOM=
+AIN_IMG>;
+> -                                               clocks =3D <&topckgen CLK=
+_TOP_IMG1>,
+> -                                                        <&imgsys1 CLK_IM=
+G1_GALS_IMG1>;
+> -                                               clock-names =3D "img-top"=
+, "gals";
+> +                                               clocks =3D <&imgsys1 CLK_=
+IMG1_GALS_IMG1>,
+> +                                                        <&topckgen CLK_T=
+OP_IMG1>;
+> +                                               clock-names =3D "gals", "=
+subsys-img-top";
+>                                                 mediatek,infracfg =3D <&i=
+nfracfg_ao>;
+>                                                 #address-cells =3D <1>;
+>                                                 #size-cells =3D <0>;
+> @@ -1041,8 +1048,11 @@ power-domain@MT8186_POWER_DOMAIN_IPE {
+>                                                          <&ipesys CLK_IPE=
+_LARB20>,
+>                                                          <&ipesys CLK_IPE=
+_SMI_SUBCOM>,
+>                                                          <&ipesys CLK_IPE=
+_GALS_IPE>;
+> -                                               clock-names =3D "ipe-top"=
+, "ipe-larb0", "ipe-larb1",
+> -                                                             "ipe-smi", =
+"ipe-gals";
+> +                                               clock-names =3D "subsys-i=
+pe-top",
+> +                                                             "subsys-ipe=
+-larb0",
+> +                                                             "subsys-ipe=
+-larb1",
+> +                                                             "subsys-ipe=
+-smi",
+> +                                                             "subsys-ipe=
+-gals";
+>                                                 mediatek,infracfg =3D <&i=
+nfracfg_ao>;
+>                                                 #power-domain-cells =3D <=
+0>;
+>                                         };
+> @@ -1061,7 +1071,9 @@ power-domain@MT8186_POWER_DOMAIN_WPE {
+>                                                 clocks =3D <&topckgen CLK=
+_TOP_WPE>,
+>                                                          <&wpesys CLK_WPE=
+_SMI_LARB8_CK_EN>,
+>                                                          <&wpesys CLK_WPE=
+_SMI_LARB8_PCLK_EN>;
+> -                                               clock-names =3D "wpe0", "=
+larb-ck", "larb-pclk";
+> +                                               clock-names =3D "wpe0",
+> +                                                             "subsys-lar=
+b-ck",
+> +                                                             "subsys-lar=
+b-pclk";
+>                                                 mediatek,infracfg =3D <&i=
+nfracfg_ao>;
+>                                                 #power-domain-cells =3D <=
+0>;
+>                                         };
 > --
-> 2.41.0
+> 2.34.1
 >
-
+>
