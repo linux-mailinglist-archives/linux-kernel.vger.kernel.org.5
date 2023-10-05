@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B9B7BAE2F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0688E7BAE32
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 23:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbjJEVv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 17:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
+        id S230055AbjJEVzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 17:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjJEVv5 (ORCPT
+        with ESMTP id S229577AbjJEVzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 17:51:57 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF80E9E;
-        Thu,  5 Oct 2023 14:51:54 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395Lk9ID008481;
-        Thu, 5 Oct 2023 21:51:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Viu3LjCg+nNUsV+HufaTsTHKmI5wxtsYvzyN9kVT2XI=;
- b=S4R2zfLxczirmvgMYFY1qLQ8rFmAj1CsN0x0FWPYn52yfthFC4ake9hYYs+p6eHQQRyI
- XdDCDdStD/OrgADASq3qrrCsH+4aGu7X59sXv7y3Cgut1Kx8N/iUxb24Yoc6L/uphqAx
- xJ8B0molGCpUBxpH7urvtehuO+IWkDPTtMQFWPthA9w2bqSHwO4IPD+aTBjsQludXR8F
- rD88RzCeFKe21yVrr2449DGD0OiltX8Ewa5qVvf9i6VM+JkeDZ12BBrIvm0mN0zs/dRW
- h1x2tX1kXC5YDI2pqJrwXxRYaoDYjrUglqCB/+MCcjCQ/HgFKxWJospG3ad8043Zz/eF iw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3th8e1v0hu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 21:51:30 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 395LpT2R011848
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Oct 2023 21:51:29 GMT
-Received: from [10.110.20.163] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 5 Oct
- 2023 14:51:29 -0700
-Message-ID: <2c196f9a-b61e-914b-1999-e9e82d16dc6e@quicinc.com>
-Date:   Thu, 5 Oct 2023 14:51:28 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v4 3/4] dt-bindings: arm: Add new compatible for smc/hvc
- transport for SCMI
-To:     Sudeep Holla <sudeep.holla@arm.com>
-CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20230911194359.27547-1-quic_nkela@quicinc.com>
- <20230911194359.27547-4-quic_nkela@quicinc.com>
- <20231003104404.o7yxg3y7dn7uhrq4@bogus>
- <7c871b23-5544-6604-257d-f0c8fd5afd06@quicinc.com>
- <20231004155310.zqwlj6boy65atoyq@bogus>
-Content-Language: en-US
-From:   Nikunj Kela <quic_nkela@quicinc.com>
-In-Reply-To: <20231004155310.zqwlj6boy65atoyq@bogus>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3IJBeV3tF0Is9MaS0KLzcGoF_PMa2-QG
-X-Proofpoint-ORIG-GUID: 3IJBeV3tF0Is9MaS0KLzcGoF_PMa2-QG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_16,2023-10-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- adultscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310050166
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        Thu, 5 Oct 2023 17:55:08 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD6B9E
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 14:55:07 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d91c3b26c9eso1350717276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 14:55:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696542907; x=1697147707; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=15N1cZsxfmEbv2x0hxsW9ZXAdYEMZDd2ct4HcMI5LaA=;
+        b=t/xvbDfxHrSLeKTjuoFd34jmqVuNPi5stRvxijdXe65BY87jpk4/+tYPoC0i0fdoS6
+         SGbJF7g3BTrAOoz3C6ftD7wwP7nlZd6T4kXuWZwO8g5eb8QmT5Fr21gTyGJErqfrjGOa
+         wZvmcmw00Oq8p//67yQqCbi42V1W1KKYjw2aqtzCWvAhz4J1yI8sdqjn5ZvvWSOOufvK
+         A6AR6jEtdqnFBq0Fm8neFYixKuo28W5Vccv5olkTEYpCcTC6PWC/Ot22fNNC6iH/z8GS
+         S7/lNMAJYlAVpXKQt8kkTGIkzYl/0j4WKeR3MPAKw73qEvCOnDHa/0IAuUdDQ21Df4cX
+         cL1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696542907; x=1697147707;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=15N1cZsxfmEbv2x0hxsW9ZXAdYEMZDd2ct4HcMI5LaA=;
+        b=YScFHyBXhYNFckPQm9Vge8kmgCYCDpn3MRgwMKCyAyDIIM+tolJAq6d3KWzh/Ywk6Q
+         sClVf2zcUIIczgeCozjGqExTDyv666AFfuvFcvY0T3JQsCwcyYaxBvzE15uzLOKwsDcw
+         3wHJ+pfABBPh8VejlKt4IVndn29etH8eI49Rez2RmE3kgr8TzbAUuwZahvlWFKTr6afj
+         R9cF8BsPcSJiryyGMX2zcklY4HdIZgH6eJxCm5ccdXGTDzKBAWLuhdQeY2qZz/DjcPv0
+         ideSllHc9Q0k4CMwawmXKAtat64AzDBWDzfRxaOwA6anP8jtg+cowpcmf05m0Wq60eGK
+         2umg==
+X-Gm-Message-State: AOJu0YyV8ZZT3WF3iAmqFEEqtaGG0awp8sV6vJtodd4MQqIFCOp594TS
+        yzbvVqr+MvPpVChK/CK0WgJFGBqP7m24q0YKAg==
+X-Google-Smtp-Source: AGHT+IH5kmRWTxHnbOHdcVuA+Thho6voAhFH0EXqlEnU/rGEgIjyx1taDbBJdWNEnWATXo/uaqRozazszc/sPEmxyg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:dcd0:0:b0:d7b:89af:b153 with SMTP
+ id y199-20020a25dcd0000000b00d7b89afb153mr86513ybe.5.1696542907205; Thu, 05
+ Oct 2023 14:55:07 -0700 (PDT)
+Date:   Thu, 05 Oct 2023 21:55:06 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIALkwH2UC/x2NQQ7CIBAAv9Ls2U0oWE39ijFNC1u7iQIulGia/
+ l30NnOZ2SCRMCW4NBsIFU4cfJX20IBdRn8nZFcdtNKmVarDlMXb+EEnXEgSespIeSH5gR0Lr09 88Gtlx6FCGMo8CEW0OGnTnc7TUfemh9qPQjO//+/rbd+/cdJAXYsAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696542906; l=1813;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=C3xl2J3v8gwUN0HU8+dA4WXLs/v1+iBpCZbkeacUwtw=; b=KPY5MJEWqGL5WHVZsLvPbRYVOUHno7nU5umJO/gm3OQgFouMAf3NVUYZm4NefBHbah92WVVAO
+ tojH7L8NeE7AtbzYIPVMs+OSU1U+HvhZRhzdhy4pfuZYpecxKULJA3f
+X-Mailer: b4 0.12.3
+Message-ID: <20231005-strncpy-drivers-net-ethernet-cavium-liquidio-lio_vf_rep-c-v1-1-92123a747780@google.com>
+Subject: [PATCH] liquidio: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Derek Chickles <dchickles@marvell.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,57 +80,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-On 10/4/2023 8:53 AM, Sudeep Holla wrote:
-> On Tue, Oct 03, 2023 at 08:59:45AM -0700, Nikunj Kela wrote:
->> On 10/3/2023 3:44 AM, Sudeep Holla wrote:
->>> On Mon, Sep 11, 2023 at 12:43:58PM -0700, Nikunj Kela wrote:
->>>> Introduce compatible "qcom,scmi-hvc-shmem" for SCMI smc/hvc
->>>> transport channel for Qualcomm virtual platforms.
->>>> The compatible mandates a shared memory channel.
->>>>
->>>> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
->>>> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>> ---
->>>>    .../devicetree/bindings/firmware/arm,scmi.yaml       | 12 ++++++++++++
->>>>    1 file changed, 12 insertions(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
->>>> index 8d54ea768d38..4090240f45b1 100644
->>>> --- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
->>>> +++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
->>>> @@ -45,6 +45,9 @@ properties:
->>>>          - description: SCMI compliant firmware with OP-TEE transport
->>>>            items:
->>>>              - const: linaro,scmi-optee
->>>> +      - description: SCMI compliant firmware with Qualcomm hvc/shmem transport
->>>> +        items:
->>>> +          - const: qcom,scmi-hvc-shmem
->>> Can it be simply "qcom,scmi-smc" for 2 reasons ?
->>> 1. We don't support SMC/HVC without shmem, so what is your argument to add
->>>      '-shmem' in the compatible here ?
->> In our platforms, there are multiple ways to allocate memory. One is
->> preallocated shmem as used here, another is dynamically by hypervisor APIs.
->> shmem was to just to indicate it is preallocated.
->>
-> Let us keep it without shmem. If it is dynamically allocated, you must not
-> need another compatible as you can check it at the runtime.
->
->>> 2. The exact conduit(SMC/HVC) used is detected runtime, so I prefer to keep
->>>     '-smc' instead of '-hvc' in the compatible just to avoid giving an illusion
->>>     that HVC is the conduit chosen here based on the compatible. It can be true
->>>     for other reason but I don't want to mislead here by using HVC.
->> IUUC, currently, conduit comes from PSCI dt node. We have been using smc for
->> PSCI but want to use hvc here. That being said, I am fine to explore if we
->> can change PSCI to use hvc too.
->>
-> I think only OPTEE has explicit conduit other than PSCI and it is continued
-> for legacy/compatibility reasons IIUC and IIRC. Anything else depends on
-> the conduit used by PSCI to be consistent. So yes you need to use what the
-> PSCI conduit is and you don't need the extra information from the DT either
-> as new property or in the compatible.
+NUL-padding is not required as rep_cfg is memset to 0:
+|       memset(&rep_cfg, 0, sizeof(rep_cfg));
 
-Ok, will use conduit then. Thanks!
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on the destination buffer without
+unnecessarily NUL-padding.
 
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+---
+ drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
->
+diff --git a/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c b/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c
+index 600de587d7a9..aa6c0dfb6f1c 100644
+--- a/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c
++++ b/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c
+@@ -638,7 +638,8 @@ lio_vf_rep_netdev_event(struct notifier_block *nb,
+ 	memset(&rep_cfg, 0, sizeof(rep_cfg));
+ 	rep_cfg.req_type = LIO_VF_REP_REQ_DEVNAME;
+ 	rep_cfg.ifidx = vf_rep->ifidx;
+-	strncpy(rep_cfg.rep_name.name, ndev->name, LIO_IF_NAME_SIZE);
++	strscpy(rep_cfg.rep_name.name, ndev->name,
++		sizeof(rep_cfg.rep_name.name));
+ 
+ 	ret = lio_vf_rep_send_soft_command(oct, &rep_cfg,
+ 					   sizeof(rep_cfg), NULL, 0);
+
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231005-strncpy-drivers-net-ethernet-cavium-liquidio-lio_vf_rep-c-b23567b42939
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
