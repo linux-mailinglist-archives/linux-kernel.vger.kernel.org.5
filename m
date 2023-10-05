@@ -2,173 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 533707BA889
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F677BA893
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbjJER6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
+        id S231634AbjJESAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 14:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbjJER6T (ORCPT
+        with ESMTP id S230453AbjJESAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:58:19 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3F89E;
-        Thu,  5 Oct 2023 10:58:17 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395HkZG9021848;
-        Thu, 5 Oct 2023 17:58:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=ASEJAjxy3u7tD8sitmRDsvClbC0Hi0/48ZyBhDlZwsA=;
- b=Wa0xEtIUW96WZKzYrGMOomwW/JKt/u/ozaDosxtKucXEjNakiX2JqjdBgd7LgTTT+aEw
- pmjhOC0q2esGtlH2HgZTL/LlMSuU//3HqYgRNOUxaxfmUbYPRhD1wRqjX487N53kte1O
- bmk47z48We/UO3tlmrJ8fV59bz97BSwhED1s+azKnK+X+2sb+RZLtiIs/P9P7bZFVYXr
- Idpn1orA2f6Xy9oMk5j5hs/kYFJdCgjobAHZzW5gBaLY6n2e7zqpHbUj05BEJtqXwEAl
- rQFIEzSfaFXVGVpwfdUMgl8k/9jrsMb9XkusZJ7uwurkTcAqPXX1jOPbE1/SAL+jJ8jq hg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj1ue0d4r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 17:58:04 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 395HuO27014845;
-        Thu, 5 Oct 2023 17:58:04 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj1ue0d3x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 17:58:04 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 395HWu8C017644;
-        Thu, 5 Oct 2023 17:58:03 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tey0p0041-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 17:58:03 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 395Hw2mt3473978
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Oct 2023 17:58:02 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9904958052;
-        Thu,  5 Oct 2023 17:58:02 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 300AB58050;
-        Thu,  5 Oct 2023 17:58:02 +0000 (GMT)
-Received: from rhel-laptop.austin.ibm.com (unknown [9.41.250.135])
-        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  5 Oct 2023 17:58:02 +0000 (GMT)
-Message-ID: <53755a0fbd6318d4783078259f2d2f8ab5f2f0b7.camel@linux.vnet.ibm.com>
-Subject: Re: [PATCH] block: Fix regression in sed-opal for a saved key.
-From:   Greg Joyce <gjoyce@linux.vnet.ibm.com>
-Reply-To: gjoyce@linux.vnet.ibm.com
-To:     Milan Broz <gmazyland@gmail.com>, linux-block@vger.kernel.org
-Cc:     jonathan.derrick@linux.dev, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org, Ondrej Kozina <okozina@redhat.com>
-Date:   Thu, 05 Oct 2023 12:58:01 -0500
-In-Reply-To: <59535b4b-9f07-44c5-a7da-e6b2fc1c67bb@gmail.com>
-References: <20231003100209.380037-1-gmazyland@gmail.com>
-         <5c4fbafb1daa45f2faf60c7d587cd23c53d9393c.camel@linux.vnet.ibm.com>
-         <59535b4b-9f07-44c5-a7da-e6b2fc1c67bb@gmail.com>
+        Thu, 5 Oct 2023 14:00:31 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAB79E
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 11:00:28 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-533df112914so2207950a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 11:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696528826; x=1697133626; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=soC/hI6qoVGb1EBSelNwhFg1ZrYnyxzAE+/e29uwgT4=;
+        b=22QnwidH5T8m0rE1qmnLt5HKBH53ChSY2UjyhuUrECXA4zPkPQVv66mhNptLztf2sk
+         mMguaiogQpVZBMqEtWvp4bSymATUAvvaORmfKpH4Rg270CNBuijTKfAJzrB629kKaLOO
+         pSbxbzk73QSNvp/0JsBkmC//eW+EaqR3H8Ic7EgZ5dQCMmg9wGIb8+uDckMgjFMJlQ4g
+         ggme4kxJDhLdpTLffXxy8v41oI9XzaviNKmJIigD1jnZcPSfhIMbpawzbMRDQuBniWlE
+         JmULgWkkDicR7UcNxdhjVDjcLl+IoAushx00kkqcQMc2rdzuje+wWqKpPTUTa9ipOjdU
+         bjCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696528826; x=1697133626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=soC/hI6qoVGb1EBSelNwhFg1ZrYnyxzAE+/e29uwgT4=;
+        b=iotE5SOy4SCUt1WNJoF10NaOUb2omO5F+JAp+2Q5yNk+ERHsDGoj/l9BBrQ39BHh25
+         gRkYZXoLgMQku9GUokdHjbFCYcUmIvwE0QlaAfXVhUC4w6yEuzZBmrjPwdidKngTHB1E
+         O2NJ7uv+oth51A9Qh/bFJqcHpnF39obBhE99aPvlV1fx9k8xj4UNlAyy02RjULkmrBtE
+         9eT/hyEVryEy665/GgIb5Nqf6QE97lTeZVOcllsYFIYAw2hDRMv+gT17lnaHuUWkHh8P
+         VeX1dHGN9nRD0c8YMplzzp8h4wUDc1eErq98T3eVTQaq6XETVtxYtNyJX3dPV98JM+Ok
+         dmdQ==
+X-Gm-Message-State: AOJu0YwlzeeEuVei63QE5bJZmCg6Wx9beezqFfdiq+m8pUJxDy5yGsz9
+        NiaE8Ml5wSv6qWMdlYGzNG7EmEIe8ws2kFnSrbdGkQ==
+X-Google-Smtp-Source: AGHT+IGxbmrYGV4xHeUYWGp7FnCMXrpxOrueGBjqdlU6Zozm6OO34o5rxIoT+s90O/UZXNHJlVnMazAF5XJouq7eXCU=
+X-Received: by 2002:aa7:dd0e:0:b0:533:1832:f2b4 with SMTP id
+ i14-20020aa7dd0e000000b005331832f2b4mr5295009edv.13.1696528826582; Thu, 05
+ Oct 2023 11:00:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230825-wip-selftests-v3-0-639963c54109@kernel.org>
+In-Reply-To: <20230825-wip-selftests-v3-0-639963c54109@kernel.org>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Thu, 5 Oct 2023 11:00:12 -0700
+Message-ID: <CAFhGd8pKbznU5Atj6vEhjTQc0e3G8wKEBPa5gMteyFAvua=nZQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] selftests/hid: assorted fixes
+To:     Benjamin Tissoires <bentiss@kernel.org>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: CM-NZeh0zeKWgvg_P7fJpDaPts_btYuJ
-X-Proofpoint-GUID: gp0FVayYExu0W28rkxxq9L4mMuzyZu0c
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_12,2023-10-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 clxscore=1015
- spamscore=0 malwarescore=0 lowpriorityscore=0 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310050136
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-05 at 08:58 +0200, Milan Broz wrote:
-> On 10/4/23 22:54, Greg Joyce wrote:
-> > On Tue, 2023-10-03 at 12:02 +0200, Milan Broz wrote:
-> > > The commit 3bfeb61256643281ac4be5b8a57e9d9da3db4335
-> > > introduced the use of keyring for sed-opal.
-> > > 
-> > > Unfortunately, there is also a possibility to save
-> > > the Opal key used in opal_lock_unlock().
-> > > 
-> > > This patch switches the order of operation, so the cached
-> > > key is used instead of failure for opal_get_key.
-> > > 
-> > > The problem was found by the cryptsetup Opal test recently
-> > > added to the cryptsetup tree.
-> > > 
-> > > Fixes: 3bfeb6125664 ("block: sed-opal: keyring support for SED
-> > > keys")
-> > > Tested-by: Ondrej Kozina <okozina@redhat.com>
-> > > Signed-off-by: Milan Broz <gmazyland@gmail.com>
-> > > ---
-> > >   block/sed-opal.c | 7 +++----
-> > >   1 file changed, 3 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/block/sed-opal.c b/block/sed-opal.c
-> > > index 6d7f25d1711b..04f38a3f5d95 100644
-> > > --- a/block/sed-opal.c
-> > > +++ b/block/sed-opal.c
-> > > @@ -2888,12 +2888,11 @@ static int opal_lock_unlock(struct
-> > > opal_dev
-> > > *dev,
-> > >   	if (lk_unlk->session.who > OPAL_USER9)
-> > >   		return -EINVAL;
-> > > 
-> > > -	ret = opal_get_key(dev, &lk_unlk->session.opal_key);
-> > > -	if (ret)
-> > > -		return ret;
-> > >   	mutex_lock(&dev->dev_lock);
-> > >   	opal_lock_check_for_saved_key(dev, lk_unlk);
-> > > -	ret = __opal_lock_unlock(dev, lk_unlk);
-> > > +	ret = opal_get_key(dev, &lk_unlk->session.opal_key);
-> > > +	if (!ret)
-> > > +		ret = __opal_lock_unlock(dev, lk_unlk);
-> > 
-> > This is relying on opal_get_key() returning 0 to decide if
-> > __opal_lock_unlock() is called. Is this really what you want? It
-> > seems
-> > that you would want to unlock if the key is a LUKS key, even if
-> > opal_get_key() returns non-zero.
-> 
-> I think it is ok. That was logic introduced in your keyring patch
-> anyway.
-> 
-> I just fixed that if key is cached (stored in OPAL struct), that key
-> is used
-> and subsequent opal_get_key() does nothing, returning 0.
-> 
-> The story is here that both OPAL lock and unlock need key, while LUKS
-> logic never required key for lock (deactivation), so we rely on the
-> cached
-> OPAL key here. We do not need any key stored for unlocking (that is
-> always
-> decrypted from a keyslot)
-> (I think requiring key for locking range is a design mistake in OPAL
-> but
-> that's not relevant for now :-)
+On Thu, Oct 5, 2023 at 8:55=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.o=
+rg> wrote:
+>
+> And this is the last(?) revision of this series which should now compile
+> with or without CONFIG_HID_BPF set.
+>
+> I had to do changes because [1] was failing
+>
+> Nick, I kept your Tested-by, even if I made small changes in 1/3. Feel
+> free to shout if you don't want me to keep it.
+>
+> Eduard, You helped us a lot in the review of v1 but never sent your
+> Reviewed-by or Acked-by. Do you want me to add one?
+>
+> Cheers,
+> Benjamin
+>
+> [1] https://gitlab.freedesktop.org/bentiss/hid/-/jobs/49754306
+>
+> For reference, the v2 cover letter:
+>
+> | Hi, I am sending this series on behalf of myself and Benjamin Tissoires=
+. There
+> | existed an initial n=3D3 patch series which was later expanded to n=3D4=
+ and
+> | is now back to n=3D3 with some fixes added in and rebased against
+> | mainline.
+> |
+> | This patch series aims to ensure that the hid/bpf selftests can be buil=
+t
+> | without errors.
+> |
+> | Here's Benjamin's initial cover letter for context:
+> | |  These fixes have been triggered by [0]:
+> | |  basically, if you do not recompile the kernel first, and are
+> | |  running on an old kernel, vmlinux.h doesn't have the required
+> | |  symbols and the compilation fails.
+> | |
+> | |  The tests will fail if you run them on that very same machine,
+> | |  of course, but the binary should compile.
+> | |
+> | |  And while I was sorting out why it was failing, I realized I
+> | |  could do a couple of improvements on the Makefile.
+> | |
+> | |  [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1=
+c153dcb2@redhat.com/T/#t
+>
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> ---
+> Changes in v3:
+> - Also overwrite all of the enum symbols in patch 1/3
+> - Link to v2: https://lore.kernel.org/r/20230908-kselftest-09-08-v2-0-0de=
+f978a4c1b@google.com
+>
+> Changes in v2:
+> - roll Justin's fix into patch 1/3
+> - add __attribute__((preserve_access_index)) (thanks Eduard)
+> - rebased onto mainline (2dde18cd1d8fac735875f2e4987f11817cc0bc2c)
+> - Link to v1: https://lore.kernel.org/r/20230825-wip-selftests-v1-0-c8627=
+69020a8@kernel.org
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1698
+> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/6=
+1
+>
+> ---
+> Benjamin Tissoires (3):
+>       selftests/hid: ensure we can compile the tests on kernels pre-6.3
+>       selftests/hid: do not manually call headers_install
+>       selftests/hid: force using our compiled libbpf headers
+>
+>  tools/testing/selftests/hid/Makefile               | 10 ++-
+>  tools/testing/selftests/hid/progs/hid.c            |  3 -
+>  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 77 ++++++++++++++++=
+++++++
+>  3 files changed, 81 insertions(+), 9 deletions(-)
+> ---
+> base-commit: 29aa98d0fe013e2ab62aae4266231b7fb05d47a2
+> change-id: 20230825-wip-selftests-9a7502b56542
+>
+> Best regards,
+> --
+> Benjamin Tissoires <bentiss@kernel.org>
+>
 
-Okay, if the key is such that opal_get_key() always returns 0, then I
-agree there isn't an issue.
+Tested entire series.
 
-Greg
+ I can now build the tests using this command:
 
-> 
-> Milan
-> 
-> > >   	mutex_unlock(&dev->dev_lock);
-> > > 
-> > >   	return ret;
+$ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers && make LLVM=3D1 -j128
+ARCH=3Dx86_64 -C tools/testing/selftests TARGETS=3Dhid
 
+
+Tested-by:  Justin Stitt <justinstitt@google.com>
