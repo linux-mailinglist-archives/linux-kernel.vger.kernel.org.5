@@ -2,102 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9293F7BA141
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819897BA342
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234946AbjJEOmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
+        id S236374AbjJEPw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:52:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233783AbjJEOiE (ORCPT
+        with ESMTP id S234298AbjJEPvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:38:04 -0400
-X-Greylist: delayed 435 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Oct 2023 07:03:36 PDT
-Received: from out203-205-221-242.mail.qq.com (out203-205-221-242.mail.qq.com [203.205.221.242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DA759E6;
-        Thu,  5 Oct 2023 07:03:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1696514613;
-        bh=SXOUgbldgZBCY3GyES22l+Ixl/lk+hf9+Aq9JS/F44U=;
-        h=From:To:Cc:Subject:Date;
-        b=ivbGpObTfpcXyvTA6pLrkKVYM8ddZpZLIkVIaEDUv+4b6FjjRZSAdcNZlsATIjqdk
-         6UgwiIQRZLoS+Lu5cp3PZht1bRkuAt4lNYy+LyYO4wSX9V9jQElNQgbsJs0vWG8xuq
-         0JLrHcH9CcmmjICvxGFqeBfA2XjHGiO2+cUGpaKQ=
-Received: from KernelDevBox.byted.org ([180.184.103.200])
-        by newxmesmtplogicsvrsza12-0.qq.com (NewEsmtp) with SMTP
-        id C7005A1E; Thu, 05 Oct 2023 21:49:48 +0800
-X-QQ-mid: xmsmtpt1696513788t2552ounz
-Message-ID: <tencent_6BA8EA125537CBB5D65B05605E1E960AA708@qq.com>
-X-QQ-XMAILINFO: MILSKRzDrLPb9EuLXmTn57oGreBCkYaFwc9IUcG6/5HF5vHFojYNqHhnEx5ycG
-         J2FoBqQxKuVm8bD5TlMpxToHTmBj3N0FQjHU/8vHoMtdHdOSLuixdQxVWyJ+QASvQbAEIbkvO4/j
-         r8H3zEEUWGT6D2p5kIYAN+HnOUEi1LVD/hskoQvnIELONuoJpgGFylV/wLa6XQMUe6u3F4lSZ+LJ
-         uk/Jv0sSJcmkNQ+u4ZsTsIVepEX1QcdbUJWKulmeY9O3p5u9rbe1lk+MICpeZJqVctfi5IwnXjTh
-         FBJe3AqbZD7cyQ5M2BE+4mq8nDiRwGgxjPbCAQkzVQ6PkeyrvzTr2UkB8i0pE4A40r07HvrRVm6r
-         4rIvBSBj7OsXv+n7vei0du/773JvOUm4G+SRKlU6CMP7XZykKFlKkSnAcqF0sva20v+0+LhEEj8N
-         s6kNU+GmOSEYFh8E+O/d9Y3dOF7J4WbU19Zn0kFPPGUpi9vWwmMNrYnO04iW/aDXI4FEwEzVHAt4
-         QekwZSY4LAfLvKyULVuzneot2gOTQE8zqwNMxYyoHN3yC/nl9h6k0XvqAkEPVCYmbvZnRPO9vPhV
-         7+73//LgD6yaYmcm6MtgAB7nq+E5dUaARkw4ej5nXbT5do34NKD8PLCLT4qIu50k4lPx3Sp+4jGK
-         lkawqTtY9IAlLqSQX7txS6BqP02Cti421bKZ28iJN/4er0xIqJ0QlPhua+ZnJFcx0KYJh+TiblbM
-         cZrOIdNEfj0mpvLx3yfxoMUu2xE4v0caVCFitQb4NJHmgrFqB7L/NKroOdjzAQKvawFmvn3ImT4P
-         q+gd2Gm9MvdrvXW9vEKdJPd97/SC+sDM9Qk/kKORdaKJZmpekb5WRT+r1RoTEbK+intAVmIN22J9
-         NPyUDx1Sx0HtnWTfKxgReIK610bhXSe6uAZdcG+j4jAUXD0hxifiPyP/yN3HHl4ASwKvF4dseb58
-         Sn+yaI7fCm9bhDyfGCaD7GMi4qkt/MvwStO0GFPlboTnIWb8l8yznghXiqFvMQHXppFVc2kac=
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From:   Zhang Shurong <zhang_shurong@foxmail.com>
-To:     Thinh.Nguyen@synopsys.com
-Cc:     gregkh@linuxfoundation.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-usb@vger.kernel.org,
+        Thu, 5 Oct 2023 11:51:05 -0400
+X-Greylist: delayed 878 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Oct 2023 07:09:27 PDT
+Received: from forward203c.mail.yandex.net (forward203c.mail.yandex.net [178.154.239.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C568B47B5;
+        Thu,  5 Oct 2023 07:09:27 -0700 (PDT)
+Received: from forward103c.mail.yandex.net (forward103c.mail.yandex.net [IPv6:2a02:6b8:c03:500:1:45:d181:d103])
+        by forward203c.mail.yandex.net (Yandex) with ESMTP id DCDB465257;
+        Thu,  5 Oct 2023 16:54:49 +0300 (MSK)
+Received: from mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net [IPv6:2a02:6b8:c14:6e01:0:640:627f:0])
+        by forward103c.mail.yandex.net (Yandex) with ESMTP id 4C57E60118;
+        Thu,  5 Oct 2023 16:54:17 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 5sYS4WpDR8c0-c59Uhkbc;
+        Thu, 05 Oct 2023 16:54:16 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail;
+        t=1696514056; bh=djv/zTCmEEO0N9ZJ0kPB68viw9nxhWIGHqi+5kw6/nk=;
+        h=Cc:Message-ID:References:Date:In-Reply-To:Subject:To:From;
+        b=mxjIvrbWDeQZsZfQoZxIAayHgrDIZBpf/35k7buCmGNqzgA1wms/0ZYX33Ym9XHmP
+         TYWEQzWj9cfX6nPeiV05eP2L6h263aubX3vkAPPjLbCCyb5l5GR4fMWGml3EujhLZm
+         iMN34tW9If/TvZtdJMXz4R80jSIM4Rq43htSKp0w=
+Authentication-Results: mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net; dkim=pass header.i=@6tel.net
+From:   Muhammed Efe Cetin <efectn@6tel.net>
+To:     d-gole@ti.com
+Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org, efectn@6tel.net,
+        heiko@sntech.de, jonas@kwiboo.se,
+        krzysztof.kozlowski+dt@linaro.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zhang Shurong <zhang_shurong@foxmail.com>
-Subject: [PATCH] usb: dwc3: fix possible object reference leak
-Date:   Thu,  5 Oct 2023 21:49:46 +0800
-X-OQ-MSGID: <20231005134946.2197459-1-zhang_shurong@foxmail.com>
-X-Mailer: git-send-email 2.30.2
+        linux-rockchip@lists.infradead.org, megi@xff.cz,
+        robh+dt@kernel.org, sebastian.reichel@collabora.com
+Subject: Re: [PATCH v3 3/3] arm64: dts: rockchip: Add Orange Pi 5
+Date:   Thu,  5 Oct 2023 16:54:04 +0300
+Message-ID: <20231005135405.257495-1-efectn@6tel.net>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230928105137.5ljhuoxjc7et5thw@dhruva>
+References: <20230928105137.5ljhuoxjc7et5thw@dhruva>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,T_SPF_PERMERROR,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The of_find_device_by_node takes a reference to the struct device
-when find the match device,we should release it when fail.
+Hello,
 
-Fix it by calling by calling platform_device_put when error returns.
+On 28.09.2023 13:51, Dhruva Gole wrote:
+> Hi,
+> 
+> On Aug 21, 2023 at 18:47:59 +0300, Muhammed Efe Cetin wrote:
+>> Add initial support for OPi5 that includes support for USB2, PCIe2, Sata,
+>> Sdmmc, SPI Flash, PMIC.
+>>
+>> Signed-off-by: Muhammed Efe Cetin <efectn@6tel.net>
+>> Reviewed-by: Ondřej Jirman <megi@xff.cz>
+>> ---
+>>   arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+>>   .../boot/dts/rockchip/rk3588s-orangepi-5.dts  | 673 ++++++++++++++++++
+>>   2 files changed, 674 insertions(+)
+>>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
+>>
+> ...
+> 
+> Can you provide some sort of documentation on how I can build and boot
+> the kernel on this board? I was unable to use the upstream arm64
+> defconfig with this exact series applied to boot the board.
 
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
----
- drivers/usb/dwc3/dwc3-imx8mp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+What was wrong when you tried to compile & boot the board? Can you provide some logs?
 
-diff --git a/drivers/usb/dwc3/dwc3-imx8mp.c b/drivers/usb/dwc3/dwc3-imx8mp.c
-index a1e15f2fffdb..af5302c3f7a9 100644
---- a/drivers/usb/dwc3/dwc3-imx8mp.c
-+++ b/drivers/usb/dwc3/dwc3-imx8mp.c
-@@ -244,7 +244,7 @@ static int dwc3_imx8mp_probe(struct platform_device *pdev)
- 					IRQF_ONESHOT, dev_name(dev), dwc3_imx);
- 	if (err) {
- 		dev_err(dev, "failed to request IRQ #%d --> %d\n", irq, err);
--		goto depopulate;
-+		goto err_device_put;
- 	}
- 
- 	device_set_wakeup_capable(dev, true);
-@@ -252,6 +252,8 @@ static int dwc3_imx8mp_probe(struct platform_device *pdev)
- 
- 	return 0;
- 
-+err_device_put:
-+	platform_device_put(dwc3_imx->dwc3);
- depopulate:
- 	of_platform_depopulate(dev);
- err_node_put:
--- 
-2.30.2
+> 
+>> +
+>> +&i2c6 {
+>> +	pinctrl-names = "default";
+>> +	pinctrl-0 = <&i2c6m3_xfer>;
+>> +	status = "okay";
+>> +
+>> +	hym8563: rtc@51 {
+>> +		compatible = "haoyu,hym8563";
+>> +		reg = <0x51>;
+>> +		#clock-cells = <0>;
+>> +		clock-output-names = "hym8563";
+>> +		pinctrl-names = "default";
+>> +		pinctrl-0 = <&hym8563_int>;
+>> +		interrupt-parent = <&gpio0>;
+>> +		interrupts = <RK_PB0 IRQ_TYPE_LEVEL_LOW>;
+>> +		wakeup-source;
+> 
+> Are you able to actually use rtc as a wakeup source? I tried this
+> on a downstream kernel that I mention below..
+> 
+> rtcwake -s 10 -m mem
+> 
+> didn't actually seem to wake the device from deepsleep after 10 seconds.
+> Do you know what other pins I can use as wakeup sources?
 
+No, i've not tried it before.
+
+> 
+>> +	};
+>> +};
+>> +
+>> +&mdio1 {
+>> +	rgmii_phy1: ethernet-phy@1 {
+>> +		compatible = "ethernet-phy-ieee802.3-c22";
+> 
+> Just wondering, can you please give some logs of the board with eth
+> working? The image that I have from opi seems to fail eth? As in I am
+> not able to see any ip address. here are the logs:
+> 
+> https://gist.github.com/DhruvaG2000/eda2762e35013c8d5ac9f37e818103a3
+
+Unfortunately the board is not near me currently. However, i was able to use GMAC ethernet in both the upstreram and downstream kernels. Did you try any images other than Orange Pi ones?
+
+> 
+> ...
+> 
