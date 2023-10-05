@@ -2,324 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 146B57BA52D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F17747BA532
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241307AbjJEQON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:14:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38760 "EHLO
+        id S241514AbjJEQO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240977AbjJEQMU (ORCPT
+        with ESMTP id S236149AbjJEQMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:12:20 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2062e.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaf::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75139199;
-        Thu,  5 Oct 2023 02:30:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=crtdKQbdGHE90CJMVczYAOXGLNFrQYLScCtayQj5Grzfd1O0odsvKxA/OnbTWyQ8d17wIyfo6rg5QHttI36gYYODfjswa2qkHtlkyI7JyjLvltVNJ27+LKI5xA/KjWvojw7661h0YWzLjHyEm63+B7KJaM+8bETQHt8LSPNSZ3GwBbB6LdWZxGveqH8VbAKK+tbmv4HNzZ3hxpTCJKOg5M0ZXJxe2jlecGK7AXCO9QoEV00r90J5ShmACUWa99gHTkUD0dBBEa5F1pXIg0N1OcQjqaWT5jAJIYXLgTk/zIzUU9vYTDQtmKkDz7assNLvhqr3n3qXmTrbw20rrXPAOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nNgPhoMWbao0T2n8TbW+P72iU63JXQ1U4WnWaG3PLDk=;
- b=CFUoj3/+LPwiA+pkuqAOS8f9iULilUNsQrebSYyISXkNPpiIQtGF1wlvof8MPmZBDTOQL+/wSewW4nh80QXJFxjblV/f+zNDQpO4RSoKj1NdZJJgERMD7LNNHcg7C6KSJeOSWWC+awA5No/WIhol+Rq1kJA9zxW8m+ODKjLz43wUmE4OSQTMTwJP0Ej/oO/MExka9ZoPfhehkUpTo0aH/bFdsjkP7X2leZgWhUb31UHAnhGph3AO4ps/sejfpNjiz3ZUJLHDn5Z5X6UcGg/gZJwKGzkSqZLXnr4EUfXNCWHx9AGe21B/ghiKUzKJIoFbbgvI6MQ63RwW1Kkx3/R9UA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nNgPhoMWbao0T2n8TbW+P72iU63JXQ1U4WnWaG3PLDk=;
- b=Rj7c0j+WOW2hVotZVoGwnZ90dtQ21RAhMRH3c80rAORtM0oAv20tF63c8JyCATCjtMvKgHPzsSmj4MU06WgRmM5BY2+XHhMpFAC5xY18CAcd/z0I29sgOn4jhS+R7kJvrIzbLkb/QkV0pyTarTK3lCOrksUjU5H8DFqt/r79lKU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by AM9PR04MB8748.eurprd04.prod.outlook.com (2603:10a6:20b:409::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.22; Thu, 5 Oct
- 2023 09:29:46 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::992:76c8:4771:8367]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::992:76c8:4771:8367%6]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
- 09:29:46 +0000
-Date:   Thu, 5 Oct 2023 12:29:43 +0300
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Roger Quadros <rogerq@kernel.org>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, horms@kernel.org, s-vadapalli@ti.com,
-        srk@ti.com, vigneshr@ti.com, p-varis@ti.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 3/4] net: ethernet: ti: am65-cpsw-qos: Add
- Frame Preemption MAC Merge support
-Message-ID: <20231005092943.q7no33k32thyo6y4@skbuf>
-References: <20230927072741.21221-1-rogerq@kernel.org>
- <20230927072741.21221-1-rogerq@kernel.org>
- <20230927072741.21221-4-rogerq@kernel.org>
- <20230927072741.21221-4-rogerq@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230927072741.21221-4-rogerq@kernel.org>
- <20230927072741.21221-4-rogerq@kernel.org>
-X-ClientProxiedBy: FR2P281CA0105.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:9c::17) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+        Thu, 5 Oct 2023 12:12:25 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2962B25721
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:38:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1696516709; x=1728052709;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=tJbtQ1MlE1W9rRSJGxdgP3sxAM2uACs3ZmeI+EII/UM=;
+  b=M6uDePpudlR3c2ET0G4xmaeiKalq3ZKk+KWWBss1+Ko/Er5cbzWc6eyH
+   W7POtcX2p6uSiYBjFVn09XHxTHYouzJD0NQnAd4CplciWIelKnn5zDVyj
+   Qd2QcUaZK9a23x9M1k/14iuIr61xtO98poqNlWGztAWQGuEIDlMjYZrol
+   /S9/aUmgv2wTIDVAKd24xZ8i8fV+44T46/svh2aopK5LviCYXcvwxO3u8
+   sVlpHGU6Mk115w4fKzG7VqnaBs4pPbamUB4Zw7QOjyF+cj2LGk0yUSiWj
+   INUfmTw9NOpRCWpo8OYw2HC1ZFbFAf1sCtVnLSpgRPLt8Z4ctXq5Eqigv
+   Q==;
+X-CSE-ConnectionGUID: pNqRUMmsQ46P00UoeOunFg==
+X-CSE-MsgGUID: z1nv3CqUSoywBv3Qj0wD/Q==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
+   d="scan'208";a="8182740"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Oct 2023 02:30:21 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 5 Oct 2023 02:30:12 -0700
+Received: from che-lt-i67131.microchip.com (10.10.85.11) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Thu, 5 Oct 2023 02:30:05 -0700
+From:   Manikandan Muralidharan <manikandan.m@microchip.com>
+To:     <sam@ravnborg.org>, <bbrezillon@kernel.org>, <airlied@gmail.com>,
+        <daniel@ffwll.ch>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <lee@kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <Hari.PrasathGE@microchip.com>,
+        <Balamanikandan.Gunasundar@microchip.com>,
+        <Durai.ManickamKR@microchip.com>, <Nayabbasha.Sayed@microchip.com>,
+        <Dharma.B@microchip.com>, <Varshini.Rajendran@microchip.com>,
+        <Balakrishnan.S@microchip.com>,
+        Manikandan Muralidharan <manikandan.m@microchip.com>
+Subject: [PATCH v7 1/7] drm: atmel-hlcdc: add flag and driver ops to differentiate XLCDC and HLCDC IP
+Date:   Thu, 5 Oct 2023 14:59:48 +0530
+Message-ID: <20231005092954.881059-2-manikandan.m@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231005092954.881059-1-manikandan.m@microchip.com>
+References: <20231005092954.881059-1-manikandan.m@microchip.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AM9PR04MB8748:EE_
-X-MS-Office365-Filtering-Correlation-Id: cda1fa45-3945-4b8c-71d4-08dbc5859d34
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cWf/xr0I30Y3YptoNQgcxiavpmQ421IJ5+FZoIoP7QRP25femhWiX35L96W/0ccYkiI3VZvzTokqTS7mvSHMwuJ+FAtP5iLzbyIS4uHGfkBtv19G3/Tg+Cf7Zs6CsJsbSxbBzmWfzfXErtZoE8Oawt1UNNLyS37aKf/cPT/oWoZ2kSqvsKsHe/JLDirQ3KqRSALirX5uhmryNfzAJb1BDtqDmTxFPIICrVdTcaw2BX93rXq8oS6xoO5w8rwR0SH2ffN94zx5y0oPEUL98r7mdzAjEb2/T4446GJGkG85PqD/lk3rj5Nz4Ud8JZ7qxeekIvvtMNi6i2KjOgz+bxaf9L9vMb49q3OHObqB2mP84j5+ij0Q1hmhHg0hYlO7C4X0dXF3KMSy9IFhSGlluU4FHTFLH4cMbl3R6d9o/Fa2oXakxZDXQNngqnSD0ljaQqa/oTN6KKmz+ZVXJkDn/aQtWCusvMqxnMN29SOvZorOvMsT4VW+Zii+JiIhYhLmxP9rySDB77o/IwJzcq+xTtsGv2CSAHATPqOjaAgscdZuY9k=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(376002)(136003)(39860400002)(396003)(346002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(1076003)(26005)(9686003)(6512007)(2906002)(33716001)(86362001)(38100700002)(66946007)(66476007)(66556008)(83380400001)(478600001)(5660300002)(44832011)(41300700001)(6916009)(316002)(966005)(6486002)(4326008)(8676002)(8936002)(6506007)(7416002)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TzMwTm80YkNLSXhRRGRvbk5FYnFQWmhubmEra0k2Vk9FeGtmbHNjWm9jZ1pJ?=
- =?utf-8?B?ZmRySWw0bTIxVmN5MWZWSTc3SVB2R1FLaTE4OVh5ZmlMdjVySVRYQ25zKzRx?=
- =?utf-8?B?THlDcHE5c2o2TThhOEE2NGd0UmRiUVJ4K0o3WjRobThQQmIxS1dqcFVsNDlX?=
- =?utf-8?B?SkFvdHRoMTFRQ2k0K0lodDl0U3FXNWVGLzQ4QmhuOU9MVjZudDNubDV2aGxV?=
- =?utf-8?B?TW1WeDlTd0gxcVNTdXROblBFSVR2M09LRmhicnlRcjFrZ3diWm5JUWs1V3ZT?=
- =?utf-8?B?ZlNHVzRWdXh2cHNQdzBCVC8yNTk4UWFNUUtYeGdqdkpia0pROVV1WkpndE9B?=
- =?utf-8?B?aEJ4N3JwN3kxdVlPdE12b0tWb3QwQWVBWXdZQTdpTkw1b0REUndGR3hhWXBu?=
- =?utf-8?B?RC9ZdlpTOHR1eE5FQXJGMUhUZExqNjJwdkpyM28ya1ZkMWdwT3VobTBSQk04?=
- =?utf-8?B?empySkNNelpiUUxoQzF4TjNDWFVEVE85OCs0ZkgwUjNTdUJlQXFBKzZzL01D?=
- =?utf-8?B?eS9mS21WeU5hd25QTWdjM1ZYUVZabFYzWHhQWm5NMUhrcHdnMjMrY3JXNDF4?=
- =?utf-8?B?R1p1MkNHTTlpa0pUbHNKZ0xsZGxLdkZpZm12dU5tYmpCQnFlTnR6bFJ1bTdv?=
- =?utf-8?B?U0xYSm9CK1RHa0lmQVlMSFRUdjJLb1NYTVBPS2s4a3JXYlpiTEltOEdhdzRX?=
- =?utf-8?B?TWdvcnljWnlNeXh3ZXpzMm1iVjZoQVZPUElaQmJ3OGZSVzZOa0kzUldCYS9x?=
- =?utf-8?B?WnVMWE51TVNKamdoQ2RoM0lnMkFOWkh3Y0FKVjRla0gybVZ0L3pzckU5aytI?=
- =?utf-8?B?WnRTTHROSGttT0tFQ05iNHJKdWVzZ3hVcGdqb2NneGxCQjdQbnVUK09TM3pD?=
- =?utf-8?B?RXVJcmhVLzVWWFNILzF0d2swUnRVWEVzcTA4MnYzTkppOThKSGIvdjY2MDFp?=
- =?utf-8?B?L0tzL09VZ2htdnNmS0tMYkdYWHdZejF4Tm1PQzdqTkxrNG5raGNMK1REbUdt?=
- =?utf-8?B?ZVNaRVRwa25rSm5aTktRN3d4NkM3bEhwTzVoOUtnZmVnZDN2K1g3UmxBQnVW?=
- =?utf-8?B?MkVkWGNTdk9XN2tJbnNTc1dMb1ppUS93cE5PaGNXSStPam9wZnNHNVFvOFV0?=
- =?utf-8?B?aWVBcG5BcXVQUDcrRU5raGtVU1I1bHdIQlBOM0pFS25BaVJXa3VpYzU0WHJ6?=
- =?utf-8?B?dXFLK1RheVlaUVdta0E4b3lGeU5QY3gwWS9tbzF0RitCMmNGQzhDNVo5Wmp1?=
- =?utf-8?B?SVo1SDNNVUxTN1ZnUUg2bDFKSERkbm95Qi81ODVWUmF5bTRSeGtRREV6am40?=
- =?utf-8?B?dkVTNXl2VVVZeTY0S0p6N09JZDZOU2lqUXpkSllSQWxNbFEyYzc4RVRwbFZo?=
- =?utf-8?B?dDFvcjJ3c1pKZE1BZGR3bUZZRE9oRVRoeWFXckFoaTlOMTRuMC9kRVY2R21J?=
- =?utf-8?B?NFJOYUxWUVgxajZseFhFb2xzVXZ3VEJlbmlENEsyUjdETXMyTVVic2FkOFQy?=
- =?utf-8?B?UzZDcVVRSGdwU1phc3Z6QWhOdWExeFlFMGVqY1U5bU12YXZTTFpsZ3pwQVlR?=
- =?utf-8?B?U0QwS3RBdUQ1YlJId0F3UXJPMVV5cGc0Z2FuL2Z3SmFKUmkzUmRsQWc1MGtY?=
- =?utf-8?B?dHlSbXVqa3UycW5MUkRlbzkrNi9Fb1dQU2t6anB6WGJGTisxYStaNkZLRDk5?=
- =?utf-8?B?Y0JHa1hBMXE3WlE2TmZ1U3IyblVvdDdvT3ZuWXRCWVlzTlVETWg5US84bXpl?=
- =?utf-8?B?K0lHSHl2aWU0bldNTEJnRjdZWk9DK2FxaUVSY0NYdlVLajR1dzIyUWRjWUgv?=
- =?utf-8?B?eEZJdVlRVTF2MkN0eVF2Y0Z3Rk0rRFhlMktTNE9pNldvYnZ0VGdsZFIyRVNX?=
- =?utf-8?B?a3N4aDlVZUJYazB2djBXUHZDTEhzYkFvRm5CQ1NhUE1CYStaSFo0UFlBM3FY?=
- =?utf-8?B?MkFzM1ZWdllmYWpFYnNNTk9TZzJXc2ZCSUdtNTQvUk5KeE1STHd1dncrZGZW?=
- =?utf-8?B?ejJrVW4zK3hqalRPdkxCd0NvSFJzWUJ6TW9KMHhXZHljQ1RmMVNsZzAxRi9t?=
- =?utf-8?B?TmJpaUg5ODVzZy9OcmFXN0VpU0I1Z1MxZGRkYXpKRHBmZkYxcXp3YXpqQk9z?=
- =?utf-8?B?L2tBRjJsbzJSZFVUMC9PVjZsMjE2czBBdzkzdHg3bm1JaVVKMmtoMFdFYlRM?=
- =?utf-8?B?OUE9PQ==?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cda1fa45-3945-4b8c-71d4-08dbc5859d34
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 09:29:46.3053
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZOCEkdeH7CBp0vtRvNy3QTXSQPijWPP1n6fka7GXKLYFX7GQUwNo+dYRZvduLL8lNprdp3WM9QTw/7irsKd37A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8748
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SPF_PERMERROR,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 10:27:40AM +0300, Roger Quadros wrote:
-> Add driver support for viewing / changing the MAC Merge sublayer
-> parameters and seeing the verification state machine's current state
-> via ethtool.
-> 
-> As hardware does not support interrupt notification for verification
-> events we resort to polling on link up. On link up we try a couple of
-> times for verification success and if unsuccessful then give up.
-> 
-> The Frame Preemption feature is described in the Technical Reference
-> Manual [1] in section:
-> 	12.3.1.4.6.7 Intersperced Express Traffic (IET – P802.3br/D2.0)
-> 
-> Due to Silicon Errata i2208 [2] we set limit min IET fragment size to 124.
-> 
-> [1] AM62x TRM - https://www.ti.com/lit/ug/spruiv7a/spruiv7a.pdf
-> [2] AM62x Silicon Errata - https://www.ti.com/lit/er/sprz487c/sprz487c.pdf
-> 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> ---
->  drivers/net/ethernet/ti/am65-cpsw-ethtool.c | 150 ++++++++++++
->  drivers/net/ethernet/ti/am65-cpsw-nuss.c    |   2 +
->  drivers/net/ethernet/ti/am65-cpsw-nuss.h    |   5 +
->  drivers/net/ethernet/ti/am65-cpsw-qos.c     | 240 ++++++++++++++++----
->  drivers/net/ethernet/ti/am65-cpsw-qos.h     | 104 +++++++++
->  5 files changed, 454 insertions(+), 47 deletions(-)
-> 
-> Changelog:
-> v5:
-> - No change
-> 
-> v4:
-> - Rebase and include in the same series as mqprio support.
-> 
-> v3:
-> - Rebase on top of v6.6-rc1 and mqprio support [1]
-> - Support ethtool_ops :: get_mm_stats()
-> - drop unused variables cmn_ctrl and verify_cnt
-> - make am65_cpsw_iet_link_state_update() and
->   am65_cpsw_iet_change_preemptible_tcs() static
-> 
-> [1] https://lore.kernel.org/all/20230918075358.5878-1-rogerq@kernel.org/
-> 
-> v2:
-> - Use proper control bits for PMAC enable (AM65_CPSW_PN_CTL_IET_PORT_EN)
->   and TX enable (AM65_CPSW_PN_IET_MAC_PENABLE)
-> - Common IET Enable (AM65_CPSW_CTL_IET_EN) is set if any port has
->   AM65_CPSW_PN_CTL_IET_PORT_EN set.
-> - Fix workaround for erratum i2208. i.e. Limit rx_min_frag_size to 124
-> - Fix am65_cpsw_iet_get_verify_timeout_ms() to default to timeout for
->   1G link if link is inactive.
-> - resize the RX FIFO based on pmac_enabled, not tx_enabled.
-> 
-> Test Procedure:
-> 
-> - 2 EVMs with AM65-CPSW network port connected to each other
-> - Run iet-setup-mqprio.sh on both
-> 
-> #!/bin/sh
-> #iet-setup-mqprio.sh
-> 
-> ifconfig eth0 down
-> ifconfig eth1 down
-> ethtool -L eth0 tx 4
-> ethtool --set-mm eth0 pmac-enabled on tx-enabled on verify-enabled on verify-time 10 tx-min-frag-size 124
-> ifconfig eth0 up
-> sleep 10
-> 
-> tc qdisc add dev eth0 handle 100: root mqprio \
-> num_tc 4 \
-> map 0 1 2 3 \
-> queues 1@0 1@1 1@2 1@3 \
-> hw 1 \
-> mode dcb \
-> fp P P P E
-> 
-> tc -g class show dev eth0
-> tc qdisc add dev eth0 clsact
-> tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5002 0xffff action skbedit priority 2
-> tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5003 0xffff action skbedit priority 3
-> ip addr add 192.168.3.102/24 dev eth0 
-> 
-> - check that MAC merge verification has succeeded
-> 
-> ethtool --show-mm eth0
-> 
->         MAC Merge layer state for eth0:
->         pMAC enabled: on
->         TX enabled: on
->         TX active: on
->         TX minimum fragment size: 124
->         RX minimum fragment size: 124
->         Verify enabled: on
->         Verify time: 10
->         Max verify time: 134
->         Verification status: SUCCEEDED
-> 
-> - On receiver EVM run 2 iperf instances
-> 
-> iperf3 -s -i30 -p5002&
-> iperf3 -s -i30 -p5003&
-> 
-> - On sender EVM run 2 iperf instances
-> 
-> iperf3 -c 192.168.3.102 -u -b200M -l1472 -u -t5 -i30 -p5002&
-> iperf3 -c 192.168.3.102 -u -b50M -l1472 -u -t5 -i30 -p5003&
-> 
-> - Check IET stats on sender. Look for MACMergeFragCountTx: increments
-> 
-> ethtool -I --show-mm eth0
-> MAC Merge layer state for eth0:
-> pMAC enabled: on
-> TX enabled: on
-> TX active: on
-> TX minimum fragment size: 124
-> RX minimum fragment size: 124
-> Verify enabled: on
-> Verify time: 10
-> Max verify time: 134
-> Verification status: SUCCEEDED
-> Statistics:
->   MACMergeFrameAssErrorCount: 0
->   MACMergeFrameSmdErrorCount: 0
->   MACMergeFrameAssOkCount: 0
->   MACMergeFragCountRx: 0
->   MACMergeFragCountTx: 57824
->   MACMergeHoldCount: 0
-> 
-> - Check IET stats on receiver. Look for MACMergeFragCountRx: and
->   MACMergeFrameAssOkCount:
-> 
-> ethtool -I --show-mm eth0
-> MAC Merge layer state for eth0:
-> pMAC enabled: on
-> TX enabled: on
-> TX active: on
-> TX minimum fragment size: 124
-> RX minimum fragment size: 124
-> Verify enabled: on
-> Verify time: 10
-> Max verify time: 134
-> Verification status: SUCCEEDED
-> Statistics:
->   MACMergeFrameAssErrorCount: 0
->   MACMergeFrameSmdErrorCount: 0
->   MACMergeFrameAssOkCount: 57018
->   MACMergeFragCountRx: 57824
->   MACMergeFragCountTx: 0
->   MACMergeHoldCount: 0
+Add is_xlcdc flag and LCD IP specific ops in driver data to differentiate
+XLCDC and HLCDC code within the atmel-hlcdc driver files.
 
-Nice of you to post commands, but could you also please clearly state
-whether the implementation passes tools/testing/selftests/net/forwarding/ethtool_mm.sh?
+Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
+---
+ drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h | 37 ++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-> +	val &= ~AM65_CPSW_PN_IET_MAC_MAC_ADDFRAGSIZE_MASK;
-> +	val |= AM65_CPSW_PN_IET_MAC_SET_ADDFRAGSIZE(add_frag_size);
-> +	writel(val, port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-> +
-> +	/* verify_timeout_count can only be set at valid link */
-> +	port->qos.iet.verify_time_ms = cfg->verify_time;
-> +
-> +	/* enable/disable pre-emption based on link status */
+diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
+index 5b5c774e0edf..d5e01ff8c7f9 100644
+--- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
++++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
+@@ -177,6 +177,9 @@ struct atmel_hlcdc_layer_cfg_layout {
+ 	int csc;
+ };
+ 
++struct atmel_hlcdc_plane_state;
++struct atmel_hlcdc_dc;
++
+ /**
+  * Atmel HLCDC DMA descriptor structure
+  *
+@@ -288,6 +291,36 @@ atmel_hlcdc_layer_to_plane(struct atmel_hlcdc_layer *layer)
+ 	return container_of(layer, struct atmel_hlcdc_plane, layer);
+ }
+ 
++/**
++ * struct atmel_lcdc_dc_ops - describes atmel_lcdc ops group
++ * to differentiate HLCDC and XLCDC IP code support.
++ * @plane_setup_scaler: update the vertical and horizontal scaling factors
++ * @update_lcdc_buffers: update the each LCDC layers DMA registers.
++ * @lcdc_atomic_disable: disable LCDC interrupts and layers
++ * @lcdc_update_general_settings: update each LCDC layers general
++ * confiugration register.
++ * @lcdc_atomic_update: enable the LCDC layers and interrupts.
++ * @lcdc_csc_init: update the color space conversion co-efficient of
++ * High-end overlay register.
++ * @lcdc_irq_dbg: to raise alert incase of interrupt overrun in any LCDC layer.
++ */
++struct atmel_lcdc_dc_ops {
++	void (*plane_setup_scaler)(struct atmel_hlcdc_plane *plane,
++				   struct atmel_hlcdc_plane_state *state);
++	void (*update_lcdc_buffers)(struct atmel_hlcdc_plane *plane,
++				    struct atmel_hlcdc_plane_state *state,
++				    u32 sr, int i);
++	void (*lcdc_atomic_disable)(struct atmel_hlcdc_plane *plane);
++	void (*lcdc_update_general_settings)(struct atmel_hlcdc_plane *plane,
++					     struct atmel_hlcdc_plane_state *state);
++	void (*lcdc_atomic_update)(struct atmel_hlcdc_plane *plane,
++				   struct atmel_hlcdc_dc *dc);
++	void (*lcdc_csc_init)(struct atmel_hlcdc_plane *plane,
++			      const struct atmel_hlcdc_layer_desc *desc);
++	void (*lcdc_irq_dbg)(struct atmel_hlcdc_plane *plane,
++			     const struct atmel_hlcdc_layer_desc *desc);
++};
++
+ /**
+  * Atmel HLCDC Display Controller description structure.
+  *
+@@ -304,8 +337,10 @@ atmel_hlcdc_layer_to_plane(struct atmel_hlcdc_layer *layer)
+  * @conflicting_output_formats: true if RGBXXX output formats conflict with
+  *				each other.
+  * @fixed_clksrc: true if clock source is fixed
++ * @is_xlcdc: true if XLCDC IP is supported
+  * @layers: a layer description table describing available layers
+  * @nlayers: layer description table size
++ * @ops: atmel lcdc dc ops
+  */
+ struct atmel_hlcdc_dc_desc {
+ 	int min_width;
+@@ -317,8 +352,10 @@ struct atmel_hlcdc_dc_desc {
+ 	int max_hpw;
+ 	bool conflicting_output_formats;
+ 	bool fixed_clksrc;
++	bool is_xlcdc;
+ 	const struct atmel_hlcdc_layer_desc *layers;
+ 	int nlayers;
++	const struct atmel_lcdc_dc_ops *ops;
+ };
+ 
+ /**
+-- 
+2.25.1
 
-For the benefit of grep, I would appreciate if it was spelled
-"preemption" everywhere.
-
-> +	am65_cpsw_iet_commit_preemptible_tcs(port);
-> +
-> +	mutex_unlock(&priv->mm_lock);
-> +
-> +	return 0;
-> +}
-> +
->  static int am65_cpsw_port_est_enabled(struct am65_cpsw_port *port)
->  {
->  	return port->qos.est_oper || port->qos.est_admin;
-> @@ -602,6 +743,8 @@ static int am65_cpsw_setup_taprio(struct net_device *ndev, void *type_data)
->  	if (port->qos.link_speed == SPEED_UNKNOWN)
->  		return -ENOLINK;
->  
-> +	am65_cpsw_iet_change_preemptible_tcs(port, taprio->mqprio.preemptible_tcs);
-> +
-
-Hmm, why just look at the preemptible traffic classes and not at
-taprio's entire mqprio configuration? This bypasses the mapping between
-Linux traffic classes and switch priorities that you've established in
-am65_cpsw_setup_mqprio().
-
-With the addition of the "mqprio" structure in tc_taprio_qopt_offload,
-my intention was to facilitate calling am65_cpsw_setup_mqprio() from
-am65_cpsw_setup_taprio().
-
->  	return am65_cpsw_set_taprio(ndev, type_data);
->  }
