@@ -2,186 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1C17BA0EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F3B7B9EA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbjJEOuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44644 "EHLO
+        id S233094AbjJEOJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239681AbjJEOrn (ORCPT
+        with ESMTP id S232736AbjJEOHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:47:43 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40424682;
-        Thu,  5 Oct 2023 07:34:51 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3957jcwf026789;
-        Thu, 5 Oct 2023 08:53:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=eE+3lVu2w4k3uwLOxwaySx3ouHPIax279I51XhOh3ug=;
- b=Gry/b2rfE4ADnco0RlmPzyXgRrhKf36W7iHcINr8grmWGfu1fTEVPbwQhcAGM9kBy3/O
- UKE1C2vjiPntBn2lng2F4ZMmkytnS2PeItM5JLROMesiW9t0rr8wg/46W3/89Euu9weF
- jQ7ztUONtPX5DNjh7BG2anhIcmRKFlndK1DEmKqh0MS5xvhIdxUbdEa66393imoi20ce
- CQtaP76GMbQVsyUT4tK8aj2mUvuTC83MgwH7n0T3GB6iTvNr/3Udc2X0YR7N/K/k1I9+
- UrIcWSvyXiW6tbu4vWR7PKcy++QghmS6fcYXxd0RVJg76ZCQfpjXlj0geheQNKeBH/tw xA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgynhbh8t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 08:53:00 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3958qxDO027273
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Oct 2023 08:52:59 GMT
-Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 5 Oct
- 2023 01:52:52 -0700
-Message-ID: <396a55c1-8ae3-8296-2826-e7ab0f5cb103@quicinc.com>
-Date:   Thu, 5 Oct 2023 14:22:49 +0530
+        Thu, 5 Oct 2023 10:07:21 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD3E4204;
+        Thu,  5 Oct 2023 01:54:24 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 191CF660731A;
+        Thu,  5 Oct 2023 09:54:19 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696496059;
+        bh=bApHrP5+rFCG+AvPQEp0nvYRi/WjkCcLC3j4z/vfddQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=I2CGLtIBRs07RgZCkRO2P3NXkFXb3qjOhfw9LtB4KRtCUj2rRosl8OyqvCKZqg35u
+         OEeV1JpqU6IRvfCT2zzFqzhJhzVeF1FdUWctYBon6aQF+sEZ9t5HDnDtRTqkz5GVm2
+         jQfo1suUiMDzkhvcEtmi1gldJwEVk2+xlQPXkGAmpZyyw4wIXGbVcTPxPRYt6PB44V
+         ohZgPaIgJzYssvvWaJ43D4PFiquBmYzaQj+D1RWkRFHV19LxfleStWVJP7Ps8el3la
+         VqV6IxldPDGrrpoPVZ5RuHrJde0+Asswow34c2Q8WPNDmlJ3rXdUMSlWQGjk8OagnD
+         ai9W46lzqe7jQ==
+Message-ID: <06f8a769-1845-ea87-dcc4-37dd5ad255ed@collabora.com>
+Date:   Thu, 5 Oct 2023 10:54:16 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v5 2/5] arm64: dts: qcom: sm8450: Add opp table support to
- PCIe
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v8 0/8] soc: mediatek: MT8365 power support
 Content-Language: en-US
-To:     Manivannan Sadhasivam <mani@kernel.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <vireshk@kernel.org>, <nm@ti.com>,
-        <sboyd@kernel.org>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, <bhelgaas@google.com>, <rafael@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_parass@quicinc.com>
-References: <1694066433-8677-1-git-send-email-quic_krichai@quicinc.com>
- <1694066433-8677-3-git-send-email-quic_krichai@quicinc.com>
- <20230928183808.GA10963@thinkpad>
-From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20230928183808.GA10963@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Markus Schneider-Pargmann <msp@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Alexandre Mergnat <amergnat@baylibre.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        Tinghan Shen <tinghan.shen@mediatek.com>,
+        Fabien Parent <parent.f@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230918093751.1188668-1-msp@baylibre.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230918093751.1188668-1-msp@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: po57y_E2hETBeVbcWCnsVmh_SpTwKbCa
-X-Proofpoint-ORIG-GUID: po57y_E2hETBeVbcWCnsVmh_SpTwKbCa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_06,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 mlxscore=0
- mlxlogscore=992 clxscore=1015 adultscore=0 lowpriorityscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310050067
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Il 18/09/23 11:37, Markus Schneider-Pargmann ha scritto:
+> Hi,
+> 
+> no real changes in this update. Rebase to v6.6-rc2 and according change
+> of directory.
 
-On 9/29/2023 12:08 AM, Manivannan Sadhasivam wrote:
-> On Thu, Sep 07, 2023 at 11:30:30AM +0530, Krishna chaitanya chundru wrote:
->> PCIe needs to choose the appropriate performance state of RPMH power
->> domain based up on the PCIe gen speed.
->>
->> So let's add the OPP table support to specify RPMH performance states.
->>
->> Use opp-level for the PCIe gen speed for easier use.
->>
-> So, you just want to control RPMh performance state using OPP and not clock
-> rates? What will happen if you switch to lowest performance state of RPMh but
-> still run PCIe clocks at max rate?
->
-> - Mani
+Since the driver changed to pmdomain/mediatek, can you please change the commit
+titles for the driver commits?
 
-Based up on the RPMH state the clock rates will be scaled accordingly.
+soc: mediatek: pm-domains: ===> pmdomain: mediatek: pm-domains:
 
-- KC
+or alternatively, I honestly would like it more like
 
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/sm8450.dtsi | 47 ++++++++++++++++++++++++++++++++++++
->>   1 file changed, 47 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
->> index 2a60cf8..a6264a5 100644
->> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
->> @@ -1820,7 +1820,28 @@
->>   			pinctrl-names = "default";
->>   			pinctrl-0 = <&pcie0_default_state>;
->>   
->> +			operating-points-v2 = <&pcie0_opp_table>;
->> +
->>   			status = "disabled";
->> +
->> +			pcie0_opp_table: opp-table {
->> +				compatible = "operating-points-v2";
->> +
->> +				opp-1 {
->> +					opp-level = <1>;
->> +					required-opps = <&rpmhpd_opp_low_svs>;
->> +				};
->> +
->> +				opp-2 {
->> +					opp-level = <2>;
->> +					required-opps = <&rpmhpd_opp_low_svs>;
->> +				};
->> +
->> +				opp-3 {
->> +					opp-level = <3>;
->> +					required-opps = <&rpmhpd_opp_nom>;
->> +				};
->> +			};
->>   		};
->>   
->>   		pcie0_phy: phy@1c06000 {
->> @@ -1932,7 +1953,33 @@
->>   			pinctrl-names = "default";
->>   			pinctrl-0 = <&pcie1_default_state>;
->>   
->> +			operating-points-v2 = <&pcie1_opp_table>;
->> +
->>   			status = "disabled";
->> +
->> +			pcie1_opp_table: opp-table {
->> +				compatible = "operating-points-v2";
->> +
->> +				opp-1 {
->> +					opp-level = <1>;
->> +					required-opps = <&rpmhpd_opp_low_svs>;
->> +				};
->> +
->> +				opp-2 {
->> +					opp-level = <2>;
->> +					required-opps = <&rpmhpd_opp_low_svs>;
->> +				};
->> +
->> +				opp-3 {
->> +					opp-level = <3>;
->> +					required-opps = <&rpmhpd_opp_low_svs>;
->> +				};
->> +
->> +				opp-4 {
->> +					opp-level = <4>;
->> +					required-opps = <&rpmhpd_opp_nom>;
->> +				};
->> +			};
->>   		};
->>   
->>   		pcie1_phy: phy@1c0f000 {
->> -- 
->> 2.7.4
->>
+pmdomain: mediatek: pd:
+
+and (not relevant to this series)
+
+pmdomain: mediatek: scpsys:
+
+...but before that, does anyone have any strong opinions against the prefix
+"pmdomain: mediatek: pd:", instead of the full "pm-domains"?
+
+Thanks!
+Angelo
+
+> 
+> Thanks for any feedback!
+> 
+> Best,
+> Markus
+> 
+> Based on v6.6-rc2
+> 
+> Changes in v8:
+> - Rebased to v6.6-rc2
+> - Moved changes from drivers/soc to drivers/pmdomain
+> 
+> Changes in v7:
+> - Rebased to v6.5-rc1
+> - Fixed a couple of small style issues pointed out by Angelo
+> 
+> Changes in v6:
+> - Change flags field to be u8 instead of u32
+> - Use macro concatenation to simplify BUS_PROT macros:
+>    BUS_PROT_WR(_hwip, ...) etc.
+> - Use the final bit values for scpsys_bus_prot_flags from the beginning
+>    of the series.
+> - Changed scpsys_domain_data->caps to be u16 to accommodate the new flag
+>    MTK_SCPD_STRICT_BUS_PROTECTION.
+> 
+> Changes in v5:
+> - Create defines for all registers and bits in mt8365 power domain patch
+> - Redesign scpsys_bus_prot_data to use flags to store reg_update,
+>    clr_ack as well as the difference between SMI and INFRACFG. The code
+>    uses the appropriate regmap depending on the flags.
+> - The WAY_EN patch now uses two flags, one for inverted operations
+>    'BUS_PROT_INVERTED' and one to use infracfg-nao for the status flags
+>    'BUS_PROT_STA_COMPONENT_INFRA_NAO'.
+> 
+> Changes in v4:
+> - Redesigned WAY_EN patch and split it up in smaller patches.
+> - Added two documentation patches.
+> - Added mediatek,infracfg-nao field to the binding.
+> 
+> Changes in v3:
+> - Mainly redesigned WAY_EN patch to be easier to understand
+> - Rebased onto v6.0-rc1
+> - Several other stuff that is described in the individual patches
+> 
+> Changes in v2:
+> - Updated error handling path for scpsys_power_on()
+> - Minor updates described in each patch
+> 
+> Previous versions:
+> v1 - https://lore.kernel.org/linux-mediatek/20220530204214.913251-1-fparent@baylibre.com/
+> v2 - https://lore.kernel.org/linux-mediatek/20220725081853.1636444-1-msp@baylibre.com/
+> v3 - https://lore.kernel.org/linux-mediatek/20220822144303.3438467-1-msp@baylibre.com/
+> v4 - https://lore.kernel.org/linux-arm-kernel/20230105170735.1637416-1-msp@baylibre.com/
+> v5 - https://lore.kernel.org/linux-arm-kernel/20230619085344.2885311-1-msp@baylibre.com/
+> v6 - https://lore.kernel.org/linux-arm-kernel/20230627131040.3418538-1-msp@baylibre.com/
+> v7 - https://lore.kernel.org/linux-arm-kernel/20230713150414.891893-1-msp@baylibre.com
+> 
+> Alexandre Bailon (2):
+>    soc: mediatek: Add support for WAY_EN operations
+>    soc: mediatek: Add support for MTK_SCPD_STRICT_BUS_PROTECTION cap
+> 
+> Fabien Parent (2):
+>    dt-bindings: power: Add MT8365 power domains
+>    soc: mediatek: pm-domains: Add support for MT8365
+> 
+> Markus Schneider-Pargmann (4):
+>    soc: mediatek: pm-domains: Move bools to a flags field
+>    soc: mediatek: pm-domains: Split bus_prot_mask
+>    soc: mediatek: pm-domains: Create bus protection operation functions
+>    soc: mediatek: pm-domains: Unify configuration for infracfg and smi
+> 
+>   .../power/mediatek,power-controller.yaml      |   6 +
+>   drivers/pmdomain/mediatek/mt6795-pm-domains.h |  16 +-
+>   drivers/pmdomain/mediatek/mt8167-pm-domains.h |  20 +-
+>   drivers/pmdomain/mediatek/mt8173-pm-domains.h |  16 +-
+>   drivers/pmdomain/mediatek/mt8183-pm-domains.h | 125 ++++++----
+>   drivers/pmdomain/mediatek/mt8186-pm-domains.h | 236 ++++++++++--------
+>   drivers/pmdomain/mediatek/mt8188-pm-domains.h | 223 +++++++++++------
+>   drivers/pmdomain/mediatek/mt8192-pm-domains.h | 112 ++++++---
+>   drivers/pmdomain/mediatek/mt8195-pm-domains.h | 199 +++++++++------
+>   drivers/pmdomain/mediatek/mt8365-pm-domains.h | 197 +++++++++++++++
+>   drivers/pmdomain/mediatek/mtk-pm-domains.c    | 157 ++++++++----
+>   drivers/pmdomain/mediatek/mtk-pm-domains.h    |  51 ++--
+>   .../dt-bindings/power/mediatek,mt8365-power.h |  19 ++
+>   include/linux/soc/mediatek/infracfg.h         |  41 +++
+>   14 files changed, 972 insertions(+), 446 deletions(-)
+>   create mode 100644 drivers/pmdomain/mediatek/mt8365-pm-domains.h
+>   create mode 100644 include/dt-bindings/power/mediatek,mt8365-power.h
+> 
+> 
+> base-commit: ce9ecca0238b140b88f43859b211c9fdfd8e5b70
+
+
