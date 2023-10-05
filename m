@@ -2,215 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C65CE7BA51B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0F77BA667
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241230AbjJEQNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
+        id S232573AbjJEQdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240948AbjJEQMT (ORCPT
+        with ESMTP id S231699AbjJEQck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:12:19 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on20722.outbound.protection.outlook.com [IPv6:2a01:111:f403:700c::722])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9797D81;
-        Thu,  5 Oct 2023 00:31:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h5OLW0KVcEFt4B6hVYNWPEeFJjJrffGpOBW4YW9zl7Z7B3ZEOwsnpCCbnsuchfFXt2b6qMCvBDKX6aEYtXn/vRT2269612b7h2RgpfrhzqpssYqfEIXaBYHJkgm4u2D6munZQKPEYR5nHkjXtovWz7iIQTurrukjwBKEzLwJCu1ga1HcFm53BHyjyYxa18QdRnRP4SGw2CWSHCw3siYIN4ZareEXwxU+AFKdMRqKIYv6EeTvWxM66JuVoBbeQxZO0yv6VvEcIEwn4xcLDgdxKJhtq4dIS+YZSflcH44zOM+EX9mMf1f08dE7CRiUPQt/d4z9hB4egHS9lScrReyMVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1Jtnmj8kasg9IINjh/dFil/blqi/cQ3XjpVf+uY+g1Y=;
- b=oPDdfuzmFaBZ7uA2KHARPQQ0GHB7ljQ6SCYVC7hQgfBDqtzYFHom5z3uASY6qPHXNU6csu3GiTgdJJj5mWK8qFZKgcNgQHGIlJ2HlFYyCe2MOWhtMu0Ty9afBOIL9Ygsg1g2DWWjAOMFiC54iKO5Vfr75wa2Oh8ltAxIjIyXTOU8Lm+vncEXdJEHzqD+WbywMp2yn0PSk8rHtmN4Jg2Z3okshuNtPfF7dZgqJd+R5JgB2WIFE/ZQgaswiVKrmbpOuFKMy/TX1/VS/c4cwmoNMqEn+p7AXilISQFBnuozQcLaBqegZFsjEFnWJxHyZn6OLogiDlFFWeQD6+QMyeQO5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1Jtnmj8kasg9IINjh/dFil/blqi/cQ3XjpVf+uY+g1Y=;
- b=DV2YUxPgYITchut9pVi0s/g2rNKxrAmhVEmTV8ZvppsAjC6abVcOSWzXIy1ZBVgU8cCeR1wTLc8DvHA3reF7PcTTKDSP3xMTkthHf2MEj01ngNEUFV6GDQ5f7NGz0hZVj4kkCyUMnaDky3907cAkjuV5znogzIlTMuYfQq37nV8=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by OSRPR01MB11663.jpnprd01.prod.outlook.com (2603:1096:604:234::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.37; Thu, 5 Oct
- 2023 07:31:38 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::fb78:2e8c:f7f9:5629]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::fb78:2e8c:f7f9:5629%7]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
- 07:31:34 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "peterz@infradead.org" <peterz@infradead.org>
-CC:     "bristot@redhat.com" <bristot@redhat.com>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "chris.hyser@oracle.com" <chris.hyser@oracle.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "efault@gmx.de" <efault@gmx.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "joshdon@google.com" <joshdon@google.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "kprateek.nayak@amd.com" <kprateek.nayak@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "patrick.bellasi@matbug.net" <patrick.bellasi@matbug.net>,
-        Pavel Machek <pavel@ucw.cz>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "pjt@google.com" <pjt@google.com>,
-        "qperret@google.com" <qperret@google.com>,
-        "qyousef@layalina.io" <qyousef@layalina.io>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        "timj@gnu.org" <timj@gnu.org>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "youssefesmat@chromium.org" <youssefesmat@chromium.org>,
-        "yu.c.chen@intel.com" <yu.c.chen@intel.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct se
-Thread-Topic: Re: [PATCH] sched/fair: fix pick_eevdf to always find the
- correct se
-Thread-Index: Adn3XJMEXg5HmmANSMuF9qI6/HDBQg==
-Date:   Thu, 5 Oct 2023 07:31:34 +0000
-Message-ID: <OS0PR01MB59220AF3959BDC5FEFC0340F86CAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|OSRPR01MB11663:EE_
-x-ms-office365-filtering-correlation-id: fb35a1c0-1ee1-4ccb-4ca4-08dbc5751a73
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4xxICLNjGi8pcB9LbjMZg+VYt3St0+DZsiF/1jyq4kZDzvGAEglIvG4DuLKCZ41VTtwFhsGrhd3oUMQzaga9M2UKfXCIpd2z1SyMi6VUVJO6Tfa5THECatJ19xD2jY0pFBy+GYgLrsq1U7BVk7xOwujo9rzqs+sFeY3RLa8THRCEBU9MuQqnQZOQ6JJwriFxn4ABnHKfQYsDgBH18lc9w8yuPS8cp7kPt/ZqBFc75s7fYvlC3vaKidrGFDqpBC6eiZowG2WTkBL8HF+xqJEghfVN550bMvPApEvbFMuGNxoIoQXyIPRq+u3KM5KRCwBo4VVPlw0Oi0gBoEXGJJMFF9GZAE5oLcRrfQQqMKS9e97xRNfYCBeFASql2VsfwWAy0rkA3XRystGegDQ4sYe1xG1hPhgApghLlD5+pXplNhxZNv01ArFZkIOveDQoGDzF1cKR2VK7oaLD3dFD4fTOwMp9JhT/U/UE7reCXIB8oE/Us/sxmlWgJZgD52KH9lWHL1/hcXC2GpYMxR+syLcRJBLeZmRU+hCLcNGEz1IkXdUj5I10f+mnWR5IifxhA2S0NnEzEAYMkA8o8agF+aZCrvy2xnL85yzY12pkUMEyzfsmvH/SgHIes+s1DMFgJT1T
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(396003)(366004)(346002)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(2906002)(8936002)(8676002)(5660300002)(52536014)(4326008)(7416002)(41300700001)(66946007)(316002)(66556008)(66476007)(66446008)(64756008)(54906003)(76116006)(110136005)(55016003)(26005)(71200400001)(6506007)(7696005)(53546011)(33656002)(9686003)(122000001)(83380400001)(86362001)(478600001)(38100700002)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?woITzKrPEG+HEhe+dUE5t/NgeFEzeYgnc/PE2CTm0BwWIJ5oQQ/U/o5RJcWQ?=
- =?us-ascii?Q?uCHre8HD2/Ry/Y+iAT/st5VOQ7W40vTyDTdk/Exar9KqWgT4lZ0KzliroE56?=
- =?us-ascii?Q?qSEdk1Iv8uL7p+QC7aV7HrMgouAT1IGjaMtYXKjsx7oKW5V4ffy4S7I97FAB?=
- =?us-ascii?Q?yxIsZIpwbv8uYs23vR+cefhUkf2I6mBFWXMfeKnnvg8ENfEgbFY4l5BS4OGI?=
- =?us-ascii?Q?ukgsuSHtM2wBt+EKLAJv6mvrYaILMiz7avgt8zz79PUH93DUS1G0hIEg33d9?=
- =?us-ascii?Q?HHNgTQOV2XEnBnNaAq7RZH9yZ0nNqqhbgWztBPhihO86YpLx5S0jicIEmq3F?=
- =?us-ascii?Q?nYdMQq+G1clz3LuwE1dRulQRbq/TdDMzr+JxFcJhBWz6+cBh3WwYybGQZxdd?=
- =?us-ascii?Q?ZXS4inWqEn4Rq5kUxv8RuglAINrPPkXQ9NMWgXaKb6IXckPmSWpEZbPbgHUz?=
- =?us-ascii?Q?Z3xiOrYygu34+gu+sJmC7jdD0RZYSd0MZS77+lCmw1w0v38loDNvh/nMq+Wy?=
- =?us-ascii?Q?JPagJ0J24HJGzabWLThGgsYzDVP2ggxyz2AMZNWj0/GYMws12CUz0Si717TL?=
- =?us-ascii?Q?Fmm6QCmWDXxmVlm+Tbkcd0yRolYl0ZWXlZ0laqSzuk+OSFLuW153CjjVI3FT?=
- =?us-ascii?Q?mKo3X5WHL3vEvzewYSUoMB7+JOrwOcPkggMEblYvHPOnDZ383FQeQzs4Eptz?=
- =?us-ascii?Q?Uofjg13Xm9Z7peendfFHvVIsUaf1QNjfMtd76eRiHqkCcJjDFGKv9BSbYu7B?=
- =?us-ascii?Q?79e7lSH9Xz78i3hSUG8G3F+QGQxOLthxCqMEDuvq2R4JpAIARogvJZwnea+f?=
- =?us-ascii?Q?t4YGYKgUaoNzq2nD/4UxmpVZYYqBA3SBipMnK6MQjnN6svg0ySGHY4O8InaA?=
- =?us-ascii?Q?QSv33QRLlB4EHOj3Sa6Rvt/ZWrKvMKZipu4slScRcQszgQpmxCxZ+kdEnGXn?=
- =?us-ascii?Q?iwz+qQopxagyB8IZMCLEIDHPMQhFetDwkeJlMxvg8Z36j3iVNREGbzvktAaX?=
- =?us-ascii?Q?m5/gsykMgln9WfcgByoRE8xc6w1mHmVHsfExUY+QusmBTEtN1dbjtpT/Pzpw?=
- =?us-ascii?Q?1wKj0MU041lJ/jX4GmqfpN5NWubGKtqPx9ToDKbHgIRlemEEburEBgDcKDko?=
- =?us-ascii?Q?ujVdO2DUllv9R75cpnMyZSlByhDwWwA6yQ4DcADlP2J6NkAy1NMcBcjdiI3r?=
- =?us-ascii?Q?3OUs2xktJRydVcxnE9MzxP+2wYNKsvjRxWZLFXunJHiY0HepwxXzzYOsjQDE?=
- =?us-ascii?Q?lnM8d8rIWJisT39WnYdrXITmuu1os9YnZOkdKih/sGpNZsOkPyI6d71L2Qyd?=
- =?us-ascii?Q?aIk1DtSPID1XvAovG5WanY5La58VnlZqWE+m8fSMFK6JRdIe6SPMKXlJkxde?=
- =?us-ascii?Q?oa20RDbi/ZSxydt13BXJ3jrJ0v1D6vCFQ+dxrrfzdwi/t31L6+SRBTh91tPo?=
- =?us-ascii?Q?h3GRm8jcUD0sn2mM4v9DpdYReubcbx+Jvz/+1PY6oqKe9jdbB05dNnonRPuJ?=
- =?us-ascii?Q?DkOojxyCpb8r1A97gVNSeNnnnHj/Cp9vwZLfJFHZASJm760c0NcYE87oWgeG?=
- =?us-ascii?Q?B9gqYS7znQaMys0fpZ6Sz7XxxBK1HfYX/KnJNNleuSmqtGoQEioMP8IZ5vTj?=
- =?us-ascii?Q?yg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 5 Oct 2023 12:32:40 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25777D85
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 00:34:35 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-532c81b9adbso1078185a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 00:34:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696491274; x=1697096074; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RemQ+kO5LWbk4kqvMyW1M9bpjQKJ4AawmNqARJCw5+Y=;
+        b=f23amMM/4IlpXckXjl5Kn1zm7CavESsTOx+3pLt5WoyhYqnB5P+0GF46gnOBl3sqN+
+         mmvn4gfjf/H58atwSXE9dIeWf5dTIso2ynvOi8RnLTfHd7ctw5Z/pyej+8vUaAr2Pf94
+         YoA61NG7Y5Nyfs5BKjq5EoZ259hmyl0YJUi6TV3RD1klJMiiLiYFIDhHaG7uvFXQMbF8
+         iHcPqfWvOGeOWMnw9Rz04fa2CUL+ngErmnGmWFfhG3c2YUpJArMQcB4Fl8pHyPv5BPl/
+         f1BNEYwf4M2C0y4ykZaoA2gvgkoeg1TPqp4wKk9wEwOcc7RHeyDonBoWJwJC0w7BEKtf
+         MAJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696491274; x=1697096074;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RemQ+kO5LWbk4kqvMyW1M9bpjQKJ4AawmNqARJCw5+Y=;
+        b=vnnCyln+HngV2EqkmL3T4UsF2fX/JPyeMnXsXKb+XrfGUT73FL27ErntG431ODVL1n
+         YvZSj+xGOI03pdPuUQQAKj7s39y/Y+NQ1mp8sa+WXKsUNDDfZdkyiG6OXeHNQlIbQx3J
+         kJFUXw8xeGOYHH0b3buXyLveuBMVo6YpbdC6MS+ScppiUoOwddUCzW+pmsu4HNRASrHQ
+         6J9We4Pyx4UdW2Ji8RcqXi/2/bgnFQEwfTd5dibstmSnoWvjfWeQoKWSQZapsJlpbLwU
+         6Z3PCQcvNmxBcj6NvNnbiexNDj6sX6jxeXLJTVwNGIwmexWeLo3MQOqojYMO9t4/dud5
+         Fpfw==
+X-Gm-Message-State: AOJu0Yzb7/+UkAOiS8nFaPiUJhvSkIcOg+BzK9181Ob/EryjLLazeRCZ
+        LaJWbY/uCV8TQ7rMlfoz+v5wuw==
+X-Google-Smtp-Source: AGHT+IEO3B7Z233MtcQfx2cBYuFG2/dqEew6/1P7hOXhNe/qdINPPgOU6yCt3Ug/CZyde69oE+fQfA==
+X-Received: by 2002:a50:ed15:0:b0:533:780f:f016 with SMTP id j21-20020a50ed15000000b00533780ff016mr3981422eds.14.1696491274275;
+        Thu, 05 Oct 2023 00:34:34 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id f26-20020a056402005a00b00530bc7cf377sm616810edu.12.2023.10.05.00.34.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 00:34:33 -0700 (PDT)
+Message-ID: <cfbc4805-c2e8-4dee-92bc-14d805dc2320@linaro.org>
+Date:   Thu, 5 Oct 2023 09:34:32 +0200
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb35a1c0-1ee1-4ccb-4ca4-08dbc5751a73
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2023 07:31:34.8461
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fh1vzcYUv0kbJn8p2M4UgJGlgYlALbLaAJmGDX49DuDyrQpLFuoNmUzioyWS63UudFiyUZCmvMGj4+v0tlv4GJuaTuYMxTmE/9vC3CdpLWw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSRPR01MB11663
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V14 3/4] dt-bindings: mfd: qcom,tcsr: Add simple-mfd
+ support for IPQ6018
+Content-Language: en-US
+To:     Devi Priya <quic_devipriy@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, lee@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, thierry.reding@gmail.com,
+        ndesaulniers@google.com, trix@redhat.com, baruch@tkos.co.il,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Cc:     linux-pwm@vger.kernel.org, u.kleine-koenig@pengutronix.de,
+        nathan@kernel.org
+References: <20231005033053.2626465-1-quic_devipriy@quicinc.com>
+ <20231005033053.2626465-4-quic_devipriy@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231005033053.2626465-4-quic_devipriy@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct =
-se
-Date: Wed, 4 Oct 2023 22:39:39 +0200	[thread overview]
-Message-ID: <c92bc8a6-225d-4fd2-88b5-8994090fb2de@samsung.com> (raw)
-In-Reply-To: <xm261qego72d.fsf_-_@google.com>
+On 05/10/2023 05:30, Devi Priya wrote:
+> Update the binding to include pwm as the child node to TCSR block and
+> add simple-mfd support for IPQ6018.
+> 
+> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
 
-Hi,
+Why did you send it twice? It's just brings confusion...
 
-On 30.09.2023 02:09, Benjamin Segall wrote:
-> The old pick_eevdf could fail to find the actual earliest eligible
-> deadline when it descended to the right looking for min_deadline, but it
-> turned out that that min_deadline wasn't actually eligible. In that case
-> we need to go back and search through any left branches we skipped
-> looking for the actual best _eligible_ min_deadline.
->
-> This is more expensive, but still O(log n), and at worst should only
-> involve descending two branches of the rbtree.
->
-> I've run this through a userspace stress test (thank you
-> tools/lib/rbtree.c), so hopefully this implementation doesn't miss any
-> corner cases.
->
-> Fixes: 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling poli=
-cy")
-> Signed-off-by: Ben Segall <bsegall@google.com>
-
-This patch causing issues [1] in Renesas RZ/G2L SMARC EVK platform. Reverti=
-ng the patch fixes the warning messages
-
-[1]
-[   25.550898] EEVDF scheduling fail, picking leftmost
-
-[   15.109634] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[   15.109636] WARNING: possible circular locking dependency detected
-[   15.109641] 6.6.0-rc4-next-20231005-arm64-renesas-ga03f9ebbbb4c #1165 No=
-t tainted
-[   15.109648] ------------------------------------------------------
-[   15.109649] migration/0/16 is trying to acquire lock:
-[   15.109654] ffff800081713460 (console_owner){..-.}-{0:0}, at: console_fl=
-ush_all.constprop.0+0x1a0/0x438
-[   15.109694]
-[   15.109694] but task is already holding lock:
-[   15.109697] ffff00007fbd2298 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0=
-xd0/0xbe0
-[   15.109718]
-[   15.109718] which lock already depends on the new lock.
-[   15.109718]
-[   15.109720]
-[   15.109720] the existing dependency chain (in reverse order) is:
-
-   25.551560]  __down_trylock_console_sem+0x34/0xb8
-[   25.551567]  console_trylock+0x24/0x74
-[   25.551574]  vprintk_emit+0x114/0x388
-[   25.551581]  vprintk_default+0x34/0x3c
-[   25.551588]  vprintk+0x9c/0xb4
-[   25.551594]  _printk+0x58/0x7c
-[   25.551600]  pick_next_task_fair+0x274/0x480
-[   25.551608]  __schedule+0x154/0xbe0
-[   25.551616]  schedule+0x48/0x110
-[   25.551623]  worker_thread+0x1b8/0x3f8
-[   25.551630]  kthread+0x114/0x118
-[   25.551635]  ret_from_fork+0x10/0x20
-[  OK  ] Started System Logging Service.
-[   26.099203] EEVDF scheduling fail, picking leftmost
-
-Cheers,
-Biju
+Best regards,
+Krzysztof
 
