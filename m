@@ -2,263 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3DC7BA0B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38ABB7B9EE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238845AbjJEOlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48698 "EHLO
+        id S231510AbjJEOOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236880AbjJEOhR (ORCPT
+        with ESMTP id S233126AbjJEOMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:37:17 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FADF4DF68
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:03:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1696514596; x=1728050596;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=A7zhmYqSGF3f91x5Sfj8wc2+BL0d/H7Pomw5rky9/34=;
-  b=t27RCKiM3PY3BnXWcgxZAkQqA+in5mRdpSan1fTMAHfmUJeRPOTALYMw
-   qIi1QspT2xSL8mBqgtN3Zz3pLHLVGY1yek4+aCxSmHUN5R7E8Cpercjnz
-   usomIslZrjBLe3uq8TDpCuQhL6XM7/3vXnNOcYl+cF0yIg33TcAshp4nd
-   OZio8IsgWFZz06lO6i1mjXwtAXMmY+ikK6CavOmyxwE/fap357CRJXEq7
-   0FFHaStg3215By3eIwc87VmAwjslszOoF2LctADRB9NRggxvVzT5nkCjn
-   F9pZfWrj+Ps2lNaZyupu8gLvdTwzGm+Si87uSXd+wCiKTNTw34H27bkSj
-   A==;
-X-CSE-ConnectionGUID: 4GRu7dlhS/uPWLgugUFv0A==
-X-CSE-MsgGUID: rHa3EQr2SRy/KcoCQJn5nA==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
-   d="scan'208";a="8504922"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Oct 2023 02:31:08 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 5 Oct 2023 02:30:58 -0700
-Received: from che-lt-i67131.microchip.com (10.10.85.11) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Thu, 5 Oct 2023 02:30:50 -0700
-From:   Manikandan Muralidharan <manikandan.m@microchip.com>
-To:     <sam@ravnborg.org>, <bbrezillon@kernel.org>, <airlied@gmail.com>,
-        <daniel@ffwll.ch>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <lee@kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <Hari.PrasathGE@microchip.com>,
-        <Balamanikandan.Gunasundar@microchip.com>,
-        <Durai.ManickamKR@microchip.com>, <Nayabbasha.Sayed@microchip.com>,
-        <Dharma.B@microchip.com>, <Varshini.Rajendran@microchip.com>,
-        <Balakrishnan.S@microchip.com>,
-        Manikandan Muralidharan <manikandan.m@microchip.com>,
-        Durai Manickam KR <durai.manickamkr@microchip.com>
-Subject: [PATCH v7 7/7] drm: atmel-hlcdc: add support for DSI output formats
-Date:   Thu, 5 Oct 2023 14:59:54 +0530
-Message-ID: <20231005092954.881059-8-manikandan.m@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231005092954.881059-1-manikandan.m@microchip.com>
-References: <20231005092954.881059-1-manikandan.m@microchip.com>
+        Thu, 5 Oct 2023 10:12:03 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF581A5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 02:31:43 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9a645e54806so139244466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 02:31:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696498302; x=1697103102; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cMC25rA2+eSQ38+uqF7hDw2RgHtjVxvyqr0ZVM2w5zc=;
+        b=urCzwFMJe05cCSlW73XRWfvdiutHWjaBFjQ/viZdyJ0fz1EIC1V142C2hCarmHoNUP
+         3L3YyLmlE6OkB3pQA2sjmkrp2+0kiPpoQd8YUL6q/S9XKvDZ2zFuAqUxyvQQXAiuotgZ
+         Id3IIuSW6A9NLSZnj0tS0X0u2YLyn6MRgWbBCu7UKyCnCrxhf6AIM+RP9QDi8xtqHwX6
+         Q/R08SxqkajKRTohyAxo5f1B2eHWJG5pjpcdmdcLRw2accLK3unelff8GO+3dcDvYcAl
+         x5Uz6U5aT/S9uaDMB1JjMcjK3qn2Pd/g2CLhNeK7XndamPZpe8e9I/yNC8+fv9emDZwK
+         sScg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696498302; x=1697103102;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cMC25rA2+eSQ38+uqF7hDw2RgHtjVxvyqr0ZVM2w5zc=;
+        b=avvdrgFi1I29lMFWco7UZjvL7hvoPlGsQgGPFWz06nLGr6b5sVZmiKrDyPutFd/g+f
+         p/jhVVFHQjtp04ndvrXLbJls/pEUh2Rt9wvcb9N9u8klT4eAFVFNudCJ/wWguFynacQ1
+         AzRxLwuvZ72ew3Vn8vKtqvE3EO3WS/I1BUYDbFRpGC7oQz4mXMpOltL2jl+x/RCjIlP4
+         M0Xdt0aP+Gv8CvK7UR3nb89lrP5iHb8i3XUW0NrZeNHNYntzFgLL3h8uFbU5/GbD9S6Z
+         dw0k4wkqIclpH0wO64ECWMHUTihQqfFG0FJnY+DZNCItftq1LbEUNRixI9+sgLl3Esci
+         +UjA==
+X-Gm-Message-State: AOJu0YwMgR9zNyCAxb/oWFb13ylkcYxNPvbUDiEiDaSdI9u78tdmBqOo
+        dnbBAZBd688N2QJrehHYmhyK8hfZLpGNQKVDYtcvpw==
+X-Google-Smtp-Source: AGHT+IFfvio8FkYu9A9VOWWLqGaexnYgvqW5wAR828Pr5q8lKiX9PTomSKqU1PWWRDMboEdpS7d26vLr+P42Oq0I+08=
+X-Received: by 2002:a17:906:196:b0:9ae:72b8:4a84 with SMTP id
+ 22-20020a170906019600b009ae72b84a84mr4025671ejb.41.1696498301953; Thu, 05 Oct
+ 2023 02:31:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230922175741.635002-1-yosryahmed@google.com>
+ <20230922175741.635002-2-yosryahmed@google.com> <lflzirgjvnodndnuncbulipka6qcif5yijtbqpvbcr3zp3532u@6b37ks523gnt>
+ <CAJD7tkbfq8P514-8Y1uZG9E0fMN2HwEaBmxEutBhjVtbtyEdCQ@mail.gmail.com>
+ <vet5qmfj5xwge4ebznzihknxvpmrmkg6rndhani3fk75oo2rdm@lk3krzcresap>
+ <20231004183619.GB39112@cmpxchg.org> <542ggmgjc27yoosxg466c6n4mzcad2z63t3wdbzevzm43g7xlt@5l7qaepzbth6>
+In-Reply-To: <542ggmgjc27yoosxg466c6n4mzcad2z63t3wdbzevzm43g7xlt@5l7qaepzbth6>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 5 Oct 2023 02:31:03 -0700
+Message-ID: <CAJD7tkbaTRu838U=e_A+89PY1t4K+t_G1qkYq84BSDO7wAEtEg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] mm: memcg: refactor page state unit helpers
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the following DPI mode if the encoder type
-is DSI as per the XLCDC IP datasheet:
-- 16BPPCFG1
-- 16BPPCFG2
-- 16BPPCFG3
-- 18BPPCFG1
-- 18BPPCFG2
-- 24BPP
+On Thu, Oct 5, 2023 at 2:06=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.com=
+> wrote:
+>
+> On Wed, Oct 04, 2023 at 02:36:19PM -0400, Johannes Weiner <hannes@cmpxchg=
+.org> wrote:
+> > Yes, it's because of node resolution which event counters generally
+> > don't have. Some of the refault events influence node-local reclaim
+> > decisions, see mm/vmscan.c::snapshot_refaults().
+> >
+> > There are a few other event counters in the stat array that people
+> > thought would be useful to have split out in
+> > /sys/devices/system/node/nodeN/vmstat to understand numa behavior
+> > better.
+> >
+> > It's a bit messy.
+> >
+> > Some events would be useful to move to 'stats' for the numa awareness,
+> > such as the allocator stats and reclaim activity.
+> >
+> > Some events would be useful to move to 'stats' for the numa awareness,
+> > but don't have the zone resolution required by them, such as
+> > kswapd/kcompactd wakeups.
+>
+> Thanks for the enlightenment.
+>
+> > Some events aren't numa specific, such as oom kills, drop_pagecache.
+>
+> These are oddballs indeed. As with the normalization patchset these are
+> counted as PAGE_SIZE^W 1 error but they should rather be an infinite
+> error (to warrant a flush).
+>
+> So my feedback to this series is:
+> - patch 1/2 -- creating two classes of units is consequence of unclarity
+>   between state and events (as in event=3D=CE=94state/=CE=94t) and resolu=
+tion
+>   (global vs per-node), so the better approach would be to tidy this up,
 
-Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-[durai.manickamkr@microchip.com: update output format using is_xlcdc flag]
-Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
----
- .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    | 123 +++++++++++++-----
- 1 file changed, 88 insertions(+), 35 deletions(-)
+I am not really sure what you mean here. I understand that this series
+fixes the unit normalization for state but leaves events out of it.
+Looking at the event items tracked by memcg in memcg_vm_event_stat it
+looks to me that most of them correspond roughly to a page's worth of
+updates (all but the THP_* events). We don't track things like
+OOM_KILL and DROP_PAGECACHE per memcg as far as I can tell.
 
-diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-index 1899be2eb6a3..6f529769b036 100644
---- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-+++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-@@ -295,11 +295,18 @@ static void atmel_hlcdc_crtc_atomic_enable(struct drm_crtc *c,
- 
- }
- 
--#define ATMEL_HLCDC_RGB444_OUTPUT	BIT(0)
--#define ATMEL_HLCDC_RGB565_OUTPUT	BIT(1)
--#define ATMEL_HLCDC_RGB666_OUTPUT	BIT(2)
--#define ATMEL_HLCDC_RGB888_OUTPUT	BIT(3)
--#define ATMEL_HLCDC_OUTPUT_MODE_MASK	GENMASK(3, 0)
-+#define ATMEL_HLCDC_RGB444_OUTPUT		BIT(0)
-+#define ATMEL_HLCDC_RGB565_OUTPUT		BIT(1)
-+#define ATMEL_HLCDC_RGB666_OUTPUT		BIT(2)
-+#define ATMEL_HLCDC_RGB888_OUTPUT		BIT(3)
-+#define ATMEL_HLCDC_DPI_RGB565C1_OUTPUT		BIT(4)
-+#define ATMEL_HLCDC_DPI_RGB565C2_OUTPUT		BIT(5)
-+#define ATMEL_HLCDC_DPI_RGB565C3_OUTPUT		BIT(6)
-+#define ATMEL_HLCDC_DPI_RGB666C1_OUTPUT		BIT(7)
-+#define ATMEL_HLCDC_DPI_RGB666C2_OUTPUT		BIT(8)
-+#define ATMEL_HLCDC_DPI_RGB888_OUTPUT		BIT(9)
-+#define ATMEL_HLCDC_OUTPUT_MODE_MASK		GENMASK(3, 0)
-+#define ATMEL_XLCDC_OUTPUT_MODE_MASK		GENMASK(9, 0)
- 
- static int atmel_hlcdc_connector_output_mode(struct drm_connector_state *state)
- {
-@@ -313,53 +320,99 @@ static int atmel_hlcdc_connector_output_mode(struct drm_connector_state *state)
- 	if (!encoder)
- 		encoder = connector->encoder;
- 
--	switch (atmel_hlcdc_encoder_get_bus_fmt(encoder)) {
--	case 0:
--		break;
--	case MEDIA_BUS_FMT_RGB444_1X12:
--		return ATMEL_HLCDC_RGB444_OUTPUT;
--	case MEDIA_BUS_FMT_RGB565_1X16:
--		return ATMEL_HLCDC_RGB565_OUTPUT;
--	case MEDIA_BUS_FMT_RGB666_1X18:
--		return ATMEL_HLCDC_RGB666_OUTPUT;
--	case MEDIA_BUS_FMT_RGB888_1X24:
--		return ATMEL_HLCDC_RGB888_OUTPUT;
--	default:
--		return -EINVAL;
--	}
--
--	for (j = 0; j < info->num_bus_formats; j++) {
--		switch (info->bus_formats[j]) {
--		case MEDIA_BUS_FMT_RGB444_1X12:
--			supported_fmts |= ATMEL_HLCDC_RGB444_OUTPUT;
-+	if (encoder->encoder_type == DRM_MODE_ENCODER_DSI) {
-+		/*
-+		 * atmel-hlcdc to support DSI formats with DSI video pipeline
-+		 * when DRM_MODE_ENCODER_DSI type is set by
-+		 * connector driver component.
-+		 */
-+		switch (atmel_hlcdc_encoder_get_bus_fmt(encoder)) {
-+		case 0:
- 			break;
- 		case MEDIA_BUS_FMT_RGB565_1X16:
--			supported_fmts |= ATMEL_HLCDC_RGB565_OUTPUT;
--			break;
-+			return ATMEL_HLCDC_DPI_RGB565C1_OUTPUT;
- 		case MEDIA_BUS_FMT_RGB666_1X18:
--			supported_fmts |= ATMEL_HLCDC_RGB666_OUTPUT;
--			break;
-+			return ATMEL_HLCDC_DPI_RGB666C1_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
-+			return ATMEL_HLCDC_DPI_RGB666C2_OUTPUT;
- 		case MEDIA_BUS_FMT_RGB888_1X24:
--			supported_fmts |= ATMEL_HLCDC_RGB888_OUTPUT;
--			break;
-+			return ATMEL_HLCDC_DPI_RGB888_OUTPUT;
- 		default:
-+			return -EINVAL;
-+		}
-+
-+		for (j = 0; j < info->num_bus_formats; j++) {
-+			switch (info->bus_formats[j]) {
-+			case MEDIA_BUS_FMT_RGB565_1X16:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB565C1_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB666_1X18:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB666C1_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB666C2_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB888_1X24:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB888_OUTPUT;
-+				break;
-+			default:
-+				break;
-+			}
-+		}
-+	} else {
-+		switch (atmel_hlcdc_encoder_get_bus_fmt(encoder)) {
-+		case 0:
- 			break;
-+		case MEDIA_BUS_FMT_RGB444_1X12:
-+			return ATMEL_HLCDC_RGB444_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB565_1X16:
-+			return ATMEL_HLCDC_RGB565_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB666_1X18:
-+			return ATMEL_HLCDC_RGB666_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB888_1X24:
-+			return ATMEL_HLCDC_RGB888_OUTPUT;
-+		default:
-+			return -EINVAL;
- 		}
--	}
- 
-+		for (j = 0; j < info->num_bus_formats; j++) {
-+			switch (info->bus_formats[j]) {
-+			case MEDIA_BUS_FMT_RGB444_1X12:
-+				supported_fmts |= ATMEL_HLCDC_RGB444_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB565_1X16:
-+				supported_fmts |= ATMEL_HLCDC_RGB565_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB666_1X18:
-+				supported_fmts |= ATMEL_HLCDC_RGB666_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB888_1X24:
-+				supported_fmts |= ATMEL_HLCDC_RGB888_OUTPUT;
-+				break;
-+			default:
-+				break;
-+			}
-+		}
-+	}
- 	return supported_fmts;
- }
- 
- static int atmel_hlcdc_crtc_select_output_mode(struct drm_crtc_state *state)
- {
--	unsigned int output_fmts = ATMEL_HLCDC_OUTPUT_MODE_MASK;
-+	unsigned int output_fmts;
- 	struct atmel_hlcdc_crtc_state *hstate;
- 	struct drm_connector_state *cstate;
- 	struct drm_connector *connector;
--	struct atmel_hlcdc_crtc *crtc;
-+	struct atmel_hlcdc_crtc *crtc = drm_crtc_to_atmel_hlcdc_crtc(state->crtc);
- 	int i;
-+	bool is_xlcdc = crtc->dc->desc->is_xlcdc;
- 
--	crtc = drm_crtc_to_atmel_hlcdc_crtc(state->crtc);
-+	output_fmts = is_xlcdc ? ATMEL_XLCDC_OUTPUT_MODE_MASK :
-+		      ATMEL_HLCDC_OUTPUT_MODE_MASK;
- 
- 	for_each_new_connector_in_state(state->state, connector, cstate, i) {
- 		unsigned int supported_fmts = 0;
-@@ -380,7 +433,7 @@ static int atmel_hlcdc_crtc_select_output_mode(struct drm_crtc_state *state)
- 
- 	hstate = drm_crtc_state_to_atmel_hlcdc_crtc_state(state);
- 	hstate->output_mode = fls(output_fmts) - 1;
--	if (crtc->dc->desc->is_xlcdc) {
-+	if (is_xlcdc) {
- 		/* check if MIPI DPI bit needs to be set */
- 		if (fls(output_fmts) > 3) {
- 			hstate->output_mode -= 4;
--- 
-2.25.1
+Do you mean that we should add something similar to
+memcg_page_state_unit() for events as well to get all of them right?
+If yes, I think that should be easy to add, it would only special case
+THP_* events.
 
+Alternatively, I can add a comment above the call to
+memcg_rstat_updated() in __count_memcg_events() explaining why we
+don't normalize the event count for now.
+
+> - patch 2/2 -- it could use the single unit class that exists,
+>   it'll bound the error of printed numbers afterall (and can be changed
+>   later depending on how it affects internal consumers).
+
+This will mean that WORKINGSET_* state will become more stale. We will
+need 4096 as many updates as today to get a flush. These are used by
+internal flushers (reclaim), and are exposed to userspace. I am not
+sure we want to do that.
+
+>
+> My 0.02=E2=82=AC,
+> Michal
