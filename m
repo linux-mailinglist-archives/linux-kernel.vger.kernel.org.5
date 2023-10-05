@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F22C7BA432
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469C47BA424
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237503AbjJEQFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
+        id S237236AbjJEQFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234733AbjJEQDY (ORCPT
+        with ESMTP id S234464AbjJEQDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Oct 2023 12:03:24 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D11C03869
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:45:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 44EFA9ED2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:45:38 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23273150C;
-        Thu,  5 Oct 2023 07:45:51 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86B101516;
+        Thu,  5 Oct 2023 07:45:53 -0700 (PDT)
 Received: from e103737-lin.cambridge.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D3DD3F641;
-        Thu,  5 Oct 2023 07:45:11 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D0B8D3F641;
+        Thu,  5 Oct 2023 07:45:13 -0700 (PDT)
 From:   Sudeep Holla <sudeep.holla@arm.com>
-Date:   Thu, 05 Oct 2023 15:44:56 +0100
-Subject: [PATCH v4 03/17] firmware: arm_ffa: Implement the notification
- bind and unbind interface
+Date:   Thu, 05 Oct 2023 15:44:58 +0100
+Subject: [PATCH v4 05/17] firmware: arm_ffa: Implement the
+ FFA_NOTIFICATION_SET interface
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231005-ffa_v1-1_notif-v4-3-cddd3237809c@arm.com>
+Message-Id: <20231005-ffa_v1-1_notif-v4-5-cddd3237809c@arm.com>
 References: <20231005-ffa_v1-1_notif-v4-0-cddd3237809c@arm.com>
 In-Reply-To: <20231005-ffa_v1-1_notif-v4-0-cddd3237809c@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -39,20 +39,20 @@ To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lorenzo Pieralisi <lpieralisi@kernel.org>,
         Olivier Deprez <olivier.deprez@arm.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2207; i=sudeep.holla@arm.com;
- h=from:subject:message-id; bh=tCh7LbKeNAevFd5uQSx03qEkiVl/aQEeXvD/r/UF4UU=;
- b=owEBbQKS/ZANAwAIAQBBurwxfuKYAcsmYgBlHsvwFDa1dLaZiLdaBoo+tK3/uFpNRlVXwQfJU
- v79YnQB7lKJAjMEAAEIAB0WIQS6ceUSBvMeskPdk+EAQbq8MX7imAUCZR7L8AAKCRAAQbq8MX7i
- mLWQD/wLXEyJRAXmNV7481V9rRrEOHvJ36UfKSIWMkvKASOA5tN91M1Orlf6679gmfJJDBvv8SP
- X8CpzgeqIgLndGOcvlgUc6sKgXdT2QHLzGMqSlp1zh6NNBzuH0CCY9YjZ+CGIHBB+vWPPL47OQR
- VcuIKfuU9VXpea+xynjlRpwkoqgjz/YGTSL19m3GOfUW6GSzopPt0aAVibxZK7PQBGRnqYbKMcO
- NkgOexysE6f9G4lhGDOJfhErVsR4D3jNpMh5UZfLxCi1Jd7Ehjxo8qT2SmQQ9Kf79rwsRbGakpv
- j/sU7v5lEMsDfKRyJPc9QT+mGcVv4FpPNySXQDWLWk35gS7Vk1hZxkkocYP1z/6HYsJMkhCSsyJ
- 4mGhqnGr9KiRwMhuUNBBi4vJjI4tXqCP+QahymeH4WfnlAt4P70SMXy4TTadgIPeoloJYQQa298
- TG0iIjeHhIsvuVombabM1TmrG5EGsfhwomwXxhzl6KAojYWradn5YXCbOWOfoTJXeueuxfvASH6
- p/YqWegmTZ7RtKxys24QRT1RvxOnCj5phnY8nqFHrkicnZL8uiHewpV4UN6yNvPdSdEwEIP96mC
- jXGiYEKjH2d9OYaTf779pGMbGf6ha1eNRMyOeoa/Vq6iilHIcNcBSoqvxabFOqVMo9FFGz2/BYJ
- eN6H/Li3w/s+KLw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1504; i=sudeep.holla@arm.com;
+ h=from:subject:message-id; bh=4q7IiagFj1+jcbEerM+tVmHVjhNoYEy9g+TfTOniWJY=;
+ b=owEBbQKS/ZANAwAIAQBBurwxfuKYAcsmYgBlHsvxU+OC43JQZl2rh/aQ5hxCbL/2rnY6mISRn
+ pGTv/huwB2JAjMEAAEIAB0WIQS6ceUSBvMeskPdk+EAQbq8MX7imAUCZR7L8QAKCRAAQbq8MX7i
+ mONFD/91SNwLzgvbqoev7AcemtwFwEIcUq5ymafJb0GYsSNhSIHyE2Fc0QDnD5JgTQvF8Ww7bCa
+ MyrtPbAxmPj+VkfD75JZmgXC7v0nVPjZ69uR+7D2kP2PxNOFiz2q0HCYkpTe6MumZGA4a+xWlrW
+ il9Rc3Ylp2GYlRp/k4nA+JIhTSoqlqo4p+2Mzr52ESdNQrMyqiPIXM+qjcL13Tlb922K0ZfoNJd
+ ElfDaqGRnnn/6yMZGzItAbsp3BnOXpjZtv4s1ogVe9+P+5RCwTGSrx4J1LM2lD71mQKB2ibjp2R
+ OmErG7UrdKtHSNkfII9fiAffYeIJ++KnBX/1KWzpoRS7ssxnSy42bsi1DxKYUrbuTKLHC3brOxw
+ 1hU8XanUC/u+SxI4ciJ+xpVxxBfdGP0aQQ65qwfgyTAKFNka9IYXK2mDCHjVg51VqEV0Mr8IlK1
+ VoggYkLvIFjuDM4mdGSf3Hi40v2Jvw2vNmCc05bXgg8re0mkLkdb9QgPbnmtE7y1cQeMiz8PxgL
+ iuvKwiuOc0AFBXYA/pJlKmV3mGH47ffFqhOvSxDGcdYqIG/uh41kL6g+S381gOSz7VPfG/S4ZXS
+ W3YPGIu6toky30eaLCxxby8VqYvn2IRsTMMcrh/6BZmuSXm27BykzpyPoIA9iDds6LVrS+okCZK
+ +vJMXWVolUaXsHw==
 X-Developer-Key: i=sudeep.holla@arm.com; a=openpgp;
  fpr=7360A21742ADF5A11767C1C139CFD4755FE2D5B4
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
@@ -63,50 +63,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A receiver endpoint must bind a notification to any sender endpoint
-before the latter can signal the notification to the former. The receiver
-assigns one or more doorbells to a specific sender. Only the sender can
-ring these doorbells.
+The framework provides an interface to the sender to specify the
+notification to signal to the receiver. A sender signals a notification
+by requesting its partition manager to set the corresponding bit in the
+notifications bitmap of the receiver invoking FFA_NOTIFICATION_SET.
 
-A receiver uses the FFA_NOTIFICATION_BIND interface to bind one or more
-notifications to the sender. A receiver un-binds a notification from a
-sender endpoint to stop the notification from being signaled. It uses
-the FFA_NOTIFICATION_UNBIND interface to do this.
-
-Allow the FF-A driver to be able to bind and unbind a given notification
-ID to a specific partition ID. This will be used to register and
-unregister notification callbacks from the FF-A client drivers.
+Implement the FFA_NOTIFICATION_SET to enable the caller(sender) to send
+the notifications for any other partitions in the system.
 
 Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 ---
- drivers/firmware/arm_ffa/driver.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/firmware/arm_ffa/driver.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-index c2ab6f4cf296..20f8f4ca8e89 100644
+index 82e54d231074..4edb3cb48014 100644
 --- a/drivers/firmware/arm_ffa/driver.c
 +++ b/drivers/firmware/arm_ffa/driver.c
-@@ -587,6 +587,35 @@ static int ffa_notification_bitmap_destroy(void)
+@@ -616,6 +616,26 @@ static int ffa_notification_bind_common(u16 dst_id, u64 bitmap,
  	return 0;
  }
  
-+#define NOTIFICATION_LOW_MASK		GENMASK(31, 0)
-+#define NOTIFICATION_HIGH_MASK		GENMASK(63, 32)
-+#define NOTIFICATION_BITMAP_HIGH(x)	\
-+		((u32)(FIELD_GET(NOTIFICATION_HIGH_MASK, (x))))
-+#define NOTIFICATION_BITMAP_LOW(x)	\
-+		((u32)(FIELD_GET(NOTIFICATION_LOW_MASK, (x))))
-+
-+static int ffa_notification_bind_common(u16 dst_id, u64 bitmap,
-+					u32 flags, bool is_bind)
++static
++int ffa_notification_set(u16 src_id, u16 dst_id, u32 flags, u64 bitmap)
 +{
 +	ffa_value_t ret;
-+	u32 func, src_dst_ids = PACK_TARGET_INFO(dst_id, drv_info->vm_id);
++	u32 src_dst_ids = PACK_TARGET_INFO(dst_id, src_id);
 +
-+	func = is_bind ? FFA_NOTIFICATION_BIND : FFA_NOTIFICATION_UNBIND;
-+
-+	invoke_ffa_fn((ffa_value_t){
-+		  .a0 = func, .a1 = src_dst_ids, .a2 = flags,
++	invoke_ffa_fn((ffa_value_t) {
++		  .a0 = FFA_NOTIFICATION_SET, .a1 = src_dst_ids, .a2 = flags,
 +		  .a3 = NOTIFICATION_BITMAP_LOW(bitmap),
 +		  .a4 = NOTIFICATION_BITMAP_HIGH(bitmap),
 +		  }, &ret);
@@ -119,9 +104,9 @@ index c2ab6f4cf296..20f8f4ca8e89 100644
 +	return 0;
 +}
 +
- static void ffa_set_up_mem_ops_native_flag(void)
+ static int ffa_run(struct ffa_device *dev, u16 vcpu)
  {
- 	if (!ffa_features(FFA_FN_NATIVE(MEM_LEND), 0, NULL, NULL) ||
+ 	ffa_value_t ret;
 
 -- 
 2.42.0
