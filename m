@@ -2,136 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B11407B9F4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5377BA2BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbjJEOTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
+        id S233946AbjJEPpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233574AbjJEORJ (ORCPT
+        with ESMTP id S233673AbjJEPpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:17:09 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55D649C1
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 22:05:46 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-534659061afso808028a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 22:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1696482345; x=1697087145; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tumpG4fZu91mYpt2qQbWwuFfddli9/TW76sKXIYzTOk=;
-        b=deQ7A4mY5ePOw4jHVnPJCqadPHGXWot17MfTlsuzPmL1tAKWWcgtfIzYCl6Y26RH/2
-         Tg5vtPBAu0gJKO7CFEu7p2di+9Zo7ZnGiByuPZRH4rVpEmvI6Ad5Z1u3CH752De5xk+b
-         6k6CTfr0mgVEyVtkEVStiiy6ER34FpSe0ONd2J1hDIrOt+KFaJzkK7e2ZCnkgu2oFmTx
-         hJYJmKEe1oqQ26KbG9i+ATT9szB+0wzhWfDLnsox8IPOw7cn1kAP95Htmm4YSPIftgTn
-         WIV57dECWvJJjG2shxvBLoZgUjtRC3J09TgpgpGGMiZclNTXmV2XoELeTgvgyRXZqaUB
-         pGSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696482345; x=1697087145;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tumpG4fZu91mYpt2qQbWwuFfddli9/TW76sKXIYzTOk=;
-        b=sGej8GIySyg7W1CUd7QtijkmZryvMvQ/IaU8JkeVTXGhP3rzdMjqJgamuuMul9bC/A
-         oiZHO5+tZZqCWIlohjAofddyyJgj/M9oWPUKDOSBbGD1kL8tvcF1jZI04ritY+ulwSO+
-         Wdekalfz9fWthZJEZAKS3xZnQ5paVOOb3vuifbnfYn/N49N8EeKneKCjCKGgLkVteEzm
-         uI5inlkQG6GXpRwwS9H9AnR1S8cqg851QZ1LqcRvsuOf199lWphajnL73rjSzRCEjopD
-         uXCTCl4BU/RufGTMeGfhcLf7aFRmKnoaHiX3mUNIO7QoGTgSZu18HNLsedJ4iVWB3rXz
-         ixdA==
-X-Gm-Message-State: AOJu0Yy4cWvXZidVs+04WDd34bRQdd5ugA7Iif9nYIYenjjHe7CbMAHp
-        UDdDvyW7psuznJcgxb0y4b7O/A==
-X-Google-Smtp-Source: AGHT+IE54MO+fhgdky4xkVipD6Wj3FDv6iN+CshxB2o1CFdPuoVHF2KKTNg0ZjphMiuqlQstCFMd7w==
-X-Received: by 2002:aa7:da8c:0:b0:530:9b94:96e with SMTP id q12-20020aa7da8c000000b005309b94096emr3525467eds.41.1696482345190;
-        Wed, 04 Oct 2023 22:05:45 -0700 (PDT)
-Received: from [192.168.32.2] ([147.161.130.252])
-        by smtp.gmail.com with ESMTPSA id u15-20020aa7d98f000000b00533bab9d9f1sm434409eds.1.2023.10.04.22.05.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 22:05:44 -0700 (PDT)
-Message-ID: <08ed16ff-14ca-a7e2-59c2-da949ceaa608@tuxon.dev>
-Date:   Thu, 5 Oct 2023 08:05:42 +0300
+        Thu, 5 Oct 2023 11:45:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6153821A21
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:32:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD21DC433CD;
+        Thu,  5 Oct 2023 05:07:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696482444;
+        bh=q9gwVh9i7yhacKF0+Y1E5YalBV+GiHWLIMRRh+7yaJA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZPQxDQ2PwLXpWqinMgBQRN97ZkH0MQvovaLYeB4w1HxqXKfBITyukOtR5Xeh5LdEG
+         YwhgvHjqCW3tRJlrBa+d6p9p/oIr6QBMEY0T32z1OQtcqRIVP2oVnf8jAKzaLI6x4p
+         PEZbiQJO0vA8Xzad3bEqwkDQsjyVs7nj2fwqc53z32HUG6UIeV7UfaRZbde0jTR5LQ
+         XwqKUqwZkzLSQCgA9+E7jQyTi1MVSEgZhvhsNPhKInezo6YkvmMnrUgVkkLorfp7b9
+         6CO1kMKHWltCupII9JDmmCz/JMmriijlTQY2+euPnxiu0X5iDoWDR7wFXUKxerljuf
+         KcvLNPfoOvCzQ==
+Date:   Thu, 5 Oct 2023 08:06:19 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        mike.kravetz@oracle.com, muchun.song@linux.dev,
+        willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region
+ when MEMINIT_EARLY
+Message-ID: <20231005050619.GB3303@kernel.org>
+References: <a6a20ff9-385c-639f-75cf-ce73a01d97cf@linux.dev>
+ <20230929100252.GW3303@kernel.org>
+ <15233624-f32e-172e-b2f6-7ca7bffbc96d@linux.dev>
+ <20231001185934.GX3303@kernel.org>
+ <90342474-432a-9fe3-2f11-915a04f0053f@linux.dev>
+ <20231002084708.GZ3303@kernel.org>
+ <f7e6f67a-4cac-73bd-1d5e-5020c6c8423d@redhat.com>
+ <20231002111051.GA3303@kernel.org>
+ <3057dab3-19f2-99ca-f125-e91a094975ed@redhat.com>
+ <8c9ee3bd-6d71-4111-8f4e-91bc52b42ed4@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 18/28] pinctrl: renesas: rzg2l: add support for
- different ds values on different groups
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
-        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com>
- <20230929053915.1530607-19-claudiu.beznea@bp.renesas.com>
- <CAMuHMdWQVtroKntVamANrWiheDYa6+=L8K53__1WUZg3bF8EFQ@mail.gmail.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdWQVtroKntVamANrWiheDYa6+=L8K53__1WUZg3bF8EFQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <8c9ee3bd-6d71-4111-8f4e-91bc52b42ed4@linux.dev>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 04.10.2023 16:17, Geert Uytterhoeven wrote:
-> On Fri, Sep 29, 2023 at 7:39â€¯AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> RZ/G3S supports different drive strength values for different power sources
->> and pin groups (A, B, C). On each group there could be up to 4 drive
->> strength values per power source. Available power sources are 1v8, 2v5,
->> 3v3. Drive strength values are fine tuned than what was previously
->> available on the driver thus the necessity of having micro-amp support.
->> As drive strength and power source values are linked together the
->> hardware setup for these was moved at the end of
->> rzg2l_pinctrl_pinconf_set() to ensure proper validation of the new
->> values.
->>
->> The drive strength values are expected to be initialized though SoC
->> specific hardware configuration data structure.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->> ---
->>
->> Changes in v2:
->> - s/strenght/strength, s/togheter/together in commit description
->> - got rid of RZG2L_INVALID_IOLH_VAL macro and consider zero as invalid
->>   value for entries in struct rzg2l_hwcfg::iolh_group[abc]_ua[] arrays
->> - removed spinlock in rzg2l_[sg]et_power_source()
->> - introduced caps_to_pwr_reg() and simplified the code in
->>   rzg2l_[sg]et_power_source()
->> - changed return type of rzg2l_iolh_ua_to_val() to int and return
->>   -EINVAL on failure cases
->> - s/rzg2l_ds_supported/rzg2l_ds_is_supported
->> - inverted the logic in rzg2l_pinctrl_pinconf_set() when applying drive
->>   strength and power source to hardware registers and thus simplified the
->>   code
->> - used devm_kcalloc() instead of devm_kzalloc()
->> - adderessed the rest of the review comments
+On Tue, Oct 03, 2023 at 10:38:09PM +0800, Yajun Deng wrote:
 > 
-> Thanks, will queue in renesas-pinctrl-for-v6.7, with Paul's comment
-> addresses.
+> On 2023/10/2 19:25, David Hildenbrand wrote:
+> > On 02.10.23 13:10, Mike Rapoport wrote:
+> > > > > 
+> > > > > That 'if' breaks the invariant that __free_pages_core is
+> > > > > always called for
+> > > > > pages with initialized page count. Adding it may lead to
+> > > > > subtle bugs and
+> > > > > random memory corruption so we don't want to add it at the
+> > > > > first place.
+> > > > 
+> > > > As long as we have to special-case memory hotplug, we know that we are
+> > > > always coming via generic_online_page() in that case. We could
+> > > > either move
+> > > > some logic over there, or let __free_pages_core() know what it
+> > > > should do.
+> > > 
+> > > Looks like the patch rather special cases MEMINIT_EARLY, although I
+> > > didn't
+> > > check throughfully other code paths.
+> > > Anyway, relying on page_count() to be correct in different ways for
+> > > different callers of __free_pages_core() does not sound right to me.
+> > 
+> > Absolutely agreed.
+> > 
+> I already sent v5  a few days ago. Comments, please...
 
-Thank you Geert and Paul!
+Does it address all the feedback from this thread?
 
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+-- 
+Sincerely yours,
+Mike.
