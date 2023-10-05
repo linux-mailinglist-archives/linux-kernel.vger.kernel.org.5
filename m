@@ -2,174 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9EF7BA887
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533707BA889
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbjJER5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54492 "EHLO
+        id S230281AbjJER6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231201AbjJER5o (ORCPT
+        with ESMTP id S229889AbjJER6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:57:44 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FE790;
-        Thu,  5 Oct 2023 10:57:42 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id d4c20237a6c8e736; Thu, 5 Oct 2023 19:57:41 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 8E47F665C39;
-        Thu,  5 Oct 2023 19:57:40 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nvdimm@lists.linux.dev,
-        Michal Wilczynski <michal.wilczynski@intel.com>
-Cc:     rafael.j.wysocki@intel.com, andriy.shevchenko@intel.com,
-        lenb@kernel.org, dan.j.williams@intel.com,
-        vishal.l.verma@intel.com, ira.weiny@intel.com, rui.zhang@intel.com,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>
-Subject: Re: [PATCH v1 2/9] docs: firmware-guide: ACPI: Clarify ACPI bus concepts
-Date:   Thu, 05 Oct 2023 19:57:40 +0200
-Message-ID: <2725050.mvXUDI8C0e@kreacher>
-In-Reply-To: <20230925144842.586829-3-michal.wilczynski@intel.com>
-References: <20230925144842.586829-1-michal.wilczynski@intel.com> <20230925144842.586829-3-michal.wilczynski@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+        Thu, 5 Oct 2023 13:58:19 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3F89E;
+        Thu,  5 Oct 2023 10:58:17 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395HkZG9021848;
+        Thu, 5 Oct 2023 17:58:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=ASEJAjxy3u7tD8sitmRDsvClbC0Hi0/48ZyBhDlZwsA=;
+ b=Wa0xEtIUW96WZKzYrGMOomwW/JKt/u/ozaDosxtKucXEjNakiX2JqjdBgd7LgTTT+aEw
+ pmjhOC0q2esGtlH2HgZTL/LlMSuU//3HqYgRNOUxaxfmUbYPRhD1wRqjX487N53kte1O
+ bmk47z48We/UO3tlmrJ8fV59bz97BSwhED1s+azKnK+X+2sb+RZLtiIs/P9P7bZFVYXr
+ Idpn1orA2f6Xy9oMk5j5hs/kYFJdCgjobAHZzW5gBaLY6n2e7zqpHbUj05BEJtqXwEAl
+ rQFIEzSfaFXVGVpwfdUMgl8k/9jrsMb9XkusZJ7uwurkTcAqPXX1jOPbE1/SAL+jJ8jq hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj1ue0d4r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 17:58:04 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 395HuO27014845;
+        Thu, 5 Oct 2023 17:58:04 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj1ue0d3x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 17:58:04 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 395HWu8C017644;
+        Thu, 5 Oct 2023 17:58:03 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tey0p0041-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 17:58:03 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 395Hw2mt3473978
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Oct 2023 17:58:02 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9904958052;
+        Thu,  5 Oct 2023 17:58:02 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 300AB58050;
+        Thu,  5 Oct 2023 17:58:02 +0000 (GMT)
+Received: from rhel-laptop.austin.ibm.com (unknown [9.41.250.135])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  5 Oct 2023 17:58:02 +0000 (GMT)
+Message-ID: <53755a0fbd6318d4783078259f2d2f8ab5f2f0b7.camel@linux.vnet.ibm.com>
+Subject: Re: [PATCH] block: Fix regression in sed-opal for a saved key.
+From:   Greg Joyce <gjoyce@linux.vnet.ibm.com>
+Reply-To: gjoyce@linux.vnet.ibm.com
+To:     Milan Broz <gmazyland@gmail.com>, linux-block@vger.kernel.org
+Cc:     jonathan.derrick@linux.dev, axboe@kernel.dk,
+        linux-kernel@vger.kernel.org, Ondrej Kozina <okozina@redhat.com>
+Date:   Thu, 05 Oct 2023 12:58:01 -0500
+In-Reply-To: <59535b4b-9f07-44c5-a7da-e6b2fc1c67bb@gmail.com>
+References: <20231003100209.380037-1-gmazyland@gmail.com>
+         <5c4fbafb1daa45f2faf60c7d587cd23c53d9393c.camel@linux.vnet.ibm.com>
+         <59535b4b-9f07-44c5-a7da-e6b2fc1c67bb@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeggdduudehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepudefpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhhvughimhhmsehlihhsthhsrdhlihhnuhigrdguvghvpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgt
- phhtthhopehrrghfrggvlhdrjhdrfiihshhotghkihesihhnthgvlhdrtghomhdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=13 Fuz1=13 Fuz2=13
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: CM-NZeh0zeKWgvg_P7fJpDaPts_btYuJ
+X-Proofpoint-GUID: gp0FVayYExu0W28rkxxq9L4mMuzyZu0c
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-05_12,2023-10-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 clxscore=1015
+ spamscore=0 malwarescore=0 lowpriorityscore=0 phishscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310050136
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, September 25, 2023 4:48:35 PM CEST Michal Wilczynski wrote:
-> Some devices implement ACPI driver as a way to manage devices
-> enumerated by the ACPI. This might be confusing as a preferred way to
-> implement a driver for devices not connected to any bus is a platform
-> driver, as stated in the documentation. Clarify relationships between
-> ACPI device, platform device and ACPI entries.
+On Thu, 2023-10-05 at 08:58 +0200, Milan Broz wrote:
+> On 10/4/23 22:54, Greg Joyce wrote:
+> > On Tue, 2023-10-03 at 12:02 +0200, Milan Broz wrote:
+> > > The commit 3bfeb61256643281ac4be5b8a57e9d9da3db4335
+> > > introduced the use of keyring for sed-opal.
+> > > 
+> > > Unfortunately, there is also a possibility to save
+> > > the Opal key used in opal_lock_unlock().
+> > > 
+> > > This patch switches the order of operation, so the cached
+> > > key is used instead of failure for opal_get_key.
+> > > 
+> > > The problem was found by the cryptsetup Opal test recently
+> > > added to the cryptsetup tree.
+> > > 
+> > > Fixes: 3bfeb6125664 ("block: sed-opal: keyring support for SED
+> > > keys")
+> > > Tested-by: Ondrej Kozina <okozina@redhat.com>
+> > > Signed-off-by: Milan Broz <gmazyland@gmail.com>
+> > > ---
+> > >   block/sed-opal.c | 7 +++----
+> > >   1 file changed, 3 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/block/sed-opal.c b/block/sed-opal.c
+> > > index 6d7f25d1711b..04f38a3f5d95 100644
+> > > --- a/block/sed-opal.c
+> > > +++ b/block/sed-opal.c
+> > > @@ -2888,12 +2888,11 @@ static int opal_lock_unlock(struct
+> > > opal_dev
+> > > *dev,
+> > >   	if (lk_unlk->session.who > OPAL_USER9)
+> > >   		return -EINVAL;
+> > > 
+> > > -	ret = opal_get_key(dev, &lk_unlk->session.opal_key);
+> > > -	if (ret)
+> > > -		return ret;
+> > >   	mutex_lock(&dev->dev_lock);
+> > >   	opal_lock_check_for_saved_key(dev, lk_unlk);
+> > > -	ret = __opal_lock_unlock(dev, lk_unlk);
+> > > +	ret = opal_get_key(dev, &lk_unlk->session.opal_key);
+> > > +	if (!ret)
+> > > +		ret = __opal_lock_unlock(dev, lk_unlk);
+> > 
+> > This is relying on opal_get_key() returning 0 to decide if
+> > __opal_lock_unlock() is called. Is this really what you want? It
+> > seems
+> > that you would want to unlock if the key is a LUKS key, even if
+> > opal_get_key() returns non-zero.
 > 
-> Suggested-by: Elena Reshetova <elena.reshetova@intel.com>
-> Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
-> ---
->  Documentation/firmware-guide/acpi/enumeration.rst | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+> I think it is ok. That was logic introduced in your keyring patch
+> anyway.
 > 
-> diff --git a/Documentation/firmware-guide/acpi/enumeration.rst b/Documentation/firmware-guide/acpi/enumeration.rst
-> index 56d9913a3370..f56cc79a9e83 100644
-> --- a/Documentation/firmware-guide/acpi/enumeration.rst
-> +++ b/Documentation/firmware-guide/acpi/enumeration.rst
-> @@ -64,6 +64,19 @@ If the driver needs to perform more complex initialization like getting and
->  configuring GPIOs it can get its ACPI handle and extract this information
->  from ACPI tables.
->  
-> +ACPI bus
-> +====================
-> +
-> +Historically some devices not connected to any bus were represented as ACPI
-> +devices, and had to implement ACPI driver. This is not a preferred way for new
-> +drivers. As explained above devices not connected to any bus should implement
-> +platform driver. ACPI device would be created during enumeration nonetheless,
-> +and would be accessible through ACPI_COMPANION() macro, and the ACPI handle would
-> +be accessible through ACPI_HANDLE() macro. ACPI device is meant to describe
-> +information related to ACPI entry e.g. handle of the ACPI entry. Think -
-> +ACPI device interfaces with the FW, and the platform device with the rest of
-> +the system.
-> +
->  DMA support
->  ===========
+> I just fixed that if key is cached (stored in OPAL struct), that key
+> is used
+> and subsequent opal_get_key() does nothing, returning 0.
+> 
+> The story is here that both OPAL lock and unlock need key, while LUKS
+> logic never required key for lock (deactivation), so we rely on the
+> cached
+> OPAL key here. We do not need any key stored for unlocking (that is
+> always
+> decrypted from a keyslot)
+> (I think requiring key for locking range is a design mistake in OPAL
+> but
+> that's not relevant for now :-)
 
-I rewrote the above entirely, so here's a new patch to replace this one:
+Okay, if the key is such that opal_get_key() always returns 0, then I
+agree there isn't an issue.
 
----
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Subject: [PATCH v2 2/9] ACPI: docs: enumeration: Clarify ACPI bus concepts
+Greg
 
-In some cases, ACPI drivers are implemented as a way to manage devices
-enumerated with the help of the platform firmware through ACPI.
-
-This might be confusing, since the preferred way to implement a driver
-for a device that cannot be enumerated natively, is a platform
-driver, as stated in the documentation.
-
-Clarify relationships between ACPI device objects, platform devices and
-ACPI Namespace entries.
-
-Suggested-by: Elena Reshetova <elena.reshetova@intel.com>
-Co-developed-by: Michal Wilczynski <michal.wilczynski@intel.com>
-Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- Documentation/firmware-guide/acpi/enumeration.rst |   43 ++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
-
-Index: linux-pm/Documentation/firmware-guide/acpi/enumeration.rst
-===================================================================
---- linux-pm.orig/Documentation/firmware-guide/acpi/enumeration.rst
-+++ linux-pm/Documentation/firmware-guide/acpi/enumeration.rst
-@@ -64,6 +64,49 @@ If the driver needs to perform more comp
- configuring GPIOs it can get its ACPI handle and extract this information
- from ACPI tables.
- 
-+ACPI device objects
-+===================
-+
-+Generally speaking, there are two categories of devices in a system in which
-+ACPI is used as an interface between the platform firmware and the OS: Devices
-+that can be discovered and enumerated natively, through a protocol defined for
-+the specific bus that they are on (for example, configuration space in PCI),
-+without the platform firmware assistance, and devices that need to be described
-+by the platform firmware so that they can be discovered.  Still, for any device
-+known to the platform firmware, regardless of which category it falls into,
-+there can be a corresponding ACPI device object in the ACPI Namespace in which
-+case the Linux kernel will create a struct acpi_device object based on it for
-+that device.
-+
-+Those struct acpi_device objects are never used for binding drivers to natively
-+discoverable devices, because they are represented by other types of device
-+objects (for example, struct pci_dev for PCI devices) that are bound to by
-+device drivers (the corresponding struct acpi_device object is then used as
-+an additional source of information on the configuration of the given device).
-+Moreover, the core ACPI device enumeration code creates struct platform_device
-+objects for the majority of devices that are discovered and enumerated with the
-+help of the platform firmware and those platform device objects can be bound to
-+by platform drivers in direct analogy with the natively enumerable devices
-+case.  Therefore it is logically inconsistent and so generally invalid to bind
-+drivers to struct acpi_device objects, including drivers for devices that are
-+discovered with the help of the platform firmware.
-+
-+Historically, ACPI drivers that bound directly to struct acpi_device objects
-+were implemented for some devices enumerated with the help of the platform
-+firmware, but this is not recommended for any new drivers.  As explained above,
-+platform device objects are created for those devices as a rule (with a few
-+exceptions that are not relevant here) and so platform drivers should be used
-+for handling them, even though the corresponding ACPI device objects are the
-+only source of device configuration information in that case.
-+
-+For every device having a corresponding struct acpi_device object, the pointer
-+to it is returned by the ACPI_COMPANION() macro, so it is always possible to
-+get to the device configuration information stored in the ACPI device object
-+this way.  Accordingly, struct acpi_device can be regarded as a part of the
-+interface between the kernel and the ACPI Namespace, whereas device objects of
-+other types (for example, struct pci_dev or struct platform_device) are used
-+for interacting with the rest of the system.
-+
- DMA support
- ===========
- 
-
-
+> 
+> Milan
+> 
+> > >   	mutex_unlock(&dev->dev_lock);
+> > > 
+> > >   	return ret;
 
