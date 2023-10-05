@@ -2,86 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FC67B9FE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2337BA0F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbjJEOaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        id S239192AbjJEOmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234143AbjJEO2c (ORCPT
+        with ESMTP id S234136AbjJEOhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:28:32 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E24A720E4B;
-        Thu,  5 Oct 2023 03:26:20 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7abda795363so346066241.0;
-        Thu, 05 Oct 2023 03:26:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696501577; x=1697106377; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ojyjucqL/lMI79N9rhj0UU8Wn1cTd7IMM6zNwMFF2vw=;
-        b=U9x92UjZjLngTZS5MuFuIFBj8u0yhRLD4gmnMwYvZB84xUs1A++SXQtk3m/WO23Kf6
-         nCDHVPReuNxgri3tUM/3fnJuY7KQLpcTv7+NbAXxJ7YGGplQVcjgVh3rUEakIAhScMhR
-         tJSmCVCl8fZZGnp3+9MoCAT6KoBYwYF8bCILpBwA4Elfe5Lo2CuHbTMssZ7B1Da/NDRq
-         /wCJiLn3jpw4E+4S58zlBmaqCKA94dECEW+tuGBHA2jJDXAhHAPHgW6OQLnnGXZNchS6
-         +lCXxDlpuLYj4CVFF8Mwj+JsfeCSCjH5Zf/85UkZxBwDEm+IcWE/0ylmONmeGMpOxSMZ
-         +8hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696501577; x=1697106377;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ojyjucqL/lMI79N9rhj0UU8Wn1cTd7IMM6zNwMFF2vw=;
-        b=MrGWRxo1FbkWCNz+V9nZrI/t4Spn10GHpNqz867h/FN7zvhlSgdtzwd270QjQYeZLC
-         eZf1UdrEB+844zPnxkPooayzKghHtgpdbj1mu89cW6VZejfjETmdaBAjPdnjE/WDeMuU
-         BrDc0FrqUVfeD7/lICfNqoZba/6wNbZIYDuttbh3nNi3AJKP1yudj5XHjWSAiIOZlGTi
-         RqP5nbsZHK7X7jW83OvzfjoFa2kHEIhn4wkVrF4H6YEw+0YeNhbeBvqZKVAbrtqfUP2i
-         Hwrhfv1BmstBcgSpwiSGjXeqaWre+bx7j7NuZBh8s3u7y4FlOopo0gGdOa5XgxexvVrZ
-         9Mjg==
-X-Gm-Message-State: AOJu0YzS2x7pjmeeQNXP2PGMOwzAFCX555IzM1G+NY2L2IUnAVIjJ+/U
-        BfjxmvyDpEj1plcZkReqYn2cr3t196Io6gp0VoQ=
-X-Google-Smtp-Source: AGHT+IGJsrV9RkmMzWmfkR4OgAmorQIZaUVdA2scJ8UavK9XfvC/A2sEdES1seCTlG7zPicZkGtVPJcs863auJjEP3A=
-X-Received: by 2002:a05:6102:904:b0:452:8423:e957 with SMTP id
- x4-20020a056102090400b004528423e957mr4957971vsh.28.1696501577288; Thu, 05 Oct
- 2023 03:26:17 -0700 (PDT)
+        Thu, 5 Oct 2023 10:37:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6894E358;
+        Thu,  5 Oct 2023 07:03:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FFFCC2BCFE;
+        Thu,  5 Oct 2023 10:27:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696501633;
+        bh=4fxCXTLyJSEnYgLs6b+JCuhTnShTf/CIKp0OZexQrj4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HHqX91JuhSpBSMK2o5ESJ0CBb18LLzCffYRKge9Capj2sJtPUdKCWOaxUiEofWFwy
+         YXYbGFcxtC72+SdtbwVaoy04zAaGLRi5fcM2EwOsKJDm8EESrPXXCLBrKNo9yC3Sf6
+         J/H2XeTyxw7J+SIcHLdbKmLBsKxTOxNeiNxlLrWI=
+Date:   Thu, 5 Oct 2023 12:27:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        haiyangz@microsoft.com, decui@microsoft.com,
+        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
+        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
+        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
+        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        will@kernel.org, catalin.marinas@arm.com
+Subject: Re: [PATCH v4 13/15] uapi: hyperv: Add mshv driver headers defining
+ hypervisor ABIs
+Message-ID: <2023100517-rogue-gopher-e70f@gregkh>
+References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1696010501-24584-14-git-send-email-nunodasneves@linux.microsoft.com>
 MIME-Version: 1.0
-References: <CAOQ4uxhbNyDzf0_fFh1Yy5Kz2Coz=gTrfOtsmteE0=ncibBnpw@mail.gmail.com>
- <0000000000001081fc0606f52ed9@google.com>
-In-Reply-To: <0000000000001081fc0606f52ed9@google.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 5 Oct 2023 13:26:06 +0300
-Message-ID: <CAOQ4uxjw_XztGxrhR9LWtz_SszdURkM+Add2q8A9BAt0z901kA@mail.gmail.com>
-Subject: Re: [syzbot] [integrity] [overlayfs] possible deadlock in
- mnt_want_write (2)
-To:     syzbot <syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com>
-Cc:     hdanton@sina.com, linux-fsdevel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-unionfs@vger.kernel.org,
-        miklos@szeredi.hu, mszeredi@redhat.com,
-        syzbot@syzkalhler.appspotmail.com, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, zohar@us.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1696010501-24584-14-git-send-email-nunodasneves@linux.microsoft.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 12:59=E2=80=AFPM syzbot
-<syzbot+b42fe626038981fb7bfa@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot tried to test the proposed patch but the build/boot failed:
+On Fri, Sep 29, 2023 at 11:01:39AM -0700, Nuno Das Neves wrote:
+> +/* Define connection identifier type. */
+> +union hv_connection_id {
+> +	__u32 asu32;
+> +	struct {
+> +		__u32 id:24;
+> +		__u32 reserved:8;
 
-My mistake. Please try again:
+Meta-commment, I don't see anywhere you are properly checking that all
+of the "reserved" areas of these structures are actually set to 0 when
+they are sent to you.  If you don't do that, then they are not really
+reserved at all and can never be used in the future, so properly check
+them please.
 
-#syz test: https://github.com/amir73il/linux ima-ovl-fix
+thanks,
+
+greg k-h
