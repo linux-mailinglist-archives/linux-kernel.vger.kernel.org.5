@@ -2,186 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 381EA7B99E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 04:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B345B7B99E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 04:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbjJECTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 22:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
+        id S233392AbjJECTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 22:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233580AbjJECTy (ORCPT
+        with ESMTP id S229767AbjJECTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 22:19:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E66DD
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 19:19:49 -0700 (PDT)
+        Wed, 4 Oct 2023 22:19:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FCBAB;
+        Wed,  4 Oct 2023 19:19:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696472389; x=1728008389;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XlOnScdtAGDG7tWSy3Li0cvXQjsbEt3gzAVcHpkWsQM=;
-  b=PLbrXeK5L0LLOuV1ZTCU5HQ9D5kA4Agl5agHq/0ZOTo+GbLsQk3ESj/T
-   jn/M0TVDNunUTk4xGLFDF8gPjCzl3ks9P1cUsnV+HJaLs4Q0cRrWcGqpI
-   BjHmU8liP/i2OOlbGOJGXewFSlPfAzxfZRPSR8+I9E5JfbVNsKgnSA5Ne
-   XRS3SyIgqH6uaiN/g+3gKoqbx3rw4NQ6H1hIn/Mr94mXlT9ra3TRIeB+R
-   7vxQjQe201lNRNgRwFoqAu9b+PQFO462ud8T0gB7kGXLArTYLeEPMeSrG
-   /io8h/ALFG7y9+2GxmFyQ6i31JQTnC7lc5pYGY1ZhUB4YXiI2w+6DlLEV
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="373725717"
+  t=1696472371; x=1728008371;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=g+jqBfDrokoRUTj7gjV3G5ldIebYIJkbWAEVlp5mO3U=;
+  b=MNWgdJzjIxSE3cLWZRKclm+/2BaN7JnUqoJuD8fQzd3qs4T3NrCXYtF6
+   VIycCme8qB/kpxIraDQo3FVL2Xc1CjoN0SzrChKqRaY60TKGaIEu+LtYU
+   DOQMG3qMuz8cMyGbhuxiaH0SVJ/IZFFrOgR4nVdHnddO599J+exSwudr/
+   811PaMNqXReakOdYY+ubTqvzkyFWGxgUDylMuurXfZA4jserkrCtWF8aI
+   zyKU7AsHtZLThxbu3AAOQ17DhiUiYWyhTafwCizDBEwcoKC2kjgeRhRze
+   JR3QyPkI+ldfJLGgHkrnkDfLMlSf7fap90DOaKgHOZV1CnNV6dt9F0l7B
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="363657154"
 X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="373725717"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 19:15:39 -0700
+   d="scan'208";a="363657154"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 19:19:30 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="925409747"
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="781061723"
 X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="925409747"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 04 Oct 2023 19:15:37 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoDtn-000KsK-16;
-        Thu, 05 Oct 2023 02:15:35 +0000
-Date:   Thu, 5 Oct 2023 10:14:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mukesh Ojha <quic_mojha@quicinc.com>, mcgrof@kernel.org,
-        russell.h.weight@intel.com, gregkh@linuxfoundation.org,
-        rafael@kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Mukesh Ojha <quic_mojha@quicinc.com>
-Subject: Re: [PATCH v2] firmware_loader: Abort new fw load request once
- firmware core knows about reboot
-Message-ID: <202310051011.PW217wHD-lkp@intel.com>
-References: <1696431327-7369-1-git-send-email-quic_mojha@quicinc.com>
+   d="scan'208";a="781061723"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Oct 2023 19:19:30 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 4 Oct 2023 19:19:29 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Wed, 4 Oct 2023 19:19:29 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 4 Oct 2023 19:19:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CenkabO6QDC5UfWVq3HX+QV14H7rQVCdT3sGyi5Q4T20G8Ioer1uMBnfGXXHOHnHURsIHGWuWHon9b8vQk9FEdZ99jeXnR3jAhCaTPzauaEEzEqpratBp/fl16GRpjNQawUBCk2DheMvW4OGfPHuEYQ8hpxwU/gQKYD297MdzRGHCA19MAhEWrZLOGgcaQgzbrpyzmcH0uFTdNeTvmUb/OziviHCCRjYvvB6NwhqmPsqU/UhMStNjqYEFnuLITjMwddpx2mmDgMxVatz8iGx/psdYvhDujTo/vzZv/KdwK2tADDnzoJCpSKuOg0FC9OADV21re/h75Y1KNnov7LQ4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=g+jqBfDrokoRUTj7gjV3G5ldIebYIJkbWAEVlp5mO3U=;
+ b=bMCbTrizGVO43yiOJid3BrilBEA2XBEc+ECCyEMHwvO4HklRBs5QJlA4rWIILzrjxWlrJ1kFiIlK/vgTK06G6Zb169iuoivzPaFT6gyTM9Gbck6a8cn7GgYflvH1OOqYQEdtpmOetNzD8QqIgiTshdomEiP0LxrftQSMHOKniuOH0UAtsqzAlpRhKkO2ohs1AipvX2nxzB8FKr8srlotWjPW6B3lvhAvNYo5H5D94NabdE+HWZmvgnJS5MU6boO8XO6ml6Hu3ta88oDH+HEDR1SAMoxDPt1RFLF0gZFsGKQCxItEpek4oKkSSVg+7xM6WNOyDGZnlPsuH6LFS682qQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by CY5PR11MB6342.namprd11.prod.outlook.com (2603:10b6:930:3d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.35; Thu, 5 Oct
+ 2023 02:19:27 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::31a9:b803:fe81:5236]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::31a9:b803:fe81:5236%4]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
+ 02:19:27 +0000
+From:   "Huang, Kai" <kai.huang@intel.com>
+To:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Zhao, Yan Y" <yan.y.zhao@intel.com>
+CC:     "robert.hoo.linux@gmail.com" <robert.hoo.linux@gmail.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Gao, Chao" <chao.gao@intel.com>,
+        "yuan.yao@linux.intel.com" <yuan.yao@linux.intel.com>
+Subject: Re: [PATCH v4 00/12] KVM: x86/mmu: refine memtype related mmu zap
+Thread-Topic: [PATCH v4 00/12] KVM: x86/mmu: refine memtype related mmu zap
+Thread-Index: AQHZtiLXgL0k8P/jtEq1HizKEtVV2bA66nyAgAAN9QA=
+Date:   Thu, 5 Oct 2023 02:19:27 +0000
+Message-ID: <f29d86b433c4cbcbae89e57ac7870067357f1973.camel@intel.com>
+References: <20230714064656.20147-1-yan.y.zhao@intel.com>
+         <169644820856.2740703.143177409737251106.b4-ty@google.com>
+In-Reply-To: <169644820856.2740703.143177409737251106.b4-ty@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|CY5PR11MB6342:EE_
+x-ms-office365-filtering-correlation-id: 2aa14865-eb83-4e3f-99f7-08dbc5498015
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OtPq1KcyFG6g34ySi2BwuQyjV69YAYqgRCrqUmYOw/LNEzWtHKpQE1YAfghclC3DxJcq0/Dq4diychYPjTzBfWYH+hdfGkaJdxCBopfaaPv+wujfOTd5uFXBaC+J9gnUWXMbNQxSKcPAuwFC7X/udzHLD7DPaVfZuinjSSY+48/YZIzIljXsVbpawFFfEEB7GJvPCWEnjn+KNTqcatPREKkhhkj90Wx/DGQ8TOn5b73G90tXr2Ca0bkQf8f+l1PXNCrLvai7rDMGvvLQ7dnTJB6RjEsRe6BHdRss6Ven72cII31GVJM8SF7aHjzeq4ilEcn6rYFCmWeaIyqB+Ubjm3OqC//pYyD70GYMiuFr6lejhPBS5X1tR9MELEEKbhFmWIH2uMI/aZqqJVLffArSfAbdZvktNHSypn2KSNYfx64jw3aMKuwOTXNHJsdNLZe0fiA21+MoPrYG1n/HgyNZw6fwgABctylWPSDKcSgzn/mQIFtG69/ARA+HajTWelsGodPtQeYn1eGgdNUpsmwIAPofOxzFCSk7tyt2DHghqulQVeSF0UDSJQocpFZzzXSw4srp6xSzsaoQZiXjLZpgj6FasHsC3EPpX9RQaCWLits=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(136003)(376002)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(71200400001)(966005)(6486002)(478600001)(6506007)(2616005)(122000001)(86362001)(38100700002)(38070700005)(82960400001)(41300700001)(2906002)(6512007)(26005)(64756008)(558084003)(54906003)(66556008)(66476007)(66446008)(5660300002)(76116006)(6636002)(316002)(110136005)(91956017)(66946007)(36756003)(8936002)(4326008)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TmFhTUN5eDFuUnNMci9MYmpRS0V2QnI1QnFNV2hBZjlDTElJSWI3Ymwvemhi?=
+ =?utf-8?B?RGphN0pFSWZoK3E1MTdyVk1yL0VzNUtERzRVWmptZXkzcGc1V0FVMzdnb2lp?=
+ =?utf-8?B?SHBkR3psYmxYSTl5T3lCVEMzQTQraFpHVU5mT0tQcUY4TGlBeUNPaGw2Z2pv?=
+ =?utf-8?B?TG5kN3drS21FZ1orQ2c4NjdZRVllQXpPUkFkWWlxeHg4SGwzUzB4YS9MM0kr?=
+ =?utf-8?B?OVdTTlVQSlNaa1l4N0JZQTYvanVyOEpicW1Za01UUGpOMkhLNEkzYXVxT1Fu?=
+ =?utf-8?B?RDUxcG9wSUFMbzIzdGJRcDh4aFJmYTZuTjNseHBUVWVWcWRRM0VFR044NXhP?=
+ =?utf-8?B?SlQxSG9vZ2R3NjR2NEYvTU1VUGtWSFJmZWJYRmV3bnNrRUhHK2NkaHdKM1Bh?=
+ =?utf-8?B?cWxsQW1uQ3daOGZmeDVFWkxRTEdHQ3pwL3pIZ2JYL0daWGV0UVpHWTY2dVNB?=
+ =?utf-8?B?SXJ6czdGeC94MzhpN01pRG5SbWxEYUZTMFlTaEhUcFRORi9YbU16elZXL3Zw?=
+ =?utf-8?B?UnJNSE14M2RtU25FanA2NVFuYkxtYXVzakpIRENVNGxXTkhhZkE0ZjJTUUZG?=
+ =?utf-8?B?R0dSNmhmSXRqN2pSa25NZjJxbVkxNU4za2R1YVBlL3hTMmpVTnc5MkVGMHJL?=
+ =?utf-8?B?WVJmRE9vendQbHBXQ3J0dGNnT1RERWhkRmZkWVVNU1F4b2lackg4aWpLaEpu?=
+ =?utf-8?B?a0ZzNnZ0aUhiakdQVndyTkxjNVRoQ2ZLdENyMDlYdExnZm9oeklVSFMvQXRQ?=
+ =?utf-8?B?U1JnZnN1TFV5bnhLR01vbXE0OUxUTnRaMktUWXBBRmJSYWJIbkJ6N0dzY2xO?=
+ =?utf-8?B?MHIzMWdRL1VHUnQ2VFNGQmVKR2oyeXY0K0pIZThlOTMvVEZQWUl3UGd1ZHEy?=
+ =?utf-8?B?aTN0UUdWQytxUVRIWEt6S1V1dmt2RHgyb2U4ZXh2dVNuRUk3VDExUCtSaXh1?=
+ =?utf-8?B?N1VMQUFqRDQvM1FRblRacC95K21DazdQTHFMd0lkakZrQjArSGZZTkZPWFV1?=
+ =?utf-8?B?Wlo3Y3pYbUJ2MU9EcSs4Y2drS1VlNndRRkRsYkpZSHFRVFJmajFoRml0YlF2?=
+ =?utf-8?B?eWRBKzJEdlIxblRjcmlWeUVrS1pxRHRjRVIrNk95VDFhbS8wRjdFZjd1WXRJ?=
+ =?utf-8?B?UWlvRjVZV1N0S2RUZWZaSXdhejRMaWVFamJReHVVdGp6QXhvWEhzRHJNS29T?=
+ =?utf-8?B?ZVVTTnJjdlBubE9zUDZkNnQvUU85N0diVk5PaFFKemNvKzBZdzA5THV3WWR1?=
+ =?utf-8?B?NDg5N2EvcEtzQlB0TEZDZTdBRkJpbDlFWGc3UHdPOTBSRXFpQ2pDUjRSM2J3?=
+ =?utf-8?B?Yml6eDFHYlpwOXZpWGRWRDhrbm82aXl4cGVRbGtMUXV0ODFac0wxSXI4TGxK?=
+ =?utf-8?B?Yk01bkNWVUkzNWdxa005eFBCSlFoMDJyVXNOeXhuSHR3OUtKbEw1VHVVM2lo?=
+ =?utf-8?B?QUd4OGU3WDZ3OEl1Rnp6NGhNRDZGK1ZJdkxjeTFGbzhJYm5MUDdWd0VhSTA1?=
+ =?utf-8?B?WkkzYm9Yd0NzWXVYajI4ZVd1b2ZqNVZSMXlSZ2xTT2tjamVDWG5kaFlTaEth?=
+ =?utf-8?B?SG9ma0ZGS2JPVHYwSjh4ZUdqazJJVGpXNXNnVzhzS2g2Yi9rUllXTitjOGRz?=
+ =?utf-8?B?YUJjcE05c29SaVVzZERlWW9ZNCtpZytDR0t5WlhDV281VUt1OGpqUWZROG9B?=
+ =?utf-8?B?VUNySndtTTFGSnl2cGx4TWtKbFVOb0FIS2RGSWFQdWFWQU1INmVUMncwUnd1?=
+ =?utf-8?B?TzhOUGJGZitiTjUrV3lxbjlCL3BSb3pYUTllZUkvaWdRUFlBU0MxSGJtS1c1?=
+ =?utf-8?B?aSs2Wk93YTc0bWpVQ3lkbTczYWUzOXQvaSt6YzB4WWpaa01qcXErU29aQ205?=
+ =?utf-8?B?ZDltY0Z1eEp0bzFGWk1LWjUzSzFCLy92K3RGazZqZ0lsaVdGRk14Tml6M3o3?=
+ =?utf-8?B?dFExSzhhV2hCQXZUMjk5SXdmK3RDNTJ6V0pxNEpnb0YxSW9oWWlWeWU5WVhq?=
+ =?utf-8?B?bng2VzVvWGxZMjZDa1gyeCtYSzF5WEtlZGhnQW5BRkI3WmFoUHJzV0ZZaEFL?=
+ =?utf-8?B?RkcxaEN1SThKNXFaUm51Z3JFWFBqTzh2aHdUT2tRUDE1cHF2WEFhVDViL0Zv?=
+ =?utf-8?B?UVcwR01TUVJ1OHlNYSsvQ1h4dXpldmtSWEZxVlA3LzFPVSs2RTJzL2g0ZWs1?=
+ =?utf-8?B?V3c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7526162229D2554BA178CA0D91353636@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1696431327-7369-1-git-send-email-quic_mojha@quicinc.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2aa14865-eb83-4e3f-99f7-08dbc5498015
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2023 02:19:27.5074
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9NIJw0axS8dqxfApHU7lb9c3z8oyyorNY95BH2WL62Xg0q4mq9bmoGTDsfN3TBvPHty/yKdPaFwZxeTskWeHPw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6342
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mukesh,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on driver-core/driver-core-testing]
-[also build test ERROR on driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.6-rc4 next-20231004]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Mukesh-Ojha/firmware_loader-Abort-new-fw-load-request-once-firmware-core-knows-about-reboot/20231004-225910
-base:   driver-core/driver-core-testing
-patch link:    https://lore.kernel.org/r/1696431327-7369-1-git-send-email-quic_mojha%40quicinc.com
-patch subject: [PATCH v2] firmware_loader: Abort new fw load request once firmware core knows about reboot
-config: um-allnoconfig (https://download.01.org/0day-ci/archive/20231005/202310051011.PW217wHD-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310051011.PW217wHD-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310051011.PW217wHD-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/base/firmware_loader/main.c:21:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-         |                                                   ^
-   In file included from drivers/base/firmware_loader/main.c:21:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   In file included from drivers/base/firmware_loader/main.c:21:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     692 |         readsb(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     700 |         readsw(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     708 |         readsl(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     717 |         writesb(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     726 |         writesw(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     735 |         writesl(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   In file included from drivers/base/firmware_loader/main.c:45:
-   In file included from drivers/base/firmware_loader/fallback.h:9:
->> drivers/base/firmware_loader/sysfs.h:87:20: error: redefinition of 'fw_load_abort' as different kind of symbol
-      87 | static inline void fw_load_abort(struct fw_sysfs *fw_sysfs)
-         |                    ^
-   drivers/base/firmware_loader/firmware.h:89:13: note: previous definition is here
-      89 | extern bool fw_load_abort;
-         |             ^
-   12 warnings and 1 error generated.
-
-
-vim +/fw_load_abort +87 drivers/base/firmware_loader/sysfs.h
-
-e0c11a8b985137 Russ Weight 2022-04-21  86  
-e0c11a8b985137 Russ Weight 2022-04-21 @87  static inline void fw_load_abort(struct fw_sysfs *fw_sysfs)
-e0c11a8b985137 Russ Weight 2022-04-21  88  {
-e0c11a8b985137 Russ Weight 2022-04-21  89  	struct fw_priv *fw_priv = fw_sysfs->fw_priv;
-e0c11a8b985137 Russ Weight 2022-04-21  90  
-e0c11a8b985137 Russ Weight 2022-04-21  91  	__fw_load_abort(fw_priv);
-e0c11a8b985137 Russ Weight 2022-04-21  92  }
-e0c11a8b985137 Russ Weight 2022-04-21  93  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+T24gV2VkLCAyMDIzLTEwLTA0IGF0IDE4OjI5IC0wNzAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
+b3RlOg0KPiBbNC81XSBLVk06IHg4Ni9tbXU6IFhhcCBLVk0gVERQIHdoZW4gbm9uY29oZXJlbnQg
+RE1BIGFzc2lnbm1lbnQgc3RhcnRzL3N0b3BzDQo+IMKgwqDCoMKgwqAgaHR0cHM6Ly9naXRodWIu
+Y29tL2t2bS14ODYvbGludXgvY29tbWl0LzNjNDk1NWMwNGI5NQ0KDQpYYXAgLT4gWmFwPyA6LSkN
+Cg0KQXBvbG9naXplIGlmIEkgbWlzc2VkIHNvbWV0aGluZy4NCg==
