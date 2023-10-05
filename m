@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9269B7BA09C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C12E7BA0D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237645AbjJEOj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46486 "EHLO
+        id S239257AbjJEOmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236654AbjJEOgo (ORCPT
+        with ESMTP id S237013AbjJEOhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:36:44 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947F243513
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:02:08 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31c5cac3ae2so940345f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 07:02:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696514521; x=1697119321; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rbcoAiVjWZW5P7u3ypsUZftXt7DOl7esx6TwnJ6vnvw=;
-        b=yMXc8n8Ma24feUaJ3nLJnrS0/sGbDmkbKFvd+GTKldX6HJBvxOtBXW3kOm/33ahOOD
-         /vvpehycvVDywf9zDD6Dkt540SotCRKB8LZq2HmkfAaohkUoFu6vZ8iriL8fY5yDi8zP
-         m69riz4SWRJkH1eGwqwPFbXV9qjwGdlfX2xSzKaCmlIdi1FvKRVFBYH+ZyyiT3WZ/0/S
-         BvXyoBjJf5/dFOmVkrnFDcKPjqHVpeEMlWGeHVx0OJmPQcQPlC7liMOidJLq4FFQvNWa
-         EkZ1H3P+B01GQ0Smwwc0EOF4lDapKHx5WJ6yMtd4/F5TuVek7kOPHIZWxQUAXR9uYAo6
-         kVDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696514521; x=1697119321;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rbcoAiVjWZW5P7u3ypsUZftXt7DOl7esx6TwnJ6vnvw=;
-        b=tKdN39CubRjfso12GphkcObV9ujWA5HLeYOFenY/atxMqbwIFr+idetbX0scOAH//b
-         +Ots6YINk8yo3r4/G2A5ycTZsPa5QQ0wafOe+ApDt4aPxgCn9CviY7QjzDTY3jl4H1lm
-         HeNHxNRt7cHtS7pD5Hmlh37pltr1ZNsBSUZZYyHWgV96mFpbK+gQzGU2ZNsculA1sLFq
-         oBtKhTMVXCLge+FuoAQYu5Qguiadb/wUPeXxTPDc7LSTyCTuXrVA1ojQwP4NSOSSyX+O
-         6hUNpVx9DMg30QJFvgFnDOocXqD60bOjzTyy4RcXez1BB9vBEC3beU0Qs7HCp/kxMx85
-         I59A==
-X-Gm-Message-State: AOJu0YzAFQvpzD+ZmndtR0HrtIdMbqsb0Ejuu3U+30/s5ARb5UelwR61
-        T9hgbIgpZ96Oszsp69v7lQHwsw==
-X-Google-Smtp-Source: AGHT+IFzMG84hWtgM7/kzXwiczHNUb5vU+sHKFOUOrM4aCWSY90+ZZWXEdv9Z3kAjAM3RZftvpszLg==
-X-Received: by 2002:adf:f74a:0:b0:31a:d6cb:7f9d with SMTP id z10-20020adff74a000000b0031ad6cb7f9dmr4786129wrp.24.1696514520442;
-        Thu, 05 Oct 2023 07:02:00 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id j18-20020a5d6052000000b003248a490e3asm1867036wrt.39.2023.10.05.07.01.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 07:02:00 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 17:01:57 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Santosh Shilimkar <santosh.shilimkar@ti.com>
-Cc:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mike Turquette <mturquette@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] clk: keystone: pll: fix a couple NULL vs IS_ERR() checks
-Message-ID: <d9da4c97-0da9-499f-9a21-1f8e3f148dc1@moroto.mountain>
+        Thu, 5 Oct 2023 10:37:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D7C4EF2;
+        Thu,  5 Oct 2023 07:03:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5BDEC43215;
+        Thu,  5 Oct 2023 14:02:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696514554;
+        bh=Yym/0Ckebdzm9KAQ3LjZwwE9ndHEvxXkPTtFfyHgzvE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ER3vAkdFfURm/ku44XkFaBj8mcSYJLYFIYPR8MrjZrUJHY3tihb1iK/Bz/mNn5mJX
+         nqafOXXXRV/PZt8t2NgzI/Kdq3BZIsN9QCNi5Gdy+6eXj0uTql3Cn6PLdrt8hky8md
+         ozSiQcR+qZRxEJWWYd1Baedcigz67LabOdu7W4mm0UQV5M6dhp111qJ4M7y3fODTfk
+         V4sR7fedFXtIjsCvaM5S+R9s7HSQthyB8cVFHA48Jyg1elyf9RoT4FQOca2mibPYdt
+         SN4tvojfOQ4tWW81z9o1Ues63Mc8ksEvPQjebNgHEicof6x7R3Iiir30sCJ6gwaD+7
+         5ps5SdnvV4MhQ==
+Date:   Thu, 5 Oct 2023 15:02:38 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] iio: adc: stm32-adc: replace deprecated strncpy
+Message-ID: <20231005150238.0f5ff100@jic23-huawei>
+In-Reply-To: <202309301056.5A21C37D5@keescook>
+References: <20230921-strncpy-drivers-iio-adc-stm32-adc-c-v1-1-c50eca098597@google.com>
+        <202309232006.690F89A@keescook>
+        <20230930184118.73d7465a@jic23-huawei>
+        <202309301056.5A21C37D5@keescook>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clk_register_divider() and clk_register_mux() functions returns
-error pointers on error but this code checks for NULL.  Fix that.
+On Sat, 30 Sep 2023 10:57:03 -0700
+Kees Cook <keescook@chromium.org> wrote:
 
-Fixes: b9e0d40c0d83 ("clk: keystone: add Keystone PLL clock driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/clk/keystone/pll.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+> On Sat, Sep 30, 2023 at 06:41:18PM +0100, Jonathan Cameron wrote:
+> > On Sat, 23 Sep 2023 20:15:09 -0700
+> > Kees Cook <keescook@chromium.org> wrote:
+> >   
+> > > On Thu, Sep 21, 2023 at 04:54:00AM +0000, Justin Stitt wrote:  
+> > > > `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> > > > 
+> > > > We should prefer more robust and less ambiguous string interfaces.
+> > > > 
+> > > > We expect adc->chan_name[val] to be NUL-terminated based on ch_name's
+> > > > use within functions that expect NUL-terminated strings like strncmp and
+> > > > printf-likes:
+> > > > | 	if (!strncmp(stm32_adc_ic[i].name, ch_name, STM32_ADC_CH_SZ)) {
+> > > > | 		/* Check internal channel availability */
+> > > > | 		switch (i) {
+> > > > | 		case STM32_ADC_INT_CH_VDDCORE:
+> > > > | 			if (!adc->cfg->regs->or_vddcore.reg)
+> > > > | 				dev_warn(&indio_dev->dev,
+> > > > | 					 "%s channel not available\n", ch_name);
+> > > > ...
+> > > > 
+> > > > There is no evidence that NUL-padding is needed either.    
+> > > 
+> > > Agreed -- it's used as a C string everywhere I can see.
+> > >   
+> > > > 
+> > > > Considering the above, a suitable replacement is `strscpy` [2] due to
+> > > > the fact that it guarantees NUL-termination on the destination buffer
+> > > > without unnecessarily NUL-padding. If, for any reason, NUL-padding _is_
+> > > > required we should go for `strscpy_pad`.
+> > > > 
+> > > > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> > > > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> > > > Link: https://github.com/KSPP/linux/issues/90
+> > > > Cc: linux-hardening@vger.kernel.org
+> > > > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > > > ---
+> > > > Note: build-tested
+> > > > ---
+> > > >  drivers/iio/adc/stm32-adc.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> > > > index f7613efb870d..9cdcf396d901 100644
+> > > > --- a/drivers/iio/adc/stm32-adc.c
+> > > > +++ b/drivers/iio/adc/stm32-adc.c
+> > > > @@ -2209,7 +2209,7 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+> > > >  				ret = -EINVAL;
+> > > >  				goto err;
+> > > >  			}
+> > > > -			strncpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
+> > > > +			strscpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);    
+> > > 
+> > > I still prefer sizeof($dst), but yes, these are the same:
+> > > 
+> > >         char chan_name[STM32_ADC_CH_MAX][STM32_ADC_CH_SZ];
+> > > 
+> > > If this needs a v2, please improve the Subject, but it is technically
+> > > correct, so:  
+> > 
+> > Hi Kees,
+> > 
+> > I can tweak the subject whilst applying.  What did you have in mind
+> > as a better one?  
+> 
+> I would use "iio: adc: stm32-adc: Replace deprecated strncpy() with strscpy()"
+Makes sense. I also used the () approach to identify functions in the
+text of the patch description instead of `funcname`
 
-diff --git a/drivers/clk/keystone/pll.c b/drivers/clk/keystone/pll.c
-index ee5c72369334..6bbdd4705d71 100644
---- a/drivers/clk/keystone/pll.c
-+++ b/drivers/clk/keystone/pll.c
-@@ -281,12 +281,13 @@ static void __init of_pll_div_clk_init(struct device_node *node)
- 
- 	clk = clk_register_divider(NULL, clk_name, parent_name, 0, reg, shift,
- 				 mask, 0, NULL);
--	if (clk) {
--		of_clk_add_provider(node, of_clk_src_simple_get, clk);
--	} else {
-+	if (IS_ERR(clk)) {
- 		pr_err("%s: error registering divider %s\n", __func__, clk_name);
- 		iounmap(reg);
-+		return;
- 	}
-+
-+	of_clk_add_provider(node, of_clk_src_simple_get, clk);
- }
- CLK_OF_DECLARE(pll_divider_clock, "ti,keystone,pll-divider-clock", of_pll_div_clk_init);
- 
-@@ -328,10 +329,12 @@ static void __init of_pll_mux_clk_init(struct device_node *node)
- 	clk = clk_register_mux(NULL, clk_name, (const char **)&parents,
- 				ARRAY_SIZE(parents) , 0, reg, shift, mask,
- 				0, NULL);
--	if (clk)
--		of_clk_add_provider(node, of_clk_src_simple_get, clk);
--	else
-+	if (IS_ERR(clk)) {
- 		pr_err("%s: error registering mux %s\n", __func__, clk_name);
-+		return;
-+	}
-+
-+	of_clk_add_provider(node, of_clk_src_simple_get, clk);
- }
- CLK_OF_DECLARE(pll_mux_clock, "ti,keystone,pll-mux-clock", of_pll_mux_clk_init);
- 
--- 
-2.39.2
+Applied with those tweaks to the togreg branch of iio.git but initially
+just pushed out as testing to let 0-day take a look at it.
+
+Thanks,
+
+Jonathan
+
+> 
+> Thanks!
+> 
+> -Kees
+> 
 
