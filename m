@@ -2,308 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDE57B9E8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5039C7BA1B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbjJEOId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
+        id S239204AbjJEOnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbjJEOGe (ORCPT
+        with ESMTP id S237150AbjJEOik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:06:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE527A87;
-        Thu,  5 Oct 2023 00:20:20 -0700 (PDT)
-Date:   Thu, 05 Oct 2023 07:20:17 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696490418;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SxdkJDsagE2u95u3CrNYRo5RQ6LTld++pfOtIiKNmso=;
-        b=44BGnwY1Bew5PdTSxmHsVCScK1/vW9C55m2KBObUwE0tiGi2aOQlWkdmFVvNYSuEBMstfz
-        bPtHuzdwQROYaIYc5G8JRPlTAEFPOqGTWYJA+xbHZvfnpd1GCjkzMy0QS4aSYagpxoO7Gk
-        8C/HSKcs8qL10oTrCNoeedia05GJXh0v2LJU5FTAJa60ydfXuodgJCDrHylSYUy/FN3UBn
-        aWK/224p1TG99ITH9Vdhkzkn2AyTDooFAdGSGVXdF4ieQouLijdIDfWo6du4K4OVZPZONS
-        n/OM11LYwSk2yQRCmJ54fg3x1rsMx4DnF68GJP5+d+1pkPda91MP4Id6AUkJaA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696490418;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SxdkJDsagE2u95u3CrNYRo5RQ6LTld++pfOtIiKNmso=;
-        b=VA/CYKv2GfnjnTV3qLiToJnimPOveh0mnodHYNgprwd5FM5h+tYRQ8Zi7+q0og0aPv0+45
-        ernBwKYAC0PpBUCQ==
-From:   "tip-bot2 for Nadav Amit" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/percpu] x86/percpu: Use compiler segment prefix qualifier
-Cc:     Nadav Amit <namit@vmware.com>, Uros Bizjak <ubizjak@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231004145137.86537-4-ubizjak@gmail.com>
-References: <20231004145137.86537-4-ubizjak@gmail.com>
-MIME-Version: 1.0
-Message-ID: <169649041744.3135.4005058021349151239.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+        Thu, 5 Oct 2023 10:38:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E600547851;
+        Thu,  5 Oct 2023 07:02:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696514576; x=1728050576;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=l+KUCngkyx4Xn47J8ZIAf9ufOUPZQFuBvCf7z3BgsUw=;
+  b=jdjGDiUavp+nNZWRqsE4/B19B7E94kiwgiPIVd7y9Lbn8zV4GHVKFtUr
+   7UnoReSNVlPDxBboGfglHFeTf+y1uyH7MWP74HzFWtkNNl5O3TpohlbW0
+   XA7qkLajCNKHRskltZxOzKt3aIsDgjrqeYZgftZORp3vs1qAq0rNFOHWB
+   V+AyczKWDGg9DjoVZLF+OQAgC6PUGqI0E6cykzIe/cOW6n+TvcoM3JR7a
+   ZPVeKAm63SxivuFYl0wBxOsVHXZsQqKbE0EO/A7shhP/I+m9yZdFffHYb
+   b3Jhikkt47kFoLlHtr80DIQov4/q7GzsntzgMPFB9nyXEAhAfnyY9ToD9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="4989434"
+X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
+   d="scan'208";a="4989434"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 00:21:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="701541751"
+X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
+   d="scan'208";a="701541751"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Oct 2023 00:21:38 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 5 Oct 2023 00:21:38 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 5 Oct 2023 00:21:38 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 5 Oct 2023 00:21:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CEr2COyaTpLFS/pIFmGFo1/e2oIIkIcV+3xSAIEz0KD9DmRz93cbY0tsy/kNzBex5BX/fepvw5T4va3w64Pio1S62XWbRMeJTTqtIhIJHCTEBIWv8faSGPBLuRjiQYn7zQAj5RfnWTWZ9aLD37xIv6B56hCHHkcTNXOurhCGCIVW7HaMbCGZLIf/8PUhbaQ0pqPZ4MxKdLRI8zocHlzvDt+nfHsByeoQJ2w7MfrCbUDzH33LgW4lETop3u5wDOdUKrXhJJsXASHeUEdclFyg3XNENV3pSkbkkgccQwXXJxIKXCQKVipANt8ztLPLvS6vriy9HQUcs+SgzKHx8Psg9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l+KUCngkyx4Xn47J8ZIAf9ufOUPZQFuBvCf7z3BgsUw=;
+ b=FmU6hv9P/mrGhhcOkKgPAcmL5uCm7qqC7ZN5Hjz5Pt57GVyW7lTeBJDIyRxOCDG1W7wJUENxh+mB8vkleCugppfdnx0psXg0/oRy/hAnRpFY8RPEHU7iH2sMR/SEAce/mCT8hbEkxgj/7LY3DLpY9Cl84N2qnyhXj102LUNGPjMK99vEzsqE8B8MK8FF0RJxEG/tV1/9m30Tn9rjRqwLtNo3Xjy8Ib0FwfTHATA5QqBMqLeRGEwIU/bFzOwYLPq3qQ0blNs2mR1UDLEDeCODrcB5F22H5zW3rRO+WMa/ONEdUWWq5Kpw5SJkdo7ry/fbpfnDBy4o4ZGN3XOc+Un2YA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SA1PR11MB6734.namprd11.prod.outlook.com (2603:10b6:806:25d::22)
+ by DS7PR11MB6151.namprd11.prod.outlook.com (2603:10b6:8:9c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.29; Thu, 5 Oct
+ 2023 07:21:29 +0000
+Received: from SA1PR11MB6734.namprd11.prod.outlook.com
+ ([fe80::922f:ec7c:601b:7f61]) by SA1PR11MB6734.namprd11.prod.outlook.com
+ ([fe80::922f:ec7c:601b:7f61%6]) with mapi id 15.20.6813.017; Thu, 5 Oct 2023
+ 07:21:29 +0000
+From:   "Li, Xin3" <xin3.li@intel.com>
+To:     Nikolay Borisov <nik.borisov@suse.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Gross, Jurgen" <jgross@suse.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>,
+        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>
+Subject: RE: [PATCH v12 00/37] x86: enable FRED for x86-64
+Thread-Topic: [PATCH v12 00/37] x86: enable FRED for x86-64
+Thread-Index: AQHZ9caENagGnRugfUWOoRzs4wEdL7A6vBYAgAAMCNA=
+Date:   Thu, 5 Oct 2023 07:21:29 +0000
+Message-ID: <SA1PR11MB67345B6C16EEA16FEED714D2A8CAA@SA1PR11MB6734.namprd11.prod.outlook.com>
+References: <20231003062458.23552-1-xin3.li@intel.com>
+ <9b5ddb4e-12f1-4058-bcce-119d6ac4817c@suse.com>
+In-Reply-To: <9b5ddb4e-12f1-4058-bcce-119d6ac4817c@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR11MB6734:EE_|DS7PR11MB6151:EE_
+x-ms-office365-filtering-correlation-id: a8cfe870-ff54-42a5-c796-08dbc573b18e
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wnAjEeoibdnhFB0qD2X2MCZl8OJKdkKnXQTF+7evRGFnlf5gNiWssSRPy/hUg4gt6pt16EhETDBIkjuGqCq+b4a+1SO9Qtn5hbh2dMRvtmf+vFRUBJA4M2NRKCOTqsMnq7Ko1jpCdKLVwTzAUtPy3UN3H4iwnJvWK25v+Guei4W4s9cLoZTKHhsinIBg2+Du/SyEj7nbqxG3EApsQV3BH49tOd6VOu8XVXQnvFD2bWs+l+BanFDWrMoJs61ip+c63+ty1P2HK5OWEzAvlzCd7n7DrTSI/moNNdfzyn+lq8Pm9Pgq7Zt8SLUwKKu0VNgS1Za5EIqc5XjCx/yRAg1X0YCrRJSh7jsIPXNB2yj9lzojASC5l52rI9ImXvjVufyo/tBAFxLq8ph4S6brJbVSA9b/eYQIv1u3CAr31QZZ2nTceEtsKICIRfrxWjYcfn4mZoaH9PQ7+E/pPb7g3UYenFhkmTG2Ubq1uAxpaN9KWCuN0osQc2od26+72ZA9LrFOMpUHkcsiOm1l3g75UYpttTr0/ypromhRIHYnbopFsnE8FxRGcBJFOQD6yi5e47wF5G5dUAuLTHjbWbNCjDbeKSEK3RkbmESGlnjtkZof4lt3Vgo+ndTK5JlnTxoTMgXH
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(39860400002)(366004)(376002)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(38100700002)(55016003)(26005)(82960400001)(38070700005)(122000001)(33656002)(86362001)(83380400001)(8936002)(316002)(4326008)(64756008)(54906003)(8676002)(66446008)(5660300002)(41300700001)(66476007)(66556008)(52536014)(110136005)(4744005)(66946007)(2906002)(76116006)(7416002)(478600001)(71200400001)(9686003)(6506007)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YnlSRVpWbFlEUDY2aWNaUnlvUWxZMEpCb2F4MXg5aHAyYzJLQkRtYmpYZTUx?=
+ =?utf-8?B?dWhFOFE3MndrS2RnNG1BVDcyNGcvbU5XRG9YWWVGeUthYjFLaWFwdHlyenFE?=
+ =?utf-8?B?aE81RmpqNTN3NzY0cEwrM04xR3RLelVDZjc3OFdZTS96dENwQjBuaFhzZ1JH?=
+ =?utf-8?B?RFlKN1VqNFNid0lOQU9KRlRVVDRNc3dzZmdBTGdXcjUybFE3cG1NRHZJZENt?=
+ =?utf-8?B?YVlvQmxabnlIdkhCeXFqWVllY0lURmovQ3Z2ODF3RVI4ckF1c20vZFMrQXZZ?=
+ =?utf-8?B?cE1vb2lYbEgyOU5EenRWZUtJSFdUTEpvNlB1MitiMVRxVU03VFFoU2tCRmtm?=
+ =?utf-8?B?T25hTkZQNXU5TDFaRUJaRFNnczF1amFOYURZNmVsUmJTTlFsWG9Gdk4rMlBR?=
+ =?utf-8?B?SG9DZExGWkpQcWRiOUtGdE9NM0RtanhPTExuczNEYjRqOFlhUlhYSGpVdjg0?=
+ =?utf-8?B?TnRnYjE0bnpPM3Avb1dpVWFYekJCbDBkMkVOQm93R29WR0F5SFVSVzl4UUpi?=
+ =?utf-8?B?blpRWUdPbW53anBJcTc3cUE4RlNCZkEzeUJoZ2FXMkdETEFnYWhpQ2RDR0xy?=
+ =?utf-8?B?ZFVvenozZ0dFbnBGd3RCZk8xdVQwTXpJWmt2bnBDelhpVWVhVmNlWGJkUkl6?=
+ =?utf-8?B?WkMzV3V5UlJVemFGREVIaWwvZmJ6R3lBeUdmRXExeDR3OTJjVlF0b3JvVnF2?=
+ =?utf-8?B?bUtieVdDUWN2WDNZSEZ1d0l5VjJLRlVtRWRZN2ExbmpxUE5LaUJxV29nZTF1?=
+ =?utf-8?B?T2V0TThqeXBXL1ZLd3FxMmV4Z1lkL3Y0Y0NPdjBwdjhGTThHYzZYRFhnSys1?=
+ =?utf-8?B?VkJJaC9IOEQ1cENHb2NwbVFhQlQwTDdlZjdLVXorWlpSWnlCYk1qLytpNE9k?=
+ =?utf-8?B?QVdZUkExOXNjbWh2V1ZhVkdWQUt2TVhqaE1xaElYeUkyWVRkNHkvcU9JOW0z?=
+ =?utf-8?B?SmFGTEFaRlRVK2JyZmtXRFB1M2VkVVJrWnNEZjltbTVodWIxUnFZZ01NVHNq?=
+ =?utf-8?B?VVJtTU14K2kxSVFFZzgvY05rZjBVcUpSbDdxamQ1VEYrQkJTT1Rtekw1YVpB?=
+ =?utf-8?B?ejNUcGNUQ2lvaFdVbTVoTHZLL3FWY3o1cEFPUkpycTI1WFQrOGJSQWR0bXhr?=
+ =?utf-8?B?Yld3NGFpUUczM1c3SDRXWWdTVXovOFIyZ1ZvcTk1S0VEMUg5b3RGb2RCcTZs?=
+ =?utf-8?B?VStsS0xBem5DQ2JMUXBrN0lBNFRKdEVlTnJkaUJFRDJ1VDFZVHVrbitYVnFJ?=
+ =?utf-8?B?cUFkVVNlQk1xQ0xyUG05TkliSjUyUFozQmNmMHliWmh4dWxrOXZ6TXRMbk1X?=
+ =?utf-8?B?TlZJZXRDTHR3aEY5eVJIaEVxRGNROWNkdW1hcUVMMGxGWDdwT1pVZlFhYjJS?=
+ =?utf-8?B?Y2J3cExKK0tFUzJjNU9pTEVkZlMzTE5iTmRzdG1QU0ZZdUkxMEZYaFQ3c1d3?=
+ =?utf-8?B?cG1KMTVOUkZpenNNQks5Njg4dzllaWhheWJ0cUZQWS8xbTQxSHFxTXhQS0RS?=
+ =?utf-8?B?VWpvblhyV0VROGRyVGxvRG91dWpyeWZGbzN1bWdDR1hxV0N3dW40emVJaytL?=
+ =?utf-8?B?Ty9idVViVUVxbTBZRXdzcllYZ3Q2WWhUd3c4V0VkdE54Z3ZQcDhXQVZRNmtv?=
+ =?utf-8?B?cm1pOGxpbGZycFJmdWlBTHpXOHlPdHVxVWdkS3V5MUh3MzlOWlprZjFmQVEy?=
+ =?utf-8?B?enJ1V3AvaW4wbUUzWWNDU2QwaTIwdlo0SnpkclE0bDZSOVBTbXM5TlpUcmJF?=
+ =?utf-8?B?b05BTldva0k2YnVuclhHYklhaTlHQ1BIdXBGNnVUYmlDa0cwUjk0OHN2YmdF?=
+ =?utf-8?B?aGNnK3Btb0xtTlJ4V3BHeGUrQXNqRW9DSW1FTzhhZTJPeXEzNHcxcFJ5dzFs?=
+ =?utf-8?B?VDZ4ZzV0OUcyVVA4REV2d3JiMTRmNGduRWo0dHJQUnBjZGpKeHVzN0hVMnlv?=
+ =?utf-8?B?dXdnb3dlWXhSNkFGWDZOM3plbG0vV1JDTnNsN0FiK0JXT2NCRndpMHBmZC9U?=
+ =?utf-8?B?YURJN0srK2hvK0ZKVnBGcmVqcUNYWWV4LzgrNkZnTDc5cEkrcE9sRGgzYTZq?=
+ =?utf-8?B?Z3c1bFUyVlR1MElDNzRWallKbWxoTEZZR3NHWlZIMWJSU256ODNrSHZzQ00y?=
+ =?utf-8?Q?RsJE=3D?=
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6734.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8cfe870-ff54-42a5-c796-08dbc573b18e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2023 07:21:29.3301
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Y4yGboRDoJVw6HShIVcUIcawr+dMFUTXIsQsaxkZHnLIKZG+zkhFcXrwn4ABkUVLTS8xYyC58qBUJSDRze9mmQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6151
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/percpu branch of tip:
-
-Commit-ID:     9a462b9eafa6dda16ea8429b151edb1fb535d744
-Gitweb:        https://git.kernel.org/tip/9a462b9eafa6dda16ea8429b151edb1fb535d744
-Author:        Nadav Amit <namit@vmware.com>
-AuthorDate:    Wed, 04 Oct 2023 16:49:43 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 05 Oct 2023 09:01:52 +02:00
-
-x86/percpu: Use compiler segment prefix qualifier
-
-Using a segment prefix qualifier is cleaner than using a segment prefix
-in the inline assembly, and provides the compiler with more information,
-telling it that __seg_gs:[addr] is different than [addr] when it
-analyzes data dependencies. It also enables various optimizations that
-will be implemented in the next patches.
-
-Use segment prefix qualifiers when they are supported. Unfortunately,
-gcc does not provide a way to remove segment qualifiers, which is needed
-to use typeof() to create local instances of the per-CPU variable. For
-this reason, do not use the segment qualifier for per-CPU variables, and
-do casting using the segment qualifier instead.
-
-Uros: Improve compiler support detection and update the patch
-to the current mainline.
-
-Signed-off-by: Nadav Amit <namit@vmware.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Brian Gerst <brgerst@gmail.com>
-Cc: Denys Vlasenko <dvlasenk@redhat.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lore.kernel.org/r/20231004145137.86537-4-ubizjak@gmail.com
----
- arch/x86/include/asm/percpu.h  | 68 ++++++++++++++++++++++-----------
- arch/x86/include/asm/preempt.h |  2 +-
- 2 files changed, 47 insertions(+), 23 deletions(-)
-
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index 20624b8..da45120 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -28,26 +28,50 @@
- #include <linux/stringify.h>
- 
- #ifdef CONFIG_SMP
-+
-+#ifdef CONFIG_CC_HAS_NAMED_AS
-+
-+#ifdef CONFIG_X86_64
-+#define __percpu_seg_override	__seg_gs
-+#else
-+#define __percpu_seg_override	__seg_fs
-+#endif
-+
-+#define __percpu_prefix		""
-+
-+#else /* CONFIG_CC_HAS_NAMED_AS */
-+
-+#define __percpu_seg_override
- #define __percpu_prefix		"%%"__stringify(__percpu_seg)":"
-+
-+#endif /* CONFIG_CC_HAS_NAMED_AS */
-+
-+#define __force_percpu_prefix	"%%"__stringify(__percpu_seg)":"
- #define __my_cpu_offset		this_cpu_read(this_cpu_off)
- 
- /*
-  * Compared to the generic __my_cpu_offset version, the following
-  * saves one instruction and avoids clobbering a temp register.
-  */
--#define arch_raw_cpu_ptr(ptr)				\
--({							\
--	unsigned long tcp_ptr__;			\
--	asm ("add " __percpu_arg(1) ", %0"		\
--	     : "=r" (tcp_ptr__)				\
--	     : "m" (this_cpu_off), "0" (ptr));		\
--	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;	\
-+#define arch_raw_cpu_ptr(ptr)					\
-+({								\
-+	unsigned long tcp_ptr__;				\
-+	asm ("add " __percpu_arg(1) ", %0"			\
-+	     : "=r" (tcp_ptr__)					\
-+	     : "m" (__my_cpu_var(this_cpu_off)), "0" (ptr));	\
-+	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;		\
- })
--#else
-+#else /* CONFIG_SMP */
-+#define __percpu_seg_override
- #define __percpu_prefix		""
--#endif
-+#define __force_percpu_prefix	""
-+#endif /* CONFIG_SMP */
- 
-+#define __my_cpu_type(var)	typeof(var) __percpu_seg_override
-+#define __my_cpu_ptr(ptr)	(__my_cpu_type(*ptr) *)(uintptr_t)(ptr)
-+#define __my_cpu_var(var)	(*__my_cpu_ptr(&var))
- #define __percpu_arg(x)		__percpu_prefix "%" #x
-+#define __force_percpu_arg(x)	__force_percpu_prefix "%" #x
- 
- /*
-  * Initialized pointers to per-cpu variables needed for the boot
-@@ -107,14 +131,14 @@ do {									\
- 		(void)pto_tmp__;					\
- 	}								\
- 	asm qual(__pcpu_op2_##size(op, "%[val]", __percpu_arg([var]))	\
--	    : [var] "+m" (_var)						\
-+	    : [var] "+m" (__my_cpu_var(_var))				\
- 	    : [val] __pcpu_reg_imm_##size(pto_val__));			\
- } while (0)
- 
- #define percpu_unary_op(size, qual, op, _var)				\
- ({									\
- 	asm qual (__pcpu_op1_##size(op, __percpu_arg([var]))		\
--	    : [var] "+m" (_var));					\
-+	    : [var] "+m" (__my_cpu_var(_var)));				\
- })
- 
- /*
-@@ -144,14 +168,14 @@ do {									\
- 	__pcpu_type_##size pfo_val__;					\
- 	asm qual (__pcpu_op2_##size(op, __percpu_arg([var]), "%[val]")	\
- 	    : [val] __pcpu_reg_##size("=", pfo_val__)			\
--	    : [var] "m" (_var));					\
-+	    : [var] "m" (__my_cpu_var(_var)));				\
- 	(typeof(_var))(unsigned long) pfo_val__;			\
- })
- 
- #define percpu_stable_op(size, op, _var)				\
- ({									\
- 	__pcpu_type_##size pfo_val__;					\
--	asm(__pcpu_op2_##size(op, __percpu_arg(P[var]), "%[val]")	\
-+	asm(__pcpu_op2_##size(op, __force_percpu_arg(P[var]), "%[val]")	\
- 	    : [val] __pcpu_reg_##size("=", pfo_val__)			\
- 	    : [var] "p" (&(_var)));					\
- 	(typeof(_var))(unsigned long) pfo_val__;			\
-@@ -166,7 +190,7 @@ do {									\
- 	asm qual (__pcpu_op2_##size("xadd", "%[tmp]",			\
- 				     __percpu_arg([var]))		\
- 		  : [tmp] __pcpu_reg_##size("+", paro_tmp__),		\
--		    [var] "+m" (_var)					\
-+		    [var] "+m" (__my_cpu_var(_var))			\
- 		  : : "memory");					\
- 	(typeof(_var))(unsigned long) (paro_tmp__ + _val);		\
- })
-@@ -187,7 +211,7 @@ do {									\
- 				    __percpu_arg([var]))		\
- 		  "\n\tjnz 1b"						\
- 		  : [oval] "=&a" (pxo_old__),				\
--		    [var] "+m" (_var)					\
-+		    [var] "+m" (__my_cpu_var(_var))			\
- 		  : [nval] __pcpu_reg_##size(, pxo_new__)		\
- 		  : "memory");						\
- 	(typeof(_var))(unsigned long) pxo_old__;			\
-@@ -204,7 +228,7 @@ do {									\
- 	asm qual (__pcpu_op2_##size("cmpxchg", "%[nval]",		\
- 				    __percpu_arg([var]))		\
- 		  : [oval] "+a" (pco_old__),				\
--		    [var] "+m" (_var)					\
-+		    [var] "+m" (__my_cpu_var(_var))			\
- 		  : [nval] __pcpu_reg_##size(, pco_new__)		\
- 		  : "memory");						\
- 	(typeof(_var))(unsigned long) pco_old__;			\
-@@ -221,7 +245,7 @@ do {									\
- 		  CC_SET(z)						\
- 		  : CC_OUT(z) (success),				\
- 		    [oval] "+a" (pco_old__),				\
--		    [var] "+m" (_var)					\
-+		    [var] "+m" (__my_cpu_var(_var))			\
- 		  : [nval] __pcpu_reg_##size(, pco_new__)		\
- 		  : "memory");						\
- 	if (unlikely(!success))						\
-@@ -244,7 +268,7 @@ do {									\
- 									\
- 	asm qual (ALTERNATIVE("call this_cpu_cmpxchg8b_emu",		\
- 			      "cmpxchg8b " __percpu_arg([var]), X86_FEATURE_CX8) \
--		  : [var] "+m" (_var),					\
-+		  : [var] "+m" (__my_cpu_var(_var)),			\
- 		    "+a" (old__.low),					\
- 		    "+d" (old__.high)					\
- 		  : "b" (new__.low),					\
-@@ -276,7 +300,7 @@ do {									\
- 			      "cmpxchg8b " __percpu_arg([var]), X86_FEATURE_CX8) \
- 		  CC_SET(z)						\
- 		  : CC_OUT(z) (success),				\
--		    [var] "+m" (_var),					\
-+		    [var] "+m" (__my_cpu_var(_var)),			\
- 		    "+a" (old__.low),					\
- 		    "+d" (old__.high)					\
- 		  : "b" (new__.low),					\
-@@ -313,7 +337,7 @@ do {									\
- 									\
- 	asm qual (ALTERNATIVE("call this_cpu_cmpxchg16b_emu",		\
- 			      "cmpxchg16b " __percpu_arg([var]), X86_FEATURE_CX16) \
--		  : [var] "+m" (_var),					\
-+		  : [var] "+m" (__my_cpu_var(_var)),			\
- 		    "+a" (old__.low),					\
- 		    "+d" (old__.high)					\
- 		  : "b" (new__.low),					\
-@@ -345,7 +369,7 @@ do {									\
- 			      "cmpxchg16b " __percpu_arg([var]), X86_FEATURE_CX16) \
- 		  CC_SET(z)						\
- 		  : CC_OUT(z) (success),				\
--		    [var] "+m" (_var),					\
-+		    [var] "+m" (__my_cpu_var(_var)),			\
- 		    "+a" (old__.low),					\
- 		    "+d" (old__.high)					\
- 		  : "b" (new__.low),					\
-@@ -494,7 +518,7 @@ static inline bool x86_this_cpu_variable_test_bit(int nr,
- 	asm volatile("btl "__percpu_arg(2)",%1"
- 			CC_SET(c)
- 			: CC_OUT(c) (oldbit)
--			: "m" (*(unsigned long __percpu *)addr), "Ir" (nr));
-+			: "m" (*__my_cpu_ptr((unsigned long __percpu *)(addr))), "Ir" (nr));
- 
- 	return oldbit;
- }
-diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
-index 4527e14..4b2a35d 100644
---- a/arch/x86/include/asm/preempt.h
-+++ b/arch/x86/include/asm/preempt.h
-@@ -92,7 +92,7 @@ static __always_inline void __preempt_count_sub(int val)
-  */
- static __always_inline bool __preempt_count_dec_and_test(void)
- {
--	return GEN_UNARY_RMWcc("decl", pcpu_hot.preempt_count, e,
-+	return GEN_UNARY_RMWcc("decl", __my_cpu_var(pcpu_hot.preempt_count), e,
- 			       __percpu_arg([var]));
- }
- 
+PiA+IFRoaXMgcGF0Y2ggc2V0IGVuYWJsZXMgdGhlIEludGVsIGZsZXhpYmxlIHJldHVybiBhbmQg
+ZXZlbnQgZGVsaXZlcnkNCj4gPiAoRlJFRCkgYXJjaGl0ZWN0dXJlIGZvciB4ODYtNjQuDQo+ID4N
+Cj4gDQo+IA0KPiBXaGljaCB0cmVlIGlzIHRoaXMgYmFzZWQgb24gbm93Pw0KPg0KDQpJdCB3YXMg
+YmFzZWQgb24gdGhlIHRpcCBtYXN0ZXIgb24gdGhlIGRheSBJIHNlbnQgdGhlIHYxMiBwYXRjaCBz
+ZXQsIGkuZS4sDQpNb25kYXkgbmlnaHQgaW4gdGhlIFVTIHdlc3QgY29hc3QuDQoNCj4gSSB0cmll
+ZCBydW5uaW5nICdiNCBkaWZmJyBidXQgaXQgY29tcGxhaW5zIGl0IGNhbid0DQo+IGZpbmQgc29t
+ZSBjb250ZXh0IGFyb3VuZCBhcmNoL3g4Ni9rZXJuZWwvY3B1L2NvbW1vbi5jIC4NCj4NCg0KV2hh
+dCBkb2VzIGl0IGNvbXBsYWluPw0KDQo+IEkgaGF2ZSB0aGUgdGlwIHRyZWUgdXBkYXRlZC4NCg0K
+SSBqdXN0IGRpZCBhIHJlYmFzZSBvbiB0aGUgbGF0ZXN0IHRpcCBtYXN0ZXIsIGFuZCBkaWQgZmlu
+ZCBhIGJ1aWxkIGJ1Zw0KY2F1c2VkIGJ5Og0KDQpbUEFUQ0ggdjEyIDMzLzM3XSB4ODYvZW50cnk6
+IEFkZCBmcmVkX2VudHJ5X2Zyb21fa3ZtKCkgZm9yIFZNWCB0byBoYW5kbGUgSVJRL05NSQ0KDQph
+cyA8YXNtL2V4cG9ydC5oPiBpcyBkZXByZWNhdGVkIGJ5IDxsaW51eC9leHBvcnQuaD4geWVzdGVy
+ZGF5Lg0KDQpBZnRlciBJIHJlcGxhY2VkIGl0LCBpdCBjb21waWxlcyBhbmQgYm9vdHMuICBXaGF0
+IHNob3VsZCBJIGRvIG5vdz8NCg0KVGhhbmtzIQ0KICAgIFhpbg0K
