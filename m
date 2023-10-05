@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9F97BA98E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C757BA990
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231760AbjJES4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 14:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
+        id S231861AbjJES45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 14:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjJES4f (ORCPT
+        with ESMTP id S231644AbjJES4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 14:56:35 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03EBA6;
-        Thu,  5 Oct 2023 11:56:33 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-79fa387fb96so57226239f.1;
-        Thu, 05 Oct 2023 11:56:33 -0700 (PDT)
+        Thu, 5 Oct 2023 14:56:54 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16E210B
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 11:56:51 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a4f656f751so19932917b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 11:56:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696532193; x=1697136993; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=r+7ZgmwvHcd4XxtyCW9lIWtoj/cz+ZOFOOkfV4f6hwY=;
-        b=UZdbWDMJzZHbuNGAvpBjHzXdy/eNa6g6HCZ6YEWGy/0/+iJeR3uf0Q39JeNNgolNm2
-         dlO3K0FfCER/2T1qFvzgSflRdpaZ+7w15+1syQEo1NS/v1Dz9EvVQqawamMcyItP/dRA
-         FtuBKhcK8sA2xvjHXF+NMUMgcDIsmNfpdvp5ODUUBtcxJ6O+HpjXAH58IYa4LSaQSQw3
-         XmHwq11aFyKPhdyDQTrVUwzir5b7UlGxGnVsSxbniIjB3WnhZtURkhC6oU2Rd4QbOyfN
-         svsitDB4x5k8JfJCSPKXFOvCZLGVGCQ68rCIlUClnsFwcJjs+zAuH5IIrpSTaPz1UXFc
-         wrkg==
+        d=google.com; s=20230601; t=1696532211; x=1697137011; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=eydlxrPJ/pmozsTSySXLkFu7a53QgB4P2BhmOOld44E=;
+        b=1MOG0FzWY+B28VfmpmiZ4Kh/e0fbmWDVf/kdCM2HUX5E5+HfYjFV37LBLnaWy/5+No
+         UA+YEv2vZhyj1fndNxbx0jp+/nPJJUHfG06a4ok6EPNLTfl1Or8f2gl4maWvZQnAtwxh
+         zp0efHFSC1s8doqXfnjyYnDurpqaSql3am9TWsIth22bpnigc5K1qkZVv875Yc1RnLgQ
+         pD3ZGob00JamvjDbDR70My+/ShqIN5hjon6qXRqHLK15s2Qk7z9xWo6rw7J90jmHRt2C
+         1+NojdXvk4apZ3/8QDd1UBg9Q2uoRsd80kHzHgxplBiPw6NiHomabLDnYV9FG55Wl46w
+         SWxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696532193; x=1697136993;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r+7ZgmwvHcd4XxtyCW9lIWtoj/cz+ZOFOOkfV4f6hwY=;
-        b=ADFRQsGkv2fSzfWwdTKE09kNpbRrCyDlWGB/xAaMsMVNOgLmMBOfonDylIGVsGrdM4
-         AjMuVznY3aGA26Scy9QlvELudfO3gRbCFR1eiEIIZsct7jBj6KvC5svmynETRbOnB9wB
-         uc9NCVW/qliv8hFXDjhoLpNlGrqTqYZw8nH7FeTgYIzYTZhJMeX58H1/955YJK6eUkJY
-         7RjAbxQHjUqIW0g4D2nTd+CuJRAUX8iKMP6gavln4ZO00mhvO96mQPLN584mawkv0+Pg
-         motj/dWfOQfoCRAWzefIvdBwCqKZl+yqemvzp8k4Aio19CLaDtNTnR2lybcmQbLuoxgm
-         eZ8A==
-X-Gm-Message-State: AOJu0YzjPMpKE2gQCp2bv0zZ/MVLMAanMWQNTVnSGCqEZbd0H0SH39LG
-        7qesW+qWIYP8hjv1OQN194MfwOhDQJo=
-X-Google-Smtp-Source: AGHT+IGLqW1KUSqWfnlmuxfLfSwgQHNDempCqj+PzjKHkCYmu7jiD94Yf4YTQxwsN/vFVi28Ga9pNg==
-X-Received: by 2002:a6b:e50b:0:b0:798:134a:44b with SMTP id y11-20020a6be50b000000b00798134a044bmr6447031ioc.21.1696532193018;
-        Thu, 05 Oct 2023 11:56:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 17-20020a0566380a5100b0042b1dd89b0bsm100832jap.155.2023.10.05.11.56.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 11:56:32 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 5 Oct 2023 11:56:30 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     David Ober <dober@lenovo.com>
-Cc:     "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
-Subject: Re: [External] Re: Watchdog patches
-Message-ID: <febf1090-67bb-4081-8010-35acf8a26952@roeck-us.net>
-References: <SEYPR03MB7192579DF7D0130F699CB7D1DA09A@SEYPR03MB7192.apcprd03.prod.outlook.com>
- <3c51b285-6691-14e7-e3e3-9e111e8561a8@roeck-us.net>
- <SEYPR03MB719214D0CFFAA04B17748321DACAA@SEYPR03MB7192.apcprd03.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SEYPR03MB719214D0CFFAA04B17748321DACAA@SEYPR03MB7192.apcprd03.prod.outlook.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        d=1e100.net; s=20230601; t=1696532211; x=1697137011;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eydlxrPJ/pmozsTSySXLkFu7a53QgB4P2BhmOOld44E=;
+        b=QY4sJW5MP+3E5fXJnCKv1pEaencEV4P/DhbTI8PbU7qCrVc/l04bGAZ9VLqf/VjO0/
+         hM30hNyGs2skR6+0CRABa1kstHL7Ml0EGRiLXlWuIRYG4CbiA600dpLZlzFpWHW5IPuH
+         d15BfYBktIgiKZEokykzf9dapz3g3g/wgY7HvklqEaeCjPCmFWJTLXdSPHepOUUP5+JB
+         zDm4DO9N8Hbjvm8fEKZf1uKYoWPm8Jb+MbJ3BBQe9MyO5P83A4ls5uBNxnSoZ68Sy/Qx
+         LvXSPYGWx7gs26jhrm1SrEE06lfHNfujrQvAxR3Votb4pFFsOPqGNDojpyV36BmtV4Ny
+         rfWw==
+X-Gm-Message-State: AOJu0Yw5HpZqcIJfbU8eI/5Q6hk6lWhsLolhPGfCN2zIfO489hSWJ0/E
+        7JV2+I5kqSQpSlo9JZXjSBVzE5bWoZPqqVdxeg==
+X-Google-Smtp-Source: AGHT+IGw9j1c4ZqKT+jP44Q5jYqURZViGdjQP9Qdf764azGuPvp2A8S9d3pmyXW8g/SwbG3OQxUJq0useT5bEpN0/A==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:770f:0:b0:d35:bf85:5aa0 with SMTP
+ id s15-20020a25770f000000b00d35bf855aa0mr99342ybc.4.1696532211122; Thu, 05
+ Oct 2023 11:56:51 -0700 (PDT)
+Date:   Thu, 05 Oct 2023 18:56:50 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAPEGH2UC/5XNSw7CIBSF4a00jL2GhyA6ch+mA0KvLUmF5kKIT
+ dO9i92Bw/8MzrexjBQws3u3McIackixhTx1zE8ujghhaM0kl0pwriEXin5ZYaBQkTJELDBkB7O
+ LN8UV+EQIHoyyxmqL2kvJ2tlC+AqfA3r2raeQS6L1cKv4rX8TVYAA7YzxWllxueJjTGmc8ezTm /X7vn8B+2ULJ90AAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696532210; l=1964;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=WEPAms72jIcON0R+TEoyIAOUx88hgLlG4C/IGyOKoeU=; b=Q5u/lRzz9GPrsxR/C/lmVH9+BUcqxH7ZIwWb/XRDHgvWh3MZgzMpWnZf5WZVVLkGT9Swq4rEM
+ N4zrwEiBjCXA5MFNEV/hVlnf6tFI0qkjSjJQ8QUtujKRqnDY/z7+iwE
+X-Mailer: b4 0.12.3
+Message-ID: <20231005-strncpy-drivers-net-dsa-lan9303-core-c-v2-1-feb452a532db@google.com>
+Subject: [PATCH v2] net: dsa: lan9303: use ethtool_sprintf() for lan9303_get_strings()
+From:   Justin Stitt <justinstitt@google.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Justin Stitt <justinstitt@google.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,14 +82,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 12:18:50PM +0000, David Ober wrote:
-> Nudge, I now have three watchdog patches pending and no updates on what may need to be changed for any of them, any update on what needs changed as to why they can not be promoted to the main line kernel.
-> 
+This pattern of strncpy with some pointer arithmetic setting fixed-sized
+intervals with string literal data is a bit weird so let's use
+ethtool_sprintf() as this has more obvious behavior and is less-error
+prone.
 
-On my side, there is a severe lack of time, combined with burnout due
-to a large number of patches requiring several rounds of review and
-feedback. I do not expect that to change anytime soon. If that is
-unacceptable, I'll be happy to resign as co-maintainer of the watchdog
-subsystem.
+Nicely, we also get to drop a usage of the now deprecated strncpy() [1].
 
-Guenter
+One might consider this pattern:
+|       ethtool_sprintf(&buf, lan9303_mib[u].name);
+... but this triggers a -Wformat-security warning.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+---
+Changes in v2:
+- use ethtool_sprintf (thanks Alexander)
+- Link to v1: https://lore.kernel.org/r/20231005-strncpy-drivers-net-dsa-lan9303-core-c-v1-1-5a66c538147e@google.com
+---
+Note: build-tested only.
+---
+ drivers/net/dsa/lan9303-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/dsa/lan9303-core.c b/drivers/net/dsa/lan9303-core.c
+index ee67adeb2cdb..95a8e5168c2a 100644
+--- a/drivers/net/dsa/lan9303-core.c
++++ b/drivers/net/dsa/lan9303-core.c
+@@ -1007,14 +1007,14 @@ static const struct lan9303_mib_desc lan9303_mib[] = {
+ static void lan9303_get_strings(struct dsa_switch *ds, int port,
+ 				u32 stringset, uint8_t *data)
+ {
++	u8 *buf = data;
+ 	unsigned int u;
+ 
+ 	if (stringset != ETH_SS_STATS)
+ 		return;
+ 
+ 	for (u = 0; u < ARRAY_SIZE(lan9303_mib); u++) {
+-		strncpy(data + u * ETH_GSTRING_LEN, lan9303_mib[u].name,
+-			ETH_GSTRING_LEN);
++		ethtool_sprintf(&buf, "%s", lan9303_mib[u].name);
+ 	}
+ }
+ 
+
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231005-strncpy-drivers-net-dsa-lan9303-core-c-6386858e5c22
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
