@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DAC7BA04C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8267BA075
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235419AbjJEOfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
+        id S236684AbjJEOhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235276AbjJEOeG (ORCPT
+        with ESMTP id S230270AbjJEOfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:34:06 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F926184
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 23:06:01 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c5ff5f858dso4267085ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 23:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1696485960; x=1697090760; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i+OzM9WN1Dh21ubOEAVeEY0lIe+PfmIXwuMmmkct6SM=;
-        b=3epmckszdy4PjWzn5YVDphkhm9OrhQM7y7LAUm4eew3ZWJ6bwKrZlEq+Umbmmz5raV
-         vQm8MSbe6MN5MA4J4DVh5+RVZp+a4R5+/kLoMdCJVRupOLMQI4sxF65IdguQAMN/+ubT
-         BbonGFbERKH/jLvTjtE0H+chxQRxMlYOremQIcjTNpU56P0tNbIyZyLlYrDWMB+xvcT9
-         pioobganbB3Ey9jmXZRFQlnj3K3WZzE6PKBgdJYbHqTgHsB6R+GjNEh1NKaK8ohq77x0
-         saCP6CEtk4x5f6BIWhgmGAnbJtOwe4mFIGW7ayR1mZ165u7hQQdUzViADIkKXqcP1Eyj
-         uOAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696485960; x=1697090760;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i+OzM9WN1Dh21ubOEAVeEY0lIe+PfmIXwuMmmkct6SM=;
-        b=kGrCe3J8zz+BVh+vS3V0b/Pww8ZhiDv/0TSNyYJSws0tMFCvW1MrFQ5PYM5d16h/rl
-         dmiViToDbLx5qLoVNR3SinuElN7+4snf/TNWQ5LRmuLonJa50zQn9ZDTG0+dmH15wF5O
-         9dX0Xs8fInxZBeTvvXzLvgF3TXCpP9qP8vUFiDrw1VJ3SPo1S+SzDgllBDUz4xs8XCcf
-         uT8hlschUZP5bZOboWIFqsV5eSeaf2adTsvHopPhAqUKmCbJKgzEAH2aav8/182cFI6R
-         iuV+ikdnD5tfaB5VveJjvexqKVqRai6NIXqmFAJB5FmsL9Av1bX9BUc8DVZ1ID8PvZmN
-         YgpA==
-X-Gm-Message-State: AOJu0YzqwObf58SkqPb1US8Obw6nj2h0shvb5dLeEuH+RwkeN8TrFkIt
-        eA78UCKjgyyQHdWmhZJkENeCGRlNi5x3zARuiM5rxw==
-X-Google-Smtp-Source: AGHT+IG1fxwb2v6SLkh4Fkaz8cqMSdUWu3blXiCEco3U0En8uebQJpE7wswsbpc3LD+Oi31mdQhRZwbY+N7+m1uQ3rk=
-X-Received: by 2002:a17:90b:84:b0:268:15dd:c5c7 with SMTP id
- bb4-20020a17090b008400b0026815ddc5c7mr3855515pjb.40.1696485960557; Wed, 04
- Oct 2023 23:06:00 -0700 (PDT)
+        Thu, 5 Oct 2023 10:35:22 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF6465A5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 23:16:46 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qoHf4-0006nV-35; Thu, 05 Oct 2023 08:16:38 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qoHf1-00BCbY-Vy; Thu, 05 Oct 2023 08:16:36 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qoHf1-009KE1-MX; Thu, 05 Oct 2023 08:16:35 +0200
+Date:   Thu, 5 Oct 2023 08:16:23 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Ken Lin <ken_lin5@hotmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, groeck@chromium.org,
+        Benson Leung <bleung@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Reka Norman <rekanorman@chromium.org>,
+        Stefan Adolfsson <sadolfsson@chromium.org>,
+        chrome-platform@lists.linux.dev, linux-media@vger.kernel.org,
+        "rasheed.hsueh" <rasheed.hsueh@lcfc.corp-partner.google.com>
+Subject: Re: [1/2] media: platform: cros-ec: Rename conns array for the match
+ table
+Message-ID: <20231005061623.hjsd4xiubqblo772@pengutronix.de>
+References: <KL1PR01MB38096300BE18095E51FB7A5BAECAA@KL1PR01MB3809.apcprd01.prod.exchangelabs.com>
 MIME-Version: 1.0
-References: <20231003035226.1945725-1-apatel@ventanamicro.com>
-In-Reply-To: <20231003035226.1945725-1-apatel@ventanamicro.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 5 Oct 2023 11:35:50 +0530
-Message-ID: <CAAhSdy0P=5WiFfFyMHjkd63JKCcjsTsvhLTNgUB+LOCd8A9iOQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] KVM RISC-V Conditional Operations
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cj6vpskierrgyefj"
+Content-Disposition: inline
+In-Reply-To: <KL1PR01MB38096300BE18095E51FB7A5BAECAA@KL1PR01MB3809.apcprd01.prod.exchangelabs.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 9:22=E2=80=AFAM Anup Patel <apatel@ventanamicro.com>=
- wrote:
->
-> This series extends KVM RISC-V to allow Guest/VM discover and use
-> conditional operations related ISA extensions (namely XVentanaCondOps
-> and Zicond).
->
-> To try these patches, use KVMTOOL from riscv_zbx_zicntr_smstateen_condops=
-_v1
-> branch at: https://github.com/avpatel/kvmtool.git
->
-> These patches are based upon the latest riscv_kvm_queue and can also be
-> found in the riscv_kvm_condops_v3 branch at:
-> https://github.com/avpatel/linux.git
->
-> Changes since v2:
->  - Dropped patch1, patch2, and patch5 since these patches don't meet
->    the requirements of patch acceptance policy.
->
-> Changes since v1:
->  - Rebased the series on riscv_kvm_queue
->  - Split PATCH1 and PATCH2 of v1 series into two patches
->  - Added separate test configs for XVentanaCondOps and Zicond in PATCH7
->    of v1 series.
->
-> Anup Patel (6):
->   dt-bindings: riscv: Add Zicond extension entry
->   RISC-V: Detect Zicond from ISA string
->   RISC-V: KVM: Allow Zicond extension for Guest/VM
->   KVM: riscv: selftests: Add senvcfg register to get-reg-list test
->   KVM: riscv: selftests: Add smstateen registers to get-reg-list test
->   KVM: riscv: selftests: Add condops extensions to get-reg-list test
 
-Queued this series for Linux-6.7
+--cj6vpskierrgyefj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Anup
+Hello,
 
->
->  .../devicetree/bindings/riscv/extensions.yaml |  6 +++
->  arch/riscv/include/asm/hwcap.h                |  1 +
->  arch/riscv/include/uapi/asm/kvm.h             |  1 +
->  arch/riscv/kernel/cpufeature.c                |  1 +
->  arch/riscv/kvm/vcpu_onereg.c                  |  2 +
->  .../selftests/kvm/riscv/get-reg-list.c        | 54 +++++++++++++++++++
->  6 files changed, 65 insertions(+)
->
-> --
-> 2.34.1
->
+On Thu, Oct 05, 2023 at 09:38:40AM +0800, Ken Lin wrote:
+> Rename conns array to port_**_conns, ** is the ports which support cec.
+> ex: dibbi_conns support Port D and B will be renamed to port_db_conns.
+> Make it much cleaner and readable.
+>=20
+> Signed-off-by: Ken Lin <ken_lin5@hotmail.com>
+> ---
+
+Two procedural hints:
+
+Please send patch series in a way that they form a thread. git
+send-email should get this right. Patch 2/2 is completely separate
+=66rom this patch which might make it harder for maintainers to apply
+your patches
+
+This patch doesn't fit on current mainline. It's a good idea to use
+the --base parameter for git format-patch or to explicitly mention the
+tree you based your patches on. (Ok, found it, it fits on next.)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--cj6vpskierrgyefj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUeVLcACgkQj4D7WH0S
+/k4x1wf+MViJOuZ1uIXTReTvTvgQbcXNTX6J3b3CCTmo1+USWjuAMAsrxTibfY6u
+ai92ZiJ42zaQzxwmcSEIv7bSNrK263WKgOzgnqwJsBum0skhzj5pg2f/ZPhKyIPA
+XMiYTUmS4TDIcOzKC8ErgBgCX6vZbqbzvt3WtMMUXaW9/wJ6dtnDo5F6F4dcZT/V
+GBGKyIcc22FFPjQJutk5DwYqygOhTKEYAPCFaADV7KyjJfvvQ+QJhSoQc0MF6NLa
+GPNMjUYPa8cm3HlAutZf5ODuNiNawC9y/xCIHGF35376OkoCYYbb+zwRV4u2tVv+
+fV+K/LWktF6E2IjMFmtyN2VOfJ3roQ==
+=+Kty
+-----END PGP SIGNATURE-----
+
+--cj6vpskierrgyefj--
