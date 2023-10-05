@@ -2,128 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B927BA668
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA2E7BA66B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbjJEQdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
+        id S236000AbjJEQeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231764AbjJEQck (ORCPT
+        with ESMTP id S232546AbjJEQck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Oct 2023 12:32:40 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2214231
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:12:09 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-405459d9a96so99525e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:12:09 -0700 (PDT)
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6083A49D2;
+        Thu,  5 Oct 2023 09:12:53 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a229ac185aso13719277b3.1;
+        Thu, 05 Oct 2023 09:12:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696522328; x=1697127128; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696522372; x=1697127172; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0r0z6lg6WCpdjTrIkK0dVsLYyVCZ/7MdG8Aqn4UL8Rc=;
-        b=o681KbIh2TlLlhg8XG13gpUMzwdOWGu93tlv1/AmAQmTSR1pYFOLQ39scqoBCGGlhi
-         4twWQG1uOshmLs2xF5w3/nPDQegq0pHr0IWitMDfaFoK/bDa9m+nCYE67EVozR0MX0+X
-         EyGpMb4MPF9fy3rf61gcJROjNqNa6HcEqJuxmhB+ki0io7BHtCw0U0i/lw4kIKZpWQfR
-         6Kjip00dYddoVNJ958TrIuB6gJsLypWAVPUE31LC1LfuJ6rivEEgPkbYFRhuBmoZQOui
-         QtqcpUzWEIo2mO1rI7Z0w5A7W0peQitW15tx4IKCl23o7rV+GX/ihXN7g61y1pw7elN7
-         oC2A==
+        bh=+qmSzyY+migyqbDuywRVcv9SVkRkaGgH1rCeouBnpl4=;
+        b=GRvORh0BSYZWuQCeWARBaAR/EygNbIjjRI3+104+eeHr+Ws6r742HYaie1ekfimhER
+         UWc7sVPgIitO/keNFcKwdMq+oPkCNx5CuvzDlHX+3gmvATF8pMoVDjLQvPeYSrDvleoN
+         yPuGhb0YFeZ9HuyaWKGHZPU/JmzOYsWvuaRiXYRTFmvzwx2w99r6Tolj7KhcKYUbcf25
+         6izNTGP7cucCIxviKyyW1nx+VZTd8DhsaKy+qro0a2MYzDnTQXjWePD8mVTq8rqmgttO
+         8oSPkcWMPOyUU6VT6XrG2N6+cSKAMRiFO6wydxTA2HIawhxTi2O2n1aSQvzT9pyNz8Kx
+         IDIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696522328; x=1697127128;
+        d=1e100.net; s=20230601; t=1696522372; x=1697127172;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0r0z6lg6WCpdjTrIkK0dVsLYyVCZ/7MdG8Aqn4UL8Rc=;
-        b=tetCK52J39L3/Y4ie+/YZBRxjl6YvK4gD5TDpQNPbKqdtrFAp0RBHkBH35lAdTq08m
-         SC0nC/Zg8oQsXKkDTsGMrdUSA6MrdwiIvnRQxDCh5oZgDrAowRNDKP79l2DdGxoT5Wzo
-         W+qkP7rX4jBbsw4u8tZOFzcQzohnjf5rVTOM5PYGM76BhDDxD+b6WCjqjk4N0MW+KNVb
-         JjqoEsWijqXq58lM04DpFSRUqJw1MHfA9OY2VGVu880lFehYJnR++3/Y/F4YkZjgXQQh
-         ABichR/AQgBsxx7KmQTNwdu1WbWjAU88QLKXnQVPKp4STWi85s6uLngrtJ0d69kByGuw
-         t/Ww==
-X-Gm-Message-State: AOJu0YyGPbhPFWc/w7xHOfRlB/l0mvXBgIdpqlxPy4EhenYZCPLJ+xYE
-        bBBCamAcslz00SXsBkWPDe0oXoY6GuT0ppnGAty+bA==
-X-Google-Smtp-Source: AGHT+IHsG9cALy9l/AGtf9WGqoTk1+vFPuwod1G0A2HPE9T+W6tIBWkayyF2LSEa5O28SfRy9xIMPv/xnERf3BuOFTY=
-X-Received: by 2002:a05:600c:b93:b0:3fe:eb42:7ec with SMTP id
- fl19-20020a05600c0b9300b003feeb4207ecmr61696wmb.1.1696522327966; Thu, 05 Oct
- 2023 09:12:07 -0700 (PDT)
+        bh=+qmSzyY+migyqbDuywRVcv9SVkRkaGgH1rCeouBnpl4=;
+        b=uviTxBfmdZgtWtTHPaTb4B+7Q9c2MSnIqsZDFwWf2KP4IRm+YnPs1MqpCZCZeb/xrH
+         JapsCY8qyOfjBKkEFbUrg09uSbqnNTbQXb0VaOGLeG3ERQVgPQ+wdcZGZmp65FwHaGix
+         hOVLf4rkuyRkPszwaW8u30d2e91ZOaqK//B8NR2XXsUzkTyTNse6GQ7cqeP1NC/mBYkV
+         7YVCIggKkid3xAXu9UKPMaTFT8Sy9viJOdwRu19bzC9nbwQJ+Ltp29WMugPpUwHtINvK
+         aJ1QtKPFFi19ychScskvKv72bLro/v7HBcoujm8TQauDjRxNMnX4kRqsPfDT/Hu0UQgW
+         cf5w==
+X-Gm-Message-State: AOJu0Yzmougj28gLcHpoWiXy0eY7GE9dz9Tk5IAbBVHQNVABzd0ucV+e
+        V3F1iy4g/KZW1FePYVqw67P6tsmkZLX1nGsPF7c=
+X-Google-Smtp-Source: AGHT+IFyDJEnqRL20o900cgp9GOfXgPyMQ2L6Aqu6Z2jkwZ63XPw2aTYKRO6CldxKTzNI0xpEBmV02zjKYsX4Y67FmI=
+X-Received: by 2002:a81:7c46:0:b0:59f:6766:2c12 with SMTP id
+ x67-20020a817c46000000b0059f67662c12mr6423391ywc.39.1696522372498; Thu, 05
+ Oct 2023 09:12:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231003145150.2498-1-ansuelsmth@gmail.com> <20231003145150.2498-3-ansuelsmth@gmail.com>
-In-Reply-To: <20231003145150.2498-3-ansuelsmth@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 5 Oct 2023 18:11:56 +0200
-Message-ID: <CANn89iK226C-pHUJm7HKMyEtMycGC=KCA2M6kw2KJaUj0cCT6w@mail.gmail.com>
-Subject: Re: [net-next PATCH v2 3/4] netdev: replace napi_reschedule with napi_schedule
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Douglas Miller <dougmill@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nick Child <nnac123@linux.ibm.com>,
-        Haren Myneni <haren@linux.ibm.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Dany Madden <danymadden@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun <haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
-        Ziwei Xiao <ziweixiao@google.com>,
-        Rushil Gupta <rushilg@google.com>,
-        Coco Li <lixiaoyan@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Junfeng Guo <junfeng.guo@intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Yuri Karpov <YKarpov@ispras.ru>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        Lee Jones <lee@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dawei Li <set_pte_at@outlook.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
+References: <20230830165949.127475-1-ojeda@kernel.org>
+In-Reply-To: <20230830165949.127475-1-ojeda@kernel.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 5 Oct 2023 18:12:40 +0200
+Message-ID: <CANiq72kmC1Az=gCMnJ_jcsQHNpbbQn=qUytyFexeg9uPpW=q4Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] MAINTAINERS: update Rust webpage
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,23 +76,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 8:36=E2=80=AFPM Christian Marangi <ansuelsmth@gmail.=
-com> wrote:
+On Wed, Aug 30, 2023 at 7:00=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> wro=
+te:
 >
-> Now that napi_schedule return a bool, we can drop napi_reschedule that
-> does the same exact function. The function comes from a very old commit
-> bfe13f54f502 ("ibm_emac: Convert to use napi_struct independent of struct
-> net_device") and the purpose is actually deprecated in favour of
-> different logic.
+> A few months ago we started a webpage for the Rust subsystem and
+> the overall Rust for Linux project [1].
 >
-> Convert every user of napi_reschedule to napi_schedule.
+> The current `W:` field of the Rust entry points to the GitHub
+> repository, since originally we kept information in a `README.md`
+> file that got rendered by GitHub when visiting that URL.
 >
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com> # ath10k
-> Acked-by: Nick Child <nnac123@linux.ibm.com> # ibm
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for can/dev/rx-offload=
-.c
+> That information was moved into the webpage and got expanded.
+> The webpage is also nowadays the entry point to the project,
+> and we pointed the "Website" GitHub metadata field to it.
+>
+> Thus update the `W:` field to point to the actual webpage.
+>
+> Link: https://rust-for-linux.com [1]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-OK, but I suspect some users of napi_reschedule() might not be race-free...
+Series applied to `rust-next`-- thanks everyone!
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Cheers,
+Miguel
