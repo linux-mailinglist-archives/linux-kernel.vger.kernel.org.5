@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF597B9F8F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1D47B9FDC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbjJEOZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38510 "EHLO
+        id S233722AbjJEOaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234248AbjJEOXj (ORCPT
+        with ESMTP id S233772AbjJEO2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:23:39 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26847AB8
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 00:31:00 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9b2f73e3af3so111267366b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 00:31:00 -0700 (PDT)
+        Thu, 5 Oct 2023 10:28:19 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E360F7ABF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 00:31:26 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b27bc8b65eso109954866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 00:31:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696491059; x=1697095859; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1696491085; x=1697095885; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WPJMTLO+rcQ93eaofl6YvPUICYprHmtKTi2Ba1SS9r8=;
-        b=vRepcQbbDfQ2IST6YRGHeokiOay44JmDKQFADJBOBiYD4RTTcDYOdaozL2uHdlhwOJ
-         7ISG+pe1bx+CC+8dpuaWdKrbZL9D8HEZ5tom8dLhYuN8BJAP017aRboQ/JoO7PHuDYz0
-         Pc+D0xzRte72c5HBd1xHZseTuJrzUZl2P1TpmhCyNwX+mnjvN7J7uKyvX5HzxRr2kgVC
-         g8tXTVBJ2YEyKlPnQxqMWAW7YqcirXEu0tu+qNJfhP1igxuLtPxSfWUwi4BDc6LaWO0Z
-         8xh6DBxBFTUXjaLXjnewzH5KV5iRul3I+1HeTB7x9twbHHI2X9TZsKDnYi/BrTOGqo1Z
-         hG4Q==
+        bh=c3wgPnof1xW5WnzXcdpPZtD7yE+iEfi3mzplGT2Sn8Y=;
+        b=kWGL4SJL86OArxmCuWF5dit74ErgIljf2Krrsy+42czCshIhBOptpMqdjh2BShUx1S
+         X8Rmt0qFi22N3ih3kApcnd8ZBjDWutj7GdiOI7z8xXG/UPTcf5DSwOAYw62NJvvW5lRD
+         tIvfHNxrRMT6UtudGoLvKyVskrj8Q8nvCAuurVBuZBwwT5XkPkkLGFdOjUQ2Eg0aSsZY
+         vPkR00WZNOM4Tl9PELm90kZRuCeFLgr9A6XKsiaOYrkXM8VDAuuShzoxfR0lLq5Lhvwo
+         MvMkhWc4635RLNCR7Y1KcCjz1F0B9V6n4DVCeHJ9WjDhx2QLd34YH1RxSACW810X6u3b
+         GTNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696491059; x=1697095859;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1696491085; x=1697095885;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WPJMTLO+rcQ93eaofl6YvPUICYprHmtKTi2Ba1SS9r8=;
-        b=q0d8gtG8N6Ljoi3pnpsQYzmrPRljUV6Ln5QVxHX8ht0AWJm+LApmyWOfD4cucL8zb4
-         UaQhxSOCRHKxbHw2SFFcwSVeGz+yaCkUeavkVfsX9UC5Y/SdpM94HpP1/yGXVjlxSyd8
-         vKKRc0K6dwHgRhWHKCg61Py2zZ8Jr/BjSGIUCbvPpiobnZrJpBpLrJSPeVhNiLQTb/h1
-         Eqmls09jEL8pBBdsdxJIX/XXSnC5XvKh/kBXUK+1BRl4cQi0+JCEi/EZKsw5ZfiBQcJT
-         G02N8ZMfRNTmfsxvP+2pW57kdrk1Z6pV+iCU6lTUTKEmkgdisBjPk1GdLimWdrdqFatx
-         Sgiw==
-X-Gm-Message-State: AOJu0Yz8Nah5Pj/jyPVNqttY/SkT+RWuD8yN/Sn6oY/T77m3bb5ltALK
-        LXW+uYUamM/38xLPubWkhRXDWA==
-X-Google-Smtp-Source: AGHT+IHx9rUS9yXnwUuTlpLFWszpnR7P8rb7udY8oUHx7qmTu+UvEIwzJlCuBHFRefkOeDKMgj0r2w==
-X-Received: by 2002:a17:907:78d1:b0:9b3:264:446 with SMTP id kv17-20020a17090778d100b009b302640446mr4269774ejc.0.1696491059133;
-        Thu, 05 Oct 2023 00:30:59 -0700 (PDT)
+        bh=c3wgPnof1xW5WnzXcdpPZtD7yE+iEfi3mzplGT2Sn8Y=;
+        b=mHt/WBQO4yfUFp2FYuot53EVe9rbsLvOH4oHe7ZwsZdW2cjiUJbPyNnvYL/yh9wr7m
+         VGMDaJVv1+6qdrzI3Y0UAVPFCnYDUYc7rMZk/gKUSwDhaqKJbMe4mvMID2G9Wu/lm9Xp
+         TJdVrJWAKOuS6lcNMPbQ0AsUv/0CzUti4uDggiXQyyqV/iRTKuX8pUjFNeWTLg45NijM
+         vi3Fj7I35L8AbaMFBXDDco1YIjotjjEMO0d9i5Lg8ftALNZn7sAPH7ayGc4tdgx6tFR5
+         rOLKXaXLmi8laChmP0mTrjrkrqaRmFb9q8afIWIp39Vy012s0C3VoGM6Fm9UtbkvuArD
+         Ldcw==
+X-Gm-Message-State: AOJu0YzlsCNxMFt5dJhrGbpzQf7fIxlC22JSzBbibqkPLEwoPknacSP5
+        2sV7JP522k5BKcZdZJiST5Oetw==
+X-Google-Smtp-Source: AGHT+IHGUK6uCijTJyg0xJE5Osr66rPsjFDs1uBMhgmT3CMErKEexD8lBXNo64g5BvxBSGRKXYO+qw==
+X-Received: by 2002:a17:907:6c14:b0:9b6:f0e2:3c00 with SMTP id rl20-20020a1709076c1400b009b6f0e23c00mr3268487ejc.71.1696491085352;
+        Thu, 05 Oct 2023 00:31:25 -0700 (PDT)
 Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id gt26-20020a170906f21a00b0099bcf9c2ec6sm692972ejb.75.2023.10.05.00.30.57
+        by smtp.gmail.com with ESMTPSA id gt26-20020a170906f21a00b0099bcf9c2ec6sm692972ejb.75.2023.10.05.00.31.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 00:30:58 -0700 (PDT)
-Message-ID: <9afe38a1-193b-494e-a47f-83610d6dabac@linaro.org>
-Date:   Thu, 5 Oct 2023 09:30:57 +0200
+        Thu, 05 Oct 2023 00:31:24 -0700 (PDT)
+Message-ID: <65a610df-5030-4dd0-9f04-2089dfe09a3d@linaro.org>
+Date:   Thu, 5 Oct 2023 09:31:23 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V14 4/4] arm64: dts: qcom: ipq6018: add pwm node
+Subject: Re: [PATCH 4/7] ARM: dts: aspeed: mtmitchell: Add LEDs
 Content-Language: en-US
-To:     Devi Priya <quic_devipriy@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, lee@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, thierry.reding@gmail.com,
-        ndesaulniers@google.com, trix@redhat.com, baruch@tkos.co.il,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Cc:     linux-pwm@vger.kernel.org, u.kleine-koenig@pengutronix.de,
-        nathan@kernel.org
-References: <20231005043127.2690639-1-quic_devipriy@quicinc.com>
- <20231005043127.2690639-5-quic_devipriy@quicinc.com>
+To:     Chanh Nguyen <chanh@os.amperecomputing.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20231005035525.19036-1-chanh@os.amperecomputing.com>
+ <20231005035525.19036-5-chanh@os.amperecomputing.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -112,9 +112,9 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231005043127.2690639-5-quic_devipriy@quicinc.com>
+In-Reply-To: <20231005035525.19036-5-chanh@os.amperecomputing.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
@@ -125,88 +125,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2023 06:31, Devi Priya wrote:
-> Describe the PWM block on IPQ6018.
+On 05/10/2023 05:55, Chanh Nguyen wrote:
+> Use gpio-leds to configure GPIOW5 to GPIO_ACTIVE_HIGH and
+> GPIO_TRANSITORY flags as a bmc ready led. The GPIOW5 pin
+> is reset when watchdog timeout occurs.
 > 
-> The PWM is in the TCSR area. Make &tcsr "simple-mfd" compatible, and add
-> &pwm as child of &tcsr.
+> Configure the GPIOS3 to GPIO_ACTIVE_HIGH as an identify led.
 > 
-> Add also ipq6018 specific compatible string.
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Co-developed-by: Baruch Siach <baruch.siach@siklu.com>
-> Signed-off-by: Baruch Siach <baruch.siach@siklu.com>
-> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
+> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
 > ---
-> v14:
+>  .../dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts     | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 > 
->   Moved ranges just after reg as suggested by Krzysztof
-> 
->   Picked up the R-b tag
-> 
-> v13:
-> 
->   No change
-> 
-> v12: 
-> 
->   No change
-> 
-> v11:
-> 
->   No change
-> 
-> v10:
-> 
->   No change
-> 
-> v9:
-> 
->   Add 'ranges' property (Rob)
-> 
-> v8:
-> 
->   Add size cell to 'reg' (Rob)
-> 
-> v7:
-> 
->   Use 'reg' instead of 'offset' (Rob)
-> 
->   Add qcom,tcsr-ipq6018 (Rob)
-> 
->   Drop clock-names (Bjorn)
-> 
-> v6:
-> 
->   Make the PWM node child of TCSR (Rob Herring)
-> 
->   Add assigned-clocks/assigned-clock-rates (Uwe Kleine-König)
-> 
-> v5: Use qcom,pwm-regs for TCSR phandle instead of direct regs
-> 
-> v3: s/qcom,pwm-ipq6018/qcom,ipq6018-pwm/ (Rob Herring)
-> 
->  arch/arm64/boot/dts/qcom/ipq6018.dtsi | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> index e59b9df96c7e..565e61ce382f 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> @@ -390,8 +390,21 @@ tcsr_mutex: hwlock@1905000 {
+> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+> index b7c4f7cfad07..88693c2b2dbe 100644
+> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+> @@ -51,6 +51,19 @@
 >  		};
+>  	};
 >  
->  		tcsr: syscon@1937000 {
-> -			compatible = "qcom,tcsr-ipq6018", "syscon";
-> +			compatible = "qcom,tcsr-ipq6018", "syscon", "simple-mfd";
->  			reg = <0x0 0x01937000 0x0 0x21000>;
-> +			ranges = <0x0 0x0 0x01937000 0x21000>;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
+> +	leds {
+> +		compatible = "gpio-leds";
 > +
-> +			 pwm: pwm@a010 {
+> +		bmc-ready {
 
-Broken indentation.
+Missing led name.
+
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check W=1` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
 
 Best regards,
 Krzysztof
