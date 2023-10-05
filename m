@@ -2,243 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 638CF7B9E7D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDE57B9E8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbjJEOHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
+        id S232362AbjJEOId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjJEOFv (ORCPT
+        with ESMTP id S232384AbjJEOGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:05:51 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968957A8B
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 00:20:02 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59f6e6b206fso6859767b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 00:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696490401; x=1697095201; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fhD+4AkRggrUFVCRueZ0EP4NvrMyL09uoQLrgXFHCqg=;
-        b=iKX7e05y5+jAEWh+swf+m1bczWFfBdxrL8viyG20sGbM5iifMvSvrH4oB5FdL7xNPT
-         oXk/RAQxERIvCe6QjawiiieR/wNljWLRbIDLymCbaVarIFEu/Nq56mni3jXnUdFUNvtH
-         mw3NzW0Cpomx7uI8FRlFZmD7TI11/dM0srCfzgW7l1XLDB7w/pPykluZXvzDs/RrqOQS
-         vQw7yC/cgu+XjjjbKd9Nyo4CoPW01JbLm62SMX4S37wM3GCEsDKoMvh5IrVVKjZ6C7iD
-         TS/1AndgFbEvxokgXEgtjwKA2JYU4qeT2gmxfjlTMwNKV91cWmzXrA3maHVen0/1fI/4
-         sg6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696490401; x=1697095201;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fhD+4AkRggrUFVCRueZ0EP4NvrMyL09uoQLrgXFHCqg=;
-        b=vC38HSjUZOfG516t6siZDxp7HQuBSmiFnwatm7OtGlHlfNmaeCmZ6oc+Suu0514JVB
-         2rbHBeVA/Idor8T9z7BcIn9mtgxiwLmu49w2q3wz/vYAjA0VHQ3pJtPREyj6HOb2CfVs
-         6tFSIRmZFMv7PnSF5SyHpaLrUeLijRFv4NhCjDizO6UnPzGLMy73VIsIxuZzzaTHLbpY
-         jMQj0NnKas6yFUR+ahu1/xF/k6XqI9hdWyXLAhunMM7DXjW2x+SdIAjUycvb3ZUcZhL3
-         60lk1LZLqic2cFHMwLiweHDYpRdeRIBSfxFigJmiwaP0BySDIjHyakf9xFP5jocLcM5Y
-         EYmQ==
-X-Gm-Message-State: AOJu0YxNG6MpsWsUWg9zDwqwvpmkwDHD9mXnpgqpPIHaqqJoRG4T1UxW
-        a8OEW1n8CfomLl9p5Hvf/rlBS6jiJu7RhckThD7rXA==
-X-Google-Smtp-Source: AGHT+IGesqMfmj1nxg+O0YSuQ3VFwBsQSZOi0zTeQfQZtjxFFMjQOoclKS4KUAPCE2zcA4w9XSSdPLdR4QyfVe1uahU=
-X-Received: by 2002:a0d:cc44:0:b0:59f:7d6b:ea42 with SMTP id
- o65-20020a0dcc44000000b0059f7d6bea42mr4835211ywd.23.1696490400983; Thu, 05
- Oct 2023 00:20:00 -0700 (PDT)
+        Thu, 5 Oct 2023 10:06:34 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE527A87;
+        Thu,  5 Oct 2023 00:20:20 -0700 (PDT)
+Date:   Thu, 05 Oct 2023 07:20:17 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696490418;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SxdkJDsagE2u95u3CrNYRo5RQ6LTld++pfOtIiKNmso=;
+        b=44BGnwY1Bew5PdTSxmHsVCScK1/vW9C55m2KBObUwE0tiGi2aOQlWkdmFVvNYSuEBMstfz
+        bPtHuzdwQROYaIYc5G8JRPlTAEFPOqGTWYJA+xbHZvfnpd1GCjkzMy0QS4aSYagpxoO7Gk
+        8C/HSKcs8qL10oTrCNoeedia05GJXh0v2LJU5FTAJa60ydfXuodgJCDrHylSYUy/FN3UBn
+        aWK/224p1TG99ITH9Vdhkzkn2AyTDooFAdGSGVXdF4ieQouLijdIDfWo6du4K4OVZPZONS
+        n/OM11LYwSk2yQRCmJ54fg3x1rsMx4DnF68GJP5+d+1pkPda91MP4Id6AUkJaA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696490418;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SxdkJDsagE2u95u3CrNYRo5RQ6LTld++pfOtIiKNmso=;
+        b=VA/CYKv2GfnjnTV3qLiToJnimPOveh0mnodHYNgprwd5FM5h+tYRQ8Zi7+q0og0aPv0+45
+        ernBwKYAC0PpBUCQ==
+From:   "tip-bot2 for Nadav Amit" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/percpu] x86/percpu: Use compiler segment prefix qualifier
+Cc:     Nadav Amit <namit@vmware.com>, Uros Bizjak <ubizjak@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231004145137.86537-4-ubizjak@gmail.com>
+References: <20231004145137.86537-4-ubizjak@gmail.com>
 MIME-Version: 1.0
-References: <20230825091234.32713-1-quic_devipriy@quicinc.com>
- <20230825091234.32713-6-quic_devipriy@quicinc.com> <CAA8EJpr+Wwgot-PDRtj-LVi79aD13B9WVREmjTXiR-8XEEx-rQ@mail.gmail.com>
- <652b55cc-87dd-46d1-e480-e25f5f22b8d8@quicinc.com> <a4c9baae-f328-22b5-48d7-fc7df0b62a79@quicinc.com>
- <CAA8EJpq0uawrOBHA8XHygEpGYF--HyxJWxKG44iiFdAZZz7O2w@mail.gmail.com>
- <45f96567-553c-9214-eb7e-c75c6e09d78b@quicinc.com> <65b030c6-6fab-53ea-2774-48698905dd96@quicinc.com>
-In-Reply-To: <65b030c6-6fab-53ea-2774-48698905dd96@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 5 Oct 2023 10:19:49 +0300
-Message-ID: <CAA8EJprSw4MGQKh01mZ5x5rBcRpgD7t4ph2617RhpR2Qg5SB=g@mail.gmail.com>
-Subject: Re: [PATCH V2 5/7] clk: qcom: Add NSS clock Controller driver for IPQ9574
-To:     Devi Priya <quic_devipriy@quicinc.com>
-Cc:     andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
-        richardcochran@gmail.com, arnd@arndb.de, geert+renesas@glider.be,
-        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        quic_saahtoma@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Message-ID: <169649041744.3135.4005058021349151239.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Oct 2023 at 09:26, Devi Priya <quic_devipriy@quicinc.com> wrote:
->
->
->
-> On 9/22/2023 5:31 PM, Devi Priya wrote:
-> >
-> >
-> > On 9/20/2023 1:50 PM, Dmitry Baryshkov wrote:
-> >> On Wed, 20 Sept 2023 at 09:39, Devi Priya <quic_devipriy@quicinc.com>
-> >> wrote:
-> >>>
-> >>>
-> >>>
-> >>> On 9/12/2023 7:38 PM, Devi Priya wrote:
-> >>>>
-> >>>>
-> >>>> On 8/25/2023 5:14 PM, Dmitry Baryshkov wrote:
-> >>>>> On Fri, 25 Aug 2023 at 12:15, Devi Priya <quic_devipriy@quicinc.com>
-> >>>>> wrote:
-> >>>>>>
-> >>>>>> Add Networking Sub System Clock Controller(NSSCC) driver for ipq9574
-> >>>>>> based
-> >>>>>> devices.
-> >>>>>>
-> >>>>>> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
-> >>>>>> ---
-> >>>>>>    Changes in V2:
-> >>>>>>           - Added depends on ARM64 || COMPILE_TEST in Kconfig
-> >>>>>>           - Added module_platform_driver
-> >>>>>>           - Dropped patch [2/6] - clk: qcom: gcc-ipq9574: Mark nssnoc
-> >>>>>> clocks as critical
-> >>>>>>              & added pm_clk for nssnoc clocks
-> >>>>>>           - Updated the uniphy clock names
-> >>>>>>
-> >>>>>>    drivers/clk/qcom/Kconfig         |    7 +
-> >>>>>>    drivers/clk/qcom/Makefile        |    1 +
-> >>>>>>    drivers/clk/qcom/nsscc-ipq9574.c | 3109
-> >>>>>> ++++++++++++++++++++++++++++++
-> >>>>>>    3 files changed, 3117 insertions(+)
-> >>>>>>    create mode 100644 drivers/clk/qcom/nsscc-ipq9574.c
-> >>>>>>
-> >>>>>> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-> >>>>>> index bd9bfb11b328..3ecc11e2c8e3 100644
-> >>>>>> --- a/drivers/clk/qcom/Kconfig
-> >>>>>> +++ b/drivers/clk/qcom/Kconfig
-> >>>>>> @@ -203,6 +203,13 @@ config IPQ_GCC_9574
-> >>>>>>             i2c, USB, SD/eMMC, etc. Select this for the root clock
-> >>>>>>             of ipq9574.
-> >>>>>>
-> >>>>>> +config IPQ_NSSCC_9574
-> >>>>>> +       tristate "IPQ9574 NSS Clock Controller"
-> >>>>>> +       depends on ARM64 || COMPILE_TEST
-> >>>>>> +       depends on IPQ_GCC_9574
-> >>>>>> +       help
-> >>>>>> +         Support for NSS clock controller on ipq9574 devices.
-> >>>>>> +
-> >>>>>>    config MSM_GCC_8660
-> >>>>>>           tristate "MSM8660 Global Clock Controller"
-> >>>>>>           depends on ARM || COMPILE_TEST
-> >>>>>> diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-> >>>>>> index 4790c8cca426..3f084928962e 100644
-> >>>>>> --- a/drivers/clk/qcom/Makefile
-> >>>>>> +++ b/drivers/clk/qcom/Makefile
-> >>>>>> @@ -30,6 +30,7 @@ obj-$(CONFIG_IPQ_GCC_6018) += gcc-ipq6018.o
-> >>>>>>    obj-$(CONFIG_IPQ_GCC_806X) += gcc-ipq806x.o
-> >>>>>>    obj-$(CONFIG_IPQ_GCC_8074) += gcc-ipq8074.o
-> >>>>>>    obj-$(CONFIG_IPQ_GCC_9574) += gcc-ipq9574.o
-> >>>>>> +obj-$(CONFIG_IPQ_NSSCC_9574)   += nsscc-ipq9574.o
-> >>>>>>    obj-$(CONFIG_IPQ_LCC_806X) += lcc-ipq806x.o
-> >>>>>>    obj-$(CONFIG_MDM_GCC_9607) += gcc-mdm9607.o
-> >>>>>>    obj-$(CONFIG_MDM_GCC_9615) += gcc-mdm9615.o
-> >>>>>> diff --git a/drivers/clk/qcom/nsscc-ipq9574.c
-> >>>>>> b/drivers/clk/qcom/nsscc-ipq9574.c
-> >>>>>> new file mode 100644
-> >>>>>> index 000000000000..65bdb449ae5f
-> >>>>>> --- /dev/null
-> >>>>>> +++ b/drivers/clk/qcom/nsscc-ipq9574.c
-> >>>>>> @@ -0,0 +1,3109 @@
-> >>>>>> +// SPDX-License-Identifier: GPL-2.0-only
-> >>>>>> +/*
-> >>>>>> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
-> >>>>>> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights
-> >>>>>> reserved.
-> >>>>>> + */
-> >>>>>> +
-> >>>>>> +#include <linux/clk-provider.h>
-> >>>>>> +#include <linux/err.h>
-> >>>>>> +#include <linux/kernel.h>
-> >>>>>> +#include <linux/module.h>
-> >>>>>> +#include <linux/of.h>
-> >>>>>> +#include <linux/of_device.h>
-> >>>>>> +#include <linux/regmap.h>
-> >>>>>> +#include <linux/pm_clock.h>
-> >>>>>> +#include <linux/pm_runtime.h>
-> >>>>>> +
-> >>>>>> +#include <dt-bindings/clock/qcom,ipq9574-nsscc.h>
-> >>>>>> +#include <dt-bindings/reset/qcom,ipq9574-nsscc.h>
-> >>>>>> +
-> >>>>>> +#include "clk-alpha-pll.h"
-> >>>>>> +#include "clk-branch.h"
-> >>>>>> +#include "clk-pll.h"
-> >>>>>> +#include "clk-rcg.h"
-> >>>>>> +#include "clk-regmap.h"
-> >>>>>> +#include "clk-regmap-divider.h"
-> >>>>>> +#include "clk-regmap-mux.h"
-> >>>>>> +#include "common.h"
-> >>>>>> +#include "reset.h"
-> >>>>>> +
-> >>>>>> +/* Need to match the order of clocks in DT binding */
-> >>>>>> +enum {
-> >>>>>> +       DT_NSSNOC_NSSCC_CLK,
-> >>>>>> +       DT_NSSNOC_SNOC_CLK,
-> >>>>>> +       DT_NSSNOC_SNOC_1_CLK,
-> >>>>>
-> >>>>> Not using the index makes it seem that these clocks are not used,
-> >>>>> until one scrolls down to pm_clks.
-> >>>> Okay, got it
-> >>>>>
-> >>>>> BTW: The NSSNOC_SNOC clocks make it look like there is an interconnect
-> >>>>> here (not a simple NIU).
-> >>>>
-> >>>> Hi Dmitry, We are exploring on the ICC driver. In the meantime to
-> >>>> unblock PCIe/NSS changes getting merged, shall we use
-> >>>> regmap_update_bits
-> >>>> and turn on the critical NSSNOC clocks, ANOC & SNOC pcie clocks in the
-> >>>> probe function of the gcc driver itself as like sm8550 driver to get
-> >>>> the
-> >>>> changes merged?
-> >>>>
-> >>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/qcom/gcc-sm8550.c#n3347
-> >>>
-> >>> Hi Dmitry,
-> >>> Just curious to know if we could send out the next series with the
-> >>> proposed approach if that holds good.
-> >>
-> >> The answer really depends on the structure of your hardware. The issue
-> >> is that once you commit the device bindings,you have to support them
-> >> forever. So, if you commit the NSS clock support without interconnects
-> >> in place, you have to keep this ANOC/SNOC/etc code forever, even after
-> >> you land the interconnect. So I'd suggest landing the icc driver first
-> >> (or at least implementing and sending to the mailing list), so that we
-> >> can see how all these pieces fit together.
-> >
-> > Hi Dmitry,
-> > Unlike MSM chipsets, IPQ chipsets does not have any use case wherein the
-> > NOC clocks have to be scaled. So if these clocks can be enabled in the
-> > probe, there is no need for an interconnect driver at all. The same
-> > applies to both ipq9574 and ipq5332 SoCs.
-> >
->
-> Hi Dmitry,
-> Just curious to know if we can go ahead with the proposed solution of
-> enabling the NOC clocks in the probe as these clocks need not be scaled
-> in IPQ chipsets & hence there would be no need for an ICC driver in
-> ipq9574 & ipq5332 targets.
+The following commit has been merged into the x86/percpu branch of tip:
 
-In the probe of which driver?
+Commit-ID:     9a462b9eafa6dda16ea8429b151edb1fb535d744
+Gitweb:        https://git.kernel.org/tip/9a462b9eafa6dda16ea8429b151edb1fb535d744
+Author:        Nadav Amit <namit@vmware.com>
+AuthorDate:    Wed, 04 Oct 2023 16:49:43 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 05 Oct 2023 09:01:52 +02:00
 
+x86/percpu: Use compiler segment prefix qualifier
 
+Using a segment prefix qualifier is cleaner than using a segment prefix
+in the inline assembly, and provides the compiler with more information,
+telling it that __seg_gs:[addr] is different than [addr] when it
+analyzes data dependencies. It also enables various optimizations that
+will be implemented in the next patches.
 
--- 
-With best wishes
-Dmitry
+Use segment prefix qualifiers when they are supported. Unfortunately,
+gcc does not provide a way to remove segment qualifiers, which is needed
+to use typeof() to create local instances of the per-CPU variable. For
+this reason, do not use the segment qualifier for per-CPU variables, and
+do casting using the segment qualifier instead.
+
+Uros: Improve compiler support detection and update the patch
+to the current mainline.
+
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: Denys Vlasenko <dvlasenk@redhat.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lore.kernel.org/r/20231004145137.86537-4-ubizjak@gmail.com
+---
+ arch/x86/include/asm/percpu.h  | 68 ++++++++++++++++++++++-----------
+ arch/x86/include/asm/preempt.h |  2 +-
+ 2 files changed, 47 insertions(+), 23 deletions(-)
+
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index 20624b8..da45120 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -28,26 +28,50 @@
+ #include <linux/stringify.h>
+ 
+ #ifdef CONFIG_SMP
++
++#ifdef CONFIG_CC_HAS_NAMED_AS
++
++#ifdef CONFIG_X86_64
++#define __percpu_seg_override	__seg_gs
++#else
++#define __percpu_seg_override	__seg_fs
++#endif
++
++#define __percpu_prefix		""
++
++#else /* CONFIG_CC_HAS_NAMED_AS */
++
++#define __percpu_seg_override
+ #define __percpu_prefix		"%%"__stringify(__percpu_seg)":"
++
++#endif /* CONFIG_CC_HAS_NAMED_AS */
++
++#define __force_percpu_prefix	"%%"__stringify(__percpu_seg)":"
+ #define __my_cpu_offset		this_cpu_read(this_cpu_off)
+ 
+ /*
+  * Compared to the generic __my_cpu_offset version, the following
+  * saves one instruction and avoids clobbering a temp register.
+  */
+-#define arch_raw_cpu_ptr(ptr)				\
+-({							\
+-	unsigned long tcp_ptr__;			\
+-	asm ("add " __percpu_arg(1) ", %0"		\
+-	     : "=r" (tcp_ptr__)				\
+-	     : "m" (this_cpu_off), "0" (ptr));		\
+-	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;	\
++#define arch_raw_cpu_ptr(ptr)					\
++({								\
++	unsigned long tcp_ptr__;				\
++	asm ("add " __percpu_arg(1) ", %0"			\
++	     : "=r" (tcp_ptr__)					\
++	     : "m" (__my_cpu_var(this_cpu_off)), "0" (ptr));	\
++	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;		\
+ })
+-#else
++#else /* CONFIG_SMP */
++#define __percpu_seg_override
+ #define __percpu_prefix		""
+-#endif
++#define __force_percpu_prefix	""
++#endif /* CONFIG_SMP */
+ 
++#define __my_cpu_type(var)	typeof(var) __percpu_seg_override
++#define __my_cpu_ptr(ptr)	(__my_cpu_type(*ptr) *)(uintptr_t)(ptr)
++#define __my_cpu_var(var)	(*__my_cpu_ptr(&var))
+ #define __percpu_arg(x)		__percpu_prefix "%" #x
++#define __force_percpu_arg(x)	__force_percpu_prefix "%" #x
+ 
+ /*
+  * Initialized pointers to per-cpu variables needed for the boot
+@@ -107,14 +131,14 @@ do {									\
+ 		(void)pto_tmp__;					\
+ 	}								\
+ 	asm qual(__pcpu_op2_##size(op, "%[val]", __percpu_arg([var]))	\
+-	    : [var] "+m" (_var)						\
++	    : [var] "+m" (__my_cpu_var(_var))				\
+ 	    : [val] __pcpu_reg_imm_##size(pto_val__));			\
+ } while (0)
+ 
+ #define percpu_unary_op(size, qual, op, _var)				\
+ ({									\
+ 	asm qual (__pcpu_op1_##size(op, __percpu_arg([var]))		\
+-	    : [var] "+m" (_var));					\
++	    : [var] "+m" (__my_cpu_var(_var)));				\
+ })
+ 
+ /*
+@@ -144,14 +168,14 @@ do {									\
+ 	__pcpu_type_##size pfo_val__;					\
+ 	asm qual (__pcpu_op2_##size(op, __percpu_arg([var]), "%[val]")	\
+ 	    : [val] __pcpu_reg_##size("=", pfo_val__)			\
+-	    : [var] "m" (_var));					\
++	    : [var] "m" (__my_cpu_var(_var)));				\
+ 	(typeof(_var))(unsigned long) pfo_val__;			\
+ })
+ 
+ #define percpu_stable_op(size, op, _var)				\
+ ({									\
+ 	__pcpu_type_##size pfo_val__;					\
+-	asm(__pcpu_op2_##size(op, __percpu_arg(P[var]), "%[val]")	\
++	asm(__pcpu_op2_##size(op, __force_percpu_arg(P[var]), "%[val]")	\
+ 	    : [val] __pcpu_reg_##size("=", pfo_val__)			\
+ 	    : [var] "p" (&(_var)));					\
+ 	(typeof(_var))(unsigned long) pfo_val__;			\
+@@ -166,7 +190,7 @@ do {									\
+ 	asm qual (__pcpu_op2_##size("xadd", "%[tmp]",			\
+ 				     __percpu_arg([var]))		\
+ 		  : [tmp] __pcpu_reg_##size("+", paro_tmp__),		\
+-		    [var] "+m" (_var)					\
++		    [var] "+m" (__my_cpu_var(_var))			\
+ 		  : : "memory");					\
+ 	(typeof(_var))(unsigned long) (paro_tmp__ + _val);		\
+ })
+@@ -187,7 +211,7 @@ do {									\
+ 				    __percpu_arg([var]))		\
+ 		  "\n\tjnz 1b"						\
+ 		  : [oval] "=&a" (pxo_old__),				\
+-		    [var] "+m" (_var)					\
++		    [var] "+m" (__my_cpu_var(_var))			\
+ 		  : [nval] __pcpu_reg_##size(, pxo_new__)		\
+ 		  : "memory");						\
+ 	(typeof(_var))(unsigned long) pxo_old__;			\
+@@ -204,7 +228,7 @@ do {									\
+ 	asm qual (__pcpu_op2_##size("cmpxchg", "%[nval]",		\
+ 				    __percpu_arg([var]))		\
+ 		  : [oval] "+a" (pco_old__),				\
+-		    [var] "+m" (_var)					\
++		    [var] "+m" (__my_cpu_var(_var))			\
+ 		  : [nval] __pcpu_reg_##size(, pco_new__)		\
+ 		  : "memory");						\
+ 	(typeof(_var))(unsigned long) pco_old__;			\
+@@ -221,7 +245,7 @@ do {									\
+ 		  CC_SET(z)						\
+ 		  : CC_OUT(z) (success),				\
+ 		    [oval] "+a" (pco_old__),				\
+-		    [var] "+m" (_var)					\
++		    [var] "+m" (__my_cpu_var(_var))			\
+ 		  : [nval] __pcpu_reg_##size(, pco_new__)		\
+ 		  : "memory");						\
+ 	if (unlikely(!success))						\
+@@ -244,7 +268,7 @@ do {									\
+ 									\
+ 	asm qual (ALTERNATIVE("call this_cpu_cmpxchg8b_emu",		\
+ 			      "cmpxchg8b " __percpu_arg([var]), X86_FEATURE_CX8) \
+-		  : [var] "+m" (_var),					\
++		  : [var] "+m" (__my_cpu_var(_var)),			\
+ 		    "+a" (old__.low),					\
+ 		    "+d" (old__.high)					\
+ 		  : "b" (new__.low),					\
+@@ -276,7 +300,7 @@ do {									\
+ 			      "cmpxchg8b " __percpu_arg([var]), X86_FEATURE_CX8) \
+ 		  CC_SET(z)						\
+ 		  : CC_OUT(z) (success),				\
+-		    [var] "+m" (_var),					\
++		    [var] "+m" (__my_cpu_var(_var)),			\
+ 		    "+a" (old__.low),					\
+ 		    "+d" (old__.high)					\
+ 		  : "b" (new__.low),					\
+@@ -313,7 +337,7 @@ do {									\
+ 									\
+ 	asm qual (ALTERNATIVE("call this_cpu_cmpxchg16b_emu",		\
+ 			      "cmpxchg16b " __percpu_arg([var]), X86_FEATURE_CX16) \
+-		  : [var] "+m" (_var),					\
++		  : [var] "+m" (__my_cpu_var(_var)),			\
+ 		    "+a" (old__.low),					\
+ 		    "+d" (old__.high)					\
+ 		  : "b" (new__.low),					\
+@@ -345,7 +369,7 @@ do {									\
+ 			      "cmpxchg16b " __percpu_arg([var]), X86_FEATURE_CX16) \
+ 		  CC_SET(z)						\
+ 		  : CC_OUT(z) (success),				\
+-		    [var] "+m" (_var),					\
++		    [var] "+m" (__my_cpu_var(_var)),			\
+ 		    "+a" (old__.low),					\
+ 		    "+d" (old__.high)					\
+ 		  : "b" (new__.low),					\
+@@ -494,7 +518,7 @@ static inline bool x86_this_cpu_variable_test_bit(int nr,
+ 	asm volatile("btl "__percpu_arg(2)",%1"
+ 			CC_SET(c)
+ 			: CC_OUT(c) (oldbit)
+-			: "m" (*(unsigned long __percpu *)addr), "Ir" (nr));
++			: "m" (*__my_cpu_ptr((unsigned long __percpu *)(addr))), "Ir" (nr));
+ 
+ 	return oldbit;
+ }
+diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
+index 4527e14..4b2a35d 100644
+--- a/arch/x86/include/asm/preempt.h
++++ b/arch/x86/include/asm/preempt.h
+@@ -92,7 +92,7 @@ static __always_inline void __preempt_count_sub(int val)
+  */
+ static __always_inline bool __preempt_count_dec_and_test(void)
+ {
+-	return GEN_UNARY_RMWcc("decl", pcpu_hot.preempt_count, e,
++	return GEN_UNARY_RMWcc("decl", __my_cpu_var(pcpu_hot.preempt_count), e,
+ 			       __percpu_arg([var]));
+ }
+ 
