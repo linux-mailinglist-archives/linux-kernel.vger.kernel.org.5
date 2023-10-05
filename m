@@ -2,139 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D177B9E08
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5787B9DCC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 15:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbjJEN6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 09:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59624 "EHLO
+        id S230377AbjJEN4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 09:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbjJEN4U (ORCPT
+        with ESMTP id S243728AbjJENtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 09:56:20 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23889902A
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 01:46:23 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-533f193fc8dso1157890a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 01:46:23 -0700 (PDT)
+        Thu, 5 Oct 2023 09:49:03 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0193A93D0;
+        Thu,  5 Oct 2023 01:52:11 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-690bd8f89baso569810b3a.2;
+        Thu, 05 Oct 2023 01:52:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696495581; x=1697100381; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xx6pMX6vajCGGHVYJARjc1sv92OuBp5xlvWEy/mgjJ0=;
-        b=awPOzOf2HgzBuYqBkPwRBZQWHYr+5GakHm6FhZQ/cWdJRj0veLDoicSu9MT5nmqNLE
-         i2Ex+hsACBjtIVYB5J24IPGli6czYPQNdLEKIVpmVQEKYR5Bu+L7nzLazfd22M+RKT3N
-         1szNBFAHa8YMyW+8l04UcXpXT8nJHKgaoTZU/cfsFf6YQxNVfQnI0EctYG46ThMNDi7D
-         EVKiLCu6Yz30nxS2AdYruzDy0sL39+i4VZYoPV7F0cnpTUCfG807ZYVqvc0cBiTT0Vj9
-         nGgKMJkfm/lX4q95aNPdes8tkNewJv4TuRvw0dVNaIIgxilslCz5dtYHkG6brPuPYWAJ
-         lWIw==
+        d=gmail.com; s=20230601; t=1696495930; x=1697100730; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jIyP9FGLHDdotVle9KkMUcCQfjZGob1ifbnnnZcJG2c=;
+        b=fT/UPpPl2B9BkfA+i+pCZ7oIK6jXZ6cVCXUTGAOhogvs2hEKFVOaNZyukfBzczCnsf
+         uZvNVdtaRp8qJ9hbgOd6dW3N59exZKeWHtL2iUsK1EgK/uRI8i49Wz22v/JTYGCFL3Vg
+         zDDKx5zCf8vSd1De8T/gkGg2SKAQ5oEplCsA59+hPCNrd8huANLGfIzBOCEDAzw8cTNF
+         3uT2eOGx6xXKOsUXhX5X+ohkYku8ntjiGoVHZh+f0Lt1OVgVOwwI2KzSD7uRxG928pth
+         q7l3tVm9MmjN8tgCyLRLGkMNcdPunh2orltfFSvQn61//FWVEVwJttBxQITK4CoHc4TM
+         rIog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696495581; x=1697100381;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xx6pMX6vajCGGHVYJARjc1sv92OuBp5xlvWEy/mgjJ0=;
-        b=ktdsTjjCJl2gT+gWOCrywrMtvokBZZh0nWqnenmbPCUa36DJwVjs9+ITIqL7hBhuwA
-         +TPYI6/4yIK9VEO7NXux2NxN0dF9Lr/QmBAT0DGkoH9C/IhiutcxXxwU29mgSB8xBefd
-         v9ZaFYIDdQ/A8yUzVC3jsw8hWMYszMNAnTaYdG8PrVMScw/JYoluRdt88b9Y2x4Q8mxD
-         HuIjvmrFA7tvpezVfDKsWjPQbnjuKKdV5O4SSU3aEQSYOmLnCNhywgD7S1OPKHC0cJjy
-         HXzsMLPA54EiOkvPvTSQmFgwVgWHU1C907bEyjtehnirX7XM3KEE38wmjSaJKh60hCMI
-         zuYQ==
-X-Gm-Message-State: AOJu0YyGNYvPUsq8DbkxK/twOMJsr4ZDujI/0B10osot+MyXUk5NBr17
-        MK/D2GZOMYsRUTCPxMzl6ixUew==
-X-Google-Smtp-Source: AGHT+IG8qofcD5TDLoKWwiNBio+VXhOka5r86036+jdAUKyFw2HeYKfsnfYmm0WeaiVu13BoEuqmtQ==
-X-Received: by 2002:a17:906:535e:b0:9ad:7471:7374 with SMTP id j30-20020a170906535e00b009ad74717374mr3500535ejo.77.1696495581459;
-        Thu, 05 Oct 2023 01:46:21 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id a1-20020a1709064a4100b009b65a698c5csm815655ejv.57.2023.10.05.01.46.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 01:46:21 -0700 (PDT)
-Message-ID: <7bbf281f-33b0-44c3-9006-43397d6186b0@linaro.org>
-Date:   Thu, 5 Oct 2023 10:46:19 +0200
+        d=1e100.net; s=20230601; t=1696495930; x=1697100730;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jIyP9FGLHDdotVle9KkMUcCQfjZGob1ifbnnnZcJG2c=;
+        b=hThXKWx+bU7ROWjSKwtP+qBYMioxH5k+0te28v0pFIhhL68Km6PDpeAVboWMQLV/rm
+         MVVl9saEl9pOKRff+kR8M+utuYRsAQInu8cphm970NjPEEl2Hieltt6ceSqQmAYCWhNO
+         GN4IetiG5ZNNlYph1ZzMCdXOPzc8DJTmMbo/uVkjQpWleNJ3uX2KTGpxS1osJVYk3ATj
+         XBM0R9tGyf8HxD0/CmokuFx5DTXjTzwdwQA51vdv4c86ZTx0Bf9fMVShabzTVpFuMWfY
+         djNe8MMofTMQpg1cJcLn8bxF/Ch7MC0QsIQeLVHLB8bXdJ0wORNFWhBRjQg5JcQmS4bO
+         UdKA==
+X-Gm-Message-State: AOJu0YyahfLWuZGuCpp5AgVEwG8DQlQAAN0Y02r1tQkSBv9L2y/S0XSA
+        eFdArFUdfZyE39P/cLx4bAH09Lu2iKvtnQ==
+X-Google-Smtp-Source: AGHT+IHRe8y1VtpH5ZcQKqlSFq+oDdJTBvmplz9WTmoiYdbTUe182GPvvFf4kQznuqOp58MTWGrQ9w==
+X-Received: by 2002:a05:6a20:12d6:b0:15d:bc0f:9b64 with SMTP id v22-20020a056a2012d600b0015dbc0f9b64mr5333019pzg.45.1696495929893;
+        Thu, 05 Oct 2023 01:52:09 -0700 (PDT)
+Received: from wenkaidev (118-163-147-182.hinet-ip.hinet.net. [118.163.147.182])
+        by smtp.gmail.com with ESMTPSA id b19-20020a170902ed1300b001c737950e4dsm1066781pld.2.2023.10.05.01.52.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 01:52:09 -0700 (PDT)
+From:   advantech.susiteam@gmail.com
+To:     advantech.susiteam@gmail.com
+Cc:     wenkai.chung@advantech.com.tw, Susi.Driver@advantech.com,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: [PATCH 1/5] watchdog: eiois200_wdt: Constructing Advantech EIO-IS200 watchdog driver
+Date:   Thu,  5 Oct 2023 16:51:19 +0800
+Message-Id: <b627f827d13514c1746beb31bb80db71023e9bb1.1696495372.git.advantech.susiteam@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1696495372.git.advantech.susiteam@gmail.com>
+References: <cover.1696495372.git.advantech.susiteam@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] dt-bindings: clock: Add SC8280XP CAMCC
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        dmitry.baryshkov@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jonathan@marek.ca, quic_tdas@quicinc.com,
-        vladimir.zapolskiy@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231004161853.86382-1-bryan.odonoghue@linaro.org>
- <20231004161853.86382-3-bryan.odonoghue@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231004161853.86382-3-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2023 18:18, Bryan O'Donoghue wrote:
-> Add device tree bindings for the camera clock controller on
-> Qualcomm SC8280XP platform.
-> 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
+From: Wenkai <advantech.susiteam@gmail.com>
 
+This is the initial patch that adds the Advantech EIO-IS200 Watchdog
+Driver to the kernel. It includes the necessary Makefile and Kconfig
+entries to integrate the driver with the watchdog framework. However,
+please note that this patch does not yet implement the actual watchdog
+functionality. When configuring the kernel using tools like menuconfig,
+as all other eiois200 series drivers, it cannot be selected Y as built
+in, you can select M to build it as a module or select N to exclude it.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Please also be aware that this driver is a sub-driver of
+`drivers/mfd/eiois200_core`. Therefore, it is required for the proper
+compilation of the Advantech EIO-IS200 support. Failing to include this
+driver may result in compilation errors.
 
-Best regards,
-Krzysztof
+Signed-off-by: Wenkai <advantech.susiteam@gmail.com>
+---
+ drivers/watchdog/Kconfig        |  14 ++++
+ drivers/watchdog/Makefile       |   1 +
+ drivers/watchdog/eiois200_wdt.c | 124 ++++++++++++++++++++++++++++++++
+ 3 files changed, 139 insertions(+)
+ create mode 100644 drivers/watchdog/eiois200_wdt.c
+
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index ee97d89dfc11..218c90714830 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -1079,6 +1079,20 @@ config ADVANTECH_EC_WDT
+ 		This driver supports Advantech products with ITE based Embedded Controller.
+ 		It does not support Advantech products with other ECs or without EC.
+ 
++config EIOIS200_WDT
++	tristate "Advantech EIO IS-200 Watchdog Timer"
++	depends on X86 && m
++	default m
++	select MFD_EIOIS200
++	help
++	  This is the driver for the hardware watchdog on the EIO IS-200 EC
++	  chip as used in Advantech boards (and likely others).
++
++	  To compile this driver as a module, choose M here: the module will
++	  be called eiois200_wdt.
++
++	  Most people will say M.
++
+ config ALIM1535_WDT
+ 	tristate "ALi M1535 PMU Watchdog Timer"
+ 	depends on X86 && PCI
+diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+index 3633f5b98236..713872a4f7de 100644
+--- a/drivers/watchdog/Makefile
++++ b/drivers/watchdog/Makefile
+@@ -103,6 +103,7 @@ obj-$(CONFIG_SUNPLUS_WATCHDOG) += sunplus_wdt.o
+ obj-$(CONFIG_ACQUIRE_WDT) += acquirewdt.o
+ obj-$(CONFIG_ADVANTECH_WDT) += advantechwdt.o
+ obj-$(CONFIG_ADVANTECH_EC_WDT) += advantech_ec_wdt.o
++obj-$(CONFIG_EIOIS200_WDT) += eiois200_wdt.o
+ obj-$(CONFIG_ALIM1535_WDT) += alim1535_wdt.o
+ obj-$(CONFIG_ALIM7101_WDT) += alim7101_wdt.o
+ obj-$(CONFIG_EBC_C384_WDT) += ebc-c384_wdt.o
+diff --git a/drivers/watchdog/eiois200_wdt.c b/drivers/watchdog/eiois200_wdt.c
+new file mode 100644
+index 000000000000..bf132a75a2ec
+--- /dev/null
++++ b/drivers/watchdog/eiois200_wdt.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Advantech EIO-IS200 Watchdog Driver
++ *
++ * Copyright (C) 2023 Advantech Co., Ltd.
++ * Author: wenkai <advantech.susiteam@gmail.com>
++ */
++
++#include <linux/mfd/core.h>
++#include <linux/reboot.h>
++#include <linux/uaccess.h>
++#include <linux/watchdog.h>
++
++#include "../mfd/eiois200.h"
++
++#define WATCHDOG_TIMEOUT	60
++#define WATCHDOG_PRETIMEOUT	10
++
++static struct _wdt {
++	u32	support;
++	long	last_time;
++	struct	regmap  *iomap;
++	struct	device *dev;
++} wdt;
++
++/* Pointer to the eiois200_core device structure */
++static struct eiois200_dev *eiois200_dev;
++
++static struct watchdog_info wdinfo = {
++	.identity = KBUILD_MODNAME,
++	.options  = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING |
++		    WDIOF_MAGICCLOSE,
++};
++
++static struct watchdog_device wddev = {
++	.info	     = &wdinfo,
++	.max_timeout = 0x7FFF,
++	.min_timeout = 1,
++};
++
++static int wdt_set_timeout(struct watchdog_device *dev,
++			   unsigned int _timeout)
++{
++	dev->timeout = _timeout;
++	dev_dbg(wdt.dev, "Set timeout: %d\n", _timeout);
++
++	return 0;
++}
++
++static int wdt_start(struct watchdog_device *dev)
++{
++	return 0;
++}
++
++static int wdt_stop(struct watchdog_device *dev)
++{
++	return 0;
++}
++
++static int wdt_ping(struct watchdog_device *dev)
++{
++	return 0;
++}
++
++static unsigned int wdt_get_timeleft(struct watchdog_device *dev)
++{
++	return 0;
++}
++
++static const struct watchdog_ops wdt_ops = {
++	.owner		= THIS_MODULE,
++	.start		= wdt_start,
++	.stop		= wdt_stop,
++	.ping		= wdt_ping,
++	.set_timeout	= wdt_set_timeout,
++	.get_timeleft	= wdt_get_timeleft,
++};
++
++static int wdt_probe(struct platform_device *pdev)
++{
++	int ret = 0;
++	struct device *dev = &pdev->dev;
++
++	/* Contact eiois200_core */
++	eiois200_dev = dev_get_drvdata(dev->parent);
++	if (!eiois200_dev)
++		return dev_err_probe(dev, ret,
++				     "Error contact eiois200_core %d\n", ret);
++
++	wdt.dev = dev;
++	wdt.iomap = dev_get_regmap(dev->parent, NULL);
++	if (!wdt.iomap)
++		return dev_err_probe(dev, -ENOMEM, "Query parent regmap fail\n");
++
++	/* Inform watchdog info */
++	wddev.ops = &wdt_ops;
++	ret = watchdog_init_timeout(&wddev, wddev.timeout, dev);
++	if (ret)
++		return dev_err_probe(dev, ret, "Init timeout fail\n");
++
++	watchdog_stop_on_reboot(&wddev);
++
++	watchdog_stop_on_unregister(&wddev);
++
++	/* Register watchdog */
++	ret = devm_watchdog_register_device(dev, &wddev);
++	if (ret)
++		return dev_err_probe(dev, ret,
++				     "Cannot register watchdog device (err: %d)\n",
++				     ret);
++
++	return 0;
++}
++
++static struct platform_driver eiois200_wdt_driver = {
++	.driver = {
++		.name  = "eiois200_wdt",
++	},
++};
++module_platform_driver_probe(eiois200_wdt_driver, wdt_probe);
++
++MODULE_AUTHOR("wenkai <advantech.susiteam@gmail.com>");
++MODULE_DESCRIPTION("Watchdog interface for Advantech EIO-IS200 embedded controller");
++MODULE_LICENSE("GPL");
+-- 
+2.34.1
 
