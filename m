@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D4C7BA414
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B727BA5F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235758AbjJEQE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58066 "EHLO
+        id S242749AbjJEQV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237519AbjJEQEE (ORCPT
+        with ESMTP id S241314AbjJEQQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:04:04 -0400
-Received: from out203-205-221-209.mail.qq.com (out203-205-221-209.mail.qq.com [203.205.221.209])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFF5F0;
-        Thu,  5 Oct 2023 07:28:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1696516127;
-        bh=zYh0StUlW1/9GZ1nQmMvd67xErwUSkJSZvHWN7RYvWw=;
-        h=From:To:Cc:Subject:Date;
-        b=n8r8q8SBAMJMvMI3TGCJQMWZ66LiXMwWmRa6kCUFgLRRsK2EHDh51Zll1+NEitWL4
-         XrLGaFGK8DJqMyAl1cO9387hUge7xZvFeqxmpcPcP0gBXJqwxzpCJlLg3cVRlSrUu+
-         7Bs/L5hvwzt5tG31UDT0XDbKZvuKUZ66boHf6w58=
-Received: from KernelDevBox.byted.org ([180.184.103.200])
-        by newxmesmtplogicsvrsza12-0.qq.com (NewEsmtp) with SMTP
-        id 72D30833; Thu, 05 Oct 2023 22:28:45 +0800
-X-QQ-mid: xmsmtpt1696516125t7v14ww2j
-Message-ID: <tencent_DD2D371DB5925B4B602B1E1D0A5FA88F1208@qq.com>
-X-QQ-XMAILINFO: OZZSS56D9fAj7Xv7SNfCcx1y4p/riDf0NjD0pb458JvO99e9GBIo18F+sIu9Cw
-         HIgV3FhsKAGYxGVDeEp0iZZ2v+Uit8GZN4jLaNGKhniEsWyIyvcPAKJJpQcoINsmbM02QGjS9FvT
-         WjJfor7Kwr0s8Tk/I/xm9KWvGthXxCcclnrwEqeQwjlKAZUa1TF20FroXJJKQkWAQkfNFCFxsWK/
-         sqFnEUqgcKjCiWnzmBeK7Yzi8tqrC2sdVMEjKUjZr5ZUFSFrb4wkWsiATZpwu5BAxnnOTWsZCedr
-         3u3VA+WpzIJasVUjXSASbU2iGT/9RHDi3Xkr2CYE5QsRJ2M+M8qYd7FALEKHQ8kt7XXL40jcnC51
-         KmBRzU4iPSs1E4bxFTOMA9OOVOyqiUAdtT5ykPggno5dNpK4/W8ZaJi37e588gy/gOGtUYxGrN8T
-         0O4ZaX6BjLLEmuFv1cD7FK11EK2seXmUMe5g5Lvp+iQwtMWLO9jpEfCV+YFpw9uB6YFGJJdkLiCu
-         0nfKtHfgdzqYAk6QIBXhYQo4kJXM3mJICHdtx4koyyTbSHCsyO/4JwEShK8A2UkQ8gpcn8BQ0Yyo
-         ymT/yUnI+3XzrBEAmDZFwVxnh3Ndqpew2Bbk5AXdgENikl4BuVwc91RWmr0JeJCYVF6ninrmrrH6
-         7S+hGQ1ylOit0Mif3P/BFbSib5jUlzbJsVO5aFr/tPMaky/79RbQa8Dv12DEqcJryBU8NHUu2WEr
-         R7PJQDC+tLUAFsOd+naif3jS/vL6ucGnkcDtxr4DQUSP7n22TAs2FtTjxw1YXF9z3D2d1jcPmKJc
-         CG9vaIEYsIJCOQG1jGjSPRwZY3otkMujjJQyWANn7FQDxknEorKYaeVmI2/iM7Bjy8S7DmaedLfF
-         9ExJFtFT1QtQF2pCQzNhWw/zQjP5pJiB3CiHKo2AgRKvlGhY8u7jkBsnsHxj4aJdtAxKoG1dbc+5
-         9OqthpWnrGi+DD8RPYFKR/mD9fnP2qsZUOWsNE7w7qPh0XadkrHptb3MuGbNSs2HQC5xaATJx7tK
-         9QJdXxeQ==
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From:   Zhang Shurong <zhang_shurong@foxmail.com>
-To:     linus.walleij@linaro.org
-Cc:     vkoul@kernel.org, linux-arm-kernel@lists.infradead.org,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Shurong <zhang_shurong@foxmail.com>
-Subject: [PATCH] maengine: ste_dma40: Fix PM disable depth imbalance in d40_probe
-Date:   Thu,  5 Oct 2023 22:28:35 +0800
-X-OQ-MSGID: <20231005142835.2256265-1-zhang_shurong@foxmail.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 5 Oct 2023 12:16:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D260593F1
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:31:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8121FC43391;
+        Thu,  5 Oct 2023 14:31:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696516273;
+        bh=PFjqfxHz1axufGhNaauK3zpHZx5oVEDTMQRFxAN+0xg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mIaAqstQdbs3z+EZ0Jpt0Burvo005Fp2Jxy2pTcnjjx0T90MbZakHTxfHK00hmEUr
+         EKvvCfg/Rh1lf8bMtpoBtrJWLv5PLj47uZ2HasMrxqhnPSpkHJ10QBHTwU6fPc0AsI
+         Yu/W87cDXHwmLoIbfZl4D2FuoW7YPrMDHGbKNc/Kx1ijkXzWylOgisS7XRokw0zOri
+         0jN8z3vZdg060iWd1noZNdG71pg9eIEU4XkRm6579MpUYUr8whyaG/ZYGBOhOZNXEy
+         tc927VsL4DSPNU16NkzjcUUk6eVm3y+BVWiyMzZlYVz6rWH9gFybZC1u905/bGj6FN
+         ES1iA+1/IDH0w==
+Date:   Thu, 5 Oct 2023 15:31:09 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: Re: (subset) [PATCH] mfd: intel-lpss: Add Intel Lunar Lake-M PCI IDs
+Message-ID: <20231005143109.GH681678@google.com>
+References: <20231002083344.75611-1-jarkko.nikula@linux.intel.com>
+ <169651386914.775665.8508120735864164763.b4-ty@kernel.org>
+ <ZR7AkFUoB1PkCkeg@smile.fi.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ZR7AkFUoB1PkCkeg@smile.fi.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pm_runtime_enable will increase power disable depth. Thus
-a pairing decrement is needed on the error handling path to
-keep it balanced according to context.
-We fix it by calling pm_runtime_disable when error returns.
+On Thu, 05 Oct 2023, Andy Shevchenko wrote:
 
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
----
- drivers/dma/ste_dma40.c | 1 +
- 1 file changed, 1 insertion(+)
+> On Thu, Oct 05, 2023 at 02:51:09PM +0100, Lee Jones wrote:
+> > On Mon, 02 Oct 2023 11:33:44 +0300, Jarkko Nikula wrote:
+> > > Add Intel Lunar Lake-M SoC PCI IDs.
+> > 
+> > Applied, thanks!
+> > 
+> > [1/1] mfd: intel-lpss: Add Intel Lunar Lake-M PCI IDs
+> >       commit: ae1fbe1b021a3075020856b2717fd971a72f9429
+> 
+> Just a side note, are you sure the word 'subset' makes sense when you take
+> _all_ patches?
 
-diff --git a/drivers/dma/ste_dma40.c b/drivers/dma/ste_dma40.c
-index 89e82508c133..002833fb1fa0 100644
---- a/drivers/dma/ste_dma40.c
-+++ b/drivers/dma/ste_dma40.c
-@@ -3668,6 +3668,7 @@ static int __init d40_probe(struct platform_device *pdev)
- 		regulator_disable(base->lcpa_regulator);
- 		regulator_put(base->lcpa_regulator);
- 	}
-+	pm_runtime_disable(base->dev);
- 
-  report_failure:
- 	d40_err(dev, "probe failed\n");
+It doesn't.
+
+It happens when there is only one patch in the set and is an artefact of:
+
+  `b4 -P _`  # Cherry-pick the msgid specified
+
+Man:
+
+  -P CHERRYPICK, --cherry-pick CHERRYPICK
+                        Cherry-pick a subset of patches (e.g. "-P
+			1-2,4,6-", "-P _" to use just the msgid
+			specified)
+
 -- 
-2.30.2
-
+Lee Jones [李琼斯]
