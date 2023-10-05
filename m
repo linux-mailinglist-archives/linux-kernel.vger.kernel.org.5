@@ -2,171 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E5C7BA9EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B167BA9F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231146AbjJETTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45772 "EHLO
+        id S230490AbjJETVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjJETTQ (ORCPT
+        with ESMTP id S229734AbjJETVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 15:19:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B34CE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:18:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696533513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2R8nvS1fGysVMS5a70TnQ+euq+3ceDHbf0f2W4kS2b4=;
-        b=YEYT4lWvpl4ZjSkxKuMIdLg8RcnEbUV7llXv6ShimJYgcHacNhhGIHkaR3GRopUphsqz7E
-        jZxUYLecdUNkmAagJEPWJDFffitGN2SXNff8tZ5Je+sddJMXMVUYA/dyfu1tGsrd8FlzCV
-        nB33ysQJ2EFyRuVLeNXihvuerZeLYeI=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-519-8gd8_A5nPhmVICcW9cE8_w-1; Thu, 05 Oct 2023 15:18:31 -0400
-X-MC-Unique: 8gd8_A5nPhmVICcW9cE8_w-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32323283257so1050800f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:18:31 -0700 (PDT)
+        Thu, 5 Oct 2023 15:21:09 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACC0E5
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:21:07 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id 71dfb90a1353d-49ab6c1869dso1637416e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:21:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696533667; x=1697138467; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V3YAwa7B2OJPRUP59nwxn3A11jwk1jGLcSNDbqpCUEs=;
+        b=I1tuKsyYs8KLTCBbO4XyPQD4vMYyicmH4C2pUL5fy9jhjOafmCKS8+sCGScEMItApK
+         Lvp9GFIMpce5ZLEN1gEMVDTta2pLi8OToRgguuIS74ZMZQTwxA8jP/r3gs9QvdzU2gjN
+         7uKt8otiw7vbK7e4ChAZH5MYKTmNXBq01j+R3ZowgBLXKvUAYJg1NVPRsQqT+0nLw7YS
+         oKcnxe5pZlPQsOTIzATCDelznHj57UJavzTLLMBto0Ik+rNIiVApVUKysFz+t5U9zm21
+         PcB2UeSDZrW1Rh5hN9/O4DxIYl5CUooWecyEQh/iKFShYjX8U/w4iE9DmVEyiOkYg3pd
+         hupA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696533510; x=1697138310;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2R8nvS1fGysVMS5a70TnQ+euq+3ceDHbf0f2W4kS2b4=;
-        b=UqbQryYTD52ZEWgR4TqsybXzgjkLCcmglBzuVhNzoKUrxkAfttV56F966pynKsFRXf
-         U5YvRFqqSXDp9BieWMgpQqmoq6go/iC9f1jQnRSFmi52JKpY2PDyZKLx1nGbVlyjXqU3
-         xCFc/SDZkb/y59tRPps6A0zEe0Lzo7EzRq76dg6cdjREO7MB+2XpVQVPQEQ8bqlTSsYG
-         5nRvoGlN+aQtj5oAgki3FVop8FG6fzXFkM3lDEn9pbaRxRcHNBKoRJ580u++hOzAWBjt
-         87s5fQUWFLGNExRlEgYnfLJV+xuhh1xSuzk9//1Ch6CmqjMbGru8sCAX83DFvyC2jXD7
-         vuAA==
-X-Gm-Message-State: AOJu0YxRpcCFDp6nVfEAjklGhsYH2HCQqLMIdmodi0LxQUQl7x4ys+Mv
-        A4Ee8p5nuHeT5+OgVBU673dkANyaKEZ4X4UFEdMdGZFMwMUBvEI0h72o3b6eVPDndvetbUb5mC8
-        wzwBHaoZs6O/2go66cwgnd0UR
-X-Received: by 2002:a5d:58c2:0:b0:319:7a9f:c63 with SMTP id o2-20020a5d58c2000000b003197a9f0c63mr5707834wrf.50.1696533510574;
-        Thu, 05 Oct 2023 12:18:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEJSoSJCYUxP/9cvc2Te2pM2upBQSmDoYt/HKnGitt6LjIRBQVlh0qAuXtMDSL56hXqGRauRg==
-X-Received: by 2002:a5d:58c2:0:b0:319:7a9f:c63 with SMTP id o2-20020a5d58c2000000b003197a9f0c63mr5707810wrf.50.1696533510205;
-        Thu, 05 Oct 2023 12:18:30 -0700 (PDT)
-Received: from redhat.com ([2.52.3.174])
-        by smtp.gmail.com with ESMTPSA id e1-20020adffc41000000b003267b4692e5sm2421018wrs.19.2023.10.05.12.18.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 12:18:28 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 15:18:25 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Dragos Tatulea <dtatulea@nvidia.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Gal Pressman <gal@nvidia.com>,
-        "eperezma@redhat.com" <eperezma@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH vhost v2 00/16] vdpa: Add support for vq descriptor
- mappings
-Message-ID: <20231005151812-mutt-send-email-mst@kernel.org>
-References: <20230928164550.980832-2-dtatulea@nvidia.com>
- <20231005133054-mutt-send-email-mst@kernel.org>
- <9dfa552011c20a58d8550bd794977de821212df4.camel@nvidia.com>
+        d=1e100.net; s=20230601; t=1696533667; x=1697138467;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V3YAwa7B2OJPRUP59nwxn3A11jwk1jGLcSNDbqpCUEs=;
+        b=et2wL58KZtRpyY2D68b5L83LuvfTeWUQtTvj3TVmLveh1mkqsUdSNbWkdoIprlHkdd
+         ZxfwljKwTOGproXs/9wcauDCpwybc+UisgJ7G5kEUvDh2n8MdrB8z6SvqUiIMHJSSs8Z
+         pF/V2f8GKTh1kN2CjZhbN5mK0tnsEzDZFzK9UK4f2NNK6RFp8O+4NYoZfQsntmyUY8Ob
+         DsX45MjPw/u9264YJJl29OZ75+cbTflgngZRNdxX9vowfwH/sSA0QanK06xA+SmIOvmE
+         7jFZyN5NX4ua7Kzzb7XtGSV57ZKBtCjTQ3tk0whuTxC5jA1et7+IgpqUsIZMVnkIyxYh
+         ZIxg==
+X-Gm-Message-State: AOJu0YyTQgSl1FBNfnMZl1jYGLyQ5GuBwQEVp+Rfkbu1Z+zo0oBEtjip
+        xH5ALCoJy8HubVOP3hqutkcnzfPjTybrdBSsbjGgFw==
+X-Google-Smtp-Source: AGHT+IFhEXUCf6hg0p0VkgiUHPuy9O4n5JiWEsbvC4N0pJ6GZCevj6BKaE5f4ZMr3qR2O1q/atILq+7gURY5Qemu1P4=
+X-Received: by 2002:a05:6122:4201:b0:49a:b587:ab79 with SMTP id
+ cm1-20020a056122420100b0049ab587ab79mr1292189vkb.8.1696533666626; Thu, 05 Oct
+ 2023 12:21:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9dfa552011c20a58d8550bd794977de821212df4.camel@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231004175217.404851126@linuxfoundation.org> <CA+G9fYsqbZhSQnEi-qSc7n+4d7nPap8HWcdbZGWLfo3mTH-L7A@mail.gmail.com>
+ <20231005172448.GA161140@pevik>
+In-Reply-To: <20231005172448.GA161140@pevik>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 6 Oct 2023 00:50:55 +0530
+Message-ID: <CA+G9fYuyXgWvsRhznP2x2VE5CvSyCCgcvxPz2J=dbvg6YW2iUA@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/259] 6.1.56-rc1 review
+To:     Petr Vorel <pvorel@suse.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-nfs@vger.kernel.org, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        LTP List <ltp@lists.linux.it>,
+        Richard Palethorpe <rpalethorpe@suse.com>,
+        Eryu Guan <eguan@redhat.com>, chrubis <chrubis@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 05:44:01PM +0000, Dragos Tatulea wrote:
-> On Thu, 2023-10-05 at 13:31 -0400, Michael S. Tsirkin wrote:
-> > On Thu, Sep 28, 2023 at 07:45:11PM +0300, Dragos Tatulea wrote:
-> > > This patch series adds support for vq descriptor table mappings which
-> > > are used to improve vdpa live migration downtime. The improvement comes
-> > > from using smaller mappings which take less time to create and destroy
-> > > in hw.
-> > > 
-> > > The first part adds the vdpa core changes from Si-Wei [0].
-> > > 
-> > > The second part adds support in mlx5_vdpa:
-> > > - Refactor the mr code to be able to cleanly add descriptor mappings.
-> > > - Add hardware descriptor mr support.
-> > > - Properly update iotlb for cvq during ASID switch.
-> > > 
-> > > Changes in v2:
-> > > 
-> > > - The "vdpa/mlx5: Enable hw support for vq descriptor mapping" change
-> > >   was split off into two patches to avoid merge conflicts into the tree
-> > >   of Linus.
-> > > 
-> > >   The first patch contains only changes for mlx5_ifc.h. This must be
-> > >   applied into the mlx5-next tree [1] first. Once this patch is applied
-> > >   on mlx5-next, the change has to be pulled fom mlx5-next into the vhost
-> > >   tree and only then the remaining patches can be applied.
-> > 
-> > 
-> > I get it you plan v3?
-> There are some very small improvements (commit message in 13/16 and fix in
-> 16/16) that could make a v3. The latter can be addressed as a separate patch
-> when moving dup_iotlb to vhost/iotlb. What do you think?
+On Thu, 5 Oct 2023 at 22:54, Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Naresh,
+>
+> > On Wed, 4 Oct 2023 at 23:41, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+>
+> > > This is the start of the stable review cycle for the 6.1.56 release.
+> > > There are 259 patches in this series, all will be posted as a respons=
+e
+> > > to this one.  If anyone has any issues with these being applied, plea=
+se
+> > > let me know.
+>
+> > > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+> > > Anything received after that time might be too late.
+>
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/pa=
+tch-6.1.56-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
+able-rc.git linux-6.1.y
+> > > and the diffstat can be found below.
+>
+> > > thanks,
+>
+> > > greg k-h
+>
+> > Results from Linaro=E2=80=99s test farm.
+> > Regressions on arm64 bcm2711-rpi-4-b device running LTP dio tests on
+> Could you please note in your reports also LTP version?
 
+Sure.
+We are running LTP Version: 20230516 for our testing.
 
-if there's a fix by all means post v3.
+We will update the latest LTP release (20230929) next week.
 
-> > 
-> > > [0]
-> > > https://lore.kernel.org/virtualization/1694248959-13369-1-git-send-email-si-wei.liu@oracle.com
-> > > [1]
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-next
-> > > 
-> > > Dragos Tatulea (13):
-> > >   vdpa/mlx5: Expose descriptor group mkey hw capability
-> > >   vdpa/mlx5: Create helper function for dma mappings
-> > >   vdpa/mlx5: Decouple cvq iotlb handling from hw mapping code
-> > >   vdpa/mlx5: Take cvq iotlb lock during refresh
-> > >   vdpa/mlx5: Collapse "dvq" mr add/delete functions
-> > >   vdpa/mlx5: Rename mr destroy functions
-> > >   vdpa/mlx5: Allow creation/deletion of any given mr struct
-> > >   vdpa/mlx5: Move mr mutex out of mr struct
-> > >   vdpa/mlx5: Improve mr update flow
-> > >   vdpa/mlx5: Introduce mr for vq descriptor
-> > >   vdpa/mlx5: Enable hw support for vq descriptor mapping
-> > >   vdpa/mlx5: Make iotlb helper functions more generic
-> > >   vdpa/mlx5: Update cvq iotlb mapping on ASID change
-> > > 
-> > > Si-Wei Liu (3):
-> > >   vdpa: introduce dedicated descriptor group for virtqueue
-> > >   vhost-vdpa: introduce descriptor group backend feature
-> > >   vhost-vdpa: uAPI to get dedicated descriptor group id
-> > > 
-> > >  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  31 +++--
-> > >  drivers/vdpa/mlx5/core/mr.c        | 191 ++++++++++++++++-------------
-> > >  drivers/vdpa/mlx5/core/resources.c |   6 +-
-> > >  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 100 ++++++++++-----
-> > >  drivers/vhost/vdpa.c               |  27 ++++
-> > >  include/linux/mlx5/mlx5_ifc.h      |   8 +-
-> > >  include/linux/mlx5/mlx5_ifc_vdpa.h |   7 +-
-> > >  include/linux/vdpa.h               |  11 ++
-> > >  include/uapi/linux/vhost.h         |   8 ++
-> > >  include/uapi/linux/vhost_types.h   |   5 +
-> > >  10 files changed, 264 insertions(+), 130 deletions(-)
-> > > 
-> > > -- 
-> > > 2.41.0
-> > 
-> 
+> FYI the best LTP release is always the latest release or git master branc=
+h.
 
+We have two threads here.
+1) LTP release tag testing on all stable-rc branches
+2) LTP master testing on a given specific kernel version [a]
+
+[a] https://qa-reports.linaro.org/lkft/ltp-master/
+
+- Naresh
