@@ -2,161 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C98F7BA595
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01257BA530
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242602AbjJEQSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
+        id S241401AbjJEQOW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Oct 2023 12:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241486AbjJEQO2 (ORCPT
+        with ESMTP id S236597AbjJEQMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:14:28 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EFD24EB7
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 04:39:55 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59f6767a15dso17633077b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 04:39:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696505994; x=1697110794; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0IYhvMB+/tYsbO1if1548hQ+c5ri7I00N34cZT67haM=;
-        b=oUq2raYXSnEPlgXt9I4U8k/ylLqsjxW7iy19qYuBTNdQNuQgMb3A7Dpz1OpTKmXVpZ
-         bsMOeRUoimciF283mTMFn2aX+N2iDW5xlSkEBBPqawFIl6M/UxoJVSWEsyTulKgmfPRs
-         SaU9+JOqJTJPx4MyVA4FiY5en+miU2dTVehnKbFJ5R+cLqZ547vuBbmgyp0VqL0FATmR
-         ZbywQHrc3+dm1lA+tG/gYeLz+vkztGYrG8fNPF7egVXjnxqQNu1swsvhbDZlGbr75sid
-         kF/Z2tBOpOx57v+pW3Y/YqqpsycOPdvliwuUJbC0UpWPTnev5H22Y+rUIV+UBWMOHiCv
-         k1UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696505994; x=1697110794;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0IYhvMB+/tYsbO1if1548hQ+c5ri7I00N34cZT67haM=;
-        b=aMaXPJvjD5WD+kAStUqhU+FO8BRDFe/EoyVbGlVw3+6h46cKGAAyZtfg6vGwuedNYM
-         nyuOTjeX135aOiAfXCoqO1JQ73C9Nzyj/L7XVB94ESN9btKZUa8zb1el4zopZzi81KaC
-         /5fd60/WIdaz6qcgQNpvs5RNLnhAd74nm4E9E7lQ4UdOFJJiB2N0c1OMQaN9vuUI7/eL
-         JqLyShXtCiSw8qncT9X4oKK5Ai94RZlLY6fob2+iU/rfhUwnhr1V9rGBQbVl3aXArxAO
-         Iy7Rnc5KGukk2kzoODFugP3YAtFVJciT+CX34s7j1rGWTXSNg9rUCKqzkYmeJH1M7XEK
-         tbtA==
-X-Gm-Message-State: AOJu0YwIv98jNVQQ888DGLsIxHedAwq9qGQ60o5T4ZiCxFIz0ztDWMNL
-        Wy6oetp8Xu8PP9Jye+JvIfqjpoBD7JmPj9+/+8ZP7A==
-X-Google-Smtp-Source: AGHT+IGz2SaLD3aU6BIPbHvTjKIKQ4LlW6fB/f1GiSxG/rP9irvPSE52u5ik65BnlAY9ONpAHojoUO4fqPhRZjJyZyE=
-X-Received: by 2002:a0d:d711:0:b0:59f:79e7:6e5d with SMTP id
- z17-20020a0dd711000000b0059f79e76e5dmr716346ywd.15.1696505994365; Thu, 05 Oct
- 2023 04:39:54 -0700 (PDT)
+        Thu, 5 Oct 2023 12:12:25 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361C53242
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:40:28 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-306-jLh_EL-5Md2BLsfBL2-SBA-1; Thu, 05 Oct 2023 12:39:56 +0100
+X-MC-Unique: jLh_EL-5Md2BLsfBL2-SBA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 5 Oct
+ 2023 12:39:54 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 5 Oct 2023 12:39:54 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "'linux@rasmusvillemoes.dk'" <linux@rasmusvillemoes.dk>,
+        'Steven Rostedt' <rostedt@goodmis.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "'bvanassche@acm.org'" <bvanassche@acm.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: [PATCH v2 next] compiler.h: Move __is_constexpr() to compiler.h.
+Thread-Topic: [PATCH v2 next] compiler.h: Move __is_constexpr() to compiler.h.
+Thread-Index: Adn3gDrI19XXJwgHQoKm/0Q5RNmGHA==
+Date:   Thu, 5 Oct 2023 11:39:54 +0000
+Message-ID: <2a6680bbe2e84459816a113730426782@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <cover.1693996662.git.quic_varada@quicinc.com> <a6d12e3b253d6a55d85f66979ba8b7d9c9ff6072.1693996662.git.quic_varada@quicinc.com>
- <CAA8EJppNsgUNgwadq9oM0_KyORNR5PBZGVZukN6MzAm2KPzC9g@mail.gmail.com> <20231005095744.GA29795@varda-linux.qualcomm.com>
-In-Reply-To: <20231005095744.GA29795@varda-linux.qualcomm.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 5 Oct 2023 14:39:43 +0300
-Message-ID: <CAA8EJpr124fymnbZ1bO=Dbbxavn3Z=1xOPmFRPnfSp-UB3p6OQ@mail.gmail.com>
-Subject: Re: [PATCH v1 07/10] arm64: dts: qcom: ipq5332: populate the opp
- table based on the eFuse
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Cc:     ilia.lin@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        quic_kathirav@quicinc.com, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Oct 2023 at 12:58, Varadarajan Narayanan
-<quic_varada@quicinc.com> wrote:
->
-> On Thu, Sep 07, 2023 at 04:59:28PM +0300, Dmitry Baryshkov wrote:
-> > On Thu, 7 Sept 2023 at 08:23, Varadarajan Narayanan
-> > <quic_varada@quicinc.com> wrote:
-> > >
-> > > IPQ53xx have different OPPs available for the CPU based on
-> > > SoC variant. This can be determined through use of an eFuse
-> > > register present in the silicon.
-> > >
-> > > Add support to read the eFuse and populate the OPPs based on it.
-> > >
-> > > Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
-> > > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> > > ---
-> > >  arch/arm64/boot/dts/qcom/ipq5332.dtsi | 34 +++++++++++++++++++++++++++++++---
-> > >  1 file changed, 31 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> > > index 82761ae..3ca3f34 100644
-> > > --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> > > @@ -91,11 +91,34 @@
-> > >         };
-> > >
-> > >         cpu_opp_table: opp-table-cpu {
-> > > -               compatible = "operating-points-v2";
-> > > +               compatible = "operating-points-v2-kryo-cpu";
-> > >                 opp-shared;
-> > > +               nvmem-cells = <&cpu_speed_bin>;
-> > > +               nvmem-cell-names = "speed_bin";
-> > > +
-> > > +               /*
-> > > +                * Listed all supported CPU frequencies and opp-supported-hw
-> > > +                * values to select CPU frequencies based on the limits fused.
-> > > +                * ------------------------------------------------------------
-> > > +                * Frequency     BIT3   BIT2   BIT1    BIT0    opp-supported-hw
-> > > +                *              1.0GHz 1.2GHz 1.5GHz No Limit
-> > > +                * ------------------------------------------------------------
-> > > +                * 1100000000     1      1      1       1            0xF
-> > > +                * 1500000000     0      0      1       1            0x3
-> > > +                * -----------------------------------------------------------
-> > > +                */
-> >
-> > This can probably go to the commit message instead.
->
-> Ok
->
-> > > +
-> > > +               opp-1100000000 {
-> > > +                       opp-hz = /bits/ 64 <1100000000>;
-> >
-> > But your table shows 1.0 GHz and 1.2 GHz instead of 1.1 GHz
->
-> Will update it.
->
-> > > +                       opp-microvolt = <850000>;
-> > > +                       opp-supported-hw = <0xF>;
-> > > +                       clock-latency-ns = <200000>;
-> > > +               };
-> > >
-> > > -               opp-1488000000 {
-> > > -                       opp-hz = /bits/ 64 <1488000000>;
-> > > +               opp-1500000000 {
-> > > +                       opp-hz = /bits/ 64 <1500000000>;
-> >
-> > So, 1.488 GHz or 1.5 GHz?
->
-> 1.5 GHz
->
-> > > +                       opp-microvolt = <950000>;
-> >
-> > Which regulator is controlled by this microvolt?
->
-> Based on the SKU, the XBL sets up the regulator to provide 950000uV
-> on CPUs capable of running 1.5G and 850000uV on other SKUs. Linux
-> doesn't control it.
+Prior to f747e6667ebb2 __is_constexpr() was in its only user minmax.h.
+That commit moved it to const.h - but that file just defines ULL(x) and
+  UL(x) so that constants can be defined for .S and .c files.
+So apart from the word 'const' it wasn't really a good location.
+Instead move the definition to compiler.h just before the similar
+  is_signed_type() and is_unsigned_type().
+This may not be a good long-term home, but the three definitions
+  belong together.
 
-Then why do you need this property here in the first place?
+Signed-off-by: David Laight <david.laight@aculab.com>
+---
+This makes it possible to use __is_constexpr() inside is_signed_type()
+so that the result is constant integer expression for pointer types.
+In particular (void *)1 isn't constant enough.
 
+v2: Add a copy into tools/linux/compiler.h to fix perf build.
 
+ include/linux/compiler.h       | 8 ++++++++
+ include/linux/const.h          | 8 --------
+ tools/include/linux/compiler.h | 8 ++++++++
+ tools/include/linux/const.h    | 8 --------
+ 4 files changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index d7779a18b24f..2efec9bfcc40 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -230,6 +230,14 @@ static inline void *offset_to_ptr(const int *off)
+ /* &a[0] degrades to a pointer: a different type from an array */
+ #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+ 
++/*
++ * This returns a constant expression while determining if an argument is
++ * a constant expression, most importantly without evaluating the argument.
++ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
++ */
++#define __is_constexpr(x) \
++	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
++
+ /*
+  * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
+  * bool and also pointer types.
+diff --git a/include/linux/const.h b/include/linux/const.h
+index 435ddd72d2c4..81b8aae5a855 100644
+--- a/include/linux/const.h
++++ b/include/linux/const.h
+@@ -3,12 +3,4 @@
+ 
+ #include <vdso/const.h>
+ 
+-/*
+- * This returns a constant expression while determining if an argument is
+- * a constant expression, most importantly without evaluating the argument.
+- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+- */
+-#define __is_constexpr(x) \
+-	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+-
+ #endif /* _LINUX_CONST_H */
+diff --git a/tools/include/linux/compiler.h b/tools/include/linux/compiler.h
+index 1684216e826a..7b65566f3e42 100644
+--- a/tools/include/linux/compiler.h
++++ b/tools/include/linux/compiler.h
+@@ -63,6 +63,14 @@
+ # define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+ #endif
+ 
++/*
++ * This returns a constant expression while determining if an argument is
++ * a constant expression, most importantly without evaluating the argument.
++ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
++ */
++#define __is_constexpr(x) \
++	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
++
+ #ifdef __ANDROID__
+ /*
+  * FIXME: Big hammer to get rid of tons of:
+diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
+index 435ddd72d2c4..81b8aae5a855 100644
+--- a/tools/include/linux/const.h
++++ b/tools/include/linux/const.h
+@@ -3,12 +3,4 @@
+ 
+ #include <vdso/const.h>
+ 
+-/*
+- * This returns a constant expression while determining if an argument is
+- * a constant expression, most importantly without evaluating the argument.
+- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+- */
+-#define __is_constexpr(x) \
+-	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+-
+ #endif /* _LINUX_CONST_H */
 -- 
-With best wishes
-Dmitry
+2.17.1
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
