@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D4C7BAAAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34DB57BAAAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbjJETsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
+        id S231575AbjJETtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbjJETsO (ORCPT
+        with ESMTP id S229437AbjJETtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 15:48:14 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C6ADB
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:48:12 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso258199966b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:48:12 -0700 (PDT)
+        Thu, 5 Oct 2023 15:49:11 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E27F4E4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:49:07 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-538575a38ffso2300419a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:49:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696535291; x=1697140091; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696535346; x=1697140146; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=fx8Fz/0lyiGSr+PU8NVEjUz0QkqFU5udG1VuqQ/XuWw=;
-        b=kookpJBlDxXQoKVHcGiTWYEYH9b58EfqEsTX2/rWpZHIY6wkUGXcl7mTR9ZOEs+r+0
-         DMYlqHCoz419V6RJ+mGCGtwiIm18WFtB2PCPGd6eQYvArh5oUkNSsKgWKldyUa8HYAPg
-         fBz/5M75TRrUm5Su33GIIgRFWKH0x9xorvwKDkMerLMm121u3M63GfKTf9+YHjkAUx9f
-         gdELEXPtpfCYhPL1t4NjRaxojTiAQcX5D8E2b3chSjLeqIS1sfP6cx2XsvQl349FRtQE
-         qrJfl3Y7fYlq6AlKIadraZjhsj1hoqkBX2QEYudpI3K4dya6OVpYUuz5rJ1j3wmhAPqy
-         aV6g==
+        bh=r5WhV7dH92WyGL0q8Wa0O/BUy3x/4ibZVoKDqGM8Nqo=;
+        b=v+3fBkq705HZzxSa8wUuDtTy4jo+S0XplCSwx8CT5UNhokwT4NP2Rjt5mz+0uaSb0R
+         iEnzI/RecHz3i8rhRKvg8K70tRQvyAy9H4OH4jfuplgpSi7oW134HIHQcwsBfRzjeBAy
+         pB6WpZMq23BWzPT0tcfVHqW6Bz96BTRpnDeROW6w5mhf7glL0x9Ifosp8u827YFp5LFV
+         NL6KFqckwoVJ+Q5Bf7xz3hReC+VacbujWxXIaoz6UJksOQy4YYV5+UJz3ALMJ0ELRATH
+         KzYpetYwdox7bUei67Ox1ZscO62XyMWvAJT4KkIpVwGaRl9QlTN2QUEYuDSDe1Fy4W7p
+         tQQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696535291; x=1697140091;
+        d=1e100.net; s=20230601; t=1696535346; x=1697140146;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fx8Fz/0lyiGSr+PU8NVEjUz0QkqFU5udG1VuqQ/XuWw=;
-        b=WuB16A0TYCfLkWHvGuBmMxEPJ5Dw+z34lTcoPsS8yz/P9XGN8+oPmI5yfBCx/5o4fv
-         KDRM3j30U3+o6sP3tc4ZcdEYcS0jK0BsrcYE8oE7EvU23/VMm6zJ+WlNrbNC7aVQOHtS
-         NP8RucwQmxtjr1hBpHCJ9RYsx8vLhp5YekjDqRZLFYwvfYAMDvfAeGeHXwl8y4P0McLM
-         /kOTOQmt59fUI/IxCzNkQr+wMl23eS/tg9NVNzV5xvenqZt8CyG4+1J37tCUzeSzD3wF
-         DJQTtLg1PCRkkJdL443wd3uUuyempVWl7MNkpvwL9Xmu5S/c8SyB31Zs5SEny5Cla1e4
-         6pDA==
-X-Gm-Message-State: AOJu0Yym9//qkXdHnHn8w4OsmyJQIvj3U9sEaqC5G2ihZrDdu5XoMGsp
-        +Vf4e2KUtS3MniGlUA5J8VAl0g==
-X-Google-Smtp-Source: AGHT+IFdHDziO4Cy3Y/RCvHiCOxki5B3tN3HRkr7Sas3Oe7RRSmcfJSjD299HDC3NaowcZ3PJrUBXQ==
-X-Received: by 2002:a17:906:31d7:b0:9b2:ccd8:2d49 with SMTP id f23-20020a17090631d700b009b2ccd82d49mr4873244ejf.0.1696535291015;
-        Thu, 05 Oct 2023 12:48:11 -0700 (PDT)
+        bh=r5WhV7dH92WyGL0q8Wa0O/BUy3x/4ibZVoKDqGM8Nqo=;
+        b=QA9FS4DsvWeVIbuSEct1bnVx62Ig5NVqkd/HECCrzULWVUHYOx5tpby53T6PVrAkhR
+         pow6tWnZZSxs4P3QNSkkQk64rQeTa8N6s3yJhb0dgw9C83DAi7oL0qJUzOyZBhPUiaKY
+         jr/0+Eyq1FghKsXqm3fj/xwd1hJ19MLT91U5R5gWmUnxxg8MfqM8U/B3ObjDES2THRcc
+         H35qSnBOhyN49DpQ193e5HPq1iDsh40g+1b+QW82uc3v+aUuINCJtSKrUEmPWMpux/lW
+         g7K/Hbk0sDxjfJAkSzKcLVK+AKIM9dLzjoW/jeTDpp5BStJcaD0HJjCP51eZW0QzXsmp
+         UlBw==
+X-Gm-Message-State: AOJu0YwVedpQCci0syCFdPKkpshQrjRluNiFwcu7NI5JIyAooHjxypR0
+        cWustitHnqyirc9dm0nI8/6vsA==
+X-Google-Smtp-Source: AGHT+IEJX8nvyypIy7SFqhTEK21/AKGJ5yeInE0z9RFgurCcjpq7gofRv6C8ygCDos1pf3LJSKFk2w==
+X-Received: by 2002:a17:906:51d1:b0:9ae:4843:66ee with SMTP id v17-20020a17090651d100b009ae484366eemr5538745ejk.36.1696535346403;
+        Thu, 05 Oct 2023 12:49:06 -0700 (PDT)
 Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id jw5-20020a170906e94500b009ae6a6451fdsm1651578ejb.35.2023.10.05.12.48.09
+        by smtp.gmail.com with ESMTPSA id jw5-20020a170906e94500b009ae6a6451fdsm1651578ejb.35.2023.10.05.12.49.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 12:48:10 -0700 (PDT)
-Message-ID: <a8d31c42-1248-4738-b01a-3abeedfd49eb@linaro.org>
-Date:   Thu, 5 Oct 2023 21:48:09 +0200
+        Thu, 05 Oct 2023 12:49:06 -0700 (PDT)
+Message-ID: <0e914bd2-148f-49f7-be23-42a4b066d4bc@linaro.org>
+Date:   Thu, 5 Oct 2023 21:49:05 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC v2 5/5] dt-bindings: gpio: Add bindings for pinctrl based
- generic gpio driver
+Subject: Re: [PATCH v3] dt-bindings: phy: Convert PXA1928 USB/HSIC PHY to DT
+ schema
 Content-Language: en-US
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org
-Cc:     Oleksii_Moisieiev@epam.com, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-References: <20231005025843.508689-1-takahiro.akashi@linaro.org>
- <20231005025843.508689-6-takahiro.akashi@linaro.org>
+To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20231004-pxa1928-usb-yaml-v3-1-150c9ef3ab9d@skole.hr>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -111,45 +111,28 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231005025843.508689-6-takahiro.akashi@linaro.org>
+In-Reply-To: <20231004-pxa1928-usb-yaml-v3-1-150c9ef3ab9d@skole.hr>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2023 04:58, AKASHI Takahiro wrote:
-> A dt binding for pin controller based generic gpio driver is defined in
-> this commit. One usable device is Arm's SCMI.
+On 04/10/2023 16:34, Duje Mihanović wrote:
+> Convert the binding for the Marvell PXA1928 USB and HSIC PHYs from TXT
+> to DT schema.
 > 
-> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-
-> +
-> +required:
-> +  - compatible
-> +  - gpio-controller
-> +  - "#gpio-cells"
-> +  - gpio-ranges
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    gpio0: gpio@0 {
-
-No reg, so no unit address.
-
-Drop also unused label.
+> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+> ---
 
 
-> +        compatible = "pin-control-gpio";
-> +        gpio-controller;
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
