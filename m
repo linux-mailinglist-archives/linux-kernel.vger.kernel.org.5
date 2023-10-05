@@ -2,92 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6587BA669
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67987BA4ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235515AbjJEQdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46342 "EHLO
+        id S240538AbjJEQNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbjJEQck (ORCPT
+        with ESMTP id S240476AbjJEQMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:32:40 -0400
-X-Greylist: delayed 1029 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Oct 2023 08:45:50 PDT
-Received: from tartarus.angband.pl (tartarus.angband.pl [51.83.246.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC4C44BF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 08:45:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=angband.pl;
-        s=tartarus; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=glxtyoqeaI0kbkfNF4iPI6CTTiHa0BUQ75DXKNcNDsQ=; b=Hj/mQTHPrHOhfnc+0vx/7Gr0wf
-        +63HJXuM5mYseQtCsn5h0iTaaQ86SdVtqfdEfgwSffPVJ42DTvUXH3wnCtcTy3GBkv4DXBWiePwPT
-        IxIu4FeR1JQz8elkj8OGrt9SkRnabcFxV/iGzmUx1WDefkTLJnagREMxflNG7TMcqYjo=;
-Received: from kilobyte by tartarus.angband.pl with local (Exim 4.96)
-        (envelope-from <kilobyte@angband.pl>)
-        id 1qoQGt-002gHy-1z;
-        Thu, 05 Oct 2023 17:28:15 +0200
-Date:   Thu, 5 Oct 2023 17:28:15 +0200
-From:   Adam Borowski <kilobyte@angband.pl>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Thorsten Leemhuis <regressions@leemhuis.info>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: what to do on no reproducer case? (was Re: Fwd: Uhhuh. NMI
- received for unknown reason 3d/2d/ on CPU xx)
-Message-ID: <20231005152815.GA630707@angband.pl>
-References: <0e6de51b-da1d-43f0-ffae-fb521febbe07@gmail.com>
- <ZQo8hzP-eRjXvtXf@debian.me>
- <2a298145-b6ec-4b4e-bd45-0cddf62b6052@leemhuis.info>
- <bcf1998e-5efa-4505-a8d2-3381c16de885@gmail.com>
+        Thu, 5 Oct 2023 12:12:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDEA20657
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 08:29:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F2AAC433C8;
+        Thu,  5 Oct 2023 15:29:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696519748;
+        bh=RrgokZIbawNcYj1Hub++fDHue36t3n7WgTCbcoHbyDE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=k9095fMg/unoHqm4RC/C+IkpwWHeq8wccyDp8x3AbaP9I0g34QhWsVVe7JmeiHf1s
+         WsD1S8lh2+NClg+t1qCJLG/tw7US3ywNl6JPPte5eCPRF9niAZcmwtN6qW3jPrlc01
+         MLs4GHfafEWWW81PqiovLlZOBDOzOhGYyOs/SzOGk7c+QlXlQuCXbkLyY2BUCQR2Ys
+         sw4NLiyDS2Tf4pm+3XklrUtCanxsayn6mXm2U/ULzOJTgnj+6ddo3x1mcS30VD2UB5
+         daE2SDOqrkdcsrVaGWuU8eoghXgo5GiBgATzhvBBIcwDxSamXJe/iq3W39Wo+k07/f
+         979ugMQKfDWwg==
+Date:   Thu, 5 Oct 2023 16:29:04 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Lee Jones <lee@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] MFD fixes for v6.6
+Message-ID: <20231005152904.GA808963@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <bcf1998e-5efa-4505-a8d2-3381c16de885@gmail.com>
-X-Junkbait: aaron@angband.pl, zzyx@angband.pl
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: kilobyte@angband.pl
-X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 07:50:29PM +0700, Bagas Sanjaya wrote:
-> On 21/09/2023 15:10, Thorsten Leemhuis wrote:
-> > Yes, without a reliable bisection result there sometimes is not much we
-> > can do -- apart from prodding various developers directly and asking for
-> > help or an idea. But in this case that's not worth it afaics, as
-> > messages like
-> > https://lore.kernel.org/all/e08e33d5-4f6d-91aa-f335-9404d16a983c@amd.com/
-> > indicate that it might be a hardware problem and not really a
-> > regression. Hence:
-> > 
-> > #regzbot resolve: inconclusive: not bisected and might be a hardware
-> > problem after all
+Good evening Linus,
 
-> Thanks for the tip! Now to fix up:
-> 
-> #regzbot inconclusive: regression not bisected - possibly hardware issue
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
-This doesn't seem to be a regression, I'm seeing this (reason 2c/3c) since
-forever (2019) on my box (2990WX), up to current -rc kernels.
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 
-Of course, it might be a different problem that results in same message,
-but I don't pretend to have a clue about the cause -- just reporting.
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git tags/mfd-fixes-6.6
 
-Meow!
+for you to fetch changes up to c7f5bd9f3aa04a5d0ced8c8f7835bead62380fa6:
+
+  dt-bindings: mfd: Revert "dt-bindings: mfd: maxim,max77693: Add USB connector" (2023-09-20 10:54:16 +0100)
+
+----------------------------------------------------------------
+Couple of small fixes, including:
+
+  - Potential build failure in CS42L43
+  - Device Tree bindings clean-up for a superseded patch
+
+----------------------------------------------------------------
+Krzysztof Kozlowski (1):
+      dt-bindings: mfd: Revert "dt-bindings: mfd: maxim,max77693: Add USB connector"
+
+Woody Zhang (1):
+      mfd: cs42l43: Fix MFD_CS42L43 dependency on REGMAP_IRQ
+
+ Documentation/devicetree/bindings/mfd/maxim,max77693.yaml | 4 ----
+ drivers/mfd/Kconfig                                       | 1 +
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
 -- 
-⢀⣴⠾⠻⢶⣦⠀
-⣾⠁⢠⠒⠀⣿⡁ Q: Is it ok to combine wired, wifi, and/or bluetooth connections
-⢿⡄⠘⠷⠚⠋⠀    in wearable computing?
-⠈⠳⣄⠀⠀⠀⠀ A: No, that would be mixed fabric, which Lev19:19 forbids.
+Lee Jones [李琼斯]
