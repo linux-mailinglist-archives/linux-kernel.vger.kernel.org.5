@@ -2,141 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAFE7BA249
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4987BA055
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbjJEP0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47300 "EHLO
+        id S236473AbjJEOg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232602AbjJEPZx (ORCPT
+        with ESMTP id S235995AbjJEOed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:25:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91C86078A;
-        Thu,  5 Oct 2023 07:51:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1BB1C433CB;
-        Thu,  5 Oct 2023 04:10:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696479019;
-        bh=tvQ6HmqskzVwBQufXqWAzijK9xLx9i/yIFRHr3dsOjg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cUGQPMVmdNnKQ0RoWKzH79W5T8AWaX52R5iZQaBiaKi+e773J54Ahe6zZ3s7p6pzB
-         WtHdPYGr1LFupPbB+ZUJHOVLwqBeJcNuVaAgf2Vvwwy1uSv28lE6HX9NRGq87B6o7a
-         Zab4J1b51rBp2Dz+Z5xRryrrFhRn5XE6a9VBlk/YCHq2OrREr9bBjDnTIpO2cfd0XP
-         CXadHlD2fzWFoS+FrMbrYO/ncV/jrXyO+QQ354YZO2Bl0VdsYTI7n3L+UO3wc6FAWf
-         F3ZgLzlbZwKm1ej4WRH/RHNWsUY2mPVvDBLyXar3PUyTQ8rrqsg+EQnloOmdkoJbhH
-         +DN+dx1Jhy6Fw==
-Date:   Thu, 5 Oct 2023 09:40:14 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Jai Luthra <j-luthra@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Benoit Parrot <bparrot@ti.com>,
-        Vaishnav Achath <vaishnav.a@ti.com>, nm@ti.com,
-        devarsht@ti.com, a-bhatia1@ti.com,
-        Martyn Welch <martyn.welch@collabora.com>,
-        Julien Massot <julien.massot@collabora.com>
-Subject: Re: [PATCH v9 13/13] media: ti: Add CSI2RX support for J721E
-Message-ID: <ZR43Jre2j51j0mFk@matsya>
-References: <20230811-upstream_csi-v9-0-8943f7a68a81@ti.com>
- <20230811-upstream_csi-v9-13-8943f7a68a81@ti.com>
- <ad042065-33a2-d42e-ce2e-628464102fc3@ideasonboard.com>
- <wgkjek77bolf5wabki7uhm6cxjy5g5z2ncoc6urr7dv5y6wnaw@yfh7ccogxfea>
- <20230829155513.GG6477@pendragon.ideasonboard.com>
- <ZR1txMVk+4oHLEKU@matsya>
- <20231004200312.GE30342@pendragon.ideasonboard.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004200312.GE30342@pendragon.ideasonboard.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 5 Oct 2023 10:34:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6F5270A
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696513851; x=1728049851;
+  h=date:from:to:cc:subject:message-id;
+  bh=WW3ruHycXKthctXbOI0KGROznspY4s6Tf8iOmnwu9nQ=;
+  b=Pb7SIZDst3DDFXTgM80oP8eklzQyEpmnWYQpdunNCFwjLD3+LzbOh+Ra
+   UOUHbdXpmahb0J0Hn/xgqIy9CgyQdAaefqmSNRmcV57ThH8cwFZfUpK3G
+   XHIRaVoJPro7eOm/fAvcMH6ZbViKlevOSMFuTU2i5jmLIuIZmgkP/5hwm
+   k+CVCf090Kp5rnK7MCNTev9mDX94TZppGRdGSiwPvcn3yhVjTEx/9wvSQ
+   K54V3T2n8r0jrWuy5ThepQ86jejTztWp//xeo2pJLnSiTglRM/bJchXNC
+   IFzpOUWmB+rhrx8+Z1xt1qiPNmSzkoDdKuwUF96wS/q0pgI4gTI8A2az/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="368461896"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="368461896"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 21:13:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="751635827"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="751635827"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 04 Oct 2023 21:13:43 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qoFk4-000KzU-2o;
+        Thu, 05 Oct 2023 04:13:40 +0000
+Date:   Thu, 05 Oct 2023 12:13:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 238437d88cea4bfcbc0e7c5031e873dec15d3e93
+Message-ID: <202310051209.fH6RMvpG-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-10-23, 23:03, Laurent Pinchart wrote:
-> On Wed, Oct 04, 2023 at 07:21:00PM +0530, Vinod Koul wrote:
-> > On 29-08-23, 18:55, Laurent Pinchart wrote:
-> > > Hi Jai,
-> > > 
-> > > (CC'ing Vinod, the maintainer of the DMA engine subsystem, for a
-> > > question below)
-> > 
-> > Sorry this got lost
-> 
-> No worries.
-> 
-> > > On Fri, Aug 18, 2023 at 03:55:06PM +0530, Jai Luthra wrote:
-> > > > On Aug 15, 2023 at 16:00:51 +0300, Tomi Valkeinen wrote:
-> > > > > On 11/08/2023 13:47, Jai Luthra wrote:
-> > > > > > From: Pratyush Yadav <p.yadav@ti.com>
-> > > 
-> > > [snip]
-> > > 
-> > > > > > +static int ti_csi2rx_start_streaming(struct vb2_queue *vq, unsigned int count)
-> > > > > > +{
-> > > > > > +	struct ti_csi2rx_dev *csi = vb2_get_drv_priv(vq);
-> > > > > > +	struct ti_csi2rx_dma *dma = &csi->dma;
-> > > > > > +	struct ti_csi2rx_buffer *buf;
-> > > > > > +	unsigned long flags;
-> > > > > > +	int ret = 0;
-> > > > > > +
-> > > > > > +	spin_lock_irqsave(&dma->lock, flags);
-> > > > > > +	if (list_empty(&dma->queue))
-> > > > > > +		ret = -EIO;
-> > > > > > +	spin_unlock_irqrestore(&dma->lock, flags);
-> > > > > > +	if (ret)
-> > > > > > +		return ret;
-> > > > > > +
-> > > > > > +	dma->drain.len = csi->v_fmt.fmt.pix.sizeimage;
-> > > > > > +	dma->drain.vaddr = dma_alloc_coherent(csi->dev, dma->drain.len,
-> > > > > > +					      &dma->drain.paddr, GFP_KERNEL);
-> > > > > > +	if (!dma->drain.vaddr)
-> > > > > > +		return -ENOMEM;
-> > > > > 
-> > > > > This is still allocating a large buffer every time streaming is started (and
-> > > > > with streams support, a separate buffer for each stream?).
-> > > > > 
-> > > > > Did you check if the TI DMA can do writes to a constant address? That would
-> > > > > be the best option, as then the whole buffer allocation problem goes away.
-> > > > 
-> > > > I checked with Vignesh, the hardware can support a scenario where we 
-> > > > flush out all the data without allocating a buffer, but I couldn't find 
-> > > > a way to signal that via the current dmaengine framework APIs. Will look 
-> > > > into it further as it will be important for multi-stream support.
-> > > 
-> > > That would be the best option. It's not immediately apparent to me if
-> > > the DMA engine API supports such a use case.
-> > > dmaengine_prep_interleaved_dma() gives you finer grain control on the
-> > > source and destination increments, but I haven't seen a way to instruct
-> > > the DMA engine to direct writes to /dev/null (so to speak). Vinod, is
-> > > this something that is supported, or could be supported ?
-> > 
-> > Write to a dummy buffer could have the same behaviour, no?
-> 
-> Yes, but if the DMA engine can write to /dev/null, that avoids
-> allocating a dummy buffer, which is nicer. For video use cases, dummy
-> buffers are often large.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 238437d88cea4bfcbc0e7c5031e873dec15d3e93  intel_idle: Add ibrs_off module parameter to force-disable IBRS
 
-hmmm maybe I haven't comprehended it full, would you mind explaining the
-details on how such a potential interleaved transfer would look like so
-that we can model it or change apis to model this
+elapsed time: 736m
+
+configs tested: 135
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs101_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                 nsimosci_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20231005   gcc  
+arm                              alldefconfig   clang
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                      footbridge_defconfig   gcc  
+arm                         orion5x_defconfig   clang
+arm                          pxa168_defconfig   clang
+arm                          pxa3xx_defconfig   gcc  
+arm                   randconfig-001-20231005   gcc  
+arm                         s5pv210_defconfig   clang
+arm                           sunxi_defconfig   gcc  
+arm                         vf610m4_defconfig   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231005   gcc  
+i386         buildonly-randconfig-002-20231005   gcc  
+i386         buildonly-randconfig-003-20231005   gcc  
+i386         buildonly-randconfig-004-20231005   gcc  
+i386         buildonly-randconfig-005-20231005   gcc  
+i386         buildonly-randconfig-006-20231005   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231005   gcc  
+i386                  randconfig-002-20231005   gcc  
+i386                  randconfig-003-20231005   gcc  
+i386                  randconfig-004-20231005   gcc  
+i386                  randconfig-005-20231005   gcc  
+i386                  randconfig-006-20231005   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231005   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                  decstation_64_defconfig   gcc  
+mips                          malta_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         alldefconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                      bamboo_defconfig   gcc  
+powerpc                      ep88xc_defconfig   gcc  
+powerpc                    klondike_defconfig   gcc  
+powerpc                     mpc5200_defconfig   clang
+powerpc                     skiroot_defconfig   clang
+powerpc                  storcenter_defconfig   gcc  
+powerpc                         wii_defconfig   gcc  
+powerpc                 xes_mpc85xx_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                    nommu_virt_defconfig   clang
+riscv                          rv32_defconfig   gcc  
+s390                             alldefconfig   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                   rts7751r2dplus_defconfig   gcc  
+sh                          sdk7780_defconfig   gcc  
+sh                             sh03_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231005   gcc  
+x86_64                randconfig-002-20231005   gcc  
+x86_64                randconfig-003-20231005   gcc  
+x86_64                randconfig-004-20231005   gcc  
+x86_64                randconfig-005-20231005   gcc  
+x86_64                randconfig-006-20231005   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
 
 -- 
-~Vinod
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
