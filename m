@@ -2,130 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 837F47BA71D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01907BA719
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbjJEQuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
+        id S230049AbjJEQuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbjJEQsY (ORCPT
+        with ESMTP id S233081AbjJEQsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:48:24 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EB71FDD
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:41:16 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-405459d9a96so2035e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:41:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696524075; x=1697128875; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kKTDRIoUmCSN9wKAZkd+bxIJEDblkCbUKypHY3ps4Iw=;
-        b=Q+9rGAz/E7g9ybkcIAMcFbKwvoF1EZUZRfBom65Nza9mTZxv5FdEt5FcqQNQF4BW3Q
-         6rUFyD4mxY75T+3bGjsgQYrrEBDxwaWrhNrtrwWIweqXkPyzy2PqaqDxs0dREmRn5Tzr
-         YNyLMfb8A8zAGs9Yg7BF5MmvP0QI6wJACnWAejFGjNFYBl8w3lkkjY4i+AA4Mxas3Dj+
-         ooHh7ByEuqTi7CdLSa3a0V/FuVsVaQ2uPyA+TdPD7ILsl3k2SZJMQpQT+KqTY+9EetUm
-         dgTEPMriDfHV42y+ZQBfdJpC263VP4M/pnNHLYwAFzsRL5Q9H6j99SQVa2AUSVR6UW9A
-         hGNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696524075; x=1697128875;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kKTDRIoUmCSN9wKAZkd+bxIJEDblkCbUKypHY3ps4Iw=;
-        b=vD7qyfgd+dHB/xFLoEeV7MVrhqYOa7QIGooUcXrs3d/zlrNeJi0Z5gWEUF/jCln6jp
-         pZC0oAGi+DuHaGgckeftl8C4iE7LjkhFa3F29uJ8lJ4niSvMDLg8xfAc7uXycICnqWYm
-         d0IfBllH3qAVvAit4oiSmnyykDR9HeiLhMn1yhuFWvUSv1Q/bAsxgFg011r37c00dnU0
-         nD3j5UjO4+Yji9Uk2gI7tMOeUjmAQNHblNhaU/MlgMOZW2VMx1NpQzPHiN2F1//KYwsU
-         pzy0pLvoWjjwGs6ou8LYgzHafZfXWTdCofm1Pq8pYrHqjpdfJLyOOod0QkSxqig2R8lj
-         GueA==
-X-Gm-Message-State: AOJu0YwJVJ0/wvw2aANl1NS6ApVOacGS+83G3YS2ImG7daWKaOPQc+KR
-        VKkYZqRAVTZLOjNMfD/UrtWP+pOVeh/yVFMS8s2RxA==
-X-Google-Smtp-Source: AGHT+IHCYz0blMBWwpdJoZ1RUCKFkOGFeBm9VdaHikhjZLlf2r3eA9UAmptIepXMQVxXyXzuuEUlEkvL8t18CpmL0rk=
-X-Received: by 2002:a05:600c:2301:b0:405:38d1:e146 with SMTP id
- 1-20020a05600c230100b0040538d1e146mr66369wmo.4.1696524074654; Thu, 05 Oct
- 2023 09:41:14 -0700 (PDT)
+        Thu, 5 Oct 2023 12:48:40 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1EBDD1BB
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:41:37 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86CB2C15;
+        Thu,  5 Oct 2023 09:42:15 -0700 (PDT)
+Received: from [10.57.2.226] (unknown [10.57.2.226])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F10073F5A1;
+        Thu,  5 Oct 2023 09:41:33 -0700 (PDT)
+Message-ID: <f33a9903-4c6e-53b4-8a24-f5afe2e1cced@arm.com>
+Date:   Thu, 5 Oct 2023 17:41:32 +0100
 MIME-Version: 1.0
-References: <20231003145150.2498-1-ansuelsmth@gmail.com> <20231003145150.2498-3-ansuelsmth@gmail.com>
- <CANn89iK226C-pHUJm7HKMyEtMycGC=KCA2M6kw2KJaUj0cCT6w@mail.gmail.com> <20231005093253.2e25533a@kernel.org>
-In-Reply-To: <20231005093253.2e25533a@kernel.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 5 Oct 2023 18:41:03 +0200
-Message-ID: <CANn89iJQ50AdXP2C1YB2pGjE02WCJ-QCsZqE1yGXtcGsfLA0Jw@mail.gmail.com>
-Subject: Re: [net-next PATCH v2 3/4] netdev: replace napi_reschedule with napi_schedule
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Douglas Miller <dougmill@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nick Child <nnac123@linux.ibm.com>,
-        Haren Myneni <haren@linux.ibm.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Dany Madden <danymadden@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun <haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
-        Ziwei Xiao <ziweixiao@google.com>,
-        Rushil Gupta <rushilg@google.com>,
-        Coco Li <lixiaoyan@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Junfeng Guo <junfeng.guo@intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Yuri Karpov <YKarpov@ispras.ru>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        Lee Jones <lee@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dawei Li <set_pte_at@outlook.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v2 2/6] arm64: KVM: Rename DEBUG_STATE_SAVE_TRBE to
+ DEBUG_STATE_SAVE_TRFCR
+To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        broonie@kernel.org, maz@kernel.org
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Jintack Lim <jintack.lim@linaro.org>,
+        Akihiko Odaki <akihiko.odaki@daynix.com>,
+        Fuad Tabba <tabba@google.com>, Joey Gouly <joey.gouly@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <20231005125757.649345-1-james.clark@arm.com>
+ <20231005125757.649345-3-james.clark@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20231005125757.649345-3-james.clark@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -133,29 +60,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 6:32=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wro=
-te:
->
-> On Thu, 5 Oct 2023 18:11:56 +0200 Eric Dumazet wrote:
-> > OK, but I suspect some users of napi_reschedule() might not be race-fre=
-e...
->
-> What's the race you're thinking of?
+On 05/10/2023 13:57, James Clark wrote:
+> This flag actually causes the TRFCR register to be saved, so rename it
+> to that effect.
+> 
+> Currently it only happens when TRBE is used, but in a later commit
+> TRFCR will be saved and restored even if TRBE isn't used, so the new
+> name will be more accurate.
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-This sort of thing... the race is in fl_starving() though...
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c
-b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-index 98dd78551d89..b5ff2e1a9975 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-@@ -4261,7 +4261,7 @@ static void sge_rx_timer_cb(struct timer_list *t)
 
-                        if (fl_starving(adap, fl)) {
-                                rxq =3D container_of(fl, struct sge_eth_rxq=
-, fl);
--                               if (napi_reschedule(&rxq->rspq.napi))
-+                               if (napi_schedule(&rxq->rspq.napi))
-                                        fl->starving++;
-                                else
-                                        set_bit(id, s->starving_fl);
