@@ -2,201 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DABB7BA36C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724377BA347
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236710AbjJEP5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53182 "EHLO
+        id S236392AbjJEPxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236722AbjJEP4f (ORCPT
+        with ESMTP id S235462AbjJEPvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:56:35 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 13C2F59D2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:53:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E55931655;
-        Thu,  5 Oct 2023 06:28:58 -0700 (PDT)
-Received: from [10.1.39.183] (XHFQ2J9959.cambridge.arm.com [10.1.39.183])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72E963F7C5;
-        Thu,  5 Oct 2023 06:28:19 -0700 (PDT)
-Message-ID: <465180b5-c365-44e5-840c-a29c285f430e@arm.com>
-Date:   Thu, 5 Oct 2023 14:28:18 +0100
+        Thu, 5 Oct 2023 11:51:08 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D545771299;
+        Thu,  5 Oct 2023 07:11:01 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 395DTLwU018466;
+        Thu, 5 Oct 2023 08:29:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696512561;
+        bh=dVZ/oX4gmdQ7oMdeoiY0ZTmy74eTe12SQx5ysletSRI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=kWMhQIrLPXh7kyX+YVvoMGsKc1ZUERWjry/SoCJmbHOdneCvAtd+iLbR0Bb6RgiJ0
+         4507NzhDcMA/J/cGyvwhsoQp26PWD2sxY6/wqxVel6/Lp7O7x15J3+RVeUY2lgMQy1
+         gBqMvxVLiP1W1Y88ALez67l6mAsMzuxaS1y06/6Q=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 395DTLtw051139
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Oct 2023 08:29:21 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 5
+ Oct 2023 08:29:21 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 5 Oct 2023 08:29:21 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 395DTLYR127845;
+        Thu, 5 Oct 2023 08:29:21 -0500
+Date:   Thu, 5 Oct 2023 08:29:21 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Roger Quadros <rogerq@kernel.org>
+CC:     "Raghavendra, Vignesh" <vigneshr@ti.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the ti tree
+Message-ID: <20231005132921.2vg6kdcr273bh7et@cabbage>
+References: <20231005141536.77538147@canb.auug.org.au>
+ <f70dec2a-dbdf-479c-af5b-a70db02b27b4@ti.com>
+ <2905cfc2-912f-4620-9455-2e91586a2839@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] arm64/mm: Hoist synchronization out of set_ptes() loop
-Content-Language: en-GB
-To:     Steven Price <steven.price@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Collingbourne <pcc@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231003133955.637353-1-ryan.roberts@arm.com>
- <3e417f1c-faed-45c7-8008-f8525c609e53@arm.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <3e417f1c-faed-45c7-8008-f8525c609e53@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <2905cfc2-912f-4620-9455-2e91586a2839@kernel.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2023 13:55, Steven Price wrote:
-> On 03/10/2023 14:39, Ryan Roberts wrote:
->> set_ptes() sets a physically contiguous block of memory (which all
->> belongs to the same folio) to a contiguous block of ptes. The arm64
->> implementation of this previously just looped, operating on each
->> individual pte. But the __sync_icache_dcache() and mte_sync_tags()
->> operations can both be hoisted out of the loop so that they are
->> performed once for the contiguous set of pages (which may be less than
->> the whole folio). This should result in minor performance gains.
->>
->> __sync_icache_dcache() already acts on the whole folio, and sets a flag
->> in the folio so that it skips duplicate calls. But by hoisting the call,
->> all the pte testing is done only once.
->>
->> mte_sync_tags() operates on each individual page with its own loop. But
->> by passing the number of pages explicitly, we can rely solely on its
->> loop and do the checks only once. This approach also makes it robust for
->> the future, rather than assuming if a head page of a compound page is
->> being mapped, then the whole compound page is being mapped, instead we
->> explicitly know how many pages are being mapped. The old assumption may
->> not continue to hold once the "anonymous large folios" feature is
->> merged.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>  arch/arm64/include/asm/mte.h     |  4 ++--
->>  arch/arm64/include/asm/pgtable.h | 27 +++++++++++++++++----------
->>  arch/arm64/kernel/mte.c          |  4 ++--
->>  3 files changed, 21 insertions(+), 14 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
->> index 4cedbaa16f41..91fbd5c8a391 100644
->> --- a/arch/arm64/include/asm/mte.h
->> +++ b/arch/arm64/include/asm/mte.h
->> @@ -90,7 +90,7 @@ static inline bool try_page_mte_tagging(struct page *page)
->>  }
->>
->>  void mte_zero_clear_page_tags(void *addr);
->> -void mte_sync_tags(pte_t pte);
->> +void mte_sync_tags(pte_t pte, unsigned int nr_pages);
->>  void mte_copy_page_tags(void *kto, const void *kfrom);
->>  void mte_thread_init_user(void);
->>  void mte_thread_switch(struct task_struct *next);
->> @@ -122,7 +122,7 @@ static inline bool try_page_mte_tagging(struct page *page)
->>  static inline void mte_zero_clear_page_tags(void *addr)
->>  {
->>  }
->> -static inline void mte_sync_tags(pte_t pte)
->> +static inline void mte_sync_tags(pte_t pte, unsigned int nr_pages)
->>  {
->>  }
->>  static inline void mte_copy_page_tags(void *kto, const void *kfrom)
->> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->> index 7f7d9b1df4e5..374c1c1485f9 100644
->> --- a/arch/arm64/include/asm/pgtable.h
->> +++ b/arch/arm64/include/asm/pgtable.h
->> @@ -325,8 +325,7 @@ static inline void __check_safe_pte_update(struct mm_struct *mm, pte_t *ptep,
->>  		     __func__, pte_val(old_pte), pte_val(pte));
->>  }
->>
->> -static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
->> -				pte_t *ptep, pte_t pte)
->> +static inline void __sync_cache_and_tags(pte_t pte, unsigned int nr_pages)
->>  {
->>  	if (pte_present(pte) && pte_user_exec(pte) && !pte_special(pte))
->>  		__sync_icache_dcache(pte);
->> @@ -339,20 +338,18 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
->>  	 */
->>  	if (system_supports_mte() && pte_access_permitted(pte, false) &&
->>  	    !pte_special(pte) && pte_tagged(pte))
->> -		mte_sync_tags(pte);
->> -
->> -	__check_safe_pte_update(mm, ptep, pte);
->> -
->> -	set_pte(ptep, pte);
->> +		mte_sync_tags(pte, nr_pages);
->>  }
->>
->>  static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
->>  			      pte_t *ptep, pte_t pte, unsigned int nr)
->>  {
->>  	page_table_check_ptes_set(mm, ptep, pte, nr);
->> +	__sync_cache_and_tags(pte, nr);
->>
->>  	for (;;) {
->> -		__set_pte_at(mm, addr, ptep, pte);
->> +		__check_safe_pte_update(mm, ptep, pte);
->> +		set_pte(ptep, pte);
->>  		if (--nr == 0)
->>  			break;
->>  		ptep++;
->> @@ -531,18 +528,28 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
->>  #define pud_pfn(pud)		((__pud_to_phys(pud) & PUD_MASK) >> PAGE_SHIFT)
->>  #define pfn_pud(pfn,prot)	__pud(__phys_to_pud_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
->>
->> +static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
->> +				pte_t *ptep, pte_t pte, unsigned int nr)
->> +{
->> +	__sync_cache_and_tags(pte, nr);
->> +	__check_safe_pte_update(mm, ptep, pte);
->> +	set_pte(ptep, pte);
->> +}
->> +
->>  static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
->>  			      pmd_t *pmdp, pmd_t pmd)
->>  {
->>  	page_table_check_pmd_set(mm, pmdp, pmd);
->> -	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd));
->> +	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd),
->> +						PMD_SHIFT - PAGE_SHIFT);
+On 16:12-20231005, Roger Quadros wrote:
+> Hi,
 > 
-> IIUC the new __set_pte_at takes the number of pages, but PMD_SHIFT -
-> PAGE_SHIFT is the log2 of that. Should this be 1 << (PMD_SHIFT -
-> PAGE_SHIFT)? Same below for pud.
-
-Ouch - good spot! I'll resubmit a fixed version.
-
+> On 05/10/2023 11:25, Raghavendra, Vignesh wrote:
+> > + Rob and DT list
+> > 
+> > Hi Stephen
+> > 
+> > On 10/5/2023 8:45 AM, Stephen Rothwell wrote:
+> >> Hi all,
+> >>
+> >> [I may have missed this yesterday, sorry]
+> >>
+> >> After merging the ti tree, today's linux-next build (arm64 defconfig)
+> >> produced these warnings:
+> >>
+> >> arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #address-cells value
+> >> arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #size-cells value
+> >>
+> >> Introduced by commit
+> >>
+> >>   45a0c06571e1 ("arm64: dts: ti: am642-evm: Add overlay for NAND expansion card")
+> >>
+> > 
+> > Thanks for the report. I will drop the offending comment.
+> > 
+> > Roger,
+> > 
+> > Sorry, this would need to be fixed in dtc or need exception from DT
+> > maintainers to ignore the warnings.
 > 
-> Steve
+> Please don't drop this patch as the issue is not with the patch but with
+> the dtc tool itself.
 > 
->>  }
->>
->>  static inline void set_pud_at(struct mm_struct *mm, unsigned long addr,
->>  			      pud_t *pudp, pud_t pud)
->>  {
->>  	page_table_check_pud_set(mm, pudp, pud);
->> -	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud));
->> +	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud),
->> +						PUD_SHIFT - PAGE_SHIFT);
->>  }
->>
->>  #define __p4d_to_phys(p4d)	__pte_to_phys(p4d_pte(p4d))
->> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
->> index 4edecaac8f91..2fb5e7a7a4d5 100644
->> --- a/arch/arm64/kernel/mte.c
->> +++ b/arch/arm64/kernel/mte.c
->> @@ -35,10 +35,10 @@ DEFINE_STATIC_KEY_FALSE(mte_async_or_asymm_mode);
->>  EXPORT_SYMBOL_GPL(mte_async_or_asymm_mode);
->>  #endif
->>
->> -void mte_sync_tags(pte_t pte)
->> +void mte_sync_tags(pte_t pte, unsigned int nr_pages)
->>  {
->>  	struct page *page = pte_page(pte);
->> -	long i, nr_pages = compound_nr(page);
->> +	unsigned int i;
->>
->>  	/* if PG_mte_tagged is set, tags have already been initialised */
->>  	for (i = 0; i < nr_pages; i++, page++) {
->> --
->> 2.25.1
->>
+> As this is a DT overlay there is no way to specify address-cells/size-cells
+> of parent here. This will be resolved only after merge with base tree.
+> 
+> This will be fixed in next dtc sync.
+> https://www.spinics.net/lists/devicetree-compiler/msg04036.html
+> 
+> See further discussion here
+> https://lore.kernel.org/all/CAL_JsqLmv904+_2EOmsQ__y1yLDvsT+_02i85phuh0cpe7X8NQ@mail.gmail.com/
 > 
 
+Roger, build warnings are a strict NO,NO for kernel. Lets bring in the
+series *after* the dtc sync is complete.
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
