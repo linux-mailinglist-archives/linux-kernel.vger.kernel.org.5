@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1737BA803
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52677BA81E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbjJER3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
+        id S231731AbjJERch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbjJER2l (ORCPT
+        with ESMTP id S230397AbjJERcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:28:41 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93CBC46B6;
-        Thu,  5 Oct 2023 10:25:56 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50325ce89e9so1668604e87.0;
-        Thu, 05 Oct 2023 10:25:56 -0700 (PDT)
+        Thu, 5 Oct 2023 13:32:15 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8AB2D71
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:27:57 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-502f29ed596so429e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 10:27:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696526755; x=1697131555; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1696526875; x=1697131675; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Vwuh9qbI3t/i2L7CtvhDqNH2748w3jNlmQxfZg9+oss=;
-        b=iGD/hVwvXkJLd3ctyvRTuUCpnRZylLmF/NgJYSeA6Ed6trJF5zUN1R12UBgeaZai3q
-         1Sa1TkqYwlJfotPleLdQOlsG4G4XDvrDWDQjMV3pqAhfvxuj5YMYLhTAmfe1bUn0s2TA
-         vs4drfqQvWCFXb6NQOAP/YsEuGpfMtySjALEZBAmxUp3dFHb4QiE0GmeAJIiBiaCb7sU
-         aWmGueHyoB/3ohUChW7j4aWYPBOlBnnfDhwdyazvv7nVzeyxMvthPVc+20CvGtZV2evR
-         yfxPOd/hmJwyrOVY7KudpVoZHYHAd5owL0Wr8mc+xNZmf3gwI9q5SRY4KoLEZafIqEme
-         zt/w==
+        bh=v7XiMb1pgpAFxLWD6alC9RmL+y1j3mmz1w57H6g7qLw=;
+        b=KSs+53Kg0kyGrVI3EsN1eGcG2Zu5i30Wk+O3Um3ruPykvAfszTA3Y+DJzvqcjKGzEB
+         U61tmD/Fqtoh34extaexd/SQOqe3uHU0y28iwEvTvGNqwTzj9OZ3WJD7bzZUKOxMNrd5
+         GQpP/14wp3ROmo9WFOqxXbGcAJZqDeU960tQL9xMAY73VEGqdO+OwnZjcmGPdDy1cUaR
+         oNpbHUi74tlsdVg+KC/Y97e0Gkty7LJaZo2DmLcMfvwjJdlYnAcrYMRWKagVIY7hxCVw
+         ca2kCZ8O7BThD7qqewmHndGQo+wShElLWBUA/HEefBp8+PXISDUZ087XVz34brlXJVvi
+         cd5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696526755; x=1697131555;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696526875; x=1697131675;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Vwuh9qbI3t/i2L7CtvhDqNH2748w3jNlmQxfZg9+oss=;
-        b=DcqU7t4KBHCAF3PK/7ySBiC67K4LqBrydCm1qSqA/wvkUf0TPU5qCzYjBGni41Te7n
-         vqINfjEqFpM2hgeIIQTfaD9ZFsR1cNybB7NQZN22nvv9YF4efhcwvDd9zdi8uNM2VUWN
-         8wKsrxT/jgYskGiFOQysKgwnLyYtMRgkBNW1iEqLq9wUSvMgKJz8MvayTvbM6k2vox4y
-         nqxdh+mbpWQFZx456Tq1NUPHyCWANPqqvQm0N8/KHEHAGLiHdTrtBBch5QAE6kRIewxJ
-         cU4in3lkofzIZ6PtLtIJCvlL8/ZvGD9WeSL+x2MMPwOXYQNwWAHF3HcRliTY6Q5KJixC
-         HHPg==
-X-Gm-Message-State: AOJu0YxspntRDglaou6m1EYIxqrN6eAe3Ar5H0liwxuwP0Hd5RxND7Ou
-        S132OjiTH8reUEkzPpdxi7xhk657dQBZBQ==
-X-Google-Smtp-Source: AGHT+IGYNuEqpaEY81R6vdiIIQWLN+Pw4qUhgy0AUWwYAG9Gxss3b1GS1iu2gXgDWd8P2e5LlzOqnQ==
-X-Received: by 2002:a05:6512:545:b0:4f8:71cc:2b6e with SMTP id h5-20020a056512054500b004f871cc2b6emr5173730lfl.33.1696526754397;
-        Thu, 05 Oct 2023 10:25:54 -0700 (PDT)
-Received: from pc.localnet (c-7e17235c.012-196-6c6b701.bbcust.telenor.se. [92.35.23.126])
-        by smtp.gmail.com with ESMTPSA id y8-20020ac24468000000b00502e01d1383sm381238lfl.27.2023.10.05.10.25.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 10:25:53 -0700 (PDT)
-From:   Henrik =?ISO-8859-1?Q?Lindstr=F6m?= <lindstrom515@gmail.com>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Florian Westphal <fw@strlen.de>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: macvtap performs IP defragmentation,
- causing MTU problems for virtual machines
-Date:   Thu, 05 Oct 2023 19:25:53 +0200
-Message-ID: <3259970.44csPzL39Z@pc>
-In-Reply-To: <20231004080037.GC15013@breakpoint.cc>
-References: <CAHkKap3sdN4wZm_euAZEyt3XB4bvr6cV-oAMGtrmrm5Z8biZ_Q@mail.gmail.com>
- <2197902.NgBsaNRSFp@pc> <20231004080037.GC15013@breakpoint.cc>
+        bh=v7XiMb1pgpAFxLWD6alC9RmL+y1j3mmz1w57H6g7qLw=;
+        b=NmVpeHwKDPKPRJuAmcPQ38NXVKXruM9VY0N2SAHh02katxHwGvg6E+KD24eLsv/HIZ
+         D9GLKYN5qhDu4VeQazLSMuHT1dvOfmvl/BiTx2NTDG7wo1q21UT8I5eBMHhNV2t/4Po9
+         QvczjTjeuUAoBYVv/A3tewB8rrR5Xj2Ou+EA39zQuMlTITNK2csZTJEgHhg3cY3q0SzX
+         ud0gXUcCoDlBS1w0WIaUa/SnI7sKBHNyMlZFSFKMcd0YgYkmQfCFTIgmKw0wqDQWBrQX
+         Mw7xP1lJ/HBmOidA2pSWX+K7NcjvYeBNcZQFVcDB5NadHdXMSW8Y3Ib9endLBMssREgZ
+         NC2w==
+X-Gm-Message-State: AOJu0YyS+DhyN1TOEE60z8G5SvJJzAzL2Wy7+SdcpO35PI7rdXXNAi7U
+        cC2XRYXGMC6nERjjcnOqLxdacavxnCVQLDROSDQtQQ==
+X-Google-Smtp-Source: AGHT+IHdIFU0zGX5w2gRSo0ggFIvjZdhp7uCzH8hvETpQCpiD5AvXxp5kMeO2grkwKHAi62mufV7/qDm9pH983jhKN8=
+X-Received: by 2002:ac2:59c2:0:b0:501:b029:1a47 with SMTP id
+ x2-20020ac259c2000000b00501b0291a47mr58317lfn.1.1696526875122; Thu, 05 Oct
+ 2023 10:27:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231004002038.907778-1-jmattson@google.com> <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
+ <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com>
+ <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local> <8c810f89-43f3-3742-60b8-1ba622321be8@redhat.com>
+ <CALMp9eR=URBsz1qmTcDU5ixncUTkNgxJahLbfyZXYr-2RkBPng@mail.gmail.com> <b9a454c9-e8aa-02f0-29d5-57753d797cfb@redhat.com>
+In-Reply-To: <b9a454c9-e8aa-02f0-29d5-57753d797cfb@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 5 Oct 2023 10:27:42 -0700
+Message-ID: <CALMp9eQ70wepTpmw9O3D+YnN1kaQ1m7etE4sa24bnya-vNai9Q@mail.gmail.com>
+Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's FsGsKernelGsBaseNonSerializing
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On onsdag 4 oktober 2023 10:00:37 CEST Florian Westphal wrote:
-> Can you submit this formally, with proper changelog and Signed-off-by?
-> See scripts/checkpatch.pl in the kernel tree.
-Sure, i can give it a shot. How do i properly credit you if i submit your
-patch with some small changes of my own?
+On Thu, Oct 5, 2023 at 10:14=E2=80=AFAM Paolo Bonzini <pbonzini@redhat.com>=
+ wrote:
+>
+> On 10/5/23 19:06, Jim Mattson wrote:
+> > On Thu, Oct 5, 2023 at 9:39=E2=80=AFAM Paolo Bonzini<pbonzini@redhat.co=
+m>  wrote:
+> >
+> >> I agree with Jim that it would be nice to have some bits from Intel, a=
+nd
+> >> some bits from AMD, that current processors always return as 1.  Futur=
+e
+> >> processors can change those to 0 as desired.
+> > That's not quite what I meant.
+> >
+> > I'm suggesting a leaf devoted to single bit negative features. If a
+> > bit is set in hardware, it means that something has been taken away.
+> > Hypervisors don't need to know exactly what was taken away. For this
+> > leaf only, hypervisors will always pass through a non-zero bit, even
+> > if they have know idea what it means.
+>
+> Understood, but I'm suggesting that these might even have the right
+> polarity: if a bit is set it means that something is there and might not
+> in the future, even if we don't know exactly what.  We can pass through
+> the bit, we can AND bits across the migration pool to define what to
+> pass to the guest, we can force-set the leaves to zero (feature
+> removed).  Either way, the point is to group future defeatures together.
 
-> You could also mention in changelog that this is ipv4 only because
-> ipv6 already considers the interface index during reassembly.
-Interesting. I've been trying to understand the code and it seems like
-ipv6 does defragmentation per-interface, while ipv4 does it "per-vrf"
-(correct me if i'm wrong). Is there any reason for this difference? 
-
-I also did some more testing with the diff from my previous mail. It 
-looks like the problem remains for interfaces under vrfs. I think simply
-doing the bcast/mcast check first fixes that though, something like this:
-	if (skb->pkt_type == PACKET_BROADCAST || skb->pkt_type == PACKET_MULTICAST) {
-		if (dev)
-			return dev->ifindex;
-	}
-
-	return l3mdev_master_ifindex_rcu(dev);
-Does that look reasonable?
-The idea being that bcast/mcast packets are always defragmented
-per-interface, and unicast packets always "per-vrf".
-
-Thanks,
-Henrik
-
-
+Oh, yeah. Your suggestion is better. :)
