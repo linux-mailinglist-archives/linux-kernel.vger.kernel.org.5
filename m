@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3C47BA046
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7EA7BA1B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234143AbjJEOey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
+        id S233462AbjJEOm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235115AbjJEOdL (ORCPT
+        with ESMTP id S235150AbjJEOiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:33:11 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4C342261B4;
-        Thu,  5 Oct 2023 05:24:16 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 6F01992009C; Thu,  5 Oct 2023 14:24:12 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 6B00692009B;
-        Thu,  5 Oct 2023 13:24:12 +0100 (BST)
-Date:   Thu, 5 Oct 2023 13:24:12 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-cc:     Su Hui <suhui@nfschina.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rafael@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] driver base: slience unused warning
-In-Reply-To: <d98f7107-56d7-44a3-8b77-b8766cdc02d9@kadam.mountain>
-Message-ID: <alpine.DEB.2.21.2310051305530.20354@angie.orcam.me.uk>
-References: <45027fa0-cda5-2a80-f1cd-ed805d2717ee@nfschina.com> <alpine.DEB.2.21.2310041557310.61599@angie.orcam.me.uk> <d98f7107-56d7-44a3-8b77-b8766cdc02d9@kadam.mountain>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Thu, 5 Oct 2023 10:38:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A508A60;
+        Thu,  5 Oct 2023 07:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696514613; x=1728050613;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=Q31/LRmUHPnliZEY/I/TLopH3gR0VgvYKU2xCR9wHdI=;
+  b=lHxgyD75DyxfxW/IPUBZwq1e8wyGDpb5Nkd+TXjwWlDsFq+RqmeK2F3l
+   PqpY45fys0ZcNX9kYesXh2XgLcjqrI0dwhV4Y74fZP3YvTreKwQNwdR+c
+   60ENcGGsA0SQ6Ax/EHpEzVMrZC6qEn+DwYaG+FJWJMWXWwduaYbMYMVjK
+   yy/iC0HC4fG1rk4WZ8D2DsEh8zrx7iVLk6SdUpcEJBGI1SrCKRzfLIKTa
+   jXmE/fzjlvLmeUpwfN9su19KDjSglFbO8y6S+PPs62IrfrAKJtcgaRQaa
+   BHq9lyj5NTxe7qd/lCcX44Bhs/A7XTHPFWVTieJv5+M3oSk526yIxiVqw
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="382347791"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="382347791"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 05:24:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="822089057"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="822089057"
+Received: from akesselm-mobl.amr.corp.intel.com (HELO [10.212.122.181]) ([10.212.122.181])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 05:24:40 -0700
+Message-ID: <c7fb4ead-13af-438b-a199-c52105545047@linux.intel.com>
+Date:   Thu, 5 Oct 2023 08:24:39 -0400
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soundwire: fix initializing sysfs for same devices on
+ different buses
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        Mastan Katragadda <Mastan.Katragadda@amd.com>
+References: <20231004130243.493617-1-krzysztof.kozlowski@linaro.org>
+ <6628a5f6-ed22-4039-b5c2-2301c05c7e3e@linux.intel.com>
+ <2023100453-perfected-palm-3503@gregkh>
+ <624b044a-1f0f-4961-8b57-cb5346e7b0d3@linux.intel.com>
+ <2023100452-craziness-unpopular-7d97@gregkh>
+ <04c5911a-a894-44b3-9f0e-fe9e6de203f2@linux.intel.com>
+ <d648c3d1-53ac-4021-ac7f-6a81f1a72dd3@sirena.org.uk>
+ <bf4ee895-293f-4bc3-ac4b-30df6361e973@linux.intel.com>
+Content-Language: en-US
+In-Reply-To: <bf4ee895-293f-4bc3-ac4b-30df6361e973@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Oct 2023, Dan Carpenter wrote:
 
-> > > This variable is been used but never be read, so gcc and W=1 give such
-> > > warning.
-> > > 
-> > > drivers/base/module.c:36:6: error:
-> > > variable ‘no_warn’ set but not used [-Werror=unused-but-set-variable]
-> > > 
-> > > I wanted to use "__maybe_unused" to avoid  this warning.
-> > > 
-> > > However it seems like a wrong using of "__maybe_unused" as Greg KH said:
-> > > 
-> > > "But no_warn is being used in this file, it's being set but not read
-> > > which is ok.  That's a real use, so this change really isn't correct,
-> > > sorry."
-> > 
-> >  The warning itself is a real issue to be sorted though.  Is this a use 
-> > case for `#pragma GCC diagnostic'?
+
+
+> I think we keep circling on the differences between "Controller" and
+> "link" (aka bus). A Controller can have one or more links. A system can
+> have one or more controllers.
 > 
-> I thought Greg liked using __maybe_unused in this case?  This is
-> drivers/base.  Do the rest of us even get a vote?  ;)
+> Intel platforms have one controller and 4 or more links.
+> QCOM platforms have one or more controllers with one link each.
 > 
-> If I do have a vote then #pragma is always the worst option.  Linus has
-> taught me to dislike pragmas a lot.
+> I am not sure how this IDA-generated bus_id helps deal with these two
+> cases, since we can't really make any assumptions on how
+> controllers/links will be started and probed.
+> 
+> What we are missing is a hierarchical controller/link definition, IOW a
+> controller_id should be given to the master by a higher level instead of
+> using an IDA.
 
- I'm not a great supporter of this solution, but at least it's guaranteed 
-to work by definition.  Otherwise we could try to outsmart the compiler; 
-perhaps:
+Tentative patches to introduce a 'controller_id' that's not an IDA are
+here: https://github.com/thesofproject/linux/pull/4616
 
-	(no_warn = sysfs_create_link(&drv->p->kobj, &mk->kobj,
-				     "module")), no_warn;
+Initial results are positive for Intel devices. it *should* work for
+other devices but I can't test. If folks at Linaro/Qualcomm and AMD can
+give it a try, that would be much appreciated.
 
-would work.  At the end of the day it's us who told the compiler to warn 
-if the result of `sysfs_create_link' is unused with all the consequences.  
-And while assigning to `no_warn' technically fulfils the requirement, the 
-variable itself isn't used beyond being assigned to, which the compiler 
-rightfully complains about because we asked for it.  It's up to us really 
-to tell the compiler what we want it to complain about and what we do not.
-
-  Maciej
+Thanks.
