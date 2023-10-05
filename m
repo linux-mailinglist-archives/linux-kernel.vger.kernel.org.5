@@ -2,85 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B01B7BA2B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D65B7BA2AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233677AbjJEPpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47544 "EHLO
+        id S234079AbjJEPpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233507AbjJEPpA (ORCPT
+        with ESMTP id S233396AbjJEPo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:45:00 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCA765A9
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:32:14 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 97E2340E0177;
-        Thu,  5 Oct 2023 14:32:12 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id iSRuRWp6bIbw; Thu,  5 Oct 2023 14:32:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1696516330; bh=W8ijLfP/dWraJu6jTU1jtlOh7n+kMPxe2wyR63bLRRc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XktgFavMHcxTPqD1OiBexg87RU5b08+sfXCLHfPcXBQKX7mEoJhC7fk1PRFc+acpJ
-         QemObipRUDzTn+OHPnsJB6X7bI+0CApoa2oFrHAIuIQ92u8JtKSDd5I6MqTHnvBFIa
-         foeASfpnXuTGN40JyflOIY73LzgfCuCWsS0Ee14872gWzTwAvTHacUj44FrS7JF9XG
-         3xN5GAfbNJO+nhoZF4oWxcUhiRGwyBmNikUoV8MG0bq1X3iUfF5zuMOvkNVLPvlf3J
-         0tsexyCILZQrBFJXijy7cD2CsU2ZjGp1aPmFRvzyx3cHAuJP0VIKg5wGEiOWKb0qRV
-         D7yPk1DP672K5OM+MOzQpn/nDuzrqucQ7q0NXrN5l208jpMlU4qRhXNGJ4bXNeIUOF
-         96gyyv0j356HltYYZpC127zlZJQBeaTN0sr5IyPvZsoL2v7aDTal4ETgaCXXurvqyP
-         WOOPj1Ti2sgpmJFm31QxWQxe4p/aZkDka15sz5j1vip1tCU3wqM5lJJlzs0mgAOIfE
-         mwjyRjD7ildA9+3cZAlz7tXPMETQErWdoCS+EQ37qM+bb6U6u/B53hVpTSdOo8yOCp
-         XYwIqtenCNXiM9MEbCfBQuGYMJT/DeJvjrEw/nHUAF/LfEi36U593GwJkR56k2e5be
-         eVNrbTryFgoJ+iHP01DMqRLo=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C617040E014B;
-        Thu,  5 Oct 2023 14:32:02 +0000 (UTC)
-Date:   Thu, 5 Oct 2023 16:32:01 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Nikunj A. Dadhania" <nikunj@amd.com>
-Cc:     thomas.lendacky@amd.com, x86@kernel.org, dionnaglaze@google.com,
-        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/14] Add Secure TSC support for SNP guests
-Message-ID: <20231005143201.GDZR7I4WHnkuKF2ddl@fat_crate.local>
-References: <20230814055222.1056404-1-nikunj@amd.com>
- <f200403b-c460-5ebb-fec5-c5caf0cdb006@amd.com>
- <9a6af215-e696-5091-69fa-1cbebe772471@amd.com>
- <20231004070100.GAZR0NrFSIDKPSQIjA@fat_crate.local>
- <1f740bdd-666b-4686-8d04-1c28da9917bd@amd.com>
+        Thu, 5 Oct 2023 11:44:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E85E9B48;
+        Thu,  5 Oct 2023 07:32:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0191C43391;
+        Thu,  5 Oct 2023 14:32:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696516363;
+        bh=kKHWqAL9V1k3ZHEQ5dtDLEXa6DVZJMGdQmdjAsLw/Gs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hD+kW4nwjLNut17okBC9zLe+N7UJNUaa6k4dZbaa2E4vEw1/1cnqVCBQ974jkKzqE
+         R+Z5exQdYwbqen2Z4cACafR40rBFMpG2pSmXJhPm1pr9J3TJL9G3TpjDQ0N536vKLq
+         etK7R0JMuHHqiJQ7tGab95SFN2xs5ZcEu+9oMd2rmEy6LJCiWZU2AB4l/+JnUGzkFh
+         MzEt481z2t943FxXgkb1kHt4yKk17B8tXQCaYdQ31F5IvidIqFDKdgjSP1EZTFSh0/
+         QPak372IpbJ5erFppGRN3ky7OBnO0PZjxFbAUzV575eV6Aw0QJm0ICccQ7yXdQd6fr
+         orl+I68wrJbIA==
+Message-ID: <63e5048b-094d-42f5-a56d-94969ba0c43e@kernel.org>
+Date:   Thu, 5 Oct 2023 16:32:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1f740bdd-666b-4686-8d04-1c28da9917bd@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] pinctrl: denverton: Replace MODULE_ALIAS() with
+ MODULE_DEVICE_TABLE()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+References: <20231005135945.3672438-1-andriy.shevchenko@linux.intel.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20231005135945.3672438-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 07:27:43PM +0530, Nikunj A. Dadhania wrote:
-> That is a good idea and I wasn't aware that this may work as a good bribe [1] :-)
+On 05/10/2023 15:59, Andy Shevchenko wrote:
+> As Krzysztof pointed out the better is to use MODULE_DEVICE_TABLE()
+> as it will be consistent with the content of the real ID table of
+> the platform devices.
+> 
+> Suggested-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/pinctrl/intel/pinctrl-denverton.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-Whatever it takes to get you folks to review each other's patches and
-get more involved in the community.
 
-:-)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
--- 
-Regards/Gruss,
-    Boris.
+Best regards,
+Krzysztof
 
-https://people.kernel.org/tglx/notes-about-netiquette
