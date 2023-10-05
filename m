@@ -2,169 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 076737B9EB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAFE7BA249
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbjJEOLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56434 "EHLO
+        id S232725AbjJEP0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233088AbjJEOJd (ORCPT
+        with ESMTP id S232602AbjJEPZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:09:33 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7252101
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 21:02:07 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9ad8a822508so101518266b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 21:02:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1696478526; x=1697083326; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YKeghe/h+8V01N3C5F/CD+J6nuH9c3jaxycLuVcqFqY=;
-        b=czzNcLA+d+be0YPPWCPcNRUQoH1t4/dkWhRiG9G2yNOnf29Kl9fM5DQ2C9x87AFSTa
-         0LTFH4kmOAto8XZpPNnnHygxbhNwcaEXXewyJ7ZGx9eRsEizdjIYoYqPX4daYrM56kmO
-         qK05bYILCCpxLlHkHgqIjFT84HCTO30ZkV5OI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696478526; x=1697083326;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YKeghe/h+8V01N3C5F/CD+J6nuH9c3jaxycLuVcqFqY=;
-        b=i1SzBvq+Helv/0/7cYluZEwueu68mIa8pdmlTtDHbdLUH9+XPelIGOaAoEaG21wsXR
-         G87x5ucfJWzBUPBTRLes+iWXMLRK/bbTg01mjLKU/XMviQDOl0LcLPomDOvM1Ou8QLjL
-         H4uECKSSg1scOhCc2Zc6Y0LrKY94bbkesjDjUVxaqUXWKPo00lgVpdpSQge68Y65dvUY
-         EEVuImJZW7abxWC/kLjhX/3rLUF9Qp/rOrldCJBrnYBOuEkK1P/1unYAVOgmEuFcHif1
-         2ZVwdmhs8zB/DFVBJq8OXHyEsFuUd7STVxf2j0GlaZYjCZqzJABtYxoNP3jhwub7C8h0
-         SCiQ==
-X-Gm-Message-State: AOJu0YzYHS2TjrZPmMkO2/Fkt3UdG1aPej9F0jf7BnBCgQptq8a0lBfe
-        f5CIfRssdDZuwjaZG3t6xn+oZO5cReItuFuNagbLNQ==
-X-Google-Smtp-Source: AGHT+IFnG1g9sQjyctXSbGWbEKu4RwQsoZ0vWyIrU9Kgouq51lY/wQ2CPqAb/STCI8uDOSFPVONtcHqKEGrGTo4XbAc=
-X-Received: by 2002:a17:906:ce:b0:9a6:426f:7dfd with SMTP id
- 14-20020a17090600ce00b009a6426f7dfdmr3358227eji.66.1696478525910; Wed, 04 Oct
- 2023 21:02:05 -0700 (PDT)
+        Thu, 5 Oct 2023 11:25:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91C86078A;
+        Thu,  5 Oct 2023 07:51:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1BB1C433CB;
+        Thu,  5 Oct 2023 04:10:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696479019;
+        bh=tvQ6HmqskzVwBQufXqWAzijK9xLx9i/yIFRHr3dsOjg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cUGQPMVmdNnKQ0RoWKzH79W5T8AWaX52R5iZQaBiaKi+e773J54Ahe6zZ3s7p6pzB
+         WtHdPYGr1LFupPbB+ZUJHOVLwqBeJcNuVaAgf2Vvwwy1uSv28lE6HX9NRGq87B6o7a
+         Zab4J1b51rBp2Dz+Z5xRryrrFhRn5XE6a9VBlk/YCHq2OrREr9bBjDnTIpO2cfd0XP
+         CXadHlD2fzWFoS+FrMbrYO/ncV/jrXyO+QQ354YZO2Bl0VdsYTI7n3L+UO3wc6FAWf
+         F3ZgLzlbZwKm1ej4WRH/RHNWsUY2mPVvDBLyXar3PUyTQ8rrqsg+EQnloOmdkoJbhH
+         +DN+dx1Jhy6Fw==
+Date:   Thu, 5 Oct 2023 09:40:14 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jai Luthra <j-luthra@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Benoit Parrot <bparrot@ti.com>,
+        Vaishnav Achath <vaishnav.a@ti.com>, nm@ti.com,
+        devarsht@ti.com, a-bhatia1@ti.com,
+        Martyn Welch <martyn.welch@collabora.com>,
+        Julien Massot <julien.massot@collabora.com>
+Subject: Re: [PATCH v9 13/13] media: ti: Add CSI2RX support for J721E
+Message-ID: <ZR43Jre2j51j0mFk@matsya>
+References: <20230811-upstream_csi-v9-0-8943f7a68a81@ti.com>
+ <20230811-upstream_csi-v9-13-8943f7a68a81@ti.com>
+ <ad042065-33a2-d42e-ce2e-628464102fc3@ideasonboard.com>
+ <wgkjek77bolf5wabki7uhm6cxjy5g5z2ncoc6urr7dv5y6wnaw@yfh7ccogxfea>
+ <20230829155513.GG6477@pendragon.ideasonboard.com>
+ <ZR1txMVk+4oHLEKU@matsya>
+ <20231004200312.GE30342@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-References: <20230928130147.564503-1-mszeredi@redhat.com> <20230928130147.564503-5-mszeredi@redhat.com>
- <CAHC9VhQD9r+Qf5Vz1XmxUdJJJO7HNTKdo8Ux=n+xkxr=JGFMrw@mail.gmail.com>
-In-Reply-To: <CAHC9VhQD9r+Qf5Vz1XmxUdJJJO7HNTKdo8Ux=n+xkxr=JGFMrw@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 5 Oct 2023 06:01:53 +0200
-Message-ID: <CAJfpegsPbDgaz46x4Rr9ZgCpF9rohVHsvuWtQ5LNAdiYU_D4Ww@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] add listmount(2) syscall
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231004200312.GE30342@pendragon.ideasonboard.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Oct 2023 at 21:38, Paul Moore <paul@paul-moore.com> wrote:
->
-> On Thu, Sep 28, 2023 at 9:04=E2=80=AFAM Miklos Szeredi <mszeredi@redhat.c=
-om> wrote:
-> >
-> > Add way to query the children of a particular mount.  This is a more
-> > flexible way to iterate the mount tree than having to parse the complet=
-e
-> > /proc/self/mountinfo.
-> >
-> > Lookup the mount by the new 64bit mount ID.  If a mount needs to be que=
-ried
-> > based on path, then statx(2) can be used to first query the mount ID
-> > belonging to the path.
-> >
-> > Return an array of new (64bit) mount ID's.  Without privileges only mou=
-nts
-> > are listed which are reachable from the task's root.
-> >
-> > Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-> > ---
-> >  arch/x86/entry/syscalls/syscall_32.tbl |  1 +
-> >  arch/x86/entry/syscalls/syscall_64.tbl |  1 +
-> >  fs/namespace.c                         | 69 ++++++++++++++++++++++++++
-> >  include/linux/syscalls.h               |  3 ++
-> >  include/uapi/asm-generic/unistd.h      |  5 +-
-> >  include/uapi/linux/mount.h             |  3 ++
-> >  6 files changed, 81 insertions(+), 1 deletion(-)
->
-> ...
->
-> > diff --git a/fs/namespace.c b/fs/namespace.c
-> > index 3326ba2b2810..050e2d2af110 100644
-> > --- a/fs/namespace.c
-> > +++ b/fs/namespace.c
-> > @@ -4970,6 +4970,75 @@ SYSCALL_DEFINE4(statmount, const struct __mount_=
-arg __user *, req,
-> >         return ret;
-> >  }
-> >
-> > +static long do_listmount(struct vfsmount *mnt, u64 __user *buf, size_t=
- bufsize,
-> > +                        const struct path *root, unsigned int flags)
-> > +{
-> > +       struct mount *r, *m =3D real_mount(mnt);
-> > +       struct path rootmnt =3D {
-> > +               .mnt =3D root->mnt,
-> > +               .dentry =3D root->mnt->mnt_root
-> > +       };
-> > +       long ctr =3D 0;
-> > +       bool reachable_only =3D true;
-> > +       int err;
-> > +
-> > +       err =3D security_sb_statfs(mnt->mnt_root);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       if (flags & LISTMOUNT_UNREACHABLE) {
-> > +               if (!capable(CAP_SYS_ADMIN))
-> > +                       return -EPERM;
-> > +               reachable_only =3D false;
-> > +       }
-> > +
-> > +       if (reachable_only && !is_path_reachable(m, mnt->mnt_root, &roo=
-tmnt))
-> > +               return capable(CAP_SYS_ADMIN) ? 0 : -EPERM;
-> > +
-> > +       list_for_each_entry(r, &m->mnt_mounts, mnt_child) {
-> > +               if (reachable_only &&
-> > +                   !is_path_reachable(r, r->mnt.mnt_root, root))
-> > +                       continue;
->
-> I believe we would want to move the security_sb_statfs() call from
-> above to down here; something like this I think ...
->
->   err =3D security_sb_statfs(r->mnt.mnt_root);
->   if (err)
->     /* if we can't access the mount, pretend it doesn't exist */
->     continue;
+On 04-10-23, 23:03, Laurent Pinchart wrote:
+> On Wed, Oct 04, 2023 at 07:21:00PM +0530, Vinod Koul wrote:
+> > On 29-08-23, 18:55, Laurent Pinchart wrote:
+> > > Hi Jai,
+> > > 
+> > > (CC'ing Vinod, the maintainer of the DMA engine subsystem, for a
+> > > question below)
+> > 
+> > Sorry this got lost
+> 
+> No worries.
+> 
+> > > On Fri, Aug 18, 2023 at 03:55:06PM +0530, Jai Luthra wrote:
+> > > > On Aug 15, 2023 at 16:00:51 +0300, Tomi Valkeinen wrote:
+> > > > > On 11/08/2023 13:47, Jai Luthra wrote:
+> > > > > > From: Pratyush Yadav <p.yadav@ti.com>
+> > > 
+> > > [snip]
+> > > 
+> > > > > > +static int ti_csi2rx_start_streaming(struct vb2_queue *vq, unsigned int count)
+> > > > > > +{
+> > > > > > +	struct ti_csi2rx_dev *csi = vb2_get_drv_priv(vq);
+> > > > > > +	struct ti_csi2rx_dma *dma = &csi->dma;
+> > > > > > +	struct ti_csi2rx_buffer *buf;
+> > > > > > +	unsigned long flags;
+> > > > > > +	int ret = 0;
+> > > > > > +
+> > > > > > +	spin_lock_irqsave(&dma->lock, flags);
+> > > > > > +	if (list_empty(&dma->queue))
+> > > > > > +		ret = -EIO;
+> > > > > > +	spin_unlock_irqrestore(&dma->lock, flags);
+> > > > > > +	if (ret)
+> > > > > > +		return ret;
+> > > > > > +
+> > > > > > +	dma->drain.len = csi->v_fmt.fmt.pix.sizeimage;
+> > > > > > +	dma->drain.vaddr = dma_alloc_coherent(csi->dev, dma->drain.len,
+> > > > > > +					      &dma->drain.paddr, GFP_KERNEL);
+> > > > > > +	if (!dma->drain.vaddr)
+> > > > > > +		return -ENOMEM;
+> > > > > 
+> > > > > This is still allocating a large buffer every time streaming is started (and
+> > > > > with streams support, a separate buffer for each stream?).
+> > > > > 
+> > > > > Did you check if the TI DMA can do writes to a constant address? That would
+> > > > > be the best option, as then the whole buffer allocation problem goes away.
+> > > > 
+> > > > I checked with Vignesh, the hardware can support a scenario where we 
+> > > > flush out all the data without allocating a buffer, but I couldn't find 
+> > > > a way to signal that via the current dmaengine framework APIs. Will look 
+> > > > into it further as it will be important for multi-stream support.
+> > > 
+> > > That would be the best option. It's not immediately apparent to me if
+> > > the DMA engine API supports such a use case.
+> > > dmaengine_prep_interleaved_dma() gives you finer grain control on the
+> > > source and destination increments, but I haven't seen a way to instruct
+> > > the DMA engine to direct writes to /dev/null (so to speak). Vinod, is
+> > > this something that is supported, or could be supported ?
+> > 
+> > Write to a dummy buffer could have the same behaviour, no?
+> 
+> Yes, but if the DMA engine can write to /dev/null, that avoids
+> allocating a dummy buffer, which is nicer. For video use cases, dummy
+> buffers are often large.
 
-Hmm.  Why is this specific to listing mounts (i.e. why doesn't readdir
-have a similar filter)?
+hmmm maybe I haven't comprehended it full, would you mind explaining the
+details on how such a potential interleaved transfer would look like so
+that we can model it or change apis to model this
 
-Also why hasn't this come up with regards to the proc interfaces that
-list mounts?
-
-I just want to understand the big picture here.
-
-Thanks,
-Miklos
+-- 
+~Vinod
