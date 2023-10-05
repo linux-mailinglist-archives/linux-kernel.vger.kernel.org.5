@@ -2,220 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B747BAA0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C5C7BAA15
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbjJETZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
+        id S231580AbjJETZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbjJETZX (ORCPT
+        with ESMTP id S231336AbjJETZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 15:25:23 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83540D4D
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:25:15 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso244608266b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:25:15 -0700 (PDT)
+        Thu, 5 Oct 2023 15:25:38 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01hn2247.outbound.protection.outlook.com [52.100.0.247])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26247FC;
+        Thu,  5 Oct 2023 12:25:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TPYPgWQmLfQqLjcfFPaHDpqg7YzlwrUuSmDMiNfIhAKObYtO5yb4mS7pJtlUerP9H6qEkaavEUXno+EmmfscVcqNOEfWr4LRZW/OqnqM0FbnAkmyfSWooTuIiYtAP8GDFxPfxq5PUqJucg6WZBGdDa3RPdUxuArgEPThJ7rKPgZu3RYxwJ3qTsaR10uGtJCnjy13f9iXg6SkZmgxG/I3yH1LF9DZ9nV5ubfl86JyD6EGJDe+qqRWH7BO39KKt+V32mj+JGXKaXqh8qfO51+HtKZ9MszY9vZWSwwPF7VJFyL+Aoqa8lL8GmiyZHzqMSjTWca1XOXFq2RInDXqS5c8FA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=60l/P/bwOWdg2MkoncNt9iPmES2WMDnbSSJxCzK/2sM=;
+ b=d9FylyFR9/250wqsNC3Bmp55vhnx1sDnPMEnalks4Jm0s7j5F4r6FBBOPO5AamuyZBD13ogxSYOtdQvDo73m7Os/jO/4xtdqVJz/6ccO/SCZEwP3f3lD+PBffz5T1hgUwHwOftuNXfEMTyv3TDjZiRBE1iI5S0TZ4Y4xOsP9Wwnn7mHRfLvFYViPCt5sUuRx5IjEOuzHmeidbdcn98/pn+d1dRhPfxme7Cr7m/KFqmavG2rWXfWVDPzVXprGfSK9MPyJ0YK49rK+OOGUPt0flpu2PxVYmx0FFWTRULZByIee2yTk1wszYXJ8z3Bhz+GuviEnsUSseAAJnH54WGqHUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 211.75.126.7) smtp.rcpttodomain=gmail.com smtp.mailfrom=nuvoton.com;
+ dmarc=fail (p=none sp=quarantine pct=100) action=none header.from=gmail.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696533913; x=1697138713; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QAIuNzRqeVKL4UBHwUYQTQv/MFOTl6dEpbXD6CCqo5M=;
-        b=CP+wsGlVZz+ZBWwKajzI5e//MDd4smfNBVfr7IWfyq0+QnepCbUxNgZEccvXVHMBZp
-         SJOje4LpCysyu932xIZpREMKVnEPC8KH5viEu01HeG4u8jsPdQ/V0xPRzXXtWZu9X7R+
-         mK28RFL3xFRUho+P+s8qJGLqt19rUgKSsdOF9OCmW5zlLMUVtZyLbZ8od7QeTvK2lMLI
-         mO4ZnejzbzuBvRFR+MtxVO+roPVXOWjHrJPZRn/04VWl3m9L06kCwzgInRmynmB2xZvr
-         4Yn9H5BrMo8A5LjmeFTLJJbIxKwq8TQ3Iz9dvtTFy5HTbrOj+FHfa3fXbQk0qmVIj1bI
-         fnlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696533913; x=1697138713;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QAIuNzRqeVKL4UBHwUYQTQv/MFOTl6dEpbXD6CCqo5M=;
-        b=gGwlx7ueel18lGMJTHLBr9klapN3F2GDqNt70hALstxNKabckgD4lKMauwXSKuGFXF
-         pnX+U4tr4cE5+Mpe8M7qBLnw/BExRNd+n9PtcnY+pvkEoVNZc9wmXn33lm35fAi6cDfY
-         hapJ2EPrVNttRtEKXzDKjbksJWDQzkEdnXrxmVHjOLALPM7gn6s9YlfeCh3TPn5YPgXK
-         IZJY1BqCLEIuQnvNHM0cw/aWgaPx1uW4mi9ikEreen04FenEwcAp0Q0njxeCafYvHHeo
-         Rj2t/37w54mL2w+SgDdtymw73oXQige93rCoSZ9+QY+q/n43exZFg/2uuRfMq99mKwbz
-         rYvA==
-X-Gm-Message-State: AOJu0Yx+ki/gKAFVlvZy7G1OP06+2WRYcli1KodKdv7b7AevXW3yBwpe
-        QAZ0JtbDa7cMVAZS40lrvcy/oP46Epil9f1/NNi63Q==
-X-Google-Smtp-Source: AGHT+IE/lNkGrp8J2WkjY7FP16+AvJpLMZkj9ptYmYvBvpsK946+tDKXzby/+pwCKElpnR04kI+486BfdcMim4oAt3U=
-X-Received: by 2002:a17:906:3048:b0:9ae:37d9:803e with SMTP id
- d8-20020a170906304800b009ae37d9803emr5549553ejd.8.1696533913393; Thu, 05 Oct
- 2023 12:25:13 -0700 (PDT)
+ d=nuvoton.onmicrosoft.com; s=selector2-nuvoton-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=60l/P/bwOWdg2MkoncNt9iPmES2WMDnbSSJxCzK/2sM=;
+ b=SMckb2zqcc0cow0S3kpl1n2EdFrEyYiWragAY0TnhYYIpcsr7L79lUkIKFp6n7ykp8hoTza82lf49OGoUokgd/x/mmStjdsmXr3FY2efbvsXHEHwnvTuZiaQbJ11aRxtfk+d3fm7scLWs6Mi1/m2PW3IaH6gtPRr2GzBgmbm44I=
+Received: from PS2PR06CA0007.apcprd06.prod.outlook.com (2603:1096:300:56::19)
+ by TYZPR03MB5374.apcprd03.prod.outlook.com (2603:1096:400:8::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.35; Thu, 5 Oct
+ 2023 19:25:33 +0000
+Received: from HK3PEPF0000021C.apcprd03.prod.outlook.com
+ (2603:1096:300:56:cafe::af) by PS2PR06CA0007.outlook.office365.com
+ (2603:1096:300:56::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.29 via Frontend
+ Transport; Thu, 5 Oct 2023 19:25:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=gmail.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
+Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
+ HK3PEPF0000021C.mail.protection.outlook.com (10.167.8.38) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Thu, 5 Oct 2023 19:25:33 +0000
+Received: from NTHCCAS02.nuvoton.com (10.1.9.121) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 6 Oct
+ 2023 03:25:32 +0800
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS02.nuvoton.com
+ (10.1.9.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Fri, 6 Oct
+ 2023 03:25:32 +0800
+Received: from taln60.nuvoton.co.il (10.191.1.180) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Fri, 6 Oct 2023 03:25:32 +0800
+Received: by taln60.nuvoton.co.il (Postfix, from userid 10070)
+        id 1CDC363A26; Thu,  5 Oct 2023 22:25:31 +0300 (IDT)
+From:   Tomer Maimon <tmaimon77@gmail.com>
+To:     <peter.chen@kernel.org>, <gregkh@linuxfoundation.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <xu.yang_2@nxp.com>, <peng.fan@nxp.com>, <avifishman70@gmail.com>,
+        <tali.perry1@gmail.com>, <joel@jms.id.au>, <venture@google.com>,
+        <yuenn@google.com>, <benjaminfair@google.com>,
+        <j.neuschaefer@gmx.net>
+CC:     <openbmc@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tomer Maimon <tmaimon77@gmail.com>
+Subject: [PATCH v5 0/3] usb: ChipIdea: add Nuvoton NPCM UDC support
+Date:   Thu, 5 Oct 2023 22:25:26 +0300
+Message-ID: <20231005192529.162785-1-tmaimon77@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
- <20230929-ad2s1210-mainline-v3-22-fa4364281745@baylibre.com>
- <20230930164251.5c07723c@jic23-huawei> <CAMknhBFKSqXvgOeRjGAOfURzndmxmCffdU6MUirEmfzKqwM_Kg@mail.gmail.com>
- <20231005153736.2603dbbf@jic23-huawei>
-In-Reply-To: <20231005153736.2603dbbf@jic23-huawei>
-From:   David Lechner <dlechner@baylibre.com>
-Date:   Thu, 5 Oct 2023 14:25:02 -0500
-Message-ID: <CAMknhBEuX9sA_eHM2xqjGkDDtq-hDMtmmYyqYbER3B42TqWRmw@mail.gmail.com>
-Subject: Re: [PATCH v3 22/27] staging: iio: resolver: ad2s1210: convert LOS
- threshold to event attr
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        David Lechner <david@lechnology.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HK3PEPF0000021C:EE_|TYZPR03MB5374:EE_
+X-MS-Office365-Filtering-Correlation-Id: ca7edeb0-c9fa-4115-49ec-08dbc5d8d833
+X-MS-Exchange-SenderADCheck: 0
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?72afFOGRcCUM0pso/Wob/aCvkH6Bnu3BJcEBpUtgyaQJVeZqkGuoxdP/Y46E?=
+ =?us-ascii?Q?4ZaZ13/0uUVVifVoxIt0SbWMuoA2w3eeO0RaqZTnoJcy1TjtMT8XQaB5FOjE?=
+ =?us-ascii?Q?o82HainDxoxld8H2ZP1txS+w8fxq6VpfZGotDZUC0TO4EwgazjGgD+OwKWgi?=
+ =?us-ascii?Q?fAJSgp+veX0SvYYpoDYbA+5SMeH2KFWDrQO36WX3RHrxEa/kj2P5NjiIZogb?=
+ =?us-ascii?Q?VgOi4RhZYGDeyoCneov+idocwtP1e0c78hLh1WpNOm/RSYbbml04fLsJbruZ?=
+ =?us-ascii?Q?HLpXSM/EMLhrbv0bXx+BCtOvrxlHCuu7xOeppejb05yL3mkMHWk65EvpOtue?=
+ =?us-ascii?Q?Q6I9/eqYXCW3Wlruq5kb55gRBIEphQWwtXo6P5H3FS7cix6Ds4wviNJmOqfz?=
+ =?us-ascii?Q?boGacvYsUS4UJeK6Vrk9vSZEA/mFttwR2znk/P2I/q4ogbc8zPHx3ZGazeQN?=
+ =?us-ascii?Q?0DFV1HmUKpmLO1GDvrJ98UhrehuJPOfLL0etQcav4E/0XMH8bo4+b9OQ1HsO?=
+ =?us-ascii?Q?cIw/Nzbo+iiE5FitLNuGinUjYxATshQKJ4reR86dxAo8z4g8LOv7G5drQYiJ?=
+ =?us-ascii?Q?IkVG33bTTpgJE6zbEWRav28CrMe5PLMHbJkf2/gK/eYxB+9+u+EpacobXzGw?=
+ =?us-ascii?Q?uEPHKL7BNWXoLO0G1kw4dM+eb2SLdV/AE07OxsVKvxPkpn+b78jR1E7OifUY?=
+ =?us-ascii?Q?U4uNr4dcvoa77mBXkJsyU8VCMxINj0wIZdPO9REZoSd6nY2s+bGmIunz3tmz?=
+ =?us-ascii?Q?5qaq0CSAC/bOC1GhZ261FUIIlND4baAMa8TkZZGtjvyDR9hu8Qr9ERIOBq15?=
+ =?us-ascii?Q?ZAwpMjyvfzArkyOXp3tlXdI6pDTFaldl2G4ksIdVsGXa3V4jvRBEWzEuX3jx?=
+ =?us-ascii?Q?3D4Triye031YFfI0QeX7x/M4GvOBBomEmQRIUlbh4zAo22+aJzZN63Dvz07F?=
+ =?us-ascii?Q?bOBnChBHt2VgLC8akwhbjg=3D=3D?=
+X-Forefront-Antispam-Report: CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(5400799018)(82310400011)(451199024)(64100799003)(48200799006)(61400799006)(186009)(40470700004)(36840700001)(46966006)(40460700003)(40480700001)(6666004)(478600001)(76482006)(966005)(34020700004)(47076005)(36860700001)(55446002)(81166007)(83170400001)(356005)(82740400003)(921005)(2906002)(7416002)(110136005)(336012)(83380400001)(6266002)(73392003)(82202003)(26005)(2616005)(1076003)(42882007)(316002)(36756003)(54906003)(42186006)(70206006)(5660300002)(70586007)(41300700001)(8676002)(4326008)(8936002)(45356006)(35450700002)(84790400001)(12100799045);DIR:OUT;SFP:1501;
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 19:25:33.3592
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca7edeb0-c9fa-4115-49ec-08dbc5d8d833
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource: HK3PEPF0000021C.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR03MB5374
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        DKIM_SIGNED,DKIM_VALID,FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,
+        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,NML_ADSP_CUSTOM_MED,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 9:37=E2=80=AFAM Jonathan Cameron <jic23@kernel.org> =
-wrote:
->
-> On Mon, 2 Oct 2023 11:09:11 -0500
-> David Lechner <dlechner@baylibre.com> wrote:
->
-> > On Sat, Sep 30, 2023 at 10:42=E2=80=AFAM Jonathan Cameron <jic23@kernel=
-.org> wrote:
-> > >
-> > > On Fri, 29 Sep 2023 12:23:27 -0500
-> > > David Lechner <dlechner@baylibre.com> wrote:
-> > >
-> > > > From: David Lechner <david@lechnology.com>
-> > > >
-> > > > From: David Lechner <dlechner@baylibre.com>
-> > > >
-> > > > The AD2S1210 has a programmable threshold for the loss of signal (L=
-OS)
-> > > > fault. This fault is triggered when either the sine or cosine input
-> > > > falls below the threshold voltage.
-> > > >
-> > > > This patch converts the custom device LOS threshold attribute to an
-> > > > event falling edge threshold attribute on a new monitor signal chan=
-nel.
-> > > > The monitor signal is an internal signal that combines the amplitud=
-es
-> > > > of the sine and cosine inputs as well as the current angle and posi=
-tion
-> > > > output. This signal is used to detect faults in the input signals.
-> > >
-> > > Hmm. Looking forwards, I'm less sure that we should be shoving all th=
-ese
-> > > error conditions onto one channel. Fundamentally we have
-> > > sine and cosine inputs. I think we should treat those as separate cha=
-nnels
-> > > and include a third differential channel between them.
-> >
-> > At first, I did consider a differential channel as you suggested in
-> > v2. However, the datasheet is quite clear that the LOS and DOS faults
-> > (and only those faults) come from a signal it calls the "monitor
-> > signal". This signal is defined as:
-> >
-> >     Monitor =3D A1 * sin(theta)  * sin(phi) + A2 * cos(theta) * cos(phi=
-)
-> >
-> > where A1 * sin(theta) is the the sine input, A2 * cos(theta) is the
-> > cosine input and phi is the position output. So mathematically
-> > speaking, there is no signal that is the difference between the two
-> > inputs. (See "Theory of Operation" section in the datasheet.)
->
-> Hmm. That's certainly a bit more complex than I expected.
-> Relying on the brief description led me astray.
->
-> It's related to the differences in the measured and  as if
-> theta =3D=3D phi and A1 =3D=3D A2 (ideal) then it will be A1.
->
-> I can see it's relevant to DOS, but not LOS.  The description of LOS
-> seems to overlap a number of different things unfortunately.
->
+This patch set add USB device controller for the NPCM Baseboard
+Management Controllers (BMC).
 
-One thing to watch out for in the datasheet is the difference between
-the fault output pins and the fault bits read over the bus. The LOS
-output pin does indicate one or more of multiple faults, but we are
-not currently using that. We are only looking at the fault bits which
-are more granular.
+NPCM UDC driver is a part of the USB ChipIdea driver.
 
->
->
-> >
-> > But if we want to hide these internal details and don't care about a
-> > strict definition of "differential", then what is suggested below
-> > seems fine.
->
-> Probably best to introduce that monitor signal though we'll have
-> to be a bit vague about what it is which has the side effect that
-> anyone trying to understand what on earth these faults are is going
-> to be confused (having read the datasheet section a couple of times
-> I'm not 100% sure...)
->
-> >
-> > >
-> > > So this one becomes a double event (you need to signal it on both
-> > > cosine and sine channels).  The DOS overange is similar.
-> > > The DOS mismatch is a threshold on the differential channel giving
-> > >
-> > > events/in_altvoltage0_thresh_falling_value
-> > > events/in_altvoltage1_thresh_falling_value (these match)
-> > > events/in_altvoltage0_thresh_rising_value
-> > > events/in_altvoltage1_thresh_rising_value (matches previous which is =
-fine)
-> > > events/in_altvoltage1-altvoltage0_mag_rising_value
-> > >
-> > > Does that work here?  Avoids smashing different types of signals toge=
-ther.
-> > > We could even do the LOT as differential between two angle channels
-> > > (tracking one and measured one) but meh that's getting complex.>
-> > > Note this will rely on channel labels to make the above make any sens=
-e at all.
-> >
-> > I think this could be OK - I think what matters most is having some
-> > documentation that maps the faults and registers on the chip to the
-> > iio names. Where would the sine/cosine clipping fault fit in though? I
-> > got a bit too creative and used X_OR_Y to differentiate it (see
-> > discussion in "staging: iio: resolver: ad2s1210: implement fault
-> > events"). Strictly speaking, it should probably be a type: threshold,
-> > direction: either event on both the sine and cosine input channels
-> > (another double event) since it occurs if either of the signal exceeds
-> > the power or ground rail voltage. But we already have threshold rising
-> > and threshold falling on these channels with a different meaning. I
-> > guess it could call it magnitude instead of a threshold?
->
-> Tricky indeed.  Though I guess we only hit the clipping case after
-> LOS or DOS fires or if their thresholds are set too wide (is that
-> even possible?).
+Adding CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS flag to modify the vbus_active
+parameter to active in case the ChipIdea USB IP role is device-only and
+there is no otgsc register.
 
-I suppose it _could_ be possible on the high side if the AVDD voltage
-supply was selected to be less than the 4.4V max of the threshold
-voltage registers.
+BMC NPCM7XX and BMC NPCM8XX has ten identical NPCM UDC modules,
 
-> So it is useful to report it as we are already in
-> error? Or can we combine the cases by treating it as a cap on the
-> threshold controls for LOS and DOS?
+The NPCM UDC were tested on NPCM845 evaluation board.
 
-I found the clipping error useful while developing this driver since
-it help identify that we had a gain setting wrong on the excitation
-output (on the circuit board) which in turn caused the inputs to be
-overdriven. But, yes when this happened, it also always triggered at
-least one or more of the LOS and DOS faults as well.
+Addressed comments from:
+ - Krzysztof Kozlowski : https://www.spinics.net/lists/devicetree/msg638451.html
 
->
-> Even when they aren't just there for error reporting, designers
-> seem to always come up with new create signals to use for event
-> detection and sometimes it's a real struggle to map them to
-> something general.
->
-> Jonathan
->
->
+Changes since version 4:
+ - Modify npcm845-udc compatible.
+
+Changes since version 3:
+ - Add Acked-by Peter Chen.
+ 
+Changes since version 2:
+ - Use dev_err_probe.
+ - Remove MODULE_ALIAS.
+
+Changes since version 1:
+ - Add SoC specific compatible.
+ - Remove USB phy mux property from dt-binding, will be handled differently.
+ - Add CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS commit to this patch set.
+
+Tomer Maimon (3):
+  usb: chipidea: add CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS flag
+  dt-bindings: usb: ci-hdrc-usb2: add npcm750 and npcm845 compatible
+  usb: chipidea: Add support for NPCM
+
+ .../devicetree/bindings/usb/ci-hdrc-usb2.yaml |   7 ++
+ drivers/usb/chipidea/Kconfig                  |   4 +
+ drivers/usb/chipidea/Makefile                 |   1 +
+ drivers/usb/chipidea/ci_hdrc_npcm.c           | 114 ++++++++++++++++++
+ drivers/usb/chipidea/otg.c                    |   5 +-
+ include/linux/usb/chipidea.h                  |   1 +
+ 6 files changed, 131 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/usb/chipidea/ci_hdrc_npcm.c
+
+-- 
+2.33.0
+
