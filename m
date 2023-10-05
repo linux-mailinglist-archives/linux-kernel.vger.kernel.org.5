@@ -2,84 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B84D27BA0B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C64C7BA0A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238794AbjJEOlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36294 "EHLO
+        id S238560AbjJEOkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:40:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236270AbjJEOhF (ORCPT
+        with ESMTP id S236232AbjJEOhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:37:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB351478AF;
-        Thu,  5 Oct 2023 07:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696514586; x=1728050586;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=ThNNe93ib7OIhxR0ZiNJ4iUr7y5MyJc/8/7ws16q7sI=;
-  b=QB1FGsDEheiTUbHV7LcVgzgTU2102iQJR5kHdSojzsI9Pgt7T+AHUrLz
-   4OG9zUm5K+8gn+g6uqptC03k6GB95qdHz0QxZgOwKereb4ArM1YGTNzwq
-   aVwuDI/StMF7WEXPWVzovTaS/c9k8inZkzamSovUEevVAXhcAI5yfWJqM
-   BZ13F42jG3Dk7X6oEsNLof5rhbTSA+CVTftYrUK+oFcu1B99SMihDx5co
-   fhd6GcibLIek4maMBEvKTgUPHQEnOelKMjvnw0i4bdYQ+ZbB+nDvlQZJ3
-   mUrGJEWF/bz+pYk1ar49LNi+2aJOc1APUnz/yXDO7RoePbVCSY/eN5902
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="380673771"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="380673771"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 21:22:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="895281677"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="895281677"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 04 Oct 2023 21:21:12 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "tj@kernel.org" <tj@kernel.org>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>
-Subject: Re: [PATCH v5 09/18] x86/sgx: Store struct sgx_encl when allocating
- new VA pages
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-10-haitao.huang@linux.intel.com>
- <ac66cb2b6e057f5e5e78345bcddea13a3e72ee5e.camel@intel.com>
- <op.2b77pp0wwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <0953e4fac90921ff53570e2e6ebd2689fc1cd8fa.camel@intel.com>
- <op.2capgplewjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <34ec0ef5fda43e4b08e1e8352e5198e9e8a783ca.camel@intel.com>
-Date:   Wed, 04 Oct 2023 23:22:38 -0500
+        Thu, 5 Oct 2023 10:37:03 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0B73F016;
+        Thu,  5 Oct 2023 07:02:52 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 08D525C025F;
+        Thu,  5 Oct 2023 00:23:41 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 05 Oct 2023 00:23:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1696479821; x=1696566221; bh=Z9/BddHtqtTSTcngqikz3LcXGL1B2ri4Bu8
+        DyrtBFpA=; b=ZATk2PEGSVbByPxxMHhCET54U+sK7GsAptaPN938K3RVWhuGZ5y
+        1MPF+9p64wEAdmCwLrRQXrxD/Z8DVIFcnUnqWreXfhPid6+S7dKJ/TEGIN/wGi+b
+        w7UeuMfX/bLTSQO+fVc34VBq1wO1dUgJOvxF0tpJTnyQf5cE3IPdC2sYfKA0jAjG
+        5+IYUWyKC3qnAOwJfJdm5vsBkqiziGe+7EGb5i4r5JXCRTl9hWca88GkjTghPVez
+        acMX6X1LbL2muWnR1934QI1V9CGQfyDgJAgufvqQ2Kw6mzMfrzzzygVbLH2Ee0dr
+        54v+p6eYw+ouexAq5fVz/hwiI28hqHXDmsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1696479821; x=1696566221; bh=Z9/BddHtqtTSTcngqikz3LcXGL1B2ri4Bu8
+        DyrtBFpA=; b=l1tqXNRK10fDiiVcNwtJA0uOc/5R0o5gnOO61e6/GXPLBmaxAmP
+        Oes8qYtqeVZfnPgVVCdc+RXPh8Gw9bfax7tqiszQxZsc85fSVpprBRMLvFkJmvnH
+        AhuqzooUTZ3Ah1sL4WvIfKU7IApqwjqXF/qoM9FYe9hU9wotxuQwckbMOMgEs8JM
+        TWOrzse4ZMt0lJw+bjUgBvNWj8zsbaiaoj4aFj16uOh6cmN1xnxFqsMEU0vEg1qx
+        BnLb9yq7cETJbSx70aGg7piPq5Ve5NY2TfQmWSplWeVPXzqFIsG5cJ8txrx7Ofi+
+        zpApTEwfl5TEODfW27Y5c9DHpS3Oza52BjQ==
+X-ME-Sender: <xms:SzoeZVQem9RMqeDhYeJaTvhJcFyq8Erl84K7YNXvrekTeVeuRl77JQ>
+    <xme:SzoeZex9sfi01AN7RobO41A27ETMlq08vkJbH__Szc2EzG4-TijY3Rs1Donu3wGlw
+    2oRFxP9O-RN>
+X-ME-Received: <xmr:SzoeZa39pA9oM1GJ4l2oTNh7mzcWmIitokwjaPOcg3v-vpVeSsY8LGcWiTNs_xPb6X8aH0DdfOhih5BftqSNWevnZ0dPSJDOjZDm1mo-eBNYrvT9r9S8pdCg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgeefgdekvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthekredttdefjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    egvdetvedvfeeivdeuueejgeetvdehlefhheethfekgfejueffgeeugfekudfhjeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:SzoeZdDciAtZwRk0Yzved4E9M2AnwsGT0W61S7IhiM0cqL1pTlvSgQ>
+    <xmx:SzoeZeiorAuaxLm_o3gm8qM5bD_cHVJOcDx1E1A_txs2tFOUDKYmXg>
+    <xmx:SzoeZRr3Cn8PLYe1aG08RrTR45DiIX7qCZO690Qp2De1v4Np-NTcwg>
+    <xmx:TToeZe5FzehY4x2bDePAxtenrqdu9Dbp12yeuFC_F0HeclaNBJgGDg>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 5 Oct 2023 00:23:33 -0400 (EDT)
+Message-ID: <a25f2736-1837-f4ca-b401-85db24f46452@themaw.net>
+Date:   Thu, 5 Oct 2023 12:23:29 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2cbqf0nkwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <34ec0ef5fda43e4b08e1e8352e5198e9e8a783ca.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 4/4] add listmount(2) syscall
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Matthew House <mattlloydhouse@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20230928130147.564503-1-mszeredi@redhat.com>
+ <20230928130147.564503-5-mszeredi@redhat.com>
+ <CAHC9VhQD9r+Qf5Vz1XmxUdJJJO7HNTKdo8Ux=n+xkxr=JGFMrw@mail.gmail.com>
+ <CAJfpegsPbDgaz46x4Rr9ZgCpF9rohVHsvuWtQ5LNAdiYU_D4Ww@mail.gmail.com>
+Content-Language: en-US
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <CAJfpegsPbDgaz46x4Rr9ZgCpF9rohVHsvuWtQ5LNAdiYU_D4Ww@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,123 +103,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Oct 2023 16:13:41 -0500, Huang, Kai <kai.huang@intel.com> wrote:
-
-> On Wed, 2023-10-04 at 10:03 -0500, Haitao Huang wrote:
->> On Tue, 03 Oct 2023 15:07:42 -0500, Huang, Kai <kai.huang@intel.com>  
->> wrote:
+On 5/10/23 12:01, Miklos Szeredi wrote:
+> On Wed, 4 Oct 2023 at 21:38, Paul Moore <paul@paul-moore.com> wrote:
+>> On Thu, Sep 28, 2023 at 9:04 AM Miklos Szeredi <mszeredi@redhat.com> wrote:
+>>> Add way to query the children of a particular mount.  This is a more
+>>> flexible way to iterate the mount tree than having to parse the complete
+>>> /proc/self/mountinfo.
+>>>
+>>> Lookup the mount by the new 64bit mount ID.  If a mount needs to be queried
+>>> based on path, then statx(2) can be used to first query the mount ID
+>>> belonging to the path.
+>>>
+>>> Return an array of new (64bit) mount ID's.  Without privileges only mounts
+>>> are listed which are reachable from the task's root.
+>>>
+>>> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+>>> ---
+>>>   arch/x86/entry/syscalls/syscall_32.tbl |  1 +
+>>>   arch/x86/entry/syscalls/syscall_64.tbl |  1 +
+>>>   fs/namespace.c                         | 69 ++++++++++++++++++++++++++
+>>>   include/linux/syscalls.h               |  3 ++
+>>>   include/uapi/asm-generic/unistd.h      |  5 +-
+>>>   include/uapi/linux/mount.h             |  3 ++
+>>>   6 files changed, 81 insertions(+), 1 deletion(-)
+>> ...
 >>
->> > On Tue, 2023-10-03 at 01:45 -0500, Haitao Huang wrote:
->> > > >
->> > > > Btw, probably a dumb question:
->> > > >
->> > > > Theoretically if you only need to find a victim enclave you don't  
->> need
->> > > > to put VA
->> > > > pages to the unreclaimable list, because those VA pages will be  
->> freed
->> > > > anyway
->> > > > when enclave is killed.  So keeping VA pages in the list is for>
->> > > accounting all
->> > > > the pages that the cgroup is having?
->> > >
->> > > Yes basically tracking them in cgroups as they are allocated.
->> > >
->> > > VAs and SECS may also come and go as swapping/unswapping happens.  
->> But
->> > > if acgroup is OOM, and all reclaimables are gone (swapped out), it'd
->> > > have toreclaim VAs/SECs in the same cgroup starting from the front  
->> of
->> > > the LRUlist. To reclaim a VA/SECS, it identifies the enclave from  
->> the
->> > > owner ofthe VA/SECS page and kills it, as killing enclave is the  
->> only
->> > > way toreclaim VA/SECS pages.
->> >
->> > To kill enclave you just need to track SECS in  the unreclaimable  
->> list.
->> > Only when you want to account the total EPC pages via some list you
->> > _probably_
->> > need to track VA as well.  But I am not quite sure about this either.
+>>> diff --git a/fs/namespace.c b/fs/namespace.c
+>>> index 3326ba2b2810..050e2d2af110 100644
+>>> --- a/fs/namespace.c
+>>> +++ b/fs/namespace.c
+>>> @@ -4970,6 +4970,75 @@ SYSCALL_DEFINE4(statmount, const struct __mount_arg __user *, req,
+>>>          return ret;
+>>>   }
+>>>
+>>> +static long do_listmount(struct vfsmount *mnt, u64 __user *buf, size_t bufsize,
+>>> +                        const struct path *root, unsigned int flags)
+>>> +{
+>>> +       struct mount *r, *m = real_mount(mnt);
+>>> +       struct path rootmnt = {
+>>> +               .mnt = root->mnt,
+>>> +               .dentry = root->mnt->mnt_root
+>>> +       };
+>>> +       long ctr = 0;
+>>> +       bool reachable_only = true;
+>>> +       int err;
+>>> +
+>>> +       err = security_sb_statfs(mnt->mnt_root);
+>>> +       if (err)
+>>> +               return err;
+>>> +
+>>> +       if (flags & LISTMOUNT_UNREACHABLE) {
+>>> +               if (!capable(CAP_SYS_ADMIN))
+>>> +                       return -EPERM;
+>>> +               reachable_only = false;
+>>> +       }
+>>> +
+>>> +       if (reachable_only && !is_path_reachable(m, mnt->mnt_root, &rootmnt))
+>>> +               return capable(CAP_SYS_ADMIN) ? 0 : -EPERM;
+>>> +
+>>> +       list_for_each_entry(r, &m->mnt_mounts, mnt_child) {
+>>> +               if (reachable_only &&
+>>> +                   !is_path_reachable(r, r->mnt.mnt_root, root))
+>>> +                       continue;
+>> I believe we would want to move the security_sb_statfs() call from
+>> above to down here; something like this I think ...
 >>
->> There is a case where even SECS is paged out for an enclave with all
->> reclaimables out.
+>>    err = security_sb_statfs(r->mnt.mnt_root);
+>>    if (err)
+>>      /* if we can't access the mount, pretend it doesn't exist */
+>>      continue;
+> Hmm.  Why is this specific to listing mounts (i.e. why doesn't readdir
+> have a similar filter)?
 >
-> Yes.  But this essentially means these enclaves are not active, thus  
-> shouldn't
-> be the victim of OOM?
+> Also why hasn't this come up with regards to the proc interfaces that
+> list mounts?
+
+The proc interfaces essentially use <mount namespace>->list to provide
+
+the mounts that can be seen so it's filtered by mount namespace of the
+
+task that's doing the open().
+
+
+See fs/namespace.c:mnt_list_next() and just below the m_start(), m_next(),
+
+etc.
+
+
+Ian
+
 >
-
-But there are VA pages for the enclave at that moment. So it can be  
-candidate for OOM victim.
-
->> So cgroup needs to track each page used by an enclave
->> and kill enclave when cgroup needs to lower usage by evicting an VA or
->> SECS page.
+> I just want to understand the big picture here.
 >
-> Let's discuss more on tracking SECS on unreclaimable list only.
->
-> Could we assume that when the OOM wants to pick up a victim to serve the  
-> new
-> enclave, there must be at least another one *active* enclave which still  
-> has the
-> SECS page in EPC?
->
-No, at a given instant when OOM happens, "active" enclave's SECS may not  
-be in EPC, but lots of VAs.
-
-OOM := "no reclaimable pages left in the cgroup to reclaim and total usage  
-is still at/near limit".
-
-
-
-> If yes, that enclave will be selected as victim.
->
-> If not, then no other enclave will be selected as victim.  Instead, only  
-> the new
-> enclave which is requesting more EPC will be selected, because it's SECS  
-> is on
-> the unreclaimable list.
->
-
-You can't assume the requesting enclave's SECS is in unreclaimable list  
-either. Think the request is from #PF in the scenario we fixed the NULL  
-pointer of SECS by reloading it.
-
-> Somehow this is unacceptable, thus we need to track VA pages too in  
-> order to
-> kill other inactive enclave?
->
-
-If we know for sure SECS will always be in EPC, thus tracked in  
-unreclaimables, then we probably can do it (see below).
-I hope the reason given above is clear.
-
->> There were some discussion on paging out VAs without killing enclaves  
->> but
->> it'd be complicated and not implemented yet.
->
-> No we don't involve swapping VA pages now.  It's a separate topic.
->
-Only mentioned it as a kind of constraints impacting current design.
-
-Another potential alternative: we don't reclaim SECS either until OOM and  
-only track SECS pages for cgroups. But that would change current behavior.  
-And I'm not sure about other consequences, e.g., enclaves theoretically  
-can allocate pages (including VA pages) in different cgroups/processes, so  
-we may still end up tracking all VA pages for cgroups or we track SECS  
-page in all cgroups in which enclave allocated any pages. Let me know your  
-thoughts.
-
->>
->> BTW, I need clarify tracking pages which is done by LRUs vs usage
->> accounting which is done by charge/uncharge to misc. To me tracking is  
->> for
->> reclaiming not accounting. Also vEPCs not tracked at all but they are
->> accounted for.
->
-> I'll review the rest patches.  Thanks.
-
-
-Thank you!
-Haitao
+> Thanks,
+> Miklos
