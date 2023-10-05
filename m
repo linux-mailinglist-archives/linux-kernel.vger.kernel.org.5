@@ -2,109 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9A17B9E66
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 776B77BA328
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbjJEOF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
+        id S235869AbjJEPwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbjJEOEO (ORCPT
+        with ESMTP id S234199AbjJEPvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:04:14 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815982484D;
-        Thu,  5 Oct 2023 04:11:44 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3af609c3e74so565243b6e.2;
-        Thu, 05 Oct 2023 04:11:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696504303; x=1697109103; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FZLz384BnmtZTkRlTbx4zMnrnVvcuSLVD0ixPYcWO2Q=;
-        b=F+COXs2L1P0XOqvdTqBWQ2sEtLS5ecKjqy2FDOWky7SkMbITnExlsDNbMm6cMmbGeD
-         wz33yILgOstsdAIh/4riIYAZ0WezuSKFWjPBeoZ/inFz8yR3MOCSBca7uC9OYJpt/nKw
-         /dCmvezTbge7VJJiT4RxClNI03ysPXYge60agicrppwIMmx6SZ+il7q5wUg5IT4ApqGV
-         xX6AxbN7h8yHXN+Ltjr6X3yIY3oQAVFIfOrSEN84FT4K5VwIf+ZJUDPdwFtAWVofYW4+
-         /zS+uYCyw+EfU4nBUseganlEoWKVkPij20yY4Nn1KXSUUQlZ91hq7ArOQMpGqCyJ2nVO
-         p0zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696504303; x=1697109103;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FZLz384BnmtZTkRlTbx4zMnrnVvcuSLVD0ixPYcWO2Q=;
-        b=izJ7eNHMhk9a/8OfdmmjjnZZYeFvBVXLNVv3ZZGo315WgAwZwaKtPDLBLYoPY1vbUR
-         uRdoroffDIvozhaX2ZvWtCdhcs9pJIxj7Caw6vXESXhg9pIE4kogBffFpHMoJyNszLNy
-         nK4K9RdVvxrYoHTDSUc8x3WJAIuaJRETk6j4Vw/gx91AtK+owAB9fph+YvbpUyFVR/Dn
-         TMEL0nV41ummQFC9oOqec88nfs7RCEUKuJHlLiDZJglOCxjgCQ+RIi2eKWV0Zi0fsg6t
-         UVZXmw/YfTNjnADmFuyOtNWjb/5GZhtFykuMG3HAilHZUIiBp5s4jlxle1SReQrlC2Wh
-         5+JQ==
-X-Gm-Message-State: AOJu0YxyNRhFYsE+fgaQGAtqQ54KP5kIFzflcn5/fe8CZ4AzDERZSvun
-        fi7rIEH9MqaUtZw6i+VYGneANsbOr+A=
-X-Google-Smtp-Source: AGHT+IHUEXw1wL4QkSvnckVLi0TTTFo19lB0LVDgyCRKEWOJzXsDiIkSz5Vp+7Yrny8xruGz8dXBrg==
-X-Received: by 2002:a05:6358:4297:b0:13a:2fed:337c with SMTP id s23-20020a056358429700b0013a2fed337cmr4966489rwc.24.1696504303486;
-        Thu, 05 Oct 2023 04:11:43 -0700 (PDT)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id p3-20020a17090a74c300b0026b50d9aee6sm1282934pjl.25.2023.10.05.04.11.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 04:11:42 -0700 (PDT)
-Message-ID: <9fa3c04b-bd98-4fde-9bfd-27d83132e766@gmail.com>
-Date:   Thu, 5 Oct 2023 18:11:35 +0700
+        Thu, 5 Oct 2023 11:51:00 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967C963EF5;
+        Thu,  5 Oct 2023 07:08:41 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 395BFtwW113496;
+        Thu, 5 Oct 2023 06:15:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696504555;
+        bh=uM+Jae/KsDO60KLh7i4asx8qWU4wCJFbP5sgHLbd4rY=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=JEu6WQvKTIGcsP2Im/8InGeeNNLUiJI40IT7slkpHmdfVgKZwtQAHFruoOX3/6X4E
+         6Fss6uLBg7LCmPDap3GKAX2LADypWn7b05lxQ/6Pl4g6EIQWAZMikc8bowo1QKHhGt
+         00BPqTPcEWJr1x00JAPJYRnGoNTczqnxxmBYOIEQ=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 395BFtGd012019
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Oct 2023 06:15:55 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 5
+ Oct 2023 06:15:55 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 5 Oct 2023 06:15:55 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 395BFttr007999;
+        Thu, 5 Oct 2023 06:15:55 -0500
+Date:   Thu, 5 Oct 2023 06:15:55 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     "J, KEERTHY" <j-keerthy@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>, <robh+dt@kernel.org>,
+        <conor+dt@kernel.org>, <kristo@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <u-kumar1@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 2/7] arm64: dts: ti: k3-j784s4: Add ESM instances
+Message-ID: <20231005111554.ol4vu4oxlensmx6m@booth>
+References: <20230927023357.9883-1-j-keerthy@ti.com>
+ <20230927023357.9883-3-j-keerthy@ti.com>
+ <4eb50f24-b6c8-790e-91b0-5646ebbb2d10@ti.com>
+ <c7c32ec5-d0c1-443d-9851-3bb8e772c8fc@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Wireless <linux-wireless@vger.kernel.org>
-Cc:     Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Pawel <pawel.veselov@gmail.com>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: 6.5.5 hardware access timeout / HW error / GPF in iwlwifi
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <c7c32ec5-d0c1-443d-9851-3bb8e772c8fc@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-I notice a regression report on Bugzilla [1]. Quoting from it:
-
-> Hardware: Intel(R) Wi-Fi 6 AX201 160MHz, REV=0x370
-> Works just fine with 6.4.15 (and older)
-> Using FC37, updated to the latest available kernel 6.5.5, can't use WiFi or even boot.
-> Linux firmware package: linux-firmware-20230919-1 (latest available version for F37)
+On 06:45-20231005, J, KEERTHY wrote:
 > 
-> First boot:
-> Timeout waiting for hardware access (CSR_GP_CNTRL 0xffffffff)
-> at __iwl_trans_pcie_grab_nic_access+0x14a/0x150
-> followed by HW error, resetting before reading at
-> iwl_fwrt_dump_lmac_error_log+0x50c/0x600 
-> The interface didn't ever plumb.
 > 
-> Second boot: GPF. I don't have the traces, but I swear it originated from iwlwifi module from what I saw on the console.
+> On 10/3/2023 12:20 PM, Vignesh Raghavendra wrote:
+> > 
+> > 
+> > On 27/09/23 08:03, Keerthy wrote:
+> > > Patch adds the ESM instances for j784s4. It has 3 instances.
+> > > One in the main domain and two in the mcu-wakeup domian.
+> > > 
+> > > Signed-off-by: Keerthy <j-keerthy@ti.com>
+> > > ---
+> > >   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi       |  8 ++++++++
+> > >   arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi | 14 ++++++++++++++
+> > >   2 files changed, 22 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> > > index efed2d683f63..26dc3776f911 100644
+> > > --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> > > +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> > > @@ -1568,4 +1568,12 @@
+> > >   		firmware-name = "j784s4-c71_3-fw";
+> > >   		status = "disabled";
+> > >   	};
+> > > +
+> > > +	main_esm: esm@700000 {
+> > > +		compatible = "ti,j721e-esm";
+> > > +		reg = <0x00 0x700000 0x00 0x1000>;
+> > > +		ti,esm-pins = <688>, <689>, <690>, <691>, <692>, <693>, <694>,
+> > > +			      <695>;
+> > > +		bootph-pre-ram;
+> > 
+> > Similar to other nodes in this file, here and elsewhere use
+> > 		bootph-all
 > 
-> I've attached the traces for both the failed boots, and the normal boot from 6.4.15 for reference.
+> Okay. I will switch to bootph-all
 
-See Bugzilla for the full thread and attached dmesg logs.
+Is'nt esm configuration just needed during pre-ram?
 
-Anyway, I'm adding this regression to regzbot:
-
-#regzbot introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cgi?id=217963
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217963
+> 
+> > 
+> > 
+> > > +	};
+> > >   };
+> > > diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+> > > index 4ab4018d3695..a7b5c4cb7d3e 100644
+> > > --- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+> > > +++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+> > > @@ -700,4 +700,18 @@
+> > >   			status = "disabled";
+> > >   		};
+> > >   	};
+> > > +
+> > > +	mcu_esm: esm@40800000 {
+> > > +		compatible = "ti,j721e-esm";
+> > > +		reg = <0x00 0x40800000 0x00 0x1000>;
+> > > +		ti,esm-pins = <95>;
+> > > +		bootph-pre-ram;
+> > > +	};
+> > > +
+> > > +	wkup_esm: esm@42080000 {
+> > > +		compatible = "ti,j721e-esm";
+> > > +		reg = <0x00 0x42080000 0x00 0x1000>;
+> > > +		ti,esm-pins = <63>;
+> > > +		bootph-pre-ram;
+> > > +	};
+> > >   };
+> > 
 
 -- 
-An old man doll... just what I always wanted! - Clara
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
