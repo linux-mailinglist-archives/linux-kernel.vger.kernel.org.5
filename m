@@ -2,139 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A0F7BA721
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210327BA846
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbjJEQuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
+        id S231462AbjJERnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232891AbjJEQtY (ORCPT
+        with ESMTP id S231439AbjJERnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:49:24 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2068.outbound.protection.outlook.com [40.107.94.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9B01FE3;
-        Thu,  5 Oct 2023 09:42:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AkbgIy1AlsVPGa33BXORZjnVO6+SJ8RVtXjbZ9UWeq6vFGpxExVrWm2SmQHluflds1JkAtBW56WLGWrve39zUVrFOTnB5TvOKNChqiRpzxGqYhDFxMk5GV5fGYfloyBG9vEeETjsusK9fb4rr9+dTZvqKxurUq7Mr6BSzNS80jD5R9AFZDH3KiLFGaLWNqOBG/2e6qXF5MMy2FzoeTvcR+oYCj/OE95isOCK0vB8t1/rIY50JUpGqe1kThJSECd5vow9PGio69UJiik/4L6Xw/oGT0YA0LB00+tW9s4T2+yIkE65ZOS+xHKpZE+oc2P68k5H9QEH/T9pkyIDwsHK2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EBJZOK/3Sd/hkz9852w+GyNxaltQ9eMs0gDMLPobpgA=;
- b=nJHSqq2TdFEkEz/7JTo7YS8I8N60c2hRjah8CR6QZx/w1ZSiNXuwPuGQAtpeu4C/bXaSGwP79xCjec1KJA2tfcWqnNqKAhw6wliUTUtK/JbxN4roTopwu0nSx/krQA6zQkD+0OxetQJvgMpZkRZBSVJk+FkMmfDNt1ErAUabn4Yws2QRcMt4RQe5aUaJJ241cHtqQQDo3O25G9/YRAU+gEwbQuSMZ6WexYCAWTEo2B6eGOGjzVKZ3osAgHmOqRejHD4CkmGHvWNAoryam5Wvu3Z8pfYQfaayMGa4cuuuzyyAZtyUB5EMcffh4hOv7eo09/gaMXVzScBwALR5z8Vy6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EBJZOK/3Sd/hkz9852w+GyNxaltQ9eMs0gDMLPobpgA=;
- b=p2GpoHoAUWk0VOrFCmGm6xWabUtXbCjTQFlie0ap3CkUJrZkL3DrUcArsex3BMhrmwWjnxmsJ7Kl4xDihp0TBe6U8Xuvgu6BCyKJSl2RKE4orfkTXC7bBW7Ax7q+TaVpyKobAzg3TetI6TFJHdkoqHc4A8t168t0jU8ecqe0SkE=
-Received: from CH0PR04CA0109.namprd04.prod.outlook.com (2603:10b6:610:75::24)
- by IA1PR12MB7566.namprd12.prod.outlook.com (2603:10b6:208:42e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.24; Thu, 5 Oct
- 2023 16:42:08 +0000
-Received: from CY4PEPF0000E9D5.namprd05.prod.outlook.com
- (2603:10b6:610:75:cafe::39) by CH0PR04CA0109.outlook.office365.com
- (2603:10b6:610:75::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.29 via Frontend
- Transport; Thu, 5 Oct 2023 16:42:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D5.mail.protection.outlook.com (10.167.241.76) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.22 via Frontend Transport; Thu, 5 Oct 2023 16:42:07 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 5 Oct
- 2023 11:42:07 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 5 Oct
- 2023 09:42:06 -0700
-Received: from xhdthippesw40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Thu, 5 Oct 2023 11:42:03 -0500
-From:   Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-To:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
-        <bhelgaas@google.com>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <michal.simek@amd.com>,
-        <bharat.kumar.gogada@amd.com>,
-        Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-Subject: [PATCH v5 RESEND 4/4] PCI: xilinx-nwl: Increase ECAM size to accommodate 256 buses
-Date:   Thu, 5 Oct 2023 22:10:51 +0530
-Message-ID: <20231005164051.984254-5-thippeswamy.havalige@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231005164051.984254-1-thippeswamy.havalige@amd.com>
-References: <20231005164051.984254-1-thippeswamy.havalige@amd.com>
+        Thu, 5 Oct 2023 13:43:20 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67C13698
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:41:14 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40662119cd0so89585e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696524073; x=1697128873; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bVX5b7Ln0UtvczEt8vQG5rg+/Wjzan8kl7gYaY7q8tA=;
+        b=evctFE3hjdzmpRRsnQ8wWufAn52O5yGI4WMgdPDKyNIqgU5WxVg6VcSAxqxOilvPGw
+         VNYiDvj4wWFUHZoWf7TKANYAPyO1VMbYYm5WgaS7m8kaNCozUSpG8rNxiE5yhOdVZz+R
+         HDqojQNIioGLo5pOGiSeXfBaA5dwpGXNRWoojb8+w5b40hrWq+3kXGyFkzdabT40Eeh6
+         a7HE3KuQCJJ6CgsMKdItjtusKvtq8Kn7p7dJweRg+h9E4/62Mjp9G0GIT17k7SrpmwnT
+         iYPujh4uY98vP9Z184oEO2MFgq6AiMoMKSQolMSzeA/9VwuFQD8W55Xp/0hQU8G2ez5r
+         B50A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696524073; x=1697128873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bVX5b7Ln0UtvczEt8vQG5rg+/Wjzan8kl7gYaY7q8tA=;
+        b=l6Yv4YkAM3ebQUqyKLxSbMeufYoV7wGPQFFsXL1oMXeqGmcBkYsTa3qxrJ+nq4Xea9
+         msjBaQrpsvTvPPQXpR9OfC5gNCx2wTetD4RQptu2lzHO9TLLZL+6VHdakTzG1MlxGLrp
+         o8TQDdI66vOFgPYhu58rSayvh/0iIhCYpQE3xSDu+MprOBoJIOtFJnohoH9GRzCOvwG6
+         ESIVVMrsTasKGT276MJr5zdJMxXwM9u//NY9P9AyJC4ZJ6WwIlZlXVoKU7zkex1Yb4WM
+         OMYhk7VBjiSUFIKd4qaNMTw9zdFvKkHwHf1dy+9cN3R/nhC0r1uT/ElQvBcBzDHZLSlr
+         pE8Q==
+X-Gm-Message-State: AOJu0YyMKyZMpLL6+CMVbgdHCXLHIWhAklzUq9KnROxumgNRP994OrN3
+        iKGVYQu2tsW48lDyr09PTGOBwAXY0d+ut/8/dshk0Ea9fBmMdp0xy74FfQ==
+X-Google-Smtp-Source: AGHT+IFaFXz7T/HQ2COJrc2QdHeMjUblqHKwQmXYnFQ3QfTU3xQ5qh9OVDCFTBaK0FgOUgsET9DCDCw08hhu5w2VbEA=
+X-Received: by 2002:a1c:4b18:0:b0:405:320a:44f9 with SMTP id
+ y24-20020a1c4b18000000b00405320a44f9mr69414wma.5.1696524072742; Thu, 05 Oct
+ 2023 09:41:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D5:EE_|IA1PR12MB7566:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0c90cb71-aaed-4b09-56b7-08dbc5c203cf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9or5TypMO1/wkJGnRZopMkM4ubMavyraMdKunyT4VCs0jMZa1+r19CUhq77IkTBg4xcFKLT8bCLOnPSLbCj6IJPMcdnR7XylOLAfx2f/pPHOVm7RFNJxBVLfG5CGJi/5t5kYYU1NiHDOisXAbQ/X2ioqfcx832u5SgV6ELJi0lmCU0iiKdqi1BAfv8waXyTZnL0FpcuW1thKu2noxQzxHLURern9qTzuPl7dS4N+q/JVKVYw6xf5m2fgTWrbKPPEHp99XT1DP5yR73kmSaM2n6qbvyns6D4+Gh2VjBAlGarmPkU0SLCn5pGTEkPCGLbbFW9Xma43SmSIz1JprPfX9OTSPrjj8EXV+teYjD4H3ub6nczLMk/4p2PoTkUkHi48XWj2D8G4GDY7FHJdxtxA3U6rj5wYluVogjLFpRFWQTFicTj+1wIxo7ODBPrxS79cf/shi1+Qh/CHwPsMzkRtuUFQcigJhC7PPBBodkdpBueTDgXnMXFviMnqac9N5+xVitEfwoTMuN03y1fJC9FyoEzlqEqqG6gWIIHpRIvpBQUfQ1FJCCRtzw1pF3y1OX9LrENZL6JZ5pcKE7S7Q8puX8P47jk75wbt3+JI3SMfsexc0aX209ik6ApNOOB7ca/afWwhiMBejGchocGDOICMIxdBiLAje/ooHTHaijpkaHP/aBS7VYGlMo25vIQa1KV3EPJkGWNY5GlXN0SgcFGeSPoFV5dVAzOhv3knz6YnEOQTta86EdbfbvUBFqNsgmCXdNeB644MloLnBppfe6rqHfb+XY3dTuLIJuNIEmwXJL0=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(39860400002)(346002)(396003)(230922051799003)(1800799009)(186009)(451199024)(82310400011)(64100799003)(40470700004)(46966006)(36840700001)(40480700001)(40460700003)(2906002)(316002)(26005)(54906003)(426003)(83380400001)(44832011)(7416002)(1076003)(478600001)(336012)(2616005)(5660300002)(4326008)(70206006)(8676002)(6666004)(110136005)(47076005)(70586007)(8936002)(356005)(36860700001)(86362001)(4744005)(81166007)(41300700001)(36756003)(82740400003)(36900700001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 16:42:07.9429
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c90cb71-aaed-4b09-56b7-08dbc5c203cf
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D5.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7566
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20231004002038.907778-1-jmattson@google.com> <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
+ <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com>
+ <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local> <CALMp9eT2qHSig-ptP461GbLSfg86aCRjoxzK9Q7dc6yXSpPn7A@mail.gmail.com>
+ <ef665e55-7604-e167-7c49-739c284c248c@intel.com>
+In-Reply-To: <ef665e55-7604-e167-7c49-739c284c248c@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 5 Oct 2023 09:41:00 -0700
+Message-ID: <CALMp9eQL4m6PVVhntG9-RbY6w60pxka2tpCvTi01dQXPJ7QEJA@mail.gmail.com>
+Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's FsGsKernelGsBaseNonSerializing
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Our controller is expecting ECAM size to be programmed by software. By
-programming "NWL_ECAM_VALUE_DEFAULT  12" controller can access up to 16MB
-ECAM region which is used to detect 16 buses, so by updating
-"NWL_ECAM_VALUE_DEFAULT" to 16 so that controller can access up to 256MB
-ECAM region to detect 256 buses.
+On Thu, Oct 5, 2023 at 9:35=E2=80=AFAM Dave Hansen <dave.hansen@intel.com> =
+wrote:
+>
+> On 10/5/23 09:22, Jim Mattson wrote:
+> > On Wed, Oct 4, 2023 at 12:59=E2=80=AFAM Borislav Petkov <bp@alien8.de> =
+wrote:
+> >> On Tue, Oct 03, 2023 at 07:44:51PM -0700, Jim Mattson wrote:
+> >>> The business of declaring breaking changes to the architectural
+> >>> specification in a CPUID bit has never made much sense to me.
+> >> How else should they be expressed then?
+> >>
+> >> In some flaky PDF which changes URLs whenever the new corporate CMS ge=
+ts
+> >> installed?
+> >>
+> >> Or we should do f/m/s matching which doesn't make any sense for VMs?
+> >>
+> >> When you think about it, CPUID is the best thing we have.
+> > Every time a new defeature bit is introduced, it breaks existing
+> > hypervisors, because no one can predict ahead of time that these bits
+> > have to be passed through.
+> >
+> > I wonder if we could convince x86 CPU vendors to put all defeature
+> > bits under a single leaf, so that we can just set the entire leaf to
+> > all 1's in KVM_GET_SUPPORTED_CPUID.
+>
+> I hope I'm not throwing stones from a glass house here...
+>
+> But I'm struggling to think of cases where Intel has read-only
+> "defeature bits" like this one.  There are certainly things like
+> MSR_IA32_MISC_ENABLE_FAST_STRING that can be toggled, but read-only
+> indicators of a departure from established architecture seems ...
+> suboptimal.
+>
+> It's arguable that TDX changed a bunch of architecture like causing
+> exceptions on CPUID and MSRs that never caused exceptions before and
+> _that_ constitutes a defeature.  But that's the least of the problems
+> for a TDX VM. :)
+>
+> (Seriously, I'm not trying to shame Intel's x86 fellow travelers here,
+>  just trying to make sure I'm not missing something).
 
-Signed-off-by: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
----
-changes in v5:
-None.
----
- drivers/pci/controller/pcie-xilinx-nwl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Intel's defeature bits that I know of are:
 
-diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
-index 8fe0e8a325b0..e307aceba5c9 100644
---- a/drivers/pci/controller/pcie-xilinx-nwl.c
-+++ b/drivers/pci/controller/pcie-xilinx-nwl.c
-@@ -126,7 +126,7 @@
- #define E_ECAM_CR_ENABLE		BIT(0)
- #define E_ECAM_SIZE_LOC			GENMASK(20, 16)
- #define E_ECAM_SIZE_SHIFT		16
--#define NWL_ECAM_MAX_SIZE		12
-+#define NWL_ECAM_MAX_SIZE		16
- 
- #define CFG_DMA_REG_BAR			GENMASK(2, 0)
- #define CFG_PCIE_CACHE			GENMASK(7, 0)
--- 
-2.25.1
-
+CPUID.(EAX=3D7,ECX=3D0):EBX[bit 13] (Haswell) - "Deprecates FPU CS and FPU
+DS values if 1."
+CPUID.(EAX=3D7,ECX=3D0):EBX[bit 6] (Skylake) - "FDP_EXCPTN_ONLY. x87 FPU
+Data Pointer updated only on x87 exceptions if 1."
