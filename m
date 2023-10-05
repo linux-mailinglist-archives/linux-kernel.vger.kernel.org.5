@@ -2,115 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 337BA7BA562
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51E47BA589
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241474AbjJEQQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
+        id S240367AbjJEQRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240748AbjJEQNj (ORCPT
+        with ESMTP id S240884AbjJEQOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:13:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642FB27553;
-        Thu,  5 Oct 2023 08:37:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696520242; x=1728056242;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IRJ9mtCnYpA5n4HvRCoExQviHP5gvTiNEInaYhfMs24=;
-  b=L4lWfqpQAkmKF4OqUq4lmi8B36K7xa2+EjtG9gnD+IBj2SachcFx2V9g
-   0bM5EzUBTwv2A6GX6HZHUFxl5/1KqOysske1qkmnZQJFRwnjX2G3ZUmTq
-   2m+MZFcm90lOTKIxmUb+BdZL6suFrgT2YC5Iy1Mf8NABATPcKpfgk9d14
-   Jf9LvrdSmzPso7J3vu5a8lomXwCGzi2phf4guZYVSHH2PWy8I0br8jByk
-   RHZhSKD/yrtKVRWmvw5TcZvPNMfL4qWXO8nHFlPmRt8Ztz8HerL3mGJj2
-   oNUYtRh16yAzWe8Mcv9Wcvsy9nVefe6rnzN/jYXaF8yqXKBsm3nItmGT9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="362891114"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="362891114"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 08:37:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="755509753"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="755509753"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 08:37:19 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qoQPd-0000000344c-04TY;
-        Thu, 05 Oct 2023 18:37:17 +0300
-Date:   Thu, 5 Oct 2023 18:37:16 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andi Shyti <andi.shyti@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Cooper <alcooperx@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v2 1/1] serial: 8250_bcm7271: Use
- devm_clk_get_optional_enabled()
-Message-ID: <ZR7YLI3t2YDBbNbK@smile.fi.intel.com>
-References: <20231005124550.3607234-1-andriy.shevchenko@linux.intel.com>
- <ZR7UCtRKrycMD5d5@ashyti-mobl2.lan>
+        Thu, 5 Oct 2023 12:14:07 -0400
+Received: from icts-p-cavuit-3.kulnet.kuleuven.be (icts-p-cavuit-3.kulnet.kuleuven.be [134.58.240.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A742C288;
+        Thu,  5 Oct 2023 08:39:04 -0700 (PDT)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 8B62E2005A.A6A6D
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:213:242:ac11:64])
+        by icts-p-cavuit-3.kulnet.kuleuven.be (Postfix) with ESMTP id 8B62E2005A;
+        Thu,  5 Oct 2023 17:38:59 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID#0.00,SA-HVU#OURIPS#-35.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1696520339;
+        bh=xeT3PLcbuZl38n6owU7MJRWwK/4IHMoTULMTupbtSIA=;
+        h=From:To:Cc:Subject:Date;
+        b=YQiSbDObPEvDrFVTijyOZfhjVpLcBiTy6mznIxvi8hKUiKC9XBeSNxzeX4++3+++Y
+         r+WJxiGLF66WMZwWuYJzEtzJKkoPbEdNxmjnqUkCI8my80IFgxBKKfNBuETDpKrknP
+         Zis3bCWOy5Lp3xoUMfioSRG0rJ6BinQN+isIqfNA=
+Received: from librem.dyn.cs.kuleuven.be (unknown [IPv6:2a02:2c40:500:a006:548e:e4dd:76a4:afd8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id 5C465D4F34F1A;
+        Thu,  5 Oct 2023 17:38:59 +0200 (CEST)
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+To:     jarkko@kernel.org, kai.huang@intel.com, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dave.hansen@linux.intel.com,
+        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Subject: [PATCH v7 00/13] selftests/sgx: Fix compilation errors
+Date:   Thu,  5 Oct 2023 17:38:41 +0200
+Message-Id: <20231005153854.25566-1-jo.vanbulck@cs.kuleuven.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZR7UCtRKrycMD5d5@ashyti-mobl2.lan>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 05:19:38PM +0200, Andi Shyti wrote:
+Hi,
 
-[...]
+This patch series ensures that all SGX selftests succeed when compiling with
+optimizations (as tested with -O{0,1,2,3,s} for both gcc 11.3.0 and clang
+14.0.0). The aim of the patches is to avoid reliance on undefined,
+compiler-specific behavior that can make the test results fragile.
 
-> > -	baud_mux_clk = devm_clk_get(dev, "sw_baud");
-> > -	if (IS_ERR(baud_mux_clk)) {
-> > -		if (PTR_ERR(baud_mux_clk) == -EPROBE_DEFER) {
-> > -			ret = -EPROBE_DEFER;
-> > -			goto release_dma;
-> > -		}
-> > -		dev_dbg(dev, "BAUD MUX clock not specified\n");
-> > -	} else {
-> > +	baud_mux_clk = devm_clk_get_optional_enabled(dev, "sw_baud");
-> > +	ret = PTR_ERR_OR_ZERO(baud_mux_clk);
-> > +	if (ret)
-> > +		goto release_dma;
-> > +	if (baud_mux_clk) {
-> >  		dev_dbg(dev, "BAUD MUX clock found\n");
-> > -		ret = clk_prepare_enable(baud_mux_clk);
-> > -		if (ret)
-> > -			goto release_dma;
-> > +
-> >  		priv->baud_mux_clk = baud_mux_clk;
-> >  		init_real_clk_rates(dev, priv);
-> >  		clk_rate = priv->default_mux_rate;
-> > +	} else {
-> > +		dev_dbg(dev, "BAUD MUX clock not specified\n");
-> 
-> little behavioral change here, but I don't think this is a
-> problem.
+As far as I see, all commits in this series now have an explicit reviewed-by
+tag, so hopefully this can get merged upstream? Please let me know if any
+concerns remain and I'd happily address them.
 
-You meant that "if (!x) else" had been changed to "if (x) else" semantics?
-Otherwise I don't see any difference.
+Reference output below:
 
-> Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
+.. Testing   gcc   -O0    [OK]
+.. Testing   gcc   -O1    [OK]
+.. Testing   gcc   -O2    [OK]
+.. Testing   gcc   -O3    [OK]
+.. Testing   gcc   -Os    [OK]
+.. Testing   gcc   -Ofast [OK]
+.. Testing   gcc   -Og    [OK]
+.. Testing   clang -O0    [OK]
+.. Testing   clang -O1    [OK]
+.. Testing   clang -O2    [OK]
+.. Testing   clang -O3    [OK]
+.. Testing   clang -Os    [OK]
+.. Testing   clang -Ofast [OK]
+.. Testing   clang -Og    [OK]
 
-Thank you!
+Changelog
+---------
+
+v7
+  - Add reviewed-by tag (Jarkko)
+
+v6
+  - Collect final ack/reviewed-by tags (Jarkko, Kai)
+
+v5
+  - Reorder patches (Jarkko, Kai)
+  - Include fixes tag for inline asm memory clobber patch (Kai)
+  - Include linker error in static-pie commit message (Kai)
+  - Include generated assembly in relocations commit (Kai)
+
+v4
+  - Remove redundant -nostartfiles compiler flag (Jarkko)
+  - Split dynamic symbol table removal in separate commit (Kai)
+  - Split redundant push/pop elimination in separate commit (Kai)
+  - Remove (incomplete) register cleansing on enclave exit
+  - Fix possibly uninitialized pointer dereferences in load.c
+
+v3
+  - Refactor encl_op_array declaration and indexing (Jarkko)
+  - Annotate encl_buffer with "used" attribute (Kai)
+  - Split encl_buffer size and placement commits (Kai)
+
+v2
+  - Add additional check for NULL pointer (Kai)
+  - Refine to produce proper static-pie executable
+  - Fix linker script assertions
+  - Specify memory clobber for inline asm instead of volatile (Kai)
+  - Clarify why encl_buffer non-static (Jarkko, Kai)
+  - Clarify -ffreestanding (Jarkko)
+
+Best,
+Jo
+
+Jo Van Bulck (13):
+  selftests/sgx: Fix uninitialized pointer dereference in error path
+  selftests/sgx: Fix uninitialized pointer dereferences in
+    encl_get_entry
+  selftests/sgx: Include memory clobber for inline asm in test enclave
+  selftests/sgx: Separate linker options
+  selftests/sgx: Specify freestanding environment for enclave
+    compilation
+  selftests/sgx: Remove redundant enclave base address save/restore
+  selftests/sgx: Produce static-pie executable for test enclave
+  selftests/sgx: Handle relocations in test enclave
+  selftests/sgx: Fix linker script asserts
+  selftests/sgx: Ensure test enclave buffer is entirely preserved
+  selftests/sgx: Ensure expected location of test enclave buffer
+  selftests/sgx: Discard unsupported ELF sections
+  selftests/sgx: Remove incomplete ABI sanitization code in test enclave
+
+ tools/testing/selftests/sgx/Makefile          | 12 ++--
+ tools/testing/selftests/sgx/defines.h         |  2 +
+ tools/testing/selftests/sgx/load.c            |  9 ++-
+ tools/testing/selftests/sgx/sigstruct.c       |  5 +-
+ tools/testing/selftests/sgx/test_encl.c       | 67 +++++++++++++------
+ tools/testing/selftests/sgx/test_encl.lds     | 10 +--
+ .../selftests/sgx/test_encl_bootstrap.S       | 28 +++-----
+ 7 files changed, 77 insertions(+), 56 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
