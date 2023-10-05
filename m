@@ -2,127 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5A77BA030
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F7C7BA355
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234979AbjJEOfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
+        id S234937AbjJEPx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235037AbjJEOcq (ORCPT
+        with ESMTP id S235723AbjJEPvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:32:46 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE1C2618F;
-        Thu,  5 Oct 2023 05:06:32 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [39.34.184.141])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 71FB1660731C;
-        Thu,  5 Oct 2023 13:06:27 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696507590;
-        bh=LdOVFJ/CYTynGHR1c4xxHz9cnN943FYHgYIwv7MK744=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=WnsEjPQ9UUsfCljQpV2ZUWJ8LvLt69qmKb9NmZ9h8SL8ElBPu5mRSLIeqkcgU0f2x
-         T0rDPNS28EGIvhBrDIhF5wFRYljOiTewRM1+mb50uzpSQ2BwJ47OQsiDI242g5sFNg
-         gznE4hhq9z/LZJFXToBgRUPbC3aK7+WHOGkk0Ym9tTQG2R2OvaMWQjbeZjzYPBQQx3
-         lol1SSOkU/oXzE8YVJvZ0aqDsUVJUWul5JpjBUIC2qfz9ecmfto4tyno6MTeGfWIZJ
-         t30gk02uaYhQKZ47GIhN/v3V1iMSqpH3ALW0ES0AHbODQ81G8BcxFvHARSuTP174/1
-         UBslRlbgTpryg==
-Message-ID: <51273ffa-e323-44e8-8a93-bc04ee356df0@collabora.com>
-Date:   Thu, 5 Oct 2023 17:06:21 +0500
+        Thu, 5 Oct 2023 11:51:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD592DE6B
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:10:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696515030;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5vb2hJxwNALK0ItKBrSQxuAZCeV02gpmdBWkQg3vwNs=;
+        b=f+9UiVRRmX5Dm1SfQ3+pOvFW2BX0FryJGy5PQqGKYB8YRfxxGa9D+ufvMwzZFhzSfNzVCr
+        RNA8ihqH9RCAdU8tAQ58lQMfIL6kPNrI2dDA1iBnGwDZvxHgsVxJT9LPdsQasaSuZs/Jfr
+        1Thv19h1E0xYIiCQH83vrGX+k/ClM7A=
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
+ [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-308-j4DcpuitNXmXODA5ylYAKg-1; Thu, 05 Oct 2023 08:08:43 -0400
+X-MC-Unique: j4DcpuitNXmXODA5ylYAKg-1
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1dd691b1037so1260042fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 05:08:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696507722; x=1697112522;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5vb2hJxwNALK0ItKBrSQxuAZCeV02gpmdBWkQg3vwNs=;
+        b=fY/3NtfN8rn9d+msTbR/ljgwzrF6aFdOdNRuKZt7Kl6WrCJ+dLdfjuqYk//0TAOx4b
+         wegtRLawFIasItn56m2rTmzE1IUPKZliPEtTj5GZLzA8E+sGQEjlEmYMGGoS38fAmDYj
+         6COxThyuqkqWz96mbChtYud31jmTsi7JB04l/Hwc6VACc/xSNghkgcaQAD6JI511nbYy
+         MYvjs9nRo1i4izFDZmuWaAcxko9ccn7IFaqrHy5eSelhD+nTLgkdm6TOEyG9+cl4Gf7g
+         RAEJM27uWfkOZrww85lK4SLp+OI2L9w7iFEKj7dK0AaD7G6cZVTbVCZoJbUWnhuH002Q
+         mbeQ==
+X-Gm-Message-State: AOJu0YxWTBblOypg4AQoaG3VVFlSILmp28h+eEc6RJga9+fPBr+BFLdu
+        c60fIN8zemBEQPQrc5rOpRuWLnq7BXGE9waasL/aDk7N8vOQVMAcE3SMQ/TdkHKoaypF0NTQCWC
+        +PZlS84G79x/Zeqet6XaHRNhU
+X-Received: by 2002:a05:6870:31cd:b0:1bb:583a:db4a with SMTP id x13-20020a05687031cd00b001bb583adb4amr5648228oac.44.1696507722481;
+        Thu, 05 Oct 2023 05:08:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHlVzvkaGp66pHg11s+DjVKpK1U4zUytQRnNDD6fm7TMLdBw8lYi1FuciqL0IBF8B/oLwXbwA==
+X-Received: by 2002:a05:6870:31cd:b0:1bb:583a:db4a with SMTP id x13-20020a05687031cd00b001bb583adb4amr5648208oac.44.1696507722222;
+        Thu, 05 Oct 2023 05:08:42 -0700 (PDT)
+Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
+        by smtp.gmail.com with ESMTPSA id h8-20020a05620a13e800b007757868e75csm429739qkl.117.2023.10.05.05.08.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 05:08:41 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 08:08:58 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH v2 20/89] bcachefs: convert to new timestamp accessors
+Message-ID: <ZR6nWs/kFcw0+0ib@bfoster>
+References: <20231004185221.80802-1-jlayton@kernel.org>
+ <20231004185347.80880-1-jlayton@kernel.org>
+ <20231004185347.80880-18-jlayton@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
-        Shuah Khan <shuah@kernel.org>, kernel@collabora.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 6/6] selftests: futex: remove duplicate unneeded defines
-To:     Ingo Molnar <mingo@kernel.org>
-References: <20230805073809.1753462-1-usama.anjum@collabora.com>
- <20230805073809.1753462-6-usama.anjum@collabora.com>
- <ZRvU8DXRWL9sgKug@gmail.com>
-Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <ZRvU8DXRWL9sgKug@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231004185347.80880-18-jlayton@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 1:46 PM, Ingo Molnar wrote:
+On Wed, Oct 04, 2023 at 02:52:05PM -0400, Jeff Layton wrote:
+> Convert to using the new inode timestamp accessor functions.
 > 
-> * Muhammad Usama Anjum <usama.anjum@collabora.com> wrote:
-> 
->> Kselftests are kernel tests and must be build with kernel headers from
->> same source version. These duplicate defines should automatically
->> picked up from kernel headers. Use KHDR_INCLUDES to add kernel header
->> files.
->>
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
->>  .../selftests/futex/include/futextest.h       | 22 -------------------
->>  1 file changed, 22 deletions(-)
->>
->> diff --git a/tools/testing/selftests/futex/include/futextest.h b/tools/testing/selftests/futex/include/futextest.h
->> index ddbcfc9b7bac4..59f66af3a6d10 100644
->> --- a/tools/testing/selftests/futex/include/futextest.h
->> +++ b/tools/testing/selftests/futex/include/futextest.h
->> @@ -25,28 +25,6 @@
->>  typedef volatile u_int32_t futex_t;
->>  #define FUTEX_INITIALIZER 0
->>  
->> -/* Define the newer op codes if the system header file is not up to date. */
->> -#ifndef FUTEX_WAIT_BITSET
->> -#define FUTEX_WAIT_BITSET		9
->> -#endif
->> -#ifndef FUTEX_WAKE_BITSET
->> -#define FUTEX_WAKE_BITSET		10
->> -#endif
->> -#ifndef FUTEX_WAIT_REQUEUE_PI
->> -#define FUTEX_WAIT_REQUEUE_PI		11
->> -#endif
->> -#ifndef FUTEX_CMP_REQUEUE_PI
->> -#define FUTEX_CMP_REQUEUE_PI		12
->> -#endif
->> -#ifndef FUTEX_WAIT_REQUEUE_PI_PRIVATE
->> -#define FUTEX_WAIT_REQUEUE_PI_PRIVATE	(FUTEX_WAIT_REQUEUE_PI | \
->> -					 FUTEX_PRIVATE_FLAG)
->> -#endif
->> -#ifndef FUTEX_REQUEUE_PI_PRIVATE
->> -#define FUTEX_CMP_REQUEUE_PI_PRIVATE	(FUTEX_CMP_REQUEUE_PI | \
->> -					 FUTEX_PRIVATE_FLAG)
->> -#endif
-> 
-> AFAICT I cannot really pick this up into the locking tree as-is, as this patch
-> relies on the KHDR_INCLUDES change in patch #1, so that all self-tests get the
-> kernel headers included, correct?
-No this patch is self contained and doesn't depend on the patch #1.
-KHDR_INCLUDES was included several releases back in kselftest's Makefile
-and in kselftests of futex. Correct headers are being included already. In
-this patch, I'm removing just the un-needed dead code. Other patches were
-already picked up by other maintainers.
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
 
-> 
-> Thanks,
-> 
-> 	Ingo
+Acked-by: Brian Foster <bfoster@redhat.com>
 
--- 
-BR,
-Muhammad Usama Anjum
+>  fs/bcachefs/fs.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> index 09137a20449b..1fbaad27d07b 100644
+> --- a/fs/bcachefs/fs.c
+> +++ b/fs/bcachefs/fs.c
+> @@ -66,9 +66,9 @@ void bch2_inode_update_after_write(struct btree_trans *trans,
+>  	inode->v.i_mode	= bi->bi_mode;
+>  
+>  	if (fields & ATTR_ATIME)
+> -		inode->v.i_atime = bch2_time_to_timespec(c, bi->bi_atime);
+> +		inode_set_atime_to_ts(&inode->v, bch2_time_to_timespec(c, bi->bi_atime));
+>  	if (fields & ATTR_MTIME)
+> -		inode->v.i_mtime = bch2_time_to_timespec(c, bi->bi_mtime);
+> +		inode_set_mtime_to_ts(&inode->v, bch2_time_to_timespec(c, bi->bi_mtime));
+>  	if (fields & ATTR_CTIME)
+>  		inode_set_ctime_to_ts(&inode->v, bch2_time_to_timespec(c, bi->bi_ctime));
+>  
+> @@ -753,8 +753,8 @@ static int bch2_getattr(struct mnt_idmap *idmap,
+>  	stat->gid	= inode->v.i_gid;
+>  	stat->rdev	= inode->v.i_rdev;
+>  	stat->size	= i_size_read(&inode->v);
+> -	stat->atime	= inode->v.i_atime;
+> -	stat->mtime	= inode->v.i_mtime;
+> +	stat->atime	= inode_get_atime(&inode->v);
+> +	stat->mtime	= inode_get_mtime(&inode->v);
+>  	stat->ctime	= inode_get_ctime(&inode->v);
+>  	stat->blksize	= block_bytes(c);
+>  	stat->blocks	= inode->v.i_blocks;
+> @@ -1418,8 +1418,8 @@ static int inode_update_times_fn(struct btree_trans *trans,
+>  {
+>  	struct bch_fs *c = inode->v.i_sb->s_fs_info;
+>  
+> -	bi->bi_atime	= timespec_to_bch2_time(c, inode->v.i_atime);
+> -	bi->bi_mtime	= timespec_to_bch2_time(c, inode->v.i_mtime);
+> +	bi->bi_atime	= timespec_to_bch2_time(c, inode_get_atime(&inode->v));
+> +	bi->bi_mtime	= timespec_to_bch2_time(c, inode_get_mtime(&inode->v));
+>  	bi->bi_ctime	= timespec_to_bch2_time(c, inode_get_ctime(&inode->v));
+>  
+>  	return 0;
+> -- 
+> 2.41.0
+> 
+
