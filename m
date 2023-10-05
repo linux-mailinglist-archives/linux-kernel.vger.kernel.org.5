@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B0C7BA199
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D797BA3B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237252AbjJEOnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
+        id S238161AbjJEP6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235741AbjJEOi2 (ORCPT
+        with ESMTP id S234278AbjJEP4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:38:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3334E364;
-        Thu,  5 Oct 2023 07:03:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C699C43397;
-        Thu,  5 Oct 2023 14:03:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696514639;
-        bh=piLsE53Q1gZgSQFUl07BSGRXu3dJHS5CexWfLgjoioM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=unHERqPdEuFsnlwkj8m5qiTQxIrHwyFBS4Ylk8EvqN9DZvHS4F+PgVWWJRKs04qLZ
-         UjVvRObXsKf1C+0743hADeJSmBxP16oo6/prqwkUa5/B/g2/5ySPticvvoJbK7GcqV
-         M+4dx6jkCc5RZUJio1GnO1OPuS67YePnXZKRrA1TDVxlm0Ft6NAgRA+UTdQEOL7ueQ
-         RQzgSQEtCMQvVsa960b2UCCpCFrLYuvRs9u64LzUUSwrejrOgXU9HSEfPm+8RZ/D9k
-         Fwc+vjtTmBFauSo73drSeW5QhEYYlYo8fU/5QTZ0oQxYtDDKVBzCDqLdLNT+RdTh2V
-         jtv3yMjVoxJqg==
-Date:   Thu, 5 Oct 2023 15:04:03 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     David Lechner <dlechner@baylibre.com>
-Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH] staging: iio: resolver: ad2s1210: fix return with lock
- held
-Message-ID: <20231005150403.453851f3@jic23-huawei>
-In-Reply-To: <20231004-staging-iio-resolver-ad2s1210-fix-return-with-lock-held-v1-1-812b932997bd@baylibre.com>
-References: <20231004-staging-iio-resolver-ad2s1210-fix-return-with-lock-held-v1-1-812b932997bd@baylibre.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Thu, 5 Oct 2023 11:56:43 -0400
+Received: from out-193.mta0.migadu.com (out-193.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EF46618
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:04:41 -0700 (PDT)
+Message-ID: <6545ac4c-1205-6c09-49ea-e00c24d1a2ff@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696514677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=czgSb+pm6uNjMEiZ+zLe1URTxhscF82iKhFuHMluZ1o=;
+        b=plmD0wnAyGVVn6u1f6DP2PD1OQ3xfBXTH2n1KSVIw0vTM9wlyerdB3V9BDsRd7ixuIkh3k
+        waXcprzA8Z/ok/W19GBjZhG28HLF19G97VFOoWwdwCtbepWjT8dt4hz4WJWZDx4qNjr+yZ
+        +5pQBkVsTHH8zmsgKUz0xQacKA9wjoI=
+Date:   Thu, 5 Oct 2023 22:04:28 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region when
+ MEMINIT_EARLY
+Content-Language: en-US
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        mike.kravetz@oracle.com, muchun.song@linux.dev,
+        willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <a6a20ff9-385c-639f-75cf-ce73a01d97cf@linux.dev>
+ <20230929100252.GW3303@kernel.org>
+ <15233624-f32e-172e-b2f6-7ca7bffbc96d@linux.dev>
+ <20231001185934.GX3303@kernel.org>
+ <90342474-432a-9fe3-2f11-915a04f0053f@linux.dev>
+ <20231002084708.GZ3303@kernel.org>
+ <f7e6f67a-4cac-73bd-1d5e-5020c6c8423d@redhat.com>
+ <20231002111051.GA3303@kernel.org>
+ <3057dab3-19f2-99ca-f125-e91a094975ed@redhat.com>
+ <8c9ee3bd-6d71-4111-8f4e-91bc52b42ed4@linux.dev>
+ <20231005050619.GB3303@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <20231005050619.GB3303@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  4 Oct 2023 09:17:26 -0500
-David Lechner <dlechner@baylibre.com> wrote:
 
-> We missed a return statement in ad2s1210_initial() that would cause
-> the lock to be held when returning an error.
-> 
-> This is fixed by replacing the return with a goto to release the lock
-> before returning.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Closes: https://lore.kernel.org/r/202310030222.iokamE9T-lkp@intel.com/
-> Fixes: 0d03d0e65846 ("staging: iio: resolver: ad2s1210: rework gpios")
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-> ---
->  drivers/staging/iio/resolver/ad2s1210.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
-> index 98afd2e9ea41..67d8af0dd7ae 100644
-> --- a/drivers/staging/iio/resolver/ad2s1210.c
-> +++ b/drivers/staging/iio/resolver/ad2s1210.c
-> @@ -555,7 +555,7 @@ static int ad2s1210_initial(struct ad2s1210_state *st)
->  	mutex_lock(&st->lock);
->  	ret = ad2s1210_set_resolution_gpios(st, st->resolution);
->  	if (ret < 0)
-> -		return ret;
-> +		goto error_ret;
-Ah.  I squashed the same fix into the original patch as it wasn't yet on a non
-rebasing tree.
+On 2023/10/5 13:06, Mike Rapoport wrote:
+> On Tue, Oct 03, 2023 at 10:38:09PM +0800, Yajun Deng wrote:
+>> On 2023/10/2 19:25, David Hildenbrand wrote:
+>>> On 02.10.23 13:10, Mike Rapoport wrote:
+>>>>>> That 'if' breaks the invariant that __free_pages_core is
+>>>>>> always called for
+>>>>>> pages with initialized page count. Adding it may lead to
+>>>>>> subtle bugs and
+>>>>>> random memory corruption so we don't want to add it at the
+>>>>>> first place.
+>>>>> As long as we have to special-case memory hotplug, we know that we are
+>>>>> always coming via generic_online_page() in that case. We could
+>>>>> either move
+>>>>> some logic over there, or let __free_pages_core() know what it
+>>>>> should do.
+>>>> Looks like the patch rather special cases MEMINIT_EARLY, although I
+>>>> didn't
+>>>> check throughfully other code paths.
+>>>> Anyway, relying on page_count() to be correct in different ways for
+>>>> different callers of __free_pages_core() does not sound right to me.
+>>> Absolutely agreed.
+>>>
+>> I already sent v5  a few days ago. Comments, please...
+> Does it address all the feedback from this thread?
+>
 
-Thanks
+Except hotplug. As far as I konw, we only clear page count in 
+MEMINIT_EARLY and all tail pages in compound page.
 
-Jonathan
+So adding 'if (page_count(page))' will have no actual effect for other 
+case. According to previous data, it didn't
 
->  
->  	/* Use default config register value plus resolution from devicetree. */
->  	data = FIELD_PREP(AD2S1210_PHASE_LOCK_RANGE_44, 1);
-> 
-> ---
-> base-commit: a533eeaef80e879b3ad1937eee7a43d1f9961c5d
-> change-id: 20231004-staging-iio-resolver-ad2s1210-fix-return-with-lock-held-f547ce6fae49
+become slower in hotplug.
 
