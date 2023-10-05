@@ -2,49 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D28F27BA280
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F23C7BA28F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbjJEPjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
+        id S233963AbjJEPlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233834AbjJEPiw (ORCPT
+        with ESMTP id S233418AbjJEPkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:38:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197FB59ACE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:54:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E463C433CB;
-        Thu,  5 Oct 2023 14:54:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696517655;
-        bh=BgEP5es9zeO064dvwEF9wU58m/4e+xe7DsWjQLlWi6k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jt9GE9e/mtkG2Et8vx1/UjPdeJzi+syUGOOPaV+kooEL54cZQcxA44vHAtz3igd5h
-         /VUOdJOzc5rWduV//h9Rn0ELG6rxwsFQOosGcnqEeLOBa1y0vp4oafnPtlLGK8Vl0B
-         jmQNsEVXDsIZjhVs6b7GmWgd5/Wn7BeY6tchonJA=
-Date:   Thu, 5 Oct 2023 16:54:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Gupta, Nipun" <nipun.gupta@amd.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, maz@kernel.org, jgg@ziepe.ca,
-        linux-kernel@vger.kernel.org, git@amd.com, harpreet.anand@amd.com,
-        pieter.jansen-van-vuuren@amd.com, nikhil.agarwal@amd.com,
-        michal.simek@amd.com, abhijit.gangurde@amd.com,
-        srivatsa@csail.mit.edu
-Subject: Re: [PATCH v4] cdx: add MSI support for CDX bus
-Message-ID: <2023100531-stick-cupped-78f6@gregkh>
-References: <20230911135259.14046-1-nipun.gupta@amd.com>
- <2023100531-matron-oversold-4a73@gregkh>
- <87wmw1p4g5.ffs@tglx>
- <2023100547-retool-chamomile-d581@gregkh>
- <51b6606a-fdc1-de11-2260-863ac08071fd@amd.com>
+        Thu, 5 Oct 2023 11:40:25 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5E1545AA
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:55:14 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-78f1210e27fso453839241.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 07:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696517714; x=1697122514; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4sb1q74MArJrmg1EnidKYrw9CtEuXNYc17Dl5pGnnhs=;
+        b=CUU3KsJC3WrgCxD+RmPXC8p8Mf0x5KNL4WnVcHAE0ucdUCgY+6bRZ5F2gJIoYvH6pm
+         +qVoBHappagOJtszBX0y9/pvitpvnZoLbqYm3K8AOUFs9vmeUTMjBU/QCU+j80fN7Gza
+         fnEREHx/zsW5lGbHTdhK61VchqKVVOVV6fByZrFZ9/z+sLyBYtbQUvgY2B7mZOurCxd1
+         EnEOxFwETPUVd+E1+gsCLgqnLSKTsZ1IpXTlh4sfVUP2y2u22BDf5UWDlFkpHq2yyp5X
+         lPZd9QYr6jclnidY8uNxtSPiFlO3p9LvbR+UAsnDeWv4yDiiIk4RZ+29klJEnBd5wLc+
+         apIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696517714; x=1697122514;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4sb1q74MArJrmg1EnidKYrw9CtEuXNYc17Dl5pGnnhs=;
+        b=Z1cPGe0yLR9d1kcgQMfYyZlY6EUA+h/GFQSiOkCjZWG9WZ8Hfz5/q73kQMnzOBK1Ww
+         PfU5QaI/gwGVUUq6uqZrsKKogVeudwu+BHt3uRVR9JBHbF5l1DjM+ybJ3GUOYmByP6DK
+         UFaYp8YMrawEwqtb1lDSIKVH5NYNQPGOuME1PeEvujPo6ghbtpVPvBNSNGyM71mGZKri
+         8qMmGdjKAs4cvSegE0fxPaYuyeTz9j/S9J9FYCEvH4KAJkXn2smrvOgN5foTYsmVrl4O
+         LpQ0B8tS6pbJNhQc3xiTTLl0PE8p7/l1XcD8bi5AtwgorM1h3AXBoa3MJ33wMutiTwLB
+         jdJA==
+X-Gm-Message-State: AOJu0YyiyYcT3iDHAYgvnDoqsBCFzHLP1h/6EkgrgfXhNe+4kwStuqeM
+        FvbyAT2GYl/yESnnbAtXbGhsJO4813mYlns+9Pl32Q==
+X-Google-Smtp-Source: AGHT+IEO+WrPrzg8wdQMFzOvFJCD6a5uz7Ox65W+J3MpViKFb5GfWKQNzse/Kl9U7x+Y2TA3B2fv/zljaBJT0SI57W8=
+X-Received: by 2002:a1f:a9d0:0:b0:49d:92e0:9cd1 with SMTP id
+ s199-20020a1fa9d0000000b0049d92e09cd1mr5188264vke.11.1696517713597; Thu, 05
+ Oct 2023 07:55:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51b6606a-fdc1-de11-2260-863ac08071fd@amd.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+References: <20231004175229.211487444@linuxfoundation.org> <CA+G9fYuE9Pu3QCVDywA8Ss-41jVfiy2e2kpxjhpTe3CRgmZkBw@mail.gmail.com>
+In-Reply-To: <CA+G9fYuE9Pu3QCVDywA8Ss-41jVfiy2e2kpxjhpTe3CRgmZkBw@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 5 Oct 2023 20:25:02 +0530
+Message-ID: <CA+G9fYvHPnba-0=uGS70EjcPgHht13j3s-_fmd2=srL0xyPjNg@mail.gmail.com>
+Subject: Re: [PATCH 6.5 000/321] 6.5.6-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Hou Tao <houtao1@huawei.com>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, bpf <bpf@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,45 +76,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 08:07:35PM +0530, Gupta, Nipun wrote:
-> Hi Greg,
-> 
-> On 10/5/2023 7:30 PM, Greg KH wrote:
-> > On Thu, Oct 05, 2023 at 03:46:34PM +0200, Thomas Gleixner wrote:
-> > > On Thu, Oct 05 2023 at 12:24, Greg KH wrote:
-> > > > > diff --git a/drivers/cdx/Kconfig b/drivers/cdx/Kconfig
-> > > > > index a08958485e31..86df7ccb76bb 100644
-> > > > > --- a/drivers/cdx/Kconfig
-> > > > > +++ b/drivers/cdx/Kconfig
-> > > > > @@ -8,6 +8,7 @@
-> > > > >   config CDX_BUS
-> > > > >   	bool "CDX Bus driver"
-> > > > >   	depends on OF && ARM64
-> > > > > +	select GENERIC_MSI_IRQ_DOMAIN
-> > > > 
-> > > > This config option isn't in my tree anywhere, where did it come from?
-> > > > What is it supposed to do?
-> > > 
-> > > 13e7accb81d6 ("genirq: Get rid of GENERIC_MSI_IRQ_DOMAIN") :)
-> > 
-> > Ok, so this hasn't been tested since the 6.2 release?  Wow, I think
-> > someone from AMD needs to take a deep look at this and verify that it
-> > actually is doing what it is supposed to be doing...
-> 
-> The patch Thomas mentioned renames "GENERIC_MSI_IRQ_DOMAIN" to
-> "GENERIC_MSI_IRQ"; and in our testing "GENERIC_MSI_IRQ" is also selected as
-> 'ARM64' is enabled which enables 'ARM_GIC_V3_ITS' which in-turn selects
-> 'GENERIC_MSI_IRQ'.
+On Thu, 5 Oct 2023 at 11:05, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> On Wed, 4 Oct 2023 at 23:53, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 6.5.6 release.
+> > There are 321 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.6-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+>
+> The following kernel warning was noticed on qemu-armv7 while booting
+> with kselftest merge configs enabled build on stable-rc 6.5.6-rc1.
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> > Hou Tao <houtao1@huawei.com>
+> >     bpf: Ensure unit_size is matched with slab cache object size
+>
+>
+> bpf: Ensure unit_size is matched with slab cache object size
+> [ Upstream commit c930472552022bd09aab3cd946ba3f243070d5c7 ]
+>
+> [    2.525383] ------------[ cut here ]------------
+> [    2.525743] WARNING: CPU: 0 PID: 1 at kernel/bpf/memalloc.c:385
+> bpf_mem_alloc_init+0x3b0/0x3b4
+> [    2.527241] bpf_mem_cache[0]: unexpected object size 128, expect 96
 
-Ok, but that's not what this patch "selects" at all :(
 
-> The patch is tested for MSI functionality on 6.6-rc1. We will re-look into
-> the config dependencies to avoid such issues, but please be assured that the
-> patch has been validated.
+Anders investigated this report and picked up the following patches to
+solve the reported problem.
 
-How has the dependancy been validated as correct if there is no such
-thing in this kernel?
+d52b59315bf5e bpf: Adjust size_index according to the value of KMALLOC_MIN_SIZE
+b1d53958b6931 bpf: Don't prefill for unused bpf_mem_cache
+c930472552022 bpf: Ensure unit_size is matched with slab cache object size
 
-confused,
-
-greg k-h
+- Naresh
