@@ -2,210 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DEA7BA87B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022207BA87F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbjJERyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
+        id S229777AbjJERzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbjJERxs (ORCPT
+        with ESMTP id S230452AbjJERyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:53:48 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02B419E
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:53:46 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50481a0eee7so2984015e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 10:53:46 -0700 (PDT)
+        Thu, 5 Oct 2023 13:54:37 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F15F10C
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:54:20 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-495d687b138so506910e0c.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 10:54:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1696528425; x=1697133225; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uKYaIARFEHct9CVHZeyqf+F/1xbWs2LD32sLXu6T+FA=;
-        b=GjdEszC1C2/i8P4d099aYUJWfQnPDhcG9ojlUxGpCItBI864nnKUgZSL2FKCrSmhDL
-         QHKVYK3m8ToDYIYEw8ucXXR2Wjdm1dsHKqh3Cl/W3AMWDLvXDatF+8dADyWGkpvBRUiu
-         G8lebHZ+uZOSrbguKwygQCIAtcCdBoxQHUO4A=
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696528459; x=1697133259; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D76EeSMgKi6+9rAoLhvu8+kB+2vM8hIpa0TeocCPFcs=;
+        b=suyWDfANo2frFGih4DlCAmyOTNKXpa/vMIOvukgPrT0z1TV6CAdAwibYSKyh4Yf+9x
+         APqMZUbYeqgaFPzMJCMI8wL+5ivAGLQFhLG2oFxKdYaHpwdpfdy0e46JQPohf6mIALO3
+         2a8QvVpdIVtzZuFExywRt1ey8Fn1JwAti/AkeeX0jmwSzz6eRKEGI5k60potyYNFh36t
+         sZHyBGz1ox7a5mcdNUtSMmlbxfXQsVLLctc/4MCHZFxWStQ/QCnBEX4rHl6zZeFeE8Gm
+         tYdDb9UaofGwEUvARYZwD6DbC2D4CQek49f8iroJ/ff6mVxmTp2RnJWRC7PTb6DSU1iF
+         oyOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696528425; x=1697133225;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uKYaIARFEHct9CVHZeyqf+F/1xbWs2LD32sLXu6T+FA=;
-        b=syX6Y6z36i2fyiPA1RD6TJisndjIP6SLZfUG/OWwPU85c0Y+fyqgeiHfxyZuovMrXs
-         vx/hLk65QcVqxNFwICT/wl4cVIKpO+pgTEMj/xjbIxsO2KNpE3T1ksT8UZJ6ZrWzA05x
-         AG5LKcS7W4AcHU6fVpiRzMiFl+a3n0ouZctCVGuqXhIlestDE8zJKVKYNB4AweiKLM7R
-         QeWWMPHZdxS8CNaDRfFvcZfRCngKOWpbg/l875dg3tFmks5WmemsHwgRwhM2ts2ZqlHJ
-         xN1sgey1BPU8TnZ6kH3EqtFc730fNDR9JSFn4LcejmSaewIrrEQydzxguaHG8XPpVAtC
-         5jYQ==
-X-Gm-Message-State: AOJu0YwdS8wqz3wPllPtdaWqVmD1te15UYq5l3au1LC/QXeysIaWBzYx
-        nMZqkXQosDOKsICKWHHgAgtt/ngs/ZzpSgz8ANG1SQ==
-X-Google-Smtp-Source: AGHT+IE+nKp6u2xQlMCLIYdXSvea40FK/8KdOR5CHdelJl5+REPEc4OEbU0z2VI9tHkaTWRjsvK/o8fCOLI3IK85a2A=
-X-Received: by 2002:a19:520c:0:b0:502:a964:84b1 with SMTP id
- m12-20020a19520c000000b00502a96484b1mr2566000lfb.25.1696528424986; Thu, 05
- Oct 2023 10:53:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696528459; x=1697133259;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D76EeSMgKi6+9rAoLhvu8+kB+2vM8hIpa0TeocCPFcs=;
+        b=C0tfFbVg/rWrYu2aDGSDSAbSUYTGN6kqug2um78syfGt7CgjmDPMJcdsEVv/tIO6At
+         VH7kHtWBwxe4ffyejZFfATD1XMWywYr3u/EYgLlPkR2kpfZYdEiPGDkBplc+0coyjWm3
+         y7qPbaCJmoWpAtu2Qfj8r+Eg0pJcZoY0jCW9fjQed6g7/W5lMKK79cgq/mXp+QqLrToT
+         TUOXhRBNcvCHGxghS4RM9lgrqeNj9GmeXuIqsKzfszqE5Sl6I4zCu/31Tm5gijMgjYmI
+         F1pM0c/WRZkKgntyECeejSsBc8srTXAKLSjGq0YM7ddLexc9AdVixIL6ovEyrdV5CiML
+         LgGg==
+X-Gm-Message-State: AOJu0YyWur/ZBepyZoUW2922XHyX+SXoR7EuZa52xa0LL7Zpi2iN0IAe
+        spMMGBjyMZCWYLwc/mtLhxNLu/krQ1M2C+9iUvKd5hDeRACWEtO0
+X-Google-Smtp-Source: AGHT+IGqd7cRywJrqAx7tLdWplGQ/cpV/JZJxibRe7Uc/F7Xm33Lo6i42WYHIC4HVau1Ml+H0YEATejuGsARVRTWRu0=
+X-Received: by 2002:a05:6122:ca8:b0:49d:120c:3c2a with SMTP id
+ ba40-20020a0561220ca800b0049d120c3c2amr5902899vkb.11.1696528459613; Thu, 05
+ Oct 2023 10:54:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230926175208.9298-1-james.quinlan@broadcom.com>
- <20230926175208.9298-2-james.quinlan@broadcom.com> <CACRpkdYGPpUUCqmJLT4t+6CNOOmRAh_vYPSPK1SWy+tNycnSqQ@mail.gmail.com>
- <20231002061628.GC911@lst.de>
-In-Reply-To: <20231002061628.GC911@lst.de>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Thu, 5 Oct 2023 13:53:33 -0400
-Message-ID: <CA+-6iNy79pLgACMGXxRkPuVkXca0VyLis+jQcRmCwtBvEfFzgw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] ARM: Select DMA_DIRECT_REMAP to fix restricted DMA
-To:     Christoph Hellwig <hch@lst.de>
+References: <20231001-vf610-gpio-v5-0-8d873a8f224a@nxp.com>
+In-Reply-To: <20231001-vf610-gpio-v5-0-8d873a8f224a@nxp.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 5 Oct 2023 19:54:08 +0200
+Message-ID: <CAMRc=MeNmEuXNgyw9eWCBoVLyo59UTB+45rMUY1uUk+0K_bYUw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/7] gpio: update i.MX93/8ULP and support i.MX95
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Eric DeVolder <eric.devolder@oracle.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000255cea0606fbcea2"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Peng Fan <peng.fan@nxp.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000255cea0606fbcea2
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Sun, Oct 1, 2023 at 10:23=E2=80=AFAM Peng Fan (OSS) <peng.fan@oss.nxp.co=
+m> wrote:
+>
+> From hardware perspective:
+> - i.MX8ULP/93 GPIO supports two interrupts, 1st for Trustzone non-secure =
+irq,
+>   2nd for Trustzone secure irq.
+> - i.MX8ULP/93 only has one register base
+>
+> The current linux gpio-vf610.c could work with i.MX8ULP/i.MX93, it is
+> because some trick did in device tree node with offset added to base:
+>   reg =3D <0x2d010080 0x1000>, <0x2d010040 0x40>;
+> But actually the register base should be 0x2d010000.
+>
+> So i.MX8ULP/93 is not HW compatible with i.MX7ULP.
+>
+> i.MX93 GPIO is directly derived from i.MX8ULP, so make i.MX93 compatible
+> with i.MX8ULP. i.MX95 GPIO is same as i.MX93, so also compatible with
+> i.MX8ULP
+>
+> There maybe dtbs_check failure if only test the 1st patch. After
+> the patchset applied, no failure.
+>
+> To make avoid break old bindings from work, update the driver
+> to support both old/new bindings.
+>
+> ---
+> Changes in v5:
+> - Add R-b for patch 1, 2
+> - Simplify code a bit more in patch 4 pPer Marco's comments
+> - Update patch 5 to only drop port->sdata check, since patch 4 is changed=
+.
+> - Link to v4: https://lore.kernel.org/r/20230926-vf610-gpio-v4-0-b57b7f6e=
+8368@nxp.com
+>
+> Changes in v4:
+>  Change to minItems for allOf: else: interrupts
+>  Update commit log for patch 4/6
+>  Follow Marco's comments for patch 4/6
+>  Add a new patch 5/6 Per Marco's comments.
+>
+> Changes in v3:
+> Update patch v2 2/6
+> Update commit log in patch v2 5/6
+> Add A-b from DT maintainer for patch v2 1/6, 3/6
+> - Link to v2: https://lore.kernel.org/r/20230916-vf610-gpio-v2-0-40823da7=
+88d7@nxp.com
+>
+> Changes in v2:
+> - Update bindings with describe items, add one reg base for i.MX8ULP/93
+> - Update driver to support one reg base, support both new/old bindings
+> - Add a new patch 1 to update gpio-ranges found in dtbs_check
+> - Link to v1: https://lore.kernel.org/r/20230914-vf610-gpio-v1-0-3ed41818=
+2a6a@nxp.com
+>
+> ---
+> Peng Fan (7):
+>       dt-bindings: gpio: vf610: update gpio-ranges
+>       dt-bindings: gpio: vf610: correct i.MX8ULP and i.MX93
+>       dt-bindings: gpio: vf610: add i.MX95 compatible
+>       gpio: vf610: add i.MX8ULP of_device_id entry
+>       gpio: vf610: simplify code by dropping data check
+>       arm64: dts: imx8ulp: update gpio node
+>       arm64: dts: imx93: update gpio node
+>
+>  .../devicetree/bindings/gpio/gpio-vf610.yaml       | 40 +++++++++++++---
+>  arch/arm64/boot/dts/freescale/imx8ulp.dtsi         | 21 +++++----
+>  arch/arm64/boot/dts/freescale/imx93.dtsi           | 28 +++++++-----
+>  drivers/gpio/gpio-vf610.c                          | 53 ++++++++++++++++=
+++----
+>  4 files changed, 105 insertions(+), 37 deletions(-)
+> ---
+> base-commit: e143016b56ecb0fcda5bb6026b0a25fe55274f56
+> change-id: 20230914-vf610-gpio-46edacd2b513
+>
+> Best regards,
+> --
+> Peng Fan <peng.fan@nxp.com>
+>
 
-On Mon, Oct 2, 2023 at 2:16=E2=80=AFAM Christoph Hellwig <hch@lst.de> wrote=
-:
->
-> On Thu, Sep 28, 2023 at 01:10:27AM +0200, Linus Walleij wrote:
-> > (...)
-> > > +       select DMA_DIRECT_REMAP
-> >
-> > Christoph invented that symbol so he can certainly
-> > explain what is missing to use this on ARM.
-> >
-> > This looks weird to me, because:
-> > > git grep atomic_pool_init
-> > arch/arm/mm/dma-mapping.c:static int __init atomic_pool_init(void)
-> > kernel/dma/pool.c:static int __init dma_atomic_pool_init(void)
-> >
-> > Now you have two atomic DMA pools in the kernel,
-> > and a lot more than that is duplicated. I'm amazed that it
-> > compiles at all.
-> >
-> > Clearly if you want to do this, surely the ARM-specific
-> > arch/arm/mm/dma-mapping.c and arch/arm/mm/dma-mapping-nommu.c
-> > needs to be removed at the same time?
-> >
-> > However I don't think it's that simple, because Christoph would surely
-> > had done this a long time ago if it was that simple.
->
-> Yes, DMA_DIRECT_REMAP should only be used for platforms using the
-> generic generic remap that plus straight into dma-direct and
-> bypasses arch_dma_alloc.
->
-> ARM first needs support to directly set the uncached/wc bits on
-> the direct mapping for CMA, which should be fairly simple but require
-> wide spread testing.
->
-> I'd be happy to work with anyone who wants to look into this.
-I'd like to look into this and help make it work for ARCH=3Darm but you
-seem to be saying that you also need help from ARM the company?
+This looks good enough. I applied patches 1-5. If you could send a
+follow-up with a comment clarification for patch 4/5, that would be
+great.
 
 Thanks,
-Jim Quinlan
-Broadcom STB/CM
-
---000000000000255cea0606fbcea2
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIQbgYJKoZIhvcNAQcCoIIQXzCCEFsCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3FMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
-MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
-rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
-aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
-e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
-cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
-MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
-KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
-/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
-TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
-YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
-b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
-CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
-BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
-jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
-9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
-/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
-jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
-AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
-dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
-MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
-IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
-XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
-J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
-nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBU0wggQ1oAMCAQICDEjuN1Vuw+TT9V/ygzANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE3MTNaFw0yNTA5MTAxMjE3MTNaMIGO
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xFDASBgNVBAMTC0ppbSBRdWlubGFuMSkwJwYJKoZIhvcNAQkB
-FhpqYW1lcy5xdWlubGFuQGJyb2FkY29tLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
-ggEBAKtQZbH0dDsCEixB9shqHxmN7R0Tywh2HUGagri/LzbKgXsvGH/LjKUjwFOQwFe4EIVds/0S
-hNqJNn6Z/DzcMdIAfbMJ7juijAJCzZSg8m164K+7ipfhk7SFmnv71spEVlo7tr41/DT2HvUCo93M
-7Hu+D3IWHBqIg9YYs3tZzxhxXKtJW6SH7jKRz1Y94pEYplGQLM+uuPCZaARbh+i0auVCQNnxgfQ/
-mOAplh6h3nMZUZxBguxG3g2p3iD4EgibUYneEzqOQafIQB/naf2uetKb8y9jKgWJxq2Y4y8Jqg2u
-uVIO1AyOJjWwqdgN+QhuIlat+qZd03P48Gim9ZPEMDUCAwEAAaOCAdswggHXMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJQYDVR0R
-BB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQwHwYD
-VR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFGx/E27aeGBP2eJktrILxlhK
-z8f6MA0GCSqGSIb3DQEBCwUAA4IBAQBdQQukiELsPfse49X4QNy/UN43dPUw0I1asiQ8wye3nAuD
-b3GFmf3SZKlgxBTdWJoaNmmUFW2H3HWOoQBnTeedLtV9M2Tb9vOKMncQD1f9hvWZR6LnZpjBIlKe
-+R+v6CLF07qYmBI6olvOY/Rsv9QpW9W8qZYk+2RkWHz/fR5N5YldKlJHP0NDT4Wjc5fEzV+mZC8A
-AlT80qiuCVv+IQP08ovEVSLPhUp8i1pwsHT9atbWOfXQjbq1B/ditFIbPzwmwJPuGUc7n7vpmtxB
-75sSFMj27j4JXl5W9vORgHR2YzuPBzfzDJU1ul0DIofSWVF6E1dx4tZohRED1Yl/T/ZGMYICbTCC
-AmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UE
-AxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMSO43VW7D5NP1X/KD
-MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCA9Epkq50/BU8wvLtP6bXw1Nj1iCh69
-XHg2uQNGqr9KkzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMzEw
-MDUxNzUzNDVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
-hkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQME
-AgEwDQYJKoZIhvcNAQEBBQAEggEABqeJb6kes/KUqLjH2Q230su/y2vvfxz+IzwAUAHDNDfN/rdv
-kFJtfZwpGBZ1ISPi1l5ZISLw4UXypOJb9G8JyJA+I3pJDGgX1bHT6DLLr/ulCRwvX1C9LRdtV55O
-9Dz4fbVv89f2ZbpqeuwjUs7m7uFH0/dNiYA68eYy0gdxzP/9AeSN87GGeWaLkLAyBPENZ3RzXuke
-+XXo9W2hJLykVuIplu1YiFKzOc6Xx6h9+8NFzIknEI+7KMubxdBNaKmRkbpqdQFBokZj/nbSGkav
-V5YshqQ8OlzWYjiBJRopbh6zlnr0Fy8dRoGLA16WTcAGxASrG2bRdW2EV0mPfqWz3w==
---000000000000255cea0606fbcea2--
+Bart
