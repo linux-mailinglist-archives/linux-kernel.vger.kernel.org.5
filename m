@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D5C7BAF33
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A317C7BAF4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjJEXMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 19:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52206 "EHLO
+        id S229716AbjJEXWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 19:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjJEXJp (ORCPT
+        with ESMTP id S229710AbjJEXUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 19:09:45 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACE0137
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 16:09:31 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8141d6fbe3so1903632276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 16:09:31 -0700 (PDT)
+        Thu, 5 Oct 2023 19:20:40 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F58D70
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 16:09:33 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f61a639b9so22038437b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 16:09:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696547370; x=1697152170; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696547373; x=1697152173; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=HGxcidzGPRegna1u1K7BT077Nrlph2dhlmMJs3FQauY=;
-        b=qjtCvls5v8mag+wFClqLuBaKLzk6ijHeHJt4XcHzOxbnR1rQR1spiwejCbu0YVBuI/
-         cluu6B6kbyRaJ1sb5HPqGcTgislwsIrmQWi158NgzXwvwL7G13hlOacWou+SijnRv0Lo
-         Mw8ClDoyvOpV0QXDm7rs1UPsVGFLhLeuc3XkQv+MctNpbw8bmo8B+dsSdPqVLo6sKQb3
-         gIbydW4Zzvx9cGBKz9yPKhnhXDRW1YOvrOvPJzkQd3ctbyWpOWoDfLx4UoF4RvTkgU0y
-         9O4Gn02xioFzNdYrO0/maAxkgco11ttZ63P+F9/y/OpL6PXFG6fPbXb4iH9+7TQidOgx
-         AWjg==
+        bh=XtYWHIWRia4V/bq2E7J5Z+6HzWlGjlCMeDuedPRX49U=;
+        b=fhhJXZD5Qj8zrrUspUuhy8saP1dXx/3nv6YL2dXlA1f2iAakZNuIR/xEVBscrK3sfz
+         rmgoHL5VgHkbnUbzYapkAALFe1d5GTLZb8rXeuwpdu4Ir9ouDmeXmJNxhAy9hdRtVceM
+         t/XVFFrVt5cWNsY7aPfPM5XMYaDP7inSDgFhwNDG13XCG5OCC4UVyx+5jRblmOxj6zLt
+         L/FBG1pR074VxvJBtmn1Sq3jDWGHnPu/VTX0n4OdC9ZfCrmwaiIYAiLPIicQzlf4Tz8V
+         bsquTprunvD+/E9gxjFh+e33nLpdjeFPmv4hdefepxouwwiQgYr19D3ZpwrsVHJabY77
+         93hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696547370; x=1697152170;
+        d=1e100.net; s=20230601; t=1696547373; x=1697152173;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HGxcidzGPRegna1u1K7BT077Nrlph2dhlmMJs3FQauY=;
-        b=Hvpzsns7n4q1psc9lNcIGwAiJifhNKmyornCrK63sjZ+P2JLp24yH8JrCxWT+vkqMX
-         G1A1dBV25wFCbGSCLtsSssgZ5YvMJgu+ulR8p7m2gAE7kcfP418TfNuo5QNLMy1Eba57
-         LYOn5/ChbOwe3DMXbd92UhhKHMcm9qJ2ehderLPaN19p5ei1RuqI9nsr6SfpKNIzQBxu
-         yKYA3qFRZf72pUzOOvqp5wXxkAxVc6lk/HsnpnNGDTOOWz9ADzBuwMRY4eNaH0NWgg0n
-         wCyP/uGfRdddEAsIU8HLIExzybjebwlTtMlJs5bN3cj5xWJ6UMbZZrkhfgGDSm8V3GkN
-         2Y/g==
-X-Gm-Message-State: AOJu0YwfoqkttFhFGGmmv5wTzSpMJ9GVZDjwQKV/eomL3BvAqHAspdfN
-        2rR41D9uPBpMgHCFWjndlZuTFh7Lcaw7
-X-Google-Smtp-Source: AGHT+IEgTi3PLG+3o2WWDEFrIlbIkR+q1EaEaSDVhwE+qexUhANhreJWyGErr61dmZWaJXVBJMGi41ML+jYa
+        bh=XtYWHIWRia4V/bq2E7J5Z+6HzWlGjlCMeDuedPRX49U=;
+        b=N2dttJ/jh4ukzlQ5xENm8nujMC+MHEfUmZT6cp/UlCy7UjbI6f4oytYv6qt06gs3Xs
+         +CSYYattC/+6juPTY5xhxAUzo1ntgTP14ExhqbELuTj3h21iFWcCzTuDvv4qS14K4dhb
+         S1aMcV8PpLy0abjTwUZqPCVRfJobTe53H2rOsiEft8ZA5BXtNbDpxYjAdN+4EO0y2rmV
+         gpYS/F9+75gRzFlTLN9XGngp7QUKoEoOIUwNvA/4kg1U2Z9ZFC0Zyez4caveg/T+8EsD
+         QoVbQ7ibeZfw2GV8xMXu/Mtcne2lrZ8IEcxmrV8R9FyS4ALGnSqvOQI9o6cLkqYgAyqP
+         VdPg==
+X-Gm-Message-State: AOJu0Yx0eO4ahy6dTqg+n9FQEOt/17JmFLxskm/m5r2fRnlrKw7ot1gQ
+        AQtBVWTrf2vpUu02DbFpx5K+i5GvCB19
+X-Google-Smtp-Source: AGHT+IGYGvZnkG9pZnldPftjX0X/I/7GYYCZctlrfJO2uLsaOS59cFuWhBo7VZbssurDfKkKblBviKnfkqu4
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7449:56a1:2b14:305b])
- (user=irogers job=sendgmr) by 2002:a25:74c2:0:b0:d7b:9902:fb3d with SMTP id
- p185-20020a2574c2000000b00d7b9902fb3dmr105008ybc.0.1696547370559; Thu, 05 Oct
- 2023 16:09:30 -0700 (PDT)
-Date:   Thu,  5 Oct 2023 16:08:47 -0700
+ (user=irogers job=sendgmr) by 2002:a81:4325:0:b0:59b:eace:d46f with SMTP id
+ q37-20020a814325000000b0059beaced46fmr114023ywa.8.1696547372891; Thu, 05 Oct
+ 2023 16:09:32 -0700 (PDT)
+Date:   Thu,  5 Oct 2023 16:08:48 -0700
 In-Reply-To: <20231005230851.3666908-1-irogers@google.com>
-Message-Id: <20231005230851.3666908-15-irogers@google.com>
+Message-Id: <20231005230851.3666908-16-irogers@google.com>
 Mime-Version: 1.0
 References: <20231005230851.3666908-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v2 14/18] perf parse-events: Fix unlikely memory leak when
- cloning terms
+Subject: [PATCH v2 15/18] tools api: Avoid potential double free
 From:   Ian Rogers <irogers@google.com>
 To:     Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
@@ -92,27 +91,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing free on an error path as detected by clang-tidy.
+io__getline will free the line on error but it doesn't clear the out
+argument. This may lead to the line being freed twice, like in
+tools/perf/util/srcline.c as detected by clang-tidy.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/parse-events.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/lib/api/io.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index c56e07bd7dd6..23c027cf20ae 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2549,8 +2549,10 @@ int parse_events_term__clone(struct parse_events_term **new,
- 		return new_term(new, &temp, /*str=*/NULL, term->val.num);
- 
- 	str = strdup(term->val.str);
--	if (!str)
-+	if (!str) {
-+		zfree(&temp.config);
- 		return -ENOMEM;
-+	}
- 	return new_term(new, &temp, str, /*num=*/0);
+diff --git a/tools/lib/api/io.h b/tools/lib/api/io.h
+index 9fc429d2852d..a77b74c5fb65 100644
+--- a/tools/lib/api/io.h
++++ b/tools/lib/api/io.h
+@@ -180,6 +180,7 @@ static inline ssize_t io__getline(struct io *io, char **line_out, size_t *line_l
+ 	return line_len;
+ err_out:
+ 	free(line);
++	*line_out = NULL;
+ 	return -ENOMEM;
  }
  
 -- 
