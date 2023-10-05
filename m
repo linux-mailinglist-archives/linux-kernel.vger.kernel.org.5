@@ -2,84 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8367BA3D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8869A7BA368
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238884AbjJEP7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
+        id S236455AbjJEP5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:57:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235150AbjJEP4y (ORCPT
+        with ESMTP id S236685AbjJEP4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:56:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A487A5FE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:56:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696514199; x=1728050199;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=u1Ps76EPPTogYal6o242bGH52l2wk2mLPz+wdyerggE=;
-  b=JPiye1jru9wu+x3C8U/cc3DIj0DYY6auukVOJ8Xh+a1Fodbe+KuW8qAA
-   z8DE3t/UR3N3rEHkYjhc0JOUcjc8HQNgDqzg069dgbF41bQcGvjupscVZ
-   YNOswU7p5PdW2JIfkM1lugAoenCFm8cGYTa2wpbfXS7B4IzlAZofWMfVd
-   r/hnTOi64SQjuh2ZBMg39ecaA7P4qKhsKQTfkl0PcJoRZAwPcC8eGjtQw
-   08Id/Mnkzn7mmgoIqNd+I8/9lyl4MeXCdXuF5Qj3mDOANY4FHUSw1GBwm
-   cijAVOAYR/bX6rnapDGdmMAtnXCc/2qScKI1nymXVvyg7bWW+VGmsymoB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="447687773"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="447687773"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 06:56:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="701661881"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="701661881"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 06:56:35 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qoOq8-000000032Yx-2PZx;
-        Thu, 05 Oct 2023 16:56:32 +0300
-Date:   Thu, 5 Oct 2023 16:56:32 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lee Jones <lee@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: (subset) [PATCH] mfd: intel-lpss: Add Intel Lunar Lake-M PCI IDs
-Message-ID: <ZR7AkFUoB1PkCkeg@smile.fi.intel.com>
-References: <20231002083344.75611-1-jarkko.nikula@linux.intel.com>
- <169651386914.775665.8508120735864164763.b4-ty@kernel.org>
+        Thu, 5 Oct 2023 11:56:33 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE2238A3D
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:57:41 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ae75ece209so193894666b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 06:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1696514260; x=1697119060; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3jhe3s5Ktjadi5rzr/ScNUu5PHR0qhenACs1FczGETQ=;
+        b=jwpAFJl1JejsXJHgW12QeNMyFK3d8sKfPVbeBTtJw/JgHNFxuIdR2HTTcSf/CcAZWt
+         ZVOB/AG5rp6pCZu8qtEuq3TXdqCU8b9hlP4AM84v/syWNIbr7q0fA+7THQgIVfqzTaT1
+         T0B+UM7Ck7j4O8j3qNBQb7EOAn46X5kGCbH5fcfhNhyV/3lt4UPbYQe8kS7o2e7UoaF+
+         N53Dp6vO9MRV6QO5LMxD2Tc4ke6SswD5fY7zF4pf7poW8pGBwEcmP8I+CXPywRzdNVF8
+         nX6C+acE7HUeXNkMCVooydwUvwfOsiINSjlbujE1XWXuoiWRGc02GAI6vLurMze+TynK
+         aKpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696514260; x=1697119060;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3jhe3s5Ktjadi5rzr/ScNUu5PHR0qhenACs1FczGETQ=;
+        b=DdV8DPgPG3/UHDoLc1uMwp7hs13ucSH/7T91RPBppozWAnr434oIWV892nH4ZJ9uQX
+         HXMOnI16XnJH7l72GheFrwZGfZ1TEdCf8kzb7p6iXCAEjhmjI/oQf5jvM8tkTvdyohYb
+         CE8ORJEK8Li2QaxmBBpWz2yJc3ZTjvm8JJ8GLiG1YpWgI1Qf3zuPe9CHWrSeqTi+8K47
+         9YltcZSU4oAOOy9pWJtJ/ySmb0b/q0VESJKrVNxntJG61U5RqxyGIPB52IwpeC49LO1V
+         JDCapqmq7zoMBYXTHYisUYwupAKKr7kWfwHgsf4l5PpudNbWYhTiONPgis8zxUGsq5Xf
+         VlwA==
+X-Gm-Message-State: AOJu0YyNuYWLrcDbes42GBI5gAMSqTO8RaxZsJ2x8JMQs1/ZLuj7Ls6o
+        8/nsBIjtcD5NU1JQtNsVTyZbqkNJJTP7W7pOwBJPvQ==
+X-Google-Smtp-Source: AGHT+IE9EjlSzKkLLQqvCvGzIENu290Y/0rTmuLlaYvhP9xylHLtEWKPqU9Nsjm1c/1q+IItp+Hh54AChE7gTHxMG7Y=
+X-Received: by 2002:a17:906:9c9:b0:9a1:bd33:4389 with SMTP id
+ r9-20020a17090609c900b009a1bd334389mr4428143eje.74.1696514259837; Thu, 05 Oct
+ 2023 06:57:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <169651386914.775665.8508120735864164763.b4-ty@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231004175217.404851126@linuxfoundation.org>
+In-Reply-To: <20231004175217.404851126@linuxfoundation.org>
+From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Date:   Thu, 5 Oct 2023 22:57:28 +0900
+Message-ID: <CAKL4bV5n6_T5S6SrgqjKLbSZVg1FrB39a-vVRaa3m2uzXExJ6Q@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/259] 6.1.56-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 02:51:09PM +0100, Lee Jones wrote:
-> On Mon, 02 Oct 2023 11:33:44 +0300, Jarkko Nikula wrote:
-> > Add Intel Lunar Lake-M SoC PCI IDs.
-> 
-> Applied, thanks!
-> 
-> [1/1] mfd: intel-lpss: Add Intel Lunar Lake-M PCI IDs
->       commit: ae1fbe1b021a3075020856b2717fd971a72f9429
+Hi Greg
 
-Just a side note, are you sure the word 'subset' makes sense when you take
-_all_ patches?
+On Thu, Oct 5, 2023 at 3:12=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.56 release.
+> There are 259 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.1.56-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
--- 
-With Best Regards,
-Andy Shevchenko
+6.1.56-rc1 tested.
 
+Build successfully completed.
+Boot successfully completed.
+No dmesg regressions.
+Video output normal.
+Sound output normal.
 
+Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+
+Thanks
+
+Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
