@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E911E7BA704
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31E97BA6BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbjJEQqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
+        id S234359AbjJEQlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233281AbjJEQpb (ORCPT
+        with ESMTP id S232259AbjJEQjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:45:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48F34C33;
-        Thu,  5 Oct 2023 09:39:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696523987; x=1728059987;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=hECVpPidxc+xsrBykLjrpIvybiMHyUQOm44BWE7oSQk=;
-  b=kqr0IvgAb7JhEjuhbjXFQW1954DFsCDRdL7fiHY0rlA+dGX807tEFgRE
-   sjzOOOcCrZek5uAUaeBPBXFvpDRneNmKoXa3JKYZWxBixU/QHnQmD/LcZ
-   QN6znlCJQEdiRKtFK8MFuPBzn0cyLhf4ac1VqKu9CMmP7IBSLXZoBnf5C
-   X6hzW6ew/cTYYVanqKcx4g8UxE1uWjVwbgVGG1MfZ2JyVjkzSliJbykJo
-   oHuomx2JvuSEnmZ6wWoCN0ic9S2qK39HRc6sfo5Ab6H9Q0YELkjS/xHfw
-   ZObjc6E4EtWaWJbEwBDs/RHIJS4lGQqLyevZtX3483apeNQCN+1HUPAB1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="2154592"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="2154592"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 09:35:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="925657352"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="925657352"
-Received: from emosbarx-mobl2.amr.corp.intel.com (HELO [10.209.23.184]) ([10.209.23.184])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 09:35:40 -0700
-Message-ID: <ef665e55-7604-e167-7c49-739c284c248c@intel.com>
-Date:   Thu, 5 Oct 2023 09:35:39 -0700
+        Thu, 5 Oct 2023 12:39:55 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF6065B2
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:36:11 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6c4b9e09521so765992a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google; t=1696523770; x=1697128570; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vYHj3JFmAZKHkL+wnxS109TagHXpAewcZFhlnZKyAfc=;
+        b=JJTVJJHW5p7Pu59TFtLDMU6/XqrU+Eq9Y6zB8uHLHqubOUDW8Xump9BxEul2aKdODk
+         JRcGJJ7pHYvxMp0q8d5Mzmzt9xx+RgE3Ut5oxsHSFAWhw4Rs4pu/WNLJK8j66MdhqpZG
+         PdGDOyPLDiOBigUjkQWWHsZ65BF7uBD4ZQvgk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696523770; x=1697128570;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vYHj3JFmAZKHkL+wnxS109TagHXpAewcZFhlnZKyAfc=;
+        b=DtKgcn1Wp3yyd4wbEFhi02yU5PnzpjMmgMAXdFebPFe7UR4g8jyHoDaoRM/8v6A1s9
+         +CJ61IlhGWosTZ8Jem/fSmadn4L44r0cyAdeGmMwvLhiW+5dNTDxO3/CJHEWA1Xprb21
+         xaAJiewhlCEN/CeXx33kxvkhKKHUB/H/xFm1u8ZOp9lHzws0U++72hoDoLZNJgy7Jnc3
+         zNvWTohB7DcnYhgwmMVGFukNnIN0WdtHsqbpU3B2DGxy6FpBT1DJVkR6AEidlDm4Zn7g
+         4qQYBa0rG7IkmhV8u+gyhcq9UjqhuVmP0CbO2nRuhVww96L/cygdc+mjaiISro2IcHfi
+         RLIQ==
+X-Gm-Message-State: AOJu0YwU14D+9jC2d79/2owD76/RTEO2RkuFULXD2K10QUz1ynTtshSW
+        15Odj5GPkSlH4/lDYOCy9Sj+cg==
+X-Google-Smtp-Source: AGHT+IF1vZ6WboGp9C0l3uWZGG1N65oSqv2B+LlOIp2OMdFj2L2Gs4NqCVYwe07cua6EJsyW/v3WUg==
+X-Received: by 2002:a05:6830:22e6:b0:6bc:fdc8:d600 with SMTP id t6-20020a05683022e600b006bcfdc8d600mr5849783otc.25.1696523770407;
+        Thu, 05 Oct 2023 09:36:10 -0700 (PDT)
+Received: from fedora64.linuxtx.org ([99.47.93.78])
+        by smtp.gmail.com with ESMTPSA id q23-20020a9d6657000000b006b9734b9fafsm304356otm.13.2023.10.05.09.36.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 09:36:09 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+Date:   Thu, 5 Oct 2023 11:36:08 -0500
+From:   Justin Forbes <jforbes@fedoraproject.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 6.5 000/321] 6.5.6-rc1 review
+Message-ID: <ZR7l+IbugqOLaQtV@fedora64.linuxtx.org>
+References: <20231004175229.211487444@linuxfoundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's
- FsGsKernelGsBaseNonSerializing
-Content-Language: en-US
-To:     Jim Mattson <jmattson@google.com>, Borislav Petkov <bp@alien8.de>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20231004002038.907778-1-jmattson@google.com>
- <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
- <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com>
- <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
- <CALMp9eT2qHSig-ptP461GbLSfg86aCRjoxzK9Q7dc6yXSpPn7A@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <CALMp9eT2qHSig-ptP461GbLSfg86aCRjoxzK9Q7dc6yXSpPn7A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231004175229.211487444@linuxfoundation.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/23 09:22, Jim Mattson wrote:
-> On Wed, Oct 4, 2023 at 12:59 AM Borislav Petkov <bp@alien8.de> wrote:
->> On Tue, Oct 03, 2023 at 07:44:51PM -0700, Jim Mattson wrote:
->>> The business of declaring breaking changes to the architectural
->>> specification in a CPUID bit has never made much sense to me.
->> How else should they be expressed then?
->>
->> In some flaky PDF which changes URLs whenever the new corporate CMS gets
->> installed?
->>
->> Or we should do f/m/s matching which doesn't make any sense for VMs?
->>
->> When you think about it, CPUID is the best thing we have.
-> Every time a new defeature bit is introduced, it breaks existing
-> hypervisors, because no one can predict ahead of time that these bits
-> have to be passed through.
+On Wed, Oct 04, 2023 at 07:52:25PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.5.6 release.
+> There are 321 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> I wonder if we could convince x86 CPU vendors to put all defeature
-> bits under a single leaf, so that we can just set the entire leaf to
-> all 1's in KVM_GET_SUPPORTED_CPUID.
+> Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.6-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-I hope I'm not throwing stones from a glass house here...
+Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
+x86_64), and boot tested x86_64. No regressions noted.
 
-But I'm struggling to think of cases where Intel has read-only
-"defeature bits" like this one.  There are certainly things like
-MSR_IA32_MISC_ENABLE_FAST_STRING that can be toggled, but read-only
-indicators of a departure from established architecture seems ...
-suboptimal.
-
-It's arguable that TDX changed a bunch of architecture like causing
-exceptions on CPUID and MSRs that never caused exceptions before and
-_that_ constitutes a defeature.  But that's the least of the problems
-for a TDX VM. :)
-
-(Seriously, I'm not trying to shame Intel's x86 fellow travelers here,
- just trying to make sure I'm not missing something).
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
