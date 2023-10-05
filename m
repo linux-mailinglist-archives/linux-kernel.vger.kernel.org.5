@@ -2,132 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9957BA29F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E508F7B9F57
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233894AbjJEPm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
+        id S232627AbjJEOVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234164AbjJEPmJ (ORCPT
+        with ESMTP id S233700AbjJEOTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:42:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6192569226;
-        Thu,  5 Oct 2023 07:57:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CBD6C433CC;
-        Thu,  5 Oct 2023 05:29:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696483777;
-        bh=0Btg3YXrlgdZvN9c5GBtYXuhH18hqWIB+5O6R7ueqJA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=htbvcSdKFwWteJskCo57Zoc+HETH4Yk4itDoLxeJ1ZG4lHI/6dRpo8c5g9SXm397o
-         Eun4d3xnthNfZVwdWsofKvM4QWBVN4HTm3hLqzLiQBrntUL8UgEGY5xtChyLJeLSvA
-         +kiu09tPGlxznwtPobf/uLurpuN8CBF2/SLMhDWs179ymyb2Urny866sSuGF/ojv6+
-         iWewEluv5jVsvROGeyy57su15Hs4TbNbwzhji63ZqwBfc3BmxOSDIm1/YBjJDN2t9v
-         ZHq7tnS5BF0NS66xJ3m6K4ABlSRKqepeLUIUEhNo390B9QIPXevXF5ZN3BxZUTA4Ed
-         Ef2zRBvRZ4gnQ==
-Date:   Thu, 5 Oct 2023 08:28:24 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "deller@gmx.de" <deller@gmx.de>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "bjorn@kernel.org" <bjorn@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
-        "puranjay12@gmail.com" <puranjay12@gmail.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <linux-trace-kernel@vger.kernel.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "dinguyen@kernel.org" <dinguyen@kernel.org>,
-        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "song@kernel.org" <song@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 04/13] mm/execmem, arch: convert remaining overrides
- of module_alloc to execmem
-Message-ID: <20231005052824.GE3303@kernel.org>
-References: <20230918072955.2507221-1-rppt@kernel.org>
- <20230918072955.2507221-5-rppt@kernel.org>
- <3483c4712306060ac56f07f5db9b146d69fc7e9e.camel@intel.com>
+        Thu, 5 Oct 2023 10:19:17 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EA95243
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 22:29:35 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c5cd27b1acso4255785ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 22:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1696483775; x=1697088575; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7J22K+kkq04iFIr8U/rDD0YSRimKRS/5/Okw8x5uY0c=;
+        b=YDfYhk0Z3OY/IKRkDkh9U+1NqruhBa8bCndqtK7pLsI9HTDmGm2fTPtTp/3PE9aCl9
+         mX1+i5V6IpDCqLDqnvveYt5ObpQb4I2fVvFzO1OpP2VjcPBLj2SjVMsQFB626F5xSUb9
+         jn8TKszJWWg6lwiYP714bcdbPW85HaTHBxQpiEqs/o12pHwcIfzNTqAwDTqopq50kZCb
+         KWE0bK+cexiqQVWFVC1cgFW1cYx5Pb/Lpidx53MAJ7WURnX8my3mOVyjIJDa0eTn0SKR
+         nfCiqdQk0ivLE8RQ7jJ7gtDLktwZLusCK61+/V6flrHajQAYFSil021Em7P8lOYJzwqY
+         hHJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696483775; x=1697088575;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7J22K+kkq04iFIr8U/rDD0YSRimKRS/5/Okw8x5uY0c=;
+        b=azoKgyjC38lrzFvNgljI6qUdl8HcGAi8C2XC8uEfgTMbNliJqRKUbXkEvXup1Tja/y
+         a+g11RO1FuQtkNv9KVXDd/r9+0cw5eWksRbpuPrcepzqVhUKkUed+BM1qZCVQLRpXU0S
+         yzpwH5k0tkIgoqp7GUaUckUJPMlDYUkYWOIWnVHqll5VOQxxw+BkaVgk10MGwlPY+8ED
+         gR4J7wGzpHfckCUHQen2fcoWZYot50TwpRxANRGbcVAadIBUd+yV+Rq9qAqeTxiy1CuP
+         MDmOYOaBoECEZinbHglJYCLDKSecYmh7OqenkbZIsPteeS3lmvvcCAIwJkbgRuagi0ta
+         YewQ==
+X-Gm-Message-State: AOJu0YzcMAMUwhXwnhEwJv7S0NF4x+1auB4Xe+uMjsAu/X2gGozye04J
+        qh+XJvRtQUoysrzZpFNZlheH
+X-Google-Smtp-Source: AGHT+IG2LgHniXqfqGiAoclAX5CoktHo0eFuP8765KXoQxH4N3w/aCvPlKjQ2Kbuv/+QXZlS0XWNTA==
+X-Received: by 2002:a17:902:f688:b0:1c6:3228:c2ca with SMTP id l8-20020a170902f68800b001c63228c2camr5549774plg.29.1696483775226;
+        Wed, 04 Oct 2023 22:29:35 -0700 (PDT)
+Received: from localhost (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902ee5500b001c3267ae317sm576756plo.165.2023.10.04.22.29.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 22:29:34 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 13:29:32 +0800
+From:   Hsieh-Tseng Shen <woodrow.shen@sifive.com>
+To:     debug@rivosinc.com
+Cc:     palmer@dabbelt.com, ajones@ventanamicro.com, aou@eecs.berkeley.edu,
+        conor.dooley@microchip.com, jan.kiszka@siemens.com,
+        kbingham@kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, paul.walmsley@sifive.com
+Subject: Re: [PATCH v5] scripts/gdb: add lx_current support for riscv
+Message-ID: <ZR5JvCSDZwTQAucC@u-NUC7i5BNH>
+Reply-To: 20221115221051.1871569-1-debug@rivosinc.com
+References: <d65bddf3-c58a-1420-bff9-8333c10edb56@microchip.com>
+ <20221115221051.1871569-1-debug@rivosinc.com>
+ <98eb5bc7-dee4-b36e-a219-17b1e08d85f6@siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3483c4712306060ac56f07f5db9b146d69fc7e9e.camel@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <98eb5bc7-dee4-b36e-a219-17b1e08d85f6@siemens.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 12:29:36AM +0000, Edgecombe, Rick P wrote:
-> On Mon, 2023-09-18 at 10:29 +0300, Mike Rapoport wrote:
-> > diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-> > index 5f71a0cf4399..9d37375e2f05 100644
-> > --- a/arch/x86/kernel/module.c
-> > +++ b/arch/x86/kernel/module.c
-> >
-> > -void *module_alloc(unsigned long size)
-> > +struct execmem_params __init *execmem_arch_params(void)
-> >  {
-> > -       gfp_t gfp_mask = GFP_KERNEL;
-> > -       void *p;
-> > -
-> > -       if (PAGE_ALIGN(size) > MODULES_LEN)
-> > -               return NULL;
-> > +       unsigned long module_load_offset = 0;
-> > +       unsigned long start;
-> >  
-> > -       p = __vmalloc_node_range(size, MODULE_ALIGN,
-> > -                                MODULES_VADDR +
-> > get_module_load_offset(),
-> > -                                MODULES_END, gfp_mask, PAGE_KERNEL,
-> > -                                VM_FLUSH_RESET_PERMS |
-> > VM_DEFER_KMEMLEAK,
-> > -                                NUMA_NO_NODE,
-> > __builtin_return_address(0));
-> > +       if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && kaslr_enabled())
-> > +               module_load_offset =
-> > +                       get_random_u32_inclusive(1, 1024) *
-> > PAGE_SIZE;
+On Mon, Jan 02, 2023 at 10:09:01AM +0100, Jan Kiszka wrote:
+> On 15.11.22 23:10, Deepak Gupta wrote:
+> > csr_sscratch CSR holds current task_struct address when hart is in
+> > user space. Trap handler on entry spills csr_sscratch into "tp" (x2)
+> > register and zeroes out csr_sscratch CSR. Trap handler on exit reloads
+> > "tp" with expected user mode value and place current task_struct address
+> > again in csr_sscratch CSR.
+> > 
+> > This patch assumes "tp" is pointing to task_struct. If value in
+> > csr_sscratch is numerically greater than "tp" then it assumes csr_sscratch
+> > is correct address of current task_struct. This logic holds when
+> >    - hart is in user space, "tp" will be less than csr_sscratch.
+> >    - hart is in kernel space but not in trap handler, "tp" will be more
+> >      than csr_sscratch (csr_sscratch being equal to 0).
+> >    - hart is executing trap handler
+> >        - "tp" is still pointing to user mode but csr_sscratch contains
+> >           ptr to task_struct. Thus numerically higher.
+> >        - "tp" is  pointing to task_struct but csr_sscratch now contains
+> >           either 0 or numerically smaller value (transiently holds
+> >           user mode tp)
+> > 
+> > Patch also adds new cached type "ulong" in scripts/gdb/linux/utils.py
+> > 
+> > Signed-off-by: Deepak Gupta <debug@rivosinc.com>
+> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> > 
+> > ---
+> > Since patch has changed a little bit from v1 and I didn't include
+> > changelog earlier, here it is.
+> > 
+> > v1 --> v2:
+> >  - added logic to locate task_struct irrespective of priv
+> >  - made locating task_struct agnostic to bitness(32 vs 64).
+> >  - added caching of ulong type in scripts/gdb/linux/utils.py
+> >  - added more descriptive commit message
+> > 
+> > v2 --> v3:
+> >  - amended commit message and source line to fit column width
+> > 
+> > v3 --> v4:
+> >  - amended commit message and remove whitespace in source
+> >  - added Reviewed-by for reviewers
+> > 
+> > v4 --> v5:
+> >  - changing the order of changelog and sign off/review tags in commit
+> > ---
+> > ---
+> >  scripts/gdb/linux/cpus.py  | 15 +++++++++++++++
+> >  scripts/gdb/linux/utils.py |  5 +++++
+> >  2 files changed, 20 insertions(+)
+> > 
+> > diff --git a/scripts/gdb/linux/cpus.py b/scripts/gdb/linux/cpus.py
+> > index 15fc4626d236..14c22f82449b 100644
+> > --- a/scripts/gdb/linux/cpus.py
+> > +++ b/scripts/gdb/linux/cpus.py
+> > @@ -173,6 +173,21 @@ def get_current_task(cpu):
+> >           else:
+> >               raise gdb.GdbError("Sorry, obtaining the current task is not allowed "
+> >                                  "while running in userspace(EL0)")
+> > +    elif utils.is_target_arch("riscv"):
+> > +         current_tp = gdb.parse_and_eval("$tp")
+> > +         scratch_reg = gdb.parse_and_eval("$sscratch")
+> > +
+> > +         # by default tp points to current task
+> > +         current_task = current_tp.cast(task_ptr_type)
+> > +
+> > +         # scratch register is set 0 in trap handler after entering kernel.
+> > +         # When hart is in user mode, scratch register is pointing to task_struct.
+> > +         # and tp is used by user mode. So when scratch register holds larger value
+> > +         # (negative address as ulong is larger value) than tp, then use scratch register.
+> > +         if (scratch_reg.cast(utils.get_ulong_type()) > current_tp.cast(utils.get_ulong_type())):
+> > +             current_task = scratch_reg.cast(task_ptr_type)
 > 
-> Minor:
-> I think you can skip the IS_ENABLED(CONFIG_RANDOMIZE_BASE) part because
-> CONFIG_RANDOMIZE_MEMORY depends on CONFIG_RANDOMIZE_BASE (which is
-> checked in kaslr_enabled()).
+> Why not if-else for the assignment here?
+> 
+> > +
+> > +         return current_task.dereference()
+> >      else:
+> >          raise gdb.GdbError("Sorry, obtaining the current task is not yet "
+> >                             "supported with this arch")
+> > diff --git a/scripts/gdb/linux/utils.py b/scripts/gdb/linux/utils.py
+> > index 1553f68716cc..ddaf3089170d 100644
+> > --- a/scripts/gdb/linux/utils.py
+> > +++ b/scripts/gdb/linux/utils.py
+> > @@ -35,12 +35,17 @@ class CachedType:
+> >  
+> >  
+> >  long_type = CachedType("long")
+> > +ulong_type = CachedType("ulong")
+> >  atomic_long_type = CachedType("atomic_long_t")
+> >  
+> >  def get_long_type():
+> >      global long_type
+> >      return long_type.get_type()
+> >  
+> > +def get_ulong_type():
+> > +    global ulong_type
+> > +    return ulong_type.get_type()
+> > +
+> >  def offset_of(typeobj, field):
+> >      element = gdb.Value(0).cast(typeobj)
+> >      return int(str(element[field].address).split()[0], 16)
+> 
+> Looks good to me otherwise.
+> 
+> Jan
+> 
+> -- 
+> Siemens AG, Technology
+> Competence Center Embedded Linux
 
-Thanks, I'll look into it.
+This patch had been pending for quite a while, and not sure if it's
+still acceptable to be merged, but from my testing it's working fine
+for me. Nevertheless, the v5 patch now has conflict with the current
+master, so I've slightly modified for reference. It would be helpful
+if Deepak can send v6 later on.
 
--- 
-Sincerely yours,
-Mike.
+Tested-by: Hsieh-Tseng Shen <woodrow.shen@sifive.com>
+
+v5 --> v6:
+ - dropped cache type "ulong" in scripts/gdb/linux/utils.py as it
+ already exists in the current upstream
+---
+ scripts/gdb/linux/cpus.py | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/scripts/gdb/linux/cpus.py b/scripts/gdb/linux/cpus.py
+index 255dc18cb9da..f8325cab5f1b 100644
+--- a/scripts/gdb/linux/cpus.py
++++ b/scripts/gdb/linux/cpus.py
+@@ -179,6 +179,21 @@ def get_current_task(cpu):
+         else:
+             raise gdb.GdbError("Sorry, obtaining the current task is not allowed "
+                                "while running in userspace(EL0)")
++    elif utils.is_target_arch("riscv"):
++        current_tp = gdb.parse_and_eval("$tp")
++        scratch_reg = gdb.parse_and_eval("$sscratch")
++
++        # by default tp points to current task
++        current_task = current_tp.cast(task_ptr_type)
++
++        # scratch register is set 0 in trap handler after entering kernel.
++        # When hart is in user mode, scratch register is pointing to task_struct.
++        # and tp is used by user mode. So when scratch register holds larger value
++        # (negative address as ulong is larger value) than tp, then use scratch register.
++        if (scratch_reg.cast(utils.get_ulong_type()) > current_tp.cast(utils.get_ulong_type())):
++            current_task = scratch_reg.cast(task_ptr_type)
++
++            return current_task.dereference()
+     else:
+         raise gdb.GdbError("Sorry, obtaining the current task is not yet "
+                            "supported with this arch")
+--
+2.31.1
+
+Thank you
