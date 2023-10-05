@@ -2,135 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C167B9E6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81657BA2F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbjJEOFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
+        id S235171AbjJEPtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231844AbjJEOEM (ORCPT
+        with ESMTP id S233313AbjJEPsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:04:12 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83ACD2755A;
-        Thu,  5 Oct 2023 06:17:23 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-325e9cd483eso958992f8f.2;
-        Thu, 05 Oct 2023 06:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696511842; x=1697116642; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WXlipJ5qHf8e9WzUIEs4uK8a+42CDw8ODZV/LpXLiL4=;
-        b=IF0b2SjaMzzCsgWmVj3AtXcx2CMEUysJkfnEGYEfOJ+tKcJXkmveIeTvgdDIRSGKUJ
-         0CiGMGwgNCD96lkQSKf7b8bO2Us2VxnxjXiw7DtPCbRTrsgaiCax4zj7Q0kO5XHZFmhF
-         JVPyivfwS4APQDYQADCif43xa9o8Xzj/BN0oG7ZKGBL8Zq0yoj92T55Y4cBizoP0kHIU
-         NK4t0SP/o1Cx2iI3WOlrLJzSMtUefStGZUwMFImQvRKyXzox/wRrVOVNw9CKW60yTMAr
-         xzLyzxg+dOoY7pEUujO//wtZcK/ViQfSm7V3mnxvG15GxrdNimRsz3m3NI2ce9jNvsmy
-         8jcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696511842; x=1697116642;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WXlipJ5qHf8e9WzUIEs4uK8a+42CDw8ODZV/LpXLiL4=;
-        b=V49zuU2fAqwFHawcTrlml9mKIm/y+3xjxy+3F+kFENks2LrorfR2g77EkOLPKqxcYS
-         E/NaCgPbZ0ts8uGc2obe3Yqvc3p7OeXfjV/mrYmNobPKfiHXo31wf4uNwaCpi11pTkU/
-         2TrXL0SoEtSnpk2EbskEbV3wjM8+Y+ZFuWGFlAAGVDRfuJv+VI+/itUvhXpXdIc/Xovo
-         GVKM6BmgKkutZwyne2LLQF3poeOVNMhoYGSLJC9ttNAxvA5v1DmZyUS+CoG+lQ4sX+TQ
-         dGzDH9Z/jzD/H/UoVezvJjqBjpj0Dh2tqS8Fbl7sbaj4LjDdNakg11gT6UmYSKjx5lUu
-         b/LA==
-X-Gm-Message-State: AOJu0YwbArR5SoPpy2EVnO/eJK13hKPKavsNccRtKcsm8nuEXrserar3
-        jI3vVtFhiObZ6G0IkzKqSibVjraDvjo=
-X-Google-Smtp-Source: AGHT+IEUVLYwY4LlX80eXxxgob1v9hgV4vJIQsGoUZs0H1UUoMKsIwxyGfugC8SCaot2oWvzkKyceQ==
-X-Received: by 2002:a5d:4a05:0:b0:31f:a277:4cde with SMTP id m5-20020a5d4a05000000b0031fa2774cdemr5183667wrq.43.1696511841724;
-        Thu, 05 Oct 2023 06:17:21 -0700 (PDT)
-Received: from amir-ThinkPad-T480.lan ([5.29.249.86])
-        by smtp.gmail.com with ESMTPSA id c3-20020adfed83000000b003250aec5e97sm1799762wro.4.2023.10.05.06.17.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 06:17:21 -0700 (PDT)
-From:   Amir Goldstein <amir73il@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: [GIT PULL] overlayfs fixes for 6.6-rc5
-Date:   Thu,  5 Oct 2023 16:17:17 +0300
-Message-Id: <20231005131717.1311531-1-amir73il@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 5 Oct 2023 11:48:12 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF1E826D1;
+        Thu,  5 Oct 2023 07:16:59 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 395DHZAG123978;
+        Thu, 5 Oct 2023 08:17:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696511855;
+        bh=KD+7zlq75ALxwrYJZRVC4LR58yxzi4RfU5hU9XkaJsI=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=YT/XxjEKBvqXxNOGvNy1FBjSCwE4u4FJLpUpZ1Y66WgI0xK91X88ZHTYMnPpPCYnu
+         4zee9ETdzOFd7mm7iLXQ1gTAQaa4/rlAQK8wqCHk3uPI6CFIn/PpjTygcEqh9sf8Xs
+         33wZwUD2CAWyd7hiXDsGUTykr1BOXIyKRrC9mzek=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 395DHZUK008994
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Oct 2023 08:17:35 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 5
+ Oct 2023 08:17:35 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 5 Oct 2023 08:17:35 -0500
+Received: from [10.249.136.52] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 395DHTaj118229;
+        Thu, 5 Oct 2023 08:17:30 -0500
+Message-ID: <3037051e-9665-4174-b545-5a91d146fb54@ti.com>
+Date:   Thu, 5 Oct 2023 18:47:28 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 0/5] Enable Display for J784S4 and AM69-SK platform
+To:     <nm@ti.com>, <vigneshr@ti.com>, <a-bhatia1@ti.com>
+CC:     <afd@ti.com>, <rogerq@kernel.org>, <s-vadapalli@ti.com>,
+        <conor+dt@kernel.org>, <r-ravikumar@ti.com>, <sabiya.d@ti.com>,
+        <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20231005100027.228806-1-j-choudhary@ti.com>
+Content-Language: en-US
+From:   Jayesh Choudhary <j-choudhary@ti.com>
+In-Reply-To: <20231005100027.228806-1-j-choudhary@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Please pull overlayfs fixes for 6.6-rc5.
 
-This branch has been sitting in linux-next for a couple of days and
-it has gone through the usual overlayfs test routines.
+On 05/10/23 15:30, Jayesh Choudhary wrote:
+> This series adds support for:
+> - DisplayPort for J784S4-EVM
+> - Displayport and HDMI for AM69-SK platform
+> 
 
-The branch merges cleanly with master branch of the moment.
 
-Thanks,
-Amir.
+[...]
 
-----------------------------------------------------------------
-The following changes since commit 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa:
+Oops! I faced some issue with my mailing server while sending these
+patches. So had to send 4/5 patches again as '--in-reply-to' but
+the hierarchy is off on mailing list. Will RESEND the series.
 
-  Linux 6.6-rc4 (2023-10-01 14:15:13 -0700)
+Please IGNORE this series.
 
-are available in the Git repository at:
+Sorry for the noise!!!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/overlayfs/vfs.git ovl-fixes-6.6-rc5
+Warm Regards,
+Jayesh
 
-for you to fetch changes up to c7242a45cb8cad5b6cd840fd4661315b45b1e841:
+> 
+> Changelog v10->v11:
+> - Added comment for disabling serdes-refclk (according to comments of v5)
+> - Update commit message to document why serdes, wiz nodes (2/5) and mhdp-
+>    bridge, tidss nodes (3/5) are disabled.
+> - Keep only ports in board files and move common properties to main file
+>    and document why ports are kept empty.
+> 
+> v10: https://lore.kernel.org/all/20230927121157.278592-1-j-choudhary@ti.com/
+> 
 
-  ovl: fix NULL pointer defer when encoding non-decodable lower fid (2023-10-03 09:24:11 +0300)
 
-----------------------------------------------------------------
-overlayfs fixes for 6.6-rc5:
+[...]
 
-- Fix for file reference leak regression from v6.6-rc2
-
-- Fix for NULL pointer deref regression from v6.6-rc1
-
-- Fixes for RCU-walk race regressions from v6.5:
-
-   Two of the fixes were taken from Al's RCU pathwalk race fixes series
-   with his concent [1].
-
-   Note that unlike most of Al's series, these two patches are not about
-   racing with ->kill_sb() and they are also very recent regressions from
-   v6.5, so I think it's worth getting them into v6.5.y.
-
-   There is also a fix for an RCU pathwalk race with ->kill_sb(), which
-   may have been solved in vfs generic code as you suggested, but it also
-   rids overlayfs from a nasty hack, so I think it's worth anyway.
-
-[1] https://lore.kernel.org/linux-fsdevel/20231003204749.GA800259@ZenIV/
-
-----------------------------------------------------------------
-Al Viro (2):
-      ovl: move freeing ovl_entry past rcu delay
-      ovl: fetch inode once in ovl_dentry_revalidate_common()
-
-Amir Goldstein (3):
-      ovl: fix file reference leak when submitting aio
-      ovl: make use of ->layers safe in rcu pathwalk
-      ovl: fix NULL pointer defer when encoding non-decodable lower fid
-
- fs/overlayfs/export.c    |  2 +-
- fs/overlayfs/file.c      |  2 --
- fs/overlayfs/ovl_entry.h | 10 +---------
- fs/overlayfs/params.c    | 17 +++++++++--------
- fs/overlayfs/super.c     | 27 +++++++++++++++++----------
- 5 files changed, 28 insertions(+), 30 deletions(-)
+> 
+> Dasnavis Sabiya (1):
+>    arm64: dts: ti: k3-am69-sk: Add DP and HDMI support
+> 
+> Rahul T R (2):
+>    arm64: dts: ti: k3-j784s4-main: Add DSS and DP-bridge node
+>    arm64: dts: ti: k3-j784s4-evm: Enable DisplayPort-0
+> 
+> Siddharth Vadapalli (2):
+>    arm64: dts: ti: k3-j784s4-main: Add system controller and SERDES lane
+>      mux
+>    arm64: dts: ti: k3-j784s4-main: Add WIZ and SERDES PHY nodes
+> 
+>   arch/arm64/boot/dts/ti/k3-am69-sk.dts      | 229 +++++++++++++++++
+>   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts   | 119 +++++++++
+>   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 276 +++++++++++++++++++++
+>   3 files changed, 624 insertions(+)
+> 
