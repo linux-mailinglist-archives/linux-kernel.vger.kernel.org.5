@@ -2,208 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 584CF7BA2A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A877B9F3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbjJEPpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
+        id S233166AbjJEOUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232943AbjJEPox (ORCPT
+        with ESMTP id S232358AbjJEORx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:44:53 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125ED8A78
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 01:33:42 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-27763c2c22eso475859a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 01:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1696494821; x=1697099621; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IDS4naPGQ1FxN0B/REXVrwAINqUy2DgeZ+fVL1m8k2o=;
-        b=cggttsFnCUTsEuuVbgzK+zamBA1LzeVLHMiEb72fq23GDIE0OljuPjI482iFp5EeQi
-         mSQ7eVtYZJ6gEeQiUZkooJIxnZXxLkW678/ML/LRcX8Nq3nz08Wi3zrMEN1s5Dwve1Rv
-         MGQv8OJl5WTI0dHofRtRVDUypQL0jIeS0B2fwUbRapfWEvecf6PGF0ChW1tXc7o67Zoj
-         sfW76H6k1Fnl5CHHHTnYvhroPNXdBy4jrdi+kodafLXLtqum31/jacy3rajaw2q6M//A
-         MAHc8cZ4/DSnR2pZOWuaKhG7xDSlLfSYY28SVAtOGqkoSY934xZpOI5r5N8jXL2e8aWV
-         eudA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696494821; x=1697099621;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IDS4naPGQ1FxN0B/REXVrwAINqUy2DgeZ+fVL1m8k2o=;
-        b=NIZu77jX0ilNDAISgeI/2A74tCR7s5EN/ObBtLwBudm5sL3mIVvI92JdlVJQiBNkMd
-         dAvLIy9w6jfLlt8SYubpzWEZA+GnZQkXujkZ3PXcpe/zDTgaD000MD4PT21twLnLKbkV
-         4AMaGIGnbDxJh4JvBY2A2eDYd8goaWeVUX2Bi86RlkDLNK623YtPQuf36iV6+Uqsjyp/
-         HNwxInNPG1HJBOx81L6H+H+DP03NRExFVAkGQckFJqtcWUkMgJWRay8cLumXo3arsp0j
-         RlpN7nJWgg4eP6qaUQg+TPMbW9cPfKOIbVSPYVAhaPceyw66PFfdycESKT9AIaabKf+X
-         KC1g==
-X-Gm-Message-State: AOJu0Ywf+b396fnkelgF2/ObSQ/xu3hRzRIci6WzCWc+rVzVSQAlAzkW
-        uqFp2el5fxeubZVJ6p4RdQd6HIV1e4oKmHRNoeP5lg==
-X-Google-Smtp-Source: AGHT+IH1X4tBIPMw8ecrWuT9gzqCc759cmkKO3BNU5kAKKqTKdTUxzIapzwh0wnQYYQpGr7uXwzXo6pgqqRJv96DJmg=
-X-Received: by 2002:a17:90b:1056:b0:274:67d0:f57 with SMTP id
- gq22-20020a17090b105600b0027467d00f57mr3666854pjb.48.1696494821447; Thu, 05
- Oct 2023 01:33:41 -0700 (PDT)
+        Thu, 5 Oct 2023 10:17:53 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5B19003;
+        Thu,  5 Oct 2023 01:36:08 -0700 (PDT)
+Date:   Thu, 05 Oct 2023 08:36:03 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696494964;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ooaRt6cPAJOEWZihUCK19vSVmC89ZgrQXgZH5+YgVmQ=;
+        b=30URau9nD9DRgr/eTus/cduE+vwu3JLLp/Rerq1dDn3yar14kx82uDrQlcN5qD5bIF9NBh
+        r+jin1kgVrp8Sjd/7WgHUzdfUpYlQ5K3Zdg2esI9fHKullgPFzUI1tLNAXzuG1+ZWWOrT1
+        6k+UskT63zP+aUnpJUch5hua7VISRwytAMbkleV9zVoslyJZtxEM9BGO/z7VTdJ/yQLaFG
+        Ihc/dgyIbKJp7EPlDVsts+nCqaVd9bYffXYYzoWq5ygECGHz83rrr/AmbhCDjy7wu4cDvg
+        Wrz31Qmsm4pgprlfisO5Ic6oFGjaw2FKq6qacP6w3cxtCo3e0DFd3nrX+B3Kog==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696494964;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ooaRt6cPAJOEWZihUCK19vSVmC89ZgrQXgZH5+YgVmQ=;
+        b=idzLrwU6B6tL0+Cy9XTdGcVN8bSN9hQuaMNz4/d7H75I9k0+4Zzi5yEwqVqcdbgkNQ5ia/
+        QHNPj3wNz62HvgCw==
+From:   "tip-bot2 for Xiu Jianfeng" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/core: Rename perf_proc_update_handler() ->
+ perf_event_max_sample_rate_handler(), for readability
+Cc:     Xiu Jianfeng <xiujianfeng@huawei.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230721090607.172002-1-xiujianfeng@huawei.com>
+References: <20230721090607.172002-1-xiujianfeng@huawei.com>
 MIME-Version: 1.0
-References: <20230922093117.3030977-2-naresh.solanki@9elements.com> <8ec35702-54a7-ad6e-99c5-7ed49667c94b@axentia.se>
-In-Reply-To: <8ec35702-54a7-ad6e-99c5-7ed49667c94b@axentia.se>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Thu, 5 Oct 2023 14:03:30 +0530
-Message-ID: <CABqG17h2PMunuyeiEPbY4Z6QMZFAmwna2t3AGn5c8YztkzSvNg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v3 2/2] i2c: muxes: pca954x: Enable features on MAX7357/MAX7358
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Message-ID: <169649496396.3135.9256203796815906807.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+The following commit has been merged into the perf/core branch of tip:
 
-On Fri, 22 Sept 2023 at 16:02, Peter Rosin <peda@axentia.se> wrote:
->
-> Hi!
->
-> Sorry for being unresponsive...
->
-> The subject, description and the bindings patch talk about MAX7358, but
-> since it not actually handled it is misleading for the subject to say
-> that features are enabled on MAX7358.
-Yes will remove reference to max7358.
->
-> 2023-09-22 at 11:31, Naresh Solanki wrote:
-> > From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> >
-> > Detect that max7357 is being used and run custom init sequence.
-> > Enable additional features based on DT settings and unconditionally
-> > release the shared interrupt pin after 1.6 seconds and allow to use
-> > it as reset.
-> >
-> > These features aren't enabled by default & its up to board designer
-> > to enable the same as it may have unexpected side effects.
-> >
-> > These should be validated for proper functioning & detection of devices
-> > in secondary bus as sometimes it can cause secondary bus being disabled.
-> >
-> > The init sequence is not run for max7358 that needs to be unlocked
-> > first, but that would need the unimplemented function
-> > i2c_probe_func_quick_write().
->
-> Is that correct? If that is all that missing, why is it not sufficient to
-> open-code it instead?
->
->         i2c_smbus_xfer(client->adapter, client->addr, client->flags,
->                        I2C_SMBUS_WRITE, 0, I2C_SMBUS_QUICK, NULL);
-will drop max7358 for now in this patch series.
->
-> >
-> > Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> > ---
-> > Changes in V3:
-> > - Delete unused #define
-> > - Update pca954x_init
-> > - Update commit message
-> >
-> > Changes in V2:
-> > - Update comments
-> > - Update check for DT properties
-> > ---
-> >  drivers/i2c/muxes/i2c-mux-pca954x.c | 38 ++++++++++++++++++++++++++++-
-> >  1 file changed, 37 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
-> > index 2219062104fb..91c7c1d13c89 100644
-> > --- a/drivers/i2c/muxes/i2c-mux-pca954x.c
-> > +++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
-> > @@ -57,6 +57,20 @@
-> >
-> >  #define PCA954X_IRQ_OFFSET 4
-> >
-> > +/*
-> > + * MAX7357's configuration register is writeable after POR, but
-> > + * can be locked by setting the basic mode bit. MAX7358 configuration
-> > + * register is locked by default and needs to be unlocked first.
-> > + * The configuration register holds the following settings:
-> > + */
-> > +#define MAX7357_CONF_INT_ENABLE                      BIT(0)
->
-> This define isn't used.
-Its indirectly used for default POR config. Will use it there.
->
-> > +#define MAX7357_CONF_FLUSH_OUT                       BIT(1)
-> > +#define MAX7357_CONF_RELEASE_INT             BIT(2)
-> > +#define MAX7357_CONF_DISCON_SINGLE_CHAN              BIT(4)
-> > +#define MAX7357_CONF_PRECONNECT_TEST         BIT(7)
-> > +
-> > +#define MAX7357_POR_DEFAULT_CONF             BIT(0)
-> > +
-> >  enum pca_type {
-> >       max_7356,
-> >       max_7357,
-> > @@ -463,6 +477,7 @@ static void pca954x_cleanup(struct i2c_mux_core *muxc)
-> >
-> >  static int pca954x_init(struct i2c_client *client, struct pca954x *data)
-> >  {
-> > +     u8 conf = MAX7357_POR_DEFAULT_CONF;
->
-> This line can be moved inside the block below handling max7357. The POR
-> default conf is not the same for max7358 anyway.
-Sure.
->
-> >       int ret;
-> >
-> >       if (data->idle_state >= 0)
-> > @@ -470,7 +485,28 @@ static int pca954x_init(struct i2c_client *client, struct pca954x *data)
-> >       else
-> >               data->last_chan = 0; /* Disconnect multiplexer */
-> >
-> > -     ret = i2c_smbus_write_byte(client, data->last_chan);
-> > +     if (device_is_compatible(&client->dev, "maxim,max7357") &&
-> > +         i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_WRITE_BYTE_DATA)) {
->
-> I would have liked a message that any requested extra features cannot
-> be enabled if the chip happens to be connected to a bus not capable of
-> ...write_byte_data(). That might be plenty helpful for anybody who
-> happens to find themself in that hole...
-Sure will add that.
->
-> > +             /*
-> > +              * The interrupt signal is shared with the reset pin. Release the
-> > +              * interrupt after 1.6 seconds to allow using the pin as reset.
-> > +              * The interrupt isn't serviced yet.
-> > +              */
-> > +             conf |= MAX7357_CONF_RELEASE_INT;
-> > +
-> > +             if (device_property_read_bool(&client->dev, "maxim,isolate-stuck-channel"))
-> > +                     conf |= MAX7357_CONF_DISCON_SINGLE_CHAN;
-> > +             if (device_property_read_bool(&client->dev, "maxim,send-flush-out-sequence"))
-> > +                     conf |= MAX7357_CONF_FLUSH_OUT;
-> > +             if (device_property_read_bool(&client->dev,
-> > +                                           "maxim,preconnection-wiggle-test-enable"))
-> > +                     conf |= MAX7357_CONF_PRECONNECT_TEST;
-> > +
-> > +             ret = i2c_smbus_write_byte_data(client, data->last_chan, conf);
-> > +     } else {
-> > +             ret = i2c_smbus_write_byte(client, data->last_chan);
-> > +     }
-> > +
-> >       if (ret < 0)
-> >               data->last_chan = 0;
-> >
->
-> Would there be any point in configuring max7357 to be in basic mode?
-If the above features arent needed then basic mode will serve the purpose.
+Commit-ID:     e6814ec3ba1994561db9b1c05a80227d30cc18fa
+Gitweb:        https://git.kernel.org/tip/e6814ec3ba1994561db9b1c05a80227d30cc18fa
+Author:        Xiu Jianfeng <xiujianfeng@huawei.com>
+AuthorDate:    Fri, 21 Jul 2023 09:06:07 
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 05 Oct 2023 10:26:50 +02:00
 
->
-> Cheers,
-> Peter
+perf/core: Rename perf_proc_update_handler() -> perf_event_max_sample_rate_handler(), for readability
+
+Follow the naming pattern of the other sysctl handlers in perf.
+
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20230721090607.172002-1-xiujianfeng@huawei.com
+---
+ include/linux/perf_event.h | 2 +-
+ kernel/events/core.c       | 4 ++--
+ kernel/sysctl.c            | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index e85cd1c..f31f962 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1573,7 +1573,7 @@ extern int sysctl_perf_cpu_time_max_percent;
+ 
+ extern void perf_sample_event_took(u64 sample_len_ns);
+ 
+-int perf_proc_update_handler(struct ctl_table *table, int write,
++int perf_event_max_sample_rate_handler(struct ctl_table *table, int write,
+ 		void *buffer, size_t *lenp, loff_t *ppos);
+ int perf_cpu_time_max_percent_handler(struct ctl_table *table, int write,
+ 		void *buffer, size_t *lenp, loff_t *ppos);
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 4c72a41..af56919 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -449,8 +449,8 @@ static void update_perf_cpu_limits(void)
+ 
+ static bool perf_rotate_context(struct perf_cpu_pmu_context *cpc);
+ 
+-int perf_proc_update_handler(struct ctl_table *table, int write,
+-		void *buffer, size_t *lenp, loff_t *ppos)
++int perf_event_max_sample_rate_handler(struct ctl_table *table, int write,
++				       void *buffer, size_t *lenp, loff_t *ppos)
+ {
+ 	int ret;
+ 	int perf_cpu = sysctl_perf_cpu_time_max_percent;
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 354a2d2..2b65857 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -1983,7 +1983,7 @@ static struct ctl_table kern_table[] = {
+ 		.data		= &sysctl_perf_event_sample_rate,
+ 		.maxlen		= sizeof(sysctl_perf_event_sample_rate),
+ 		.mode		= 0644,
+-		.proc_handler	= perf_proc_update_handler,
++		.proc_handler	= perf_event_max_sample_rate_handler,
+ 		.extra1		= SYSCTL_ONE,
+ 	},
+ 	{
