@@ -2,124 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D97A7BA51A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCC57BA51D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241190AbjJEQNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
+        id S241294AbjJEQN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240390AbjJEQMT (ORCPT
+        with ESMTP id S240952AbjJEQMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Oct 2023 12:12:19 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CFC24E90
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 04:27:29 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-533f193fc8dso1432070a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 04:27:29 -0700 (PDT)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B4F24EAA;
+        Thu,  5 Oct 2023 04:36:42 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50573e85ee0so1077011e87.3;
+        Thu, 05 Oct 2023 04:36:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696505248; x=1697110048; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v36wx9Pk64n53fIg/6A0WMF6jR/YhJkuHYrw/KUTl6k=;
-        b=Kf/dZ1QtITz+yuoa0l3mL33bdwPG9sRU4elNZqn8RvRYVxR07Qm5ok22B13lGigzuj
-         wfEMd8iTVnLrObpOcaVlRe5hNq8xt0nRD8tUUri9LP6cxMKrjMzGvXyfjsmWPT/kcInj
-         qVhlisVdUqupM6nnOypCP4OPMR1Hf6/arv/KiP22ETmR+bd8ZUzIR1+Csjm2Z3odib4H
-         mtmmqY1N1xB54LoGoz888V0VEKmxQmRjbEXdjL1tG6y2W++MutTVrOeC6hkw7oBS0gjT
-         /T6QtCXW5ioAQffN8+/n6XJ6Hq3PZZL/nLJ1N0n3RdnpZONepJQ8Pji6TSDKFocq7NkD
-         ppAw==
+        d=gmail.com; s=20230601; t=1696505800; x=1697110600; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qBUY5sKoG8544w0xkR7tsGcBR4jBl32mFG7ayB2c9ik=;
+        b=dWYWNFG09+EQIyCVhcvEX5KLLOduNOdHONjazySQ2aL+R/OZ+3jk5zYXsrDB88Mzaq
+         Me12/sBNOUU5tnTHasE8sjWl8iEx38PHgtj2HyVxuBBPXjRmO4LmIbG2R4Z1VLQ3oVtk
+         azOeScxd0FLxbCalvLOLWhE3nKtAMCcfss00XIER49szgKA9p8+Rhv/zfXaoEcbm5aCN
+         Xqp4jNwEaGMPqRIEZWU5nwg9ASJn0aSFfCMlw123UMJnAVqQpa0nz8/xhgPyv6oUcSCd
+         /+sZByoPcdy/zgoHT4knTu/P/b80E1pe56MXQMsAyk/jvQvz/K7emmv6a0iTJ4CuIrUs
+         156A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696505248; x=1697110048;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v36wx9Pk64n53fIg/6A0WMF6jR/YhJkuHYrw/KUTl6k=;
-        b=b9rEQLT2ftDEO01Vb5DMIGXzwht7vRUbgkzaby/Vlpx31kZh+iqGIPLlTCOtL6T3la
-         91azviJjiURMyYbPFzJHxgyaOs+hZzpCy2PAT5y0TzyD8kteo+CpZzJkaOmGDr68uZAH
-         zWdCwa3TAvxj16omRRX8apuB2aTlTy5T4pW2ahGTa0TyWYqj3hR9cefi/GZHXYK5MTTN
-         M8usHi8HVssM/9OGwfvtMyJ8PUOv94ObFNHYoiWRALwCua4rpl8dovhlO0zAOQTCPKZO
-         xlpVwC34Lv5cWSFd7W7Wz33xZfGXbP2Fd+gaxbcVZ+yDUzP0pnVKizefOp6pNqen0tmw
-         qsGQ==
-X-Gm-Message-State: AOJu0YxUaCZpWQ+gOQgRQj/52wd8g2B/ch2eLH3LlNA7Z6A4ZTW517PG
-        tgD7GEIcThWOcU04a6vB+y5eKg==
-X-Google-Smtp-Source: AGHT+IH5sTt0UC8bfVW5JJhNwhjYB38ckB3QAE2oyGcpN6Y52pD844+c/uZe7G0bj2x75kqsUvspCg==
-X-Received: by 2002:a05:6402:4025:b0:531:1f3b:cb36 with SMTP id d37-20020a056402402500b005311f3bcb36mr5316270eda.9.1696505247836;
-        Thu, 05 Oct 2023 04:27:27 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id w24-20020a50fa98000000b00532bec5f768sm915596edr.95.2023.10.05.04.27.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 04:27:27 -0700 (PDT)
-Message-ID: <aa7aab2b-6e9a-4055-b9c7-9edc27556bd7@linaro.org>
-Date:   Thu, 5 Oct 2023 13:27:25 +0200
+        d=1e100.net; s=20230601; t=1696505800; x=1697110600;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qBUY5sKoG8544w0xkR7tsGcBR4jBl32mFG7ayB2c9ik=;
+        b=aZ/1NeeWzeZEfBVz5RJv6VFvMKsY2314MqUhAYYhAUmEEsHuCkizhkTZV4oGSqysCm
+         2tJp2JijqxzcwO3DQOsQS5IuzZfUI5si8cooyZLA2gcB0SbJgTIAUtPkWLoM59cM7ImV
+         Fi1OrCAsz9bfcoGL7qyuC391B5r/hSX1bwZRB3O1GZB4fI0DlwpV4ZLFznrcDpFaKY9K
+         9uYqihwMcYMM6us4O/HrwlARuXhR/EhZFZaHryYroGtJOlDCPXpF6rjYDt+e//Tdd+HR
+         9iER4lFXjI5FWA4Hpa7NPqu6wQVqjZmlZJfo5PCtyewaNRIoz9A0LT4Q1IxHIkhex/PI
+         aWIQ==
+X-Gm-Message-State: AOJu0Ywr29dUlUyC1CGpJEPCkKNSXPE2j0gaqmVdHsliBSlIC3ixHkxY
+        EuHbTX8zv52x+dwO3MSlb/PR1QPVeohDUQ3/
+X-Google-Smtp-Source: AGHT+IH0kMz3sZo2ZfDCA48VQyxur5aWbWuEwihKendW4HaaYWNDoGqnkckdyklkcQgK2ZBFX2k6ZA==
+X-Received: by 2002:a05:6512:282:b0:502:cc8d:f20a with SMTP id j2-20020a056512028200b00502cc8df20amr4904793lfp.27.1696505800023;
+        Thu, 05 Oct 2023 04:36:40 -0700 (PDT)
+Received: from skhimich.dev.yadro.com ([185.15.172.210])
+        by smtp.gmail.com with ESMTPSA id n18-20020a195512000000b004fe1bc7e4acsm260720lfe.131.2023.10.05.04.36.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 04:36:39 -0700 (PDT)
+From:   Sergey Khimich <serghox@gmail.com>
+To:     linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Cc:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: [PATCH] dmaengine: dw-axi-dmac: Add support DMAX_NUM_CHANNELS > 16
+Date:   Thu,  5 Oct 2023 14:36:38 +0300
+Message-Id: <20231005113638.2039726-1-serghox@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] dt-bindings: usb: ci-hdrc-usb2: add npcm750 and
- npcm845 compatible
-Content-Language: en-US
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     peter.chen@kernel.org, gregkh@linuxfoundation.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        xu.yang_2@nxp.com, peng.fan@nxp.com, avifishman70@gmail.com,
-        tali.perry1@gmail.com, joel@jms.id.au, venture@google.com,
-        yuenn@google.com, benjaminfair@google.com, j.neuschaefer@gmx.net,
-        openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20231003110130.229711-1-tmaimon77@gmail.com>
- <20231003110130.229711-3-tmaimon77@gmail.com>
- <25e8c953-8bf1-4107-9531-263d68c41128@linaro.org>
- <CAP6Zq1gwbYfE4xg0-TCC+Wfoo_1omdsWukupJqpZekMem0xeMA@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAP6Zq1gwbYfE4xg0-TCC+Wfoo_1omdsWukupJqpZekMem0xeMA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -127,44 +70,245 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2023 12:46, Tomer Maimon wrote:
-> Hi Krzysztof,
-> 
-> Thanks for your comment
-> 
-> On Wed, 4 Oct 2023 at 11:03, Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 03/10/2023 13:01, Tomer Maimon wrote:
->>> Add a compatible string for Nuvoton BMC NPCM750 and Nuvoton BMC NPCM845.
->>>
->>> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
->>> ---
->>>  Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml | 4 ++++
->>>  1 file changed, 4 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
->>> index 1394557517b1..a9e173432002 100644
->>> --- a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
->>> +++ b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
->>> @@ -16,6 +16,8 @@ properties:
->>>        - enum:
->>>            - chipidea,usb2
->>>            - lsi,zevio-usb
->>> +          - nuvoton,npcm750-udc
->>> +          - nuvoton,npcm845-udc
->>
->> Your driver clearly suggests these are compatible. If they are not, why
->> commit msg does no explain anything here?
-> Do you mean to add nuvoton,npcmxxx-udc as described below to the end
-> of the compatible property?
->       - items:
->           - enum:
->               - nuvoton,npcm845-udc
->           - const: nuvoton,npcm750-udc
+From: Sergey Khimich <serghox@gmail.com>
 
-For the 845 yes. Of course you also need enum entry for 750.
+Added support for DMA controller with more than 16 channels.
 
-Best regards,
-Krzysztof
+Signed-off-by: Sergey Khimich <serghox@gmail.com>
+---
+ .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 156 +++++++++++++-----
+ drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |   6 +-
+ 2 files changed, 120 insertions(+), 42 deletions(-)
+
+diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+index dd02f84e404d..984e953046c4 100644
+--- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
++++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+@@ -62,6 +62,17 @@ static inline u32 axi_dma_ioread32(struct axi_dma_chip *chip, u32 reg)
+ 	return ioread32(chip->regs + reg);
+ }
+ 
++static inline void
++axi_dma_iowrite64(struct axi_dma_chip *chip, u32 reg, u64 val)
++{
++	iowrite64(val, chip->regs + reg);
++}
++
++static inline u64 axi_dma_ioread64(struct axi_dma_chip *chip, u32 reg)
++{
++	return ioread64(chip->regs + reg);
++}
++
+ static inline void
+ axi_chan_iowrite32(struct axi_dma_chan *chan, u32 reg, u32 val)
+ {
+@@ -182,38 +193,73 @@ static inline u32 axi_chan_irq_read(struct axi_dma_chan *chan)
+ 
+ static inline void axi_chan_disable(struct axi_dma_chan *chan)
+ {
+-	u32 val;
+-
+-	val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
+-	val &= ~(BIT(chan->id) << DMAC_CHAN_EN_SHIFT);
+-	if (chan->chip->dw->hdata->reg_map_8_channels)
+-		val |=   BIT(chan->id) << DMAC_CHAN_EN_WE_SHIFT;
+-	else
+-		val |=   BIT(chan->id) << DMAC_CHAN_EN2_WE_SHIFT;
+-	axi_dma_iowrite32(chan->chip, DMAC_CHEN, val);
++	u64 val;
++
++	if (chan->chip->dw->hdata->nr_channels >= DMAC_CHAN_16) {
++		val = axi_dma_ioread64(chan->chip, DMAC_CHEN);
++		if (chan->id >= DMAC_CHAN_16) {
++			val &= ~((BIT(chan->id) >> DMAC_CHAN_16)
++				<< (DMAC_CHAN_EN_SHIFT + DMAC_CHAN_BLOCK_SHIFT));
++			val |=   (BIT(chan->id) >> DMAC_CHAN_16)
++				<< (DMAC_CHAN_EN2_WE_SHIFT + DMAC_CHAN_BLOCK_SHIFT);
++		} else {
++			val &= ~(BIT(chan->id) << DMAC_CHAN_EN_SHIFT);
++			val |=   BIT(chan->id) << DMAC_CHAN_EN2_WE_SHIFT;
++		}
++		axi_dma_iowrite64(chan->chip, DMAC_CHEN, val);
++	} else {
++		val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
++		val &= ~(BIT(chan->id) << DMAC_CHAN_EN_SHIFT);
++		if (chan->chip->dw->hdata->reg_map_8_channels)
++			val |=   BIT(chan->id) << DMAC_CHAN_EN_WE_SHIFT;
++		else
++			val |=   BIT(chan->id) << DMAC_CHAN_EN2_WE_SHIFT;
++		axi_dma_iowrite32(chan->chip, DMAC_CHEN, (u32)val);
++	}
+ }
+ 
+ static inline void axi_chan_enable(struct axi_dma_chan *chan)
+ {
+-	u32 val;
+-
+-	val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
+-	if (chan->chip->dw->hdata->reg_map_8_channels)
+-		val |= BIT(chan->id) << DMAC_CHAN_EN_SHIFT |
+-			BIT(chan->id) << DMAC_CHAN_EN_WE_SHIFT;
+-	else
+-		val |= BIT(chan->id) << DMAC_CHAN_EN_SHIFT |
++	u64 val;
++
++	if (chan->chip->dw->hdata->nr_channels >= DMAC_CHAN_16) {
++		val = axi_dma_ioread64(chan->chip, DMAC_CHEN);
++		if (chan->id >= DMAC_CHAN_16) {
++			val |= (BIT(chan->id) >> DMAC_CHAN_16)
++				<< (DMAC_CHAN_EN_SHIFT + DMAC_CHAN_BLOCK_SHIFT) |
++				(BIT(chan->id) >> DMAC_CHAN_16)
++				<< (DMAC_CHAN_EN2_WE_SHIFT + DMAC_CHAN_BLOCK_SHIFT);
++		} else {
++			val |= BIT(chan->id) << DMAC_CHAN_EN_SHIFT |
+ 			BIT(chan->id) << DMAC_CHAN_EN2_WE_SHIFT;
+-	axi_dma_iowrite32(chan->chip, DMAC_CHEN, val);
++		}
++		axi_dma_iowrite64(chan->chip, DMAC_CHEN, val);
++	} else {
++		val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
++		if (chan->chip->dw->hdata->reg_map_8_channels) {
++			val |= BIT(chan->id) << DMAC_CHAN_EN_SHIFT |
++			BIT(chan->id) << DMAC_CHAN_EN_WE_SHIFT;
++		} else {
++			val |= BIT(chan->id) << DMAC_CHAN_EN_SHIFT |
++				BIT(chan->id) << DMAC_CHAN_EN2_WE_SHIFT;
++		}
++		axi_dma_iowrite32(chan->chip, DMAC_CHEN, (u32)val);
++	}
+ }
+ 
+ static inline bool axi_chan_is_hw_enable(struct axi_dma_chan *chan)
+ {
+-	u32 val;
++	u64 val;
+ 
+-	val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
++	if (chan->chip->dw->hdata->nr_channels >= DMAC_CHAN_16)
++		val = axi_dma_ioread64(chan->chip, DMAC_CHEN);
++	else
++		val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
+ 
+-	return !!(val & (BIT(chan->id) << DMAC_CHAN_EN_SHIFT));
++	if (chan->id >= DMAC_CHAN_16)
++		return !!(val & ((BIT(chan->id) >> DMAC_CHAN_16) << DMAC_CHAN_BLOCK_SHIFT));
++	else
++		return !!(val & (BIT(chan->id) << DMAC_CHAN_EN_SHIFT));
+ }
+ 
+ static void axi_dma_hw_init(struct axi_dma_chip *chip)
+@@ -1175,20 +1221,34 @@ static int dma_chan_pause(struct dma_chan *dchan)
+ 	struct axi_dma_chan *chan = dchan_to_axi_dma_chan(dchan);
+ 	unsigned long flags;
+ 	unsigned int timeout = 20; /* timeout iterations */
+-	u32 val;
++	u64 val;
+ 
+ 	spin_lock_irqsave(&chan->vc.lock, flags);
+ 
+-	if (chan->chip->dw->hdata->reg_map_8_channels) {
+-		val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
+-		val |= BIT(chan->id) << DMAC_CHAN_SUSP_SHIFT |
+-			BIT(chan->id) << DMAC_CHAN_SUSP_WE_SHIFT;
+-		axi_dma_iowrite32(chan->chip, DMAC_CHEN, val);
++	if (chan->chip->dw->hdata->nr_channels >= DMAC_CHAN_16) {
++		val = axi_dma_ioread64(chan->chip, DMAC_CHSUSPREG);
++		if (chan->id >= DMAC_CHAN_16) {
++			val |= (BIT(chan->id) >> DMAC_CHAN_16)
++				<< (DMAC_CHAN_SUSP2_SHIFT + DMAC_CHAN_BLOCK_SHIFT) |
++				(BIT(chan->id) >> DMAC_CHAN_16)
++				<< (DMAC_CHAN_SUSP2_WE_SHIFT + DMAC_CHAN_BLOCK_SHIFT);
++		} else {
++			val |= BIT(chan->id) << DMAC_CHAN_SUSP2_SHIFT |
++			       BIT(chan->id) << DMAC_CHAN_SUSP2_WE_SHIFT;
++			}
++			axi_dma_iowrite64(chan->chip, DMAC_CHSUSPREG, val);
+ 	} else {
+-		val = axi_dma_ioread32(chan->chip, DMAC_CHSUSPREG);
+-		val |= BIT(chan->id) << DMAC_CHAN_SUSP2_SHIFT |
++		if (chan->chip->dw->hdata->reg_map_8_channels) {
++			val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
++			val |= BIT(chan->id) << DMAC_CHAN_SUSP_SHIFT |
++			BIT(chan->id) << DMAC_CHAN_SUSP_WE_SHIFT;
++			axi_dma_iowrite32(chan->chip, DMAC_CHEN, (u32)val);
++		} else {
++			val = axi_dma_ioread32(chan->chip, DMAC_CHSUSPREG);
++			val |= BIT(chan->id) << DMAC_CHAN_SUSP2_SHIFT |
+ 			BIT(chan->id) << DMAC_CHAN_SUSP2_WE_SHIFT;
+-		axi_dma_iowrite32(chan->chip, DMAC_CHSUSPREG, val);
++			axi_dma_iowrite32(chan->chip, DMAC_CHSUSPREG, (u32)val);
++		}
+ 	}
+ 
+ 	do  {
+@@ -1210,18 +1270,32 @@ static int dma_chan_pause(struct dma_chan *dchan)
+ /* Called in chan locked context */
+ static inline void axi_chan_resume(struct axi_dma_chan *chan)
+ {
+-	u32 val;
+-
+-	if (chan->chip->dw->hdata->reg_map_8_channels) {
+-		val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
+-		val &= ~(BIT(chan->id) << DMAC_CHAN_SUSP_SHIFT);
+-		val |=  (BIT(chan->id) << DMAC_CHAN_SUSP_WE_SHIFT);
+-		axi_dma_iowrite32(chan->chip, DMAC_CHEN, val);
++	u64 val;
++
++	if (chan->chip->dw->hdata->nr_channels >= DMAC_CHAN_16) {
++		val = axi_dma_ioread64(chan->chip, DMAC_CHSUSPREG);
++		if (chan->id >= DMAC_CHAN_16) {
++			val &= ~((BIT(chan->id) >> DMAC_CHAN_16)
++				<< (DMAC_CHAN_SUSP2_SHIFT + DMAC_CHAN_BLOCK_SHIFT));
++			val |=  ((BIT(chan->id) >> DMAC_CHAN_16)
++				<< (DMAC_CHAN_SUSP2_WE_SHIFT + DMAC_CHAN_BLOCK_SHIFT));
++		} else {
++			val &= ~(BIT(chan->id) << DMAC_CHAN_SUSP2_SHIFT);
++			val |=  (BIT(chan->id) << DMAC_CHAN_SUSP2_WE_SHIFT);
++		}
++			axi_dma_iowrite64(chan->chip, DMAC_CHSUSPREG, val);
+ 	} else {
+-		val = axi_dma_ioread32(chan->chip, DMAC_CHSUSPREG);
+-		val &= ~(BIT(chan->id) << DMAC_CHAN_SUSP2_SHIFT);
+-		val |=  (BIT(chan->id) << DMAC_CHAN_SUSP2_WE_SHIFT);
+-		axi_dma_iowrite32(chan->chip, DMAC_CHSUSPREG, val);
++		if (chan->chip->dw->hdata->reg_map_8_channels) {
++			val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
++			val &= ~(BIT(chan->id) << DMAC_CHAN_SUSP_SHIFT);
++			val |=  (BIT(chan->id) << DMAC_CHAN_SUSP_WE_SHIFT);
++			axi_dma_iowrite32(chan->chip, DMAC_CHEN, (u32)val);
++		} else {
++			val = axi_dma_ioread32(chan->chip, DMAC_CHSUSPREG);
++			val &= ~(BIT(chan->id) << DMAC_CHAN_SUSP2_SHIFT);
++			val |=  (BIT(chan->id) << DMAC_CHAN_SUSP2_WE_SHIFT);
++			axi_dma_iowrite32(chan->chip, DMAC_CHSUSPREG, (u32)val);
++		}
+ 	}
+ 
+ 	chan->is_paused = false;
+diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
+index eb267cb24f67..454904d99654 100644
+--- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
++++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
+@@ -18,7 +18,7 @@
+ 
+ #include "../virt-dma.h"
+ 
+-#define DMAC_MAX_CHANNELS	16
++#define DMAC_MAX_CHANNELS	32
+ #define DMAC_MAX_MASTERS	2
+ #define DMAC_MAX_BLK_SIZE	0x200000
+ 
+@@ -222,6 +222,10 @@ static inline struct axi_dma_chan *dchan_to_axi_dma_chan(struct dma_chan *dchan)
+ /* DMAC_CHEN2 */
+ #define DMAC_CHAN_EN2_WE_SHIFT		16
+ 
++/* DMAC CHAN BLOCKS */
++#define DMAC_CHAN_BLOCK_SHIFT		32
++#define DMAC_CHAN_16			16
++
+ /* DMAC_CHSUSP */
+ #define DMAC_CHAN_SUSP2_SHIFT		0
+ #define DMAC_CHAN_SUSP2_WE_SHIFT	16
+-- 
+2.30.2
 
