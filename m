@@ -2,132 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 250AE7B9E22
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BB47B9E27
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbjJEN7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 09:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
+        id S232213AbjJEN5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 09:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232244AbjJEN5g (ORCPT
+        with ESMTP id S243891AbjJENze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 09:57:36 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3078810CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 20:07:57 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c0ecb9a075so3273055ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 20:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696475276; x=1697080076; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1cbMRa4tTE64i0xTO+5SXlx3zeeEFmOFwZHGXQ8yJGw=;
-        b=bGDwxiojuvXT33COYRAVZF1Af+0zxG4LkA/AI+q5445O0YhxxZPpwflNd4c2Ddk/Cr
-         FpwfeExAPEZQII2KRUV1/1VJt8pXDzu/YrkAjZ6x8/OQZuB5LdOP7QFoEqEpiNZxXLOP
-         F1C4n0HJ1eVwC+Ge2MBKhl1NTh4Mmu17U+NjU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696475276; x=1697080076;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1cbMRa4tTE64i0xTO+5SXlx3zeeEFmOFwZHGXQ8yJGw=;
-        b=rGBJrS2je0E4dYJ9RVl/yoXccLkUuJZcOykhRrLe78Ukw1nuymNwdykF10tGoQACgt
-         NTEpDE5sT5D0liZrosek3NAkyB6EmUaUTGd1nWrKe9z6UWEIYqHAAToWJMEjDijrn8Y8
-         Plx3O7GdEpAAu8ByLlPD3s+kMUn/zi6YeQem7GpfAG0xPYWnAGeZUBLDfOZlaWgt2FN7
-         jCMjsuDjU7oROmReI8yRWhfJ4RhPZfZ8vStw4oxEA/qUGIRnUaSVihaXVgNxsezJUmRl
-         CP4vrKYDKfPbjD80dk8I7XJwW0PLM8bc7rpGxyQyd9OvcElC8WE1kDqR/vUypNL+BU5o
-         79pg==
-X-Gm-Message-State: AOJu0YyZg8iMq0xB71iJP2ptFRzyBP+27UcU5fopQuFzu+6F0QoVq2rh
-        1VRIOLWoOEqmB42KSKSOAzm3jLNR32sG4z6mtv0=
-X-Google-Smtp-Source: AGHT+IEHC/NcKdyXD51wauvGPZCWyuKTY3ZFBWWl9ZQ6W0PsxJMcaUSSelo/HFoKp6Dcs1geAWSGGQ==
-X-Received: by 2002:a17:902:c112:b0:1c0:93b6:2e4b with SMTP id 18-20020a170902c11200b001c093b62e4bmr3934009pli.33.1696475276668;
-        Wed, 04 Oct 2023 20:07:56 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id jg4-20020a17090326c400b001bb0eebd90asm324227plb.245.2023.10.04.20.07.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 20:07:56 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 20:07:55 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] net: dsa: lan9303: replace deprecated strncpy with memcpy
-Message-ID: <202310041959.727EB5ED@keescook>
-References: <20231005-strncpy-drivers-net-dsa-lan9303-core-c-v1-1-5a66c538147e@google.com>
+        Thu, 5 Oct 2023 09:55:34 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2659310F0;
+        Wed,  4 Oct 2023 20:15:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696475739;
+        bh=IWIDGeHwZTv8cvx7Pmxk0dBBOn8mpJiMjXDDssxG/ow=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RJDj9zzUH4AshrVqwOfL9CI7MASDYp59PbK4g3jmoBVL3cY4E5LVW2jbEwBL2ZvIz
+         4r42C4O9KTq/N1SmwuVkPhcW7xo93n2WRpLV3DgB/OW9RQQKBOC7kRGXD/SYcFmYoM
+         17PyO7zyRT58yxBpI2m9T7Ig0Z4+vn7TaimxOdNUQc0oIkQ8vSKm/1EeAPJgxI+GA2
+         pA9KY5cYw9SrqBS2D0P4ByIMFzhMmMLtD2oNgBz1lBwX+3R8NIA8YPfp0No8nHZQi9
+         3krToV9S+vIat6myBX6+xqUQcAQ7Rgc1ZrasdKH43UdUNH0+t9aAZlyiLjMwMpJ0Gw
+         8VYEjouxc0o+A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S1GsR3xkpz4xQ1;
+        Thu,  5 Oct 2023 14:15:39 +1100 (AEDT)
+Date:   Thu, 5 Oct 2023 14:15:36 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+Cc:     Roger Quadros <rogerq@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the ti tree
+Message-ID: <20231005141536.77538147@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005-strncpy-drivers-net-dsa-lan9303-core-c-v1-1-5a66c538147e@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/HurukrJ=5I1ls3v3XEBFOHe";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 12:30:18AM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous
-> interfaces.
-> 
-> Let's opt for memcpy as we are copying strings into slices of length
-> `ETH_GSTRING_LEN` within the `data` buffer. Other similar get_strings()
-> implementations [2] [3] use memcpy().
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://elixir.bootlin.com/linux/v6.3/source/drivers/infiniband/ulp/opa_vnic/opa_vnic_ethtool.c#L167 [2]
-> Link: https://elixir.bootlin.com/linux/v6.3/source/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c#L137 [3]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> ---
->  drivers/net/dsa/lan9303-core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/lan9303-core.c b/drivers/net/dsa/lan9303-core.c
-> index ee67adeb2cdb..665d69384b62 100644
-> --- a/drivers/net/dsa/lan9303-core.c
-> +++ b/drivers/net/dsa/lan9303-core.c
-> @@ -1013,8 +1013,8 @@ static void lan9303_get_strings(struct dsa_switch *ds, int port,
->  		return;
->  
->  	for (u = 0; u < ARRAY_SIZE(lan9303_mib); u++) {
-> -		strncpy(data + u * ETH_GSTRING_LEN, lan9303_mib[u].name,
-> -			ETH_GSTRING_LEN);
-> +		memcpy(data + u * ETH_GSTRING_LEN, lan9303_mib[u].name,
-> +		       ETH_GSTRING_LEN);
+--Sig_/HurukrJ=5I1ls3v3XEBFOHe
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This won't work because lan9303_mib entries aren't ETH_GSTRING_LEN-long
-strings; they're string pointers:
+Hi all,
 
-static const struct lan9303_mib_desc lan9303_mib[] = {
-        { .offset = LAN9303_MAC_RX_BRDCST_CNT_0, .name = "RxBroad", },
+[I may have missed this yesterday, sorry]
 
-So this really does need a strcpy-family function.
+After merging the ti tree, today's linux-next build (arm64 defconfig)
+produced these warnings:
 
-And, I think the vnic_gstrings_stats and ipoib_gstrings_stats examples
-are actually buggy -- they're copying junk into userspace...
+arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_de=
+fault_addr_size): /fragment@3/__overlay__: Relying on default #address-cell=
+s value
+arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_de=
+fault_addr_size): /fragment@3/__overlay__: Relying on default #size-cells v=
+alue
 
-I am reminded of this patch, which correctly uses strscpy_pad():
-https://lore.kernel.org/lkml/20230718-net-dsa-strncpy-v1-1-e84664747713@google.com/
+Introduced by commit
 
-I think you want to do the same here, and use strscpy_pad(). And perhaps
-send some fixes for the other memcpy() users?
+  45a0c06571e1 ("arm64: dts: ti: am642-evm: Add overlay for NAND expansion =
+card")
 
-(Have I mentioned I really dislike the get_strings() API?)
+--=20
+Cheers,
+Stephen Rothwell
 
--Kees
+--Sig_/HurukrJ=5I1ls3v3XEBFOHe
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
--- 
-Kees Cook
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUeKlgACgkQAVBC80lX
+0GzDFwf/UoKvoSrJ968rfk6pnjh6+h5MqgTO6Mz4Z5XcjqbDAsKzWZOwsqYVq9HL
+Qen3d7yBSDxYWiNLH10S0Ii6FRgWxQgaiAzKDtJRzxUPPDjWTxZL/sskihoHxgDm
+IcVYm/hy7cPHEo/Exp9KSjlvS5OLdHeGe1zLtaf5Xdwokn15qoKvMpI+DBVOSF85
+71j7q5AzBphDtOQZe1GIBZdHaYYzG7gRMYXt5CcydGIqk3vPO4+/tdy1pezCb+L7
+F9Snd9eNbZgbMksZTFXaJ6sjLasWGErTohZrEM1kNCRfEDsVYthtDyyUcQ7INQfS
+eLJIaXTqaZ+HDAQpQT0j9J9H4Nb2zg==
+=hwMs
+-----END PGP SIGNATURE-----
+
+--Sig_/HurukrJ=5I1ls3v3XEBFOHe--
