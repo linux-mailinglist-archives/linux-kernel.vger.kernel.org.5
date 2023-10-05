@@ -2,225 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA53A7B99FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 04:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD817B9A01
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 04:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233655AbjJEClE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Oct 2023 22:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58030 "EHLO
+        id S233580AbjJECm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 22:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjJEClC (ORCPT
+        with ESMTP id S229767AbjJECm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 22:41:02 -0400
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB35C0
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 19:40:59 -0700 (PDT)
-Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay02.hostedemail.com (Postfix) with ESMTP id 585CA120217;
-        Thu,  5 Oct 2023 02:40:58 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 76D2118;
-        Thu,  5 Oct 2023 02:40:56 +0000 (UTC)
-Message-ID: <3dca40b677dd2fef979a5a581a2db91df2c21801.camel@perches.com>
-Subject: Re: [PATCH] get_maintainer/MAINTAINERS: confine K content matching
- to patches
-From:   Joe Perches <joe@perches.com>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 04 Oct 2023 19:40:55 -0700
-In-Reply-To: <20231004-get_maintainer_change_k-v1-1-ac7ced18306a@google.com>
-References: <20231004-get_maintainer_change_k-v1-1-ac7ced18306a@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 4 Oct 2023 22:42:57 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECE3D8
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 19:42:52 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6927528c01dso87170b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 19:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696473772; x=1697078572; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7eSqbR+iPZeaMwWM2FXXaj0hJ0gXvRe4tAkt/tdpAJ8=;
+        b=HJy6plJvZkzF3vyKNrGDIoy5CXbw0aazAxmWwcgxAF8y3PR/8/E1MTvm3+gNtdNutz
+         uemJchpD6FD793IcOAbof1SaeDj+gog0L1dpIxzgQweJup2JTg6URi9lGbNPknN5fC+t
+         DrNX38PXkJPhwd6BIztdV2jj11EJPq19CGJNjrREbJ5feOZaA1nSN8IXJFkLq1iri6AG
+         395o2BcrgRZjUTVGuynx9XzTYl9iw88z6V8wh8Gg0d/WmJo1mJozccLRxk6JKpQoyLmc
+         4ZDLcrtaxAP6Sz1/ASN6Rz3SOpp5BLc/kUCHKIw4RsaNDxxThZYkaEQrpnnAcs7WTqI4
+         coYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696473772; x=1697078572;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7eSqbR+iPZeaMwWM2FXXaj0hJ0gXvRe4tAkt/tdpAJ8=;
+        b=h7hc3Q+hWdJ3yDZIgKnp8AwBhSijGn0tfKgzUT/BNo5uon+JlfrM0ie8+/D3bbwKVX
+         tImzKBamkuIXmfXig7exIx/JO+r7zhfXJYpCy0jGLIVDrWMN4jNQiUmE869ZF+UMOjS7
+         HLeVL7XaTtnAlEkr4DZ7cQkXj6FObumGHsOri3xLGrZRvuB8blviNBmHvWqZ3whuG68X
+         7yhlphGIvHyRfxPBnx9RCwSyznkFk5Q3X25/PPuC8IQrhHe9zAHzf+LhKw2XwoplgzC1
+         6lCaZKX38CyzmHWigvj5DWPE6rFS5YjI09l1Nq5WHL4dBYmq5uOC3u3zSHFKj3jEaIt4
+         mU4A==
+X-Gm-Message-State: AOJu0YwA6jnlMNI0WuB3mrGdVJULYwI8dTwa1IVrRACiygnA2TDWbAQ6
+        D8+PU5LAt09/BPDUF7Afq3b38A==
+X-Google-Smtp-Source: AGHT+IFnnNjSS8t30msFADUxCDG59oqiybxhdToWtAwD2iUbLmzuZczi1sC1p6VvaSyzAAJNI9y5YA==
+X-Received: by 2002:a05:6a20:1584:b0:15d:f804:6907 with SMTP id h4-20020a056a20158400b0015df8046907mr4643492pzj.0.1696473772138;
+        Wed, 04 Oct 2023 19:42:52 -0700 (PDT)
+Received: from octopus ([2400:4050:c3e1:100:a16d:fce2:497:afb7])
+        by smtp.gmail.com with ESMTPSA id d21-20020aa78695000000b00690c2cd7e0esm239580pfo.49.2023.10.04.19.42.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 19:42:51 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 11:42:47 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        Oleksii_Moisieiev@epam.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Subject: Re: [RFC 3/4] gpio: scmi: add SCMI pinctrl based gpio driver
+Message-ID: <ZR4ipzoAU7lv/zv4@octopus>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>, sudeep.holla@arm.com,
+        cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        Oleksii_Moisieiev@epam.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+References: <20231002021602.260100-1-takahiro.akashi@linaro.org>
+ <20231002021602.260100-4-takahiro.akashi@linaro.org>
+ <CACRpkdZojfC2qr7gfzL9fj=DEYJcuPR=a1+zVWTMysK9BH_m_Q@mail.gmail.com>
+ <ZR0L5Oe9oT/sEF2p@octopus>
+ <CACRpkdY=5hYONDcXW4omcX7=r-JtH=AvOSVMkj72LKiaF_wJuA@mail.gmail.com>
 MIME-Version: 1.0
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 76D2118
-X-Stat-Signature: 8cwfdmcgu6s7feiy9et55jk549jogxjp
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+TyMkleSp6sZTOl272wIe+N1zs1yQjNIs=
-X-HE-Tag: 1696473656-395626
-X-HE-Meta: U2FsdGVkX1+YpHgP8jh2IDxzYlBdQWuu6fWm9Gh68kiSMecvGHO0zc7jgkO5unWiA0V4XgpDLsuDPywI74IEg7BHGg3IVC7decd+ojOAW04JxukfBRVj8Wkp6qe+PMPy8LBxe0r3NhjPVaerPhXEYZq9VMs0GwIPObO6qBaLixhCEVByZf9B/LNig1P2CIR17boqoVkfVq1/J3jO+sGCLdbp8zqP5XplOi/JB16EOdGtfoIfQ1t5hfsoBecbbhlbR1X2fYHymuUkdFoIl7JHgieYRfdaHDbJL+a12aDaWqSCovbUM3FY6igsRzTa7dhDg6LmwxblwGAw1X1azhXWnJucRm0auKxAnjKMnB0k5vru8yZiy7KP7w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdY=5hYONDcXW4omcX7=r-JtH=AvOSVMkj72LKiaF_wJuA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-10-04 at 21:21 +0000, Justin Stitt wrote:
-> The current behavior of K: is a tad bit noisy. It matches against the
-> entire contents of files instead of just against the contents of a
-> patch.
+Hi Linus,
+
+On Wed, Oct 04, 2023 at 10:35:05AM +0200, Linus Walleij wrote:
+> Hi Takahiro,
 > 
-> This means that a patch with a single character change (fixing a typo or
-> whitespace or something) would still to/cc maintainers and lists if the
-> affected file matched against the regex pattern given in K:. For
-> example, if a file has the word "clang" in it then every single patch
-> touching that file will to/cc Nick, Nathan and some lists.
+> I see you are on track with this!
 > 
-> Let's change this behavior to only content match against patches
-> (subjects, message, diff) as this is what most people expect the
-> behavior already is. Most users of "K:" would prefer patch-only content
-> matching. If this is not the case let's add a new matching type as
-> proposed in [1].
+> Some clarifications:
+> 
+> On Wed, Oct 4, 2023 at 8:53???AM AKASHI Takahiro
+> <takahiro.akashi@linaro.org> wrote:
+> 
+> > I'm still not sure whether my approach can be applied to any other
+> > pinctrl-based gpio drivers, in which extra (driver-specific) operations
+> > might be needed around the generic pinctrl_gpio helpers (i.e. gpiolib.c).
+> > For instance, look at gpio-tegra.c:
+> 
+> Yeah, it kind of requires a "pure" pin controller underneath that don't
+> want to do anything else on any operations, otherwise we are back
+> to a per-soc pin control driver.
+> 
+> But I think it is appropriate for abstractions that strive to provide
+> "total abstraction behind a firmware", so such as SCMI or ACPI (heh).
 
-I'm glad to know  you are coming around to my suggestion.
+Right. So we are on the same page now.
 
-I believe the file-based keyword matching should _not_ be
-removed and the option should be added for it like I suggested.
+> > > Skip this, let's use device properties instead. They will anyways just translate
+> > > to OF properties in the OF case.
+> >
+> > Okay, I don't know how device properties work, though.
+> 
+> They are pretty much 1-to-1 slot-ins for the corresponding of_*
+> functions, passing struct device * instead of struct device_node *,
+> if you look in include/linux/property.h you will feel at home very
+> quickly.
+> 
+> > > > +static int scmi_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
+> > >
+> > > Rename all functions pinctrl_gpio_*
+> >
+> > Well, this change will result in name conflicts against existing
+> > pinctrl_gpio_direction_[in|out]out(). So use "pin_control_gpio_" prefix.
+> 
+> Yeah that works, or pincontro_by_gpio_ or such.
 
-I also think it might be better to mark the "maintained" output
-differently as something like "keyword matched" instead.
+I will use "pin_control_gpio_", which still sounds confusing though.
+Please modify it if you don't like.
 
+> > Not sure how the last case (in_en && out_en && DRIVE_OPEN_DRAIN) works.
+> 
+> I wrote some documentation! But it is hidden deep in the docs:
+> https://docs.kernel.org/driver-api/gpio/driver.html#gpio-lines-with-open-drain-source-support
+> 
+> > In order to be able to read a value as an input pin, I think, we need
+> > to set the output status to Hi-Z. Then we should recognize it as "INPUT"?
+> > In this case, however, we cannot distinguish the other case where we want
+> > to use the pin as OUTPUT and drive it to (active) high.
+> 
+> With open drain, on GPIO controllers that do not support a native
+> open drain mode, we emulate open drain output high by switching
+> the line into input mode. The line in this case has a pull-up resistor
+> (internal or external) and as input mode is high-Z the pull up resistor
+> will pull the signal high, to any level - could be e.g 48V which is
+> helpful for some serial links.
 
-Something like:
----
- scripts/get_maintainer.pl | 38 ++++++++++++++++++++------------------
- 1 file changed, 20 insertions(+), 18 deletions(-)
+I now think I see what you meant here, but still not sure why we need to
+assert CONFIG_INPUT and CONFIG_OUT at the same time from API viewpoint.
 
-diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-index ab123b498fd9..befae75e61ab 100755
---- a/scripts/get_maintainer.pl
-+++ b/scripts/get_maintainer.pl
-@@ -57,6 +57,7 @@ my $subsystem = 0;
- my $status = 0;
- my $letters = "";
- my $keywords = 1;
-+my $keywords_in_file = 0;
- my $sections = 0;
- my $email_file_emails = 0;
- my $from_filename = 0;
-@@ -272,6 +273,7 @@ if (!GetOptions(
- 		'letters=s' => \$letters,
- 		'pattern-depth=i' => \$pattern_depth,
- 		'k|keywords!' => \$keywords,
-+		'kf|keywords-in-file!' => \$keywords_in_file,
- 		'sections!' => \$sections,
- 		'fe|file-emails!' => \$email_file_emails,
- 		'f|file' => \$from_filename,
-@@ -318,6 +320,7 @@ if ($sections || $letters ne "") {
-     $subsystem = 0;
-     $web = 0;
-     $keywords = 0;
-+    $keywords_in_file = 0;
-     $interactive = 0;
- } else {
-     my $selections = $email + $scm + $status + $subsystem + $web;
-@@ -548,16 +551,14 @@ foreach my $file (@ARGV) {
- 	$file =~ s/^\Q${cur_path}\E//;	#strip any absolute path
- 	$file =~ s/^\Q${lk_path}\E//;	#or the path to the lk tree
- 	push(@files, $file);
--	if ($file ne "MAINTAINERS" && -f $file && $keywords) {
-+	if ($file ne "MAINTAINERS" && -f $file && $keywords && $keywords_in_file) {
- 	    open(my $f, '<', $file)
- 		or die "$P: Can't open $file: $!\n";
- 	    my $text = do { local($/) ; <$f> };
- 	    close($f);
--	    if ($keywords) {
--		foreach my $line (keys %keyword_hash) {
--		    if ($text =~ m/$keyword_hash{$line}/x) {
--			push(@keyword_tvi, $line);
--		    }
-+	    foreach my $line (keys %keyword_hash) {
-+		if ($text =~ m/$keyword_hash{$line}/x) {
-+		    push(@keyword_tvi, $line);
- 		}
- 	    }
- 	}
-@@ -919,7 +920,7 @@ sub get_maintainers {
- 	}
- 
- 	foreach my $line (sort {$hash{$b} <=> $hash{$a}} keys %hash) {
--	    add_categories($line);
-+	    add_categories($line, "");
- 	    if ($sections) {
- 		my $i;
- 		my $start = find_starting_index($line);
-@@ -947,7 +948,7 @@ sub get_maintainers {
-     if ($keywords) {
- 	@keyword_tvi = sort_and_uniq(@keyword_tvi);
- 	foreach my $line (@keyword_tvi) {
--	    add_categories($line);
-+	    add_categories($line, ":Keyword");
- 	}
-     }
- 
-@@ -1076,6 +1077,7 @@ Output type options:
- Other options:
-   --pattern-depth => Number of pattern directory traversals (default: 0 (all))
-   --keywords => scan patch for keywords (default: $keywords)
-+  --keywords-in-file => scan file for keywords (default: $keywords_in_file)
-   --sections => print all of the subsystem sections with pattern matches
-   --letters => print all matching 'letter' types from all matching sections
-   --mailmap => use .mailmap file (default: $email_use_mailmap)
-@@ -1086,7 +1088,7 @@ Other options:
- 
- Default options:
-   [--email --tree --nogit --git-fallback --m --r --n --l --multiline
--   --pattern-depth=0 --remove-duplicates --rolestats]
-+   --pattern-depth=0 --remove-duplicates --rolestats --keywords]
- 
- Notes:
-   Using "-f directory" may give unexpected results:
-@@ -1312,7 +1314,7 @@ sub get_list_role {
- }
- 
- sub add_categories {
--    my ($index) = @_;
-+    my ($index, $suffix) = @_;
- 
-     my $i;
-     my $start = find_starting_index($index);
-@@ -1342,7 +1344,7 @@ sub add_categories {
- 			if (!$hash_list_to{lc($list_address)}) {
- 			    $hash_list_to{lc($list_address)} = 1;
- 			    push(@list_to, [$list_address,
--					    "subscriber list${list_role}"]);
-+					    "subscriber list${list_role}" . $suffix]);
- 			}
- 		    }
- 		} else {
-@@ -1352,12 +1354,12 @@ sub add_categories {
- 				if ($email_moderated_list) {
- 				    $hash_list_to{lc($list_address)} = 1;
- 				    push(@list_to, [$list_address,
--						    "moderated list${list_role}"]);
-+						    "moderated list${list_role}" . $suffix]);
- 				}
- 			    } else {
- 				$hash_list_to{lc($list_address)} = 1;
- 				push(@list_to, [$list_address,
--						"open list${list_role}"]);
-+						"open list${list_role}" . $suffix]);
- 			    }
- 			}
- 		    }
-@@ -1365,19 +1367,19 @@ sub add_categories {
- 	    } elsif ($ptype eq "M") {
- 		if ($email_maintainer) {
- 		    my $role = get_maintainer_role($i);
--		    push_email_addresses($pvalue, $role);
-+		    push_email_addresses($pvalue, $role . $suffix);
- 		}
- 	    } elsif ($ptype eq "R") {
- 		if ($email_reviewer) {
- 		    my $subsystem = get_subsystem_name($i);
--		    push_email_addresses($pvalue, "reviewer:$subsystem");
-+		    push_email_addresses($pvalue, "reviewer:$subsystem" . $suffix);
- 		}
- 	    } elsif ($ptype eq "T") {
--		push(@scm, $pvalue);
-+		push(@scm, $pvalue . $suffix);
- 	    } elsif ($ptype eq "W") {
--		push(@web, $pvalue);
-+		push(@web, $pvalue . $suffix);
- 	    } elsif ($ptype eq "S") {
--		push(@status, $pvalue);
-+		push(@status, $pvalue . $suffix);
- 	    }
- 	}
-     }
+Anyhow, I will follow the logic that you suggested.
 
+> But this case is really tricky so it can be hard to get things right,
+> I get a bit confused and so we need to think about it a few times.
+> 
+> > > > +static void scmi_gpio_set(struct gpio_chip *chip, unsigned int offset, int val)
+> > >
+> > > static int?
+> >
+> > Unfortunately, the function prototype of "set" in struct gpio_device is
+> >         void (*set)(struct gpio_chip *gc, unsigned int offset, int value);
+> >
+> > So we cannot propagate an error to the caller.
+> 
+> Grrr that must be my fault. Sorry about not fixing this :(
+> 
+> > > No need to add & 0x01, the gpiolib core already does this.
+> >
+> > Which part of gpiolib core?
+> 
+> chip->set = scmi_gpio_set; gets called like this in gpiolib:
+> 
+>  gpiod_direction_output_raw_commit(..., int value)
+> {
+>     int val = !!value;
+> (...)
+>     gc->set(gc, gpio_chip_hwgpio(desc), val);
+> 
+> Notice clamping int val = !!value; will make the passed val 0 or 1.
+
+Yeah.
+
+> > > > +static u16 sum_up_ngpios(struct gpio_chip *chip)
+> > > > +{
+> > > > +       struct gpio_pin_range *range;
+> > > > +       struct gpio_device *gdev = chip->gpiodev;
+> > > > +       u16 ngpios = 0;
+> > > > +
+> > > > +       list_for_each_entry(range, &gdev->pin_ranges, node) {
+> > > > +               ngpios += range->range.npins;
+> > > > +       }
+> > >
+> > > This works but isn't really the intended use case of the ranges.
+> > > Feel a bit uncertain about it, but I can't think of anything better.
+> > > And I guess these come directly out of SCMI so it's first hand
+> > > information about all GPIOs.
+> >
+> > I don't get your point.
+> > However many pins SCMI firmware (or other normal pin controllers) might
+> > expose, the total number of pins available by this driver is limited by
+> > "gpio-ranges" property.
+> > So the sum as "ngpios" should make sense unless a user accidentally
+> > specifies a wrong range of pins.
+> 
+> Yes.
+> 
+> And it is this fact that the same number need to appear in two places
+> and double-specification will sooner or later bring us to the situation
+> where the two do not agree, and what do we do then?
+> 
+> If the ranges come from firmware, which is subject to change such
+> as "oops we forgot this pin", the GPIO number will just insert itself
+> among the already existing ones: say we have two ranges:
+> 
+> 1: 0..5
+> 2: 6..9
+> 
+> Ooops forgot a GPIO in the first range, it has to be bumped to
+> 0..6.
+> 
+> But somewhere in the device tree there is:
+> 
+> foo-gpios = <&scmi_gpio 7 GPIO_OUT_LOW>;
+> 
+> So now this is wrong (need to be changed to 8) and we have zero tooling
+> to detect this, the author just has to be very careful all the time.
+
+Well, even without a change by an user, this kind of human error
+may happen. There is no way to verify the correct *pin number*,
+say, if I specify 100 instead of 7 in an above example.
+
+> But I honestly do not know any better way.
+
+One good practice to mitigate those cases might be to use a (gpio or
+gpio-group) name instead of a pin number, or a "virtual" gpio device.
+
+        foo_gpio: gpio@0 {
+            compatibles = "pin-control-gpio";
+
+            gpio-range = <&scmi_pinctrl 0 0 0>;
+            gpio-range-group-name = "pins_for_foo";
+        }
+        baa_gpio: gpio@1 {
+            compatibles = "pin-control-gpio";
+
+            gpio-range = <&scmi_pinctrl 0 0 0>;
+            gpio-range-group-name = "pins_for_baa";
+        }
+
+# Not sure multiple "pin-control-gpio" devices are possible.
+
+-Takahiro Akashi
+
+> > > which in turn becomes just pinctrl_gpio_set_config(), which
+> > > is what we want.
+> > >
+> > > The second cell in two-cell GPIOs already supports passing
+> > > GPIO_PUSH_PULL, GPIO_OPEN_DRAIN, GPIO_OPEN_SOURCE,
+> > > GPIO_PULL_UP, GPIO_PULL_DOWN, GPIO_PULL_DISABLE,
+> > > which you can this way trivially pass down to the pin control driver.
+> > >
+> > > NB: make sure the scmi pin control driver returns error for
+> > > unknown configs.
+> >
+> > Well, the error will be determined by SCMI firmware(server)
+> > not the driver itself :)
+> 
+> Hehe, I think it is good that the SCMI firmware gets some exercise
+> from day 1!
+> 
+> Yours,
+> Linus Walleij
