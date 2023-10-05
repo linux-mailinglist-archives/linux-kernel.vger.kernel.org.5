@@ -2,143 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6237B9FCF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617007B9F84
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232806AbjJEOaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57718 "EHLO
+        id S233825AbjJEOZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233845AbjJEO2V (ORCPT
+        with ESMTP id S233278AbjJEOXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:28:21 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE94E5272
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 22:35:16 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-7aba0a76512so220240241.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 22:35:16 -0700 (PDT)
+        Thu, 5 Oct 2023 10:23:02 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B45F59FD
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 22:51:00 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-51b4ef5378bso431664a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 22:51:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696484116; x=1697088916; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/LQ+X+x8kIqTkVd50ogLWp0VaSEkcS2ypomcdLaAgP0=;
-        b=HRKR344OmuVWhytU6DzNKf+MPwLpppjOMBdea3pGdCoarPxHlnNKLjBlDAd3pV0pYY
-         drzHsdf8mP+SGH9Pu7J9JkLfja8LseMUe7Q0ILOxsNkEta7RceNPLVCyYt9/C1DQza4j
-         S7gVMuQ+kT8yC7KnR//NZx+OvlyX0zLjjyhfv0wE/88/s9uLFyjZ+wp5/En0j4AXpFTj
-         heizjGqyxt8MlRZZhIg9KSSDDNw10hCrJSqEVNFgU7iKPB5v7fczClm2t9hvMKE4oShm
-         lqrmS/37NxLYNdo6Fv0Wx7nIvO/YjlUivsCa+BflON5jrJEPjwQ7pekMvo1uSfLyGGWK
-         5sag==
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1696485060; x=1697089860; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IAn7kTF76MX4baCsjz/DD87LgbEJOFPnszS1gD87MLo=;
+        b=ZXubW7/QRu9lfTWrHyJPGHvyKFEbmAjEGsA43lpb7Aa1B5q0XjQmR8aY6/JMLTFW6d
+         LPSWr2Ds4/22GFtcQ/9KzR28OoFbFkzZuaf/Cr1iE7cPrQre79m0GookUWiIvChHBIyD
+         nwi6+MkCNAcKtTcb18oWw9GtyZ4cxW2Or03HqHrNSE3OY4b777U/GoD/PFu5kxxK0VQi
+         bFuyj6U47r4kUsPOlP4MYPFSubLZEb0fCnFgIByCYMoXS79N9lpdNH5AftJZuOuRPM3l
+         bpY9o14EBhXWKmB5o1ri0uEmRyy+3BYQPNVsmgKJoz2UgwcKGHU96ndyPlbaFh5YHpaU
+         ge2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696484116; x=1697088916;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/LQ+X+x8kIqTkVd50ogLWp0VaSEkcS2ypomcdLaAgP0=;
-        b=XZlOanZnp63mMRxsUjA2JTD+IWZmE/aP3Dg4lN/uZek5d26ynq8DPPXuxxd8DpAx3Y
-         EuC5t3dWdQbHW0VGmPLyOJ8ktgg5qIjDmyuMv33+e++2twgDOmC7QMwncjhqU6dZeg5n
-         thhHkxB0bW2G4mx3LLD1XK4pUPpW6q0zznMjgtxnbSLZ+sMceFcc+xJaHrpRwCWC+gb9
-         yOwEDcS1aNL4/UZwlxqpnD3fDmtiEXmaBmGe4zhIAzUcV8rF48BlX5zn9n1QzxzHKJZ1
-         c9wW859gwxgTLCJz00iH/PeELLgJaWUgmqLBeqm/KVf0gxIrqj9Aw6uILHql2tWEftmy
-         rSRQ==
-X-Gm-Message-State: AOJu0YzBPxdUNhTLEePbZ+43k2b8jD1moB+Y9+iGPIGwGjt9v6Ox3Zmv
-        cWim3ki63cT2NQVh5Yt+MjU+hRykO3PxOGUPmot6lg==
-X-Google-Smtp-Source: AGHT+IFyUEy98cMidc1tr4QnSypHpNlXUtm1aI5nwEWjnjVyHJ6lFX/6zV9UcK6yLBCnVPD0b2cF/SGIK7DsUIDhFMI=
-X-Received: by 2002:a05:6102:282a:b0:452:d5f6:cf5d with SMTP id
- ba10-20020a056102282a00b00452d5f6cf5dmr3993630vsb.32.1696484115747; Wed, 04
- Oct 2023 22:35:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696485060; x=1697089860;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IAn7kTF76MX4baCsjz/DD87LgbEJOFPnszS1gD87MLo=;
+        b=nZUBGPkzZOjhM9opXFtfcNUKF56USzQefclDbYgV+5pNW04JopPuVL9YFqYe/cf7V1
+         aSLpWWaO8fm9PgCaxcU3kI6561+Yvojg+PNJr5nCvaGMYDNpq7e2n8qlpeyw3rf0D5dt
+         573xmq+B++2HksGJ/7naJeF9UEUJaeGysbilGCpqYTWepv4LlQTWEf1v7OBdmeQrTo7H
+         jFQYP5XOOx+uknB71ZskycVGSjpHQRI4vw7If21busQ307Z1yci6E1wsaEffdBJNUBRt
+         eAX/OqAOCajSZGUxdirMG+JxcDMT9EDSDti4jZ/DyN+85vaurrH4CdnNcgVZDQ4CR1Fl
+         IcIQ==
+X-Gm-Message-State: AOJu0YwzN511HJwu2HHyCww6b0s7eo/BB5MBVONsXQQ2RUWEIKXgtqHA
+        32xJ3l2yKg87HfMiOxvFfthCxbBQ3zK/9+XDkj60biUJz3k7tlJ4
+X-Google-Smtp-Source: AGHT+IEtGbIHdTfL2yZTTDLPgQj3me/hsvVuKvB4XaXv1nNxUCov3SGcpN7sdI1I388p/AKgKTr/0lfdATge9YktJw8=
+X-Received: by 2002:a17:90b:a04:b0:26d:416a:b027 with SMTP id
+ gg4-20020a17090b0a0400b0026d416ab027mr4208863pjb.31.1696485059836; Wed, 04
+ Oct 2023 22:50:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231004175229.211487444@linuxfoundation.org>
-In-Reply-To: <20231004175229.211487444@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 5 Oct 2023 11:05:04 +0530
-Message-ID: <CA+G9fYuE9Pu3QCVDywA8Ss-41jVfiy2e2kpxjhpTe3CRgmZkBw@mail.gmail.com>
-Subject: Re: [PATCH 6.5 000/321] 6.5.6-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, bpf <bpf@vger.kernel.org>
+References: <20231003035226.1945725-3-apatel@ventanamicro.com> <mhng-4ec1093a-4542-429e-a9f0-8a976cff9ac4@palmer-ri-x1c9>
+In-Reply-To: <mhng-4ec1093a-4542-429e-a9f0-8a976cff9ac4@palmer-ri-x1c9>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 5 Oct 2023 11:20:48 +0530
+Message-ID: <CAAhSdy2CxWw9ny7vdBoEzsXkm_J882NGKTDQ7BfykrjuB1QR+w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] RISC-V: Detect Zicond from ISA string
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     apatel@ventanamicro.com, pbonzini@redhat.com,
+        atishp@atishpatra.org, Paul Walmsley <paul.walmsley@sifive.com>,
+        Conor Dooley <conor@kernel.org>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, shuah@kernel.org,
+        ajones@ventanamicro.com, mchitale@ventanamicro.com,
+        devicetree@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Oct 2023 at 23:53, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Wed, Oct 4, 2023 at 7:37=E2=80=AFPM Palmer Dabbelt <palmer@dabbelt.com> =
+wrote:
 >
-> This is the start of the stable review cycle for the 6.5.6 release.
-> There are 321 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Mon, 02 Oct 2023 20:52:22 PDT (-0700), apatel@ventanamicro.com wrote:
+> > The RISC-V integer conditional (Zicond) operation extension defines
+> > standard conditional arithmetic and conditional-select/move operations
+> > which are inspired from the XVentanaCondOps extension. In fact, QEMU
+> > RISC-V also has support for emulating Zicond extension.
+> >
+> > Let us detect Zicond extension from ISA string available through
+> > DT or ACPI.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > ---
+> >  arch/riscv/include/asm/hwcap.h | 1 +
+> >  arch/riscv/kernel/cpufeature.c | 1 +
+> >  2 files changed, 2 insertions(+)
+> >
+> > diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hw=
+cap.h
+> > index 0f520f7d058a..6fc51c1b34cf 100644
+> > --- a/arch/riscv/include/asm/hwcap.h
+> > +++ b/arch/riscv/include/asm/hwcap.h
+> > @@ -59,6 +59,7 @@
+> >  #define RISCV_ISA_EXT_ZIFENCEI               41
+> >  #define RISCV_ISA_EXT_ZIHPM          42
+> >  #define RISCV_ISA_EXT_SMSTATEEN              43
+> > +#define RISCV_ISA_EXT_ZICOND         44
+> >
+> >  #define RISCV_ISA_EXT_MAX            64
+> >
+> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeat=
+ure.c
+> > index 3755a8c2a9de..e3803822ab5a 100644
+> > --- a/arch/riscv/kernel/cpufeature.c
+> > +++ b/arch/riscv/kernel/cpufeature.c
+> > @@ -167,6 +167,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D=
+ {
+> >       __RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
+> >       __RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
+> >       __RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
+> > +     __RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+> >       __RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+> >       __RISCV_ISA_EXT_DATA(zifencei, RISCV_ISA_EXT_ZIFENCEI),
+> >       __RISCV_ISA_EXT_DATA(zihintpause, RISCV_ISA_EXT_ZIHINTPAUSE),
 >
-> Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
-> Anything received after that time might be too late.
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.6-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
+> Can we do a shared tag, though?  These will conflict.
+
+Thanks Palmer.
+
+I will provide a shared tag based on 6.6-rc5 sometime
+next week. I hope this is okay for you.
+
+Regards,
+Anup
+
 >
-> thanks,
->
-> greg k-h
-
-The following kernel warning was noticed on qemu-armv7 while booting
-with kselftest merge configs enabled build on stable-rc 6.5.6-rc1.
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-> Hou Tao <houtao1@huawei.com>
->     bpf: Ensure unit_size is matched with slab cache object size
-
-
-bpf: Ensure unit_size is matched with slab cache object size
-[ Upstream commit c930472552022bd09aab3cd946ba3f243070d5c7 ]
-
-[    2.525383] ------------[ cut here ]------------
-[    2.525743] WARNING: CPU: 0 PID: 1 at kernel/bpf/memalloc.c:385
-bpf_mem_alloc_init+0x3b0/0x3b4
-[    2.527241] bpf_mem_cache[0]: unexpected object size 128, expect 96
-[    2.527897] Modules linked in:
-[    2.528721] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.6-rc1 #1
-[    2.529525] Hardware name: Generic DT based system
-[    2.531279]  unwind_backtrace from show_stack+0x10/0x14
-[    2.531684]  show_stack from dump_stack_lvl+0x48/0x54
-[    2.532220]  dump_stack_lvl from __warn+0xd4/0x200
-[    2.532878]  __warn from warn_slowpath_fmt+0xb4/0x168
-[    2.533516]  warn_slowpath_fmt from bpf_mem_alloc_init+0x3b0/0x3b4
-[    2.534133]  bpf_mem_alloc_init from bpf_global_ma_init+0x18/0x30
-[    2.534911]  bpf_global_ma_init from do_one_initcall+0x118/0x250
-[    2.535594]  do_one_initcall from do_initcall_level+0xe8/0xf4
-[    2.536016]  do_initcall_level from do_initcalls+0x50/0x80
-[    2.536618]  do_initcalls from kernel_init_freeable+0x90/0xd8
-[    2.537220]  kernel_init_freeable from kernel_init+0x14/0x1b4
-[    2.537634]  kernel_init from ret_from_fork+0x14/0x28
-[    2.538271] Exception stack(0xf0825fb0 to 0xf0825ff8)
-[    2.539230] 5fa0:                                     00000000
-00000000 00000000 00000000
-[    2.539792] 5fc0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000
-[    2.540497] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[    2.541682] ---[ end trace 0000000000000000 ]---
-
-Links:
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.5-322-g9327d0db36be/testrun/20257234/suite/log-parser-boot/test/check-kernel-exception/log
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2WJGm4kyWj47rr0KEArH4BwqPCs
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.5-322-g9327d0db36be/testrun/20257234/suite/log-parser-boot/tests/
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> --
+> kvm-riscv mailing list
+> kvm-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kvm-riscv
