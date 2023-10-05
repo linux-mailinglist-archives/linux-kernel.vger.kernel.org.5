@@ -2,109 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F19B87BA134
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8179A7BA320
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239577AbjJEOrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45028 "EHLO
+        id S235491AbjJEPwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238971AbjJEOoD (ORCPT
+        with ESMTP id S233917AbjJEPu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:44:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A8293250
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:20:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696515603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/M/mDfnV0O1UQMEklooDLZvgibVMpXp93dsISQC12dY=;
-        b=JUinUkLi84aWmaiX/p6WzafbKAIRhSyEcPSf8jeJx/OcIZVJNiRWtkbXCQbJq1dOiPgKlG
-        d+z6cnlO+J/FR1LKiKqArNyOCtHIN6p8c2fqYWrBDn/nM/hfqP7+weqUtNYs93lPdFvMiU
-        in6m7VPjO2Rp9tPAVcfODp2ceQF60Uk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-526-YciYf3GKOOCx-hhuUbdJTg-1; Thu, 05 Oct 2023 07:18:46 -0400
-X-MC-Unique: YciYf3GKOOCx-hhuUbdJTg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8A4CD3800BB7;
-        Thu,  5 Oct 2023 11:18:45 +0000 (UTC)
-Received: from dba-icx.bos.redhat.com (prarit2023-dbaguest.khw1.lab.eng.bos.redhat.com [10.16.200.91])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E1CF40C2015;
-        Thu,  5 Oct 2023 11:18:45 +0000 (UTC)
-From:   David Arcari <darcari@redhat.com>
-To:     linux-pm@vger.kernel.org
-Cc:     David Arcari <darcari@redhat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Chen Yu <yu.c.chen@intel.com>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH] thermal: intel: powerclamp: fix mismatch in get function for max_idle
-Date:   Thu,  5 Oct 2023 07:17:57 -0400
-Message-ID: <20231005111757.1293740-1-darcari@redhat.com>
+        Thu, 5 Oct 2023 11:50:57 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5903C63EFE;
+        Thu,  5 Oct 2023 07:08:44 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 395BJ7DL114262;
+        Thu, 5 Oct 2023 06:19:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696504747;
+        bh=O3H9updDdRZA1n9r7jo5xac1dzx6YqsbyUPWoem2bi0=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=F4FE1PjJyNXeVo5vS5nYLlEjPCgoMzZB0fZgXYnwEzzveDo6GFhwZI972eUp8mZMa
+         cY+PSWWN52Cyfp2F1fa36KCEjG3A2zRRfb1dolG4rzP8ZK52WspFONbokepOoD96bo
+         FmRdi58lXtE9dGFBR5rsnUnASOZM6mE23nNjKX5c=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 395BJ7ip073088
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Oct 2023 06:19:07 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 5
+ Oct 2023 06:19:07 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 5 Oct 2023 06:19:07 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 395BJ70q073832;
+        Thu, 5 Oct 2023 06:19:07 -0500
+Date:   Thu, 5 Oct 2023 06:19:07 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Ayush Singh <ayushdevel1325@gmail.com>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <greybus-dev@lists.linaro.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <gregkh@linuxfoundation.org>,
+        <vaishnav@beagleboard.org>, <jkridner@beagleboard.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh+dt@kernel.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v7 1/3] dt-bindings: net: Add ti,cc1352p7
+Message-ID: <20231005111907.ck6rhmuhicrjkifr@elderly>
+References: <20231004184639.462510-1-ayushdevel1325@gmail.com>
+ <20231004184639.462510-2-ayushdevel1325@gmail.com>
+ <a171cc72-98cf-4f7f-ba86-6da2ac45ea22@linaro.org>
+ <aa63918f-3a95-5e86-d61d-91a59cf643ad@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <aa63918f-3a95-5e86-d61d-91a59cf643ad@gmail.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KASAN reported this
+On 13:51-20231005, Ayush Singh wrote:
+> > > Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
+> > > ---
+> > >   .../devicetree/bindings/net/ti,cc1352p7.yaml  | 51 +++++++++++++++++++
+> > >   MAINTAINERS                                   |  6 +++
+> > >   2 files changed, 57 insertions(+)
+> > >   create mode 100644 Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/net/ti,cc1352p7.yaml b/Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
+> > > new file mode 100644
+> > > index 000000000000..291ba34c389b
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
+> > > @@ -0,0 +1,51 @@
+> > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/net/ti,cc1352p7.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Texas Instruments Simplelink CC1352P7 wireless MCU
+> > > +
+> > > +description:
+> > > +  The cc1352p7 mcu can be connected via SPI or UART.
+> > > +
+> > > +maintainers:
+> > > +  - Ayush Singh <ayushdevel1325@gmail.com>
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: ti,cc1352p7
+> > > +
+> > > +  clocks:
+> > > +    maxItems: 2
+> > > +
+> > > +  clock-names:
+> > > +    description:
+> > > +      sclk_hf is the main system (mcu and peripherals) clock
+> > > +      sclk_lf is low-frequency system clock
+> > This does no go here, but to clocks. I wrote how it should be done.
+> > Don't ignore the feedback.
+> It was suggested to use `clock-names` by Nishanth Menon in the previous
+> email, so I thought this was what it meant. I will remove clock-names if
+> that's better.
 
-      [ 444.853098] BUG: KASAN: global-out-of-bounds in param_get_int+0x77/0x90
-      [ 444.853111] Read of size 4 at addr ffffffffc16c9220 by task cat/2105
-      ...
-      [ 444.853442] The buggy address belongs to the variable:
-      [ 444.853443] max_idle+0x0/0xffffffffffffcde0 [intel_powerclamp]
+Krzysztof was mentioning that the description should be with clocks.
+clock-names would allow for more descriptive dts
 
-There is a mismatch between the param_get_int and the definition of
-max_idle.  Replacing param_get_int with param_get_byte resolves this
-issue.
+> > > +    items:
+> > > +      - const: sclk_hf
+> > > +      - const: sclk_lf
+> > > +
+> > > +  reset-gpios: true
+> > 
+> > No, really, why do you change correct code into incorrect one? Who asked
+> > you to drop maxItems?
+> I found that many bindings (`display/ilitek,ili9486.yaml`,
+> `iio/dac/adi,ad5758.yaml`) use this pattern instead of `maxItems` for
+> `reset-gpios`. So I assumed it was some sort of convention. I will change it
+> back to `maxItems`.
 
-Fixes: ebf519710218 ("thermal: intel: powerclamp: Add two module parameters")
+maxItems restrict the number of GPIOs to the ones that are actually
+needed for the peripheral.
 
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Amit Kucheria <amitk@kernel.org>
-Cc: Zhang Rui <rui.zhang@intel.com>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: David Arcari <darcari@redhat.com>
-Cc: Chen Yu <yu.c.chen@intel.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Signed-off-by: David Arcari <darcari@redhat.com>
----
- drivers/thermal/intel/intel_powerclamp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/intel/intel_powerclamp.c
-index 36243a3972fd..5ac5cb60bae6 100644
---- a/drivers/thermal/intel/intel_powerclamp.c
-+++ b/drivers/thermal/intel/intel_powerclamp.c
-@@ -256,7 +256,7 @@ static int max_idle_set(const char *arg, const struct kernel_param *kp)
- 
- static const struct kernel_param_ops max_idle_ops = {
- 	.set = max_idle_set,
--	.get = param_get_int,
-+	.get = param_get_byte,
- };
- 
- module_param_cb(max_idle, &max_idle_ops, &max_idle, 0644);
 -- 
-2.41.0
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
