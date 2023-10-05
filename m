@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4520D7BAA08
+	by mail.lfdr.de (Postfix) with ESMTP id B955F7BAA0A
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbjJETZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33896 "EHLO
+        id S231620AbjJETZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231314AbjJETY4 (ORCPT
+        with ESMTP id S231272AbjJETY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Oct 2023 15:24:56 -0400
 Received: from hosting.gsystem.sk (hosting.gsystem.sk [212.5.213.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2CE6CE4;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2CD68DE;
         Thu,  5 Oct 2023 12:24:50 -0700 (PDT)
 Received: from gsql.ggedos.sk (off-20.infotel.telecom.sk [212.5.213.20])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id 018EE7A062F;
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id 2D0C87A072E;
         Thu,  5 Oct 2023 21:24:48 +0200 (CEST)
 From:   Ondrej Zary <linux@zary.sk>
 To:     Damien Le Moal <dlemoal@kernel.org>,
@@ -29,9 +29,9 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         Tim Waugh <tim@cyberelk.net>,
         linux-parport@lists.infradead.org, linux-ide@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] ata: pata_parport: add custom version of wait_after_reset
-Date:   Thu,  5 Oct 2023 21:24:39 +0200
-Message-Id: <20231005192440.4047-4-linux@zary.sk>
+Subject: [PATCH 4/4] ata: pata_parport: fit3: implement IDE command set registers
+Date:   Thu,  5 Oct 2023 21:24:40 +0200
+Message-Id: <20231005192440.4047-5-linux@zary.sk>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20231005192440.4047-1-linux@zary.sk>
 References: <20231005192440.4047-1-linux@zary.sk>
@@ -46,106 +46,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some parallel adapters (e.g. EXP Computer MC-1285B EPP Cable) return
-bogus values when there's no master device present. This can cause
-reset to fail, preventing the lone slave device (such as EXP Computer
-CD-865) from working.
+fit3 protocol driver does not support accessing IDE control registers
+(device control/altstatus). The DOS driver does not use these registers
+either (as observed from DOSEMU trace). But the HW seems to be capable
+of accessing these registers - I simply tried bit 3 and it works!
 
-Add custom version of wait_after_reset that ignores master failure when
-a slave device is present. The custom version is also needed because
-the generic ata_sff_wait_after_reset uses direct port I/O for slave
-device detection.
+The control register is required to properly reset ATAPI devices or
+they will be detected only once (after a power cycle).
+
+Tested with EXP Computer CD-865 with MC-1285B EPP cable and
+TransDisk 3000.
 
 Signed-off-by: Ondrej Zary <linux@zary.sk>
 ---
- drivers/ata/pata_parport/pata_parport.c | 67 ++++++++++++++++++++++++-
- 1 file changed, 66 insertions(+), 1 deletion(-)
+ drivers/ata/pata_parport/fit3.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/ata/pata_parport/pata_parport.c b/drivers/ata/pata_parport/pata_parport.c
-index cf87bbb52f1f..318b2ce2d8d1 100644
---- a/drivers/ata/pata_parport/pata_parport.c
-+++ b/drivers/ata/pata_parport/pata_parport.c
-@@ -80,6 +80,71 @@ static bool pata_parport_devchk(struct ata_port *ap, unsigned int device)
- 	return (nsect == 0x55) && (lbal == 0xaa);
- }
+diff --git a/drivers/ata/pata_parport/fit3.c b/drivers/ata/pata_parport/fit3.c
+index bad7aa920cdc..d2b81cf2e16d 100644
+--- a/drivers/ata/pata_parport/fit3.c
++++ b/drivers/ata/pata_parport/fit3.c
+@@ -9,11 +9,6 @@
+  *
+  * The TD-2000 and certain older devices use a different protocol.
+  * Try the fit2 protocol module with them.
+- *
+- * NB:  The FIT adapters do not appear to support the control
+- * registers.  So, we map ALT_STATUS to STATUS and NO-OP writes
+- * to the device control register - this means that IDE reset
+- * will not work on these devices.
+  */
  
-+static int pata_parport_wait_after_reset(struct ata_link *link,
-+					 unsigned int devmask,
-+					 unsigned long deadline)
-+{
-+	struct ata_port *ap = link->ap;
-+	struct pi_adapter *pi = ap->host->private_data;
-+	unsigned int dev0 = devmask & (1 << 0);
-+	unsigned int dev1 = devmask & (1 << 1);
-+	int rc, ret = 0;
-+
-+	ata_msleep(ap, ATA_WAIT_AFTER_RESET);
-+
-+	/* always check readiness of the master device */
-+	rc = ata_sff_wait_ready(link, deadline);
-+	if (rc) {
-+		/*
-+		 * some adapters return bogus values if master device is not
-+		 * present, so don't abort now if a slave device is present
-+		 */
-+		if (!dev1)
-+			return rc;
-+		ret = -ENODEV;
-+	}
-+
-+	/*
-+	 * if device 1 was found in ata_devchk, wait for register
-+	 * access briefly, then wait for BSY to clear.
-+	 */
-+	if (dev1) {
-+		int i;
-+
-+		pata_parport_dev_select(ap, 1);
-+		/*
-+		 * Wait for register access.  Some ATAPI devices fail
-+		 * to set nsect/lbal after reset, so don't waste too
-+		 * much time on it.  We're gonna wait for !BSY anyway.
-+		 */
-+		for (i = 0; i < 2; i++) {
-+			u8 nsect, lbal;
-+
-+			nsect = pi->proto->read_regr(pi, 0, ATA_REG_NSECT);
-+			lbal = pi->proto->read_regr(pi, 0, ATA_REG_LBAL);
-+			if ((nsect == 1) && (lbal == 1))
-+				break;
-+			/* give drive a breather */
-+			ata_msleep(ap, 50);
-+		}
-+
-+		rc = ata_sff_wait_ready(link, deadline);
-+		if (rc) {
-+			if (rc != -ENODEV)
-+				return rc;
-+			ret = rc;
-+		}
-+	}
-+
-+	pata_parport_dev_select(ap, 0);
-+	if (dev1)
-+		pata_parport_dev_select(ap, 1);
-+	if (dev0)
-+		pata_parport_dev_select(ap, 0);
-+
-+	return ret;
-+}
-+
- static int pata_parport_bus_softreset(struct ata_port *ap, unsigned int devmask,
- 				      unsigned long deadline)
+ #include <linux/module.h>
+@@ -37,8 +32,7 @@
+ 
+ static void fit3_write_regr(struct pi_adapter *pi, int cont, int regr, int val)
  {
-@@ -94,7 +159,7 @@ static int pata_parport_bus_softreset(struct ata_port *ap, unsigned int devmask,
- 	ap->last_ctl = ap->ctl;
+-	if (cont == 1)
+-		return;
++	regr += cont << 3;
  
- 	/* wait the port to become ready */
--	return ata_sff_wait_after_reset(&ap->link, devmask, deadline);
-+	return pata_parport_wait_after_reset(&ap->link, devmask, deadline);
- }
+ 	switch (pi->mode) {
+ 	case 0:
+@@ -59,11 +53,7 @@ static int fit3_read_regr(struct pi_adapter *pi, int cont, int regr)
+ {
+ 	int  a, b;
  
- static int pata_parport_softreset(struct ata_link *link, unsigned int *classes,
+-	if (cont) {
+-		if (regr != 6)
+-			return 0xff;
+-		regr = 7;
+-	}
++	regr += cont << 3;
+ 
+ 	switch (pi->mode) {
+ 	case 0:
 -- 
 Ondrej Zary
 
