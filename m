@@ -2,142 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EE97BA1C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54F97BA1F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbjJEO6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
+        id S233029AbjJEPGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234003AbjJEO43 (ORCPT
+        with ESMTP id S234032AbjJEPFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:56:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1828B1F754
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:39:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696516748;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WtdGx+OPUYNJ/AOWymXa/bx8UKj2Lj0Mpvrei971DGA=;
-        b=UHaFnf4gtmkFxHvmntH2oqWA9uxij4+UvrLjBE6fn8kudCqvky4SFdOz9rNs4GA9daEWPr
-        pEyp6jv+aFXe6mfpp3VFYoLZFZvbjPoYPssQTQkad9I8+NF7v07J4gAWvZnFIkfevI/wes
-        Y+fp/TFggfUW9+jldSB2sspKxcBP/Ng=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-149-NqYKoLAoM822Sr1SzOzEGQ-1; Thu, 05 Oct 2023 10:38:54 -0400
-X-MC-Unique: NqYKoLAoM822Sr1SzOzEGQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AEA673C1E9D1;
-        Thu,  5 Oct 2023 14:38:52 +0000 (UTC)
-Received: from thuth-p1g4.redhat.com (unknown [10.39.192.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7F5C340C6EA8;
-        Thu,  5 Oct 2023 14:38:51 +0000 (UTC)
-From:   Thomas Huth <thuth@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 7/7] KVM: selftests: x86: Use TAP interface in the userspace_msr_exit test
-Date:   Thu,  5 Oct 2023 16:38:39 +0200
-Message-ID: <20231005143839.365297-8-thuth@redhat.com>
-In-Reply-To: <20231005143839.365297-1-thuth@redhat.com>
-References: <20231005143839.365297-1-thuth@redhat.com>
+        Thu, 5 Oct 2023 11:05:51 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4853D11797
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:41:05 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D171C15;
+        Thu,  5 Oct 2023 07:41:44 -0700 (PDT)
+Received: from [10.57.2.146] (unknown [10.57.2.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 78BC73F641;
+        Thu,  5 Oct 2023 07:41:03 -0700 (PDT)
+Message-ID: <9e4e5536-05bb-4309-8d08-7158f9e7e8af@arm.com>
+Date:   Thu, 5 Oct 2023 15:41:01 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] arm64/mm: Hoist synchronization out of set_ptes() loop
+Content-Language: en-GB
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Collingbourne <pcc@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231005140730.2191134-1-ryan.roberts@arm.com>
+From:   Steven Price <steven.price@arm.com>
+In-Reply-To: <20231005140730.2191134-1-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the kselftest_harness.h interface in this test to get TAP
-output, so that it is easier for the user to see what the test
-is doing.
+On 05/10/2023 15:07, Ryan Roberts wrote:
+> set_ptes() sets a physically contiguous block of memory (which all
+> belongs to the same folio) to a contiguous block of ptes. The arm64
+> implementation of this previously just looped, operating on each
+> individual pte. But the __sync_icache_dcache() and mte_sync_tags()
+> operations can both be hoisted out of the loop so that they are
+> performed once for the contiguous set of pages (which may be less than
+> the whole folio). This should result in minor performance gains.
+> 
+> __sync_icache_dcache() already acts on the whole folio, and sets a flag
+> in the folio so that it skips duplicate calls. But by hoisting the call,
+> all the pte testing is done only once.
+> 
+> mte_sync_tags() operates on each individual page with its own loop. But
+> by passing the number of pages explicitly, we can rely solely on its
+> loop and do the checks only once. This approach also makes it robust for
+> the future, rather than assuming if a head page of a compound page is
+> being mapped, then the whole compound page is being mapped, instead we
+> explicitly know how many pages are being mapped. The old assumption may
+> not continue to hold once the "anonymous large folios" feature is
+> merged.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-Note: We're not using the KVM_ONE_VCPU_TEST() macro here (but the
-generic TEST() macro from kselftest_harness.h) since each of the
-tests needs a different guest code function.
+Reviewed-by: Steven Price <steven.price@arm.com>
 
-Signed-off-by: Thomas Huth <thuth@redhat.com>
----
- .../kvm/x86_64/userspace_msr_exit_test.c      | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
-
-diff --git a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
-index 3533dc2fbfeeb..9843528bba0c6 100644
---- a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
-@@ -8,6 +8,7 @@
- #define _GNU_SOURCE /* for program_invocation_short_name */
- #include <sys/ioctl.h>
- 
-+#include "kselftest_harness.h"
- #include "test_util.h"
- #include "kvm_util.h"
- #include "vmx.h"
-@@ -527,7 +528,7 @@ static void run_guest_then_process_ucall_done(struct kvm_vcpu *vcpu)
- 	process_ucall_done(vcpu);
- }
- 
--static void test_msr_filter_allow(void)
-+TEST(msr_filter_allow)
- {
- 	struct kvm_vcpu *vcpu;
- 	struct kvm_vm *vm;
-@@ -646,7 +647,7 @@ static void handle_wrmsr(struct kvm_run *run)
- 	}
- }
- 
--static void test_msr_filter_deny(void)
-+TEST(msr_filter_deny)
- {
- 	struct kvm_vcpu *vcpu;
- 	struct kvm_vm *vm;
-@@ -693,7 +694,7 @@ static void test_msr_filter_deny(void)
- 	kvm_vm_free(vm);
- }
- 
--static void test_msr_permission_bitmap(void)
-+TEST(msr_permission_bitmap)
- {
- 	struct kvm_vcpu *vcpu;
- 	struct kvm_vm *vm;
-@@ -786,7 +787,7 @@ static void run_msr_filter_flag_test(struct kvm_vm *vm)
- }
- 
- /* Test that attempts to write to the unused bits in a flag fails. */
--static void test_user_exit_msr_flags(void)
-+TEST(user_exit_msr_flags)
- {
- 	struct kvm_vcpu *vcpu;
- 	struct kvm_vm *vm;
-@@ -804,13 +805,5 @@ static void test_user_exit_msr_flags(void)
- 
- int main(int argc, char *argv[])
- {
--	test_msr_filter_allow();
--
--	test_msr_filter_deny();
--
--	test_msr_permission_bitmap();
--
--	test_user_exit_msr_flags();
--
--	return 0;
-+	return test_harness_run(argc, argv);
- }
--- 
-2.41.0
+> ---
+> v2 fixes the invocations of __set_pte_at() to pass nr_pages rather than order.
+> Thanks to Steven Price for pointing that out.
+> 
+>  arch/arm64/include/asm/mte.h     |  4 ++--
+>  arch/arm64/include/asm/pgtable.h | 27 +++++++++++++++++----------
+>  arch/arm64/kernel/mte.c          |  4 ++--
+>  3 files changed, 21 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> index 4cedbaa16f41..91fbd5c8a391 100644
+> --- a/arch/arm64/include/asm/mte.h
+> +++ b/arch/arm64/include/asm/mte.h
+> @@ -90,7 +90,7 @@ static inline bool try_page_mte_tagging(struct page *page)
+>  }
+> 
+>  void mte_zero_clear_page_tags(void *addr);
+> -void mte_sync_tags(pte_t pte);
+> +void mte_sync_tags(pte_t pte, unsigned int nr_pages);
+>  void mte_copy_page_tags(void *kto, const void *kfrom);
+>  void mte_thread_init_user(void);
+>  void mte_thread_switch(struct task_struct *next);
+> @@ -122,7 +122,7 @@ static inline bool try_page_mte_tagging(struct page *page)
+>  static inline void mte_zero_clear_page_tags(void *addr)
+>  {
+>  }
+> -static inline void mte_sync_tags(pte_t pte)
+> +static inline void mte_sync_tags(pte_t pte, unsigned int nr_pages)
+>  {
+>  }
+>  static inline void mte_copy_page_tags(void *kto, const void *kfrom)
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 7f7d9b1df4e5..68984ba9ce2a 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -325,8 +325,7 @@ static inline void __check_safe_pte_update(struct mm_struct *mm, pte_t *ptep,
+>  		     __func__, pte_val(old_pte), pte_val(pte));
+>  }
+> 
+> -static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+> -				pte_t *ptep, pte_t pte)
+> +static inline void __sync_cache_and_tags(pte_t pte, unsigned int nr_pages)
+>  {
+>  	if (pte_present(pte) && pte_user_exec(pte) && !pte_special(pte))
+>  		__sync_icache_dcache(pte);
+> @@ -339,20 +338,18 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+>  	 */
+>  	if (system_supports_mte() && pte_access_permitted(pte, false) &&
+>  	    !pte_special(pte) && pte_tagged(pte))
+> -		mte_sync_tags(pte);
+> -
+> -	__check_safe_pte_update(mm, ptep, pte);
+> -
+> -	set_pte(ptep, pte);
+> +		mte_sync_tags(pte, nr_pages);
+>  }
+> 
+>  static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+>  			      pte_t *ptep, pte_t pte, unsigned int nr)
+>  {
+>  	page_table_check_ptes_set(mm, ptep, pte, nr);
+> +	__sync_cache_and_tags(pte, nr);
+> 
+>  	for (;;) {
+> -		__set_pte_at(mm, addr, ptep, pte);
+> +		__check_safe_pte_update(mm, ptep, pte);
+> +		set_pte(ptep, pte);
+>  		if (--nr == 0)
+>  			break;
+>  		ptep++;
+> @@ -531,18 +528,28 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
+>  #define pud_pfn(pud)		((__pud_to_phys(pud) & PUD_MASK) >> PAGE_SHIFT)
+>  #define pfn_pud(pfn,prot)	__pud(__phys_to_pud_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
+> 
+> +static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, pte_t pte, unsigned int nr)
+> +{
+> +	__sync_cache_and_tags(pte, nr);
+> +	__check_safe_pte_update(mm, ptep, pte);
+> +	set_pte(ptep, pte);
+> +}
+> +
+>  static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
+>  			      pmd_t *pmdp, pmd_t pmd)
+>  {
+>  	page_table_check_pmd_set(mm, pmdp, pmd);
+> -	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd));
+> +	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd),
+> +						PMD_SIZE >> PAGE_SHIFT);
+>  }
+> 
+>  static inline void set_pud_at(struct mm_struct *mm, unsigned long addr,
+>  			      pud_t *pudp, pud_t pud)
+>  {
+>  	page_table_check_pud_set(mm, pudp, pud);
+> -	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud));
+> +	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud),
+> +						PUD_SIZE >> PAGE_SHIFT);
+>  }
+> 
+>  #define __p4d_to_phys(p4d)	__pte_to_phys(p4d_pte(p4d))
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index 4edecaac8f91..2fb5e7a7a4d5 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -35,10 +35,10 @@ DEFINE_STATIC_KEY_FALSE(mte_async_or_asymm_mode);
+>  EXPORT_SYMBOL_GPL(mte_async_or_asymm_mode);
+>  #endif
+> 
+> -void mte_sync_tags(pte_t pte)
+> +void mte_sync_tags(pte_t pte, unsigned int nr_pages)
+>  {
+>  	struct page *page = pte_page(pte);
+> -	long i, nr_pages = compound_nr(page);
+> +	unsigned int i;
+> 
+>  	/* if PG_mte_tagged is set, tags have already been initialised */
+>  	for (i = 0; i < nr_pages; i++, page++) {
+> --
+> 2.25.1
+> 
 
