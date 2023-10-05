@@ -2,347 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F21D7B9E7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E984C7BA0DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbjJEOH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33924 "EHLO
+        id S240228AbjJEOsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232029AbjJEOFR (ORCPT
+        with ESMTP id S240091AbjJEOox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:05:17 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on20601.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eae::601])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8964EF8;
-        Wed,  4 Oct 2023 22:27:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GtUEfG/BvQq8qcTEYqI9uCEhLiuhljSYW2o6fIux2fjxvIMpOWgq2emAL1tn+4q9Ujexm9hzMgBizJ+F1PS4gnMvGdQGw25hC3uJiiXzFbQs9hmL7EuqGv4uSwEb7uDrfNa3+CxAu1fDFP3dU7QNLrXn5qXjRFtrAT+I1eyxaOLUVAM0eIXwqk4yRWos/UePGjPNEEA2IYrsGJpjZ3sY1BnXGEElSt4U6/KVG0Nq8DmTIl5WCqwZYUL1G31PkOI5QW2rQL4V63ihKjD6iGoi6jiPezmWo8nwEPWFqW8KXywKG3ZfHnP3/qvFAm5ziRqORaIYwoHUqEdOSg9X7+aRlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pasd/eTIvhNEgyrJP1iQxHoAyNdcqhtMCtq+P5vd+XY=;
- b=ZK5+/SAzOAcnIXwqrhE5Gpc0v9kMt1h0shWz5Bb31C/pusfRVrl7nwyH95BUa9H4MBiGV1iKiPLPryafIqPyfYGfBvbobKe3ErAVLjlYoVFCg60vqW6S6n/CvYEnpVLmsvOU+Qz9P/2NZpgZoitOVQ7mOAXEsUj2TLGj42TMvsrgYC0+18tbv7gUDenJP1/jUJqSKKgsFzK8QOfoY9nt/natoJoToMfjl7ekf9Wi3TII2G9MTqQyqi4yZkqwwRdRH+5OvngmGIzweu/vvmFEc0tAJXoiKo+PImzrEtnL7d8xfdNIIyNVeEafa8wAfGqjXyMSwQSIkRAKm8L7MwGNZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pasd/eTIvhNEgyrJP1iQxHoAyNdcqhtMCtq+P5vd+XY=;
- b=Czc+eeJMh5HHk9pICG1vCPe+lzongqnJGQ8Ua2CcaNUHkkyaVBVcSGtVIikQR/aQ0h/FPJOW+9ltD3ODtNDlino9pdvNvEE+4iAdFeMVScy3yhV9H9lyB7x0/CuB7GiAJ5nka0Na7jzrO0sY9limafH5bhisosEw5f6dzAU32+E=
-Received: from DM6PR06CA0071.namprd06.prod.outlook.com (2603:10b6:5:54::48) by
- PH7PR12MB7843.namprd12.prod.outlook.com (2603:10b6:510:27e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.37; Thu, 5 Oct
- 2023 05:26:53 +0000
-Received: from DS1PEPF00017090.namprd03.prod.outlook.com
- (2603:10b6:5:54:cafe::ee) by DM6PR06CA0071.outlook.office365.com
- (2603:10b6:5:54::48) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.26 via Frontend
- Transport; Thu, 5 Oct 2023 05:26:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS1PEPF00017090.mail.protection.outlook.com (10.167.17.132) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Thu, 5 Oct 2023 05:26:53 +0000
-Received: from sindhu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 5 Oct
- 2023 00:26:46 -0500
-From:   Sandipan Das <sandipan.das@amd.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <x86@kernel.org>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@kernel.org>, <namhyung@kernel.org>, <irogers@google.com>,
-        <adrian.hunter@intel.com>, <tglx@linutronix.de>, <bp@alien8.de>,
-        <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
-        <eranian@google.com>, <ananth.narayan@amd.com>,
-        <ravi.bangoria@amd.com>, <santosh.shukla@amd.com>,
-        <sandipan.das@amd.com>
-Subject: [PATCH v2 6/6] perf vendor events amd: Add Zen 4 memory controller events
-Date:   Thu, 5 Oct 2023 10:53:16 +0530
-Message-ID: <3a7245598265737ae4296fa6b0ab03a51708c502.1696425185.git.sandipan.das@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1696425185.git.sandipan.das@amd.com>
-References: <cover.1696425185.git.sandipan.das@amd.com>
+        Thu, 5 Oct 2023 10:44:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9CE6E91;
+        Thu,  5 Oct 2023 07:22:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2146C43391;
+        Thu,  5 Oct 2023 05:27:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696483656;
+        bh=hXymtCmkQgS1mz4WN4LARQgIXsgfg8oCoZqTgfgSt/M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BbpCpY2Q0zEwY41GucwBsBZTdMge6AGCY7bXU/clMyyCXKJTV0EDLKXZQhP6Gmvyb
+         i7tzzZViGYUX1/BLXHrp9MgUNcssHkKZ+E07sMIo2XQd9Xhgj8wBFQLGyOjD2kEs17
+         PxOhx0u+oKdQ8lrzOhlumXDQrrVIpZHitXF+j0a79GixClpVIz2eZl61qc1UDcG73I
+         FDMmfOiG2H8IzEuKKw/M7PogaSgM8X2WZc5kjl+Dp1+hjjwCugO78vBqHSBJRgrtI8
+         iiiR0aNTydrnms7VNPMV5M6X+tEx0k+2XJsejW9H5dww52kR9ESsW7JTvRKWQR81qv
+         y9fkPnEwbon1w==
+Date:   Thu, 5 Oct 2023 08:26:22 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "bjorn@kernel.org" <bjorn@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "hca@linux.ibm.com" <hca@linux.ibm.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
+        "puranjay12@gmail.com" <puranjay12@gmail.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
+        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
+        "linux-trace-kernel@vger.kernel.org" 
+        <linux-trace-kernel@vger.kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "dinguyen@kernel.org" <dinguyen@kernel.org>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "song@kernel.org" <song@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 03/13] mm/execmem, arch: convert simple overrides of
+ module_alloc to execmem
+Message-ID: <20231005052622.GD3303@kernel.org>
+References: <20230918072955.2507221-1-rppt@kernel.org>
+ <20230918072955.2507221-4-rppt@kernel.org>
+ <607927885bb8ca12d4cd5787f01207c256cc8798.camel@intel.com>
+ <00277a3acb36d2309156264c7e8484071bc91614.camel@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF00017090:EE_|PH7PR12MB7843:EE_
-X-MS-Office365-Filtering-Correlation-Id: cc401e67-02ee-4c97-91ac-08dbc563af00
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HCBhQ7AIZhjFLuErfBbZlE1aoyUuGwRUyU3LixzxCpjX/54fhdtwr8nEyJk3zK7g73NLdDJLRxs3w6MvhFZFPfdOn0jAFXdoxvySMDXqtLStqJIC/nxb7QviL2jIQKVOoU7PzJpJxjw2EBAiUFuYxeIUzYCXALgF+Vklp6jODzeIz4YI0fW+v96dV9SHfkjwUqTqmadoZoAAQNhLi0xtcrzKft/GzegtqOsU7syn2KE9Edp+l3CIziCupg+zL5SrApUSysaY3B5kX0MzT9E0cqMgW1zkvyoLkZA+yJFUfxMC9aAmiH7j8S/WSI7pdKWbn2K577ppJ8mud8xov0MfdbleGONjBIl3uiNxHII9bhB/Zw/q1onstAlnOWePfD68aizXEtJe9i9t/wOn/wRSxw34xpv2wjG4QAkfCRb+1F2q6cRifr17FtojsWNWWWwhSGrU/+RzEFQMjn7QuDAS09w+akuAa4UwC625i5z8atNXoJKlS92hGxZW01lL6p39W9ua+HySK+ZBla7mV6xVqJSCeXxaa1SWA8/4q6xCSnL//A/+d4JGvp7jXGPXpw1zvoOAiUYpZdxGmWwJCQz0mWZ0yZuoYSXz4rBHXpW3gsNLeRoZQKMXfRx7pVqX8Sakh+o4vMIlouCauIwIsm16l+xEJDijdPW7zrHJm3O9czI2mYcMP5nDPoNS74KX41KtVhnlHuJMPLoz1ejOQQ8c3xhX2tbTeb1B+dbtRhIJYUT76zOvrHe5zZVQlStNz0xE1g3DA8K2+5cuFWrSWPTuPA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(82310400011)(1800799009)(451199024)(64100799003)(186009)(40470700004)(36840700001)(46966006)(7416002)(44832011)(5660300002)(8676002)(2906002)(4326008)(8936002)(41300700001)(70206006)(70586007)(2616005)(316002)(40460700003)(54906003)(110136005)(36860700001)(40480700001)(26005)(336012)(426003)(6666004)(36756003)(7696005)(16526019)(356005)(81166007)(82740400003)(83380400001)(86362001)(47076005)(478600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 05:26:53.0760
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc401e67-02ee-4c97-91ac-08dbc563af00
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017090.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7843
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00277a3acb36d2309156264c7e8484071bc91614.camel@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make the jevents parser aware of the Unified Memory Controller (UMC) PMU
-and add events taken from Section 8.2.1 "UMC Performance Monitor Events"
-of the Processor Programming Reference (PPR) for AMD Family 19h Model 11h
-processors. The events capture UMC command activity such as CAS, ACTIVATE,
-PRECHARGE etc. while the metrics derive data bus utilization and memory
-bandwidth out of these events.
+On Wed, Oct 04, 2023 at 03:39:26PM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2023-10-03 at 17:29 -0700, Rick Edgecombe wrote:
+> > It seems a bit weird to copy all of this. Is it trying to be faster
+> > or
+> > something?
+> > 
+> > Couldn't it just check r->start in execmem_text/data_alloc() path and
+> > switch to EXECMEM_DEFAULT if needed then? The execmem_range_is_data()
+> > part that comes later could be added to the logic there too. So this
+> > seems like unnecessary complexity to me or I don't see the reason.
+> 
+> I guess this is a bad idea because if you have the full size array
+> sitting around anyway you might as well use it and reduce the
+> exec_mem_alloc() logic.
 
-Signed-off-by: Sandipan Das <sandipan.das@amd.com>
-Acked-by: Ian Rogers <irogers@google.com>
----
- .../arch/x86/amdzen4/memory-controller.json   | 101 ++++++++++++++++++
- .../arch/x86/amdzen4/recommended.json         |  84 +++++++++++++++
- tools/perf/pmu-events/jevents.py              |   2 +
- 3 files changed, 187 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/x86/amdzen4/memory-controller.json
+That's was the idea, indeed. :)
 
-diff --git a/tools/perf/pmu-events/arch/x86/amdzen4/memory-controller.json b/tools/perf/pmu-events/arch/x86/amdzen4/memory-controller.json
-new file mode 100644
-index 000000000000..55263e5e4f69
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/x86/amdzen4/memory-controller.json
-@@ -0,0 +1,101 @@
-+[
-+  {
-+    "EventName": "umc_mem_clk",
-+    "PublicDescription": "Number of memory clock cycles.",
-+    "EventCode": "0x00",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_act_cmd.all",
-+    "PublicDescription": "Number of ACTIVATE commands sent.",
-+    "EventCode": "0x05",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_act_cmd.rd",
-+    "PublicDescription": "Number of ACTIVATE commands sent for reads.",
-+    "EventCode": "0x05",
-+    "RdWrMask": "0x1",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_act_cmd.wr",
-+    "PublicDescription": "Number of ACTIVATE commands sent for writes.",
-+    "EventCode": "0x05",
-+    "RdWrMask": "0x2",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_pchg_cmd.all",
-+    "PublicDescription": "Number of PRECHARGE commands sent.",
-+    "EventCode": "0x06",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_pchg_cmd.rd",
-+    "PublicDescription": "Number of PRECHARGE commands sent for reads.",
-+    "EventCode": "0x06",
-+    "RdWrMask": "0x1",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_pchg_cmd.wr",
-+    "PublicDescription": "Number of PRECHARGE commands sent for writes.",
-+    "EventCode": "0x06",
-+    "RdWrMask": "0x2",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_cas_cmd.all",
-+    "PublicDescription": "Number of CAS commands sent.",
-+    "EventCode": "0x0a",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_cas_cmd.rd",
-+    "PublicDescription": "Number of CAS commands sent for reads.",
-+    "EventCode": "0x0a",
-+    "RdWrMask": "0x1",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_cas_cmd.wr",
-+    "PublicDescription": "Number of CAS commands sent for writes.",
-+    "EventCode": "0x0a",
-+    "RdWrMask": "0x2",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_data_slot_clks.all",
-+    "PublicDescription": "Number of clocks used by the data bus.",
-+    "EventCode": "0x14",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_data_slot_clks.rd",
-+    "PublicDescription": "Number of clocks used by the data bus for reads.",
-+    "EventCode": "0x14",
-+    "RdWrMask": "0x1",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  },
-+  {
-+    "EventName": "umc_data_slot_clks.wr",
-+    "PublicDescription": "Number of clocks used by the data bus for writes.",
-+    "EventCode": "0x14",
-+    "RdWrMask": "0x2",
-+    "PerPkg": "1",
-+    "Unit": "UMCPMC"
-+  }
-+]
-diff --git a/tools/perf/pmu-events/arch/x86/amdzen4/recommended.json b/tools/perf/pmu-events/arch/x86/amdzen4/recommended.json
-index 5e6a793acf7b..96e06401c6cb 100644
---- a/tools/perf/pmu-events/arch/x86/amdzen4/recommended.json
-+++ b/tools/perf/pmu-events/arch/x86/amdzen4/recommended.json
-@@ -330,5 +330,89 @@
-     "MetricGroup": "data_fabric",
-     "PerPkg": "1",
-     "ScaleUnit": "6.103515625e-5MiB"
-+  },
-+  {
-+    "MetricName": "umc_data_bus_utilization",
-+    "BriefDescription": "Memory controller data bus utilization.",
-+    "MetricExpr": "d_ratio(umc_data_slot_clks.all / 2, umc_mem_clk)",
-+    "MetricGroup": "memory_controller",
-+    "PerPkg": "1",
-+    "ScaleUnit": "100%"
-+  },
-+  {
-+    "MetricName": "umc_cas_cmd_rate",
-+    "BriefDescription": "Memory controller CAS command rate.",
-+    "MetricExpr": "d_ratio(umc_cas_cmd.all * 1000, umc_mem_clk)",
-+    "MetricGroup": "memory_controller",
-+    "PerPkg": "1"
-+  },
-+  {
-+    "MetricName": "umc_cas_cmd_read_ratio",
-+    "BriefDescription": "Ratio of memory controller CAS commands for reads.",
-+    "MetricExpr": "d_ratio(umc_cas_cmd.rd, umc_cas_cmd.all)",
-+    "MetricGroup": "memory_controller",
-+    "PerPkg": "1",
-+    "ScaleUnit": "100%"
-+  },
-+  {
-+    "MetricName": "umc_cas_cmd_write_ratio",
-+    "BriefDescription": "Ratio of memory controller CAS commands for writes.",
-+    "MetricExpr": "d_ratio(umc_cas_cmd.wr, umc_cas_cmd.all)",
-+    "MetricGroup": "memory_controller",
-+    "PerPkg": "1",
-+    "ScaleUnit": "100%"
-+  },
-+  {
-+    "MetricName": "umc_mem_read_bandwidth",
-+    "BriefDescription": "Estimated memory read bandwidth.",
-+    "MetricExpr": "(umc_cas_cmd.rd * 64) / 1e6 / duration_time",
-+    "MetricGroup": "memory_controller",
-+    "PerPkg": "1",
-+    "ScaleUnit": "1MB/s"
-+  },
-+  {
-+    "MetricName": "umc_mem_write_bandwidth",
-+    "BriefDescription": "Estimated memory write bandwidth.",
-+    "MetricExpr": "(umc_cas_cmd.wr * 64) / 1e6 / duration_time",
-+    "MetricGroup": "memory_controller",
-+    "PerPkg": "1",
-+    "ScaleUnit": "1MB/s"
-+  },
-+  {
-+    "MetricName": "umc_mem_bandwidth",
-+    "BriefDescription": "Estimated combined memory bandwidth.",
-+    "MetricExpr": "(umc_cas_cmd.all * 64) / 1e6 / duration_time",
-+    "MetricGroup": "memory_controller",
-+    "PerPkg": "1",
-+    "ScaleUnit": "1MB/s"
-+  },
-+  {
-+    "MetricName": "umc_cas_cmd_read_ratio",
-+    "BriefDescription": "Ratio of memory controller CAS commands for reads.",
-+    "MetricExpr": "d_ratio(umc_cas_cmd.rd, umc_cas_cmd.all)",
-+    "MetricGroup": "memory_controller",
-+    "PerPkg": "1",
-+    "ScaleUnit": "100%"
-+  },
-+  {
-+    "MetricName": "umc_cas_cmd_rate",
-+    "BriefDescription": "Memory controller CAS command rate.",
-+    "MetricExpr": "d_ratio(umc_cas_cmd.all * 1000, umc_mem_clk)",
-+    "MetricGroup": "memory_controller",
-+    "PerPkg": "1"
-+  },
-+  {
-+    "MetricName": "umc_activate_cmd_rate",
-+    "BriefDescription": "Memory controller ACTIVATE command rate.",
-+    "MetricExpr": "d_ratio(umc_act_cmd.all * 1000, umc_mem_clk)",
-+    "MetricGroup": "memory_controller",
-+    "PerPkg": "1"
-+  },
-+  {
-+    "MetricName": "umc_precharge_cmd_rate",
-+    "BriefDescription": "Memory controller PRECHARGE command rate.",
-+    "MetricExpr": "d_ratio(umc_pchg_cmd.all * 1000, umc_mem_clk)",
-+    "MetricGroup": "memory_controller",
-+    "PerPkg": "1"
-   }
- ]
-diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-index 72ba4a9239c6..ff202e0b7b0a 100755
---- a/tools/perf/pmu-events/jevents.py
-+++ b/tools/perf/pmu-events/jevents.py
-@@ -286,6 +286,7 @@ class JsonEvent:
-           'imx8_ddr': 'imx8_ddr',
-           'L3PMC': 'amd_l3',
-           'DFPMC': 'amd_df',
-+          'UMCPMC': 'amd_umc',
-           'cpu_core': 'cpu_core',
-           'cpu_atom': 'cpu_atom',
-           'ali_drw': 'ali_drw',
-@@ -345,6 +346,7 @@ class JsonEvent:
-         ('Invert', 'inv='),
-         ('SampleAfterValue', 'period='),
-         ('UMask', 'umask='),
-+        ('RdWrMask', 'rdwrmask='),
-     ]
-     for key, value in event_fields:
-       if key in jd and jd[key] != '0':
+> Just looking at it from the x86 side (and
+> similar) though, where there is actually only one execmem_range and it
+> building this whole array with identical data and it seems weird.
+
+Right, most architectures have only one range, but to support all variants
+that we have, execmem has to maintain the whole array.
+
 -- 
-2.34.1
-
+Sincerely yours,
+Mike.
