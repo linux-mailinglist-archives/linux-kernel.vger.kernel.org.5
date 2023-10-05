@@ -2,158 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5287BAAA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319907BAAAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbjJETsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:48:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
+        id S231726AbjJETsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjJETsA (ORCPT
+        with ESMTP id S231674AbjJETsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 15:48:00 -0400
-Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2292E4
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:47:58 -0700 (PDT)
-Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6c6373a4aa7so1806790a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:47:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696535278; x=1697140078;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+rJYWdpX39fnELsnaA+2kd6nQscj6bBDfjIPgrB9Ju0=;
-        b=us7D5E9qXSP2IrWon0x1ApZMp1ZSzTrCBRxQmXzp9XnSRPyvPSQ4QuGVX/gweecyL0
-         tIfxssLRU6ogTgB+XXyZa7DILkf5SsZcOCf1mxeQP6KGW1cimAP4B49I1D1zHUsM4trt
-         pyyRZes8wHPow+OIKX4RNH8wJis+7vdMhrFwN0z//IN53pr1YZbWs1gf8zUPDRJM1/WJ
-         KeL+5nXYbM3OjT/h0rnAVmE+EzNATMHV0RNl9RT1c1hO0ENysEvNos1i8fo6yQVS+mtM
-         I0x7/z8K13m0OKPPW7Z1LBPA1t6VVz1FQEzuZYAioSMO6KOGDvoNIIgxCjqS8/8jaGnm
-         erng==
-X-Gm-Message-State: AOJu0Yw6Nqzerzj9Zey89I7ULMNw37UIJXk/z0zoxCDgRu1uk0ZqvXin
-        QJSNdVf8LOwINw751ibN/LjgAkkDQNULyO0K/Vrx3dLHPEQm
-X-Google-Smtp-Source: AGHT+IFUijQ5HWSsoSG3N0LC7VwaXmm+icbh/NGey9Tl9HOTXcuEWtAJ9WROrzOwSqClh5RBXfvO6mNgx1M4GTSql85R+ljbkhRO
+        Thu, 5 Oct 2023 15:48:12 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0698AEB
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:48:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Qpf1+WmV+JGF4Y+0ho5iyK/Z6DvzFlJqZ0TtxPTJ/LQpWg6okA4r0lY4v7j7uzqfWnDnAe6XdvtjZJS+UFtAKeoYUZ8FzB8E+XQqDNTBWL8n7yqHnz4laETy/TQIEkmkg7zbjmIboK4rp6sNsQNmcnZNgL9KVX9guYHeRTeNLSw0b7trpWGJFv2cHdyl63dfUpxyZGG2Wsk8qwuxM5Q3bMYWTitirNChgRjAtgojMS79xmDekgtQnioUhN9iHmUI6Uc9V9mVQHv6vxQ7kjVql2c99q94t/KeFvPn2yYeq8Kq0bQxy0YyaeB95b6obop0EpSD8ANetbkj7aWK+W2kOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1kDqyYkG0M5sYUrJ+pD4Sm0sR8pMhzC0qzxsYAfpiyY=;
+ b=b7aLibb2tuhB42rkOiE69PEsUdsJHcsamBl14AcFLD2Gz8sJLeKRiTErWMAMwMd1l4P++mXKB6kacLLD48Wq3qDGC4SuiN+J1PWczorC6LwJSoYuGK426lJRY9MQjAbftFuuAXV0NrsVFv6H50vVhUWCfvZCf2gBbldvY17S8qn9JnxnOVWO/1VC+TYshrm1dD0WOipQNzIENS9Kn3Oy5wT8Uc0Lfq1zMbBiilAZ4NMx+E6MXJBmDFfWsj02a2tmhFIOA2407o/y0hwVBSFFDh2Px69h6F2Vnq1q+rnWlrh43V4KAzVwwZFI7oBNNVQikNJtzJiXBNgOBKJHon/b8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1kDqyYkG0M5sYUrJ+pD4Sm0sR8pMhzC0qzxsYAfpiyY=;
+ b=NZYf2cm5hdc1/2E9Z5fiUMnb7/7PC+iVSdyvh9F+V49Nqa2pjt9aRqKDwtRvD72DHoob069znqXElR0WqrsXajho2dEDdOshD6WBtbiw0343xlpV47n/9N8iDeF/2B7GZ761NfDEeGLngPKyycrL/k65fg16B/rMJL8F+2epQ2A=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
+ by BL0PR12MB4867.namprd12.prod.outlook.com (2603:10b6:208:17e::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.35; Thu, 5 Oct
+ 2023 19:48:07 +0000
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::2e40:ffd7:e752:644f]) by BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::2e40:ffd7:e752:644f%6]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
+ 19:48:07 +0000
+Message-ID: <a6edf388-3000-404a-a4a1-acab7a9df1d9@amd.com>
+Date:   Thu, 5 Oct 2023 15:48:04 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/1] drm/amdkfd: get doorbell's absolute offset based
+ on the db_size
+Content-Language: en-US
+To:     Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
+        alexander.deucher@amd.com, shashank.sharma@amd.com,
+        Mukul.Joshi@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231005172011.9271-1-Arvind.Yadav@amd.com>
+ <20231005172011.9271-2-Arvind.Yadav@amd.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Organization: AMD Inc.
+In-Reply-To: <20231005172011.9271-2-Arvind.Yadav@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR0101CA0147.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:e::20) To BN9PR12MB5115.namprd12.prod.outlook.com
+ (2603:10b6:408:118::14)
 MIME-Version: 1.0
-X-Received: by 2002:a9d:7dcf:0:b0:6c4:7e6c:cb4e with SMTP id
- k15-20020a9d7dcf000000b006c47e6ccb4emr1782895otn.5.1696535278207; Thu, 05 Oct
- 2023 12:47:58 -0700 (PDT)
-Date:   Thu, 05 Oct 2023 12:47:58 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009b49ce0606fd665a@google.com>
-Subject: [syzbot] [ntfs3?] WARNING in attr_data_get_block (3)
-From:   syzbot <syzbot+a9850b21d99643eadbb8@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com,
-        clang-built-linux@googlegroups.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, ntfs3@lists.linux.dev,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|BL0PR12MB4867:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7dad04c4-a388-4571-4a5f-08dbc5dbff40
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4OlICpsw8CmzW0+WpVJKZvAQ7LYoM7DUU0AvzSvhmK+p2gl9OAvZQlQUOrzHns+LQ/jQTSsMDmonzxaJLKJ2Nr9qt8OmwVh62536GzOws/k44igoQ3XsQCOOsP3Mtil+a7T/IXSD401BcYzoqpv1HfFPUVxNsscvdWSAUl2uBb9IT6Z+2omhSL1ep6muJf7E++tGZFF6TGUui2PArZdwQVvR9fOI6BgoAG7/JdtEM0BjqTXiQvQLd5/jGeslgna6kaBU/OeHnWG55PFL0DNBw7wtKJvqk5RX5jx7uSziPJkddOF96nzdKfSBTSHiwkYFOGeutKhQnyqxo17+qQiBddWPFhyxWgfBFVun0vjloZB3C6IkbAmTH5NjXSQpsxuTJgUz5IEW/3NGbo0+WyC7T/KbC3JYBvsX3oT+YtPEj9WviUJmj+2K00pD7ekLrbv6zAn944WIgfqqO37JHrJ1LqB5c/w33MGe2+kCNjCSlSqszdd5Wlq7TqYzJENptZhQW7KqqvWFY1p0AHUyOnO+eUA7SzvUeMbp9M5S5DGUXkVyuBjdksb3L54bzBRzTiPixcxBKyvJ1NMPQkqgoLE0b5hpNxg7k5S4Ax5W+mfX3FcPijp8/wZtQiSfBNrstwpwyiALjWgqvcq4yG2uL0otWQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(366004)(136003)(346002)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(53546011)(6512007)(86362001)(31686004)(38100700002)(83380400001)(31696002)(26005)(2616005)(6486002)(478600001)(6506007)(6666004)(36916002)(66476007)(66556008)(66946007)(5660300002)(2906002)(44832011)(36756003)(316002)(41300700001)(8936002)(8676002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?czBua255VGtQakQ3ZHd4OE5FUkNMamJoMXZyTEFkYWI0cDhSSGNZY3hRano2?=
+ =?utf-8?B?RlRKcDUzZWt4dTlJZEVWSStaR2FtamxtUFhteG5OOHd5OU4rWkx0T0FQRDRC?=
+ =?utf-8?B?UW5ObVZ6Z1lOWTlhVGRnQ3dEVWNiRjB5dWl1WFBlMUNTdHhVaUl1UjZoM3pL?=
+ =?utf-8?B?SDNIQjY4V3Z1OEtYNHhWYzljMUpxNDJFWWloeDBXcTZWVVcxcGE5WVE2djJ2?=
+ =?utf-8?B?VGtFa3BXVS8xcXE3U2hVR2JtRXNpcjZDRFJ6dzNUOWt4V2Fvd3IvN21BaFBZ?=
+ =?utf-8?B?UnFQak5tNVZ2MWFZdWgwODhFN3pXcWlQUnJuaDM3UWZtM0NPclRIWUFsT0hQ?=
+ =?utf-8?B?dzJPUTgya3hJWWhYYTZtSUZtUUwySTlzeGxEQ1hZajdNUXhNVjJQN05vQnpy?=
+ =?utf-8?B?UmkxVk1lMTd2WHZmM09Mc2g2QnhlM2RoQy9Kcm9iMXFrakpFRXUrRlN4akdE?=
+ =?utf-8?B?NUJxY290NnY3TXVadUFzQ1grVzI2bXBheVpmd0kvbFlQYW5Jc0ZLcEtQd1hL?=
+ =?utf-8?B?MFhwR2tYUmhHVmlWQWlFc0FlaTFLejY0SjBuZlgyVm9YcTM0U3ZyTDM1TkFa?=
+ =?utf-8?B?UkRFdDNGd2FLb1hXRmRPUUxVM1V6Rys2RVYyMEwySXB5cERybEJKQ2kzQzZI?=
+ =?utf-8?B?SGpvMldKeVZqU0Y4WTZXZjFUOFNxRU9kcG5TS2pXS1hoaFNDSjVmOWVyRXY2?=
+ =?utf-8?B?Wk83bEpCbnEwTlovU3ovdU8rYkQyY1ZuS1IzazNsa0J4dUJ3WTNycDRFRzBN?=
+ =?utf-8?B?U1ZqSWlQeVN5bWxzVFF5RjY2c0h6ZU9CZ2x2c21qYzc2V1JiSVpPclcrblNY?=
+ =?utf-8?B?OWducVA4RWJjaFV1LzR4TjQzUDNiNFBtL2xXWEQ1aTBoK3JhZ2k5bmtBVzNM?=
+ =?utf-8?B?SmJVZHUxN1ZpY1poRGFMREdvdEhoZ0xIY254cjN3T0YxV3ZPZTZNcUwzc3hW?=
+ =?utf-8?B?RDE3b1BBMW9IcUlydE9BMnZ5b2xLWmJONUYvSVluRVlORWp6WmVxRmlURzdM?=
+ =?utf-8?B?UWJ1d04yMGY2enZoUnFMRlozUExneU1rVDMwckszQlRQbUhwWXcwc2JEcUFX?=
+ =?utf-8?B?cUJidXFRTktCak1qdlNVVW85Q3NVclNUcjNxUUFmT2dYcDZ4blFYdHk4MlhJ?=
+ =?utf-8?B?WXZxeWgwSWdXQnhXbG5HRGViMkxKWUdGeExLNmpLNFJjOTV4TjZLYzhvdTQ3?=
+ =?utf-8?B?L0s5SHpRTmk1c1QyOXNCL3dYd2JzUHZocVVmUXBLdEhlQnRGK1ZiQVM1RnBP?=
+ =?utf-8?B?UmZIZWF3dkdvYTdCNU05dnRCcGZuVWh1STVVVDh5cm45bkRHU0JqQnhJa3Rj?=
+ =?utf-8?B?YlZPaEhzbisyZWNQVm1Ba0N0bHpUT2R6K0N3QytHMUdDVGlwRjlBdWlTcXNq?=
+ =?utf-8?B?dm5OMW0vWllmR096RFpLTTdYNDB1NnI2bU1xUW9OVkQwc1dQYnRxbnNXWDA5?=
+ =?utf-8?B?R1lIOFR0QXkvQlE1eXhGSkI1d1gvM2tub05tVHdvc3ozeVVmL09mcitzaXo4?=
+ =?utf-8?B?WmVGSEEwR3E4NG9QK2QrUVBHNkVDay9lTTlJR1krRVljayt0c09lc2tlakNG?=
+ =?utf-8?B?MjNoRi85Ylc2dDhMRmVadCs4SjVDK1pabjJWZGdhUFo2THhUMFdEaXI3d2l6?=
+ =?utf-8?B?Y05pOTZFZ3J0OFZJRTlFY0xkQVIrb1B3a2dZQUZET0RVaTEwQlA0ZmNqbTQw?=
+ =?utf-8?B?ZWMvU2VkQWx6VEw0RkRuditwRmdRR0x1SGhVckgxd1RVOElKOXlBU3Zpblda?=
+ =?utf-8?B?M2FNLzYzSzhtM2VxaGswb0lWdU1LR2J0N1lSS3d3SnpIenNhV0lLaTlqcVNT?=
+ =?utf-8?B?bVEzZGdZOWFVdEtvT2paU2MxN2N5L1dhYWtlUE1nbXlqL0dMV1I5b3lMWFNQ?=
+ =?utf-8?B?dG5sYktYYjVUWUtNcHh1aVFlaHRHWW1mSTRWNjRPWVR6VmZiMmU2UFMydGdS?=
+ =?utf-8?B?UnMvSGNMajJUNGtCL2ZLZ2lPMzF5K0NWNCtKeUxUbndGZTBuQk12SGlwUS8r?=
+ =?utf-8?B?RnBzOC8zM3ZGTERQSVM2czJia2lZeXMwUUJNVnZVb3pJVTl3T3JJc1daOFhE?=
+ =?utf-8?B?Y2ZrQUJTT1RWY0tGaWx6aGVpb09DTStYSFdaT2Q4Qit4UXkxS1hKZWxhMjVs?=
+ =?utf-8?Q?mE6WdrXqJ+3NI5jb8zDmrsfbX?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7dad04c4-a388-4571-4a5f-08dbc5dbff40
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 19:48:07.6329
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +tAV2J3U9wmHmoV043Lehi/2mA9Q4E9RrCW4Jwv/nInMffZa7kSMN4QV48tbdt32nADDx7KYcVUSds+E5OdazQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4867
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2023-10-05 13:20, Arvind Yadav wrote:
+> Here, Adding db_size in byte to find the doorbell's
+> absolute offset for both 32-bit and 64-bit doorbell sizes.
+> So that doorbell offset will be aligned based on the doorbell
+> size.
+>
+> v2:
+> - Addressed the review comment from Felix.
+> v3:
+> - Adding doorbell_size as parameter to get db absolute offset.
+> v4:
+>    Squash the two patches into one.
+>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
+> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
 
-syzbot found the following issue on:
-
-HEAD commit:    e402b08634b3 Merge tag 'soc-fixes-6.6' of git://git.kernel..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=111e0d01680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=12da82ece7bf46f9
-dashboard link: https://syzkaller.appspot.com/bug?extid=a9850b21d99643eadbb8
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12b684e6680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10ede4d6680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/41cd2d7ae4a2/disk-e402b086.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/06c5c0caa862/vmlinux-e402b086.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/483b777ed71c/bzImage-e402b086.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/f17ff5020b6d/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/6aff89451d15/mount_2.gz
-
-The issue was bisected to:
-
-commit 6e5be40d32fb1907285277c02e74493ed43d77fe
-Author: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Date:   Fri Aug 13 14:21:30 2021 +0000
-
-    fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15f20a7c680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17f20a7c680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13f20a7c680000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a9850b21d99643eadbb8@syzkaller.appspotmail.com
-Fixes: 6e5be40d32fb ("fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile")
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5033 at fs/ntfs3/attrib.c:1059 attr_data_get_block+0x1926/0x2da0
-Modules linked in:
-CPU: 1 PID: 5033 Comm: syz-executor106 Not tainted 6.6.0-rc3-syzkaller-00214-ge402b08634b3 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:attr_data_get_block+0x1926/0x2da0 fs/ntfs3/attrib.c:1059
-Code: 80 e1 07 80 c1 03 38 c1 0f 8c 48 ff ff ff 48 8d bc 24 e0 01 00 00 e8 19 74 18 ff 48 8b 54 24 58 e9 31 ff ff ff e8 ba 01 be fe <0f> 0b bb ea ff ff ff e9 11 fa ff ff e8 a9 01 be fe e9 0f f9 ff ff
-RSP: 0018:ffffc9000406f6a0 EFLAGS: 00010293
-RAX: ffffffff82d008b6 RBX: 00000000ffffffff RCX: ffff888025380000
-RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 00000000ffffffff
-RBP: ffffc9000406f908 R08: ffffffff82d0038f R09: 1ffffffff20df689
-R10: dffffc0000000000 R11: fffffbfff20df68a R12: 1ffff9200080def4
-R13: 000000000000001c R14: ffff888076620140 R15: dffffc0000000000
-FS:  00007f36f9b9c6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f36f9b9cd58 CR3: 0000000026956000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ntfs_fallocate+0xc6d/0x1100 fs/ntfs3/file.c:610
- vfs_fallocate+0x551/0x6b0 fs/open.c:324
- do_vfs_ioctl+0x22da/0x2b40 fs/ioctl.c:850
- __do_sys_ioctl fs/ioctl.c:869 [inline]
- __se_sys_ioctl+0x81/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f37091ff5a9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f36f9b9c218 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000000003f RCX: 00007f37091ff5a9
-RDX: 0000000020000780 RSI: 0000000040305828 RDI: 0000000000000004
-RBP: 00007f37092aa6d8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f37092aa6d0
-R13: 00007f3709277a14 R14: 726665646f747561 R15: 61635f6563617073
- </TASK>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h        |  5 +++--
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c    | 13 +++++++++----
+>   .../gpu/drm/amd/amdkfd/kfd_device_queue_manager.c   |  3 ++-
+>   drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c           | 10 ++++++++--
+>   .../gpu/drm/amd/amdkfd/kfd_process_queue_manager.c  |  3 ++-
+>   5 files changed, 24 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h
+> index 09f6727e7c73..4a8b33f55f6b 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell.h
+> @@ -357,8 +357,9 @@ int amdgpu_doorbell_init(struct amdgpu_device *adev);
+>   void amdgpu_doorbell_fini(struct amdgpu_device *adev);
+>   int amdgpu_doorbell_create_kernel_doorbells(struct amdgpu_device *adev);
+>   uint32_t amdgpu_doorbell_index_on_bar(struct amdgpu_device *adev,
+> -				       struct amdgpu_bo *db_bo,
+> -				       uint32_t doorbell_index);
+> +				      struct amdgpu_bo *db_bo,
+> +				      uint32_t doorbell_index,
+> +				      uint32_t db_size);
+>   
+>   #define RDOORBELL32(index) amdgpu_mm_rdoorbell(adev, (index))
+>   #define WDOORBELL32(index, v) amdgpu_mm_wdoorbell(adev, (index), (v))
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
+> index da4be0bbb446..6690f5a72f4d 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
+> @@ -114,19 +114,24 @@ void amdgpu_mm_wdoorbell64(struct amdgpu_device *adev, u32 index, u64 v)
+>    * @adev: amdgpu_device pointer
+>    * @db_bo: doorbell object's bo
+>    * @db_index: doorbell relative index in this doorbell object
+> + * @db_size: doorbell size is in byte
+>    *
+>    * returns doorbell's absolute index in BAR
+>    */
+>   uint32_t amdgpu_doorbell_index_on_bar(struct amdgpu_device *adev,
+> -				       struct amdgpu_bo *db_bo,
+> -				       uint32_t doorbell_index)
+> +				      struct amdgpu_bo *db_bo,
+> +				      uint32_t doorbell_index,
+> +				      uint32_t db_size)
+>   {
+>   	int db_bo_offset;
+>   
+>   	db_bo_offset = amdgpu_bo_gpu_offset_no_check(db_bo);
+>   
+> -	/* doorbell index is 32 bit but doorbell's size is 64-bit, so *2 */
+> -	return db_bo_offset / sizeof(u32) + doorbell_index * 2;
+> +	/* doorbell index is 32 bit but doorbell's size can be 32 bit
+> +	 * or 64 bit, so *db_size(in byte)/4 for alignment.
+> +	 */
+> +	return db_bo_offset / sizeof(u32) + doorbell_index *
+> +	       DIV_ROUND_UP(db_size, 4);
+>   }
+>   
+>   /**
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+> index 0d3d538b64eb..e07652e72496 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+> @@ -407,7 +407,8 @@ static int allocate_doorbell(struct qcm_process_device *qpd,
+>   
+>   	q->properties.doorbell_off = amdgpu_doorbell_index_on_bar(dev->adev,
+>   								  qpd->proc_doorbells,
+> -								  q->doorbell_id);
+> +								  q->doorbell_id,
+> +								  dev->kfd->device_info.doorbell_size);
+>   	return 0;
+>   }
+>   
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c b/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
+> index 7b38537c7c99..05c74887fd6f 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c
+> @@ -161,7 +161,10 @@ void __iomem *kfd_get_kernel_doorbell(struct kfd_dev *kfd,
+>   	if (inx >= KFD_MAX_NUM_OF_QUEUES_PER_PROCESS)
+>   		return NULL;
+>   
+> -	*doorbell_off = amdgpu_doorbell_index_on_bar(kfd->adev, kfd->doorbells, inx);
+> +	*doorbell_off = amdgpu_doorbell_index_on_bar(kfd->adev,
+> +						     kfd->doorbells,
+> +						     inx,
+> +						     kfd->device_info.doorbell_size);
+>   	inx *= 2;
+>   
+>   	pr_debug("Get kernel queue doorbell\n"
+> @@ -240,7 +243,10 @@ phys_addr_t kfd_get_process_doorbells(struct kfd_process_device *pdd)
+>   			return 0;
+>   	}
+>   
+> -	first_db_index = amdgpu_doorbell_index_on_bar(adev, pdd->qpd.proc_doorbells, 0);
+> +	first_db_index = amdgpu_doorbell_index_on_bar(adev,
+> +						      pdd->qpd.proc_doorbells,
+> +						      0,
+> +						      pdd->dev->kfd->device_info.doorbell_size);
+>   	return adev->doorbell.base + first_db_index * sizeof(uint32_t);
+>   }
+>   
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+> index adb5e4bdc0b2..77649392e233 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+> @@ -377,7 +377,8 @@ int pqm_create_queue(struct process_queue_manager *pqm,
+>   		 */
+>   		uint32_t first_db_index = amdgpu_doorbell_index_on_bar(pdd->dev->adev,
+>   								       pdd->qpd.proc_doorbells,
+> -								       0);
+> +								       0,
+> +								       pdd->dev->kfd->device_info.doorbell_size);
+>   
+>   		*p_doorbell_offset_in_process = (q->properties.doorbell_off
+>   						- first_db_index) * sizeof(uint32_t);
