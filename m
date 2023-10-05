@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 145257BAEB8
+	by mail.lfdr.de (Postfix) with ESMTP id 726547BAEB9
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjJEWQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 18:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
+        id S229800AbjJEWQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 18:16:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJEWQv (ORCPT
+        with ESMTP id S230188AbjJEWQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 18:16:51 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC9FD9
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:16:49 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-405459d9a96so37255e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:16:49 -0700 (PDT)
+        Thu, 5 Oct 2023 18:16:53 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D821C9E;
+        Thu,  5 Oct 2023 15:16:52 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-351367c940cso6348175ab.2;
+        Thu, 05 Oct 2023 15:16:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696544208; x=1697149008; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0bay8cunWQ05UAT3X4nRQGJsULFuIk9d15GtcH157QY=;
-        b=T364UsNnb7nVogvMpdNXn/bH76TAXh5Y8/IWxIy7NMo+VuS4zz8GAy8WzqbDO0GhUl
-         XTlahc36FQeAM1/tOQSZCgPEbe5EOSqNKXoiVzq27f4Vz31oEjJ/kIPTyMlTVKYwT7hD
-         FOHT1vxEu3HRlcHQVMyUEKolli1tgD4Yawvdb2qhQ3EbwCuh/F/SmrBT9CS6XujYBLQ5
-         p+zpSEGdp0Fs0W4s2/s7AoNGoOu0po4fAzhuOehWCSx7TQsAipl/m4C4EIxUTLBqwKpU
-         cdYMj0fMKYCxK9GmJlFEGrGqL3T+kZVVyPpzsC7i+ba4dcIEePgoP2IH7rz4sskmlXgk
-         4p/A==
+        d=gmail.com; s=20230601; t=1696544212; x=1697149012; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6xdUKLPOqUuE2xOAqvscJ4AB6qNam9+2x2WqgjeUiEU=;
+        b=cjafcYSDwzOqZC/RLQMtIsJRXLAVIjtlZxBUN7Ar8DBDps17B4sHYYQazwUtcH9FsV
+         ytCFNmaiBkEfAnjopp/G3S0c+5I2f+zeD+S3hgrFMhMBBhrVnd/LzfRkb1KYbPbCh5BT
+         lTrFXNyoSK2O1fvC682aOqUaV6W1p31t+QaOYiz9LhQQ7BLu48sItqmkepGa2yb9P9Ze
+         WwFMZF3fAdKZf8l2yi3qMlXC0qGMY0faerjajSjg1e8wL11XfJNEAxfQQ0rDBo/W5fVf
+         zbfxv45yGUhNSzTB+XK8W+ggKbiW4Hn2bWosrqlL/6qF6YHLeElrIQaOnHG6TCHnVPc9
+         1tng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696544208; x=1697149008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696544212; x=1697149012;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0bay8cunWQ05UAT3X4nRQGJsULFuIk9d15GtcH157QY=;
-        b=P2n7hQzwg3s0KZRmXlEAMlGYwhgrVAylTNviwASg+/tDxanSYSP44+UJHFwbCcWiDJ
-         sSHmsKKXQpYq9gyqDxse4YsaFZ22oB/aitO/DQceU2b/pcuL8sD08QGjGZt+/v3jb4YB
-         YjGVpnJo+XyVGJLSYuOH2Did9mxORLISR393gq5ljmP2XGLZhFsJqawyD49378oM3VHf
-         m3/uZox2kUZpBXCSxjN02YYT/wS7y4XWh74jMXAIRBmabyjCFIlDUjLv0tTIMi1VqpbC
-         1KdqLwaEymd0xApls9H5JlxdyNVS/rWrSs/t/Yc31gzbYlYshVYosTkuOfTlNt7Utay/
-         657A==
-X-Gm-Message-State: AOJu0YzqtDYGpAxAfJew7Y/qCy1/UeJtZihiwGkLSxq+N9Z1UZGPGxOg
-        NjUVq2L6VBhyfpnP1ijz2h7Wvxb90zqYawpdz8s7jg==
-X-Google-Smtp-Source: AGHT+IHWi11t7vguwOrZMBTZWkQmHmfbxGoF4jE9spm56iseKmLMzmy4X7cgsF8O8H115MZbCjeA3dhxC0ryCXXsYKU=
-X-Received: by 2002:a05:600c:1884:b0:3f6:f4b:d4a6 with SMTP id
- x4-20020a05600c188400b003f60f4bd4a6mr110415wmp.7.1696544208096; Thu, 05 Oct
- 2023 15:16:48 -0700 (PDT)
+        bh=6xdUKLPOqUuE2xOAqvscJ4AB6qNam9+2x2WqgjeUiEU=;
+        b=mMaJ+iwxLl7sC0j0nY9YOqGHU7r6QfjZspNvmeXQR0BqsR5jXjI352jXDE3gHH/UyD
+         xFAkJESmSp+Qr1cuaNkIawg5nAfYoDnJ7vMswjM+zRD6ygIUAlgsW6keVWNuaC3AfnxP
+         93sL2I8ZGWdb3l+7VXIL47ps8ySmphy0EeoxNPxCnoJw/2TZiFZrI2Hq1wicveWQyDTf
+         zzQWzp+P1nfJIM79UIplecShUHEjbXLJfo1lkAkxHRB8vrIkCbKInREbS5OTwRAv2y4s
+         /TbGa0LYl8gTAle4eFkzqvPeJdiWBm8Cwm9Xwv1P7sOr1fU0HG9QRAYk++x2rMpbvbq1
+         pfbw==
+X-Gm-Message-State: AOJu0YwwEWyIAUfrBshJiqolMf90jTG2/vYMzbnmHgVLGhHBgackFr3C
+        LyhnD/2N+9/3u4pzhS7GyHRgWjmWYFA=
+X-Google-Smtp-Source: AGHT+IETd2PYHBWusTq64RYlc8DdrHmJoAoReprpnKGOC870mvvtLHRJYwLh87EM3yYncQLWiq+7vw==
+X-Received: by 2002:a05:6e02:1be4:b0:352:749b:7210 with SMTP id y4-20020a056e021be400b00352749b7210mr7665099ilv.18.1696544212159;
+        Thu, 05 Oct 2023 15:16:52 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v10-20020a02b90a000000b0043167542398sm39135jan.141.2023.10.05.15.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 15:16:51 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 5 Oct 2023 15:16:49 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.5 000/321] 6.5.6-rc1 review
+Message-ID: <f8ea806b-87b4-4eaa-b6c8-1b518fc202d2@roeck-us.net>
+References: <20231004175229.211487444@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20230926205948.1399594-1-irogers@google.com> <8a6b9556-c82c-4253-a4c1-74d696ad26df@linux.intel.com>
-In-Reply-To: <8a6b9556-c82c-4253-a4c1-74d696ad26df@linux.intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 5 Oct 2023 15:16:36 -0700
-Message-ID: <CAP-5=fWk12jKjVmV+aJ_U5A=ao7L1ha-wOHaM+ytO9oF0nP9zA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] perf vendor events intel: Fix broadwellde
- tma_info_system_dram_bw_use metric
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Perry Taylor <perry.taylor@intel.com>,
-        Caleb Biggers <caleb.biggers@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231004175229.211487444@linuxfoundation.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,56 +78,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 6:47=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
-om> wrote:
->
->
->
-> On 2023-09-26 4:59 p.m., Ian Rogers wrote:
-> > Broadwell-de has a consumer core and server uncore. The uncore_arb PMU
-> > isn't present and the broadwellx style cbox PMU should be used
-> > instead. Fix the tma_info_system_dram_bw_use metric to use the server
-> > metric rather than client.
-> >
-> > The associated converter script fix is in:
-> > https://github.com/intel/perfmon/pull/111
-> >
-> > Fixes: 7d124303d620 ("perf vendor events intel: Update broadwell varian=
-t events/metrics")
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
->
-> Thanks Ian. The whole patch series looks good to me.
->
-> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+On Wed, Oct 04, 2023 at 07:52:25PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.5.6 release.
+> There are 321 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+> Anything received after that time might be too late.
+> 
 
-Would be good to pick this up in perf-tools-next.
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 530 pass: 530 fail: 0
 
-Thanks,
-Ian
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-> Thanks,
-> Kan
->
-> >  tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.j=
-son b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> > index 8fc62b8f667d..d0ef46c9bb61 100644
-> > --- a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> > +++ b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> > @@ -652,7 +652,7 @@
-> >      },
-> >      {
-> >          "BriefDescription": "Average external Memory Bandwidth Use for=
- reads and writes [GB / sec]",
-> > -        "MetricExpr": "64 * (arb@event\\=3D0x81\\,umask\\=3D0x1@ + arb=
-@event\\=3D0x84\\,umask\\=3D0x1@) / 1e6 / duration_time / 1e3",
-> > +        "MetricExpr": "64 * (UNC_M_CAS_COUNT.RD + UNC_M_CAS_COUNT.WR) =
-/ 1e9 / duration_time",
-> >          "MetricGroup": "HPC;Mem;MemoryBW;SoC;tma_issueBW",
-> >          "MetricName": "tma_info_system_dram_bw_use",
-> >          "PublicDescription": "Average external Memory Bandwidth Use fo=
-r reads and writes [GB / sec]. Related metrics: tma_fb_full, tma_mem_bandwi=
-dth, tma_sq_full"
+Guenter
