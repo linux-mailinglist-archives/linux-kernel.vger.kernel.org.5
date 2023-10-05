@@ -2,134 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE4D7BA346
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874A77BA196
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236073AbjJEPxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
+        id S239637AbjJEOob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235410AbjJEPvI (ORCPT
+        with ESMTP id S237447AbjJEOjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:51:08 -0400
+        Thu, 5 Oct 2023 10:39:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B716079E;
-        Thu,  5 Oct 2023 07:07:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CA90C116B8;
-        Thu,  5 Oct 2023 09:18:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696497497;
-        bh=er2gV/B0WGFGwTMx3YbhEbm41Uarn24n6lRwoScj7y4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0V/zks3qAJ5nzMioieCIDud+bGbfkFe+9f0mnDo772FRR8YsbFjMw0sctDIrO3PFZ
-         nZV0Gm93NEvl6n/mwYKwei2JXj330Jd4CZOYF9zaTScF7OBP5YMYV5ou3bTpQwWS3Z
-         Q355DK9M+2o0elgzOH08Weh4qq4s6NbYIdTGqF5s=
-Date:   Thu, 5 Oct 2023 11:18:14 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lee Jones <lee@kernel.org>
-Cc:     "Starke, Daniel" <daniel.starke@siemens.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Fedor Pchelkin <pchelkin@ispras.ru>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com" 
-        <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
-Subject: Re: [PATCH 1/1] tty: n_gsm: Avoid sleeping during .write() whilst
- atomic
-Message-ID: <2023100528-directory-arrogant-2ca9@gregkh>
-References: <20231003170020.830242-1-lee@kernel.org>
- <2023100320-immorally-outboard-573a@gregkh>
- <DB9PR10MB588170E923A6ED8B3D6D9613E0CBA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM>
- <2023100421-negotiate-stammer-1b35@gregkh>
- <20231004085720.GA9374@google.com>
- <2023100448-cotton-safehouse-aca2@gregkh>
- <20231004125704.GA83257@google.com>
- <2023100435-xerox-idiocy-5cf0@gregkh>
- <20231005090311.GD83257@google.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B4A76AD;
+        Thu,  5 Oct 2023 07:07:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC1B4C116B9;
+        Thu,  5 Oct 2023 09:18:52 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     kvm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [GIT PULL] LoongArch KVM changes for v6.7
+Date:   Thu,  5 Oct 2023 17:18:25 +0800
+Message-Id: <20231005091825.3207300-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005090311.GD83257@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 10:03:11AM +0100, Lee Jones wrote:
-> On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
-> 
-> > On Wed, Oct 04, 2023 at 01:57:04PM +0100, Lee Jones wrote:
-> > > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
-> > > 
-> > > > On Wed, Oct 04, 2023 at 09:57:20AM +0100, Lee Jones wrote:
-> > > > > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
-> > > > > 
-> > > > > > On Wed, Oct 04, 2023 at 05:59:09AM +0000, Starke, Daniel wrote:
-> > > > > > > > Daniel, any thoughts?
-> > > > > > > 
-> > > > > > > Our application of this protocol is only with specific modems to enable
-> > > > > > > circuit switched operation (handling calls, selecting/querying networks,
-> > > > > > > etc.) while doing packet switched communication (i.e. IP traffic over PPP).
-> > > > > > > The protocol was developed for such use cases.
-> > > > > > > 
-> > > > > > > Regarding the issue itself:
-> > > > > > > There was already an attempt to fix all this by switching from spinlocks to
-> > > > > > > mutexes resulting in ~20% performance loss. However, the patch was reverted
-> > > > > > > as it did not handle the T1 timer leading into sleep during atomic within
-> > > > > > > gsm_dlci_t1() on every mutex lock there.
-> > > > > 
-> > > > > That's correct.  When I initially saw this report, my initial thought
-> > > > > was to replace the spinlocks with mutexts, but having read the previous
-> > > > > accepted attempt and it's subsequent reversion I started to think of
-> > > > > other ways to solve this issue.  This solution, unlike the last, does
-> > > > > not involve adding sleep inducing locks into atomic contexts, nor
-> > > > > should it negatively affect performance.
-> > > > > 
-> > > > > > > There was also a suggestion to fix this in do_con_write() as
-> > > > > > > tty_operations::write() appears to be documented as "not allowed to sleep".
-> > > > > > > The patch for this was rejected. It did not fix the issue within n_gsm.
-> > > > > > > 
-> > > > > > > Link: https://lore.kernel.org/all/20221203215518.8150-1-pchelkin@ispras.ru/
-> > > > > > > Link: https://lore.kernel.org/all/20221212023530.2498025-1-zengheng4@huawei.com/
-> > > > > > > Link: https://lore.kernel.org/all/5a994a13-d1f2-87a8-09e4-a877e65ed166@kernel.org/
-> > > > > > 
-> > > > > > Ok, I thought I remembered this, I'll just drop this patch from my
-> > > > > > review queue and wait for a better solution if it ever comes up as this
-> > > > > > isn't a real issue that people are seeing on actual systems, but just a
-> > > > > > syzbot report.
-> > > > > 
-> > > > > What does the "better solution" look like?
-> > > > 
-> > > > One that actually fixes the root problem here (i.e. does not break the
-> > > > recursion loop, or cause a performance decrease for normal users, or
-> > > > prevent this from being bound to the console).
-> > > 
-> > > Does this solution break the recursion loop or affect performance?
-> > 
-> > This solution broke the recursion by returning an error, right?
-> 
-> This is the part I was least sure about.
-> 
-> If this was considered valid and we were to go forward with a solution
-> like this, what would a quality improvement look like?  Should we have
-> stayed in this function and waited for the previous occupant to leave
-> before continuing through ->write()?
+The following changes since commit 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa:
 
-This isn't valid, as it obviously never shows up in real use.
+  Linux 6.6-rc4 (2023-10-01 14:15:13 -0700)
 
-The real solution should be to prevent binding a console to this line
-discipline as it can not handle the recursion that consoles require for
-the write path.
+are available in the Git repository at:
 
-Then, if consoles are really needed, the code can be fixed up to handle
-such recursion.  That's not a trivial thing to do, as can be seen by the
-crazy gyrations that the n_tty line discipline does in its write path...
+  git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-kvm-6.7
 
-thanks,
+for you to fetch changes up to 2c10cda4b777be4be9d9e69e4f70c818dbb15e21:
 
-greg k-h
+  LoongArch: KVM: Add maintainers for LoongArch KVM (2023-10-02 10:01:29 +0800)
+
+----------------------------------------------------------------
+LoongArch KVM changes for v6.7
+
+Add LoongArch's KVM support. Loongson 3A5000/3A6000 supports hardware
+assisted virtualization. With cpu virtualization, there are separate
+hw-supported user mode and kernel mode in guest mode. With memory
+virtualization, there are two-level hw mmu table for guest mode and host
+mode. Also there is separate hw cpu timer with consant frequency in
+guest mode, so that vm can migrate between hosts with different freq.
+Currently, we are able to boot LoongArch Linux guests.
+
+Few key aspects of KVM LoongArch added by this series are:
+1. Enable kvm hardware features when kvm module is loaded.
+2. Implement VM and vcpu related ioctl interface such as vcpu create,
+   vcpu run etc. GET_ONE_REG/SET_ONE_REG ioctl commands are use to
+   get general registers one by one.
+3. Hardware access about MMU, timer and csr are emulated in kernel.
+4. Hardwares such as mmio and iocsr device are emulated in user space
+   such as IPI, irqchips, pci devices etc.
+
+----------------------------------------------------------------
+Tianrui Zhao (25):
+      LoongArch: KVM: Add kvm related header files
+      LoongArch: KVM: Implement kvm module related interface
+      LoongArch: KVM: Implement kvm hardware enable, disable interface
+      LoongArch: KVM: Implement VM related functions
+      LoongArch: KVM: Add vcpu related header files
+      LoongArch: KVM: Implement basic vcpu interfaces
+      LoongArch: KVM: Implement basic vcpu ioctl interfaces
+      LoongArch: KVM: Implement fpu operations for vcpu
+      LoongArch: KVM: Implement vcpu interrupt operations
+      LoongArch: KVM: Implement vcpu load and vcpu put operations
+      LoongArch: KVM: Implement misc vcpu related interfaces
+      LoongArch: KVM: Implement vcpu timer operations
+      LoongArch: KVM: Implement virtual machine tlb operations
+      LoongArch: KVM: Implement kvm mmu operations
+      LoongArch: KVM: Implement handle csr exception
+      LoongArch: KVM: Implement handle iocsr exception
+      LoongArch: KVM: Implement handle idle exception
+      LoongArch: KVM: Implement handle gspr exception
+      LoongArch: KVM: Implement handle mmio exception
+      LoongArch: KVM: Implement handle fpu exception
+      LoongArch: KVM: Implement kvm exception vectors
+      LoongArch: KVM: Implement vcpu world switch
+      LoongArch: KVM: Enable kvm config and add the makefile
+      LoongArch: KVM: Supplement kvm document about LoongArch-specific part
+      LoongArch: KVM: Add maintainers for LoongArch KVM
+
+ Documentation/virt/kvm/api.rst             |  70 ++-
+ MAINTAINERS                                |  12 +
+ arch/loongarch/Kbuild                      |   2 +
+ arch/loongarch/Kconfig                     |   6 +
+ arch/loongarch/configs/loongson3_defconfig |   2 +
+ arch/loongarch/include/asm/inst.h          |  16 +
+ arch/loongarch/include/asm/kvm_csr.h       | 211 +++++++
+ arch/loongarch/include/asm/kvm_host.h      | 237 ++++++++
+ arch/loongarch/include/asm/kvm_mmu.h       | 139 +++++
+ arch/loongarch/include/asm/kvm_types.h     |  11 +
+ arch/loongarch/include/asm/kvm_vcpu.h      |  93 +++
+ arch/loongarch/include/asm/loongarch.h     |  19 +-
+ arch/loongarch/include/uapi/asm/kvm.h      | 108 ++++
+ arch/loongarch/kernel/asm-offsets.c        |  32 +
+ arch/loongarch/kvm/Kconfig                 |  40 ++
+ arch/loongarch/kvm/Makefile                |  22 +
+ arch/loongarch/kvm/exit.c                  | 696 +++++++++++++++++++++
+ arch/loongarch/kvm/interrupt.c             | 183 ++++++
+ arch/loongarch/kvm/main.c                  | 420 +++++++++++++
+ arch/loongarch/kvm/mmu.c                   | 914 ++++++++++++++++++++++++++++
+ arch/loongarch/kvm/switch.S                | 250 ++++++++
+ arch/loongarch/kvm/timer.c                 | 197 ++++++
+ arch/loongarch/kvm/tlb.c                   |  32 +
+ arch/loongarch/kvm/trace.h                 | 162 +++++
+ arch/loongarch/kvm/vcpu.c                  | 939 +++++++++++++++++++++++++++++
+ arch/loongarch/kvm/vm.c                    |  94 +++
+ include/uapi/linux/kvm.h                   |   9 +
+ 27 files changed, 4902 insertions(+), 14 deletions(-)
+ create mode 100644 arch/loongarch/include/asm/kvm_csr.h
+ create mode 100644 arch/loongarch/include/asm/kvm_host.h
+ create mode 100644 arch/loongarch/include/asm/kvm_mmu.h
+ create mode 100644 arch/loongarch/include/asm/kvm_types.h
+ create mode 100644 arch/loongarch/include/asm/kvm_vcpu.h
+ create mode 100644 arch/loongarch/include/uapi/asm/kvm.h
+ create mode 100644 arch/loongarch/kvm/Kconfig
+ create mode 100644 arch/loongarch/kvm/Makefile
+ create mode 100644 arch/loongarch/kvm/exit.c
+ create mode 100644 arch/loongarch/kvm/interrupt.c
+ create mode 100644 arch/loongarch/kvm/main.c
+ create mode 100644 arch/loongarch/kvm/mmu.c
+ create mode 100644 arch/loongarch/kvm/switch.S
+ create mode 100644 arch/loongarch/kvm/timer.c
+ create mode 100644 arch/loongarch/kvm/tlb.c
+ create mode 100644 arch/loongarch/kvm/trace.h
+ create mode 100644 arch/loongarch/kvm/vcpu.c
+ create mode 100644 arch/loongarch/kvm/vm.c
