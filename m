@@ -2,118 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB6A7BAEED
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9DA7BAEF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbjJEWmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 18:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34060 "EHLO
+        id S231243AbjJEWqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 18:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231935AbjJEWms (ORCPT
+        with ESMTP id S229527AbjJEWqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 18:42:48 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642C6CE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:42:46 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-505a62d24b9so1846872e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:42:46 -0700 (PDT)
+        Thu, 5 Oct 2023 18:46:13 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E4DD6
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:46:10 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3af8b498d31so1070085b6e.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696545764; x=1697150564; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J55C2DECva8x20ZCPV5VaEapm9sYZn6cEu2d8qLrjfw=;
-        b=o7scVgVaBiu4bYn17sb1+jVHr9j8WG3GKSRJLFbZLWCqdQeenQr75keX4r80BaTnt1
-         u4x+/M0dj8elDTLk8/+WhzUWfMp7yxu3TCuc2MJpjNHBuK4ixX76ddSaQP09x/4v/Dkg
-         rej/ebJyCqrVVgMimZJv7+NawJhnp2PIy/iGDRWfW5PE/HJU1pxmPlEGhfLdlb6IkqwM
-         JaTcKVZm/kwELJnWdFihtU8sUG3akr/gnM9wPIjKoS+nxK+iHk+SNUI+ML8twmoF3yDd
-         rRABG2i2znyyhAfZM2kdpEZTwUDMQq+dtRkr8XHayvqXJioishzbk+8K8+lToxjC5mNh
-         Kzrg==
+        d=chromium.org; s=google; t=1696545969; x=1697150769; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ePyskiEJCEOltRf//00HdVQ4cJ67D/wO+W+PB1Wu8iw=;
+        b=iuROY2lNaoGjIIE9uohhCqFE4Q/gSKmQAQnrfz2eaypGCLHwS6nnLVL46Qily4BlHV
+         CddSMA+7bcZY5bNhiBO+tmSUpHOWNQAsp9HuqcOr7d2dyQ6jrXa/tGKUZA5ue7FtXGQ0
+         fqSokBtGSpL3/tcooiE5689m5uIwx+1w3XmTI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696545764; x=1697150564;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J55C2DECva8x20ZCPV5VaEapm9sYZn6cEu2d8qLrjfw=;
-        b=DGvUzu648lXYHaslspm/jiJNin987ZJ08/q24FVQZ115f3bjbK+cyd4jhVxDwhgWG+
-         6czkD8nYv6ZCJwxj3pWjoOa7pa+NFcWZtlOzLwEvCFfTz+XyUFaR8Ha60qEf+EJIxwUq
-         pTCMg91IrYzob8D+96xz2/o2A1zb6OAd6qtGcxiaWPXmFktuYpLYEDNZ1M9Qcz9q4Ox3
-         bwBXaU/srlkweYZuiwwOo4izyLP2pZ0aUDpzPrrXR78rMcIpdNQXC9NVWF3YQFTXkbTG
-         kTZJuDxXtczgK7YnidKHzu3WJKtSTs2jHzGuWYkWM6F8rgKrEUvfXEQDtJ0SpCoNEkMw
-         Io3g==
-X-Gm-Message-State: AOJu0YwU/bloC+IyRbRmUh6y4frqWlnEaNcQKXf35cm84m/dCiIzn8b0
-        3qTC8Jp2JXGlI1wHx/uVCnVumA==
-X-Google-Smtp-Source: AGHT+IGEkk1/dB0O8kz/B/IOyEVgYrzdTBNr3I5VSfV7uBhvhWf6AWTlOwegLw3Kr7Ps7P1/Hd7iEA==
-X-Received: by 2002:a05:6512:2512:b0:4fb:740a:81ae with SMTP id be18-20020a056512251200b004fb740a81aemr6924452lfb.16.1696545764617;
-        Thu, 05 Oct 2023 15:42:44 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id d24-20020ac25458000000b005009b979e3dsm31121lfn.303.2023.10.05.15.42.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 15:42:44 -0700 (PDT)
-Message-ID: <77b410f5-93a2-48be-a0d4-2053f280bc8b@linaro.org>
-Date:   Fri, 6 Oct 2023 01:42:43 +0300
+        d=1e100.net; s=20230601; t=1696545969; x=1697150769;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ePyskiEJCEOltRf//00HdVQ4cJ67D/wO+W+PB1Wu8iw=;
+        b=p7JNHrCamVq3fr6TipMVjCnPW736tHnIDvU4b2LVgl53OeoHsEfEAUB+P+x+4UvkFH
+         Nq8/VPpzBvrAuUTQJRzTHQww+QdyCPtgK8Zo+6E3UJwDWEbkI5Kurweq9Xxo8hbvbpwM
+         qIl2j8DT8E74aPSgyf5N5dBzdNyGssC+zNCYXE7zDwmrmQYYxdXgrkQez6BMkfPW+6RB
+         IhiwhXsaf6g12yp+lV+XSuE2TiTJieTpbeOs8urtBC8OUAqvVuYYUEDDfCrTrEp1khlg
+         Qt6VicLLzgfTYuWm/xoP64iJkwgV00Mv0qiSBVGbfNgbXzWpDCXzJqaRBfOHufnla2EZ
+         dD6A==
+X-Gm-Message-State: AOJu0YwFqY4dOfoMClZyb7RbWSWHjF6/mRy1aYwFXBFPcGU/foCbToJC
+        KmmOarLtqLnN/Uh7MgCnnYVROg==
+X-Google-Smtp-Source: AGHT+IGaIDqu6BSYW2le6DfTb8YAwAbC27p7HsJYK0cA5SoI/rfP7fY4ed258/zRZ4xNHEbx5qw3Bg==
+X-Received: by 2002:a05:6808:110:b0:3ae:87c8:437e with SMTP id b16-20020a056808011000b003ae87c8437emr6462389oie.41.1696545969449;
+        Thu, 05 Oct 2023 15:46:09 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id p19-20020a639513000000b00585391d0aafsm1984306pgd.6.2023.10.05.15.46.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 15:46:08 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 15:46:08 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] bcm63xx_enet: replace deprecated strncpy with strscpy
+Message-ID: <202310051544.822967F55@keescook>
+References: <20231005-strncpy-drivers-net-ethernet-broadcom-bcm63xx_enet-c-v1-1-6823b3c3c443@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] drm/msm/dp: Remove error message when downstream port
- not connected
-Content-Language: en-GB
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org,
-        Vinod Polimera <quic_vpolimer@quicinc.com>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>
-References: <20230906181226.2198441-1-swboyd@chromium.org>
- <20230906181226.2198441-3-swboyd@chromium.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230906181226.2198441-3-swboyd@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231005-strncpy-drivers-net-ethernet-broadcom-bcm63xx_enet-c-v1-1-6823b3c3c443@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/09/2023 21:12, Stephen Boyd wrote:
-> Plugging in an Apple dongle without the HDMI cable attached prints out
-> an error message in the kernel logs when nothing is actually wrong.
+On Thu, Oct 05, 2023 at 08:51:40PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 > 
->     no downstream ports connected
+> A suitable replacement is strscpy() [2] due to the fact that it
+> guarantees NUL-termination on the destination buffer without
+> unnecessarily NUL-padding.
 > 
-> This is because the downstream port for the HDMI connector is not
-> connected, so the Apple dongle reports that as a zero sink count device.
+> bcm_enet_get_drvinfo() already uses strscpy(), let's match it's
+> implementation:
+> |       static void bcm_enet_get_drvinfo(struct net_device *netdev,
+> |       				 struct ethtool_drvinfo *drvinfo)
+> |       {
+> |       	strscpy(drvinfo->driver, bcm_enet_driver_name, sizeof(drvinfo->driver));
+> |       	strscpy(drvinfo->bus_info, "bcm63xx", sizeof(drvinfo->bus_info));
+> |       }
 > 
-> Cc: Vinod Polimera <quic_vpolimer@quicinc.com>
-> Cc: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->   drivers/gpu/drm/msm/dp/dp_panel.c | 1 -
->   1 file changed, 1 deletion(-)
+> Note that now bcm_enet_get_drvinfo() and bcm_enetsw_get_drvinfo() do the
+> exact same thing.
 > 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
-> index 97ba41593820..ae778e1a6fd0 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_panel.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_panel.c
-> @@ -156,7 +156,6 @@ int dp_panel_read_sink_caps(struct dp_panel *dp_panel,
->   	if (drm_dp_is_branch(dp_panel->dpcd)) {
->   		count = drm_dp_read_sink_count(panel->aux);
->   		if (!count) {
-> -			DRM_ERROR("no downstream ports connected\n");
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Maybe this can be converted to drm_dbg_dp?
+Looks good. Other writers to drvinfo, as you saw, do the same strscpy,
+so this looks correct to me.
 
->   			panel->link->sink_count = 0;
->   			return -ENOTCONN;
->   		}
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-With best wishes
-Dmitry
-
+Kees Cook
