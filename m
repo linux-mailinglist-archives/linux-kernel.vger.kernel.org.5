@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 711967BA92A
+	by mail.lfdr.de (Postfix) with ESMTP id BB75B7BA92B
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbjJEScH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 14:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
+        id S231769AbjJEScJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 14:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbjJEScC (ORCPT
+        with ESMTP id S231718AbjJEScE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 14:32:02 -0400
+        Thu, 5 Oct 2023 14:32:04 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6155BAD;
-        Thu,  5 Oct 2023 11:32:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FF4C6;
+        Thu,  5 Oct 2023 11:32:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696530721; x=1728066721;
+  t=1696530722; x=1728066722;
   h=from:date:subject:mime-version:content-transfer-encoding:
    message-id:references:in-reply-to:to:cc;
-  bh=YjfMcrhNvXHMJFZBqykeVf1EucGf0umzz4JhkLD/Qkk=;
-  b=Rq3h50C+aZ8VZlSZ/THp6nvJcQarpSkLxaavdB45b1UuZ56f6N9c9Ef3
-   XUn2snQBtIrVkWeJhLAdUA6yIbwACFM/0geK7GVwjLqn5ajCrdS+C+nZF
-   t3MNuj1UM6CylrTWu34LOm+OwTHtbyebzr029sQc+rsG5FvOIm0je7FPL
-   9YAVXh4ZGG220rBkpoWiCG+lUXIedmZZekkICDog9me7zBMARz36VXR1N
-   ucFhSMEBq5aqhMjYYZXTB5k9mPv3C6UyKk1u/RJQCCWI23PCdKK7SoyIE
-   S5vE6eNalvET0godYxcgU3LyxDCRFOT1nUPv9x7oG9oLqU8IiVxKEbKIj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="363860732"
+  bh=6MPyfJ9TCOOWqIqYtO0O+rswGranA361S3pLp//iGZE=;
+  b=e6HsyKKs7QsDIvxEwMh96G9DJzSwTIXhZKvfyhzJtLDMA69DKUGGqo6E
+   fRnw2bxWj4vpeHZy2gWNdcKhKZpHaYMS35y6QcLf2lStIV/jFHZulDsXQ
+   mhk/KHbEUVUuYDeumqhh79AIsChWcRQbFV1uy7yugOPEi8jhLXXw50uTg
+   vV4h+ikzG9YPYDmBfgtoZhBGxn/6CMbZrD6IibaIaM3XrnVX519mDPCnu
+   N3vBM4vzbfUEO7P6SPfRWRFkcmDiTWYGBz6hDBRPRHvdtOLVW4vjrSqU7
+   V16yvqdSpoExjFIUZVDAY3JU3Et0UJRVn63CSbCeqeeXEOrVOXj4ugj1F
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="363860742"
 X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="363860732"
+   d="scan'208";a="363860742"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 11:31:54 -0700
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 11:31:55 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="781342828"
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="781342843"
 X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="781342828"
+   d="scan'208";a="781342843"
 Received: from amykuo-mobl.amr.corp.intel.com (HELO [192.168.1.200]) ([10.212.12.247])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 11:31:53 -0700
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 11:31:54 -0700
 From:   Vishal Verma <vishal.l.verma@intel.com>
-Date:   Thu, 05 Oct 2023 12:31:39 -0600
-Subject: [PATCH v5 1/2] mm/memory_hotplug: split memmap_on_memory requests
- across memblocks
+Date:   Thu, 05 Oct 2023 12:31:40 -0600
+Subject: [PATCH v5 2/2] dax/kmem: allow kmem to add memory with
+ memmap_on_memory
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231005-vv-kmem_memmap-v5-1-a54d1981f0a3@intel.com>
+Message-Id: <20231005-vv-kmem_memmap-v5-2-a54d1981f0a3@intel.com>
 References: <20231005-vv-kmem_memmap-v5-0-a54d1981f0a3@intel.com>
 In-Reply-To: <20231005-vv-kmem_memmap-v5-0-a54d1981f0a3@intel.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
@@ -62,15 +62,16 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Michal Hocko <mhocko@suse.com>,
         Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
         Jeff Moyer <jmoyer@redhat.com>,
-        Vishal Verma <vishal.l.verma@intel.com>
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8397;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6429;
  i=vishal.l.verma@intel.com; h=from:subject:message-id;
- bh=YjfMcrhNvXHMJFZBqykeVf1EucGf0umzz4JhkLD/Qkk=;
- b=owGbwMvMwCXGf25diOft7jLG02pJDKnyjBJBclPPXj5WJ9n00skx2Nnbcs2GS9KRlhWtZq++T
- wx+vrCyo5SFQYyLQVZMkeXvno+Mx+S25/MEJjjCzGFlAhnCwMUpABO5ksjwv840ZvXXpHb/uGd+
- V5R/Zp9v9xZqTf16WiFg1e9arjUW+xgZ3mbzL1uzNHTCrsr5mpUrDbtMa13sVv3Nn8TFrinFwWX
- ABwA=
+ bh=6MPyfJ9TCOOWqIqYtO0O+rswGranA361S3pLp//iGZE=;
+ b=owGbwMvMwCXGf25diOft7jLG02pJDKnyjBJZMtvzxY/rnZRnS5B6+WzZG5k0I03eqFmzWPlE1
+ cIS7t/oKGVhEONikBVTZPm75yPjMbnt+TyBCY4wc1iZQIYwcHEKwEQ4fzL8sxL8VRjvf69bNlib
+ 57zYhYK3GvWrD3OvLEkq+ro53MRJl+F/8UOVGYFydm9mF+84vt5AfMbKXSJ/HtWz9LQ/7dnsEP6
+ YCwA=
 X-Developer-Key: i=vishal.l.verma@intel.com; a=openpgp;
  fpr=F8682BE134C67A12332A2ED07AFA61BEA3B84DFF
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -83,22 +84,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MHP_MEMMAP_ON_MEMORY flag for hotplugged memory is restricted to
-'memblock_size' chunks of memory being added. Adding a larger span of
-memory precludes memmap_on_memory semantics.
+Large amounts of memory managed by the kmem driver may come in via CXL,
+and it is often desirable to have the memmap for this memory on the new
+memory itself.
 
-For users of hotplug such as kmem, large amounts of memory might get
-added from the CXL subsystem. In some cases, this amount may exceed the
-available 'main memory' to store the memmap for the memory being added.
-In this case, it is useful to have a way to place the memmap on the
-memory being added, even if it means splitting the addition into
-memblock-sized chunks.
+Enroll kmem-managed memory for memmap_on_memory semantics if the dax
+region originates via CXL. For non-CXL dax regions, retain the existing
+default behavior of hot adding without memmap_on_memory semantics.
 
-Change add_memory_resource() to loop over memblock-sized chunks of
-memory if caller requested memmap_on_memory, and if other conditions for
-it are met. Teach try_remove_memory() to also expect that a memory
-range being removed might have been split up into memblock sized chunks,
-and to loop through those as needed.
+Add a sysfs override under the dax device to control this behavior and
+override either default.
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@redhat.com>
@@ -108,243 +103,187 @@ Cc: Dan Williams <dan.j.williams@intel.com>
 Cc: Dave Jiang <dave.jiang@intel.com>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Huang Ying <ying.huang@intel.com>
-Suggested-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
 ---
- mm/memory_hotplug.c | 162 ++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 99 insertions(+), 63 deletions(-)
+ drivers/dax/bus.h         |  1 +
+ drivers/dax/dax-private.h |  1 +
+ drivers/dax/bus.c         | 38 ++++++++++++++++++++++++++++++++++++++
+ drivers/dax/cxl.c         |  1 +
+ drivers/dax/hmem/hmem.c   |  1 +
+ drivers/dax/kmem.c        |  8 +++++++-
+ drivers/dax/pmem.c        |  1 +
+ 7 files changed, 50 insertions(+), 1 deletion(-)
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index f8d3e7427e32..77ec6f15f943 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1380,6 +1380,44 @@ static bool mhp_supports_memmap_on_memory(unsigned long size)
- 	return arch_supports_memmap_on_memory(vmemmap_size);
- }
+diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
+index 1ccd23360124..cbbf64443098 100644
+--- a/drivers/dax/bus.h
++++ b/drivers/dax/bus.h
+@@ -23,6 +23,7 @@ struct dev_dax_data {
+ 	struct dev_pagemap *pgmap;
+ 	resource_size_t size;
+ 	int id;
++	bool memmap_on_memory;
+ };
  
-+static int add_memory_create_devices(int nid, struct memory_group *group,
-+				     u64 start, u64 size, mhp_t mhp_flags)
+ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data);
+diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+index 27cf2daaaa79..446617b73aea 100644
+--- a/drivers/dax/dax-private.h
++++ b/drivers/dax/dax-private.h
+@@ -70,6 +70,7 @@ struct dev_dax {
+ 	struct ida ida;
+ 	struct device dev;
+ 	struct dev_pagemap *pgmap;
++	bool memmap_on_memory;
+ 	int nr_range;
+ 	struct dev_dax_range {
+ 		unsigned long pgoff;
+diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+index 0ee96e6fc426..43be95a231c9 100644
+--- a/drivers/dax/bus.c
++++ b/drivers/dax/bus.c
+@@ -367,6 +367,7 @@ static ssize_t create_store(struct device *dev, struct device_attribute *attr,
+ 			.dax_region = dax_region,
+ 			.size = 0,
+ 			.id = -1,
++			.memmap_on_memory = false,
+ 		};
+ 		struct dev_dax *dev_dax = devm_create_dev_dax(&data);
+ 
+@@ -1269,6 +1270,40 @@ static ssize_t numa_node_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RO(numa_node);
+ 
++static ssize_t memmap_on_memory_show(struct device *dev,
++				     struct device_attribute *attr, char *buf)
 +{
-+	struct mhp_params params = { .pgprot = pgprot_mhp(PAGE_KERNEL) };
-+	struct vmem_altmap mhp_altmap = {
-+		.base_pfn =  PHYS_PFN(start),
-+		.end_pfn  =  PHYS_PFN(start + size - 1),
-+	};
-+	int ret;
++	struct dev_dax *dev_dax = to_dev_dax(dev);
 +
-+	if ((mhp_flags & MHP_MEMMAP_ON_MEMORY)) {
-+		mhp_altmap.free = memory_block_memmap_on_memory_pages();
-+		params.altmap = kmalloc(sizeof(struct vmem_altmap), GFP_KERNEL);
-+		if (!params.altmap)
-+			return -ENOMEM;
-+
-+		memcpy(params.altmap, &mhp_altmap, sizeof(mhp_altmap));
-+	}
-+
-+	/* call arch's memory hotadd */
-+	ret = arch_add_memory(nid, start, size, &params);
-+	if (ret < 0)
-+		goto error;
-+
-+	/* create memory block devices after memory was added */
-+	ret = create_memory_block_devices(start, size, params.altmap, group);
-+	if (ret)
-+		goto err_bdev;
-+
-+	return 0;
-+
-+err_bdev:
-+	arch_remove_memory(start, size, NULL);
-+error:
-+	kfree(params.altmap);
-+	return ret;
++	return sprintf(buf, "%d\n", dev_dax->memmap_on_memory);
 +}
 +
- /*
-  * NOTE: The caller must call lock_device_hotplug() to serialize hotplug
-  * and online/offline operations (triggered e.g. by sysfs).
-@@ -1388,14 +1426,10 @@ static bool mhp_supports_memmap_on_memory(unsigned long size)
-  */
- int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
- {
--	struct mhp_params params = { .pgprot = pgprot_mhp(PAGE_KERNEL) };
-+	unsigned long memblock_size = memory_block_size_bytes();
- 	enum memblock_flags memblock_flags = MEMBLOCK_NONE;
--	struct vmem_altmap mhp_altmap = {
--		.base_pfn =  PHYS_PFN(res->start),
--		.end_pfn  =  PHYS_PFN(res->end),
--	};
- 	struct memory_group *group = NULL;
--	u64 start, size;
-+	u64 start, size, cur_start;
- 	bool new_node = false;
- 	int ret;
- 
-@@ -1436,28 +1470,21 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
- 	/*
- 	 * Self hosted memmap array
- 	 */
--	if (mhp_flags & MHP_MEMMAP_ON_MEMORY) {
--		if (mhp_supports_memmap_on_memory(size)) {
--			mhp_altmap.free = memory_block_memmap_on_memory_pages();
--			params.altmap = kmalloc(sizeof(struct vmem_altmap), GFP_KERNEL);
--			if (!params.altmap)
-+	if ((mhp_flags & MHP_MEMMAP_ON_MEMORY) &&
-+	    mhp_supports_memmap_on_memory(memblock_size)) {
-+		for (cur_start = start; cur_start < start + size;
-+		     cur_start += memblock_size) {
-+			ret = add_memory_create_devices(nid, group, cur_start,
-+							memblock_size,
-+							mhp_flags);
-+			if (ret)
- 				goto error;
--
--			memcpy(params.altmap, &mhp_altmap, sizeof(mhp_altmap));
- 		}
--		/* fallback to not using altmap  */
--	}
--
--	/* call arch's memory hotadd */
--	ret = arch_add_memory(nid, start, size, &params);
--	if (ret < 0)
--		goto error_free;
--
--	/* create memory block devices after memory was added */
--	ret = create_memory_block_devices(start, size, params.altmap, group);
--	if (ret) {
--		arch_remove_memory(start, size, NULL);
--		goto error_free;
-+	} else {
-+		ret = add_memory_create_devices(nid, group, start, size,
-+						mhp_flags);
-+		if (ret)
-+			goto error;
- 	}
- 
- 	if (new_node) {
-@@ -1494,8 +1521,6 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
- 		walk_memory_blocks(start, size, NULL, online_memory_block);
- 
- 	return ret;
--error_free:
--	kfree(params.altmap);
- error:
- 	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK))
- 		memblock_remove(start, size);
-@@ -2146,12 +2171,41 @@ void try_offline_node(int nid)
- }
- EXPORT_SYMBOL(try_offline_node);
- 
--static int __ref try_remove_memory(u64 start, u64 size)
-+static void __ref remove_memory_block_and_altmap(int nid, u64 start, u64 size)
- {
-+	int rc = 0;
- 	struct memory_block *mem;
--	int rc = 0, nid = NUMA_NO_NODE;
- 	struct vmem_altmap *altmap = NULL;
- 
-+	rc = walk_memory_blocks(start, size, &mem, test_has_altmap_cb);
-+	if (rc) {
-+		altmap = mem->altmap;
-+		/*
-+		 * Mark altmap NULL so that we can add a debug
-+		 * check on memblock free.
-+		 */
-+		mem->altmap = NULL;
-+	}
-+
-+	/*
-+	 * Memory block device removal under the device_hotplug_lock is
-+	 * a barrier against racing online attempts.
-+	 */
-+	remove_memory_block_devices(start, size);
-+
-+	arch_remove_memory(start, size, altmap);
-+
-+	/* Verify that all vmemmap pages have actually been freed. */
-+	if (altmap) {
-+		WARN(altmap->alloc, "Altmap not fully unmapped");
-+		kfree(altmap);
-+	}
-+}
-+
-+static int __ref try_remove_memory(u64 start, u64 size)
++static ssize_t memmap_on_memory_store(struct device *dev,
++				      struct device_attribute *attr,
++				      const char *buf, size_t len)
 +{
-+	int rc, nid = NUMA_NO_NODE;
++	struct dev_dax *dev_dax = to_dev_dax(dev);
++	struct dax_region *dax_region = dev_dax->region;
++	ssize_t rc;
++	bool val;
 +
- 	BUG_ON(check_hotplug_memory_range(start, size));
++	rc = kstrtobool(buf, &val);
++	if (rc)
++		return rc;
++
++	device_lock(dax_region->dev);
++	if (!dax_region->dev->driver) {
++		device_unlock(dax_region->dev);
++		return -ENXIO;
++	}
++
++	dev_dax->memmap_on_memory = val;
++
++	device_unlock(dax_region->dev);
++	return len;
++}
++static DEVICE_ATTR_RW(memmap_on_memory);
++
+ static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
+ {
+ 	struct device *dev = container_of(kobj, struct device, kobj);
+@@ -1295,6 +1330,7 @@ static struct attribute *dev_dax_attributes[] = {
+ 	&dev_attr_align.attr,
+ 	&dev_attr_resource.attr,
+ 	&dev_attr_numa_node.attr,
++	&dev_attr_memmap_on_memory.attr,
+ 	NULL,
+ };
+ 
+@@ -1400,6 +1436,8 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+ 	dev_dax->align = dax_region->align;
+ 	ida_init(&dev_dax->ida);
+ 
++	dev_dax->memmap_on_memory = data->memmap_on_memory;
++
+ 	inode = dax_inode(dax_dev);
+ 	dev->devt = inode->i_rdev;
+ 	dev->bus = &dax_bus_type;
+diff --git a/drivers/dax/cxl.c b/drivers/dax/cxl.c
+index 8bc9d04034d6..c696837ab23c 100644
+--- a/drivers/dax/cxl.c
++++ b/drivers/dax/cxl.c
+@@ -26,6 +26,7 @@ static int cxl_dax_region_probe(struct device *dev)
+ 		.dax_region = dax_region,
+ 		.id = -1,
+ 		.size = range_len(&cxlr_dax->hpa_range),
++		.memmap_on_memory = true,
+ 	};
+ 
+ 	return PTR_ERR_OR_ZERO(devm_create_dev_dax(&data));
+diff --git a/drivers/dax/hmem/hmem.c b/drivers/dax/hmem/hmem.c
+index 5d2ddef0f8f5..b9da69f92697 100644
+--- a/drivers/dax/hmem/hmem.c
++++ b/drivers/dax/hmem/hmem.c
+@@ -36,6 +36,7 @@ static int dax_hmem_probe(struct platform_device *pdev)
+ 		.dax_region = dax_region,
+ 		.id = -1,
+ 		.size = region_idle ? 0 : range_len(&mri->range),
++		.memmap_on_memory = false,
+ 	};
+ 
+ 	return PTR_ERR_OR_ZERO(devm_create_dev_dax(&data));
+diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
+index c57acb73e3db..0aa6c45a4e5a 100644
+--- a/drivers/dax/kmem.c
++++ b/drivers/dax/kmem.c
+@@ -12,6 +12,7 @@
+ #include <linux/mm.h>
+ #include <linux/mman.h>
+ #include <linux/memory-tiers.h>
++#include <linux/memory_hotplug.h>
+ #include "dax-private.h"
+ #include "bus.h"
+ 
+@@ -56,6 +57,7 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
+ 	unsigned long total_len = 0;
+ 	struct dax_kmem_data *data;
+ 	int i, rc, mapped = 0;
++	mhp_t mhp_flags;
+ 	int numa_node;
  
  	/*
-@@ -2167,47 +2221,28 @@ static int __ref try_remove_memory(u64 start, u64 size)
- 	if (rc)
- 		return rc;
+@@ -136,12 +138,16 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
+ 		 */
+ 		res->flags = IORESOURCE_SYSTEM_RAM;
  
-+	mem_hotplug_begin();
++		mhp_flags = MHP_NID_IS_MGID;
++		if (dev_dax->memmap_on_memory)
++			mhp_flags |= MHP_MEMMAP_ON_MEMORY;
 +
- 	/*
--	 * We only support removing memory added with MHP_MEMMAP_ON_MEMORY in
--	 * the same granularity it was added - a single memory block.
-+	 * For memmap_on_memory, the altmaps could have been added on
-+	 * a per-memblock basis. Loop through the entire range if so,
-+	 * and remove each memblock and its altmap.
- 	 */
- 	if (mhp_memmap_on_memory()) {
--		rc = walk_memory_blocks(start, size, &mem, test_has_altmap_cb);
--		if (rc) {
--			if (size != memory_block_size_bytes()) {
--				pr_warn("Refuse to remove %#llx - %#llx,"
--					"wrong granularity\n",
--					start, start + size);
--				return -EINVAL;
--			}
--			altmap = mem->altmap;
--			/*
--			 * Mark altmap NULL so that we can add a debug
--			 * check on memblock free.
--			 */
--			mem->altmap = NULL;
--		}
-+		unsigned long memblock_size = memory_block_size_bytes();
-+		u64 cur_start;
-+
-+		for (cur_start = start; cur_start < start + size;
-+		     cur_start += memblock_size)
-+			remove_memory_block_and_altmap(nid, cur_start,
-+						       memblock_size);
-+	} else {
-+		remove_memory_block_and_altmap(nid, start, size);
- 	}
+ 		/*
+ 		 * Ensure that future kexec'd kernels will not treat
+ 		 * this as RAM automatically.
+ 		 */
+ 		rc = add_memory_driver_managed(data->mgid, range.start,
+-				range_len(&range), kmem_name, MHP_NID_IS_MGID);
++				range_len(&range), kmem_name, mhp_flags);
  
- 	/* remove memmap entry */
- 	firmware_map_remove(start, start + size, "System RAM");
+ 		if (rc) {
+ 			dev_warn(dev, "mapping%d: %#llx-%#llx memory add failed\n",
+diff --git a/drivers/dax/pmem.c b/drivers/dax/pmem.c
+index ae0cb113a5d3..f3c6c67b8412 100644
+--- a/drivers/dax/pmem.c
++++ b/drivers/dax/pmem.c
+@@ -63,6 +63,7 @@ static struct dev_dax *__dax_pmem_probe(struct device *dev)
+ 		.id = id,
+ 		.pgmap = &pgmap,
+ 		.size = range_len(&range),
++		.memmap_on_memory = false,
+ 	};
  
--	/*
--	 * Memory block device removal under the device_hotplug_lock is
--	 * a barrier against racing online attempts.
--	 */
--	remove_memory_block_devices(start, size);
--
--	mem_hotplug_begin();
--
--	arch_remove_memory(start, size, altmap);
--
--	/* Verify that all vmemmap pages have actually been freed. */
--	if (altmap) {
--		WARN(altmap->alloc, "Altmap not fully unmapped");
--		kfree(altmap);
--	}
--
- 	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
- 		memblock_phys_free(start, size);
- 		memblock_remove(start, size);
-@@ -2219,6 +2254,7 @@ static int __ref try_remove_memory(u64 start, u64 size)
- 		try_offline_node(nid);
- 
- 	mem_hotplug_done();
-+
- 	return 0;
- }
- 
+ 	return devm_create_dev_dax(&data);
 
 -- 
 2.41.0
