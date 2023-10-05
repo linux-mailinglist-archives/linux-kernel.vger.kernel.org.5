@@ -2,286 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFB67BA8D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDEA7BA9B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbjJESNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 14:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34508 "EHLO
+        id S229614AbjJETGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbjJESM5 (ORCPT
+        with ESMTP id S232332AbjJESOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 14:12:57 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2074.outbound.protection.outlook.com [40.107.237.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD24CE;
-        Thu,  5 Oct 2023 11:12:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XwuiJqknDlH/QgBUkBuaBjK55Zdc6w1FpTrttT1WP/5nAgnNgTSfn49e00+lJv9kMeSMmT692JFbh8/YAa/Fzldo23X7eJCvSSmkHYfKvgkwhSscWPIt++K54VNbS2bKk1e/FhN8EKqGjuGU0fR62DnJidETUAuSvU3S5yUtc0Lo09agPDorlLUoL9BhTQGGC1HzOx1QSMmD1Pk74U1pknwsV5y8QZizQvzpooCbn283iO/778lwuN41YQX6Fg+3BInhTC3w0wf8LICwuXIFM06lsY6AnmIWs5B+LXDgdOuvGojb47q/ALGWSklyblAOkZ5rWc/tHAMhc23mhMcQog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mOauRLuwCA5+otNQIaiAt1FIorRJ9/iNda9U7+9PPKM=;
- b=E8EbEstfeE3GMXFTy8xkllVMCpcjit3pTSN2K5d7SkajJ/K/geMY4ihA4wO0Wbi81CBhYqdOdCWuIQpjGL5U/EiRay2/zaomLBAH9Dw3gP9QpSSOz7IcO0a+jAfEwpW4aIkYKbVeYPnZp8R4q4CiDdk5Cg1FiJIf8Q1OKl5BHvUNunNg8RKjdwBQlRIKJOxD2TrArsb/tI6Hh/5nNLD5tXrBAQJlbiCjRLfk0nw7DJidIsFgckkC+sYpEAi8qIJiXLQZ3SvBLo/kjyJdI7UTrK7WjUu9+NX20rsI8RIqbbBm6ZHbbVk/VUk4c5Vvcag44uFpEBdzyWdI7EJEN5xWfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mOauRLuwCA5+otNQIaiAt1FIorRJ9/iNda9U7+9PPKM=;
- b=EQHq/v5RKJYFF2nZDYHA5DyALwa5aIqi/LcgvruDEor9HJEOh0Qo5c/4KlEUgSRpJn8DYPuEWP8bn369e0pcqQN+9Kmo51P7Bg6vGTQwCZDatcP6Kvlk0TB5M2TODmGRqCXFuPlpItJXU2PEW+j+kjhT0JiqvHFyYrmvdXAJRVZlpMksV6xB2+4vvldWpPu6P6eRoC+Xw82DT+XYeUCDHCONEH0OweuFA+/xHO6Jj2s/6oXUOaeiz0eoRZjjmn1vLOHyr4ts/Y1ICaaoGV7+td/yiBH+qbMgNwpQPx/Zn0kLMcvJlSakRNoHoQF4OhjXtzwAbFnNePtcN7v4gEg32Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from IA1PR12MB6604.namprd12.prod.outlook.com (2603:10b6:208:3a0::7)
- by MN0PR12MB5761.namprd12.prod.outlook.com (2603:10b6:208:374::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Thu, 5 Oct
- 2023 18:12:42 +0000
-Received: from IA1PR12MB6604.namprd12.prod.outlook.com
- ([fe80::8814:146:e28e:6eea]) by IA1PR12MB6604.namprd12.prod.outlook.com
- ([fe80::8814:146:e28e:6eea%4]) with mapi id 15.20.6838.016; Thu, 5 Oct 2023
- 18:12:41 +0000
-Message-ID: <647d3b52-1daf-175d-d5c2-45653dd2604c@nvidia.com>
-Date:   Thu, 5 Oct 2023 11:12:37 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [RFT PATCH 14/21] hte: tegra194: don't access struct gpio_chip
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
-        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20230905185309.131295-1-brgl@bgdev.pl>
- <20230905185309.131295-15-brgl@bgdev.pl>
- <CACRpkda9=VULj4Cy_sit-UpUQnVEbS-RJKAeULVCw8ZCRTq1sw@mail.gmail.com>
- <CAMRc=MdTk1B4MEh9C624Upm_EcaQgJd9OU-AGfU0G-DU1+qk6A@mail.gmail.com>
- <36b17290-c643-8d8e-e82b-49afa6b34fbb@nvidia.com>
- <3624e973-d09a-d211-c6d0-d0ffb8c20c4b@nvidia.com>
- <90b5f887-8af4-a80d-ea4d-cf2199752de4@nvidia.com>
- <0e7cae42-0b81-c038-8beb-49102feea8a6@nvidia.com>
- <CAMRc=McSG6qajxt6P3vWQEeT63Pk5tggD05pUoMD1zd5ApZxgA@mail.gmail.com>
-Content-Language: en-US
-X-Nvconfidentiality: public
-From:   Dipen Patel <dipenp@nvidia.com>
-In-Reply-To: <CAMRc=McSG6qajxt6P3vWQEeT63Pk5tggD05pUoMD1zd5ApZxgA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BYAPR02CA0007.namprd02.prod.outlook.com
- (2603:10b6:a02:ee::20) To IA1PR12MB6604.namprd12.prod.outlook.com
- (2603:10b6:208:3a0::7)
+        Thu, 5 Oct 2023 14:14:10 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631FEDE;
+        Thu,  5 Oct 2023 11:14:09 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c15463ddd4so14522121fa.3;
+        Thu, 05 Oct 2023 11:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696529647; x=1697134447; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4mkmrZ85KDPvgtxyxwHlcxR2FwXeKHeY2CWLRj7V6mQ=;
+        b=Xry8hv/YKZalo97emr9Rpz4cm+C2Q9juXc/5mXfj2c/vu9erJ1rWc/+p8WLOljt9S9
+         JfX9SYVTxEQG3FkG5zhDHc8yoMynohoT7maO7eaxJlSAIB8NCBhLUS4tB6leXKRPp05W
+         3wzcGw3DXYjZO9sXLyPfDk3oltIQlxYLMUbzHqR7VGRJMG39h2XM+XesYm7CiImw5+2N
+         8ZtJwS/MQkalgJ71k7cGI1KB+KfhRLr3Bbe8B3EUoI8pCvRAmbFfg9MoDZiWlSY7Aavw
+         0mB0jhakyMZ+ibrxQuCm0r0J8TAv4N3asbosNd4RYLUxVHJhZSEqffylC6VT+HYxZiLA
+         jB/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696529647; x=1697134447;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4mkmrZ85KDPvgtxyxwHlcxR2FwXeKHeY2CWLRj7V6mQ=;
+        b=IjEv6IM5m7ahtLC5JZsb+Y0ljSf42WowXPBpv1+spEgyUYO/CEt+DHnoONxxlZV8u8
+         BZGy8xQJzRLJeydOIKe1afJr8JA+q9pC8fXSoWH19ZQT9tBclzvkbjiE7Y143Cf88QGT
+         GW4bDWqpWZggOAlQhkJkK9rM5QomIk4MGcre/8uAzCNFm+Nj1xrfu/EuExBsVzuJqnVg
+         bKOUF7Sxp5hT52Dh+4G/9n/7yduaRfcoFuSAcLMyF5+8Pfz/Rb28jAeWALmnP9iwMolS
+         oG8CqNHyooneoK0OuKNEODgyGiflJrma1YnljThxkrI3HZV1By95f64c1bnJ+a5HRQr/
+         0lmg==
+X-Gm-Message-State: AOJu0YxxDX5NrS33zfnripPO5GgtvWHLKsJPjnMQ4MHWN8OulrLhVykk
+        OQzF3fyp1u8fwiwa1ECsMfw=
+X-Google-Smtp-Source: AGHT+IHGLAsSutIacUOwL8sK0JmdEvfw4ceipZby+beeO7d1Vfy6hKGZN5cCfh8lGxBm0rDxTQYCaA==
+X-Received: by 2002:a05:651c:1059:b0:2c0:bc5:5ff1 with SMTP id x25-20020a05651c105900b002c00bc55ff1mr5785854ljm.22.1696529647195;
+        Thu, 05 Oct 2023 11:14:07 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id u2-20020a2e8542000000b002c0d9d83f71sm381811ljj.62.2023.10.05.11.14.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 11:14:06 -0700 (PDT)
+Message-ID: <1e64c550b3ce044c1ab045ec74946d1b361f364e.camel@gmail.com>
+Subject: Re: [PATCH v3 0/3] selftests/hid: assorted fixes
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Benjamin Tissoires <bentiss@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Justin Stitt <justinstitt@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Date:   Thu, 05 Oct 2023 21:14:05 +0300
+In-Reply-To: <20230825-wip-selftests-v3-0-639963c54109@kernel.org>
+References: <20230825-wip-selftests-v3-0-639963c54109@kernel.org>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB6604:EE_|MN0PR12MB5761:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3ec7cfcc-4ebe-4eab-610c-08dbc5ceaa66
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vnyxgrq2YhffzHgft5R9+OmaPWj4bnqQvVxoBBMxAFB6QAxfKJTxPqf78wO9GQEwLGqVvKZU20flSOAAY8oACAERYagphnU2MRQDMg25uMcq1j5ioe0sBz2Y0JOUs5pH0sdN9e04DoAPPZODYB/Fp8L1a+ysA0Ql1dfFW3Lg2AuuHrYjgzLr+4dpAyLu/ntOI3qibe0i87EYvRM5829VWftp5N0CJRO4TpqDMfA3/ATfM02Sz+6o+4e8d4Zq4ykqb5KgrrLEk9aYnGbA1uMO6or5o9ft/Yrs3Pd3NM2pInR3HFK5HjbTe4U7Zdooh7mNKTQeYDeqM2Fb8tZomRmS/V03Y2gfm82udY2KLye8+fjpo5iM7X1t15gaeyTEW2cJFyDut7gV22iTrREVdMgCFtllZPRKdFdaOUVWzM9XmiiOygWwGp2PlE1mDZctLqE+eB7qx8oLOmdPk2gTKjFFxZHC97ADoTXXOGfnpoNQ10hpsXw1zerjqpTrneF4P1OVjpxqUdIJ8s3/DL0s8LiUNRKbbaEpUl9gVV/iJaPBi0L5uHv74D/m21JW/irN76rUGkZLfOwRDesM7AvcuU3JB3g/GapY0F01ferxrk1VCPIacVpHTspayHI0w5Vmtl8GMFj+PbFc4zWFyLlp3LyYFg7Yt+zQ+VWL2PTmsZz6fvH1zbg5I0kLkemNMuceQvuibCvSfzEHvfeE20+gAIW+vzxqvWWhE1r1jxg3AkXmfjA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6604.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(376002)(346002)(39860400002)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(83380400001)(7416002)(2906002)(31686004)(5660300002)(8676002)(36756003)(26005)(4326008)(2616005)(6486002)(41300700001)(66476007)(54906003)(8936002)(66946007)(6916009)(316002)(478600001)(53546011)(66556008)(966005)(31696002)(86362001)(6512007)(38100700002)(6666004)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MFk2RTBjYVFwRnZUR1d4cG5xaHduWVBtazJhSlFjaDBKTkdNQndnMjk0cURl?=
- =?utf-8?B?TU5LWm4yWDQ2Z3ljeHZseGVFU0d6VlZHaUg3R1JmSXY1Z21qZ1Y4OU8wRWVD?=
- =?utf-8?B?anM4aFc0TDhhOEx5YlpmUDBDV2JyZTZ2WHhqTVk5SnNQbGd3d2lvK25WODI4?=
- =?utf-8?B?ODRmRmpSb2s4UjhNeDRtYytJYXhTbDJabnNuMWtDY2QycU4ySEo1MkwzZm9a?=
- =?utf-8?B?dEtBZENJY0ErakdPcnNmUC9KRC9QZitwdXVobjJnQlJReXRZL2t6SFBNalVs?=
- =?utf-8?B?Z21EbmM0NklMZGlOQ25lUnpOeGhXaXg1VCtjWk9rOU9ZcEpGTjBpWmUxZXlT?=
- =?utf-8?B?dTZJZHlWSjRMVXhvbWhxbEFwQXdRclZLVVpoWFd1YWxQOFAvSjZFdDdWTUFG?=
- =?utf-8?B?U2NCbHR1TmNQdlZNcjFhakRwREt2SC9uK3p4Y205UkM1dGhlc3dhcTl1ZG9L?=
- =?utf-8?B?S3hGUEpwV3djdXJ5QUMyaitlR2RuTlpkY2trWVhoSkdTMlI1eTk3TlhKTWJY?=
- =?utf-8?B?MFJ0Skd0elBmQ3RJZUFUak5lN2M3Nm81ZDRVeTZHQXBuM2ZZL1ZqVmF4SW5V?=
- =?utf-8?B?R2tkVjU1UWo3MWVmODdFYUttUXFuSklxdHJ5UXBDYlhtbGVCWjF1WkVSaDFG?=
- =?utf-8?B?Z3JkMFJqd1FPb2pMR1RobjhvVEpERC9sZ01mN2Zjd3VBb1F5MmpINW5pbEVn?=
- =?utf-8?B?M3ovbHBxZWlrNkt4WDJYZktsYVZmdjRmRThiMjRwc0dDTGtwako0TzVBa3k4?=
- =?utf-8?B?ZXBGaGJvMTB2bzZhVkU5cXhwQnNScS9tQzhIU2hCR3h6TnFJQ0wzQ0hoeWd4?=
- =?utf-8?B?SXNXeDZyaEJQRm9HbDJwVnB6QVBvVnFmZFA2MWV1Yno0R3BNY3hYeitYcUlM?=
- =?utf-8?B?Rjc0ZHlrNGI4bEVBdXlOWXRsbjVuZzVvTWIyRWdvU1lybE4ydUhHNDZDbG5N?=
- =?utf-8?B?cXpZMkpVZGMwaDAyakkvaWpYajFZOE9pZnZvdXVFVkR0NFBjQlc0ei9KVnNw?=
- =?utf-8?B?RzRlQmVrMTFpSU1kakJ3Z3ZVakFybFhuMlBDOXA2KzVnMldwRks5Tk11cnJo?=
- =?utf-8?B?N3NVWXgwTGtqWE5BZjBudEdjMVNBeGwvVy9BZ0N4ZXEvOVhTU1hBRWRDNDZO?=
- =?utf-8?B?b1plQ0czbHRHNFQzWDJuK0l3dlo1Z292L2FrRk5rR2Q0UGdGdnlzSUtaMC85?=
- =?utf-8?B?eTRxdlZ6VS9WZ1NrL2lPQjVvMWZ3algvRHpaU0FJYUVFVmdnNnV3RVpoMFhy?=
- =?utf-8?B?d0JoaUVXQm9PZFllKzVwdXlQdDhvVzZaSVpUdVN1bWcrc0tpUWY1V0RuRlN0?=
- =?utf-8?B?MVAxZE1hdlIxU3ZoSGJrUE0weGNST3FZc2RjS1k1cXhTWUg2cUJWL1JOTU9l?=
- =?utf-8?B?anc1UnNDZ2k2d3pyMkJzUlovaE44V0dyWDkxOXRReGdqWjIrU1d4TytIL0d3?=
- =?utf-8?B?Z0hCVVVOUEhCeTMxL3RlNGVKVER0NDFZUUYxb040eERDZnErYWlUTkY0VVZa?=
- =?utf-8?B?M2tXQ25JQmRLRFI1bUYzUXZUNWw2ejVIOW5SMDhCcCtZZUUvaHowYUJxRjR6?=
- =?utf-8?B?alJrdXNMWDlLVUJvWDM5ZlV2RjAyREJJWmZqTXdaZlRCbVRmMkR5NkIvcHgv?=
- =?utf-8?B?OGdDZmQ3dGhwZ1VjcEFoOVZjTDRQdWU0enJvdldtNmh5OTBTK1kyRXZJTUdG?=
- =?utf-8?B?TFFJRVlOVkFnUnBhK1ErcjNBS0V3SUEvNDNwRFF4c1F4WVFSRnpwU3lmaGJq?=
- =?utf-8?B?SkQ0dysxbTM3Q2tBUDFXUHJMTUtrZldMNUZjTVNTNUFZRzRLV3NDKzV1S3o4?=
- =?utf-8?B?YTBSQXJyOUEyajVMbHhveDRPNHMxVkFKZlN2TjBSWjUzeWdlU1BCS1h2d2Vq?=
- =?utf-8?B?S2FVSndjdFZZemlrOHZhdlY1RENXVlBoNENNa2taRW9iVWlXWnRtUjhBbUc0?=
- =?utf-8?B?SHpLVjdER3JkMXZFT2E5aXRlRDVZRldJaTZ3ZVdzaElRNGwxS0ltbFJ6ZGk3?=
- =?utf-8?B?UG9wMGJXT05GcEdYNUMxdTFDU0lwWTRxcC9Vc1M4MHJLS1d5V0tyWG1FZDdJ?=
- =?utf-8?B?ZityQzB1ZHgvVGpGNVhhOWxhblJMMm42UVh0Sy9QVWxKZUpQeWFpeEZ0NEpx?=
- =?utf-8?Q?EBEiHGX1qdC87Jy5C+Wazfaru?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ec7cfcc-4ebe-4eab-610c-08dbc5ceaa66
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6604.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 18:12:41.8041
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MeSzoBoSWZ7Y5vjInDGkVlmA1F8yz2ha8eZ296sz/QyMxa4olsl25Utw8BKzj/9ptbi3mer9ab71cKN9fu781w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5761
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/23 6:48 AM, Bartosz Golaszewski wrote:
-> On Thu, Oct 5, 2023 at 1:52 AM Dipen Patel <dipenp@nvidia.com> wrote:
->>
->> On 10/4/23 3:54 PM, Dipen Patel wrote:
->>> On 10/4/23 1:33 PM, Dipen Patel wrote:
->>>> On 10/4/23 1:30 PM, Dipen Patel wrote:
->>>>> On 10/4/23 5:00 AM, Bartosz Golaszewski wrote:
->>>>>> On Thu, Sep 7, 2023 at 9:28 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->>>>>>>
->>>>>>> On Tue, Sep 5, 2023 at 8:53 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->>>>>>>
->>>>>>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>>>>>>
->>>>>>>> Using struct gpio_chip is not safe as it will disappear if the
->>>>>>>> underlying driver is unbound for any reason. Switch to using reference
->>>>>>>> counted struct gpio_device and its dedicated accessors.
->>>>>>>>
->>>>>>>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>>>>>
->>>>>>> As Andy points out add <linux/cleanup.h>, with that fixed:
->>>>>>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->>>>>>>
->>>>>>> I think this can be merged into the gpio tree after leaving some
->>>>>>> slack for the HTE maintainer to look at it, things look so much
->>>>>>> better after this.
->>>>>>>
->>>>>>> Yours,
->>>>>>> Linus Walleij
->>>>>>
->>>>>> Dipen,
->>>>>>
->>>>>> if you could give this patch a test and possibly ack it for me to take
->>>>>> it through the GPIO tree (or go the immutable tag from HTE route) then
->>>>>> it would be great. This is the last user of gpiochip_find() treewide,
->>>>>> so with it we could remove it entirely for v6.7.
->>>>>
->>>>> Progress so far for the RFT...
->>>>>
->>>>> I tried applying the patch series on 6.6-rc1 and it did not apply cleanly,
->>>>> some patches I needed to manually apply and correct. With all this, it failed
->>>>> compilation at some spi/spi-bcm2835 driver. I disabled that and was able to
->>>>> compile. I thought I should let you know this part.
->>>>>
->>>>> Now, I tried to test the hte and it seems to fail finding the gpio device,
->>>>> roughly around this place [1]. I thought it would be your patch series so
->>>>> tried to just use 6.6rc1 without your patches and it still failed at the
->>>>> same place. I have to trace back now from which kernel version it broke.
->>>>
->>>> [1].
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/pateldipen1984/linux.git/tree/drivers/hte/hte-tegra194.c?h=for-next#n781
->>>>
->>>> of course with your patches it would fail for the gdev instead of the chip.
->>>
->>> Small update:
->>>
->>> I put some debugging prints in the gpio match function in the hte-tegra194.c as
->>> below:
->>>
->>> static int tegra_gpiochip_match(struct gpio_chip *chip, void *data)
->>>  {
->>> +       struct device_node *node = data;
->>> +       struct fwnode_handle *fw = of_node_to_fwnode(data);
->>> +       if (!fw || !chip->fwnode)
->>> +               pr_err("dipen patel: fw is null\n");
->>>
->>> -       pr_err("%s:%d\n", __func__, __LINE__);
->>> +       pr_err("dipen patel, %s:%d: %s, %s, %s, match?:%d, fwnode name:%s\n",
->>> __func__, __LINE__, chip->label, node->name, node->full_name, (chip->fwnode ==
->>> fw), fw->dev->init_name);
->>>         return chip->fwnode == of_node_to_fwnode(data);
->>>  }
->>>
->>> The output of the printfs looks like below:
->>> [    3.955194] dipen patel: fw is null -----> this message started appearing
->>> when I added !chip->fwnode test in the if condition line.
->>>
->>> [    3.958864] dipen patel, tegra_gpiochip_match:689: tegra234-gpio, gpio,
->>> gpio@c2f0000, match?:0, fwnode name:(null)
->>>
->>> I conclude that chip->fwnode is empty. Any idea in which conditions that node
->>> would be empty?
->>
->> sorry for spamming, one last message before I sign off for the day....
->>
->> Seems, adding below in the tegra gpio driver resolved the issue I am facing, I
->> was able to verify your patch series.
->>
->> diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra186.c
->> index d87dd06db40d..a56c159d7136 100644
->> --- a/drivers/gpio/gpio-tegra186.c
->> +++ b/drivers/gpio/gpio-tegra186.c
->> @@ -989,6 +989,8 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
->>                 offset += port->pins;
->>         }
->>
->> +       gpio->gpio.fwnode = of_node_to_fwnode(pdev->dev.of_node);
->> +
->>         return devm_gpiochip_add_data(&pdev->dev, &gpio->gpio, gpio);
->>  }
->>
->> Now, few follow up questions:
->> 1) is this the correct way of setting the chip fwnode in the gpio driver?
-> 
-> You shouldn't need this. This driver already does:
-> 
->     gpio->gpio.parent = &pdev->dev;
-> 
-> so fwnode should be assigned in gpiochip_add_data_with_key(). Can you
-> check why this doesn't happen?
+On Thu, 2023-10-05 at 17:55 +0200, Benjamin Tissoires wrote:
+> > And this is the last(?) revision of this series which should now compil=
+e
+> > with or without CONFIG_HID_BPF set.
+> >=20
+> > I had to do changes because [1] was failing
+> >=20
+> > Nick, I kept your Tested-by, even if I made small changes in 1/3. Feel
+> > free to shout if you don't want me to keep it.
+> >=20
+> > Eduard, You helped us a lot in the review of v1 but never sent your
+> > Reviewed-by or Acked-by. Do you want me to add one?
 
-I do not see anywhere chip->fwnode being set in the gpiochip_add_* function.
-The only reference I see is here [1]. Does it mean I need to change my match
-function from:
+Hi Benjamin,
 
-chip->fwnode == of_node_to_fwnode(data)
+I think there is no need, I just took part in the discussion and that's all=
+.
+Feel free to ping me if there is anything BPF related that needs clarificat=
+ion.
 
-to:
-dev_fwnode(chip->parent) == of_node_to_fwnode(data)?
+Thanks,
+Eduard
 
-[1]:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/gpio/gpiolib.c?h=v6.6-rc1#n767
-
-> 
-> Bart
-> 
->> 2) Or should I use something else in hte matching function instead of fwnode so
->> to avoid adding above line in the gpio driver?
->>
->>>
->>>>>
->>>>>>
->>>>>> Bart
->>>>>
->>>>
->>>
->>
+> >=20
+> > Cheers,
+> > Benjamin
+> >=20
+> > [1] https://gitlab.freedesktop.org/bentiss/hid/-/jobs/49754306
+> >=20
+> > For reference, the v2 cover letter:
+> >=20
+> > > > Hi, I am sending this series on behalf of myself and Benjamin Tisso=
+ires. There
+> > > > existed an initial n=3D3 patch series which was later expanded to n=
+=3D4 and
+> > > > is now back to n=3D3 with some fixes added in and rebased against
+> > > > mainline.
+> > > >=20
+> > > > This patch series aims to ensure that the hid/bpf selftests can be =
+built
+> > > > without errors.
+> > > >=20
+> > > > Here's Benjamin's initial cover letter for context:
+> > > > > >  These fixes have been triggered by [0]:
+> > > > > >  basically, if you do not recompile the kernel first, and are
+> > > > > >  running on an old kernel, vmlinux.h doesn't have the required
+> > > > > >  symbols and the compilation fails.
+> > > > > >=20
+> > > > > >  The tests will fail if you run them on that very same machine,
+> > > > > >  of course, but the binary should compile.
+> > > > > >=20
+> > > > > >  And while I was sorting out why it was failing, I realized I
+> > > > > >  could do a couple of improvements on the Makefile.
+> > > > > >=20
+> > > > > >  [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d49=
+8-0ca1c153dcb2@redhat.com/T/#t
+> >=20
+> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> > ---
+> > Changes in v3:
+> > - Also overwrite all of the enum symbols in patch 1/3
+> > - Link to v2: https://lore.kernel.org/r/20230908-kselftest-09-08-v2-0-0=
+def978a4c1b@google.com
+> >=20
+> > Changes in v2:
+> > - roll Justin's fix into patch 1/3
+> > - add __attribute__((preserve_access_index)) (thanks Eduard)
+> > - rebased onto mainline (2dde18cd1d8fac735875f2e4987f11817cc0bc2c)
+> > - Link to v1: https://lore.kernel.org/r/20230825-wip-selftests-v1-0-c86=
+2769020a8@kernel.org
+> >=20
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1698
+> > Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues=
+/61
+> >=20
+> > ---
+> > Benjamin Tissoires (3):
+> >       selftests/hid: ensure we can compile the tests on kernels pre-6.3
+> >       selftests/hid: do not manually call headers_install
+> >       selftests/hid: force using our compiled libbpf headers
+> >=20
+> >  tools/testing/selftests/hid/Makefile               | 10 ++-
+> >  tools/testing/selftests/hid/progs/hid.c            |  3 -
+> >  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 77 ++++++++++++++=
+++++++++
+> >  3 files changed, 81 insertions(+), 9 deletions(-)
+> > ---
+> > base-commit: 29aa98d0fe013e2ab62aae4266231b7fb05d47a2
+> > change-id: 20230825-wip-selftests-9a7502b56542
+> >=20
+> > Best regards,
 
