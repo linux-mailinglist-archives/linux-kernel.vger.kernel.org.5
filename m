@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F0F7BA1A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88797BA1B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238540AbjJEOoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
+        id S238342AbjJEOnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237266AbjJEOiw (ORCPT
+        with ESMTP id S237204AbjJEOip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:38:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9926619
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:04:41 -0700 (PDT)
+        Thu, 5 Oct 2023 10:38:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870344E367
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:04:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696514681; x=1728050681;
+  t=1696514656; x=1728050656;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=qwslEXpVpdjmSlqhv7KA+43haihOLBSreW4A7xlGLmo=;
-  b=JxUMQQWtCYva/s2PcsHG1dRB9NgH5CismZtSLiIdtxcAR/zGte8T7QEF
-   WPUZHB2USd9RQ1qdDdIhD2MTpjITgyEUczO7vIBAjbwKE6g7C9jodLzww
-   A3jUeTmTRnYB0BcjZ3XhY/3Uy3WJ1Yeq0zmRO9cPK2Bufo9O965CvSA62
-   Ouf1SOJgZLdeeM9wXgJZSaR7LlaCaLXpjeO8WAConTcfsv+xeuBjR5Sdb
-   fWoEFxuAVxcjgzskBuPZlIMcJGUshNFozkKuz/oH+6+FPw68m/MplyDUl
-   vLgRGVRz5C75TCVSm37aXAcVPY0aOz4TCscS89YLqIo+lwMmm/9HIa90M
+  bh=UutLKR1Vg2FeYITzS3ethN6UgzHw9Sr7YlTqsZDUwd0=;
+  b=XmucqGNRRfm93DC4BT2r5OcHuuRUny0dk0lZC6N4/1ptOwWo7DDNtHyB
+   AFhErLcTN2LUFBiIEJUeKF6Tpzk0bOk5dZg6AyYyskuIFoRHqBAW9EFBe
+   dPRCa9fFcheFYK0hIdFOr2/6X65Gh6HfUWzwyqln1CjLouFrHFJAy5Qzo
+   gZ7FOK/dlgwjAahMcwidpN6kwxXOyDQWdhZ5s1ROAYMWMSbNl14Gz91Ds
+   T3xaKEsf08EmcKIp9Ajh3jQjooRF5lABuqZRaYKbzFnLNfhaweDMHiDpL
+   C7S++Slmi2N+3zcVKcddn2hkUBv6R99l8JE02B1gR3YKB6nTa0Nc96FdF
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="380767064"
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="382357451"
 X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="380767064"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 06:14:21 -0700
+   d="scan'208";a="382357451"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 06:14:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="728449205"
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="817564303"
 X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="728449205"
+   d="scan'208";a="817564303"
 Received: from skwasnia-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.222.71])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 06:14:16 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 06:14:16 -0700
 Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 2144510A12F; Thu,  5 Oct 2023 16:14:14 +0300 (+03)
+        id 2BD9910A14A; Thu,  5 Oct 2023 16:14:14 +0300 (+03)
 From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -57,9 +57,9 @@ Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
         kexec@lists.infradead.org, linux-coco@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH 02/13] kernel/cpu: Add support for declaring CPU hotplug not supported
-Date:   Thu,  5 Oct 2023 16:13:51 +0300
-Message-ID: <20231005131402.14611-3-kirill.shutemov@linux.intel.com>
+Subject: [PATCH 03/13] cpu/hotplug, x86/acpi: Disable CPU hotplug for ACPI MADT wakeup
+Date:   Thu,  5 Oct 2023 16:13:52 +0300
+Message-ID: <20231005131402.14611-4-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
 References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
@@ -75,77 +75,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function cpu_hotplug_not_supported() can be called to indicate that
-CPU hotplug should be disabled. It does not prevent the initial bring up
-of the CPU, but it stops subsequent offlining.
+ACPI MADT doesn't allow to offline CPU after it got woke up.
 
-This function is intended to replace CC_ATTR_HOTPLUG_DISABLED.
+Currently hotplug prevented based on the confidential computing
+attribute which is set for Intel TDX. But TDX is not the only possible
+user of the wake up method.
+
+Mark CPU hotplug as "not supported" on ACPI MADT wakeup enumeration.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- include/linux/cpu.h |  2 ++
- kernel/cpu.c        | 17 ++++++++++++++++-
- 2 files changed, 18 insertions(+), 1 deletion(-)
+ arch/x86/coco/core.c               |  1 -
+ arch/x86/kernel/acpi/madt_wakeup.c |  4 ++++
+ include/linux/cc_platform.h        | 10 ----------
+ kernel/cpu.c                       |  2 +-
+ 4 files changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index f19f56501809..aab3887cadbc 100644
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -132,6 +132,7 @@ extern void cpus_read_lock(void);
- extern void cpus_read_unlock(void);
- extern int  cpus_read_trylock(void);
- extern void lockdep_assert_cpus_held(void);
-+extern void cpu_hotplug_not_supported(void);
- extern void cpu_hotplug_disable(void);
- extern void cpu_hotplug_enable(void);
- void clear_tasks_mm_cpumask(int cpu);
-@@ -147,6 +148,7 @@ static inline void cpus_read_lock(void) { }
- static inline void cpus_read_unlock(void) { }
- static inline int  cpus_read_trylock(void) { return true; }
- static inline void lockdep_assert_cpus_held(void) { }
-+static inline void cpu_hotplug_not_supported(void) { }
- static inline void cpu_hotplug_disable(void) { }
- static inline void cpu_hotplug_enable(void) { }
- static inline int remove_cpu(unsigned int cpu) { return -EPERM; }
+diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+index eeec9986570e..f07c3bb7deab 100644
+--- a/arch/x86/coco/core.c
++++ b/arch/x86/coco/core.c
+@@ -20,7 +20,6 @@ static bool noinstr intel_cc_platform_has(enum cc_attr attr)
+ {
+ 	switch (attr) {
+ 	case CC_ATTR_GUEST_UNROLL_STRING_IO:
+-	case CC_ATTR_HOTPLUG_DISABLED:
+ 	case CC_ATTR_GUEST_MEM_ENCRYPT:
+ 	case CC_ATTR_MEM_ENCRYPT:
+ 		return true;
+diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
+index 1b9747bfd5b9..15bdf10b1393 100644
+--- a/arch/x86/kernel/acpi/madt_wakeup.c
++++ b/arch/x86/kernel/acpi/madt_wakeup.c
+@@ -1,4 +1,5 @@
+ #include <linux/acpi.h>
++#include <linux/cpu.h>
+ #include <asm/apic.h>
+ 
+ /* Physical address of the Multiprocessor Wakeup Structure mailbox */
+@@ -74,6 +75,9 @@ int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
+ 
+ 	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
+ 
++	/* Disable CPU onlining/offlining */
++	cpu_hotplug_not_supported();
++
+ 	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
+ 
+ 	return 0;
+diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
+index cb0d6cd1c12f..d08dd65b5c43 100644
+--- a/include/linux/cc_platform.h
++++ b/include/linux/cc_platform.h
+@@ -80,16 +80,6 @@ enum cc_attr {
+ 	 * using AMD SEV-SNP features.
+ 	 */
+ 	CC_ATTR_GUEST_SEV_SNP,
+-
+-	/**
+-	 * @CC_ATTR_HOTPLUG_DISABLED: Hotplug is not supported or disabled.
+-	 *
+-	 * The platform/OS is running as a guest/virtual machine does not
+-	 * support CPU hotplug feature.
+-	 *
+-	 * Examples include TDX Guest.
+-	 */
+-	CC_ATTR_HOTPLUG_DISABLED,
+ };
+ 
+ #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
 diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 6de7c6bb74ee..cf536fe1a88a 100644
+index cf536fe1a88a..9d4279476b40 100644
 --- a/kernel/cpu.c
 +++ b/kernel/cpu.c
-@@ -484,6 +484,9 @@ static int cpu_hotplug_disabled;
- 
- DEFINE_STATIC_PERCPU_RWSEM(cpu_hotplug_lock);
- 
-+/* Cleared if platform declares CPU hotplug not supported */
-+static bool cpu_hotplug_supported = true;
-+
- void cpus_read_lock(void)
- {
- 	percpu_down_read(&cpu_hotplug_lock);
-@@ -543,6 +546,18 @@ static void lockdep_release_cpus_lock(void)
- 	rwsem_release(&cpu_hotplug_lock.dep_map, _THIS_IP_);
- }
- 
-+/*
-+ * Declare CPU hotplug not supported.
-+ *
-+ * It doesn't prevent initial bring up of the CPU, but stops offlining.
-+ */
-+void cpu_hotplug_not_supported(void)
-+{
-+	cpu_maps_update_begin();
-+	cpu_hotplug_supported = false;
-+	cpu_maps_update_done();
-+}
-+
- /*
-  * Wait for currently running CPU hotplug operations to complete (if any) and
-  * disable future CPU hotplug (from sysfs). The 'cpu_add_remove_lock' protects
-@@ -1507,7 +1522,7 @@ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
+@@ -1522,7 +1522,7 @@ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
  	 * If the platform does not support hotplug, report it explicitly to
  	 * differentiate it from a transient offlining failure.
  	 */
--	if (cc_platform_has(CC_ATTR_HOTPLUG_DISABLED))
-+	if (cc_platform_has(CC_ATTR_HOTPLUG_DISABLED) || !cpu_hotplug_supported)
+-	if (cc_platform_has(CC_ATTR_HOTPLUG_DISABLED) || !cpu_hotplug_supported)
++	if (!cpu_hotplug_supported)
  		return -EOPNOTSUPP;
  	if (cpu_hotplug_disabled)
  		return -EBUSY;
