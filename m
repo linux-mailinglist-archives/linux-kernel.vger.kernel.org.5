@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AEE7BABB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 22:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CA87BABB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 22:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbjJEU4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 16:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
+        id S230521AbjJEU6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 16:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbjJEU4K (ORCPT
+        with ESMTP id S229535AbjJEU6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 16:56:10 -0400
-Received: from hosting.gsystem.sk (hosting.gsystem.sk [212.5.213.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6230FC0;
-        Thu,  5 Oct 2023 13:56:08 -0700 (PDT)
-Received: from gsql.ggedos.sk (off-20.infotel.telecom.sk [212.5.213.20])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id 175AE7A072E;
-        Thu,  5 Oct 2023 22:56:07 +0200 (CEST)
-From:   Ondrej Zary <linux@zary.sk>
-To:     Damien Le Moal <dlemoal@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Tim Waugh <tim@cyberelk.net>,
-        linux-parport@lists.infradead.org, linux-ide@vger.kernel.org,
+        Thu, 5 Oct 2023 16:58:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB7293
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 13:58:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED202C433C8;
+        Thu,  5 Oct 2023 20:58:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696539488;
+        bh=3b9ePAV/GGXEOSrD+P3Oy9gAEO1GIL3if6yfbYOJVsE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=BFshO7R/0dTAq0jpajSzkSnLUZ0ig50IxCsZ+/xwqMXbY/x9y3oHvrQIcEcljsaHz
+         ZeIuDAyNUmxKTHLJCmfLu7maRxkCM8Og2/Xe/CrD6cAdFfRHkWwUnwP2eJQQk5tLOW
+         N7fczG/lgbQ4FNOG1X2XVHi73ld9inKpiP/2lT+GuB0QdL2oyoUWPlNpjJhctJQdov
+         +51omX+HFf4s4KYT0IB4C+LZ4aQJJVTebfMSkC+lY/89YB+SB1uw91GFyq6h73YnS7
+         nZQxjGU2XS6IxJRLkVxLTdqEvHMGVTtAl2V+Y378Va/4a6raRZjI9ZsXFGl558zmYV
+         UAeavK+0eF/rQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 845EDCE090A; Thu,  5 Oct 2023 13:58:07 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 13:58:07 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Shuah Khan <shuah@kernel.org>, Willy Tarreau <w@1wt.eu>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] ata: pata_parport: fit3: implement IDE command set registers
-Date:   Thu,  5 Oct 2023 22:55:59 +0200
-Message-Id: <20231005205559.6504-5-linux@zary.sk>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231005205559.6504-1-linux@zary.sk>
-References: <20231005205559.6504-1-linux@zary.sk>
+Subject: Re: nolibc changes since 6.6-rc1 for linux-next
+Message-ID: <25382680-956a-4612-b930-f6823c71cf8d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <11a790c0-f9c0-49eb-b14f-56b962af6d2d@t-8ch.de>
+ <dcfa99da-eb3e-4c85-9e7f-092bbb1be801@linuxfoundation.org>
+ <48c01af3-d373-4546-a8f2-d81fa447eaaa@t-8ch.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <48c01af3-d373-4546-a8f2-d81fa447eaaa@t-8ch.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fit3 protocol driver does not support accessing IDE control registers
-(device control/altstatus). The DOS driver does not use these registers
-either (as observed from DOSEMU trace). But the HW seems to be capable
-of accessing these registers - I simply tried bit 3 and it works!
+On Thu, Oct 05, 2023 at 10:28:05PM +0200, Thomas Weißschuh wrote:
+> On 2023-10-05 14:15:31-0600, Shuah Khan wrote:
+> > Hi Thomas,
+> > 
+> > On 10/5/23 11:00, Thomas Weißschuh wrote:
+> > > Hi Shuah,
+> > > 
+> > > I'd like to test the current state of nolibc in linux-next.
+> > > Could pull the request below into your nolibc branch?
+> > > 
+> > > I'll do some manual tests this weekend, too.
+> > > 
+> > > 
+> > > Thanks,
+> > > Thomas
+> > > 
+> > > 
+> > > The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+> > > 
+> > >    Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+> > > 
+> > > are available in the Git repository at:
+> > > 
+> > >    https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git nolibc/next
+> > > 
+> > > for you to fetch changes up to ab663cc32912914258bc8a2fbd0e753f552ee9d8:
+> > > 
+> > >    tools/nolibc: automatically detect necessity to use pselect6 (2023-09-28 09:20:35 +0200)
+> > 
+> > Absolutely. Do you mind tagging and pushing the tag and send
+> > pull request with the tag?
+> 
+> Sure, here it is:
+> 
+> 
+> The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+> 
+>   Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git nolibc-next.2023.10.05a
+> 
+> for you to fetch changes up to ab663cc32912914258bc8a2fbd0e753f552ee9d8:
+> 
+>   tools/nolibc: automatically detect necessity to use pselect6 (2023-09-28 09:20:35 +0200)
 
-The control register is required to properly reset ATAPI devices or
-they will be detected only once (after a power cycle).
+Looks good on my laptop:
 
-Tested with EXP Computer CD-865 with MC-1285B EPP cable and
-TransDisk 3000.
+make run:
 
-Signed-off-by: Ondrej Zary <linux@zary.sk>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
----
- drivers/ata/pata_parport/fit3.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+	160 test(s): 160 passed,   0 skipped,   0 failed => status: success
 
-diff --git a/drivers/ata/pata_parport/fit3.c b/drivers/ata/pata_parport/fit3.c
-index bad7aa920cdc..d2b81cf2e16d 100644
---- a/drivers/ata/pata_parport/fit3.c
-+++ b/drivers/ata/pata_parport/fit3.c
-@@ -9,11 +9,6 @@
-  *
-  * The TD-2000 and certain older devices use a different protocol.
-  * Try the fit2 protocol module with them.
-- *
-- * NB:  The FIT adapters do not appear to support the control
-- * registers.  So, we map ALT_STATUS to STATUS and NO-OP writes
-- * to the device control register - this means that IDE reset
-- * will not work on these devices.
-  */
- 
- #include <linux/module.h>
-@@ -37,8 +32,7 @@
- 
- static void fit3_write_regr(struct pi_adapter *pi, int cont, int regr, int val)
- {
--	if (cont == 1)
--		return;
-+	regr += cont << 3;
- 
- 	switch (pi->mode) {
- 	case 0:
-@@ -59,11 +53,7 @@ static int fit3_read_regr(struct pi_adapter *pi, int cont, int regr)
- {
- 	int  a, b;
- 
--	if (cont) {
--		if (regr != 6)
--			return 0xff;
--		regr = 7;
--	}
-+	regr += cont << 3;
- 
- 	switch (pi->mode) {
- 	case 0:
--- 
-Ondrej Zary
+make run-user:
 
+	160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
+
+Shuah, I can take nolibc for the upcoming merge window (I believe that
+it is my turn to do so), but if you would prefer to take them, that also
+works for me.  Either way, just let me know.
+
+							Thanx, Paul
