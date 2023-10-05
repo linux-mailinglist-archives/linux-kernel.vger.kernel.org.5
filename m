@@ -2,140 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8179A7BA320
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26E97B9F3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235491AbjJEPwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
+        id S233610AbjJEOTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233917AbjJEPu5 (ORCPT
+        with ESMTP id S230202AbjJEORX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:50:57 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5903C63EFE;
-        Thu,  5 Oct 2023 07:08:44 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 395BJ7DL114262;
-        Thu, 5 Oct 2023 06:19:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696504747;
-        bh=O3H9updDdRZA1n9r7jo5xac1dzx6YqsbyUPWoem2bi0=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=F4FE1PjJyNXeVo5vS5nYLlEjPCgoMzZB0fZgXYnwEzzveDo6GFhwZI972eUp8mZMa
-         cY+PSWWN52Cyfp2F1fa36KCEjG3A2zRRfb1dolG4rzP8ZK52WspFONbokepOoD96bo
-         FmRdi58lXtE9dGFBR5rsnUnASOZM6mE23nNjKX5c=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 395BJ7ip073088
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 5 Oct 2023 06:19:07 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 5
- Oct 2023 06:19:07 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 5 Oct 2023 06:19:07 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 395BJ70q073832;
-        Thu, 5 Oct 2023 06:19:07 -0500
-Date:   Thu, 5 Oct 2023 06:19:07 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Ayush Singh <ayushdevel1325@gmail.com>
-CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <greybus-dev@lists.linaro.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <gregkh@linuxfoundation.org>,
-        <vaishnav@beagleboard.org>, <jkridner@beagleboard.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <vigneshr@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>, <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v7 1/3] dt-bindings: net: Add ti,cc1352p7
-Message-ID: <20231005111907.ck6rhmuhicrjkifr@elderly>
-References: <20231004184639.462510-1-ayushdevel1325@gmail.com>
- <20231004184639.462510-2-ayushdevel1325@gmail.com>
- <a171cc72-98cf-4f7f-ba86-6da2ac45ea22@linaro.org>
- <aa63918f-3a95-5e86-d61d-91a59cf643ad@gmail.com>
+        Thu, 5 Oct 2023 10:17:23 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C719124872
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 04:20:16 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-313e742a787so511039f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 04:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696504815; x=1697109615; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D4AE5jS4qjwXCMnOlOFtdJ9RttCSKbWymcLORudPBgc=;
+        b=vITy67iqXCawyJRrBYTbANj04Wqd82i9f+X41xRdVLpr9q1nrjp3lsGFiHlsCH4/Mm
+         gYaoQefcPxWoF98ga9pncX77lQMPRQgXX5DlFeNEWdkrD7jVEA4VmiAonOKryk1TfyP8
+         Xf/ODAA7V8B2gZkU8C/xsfqPlqxWBhEehk7ysxdNpqytvgNkJj5CllMfDprn49pUEKT7
+         OlgtR6JFLaxWz3LozZJ5G3+wdPB+at/WpKJKi/DeZqjdgNeEx3aT5HuOoDzmhwmoJ19G
+         RrDWYo6ObHQwOXN+QuZunJj8p0F5Nl5JdS7rlbIFcT3WQLYQL6NMEKxcncm3Le4s1NKf
+         kqVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696504815; x=1697109615;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D4AE5jS4qjwXCMnOlOFtdJ9RttCSKbWymcLORudPBgc=;
+        b=r05dC87MOq1c/OH0VxtCGCpQKQGGLdzAlbA8E7ZWkmwXl0p4GWv6re7TQTAQpUpQiS
+         MBe3HKk0g+x/YZDBce1umjda//o7VQsKRq7+uLsp2c7abBoU4RapSH56R06lpCODxuKg
+         a+s6htrkKgXwLAHzE5Mw6fpWVVTwfR8vhTNDYv9yG9vgrmjjfY93LMsiBexCxitk00r0
+         IlNeDmSvb7ddhF+VaGoz3z4qfROO2NEau9g7PT029lpVfATrMinNZefZfoA1wJfLn/qO
+         5R4sLs+Wx/28MPtH2g3qBpc1dpviSKq953U8hZoXITmak0QhjZx5gI3jCWYVdjdzH9fY
+         rJwg==
+X-Gm-Message-State: AOJu0Yz0zZbBVNC4wzIpB5clnmmBKvgFRq8RMJGVOA8bbzQpjnUDvsTJ
+        ek1mePcPnJ0XrUK293b3oug12s515N5yr/BF68A=
+X-Google-Smtp-Source: AGHT+IEI36e0d7npO9gHvSq0PCK8REknqrsXlLxeDQM2Vg3iDm3n0GAUq6RQUC7RZu5soOlpwzCm6w==
+X-Received: by 2002:a5d:6387:0:b0:323:1688:a70e with SMTP id p7-20020a5d6387000000b003231688a70emr1084141wru.16.1696504815109;
+        Thu, 05 Oct 2023 04:20:15 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:8bb6:12b3:863a:e5dd? ([2a05:6e02:1041:c10:8bb6:12b3:863a:e5dd])
+        by smtp.googlemail.com with ESMTPSA id t25-20020a1c7719000000b004065daba6casm3539418wmi.46.2023.10.05.04.20.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 04:20:14 -0700 (PDT)
+Message-ID: <d784edb6-9a95-b30c-6f55-a1daccad2f9e@linaro.org>
+Date:   Thu, 5 Oct 2023 13:20:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <aa63918f-3a95-5e86-d61d-91a59cf643ad@gmail.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 6/6] thermal: int340x: Use thermal_zone_for_each_trip()
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+References: <4846448.GXAFRqVoOG@kreacher> <3532950.iIbC2pHGDl@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <3532950.iIbC2pHGDl@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13:51-20231005, Ayush Singh wrote:
-> > > Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
-> > > ---
-> > >   .../devicetree/bindings/net/ti,cc1352p7.yaml  | 51 +++++++++++++++++++
-> > >   MAINTAINERS                                   |  6 +++
-> > >   2 files changed, 57 insertions(+)
-> > >   create mode 100644 Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/net/ti,cc1352p7.yaml b/Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
-> > > new file mode 100644
-> > > index 000000000000..291ba34c389b
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
-> > > @@ -0,0 +1,51 @@
-> > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/net/ti,cc1352p7.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Texas Instruments Simplelink CC1352P7 wireless MCU
-> > > +
-> > > +description:
-> > > +  The cc1352p7 mcu can be connected via SPI or UART.
-> > > +
-> > > +maintainers:
-> > > +  - Ayush Singh <ayushdevel1325@gmail.com>
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: ti,cc1352p7
-> > > +
-> > > +  clocks:
-> > > +    maxItems: 2
-> > > +
-> > > +  clock-names:
-> > > +    description:
-> > > +      sclk_hf is the main system (mcu and peripherals) clock
-> > > +      sclk_lf is low-frequency system clock
-> > This does no go here, but to clocks. I wrote how it should be done.
-> > Don't ignore the feedback.
-> It was suggested to use `clock-names` by Nishanth Menon in the previous
-> email, so I thought this was what it meant. I will remove clock-names if
-> that's better.
+On 03/10/2023 15:26, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Modify int340x_thermal_update_trips() to use thermal_zone_for_each_trip()
+> for walking trips instead of using the trips[] table passed to the
+> thermal zone registration function.
+> 
+> For this purpose, store active trip point indices in the priv fieids of
+> the corresponding thermal_trip structures.
+> 
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+> 
+> v1 -> v2: Mo changes
+> 
+> ---
 
-Krzysztof was mentioning that the description should be with clocks.
-clock-names would allow for more descriptive dts
-
-> > > +    items:
-> > > +      - const: sclk_hf
-> > > +      - const: sclk_lf
-> > > +
-> > > +  reset-gpios: true
-> > 
-> > No, really, why do you change correct code into incorrect one? Who asked
-> > you to drop maxItems?
-> I found that many bindings (`display/ilitek,ili9486.yaml`,
-> `iio/dac/adi,ad5758.yaml`) use this pattern instead of `maxItems` for
-> `reset-gpios`. So I assumed it was some sort of convention. I will change it
-> back to `maxItems`.
-
-maxItems restrict the number of GPIOs to the ones that are actually
-needed for the peripheral.
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
