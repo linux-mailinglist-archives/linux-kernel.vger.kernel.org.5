@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB20E7B9FB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772427B9F2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233937AbjJEO1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42874 "EHLO
+        id S233731AbjJEOSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235521AbjJEOYu (ORCPT
+        with ESMTP id S244418AbjJENxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:24:50 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0E293CF;
-        Thu,  5 Oct 2023 01:52:07 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3af5b26d599so514069b6e.2;
-        Thu, 05 Oct 2023 01:52:07 -0700 (PDT)
+        Thu, 5 Oct 2023 09:53:34 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FFF93D2;
+        Thu,  5 Oct 2023 01:52:15 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c5c91bece9so5436955ad.3;
+        Thu, 05 Oct 2023 01:52:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696495926; x=1697100726; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=14DahahFkQoOWdX47n8G7u6PeGawD3QEfTn/cdN7xE4=;
-        b=dPHLynF6KzACCjRiQPP5uf3F31Uz5UrsNK98j0GNbYl9vLSo1wyRhCQ5g4biA9pBv7
-         JN+j21Nry6XIST/rp9h3cWUJshlwy9Th7aGfLFpSZxY+OF7dowSdt6IdwDhzTIYk7x5I
-         NzesNXqac8gDZSEmX6+OBkxpvOGClVMI/Etw/A/PFr2zk6zc9t1LTTg+WShHKtFXmegG
-         tJZ0G0nFsJ5VsxbmIMjqt3ccwUZ/bJLZdInYwEH2PO/vw8T+w+VD+aVBkS5pviMYFI55
-         V3nBBvqrUjp+LPjG9CKIeEkTxl+XZ6+8thLThFnvm7mAvZDRi67CqshyKsIYbBhy8PR4
-         hjwg==
+        d=gmail.com; s=20230601; t=1696495934; x=1697100734; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zgM5ckKPxNB77t1sRiLlpy3j0VyAqto+yLSEBB/aNRg=;
+        b=BNSXk1jGkIh2FykCW3jyKH1DLljKVV/vo0OuYJ+hpWYw6/WAoSZqdfLgXu/u/ZNW8U
+         g05XbCIwqNasy4Z2vk9a51BWV9PBJXMY1mfwThOo+cCA9x0m0MT6B4DJI1DBKoCGtRah
+         TpCjjCgAMWLUw7iIuuYFnXtMpXpnMNLfS0epzQmPz184gw4pTFq62+UPXtJJeSIToaiI
+         JmCu5j4yv29QbYViBTg+eTHy8IlNr9/JHQoueC5pEKhbrAveEeUp3qhKBxBnw5/trs1o
+         icIPjX3s/NgF0n3djkhk8JZu95u2fx936596KkflHSg+WcKets0QuKN3puAtTxEnTa04
+         heZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696495926; x=1697100726;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=14DahahFkQoOWdX47n8G7u6PeGawD3QEfTn/cdN7xE4=;
-        b=XLuKkxqfKRGpw7na9K9wQzFXyO99X8tgznM7nGByJxgb3/qiMP6Tlz0vkziNZCLwMt
-         wJL5KgbxGLbM+MbBVCSu0U5jsr7HvzedZU/bfWnkly6UGqyj6EGCPNotlWT1uk0hx2Os
-         +g95Jind8S75lZC2h4q5wtme26tApk3pIJgD6VCscyP4ZWhn96b4JqP8+08+mWS24vna
-         s2VRmNEBXn673UWe09aWix0/GLVIAPNRMNC4kfCVoCJGIQHnN7Mh/Ps+M4DT5VH/e9jU
-         LybQG0J8NWob4QTDxNgufAwrDoNAX/cDWxekdFELtt1wcbW+nWOHEFZD2+RcEXuDQdtl
-         SLgA==
-X-Gm-Message-State: AOJu0YzQfI0EcxPwoZeAjC5k0xwVMQS+gdO+oLKR6nr4+Y9DL4mswbmO
-        ibvE7QKutgmUFe1sbuBLxpvLFHEzHqym6A==
-X-Google-Smtp-Source: AGHT+IHO8zLha/0xfhHNk1JVmXIZSf1rn1EFvZhUelMtoLLYh8NBFNZlR/QCH5KYSfHX8ZEYUTNVug==
-X-Received: by 2002:a05:6358:e49e:b0:15c:e2c9:d1ca with SMTP id by30-20020a056358e49e00b0015ce2c9d1camr5664689rwb.1.1696495926581;
-        Thu, 05 Oct 2023 01:52:06 -0700 (PDT)
-Received: from wenkaidev (118-163-147-182.hinet-ip.hinet.net. [118.163.147.182])
-        by smtp.gmail.com with ESMTPSA id z8-20020a17090a014800b00262eb0d141esm1092591pje.28.2023.10.05.01.52.05
+        d=1e100.net; s=20230601; t=1696495934; x=1697100734;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zgM5ckKPxNB77t1sRiLlpy3j0VyAqto+yLSEBB/aNRg=;
+        b=wMbd2tVQ1K0EOGUsJHxKqpE+kzfsLEPO7jLiT/oZuKOZu4KEs67EImcZtNGEJ2qhsP
+         CGCgsRoAOfRomUwPR/PJZTWQecOp5KYxwob3au8dRNA9JcFZyNafNquj0ycQAqZYp0fw
+         8Mj/1IDJh3Bs7hKMRqd63DBo/dzqtKx3vgF48mvveqBMWpiJbohLYxSTcLsL6v5WXY6p
+         Zvnp5yOVLjYnzNYNrEqr12c78MbOZw9OF9lVq88r5zdMTFykkW0qB4DsO1NXDEAXwZbs
+         RzbgaL+eaxrzgUzjQcXNAXnqYgUjhnvtnhQqPD2RwsZuaqCj7FP6p/oK324MkaMnplnO
+         4Dvg==
+X-Gm-Message-State: AOJu0YxF2puC02EGF+FxgUUknptYWcUTsd1f22bOuiDiD5LcY9neZdNc
+        gKc53x15fZETYhUYzn8Z673oxKOf7MCNZg==
+X-Google-Smtp-Source: AGHT+IHaquDPsukG6jJq108ZBRy06PSDfaFfZOEMKm3D8kLZf8yJt6ZNQ2ty+aXqa8AoHdUElL3Ogg==
+X-Received: by 2002:a17:902:e883:b0:1c6:19da:b29f with SMTP id w3-20020a170902e88300b001c619dab29fmr5291623plg.26.1696495934010;
+        Thu, 05 Oct 2023 01:52:14 -0700 (PDT)
+Received: from wenkaidev ([123.51.235.123])
+        by smtp.gmail.com with ESMTPSA id h19-20020a170902f7d300b001bc59cd718asm1058645plw.278.2023.10.05.01.52.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 01:52:05 -0700 (PDT)
+        Thu, 05 Oct 2023 01:52:13 -0700 (PDT)
 From:   advantech.susiteam@gmail.com
 To:     advantech.susiteam@gmail.com
 Cc:     wenkai.chung@advantech.com.tw, Susi.Driver@advantech.com,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
         linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH 0/5] watchdog: eiois200_wdt: Add EIO-IS200 Watchdog Driver
-Date:   Thu,  5 Oct 2023 16:51:18 +0800
-Message-Id: <cover.1696495372.git.advantech.susiteam@gmail.com>
+Subject: [PATCH 2/5] watchdog: eiois200_wdt: Add PMC support with eiois200_core.
+Date:   Thu,  5 Oct 2023 16:51:20 +0800
+Message-Id: <a3e22f8ebd9154e4fd4e11aef253de762e0523cf.1696495372.git.advantech.susiteam@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1696495372.git.advantech.susiteam@gmail.com>
+References: <cover.1696495372.git.advantech.susiteam@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -74,44 +76,162 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Wenkai <advantech.susiteam@gmail.com>
 
-This patch series aims to add support for the Advantech EIO-IS200
-Embedded Controller's watchdog timer to the Linux kernel. The EIO-IS200
-is a widely used embedded controller, and this series introduces a
-native driver for its watchdog timer functionality within the Linux
-ecosystem.
+All eiois200 series driver functionalities are based on PMC (Peripheral
+Management Controller) communication. This patch enables communication
+between the driver and the eiois200_core. However, this version does
+not yet implement the watchdog timer's functionality.
 
-Driver Features:
-- Complete support for the Advantech EIO-IS200 Embedded Controller's
-  hardware watchdog timer.
-- Seamless integration with the Linux Watchdog framework, enabling
-  standard watchdog functionality.
-- Flexible configuration options for watchdog timeout and event types.
-- Module parameters for setting default timeout and event type.
-- The EIO-IS200 can select special event output pin such as PWRBTN
-  (Power button),SCI (ACPI System Control Interrupt), IRQ, and GPIO
+Signed-off-by: Wenkai <advantech.susiteam@gmail.com>
+---
+ drivers/watchdog/eiois200_wdt.c | 114 ++++++++++++++++++++++++++++++++
+ 1 file changed, 114 insertions(+)
 
-Driver Dependencies:
-- The driver relies on the Linux Multi-Function Device (MFD) framework
-  and related dependencies.
-- Assumption of the presence of the Advantech eiois200_core MFD core
-  driver.
-
-Wenkai (5):
-  watchdog: eiois200_wdt: Constructing Advantech EIO-IS200 watchdog
-			  driver
-  watchdog: eiois200_wdt: Add PMC support with eiois200_core.
-  watchdog: eiois200_wdt: Implement basic watchdog functionalities
-  watchdog: eiois200_wdt: Enhanced watchdog functionality and pretimeout
-  watchdog: eiois200_wdt: Enhanced IRQ trigger behavior
-
- drivers/watchdog/Kconfig        |  14 +
- drivers/watchdog/Makefile       |   1 +
- drivers/watchdog/eiois200_wdt.c | 658 ++++++++++++++++++++++++++++++++
- 3 files changed, 673 insertions(+)
- create mode 100644 drivers/watchdog/eiois200_wdt.c
-
-
-base-commit: 9aab92bc3a8922d4b2e24d10271dfe3034cbf5c2
+diff --git a/drivers/watchdog/eiois200_wdt.c b/drivers/watchdog/eiois200_wdt.c
+index bf132a75a2ec..ce4435ac62f2 100644
+--- a/drivers/watchdog/eiois200_wdt.c
++++ b/drivers/watchdog/eiois200_wdt.c
+@@ -16,6 +16,40 @@
+ #define WATCHDOG_TIMEOUT	60
+ #define WATCHDOG_PRETIMEOUT	10
+ 
++/* Support Flags */
++#define SUPPORT_AVAILABLE	BIT(0)
++#define SUPPORT_RESET		BIT(7)
++
++/* PMC registers */
++#define REG_STATUS		0x00
++#define REG_CONTROL		0x02
++#define REG_EVENT		0x10
++#define REG_RESET_EVENT_TIME	0x14
++#define REG_IRQ_NUMBER		0x17
++
++/* PMC command and control */
++#define CMD_WDT_WRITE		0x2A
++#define CMD_WDT_READ		0x2B
++#define CTRL_STOP		0x00
++#define CTRL_START		0x01
++#define CTRL_TRIGGER		0x02
++
++/* I/O register and its flags */
++#define IOREG_UNLOCK		0x87
++#define IOREG_LOCK		0xAA
++#define IOREG_LDN		0x07
++#define IOREG_LDN_PMCIO		0x0F
++#define IOREG_IRQ		0x70
++#define IOREG_WDT_STATUS	0x30
++
++/* Flags */
++#define FLAG_WDT_ENABLED	0x01
++#define FLAG_TRIGGER_IRQ	BIT(4)
++
++/* PMC read and write a value */
++#define PMC_WRITE(cmd, data)	pmc(CMD_WDT_WRITE, cmd, data)
++#define PMC_READ(cmd, data)	pmc(CMD_WDT_READ, cmd, data)
++
+ static struct _wdt {
+ 	u32	support;
+ 	long	last_time;
+@@ -47,6 +81,48 @@ static int wdt_set_timeout(struct watchdog_device *dev,
+ 	return 0;
+ }
+ 
++static int pmc(u8 cmd, u8 ctrl, void *payload)
++{
++	struct pmc_op op = {
++		.cmd      = cmd,
++		.control  = ctrl,
++		.size     = ctrl <= REG_EVENT	   ? 1 :
++			    ctrl >= REG_IRQ_NUMBER ? 1 : 4,
++		.payload  = payload,
++	};
++
++	return eiois200_core_pmc_operation(wdt.dev, &op);
++}
++
++static int get_time(u8 ctrl, u32 *val)
++{
++	int ret;
++
++	ret = PMC_READ(ctrl, val);
++
++	/* ms to sec */
++	*val /= 1000;
++
++	return ret;
++}
++
++
++static int wdt_get_config(void)
++{
++	int ret;
++	u32 reset_time;
++
++	/* Get Reset Time */
++	ret = get_time(REG_RESET_EVENT_TIME, &reset_time);
++	if (ret)
++		return ret;
++
++	dev_info(wdt.dev, "Timeout H/W default timeout: %d secs\n", reset_time);
++	wddev.timeout	 = reset_time;
++
++	return 0;
++}
++
+ static int wdt_start(struct watchdog_device *dev)
+ {
+ 	return 0;
+@@ -67,6 +143,40 @@ static unsigned int wdt_get_timeleft(struct watchdog_device *dev)
+ 	return 0;
+ }
+ 
++static int wdt_support(void)
++{
++	u8 support;
++
++	if (PMC_READ(REG_STATUS, &support))
++		return -EIO;
++
++	if ((support & SUPPORT_AVAILABLE) == 0)
++		return -EIO;
++
++	/* Must support reset */
++	if ((support & SUPPORT_RESET) != SUPPORT_RESET)
++		return -EIO;
++
++	/* Must has support event **/
++	wdt.support = support;
++
++	return 0;
++}
++static int wdt_init(struct device *dev)
++{
++	int ret = 0;
++
++	ret = wdt_support();
++	if (ret)
++		return ret;
++
++	ret = wdt_get_config();
++	if (ret)
++		return ret;
++
++	return ret;
++}
++
+ static const struct watchdog_ops wdt_ops = {
+ 	.owner		= THIS_MODULE,
+ 	.start		= wdt_start,
+@@ -91,6 +201,10 @@ static int wdt_probe(struct platform_device *pdev)
+ 	wdt.iomap = dev_get_regmap(dev->parent, NULL);
+ 	if (!wdt.iomap)
+ 		return dev_err_probe(dev, -ENOMEM, "Query parent regmap fail\n");
++	
++	/* Initialize EC watchdog */
++	if (wdt_init(dev))
++		return dev_err_probe(dev, -EIO, "wdt_init fail\n");
+ 
+ 	/* Inform watchdog info */
+ 	wddev.ops = &wdt_ops;
 -- 
 2.34.1
 
