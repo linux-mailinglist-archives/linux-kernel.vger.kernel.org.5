@@ -2,69 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B5F7BA5A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E2C7BA55F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242683AbjJEQSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52326 "EHLO
+        id S241218AbjJEQQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242066AbjJEQPH (ORCPT
+        with ESMTP id S241001AbjJEQNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:15:07 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF21DA39D
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 08:45:22 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-502f29ed596so5849e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 08:45:22 -0700 (PDT)
+        Thu, 5 Oct 2023 12:13:17 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B38553407
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 08:47:33 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99de884ad25so210132266b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 08:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696520721; x=1697125521; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TX8UjF5DOaU9Dh2iocwbm0C+QFn3F6aBNSMI29Aiai8=;
-        b=VQOscCFBpXf1ZzW3MV55ZIjlNuW+7yhPaMpVP9lj0FC44j27F/2Pjfmg1vqINrYfQC
-         fscsyUlsVo5u93HZ01rFgKVne5TT8C/qqNNn8xmyTxPytOrxolNmLXctFhgExw+4WtwO
-         Sp4PE+CMYPwT9bxeWL8Fy5X7VESSDVRAbvfsGHxK2izsEFfpDOMlKRh59Ox31ezNUsp5
-         9xSE4H9fYQ68ShjOoVKTYqFzjBkYwi2RUO7nuXDBbevMVDk7UMOAqIIxXTElLe1eJ+L6
-         yYwgW1yJxfM6fJJKhQUGd/RrxZ/HixUIhs5sR0IeP0zOR9rlSRi9qC0sLOIRlqXEkHyn
-         F3nw==
+        d=szeredi.hu; s=google; t=1696520852; x=1697125652; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UIbClnluXXm7tzBo8R0egubgbNZCa9FUtfT45WqWEaw=;
+        b=A34CFJbJNOQHh16uipq42ogpUAnfu4V8c8TuMTe/W6ZS1fj+RCy9MC+AIcWpP+Va53
+         BrKyct1gSCxej2UGQ7ePhqm1IqeTUBo3LST6tXYw94/POs4sNnk3OzFmEeWubPXegQ06
+         Y+qEX7z1Ug88Eb3dLZARoAga7Mza2twAsUyrQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696520721; x=1697125521;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TX8UjF5DOaU9Dh2iocwbm0C+QFn3F6aBNSMI29Aiai8=;
-        b=E3AtCtq9msXcFjXRK04n1vptx5Qs2OTt1NzFDZWUWIXRRnfhJvqYyVG01sDx+qLewS
-         sFNT0YPnHzr7oj9V3Ttnhp8p6TLTOUWTN5DzoKLDY5NkXlXjUa2+MTUstgJUNo3HtHyh
-         A/o4wXeu7xkuJEfT/oN3CMfT/3se3cOh3NcdxwnbVflcyHGfg13AD7Ec20ImB+fFh+T/
-         50oCv/aS2FfKOV/Nop6EEEIXt/WCPjlfHwDcFwuDe5oi1I6WvA2+Vdo8l2SSiJmyHpR0
-         1uwpaISkndK25kUYJ+F6cB/mTCO+LXEMU0JYxHdhzcryf0aW4ebAx7rdH/dYF8nziUGl
-         Jc4w==
-X-Gm-Message-State: AOJu0YzvD+Cp/r2mZsmtD8VOBbwg23e8LS0Pv3P/liQacwZmT2PjF4vQ
-        6upHmlFbz+3iOkoLPvarARa/7kwd1wvRRwHvaFFKKQ==
-X-Google-Smtp-Source: AGHT+IGqWYrP0bU6eH51+KA9yozaWEkGtoya3hyr8M5/z64fkCqqmxjqLX8ue9OPpGidRiBJF9uVILyMf4ypss3Co70=
-X-Received: by 2002:a05:6512:484:b0:4fe:ffbc:ac98 with SMTP id
- v4-20020a056512048400b004feffbcac98mr43473lfq.4.1696520720865; Thu, 05 Oct
- 2023 08:45:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696520852; x=1697125652;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UIbClnluXXm7tzBo8R0egubgbNZCa9FUtfT45WqWEaw=;
+        b=Bm45JFQgir9kCdvh0sUy1TdZliWm9urwpi+Z3mw5TB16P77t/urL6vgG9Hw+oVtySN
+         X6trRKlvvZiZ/Tz4epKsOcgt9nfRH8hAOYua6uZHa3s3W5xxjlDb1ojjKkpnM8zklnm5
+         APetDRNE308Y0Li9SRHndQXvAIDvVBYROG0BL7btgHwcnajXDwXLVYCNKrY9lHz50Fwc
+         f97+k1INX3MgE8J043WXqbHsy6tNbcZ2hXzDwhb0kk9TgsmXQ8Q7cbOfKEzLdyvPrOcJ
+         6H+VkTn9JxVwsR6fa1wOtboxQF13C+qlq8/O0Fsk432Ofz8Lwlk03sOB1koGU8cwzYVd
+         Sgrg==
+X-Gm-Message-State: AOJu0Yxlwo86Fl/6bQ4h+SE8MMg1GwsgfcFdhRue6COjlwvESPvuCwTc
+        vWppopCbCX33qANWH5/wHqiFamHg46evnelU6wD6Lw==
+X-Google-Smtp-Source: AGHT+IGsngpSrcqd6kKV9Bco2sKwkS1oFAFzCv5dVv+U0Wu/XKkes83ujmyHOcp2jA+PoEmRR/awY7L3W30UVlh+yEI=
+X-Received: by 2002:a17:906:cc50:b0:9ae:7611:99bb with SMTP id
+ mm16-20020a170906cc5000b009ae761199bbmr5442107ejb.59.1696520851931; Thu, 05
+ Oct 2023 08:47:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZR6+MhXtLnv6ow6E@kernel.org>
-In-Reply-To: <ZR6+MhXtLnv6ow6E@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 5 Oct 2023 08:45:09 -0700
-Message-ID: <CAP-5=fWtX3_bmBHbeEskmM4rzX-r1LAhE8_kaYy8WueUpKCdUw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] perf build: Add missing comment about NO_LIBTRACEEVENT=1
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20230928130147.564503-1-mszeredi@redhat.com> <20230928130147.564503-5-mszeredi@redhat.com>
+ <CAHC9VhQD9r+Qf5Vz1XmxUdJJJO7HNTKdo8Ux=n+xkxr=JGFMrw@mail.gmail.com>
+ <CAJfpegsPbDgaz46x4Rr9ZgCpF9rohVHsvuWtQ5LNAdiYU_D4Ww@mail.gmail.com> <a25f2736-1837-f4ca-b401-85db24f46452@themaw.net>
+In-Reply-To: <a25f2736-1837-f4ca-b401-85db24f46452@themaw.net>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 5 Oct 2023 17:47:20 +0200
+Message-ID: <CAJfpegv78njkWdaShTskKXoGOpKAndvYYJwq7CLibiu+xmLCvg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] add listmount(2) syscall
+To:     Ian Kent <raven@themaw.net>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Matthew House <mattlloydhouse@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,55 +77,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 6:46=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
-l.org> wrote:
->
-> From: Arnaldo Carvalho de Melo <acme@redhat.com>
->
-> By default perf will fail the build if the development files for
-> libtraceevent are not available.
->
-> To build perf without libtraceevent support, disabling several features
-> such as 'perf trace', one needs to add NO_LIBTRACEVENT=3D1 to the make
-> command line.
->
-> Add the missing comments about that to the tools/perf/Makefile.perf
-> file, just like all the other such command line toggles.
->
-> Fixes: 378ef0f5d9d7f465 ("perf build: Use libtraceevent from the system")
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+On Thu, 5 Oct 2023 at 06:23, Ian Kent <raven@themaw.net> wrote:
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+> The proc interfaces essentially use <mount namespace>->list to provide
+>
+> the mounts that can be seen so it's filtered by mount namespace of the
+>
+> task that's doing the open().
+>
+>
+> See fs/namespace.c:mnt_list_next() and just below the m_start(), m_next(),
+
+/proc/$PID/mountinfo will list the mount namespace of $PID.  Whether
+current task has permission to do so is decided at open time.
+
+listmount() will list the children of the given mount ID.  The mount
+ID is looked up in the task's mount namespace, so this cannot be used
+to list mounts of other namespaces.  It's a more limited interface.
+
+I sort of understand the reasoning behind calling into a security hook
+on entry to statmount() and listmount().  And BTW I also think that if
+statmount() and listmount() is limited in this way, then the same
+limitation should be applied to the proc interfaces.  But that needs
+to be done real carefully because it might cause regressions.  OTOH if
+it's only done on the new interfaces, then what is the point, since
+the old interfaces will be available indefinitely?
+
+Also I cannot see the point in hiding some mount ID's from the list.
+It seems to me that the list is just an array of numbers that in
+itself doesn't carry any information.
 
 Thanks,
-Ian
-
-> ---
->  tools/perf/Makefile.perf | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index 98604e396ac33643..456872ac410df4c0 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -69,6 +69,10 @@ include ../scripts/utilities.mak
->  # Define NO_LIBDW_DWARF_UNWIND if you do not want libdw support
->  # for dwarf backtrace post unwind.
->  #
-> +# Define NO_LIBTRACEEVENT=3D1 if you don't want libtraceevent to be link=
-ed,
-> +# this will remove multiple features and tools, such as 'perf trace',
-> +# that need it to read tracefs event format files, etc.
-> +#
->  # Define NO_PERF_READ_VDSO32 if you do not want to build perf-read-vdso3=
-2
->  # for reading the 32-bit compatibility VDSO in 64-bit mode
->  #
-> --
-> 2.41.0
->
-> --
+Miklos
