@@ -2,135 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F7C7BA355
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C327BA3E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234937AbjJEPx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:53:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43632 "EHLO
+        id S239583AbjJEP7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235723AbjJEPvl (ORCPT
+        with ESMTP id S235183AbjJEP5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:51:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD592DE6B
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:10:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696515030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5vb2hJxwNALK0ItKBrSQxuAZCeV02gpmdBWkQg3vwNs=;
-        b=f+9UiVRRmX5Dm1SfQ3+pOvFW2BX0FryJGy5PQqGKYB8YRfxxGa9D+ufvMwzZFhzSfNzVCr
-        RNA8ihqH9RCAdU8tAQ58lQMfIL6kPNrI2dDA1iBnGwDZvxHgsVxJT9LPdsQasaSuZs/Jfr
-        1Thv19h1E0xYIiCQH83vrGX+k/ClM7A=
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
- [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-308-j4DcpuitNXmXODA5ylYAKg-1; Thu, 05 Oct 2023 08:08:43 -0400
-X-MC-Unique: j4DcpuitNXmXODA5ylYAKg-1
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1dd691b1037so1260042fac.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 05:08:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696507722; x=1697112522;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5vb2hJxwNALK0ItKBrSQxuAZCeV02gpmdBWkQg3vwNs=;
-        b=fY/3NtfN8rn9d+msTbR/ljgwzrF6aFdOdNRuKZt7Kl6WrCJ+dLdfjuqYk//0TAOx4b
-         wegtRLawFIasItn56m2rTmzE1IUPKZliPEtTj5GZLzA8E+sGQEjlEmYMGGoS38fAmDYj
-         6COxThyuqkqWz96mbChtYud31jmTsi7JB04l/Hwc6VACc/xSNghkgcaQAD6JI511nbYy
-         MYvjs9nRo1i4izFDZmuWaAcxko9ccn7IFaqrHy5eSelhD+nTLgkdm6TOEyG9+cl4Gf7g
-         RAEJM27uWfkOZrww85lK4SLp+OI2L9w7iFEKj7dK0AaD7G6cZVTbVCZoJbUWnhuH002Q
-         mbeQ==
-X-Gm-Message-State: AOJu0YxWTBblOypg4AQoaG3VVFlSILmp28h+eEc6RJga9+fPBr+BFLdu
-        c60fIN8zemBEQPQrc5rOpRuWLnq7BXGE9waasL/aDk7N8vOQVMAcE3SMQ/TdkHKoaypF0NTQCWC
-        +PZlS84G79x/Zeqet6XaHRNhU
-X-Received: by 2002:a05:6870:31cd:b0:1bb:583a:db4a with SMTP id x13-20020a05687031cd00b001bb583adb4amr5648228oac.44.1696507722481;
-        Thu, 05 Oct 2023 05:08:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHlVzvkaGp66pHg11s+DjVKpK1U4zUytQRnNDD6fm7TMLdBw8lYi1FuciqL0IBF8B/oLwXbwA==
-X-Received: by 2002:a05:6870:31cd:b0:1bb:583a:db4a with SMTP id x13-20020a05687031cd00b001bb583adb4amr5648208oac.44.1696507722222;
-        Thu, 05 Oct 2023 05:08:42 -0700 (PDT)
-Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
-        by smtp.gmail.com with ESMTPSA id h8-20020a05620a13e800b007757868e75csm429739qkl.117.2023.10.05.05.08.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 05:08:41 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 08:08:58 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v2 20/89] bcachefs: convert to new timestamp accessors
-Message-ID: <ZR6nWs/kFcw0+0ib@bfoster>
-References: <20231004185221.80802-1-jlayton@kernel.org>
- <20231004185347.80880-1-jlayton@kernel.org>
- <20231004185347.80880-18-jlayton@kernel.org>
+        Thu, 5 Oct 2023 11:57:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC455273C;
+        Thu,  5 Oct 2023 06:54:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696514066; x=1728050066;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=WT2vF2g6ySQ88OnBsaROozLS1/K+Uk2umLsgnTugo4g=;
+  b=HikMK4ts2LgVHHpFAoKBy/afRCgUWTyNkt7XIvTxTbctujN9aqgBhYvJ
+   N0XR6P8DPcUyG1fwfyBLudGQkcEJbwQ+mKXBQc0BREv+dxdsc5tn5FucB
+   SDX3D2JjjTxV/VhMASL9QRuDe4wzQkkIQvitylHdvyC8wAmloYmhGsiA5
+   1obxGhvooAhmjZzlaSjWAOMfyMP01PRHaD9NsyKBPPAPgJa/qaCZ7+gNY
+   N4HgYAwb5tdqldphW8xYfoXBkJUppzkxc42/LT77z3WSiyuzNTwXu8bAx
+   AqMxOBNyQFO7hIyWWc5gLGH9ZfFXip/MTE0hkz94pezNeBeMx1mfGLZLa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="414443730"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="414443730"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 05:15:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="728425237"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="728425237"
+Received: from ppglcf2090.png.intel.com ([10.126.160.96])
+  by orsmga006.jf.intel.com with ESMTP; 05 Oct 2023 05:14:59 -0700
+From:   Rohan G Thomas <rohan.g.thomas@intel.com>
+To:     kuba@kernel.org
+Cc:     alexandre.torgue@foss.st.com, andriy.shevchenko@linux.intel.com,
+        davem@davemloft.net, devicetree@vger.kernel.org,
+        edumazet@google.com, fancer.lancer@gmail.com, joabreu@synopsys.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
+        pabeni@redhat.com, rohan.g.thomas@intel.com
+Subject: Re: [PATCH net-next 1/1] net: stmmac: xgmac: EST interrupts handling
+Date:   Thu,  5 Oct 2023 20:14:41 +0800
+Message-Id: <20231005121441.22916-1-rohan.g.thomas@intel.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20231004092613.07cb393f@kernel.org>
+References: <20231004092613.07cb393f@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004185347.80880-18-jlayton@kernel.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 02:52:05PM -0400, Jeff Layton wrote:
-> Convert to using the new inode timestamp accessor functions.
+On Wed, 4 Oct 2023 09:26:13 -0700 Jakub Kicinski wrote:
+> On Tue, 3 Oct 2023 14:12:15 +0300 Serge Semin wrote:
+> > If I didn't miss some details after that we'll have a common EST
+> > module utilized for both DW QoS Eth and DW XGMAC IP-cores.
 > 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
+> So the question now is whether we want Rohan to do this conversion _first_,
+> in DW QoS 5, and then add xgmac part. Or the patch should go in as is and
+> you'll follow up with the conversion?
 
-Acked-by: Brian Foster <bfoster@redhat.com>
+Hi Jakub, Serge,
 
->  fs/bcachefs/fs.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> index 09137a20449b..1fbaad27d07b 100644
-> --- a/fs/bcachefs/fs.c
-> +++ b/fs/bcachefs/fs.c
-> @@ -66,9 +66,9 @@ void bch2_inode_update_after_write(struct btree_trans *trans,
->  	inode->v.i_mode	= bi->bi_mode;
->  
->  	if (fields & ATTR_ATIME)
-> -		inode->v.i_atime = bch2_time_to_timespec(c, bi->bi_atime);
-> +		inode_set_atime_to_ts(&inode->v, bch2_time_to_timespec(c, bi->bi_atime));
->  	if (fields & ATTR_MTIME)
-> -		inode->v.i_mtime = bch2_time_to_timespec(c, bi->bi_mtime);
-> +		inode_set_mtime_to_ts(&inode->v, bch2_time_to_timespec(c, bi->bi_mtime));
->  	if (fields & ATTR_CTIME)
->  		inode_set_ctime_to_ts(&inode->v, bch2_time_to_timespec(c, bi->bi_ctime));
->  
-> @@ -753,8 +753,8 @@ static int bch2_getattr(struct mnt_idmap *idmap,
->  	stat->gid	= inode->v.i_gid;
->  	stat->rdev	= inode->v.i_rdev;
->  	stat->size	= i_size_read(&inode->v);
-> -	stat->atime	= inode->v.i_atime;
-> -	stat->mtime	= inode->v.i_mtime;
-> +	stat->atime	= inode_get_atime(&inode->v);
-> +	stat->mtime	= inode_get_mtime(&inode->v);
->  	stat->ctime	= inode_get_ctime(&inode->v);
->  	stat->blksize	= block_bytes(c);
->  	stat->blocks	= inode->v.i_blocks;
-> @@ -1418,8 +1418,8 @@ static int inode_update_times_fn(struct btree_trans *trans,
->  {
->  	struct bch_fs *c = inode->v.i_sb->s_fs_info;
->  
-> -	bi->bi_atime	= timespec_to_bch2_time(c, inode->v.i_atime);
-> -	bi->bi_mtime	= timespec_to_bch2_time(c, inode->v.i_mtime);
-> +	bi->bi_atime	= timespec_to_bch2_time(c, inode_get_atime(&inode->v));
-> +	bi->bi_mtime	= timespec_to_bch2_time(c, inode_get_mtime(&inode->v));
->  	bi->bi_ctime	= timespec_to_bch2_time(c, inode_get_ctime(&inode->v));
->  
->  	return 0;
-> -- 
-> 2.41.0
-> 
+If agreed, this commit can go in. I can submit another patch with the
+refactoring suggested by Serge.
 
+Again, thanks Serge for the prompt response. Regarding the below point in your
+earlier response,
+
+> > 2. PTP time offset setup performed by means of the
+> > MTL_EST_CONTROL.PTOV field. DW QoS Eth v5.x HW manual claims it's "The
+> > value of PTP Clock period multiplied by 6 in nanoseconds." So either Jose got
+> > mistaken by using _9_ for DW XGMAC v3.x or the DW XGMAC indeed is
+> > different in that aspect.
+
+This is a little confusing...
+I referred databooks for DW QoS Eth v5.30a and DW XGMAC v3.10a. In both this is
+mentioned as "The value of PTP Clock period multiplied by 9 in nanoseconds".
+
+Best Regards,
+Rohan
