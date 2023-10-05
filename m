@@ -2,67 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B684D7BAB45
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 22:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35D37BAB48
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 22:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbjJEUKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 16:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
+        id S229818AbjJEUMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 16:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjJEUKn (ORCPT
+        with ESMTP id S229526AbjJEUL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 16:10:43 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AC8E4
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 13:10:41 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5347e657a11so2385631a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 13:10:41 -0700 (PDT)
+        Thu, 5 Oct 2023 16:11:58 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D5CDB
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 13:11:55 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53406799540so2534739a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 13:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696536640; x=1697141440; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696536714; x=1697141514; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SDEWPhSFZT2wrr3lmK3HQACNYGeh2PGdg05lzm75XYw=;
-        b=ZyxS2oNYLc1SjY9u5UhomTI2VO1W6BPg0xWKcJAMXGA8eX0e0z1QgSxbQdI3kyl/o5
-         P24Dq6ejvaiU2gLVEbruuaKxJ3KMhnp/6UfbHgx3y1d+XMejob82saUTU1zHUBem1OZB
-         RRVF/LY6wO0RbwYmV8cR/DPv4yjspwWzH7eG99nF1/dOpiuy8AEg06iTAaqbmyz4ezSH
-         BEA6y1zT363b7kTgn/ui/XCgNz/W/p9xTf4SeBdp2hQvZGO4VA3QR9DM5q2WinIrTwCc
-         H3Y9tbLWYUI57lrOk+vH+YoSOqQWi/6ltyKdO0E/H3o+mcZD86GpPfFCylVWeYh8wKIK
-         U3tQ==
+        bh=RJenS8e96CYmPYx44gSsuYhGimZlKWFUjESpGAE1Lho=;
+        b=F6kOv78Hn8GGopeoRc4Axbl4jWRhmCHIywEAClrsW3VwV1ouwsb8kTpCd3i8niwAnC
+         4CKSSZ8wZ640wyCz33C9/LOu3nQbwPkvuZ3lT5FNIv3aWZjiLw3tNlfbuwg3Ubl5kG9r
+         De0wUcvCbfmFnp6kS6+IHYfO97+48PQ5LlJuWDF82v2kI/pfh9zA2r4fzUPWxbJSiDAy
+         lMvny8p/Bk/tMHF0kyKhLIzK0AeZZMQ0s9xp9so3QwMfn3mho0IgBI+ej22tUJ389G0T
+         dhUUiA/U4x0ioBRCZ2OfkixqmbTfP4iBJ2guUICJQd6OS6Wx57QWl4pJI57uklwx9Pdm
+         O/EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696536640; x=1697141440;
+        d=1e100.net; s=20230601; t=1696536714; x=1697141514;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SDEWPhSFZT2wrr3lmK3HQACNYGeh2PGdg05lzm75XYw=;
-        b=qVSvVNJZGIZg3eSY2VglHge/77maZq2k9UEgV349KGK0vb6V4Xzf8AEujjjPnNga3B
-         qBImj9OVolQpQ1w/SiAOx/0g4Vnja8mTDNCLtPTGsneyjYs3LIxdkb80mWlbZV6kAnHs
-         qECVnti0QMZB6M/P6a83HjrZLtgm097xCh6Rr2/+dbXz/F4Fy+hRWVHvyohaTADnmSWy
-         EgWolt3p/HZQg8/wV038N6Mp/Z2exw3/22i+QpOvwpe16ID/UeU2jVAnEUEV8MYtsvgF
-         UwbGVv6lfWSjKQJMmaWDcV9LvsX1s3PhmhSrCl9JRm3KHN5dLZT3awh5bjPNLivRa8aX
-         p1/Q==
-X-Gm-Message-State: AOJu0Yy7k7iMDGLUUir7962wQ+gAYLyckfUWV2aosOppC+19hW3/LhNy
-        FJHx6IQ4Iytqk1Cc3n47nSG3biLZEIOst33NRocL9w==
-X-Google-Smtp-Source: AGHT+IGmRqAhhgC6r5i5H8FuY2pS87uhv9hSsrz4ZgPgSwVKtydn6UqIDH22wogY2BL1vHz/cPGmiJLK11Q1xLAy2g0=
-X-Received: by 2002:aa7:d503:0:b0:538:ae5:6138 with SMTP id
- y3-20020aa7d503000000b005380ae56138mr6430924edq.34.1696536639868; Thu, 05 Oct
- 2023 13:10:39 -0700 (PDT)
+        bh=RJenS8e96CYmPYx44gSsuYhGimZlKWFUjESpGAE1Lho=;
+        b=EPWjRSdRi/ocAXWIm8ifKopqg+oVvgGAiTAJFeloSjoYH9P5fUZ8ImNrikema4+FAn
+         4aOey0KDM5nIVK4xuqNL6NhJ5hpxuECANR1b6/JIcGnBbJUYIicH9IfIHELplxr/mAKV
+         foPLEn3efEtCg/M3kJP7IGhQxZ4PBNng/FpHl/F5W8a+zNQahQVxmjiYf4Y7NyjoZYYL
+         KYZYQm1gVWAQCRnYRWyGdWeWQwFrmErzvuQJ0ocLQZRj5eUNJ6y6+LtFv/qT4d5bWLmX
+         5GOV0W8gpluAmG8V5sT9rpMxE/qxbE5bVit0DKQTb9xpqGYsf2WKk6ndBZR8ADbEPgs0
+         eNog==
+X-Gm-Message-State: AOJu0YwCeCH6K1Aqn7k7px2nU8NxbMDMB1qRSt69YJ+HPi1I3iEebuNH
+        wL2Trt/io/bm27iHBjEJWwB7kMpxmkqAPfOBTr6l5C51t9TfJqYNDfEElQ==
+X-Google-Smtp-Source: AGHT+IHTk3c+HQmQKp2cPgHGJZmuuSUdEFKh0VZgM/x//9SuZJDNXQ66xhuriyrmKonMpqUx9kA8Sdsboeuz4SwAvTM=
+X-Received: by 2002:aa7:c409:0:b0:530:d6c5:7e79 with SMTP id
+ j9-20020aa7c409000000b00530d6c57e79mr5363224edq.32.1696536713873; Thu, 05 Oct
+ 2023 13:11:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231004-get_maintainer_change_k-v1-1-ac7ced18306a@google.com>
- <3dca40b677dd2fef979a5a581a2db91df2c21801.camel@perches.com>
- <CAFhGd8oTHFDQ05M++E3ggAvs0567w5fSxovumX+vs8YXT8VXTA@mail.gmail.com>
- <6e13b9b1a964b49079a2f7814c0d65e767cd010a.camel@perches.com>
- <CAFhGd8rGr3fm-U3XCjRkJQRymvjqGFYzsPu61zbMZCebuN5Rww@mail.gmail.com>
- <a8b680c03379ed7a07418e471b29dccd801f23cb.camel@perches.com>
- <CAFhGd8rGZ6w7bz90LRnwd_1K3ibR2KsT6cJ2kiuO5mSAdnWjFw@mail.gmail.com> <eea5087a2bd94b80b5a16af95a4caf20376bbc52.camel@perches.com>
-In-Reply-To: <eea5087a2bd94b80b5a16af95a4caf20376bbc52.camel@perches.com>
+References: <20231005-get_maintainer_change_k-v2-1-5f7febcfedb3@google.com>
+In-Reply-To: <20231005-get_maintainer_change_k-v2-1-5f7febcfedb3@google.com>
 From:   Justin Stitt <justinstitt@google.com>
-Date:   Thu, 5 Oct 2023 13:10:28 -0700
-Message-ID: <CAFhGd8r6B=PAXNzDEOaWAVOHdH+3ZKOCuAqadvR3cXtAy4gQDg@mail.gmail.com>
-Subject: Re: [PATCH] get_maintainer/MAINTAINERS: confine K content matching to patches
+Date:   Thu, 5 Oct 2023 13:11:42 -0700
+Message-ID: <CAFhGd8p=X7qP+QndjBOBAXORBxLqgKpcysN61wp_Rj0xvM3+iA@mail.gmail.com>
+Subject: Re: [PATCH v2] get_maintainer: add --keywords-in-file
 To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -76,135 +69,206 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 1:05=E2=80=AFPM Joe Perches <joe@perches.com> wrote:
+disregard!
+
+Joe's spinning up a patch -- coming soon. [1]
+
+On Thu, Oct 5, 2023 at 1:09=E2=80=AFPM Justin Stitt <justinstitt@google.com=
+> wrote:
 >
-> On Thu, 2023-10-05 at 12:52 -0700, Justin Stitt wrote:
-> > On Thu, Oct 5, 2023 at 11:42=E2=80=AFAM Joe Perches <joe@perches.com> w=
-rote:
-> > >
-> > > On Thu, 2023-10-05 at 11:30 -0700, Justin Stitt wrote:
-> > > > On Thu, Oct 5, 2023 at 11:15=E2=80=AFAM Joe Perches <joe@perches.co=
-m> wrote:
-> > > > >
-> > > > > On Thu, 2023-10-05 at 11:06 -0700, Justin Stitt wrote:
-> > > > > > On Wed, Oct 4, 2023 at 7:40=E2=80=AFPM Joe Perches <joe@perches=
-.com> wrote:
-> > > > > > >
-> > > > > > > On Wed, 2023-10-04 at 21:21 +0000, Justin Stitt wrote:
-> > > > > > > > The current behavior of K: is a tad bit noisy. It matches a=
-gainst the
-> > > > > > > > entire contents of files instead of just against the conten=
-ts of a
-> > > > > > > > patch.
-> > > > > > > >
-> > > > > > > > This means that a patch with a single character change (fix=
-ing a typo or
-> > > > > > > > whitespace or something) would still to/cc maintainers and =
-lists if the
-> > > > > > > > affected file matched against the regex pattern given in K:=
-. For
-> > > > > > > > example, if a file has the word "clang" in it then every si=
-ngle patch
-> > > > > > > > touching that file will to/cc Nick, Nathan and some lists.
-> > > > > > > >
-> > > > > > > > Let's change this behavior to only content match against pa=
-tches
-> > > > > > > > (subjects, message, diff) as this is what most people expec=
-t the
-> > > > > > > > behavior already is. Most users of "K:" would prefer patch-=
-only content
-> > > > > > > > matching. If this is not the case let's add a new matching =
-type as
-> > > > > > > > proposed in [1].
-> > > > > > >
-> > > > > > > I'm glad to know  you are coming around to my suggestion.
-> > > > > > :)
-> > > > > >
-> > > > > > >
-> > > > > > > I believe the file-based keyword matching should _not_ be
-> > > > > > > removed and the option should be added for it like I suggeste=
-d.
-> > > > > >
-> > > > > > Having a command line flag allowing get_maintainer.pl
-> > > > > > users to decide the behavior of K: is weird to me. If I'm a mai=
-ntainer setting
-> > > > > > my K: in MAINTAINERS I want some sort of consistent behavior. S=
-ome
-> > > > > > patches will start hitting mailing list that DO have keywords i=
-n the patch
-> > > > > > and others, confusingly, not.
-> > > > >
-> > > > > Not true.
-> > > > >
-> > > > > If a patch contains a keyword match, get_maintainers will _always=
-_
-> > > > > show the K: keyword maintainers unless --nokeywords is specified
-> > > > > on the command line.
-> > > >
-> > > > ...
-> > > >
-> > > > >
-> > > > > If a file contains a keyword match, it'll only show the K:
-> > > > > keyword  if --keywords-in-file is set.
-> > > >
-> > > > Right, what I'm saying is a patch can arrive in a maintainer's inbo=
-x
-> > > > wherein the patch itself has no mention of the keyword (if
-> > > > get_maintainer user opted for --keywords-in-file). Just trying to
-> > > > avoid some cases of the question: "Why is this in my inbox?"
-> > >
-> > > Because the script user specifically asked for it.
-> > >
-> > > > > > To note, we get some speed-up here as pattern matching a patch =
-that
-> > > > > > touches lots of files would result in searching all of them in =
-their
-> > > > > > entirety. Just removing this behavior _might_ have a measurable
-> > > > > > speed-up for patch series touching dozens of files.
-> > > > >
-> > > > > Again, not true.
-> > > > >
-> > > > > Patches do _not_ scan the original modified files for keyword mat=
-ches.
-> > > > > Only the patch itself is scanned.  That's the current behavior as=
- well.
-> > > > >
-> > > >
-> > > > Feel like I'm missing something here. How is K: matching keywords i=
-n
-> > > > files without reading them.
-> > > >
-> > > > If my patch touches 10 files then all 10 of those files are scanned=
- for
-> > > > K: matches right?
-> > >
-> > > Nope.
-> > >
-> > > Understand the patches are the input to get_maintainer and not
-> > > just files.
-> > >
-> > > If a patch is fed to get_maintainer then any files modified by
-> > > the patch are _not_ scanned.
-> > >
-> > > Only the patch _content_ is used for keyword matches.
-> > >
-> >
-> > Got it. I'll roll your patch into a v3.
-> >
+> There were some recent attempts [1] [2] to make the K: field less noisy
+> and its behavior more obvious. Ultimately, a shift in the default
+> behavior and an associated command line flag is the best choice.
 >
-> Actually, I have a slightly improved patch as
-> the actual keyword is shown too.
+> Currently, K: will match keywords found in both patches and files.
+> Matching content from entire files is (while documented) not obvious
+> behavior and is usually not wanted by maintainers. This patch opts to
+> only allow patch content to be matched against unless --keywords-in-file
+> is provided.
 >
-> I'll get it uploaded and make sure you are credited
-> with the effort to make the change.
+> Link: https://lore.kernel.org/all/20230928-get_maintainer_add_d-v2-0-8acb=
+3f394571@google.com/ [1]
+> Link: https://lore.kernel.org/all/3dca40b677dd2fef979a5a581a2db91df2c2180=
+1.camel@perches.com/ [2]
+> Authored-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Changes in v2:
+> - Use Joe's patch and ditch this one
+> - Link to v1: https://lore.kernel.org/r/20231004-get_maintainer_change_k-=
+v1-1-ac7ced18306a@google.com
+> ---
+> Note: I've opted to make this a v2 instead of a whole new patch since
+> it's related and the patch is authored in v1 by Joe. It will simply
+> replace the old patch in its entirety.
+> ---
+>  scripts/get_maintainer.pl | 38 ++++++++++++++++++++------------------
+>  1 file changed, 20 insertions(+), 18 deletions(-)
+>
+> diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
+> index ab123b498fd9..befae75e61ab 100755
+> --- a/scripts/get_maintainer.pl
+> +++ b/scripts/get_maintainer.pl
+> @@ -57,6 +57,7 @@ my $subsystem =3D 0;
+>  my $status =3D 0;
+>  my $letters =3D "";
+>  my $keywords =3D 1;
+> +my $keywords_in_file =3D 0;
+>  my $sections =3D 0;
+>  my $email_file_emails =3D 0;
+>  my $from_filename =3D 0;
+> @@ -272,6 +273,7 @@ if (!GetOptions(
+>                 'letters=3Ds' =3D> \$letters,
+>                 'pattern-depth=3Di' =3D> \$pattern_depth,
+>                 'k|keywords!' =3D> \$keywords,
+> +               'kf|keywords-in-file!' =3D> \$keywords_in_file,
+>                 'sections!' =3D> \$sections,
+>                 'fe|file-emails!' =3D> \$email_file_emails,
+>                 'f|file' =3D> \$from_filename,
+> @@ -318,6 +320,7 @@ if ($sections || $letters ne "") {
+>      $subsystem =3D 0;
+>      $web =3D 0;
+>      $keywords =3D 0;
+> +    $keywords_in_file =3D 0;
+>      $interactive =3D 0;
+>  } else {
+>      my $selections =3D $email + $scm + $status + $subsystem + $web;
+> @@ -548,16 +551,14 @@ foreach my $file (@ARGV) {
+>         $file =3D~ s/^\Q${cur_path}\E//;  #strip any absolute path
+>         $file =3D~ s/^\Q${lk_path}\E//;   #or the path to the lk tree
+>         push(@files, $file);
+> -       if ($file ne "MAINTAINERS" && -f $file && $keywords) {
+> +       if ($file ne "MAINTAINERS" && -f $file && $keywords && $keywords_=
+in_file) {
+>             open(my $f, '<', $file)
+>                 or die "$P: Can't open $file: $!\n";
+>             my $text =3D do { local($/) ; <$f> };
+>             close($f);
+> -           if ($keywords) {
+> -               foreach my $line (keys %keyword_hash) {
+> -                   if ($text =3D~ m/$keyword_hash{$line}/x) {
+> -                       push(@keyword_tvi, $line);
+> -                   }
+> +           foreach my $line (keys %keyword_hash) {
+> +               if ($text =3D~ m/$keyword_hash{$line}/x) {
+> +                   push(@keyword_tvi, $line);
+>                 }
+>             }
+>         }
+> @@ -919,7 +920,7 @@ sub get_maintainers {
+>         }
+>
+>         foreach my $line (sort {$hash{$b} <=3D> $hash{$a}} keys %hash) {
+> -           add_categories($line);
+> +           add_categories($line, "");
+>             if ($sections) {
+>                 my $i;
+>                 my $start =3D find_starting_index($line);
+> @@ -947,7 +948,7 @@ sub get_maintainers {
+>      if ($keywords) {
+>         @keyword_tvi =3D sort_and_uniq(@keyword_tvi);
+>         foreach my $line (@keyword_tvi) {
+> -           add_categories($line);
+> +           add_categories($line, ":Keyword");
+>         }
+>      }
+>
+> @@ -1076,6 +1077,7 @@ Output type options:
+>  Other options:
+>    --pattern-depth =3D> Number of pattern directory traversals (default: =
+0 (all))
+>    --keywords =3D> scan patch for keywords (default: $keywords)
+> +  --keywords-in-file =3D> scan file for keywords (default: $keywords_in_=
+file)
+>    --sections =3D> print all of the subsystem sections with pattern match=
+es
+>    --letters =3D> print all matching 'letter' types from all matching sec=
+tions
+>    --mailmap =3D> use .mailmap file (default: $email_use_mailmap)
+> @@ -1086,7 +1088,7 @@ Other options:
+>
+>  Default options:
+>    [--email --tree --nogit --git-fallback --m --r --n --l --multiline
+> -   --pattern-depth=3D0 --remove-duplicates --rolestats]
+> +   --pattern-depth=3D0 --remove-duplicates --rolestats --keywords]
+>
+>  Notes:
+>    Using "-f directory" may give unexpected results:
+> @@ -1312,7 +1314,7 @@ sub get_list_role {
+>  }
+>
+>  sub add_categories {
+> -    my ($index) =3D @_;
+> +    my ($index, $suffix) =3D @_;
+>
+>      my $i;
+>      my $start =3D find_starting_index($index);
+> @@ -1342,7 +1344,7 @@ sub add_categories {
+>                         if (!$hash_list_to{lc($list_address)}) {
+>                             $hash_list_to{lc($list_address)} =3D 1;
+>                             push(@list_to, [$list_address,
+> -                                           "subscriber list${list_role}"=
+]);
+> +                                           "subscriber list${list_role}"=
+ . $suffix]);
+>                         }
+>                     }
+>                 } else {
+> @@ -1352,12 +1354,12 @@ sub add_categories {
+>                                 if ($email_moderated_list) {
+>                                     $hash_list_to{lc($list_address)} =3D =
+1;
+>                                     push(@list_to, [$list_address,
+> -                                                   "moderated list${list=
+_role}"]);
+> +                                                   "moderated list${list=
+_role}" . $suffix]);
+>                                 }
+>                             } else {
+>                                 $hash_list_to{lc($list_address)} =3D 1;
+>                                 push(@list_to, [$list_address,
+> -                                               "open list${list_role}"])=
+;
+> +                                               "open list${list_role}" .=
+ $suffix]);
+>                             }
+>                         }
+>                     }
+> @@ -1365,19 +1367,19 @@ sub add_categories {
+>             } elsif ($ptype eq "M") {
+>                 if ($email_maintainer) {
+>                     my $role =3D get_maintainer_role($i);
+> -                   push_email_addresses($pvalue, $role);
+> +                   push_email_addresses($pvalue, $role . $suffix);
+>                 }
+>             } elsif ($ptype eq "R") {
+>                 if ($email_reviewer) {
+>                     my $subsystem =3D get_subsystem_name($i);
+> -                   push_email_addresses($pvalue, "reviewer:$subsystem");
+> +                   push_email_addresses($pvalue, "reviewer:$subsystem" .=
+ $suffix);
+>                 }
+>             } elsif ($ptype eq "T") {
+> -               push(@scm, $pvalue);
+> +               push(@scm, $pvalue . $suffix);
+>             } elsif ($ptype eq "W") {
+> -               push(@web, $pvalue);
+> +               push(@web, $pvalue . $suffix);
+>             } elsif ($ptype eq "S") {
+> -               push(@status, $pvalue);
+> +               push(@status, $pvalue . $suffix);
+>             }
+>         }
+>      }
+>
+> ---
+> base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+> change-id: 20231004-get_maintainer_change_k-46a2055e2c59
+>
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
 >
 
-Dang, we just collided in mid-air. I just sent a new patch.
-Let's disregard my patch that was sent.
-
-Thanks for the efforts here. I appreciate it.
-
-> cheers, Joe
-
-Thanks
-Justin
+[1]: https://lore.kernel.org/all/eea5087a2bd94b80b5a16af95a4caf20376bbc52.c=
+amel@perches.com
