@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FA07BA67A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CB17BA67D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbjJEQfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55932 "EHLO
+        id S234622AbjJEQfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234708AbjJEQdB (ORCPT
+        with ESMTP id S235428AbjJEQdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:33:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D8B2D79
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:51:02 -0700 (PDT)
+        Thu, 5 Oct 2023 12:33:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E942D69
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:50:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696513861;
+        s=mimecast20190719; t=1696513857;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xzJsIbEdC1wOEGvDx6w4HMSs5sdtsVv5hyJaAp9aFTU=;
-        b=Dmt72+eq1GVZrly8ySQuKI5E4jLSD8ZWcUz8pOy+D+oxXgM9JZRuxP/odIaCIhML4ORkoz
-        KxU886IRflku7oDyBFmCiAvyO51cJjnsqyUpr0fEV0KqMiB3pCJtfVkBCc+769LIXOFsw4
-        JlH71pb+HKAD+jLclDu2eOWS0ZM7TjM=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=Xcvsqfs+0EpVaBq57CSBuRBfpi+Ba+5rBlUn7RyIyWg=;
+        b=IJUGNmUJoDuDeFAUiVQax7kESL4EI/8h32Fw5xOjOYyDxlFtCcgpexScWOB2mPQWKNKBXs
+        sMrgNp8Y92LGv4/POUwIWPcC00Suxrv2M0xBmisrWFg4k63PQZ6+Jd0+u4pSV/MG+8xKi0
+        JdP/4CepUvb8M2BBsLQbtpn4BJqy62I=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-178-six0725SOHufAbyivyIScA-1; Thu, 05 Oct 2023 08:50:00 -0400
-X-MC-Unique: six0725SOHufAbyivyIScA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4064b38dc63so9533435e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 05:50:00 -0700 (PDT)
+ us-mta-471-3b0qTd-1NaekyB5zEy0-4w-1; Thu, 05 Oct 2023 08:50:31 -0400
+X-MC-Unique: 3b0qTd-1NaekyB5zEy0-4w-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fe1521678fso6724215e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 05:50:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696510199; x=1697114999;
+        d=1e100.net; s=20230601; t=1696510230; x=1697115030;
         h=content-transfer-encoding:mime-version:user-agent:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xzJsIbEdC1wOEGvDx6w4HMSs5sdtsVv5hyJaAp9aFTU=;
-        b=gGijXZ/UgjR40vVf2ui4zfLAO2WK2ADDA9yVfdcywtrpJfFhy8xfq47C9t/gL0j/XU
-         p5OqMZznbkCw/TAkAVo/w0QFKfyvCcquQvaQXTknj3hjJa+f4zQbrH0EJ1wZsSAFJC2i
-         fHHWwsjg/CK8ZaGaf4CO8DXbh6O+X8JpqImi8L0i1tv4SEbQcrIZJeOXsv35LBv7CVdk
-         K7bVmurllwin1+JBwm+CQLlmO/s7cdEt8iB5FlIAJRsAmOWCqrYkOjQpYgunYsYwdAUu
-         6TEuQ3BfMjX/r9Gd/fe5CV/r6VqAvhZjxEsppiBVtDcpfNFS9F9W4Sx+QvT2awe9Nv01
-         IVxA==
-X-Gm-Message-State: AOJu0YxzSJa9gzouciAvnP9urqkoz/x9oh7IJzHKAvOo5vW4oSIAJLFP
-        yv47Li0T7jDtOVNjNNYy1PReg9clZHoY8toOywoN9pRtlEMuf8BObFptxt0BZ66TeTnK7E+N/8g
-        6sGEmICo2ZIN7/q2shO4ql76e
-X-Received: by 2002:a05:600c:1c96:b0:405:3622:382c with SMTP id k22-20020a05600c1c9600b004053622382cmr1352350wms.17.1696510199507;
-        Thu, 05 Oct 2023 05:49:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEH/NInPYmO1UfH7A7RZ9fUuJQjy8h9hg0sJsC7opG/J+MuehyjgG03sU18g5lM4H7ISOKsIQ==
-X-Received: by 2002:a05:600c:1c96:b0:405:3622:382c with SMTP id k22-20020a05600c1c9600b004053622382cmr1352337wms.17.1696510199189;
-        Thu, 05 Oct 2023 05:49:59 -0700 (PDT)
+        bh=Xcvsqfs+0EpVaBq57CSBuRBfpi+Ba+5rBlUn7RyIyWg=;
+        b=rt1CqDgrIWk0MS8ox7eqoBNiJq+vj8yQc25+MMJQBDv5nDqv93qq7POHbmaKrJ1+Sp
+         7/OYuNFw6NTDRd7GpzOp8n4mRfi7Fk55Xg9YJuuH5y6c7gI/tcfkRRlP4WgoCAjl+pek
+         eO3oU+nz3YqYxivwK+DnOOqxz+9WKHS/1U/N2yIHdLoZLma5HQ/vJajAmwCCj0/jyEdn
+         5yw//CEeyMlcjyJKMsKpgYxtES6i1x06CjTgEi5MG6S9Jac8oMKaWOxBgI7irMkwuiqv
+         s1d7waRB4hBYoZp4dVBKCmQPcwB8OHBxhbga6UQZONwC3ixjL+sS6uVNEmLJ4o4n5eea
+         tuXQ==
+X-Gm-Message-State: AOJu0YwOuXpwFuDjgn6s0sJCQF6EiwLNmlKxXR2NlAEaZpDYrR1KowWE
+        PHL1wxZtst/9OaE5bbVbLxeuU+LgSR8SAAGjPWsjp+UILJUaSTd1zCGLjIIRRK6rWqDSrlpdeOI
+        e5v5tqAUN0CZWqEcnH6O8PoIx
+X-Received: by 2002:a7b:ce8a:0:b0:405:4776:735a with SMTP id q10-20020a7bce8a000000b004054776735amr5323314wmj.2.1696510230557;
+        Thu, 05 Oct 2023 05:50:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG/nNVNIiyNjSawDybdIlilVc6D36h0kbYPNWFpdsCIWytAI5dR7THMDUcsxYxTxZ4KOTFEUA==
+X-Received: by 2002:a7b:ce8a:0:b0:405:4776:735a with SMTP id q10-20020a7bce8a000000b004054776735amr5323302wmj.2.1696510230236;
+        Thu, 05 Oct 2023 05:50:30 -0700 (PDT)
 Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id v5-20020a05600c214500b003fbe791a0e8sm1486081wml.0.2023.10.05.05.49.58
+        by smtp.gmail.com with ESMTPSA id t14-20020a1c770e000000b004054dcbf92asm1452694wmi.20.2023.10.05.05.50.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 05:49:58 -0700 (PDT)
-Message-ID: <74477cff348512fd88da8bb8fa901207fa29e316.camel@redhat.com>
-Subject: Re: [PATCH 02/10] KVM: SVM: Use AVIC_HPA_MASK when initializing
- vCPU's Physical ID entry
+        Thu, 05 Oct 2023 05:50:29 -0700 (PDT)
+Message-ID: <c09766568221adac7e532dc4ae283d7f367571a3.camel@redhat.com>
+Subject: Re: [PATCH 05/10] KVM: SVM: Drop vcpu_svm's pointless
+ avic_backing_page field
 From:   Maxim Levitsky <mlevitsk@redhat.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Joerg Roedel <joro@8bytes.org>
 Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Date:   Thu, 05 Oct 2023 15:49:57 +0300
-In-Reply-To: <20230815213533.548732-3-seanjc@google.com>
+Date:   Thu, 05 Oct 2023 15:50:28 +0300
+In-Reply-To: <20230815213533.548732-6-seanjc@google.com>
 References: <20230815213533.548732-1-seanjc@google.com>
-         <20230815213533.548732-3-seanjc@google.com>
+         <20230815213533.548732-6-seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -85,75 +84,72 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 У вт, 2023-08-15 у 14:35 -0700, Sean Christopherson пише:
-> Use AVIC_HPA_MASK instead of AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK when
-> initializing a vCPU's Physical ID table entry, the two masks are identical.
-
-Masks are identical, but they refer to different things. 
-AVIC_HPA_MASK is about avic's fields in vmcb, while AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK
-is about the portion of the physical id entry which has the address.
-
-They are the same currently but for documentation purposes I don't understand
-why removal of one of them makes sense.
-
-IMHO, it's best to define them to the same value, e.g:
-
-#define AVIC_HPA_MASK	GENMASK_ULL(51, 12)
-
-#define AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK GENMASK_ULL(51, 12)
-
-Best regards,
-	Maxim Levitsky
-
-
-> Keep both #defines for now, along with a few new static asserts.  A future
-> change will clean up the entire mess (spoiler alert, the masks are
-> pointless).
+> Drop vcpu_svm's avic_backing_page pointer and instead grab the physical
+> address of KVM's vAPIC page directly from the source.  Getting a physical
+> address from a kernel virtual address is not an expensive operation, and
+> getting the physical address from a struct page is *more* expensive for
+> CONFIG_SPARSEMEM=y kernels.  Regardless, none of the paths that consume
+> the address are hot paths, i.e. shaving cycles is not a priority.
 > 
-> Opportunisitically move the bitwise-OR of AVIC_PHYSICAL_ID_ENTRY_VALID_MASK
-> outside of the call to __sme_set(), again to pave the way for code
-> deduplication.  __sme_set() is purely additive, i.e. ORing in the valid
-> bit before or after the C-bit does not change the end result.
-> 
-> No functional change intended.
+> Eliminating the "cache" means KVM doesn't have to worry about the cache
+> being invalid, which will simplify a future fix when dealing with vCPU IDs
+> that are too big.
 > 
 > Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  arch/x86/include/asm/svm.h | 2 ++
->  arch/x86/kvm/svm/avic.c    | 5 ++---
->  2 files changed, 4 insertions(+), 3 deletions(-)
+>  arch/x86/kvm/svm/avic.c | 4 +---
+>  arch/x86/kvm/svm/svm.h  | 1 -
+>  2 files changed, 1 insertion(+), 4 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-> index 1e70600e84f7..609c9b596399 100644
-> --- a/arch/x86/include/asm/svm.h
-> +++ b/arch/x86/include/asm/svm.h
-> @@ -285,6 +285,8 @@ static_assert((AVIC_MAX_PHYSICAL_ID & AVIC_PHYSICAL_MAX_INDEX_MASK) == AVIC_MAX_
->  static_assert((X2AVIC_MAX_PHYSICAL_ID & AVIC_PHYSICAL_MAX_INDEX_MASK) == X2AVIC_MAX_PHYSICAL_ID);
->  
->  #define AVIC_HPA_MASK	~((0xFFFULL << 52) | 0xFFF)
-> +static_assert(AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK == AVIC_HPA_MASK);
-> +static_assert(AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK == GENMASK_ULL(51, 12));
->  
->  #define SVM_SEV_FEAT_DEBUG_SWAP                        BIT(5)
->  
 > diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-> index 7062164e4041..442c58ef8158 100644
+> index 954bdb45033b..e49b682c8469 100644
 > --- a/arch/x86/kvm/svm/avic.c
 > +++ b/arch/x86/kvm/svm/avic.c
-> @@ -308,9 +308,8 @@ static int avic_init_backing_page(struct kvm_vcpu *vcpu)
+> @@ -243,7 +243,7 @@ int avic_vm_init(struct kvm *kvm)
+>  
+>  static phys_addr_t avic_get_backing_page_address(struct vcpu_svm *svm)
+>  {
+> -	return __sme_set(page_to_phys(svm->avic_backing_page));
+> +	return __sme_set(__pa(svm->vcpu.arch.apic->regs));
+
+I overall agree with this patch however the old code was safer:
+
+svm->avic_backing_page is set to physical address of the apic registers
+only in the avic_init_backing_page() and after checking the 
+vcpu->arch.apic->regs != NULL and now in theory NULL vcpu->arch.apic->regs
+are not checked.
+
+I know that you later add a patch which adds a similar warning, but I prefer that
+you fold it with this patch.
+ 
+>  }
+>  
+>  void avic_init_vmcb(struct vcpu_svm *svm, struct vmcb *vmcb)
+> @@ -305,8 +305,6 @@ static int avic_init_backing_page(struct kvm_vcpu *vcpu)
+>  			return ret;
+>  	}
+>  
+> -	svm->avic_backing_page = virt_to_page(vcpu->arch.apic->regs);
+> -
+>  	/* Setting AVIC backing page address in the phy APIC ID table */
+>  	entry = avic_get_physical_id_entry(vcpu, id);
 >  	if (!entry)
->  		return -EINVAL;
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 2237230aad98..a9fde1bb85ee 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -261,7 +261,6 @@ struct vcpu_svm {
 >  
-> -	new_entry = __sme_set((page_to_phys(svm->avic_backing_page) &
-> -			      AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK) |
-> -			      AVIC_PHYSICAL_ID_ENTRY_VALID_MASK);
-> +	new_entry = __sme_set(page_to_phys(svm->avic_backing_page) & AVIC_HPA_MASK) |
-> +		    AVIC_PHYSICAL_ID_ENTRY_VALID_MASK;
->  	WRITE_ONCE(*entry, new_entry);
+>  	u32 ldr_reg;
+>  	u32 dfr_reg;
+> -	struct page *avic_backing_page;
+>  	u64 *avic_physical_id_cache;
 >  
->  	svm->avic_physical_id_cache = entry;
+>  	/*
 
 
-
+Best regards,
+	Maxim Levitsky
 
 
 
