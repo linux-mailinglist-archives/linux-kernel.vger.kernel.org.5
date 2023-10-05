@@ -2,177 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9512D7BA677
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08507BA560
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236606AbjJEQeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
+        id S241266AbjJEQQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbjJEQck (ORCPT
+        with ESMTP id S234753AbjJEQNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:32:40 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB93A60B5;
-        Thu,  5 Oct 2023 07:42:24 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395DjE7F021621;
-        Thu, 5 Oct 2023 14:42:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=gA4E+LhvP+QOudqDT1Vi4Udvi1IE4594Djagbj9I1mE=;
- b=lTD6IGZb3zWeeVH33QF8GupBS+4Lg/dsfOdpdAIsKkg34jqIWfZei72FiZEmHEFbR1iI
- o82CDRBQQAA6EWuQllY578mIK2ATNgWfiVOT5reXR5+YfbAbTPBTG+MhUNImkp/c9yly
- lBnSIQbn83TrMMHaslmNWCulUlJgnA5G4zt+sim/QPwwdyY+L8BdWlTCrtGNsc9TjSIp
- JB+q6pftkFphRxm62UY3M51j2GNC5VyQJNJV4eb/JVY5fEpFkoWtOZ3SnTtATt5MnRsY
- SCdDxu20s5cqJ81h8EycmQ6YbdMVizE0N5rPh03zY0cxs5a6rFgO9tP//RbjxPhqtDlC mQ== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3thg7hsm0p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 14:42:17 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 395EgGNr003904
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Oct 2023 14:42:16 GMT
-Received: from varda-linux.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 5 Oct 2023 07:42:10 -0700
-Date:   Thu, 5 Oct 2023 20:12:06 +0530
-From:   Varadarajan Narayanan <quic_varada@quicinc.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <ilia.lin@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <rafael@kernel.org>,
-        <viresh.kumar@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <quic_kathirav@quicinc.com>, <linux-pm@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v1 07/10] arm64: dts: qcom: ipq5332: populate the opp
- table based on the eFuse
-Message-ID: <20231005144205.GB29795@varda-linux.qualcomm.com>
-References: <cover.1693996662.git.quic_varada@quicinc.com>
- <a6d12e3b253d6a55d85f66979ba8b7d9c9ff6072.1693996662.git.quic_varada@quicinc.com>
- <CAA8EJppNsgUNgwadq9oM0_KyORNR5PBZGVZukN6MzAm2KPzC9g@mail.gmail.com>
- <20231005095744.GA29795@varda-linux.qualcomm.com>
- <CAA8EJpr124fymnbZ1bO=Dbbxavn3Z=1xOPmFRPnfSp-UB3p6OQ@mail.gmail.com>
+        Thu, 5 Oct 2023 12:13:39 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56AB698D
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:43:19 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d81afd5273eso1126505276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 07:43:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696516999; x=1697121799; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EE8iPYu9LpRlrA3P5svRFO6CzOzjvPUAMSGvj485Oxk=;
+        b=inptMAmDcUZ1iBCTY/rT4ZJ75tNZgRwaf6/zv4O44QzEe+ZBaFB053c+VOj3C4QipE
+         zMd3KGrBNxPCRXwqq1eVQpP9HB/gPjmGNvFGD/oshJzSOEdaCYIrYk80LOKEJGLs6wzF
+         IzrmKnbTd8vJPVU4VxrBBFi1dwoGbLrnE+ePMOrSam8Z3FyJiYZRJOyaw7Gc6ehQdczz
+         kuadF+lYJQ6jNTREZqwL7fMtvowk4Lg/LP8kG4CiqDg5BDXkY4OEB5cCttwxjLvLAtJH
+         c1vJ5f88oeq9RNFpgmcs5T/k9u5AUAMp4qdytFz3UEGHD+Z+7oNCmB0arvYqa1lVa+AN
+         J2gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696516999; x=1697121799;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EE8iPYu9LpRlrA3P5svRFO6CzOzjvPUAMSGvj485Oxk=;
+        b=KetBznT4TEPkFfu09jyz83inGMXY+OUsFny21p9T1uOnYT10hFVu7cC55LmR9EIBpd
+         DaEgtTsC/0y8BKBT9yXXdP9jIlPMEGbw+I3FETujcTu71DUC5npimqdVJL0yAW4w2tRX
+         eLNhMQXBv6b8dKBYWH/ViuiOcN6hI2zc/pNlVa9qFDRwZzLLQqmQOfS9J0LXJtBFJ+K1
+         MrgtTL8Qq1VwO1ttDIsHSEfD5tgdpTZndgTlrAs9z/taGQ6L/dHJLKD3+yjmS9t+vWBg
+         r+okKLSZI0FbGcUVtdk7RaIMjzb78gMtM/mSgA9qJvw70m2ALLFYwnGVSfxBjsAvKD6K
+         8gcg==
+X-Gm-Message-State: AOJu0YwBN5+cYIQwyRQMXVKlvk2/bb4jmpYUBnamEgrOWjgQ0aRFwu3h
+        7pDbJmPlg5mhcHkjWFHpi7SB49DvEwUuySW9WvzPKg==
+X-Google-Smtp-Source: AGHT+IGOqTvtxfqWgNnMMFc4737tOPznDx2Ec+u1Qc6vg6Ytf9IAjo7xOI8HjQPL083wFsBnlWD0qahO/3mYB56VT9A=
+X-Received: by 2002:a25:23ce:0:b0:d91:5a1b:eea with SMTP id
+ j197-20020a2523ce000000b00d915a1b0eeamr4876224ybj.50.1696516998560; Thu, 05
+ Oct 2023 07:43:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpr124fymnbZ1bO=Dbbxavn3Z=1xOPmFRPnfSp-UB3p6OQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: UZ043y7PLOrm6BR2rXvCw8tfzxFtUx0U
-X-Proofpoint-ORIG-GUID: UZ043y7PLOrm6BR2rXvCw8tfzxFtUx0U
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_08,2023-10-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- priorityscore=1501 mlxscore=0 suspectscore=0 spamscore=0 bulkscore=0
- lowpriorityscore=0 impostorscore=0 adultscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310050113
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Fuad Tabba <tabba@google.com>
+Date:   Thu, 5 Oct 2023 15:42:42 +0100
+Message-ID: <CA+EHjTwTgEVtea7wgef5G6EEgFa0so_GbNXTMZNKyFE=ucyV0g@mail.gmail.com>
+Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, KVM <kvm@vger.kernel.org>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        KVMARM <kvmarm@lists.linux.dev>,
+        LinuxMIPS <linux-mips@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 02:39:43PM +0300, Dmitry Baryshkov wrote:
-> On Thu, 5 Oct 2023 at 12:58, Varadarajan Narayanan
-> <quic_varada@quicinc.com> wrote:
-> >
-> > On Thu, Sep 07, 2023 at 04:59:28PM +0300, Dmitry Baryshkov wrote:
-> > > On Thu, 7 Sept 2023 at 08:23, Varadarajan Narayanan
-> > > <quic_varada@quicinc.com> wrote:
-> > > >
-> > > > IPQ53xx have different OPPs available for the CPU based on
-> > > > SoC variant. This can be determined through use of an eFuse
-> > > > register present in the silicon.
-> > > >
-> > > > Add support to read the eFuse and populate the OPPs based on it.
-> > > >
-> > > > Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
-> > > > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> > > > ---
-> > > >  arch/arm64/boot/dts/qcom/ipq5332.dtsi | 34 +++++++++++++++++++++++++++++++---
-> > > >  1 file changed, 31 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> > > > index 82761ae..3ca3f34 100644
-> > > > --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> > > > +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> > > > @@ -91,11 +91,34 @@
-> > > >         };
-> > > >
-> > > >         cpu_opp_table: opp-table-cpu {
-> > > > -               compatible = "operating-points-v2";
-> > > > +               compatible = "operating-points-v2-kryo-cpu";
-> > > >                 opp-shared;
-> > > > +               nvmem-cells = <&cpu_speed_bin>;
-> > > > +               nvmem-cell-names = "speed_bin";
-> > > > +
-> > > > +               /*
-> > > > +                * Listed all supported CPU frequencies and opp-supported-hw
-> > > > +                * values to select CPU frequencies based on the limits fused.
-> > > > +                * ------------------------------------------------------------
-> > > > +                * Frequency     BIT3   BIT2   BIT1    BIT0    opp-supported-hw
-> > > > +                *              1.0GHz 1.2GHz 1.5GHz No Limit
-> > > > +                * ------------------------------------------------------------
-> > > > +                * 1100000000     1      1      1       1            0xF
-> > > > +                * 1500000000     0      0      1       1            0x3
-> > > > +                * -----------------------------------------------------------
-> > > > +                */
-> > >
-> > > This can probably go to the commit message instead.
-> >
-> > Ok
-> >
-> > > > +
-> > > > +               opp-1100000000 {
-> > > > +                       opp-hz = /bits/ 64 <1100000000>;
-> > >
-> > > But your table shows 1.0 GHz and 1.2 GHz instead of 1.1 GHz
-> >
-> > Will update it.
-> >
-> > > > +                       opp-microvolt = <850000>;
-> > > > +                       opp-supported-hw = <0xF>;
-> > > > +                       clock-latency-ns = <200000>;
-> > > > +               };
-> > > >
-> > > > -               opp-1488000000 {
-> > > > -                       opp-hz = /bits/ 64 <1488000000>;
-> > > > +               opp-1500000000 {
-> > > > +                       opp-hz = /bits/ 64 <1500000000>;
-> > >
-> > > So, 1.488 GHz or 1.5 GHz?
-> >
-> > 1.5 GHz
-> >
-> > > > +                       opp-microvolt = <950000>;
-> > >
-> > > Which regulator is controlled by this microvolt?
-> >
-> > Based on the SKU, the XBL sets up the regulator to provide 950000uV
-> > on CPUs capable of running 1.5G and 850000uV on other SKUs. Linux
-> > doesn't control it.
+Hi Sean,
+
+On Tue, Oct 3, 2023 at 9:51=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
 >
-> Then why do you need this property here in the first place?
+> On Tue, Oct 03, 2023, Fuad Tabba wrote:
+> > On Tue, Oct 3, 2023 at 4:59=E2=80=AFPM Sean Christopherson <seanjc@goog=
+le.com> wrote:
+> > > On Tue, Oct 03, 2023, Fuad Tabba wrote:
+> > > > > +#define KVM_MEMORY_ATTRIBUTE_PRIVATE           (1ULL << 3)
+> > > > > +
+> > > >
+> > > > In pKVM, we don't want to allow setting (or clearing) of PRIVATE/SH=
+ARED
+> > > > attributes from userspace.
+> > >
+> > > Why not?  The whole thing falls apart if userspace doesn't *know* the=
+ state of a
+> > > page, and the only way for userspace to know the state of a page at a=
+ given moment
+> > > in time is if userspace controls the attributes.  E.g. even if KVM we=
+re to provide
+> > > a way for userspace to query attributes, the attributes exposed to us=
+rspace would
+> > > become stale the instant KVM drops slots_lock (or whatever lock prote=
+cts the attributes)
+> > > since userspace couldn't prevent future changes.
+> >
+> > I think I might not quite understand the purpose of the
+> > KVM_SET_MEMORY_ATTRIBUTES ABI. In pKVM, all of a protected guest's memo=
+ry is
+> > private by default, until the guest shares it with the host (via a
+> > hypercall), or another guest (future work). When the guest shares it,
+> > userspace is notified via KVM_EXIT_HYPERCALL. In many use cases, usersp=
+ace
+> > doesn't need to keep track directly of all of this, but can reactively =
+un/map
+> > the memory being un/shared.
+>
+> Yes, and then userspace needs to tell KVM, via KVM_SET_MEMORY_ATTRIBUTES,=
+ that
+> userspace has agreed to change the state of the page.  Userspace may not =
+need/want
+> to explicitly track the state of pages, but userspace still needs to tell=
+ KVM what
+> userspace wants.
+>
+> KVM is primarily an accelerator, e.g. KVM's role is to make things go fas=
+t (relative
+> to doing things in userspace) and provide access to resources/instruction=
+s that
+> require elevated privileges.  As a general rule, we try to avoid defining=
+ the vCPU
+> model, security policies, etc. in KVM, because hardcoding policy into KVM=
+ (and the
+> kernel as a whole) eventually limits the utility of KVM.
+>
+> As it pertains to PRIVATE vs. SHARED, KVM's role is to define and enforce=
+ the basic
+> rules, but KVM shouldn't do things like define when it is (il)legal to co=
+nvert
+> memory to/from SHARED, what pages can be converted, what happens if the g=
+uest and
+> userspace disagree, etc.
 
-I get these errors without this property
+Thanks for clarifying that. My initial understanding of the purpose of
+KVM_SET_MEMORY_ATTRIBUTES wasn't clear. Now I see how having the
+userspace view in KVM would avoid the need to hardcore many policies,
+and I can see how this could come in handy in the future when we start
+going into multi-sharing, for example.
 
-[    1.018065] cpu cpu0: opp_parse_microvolt: opp-microvolt missing although OPP managing regulators
-[    1.018074] cpu cpu0: _of_add_opp_table_v2: Failed to add OPP, -22
+> > > Why does pKVM need to prevent userspace from stating *its* view of at=
+tributes?
+> > >
+> > > If the goal is to reduce memory overhead, that can be solved by using=
+ an internal,
+> > > non-ABI attributes flag to track pKVM's view of SHARED vs. PRIVATE.  =
+If the guest
+> > > attempts to access memory where pKVM and userspace don't agree on the=
+ state,
+> > > generate an exit to userspace.  Or kill the guest.  Or do something e=
+lse entirely.
+> >
+> > For the pKVM hypervisor the guest's view of the attributes doesn't
+> > matter. The hypervisor at the end of the day is the ultimate arbiter
+> > for what is shared and with how. For pKVM (at least in my port of
+> > guestmem), we use the memory attributes from guestmem essentially to
+> > control which memory can be mapped by the host.
+>
+> The guest's view absolutely matters.  The guest's view may not be express=
+ed at
+> access time, e.g. as you note below, pKVM and other software-protected VM=
+s don't
+> have a dedicated shared vs. private bit like TDX and SNP.  But the view i=
+s still
+> there, e.g. in the pKVM model, the guest expresses its desire for shared =
+vs.
+> private via hypercall, and IIRC, the guest's view is tracked by the hyper=
+visor
+> in the stage-2 PTEs.  pKVM itself may track the guest's view on things, b=
+ut the
+> view is still the guest's.
 
-Thanks
-Varada
+This was poorly worded on my part. You're right that in practice the
+pKVM hypervisor is the one tracking the guest's view, based on the
+hypercalls from the guest.
+
+> E.g. if the guest thinks a page is private, but in reality KVM and host u=
+serspace
+> have it as shared, then the guest may unintentionally leak data to the un=
+trusted
+> world.
+>
+> IIUC, you have implemented guest_memfd support in pKVM by changing the at=
+tributes
+> when the guest makes the hypercall.  This can work, but only so long as t=
+he guest
+> and userspace are well-behaved, and it will likely paint pKVM into a corn=
+er in
+> the long run.
+>
+> E.g. if the guest makes a hypercall to convert memory to PRIVATE, but the=
+re is
+> no memslot or the memslot doesn't support private memory, then unless the=
+re is
+> policy baked into KVM, or an ABI for the guest<=3D>host hypercall interfa=
+ce that
+> allows unwinding the program counter, you're stuck.  Returning an error f=
+or the
+> hypercall straight from KVM is undesirable as that would put policy into =
+KVM that
+> doesn't need to be there, e.g. that would prevent userspace from manipula=
+ting
+> memslots in response to (un)share requests from the guest.  It's a simila=
+r story
+> if KVM marks the page as PRIVATE, as that would prevent userspace from re=
+turning
+> an error for the hypercall, i.e. would prevent usersepace from denying th=
+e request
+> to convert to PRIVATE.
+
+Ack.
+
+> > One difference between pKVM and TDX (as I understand it), is that TDX
+> > uses the msb of the guest's IPA to indicate whether memory is shared
+> > or private, and that can generate a mismatch on guest memory access
+> > between what it thinks the state is, and what the sharing state in
+> > reality is. pKVM doesn't have that. Memory is private by default, and
+> > can be shared in-place, both in the guest's IPA space as well as the
+> > underlying physical page.
+>
+> TDX's shared bit and SNP's encryption bit are just a means of hardware en=
+forcement.
+> pKVM does have a hardware bit because hardware doesn't provide any enforc=
+ement.
+> But as above, pKVM does have an equivalent *somewhere*.
+>
+> > > > The other thing, which we need for pKVM anyway, is to make
+> > > > kvm_vm_set_mem_attributes() global, so that it can be called from o=
+utside of
+> > > > kvm_main.c (already have a local patch for this that declares it in
+> > > > kvm_host.h),
+> > >
+> > > That's no problem, but I am definitely opposed to KVM modifying attri=
+butes that
+> > > are owned by userspace.
+> > >
+> > > > and not gate this function by KVM_GENERIC_MEMORY_ATTRIBUTES.
+> > >
+> > > As above, I am opposed to pKVM having a completely different ABI for =
+managing
+> > > PRIVATE vs. SHARED.  I have no objection to pKVM using unclaimed flag=
+s in the
+> > > attributes to store extra metadata, but if KVM_SET_MEMORY_ATTRIBUTES =
+doesn't work
+> > > for pKVM, then we've failed miserably and should revist the uAPI.
+> >
+> > Like I said, pKVM doesn't need a userspace ABI for managing PRIVATE/SHA=
+RED,
+> > just a way of tracking in the host kernel of what is shared (as opposed=
+ to
+> > the hypervisor, which already has the knowledge). The solution could si=
+mply
+> > be that pKVM does not enable KVM_GENERIC_MEMORY_ATTRIBUTES, has its own
+> > tracking of the status of the guest pages, and only selects KVM_PRIVATE=
+_MEM.
+>
+> At the risk of overstepping my bounds, I think that effectively giving th=
+e guest
+> full control over what is shared vs. private is a mistake.  It more or le=
+ss locks
+> pKVM into a single model, and even within that model, dealing with errors=
+ and/or
+> misbehaving guests becomes unnecessarily problematic.
+>
+> Using KVM_SET_MEMORY_ATTRIBUTES may not provide value *today*, e.g. the u=
+serspace
+> side of pKVM could simply "reflect" all conversion hypercalls, and termin=
+ate the
+> VM on errors.  But the cost is very minimal, e.g. a single extra ioctl() =
+per
+> converion, and the upside is that pKVM won't be stuck if a use case comes=
+ along
+> that wants to go beyond "all conversion requests either immediately succe=
+ed or
+> terminate the guest".
+
+Now that I understand the purpose of KVM_SET_MEMORY_ATTRIBUTES, I
+agree. However, pKVM needs to track at the host kernel (i.e., EL1)
+whether guest memory is shared or private.
+
+One approach would be to add another flag to the attributes that
+tracks the host kernel view. The way KVM_SET_MEMORY_ATTRIBUTES is
+implemented now, userspace can zero it, so in that case, that
+operation would need to be masked to avoid that.
+
+Another approach would be to have a pKVM-specific xarray (or similar)
+to do the tracking, but since there is a structure that's already
+doing something similar (i.e.,the attributes array), it seems like it
+would be unnecessary overhead.
+
+Do you have any ideas or preferences?
+
+Cheers,
+/fuad
