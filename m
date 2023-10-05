@@ -2,166 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262B07B9E5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3569A7B9FE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbjJEOEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
+        id S235042AbjJEObV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbjJEOD2 (ORCPT
+        with ESMTP id S234206AbjJEO3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:03:28 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFAF6A56
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 23:30:39 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-65b0383f618so3536356d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 23:30:39 -0700 (PDT)
+        Thu, 5 Oct 2023 10:29:17 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33CB6A5E
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 23:31:34 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-323ef9a8b59so616496f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 23:31:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696487438; x=1697092238; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2SQ+Fg73Fl1pdYOuoSzMniIQZ34aTxWQ4ZYKT+W2gXQ=;
-        b=kHQrV4/q7DNUnT3h6BltELplHfMJB3KarFzoDWaSujxX8CkEhm7xNLLCrYLr83iThj
-         OyO3CNx/ag/OMoRvpuhwUiU4Nk8gmRpn4GqnFkELv28Y979xm+cWgfq+LOzlEnicyURk
-         kEifd2SC3L7vcA4L6Xetj8pacFqWKDE8FLJHr5E+idLcY+Axy1tsuCceP3Pfhy+yepdU
-         s9USvYBqJl49Ljf3X8kfnL08aml2ZCBjtWFnIdSeqTNOMPtQNVsj2IMtXQdx7HWPkubK
-         rXM3+V7lhQNmpbg3/JfORnBhZXyYPLaowdHxlVxGymCQbG6q1C22goqT3GYRb+plLhuS
-         QhGw==
+        d=linaro.org; s=google; t=1696487493; x=1697092293; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q5W+5km9oY3CezrKFXltA7PDU8akry8lgWTdEDkyo4E=;
+        b=JqZhlby9mRmDNUZGRtv+4Pxy/lzBHMDdoHmYzJUq6kzUP96peVrOBWHILfG9B6Pvjq
+         rmHCIREdLx4x6mO7bcFQpcOPM3r4UeiFvY7Q69c1vO0J5ZeW0SsMJ6SuQxB6urD2qPWP
+         MJpGPFviPlF3b7j3YLy45WOQbnkxoOPPMbWUjMQuGfgPWqxxa1Ve1cSRea1e5Bn2wuA2
+         DSY68wPIVpfIqM+hVDrsZQnNx/DhUbDp0yKIcL2Anpb+TvGM7ljBbOEfYxU/4KdFSPXk
+         an4AwXFIiRBUsk8qrDhJG9HPRTCysuQrW+bjJjqq0U7Yobfq/+Es9kH0pEx6wMue/It7
+         OTog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696487438; x=1697092238;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2SQ+Fg73Fl1pdYOuoSzMniIQZ34aTxWQ4ZYKT+W2gXQ=;
-        b=wZrRFTLhn6vlWgl9UQjU1IE20gUw+2pGGpo+r7mm9qz8LRPiRAvaJnV8poM4iSU39Q
-         44n0cpKYJoCl4SdZBoGFhaC8Ox9WkhTCVu4tFZa5pYCSUveuncs10nLIhCtEnM+tE2mx
-         Wo8kZMlmZXey3xMTUak5vA+ZykBgRMfxpCj3xo7tmCWfyoLKVhk+IodQQ6gdeaJqvOy7
-         dTKG0bRmCFpHbjcafOUiu7Qf1sPfiNyL7onmpILmNxy1kbGiIedmhdKXpmNwT11yZgpB
-         hWo47ZE15JHtPqOYMeW1rsUcwJPL84yM4xhaNoltCltKZmi0K5NbWrXzAJsQfowNYwdo
-         rv8w==
-X-Gm-Message-State: AOJu0YxTkhnQATdW1pBCTYhPGDYqdZakGOpxxRxDiZLOxPiOmYovJWwB
-        o/pOV6Yt823iLHyrrtNu/MA7K3AgYmsBi9RxJGOH4w==
-X-Google-Smtp-Source: AGHT+IF5f1woXxIsewhgr6LbTilldo0UbnPe8GvHXkLgce/BgID0Anv6sRQXpWQI1Bf4MTBoj6iubumSQOISbver5vA=
-X-Received: by 2002:a05:6214:4885:b0:65c:fec5:6f0 with SMTP id
- pc5-20020a056214488500b0065cfec506f0mr4748990qvb.45.1696487438665; Wed, 04
- Oct 2023 23:30:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696487493; x=1697092293;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q5W+5km9oY3CezrKFXltA7PDU8akry8lgWTdEDkyo4E=;
+        b=q3Hd6kATvZS2xskMKYh3fRfnEj4bVZo3iIV8NhwPwXpx3UfySuFxxFpdaOyLer+t9r
+         K8A+b6ayya/qGltdbp7RzBegT/hiLj7hzfkK1KxcrOgMzLSyUfEBs0Yz5YTxMEc0Mx/D
+         RMYvfBW+8EzBaVIeBt/gbJ8oi3m9RbjTna/SlEX9T4DFaApC1s39bOZqnyQnwMruB3CG
+         lxXnDWJUQC4Tf4rdL4oVhQ4tUGKPU5uvrU4b/Za3lRIVxDHrDPqz32daiJX/CtnBzLgt
+         nlQpbkf1r0B3dh53eH0qwL4zDdE1D4U/xVROSnw77PbMfQteQ3htqweM4BDCgR0IiG3J
+         WUVw==
+X-Gm-Message-State: AOJu0YxnUMg0tMXMoXzR1Bb0kgxvrdwsuS4n9rK1INOj/dXuJNrKnirK
+        O98Hw998MzesLrKsVnuOR7jwNA==
+X-Google-Smtp-Source: AGHT+IF4ixdIQfW3FK081CqPPePUbhMJmhpRDt6pintjSlT07UJabiR7lKPTEYKF9KJP1v7iLMdJUA==
+X-Received: by 2002:a05:6000:100e:b0:320:485:7010 with SMTP id a14-20020a056000100e00b0032004857010mr4128536wrx.67.1696487493496;
+        Wed, 04 Oct 2023 23:31:33 -0700 (PDT)
+Received: from [192.168.69.115] (tbo33-h01-176-171-211-120.dsl.sta.abo.bbox.fr. [176.171.211.120])
+        by smtp.gmail.com with ESMTPSA id y17-20020a5d6151000000b0031f82743e25sm939874wrt.67.2023.10.04.23.31.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 23:31:33 -0700 (PDT)
+Message-ID: <ebd12a11-551f-f66b-293b-f7fc2dfee31d@linaro.org>
+Date:   Thu, 5 Oct 2023 08:31:31 +0200
 MIME-Version: 1.0
-References: <20230929-ffa_v1-1_notif-v3-0-c8e4f15190c8@arm.com>
- <20230929-ffa_v1-1_notif-v3-7-c8e4f15190c8@arm.com> <20231004091021.GA1091193@rayden>
- <20231004151123.z4w5u3j7a743bmdq@bogus>
-In-Reply-To: <20231004151123.z4w5u3j7a743bmdq@bogus>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Thu, 5 Oct 2023 08:30:27 +0200
-Message-ID: <CAHUa44HYJP_F0MqXFTb9rgvMstXmTfU4thAhGxS6aSObZz+tMA@mail.gmail.com>
-Subject: Re: [PATCH v3 07/17] firmware: arm_ffa: Implement the
- NOTIFICATION_INFO_GET interface
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Coboy Chen <coboy.chen@mediatek.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Olivier Deprez <olivier.deprez@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH 05/11] dt-bindings: mips: cpu: Add I-Class I6500
+ Multiprocessor Core
+Content-Language: en-US
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=c3=a9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
+ <20231004161038.2818327-6-gregory.clement@bootlin.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20231004161038.2818327-6-gregory.clement@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 5:11=E2=80=AFPM Sudeep Holla <sudeep.holla@arm.com> =
-wrote:
->
-> On Wed, Oct 04, 2023 at 11:10:21AM +0200, Jens Wiklander wrote:
-> > On Fri, Sep 29, 2023 at 04:02:56PM +0100, Sudeep Holla wrote:
-> > > The receiver=E2=80=99s scheduler uses the FFA_NOTIFICATION_INFO_GET i=
-nterface
-> > > to retrieve the list of endpoints that have pending notifications and
-> > > must be run. A notification could be signaled by a sender in the secu=
-re
-> > > world to a VM. The Hypervisor needs to determine which VM and vCPU
-> > > (in case a per-vCPU notification is signaled) has a pending notificat=
-ion
-> > > in this scenario. It must obtain this information through an invocati=
-on
-> > > of the FFA_NOTIFICATION_INFO_GET.
-> > >
-> > > Add the implementation of the NOTIFICATION_INFO_GET interface
-> > > and prepare to use this to handle the schedule receiver interrupt.
-> > > Implementation of handling notifications will be added later.
-> > >
-> > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > > ---
-> > >  drivers/firmware/arm_ffa/driver.c | 70 +++++++++++++++++++++++++++++=
-++++++++++
-> > >  1 file changed, 70 insertions(+)
-> > >
-> > > diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm=
-_ffa/driver.c
-> > > index 02eedb7bc171..dfeeb751bebe 100644
-> > > --- a/drivers/firmware/arm_ffa/driver.c
-> > > +++ b/drivers/firmware/arm_ffa/driver.c
-> > > @@ -602,6 +602,13 @@ static int ffa_notification_bitmap_destroy(void)
-> > >     (FIELD_PREP(RECEIVER_VCPU_MASK, (vcpu_r)) | \
-> > >      FIELD_PREP(RECEIVER_ID_MASK, (r)))
-> > >
-> > > +#define NOTIFICATION_INFO_GET_MORE_PEND_MASK       BIT(0)
-> > > +#define NOTIFICATION_INFO_GET_ID_COUNT             GENMASK(11, 7)
-> > > +#define ID_LIST_MASK_64                            GENMASK(51, 12)
-> > > +#define ID_LIST_MASK_32                            GENMASK(31, 12)
-> > > +#define MAX_IDS_64                         20
-> > > +#define MAX_IDS_32                         10
-> > > +
-> > >  static int ffa_notification_bind_common(u16 dst_id, u64 bitmap,
-> > >                                     u32 flags, bool is_bind)
-> > >  {
-> > > @@ -673,6 +680,69 @@ static int ffa_notification_get(u32 flags, struc=
-t ffa_notify_bitmaps *notify)
-> > >     return 0;
-> > >  }
-> > >
-> > > +static void __do_sched_recv_cb(u16 partition_id, u16 vcpu, bool is_p=
-er_vcpu)
-> > > +{
-> > > +   pr_err("Callback for partition 0x%x failed.\n", partition_id);
-> > > +}
-> > > +
-> > > +static void ffa_notification_info_get(bool is_64b)
-> > > +{
-> > > +   int idx, list, max_ids, lists_cnt, ids_processed, ids_count[MAX_I=
-DS_64];
-> > > +   ffa_value_t ret;
-> > > +   u64 id_list;
-> > > +
-> > > +   do {
-> > > +           invoke_ffa_fn((ffa_value_t){
-> > > +                     .a0 =3D FFA_FN_NATIVE(NOTIFICATION_INFO_GET),
-> > > +                     }, &ret);
-> > > +
-> > > +           if (ret.a0 !=3D FFA_FN_NATIVE(SUCCESS)) {
-> >
-> > The specification doesn't require a response using 64-bit SMCCC, it is
-> > valid to respond using 32-bit SMCCC too.
-> >
->
-> Do you mean to say the we need to support 64b NOTIFICATION_INFO_GET
-> returning 32b FFA_SUCCESS ? If so do we need to assume only 32bits are
-> used in the result. As per the specification,
->
-> "0xC4000061(FFA_FN64_SUCCESS): This function ID is used only if any resul=
-t
->  register encodes a 64-bit parameter."
->
-> My question is what that means allowing 32bit FFA_SUCCESS here?
+On 4/10/23 18:10, Gregory CLEMENT wrote:
+> The MIPS Warrior I-class I6500 was announced by Imagination
+> Technologies in 2016 and is used in the Mobileye SoC EyeQ5.
+> 
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+> ---
+>   Documentation/devicetree/bindings/mips/cpus.yaml | 1 +
+>   1 file changed, 1 insertion(+)
 
-My bad, this is the one place where a 64-bit FFA_SUCCESS is more or
-less required. I'll fix my side of things.
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
-Thanks,
-Jens
+
