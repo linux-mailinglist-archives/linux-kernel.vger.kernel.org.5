@@ -2,117 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 486C97BA6F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D517BA49E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbjJEQni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
+        id S234733AbjJEQIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234381AbjJEQlZ (ORCPT
+        with ESMTP id S239406AbjJEQHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:41:25 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1139C9E;
-        Thu,  5 Oct 2023 09:29:52 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395GQ3Kl008480;
-        Thu, 5 Oct 2023 16:29:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : content-type : content-transfer-encoding :
- mime-version; s=pp1; bh=e/uxUGgKiTmqQdW2f3YDwweeYv/YTjo50AJHu3QIs4g=;
- b=QD+regq6d+lND1misANH50l7ZSdJy134tf+kl2571l8wf57mO5vm5xRCDmSSzBW4El/U
- /tniRGr0RUVMrv1pSDEK8qZ5jiiXYZb7blwEEjXMw0sjB0r0pm+pnpRIco96pKa0boF4
- fhPOxUk3wwzNIaOCB9FbD0rwtzZJ615Im3Y0Rv0c4/FXBovsec9YcajG1wMsqeqOfocV
- b9hnqo9mWW6aZUUTl0DoxI7GIGKV/FQEdnxc/X+5TZCfBLHzCVVRWPhMKuxKhNKU8SGg
- iU3oExdtThsel/3bXvS7ZadhFY4GplMMPz0kxCXss1O1kfgOEKXU/3WtfHX3LtRaXH+2 rA== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj0ner3xu-32
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 16:29:16 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 395FEwlK025087;
-        Thu, 5 Oct 2023 15:53:32 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3texcywjaj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 15:53:32 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 395FrVes7275070
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Oct 2023 15:53:31 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8774458056;
-        Thu,  5 Oct 2023 15:53:31 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 087865803F;
-        Thu,  5 Oct 2023 15:53:31 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.90.188])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  5 Oct 2023 15:53:30 +0000 (GMT)
-Message-ID: <d213722924c7942bc60fc6b7acf934c8bf6f74e0.camel@linux.ibm.com>
-Subject: [GIT PULL] integrity: susbystem fixes for v6.6 (take 2)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Thu, 05 Oct 2023 11:53:30 -0400
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: dJbaJMpTfBtZ0TFEo7FBGFZitGqLzd_r
-X-Proofpoint-ORIG-GUID: dJbaJMpTfBtZ0TFEo7FBGFZitGqLzd_r
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 5 Oct 2023 12:07:09 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE395EC85
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 08:54:07 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-405505b07dfso14121175e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 08:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1696521246; x=1697126046; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=F9jgX1V/4Lt7reawNBa64mpmNNW6z5NJmtuZCopzjTg=;
+        b=RdPs6bZCzTnzBDxtlGbBLZYrAXpWrVAqfCJrQjL459cvkqcCFqNtPhHtRBAwn5I8kH
+         nfQAuZhDmuHS1+nDaiCuiLbJR2h1BieddU2ZSBvOt67/EnEtUp3zHl6333g5L3aRABeI
+         c84o55OR0SNgsy338YXtivt4XS5bwzlDpJA5FfaRnPufkbpPg3bOgAdOvCKXtnTihsMj
+         RXxgmzCCTuwjZ1aJD/7JkbJuC6sN/RMEnf3E9Uf/CUT2/2GplY8b1XT8JZFgF/20KZim
+         hBAxChOohMgtPD7eTpDlABCwibgKK+0BuXdrGfpW9kfJNuxzQRyR9eN9OXuBq0WWzjvX
+         J0AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696521246; x=1697126046;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F9jgX1V/4Lt7reawNBa64mpmNNW6z5NJmtuZCopzjTg=;
+        b=U9wD6zNHeJZGpYTSaapwwN4NLkTSf5WI2YWO25iH9jA4Abf6GkmlvDAiqvGd0T2LHD
+         6dm/vOW4hQtMq1Sim7rhlttwTJOHJ2eYQA1H8azImvvgpLITMxqwpl3udPqFS0mcZBGU
+         MPuhIs+iUinjsQGfWWfQlW+tyARi1poHouYkuivo/vL/ljDapAetnE9MUUeyhFIcu5lO
+         CgFDd3nu/7f03qWsEwqEqq96brd+IVx98dnln/Umny6hcE/4eagl7K7T2SxIa512cBRe
+         MDL9vehcQFhawK7UCX+cFlvof7yGfmZdzb46QLJnUaQtEZ/jRw+d7zYONG9ROGOYk4Rw
+         8OJQ==
+X-Gm-Message-State: AOJu0YwI3fj+v1oQVf9clIuYM9o08xQJugm7jzE1ZYCah5zSDO6y2hFS
+        foc6bWjSHt7NOadaZMSzlfnKcw==
+X-Google-Smtp-Source: AGHT+IH2BebPRq+/LzX2/VVJ5f5eYcre8Nkr1mAjsJbh/Lmum/1uCIr+dEfwSuRrKcNBSRmGFfuaog==
+X-Received: by 2002:a5d:4e42:0:b0:313:f75b:c552 with SMTP id r2-20020a5d4e42000000b00313f75bc552mr2619252wrt.15.1696521246096;
+        Thu, 05 Oct 2023 08:54:06 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:4a49:8ee5:5e5c:cfd5? ([2a02:8011:e80c:0:4a49:8ee5:5e5c:cfd5])
+        by smtp.gmail.com with ESMTPSA id p3-20020a5d4583000000b0032008f99216sm2070696wrq.96.2023.10.05.08.54.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 08:54:05 -0700 (PDT)
+Message-ID: <173829f3-817e-4937-808f-7f9bfc22207f@isovalent.com>
+Date:   Thu, 5 Oct 2023 16:54:04 +0100
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_11,2023-10-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=942 impostorscore=0
- suspectscore=0 clxscore=1015 mlxscore=0 spamscore=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310050128
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/2] bpftool: Align bpf_load_and_run_opts insns and
+ data
+Content-Language: en-GB
+To:     Ian Rogers <irogers@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231004222323.3503030-1-irogers@google.com>
+ <20231004222323.3503030-2-irogers@google.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20231004222323.3503030-2-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 04/10/2023 23:23, Ian Rogers wrote:
+> A C string lacks alignment so use aligned arrays to avoid potential
+> alignment problems. Switch to using sizeof (less 1 for the \0
+> terminator) rather than a hardcode size constant.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/bpf/bpftool/gen.c | 47 ++++++++++++++++++++++-------------------
+>  1 file changed, 25 insertions(+), 22 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index b8ebcee9bc56..7a545dcabe38 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -408,8 +408,8 @@ static void codegen(const char *template, ...)
+>  		/* skip baseline indentation tabs */
+>  		for (n = skip_tabs; n > 0; n--, src++) {
+>  			if (*src != '\t') {
+> -				p_err("not enough tabs at pos %td in template '%s'",
+> -				      src - template - 1, template);
+> +				p_err("not enough tabs at pos %td in template '%s'\n'%s'",
+> +					src - template - 1, template, src);
 
-Two additional patches to fix the removal of the deprecated
-IMA_TRUSTED_KEYRING Kconfig.
+Nit: This line is no longer aligned with the opening parenthesis.
 
-thanks,
+Other than that:
 
-Mimi
-
-The following changes since commit 6465e260f48790807eef06b583b38ca9789b6072:
-
-  Linux 6.6-rc3 (2023-09-24 14:31:13 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v6.6-fix
-
-for you to fetch changes up to 91e326563ee34509c35267808a4b1b3ea3db62a8:
-
-  ima: rework CONFIG_IMA dependency block (2023-09-27 11:52:12 -0400)
-
-----------------------------------------------------------------
-integrity-v6.6-fix
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      ima: rework CONFIG_IMA dependency block
-
-Oleksandr Tymoshenko (1):
-      ima: Finish deprecation of IMA_TRUSTED_KEYRING Kconfig
-
- security/integrity/ima/Kconfig | 22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
-
+Acked-by: Quentin Monnet <quenti@isovalent.com>
