@@ -2,129 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B7B7BAED1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1B17BAED4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbjJEWdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 18:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
+        id S231614AbjJEWfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 18:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjJEWdd (ORCPT
+        with ESMTP id S229530AbjJEWfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 18:33:33 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE95DB;
-        Thu,  5 Oct 2023 15:33:32 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395MSP5j009713;
-        Thu, 5 Oct 2023 22:33:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=6g9Cyjl5K6OG1jkcqwrpcexPvXh/RcSiBX825pOgneQ=;
- b=gQh1G/y9mUJFUoQgZK/H8e1Y/Q6hSsUHp5u0VMTmfMLqJB4vtfJVo+c+FqIRZwif46U6
- KEJ8SPGnm6JvOw8Yy/lrLKHHqA4cCRRxNSphq05XsyJSanSiTy0C85na3jIQCjccMCia
- tLhdaFzacbv3KlsbQ5rv9oytCorAHsNNokBw29QGERufl1p/rLA9rrGoT79oQhCz435u
- 1fj5wlnh2WqxlvWkiFSMfWvPtg0/KtHotCOA40/7YwJWv75ZJmwfu4ZaBkXyJmUrmtcG
- zRoAWtEXnKy7q3JnJ+T4SzYIQ0lRI/jRU8SO1cXhqcfF5TeAeWl7S/rxmsqCthIPJ+lf yQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3th8e1v2js-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 22:33:16 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 395MXGXg028924
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Oct 2023 22:33:16 GMT
-Received: from [10.110.20.163] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 5 Oct
- 2023 15:33:15 -0700
-Message-ID: <69b8ded0-7648-80bd-c41b-c591b0f861ef@quicinc.com>
-Date:   Thu, 5 Oct 2023 15:33:14 -0700
+        Thu, 5 Oct 2023 18:35:24 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D993D6
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:35:21 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5032a508e74so1017e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:35:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696545320; x=1697150120; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OKaIQ8Zyh16/tVcnFuQ7sDuazPniKY0bHDKBdsLSgQk=;
+        b=eh+J96NBuFviMzGYQlf4gKBBEneDV9hiuYpnxbID13tIz/GUaGyVD2AtxSLHbKZ2YT
+         zPgv1xGYVrkxBefoN08PQaUANOZGLHmJf1wdHVMu8Bd9uJ/HlbToiAbPTQu8iGYaQV1t
+         pdTP/+58ifJeJaIcvJSaBC9hzmDBZSY5KZw5W7m9PRfvFTzH860suvBOKm2XoWem68Oc
+         KJ0IvE6D/U6OAWdaj35peKV8AMGp5RD+vHyynr4vgRNbtzr9UJ63Pxi0TI6uynZtQ0V5
+         XmH7mpoZGBAXxqJ67AXpFRYxNm4SJ+UX7xhRpXcG1vkyUZPAgcsvg1UVnkjvqpJLSnHn
+         rF6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696545320; x=1697150120;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OKaIQ8Zyh16/tVcnFuQ7sDuazPniKY0bHDKBdsLSgQk=;
+        b=lgmQIWU9UStl6agDvUDfgHXksLgDCMekAUcO99xOBOVnBCk+x4VFI1QQWn/Nx8zzDP
+         D5DILKFYMpTj/4bX4V5s2Yld2e7Sj1Pm3n7nFM0FfYIYkH7F+lAElXlFSfMdJ5zLHJUV
+         wLodHa68wJoDnzmWyDfXWRoCKyQa9meUDGbURPiH3v3WxQCJlIbTVUW2O5oTLKbmjDAU
+         ybj/PlX0qNK1PIvFvAIrWU8I4MWc8u3glY34WYg67GXvr3sNxnW6htM8HiQx6qqWewmB
+         dstKodYUKL5v0n7lQh4reoU7YH+ts0Ielw3v1eDNEVKDheplSny5mgWcbfmCqCV4Hc89
+         kBaw==
+X-Gm-Message-State: AOJu0YxCH4nOwhJI/L4FwxXV8iNxEUXlm9Px4qzUyVguddeActrN1Mnm
+        OMH7zH8B5F796UTBf4adumvnXcN/Vz2Ga1wl2svJiw==
+X-Google-Smtp-Source: AGHT+IFqiQSTSTwPTJ61CESf8GdTp78bw4W7PrhxaBvAYX3nwWRy9q/Us0yHiv3NoCGSa/fT9UUpSF7pItxtBuBJLKY=
+X-Received: by 2002:a19:7006:0:b0:502:dc15:7fb with SMTP id
+ h6-20020a197006000000b00502dc1507fbmr90726lfc.5.1696545319446; Thu, 05 Oct
+ 2023 15:35:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v4 4/4] firmware: arm_scmi: Add qcom hvc/shmem transport
- support
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20230911194359.27547-1-quic_nkela@quicinc.com>
- <20230911194359.27547-5-quic_nkela@quicinc.com>
- <20231003111914.63z35sn3r3k7drtp@bogus>
- <6246714a-3b40-e1b6-640e-560ba55b6436@quicinc.com>
- <20231004160630.pxspafszlt6o7oj6@bogus>
- <20231005222016.GI3553829@hu-bjorande-lv.qualcomm.com>
-Content-Language: en-US
-From:   Nikunj Kela <quic_nkela@quicinc.com>
-In-Reply-To: <20231005222016.GI3553829@hu-bjorande-lv.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: zWNE7LW-QekoHznHQ7t6FM-CyQDjR4op
-X-Proofpoint-ORIG-GUID: zWNE7LW-QekoHznHQ7t6FM-CyQDjR4op
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_17,2023-10-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- adultscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310050171
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230923053515.535607-1-irogers@google.com> <20230923053515.535607-2-irogers@google.com>
+ <CAKwvOdmHg_43z_dTZrOLGubuBBvmHdPxSFjOWa3oWkbOp2qWWg@mail.gmail.com>
+ <CAP-5=fV6c1tWAd2GjMwn4PQN=3BXNQGz=vbonHSjRjQ3fbEL+g@mail.gmail.com>
+ <ZRWMWcNKvZMgiAMR@bergen.fjasle.eu> <CAK7LNASuOWtd-iv2C3HLWr1oq9gD8BiP4B=8wRUo81CSK=g5Yw@mail.gmail.com>
+In-Reply-To: <CAK7LNASuOWtd-iv2C3HLWr1oq9gD8BiP4B=8wRUo81CSK=g5Yw@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 5 Oct 2023 15:35:07 -0700
+Message-ID: <CAP-5=fVz-Yqb_AnkJkoBAO8id7m2f0qaU_VnFVDoAXagwHfz6A@mail.gmail.com>
+Subject: Re: [PATCH v1 01/18] gen_compile_commands: Allow the line prefix to
+ still be cmd_
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nicolas Schier <nicolas@fjasle.eu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Yuan Can <yuancan@huawei.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        James Clark <james.clark@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 3, 2023 at 7:31=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.or=
+g> wrote:
+>
+> On Thu, Sep 28, 2023 at 11:26=E2=80=AFPM Nicolas Schier <nicolas@fjasle.e=
+u> wrote:
+> >
+> > On Mon, 25 Sep 2023 09:06:11 -0700, Ian Rogers wrote:
+> > > On Mon, Sep 25, 2023 at 8:49=E2=80=AFAM Nick Desaulniers
+> > > <ndesaulniers@google.com> wrote:
+> > > >
+> > > > On Fri, Sep 22, 2023 at 10:35=E2=80=AFPM Ian Rogers <irogers@google=
+.com> wrote:
+> > > > >
+> > > > > Builds in tools still use the cmd_ prefix in .cmd files, so don't
+> > > > > require the saved part. Name the groups in the line pattern match=
+ so
+> > > >
+> > > > Is that something that can be changed in the tools/ Makefiles?
+> > > >
+> > > > I'm fine with this change, just curious where the difference comes
+> > > > from precisely.
+> > > > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> > >
+> > > I agree. The savedcmd_ change came from Masahiro in:
+> > > https://lore.kernel.org/lkml/20221229091501.916296-1-masahiroy@kernel=
+.org/
+> > > I was reluctant to change the build logic in tools/ because of the
+> > > potential to break things. Maybe Masahiro/Nicolas know of issues?
+> >
+> > I haven't seen any issues related to the introduction of savedcmd_; and
+> > roughly searching through tools/ I cannot find a rule that matches the
+> > pattern Masahiro described in commit 92215e7a801d ("kbuild: rename
+> > cmd_$@ to savedcmd_$@ in *.cmd files", 2022-12-29).  For consistency,
+> > I'd like to see the build rules in tools/ re-use the ones from scripts/
+> > but as of now I don't see any necessity to introduce savedcmd in
+> > tools/, yet.
+> >
+> > Kind regards,
+> > Nicolas
+>
+>
+> tools/build/Build.include mimics scripts/Kbuild.include
+>
+> That should be changed in the same way.
 
-On 10/5/2023 3:20 PM, Bjorn Andersson wrote:
-> On Wed, Oct 04, 2023 at 05:06:30PM +0100, Sudeep Holla wrote:
->> On Tue, Oct 03, 2023 at 09:16:27AM -0700, Nikunj Kela wrote:
->>> On 10/3/2023 4:19 AM, Sudeep Holla wrote:
->>>> On Mon, Sep 11, 2023 at 12:43:59PM -0700, Nikunj Kela wrote:
->>>>> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
-> [..]
->>>>> @@ -63,6 +66,8 @@ struct scmi_smc {
->>>>>    	u32 func_id;
->>>>>    	u32 param_page;
->>>>>    	u32 param_offset;
->>>>> +	u64 cap_id;
->>>> Can it be unsigned long instead so that it just works for both 32 and 64 bit.
->>> My first version of this patch was ulong but Bjorn suggested to make this
->>> structure size fixed i.e. architecture independent. Hence changed it to u64.
->>> If you are ok with ulong, I can change it back to ulong.
->>>
->> SMCCC pre-v1.2 used the common structure in that way. I don't see any issue
->> with that. I haven't followed Bjorn suggestions/comments though.
->>
-> My request was that funcId and capId is an ABI between the firmware and
-> the OS, so I'd like for that to use well defined, fixed sized, data
-> types - if nothing else just for documentation purpose.
->
-> These values will be truncated when passed to arm_smccc_1_1_invoke()
-> anyways, so I don't have any opinion against using unsigned long here...
->
->
-> PS. I understand why func_id is u32, but why are param_page and
-> param_offset u32?
+Thanks Masahiro,
 
-That was done to keep it uniform across smc32/smc64 conventions.
+I support that as a goal, I'm not sure I want to embrace it here. For
+example, in tools/build/Build.include there is:
+```
+# Echo command
+# Short version is used, if $(quiet) equals `quiet_', otherwise full one.
+echo-cmd =3D $(if $($(quiet)cmd_$(1)),\
+           echo '  $(call escsq,$($(quiet)cmd_$(1)))';)
+```
 
->
-> Regards,
-> Bjorn
+This is relevant given the use of cmd_ and not savedcmd_. In
+scripts/Kbuild.include there is no equivalent, nor is there in
+scripts. So do I dig into the history of echo-cmd unfork that, and
+then go to the next thing? I find a lot of things like
+tools/selftests/bpf won't build for me. When I debug a failure is it
+because of a change or a pre-existing issue? Given the scope of the
+Build.include unification problem, and this 4 line change, I hope we
+can move forward with this and keep unification as a separate problem
+(I totally support solving that problem).
+
+Thanks,
+Ian
+
+> --
+> Best Regards
+> Masahiro Yamada
