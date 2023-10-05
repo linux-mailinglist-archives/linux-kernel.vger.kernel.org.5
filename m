@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C327BA3E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDCA7B9FA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239583AbjJEP7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        id S233967AbjJEO03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235183AbjJEP5A (ORCPT
+        with ESMTP id S234565AbjJEOYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:57:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC455273C;
-        Thu,  5 Oct 2023 06:54:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696514066; x=1728050066;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WT2vF2g6ySQ88OnBsaROozLS1/K+Uk2umLsgnTugo4g=;
-  b=HikMK4ts2LgVHHpFAoKBy/afRCgUWTyNkt7XIvTxTbctujN9aqgBhYvJ
-   N0XR6P8DPcUyG1fwfyBLudGQkcEJbwQ+mKXBQc0BREv+dxdsc5tn5FucB
-   SDX3D2JjjTxV/VhMASL9QRuDe4wzQkkIQvitylHdvyC8wAmloYmhGsiA5
-   1obxGhvooAhmjZzlaSjWAOMfyMP01PRHaD9NsyKBPPAPgJa/qaCZ7+gNY
-   N4HgYAwb5tdqldphW8xYfoXBkJUppzkxc42/LT77z3WSiyuzNTwXu8bAx
-   AqMxOBNyQFO7hIyWWc5gLGH9ZfFXip/MTE0hkz94pezNeBeMx1mfGLZLa
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="414443730"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="414443730"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 05:15:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="728425237"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="728425237"
-Received: from ppglcf2090.png.intel.com ([10.126.160.96])
-  by orsmga006.jf.intel.com with ESMTP; 05 Oct 2023 05:14:59 -0700
-From:   Rohan G Thomas <rohan.g.thomas@intel.com>
-To:     kuba@kernel.org
-Cc:     alexandre.torgue@foss.st.com, andriy.shevchenko@linux.intel.com,
-        davem@davemloft.net, devicetree@vger.kernel.org,
-        edumazet@google.com, fancer.lancer@gmail.com, joabreu@synopsys.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, rohan.g.thomas@intel.com
-Subject: Re: [PATCH net-next 1/1] net: stmmac: xgmac: EST interrupts handling
-Date:   Thu,  5 Oct 2023 20:14:41 +0800
-Message-Id: <20231005121441.22916-1-rohan.g.thomas@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20231004092613.07cb393f@kernel.org>
-References: <20231004092613.07cb393f@kernel.org>
+        Thu, 5 Oct 2023 10:24:16 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1719261A0;
+        Thu,  5 Oct 2023 05:16:08 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-307d20548adso896033f8f.0;
+        Thu, 05 Oct 2023 05:16:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696508167; x=1697112967; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=K9RLPKw/fdVMOG2mqUZ1IRmtC3X+vMbGsjNsnzZlTRY=;
+        b=UNBXdUeXgUzUFGA4y04IfXkfA79DH8CSlX+6NgwrUJxUUDXxJkLrN3QVXQzqxJpBvU
+         q2ibQn46etLD/XUP4lol3pBO1+b2e1RGr1N9b8yxGgtObWGdZcOcLk5Zf4LMxstqaKy/
+         qiuEGcdGfqWjqfiv4acmnISS0M//uzL+nIt2b1cxdJB0FjekP/Jd33rCgVExqnwOLgn0
+         1GNgPkMcVFd9if2X6hkxqYWgYcd0Nlo2YueclaxCQMcfTs+97yVF4CV4Ib6M7GfyrBTl
+         hciGk1ssg+yytJNBQ1GGxk+v/FKl0bwzXlZZERLpEwQtTKHe9ua16Iq2O0BMxfFzWSyY
+         c7cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696508167; x=1697112967;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=K9RLPKw/fdVMOG2mqUZ1IRmtC3X+vMbGsjNsnzZlTRY=;
+        b=P0rMuOCVZvgDJgTlr0B+2/g7dcDlERUBs0NdSqJdHPK9D7F7kJOxwngk8D2RBlA2SY
+         SaJ/Vhq5S+YpYf+24sdNPIhr5eBnBd004YccsP9eNsY4Bc+N+dj+/88pDnf4uZlkXIS3
+         GX+H4pRrxEKBjxYY1+8nmxOkaQ9FMvazfPcWVhEuOclWm8cr2NHIR8Q/zKQSbgDHkXBx
+         6EtfNTc3j3WK1XMZI88D3GLjx4rfGiRh957Aeotx5YKLH6gLv+RV/L4rP2QGgToZ0kc1
+         dcBn6cWHXWDGXS3KWejJMjgrqsLcqgRDn+Kn2NO5vSIqGM8r1mcyFHHiiP8rFWcY9qw9
+         sjsA==
+X-Gm-Message-State: AOJu0YxObJZUhITJ5ZX1UBaxT5uwG6KHAVyrlxUJk8qh6OLbirE40hpJ
+        9q7iCGNBq2oYru4rmrJB8HQ01SDRRK98k5jEhWs=
+X-Google-Smtp-Source: AGHT+IGcFTOdc9DVt1jQkccvp+BluXK8jOFb5t5ML2mh2pR8qWoJvyzHS8RhH+58BfEtm4AwdF7uOM965BiKgfKDTRM=
+X-Received: by 2002:adf:ec83:0:b0:323:3346:7d51 with SMTP id
+ z3-20020adfec83000000b0032333467d51mr4462588wrn.18.1696508167002; Thu, 05 Oct
+ 2023 05:16:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230926182625.72475-1-dg573847474@gmail.com> <20231004170120.1c80b3b4@kernel.org>
+ <CAAo+4rW=zh_d7AxJSP0uLuO7w+_PmbBfBr6D4=4X2Ays7ATqoA@mail.gmail.com> <CAM0EoMkgUPF751LpEij4QjwsP_Z3qBMW_Nss67OVN1hxyN0mGQ@mail.gmail.com>
+In-Reply-To: <CAM0EoMkgUPF751LpEij4QjwsP_Z3qBMW_Nss67OVN1hxyN0mGQ@mail.gmail.com>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Thu, 5 Oct 2023 20:15:55 +0800
+Message-ID: <CAAo+4rU0jBCcUha97nwVBWW0jmFnrYMowMzEkY+ocdzd=1LiNQ@mail.gmail.com>
+Subject: Re: [PATCH] net/sched: use spin_lock_bh() on &gact->tcf_lock
+To:     Jamal Hadi Salim <jhs@mojatatu.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, xiyou.wangcong@gmail.com,
+        jiri@resnulli.us, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Oct 2023 09:26:13 -0700 Jakub Kicinski wrote:
-> On Tue, 3 Oct 2023 14:12:15 +0300 Serge Semin wrote:
-> > If I didn't miss some details after that we'll have a common EST
-> > module utilized for both DW QoS Eth and DW XGMAC IP-cores.
-> 
-> So the question now is whether we want Rohan to do this conversion _first_,
-> in DW QoS 5, and then add xgmac part. Or the patch should go in as is and
-> you'll follow up with the conversion?
+Does it mean that dev_queue_xmit() should be executed under BH?
 
-Hi Jakub, Serge,
-
-If agreed, this commit can go in. I can submit another patch with the
-refactoring suggested by Serge.
-
-Again, thanks Serge for the prompt response. Regarding the below point in your
-earlier response,
-
-> > 2. PTP time offset setup performed by means of the
-> > MTL_EST_CONTROL.PTOV field. DW QoS Eth v5.x HW manual claims it's "The
-> > value of PTP Clock period multiplied by 6 in nanoseconds." So either Jose got
-> > mistaken by using _9_ for DW XGMAC v3.x or the DW XGMAC indeed is
-> > different in that aspect.
-
-This is a little confusing...
-I referred databooks for DW QoS Eth v5.30a and DW XGMAC v3.10a. In both this is
-mentioned as "The value of PTP Clock period multiplied by 9 in nanoseconds".
-
-Best Regards,
-Rohan
+Thanks,
+Chengfeng
