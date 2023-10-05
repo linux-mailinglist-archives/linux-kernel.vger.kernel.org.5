@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C26E97B9F3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0DB7BA04E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233610AbjJEOTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
+        id S235624AbjJEOft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjJEORX (ORCPT
+        with ESMTP id S235373AbjJEOeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:17:23 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C719124872
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 04:20:16 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-313e742a787so511039f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 04:20:16 -0700 (PDT)
+        Thu, 5 Oct 2023 10:34:16 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4FD24876
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 04:20:52 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-5041d6d8b10so1121995e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 04:20:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696504815; x=1697109615; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696504850; x=1697109650; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=D4AE5jS4qjwXCMnOlOFtdJ9RttCSKbWymcLORudPBgc=;
-        b=vITy67iqXCawyJRrBYTbANj04Wqd82i9f+X41xRdVLpr9q1nrjp3lsGFiHlsCH4/Mm
-         gYaoQefcPxWoF98ga9pncX77lQMPRQgXX5DlFeNEWdkrD7jVEA4VmiAonOKryk1TfyP8
-         Xf/ODAA7V8B2gZkU8C/xsfqPlqxWBhEehk7ysxdNpqytvgNkJj5CllMfDprn49pUEKT7
-         OlgtR6JFLaxWz3LozZJ5G3+wdPB+at/WpKJKi/DeZqjdgNeEx3aT5HuOoDzmhwmoJ19G
-         RrDWYo6ObHQwOXN+QuZunJj8p0F5Nl5JdS7rlbIFcT3WQLYQL6NMEKxcncm3Le4s1NKf
-         kqVg==
+        bh=AfjjBx8bRosL03zIEqb5fC4vsYyRufBl5/7gyLY5YvY=;
+        b=pVXUvDcxNUXW6+THwL9jZb+yNvyRIIPsCJDfdl47zAG0kTrjnhCvDX5K+zS+Zhs+ui
+         tRDkiUaCK2W4pFN0R2jc2dT+Aj7BjpUmT6Tqhh6/UMoCpIUmvsqDggo8aQ8u2bvkc7qF
+         sv1p1cnUoUUWwCLyQFMvMJndP1PcnYxgdOkpj3uPkDBigp2qFkdrYsgK3KYDBeElxQXs
+         hKZvK4vlhUNdFJIS6y5c7VzLeO9c4G5TsSx40Vpyo2OJXApZGFwd50hkfh8ww0Dm3gmm
+         jV+RcmqPdFLS8fC0ROj8eyZj3xq7h9T1/OUDUG5S78KivRYfMHRa86VNcdksxuGjzIj7
+         xEZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696504815; x=1697109615;
+        d=1e100.net; s=20230601; t=1696504850; x=1697109650;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D4AE5jS4qjwXCMnOlOFtdJ9RttCSKbWymcLORudPBgc=;
-        b=r05dC87MOq1c/OH0VxtCGCpQKQGGLdzAlbA8E7ZWkmwXl0p4GWv6re7TQTAQpUpQiS
-         MBe3HKk0g+x/YZDBce1umjda//o7VQsKRq7+uLsp2c7abBoU4RapSH56R06lpCODxuKg
-         a+s6htrkKgXwLAHzE5Mw6fpWVVTwfR8vhTNDYv9yG9vgrmjjfY93LMsiBexCxitk00r0
-         IlNeDmSvb7ddhF+VaGoz3z4qfROO2NEau9g7PT029lpVfATrMinNZefZfoA1wJfLn/qO
-         5R4sLs+Wx/28MPtH2g3qBpc1dpviSKq953U8hZoXITmak0QhjZx5gI3jCWYVdjdzH9fY
-         rJwg==
-X-Gm-Message-State: AOJu0Yz0zZbBVNC4wzIpB5clnmmBKvgFRq8RMJGVOA8bbzQpjnUDvsTJ
-        ek1mePcPnJ0XrUK293b3oug12s515N5yr/BF68A=
-X-Google-Smtp-Source: AGHT+IEI36e0d7npO9gHvSq0PCK8REknqrsXlLxeDQM2Vg3iDm3n0GAUq6RQUC7RZu5soOlpwzCm6w==
-X-Received: by 2002:a5d:6387:0:b0:323:1688:a70e with SMTP id p7-20020a5d6387000000b003231688a70emr1084141wru.16.1696504815109;
-        Thu, 05 Oct 2023 04:20:15 -0700 (PDT)
+        bh=AfjjBx8bRosL03zIEqb5fC4vsYyRufBl5/7gyLY5YvY=;
+        b=u1mK0RILZjzgYfluLkjU1UStnOSWJJxdwqtv4nZhNTTKSg/eNVSobjOKjQHhyyCbRS
+         BXIJim15HNc1KP7qXaBvb3unbJH0qyALiZGX4Me7p+UqTPyRZFVsVX+XWwNWvrVC0Vle
+         LNO0pBkEfLUMIaAKhQjImqyfpBp8e6nJbNC54iRnaC5Kj3xbPy38pf7fGLMUL0kyjs6q
+         krplvspJmTbl4ba2aM/KSwlTwv6QmpsBUQwlRO/QuzvKRV24wtzG1yWbfqPXzpQzlr/R
+         S48yPboMQuhvLMvYtmUSMsGb0tl2yUSTJvFXvWgDPC0WFMTKFB38PrI0KD+lzsBWrOZa
+         ksEQ==
+X-Gm-Message-State: AOJu0YwPTPD80d63jf8zhJYnjY64cKKvUI1cusL7RNKppTuqrm04FMKL
+        5tkXOnV4QIYnYheJqOMXoDwiHeHV80j/dZuniVU=
+X-Google-Smtp-Source: AGHT+IF8iEf39U3EvChPzm6UH7GQU2jK7ervLMhE6RcloOs8ZvA9CjMZCrFvVxd2JoT2k/lXG3kZhg==
+X-Received: by 2002:a19:8c0e:0:b0:500:bc14:3e06 with SMTP id o14-20020a198c0e000000b00500bc143e06mr4555039lfd.44.1696504849804;
+        Thu, 05 Oct 2023 04:20:49 -0700 (PDT)
 Received: from ?IPV6:2a05:6e02:1041:c10:8bb6:12b3:863a:e5dd? ([2a05:6e02:1041:c10:8bb6:12b3:863a:e5dd])
-        by smtp.googlemail.com with ESMTPSA id t25-20020a1c7719000000b004065daba6casm3539418wmi.46.2023.10.05.04.20.14
+        by smtp.googlemail.com with ESMTPSA id hn8-20020a05600ca38800b00405959bbf4fsm1297865wmb.19.2023.10.05.04.20.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 04:20:14 -0700 (PDT)
-Message-ID: <d784edb6-9a95-b30c-6f55-a1daccad2f9e@linaro.org>
-Date:   Thu, 5 Oct 2023 13:20:13 +0200
+        Thu, 05 Oct 2023 04:20:49 -0700 (PDT)
+Message-ID: <3620cb02-c6af-cd65-439c-92ea9c369174@linaro.org>
+Date:   Thu, 5 Oct 2023 13:20:48 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v2 6/6] thermal: int340x: Use thermal_zone_for_each_trip()
+Subject: Re: [PATCH v2 4/6] ACPI: thermal: Use thermal_zone_for_each_trip()
+ for updating trips
 Content-Language: en-US
 To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Linux PM <linux-pm@vger.kernel.org>
@@ -64,38 +65,34 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Zhang Rui <rui.zhang@intel.com>,
         Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>
-References: <4846448.GXAFRqVoOG@kreacher> <3532950.iIbC2pHGDl@kreacher>
+References: <4846448.GXAFRqVoOG@kreacher> <1954465.PYKUYFuaPT@kreacher>
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <3532950.iIbC2pHGDl@kreacher>
+In-Reply-To: <1954465.PYKUYFuaPT@kreacher>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 15:26, Rafael J. Wysocki wrote:
+On 03/10/2023 15:24, Rafael J. Wysocki wrote:
 > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Modify int340x_thermal_update_trips() to use thermal_zone_for_each_trip()
-> for walking trips instead of using the trips[] table passed to the
-> thermal zone registration function.
-> 
-> For this purpose, store active trip point indices in the priv fieids of
-> the corresponding thermal_trip structures.
+> Rearrange the code handling notifications from the platform firmware
+> regarding trip point updates to carry out one loop over trip points
+> instead of two of them by using thermal_zone_for_each_trip() for that,
+> which is more straightforward than using a combination of
+> thermal_zone_device_exec() and for_each_thermal_trip(), each with its
+> own callback function.
 > 
 > No intentional functional impact.
 > 
 > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
-> 
-> v1 -> v2: Mo changes
-> 
 > ---
 
 Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
