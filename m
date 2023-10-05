@@ -2,130 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AB37BA52C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B257BA6C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239538AbjJEQOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38712 "EHLO
+        id S234451AbjJEQlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240970AbjJEQMU (ORCPT
+        with ESMTP id S232279AbjJEQj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:12:20 -0400
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01olkn0813.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe1e::813])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D7F93D1;
-        Thu,  5 Oct 2023 01:52:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VRwqzXXosPAbwsVLgptQh88u+dDR0y316QZlouzlClIpxom3pjv1dNW6OaKe0sQZJoIvk9Z9veZKtKcatlXnakGmdlhsM3uoh10yWMrDmO7w0vKagwylyPZUhNHHHKaFQwtAsFNxKNTx4ezt8s4enzd0eqjt3P1FDXckyuub1YxDMr/4taWExDieLg0UmQIICzZEuc20eSjgQM0fAjKDBKZAX+2gm12gUpA5vTkzhKUv9JYrOsu5vHx7M09Z0PeNDeiL+XWYd8J9HIc1/giBS61Rugaj7iSQjPMdtl1zLF4v11kH9CM8k0Z8w+7HB8JCHLPRvuvRO4cxyOq7efdOKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qSs6VLssUz41mgB5cZYvsadDrlLXxuEY702N38NLYOg=;
- b=jAk+6Pv0VJpgKAv5rEOFPfhP0iARl3IpSsX/svPDAj417iSsRc9Tc7EFfvVOKODBH27euFJ+U8AsisfDzicm5py0HaSKSf/+lDZY01OIBC13zGa1Fgmi3cK32Cg1JFZ94Wn6sllfiiB58bJLmQWeSo1dE4Tu/fiJk84YXuCPakhF92raV66Fgov085Wx+gpPWjDXNGlqS0vCEIU0jG2BJGRiOItP9+QlK5hgLOuCM6ELEMrAz96dkQQ1EIh5WY2ISecsOHCxq5KASVUKqNRIES6XFc/gU5G1ufO3s0WLpb28Ja0oWYv72sN/ZIsa5Hnq3gtUWIsUOf6IhKXFEoBGSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from AM0PR09MB2675.eurprd09.prod.outlook.com (2603:10a6:208:d3::24)
- by PAWPR09MB6613.eurprd09.prod.outlook.com (2603:10a6:102:342::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Thu, 5 Oct
- 2023 08:51:55 +0000
-Received: from AM0PR09MB2675.eurprd09.prod.outlook.com
- ([fe80::b4c3:964f:93ac:4b0]) by AM0PR09MB2675.eurprd09.prod.outlook.com
- ([fe80::b4c3:964f:93ac:4b0%7]) with mapi id 15.20.6813.027; Thu, 5 Oct 2023
- 08:51:55 +0000
-From:   Paul Geurts <paul_geurts@live.nl>
-To:     u.kleine-koenig@pengutronix.de
-Cc:     festevam@gmail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, kernel@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        paul_geurts@live.nl, s.hauer@pengutronix.de, shawnguo@kernel.org
-Subject: Re: [PATCH] serial: imx: fix tx statemachine deadlock
-Date:   Thu,  5 Oct 2023 10:51:44 +0200
-Message-ID: <AM0PR09MB267515B5C995C5FEA1A8833295CAA@AM0PR09MB2675.eurprd09.prod.outlook.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231004102008.giyogvnsc26ucx4k@pengutronix.de>
-References: <20231004102008.giyogvnsc26ucx4k@pengutronix.de>
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-TMN:  [Pyd27K2z+gzsipdoQo3oHACIXzOPVdu+TLHJiKBDLoDdjwcny6vJU97aT+vr10an]
-X-ClientProxiedBy: AS9P194CA0011.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:20b:46d::16) To AM0PR09MB2675.eurprd09.prod.outlook.com
- (2603:10a6:208:d3::24)
-X-Microsoft-Original-Message-ID: <20231005085144.2649-1-paul_geurts@live.nl>
+        Thu, 5 Oct 2023 12:39:56 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDBE9EC3;
+        Thu,  5 Oct 2023 02:01:21 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-325e9cd483eso731265f8f.2;
+        Thu, 05 Oct 2023 02:01:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696496480; x=1697101280; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nyCjyMRZJPpmlXHrivKxtsx8HD0NSj+fcEZELdzdDEQ=;
+        b=Rl9qiaC6E4CPjVzA2ffAgqUOlM7epwfWWskPrOAtio1Bgz9Ivh+hpIMkTOaqW6MG6g
+         tC5BvfdSlJq8My5xgrklxIGUASaG2C4EkkuggdwPPQhDl9jz8VGKJcljBEQQRaBBHcXs
+         HKkXgphDYCLa02Z+WBGEL2hYgO/Un1JLQYPc3/xsdscqmnUVkzM2N9e/4k7jpbZOr1+9
+         h7tDTg+kiuJDlxWFzWWzEYhJIP4ZLA8X9A77RmuJGfkK+yMp19dy2v24ouIOdklavYvS
+         AAp3SIlX3UaPILsFzXd5PBZghRktUSpeHUNDuNbHIDB5rYSbrjqVycQ8ASPRQbSIHNac
+         AGSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696496480; x=1697101280;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nyCjyMRZJPpmlXHrivKxtsx8HD0NSj+fcEZELdzdDEQ=;
+        b=r0aHURFeQ4YALc5AJ1LKezB3Nlhoc3oW6Sq2PUVm87wDfKB9kE8dnGwbf8Y4ADO19X
+         Gkv3vxgpSMk8S4PnFurBgesMDKVEPYQ4YU2rL0EEyQd/iK3voJXnbOOeaR8WKvFo4fkV
+         Ca2+mXeRK48pavz5tCLh7gCWqUCY6SbRjQsrW/r9zSZ/BYjcgBTZ2jbLIEyGn0ExjMR4
+         pXf/nbsLVGaadhktaRBr82r6YlPRi84G/2tGekyJ8XkA0cWjfbrMLObG11q0ze8O1RAr
+         YyCj6burZHlHstjNS4szvJmWXVtvfJhppdYz+an+JPh0IBSuOjAP5j2jj9CFjJX7Y2fb
+         v+EQ==
+X-Gm-Message-State: AOJu0YyU4BsKhS30/ewHEfAxeAILYS/1ugDyTSLKUhzP5mTSkQU7ngL1
+        ZraEM+10f7+XRNb7Y4C++S2yNkUhlhBIWjzs4Jw=
+X-Google-Smtp-Source: AGHT+IFIPFt0C+RQD6SfEGDNp/O1EcsXM3cXS55wuqm/OjC897gfV9/lodgbKZQ3zWKSi7n3ZjBLYo9o40siMK6OUUQ=
+X-Received: by 2002:adf:edc3:0:b0:321:56af:5ef9 with SMTP id
+ v3-20020adfedc3000000b0032156af5ef9mr3840408wro.70.1696496479494; Thu, 05 Oct
+ 2023 02:01:19 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR09MB2675:EE_|PAWPR09MB6613:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4e7896e0-694d-46ce-545f-08dbc580537a
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6X5RPZYFlmfmsr69mBIwAwqRKlbcCBsiI2wIRHRiFmYfqwaNmJ5nf/OLVSy+4W9M4NCQtNtMtaOxMqowsCfhaHVGJ7Ojij9oCSWiqq44CyOVU2uXO1IeVq1L9utPjdCOtgftb0TRbFaEYrOa/IkqpFG18nn2ZNN9oTNCU1BmauX6UF5+rVmL7j+KCxPgDheBnkyx0Mc9nR2ZGoeoU79ysEisuOVkXI9/niqmRdET1QG6FaGXUmJQAw18eXBMi3UeILkDJMC5C8U0C0wBW4Rk0DBEFyK1wUpcUKlj5lAubCAxUq/WI/RBtMdBXz0WKbt/SGpgoOTG12UheOJaAmcyVfO2AQBMufmyWTqRezs+3iI4/hTZju999NGMhL73oTSTDOsZjBNFTN9orYiJUoIloc7SWPMKF6gbH7QEpPpBWIloyjkuVUjRz0Uap/I64zI99hMZeCbgJ/k+7E7fYkMS2/ByennmBmycU4fBdTNo0T58KoAPTt4yeR9QLV2pSJyYM233e/mTdVPLS3AKq7Y95VIHkiamspBXJyrVTiVZ/W8lpDmGAgKNWwarzKZWXtzhS0A94nsFwiUWxeX0kWvtP3npRWlmqYJEF1L150UvjOMzzfUscm/x/lE/lP/jjFns
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6Z8esGMfrpNvGsmZ6OAp/9mfIfdtPOFKMw0V1J8InOoABBhYyWlfiCIei40P?=
- =?us-ascii?Q?G5kTpMOAoUGa7L9npH395f70hl/za192mg5bkTsGi6kS+njoI5ZKouInuA2x?=
- =?us-ascii?Q?tyWVXI1HbGDm117HlvGN2j5F2Qyf+WAmm/zte5XzyZOU1R09mCj4uFoLTD7h?=
- =?us-ascii?Q?lcBfVtBUV+7fmz4IOZKTgCLNtoFWEvdw0x0lfKP/KLJlMxIweQ3A+6gfw2d3?=
- =?us-ascii?Q?ZxnOlulmErpBoDpq9ODEkmmkfSYu7eGSdQ5/akRnqAzaH1F9xwueRPvs+cZq?=
- =?us-ascii?Q?5N9QAvHj6Layi5JwIwCcZFUbuSs0RswdJnCHsSjqM5Jhk7VVR+bPAFjCsgZz?=
- =?us-ascii?Q?VCCfg1Li3Pbwm84WiPPBMIhsXvHTZgjc6Rg3N5xxJ5nfTMvnDynB4inDDz6o?=
- =?us-ascii?Q?PNebAyBGec9Mq7Zq70raIsnzOsF6O4MvyA7L67UEBrV0OUAanCG1r+3Wj51O?=
- =?us-ascii?Q?oR+GDv/xmAnWSGBzEFUVFXbFeLf/wvIQeJ4CAAn8OpJOUKqZYi6NkcMZy0MZ?=
- =?us-ascii?Q?9dDwdp0IiKQ/yWDFYASV1v4GujJOtyZi56F1KpxBuVE5r27/U0ILEbs9JlSa?=
- =?us-ascii?Q?nE2PCYdiRuC5OQkFrvBpTxs+0mcaGCN99SOI9P/d0QVYaphNbdJH6mWEfmsr?=
- =?us-ascii?Q?Z8Hm7QP782tGHLbB/gK8PQjz5fwBt4+/xl1c1U0Fi3r2FYKVD3VnMSw3uvN6?=
- =?us-ascii?Q?36cjs8YC4BKyhbm0WUCirJzpFDMR4eZiTMxEZTflljANHGVWXfgEhr753P0W?=
- =?us-ascii?Q?4tPb1+c+1RpDaFfpdAl28qXdQq460bLSZA6BGx9RawsGilS1052lsE/9f4C1?=
- =?us-ascii?Q?8S2bJj05IC2PYBt2sI7CHauwy5zTPNEZJRb/STkKjy5RfKybaK8gyFtCqkO+?=
- =?us-ascii?Q?tuLd26nUiW7psJ8W+OO0M57/PeI0pfmtMrElU223F8VdgMGesEJnMOkza89p?=
- =?us-ascii?Q?pw8vUXN7mzaBE57tXBjtvUND5IBr4wvTrDmNCURzAqKoCZma4+QDQ42o6NBb?=
- =?us-ascii?Q?dPYcDcsYX9nj5fm4/NXqgFJB2Z/F5zkeXPwfuYRoo9ar/H8MGwzdWPKYZJwv?=
- =?us-ascii?Q?URoNJOShpJl0gSmaFbNwwBQGN7UqO4tpUdUhq7wpInmMl3+drY2Nh9NbwEee?=
- =?us-ascii?Q?+J8bMm6CqNAHlnanTObRBfoqaVD6tUztif83mwUAKsjvEU9R74F6N/G5bi9w?=
- =?us-ascii?Q?/7qk03OuLwKM1YBffwvmTYR4A2gENq6v+FHa9YXVqd2aVOWWfHV1XB+u/Viw?=
- =?us-ascii?Q?8hiWm4d+MF9qnDl3a+C3S28uRhkHGZv7jbonRHi1bw=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-64da6.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e7896e0-694d-46ce-545f-08dbc580537a
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR09MB2675.eurprd09.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 08:51:55.5383
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR09MB6613
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230926182625.72475-1-dg573847474@gmail.com> <20231004170120.1c80b3b4@kernel.org>
+In-Reply-To: <20231004170120.1c80b3b4@kernel.org>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Thu, 5 Oct 2023 17:01:07 +0800
+Message-ID: <CAAo+4rW=zh_d7AxJSP0uLuO7w+_PmbBfBr6D4=4X2Ays7ATqoA@mail.gmail.com>
+Subject: Re: [PATCH] net/sched: use spin_lock_bh() on &gact->tcf_lock
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe,
+Hi Jakub,
 
-> Sounds reasonable.
-> 
-> A Fixes: line would be nice.
+Thanks for the reply,
 
-Yes, I will add the Fixes line for sure.
+I inspected the code a bit more, it seems that the TC action is called from
+tcf_proto_ops.classify() callback, which is called from Qdisc_ops enqueue
+callback.
 
-> So the new thing is: If the hardware is still busy sending stuff but
-> /dev/ttymxcX isn't open any more (i.e. .shutdown was called), the
-> transmitter gets disabled. I wonder if in this case disabling the
-> transmitter should be delayed until the shifter is empty? Or maybe this
-> should be handled in .shutdown, that is only disable TCEN once the
-> shifter is empty?
+Then Qdisc enqueue callback is from
 
-Good point. I am wondering whether this would be necessary. Writing to the
-TTY is blocking until the shifter is done, so closing it before the shifter
-is done is an error condition anyway, right? So if it already is an error
-condition, the data is already unreliable. Making sure the shifter is
-empty on shutdown would mean waiting for it, or doing it asynchronously,
-which IMO is both not a great idea. Maybe we can just dump the buffer on
-shutdown but I don't know whether the IP can do that.
+-> __dev_queue_xmit()
+-> __dev_xmit_skb()
+-> dev_qdisc_enqueue()
 
-Let me know what you think.
+inside the net core. It seems that this __dev_queue_xmit() callback is
+typically called from BH context (e.g.,  NET_TX_SOFTIRQ) with BH
+already disabled, but sometimes also can from a work queue under
+process context, one case is the br_mrp_test_work_expired() inside
+net/bridge/br_mrp.c. Does it indicate that this TC action could also be
+called with BH enable? I am not a developer so really not sure about it,
+as the networking code is a bit long and complicated.
 
-br,
-Paul
+Thanks again,
+Chengfeng
