@@ -2,74 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C01907BA719
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71BE7BA72E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbjJEQuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50954 "EHLO
+        id S229886AbjJEQ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233081AbjJEQsk (ORCPT
+        with ESMTP id S229668AbjJEQ4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:48:40 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1EBDD1BB
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:41:37 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86CB2C15;
-        Thu,  5 Oct 2023 09:42:15 -0700 (PDT)
-Received: from [10.57.2.226] (unknown [10.57.2.226])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F10073F5A1;
-        Thu,  5 Oct 2023 09:41:33 -0700 (PDT)
-Message-ID: <f33a9903-4c6e-53b4-8a24-f5afe2e1cced@arm.com>
-Date:   Thu, 5 Oct 2023 17:41:32 +0100
+        Thu, 5 Oct 2023 12:56:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03D35FCB
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:45:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696524305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LZYBR2QbKq3NqPwbI1Wys9ihDkXFlFcq5Xf8xnR7rTY=;
+        b=RP7oiuM2MEEvR/p8ljoe27dGJaWUkAwcNR22W4D5mZwTEVV2YAUAaEcz0LEloZqc+92HEq
+        U9Oh/1+dWOp6fv3zG3bekn2wjvrT2J3sFpid3cpRAqOSSWvNmksefQUB5kdeTk/hn2MuiJ
+        cSYgxX0/HGcIZkkmyhxSLX7CfEEIZyM=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-607-738pc9IbPsGpqOG3R-nHng-1; Thu, 05 Oct 2023 12:45:04 -0400
+X-MC-Unique: 738pc9IbPsGpqOG3R-nHng-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4030ae94fedso8855925e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:45:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696524303; x=1697129103;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=LZYBR2QbKq3NqPwbI1Wys9ihDkXFlFcq5Xf8xnR7rTY=;
+        b=UALYH0CrRAfGpeICz3Emw+4QwRygS4loa+tSdQyvJZ1kVAtNcS03unI6kvvXjWoQJ/
+         3nREE8Blwt98s6qiOQzsQ6fmvHX3GFvj/VhTs7n+YmkOIbT6rvBHxJMCyrUVlWmagfar
+         Ado9mZ2bJZ+/jKJzp3lx+WTrT3twBJNySpnqMBaHcZvfySok7qEyGDA04KN1x58phJwJ
+         dCiFYcy70Twhl141g1YjuViMsgGQTGuKhHj0/bt1WHOaBHpvDAlRASJ0J/I3JkKhsLyI
+         rfpI1Y1smtSNYHWjeWoJ584zGcfWnEYYzl9IRVx4HeRqGuerPvETohN3EZfwe/erpfBT
+         UbYQ==
+X-Gm-Message-State: AOJu0YwFZHljK3lxuofH2Ri9jV6jI1B4xNrF6Mnb6xU+deCzdnlHEdzo
+        Kin0WPsSfTu04/aMGrMu+VmxEw6Kh/VS/jORQ20AQ7IkZIr6ZvQr+5z14JPyhRQlCV+VZmgxd1O
+        k9YK65uQqRFRu+M9o3qmzfQQu
+X-Received: by 2002:a7b:c84d:0:b0:401:b504:b6a0 with SMTP id c13-20020a7bc84d000000b00401b504b6a0mr4797714wml.3.1696524303346;
+        Thu, 05 Oct 2023 09:45:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFSAY1JlfgaWsXPc1rDsrIpGA57eSh7hEMXp5NeMXQy4aTq9QP5VCNrJdBs1/K0EyU5ILMNkQ==
+X-Received: by 2002:a7b:c84d:0:b0:401:b504:b6a0 with SMTP id c13-20020a7bc84d000000b00401b504b6a0mr4797690wml.3.1696524302947;
+        Thu, 05 Oct 2023 09:45:02 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id d16-20020adff850000000b003232d122dbfsm2157582wrq.66.2023.10.05.09.45.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 09:45:02 -0700 (PDT)
+Message-ID: <d9bf0049963df4d1e3e03290c28acb95d833f782.camel@redhat.com>
+Subject: Re: [PATCH v2] x86: KVM: Add feature flag for
+ CPUID.80000021H:EAX[bit 1]
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Thu, 05 Oct 2023 19:45:00 +0300
+In-Reply-To: <20231005031237.1652871-1-jmattson@google.com>
+References: <20231005031237.1652871-1-jmattson@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v2 2/6] arm64: KVM: Rename DEBUG_STATE_SAVE_TRBE to
- DEBUG_STATE_SAVE_TRFCR
-To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        broonie@kernel.org, maz@kernel.org
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Fuad Tabba <tabba@google.com>, Joey Gouly <joey.gouly@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <20231005125757.649345-1-james.clark@arm.com>
- <20231005125757.649345-3-james.clark@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20231005125757.649345-3-james.clark@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2023 13:57, James Clark wrote:
-> This flag actually causes the TRFCR register to be saved, so rename it
-> to that effect.
+У ср, 2023-10-04 у 20:12 -0700, Jim Mattson пише:
+> Define an X86_FEATURE_* flag for CPUID.80000021H:EAX.[bit 1], and
+> advertise the feature to userspace via KVM_GET_SUPPORTED_CPUID.
 > 
-> Currently it only happens when TRBE is used, but in a later commit
-> TRFCR will be saved and restored even if TRBE isn't used, so the new
-> name will be more accurate.
+> Per AMD's "Processor Programming Reference (PPR) for AMD Family 19h
+> Model 61h, Revision B1 Processors (56713-B1-PUB)," this CPUID bit
+> indicates that a WRMSR to MSR_FS_BASE, MSR_GS_BASE, or
+> MSR_KERNEL_GS_BASE is non-serializing. This is a change in previously
+> architected behavior.
 > 
-> Signed-off-by: James Clark <james.clark@arm.com>
+> Effectively, this CPUID bit is a "defeature" bit, or a reverse
+> polarity feature bit. When this CPUID bit is clear, the feature
+> (serialization on WRMSR to any of these three MSRs) is available. When
+> this CPUID bit is set, the feature is not available.
+> 
+> KVM_GET_SUPPORTED_CPUID must pass this bit through from the underlying
+> hardware, if it is set. Leaving the bit clear claims that WRMSR to
+> these three MSRs will be serializing in a guest running under
+> KVM. That isn't true. Though KVM could emulate the feature by
+> intercepting writes to the specified MSRs, it does not do so
+> today. The guest is allowed direct read/write access to these MSRs
+> without interception, so the innate hardware behavior is preserved
+> under KVM.
+> 
+> Signed-off-by: Jim Mattson <jmattson@google.com>
+> ---
+> 
+> v1 -> v2: Added justification for this change to the commit message,
+>           tweaked the macro name and comment in cpufeatures.h for
+> 	  improved clarity.
+> 
+>  arch/x86/include/asm/cpufeatures.h | 1 +
+>  arch/x86/kvm/cpuid.c               | 3 ++-
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index 58cb9495e40f..4af140cf5719 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -443,6 +443,7 @@
+>  
+>  /* AMD-defined Extended Feature 2 EAX, CPUID level 0x80000021 (EAX), word 20 */
+>  #define X86_FEATURE_NO_NESTED_DATA_BP	(20*32+ 0) /* "" No Nested Data Breakpoints */
+> +#define X86_FEATURE_WRMSR_XX_BASE_NS	(20*32+ 1) /* "" WRMSR to {FS,GS,KERNEL_GS}_BASE is non-serializing */
+>  #define X86_FEATURE_LFENCE_RDTSC	(20*32+ 2) /* "" LFENCE always serializing / synchronizes RDTSC */
+>  #define X86_FEATURE_NULL_SEL_CLR_BASE	(20*32+ 6) /* "" Null Selector Clears Base */
+>  #define X86_FEATURE_AUTOIBRS		(20*32+ 8) /* "" Automatic IBRS */
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 0544e30b4946..93241b33e36f 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -761,7 +761,8 @@ void kvm_set_cpu_caps(void)
+>  
+>  	kvm_cpu_cap_mask(CPUID_8000_0021_EAX,
+>  		F(NO_NESTED_DATA_BP) | F(LFENCE_RDTSC) | 0 /* SmmPgCfgLock */ |
+> -		F(NULL_SEL_CLR_BASE) | F(AUTOIBRS) | 0 /* PrefetchCtlMsr */
+> +		F(NULL_SEL_CLR_BASE) | F(AUTOIBRS) | 0 /* PrefetchCtlMsr */ |
+> +		F(WRMSR_XX_BASE_NS)
+>  	);
+>  
+>  	if (cpu_feature_enabled(X86_FEATURE_SRSO_NO))
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+Best regards,
+	Maxim Levitsky
 
