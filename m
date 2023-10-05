@@ -2,92 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 831187B9F54
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981DF7B9EAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234028AbjJEOVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51690 "EHLO
+        id S233130AbjJEOJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233430AbjJEOTQ (ORCPT
+        with ESMTP id S231356AbjJEOII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:19:16 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F5A1FD5;
-        Wed,  4 Oct 2023 20:56:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696478218;
-        bh=Y8WYWvEKLvGitXN7cKGVj7fz0TaJkMvFxctxC2itPMw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fJvDsH9x6NPnQ4CS5mkRxr/jG7jFy68X7IxFQ9jqpnsPqJutwBPfhS9QsDazSbImR
-         sAou1b2gLrdY9etnccEY7o2Zi63zLmKcSPD/4nwlm5mbqR3dEwdtJG49NQEzhEPy2l
-         Q4jn6ctAt8KL+pe87lN419sRqaTy+PkXjrr0/zX/4DwQ0+cSt5weMNA+oc+o7tvrXz
-         BaGy6mDB3zqqKCtqWj9/BukUK4nhpSuMFqxIzyrXQp/OwD/QvcWv6kRJTWdeM9vvPg
-         DyEV3+LUs7J0v+rGv0piKsRxH3pdKY9TX8Av7w/ph+1oyJQPiRdpDNgt3yuTRp9uXj
-         wmM9zitquD/kA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S1Hn50GTKz4xVl;
-        Thu,  5 Oct 2023 14:56:56 +1100 (AEDT)
-Date:   Thu, 5 Oct 2023 14:56:55 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm-misc tree
-Message-ID: <20231005145655.1be26501@canb.auug.org.au>
+        Thu, 5 Oct 2023 10:08:08 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820A61FDF;
+        Wed,  4 Oct 2023 20:59:09 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c5db4925f9so4649585ad.1;
+        Wed, 04 Oct 2023 20:59:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696478348; x=1697083148;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e+Jkb9so4Sx/SuJj60Fyzc1sAp0BI3gQYpSvgDry1RU=;
+        b=uV9OeEnvCIsjCh7gtOscvYY4I3quzgdpthYLmr75YtiVM/HboaWhAd7CXn48il05iK
+         QE8cx9gGowbYKaV1g7wzGWPczQSrkb7EL7oSdqhYtzfkfyzPYr0bLT3QuNZ7qFfAJa36
+         l+z8oLn9WQX9MrHxF5j7rKRYqrORF3K9MQblbMB9keve19hezIoJY8rMMmaqHF7yUDbF
+         ttJV2jHX0/DnWyEa98qfjVYyfADc1zB3KRX2RWAWifxU5cftDDaKONDTiX5FCBp9xiiB
+         mDARnla87ZHW1rnlLDKYvGcN9A7+r0N4BHwQszOOCq2y6iu7UCX1+4eSxE41m7OqJzwL
+         enoQ==
+X-Gm-Message-State: AOJu0Yw6VTtPgmxL4yN0SoFYe3irDkR5zYdPHNxF4MYcBA6JEpd2vcXr
+        is96ZjBn+chDUWcfnG18nB0=
+X-Google-Smtp-Source: AGHT+IHAxgh1RuIcuUvDcXDLUh/lmF/YHHBUPm/7q98TdAA0PrzTlYpYEdCFxJzdIf9FrJHWVapM5g==
+X-Received: by 2002:a17:902:db10:b0:1bc:edd:e891 with SMTP id m16-20020a170902db1000b001bc0edde891mr398542plx.1.1696478348342;
+        Wed, 04 Oct 2023 20:59:08 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id c16-20020a170903235000b001c724732058sm392807plh.235.2023.10.04.20.59.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 20:59:07 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 03:59:05 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+        decui@microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
+        catalin.marinas@arm.com
+Subject: Re: [PATCH v4 13/15] uapi: hyperv: Add mshv driver headers defining
+ hypervisor ABIs
+Message-ID: <ZR40iZDLy43WzEy3@liuwe-devbox-debian-v2>
+References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1696010501-24584-14-git-send-email-nunodasneves@linux.microsoft.com>
+ <2023093057-eggplant-reshoot-8513@gregkh>
+ <ZRia1uyFfEkSqmXw@liuwe-devbox-debian-v2>
+ <2023100154-ferret-rift-acef@gregkh>
+ <ZRyj5kJJYaBu22O3@liuwe-devbox-debian-v2>
+ <2023100458-confusing-carton-3302@gregkh>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/v.g1oC3UHeTqCPfYy_=JChq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023100458-confusing-carton-3302@gregkh>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/v.g1oC3UHeTqCPfYy_=JChq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 04, 2023 at 08:11:13AM +0200, Greg KH wrote:
+> On Tue, Oct 03, 2023 at 11:29:42PM +0000, Wei Liu wrote:
+> > > > > > diff --git a/include/uapi/hyperv/hvgdk.h b/include/uapi/hyperv/hvgdk.h
+> > > > > > new file mode 100644
+> > > > > > index 000000000000..9bcbb7d902b2
+> > > > > > --- /dev/null
+> > > > > > +++ b/include/uapi/hyperv/hvgdk.h
+> > > > > > @@ -0,0 +1,41 @@
+> > > > > > +/* SPDX-License-Identifier: MIT */
+> > > > > 
+> > > > > That's usually not a good license for a new uapi .h file, why did you
+> > > > > choose this one?
+> > > > > 
+> > > > 
+> > > > This is chosen so that other Microsoft developers who don't normally
+> > > > work on Linux can review this code.
+> > > 
+> > > Sorry, but that's not how kernel development is done.  Please fix your
+> > > internal review processes and use the correct uapi header file license.
+> > > 
+> > > If your lawyers insist on this license, that's fine, but please have
+> > > them provide a signed-off-by on the patch that adds it and have it
+> > > documented why it is this license in the changelog AND in a comment in
+> > > the file so we can understand what is going on with it.
+> > > 
+> > 
+> > We went through an internal review with our legal counsel regarding the
+> > MIT license. We have an approval from them.
+> > 
+> > Let me ask if using something like "GPL-2.0 WITH Linux-syscall-note OR
+> > MIT" is possible.
+> 
+> That marking makes no sense from a legal point of view, please work with
+> your lawyers as it seems they do not understand license descriptions
+> very well :(
 
-Hi all,
+I've got the clearance to use "GPL-2.0 WITH Linux-syscall-note". We can
+close on this issue. Thank you for the review.
 
-After merging the drm-misc tree, today's linux-next build (htmldocs)
-produced this warning:
+Thanks,
+Wei.
 
-Documentation/gpu/panfrost.rst: WARNING: document isn't included in any toc=
-tree
-
-Introduced by commit
-
-  f11b0417eec2 ("drm/panfrost: Add fdinfo support GPU load metrics")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/v.g1oC3UHeTqCPfYy_=JChq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUeNAgACgkQAVBC80lX
-0Gx+rQf/be1YeBjQboBa32eEz0zXSNs60u0GoGTX97AyaS+M4ryys17EsnNVGYTP
-UOYOtiFCu+5L1OSHECcX4AFi1CTd+JRQIgcaNS+flOfpkNWwun+6Hew/c6n0Ysgb
-tk7mymKqC1xyOFltFjtfiO1bW3J8kzJFRCPUX95Yolk9sL+4qezDZuQJ5nXnYCYu
-mZGb2rSBWXeSCrVivR2Xdkqk/ohuGFKU0tLbD2Bxqt7zUxQuX0I1WMChqnz1J7QH
-g7v4HfQ1Ty0yhdt3+MfQOx7JFKJdPKqkxtQaJ8oBgy2ZVJtrbJGsnl3/lilWfL//
-rX5KXZzl9mMj0k0ZGVEcnHATpZ6Xog==
-=jOvX
------END PGP SIGNATURE-----
-
---Sig_/v.g1oC3UHeTqCPfYy_=JChq--
+> 
+> thanks,
+> 
+> greg k-h
