@@ -2,62 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C747BA6CD
+	by mail.lfdr.de (Postfix) with ESMTP id 85A057BA6CB
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234539AbjJEQlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46986 "EHLO
+        id S231209AbjJEQlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232593AbjJEQkC (ORCPT
+        with ESMTP id S230264AbjJEQkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:40:02 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7997E4201;
-        Thu,  5 Oct 2023 09:34:28 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c1c66876aso229592366b.2;
-        Thu, 05 Oct 2023 09:34:28 -0700 (PDT)
+        Thu, 5 Oct 2023 12:40:10 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E010649CD;
+        Thu,  5 Oct 2023 09:34:39 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59e77e4f707so14484877b3.0;
+        Thu, 05 Oct 2023 09:34:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696523665; x=1697128465; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TVELeAMbqDGQTgb0H+LdBlcaOEIyA8bnbU3CE39csMo=;
-        b=hGMInpkH4KxvKoa7iTpyK7JnvV16t0CDDH7aqJuatJ5cLWrj20DXUnabz7W6JI63Jl
-         eIdwJ+tF+IJ2G5EMHK3eCVoE5ra+4wzxdmvSogf1Tocwd8WlFPG6ScIeHe7KpQ4skOi7
-         ZGSxaahuHOxpdgqzbUWlwnOdtn3T+Z7+ijdQYA6ZdakHSr+Iw3/GZ0EiNTlnXRzKjq5s
-         gCmXNqQK7/hBonvTOfvRqqKrKTFL48/a7r8G00T1MvkiBsbIBsiySxSMwd+W6UVNAyaF
-         wvjhH5LlaZ5qUcFu2lwXgzjg8GxG+gONvGnii1fJ2aZ0T7SO1ufe9rGywKx02k5RocZ6
-         fEig==
+        d=gmail.com; s=20230601; t=1696523679; x=1697128479; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u4tg2+xr3KT0aenM1QifjTQYunwzMhJdxnzpDyHvDvY=;
+        b=VwgZclZePaBjFLx17eHAJFP9DrNZSIjO9bhoWfGVk3pf+MZxqa7vkkGTKPxSyvLf99
+         K3P1XydTEcQSo6VJgTlhE0tPt09G0f9kDPzb+DGPn4B4ZbIw5a3WLAq+DzihrM3hTHUd
+         bw+NABq5uqKWwCVdMAFGyvDrVCyago2I/zbewUWtMoGqzIM70CmtdsfXrhFJVS0bSoqL
+         pAuYB+1vJ4Nqha5iNmVBa8S4yURnvOGmG8ZvyWAif6edxJrau55lxafGILc46QU2c4/i
+         0/TI0QYx90nY7eKh1lTdeY5o4IKI3Uz5+q3HLf9Q6xby4H37LxxvoRo+wv0Ii4MgjdRG
+         CP+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696523665; x=1697128465;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TVELeAMbqDGQTgb0H+LdBlcaOEIyA8bnbU3CE39csMo=;
-        b=ZGQQqxalqSeXPtzitibNKxxBomXTrXjjTgVQjNiWglOGQrK8B5nV+dqKg3Ck3iHS+I
-         XzRroHQmUzdSDP7j0jwTtgt+83OLVTBR97qPA7dgXNMbSIelIi/lXIy3PYgBEqg8xa7s
-         RKqgVjw426RuF4pKn5bAP1vBGR+ZX/yJ7SFQJK+hQl8ZLV4o5z8aN+wKh9Hx8DkcZEva
-         mscrdq7pimOIy7ElpM4zIikV2IbLmcpjbZ0P84+DwbMr0u3JUF7OhHc7h9Iup3orqHwh
-         GyC7KwOVOxzlbUZY8mnpdd9q9q0fV66Zocn37MF3u9gMNPqTV0uXky69liZuYosrD7gx
-         RJSw==
-X-Gm-Message-State: AOJu0YyZIXRiSaxDpfplhXzXys0P2ubtynSkOBWbSpneeBBV82i4A1dQ
-        IotRGVa47IbUKv6kaB67hA==
-X-Google-Smtp-Source: AGHT+IFB36AeEXaPu0q6jpcdY7fJZGSxOblkQscd1nl+87XkgvPLXWtiribZ/loKyzYb/jWR7oLAbQ==
-X-Received: by 2002:a17:907:2704:b0:9ae:5492:64e with SMTP id w4-20020a170907270400b009ae5492064emr4686541ejk.25.1696523664571;
-        Thu, 05 Oct 2023 09:34:24 -0700 (PDT)
-Received: from p183 ([46.53.253.206])
-        by smtp.gmail.com with ESMTPSA id m14-20020a1709066d0e00b00991d54db2acsm1428974ejr.44.2023.10.05.09.34.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 09:34:23 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 19:34:21 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: stack leak via uart_get_info() ?
-Message-ID: <967b9ef1-fb36-48bf-9e6a-1b99af24c052@p183>
+        d=1e100.net; s=20230601; t=1696523679; x=1697128479;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u4tg2+xr3KT0aenM1QifjTQYunwzMhJdxnzpDyHvDvY=;
+        b=rK+1bNiUsAEF3a+AvIcxd2VN+170xAjJTzzmZ4u5FvBfauU8rRK/zC61i+4m+gtv4F
+         q5smwD1V20asxydvRiEmlElW97Iui0cdRyfRHah/hY5hk1RO9aJpVOWAFDxZwxa8feqI
+         6iHyap6OutWDB45mUhPM0jMPfdzmqOxEZ0JFsK+BymZ+tlofdXtzh1qahVKdm1Kl1g6z
+         fyS+fVzPonersYvGeYvF8IITD58WxAwxOfLfbGV0fIdJdaADpfP+z4Mi43KHBU0Ov+X9
+         9Whp74zSeSQI3wxjeLOEzgUr38Xu8M0uSpT2fy3Om2OVIOe7PFOa7zHEEKD9tt0wOP6j
+         EtqQ==
+X-Gm-Message-State: AOJu0YzxO9XiiWoU9Q6DR8ndNcjlh+9uXDa0PCgt0K/kB+pHgfAjONL6
+        T6zjIuRMN35ok9WEcnA09Xmn8R9ANiIYCyiPdBKzoGCeojtTaw==
+X-Google-Smtp-Source: AGHT+IG6sIDN8XjXV0ktEGS3SwOUGAHbPaZGfd2h32fXN/0ytiWPzajC0yZ3LzJH6hHWVUzM1wVe/KyNqzRHSkZdev8=
+X-Received: by 2002:a81:6289:0:b0:59b:eb8:c38a with SMTP id
+ w131-20020a816289000000b0059b0eb8c38amr6679782ywb.30.1696523678763; Thu, 05
+ Oct 2023 09:34:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20230923024707.47610-1-gary@garyguo.net>
+In-Reply-To: <20230923024707.47610-1-gary@garyguo.net>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 5 Oct 2023 18:34:27 +0200
+Message-ID: <CANiq72=NQ3-cnc7cnUiF4u_dX7q2kWKe5edeZdFBtRTwmUNP-w@mail.gmail.com>
+Subject: Re: [PATCH] rust: remove ignores for `clippy::new_ret_no_self`
+To:     Gary Guo <gary@garyguo.net>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Ben Gooding <ben.gooding.dev@gmail.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -68,31 +78,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If this check ever triggers
+On Sat, Sep 23, 2023 at 4:47=E2=80=AFAM Gary Guo <gary@garyguo.net> wrote:
+>
+> The clippy false positive triggering `new_ret_no_self` lint when using
+> `pin_init!` macro is fixed in 1.67, so remove all `#[allow]`s ignoring
+> the lint.
+>
+> Signed-off-by: Gary Guo <gary@garyguo.net>
 
-	static int uart_get_info(struct tty_port *port, struct serial_struct *retinfo)
-	{
+Applied to `rust-next` with a bit of rewording to add those two links
+I mentioned -- thanks everyone!
 
-		uport = uart_port_check(state);
-	        if (!uport)
-	                goto out;
-
-then all those sysfs users will print stack contents to userspace.
-
-Can it trigger while sysfs read is executing?
-
-
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
-
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -775,6 +775,8 @@ static int uart_get_info(struct tty_port *port, struct serial_struct *retinfo)
- 	struct uart_port *uport;
- 	int ret = -ENODEV;
- 
-+	*retinfo = (struct serial_struct){};
-+
- 	/*
- 	 * Ensure the state we copy is consistent and no hardware changes
- 	 * occur as we go
+Cheers,
+Miguel
