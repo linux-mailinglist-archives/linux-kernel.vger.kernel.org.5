@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F597BAF38
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD127BAF37
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbjJEXLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 19:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
+        id S229805AbjJEXLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 19:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjJEXJR (ORCPT
+        with ESMTP id S229501AbjJEXJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 19:09:17 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A90D5B
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 16:09:11 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d816fa2404aso2121812276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 16:09:11 -0700 (PDT)
+        Thu, 5 Oct 2023 19:09:20 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A28FD5D
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 16:09:14 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d84acda47aeso2096029276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 16:09:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696547351; x=1697152151; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696547353; x=1697152153; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=MTpWBQgPQVQy0TAZXLEWpBVQQ2YTPMy6ZmoyjFN0GGE=;
-        b=yGE388MqJTU/fjPZnES+SGVGN9DpeJ67NXpzBBTNoFPld7Qa3qESa4n/bz8CNqTOwf
-         HIIQWmLaUlkebgzY4Q3gKNp90E2XoDbKLIEPKdzYGgO6XCDdXMQAH9SUaiT8BtMHgLHy
-         E0YPNMcbvC3wzbIzAa5emj5zUQ34vMY2hOrCDU8z086mUTnMggBg2JOChXXgXU7Uhrh3
-         fzTrJ7zsslmFzOna+9kSTGk0EqqQhIKvaQpsh3VYC5GuXEZaFUBAStumtm/9oj6k7uNi
-         72yCdGjHiikGpKiyR+LAmw8DW7eipCJKVo5qyt+dnG5TXlP6P/IAeno+FWc/5hgpw4/1
-         UxAg==
+        bh=fapvG1sgoYBqHgoFOW9TcSIAiI5hx1hj0GAN7+v4jh4=;
+        b=2eUm25P2a2eFfh56kz1uSlz9NaWL7J/iU17mHmso2A1+lo3PPSav85ngzAJo+E+Weo
+         vrW/grBI1oJKqpACTbpHctclty+Yt4pXfeXX4zp3+TODPuLIfW2waNTf5z0Ey+LUCm5r
+         9v2JeeiDyNer354S8plXgZL75bCuO6GU4CbxX2j4MhGU2OyZK1jrsAV5oUtek8y+qyut
+         q4TKRPSZ+E1o1lmKNO39mbmi39d90sqNvtQgShhQQDa/hcti+cuseS4FSSkNPwiQI0MU
+         WVIP/ruBpX+eblxV/SFy7WhQ4bBa29EIBN6/2ja1XHRDrkvhYZ0bF3KnbkticwIrduhD
+         /VCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696547351; x=1697152151;
+        d=1e100.net; s=20230601; t=1696547353; x=1697152153;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MTpWBQgPQVQy0TAZXLEWpBVQQ2YTPMy6ZmoyjFN0GGE=;
-        b=QHs1qNPWAmS1C8xGkeUd8SES8MTN8HjqGoCpFQUn+WZXHQuIdW7/5aVIME73Jq1Axg
-         TJScpvsUQDJa7xC0sFh3vgHUGDiTXkY5ky1bgctqN1ke67z0AW/AI5EJD3JhWRdJeWA2
-         CLTZrwD2GKKxsBr0+jbYVI/bMMLs2FWjKxVlofJ2AdrnrwB1R2HxgMaCrZv2JII2EqCr
-         /aNkyjyL8iY36Dxe59nU7GMDGVRoVhvDbszn6ceJjvXKLP16+Cjqmnkye+ZlDJaaCrUs
-         t+QGItABLTFp2G/oQIcp1R1lrxqJozl8C0tQuIcY5DyWxK6L3a21006Y8jlPmQMmUJ4S
-         mplQ==
-X-Gm-Message-State: AOJu0YzgbikK6gG+DSYMb9ovumb1NS+o7rJVKk/ZnwE7V/ac062gkyrG
-        6gE7jmOdO5YCHKfr7uS1y7crv0BnzS3A
-X-Google-Smtp-Source: AGHT+IGnxaCsZLcDNpjb2IRnCqzooQl7/eSuSXSt2DJTDf33tEW2BnCckAmI3vVY62Ne9wg9AkMtIxPrNICk
+        bh=fapvG1sgoYBqHgoFOW9TcSIAiI5hx1hj0GAN7+v4jh4=;
+        b=jMd5nmR2c6EKvDFJNjJkDkoYpgan/8XQnx8IBmvpmnHXPtq48kNIIxnfjiGUqnVW0w
+         rPnoXjVNORRKvBJ1Swrn2hGTrdCByin59lN8gGNHxF6q3tgwhY+w5S0PjZ39II+NwEPM
+         0aknaKVNqwwlV5P+WzOQyhSZm/E+ykxb1ubteLlY1XxXeClOXrTjpEmBYd1pqcH3KZHl
+         LHgMTtw36ZEJdhP1VIPA07hzGTiyK1EjibBnT9TwtORGzf1l3YzkKERRJ+VFPe5p3YKx
+         1FDrzvFKqgwWtDS7h5rlvwN96rM8bf0mKCYhuNifVMSSSmB5wDSV1RWalurKFj6LTjit
+         NEVA==
+X-Gm-Message-State: AOJu0YyjgkAlcaQtV8vpFFuezZuQnAiCQMOPbUnI4b/1NKvWJK7/2y8A
+        iWmAVWddMb5AQSxZYbNiOTn+GbyX0VK8
+X-Google-Smtp-Source: AGHT+IFQvzaYKByRTXdCNgbgMtf6ZQo0ZLONfku1Pyu5zu4z+Lcclzm0e0v4jTWzT6RLDSWWI+/6U4DHYIBX
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7449:56a1:2b14:305b])
- (user=irogers job=sendgmr) by 2002:a25:2513:0:b0:d0f:a0a6:8e87 with SMTP id
- l19-20020a252513000000b00d0fa0a68e87mr93479ybl.2.1696547351036; Thu, 05 Oct
- 2023 16:09:11 -0700 (PDT)
-Date:   Thu,  5 Oct 2023 16:08:39 -0700
+ (user=irogers job=sendgmr) by 2002:a25:770b:0:b0:d0e:d67d:6617 with SMTP id
+ s11-20020a25770b000000b00d0ed67d6617mr113429ybc.4.1696547353259; Thu, 05 Oct
+ 2023 16:09:13 -0700 (PDT)
+Date:   Thu,  5 Oct 2023 16:08:40 -0700
 In-Reply-To: <20231005230851.3666908-1-irogers@google.com>
-Message-Id: <20231005230851.3666908-7-irogers@google.com>
+Message-Id: <20231005230851.3666908-8-irogers@google.com>
 Mime-Version: 1.0
 References: <20231005230851.3666908-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v2 06/18] perf buildid-cache: Fix use of uninitialized value
+Subject: [PATCH v2 07/18] perf env: Remove unnecessary NULL tests
 From:   Ian Rogers <irogers@google.com>
 To:     Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
@@ -84,39 +84,59 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The buildid filename is first determined and then from this the
-buildid read. If getting the filename fails then the buildid will be
-used for a later memcmp uninitialized. Detected by clang-tidy.
+clang-tidy was warning:
+```
+util/env.c:334:23: warning: Access to field 'nr_pmu_mappings' results in a dereference of a null pointer (loaded from variable 'env') [clang-analyzer-core.NullDereference]
+        env->nr_pmu_mappings = pmu_num;
+```
+
+As functions are called potentially when !env was true. This condition
+could never be true as it would produce a segv, so remove the
+unnecessary NULL tests and silence clang-tidy.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-buildid-cache.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ tools/perf/util/env.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/builtin-buildid-cache.c b/tools/perf/builtin-buildid-cache.c
-index cd381693658b..e2a40f1d9225 100644
---- a/tools/perf/builtin-buildid-cache.c
-+++ b/tools/perf/builtin-buildid-cache.c
-@@ -277,8 +277,10 @@ static bool dso__missing_buildid_cache(struct dso *dso, int parm __maybe_unused)
- 	char filename[PATH_MAX];
- 	struct build_id bid;
+diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+index a164164001fb..44140b7f596a 100644
+--- a/tools/perf/util/env.c
++++ b/tools/perf/util/env.c
+@@ -457,7 +457,7 @@ const char *perf_env__cpuid(struct perf_env *env)
+ {
+ 	int status;
  
--	if (dso__build_id_filename(dso, filename, sizeof(filename), false) &&
--	    filename__read_build_id(filename, &bid) == -1) {
-+	if (!dso__build_id_filename(dso, filename, sizeof(filename), false))
-+		return true;
-+
-+	if (filename__read_build_id(filename, &bid) == -1) {
- 		if (errno == ENOENT)
- 			return false;
+-	if (!env || !env->cpuid) { /* Assume local operation */
++	if (!env->cpuid) { /* Assume local operation */
+ 		status = perf_env__read_cpuid(env);
+ 		if (status)
+ 			return NULL;
+@@ -470,7 +470,7 @@ int perf_env__nr_pmu_mappings(struct perf_env *env)
+ {
+ 	int status;
  
+-	if (!env || !env->nr_pmu_mappings) { /* Assume local operation */
++	if (!env->nr_pmu_mappings) { /* Assume local operation */
+ 		status = perf_env__read_pmu_mappings(env);
+ 		if (status)
+ 			return 0;
+@@ -483,7 +483,7 @@ const char *perf_env__pmu_mappings(struct perf_env *env)
+ {
+ 	int status;
+ 
+-	if (!env || !env->pmu_mappings) { /* Assume local operation */
++	if (!env->pmu_mappings) { /* Assume local operation */
+ 		status = perf_env__read_pmu_mappings(env);
+ 		if (status)
+ 			return NULL;
 -- 
 2.42.0.609.gbb76f46606-goog
 
