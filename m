@@ -2,92 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA1E7BA2FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3037BA2F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234269AbjJEPuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44096 "EHLO
+        id S234136AbjJEPt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234060AbjJEPtJ (ORCPT
+        with ESMTP id S234569AbjJEPtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:49:09 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2FE6A39F;
-        Thu,  5 Oct 2023 08:08:24 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20D53C15;
-        Thu,  5 Oct 2023 08:09:03 -0700 (PDT)
-Received: from bogus (unknown [10.57.93.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A4563F5A1;
-        Thu,  5 Oct 2023 08:08:21 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 16:06:49 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 9/9] firmware: arm_scmi: Add generic OPP support to the
- SCMI performance domain
-Message-ID: <20231005150649.p6viyorcucq2irsi@bogus>
-References: <20230925131715.138411-1-ulf.hansson@linaro.org>
- <20230925131715.138411-10-ulf.hansson@linaro.org>
- <20230929162522.zjoh5d2tqspzm3nc@bogus>
- <20231003082133.xyu46szs3jfm6fks@vireshk-i7>
- <20231003112647.bbqwnre5bzijw5sg@bogus>
- <20231004050806.sba3ogq76yiylrro@vireshk-i7>
+        Thu, 5 Oct 2023 11:49:05 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E078C37;
+        Thu,  5 Oct 2023 08:07:49 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D89EF1F38D;
+        Thu,  5 Oct 2023 15:07:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1696518467; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=yZlU7QN0oRlDYYCQ2eW8q/GdWjqvw1DcFTvoKMkfVz8=;
+        b=ov2VnqDIVSqkpksz2LmAeiGObLWtzfZogfmYV5AAr9s9quUiBPRZJ71FwxA7JmI/K/kjDU
+        6SC1JbcUjWGz5lhROAqphQuenK7OdwFHGKbZgSZ5Rvh3zB7CTnaJGtf9nlaamenUZWbF0H
+        qWL9j/y9ZM00hKDMDocR3eQYp9hyGfE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1696518467;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=yZlU7QN0oRlDYYCQ2eW8q/GdWjqvw1DcFTvoKMkfVz8=;
+        b=ZhTwBZlLV3Jc4irtOEOMLaKr2L3qMg95Ll4Tmq+LMYA9lxj9Myk5tq4YKSYhsTc6vkOe8O
+        AEqAHUMSIL58k7DQ==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        by relay2.suse.de (Postfix) with ESMTP id 63D052C143;
+        Thu,  5 Oct 2023 15:07:47 +0000 (UTC)
+From:   Michal Suchanek <msuchanek@suse.de>
+To:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Nicolas Schier <nicolas@fjasle.eu>, linux-modules@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michal Suchanek <msuchanek@suse.de>
+Subject: [PATCH rebased] kbuild: rpm-pkg: Fix build with non-default MODLIB
+Date:   Thu,  5 Oct 2023 17:07:28 +0200
+Message-ID: <20231005150728.3429-1-msuchanek@suse.de>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004050806.sba3ogq76yiylrro@vireshk-i7>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 10:38:06AM +0530, Viresh Kumar wrote:
-> On 03-10-23, 12:26, Sudeep Holla wrote:
-> > On Tue, Oct 03, 2023 at 01:51:33PM +0530, Viresh Kumar wrote:
-> > > On 29-09-23, 17:25, Sudeep Holla wrote:
-> > > > On Mon, Sep 25, 2023 at 03:17:15PM +0200, Ulf Hansson wrote:
-> > > > > To allow a consumer driver to use the OPP library to scale the performance
-> > > > > for its device, let's dynamically add the OPP table when the device gets
-> > > > > attached to its SCMI performance domain.
-> > > > >
-> > > > 
-> > > > The SCMI changes(patches 7-9) look fine to me. Rafael was fine with genpd
-> > > > changes, Viresh if you are OK with OPP changes I can take it via SCMI as
-> > > > there are some dependent patches as Ulf has pointed out in the cover letter.
-> > > 
-> > > I would like to take OPP patches via my tree as there are some changes in my
-> > > tree and I plan to add some more changes on top of this. I can give an immutable
-> > > branch though.
-> > >
-> > 
-> > Works for me. Please do share it once you have it ready.
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git opp/pm-domain-scmi
-> 
+The default MODLIB value is composed of two variables and the hardcoded
+string '/lib/modules/'.
 
-Thanks, I wasn't expecting these patches in the branch, but if you are
-aware off and are fine with it, I have no objections.
+MODLIB = $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
 
-	dt-bindings: opp: opp-v2-kryo-cpu: Allow opp-peak-kBps
-	OPP: debugfs: Fix warning with W=1 builds
-	OPP: Remove doc style comments for internal routines
-	OPP: Add dev_pm_opp_find_level_floor()
+Defining this middle part as a variable was rejected on the basis that
+users can pass the whole MODLIB to make, such as
 
+make 'MODLIB=$(INSTALL_MOD_PATH)/usr/lib/modules/$(KERNELRELEASE)'
+
+However, this middle part of MODLIB is independently hardcoded by
+rpm-pkg, and when the user alters MODLIB this is not reflected when
+building the package.
+
+Given that $(INSTALL_MOD_PATH) is overridden during the rpm package build
+it is likely going to be empty. Then MODLIB can be passed to the rpm
+package, and used in place of the whole
+/usr/lib/modules/$(KERNELRELEASE) part.
+
+Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+---
+ scripts/package/kernel.spec | 8 ++++----
+ scripts/package/mkspec      | 1 +
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/scripts/package/kernel.spec b/scripts/package/kernel.spec
+index 3eee0143e0c5..15f49c5077db 100644
+--- a/scripts/package/kernel.spec
++++ b/scripts/package/kernel.spec
+@@ -67,7 +67,7 @@ cp $(%{make} %{makeflags} -s image_name) %{buildroot}/boot/vmlinuz-%{KERNELRELEA
+ %{make} %{makeflags} INSTALL_HDR_PATH=%{buildroot}/usr headers_install
+ cp System.map %{buildroot}/boot/System.map-%{KERNELRELEASE}
+ cp .config %{buildroot}/boot/config-%{KERNELRELEASE}
+-ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEASE}/build
++ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}%{MODLIB}/build
+ %if %{with_devel}
+ %{make} %{makeflags} run-command KBUILD_RUN_COMMAND='${srctree}/scripts/package/install-extmod-build %{buildroot}/usr/src/kernels/%{KERNELRELEASE}'
+ %endif
+@@ -98,8 +98,8 @@ fi
+ 
+ %files
+ %defattr (-, root, root)
+-/lib/modules/%{KERNELRELEASE}
+-%exclude /lib/modules/%{KERNELRELEASE}/build
++%{MODLIB}
++%exclude %{MODLIB}/build
+ /boot/*
+ 
+ %files headers
+@@ -110,5 +110,5 @@ fi
+ %files devel
+ %defattr (-, root, root)
+ /usr/src/kernels/%{KERNELRELEASE}
+-/lib/modules/%{KERNELRELEASE}/build
++%{MODLIB}/build
+ %endif
+diff --git a/scripts/package/mkspec b/scripts/package/mkspec
+index d41608efb747..d41b2e5304ac 100755
+--- a/scripts/package/mkspec
++++ b/scripts/package/mkspec
+@@ -18,6 +18,7 @@ fi
+ cat<<EOF
+ %define ARCH ${ARCH}
+ %define KERNELRELEASE ${KERNELRELEASE}
++%define MODLIB ${MODLIB}
+ %define pkg_release $("${srctree}/init/build-version")
+ EOF
+ 
 -- 
-Regards,
-Sudeep
+2.42.0
+
