@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EB17B990B
+	by mail.lfdr.de (Postfix) with ESMTP id 22EE37B990D
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 02:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244156AbjJEAER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 20:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
+        id S244162AbjJEAE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 20:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243808AbjJEAEO (ORCPT
+        with ESMTP id S243808AbjJEAEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 20:04:14 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1960CE;
-        Wed,  4 Oct 2023 17:04:10 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-7a2cc9ee64cso18396239f.1;
-        Wed, 04 Oct 2023 17:04:10 -0700 (PDT)
+        Wed, 4 Oct 2023 20:04:25 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD17EE
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 17:04:19 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7b07719089aso293831241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 17:04:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696464249; x=1697069049; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1696464258; x=1697069058; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xHepvuDvDnHmuTSCWiPic5GpIEisZ00JylNY2qD1gZ4=;
-        b=kG64eVOqYT7srvclvU6HA1/qAmIpVFoufCQQ4hthYqUIjwVamwZiH1wSCb7pUP2Nab
-         4oui0/EqK/w74MOsJKvXhRF/4mFHdMMD+tkDT1tCwt4sgUvNJTs5tM5BGrOQWtgtlAJB
-         kHjKmM5HctGP1zKiaCpuXmtmTiLry+/jqzXtfouxkXl3+xo80IXcSs7aPPWoeThfQnNL
-         jyolHtWILxxUj93H6jGV8OibsFkX60pXKpIN5E4vyBsPH3jhTO+lkIVs2A2g1GFaD2pd
-         +X3i3WJ/oeTnGutY1aWSzKvu9mJQzcd4kbLzHTjz78vsXT5EX727Ziuvy7OFfyHQxJAd
-         0Vuw==
+        bh=xkg7+rczDvEf5vw76+FGOEqy3G1WsJgAGbY3dy46WG0=;
+        b=jAZHMGfs/vH7lfRwrjyBz6oaFuz3C1bSEuf49kmnnmaN/1p7tImxjkU6o/4c4dx1lJ
+         UoFjuCuejMcHBt4wsCfpZPDfSaDGGqjVZAnl8GK0MQrbtU59b/wblW26/+QIURRWu8IC
+         Xio2N+850dp1vJW3AG5TSrezoIFRUrQa3FPEqgsvrHV+w3BnEagnkdYW5o8SrnwkEvEm
+         0zmlRLvc4wAGVbV0qHEBLA33A9cLqU5wlFC8HawtQ1gglZzssIN2nIOzdONFQrBspr4p
+         JJyzYKY1bQRRmjJlBLLAez9rp9mi0TMmc1Pv3F3O4fcKwZCO0I5Zie5I6lKcVxONeaWK
+         B+DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696464249; x=1697069049;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696464258; x=1697069058;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xHepvuDvDnHmuTSCWiPic5GpIEisZ00JylNY2qD1gZ4=;
-        b=c1DRW3xNrdwbz7HNlgQifPVZvKqp03ynRFC4J7jaLrtgHwz+TZGN/TNZ16juc4sqwE
-         2aNQkvhyrNwTSJRp8XMwQzFqDhnCTYOKs+h36OL5EhH/nAsLPJvBA7W7iHOuEiUZGSqb
-         YWMou+6bFPBEo2OYIdfAV3Pm7fG95WTPdEAwaYOG+BpUkPemZn/jNVz3BpH2a36U/FO2
-         XxfOwPsOxEUUdtcoEM0hjolcm4MI4llk2iJRmwDrnY46FazH+4fXIzVr0mhXQxxnaDph
-         hv3YWmZ9lSlfvKNEcArRLObT95bsqXR/RRVLlZowlj97BaI+qqZfXHKa1T99cSB46j/2
-         MTuA==
-X-Gm-Message-State: AOJu0Yy3FlIJUxf2/JAZFARrrhf1GIxlLqR6YaeaCGc1AYflRwIUbn2K
-        Q1X54w0mObXQtT79yeWFTGD1RUw2baZ2aw==
-X-Google-Smtp-Source: AGHT+IFO3eAUYPtMwyaWQxEAv8UyDyRrouwbdaXoULyX47Tx6bmZsg/kFcYqtUUPVyFzmKrOq/n2fA==
-X-Received: by 2002:a5e:8d10:0:b0:792:8c52:b3b8 with SMTP id m16-20020a5e8d10000000b007928c52b3b8mr3951032ioj.14.1696464249358;
-        Wed, 04 Oct 2023 17:04:09 -0700 (PDT)
-Received: from aford-System-Version.lan (c-75-72-166-104.hsd1.mn.comcast.net. [75.72.166.104])
-        by smtp.gmail.com with ESMTPSA id h3-20020a5ecb43000000b0079fdeed3ab6sm56895iok.40.2023.10.04.17.04.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 17:04:08 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-omap@vger.kernel.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Derald D. Woods" <woods.technical@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V3 2/2] arm: dts: am3517-evm: Enable Ethernet PHY Interrupt
-Date:   Wed,  4 Oct 2023 19:04:02 -0500
-Message-Id: <20231005000402.50879-2-aford173@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231005000402.50879-1-aford173@gmail.com>
-References: <20231005000402.50879-1-aford173@gmail.com>
+        bh=xkg7+rczDvEf5vw76+FGOEqy3G1WsJgAGbY3dy46WG0=;
+        b=XVxFIe/jJBdTpTFfXRUptxXATBjQP63LbsRJouyiZjKUQlG4PwQ+9keci43geS9GwT
+         BYMN3OUFGtw5UzvT4bs9QOj2RjmihbZ/RkX/1petw6Xhe8BhxXYLEQft2tqIs3mJ4ppR
+         ty7BbAwMG9bIdadkU9djQVFRJAOk6yjgAHe4m5+REzyxAeq/FNj57KWISrDIBCjnmcY8
+         Mr26DvMR68t2Lk7Y0ECTaTdF6g/WGj3OLkD6eu1RKaGBtf2SfmTK0WncEFCtOLg1kKtw
+         VonR2Udy8dR4TbYjoSB0IeJc1kpupGasQpibYhiLXjKmM5J5zBndqZWygppZBXfgE/OS
+         bmEw==
+X-Gm-Message-State: AOJu0YzcgHJBlckCjelyTHeiAiPC78XFIteGIMBIkzrPmwbToa/xVHih
+        kD0W3J76F2LStVbA1kznHoCRwrEBXw/+htEbiZQ=
+X-Google-Smtp-Source: AGHT+IEkEy7nTZvm9Lo1GeI7LwD4zyd85KPs0KALc+yrS1+dsVdNI/ItufsM2wWbY3At4/Yvp+fWO2fpBLL86lPRrkw=
+X-Received: by 2002:a05:6102:53c9:b0:455:dd1c:9653 with SMTP id
+ bs9-20020a05610253c900b00455dd1c9653mr487841vsb.1.1696464258319; Wed, 04 Oct
+ 2023 17:04:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231003230155.355807-1-daeho43@gmail.com> <ZR30mNQEyRjzr0jm@google.com>
+ <CACOAw_zSvAPTREb0dSv6srRuxuKxDZp4rMhLyWTk+uJ3WKSWKA@mail.gmail.com> <ZR37Xyr9HcVuLqxx@google.com>
+In-Reply-To: <ZR37Xyr9HcVuLqxx@google.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Wed, 4 Oct 2023 17:04:07 -0700
+Message-ID: <CACOAw_weaNhBUpeR9xnkPYQCu6RO-AkUZeJGJYh9tokdUtATKg@mail.gmail.com>
+Subject: Re: [PATCH] f2fs-tools: use proper address entry count for direct nodes
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -78,57 +71,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Ethernet PHY interrupt pin is routed to GPIO_58.  Create a
-PHY node to configure this GPIO for the interrupt to avoid polling.
+On Wed, Oct 4, 2023 at 4:55=E2=80=AFPM Jaegeuk Kim <jaegeuk@kernel.org> wro=
+te:
+>
+> On 10/04, Daeho Jeong wrote:
+> > On Wed, Oct 4, 2023 at 4:26=E2=80=AFPM Jaegeuk Kim <jaegeuk@kernel.org>=
+ wrote:
+> > >
+> > > On 10/03, Daeho Jeong wrote:
+> > > > From: Daeho Jeong <daehojeong@google.com>
+> > > >
+> > > > For direct nodes, we have to use DEF_ADDRS_PER_BLOCK.
+> > > >
+> > > > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> > > > ---
+> > > >  fsck/fsck.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/fsck/fsck.c b/fsck/fsck.c
+> > > > index 78ffdb6..56a7d31 100644
+> > > > --- a/fsck/fsck.c
+> > > > +++ b/fsck/fsck.c
+> > > > @@ -2894,7 +2894,7 @@ static void fsck_failed_reconnect_file_dnode(=
+struct f2fs_sb_info *sbi,
+> > > >       fsck->chk.valid_blk_cnt--;
+> > > >       f2fs_clear_main_bitmap(sbi, ni.blk_addr);
+> > > >
+> > > > -     for (i =3D 0; i < ADDRS_PER_BLOCK(&node->i); i++) {
+> > > > +     for (i =3D 0; i < DEF_ADDRS_PER_BLOCK; i++) {
+> > >
+> > > It seems we need to use the inode block passing by fsck_failed_reconn=
+ect_file().
+> >
+> > This function is for direct nodes. Is it correct to use inode block her=
+e?
+>
+>  523 unsigned int addrs_per_block(struct f2fs_inode *i)
+>  524 {
+>  525         if (!LINUX_S_ISREG(le16_to_cpu(i->i_mode)) ||
+>  526                         !(le32_to_cpu(i->i_flags) & F2FS_COMPR_FL))
+>  527                 return DEF_ADDRS_PER_BLOCK;
+>  528         return ALIGN_DOWN(DEF_ADDRS_PER_BLOCK, 1 << i->i_log_cluster=
+_size);
+>  529 }
+>
+> If the inode is compressed, it seems it has to be aligned to cluster size=
+.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
-V3:  Fix issue where V2 wasn't properly properly commit-ammended, so V2 patch didn't properly generate
+makes sense. Thanks~!
 
-V2:  Attempted (but failed) to fix ethernet-phy-pins naming
-
-diff --git a/arch/arm/boot/dts/ti/omap/am3517-evm.dts b/arch/arm/boot/dts/ti/omap/am3517-evm.dts
-index 866f68c5b504..40f15da81043 100644
---- a/arch/arm/boot/dts/ti/omap/am3517-evm.dts
-+++ b/arch/arm/boot/dts/ti/omap/am3517-evm.dts
-@@ -172,11 +172,24 @@ hsusb1_phy: hsusb1_phy {
- &davinci_emac {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&ethernet_pins>;
-+	phy-mode = "rmii";
-+	phy-handle = <&ethphy0>;
- 	status = "okay";
- };
- 
- &davinci_mdio {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
- 	status = "okay";
-+
-+	ethphy0: ethernet-phy@0 {
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&enet_phy_pins>;
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <0>;
-+		interrupt-parent = <&gpio2>;
-+		interrupts = <26 IRQ_TYPE_LEVEL_LOW>;	/* gpio_58 */
-+	};
- };
- 
- &dss {
-@@ -257,6 +270,12 @@ OMAP3_CORE1_IOPAD(0x2210, PIN_INPUT_PULLDOWN | MUX_MODE0) /* rmii_50mhz_clk */
- 		>;
- 	};
- 
-+	enet_phy_pins: ethernet-phy-pins {
-+		pinctrl-single,pins = <
-+			OMAP3_CORE1_IOPAD(0x20bc, PIN_INPUT | MUX_MODE4)	/* gpmc_ncs7.gpio_57 */
-+		>;
-+	};
-+
- 	i2c2_pins: i2c2-pins {
- 		pinctrl-single,pins = <
- 			OMAP3_CORE1_IOPAD(0x21be, PIN_INPUT_PULLUP | MUX_MODE0)  /* i2c2_scl */
--- 
-2.40.1
-
+>
+> >
+> > >
+> > > >               addr =3D le32_to_cpu(node->dn.addr[i]);
+> > > >               if (!addr)
+> > > >                       continue;
+> > >
+> > > 3012                         fsck->chk.valid_blk_cnt--;
+> > > 3013                         if (addr =3D=3D NEW_ADDR)
+> > >
+> > > And, we also need to skip if addr =3D=3D COMPRESS_ADDR here?
+> > >
+> > > 3014                                 continue;
+> > > 3015                         f2fs_clear_main_bitmap(sbi, addr);
+> > > 3016                 }
+> > >
+> > > > --
+> > > > 2.42.0.582.g8ccd20d70d-goog
