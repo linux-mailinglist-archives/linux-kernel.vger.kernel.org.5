@@ -2,80 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAB47BA3EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B717BA12C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbjJEQAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
+        id S231682AbjJEOp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236751AbjJEP50 (ORCPT
+        with ESMTP id S238551AbjJEOkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:57:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2480655A3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:53:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696513987;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zmjmV2FL8ELc9fhvem7XqWCaaiXwmt6kD+gkjkkdF+o=;
-        b=VWgy9CiEMsl84viLi0IGu2glFxqLWTI7umGqHpqfHtNDRHtM37b/Kj3Ftw71oGbE8W0R/r
-        HLRMuZREEiIohw/D0rpQmzoYQI82+ohI6Z6+ny7SU0Vgh0jCaMBDWz662gNnuTDm3RFfYL
-        bQLWwv1bsqvnvgqn/DTEldReQO0so5M=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-158-h1Pp44gsNiykjZAlvKACSw-1; Thu, 05 Oct 2023 08:52:20 -0400
-X-MC-Unique: h1Pp44gsNiykjZAlvKACSw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f5df65fa35so6381425e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 05:52:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696510339; x=1697115139;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zmjmV2FL8ELc9fhvem7XqWCaaiXwmt6kD+gkjkkdF+o=;
-        b=blEhZfpyJu9LCJt/e5OAEVIGd/whgyT3RyQ7MCqhyzfFg+MBuSGpiTRcNpGOumG98q
-         Y27QdZHBRMpUy04LZnawf2hGB/ISw4Y87kG03lU+CmUieGp55EtYllgRkm0uRcUBSZSh
-         KYxC2C7ibFOwF8z9d6H0he2T8s9pmsfc6g12iFaVhsoPiO4iMQbxWW3ah/tKOFilNZoN
-         jMMrG4XzHCjx+03dCpJg6cstzn+gI4xgoKiMUx36+yLePRIE6tVkIvGWlgA4+a3IFAnO
-         GEayG8kj2HJY9RSuDarqZBGC13CGd1pKOYKWc/T8c5D00fBPmtyVGZmVG3JoXfTliT8X
-         F32g==
-X-Gm-Message-State: AOJu0YzOdqOZ29Tz70uN5xNSHGq/u2OeREjg4bY4uIHYxPtfBdYMDWTj
-        hJ5ZoO9hOQ1pazkFt3mHJUO1Zs6FLov66RnE/r0Qfreu/xx6cq5wzj/h/qy47QV3iFLnfbsw35Q
-        rxVf5TwbPzMkoTPchObKQCpsW
-X-Received: by 2002:a1c:7c17:0:b0:3fe:ba7:f200 with SMTP id x23-20020a1c7c17000000b003fe0ba7f200mr5396607wmc.20.1696510338931;
-        Thu, 05 Oct 2023 05:52:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHxwrlRRVC5KgOB6WbF1XYVweDYi+0tB1CX4lseGUm0j72BT+/pFJ39YKJShc6AHamwCvT6eg==
-X-Received: by 2002:a1c:7c17:0:b0:3fe:ba7:f200 with SMTP id x23-20020a1c7c17000000b003fe0ba7f200mr5396595wmc.20.1696510338583;
-        Thu, 05 Oct 2023 05:52:18 -0700 (PDT)
-Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id z7-20020a7bc7c7000000b003fee567235bsm3734745wmk.1.2023.10.05.05.52.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 05:52:18 -0700 (PDT)
-Message-ID: <1d9377235ada012bc09e1864c4ef7522b8ef02fd.camel@redhat.com>
-Subject: Re: [PATCH 08/10] KVM: SVM: WARN if KVM attempts to create AVIC
- backing page with user APIC
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 05 Oct 2023 15:52:16 +0300
-In-Reply-To: <20230815213533.548732-9-seanjc@google.com>
-References: <20230815213533.548732-1-seanjc@google.com>
-         <20230815213533.548732-9-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 5 Oct 2023 10:40:41 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6A9C177666
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:13:18 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7367D1576;
+        Thu,  5 Oct 2023 05:55:58 -0700 (PDT)
+Received: from [10.1.37.28] (e122027.cambridge.arm.com [10.1.37.28])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8BB953F641;
+        Thu,  5 Oct 2023 05:55:18 -0700 (PDT)
+Message-ID: <3e417f1c-faed-45c7-8008-f8525c609e53@arm.com>
+Date:   Thu, 5 Oct 2023 13:55:16 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] arm64/mm: Hoist synchronization out of set_ptes() loop
+Content-Language: en-GB
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Collingbourne <pcc@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231003133955.637353-1-ryan.roberts@arm.com>
+From:   Steven Price <steven.price@arm.com>
+In-Reply-To: <20231003133955.637353-1-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,34 +45,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-У вт, 2023-08-15 у 14:35 -0700, Sean Christopherson пише:
-> WARN if KVM attempts to allocate a vCPU's AVIC backing page without an
-> in-kernel local APIC.  avic_init_vcpu() bails early if the APIC is not
-> in-kernel, and KVM disallows enabling an in-kernel APIC after vCPUs have
-> been created, i.e. it should be impossible to reach
-> avic_init_backing_page() without the vAPIC being allocated.
+On 03/10/2023 14:39, Ryan Roberts wrote:
+> set_ptes() sets a physically contiguous block of memory (which all
+> belongs to the same folio) to a contiguous block of ptes. The arm64
+> implementation of this previously just looped, operating on each
+> individual pte. But the __sync_icache_dcache() and mte_sync_tags()
+> operations can both be hoisted out of the loop so that they are
+> performed once for the contiguous set of pages (which may be less than
+> the whole folio). This should result in minor performance gains.
 > 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> __sync_icache_dcache() already acts on the whole folio, and sets a flag
+> in the folio so that it skips duplicate calls. But by hoisting the call,
+> all the pte testing is done only once.
+> 
+> mte_sync_tags() operates on each individual page with its own loop. But
+> by passing the number of pages explicitly, we can rely solely on its
+> loop and do the checks only once. This approach also makes it robust for
+> the future, rather than assuming if a head page of a compound page is
+> being mapped, then the whole compound page is being mapped, instead we
+> explicitly know how many pages are being mapped. The old assumption may
+> not continue to hold once the "anonymous large folios" feature is
+> merged.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > ---
->  arch/x86/kvm/svm/avic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm64/include/asm/mte.h     |  4 ++--
+>  arch/arm64/include/asm/pgtable.h | 27 +++++++++++++++++----------
+>  arch/arm64/kernel/mte.c          |  4 ++--
+>  3 files changed, 21 insertions(+), 14 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-> index 522feaa711b4..3b2d00d9ca9b 100644
-> --- a/arch/x86/kvm/svm/avic.c
-> +++ b/arch/x86/kvm/svm/avic.c
-> @@ -300,7 +300,7 @@ static int avic_init_backing_page(struct kvm_vcpu *vcpu)
->  		return 0;
->  	}
->  
-> -	if (!vcpu->arch.apic->regs)
-> +	if (WARN_ON_ONCE(!vcpu->arch.apic->regs))
->  		return -EINVAL;
->  
->  	if (kvm_apicv_activated(vcpu->kvm)) {
+> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> index 4cedbaa16f41..91fbd5c8a391 100644
+> --- a/arch/arm64/include/asm/mte.h
+> +++ b/arch/arm64/include/asm/mte.h
+> @@ -90,7 +90,7 @@ static inline bool try_page_mte_tagging(struct page *page)
+>  }
+> 
+>  void mte_zero_clear_page_tags(void *addr);
+> -void mte_sync_tags(pte_t pte);
+> +void mte_sync_tags(pte_t pte, unsigned int nr_pages);
+>  void mte_copy_page_tags(void *kto, const void *kfrom);
+>  void mte_thread_init_user(void);
+>  void mte_thread_switch(struct task_struct *next);
+> @@ -122,7 +122,7 @@ static inline bool try_page_mte_tagging(struct page *page)
+>  static inline void mte_zero_clear_page_tags(void *addr)
+>  {
+>  }
+> -static inline void mte_sync_tags(pte_t pte)
+> +static inline void mte_sync_tags(pte_t pte, unsigned int nr_pages)
+>  {
+>  }
+>  static inline void mte_copy_page_tags(void *kto, const void *kfrom)
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 7f7d9b1df4e5..374c1c1485f9 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -325,8 +325,7 @@ static inline void __check_safe_pte_update(struct mm_struct *mm, pte_t *ptep,
+>  		     __func__, pte_val(old_pte), pte_val(pte));
+>  }
+> 
+> -static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+> -				pte_t *ptep, pte_t pte)
+> +static inline void __sync_cache_and_tags(pte_t pte, unsigned int nr_pages)
+>  {
+>  	if (pte_present(pte) && pte_user_exec(pte) && !pte_special(pte))
+>  		__sync_icache_dcache(pte);
+> @@ -339,20 +338,18 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+>  	 */
+>  	if (system_supports_mte() && pte_access_permitted(pte, false) &&
+>  	    !pte_special(pte) && pte_tagged(pte))
+> -		mte_sync_tags(pte);
+> -
+> -	__check_safe_pte_update(mm, ptep, pte);
+> -
+> -	set_pte(ptep, pte);
+> +		mte_sync_tags(pte, nr_pages);
+>  }
+> 
+>  static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+>  			      pte_t *ptep, pte_t pte, unsigned int nr)
+>  {
+>  	page_table_check_ptes_set(mm, ptep, pte, nr);
+> +	__sync_cache_and_tags(pte, nr);
+> 
+>  	for (;;) {
+> -		__set_pte_at(mm, addr, ptep, pte);
+> +		__check_safe_pte_update(mm, ptep, pte);
+> +		set_pte(ptep, pte);
+>  		if (--nr == 0)
+>  			break;
+>  		ptep++;
+> @@ -531,18 +528,28 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
+>  #define pud_pfn(pud)		((__pud_to_phys(pud) & PUD_MASK) >> PAGE_SHIFT)
+>  #define pfn_pud(pfn,prot)	__pud(__phys_to_pud_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
+> 
+> +static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, pte_t pte, unsigned int nr)
+> +{
+> +	__sync_cache_and_tags(pte, nr);
+> +	__check_safe_pte_update(mm, ptep, pte);
+> +	set_pte(ptep, pte);
+> +}
+> +
+>  static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
+>  			      pmd_t *pmdp, pmd_t pmd)
+>  {
+>  	page_table_check_pmd_set(mm, pmdp, pmd);
+> -	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd));
+> +	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd),
+> +						PMD_SHIFT - PAGE_SHIFT);
 
-As I said I prefer this to be folded with patch that adds the avic_init_backing_page().
+IIUC the new __set_pte_at takes the number of pages, but PMD_SHIFT -
+PAGE_SHIFT is the log2 of that. Should this be 1 << (PMD_SHIFT -
+PAGE_SHIFT)? Same below for pud.
 
-Best regards,
-	Maxim Levitsky
+Steve
+
+>  }
+> 
+>  static inline void set_pud_at(struct mm_struct *mm, unsigned long addr,
+>  			      pud_t *pudp, pud_t pud)
+>  {
+>  	page_table_check_pud_set(mm, pudp, pud);
+> -	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud));
+> +	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud),
+> +						PUD_SHIFT - PAGE_SHIFT);
+>  }
+> 
+>  #define __p4d_to_phys(p4d)	__pte_to_phys(p4d_pte(p4d))
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index 4edecaac8f91..2fb5e7a7a4d5 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -35,10 +35,10 @@ DEFINE_STATIC_KEY_FALSE(mte_async_or_asymm_mode);
+>  EXPORT_SYMBOL_GPL(mte_async_or_asymm_mode);
+>  #endif
+> 
+> -void mte_sync_tags(pte_t pte)
+> +void mte_sync_tags(pte_t pte, unsigned int nr_pages)
+>  {
+>  	struct page *page = pte_page(pte);
+> -	long i, nr_pages = compound_nr(page);
+> +	unsigned int i;
+> 
+>  	/* if PG_mte_tagged is set, tags have already been initialised */
+>  	for (i = 0; i < nr_pages; i++, page++) {
+> --
+> 2.25.1
+> 
 
