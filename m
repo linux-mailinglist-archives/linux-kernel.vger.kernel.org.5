@@ -2,192 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA4A7BA5B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE9B7BA3FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241807AbjJEQTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35392 "EHLO
+        id S233514AbjJEQDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240599AbjJEQPb (ORCPT
+        with ESMTP id S232660AbjJEQCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:15:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1372D0D5
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696516081; x=1728052081;
-  h=date:from:to:cc:subject:message-id;
-  bh=5EOlZQDXhQn4qDhlhUaVQI03oMRvBlf26cnQOWvrHow=;
-  b=e2SiSi2NW3S0Ekf1VAyA+SN1TKqXrJx8LqPASEdzhZeK5jtkhW2qLtYp
-   UKjMAG4S7tcXkVwYaVqEFVxRTN+7nU7CBAUQ9SQyvRWq3IQZw+sNWSg9l
-   HQEWidzdbWpj75xo5UZ13AJkzV8tAvhLuoimL6O2S/1aKpqPGc3QmG8pI
-   atODyT8E3QOJUOX8sgzBqUxLmMe3Rgtlqm5/RFWpfWaQE/SsHPTEd4ZB4
-   6DLW6efJl9kqrTEO/rUHs3DbnptPNfOEP1v2Fc6fk9PFwyzv8W4X5tQyL
-   rV4WgZgum5YIFZmdqiEMbLWdi9yB6n3yrp/atkxka28iIDagCL5iN8m/H
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="2084943"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="2084943"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 05:42:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="728429976"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="728429976"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 05 Oct 2023 05:42:51 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoNgn-000LOI-1Z;
-        Thu, 05 Oct 2023 12:42:49 +0000
-Date:   Thu, 05 Oct 2023 20:41:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2023.09.26a] BUILD SUCCESS
- 8e96b20d0eead0d602cf0424aac4b8bdcbd61f73
-Message-ID: <202310052048.48vQeY2A-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Thu, 5 Oct 2023 12:02:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2C930EF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:51:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696513875;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rHlDcpYqvRVbBwfdymZ9aLtHILbpbHaMo9iVj1JrDzc=;
+        b=gQ0z959sConFIVpmjA999kDsPnFsebZ556fbZN2CAZZz0Htchr1vnXNOLyupKrJ30ay0yY
+        h7RMIgnlcGLLrzabZwbe/QLcluLVJzyG9ltWaiWssgcL+5xpj/1whxBmhhX46zoLgorfbD
+        Y4s9r+BUyK788ZD7n7zA7+ytvBpN/to=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-693-wiYRKBfAN3u1cFKrGXyPyg-1; Thu, 05 Oct 2023 08:49:52 -0400
+X-MC-Unique: wiYRKBfAN3u1cFKrGXyPyg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40652e8cb57so6581825e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 05:49:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696510192; x=1697114992;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rHlDcpYqvRVbBwfdymZ9aLtHILbpbHaMo9iVj1JrDzc=;
+        b=QDvkV2uVGinaCEWdrmSyZjN4NbDjQXbObXN6ykinAAOVmT7g1in7DvEB6FYEYaNCCT
+         v1fe2u98fyPTafqSdMEWH2/EV6giTicoVX++fJCctBb5bMerpIFF9lX4qW07TYVemCoW
+         1CdwH0PzaZhQVtNkZZcU2TysReqjGDm24u02EDw0Kiw8ld95TFck543p1ZcZ0Fqg+ZCw
+         GyVQa9Dw8KQJx4hSbthtMVPZUsFSHlzJEk+VMtqAmWPvRNOYxBME7Rx5xmN5ZhNbGdH6
+         i20oRwE4DMB6slQL8SceuINIuZWXcvRrMtXqaSnmD4++fVXxskEpE0x2iUx+5n4qqtBK
+         /Gqg==
+X-Gm-Message-State: AOJu0Yw2Szt7kpvkCksOcTvdKNZrhFo33S+nJm5ojwxB/MVQZbxUMYuT
+        UGUyD7eH4rbKayrdOuHZb7Bd78hml1gK1oRi+32VvbfK8P3nE9N2YlrCHDkaFbyMnRzlZrxNvwk
+        NetgNW/MAdvQ7yglmX8FVL3fZ
+X-Received: by 2002:adf:d0cc:0:b0:325:1a1:1052 with SMTP id z12-20020adfd0cc000000b0032501a11052mr5064647wrh.29.1696510191828;
+        Thu, 05 Oct 2023 05:49:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGZHJVnS3AX4sTAeuTlcu+imxj8xColT0TARU2HpMGu+8c9DPPYsxChjGTAZorisoDDrTSayw==
+X-Received: by 2002:adf:d0cc:0:b0:325:1a1:1052 with SMTP id z12-20020adfd0cc000000b0032501a11052mr5064632wrh.29.1696510191545;
+        Thu, 05 Oct 2023 05:49:51 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id y8-20020a7bcd88000000b00406447b798bsm3709768wmj.37.2023.10.05.05.49.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 05:49:51 -0700 (PDT)
+Message-ID: <8dfb288e02cdd34e777061e725a5da55ebec6cf1.camel@redhat.com>
+Subject: Re: [PATCH 01/10] KVM: SVM: Drop pointless masking of default APIC
+ base when setting V_APIC_BAR
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 05 Oct 2023 15:49:49 +0300
+In-Reply-To: <20230815213533.548732-2-seanjc@google.com>
+References: <20230815213533.548732-1-seanjc@google.com>
+         <20230815213533.548732-2-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.09.26a
-branch HEAD: 8e96b20d0eead0d602cf0424aac4b8bdcbd61f73  srcu: Explain why callbacks invocations can't run concurrently
+У вт, 2023-08-15 у 14:35 -0700, Sean Christopherson пише:
+> Drop VMCB_AVIC_APIC_BAR_MASK, it's just a regurgitation of the maximum
+> theoretical 4KiB-aligned physical address, i.e. is not novel in any way,
+> and its only usage is to mask the default APIC base, which is 4KiB aligned
+> and (obviously) a legal physical address.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/include/asm/svm.h | 2 --
+>  arch/x86/kvm/svm/avic.c    | 2 +-
+>  2 files changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+> index 72ebd5e4e975..1e70600e84f7 100644
+> --- a/arch/x86/include/asm/svm.h
+> +++ b/arch/x86/include/asm/svm.h
+> @@ -257,8 +257,6 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
+>  
+>  #define AVIC_DOORBELL_PHYSICAL_ID_MASK			GENMASK_ULL(11, 0)
+>  
+> -#define VMCB_AVIC_APIC_BAR_MASK				0xFFFFFFFFFF000ULL
 
-elapsed time: 887m
+While this mask is indeed not needed now because AVIC doesn't support non default APIC base,
+this mask will be needed in my upcoming nested AVIC support, because nested hypervisor can
+ask for any apic base it wishes for.
 
-configs tested: 115
-configs skipped: 2
+> -
+>  #define AVIC_UNACCEL_ACCESS_WRITE_MASK		1
+>  #define AVIC_UNACCEL_ACCESS_OFFSET_MASK		0xFF0
+>  #define AVIC_UNACCEL_ACCESS_VECTOR_MASK		0xFFFFFFFF
+> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+> index cfc8ab773025..7062164e4041 100644
+> --- a/arch/x86/kvm/svm/avic.c
+> +++ b/arch/x86/kvm/svm/avic.c
+> @@ -251,7 +251,7 @@ void avic_init_vmcb(struct vcpu_svm *svm, struct vmcb *vmcb)
+>  	vmcb->control.avic_backing_page = bpa & AVIC_HPA_MASK;
+>  	vmcb->control.avic_logical_id = lpa & AVIC_HPA_MASK;
+>  	vmcb->control.avic_physical_id = ppa & AVIC_HPA_MASK;
+> -	vmcb->control.avic_vapic_bar = APIC_DEFAULT_PHYS_BASE & VMCB_AVIC_APIC_BAR_MASK;
+> +	vmcb->control.avic_vapic_bar = APIC_DEFAULT_PHYS_BASE;
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Here I agree that the '&' is functionally pointless, 
+although I am not sure that removing it makes the code more readable.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231005   gcc  
-arm                              alldefconfig   clang
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         bcm2835_defconfig   clang
-arm                                 defconfig   gcc  
-arm                         orion5x_defconfig   clang
-arm                   randconfig-001-20231005   gcc  
-arm                         s5pv210_defconfig   clang
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231005   gcc  
-i386         buildonly-randconfig-002-20231005   gcc  
-i386         buildonly-randconfig-003-20231005   gcc  
-i386         buildonly-randconfig-004-20231005   gcc  
-i386         buildonly-randconfig-005-20231005   gcc  
-i386         buildonly-randconfig-006-20231005   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231005   gcc  
-i386                  randconfig-002-20231005   gcc  
-i386                  randconfig-003-20231005   gcc  
-i386                  randconfig-004-20231005   gcc  
-i386                  randconfig-005-20231005   gcc  
-i386                  randconfig-006-20231005   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231005   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                      acadia_defconfig   clang
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                     ksi8560_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231005   gcc  
-x86_64                randconfig-002-20231005   gcc  
-x86_64                randconfig-003-20231005   gcc  
-x86_64                randconfig-004-20231005   gcc  
-x86_64                randconfig-005-20231005   gcc  
-x86_64                randconfig-006-20231005   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best regards,
+	Maxim Levitsky
+
+>  
+>  	if (kvm_apicv_activated(svm->vcpu.kvm))
+>  		avic_activate_vmcb(svm);
+
+
+
+
+
