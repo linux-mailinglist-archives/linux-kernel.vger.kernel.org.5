@@ -2,71 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3230F7B9EF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE4D7BA346
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbjJEOQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
+        id S236073AbjJEPxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233068AbjJEOOM (ORCPT
+        with ESMTP id S235410AbjJEPvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:14:12 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE167A257
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 02:17:43 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qoKTr-0004yM-Uh; Thu, 05 Oct 2023 11:17:15 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qoKTp-00BEVG-Mk; Thu, 05 Oct 2023 11:17:13 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qoKTp-009Nwv-Ca; Thu, 05 Oct 2023 11:17:13 +0200
-Date:   Thu, 5 Oct 2023 11:17:13 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Subject: Re: [PATCH 1/2] pwm: make it possible to apply pwm changes in atomic
- context
-Message-ID: <20231005091713.jgx5h2ss4oybdxq7@pengutronix.de>
-References: <cover.1696156485.git.sean@mess.org>
- <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
- <20231004095920.ne7yrrthow6tnuvg@pengutronix.de>
- <ZR50KCVNzhlLooLW@gofer.mess.org>
+        Thu, 5 Oct 2023 11:51:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B716079E;
+        Thu,  5 Oct 2023 07:07:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CA90C116B8;
+        Thu,  5 Oct 2023 09:18:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696497497;
+        bh=er2gV/B0WGFGwTMx3YbhEbm41Uarn24n6lRwoScj7y4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0V/zks3qAJ5nzMioieCIDud+bGbfkFe+9f0mnDo772FRR8YsbFjMw0sctDIrO3PFZ
+         nZV0Gm93NEvl6n/mwYKwei2JXj330Jd4CZOYF9zaTScF7OBP5YMYV5ou3bTpQwWS3Z
+         Q355DK9M+2o0elgzOH08Weh4qq4s6NbYIdTGqF5s=
+Date:   Thu, 5 Oct 2023 11:18:14 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee@kernel.org>
+Cc:     "Starke, Daniel" <daniel.starke@siemens.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Fedor Pchelkin <pchelkin@ispras.ru>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com" 
+        <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
+Subject: Re: [PATCH 1/1] tty: n_gsm: Avoid sleeping during .write() whilst
+ atomic
+Message-ID: <2023100528-directory-arrogant-2ca9@gregkh>
+References: <20231003170020.830242-1-lee@kernel.org>
+ <2023100320-immorally-outboard-573a@gregkh>
+ <DB9PR10MB588170E923A6ED8B3D6D9613E0CBA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM>
+ <2023100421-negotiate-stammer-1b35@gregkh>
+ <20231004085720.GA9374@google.com>
+ <2023100448-cotton-safehouse-aca2@gregkh>
+ <20231004125704.GA83257@google.com>
+ <2023100435-xerox-idiocy-5cf0@gregkh>
+ <20231005090311.GD83257@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="x5d57cuv6lgyekgb"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZR50KCVNzhlLooLW@gofer.mess.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+In-Reply-To: <20231005090311.GD83257@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,111 +60,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 05, 2023 at 10:03:11AM +0100, Lee Jones wrote:
+> On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
+> 
+> > On Wed, Oct 04, 2023 at 01:57:04PM +0100, Lee Jones wrote:
+> > > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
+> > > 
+> > > > On Wed, Oct 04, 2023 at 09:57:20AM +0100, Lee Jones wrote:
+> > > > > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
+> > > > > 
+> > > > > > On Wed, Oct 04, 2023 at 05:59:09AM +0000, Starke, Daniel wrote:
+> > > > > > > > Daniel, any thoughts?
+> > > > > > > 
+> > > > > > > Our application of this protocol is only with specific modems to enable
+> > > > > > > circuit switched operation (handling calls, selecting/querying networks,
+> > > > > > > etc.) while doing packet switched communication (i.e. IP traffic over PPP).
+> > > > > > > The protocol was developed for such use cases.
+> > > > > > > 
+> > > > > > > Regarding the issue itself:
+> > > > > > > There was already an attempt to fix all this by switching from spinlocks to
+> > > > > > > mutexes resulting in ~20% performance loss. However, the patch was reverted
+> > > > > > > as it did not handle the T1 timer leading into sleep during atomic within
+> > > > > > > gsm_dlci_t1() on every mutex lock there.
+> > > > > 
+> > > > > That's correct.  When I initially saw this report, my initial thought
+> > > > > was to replace the spinlocks with mutexts, but having read the previous
+> > > > > accepted attempt and it's subsequent reversion I started to think of
+> > > > > other ways to solve this issue.  This solution, unlike the last, does
+> > > > > not involve adding sleep inducing locks into atomic contexts, nor
+> > > > > should it negatively affect performance.
+> > > > > 
+> > > > > > > There was also a suggestion to fix this in do_con_write() as
+> > > > > > > tty_operations::write() appears to be documented as "not allowed to sleep".
+> > > > > > > The patch for this was rejected. It did not fix the issue within n_gsm.
+> > > > > > > 
+> > > > > > > Link: https://lore.kernel.org/all/20221203215518.8150-1-pchelkin@ispras.ru/
+> > > > > > > Link: https://lore.kernel.org/all/20221212023530.2498025-1-zengheng4@huawei.com/
+> > > > > > > Link: https://lore.kernel.org/all/5a994a13-d1f2-87a8-09e4-a877e65ed166@kernel.org/
+> > > > > > 
+> > > > > > Ok, I thought I remembered this, I'll just drop this patch from my
+> > > > > > review queue and wait for a better solution if it ever comes up as this
+> > > > > > isn't a real issue that people are seeing on actual systems, but just a
+> > > > > > syzbot report.
+> > > > > 
+> > > > > What does the "better solution" look like?
+> > > > 
+> > > > One that actually fixes the root problem here (i.e. does not break the
+> > > > recursion loop, or cause a performance decrease for normal users, or
+> > > > prevent this from being bound to the console).
+> > > 
+> > > Does this solution break the recursion loop or affect performance?
+> > 
+> > This solution broke the recursion by returning an error, right?
+> 
+> This is the part I was least sure about.
+> 
+> If this was considered valid and we were to go forward with a solution
+> like this, what would a quality improvement look like?  Should we have
+> stayed in this function and waited for the previous occupant to leave
+> before continuing through ->write()?
 
---x5d57cuv6lgyekgb
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This isn't valid, as it obviously never shows up in real use.
 
-Hello Sean,
+The real solution should be to prevent binding a console to this line
+discipline as it can not handle the recursion that consoles require for
+the write path.
 
-On Thu, Oct 05, 2023 at 09:30:32AM +0100, Sean Young wrote:
-> On Wed, Oct 04, 2023 at 11:59:20AM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Sun, Oct 01, 2023 at 11:40:29AM +0100, Sean Young wrote:
-> > > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> > > index dc66e3405bf5..d9679ae5b2be 100644
-> > > --- a/drivers/pwm/core.c
-> > > +++ b/drivers/pwm/core.c
-> > > @@ -505,7 +505,7 @@ int pwm_apply_state(struct pwm_device *pwm, const=
- struct pwm_state *state)
-> > >  	 * is a bad idea. So make it explicit that calling this function mi=
-ght
-> > >  	 * sleep.
-> > >  	 */
-> > > -	might_sleep();
-> > > +	might_sleep_if(pwm_can_sleep(pwm));
-> > > =20
-> > >  	if (!pwm || !state || !state->period ||
-> > >  	    state->duty_cycle > state->period)
-> >=20
-> > I'd like to have a mechanism to catch drivers that missed to set
-> > .can_sleep. The best idea I currently have for that is to disable
-> > preemption if IS_ENABLED(CONFIG_PWM_DEBUG) && !pwm_can_sleep(pwm) while
-> > .apply() is running.
->=20
-> If we have pwm_apply_state_atomic(), then CONFIG_DEBUG_ATOMIC_SLEEP will
-> catch them, but only in that code path of course.
->=20
-> How about using non_block_start() and non_block_end() if can_sleep is
-> not set?
+Then, if consoles are really needed, the code can be fixed up to handle
+such recursion.  That's not a trivial thing to do, as can be seen by the
+crazy gyrations that the n_tty line discipline does in its write path...
 
-TIL, looks like it was created for that task.
+thanks,
 
-> > > diff --git a/drivers/pwm/pwm-fsl-ftm.c b/drivers/pwm/pwm-fsl-ftm.c
-> > > index b7c6045c5d08..b8b9392844e9 100644
-> > > --- a/drivers/pwm/pwm-fsl-ftm.c
-> > > +++ b/drivers/pwm/pwm-fsl-ftm.c
-> > > @@ -405,6 +405,7 @@ static int fsl_pwm_probe(struct platform_device *=
-pdev)
-> > > =20
-> > >  	fpc->soc =3D of_device_get_match_data(&pdev->dev);
-> > >  	fpc->chip.dev =3D &pdev->dev;
-> > > +	fpc->chip.can_sleep =3D true;
-> >=20
-> > Also I wonder if the distinction between atomic and sleeping
-> > pwm_state_apply() should be more explicit. For GPIOs you have a sleeping
-> > variant gpiod_set_value_cansleep() that allows to immediately determine
-> > the intended context in the caller. This would allow that programming
-> > a PWM stays a preemption point (if possible/desired) even if the
-> > underlying hardware/driver is atomic. To not have to touch all consumer
-> > drivers, maybe the pair for pwm should better be
-> >=20
-> > 	pwm_apply_state()
-> > 	pwm_apply_state_atomic()
->=20
-> Do we need pwm_config_atomic(), pwm_enable_atomic(), and pwm_disable_atom=
-ic()
-> too? These are just convenience functions, so we can probably do without =
-them.
-
-I'd like to get rid of these, so for now I'd keep them as is.
-
-> > instead of a "cansleep" suffix for the sleeping variant? Or maybe it's
-> > better to accept touching all consumer drivers to get semantics similar
-> > to gpio? I couldn't decide quickly what I really like better here, so
-> > that's your chance to comment and influence the outcome :-)
->=20
-> If you expect to have more parameters for pwm_apply_state() then a flags
-> argument makes sense.
-
-Actually I don't want more parameters -- at least for this use case. I
-could imagine another parameter for something like apply-immediately vs.
-complete-current-period, but that's another topic.
-
-> TBH I like the pwm_apply_state_atomic() option.
-
-ok.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---x5d57cuv6lgyekgb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUefxgACgkQj4D7WH0S
-/k7aWAf+OxUfKBgEw3SVXriToMTyS73Uv7QeEY7QBZpX1vw08Ec0hP5Cww0L95e+
-ppjZ4O7YXmKcbOwHiakO3lKrm4KgzdpGqt+GV4zaBiubE8Wk6OyNN+P0bMe4jS2l
-uCOtDw9qDw8fSDGZsXTZTfGkdAUcGBnPR2gXJEF7avXghW4EWKmspE7+tS6d07Sl
-ItOiLn/AyScHsTWq4irGhaTe0K+eaM/GO3blwSu38ar3Pt3JCu5PEOxcRextT+cq
-f6eAObmnxL2JrR4M8szNwMEdm/1iRf0xUcAcpYs3biYbhq074kiN1X+NJ0dCtvCH
-2P1yNSi9esnY8j6X9ZGw1FLJA3kj1A==
-=bWrr
------END PGP SIGNATURE-----
-
---x5d57cuv6lgyekgb--
+greg k-h
