@@ -2,157 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B71BE7BA72E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FAD7BA747
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbjJEQ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        id S230084AbjJERGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjJEQ4E (ORCPT
+        with ESMTP id S231636AbjJERFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:56:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03D35FCB
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:45:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696524305;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LZYBR2QbKq3NqPwbI1Wys9ihDkXFlFcq5Xf8xnR7rTY=;
-        b=RP7oiuM2MEEvR/p8ljoe27dGJaWUkAwcNR22W4D5mZwTEVV2YAUAaEcz0LEloZqc+92HEq
-        U9Oh/1+dWOp6fv3zG3bekn2wjvrT2J3sFpid3cpRAqOSSWvNmksefQUB5kdeTk/hn2MuiJ
-        cSYgxX0/HGcIZkkmyhxSLX7CfEEIZyM=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-607-738pc9IbPsGpqOG3R-nHng-1; Thu, 05 Oct 2023 12:45:04 -0400
-X-MC-Unique: 738pc9IbPsGpqOG3R-nHng-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4030ae94fedso8855925e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:45:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696524303; x=1697129103;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=LZYBR2QbKq3NqPwbI1Wys9ihDkXFlFcq5Xf8xnR7rTY=;
-        b=UALYH0CrRAfGpeICz3Emw+4QwRygS4loa+tSdQyvJZ1kVAtNcS03unI6kvvXjWoQJ/
-         3nREE8Blwt98s6qiOQzsQ6fmvHX3GFvj/VhTs7n+YmkOIbT6rvBHxJMCyrUVlWmagfar
-         Ado9mZ2bJZ+/jKJzp3lx+WTrT3twBJNySpnqMBaHcZvfySok7qEyGDA04KN1x58phJwJ
-         dCiFYcy70Twhl141g1YjuViMsgGQTGuKhHj0/bt1WHOaBHpvDAlRASJ0J/I3JkKhsLyI
-         rfpI1Y1smtSNYHWjeWoJ584zGcfWnEYYzl9IRVx4HeRqGuerPvETohN3EZfwe/erpfBT
-         UbYQ==
-X-Gm-Message-State: AOJu0YwFZHljK3lxuofH2Ri9jV6jI1B4xNrF6Mnb6xU+deCzdnlHEdzo
-        Kin0WPsSfTu04/aMGrMu+VmxEw6Kh/VS/jORQ20AQ7IkZIr6ZvQr+5z14JPyhRQlCV+VZmgxd1O
-        k9YK65uQqRFRu+M9o3qmzfQQu
-X-Received: by 2002:a7b:c84d:0:b0:401:b504:b6a0 with SMTP id c13-20020a7bc84d000000b00401b504b6a0mr4797714wml.3.1696524303346;
-        Thu, 05 Oct 2023 09:45:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFSAY1JlfgaWsXPc1rDsrIpGA57eSh7hEMXp5NeMXQy4aTq9QP5VCNrJdBs1/K0EyU5ILMNkQ==
-X-Received: by 2002:a7b:c84d:0:b0:401:b504:b6a0 with SMTP id c13-20020a7bc84d000000b00401b504b6a0mr4797690wml.3.1696524302947;
-        Thu, 05 Oct 2023 09:45:02 -0700 (PDT)
-Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id d16-20020adff850000000b003232d122dbfsm2157582wrq.66.2023.10.05.09.45.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 09:45:02 -0700 (PDT)
-Message-ID: <d9bf0049963df4d1e3e03290c28acb95d833f782.camel@redhat.com>
-Subject: Re: [PATCH v2] x86: KVM: Add feature flag for
- CPUID.80000021H:EAX[bit 1]
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Date:   Thu, 05 Oct 2023 19:45:00 +0300
-In-Reply-To: <20231005031237.1652871-1-jmattson@google.com>
-References: <20231005031237.1652871-1-jmattson@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 5 Oct 2023 13:05:37 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5223AB3;
+        Thu,  5 Oct 2023 09:51:58 -0700 (PDT)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395GoQXH009724;
+        Thu, 5 Oct 2023 16:51:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=BSDOGUc+JL9tA2cDFhfNjolCDslHhA0NmpBlnFKh2vs=;
+ b=doMomtAxPLQ9ZicS3gR4V1yDjOwEmPt8s1QXcjtKaQS/RMCUM2GEzlSxhxTyE6OfR6uF
+ 4GXFi4FqasQNfyDZxDslmnBqnO7Hj50H28EhXDeDsNZ/cEj9HvVrcqSCeNo6VGsPBFzR
+ TRpDgztUkbJwyfvV0FHqW6zR8YQG7nqtbfJbExBpmMq5str4XzA91tzRa6KMkYAmfeV8
+ Gek2c8LfRqockq6UlM39zUceGG873zTtBtas+1zq83XSrNxKSd3lFbTqbaHNFUsBaeTZ
+ rUnGhujRpdTV4+GitL4sA8gDEue8JsL+9ejw9LjCeG7NxQOoowenZZeYfY5epcXgMCGf AA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj11082kg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 16:51:36 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 395GoSfC009908;
+        Thu, 5 Oct 2023 16:51:36 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj11082hb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 16:51:36 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 395GROnB007444;
+        Thu, 5 Oct 2023 16:45:09 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3teygm5y1w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 16:45:09 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
+        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 395Gj8bs21168402
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Oct 2023 16:45:08 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6FF0F58060;
+        Thu,  5 Oct 2023 16:45:08 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4E4E35803F;
+        Thu,  5 Oct 2023 16:45:07 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.90.188])
+        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  5 Oct 2023 16:45:07 +0000 (GMT)
+Message-ID: <e1570b53b991301ee73be185244ef43487bf5961.camel@linux.ibm.com>
+Subject: Re: [PATCH] KEYS: trusted: Remove redundant static calls usage
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Sumit Garg <sumit.garg@linaro.org>, torvalds@linux-foundation.org,
+        jarkko@kernel.org, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        jejb@linux.ibm.com, David.Kaplan@amd.com, bp@alien8.de,
+        mingo@kernel.org, x86@kernel.org, regressions@leemhuis.info,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date:   Thu, 05 Oct 2023 12:45:06 -0400
+In-Reply-To: <20231005133306.379718-1-sumit.garg@linaro.org>
+References: <20231005133306.379718-1-sumit.garg@linaro.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AZfxM2HWduYWXK5tKbH3MW8Ha74FZdKX
+X-Proofpoint-ORIG-GUID: 8EcC0hJpp4Xb9w9BWrOx4e9kmUmdazCA
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-05_12,2023-10-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ bulkscore=0 impostorscore=0 phishscore=0 priorityscore=1501
+ mlxlogscore=999 malwarescore=0 mlxscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310050132
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-У ср, 2023-10-04 у 20:12 -0700, Jim Mattson пише:
-> Define an X86_FEATURE_* flag for CPUID.80000021H:EAX.[bit 1], and
-> advertise the feature to userspace via KVM_GET_SUPPORTED_CPUID.
-> 
-> Per AMD's "Processor Programming Reference (PPR) for AMD Family 19h
-> Model 61h, Revision B1 Processors (56713-B1-PUB)," this CPUID bit
-> indicates that a WRMSR to MSR_FS_BASE, MSR_GS_BASE, or
-> MSR_KERNEL_GS_BASE is non-serializing. This is a change in previously
-> architected behavior.
-> 
-> Effectively, this CPUID bit is a "defeature" bit, or a reverse
-> polarity feature bit. When this CPUID bit is clear, the feature
-> (serialization on WRMSR to any of these three MSRs) is available. When
-> this CPUID bit is set, the feature is not available.
-> 
-> KVM_GET_SUPPORTED_CPUID must pass this bit through from the underlying
-> hardware, if it is set. Leaving the bit clear claims that WRMSR to
-> these three MSRs will be serializing in a guest running under
-> KVM. That isn't true. Though KVM could emulate the feature by
-> intercepting writes to the specified MSRs, it does not do so
-> today. The guest is allowed direct read/write access to these MSRs
-> without interception, so the innate hardware behavior is preserved
-> under KVM.
-> 
-> Signed-off-by: Jim Mattson <jmattson@google.com>
-> ---
-> 
-> v1 -> v2: Added justification for this change to the commit message,
->           tweaked the macro name and comment in cpufeatures.h for
-> 	  improved clarity.
-> 
->  arch/x86/include/asm/cpufeatures.h | 1 +
->  arch/x86/kvm/cpuid.c               | 3 ++-
->  2 files changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index 58cb9495e40f..4af140cf5719 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -443,6 +443,7 @@
->  
->  /* AMD-defined Extended Feature 2 EAX, CPUID level 0x80000021 (EAX), word 20 */
->  #define X86_FEATURE_NO_NESTED_DATA_BP	(20*32+ 0) /* "" No Nested Data Breakpoints */
-> +#define X86_FEATURE_WRMSR_XX_BASE_NS	(20*32+ 1) /* "" WRMSR to {FS,GS,KERNEL_GS}_BASE is non-serializing */
->  #define X86_FEATURE_LFENCE_RDTSC	(20*32+ 2) /* "" LFENCE always serializing / synchronizes RDTSC */
->  #define X86_FEATURE_NULL_SEL_CLR_BASE	(20*32+ 6) /* "" Null Selector Clears Base */
->  #define X86_FEATURE_AUTOIBRS		(20*32+ 8) /* "" Automatic IBRS */
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 0544e30b4946..93241b33e36f 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -761,7 +761,8 @@ void kvm_set_cpu_caps(void)
->  
->  	kvm_cpu_cap_mask(CPUID_8000_0021_EAX,
->  		F(NO_NESTED_DATA_BP) | F(LFENCE_RDTSC) | 0 /* SmmPgCfgLock */ |
-> -		F(NULL_SEL_CLR_BASE) | F(AUTOIBRS) | 0 /* PrefetchCtlMsr */
-> +		F(NULL_SEL_CLR_BASE) | F(AUTOIBRS) | 0 /* PrefetchCtlMsr */ |
-> +		F(WRMSR_XX_BASE_NS)
->  	);
->  
->  	if (cpu_feature_enabled(X86_FEATURE_SRSO_NO))
+Hi Summit,
 
+On Thu, 2023-10-05 at 19:03 +0530, Sumit Garg wrote:
+> Static calls invocations aren't well supported from module __init and
+> __exit functions, especially the static call from cleanup_trusted() led 
+> to a crash on x86 kernel with CONFIG_DEBUG_VIRTUAL=y.
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+Split the above paragraph into two sentences.
 
-Best regards,
-	Maxim Levitsky
+> However, the usage of static call invocations for trusted_key_init()
+> and trusted_key_exit() doesn't adds any value neither from performance
+> point and nor there is any security benefit.
+
+   don't add any value from either a performance or security
+perspective.
+
+>  Hence switch to use indirect
+> function calls instead.
+> 
+> Note here that although it will fix the current crash reported. But
+> ultimately we need fix up static calls infrastructure to either support
+> its future usage from module __init and __exit functions or not.
+
+The first line is a sentence fragment.  Please replace the period with
+a comma.
+
+   report, ultimately the static call call infrastructure should ...
+
+> 
+> Reported-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> Closes: https://lore.kernel.org/lkml/ZRhKq6e5nF%2F4ZIV1@fedora/#t
+
+Replace "Closes" with "Link".
+
+> Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+
+-- 
+thanks,
+
+Mimi
 
