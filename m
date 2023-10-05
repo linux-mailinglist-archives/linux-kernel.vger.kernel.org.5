@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBAA7BA24C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCDC7BA265
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbjJEP2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
+        id S232253AbjJEPdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233088AbjJEP1k (ORCPT
+        with ESMTP id S231586AbjJEPc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:27:40 -0400
+        Thu, 5 Oct 2023 11:32:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB488E97
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:48:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E0F9C32788;
-        Thu,  5 Oct 2023 11:09:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE83D5C6BA;
+        Thu,  5 Oct 2023 07:50:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9C61C3278A;
+        Thu,  5 Oct 2023 11:10:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696504154;
-        bh=pMx5pqQeQDjrMnqS2Ak24EVeDg8+F9nrpir675DqlrA=;
+        s=k20201202; t=1696504244;
+        bh=81DnpxxdBYZrrUfyjgAJck9Wj4KLJe818fuwhsQR8+Q=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=mO3QatlovJ1Y2buxaCKbEVfM0NU7/nT9U+XbwOch583bi3zBhSU0sMEvXip87qE2M
-         y+owKp3cAfSU3ExAdWhd6r93T5SjFHugE5uIMRJ0fbG4Y8mLJbaSC1UxnMjoybiJFy
-         E37VRRvtwnalMCHyVgwUlH4Z7XqUuskXWiY8ZtUr3V6lVOLZcl9Z5KMQOBrTnjEd3E
-         feB0Snrbi/J1AmoMi5ryqmN3CcOfx9AGItI2CDTB9kiS086av0YVnN0obHwZRK1PP+
-         zBLAWY7NSk76SCnYCf1SToTSDoz6NYQphvK9BxElH7qpFOKPR7JKUxLVZNX0/9BVAC
-         2NrTbCPOqD8CQ==
+        b=cWy0RApPbByN09t6pLFrtNEMn3oUnEl+1fgjrYnK0wjnt4TS1k1ixGdjUTaMDd8BZ
+         ts+kdvt4N6Hqac1rifjOJnWqfnekB/dA0edFrP9UTfi9SuqqcDz7Mx2sNESC+FBSLw
+         jmZf1+QT7B1CKM09y6bsEsSYf7N1p8N0qzW40uIeKHWYxj3XcEAODKahrGYBznIAUz
+         Eer+PBcIyx4V4a0hUCuonk17HJDnMdLjSH9LjBLVWILe3IQMttBCAa3qZiekA7Rp2E
+         lHeHvWX5Fbksap9nnNwbrxqVMfT/15s+eE70tc8imu4NHAg85yAgLgouxnoq1NnOcg
+         DwbNARrutJ5Hg==
 From:   Lee Jones <lee@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee@kernel.org>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-In-Reply-To: <20230927-strncpy-drivers-mfd-db8500-prcmu-c-v1-1-db9693f92a68@google.com>
-References: <20230927-strncpy-drivers-mfd-db8500-prcmu-c-v1-1-db9693f92a68@google.com>
-Subject: Re: (subset) [PATCH] mfd: db8500-prcmu: replace deprecated strncpy
- with strscpy
-Message-Id: <169650415311.686763.14245532826620345084.b4-ty@kernel.org>
-Date:   Thu, 05 Oct 2023 12:09:13 +0100
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+In-Reply-To: <20230929-leds-maple-v1-0-ba5f9dcb1e75@kernel.org>
+References: <20230929-leds-maple-v1-0-ba5f9dcb1e75@kernel.org>
+Subject: Re: [PATCH 0/4] leds: Convert to use maple tree register cache
+Message-Id: <169650424265.688682.2460798715972634009.b4-ty@kernel.org>
+Date:   Thu, 05 Oct 2023 12:10:42 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -53,26 +52,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sep 2023 05:10:54 +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We expect project_name to be NUL-terminated based on its use with
-> pr_info:
-> | 	pr_info("PRCMU firmware: %s(%d), version %d.%d.%d\n",
-> | 		fw_info.version.project_name,
-> | 		fw_info.version.project,
-> | 		fw_info.version.api_version,
-> | 		fw_info.version.func_version,
-> | 		fw_info.version.errata);
+On Fri, 29 Sep 2023 17:23:34 +0200, Mark Brown wrote:
+> The maple tree register cache is a more modern replacement for the
+> rbtree cache, the underlying data structure is more modern and the
+> surrounding cache implementation makes a number of choices which are
+> more suited to modern systems than those made by rbtree.  This series
+> updates the LED drivers that use the rbtree cache to use the maple tree
+> cache.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] mfd: db8500-prcmu: replace deprecated strncpy with strscpy
-      commit: 5f0c4e32e8da434a83dd74a08e477c11e7efc6f7
+[1/4] leds: lm3601x: Convert to use maple tree register cache
+      commit: c2b7575239f5d0925035f3fc3bb155d176abee80
+[2/4] leds: aw200xx: Convert to use maple tree register cache
+      commit: 2aedfe62b4151b0abe35bf022edf18f84817afcd
+[3/4] leds: lm392x: Convert to use maple tree register cache
+      commit: c2ecac98222a23ad8209a71ad5c1e32a8be46392
+[4/4] leds: lp3952: Convert to use maple tree register cache
+      commit: 2997d69d888d6ee7114a89d066889a016448422a
 
 --
 Lee Jones [李琼斯]
