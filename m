@@ -2,86 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D40787BA771
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBD57BA7F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbjJERP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49618 "EHLO
+        id S230410AbjJER0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:26:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231156AbjJEROu (ORCPT
+        with ESMTP id S229867AbjJERNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:14:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255BD2721
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:05:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696525521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KKcKcbN0G6E1ZA/muCY4Z4QSr4fIlnQTBllEL5N75xE=;
-        b=d1ISXUNzF8e+YE8UHhif4pclFZ/lIHdnIX0zEmgoUoVQLDhhkiR8GSCWxLNWiu+NxVtAy3
-        N8H6wDOPcrrsO4heSlfXHmZh97v9+6BLU5rroMnsmgglJ0oCEf+9vt90zHDQwVXGAvVmOe
-        O5ov9cMWJG9ZMZUnGvk8BzypRx74Rao=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-296-XZ12uclKPy6PIwXfFzFfYw-1; Thu, 05 Oct 2023 13:05:16 -0400
-X-MC-Unique: XZ12uclKPy6PIwXfFzFfYw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 12A563C0F670;
-        Thu,  5 Oct 2023 17:05:16 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.69])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 36232492B05;
-        Thu,  5 Oct 2023 17:05:12 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  5 Oct 2023 19:04:17 +0200 (CEST)
-Date:   Thu, 5 Oct 2023 19:04:14 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Li Nan <linan666@huaweicloud.com>
-Cc:     Khazhy Kumykov <khazhy@chromium.org>, tj@kernel.org,
-        josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
- throttle is enabled
-Message-ID: <20231005170413.GB32420@redhat.com>
-References: <20230928015858.1809934-1-linan666@huaweicloud.com>
- <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
- <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+        Thu, 5 Oct 2023 13:13:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143541BC0
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696525484; x=1728061484;
+  h=date:from:to:cc:subject:message-id;
+  bh=jxI84OH5DW8ucEJBhDgibDi9SkASGQ2Q7Nm4XR6wQ8o=;
+  b=fiDLQsRJ0w4UOmfDkAUCsC0qCBnxZzwNO8G59jZEJUppTAA1YpIEDcKz
+   FOXL93CSBTxY9ik4Ifv+1lwpq8Ya17iLeFazazZw2dwhlbQ3LLGp7Q1rA
+   QalszGu+KIymU325dFTJiMSyLgmMxiNRjI8PjeEJAaSshz4/11QnoAdy6
+   0w528ccze2tM9cCkFadnwN/KEXlh/H80DFj090LoXjenOLRzBNJw23+FE
+   S18FenT7fXLJC+QxlIpTvupmwgx0w1fkR+AL9w4MvqF8LSm9+Vyjow1j7
+   mmOvaJe2+gjw6NX2VcmH60fE30GE0zN3EwYiPHPFibtfd4W6AKnA1vCSp
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="373912457"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="373912457"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 10:04:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="817683522"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="817683522"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 05 Oct 2023 10:04:41 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qoRmB-000Lgw-22;
+        Thu, 05 Oct 2023 17:04:39 +0000
+Date:   Fri, 06 Oct 2023 01:04:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:dev.2023.10.04a] BUILD SUCCESS
+ d59323511409e832e74cc829d2853fd9fcda8f83
+Message-ID: <202310060111.SRZgC5dk-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sorry, didn't notice this part before.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.10.04a
+branch HEAD: d59323511409e832e74cc829d2853fd9fcda8f83  EXP timers: Tag (hr)timer softirq as hotplug safe
 
-I am not a asm expert (to say at least;) but
+elapsed time: 892m
 
-On 10/05, Li Nan wrote:
->
-> When (a * mul) overflows, a divide 0 error occurs in
-> mul_u64_u64_div_u64().
+configs tested: 115
+configs skipped: 2
 
-Just in case... No, iirc it is divq which triggers #DE when the
-result of division doesn't fit u64.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-(a * mul) can't overflow, the result is 128-bit rax:rdx number.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231005   gcc  
+arm                              alldefconfig   clang
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         bcm2835_defconfig   clang
+arm                                 defconfig   gcc  
+arm                         orion5x_defconfig   clang
+arm                   randconfig-001-20231005   gcc  
+arm                         s5pv210_defconfig   clang
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231005   gcc  
+i386         buildonly-randconfig-002-20231005   gcc  
+i386         buildonly-randconfig-003-20231005   gcc  
+i386         buildonly-randconfig-004-20231005   gcc  
+i386         buildonly-randconfig-005-20231005   gcc  
+i386         buildonly-randconfig-006-20231005   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231005   gcc  
+i386                  randconfig-002-20231005   gcc  
+i386                  randconfig-003-20231005   gcc  
+i386                  randconfig-004-20231005   gcc  
+i386                  randconfig-005-20231005   gcc  
+i386                  randconfig-006-20231005   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231005   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                      acadia_defconfig   clang
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                     ksi8560_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231005   gcc  
+x86_64                randconfig-002-20231005   gcc  
+x86_64                randconfig-003-20231005   gcc  
+x86_64                randconfig-004-20231005   gcc  
+x86_64                randconfig-005-20231005   gcc  
+x86_64                randconfig-006-20231005   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
 
-Oleg.
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
