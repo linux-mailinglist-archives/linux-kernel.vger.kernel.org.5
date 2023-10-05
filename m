@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 471277BA3D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683387B9F81
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238786AbjJEP7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
+        id S233635AbjJEOY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234700AbjJEP4v (ORCPT
+        with ESMTP id S233113AbjJEOWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:56:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86649158FF;
-        Thu,  5 Oct 2023 06:57:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E97BC4AF76;
-        Thu,  5 Oct 2023 13:38:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696513119;
-        bh=F8uLKRMaqIMTxEEJ0Tsvy4TdC8fIt8Vx4EseGKGLtPc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p5SUr0VxoNw+IMG3d+fiAzkAjXm8HBBlx+hHso1qsYXmPAT8O0zA5EIrAoa5dOJ29
-         AWqrQ1SeDYDcKFHNGuFBhsqnVDdUleFpRpShtXXR0py1kMq2uz6CGz+9swRsrXhoS4
-         H4cHn7bEHfyCivvLnm4J8Pq6RWsQEJSOAW74mSjKLRQjk6Ty1JpwvMe0NRhs5H1c0b
-         rakipOaXlBZbpQ2A+U0LubipL2oLp7e7rqiH4/hSMqB5BDVc4DtSXSZJRmlsDxfKIL
-         C8vGeYTbMHHJC5BGs6Xr05XC1yLPcN+o7LITZ7NemOphJSzQgjghmJPadPGiVSjx4s
-         dBbAkOEUYMRxg==
-Date:   Thu, 5 Oct 2023 14:38:32 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Anjelique Melendez <quic_amelende@quicinc.com>
-Cc:     pavel@ucw.cz, thierry.reding@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org, luca.weiss@fairphone.com,
-        konrad.dybcio@linaro.org, u.kleine-koenig@pengutronix.de,
-        quic_subbaram@quicinc.com, quic_gurus@quicinc.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, kernel@quicinc.com
-Subject: Re: [PATCH v5 5/7] leds: rgb: leds-qcom-lpg: Update PMI632 lpg_data
- to support PPG
-Message-ID: <20231005133832.GE681678@google.com>
-References: <20230929003901.15086-1-quic_amelende@quicinc.com>
- <20230929003901.15086-6-quic_amelende@quicinc.com>
+        Thu, 5 Oct 2023 10:22:48 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6294A27B1C;
+        Thu,  5 Oct 2023 06:38:46 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b64b98656bso180272266b.0;
+        Thu, 05 Oct 2023 06:38:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696513123; x=1697117923;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Typac5B7OWpGgMVQT5CpmSBuv29OUVSxeeOBcTx4oyI=;
+        b=ZctPJkBRQmDPaOn3Zr5OGfwYd9joLCDVJ5qtyYEmB2D7SWtoxP3q1lwakTrLItg8Bu
+         CuMOJVqeVacvlJHSp+S1IqtTW1NxT7ZqAutjRlesMyR2l2vngkxCg3hN7QIU0GR4i7cM
+         E1FiFBj28S/wvrKl40Uc/KBM5l8BXNL9y9EuhIBNKzqosOZQLBcWBbmG4mhSnsYMx/aX
+         0HOW9eveTkU5FbVE6XxCKv15ilKWCWu4/1JYZxzcCsOo0qKL8dgQppYYB+M3suY6iQeM
+         cx0VP+99IEW8zEOLus8QZFG+9Fvy8zlJ+8BlZ6Haj/P2A0C8WtnxN8fujo92WTYZqEdB
+         fGwQ==
+X-Gm-Message-State: AOJu0Yx/sqe8M8tnyFSDBP6Mnt8VBcFbizRSu8kRdD5s05Td6HPwmItm
+        EEVtLZQvzM14E3NDtlicrUM=
+X-Google-Smtp-Source: AGHT+IFDc8GOq/vFfcLWVdGllmnI1Bgm7f2sRPgc5/yJuIMcEh102ROZ7TT4kAIBKHdm8jzKkU79tw==
+X-Received: by 2002:a17:906:3012:b0:9a2:225a:8d01 with SMTP id 18-20020a170906301200b009a2225a8d01mr4581177ejz.7.1696513122856;
+        Thu, 05 Oct 2023 06:38:42 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-120.fbsv.net. [2a03:2880:31ff:78::face:b00c])
+        by smtp.gmail.com with ESMTPSA id kb4-20020a1709070f8400b009adc81bb544sm1210966ejc.106.2023.10.05.06.38.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 06:38:42 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 06:38:40 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     mike.kravetz@oracle.com, muchun.song@linux.dev,
+        akpm@linux-foundation.org, Shuah Khan <shuah@kernel.org>,
+        linux-mm@kvack.org, open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 2/2] selftests/mm: Add a new test for madv and hugetlb
+Message-ID: <ZR68YM1ImrAGy+ZJ@gmail.com>
+References: <20231004171127.106056-1-leitao@debian.org>
+ <20231004171127.106056-2-leitao@debian.org>
+ <026a75f627bc7ffa45ead3fd6ecb9da7b5bc2692.camel@surriel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230929003901.15086-6-quic_amelende@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <026a75f627bc7ffa45ead3fd6ecb9da7b5bc2692.camel@surriel.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sep 2023, Anjelique Melendez wrote:
-
-> Update the pmi632 lpg_data struct so that pmi632 devices use PPG
-> for LUT pattern.
+On Wed, Oct 04, 2023 at 08:22:08PM -0400, Rik van Riel wrote:
+> On Wed, 2023-10-04 at 10:11 -0700, Breno Leitao wrote:
+> > 
+> > +char *huge_ptr;
+> > +
+> > +/* Touch the memory while it is being madvised() */
+> > +void *touch(void *unused)
+> > +{
+> > +†††††††char *ptr = (char *)huge_ptr;
+> > +
+> > +†††††††if (!ptr) {
+> > +†††††††††††††††fprintf(stderr, "Failed to allocate memory\n");
+> > +†††††††††††††††perror("");
+> > +†††††††}
 > 
-> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
-> ---
->  drivers/leds/rgb/leds-qcom-lpg.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+> I'm not sure this error message makes a lot of sense
+> away from where the huge page gets allocated.
 
-Reviewed-by: Lee Jones <lee@kernel.org>
+Right. I think I don't need this whole "if" clause at all. Let me remove
+it.
 
-> diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-> index 4d87686f916c..a6cea6bd7167 100644
-> --- a/drivers/leds/rgb/leds-qcom-lpg.c
-> +++ b/drivers/leds/rgb/leds-qcom-lpg.c
-> @@ -1660,11 +1660,13 @@ static const struct lpg_data pm8994_lpg_data = {
->  static const struct lpg_data pmi632_lpg_data = {
->  	.triled_base = 0xd000,
->  
-> +	.lut_size = 64,
-> +
->  	.num_channels = 5,
->  	.channels = (const struct lpg_channel_data[]) {
-> -		{ .base = 0xb300, .triled_mask = BIT(7) },
-> -		{ .base = 0xb400, .triled_mask = BIT(6) },
-> -		{ .base = 0xb500, .triled_mask = BIT(5) },
-> +		{ .base = 0xb300, .triled_mask = BIT(7), .sdam_offset = 0x48 },
-> +		{ .base = 0xb400, .triled_mask = BIT(6), .sdam_offset = 0x56 },
-> +		{ .base = 0xb500, .triled_mask = BIT(5), .sdam_offset = 0x64 },
->  		{ .base = 0xb600 },
->  		{ .base = 0xb700 },
->  	},
-> -- 
-> 2.41.0
+> > 
+> > +†††††††while (max--) {
+> > +†††††††††††††††huge_ptr = mmap(NULL, MMAP_SIZE, PROT_READ |
+> > PROT_WRITE,
+> > +†††††††††††††††††††††††††††††††MAP_PRIVATE | MAP_ANONYMOUS |
+> > MAP_HUGETLB, -1, 0);
+> > +
+> > +†††††††††††††††if ((unsigned long)huge_ptr == -1) {
+> > +†††††††††††††††††††††††perror("Failed to allocate\n");
+> > +†††††††††††††††††††††††continue;
+> > +†††††††††††††††}
 > 
+> Should the test case just exit with an error here, when
+> the allocation fails?
 
--- 
-Lee Jones [ÊùéÁêºÊñØ]
+Yes, probably skip the test if we are not able to allocate the memory.
+I just found I can use something as `ksft_exit_skip()` for this purpose.
+
+Thanks for the great feedbacks!
