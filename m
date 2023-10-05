@@ -2,88 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8DA7B99D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 03:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2CCD7B99D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 04:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244450AbjJEB4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 21:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
+        id S233044AbjJECEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 22:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243717AbjJEB4O (ORCPT
+        with ESMTP id S229767AbjJECEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 21:56:14 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27439E
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 18:56:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6AD29C433C7;
-        Thu,  5 Oct 2023 01:56:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696470968;
-        bh=Ds7/7Qor00gfkfbVsC+TNH+U4huQ8fWDTvRydnVSLO4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Ih6W11r29lo60oH0FY2wh03dJUw9ppcaFMzQIjkjEN3t8PYlWP5a1oQNmf3Uqvl8d
-         rMYgc3uIC5sSGPDnoASMjCUSF2kxUozoGNV9Fke8KEFsxNjMGBaql090cngq5ma1yA
-         VQb9AV85DE04nSKD03Xulo+gIP0l/3AUmXrtfP4LnSPrj8d6zD2vUx+Ib7115Yv647
-         V6Wbda8tXBYr6cri2XjIC4eAqQShPDasCGH5qTEjWfItHkVFv0dzLA2LXQZV9lcmWM
-         QO8XndgrMAygvr9kuG0ehlNnXCSKO+ThHY77jGL6iGPe867kMOyntElvoJcOSLVIOX
-         nkgfCQxjJtzuA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5415BE632D6;
-        Thu,  5 Oct 2023 01:56:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 4 Oct 2023 22:04:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B429AB;
+        Wed,  4 Oct 2023 19:04:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696471481; x=1728007481;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7f2TlIXBIJjbSNeuOq7FE3Xuyd7JTillqKjxVDak1fY=;
+  b=hJLJSK0csq69DUU4LIHCOSiKCkhZrlAodmog5YQEj7rGChJ0ufoTSXNe
+   cwLUgM6eFn1XVxRZaKPfvB+/FPxV6e6W5sJTusef5bcWH4NL78QYbJFE/
+   9w3M69zAYfVODnWKynGXL+6SbD5qWXqy1UkKsl1PA+rkZ2NrZxAtyr0dJ
+   AWmMdAZ/dR2OezPNWvjojgqvatskEY9dDI9IL1CongYOOzvahGCoSKsut
+   xvc48S5n+TZV13Ajowio5H7OxJgr1h9k1F/W4uMyU3pb3SalP2wenUBtB
+   mV2PHzToSQoLdKT+eqVswhucOwNbUYUDEt5YnLF2Rk2jLt5PI3Z/dRFrY
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="449865051"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="449865051"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 19:04:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="875366247"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="875366247"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 04 Oct 2023 19:04:37 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qoDj9-000Krs-0E;
+        Thu, 05 Oct 2023 02:04:35 +0000
+Date:   Thu, 5 Oct 2023 10:04:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     werneazc@gmail.com, jic23@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        lars@metafoo.de
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andre Werner <andre.werner@systec-electronic.com>
+Subject: Re: [PATCH 2/2] iio: adc: ads7038: Add driver support for 12bit ADC
+Message-ID: <202310050917.qrpQA2nb-lkp@intel.com>
+References: <20231004102330.3713-2-andre.werner@systec-electronic.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/4] platform/chrome: Random driver cleanups
-From:   patchwork-bot+chrome-platform@kernel.org
-Message-Id: <169647096834.5479.6608928150859840412.git-patchwork-notify@kernel.org>
-Date:   Thu, 05 Oct 2023 01:56:08 +0000
-References: <20231003003429.1378109-1-swboyd@chromium.org>
-In-Reply-To: <20231003003429.1378109-1-swboyd@chromium.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     bleung@chromium.org, tzungbi@kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        chrome-platform@lists.linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231004102330.3713-2-andre.werner@systec-electronic.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi,
 
-This series was applied to chrome-platform/linux.git (for-next)
-by Tzung-Bi Shih <tzungbi@kernel.org>:
+kernel test robot noticed the following build warnings:
 
-On Mon,  2 Oct 2023 17:34:24 -0700 you wrote:
-> Here's some random chromeos driver cleanups that have been sitting in my
-> tree. I've noticed them while browsing the code for something I'm
-> working on.
-> 
-> Stephen Boyd (4):
->   platform/chrome: cros_ec_typec: Use semi-colons instead of commas
->   platform/chrome: cros_ec_typec: Use dev_err_probe() more
->   platform/chrome: cros_typec_vdm: Mark port_amode_ops const
->   platform/chrome: cros_ec_proto: Mark outdata as const
-> 
-> [...]
+[auto build test WARNING on jic23-iio/togreg]
+[also build test WARNING on robh/for-next linus/master v6.6-rc4 next-20231004]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Here is the summary with links:
-  - [1/4] platform/chrome: cros_ec_typec: Use semi-colons instead of commas
-    https://git.kernel.org/chrome-platform/c/a88f6ef67957
-  - [2/4] platform/chrome: cros_ec_typec: Use dev_err_probe() more
-    https://git.kernel.org/chrome-platform/c/2b055bf8ac84
-  - [3/4] platform/chrome: cros_typec_vdm: Mark port_amode_ops const
-    https://git.kernel.org/chrome-platform/c/14e7c01cc349
-  - [4/4] platform/chrome: cros_ec_proto: Mark outdata as const
-    https://git.kernel.org/chrome-platform/c/2f3dd39e2b49
+url:    https://github.com/intel-lab-lkp/linux/commits/werneazc-gmail-com/iio-adc-ads7038-Add-driver-support-for-12bit-ADC/20231004-182531
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
+patch link:    https://lore.kernel.org/r/20231004102330.3713-2-andre.werner%40systec-electronic.com
+patch subject: [PATCH 2/2] iio: adc: ads7038: Add driver support for 12bit ADC
+config: powerpc64-allyesconfig (https://download.01.org/0day-ci/archive/20231005/202310050917.qrpQA2nb-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310050917.qrpQA2nb-lkp@intel.com/reproduce)
 
-You are awesome, thank you!
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310050917.qrpQA2nb-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/iio/adc/ti-ads7038-core.c:46:5: warning: no previous prototype for function 'ads7038_read_raw' [-Wmissing-prototypes]
+      46 | int ads7038_read_raw(struct iio_dev *indio_dev,
+         |     ^
+   drivers/iio/adc/ti-ads7038-core.c:46:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+      46 | int ads7038_read_raw(struct iio_dev *indio_dev,
+         | ^
+         | static 
+   1 warning generated.
+
+
+vim +/ads7038_read_raw +46 drivers/iio/adc/ti-ads7038-core.c
+
+    45	
+  > 46	int ads7038_read_raw(struct iio_dev *indio_dev,
+    47			     struct iio_chan_spec const *chan,
+    48			     int *val, int *val2,
+    49			     long mask)
+    50	{
+    51		unsigned int ret;
+    52		struct ads7038_ch_meas_result tmp_val;
+    53		struct ads7038_data *const data = (struct ads7038_data *)iio_priv(indio_dev);
+    54		struct ads7038_info *const info = (struct ads7038_info *)data->info;
+    55	
+    56		ret = info->read_channel(indio_dev, chan->channel, &tmp_val);
+    57	
+    58		if (ret < 0) {
+    59			dev_err(&indio_dev->dev, "Read channel returned with error %d", ret);
+    60			return ret;
+    61		}
+    62	
+    63		switch (mask) {
+    64		case IIO_CHAN_INFO_RAW:
+    65			*val = tmp_val.raw;
+    66	
+    67			ret = IIO_VAL_INT;
+    68			break;
+    69		case IIO_CHAN_INFO_SCALE:
+    70			ret = regulator_get_voltage(data->reg);
+    71			if (ret < 0)
+    72				break;
+    73	
+    74			*val = ret / 1000;	/* uV -> mV */
+    75			*val2 = (1 << chan->scan_type.realbits) - 1;
+    76	
+    77			ret = IIO_VAL_FRACTIONAL;
+    78			break;
+    79		default:
+    80			ret = -EINVAL;
+    81			break;
+    82		}
+    83	
+    84		return ret;
+    85	}
+    86	
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
