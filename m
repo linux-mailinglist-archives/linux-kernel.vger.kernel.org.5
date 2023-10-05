@@ -2,134 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCF17BA013
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD507BA124
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235054AbjJEOcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38892 "EHLO
+        id S238904AbjJEOmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234300AbjJEObZ (ORCPT
+        with ESMTP id S234122AbjJEOhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:31:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF0328114;
-        Thu,  5 Oct 2023 06:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696513497; x=1728049497;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=5SpEVemSirx21NVTF+jU5S1sEv0Gnxk/3NfB/f1IUz4=;
-  b=aQKUx/FTxmgbepNPNIG/kWF8sBDNepyMMmRnsReYPUs1iCTyRG9KGhr/
-   aW8ULEpE6gdquYw5Y4uDf83OEE5ceWBBWuoXUg8dCvplOUou7YG3J5Kzf
-   7T5RKx7EA567zpFvPkYy/uQNEpH+HiLwv01Iax42iHKiaWRv0CqrElMDO
-   08x+2gqpWSfauslQ7sThhZ077OVlCJOgX5X1G1DbWq+58aYiLz2aT8F/X
-   vsgT0TIRwLYYzy4gvryPh8vHhDvNJ8LfCH01Ld8jwwfP4cJhSCqNekDuT
-   1cJeWXuOCUoGEKdMDpDqbydzKUaTskjXdXW2R+ue/oJerBuh5U2izDYMy
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="447665974"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="447665974"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 05:45:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="1083010888"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="1083010888"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 05 Oct 2023 05:45:53 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 0AC6C35A; Thu,  5 Oct 2023 15:45:51 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andi Shyti <andi.shyti@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 1/1] serial: 8250_bcm7271: Use devm_clk_get_optional_enabled()
-Date:   Thu,  5 Oct 2023 15:45:50 +0300
-Message-Id: <20231005124550.3607234-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Thu, 5 Oct 2023 10:37:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729BD8A4D;
+        Thu,  5 Oct 2023 07:03:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E4F5C3279D;
+        Thu,  5 Oct 2023 12:45:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696509955;
+        bh=OyPYLq8qw3jPUQ7rA5KJM4mXFbg5lNRBN/Aw7zBp+L4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=HLWo6k8p032N2hH+EknnrwhrZQgP2503xfFAY8bwfX4utLsM8uym7mbVNhp2BYVKB
+         s+jC7tV0VdyNFMcXr4XY5CLzZRiRfhxp64CqGdzalVzcsOoSnWyge2bcwtZbuKVsXb
+         cAIURc3dJ/i0srVdjL4Idvbs6WxQC9OWICK9BB4KliJ+5nMgdgpgeBu4MnuTV5WeXI
+         Vjk46daoz5mBOebcG99aKmHcDqIUaYKGXsp0lPX1Y3jUxzhzQtjCl8bO1IR8fCyBNi
+         sF3RgZTCDtAYO7kM+ZvbtQOT4K9gLYjWwE2RSIlX+8EaNlCspTKPe9DXyjUChbfEaA
+         yNqffQfYE4z1w==
+Message-ID: <9af5c896da0c39c66d0555879c04c23fd853c9de.camel@kernel.org>
+Subject: Re: [PATCH v2 89/89] fs: move i_generation into new hole created
+ after timestamp conversion
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Date:   Thu, 05 Oct 2023 08:45:53 -0400
+In-Reply-To: <CAOQ4uxgtyaBTM1bOSSGmsk+F4ZwsK+-N5ZZ3wAt_nv_E6G3C7Q@mail.gmail.com>
+References: <20231004185530.82088-1-jlayton@kernel.org>
+         <20231004185530.82088-3-jlayton@kernel.org>
+         <CAOQ4uxgtyaBTM1bOSSGmsk+F4ZwsK+-N5ZZ3wAt_nv_E6G3C7Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_clk_get_optional_enabled() to simplify the code.
+On Thu, 2023-10-05 at 08:08 +0300, Amir Goldstein wrote:
+> On Wed, Oct 4, 2023 at 9:56=E2=80=AFPM Jeff Layton <jlayton@kernel.org> w=
+rote:
+> >=20
+> > The recent change to use discrete integers instead of struct timespec64
+> > shaved 8 bytes off of struct inode, but it also moves the i_lock
+> > into the previous cacheline, away from the fields that it protects.
+> >=20
+> > Move i_generation above the i_lock, which moves the new 4 byte hole to
+> > just after the i_fsnotify_mask in my setup.
+>=20
+> Might be good to mention that this hole has a purpose...
+>=20
+> >=20
+> > Suggested-by: Amir Goldstein <amir73il@gmail.com>
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  include/linux/fs.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index 485b5e21c8e5..686c9f33e725 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -677,6 +677,7 @@ struct inode {
+> >         u32                     i_atime_nsec;
+> >         u32                     i_mtime_nsec;
+> >         u32                     i_ctime_nsec;
+> > +       u32                     i_generation;
+> >         spinlock_t              i_lock; /* i_blocks, i_bytes, maybe i_s=
+ize */
+> >         unsigned short          i_bytes;
+> >         u8                      i_blkbits;
+> > @@ -733,7 +734,6 @@ struct inode {
+> >                 unsigned                i_dir_seq;
+> >         };
+> >=20
+> > -       __u32                   i_generation;
+> >=20
+> >  #ifdef CONFIG_FSNOTIFY
+> >         __u32                   i_fsnotify_mask; /* all events this ino=
+de cares about */
+>=20
+> If you post another version, please leave a comment here
+>=20
+> +         /* 32bit hole reserved for expanding i_fsnotify_mask to 64bit *=
+/
+>=20
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: fixed the returned value (Andi)
- drivers/tty/serial/8250/8250_bcm7271.c | 24 +++++++++---------------
- 1 file changed, 9 insertions(+), 15 deletions(-)
+Sure.
 
-diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/serial/8250/8250_bcm7271.c
-index 1a853a08654a..55dea2539c47 100644
---- a/drivers/tty/serial/8250/8250_bcm7271.c
-+++ b/drivers/tty/serial/8250/8250_bcm7271.c
-@@ -1015,26 +1015,23 @@ static int brcmuart_probe(struct platform_device *pdev)
- 	of_property_read_u32(np, "clock-frequency", &clk_rate);
- 
- 	/* See if a Baud clock has been specified */
--	baud_mux_clk = devm_clk_get(dev, "sw_baud");
--	if (IS_ERR(baud_mux_clk)) {
--		if (PTR_ERR(baud_mux_clk) == -EPROBE_DEFER) {
--			ret = -EPROBE_DEFER;
--			goto release_dma;
--		}
--		dev_dbg(dev, "BAUD MUX clock not specified\n");
--	} else {
-+	baud_mux_clk = devm_clk_get_optional_enabled(dev, "sw_baud");
-+	ret = PTR_ERR_OR_ZERO(baud_mux_clk);
-+	if (ret)
-+		goto release_dma;
-+	if (baud_mux_clk) {
- 		dev_dbg(dev, "BAUD MUX clock found\n");
--		ret = clk_prepare_enable(baud_mux_clk);
--		if (ret)
--			goto release_dma;
-+
- 		priv->baud_mux_clk = baud_mux_clk;
- 		init_real_clk_rates(dev, priv);
- 		clk_rate = priv->default_mux_rate;
-+	} else {
-+		dev_dbg(dev, "BAUD MUX clock not specified\n");
- 	}
- 
- 	if (clk_rate == 0) {
- 		ret = dev_err_probe(dev, -EINVAL, "clock-frequency or clk not defined\n");
--		goto err_clk_disable;
-+		goto release_dma;
- 	}
- 
- 	dev_dbg(dev, "DMA is %senabled\n", priv->dma_enabled ? "" : "not ");
-@@ -1118,8 +1115,6 @@ static int brcmuart_probe(struct platform_device *pdev)
- 	serial8250_unregister_port(priv->line);
- err:
- 	brcmuart_free_bufs(dev, priv);
--err_clk_disable:
--	clk_disable_unprepare(baud_mux_clk);
- release_dma:
- 	if (priv->dma_enabled)
- 		brcmuart_arbitration(priv, 0);
-@@ -1134,7 +1129,6 @@ static int brcmuart_remove(struct platform_device *pdev)
- 	hrtimer_cancel(&priv->hrt);
- 	serial8250_unregister_port(priv->line);
- 	brcmuart_free_bufs(&pdev->dev, priv);
--	clk_disable_unprepare(priv->baud_mux_clk);
- 	if (priv->dma_enabled)
- 		brcmuart_arbitration(priv, 0);
- 	return 0;
--- 
-2.40.0.1.gaa8946217a0b
+I suppose we could create a union there too if you really want to
+reserve it:
 
+	union {
+		__u32		i_fsnotify_mask;
+		__u64		__i_fsnotify_mask_ext;
+	};
+
+--=20
+Jeff Layton <jlayton@kernel.org>
