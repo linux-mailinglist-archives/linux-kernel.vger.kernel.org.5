@@ -2,136 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 932E17BA2AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D377B9FC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234035AbjJEPpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:45:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
+        id S233645AbjJEO3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232999AbjJEPoz (ORCPT
+        with ESMTP id S234126AbjJEO2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:44:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB4B13C80;
-        Thu,  5 Oct 2023 07:32:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5903BC32782;
-        Thu,  5 Oct 2023 10:54:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696503274;
-        bh=r9QAN25ECg8YV7rovLkgwPyjjglMxbc27XwhgPj0p2k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jylTMHbvJxFAMVfEx+/VTWJ5qLSXYONVK3QwgUliTNxTLcVa8fp1LiFRhv8pXAEiG
-         c6IiyFrR/PMIZPxfaWHGeiEjHY7WqILh+Dz+ukbT78vExFr+jS34I+5LH3isMfZ44S
-         qJKlRR8+urhiXnx8GpuqU0JHlw2ssmvVraMs/zIj7WyVlj3504YyoTfBlXUEIySbmG
-         7SRdbQEUn0OJ7UxE9O9zzI0SzobLyNc1nPSIQU4xE3oVxKEOkYDjFgN/iuu3G0Cxqh
-         H/3Q+LOeLDOYEiQ3Jx6lKEWtH40Fo7GS0K4LLz7c4KaAka3U16sUdq0wM80Xwsg+9q
-         9RYFeYnWmN0Zw==
-Date:   Thu, 5 Oct 2023 11:54:29 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     shravan chippa <shravan.chippa@microchip.com>,
-        green.wan@sifive.com, vkoul@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, conor+dt@kernel.org,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nagasuresh.relli@microchip.com, praveen.kumar@microchip.com,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v2 2/4] dt-bindings: dma: sf-pdma: add new compatible name
-Message-ID: <20231005-wanted-plausible-71dae05ccc7b@spud>
-References: <20231003042215.142678-1-shravan.chippa@microchip.com>
- <20231003042215.142678-3-shravan.chippa@microchip.com>
- <20231004133021.GB2743005-robh@kernel.org>
+        Thu, 5 Oct 2023 10:28:00 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D3F23533
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 03:57:56 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-533e7d127d4so1361415a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 03:57:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696503475; x=1697108275; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wQ3RLUCaSdzxvXiookFTZU1MPOs1GBqSab/AI/nOpfA=;
+        b=l4mIzmmSwXvhm5+rsVWR5ywVcGzQRhCT4fa+9ZOAF8lXPp28DaSUsP/0uRqy1dR+F2
+         Mlwxh2LNGCL179TnZ9nUoMWY1KLeyj92F8QyZVBdaW0AWXJDtuuRHbby8FvfLO4Z5Xz1
+         7WsXZ+UgzYQYNz5KgwlDf3JTLpsqgm4Pk9OD1uqVqAqP74cdRctI1FQq/NYVnkcagoK9
+         9kE6NV90jJfHBXIRm+RxNyaG8Ejz77JfMT2OkcuOX2aW5uC9V87edG1X+ykK2gmex9Gx
+         hLeER9ICJt4vU+MY3ffr3YWh7P/Z1rDZCqs7Tx64dCC35gYc8V4ZqprxuEwOgsWze6Gr
+         qTtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696503475; x=1697108275;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wQ3RLUCaSdzxvXiookFTZU1MPOs1GBqSab/AI/nOpfA=;
+        b=Sdk8g97e+bADoTePLIxA5PrmJFPz6k4ERLApNk096s5Y8iDrG/8DWDBVAhbTRHvbtQ
+         0Ko+CW4LHPLpcTa+RMmby+oNZ67lEtALMOZLscl/unQnxS4Dt39+dQdaZ05dNah5ZLOV
+         +w4jfXMJrE7175t+uLa98o3J+dZaAth6HrSeLsM2nkcEzbxfVc93ElDd/QIp/tQtPm1f
+         /L946iX4MMuutBsmjKNiyf9LC5mBZ5TUeU1it07FFd8OREVrt3jWrA8CuvBPFMxWEKwE
+         qB+BypQQESNYoYBPhSEhp3pVBnYbH8H41LT93tPCX/Gy+7lDs36UuaTVJNXrFvTVsWXZ
+         nxVA==
+X-Gm-Message-State: AOJu0YyzeTMYU9xQKRvhhXwpij9+SI8hyx8P+YY9MeyYl/0aEGWFeYwY
+        zzxCoZh9X0+O7pIpFcMyZJc7ew==
+X-Google-Smtp-Source: AGHT+IFHKo08dnCxAHCSqPUlKllGshZLoez6ZB/WnVtxPktmfHwRTGXFlNqeq165yWJe8Uhn/+DHKw==
+X-Received: by 2002:a05:6402:6d4:b0:533:795d:8c48 with SMTP id n20-20020a05640206d400b00533795d8c48mr4763188edy.10.1696503475355;
+        Thu, 05 Oct 2023 03:57:55 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id e7-20020a50fb87000000b00533c844e337sm883976edq.85.2023.10.05.03.57.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 03:57:54 -0700 (PDT)
+Message-ID: <1d252872-092e-405e-b5d6-b6bc2707b14b@linaro.org>
+Date:   Thu, 5 Oct 2023 12:57:53 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FXxfjJNs6siMoTeZ"
-Content-Disposition: inline
-In-Reply-To: <20231004133021.GB2743005-robh@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] extcon: max77843: add device-tree compatible string
+Content-Language: en-US
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>
+References: <20231005104327.981101-1-m.szyprowski@samsung.com>
+ <CGME20231005104339eucas1p147e85630eec0ec4b476a21ed2cd3650d@eucas1p1.samsung.com>
+ <20231005104327.981101-2-m.szyprowski@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231005104327.981101-2-m.szyprowski@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05/10/2023 12:43, Marek Szyprowski wrote:
+> Add the needed device-tree compatible string to the MAX77843 extcon
+> driver, so it can be automatically loaded when compiled as a kernel
+> module and given device-tree contains separate 'muic' node under the main
+> MAX77843 PMIC node.
+> 
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
 
---FXxfjJNs6siMoTeZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-On Wed, Oct 04, 2023 at 08:30:21AM -0500, Rob Herring wrote:
-> On Tue, Oct 03, 2023 at 09:52:13AM +0530, shravan chippa wrote:
-> > From: Shravan Chippa <shravan.chippa@microchip.com>
-> >=20
-> > Add new compatible name microchip,mpfs-pdma to support
-> > out of order dma transfers
-> >=20
-> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> > Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
-> > ---
-> >  .../bindings/dma/sifive,fu540-c000-pdma.yaml         | 12 ++++++++----
-> >  1 file changed, 8 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pd=
-ma.yaml b/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
-> > index a1af0b906365..974467c4bacb 100644
-> > --- a/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
-> > +++ b/Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
-> > @@ -27,10 +27,14 @@ allOf:
-> > =20
-> >  properties:
-> >    compatible:
-> > -    items:
-> > -      - enum:
-> > -          - sifive,fu540-c000-pdma
-> > -      - const: sifive,pdma0
-> > +    oneOf:
-> > +      - items:
-> > +          - const: microchip,mpfs-pdma # Microchip out of order DMA tr=
-ansfer
-> > +          - const: sifive,fu540-c000-pdma # Sifive in-order DMA transf=
-er
+Best regards,
+Krzysztof
 
-IIRC I asked for the comments here to be removed on the previous
-version, and my r-b was conditional on that.
-The device specific compatible has merit outside of the ordering, which
-may just be a software policy decision.
-
-> This doesn't really make sense. microchip,mpfs-pdma is compatible with=20
-> sifive,fu540-c000-pdma and sifive,fu540-c000-pdma is compatible with=20
-> sifive,pdma0, but microchip,mpfs-pdma is not compatible with=20
-> sifive,pdma0? (Or replace "compatible with" with "a superset of")
-
-TBH, I am not sure why it was done this way. Probably because the driver
-contains both sifive,pdma0 and sifive,fu540-c000-pdma. Doing
-compatible =3D "microchip,mpfs-pdma", "sifive,fu540-c000-pdma", "sifive,pdm=
-a0";
-thing would be fine.
-
-> Any fallback is only useful if an OS only understanding the fallback=20
-> will work with the h/w. Does this h/w work without the driver changes?
-
-Yes.=20
-I've been hoping that someone from SiFive would come along, and in
-response to this patchset, tell us _why_ the driver does not make use of
-out-of-order transfers to begin with.
-
-Thanks,
-Conor.
-
---FXxfjJNs6siMoTeZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZR6V5AAKCRB4tDGHoIJi
-0oX1AP4gvbx/YYM63FggUSYmU1/62CsJzHKn0+mB5T85IMCFwgD/cOxS4ARE5fEz
-L4ddVpARkl5OfnTsKxySy+l9cZjbFgc=
-=hzTR
------END PGP SIGNATURE-----
-
---FXxfjJNs6siMoTeZ--
