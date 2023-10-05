@@ -2,234 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7FD7B9EC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FFA7B9F56
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbjJEOL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
+        id S233385AbjJEOVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:21:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232167AbjJEOJx (ORCPT
+        with ESMTP id S232473AbjJEOTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:09:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80BACE7;
-        Thu,  5 Oct 2023 06:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696513710; x=1728049710;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=v+okn4KDE0Jh/SeH/Yc5Kcs3VNsIMzK5+c32V9VGkMY=;
-  b=lXOW4IYtbiAuhuGql4XYHJDG8paGuU3srPxZDvpA+46juc8Ww4LL+1A+
-   +GXTTU7ZPcxeoZGY1YK1NRByTwxJz6Gz4AoVXTbNtyZSVjsHZH8+ussEM
-   gqzmeh3uIBBuPVPKlPBuYMbzdNcJDDHR1lKvZUN6wWzV3FeW3nHMguj1O
-   xl5BsmaJDKEIn2F7ADlXEfxPHsyB4+l1n6NhiWHnoqayBDBsHS6ZZgmbh
-   juOT6NXFP6M5WQ3kMIR1powre5jjSJxMZFAVCoDss3ATmoSI8SFb30FiY
-   cOi6aPJkM/TqmqY7URT4WYmmOOrxDLIpA51/873d+xEXjR3TaLSqNU6C9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="469675367"
-X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
-   d="scan'208";a="469675367"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 22:18:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="867737716"
-X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
-   d="scan'208";a="867737716"
-Received: from unknown (HELO localhost.localdomain) ([10.226.216.116])
-  by fmsmga002.fm.intel.com with ESMTP; 04 Oct 2023 22:18:35 -0700
-From:   niravkumar.l.rabara@intel.com
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: mtd: cadence: convert cadence-nand-controller.txt to yaml
-Date:   Thu,  5 Oct 2023 13:15:48 +0800
-Message-Id: <20231005051548.55122-1-niravkumar.l.rabara@intel.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 5 Oct 2023 10:19:13 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF53E4C07
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 22:15:54 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c874b43123so4384485ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 22:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696482954; x=1697087754; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=H9nT5tLRN5qqmtXX+vtQZ11JSBruGv0fxOyk+moMln8=;
+        b=kmvhdUxUlbnxq02vSii0ln+sRYRZs8Kw/1sWj+/uxLViHgqXPzWtYrJ7mkcCTALkY3
+         FwfqubpOsL36Rlrsuv2WNylqzKPgSxEZCFHHAiDl+JClQvUJKWaGhTHZalsobCQhI81Z
+         zO+aEQAsfALsJ3sF1n+9de8+HWThxVxuJvx7UVBpq8iH9so2uFV90xvZuFLFmyCg2S48
+         vmdm4Krj4Kk3rRMjkSXE61p3PryftlI6DR9l33akDE/lcqzKErkeA9jEWzkIE5ZxFosa
+         IyQr21FoxlO7mvkhu8J4rBHtwmcgt/Ji+BPfcxxQD1IAQB3BWLZaTgSYB8yfEsAuu6lX
+         RxOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696482954; x=1697087754;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H9nT5tLRN5qqmtXX+vtQZ11JSBruGv0fxOyk+moMln8=;
+        b=tkxtGv6k9z8jjE39Kwvqug7uosKEqINfHI5R6Dk46YM7nOsd0zWQm30m+XSf5W12Of
+         Z+vt58WQk4V+wAG53/YXzwSIz15R5r7gv40nQG+er1weHmAXIf8/vAakZ+X4wWiwWiZe
+         gsksDJq/KJKkeURYf9MYV9UDn2nsa3VfPKhQVsSWFc2WpexmeYskeGnX8EfY/odB0rI3
+         mdE4QY6nkfh/d5Dk+I/gC/f6sWdqc2ZOgejNDXglqgIkGN7yL7j7tH/IjOqMgmrt7BtG
+         0uo8NBQJ2wHtEnu9y9X4Tw58NWl9/vEri4L1FWczH+317AomdzgPUg29yq3fvWFg3hBX
+         DzOA==
+X-Gm-Message-State: AOJu0YxNOUzgZuSI4nvSRxdFF4Vj/zDx4WqXBdjE9VBTubPPTs85usve
+        I8qeZ5U+OmnjN+F18xE3xNI=
+X-Google-Smtp-Source: AGHT+IG0E0MClgQEMPm1p4gW05l/cLgh45hB65zPuXG48f5XxjBjvLGQ87pk67e720CBKvIJ65j8ZQ==
+X-Received: by 2002:a17:903:2445:b0:1c7:4ab6:b3cc with SMTP id l5-20020a170903244500b001c74ab6b3ccmr5233304pls.54.1696482954260;
+        Wed, 04 Oct 2023 22:15:54 -0700 (PDT)
+Received: from [10.0.2.15] ([103.37.201.179])
+        by smtp.gmail.com with ESMTPSA id h10-20020a170902f7ca00b001bc445e249asm533587plw.124.2023.10.04.22.15.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 22:15:53 -0700 (PDT)
+Message-ID: <3d4e0f62-35bb-4b18-a64c-191c88415032@gmail.com>
+Date:   Thu, 5 Oct 2023 10:45:49 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] jfs : fs array-index-out-of-bounds in txCommit
+Content-Language: en-US
+To:     Dave Kleikamp <dave.kleikamp@oracle.com>, shaggy@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+        Linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+0558d19c373e44da3c18@syzkaller.appspotmail.com
+References: <20230919155542.4354-1-ghandatmanas@gmail.com>
+ <423182d1-3d75-4a73-9011-da24658a40cc@oracle.com>
+From:   Manas Ghandat <ghandatmanas@gmail.com>
+In-Reply-To: <423182d1-3d75-4a73-9011-da24658a40cc@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+On 04/10/23 00:46, Dave Kleikamp wrote:
+> The size of the xad array can be either XTROOTMAXSLOT or XTPAGEMAXSLOT 
+> depending on whether it is the root, imbedded in the inode, or not. It 
+> is currently declared with the smaller value so we can use xtpage_t 
+> within the inode.
+>
+> I had promised to address this, but haven't gotten to it yet. I'll try 
+> to carve out some time to do that.
+>
+> Thanks,
+> Shaggy
 
-Convert cadence-nand-controller.txt to yaml format.
-Update cadence-nand-controller.txt to cadence,nand.yaml in MAINTAINER file.
-
-Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
----
- .../devicetree/bindings/mtd/cadence,nand.yaml | 73 +++++++++++++++++++
- .../bindings/mtd/cadence-nand-controller.txt  | 53 --------------
- MAINTAINERS                                   |  2 +-
- 3 files changed, 74 insertions(+), 54 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/cadence,nand.yaml
- delete mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-
-diff --git a/Documentation/devicetree/bindings/mtd/cadence,nand.yaml b/Documentation/devicetree/bindings/mtd/cadence,nand.yaml
-new file mode 100644
-index 000000000000..781812ac702f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/cadence,nand.yaml
-@@ -0,0 +1,73 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/cadence,nand.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Cadence NAND controller
-+
-+maintainers:
-+  - Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-+
-+allOf:
-+  - $ref: nand-controller.yaml
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: cdns,hp-nfc
-+
-+  reg:
-+    items:
-+      - description: Address and length of the controller register set
-+      - description: Address and length of the Slave DMA data port
-+
-+  reg-names:
-+    items:
-+      - const: reg
-+      - const: sdma
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  dmas:
-+    maxItems: 1
-+
-+  cdns,board-delay-ps:
-+    description: |
-+      Estimated Board delay. The value includes the total round trip
-+      delay for the signals and is used for deciding on values associated
-+      with data read capture. The example formula for SDR mode is the
-+      following.
-+      board delay = RE#PAD delay + PCB trace to device + PCB trace from device
-+      + DQ PAD delay
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+      nand-controller@10b80000 {
-+        compatible = "cdns,hp-nfc";
-+        reg = <0x10b80000 0x10000>,
-+            <0x10840000 0x10000>;
-+        reg-names = "reg", "sdma";
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        interrupts = <0 97 4>;
-+        clocks = <&nf_clk>;
-+        cdns,board-delay-ps = <4830>;
-+
-+        nand@0 {
-+            reg = <0>;
-+        };
-+      };
-diff --git a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-deleted file mode 100644
-index d2eada5044b2..000000000000
---- a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-+++ /dev/null
-@@ -1,53 +0,0 @@
--* Cadence NAND controller
--
--Required properties:
--  - compatible : "cdns,hp-nfc"
--  - reg : Contains two entries, each of which is a tuple consisting of a
--	  physical address and length. The first entry is the address and
--	  length of the controller register set. The second entry is the
--	  address and length of the Slave DMA data port.
--  - reg-names: should contain "reg" and "sdma"
--  - #address-cells: should be 1. The cell encodes the chip select connection.
--  - #size-cells : should be 0.
--  - interrupts : The interrupt number.
--  - clocks: phandle of the controller core clock (nf_clk).
--
--Optional properties:
--  - dmas: shall reference DMA channel associated to the NAND controller
--  - cdns,board-delay-ps : Estimated Board delay. The value includes the total
--    round trip delay for the signals and is used for deciding on values
--    associated with data read capture. The example formula for SDR mode is
--    the following:
--    board delay = RE#PAD delay + PCB trace to device + PCB trace from device
--    + DQ PAD delay
--
--Child nodes represent the available NAND chips.
--
--Required properties of NAND chips:
--  - reg: shall contain the native Chip Select ids from 0 to max supported by
--    the cadence nand flash controller
--
--See Documentation/devicetree/bindings/mtd/nand-controller.yaml for more details on
--generic bindings.
--
--Example:
--
--nand_controller: nand-controller@60000000 {
--	  compatible = "cdns,hp-nfc";
--	  #address-cells = <1>;
--	  #size-cells = <0>;
--	  reg = <0x60000000 0x10000>, <0x80000000 0x10000>;
--	  reg-names = "reg", "sdma";
--	  clocks = <&nf_clk>;
--	  cdns,board-delay-ps = <4830>;
--	  interrupts = <2 0>;
--	  nand@0 {
--	      reg = <0>;
--	      label = "nand-1";
--	  };
--	  nand@1 {
--	      reg = <1>;
--	      label = "nand-2";
--	  };
--
--};
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 90f13281d297..502963390646 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4474,7 +4474,7 @@ F:	drivers/media/platform/cadence/cdns-csi2*
- CADENCE NAND DRIVER
- L:	linux-mtd@lists.infradead.org
- S:	Orphan
--F:	Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-+F:	Documentation/devicetree/bindings/mtd/cadence,nand.yaml
- F:	drivers/mtd/nand/raw/cadence-nand-controller.c
- 
- CADENCE USB3 DRD IP DRIVER
--- 
-2.25.1
+Can you guide with the workflow of how things should be done. I can try 
+to work on it and resolve the issue.
 
