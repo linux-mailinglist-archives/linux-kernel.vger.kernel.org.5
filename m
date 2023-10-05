@@ -2,108 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5F27BA57B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD0E7BA651
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242291AbjJEQRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
+        id S235490AbjJEQdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240874AbjJEQOH (ORCPT
+        with ESMTP id S237125AbjJEQcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:14:07 -0400
-Received: from icts-p-cavuit-4.kulnet.kuleuven.be (icts-p-cavuit-4.kulnet.kuleuven.be [134.58.240.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AB32C29D;
-        Thu,  5 Oct 2023 08:39:11 -0700 (PDT)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        Thu, 5 Oct 2023 12:32:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8EE29B30;
+        Thu,  5 Oct 2023 08:38:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C34DDC433C7;
+        Thu,  5 Oct 2023 15:38:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696520320;
+        bh=xqrKx4Kd9+GEwmVN2AFDTKEreQZrRE6Wy71JqH75+OE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LqCYd0wShQEfQ34aCPNRYpG9e1rGe5FNRozfs/5sOKIA7TYVUgPTcijdTj55JFWfQ
+         auvuso6FRNRvidbRggXlLxtCwXiF4iNXlwfJGvSsgs/hO/3op6t1hPMIONqaXIrZ2w
+         Q2mv8hKik9Ebvlu064LHGgiEYBub0T7YobcTM+ShQ4zVSJljVfhHsn+FnEEg/UkAaR
+         BrErZ1FXfwVsWQNVbdO755cLE4C3aM6wzbhZZHZouxWn1O/C4XMTe0UnflQ14xMm1W
+         Tx4Z1/aYWNgLgnxbBIfmbcjKn39eOQGviAjTdvZ0M81mTSMbXkfuSyR4yo7ZkMzGHY
+         8J1tjnGUqTqYQ==
+Date:   Thu, 5 Oct 2023 16:38:44 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     werneazc <werneazc@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, lars@metafoo.de, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andre Werner <andre.werner@systec-electronic.com>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: ti,ads7038: Add description
+ for ADS7038
+Message-ID: <20231005163844.3294e4e1@jic23-huawei>
+In-Reply-To: <CAKDJRcf4ikKWvENrg=9JW1EneY8qehD8HTxahL8x+5KxoCSQ0g@mail.gmail.com>
+References: <20231004102330.3713-1-andre.werner@systec-electronic.com>
+        <20231004151150.GA3140591-robh@kernel.org>
+        <CAKDJRcf4ikKWvENrg=9JW1EneY8qehD8HTxahL8x+5KxoCSQ0g@mail.gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 5D5172E.A8248
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:213:242:ac11:64])
-        by icts-p-cavuit-4.kulnet.kuleuven.be (Postfix) with ESMTP id 5D5172E;
-        Thu,  5 Oct 2023 17:39:00 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_VALID#0.00,SA-HVU#OURIPS#-35.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1696520340;
-        bh=NdUR+7nosFPVu+HpEjxUpAINbu4PmwNYym3jDerAKxc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=AcmelvGYuvNwmZT6FggOGzeIhUZ2WFfhEhBTUaLV08nxhe6krjT8b2PjM6KMkGoik
-         2udXzMA/db7zUoFnWUpzNAP+P9fS9zedbrdJOH9qUfrDzj/fnvrA89iCY2bGdITf72
-         KfEV2zJOlB8QJXidxvATzXLrKcTp5XOuBWzqF9as=
-Received: from librem.dyn.cs.kuleuven.be (unknown [IPv6:2a02:2c40:500:a006:548e:e4dd:76a4:afd8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id EA78CD4F34F1A;
-        Thu,  5 Oct 2023 17:38:59 +0200 (CEST)
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-To:     jarkko@kernel.org, kai.huang@intel.com, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com,
-        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Subject: [PATCH v7 03/13] selftests/sgx: Include memory clobber for inline asm in test enclave
-Date:   Thu,  5 Oct 2023 17:38:44 +0200
-Message-Id: <20231005153854.25566-4-jo.vanbulck@cs.kuleuven.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231005153854.25566-1-jo.vanbulck@cs.kuleuven.be>
-References: <20231005153854.25566-1-jo.vanbulck@cs.kuleuven.be>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the "memory" clobber to the EMODPE and EACCEPT asm blocks to tell the
-compiler the assembly code accesses to the secinfo struct. This ensures
-the compiler treats the asm block as a memory barrier and the write to
-secinfo will be visible to ENCLU.
+On Thu, 5 Oct 2023 05:51:40 +0200
+werneazc <werneazc@gmail.com> wrote:
 
-Fixes: 20404a808593 ("selftests/sgx: Add test for EPCM permission changes")
-Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Reviewed-by: Kai Huang <kai.huang@intel.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- tools/testing/selftests/sgx/test_encl.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> Dear Mr. Herring,
+>=20
+> On Wed, Oct 4, 2023 at 5:11=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
+e:
+> >
+> > On Wed, Oct 04, 2023 at 12:23:29PM +0200, werneazc@gmail.com wrote: =20
+> > > From: Andre Werner <andre.werner@systec-electronic.com>
+> > > =20
+> >
+> > Needs a commit message. =20
+>=20
+> Added in an upcoming commit.
+>=20
+> > =20
+> > > Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
+> > > ---
+> > >  .../bindings/iio/adc/ti,ads7038.yaml          | 51 +++++++++++++++++=
+++
+> > >  1 file changed, 51 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads7=
+038.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads7038.yam=
+l b/Documentation/devicetree/bindings/iio/adc/ti,ads7038.yaml
+> > > new file mode 100644
+> > > index 000000000000..37fbae95c8e6
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/iio/adc/ti,ads7038.yaml
+> > > @@ -0,0 +1,51 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/iio/adc/ti,ads7038.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Texas Instruments ADS7038 and similar ADCs
+> > > +
+> > > +maintainers:
+> > > +  - Andre Werner <andre.werner@systec-electronic.com>
+> > > +
+> > > +description: |
+> > > +  Family of 7 channel, 12 bit ADCs with SPI/I2C interface.
+> > > +
+> > > +  Datasheet: https://www.ti.com/lit/gpn/ads7038
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - ti,ads7038
+> > > +      - ti,ads7138
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  spi-max-frequency:
+> > > +    maximum: 60000000
+> > > +
+> > > +  vref-supply:
+> > > +    description: Supplies the 2.5V or 5V reference voltage =20
+> >
+> > I don't see that in the datasheet. It has AVDD and DVDD. =20
+>=20
+> Yes, that was a copy-and-paste error from another description used as
+> a template.
+>=20
+> >
+> > Also, looks like there are GPIOs. Those aren't ever exposed to the OS? =
+=20
+>=20
+> Yes, you are right. This is a fundamental implementation of the driver
+> to support the chip family. I want to add further functionalities in
+> upcoming commits.
+> I wanted to get some feedback when the first steps are done to not
+> reinvent everything from the beginning if something is generally
+> wrong in the driver structure and the way I had used the APIs.
 
-diff --git a/tools/testing/selftests/sgx/test_encl.c b/tools/testing/selftests/sgx/test_encl.c
-index c0d6397295e3..ae791df3e5a5 100644
---- a/tools/testing/selftests/sgx/test_encl.c
-+++ b/tools/testing/selftests/sgx/test_encl.c
-@@ -24,10 +24,11 @@ static void do_encl_emodpe(void *_op)
- 	secinfo.flags = op->flags;
- 
- 	asm volatile(".byte 0x0f, 0x01, 0xd7"
--				:
-+				: /* no outputs */
- 				: "a" (EMODPE),
- 				  "b" (&secinfo),
--				  "c" (op->epc_addr));
-+				  "c" (op->epc_addr)
-+				: "memory" /* read from secinfo pointer */);
- }
- 
- static void do_encl_eaccept(void *_op)
-@@ -42,7 +43,8 @@ static void do_encl_eaccept(void *_op)
- 				: "=a" (rax)
- 				: "a" (EACCEPT),
- 				  "b" (&secinfo),
--				  "c" (op->epc_addr));
-+				  "c" (op->epc_addr)
-+				: "memory" /* read from secinfo pointer */);
- 
- 	op->ret = rax;
- }
--- 
-2.25.1
+Device tree binding should fully describe the hardware, not what
+the driver currently implements.
+
+So add the GPIOs for v3.
+>=20
+> > =20
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - vref-supply
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    spi {
+> > > +        #address-cells =3D <1>;
+> > > +        #size-cells =3D <0>;
+> > > +
+> > > +        adc@0 {
+> > > +            compatible =3D "ti,ads7038";
+> > > +            reg =3D <0>;
+> > > +            vref-supply =3D <&refin_supply>;
+> > > +            spi-max-frequency =3D <10000000>;
+> > > +        };
+> > > +    };
+> > > --
+> > > 2.42.0
+> > > =20
+>=20
+> Regards,
+>=20
+> Andr=C3=A9
 
