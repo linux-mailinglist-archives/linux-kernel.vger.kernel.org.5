@@ -2,298 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F13C7BAE8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1607BAE8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbjJEWBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 18:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
+        id S231202AbjJEWBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 18:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJEWBD (ORCPT
+        with ESMTP id S229537AbjJEWB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 18:01:03 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4998795
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:01:01 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9b6559cbd74so277257266b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:01:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696543260; x=1697148060; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j7rW+zsppbDSR83e2mu/w1o69uKLyDR0SFckkgNxcXI=;
-        b=QkUHUGHUzlqi/NIVOZyWv0gfGbDEy/mMbPC3nVWsYUx/inUu0v5zhTC0tLCUAABR4H
-         KZU8Mkrt2kjOeFeeLoA1fhS4vaP9Z75lxVS00jXU5SSSS90UCCTqxJwAA+aH7ybuS4Ye
-         JgtPIvKmRsX1clhV4RHxIQZc/tcJrZT5MlODNMIWhuom175Yeok2RogCBI9GLIbBcIDw
-         ytakB2XX79h0AOy+DOshD6RPqvMCZz2m6X6W15F01PL1zvPz9bBlv2pGRXjvbBdNbQ1x
-         XxyMQhFB7c6VvApKsPvC2GGlOubSKOsWVAdO8GwjLBsVPZSZPDOAcENVuY39anyVCwC3
-         /IEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696543260; x=1697148060;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j7rW+zsppbDSR83e2mu/w1o69uKLyDR0SFckkgNxcXI=;
-        b=HPhZQJF3I9uebven06pjPhkQJ7YoyBzL0V2JfAVWLHybR8BXrfx73TN3om9FXsXA1E
-         vCViBh9Dmcz4UN2TUTrP3W7kTMkyaxyLDtfDGtR8HbtoYtCtxdua7+FB7sjxgFcg4IFC
-         UohQ0Q8WvAqu/u2A1Eeg29raBJHkCdwXxxF9gXcMhxy4u+gTgmaaRIz+bxzfQi0ulaWv
-         bioTDxI+gtvjSISid4G2cnMYeEW463wrcNDwUcOBaONOHL90hyo7JV5byRtg1aqP8dok
-         d0h5/my3dtHUn/mhqrY6xOYK3jTePISRb71aW5WTy6SD87vTufyCyn8ZZjOhqaEYYM83
-         xzVg==
-X-Gm-Message-State: AOJu0Yz0qLSFfjcnHlvP0FoiXS4d0PETfg4BdQDVe03VXJzouBQyRTjF
-        iQplo20LV8FoLLmu8tpZazLyRDn2H3B7D6PuqBuMaA==
-X-Google-Smtp-Source: AGHT+IH3GfxRS/3sVDu+yQ1Gy2+/8Wlf1t6GCIUPhTuL6dybptTu/zucWb6U/HMliFqydqhaSYe1gZVejZcjJVEKf74=
-X-Received: by 2002:a17:906:cc15:b0:9ae:4b88:cdbf with SMTP id
- ml21-20020a170906cc1500b009ae4b88cdbfmr5763847ejb.29.1696543259592; Thu, 05
- Oct 2023 15:00:59 -0700 (PDT)
+        Thu, 5 Oct 2023 18:01:29 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2050.outbound.protection.outlook.com [40.107.243.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4951F95
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:01:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ILlZvg/Ez4MH9Q3v5dbh80HANBMBgNiyhieUzFU48eaoCyQYYmX9q0BFkILUXkKfGk2FhegW8UMDaaKuGlmfltlOVeeuGKPl4yg68aFjgC7XsycZW+kDmwPhULpFgmtXqYs7KEEFOJ7hE5ZfV8wcEgoVH79Z7vtEnTtxrfLAjG/wbuxaJCAoON33eGCRUsM+S7/oR7LauCUjQnnTFStJPOS6NV60OnuyoCtBJJvP0Y6wF78t/vMYTHys3qcEhG0cVc0fpR700PmtyUnjyCJfxZ8nVnlNH5AuOAPE1FjEKS2EMWMpqA1tmD5s7cboU0VYENSNML9wv9z46or4ZpzZfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+YOUjXjhgnt3AKsdzIZrNF42fieVxjJsDSM68u1QEbU=;
+ b=XDVOhcUnpEc7EaA30TJg1m0/Wij7La4EscgODkV/lp3GSU7FS8NpKzIyFu9tuDGhkWglJXkYuJHE4cBxljllW1bWqDDnnzVe0UP1EWi9nnSN9+wAavwZ1sIr7uQSHxoyqUk1fX3jmsa4jTmzCzzvLqHVytZHWHuBi4kL8cNYhD+83z2UBl193G/pn4ryIxgmxkfkijZ84aCZHiHq5e5YR5N04pygueL4l1QvKhL0O8z8Y2GIinGGOJO17kcNbAlmUj/p0zJskNxoRmcod+W7G+XONKshHix8dlGiP1mqhA8Rxw9/oIATbdVe1dQMlJm8kHE+j/9Kqipn0B6Dz44YTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+YOUjXjhgnt3AKsdzIZrNF42fieVxjJsDSM68u1QEbU=;
+ b=vs1ueKbHnZ56I46+WefqLm5AbZDIKB+TFkqWSTu2qASewlaECi/aglNXfE/XSSYNafK32mHaGb1uRtIVrh8SrFONXn3bQz9SOS0Lz6y3wWpxiTzl4bp13DEfO4lq46EYRwc6Q6LBGaASNa0GvpRkaDTM2eEemQG3gmc8Kzyy7V0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SJ2PR12MB8829.namprd12.prod.outlook.com (2603:10b6:a03:4d0::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.35; Thu, 5 Oct
+ 2023 22:01:25 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::6ac8:eb30:6faf:32b2]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::6ac8:eb30:6faf:32b2%5]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
+ 22:01:25 +0000
+Message-ID: <e0459b50-7e21-7548-8151-9010ee88b0a6@amd.com>
+Date:   Thu, 5 Oct 2023 17:01:23 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH 10/13] x86/tdx: Convert shared memory back to private on
+ kexec
+Content-Language: en-US
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
+ <20231005131402.14611-11-kirill.shutemov@linux.intel.com>
+ <8d0e4e71-0614-618a-0f84-55eeb6d27a6d@amd.com>
+ <20231005212828.veeekxqc7rwvrbig@box>
+From:   "Kalra, Ashish" <ashish.kalra@amd.com>
+In-Reply-To: <20231005212828.veeekxqc7rwvrbig@box>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR13CA0013.namprd13.prod.outlook.com
+ (2603:10b6:806:21::18) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-References: <01fe46f0c58aa8baf92156ae2bdccfb2bf0cb48e.camel@perches.com>
-In-Reply-To: <01fe46f0c58aa8baf92156ae2bdccfb2bf0cb48e.camel@perches.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Thu, 5 Oct 2023 15:00:47 -0700
-Message-ID: <CAFhGd8q5Tktj4d_Y3Z12xycz_iwwWgVvspUdTGxOYM4M318bsg@mail.gmail.com>
-Subject: Re: [PATCH] get_maintainer: add --keywords-in-file option
-To:     Joe Perches <joe@perches.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2767:EE_|SJ2PR12MB8829:EE_
+X-MS-Office365-Filtering-Correlation-Id: 92821f89-4c19-40ce-bb58-08dbc5ee9e80
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +A2y9vwl9TJ4qegqaWrbd+TzFAvigoh5M7Y8coL2tKBlXM0FVBnbSMxMHrolnjyVGpAkWOcObDP3FWCDbe0wvPFQLHAPXJ8QsnQCKUJfZYq9xYwBHLd0dOpqQZlHdZYUt/yERBAHb05mXx3BMQMkeVdINog0NSp2IDMOm2WxUYJVU2AXY+sVO2f0K5ID7qbAoZzc65vJ9058ITP/ZrUNcIuHigrf/isAQ7HfctHKUFXhQPUR56Qc/ab6BN2aNl66Bl9shJ9PFi5DcHvPgyagDc/1WAWAaF3AvHE6i2An3AsSHoFrMgnDIXMchDFthnCaN9cHYQsAeiSZvItbzZNwK6O/KX4l56RtaqrljYCpk4JtStXAVB+cAzX1poowN5x+DYNNNTMv9v91h5Fh39o/ALZmbxfIqySO0lCO7Y8KMQntAi4hSKo4NaV2auQMZzKpkjSC/CrkLSfuq3ugkQhpmiOhh9jYJ+gnUPWgdPH06GtW6sbZ+PGW+Ji5rKrjW2VIMhS1Toh2mc+ShJcuZ+IqrXiIBRvoAqfbR4ANw1wxqQ0h1LEScssBo8D7Qs8P2B3IWqFXg+GEOFevMkTl76DgdaPqnvidoWar6HOrxVhvGmbNxvWfov/LYQpF3ZACGHnDPJiwr/Ubu4u58fqo9J7IAA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(366004)(39860400002)(376002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(31686004)(6506007)(6486002)(53546011)(478600001)(2616005)(86362001)(38100700002)(36756003)(31696002)(7416002)(41300700001)(2906002)(83380400001)(6512007)(26005)(54906003)(8936002)(66556008)(66476007)(316002)(66946007)(6916009)(5660300002)(4326008)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VlFNRGNjUHlxM1NNT1Q5bTcrQkR6a0FrczZxTm81d1NUUXhTV1lSSE55a3NP?=
+ =?utf-8?B?bWNsSHF3bjdZSUJzU3JRR0RkcWt4VUJPVVEzejJLSGZFREw1c1hzZXJ1OGRO?=
+ =?utf-8?B?NWpXZmhyVGlmdWw1Q2d5T3NHd1dBMkQ4aVBHVEpUNDZzd0J6UlNhSld2Nnkw?=
+ =?utf-8?B?T2YrQTc0NDBUM1ZaWTlYWURTSGw3MzRFaHJyZkpYYkdzclcwa29BRGRIaHU2?=
+ =?utf-8?B?MnExZ1YzRDhHTks0cTIzTGs4QXJ6b2xuRmdPSFE4WGlZZHR1R29uNzY2UEQr?=
+ =?utf-8?B?UGhvV29oZmhUUStHOXJMeHJXa1RkRDBRQVo0OXpDK0NYYWVQSFZmeVlBNlpX?=
+ =?utf-8?B?dXljRW95aURlOXNjdUlLWnFrNnk0THZ2Vm9MR0pnZnFiNHlET0FaRm4ycVBr?=
+ =?utf-8?B?OEpTWHdLeTBwalRabkx6SFFZSy9aV0U0ZC9iVURVdFhPdWNod2o4N2NkVGl2?=
+ =?utf-8?B?QXlCdXpRMDF1VUVMZ1prZ3F6RldlSzNQTDVrR1ZzUThDcE9veGtDZGZYVyt5?=
+ =?utf-8?B?ZlQ3YUhYVW9RMkhmL3dSMFZwN3k3YWNNdlRKUlVGcW8xa0l5b2VrZHBpQUxm?=
+ =?utf-8?B?UUNMcmhxd0pKSlJCMElvTEFXRCtTUklRaDVCMTBjcXhQSXNYc0ZXSUVpYmtI?=
+ =?utf-8?B?SjRWbGVSMlRiODU3cFlrYjAzUVF1SGJUOTUvdjF3eUt5akNvUkFHc3JMeSto?=
+ =?utf-8?B?bU1JNVlGUkhVSkkyUzRqRCsreEltMU5uMlBwQW9HR3hwVkx0ZTFpR2cvNDRp?=
+ =?utf-8?B?ejNGd3pPbFNxZVVLVWc0TmZzRzZac3BZRkNUZ0lqNzdnL2xXaE90SStaQTJI?=
+ =?utf-8?B?blJjREtrYzBhV0tUQW8rT3k5eDR5Yy9EaEROd0R4dE43Si9ralFlYVZXZzVM?=
+ =?utf-8?B?MWQ5R2paZmN6OE8wL1p4dXpWeDZxUFd3WWlNalNxSUFtSGJ0Z2hiMmc1WmRE?=
+ =?utf-8?B?RGhISnhPY0JtV2pCL0pnc1YrcmExSFVuTWp2OVkybGV3UWQ3a2htb1NJZlND?=
+ =?utf-8?B?czY2eUxJMXdSZWhQY05qT3g5R2lNYkk1ZmY5clRzcmJ2SjUrZ2RCUERFYnBT?=
+ =?utf-8?B?MGwwc0tFUEMxVXZweE5tVVBPeDFhQ3N2OFkwYmVDWlptNGcxMndsdDZWQU5o?=
+ =?utf-8?B?WXVidytaaG1zWktNK0s4eFpsMzFCNHF2NHB2MFBBNGY3MWxyTnFBYVJJaVlN?=
+ =?utf-8?B?YWVjQkFub3pCYkJZalZZT1BnTUhTM3YrVW9GVlU5NDJKNnMyckxmcFhqeVNJ?=
+ =?utf-8?B?R1JaamlvVXBLcVRiQXVsekszVnc5eGhSYjlKSDhDbks5WHdvNlREc1ZQYzk5?=
+ =?utf-8?B?V3VLWThSZjNrRjdXVHVlaUlLVjNKTVhIWmVXMHAycXBmQjR1NklDdGFuaEpF?=
+ =?utf-8?B?VmwyRVU2OEJIb1RxVStYRExTQVdVR2hUUlg0WTJKc2NTSU12OTFkMUFFU0Ez?=
+ =?utf-8?B?MjhIU0tRQ09EOTdTa29JUWROeWp0ZWVIL2NTZzNUYWpHNVg2eXEzTHJDbDdF?=
+ =?utf-8?B?b0RxSzZuYVhRSG0zcE9OOHhneUlIbmwzK2g2bTVEM0g4c2krdjhheWlTNWwx?=
+ =?utf-8?B?YS9yVTRxcmpXTEw2MHdXR1VuQmVJdnhHUlZ1SDlWYzNRNGowQndLOSsxeTMy?=
+ =?utf-8?B?VnlzNEIvZElGK3NaSitTWjU2Y3ZkdGgrUjhVb1lzUEdmU1lYWjFiajFlRktm?=
+ =?utf-8?B?K3E5MnhzQnpndFZGeHRkQ09NU25TTVREMjdIS3pMNkdJK1owd0E5L21tN3Yv?=
+ =?utf-8?B?cHMxd1cxTnI1NWlKLy92TUhUL2RaZU5MTWhpYVZ0ZUFBWmc2TFUydXVIYmF5?=
+ =?utf-8?B?Qnc3ZTJBdFJ2UHYvemYvdXM0d1FBVE1KS01STlk3MjlUNWVVWWsvZllpcEkr?=
+ =?utf-8?B?Nzc1bElRdjg3R216WFlIcDc0U3AzRTZRRDBDWkdVd1lzU1BHcHVNcHFDTVE3?=
+ =?utf-8?B?ckI4eEt1T0wrN0p1eHJIUEl3Zy8zelJhQmpOUndpZHVEcHdzNWRUNkVwWHdn?=
+ =?utf-8?B?cnpuRVM1TWlHa3RRUm0rMUZ0OFptdVFwTDJMeVI0SnE5Q1o2RG9CQUNvalJv?=
+ =?utf-8?B?OXV5QXRkaUdBZ2lyZFZVV0ZVQW5lRVBqQUhVYjhYZ0RPQkJVdjhCQnhEWU5O?=
+ =?utf-8?Q?H9fw1HoyJskideTrgWHMDCCqj?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92821f89-4c19-40ce-bb58-08dbc5ee9e80
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 22:01:25.6740
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ckdn0OHKCqi/zj9bMypgw751F0jmNae2I5KsYqgclC0oxL0k3YdWyq/Uv+AgUky+YfZWzjBZhzz/CXd0/Pdnew==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8829
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 2:35=E2=80=AFPM Joe Perches <joe@perches.com> wrote:
->
-> There were some recent attempts [1] [2] to make the K: field less noisy
-> and its behavior more obvious. Ultimately, a shift in the default
-> behavior and an associated command line flag is the best choice.
->
-> Currently, K: will match keywords found in both patches and files.
->
-> Matching content from entire files is (while documented) not obvious
-> behavior and is usually not wanted by maintainers.
->
-> Now only patch content will be matched against unless --keywords-in-file
-> is also provided as an argument to get_maintainer.
->
-> Add the actual keyword matched to the role or rolestats as well.
->
-> For instance given the diff below that removes clang:
->
->    diff --git a/drivers/hid/bpf/entrypoints/README b/drivers/hid/bpf/entr=
-ypoints/README
->    index 147e0d41509f..f88eb19e8ef2 100644
->    --- a/drivers/hid/bpf/entrypoints/README
->    +++ b/drivers/hid/bpf/entrypoints/README
->    @@ -1,4 +1,4 @@
->     WARNING:
->     If you change "entrypoints.bpf.c" do "make -j" in this directory to r=
-ebuild "entrypoints.skel.h".
->    -Make sure to have clang 10 installed.
->    +Make sure to have 10 installed.
->     See Documentation/bpf/bpf_devel_QA.rst
->
-> The new role/rolestats output includes ":Keyword:\b(?i:clang|llvm)\b"
->
-> $ git diff drivers/hid/bpf/entrypoints/README | .scripts/get_maintainer.p=
-l
-> Jiri Kosina <jikos@kernel.org> (maintainer:HID CORE LAYER,commit_signer:1=
-/1=3D100%)
-> Benjamin Tissoires <benjamin.tissoires@redhat.com> (maintainer:HID CORE L=
-AYER,commit_signer:1/1=3D100%,authored:1/1=3D100%,added_lines:4/4=3D100%)
-> Nathan Chancellor <nathan@kernel.org> (supporter:CLANG/LLVM BUILD SUPPORT=
-:Keyword:\b(?i:clang|llvm)\b)
-> Nick Desaulniers <ndesaulniers@google.com> (supporter:CLANG/LLVM BUILD SU=
-PPORT:Keyword:\b(?i:clang|llvm)\b)
-> Tom Rix <trix@redhat.com> (reviewer:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?=
-i:clang|llvm)\b)
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> (commit_signer:1/1=3D100%=
-)
-> linux-input@vger.kernel.org (open list:HID CORE LAYER)
-> linux-kernel@vger.kernel.org (open list)
-> llvm@lists.linux.dev (open list:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:cl=
-ang|llvm)\b)
->
-> Link: https://lore.kernel.org/r/20231004-get_maintainer_change_k-v1-1-ac7=
-ced18306a@google.com
-> Link: https://lore.kernel.org/all/20230928-get_maintainer_add_d-v2-0-8acb=
-3f394571@google.com
-> Link: https://lore.kernel.org/all/3dca40b677dd2fef979a5a581a2db91df2c2180=
-1.camel@perches.com
-> Original-patch-by: Justin Stitt <justinstitt@google.com>
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->  scripts/get_maintainer.pl | 38 ++++++++++++++++++++------------------
->  1 file changed, 20 insertions(+), 18 deletions(-)
->
-> diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-> index ab123b498fd9..16d8ac6005b6 100755
-> --- a/scripts/get_maintainer.pl
-> +++ b/scripts/get_maintainer.pl
-> @@ -57,6 +57,7 @@ my $subsystem =3D 0;
->  my $status =3D 0;
->  my $letters =3D "";
->  my $keywords =3D 1;
-> +my $keywords_in_file =3D 0;
->  my $sections =3D 0;
->  my $email_file_emails =3D 0;
->  my $from_filename =3D 0;
-> @@ -272,6 +273,7 @@ if (!GetOptions(
->                 'letters=3Ds' =3D> \$letters,
->                 'pattern-depth=3Di' =3D> \$pattern_depth,
->                 'k|keywords!' =3D> \$keywords,
-> +               'kf|keywords-in-file!' =3D> \$keywords_in_file,
->                 'sections!' =3D> \$sections,
->                 'fe|file-emails!' =3D> \$email_file_emails,
->                 'f|file' =3D> \$from_filename,
-> @@ -318,6 +320,7 @@ if ($sections || $letters ne "") {
->      $subsystem =3D 0;
->      $web =3D 0;
->      $keywords =3D 0;
-> +    $keywords_in_file =3D 0;
->      $interactive =3D 0;
->  } else {
->      my $selections =3D $email + $scm + $status + $subsystem + $web;
-> @@ -548,16 +551,14 @@ foreach my $file (@ARGV) {
->         $file =3D~ s/^\Q${cur_path}\E//;  #strip any absolute path
->         $file =3D~ s/^\Q${lk_path}\E//;   #or the path to the lk tree
->         push(@files, $file);
-> -       if ($file ne "MAINTAINERS" && -f $file && $keywords) {
-> +       if ($file ne "MAINTAINERS" && -f $file && $keywords && $keywords_=
-in_file) {
->             open(my $f, '<', $file)
->                 or die "$P: Can't open $file: $!\n";
->             my $text =3D do { local($/) ; <$f> };
->             close($f);
-> -           if ($keywords) {
-> -               foreach my $line (keys %keyword_hash) {
-> -                   if ($text =3D~ m/$keyword_hash{$line}/x) {
-> -                       push(@keyword_tvi, $line);
-> -                   }
-> +           foreach my $line (keys %keyword_hash) {
-> +               if ($text =3D~ m/$keyword_hash{$line}/x) {
-> +                   push(@keyword_tvi, $line);
->                 }
->             }
->         }
-> @@ -919,7 +920,7 @@ sub get_maintainers {
->         }
->
->         foreach my $line (sort {$hash{$b} <=3D> $hash{$a}} keys %hash) {
-> -           add_categories($line);
-> +           add_categories($line, "");
->             if ($sections) {
->                 my $i;
->                 my $start =3D find_starting_index($line);
-> @@ -947,7 +948,7 @@ sub get_maintainers {
->      if ($keywords) {
->         @keyword_tvi =3D sort_and_uniq(@keyword_tvi);
->         foreach my $line (@keyword_tvi) {
-> -           add_categories($line);
-> +           add_categories($line, ":Keyword:$keyword_hash{$line}");
->         }
->      }
->
-> @@ -1076,6 +1077,7 @@ Output type options:
->  Other options:
->    --pattern-depth =3D> Number of pattern directory traversals (default: =
-0 (all))
->    --keywords =3D> scan patch for keywords (default: $keywords)
-> +  --keywords-in-file =3D> scan file for keywords (default: $keywords_in_=
-file)
->    --sections =3D> print all of the subsystem sections with pattern match=
-es
->    --letters =3D> print all matching 'letter' types from all matching sec=
-tions
->    --mailmap =3D> use .mailmap file (default: $email_use_mailmap)
-> @@ -1086,7 +1088,7 @@ Other options:
->
->  Default options:
->    [--email --tree --nogit --git-fallback --m --r --n --l --multiline
-> -   --pattern-depth=3D0 --remove-duplicates --rolestats]
-> +   --pattern-depth=3D0 --remove-duplicates --rolestats --keywords]
->
->  Notes:
->    Using "-f directory" may give unexpected results:
-> @@ -1312,7 +1314,7 @@ sub get_list_role {
->  }
->
->  sub add_categories {
-> -    my ($index) =3D @_;
-> +    my ($index, $suffix) =3D @_;
->
->      my $i;
->      my $start =3D find_starting_index($index);
-> @@ -1342,7 +1344,7 @@ sub add_categories {
->                         if (!$hash_list_to{lc($list_address)}) {
->                             $hash_list_to{lc($list_address)} =3D 1;
->                             push(@list_to, [$list_address,
-> -                                           "subscriber list${list_role}"=
-]);
-> +                                           "subscriber list${list_role}"=
- . $suffix]);
->                         }
->                     }
->                 } else {
-> @@ -1352,12 +1354,12 @@ sub add_categories {
->                                 if ($email_moderated_list) {
->                                     $hash_list_to{lc($list_address)} =3D =
-1;
->                                     push(@list_to, [$list_address,
-> -                                                   "moderated list${list=
-_role}"]);
-> +                                                   "moderated list${list=
-_role}" . $suffix]);
->                                 }
->                             } else {
->                                 $hash_list_to{lc($list_address)} =3D 1;
->                                 push(@list_to, [$list_address,
-> -                                               "open list${list_role}"])=
-;
-> +                                               "open list${list_role}" .=
- $suffix]);
->                             }
->                         }
->                     }
-> @@ -1365,19 +1367,19 @@ sub add_categories {
->             } elsif ($ptype eq "M") {
->                 if ($email_maintainer) {
->                     my $role =3D get_maintainer_role($i);
-> -                   push_email_addresses($pvalue, $role);
-> +                   push_email_addresses($pvalue, $role . $suffix);
->                 }
->             } elsif ($ptype eq "R") {
->                 if ($email_reviewer) {
->                     my $subsystem =3D get_subsystem_name($i);
-> -                   push_email_addresses($pvalue, "reviewer:$subsystem");
-> +                   push_email_addresses($pvalue, "reviewer:$subsystem" .=
- $suffix);
->                 }
->             } elsif ($ptype eq "T") {
-> -               push(@scm, $pvalue);
-> +               push(@scm, $pvalue . $suffix);
->             } elsif ($ptype eq "W") {
-> -               push(@web, $pvalue);
-> +               push(@web, $pvalue . $suffix);
->             } elsif ($ptype eq "S") {
-> -               push(@status, $pvalue);
-> +               push(@status, $pvalue . $suffix);
->             }
->         }
->      }
+On 10/5/2023 4:28 PM, Kirill A. Shutemov wrote:
+> On Thu, Oct 05, 2023 at 01:41:38PM -0500, Kalra, Ashish wrote:
+>>> +static void unshare_all_memory(bool unmap)
+>>> +{
+>>> +	unsigned long addr, end;
+>>> +	long found = 0, shared;
+>>> +
+>>> +	/*
+>>> +	 * Walk direct mapping and convert all shared memory back to private,
+>>> +	 */
+>>> +
+>>> +	addr = PAGE_OFFSET;
+>>> +	end  = PAGE_OFFSET + get_max_mapped();
+>>> +
+>>> +	while (addr < end) {
+>>> +		unsigned long size;
+>>> +		unsigned int level;
+>>> +		pte_t *pte;
+>>> +
+>>> +		pte = lookup_address(addr, &level);
+>>
+>> IIRC, you were earlier walking the direct mapping using
+>> walk_page_range_novma(), any particular reason to use lookup_address()
+>> instead ?
+> 
+> walk_page_range_novma() wants mmap lock to be taken, but it is tricky as
+> we run here from atomic context in case of crash.
+> 
+> I considered using trylock to bypass the limitation, but it is a hack.
+> 
+>>
+>>> +		size = page_level_size(level);
+>>> +
+>>> +		if (pte && pte_decrypted(*pte)) {
+>>
+>> Additionally need to add check for pte_none() here to handle physical memory
+>> holes in direct mapping.
+> 
+> lookup_address() returns NULL for none entries.
 >
 
-Works great!
+Looking at lookup_address_in_pgd(), at pte level it is simply returning
+pte_offset_kernel() and there does not seem to be a check for returning 
+NULL if pte_none() ?
 
-Some inboxes/lists should now be a little less noisy.
+>>> +			int pages = size / PAGE_SIZE;
+>>> +
+>>> +			/*
+>>> +			 * Touching memory with shared bit set triggers implicit
+>>> +			 * conversion to shared.
+>>> +			 *
+>>> +			 * Make sure nobody touches the shared range from
+>>> +			 * now on.
+>>> +			 *
+>>> +			 * Bypass unmapping for crash scenario. Unmapping
+>>> +			 * requires sleepable context, but in crash case kernel
+>>> +			 * hits the code path with interrupts disabled.
+>>
+>> In case of SNP we will need to temporarily enable interrupts during this
+>> unsharing as we invoke set_memory_encrypted() which then hits a BUG_ON() in
+>> cpa_flush() if interrupts are disabled.
+> 
+> Do you really need full set_memory_encrypted()? Can't you do something
+> ligher?
+> 
+We need to modify the PTE for setting c-bit to 1 so that will require 
+cpa_flush(), though probably can add something lighter to do
+clflush_cache_range() directly ?
 
-Tested-by: Justin Stitt <justinstitt@google.com>
+Thanks,
+Ashish
+
