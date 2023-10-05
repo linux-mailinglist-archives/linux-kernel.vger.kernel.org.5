@@ -2,143 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8A37BA128
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834B67BA2CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239766AbjJEOrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
+        id S234077AbjJEPrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239521AbjJEOoV (ORCPT
+        with ESMTP id S233532AbjJEPqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:44:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5AF8260
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:20:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696515630;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p8OERLt30v5GuP5/A96MP1RVbcyVg7KG0iqkYYWA2oU=;
-        b=HIPIsEqsUDpS4W9iFh8d/zaKEihj1+rZe3doPvQKMyAzGGTjbh6HB2mAQrUIzjKZuU06TF
-        3loYAV9WH3CZEEXkuG8c6ru9YAxg/EgNt0KG0l1O6Lqko9j7Nrc97XNBnhipGErvnCeGT4
-        CXvIqN9cYTvGgr5WwpGALUedoc6EUGo=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-634-WDI6V2-5OzCW3Y0OIWeEUQ-1; Thu, 05 Oct 2023 04:19:10 -0400
-X-MC-Unique: WDI6V2-5OzCW3Y0OIWeEUQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-402cd372b8bso5272845e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 01:19:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696493949; x=1697098749;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p8OERLt30v5GuP5/A96MP1RVbcyVg7KG0iqkYYWA2oU=;
-        b=SAHWa8mZD0Jbeeyl870a5EapJdA79DlUk1DV4ZGj0qCRnn2NoGIDdDV2BGEK5Avzmf
-         FeZEXr1opmKa72pC97a5ZeH4BDPZBX4TP1AyMUK9bkrap8cu4zNv1edQ7YkFo6/C6wH2
-         LqrRowTDX8Jjn363r/BDtOPLLa0lTfvJQFT2bpAA99N8MOmesKaPus/jgNf7nZHXAOri
-         EEHR52K5ooQoPv7du+4FgEYIRop3O5AD7PMQPUT1O3E56SndEMS23eRocvMybgrcOTY3
-         TH0XNuq9EEE6awVYsrF8cvvrAUYmzuCIGhQr6DTBBOHJ80GBH0v73MZBefxKCuZTXQtB
-         561g==
-X-Gm-Message-State: AOJu0YxZDEqjSVy/koC5njMKAuKGB3SKbD6PsTdLK5Duah/OFQYdVRIn
-        Yv6ZavCHCdKshtic3Mcjv/YTPAFMWcgNe0yFr/0lIpNLe6k3EJjt66fv2Ip7HWHIZ4NTzWDdkF7
-        JqVQuHCylz4/QFogN/qHJ/xVj
-X-Received: by 2002:a1c:7918:0:b0:406:5303:9be2 with SMTP id l24-20020a1c7918000000b0040653039be2mr4592409wme.0.1696493949045;
-        Thu, 05 Oct 2023 01:19:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGBbWTEjl1tZ+K+VDxwydJ2ZY8lKhMy6qbI1xCWeBAJWf0ILuqBVCgDtEPtvwMduKSwmGhbgQ==
-X-Received: by 2002:a1c:7918:0:b0:406:5303:9be2 with SMTP id l24-20020a1c7918000000b0040653039be2mr4592381wme.0.1696493948671;
-        Thu, 05 Oct 2023 01:19:08 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c707:d000:419d:b58e:720e:5890? (p200300cbc707d000419db58e720e5890.dip0.t-ipconnect.de. [2003:cb:c707:d000:419d:b58e:720e:5890])
-        by smtp.gmail.com with ESMTPSA id n5-20020a5d67c5000000b00317f70240afsm1165396wrw.27.2023.10.05.01.19.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 01:19:08 -0700 (PDT)
-Message-ID: <65867977-ac07-092e-6831-91543bb2da77@redhat.com>
-Date:   Thu, 5 Oct 2023 10:19:06 +0200
+        Thu, 5 Oct 2023 11:46:32 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8AD8862;
+        Thu,  5 Oct 2023 08:03:01 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395ExjYd006794;
+        Thu, 5 Oct 2023 15:02:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=YgYYgzYwO9PSxWqLIRQnBK4k7RetQefF9XdOzJSQoYc=;
+ b=Wo1i9/ZmRfW+sOiV10vsxsaYC2jRqByRanJsB4FrEnZn9bx9PzoFf+uVU3oYGNJf2K5Q
+ cqIAI9o+2h7qveiTI9VjL5eAoEwi0edPMBMDeRIjj21UO23MbKH6FAF/i280UuuzpMIR
+ piw4jTA3pd7iB8a1Y06BL2rps7aUne+rPu8gxdKU+MCdwR1QSsiZzDQDByoehrUg8H5W
+ H/BU7BYWW7pFf0vGpv5+osvAk7QAFqQ2kFiONNViyhy3Bb14l9Bj1K0bazOipMncyG2V
+ nO8F8T2GX6AUsVNpv81JsNNDpSeUsSRU+XfyMmgzTl3o90+7K44mEOnCB9dqXGnmO/g4 Zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3thy9q845k-69
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 15:02:51 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 395A5MFL024567;
+        Thu, 5 Oct 2023 10:31:57 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3thsaqcufv-154
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 10:31:57 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3956oBos006684;
+        Thu, 5 Oct 2023 08:21:07 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tf07khqq6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 08:21:07 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3958L4cY18940654
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Oct 2023 08:21:04 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9E5902004B;
+        Thu,  5 Oct 2023 08:21:04 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7114E20040;
+        Thu,  5 Oct 2023 08:21:03 +0000 (GMT)
+Received: from [9.171.88.212] (unknown [9.171.88.212])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  5 Oct 2023 08:21:03 +0000 (GMT)
+Message-ID: <dcc46fedda57e7e3ade14685ddb262309544ad7e.camel@linux.ibm.com>
+Subject: Re: [PATCH net-next v4 00/18] net/smc: implement virtual ISM
+ extension and loopback-ism
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Wen Gu <guwen@linux.alibaba.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     wintera@linux.ibm.com, gbayer@linux.ibm.com, pasic@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        dust.li@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 05 Oct 2023 10:21:03 +0200
+In-Reply-To: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
+References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: WlOKwDSQ3j-4dmb_5lF51_EYmohTTJVy
+X-Proofpoint-ORIG-GUID: XGcQ2sILzvao8M7KWvTeOWeqmLTjaIxY
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v6 1/9] mm: Allow deferred splitting of arbitrary anon
- large folios
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <20230929114421.3761121-2-ryan.roberts@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230929114421.3761121-2-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-05_08,2023-10-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 impostorscore=0 malwarescore=0 spamscore=0 phishscore=0
+ clxscore=1015 suspectscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310050115
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NUMERIC_HTTP_ADDR,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.09.23 13:44, Ryan Roberts wrote:
-> In preparation for the introduction of large folios for anonymous
-> memory, we would like to be able to split them when they have unmapped
-> subpages, in order to free those unused pages under memory pressure. So
-> remove the artificial requirement that the large folio needed to be at
-> least PMD-sized.
-> 
-> Reviewed-by: Yu Zhao <yuzhao@google.com>
-> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->   mm/rmap.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 9f795b93cf40..8600bd029acf 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1446,11 +1446,11 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
->   		__lruvec_stat_mod_folio(folio, idx, -nr);
->   
->   		/*
-> -		 * Queue anon THP for deferred split if at least one
-> +		 * Queue anon large folio for deferred split if at least one
->   		 * page of the folio is unmapped and at least one page
->   		 * is still mapped.
->   		 */
-> -		if (folio_test_pmd_mappable(folio) && folio_test_anon(folio))
-> +		if (folio_test_large(folio) && folio_test_anon(folio))
->   			if (!compound || nr < nr_pmdmapped)
->   				deferred_split_folio(folio);
->   	}
+On Sun, 2023-09-24 at 23:16 +0800, Wen Gu wrote:
+> Hi, all
+>=20
+> # Background
+>=20
+> SMC-D is now used in IBM z with ISM function to optimize network intercon=
+nect
+> for intra-CPC communications. Inspired by this, we try to make SMC-D avai=
+lable
+> on the non-s390 architecture through a software-simulated virtual ISM dev=
+ice,
+> such as loopback-ism device here, to accelerate inter-process or inter-co=
+ntainers
+> communication within the same OS.
+>=20
+> # Design
+>=20
+> This patch set includes 4 parts:
+>=20
+>  - Patch #1-#3: decouple ISM device hard code from SMC-D stack.
+>  - Patch #4-#8: implement virtual ISM extension defined in SMCv2.1.
+>  - Patch #9-#13: implement loopback-ism device.
+>  - Patch #14-#18: memory copy optimization for the case using loopback.
+>=20
+> The loopback-ism device is designed as a kernel device and not be limited=
+ to
+> a specific net namespace, ends of both inter-process connection (1/1' in =
+diagram
+> below) or inter-container connection (2/2' in diagram below) will find th=
+at peer
+> shares the same loopback-ism device during the CLC handshake. Then loopba=
+ck-ism
+> device will be chosen.
+>=20
+>  Container 1 (ns1)                              Container 2 (ns2)
+>  +-----------------------------------------+    +------------------------=
+-+
+>  | +-------+      +-------+      +-------+ |    |        +-------+       =
+ |
+>  | | App A |      | App B |      | App C | |    |        | App D |<-+    =
+ |
+>  | +-------+      +---^---+      +-------+ |    |        +-------+  |(2')=
+ |
+>  |     |127.0.0.1 (1')|             |192.168.0.11       192.168.0.12|    =
+ |
+>  |  (1)|   +--------+ | +--------+  |(2)   |    | +--------+   +--------+=
+ |
+>  |     `-->|   lo   |-` |  eth0  |<-`      |    | |   lo   |   |  eth0  |=
+ |
+>  +---------+--|---^-+---+-----|--+---------+    +-+--------+---+-^------+=
+-+
+>               |   |           |                                  |
+>  Kernel       |   |           |                                  |
+>  +----+-------v---+-----------v----------------------------------+---+---=
+-+
+>  |    |                            TCP                               |   =
+ |
+>  |    |                                                              |   =
+ |
+>  |    +--------------------------------------------------------------+   =
+ |
+>  |                                                                       =
+ |
+>  |                           +--------------+                            =
+ |
+>  |                           | smc loopback |                            =
+ |
+>  +---------------------------+--------------+----------------------------=
+-+
+>=20
+>=20
+> loopback-ism device allocs RMBs and sndbufs for each connection peer and =
+'moves'
+> data from sndbuf at one end to RMB at the other end. Since communication =
+occurs
+> within the same kernel, the sndbuf can be mapped to peer RMB so that the =
+data
+> copy in loopback-ism case can be avoided.
+>=20
+>  Container 1 (ns1)                              Container 2 (ns2)
+>  +-----------------------------------------+    +------------------------=
+-+
+>  | +-------+      +-------+      +-------+ |    |        +-------+       =
+ |
+>  | | App A |      | App B |      | App C | |    |        | App D |       =
+ |
+>  | +-------+      +--^----+      +-------+ |    |        +---^---+       =
+ |
+>  |       |           |               |     |    |            |           =
+ |
+>  |   (1) |      (1') |           (2) |     |    |       (2') |           =
+ |
+>  |       |           |               |     |    |            |           =
+ |
+>  +-------|-----------|---------------|-----+    +------------|-----------=
+-+
+>          |           |               |                       |
+>  Kernel  |           |               |                       |
+>  +-------|-----------|---------------|-----------------------|-----------=
+-+
+>  | +-----v-+      +-------+      +---v---+               +-------+       =
+ |
+>  | | snd A |-+    | RMB B |<--+  | snd C |-+          +->| RMB D |       =
+ |
+>  | +-------+ |    +-------+   |  +-------+ |          |  +-------+       =
+ |
+>  | +-------+ |    +-------+   |  +-------+ |          |  +-------+       =
+ |
+>  | | RMB A | |    | snd B |   |  | RMB C | |          |  | snd D |       =
+ |
+>  | +-------+ |    +-------+   |  +-------+ |          |  +-------+       =
+ |
+>  |           |               +-------------v+         |                  =
+ |
+>  |           +-------------->| smc loopback |---------+                  =
+ |
+>  +---------------------------+--------------+----------------------------=
+-+
+>=20
+> # Benchmark Test
+>=20
+>  * Test environments:
+>       - VM with Intel Xeon Platinum 8 core 2.50GHz, 16 GiB mem.
+>       - SMC sndbuf/RMB size 1MB.
+>=20
+>  * Test object:
+>       - TCP: run on TCP loopback.
+>       - domain: run on UNIX domain.
+>       - SMC lo: run on SMC loopback device.
+>=20
+> 1. ipc-benchmark (see [1])
+>=20
+>  - ./<foo> -c 1000000 -s 100
+>=20
+>                             TCP                  SMC-lo
+> Message
+> rate (msg/s)              81539                  151251(+85.50%)
+>=20
+> 2. sockperf
+>=20
+>  - serv: <smc_run> taskset -c <cpu> sockperf sr --tcp
+>  - clnt: <smc_run> taskset -c <cpu> sockperf { tp | pp } --tcp --msg-size=
+=3D{ 64000 for tp | 14 for pp } -i 127.0.0.1 -t 30
+>=20
+>                             TCP                  SMC-lo
+> Bandwidth(MBps)         5313.66                 8270.51(+55.65%)
+> Latency(us)               5.806                   3.207(-44.76%)
+>=20
+> 3. nginx/wrk
+>=20
+>  - serv: <smc_run> nginx
+>  - clnt: <smc_run> wrk -t 8 -c 1000 -d 30 http://127.0.0.1:80
+>=20
+>                            TCP                   SMC-lo
+> Requests/s           194641.79                258656.13(+32.89%)
+>=20
+> 4. redis-benchmark
+>=20
+>  - serv: <smc_run> redis-server
+>  - clnt: <smc_run> redis-benchmark -h 127.0.0.1 -q -t set,get -n 400000 -=
+c 200 -d 1024
+>=20
+>                            TCP                   SMC-lo
+> GET(Requests/s)       85855.34                115640.35(+34.69%)
+> SET(Requests/s)       86337.15                118203.30(+36.90%)
+>=20
+> [1] https://github.com/goldsborough/ipc-bench
+>=20
 
-This patch can be picked up early I think.
+Hi Wen Gu,
 
--- 
-Cheers,
+I've been trying out your series with iperf3, qperf, and uperf on
+s390x. I'm using network namespaces with a ConnectX VF from the same
+card in each namespace for the initial TCP/IP connection i.e. initially
+it goes out to a real NIC even if that can switch internally. All of
+these look great for streaming workloads both in terms of performance
+and stability. With a Connect-Request-Response workload and uperf
+however I've run into issues. The test configuration I use is as
+follows:
 
-David / dhildenb
+Client Command:
+
+# host=3D$ip_server ip netns exec client smc_run uperf -m tcp_crr.xml
+
+Server Command:
+
+# ip netns exec server smc_run uperf -s &> /dev/null
+
+Uperf tcp_crr.xml:
+
+<?xml version=3D"1.0"?>
+<profile name=3D"TCP_CRR">
+        <group nthreads=3D"12">
+                <transaction duration=3D"120">
+                        <flowop type=3D"connect" options=3D"remotehost=3D$h=
+ost protocol=3Dtcp" />
+                        <flowop type=3D"write" options=3D"size=3D200"/>
+                        <flowop type=3D"read" options=3D"size=3D1000"/>
+                        <flowop type=3D"disconnect" />
+                </transaction>
+        </group>
+</profile>
+
+The workload first runs fine but then after about 4 GB of data
+transferred fails with "Connection refused" and "Connection reset by
+peer" errors. The failure is not permanent however and re-running
+the streaming workloads run fine again (with both uperf server and
+client restarted). So I suspect something gets stuck in either the
+client or server sockets. The same workload runs fine with TCP/IP of
+course.
+
+Thanks,
+Niklas
+
 
