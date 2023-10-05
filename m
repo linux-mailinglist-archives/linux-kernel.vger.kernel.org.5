@@ -2,185 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 582D57B9FC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E3B7BA153
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234023AbjJEO3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42022 "EHLO
+        id S238258AbjJEOnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234102AbjJEO1Y (ORCPT
+        with ESMTP id S237132AbjJEOik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:27:24 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C3C76A0
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 00:12:54 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-4527d436ddfso325339137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 00:12:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696489974; x=1697094774; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OogRoZfS+KCs50xXFrJ7TjK5qXdEjTWJkgAZyfQ+l0g=;
-        b=ugxIEeSad8acpJHqII7iFa5Ktdh8QZ4oecWcCFQ5y/hbHFJlvFqMJv9iDmGt4Lxh7+
-         dV/841iTvGfLm8FvRAx8S7S5p7nYC56uJN1YDkyKU/ud46bJsV1RgWc3492DQaeg2DYp
-         3t6IkJM00/YebzlpF6adezg4P+8qiyBHPT/Icq/LZFEEmm8UKqHKdR7SAs7KFkznDpXs
-         av3ai7azrNNoyDelT8THXPsTjxJN8X8hZm04cdaerDShut4ju0/5yS9Nwxw1MPFE2UH/
-         O7B6Zssgee84pSqnmFGfnxCJci3XH/xzTE8qqjQh8DGV8dD/aTVqZi+Fc1SZToXRgQuH
-         WO8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696489974; x=1697094774;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OogRoZfS+KCs50xXFrJ7TjK5qXdEjTWJkgAZyfQ+l0g=;
-        b=W3Y/ibugweSF6VXoH0X+IATGyvPy+P0mq6J2xRpurKIhcdnaVsrBNLzr72yv8DhwbC
-         o/PgLT9OmgfC3wdWr/y9Z+gVHfub1MpMVOmWQBImilptbaUPaOnwjECJQha5+YAYjAFd
-         bnEZvfHuhR7vrWqzaiZjCKFgYx9EkU3j1dYeJvNj41HPuxaBZqSD3QxUXa9wFXAqgA/3
-         MHgkiF+0+3W4oIYzGu2bckHlhlqKr9z0h6YtrxXmljiNs3O45VZzvbP6UD8LKKVxVwRq
-         8uMJ/+bqjMz7f8OXnBWOMs3N6CT1YB1yJ9IL3YEzVGdjgDM+1iLVkX7C4sSxuEXaXrNO
-         bVEQ==
-X-Gm-Message-State: AOJu0YwYlFe0ng7YoaduglNQHTGgdzijLl48BQMT+R+TtR9RrS/UOxfc
-        aP3M2uBS+NmjQA7GswULVMypfSxXZNkerP/nvKStzg==
-X-Google-Smtp-Source: AGHT+IEkTEShELFzLmOYm9pZifwz8zN1dpxg4FkFmg/0S8ndh86LLvirqKPTBfa+qn+UdVEXq6k6eCTWXmQPRTJ8jPE=
-X-Received: by 2002:a05:6102:354d:b0:450:fcad:ff23 with SMTP id
- e13-20020a056102354d00b00450fcadff23mr3890408vss.32.1696489973920; Thu, 05
- Oct 2023 00:12:53 -0700 (PDT)
+        Thu, 5 Oct 2023 10:38:40 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EBB4785E;
+        Thu,  5 Oct 2023 07:02:55 -0700 (PDT)
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3955F1Eb014545;
+        Thu, 5 Oct 2023 09:19:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=selector1; bh=UELHM3+btlr1tLsVkeUaq
+        pciYdarLBdmCA0OkNzAXRs=; b=jUlsFwuSfJMzmlsawbWienb/4c0cCH3wUY4C7
+        sZwnGNaJLzGc+3HlE1GJFHKr1wFHxIRttM4DeJQbZM0Yk+sDFk377PUdSGMdzVZ6
+        PVN3Lzw7bRgilrcVH1WQ62KiEIJGGmkjJ7kKQpHduHX0NDw+X2ncUv0y9uxcQODB
+        MfVkVf9QSoicH7epvhwTJCV5j8K7i+gTDP6eHJvZV7pvRL2xaJyE1aHW7bUYJrf8
+        QH2JAx7svAxmaoNSD6S4zzCMCrJc50hioroFRa6P1jL5jpo7cWtXnNnFugoFwnig
+        qdPOcv69K0TUBejk7Kyio3+lt5jQeBo71HH5f05umnp+YArAA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3thpu0rfdv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 09:19:39 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4202E10005D;
+        Thu,  5 Oct 2023 09:19:38 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 39FEA21C2FC;
+        Thu,  5 Oct 2023 09:19:38 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 5 Oct
+ 2023 09:19:37 +0200
+Date:   Thu, 5 Oct 2023 09:19:22 +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Andi Shyti <andi.shyti@kernel.org>
+CC:     Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        M'boumba Cedric Madianga <cedric.madianga@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] i2c: stm32f7: Fix PEC handling in case of SMBUS transfers
+Message-ID: <20231005071922.GA1372701@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Andi Shyti <andi.shyti@kernel.org>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        M'boumba Cedric Madianga <cedric.madianga@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        linux-i2c@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231002084211.1108940-1-alain.volmat@foss.st.com>
+ <20231003174246.vdazyls3c7kykd63@zenone.zhora.eu>
 MIME-Version: 1.0
-References: <20230928092040.9420-1-brgl@bgdev.pl> <20230928092040.9420-12-brgl@bgdev.pl>
- <4ab66f17-4686-411f-b829-74eab3489568@gmail.com>
-In-Reply-To: <4ab66f17-4686-411f-b829-74eab3489568@gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 5 Oct 2023 09:12:42 +0200
-Message-ID: <CAMRc=MebkzaLUtTn20V9f0FU1PbGrUGSHAJR+j3nVpc6wdJnsQ@mail.gmail.com>
-Subject: Re: [PATCH v2 11/11] firmware: qcom: scm: enable SHM bridge
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231003174246.vdazyls3c7kykd63@zenone.zhora.eu>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-05_04,2023-10-02_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 12:24=E2=80=AFAM Maximilian Luz <luzmaximilian@gmail=
-.com> wrote:
->
-> On 9/28/23 11:20, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Extens the SCM memory allocator with using the SHM Bridge feature if
-> > available on the platform. This makes the trustzone only use dedicated
-> > buffers for SCM calls. We map the entire SCM genpool as a bridge.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> This patch breaks something in early boot on my Surface Pro X (sc8180x).
-> Unfortunately I can't provide many details at the moment because the
-> only thing I can see are RCU stalls, and the traces from them are quite
-> useless.
->
-> Without this patch, the rest of the series (with the fix you posted on
-> patch 6 applied) seems to work fine. Including both RFT qseecom patches.
->
-> I plan to have a closer look at this once I have some more time though.
->
+Hi Andi,
 
-Can it be the PAS image loading? This is something Andrew reported and
-I have it fixed for v3.
+Thanks for the review.
 
-Bart
+On Tue, Oct 03, 2023 at 07:42:46PM +0200, Andi Shyti wrote:
+> Hi Alain,
+> 
+> On Mon, Oct 02, 2023 at 10:42:10AM +0200, Alain Volmat wrote:
+> > The PECBYTE bit allows to generate (in case of write) or
+> > compute/compare the PEC byte (in case of read).  In case
+> > of reading a value (performed by first sending a write
+> > command, then followed by a read command) the PECBYTE should
+> > only be set before starting the read command and not before
+> > the first write command.
+> 
+> What is this patch fixing?
+> 
+> Can you please point this detail in the documentation, I haven't
+> found it[*]
 
-> Regards,
-> Max
->
+This is about the handling of the PECBYTE bit of the I2C_CR2 register
+(cf page 1010 of the spec you pointed).  There were no issue in case
+of performing SMBUS write (with PEC), however read was not working.
+PECBYTE was set from the very beginning of the transaction, but since
+SMBUS read is first made of a write transfer, followed by a read transfer,
+the PECBYTE was appended to the end of the write transfer (instead of the read
+transfer), leading to lose of the last byte of the write transfer.
+(in addition to the fact that the PEC byte should NOT be placed at the
+end of the write transfer).
+(cf Figure 30 of SMBUS specification [1]).
+
+I could add more information within the commit log if you prefer.
+
+[1] http://www.smbus.org/specs/SMBus_3_2_20220112.pdf
+
+> 
+> > Fixes: 9e48155f6bfe ("i2c: i2c-stm32f7: Add initial SMBus protocols support")
+> > 
+> > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> 
+> please, don't leave blank lines between tags.
+
+Ok,  will remove this blank line within a v2.
+
+Thanks,
+Alain
+
+> 
+> Thanks,
+> Andi
+> 
+> [*] Hope this is the correct one:
+> https://www.st.com/resource/en/reference_manual/rm0385-stm32f75xxx-and-stm32f74xxx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf
+> 
 > > ---
-> >   drivers/firmware/qcom/qcom_scm-mem.c | 42 ++++++++++++++++++++++++++-=
--
-> >   1 file changed, 39 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/firmware/qcom/qcom_scm-mem.c b/drivers/firmware/qc=
-om/qcom_scm-mem.c
-> > index eafecbe23770..12b12b15f46f 100644
-> > --- a/drivers/firmware/qcom/qcom_scm-mem.c
-> > +++ b/drivers/firmware/qcom/qcom_scm-mem.c
-> > @@ -16,6 +16,8 @@
-> >
-> >   #include "qcom_scm.h"
-> >
-> > +#define QCOM_SHM_BRIDGE_NUM_VM_SHIFT 9
-> > +
-> >   static size_t qcom_scm_mem_pool_size =3D SZ_2M;
-> >   module_param_named(qcom_scm_mem_pool_size, qcom_scm_mem_pool_size,
-> >                  ulong, 0400);
-> > @@ -108,8 +110,24 @@ phys_addr_t qcom_scm_mem_to_phys(void *vaddr)
-> >       return chunk->paddr;
-> >   }
-> >
-> > +static int qcom_scm_mem_shm_bridge_create(void)
-> > +{
-> > +     uint64_t pfn_and_ns_perm, ipfn_and_s_perm, size_and_flags, ns_per=
-ms;
-> > +
-> > +     ns_perms =3D (QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ);
-> > +     pfn_and_ns_perm =3D (u64)qcom_scm_mem.pbase | ns_perms;
-> > +     ipfn_and_s_perm =3D (u64)qcom_scm_mem.pbase | ns_perms;
-> > +     size_and_flags =3D qcom_scm_mem.size | (1 << QCOM_SHM_BRIDGE_NUM_=
-VM_SHIFT);
-> > +
-> > +     return qcom_scm_create_shm_bridge(qcom_scm_mem.dev, pfn_and_ns_pe=
-rm,
-> > +                                       ipfn_and_s_perm, size_and_flags=
-,
-> > +                                       QCOM_SCM_VMID_HLOS);
-> > +}
-> > +
-> >   int qcom_scm_mem_enable(struct device *dev)
-> >   {
-> > +     int ret;
-> > +
-> >       INIT_RADIX_TREE(&qcom_scm_mem.chunks, GFP_ATOMIC);
-> >       spin_lock_init(&qcom_scm_mem.lock);
-> >       qcom_scm_mem.dev =3D dev;
-> > @@ -128,7 +146,25 @@ int qcom_scm_mem_enable(struct device *dev)
-> >
-> >       gen_pool_set_algo(qcom_scm_mem.pool, gen_pool_best_fit, NULL);
-> >
-> > -     return gen_pool_add_virt(qcom_scm_mem.pool,
-> > -                              (unsigned long)qcom_scm_mem.vbase,
-> > -                              qcom_scm_mem.pbase, qcom_scm_mem.size, -=
-1);
-> > +     ret =3D gen_pool_add_virt(qcom_scm_mem.pool,
-> > +                             (unsigned long)qcom_scm_mem.vbase,
-> > +                             qcom_scm_mem.pbase, qcom_scm_mem.size, -1=
-);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret =3D qcom_scm_enable_shm_bridge();
-> > +     if (ret) {
-> > +             if (ret =3D=3D EOPNOTSUPP)
-> > +                     dev_info(dev, "SHM Bridge not supported\n");
-> > +             else
-> > +                     return ret;
-> > +     } else {
-> > +             ret =3D qcom_scm_mem_shm_bridge_create();
-> > +             if (ret)
-> > +                     return ret;
-> > +
-> > +             dev_info(dev, "SHM Bridge enabled\n");
-> > +     }
-> > +
-> > +     return 0;
-> >   }
+> >  drivers/i2c/busses/i2c-stm32f7.c | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+> > index 579b30581725..0d3c9a041b56 100644
+> > --- a/drivers/i2c/busses/i2c-stm32f7.c
+> > +++ b/drivers/i2c/busses/i2c-stm32f7.c
+> > @@ -1059,9 +1059,10 @@ static int stm32f7_i2c_smbus_xfer_msg(struct stm32f7_i2c_dev *i2c_dev,
+> >  	/* Configure PEC */
+> >  	if ((flags & I2C_CLIENT_PEC) && f7_msg->size != I2C_SMBUS_QUICK) {
+> >  		cr1 |= STM32F7_I2C_CR1_PECEN;
+> > -		cr2 |= STM32F7_I2C_CR2_PECBYTE;
+> > -		if (!f7_msg->read_write)
+> > +		if (!f7_msg->read_write) {
+> > +			cr2 |= STM32F7_I2C_CR2_PECBYTE;
+> >  			f7_msg->count++;
+> > +		}
+> >  	} else {
+> >  		cr1 &= ~STM32F7_I2C_CR1_PECEN;
+> >  		cr2 &= ~STM32F7_I2C_CR2_PECBYTE;
+> > @@ -1149,8 +1150,10 @@ static void stm32f7_i2c_smbus_rep_start(struct stm32f7_i2c_dev *i2c_dev)
+> >  	f7_msg->stop = true;
+> >  
+> >  	/* Add one byte for PEC if needed */
+> > -	if (cr1 & STM32F7_I2C_CR1_PECEN)
+> > +	if (cr1 & STM32F7_I2C_CR1_PECEN) {
+> > +		cr2 |= STM32F7_I2C_CR2_PECBYTE;
+> >  		f7_msg->count++;
+> > +	}
+> >  
+> >  	/* Set number of bytes to be transferred */
+> >  	cr2 &= ~(STM32F7_I2C_CR2_NBYTES_MASK);
+> > -- 
+> > 2.25.1
+> > 
