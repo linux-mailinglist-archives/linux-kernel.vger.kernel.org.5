@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1997BAF58
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 568F27BAF5B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229522AbjJEXfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 19:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51944 "EHLO
+        id S229767AbjJEXfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 19:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjJEXeF (ORCPT
+        with ESMTP id S229570AbjJEXeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 19:34:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F150B119;
-        Thu,  5 Oct 2023 16:34:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696548845; x=1728084845;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kNlsRW4WFlGXVfge1WJ6meHpmVQjd3H9vQAlCblm87s=;
-  b=TmFzloG5ZC30MDcy4w+JXkKfGh7lKE2S3tPFfdeXJT04tEjIC4jezcx8
-   xIWpRkbc3UQtR+VuKOURtNk9uXVAa9StSfcWW7DHI8Sx6m3YycjrCk2Dg
-   mkRjzkXFgILsw79b0bJgOys2Y7F9aWBfy6GJCOOBhMs7zhwTAPy9lrlx7
-   0bfESTvytyu6jLDCPox/1AjufX32xGNBuOhTJSbRntYku6n0OUby6ktJY
-   /8QIF8e54T6wrkPefhZbHg+5aehfTkteTOaKvIoKQif1B3FmmOblfXykk
-   ieXdq3lX9q2D74YsfIla7ZzwgktGCl6XrY9QnjbmOQoUylIfvOPhduPPz
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="373995508"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="373995508"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 16:34:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="822306557"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="822306557"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Oct 2023 16:34:02 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoXqy-000M1c-0y;
-        Thu, 05 Oct 2023 23:34:00 +0000
-Date:   Fri, 6 Oct 2023 07:33:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     advantech.susiteam@gmail.com
-Cc:     oe-kbuild-all@lists.linux.dev, wenkai.chung@advantech.com.tw,
-        Susi.Driver@advantech.com,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 1/5] watchdog: eiois200_wdt: Constructing Advantech
- EIO-IS200 watchdog driver
-Message-ID: <202310060719.v6gRNpBq-lkp@intel.com>
-References: <b627f827d13514c1746beb31bb80db71023e9bb1.1696495372.git.advantech.susiteam@gmail.com>
+        Thu, 5 Oct 2023 19:34:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E164A12A;
+        Thu,  5 Oct 2023 16:34:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED4F1C433C7;
+        Thu,  5 Oct 2023 23:34:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696548852;
+        bh=XH827zbbYk1K6D5cvTdeOv5tt/6OMGuFkDJbCdQeAhY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ijl9CLug3INcIwbSVPhjoNh3qBDNOj8WJ1sW7eu2O/SC/vdH80HmuYEnU1F+L4mvu
+         7FSP4WL/AZsfeJtrC5XOBOLgvRuHFElH9qlqh+2EFjcu7r0WHRZfo4yT0el8Dsl6X3
+         5i5myfiDn3B4xR2m5iCeveoILE1tJeyDYalk4eY0qiGbbWDX5iopcOeIcWONTWzY+W
+         HMLIHhfgZoEXrJ3o/dvzsW3gJyKbLa1w5JUvH13gNc6cxuQ0O7Nd7scqv2K/rc8b1z
+         THpr8ZxpdjwtvYWFErUBjie8EGFglbutpVWPQfuMetm+kXvg6QBQL4xjyNxapTZ2EY
+         cmd41Dugc2JSA==
+Date:   Fri, 6 Oct 2023 00:34:05 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Dumitru Ceclan <mitrutzceclan@gmail.com>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: adc: add AD7173
+Message-ID: <20231006-ravioli-hangout-ef9a9bf9cd7c@spud>
+References: <20231005105921.460657-1-mitrutzceclan@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="taPXRJOU8lSR+tKW"
 Content-Disposition: inline
-In-Reply-To: <b627f827d13514c1746beb31bb80db71023e9bb1.1696495372.git.advantech.susiteam@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <20231005105921.460657-1-mitrutzceclan@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,39 +66,193 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-kernel test robot noticed the following build errors:
+--taPXRJOU8lSR+tKW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[auto build test ERROR on 9aab92bc3a8922d4b2e24d10271dfe3034cbf5c2]
+On Thu, Oct 05, 2023 at 01:59:21PM +0300, Dumitru Ceclan wrote:
+> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+> which can be used in high precision, low noise single channel applications
+> or higher speed multiplexed applications. The Sigma-Delta ADC is intended
+> primarily for measurement of signals close to DC but also delivers
+> outstanding performance with input bandwidths out to ~10kHz.
+>=20
+> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/advantech-susiteam-gmail-com/watchdog-eiois200_wdt-Constructing-Advantech-EIO-IS200-watchdog-driver/20231005-231419
-base:   9aab92bc3a8922d4b2e24d10271dfe3034cbf5c2
-patch link:    https://lore.kernel.org/r/b627f827d13514c1746beb31bb80db71023e9bb1.1696495372.git.advantech.susiteam%40gmail.com
-patch subject: [PATCH 1/5] watchdog: eiois200_wdt: Constructing Advantech EIO-IS200 watchdog driver
-config: i386-randconfig-003-20231006 (https://download.01.org/0day-ci/archive/20231006/202310060719.v6gRNpBq-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231006/202310060719.v6gRNpBq-lkp@intel.com/reproduce)
+With Jonathan's two items addressed, you can add:
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310060719.v6gRNpBq-lkp@intel.com/
+Thanks,
+Conor.
 
-All errors (new ones prefixed by >>):
+> ---
+> V2 -> V3
+>  - remove redundant descriptions
+>  - use referenced 'bipolar' property
+>  - remove newlines from example
+>=20
+>  .../bindings/iio/adc/adi,ad7173.yaml          | 130 ++++++++++++++++++
+>  1 file changed, 130 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.=
+yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml b/=
+Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+> new file mode 100644
+> index 000000000000..bf9e3cbf842e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+> @@ -0,0 +1,130 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2023 Analog Devices Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/adi,ad7173.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices AD7173 ADC device driver
+> +
+> +maintainers:
+> +  - Ceclan Dumitru <dumitru.ceclan@analog.com>
+> +
+> +description: |
+> +  Bindings for the Analog Devices AD717X ADC's. Datasheets for supported=
+ chips:
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/=
+AD7172-2.pdf
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/=
+AD7173-8.pdf
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/=
+AD7175-2.pdf
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/=
+AD7176-2.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,ad7172-2
+> +      - adi,ad7173-8
+> +      - adi,ad7175-2
+> +      - adi,ad7176-2
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+> +
+> +  spi-max-frequency:
+> +    maximum: 20000000
+> +
+> +  spi-cpol:
+> +    type: boolean
+> +
+> +  spi-cpha:
+> +    type: boolean
+> +
+> +  required:
+> +    - compatible
+> +    - reg
+> +    - interrupts
+> +
+> +patternProperties:
+> +  "^channel@[0-9a-f]$":
+> +    type: object
+> +    $ref: adc.yaml
+> +    unevaluatedProperties: false
+> +
+> +    properties:
+> +      reg:
+> +        minimum: 0
+> +        maximum: 15
+> +
+> +      diff-channels:
+> +        items:
+> +          minimum: 0
+> +          maximum: 31
+> +
+> +      bipolar:
+> +        type: boolean
+> +
+> +    required:
+> +      - reg
+> +      - diff-channels
+> +
+> +allOf:
+> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    spi {
+> +      #address-cells =3D <1>;
+> +      #size-cells =3D <0>;
+> +
+> +      adc@0 {
+> +        compatible =3D "adi,ad7173-8";
+> +        reg =3D <0>;
+> +
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        interrupts =3D <25 IRQ_TYPE_EDGE_FALLING>;
+> +        interrupt-parent =3D <&gpio>;
+> +        spi-max-frequency =3D <5000000>;
+> +
+> +        channel@0 {
+> +          reg =3D <0>;
+> +          bipolar;
+> +          diff-channels =3D <0 1>;
+> +        };
+> +
+> +        channel@1 {
+> +          reg =3D <1>;
+> +          diff-channels =3D <2 3>;
+> +        };
+> +
+> +        channel@2 {
+> +          reg =3D <2>;
+> +          bipolar;
+> +          diff-channels =3D <4 5>;
+> +        };
+> +
+> +        channel@3 {
+> +          reg =3D <3>;
+> +          bipolar;
+> +          diff-channels =3D <6 7>;
+> +        };
+> +
+> +        channel@4 {
+> +          reg =3D <4>;
+> +          diff-channels =3D <8 9>;
+> +        };
+> +      };
+> +    };
+> --=20
+> 2.39.2
+>=20
 
->> drivers/watchdog/eiois200_wdt.c:14:10: fatal error: ../mfd/eiois200.h: No such file or directory
-      14 | #include "../mfd/eiois200.h"
-         |          ^~~~~~~~~~~~~~~~~~~
-   compilation terminated.
+--taPXRJOU8lSR+tKW
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-vim +14 drivers/watchdog/eiois200_wdt.c
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZR9HygAKCRB4tDGHoIJi
+0l2SAQCTpojOiYhgWtcaGleXgMHQyDxcwPwEaMySBZYIH9qMPAD+K33f7oMRFfvF
+P/CwGzhdh5jnNs1aEeD1Vw6OCR6pJQM=
+=1JZt
+-----END PGP SIGNATURE-----
 
-    13	
-  > 14	#include "../mfd/eiois200.h"
-    15	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--taPXRJOU8lSR+tKW--
