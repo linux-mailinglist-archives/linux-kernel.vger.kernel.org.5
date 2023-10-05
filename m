@@ -2,106 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB497BAF62
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF297BAF68
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbjJEXkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 19:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44538 "EHLO
+        id S229498AbjJEXs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 19:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjJEXje (ORCPT
+        with ESMTP id S229459AbjJEXsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 19:39:34 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF59116;
-        Thu,  5 Oct 2023 16:39:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696549171;
-        bh=W4CzBrXIZfoFxDzwDzpUKkmGPcZbwFXTX4PF7psd/3U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qKQdSheofcQIGSCDXjiVqQhqzvLuu6/7SC69nW8btUIMyr+IZnd4p484qDf+qbW6i
-         BHegnvIjon6dS/EErONfP4XrQKiPnL6NUpzt480Z9DEtyP/XdbXaQWgXwEDldLQwAb
-         Kg1ZHZUJnCj9Q6UK1ramSog8xg9SL4cDqeD7uBC7lIx3l0CL8FuG7pNMldMHaIWvOj
-         VjNF5jx2nzF7YUyeva2C3c0vTVXmtPqM/h0uiOZdRG2JCu4EMtxsxtcmMrfmTe6yCa
-         80nXrmNVdd3Jc4effQ4RC8Db1xZC75jDlQYZh1qIsO0dEItyrBK72Fb4lI8SSPiCNp
-         3IxBnBq3kxPmg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S1p1b4KDtz4x5k;
-        Fri,  6 Oct 2023 10:39:31 +1100 (AEDT)
-Date:   Fri, 6 Oct 2023 10:39:29 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the scmi tree
-Message-ID: <20231006103929.4c56edb3@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nPc_8xk77m/.M5evTqA8giC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 5 Oct 2023 19:48:54 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C3FC6
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 16:48:52 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d918aef0d0dso2261995276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 16:48:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696549731; x=1697154531; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+lEPeKg/GP3Y80L6NB8ajXYC+n4V3di2jIUF82A5N1I=;
+        b=hymtPkWLHvjXnwmr7k7cb5XQ+J2RhhbGESHmSvrmkhOlN8FIvTvO8eHhj0DZafvtql
+         3YQzgW+tDi4HQ+blrzko5aLAxONiEQQVn6MlQnEAiOlnt5FjGtRL7rB2oa63C/0m05Os
+         pBm7XnMsZWjb4HYLkIn8vGeB2YuOxYdrIPKtPToF4v8JqfRjbAT03K438Nb1vPfP13yW
+         YdiwyCy7f3XhLh4+9KigJi6ktsNtapV+GV45TEZRTdv4IQccZ90hVowdWgvdJsZX/eNQ
+         5JvBN3CaevknfC8hqqz/aDs+y1HDYZVQcU/wOGJcWlNxJP6l5PlSBXpCEiLL0EE+brXc
+         6BMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696549731; x=1697154531;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+lEPeKg/GP3Y80L6NB8ajXYC+n4V3di2jIUF82A5N1I=;
+        b=cIpFsUWBhBX6/0uCg8eOk2wq2qwPuvsf3ubgnsEMOFYRyYHbMBf6Ha3eSfwVvBnfWk
+         sntUQ5uSg3KSfRX5c2YhceFBB5IEOm/0LEbtC+TdFHkYlvHhnU3zq3DJnCOV6LhD6wrv
+         /+SRi4wKubDY5jpmYsPrVPoBT/+gUcNxbxnbDu+gfEnQdNjv3AtzvTOivylgGEfZMCzF
+         +N36yfU/rZBaBUrmptEFOfh+9ZTkBybL5TwkLJPmJ85kebeT3Togmy/0GEVEQkRCm/62
+         UCN4F79l2G9EReqtYjfjprEwOm6I+uSKbPrBxKR+VRhlVmiYby/utGUep9/RYVoZ7yb4
+         lOOg==
+X-Gm-Message-State: AOJu0YxGW5I+F8c4YSg7N9/TuSpuxrwVqJ81QdK1tvdzNUtqvxgTHd3r
+        kMM7ZVdMLMzpynJRyJJuvpMzbfkFxMI=
+X-Google-Smtp-Source: AGHT+IHRi3WHSS0eRi4G7jOWTC1zbVq5PcSR3DpHe2Rifw8FnLaa5w+GwmW/eLasxxswlFxA+y9CeGzvWuY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:1f56:0:b0:d7e:7a8a:2159 with SMTP id
+ f83-20020a251f56000000b00d7e7a8a2159mr100071ybf.5.1696549731485; Thu, 05 Oct
+ 2023 16:48:51 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 16:48:50 -0700
+In-Reply-To: <20231005175238.7bb2zut4fb7ebdqc@amd.com>
+Mime-Version: 1.0
+References: <cover.1695327124.git.isaku.yamahata@intel.com>
+ <f987dcde3b051371b496847282022c679e9402e4.1695327124.git.isaku.yamahata@intel.com>
+ <ZQypbSuMrbJpJBER@google.com> <ZQy29msIoAGQUGR2@google.com> <20231005175238.7bb2zut4fb7ebdqc@amd.com>
+Message-ID: <ZR9LYhpxTaTk6PJX@google.com>
+Subject: Re: [RFC PATCH v2 1/6] KVM: gmem: Truncate pages on punch hole
+From:   Sean Christopherson <seanjc@google.com>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
+        Fuad Tabba <tabba@google.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nPc_8xk77m/.M5evTqA8giC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 05, 2023, Michael Roth wrote:
+> On Thu, Sep 21, 2023 at 02:34:46PM -0700, Sean Christopherson wrote:
+> > On Thu, Sep 21, 2023, Sean Christopherson wrote:
+> > > > diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
+> > > > index a819367434e9..01fb4ca861d0 100644
+> > > > --- a/virt/kvm/guest_mem.c
+> > > > +++ b/virt/kvm/guest_mem.c
+> > > > @@ -130,22 +130,32 @@ static void kvm_gmem_invalidate_end(struct kvm_gmem *gmem, pgoff_t start,
+> > > >  static long kvm_gmem_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+> > > >  {
+> > > >  	struct list_head *gmem_list = &inode->i_mapping->private_list;
+> > > > +	struct address_space *mapping  = inode->i_mapping;
+> > > >  	pgoff_t start = offset >> PAGE_SHIFT;
+> > > >  	pgoff_t end = (offset + len) >> PAGE_SHIFT;
+> > > >  	struct kvm_gmem *gmem;
+> > > >  
+> > > > +	/*
+> > > > +	 * punch hole may result in zeroing partial area.  As pages can be
+> > > > +	 * encrypted, prohibit zeroing partial area.
+> > > > +	 */
+> > > > +	if (offset & ~PAGE_MASK || len & ~PAGE_MASK)
+> > > > +		return -EINVAL;
+> > > 
+> > > This should be unnecessary, kvm_gmem_fallocate() does
+> > > 
+> > > 	if (!PAGE_ALIGNED(offset) || !PAGE_ALIGNED(len))
+> > > 		return -EINVAL;
+> > > 
+> > > before invoking kvm_gmem_punch_hole().  If that's not working, i.e. your test
+> > > fails, then that code needs to be fixed.  I'll run your test to double-check,
+> > > but AFAICT this is unnecesary.
+> > 
+> > I confirmed that the testcase passes without the extra checks.  Just to close the
+> > loop, what prompted adding more checks to kvm_gmem_punch_hole()?
+> 
+> I don't know if it's the same issue that Isaku ran into, but for SNP we
+> hit a similar issue with the truncate_inode_pages_range(lstart, lend) call.
+> 
+> The issue in that case was a bit more subtle:
+> 
+>   - userspace does a hole-punch on a 4K range of its gmem FD, which happens
+>     to be backed by a 2MB folio.
+>   - truncate_inode_pages_range() gets called for that 4K range
+>   - truncate_inode_pages_range() does special handling on the folios at the
+>     start/end of the range in case they are partial and passes these to
+>     truncate_inode_partial_folio(folio, lstart, lend). In this case, there's
+>     just the 1 backing folio. But it *still* gets the special treatment, and
+>     so gets passed to truncate_inode_partial_folio().
+>   - truncate_inode_partial_folio() will then zero that 4K range, even though
+>     it is page-aligned, based on the following rationale in the comments:
+> 
+>         /*
+>          * We may be zeroing pages we're about to discard, but it avoids
+>          * doing a complex calculation here, and then doing the zeroing
+>          * anyway if the page split fails.
+>          */
+>         folio_zero_range(folio, offset, length);
+> 
+>   - after that, .invalidate_folio callback is issued, then the folio is split,
+>     and the caller (truncate_inode_pages_range()) does another pass through
+> 	the whole range and can free the now-split folio then .free_folio callbacks
+>     are issued.
+> 
+> Because of that, we can't rely on .invalidate_folio/.free_folio to handle
+> putting the page back into a normal host-accessible state, because the
+> zero'ing will happen beforehand.
 
-Hi all,
+Argh, and that causes an RMP violation #PF.
 
-After merging the scmi tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+FWIW, I don't *think* zeroing would be problematic for TDX.  The page would get
+poisoned, but KVM would re-zero the memory with MOVDIR64B and flush the cache.
 
-In file included from drivers/tee/optee/ffa_abi.c:8:
-include/linux/arm_ffa.h: In function 'ffa_mem_desc_offset':
-include/linux/arm_ffa.h:105:10: error: implicit declaration of function 'FI=
-ELD_PREP' [-Werror=3Dimplicit-function-declaration]
-  105 |         (FIELD_PREP(FFA_MAJOR_VERSION_MASK, (major)) |          \
-      |          ^~~~~~~~~~
-include/linux/arm_ffa.h:107:33: note: in expansion of macro 'FFA_PACK_VERSI=
-ON_INFO'
-  107 | #define FFA_VERSION_1_0         FFA_PACK_VERSION_INFO(1, 0)
-      |                                 ^~~~~~~~~~~~~~~~~~~~~
-include/linux/arm_ffa.h:368:28: note: in expansion of macro 'FFA_VERSION_1_=
-0'
-  368 |         if (ffa_version <=3D FFA_VERSION_1_0)
-      |                            ^~~~~~~~~~~~~~~
+> That's why we ended up needing to do this for SNP patches to make sure
+> arch-specific invalidation callbacks are issued before the truncation occurs:
+> 
+>   https://github.com/mdroth/linux/commit/4ebcc04b84dd691fc6daccb9b7438402520b0704#diff-77306411fdaeb7f322a1ca756dead9feb75363aa6117b703ac118576153ddb37R233
+> 
+> I'd planned to post those as a separate RFC to discuss, but when I came across
+> this it seemed like it might be relevant to what the TDX folks might ran into
+> here.
+> 
+> If not for the zero'ing logic mentioned above, for SNP at least, the
+> .free_folio() ends up working pretty nicely for both truncation and fput(),
+> and even plays nicely with live update use-case where the destination gmem
+> instance shares the inode->i_mapping, since iput() won't trigger the
+> truncate_inode_pages_final() until the last reference goes away so we don't
+> have to do anything special in kvm_gmem_release() to determine when we
+> should/shouldn't issue the arch-invalidations to clean up things like the
+> RMP table.
+> 
+> It seems like the above zero'ing logic could be reworked to only zero non-page
+> aligned ranges (as the comments above truncate_inode_pages_range() claim
+> should be the case), which would avoid the issue for the gmem use-case. But I
+> wonder if some explicit "dont-zero-these-pages" flag might be more robust.
+> 
+> Or maybe there's some other way we should be going about this?
 
-Exposed by commit
+Skipping the write seems like the obvious solution.  An address_space flag,
+e.g. AS_INACCESSIBLE, would be the easiest thing to implement.  Or maybe even
+make it AS_DONT_ZERO_ON_TRUNCATE_DAMMIT (mostly joking).
 
-  0624de756f75 ("firmware: arm_ffa: Update memory descriptor to support v1.=
-1 format")
-
-This has been possible for a while, and arm_ffa.h needs to include
-linus/bitfoeld.h ...
-
-I have used the scmi tree from next-20231005 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/nPc_8xk77m/.M5evTqA8giC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUfSTEACgkQAVBC80lX
-0GwZIAf/eKN4PbTQKD/opx6+HlOC5J3bf5Jm1Z7THWV8iCzELwJtSdImmzt8CEkh
-E9GJEKB1LLW/7+/eGo2G6bpiuzs0s2f/MryzYSjQaLyLitBqNQVDItOjL7+62I1e
-2akQLA39qCJA5XvHqMP0fgmMaGQ4CGdS07pZm58IMcLpIewnYW5SGrPXr/6g4H6w
-5Op+jxQ6EK7vYOkbm6u90/YtY6Wk0kSqw/MLs0xJ5yiMQJPngpCl098ffBVVmMRG
-4E7Mel1ZVKaLe50W6FutqFadSe0hEte5LTpkVhhOQAtb21YBGNGgq2NSpOg9Gvtc
-oaCkfPy9xz6eOXZVwDeKYuqga+nY5A==
-=lpIV
------END PGP SIGNATURE-----
-
---Sig_/nPc_8xk77m/.M5evTqA8giC--
+Or a hook in address_space_operations to zero the folio, which conceptually is
+better in many ways, but feels like overkill.
