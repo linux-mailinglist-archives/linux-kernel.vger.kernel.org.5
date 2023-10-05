@@ -2,117 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB9B7B9F0F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45237BA2DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbjJEOR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51690 "EHLO
+        id S233532AbjJEPst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231175AbjJEOPr (ORCPT
+        with ESMTP id S233729AbjJEPsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:15:47 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99A0902D
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 01:47:24 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-534659061afso1100714a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 01:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696495643; x=1697100443; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hD29T/lNAZ/QXmGwMrZ1x3g2jDcpF7q49U192S8uJFo=;
-        b=lsQNuKsJVy+XPtiCITALaWpCvQLvvXHP4eQsqCypPyRDCyoG6BSmEemyAs7kdMhk/t
-         kt0B55GzYDKGLVIU85PPg5vohlfa1katKpoorrNuacg0FeNupK/MfNy6uWpPGytrhzp1
-         qrDMJSvGuk6+mHHk7xEMUOcMob7QCgsjXsLcB9CYTIUCEd2sV+18KhSwi3GLISnLhL0k
-         flHwr8KH48W3RD3vhwVQsAC4GbwHStBiUz5F0NW1gZEkX4DB+ik0KMIFGqTGNdJ764en
-         LAXemJU/FTNJV75eM3VrU3K5oYL0CDUgdeLW77wSsgSoO+a6cuQM5hhQFDHPaA1xssFJ
-         xoBg==
+        Thu, 5 Oct 2023 11:48:04 -0400
+Received: from mail-oa1-x4e.google.com (mail-oa1-x4e.google.com [IPv6:2001:4860:4864:20::4e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E94903C
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 01:49:46 -0700 (PDT)
+Received: by mail-oa1-x4e.google.com with SMTP id 586e51a60fabf-1e12f68563cso907581fac.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 01:49:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696495643; x=1697100443;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hD29T/lNAZ/QXmGwMrZ1x3g2jDcpF7q49U192S8uJFo=;
-        b=Ibnebvwp5pdnqxmwGXGYKySVj9ZrfGt/urlMlCaQ255T3qwuahOROPlxBfzJFS/1MR
-         G5I8HcNuSTQZ6A+NGuXrWaEXFlh7zFDXx0hddCgsMuESRXPDYAS6LZK9cCR0KcbhX8XX
-         goz2SrUeWWqPVFv/LDC6rQ/3M+Ux0KE2OfAmxqtnRVRvJwUJw6tKRjOCtXaicpIjlEG3
-         ROdp8/MeFO58XLU5kv5vh9WzFJfSsjJwl0rGqcm8siKOU/oNTg2Bk3jfS7vFdOtxsP5a
-         jhfQrwsNy07YqWa1WAgwzrqL7Dae9yNUv5il3h7AumO2BIygreqI+L6V5qjXVzj0k8eX
-         pYyg==
-X-Gm-Message-State: AOJu0YzI8fdMuiQey0VcoIkWU+tVBzJ0N/eMCJ0w/FuTwKi7gmIB6X6o
-        sADem+Ie05onUGTMlW/mCg4Otg==
-X-Google-Smtp-Source: AGHT+IHoI73LDoSrX3Gv9DQxUZNSzP3ZoUFcKOfRokgWvrTjGiN0gthxYBek7Z+baJjgCuDr2rd82A==
-X-Received: by 2002:a17:906:105e:b0:9ae:654d:5105 with SMTP id j30-20020a170906105e00b009ae654d5105mr4915001ejj.47.1696495642975;
-        Thu, 05 Oct 2023 01:47:22 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id a1-20020a1709064a4100b009b65a698c5csm815655ejv.57.2023.10.05.01.47.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 01:47:22 -0700 (PDT)
-Message-ID: <6b4968d9-80d3-4a5a-b42e-3982825e45e9@linaro.org>
-Date:   Thu, 5 Oct 2023 10:47:21 +0200
+        d=1e100.net; s=20230601; t=1696495784; x=1697100584;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O5CT72nr6fyLIM2HBIZewHuJMtsZSdhGCa8W/NlrzdE=;
+        b=ZNhmEm0wrbem9KB+I+Yjokt54Nb5XBOSnuSGA57h/y+0PR5mfZ6sKjLCf18I56oirr
+         G24w+BW04XXrEBlltSnu0xCf4QeSucm9Ry0WNbtAqKAAvsMyFVcv0RK9Y/pvjsKm4VpI
+         BJwxImxxxNY3bprJXDmZdXwtDINtKzupyZLgVLQYqvPVxUf57wkPHYois8hmACvfPu8d
+         AnSCAaseNSvKRAz29eK26puYOoly+KWGexp430e19jxlIaLksBx9O7LKsO4TbHVd1rrM
+         5hk9y1dKNmbZRdXZVLmCW1EoU+ShfYq9V1KSEX1i2zgrHz6MO7lhE2YWv/Nkhmb+wyUd
+         FplQ==
+X-Gm-Message-State: AOJu0YziowyKdHV5gtb4PRDjdy6Rj51NuQ6RRiMFsJOdogU6ZVnuvO19
+        8rabeMGA4znilv7luOwb9MyErRXG85k2iBmBHJWrFEC1mpOj
+X-Google-Smtp-Source: AGHT+IHo2mnMCI10UV5TXKADf/v1RkgnT7tekZCDwNptOcZZfYxVDZ7TggD0WGNuei7CQm9SVjBSkU+Mt7tLm3HnsTxz0UA+JsN/
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] ARM: dts: omap4-embt2ws: Add Bluetooth
-Content-Language: en-US
-To:     Andreas Kemnade <andreas@kemnade.info>, bcousson@baylibre.com,
-        tony@atomide.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231004070309.2408745-1-andreas@kemnade.info>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231004070309.2408745-1-andreas@kemnade.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Received: by 2002:a05:6870:1a89:b0:1d6:e8f0:4c47 with SMTP id
+ ef9-20020a0568701a8900b001d6e8f04c47mr1782979oab.9.1696495782543; Thu, 05 Oct
+ 2023 01:49:42 -0700 (PDT)
+Date:   Thu, 05 Oct 2023 01:49:42 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007b47270606f43464@google.com>
+Subject: [syzbot] [net?] [wireless?] memory leak in regulatory_init_db
+From:   syzbot <syzbot+39ec16ff6cc18b1d066d@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -120,20 +57,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2023 09:03, Andreas Kemnade wrote:
-> Since the required clock is now available, add bluetooth.
-> 
-> Note: Firmware (bts file) from device vendor reroutes tx for some time
-> during initialisation and later put it back, producing timeouts in
-> bluetooth initialisation but ignoring that command leads to proper
-> initialisation.
-> 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    3b517966c561 Merge tag 'dma-mapping-6.6-2023-09-30' of git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=130dac2a680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aa96152f5a3192e3
+dashboard link: https://syzkaller.appspot.com/bug?extid=39ec16ff6cc18b1d066d
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1695bd3e680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ae8c4e680000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/cb67ab976a91/disk-3b517966.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/21326eb3ef67/vmlinux-3b517966.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0a95555fe120/bzImage-3b517966.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+39ec16ff6cc18b1d066d@syzkaller.appspotmail.com
+
+executing program
+BUG: memory leak
+unreferenced object 0xffff888108f880c0 (size 64):
+  comm "swapper/0", pid 1, jiffies 4294938895 (age 68.260s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    ff ff ff ff 00 00 00 00 00 00 00 00 30 30 00 00  ............00..
+  backtrace:
+    [<ffffffff81574195>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1114
+    [<ffffffff875a3f05>] kmalloc include/linux/slab.h:599 [inline]
+    [<ffffffff875a3f05>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff875a3f05>] regulatory_hint_core net/wireless/reg.c:3218 [inline]
+    [<ffffffff875a3f05>] regulatory_init_db+0xe5/0x1d0 net/wireless/reg.c:4290
+    [<ffffffff81001cb6>] do_one_initcall+0x76/0x430 init/main.c:1232
+    [<ffffffff874d86ea>] do_initcall_level init/main.c:1294 [inline]
+    [<ffffffff874d86ea>] do_initcalls init/main.c:1310 [inline]
+    [<ffffffff874d86ea>] do_basic_setup init/main.c:1329 [inline]
+    [<ffffffff874d86ea>] kernel_init_freeable+0x25a/0x460 init/main.c:1547
+    [<ffffffff84b3928b>] kernel_init+0x1b/0x290 init/main.c:1437
+    [<ffffffff81149f25>] ret_from_fork+0x45/0x50 arch/x86/kernel/process.c:147
+    [<ffffffff81002be1>] ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+BUG: memory leak
+unreferenced object 0xffff88814490d800 (size 2048):
+  comm "syz-executor220", pid 5026, jiffies 4294943369 (age 23.530s)
+  hex dump (first 32 bytes):
+    d8 4c a8 0d 81 88 ff ff 22 01 00 00 00 00 ad de  .L......".......
+    00 00 00 00 ff ff ff ff ff ff 00 aa aa aa aa aa  ................
+  backtrace:
+    [<ffffffff81574195>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1114
+    [<ffffffff84527e6f>] kmalloc include/linux/slab.h:599 [inline]
+    [<ffffffff84527e6f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff84527e6f>] hci_conn_add+0x4f/0x5e0 net/bluetooth/hci_conn.c:957
+    [<ffffffff84528668>] hci_connect_acl+0x198/0x1b0 net/bluetooth/hci_conn.c:1632
+    [<ffffffff8452b4cb>] hci_connect_sco+0x4b/0x520 net/bluetooth/hci_conn.c:1685
+    [<ffffffff8459d6b3>] sco_connect net/bluetooth/sco.c:266 [inline]
+    [<ffffffff8459d6b3>] sco_sock_connect+0x1c3/0x520 net/bluetooth/sco.c:591
+    [<ffffffff83e96b01>] __sys_connect_file+0x91/0xb0 net/socket.c:2033
+    [<ffffffff83e96c06>] __sys_connect+0xe6/0x110 net/socket.c:2050
+    [<ffffffff83e96c4c>] __do_sys_connect net/socket.c:2060 [inline]
+    [<ffffffff83e96c4c>] __se_sys_connect net/socket.c:2057 [inline]
+    [<ffffffff83e96c4c>] __x64_sys_connect+0x1c/0x20 net/socket.c:2057
+    [<ffffffff84b33fc8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84b33fc8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+BUG: memory leak
+unreferenced object 0xffff8881091dc400 (size 512):
+  comm "kworker/u5:2", pid 5022, jiffies 4294943869 (age 18.530s)
+  hex dump (first 32 bytes):
+    00 d8 90 44 81 88 ff ff c0 b9 e2 0c 81 88 ff ff  ...D............
+    fd 03 00 00 00 00 00 00 00 06 0c 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81574195>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1114
+    [<ffffffff845627dd>] kmalloc include/linux/slab.h:599 [inline]
+    [<ffffffff845627dd>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff845627dd>] l2cap_conn_add.part.0+0x3d/0x340 net/bluetooth/l2cap_core.c:7845
+    [<ffffffff845703b4>] l2cap_conn_add net/bluetooth/l2cap_core.c:71 [inline]
+    [<ffffffff845703b4>] l2cap_connect_cfm+0x264/0x740 net/bluetooth/l2cap_core.c:8242
+    [<ffffffff8452ba43>] hci_connect_cfm include/net/bluetooth/hci_core.h:1935 [inline]
+    [<ffffffff8452ba43>] hci_conn_failed+0xa3/0x120 net/bluetooth/hci_conn.c:1251
+    [<ffffffff84594cc6>] hci_abort_conn_sync+0x4d6/0x6d0 net/bluetooth/hci_sync.c:5435
+    [<ffffffff8452560d>] abort_conn_sync+0x7d/0xa0 net/bluetooth/hci_conn.c:2894
+    [<ffffffff8458b3ad>] hci_cmd_sync_work+0xcd/0x150 net/bluetooth/hci_sync.c:306
+    [<ffffffff812c8d9d>] process_one_work+0x23d/0x530 kernel/workqueue.c:2630
+    [<ffffffff812c99c7>] process_scheduled_works kernel/workqueue.c:2703 [inline]
+    [<ffffffff812c99c7>] worker_thread+0x327/0x590 kernel/workqueue.c:2784
+    [<ffffffff812d6d9b>] kthread+0x12b/0x170 kernel/kthread.c:388
+    [<ffffffff81149f25>] ret_from_fork+0x45/0x50 arch/x86/kernel/process.c:147
+    [<ffffffff81002be1>] ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Best regards,
-Krzysztof
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
