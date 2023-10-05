@@ -2,195 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B717BA12C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E86C7BA16B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231682AbjJEOp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
+        id S239176AbjJEOly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238551AbjJEOkl (ORCPT
+        with ESMTP id S233746AbjJEOhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:40:41 -0400
+        Thu, 5 Oct 2023 10:37:40 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6A9C177666
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:13:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 007327ABE
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:03:17 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7367D1576;
-        Thu,  5 Oct 2023 05:55:58 -0700 (PDT)
-Received: from [10.1.37.28] (e122027.cambridge.arm.com [10.1.37.28])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8BB953F641;
-        Thu,  5 Oct 2023 05:55:18 -0700 (PDT)
-Message-ID: <3e417f1c-faed-45c7-8008-f8525c609e53@arm.com>
-Date:   Thu, 5 Oct 2023 13:55:16 +0100
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 605791595;
+        Thu,  5 Oct 2023 05:57:00 -0700 (PDT)
+Received: from [10.57.2.226] (unknown [10.57.2.226])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 367153F641;
+        Thu,  5 Oct 2023 05:56:20 -0700 (PDT)
+Message-ID: <2c0547a7-9d55-bfc9-cd3f-02f4f8b0308b@arm.com>
+Date:   Thu, 5 Oct 2023 13:56:18 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] arm64/mm: Hoist synchronization out of set_ptes() loop
-Content-Language: en-GB
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Collingbourne <pcc@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231003133955.637353-1-ryan.roberts@arm.com>
-From:   Steven Price <steven.price@arm.com>
-In-Reply-To: <20231003133955.637353-1-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH] MAINTAINERS: coresight: Add filename catchall for
+ Coresight
+To:     James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>
+Cc:     gregkh@linuxfoundation.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, leo.yan@linaro.org,
+        namhyung@kernel.org, atrajeev@linux.vnet.ibm.com,
+        Oded Gabbay <ogabbay@kernel.org>
+References: <20231005084001.34741-1-james.clark@arm.com>
+ <CAJ9a7Vhrup63a8+auvacTTNQgXpsuZW-9fex3r=w+JZQs6aXcg@mail.gmail.com>
+ <a5cb74e2-86ba-eb49-a8cc-f8778e68bcbc@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <a5cb74e2-86ba-eb49-a8cc-f8778e68bcbc@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-8.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 14:39, Ryan Roberts wrote:
-> set_ptes() sets a physically contiguous block of memory (which all
-> belongs to the same folio) to a contiguous block of ptes. The arm64
-> implementation of this previously just looped, operating on each
-> individual pte. But the __sync_icache_dcache() and mte_sync_tags()
-> operations can both be hoisted out of the loop so that they are
-> performed once for the contiguous set of pages (which may be less than
-> the whole folio). This should result in minor performance gains.
+On 05/10/2023 13:42, James Clark wrote:
 > 
-> __sync_icache_dcache() already acts on the whole folio, and sets a flag
-> in the folio so that it skips duplicate calls. But by hoisting the call,
-> all the pte testing is done only once.
 > 
-> mte_sync_tags() operates on each individual page with its own loop. But
-> by passing the number of pages explicitly, we can rely solely on its
-> loop and do the checks only once. This approach also makes it robust for
-> the future, rather than assuming if a head page of a compound page is
-> being mapped, then the whole compound page is being mapped, instead we
-> explicitly know how many pages are being mapped. The old assumption may
-> not continue to hold once the "anonymous large folios" feature is
-> merged.
+> On 05/10/2023 13:08, Mike Leach wrote:
+>> Won't this also pick up....
+>>
+>> drivers/accel/habanalabs/gaudi/gaudi_coresight.c
+>>
+>> ?
+>>
+>> Which isn't part of anything we maintain
+>>
 > 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  arch/arm64/include/asm/mte.h     |  4 ++--
->  arch/arm64/include/asm/pgtable.h | 27 +++++++++++++++++----------
->  arch/arm64/kernel/mte.c          |  4 ++--
->  3 files changed, 21 insertions(+), 14 deletions(-)
+> Ah ok I did try to check for other non Arm Coresight files with
+> Coresight in the name and didn't find any, but I must have missed that one.
 > 
-> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-> index 4cedbaa16f41..91fbd5c8a391 100644
-> --- a/arch/arm64/include/asm/mte.h
-> +++ b/arch/arm64/include/asm/mte.h
-> @@ -90,7 +90,7 @@ static inline bool try_page_mte_tagging(struct page *page)
->  }
+> I will just explicitly add the missing ones instead.
 > 
->  void mte_zero_clear_page_tags(void *addr);
-> -void mte_sync_tags(pte_t pte);
-> +void mte_sync_tags(pte_t pte, unsigned int nr_pages);
->  void mte_copy_page_tags(void *kto, const void *kfrom);
->  void mte_thread_init_user(void);
->  void mte_thread_switch(struct task_struct *next);
-> @@ -122,7 +122,7 @@ static inline bool try_page_mte_tagging(struct page *page)
->  static inline void mte_zero_clear_page_tags(void *addr)
->  {
->  }
-> -static inline void mte_sync_tags(pte_t pte)
-> +static inline void mte_sync_tags(pte_t pte, unsigned int nr_pages)
->  {
->  }
->  static inline void mte_copy_page_tags(void *kto, const void *kfrom)
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 7f7d9b1df4e5..374c1c1485f9 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -325,8 +325,7 @@ static inline void __check_safe_pte_update(struct mm_struct *mm, pte_t *ptep,
->  		     __func__, pte_val(old_pte), pte_val(pte));
->  }
-> 
-> -static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
-> -				pte_t *ptep, pte_t pte)
-> +static inline void __sync_cache_and_tags(pte_t pte, unsigned int nr_pages)
->  {
->  	if (pte_present(pte) && pte_user_exec(pte) && !pte_special(pte))
->  		__sync_icache_dcache(pte);
-> @@ -339,20 +338,18 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
->  	 */
->  	if (system_supports_mte() && pte_access_permitted(pte, false) &&
->  	    !pte_special(pte) && pte_tagged(pte))
-> -		mte_sync_tags(pte);
-> -
-> -	__check_safe_pte_update(mm, ptep, pte);
-> -
-> -	set_pte(ptep, pte);
-> +		mte_sync_tags(pte, nr_pages);
->  }
-> 
->  static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
->  			      pte_t *ptep, pte_t pte, unsigned int nr)
->  {
->  	page_table_check_ptes_set(mm, ptep, pte, nr);
-> +	__sync_cache_and_tags(pte, nr);
-> 
->  	for (;;) {
-> -		__set_pte_at(mm, addr, ptep, pte);
-> +		__check_safe_pte_update(mm, ptep, pte);
-> +		set_pte(ptep, pte);
->  		if (--nr == 0)
->  			break;
->  		ptep++;
-> @@ -531,18 +528,28 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
->  #define pud_pfn(pud)		((__pud_to_phys(pud) & PUD_MASK) >> PAGE_SHIFT)
->  #define pfn_pud(pfn,prot)	__pud(__phys_to_pud_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
-> 
-> +static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
-> +				pte_t *ptep, pte_t pte, unsigned int nr)
-> +{
-> +	__sync_cache_and_tags(pte, nr);
-> +	__check_safe_pte_update(mm, ptep, pte);
-> +	set_pte(ptep, pte);
-> +}
-> +
->  static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
->  			      pmd_t *pmdp, pmd_t pmd)
->  {
->  	page_table_check_pmd_set(mm, pmdp, pmd);
-> -	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd));
-> +	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd),
-> +						PMD_SHIFT - PAGE_SHIFT);
+> Although on further inspection it does seem to be related to some Arm
+> Coresight implementation, although not one that fits in the existing
 
-IIUC the new __set_pte_at takes the number of pages, but PMD_SHIFT -
-PAGE_SHIFT is the log2 of that. Should this be 1 << (PMD_SHIFT -
-PAGE_SHIFT)? Same below for pud.
+True, indeed it is hand written code sequence that we do for the
+normal CoreSight components. The access to the components looks a bit
+convoluted. However, with the coresight_access abstraction we have,
+it is possible to abstract it away and move the driver framework to
+CoreSight drivers.
 
-Steve
+> Perf or Coresight driver framework. So I'm not sure if there could ever
+> be any sharing of code between the two, maybe not from an initial glance.
 
->  }
+Nothing that we could do at the moment without support from the
+habana labs folks.
+
+Suzuki
+
 > 
->  static inline void set_pud_at(struct mm_struct *mm, unsigned long addr,
->  			      pud_t *pudp, pud_t pud)
->  {
->  	page_table_check_pud_set(mm, pudp, pud);
-> -	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud));
-> +	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud),
-> +						PUD_SHIFT - PAGE_SHIFT);
->  }
-> 
->  #define __p4d_to_phys(p4d)	__pte_to_phys(p4d_pte(p4d))
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index 4edecaac8f91..2fb5e7a7a4d5 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -35,10 +35,10 @@ DEFINE_STATIC_KEY_FALSE(mte_async_or_asymm_mode);
->  EXPORT_SYMBOL_GPL(mte_async_or_asymm_mode);
->  #endif
-> 
-> -void mte_sync_tags(pte_t pte)
-> +void mte_sync_tags(pte_t pte, unsigned int nr_pages)
->  {
->  	struct page *page = pte_page(pte);
-> -	long i, nr_pages = compound_nr(page);
-> +	unsigned int i;
-> 
->  	/* if PG_mte_tagged is set, tags have already been initialised */
->  	for (i = 0; i < nr_pages; i++, page++) {
-> --
-> 2.25.1
-> 
+>> On Thu, 5 Oct 2023 at 09:40, James Clark <james.clark@arm.com> wrote:
+>>>
+>>> There are a few files missing from the list like test_arm_coresight.sh
+>>> and arm-coresight.txt. These could be picked up just with a name match.
+>>>
+>>> Signed-off-by: James Clark <james.clark@arm.com>
+>>> ---
+>>>   MAINTAINERS | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index 90f13281d297..3ee45066b7e4 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -2066,6 +2066,7 @@ F:        tools/perf/arch/arm/util/pmu.c
+>>>   F:     tools/perf/tests/shell/coresight/*
+>>>   F:     tools/perf/util/cs-etm-decoder/*
+>>>   F:     tools/perf/util/cs-etm.*
+>>> +N:     coresight
+>>>
+>>>   ARM/CORTINA SYSTEMS GEMINI ARM ARCHITECTURE
+>>>   M:     Hans Ulli Kroll <ulli.kroll@googlemail.com>
+>>> --
+>>> 2.34.1
+>>>
+>>
+>>
 
