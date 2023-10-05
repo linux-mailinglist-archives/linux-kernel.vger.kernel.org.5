@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0EAD7BA187
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32AA97BA165
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237168AbjJEOp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45056 "EHLO
+        id S229483AbjJEOqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238897AbjJEOlR (ORCPT
+        with ESMTP id S238995AbjJEOlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:41:17 -0400
+        Thu, 5 Oct 2023 10:41:31 -0400
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E997CA38B;
-        Thu,  5 Oct 2023 07:15:51 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 395DRe4d128460;
-        Thu, 5 Oct 2023 08:27:40 -0500
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6543A5C7;
+        Thu,  5 Oct 2023 07:16:18 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 395DRfYm128470;
+        Thu, 5 Oct 2023 08:27:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696512460;
-        bh=dhF1bJ0ZILUtbK7vebe0Yuiz2gSzGrAxN/oVbUrMUUM=;
+        s=ti-com-17Q1; t=1696512461;
+        bh=s2POO6h/gtAk3EHTaudsU8u3WXVUmNWLvH3/EEsI0Gs=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Z59DsFa276Kb27DIFdEYWwHEZnxGNK2CVqJ8BYqg5D7lqykdX84ATYPrJ7YNeDdZ5
-         UE82w4qayK/G1rloUHGQqBAtqt21a1DzrDCofBzriGiUiCQmyXxnR/rCtht5qUmPlG
-         8lcwTrbLnUqCeMLvUOXHRkOCoP7oXEVIXSgDl7Ng=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 395DRdwk040716
+        b=U9GrKOnd4dKuSfTgA4uShEU0bUoID9b6S0HAh+CL007oxBOLGcE39tRmXROlYK/x4
+         kz1Pk1tB5nQTz9u2Fvehy0cUxt05yHE/IfuEAffsAfz9CxVVdxsO+dzY3l8ItuBxiL
+         xqBT1/VZKigDnfGATC/F/Y7uVxB8YAL4A/2EGxEQ=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 395DRfwh025084
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 5 Oct 2023 08:27:39 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 5 Oct 2023 08:27:41 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 5
- Oct 2023 08:27:39 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2023 08:27:41 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 5 Oct 2023 08:27:39 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 395DRceG126693;
-        Thu, 5 Oct 2023 08:27:39 -0500
+ Frontend Transport; Thu, 5 Oct 2023 08:27:41 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 395DReuu057448;
+        Thu, 5 Oct 2023 08:27:41 -0500
 From:   Jayesh Choudhary <j-choudhary@ti.com>
 To:     <nm@ti.com>, <vigneshr@ti.com>, <a-bhatia1@ti.com>
 CC:     <afd@ti.com>, <rogerq@kernel.org>, <s-vadapalli@ti.com>,
@@ -48,9 +48,9 @@ CC:     <afd@ti.com>, <rogerq@kernel.org>, <s-vadapalli@ti.com>,
         <krzysztof.kozlowski+dt@linaro.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <j-choudhary@ti.com>
-Subject: [PATCH RESEND v11 3/5] arm64: dts: ti: k3-j784s4-main: Add DSS and DP-bridge node
-Date:   Thu, 5 Oct 2023 18:57:30 +0530
-Message-ID: <20231005132732.7462-4-j-choudhary@ti.com>
+Subject: [PATCH RESEND v11 4/5] arm64: dts: ti: k3-j784s4-evm: Enable DisplayPort-0
+Date:   Thu, 5 Oct 2023 18:57:31 +0530
+Message-ID: <20231005132732.7462-5-j-choudhary@ti.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231005132732.7462-1-j-choudhary@ti.com>
 References: <20231005132732.7462-1-j-choudhary@ti.com>
@@ -70,101 +70,167 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rahul T R <r-ravikumar@ti.com>
 
-Add DSS and DP-bridge node for J784S4 SoC. DSS IP in J784S4 is
-same as DSS IP in J721E, so same compatible is being used.
-The DP is Cadence MHDP8546.
-Disable them by default as nodes are missing port definition
-and phy link configurations which are added later in platform
-dt file.
+Enable display for J784S4 EVM.
+
+Add assigned clocks for DSS, DT node for DisplayPort PHY and pinmux for
+DP HPD. Add the clock frequency for serdes_refclk.
+
+Add the endpoint nodes to describe connection from:
+DSS => MHDP => DisplayPort connector.
+
+Also add the GPIO expander-4 node and pinmux for main_i2c4 which is
+required for controlling DP power. Set status for all required nodes
+for DP-0 as "okay".
 
 Signed-off-by: Rahul T R <r-ravikumar@ti.com>
-[j-choudhary@ti.com: move dss & mhdp node together in main, fix dss node]
+[j-choudhary@ti.com: move all the changes together to enable DP-0 in EVM]
 Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
 Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 71 ++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 119 +++++++++++++++++++++++
+ 1 file changed, 119 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-index e20e26b76ffd..59451b8f063c 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-@@ -1773,4 +1773,75 @@ c71_3: dsp@67800000 {
- 		firmware-name = "j784s4-c71_3-fw";
- 		status = "disabled";
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+index 5991c2e1d994..6f46a1ab179e 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+@@ -249,6 +249,28 @@ vdd_sd_dv: regulator-TLV71033 {
+ 		states = <1800000 0x0>,
+ 			 <3300000 0x1>;
  	};
 +
-+	mhdp: bridge@a000000 {
-+		compatible = "ti,j721e-mhdp8546";
-+		reg = <0x0 0xa000000 0x0 0x30a00>,
-+		      <0x0 0x4f40000 0x0 0x20>;
-+		reg-names = "mhdptx", "j721e-intg";
-+		clocks = <&k3_clks 217 11>;
-+		interrupt-parent = <&gic500>;
-+		interrupts = <GIC_SPI 614 IRQ_TYPE_LEVEL_HIGH>;
-+		power-domains = <&k3_pds 217 TI_SCI_PD_EXCLUSIVE>;
-+		status = "disabled";
-+
-+		dp0_ports: ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			/* Remote-endpoints are on the boards so
-+			 * ports are defined in the platform dt file.
-+			 */
-+		};
++	dp0_pwr_3v3: regulator-dp0-prw {
++		compatible = "regulator-fixed";
++		regulator-name = "dp0-pwr";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		gpio = <&exp4 0 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
 +	};
 +
-+	dss: dss@4a00000 {
-+		compatible = "ti,j721e-dss";
-+		reg = <0x00 0x04a00000 0x00 0x10000>, /* common_m */
-+		      <0x00 0x04a10000 0x00 0x10000>, /* common_s0*/
-+		      <0x00 0x04b00000 0x00 0x10000>, /* common_s1*/
-+		      <0x00 0x04b10000 0x00 0x10000>, /* common_s2*/
-+		      <0x00 0x04a20000 0x00 0x10000>, /* vidl1 */
-+		      <0x00 0x04a30000 0x00 0x10000>, /* vidl2 */
-+		      <0x00 0x04a50000 0x00 0x10000>, /* vid1 */
-+		      <0x00 0x04a60000 0x00 0x10000>, /* vid2 */
-+		      <0x00 0x04a70000 0x00 0x10000>, /* ovr1 */
-+		      <0x00 0x04a90000 0x00 0x10000>, /* ovr2 */
-+		      <0x00 0x04ab0000 0x00 0x10000>, /* ovr3 */
-+		      <0x00 0x04ad0000 0x00 0x10000>, /* ovr4 */
-+		      <0x00 0x04a80000 0x00 0x10000>, /* vp1 */
-+		      <0x00 0x04aa0000 0x00 0x10000>, /* vp1 */
-+		      <0x00 0x04ac0000 0x00 0x10000>, /* vp1 */
-+		      <0x00 0x04ae0000 0x00 0x10000>, /* vp4 */
-+		      <0x00 0x04af0000 0x00 0x10000>; /* wb */
-+		reg-names = "common_m", "common_s0",
-+			    "common_s1", "common_s2",
-+			    "vidl1", "vidl2","vid1","vid2",
-+			    "ovr1", "ovr2", "ovr3", "ovr4",
-+			    "vp1", "vp2", "vp3", "vp4",
-+			    "wb";
-+		clocks = <&k3_clks 218 0>,
-+			 <&k3_clks 218 2>,
-+			 <&k3_clks 218 5>,
-+			 <&k3_clks 218 14>,
-+			 <&k3_clks 218 18>;
-+		clock-names = "fck", "vp1", "vp2", "vp3", "vp4";
-+		power-domains = <&k3_pds 218 TI_SCI_PD_EXCLUSIVE>;
-+		interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupt-names = "common_m",
-+				  "common_s0",
-+				  "common_s1",
-+				  "common_s2";
-+		status = "disabled";
++	dp0: connector-dp0 {
++		compatible = "dp-connector";
++		label = "DP0";
++		type = "full-size";
++		dp-pwr-supply = <&dp0_pwr_3v3>;
 +
-+		dss_ports: ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			/* Ports that DSS drives are platform specific
-+			 * so they are defined in platform dt file.
-+			 */
++		port {
++			dp0_connector_in: endpoint {
++				remote-endpoint = <&dp0_out>;
++			};
 +		};
 +	};
  };
+ 
+ &main_pmx0 {
+@@ -289,6 +311,19 @@ vdd_sd_dv_pins_default: vdd-sd-dv-default-pins {
+ 			J784S4_IOPAD(0x020, PIN_INPUT, 7) /* (AJ35) MCAN15_RX.GPIO0_8 */
+ 		>;
+ 	};
++
++	dp0_pins_default: dp0-default-pins {
++		pinctrl-single,pins = <
++			J784S4_IOPAD(0x0cc, PIN_INPUT, 12) /* (AM37) SPI0_CS0.DP0_HPD */
++		>;
++	};
++
++	main_i2c4_pins_default: main-i2c4-default-pins {
++		pinctrl-single,pins = <
++			J784S4_IOPAD(0x014, PIN_INPUT_PULLUP, 8) /* (AG33) MCAN14_TX.I2C4_SCL */
++			J784S4_IOPAD(0x010, PIN_INPUT_PULLUP, 8) /* (AH33) MCAN13_RX.I2C4_SDA */
++		>;
++	};
+ };
+ 
+ &wkup_pmx2 {
+@@ -862,3 +897,87 @@ adc {
+ 		ti,adc-channels = <0 1 2 3 4 5 6 7>;
+ 	};
+ };
++
++&serdes_refclk {
++	status = "okay";
++	clock-frequency = <100000000>;
++};
++
++&dss {
++	status = "okay";
++	assigned-clocks = <&k3_clks 218 2>,
++			  <&k3_clks 218 5>,
++			  <&k3_clks 218 14>,
++			  <&k3_clks 218 18>;
++	assigned-clock-parents = <&k3_clks 218 3>,
++				 <&k3_clks 218 7>,
++				 <&k3_clks 218 16>,
++				 <&k3_clks 218 22>;
++};
++
++&serdes_wiz4 {
++	status = "okay";
++};
++
++&serdes4 {
++	status = "okay";
++	serdes4_dp_link: phy@0 {
++		reg = <0>;
++		cdns,num-lanes = <4>;
++		#phy-cells = <0>;
++		cdns,phy-type = <PHY_TYPE_DP>;
++		resets = <&serdes_wiz4 1>, <&serdes_wiz4 2>,
++			 <&serdes_wiz4 3>, <&serdes_wiz4 4>;
++	};
++};
++
++&mhdp {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&dp0_pins_default>;
++	phys = <&serdes4_dp_link>;
++	phy-names = "dpphy";
++};
++
++&dss_ports {
++	/* DP */
++	port@0 {
++		reg = <0>;
++
++		dpi0_out: endpoint {
++			remote-endpoint = <&dp0_in>;
++		};
++	};
++};
++
++&main_i2c4 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_i2c4_pins_default>;
++	clock-frequency = <400000>;
++
++	exp4: gpio@20 {
++		compatible = "ti,tca6408";
++		reg = <0x20>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++};
++
++&dp0_ports {
++	port@0 {
++		reg = <0>;
++
++		dp0_in: endpoint {
++			remote-endpoint = <&dpi0_out>;
++		};
++	};
++
++	port@4 {
++		reg = <4>;
++
++		dp0_out: endpoint {
++			remote-endpoint = <&dp0_connector_in>;
++		};
++	};
++};
 -- 
 2.25.1
 
