@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D923A7B9EF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A558F7BA077
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbjJEOQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
+        id S236962AbjJEOh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231843AbjJEON5 (ORCPT
+        with ESMTP id S235402AbjJEOfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:13:57 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F50A5E8
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 02:32:51 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53406799540so1267897a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 02:32:51 -0700 (PDT)
+        Thu, 5 Oct 2023 10:35:21 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AABBA5EC
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 02:32:53 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b6559cbd74so142608366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 02:32:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696498370; x=1697103170; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qNwLLYEchjqrT8u4dds+22/hvzzwVkXCbPu7CyE+3Mk=;
-        b=V4REbNl/YAk00RXPG9rZxg5pwJCWIBFL6E5x0WAlIICbPHdhHu2STeD/ZWKy739zw0
-         vkfNqbtr7nun1bxGzAJMLOzce40sjFpy3nJoo+lkuG7rAKzsVGkVPMpG9TpBE8/7f9+F
-         K73Dq2cz4suXtGGUuAJWN5jpwJDATKp3RJU3GdLFSYdK4WK6G/+4Bx7Z1N6dgi8nkxdL
-         kkDfq8pWYK8KkIQ3X4j6fNKKFrp3pN09WSkbjd0ci+2H/7sA/EY16yplSwsIC4lUVSQZ
-         m1LBONZfdebCqNX1+FKtzMmqkvaXg+jjzBmuh5hx0N/XYvuiqNG/9dc8calhLVhl3WM7
-         ORxA==
+        d=linaro.org; s=google; t=1696498371; x=1697103171; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YdLOn08HJMrX2Ou2DkH0AnNqsbvAINSqQuseGJAmCt0=;
+        b=hHpq1jnNTJvqDyADj+w00PSih1ks2bzAQ2JLnQumUe5tM8tnwyzVR2+Cia5H8agxTD
+         MnBzxiSrUf+q6DcwSSFBf7fVUIjAI7MQN9MB5ggTzn8le6ze6kW6HmCZgRbxxh2ImOgv
+         IBV23glvYDtO+a7qul8BnaSuNgMLGK+fNQAacNBN6mcVdZLHQtZhveKpkrnM2XPY7tCP
+         CKxwWsE5vwzj2CooSXTDRoTAGMbpeNKELEucG0XeK2QPjsNwu9uvgQBW6GL1nK2TyWfw
+         2ZMxyPc4cej04yGjMeRy/TZSo1cfgn3KOIvOqfx4d921R85yGdVAV0e20AEo8aXncBIK
+         R4YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696498370; x=1697103170;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qNwLLYEchjqrT8u4dds+22/hvzzwVkXCbPu7CyE+3Mk=;
-        b=SKLkZBnZRhZhM9Z/mxQJavLSorwzHZNulTTOjsq4c8Vh1m+U4EQukqOlKYNLwF8IDq
-         DSsPEiDuQq85LuaQK7FunpLKw0wswTQPzlysbuolq3W6bDWqpqcFOsfFm0AeA50VrO2u
-         jgaCq4VQDqP+GfDpaiB4hhrpT6bIc/hH5HI6Zerf9lBROwL6A7OJnB+2Ugb9vgztsWTY
-         npstM+pxN4M8bXxs39kIgsJIyJneM8eRQkCmZqypHUnRTZnjTbsvcL+izxDBlqOck6dG
-         QYuEXYNf2ZrCmK92X1sXM7LTZPvmmXjDYxIFTAl1/+YL2lS2Zh96e5GywKAowcELpT12
-         yv8g==
-X-Gm-Message-State: AOJu0YymvQnjl+/0aizxoOivdL5XvlhRIH5oNTireZxUe+sfA1jKg8mm
-        DlVcvsjlxaRzyR3zyPycf+DMyw==
-X-Google-Smtp-Source: AGHT+IGGASEELZoOzZ6BfyTzvlBZV9PBihNgej7jZay1gXGRYHNhNO+WGFiREWZMmxKPAgpv4B/eZA==
-X-Received: by 2002:a17:906:310b:b0:9ae:5765:c134 with SMTP id 11-20020a170906310b00b009ae5765c134mr4869914ejx.15.1696498370178;
-        Thu, 05 Oct 2023 02:32:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696498371; x=1697103171;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YdLOn08HJMrX2Ou2DkH0AnNqsbvAINSqQuseGJAmCt0=;
+        b=CdrVfgqdFVDPzftkeAKdkcIZqff9RgXgED+Bjt4EGuGot5y0OzlaUP6vBQntfAdRbk
+         bT1IISrtk7Hs919/I+vaXFB+ZTFzw+ESXVISQpFQZIE/izbrc4FaSzxKJbZU4LRQ1PQJ
+         h6HzjtBpgx2Bp7OJh5czMeUknqQzMJO9A9Ug+9HIURAqS/IGPT6lSwyUOW7FnL+41OzA
+         P1mK5AcHjT+WDMbY4kU6qReOvE3QuVwn+4ZwavZP7zRo1e6GRr3ZgaCltyB5DKPy6URq
+         ccLivjJiyE1E8WOsMRUv13uFiphqTQ52po8ZAvt7CqTOPDhGDxEzQ4qF8oKVRa0i/ZH6
+         +q7w==
+X-Gm-Message-State: AOJu0Ywvl19Ah7jg4qWD35C+X7oQBgJ+OXp0jxB70Y4k4fjvvsu5XXI+
+        sRssrTi0F17chcTiNG9CCMG12g==
+X-Google-Smtp-Source: AGHT+IEGiwd6GZAfK3FbFUd2UMYw/vGyBuvevBUIP7Ff7gNZtLv+jk3/3mwwnVIKtSHWpnmRH8BORw==
+X-Received: by 2002:a17:906:74cc:b0:9a1:d0bb:d215 with SMTP id z12-20020a17090674cc00b009a1d0bbd215mr4501972ejl.5.1696498371530;
+        Thu, 05 Oct 2023 02:32:51 -0700 (PDT)
 Received: from krzk-bin.. (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id rn4-20020a170906d92400b0099bc038eb2bsm863893ejb.58.2023.10.05.02.32.48
+        by smtp.gmail.com with ESMTPSA id rn4-20020a170906d92400b0099bc038eb2bsm863893ejb.58.2023.10.05.02.32.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 02:32:49 -0700 (PDT)
+        Thu, 05 Oct 2023 02:32:51 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Rob Herring <robh@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -60,14 +61,16 @@ To:     Rob Herring <robh@kernel.org>,
         devicetree@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Andreas Kemnade <andreas@kemnade.info>
-Subject: [PATCH 1/2] dt-bindings: serial: fix regex pattern for matching serial node children
-Date:   Thu,  5 Oct 2023 11:32:46 +0200
-Message-Id: <20231005093247.128166-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 2/2] dt-bindings: serial: allow naming of Bluetooth with GPS children
+Date:   Thu,  5 Oct 2023 11:32:47 +0200
+Message-Id: <20231005093247.128166-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231005093247.128166-1-krzysztof.kozlowski@linaro.org>
+References: <20231005093247.128166-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,28 +79,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The regular expression pattern for matching serial node children should
-accept only nodes starting and ending with the set of words: bluetooth,
-gnss, gps or mcu.  Add missing brackets to enforce such matching.
+Some devices attached over UART combine Bluetooth and GNSS/GPS receiver,
+so allow "bluetooth-gnss" naming of children nodes.
 
-Fixes: 0c559bc8abfb ("dt-bindings: serial: restrict possible child node names")
-Reported-by: Andreas Kemnade <andreas@kemnade.info>
-Closes: https://lore.kernel.org/all/20231004170021.36b32465@aktux/
+Link: https://lore.kernel.org/all/20231004070309.2408745-1-andreas@kemnade.info/
+Suggested-by: Andreas Kemnade <andreas@kemnade.info>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
  Documentation/devicetree/bindings/serial/serial.yaml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/serial/serial.yaml b/Documentation/devicetree/bindings/serial/serial.yaml
-index ea277560a596..5727bd549dec 100644
+index 5727bd549dec..468af429c3e6 100644
 --- a/Documentation/devicetree/bindings/serial/serial.yaml
 +++ b/Documentation/devicetree/bindings/serial/serial.yaml
 @@ -96,7 +96,7 @@ then:
      rts-gpios: false
  
  patternProperties:
--  "^bluetooth|gnss|gps|mcu$":
-+  "^(bluetooth|gnss|gps|mcu)$":
+-  "^(bluetooth|gnss|gps|mcu)$":
++  "^(bluetooth|bluetooth-gnss|gnss|gps|mcu)$":
      if:
        type: object
      then:
