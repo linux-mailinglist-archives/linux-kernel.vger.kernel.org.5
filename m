@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB877B997A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 03:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440B07B9978
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 03:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244268AbjJEBNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 21:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
+        id S244263AbjJEBMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 21:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243808AbjJEBNK (ORCPT
+        with ESMTP id S241050AbjJEBMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 21:13:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4899CCE;
-        Wed,  4 Oct 2023 18:13:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696468381; x=1728004381;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=VVynd+E2oXjDW4eXcmQeX+pxzwLJmpuXmxCEdtwoB5c=;
-  b=VXHGi3H6aEouyCzzJbvcQOavccVoRbQQyXH8jPZFoXBlexwJYED9hny3
-   +ODQtC0wY9Y6Oy43UzJm+oiTuL3uEmqjD8CheG6otNbi9kE7ZLf6mvhvh
-   iwXan6/K6MnTEWup4EUmxCsedK0tEd+QtfVp0mgLhYBCTeVlXaVkMiukX
-   9pWpS1c5wSQiO86daqRwLVdCGorsafpjBAfa5iSB7J7exsrEiRx2QmXpH
-   bouHpbOMiBIabedEfZsTDL/ZFaIRWw7gdIcw86lyRLBeHC5F2I3X8uTuV
-   ewYGqpDT76ewsAHY1SQTVVrY+lqARquuvSt4B/SHrxlz7N/TaSijjUoS3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="387236015"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="387236015"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 18:13:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="745231792"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="745231792"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 04 Oct 2023 18:12:58 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoCum-000Kpc-1g;
-        Thu, 05 Oct 2023 01:12:45 +0000
-Date:   Thu, 5 Oct 2023 09:11:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Shawn Anastasio <sanastasio@raptorengineering.com>,
-        devicetree@vger.kernel.org, lee@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Timothy Pearson <tpearson@raptorengineering.com>,
-        linux-kernel@vger.kernel.org,
-        Georgy Yakovlev <Georgy.Yakovlev@sony.com>,
-        Shawn Anastasio <sanastasio@raptorengineering.com>
-Subject: Re: [PATCH 3/3] mfd: sie-cronos-cpld: Add driver for SIE cronos CPLD
-Message-ID: <202310050807.eDZkgFy5-lkp@intel.com>
-References: <2e9763cb4fa258fe11769a4ff1544d96c536a4a2.1696285339.git.sanastasio@raptorengineering.com>
+        Wed, 4 Oct 2023 21:12:33 -0400
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7F8E4;
+        Wed,  4 Oct 2023 18:12:23 -0700 (PDT)
+Received: from [192.168.68.112] (ppp118-210-84-62.adl-adc-lon-bras32.tpg.internode.on.net [118.210.84.62])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 22EBF200DB;
+        Thu,  5 Oct 2023 09:12:13 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=codeconstruct.com.au; s=2022a; t=1696468337;
+        bh=xAxBkEJVdrWYBdGjmgEXDdPp5zXscmuH8qacPOd7/ek=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=eoIzp3TLvlOLS2As2yWm6Y+lulUfPoFLMN47c8hyhA4en1MViwWxFtCxFb5CLJz+e
+         ufeii4Unrj8ebwvcJ2VWtid0g87OtRmQTf4H26qSsbsd3QnDCSj0zWHiRJyCe6fOZr
+         6sSsZtCjxR2ZctKxXpzuhGMdD2uL5x7Zr3Pr2Y/rmU7w0cllCW7X+JaQyspLJ15L2+
+         diC9oBgd1ko/KUlqQIFpkDoYOxR4KmxscrR1sN82SL6TJua+G7QAl6w5d9wE8Ja294
+         O6LfaLRSBm/8j/N4fx894/+5i2/yNSqL1W1EpbkdP50GL8nOFRme+uiW5lg3BIMQNk
+         yYUeJkyzZgt1A==
+Message-ID: <b5b813d156c31d73baf1e153f495e69d3367718b.camel@codeconstruct.com.au>
+Subject: Re: [PATCH] gpio: aspeed: fix the GPIO number passed to
+ pinctrl_gpio_set_config()
+From:   Andrew Jeffery <andrew@codeconstruct.com.au>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
+Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Date:   Thu, 05 Oct 2023 11:42:12 +1030
+In-Reply-To: <20231003073926.10771-1-brgl@bgdev.pl>
+References: <20231003073926.10771-1-brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2e9763cb4fa258fe11769a4ff1544d96c536a4a2.1696285339.git.sanastasio@raptorengineering.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shawn,
+On Tue, 2023-10-03 at 09:39 +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>=20
+> pinctrl_gpio_set_config() expects the GPIO number from the global GPIO
+> numberspace, not the controller-relative offset, which needs to be added
+> to the chip base.
+>=20
+> Fixes: 5ae4cb94b313 ("gpio: aspeed: Add debounce support")
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-kernel test robot noticed the following build warnings:
+Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
 
-[auto build test WARNING on lee-mfd/for-mfd-next]
-[also build test WARNING on robh/for-next linus/master v6.6-rc4 next-20231004]
-[cannot apply to lee-leds/for-leds-next lee-mfd/for-mfd-fixes]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks!
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Shawn-Anastasio/dt-bindings-mfd-sie-cronos-cpld-Add-initial-DT-binding/20231003-073243
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git for-mfd-next
-patch link:    https://lore.kernel.org/r/2e9763cb4fa258fe11769a4ff1544d96c536a4a2.1696285339.git.sanastasio%40raptorengineering.com
-patch subject: [PATCH 3/3] mfd: sie-cronos-cpld: Add driver for SIE cronos CPLD
-config: i386-randconfig-063-20231005 (https://download.01.org/0day-ci/archive/20231005/202310050807.eDZkgFy5-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310050807.eDZkgFy5-lkp@intel.com/reproduce)
+> ---
+>  drivers/gpio/gpio-aspeed.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpio/gpio-aspeed.c b/drivers/gpio/gpio-aspeed.c
+> index da33bbbdacb9..58f107194fda 100644
+> --- a/drivers/gpio/gpio-aspeed.c
+> +++ b/drivers/gpio/gpio-aspeed.c
+> @@ -973,7 +973,7 @@ static int aspeed_gpio_set_config(struct gpio_chip *c=
+hip, unsigned int offset,
+>  	else if (param =3D=3D PIN_CONFIG_BIAS_DISABLE ||
+>  			param =3D=3D PIN_CONFIG_BIAS_PULL_DOWN ||
+>  			param =3D=3D PIN_CONFIG_DRIVE_STRENGTH)
+> -		return pinctrl_gpio_set_config(offset, config);
+> +		return pinctrl_gpio_set_config(chip->base + offset, config);
+>  	else if (param =3D=3D PIN_CONFIG_DRIVE_OPEN_DRAIN ||
+>  			param =3D=3D PIN_CONFIG_DRIVE_OPEN_SOURCE)
+>  		/* Return -ENOTSUPP to trigger emulation, as per datasheet */
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310050807.eDZkgFy5-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/mfd/sie-cronos-cpld.c:509:34: warning: 'cronos_cpld_dt_ids' defined but not used [-Wunused-const-variable=]
-     509 | static const struct of_device_id cronos_cpld_dt_ids[] = {
-         |                                  ^~~~~~~~~~~~~~~~~~
-
-
-vim +/cronos_cpld_dt_ids +509 drivers/mfd/sie-cronos-cpld.c
-
-   508	
- > 509	static const struct of_device_id cronos_cpld_dt_ids[] = {
-   510		{ .compatible = "sie,cronos-cpld", },
-   511		{ }
-   512	};
-   513	MODULE_DEVICE_TABLE(of, cronos_cpld_dt_ids);
-   514	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
