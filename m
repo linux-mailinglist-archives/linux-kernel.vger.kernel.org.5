@@ -2,109 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8757BA4EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C137BA56E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240400AbjJEQM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
+        id S241889AbjJEQQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240320AbjJEQL7 (ORCPT
+        with ESMTP id S241138AbjJEQNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:11:59 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5E51733;
-        Thu,  5 Oct 2023 06:49:01 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39538AsV022257;
-        Thu, 5 Oct 2023 03:31:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=H8Wr2XjEs5oHuA9SGyGdCEHWKMZtg85Nl/LHRslFifI=;
- b=BGqqUAZnsN6YaVS1lZFRM5SgKau9q+0iEL8ypghu+gol9bLf3PLhkn2Fvt3jUCPIU23B
- nhfUNNNC9BO8ug6Nmerssq1qIVD5vvtKcgdHbGUKQNexsU87/jY9PPVj9M5/JmbGYluq
- HC+diVNUuuBpi/5p40Q+kNFPM7f/a+EvBq/UsreXQ/W+fPJ5YKx5OfbkJ04BUviWS800
- SPn32rIhnskptwMC55ScmIPQ/+691kkBD6TmuFk4BHhAtcwe6zaSPMo/VNiqSh/plDI7
- sHc2DXBplfAMY/Hjvzzl3HSRxO5Qa8MlkOJ/GuJKhdzCoLOPMdoPnmcof6hm8my2i5lv 2A== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3thj6ggb9w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 03:31:12 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3953VBbj006841
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Oct 2023 03:31:11 GMT
-Received: from hu-devipriy-blr.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 4 Oct 2023 20:31:06 -0700
-From:   Devi Priya <quic_devipriy@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <thierry.reding@gmail.com>, <ndesaulniers@google.com>,
-        <trix@redhat.com>, <baruch@tkos.co.il>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>
-CC:     <linux-pwm@vger.kernel.org>, <u.kleine-koenig@pengutronix.de>,
-        <nathan@kernel.org>
-Subject: [PATCH V14 0/4] Add PWM support for IPQ chipsets 
-Date:   Thu, 5 Oct 2023 09:00:49 +0530
-Message-ID: <20231005033053.2626465-1-quic_devipriy@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 5 Oct 2023 12:13:42 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2071b.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe59::71b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408181BFB;
+        Wed,  4 Oct 2023 20:56:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HQesswGbiO+7GNrUr1l9m0rdHF0tEIk+wYKWVOAfOoPMPn8dKeoeptGgNS4wq7Yn5EdCPQxp7NAUxTcp1L7jsmY1E1vUHgitPrBV9KZ2AhqTx7qOxmAN0MxutjyMaBwaIDynm02ENQt/Cc4UUovodj7THdvAtTUJmHn3LOXwgy+1/cJZCfnh9wHwBR2PBIR1fwZkk/NWYLTcxnI3NAZm7dnRcnN1rYEwbxLZ2JW3InKGyq1wy66CsXH31ZwM/g4BuXk50Sgy4G//0bxQzn0GK4zhpDEFej1wPSIu35V3C9XwQDrvbO4GofGtvdeot/h2Fe0xvjrY82oPEo2gBGsjEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qI4TPyc2XF7Y6lzUlN2IgqrdTo1lXeAq4rUJKnhM7dw=;
+ b=oW+7LGrjRu/qioZLl65WzgUYLTmkMcO48kp9m8MYwzuVCIsfonLextx1gHPLP1JOQ82fNgnXyMNJAw2UMGT77mIqFDtGx3QTwiJnhfkl8AzoExheJh7Te/t1PkdjmLFn+lNTxYcLBmhQIuVKhtuWKV0x4cmanlzBGDvWF8Nc12m9UR6o1HT4ps+DXsxcgCDezxUSRnRZCQVdAoTKOboakJS4fz08Is/VASJEqco9jIQzW38zUIlV47yq2LpGrzli/xI4AcbmDu+7JDWkwKR3rZ9OuV2W5YuqHcL7YwO1wld620oOzjof/UM2FazB331Zx+EoWYZrtChLIWkoK7rBfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qI4TPyc2XF7Y6lzUlN2IgqrdTo1lXeAq4rUJKnhM7dw=;
+ b=nAVCXwSvZ99ohfLKZEaBCj+YRKXSgnioUovRxjoTil8SCE6APRhuDuQvUjH/W7nnYSNxqaGUHJ6OarhhJeN6NHwmriOeOtUrShhYayS8WUmpk7LegG/2RNFooTcYPq79yyCXSnQeSW4EALu4ssUyX87440AF/0eD//gavK5abU0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DS0PR01MB8010.prod.exchangelabs.com (2603:10b6:8:151::19) by
+ BL1PR01MB7649.prod.exchangelabs.com (2603:10b6:208:394::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6813.25; Thu, 5 Oct 2023 03:55:55 +0000
+Received: from DS0PR01MB8010.prod.exchangelabs.com
+ ([fe80::6a3d:61d7:133b:9eb9]) by DS0PR01MB8010.prod.exchangelabs.com
+ ([fe80::6a3d:61d7:133b:9eb9%4]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
+ 03:55:54 +0000
+From:   Chanh Nguyen <chanh@os.amperecomputing.com>
+To:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Chanh Nguyen <chanh@os.amperecomputing.com>
+Subject: [PATCH 0/7] Update the device tree for Ampere's BMC platform
+Date:   Thu,  5 Oct 2023 10:55:18 +0700
+Message-Id: <20231005035525.19036-1-chanh@os.amperecomputing.com>
+X-Mailer: git-send-email 2.17.1
 Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: AEFiTwcWsO7jdAFold3Tw1CKwN-VKGZ0
-X-Proofpoint-ORIG-GUID: AEFiTwcWsO7jdAFold3Tw1CKwN-VKGZ0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_13,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 malwarescore=0 adultscore=0
- priorityscore=1501 clxscore=1015 mlxlogscore=671 impostorscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310050028
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SGXP274CA0016.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::28)
+ To DS0PR01MB8010.prod.exchangelabs.com (2603:10b6:8:151::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR01MB8010:EE_|BL1PR01MB7649:EE_
+X-MS-Office365-Filtering-Correlation-Id: ff1e62ab-f340-439a-2f2b-08dbc556f8f4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XJUkQhlQW09jpBMScOyweI01r5WlrX0OQUxs9qJ+UnzP9l1lHQxvmrFQTqzKcnxJGn2KuB3bstyRY26/iDtXWxvKzGwKWrR4A9QkYmXIq6cimyMOpfizEoj9tFMwUxhDzs29QW0M6hULRQE+iQOyckK8sRfsff9EW1ldS6WEgAOC/+2mtLiQiAVPvFCMOnmu1x5VXZ9LxgqE71EtonTeELqAvnT51pcuBg9bZcD0iVrd5I920FEKTJ1T8lnAUp1tPpugY+8qgIJ+OSsAAzGmVG5yI5K2v4j4k5n02Vjr9du9RPj5X1+FO7IiBn8e6cHdMpdpfm8ha+Yo7e6mzbYQ56K1SA0Rb8dD8/LFcW2ziDj1QkwmoWlAbkuk7SnfCYEcxvBDP2b2MLqRLfkUDyccr1+r4NC/urHWcM4azQpXqsEObAFRk0L8lPUQ3rZvENlMF5Hl35zNx4omfv/HiEW/JZ4gSdhwc6sn4Aigj4D2Shz5wSQv6U0ZnGtEkfjT9z5ihb0bg0mHcuOx383fv/vt1Bgxm/O5MevuOaWmDY1aN4MWBp4MyLAFsjGU7wSXuhX76VM3wq0Ql5GR6DaC0u33VRhaMs/6zcgY4HbzmZ6MoiWVdmfqVep1L0odQzXDYh83
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR01MB8010.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39850400004)(396003)(346002)(366004)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(38350700002)(38100700002)(6666004)(478600001)(83380400001)(6512007)(921005)(6486002)(6506007)(52116002)(7416002)(15650500001)(86362001)(8676002)(4326008)(8936002)(5660300002)(26005)(316002)(41300700001)(66946007)(66556008)(66476007)(2906002)(4744005)(110136005)(1076003)(107886003)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QQO6UWGQH/luImpJgjPnDiNblxa9nugnbKwwne4maYfQYNnuOZJ0ete/6BOZ?=
+ =?us-ascii?Q?9kpAUcCQxkcqgPC8pLKJOAwwOQzAHIhLsZriyYatEWyPXT5VJHxToxCG+2yc?=
+ =?us-ascii?Q?aFWNrvor5goMRzAxbPJIWgK2AFkZ+0Goy6zwhuKINQiaS7tdsJjzelF5FlEs?=
+ =?us-ascii?Q?3dIPxgnREXyLckkrf4VZBISjCj1PEkjKDc0XJm2Kh5K7OFykTNZ4dmaCiJ40?=
+ =?us-ascii?Q?tHOGo3963D4Ds5Czb+pfMF130+NrSn5902flJwmjLJEjrGOxdcm0+jWPMue4?=
+ =?us-ascii?Q?VZQ9SyqxB5bwdy/nLIbddOuHBiZwoFcpmt1uHEWYJmOerPUl6JiyZZq304jw?=
+ =?us-ascii?Q?uO1z9DJz2bFtSH4fYGsK0Nzj0lUEFmvScYF5Bhd8b9uSFPAdmMJUtVNt4C2Y?=
+ =?us-ascii?Q?f5Dxy9c/Jvf9AK9dZosG+AITdQqMMKkPnp3w6ZiUlV9nBwz9dutK7pa+070H?=
+ =?us-ascii?Q?3N1NWb/AeMqW7sO8s3aCFPycDvge5zU7UEOdYihE/ws8sdJtjK4u0VTYyaRc?=
+ =?us-ascii?Q?geHP2xFREwiOy18RRnzIFAgd35AXAYx2YnrrDx7ncE3HtEL8xA2x9RXj+S1E?=
+ =?us-ascii?Q?IW8epzdbR2EDxKb3eA+JKGv3D/eUX1NZ1JXlQ6jFf4uPZkHWCvzm2zAhpbkP?=
+ =?us-ascii?Q?YIQA4akc4I/Z5vcg688i+Ed6KZrZEJO3l3LitsybcEio7drk6QauK6x2ffmE?=
+ =?us-ascii?Q?tMUH/1+b0n92J14bwhAkLrjYgmXESWCzxK7467f+Na6qqznKLWu8lPIc0VgI?=
+ =?us-ascii?Q?roJe0dBlF/+Zv0usAKHMHaUgalHiVMoFgYM6SVQU4Daj1JXMt5obc8LuGm2p?=
+ =?us-ascii?Q?XTRO6Ij0LzPpXNkDqsJQ6QRtkgNBhVGpwye2URt3O5zSVUr+/Pf3gaRTZJX/?=
+ =?us-ascii?Q?16NTwe6OSBrVnWew63rRwyrXRMJ1UYOfC/7LsbAD4BZ1UMqZczMH11+aHJJh?=
+ =?us-ascii?Q?/fwY68HzsbfLHvYKAEzeD1TRqXmMyy3yzoP4pvYbjtOe4sQ16/gUQCANnbFb?=
+ =?us-ascii?Q?xyp+So0c/tMUU379yYSKWF9HjP9SDgTk0ZWs365lon383YaBvzqNlcXfJxFL?=
+ =?us-ascii?Q?7mLToiV7WgY4AehhFYFZa215tKFL3/1sL2/SEA3nxUBkBf7jr134DoNCUtRn?=
+ =?us-ascii?Q?Yj7S9gsxUv7xX6vQmeE5Rt6LCglL134seWDWG3yeM4mi28A1OJsqRmTpFZRS?=
+ =?us-ascii?Q?L/pJpaouCQncgqFqNxDwqiO101mSq13dVmvpW6/cPwz+fjKOAckr99bI9RGI?=
+ =?us-ascii?Q?utZIS/Ylb2V7t8c/CywXmDJGwSOhCwNWlvu9R1V3VXoNl95NbFYSUdHAzEpN?=
+ =?us-ascii?Q?aJPwfJZklZZaTDAwL13UW2VSe4WHSovQugbnR3zOoTlaEKpvIL7GYl6cc3g6?=
+ =?us-ascii?Q?5ROMgkmbNoa2xmHdVI25YVnf7uDvn0W94BqOme3c+07ZC+hPQmWLnDh3qpRr?=
+ =?us-ascii?Q?fWf4IYjhOTsbq7IbMYovBxa1CmHOTSiptSHcj7sXcpMhbmOHWXmmonhNP46x?=
+ =?us-ascii?Q?uClOWB8Ij0kwvh+7YPa2Iml1c9Q35hUVQ8KIxWui3NKb/ITy4phv/N38S/Lz?=
+ =?us-ascii?Q?X0ZKl9nMxdMcvIw34LWdooOi4fndcMcrLqnV4nHkUGrZQPTLNCtBtbFSuZQR?=
+ =?us-ascii?Q?tcIML5v235ynr8JiIstB+To=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff1e62ab-f340-439a-2f2b-08dbc556f8f4
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR01MB8010.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 03:55:54.2184
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7HftmYQtpasa2x8fXURCDKHUG/CU235HdBvREE1QAHFSbZHjD8oGqToTSl5GnhM0HACgIS2UA2Lu3h58yT3Aoayvffhify8Zaja5vOlKt3yF1vmZ83ByTQKswn6MC742
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR01MB7649
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PWM driver and binding support for IPQ chipsets.
-Also, add support for pwm node in ipq6018.
+Updates the device tree to support some features on Ampere's
+Mt.Mitchell BMC and Ampere's Mt.Jade BMC.
 
-V14:
-Detailed Change logs are added to the respective patches.
+Chanh Nguyen (7):
+  ARM: dts: aspeed: mtjade, mtmitchell: Update gpio-line-names
+  ARM: dts: aspeed: mtjade, mtmitchell: Add new gpio-line-names
+  ARM: dts: aspeed: mtjade: Add the gpio-hog
+  ARM: dts: aspeed: mtmitchell: Add LEDs
+  ARM: dts: aspeed: mtmitchell: Add inlet temperature sensor
+  ARM: dts: aspeed: mtmitchell: Remove redundant ADC configurations
+  ARM: dts: aspeed: mtmitchell: Add I2C NVMe alias port
 
-V13 can be found at:
-https://lore.kernel.org/linux-arm-msm/20231004090449.256229-1-quic_devipriy@quicinc.com/
-
-Devi Priya (4):
-  pwm: driver for qualcomm ipq6018 pwm block
-  dt-bindings: pwm: add IPQ6018 binding
-  dt-bindings: mfd: qcom,tcsr: Add simple-mfd support for IPQ6018
-  arm64: dts: qcom: ipq6018: add pwm node
-
- .../devicetree/bindings/mfd/qcom,tcsr.yaml    | 112 +++++--
- .../bindings/pwm/qcom,ipq6018-pwm.yaml        |  45 +++
- arch/arm64/boot/dts/qcom/ipq6018.dtsi         |  15 +-
- drivers/pwm/Kconfig                           |  12 +
- drivers/pwm/Makefile                          |   1 +
- drivers/pwm/pwm-ipq.c                         | 282 ++++++++++++++++++
- 6 files changed, 435 insertions(+), 32 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
- create mode 100644 drivers/pwm/pwm-ipq.c
+ .../dts/aspeed/aspeed-bmc-ampere-mtjade.dts   |  66 ++--
+ .../aspeed/aspeed-bmc-ampere-mtmitchell.dts   | 315 ++++++++++++++++--
+ 2 files changed, 334 insertions(+), 47 deletions(-)
 
 -- 
-2.34.1
+2.17.1
 
