@@ -2,264 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D049F7BA89B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4472A7BA8A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjJESFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 14:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
+        id S230173AbjJESHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 14:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbjJESFV (ORCPT
+        with ESMTP id S231879AbjJESHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 14:05:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D90398
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 11:05:06 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B5C2C15;
-        Thu,  5 Oct 2023 11:05:44 -0700 (PDT)
-Received: from [10.57.2.226] (unknown [10.57.2.226])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2848B3F641;
-        Thu,  5 Oct 2023 11:05:03 -0700 (PDT)
-Message-ID: <3b41286f-d2b0-5fdf-88ef-1e63f302f9c8@arm.com>
-Date:   Thu, 5 Oct 2023 19:05:01 +0100
+        Thu, 5 Oct 2023 14:07:34 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2044.outbound.protection.outlook.com [40.107.21.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AF4E8;
+        Thu,  5 Oct 2023 11:07:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a8QnJgzmy0oRUZ5DQENcmcGzu0MTYL6Jd3Zz4ocaXe8mC+MJXpQUruyTRFYxlifPljDjL2bfTnxqxklt+5t3D5SNgWiC645+V0zljvIT9zgE2oJxh+rIxG4TZhXjQageJwhuAX46WLhdrPgPe1rZBqC+UqK5LSwqzI6DXHStdEtopJruShijYBJ5GH9+JppNsTc976KWeKI0IdKx7jRxXKOrPN4y38Ad/59xYflN4v2lIIGQ7JV54lO0iX/u4OhKm3xfF7h13CABlqroK/itkPkyJ17lWjufJ3JYf2nxLRVQTeukL7ePsrcQH7ppBPIWpCKlpJTmbrZ5r280DpL3Rw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Q1M0kblItSEnUUsR+n0ms28X5Lm8J/lTo2+RXHdMdIw=;
+ b=nVWpjxg6/6I6M7+6eFsD3EgQYQl0/YuEbdNvOZPXEi8JMsTc+TQBK62RboDOiRAvy2vM8lb44dwSc0JN7Cz50MVNXA2oml0FRlX/k+9RoQRAQkqVYb34bNX/zxLHZxU1hIN5L8F/5S4r8OFCQnb29B5LBbK5ul+oo8mjb0diUpnYLH1OJjbHSljXfW7+TplNbrfHPtqzX+KTSoXXMDR/MknyuJNsRTpx/mABaTN6JZO66kCjrAXKFmZqh45naWOeA8GCsW92cYHuVkaDgNwRAD9MfAhUjZMIjJMaVJ67zLsf+66+LS98fZEqiHcLtWouvQi47IAqv5kaI0KSqc00cg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q1M0kblItSEnUUsR+n0ms28X5Lm8J/lTo2+RXHdMdIw=;
+ b=S4dkBh76RRwG+zFb9ZqK4iFYq+tAz3H64P0a1NPAqP7ibNltxt+6JNMqoIu/tQt3oxQDFTK3i3f0syNaOumF2DFBWVJ7E11q36dkrPLSzEfM3qRAR/lXiDMZ6o3dm9ZuxyQ2Ez6WIlliKriQtJkrGpeKbLkp5MhEAsbbSRN5HBk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
+ by AM8PR04MB7890.eurprd04.prod.outlook.com (2603:10a6:20b:24e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Thu, 5 Oct
+ 2023 18:07:28 +0000
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::e109:7026:7d76:5617]) by AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::e109:7026:7d76:5617%7]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
+ 18:07:28 +0000
+From:   "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, borisp@nvidia.com,
+        saeedm@nvidia.com, leon@kernel.org, sd@queasysnail.net,
+        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        richardcochran@gmail.com, sebastian.tobuschat@oss.nxp.com,
+        phaddad@nvidia.com, ehakim@nvidia.com, raeds@nvidia.com,
+        atenart@kernel.org,
+        "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+Subject: [PATCH net v7 0/4] Add update_pn flag
+Date:   Thu,  5 Oct 2023 21:06:32 +0300
+Message-Id: <20231005180636.672791-1-radu-nicolae.pirea@oss.nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: VI1P194CA0041.EURP194.PROD.OUTLOOK.COM
+ (2603:10a6:803:3c::30) To AM9PR04MB8954.eurprd04.prod.outlook.com
+ (2603:10a6:20b:409::7)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v2 5/6] arm64: KVM: Write TRFCR value on guest switch with
- nVHE
-To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        broonie@kernel.org, maz@kernel.org
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Fuad Tabba <tabba@google.com>, Joey Gouly <joey.gouly@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <20231005125757.649345-1-james.clark@arm.com>
- <20231005125757.649345-6-james.clark@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20231005125757.649345-6-james.clark@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|AM8PR04MB7890:EE_
+X-MS-Office365-Filtering-Correlation-Id: cbff4942-3bbe-4442-f989-08dbc5cdef88
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nre42TTQaSTtMeWDRek+dhlBFwIzppHBrcfqju3IGOnaHBVZUZ2m3uhCuO/CBl5tGrB97nF2viUiQX5h5BztrmsV4Mp1EsgpMpZ8S7reNu2LPQkCJxVAL/zDCvdzjVImvd/0vg2z/VE0RDy6S7Id22zY2kKRi8VSfbSLCsHGDb6kqm3kQ4/VRcLiMmgu/4Z1zE3h5oXVVgcSe3OddX7xzKZ7/vzPVuueBmrXoCfpba2bsExa00nWhvYxWM/OJN3RS5q6ligaKuoSmEN1hKaFXQPPxt4eo4TaebVLE8d+zP8EnfHewnO0jqMN2d/oNxcmrAUTuC9NzNyHvT7BlqRVQR3qZ+dPpJG2VR8cyMv10o+eFR9bx+4PiG8VMHy3tUeHhXCrKLPtwBHiI8U7fvIbhaKjdZ/fpGfszYyMzGC9Omeid59d5yuUAhLQaX1FJRXiwOwSBzFzzTt7H/b8Cbf3EiruZMI76DPgyW00UATnnCe3mKKqpsyPpfMftXunBU9wNPsqmmhqUV7F01Y5v1eLKTdZFx3WtltZC+vnAkIfKt6fQLPwV+PscOYmcA4SP5Pdjja0Jf6ZGPlrNhjra7UOzIffZ5rMH/uMxhdsL6LbowM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(366004)(376002)(136003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(6512007)(966005)(52116002)(6506007)(6666004)(478600001)(6486002)(83380400001)(26005)(1076003)(7416002)(2906002)(4744005)(2616005)(15650500001)(316002)(66476007)(66556008)(66946007)(4326008)(41300700001)(8936002)(8676002)(5660300002)(38100700002)(38350700002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?g5ZEDsH0nOxLOylW/2WN7L5lpTzYF9Li0XIPtotCl1uan9FJa4XPWhRgRMSg?=
+ =?us-ascii?Q?pPVKoh8Nsde4ez8BJzs3I9ckOjbnATT2Om8jqKmCy4V2iNWfklhJ1YD1ucQK?=
+ =?us-ascii?Q?22gHlC2eW/D1UPbbghioGQQLDlWfbkjA/UsCQL1Fns1E2AqkUW8a4TgmSSqA?=
+ =?us-ascii?Q?G+PENyJzitWxxb7t7xPV+cJnuV63RozynBJ/QbshpWcztCZ68y+VoQaPDKCG?=
+ =?us-ascii?Q?DFLdLpzpvv+6xdKy09dEtL0qGU+7J4zEM645yrHjZCw8w4ommJJVjXs5bK5/?=
+ =?us-ascii?Q?3AZCQ8Jl/dm6UL6h5bCGJabC8GmjzE8u+lzwkmR2ZML9MJv/tqDn7FA1Ottr?=
+ =?us-ascii?Q?CGKp7Vl4Axuls3vrqKbVtDekapkNpcI7GVo5LlJrw5mErKchjq6B/qtkpJGO?=
+ =?us-ascii?Q?yJDPteuV7nxl8vrD7adC8jos4950AtZsXVxuKjlct9Q2RTH/FXidD+6B36hh?=
+ =?us-ascii?Q?czep55Cuw7EUWZJpqO9b9xzoKlEAc+XyvhPpm6lW6YPD+E3wWXty/hkSuZxB?=
+ =?us-ascii?Q?g+lBWmk1exJ2wRc61yLXSvnZhGZ5nmsbif+dbGcgl/+KghD5fVppudfYAHHx?=
+ =?us-ascii?Q?lveM9mxx34ncY9D9EvJRfmPBmT/Of0+eSSb2WO2ZAR3VmgwHYIfoAvdxg5xw?=
+ =?us-ascii?Q?hqVxNA0qNIVU6CLORPz+UT6LUic9sJ9piOsFXADgWbBI1vEejfgs71CekER6?=
+ =?us-ascii?Q?mDKxNyIDYV0EbfQW2LoZCNsLmIig9Qxj6K0+kKokbRdRnwE/uJbMejeH0jn3?=
+ =?us-ascii?Q?37QDnVVXsTg7bNzErWSkhaQSggmFocq+/5nC5FES/VJrLxEs343CZpW2q/Fv?=
+ =?us-ascii?Q?FCd0cobDaEj+i7Z1zxnBxUedOe5HgNT4asDCbwPVpAjDh4SA9uszeme9H0jC?=
+ =?us-ascii?Q?PphJNTsMkClIp1rLD5DsMmALzV2lNRgbaw7oMUCxrvuSM3wrRlI/TWK6sigH?=
+ =?us-ascii?Q?wJsYysYASSHWVCfqwPwvJHNm3rV2Db9dnKcSDIDJbGppOG/127y7AcEhZhKa?=
+ =?us-ascii?Q?GoCsHncPQdUHasFX+L8C48KGOtLf+8dBmhtVsIhPrUE4k7oov5VOEONH9p31?=
+ =?us-ascii?Q?Tki62jZQL1P5FIbTqYoafyzXspOm3PqRiYgBRvJYVz49i8zMrbkZPICDPK4/?=
+ =?us-ascii?Q?sDNo4Bb0uryJ8xVAH+2iQKonVJ9ezdvV2snOiW7hiQeyCbudC/QXbcmM6cXx?=
+ =?us-ascii?Q?BBpQHfXpM66EK18c9+1OrxE81M3EGSSCDwO8fiW8OhKfPTWOUS1GLxvv22kB?=
+ =?us-ascii?Q?Pyz0nwUIDQxP4SQO7reGyRpUIrCpg4VijRJBkT5Yv08Y7NUPqxufE0fa5REB?=
+ =?us-ascii?Q?VQtPEiva6eToPzwm7ZfCw2Wy61L3SSXB2HKu3ixDwyaHGgZaEe0rD4CG/x30?=
+ =?us-ascii?Q?voFj+JpjxujbeyYlzkcqU1zU6/fO+Byx6tKpfqm6axOucJLVoZ/iDHcYGzpN?=
+ =?us-ascii?Q?/JxwG+YA9LMaW4nxrGXdWoAeKNNIubyTxFhQIREN0NqgvBLZnqrEiZlyydp9?=
+ =?us-ascii?Q?mlIcCU0cd1WlqyBwbz0ODkBbf5fkJIN53Bq68dR13oicQr2QfdNEsSFSPtF0?=
+ =?us-ascii?Q?ODvljpIZ/xYtFQcaOqQLEQtNvXxbGU9et6Pya72nuhHO+x5VxlOfA/nS0UTI?=
+ =?us-ascii?Q?fw=3D=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbff4942-3bbe-4442-f989-08dbc5cdef88
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 18:07:28.4760
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JsFXg346RI2MN5OPY//xPkO2uHlv3stU0cXsLAFFofle3+C8ocexch+lIKI/50hNIXX+0eZ+Qhq4LwJKfn5jPuFtaZYIyMMItlMSu8tLPOQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7890
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2023 13:57, James Clark wrote:
-> The guest value for TRFCR requested by the Coresight driver is saved
-> in sysregs[TRFCR_EL1]. On guest switch this value needs to be written to
-> the register. Currently TRFCR is only modified when we want to disable
-> trace completely in guests due to an issue with TRBE. Expand the
-> __debug_save_trace() function to always write to the register if a
-> different value for guests is required, but also keep the existing TRBE
-> disable behavior if that's required.
-> 
-> The TRFCR restore function remains functionally the same, except a value
-> of 0 doesn't mean "don't restore" anymore. Now that we save both guest
-> and host values the register is restored any time the guest and host
-> values differ.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->   arch/arm64/include/asm/kvm_hyp.h   |  6 ++-
->   arch/arm64/kvm/debug.c             | 13 +++++-
->   arch/arm64/kvm/hyp/nvhe/debug-sr.c | 63 ++++++++++++++++++------------
->   arch/arm64/kvm/hyp/nvhe/switch.c   |  4 +-
->   4 files changed, 57 insertions(+), 29 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
-> index 37e238f526d7..0383fd3d60b5 100644
-> --- a/arch/arm64/include/asm/kvm_hyp.h
-> +++ b/arch/arm64/include/asm/kvm_hyp.h
-> @@ -103,8 +103,10 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu);
->   void __debug_switch_to_host(struct kvm_vcpu *vcpu);
->   
->   #ifdef __KVM_NVHE_HYPERVISOR__
-> -void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt);
-> -void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt);
-> +void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
-> +				    struct kvm_cpu_context *guest_ctxt);
-> +void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
-> +				       struct kvm_cpu_context *guest_ctxt);
->   #endif
->   
->   void __fpsimd_save_state(struct user_fpsimd_state *fp_regs);
-> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
-> index 19e722359154..d949dd354464 100644
-> --- a/arch/arm64/kvm/debug.c
-> +++ b/arch/arm64/kvm/debug.c
-> @@ -337,10 +337,21 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
->   	    !(read_sysreg_s(SYS_PMBIDR_EL1) & BIT(PMBIDR_EL1_P_SHIFT)))
->   		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_SPE);
->   
-> -	/* Check if we have TRBE implemented and available at the host */
-> +	/*
-> +	 * Check if we have TRBE implemented and available at the host. If it's
-> +	 * in use at the time of guest switch it will need to be disabled and
-> +	 * then restored.
-> +	 */
->   	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
->   	    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
->   		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+Patches extracted from
+https://lore.kernel.org/all/20230928084430.1882670-1-radu-nicolae.pirea@oss.nxp.com/
+Update_pn flag will let the offloaded MACsec implementations to know when
+the PN is updated.
 
-As per A3.1 Armv9-A architecture extensions (DDI 0487J.a), FEAT_TRBE
-mandates FEAT_TRF. So, we could check FEAT_TRF and if we have a hit, 
-skip the TRBE checks. But, having read the code below, it looks like
-we need separate flags for TRFCR and TRBE.
-	
-> +	/*
-> +	 * Also save TRFCR on nVHE if FEAT_TRF (TraceFilt) exists. This will be
-> +	 * done in cases where use of TRBE doesn't completely disable trace and
-> +	 * handles the exclude_host/exclude_guest rules of the trace session.
-> +	 */
-> +	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceFilt_SHIFT))
-> +		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
-	
->   }
->   
->   void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
-> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-> index 128a57dddabf..c6252029c277 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-> @@ -51,42 +51,56 @@ static void __debug_restore_spe(struct kvm_cpu_context *host_ctxt)
->   	write_sysreg_s(ctxt_sys_reg(host_ctxt, PMSCR_EL1), SYS_PMSCR_EL1);
->   }
->   
-> -static void __debug_save_trace(struct kvm_cpu_context *host_ctxt)
-> +/*
-> + * Save TRFCR and disable trace completely if TRBE is being used, otherwise
-> + * apply required guest TRFCR value.
-> + */
-> +static void __debug_save_trace(struct kvm_cpu_context *host_ctxt,
-> +			       struct kvm_cpu_context *guest_ctxt)
->   {
-> -	ctxt_sys_reg(host_ctxt, TRFCR_EL1) = 0;
-> +	ctxt_sys_reg(host_ctxt, TRFCR_EL1) = read_sysreg_s(SYS_TRFCR_EL1);
->   
->   	/* Check if the TRBE is enabled */
-> -	if (!(read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_EL1_E))
-> -		return;
-> -	/*
-> -	 * Prohibit trace generation while we are in guest.
-> -	 * Since access to TRFCR_EL1 is trapped, the guest can't
-> -	 * modify the filtering set by the host.
-> -	 */
-> -	ctxt_sys_reg(host_ctxt, TRFCR_EL1) = read_sysreg_s(SYS_TRFCR_EL1);
-> -	write_sysreg_s(0, SYS_TRFCR_EL1);
-> -	isb();
-> -	/* Drain the trace buffer to memory */
-> -	tsb_csync();
-> +	if (read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_EL1_E) {
+Radu P.
 
-This is problematic. At this point, we are not sure if TRBE is available
-or not (e.g. we could be on a v8.4 CPU or a v9.0 with TRBE disabled by
-higher EL). May be we need to add a separate flag to indicate the
-presence of TRBE.
+Radu Pirea (NXP OSS) (4):
+  net: macsec: indicate next pn update when offloading
+  octeontx2-pf: mcs: update PN only when update_pn is true
+  net: phy: mscc: macsec: reject PN update requests
+  net/mlx5e: macsec: use update_pn flag instead of PN comparation
 
-Suzuki
+ .../ethernet/marvell/octeontx2/nic/cn10k_macsec.c   | 13 +++++++++----
+ .../ethernet/mellanox/mlx5/core/en_accel/macsec.c   |  4 ++--
+ drivers/net/macsec.c                                |  2 ++
+ drivers/net/phy/mscc/mscc_macsec.c                  |  6 ++++++
+ include/net/macsec.h                                |  1 +
+ 5 files changed, 20 insertions(+), 6 deletions(-)
 
-> +		/*
-> +		 * Prohibit trace generation while we are in guest. Since access
-> +		 * to TRFCR_EL1 is trapped, the guest can't modify the filtering
-> +		 * set by the host.
-> +		 */
-> +		ctxt_sys_reg(guest_ctxt, TRFCR_EL1) = 0;
-> +		write_sysreg_s(0, SYS_TRFCR_EL1);
-> +		isb();
-> +		/* Drain the trace buffer to memory */
-> +		tsb_csync();
-> +	} else {
-> +		/*
-> +		 * Not using TRBE, so guest trace works. Apply the guest filters
-> +		 * provided by the Coresight driver, if different.
-> +		 */
-> +		if (ctxt_sys_reg(host_ctxt, TRFCR_EL1) !=
-> +		    ctxt_sys_reg(guest_ctxt, TRFCR_EL1))
-> +			write_sysreg_s(ctxt_sys_reg(guest_ctxt, TRFCR_EL1),
-> +				       SYS_TRFCR_EL1);
-> +	}
->   }
->   
-> -static void __debug_restore_trace(struct kvm_cpu_context *host_ctxt)
-> +static void __debug_restore_trace(struct kvm_cpu_context *host_ctxt,
-> +				  struct kvm_cpu_context *guest_ctxt)
->   {
-> -	if (!ctxt_sys_reg(host_ctxt, TRFCR_EL1))
-> -		return;
-> -
->   	/* Restore trace filter controls */
-> -	write_sysreg_s(ctxt_sys_reg(host_ctxt, TRFCR_EL1), SYS_TRFCR_EL1);
-> +	if (ctxt_sys_reg(host_ctxt, TRFCR_EL1) != ctxt_sys_reg(guest_ctxt, TRFCR_EL1))
-> +		write_sysreg_s(ctxt_sys_reg(host_ctxt, TRFCR_EL1), SYS_TRFCR_EL1);
->   }
->   
-> -void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt)
-> +void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
-> +				    struct kvm_cpu_context *guest_ctxt)
->   {
->   	/* Disable and flush SPE data generation */
->   	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_SPE))
->   		__debug_save_spe(host_ctxt);
-> -	/* Disable and flush Self-Hosted Trace generation */
-> +
->   	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
-> -		__debug_save_trace(host_ctxt);
-> +		__debug_save_trace(host_ctxt, guest_ctxt);
->   }
->   
->   void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
-> @@ -94,12 +108,13 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
->   	__debug_switch_to_guest_common(vcpu);
->   }
->   
-> -void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt)
-> +void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
-> +				       struct kvm_cpu_context *guest_ctxt)
->   {
->   	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_SPE))
->   		__debug_restore_spe(host_ctxt);
->   	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
-> -		__debug_restore_trace(host_ctxt);
-> +		__debug_restore_trace(host_ctxt, guest_ctxt);
->   }
->   
->   void __debug_switch_to_host(struct kvm_vcpu *vcpu)
-> diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
-> index c8f15e4dab19..55207ec31bd3 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/switch.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/switch.c
-> @@ -276,7 +276,7 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
->   	 * translation regime to EL2 (via MDCR_EL2_E2PB == 0) and
->   	 * before we load guest Stage1.
->   	 */
-> -	__debug_save_host_buffers_nvhe(host_ctxt);
-> +	__debug_save_host_buffers_nvhe(host_ctxt, guest_ctxt);
->   
->   	/*
->   	 * We're about to restore some new MMU state. Make sure
-> @@ -343,7 +343,7 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
->   	 * This must come after restoring the host sysregs, since a non-VHE
->   	 * system may enable SPE here and make use of the TTBRs.
->   	 */
-> -	__debug_restore_host_buffers_nvhe(host_ctxt);
-> +	__debug_restore_host_buffers_nvhe(host_ctxt, guest_ctxt);
->   
->   	if (pmu_switch_needed)
->   		__pmu_switch_to_host(vcpu);
+-- 
+2.34.1
 
