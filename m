@@ -2,139 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FAD7BA747
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377AD7BA72F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbjJERGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
+        id S230282AbjJEQ5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbjJERFh (ORCPT
+        with ESMTP id S229845AbjJEQ4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:05:37 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5223AB3;
-        Thu,  5 Oct 2023 09:51:58 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395GoQXH009724;
-        Thu, 5 Oct 2023 16:51:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=BSDOGUc+JL9tA2cDFhfNjolCDslHhA0NmpBlnFKh2vs=;
- b=doMomtAxPLQ9ZicS3gR4V1yDjOwEmPt8s1QXcjtKaQS/RMCUM2GEzlSxhxTyE6OfR6uF
- 4GXFi4FqasQNfyDZxDslmnBqnO7Hj50H28EhXDeDsNZ/cEj9HvVrcqSCeNo6VGsPBFzR
- TRpDgztUkbJwyfvV0FHqW6zR8YQG7nqtbfJbExBpmMq5str4XzA91tzRa6KMkYAmfeV8
- Gek2c8LfRqockq6UlM39zUceGG873zTtBtas+1zq83XSrNxKSd3lFbTqbaHNFUsBaeTZ
- rUnGhujRpdTV4+GitL4sA8gDEue8JsL+9ejw9LjCeG7NxQOoowenZZeYfY5epcXgMCGf AA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj11082kg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 16:51:36 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 395GoSfC009908;
-        Thu, 5 Oct 2023 16:51:36 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj11082hb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 16:51:36 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 395GROnB007444;
-        Thu, 5 Oct 2023 16:45:09 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3teygm5y1w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 16:45:09 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 395Gj8bs21168402
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Oct 2023 16:45:08 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6FF0F58060;
-        Thu,  5 Oct 2023 16:45:08 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E4E35803F;
-        Thu,  5 Oct 2023 16:45:07 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.90.188])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  5 Oct 2023 16:45:07 +0000 (GMT)
-Message-ID: <e1570b53b991301ee73be185244ef43487bf5961.camel@linux.ibm.com>
-Subject: Re: [PATCH] KEYS: trusted: Remove redundant static calls usage
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Sumit Garg <sumit.garg@linaro.org>, torvalds@linux-foundation.org,
-        jarkko@kernel.org, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        jejb@linux.ibm.com, David.Kaplan@amd.com, bp@alien8.de,
-        mingo@kernel.org, x86@kernel.org, regressions@leemhuis.info,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Thu, 05 Oct 2023 12:45:06 -0400
-In-Reply-To: <20231005133306.379718-1-sumit.garg@linaro.org>
-References: <20231005133306.379718-1-sumit.garg@linaro.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AZfxM2HWduYWXK5tKbH3MW8Ha74FZdKX
-X-Proofpoint-ORIG-GUID: 8EcC0hJpp4Xb9w9BWrOx4e9kmUmdazCA
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 5 Oct 2023 12:56:04 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E72A6709;
+        Thu,  5 Oct 2023 09:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1696524324;
+        bh=Wc1ok2Vt/Cz1nLVIzQ7UVMt9OEsxSir8ZCwThJY4DII=;
+        h=From:Date:Subject:To:Cc:From;
+        b=pf6MI9w02YAqmeQoh5kTBhBv1hZ+Nx2heGQD+43k8y0+++2HopB7ZHD4gTa5c8GLB
+         Msuu5LS7U36v41vTIgkiLTnWvUaMPtdYq2ybR5OIpLTTc68tATr2M0hjlMj3OPBgbK
+         WVHS41sgn38d/ze/FIrvAOLJEcAjGzhagVvzjjC8=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Thu, 05 Oct 2023 18:45:07 +0200
+Subject: [PATCH RFC] tools/nolibc: add support for constructors and
+ destructors
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_12,2023-10-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- bulkscore=0 impostorscore=0 phishscore=0 priorityscore=1501
- mlxlogscore=999 malwarescore=0 mlxscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310050132
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231005-nolibc-constructors-v1-1-776d56bbe917@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIABLoHmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDAwNT3bz8nMykZN3k/LzikqLS5JL8omLdJKPE1KS0tFTLJDNTJaDOgqL
+ UtMwKsKnRSkFuzkqxtbUAg2H1n2oAAAA=
+To:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696524324; l=4282;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=Wc1ok2Vt/Cz1nLVIzQ7UVMt9OEsxSir8ZCwThJY4DII=;
+ b=vdgrOYquQea5IRXxwz7Ybi5UIa6ZR7BpUl/sKN4wBErVSIS/mB/R+TMRG/F4lDRMRlcnlDofg
+ DbzWTbul1utBj9Y4hk++QZoxOPWCrI0nmDzXb1vRi9eHJpHHvZ0G05W
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Summit,
+With the startup code moved to C, implementing support for
+constructors and deconstructors is fairly easy to implement.
 
-On Thu, 2023-10-05 at 19:03 +0530, Sumit Garg wrote:
-> Static calls invocations aren't well supported from module __init and
-> __exit functions, especially the static call from cleanup_trusted() led 
-> to a crash on x86 kernel with CONFIG_DEBUG_VIRTUAL=y.
+Examples for code size impact:
 
-Split the above paragraph into two sentences.
+   text	   data	    bss	    dec	    hex	filename
+  21837	    104	     88	  22029	   560d	nolibc-test.before
+  22135	    120	     88	  22343	   5747	nolibc-test.after
+  21970	    104	     88	  22162	   5692 nolibc-test.after-only-crt.h-changes
 
-> However, the usage of static call invocations for trusted_key_init()
-> and trusted_key_exit() doesn't adds any value neither from performance
-> point and nor there is any security benefit.
+The sections are defined by [0].
 
-   don't add any value from either a performance or security
-perspective.
+[0] https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.dynamic.html
 
->  Hence switch to use indirect
-> function calls instead.
-> 
-> Note here that although it will fix the current crash reported. But
-> ultimately we need fix up static calls infrastructure to either support
-> its future usage from module __init and __exit functions or not.
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+Note:
 
-The first line is a sentence fragment.  Please replace the period with
-a comma.
+This is only an RFC as I'm not 100% sure it belong into nolibc.
+But at least the code is visible as an example.
 
-   report, ultimately the static call call infrastructure should ...
+Also it is one prerequisite for full ksefltest_harness.h support in
+nolibc, should we want that.
+---
+ tools/include/nolibc/crt.h                   | 23 ++++++++++++++++++++++-
+ tools/testing/selftests/nolibc/nolibc-test.c | 16 ++++++++++++++++
+ 2 files changed, 38 insertions(+), 1 deletion(-)
 
-> 
-> Reported-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> Closes: https://lore.kernel.org/lkml/ZRhKq6e5nF%2F4ZIV1@fedora/#t
+diff --git a/tools/include/nolibc/crt.h b/tools/include/nolibc/crt.h
+index a5f33fef1672..c1176611d9a9 100644
+--- a/tools/include/nolibc/crt.h
++++ b/tools/include/nolibc/crt.h
+@@ -13,11 +13,22 @@ const unsigned long *_auxv __attribute__((weak));
+ static void __stack_chk_init(void);
+ static void exit(int);
+ 
++extern void (*const __preinit_array_start[])(void) __attribute__((weak));
++extern void (*const __preinit_array_end[])(void) __attribute__((weak));
++
++extern void (*const __init_array_start[])(void) __attribute__((weak));
++extern void (*const __init_array_end[])(void) __attribute__((weak));
++
++extern void (*const __fini_array_start[])(void) __attribute__((weak));
++extern void (*const __fini_array_end[])(void) __attribute__((weak));
++
+ void _start_c(long *sp)
+ {
+ 	long argc;
+ 	char **argv;
+ 	char **envp;
++	int exitcode;
++	void (* const *func)(void);
+ 	const unsigned long *auxv;
+ 	/* silence potential warning: conflicting types for 'main' */
+ 	int _nolibc_main(int, char **, char **) __asm__ ("main");
+@@ -54,8 +65,18 @@ void _start_c(long *sp)
+ 		;
+ 	_auxv = auxv;
+ 
++	for (func = __preinit_array_start; func < __preinit_array_end; func++)
++		(*func)();
++	for (func = __init_array_start; func < __init_array_end; func++)
++		(*func)();
++
+ 	/* go to application */
+-	exit(_nolibc_main(argc, argv, envp));
++	exitcode = _nolibc_main(argc, argv, envp);
++
++	for (func = __fini_array_end - 1; func >= __fini_array_start; func--)
++		(*func)();
++
++	exit(exitcode);
+ }
+ 
+ #endif /* _NOLIBC_CRT_H */
+diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+index a3ee4496bf0a..f166b425613a 100644
+--- a/tools/testing/selftests/nolibc/nolibc-test.c
++++ b/tools/testing/selftests/nolibc/nolibc-test.c
+@@ -57,6 +57,9 @@ static int test_argc;
+ /* will be used by some test cases as readable file, please don't write it */
+ static const char *argv0;
+ 
++/* will be used by constructor tests */
++static int constructor_test_value;
++
+ /* definition of a series of tests */
+ struct test {
+ 	const char *name;              /* test name */
+@@ -594,6 +597,18 @@ int expect_strne(const char *expr, int llen, const char *cmp)
+ #define CASE_TEST(name) \
+ 	case __LINE__: llen += printf("%d %s", test, #name);
+ 
++__attribute__((constructor))
++static void constructor1(void)
++{
++	constructor_test_value = 1;
++}
++
++__attribute__((constructor))
++static void constructor2(void)
++{
++	constructor_test_value *= 2;
++}
++
+ int run_startup(int min, int max)
+ {
+ 	int test;
+@@ -631,6 +646,7 @@ int run_startup(int min, int max)
+ 		CASE_TEST(auxv_addr);        EXPECT_PTRGT(test_auxv != (void *)-1, test_auxv, brk); break;
+ 		CASE_TEST(auxv_AT_UID);      EXPECT_EQ(1, getauxval(AT_UID), getuid()); break;
+ 		CASE_TEST(auxv_AT_PAGESZ);   EXPECT_GE(1, getauxval(AT_PAGESZ), 4096); break;
++		CASE_TEST(constructor);      EXPECT_EQ(1, constructor_test_value, 2); break;
+ 		case __LINE__:
+ 			return ret; /* must be last */
+ 		/* note: do not set any defaults so as to permit holes above */
 
-Replace "Closes" with "Link".
+---
+base-commit: ab663cc32912914258bc8a2fbd0e753f552ee9d8
+change-id: 20231005-nolibc-constructors-b2aebffe9b65
 
-> Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-
+Best regards,
 -- 
-thanks,
-
-Mimi
+Thomas Weißschuh <linux@weissschuh.net>
 
