@@ -2,118 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CB77BA6FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D8B7BA6F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbjJEQnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46972 "EHLO
+        id S233732AbjJEQno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbjJEQmL (ORCPT
+        with ESMTP id S234506AbjJEQlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:42:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE5719A2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:25:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696523127;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kcIHJd8zrYki+Wg0RoULYhP1Y/OyxEQ+26ogj6n5WEc=;
-        b=gM0+0oOS9pwkJW7zC0CkzWMTvzCm6pHZK4/JSxiFUyzkV8qhAB0zSPMcikI/qerG03il/j
-        YnupQpcdz/V3QqxyddNMohVZiwmM2j73YWH/Ksn0uFyyyD4WitVDxCrrwjnIxOWZi1gvsh
-        Sn6wjUKDe8XY8JZ7rcO4XYZiisRJoo8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-470-R_aqFmEYMeisHvtuHQG8fQ-1; Thu, 05 Oct 2023 12:25:20 -0400
-X-MC-Unique: R_aqFmEYMeisHvtuHQG8fQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 5 Oct 2023 12:41:35 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E0659D7
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:26:07 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id EC47440E019E;
+        Thu,  5 Oct 2023 16:26:05 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Ywce8X2Eol94; Thu,  5 Oct 2023 16:26:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1696523161; bh=LNsi6kyKNbrnFjEuzko5Cj4o3hlC3He0qw0OPp2bpqY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NfslYQxdbC6mCAsZhvSjzdU5I04tqTQo0Yg8iABD8Iya60KMMfOkyyndBZztRxYbk
+         1iZC0pmtfA8vE3sTY8ZPkUi93qDbluzSSEAFBpK3t4bokMP9N6fBCCiP+uqn2fWdhs
+         EjmOz8fLNAOwhnT4Woa6+S/d+v0A9uZVTYC3A/F7AnhT9xhWHl6T4Ap8xWVzxgY3Oo
+         XezHkfpGOSNNmsCHF9Ne//vyFhvntjCO6XQE/7SDylyh/lxwo8F8yTB/s4XcSwLsTe
+         D9p9Jasv+R41FO4riICk9p8RN8hAhLt5D7/IBw5epXMD6LL+Uzso2dbigjxlX5RJbL
+         AHoL/Kl1ZDaDB4YoxvfS5MaP2rIlwyAosd/vckEAPuVzfrt28pmRk4y3lJXEhesY9I
+         xgbVuu3+F9Cdj0FcGjtORRX4OBEQJgW6R8a63a6y9rdQnGdkctKltHDo2gxLO875V/
+         IR7rSVAYG7nfcV8MA3i4PixvKbz1ruK2e0fLs2umC05RhoS55IJ8kV7iyMYuFS30cQ
+         aPJJCi91Ea5+PmQkoHUmCnqOuSkOOxSidlIaqZW8MTP+Y/UHBlwia5vvIB6w71A/or
+         Z284Cc5oRN3DhY4WPqymYa12DeVvxXwjNsb29dPkzgip5IalBIkL6pHixuguE6w3R2
+         5r6qu05+RBEazvCzyw/GhLew=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F1AA85A5A8;
-        Thu,  5 Oct 2023 16:25:19 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.69])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6A7E02156711;
-        Thu,  5 Oct 2023 16:25:16 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  5 Oct 2023 18:24:21 +0200 (CEST)
-Date:   Thu, 5 Oct 2023 18:24:17 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Li Nan <linan666@huaweicloud.com>
-Cc:     Khazhy Kumykov <khazhy@chromium.org>, tj@kernel.org,
-        josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
- throttle is enabled
-Message-ID: <20231005162417.GA32420@redhat.com>
-References: <20230928015858.1809934-1-linan666@huaweicloud.com>
- <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
- <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9CB8D40E014B;
+        Thu,  5 Oct 2023 16:25:49 +0000 (UTC)
+Date:   Thu, 5 Oct 2023 18:25:45 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Breno Leitao <leitao@debian.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] x86/bugs: Add a separate config for each mitigation
+Message-ID: <20231005162545.GFZR7jiUNyNkscijUl@fat_crate.local>
+References: <20230628142129.2468174-1-leitao@debian.org>
+ <ZRV1bIuSXjZ+uPKB@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <ZRV1bIuSXjZ+uPKB@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Li,
++ Linus.
 
-On 10/05, Li Nan wrote:
->
-> >I don't think this change is sufficient to prevent kernel crash, as a
-> >"clever" user could still set the bps_limit to U64_MAX - 1 (or another
-> >large value), which probably would still result in the same crash. The
-> >comment in mul_u64_u64_div_u64 suggests there's something we can do to
-> >better handle the overflow case, but I'm not sure what it's referring
-> >to. ("Will generate an #DE when the result doesn't fit u64, could fix
-> >with an __ex_table[] entry when it becomes an issue.") Otherwise, we
->
-> When (a * mul) overflows, a divide 0 error occurs in
-> mul_u64_u64_div_u64(). Commit 3dc167ba5729 ("sched/cputime: Improve
-> cputime_adjust()") changed func and said: "Will generate an #DE when the
-> result doesn't fit u64, could fix with an __ex_table[] entry when it
-> becomes an issue." But we are unsure of how to fix it. Could you please
-> explain how to fix this issue.
+On Thu, Sep 28, 2023 at 05:45:32AM -0700, Breno Leitao wrote:
+> On Wed, Jun 28, 2023 at 07:21:28AM -0700, leitao@debian.org wrote:
+> > From: Breno Leitao <leitao@debian.org>
+> > 
+> > Create an entry for each CPU mitigation under
+> > CONFIG_SPECULATION_MITIGATIONS. This allow users to enable or disable
+> > them at compilation time.
+> > 
+> > If a mitigation is disabled at compilation time, it could be enabled at
+> > runtime using kernel command line arguments.
+> 
+> I had a chat about this topic with Boris and Thomas at Kernel Recipes,
+> and I would like to summarize the current state, and get it moving
+> forward.
+> 
+> 1) The hardware mitigations are half-way added to KCONFIG. I.e., half of
+> the hardware mitigations are specified under SPECULATION_MITIGATIONS,
+> but not all of them.
+> 	* You can enabled/disabled just half of them at build time.
+> 
+> 2) It is impossible to build a kernel with speculative mitigations
+> disabled.
+> 	* The only way to disable the mitigations is at boot time,
+> 	  using the "mitigations=off" boot parameter.
+> 
+> 
+> So, disabling SPECULATION_MITIGATIONS, will only disable the mitigations
+> that are under SPECULATION_MITIGATIONS. Other mitigations will continue
+> to be enabled by default. This is is misleading for the user.
+> 
+> Here are a few options moving forward:
+> 
+> 1) Create one Kconfig entry per mitigation, so, the user can pick and
+> choose what to enable and disable. (Version 3 of this patch. May need a
+> re-spin due to the new mitigations being added.)
+> 
+> 2) Keep the Kconfig entries as-is. Create a new Kconfig entry
+> (CPU_MITIGATIONS_DEFAULT_OFF?) to disable the mitigations by default,
+> similarly to the `mitigations=off` boot parameter (v1 of this patch)
+> 
+> 3) Same as 2, but, reusing SPECULATION_MITIGATIONS instead of
+> creating a new Kconfig entry.
+> 
+> 4) Remove the current entries in SPECULATION_MITIGATIONS and the fine
+> control on what to enable/disable?!
+> 
+> What is the preferred way?
 
-Not sure I understand the question...
+I happen to know that Linus wanted those per mitigation, perhaps to be
+able to disable only a subset of them.
 
-OK, we can change mul_u64_u64_div_u64() to trap the exception, say,
+Linus, what are you thoughts on it, should we continue with a Kconfig
+option per mitigation or should we hide them all behind a single Kconfig
+option - which would be a lot simpler and easier?
 
-	static inline u64 mul_u64_u64_div_u64(u64 a, u64 mul, u64 div)
-	{
-		u64 q;
+Apparently people want to completely remove the mitigations crap for
+some configurations at build time already.
 
-		asm ("mulq %2; 1: divq %3; 2:\n"
-		     _ASM_EXTABLE_TYPE(1b, 2b, EX_TYPE_DEFAULT|EX_FLAG_CLEAR_AX)
-					: "=a" (q)
-					: "a" (a), "rm" (mul), "rm" (div)
-					: "rdx");
+Thx.
 
-		return q;
-	}
+-- 
+Regards/Gruss,
+    Boris.
 
-should (iiuc) return 0 if the result doesn't fit u64 or div == 0.
-
-But even if we forget that this is x86-specific, how can this help?
-What should calculate_bytes_allowed() do/return in this case?
-
-> >probably need to remove the mul_u64_u64_div_u64 and check for
-> >overflow/potential overflow ourselves?
-
-probably yes...
-
-Oleg.
-
+https://people.kernel.org/tglx/notes-about-netiquette
