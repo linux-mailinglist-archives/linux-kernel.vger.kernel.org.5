@@ -2,161 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5886C7B9E6B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807897B9FEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbjJEOGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
+        id S234082AbjJEOao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbjJEOEQ (ORCPT
+        with ESMTP id S234180AbjJEO3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:04:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9C228100
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696513473; x=1728049473;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=lpZA39v5SnIRDC7l7LsxZrl19vs2WsIC/6TcqgPdEjk=;
-  b=hT6Dg0MCqErYaGVRPsaE5o/FZaSKdjB8sgwpjcuMmSnaX/r/93P0x9u0
-   LmVN81Fy89fEBM96cAJvfloqG/nrdk89w+8tKN0GoMb2lPUB38Y6PcfzJ
-   NOpHXj72wPE+5BKa1mteI/gRlD6hJZiMoiAR62ZVixCGRsSSqG5GJwG/l
-   3MFcCP/5NJ0j02XbnFczl9xiWniE1NbPf24Rz6q3s4sZd/5M57zj4N70f
-   AMQxeKfQQ4E/cipBg0msZoo7t1MOvcVK3sZ6jRsDgcXi9bm/v4VoOZ19S
-   IN7UBqtp9gJkt54x+82uJJIZ4YjvO/iQ010nDBpzhHcZRCUMs3FKPeo8O
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="387340122"
-X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
-   d="scan'208";a="387340122"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 03:58:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="751739054"
-X-IronPort-AV: E=Sophos;i="6.03,202,1694761200"; 
-   d="scan'208";a="751739054"
-Received: from szeseong-mobl.gar.corp.intel.com (HELO [10.251.222.152]) ([10.251.222.152])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 03:58:16 -0700
-Message-ID: <b4a010aa-b547-42ad-844f-849f287abd54@linux.intel.com>
-Date:   Thu, 5 Oct 2023 13:58:26 +0300
+        Thu, 5 Oct 2023 10:29:04 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05D923D01;
+        Thu,  5 Oct 2023 04:00:50 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50337b43ee6so1096485e87.3;
+        Thu, 05 Oct 2023 04:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696503649; x=1697108449; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4yKDLEpsQ7VNfIu4ns2cVaF5g5AlvkRxOThMkLNLu54=;
+        b=DyYTpj5O3SDs1MUT4akrYSG3JSOgGJjRn1EwJpWinCaqSyL9jnGX1S7XrMww7JZwtc
+         rpoe11uV7Z+g0eTnyKzi8xCbU5e2bAx1NBMS5D+JD7YJRIar7nkC3q55Q1Dl0Yle3IJr
+         sqS86VcwmAX87PfQFFe/kxTaESCOppN3VpExGiTBc62V1y1nc/+lLHwCxbsE3y5sCaL5
+         4D3Pkoym3b2QyijwL10TnFbcV5bbdzZJVsjCRs8uYpks/xHxrnY7tCQuiqclaq/7OPdC
+         p1xg6tZIEMqvbqhrrXO1EEfl17hG5QFnk90u41WYid34RYoCrHYTQaFv39P1ZaSGDX39
+         fUyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696503649; x=1697108449;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4yKDLEpsQ7VNfIu4ns2cVaF5g5AlvkRxOThMkLNLu54=;
+        b=G9nM1blnRopCp6/ard/AfWg5PvGCdGxFBUeS+pfXKGuqJdTP7EOJL7miUqSdcjZpp2
+         raKbyh2VW8kAdqYeOQJrC9kFNbYoji14ShLbfG1l48GVsP+wZrneYNaf/UotGqybydIW
+         XXmOddeExtypN1Gksjh+EBdGpm6ppS9byGyCDMVadILCPONWptvkuIC9wlj9niifUx1v
+         rH5tp1Nli3GC/SYZZ7GCPGC8wQ+KS2HNQ8xagI6Xieb28xChGqAwaDG7/p5P7/2oi370
+         Yrv8yEBFjlaXKcp64Rmq+5l0ojEWNNKl01Yy+zWmaBztOPlfNE1W9epHl7thUa1cZEd1
+         St9g==
+X-Gm-Message-State: AOJu0YyD7mzVZNh0GfobWSWtXc22Ywvhup0pRvYUdgAPntzyaLIQw2v/
+        nmB/4q6bCzv7ELFPH+XT0Wo=
+X-Google-Smtp-Source: AGHT+IFvXRCpTbbGo0xm+WMtWgdEVQ3lrnpnQBX8o8q8w0En2Ih6C30E19ZNfYUh0gc/2I/xwbNrrg==
+X-Received: by 2002:ac2:4ec1:0:b0:503:8fa:da22 with SMTP id p1-20020ac24ec1000000b0050308fada22mr3940230lfr.22.1696503648874;
+        Thu, 05 Oct 2023 04:00:48 -0700 (PDT)
+Received: from localhost.localdomain ([5.2.194.157])
+        by smtp.gmail.com with ESMTPSA id g11-20020aa7d1cb000000b0052c9f1d3cfasm890066edp.84.2023.10.05.04.00.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 04:00:47 -0700 (PDT)
+From:   Dumitru Ceclan <mitrutzceclan@gmail.com>
+To:     mitrutzceclan@gmail.com
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        =?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] dt-bindings: adc: add AD7173
+Date:   Thu,  5 Oct 2023 13:59:21 +0300
+Message-Id: <20231005105921.460657-1-mitrutzceclan@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 11/12] ASoC: SOF: Intel: Move binding to display driver
- outside of deferred probe
-To:     Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc:     Alsa-devel <alsa-devel@alsa-project.org>,
-        Maarten Lankhorst <dev@lankhorst.se>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
- <20231004145540.32321-12-maarten.lankhorst@linux.intel.com>
- <alpine.DEB.2.22.394.2310041953090.3390143@eliteleevi.tm.intel.com>
-Content-Language: en-US
-From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <alpine.DEB.2.22.394.2310041953090.3390143@eliteleevi.tm.intel.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+which can be used in high precision, low noise single channel applications
+or higher speed multiplexed applications. The Sigma-Delta ADC is intended
+primarily for measurement of signals close to DC but also delivers
+outstanding performance with input bandwidths out to ~10kHz.
 
+Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+---
+V2 -> V3
+ - remove redundant descriptions
+ - use referenced 'bipolar' property
+ - remove newlines from example
 
-On 04/10/2023 19:59, Kai Vehmanen wrote:
-> Hi,
-> 
-> I'm good with rest of the series, but one patch requires work.
-> 
-> On Wed, 4 Oct 2023, Maarten Lankhorst wrote:
-> 
->> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
->> the snd_hdac_i915_init into a workqueue.
->>
->> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
->> probe function.
->>
->> The previously added probe_early can be used for this,
->> and we also use the newly added remove_late for unbinding afterwards.
-> [...]
->> --- a/sound/soc/sof/intel/hda-common-ops.c
->> +++ b/sound/soc/sof/intel/hda-common-ops.c
->> @@ -19,6 +19,7 @@ struct snd_sof_dsp_ops sof_hda_common_ops = {
->>  	.probe_early	= hda_dsp_probe_early,
->>  	.probe		= hda_dsp_probe,
->>  	.remove		= hda_dsp_remove,
->> +	.remove_late	= hda_dsp_remove_late,
->>  
->>  	/* Register IO uses direct mmio */
->>  
->> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
->> index 86a2571488bc..4eb7f04b8ae1 100644
->> --- a/sound/soc/sof/intel/hda.c
->> +++ b/sound/soc/sof/intel/hda.c
->> @@ -1160,6 +1160,7 @@ int hda_dsp_probe_early(struct snd_sof_dev *sdev)
->>  		return -ENOMEM;
->>  	sdev->pdata->hw_pdata = hdev;
->>  	hdev->desc = chip;
->> +	ret = hda_init(sdev);
->>  
->>  err:
->>  	return ret;
-> 
-> I don't think this works. The hda_codec_i915_init() errors are ignored in 
-> hda_init() so this never returns -EPROBE_DEFER.
-> 
-> So something like this is needed on top (tested quickly on one SOF 
-> machine and this blocks SOF load until i915 or xe driver is loaded):
-> 
-> --cut--
-> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-> index 9025bfaf6a7e..8b17c82dcc89 100644
-> --- a/sound/soc/sof/intel/hda.c
-> +++ b/sound/soc/sof/intel/hda.c
-> @@ -863,13 +863,20 @@ static int hda_init(struct snd_sof_dev *sdev)
->         /* init i915 and HDMI codecs */
->         ret = hda_codec_i915_init(sdev);
->         if (ret < 0)
-> -               dev_warn(sdev->dev, "init of i915 and HDMI codec 
-> failed\n");
-> +               dev_warn(sdev->dev, "init of i915 and HDMI codec failed 
-> (%d)\n", ret);
+ .../bindings/iio/adc/adi,ad7173.yaml          | 130 ++++++++++++++++++
+ 1 file changed, 130 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
 
-we should not print anything or maximum dev_dbg in case of EPROBE_DEFER.
-
-> +
-> +       if (ret < 0 && ret != -ENODEV)
-> +               goto out;
->  
->         /* get controller capabilities */
->         ret = hda_dsp_ctrl_get_caps(sdev);
->         if (ret < 0)
->                 dev_err(sdev->dev, "error: get caps error\n");
->  
-> +out:
-> +       if (ret < 0)
-> +               iounmap(sof_to_bus(sdev)->remap_addr);
-> +
->         return ret;
->  }
-> --cut--
-> 
-> Br, Kai
-
+diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+new file mode 100644
+index 000000000000..bf9e3cbf842e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+@@ -0,0 +1,130 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2023 Analog Devices Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/adi,ad7173.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices AD7173 ADC device driver
++
++maintainers:
++  - Ceclan Dumitru <dumitru.ceclan@analog.com>
++
++description: |
++  Bindings for the Analog Devices AD717X ADC's. Datasheets for supported chips:
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7172-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7173-8.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7175-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7176-2.pdf
++
++properties:
++  compatible:
++    enum:
++      - adi,ad7172-2
++      - adi,ad7173-8
++      - adi,ad7175-2
++      - adi,ad7176-2
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  spi-max-frequency:
++    maximum: 20000000
++
++  spi-cpol:
++    type: boolean
++
++  spi-cpha:
++    type: boolean
++
++  required:
++    - compatible
++    - reg
++    - interrupts
++
++patternProperties:
++  "^channel@[0-9a-f]$":
++    type: object
++    $ref: adc.yaml
++    unevaluatedProperties: false
++
++    properties:
++      reg:
++        minimum: 0
++        maximum: 15
++
++      diff-channels:
++        items:
++          minimum: 0
++          maximum: 31
++
++      bipolar:
++        type: boolean
++
++    required:
++      - reg
++      - diff-channels
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      adc@0 {
++        compatible = "adi,ad7173-8";
++        reg = <0>;
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        interrupts = <25 IRQ_TYPE_EDGE_FALLING>;
++        interrupt-parent = <&gpio>;
++        spi-max-frequency = <5000000>;
++
++        channel@0 {
++          reg = <0>;
++          bipolar;
++          diff-channels = <0 1>;
++        };
++
++        channel@1 {
++          reg = <1>;
++          diff-channels = <2 3>;
++        };
++
++        channel@2 {
++          reg = <2>;
++          bipolar;
++          diff-channels = <4 5>;
++        };
++
++        channel@3 {
++          reg = <3>;
++          bipolar;
++          diff-channels = <6 7>;
++        };
++
++        channel@4 {
++          reg = <4>;
++          diff-channels = <8 9>;
++        };
++      };
++    };
 -- 
-Péter
+2.39.2
+
