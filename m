@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC9E7BA630
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9339D7BA6BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239775AbjJEQ3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54674 "EHLO
+        id S233468AbjJEQlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244322AbjJEQ06 (ORCPT
+        with ESMTP id S235355AbjJEQj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:26:58 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291F11BF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:22:02 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-694ed84c981so946977b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:22:02 -0700 (PDT)
+        Thu, 5 Oct 2023 12:39:28 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B574236A5
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:23:02 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40662119cd0so87195e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:23:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696522921; x=1697127721; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5xlZdjuRZ3EiS5hUIS3cheCtDGn4hllvnDuk1YtIiL8=;
-        b=iQIwcjDtUcQ5B7rrH39U4s3CYqxQgzRv+yOXK4ffX/PQ0bDtRpArNZ3ZP0TU2V+iSO
-         EjiiE4Siown06hQ3iW692SiwY8IgnChw/Xl4jVtIOppxjoQDRYRrbDozpzSnFelVSbBG
-         Iz5FDOl0ifwGXffc1W0e6+GEtk1pg6ONmqSHI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696522921; x=1697127721;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1696522981; x=1697127781; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5xlZdjuRZ3EiS5hUIS3cheCtDGn4hllvnDuk1YtIiL8=;
-        b=PzsaKacf2mbz8M4tal+81Qszms8iuVLhZR4avnDUGQsYkNVmamHZtHi8yPUeEAU2SF
-         2OkIjf0fMrfr/xP43cKEbpKzd6m5AcvhmjDwTnRj/v40nkejJ9xPj87VQ0efXflRkXpy
-         IF27Iii57CLVB4fbtWSK7idbED1XriP/l/k+1tfXoTzUE6iFCtcBu2gzpICkkYSYHPi6
-         RQZg5FG8OZhLrYcS4gagBMYZQRmkH26LViXORwaAX6V1UZUW0FsHUxLobiGUB8xFSIyE
-         hrj5lYmCWTdIms/ZFZZhfUmTr1liJj4hm//B/mg5RTJtVdIaZ7cRMlv7y376Xlxxy1Cd
-         y8Mg==
-X-Gm-Message-State: AOJu0Yz7Q0K8tophiCx6pIze/iCCYFERVZAzVpSR5ZHDuI4UssTuSduh
-        KKZ8PdD6aKWm/B/FugRPUJntvA==
-X-Google-Smtp-Source: AGHT+IFPkZwwtErvUtwQx729VOR4jIp/RfewIvjt55LeIfJ6pMziUndRTcO/Mi/qbMOguQZV28rD9A==
-X-Received: by 2002:a05:6a20:8f26:b0:159:fe1d:2f32 with SMTP id b38-20020a056a208f2600b00159fe1d2f32mr6782722pzk.42.1696522921110;
-        Thu, 05 Oct 2023 09:22:01 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j23-20020aa78017000000b0069305627494sm1568468pfi.165.2023.10.05.09.22.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 09:22:00 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 09:21:59 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux@rasmusvillemoes.dk'" <linux@rasmusvillemoes.dk>,
-        'Steven Rostedt' <rostedt@goodmis.org>,
-        "'bvanassche@acm.org'" <bvanassche@acm.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 next] compiler.h: Move __is_constexpr() to compiler.h.
-Message-ID: <202310050921.F0B15702D4@keescook>
-References: <2a6680bbe2e84459816a113730426782@AcuMS.aculab.com>
+        bh=pzyAiWhvPRkAaSX04taWxyRaF35/7oPd53VXghDgNwg=;
+        b=GVagLX8V3wo4J8tN9/raqI5+A44kv2gtYr/noRXWFtzp0Juowt0R+n+xThn+7cu65h
+         Cr/GYr1Xb8J60TX4ZLhtQmxaFOpZDkRAAShAV9L1SUxZTe8goRQy/YmjFBBJ9eXtDVoS
+         OTWIFCTqE0odBSHEzQS4uG0RXNCducYzGqQRe78mcMhBVDNii/RdWa9StUH7f3prWfnA
+         Flu2Hke6yWaYOPA7PMPt03G+KS4FHC9cnB351khpoybUe3HQKDlYkiTCRX078G3U8AQ5
+         CmO+9Ojr5mVYlrXq5EsX3Ia6zTljK9kB679RokhD1DyYD9Va34Wd/exOZQjP3VIrpn0D
+         IOxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696522981; x=1697127781;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pzyAiWhvPRkAaSX04taWxyRaF35/7oPd53VXghDgNwg=;
+        b=Ir0bb7dEgswmqItwc8/5M32MQaj34QH9tn7U5tzn0+jBJ07IWp63nPk/JnVj+3Y7V+
+         d+VGXgZoM/3OzPjLNrbachyieB5UCF6lOv4ND28ECQ+vJCzAlknCBvCLFc7RD9RYAQSE
+         xn0j4Q78mwkZfu0UYWhavXkyxZbGltKYaug1QO6VXa061s9o5gGZslqfnmPO+vCAeIhM
+         Je9ftdXfct5iYZiyeZKRN2/CH9FCRurY6sayebtYoS7ZBI+TFxe/juU1vOoNt71nJsT4
+         l0px0RIv/nnm5qEzfHinndVn9RE4uGm/5jDj7GYrBTPzo9ZbY7FmyRdOAd8WUOZLFwWt
+         gT4g==
+X-Gm-Message-State: AOJu0YyF9TpvxZtPCp7jY9xXKngsgCGCOD0d4FiQeDxx6zaXmUAHD2m0
+        S/uptHIsdAxNtX4DePpu4pfCMWAAP3lXAZW1+mXTbQ==
+X-Google-Smtp-Source: AGHT+IFNO9qGrQUgXzJ/X1z/NsSmH5wKOMIFOjmbUOxeOunMIpw7ug3LlS+y1sx2UukRlZboK4+RxhX2g+VL0uIbgWg=
+X-Received: by 2002:a05:600c:3414:b0:3f4:fb7:48d4 with SMTP id
+ y20-20020a05600c341400b003f40fb748d4mr66710wmp.3.1696522981030; Thu, 05 Oct
+ 2023 09:23:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2a6680bbe2e84459816a113730426782@AcuMS.aculab.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231004002038.907778-1-jmattson@google.com> <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
+ <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com> <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
+In-Reply-To: <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 5 Oct 2023 09:22:44 -0700
+Message-ID: <CALMp9eT2qHSig-ptP461GbLSfg86aCRjoxzK9Q7dc6yXSpPn7A@mail.gmail.com>
+Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's FsGsKernelGsBaseNonSerializing
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Dave Hansen <dave.hansen@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 11:39:54AM +0000, David Laight wrote:
-> Prior to f747e6667ebb2 __is_constexpr() was in its only user minmax.h.
-> That commit moved it to const.h - but that file just defines ULL(x) and
->   UL(x) so that constants can be defined for .S and .c files.
-> So apart from the word 'const' it wasn't really a good location.
-> Instead move the definition to compiler.h just before the similar
->   is_signed_type() and is_unsigned_type().
-> This may not be a good long-term home, but the three definitions
->   belong together.
-> 
-> Signed-off-by: David Laight <david.laight@aculab.com>
+On Wed, Oct 4, 2023 at 12:59=E2=80=AFAM Borislav Petkov <bp@alien8.de> wrot=
+e:
+>
+> On Tue, Oct 03, 2023 at 07:44:51PM -0700, Jim Mattson wrote:
+> > The business of declaring breaking changes to the architectural
+> > specification in a CPUID bit has never made much sense to me.
+>
+> How else should they be expressed then?
+>
+> In some flaky PDF which changes URLs whenever the new corporate CMS gets
+> installed?
+>
+> Or we should do f/m/s matching which doesn't make any sense for VMs?
+>
+> When you think about it, CPUID is the best thing we have.
 
-Yeah, this is what I'd expect (a duplicate move in tools/). Thanks!
+Every time a new defeature bit is introduced, it breaks existing
+hypervisors, because no one can predict ahead of time that these bits
+have to be passed through.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+I wonder if we could convince x86 CPU vendors to put all defeature
+bits under a single leaf, so that we can just set the entire leaf to
+all 1's in KVM_GET_SUPPORTED_CPUID.
