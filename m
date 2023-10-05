@@ -2,96 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E00237BA885
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9EF7BA887
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbjJER5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54476 "EHLO
+        id S230372AbjJER5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231417AbjJER5k (ORCPT
+        with ESMTP id S231201AbjJER5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:57:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17BE9B
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:57:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696528657; x=1728064657;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HoO4PJ5IPDARcTkIkgFnhCks20ntXGOqz45QA7UBmbE=;
-  b=ACGFDwCHOmVvE5oWembGI6NKqOYHaxTDw4J8jlzCHFuFKy5FloDaKESq
-   Zmr7bDyqi9jCvogBEQu/tURn6zJV/gF1h7ImmIFeoYTiU5j7BZs7zqpjH
-   tXuxdSICDN0uGMkTb+ORWj3F0mF6TB0oYn4+v9mCg5AfhW8Qjw0sIEBBe
-   QjWScwk0oTzjz1skOiWjZ0zYV3N63Dhfa4PgxqjpxWTvogD4Y0pyxyxZg
-   mCSa+31r9cgjPLFELvKvZJbtbb7+2A6wTPSIfONwvm1hJWx4PAiNsILjS
-   cAgeVPxMdH6CRMVWMGopJ5y/m2UyJrsvv6hNiwnZof031jDp2CXkijNXP
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="373923354"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="373923354"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 10:57:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="745548109"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="745548109"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 05 Oct 2023 10:57:34 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoSbL-000LkK-2u;
-        Thu, 05 Oct 2023 17:57:31 +0000
-Date:   Fri, 6 Oct 2023 01:57:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
-Cc:     oe-kbuild-all@lists.linux.dev, shr@devkernel.io,
-        akpm@linux-foundation.org, david@redhat.com, hannes@cmpxchg.org,
-        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 2/4] mm/ksm: add sysfs knobs for advisor
-Message-ID: <202310060119.K002rbE5-lkp@intel.com>
-References: <20231004190249.829015-3-shr@devkernel.io>
+        Thu, 5 Oct 2023 13:57:44 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FE790;
+        Thu,  5 Oct 2023 10:57:42 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id d4c20237a6c8e736; Thu, 5 Oct 2023 19:57:41 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 8E47F665C39;
+        Thu,  5 Oct 2023 19:57:40 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev,
+        Michal Wilczynski <michal.wilczynski@intel.com>
+Cc:     rafael.j.wysocki@intel.com, andriy.shevchenko@intel.com,
+        lenb@kernel.org, dan.j.williams@intel.com,
+        vishal.l.verma@intel.com, ira.weiny@intel.com, rui.zhang@intel.com,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>
+Subject: Re: [PATCH v1 2/9] docs: firmware-guide: ACPI: Clarify ACPI bus concepts
+Date:   Thu, 05 Oct 2023 19:57:40 +0200
+Message-ID: <2725050.mvXUDI8C0e@kreacher>
+In-Reply-To: <20230925144842.586829-3-michal.wilczynski@intel.com>
+References: <20230925144842.586829-1-michal.wilczynski@intel.com> <20230925144842.586829-3-michal.wilczynski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004190249.829015-3-shr@devkernel.io>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeggdduudehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepudefpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhhvughimhhmsehlihhsthhsrdhlihhnuhigrdguvghvpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgt
+ phhtthhopehrrghfrggvlhdrjhdrfiihshhotghkihesihhnthgvlhdrtghomhdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=13 Fuz1=13 Fuz2=13
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan,
+On Monday, September 25, 2023 4:48:35 PM CEST Michal Wilczynski wrote:
+> Some devices implement ACPI driver as a way to manage devices
+> enumerated by the ACPI. This might be confusing as a preferred way to
+> implement a driver for devices not connected to any bus is a platform
+> driver, as stated in the documentation. Clarify relationships between
+> ACPI device, platform device and ACPI entries.
+> 
+> Suggested-by: Elena Reshetova <elena.reshetova@intel.com>
+> Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+> ---
+>  Documentation/firmware-guide/acpi/enumeration.rst | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/Documentation/firmware-guide/acpi/enumeration.rst b/Documentation/firmware-guide/acpi/enumeration.rst
+> index 56d9913a3370..f56cc79a9e83 100644
+> --- a/Documentation/firmware-guide/acpi/enumeration.rst
+> +++ b/Documentation/firmware-guide/acpi/enumeration.rst
+> @@ -64,6 +64,19 @@ If the driver needs to perform more complex initialization like getting and
+>  configuring GPIOs it can get its ACPI handle and extract this information
+>  from ACPI tables.
+>  
+> +ACPI bus
+> +====================
+> +
+> +Historically some devices not connected to any bus were represented as ACPI
+> +devices, and had to implement ACPI driver. This is not a preferred way for new
+> +drivers. As explained above devices not connected to any bus should implement
+> +platform driver. ACPI device would be created during enumeration nonetheless,
+> +and would be accessible through ACPI_COMPANION() macro, and the ACPI handle would
+> +be accessible through ACPI_HANDLE() macro. ACPI device is meant to describe
+> +information related to ACPI entry e.g. handle of the ACPI entry. Think -
+> +ACPI device interfaces with the FW, and the platform device with the rest of
+> +the system.
+> +
+>  DMA support
+>  ===========
 
-kernel test robot noticed the following build errors:
+I rewrote the above entirely, so here's a new patch to replace this one:
 
-[auto build test ERROR on 12d04a7bf0da67321229d2bc8b1a7074d65415a9]
+---
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Subject: [PATCH v2 2/9] ACPI: docs: enumeration: Clarify ACPI bus concepts
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Stefan-Roesch/mm-ksm-add-ksm-advisor/20231005-030402
-base:   12d04a7bf0da67321229d2bc8b1a7074d65415a9
-patch link:    https://lore.kernel.org/r/20231004190249.829015-3-shr%40devkernel.io
-patch subject: [PATCH v1 2/4] mm/ksm: add sysfs knobs for advisor
-config: i386-buildonly-randconfig-002-20231006 (https://download.01.org/0day-ci/archive/20231006/202310060119.K002rbE5-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231006/202310060119.K002rbE5-lkp@intel.com/reproduce)
+In some cases, ACPI drivers are implemented as a way to manage devices
+enumerated with the help of the platform firmware through ACPI.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310060119.K002rbE5-lkp@intel.com/
+This might be confusing, since the preferred way to implement a driver
+for a device that cannot be enumerated natively, is a platform
+driver, as stated in the documentation.
 
-All errors (new ones prefixed by >>):
+Clarify relationships between ACPI device objects, platform devices and
+ACPI Namespace entries.
 
-   ld: mm/ksm.o: in function `scan_get_next_rmap_item':
->> ksm.c:(.text+0x3e45): undefined reference to `__divdi3'
->> ld: ksm.c:(.text+0x3e88): undefined reference to `__divdi3'
-   ld: ksm.c:(.text+0x3ed9): undefined reference to `__divdi3'
+Suggested-by: Elena Reshetova <elena.reshetova@intel.com>
+Co-developed-by: Michal Wilczynski <michal.wilczynski@intel.com>
+Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ Documentation/firmware-guide/acpi/enumeration.rst |   43 ++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Index: linux-pm/Documentation/firmware-guide/acpi/enumeration.rst
+===================================================================
+--- linux-pm.orig/Documentation/firmware-guide/acpi/enumeration.rst
++++ linux-pm/Documentation/firmware-guide/acpi/enumeration.rst
+@@ -64,6 +64,49 @@ If the driver needs to perform more comp
+ configuring GPIOs it can get its ACPI handle and extract this information
+ from ACPI tables.
+ 
++ACPI device objects
++===================
++
++Generally speaking, there are two categories of devices in a system in which
++ACPI is used as an interface between the platform firmware and the OS: Devices
++that can be discovered and enumerated natively, through a protocol defined for
++the specific bus that they are on (for example, configuration space in PCI),
++without the platform firmware assistance, and devices that need to be described
++by the platform firmware so that they can be discovered.  Still, for any device
++known to the platform firmware, regardless of which category it falls into,
++there can be a corresponding ACPI device object in the ACPI Namespace in which
++case the Linux kernel will create a struct acpi_device object based on it for
++that device.
++
++Those struct acpi_device objects are never used for binding drivers to natively
++discoverable devices, because they are represented by other types of device
++objects (for example, struct pci_dev for PCI devices) that are bound to by
++device drivers (the corresponding struct acpi_device object is then used as
++an additional source of information on the configuration of the given device).
++Moreover, the core ACPI device enumeration code creates struct platform_device
++objects for the majority of devices that are discovered and enumerated with the
++help of the platform firmware and those platform device objects can be bound to
++by platform drivers in direct analogy with the natively enumerable devices
++case.  Therefore it is logically inconsistent and so generally invalid to bind
++drivers to struct acpi_device objects, including drivers for devices that are
++discovered with the help of the platform firmware.
++
++Historically, ACPI drivers that bound directly to struct acpi_device objects
++were implemented for some devices enumerated with the help of the platform
++firmware, but this is not recommended for any new drivers.  As explained above,
++platform device objects are created for those devices as a rule (with a few
++exceptions that are not relevant here) and so platform drivers should be used
++for handling them, even though the corresponding ACPI device objects are the
++only source of device configuration information in that case.
++
++For every device having a corresponding struct acpi_device object, the pointer
++to it is returned by the ACPI_COMPANION() macro, so it is always possible to
++get to the device configuration information stored in the ACPI device object
++this way.  Accordingly, struct acpi_device can be regarded as a part of the
++interface between the kernel and the ACPI Namespace, whereas device objects of
++other types (for example, struct pci_dev or struct platform_device) are used
++for interacting with the rest of the system.
++
+ DMA support
+ ===========
+ 
+
+
+
