@@ -2,151 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E157BAB3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 22:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B684D7BAB45
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 22:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbjJEUJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 16:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
+        id S229682AbjJEUKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 16:10:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbjJEUJn (ORCPT
+        with ESMTP id S229483AbjJEUKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 16:09:43 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443BFF1;
-        Thu,  5 Oct 2023 13:09:42 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso2561796a12.3;
-        Thu, 05 Oct 2023 13:09:42 -0700 (PDT)
+        Thu, 5 Oct 2023 16:10:43 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AC8E4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 13:10:41 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5347e657a11so2385631a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 13:10:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696536580; x=1697141380; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sfmkRc/uY6UuKa9VNHdy4C4hxN6NSuOU6XiScrNs4/I=;
-        b=QmUc7DFw1EJZ34FGeRRyHFNbWPfzJS5PHawiiHtvkL8dc39BHmdGpqimW4enxNNSDX
-         VtsU8R8OqbaorJWXcZsUxDw2pM8XLoiRy9RW7T7Gj93/GH3UR43j/H402BmeaANh1TTu
-         h3tKPxrppp0aAM7aGkyrNneaGtY+Gp/8q0q7pXY68EpUjEDhsJnMownVZ9aUUsnTrThT
-         EiqF0pIlhMJ7Px+mAMgZ0d9MUpsYfyWgpQb8KuJmwWzVSPHw4bbAA+AiMGAtTfmXdTAO
-         TkhWnI/zzpWxIdBoTkdCeH1MnAo3N7Sc+uBC5xnSEkmkjz1v5WfHI/IGq3hPnA1svV9X
-         1DJg==
+        d=google.com; s=20230601; t=1696536640; x=1697141440; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SDEWPhSFZT2wrr3lmK3HQACNYGeh2PGdg05lzm75XYw=;
+        b=ZyxS2oNYLc1SjY9u5UhomTI2VO1W6BPg0xWKcJAMXGA8eX0e0z1QgSxbQdI3kyl/o5
+         P24Dq6ejvaiU2gLVEbruuaKxJ3KMhnp/6UfbHgx3y1d+XMejob82saUTU1zHUBem1OZB
+         RRVF/LY6wO0RbwYmV8cR/DPv4yjspwWzH7eG99nF1/dOpiuy8AEg06iTAaqbmyz4ezSH
+         BEA6y1zT363b7kTgn/ui/XCgNz/W/p9xTf4SeBdp2hQvZGO4VA3QR9DM5q2WinIrTwCc
+         H3Y9tbLWYUI57lrOk+vH+YoSOqQWi/6ltyKdO0E/H3o+mcZD86GpPfFCylVWeYh8wKIK
+         U3tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696536580; x=1697141380;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sfmkRc/uY6UuKa9VNHdy4C4hxN6NSuOU6XiScrNs4/I=;
-        b=CIuk06mpSyelLMnEVUhFAusWn0RWbaJDyVyJenAvAniOhAQu+KHU2FkBdl3+b1mkOm
-         F45C6UlqdyBJnOLtaSeBbpr2QNlbw3z0m/esW7g/GpgUWLY+mS1RaHEsEBGya3GBiiWm
-         wkq/iUtPQKKpD6YXsWriMD/Vv9F4M1hpXaOpMoKfQ8GNExTxAuSMSyNGGMQ9AFj/X1ud
-         +tRm15zJOcAeluz9vVF/B6JnLaq5cHRdbbAnq567V0rfIskZJyYkdj6BotLOfniYGNC2
-         ZNq2papnJ0G2GxW78Wj+Qe5qDsyO1APer7GTwuTUWbFvFtvhlTBZF6ff13mn0eyZrPMu
-         0PGQ==
-X-Gm-Message-State: AOJu0Yy0blTm22uA2IxwRsMPkbGyIs0Tf/q1Li7f0ynOABuWCA8Zfsmh
-        ssbJTUbShQI1EFStYIdGRmA=
-X-Google-Smtp-Source: AGHT+IEnBYfve56IylcRPgP0PcIdY9GCF7h5W7PsF3KKpyLfgORQdVo7XwM6EZvEmwiBuHCC/hUOsA==
-X-Received: by 2002:a17:907:7603:b0:9ae:381a:6c55 with SMTP id jx3-20020a170907760300b009ae381a6c55mr6004112ejc.15.1696536580400;
-        Thu, 05 Oct 2023 13:09:40 -0700 (PDT)
-Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
-        by smtp.gmail.com with ESMTPSA id a24-20020a170906685800b009828e26e519sm1681960ejs.122.2023.10.05.13.09.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 13:09:39 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 5 Oct 2023 22:09:37 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Xuewen Yan <xuewen.yan@unisoc.com>, viresh.kumar@linaro.org,
-        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        guohua.yan@unisoc.com, qyousef@layalina.io,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: schedutil: next_freq need update when
- cpufreq_limits changed
-Message-ID: <ZR8YAQoa//dLs3Yn@gmail.com>
-References: <20230719130527.8074-1-xuewen.yan@unisoc.com>
- <ZR6delkbZxl31zuY@gmail.com>
- <CAJZ5v0j8T0KUjLzS=MCF1M33KMhf-EVrT1W5Tncr6wnOXUMgwQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1696536640; x=1697141440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SDEWPhSFZT2wrr3lmK3HQACNYGeh2PGdg05lzm75XYw=;
+        b=qVSvVNJZGIZg3eSY2VglHge/77maZq2k9UEgV349KGK0vb6V4Xzf8AEujjjPnNga3B
+         qBImj9OVolQpQ1w/SiAOx/0g4Vnja8mTDNCLtPTGsneyjYs3LIxdkb80mWlbZV6kAnHs
+         qECVnti0QMZB6M/P6a83HjrZLtgm097xCh6Rr2/+dbXz/F4Fy+hRWVHvyohaTADnmSWy
+         EgWolt3p/HZQg8/wV038N6Mp/Z2exw3/22i+QpOvwpe16ID/UeU2jVAnEUEV8MYtsvgF
+         UwbGVv6lfWSjKQJMmaWDcV9LvsX1s3PhmhSrCl9JRm3KHN5dLZT3awh5bjPNLivRa8aX
+         p1/Q==
+X-Gm-Message-State: AOJu0Yy7k7iMDGLUUir7962wQ+gAYLyckfUWV2aosOppC+19hW3/LhNy
+        FJHx6IQ4Iytqk1Cc3n47nSG3biLZEIOst33NRocL9w==
+X-Google-Smtp-Source: AGHT+IGmRqAhhgC6r5i5H8FuY2pS87uhv9hSsrz4ZgPgSwVKtydn6UqIDH22wogY2BL1vHz/cPGmiJLK11Q1xLAy2g0=
+X-Received: by 2002:aa7:d503:0:b0:538:ae5:6138 with SMTP id
+ y3-20020aa7d503000000b005380ae56138mr6430924edq.34.1696536639868; Thu, 05 Oct
+ 2023 13:10:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0j8T0KUjLzS=MCF1M33KMhf-EVrT1W5Tncr6wnOXUMgwQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231004-get_maintainer_change_k-v1-1-ac7ced18306a@google.com>
+ <3dca40b677dd2fef979a5a581a2db91df2c21801.camel@perches.com>
+ <CAFhGd8oTHFDQ05M++E3ggAvs0567w5fSxovumX+vs8YXT8VXTA@mail.gmail.com>
+ <6e13b9b1a964b49079a2f7814c0d65e767cd010a.camel@perches.com>
+ <CAFhGd8rGr3fm-U3XCjRkJQRymvjqGFYzsPu61zbMZCebuN5Rww@mail.gmail.com>
+ <a8b680c03379ed7a07418e471b29dccd801f23cb.camel@perches.com>
+ <CAFhGd8rGZ6w7bz90LRnwd_1K3ibR2KsT6cJ2kiuO5mSAdnWjFw@mail.gmail.com> <eea5087a2bd94b80b5a16af95a4caf20376bbc52.camel@perches.com>
+In-Reply-To: <eea5087a2bd94b80b5a16af95a4caf20376bbc52.camel@perches.com>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Thu, 5 Oct 2023 13:10:28 -0700
+Message-ID: <CAFhGd8r6B=PAXNzDEOaWAVOHdH+3ZKOCuAqadvR3cXtAy4gQDg@mail.gmail.com>
+Subject: Re: [PATCH] get_maintainer/MAINTAINERS: confine K content matching to patches
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Rafael J. Wysocki <rafael@kernel.org> wrote:
-
-> On Thu, Oct 5, 2023 at 1:26 PM Ingo Molnar <mingo@kernel.org> wrote:
+On Thu, Oct 5, 2023 at 1:05=E2=80=AFPM Joe Perches <joe@perches.com> wrote:
+>
+> On Thu, 2023-10-05 at 12:52 -0700, Justin Stitt wrote:
+> > On Thu, Oct 5, 2023 at 11:42=E2=80=AFAM Joe Perches <joe@perches.com> w=
+rote:
+> > >
+> > > On Thu, 2023-10-05 at 11:30 -0700, Justin Stitt wrote:
+> > > > On Thu, Oct 5, 2023 at 11:15=E2=80=AFAM Joe Perches <joe@perches.co=
+m> wrote:
+> > > > >
+> > > > > On Thu, 2023-10-05 at 11:06 -0700, Justin Stitt wrote:
+> > > > > > On Wed, Oct 4, 2023 at 7:40=E2=80=AFPM Joe Perches <joe@perches=
+.com> wrote:
+> > > > > > >
+> > > > > > > On Wed, 2023-10-04 at 21:21 +0000, Justin Stitt wrote:
+> > > > > > > > The current behavior of K: is a tad bit noisy. It matches a=
+gainst the
+> > > > > > > > entire contents of files instead of just against the conten=
+ts of a
+> > > > > > > > patch.
+> > > > > > > >
+> > > > > > > > This means that a patch with a single character change (fix=
+ing a typo or
+> > > > > > > > whitespace or something) would still to/cc maintainers and =
+lists if the
+> > > > > > > > affected file matched against the regex pattern given in K:=
+. For
+> > > > > > > > example, if a file has the word "clang" in it then every si=
+ngle patch
+> > > > > > > > touching that file will to/cc Nick, Nathan and some lists.
+> > > > > > > >
+> > > > > > > > Let's change this behavior to only content match against pa=
+tches
+> > > > > > > > (subjects, message, diff) as this is what most people expec=
+t the
+> > > > > > > > behavior already is. Most users of "K:" would prefer patch-=
+only content
+> > > > > > > > matching. If this is not the case let's add a new matching =
+type as
+> > > > > > > > proposed in [1].
+> > > > > > >
+> > > > > > > I'm glad to know  you are coming around to my suggestion.
+> > > > > > :)
+> > > > > >
+> > > > > > >
+> > > > > > > I believe the file-based keyword matching should _not_ be
+> > > > > > > removed and the option should be added for it like I suggeste=
+d.
+> > > > > >
+> > > > > > Having a command line flag allowing get_maintainer.pl
+> > > > > > users to decide the behavior of K: is weird to me. If I'm a mai=
+ntainer setting
+> > > > > > my K: in MAINTAINERS I want some sort of consistent behavior. S=
+ome
+> > > > > > patches will start hitting mailing list that DO have keywords i=
+n the patch
+> > > > > > and others, confusingly, not.
+> > > > >
+> > > > > Not true.
+> > > > >
+> > > > > If a patch contains a keyword match, get_maintainers will _always=
+_
+> > > > > show the K: keyword maintainers unless --nokeywords is specified
+> > > > > on the command line.
+> > > >
+> > > > ...
+> > > >
+> > > > >
+> > > > > If a file contains a keyword match, it'll only show the K:
+> > > > > keyword  if --keywords-in-file is set.
+> > > >
+> > > > Right, what I'm saying is a patch can arrive in a maintainer's inbo=
+x
+> > > > wherein the patch itself has no mention of the keyword (if
+> > > > get_maintainer user opted for --keywords-in-file). Just trying to
+> > > > avoid some cases of the question: "Why is this in my inbox?"
+> > >
+> > > Because the script user specifically asked for it.
+> > >
+> > > > > > To note, we get some speed-up here as pattern matching a patch =
+that
+> > > > > > touches lots of files would result in searching all of them in =
+their
+> > > > > > entirety. Just removing this behavior _might_ have a measurable
+> > > > > > speed-up for patch series touching dozens of files.
+> > > > >
+> > > > > Again, not true.
+> > > > >
+> > > > > Patches do _not_ scan the original modified files for keyword mat=
+ches.
+> > > > > Only the patch itself is scanned.  That's the current behavior as=
+ well.
+> > > > >
+> > > >
+> > > > Feel like I'm missing something here. How is K: matching keywords i=
+n
+> > > > files without reading them.
+> > > >
+> > > > If my patch touches 10 files then all 10 of those files are scanned=
+ for
+> > > > K: matches right?
+> > >
+> > > Nope.
+> > >
+> > > Understand the patches are the input to get_maintainer and not
+> > > just files.
+> > >
+> > > If a patch is fed to get_maintainer then any files modified by
+> > > the patch are _not_ scanned.
+> > >
+> > > Only the patch _content_ is used for keyword matches.
+> > >
 > >
+> > Got it. I'll roll your patch into a v3.
 > >
-> > * Xuewen Yan <xuewen.yan@unisoc.com> wrote:
-> >
-> > > When cpufreq's policy is single, there is a scenario that will
-> > > cause sg_policy's next_freq to be unable to update.
-> > >
-> > > When the cpu's util is always max, the cpufreq will be max,
-> > > and then if we change the policy's scaling_max_freq to be a
-> > > lower freq, indeed, the sg_policy's next_freq need change to
-> > > be the lower freq, however, because the cpu_is_busy, the next_freq
-> > > would keep the max_freq.
-> > >
-> > > For example:
-> > > The cpu7 is single cpu:
-> > >
-> > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # while true;do done&
-> > > [1] 4737
-> > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # taskset -p 80 4737
-> > > pid 4737's current affinity mask: ff
-> > > pid 4737's new affinity mask: 80
-> > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
-> > > 2301000
-> > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_cur_freq
-> > > 2301000
-> > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # echo 2171000 > scaling_max_freq
-> > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
-> > > 2171000
-> > >
-> > > At this time, the sg_policy's next_freq would keep 2301000.
-> > >
-> > > To prevent the case happen, add the judgment of the need_freq_update flag.
-> > >
-> > > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> > > Co-developed-by: Guohua Yan <guohua.yan@unisoc.com>
-> > > Signed-off-by: Guohua Yan <guohua.yan@unisoc.com>
-> > > ---
-> > >  kernel/sched/cpufreq_schedutil.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > > index 4492608b7d7f..458d359f5991 100644
-> > > --- a/kernel/sched/cpufreq_schedutil.c
-> > > +++ b/kernel/sched/cpufreq_schedutil.c
-> > > @@ -350,7 +350,8 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
-> > >        * Except when the rq is capped by uclamp_max.
-> > >        */
-> > >       if (!uclamp_rq_is_capped(cpu_rq(sg_cpu->cpu)) &&
-> > > -         sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
-> > > +         sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq &&
-> > > +         !sg_policy->need_freq_update) {
-> > >               next_f = sg_policy->next_freq;
-> > >
-> > >               /* Restore cached freq as next_freq has changed */
-> >
-> > Just wondering about the status of this fix - is it pending in
-> > some tree, or should we apply it to the scheduler tree?
-> 
-> I have not queued it up yet, so it can be applied to the scheduler tree.
+>
+> Actually, I have a slightly improved patch as
+> the actual keyword is shown too.
+>
+> I'll get it uploaded and make sure you are credited
+> with the effort to make the change.
+>
 
-Ok, I've applied it - and I've added your Acked-by.
+Dang, we just collided in mid-air. I just sent a new patch.
+Let's disregard my patch that was sent.
 
-Thanks,
+Thanks for the efforts here. I appreciate it.
 
-	Ingo
+> cheers, Joe
+
+Thanks
+Justin
