@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 359737BAE8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FC47BAE91
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 00:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbjJEWDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 18:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34046 "EHLO
+        id S231837AbjJEWD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 18:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJEWDA (ORCPT
+        with ESMTP id S229537AbjJEWD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 18:03:00 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E1695;
-        Thu,  5 Oct 2023 15:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696543373;
-        bh=9gVRYt6M+0BDHf+TyxYGa3vfMLe3BEc9+4rK8pNQ6PU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=d2M+mCgYrHK6j/stgHwOLWvKtC/SPcizlh8eEcjdWug2V2PCmM3hq+HsMaPcYOGRs
-         saaPkhHS9qJYElzvYQ9gmwerT3yzV2ueJDZnXQid/vRvNYdG0Gh1AUHkfL8B5xPBX4
-         jBneEpwd6e5McOvhD50NWZwbyO3e3r0VR6jKwR5X4NR9oFAdlH8yfCR8YH4fuBpuEh
-         ZyeJxVCc169qk9cLNDhsPLwnswYrh8pmg1pdZgWzC3BWcqWDPAj1snBhgIHJIZh4DS
-         xq/zKQBb/6BoecZlt0AjRIIVoKmsiAD2CacJvYfx9wllVeE4I8rMR+IMr55c+MVZyS
-         0I8a4oc8nfj/g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S1lt52n0jz4xF5;
-        Fri,  6 Oct 2023 09:02:53 +1100 (AEDT)
-Date:   Fri, 6 Oct 2023 09:02:35 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the bluetooth tree
-Message-ID: <20231006090116.03e9e6e6@canb.auug.org.au>
+        Thu, 5 Oct 2023 18:03:28 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F139895
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 15:03:26 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405459d9a96so36615e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 15:03:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696543405; x=1697148205; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MT1UXws5EaLoSLlRb6+SPNkgqpM3S+hu1ZvOKq4ES/E=;
+        b=saxmJmKlGUJ+FQMfZsmD1UF+pwbmXD3WGRqwnalbmkj7HgcZyfte9FhDIj1ITEH444
+         Obvm2GpZenL60foXRjLT08cKdZ0d1VhHA8qEHf/hSQuGkWNYfQY2urQN9UdfXN8UYkvh
+         3CmV9IvfbZDQ1vQhIGP0TBXdm6k7sju1BURzn3ypRpX/rfsE7vLAzBPGLqoFMeUqpr0v
+         NAXrxfdDFznfpWAWfa7gZ7AH+lB8jlVBQYLsCIHgsRmErJ53aK1UVYwS/Dt+svmhr3a7
+         II3Pkcf1i2blTiZ197xw5+A94TDYWqU+T63Y/9+WpfTwvSwXEJun5R3i8nFJ+aqCqCZw
+         G91w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696543405; x=1697148205;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MT1UXws5EaLoSLlRb6+SPNkgqpM3S+hu1ZvOKq4ES/E=;
+        b=lLSvC7OqmVn59KEVIrErfSrwyFYini6Hr07Bhb3HbzLs7CuR8eKwZKLMim1BkP67yn
+         fLzvW6V5qn9rJmxxXilqO4MaDYP8MySxzmOTJZz31CCKyZaq3DwYWWQ9y2Xc7rWUCLLp
+         AkTiPqNL+AGEsecLFJLz7T4KC3Z431jMV/6YcQgH8h+RayuUVmQIjlYzEcvnl5Dj6u4y
+         P2YZ8+FSNI0n/nQvldXZarV8itzyy5qc6tld4rQX5k4MyIS9hZ5VISvOUeSio3ntq27/
+         jGhf525WOLqJz5nhOsf78mWm4EcZSLMLB3wbz+BqWRexLYgX/ROwXwnUOr+Xs8GCmuAj
+         Lc9g==
+X-Gm-Message-State: AOJu0YwVwJH5lEKRmJZZg3wWGKsAy4JiKKFPDhw1F6K9AtvcSdWYa+M/
+        8xLnzUCxhsCKPt/XxeRUveYEPQJYAo+vaclpAA6ijA==
+X-Google-Smtp-Source: AGHT+IHgdetxaCDp/Q2yZTcDE1g0qogeilw5jplia3TNRnClpg1xF2p5U/mvDp+4nAWn1MzWyfPRsmQYFtu7/KnuDmA=
+X-Received: by 2002:a05:600c:2182:b0:404:7462:1f87 with SMTP id
+ e2-20020a05600c218200b0040474621f87mr106347wme.6.1696543405189; Thu, 05 Oct
+ 2023 15:03:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/m.h3XXB8uLr50WxlIvUZ1Xy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231004222323.3503030-1-irogers@google.com> <20231004222323.3503030-2-irogers@google.com>
+ <173829f3-817e-4937-808f-7f9bfc22207f@isovalent.com>
+In-Reply-To: <173829f3-817e-4937-808f-7f9bfc22207f@isovalent.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 5 Oct 2023 15:03:12 -0700
+Message-ID: <CAP-5=fUyDUV_XzaTKF4V5h5yzkqtM27AfK2qRTncQiAryHHYcg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] bpftool: Align bpf_load_and_run_opts insns and data
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/m.h3XXB8uLr50WxlIvUZ1Xy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 5, 2023 at 8:54=E2=80=AFAM Quentin Monnet <quentin@isovalent.co=
+m> wrote:
+>
+> On 04/10/2023 23:23, Ian Rogers wrote:
+> > A C string lacks alignment so use aligned arrays to avoid potential
+> > alignment problems. Switch to using sizeof (less 1 for the \0
+> > terminator) rather than a hardcode size constant.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/bpf/bpftool/gen.c | 47 ++++++++++++++++++++++-------------------
+> >  1 file changed, 25 insertions(+), 22 deletions(-)
+> >
+> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> > index b8ebcee9bc56..7a545dcabe38 100644
+> > --- a/tools/bpf/bpftool/gen.c
+> > +++ b/tools/bpf/bpftool/gen.c
+> > @@ -408,8 +408,8 @@ static void codegen(const char *template, ...)
+> >               /* skip baseline indentation tabs */
+> >               for (n =3D skip_tabs; n > 0; n--, src++) {
+> >                       if (*src !=3D '\t') {
+> > -                             p_err("not enough tabs at pos %td in temp=
+late '%s'",
+> > -                                   src - template - 1, template);
+> > +                             p_err("not enough tabs at pos %td in temp=
+late '%s'\n'%s'",
+> > +                                     src - template - 1, template, src=
+);
+>
+> Nit: This line is no longer aligned with the opening parenthesis.
+>
+> Other than that:
+>
+> Acked-by: Quentin Monnet <quenti@isovalent.com>
 
-Hi all,
+Thanks! Nit fixed in v5.
 
-The following commits are also in Linus Torvalds' tree as different
-commits (but the same patches):
-
-  0ef9e5c1af4c ("Bluetooth: ISO: Fix handling of listen for unicast")
-  190b32220f99 ("Bluetooth: btusb: add shutdown function for QCA6174")
-  2eb5e4369bc4 ("Bluetooth: Avoid redundant authentication")
-  8ee19a4f17bc ("Bluetooth: hci_core: Fix build warnings")
-  9f0fcb5aa550 ("Bluetooth: Fix hci_link_tx_to RCU lock usage")
-  b78e04e5f353 ("Bluetooth: Delete unused hci_req_prepare_suspend() declara=
-tion")
-  c0c64dc267e4 ("Bluetooth: hci_codec: Fix leaking content of local_codecs")
-  da10fc7a9dc3 ("Bluetooth: hci_sync: Fix handling of HCI_QUIRK_STRICT_DUPL=
-ICATE_FILTER")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/m.h3XXB8uLr50WxlIvUZ1Xy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUfMnsACgkQAVBC80lX
-0GztpQf/YVIhjAQePWXZp6SYkgoQ1zeZ8oKyYvV4oZTtgOvzBKco0qeLoSZ6fO0q
-o+ToOIjah9wb/buhGnMoWNxgVIiNKS58dvMrMnd+YKngQH5xmH4eHJkpksddMk8b
-nF4iOqcUgko2Ymc4Wm0eaqDEzPc+W4p+zWiWDgcyor0PoVZH8jh5JOUozIAlIqTx
-g/hUWTT6O9DfG87mp46RBcvdpbBGrEWe2NLCWttH8KTwpvEjSw7oynq+pBLBdD+c
-Q7Mdq2RN/Y7b75jpLnmxv6naDLOXaqdTgHsjvsyzgI4OMYs/FOH2pSndUTKG4bFY
-zpFIelgRR7fino8/hTfRSQFzcLJ8DA==
-=cEsB
------END PGP SIGNATURE-----
-
---Sig_/m.h3XXB8uLr50WxlIvUZ1Xy--
+Ian
