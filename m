@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 912AA7B9A03
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 04:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34177B9A15
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 04:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233839AbjJECoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 22:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
+        id S233942AbjJECq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 22:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjJECoK (ORCPT
+        with ESMTP id S233874AbjJECq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 22:44:10 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22D3C0;
-        Wed,  4 Oct 2023 19:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=0NQ/g4PmP3KmQk0o9HxrWTK9sWaymND2wvzIv9n7au0=; b=VD9VMX3YpO4p8fBX8lciuydeA6
-        WyT4s8XUgioC6EOCKNETFxjIG9C5ZcUGuN3RqKzqIYq/AFI8xGJrr66v3/Gcgp3gvshBwFj4sTrGS
-        sJwR/zVWIlcIltPUmUwRafp50nLbHGGtSVXvPQAcR7hKJepgX6aUat7loXwwgaRT4pq8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qoEL9-008ICm-Od; Thu, 05 Oct 2023 04:43:51 +0200
-Date:   Thu, 5 Oct 2023 04:43:51 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Robert Marko <robimarko@gmail.com>, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH net-next] net: phy: aquantia: add firmware load
- support
-Message-ID: <56227e76-f01f-4b90-b325-1cd9ecb8d5a3@lunn.ch>
-References: <20230930104008.234831-1-robimarko@gmail.com>
- <20231004162831.0cf1f6a8@kernel.org>
+        Wed, 4 Oct 2023 22:46:27 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0FA11C0;
+        Wed,  4 Oct 2023 19:46:24 -0700 (PDT)
+Received: from [10.137.106.151] (unknown [131.107.159.23])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4A2ED20B74C0;
+        Wed,  4 Oct 2023 19:46:23 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4A2ED20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1696473983;
+        bh=Tk/tWsa69Leyj9ipJnNt9y71v/ZHhVK2fPaRDp6yvHQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ZQxoETTv2uriamkJ6lcmJ39iqLPRnLv5GPtaWy8Cgj0R2TbpV39ck1IMfXgHmLpSU
+         V+Uu7J0ybvJh7tNBgQDYmTIlaWfSFLpTvLyQhdcaxLt7Lc2w56HcJAKUG31fioNpzB
+         ZAoqtGDUC5O8nf+oC1KzCGnUrL5/L/89+LLpsR+M=
+Message-ID: <a58cc269-1a95-445d-85c9-ecf997b47294@linux.microsoft.com>
+Date:   Wed, 4 Oct 2023 19:45:50 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004162831.0cf1f6a8@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v11 16/19] ipe: enable support for fs-verity as a
+ trust provider
+To:     Randy Dunlap <rdunlap@infradead.org>, corbet@lwn.net,
+        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
+        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
+        agk@redhat.com, snitzer@kernel.org, eparis@redhat.com,
+        paul@paul-moore.com
+Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+References: <1696457386-3010-1-git-send-email-wufan@linux.microsoft.com>
+ <1696457386-3010-17-git-send-email-wufan@linux.microsoft.com>
+ <7cecea3f-aaca-4df5-9595-324137c3627e@infradead.org>
+Content-Language: en-US
+From:   Fan Wu <wufan@linux.microsoft.com>
+In-Reply-To: <7cecea3f-aaca-4df5-9595-324137c3627e@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 04:28:31PM -0700, Jakub Kicinski wrote:
-> On Sat, 30 Sep 2023 12:39:44 +0200 Robert Marko wrote:
-> > +	ret = of_property_read_string(dev->of_node, "firmware-name",
-> > +				      &fw_name);
+
+
+On 10/4/2023 4:58 PM, Randy Dunlap wrote:
 > 
-> Perhaps a well established weirdness of the embedded world but why read
-> the fw name from OF?! You can identify what PHY it is and decide the
-> file name based on that. And also put that fw name in MODULE_FIRMWARE()
-> so that initramfs can be built with appropriate file in place :S
+> 
+> On 10/4/23 15:09, Fan Wu wrote:
+> 
+> | diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
+> | index 7afb1ce0cb99..9dd5c4769d79 100644
+> | --- a/security/ipe/Kconfig
+> | +++ b/security/ipe/Kconfig
+> | @@ -30,6 +30,19 @@ config IPE_PROP_DM_VERITY
+> |  	  that was mounted with a signed root-hash or the volume's
+> |  	  root hash matches the supplied value in the policy.
+> |
+> | +	  If unsure, answer Y.
+> | +
+> | +config IPE_PROP_FS_VERITY
+> | +	bool "Enable property for fs-verity files"
+> | +	depends on FS_VERITY && FS_VERITY_BUILTIN_SIGNATURES
+> | +	help
+> | +	  This option enables the usage of properties "fsverity_signature"
+> | +	  and "fsverity_digest". These properties evaluates to TRUE when
+> 
+> 	                                          evaluate
+> 
+> | +	  a file is fsverity enabled and with a signed digest or its
+> | +	  diegst matches the supplied value in the policy.
+> 
+> 	  digest
+> 
+> | +
+> | +	  if unsure, answer Y.
+> | +
+> |  endmenu
+> |
+> |  endif
+> 
+> 
 
-The Aquantia PHY and its `firmware` is just weird. It is more than
-just firmware, it also contains what i think they call provisioning.
-That is basically the reset defaults for registers. And not everything
-is documented, and i think parts of that provision contains SERDES eye
-configuration. So i think you end up with a custom firmware per board?
-And you can never trust the firmware in one device will do the same
-thing as a different firmware in another device, because the reset
-defaults are a bit fuzzy. The PHY driver is somewhat built on sand,
-since you cannot really trust any register to have any specific reset
-value.
+Thanks for catching the typo/error. Not sure why my spell script didn't 
+find them. Maybe I should consider using a better tool.
 
-So i can understand putting the board specific firmware name in DT,
-and that the firmware will never be in linux-firmware because it would
-not scale, and there never being one firmware usable for all
-boards. And this odd way of doing things means the usual mechanisms
-for getting the firmware in initramfs does not work.
-
-I suppose the question is, do we want to say this is all too ugly for
-Linux, solve it in the bootloader, or spend the extra $0.50 for a
-flash chip and put the firmware in at the factory. As a kernel
-developer i would want the boot loader to solve this, so i can TFTP
-boot the kernel. I would also like having a rescue mechanism for when
-i brick Linux on the box and need to boot a Debian install image to
-recover it.
-
-    Andrew
+-Fan
