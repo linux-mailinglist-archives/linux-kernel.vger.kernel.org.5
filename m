@@ -2,151 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131967BA6CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD257BA56C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbjJEQlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47018 "EHLO
+        id S232237AbjJEQQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230396AbjJEQkE (ORCPT
+        with ESMTP id S241126AbjJEQNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:40:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD69E46B2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696513926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gz/nfygGmbnXJsd+IS1AZ3tkRriknqzPVzuD8/FrAdY=;
-        b=aw7E3EQ+bnFK59AZrPAoEwp8uVcX41B8GO1phZqvB4xVntMD/3zxN64oDTI+8OzFoe7zc9
-        +7ZnMyxp3KtBH8LziOU3PKLkku2LUho++LoI16Tr1nKWxXuVdoO7E/nNK+94kWg+RQRobp
-        I04zJ9Mh6wkkyCgUtLfjUsjAtcJuZUI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-691-U-Rupq1vMFSpZZf9Y990UQ-1; Thu, 05 Oct 2023 08:50:49 -0400
-X-MC-Unique: U-Rupq1vMFSpZZf9Y990UQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4066e59840eso5624765e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 05:50:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696510248; x=1697115048;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gz/nfygGmbnXJsd+IS1AZ3tkRriknqzPVzuD8/FrAdY=;
-        b=ILcsTvOSXpOH0Vh4NSk7ClkgDLPIX6KkM410PTejAlahcQnmJ+r9T5QtXCEtuZWp3x
-         +bFJSlNOZthnrVVLdppc1zqjiC5066/uEo4onshmzRwKjAzlRX5xOtSuAEXMhwT8ALyF
-         zpYjD+bDXqgD3EmzsHwUg3WTp7COk3K8CgIZRRuIt5Qc+M8lYpR3KQmA7f1/Djoaj+QR
-         R9lBczNmPaghOPLfrdKcMM8hstdJdAQlc9M0ewKjhbcnDH8rknQLIjb8c352deAKxfxH
-         bnbXQUB5snOEX+zis9LmVy206S5V4NWVkZ9zLP7UlbVzjyt3pjdcoE1r5mcIHPjShsx+
-         W2LA==
-X-Gm-Message-State: AOJu0Yz84Kjdrf1/M03GAqtrfVgIYfv3aPsrmuyEEt7n4l3QlKZaWXbn
-        lbUvDnKuFsCbQkuOyjZKBKJs03jWXgH9QOZ3obPyOWIxyCxOzblCqSJLdHrw14VotbqZXWjW9kL
-        4ypg3St78tdjm3s1UAxxVvMrgH+/BBwvn
-X-Received: by 2002:a7b:cbd5:0:b0:3ff:ca80:eda3 with SMTP id n21-20020a7bcbd5000000b003ffca80eda3mr4776379wmi.10.1696510247894;
-        Thu, 05 Oct 2023 05:50:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE/SJNiXj3XatMAFFcAo+yGfpoct1qUkwh1sePQUc9yGeKWgR2qxGA7p6oIQPZObYy145GAeA==
-X-Received: by 2002:a7b:cbd5:0:b0:3ff:ca80:eda3 with SMTP id n21-20020a7bcbd5000000b003ffca80eda3mr4776365wmi.10.1696510247529;
-        Thu, 05 Oct 2023 05:50:47 -0700 (PDT)
-Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id c11-20020a7bc84b000000b0040648217f4fsm3706589wml.39.2023.10.05.05.50.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 05:50:47 -0700 (PDT)
-Message-ID: <4ae1b1aeae6662c56c982c916e550ddcd8543aa7.camel@redhat.com>
-Subject: Re: [PATCH 06/10] iommu/amd: KVM: SVM: Use pi_desc_addr to derive
- ga_root_ptr
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 05 Oct 2023 15:50:45 +0300
-In-Reply-To: <20230815213533.548732-7-seanjc@google.com>
-References: <20230815213533.548732-1-seanjc@google.com>
-         <20230815213533.548732-7-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 5 Oct 2023 12:13:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3534026FD8;
+        Thu,  5 Oct 2023 06:05:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Mkk02uRjKGFB4e8aG+3kpHFTSQxewntkAdfkHaxdesI=; b=e8lzia3eWGjc2IATz+le3lrKVu
+        gOGiebot8NBca6IuY1/7+0Md+gtJwtDVfAHSbA0UWbreBJzbz2kT+hFv+RpLa6r5qqRoffNUXfRGU
+        VA7jnn8XW5RZTzKlM7OWo4x9vALqRV3miM8Zj4Wp1GxFCK1GDxu9CMi+opvVuCBcDMsxrXr1VD/GA
+        ISl5cGU9QCIbPRtkw/08b6pYXUxKIhk56rJaYx/OV4skaPAarzqcWN2klpsiXE8vITVUS0/02QcWn
+        rDUIB+fTSXu4BQliJpqS6UwH588iRi1GdKAdsFAPCdE/peTEyKFsQeCaJqVQf6gemqeoarlPqa0Hy
+        z8Nh6/3A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qoO2h-009V8J-IJ; Thu, 05 Oct 2023 13:05:27 +0000
+Date:   Thu, 5 Oct 2023 14:05:27 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org, linux-mm@kvack.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-media@vger.kernel.org
+Subject: Re: [REGRESSION] BUG: KFENCE: memory corruption in
+ drm_gem_put_pages+0x186/0x250
+Message-ID: <ZR60lylMtLO6ZGp7@casper.infradead.org>
+References: <13360591.uLZWGnKmhe@natalenko.name>
+ <3254850.aeNJFYEL58@natalenko.name>
+ <ZR6p4MpDbQpZiUSZ@casper.infradead.org>
+ <22037450.EfDdHjke4D@natalenko.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <22037450.EfDdHjke4D@natalenko.name>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-У вт, 2023-08-15 у 14:35 -0700, Sean Christopherson пише:
-> Use vcpu_data.pi_desc_addr instead of amd_iommu_pi_data.base to get the
-> GA root pointer.  KVM is the only source of amd_iommu_pi_data.base, and
-> KVM's one and only path for writing amd_iommu_pi_data.base computes the
-> exact same value for vcpu_data.pi_desc_addr and amd_iommu_pi_data.base,
-> and fills amd_iommu_pi_data.base if and only if vcpu_data.pi_desc_addr is
-> valid, i.e. amd_iommu_pi_data.base is fully redundant.
+On Thu, Oct 05, 2023 at 02:30:55PM +0200, Oleksandr Natalenko wrote:
+> No-no, sorry for possible confusion. Let me explain again:
 > 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/svm/avic.c   | 1 -
->  drivers/iommu/amd/iommu.c | 2 +-
->  include/linux/amd-iommu.h | 1 -
->  3 files changed, 1 insertion(+), 3 deletions(-)
+> 1. we had an issue with i915, which was introduced by 0b62af28f249, and later was fixed by 863a8eb3f270
+> 2. now I've discovered another issue, which looks very similar to 1., but in a VM with Cirrus VGA, and it happens even while having 863a8eb3f270 applied
+> 3. I've tried reverting 3291e09a4638, after which I cannot reproduce the issue with Cirrus VGA, but clearly there was no fix for it discussed
 > 
-> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-> index e49b682c8469..bd81e3517838 100644
-> --- a/arch/x86/kvm/svm/avic.c
-> +++ b/arch/x86/kvm/svm/avic.c
-> @@ -919,7 +919,6 @@ int avic_pi_update_irte(struct kvm *kvm, unsigned int host_irq,
->  			struct amd_iommu_pi_data pi;
->  
->  			/* Try to enable guest_mode in IRTE */
-> -			pi.base = avic_get_backing_page_address(svm);
->  			pi.ga_tag = AVIC_GATAG(to_kvm_svm(kvm)->avic_vm_id,
->  						     svm->vcpu.vcpu_id);
->  			pi.is_guest_mode = true;
-> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-> index c3b58a8389b9..9814df73b9a7 100644
-> --- a/drivers/iommu/amd/iommu.c
-> +++ b/drivers/iommu/amd/iommu.c
-> @@ -3622,7 +3622,7 @@ static int amd_ir_set_vcpu_affinity(struct irq_data *data, void *vcpu_info)
->  
->  	pi_data->prev_ga_tag = ir_data->cached_ga_tag;
->  	if (pi_data->is_guest_mode) {
-> -		ir_data->ga_root_ptr = (pi_data->base >> 12);
-> +		ir_data->ga_root_ptr = (vcpu_pi_info->pi_desc_addr >> 12);
->  		ir_data->ga_vector = vcpu_pi_info->vector;
->  		ir_data->ga_tag = pi_data->ga_tag;
->  		ret = amd_iommu_activate_guest_mode(ir_data);
-> diff --git a/include/linux/amd-iommu.h b/include/linux/amd-iommu.h
-> index 953e6f12fa1c..30d19ad0e8a9 100644
-> --- a/include/linux/amd-iommu.h
-> +++ b/include/linux/amd-iommu.h
-> @@ -20,7 +20,6 @@ struct amd_iommu;
->  struct amd_iommu_pi_data {
->  	u32 ga_tag;
->  	u32 prev_ga_tag;
-> -	u64 base;
+> IOW, 863a8eb3f270 is the fix for 0b62af28f249, but not for 3291e09a4638. It looks like 3291e09a4638 requires a separate fix.
 
-I think that a comment describing where the base address of the apic register page is taken now is needed, 
-because before your patch the 'amd_iommu_pi_data' was self documenting, since it had all the info 
-about the PI remap entry, but now it doesn't.
+Thank you!  Sorry about the misunderstanding.  Try this:
 
-
->  	bool is_guest_mode;
->  	struct vcpu_data *vcpu_data;
->  	void *ir_data;
-
-
-Best regards,
-	Maxim Levitsky
-
-
-
+diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
+index 6129b89bb366..44a948b80ee1 100644
+--- a/drivers/gpu/drm/drm_gem.c
++++ b/drivers/gpu/drm/drm_gem.c
+@@ -540,7 +540,7 @@ struct page **drm_gem_get_pages(struct drm_gem_object *obj)
+ 	struct page **pages;
+ 	struct folio *folio;
+ 	struct folio_batch fbatch;
+-	int i, j, npages;
++	long i, j, npages;
+ 
+ 	if (WARN_ON(!obj->filp))
+ 		return ERR_PTR(-EINVAL);
+@@ -564,11 +564,13 @@ struct page **drm_gem_get_pages(struct drm_gem_object *obj)
+ 
+ 	i = 0;
+ 	while (i < npages) {
++		long nr;
+ 		folio = shmem_read_folio_gfp(mapping, i,
+ 				mapping_gfp_mask(mapping));
+ 		if (IS_ERR(folio))
+ 			goto fail;
+-		for (j = 0; j < folio_nr_pages(folio); j++, i++)
++		nr = min(npages - i, folio_nr_pages(folio));
++		for (j = 0; j < nr; j++, i++)
+ 			pages[i] = folio_file_page(folio, i);
+ 
+ 		/* Make sure shmem keeps __GFP_DMA32 allocated pages in the
 
 
