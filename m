@@ -2,171 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F677BA893
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A0D7BA94A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbjJESAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 14:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
+        id S232019AbjJESk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 14:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbjJESAb (ORCPT
+        with ESMTP id S232286AbjJESkI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 14:00:31 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAB79E
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 11:00:28 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-533df112914so2207950a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 11:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696528826; x=1697133626; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=soC/hI6qoVGb1EBSelNwhFg1ZrYnyxzAE+/e29uwgT4=;
-        b=22QnwidH5T8m0rE1qmnLt5HKBH53ChSY2UjyhuUrECXA4zPkPQVv66mhNptLztf2sk
-         mMguaiogQpVZBMqEtWvp4bSymATUAvvaORmfKpH4Rg270CNBuijTKfAJzrB629kKaLOO
-         pSbxbzk73QSNvp/0JsBkmC//eW+EaqR3H8Ic7EgZ5dQCMmg9wGIb8+uDckMgjFMJlQ4g
-         ggme4kxJDhLdpTLffXxy8v41oI9XzaviNKmJIigD1jnZcPSfhIMbpawzbMRDQuBniWlE
-         JmULgWkkDicR7UcNxdhjVDjcLl+IoAushx00kkqcQMc2rdzuje+wWqKpPTUTa9ipOjdU
-         bjCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696528826; x=1697133626;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=soC/hI6qoVGb1EBSelNwhFg1ZrYnyxzAE+/e29uwgT4=;
-        b=iotE5SOy4SCUt1WNJoF10NaOUb2omO5F+JAp+2Q5yNk+ERHsDGoj/l9BBrQ39BHh25
-         gRkYZXoLgMQku9GUokdHjbFCYcUmIvwE0QlaAfXVhUC4w6yEuzZBmrjPwdidKngTHB1E
-         O2NJ7uv+oth51A9Qh/bFJqcHpnF39obBhE99aPvlV1fx9k8xj4UNlAyy02RjULkmrBtE
-         9eT/hyEVryEy665/GgIb5Nqf6QE97lTeZVOcllsYFIYAw2hDRMv+gT17lnaHuUWkHh8P
-         VeX1dHGN9nRD0c8YMplzzp8h4wUDc1eErq98T3eVTQaq6XETVtxYtNyJX3dPV98JM+Ok
-         dmdQ==
-X-Gm-Message-State: AOJu0YwlzeeEuVei63QE5bJZmCg6Wx9beezqFfdiq+m8pUJxDy5yGsz9
-        NiaE8Ml5wSv6qWMdlYGzNG7EmEIe8ws2kFnSrbdGkQ==
-X-Google-Smtp-Source: AGHT+IGxbmrYGV4xHeUYWGp7FnCMXrpxOrueGBjqdlU6Zozm6OO34o5rxIoT+s90O/UZXNHJlVnMazAF5XJouq7eXCU=
-X-Received: by 2002:aa7:dd0e:0:b0:533:1832:f2b4 with SMTP id
- i14-20020aa7dd0e000000b005331832f2b4mr5295009edv.13.1696528826582; Thu, 05
- Oct 2023 11:00:26 -0700 (PDT)
+        Thu, 5 Oct 2023 14:40:08 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFC3109;
+        Thu,  5 Oct 2023 11:40:02 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3959biGK091444;
+        Thu, 5 Oct 2023 04:37:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696498664;
+        bh=/EwkGHhFZ18KSjSpEimnhStbkFUoj7UyWXZ/gbTCs6g=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=SdjlvQb6M0urm6AwizlLqI/G+KhDshHMVVWZSst6NRDkb/+2JZFxhRLc9So7CDeiS
+         uxAcy+/zizAVnJMLleuMnRkPJDtbd9nDRLRvroeyr4/yOROp1lE6GsMAOUv6nDzYHz
+         0p2LThDXkvLyHbv679/XM2NOephdTb7nTO1Czj0s=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3959biir014593
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Oct 2023 04:37:44 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 5
+ Oct 2023 04:37:43 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 5 Oct 2023 04:37:43 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3959bgaW012868;
+        Thu, 5 Oct 2023 04:37:43 -0500
+From:   Nitin Yadav <n-yadav@ti.com>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <rogerq@ti.com>
+CC:     <kristo@kernel.org>, <robh+dt@kernel.org>, <conor+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 2/3] arm64: dts: ti: Add overlay for NAND daughter card
+Date:   Thu, 5 Oct 2023 15:07:38 +0530
+Message-ID: <20231005093739.4071934-3-n-yadav@ti.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231005093739.4071934-1-n-yadav@ti.com>
+References: <20231005093739.4071934-1-n-yadav@ti.com>
 MIME-Version: 1.0
-References: <20230825-wip-selftests-v3-0-639963c54109@kernel.org>
-In-Reply-To: <20230825-wip-selftests-v3-0-639963c54109@kernel.org>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Thu, 5 Oct 2023 11:00:12 -0700
-Message-ID: <CAFhGd8pKbznU5Atj6vEhjTQc0e3G8wKEBPa5gMteyFAvua=nZQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] selftests/hid: assorted fixes
-To:     Benjamin Tissoires <bentiss@kernel.org>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 8:55=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.o=
-rg> wrote:
->
-> And this is the last(?) revision of this series which should now compile
-> with or without CONFIG_HID_BPF set.
->
-> I had to do changes because [1] was failing
->
-> Nick, I kept your Tested-by, even if I made small changes in 1/3. Feel
-> free to shout if you don't want me to keep it.
->
-> Eduard, You helped us a lot in the review of v1 but never sent your
-> Reviewed-by or Acked-by. Do you want me to add one?
->
-> Cheers,
-> Benjamin
->
-> [1] https://gitlab.freedesktop.org/bentiss/hid/-/jobs/49754306
->
-> For reference, the v2 cover letter:
->
-> | Hi, I am sending this series on behalf of myself and Benjamin Tissoires=
-. There
-> | existed an initial n=3D3 patch series which was later expanded to n=3D4=
- and
-> | is now back to n=3D3 with some fixes added in and rebased against
-> | mainline.
-> |
-> | This patch series aims to ensure that the hid/bpf selftests can be buil=
-t
-> | without errors.
-> |
-> | Here's Benjamin's initial cover letter for context:
-> | |  These fixes have been triggered by [0]:
-> | |  basically, if you do not recompile the kernel first, and are
-> | |  running on an old kernel, vmlinux.h doesn't have the required
-> | |  symbols and the compilation fails.
-> | |
-> | |  The tests will fail if you run them on that very same machine,
-> | |  of course, but the binary should compile.
-> | |
-> | |  And while I was sorting out why it was failing, I realized I
-> | |  could do a couple of improvements on the Makefile.
-> | |
-> | |  [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1=
-c153dcb2@redhat.com/T/#t
->
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> ---
-> Changes in v3:
-> - Also overwrite all of the enum symbols in patch 1/3
-> - Link to v2: https://lore.kernel.org/r/20230908-kselftest-09-08-v2-0-0de=
-f978a4c1b@google.com
->
-> Changes in v2:
-> - roll Justin's fix into patch 1/3
-> - add __attribute__((preserve_access_index)) (thanks Eduard)
-> - rebased onto mainline (2dde18cd1d8fac735875f2e4987f11817cc0bc2c)
-> - Link to v1: https://lore.kernel.org/r/20230825-wip-selftests-v1-0-c8627=
-69020a8@kernel.org
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1698
-> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/6=
-1
->
-> ---
-> Benjamin Tissoires (3):
->       selftests/hid: ensure we can compile the tests on kernels pre-6.3
->       selftests/hid: do not manually call headers_install
->       selftests/hid: force using our compiled libbpf headers
->
->  tools/testing/selftests/hid/Makefile               | 10 ++-
->  tools/testing/selftests/hid/progs/hid.c            |  3 -
->  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 77 ++++++++++++++++=
-++++++
->  3 files changed, 81 insertions(+), 9 deletions(-)
-> ---
-> base-commit: 29aa98d0fe013e2ab62aae4266231b7fb05d47a2
-> change-id: 20230825-wip-selftests-9a7502b56542
->
-> Best regards,
-> --
-> Benjamin Tissoires <bentiss@kernel.org>
->
+Introduce k3-am62-lp-sk-nand.dtso overlay file to support
+the X8 NAND EXPANSION BOARD card (PROC143E1) for AM62x LP SK
+board. NAND has partitions for different boot components as
+below:
 
-Tested entire series.
+0x000000000000-0x000000200000 : "NAND.tiboot3
+0x000000200000-0x000000400000 : "NAND.tispl
+0x000000400000-0x000000600000 : "NAND.tiboot3.backup
+0x000000600000-0x000000a00000 : "NAND.u-boot
+0x000000a00000-0x000000a40000 : "NAND.u-boot-env
+0x000000a40000-0x000000a80000 : "NAND.u-boot-env.backup
+0x000000a80000-0x000040000000 : "NAND.file-system
 
- I can now build the tests using this command:
+Disable mcasp1 node in DT to avoid pinmux conflict. Update
+Makefile to include k3-am62-lp-sk-nand.dtso.
 
-$ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers && make LLVM=3D1 -j128
-ARCH=3Dx86_64 -C tools/testing/selftests TARGETS=3Dhid
+Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+Reviewed-by: Roger Quadros <rogerq@kernel.org>
+---
+ arch/arm64/boot/dts/ti/Makefile               |   3 +-
+ .../arm64/boot/dts/ti/k3-am62-lp-sk-nand.dtso | 119 ++++++++++++++++++
+ 2 files changed, 121 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am62-lp-sk-nand.dtso
 
+diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+index b3516419f95d..f6e3ff55f787 100644
+--- a/arch/arm64/boot/dts/ti/Makefile
++++ b/arch/arm64/boot/dts/ti/Makefile
+@@ -18,7 +18,8 @@ dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-nonwifi-yavia.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dahlia.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dev.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-yavia.dtb
+-dtb-$(CONFIG_ARCH_K3) += k3-am62-lp-sk.dtb
++k3-am62-lp-sk-nand-dtbs := k3-am62-lp-sk.dtb k3-am62-lp-sk-nand.dtbo
++dtb-$(CONFIG_ARCH_K3) += k3-am62-lp-sk-nand.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-hdmi-audio.dtbo
+ 
+ # Boards with AM62Ax SoC
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-lp-sk-nand.dtso b/arch/arm64/boot/dts/ti/k3-am62-lp-sk-nand.dtso
+new file mode 100644
+index 000000000000..0f4e26db534b
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-am62-lp-sk-nand.dtso
+@@ -0,0 +1,119 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022-2023 Texas Instruments Incorporated - https://www.ti.com/
++ */
++
++/dts-v1/;
++/plugin/;
++
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/irq.h>
++
++#include "k3-pinctrl.h"
++
++&mcasp1 {
++	status = "disabled";
++};
++
++&main_pmx0 {
++	gpmc0_pins_default: gpmc0-pins-default {
++		pinctrl-single,pins = <
++			AM62X_IOPAD(0x003c, PIN_INPUT, 0) /* (M25) GPMC0_AD0 */
++			AM62X_IOPAD(0x0040, PIN_INPUT, 0) /* (N23) GPMC0_AD1 */
++			AM62X_IOPAD(0x0044, PIN_INPUT, 0) /* (N24) GPMC0_AD2 */
++			AM62X_IOPAD(0x0048, PIN_INPUT, 0) /* (N25) GPMC0_AD3 */
++			AM62X_IOPAD(0x004c, PIN_INPUT, 0) /* (P24) GPMC0_AD4 */
++			AM62X_IOPAD(0x0050, PIN_INPUT, 0) /* (P22) GPMC0_AD5 */
++			AM62X_IOPAD(0x0054, PIN_INPUT, 0) /* (P21) GPMC0_AD6 */
++			AM62X_IOPAD(0x0058, PIN_INPUT, 0) /* (R23) GPMC0_AD7 */
++			AM62X_IOPAD(0x0084, PIN_OUTPUT, 0) /* (L23) GPMC0_ADVn_ALE */
++			AM62X_IOPAD(0x0088, PIN_OUTPUT, 0) /* (L24) GPMC0_OEn_REn */
++			AM62X_IOPAD(0x008c, PIN_OUTPUT, 0) /* (L25) GPMC0_WEn */
++			AM62X_IOPAD(0x0090, PIN_OUTPUT, 0) /* (M24) GPMC0_BE0n_CLE */
++			AM62X_IOPAD(0x00a8, PIN_OUTPUT, 0) /* (M21) GPMC0_CSn0 */
++			AM62X_IOPAD(0x0098, PIN_INPUT, 0) /* (U23) GPMC0_WAIT0 */
++		>;
++	};
++};
++
++&gpmc0 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&gpmc0_pins_default>;
++	ranges = <0 0 0x00 0x51000000 0x01000000>; /* CS0 space. Min partition = 16MB */
++	#address-cells = <2>;
++	#size-cells = <1>;
++
++	nand0_0: nand@0,0 {
++		compatible = "ti,am64-nand";
++		reg = <0 0 64>;         /* device IO registers */
++		interrupt-parent = <&gpmc0>;
++		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
++			     <1 IRQ_TYPE_NONE>; /* termcount */
++		rb-gpios = <&gpmc0 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
++		ti,nand-xfer-type = "prefetch-polled";
++		ti,nand-ecc-opt = "bch8";       /* BCH8: Bootrom limitation */
++		ti,elm-id = <&elm0>;
++		nand-bus-width = <8>;
++		gpmc,device-width = <1>;
++		gpmc,sync-clk-ps = <0>;
++		gpmc,cs-on-ns = <0>;
++		gpmc,cs-rd-off-ns = <40>;
++		gpmc,cs-wr-off-ns = <40>;
++		gpmc,adv-on-ns = <0>;
++		gpmc,adv-rd-off-ns = <25>;
++		gpmc,adv-wr-off-ns = <25>;
++		gpmc,we-on-ns = <0>;
++		gpmc,we-off-ns = <20>;
++		gpmc,oe-on-ns = <3>;
++		gpmc,oe-off-ns = <30>;
++		gpmc,access-ns = <30>;
++		gpmc,rd-cycle-ns = <40>;
++		gpmc,wr-cycle-ns = <40>;
++		gpmc,bus-turnaround-ns = <0>;
++		gpmc,cycle2cycle-delay-ns = <0>;
++		gpmc,clk-activation-ns = <0>;
++		gpmc,wr-access-ns = <40>;
++		gpmc,wr-data-mux-bus-ns = <0>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				label = "NAND.tiboot3";
++				reg = <0x00000000 0x00200000>;  /* 2M */
++			};
++			partition@200000 {
++				label = "NAND.tispl";
++				reg = <0x00200000 0x00200000>;  /* 2M */
++			};
++			partition@400000 {
++				label = "NAND.tiboot3.backup";  /* 2M */
++				reg = <0x00400000 0x00200000>;  /* BootROM looks at 4M */
++			};
++			partition@600000 {
++				label = "NAND.u-boot";
++				reg = <0x00600000 0x00400000>;  /* 4M */
++			};
++			partition@a00000 {
++				label = "NAND.u-boot-env";
++				reg = <0x00a00000 0x00040000>;  /* 256K */
++			};
++			partition@a40000 {
++				label = "NAND.u-boot-env.backup";
++				reg = <0x00a40000 0x00040000>;  /* 256K */
++			};
++			partition@a80000 {
++				label = "NAND.file-system";
++				reg = <0x00a80000 0x3f580000>;
++			};
++		};
++	};
++};
++
++&elm0{
++	status = "okay";
++};
+-- 
+2.25.1
 
-Tested-by:  Justin Stitt <justinstitt@google.com>
