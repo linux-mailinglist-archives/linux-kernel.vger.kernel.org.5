@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C72E7BA3DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C117BA3E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239143AbjJEP70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
+        id S239865AbjJEP7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234750AbjJEP46 (ORCPT
+        with ESMTP id S234632AbjJEP5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:56:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD9BB291
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:59:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAB82C116A4;
-        Thu,  5 Oct 2023 13:58:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696514328;
-        bh=AiYYMA+NHBeWDMz0RJeTj9dCfxc0pBpMecEskqVefGY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lcCQ8V9LlcSBGrW0NZctP7uRITYQmNVj6qin6uL/yCqmpr4oliqpI5HmUEK+9YF/x
-         J/TP6/3T+4qjBRTj+atu15R+CjHISSwUsjcUUPNBnb8U9FQQVTodnwYUWAX51Wf4YP
-         VtTPy+Vhhh8Bc4Eww4qNELhXKiuN3DY8cBtHYI4I=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>
-Subject: [PATCH 3/3] staging: greybus: fw-management: make fw_mgmt_class constant
-Date:   Thu,  5 Oct 2023 15:58:36 +0200
-Message-ID: <2023100534-catty-moodiness-099e@gregkh>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <2023100533-broadband-hunk-9e91@gregkh>
-References: <2023100533-broadband-hunk-9e91@gregkh>
+        Thu, 5 Oct 2023 11:57:03 -0400
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4B4B2B0
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:59:56 -0700 (PDT)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1dce4259823so1312599fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 06:59:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696514332; x=1697119132;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QZ3jIZcjuy9IwEEUZGsMTuLaII8wkn3ebRcwccGBLh8=;
+        b=LIlNE6D1V6FuPILNeqrUinyh0y9MuZtGGdmaAIbck6yAMpxR19fqp/Ez09njZsMJrg
+         o3kmSFXCsz9xIg/1ocoXAPAHPLs/3jNCh3RF6e/wm19av4vVT5w1B0TPedUN4d0fYClr
+         eQbaAD+u4Qosk7GJ4uLNEePd0FxZJpvUDAmmRyUwq7+ASJQfAV+7bv1RPNLyvhmxwA74
+         hV6ziOt7L/F1sJgMbAxjMRKsPlm/os3pAnZG13BenV/qxHx7IYJZ/JTh9tKkp/oWEU0E
+         Q2S3rsceTAuvneGIOwS2hwURjYJgUMkQRTa74sxGRdt2vei2SJ1xwm2RsqiVknHW2x6T
+         VPVw==
+X-Gm-Message-State: AOJu0YyDdmV0BTSWqkssU/7uQo3fYZfNJ/+zP3x+e3k9FA4UHuDCLKs6
+        eMDWRtCGEwSx0PTa+DLT8gVKy89gzAu1Rqq+9tyfDmJ+U9sT
+X-Google-Smtp-Source: AGHT+IE4974EMbqpFAyLxpSqlzR2TgeX6fQDuPmOEUx8diqTerPcA55b3fFgWBLWTp9PEikjUHL+6vz7vTGrER2417wsfxJAPfYw
 MIME-Version: 1.0
-Lines:  78
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2579; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=AiYYMA+NHBeWDMz0RJeTj9dCfxc0pBpMecEskqVefGY=; b=owGbwMvMwCRo6H6F97bub03G02pJDKlyB7l4gji/rr/28Y2vzu/Z3eHcPA2MupufTGAymJ8U+ P3k+0S2jlgWBkEmBlkxRZYv23iO7q84pOhlaHsaZg4rE8gQBi5OAZiIQQvDgo0Xn37b2aF7R1um J+jE5m1cFmVX7jDM09tcn/jyyuPL97RfHCz9mxp/+N9+RQA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6870:6289:b0:1dd:39ce:e25c with SMTP id
+ s9-20020a056870628900b001dd39cee25cmr1897300oan.3.1696514332010; Thu, 05 Oct
+ 2023 06:58:52 -0700 (PDT)
+Date:   Thu, 05 Oct 2023 06:58:51 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001db0110606f886f0@google.com>
+Subject: [syzbot] Monthly gfs2 report (Oct 2023)
+From:   syzbot <syzbot+listfaee261bcd9ab8e92c18@syzkaller.appspotmail.com>
+To:     gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the driver core allows for struct class to be in read-only
-memory, making all 'class' structures to be declared at build time
-placing them into read-only memory, instead of having to be dynamically
-allocated at load time.
+Hello gfs2 maintainers/developers,
 
-Cc: Johan Hovold <johan@kernel.org>
-Cc: Alex Elder <elder@kernel.org>
-Cc: greybus-dev@lists.linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This is a 31-day syzbot report for the gfs2 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/gfs2
+
+During the period, 4 new issues were detected and 0 were fixed.
+In total, 23 issues are still open and 20 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref  Crashes Repro Title
+<1>  4115    Yes   WARNING in __folio_mark_dirty (2)
+                   https://syzkaller.appspot.com/bug?extid=e14d6cd6ec241f507ba7
+<2>  3678    Yes   WARNING in folio_account_dirtied
+                   https://syzkaller.appspot.com/bug?extid=8d1d62bfb63d6a480be1
+<3>  652     Yes   kernel BUG in gfs2_glock_nq (2)
+                   https://syzkaller.appspot.com/bug?extid=70f4e455dee59ab40c80
+<4>  182     Yes   BUG: sleeping function called from invalid context in gfs2_withdraw
+                   https://syzkaller.appspot.com/bug?extid=577d06779fa95206ba66
+<5>  79      Yes   INFO: task hung in gfs2_gl_hash_clear (3)
+                   https://syzkaller.appspot.com/bug?extid=ed7d0f71a89e28557a77
+<6>  54      Yes   WARNING in gfs2_check_blk_type
+                   https://syzkaller.appspot.com/bug?extid=092b28923eb79e0f3c41
+<7>  35      Yes   general protection fault in gfs2_dump_glock (2)
+                   https://syzkaller.appspot.com/bug?extid=427fed3295e9a7e887f2
+<8>  9       Yes   KASAN: slab-use-after-free Write in gfs2_qd_dealloc
+                   https://syzkaller.appspot.com/bug?extid=29c47e9e51895928698c
+<9>  8       Yes   BUG: unable to handle kernel NULL pointer dereference in gfs2_rgrp_dump
+                   https://syzkaller.appspot.com/bug?extid=da0fc229cc1ff4bb2e6d
+<10> 4       Yes   BUG: unable to handle kernel NULL pointer dereference in gfs2_rindex_update
+                   https://syzkaller.appspot.com/bug?extid=2b32df23ff6b5b307565
+
 ---
- drivers/staging/greybus/fw-management.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/staging/greybus/fw-management.c b/drivers/staging/greybus/fw-management.c
-index cd9141e4b794..93137a3c4907 100644
---- a/drivers/staging/greybus/fw-management.c
-+++ b/drivers/staging/greybus/fw-management.c
-@@ -55,7 +55,10 @@ struct fw_mgmt {
-  */
- #define NUM_MINORS		U8_MAX
- 
--static struct class *fw_mgmt_class;
-+static const struct class fw_mgmt_class = {
-+	.name = "gb_fw_mgmt",
-+};
-+
- static dev_t fw_mgmt_dev_num;
- static DEFINE_IDA(fw_mgmt_minors_map);
- static LIST_HEAD(fw_mgmt_list);
-@@ -629,7 +632,7 @@ int gb_fw_mgmt_connection_init(struct gb_connection *connection)
- 		goto err_remove_ida;
- 
- 	/* Add a soft link to the previously added char-dev within the bundle */
--	fw_mgmt->class_device = device_create(fw_mgmt_class, fw_mgmt->parent,
-+	fw_mgmt->class_device = device_create(&fw_mgmt_class, fw_mgmt->parent,
- 					      fw_mgmt->dev_num, NULL,
- 					      "gb-fw-mgmt-%d", minor);
- 	if (IS_ERR(fw_mgmt->class_device)) {
-@@ -664,7 +667,7 @@ void gb_fw_mgmt_connection_exit(struct gb_connection *connection)
- 
- 	fw_mgmt = gb_connection_get_data(connection);
- 
--	device_destroy(fw_mgmt_class, fw_mgmt->dev_num);
-+	device_destroy(&fw_mgmt_class, fw_mgmt->dev_num);
- 	cdev_del(&fw_mgmt->cdev);
- 	ida_simple_remove(&fw_mgmt_minors_map, MINOR(fw_mgmt->dev_num));
- 
-@@ -696,9 +699,9 @@ int fw_mgmt_init(void)
- {
- 	int ret;
- 
--	fw_mgmt_class = class_create("gb_fw_mgmt");
--	if (IS_ERR(fw_mgmt_class))
--		return PTR_ERR(fw_mgmt_class);
-+	ret = class_register(&fw_mgmt_class);
-+	if (ret)
-+		return ret;
- 
- 	ret = alloc_chrdev_region(&fw_mgmt_dev_num, 0, NUM_MINORS,
- 				  "gb_fw_mgmt");
-@@ -708,13 +711,13 @@ int fw_mgmt_init(void)
- 	return 0;
- 
- err_remove_class:
--	class_destroy(fw_mgmt_class);
-+	class_unregister(&fw_mgmt_class);
- 	return ret;
- }
- 
- void fw_mgmt_exit(void)
- {
- 	unregister_chrdev_region(fw_mgmt_dev_num, NUM_MINORS);
--	class_destroy(fw_mgmt_class);
-+	class_unregister(&fw_mgmt_class);
- 	ida_destroy(&fw_mgmt_minors_map);
- }
--- 
-2.42.0
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
