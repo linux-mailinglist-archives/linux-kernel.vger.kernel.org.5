@@ -2,78 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CAB7BA87C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BFA7BA78D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229488AbjJERzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 13:55:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
+        id S230021AbjJERQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbjJERyV (ORCPT
+        with ESMTP id S231520AbjJERPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 13:54:21 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB0F3A84
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:07:03 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so527a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 10:07:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696525622; x=1697130422; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wzZbwwBbKebKwgMr49OTxR0Xhz5+Y0n3B7MG0qd+R/Y=;
-        b=AulhkyAN/GUHMVgM7g3Xc9xDMHysWVVVcpgXZmVyp8NReAsh08pEKNmFSUl0rg/Rd9
-         i2eVboVQfpchFnZdQjU3DwsCjTTKGr+qt/YONzp570EaUvRRj9o5bpO7tGolNc5BYlOU
-         2kjVo+tQAdEY7T/dN/eK+x/VkwhBGHC0UvRRhBzyuTdXE+KJseOcFLaQ8FoW5/IcLej5
-         8Ke28JxRu8M7LOoQ/6OEf/IDL18BEHKfvl8H4Ard/v37yLivDzwRKQZ5Xd14sQXZwnkK
-         yKFk12lhY/12Up7mrMDCe4Qy3KW2sovgugAkXp9Ad7qJoDnDzAOAmXzXOTbTk11E6Sc4
-         YPJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696525622; x=1697130422;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wzZbwwBbKebKwgMr49OTxR0Xhz5+Y0n3B7MG0qd+R/Y=;
-        b=LNwoAlrnsNM31LQV/zlm17SCUmQ/9zH9EBh9tjX8TldN8sQjsD9j8M/V92WkyfZhsW
-         3xLFcX7RiavQYpHgULi38kLOQIvI+1DxkCE9gKNJFBvQ9VTpqcgHdh74S2pv8uqPh9+l
-         mFNlfWaUchO2IuqV2x7FTnnIiI8Q8QkSjZYPt/Nm67r8qUrIQ2c5RWVG098219U6AnP/
-         9L6ElR5Yy/LD9GOkhHf+hXgKImpsVC5/E+k8D6aphnYkhtOxRkCK7cOGtKPBX4J+PnO0
-         REJJTWrBQfv5x8zZEZVDeSgpYGk7bIhswidFLbu+eBZ+1YlYTnYGFn1uxuIHXOuntCmZ
-         oiNw==
-X-Gm-Message-State: AOJu0YyYaFOht2ZcPDwn9Vl8833XTd661Hehgmdk91FYifGJqGntzZZf
-        TkWIwg2LyHax4+7lia718bGUEK0z5FHfeWw/0tne8g==
-X-Google-Smtp-Source: AGHT+IGT+kR1c9HFvTY4OIplYN+U2b57hpDklQEGtUSa87zhhvTwZ8/QEXjREsFcoHhv7GLM8rXHJpR8f2FjsuOLWgM=
-X-Received: by 2002:a50:8d5a:0:b0:538:2941:ad10 with SMTP id
- t26-20020a508d5a000000b005382941ad10mr80323edt.5.1696525622177; Thu, 05 Oct
- 2023 10:07:02 -0700 (PDT)
+        Thu, 5 Oct 2023 13:15:04 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F1A873A92
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:07:06 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6823CC15;
+        Thu,  5 Oct 2023 10:07:45 -0700 (PDT)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 467CC3F5A1;
+        Thu,  5 Oct 2023 10:07:04 -0700 (PDT)
+Message-ID: <cbca86ba-c7e8-dde6-2319-dc217427ec93@arm.com>
+Date:   Thu, 5 Oct 2023 18:07:02 +0100
 MIME-Version: 1.0
-References: <20231004002038.907778-1-jmattson@google.com> <01009a2a-929e-ce16-6f44-1d314e6bcba5@intel.com>
- <CALMp9eR+Qudg++J_dmY_SGbM_kr=GQcRRcjuUxtm9rfaC_qeXQ@mail.gmail.com>
- <20231004075836.GBZR0bLC/Y09sSSYWw@fat_crate.local> <8c810f89-43f3-3742-60b8-1ba622321be8@redhat.com>
-In-Reply-To: <8c810f89-43f3-3742-60b8-1ba622321be8@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 5 Oct 2023 10:06:45 -0700
-Message-ID: <CALMp9eR=URBsz1qmTcDU5ixncUTkNgxJahLbfyZXYr-2RkBPng@mail.gmail.com>
-Subject: Re: [PATCH] x86: KVM: Add feature flag for AMD's FsGsKernelGsBaseNonSerializing
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 08/24] x86/resctrl: Track the number of dirty RMID a
+ CLOSID has
+Content-Language: en-GB
+To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        carl@os.amperecomputing.com, lcherian@marvell.com,
+        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+        baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+        dfustini@baylibre.com, amitsinght@marvell.com
+References: <20230914172138.11977-1-james.morse@arm.com>
+ <20230914172138.11977-9-james.morse@arm.com>
+ <3f448b5e-de75-35fa-02ab-7cbd37389227@intel.com>
+From:   James Morse <james.morse@arm.com>
+In-Reply-To: <3f448b5e-de75-35fa-02ab-7cbd37389227@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,21 +59,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 9:39=E2=80=AFAM Paolo Bonzini <pbonzini@redhat.com> =
-wrote:
+Hi Reinette,
 
-> I agree with Jim that it would be nice to have some bits from Intel, and
-> some bits from AMD, that current processors always return as 1.  Future
-> processors can change those to 0 as desired.
+On 03/10/2023 22:13, Reinette Chatre wrote:
+> On 9/14/2023 10:21 AM, James Morse wrote:
+>> @@ -796,13 +817,30 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
+>>  static int dom_data_init(struct rdt_resource *r)
+>>  {
+>>  	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
+>> +	u32 num_closid = resctrl_arch_get_num_closid(r);
+>>  	struct rmid_entry *entry = NULL;
+>> +	int err = 0, i;
+>>  	u32 idx;
+>> -	int i;
+>> +
+>> +	mutex_lock(&rdtgroup_mutex);
+>> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
+>> +		int *tmp;
+>> +
+>> +		tmp = kcalloc(num_closid, sizeof(int), GFP_KERNEL);
+> 
+> Shouldn't this rather be sizeof(unsigned int) to match the type it will store?
 
-That's not quite what I meant.
+It matches the type of tmp... I'll change both closid_num_dirty_rmid and tmp to a u32 *,
+and this sizeof() to be sizeof(*tmp).
 
-Today, hypervisors will not pass through a non-zero CPUID bit that
-they don't know the definition of. This makes sense for positive
-features, and for multi-bit fields.
 
-I'm suggesting a leaf devoted to single bit negative features. If a
-bit is set in hardware, it means that something has been taken away.
-Hypervisors don't need to know exactly what was taken away. For this
-leaf only, hypervisors will always pass through a non-zero bit, even
-if they have know idea what it means.
+>> +		if (!tmp) {
+>> +			err = -ENOMEM;
+>> +			goto out_unlock;
+>> +		}
+>> +
+>> +		closid_num_dirty_rmid = tmp;
+>> +	}
+>>  
+>>  	rmid_ptrs = kcalloc(idx_limit, sizeof(struct rmid_entry), GFP_KERNEL);
+>> -	if (!rmid_ptrs)
+>> -		return -ENOMEM;
+>> +	if (!rmid_ptrs) {
+>> +		kfree(closid_num_dirty_rmid);
+>> +		err = -ENOMEM;
+>> +		goto out_unlock;
+>> +	}
+>>  
+>>  	for (i = 0; i < idx_limit; i++) {
+>>  		entry = &rmid_ptrs[i];
+>> @@ -822,13 +860,21 @@ static int dom_data_init(struct rdt_resource *r)
+>>  	entry = __rmid_entry(idx);
+>>  	list_del(&entry->list);
+>>  
+>> -	return 0;
+>> +out_unlock:
+>> +	mutex_unlock(&rdtgroup_mutex);
+>> +
+>> +	return err;
+>>  }
+>>  
+>>  void resctrl_exit_mon_l3_config(struct rdt_resource *r)
+>>  {
+>>  	mutex_lock(&rdtgroup_mutex);
+>>  
+>> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
+>> +		kfree(closid_num_dirty_rmid);
+>> +		closid_num_dirty_rmid = NULL;
+>> +	}
+>> +
+>>  	kfree(rmid_ptrs);
+>>  	rmid_ptrs = NULL;
+>>  
+> 
+> Awaiting response on patch #2 related to above hunk.
+
+It's the same story here. CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID makes this behaviour
+visible to the filesystem code, which means the filesystem code can do the alloc/free of
+this array. All this eventually moves out to /fs/.
+
+This is all because the RMID allocation is dependent on the limbo list that resctrl
+manages, and for MPAM the CLOSID is too. I'm sure its simpler to expose this MPAM
+behaviour to resctrl - and in a way that the compiler can remove if its not needed. The
+alternative would be to duplicate the allocators on each architecture. I don't think MPAM
+is different enough to justify this.
+
+
+Thanks,
+
+James
