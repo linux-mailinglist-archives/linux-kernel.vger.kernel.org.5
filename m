@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 905097BA230
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C68817BA233
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbjJEPTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
+        id S232226AbjJEPUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232999AbjJEPTD (ORCPT
+        with ESMTP id S233191AbjJEPTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:19:03 -0400
+        Thu, 5 Oct 2023 11:19:09 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9C32A3850
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:45:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AFD773866
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:45:11 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3951DA7;
-        Thu,  5 Oct 2023 07:45:48 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E58FD139F;
+        Thu,  5 Oct 2023 07:45:49 -0700 (PDT)
 Received: from e103737-lin.cambridge.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 099FA3F641;
-        Thu,  5 Oct 2023 07:45:08 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3B6EE3F641;
+        Thu,  5 Oct 2023 07:45:10 -0700 (PDT)
 From:   Sudeep Holla <sudeep.holla@arm.com>
-Date:   Thu, 05 Oct 2023 15:44:54 +0100
-Subject: [PATCH v4 01/17] firmware: arm_ffa: Update the FF-A command list
- with v1.1 additions
+Date:   Thu, 05 Oct 2023 15:44:55 +0100
+Subject: [PATCH v4 02/17] firmware: arm_ffa: Implement notification bitmap
+ create and destroy interfaces
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231005-ffa_v1-1_notif-v4-1-cddd3237809c@arm.com>
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231005-ffa_v1-1_notif-v4-2-cddd3237809c@arm.com>
 References: <20231005-ffa_v1-1_notif-v4-0-cddd3237809c@arm.com>
 In-Reply-To: <20231005-ffa_v1-1_notif-v4-0-cddd3237809c@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -39,20 +39,20 @@ To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lorenzo Pieralisi <lpieralisi@kernel.org>,
         Olivier Deprez <olivier.deprez@arm.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3114; i=sudeep.holla@arm.com;
- h=from:subject:message-id; bh=278KahauozE45XUUmHl11QnvUebKx7Dm6zTUaEvv3Cs=;
- b=owEBbQKS/ZANAwAIAQBBurwxfuKYAcsmYgBlHsvwExh2e02foBJMzeMrAazRi+haUyLVwCFry
- sj7SSL7VMWJAjMEAAEIAB0WIQS6ceUSBvMeskPdk+EAQbq8MX7imAUCZR7L8AAKCRAAQbq8MX7i
- mMeED/4pLumUe+LTTAquMVWC2OYtNXXQuLnLgaiSrgDLjpPeCYpasHYXpdF6zFoqoExrlcgrGFp
- gkByGXQSVkqoDUz4nilUhFkxHbVuLqyZ1z604MEe5xJkUDd1OXodi/gP53BfHKU81GzddyzHey0
- JaICJRZqPdChQV2sOXbwraD9LffsenQCB6tbu2GvZ6b+b/QENbErv+gIw8dOj0X9yitqJOmTPge
- 3JVsxo8alTbZl6Z9Mn8JOQxt1JsLw4BsNCnShWXR+tBKX2wIpIEUXyx1ItzApPqbMiqFc8GZZEn
- ZLcY7qwpDU6FvfrSf41pTpc/Ql+iSosMdup7Z5Qe1FUVMgpWtR7F9dFQ/+XmOYaQibkyygUhJOa
- cXl5DCthQ6kGxbrtABxpDNfC/B7uE71gLxpQjwAr4bkOxPcVvYg8S5ndxlBvWBrbiqCNQ1nEMSG
- trn/8ofng02cTJqQyrlLS0vYF0Mwl3HfaivO7n0S/BgGQR1KeKNR38IaDKS/G22sYGUyE0bBLwT
- Yj515gl2lFlLYCEebRc9VcUhQuI+FSgfXDAG0CwPY/2kglmaHfAO2HeZS+gFz9OFhRrE/R451Hm
- oym3CG+WkD0iSxY87/WZq3VWdUogn2+F0W2WOfMfHQyXV+I/R4pLrOaret/D2Zh+1sevtSxVQMA
- hJPBFpxiyt0IUbQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3477; i=sudeep.holla@arm.com;
+ h=from:subject:message-id; bh=uUL2ZAphmbDP68h5pYnBIMj7pjeetUE+/DHcD8KcBDo=;
+ b=owEBbQKS/ZANAwAIAQBBurwxfuKYAcsmYgBlHsvwJYa5tKnQfZaTKhzLY4WPPK31PNv/mf0ul
+ VCCjuqGifWJAjMEAAEIAB0WIQS6ceUSBvMeskPdk+EAQbq8MX7imAUCZR7L8AAKCRAAQbq8MX7i
+ mIqlD/9ZEzkQ5vVuCRL2ahSlui8c006jtP9sHnonqbqj/uQI25nWgyFlpfjkONGVjuCMTyUxRWu
+ xPfCEn94+9Nx50JUjhdjNc9lCj3k8PvmC0kPUGwP96/dA4nNBdeYQmENzZNAnTMdDmj42UsCr7D
+ /uBP0aJtAoA1lT2tLSqmsRx0ACpfaysMnTu/D+G4ZHuqNhzPXHiW+bE3EJm2lWc+yLY7UttbGGI
+ vEUFMRS6Iz3/H5CJeDNSmvB94k6cnvNXEWdQeuL+cVAiiQLnls8iQ2ZLgqVVxjJlwHZ9C1Ol83D
+ /voSUdLmKmDyfFcqxQR/VsZGakRzJKhgHgsqNYETj3VcVLBGvbKimPHA/QXXGejKWaRKtdb1M2d
+ 64QcsZkswWyn0Vfz/Ku/ImS0Bt6teVWNbP6Yt7Edi+whd9/b3AmfUSY6WD3N55nrfD4W6FJwP0b
+ EunSKSrbY9qbWhzejMYfZS+vRZnVxLu7/Su1ZJEtVEjPLH+Fcpg2G7ffClOyyRswQtBvL14hXzJ
+ R2ca4WEMv1PAzoWFn6gik8c77a9suhCesDI9ubXm4+Y4/uU6mGDTMxalUn0DcDeN/qmha7Dmt5j
+ uXreRXJ/pFpNCmG5vwW6+Fn2aGF5i6McW5N6lLQjbzFqbHvq/nKgVAZy+rJdR+cBAMEiZnfN7YO
+ m82V4mWUYhJq3mQ==
 X-Developer-Key: i=sudeep.holla@arm.com; a=openpgp;
  fpr=7360A21742ADF5A11767C1C139CFD4755FE2D5B4
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
@@ -63,83 +63,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arm Firmware Framework for A-profile(FFA) v1.1 introduces notifications
-and indirect messaging based upon notifications support and extends some
-of the memory interfaces.
+On systems without a hypervisor the responsibility of requesting the
+creation of the notification bitmaps in the SPM falls to the FF-A driver.
 
-Let us add all the newly supported FF-A function IDs in the spec.
-Also update to the error values and associated handling.
+We use FFA features to determine if the ABI is supported, if it is not
+we can assume there is a hypervisor present and will take care of ensure
+the relevant notifications bitmaps are created on this partitions behalf.
+
+An endpoint’s notification bitmaps needs to be setup before it configures
+its notifications and before other endpoints and partition managers can
+start signaling these notifications.
+
+Add interface to create and destroy the notification bitmaps and use the
+same to do the necessary setup during the initialisation and cleanup
+during the module exit.
 
 Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 ---
- drivers/firmware/arm_ffa/driver.c |  1 +
- include/linux/arm_ffa.h           | 20 ++++++++++++++++++++
- 2 files changed, 21 insertions(+)
+ drivers/firmware/arm_ffa/driver.c | 63 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 62 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-index 7cd6b1564e80..a64512388ea5 100644
+index a64512388ea5..c2ab6f4cf296 100644
 --- a/drivers/firmware/arm_ffa/driver.c
 +++ b/drivers/firmware/arm_ffa/driver.c
-@@ -64,6 +64,7 @@ static const int ffa_linux_errmap[] = {
- 	-EACCES,	/* FFA_RET_DENIED */
- 	-EAGAIN,	/* FFA_RET_RETRY */
- 	-ECANCELED,	/* FFA_RET_ABORTED */
-+	-ENODATA,	/* FFA_RET_NO_DATA */
+@@ -84,6 +84,7 @@ struct ffa_drv_info {
+ 	void *rx_buffer;
+ 	void *tx_buffer;
+ 	bool mem_ops_native;
++	bool bitmap_created;
  };
  
- static inline int ffa_to_linux_errno(int errno)
-diff --git a/include/linux/arm_ffa.h b/include/linux/arm_ffa.h
-index cc060da51bec..2ea1717a0825 100644
---- a/include/linux/arm_ffa.h
-+++ b/include/linux/arm_ffa.h
-@@ -20,6 +20,7 @@
+ static struct ffa_drv_info *drv_info;
+@@ -555,6 +556,37 @@ static int ffa_features(u32 func_feat_id, u32 input_props,
+ 	return 0;
+ }
  
- #define FFA_ERROR			FFA_SMC_32(0x60)
- #define FFA_SUCCESS			FFA_SMC_32(0x61)
-+#define FFA_FN64_SUCCESS		FFA_SMC_64(0x61)
- #define FFA_INTERRUPT			FFA_SMC_32(0x62)
- #define FFA_VERSION			FFA_SMC_32(0x63)
- #define FFA_FEATURES			FFA_SMC_32(0x64)
-@@ -54,6 +55,23 @@
- #define FFA_MEM_FRAG_RX			FFA_SMC_32(0x7A)
- #define FFA_MEM_FRAG_TX			FFA_SMC_32(0x7B)
- #define FFA_NORMAL_WORLD_RESUME		FFA_SMC_32(0x7C)
-+#define FFA_NOTIFICATION_BITMAP_CREATE	FFA_SMC_32(0x7D)
-+#define FFA_NOTIFICATION_BITMAP_DESTROY FFA_SMC_32(0x7E)
-+#define FFA_NOTIFICATION_BIND		FFA_SMC_32(0x7F)
-+#define FFA_NOTIFICATION_UNBIND		FFA_SMC_32(0x80)
-+#define FFA_NOTIFICATION_SET		FFA_SMC_32(0x81)
-+#define FFA_NOTIFICATION_GET		FFA_SMC_32(0x82)
-+#define FFA_NOTIFICATION_INFO_GET	FFA_SMC_32(0x83)
-+#define FFA_FN64_NOTIFICATION_INFO_GET	FFA_SMC_64(0x83)
-+#define FFA_RX_ACQUIRE			FFA_SMC_32(0x84)
-+#define FFA_SPM_ID_GET			FFA_SMC_32(0x85)
-+#define FFA_MSG_SEND2			FFA_SMC_32(0x86)
-+#define FFA_SECONDARY_EP_REGISTER	FFA_SMC_32(0x87)
-+#define FFA_FN64_SECONDARY_EP_REGISTER	FFA_SMC_64(0x87)
-+#define FFA_MEM_PERM_GET		FFA_SMC_32(0x88)
-+#define FFA_FN64_MEM_PERM_GET		FFA_SMC_64(0x88)
-+#define FFA_MEM_PERM_SET		FFA_SMC_32(0x89)
-+#define FFA_FN64_MEM_PERM_SET		FFA_SMC_64(0x89)
++static int ffa_notification_bitmap_create(void)
++{
++	ffa_value_t ret;
++	u16 vcpu_count = nr_cpu_ids;
++
++	invoke_ffa_fn((ffa_value_t){
++		      .a0 = FFA_NOTIFICATION_BITMAP_CREATE,
++		      .a1 = drv_info->vm_id, .a2 = vcpu_count,
++		      }, &ret);
++
++	if (ret.a0 == FFA_ERROR)
++		return ffa_to_linux_errno((int)ret.a2);
++
++	return 0;
++}
++
++static int ffa_notification_bitmap_destroy(void)
++{
++	ffa_value_t ret;
++
++	invoke_ffa_fn((ffa_value_t){
++		      .a0 = FFA_NOTIFICATION_BITMAP_DESTROY,
++		      .a1 = drv_info->vm_id,
++		      }, &ret);
++
++	if (ret.a0 == FFA_ERROR)
++		return ffa_to_linux_errno((int)ret.a2);
++
++	return 0;
++}
++
+ static void ffa_set_up_mem_ops_native_flag(void)
+ {
+ 	if (!ffa_features(FFA_FN_NATIVE(MEM_LEND), 0, NULL, NULL) ||
+@@ -704,6 +736,34 @@ static void ffa_setup_partitions(void)
+ 	kfree(pbuf);
+ }
  
- /*
-  * For some calls it is necessary to use SMC64 to pass or return 64-bit values.
-@@ -76,6 +94,7 @@
- #define FFA_RET_DENIED             (-6)
- #define FFA_RET_RETRY              (-7)
- #define FFA_RET_ABORTED            (-8)
-+#define FFA_RET_NO_DATA            (-9)
++static int ffa_notifications_setup(void)
++{
++	int ret;
++
++	ret = ffa_features(FFA_NOTIFICATION_BITMAP_CREATE, 0, NULL, NULL);
++	if (ret) {
++		pr_err("Notifications not supported, continuing with it ..\n");
++		return 0;
++	}
++
++	ret = ffa_notification_bitmap_create();
++	if (ret) {
++		pr_err("notification_bitmap_create error %d\n", ret);
++		return ret;
++	}
++	drv_info->bitmap_created = true;
++
++	return 0;
++}
++
++static void ffa_notifications_cleanup(void)
++{
++	if (drv_info->bitmap_created) {
++		ffa_notification_bitmap_destroy();
++		drv_info->bitmap_created = false;
++	}
++}
++
+ static int __init ffa_init(void)
+ {
+ 	int ret;
+@@ -759,7 +819,7 @@ static int __init ffa_init(void)
  
- /* FFA version encoding */
- #define FFA_MAJOR_VERSION_MASK	GENMASK(30, 16)
-@@ -86,6 +105,7 @@
- 	(FIELD_PREP(FFA_MAJOR_VERSION_MASK, (major)) |		\
- 	 FIELD_PREP(FFA_MINOR_VERSION_MASK, (minor)))
- #define FFA_VERSION_1_0		FFA_PACK_VERSION_INFO(1, 0)
-+#define FFA_VERSION_1_1		FFA_PACK_VERSION_INFO(1, 1)
+ 	ffa_set_up_mem_ops_native_flag();
  
- /**
-  * FF-A specification mentions explicitly about '4K pages'. This should
+-	return 0;
++	return ffa_notifications_setup();
+ free_pages:
+ 	if (drv_info->tx_buffer)
+ 		free_pages_exact(drv_info->tx_buffer, RXTX_BUFFER_SIZE);
+@@ -774,6 +834,7 @@ subsys_initcall(ffa_init);
+ 
+ static void __exit ffa_exit(void)
+ {
++	ffa_notifications_cleanup();
+ 	ffa_rxtx_unmap(drv_info->vm_id);
+ 	free_pages_exact(drv_info->tx_buffer, RXTX_BUFFER_SIZE);
+ 	free_pages_exact(drv_info->rx_buffer, RXTX_BUFFER_SIZE);
 
 -- 
 2.42.0
