@@ -2,146 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1DD7BAA2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFAF7BAA31
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjJETd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
+        id S230405AbjJETdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjJETd2 (ORCPT
+        with ESMTP id S229835AbjJETdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 15:33:28 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F18DB
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:33:27 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9936b3d0286so254955666b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696534405; x=1697139205; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=y4UEE65lFhOrzbPGl/iOYRgYQaGHQyg6aoZ6ztKtIPY=;
-        b=Ocw7yrGyzbIkUjLPKRvUQ0aVCutGiTXNzsZUVz72FwjvWTpczojE43gPzQDnhj/9ks
-         bkJ0vSqLmkJcvKGoQKc1guaZmpPQ33Pr8bFKyIR3UAcXNMCL2hDYy5ct/+Ep54M2oE4s
-         pu7Y5jinyKTJqkRRdUqBGfFZkzmFWe3HBWAdtqD7vzApAv6xsFEOJOMTLxoMtePeqR/y
-         LhksyfEu6Y7O+jKOVsDYzyITAhwEUOPzO7Uzgxb/gwH2Gw9EJQwVpjQ5iBeUOgS6sKLM
-         DbT/+xr1GZpUlCQqG5xLgMvIasNCXZmkw8l/aKUdYYX2iNNzZ5MOx65PiizpvUxGeVg2
-         epmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696534405; x=1697139205;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y4UEE65lFhOrzbPGl/iOYRgYQaGHQyg6aoZ6ztKtIPY=;
-        b=n2DKccG9swADb+EXFvVrxRUxGowc9ZllzWT3arMywTsAfa0xC9+oiOLy+ie7Uydzap
-         wzL52k8hJ89zyo2On4cElq/9dqQZZNEHlV3RWA9QxzkAVKazKn0iDAjgCU0AcGNpBC/8
-         xO98s2L4pYxhiLXuFoxXgUNmCurCSTzS53G71TAJo6AdRaJxsxOajutYThgtf0JLgLCp
-         QFVwY+mlqiqSeIs5o5F0JfdgYDYaj13ZxyTPVmAXmLWsTtCbfQO+jDYK81q/YAUCZbRY
-         WIw37HXe5/bBX1lQV95+DYAcyiIMwS2q+IBV3CFA8B4asZyqy2QufVsQEqePAzT2qrYT
-         jDBQ==
-X-Gm-Message-State: AOJu0Yzw+98I5SaOZ4d+sw7S4kZhnk2LughmTdy/KFIw1sNHmV32cM1t
-        r7lrwf9yMaNes6vqXyemGU0xuQ==
-X-Google-Smtp-Source: AGHT+IFVcF6eMuOo4470ukhp0qoJNX+1XfTItQET+m4tKusw8t8TfXQ8nWf5qTgCie/0Qim4HEHaDQ==
-X-Received: by 2002:a17:907:2724:b0:9ae:6196:a410 with SMTP id d4-20020a170907272400b009ae6196a410mr5550030ejl.43.1696534405657;
-        Thu, 05 Oct 2023 12:33:25 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id y18-20020a170906559200b009ad75d318ffsm1656981ejp.17.2023.10.05.12.33.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 12:33:25 -0700 (PDT)
-Message-ID: <4eac8a89-c188-40c4-b179-6229ea87b65e@linaro.org>
-Date:   Thu, 5 Oct 2023 21:33:23 +0200
+        Thu, 5 Oct 2023 15:33:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF7AE9;
+        Thu,  5 Oct 2023 12:33:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696534423; x=1728070423;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=AkXmQnpHWoYF6nWm1cn+DVlsyjxP8MZslasgHj950dc=;
+  b=mRq4YxviAt+Pi0dtl7coKL8reXE40KjDer/wcwVSYiaahAmeJ3senyVb
+   IbvPV0SOPVOrhzDHfrASGl9vALi1zVvCc8VT4GXLV16hTW7CNbffz4AJQ
+   /8YcfEknseblMgCBth+GXXmWSlQNFs+OnHHIusags75HFnf+6ilZH0DZr
+   oD9xdaHoklEf7phkEqF3pfuhvjjBBLZ1rfO/T6DyV1/1MZ2zykPPyGnOn
+   IL4HRUbWi3d+nmaBHkrl2WGZXKg9HUadelh4hqLIoEtEMBOhVm0KE+JZX
+   D5rm8+inqu3SbHcZ0gQgFu+Eoy84NtnU0U6kB+RjfcPkXj5ggZOFd5cU1
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="363877648"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="363877648"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 12:33:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="755596090"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="755596090"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 05 Oct 2023 12:33:40 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>
+Subject: Re: [PATCH v5 15/18] x86/sgx: Prepare for multiple LRUs
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-16-haitao.huang@linux.intel.com>
+ <6f71642624812da126b900e94e76a72166d9aecd.camel@intel.com>
+Date:   Thu, 05 Oct 2023 14:33:38 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/3] dt-bindings: usb: ci-hdrc-usb2: add npcm750 and
- npcm845 compatible
-Content-Language: en-US
-To:     Tomer Maimon <tmaimon77@gmail.com>, peter.chen@kernel.org,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, xu.yang_2@nxp.com,
-        peng.fan@nxp.com, avifishman70@gmail.com, tali.perry1@gmail.com,
-        joel@jms.id.au, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, j.neuschaefer@gmx.net
-Cc:     openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20231005192529.162785-1-tmaimon77@gmail.com>
- <20231005192529.162785-3-tmaimon77@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231005192529.162785-3-tmaimon77@gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2ccwmcljwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <6f71642624812da126b900e94e76a72166d9aecd.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2023 21:25, Tomer Maimon wrote:
-> Add a compatible string for Nuvoton BMC NPCM750 and Nuvoton BMC NPCM845.
-> 
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> ---
+On Thu, 05 Oct 2023 07:30:46 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
->    reg:
->      minItems: 1
-> @@ -388,6 +393,8 @@ allOf:
->              enum:
->                - chipidea,usb2
->                - lsi,zevio-usb
-> +              - nuvoton,npcm750-udc
-> +              - nuvoton,npcm845-udc
+> On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
+>> +static inline struct sgx_epc_lru_lists *sgx_lru_lists(struct  
+>> sgx_epc_page *epc_page)
+>> +{
+>> +	return &sgx_global_lru;
+>> +}
+>> +
+>> +static inline bool sgx_can_reclaim(void)
+>> +{
+>> +	return !list_empty(&sgx_global_lru.reclaimable);
+>> +}
+>> +
+>
+> Shouldn't sgx_can_reclaim() also take a 'struct sgx_epc_lru_lists *'?
+>
+> I thought we also need to check whether a cgroup's LRU lists can be  
+> reclaimed?
 
-npcm845 is not needed here.
+This is only used to check if any pages reclaimable at the top level in  
+this file. Later sgx_epc_cgroup_lru_empty(NULL) is used in this function  
+to recursively check all cgroups starting from the root.
 
-Best regards,
-Krzysztof
-
+Haitao
