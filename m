@@ -2,224 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB127BA0AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60277BA3C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237095AbjJEOic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
+        id S238441AbjJEP6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:58:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235330AbjJEOfn (ORCPT
+        with ESMTP id S234334AbjJEP4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:35:43 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CD51F774
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 03:04:09 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-405524e6769so4660595e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 03:04:09 -0700 (PDT)
+        Thu, 5 Oct 2023 11:56:50 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BC01FED9;
+        Thu,  5 Oct 2023 03:07:01 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b6559cbd74so148899466b.1;
+        Thu, 05 Oct 2023 03:07:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696500247; x=1697105047; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ht/26KcwXqbG8H0CaHUShIqCIIP7F7mFha6xJKTzams=;
-        b=H26j89WcaEES/F5QqpKc1LVod83LApXqD5x/loVcO7pgJifkKV1LX3ol4tZS7Jhz3b
-         fMCCsO7e+cVNGrGiowFPvNLSnLYgPZCB0Can74u/fqAgbQqINKrHjpWSNhaWBS1vqsZd
-         nXJgZGEBcPLio6pJF2RJjBLVHlRo1+kMHOT5PTK8GKXEoB3pSQ1Ecaw1GpiCypZgV/WY
-         Jjff6jOz0l2i+X9LjrR+sxUzm+SBVmvEqeldYn26qKaBmrDAjG7uz/tYtTi16VGLm6+A
-         2FgPDS3q0tznbw05cJDCVm6vQJhFo0emiPMlfx3jorQqpN71ypAZWPjAOl7wlz9kc2xi
-         ryPQ==
+        d=gmail.com; s=20230601; t=1696500420; x=1697105220; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZhNCejINv/rvRMnwXFbkozy89uWTZdk6L4MDx6KXZ3M=;
+        b=UcLbykxScrw5D1eskgwDNWoREKFPtLji+FLIErYXo/MJhBbqqT4w3QmjfNXztdREbj
+         D1qPOVeU6KsJYOcjsaoKRVgWMEC3bzh0RAL5k89Gqh/RoWVAad/DZGtIgnh+OlwLrpzL
+         imqtDXfLy3HkPlw/AizBUfJFzekL4WkZDnDwjxDTI0nzd9ryDVRT16X0EHPhnEbBKD41
+         AjLu0F2i7kDdWWIPrHLorxmmqcRVrbP4sK7EUCmWTfry7odd0Z0Kc0KovYRKPJcCjCrq
+         arQoitlwglF90Zo0zgVUJ8SGWGf7rddrywMHIryGCT0eSrMRJtbLbmiHStfbMr+DpVye
+         x5tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696500247; x=1697105047;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Ht/26KcwXqbG8H0CaHUShIqCIIP7F7mFha6xJKTzams=;
-        b=wSnfJjnvMCN/YFWfG57eVFziDTKl7Wh/Tl2tooGRPrdJfNvncwH7jkl/QdCi391J92
-         PeMLOFQZDALyOCwyMUm5iAauLEIhFyjQNxINXF1xKHmxuaSgRjfhDOgHbgrgartLPZGx
-         +ZMaT5Kx7cbC16hc0qlNOFUs6s+4ryekRkSG7Xq0fcydTJ1TY/a8RjApZoCRYW1Q75Ha
-         2JO5KlGiV8zF5GQJjscc+WizyfMER7VaqHImmfPTpX6dBCPK/m71Z/KoLTtuhE0SS/eK
-         Z27tloYF1uKsw7Jel+5Sf3yPWFwlD3Zyv+22FGtO7UIB93MaoOD7gtdTfh2vRR6ZI8G7
-         YkRQ==
-X-Gm-Message-State: AOJu0YySxAlvQrJiNopqgkg9S+FTn7SH6CmsHh1fJY+wGp8gl8lCKrFF
-        f6FYuhWLTEBy56vmYPbitazzPw==
-X-Google-Smtp-Source: AGHT+IEQGYUZehdKXC0Mt2uWCamRcw59VAjQXSkW7yq4p+TakEOffIOlJyrgjaFU/WknCVAKGnfJAg==
-X-Received: by 2002:a05:600c:895:b0:405:3be0:c78d with SMTP id l21-20020a05600c089500b004053be0c78dmr877519wmp.3.1696500247638;
-        Thu, 05 Oct 2023 03:04:07 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:53f9:e5cc:ac8f:e0db? ([2a01:e0a:982:cbb0:53f9:e5cc:ac8f:e0db])
-        by smtp.gmail.com with ESMTPSA id s10-20020a05600c044a00b004063c9f68f2sm1145465wmb.26.2023.10.05.03.04.06
+        d=1e100.net; s=20230601; t=1696500420; x=1697105220;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZhNCejINv/rvRMnwXFbkozy89uWTZdk6L4MDx6KXZ3M=;
+        b=v0x1ygP28Sz8BdM108Z/O693PM7ApwzNDpkbIA7RXhNDGELJdb1dKrZMjjOT3SB3N3
+         7g2TwM5m6baYkrpM1MXI++lLFzgUsQPMMkAxPfKzZyNNnMPt18CaMUKVHKDmVNAYlmUA
+         fWSzPPgsXzxU93e6Xnr+gvUsEX5+s6kr8+RbqEVykogyDCXCKHF2hIJYDFT5uQcIaNEa
+         jbqoTgoqwZxFXVuS2ZswelaaHf+3KZhrKpLTelEnGlOEH7gtGbu3eHLsG+X96PT0Lbp9
+         ga/xj8bIhiUCUkV/IP/lPsNETmUexqH76z7SdrpN8ml18jlAOF0V5lwdVQcLT15wMSjc
+         BExQ==
+X-Gm-Message-State: AOJu0YyeqiM6dTuGRwoN01SwKS6w7Zp9JiloL+C+wrW4o8IPsewdfT+f
+        SbhjJspD9Is940bc/aQRhuQUMD3elg==
+X-Google-Smtp-Source: AGHT+IGtUzYRQnJzanS5pJVO4ZNw7dC55MP4rIku1b1FoShJe1HuVaSF4EtOHELw98Bx/KD+mJHU+g==
+X-Received: by 2002:a17:906:220c:b0:9b8:a556:87a5 with SMTP id s12-20020a170906220c00b009b8a55687a5mr3963317ejs.22.1696500419691;
+        Thu, 05 Oct 2023 03:06:59 -0700 (PDT)
+Received: from ?IPV6:2a02:810b:f40:4300:8342:fd16:599d:c630? ([2a02:810b:f40:4300:8342:fd16:599d:c630])
+        by smtp.gmail.com with ESMTPSA id q23-20020a17090622d700b009930308425csm915447eja.31.2023.10.05.03.06.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 03:04:07 -0700 (PDT)
-Message-ID: <036a9fef-02fd-4bfd-afb5-50724f15176c@linaro.org>
-Date:   Thu, 5 Oct 2023 12:04:06 +0200
+        Thu, 05 Oct 2023 03:06:59 -0700 (PDT)
+Message-ID: <db6476ad-361c-427e-8f57-1ad51861b2ed@gmail.com>
+Date:   Thu, 5 Oct 2023 12:06:58 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 2/2] arm64: dts: amlogic: add libretech cottonwood support
-Content-Language: en-US, fr
-To:     Jerome Brunet <jbrunet@baylibre.com>,
+Subject: Re: [PATCH v2 5/5] ARM: dts: rockchip: Disable non-required timers
+ for RK3128
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     Johan Jonker <jbx6244@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>
-Cc:     Kevin Hilman <khilman@baylibre.com>, Da Xue <da.xue@libretech.co>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-References: <20231002141020.2403652-1-jbrunet@baylibre.com>
- <20231002141020.2403652-3-jbrunet@baylibre.com>
- <b81a296d-0640-4b2e-aab6-c9de37d10206@linaro.org>
- <1j5y3ozvmk.fsf@starbuckisacylon.baylibre.com>
- <3e69ae4b-5d9e-42ee-a21e-151de8fbb996@linaro.org>
- <1j8r8hxutt.fsf@starbuckisacylon.baylibre.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <1j8r8hxutt.fsf@starbuckisacylon.baylibre.com>
+References: <20230829203721.281455-4-knaerzche@gmail.com>
+ <20230829203721.281455-14-knaerzche@gmail.com>
+ <101f3b88-7151-af5c-3bd4-feb13763228b@arm.com>
+Content-Language: en-US
+From:   Alex Bee <knaerzche@gmail.com>
+In-Reply-To: <101f3b88-7151-af5c-3bd4-feb13763228b@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2023 11:42, Jerome Brunet wrote:
-> 
-> On Tue 03 Oct 2023 at 09:35, Neil Armstrong <neil.armstrong@linaro.org> wrote:
-> 
->> On 02/10/2023 20:57, Jerome Brunet wrote:
->>> On Mon 02 Oct 2023 at 18:45, Neil Armstrong <neil.armstrong@linaro.org>
->>> wrote:
->>>
->>
->> <snip>
->>
->>>>> +&usb3_pcie_phy {
->>>>> +	#address-cells = <1>;
->>>>> +	#size-cells = <0>;
->>>>> +	phy-supply = <&vcc_5v>;
->>>>> +
->>>>> +	hub: hub@1 {
->>>>> +		compatible = "usb5e3,626";
->>>>> +		reg = <1>;
->>>>> +		reset-gpios = <&gpio GPIOC_7 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
->>>>> +	};
->>>>
->>>> Not sure the PHY is the right place to put the USB HUB,
->>>> and it's probable the HUB is connected to both the USB2 and USB3 lines
->>> It is connected to the USB3.0 only
->>>
->>>> so you should have both USB IDs in DT like it'd done for the Odroid-C4:
->>>>
->>>> / {
->>>> ...
->>>>            /* USB hub supports both USB 2.0 and USB 3.0 root hub */
->>>>            usb-hub {
->>>>                    dr_mode = "host";
->>>>                    #address-cells = <1>;
->>>>                    #size-cells = <0>;
->>>>
->>>>                    /* 2.0 hub on port 1 */
->>>>                    hub_2_0: hub@1 {
->>>>                            compatible = "usb2109,2817";
->>>>                            reg = <1>;
->>>>                            peer-hub = <&hub_3_0>;
->>>>                            reset-gpios = <&gpio GPIOH_4 GPIO_ACTIVE_LOW>;
->>>>                            vdd-supply = <&vcc_5v>;
->>>>                    };
->>>>
->>>>                    /* 3.1 hub on port 4 */
->>>>                    hub_3_0: hub@2 {
->>>>                            compatible = "usb2109,817";
->>>>                            reg = <2>;
->>>>                            peer-hub = <&hub_2_0>;
->>>>                            reset-gpios = <&gpio GPIOH_4 GPIO_ACTIVE_LOW>;
->>>>                            vdd-supply = <&vcc_5v>;
->>>>                    };
->>>>            };
->>>> ...
->>>> };
->>>>
->>>> if it only has a single USB ID, then it should go under the dwc3 node.
->>> The usb controller is connected to the PHY and what's coming out of the
->>> PHY
->>> goes to the hub. It seems logical to hub the hub under it.
->>> Why bypass the PHY ?
->>
->> The USB bindings the USB devices nodes should be under the controller's node,
->> not the PHY, see:
->>
->> Documentation/devicetree/bindings/usb/usb-hcd.yaml
->> ...
->> patternProperties:
->>    "^.*@[0-9a-f]{1,2}$":
->>      description: The hard wired USB devices
->>      type: object
->>      $ref: /schemas/usb/usb-device.yaml
->> ...
->> and the example.
->>
->> Subnodes aren't allowed in the PHY node.
-> 
-> Ok, that is what schema says.
-> HW wise there is possible problem though.
-> 
-> The phy node has the power supply to the bus.
-> In that case it is a controllable one.
-> 
-> If fixed USB devices go under the controller instead of the PHY, isn't
-> it possible that the kernel may attempt to probe them before the bus is
-> powered ? For this particular board, it would make the reset we are
-> trying to apply useless.
+Hi Robin, Hi Heiko,
 
-The usb core has a special handling for those usb hubs doing the power
-up at the right time during the USB setup, including the PHY powering up.
-So the power sequence should be fine.
+Am 30.08.23 um 20:17 schrieb Robin Murphy:
+> On 2023-08-29 21:37, Alex Bee wrote:
+>> The Rockchip timer linux driver can handle a maximum of 2 timers and 
+>> will
+>> get confused if more of them exist.
+>
+> Wouldn't it be better to fix that? It looks trivial to do, and frankly 
+> it's a behaviour that doesn't make sense anyway. Of course a system 
+> can have more hardware available than Linux wants to use; that's not 
+> an error, it's just Linux's choice to not use it! See commit 
+> a98399cbc1e0 ("clocksource/drivers/sp804: Avoid error on multiple 
+> instances") for example.
+>
+> DTs shouldn't be treated like Linux board files, so curating them 
+> around Linux-specific driver behaviour is inappropriate; FreeBSD or 
+> U-Boot or whatever are perfectly entitled to make use of 5 timers at 
+> once if they can.
 
-This has been done on Odroid-C2 and Odroid-N2 already.
+That's fully true, thanks for the hint.
 
-Neil
+The common Rockchip workaround currently seems to be to just expose the 
+timer(s) in the DT which can be handled by the linux driver.  RK3288, 
+for instance, has 7 timers but there's a single one present in the SoC 
+DT ... and another one is enabled in the common RK mach-code, .... ups
 
-> 
+Anyway: I'll have a look in the RK timer driver and try to fix it. 
+Though, I'm not sure if just ignoring the others like sp804 driver does 
+is sufficient, as we still will have to add workarounds to the clock 
+driver in order to keep the clocks enabled for those timers which are 
+not used by linux, but are required (as source for the arm timer, for 
+instance).
+
+The dw_apb_timer driver seems to register the second timer as 
+clocksource- and all others as clockevent-timers .... that looks like 
+the "better" approach around that issue.
+
+Regards,
+
+Alex
+
+>
+> Thanks,
+> Robin.
+>
+>> RK3128 only needs timer0, timer1 and timer5. The latter is the source
+>> for the arm-timer and it's clock is prevented from being disabled in the
+>> clock driver so it can get disabled in the device tree, too.
 >>
->> Neil
+>> Fixes: a0201bff6259 ("ARM: dts: rockchip: add rk3128 soc dtsi")
+>> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+>> ---
+>>   arch/arm/boot/dts/rockchip/rk3128.dtsi | 4 ++++
+>>   1 file changed, 4 insertions(+)
 >>
->>>
->>>>
->>>>> +};
->>>>> +
->>>>> +&usb {
->>>>> +	status = "okay";
->>>>> +};
->>
->> <snip>
-> 
-
+>> diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi 
+>> b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+>> index 88a4b0d6d928..f3f0788195d2 100644
+>> --- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
+>> +++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+>> @@ -252,6 +252,7 @@ timer2: timer@20044040 {
+>>           interrupts = <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>;
+>>           clocks = <&cru PCLK_TIMER>, <&cru SCLK_TIMER2>;
+>>           clock-names = "pclk", "timer";
+>> +        status = "disabled";
+>>       };
+>>         timer3: timer@20044060 {
+>> @@ -260,6 +261,7 @@ timer3: timer@20044060 {
+>>           interrupts = <GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>;
+>>           clocks = <&cru PCLK_TIMER>, <&cru SCLK_TIMER3>;
+>>           clock-names = "pclk", "timer";
+>> +        status = "disabled";
+>>       };
+>>         timer4: timer@20044080 {
+>> @@ -268,6 +270,7 @@ timer4: timer@20044080 {
+>>           interrupts = <GIC_SPI 61 IRQ_TYPE_LEVEL_HIGH>;
+>>           clocks = <&cru PCLK_TIMER>, <&cru SCLK_TIMER4>;
+>>           clock-names = "pclk", "timer";
+>> +        status = "disabled";
+>>       };
+>>         timer5: timer@200440a0 {
+>> @@ -276,6 +279,7 @@ timer5: timer@200440a0 {
+>>           interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
+>>           clocks = <&cru PCLK_TIMER>, <&cru SCLK_TIMER5>;
+>>           clock-names = "pclk", "timer";
+>> +        status = "disabled";
+>>       };
+>>         watchdog: watchdog@2004c000 {
