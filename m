@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F297B9F1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA9B7B9F61
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbjJEOSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34504 "EHLO
+        id S234534AbjJEOVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244345AbjJENxE (ORCPT
+        with ESMTP id S233624AbjJEOTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 09:53:04 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149757ECB;
-        Thu,  5 Oct 2023 00:49:12 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-578e33b6fb7so442125a12.3;
-        Thu, 05 Oct 2023 00:49:12 -0700 (PDT)
+        Thu, 5 Oct 2023 10:19:43 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C787ECD;
+        Thu,  5 Oct 2023 00:49:29 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c0ecb9a075so4459395ad.2;
+        Thu, 05 Oct 2023 00:49:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696492151; x=1697096951; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696492169; x=1697096969; darn=vger.kernel.org;
         h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z+shXokc3b1SA2zWfnMnBrWdVnpdHWbiNYj8YxjiEvU=;
-        b=GwPOWyQXLWjt0gMeqbtH7MH09TVrU8FdgtirXbDp8jKarK8U0KC5nLYWajknACwLG9
-         ds7E0GlgpHLc0iZJj5ThZPPYKj4oDVN4t55KBZfTlrV6x9/zxm7lLtlx+aaUEA/8bAb1
-         DZppdof1/p6Mn5wERoglfYhZo4pgZuwC8EYN7qyA1IWRG19W9fUX2iF7HnqgieodPPN5
-         a4LJlZZT6GIIOcBfhfmlAQUTZ3jW/1teS9PJIxAcRFZkadQ3NYu+NcGOvv1E5W9Dttk6
-         VbK8rkKxQqKV97AddkPyPYA6fEN85e8HoX8vYroElORIpHKBKrUBazml4w+j++X+K57j
-         U7ZA==
+        bh=yNVpwFwUzdTjdcx8LxWNrxnvfOWjcBf4eGnf1qLnD3E=;
+        b=VSqc7DGmLlZKs7rgnu6vEWoDfjJWmFLe2Kgr5lBVrvMzbWWYxPoN5vsz0bpSBkrjWo
+         o7mTvL0aSDEGUYLkfbWEl/I+7JiPXy/zNx2Qxn2jLox47zMFEuD0nJsbXkNQ8V1KRb3W
+         EuZ1ezjATUBLfQzVRwXsytGy44Xo00Qb8HLe5xn/214gU5umLfMMm3qXSBN08K1hQJ8g
+         uiEfLNmOpDv+fbjYXc+I+ChMQPag6i0chZlIGtsoGrk68jGpfDxBkXARezACZTq5msX1
+         PsU4ZCZrk3mIh96CKfryaemqPR6R9/wdUQwSgyRD+OvKDbfl/eCKHCOjZjl5GlRhuK/4
+         ytLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696492151; x=1697096951;
+        d=1e100.net; s=20230601; t=1696492169; x=1697096969;
         h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Z+shXokc3b1SA2zWfnMnBrWdVnpdHWbiNYj8YxjiEvU=;
-        b=CRsyGrdpZ/LwEqpjTj7ImUK2NWr6dS2HYKvWr2Hw1NJl2sa0FjTXqygOZKVWTrbw6A
-         QsodeOuqjXHYeezFxK3a0XSjVnDhqZwlQhqxJH+IDr/2T1rHpXBLRlXp+kj3xAZ8mD/v
-         ZSrW5/QG1oExBTpiQFFpT3FZEhwodQsxvgug2HK97xsuB/GtC89/X+QQkO13jfE+poBU
-         OuMZt6xvekvpEneKhFbQF/RIRoLtLlCPHLYg0lKPvquY9BHSI5tgFNV9BQ/SdeGVT+xr
-         AEtQdfbUi7ezArFOlJOeDzNr9bjbZZWPV95m70/2ioE6atG19JCemUGbZ0UhG/u6Cvoz
-         scmg==
-X-Gm-Message-State: AOJu0Yz3IyWfyXltAietjKO/5IA7gT0QLO+Z7F7hgZ8tQP6FxW8b8fB8
-        cm3elO0OuXKYZDkbi4+ySxI=
-X-Google-Smtp-Source: AGHT+IFctSNXXRG6BjXN/xRDMVWMn9ZK2l+5Q7fGGJM5KNiZ1ViEQTsL+oyBbyLQdCa3dYEgDyLXuw==
-X-Received: by 2002:a17:90a:c9:b0:274:46cd:5af2 with SMTP id v9-20020a17090a00c900b0027446cd5af2mr4174201pjd.34.1696492151357;
-        Thu, 05 Oct 2023 00:49:11 -0700 (PDT)
+        bh=yNVpwFwUzdTjdcx8LxWNrxnvfOWjcBf4eGnf1qLnD3E=;
+        b=BWQy7VbPXV307LNXuPxhZM7tEYUDAdeE59/DhVW5JKD4bzausXZYidmH4aXH4jhKU1
+         Z+IcjboRY2RuyCo2Lp18G/6QhbpEedYkCqORVi9pWUqAfAYvru2bKPxgOLS3uE2HfhGp
+         LThfMJ0cn0rBc5+eNqus0+EMO8sh9NJ58R52TOdf9hGU1N/wWRIuAOqbRw1WHoWY2cax
+         t1q9QT16tsRusvweLgyelKOSZ0j8nEuK5VJDTsb83lS6XQxW0vmjI4TyQjF7LkB6p8vK
+         nKo98s+1gkQvrM9uPUpcgdH/grMzBKQkE/IIYNQuK5BbeRNO53aBqDXArVZbPcvdMb0v
+         YpUw==
+X-Gm-Message-State: AOJu0YxIRK8P04bzqku/i8GRDubakBJniC2Cy7nLU6hnuucBwtHoR+V5
+        ZRiouddvZoliWTUYkW2HUF0=
+X-Google-Smtp-Source: AGHT+IFzKI5i0LPDa9jvu3lqeTN/TjsrZlfUF/B0Jien7fzcUl1Oz4tSh5fXEFo/KKGJ9jm0xHiL/A==
+X-Received: by 2002:a17:902:d4c4:b0:1c1:e7b2:27af with SMTP id o4-20020a170902d4c400b001c1e7b227afmr4822042plg.57.1696492168788;
+        Thu, 05 Oct 2023 00:49:28 -0700 (PDT)
 Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id y14-20020a17090a134e00b00277560ecd5dsm2772178pjf.46.2023.10.05.00.49.08
+        by smtp.gmail.com with ESMTPSA id x12-20020a170902ea8c00b001bf846dd2d0sm920239plb.13.2023.10.05.00.49.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 00:49:10 -0700 (PDT)
+        Thu, 05 Oct 2023 00:49:28 -0700 (PDT)
 From:   Chengfeng Ye <dg573847474@gmail.com>
 To:     3chas3@gmail.com, davem@davemloft.net, horms@kernel.org
 Cc:     linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH v2 1/2] atm: solos-pci: Fix potential deadlock on &cli_queue_lock
-Date:   Thu,  5 Oct 2023 07:48:58 +0000
-Message-Id: <20231005074858.65082-1-dg573847474@gmail.com>
+Subject: [PATCH v2 2/2] atm: solos-pci: Fix potential deadlock on &tx_queue_lock
+Date:   Thu,  5 Oct 2023 07:49:17 +0000
+Message-Id: <20231005074917.65161-1-dg573847474@gmail.com>
 X-Mailer: git-send-email 2.17.1
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
@@ -66,52 +66,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As &card->cli_queue_lock is acquired under softirq context along the
+As &card->tx_queue_lock is acquired under softirq context along the
 following call chain from solos_bh(), other acquisition of the same
 lock inside process context should disable at least bh to avoid double
 lock.
 
-<deadlock #1>
-console_show()
---> spin_lock(&card->cli_queue_lock)
+<deadlock #2>
+pclose()
+--> spin_lock(&card->tx_queue_lock)
 <interrupt>
    --> solos_bh()
-   --> spin_lock(&card->cli_queue_lock)
+   --> fpga_tx()
+   --> spin_lock(&card->tx_queue_lock)
 
 This flaw was found by an experimental static analysis tool I am
 developing for irq-related deadlock.
 
 To prevent the potential deadlock, the patch uses spin_lock_irqsave()
-on the card->cli_queue_lock under process context code consistently
-to prevent the possible deadlock scenario.
+on &card->tx_queue_lock under process context code consistently to
+prevent the possible deadlock scenario.
 
-Fixes: 9c54004ea717 ("atm: Driver for Solos PCI ADSL2+ card.")
+Fixes: 213e85d38912 ("solos-pci: clean up pclose() function")
 Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
 ---
-V2: add fix tag, and slipt into two patches
+V2: add fix tag, and split into two patches
 
  drivers/atm/solos-pci.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/atm/solos-pci.c b/drivers/atm/solos-pci.c
-index 94fbc3abe60e..48cf9b36b61a 100644
+index 48cf9b36b61a..247e9200e312 100644
 --- a/drivers/atm/solos-pci.c
 +++ b/drivers/atm/solos-pci.c
-@@ -447,11 +447,12 @@ static ssize_t console_show(struct device *dev, struct device_attribute *attr,
- 	struct atm_dev *atmdev = container_of(dev, struct atm_dev, class_dev);
- 	struct solos_card *card = atmdev->dev_data;
- 	struct sk_buff *skb;
+@@ -955,16 +955,17 @@ static void pclose(struct atm_vcc *vcc)
+ 	unsigned char port = SOLOS_CHAN(vcc->dev);
+ 	struct sk_buff *skb, *tmpskb;
+ 	struct pkt_hdr *header;
 +	unsigned long flags;
- 	unsigned int len;
  
--	spin_lock(&card->cli_queue_lock);
-+	spin_lock_irqsave(&card->cli_queue_lock, flags);
- 	skb = skb_dequeue(&card->cli_queue[SOLOS_CHAN(atmdev)]);
--	spin_unlock(&card->cli_queue_lock);
-+	spin_unlock_irqrestore(&card->cli_queue_lock, flags);
- 	if(skb == NULL)
- 		return sprintf(buf, "No data.\n");
+ 	/* Remove any yet-to-be-transmitted packets from the pending queue */
+-	spin_lock(&card->tx_queue_lock);
++	spin_lock_irqsave(&card->tx_queue_lock, flags);
+ 	skb_queue_walk_safe(&card->tx_queue[port], skb, tmpskb) {
+ 		if (SKB_CB(skb)->vcc == vcc) {
+ 			skb_unlink(skb, &card->tx_queue[port]);
+ 			solos_pop(vcc, skb);
+ 		}
+ 	}
+-	spin_unlock(&card->tx_queue_lock);
++	spin_unlock_irqrestore(&card->tx_queue_lock, flags);
  
+ 	skb = alloc_skb(sizeof(*header), GFP_KERNEL);
+ 	if (!skb) {
 -- 
 2.17.1
 
