@@ -2,242 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 807897B9FEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BCF7BA1E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234082AbjJEOao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
+        id S232701AbjJEPBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234180AbjJEO3E (ORCPT
+        with ESMTP id S233778AbjJEPAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:29:04 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05D923D01;
-        Thu,  5 Oct 2023 04:00:50 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50337b43ee6so1096485e87.3;
-        Thu, 05 Oct 2023 04:00:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696503649; x=1697108449; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4yKDLEpsQ7VNfIu4ns2cVaF5g5AlvkRxOThMkLNLu54=;
-        b=DyYTpj5O3SDs1MUT4akrYSG3JSOgGJjRn1EwJpWinCaqSyL9jnGX1S7XrMww7JZwtc
-         rpoe11uV7Z+g0eTnyKzi8xCbU5e2bAx1NBMS5D+JD7YJRIar7nkC3q55Q1Dl0Yle3IJr
-         sqS86VcwmAX87PfQFFe/kxTaESCOppN3VpExGiTBc62V1y1nc/+lLHwCxbsE3y5sCaL5
-         4D3Pkoym3b2QyijwL10TnFbcV5bbdzZJVsjCRs8uYpks/xHxrnY7tCQuiqclaq/7OPdC
-         p1xg6tZIEMqvbqhrrXO1EEfl17hG5QFnk90u41WYid34RYoCrHYTQaFv39P1ZaSGDX39
-         fUyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696503649; x=1697108449;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4yKDLEpsQ7VNfIu4ns2cVaF5g5AlvkRxOThMkLNLu54=;
-        b=G9nM1blnRopCp6/ard/AfWg5PvGCdGxFBUeS+pfXKGuqJdTP7EOJL7miUqSdcjZpp2
-         raKbyh2VW8kAdqYeOQJrC9kFNbYoji14ShLbfG1l48GVsP+wZrneYNaf/UotGqybydIW
-         XXmOddeExtypN1Gksjh+EBdGpm6ppS9byGyCDMVadILCPONWptvkuIC9wlj9niifUx1v
-         rH5tp1Nli3GC/SYZZ7GCPGC8wQ+KS2HNQ8xagI6Xieb28xChGqAwaDG7/p5P7/2oi370
-         Yrv8yEBFjlaXKcp64Rmq+5l0ojEWNNKl01Yy+zWmaBztOPlfNE1W9epHl7thUa1cZEd1
-         St9g==
-X-Gm-Message-State: AOJu0YyD7mzVZNh0GfobWSWtXc22Ywvhup0pRvYUdgAPntzyaLIQw2v/
-        nmB/4q6bCzv7ELFPH+XT0Wo=
-X-Google-Smtp-Source: AGHT+IFvXRCpTbbGo0xm+WMtWgdEVQ3lrnpnQBX8o8q8w0En2Ih6C30E19ZNfYUh0gc/2I/xwbNrrg==
-X-Received: by 2002:ac2:4ec1:0:b0:503:8fa:da22 with SMTP id p1-20020ac24ec1000000b0050308fada22mr3940230lfr.22.1696503648874;
-        Thu, 05 Oct 2023 04:00:48 -0700 (PDT)
-Received: from localhost.localdomain ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id g11-20020aa7d1cb000000b0052c9f1d3cfasm890066edp.84.2023.10.05.04.00.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 04:00:47 -0700 (PDT)
-From:   Dumitru Ceclan <mitrutzceclan@gmail.com>
-To:     mitrutzceclan@gmail.com
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
+        Thu, 5 Oct 2023 11:00:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96F616AA4;
+        Thu,  5 Oct 2023 07:37:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FBAFC32784;
+        Thu,  5 Oct 2023 10:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696503589;
+        bh=UBDFLeY+PPEBJKSf7kZcYghS/Q9ycdJpp2P0dOU7MX0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bHf+IaimHmjzXHj+umSI5gqnp+F5ATSlb291+Lg68bU6aTrVR2AOORQde80aTEtaj
+         DxbB+OjPUgEzFbqtjtWt8O+Q8m+28sjEc2VsvYAEWUN/0n6JNnT8Gmfw6H3cOy8ter
+         MFJkBgRiZSqwdEI8xdfvB64npda56x4HenxGybY7I3Sh/fPinivGTb92LMM8Hk3eUE
+         CVvK7Z3DgIosM8SU24Vz90u4w1esQa8sBKSEgzvheHNhQ6Q1LGaNcsccTBcb3cAZ8T
+         Aq9bP2eMUu4vzk+GAjF3lMmXaSw7w8/gfTkEq2o2FT2T1YvJyUZInuQ8fjVXUVlPeV
+         4cbNyH7WOsLYQ==
+Date:   Thu, 5 Oct 2023 11:59:42 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Hugues Fruchet <hugues.fruchet@foss.st.com>
+Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Daniel Almeida <daniel.almeida@collabora.com>,
+        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        =?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/2] dt-bindings: adc: add AD7173
-Date:   Thu,  5 Oct 2023 13:59:21 +0300
-Message-Id: <20231005105921.460657-1-mitrutzceclan@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Adam Ford <aford173@gmail.com>
+Subject: Re: [RFC 0/6] VP8 H1 stateless encoding
+Message-ID: <20231005-bleach-unknotted-9b11443959b1@spud>
+References: <20231004103720.3540436-1-hugues.fruchet@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Ia4S0Q4OBDpOeXiU"
+Content-Disposition: inline
+In-Reply-To: <20231004103720.3540436-1-hugues.fruchet@foss.st.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AD7173 family offer a complete integrated Sigma-Delta ADC solution
-which can be used in high precision, low noise single channel applications
-or higher speed multiplexed applications. The Sigma-Delta ADC is intended
-primarily for measurement of signals close to DC but also delivers
-outstanding performance with input bandwidths out to ~10kHz.
 
-Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
----
-V2 -> V3
- - remove redundant descriptions
- - use referenced 'bipolar' property
- - remove newlines from example
+--Ia4S0Q4OBDpOeXiU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- .../bindings/iio/adc/adi,ad7173.yaml          | 130 ++++++++++++++++++
- 1 file changed, 130 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+On Wed, Oct 04, 2023 at 12:37:14PM +0200, Hugues Fruchet wrote:
+> Hi all,
+>=20
+> Here is an RFC to support VP8 encoding using Hantro H1 hardware
+> of STM32MP25 SoCs (Verisilicon VC8000NanoE IP).
+> This work is derived from work done to support Rockchip RK3399
+> VPU2 in RFC [1] with a reshuffling of registers to match H1
+> register set.
+>=20
+> This has been tested on STM32MP257F-EV1 evaluation board using
+> GStreamer userspace [2]:
+> gst-launch-1.0 videotestsrc num-buffers=3D500 ! video/x-raw,width=3D640,h=
+eight=3D480 \
+> ! v4l2slvp8enc ! queue ! matroskamux ! filesink location=3Dtest_vp8.mkv
+>=20
+> For the sake of simplicity I have embedded here the RFC [1] before the
+> changes related to this exact RFC, all rebased on v6.6 + STM32MP25
+> hardware codecs support [3].
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
-new file mode 100644
-index 000000000000..bf9e3cbf842e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
-@@ -0,0 +1,130 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Analog Devices Inc.
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/adc/adi,ad7173.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices AD7173 ADC device driver
-+
-+maintainers:
-+  - Ceclan Dumitru <dumitru.ceclan@analog.com>
-+
-+description: |
-+  Bindings for the Analog Devices AD717X ADC's. Datasheets for supported chips:
-+    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7172-2.pdf
-+    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7173-8.pdf
-+    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7175-2.pdf
-+    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7176-2.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,ad7172-2
-+      - adi,ad7173-8
-+      - adi,ad7175-2
-+      - adi,ad7176-2
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+  spi-max-frequency:
-+    maximum: 20000000
-+
-+  spi-cpol:
-+    type: boolean
-+
-+  spi-cpha:
-+    type: boolean
-+
-+  required:
-+    - compatible
-+    - reg
-+    - interrupts
-+
-+patternProperties:
-+  "^channel@[0-9a-f]$":
-+    type: object
-+    $ref: adc.yaml
-+    unevaluatedProperties: false
-+
-+    properties:
-+      reg:
-+        minimum: 0
-+        maximum: 15
-+
-+      diff-channels:
-+        items:
-+          minimum: 0
-+          maximum: 31
-+
-+      bipolar:
-+        type: boolean
-+
-+    required:
-+      - reg
-+      - diff-channels
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      adc@0 {
-+        compatible = "adi,ad7173-8";
-+        reg = <0>;
-+
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        interrupts = <25 IRQ_TYPE_EDGE_FALLING>;
-+        interrupt-parent = <&gpio>;
-+        spi-max-frequency = <5000000>;
-+
-+        channel@0 {
-+          reg = <0>;
-+          bipolar;
-+          diff-channels = <0 1>;
-+        };
-+
-+        channel@1 {
-+          reg = <1>;
-+          diff-channels = <2 3>;
-+        };
-+
-+        channel@2 {
-+          reg = <2>;
-+          bipolar;
-+          diff-channels = <4 5>;
-+        };
-+
-+        channel@3 {
-+          reg = <3>;
-+          bipolar;
-+          diff-channels = <6 7>;
-+        };
-+
-+        channel@4 {
-+          reg = <4>;
-+          diff-channels = <8 9>;
-+        };
-+      };
-+    };
--- 
-2.39.2
+I don't see any bindings etc here, what is it that you think I would
+care about looking at in this RFC series?
 
+Thanks,
+Conor.
+
+>=20
+> [1] https://lwn.net/ml/linux-media/20230309125651.23911-1-andrzej.p@colla=
+bora.com/
+> [2] https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3=
+736
+> [3] https://patchwork.kernel.org/project/linux-media/list/?series=3D789861
+>=20
+> Best regards,
+> Hugues.
+>=20
+>=20
+> Andrzej Pietrasiewicz (2):
+>   media: uapi: Add VP8 stateless encoder controls
+>   media: hantro: add VP8 encode support for Rockchip RK3399 VPU2
+>=20
+> Hugues Fruchet (4):
+>   media: hantro: add h1 vp8 encode support
+>   media: hantro: add VP8 encode support for STM32MP25 VENC
+>   media: hantro: h1: NV12 single-plane support
+>   media: hantro: add NV12 single-plane support for STM32MP25 VENC
+>=20
+>  drivers/media/platform/verisilicon/Makefile   |    3 +
+>  drivers/media/platform/verisilicon/hantro.h   |   10 +
+>  .../platform/verisilicon/hantro_boolenc.c     |   69 +
+>  .../platform/verisilicon/hantro_boolenc.h     |   21 +
+>  .../media/platform/verisilicon/hantro_drv.c   |   15 +-
+>  .../platform/verisilicon/hantro_h1_jpeg_enc.c |   42 +-
+>  .../platform/verisilicon/hantro_h1_regs.h     |   71 +-
+>  .../platform/verisilicon/hantro_h1_vp8_enc.c  | 1589 +++++++++++++++++
+>  .../media/platform/verisilicon/hantro_hw.h    |   93 +
+>  .../media/platform/verisilicon/hantro_v4l2.c  |    5 +-
+>  .../media/platform/verisilicon/hantro_vp8.c   |  118 ++
+>  .../verisilicon/rockchip_vpu2_hw_vp8_enc.c    | 1574 ++++++++++++++++
+>  .../platform/verisilicon/rockchip_vpu2_regs.h |    1 +
+>  .../platform/verisilicon/rockchip_vpu_hw.c    |   23 +-
+>  .../platform/verisilicon/stm32mp25_venc_hw.c  |   35 +-
+>  drivers/media/v4l2-core/v4l2-ctrls-core.c     |   13 +
+>  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    5 +
+>  include/media/v4l2-ctrls.h                    |    2 +
+>  include/uapi/linux/v4l2-controls.h            |   91 +
+>  include/uapi/linux/videodev2.h                |    3 +
+>  20 files changed, 3755 insertions(+), 28 deletions(-)
+>  create mode 100644 drivers/media/platform/verisilicon/hantro_boolenc.c
+>  create mode 100644 drivers/media/platform/verisilicon/hantro_boolenc.h
+>  create mode 100644 drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
+>  create mode 100644 drivers/media/platform/verisilicon/rockchip_vpu2_hw_v=
+p8_enc.c
+>=20
+> --=20
+> 2.25.1
+>=20
+
+--Ia4S0Q4OBDpOeXiU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZR6XHgAKCRB4tDGHoIJi
+0sjvAP0ZC5KOCGnycz1ccSYrmARfxdHqtXmmmQJpUOyX3kDeCwD/Q0VKIfCKL28d
+bB3btsN54UkoHILpiUtId0zm3X7Q6gU=
+=90H2
+-----END PGP SIGNATURE-----
+
+--Ia4S0Q4OBDpOeXiU--
