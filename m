@@ -2,143 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB417BA11E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 307A77BA1B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239035AbjJEOr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
+        id S237447AbjJEOqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238678AbjJEOns (ORCPT
+        with ESMTP id S239009AbjJEOlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:43:48 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E285FD0
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:21:12 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231005104340euoutp023f1a4987ce326703d26c55dfeaeb8138~LMCUEAldD1583815838euoutp02E
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 10:43:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231005104340euoutp023f1a4987ce326703d26c55dfeaeb8138~LMCUEAldD1583815838euoutp02E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1696502620;
-        bh=8wEAKXOwQhYmIssQzSnkvAgvOVQgNm4lz48XDZ7ufcw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uKiHUcHpCSgchxQ6HOeWjDidotaEAdTeCHsz7e52stdoI8VnYbuu0EBrheN0Si9Y7
-         2ORvTh/opflBjHyWf4+qf5sS2gnM9GUpc+ZZoRmZcF7mFa6n6VQXgQopkduS2/6RZs
-         pWMguiR66CE4ehF/odZlMGLI5nop5vBG2c34+yr0=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20231005104339eucas1p108080269626f3ee3056114cbe12a947c~LMCTxjoTC1459814598eucas1p1d;
-        Thu,  5 Oct 2023 10:43:39 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 68.87.42423.B539E156; Thu,  5
-        Oct 2023 11:43:39 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231005104339eucas1p147e85630eec0ec4b476a21ed2cd3650d~LMCTen-hd0765607656eucas1p16;
-        Thu,  5 Oct 2023 10:43:39 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231005104339eusmtrp1e8f0a0291bf2ee5a86b479b6869e51ee~LMCTdAg5V2008320083eusmtrp1l;
-        Thu,  5 Oct 2023 10:43:39 +0000 (GMT)
-X-AuditID: cbfec7f2-a3bff7000002a5b7-f8-651e935b49cb
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id B7.12.10549.B539E156; Thu,  5
-        Oct 2023 11:43:39 +0100 (BST)
-Received: from AMDC4653.digital.local (unknown [106.120.51.32]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20231005104339eusmtip150522e1f70365d612ed92e9819dc1ba4~LMCTDLvTu1355713557eusmtip1K;
-        Thu,  5 Oct 2023 10:43:39 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>
-Subject: [PATCH 2/2] extcon: max77843: add device-tree compatible string
-Date:   Thu,  5 Oct 2023 12:43:26 +0200
-Message-Id: <20231005104327.981101-2-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231005104327.981101-1-m.szyprowski@samsung.com>
+        Thu, 5 Oct 2023 10:41:32 -0400
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE982A5C5;
+        Thu,  5 Oct 2023 07:16:18 -0700 (PDT)
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1qoLqs-0005vd-4Z; Thu, 05 Oct 2023 12:45:06 +0200
+Message-ID: <71d4d583-9afa-4c21-8684-0285bc2b8b19@maciej.szmigiero.name>
+Date:   Thu, 5 Oct 2023 12:45:00 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: selftests: Zero-initialize entire test_result in
+ memslot perf test
+Content-Language: en-US, pl-PL
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+References: <20231005002954.2887098-1-seanjc@google.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Autocrypt: addr=mail@maciej.szmigiero.name; keydata=
+ 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
+In-Reply-To: <20231005002954.2887098-1-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJIsWRmVeSWpSXmKPExsWy7djP87rRk+VSDd49N7C4/uU5q8Xe11vZ
-        LS7vmsNmsfbIXXaL240r2BxYPe5c28Pm0bdlFaPH501yAcxRXDYpqTmZZalF+nYJXBmvppgX
-        TOGoWLM9t4HxC1sXIyeHhICJxOV/j9m7GLk4hARWMEqsu7uXFcL5wihx/+EkqMxnRokt/34y
-        djFygLXcWKIOEV/OKLGmfQsLXMePKX+YQeayCRhKdL3tAtshIqAgsbn3GdhYZoEdjBI3p5xn
-        AkkIC3hI7Jk3GayBRUBVYsehLWBxXgE7ic3/XzFCHCgvsf/gWWaQzZwC9hLbtwZDlAhKnJz5
-        hAXEZgYqad46mxmifC6HRG87L8ShLhIfv1RBhIUlXh3fwg5hy0icntwDdrOEQDujxILf95kg
-        nAmMEg3Pb0HttZa4c+4XG8ggZgFNifW79CHCjhL3/m9lgpjPJ3HjrSDECXwSk7ZNZ4YI80p0
-        tAlBVKtJzDq+Dm7twQuXoEo8JNYtZ5/AqDgLyS+zkPwyC2HtAkbmVYziqaXFuempxYZ5qeV6
-        xYm5xaV56XrJ+bmbGIGp4/S/4592MM599VHvECMTB+MhRgkOZiUR3vQGmVQh3pTEyqrUovz4
-        otKc1OJDjNIcLErivNq2J5OFBNITS1KzU1MLUotgskwcnFINTPJb12VwtO7JMvUQ71M5XCd6
-        JVwi/kbJknePny07/j7l355D/U8DPmWamvh+uholsPSVxUvWF74GLadtwyxnd3Q0361MN1cx
-        3tN1bfby3Eu8RxPKbvZblfAaM/59zHVhnuil2ROvC5++1fhgZ7ucw+2/Z1sYJxvqx1bayU7R
-        UeBfKsUqoVTJrVG26VhBplS26RU158kH1A+VbUjbJ69qwdf9KOXd/RyrXRLfvzW+21ra/9P7
-        72uXiwdnyhqKevrf7VD82nw9g7+pPCQsaQF7VenZbaWbvT42x/0pPME25f+stf5+d3Zr5Ck5
-        LPk9+ffDZ3MaWCz/6OruO71zG1N/0nG7pzKt666/NZ39l/9LtRJLcUaioRZzUXEiAGeR1VmM
-        AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJLMWRmVeSWpSXmKPExsVy+t/xu7rRk+VSDbqapC2uf3nOarH39VZ2
-        i8u75rBZrD1yl93iduMKNgdWjzvX9rB59G1ZxejxeZNcAHOUnk1RfmlJqkJGfnGJrVK0oYWR
-        nqGlhZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2CXsarKeYFUzgq1mzPbWD8wtbFyMEhIWAi
-        cWOJehcjF4eQwFJGiZlXTrB3MXICxWUkTk5rYIWwhSX+XOtigyj6xCixYNkcFpAEm4ChRNdb
-        kAQnh4iAgsTm3mesIEXMArsYJd7NmccEkhAW8JDYM28yM4jNIqAqsePQFrA4r4CdxOb/rxgh
-        NshL7D94lhnkIk4Be4ntW4NBwkJAJW9bW6DKBSVOznwCtpcZqLx562zmCYwCs5CkZiFJLWBk
-        WsUoklpanJueW2yoV5yYW1yal66XnJ+7iREY5tuO/dy8g3Heq496hxiZOBgPMUpwMCuJ8KY3
-        yKQK8aYkVlalFuXHF5XmpBYfYjQFOnsis5Rocj4w0vJK4g3NDEwNTcwsDUwtzYyVxHk9CzoS
-        hQTSE0tSs1NTC1KLYPqYODilGpg6fZ/N+3vWqDedaYf4giPiN5c5VF8UPJ3moNTwZ3nMpAb7
-        iVu0djyRn5eUFOKzXuk02+mngRsm/G677Jd3chOb4i/DSw1e/RwHN75k2rVI6M0kN6XoQ1/j
-        ZHg6hcQLowXFOiO+NJ9UPsf45/7sKrmV0zy7dHbua157/NyBtCWPfRTdzv5c2hftHFo9Q6Zo
-        3nWRzVtO1xgIbdoYq+aj4TojyM4xgv3V+efRr+7E2Cmd9eM2kp+V5FL5YbbunifKC9nFrK8o
-        WhUcqP+1ZZrnm1PCr9tUp12N7dgukreuJXEH0ySX2vzid7dduFc/NOxeW6Hz9J5VSN/ViYUV
-        NpGv5Nkf6881fmhRsP9eyQFO7RglluKMREMt5qLiRACzBBb0/AIAAA==
-X-CMS-MailID: 20231005104339eucas1p147e85630eec0ec4b476a21ed2cd3650d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20231005104339eucas1p147e85630eec0ec4b476a21ed2cd3650d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231005104339eucas1p147e85630eec0ec4b476a21ed2cd3650d
-References: <20231005104327.981101-1-m.szyprowski@samsung.com>
-        <CGME20231005104339eucas1p147e85630eec0ec4b476a21ed2cd3650d@eucas1p1.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the needed device-tree compatible string to the MAX77843 extcon
-driver, so it can be automatically loaded when compiled as a kernel
-module and given device-tree contains separate 'muic' node under the main
-MAX77843 PMIC node.
+On 5.10.2023 02:29, Sean Christopherson wrote:
+> Zero-initialize the entire test_result structure used by memslot_perf_test
+> instead of zeroing only the fields used to guard the pr_info() calls.
+> 
+> gcc 13.2.0 is a bit overzealous and incorrectly thinks that rbestslottim's
+> slot_runtime may be used uninitialized.
+> 
+>    In file included from memslot_perf_test.c:25:
+>    memslot_perf_test.c: In function ‘main’:
+>    include/test_util.h:31:22: error: ‘rbestslottime.slot_runtime.tv_nsec’ may be used uninitialized [-Werror=maybe-uninitialized]
+>       31 | #define pr_info(...) printf(__VA_ARGS__)
+>          |                      ^~~~~~~~~~~~~~~~~~~
+>    memslot_perf_test.c:1127:17: note: in expansion of macro ‘pr_info’
+>     1127 |                 pr_info("Best slot setup time for the whole test area was %ld.%.9lds\n",
+>          |                 ^~~~~~~
+>    memslot_perf_test.c:1092:28: note: ‘rbestslottime.slot_runtime.tv_nsec’ was declared here
+>     1092 |         struct test_result rbestslottime;
+>          |                            ^~~~~~~~~~~~~
+>    include/test_util.h:31:22: error: ‘rbestslottime.slot_runtime.tv_sec’ may be used uninitialized [-Werror=maybe-uninitialized]
+>       31 | #define pr_info(...) printf(__VA_ARGS__)
+>          |                      ^~~~~~~~~~~~~~~~~~~
+>    memslot_perf_test.c:1127:17: note: in expansion of macro ‘pr_info’
+>     1127 |                 pr_info("Best slot setup time for the whole test area was %ld.%.9lds\n",
+>          |                 ^~~~~~~
+>    memslot_perf_test.c:1092:28: note: ‘rbestslottime.slot_runtime.tv_sec’ was declared here
+>     1092 |         struct test_result rbestslottime;
+>          |                            ^~~~~~~~~~~~~
+> 
+> That can't actually happen, at least not without the "result" structure in
+> test_loop() also being used uninitialized, which gcc doesn't complain
+> about, as writes to rbestslottime are all-or-nothing, i.e. slottimens can't
+> be non-zero without slot_runtime being written.
+> 
+> 	if (!data->mem_size &&
+> 	    (!rbestslottime->slottimens ||
+> 	     result.slottimens < rbestslottime->slottimens))
+> 		*rbestslottime = result;
+> 
+> Zero-initialize the structures to make gcc happy even though this is
+> likely a compiler bug.  The cost to do so is negligible, both in terms of
+> code and runtime overhead.  The only downside is that the compiler won't
+> warn about legitimate usage of "uninitialized" data, e.g. the test could
+> end up consuming zeros instead of useful data.  However, given that the
+> test is quite mature and unlikely to see substantial changes, the odds of
+> introducing such bugs are relatively low, whereas being able to compile
+> KVM selftests with -Werror detects issues on a regular basis.
+> 
+> Cc: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+> 
+> I don't like papering over compiler bugs, but this is causing me quite a bit of
+> pain, and IMO the long-term downsides are quite minimal.  And I already spent
+> way too much time trying to figure out if there is some bizarre edge case that
+> gcc is detecting :-/
+> 
 
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
----
- drivers/extcon/extcon-max77843.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Weird, but as you say, the downsides of papering over this (probable) compiler
+issue are small, so:
+Reviewed-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
 
-diff --git a/drivers/extcon/extcon-max77843.c b/drivers/extcon/extcon-max77843.c
-index 1bc0426ce3f1..e04ebdda886a 100644
---- a/drivers/extcon/extcon-max77843.c
-+++ b/drivers/extcon/extcon-max77843.c
-@@ -946,6 +946,12 @@ static const struct platform_device_id max77843_muic_id[] = {
- };
- MODULE_DEVICE_TABLE(platform, max77843_muic_id);
- 
-+static const struct of_device_id of_max77843_muic_dt_match[] = {
-+	{ .compatible = "maxim,max77843-muic", },
-+	{ /* sentinel */ },
-+};
-+MODULE_DEVICE_TABLE(of, of_max77843_muic_dt_match);
-+
- static struct platform_driver max77843_muic_driver = {
- 	.driver		= {
- 		.name		= "max77843-muic",
--- 
-2.34.1
+Thanks,
+Maciej
 
