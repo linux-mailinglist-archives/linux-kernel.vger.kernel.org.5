@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A867B99B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 03:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEC37B99AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 03:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244414AbjJEBcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 21:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
+        id S244359AbjJEBdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 21:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244390AbjJEBcc (ORCPT
+        with ESMTP id S233837AbjJEBdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 21:32:32 -0400
+        Wed, 4 Oct 2023 21:33:37 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E68910E;
-        Wed,  4 Oct 2023 18:32:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC18FC433C7;
-        Thu,  5 Oct 2023 01:32:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41043C1;
+        Wed,  4 Oct 2023 18:33:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ED54C433C9;
+        Thu,  5 Oct 2023 01:33:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696469545;
-        bh=CvbBn3DEYTRU0fWQrAevoGXG4gWpakJPnp5/H5lNnQ4=;
+        s=k20201202; t=1696469613;
+        bh=vgS1eDWq0tRBo/D0vvFhMTJ0/3CwE7EsqQfxCv2E5Lw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kJL8MlkWkWAoIPnri8IdmZvZ6pGvi6iVGS7VoZewX8iL5ZhL8SSJzMqz1rFgwlZ6v
-         78L90szggTLNnr+oujdtWUItnY/ZzrMncbA75Oqf6ltftelHR7em0geenHXJ3yU/hu
-         cOEiYq38WAu8+Xf140y3lc2b7Y+m1nX+8MSt5bMJCJuciwghUJhcFzgrCAkfxDIdF2
-         eHnqNMLv34Wf5syK6J5p21xymXno0IIo0kn6LKeU2lGsa0CGDvzOcAnfGp5ojuoYzF
-         OjgxVs1oo/7eF0tHVgATHZ7pnBOIDhF2Qa5d8E4uQTYcZtSqyg2rcN0NmAkTm/+3dE
-         8381hkhY/zRbQ==
+        b=kidvMgua08g8noUY824M6mgW+by00EMwNUvUUzj6nlP1v6+s5HIHbtYQVY/iOlUgE
+         t/Q1gfVEpvb6OI4R1jxkXuFLKnFsD+wtkf7yZeqOGyZQu5cjwFtj3GW8ckbXMeXm1u
+         rETNLvyt4h20yJ3pWtpelj2V/vWCi+oHiJryeSrbW/bxNJHdzjh1cf0GgIe1qQFTbu
+         yjzbynI3Di0BRI4iOg608Ix9iHHvKD6zfXSm/T/KLGB5gUivScC5BJZsJ7A8O+MkKo
+         5l4uDLXC1HxqeSe+7DdyRYTWYSgMzkdTy5sHkZIL8RfyHfVoVDFHFM3/q9tlSdvQHh
+         eq04HrjKtsZAw==
 From:   SeongJae Park <sj@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
@@ -37,11 +37,11 @@ Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
         sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
         conor@kernel.org, damon@lists.linux.dev,
         SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.1 000/259] 6.1.56-rc1 review
-Date:   Thu,  5 Oct 2023 01:32:21 +0000
-Message-Id: <20231005013222.6475-1-sj@kernel.org>
+Subject: Re: [PATCH 6.5 000/321] 6.5.6-rc1 review
+Date:   Thu,  5 Oct 2023 01:33:30 +0000
+Message-Id: <20231005013330.6499-1-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231004175217.404851126@linuxfoundation.org>
+In-Reply-To: <20231004175229.211487444@linuxfoundation.org>
 References: 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,10 +57,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-On Wed, 4 Oct 2023 19:52:53 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Wed, 4 Oct 2023 19:52:25 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> This is the start of the stable review cycle for the 6.1.56 release.
-> There are 259 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 6.5.6 release.
+> There are 321 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -68,9 +68,9 @@ On Wed, 4 Oct 2023 19:52:53 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.56-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.6-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
 > and the diffstat can be found below.
 
 This rc kernel passes DAMON functionality test[1] on my test machine.
@@ -80,7 +80,7 @@ kernel from linux-stable-rc tree[2].
 Tested-by: SeongJae Park <sj@kernel.org>
 
 [1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 0353a7bfd2b6 ("Linux 6.1.56-rc1")
+[2] 9327d0db36be ("Linux 6.5.6-rc1")
 
 Thanks,
 SJ
@@ -89,10 +89,6 @@ SJ
 
 ---
 
-# .config:1405:warning: override: reassigning to symbol DAMON
-# .config:1415:warning: override: reassigning to symbol CGROUPS
-ok 14 selftests: damon-tests: build_nomemcg.sh
-# kselftest dir '/home/sjpark/damon-tests-cont/linux/tools/testing/selftests/damon-tests' is in dirty state.
 # the log is at '/home/sjpark/log'.
  [32m
 ok 1 selftests: damon: debugfs_attrs.sh
@@ -101,7 +97,11 @@ ok 3 selftests: damon: debugfs_target_ids.sh
 ok 4 selftests: damon: debugfs_empty_targets.sh
 ok 5 selftests: damon: debugfs_huge_count_read_write.sh
 ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: sysfs.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
 ok 1 selftests: damon-tests: kunit.sh
 ok 2 selftests: damon-tests: huge_count_read_write.sh
 ok 3 selftests: damon-tests: buffer_overflow.sh
