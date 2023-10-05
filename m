@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 931F17BA3B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7AE7BA349
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 17:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238109AbjJEP6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 11:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54410 "EHLO
+        id S236537AbjJEPxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 11:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234357AbjJEP4o (ORCPT
+        with ESMTP id S235569AbjJEPvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:56:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AEB4EEA
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:52:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 842C8C4AF7C;
-        Thu,  5 Oct 2023 13:46:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696513590;
-        bh=Vxu7IYRcRA3at04zzkrUOH/h71VC6MDIlrfNN/mUCfM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=O1ZaV9SYvnrbjSGzWTKxmLNRNBaBQZuQME1HGQJkya6AjnB6lsfOKqayss1fVsZZH
-         sTMdb/rgggQN3IbYjLZ0dkOmCqc451rnsXk8P+WUO+eBf26OKIaFmpVhv+eFvfcXUW
-         eVYj5bVCnd95dFn0uvtX2935jyYfSt+8EGKnk1LacIuQx98scrHHoH6E0dRZR+ct6g
-         u5R84/GDFxEnGFaY/dMsgDGeevJlrJbcm7GxvfyeAyYKoHdYMQiBSdSzWeVLqPj9j3
-         kagXnFldPXej/15J+i4S/LGYlyi13cYE38xQs/3JTzSM3B93HjE6PzQ/QlsAMAMPld
-         3BxHdj7+7DQsA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D115F40508; Thu,  5 Oct 2023 10:46:26 -0300 (-03)
-Date:   Thu, 5 Oct 2023 10:46:26 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/1] perf build: Add missing comment about NO_LIBTRACEEVENT=1
-Message-ID: <ZR6+MhXtLnv6ow6E@kernel.org>
+        Thu, 5 Oct 2023 11:51:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0467287C1
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 06:46:36 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696513594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=42tl0KPN/Bk5Rmo8LcdKc7+SvXEUS7Jqrg3bxIq0n+E=;
+        b=GC+8EvOvVL5DURXQm+J2WQyy1zaQ2QLnBqxYpuqOuPhOvIGF3VBuaNfRdxK1WtcJ5mS9/G
+        dsMIUKRRkgwMfaho4ZQCIk/EdSDooECU9C8i/5qu4Dyu5scSFmShTYCIHqpJEKCE7abvmB
+        IYRTa3OCqK5A83+kT7IvDyMrLbJ5oG4WruS3kZXeAwUjqktrHEPN6DWa+Pzid9z9odB+U6
+        t98QiFWAoH27JREG2UNjdrmAIVsEYGpVOJaXTPQJxz+yks4NWSnCWDtRe6co9jFQwXzvky
+        kN1dZLC3WdqA68IT84mjpo2dTmU4hChPhWr1+/CRU9aTkt6JAicQGUoWMM+Zwg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696513594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=42tl0KPN/Bk5Rmo8LcdKc7+SvXEUS7Jqrg3bxIq0n+E=;
+        b=5rRhfG6fcWxCHcdyvNfi5eiaHI6YTGLb8bpBac0WkcvFRQVHBP0GAQL6PaQsQTEILen/8o
+        yHMu0dA/yP3ttdDQ==
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Nipun Gupta <nipun.gupta@amd.com>
+Cc:     maz@kernel.org, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
+        git@amd.com, harpreet.anand@amd.com,
+        pieter.jansen-van-vuuren@amd.com, nikhil.agarwal@amd.com,
+        michal.simek@amd.com, abhijit.gangurde@amd.com,
+        srivatsa@csail.mit.edu
+Subject: Re: [PATCH v4] cdx: add MSI support for CDX bus
+In-Reply-To: <2023100531-matron-oversold-4a73@gregkh>
+References: <20230911135259.14046-1-nipun.gupta@amd.com>
+ <2023100531-matron-oversold-4a73@gregkh>
+Date:   Thu, 05 Oct 2023 15:46:34 +0200
+Message-ID: <87wmw1p4g5.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+On Thu, Oct 05 2023 at 12:24, Greg KH wrote:
+>> diff --git a/drivers/cdx/Kconfig b/drivers/cdx/Kconfig
+>> index a08958485e31..86df7ccb76bb 100644
+>> --- a/drivers/cdx/Kconfig
+>> +++ b/drivers/cdx/Kconfig
+>> @@ -8,6 +8,7 @@
+>>  config CDX_BUS
+>>  	bool "CDX Bus driver"
+>>  	depends on OF && ARM64
+>> +	select GENERIC_MSI_IRQ_DOMAIN
+>
+> This config option isn't in my tree anywhere, where did it come from?
+> What is it supposed to do?
 
-By default perf will fail the build if the development files for
-libtraceevent are not available.
+13e7accb81d6 ("genirq: Get rid of GENERIC_MSI_IRQ_DOMAIN") :)
 
-To build perf without libtraceevent support, disabling several features
-such as 'perf trace', one needs to add NO_LIBTRACEVENT=1 to the make
-command line.
+> And I really need a msi maintainer to review this before I can take it,
+> thanks.
 
-Add the missing comments about that to the tools/perf/Makefile.perf
-file, just like all the other such command line toggles.
+I've put it on my ever growing pile of things to look at.
 
-Fixes: 378ef0f5d9d7f465 ("perf build: Use libtraceevent from the system")
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/Makefile.perf | 4 ++++
- 1 file changed, 4 insertions(+)
+Thanks,
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 98604e396ac33643..456872ac410df4c0 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -69,6 +69,10 @@ include ../scripts/utilities.mak
- # Define NO_LIBDW_DWARF_UNWIND if you do not want libdw support
- # for dwarf backtrace post unwind.
- #
-+# Define NO_LIBTRACEEVENT=1 if you don't want libtraceevent to be linked,
-+# this will remove multiple features and tools, such as 'perf trace',
-+# that need it to read tracefs event format files, etc.
-+#
- # Define NO_PERF_READ_VDSO32 if you do not want to build perf-read-vdso32
- # for reading the 32-bit compatibility VDSO in 64-bit mode
- #
--- 
-2.41.0
-
--- 
+        tglx
