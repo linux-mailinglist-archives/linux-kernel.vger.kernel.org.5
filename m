@@ -2,127 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 831617B9925
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 02:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF18A7B992A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 02:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244203AbjJEAKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 20:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
+        id S244191AbjJEAN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 20:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244205AbjJEAKj (ORCPT
+        with ESMTP id S232748AbjJEAN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 20:10:39 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E21DD
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 17:10:33 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-2773ced5d40so412455a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Oct 2023 17:10:33 -0700 (PDT)
+        Wed, 4 Oct 2023 20:13:28 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC3FD8;
+        Wed,  4 Oct 2023 17:13:24 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-692c02adeefso324927b3a.3;
+        Wed, 04 Oct 2023 17:13:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696464633; x=1697069433; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gPugQrDnD73C5LTJhkV2zm1niwL250wt+6xcFQiBy84=;
-        b=Dn0OGU81g5mIl6PaMNEj/WH0T2m6BygJ7GoIzh8tNy6B6ZqiGV0VmP3sGr+RdBkrsq
-         jJoZjHteDHnA4LzSxuILn3AGoM6mddseCTXeEff2DpViwJlAW+KDaUXyDf/ZH6giXRGq
-         hdiNt7tZ/oR4AEt16VMjK3Jq1reANaBFLMg4HBeSmAdjgXFOLP++kYOR10zAnzPPDGmQ
-         xf9igVp63LSJgfpCsfsW2C2AXA7RGvw9pKt0lpLlPqDL5LK1dAnkYw2g+MHWIBm3c9qv
-         nMaVbetDv/ODkCf7LtoACjq6mWXq32DRMrHEsenx2Mqj1MyqjgD94CyovVfnQx724oSb
-         +NfQ==
+        d=gmail.com; s=20230601; t=1696464804; x=1697069604; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nqakhanUkyXE0xPicMEDIve3RCLeYDmd6tYI+qxvuGI=;
+        b=jQCxzsZFDI/kG0/1a1abjao+wn3b3n5FL0E06jkXNvgj/HeYUayTgWWNUU0AhKBP62
+         iH94Kn2rDJlwiat3xA17SUuJ3BBVRVS76VYLJXUZI1QI5c3KN3tjEf1yUG9Q6eN7V3VI
+         bhB0GIvll114RHUuuURieo5zRs90+n5aAiw4hBi2UzhyFdgTQwWPdpxkEabz8Vct4kUZ
+         C/Z3vk111e5TfpfQCRaUdtjL01auQMuMUPOYL2cGX5zOWdzCQPlAIcumFiaX2Dn2f+lp
+         dsn8QJbdENYtzN/V2g2E+Ut8M3L7W1NN+uRZ4IXe+FsT1CB3Vf+LLrTQcAMbJ8wO7u2r
+         l5+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696464633; x=1697069433;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gPugQrDnD73C5LTJhkV2zm1niwL250wt+6xcFQiBy84=;
-        b=DcxhG9Ahe+9fMm0ebv9yWkB1O0rNBMOkmjX2sVmdBFzMEsQR0d0LaUKCuNWyjArHMT
-         4h2AyrRguVXlD22b4H1DtT17kXlqawQvwdg2DJksCd2OBWn9WckPuT5t4Juz4xuhBi9M
-         QgRt2ceTkE09cDhUxQWPAP4KapIVrhz52Hp7cPCdTcs7hDejxOD/dhPazsMevyMRzSio
-         P6ideWxu2vrFe80fvIoeSP/UKTg7G8bDNxwWFIIshc/UymTvj4PS5YdJJ8XoOUAR7qap
-         Q7mzaOzMBSiVXbWv9JX0TFCu65YGp+yVDtkkxGJllMO8a0CoOoEk+GV+fkt3WKJM0qUN
-         SBlw==
-X-Gm-Message-State: AOJu0Yxyo1xXZxvZv/SMb4K8COPUoIdBfI+lmYa+UjPbWueUs3j6gqmQ
-        NWElVfjVVLkjvI5Tw+kUj45O2yUgaHY=
-X-Google-Smtp-Source: AGHT+IGdEKoKxaHSokJn1QJOH9Dx8FDHttRYqzcRDDJyApk3QUMzw3Gxw6QozNYZnV8kxuN/bHp9HMXyr1w=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:8d8:b0:278:fb8b:32ae with SMTP id
- ds24-20020a17090b08d800b00278fb8b32aemr61159pjb.9.1696464632755; Wed, 04 Oct
- 2023 17:10:32 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 17:10:31 -0700
-In-Reply-To: <e8993457-9e28-434a-b4e8-25ffcbee6517@maciej.szmigiero.name>
-Mime-Version: 1.0
-References: <0ffde769702c6cdf6b6c18e1dcb28b25309af7f7.1695659717.git.maciej.szmigiero@oracle.com>
- <ZRHRsgjhOmIrxo0W@google.com> <8c6a1fc8-2ac5-4767-8b02-9ef56434724e@maciej.szmigiero.name>
- <ZRHckCMwOv3jfSs7@google.com> <ac402dd4-8bf3-87a8-7ade-50d62997ce97@amd.com> <e8993457-9e28-434a-b4e8-25ffcbee6517@maciej.szmigiero.name>
-Message-ID: <ZR3-90IQqb3mSV-b@google.com>
-Subject: Re: [PATCH] KVM: x86: Ignore MSR_AMD64_BU_CFG access
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696464804; x=1697069604;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nqakhanUkyXE0xPicMEDIve3RCLeYDmd6tYI+qxvuGI=;
+        b=VfFaO08zInF5GnPFF+EHeemTWbOQ34IKHJS+0AOTOTmXK3CSjs1Gsgjh1bMgcg2qvR
+         5C8a7LW2Vpx4t8t1w+8oEGf9O6BV08gXUMVSvKbwnNjEWEYLfIM/nn4+ED+R2067CvOH
+         CYkOtfcIWT1wXnunnhf9GyKDrbMQyybTQFzZd1oSgZTdCINfE1KG1cxtg+t1dObd1UQJ
+         54tYeJWJebKIYhqH66gPLkqFK9DsTvp8RQcidC9zFIEA9lzt0tAJ3FCdIDaZ0ysm2LZ/
+         N7FMJBiobFMuTwIHgybXWWv0hAmTaFZY1z/ZO4JyL7i8xGQZfyI/zORSSQfizJLxT+8o
+         TTYw==
+X-Gm-Message-State: AOJu0YxCZQSWiG2wQu7zeyHJKNSv5UyRGf0E6zifcnVHdG6pX0oVjC38
+        4gQ7H2iqH4zpdXdhjHVLMJWsXYkIbVk=
+X-Google-Smtp-Source: AGHT+IHIwFlvB45+yzceWHMTWIgLMaG0BJtUWIPRq5vAnAJGf8k4ZlJVldPc1gAL5tyGmDlxeKYlBw==
+X-Received: by 2002:a05:6a20:32aa:b0:15e:10e:2cc3 with SMTP id g42-20020a056a2032aa00b0015e010e2cc3mr2952450pzd.60.1696464803576;
+        Wed, 04 Oct 2023 17:13:23 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id l2-20020a170903244200b001b891259eddsm154267pls.197.2023.10.04.17.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 17:13:22 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 4E388A6F5E91; Thu,  5 Oct 2023 07:13:19 +0700 (WIB)
+Date:   Thu, 5 Oct 2023 07:13:18 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     "KaiLong Wang" <wangkailong@jari.cn>, arnd@arndb.de
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vmlinux.lds.h: Clean up errors in vmlinux.lds.h
+Message-ID: <ZR3_nt646ijkV3UJ@debian.me>
+References: <72e80688.8a8.18ad9bba905.Coremail.wangkailong@jari.cn>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bEqKWIA1685n+LKp"
+Content-Disposition: inline
+In-Reply-To: <72e80688.8a8.18ad9bba905.Coremail.wangkailong@jari.cn>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023, Maciej S. Szmigiero wrote:
-> On 26.09.2023 00:25, Tom Lendacky wrote:
-> > > > It's partially documented in various AMD BKDGs, however I couldn't =
-find
-> > > > any definition for this particular bit (8) - other than that it is =
-reserved.
-> > >=20
-> > > I found it as MSR_AMD64_BU_CFG for Model 16h, but that's Jaguar/Puma,=
- not Zen1.
-> > > My guess is that Windows is trying to write this thing:
-> > >=20
-> > > =C2=A0=C2=A0 MSRC001_1023 [Table Walker Configuration] (Core::X86::Ms=
-r::TW_CFG)
-> > > =C2=A0=C2=A0 Read-write. Reset: 0000_0000_0000_0000h.
-> > > =C2=A0=C2=A0 _lthree0_core[3,1]; MSRC001_1023
-> > >=20
-> > > =C2=A0=C2=A0 Bits=C2=A0=C2=A0 Description
-> > > =C2=A0=C2=A0 63:50=C2=A0 Reserved.
-> > > =C2=A0=C2=A0 49=C2=A0=C2=A0=C2=A0=C2=A0 TwCfgCombineCr0Cd: combine CR=
-0_CD for both threads of a core. Read-write. Reset: 0. Init: BIOS,1.
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1=3DThe host C=
-r0_Cd values from the two threads are OR'd together and used by both thread=
-s.
-> > > =C2=A0=C2=A0 48:0=C2=A0=C2=A0 Reserved.
-> > >=20
-> > > Though that still doesn't explain bit 8...=C2=A0 Perhaps a chicken-bi=
-t related to yet
-> > > another speculation bug?
-> > >=20
-> > > Boris or Tom, any idea what Windows is doing?=C2=A0 I doubt it change=
-s our options in
-> > > terms of "fixing" this in KVM, but having a somewhat accurate/helpful=
- changelog
-> > > would be nice.
-> >=20
-> > It's definitely not related to a speculation bug, but I'm unsure what w=
-as
-> > told to Microsoft that has them performing that WRMSR. The patch does t=
-he
-> > proper thing, though, as a guest shouldn't be updating that setting.
-> >=20
-> > And TW_CFG is the proper name of that MSR for Zen.
->=20
-> So, should I prepare v2 with MSR_AMD64_BU_CFG -> MSR_AMD64_TW_CFG change?
 
-If we can get Paolo's attention, I'd like to get his thoughts on punting th=
-is
-to QEMU/userspace.  I'm worried that "handling" uarch specific MSRs in KVM =
-is
-going to paint us into a corner and force KVM to check guest F/M/S someday,=
- which
-I want to avoid at pretty much all costs.
+--bEqKWIA1685n+LKp
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Sep 28, 2023 at 11:01:08AM +0800, KaiLong Wang wrote:
+> Fix the following errors reported by checkpatch:
+>=20
+> ERROR: spaces required around that ':' (ctx:WxV)
+> ERROR: space required after that ',' (ctx:VxO)
+> ERROR: need consistent spacing around '*' (ctx:VxW)
+>=20
+> Signed-off-by: KaiLong Wang <wangkailong@jari.cn>
+> ---
+>  include/asm-generic/vmlinux.lds.h | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmli=
+nux.lds.h
+> index 9c59409104f6..9e19234bbf97 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -63,8 +63,8 @@
+>   * up in the PT_NOTE Program Header.
+>   */
+>  #ifdef EMITS_PT_NOTE
+> -#define NOTES_HEADERS		:text :note
+> -#define NOTES_HEADERS_RESTORE	__restore_ph : { *(.__restore_ph) } :text
+> +#define NOTES_HEADERS : text : note
+> +#define NOTES_HEADERS_RESTORE	__restore_ph : { *(.__restore_ph) } : text
+
+Personally I prefer macro arguments to be aligned.
+
+>  #else
+>  #define NOTES_HEADERS
+>  #define NOTES_HEADERS_RESTORE
+> @@ -98,10 +98,10 @@
+>   */
+>  #if defined(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION) || defined(CONFIG_LTO_=
+CLANG)
+>  #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
+> -#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundlit=
+eral* .data.$__unnamed_* .data.$L*
+> +#define DATA_MAIN .data .data.[0-9a-zA-Z_] * .data..L * .data..compoundl=
+iteral * .data.$__unnamed_ * .data.$L*
+>  #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
+> -#define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
+> -#define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
+> +#define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_] * .rodata..L*
+> +#define BSS_MAIN .bss .bss.[0-9a-zA-Z_] * .bss..compoundliteral*
+>  #define SBSS_MAIN .sbss .sbss.[0-9a-zA-Z_]*
+
+Is it taking a pointer or changing to multiplication?
+
+>  #else
+>  #define TEXT_MAIN .text
+> @@ -462,7 +462,7 @@
+>  	. =3D ALIGN((align));						\
+>  	.rodata           : AT(ADDR(.rodata) - LOAD_OFFSET) {		\
+>  		__start_rodata =3D .;					\
+> -		*(.rodata) *(.rodata.*)					\
+> +		*(.rodata) * (.rodata.*)					\
+>  		SCHED_DATA						\
+>  		RO_AFTER_INIT_DATA	/* Read only after init */	\
+>  		. =3D ALIGN(8);						\
+> @@ -494,28 +494,28 @@
+>  	/* Kernel symbol table: Normal symbols */			\
+>  	__ksymtab         : AT(ADDR(__ksymtab) - LOAD_OFFSET) {		\
+>  		__start___ksymtab =3D .;					\
+> -		KEEP(*(SORT(___ksymtab+*)))				\
+> +		KEEP(*(SORT(___ksymtab+ *)))				\
+>  		__stop___ksymtab =3D .;					\
+>  	}								\
+>  									\
+>  	/* Kernel symbol table: GPL-only symbols */			\
+>  	__ksymtab_gpl     : AT(ADDR(__ksymtab_gpl) - LOAD_OFFSET) {	\
+>  		__start___ksymtab_gpl =3D .;				\
+> -		KEEP(*(SORT(___ksymtab_gpl+*)))				\
+> +		KEEP(*(SORT(___ksymtab_gpl+ *)))			\
+>  		__stop___ksymtab_gpl =3D .;				\
+>  	}								\
+>  									\
+>  	/* Kernel symbol table: Normal symbols */			\
+>  	__kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET) {		\
+>  		__start___kcrctab =3D .;					\
+> -		KEEP(*(SORT(___kcrctab+*)))				\
+> +		KEEP(*(SORT(___kcrctab+ *)))				\
+>  		__stop___kcrctab =3D .;					\
+>  	}								\
+>  									\
+>  	/* Kernel symbol table: GPL-only symbols */			\
+>  	__kcrctab_gpl     : AT(ADDR(__kcrctab_gpl) - LOAD_OFFSET) {	\
+>  		__start___kcrctab_gpl =3D .;				\
+> -		KEEP(*(SORT(___kcrctab_gpl+*)))				\
+> +		KEEP(*(SORT(___kcrctab_gpl+ *)))			\
+>  		__stop___kcrctab_gpl =3D .;				\
+>  	}								\
+
+Same here.
+
+Confused...
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--bEqKWIA1685n+LKp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZR3/mAAKCRD2uYlJVVFO
+oxvuAQCkXx9+njnvII0+xKHGRERMrYm8sxrQQXTQ3J6EHyC8dQEAlc3kXaAJwrV9
+I8WIium3NvzhTHvv8hayacA5UwGjgAA=
+=dqD1
+-----END PGP SIGNATURE-----
+
+--bEqKWIA1685n+LKp--
