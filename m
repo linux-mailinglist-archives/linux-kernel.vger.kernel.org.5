@@ -2,377 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D00E7B9DD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 15:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6AEC7B9DC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 15:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbjJEN4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 09:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
+        id S231133AbjJEN4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 09:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244005AbjJENut (ORCPT
+        with ESMTP id S244231AbjJENwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 09:50:49 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on20617.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e8c::617])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094ED1BC5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 20:50:37 -0700 (PDT)
+        Thu, 5 Oct 2023 09:52:09 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2071b.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe59::71b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F08C1BFD;
+        Wed,  4 Oct 2023 20:56:13 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QsZVmX+CitgMChDlikZGnNb236ZecygXso5xZpsWqxFrlWVd0ic78HH+qb0URBDYNxF9jl5OiJyRPwhktejdP1mZqRkwBqXdM2z3J4A9gdFtyc+yzWltjcKm/uYzDhA88exuhuusrbch6MIfCCyNPFGdUzYlWnwzafmfH0IkP7ECE0HuEqY9CKxw5eSP2PUmUSLqpDYvxfFr4RbvEES6SO1n75lCQEjvvk17HSFi/jcYP/N2/Tep3ykB+nL8vQya6TKk6UciQCLtwrmvyTlhiE/5ZohO7x2GVUSKPrU/y8a0a//PuQ90F4e+tow112CNEDbthoat3uj89OXy83AxPw==
+ b=MOAJS1g530kjtnIU81bWERyJOxzCO1LoPMOb8rQ+6F7rFBdSEUWLKRseStf14ZLrOpUENP0qujX8Y4jDwSHCCKlU/0MSvW70wdsjPEgdgQxkEY+kKM3v22TLIiP6JC2YEC+uGs1R4Oncwljov6FdsWXDN6adfvcwfM12YVrPryP+2HbhGRq+66bhdDybEExP5I4peT47bOt7jlPqti8kSE2OK0Y7LGbb0QHILsU4q59+kfrXk+RsMWuYmIzbqMK6BOMPhMb/aFeqbLI/MURm3o/XgA3tDHm6ej3KGIYO9x+CwF17C/FV+OaHHtXQLLI565FBtDP/jv2yAc191pA+3g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QDnaFtgm5xuDbTkXekkG1Ux+/ScW1QHccRWoImz/DHE=;
- b=fdkcuYwWDFnsD3SU2qQKCmWrI2N0C7w9GfRT2kCpjeRVyY1JwS/jcJkWcp0uWMA3I+3KbP22kCOwU50rKwkYGTDMv3eR+J3EvhHdA2zUjF2Jzq7mmDaR5zr09acuymO74lra0JfRJXky90MzyIro6PmvDDDlsACUCvYofZBKRn6acQ92niSSWZjd6GcYPcK6maZxLNS/wE016k5UM3YZ0vG537D5fHxWAm6MraWdQzkWjU9ZGC4oB7sMEvp9eqUFTjAYOhgcVHJhTGiyZi02m1/Z0hX9TDkfyrgAoXpDxiULYBX1pniwcyvbAqjjvozwDcnw4pmTepGNBEs5+/vfUA==
+ bh=e8NbKW+afFd5BIlOfUO9CN82XK58ZXuR/m2S1+hxk3I=;
+ b=enTrBhQBuhXECxKsDeMjfr6LkPQegG7LsbroN4kPII+OihrCsWuqkBnCbrz/iR9d7XykrC7zpZKdCU7beI3zzmHnKaZ31jwP1nFAP5MCUcf0g915PId0X/JOtPFrOO9B+fd8WBAf3qgTI0Z06DTFSK2+UYGK7Yc9kORXTz0GoQ4GH9wY6RrpSdQ59ZOEh5bLPExcvMltZ9QtPjb4s/6U7uWz7zEy7rjYvn/3MdT9yJKruOHGYHNDjBO85+bz3DQ96dME+MdN36p0mLoc6SAoBwcdWt0wLagSZuutWgwdQzmvy1ergAZkzM6MlK5zJjaSZUqzVpgyKdJHxpOg0akqIw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QDnaFtgm5xuDbTkXekkG1Ux+/ScW1QHccRWoImz/DHE=;
- b=S3cVcOcBzIMbLIdGe5LGlof6BCWVQk81s0gQdt9vV2t5OLQmQcZ9LnAUUnO6sSy3qdcNoF0Ga6Bc9rb7ob8FSq83Bs++QeMJxtKlvmaLZ3vyBNgbaFgH+/OzubMj3yEUCkph/Z9XNz4Y6IvmSayIdaS0MUcIvmRA7cbadii+4fU=
+ bh=e8NbKW+afFd5BIlOfUO9CN82XK58ZXuR/m2S1+hxk3I=;
+ b=Y25FkCYiQg615TZa9avwSvOnz5h5quoL880wiv0L+pXUNqAHom5dF5ZCYi/xy4j8v91lnMFCtb+Cd6dGnP4gZI+QJReHOS0KJZ2S7QRiUWrHS32pPJIfQJNKJJRkxjYov0SRCuhGF4FFyzPT8NAr5nu15O/53PA/fyRtTFNFnt0=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW2PR12MB2379.namprd12.prod.outlook.com (2603:10b6:907:9::24)
- by SA3PR12MB7829.namprd12.prod.outlook.com (2603:10b6:806:316::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.34; Thu, 5 Oct
- 2023 03:50:20 +0000
-Received: from MW2PR12MB2379.namprd12.prod.outlook.com
- ([fe80::2cf7:49ea:e95c:31b8]) by MW2PR12MB2379.namprd12.prod.outlook.com
- ([fe80::2cf7:49ea:e95c:31b8%6]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
- 03:50:20 +0000
-Message-ID: <6fef325c-4415-c3c8-8254-531b2883b8e3@amd.com>
-Date:   Thu, 5 Oct 2023 09:20:05 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [RFC PATCH 3/3] sched/fair: Add a per-shard overload flag
-Content-Language: en-US
-To:     David Vernet <void@manifault.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, tj@kernel.org,
-        roman.gushchin@linux.dev, gautham.shenoy@amd.com,
-        aaron.lu@intel.com, wuyun.abel@bytedance.com, kernel-team@meta.com
-References: <31aeb639-1d66-2d12-1673-c19fed0ab33a@amd.com>
- <20230831104508.7619-1-kprateek.nayak@amd.com>
- <20230831104508.7619-4-kprateek.nayak@amd.com>
- <20230831191103.GC531917@maniforge>
- <350639fb-a428-7d94-b13b-7a33e68b7b09@amd.com>
- <20230929170104.GA78641@maniforge>
- <925f13cd-b020-a799-3505-b3df46a51ffe@amd.com>
- <20231004172036.GC30978@maniforge>
-From:   K Prateek Nayak <kprateek.nayak@amd.com>
-In-Reply-To: <20231004172036.GC30978@maniforge>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN3PR01CA0128.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:bf::13) To MW2PR12MB2379.namprd12.prod.outlook.com
- (2603:10b6:907:9::24)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DS0PR01MB8010.prod.exchangelabs.com (2603:10b6:8:151::19) by
+ BL1PR01MB7649.prod.exchangelabs.com (2603:10b6:208:394::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6813.25; Thu, 5 Oct 2023 03:56:04 +0000
+Received: from DS0PR01MB8010.prod.exchangelabs.com
+ ([fe80::6a3d:61d7:133b:9eb9]) by DS0PR01MB8010.prod.exchangelabs.com
+ ([fe80::6a3d:61d7:133b:9eb9%4]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
+ 03:56:03 +0000
+From:   Chanh Nguyen <chanh@os.amperecomputing.com>
+To:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Chanh Nguyen <chanh@os.amperecomputing.com>
+Subject: [PATCH 1/7] ARM: dts: aspeed: mtjade, mtmitchell: Update gpio-line-names
+Date:   Thu,  5 Oct 2023 10:55:19 +0700
+Message-Id: <20231005035525.19036-2-chanh@os.amperecomputing.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231005035525.19036-1-chanh@os.amperecomputing.com>
+References: <20231005035525.19036-1-chanh@os.amperecomputing.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SGXP274CA0016.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::28)
+ To DS0PR01MB8010.prod.exchangelabs.com (2603:10b6:8:151::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2379:EE_|SA3PR12MB7829:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1f402d1f-52f8-4fae-ed3e-08dbc55631c7
+X-MS-TrafficTypeDiagnostic: DS0PR01MB8010:EE_|BL1PR01MB7649:EE_
+X-MS-Office365-Filtering-Correlation-Id: 91c5531d-ccef-4183-9201-08dbc556fecf
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qNP9DQJL23m3ybH7MtFYk4TnBqDeN6GMbo517Gw/2Msxip2pHg3gggjy0QYxHd/8WBW+Pi+zitZXs4TZ9sm+HzmDhYx09JyjbGBu9unFbY+ONHr5YJp21l8RSQ1BOPm2Ucv+TcVFpfX+EOFaGIjifDtyRE83U1TbDMVVCClIu0yYaoEDTw5e8x1lrKA9RTKRTX9QaZGaEJ0Pkvpbb8kQFkWD9QZ7d5p2NtzAVvVs0SgfcFfWpstIr4PACoEbyUWbISqESMzBJmP18/VM04RIF8OY7y5Zfs5uzMwQBJjYJEhPWupZk1Z0BermYjL4yKA7lTartMsuEIHO4TyDyF6EwMLtHdMGSNBSY5D3hGEgyJeugUoPbgsMX0GI040cSUupiQrGw/KZp9ThU7DDhmP95UuZ0w68WR2ng+K7brZJBT+UT+cY/ouB6/hB4PuEEa51kxVDJlHpnleEk+tF+bbNk66I8RY1RlFd5FV0TTEQryLO2305Ko6wWgzshgNXft9tYW6EnXp8E11zGWkHu8VMfVj2UTu/YvggC7bOJEFqlIoQtsDUMwQ2LSOmyWVzxGuKpgbpJiON4vlwVOiDNttAQy96l/+ZPvyBBa84Uaw5UujyAJPxSJoRGdZ55arPs6zaJnSeM2QdJXzGZ4D+w/nW6Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(136003)(39860400002)(346002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(31686004)(66899024)(2616005)(6512007)(53546011)(6506007)(6486002)(31696002)(86362001)(38100700002)(36756003)(30864003)(7416002)(2906002)(8676002)(6666004)(478600001)(83380400001)(8936002)(4326008)(316002)(26005)(41300700001)(66946007)(5660300002)(6916009)(66556008)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 22kRoacU9Kl6za9gzr1hJPusDKWICfMdo+Y068z3n+tXA2kLh2bELU3kAqGBAMqO7IYS+8yY4Lf+3B1K+5cCawVVJBCWagA9d3Y/qAJ9r+tocc2wmCB0iYfnZVzbmbaftm03k7c4ZTWg6WQKvxDPlYwXWPcA3aD71S6iS4W3sFD7mHJV0m517UHG59p/BVOKk18p1hhaUsXGQX3gEASFYpXgc/RnHGknhd0q+pjV4N16NshAMLp0kuytsn2T9yeyobvxkc3rOWn/GeKK2167euZyIGlAv27HRWQwQQ8Qs9G2VnAIIE83uNzPerOdNmIjsOTHlvDVB5doyv5B6uQDv7Z84L2aNSqNX0Fbu6ZTWZ93qox4OKnNtc0v3ZnWDV4x04kybUwlXwGKz45cH5WwmQ6Iwn0CypVTxFQ0EG8ygQWggDtl+wcz/g+Ld28qu3DlW4FGKGpBlop0LBBLKnVUKOzH3geQ9GfMY+ichFOzfqnzdutPqqF3r3O9vJWgcvtzHmjr0OQeXRz1gfxkSzLqj6HuFIsJq0AhY5ZbffnpHnSG0OrmnnsdsR9V/JkfMLaTFF1ThxjsHHQWH8Oz0JNq5EXadp1MJlAiGZVjYgpqO8RWif7ylLLuzw77p9mRYTtUtUnSY0whtvIlJlvOzoM1dA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR01MB8010.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39850400004)(396003)(346002)(366004)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(84970400001)(38350700002)(38100700002)(6666004)(478600001)(83380400001)(6512007)(921005)(6486002)(6506007)(52116002)(7416002)(15650500001)(86362001)(8676002)(4326008)(8936002)(5660300002)(26005)(316002)(41300700001)(66946007)(66556008)(66476007)(2906002)(110136005)(1076003)(107886003)(2616005)(449214003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YnpPcG84Z1RtNjJXUUFiUGdvSzZKSHJ5WWZaRkh1dXhLQWlneFg2a0tMcGFE?=
- =?utf-8?B?NGZWYWtKNUZVUThzcHhsWUZIcm9qb0ZhMFNnK1lSSzNJNzQrT29zSFo5VXRl?=
- =?utf-8?B?UklBdmlzRVZSZi9qVDM2MFN5SlUwYmZXc3VsVkZuSlRWY2ZPMlJRZ2ZtSlhx?=
- =?utf-8?B?SWpaMXUvWHRZb1lIZUZQMGNpbmJ1MU04SkZNUU5FRzRkL00wV2o4TkdtdzIx?=
- =?utf-8?B?R0RJcC9zUFVWTXAzMHVRdmJjalQ1TzNlWmtNWWtHWjdWaGx2QW1mRWxiazVn?=
- =?utf-8?B?WEZ1TEg2Wk9PeXg4S1Jsa3VxYWR2SzVKbWJLTDduMlF3NzczeUVwbTMzaUox?=
- =?utf-8?B?N1N2RGs2VUVuMXIwZ0dPc1g1NWd3aWNzM0d0b05SSWNoaFYvYldjcUZoa2NM?=
- =?utf-8?B?SWZKY2NpZCs2TDNVckR3eWU2L3dJaGd2U2Z3TXJmR1NrTHFEN2hJTitJUXR6?=
- =?utf-8?B?cmM5UFd6K0ZvNXZRdVBOemNzYU5WRGhBbHQxcTdKcjhqTWtkTUV5WlRtR2NC?=
- =?utf-8?B?emlKejZDVUxBNGpTYmpuRStORFRRaGFuand3TXlpZ2oyQ3BRMUhSTmlZREY3?=
- =?utf-8?B?N243Tk9lK0dicWwwTmVvRXFoZFRuczdvaUtKbCtkRjhZMUI0ek13dHVRcjY4?=
- =?utf-8?B?UENoMFRZSkpyWmNEc2dhYUhsNDk0SVE4T3Y1MGl5OWI1Q1JxM0hZNlJaS3Vs?=
- =?utf-8?B?VHNBcGpKeHE3c2QwOTZMM0hQRUtlS2hzQW1YT0dWdXR3UHR1VFpOV3dwVE4y?=
- =?utf-8?B?N0dNTlk5UWQyUFB4c0xLN0xuYkRaRHpsck5UZXhnWHVuWVpQdDM2MUZQbFdp?=
- =?utf-8?B?cTUwejZmczhZYW05enI1RTFvVTAzdks2bmhvRlFkK3diV0NIelB2OHZzVkdC?=
- =?utf-8?B?bmhJb2M4RXdhUTRYMWI2UzdUR0dCZHdvZXk0L05kWk93WFFuR3MxWFJCbVN4?=
- =?utf-8?B?QStDV2hQcWQvMWRoU0luQTBZZ1RkOFVUODVnSkczem9raTk0cG4rcXJuQWtW?=
- =?utf-8?B?TGdYV2xWdlNEVEx6UHdVcisxNXhrU1VmZkRscmlXd3JDclBDR2MzT25TdWg0?=
- =?utf-8?B?YTBKQ3ZwR3JaSzdXM25VNGdnZTJJV3lQWnMrbUtmUFZqRjhtMTd3dFgwQ1Rl?=
- =?utf-8?B?c25tcXlUenNVYStzOXRDUm95QllzVnFiSzRIdVRiOGVsU1AzaEhzMWdXL3Rl?=
- =?utf-8?B?SEhHbGV4TWJJRElGbTg2VGg2WEpJZkYvc0dNTXNuUU5wT1hpajhjdEdYT1hT?=
- =?utf-8?B?NjZCWWs4TTM5QkkzOGwwMFJ3NmNVUmkzcHorbXA2VlJHYThFV2p2WE4yek9X?=
- =?utf-8?B?OWRtdmgrYjNxOXJxd3l6NzlFc0xoM0w1c0VLUVRUL0M4Y3FtTjVxVFliRFdz?=
- =?utf-8?B?TUx2SnY1dXpCMk5LT0p0RzU1SXpkNGd3ZVJHTWllTGNuMnBLNkJEaUhTUE5P?=
- =?utf-8?B?L2FmZy9PUGdwQSswQ09DOWlxakxuc0I3SzIybGZxVXk1TUErUmEzMzdsWUoz?=
- =?utf-8?B?YXpEQnhwZGtPbHpWRlBoNHc1dURib3VpNm9sU1pZQkJHOHdrRWJIekZMaGlo?=
- =?utf-8?B?S3h6NmFrbVF3ZXJqL250N01MQjZiTEpnSnM3dWlobDhGc3lUQUY2M2FqbWRB?=
- =?utf-8?B?KzhLQ3NSKzJ3VDlIdk5PK2tOcmhFMVdiMWpQRnlkZ0ErUzcvR0dYY3liSm84?=
- =?utf-8?B?SnVUL0RCa2hSOS9pTU5GSE5ZbEZFVGg5ZE5aenFNYm1JdTd6ODZHdGtjZzM0?=
- =?utf-8?B?cTRYTVcwWGpRZWNGbnoyTk5BeHBjcHFpODh3Z0NnVEYxeEF1RSswNlhrNDhq?=
- =?utf-8?B?RTRpZ1NMbjREUmxJOVBoZlBMVjhwamJFS3V4U0x1Z0cxb3puR0tkcWRWc0lr?=
- =?utf-8?B?THhGMXJQdUpRV0lsOFZoVGo1Z0Znb2Y2cEdWakg2b1JuQjhONDZwNXFKUGN0?=
- =?utf-8?B?SVEvamdDSmZmVzVoMlVzYndFZWpsa1ZGU3c3Y2FNalYxSWtFZkdUOXE0ZDZ3?=
- =?utf-8?B?Y0hCODZHQkUrdVI4VTliQ1hEeEx5VkJjem9rcHN6dkVIbWt3bVdvbUVRMEs0?=
- =?utf-8?B?S0VEWUZNZTFTNkwvNXk5NkNMVHBVc2Q2UFVrOGM3RXJiOUhGUHNjL0VaYUdq?=
- =?utf-8?Q?L8TKjDpBBpyUSNkrBFJ4nGoqK?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f402d1f-52f8-4fae-ed3e-08dbc55631c7
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB2379.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2L39HRUMTjvIwVg58IEeZlzaE70jzoRU9FTKzqOdsl3O05Z5E8+rTWnxp9zk?=
+ =?us-ascii?Q?FlikTP2KB0yTw4VxIqS8ehgZZvJLIjNFxx4s2J7FK8qt1oG9RFH7xuC0jp5X?=
+ =?us-ascii?Q?2Qqz8UGMR+CJtl50L8RJgXd7HxK6+mWwONncvVOytsTXcv8f7QPeL8mMyYBJ?=
+ =?us-ascii?Q?MMi4XaBrtJyua5f4YX6cZjk04Ci/t//RnbBecSZRIdWRzLbz1QNQawMGkD2N?=
+ =?us-ascii?Q?rRP5jJgZfAGz816wmYRpgua8J2l2P0QHe+5cTC0bCIATRODk/Ulwp1TR6qrO?=
+ =?us-ascii?Q?HC7qcX4DVHVGfg5pdhuGTOQ+IJUB7hlyknG4wrJpipJ8l4jUjK8GJRA0QJgq?=
+ =?us-ascii?Q?vK6snjdDlFqMhFqLypPuhkxcl/z98RfroPnoguRDvjzyn7zyEunyWoJIGKgG?=
+ =?us-ascii?Q?hl6FSYTlfwTqQCa8M/PohuCo5D4MtmsM3OQlFml7YXTPqaEv0MyPFAQM0E7c?=
+ =?us-ascii?Q?szLNE4NNNLVA26Palf+s4DCIStGYyYNHeFVHR1UuKLmTwtiWoVkPGP8O7oPF?=
+ =?us-ascii?Q?QIXAoNCUOwVNl7g/bbxCeSmDSOyXtgztjyZBQYLauPX804C65HDZVP+2eGFy?=
+ =?us-ascii?Q?dV9iZn12V981dnqOXOUDx7zROSUQwFo9H+408DT14mjIP1zGxl6tuaqaAz7s?=
+ =?us-ascii?Q?1+hkdgHS6OxNrOZszqP73B9KpSpCAcQ3ZNBy/sIwdBeia/vMrHbtrzs71ekT?=
+ =?us-ascii?Q?o0zkINiGKwAgOROeNPAsIkNGx/PvM2qeQCGssxKx7lxvUyytR+mtMASKcatt?=
+ =?us-ascii?Q?1KIa/N9OOPIoxhUBB8IVu4Q4hsFAubOAqbVrWJzU5Nq1vaU9pGBMMU207qME?=
+ =?us-ascii?Q?lfJlcGgLRsRm8r3FVVP58bQ0zLCxK+nTaYyCYCW2HOhv8EpL9pab/aOSRhdm?=
+ =?us-ascii?Q?nPi+qWeqouYRTV6fg3560ZoNKJyyY9I1WjYOqkXVMvBHgrotBvgPQ9t7W+w5?=
+ =?us-ascii?Q?pRD0Gy/m9pOu90Y1dxSK7rbt6kKNhT7rlhRbCqgIqd4dWdpBgdxzBbZ7ud1u?=
+ =?us-ascii?Q?xyU2ibO/XSMmVw3GjBkXcMSCiQiaTXr2bWc0SbpCB3sYs8qtl2DshdFnvOST?=
+ =?us-ascii?Q?wqoOYDpHr7Mv2hwE0u5vI5JOF3kXHrobTTFV2wtU+Tj1Qsc1Xf2AzJuuH1Fh?=
+ =?us-ascii?Q?TwQYI83CHof7pCV2OWujybhvW9TwAeo+ljmW+gCqRX77BGEBOxuNd2Wpa5hv?=
+ =?us-ascii?Q?oq0el1Gqv08d7EALck6Ahh8AaiM8CLuya4WzqcrEPw9WQ4dWirJ3+M0MXUhf?=
+ =?us-ascii?Q?8ZOTwCJToOAFUWqnU6x1ZOMWEBopGhrm8BywHU1X/tqV+OXAqJnm8S/9xeAe?=
+ =?us-ascii?Q?QZCKz4QwJd6FYK/cV0mD3A+SNydlFZjQR3Q8pNitoM+6Mm5axnnKQL6SFcgc?=
+ =?us-ascii?Q?MPM16GU8DHU1mN8H6YDZrJgtLoW2iMoqfOEmr36z5QWlwDHI+AWml0zF4sUB?=
+ =?us-ascii?Q?1yGvz17CjMXDUYMM0OnMfe7MJjGM4QZjigJMW/jXaxBSUmzKHo2gIJ24z0dC?=
+ =?us-ascii?Q?4EOdZ8GQY+ueQBduX2bTF8pgCTLmIEYuY/s2C8VqZcbDndfzBbLb1sU1VnHQ?=
+ =?us-ascii?Q?JwadPFaKfI/KjwePMWg54fV3vnCuSxoUnMb51OsfapML4cnQMHE6Nnon82GI?=
+ =?us-ascii?Q?JOTxmcNUB59jYovc1cDECNU=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91c5531d-ccef-4183-9201-08dbc556fecf
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR01MB8010.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 03:50:20.1844
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 03:56:03.8925
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ob8vODz7Lp1fGbSgTu31k+rlo5j4nO/aab4Y3p2nmIcGoo8XgXibGv6K5kLcIltXj4PxQKY2kRCfjm1xR4fjtA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7829
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: sk3/yaBzXFIuDHpVPXT7rJ4TqpE2iTOm+CTGzS/yN34j2FnFvLp592EkmdLLpu41qkJ+7HNWgzIkoKf3mL6wrOKUN1OtIALa90nxYcPd3OfvoRrZb7jfFMO8sJ8Wc80d
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR01MB7649
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED,WEIRD_QUOTING autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David,
+Update GPIO line-name to follow naming convention specified at
+github.com/openbmc/docs/blob/master/designs/device-tree-gpio-naming.md
 
-On 10/4/2023 10:50 PM, David Vernet wrote:
-> On Wed, Oct 04, 2023 at 09:51:18AM +0530, K Prateek Nayak wrote:
->> Hello David,
-> 
-> Hello Prateek,
-> 
->>
->> Thank you for answering my queries, I'll leave some data below to
->> answer yours.
->>
->> On 9/29/2023 10:31 PM, David Vernet wrote:
->>> On Fri, Sep 01, 2023 at 01:53:12AM +0530, K Prateek Nayak wrote:
->>>> Hello David,
->>>>
->>>> On 9/1/2023 12:41 AM, David Vernet wrote:
->>>>> On Thu, Aug 31, 2023 at 04:15:08PM +0530, K Prateek Nayak wrote:
->>>>>
->>>>> Hi Prateek,
->>>>>
->>>>>> Even with the two patches, I still observe the following lock
->>>>>> contention when profiling the tbench 128-clients run with IBS:
->>>>>>
->>>>>>   -   12.61%  swapper          [kernel.vmlinux]         [k] native_queued_spin_lock_slowpath
->>>>>>      - 10.94% native_queued_spin_lock_slowpath
->>>>>>         - 10.73% _raw_spin_lock
->>>>>>            - 9.57% __schedule
->>>>>>                 schedule_idle
->>>>>>                 do_idle
->>>>>>               + cpu_startup_entry
->>>>>>            - 0.82% task_rq_lock
->>>>>>                 newidle_balance
->>>>>>                 pick_next_task_fair
->>>>>>                 __schedule
->>>>>>                 schedule_idle
->>>>>>                 do_idle
->>>>>>               + cpu_startup_entry
->>>>>>
->>>>>> Since David mentioned rq->avg_idle check is probably not the right step
->>>>>> towards the solution, this experiment introduces a per-shard
->>>>>> "overload" flag. Similar to "rq->rd->overload", per-shard overload flag
->>>>>> notifies of the possibility of one or more rq covered in the shard's
->>>>>> domain having a queued task. shard's overload flag is set at the same
->>>>>> time as "rq->rd->overload", and is cleared when shard's list is found
->>>>>> to be empty.
->>>>>
->>>>> I think this is an interesting idea, but I feel that it's still working
->>>>> against the core proposition of SHARED_RUNQ, which is to enable work
->>>>> conservation.
->>>>
->>>> I don't think so! Work conservation is possible if there is an
->>>> imbalance. Consider the case where we 15 tasks in the shared_runq but we
->>>> have 16 CPUs, 15 of which are running these 15 tasks, and one going
->>>
->>> I'm not sure I'm fully following. Those 15 tasks would not be enqueued
->>> in the shared runq if they were being run. They would be dequeued from
->>> the shared_runq in __dequeue_entity(), which would be called from
->>> set_next_entity() before they were run. In this case, the
->>> shard->overload check should be equivalent to the
->>> !list_empty(&shard->list) check.
->>>
->>> Oh, or is the idea that we're not bothering to pull them from the
->>> shared_runq if they're being woken up and enqueued on an idle core that
->>> will immediately run them on the next resched path? If so, I wonder if
->>> we would instead just want to not enqueue the task in the shared_runq at
->>> all? Consider that if another task comes in on an rq with
->>> rq->nr_running >= 2, that we still wouldn't want to pull the tasks that
->>> were being woken up on idle cores (nor take the overhead of inserting
->>> and then immediately removing them from the shared_runq).
-> 
-> Friendly ping on this point. This is the only scenario where I could see
-> the overload check helping, so I want to make sure I'm understanding it
-> and am correct in that just avoiding enqueueing the task in the shard in
-> this scenario would give us the same benefit.
+Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
+---
+ .../dts/aspeed/aspeed-bmc-ampere-mtjade.dts   | 42 +++++++++----------
+ .../aspeed/aspeed-bmc-ampere-mtmitchell.dts   |  6 +--
+ 2 files changed, 24 insertions(+), 24 deletions(-)
 
-Woops! Missed answering this. So the original motivation for
-'shard->overload' was that there is a rq lock contention, very likely as
-a result of shared_runq_pick_next_task() trying to grab a remote rq's
-lock. Looking at shared_runq_pick_next_task(), the criteria
-"!task_on_cpu(src_rq, p)" led me to believe we might end up enqueuing a
-task that is running on the CPU but now that I take a look at
-shared_runq_enqueue_task() being called from __enqueue_entity(), this
-should be a very rare scenario. 
-
-However, if a running task was enqueued often into a shared_runq, the
-'shard->overload' is an indication that all the runqueues covered by
-the shard are not overloaded and hence, peeking into the shard can be
-skipped. Let me see if I can grab some more stats to verify what
-exactly is happening.
-
-> 
->> So this is the breakdown of outcomes after peeking into the shared_runq
->> during newidle_balance:
->>
->>                                                 SHARED_RUNQ                     SHARED_RUNQ
->>                                         + correct cost accounting       + correct cost accounting
->>                                                                         + rq->avg_idle early bail
->>
->> tbench throughput (normalized)		:	     1.00			2.47	       (146.84%)
->>
->> attempts                                :       6,560,413                  2,273,334           (-65.35%)
->> shared_runq was empty                   :       2,276,307 [34.70%]         1,379,071 [60.66%]  (-39.42%)
->> successful at pulling task              :       2,557,158 [38/98%]           342,839 [15.08%]  (-86.59%)
->> unsuccessful despite fetching task      :       1,726,948 [26.32%]           551,424 [24.26%]  (-68.06%)
->>
->> As you can see, there are more attempts and a greater chance of success
->> in the case without the rq->avg_idle check upfront. Where the problem
->> lies (at least what I believe is) a task is waiting to be enqueued / has
->> been enqueued while we are trying to migrate a task fetched from the
->> shared_runq. Thus, instead of just being idle for a short duration and
->> running the task, we are now making it wait till we fetch another task
->> onto the CPU.
->>
->> I think the scenario changes as follows with shared_runq:
->>
->> - Current
->>
->>
->>       [Short Idling]	[2 tasks]                        [1 task]	[2 tasks]
->> 	+-------+	+-------+                       +-------+	+-------+
->> 	|	|	|	|        wakeup         |	|	|	|
->> 	| CPU 0 |	| CPU 1 |	 on CPU0        | CPU 0 |	| CPU 1 |
->> 	|	|	|	|       -------->       |	|	|	|
->> 	+-------+	+-------+                       +-------+	+-------+
->>
->> - With shared_runq
->>
->>       [pull from CPU1]	[2 tasks]                       [2 tasks]	[1 task]
->> 	+-------+	+-------+                       +-------+	+-------+
->> 	|	|	|	|        wakeup         |	|	|	|
->> 	| CPU 0 |	| CPU 1 |	 on CPU0        | CPU 0 |	| CPU 1 |
->> 	|	|	|	|       -------->       |	|	|	|
->> 	+-------+	+-------+                       +-------+	+-------+
->>
->> We reach a similar final state but with shared_runq we've paid a price
->> for task migration. Worst case, the following timeline can happen:
->>
->>         |
->>   CPU0  | [T0 R, T1 Q] [       T0 R      ] [newidle_balance] [T4 R ...
->>         |
->>         |                  pull T1 \             pull T4 /
->>         |
->>   CPU1  | [T3 R] [newidle_balance] [T1 R, T4 Q] [       T1 R      ]
->>         |            [T4 TTWU]
->>         |
->>
->> With the rq->avg_idle bailout, it might end up looking like:
->>
->>         |
->>   CPU0  | [          T0 R, T1 Q          ] [T1 R ...
->>         |
->>         |
->>   CPU1  | [T3 R] [ I ] [T4 R ...
->>         |            
->>         |
-> 
-> This certainly seems possible, and wouldn't be terribly surprising or
-> unexpected. Taking a step back here, I want to be clear that I do
-> understand the motivation for including the rq->avg_idle check for
-> SHARED_RUNQ; even just conceptually, and regardless of the numbers you
-> and others have observed for workloads that do these short sleeps. The
-> whole idea behind that check is that we want to avoid doing
-> newidle_balance() if the overhead of doing newidle_balance() would
-> exceed the amount of time that a task was blocked. Makes sense. Why
-> would you take the overhead of balancing if you have reason to believe
-> that a task is likely to be idle for less time than it takes to do a
-> migration?
-> 
-> There's certainly a reasonable argument for why that should also apply
-> to SHARED_RUNQ. If the overhead of doing a SHARED_RUNQ migration is
-> greater than the amount of time that an sd is expected to be idle, then
-> it's not worth bothering with SHARED_RUNQ either. On the other hand, the
-> claim of SHARED_RUNQ is that it's faster than doing a regular balance
-> pass, because we're doing an O(# shards) iteration to find tasks (before
-> sharding it was O(1)), rather than O(# CPUs). So if we also do the
-> rq->avg_idle check, that basically means that SHARED_RUNQ becomes a
-> cache for a full load_balance() call.
-> 
-> Maybe that makes sense and is ultimately the correct design /
-> implementation for the feature. I'm not fundamentally opposed to that,
-> but I think we should be cognizant of the tradeoff we're making. If we
-> don't include this rq->avg_idle check, then some workloads will regress
-> because we're doing excessive migrations, but if we do check it, then
-> others will also regress because we're doing insufficient migrations due
-> to incorrectly assuming that an rq won't be idle for long. On yet
-> another hand, maybe it's fine to allow users to work around that by
-> setting sysctl_sched_migration_cost_ns = 0? That only sort of works,
-> because we ignore that and set rq->max_idle_balance_cost = curr_cost in
-> newidle_balance() if we end up doing a balance pass. I also know that
-> Peter and others discourage the use of these debugfs knobs, so I'm not
-> sure it's even applicable to point that out as a workaround.
-> 
-> And so hopefully the problem starts to become clear. It doesn't take
-> long for for us to get mired in heuristics that make it difficult to
-> reason about the expected behavior of the feature, and also difficult to
-> reason about future changes as these heuristics have now all crossed
-> streams. Maybe that's OK, and is preferable to the alternative. My
-> personal opinion, however, is that it's preferable to provide users with
-> knobs that do straightforward things that are independent from existing
-> heuristics and knobs which were added for other circumstances. I'd
-> rather have confidence that I understand how a feature is supposed to
-> work, and can easily reason about when it's stupid (or not) to use it,
-> vs. have an expectation for it to not regress workloads in any scenario.
-> 
-> Note that this doesn't mean we can't make my patches less dumb. I think
-> your suggestions to e.g. check the overload flag (or possibly even
-> better to just not enqueue in a shard if the rq isn't overloaded),
-> re-check ttwu->pending after failing to find a task in the shard, etc
-> make complete sense. There's no downside -- we're just avoiding
-> pointless work. It's the heuristics like checking rq->avg_idle that
-> really worry me.
-
-I agree since avg_idle is merely a prediction that may or may not be
-true.
-
-> 
-> Peter -- I think it would be helpful if you could weigh in here just to
-> provide your thoughts on this more "philosophical" question.
-> 
->> If possible, can you check how long is the avg_idle running your
->> workload? Meanwhile, I believe there are a few workloads that
->> exhibit same behavior as tbench (large scale idling for short
->> duration) Let me go check if I can see tbench like issue there.
-> 
-> Sure thing, in the meantime I'll test this out on HHVM. I've actually
-> been working on getting a build + testbed ready for a few days, so
-> hopefully it won't take much longer to get some results. Even if it
-> turns out that this works great for HHVM, I'd ideally like to get
-> Peter's and others' thoughts on the above.
-
-I'll gather some more data too in the meantime :)
-
-> 
-> Thanks,
-> David
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
+index 0a51d2e32fab..e57efcc8522a 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
+@@ -760,30 +760,30 @@
  
---
-Thanks and Regards,
-Prateek
+ &gpio {
+ 	gpio-line-names =
+-	/*A0-A7*/	"","","","S0_BMC_SPECIAL_BOOT","","","","",
+-	/*B0-B7*/	"BMC_SELECT_EEPROM","","","",
+-			"POWER_BUTTON","","","",
++	/*A0-A7*/	"","","","host0-special-boot","","","","",
++	/*B0-B7*/	"i2c-backup-sel","","","",
++			"power-button","","","",
+ 	/*C0-C7*/	"","","","","","","","",
+ 	/*D0-D7*/	"","","","","","","","",
+ 	/*E0-E7*/	"","","","","","","","",
+-	/*F0-F7*/	"","","BMC_SYS_PSON_L","S0_DDR_SAVE","PGOOD",
+-			"S1_DDR_SAVE","","",
+-	/*G0-G7*/	"host0-ready","SHD_REQ_L","","S0_OVERTEMP_L","","",
++	/*F0-F7*/	"","","power-chassis-control","s0-ddr-save","power-chassis-good",
++			"s1-ddr-save","","",
++	/*G0-G7*/	"host0-ready","host0-shd-req-n","","s0-overtemp-n","","",
+ 			"","",
+-	/*H0-H7*/	"","","","","PSU1_VIN_GOOD","PSU2_VIN_GOOD","","",
+-	/*I0-I7*/	"PSU1_PRESENT","PSU2_PRESENT","S1_BMC_SPECIAL_BOOT",
+-			"","","","","",
+-	/*J0-J7*/	"S0_HIGHTEMP_L","S0_FAULT_L","S0_SCP_AUTH_FAIL_L","",
++	/*H0-H7*/	"","","","","ps0-vin-good","ps1-vin-good","","",
++	/*I0-I7*/	"presence-ps0","presence-ps1","s1-special-boot",
++				"","","","","",
++	/*J0-J7*/	"s0-hightemp-n","s0-fault-alert","s0-sys-auth-failure-n","",
+ 			"","","","",
+ 	/*K0-K7*/	"","","","","","","","",
+-	/*L0-L7*/       "","","","BMC_SYSRESET_L","SPI_AUTH_FAIL_L","","","",
++	/*L0-L7*/	"","","","host0-sysreset-n","s0-spi-auth-fail-n","","","",
+ 	/*M0-M7*/	"","","","","","","","",
+ 	/*N0-N7*/	"","","","","","","","",
+ 	/*O0-O7*/	"","","","","","","","",
+ 	/*P0-P7*/	"","","","","","","","",
+-	/*Q0-Q7*/	"","","","","","UID_BUTTON","","",
+-	/*R0-R7*/	"","","BMC_EXT_HIGHTEMP_L","OCP_AUX_PWREN",
+-			"OCP_MAIN_PWREN","RESET_BUTTON","","",
++	/*Q0-Q7*/	"","","","","","identify-button","","",
++	/*R0-R7*/	"","","ext-hightemp-n","",
++			"ocp-main-pwren","reset-button","","",
+ 	/*S0-S7*/	"","","","","rtc-battery-voltage-read-enable","","","",
+ 	/*T0-T7*/	"","","","","","","","",
+ 	/*U0-U7*/	"","","","","","","","",
+@@ -791,18 +791,18 @@
+ 	/*W0-W7*/	"","","","","","","","",
+ 	/*X0-X7*/	"","","","","","","","",
+ 	/*Y0-Y7*/	"","","","","","","","",
+-	/*Z0-Z7*/	"S0_BMC_PLIMIT","S1_FAULT_L","S1_FW_BOOT_OK","","",
+-			"S1_SCP_AUTH_FAIL_L","S1_OVERTEMP_L","",
++	/*Z0-Z7*/	"s0-plimit","s1-fault-alert","s1-fw-boot-ok","","",
++			"s1-sys-auth-failure-n","s1-overtemp-n","",
+ 	/*AA0-AA7*/	"","","","","","","","",
+-	/*AB0-AB7*/	"S1_HIGHTEMP_L","S1_BMC_PLIMIT","S0_BMC_DDR_ADDR",
+-			"S1_BMC_DDR_ADR","","","","",
+-	/*AC0-AC7*/	"SYS_PWR_GD","","","","","BMC_READY","SLAVE_PRESENT_L",
+-			"BMC_OCP_PG";
++	/*AB0-AB7*/	"s1-hightemp-n","s1-plimit","s0-ddr-addr",
++			"s1-ddr-addr","","","","",
++	/*AC0-AC7*/	"sys-pwr-gd","","","","","","presence-cpu1",
++			"ocp-pgood";
+ 
+ 	i2c4-o-en-hog {
+ 		gpio-hog;
+ 		gpios = <ASPEED_GPIO(Y, 2) GPIO_ACTIVE_HIGH>;
+ 		output-high;
+-		line-name = "BMC_I2C4_O_EN";
++		line-name = "i2c4-o-en";
+ 	};
+ };
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+index 0715cb9ab30c..2f571b43106d 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+@@ -599,17 +599,17 @@
+ 	/*Q0-Q7*/	"","","","","","","","",
+ 	/*R0-R7*/	"","","","","","","","",
+ 	/*S0-S7*/	"","","identify-button","led-identify",
+-			"s1-ddr-save","spi-nor-access","sys-pgood","presence-cpu1",
++			"s1-ddr-save","spi-nor-access","host0-ready","presence-cpu1",
+ 	/*T0-T7*/	"","","","","","","","",
+ 	/*U0-U7*/	"","","","","","","","",
+ 	/*V0-V7*/	"s0-hightemp-n","s0-fault-alert","s0-sys-auth-failure-n",
+-			"host0-reboot-ack-n","host0-ready","host0-shd-req-n",
++			"host0-reboot-ack-n","s0-fw-boot-ok","host0-shd-req-n",
+ 			"host0-shd-ack-n","s0-overtemp-n",
+ 	/*W0-W7*/	"","ocp-main-pwren","ocp-pgood","",
+ 			"bmc-ok","bmc-ready","spi0-program-sel","spi0-backup-sel",
+ 	/*X0-X7*/	"i2c-backup-sel","s1-fault-alert","s1-fw-boot-ok",
+ 			"s1-hightemp-n","s0-spi-auth-fail-n","s1-sys-auth-failure-n",
+-			"s1-overtemp-n","s1-spi-auth-fail-n",
++			"s1-overtemp-n","cpld-s1-spi-auth-fail-n",
+ 	/*Y0-Y7*/	"","","","","","","","host0-special-boot",
+ 	/*Z0-Z7*/	"reset-button","ps0-pgood","ps1-pgood","","","","","";
+ 
+-- 
+2.17.1
+
