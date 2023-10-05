@@ -2,45 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B65C7BA48E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A587BA475
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235303AbjJEQHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:07:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
+        id S240246AbjJEQFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 12:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239135AbjJEQEk (ORCPT
+        with ESMTP id S237478AbjJEQED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:04:40 -0400
+        Thu, 5 Oct 2023 12:04:03 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F862C28D;
-        Thu,  5 Oct 2023 07:27:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D20C0C36AE6;
-        Thu,  5 Oct 2023 13:11:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02AE95DFCF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 07:07:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EDC9C36AF0;
+        Thu,  5 Oct 2023 13:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696511505;
-        bh=AWa9aB3awlpYYHRZ8aPyhCDQYyEoopdnUDfWPzETdes=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p6vWk8D7UqoPbid+0FhB6M6Imd4+W70F2pTdH4/Q4Di/hpvz6wS5ho/RNBKGg1ApF
-         I+v2H2MPCvEXJoj4nkKuWSJtgT6mS0QSkE5fmm2WKZ0F/LW4+3SWD4KHoGyVNqHj31
-         ipyxc7LWFsO2Qe/iZ2Kb13wMsU/toS6ohUd2Po+uVKYoRed2sixluHhtMbPI10Ow/g
-         qdSe9zZuvYVUPKJ8BgruPfeIHRVHVFHfl8tkzs8++3ZK9EQfhfg8+hbthg8XroCT27
-         x+ikYyIEkHRvM3/Yj7+MoN6T7w5CN7PAEeHBM2W+fqa2NYFNM0PAL+YDWrRKsvQyH/
-         PqfVGoFvMSlzw==
-Date:   Thu, 5 Oct 2023 14:11:40 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v3 0/2] Match data improvements for pca955x driver
-Message-ID: <20231005131140.GC681678@google.com>
-References: <20230930175615.13301-1-biju.das.jz@bp.renesas.com>
+        s=k20201202; t=1696512582;
+        bh=eKVQkVdvM1LQ6mdxoEN/45x8ioQAGbo/3OSjYqGT/r0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aAWQyKUh4zUic5w8JBKR8q7LW20d07MjI5VXbf1ZNy1lm5Ck3Dat2QYjvA4xwfbh6
+         26SCzaTVtVL3YmmU0temuuhTrpvaPygIvxS8CZx5tdXKano1Prdgdf5GEHKLGNS4zv
+         rQcRIu68EyVNBFmpPxMI8ARH9pd23Do6Ek+twgfZ0h5FwkQz00ki+B+j6SnzmTiKZ2
+         TcH2QiBxBb6hF7djVLFHd4mNemkWrO25oRWaR8LY6WvN7gstiUSrjsIsJnC+tIIzPT
+         cTQAKDEhMkiqWJkfzABR9m8Qmlqbe3JkSUyfV5IgNG0Ne1kW9WMdLQL2PPnpGNYrBu
+         SZcrbTCr0LXzA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 693B640508; Thu,  5 Oct 2023 10:29:38 -0300 (-03)
+Date:   Thu, 5 Oct 2023 10:29:38 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH 1/1] perf symbols: Add 'intel_idle_ibrs' to the list of idle
+ symbols
+Message-ID: <ZR66Qgbcltt+zG7F@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230930175615.13301-1-biju.das.jz@bp.renesas.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -50,29 +55,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 Sep 2023, Biju Das wrote:
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-> This patch series aims to add match data improvements for pca955x driver.
-> 
-> This patch series is only compile tested.
-> 
-> v2->v3:
->  * Added Rb tag from Andy.
->  * Dropped tabs from struct pca955x.
-> v1->v2:
->  * Added Rb tag from Lee Jones for patch#1.
->  * Adeed patch#2 for cleanup of OF/ID table terminators.
-> 
-> Biju Das (2):
->   leds: pca955x: Convert enum->pointer for data in the match tables
->   leds: pca955x: Cleanup OF/ID table terminators
-> 
->  drivers/leds/leds-pca955x.c | 71 +++++++++++++++----------------------
->  1 file changed, 29 insertions(+), 42 deletions(-)
+This is a longstanding to do list entry: we need a way to see that a
+sample took place while in idle state, as the current way to do it is
+to infer that by the name of the functions that in such state have
+more samples, IOW: a hack.
 
-These no longer apply.
+Maybe we can do flip a bit in samples that take place inside the
+enter/exit idle section in do_idle()?
 
-Please rebase and submit a [RESEND] so I can apply them.
+But till then, add one more :-\
 
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+cc: FrÈdÈric Weisbecker <fweisbec@gmail.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Ingo Molnar <mingo@kernel.org>,
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/util/symbol.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+index 5b54d2639df4740e..3c7f483bf85bbdaf 100644
+--- a/tools/perf/util/symbol.c
++++ b/tools/perf/util/symbol.c
+@@ -718,6 +718,7 @@ static bool symbol__is_idle(const char *name)
+ 		"cpu_startup_entry",
+ 		"idle_cpu",
+ 		"intel_idle",
++		"intel_idle_ibrs",
+ 		"default_idle",
+ 		"native_safe_halt",
+ 		"enter_idle",
 -- 
-Lee Jones [ÊùéÁêºÊñØ]
+2.41.0
+
