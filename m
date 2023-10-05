@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2637BA0B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D938A7BA172
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238765AbjJEOlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
+        id S239218AbjJEOmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236755AbjJEOhD (ORCPT
+        with ESMTP id S234079AbjJEOhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:37:03 -0400
+        Thu, 5 Oct 2023 10:37:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B955835B6;
-        Thu,  5 Oct 2023 07:02:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D891C116A8;
-        Thu,  5 Oct 2023 08:04:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D794E357;
+        Thu,  5 Oct 2023 07:03:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DECBC116A9;
+        Thu,  5 Oct 2023 08:05:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696493083;
-        bh=n0iBSjPCJkTWykMjXg2IpQ/zpWh4QfV3NqOyRltJBhg=;
+        s=korg; t=1696493137;
+        bh=HoLOrIR292OK4LNCHKlQpciqwUF+riXC6qahbbVsLY4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZCfl+kBAeFYIZUswnR8uZMzh5QaIJPbx13BP7AgAhJj9nSlwojL7hm97zgFR+Yxm5
-         7/oFKTMm3x9km0Lwzc0wP8DTaW0x1ExhMFUQSaP0H9MdSTmVzeaD/awJ0BZawcZOeG
-         hjVoG3S3lyssDem651xtmzWvVyey+eIoIQcBc7p4=
-Date:   Thu, 5 Oct 2023 10:04:41 +0200
+        b=LTz+1BNHOgV0lFcjaazPlDTfyaTqmwjXZ/zZp7FcfA8XXEwjfSUYHShpjj2BefInh
+         UDjhAQCauP5lrbl1BakuefOU6Nq38/Rv2zRtjH3xG3RVUUxx0FmUYMfabK1w0rPk9F
+         S2FO8I/SGd6NLOJgfc5UvIr0ryhqcsgmMrdTDwBQ=
+Date:   Thu, 5 Oct 2023 10:05:35 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Umang Jain <umang.jain@ideasonboard.com>
 Cc:     linux-staging@lists.linux.dev,
@@ -38,15 +38,14 @@ Cc:     linux-staging@lists.linux.dev,
         Dave Stevenson <dave.stevenson@raspberrypi.com>,
         Kieran Bingham <kieran.bingham@ideasonboard.com>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v12 6/6] staging: bcm2835-audio: Register bcm2835-audio
- with vchiq_bus_type
-Message-ID: <2023100523-comprised-eggnog-bd20@gregkh>
+Subject: Re: [PATCH v12 0/6] staging: vc04_services: vchiq: Register devices
+ with a custom bus_type
+Message-ID: <2023100502-unwilling-bleach-b5ac@gregkh>
 References: <20230923143200.268063-1-umang.jain@ideasonboard.com>
- <20230923143200.268063-7-umang.jain@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230923143200.268063-7-umang.jain@ideasonboard.com>
+In-Reply-To: <20230923143200.268063-1-umang.jain@ideasonboard.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -57,21 +56,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 08:02:00PM +0530, Umang Jain wrote:
-> Similar to how bcm2385-camera device is registered, register the
-> bcm2835-audio with vchiq_bus_type as well.
+On Sat, Sep 23, 2023 at 08:01:54PM +0530, Umang Jain wrote:
+> The patch series added a new bus type vchiq_bus_type and registers
+> child devices in order to move them away from using platform
+> device/driver.
 > 
-> Since we moved away bcm2835-audio from platform driver/device,
-> we have to set the DMA mask explicitly. Set the DMA mask at probe
-> time.
-> 
-> Meanwhile at it, change the name and module alias from "bcm2835_audio"
-> to "bcm2835-audio" to be consistent with bcm2835-camera device. This
-> does not brings any functional change as '-' and '_' are
-> interchangeable as per modprobe man pages.
+> Tested on RPi-3-b with media tree master branch.
 
-Again, why is the module alias still needed?
-
-thanks,
+Thanks for sticking with this through so many different revisions. I
+only had minor comments on the series, you can address them in follow-on
+patches if needed (one at the least is needed.)  All are now queued up
+in my tree.
 
 greg k-h
