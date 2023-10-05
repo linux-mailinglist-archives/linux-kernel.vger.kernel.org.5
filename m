@@ -2,48 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD4A7BA0A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117997BA131
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237427AbjJEOjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45894 "EHLO
+        id S237387AbjJEOsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236463AbjJEOg1 (ORCPT
+        with ESMTP id S240104AbjJEOoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:36:27 -0400
+        Thu, 5 Oct 2023 10:44:55 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D9A40FA6;
-        Thu,  5 Oct 2023 06:59:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C6F4C4AF5D;
-        Thu,  5 Oct 2023 13:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696511864;
-        bh=zJHDnHWdgIbRM4Y1eO5Uc5GD/FiVY6eNJTs31x3OKu0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SN3M68fTBcN/+fgiT5mi5gxto21HPEE/ZmqljY2sx00hRsPp/RTlUDy69/4QX5fDt
-         +wOSSrz65JQAibM9qUqbAvU5wra5ySEb27H4fLT9KAQzDtUaYwTMR4AyDslFwpmme1
-         KyQNyevOhkIhYQjcpObKVUgTLuhEAfasbCCphb3/MTSPnKSBg9r/m39HHo5aAp4vae
-         tHDiPOG1l/mN4buIb9pQbf6brCwVvIYyobLG33I2Xc/M65qwe89S198eSeyqaDvCov
-         Z7tvwvY1rOrT82cYX3bcRnzxT6VE4KCtkCswe2tKIU/DaW0u76xFZk2RBmtFUxnBEs
-         iRWNqPNGQZHXA==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH v3 2/2] pwm: add T-HEAD PWM driver
-Date:   Thu,  5 Oct 2023 21:05:19 +0800
-Message-Id: <20231005130519.3864-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20231005130519.3864-1-jszhang@kernel.org>
-References: <20231005130519.3864-1-jszhang@kernel.org>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678452B910;
+        Thu,  5 Oct 2023 07:22:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CDE2C32774;
+        Thu,  5 Oct 2023 13:05:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696511124;
+        bh=shELxFK0t3LwvCqN1U6OFYPeGm+WwA3tp/gvX8oAO1I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D94BSBdr7sY08VP1z/72KHcCuKatVRlHnw7OPhGylpUYrij5KdM3eeTQc5zSKipOy
+         hcN0EL2x+6NDL4FQhHrPiGikTTycVowCqZRoToptzGzikAtjYDw2co50uObzftiZnw
+         8BNSx7BQeeCwM7X1qVAoaShLb7Xvc4gfIIk/FN4Q=
+Date:   Thu, 5 Oct 2023 15:05:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alistair Francis <alistair23@gmail.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        Jonathan.Cameron@huawei.com, lukas@wunner.de,
+        alex.williamson@redhat.com, christian.koenig@amd.com,
+        kch@nvidia.com, logang@deltatee.com, linux-kernel@vger.kernel.org,
+        chaitanyak@nvidia.com, rdunlap@infradead.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Subject: Re: [PATCH v6 2/3] sysfs: Add a attr_is_visible function to
+ attribute_group
+Message-ID: <2023100539-playgroup-stoppable-d5d4@gregkh>
+References: <20230817235810.596458-1-alistair.francis@wdc.com>
+ <20230817235810.596458-2-alistair.francis@wdc.com>
+ <2023081959-spinach-cherisher-b025@gregkh>
+ <CAKmqyKM+DNTF1f0FvDEda_db792Ta4w_uAKNTZ6E3NkYoVcPFQ@mail.gmail.com>
+ <2023082325-cognitive-dispose-1180@gregkh>
+ <CAKmqyKMMKJN7HU_achBc8S6-Jx16owrthwDDRWysMZe=jymnMA@mail.gmail.com>
+ <2023083111-impulsive-majestic-24ee@gregkh>
+ <2023083139-underling-amuser-772e@gregkh>
+ <2023090142-circling-probably-7828@gregkh>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2023090142-circling-probably-7828@gregkh>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -54,327 +60,459 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T-HEAD SoCs such as the TH1520 contain a PWM controller used
-to control the LCD backlight, fan and so on. Add driver for it.
+On Fri, Sep 01, 2023 at 11:00:59PM +0200, Greg KH wrote:
+> On Thu, Aug 31, 2023 at 04:36:13PM +0200, Greg KH wrote:
+> > On Thu, Aug 31, 2023 at 10:31:07AM +0200, Greg KH wrote:
+> > > On Mon, Aug 28, 2023 at 03:05:41PM +1000, Alistair Francis wrote:
+> > > > On Wed, Aug 23, 2023 at 5:02 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > On Tue, Aug 22, 2023 at 04:20:06PM -0400, Alistair Francis wrote:
+> > > > > > On Sat, Aug 19, 2023 at 6:57 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > > > >
+> > > > > > > On Thu, Aug 17, 2023 at 07:58:09PM -0400, Alistair Francis wrote:
+> > > > > > > > The documentation for sysfs_merge_group() specifically says
+> > > > > > > >
+> > > > > > > >     This function returns an error if the group doesn't exist or any of the
+> > > > > > > >     files already exist in that group, in which case none of the new files
+> > > > > > > >     are created.
+> > > > > > > >
+> > > > > > > > So just not adding the group if it's empty doesn't work, at least not
+> > > > > > > > with the code we currently have. The code can be changed to support
+> > > > > > > > this, but it is difficult to determine how this will affect existing use
+> > > > > > > > cases.
+> > > > > > >
+> > > > > > > Did you try?  I'd really really really prefer we do it this way as it's
+> > > > > > > much simpler overall to have the sysfs core "do the right thing
+> > > > > > > automatically" than to force each and every bus/subsystem to have to
+> > > > > > > manually add this type of attribute.
+> > > > > > >
+> > > > > > > Also, on a personal level, I want this function to work as it will allow
+> > > > > > > us to remove some code in some busses that don't really need to be there
+> > > > > > > (dynamic creation of some device attributes), which will then also allow
+> > > > > > > me to remove some apis in the driver core that should not be used at all
+> > > > > > > anymore (but keep creeping back in as there is still a few users.)
+> > > > > > >
+> > > > > > > So I'll be selfish here and say "please try to get my proposed change to
+> > > > > > > work, it's really the correct thing to do here."
+> > > > > >
+> > > > > > I did try!
+> > > > > >
+> > > > > > This is an attempt:
+> > > > > > https://github.com/alistair23/linux/commit/56b55756a2d7a66f7b6eb8a5692b1b5e2f81a9a9
+> > > > > >
+> > > > > > It is based on your original patch with a bunch of:
+> > > > > >
+> > > > > > if (!parent) {
+> > > > > >     parent = kernfs_create_dir_ns(kobj->sd, grp->name,
+> > > > > >                   S_IRWXU | S_IRUGO | S_IXUGO,
+> > > > > >                   uid, gid, kobj, NULL);
+> > > > > >     ...
+> > > > > >     }
+> > > > > >
+> > > > > >
+> > > > > > added throughout the code base.
+> > > > > >
+> > > > > > Very basic testing shows that it does what I need it to do and I don't
+> > > > > > see any kernel oops on boot.
+> > > > >
+> > > > > Nice!
+> > > > >
+> > > > > Mind if I take it and clean it up a bit and test with it here?  Again, I
+> > > > > need this functionality for other stuff as well, so getting it merged
+> > > > > for your feature is fine with me.
+> > > > 
+> > > > Sure! Go ahead. Sorry I was travelling last week.
+> > > > 
+> > > > >
+> > > > > > I prefer the approach I have in this mailing list patch. But if you
+> > > > > > like the commit mentioned above I can tidy and clean it up and then
+> > > > > > use that instead
+> > > > >
+> > > > > I would rather do it this way.  I can work on this on Friday if you want
+> > > > > me to.
+> > > > 
+> > > > Yeah, that's fine with me. If you aren't able to let me know and I can
+> > > > finish up the patch and send it with this series
+> > > 
+> > > Great, and for the email record, as github links are not stable, here's
+> > > the patch that you have above attached below.  I'll test this out and
+> > > clean it up a bit more and see how it goes...
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > > 
+> > > 
+> > > From 2929d17b58d02dcf52d0345fa966c616e09a5afa Mon Sep 17 00:00:00 2001
+> > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Date: Wed, 24 Aug 2022 15:45:36 +0200
+> > > Subject: [PATCH] sysfs: do not create empty directories if no attributes are
+> > >  present
+> > > 
+> > > When creating an attribute group, if it is named a subdirectory is
+> > > created and the sysfs files are placed into that subdirectory.  If no
+> > > files are created, normally the directory would still be present, but it
+> > > would be empty.  Clean this up by removing the directory if no files
+> > > were successfully created in the group at all.
+> > > 
+> > > Co-developed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Co-developed-by: Alistair Francis <alistair.francis@wdc.com>
+> > > Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+> > > ---
+> > >  fs/sysfs/file.c  | 14 ++++++++++--
+> > >  fs/sysfs/group.c | 56 ++++++++++++++++++++++++++++++++++++------------
+> > >  2 files changed, 54 insertions(+), 16 deletions(-)
+> > > 
+> > > diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
+> > > index a12ac0356c69..7aab6c09662c 100644
+> > > --- a/fs/sysfs/file.c
+> > > +++ b/fs/sysfs/file.c
+> > > @@ -391,8 +391,18 @@ int sysfs_add_file_to_group(struct kobject *kobj,
+> > >  		kernfs_get(parent);
+> > >  	}
+> > >  
+> > > -	if (!parent)
+> > > -		return -ENOENT;
+> > > +	if (!parent) {
+> > > +		parent = kernfs_create_dir_ns(kobj->sd, group,
+> > > +					  S_IRWXU | S_IRUGO | S_IXUGO,
+> > > +					  uid, gid, kobj, NULL);
+> > > +		if (IS_ERR(parent)) {
+> > > +			if (PTR_ERR(parent) == -EEXIST)
+> > > +				sysfs_warn_dup(kobj->sd, group);
+> > > +			return PTR_ERR(parent);
+> > > +		}
+> > > +
+> > > +		kernfs_get(parent);
+> > > +	}
+> > >  
+> > >  	kobject_get_ownership(kobj, &uid, &gid);
+> > >  	error = sysfs_add_file_mode_ns(parent, attr, attr->mode, uid, gid,
+> > > diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
+> > > index 138676463336..013fa333cd3c 100644
+> > > --- a/fs/sysfs/group.c
+> > > +++ b/fs/sysfs/group.c
+> > > @@ -31,12 +31,14 @@ static void remove_files(struct kernfs_node *parent,
+> > >  			kernfs_remove_by_name(parent, (*bin_attr)->attr.name);
+> > >  }
+> > >  
+> > > +/* returns -ERROR if error, or >= 0 for number of files actually created */
+> > >  static int create_files(struct kernfs_node *parent, struct kobject *kobj,
+> > >  			kuid_t uid, kgid_t gid,
+> > >  			const struct attribute_group *grp, int update)
+> > >  {
+> > >  	struct attribute *const *attr;
+> > >  	struct bin_attribute *const *bin_attr;
+> > > +	int files_created = 0;
+> > >  	int error = 0, i;
+> > >  
+> > >  	if (grp->attrs) {
+> > > @@ -65,6 +67,8 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
+> > >  						       gid, NULL);
+> > >  			if (unlikely(error))
+> > >  				break;
+> > > +
+> > > +			files_created++;
+> > >  		}
+> > >  		if (error) {
+> > >  			remove_files(parent, grp);
+> > > @@ -95,12 +99,15 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
+> > >  							   NULL);
+> > >  			if (error)
+> > >  				break;
+> > > +			files_created++;
+> > >  		}
+> > >  		if (error)
+> > >  			remove_files(parent, grp);
+> > >  	}
+> > >  exit:
+> > > -	return error;
+> > > +	if (error)
+> > > +		return error;
+> > > +	return files_created;
+> > >  }
+> > >  
+> > >  
+> > > @@ -130,9 +137,14 @@ static int internal_create_group(struct kobject *kobj, int update,
+> > >  		if (update) {
+> > >  			kn = kernfs_find_and_get(kobj->sd, grp->name);
+> > >  			if (!kn) {
+> > > -				pr_warn("Can't update unknown attr grp name: %s/%s\n",
+> > > -					kobj->name, grp->name);
+> > > -				return -EINVAL;
+> > > +				kn = kernfs_create_dir_ns(kobj->sd, grp->name,
+> > > +							  S_IRWXU | S_IRUGO | S_IXUGO,
+> > > +							  uid, gid, kobj, NULL);
+> > > +				if (IS_ERR(kn)) {
+> > > +					if (PTR_ERR(kn) == -EEXIST)
+> > > +						sysfs_warn_dup(kobj->sd, grp->name);
+> > > +					return PTR_ERR(kn);
+> > > +				}
+> > >  			}
+> > >  		} else {
+> > >  			kn = kernfs_create_dir_ns(kobj->sd, grp->name,
+> > > @@ -150,11 +162,18 @@ static int internal_create_group(struct kobject *kobj, int update,
+> > >  
+> > >  	kernfs_get(kn);
+> > >  	error = create_files(kn, kobj, uid, gid, grp, update);
+> > > -	if (error) {
+> > > +	if (error <= 0) {
+> > > +		/*
+> > > +		 * If an error happened _OR_ if no files were created in the
+> > > +		 * attribute group, and we have a name for this group, delete
+> > > +		 * the name so there's not an empty directory.
+> > > +		 */
+> > >  		if (grp->name)
+> > >  			kernfs_remove(kn);
+> > > +	} else {
+> > > +		error = 0;
+> > > +		kernfs_put(kn);
+> > >  	}
+> > > -	kernfs_put(kn);
+> > >  
+> > >  	if (grp->name && update)
+> > >  		kernfs_put(kn);
+> > > @@ -318,13 +337,12 @@ void sysfs_remove_groups(struct kobject *kobj,
+> > >  EXPORT_SYMBOL_GPL(sysfs_remove_groups);
+> > >  
+> > >  /**
+> > > - * sysfs_merge_group - merge files into a pre-existing attribute group.
+> > > + * sysfs_merge_group - merge files into a attribute group.
+> > >   * @kobj:	The kobject containing the group.
+> > >   * @grp:	The files to create and the attribute group they belong to.
+> > >   *
+> > > - * This function returns an error if the group doesn't exist or any of the
+> > > - * files already exist in that group, in which case none of the new files
+> > > - * are created.
+> > > + * This function returns an error if any of the files already exist in
+> > > + * that group, in which case none of the new files are created.
+> > >   */
+> > >  int sysfs_merge_group(struct kobject *kobj,
+> > >  		       const struct attribute_group *grp)
+> > > @@ -336,12 +354,22 @@ int sysfs_merge_group(struct kobject *kobj,
+> > >  	struct attribute *const *attr;
+> > >  	int i;
+> > >  
+> > > -	parent = kernfs_find_and_get(kobj->sd, grp->name);
+> > > -	if (!parent)
+> > > -		return -ENOENT;
+> > > -
+> > >  	kobject_get_ownership(kobj, &uid, &gid);
+> > >  
+> > > +	parent = kernfs_find_and_get(kobj->sd, grp->name);
+> > > +	if (!parent) {
+> > > +		parent = kernfs_create_dir_ns(kobj->sd, grp->name,
+> > > +					  S_IRWXU | S_IRUGO | S_IXUGO,
+> > > +					  uid, gid, kobj, NULL);
+> > > +		if (IS_ERR(parent)) {
+> > > +			if (PTR_ERR(parent) == -EEXIST)
+> > > +				sysfs_warn_dup(kobj->sd, grp->name);
+> > > +			return PTR_ERR(parent);
+> > > +		}
+> > > +
+> > > +		kernfs_get(parent);
+> > > +	}
+> > > +
+> > >  	for ((i = 0, attr = grp->attrs); *attr && !error; (++i, ++attr))
+> > >  		error = sysfs_add_file_mode_ns(parent, *attr, (*attr)->mode,
+> > >  					       uid, gid, NULL);
+> > > -- 
+> > > 2.42.0
+> > > 
+> > 
+> > And as the 0-day bot just showed, this patch isn't going to work
+> > properly, the uid/gid stuff isn't all hooked up properly, I'll work on
+> > fixing that up when I get some cycles...
+> 
+> Oops, nope, that was my fault in applying this to my tree, sorry for the
+> noise...
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+And I just got around to testing this, and it does not boot at all.
+Below is the patch I am using, are you sure you got this to boot for
+you?
+
+thanks,
+
+greg k-h
+
+From db537de5a5af649b594604e2de177527f890878d Mon Sep 17 00:00:00 2001
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date: Wed, 24 Aug 2022 15:45:36 +0200
+Subject: [PATCH] sysfs: do not create empty directories if no attributes are
+ present
+
+When creating an attribute group, if it is named a subdirectory is
+created and the sysfs files are placed into that subdirectory.  If no
+files are created, normally the directory would still be present, but it
+would be empty.  Clean this up by removing the directory if no files
+were successfully created in the group at all.
+
+Co-developed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Co-developed-by: Alistair Francis <alistair.francis@wdc.com>
+Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
 ---
- drivers/pwm/Kconfig     |  11 ++
- drivers/pwm/Makefile    |   1 +
- drivers/pwm/pwm-thead.c | 270 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 282 insertions(+)
- create mode 100644 drivers/pwm/pwm-thead.c
+ fs/sysfs/file.c  | 16 +++++++++++---
+ fs/sysfs/group.c | 56 ++++++++++++++++++++++++++++++++++++------------
+ 2 files changed, 55 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 8ebcddf91f7b..428fa365a19a 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -637,6 +637,17 @@ config PWM_TEGRA
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called pwm-tegra.
+diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
+index a12ac0356c69..9f79ec193ffe 100644
+--- a/fs/sysfs/file.c
++++ b/fs/sysfs/file.c
+@@ -391,10 +391,20 @@ int sysfs_add_file_to_group(struct kobject *kobj,
+ 		kernfs_get(parent);
+ 	}
  
-+config PWM_THEAD
-+	tristate "T-HEAD PWM support"
-+	depends on ARCH_THEAD || COMPILE_TEST
-+	depends on HAS_IOMEM
-+	help
-+	  Generic PWM framework driver for the PWFM controller found on THEAD
-+	  SoCs.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called pwm-thead.
-+
- config PWM_TIECAP
- 	tristate "ECAP PWM support"
- 	depends on ARCH_OMAP2PLUS || ARCH_DAVINCI_DA8XX || ARCH_KEYSTONE || ARCH_K3 || COMPILE_TEST
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index c822389c2a24..4c317e6316e8 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -59,6 +59,7 @@ obj-$(CONFIG_PWM_STMPE)		+= pwm-stmpe.o
- obj-$(CONFIG_PWM_SUN4I)		+= pwm-sun4i.o
- obj-$(CONFIG_PWM_SUNPLUS)	+= pwm-sunplus.o
- obj-$(CONFIG_PWM_TEGRA)		+= pwm-tegra.o
-+obj-$(CONFIG_PWM_THEAD)		+= pwm-thead.o
- obj-$(CONFIG_PWM_TIECAP)	+= pwm-tiecap.o
- obj-$(CONFIG_PWM_TIEHRPWM)	+= pwm-tiehrpwm.o
- obj-$(CONFIG_PWM_TWL)		+= pwm-twl.o
-diff --git a/drivers/pwm/pwm-thead.c b/drivers/pwm/pwm-thead.c
-new file mode 100644
-index 000000000000..3b9ffddfe33d
---- /dev/null
-+++ b/drivers/pwm/pwm-thead.c
-@@ -0,0 +1,270 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * T-HEAD PWM driver
-+ *
-+ * Copyright (C) 2021 Alibaba Group Holding Limited.
-+ * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-+ *
-+ * Limitations:
-+ * - The THEAD_PWM_CTRL_START bit is only effective when 0 -> 1, which is used
-+ *   to start the channel, 1 -> 0 doesn't change anything. so 0 % duty cycle
-+ *   is used to "disable" the channel.
-+ * - The THEAD_PWM_CTRL_START bit is automatically cleared once PWM channel is
-+ *   started.
-+ * - The THEAD_PWM_CFG_UPDATE atomically updates and only updates period and duty.
-+ * - To update period and duty, THEAD_PWM_CFG_UPDATE needs to go through 0 -> 1
-+ *   step, I.E if THEAD_PWM_CFG_UPDATE is already 1, it's necessary to clear it
-+ *   to 0 beforehand.
-+ * - Polarity can only be changed if never started before.
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/pwm.h>
-+#include <linux/slab.h>
-+
-+#define THEAD_PWM_MAX_NUM		6
-+#define THEAD_PWM_MAX_PERIOD		GENMASK(31, 0)
-+#define THEAD_PWM_MAX_DUTY		GENMASK(31, 0)
-+
-+#define THEAD_PWM_CHN_BASE(n)		((n) * 0x20)
-+#define THEAD_PWM_CTRL(n)		(THEAD_PWM_CHN_BASE(n) + 0x00)
-+#define  THEAD_PWM_CTRL_START		BIT(0)
-+#define  THEAD_PWM_CTRL_SOFT_RST		BIT(1)
-+#define  THEAD_PWM_CTRL_CFG_UPDATE	BIT(2)
-+#define  THEAD_PWM_CTRL_INTEN		BIT(3)
-+#define  THEAD_PWM_CTRL_MODE		GENMASK(5, 4)
-+#define  THEAD_PWM_CTRL_MODE_CONTINUOUS	FIELD_PREP(THEAD_PWM_CTRL_MODE, 2)
-+#define  THEAD_PWM_CTRL_EVTRIG		GENMASK(7, 6)
-+#define  THEAD_PWM_CTRL_FPOUT		BIT(8)
-+#define  THEAD_PWM_CTRL_INFACTOUT	BIT(9)
-+#define THEAD_PWM_RPT(n)		(THEAD_PWM_CHN_BASE(n) + 0x04)
-+#define THEAD_PWM_PER(n)		(THEAD_PWM_CHN_BASE(n) + 0x08)
-+#define THEAD_PWM_FP(n)			(THEAD_PWM_CHN_BASE(n) + 0x0c)
-+#define THEAD_PWM_STATUS(n)		(THEAD_PWM_CHN_BASE(n) + 0x10)
-+#define  THEAD_PWM_STATUS_CYCLE		GENMASK(7, 0)
-+
-+struct thead_pwm_chip {
-+	struct pwm_chip chip;
-+	void __iomem *mmio_base;
-+	struct clk *clk;
-+	u8 channel_ever_started;
-+};
-+
-+static inline struct thead_pwm_chip *thead_pwm_from_chip(struct pwm_chip *chip)
-+{
-+	return container_of(chip, struct thead_pwm_chip, chip);
-+}
-+
-+static int thead_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-+			   const struct pwm_state *state)
-+{
-+	struct thead_pwm_chip *priv = thead_pwm_from_chip(chip);
-+	u32 val = THEAD_PWM_CTRL_INFACTOUT | THEAD_PWM_CTRL_FPOUT | THEAD_PWM_CTRL_MODE_CONTINUOUS;
-+	u64 period_cycle, duty_cycle, rate;
-+	int ret;
-+
-+	/* if ever started, can't change the polarity */
-+	if ((priv->channel_ever_started & (1 << pwm->hwpwm)) &&
-+	    state->polarity != pwm->state.polarity)
-+		return -EINVAL;
-+
-+	if (!state->enabled) {
-+		if (pwm->state.enabled) {
-+			val = readl(priv->mmio_base + THEAD_PWM_CTRL(pwm->hwpwm));
-+			val &= ~THEAD_PWM_CTRL_CFG_UPDATE;
-+			writel(val, priv->mmio_base + THEAD_PWM_CTRL(pwm->hwpwm));
-+
-+			writel(0, priv->mmio_base + THEAD_PWM_FP(pwm->hwpwm));
-+
-+			val |= THEAD_PWM_CTRL_CFG_UPDATE;
-+			writel(val, priv->mmio_base + THEAD_PWM_CTRL(pwm->hwpwm));
-+			pm_runtime_put_sync(chip->dev);
+-	if (!parent)
+-		return -ENOENT;
+-
+ 	kobject_get_ownership(kobj, &uid, &gid);
++	if (!parent) {
++		parent = kernfs_create_dir_ns(kobj->sd, group,
++					  S_IRWXU | S_IRUGO | S_IXUGO,
++					  uid, gid, kobj, NULL);
++		if (IS_ERR(parent)) {
++			if (PTR_ERR(parent) == -EEXIST)
++				sysfs_warn_dup(kobj->sd, group);
++			return PTR_ERR(parent);
 +		}
-+		return 0;
++
++		kernfs_get(parent);
 +	}
 +
-+	if (!pwm->state.enabled) {
-+		ret = pm_runtime_resume_and_get(chip->dev);
-+		if (ret < 0)
-+			return ret;
+ 	error = sysfs_add_file_mode_ns(parent, attr, attr->mode, uid, gid,
+ 				       NULL);
+ 	kernfs_put(parent);
+diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
+index 138676463336..013fa333cd3c 100644
+--- a/fs/sysfs/group.c
++++ b/fs/sysfs/group.c
+@@ -31,12 +31,14 @@ static void remove_files(struct kernfs_node *parent,
+ 			kernfs_remove_by_name(parent, (*bin_attr)->attr.name);
+ }
+ 
++/* returns -ERROR if error, or >= 0 for number of files actually created */
+ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
+ 			kuid_t uid, kgid_t gid,
+ 			const struct attribute_group *grp, int update)
+ {
+ 	struct attribute *const *attr;
+ 	struct bin_attribute *const *bin_attr;
++	int files_created = 0;
+ 	int error = 0, i;
+ 
+ 	if (grp->attrs) {
+@@ -65,6 +67,8 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
+ 						       gid, NULL);
+ 			if (unlikely(error))
+ 				break;
++
++			files_created++;
+ 		}
+ 		if (error) {
+ 			remove_files(parent, grp);
+@@ -95,12 +99,15 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
+ 							   NULL);
+ 			if (error)
+ 				break;
++			files_created++;
+ 		}
+ 		if (error)
+ 			remove_files(parent, grp);
+ 	}
+ exit:
+-	return error;
++	if (error)
++		return error;
++	return files_created;
+ }
+ 
+ 
+@@ -130,9 +137,14 @@ static int internal_create_group(struct kobject *kobj, int update,
+ 		if (update) {
+ 			kn = kernfs_find_and_get(kobj->sd, grp->name);
+ 			if (!kn) {
+-				pr_warn("Can't update unknown attr grp name: %s/%s\n",
+-					kobj->name, grp->name);
+-				return -EINVAL;
++				kn = kernfs_create_dir_ns(kobj->sd, grp->name,
++							  S_IRWXU | S_IRUGO | S_IXUGO,
++							  uid, gid, kobj, NULL);
++				if (IS_ERR(kn)) {
++					if (PTR_ERR(kn) == -EEXIST)
++						sysfs_warn_dup(kobj->sd, grp->name);
++					return PTR_ERR(kn);
++				}
+ 			}
+ 		} else {
+ 			kn = kernfs_create_dir_ns(kobj->sd, grp->name,
+@@ -150,11 +162,18 @@ static int internal_create_group(struct kobject *kobj, int update,
+ 
+ 	kernfs_get(kn);
+ 	error = create_files(kn, kobj, uid, gid, grp, update);
+-	if (error) {
++	if (error <= 0) {
++		/*
++		 * If an error happened _OR_ if no files were created in the
++		 * attribute group, and we have a name for this group, delete
++		 * the name so there's not an empty directory.
++		 */
+ 		if (grp->name)
+ 			kernfs_remove(kn);
++	} else {
++		error = 0;
++		kernfs_put(kn);
+ 	}
+-	kernfs_put(kn);
+ 
+ 	if (grp->name && update)
+ 		kernfs_put(kn);
+@@ -318,13 +337,12 @@ void sysfs_remove_groups(struct kobject *kobj,
+ EXPORT_SYMBOL_GPL(sysfs_remove_groups);
+ 
+ /**
+- * sysfs_merge_group - merge files into a pre-existing attribute group.
++ * sysfs_merge_group - merge files into a attribute group.
+  * @kobj:	The kobject containing the group.
+  * @grp:	The files to create and the attribute group they belong to.
+  *
+- * This function returns an error if the group doesn't exist or any of the
+- * files already exist in that group, in which case none of the new files
+- * are created.
++ * This function returns an error if any of the files already exist in
++ * that group, in which case none of the new files are created.
+  */
+ int sysfs_merge_group(struct kobject *kobj,
+ 		       const struct attribute_group *grp)
+@@ -336,12 +354,22 @@ int sysfs_merge_group(struct kobject *kobj,
+ 	struct attribute *const *attr;
+ 	int i;
+ 
+-	parent = kernfs_find_and_get(kobj->sd, grp->name);
+-	if (!parent)
+-		return -ENOENT;
+-
+ 	kobject_get_ownership(kobj, &uid, &gid);
+ 
++	parent = kernfs_find_and_get(kobj->sd, grp->name);
++	if (!parent) {
++		parent = kernfs_create_dir_ns(kobj->sd, grp->name,
++					  S_IRWXU | S_IRUGO | S_IXUGO,
++					  uid, gid, kobj, NULL);
++		if (IS_ERR(parent)) {
++			if (PTR_ERR(parent) == -EEXIST)
++				sysfs_warn_dup(kobj->sd, grp->name);
++			return PTR_ERR(parent);
++		}
++
++		kernfs_get(parent);
 +	}
 +
-+	if (state->polarity == PWM_POLARITY_INVERSED)
-+		val &= ~THEAD_PWM_CTRL_FPOUT;
-+
-+	writel(val, priv->mmio_base + THEAD_PWM_CTRL(pwm->hwpwm));
-+
-+	rate = clk_get_rate(priv->clk);
-+	/*
-+	 * The following calculations might overflow if clk is bigger
-+	 * than 1 GHz. In practise it's 24MHz, so this limitation
-+	 * is only theoretic.
-+	 */
-+	if (rate > NSEC_PER_SEC)
-+		return -EINVAL;
-+
-+	period_cycle = mul_u64_u64_div_u64(rate, state->period, NSEC_PER_SEC);
-+	if (period_cycle > THEAD_PWM_MAX_PERIOD)
-+		period_cycle = THEAD_PWM_MAX_PERIOD;
-+	/*
-+	 * With limitation above we have period_cycle <= THEAD_PWM_MAX_PERIOD,
-+	 * so this cannot overflow.
-+	 */
-+	writel(period_cycle, priv->mmio_base + THEAD_PWM_PER(pwm->hwpwm));
-+
-+	duty_cycle = mul_u64_u64_div_u64(rate, state->duty_cycle, NSEC_PER_SEC);
-+	if (duty_cycle > THEAD_PWM_MAX_DUTY)
-+		duty_cycle = THEAD_PWM_MAX_DUTY;
-+	/*
-+	 * With limitation above we have duty_cycle <= THEAD_PWM_MAX_DUTY,
-+	 * so this cannot overflow.
-+	 */
-+	writel(duty_cycle, priv->mmio_base + THEAD_PWM_FP(pwm->hwpwm));
-+
-+	val |= THEAD_PWM_CTRL_CFG_UPDATE;
-+	writel(val, priv->mmio_base + THEAD_PWM_CTRL(pwm->hwpwm));
-+
-+	if (!pwm->state.enabled) {
-+		val |= THEAD_PWM_CTRL_START;
-+		writel(val, priv->mmio_base + THEAD_PWM_CTRL(pwm->hwpwm));
-+		priv->channel_ever_started |= 1 << pwm->hwpwm;
-+	}
-+
-+	return 0;
-+}
-+
-+static int thead_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-+			       struct pwm_state *state)
-+{
-+	struct thead_pwm_chip *priv = thead_pwm_from_chip(chip);
-+	u64 rate = clk_get_rate(priv->clk);
-+	u32 val;
-+	int ret;
-+
-+	ret = pm_runtime_resume_and_get(chip->dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	val = readl(priv->mmio_base + THEAD_PWM_CTRL(pwm->hwpwm));
-+	if (val & THEAD_PWM_CTRL_FPOUT)
-+		state->polarity = PWM_POLARITY_NORMAL;
-+	else
-+		state->polarity = PWM_POLARITY_INVERSED;
-+
-+	val = readl(priv->mmio_base + THEAD_PWM_PER(pwm->hwpwm));
-+	/*
-+	 * val 32 bits, multiply NSEC_PER_SEC, won't overflow.
-+	 */
-+	state->period = DIV64_U64_ROUND_UP((u64)val * NSEC_PER_SEC, rate);
-+
-+	val = readl(priv->mmio_base + THEAD_PWM_FP(pwm->hwpwm));
-+	state->enabled = !!val;
-+	/*
-+	 * val 32 bits, multiply NSEC_PER_SEC, won't overflow.
-+	 */
-+	state->duty_cycle = DIV64_U64_ROUND_UP((u64)val * NSEC_PER_SEC, rate);
-+
-+	pm_runtime_put_sync(chip->dev);
-+
-+	return 0;
-+}
-+
-+static const struct pwm_ops thead_pwm_ops = {
-+	.apply = thead_pwm_apply,
-+	.get_state = thead_pwm_get_state,
-+	.owner = THIS_MODULE,
-+};
-+
-+static int __maybe_unused thead_pwm_runtime_suspend(struct device *dev)
-+{
-+	struct thead_pwm_chip *priv = dev_get_drvdata(dev);
-+
-+	clk_disable_unprepare(priv->clk);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused thead_pwm_runtime_resume(struct device *dev)
-+{
-+	struct thead_pwm_chip *priv = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret)
-+		dev_err(dev, "failed to enable pwm clock(%pe)\n", ERR_PTR(ret));
-+
-+	return ret;
-+}
-+
-+static int thead_pwm_probe(struct platform_device *pdev)
-+{
-+	struct thead_pwm_chip *priv;
-+	int ret, i;
-+	u32 val;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	priv->mmio_base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->mmio_base))
-+		return PTR_ERR(priv->mmio_base);
-+
-+	priv->clk = devm_clk_get_enabled(&pdev->dev, NULL);
-+	if (IS_ERR(priv->clk))
-+		return PTR_ERR(priv->clk);
-+
-+	priv->chip.ops = &thead_pwm_ops;
-+	priv->chip.dev = &pdev->dev;
-+	priv->chip.npwm = THEAD_PWM_MAX_NUM;
-+
-+	/* check whether PWM is ever started or not */
-+	for (i = 0; i < priv->chip.npwm; i++) {
-+		val = readl(priv->mmio_base + THEAD_PWM_FP(i));
-+		if (val)
-+			priv->channel_ever_started |= 1 << i;
-+	}
-+
-+	ret = devm_pwmchip_add(&pdev->dev, &priv->chip);
-+	if (ret)
-+		return ret;
-+
-+	devm_pm_runtime_enable(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id thead_pwm_dt_ids[] = {
-+	{.compatible = "thead,th1520-pwm",},
-+	{/* sentinel */}
-+};
-+MODULE_DEVICE_TABLE(of, thead_pwm_dt_ids);
-+
-+static const struct dev_pm_ops thead_pwm_pm_ops = {
-+	SET_RUNTIME_PM_OPS(thead_pwm_runtime_suspend, thead_pwm_runtime_resume, NULL)
-+};
-+
-+static struct platform_driver thead_pwm_driver = {
-+	.driver = {
-+		.name = "thead-pwm",
-+		.of_match_table = thead_pwm_dt_ids,
-+		.pm = &thead_pwm_pm_ops,
-+	},
-+	.probe = thead_pwm_probe,
-+};
-+module_platform_driver(thead_pwm_driver);
-+
-+MODULE_AUTHOR("Wei Liu <lw312886@linux.alibaba.com>");
-+MODULE_AUTHOR("Jisheng Zhang <jszhang@kernel.org>");
-+MODULE_DESCRIPTION("T-HEAD pwm driver");
-+MODULE_LICENSE("GPL v2");
+ 	for ((i = 0, attr = grp->attrs); *attr && !error; (++i, ++attr))
+ 		error = sysfs_add_file_mode_ns(parent, *attr, (*attr)->mode,
+ 					       uid, gid, NULL);
 -- 
-2.40.1
+2.42.0
 
