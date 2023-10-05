@@ -2,179 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 377AD7BA72F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 18:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58ED57BA740
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 19:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbjJEQ5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 12:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38600 "EHLO
+        id S230046AbjJERC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 13:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbjJEQ4E (ORCPT
+        with ESMTP id S230180AbjJERBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:56:04 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E72A6709;
-        Thu,  5 Oct 2023 09:45:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1696524324;
-        bh=Wc1ok2Vt/Cz1nLVIzQ7UVMt9OEsxSir8ZCwThJY4DII=;
-        h=From:Date:Subject:To:Cc:From;
-        b=pf6MI9w02YAqmeQoh5kTBhBv1hZ+Nx2heGQD+43k8y0+++2HopB7ZHD4gTa5c8GLB
-         Msuu5LS7U36v41vTIgkiLTnWvUaMPtdYq2ybR5OIpLTTc68tATr2M0hjlMj3OPBgbK
-         WVHS41sgn38d/ze/FIrvAOLJEcAjGzhagVvzjjC8=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Thu, 05 Oct 2023 18:45:07 +0200
-Subject: [PATCH RFC] tools/nolibc: add support for constructors and
- destructors
+        Thu, 5 Oct 2023 13:01:10 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76117D90
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 09:47:39 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d8164e661abso1296031276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 09:47:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1696524459; x=1697129259; darn=vger.kernel.org;
+        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=q1I4v2Ndh5Su4u2mCUC1g3qJD2ulXbPQGqtauWY2rqM=;
+        b=WKAmmYAJRtViLMyLQvJWWUOqOIJiZNd3iEN12m5yR4vUqUZcqXteXxvLRui4PU19CP
+         swjI7C4ywgeEfFNk+8z3INV4ynf4mxPfWaG1GGTK7QEaqvG25EaNui3maeaUGvDNzsBD
+         7+RmPenT5VsHx802VQ3mliWtkEplO5KOuALJM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696524459; x=1697129259;
+        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=q1I4v2Ndh5Su4u2mCUC1g3qJD2ulXbPQGqtauWY2rqM=;
+        b=XCMbIdW/bmAU1FFMkSNvnCUKUOCMQUmPCodkq67y3syEPsDHnP262XyKVp+wvTJc7k
+         9W3Q6/it/Fha+6iwvv10Y4ibvCEtHHP+0B6XmZthq11dpsAvSVu8NVPb5YeMLiUCpH5v
+         skGlq4l2b079PCHnf2U1HKmUmIfs9hkzGh42GfGNMeBrBKJgtYc2i0TjcpcTP3zgdJvC
+         7u3dmL4SPSQznf5rKdil7wuiBTkCy31cHtx1B2toyR/Vv2JYfpx2ziZzrIFLe0bKZaZp
+         TqAtkVW4dKwUVea+L3r9AiCDgEut9TdQaIgyIKk7z0wTW0gwVmchjntE+V+RmwceTGdp
+         EZNA==
+X-Gm-Message-State: AOJu0YxC6d6hayMvsFuiQMNeWN4P1w00p4ro6msIf1w0YgVHRiBBTHYX
+        StHPfyDY+PA0ZP9DsnOg7lFW2A==
+X-Google-Smtp-Source: AGHT+IHUvbeX/9TMTGXpNeMZiRb9jaigp92I+hDJiGNTjvImbmpxdtAVzNB0BDPzxvh0h2OlThcAVA==
+X-Received: by 2002:a25:8b84:0:b0:d09:34f4:6698 with SMTP id j4-20020a258b84000000b00d0934f46698mr4993619ybl.36.1696524458725;
+        Thu, 05 Oct 2023 09:47:38 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x15-20020a0ce0cf000000b0065b2e561c17sm623761qvk.123.2023.10.05.09.47.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 09:47:38 -0700 (PDT)
+From:   Florian Fainelli <florian.fainelli@broadcom.com>
+To:     linux-pwm@vger.kernel.org
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX
+        ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] pwm: brcmstb: Checked clk_prepare_enable() return value
+Date:   Thu,  5 Oct 2023 09:47:27 -0700
+Message-Id: <20231005164728.1846726-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231005-nolibc-constructors-v1-1-776d56bbe917@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIABLoHmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDAwNT3bz8nMykZN3k/LzikqLS5JL8omLdJKPE1KS0tFTLJDNTJaDOgqL
- UtMwKsKnRSkFuzkqxtbUAg2H1n2oAAAA=
-To:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696524324; l=4282;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=Wc1ok2Vt/Cz1nLVIzQ7UVMt9OEsxSir8ZCwThJY4DII=;
- b=vdgrOYquQea5IRXxwz7Ybi5UIa6ZR7BpUl/sKN4wBErVSIS/mB/R+TMRG/F4lDRMRlcnlDofg
- DbzWTbul1utBj9Y4hk++QZoxOPWCrI0nmDzXb1vRi9eHJpHHvZ0G05W
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000bccc490606fae176"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the startup code moved to C, implementing support for
-constructors and deconstructors is fairly easy to implement.
+--000000000000bccc490606fae176
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Examples for code size impact:
+Check the clk_prepare_enable() return value and propagate it.
 
-   text	   data	    bss	    dec	    hex	filename
-  21837	    104	     88	  22029	   560d	nolibc-test.before
-  22135	    120	     88	  22343	   5747	nolibc-test.after
-  21970	    104	     88	  22162	   5692 nolibc-test.after-only-crt.h-changes
-
-The sections are defined by [0].
-
-[0] https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.dynamic.html
-
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Suggested-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
-Note:
+This change depends upon:
 
-This is only an RFC as I'm not 100% sure it belong into nolibc.
-But at least the code is visible as an example.
+https://lore.kernel.org/all/20231004175414.1738475-1-florian.fainelli@broadcom.com/
 
-Also it is one prerequisite for full ksefltest_harness.h support in
-nolibc, should we want that.
----
- tools/include/nolibc/crt.h                   | 23 ++++++++++++++++++++++-
- tools/testing/selftests/nolibc/nolibc-test.c | 16 ++++++++++++++++
- 2 files changed, 38 insertions(+), 1 deletion(-)
+ drivers/pwm/pwm-brcmstb.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/tools/include/nolibc/crt.h b/tools/include/nolibc/crt.h
-index a5f33fef1672..c1176611d9a9 100644
---- a/tools/include/nolibc/crt.h
-+++ b/tools/include/nolibc/crt.h
-@@ -13,11 +13,22 @@ const unsigned long *_auxv __attribute__((weak));
- static void __stack_chk_init(void);
- static void exit(int);
- 
-+extern void (*const __preinit_array_start[])(void) __attribute__((weak));
-+extern void (*const __preinit_array_end[])(void) __attribute__((weak));
-+
-+extern void (*const __init_array_start[])(void) __attribute__((weak));
-+extern void (*const __init_array_end[])(void) __attribute__((weak));
-+
-+extern void (*const __fini_array_start[])(void) __attribute__((weak));
-+extern void (*const __fini_array_end[])(void) __attribute__((weak));
-+
- void _start_c(long *sp)
+diff --git a/drivers/pwm/pwm-brcmstb.c b/drivers/pwm/pwm-brcmstb.c
+index a7d529bf76ad..de9cbda2e4ff 100644
+--- a/drivers/pwm/pwm-brcmstb.c
++++ b/drivers/pwm/pwm-brcmstb.c
+@@ -297,9 +297,7 @@ static int brcmstb_pwm_resume(struct device *dev)
  {
- 	long argc;
- 	char **argv;
- 	char **envp;
-+	int exitcode;
-+	void (* const *func)(void);
- 	const unsigned long *auxv;
- 	/* silence potential warning: conflicting types for 'main' */
- 	int _nolibc_main(int, char **, char **) __asm__ ("main");
-@@ -54,8 +65,18 @@ void _start_c(long *sp)
- 		;
- 	_auxv = auxv;
+ 	struct brcmstb_pwm *p = dev_get_drvdata(dev);
  
-+	for (func = __preinit_array_start; func < __preinit_array_end; func++)
-+		(*func)();
-+	for (func = __init_array_start; func < __init_array_end; func++)
-+		(*func)();
-+
- 	/* go to application */
--	exit(_nolibc_main(argc, argv, envp));
-+	exitcode = _nolibc_main(argc, argv, envp);
-+
-+	for (func = __fini_array_end - 1; func >= __fini_array_start; func--)
-+		(*func)();
-+
-+	exit(exitcode);
+-	clk_prepare_enable(p->clk);
+-
+-	return 0;
++	return clk_prepare_enable(p->clk);
  }
+ #endif
  
- #endif /* _NOLIBC_CRT_H */
-diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-index a3ee4496bf0a..f166b425613a 100644
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@ -57,6 +57,9 @@ static int test_argc;
- /* will be used by some test cases as readable file, please don't write it */
- static const char *argv0;
- 
-+/* will be used by constructor tests */
-+static int constructor_test_value;
-+
- /* definition of a series of tests */
- struct test {
- 	const char *name;              /* test name */
-@@ -594,6 +597,18 @@ int expect_strne(const char *expr, int llen, const char *cmp)
- #define CASE_TEST(name) \
- 	case __LINE__: llen += printf("%d %s", test, #name);
- 
-+__attribute__((constructor))
-+static void constructor1(void)
-+{
-+	constructor_test_value = 1;
-+}
-+
-+__attribute__((constructor))
-+static void constructor2(void)
-+{
-+	constructor_test_value *= 2;
-+}
-+
- int run_startup(int min, int max)
- {
- 	int test;
-@@ -631,6 +646,7 @@ int run_startup(int min, int max)
- 		CASE_TEST(auxv_addr);        EXPECT_PTRGT(test_auxv != (void *)-1, test_auxv, brk); break;
- 		CASE_TEST(auxv_AT_UID);      EXPECT_EQ(1, getauxval(AT_UID), getuid()); break;
- 		CASE_TEST(auxv_AT_PAGESZ);   EXPECT_GE(1, getauxval(AT_PAGESZ), 4096); break;
-+		CASE_TEST(constructor);      EXPECT_EQ(1, constructor_test_value, 2); break;
- 		case __LINE__:
- 			return ret; /* must be last */
- 		/* note: do not set any defaults so as to permit holes above */
-
----
-base-commit: ab663cc32912914258bc8a2fbd0e753f552ee9d8
-change-id: 20231005-nolibc-constructors-b2aebffe9b65
-
-Best regards,
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
+2.34.1
 
+
+--000000000000bccc490606fae176
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOyUP796BDTkm9FZ
+oq8JRX0kI1314zDnyE9T67HS7DZDMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMTAwNTE2NDczOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDz1w6lhp2dT41FOeZgw2zlIAMKYS0WFG7M
+daR91fmyx8hINFncNxy7b0KTja1WsZIlzPVYjEOrfWxSVq8G/nlrnICh48yGA81KL1o4yfbsXk4x
++c0Hzn8ufoLb5QNSCwPp+DCjsENNiLF31BL6Y5O2PvPpRIxdlQvdTi9OVgqLztMMy/uwL7W7kH03
+yoBolGOShp9h0I1ewjEglC9xY64JwuequWBOdIlGZ3Tn+OGqw3vxrsItuBAzLxZQbWaON8r/1CQf
+1+voNhhzX24Up4hdBo0o3Rt4D4Z9jIE75OeHMyauBwKjSvIrZYxJTZF+fm4InA/NMFjALzQBtz0E
+cMSW
+--000000000000bccc490606fae176--
