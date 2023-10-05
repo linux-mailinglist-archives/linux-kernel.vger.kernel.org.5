@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA9B7B9F61
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C327BA074
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234534AbjJEOVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42762 "EHLO
+        id S236917AbjJEOhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233624AbjJEOTn (ORCPT
+        with ESMTP id S234210AbjJEOfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:19:43 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C787ECD;
-        Thu,  5 Oct 2023 00:49:29 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c0ecb9a075so4459395ad.2;
-        Thu, 05 Oct 2023 00:49:29 -0700 (PDT)
+        Thu, 5 Oct 2023 10:35:15 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3589C83C0
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 00:52:55 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5362bcc7026so1090122a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 00:52:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696492169; x=1697096969; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yNVpwFwUzdTjdcx8LxWNrxnvfOWjcBf4eGnf1qLnD3E=;
-        b=VSqc7DGmLlZKs7rgnu6vEWoDfjJWmFLe2Kgr5lBVrvMzbWWYxPoN5vsz0bpSBkrjWo
-         o7mTvL0aSDEGUYLkfbWEl/I+7JiPXy/zNx2Qxn2jLox47zMFEuD0nJsbXkNQ8V1KRb3W
-         EuZ1ezjATUBLfQzVRwXsytGy44Xo00Qb8HLe5xn/214gU5umLfMMm3qXSBN08K1hQJ8g
-         uiEfLNmOpDv+fbjYXc+I+ChMQPag6i0chZlIGtsoGrk68jGpfDxBkXARezACZTq5msX1
-         PsU4ZCZrk3mIh96CKfryaemqPR6R9/wdUQwSgyRD+OvKDbfl/eCKHCOjZjl5GlRhuK/4
-         ytLQ==
+        d=linaro.org; s=google; t=1696492373; x=1697097173; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2VPo73+NISdMnqKKa8YLMLwOayu51kTHaFGUFFnTf0g=;
+        b=boXa7KdYeH3nQN4KhIxwMhS5/tziK1uB0pZsgNFvYhxRXz8o6izYmmHPb5LACVqEKt
+         0UamJnFGSbxPHBrtAaez8g05hAmbqPDan6K2geY05jt6gPZyaIcHmhEzhVQM9oIf7FGV
+         YEvp2qvbhMF3NntRonWWYwYUFDOzY2gaN9JOdkjdcJit8ODTW8ufXb8SinhBuGswuAu7
+         ypqthXfSDwxwAv3/WyLo3x0WF18s79Ay8yi0OCZ/hohQVEPHXQcgvyZvIZsymd/86C/6
+         cb0d2iiouwELXoZehhFUut5/f60PGkg42cnzsBNH8GtlUdKwn8nAtvDM1w/RmFcaK2ha
+         5xNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696492169; x=1697096969;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yNVpwFwUzdTjdcx8LxWNrxnvfOWjcBf4eGnf1qLnD3E=;
-        b=BWQy7VbPXV307LNXuPxhZM7tEYUDAdeE59/DhVW5JKD4bzausXZYidmH4aXH4jhKU1
-         Z+IcjboRY2RuyCo2Lp18G/6QhbpEedYkCqORVi9pWUqAfAYvru2bKPxgOLS3uE2HfhGp
-         LThfMJ0cn0rBc5+eNqus0+EMO8sh9NJ58R52TOdf9hGU1N/wWRIuAOqbRw1WHoWY2cax
-         t1q9QT16tsRusvweLgyelKOSZ0j8nEuK5VJDTsb83lS6XQxW0vmjI4TyQjF7LkB6p8vK
-         nKo98s+1gkQvrM9uPUpcgdH/grMzBKQkE/IIYNQuK5BbeRNO53aBqDXArVZbPcvdMb0v
-         YpUw==
-X-Gm-Message-State: AOJu0YxIRK8P04bzqku/i8GRDubakBJniC2Cy7nLU6hnuucBwtHoR+V5
-        ZRiouddvZoliWTUYkW2HUF0=
-X-Google-Smtp-Source: AGHT+IFzKI5i0LPDa9jvu3lqeTN/TjsrZlfUF/B0Jien7fzcUl1Oz4tSh5fXEFo/KKGJ9jm0xHiL/A==
-X-Received: by 2002:a17:902:d4c4:b0:1c1:e7b2:27af with SMTP id o4-20020a170902d4c400b001c1e7b227afmr4822042plg.57.1696492168788;
-        Thu, 05 Oct 2023 00:49:28 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id x12-20020a170902ea8c00b001bf846dd2d0sm920239plb.13.2023.10.05.00.49.26
+        d=1e100.net; s=20230601; t=1696492373; x=1697097173;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2VPo73+NISdMnqKKa8YLMLwOayu51kTHaFGUFFnTf0g=;
+        b=htnv+HAvE/X05hjJ/X8iqDaJ+ac7iF8o7uL16cXCIXpoWNzQ4/mqkhwX/aBsV4/n03
+         vrygpHzxuP4X28ABGQ6RXQnSl0qwEifLdcsPjptxHAOMeCTc6sM/lyr5EznnZAJCDceY
+         rPAyoqRzgS2Odx2v0gU/zGuCmnB17bw7ikK2O8JkmH1Y8FnKhrvJXWIQHiInhJwPiAyf
+         76d4YKSVVKYQpfOFbVupeMmRazReDXM9KiT7/NcttbLFa1Z0pkZx51Mq99PeToQLfKIL
+         Xy55z46pZa/sIljKnCibhWZb170y1p8yWDg+iivWk45NJ0kNhA/T9apuT1ZMD/1jsoNO
+         YOow==
+X-Gm-Message-State: AOJu0Ywu+yLm2gRBOnTgMftUFRsZBhOpE/SZpS5mtRa5xVxtDiZoyMIM
+        d6PCj0P2+ZDnwRJRKT3egYhp9g==
+X-Google-Smtp-Source: AGHT+IET4gtql0BEhc/DH8ss0kuES1cJOacsuqdH2Pa/FBh564Eq+POI0e557ksJTlua6yohWy5Dcw==
+X-Received: by 2002:a17:906:95:b0:9b2:7b89:8199 with SMTP id 21-20020a170906009500b009b27b898199mr3889937ejc.53.1696492373610;
+        Thu, 05 Oct 2023 00:52:53 -0700 (PDT)
+Received: from krzk-bin.. (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id l12-20020a170906078c00b009b94fe3fc47sm722051ejc.159.2023.10.05.00.52.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 00:49:28 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     3chas3@gmail.com, davem@davemloft.net, horms@kernel.org
-Cc:     linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH v2 2/2] atm: solos-pci: Fix potential deadlock on &tx_queue_lock
-Date:   Thu,  5 Oct 2023 07:49:17 +0000
-Message-Id: <20231005074917.65161-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 05 Oct 2023 00:52:53 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 1/2] ASoC: qcom: explicitly include binding headers when used
+Date:   Thu,  5 Oct 2023 09:52:49 +0200
+Message-Id: <20231005075250.88159-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As &card->tx_queue_lock is acquired under softirq context along the
-following call chain from solos_bh(), other acquisition of the same
-lock inside process context should disable at least bh to avoid double
-lock.
+Few units use qcom,lpass.h binding headers but they rely on them being
+included through a different header.  Make the usage explicit which
+allows easier to find the users of a header.
 
-<deadlock #2>
-pclose()
---> spin_lock(&card->tx_queue_lock)
-<interrupt>
-   --> solos_bh()
-   --> fpga_tx()
-   --> spin_lock(&card->tx_queue_lock)
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-This flaw was found by an experimental static analysis tool I am
-developing for irq-related deadlock.
-
-To prevent the potential deadlock, the patch uses spin_lock_irqsave()
-on &card->tx_queue_lock under process context code consistently to
-prevent the possible deadlock scenario.
-
-Fixes: 213e85d38912 ("solos-pci: clean up pclose() function")
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
 ---
-V2: add fix tag, and split into two patches
 
- drivers/atm/solos-pci.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Changes in v2:
+1. New patch
+---
+ sound/soc/qcom/lpass-cdc-dma.c  | 1 +
+ sound/soc/qcom/lpass-cpu.c      | 1 +
+ sound/soc/qcom/lpass-platform.c | 1 +
+ sound/soc/qcom/sc7280.c         | 1 +
+ 4 files changed, 4 insertions(+)
 
-diff --git a/drivers/atm/solos-pci.c b/drivers/atm/solos-pci.c
-index 48cf9b36b61a..247e9200e312 100644
---- a/drivers/atm/solos-pci.c
-+++ b/drivers/atm/solos-pci.c
-@@ -955,16 +955,17 @@ static void pclose(struct atm_vcc *vcc)
- 	unsigned char port = SOLOS_CHAN(vcc->dev);
- 	struct sk_buff *skb, *tmpskb;
- 	struct pkt_hdr *header;
-+	unsigned long flags;
+diff --git a/sound/soc/qcom/lpass-cdc-dma.c b/sound/soc/qcom/lpass-cdc-dma.c
+index 8221e2cbe35c..586f23049447 100644
+--- a/sound/soc/qcom/lpass-cdc-dma.c
++++ b/sound/soc/qcom/lpass-cdc-dma.c
+@@ -5,6 +5,7 @@
+  * lpass-cdc-dma.c -- ALSA SoC CDC DMA CPU DAI driver for QTi LPASS
+  */
  
- 	/* Remove any yet-to-be-transmitted packets from the pending queue */
--	spin_lock(&card->tx_queue_lock);
-+	spin_lock_irqsave(&card->tx_queue_lock, flags);
- 	skb_queue_walk_safe(&card->tx_queue[port], skb, tmpskb) {
- 		if (SKB_CB(skb)->vcc == vcc) {
- 			skb_unlink(skb, &card->tx_queue[port]);
- 			solos_pop(vcc, skb);
- 		}
- 	}
--	spin_unlock(&card->tx_queue_lock);
-+	spin_unlock_irqrestore(&card->tx_queue_lock, flags);
++#include <dt-bindings/sound/qcom,lpass.h>
+ #include <linux/clk.h>
+ #include <linux/module.h>
+ #include <linux/export.h>
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 39571fed4001..d15039bb7f82 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -5,6 +5,7 @@
+  * lpass-cpu.c -- ALSA SoC CPU DAI driver for QTi LPASS
+  */
  
- 	skb = alloc_skb(sizeof(*header), GFP_KERNEL);
- 	if (!skb) {
++#include <dt-bindings/sound/qcom,lpass.h>
+ #include <linux/clk.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index 73e3d39bd24c..5b99b41956ed 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -5,6 +5,7 @@
+  * lpass-platform.c -- ALSA SoC platform driver for QTi LPASS
+  */
+ 
++#include <dt-bindings/sound/qcom,lpass.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/export.h>
+ #include <linux/kernel.h>
+diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
+index c23df4c8f341..095756883050 100644
+--- a/sound/soc/qcom/sc7280.c
++++ b/sound/soc/qcom/sc7280.c
+@@ -4,6 +4,7 @@
+ //
+ // ALSA SoC Machine driver for sc7280
+ 
++#include <dt-bindings/sound/qcom,lpass.h>
+ #include <linux/input.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
 -- 
-2.17.1
+2.34.1
 
