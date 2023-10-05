@@ -2,153 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2D77BAB33
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 22:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C347BAB35
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 22:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbjJEUGF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Oct 2023 16:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        id S229559AbjJEUJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 16:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJEUGD (ORCPT
+        with ESMTP id S229483AbjJEUJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 16:06:03 -0400
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7722ACE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 13:05:58 -0700 (PDT)
-Received: from omf19.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay07.hostedemail.com (Postfix) with ESMTP id 72B9F160421;
-        Thu,  5 Oct 2023 20:05:57 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 1BE892002D;
-        Thu,  5 Oct 2023 20:05:54 +0000 (UTC)
-Message-ID: <eea5087a2bd94b80b5a16af95a4caf20376bbc52.camel@perches.com>
-Subject: Re: [PATCH] get_maintainer/MAINTAINERS: confine K content matching
- to patches
-From:   Joe Perches <joe@perches.com>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 05 Oct 2023 13:05:53 -0700
-In-Reply-To: <CAFhGd8rGZ6w7bz90LRnwd_1K3ibR2KsT6cJ2kiuO5mSAdnWjFw@mail.gmail.com>
-References: <20231004-get_maintainer_change_k-v1-1-ac7ced18306a@google.com>
-         <3dca40b677dd2fef979a5a581a2db91df2c21801.camel@perches.com>
-         <CAFhGd8oTHFDQ05M++E3ggAvs0567w5fSxovumX+vs8YXT8VXTA@mail.gmail.com>
-         <6e13b9b1a964b49079a2f7814c0d65e767cd010a.camel@perches.com>
-         <CAFhGd8rGr3fm-U3XCjRkJQRymvjqGFYzsPu61zbMZCebuN5Rww@mail.gmail.com>
-         <a8b680c03379ed7a07418e471b29dccd801f23cb.camel@perches.com>
-         <CAFhGd8rGZ6w7bz90LRnwd_1K3ibR2KsT6cJ2kiuO5mSAdnWjFw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 5 Oct 2023 16:09:04 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A582DE
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 13:09:03 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9a645e54806so259616366b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 13:09:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696536542; x=1697141342; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zB+mV+loa+IjFsnqD3i+tWsK9lbENMpsCap2Dmlw6Gg=;
+        b=uQrewXGH7UgtLILs4upcec0za83YjMHtD0w8dNE8bXQGQ+Wl+BCRArTmAi2qKauL3u
+         8NjEDnibR5MNAsAPQvzOTTqKrzNtA4H0qMVxlWq/sjr3FGOZzeGJFfmQcRVFZyDsRDgI
+         cxTjlS8QeVWWgx/jJHbNljn4kkkjDTG0Orky7c0xkub/deFcXsr3rKRChytBzn+Xwzjb
+         H2aun8cNFCFzhj8SSmnR31m/YkwFbAlgOL3pAzdfpD27mr0jWwrXjuudN/1XhVoLaD4p
+         i1nMs2580Hhb2KI0LaH1uadJOsOA9zU70Dtzgd/WNcqoB1l/PFEGMLMI7SC3t6PYNZox
+         ltqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696536542; x=1697141342;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zB+mV+loa+IjFsnqD3i+tWsK9lbENMpsCap2Dmlw6Gg=;
+        b=uk1OeAaQVQ463POUU5Ig9UIslnS8hr2aO+Z3VF3PLxn5v6DVPaykSQ4AiZkxevbczp
+         /PZ8j/bSRC9bIjrBsyY78Fc5PrmzqGY3Zk+9LH+rAqksLBq492XrIEUGuZaE6A4TxIzv
+         osIjh13/x5bJR8r4hLkBL43MeKRfsPJFJ3u1OvAC4BDS6PxVrVKh/wVcgyCHwYPjc+uR
+         DQx+kdT/ZjmLTCrkWt7jEo6q+2k+3HhxvJx26nIvyTXpxg4HKywf2esoMkRxpnbGQE03
+         bA+oTnM9K/F9lec9XAXrWLwvjdeBKxi5ixLdR0jwIUECMUCiyTFEGv+7ZYqZNRDBKga2
+         czhA==
+X-Gm-Message-State: AOJu0YxwBE4d60bAaADnN32Z665UOcVyzUzfQvzEABEup0zu58Nw0TSg
+        gCf5tnpAIGfgK21Q4UPxC/eE7g==
+X-Google-Smtp-Source: AGHT+IG2KxKuD4R2zSJqWCajGGhFkMA91xza5FNxup7W6+zdFVp0fmYQeZjUFfroNg8FuNjnRDA9pg==
+X-Received: by 2002:a17:906:3156:b0:9b2:b71f:83be with SMTP id e22-20020a170906315600b009b2b71f83bemr5444688eje.1.1696536541806;
+        Thu, 05 Oct 2023 13:09:01 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id i13-20020a056402054d00b005231e3d89efsm1549705edx.31.2023.10.05.13.09.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 13:09:01 -0700 (PDT)
+Message-ID: <90746214-d091-464f-a889-bc4353caa362@linaro.org>
+Date:   Thu, 5 Oct 2023 22:08:54 +0200
 MIME-Version: 1.0
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 1BE892002D
-X-Stat-Signature: pwf4o46ayjstbkyxc9z58umnspw6hctt
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/1VlcfI30pytACJfVJd+MYNwCJK4b7g5I=
-X-HE-Tag: 1696536354-269339
-X-HE-Meta: U2FsdGVkX1+WfrL/Nr/SqgpAzh0ggajZ0mOPMMrHUHfIroDj3aNY0pp04WVVAlpeFRzrXzYhTaQ+HRAN1VK7JjazQgHCnhdn8nYlEd/Ms2rv9llin/AlILVu2zBXh3q8MgyzRJb3lY9GgrrYC9sml/uihVH38p9RXc5Eb6dDdM/xvxAE36BgvPPkbemFCbyLwGN69dJ9d314PWsEtfJVi1vAlet4v2EyGT667m7vdqArQlsu0DfhD+D/G5zjUxyl3morSbdeVgVa3flbBvhsMBoTA2VG4msp1V56Xr5vgGczY4UafrX2E6w8Hf9c14VDXZosWgRe3k24LxZWqCFX1pBXj3r0QwanE+p4KZtwS8QCTiniCzTYgU+UFafw6dIg
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] dt-bindings: media: rockchip: Add resets property into
+ decoder node
+Content-Language: en-US
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
+        mchehab@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        heiko@sntech.de
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20231005161107.269303-1-benjamin.gaignard@collabora.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231005161107.269303-1-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-05 at 12:52 -0700, Justin Stitt wrote:
-> On Thu, Oct 5, 2023 at 11:42 AM Joe Perches <joe@perches.com> wrote:
-> > 
-> > On Thu, 2023-10-05 at 11:30 -0700, Justin Stitt wrote:
-> > > On Thu, Oct 5, 2023 at 11:15 AM Joe Perches <joe@perches.com> wrote:
-> > > > 
-> > > > On Thu, 2023-10-05 at 11:06 -0700, Justin Stitt wrote:
-> > > > > On Wed, Oct 4, 2023 at 7:40 PM Joe Perches <joe@perches.com> wrote:
-> > > > > > 
-> > > > > > On Wed, 2023-10-04 at 21:21 +0000, Justin Stitt wrote:
-> > > > > > > The current behavior of K: is a tad bit noisy. It matches against the
-> > > > > > > entire contents of files instead of just against the contents of a
-> > > > > > > patch.
-> > > > > > > 
-> > > > > > > This means that a patch with a single character change (fixing a typo or
-> > > > > > > whitespace or something) would still to/cc maintainers and lists if the
-> > > > > > > affected file matched against the regex pattern given in K:. For
-> > > > > > > example, if a file has the word "clang" in it then every single patch
-> > > > > > > touching that file will to/cc Nick, Nathan and some lists.
-> > > > > > > 
-> > > > > > > Let's change this behavior to only content match against patches
-> > > > > > > (subjects, message, diff) as this is what most people expect the
-> > > > > > > behavior already is. Most users of "K:" would prefer patch-only content
-> > > > > > > matching. If this is not the case let's add a new matching type as
-> > > > > > > proposed in [1].
-> > > > > > 
-> > > > > > I'm glad to know  you are coming around to my suggestion.
-> > > > > :)
-> > > > > 
-> > > > > > 
-> > > > > > I believe the file-based keyword matching should _not_ be
-> > > > > > removed and the option should be added for it like I suggested.
-> > > > > 
-> > > > > Having a command line flag allowing get_maintainer.pl
-> > > > > users to decide the behavior of K: is weird to me. If I'm a maintainer setting
-> > > > > my K: in MAINTAINERS I want some sort of consistent behavior. Some
-> > > > > patches will start hitting mailing list that DO have keywords in the patch
-> > > > > and others, confusingly, not.
-> > > > 
-> > > > Not true.
-> > > > 
-> > > > If a patch contains a keyword match, get_maintainers will _always_
-> > > > show the K: keyword maintainers unless --nokeywords is specified
-> > > > on the command line.
-> > > 
-> > > ...
-> > > 
-> > > > 
-> > > > If a file contains a keyword match, it'll only show the K:
-> > > > keyword  if --keywords-in-file is set.
-> > > 
-> > > Right, what I'm saying is a patch can arrive in a maintainer's inbox
-> > > wherein the patch itself has no mention of the keyword (if
-> > > get_maintainer user opted for --keywords-in-file). Just trying to
-> > > avoid some cases of the question: "Why is this in my inbox?"
-> > 
-> > Because the script user specifically asked for it.
-> > 
-> > > > > To note, we get some speed-up here as pattern matching a patch that
-> > > > > touches lots of files would result in searching all of them in their
-> > > > > entirety. Just removing this behavior _might_ have a measurable
-> > > > > speed-up for patch series touching dozens of files.
-> > > > 
-> > > > Again, not true.
-> > > > 
-> > > > Patches do _not_ scan the original modified files for keyword matches.
-> > > > Only the patch itself is scanned.  That's the current behavior as well.
-> > > > 
-> > > 
-> > > Feel like I'm missing something here. How is K: matching keywords in
-> > > files without reading them.
-> > > 
-> > > If my patch touches 10 files then all 10 of those files are scanned for
-> > > K: matches right?
-> > 
-> > Nope.
-> > 
-> > Understand the patches are the input to get_maintainer and not
-> > just files.
-> > 
-> > If a patch is fed to get_maintainer then any files modified by
-> > the patch are _not_ scanned.
-> > 
-> > Only the patch _content_ is used for keyword matches.
-> > 
+On 05/10/2023 18:11, Benjamin Gaignard wrote:
+> RK3588 AV1 decoder hardware block have resets lines and driver code
+> already suppport it.
+> Update yaml file to be aligned with this feature.
 > 
-> Got it. I'll roll your patch into a v3.
-> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
-Actually, I have a slightly improved patch as
-the actual keyword is shown too.
 
-I'll get it uploaded and make sure you are credited
-with the effort to make the change.
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-cheers, Joe
+Best regards,
+Krzysztof
+
