@@ -2,189 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0FE7BAADA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980877BAA9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232431AbjJET4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56166 "EHLO
+        id S229836AbjJETrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232102AbjJET4J (ORCPT
+        with ESMTP id S231357AbjJETrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 15:56:09 -0400
-X-Greylist: delayed 567 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Oct 2023 12:56:03 PDT
-Received: from proxmox1.postmarketos.org (proxmox1.postmarketos.org [213.239.216.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 039DA193;
-        Thu,  5 Oct 2023 12:56:02 -0700 (PDT)
-Received: from [192.168.1.177] (unknown [10.0.0.254])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by proxmox1.postmarketos.org (Postfix) with ESMTPSA id C3509140B01;
-        Thu,  5 Oct 2023 19:46:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=postmarketos.org;
-        s=donut; t=1696535193;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cIOhWmDhaGKnIOKqSallat4hBjPWg9wv14CRRkvBnO8=;
-        b=gkP75ATkFuJkXErAW/PpJat6k5/Htnp9NLF6G0yL5FPd9zb3e7/4+WegrFXn/YJQD6dv0d
-        wDuXLaeWdpjeOiVL+s7MmiUVDSub0JXNcdNWf290sEABUVFheVGLr10eIByPNP109dIJ7u
-        WbIGNxc7cBE21VbaBcnx/e9oYMG/TFg=
-Message-ID: <fe78f7e4-9655-639c-4a8c-120daa221ce7@postmarketos.org>
-Date:   Thu, 5 Oct 2023 22:46:32 +0300
+        Thu, 5 Oct 2023 15:47:03 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A14EB
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:47:00 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b64b98656bso246918566b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:47:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696535219; x=1697140019; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3Dt9k8PRGqt54iiTeBVK6B2nTooRkAx1cay9o3WY25Q=;
+        b=r2LrDtF7dg5/8ZRrSk1CaLoXN/QH7ce9ZZNFuOxitWNpYMGHlhyrS83xrFtZmN7XmD
+         iLfpxxg8h63SkCG/KICtJB5NINLEvakUZbaO751+wV3gSjKhQHmKzrnrmRsK41VS+fVa
+         zct12oSF/UeWqDvAiDTvPR7ZH/ScQuLgq/57QsBTpAXPVK9mEqSQSi0SNQGRvKhNdP33
+         eURZyQzKPf+1Ek9OVlWaFXUzu/HYBsCjnAnEU63mXcEsZhnFKKkEs128v1TmRF4xRHhF
+         o39aeSaJoY7BWChGwf4XKVqLASpRmW+DoysVNM5uDwHeXCJxdbNWDkcrQsLzh9k57YX/
+         lLkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696535219; x=1697140019;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Dt9k8PRGqt54iiTeBVK6B2nTooRkAx1cay9o3WY25Q=;
+        b=SqCmUc4anf8/hw/qkqVRKzwHQseP1tD64Mo2v3EcGHyHf86rYx39Hsa54dfDDyC78W
+         wQIu0ovY9QcgDMuzmeJgLEDX/MA8NArRWDjqRkwI7WquuKO0FSugZQix5NYhSJN5Pf/+
+         SvWCFwUt0jcOLXisELpcKEjQEyw5iAB5BrmvCG4iiq21Nvaol9RjnIa30/NDhERe++bb
+         MT3vNc/fMqXq63eB0ZjbQ2KBI36GPlJtRgTynqjpLIbseAd3s213iAnFHSUhvYqNUyRQ
+         0g9up0FfqXF/49tfpGZJQoE0l8JsyLCqDCzUg+NCH8r2oy0g8w/cg73w6qjF1hvhtZ5o
+         dIpg==
+X-Gm-Message-State: AOJu0YzIupQt/gm8EydK+26eXW2V4x2XvFTLTdwdc6YtiZfwaA+KrNWV
+        JEiNcXi1J8SqqqMJ4exgWTnIqA==
+X-Google-Smtp-Source: AGHT+IExuH8kOzj/dTZpci/l66+zbVuI1Q4ansN6TEuNcT5VkMIxS+P4Zhp6GYS72DXTGfUPCsQq5A==
+X-Received: by 2002:a17:907:780d:b0:9b6:4df9:e5b5 with SMTP id la13-20020a170907780d00b009b64df9e5b5mr5792518ejc.61.1696535218928;
+        Thu, 05 Oct 2023 12:46:58 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id jw5-20020a170906e94500b009ae6a6451fdsm1651578ejb.35.2023.10.05.12.46.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 12:46:58 -0700 (PDT)
+Message-ID: <86886ecb-dd39-49fb-a575-9e9bf303a8b1@linaro.org>
+Date:   Thu, 5 Oct 2023 21:46:57 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drm/panel: Move AUX B116XW03 out of panel-edp back to
- panel-simple
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/7] arm64: dts: st: add soc & rifsc structure to
+ stm32mp255
 Content-Language: en-US
-To:     Doug Anderson <dianders@chromium.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
-        Hsin-Yi Wang <hsinyi@chromium.org>, matthias.bgg@gmail.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>, airlied@gmail.com,
-        daniel@ffwll.ch, jitao.shi@mediatek.com, linus.walleij@linaro.org,
-        linux-kernel@vger.kernel.org, neil.armstrong@linaro.org,
-        quic_jesszhan@quicinc.com, sam@ravnborg.org,
-        Anton Bambura <jenneron@protonmail.com>
-References: <20230925150010.1.Iff672233861bcc4cf25a7ad0a81308adc3bda8a4@changeid>
- <b0037c9f-588b-4eb8-6415-0fe75bed264f@collabora.com>
- <CAD=FV=UWQgLLfU4X+6OUR5AWOkJKwG9J7BbKGRCgze6LTY6JNw@mail.gmail.com>
- <CAD=FV=UqG6DiAyjcLKeoUWKutepGd46Zx=8O-NWKoYC-fZEG6g@mail.gmail.com>
-From:   Anton Bambura <jenneron@postmarketos.org>
-In-Reply-To: <CAD=FV=UqG6DiAyjcLKeoUWKutepGd46Zx=8O-NWKoYC-fZEG6g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+References: <20231004091552.3531659-1-hugues.fruchet@foss.st.com>
+ <20231004091552.3531659-6-hugues.fruchet@foss.st.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231004091552.3531659-6-hugues.fruchet@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 04/10/2023 11:15, Hugues Fruchet wrote:
+> Add soc & rifsc structure to stm32mp255.
+> 
+> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> ---
+>  arch/arm64/boot/dts/st/stm32mp255.dtsi | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+> index e6fa596211f5..4f2b224fe077 100644
+> --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
+> +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+> @@ -6,4 +6,8 @@
+>  #include "stm32mp253.dtsi"
+>  
+>  / {
+> +	soc@0 {
+> +		rifsc: rifsc-bus@42080000 {
 
-On 10/5/23 21:10, Doug Anderson wrote:
 
-> Hi,
->
-> On Tue, Sep 26, 2023 at 7:01 AM Doug Anderson <dianders@chromium.org> wrote:
->> Hi,
->>
->> On Tue, Sep 26, 2023 at 1:06 AM AngeloGioacchino Del Regno
->> <angelogioacchino.delregno@collabora.com> wrote:
->>> Il 26/09/23 00:00, Douglas Anderson ha scritto:
->>>> In commit 5f04e7ce392d ("drm/panel-edp: Split eDP panels out of
->>>> panel-simple") I moved a pile of panels out of panel-simple driver
->>>> into the newly created panel-edp driver. One of those panels, however,
->>>> shouldn't have been moved.
->>>>
->>>> As is clear from commit e35e305eff0f ("drm/panel: simple: Add AUO
->>>> B116XW03 panel support"), AUX B116XW03 is an LVDS panel. It's used in
->>>> exynos5250-snow and exynos5420-peach-pit where it's clear that the
->>>> panel is hooked up with LVDS. Furthermore, searching for datasheets I
->>>> found one that makes it clear that this panel is LVDS.
->>>>
->>>> As far as I can tell, I got confused because in commit 88d3457ceb82
->>>> ("drm/panel: auo,b116xw03: fix flash backlight when power on") Jitao
->>>> Shi added "DRM_MODE_CONNECTOR_eDP". That seems wrong. Looking at the
->>>> downstream ChromeOS trees, it seems like some Mediatek boards are
->>>> using a panel that they call "auo,b116xw03" that's an eDP panel. The
->>>> best I can guess is that they actually have a different panel that has
->>>> similar timing. If so then the proper panel should be used or they
->>>> should switch to the generic "edp-panel" compatible.
->>>>
->>>> When moving this back to panel-edp, I wasn't sure what to use for
->>>> .bus_flags and .bus_format and whether to add the extra "enable" delay
->>>> from commit 88d3457ceb82 ("drm/panel: auo,b116xw03: fix flash
->>>> backlight when power on"). I've added formats/flags/delays based on my
->>>> (inexpert) analysis of the datasheet. These are untested.
->>>>
->>>> NOTE: if/when this is backported to stable, we might run into some
->>>> trouble. Specifically, before 474c162878ba ("arm64: dts: mt8183:
->>>> jacuzzi: Move panel under aux-bus") this panel was used by
->>>> "mt8183-kukui-jacuzzi", which assumed it was an eDP panel. I don't
->>>> know what to suggest for that other than someone making up a bogus
->>>> panel for jacuzzi that's just for the stable channel.
->>>>
->>>> Fixes: 88d3457ceb82 ("drm/panel: auo,b116xw03: fix flash backlight when power on")
->>>> Fixes: 5f04e7ce392d ("drm/panel-edp: Split eDP panels out of panel-simple")
->>>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
->>>> ---
->>>> I haven't had a snow or peach-pit hooked up for debugging / testing
->>>> for years. I presume that they must be broken and hope that this fixes
->>>> them.
->>> We could avoid backport breakages by avoiding to backport this to any kernel
->>> that doesn't contain commit 474c162878ba ("arm64: dts: mt8183: jacuzzi: Move
->>> panel under aux-bus")... because creating a dummy panel to get two wrongs
->>> right is definitely not ok.
->> Sure, except that leaves us with ... a breakage. :-P
->>
->> Although I haven't tested it, I have a hard time believing that
->> exynos5250-snow and exynos5420-peach-pit will work properly with the
->> panel defined as an eDP panel. That means that they will be broken. If
->> someone cared to get those fixed in a stable backport then we'd be
->> stuck deciding who to break. If you have any brilliant ideas then I'm
->> all ears.
->>
->> ...then again, I presume this has been broken since commit
->> 88d3457ceb82 ("drm/panel: auo,b116xw03: fix flash backlight when power
->> on"). That was a little over 3 years ago. Maybe I'm wrong and somehow
->> things still limp along and sorta work even though the panel is
->> defined incorrectly?
-> I dug out a exynos5250-snow out of my pile and booted postmarket OS on
-> it, which was shockingly easy/pleasant (kudos to those involved!). I
-> found that it was booting a kernel based on 6.1.24. Digging into
-> sysfs, I found that indeed it appeared to be using the "panel-edp"
-> driver, so I guess it is limping along with the wrong driver and wrong
-> flags...
+This change on its own makes little sense. We do not add empty
+placeholders...
 
-Hi. I'm the maintainer of chromebooks (including exynos 5 ones) in 
-postmarketOS.
 
-We are indeed on 6.1.24 yet, but we will upgrade it to the latest LTS soon.
-
-> It wasn't totally clear for me how to build a new kernel and deploy it
-> for postmarket OS, so I wasn't able to confirm this change. I've CCed
-> the person listed on the postmarket OS wiki though to see if they have
-> any insight.
-
-The recommended way to build kernel is envkernel, see
-
-https://wiki.postmarketos.org/wiki/Compiling_kernels_with_envkernel.sh. 
-This way you can build kernel, package it and sideload it to your 
-device, so it will get installed including updating /lib/modules and 
-flashing chrome os kernel partition.
-
-You would need to source envkernel.sh in your kernel tree, place kernel 
-config at .output/.config, build it and perform:
-pmbootstrap build --envkernel linux-postmarketos-exynos5
-pmbootstrap sideload --install-key --host <ip> linux-postmarketos-exynos5
-
-We use lts branch of https://gitlab.com/exynos5-mainline/linux with this 
-config:
-
-https://gitlab.com/postmarketOS/pmaports/-/blob/master/device/community/linux-postmarketos-exynos5/config-postmarketos-exynos5.armv7
-
->
-> In any case, it sounds as if things are working well enough on older
-> OSes, so maybe we can just skip trying to do any stable backport on
-> this. It still seems like we should land it, though, since the current
-> state of the world seems pretty broken. Anyone willing to give a
-> Reviewed-by or Acked-by tag?
->
-> -Doug
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
+Best regards,
+Krzysztof
 
