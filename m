@@ -2,150 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F9C7B99DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 04:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381EA7B99E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 04:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbjJECPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Oct 2023 22:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
+        id S233476AbjJECTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Oct 2023 22:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjJECP3 (ORCPT
+        with ESMTP id S233580AbjJECTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Oct 2023 22:15:29 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31469C1;
-        Wed,  4 Oct 2023 19:15:25 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394Fdvjh019027;
-        Wed, 4 Oct 2023 19:14:44 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=YB9+Nmw4dr/PPR04PoBlvPvn37t1bScOgxylfQ7VBb4=;
- b=W+KmyvExwsWP+5lTIXo1rMJMxx6X/doCIKlDDkXCwLoTJy1oS3t/zfN978r1Q8jT3Wjf
- qWl4fzIwEyWWBrqCMQDzX5kiCv+tg+klOyC/JcCibCaDYG7puTIn3SHx81RJhm8SiN3z
- lWaPeyUSn23MFz9oA28Tf9jJHAf9uOIws2bD8ZFahow683pudx7d1ZGLTpWHvKure/gT
- jiwcqf9LvzfK1JQx349HUm+nkk4guPM08MgM2pzUVn20Qes2GehhrUdxuXwRnjZE8pNc
- rVIG0VH8Sq9uDy5rbQC9w1WT4OZXnogKnU4SmeSZn+e4N/4Ehd1DNC5QyKKfw5m3UXDa ZA== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3th29um538-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 19:14:43 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 4 Oct
- 2023 19:14:41 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Wed, 4 Oct 2023 19:14:41 -0700
-Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
-        by maili.marvell.com (Postfix) with ESMTP id 479BE3F707B;
-        Wed,  4 Oct 2023 19:14:32 -0700 (PDT)
-From:   Ratheesh Kannoth <rkannoth@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <rkannoth@marvell.com>, <hawk@kernel.org>,
-        <alexander.duyck@gmail.com>, <ilias.apalodimas@linaro.org>,
-        <linyunsheng@huawei.com>, <bigeasy@linutronix.de>
-Subject: [PATCH net v1] octeontx2-pf: Fix page pool frag allocation failure.
-Date:   Thu, 5 Oct 2023 07:44:34 +0530
-Message-ID: <20231005021434.3427404-1-rkannoth@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 4 Oct 2023 22:19:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E66DD
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Oct 2023 19:19:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696472389; x=1728008389;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=XlOnScdtAGDG7tWSy3Li0cvXQjsbEt3gzAVcHpkWsQM=;
+  b=PLbrXeK5L0LLOuV1ZTCU5HQ9D5kA4Agl5agHq/0ZOTo+GbLsQk3ESj/T
+   jn/M0TVDNunUTk4xGLFDF8gPjCzl3ks9P1cUsnV+HJaLs4Q0cRrWcGqpI
+   BjHmU8liP/i2OOlbGOJGXewFSlPfAzxfZRPSR8+I9E5JfbVNsKgnSA5Ne
+   XRS3SyIgqH6uaiN/g+3gKoqbx3rw4NQ6H1hIn/Mr94mXlT9ra3TRIeB+R
+   7vxQjQe201lNRNgRwFoqAu9b+PQFO462ud8T0gB7kGXLArTYLeEPMeSrG
+   /io8h/ALFG7y9+2GxmFyQ6i31JQTnC7lc5pYGY1ZhUB4YXiI2w+6DlLEV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="373725717"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="373725717"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 19:15:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="925409747"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="925409747"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 04 Oct 2023 19:15:37 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qoDtn-000KsK-16;
+        Thu, 05 Oct 2023 02:15:35 +0000
+Date:   Thu, 5 Oct 2023 10:14:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>, mcgrof@kernel.org,
+        russell.h.weight@intel.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Mukesh Ojha <quic_mojha@quicinc.com>
+Subject: Re: [PATCH v2] firmware_loader: Abort new fw load request once
+ firmware core knows about reboot
+Message-ID: <202310051011.PW217wHD-lkp@intel.com>
+References: <1696431327-7369-1-git-send-email-quic_mojha@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: evaUIMMyftB6kJu6KHLG9UfVepScin-n
-X-Proofpoint-ORIG-GUID: evaUIMMyftB6kJu6KHLG9UfVepScin-n
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_13,2023-10-02_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1696431327-7369-1-git-send-email-quic_mojha@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since page pool param's "order" is set to 0, will result
-in below warn message if interface is configured higher
-rx buffer size.
+Hi Mukesh,
 
-Steps to reproduce the issue.
-1. devlink dev param set pci/0002:04:00.0 name receive_buffer_size \
-   value 8196 cmode runtime
-2. ifconfig eth0 up
+kernel test robot noticed the following build errors:
 
-[   19.901356] ------------[ cut here ]------------
-[   19.901361] WARNING: CPU: 11 PID: 12331 at net/core/page_pool.c:567 page_pool_alloc_frag+0x3c/0x230
-[   19.901449] pstate: 82401009 (Nzcv daif +PAN -UAO +TCO -DIT +SSBS BTYPE=--)
-[   19.901451] pc : page_pool_alloc_frag+0x3c/0x230
-[   19.901453] lr : __otx2_alloc_rbuf+0x60/0xbc [rvu_nicpf]
-[   19.901460] sp : ffff80000f66b970
-[   19.901461] x29: ffff80000f66b970 x28: 0000000000000000 x27: 0000000000000000
-[   19.901464] x26: ffff800000d15b68 x25: ffff000195b5c080 x24: ffff0002a5a32dc0
-[   19.901467] x23: ffff0001063c0878 x22: 0000000000000100 x21: 0000000000000000
-[   19.901469] x20: 0000000000000000 x19: ffff00016f781000 x18: 0000000000000000
-[   19.901472] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-[   19.901474] x14: 0000000000000000 x13: ffff0005ffdc9c80 x12: 0000000000000000
-[   19.901477] x11: ffff800009119a38 x10: 4c6ef2e3ba300519 x9 : ffff800000d13844
-[   19.901479] x8 : ffff0002a5a33cc8 x7 : 0000000000000030 x6 : 0000000000000030
-[   19.901482] x5 : 0000000000000005 x4 : 0000000000000000 x3 : 0000000000000a20
-[   19.901484] x2 : 0000000000001080 x1 : ffff80000f66b9d4 x0 : 0000000000001000
-[   19.901487] Call trace:
-[   19.901488]  page_pool_alloc_frag+0x3c/0x230
-[   19.901490]  __otx2_alloc_rbuf+0x60/0xbc [rvu_nicpf]
-[   19.901494]  otx2_rq_aura_pool_init+0x1c4/0x240 [rvu_nicpf]
-[   19.901498]  otx2_open+0x228/0xa70 [rvu_nicpf]
-[   19.901501]  otx2vf_open+0x20/0xd0 [rvu_nicvf]
-[   19.901504]  __dev_open+0x114/0x1d0
-[   19.901507]  __dev_change_flags+0x194/0x210
-[   19.901510]  dev_change_flags+0x2c/0x70
-[   19.901512]  devinet_ioctl+0x3a4/0x6c4
-[   19.901515]  inet_ioctl+0x228/0x240
-[   19.901518]  sock_ioctl+0x2ac/0x480
-[   19.901522]  __arm64_sys_ioctl+0x564/0xe50
-[   19.901525]  invoke_syscall.constprop.0+0x58/0xf0
-[   19.901529]  do_el0_svc+0x58/0x150
-[   19.901531]  el0_svc+0x30/0x140
-[   19.901533]  el0t_64_sync_handler+0xe8/0x114
-[   19.901535]  el0t_64_sync+0x1a0/0x1a4
-[   19.901537] ---[ end trace 678c0bf660ad8116 ]---
+[auto build test ERROR on driver-core/driver-core-testing]
+[also build test ERROR on driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.6-rc4 next-20231004]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
-Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
+url:    https://github.com/intel-lab-lkp/linux/commits/Mukesh-Ojha/firmware_loader-Abort-new-fw-load-request-once-firmware-core-knows-about-reboot/20231004-225910
+base:   driver-core/driver-core-testing
+patch link:    https://lore.kernel.org/r/1696431327-7369-1-git-send-email-quic_mojha%40quicinc.com
+patch subject: [PATCH v2] firmware_loader: Abort new fw load request once firmware core knows about reboot
+config: um-allnoconfig (https://download.01.org/0day-ci/archive/20231005/202310051011.PW217wHD-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310051011.PW217wHD-lkp@intel.com/reproduce)
 
----
-ChangeLog
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310051011.PW217wHD-lkp@intel.com/
 
-v0 -> v1: Used get_order() and PAGE_ALIGN. Fixed commit message
----
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+All errors (new ones prefixed by >>):
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 997fedac3a98..a917577d5092 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -1357,7 +1357,7 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
- 	struct page_pool_params pp_params = { 0 };
- 	struct npa_aq_enq_req *aq;
- 	struct otx2_pool *pool;
--	int err;
-+	int err, sz;
- 
- 	pool = &pfvf->qset.pool[pool_id];
- 	/* Alloc memory for stack which is used to store buffer pointers */
-@@ -1403,6 +1403,8 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
- 		return 0;
- 	}
- 
-+	sz = PAGE_ALIGN(ALIGN(SKB_DATA_ALIGN(buf_size), OTX2_ALIGN));
-+	pp_params.order = get_order(sz);
- 	pp_params.flags = PP_FLAG_PAGE_FRAG | PP_FLAG_DMA_MAP;
- 	pp_params.pool_size = min(OTX2_PAGE_POOL_SZ, numptrs);
- 	pp_params.nid = NUMA_NO_NODE;
+   In file included from drivers/base/firmware_loader/main.c:21:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     547 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+         |                                                   ^
+   In file included from drivers/base/firmware_loader/main.c:21:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+         |                                                   ^
+   In file included from drivers/base/firmware_loader/main.c:21:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     692 |         readsb(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     700 |         readsw(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     708 |         readsl(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     717 |         writesb(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     726 |         writesw(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     735 |         writesl(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   In file included from drivers/base/firmware_loader/main.c:45:
+   In file included from drivers/base/firmware_loader/fallback.h:9:
+>> drivers/base/firmware_loader/sysfs.h:87:20: error: redefinition of 'fw_load_abort' as different kind of symbol
+      87 | static inline void fw_load_abort(struct fw_sysfs *fw_sysfs)
+         |                    ^
+   drivers/base/firmware_loader/firmware.h:89:13: note: previous definition is here
+      89 | extern bool fw_load_abort;
+         |             ^
+   12 warnings and 1 error generated.
+
+
+vim +/fw_load_abort +87 drivers/base/firmware_loader/sysfs.h
+
+e0c11a8b985137 Russ Weight 2022-04-21  86  
+e0c11a8b985137 Russ Weight 2022-04-21 @87  static inline void fw_load_abort(struct fw_sysfs *fw_sysfs)
+e0c11a8b985137 Russ Weight 2022-04-21  88  {
+e0c11a8b985137 Russ Weight 2022-04-21  89  	struct fw_priv *fw_priv = fw_sysfs->fw_priv;
+e0c11a8b985137 Russ Weight 2022-04-21  90  
+e0c11a8b985137 Russ Weight 2022-04-21  91  	__fw_load_abort(fw_priv);
+e0c11a8b985137 Russ Weight 2022-04-21  92  }
+e0c11a8b985137 Russ Weight 2022-04-21  93  
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
