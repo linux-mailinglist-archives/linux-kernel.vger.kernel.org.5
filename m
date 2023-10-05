@@ -2,171 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A027BAF30
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020297BAF39
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 01:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbjJEXMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 19:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34504 "EHLO
+        id S229529AbjJEXMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 19:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjJEXJk (ORCPT
+        with ESMTP id S229584AbjJEXK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 19:09:40 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76897D5E
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 16:09:27 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c60778a3bfso12438685ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 16:09:27 -0700 (PDT)
+        Thu, 5 Oct 2023 19:10:27 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67591D7A
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 16:10:19 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1dcfb2a3282so973946fac.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 16:10:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696547367; x=1697152167; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DoiIVSH2H/7Ehkj4/Ha1iKcbnVhKAH6CyOO+EjLparg=;
-        b=ZTUg87L3qbyY/YdSC6Uv7LNgY63RUIaMacDUOJOoCzkdsw6c4iIwqfpyFRD9hSlsAp
-         GrRihCD7NLnNKPkWWlz5TmNeOoN1cqBr4wxyNVsi4j/AoALqQ48jGzWJ0h2wgQFEEC9O
-         lqpwzvT9FASKKWWYpk/corpZu6Hou9HK24jGc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696547367; x=1697152167;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1696547417; x=1697152217; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DoiIVSH2H/7Ehkj4/Ha1iKcbnVhKAH6CyOO+EjLparg=;
-        b=EiRCuTiJ6CgiVMWAwyxU7cvTBUJ2n48piG48GkrU3PMwv2KbN5MpUYelGm3n9Y0Snu
-         2t0uI+m3r58FmQSfj4CJ/bpGynz+csBk0X+1W/OmiPFxRDU5824Fn6MQAdGM+FLfcJET
-         b1HR62PbkRnMl5NtzwOp3exq9su+C3oshVodviWaXK/9dAncAgrqFa+6KiA2zJLeQW/w
-         bHBu2vaYN2zUp1y/4xOUF1wgD/44S5Fkb9ViK1f90C8hZR4qF15Au4qQAZMpVFAppkTD
-         BKetACBLwsizhMMbYZRX8GP2YqDeca4aCCCWfx8tztCaubo/DAYGBEXXKrQD3uZPS0eT
-         i0KA==
-X-Gm-Message-State: AOJu0YyB0MGSAquOgoYjbvqrRgQBu5cat7wrd0cF357w6dK6utmHuJPt
-        WKA/tXyVmkhNdiKu1nEKvm75Iw==
-X-Google-Smtp-Source: AGHT+IHcq5uCc483ikwSlkpjgM2nwnjHkpTW/XMhjMaTpuHs/FjHne5CGBFVVASfL01xWH04NCQt/g==
-X-Received: by 2002:a17:903:22c3:b0:1c3:cee1:cc8e with SMTP id y3-20020a17090322c300b001c3cee1cc8emr7994677plg.68.1696547366933;
-        Thu, 05 Oct 2023 16:09:26 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ja14-20020a170902efce00b001bd62419744sm2318235plb.147.2023.10.05.16.09.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 16:09:26 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 16:09:23 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] bna: replace deprecated strncpy with strscpy
-Message-ID: <202310051549.D76C508541@keescook>
-References: <20231005-strncpy-drivers-net-ethernet-brocade-bna-bfa_ioc-c-v1-1-8dfd30123afc@google.com>
+        bh=w/YtWbTk+ogUdRC0TaUNLH0mjAz4ZjMf7BjFozKWCr4=;
+        b=AFLMVXPeg5AM8dkTNry21oak9DwrjG9EyWaqYRnL34AZFSMc5wWNJfy17Os8URahoG
+         JKOuzt0ERG3W9R4M1nk2H1pZ79hOd1994UYuDY3fsjsn+Ua5p7eq5LMpNQSyCbq4zNvs
+         HCMSJiWYhjJM7cJbBWr/BQx0/bpDNWKyzIK0hN3oBh7vf5GDu5laZnlO7YffJ2mZWNJl
+         NOT3IjhTDIGD7BzbCWxEeu9mV2D64ks/hzMv9KRtNSAs4OmhOYu2RsXlEr9JEtjYx8RO
+         ydeEdijaYLSMPESApHlT6NR/pDj33hIBAIb/CZg8hzeXvjllYPai+AdZGxe+gYtz13UR
+         630w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696547417; x=1697152217;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w/YtWbTk+ogUdRC0TaUNLH0mjAz4ZjMf7BjFozKWCr4=;
+        b=XQJTxu+ZgpbDZGZuJbhsA3Mz4J1Dmd63QbpsBNfLXFYB/EiDJTj/qSlX1dbQInXdOF
+         cPFsk04aTlwgNIWUF+fdTEAgugBKjumGvhYGTsHekb4GElo69bdb3+D7itLQRfRjM+Kz
+         vs3PAWDCrmBcbUAjQPZJdbUHJ2y0bIAmNx/8rVo5YnSZlttZQKc5UhDLRuYg14quVbP+
+         LOdqf+4UIpRxzRcHWlmj68p+G/+vUw7QST2Ir0M/9b8MeZFiWdxlP4SVZneW5i83rbiV
+         yM3WoJdJvV3usl3amR0+/Fdak79k9MIu+fRmgoMfedp0sQf95WE8hma+6/FCZd1bp5ui
+         1l3Q==
+X-Gm-Message-State: AOJu0YwGBnpYL30ml8uR9wHetS/+lV8GfRaEIfztJQ3sw+Ezx+A7oGay
+        f5Th0d41sqBF+SGq8PIiJQk8chWtgxAxrPcc9hxMIqK+TQStm8opsOBWiw==
+X-Google-Smtp-Source: AGHT+IEi5mt0HUWvGXoOR9/HihUuvyjLFuF042LlV5NUednd2sjFg1KVbs7kTHVGnRgnM9lXJBh44olZr34CTe9R6yA=
+X-Received: by 2002:a05:6870:c6a4:b0:1b0:3637:2bbe with SMTP id
+ cv36-20020a056870c6a400b001b036372bbemr7422579oab.54.1696547416661; Thu, 05
+ Oct 2023 16:10:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005-strncpy-drivers-net-ethernet-brocade-bna-bfa_ioc-c-v1-1-8dfd30123afc@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231003041704.1746303-1-maheshb@google.com> <ZRzqYO2eV9Lmm8+O@hoboy.vegasvil.org>
+In-Reply-To: <ZRzqYO2eV9Lmm8+O@hoboy.vegasvil.org>
+From:   =?UTF-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS14KS+4KSwKQ==?= 
+        <maheshb@google.com>
+Date:   Thu, 5 Oct 2023 16:09:50 -0700
+Message-ID: <CAF2d9jgRwSF426u9jgYZeVd5+Cd3B21m-bT_FcSzW83riJvhhw@mail.gmail.com>
+Subject: Re: [PATCHv2 next 2/3] ptp: add ioctl interface for ptp_gettimex64any()
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Linux <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        John Stultz <jstultz@google.com>,
+        Don Hatchett <hatch@google.com>,
+        Yuliang Li <yuliangli@google.com>,
+        Mahesh Bandewar <mahesh@bandewar.net>,
+        Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 09:05:42PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> bfa_ioc_get_adapter_manufacturer() simply copies a string literal into
-> `manufacturer`.
-> 
-> NUL-padding is not needed because bfa_ioc_get_adapter_manufacturer()'s
-> only caller passes `ad_attr` (which is from ioc_attr) which is then
-> memset to 0.
->  bfa_nw_ioc_get_attr() ->
->    bfa_ioc_get_adapter_attr() ->
->      bfa_nw_ioc_get_attr() ->
->        memset((void *)ioc_attr, 0, sizeof(struct bfa_ioc_attr));
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> ---
->  drivers/net/ethernet/brocade/bna/bfa_ioc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/brocade/bna/bfa_ioc.c b/drivers/net/ethernet/brocade/bna/bfa_ioc.c
-> index b07522ac3e74..497cb65f2d06 100644
-> --- a/drivers/net/ethernet/brocade/bna/bfa_ioc.c
-> +++ b/drivers/net/ethernet/brocade/bna/bfa_ioc.c
-> @@ -2839,7 +2839,7 @@ bfa_ioc_get_adapter_optrom_ver(struct bfa_ioc *ioc, char *optrom_ver)
->  static void
->  bfa_ioc_get_adapter_manufacturer(struct bfa_ioc *ioc, char *manufacturer)
->  {
-> -	strncpy(manufacturer, BFA_MFG_NAME, BFA_ADAPTER_MFG_NAME_LEN);
-> +	strscpy(manufacturer, BFA_MFG_NAME, sizeof(manufacturer));
->  }
+On Tue, Oct 3, 2023 at 9:30=E2=80=AFPM Richard Cochran <richardcochran@gmai=
+l.com> wrote:
+>
+> On Mon, Oct 02, 2023 at 09:17:04PM -0700, Mahesh Bandewar wrote:
+> > add an ioctl op PTP_SYS_OFFSET_ANY2 to support ptp_gettimex64any() meth=
+od
+>
+> NAK.
+>
+Could you elaborate?
 
-tl;dr: please use:
+> > +     case PTP_SYS_OFFSET_ANY2:
+>
+> 2?
+>
+> What happended to 1?
 
-	strscpy_pad(manufacturer, BFA_MFG_NAME, BFA_ADAPTER_MFG_NAME_LEN);
-
-sizeof() will not work correctly here -- manufacturer is a char *,
-so this will always be sizeof(unsigned long). Which begs the question,
-why is an unbounded string being passed here? Yay fragile API.
-
-I notice bfa_ioc_get_adapter_manufacturer() in drivers/scsi/bfa/bfa_ioc.c
-does this:
-
-        memset((void *)manufacturer, 0, BFA_ADAPTER_MFG_NAME_LEN);
-        strscpy(manufacturer, BFA_MFG_NAME, BFA_ADAPTER_MFG_NAME_LEN);
-
-So, I think we should follow suit (but use strscpy_pad() instead to
-avoid the partially redundant memset).
-
-I also note that the "manufacturer" argument comes from many possible
-structs, not just struct bfa_adapter_attr:
-
-drivers/net/ethernet/brocade/bna/bfa_ioc.c:2761:        bfa_ioc_get_adapter_manufacturer(ioc, ad_attr->manufacturer);
-
-	struct bfa_adapter_attr {
-	        char            manufacturer[BFA_ADAPTER_MFG_NAME_LEN];
-
-drivers/scsi/bfa/bfa_ioc.c:2698:        bfa_ioc_get_adapter_manufacturer(ioc, ad_attr->manufacturer);
-
-	struct bfa_adapter_attr_s {
-	        char            manufacturer[BFA_ADAPTER_MFG_NAME_LEN];
-
-drivers/scsi/bfa/bfa_fcs_lport.c:2630:  bfa_ioc_get_adapter_manufacturer(&port->fcs->bfa->ioc,
-
-	struct bfa_fcs_fdmi_hba_attr_s {
-		...
-	        u8         manufacturer[64];
-
-This is unexpectedly large... I was expecting either 8 or
-BFA_ADAPTER_MFG_NAME_LEN:
-
-drivers/net/ethernet/brocade/bna/bfa_defs.h:31: BFA_ADAPTER_MFG_NAME_LEN    = 8,   /*!< manufacturer name length */
-drivers/scsi/bfa/bfa_defs.h:259:        BFA_ADAPTER_MFG_NAME_LEN    = 8,   /*  manufacturer name length */
-
-(But it seems not a problem, since it's memset() before...)
-
-And there are more that I've check, since I also found this macro:
-
-#define bfa_get_adapter_manufacturer(__bfa, __manufacturer)             \
-        bfa_ioc_get_adapter_manufacturer(&(__bfa)->ioc, __manufacturer)
-
-And there are multiple implementations of bfa_ioc_get_adapter_manufacturer(), it seems.
-
--- 
-Kees Cook
+My reading from the commit 415606588c61 ("PTP: introduce new versions
+of IOCTLs") is that we have an issue with the version 1 and hence we
+added ver 2 of the existing ops. Since it's a new implementation, I
+can skip the old part and just implement ver 2.
+However, I can do something like
+     #define PTP_SYS_OFFSET_ANY PTP_OFFSET_ANY2
+is that something inline with the mix of ver 1 and ver 2 expectation?
