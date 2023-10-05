@@ -2,93 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C737BA9E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E5C7BA9EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 21:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbjJETRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 15:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37526 "EHLO
+        id S231146AbjJETTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 15:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjJETRT (ORCPT
+        with ESMTP id S229835AbjJETTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 15:17:19 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7B7CE;
-        Thu,  5 Oct 2023 12:17:19 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1dd71c0a41fso791108fac.2;
-        Thu, 05 Oct 2023 12:17:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696533437; x=1697138237; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rqirAhdhlifzlWSmYkNBUWfnYzjdjuk6xxAE0rOCESk=;
-        b=jLqspYxR4nETSW5PTui2+dPPzX68mGGUKGQcw8rbHH/We4uEQCO3s5mftsUdnr7mYX
-         XOp0ZPP//V6FL8Tu81ydBkUMy5HSQteNyflwMLbPD07dEXL6qiz/Ei9g625L8o1271QJ
-         umgEiDHTsXrIdV4schVEQcniboMSSBxybIq1pExdW+ZOTmeU/mwLap/5RhZLVjhAqwCm
-         sff4GaSSWKTo20bFvnbV3n3yRr0CIuhs5op0BQAoK6iByab4JpaGSMtgHGA51AUAfP9P
-         iXtMkVTEFzaKMvPUP2hi934OtPyJZOch5t/MyN3mmMjzYMrZLcga6iZ8T6Xo+3132W5c
-         WD0g==
+        Thu, 5 Oct 2023 15:19:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B34CE
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 12:18:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696533513;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2R8nvS1fGysVMS5a70TnQ+euq+3ceDHbf0f2W4kS2b4=;
+        b=YEYT4lWvpl4ZjSkxKuMIdLg8RcnEbUV7llXv6ShimJYgcHacNhhGIHkaR3GRopUphsqz7E
+        jZxUYLecdUNkmAagJEPWJDFffitGN2SXNff8tZ5Je+sddJMXMVUYA/dyfu1tGsrd8FlzCV
+        nB33ysQJ2EFyRuVLeNXihvuerZeLYeI=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-519-8gd8_A5nPhmVICcW9cE8_w-1; Thu, 05 Oct 2023 15:18:31 -0400
+X-MC-Unique: 8gd8_A5nPhmVICcW9cE8_w-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32323283257so1050800f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 12:18:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696533437; x=1697138237;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rqirAhdhlifzlWSmYkNBUWfnYzjdjuk6xxAE0rOCESk=;
-        b=MNIYoRG5/3pl+MIsdpuzEFOsshNOudGMgSrt5vRz5Lr1iE8yy81oFVw29mChsiuMDB
-         dK2362+vtOtSn4pFy7T7VhB/ZrJWRf+kPzSZtg6bnp+aBjKaamYtzX86Mna3MUij0dRV
-         meNXm9tdPBubfSoTiCr1+2nwvF1h3VfHxeoIG+3d8T/uwXhEjyZMq7dQfoJ/CY/EkFO+
-         AFmR0sGvzHoberpZt4689b413+0ii423hVP87/V7iPGwt4TKN5RLl9pnniZ+yarkZ0NJ
-         Ax2TnNbHJyKUp/B76oo7OaYBSV7n/CYaRj7m/lZLurrulgJlTHTTjVb+QADL7T+6HRrD
-         /uSg==
-X-Gm-Message-State: AOJu0YxGZKVH+uaS/K49SMLrt/fJFF3Eh/lorAEjhKKtu4+ZtEsew3lu
-        Mu1h0mFqMwj59SSdwaWCOXbD547YLNdBV+SAnHY=
-X-Google-Smtp-Source: AGHT+IE9blaE8fKYMPW45SEpXrubpwaapIeDOKnbcoknHheWjAVJiN+4m5TQBB5p+A2vaUi+VAlbFj5qOlq3oinBPvU=
-X-Received: by 2002:a05:6870:560a:b0:1d6:79e2:8484 with SMTP id
- m10-20020a056870560a00b001d679e28484mr6961566oao.22.1696533436945; Thu, 05
- Oct 2023 12:17:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696533510; x=1697138310;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2R8nvS1fGysVMS5a70TnQ+euq+3ceDHbf0f2W4kS2b4=;
+        b=UqbQryYTD52ZEWgR4TqsybXzgjkLCcmglBzuVhNzoKUrxkAfttV56F966pynKsFRXf
+         U5YvRFqqSXDp9BieWMgpQqmoq6go/iC9f1jQnRSFmi52JKpY2PDyZKLx1nGbVlyjXqU3
+         xCFc/SDZkb/y59tRPps6A0zEe0Lzo7EzRq76dg6cdjREO7MB+2XpVQVPQEQ8bqlTSsYG
+         5nRvoGlN+aQtj5oAgki3FVop8FG6fzXFkM3lDEn9pbaRxRcHNBKoRJ580u++hOzAWBjt
+         87s5fQUWFLGNExRlEgYnfLJV+xuhh1xSuzk9//1Ch6CmqjMbGru8sCAX83DFvyC2jXD7
+         vuAA==
+X-Gm-Message-State: AOJu0YxRpcCFDp6nVfEAjklGhsYH2HCQqLMIdmodi0LxQUQl7x4ys+Mv
+        A4Ee8p5nuHeT5+OgVBU673dkANyaKEZ4X4UFEdMdGZFMwMUBvEI0h72o3b6eVPDndvetbUb5mC8
+        wzwBHaoZs6O/2go66cwgnd0UR
+X-Received: by 2002:a5d:58c2:0:b0:319:7a9f:c63 with SMTP id o2-20020a5d58c2000000b003197a9f0c63mr5707834wrf.50.1696533510574;
+        Thu, 05 Oct 2023 12:18:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEJSoSJCYUxP/9cvc2Te2pM2upBQSmDoYt/HKnGitt6LjIRBQVlh0qAuXtMDSL56hXqGRauRg==
+X-Received: by 2002:a5d:58c2:0:b0:319:7a9f:c63 with SMTP id o2-20020a5d58c2000000b003197a9f0c63mr5707810wrf.50.1696533510205;
+        Thu, 05 Oct 2023 12:18:30 -0700 (PDT)
+Received: from redhat.com ([2.52.3.174])
+        by smtp.gmail.com with ESMTPSA id e1-20020adffc41000000b003267b4692e5sm2421018wrs.19.2023.10.05.12.18.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 12:18:28 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 15:18:25 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Gal Pressman <gal@nvidia.com>,
+        "eperezma@redhat.com" <eperezma@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH vhost v2 00/16] vdpa: Add support for vq descriptor
+ mappings
+Message-ID: <20231005151812-mutt-send-email-mst@kernel.org>
+References: <20230928164550.980832-2-dtatulea@nvidia.com>
+ <20231005133054-mutt-send-email-mst@kernel.org>
+ <9dfa552011c20a58d8550bd794977de821212df4.camel@nvidia.com>
 MIME-Version: 1.0
-References: <20231005175230.232764-1-mario.limonciello@amd.com>
- <20231005175230.232764-3-mario.limonciello@amd.com> <2023100547-vitamins-detergent-4d18@gregkh>
-In-Reply-To: <2023100547-vitamins-detergent-4d18@gregkh>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 5 Oct 2023 15:17:05 -0400
-Message-ID: <CADnq5_MDxwJBvxvy9AohKn+Nu4NPs2kQVS4AwYyscdV41KDoQQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] Revert "drm/amd/pm: workaround for the wrong ac
- power detection on smu 13.0.0"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-usb@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Wolfram Sang <wsa@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9dfa552011c20a58d8550bd794977de821212df4.camel@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 3:13=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Oct 05, 2023 at 12:52:30PM -0500, Mario Limonciello wrote:
-> > This reverts commit 0e5e1a84f0b8c814d502a135824244127fed8f23.
-> >
-> > Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-> > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
->
-> No explaination as to why this needs to be reverted?  And does this need
-> to be backported anywhere?
+On Thu, Oct 05, 2023 at 05:44:01PM +0000, Dragos Tatulea wrote:
+> On Thu, 2023-10-05 at 13:31 -0400, Michael S. Tsirkin wrote:
+> > On Thu, Sep 28, 2023 at 07:45:11PM +0300, Dragos Tatulea wrote:
+> > > This patch series adds support for vq descriptor table mappings which
+> > > are used to improve vdpa live migration downtime. The improvement comes
+> > > from using smaller mappings which take less time to create and destroy
+> > > in hw.
+> > > 
+> > > The first part adds the vdpa core changes from Si-Wei [0].
+> > > 
+> > > The second part adds support in mlx5_vdpa:
+> > > - Refactor the mr code to be able to cleanly add descriptor mappings.
+> > > - Add hardware descriptor mr support.
+> > > - Properly update iotlb for cvq during ASID switch.
+> > > 
+> > > Changes in v2:
+> > > 
+> > > - The "vdpa/mlx5: Enable hw support for vq descriptor mapping" change
+> > >   was split off into two patches to avoid merge conflicts into the tree
+> > >   of Linus.
+> > > 
+> > >   The first patch contains only changes for mlx5_ifc.h. This must be
+> > >   applied into the mlx5-next tree [1] first. Once this patch is applied
+> > >   on mlx5-next, the change has to be pulled fom mlx5-next into the vhost
+> > >   tree and only then the remaining patches can be applied.
+> > 
+> > 
+> > I get it you plan v3?
+> There are some very small improvements (commit message in 13/16 and fix in
+> 16/16) that could make a v3. The latter can be addressed as a separate patch
+> when moving dup_iotlb to vhost/iotlb. What do you think?
 
-This patch ultimately never went upstream, but there was some
-confusion about whether it did or not.  It can be ignored.
 
-Alex
+if there's a fix by all means post v3.
+
+> > 
+> > > [0]
+> > > https://lore.kernel.org/virtualization/1694248959-13369-1-git-send-email-si-wei.liu@oracle.com
+> > > [1]
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-next
+> > > 
+> > > Dragos Tatulea (13):
+> > >   vdpa/mlx5: Expose descriptor group mkey hw capability
+> > >   vdpa/mlx5: Create helper function for dma mappings
+> > >   vdpa/mlx5: Decouple cvq iotlb handling from hw mapping code
+> > >   vdpa/mlx5: Take cvq iotlb lock during refresh
+> > >   vdpa/mlx5: Collapse "dvq" mr add/delete functions
+> > >   vdpa/mlx5: Rename mr destroy functions
+> > >   vdpa/mlx5: Allow creation/deletion of any given mr struct
+> > >   vdpa/mlx5: Move mr mutex out of mr struct
+> > >   vdpa/mlx5: Improve mr update flow
+> > >   vdpa/mlx5: Introduce mr for vq descriptor
+> > >   vdpa/mlx5: Enable hw support for vq descriptor mapping
+> > >   vdpa/mlx5: Make iotlb helper functions more generic
+> > >   vdpa/mlx5: Update cvq iotlb mapping on ASID change
+> > > 
+> > > Si-Wei Liu (3):
+> > >   vdpa: introduce dedicated descriptor group for virtqueue
+> > >   vhost-vdpa: introduce descriptor group backend feature
+> > >   vhost-vdpa: uAPI to get dedicated descriptor group id
+> > > 
+> > >  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  31 +++--
+> > >  drivers/vdpa/mlx5/core/mr.c        | 191 ++++++++++++++++-------------
+> > >  drivers/vdpa/mlx5/core/resources.c |   6 +-
+> > >  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 100 ++++++++++-----
+> > >  drivers/vhost/vdpa.c               |  27 ++++
+> > >  include/linux/mlx5/mlx5_ifc.h      |   8 +-
+> > >  include/linux/mlx5/mlx5_ifc_vdpa.h |   7 +-
+> > >  include/linux/vdpa.h               |  11 ++
+> > >  include/uapi/linux/vhost.h         |   8 ++
+> > >  include/uapi/linux/vhost_types.h   |   5 +
+> > >  10 files changed, 264 insertions(+), 130 deletions(-)
+> > > 
+> > > -- 
+> > > 2.41.0
+> > 
+> 
+
