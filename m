@@ -2,181 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4D57BA97E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81F87BA984
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 20:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231473AbjJESxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 14:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
+        id S231297AbjJESz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 14:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbjJESxY (ORCPT
+        with ESMTP id S229932AbjJESzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 14:53:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA7D98;
-        Thu,  5 Oct 2023 11:53:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D027C433C7;
-        Thu,  5 Oct 2023 18:53:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696531997;
-        bh=chYFievT/u2R2Xpv24rtGTlpheFGgMYWE/+zxnqxkdY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=RrzGi5/URDgDNTXjNM5T2qbqstYXXCkWKLk/hQALtR15Na0VYXcuRRnBSrL4bgKR0
-         tgXsaksM2u/HeVdwbBR+p6xdFxOkIGpFMSnqRez4j31QSA7CJD+1OOZejWJeVjpsNZ
-         w7K9D2Nd/3ZnOinKGaunyb2FFSu8Mq8mWmeWZuMGaFubwvhW1Zz5uUBxvEk6B9TtqJ
-         zq5qo7/lSKtLXIGUtY5vUhihWKRFFnhXH7XshwH4X7tYYwXGAoxQ6OW1e/6BwEFdzJ
-         mGCquss2yWEWZPeq5wfR+N8Rnh4hALOKnfXtTsaSGmufhHMyDjVNoQAF9YTXhk61Os
-         shl7rhcepBH3w==
-Date:   Thu, 5 Oct 2023 13:53:15 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     bhelgaas@google.com, lukas@wunner.de, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, mika.westerberg@linux.intel.com
-Subject: Re: [PATCH v2] PCI: Make d3cold_allowed sysfs attribute read only
-Message-ID: <20231005185315.GA785324@bhelgaas>
+        Thu, 5 Oct 2023 14:55:55 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8629798;
+        Thu,  5 Oct 2023 11:55:54 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5043a01ee20so1695157e87.0;
+        Thu, 05 Oct 2023 11:55:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696532153; x=1697136953; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MWYpFdaVGut5Npp6T7pkp8bwOXgHapwNlMwFZnUGk7w=;
+        b=FJZ6/yTxRuzOMR6Sweo4Pazyb130kOqWqIcCddCKv0ahnIeDA9jE4MJhrjfSBBVlgM
+         FG/w/dvl8os8jAZkyOeX9rmyGkRz++bcprYu0ocUlKhB5lWTLEiXV+RDbbFc4B73OnaP
+         DKAhebanyXaPO0iVFwZ8VG14aGhXmNJJvsWfM6oxzu9eIIczUjpNnEvKDB6CsfIe97eL
+         0Bp6xzxSuRIUTlWpuUpOQ8DLDSsgcl7uSPEyKUvlflaSP5yMXpKkXrFXe+MlZgcctTW6
+         2TR+DTk/7G2VyoL4aCIoj/8TkgwfxlLE6TaQZIBuO+ygyJku5exVEPvS1vH5pWixdgeJ
+         hj0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696532153; x=1697136953;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MWYpFdaVGut5Npp6T7pkp8bwOXgHapwNlMwFZnUGk7w=;
+        b=B6kk7UqamgBfsGboqSPchVzbH6RhQAKVeBFri6jd9DHXmlLrLh72ZotQ+a3/ijxa3r
+         JDOSbeZ0OBzXP8t6WV+4IfjNG/oXLhqsBVB4t/K5esPWm0STOMJOWgRxgTg6m+APRraf
+         bawxL33bFBtJcBIMiBmGrRHRBa9avmVzSODKPJZMBJ+STWpGygEvwKoi7Mo+c3oYSdBX
+         iYWzHN6tKv9crLDd/9qOSyGbD23Bl1pz+t6ZdPhCQCPnkxDcenOmkcBKe66y8vBUpsNh
+         OO1SL3i29IaoKpyRyBn5xWTNk1rfgTvBzuH0G9tuuFWTQqbj1sWVo74Zn3rSDT5v+yOq
+         9UUg==
+X-Gm-Message-State: AOJu0Ywlzl0Q3U5vsZYXJZ5NqXA2QnH245m1EKivEqsmJqG6LEYkoTLT
+        EJPRhVoYRvmvEGy1RhWfgIA=
+X-Google-Smtp-Source: AGHT+IFqJ0U55JaSS9dVubIT2L7uAnCK33QG8H5yiAfzQX6CIEcmXkxhfi0/H3PS/DK9qIQv6VV5iQ==
+X-Received: by 2002:a05:6512:523:b0:500:9a45:638 with SMTP id o3-20020a056512052300b005009a450638mr5397514lfc.2.1696532152323;
+        Thu, 05 Oct 2023 11:55:52 -0700 (PDT)
+Received: from fr.lan ([46.31.31.132])
+        by smtp.googlemail.com with ESMTPSA id q1-20020ac246e1000000b004fe48d0b639sm402341lfo.83.2023.10.05.11.55.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 11:55:51 -0700 (PDT)
+From:   Ivan Mikhaylov <fr0st61te@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Ivan Mikhaylov <fr0st61te@gmail.com>
+Subject: [PATCH v4 0/2] Add maxim max34408/34409 ADC driver and yaml
+Date:   Thu,  5 Oct 2023 21:55:35 +0300
+Message-ID: <20231005185537.32267-1-fr0st61te@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004144731.158342-1-mario.limonciello@amd.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 09:47:31AM -0500, Mario Limonciello wrote:
-> Before d3cold was stable userspace was allowed to influence the kernel's
-> decision of whether to enable d3cold for a device by a sysfs file
-> `d3cold_allowed`.  This potentially allows userspace to break the suspend
-> for the system.
+Add Maxim max34408/34409 ADC driver and yaml for it. Until now it
+supports only current monitioring function without overcurrent
+threshold/delay, shutdown delay configuration, alert interrupt.
 
-Is "Before d3cold was stable" referring to a "d3cold" read-only
-variable, or to Linux functionality of using D3cold, or ...?
+Changes from v1:
+   - minor changes from Rob's comments for yaml
+   - add ena, shtdn and make 4 inputs for R sense from Jonathan's comments for yaml
+   - add _REG suffix and make prefix for bitmasks and statuses
+   - add SCALE/OFFSET instead of AVG/PROCESSED from Jonathan and
+     Lars-Peter comments
+   - add chip data from Jonathan and Lars-Peter comments
+   - minor changes from Lars-Peter and Jonathan comments for driver
 
-In what sense does the `d3cold_allowed` sysfs file break suspend?
+Changes from v2:
+   - add channels into hardware description into yaml
+   - add rsense property per channel
+   - rename pins for shtdn and ena pins
+   - make one array for input_rsense values
 
-> For debugging purposes `pci_port_pm=` can be used to control whether
-> a PCI port will go into D3cold and runtime PM can be turned off by
-> sysfs on PCI end points.
+Changes from v3:
+   - change *_34408_OCT3 and 4 to *_34409_OCT3 and 4
+   - change of_property_read_u32 to fwnode family calls
+   - add i2c dev table
+   - change of_match_device to i2c_of_match_device
+   - change match->data to i2c_get_match_data 
 
-I guess this should be "pcie_port_pm=", which affects *all* PCIe
-ports?
+Ivan Mikhaylov (2):
+  dt-bindings: adc: provide max34408/9 device tree binding document
+  iio: adc: Add driver support for MAX34408/9
 
-Which sysfs file turns off runtime PM for endpoints?
+ .../bindings/iio/adc/maxim,max34408.yaml      | 137 +++++++++
+ drivers/iio/adc/Kconfig                       |  11 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/max34408.c                    | 278 ++++++++++++++++++
+ 4 files changed, 427 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
+ create mode 100644 drivers/iio/adc/max34408.c
 
-> Change the sysfs attribute to a noop that ignores the input when written
-> and shows a warning. Simplify the internal kernel logic to drop
-> `d3cold_allowed`.
-> 
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
-> v1->v2:
->  * Leave R/W and show a warning instead
->  * Mark deprecated in sysfs file
-> ---
->  Documentation/ABI/testing/sysfs-bus-pci |  4 ++--
->  drivers/pci/pci-acpi.c                  |  2 +-
->  drivers/pci/pci-sysfs.c                 | 14 ++------------
->  drivers/pci/pci.c                       |  3 +--
->  include/linux/pci.h                     |  1 -
->  5 files changed, 6 insertions(+), 18 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-> index ecf47559f495..b5db141dfee6 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-pci
-> +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> @@ -283,8 +283,8 @@ Description:
->  		device will never be put into D3Cold state.  If it is set, the
->  		device may be put into D3Cold state if other requirements are
->  		satisfied too.  Reading this attribute will show the current
-> -		value of d3cold_allowed bit.  Writing this attribute will set
-> -		the value of d3cold_allowed bit.
-> +		value of no_d3cold bit.
-> +		Writing to this attribute is deprecated and will do nothing.
->  
->  What:		/sys/bus/pci/devices/.../sriov_totalvfs
->  Date:		November 2012
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index 05b7357bd258..a05350a4e49c 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -911,7 +911,7 @@ pci_power_t acpi_pci_choose_state(struct pci_dev *pdev)
->  {
->  	int acpi_state, d_max;
->  
-> -	if (pdev->no_d3cold || !pdev->d3cold_allowed)
-> +	if (pdev->no_d3cold)
->  		d_max = ACPI_STATE_D3_HOT;
->  	else
->  		d_max = ACPI_STATE_D3_COLD;
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index 5e741a05cf2c..52ed5a55a371 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -523,17 +523,7 @@ static ssize_t d3cold_allowed_store(struct device *dev,
->  				    struct device_attribute *attr,
->  				    const char *buf, size_t count)
->  {
-> -	struct pci_dev *pdev = to_pci_dev(dev);
-> -	unsigned long val;
-> -
-> -	if (kstrtoul(buf, 0, &val) < 0)
-> -		return -EINVAL;
-> -
-> -	pdev->d3cold_allowed = !!val;
-> -	pci_bridge_d3_update(pdev);
-> -
-> -	pm_runtime_resume(dev);
-> -
-> +	dev_warn_once(dev, "pci: writing to d3cold_allowed is deprecated\n");
->  	return count;
->  }
->  
-> @@ -541,7 +531,7 @@ static ssize_t d3cold_allowed_show(struct device *dev,
->  				   struct device_attribute *attr, char *buf)
->  {
->  	struct pci_dev *pdev = to_pci_dev(dev);
-> -	return sysfs_emit(buf, "%u\n", pdev->d3cold_allowed);
-> +	return sysfs_emit(buf, "%u\n", !pdev->no_d3cold);
->  }
->  static DEVICE_ATTR_RW(d3cold_allowed);
->  #endif
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 59c01d68c6d5..8c5a6f68f63d 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3067,7 +3067,7 @@ static int pci_dev_check_d3cold(struct pci_dev *dev, void *data)
->  	bool *d3cold_ok = data;
->  
->  	if (/* The device needs to be allowed to go D3cold ... */
-> -	    dev->no_d3cold || !dev->d3cold_allowed ||
-> +	    dev->no_d3cold ||
->  
->  	    /* ... and if it is wakeup capable to do so from D3cold. */
->  	    (device_may_wakeup(&dev->dev) &&
-> @@ -3204,7 +3204,6 @@ void pci_pm_init(struct pci_dev *dev)
->  	dev->d3hot_delay = PCI_PM_D3HOT_WAIT;
->  	dev->d3cold_delay = PCI_PM_D3COLD_WAIT;
->  	dev->bridge_d3 = pci_bridge_d3_possible(dev);
-> -	dev->d3cold_allowed = true;
->  
->  	dev->d1_support = false;
->  	dev->d2_support = false;
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 8c7c2c3c6c65..5f4ed71d31f5 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -376,7 +376,6 @@ struct pci_dev {
->  	unsigned int	no_d1d2:1;	/* D1 and D2 are forbidden */
->  	unsigned int	no_d3cold:1;	/* D3cold is forbidden */
->  	unsigned int	bridge_d3:1;	/* Allow D3 for bridge */
-> -	unsigned int	d3cold_allowed:1;	/* D3cold is allowed by user */
->  	unsigned int	mmio_always_on:1;	/* Disallow turning off io/mem
->  						   decoding during BAR sizing */
->  	unsigned int	wakeup_prepared:1;
-> -- 
-> 2.34.1
-> 
+-- 
+2.42.0
+
