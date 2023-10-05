@@ -2,150 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2497BA06B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3E97BA12B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Oct 2023 16:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238691AbjJEOky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 10:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
+        id S235656AbjJEOmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 10:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236767AbjJEOhD (ORCPT
+        with ESMTP id S231479AbjJEOhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:37:03 -0400
+        Thu, 5 Oct 2023 10:37:51 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2937547884;
-        Thu,  5 Oct 2023 07:02:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C669C3278D;
-        Thu,  5 Oct 2023 11:33:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696505618;
-        bh=Gujm2UgMSTQVzZie35S9mqqAaJznypMdR0YvTSDXPyw=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E29F497A3;
+        Thu,  5 Oct 2023 07:02:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D08F8C3278E;
+        Thu,  5 Oct 2023 11:34:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696505644;
+        bh=uQCzM5xbAuZl+/32wrxwrBNmw+5LgwY7U9nc7LghN6o=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gELojnSzg2yqBqBfMB47SkfKfxYds38jUHnz9IRgkoQe81teDdJPkSeX3TarlowRb
-         GontVOYLTVhOXmW7ZTrBaQWOUKmb7pZ4Qv4hT2k4mpS8yHzVWzMqxwNM78V3hAQw3N
-         2BwFhyD/1rAtxM4OlLFICsGfX3oHxORpjgt/VMrY=
-Date:   Thu, 5 Oct 2023 13:33:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lee Jones <lee@kernel.org>
-Cc:     "Starke, Daniel" <daniel.starke@siemens.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Fedor Pchelkin <pchelkin@ispras.ru>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com" 
-        <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
-Subject: Re: [PATCH 1/1] tty: n_gsm: Avoid sleeping during .write() whilst
- atomic
-Message-ID: <2023100512-charger-cherisher-9a3d@gregkh>
-References: <2023100320-immorally-outboard-573a@gregkh>
- <DB9PR10MB588170E923A6ED8B3D6D9613E0CBA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM>
- <2023100421-negotiate-stammer-1b35@gregkh>
- <20231004085720.GA9374@google.com>
- <2023100448-cotton-safehouse-aca2@gregkh>
- <20231004125704.GA83257@google.com>
- <2023100435-xerox-idiocy-5cf0@gregkh>
- <20231005090311.GD83257@google.com>
- <2023100528-directory-arrogant-2ca9@gregkh>
- <20231005104311.GG83257@google.com>
+        b=X0ft9yf36AQug4BLX5o8ln8sDmEA79VOqDZe1B3WKxylc0cjhwD8VeW/T9iPtoGN0
+         aP0r2Oy/ylZS+cNPV1HR+qwnj/Chq/JeYm33JfbMbvVxVu1cf/4uRTtLegDwib7EvM
+         66UeHSDD8BQgPGvA9cIE0qDRNj3Wl9poy06t6FFzv4DKh+4JbaA+ZlHB25E5Ed30y/
+         yFlf5KpW/RJJ2PhS0BvyvLR2aD0KsWoSQQiSWqcpkcqhmhGA4LprVP+gkCI1aQa/A/
+         kIMezW0l6WM+lk8PiTiLJrQuQvKmPGPKqrER+QXnmROlFg9xMZ6CZI4Xqpa2CO71N7
+         vfUF4l1FEcl+A==
+Date:   Thu, 5 Oct 2023 13:34:01 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Benedikt Spranger <b.spranger@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Subject: Re: [PATCH 1/1] clk: socfpga: gate: Fix of by factor 2 for serial
+ console
+Message-ID: <qpskbgigcaoyjuhzeguz366cjukv3ij7utlbkra5edhwn6uzh4@bdedm6vs62y5>
+References: <20231005095927.12398-1-b.spranger@linutronix.de>
+ <20231005095927.12398-2-b.spranger@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="prvu7vztqw3jsd37"
 Content-Disposition: inline
-In-Reply-To: <20231005104311.GG83257@google.com>
+In-Reply-To: <20231005095927.12398-2-b.spranger@linutronix.de>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 11:43:11AM +0100, Lee Jones wrote:
-> On Thu, 05 Oct 2023, Greg Kroah-Hartman wrote:
-> 
-> > On Thu, Oct 05, 2023 at 10:03:11AM +0100, Lee Jones wrote:
-> > > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
-> > > 
-> > > > On Wed, Oct 04, 2023 at 01:57:04PM +0100, Lee Jones wrote:
-> > > > > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
-> > > > > 
-> > > > > > On Wed, Oct 04, 2023 at 09:57:20AM +0100, Lee Jones wrote:
-> > > > > > > On Wed, 04 Oct 2023, Greg Kroah-Hartman wrote:
-> > > > > > > 
-> > > > > > > > On Wed, Oct 04, 2023 at 05:59:09AM +0000, Starke, Daniel wrote:
-> > > > > > > > > > Daniel, any thoughts?
-> > > > > > > > > 
-> > > > > > > > > Our application of this protocol is only with specific modems to enable
-> > > > > > > > > circuit switched operation (handling calls, selecting/querying networks,
-> > > > > > > > > etc.) while doing packet switched communication (i.e. IP traffic over PPP).
-> > > > > > > > > The protocol was developed for such use cases.
-> > > > > > > > > 
-> > > > > > > > > Regarding the issue itself:
-> > > > > > > > > There was already an attempt to fix all this by switching from spinlocks to
-> > > > > > > > > mutexes resulting in ~20% performance loss. However, the patch was reverted
-> > > > > > > > > as it did not handle the T1 timer leading into sleep during atomic within
-> > > > > > > > > gsm_dlci_t1() on every mutex lock there.
-> > > > > > > 
-> > > > > > > That's correct.  When I initially saw this report, my initial thought
-> > > > > > > was to replace the spinlocks with mutexts, but having read the previous
-> > > > > > > accepted attempt and it's subsequent reversion I started to think of
-> > > > > > > other ways to solve this issue.  This solution, unlike the last, does
-> > > > > > > not involve adding sleep inducing locks into atomic contexts, nor
-> > > > > > > should it negatively affect performance.
-> > > > > > > 
-> > > > > > > > > There was also a suggestion to fix this in do_con_write() as
-> > > > > > > > > tty_operations::write() appears to be documented as "not allowed to sleep".
-> > > > > > > > > The patch for this was rejected. It did not fix the issue within n_gsm.
-> > > > > > > > > 
-> > > > > > > > > Link: https://lore.kernel.org/all/20221203215518.8150-1-pchelkin@ispras.ru/
-> > > > > > > > > Link: https://lore.kernel.org/all/20221212023530.2498025-1-zengheng4@huawei.com/
-> > > > > > > > > Link: https://lore.kernel.org/all/5a994a13-d1f2-87a8-09e4-a877e65ed166@kernel.org/
-> > > > > > > > 
-> > > > > > > > Ok, I thought I remembered this, I'll just drop this patch from my
-> > > > > > > > review queue and wait for a better solution if it ever comes up as this
-> > > > > > > > isn't a real issue that people are seeing on actual systems, but just a
-> > > > > > > > syzbot report.
-> > > > > > > 
-> > > > > > > What does the "better solution" look like?
-> > > > > > 
-> > > > > > One that actually fixes the root problem here (i.e. does not break the
-> > > > > > recursion loop, or cause a performance decrease for normal users, or
-> > > > > > prevent this from being bound to the console).
-> > > > > 
-> > > > > Does this solution break the recursion loop or affect performance?
-> > > > 
-> > > > This solution broke the recursion by returning an error, right?
-> > > 
-> > > This is the part I was least sure about.
-> > > 
-> > > If this was considered valid and we were to go forward with a solution
-> > > like this, what would a quality improvement look like?  Should we have
-> > > stayed in this function and waited for the previous occupant to leave
-> > > before continuing through ->write()?
-> > 
-> > This isn't valid, as it obviously never shows up in real use.
-> > 
-> > The real solution should be to prevent binding a console to this line
-> > discipline as it can not handle the recursion that consoles require for
-> > the write path.
-> 
-> Would something like this tick that box?
-> 
-> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-> index 1f3aba607cd51..5c1d2fcd5d9e2 100644
-> --- a/drivers/tty/n_gsm.c
-> +++ b/drivers/tty/n_gsm.c
-> @@ -3716,6 +3716,10 @@ static ssize_t gsmld_write(struct tty_struct *tty, struct file *file,
->         if (!gsm)
->                 return -ENODEV;
->  
-> +       /* The GSM line discipline does not support binding to console */
-> +       if (strncmp(tty->name, "tty", 3))
-> +               return -EINVAL;
 
-No, that's not going to work, some consoles do not start with "tty" :(
+--prvu7vztqw3jsd37
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-thanks,
+Hi,
 
-greg k-h
+On Thu, Oct 05, 2023 at 11:59:27AM +0200, Benedikt Spranger wrote:
+> Commit 9607beb917df ("clk: socfpga: gate: Add a determine_rate hook")
+> introduce a specific determine_rate hook. As a result the calculated
+> clock for the serial IP is off by factor 2 after that i.e. if the system
+> configures a baudrate of 115200 it is set physicaly to 57600.
+
+Where is that factor 2 coming from?
+
+> Change the determine_rate hook to the reparent variant
+> __clk_mux_determine_rate() to fix the issue.
+
+It's also not clear to me why that would fix anything. This patch should
+only make the old behaviour explicit, could you expand a bit on what
+happens?
+
+Thanks!
+Maxime
+
+--prvu7vztqw3jsd37
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZR6fKQAKCRDj7w1vZxhR
+xWkXAP944YltL6lQ6PADz9Gi/tzH2kaECDaV1ZlxH1ROb0heXAD9FYCgSiGiA8Ol
+Q96Bcx34HvhWVd152+c2DCv2VNyF3gw=
+=G/z2
+-----END PGP SIGNATURE-----
+
+--prvu7vztqw3jsd37--
