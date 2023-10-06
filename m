@@ -2,79 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA79C7BB78E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79EF7BB78B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbjJFM20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
+        id S232347AbjJFM1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbjJFM2V (ORCPT
+        with ESMTP id S232342AbjJFM1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:28:21 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AE3F4CA
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:28:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=1a/vW
-        nH3Ah5pXEyFX/8tf2+Zvr5M8bQvxpTQY3e+UqA=; b=C2T7kyfWIAIMoRJ/bRm2z
-        xeT3mpMXCpdPWWNAMnQ8dsaGaPQdGELhq0nz99G9DzEyLGaQ/Co3dPNbpdmy7Tva
-        itDV8YzNT5/RNMS08f29Y6bUuyLAqoHNkc4VzElSalnNWBf7gj08o9hqN3LnWCho
-        Eiyw7Az5WzGNa4wglW5IP4=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g3-4 (Coremail) with SMTP id _____wAnLUQn_R9lBEAAEA--.49286S4;
-        Fri, 06 Oct 2023 20:27:28 +0800 (CST)
-From:   Ma Ke <make_ruc2021@163.com>
-To:     richard@nod.at, anton.ivanov@cambridgegreys.com,
-        johannes@sipsolutions.net, make_ruc2021@163.com,
-        xiangyang3@huawei.com
-Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] um: vector: fix return value check in vector_legacy_rx
-Date:   Fri,  6 Oct 2023 20:27:17 +0800
-Message-Id: <20231006122717.3984017-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+        Fri, 6 Oct 2023 08:27:34 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 86CAD1A7;
+        Fri,  6 Oct 2023 05:27:24 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 2FE0C9200B4; Fri,  6 Oct 2023 14:27:23 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 2D9209200B3;
+        Fri,  6 Oct 2023 13:27:23 +0100 (BST)
+Date:   Fri, 6 Oct 2023 13:27:23 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+cc:     Su Hui <suhui@nfschina.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] driver base: slience unused warning
+In-Reply-To: <ceaa146a-2781-4266-ade8-6a25eb39abbf@kadam.mountain>
+Message-ID: <alpine.DEB.2.21.2310061312460.20732@angie.orcam.me.uk>
+References: <45027fa0-cda5-2a80-f1cd-ed805d2717ee@nfschina.com> <alpine.DEB.2.21.2310041557310.61599@angie.orcam.me.uk> <d98f7107-56d7-44a3-8b77-b8766cdc02d9@kadam.mountain> <alpine.DEB.2.21.2310051305530.20354@angie.orcam.me.uk>
+ <ceaa146a-2781-4266-ade8-6a25eb39abbf@kadam.mountain>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wAnLUQn_R9lBEAAEA--.49286S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZFyUXr1DCr1kZF4DAFyUGFg_yoWfGrX_Kw
-        1xZanrGr47Grn8Xr1DGF13urya93WkZFZ8Z3WFqr9xZw43Z34fAws0qrn8A3WUWay7Wwsr
-        Kry3GrWjkw1rKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRNeOJUUUUUU==
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/xtbBFRkBC2B9oZDe6wABse
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In vector_legacy_rx, to avoid an unexpected result returned by
-pskb_trim, we should check the return value of pskb_trim().
+On Thu, 5 Oct 2023, Dan Carpenter wrote:
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
- arch/um/drivers/vector_kern.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> This is a W=1 static checker warning.  We've already reviewed it, and
+> marked it as old.  There isn't anything else required.
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 131b7cb29576..822a8c0cdcc1 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -890,7 +890,8 @@ static int vector_legacy_rx(struct vector_private *vp)
- 					skb->ip_summed = CHECKSUM_UNNECESSARY;
- 				}
- 			}
--			pskb_trim(skb, pkt_len - vp->rx_header_size);
-+			if (pskb_trim(skb, pkt_len - vp->rx_header_size))
-+				return 0;
- 			skb->protocol = eth_type_trans(skb, skb->dev);
- 			vp->dev->stats.rx_bytes += skb->len;
- 			vp->dev->stats.rx_packets++;
--- 
-2.37.2
+ Good point.
 
+> Or are we close to promoting the unused-but-set-variable warning from
+> W=1 to being on by default?  How many of these warnings are remaining?
+> It it's like only 20-50 warnings left then maybe we should consider the
+> other options but that kind of information needs to be in the cover
+> letter or otherwise we won't know about it.
+
+ Hmm, these warnings do help chasing dead code, which in turn may reveal 
+real issues, such as where someone missed or forgot something when writing 
+their code and a value that was supposed to be used somehow is instead 
+discarded.
+
+ Most commonly it will be the case when some code has been deliberately 
+removed as it evolves and a part that is no longer needed has been missed 
+by chance and left in place.  I've seen it happen.  Apart from the code 
+sloppiness resulting it shouldn't matter that much though as the compiler 
+is usually pretty good at discarding dead code.
+
+  Maciej
