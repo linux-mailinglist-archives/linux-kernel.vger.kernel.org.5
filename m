@@ -2,74 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D804D7BAFFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CBB7BB003
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjJFBNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 21:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
+        id S229725AbjJFBQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 21:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjJFBNH (ORCPT
+        with ESMTP id S229606AbjJFBQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 21:13:07 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AEAE4
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 18:13:05 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-27731a63481so1493647a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 18:13:05 -0700 (PDT)
+        Thu, 5 Oct 2023 21:16:53 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6E9DE
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 18:16:52 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81646fcf3eso2362943276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 18:16:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696554784; x=1697159584; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZAek5umiw6GVVoIEUs57JBTUu1Ih3TpUkA3pAEzjKWY=;
-        b=2h2QK6gqw4FLR3yx2bhHeZAYMiLEvjmruIIqwVZlSdfvvo9I7btoOjevefJHNsf+ry
-         8TL8XY+XQJu+p5ECY1LHz/3h6b4vuAbskcGklpEEFziskkAMJ9xXW9CoK/MDRHvxIIA5
-         /MyIM6zxNNpqCHDOAkOeSC/k/d2f46FxHGGVPKJFd1/Cb2k/tusV7oZiuGXt6copNNx4
-         bfrFfstVBM3W1I1n5vuTxaXltfENJKJiMWN1UGGj/ReJGCwzm4aX+dAF+O+Z9/hPW0MX
-         s3y/gIDnQ74AmoQi18VuV87hN4nuob1qajHJzUhx/ryALztQzQxjaWUhqOwByAKwZ+7z
-         Io/A==
+        d=google.com; s=20230601; t=1696555011; x=1697159811; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jd5KxEqEwY2iqG9q8MvnGaf7JmKJ2HuMOoFFZ0hbqA8=;
+        b=SVY4b76bYUYMfoXuEmJf3k2FR1jcMSAnsA6OLo8zwPKgmYN3BYRn2ZWvsN46pn6vTY
+         ou0OQMGmyzVR7+IQk5mHMMF/TT6nz0dsjb6RLTI0Ekwki8Xq3+mgxqTp4yhF/gGvibQy
+         4Gl6bnD6HuQfYjy4BiKv42trsQiNAtuJQPF1rH4cz4NdBiXm0OVJwV81mieNp/SuqwMJ
+         AWqNZWrcZO9mGKDcwZB+Js5wW3HR55N0pelh/viy8I72JmA+ARC9nTY2EnYQQmCAjiee
+         /sNy7wiHfz1OCF8BeLBV/g7b9IQ43PrT2v6YOGpEaWTDa0Qrx5E6aga3vJB/KE+1NKeC
+         IWJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696554784; x=1697159584;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZAek5umiw6GVVoIEUs57JBTUu1Ih3TpUkA3pAEzjKWY=;
-        b=btEGp7az3OqxiAVK0VY/dL+UiITWuVFPt6ykxlxCXRCrmI47mP8JFSMGlDk1sdnvtY
-         8PpNseleBES935Vs9UWS2vnje8e5pdQIpCJZntzT9FibfOpZwZRGq7XiaIaEJ1Qz6SCZ
-         M4jqb5YQTBKEviaVoo8rQLTsIej+bwXHzZac07YVfCmXgpnuVi7QovfHe33JvXz/Nugg
-         8VvWlOOKHZQeQPMZeoxx522ZeN4GXwP8W5z41qm25cxQ5s1X3X+1ZXWEgLU0A/rGCpah
-         KyqGFhlrvvuqWUdqwxmwpx8F71gWQ6oR91moDbu8eMBvmEcOohGheK9EHCDnV2SvYU+J
-         N+bQ==
-X-Gm-Message-State: AOJu0YyumxlwUxAY6s4xk0BjtN6NVQgGp8KE8q5c6/c+YMDZx6J+9wue
-        KEHznDqu2ogANbvH/XvrhlNoNv8onJmbgHPV
-X-Google-Smtp-Source: AGHT+IFaSFiDN6s7b5QnThCcfsNZu7HKcB00VtLQMm6/AH4Mz1KgT5focdnzVy4yYsrJWHqYTSx+4tkiEfZiNjoi
-X-Received: from vannapurve2.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:43a4])
- (user=vannapurve job=sendgmr) by 2002:a17:90a:ad4c:b0:276:d039:aec4 with SMTP
- id w12-20020a17090aad4c00b00276d039aec4mr110386pjv.6.1696554784428; Thu, 05
- Oct 2023 18:13:04 -0700 (PDT)
-Date:   Fri,  6 Oct 2023 01:12:55 +0000
+        d=1e100.net; s=20230601; t=1696555011; x=1697159811;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jd5KxEqEwY2iqG9q8MvnGaf7JmKJ2HuMOoFFZ0hbqA8=;
+        b=AiT3m0maqrEX0wHHR9fmfgEKmGOD2vbBleQZak2Yg30avz35wSzDBS6zeVacQeMfyE
+         kVGLXKjq75nzRkfSaJpsU3gk6bOgbwx3oaFTz5bG+BXmCU1TKql1HfJJbmNhMVuYr9dm
+         wsbpIAL5H8D6YBMSDDkfkryQ1vOryeIwMLP9q58iDr8zSgpJ74oy4+jBYrMjCwc2Pic3
+         LwYfHTdLtSuysL7bHg8LHMgv2rkGDaLvE0rcWWLkNRnzrvSCMQlL5FGOfnGx14SbGfYo
+         GCfzVkffzk6M65deAKYIUbs6kRjmWEtlQzrT5+VASuqzjhocEa7OYAjsJQHug/X4+DS/
+         kXxA==
+X-Gm-Message-State: AOJu0YwxgZqqytI8WBAO1y+43NjvvKOIUjij9mEhNn1mPD3RdsgFymOG
+        MSfxJSBupHInBpQUPQneW8n4BDgiD4k=
+X-Google-Smtp-Source: AGHT+IHfG8E/0LJ9G93D45hP8patkOPnQ0VmZvmttke/y2ua8eemwq7tU907u2qwiUzAuKPPgEAJ1HKQOxw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:180e:b0:d77:984e:c770 with SMTP id
+ cf14-20020a056902180e00b00d77984ec770mr114742ybb.5.1696555011194; Thu, 05 Oct
+ 2023 18:16:51 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 18:16:49 -0700
+In-Reply-To: <CW0NB512KP2E.2ZZD07F49LND3@amazon.com>
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Message-ID: <20231006011255.4163884-1-vannapurve@google.com>
-Subject: [PATCH] x86/tdx: Override the tsc calibration for TDX VMs
-From:   Vishal Annapurve <vannapurve@google.com>
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Sagi Shahar <sagis@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vishal Annapurve <vannapurve@google.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <20231001111313.77586-1-nsaenz@amazon.com> <ZR35gq1NICwhOUAS@google.com>
+ <CW0NB512KP2E.2ZZD07F49LND3@amazon.com>
+Message-ID: <ZR9gATE2NSOOhedQ@google.com>
+Subject: Re: [RFC] KVM: Allow polling vCPUs for events
+From:   Sean Christopherson <seanjc@google.com>
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>
+Cc:     kvm@vger.kernel.org, pbonzini@redhat.com,
+        linux-kernel@vger.kernel.org, graf@amazon.de, dwmw2@infradead.org,
+        fgriffo@amazon.com, anelkz@amazon.de, peterz@infradead.org
+Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
@@ -80,66 +69,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TSC calibration for native execution gets the TSC frequency from CPUID,
-but also ends up setting lapic_timer_period. When using oneshot mode
-with lapic timer, predefined value of lapic_timer_period causes lapic
-timer calibration to be skipped with wrong multipliers set for lapic
-timer.
+On Thu, Oct 05, 2023, Nicolas Saenz Julienne wrote:
+> Hi Sean,
+> Thanks for taking the time to look at this.
+> 
+> On Wed Oct 4, 2023 at 11:47 PM UTC, Sean Christopherson wrote:
+> > This does not look remotely safe on multiple fronts.  For starters, I don't see
+> > anything in the .poll() infrastructure that provides serialization, e.g. if there
+> > are multiple tasks polling then this will be "interesting".
+> 
+> Would allowing only one poller be acceptable?
 
-To avoid this issue, override the TSC calibration step for TDX VMs to
-just calculate the TSC frequency using cpuid values.
+As a last resort, but I think we should first try to support multiple pollers.
 
-Signed-off-by: Vishal Annapurve <vannapurve@google.com>
----
- arch/x86/coco/tdx/tdx.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+> > And there is zero chance this is race-free, e.g. nothing prevents the vCPU task
+> > itself from changing vcpu->mode from POLLING_FOR_EVENTS to something else.
+> >
+> > Why on earth is this mucking with vcpu->mode?  Ignoring for the moment that using
+> > vcpu->requests as the poll source is never going to happen, there's zero reason
+> 
+> IIUC accessing vcpu->requests in the kvm_vcpu_poll() is out of the
+> question? Aren't we're forced to do so in order to avoid the race I
+> mention above.
 
-diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-index 1d6b863c42b0..6625594f8c62 100644
---- a/arch/x86/coco/tdx/tdx.c
-+++ b/arch/x86/coco/tdx/tdx.c
-@@ -757,6 +757,33 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
- 	return true;
- }
- 
-+/**
-+ * Determine TSC frequency via CPUID, else return 0.
-+ */
-+static unsigned long tdx_calibrate_tsc(void)
-+{
-+	unsigned int eax_denominator = 0, ebx_numerator = 0, ecx_hz = 0, edx = 0;
-+	unsigned int crystal_khz;
-+
-+	/* CPUID 15H TSC/Crystal ratio, plus optionally Crystal Hz */
-+	cpuid(0x15, &eax_denominator, &ebx_numerator, &ecx_hz, &edx);
-+
-+	if (ebx_numerator == 0 || eax_denominator == 0)
-+		return 0;
-+
-+	crystal_khz = ecx_hz / 1000;
-+
-+	/*
-+	 * TSC frequency reported directly by CPUID is a "hardware reported"
-+	 * frequency and is the most accurate one so far we have. This
-+	 * is considered a known frequency.
-+	 */
-+	if (crystal_khz != 0)
-+		setup_force_cpu_cap(X86_FEATURE_TSC_KNOWN_FREQ);
-+
-+	return crystal_khz * ebx_numerator / eax_denominator;
-+}
-+
- void __init tdx_early_init(void)
- {
- 	u64 cc_mask;
-@@ -808,6 +835,7 @@ void __init tdx_early_init(void)
- 
- 	x86_platform.guest.enc_cache_flush_required  = tdx_cache_flush_required;
- 	x86_platform.guest.enc_tlb_flush_required    = tdx_tlb_flush_required;
-+	x86_platform.calibrate_tsc = tdx_calibrate_tsc;
- 
- 	/*
- 	 * TDX intercepts the RDMSR to read the X2APIC ID in the parallel
--- 
-2.42.0.609.gbb76f46606-goog
+Reading vcpu->requests is fine, though I suspect it will be easier to use a
+dedicated field.  Requests aren't single bit values and most of them are arch
+specific, which will make it annoying to key off of requests directly.  I'm
+guessing it will be impossible to completely avoid arch specific polling logic,
+but I'd rather not jump straight to that.
 
+> > @@ -285,6 +293,9 @@ static void kvm_make_vcpu_request(struct kvm_vcpu *vcpu, unsigned int req,
+> >                 if (cpu != -1 && cpu != current_cpu)
+> >                         __cpumask_set_cpu(cpu, tmp);
+> >         }
+> > +
+> > +       if (kvm_request_is_being_polled(vcpu, req))
+> > +               wake_up_interruptible(...);
+> >  }
+> >
+> >  bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+> 
+> I'll use this approach.
+> 
+> So since we have to provide a proper uAPI, do you have anything against
+> having user-space set the polling mask through an ioctl?
+
+What exactly do you mean?  The mask of what poll "events" userspace cares about?
+I doubt that will work well if KVM supports more than one poller, as preventing
+them from stomping over one another would be all but impossible.
+
+> Also any suggestions on how kvm_request_to_poll_mask() should look like. For
+> ex.  VSM mostly cares for regular interrupts/timers, so mapping
+> 
+>   KVM_REQ_UNBLOCK, KVM_REQ_HV_STIMER, KVM_REQ_EVENT, KVM_REQ_SMI,
+>   KVM_REQ_NMI
+> 
+> to a KVM_POLL_INTERRUPTS_FLAG would work. We can then have ad-hoc flags
+> for async-pf, kvmclock updates, dirty logging, etc...
+
+What all does your use case need/want to poll on?  Mapping out exactly what all
+you want/need to poll is probably the best way to answer this question.
