@@ -2,140 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3E77BB4BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0ED7BB4BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbjJFKEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 06:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54264 "EHLO
+        id S231617AbjJFKEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 06:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbjJFKEf (ORCPT
+        with ESMTP id S231574AbjJFKEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 06:04:35 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93237AD
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 03:04:34 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99c3c8adb27so336436666b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 03:04:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696586673; x=1697191473; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LVIjAchu4k1/zLUf7QjWWCMC0v+GTyXQ9uFRFk3QTgI=;
-        b=QNbkNRY1Ww0DYNeVuaw03LyOsWezNC+nZkYx7mCky1iTRdXSThuOGn8MhST6ERcWwA
-         DueJVQYX6HQy5kqFx6JhlvKuhMAh/D2qH/wtJOeAmZ0HYxymHqLwFGo5vY1wiuVJck6d
-         Gw9gInyq4jwBy6LZFV7XEr+0aAiVRVKtnaj8/wxZD0vTunkma3Txdx1XIoClOEQlYUY1
-         7/GvSOz1Vpk4DJfPFKjP+6GtetBXi2oS3zrbjE5B7i212W0qMwxLTDBZQToQe0uG0VHX
-         jIKiqQZHUmoVWjOH6MXwJZHaigmjREbKXb2wE4MvO/Qk8ReQ4GdlFSjaPDSU5+HX/wYj
-         Pu2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696586673; x=1697191473;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LVIjAchu4k1/zLUf7QjWWCMC0v+GTyXQ9uFRFk3QTgI=;
-        b=p86EsIDutP04epP3yZjopTHlJLBOC6RSBeXI4GucKvnkGZSDwVOzI9iyo19SUfvs53
-         ue98BIERns7o23SoamoTi/pxWttKE9C4YJa+UwZF1N/uV+YKnj6Z2h+5SAI+oTuQEYoS
-         T5Ghs3gxSaGVIVcFrFwcvEnVfn6ZV5UTa739QK64FVbPuo4jw7IStWtV6RMuF1l2k4BL
-         aCUjgWERkDQDCpOTlWBr++XVWvTXjPgGNJQy501glQJKi4RXxMSBkFTIqRbuXStyhhx1
-         Y1w6u+cPnHE2LSEU52ItUPco1GuxZAT4nU65dr4uNLkond8n+wbFnYwA3kWgOyRG2sU2
-         SROw==
-X-Gm-Message-State: AOJu0YwENcQzD8NmMipB3XE4iVFMgPNpHYliCBHPFMVhRAjzucQ6sqzN
-        cAzoUZUqL60wSSKWqgM3qWrUZg==
-X-Google-Smtp-Source: AGHT+IEb3a7MID3dcoJxIO6TI8tZrhRZpBC5lb9TiaXd+qr/qq4SfkeLa+U52oSxaXlBxRMPwaZRMQ==
-X-Received: by 2002:a17:907:7632:b0:9aa:16c4:be16 with SMTP id jy18-20020a170907763200b009aa16c4be16mr6616452ejc.57.1696586673002;
-        Fri, 06 Oct 2023 03:04:33 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id e27-20020a170906045b00b009b655c43710sm2621313eja.24.2023.10.06.03.04.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 03:04:32 -0700 (PDT)
-Message-ID: <729ca85a-1e93-4013-b92b-e8e8d2b0aa18@linaro.org>
-Date:   Fri, 6 Oct 2023 12:04:31 +0200
+        Fri, 6 Oct 2023 06:04:45 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D90FD
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 03:04:43 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231006100442euoutp021a7e2483c9dc2fe83c8f10b321980f10~LfJlPekKv0875308753euoutp02R
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 10:04:42 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231006100442euoutp021a7e2483c9dc2fe83c8f10b321980f10~LfJlPekKv0875308753euoutp02R
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1696586682;
+        bh=4W5tFkuucJCypa0L7HcUy55hL2J5Gro3wnBCsUs/EI0=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=SomvssLtXcs4Ml7sGmKyFDQZ9y6FuOHKG1OmSFqtYMnxRZBmgtAuXkvKzLuPISlJw
+         YuEAFsvNLgNJRruNeNa3EGif1zhstO97upiB/fiG1qRmKnn3Cfed4AUeaDzwNOftvj
+         QjCtU3G0aiceLToEVLhWL+ynSEnbV6jUOSMTSis0=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20231006100442eucas1p197f84e055b7299d728d6a26342dcc6ac~LfJlAmQem1497814978eucas1p1D;
+        Fri,  6 Oct 2023 10:04:42 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 92.14.42423.ABBDF156; Fri,  6
+        Oct 2023 11:04:42 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20231006100441eucas1p1642aee6baa9713864274aa254f4b5116~LfJksjNqy2534125341eucas1p1H;
+        Fri,  6 Oct 2023 10:04:41 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231006100441eusmtrp2908adc16bc04b7e433845ab4d4728f8e~LfJkr_cgf3224832248eusmtrp2i;
+        Fri,  6 Oct 2023 10:04:41 +0000 (GMT)
+X-AuditID: cbfec7f2-a51ff7000002a5b7-16-651fdbba5f17
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 35.1D.25043.9BBDF156; Fri,  6
+        Oct 2023 11:04:41 +0100 (BST)
+Received: from AMDC4653.digital.local (unknown [106.120.51.32]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231006100441eusmtip298471e42ee4c8642c8f322b94a4a6213~LfJkSsOhK1124111241eusmtip21;
+        Fri,  6 Oct 2023 10:04:41 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>
+Subject: [PATCH v2 1/2] extcon: max77693: add device-tree compatible string
+Date:   Fri,  6 Oct 2023 12:04:33 +0200
+Message-Id: <20231006100434.2908243-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Input: max77693-haptic - add device-tree compatible
- strings
-Content-Language: en-US
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-References: <CGME20231006100330eucas1p2c874f582336ed1de4dc1cd759c452ce2@eucas1p2.samsung.com>
- <20231006100320.2908210-1-m.szyprowski@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231006100320.2908210-1-m.szyprowski@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTcRj1d+/dvFtMrlfTHyZOTCOjtJHhwNCyskF/FEEIgtXI6zXapm6Z
+        NRFn0sPZYg0fuMyUlppl1nLSfFSTctlSK9F8TcseK8VeipRG5nbV/O985zuHcz74cJScx/zw
+        Y7ITlFwmlgSxuVhj+++uTU1DfGpzr44nfDPtYAlbJ0zuwp6mMraw7ondXTiUW8PezhIN97Ww
+        RZcaaoFoyhiwH03gbkuiJMdOUvLw6CPclPqBLyDtI/fUnzo9qgJnOGrAwSERAX+ce8VSAy5O
+        EjUAVhXrATNMA9ibewZjhikAG62fWUuWubtTKLOoBtBu68CWLeZeG3Cq2IQAqifVbCf2JgLh
+        fc0nVwhKPABwoLAbUQMc9yL2wt/2RKcGI0Jg8W074sQ8IgaWXa9CmTQ+fGTpRBneE3aUfsCc
+        GF3g80xXXC0gkYtDfacKMIZd8GlDF8JgLzhubXBnsD+cN19DGMN5ACvmRhcHLYAqx+CiOwoO
+        d82yne1QIhTWN4Uz9A5ovnnRVRoSHrB/0pMp4QF1jSUoQ/PghXMko14H9dY7y7GWl68XbxHB
+        /huTLp4kEuGd8mpMCwL1K07TrzhN/79DBUBrgS+VoZDSlEIgozLDFGKpIkNGhx1NlRrBwo/Y
+        /lp/PgBXx3+EtQEEB20A4miQN49W+VMkL0l8WknJUw/LMySUog2swbEgX15IEp8iCVp8gjpO
+        UWmUfGmL4Bw/FVK0S353RGc7FdDFOz5E2nduKQiOmziU0LfmecWryusaovbFi+h8tfaert9m
+        5c/ocudrY1Nm/Av5P2M3GtIl0mBPJaUZNXc/Mwy7RUrr6ot4a997I9/K+VmruAqBj9BY1edj
+        jr/cMqZpdyus/PDe5Baq0o+15h00ZOf8BT0GRxRyRBk6W7QtUuanBTQ9+kkwPbyP1hjn4kUG
+        1CrwImjL1sDSgSxl242aeN/L31Pf8aMivj2UjDd9J7MPkOmc/K/5vfeSPTwymy3vmtePlL7N
+        KQkwGp4FFzTfMj12JLcLY/ssmrNe1dK8gT3W9LjVIT27T6/mZHKirb6Dg79igjBFiliwAZUr
+        xP8ArL2emZIDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrCLMWRmVeSWpSXmKPExsVy+t/xe7o7b8unGvyYYW5x/ctzVou9r7ey
+        W1zeNYfNYu2Ru+wWtxtXsDmwety5tofNo2/LKkaPz5vkApij9GyK8ktLUhUy8otLbJWiDS2M
+        9AwtLfSMTCz1DI3NY62MTJX07WxSUnMyy1KL9O0S9DLW33zJWPCUq+LP2lnMDYxNnF2MnBwS
+        AiYSvzd8Zu5i5OIQEljKKPFl5U0miISMxMlpDawQtrDEn2tdbBBFnxglDr7dBpZgEzCU6HoL
+        kuDkEBFQkNjc+4wVpIhZYBejxLs584AmcXAIC3hL/LwbC1LDIqAqMW3NXbAFvAL2EnMWL2OG
+        WCAvsf/gWWaIuKDEyZlPWEBsZqB489bZzBMY+WYhSc1CklrAyLSKUSS1tDg3PbfYSK84Mbe4
+        NC9dLzk/dxMjMHi3Hfu5ZQfjylcf9Q4xMnEwHmKU4GBWEuFNb5BJFeJNSaysSi3Kjy8qzUkt
+        PsRoCnTfRGYp0eR8YPzklcQbmhmYGpqYWRqYWpoZK4nzehZ0JAoJpCeWpGanphakFsH0MXFw
+        SjUwmXa/TDnZYmk9hWGx4bb7lzdktHZaLitPkCkoqJzy5DZr3zIrdnVX0alZXqnRWX+i9b58
+        EuibqHff2MpprrNiZeOW4LwIxS9Kc8wWdwWfXfXU46vG1YhlZufYr7zrbf2lnsqjrr7TsdnP
+        WHgSx5y2pb16FvYxX44dSnooz3CtcZfL/M9ST064lpcWSGVLsNvduPgl/Zi0r8/Xyzzs7k+V
+        rIon2Bszer3kYlxbeybhjua2ik8e8ceDRM0cDD20FT+b1DhcZ+zMrNMSruyXK73C8vDUi9yT
+        xnvEL75bYt6k8u4m050WDZkLh3grrvExr/kgqvJFxXGX0K13rQdPMPbnqheuOejp0JAnb9Tx
+        RomlOCPRUIu5qDgRANpY2nDnAgAA
+X-CMS-MailID: 20231006100441eucas1p1642aee6baa9713864274aa254f4b5116
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231006100441eucas1p1642aee6baa9713864274aa254f4b5116
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231006100441eucas1p1642aee6baa9713864274aa254f4b5116
+References: <CGME20231006100441eucas1p1642aee6baa9713864274aa254f4b5116@eucas1p1.samsung.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2023 12:03, Marek Szyprowski wrote:
-> Add the needed device-tree compatible strings to the MAX77693 haptic
-> driver, so it can be automatically loaded when compiled as a kernel
-> module and given device-tree contains separate (i.e. 'motor-driver') node
-> under the main PMIC node. When device is instantiated from device-tree,
-> the driver data cannot be read via platform_get_device_id(), so get
-> device type from the parent MFD device instead, what works for both
-> cases.
-> 
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->  drivers/input/misc/max77693-haptic.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
+Commit 57f706bf7307 ("ARM: dts: samsung: exynos4412-midas: add USB
+connector and USB OTG") added a 'muic' node to the MAX77693 PMIC
+definition in various device-tree files. Since that commit, the newly
+created MFD cell gained its own of_node and compatible string. This
+changed its modalias, what in turn broke automated loading of the driver
+module, because the new modalias is based on the of_node compatible
+string, not the platform device name.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Fix this by adding the needed device-tree compatible string.
 
-Best regards,
-Krzysztof
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+---
+ drivers/extcon/extcon-max77693.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/extcon/extcon-max77693.c b/drivers/extcon/extcon-max77693.c
+index 1f1d9ab0c5c7..2c567e0b7b7f 100644
+--- a/drivers/extcon/extcon-max77693.c
++++ b/drivers/extcon/extcon-max77693.c
+@@ -1258,9 +1258,16 @@ static int max77693_muic_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
++static const struct of_device_id of_max77693_muic_dt_match[] = {
++	{ .compatible = "maxim,max77693-muic", },
++	{ /* sentinel */ },
++};
++MODULE_DEVICE_TABLE(of, of_max77693_muic_dt_match);
++
+ static struct platform_driver max77693_muic_driver = {
+ 	.driver		= {
+ 		.name	= DEV_NAME,
++		.of_match_table = of_max77693_muic_dt_match,
+ 	},
+ 	.probe		= max77693_muic_probe,
+ };
+-- 
+2.34.1
 
