@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B647BB5C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36E57BB5C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbjJFK7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 06:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
+        id S231873AbjJFLBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231475AbjJFK7u (ORCPT
+        with ESMTP id S231312AbjJFLBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 06:59:50 -0400
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766CACE
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 03:59:45 -0700 (PDT)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5335725cf84so3616020a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 03:59:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696589984; x=1697194784;
+        Fri, 6 Oct 2023 07:01:13 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC1AC5
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 04:01:11 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9936b3d0286so365129866b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 04:01:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696590070; x=1697194870; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rAuuYKt1AgIPyV6uxItWEA2AncLhqXC4C5AM+mIo8z0=;
-        b=gyoLuVp2V3+erT/+L4SkKZMM5fEIBFkdW0Lf5cT4jWvPZ/uXnDgHE66xNFunFBO7Co
-         RZx2QOutdLka2TptTXDIv0TfiuQXlbbPCCMo/if8utiFYdXfRNiCjTXFfeKze+vzMYpj
-         5simal4qY/laxmI+GSXSjcKKpMXYFh6jON24o0pSZpmcPhQoA6aw/XvBW6ZFdMDY+kBX
-         OjVyDOFCysondwuMS+NfAtGYqhI+amVkXsuyBUTRo109cqp2kXEtrMYYQsBHk3ayP9BK
-         L8mZWl0y00qPCSnqRCYv0Yf9HVmf1unPp0r5yaZvvddqM+NapHS+oItv49RG7JmJaXQl
-         jV2w==
-X-Gm-Message-State: AOJu0YzIODY55XZywtJbTI9EgIX2KLxwo3yMyY+sFLljiKL0cge15Le0
-        rdZfxjkwdqzQ+fl4MGz9Ws/39/hIANM=
-X-Google-Smtp-Source: AGHT+IFf2FQsn9AXzxNxCXar1vrjQNt3kFz2IQq0VUCg2GqPLtb9flOIgIfwACr9pyXMHVJOghrtKQ==
-X-Received: by 2002:aa7:d9cd:0:b0:533:49d2:dc8f with SMTP id v13-20020aa7d9cd000000b0053349d2dc8fmr6473773eds.17.1696589983603;
-        Fri, 06 Oct 2023 03:59:43 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-009.fbsv.net. [2a03:2880:31ff:9::face:b00c])
-        by smtp.gmail.com with ESMTPSA id c6-20020aa7c746000000b00537f5e85ea0sm2393308eds.13.2023.10.06.03.59.42
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=54GkJ799T1y0yQUmcVNhrGWVDiHwsfgV5Ye0eDD6kMM=;
+        b=L5URv1hxGhe+vr9xPGmasb2vDF52hAG8J6qzKAIatXBelzL3M2yt2WEg2KkSjlZvYm
+         kI+OBWfaClkHQhoekVyRpXvp2tNt6ka3P2peqi24EpQwpdSW1LoehGxE60NyTL2v59hB
+         Gd9zthQBFnaBhlBdpNGWe+S6GUxRtc2rQaU8U9iBV6lkVmai/SUiiARonHTwaAU7Xbod
+         hVEaoAUMEBZxTx+fDMniz9CaNqgZyQY4T5fEqO+W21TRQlh508T5eaCGNzVRh/a1SKuW
+         YhHVi40nJ3V0bamhisPix5L+s+GG2PFFD+xr56Uj6kuA50P4FaGcyzd5O7WZaDs/UhD0
+         q5NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696590070; x=1697194870;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=54GkJ799T1y0yQUmcVNhrGWVDiHwsfgV5Ye0eDD6kMM=;
+        b=I0xaFDJoYoJkZDo8OKLOKuPqlD/pGcTopFrhHMuJzDnjg48Tm7oi/KAe2Ed1r+b+hU
+         qH9pJHZ7Bc2/Q5BZ+4bQASGl78WkAdGkBtapW4Ixa6J/9ygpNVzEeBVa+ea21g68rqx/
+         +LOTKmMF47xJW+oXRHk61k7jFdi3RYjx2doqG3o/3k1GiFPc2963mnqH0BzzyFRPG+7D
+         0R1WsN3BFjSU/w2ZJIN7bWlmbQEiFENyMqFZf9feKmupK42iQGPb7dFc7bXcANdL8fjd
+         EwzkExMIQQ1zi3QwLHynDTfUrkeBz+w3koCu2Xadr03hWEfEhVFjnQLIQ6MXKn1NbtA8
+         mDxw==
+X-Gm-Message-State: AOJu0YwGRSQTQ+HN0mIZtxLkDM8f47tq/6M/Kqp47C4UsuF2YVBRWmhL
+        1eUs2YVe53m1ei0EiB7lJVg=
+X-Google-Smtp-Source: AGHT+IEzctO4NB8thofuFABzr3/LWrWW5+fSf5Jn5YY19q6Ys1j2Yfhhr7kGjGjDYKjLNqxKVgbXCA==
+X-Received: by 2002:a17:906:5357:b0:9ae:7681:f62a with SMTP id j23-20020a170906535700b009ae7681f62amr7734306ejo.44.1696590070024;
+        Fri, 06 Oct 2023 04:01:10 -0700 (PDT)
+Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
+        by smtp.gmail.com with ESMTPSA id y11-20020a17090629cb00b009ad829ed144sm2687815eje.130.2023.10.06.04.01.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 03:59:43 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 03:59:39 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] x86/bugs: Add a separate config for each mitigation
-Message-ID: <ZR/om/SzaPCwzYv7@gmail.com>
-References: <20230628142129.2468174-1-leitao@debian.org>
- <ZRV1bIuSXjZ+uPKB@gmail.com>
- <20231005162545.GFZR7jiUNyNkscijUl@fat_crate.local>
- <CAHk-=wjTHeQjsqtHcBGvy9TaJQ5uAm5HrCDuOD9v7qA9U1Xr4w@mail.gmail.com>
- <20231006095410.GBZR/ZQmaako5yMhVs@fat_crate.local>
+        Fri, 06 Oct 2023 04:01:09 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 6 Oct 2023 13:01:07 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 3/3] sched/nohz: Remove weird error handling from
+ find_new_ilb()
+Message-ID: <ZR/o8+EJGLMi3uPr@gmail.com>
+References: <20231006102518.2452758-1-mingo@kernel.org>
+ <20231006102518.2452758-4-mingo@kernel.org>
+ <20231006103858.GB36277@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231006095410.GBZR/ZQmaako5yMhVs@fat_crate.local>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231006103858.GB36277@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 11:54:10AM +0200, Borislav Petkov wrote:
-> On Thu, Oct 05, 2023 at 11:29:02AM -0700, Linus Torvalds wrote:
-> > ...
-> > "complex" conditionals may also be annoying, but dammit, they are
-> > important documentation about why we do those things, and unlike just
-> > comments that will inevitably bit-rot, they have semantics and get
-> > tested.
-> 
-> Thanks for explaining - it does make sense to me.
-Thanks for clarifying it.
 
-> So, from the looks of it, we're halfway there:
-> 
->  - SPECULATION_MITIGATIONS is there for people who want to whack off the
->    whole crap
-> 
->  - the separate Kconfig switches are for people who want to do
->    a finer-grained control. And yeah, they might be annoying the first
->    time but you do them once and then you use the .config forever, like
->    with anything else.
-> 
-> So yeah, sounds like a plan. Breno, please add Linus' explanation to the
-> commit message why we're doing it this way, when sending your new
-> version.
+* Peter Zijlstra <peterz@infradead.org> wrote:
 
-Sure, I will update the version 3 of the patchset[1] and add Linus'
-explanation plus some new mitigation that showed up in the meantime.
+> On Fri, Oct 06, 2023 at 12:25:18PM +0200, Ingo Molnar wrote:
+> > find_new_ilb() returns nr_cpu_ids on failure - which is a weird
+> > choice in itself: not only is it a global variable, it is
+> > a +1 out of bounds CPU index...
+> 
+> FWIW this is what all the cpumask bitops return when they've exhausted
+> the mask. Eg. no bits left set etc..
 
-[1] https://lore.kernel.org/all/20230628142129.2468174-1-leitao@debian.org/
+yeah, which then results in type-forcing uglies like:
 
+   kernel/events/core.c:	if ((unsigned)cpu >= nr_cpu_ids) {
+   kernel/events/core.c:   if ((unsigned)cpu >= nr_cpu_ids) {
+   kernel/smp.c:	   if ((unsigned)cpu >= nr_cpu_ids || !cpu_online(cpu)) {
+
+:-/
+
+So I don't think this is a particularly well thought-out interface.
+
+Thanks,
+
+	Ingo
