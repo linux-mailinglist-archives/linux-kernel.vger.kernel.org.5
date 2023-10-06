@@ -2,253 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F35FD7BBB6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DF07BBB75
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbjJFPMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 11:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43666 "EHLO
+        id S232721AbjJFPNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 11:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjJFPMW (ORCPT
+        with ESMTP id S230223AbjJFPNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 11:12:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA3A9F;
-        Fri,  6 Oct 2023 08:12:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E7A5C433C9;
-        Fri,  6 Oct 2023 15:12:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696605140;
-        bh=pBOi8Gv1qqAYJ4e8Pn7HdfqP1/2VS6TDqzcavQT8xAc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nh1+bqXtCsi7ZZjZza7aC7d+ut2k/L3MQ+5Yjbyyv1/rHiu7DpXYb0fba6V9ovLcq
-         3nThaQWrbMSifXObCGFbgCaXVJETfj+p1iG9omrqLEXdhglmUntxPtacm984ZQ1IBq
-         Z56bKzR9KRYYZqsZzOfgNAeaXVyIOXMLoOpWbR5GfsoOlMe93ATdTWsA/vWL3yOZIw
-         im/S8fZbvtC5Y7Yqda311tVnW6zF4kuV7/vvLGpLqNiA9Oq8oT3u2sKz0otwYRSmfL
-         idCa4DHkyLoKI6w+NKGAmzCYnkJFjfggZH5oYwNtKZs9UAyZjuvi9kdrvFd1Qyly2K
-         XwCQmPtZXBDEw==
-Received: (nullmailer pid 3946956 invoked by uid 1000);
-        Fri, 06 Oct 2023 15:12:17 -0000
-Date:   Fri, 6 Oct 2023 10:12:17 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        loic.poulain@linaro.org, rfoss@kernel.org, andi.shyti@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        todor.too@gmail.com, mchehab@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] media: dt-bindings: media: camss: Add
- qcom,sc8280xp-camss binding
-Message-ID: <20231006151217.GA3943830-robh@kernel.org>
-References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
- <20231006120159.3413789-5-bryan.odonoghue@linaro.org>
- <ace84d7f-d332-4598-a95d-634c1d17f852@linaro.org>
+        Fri, 6 Oct 2023 11:13:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913599F
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 08:13:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696605181;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=NHY6LRSsGEtAVXNDOjO62ecbXXwm9UaRIIe77pDYtx0=;
+        b=JrV7cKOspCYK3OD1wXPIQHLo8hEH3JQ0yYq+8Xt2D+hW+F/ymxocC/3DlbUyMtqVzxL5Pj
+        W0pgS804g/l6+eqPObtV8Tph3mKib3Qz+17hgvArj10ViAOk/8y6wlwtxtOJheT5KJwDA4
+        ZGl5wTULlnE3NGaR/NE1yfAnKS1YFrY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-43-ndJne-f3MimyL-7m1yU1rg-1; Fri, 06 Oct 2023 11:13:00 -0400
+X-MC-Unique: ndJne-f3MimyL-7m1yU1rg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B244C3801EF5;
+        Fri,  6 Oct 2023 15:12:59 +0000 (UTC)
+Received: from RHTPC1VM0NT.lan (unknown [10.22.33.74])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EB37440D1BE;
+        Fri,  6 Oct 2023 15:12:58 +0000 (UTC)
+From:   Aaron Conole <aconole@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     dev@openvswitch.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Adrian Moreno <amorenoz@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>
+Subject: [PATCH net 0/4] selftests: openvswitch: Minor fixes for some systems
+Date:   Fri,  6 Oct 2023 11:12:54 -0400
+Message-Id: <20231006151258.983906-1-aconole@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ace84d7f-d332-4598-a95d-634c1d17f852@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 02:33:42PM +0200, Krzysztof Kozlowski wrote:
-> On 06/10/2023 14:01, Bryan O'Donoghue wrote:
-> > Add bindings for qcom,sc8280xp-camss in order to support the camera
-> > subsystem for sc8280xp as found in the Lenovo x13s Laptop.
-> > 
-> > Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> > ---
-> >  .../bindings/media/qcom,sc8280xp-camss.yaml   | 598 ++++++++++++++++++
-> >  1 file changed, 598 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml b/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
-> > new file mode 100644
-> > index 000000000000..46d2da4ad373
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
-> > @@ -0,0 +1,598 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/qcom,sc8280xp-camss.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Qualcomm CAMSS
-> 
-> Instead something like:
-> Qualcomm SC8280xp Camera SubSystem (CAMSS)
-> ?
-> 
-> > +
-> > +maintainers:
-> > +  - Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> > +
-> > +description: |
-> > +  The CAMSS IP is a CSI decoder and ISP present on Qualcomm platforms.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: qcom,sc8280xp-camss
-> > +
-> > +  clocks:
-> > +    minItems: 63
-> 
-> You can drop minItems if they equal maxItems.
-> 
-> > +    maxItems: 63
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: camnoc_axi
-> > +      - const: camnoc_axi_src
-> > +      - const: cpas_ahb
-> > +      - const: cphy_rx_src
-> > +      - const: csiphy0
-> > +      - const: csiphy0_timer_src
-> > +      - const: csiphy0_timer
-> > +      - const: csiphy1
-> > +      - const: csiphy1_timer_src
-> > +      - const: csiphy1_timer
-> > +      - const: csiphy2
-> > +      - const: csiphy2_timer_src
-> > +      - const: csiphy2_timer
-> > +      - const: csiphy3
-> > +      - const: csiphy3_timer_src
-> > +      - const: csiphy3_timer
-> > +      - const: vfe0_axi
-> > +      - const: vfe0_src
-> > +      - const: vfe0
-> > +      - const: vfe0_cphy_rx
-> > +      - const: vfe0_csid_src
-> > +      - const: vfe0_csid
-> > +      - const: vfe1_axi
-> > +      - const: vfe1_src
-> > +      - const: vfe1
-> > +      - const: vfe1_cphy_rx
-> > +      - const: vfe1_csid_src
-> > +      - const: vfe1_csid
-> > +      - const: vfe2_axi
-> > +      - const: vfe2_src
-> > +      - const: vfe2
-> > +      - const: vfe2_cphy_rx
-> > +      - const: vfe2_csid_src
-> > +      - const: vfe2_csid
-> > +      - const: vfe3_axi
-> > +      - const: vfe3_src
-> > +      - const: vfe3
-> > +      - const: vfe3_cphy_rx
-> > +      - const: vfe3_csid_src
-> > +      - const: vfe3_csid
-> > +      - const: vfe_lite0_src
-> > +      - const: vfe_lite0
-> > +      - const: vfe_lite0_cphy_rx
-> > +      - const: vfe_lite0_csid_src
-> > +      - const: vfe_lite0_csid
-> > +      - const: vfe_lite1_src
-> > +      - const: vfe_lite1
-> > +      - const: vfe_lite1_cphy_rx
-> > +      - const: vfe_lite1_csid_src
-> > +      - const: vfe_lite1_csid
-> > +      - const: vfe_lite2_src
-> > +      - const: vfe_lite2
-> > +      - const: vfe_lite2_cphy_rx
-> > +      - const: vfe_lite2_csid_src
-> > +      - const: vfe_lite2_csid
-> > +      - const: vfe_lite3_src
-> > +      - const: vfe_lite3
-> > +      - const: vfe_lite3_cphy_rx
-> > +      - const: vfe_lite3_csid_src
-> > +      - const: vfe_lite3_csid
-> > +      - const: gcc_axi_hf
-> > +      - const: gcc_axi_sf
-> > +      - const: slow_ahb_src
-> > +
-> > +  interrupts:
-> > +    minItems: 20
-> 
-> You can drop minItems if they equal maxItems.
-> 
-> 
-> > +    maxItems: 20
-> > +
-> > +  interrupt-names:
-> > +    items:
-> > +      - const: csid1_lite
-> > +      - const: vfe_lite1
-> > +      - const: csiphy3
-> > +      - const: csid0
-> > +      - const: vfe0
-> > +      - const: csid1
-> > +      - const: vfe1
-> > +      - const: csid0_lite
-> > +      - const: vfe_lite0
-> > +      - const: csiphy0
-> > +      - const: csiphy1
-> > +      - const: csiphy2
-> > +      - const: csid2
-> > +      - const: vfe2
-> > +      - const: csid3_lite
-> > +      - const: csid2_lite
-> > +      - const: vfe_lite3
-> > +      - const: vfe_lite2
-> > +      - const: csid3
-> > +      - const: vfe3
-> > +
-> > +  iommus:
-> > +    minItems: 16
-> 
-> You can drop minItems if they equal maxItems.
-> 
-> > +    maxItems: 16
-> > +
-> > +  interconnects:
-> > +    minItems: 4
-> 
-> You can drop minItems if they equal maxItems.
-> 
-> 
-> > +    maxItems: 4
-> > +
-> > +  interconnect-names:
-> > +    items:
-> > +      - const: cam_ahb
-> > +      - const: cam_hf_mnoc
-> > +      - const: cam_sf_mnoc
-> > +      - const: cam_sf_icp_mnoc
-> > +
-> > +  power-domains:
-> > +    items:
-> > +      - description: IFE0 GDSC - Image Front End, Global Distributed Switch Controller.
-> > +      - description: IFE1 GDSC - Image Front End, Global Distributed Switch Controller.
-> > +      - description: IFE2 GDSC - Image Front End, Global Distributed Switch Controller.
-> > +      - description: IFE3 GDSC - Image Front End, Global Distributed Switch Controller.
-> > +      - description: Titan Top GDSC - Titan ISP Block, Global Distributed Switch Controller.
-> > +
-> > +  power-domain-names:
-> > +    items:
-> > +      - description: ife0
-> > +      - description: ife1
-> > +      - description: ife2
-> > +      - description: ife3
-> > +      - description: top
-> > +
-> > +  ports:
-> > +    $ref: /schemas/graph.yaml#/properties/ports
-> > +
-> 
-> On this level of indentation:
-> additionalProperties: false
+A number of corner cases were caught when trying to run the selftests on
+older systems.  Missed skip conditions, some error cases, and outdated
+python setups would all report failures but the issue would actually be
+related to some other condition rather than the selftest suite.
 
-No, because then #size-cells/#address-cells won't be allowed.
+Address these individual cases.
 
-Rob
+Aaron Conole (4):
+  selftests: openvswitch: Add version check for pyroute2
+  selftests: openvswitch: Catch cases where the tests are killed
+  selftests: openvswitch: Skip drop testing on older kernels
+  selftests: openvswitch: Fix the ct_tuple for v4
+
+ .../selftests/net/openvswitch/openvswitch.sh  | 21 ++++++++-
+ .../selftests/net/openvswitch/ovs-dpctl.py    | 46 ++++++++++++++++++-
+ 2 files changed, 65 insertions(+), 2 deletions(-)
+
+-- 
+2.40.1
+
