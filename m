@@ -2,125 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5E77BB44E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380F27BB456
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbjJFJen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 05:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33764 "EHLO
+        id S231467AbjJFJhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 05:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbjJFJel (ORCPT
+        with ESMTP id S230498AbjJFJhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 05:34:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C90AB;
-        Fri,  6 Oct 2023 02:34:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE02AC433C7;
-        Fri,  6 Oct 2023 09:34:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696584880;
-        bh=eaiC0m6KCNQ8eqoSmmSKhQnpzSwu4dXMIdrsEkhuAkA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=igTTThiDiH1azZasoPr+f2LT1JZ9Acj6Hk4H1OeXOrInDYVUm1wdUNrhMepDSVDC1
-         6TDWEdfBz9VF4Pfrd0YwPPoG8h4neb4dRPJ12dMwGVkBoJvPAub/FmTF2quQ5+ije1
-         0Ojsqff3B2EB65yX4MfYr3eVo45dODyQBkRutqAI=
-Date:   Fri, 6 Oct 2023 11:34:37 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: Re: [PATCH v4 5/5] drivers/tty/serial: add ESP32S3 ACM device driver
-Message-ID: <2023100625-water-molehill-4a8f@gregkh>
-References: <20230928151631.149333-1-jcmvbkbc@gmail.com>
- <20230928151631.149333-6-jcmvbkbc@gmail.com>
- <2023100326-crushing-septic-4856@gregkh>
- <CAMo8BfJgpP-=tNEChcyR3z6i_QeJ9Ywq7EOjjC5i7Uq4OrgXNA@mail.gmail.com>
- <2023100544-rendering-identify-e0ad@gregkh>
- <CAMo8Bf+wS+qiX2mMZm0i8dt7xkDO8RvroP8RF=78zxgFj-zwaA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMo8Bf+wS+qiX2mMZm0i8dt7xkDO8RvroP8RF=78zxgFj-zwaA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 6 Oct 2023 05:37:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269A29F
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 02:37:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696585031; x=1728121031;
+  h=date:from:to:cc:subject:message-id;
+  bh=Sjxk4sRYj0VGwwq9W27YD9jHO3fT5qpCfewxlL1hVe0=;
+  b=HJEgmv8H0G1S9s198/LbJ+bh+WKK5LNMOGK7dBLn5Zz2/ynamMBYIi4J
+   rvt5C/uji6RqP/xvl6+O9kZAyyHfGwsek5UGQFI6QyC8r8dOz4Ztp08Xh
+   jwUIRYXrSIGChPZ4emCNwLXBieFuuEcy3fzladyH3hE9VBw4sQCrgL241
+   NPL0fGCOZxnWxpBhzGsqL52+5DW6cm0aqpSA6lmXRrFNu/KI3DA3ziuaZ
+   nAlKx/fufz4yRvayVBbru9nDq2yQC7EbOoQFfXQFtakBH20lv8rQRh/aT
+   HGSi69LPRVyiRm9qkuu1E1SR/+UXXC2qtqGJNh5dHxrAht/t9exivPwY2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="414714373"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="414714373"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 02:37:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="752134285"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="752134285"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 06 Oct 2023 02:37:09 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qohGd-000MT8-0e;
+        Fri, 06 Oct 2023 09:37:07 +0000
+Date:   Fri, 06 Oct 2023 17:37:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/urgent] BUILD SUCCESS
+ 9e0bc36ab07c550d791bf17feeb479f1dfc42d89
+Message-ID: <202310061704.XXTYvxLY-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 02:21:55PM -0700, Max Filippov wrote:
-> On Thu, Oct 5, 2023 at 11:57 AM Greg Kroah-Hartman
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/tty/serial/esp32_acm.c
-> > > > > @@ -0,0 +1,459 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > > >
-> > > > Why "or later"?  I have to ask, sorry.
-> > >
-> > > I don't really have a preference here. Is there a reason to choose
-> > > GPL-2.0 only for a new code?
-> >
-> > It's your call, you need to pick that, but I can provide recommendations
-> > if you want :)
-> 
-> Please do?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/urgent
+branch HEAD: 9e0bc36ab07c550d791bf17feeb479f1dfc42d89  cpufreq: schedutil: Update next_freq when cpufreq_limits change
 
-If you only want your code being used in Linux, then stick with
-"GPL-2.0".  If you want your code to be able to be copied into other
-GPLv3 licensed code bodies (like Hurd and others), then license it as
-"GPL-2.0-or-later".  Your call.
+elapsed time: 784m
 
-> > > > And no copyright information?  That's fine, but be sure your company's
-> > > > lawyers are ok with it...
-> > >
-> > > There's no company behind this, just myself.
-> >
-> > Great, it's your copyright, be proud, put it on there!
-> 
-> If I don't have to I'd rather not. This is just a piece of meaningless noise.
+configs tested: 101
+configs skipped: 2
 
-You already own the copyright by virtue of creating the code (you can't
-give it away), so might as well put your mark on it to make it more
-noticable.  But it's not required, if you don't want to, no one can
-force you, again, your call.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> > > > > --- a/include/uapi/linux/serial_core.h
-> > > > > +++ b/include/uapi/linux/serial_core.h
-> > > > > @@ -248,4 +248,7 @@
-> > > > >  /* Espressif ESP32 UART */
-> > > > >  #define PORT_ESP32UART       124
-> > > > >
-> > > > > +/* Espressif ESP32 ACM */
-> > > > > +#define PORT_ESP32ACM        125
-> > > >
-> > > > Why are these defines needed?  What in userspace is going to require
-> > > > them?  If nothing, please do not add them.
-> > >
-> > > I don't understand what the alternatives are. The comment for the
-> > > uart_ops::config_port() callback says that port->type should be set
-> > > to the type of the port found, and I see that almost every serial driver
-> > > defines a unique PORT_* for that.
-> >
-> > Yes, but not all do.  If you don't need to do anything special, it can
-> > just claim to be a normal device, we've had threads about this on the
-> > list before.  If you don't need to determine in userspace from the tty
-> > connection what device it is, just use the default one instead.
-> 
-> Ok, it looks like having
-> 
-> #define PORT_ESP32ACM (-1)
-> 
-> in the driver source should be ok? I've tested that it works.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231006   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20231006   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231006   gcc  
+i386                  randconfig-002-20231006   gcc  
+i386                  randconfig-003-20231006   gcc  
+i386                  randconfig-004-20231006   gcc  
+i386                  randconfig-005-20231006   gcc  
+i386                  randconfig-006-20231006   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231006   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231006   gcc  
+x86_64                randconfig-002-20231006   gcc  
+x86_64                randconfig-003-20231006   gcc  
+x86_64                randconfig-004-20231006   gcc  
+x86_64                randconfig-005-20231006   gcc  
+x86_64                randconfig-006-20231006   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-Hah, I like that hack.  But why not just use PORT_UNKNOWN?
-
-thanks,
-
-greg k-h
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
