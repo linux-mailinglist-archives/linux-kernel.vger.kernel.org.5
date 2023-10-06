@@ -2,112 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 058A37BBCED
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D947BBCF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232892AbjJFQko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
+        id S232938AbjJFQl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232496AbjJFQkn (ORCPT
+        with ESMTP id S232496AbjJFQlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:40:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2567FC2;
-        Fri,  6 Oct 2023 09:40:40 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 18:40:36 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696610438;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xJK9V2VtLPnBrImfjMOmFTNsUiDy1Y0fI2z1sk+3JmU=;
-        b=1uoOGzSonar2EkeoparSKR9fpxQO4KWP9mczppZnHMlBSeaTPqCqtigTWCZJ3XFCDtecad
-        G1L9RRBTaWv+ds1u7J9/x8WnhL9MLdYkDkGHszVTd7pRYndKjWotV/GG1dQR5rEi2G3M3d
-        v53c4q7xCOmH/13Sp/ylOVcRhFfWVQIoDzcNAHI4iiegIkFvgd1CyFpKLHaKe/8OtVXQid
-        SeqnVVChA8exJYD9p/KbyIxL1zF7DgcFO16wPwuNE0tTnEmlGjY5EyR9KC1rth3Z1vRIGT
-        XA3MNp2PhpBSY4GQERrXN6APSzbjwntKvCYRguDWYNWjFYut3XC8880gxIwiaw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696610438;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xJK9V2VtLPnBrImfjMOmFTNsUiDy1Y0fI2z1sk+3JmU=;
-        b=74pAOyjNU+plxaJMGG2ktItK+APbVyqDvDy1lePId2QUmYEWVnhs5OppTY+ms9MDHHfPQ9
-        zKL2rsyKf7o9yMCA==
-From:   Benedikt Spranger <b.spranger@linutronix.de>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Dinh Nguyen <dinguyen@kernel.org>
-Subject: Re: [PATCH 1/1] clk: socfpga: gate: Fix of by factor 2 for serial
- console
-Message-ID: <20231006184020.7fb6f509@mitra>
-In-Reply-To: <ujs6kaisllqu3qzm76qkwpmdy2vnulp6z742ooclbsdz36zl5f@m7ujgar4pwqs>
-References: <20231005095927.12398-1-b.spranger@linutronix.de>
-        <20231005095927.12398-2-b.spranger@linutronix.de>
-        <qpskbgigcaoyjuhzeguz366cjukv3ij7utlbkra5edhwn6uzh4@bdedm6vs62y5>
-        <20231005203202.08b5d1cf@mitra>
-        <ujs6kaisllqu3qzm76qkwpmdy2vnulp6z742ooclbsdz36zl5f@m7ujgar4pwqs>
-Organization: Linutronix GmbH
+        Fri, 6 Oct 2023 12:41:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9A0AD;
+        Fri,  6 Oct 2023 09:41:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696610484; x=1728146484;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BnxHeCvree896UWaqx9iqbQG2BrZrTAePfLACfL+Aho=;
+  b=jkqHw2M8YmT0+VPZVRjUIDGfdpr7wLBokNFVlvJK24pbWh88ZkFhe9Db
+   vRnAWv9B4esmjwXf1Re4CF7eUWtUWYAYSyqFpiU89+O7jG/YSd1nf7e5x
+   +itFwWolmPznNwLV4u+rYH9PdQ45QNTSBv11xhoYgkvpjVEwQqg/UFONt
+   WnWMtCQOsYid2zzpAql2Y2HNPEQfnYk7rOxKV2oQPwIZYkPs+bhtrinYm
+   wo65LLgXTC5y42qBWENAeHpunCOkJC6BbiHaykT0GEDgLvmHKzEqFf0su
+   YCfYcgx6Ym6Frzd9mRXggRkHZeP+lUGmdxCx3LE6p3Egn3JB4k4Z4gCW3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="364063147"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="364063147"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 09:41:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="842892834"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="842892834"
+Received: from rchatre-ws.ostc.intel.com ([10.54.69.144])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 09:41:23 -0700
+From:   Reinette Chatre <reinette.chatre@intel.com>
+To:     jgg@nvidia.com, yishaih@nvidia.com,
+        shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
+        alex.williamson@redhat.com
+Cc:     kvm@vger.kernel.org, dave.jiang@intel.com, jing2.liu@intel.com,
+        ashok.raj@intel.com, fenghua.yu@intel.com,
+        tom.zanussi@linux.intel.com, reinette.chatre@intel.com,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Subject: [RFC PATCH V2 00/18]  vfio/pci: Back guest interrupts from Interrupt Message Store (IMS)
+Date:   Fri,  6 Oct 2023 09:40:55 -0700
+Message-Id: <cover.1696609476.git.reinette.chatre@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Oct 2023 17:01:34 +0200
-Maxime Ripard <mripard@kernel.org> wrote:
+Changes since RFC V1:
+- RFC V1: https://lore.kernel.org/lkml/cover.1692892275.git.reinette.chatre@intel.com/
+- This is a complete rewrite based on feedback from Jason and Kevin.
+  Primarily the transition is to make IMS a new backend of MSI-X
+  emulation: VFIO PCI transitions to be an interrupt management frontend
+  with existing interrupt management for PCI passthrough devices as a
+  backend and IMS interrupt management introduced as a new backend.
+  The first part of the series splits VFIO PCI interrupt
+  management into a "frontend" and "backend" with the existing PCI
+  interrupt management as its first backend. The second part of the
+  series adds IMS interrupt management as a new interrupt management
+  backend.
+  This is a significant change from RFC V1 as well as in the impact of
+  the changes on existing VFIO PCI. This was done in response to
+  feedback that I hope I understood as intended. If I did not get it
+  right, please do point out to me where I went astray and I'd be
+  happy to rewrite. Of course, suggestions for improvement will
+  be much appreciated.
 
-> On Thu, Oct 05, 2023 at 08:32:23PM +0200, Benedikt Spranger wrote:
-> > On Thu, 5 Oct 2023 13:34:01 +0200
-> > Maxime Ripard <mripard@kernel.org> wrote:
-> > 
-> > > Where is that factor 2 coming from?
-> > In drivers/tty/serial/8250/8250_dw.c p->uartclk is set twice as high,
-> > as it should be: 
-> > 
-> > dw8250_set_termios() is called and rate is evaluated to 20000000 in the
-> > bad and 10000000 in the good case. As a result p->uartclk is set to
-> > 20000000 in the bad case.
-> 
-> Sure, sorry I worded that poorly. What I meant was what clock tree
-> decision is taken now that wasn't taken before that leads to that factor
-> 2 difference.
-OK.
+Hi Everybody,
 
-> Thanks for the traces, that's helpful. It looks like the culprit is:
-> 
-> Good:
-> 
->             init-1       [001] .....     0.125643: clk_rate_request_start: l4_sp_clk min 0 max 4294967295, parent per_base_clk (200000000)
->             init-1       [001] .....     0.125651: clk_rate_request_done: l4_sp_clk min 0 max 4294967295, parent per_base_clk (200000000)
->             init-1       [001] .....     0.125657: dw8250_set_termios: dw8250_set_termios: rate = 200000000 newrate = 1843200
-> 
-> vs Bad:
-> 
->             init-1       [001] .....     0.116063: clk_rate_request_start: l4_sp_clk min 0 max 4294967295, parent per_base_clk (200000000)
->             init-1       [001] .....     0.116089: clk_rate_request_done: l4_sp_clk min 0 max 4294967295, parent per_base_clk (200000000)
->             init-1       [001] .....     0.116096: dw8250_set_termios: dw8250_set_termios: rate = 4294967274 newrate = 1843200
-> 
-> The rate returned is super suspicious, as it's an -EINVAL casted into an
-> unsigned long. So I think something on that clock chain is returning an
-> error for some reason, which is then treated as a rate by the rest and
-> everybody's just confused.
-OK.
+With Interrupt Message Store (IMS) support introduced in
+commit 0194425af0c8 ("PCI/MSI: Provide IMS (Interrupt Message Store)
+support") a device can create a secondary interrupt domain that works
+side by side with MSI-X on the same device. IMS allows for
+implementation-specific interrupt storage that is managed by the
+implementation specific interrupt chip associated with the IMS domain
+at the time it (the IMS domain) is created for the device via
+pci_create_ims_domain().
 
-> What is the board that you're using?
-I am using a Cyclone5 DE0-Nano-Soc/Atlas board
-(socfpga_cyclone5_de0_nano_soc.dts). 
+An example usage of IMS is for devices that can have their resources
+assigned to guests with varying granularity. For example, an
+accelerator device may support many workqueues and a single workqueue
+can be composed into a virtual device for use by a guest. Using
+IMS interrupts for the guest preserves MSI-X for host usage while
+allowing a significantly larger number of interrupt vectors than
+allowed by MSI-X. All while enabling usage of the same device driver
+within the host and guest.
 
-Regards
-    Benedikt Spranger
+This series introduces IMS support to VFIO PCI for use by
+virtual devices that support MSI-X interrupts that are backed by IMS
+interrupts on the host. Specifically, that means that when the virtual
+device's VFIO_DEVICE_SET_IRQS ioctl() receives a "trigger interrupt"
+(VFIO_IRQ_SET_ACTION_TRIGGER) for a MSI-X index then VFIO PCI IMS
+allocates/frees an IMS interrupt on the host.
+
+VFIO PCI assumes that it is managing interrupts of a passthrough PCI
+device. VFIO PCI is split into a "frontend" and "backend" to support
+interrupt management for virtual devices that are not passthrough PCI
+devices. The VFIO PCI frontend directs guest requests to the
+appropriate backend. Existing interrupt management for passthrough PCI
+devices is the first backend, guest MSI-X interrupts backed by
+IMS interrupts on the host is the new backend (VFIO PCI IMS).
+
+An IMS interrupt is allocated via pci_ims_alloc_irq() that requires
+an implementation specific cookie that is opaque to VFIO PCI IMS. This
+can be a PASID, queue ID, pointer etc. During initialization
+VFIO PCI IMS learns which PCI device to operate on and what the
+default cookie should be for any new interrupt allocation. VFIO PCI
+IMS can also associate a unique cookie with each vector and to maintain
+this association the backend maintains interrupt contexts for the virtual
+device's lifetime.
+
+Guests may access a virtual device via both 'direct-path', where the
+guest interacts directly with the underlying hardware, and 'intercepted
+path', where the virtual device emulates operations. VFIO PCI
+supports emulated interrupts (better naming suggestions are welcome) to
+handle 'intercepted path' operations where completion interrupts are
+signaled from the virtual device, not the underlying hardware. Backend
+support is required for emulated interrupts and only VFIO PCI IMS
+backend supports emulated interrupts in this series.
+
+This has been tested with a yet to be published VFIO driver for the
+Intel Data Accelerators (IDXD) present in Intel Xeon CPUs.
+
+While this series contains a working implementation it is presented
+as an RFC with the goal to obtain feedback on whether VFIO PCI IMS
+is appropriate for inclusion into VFIO and whether it is
+(or could be adapted to be) appropriate for support of other
+planned IMS usages you may be aware of.
+
+Any feedback will be greatly appreciated.
+
+Reinette
+
+Reinette Chatre (18):
+  PCI/MSI: Provide stubs for IMS functions
+  vfio/pci: Move PCI specific check from wrapper to PCI function
+  vfio/pci: Use unsigned int instead of unsigned
+  vfio/pci: Make core interrupt callbacks accessible to all virtual
+    devices
+  vfio/pci: Split PCI interrupt management into front and backend
+  vfio/pci: Separate MSI and MSI-X handling
+  vfio/pci: Move interrupt eventfd to interrupt context
+  vfio/pci: Move mutex acquisition into function
+  vfio/pci: Move interrupt contexts to generic interrupt struct
+  vfio/pci: Move IRQ type to generic interrupt context
+  vfio/pci: Split interrupt context initialization
+  vfio/pci: Provide interrupt context to generic ops
+  vfio/pci: Make vfio_pci_set_irqs_ioctl() available
+  vfio/pci: Add core IMS support
+  vfio/pci: Support emulated interrupts
+  vfio/pci: Support emulated interrupts in IMS backend
+  vfio/pci: Add accessor for IMS index
+  vfio/pci: Support IMS cookie modification
+
+ drivers/vfio/pci/vfio_pci_config.c |   2 +-
+ drivers/vfio/pci/vfio_pci_core.c   |  50 +--
+ drivers/vfio/pci/vfio_pci_intrs.c  | 658 ++++++++++++++++++++++++++---
+ drivers/vfio/pci/vfio_pci_priv.h   |   2 +-
+ include/linux/pci.h                |  31 +-
+ include/linux/vfio_pci_core.h      |  70 ++-
+ 6 files changed, 706 insertions(+), 107 deletions(-)
+
+
+base-commit: 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
+-- 
+2.34.1
+
