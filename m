@@ -2,52 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 728297BC25A
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D7D7BC25B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233829AbjJFWq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 18:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
+        id S233846AbjJFWqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 18:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233805AbjJFWq1 (ORCPT
+        with ESMTP id S233805AbjJFWqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 18:46:27 -0400
+        Fri, 6 Oct 2023 18:46:33 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6709F;
-        Fri,  6 Oct 2023 15:46:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 410B4C433C7;
-        Fri,  6 Oct 2023 22:46:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A65A2;
+        Fri,  6 Oct 2023 15:46:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14360C433C7;
+        Fri,  6 Oct 2023 22:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696632384;
-        bh=D9nd/T1QbYtvFd+kC/X4Q1OtVD/3HpjeGmA8YdjLW20=;
+        s=k20201202; t=1696632391;
+        bh=ISXp2gYet5qklONCtk802z18uyrzOQLPrR+IectAYzM=;
         h=From:To:Cc:Subject:Date:From;
-        b=KtoakUqVnLPmvv9T3lObN9A7LSeFB/+nVzId9ubHHKSxu5dzFdCX/fZIwudFomtab
-         zKfMsWQ8ZcdmzjLPMZFgSqyd07i2NV/Tc/ZciZHlT1AEFQksLdF6Mn3bIixUJoBHrY
-         WeTd7S0mG2NKVP5AXzWq+8h8A5dvX6XuXURf/jzHTJawtLHFZHScfhX14yPfkD8wca
-         /FdOmgH9BsCADIKWJ2Tn9JWol1p2PeKFNZ0vW6VsYPnGFeTe3/iwFB+wQo4HCmAuQ0
-         +wOJgRcBNTCcYwploTNibIIoOoyLQ4cZprvyIgF9XxRbJr1mYxFwqthoUH1PaJk1se
-         kjGrOJN+W0QuQ==
-Received: (nullmailer pid 444811 invoked by uid 1000);
-        Fri, 06 Oct 2023 22:46:22 -0000
+        b=Ip2tsOOtD1XFeJ7HcnZp4uXZtSnukFsIyWAsYCrBAyJ7Gd98G6L2uARSKSDosHjsr
+         o45U27aHqeQo3BoMq8wn/G1CVA+UFIdZMP0eXCq/X8LObyss/f0ivMJpRbD7c9s90M
+         opjh2LE8FFS4PPeU8/aMS6dHdk0XKSlmDVnjJ1Is+7nHIa7jsuOmJNXCMm0Pm1qPRn
+         WcIn3jpwOMTufPOJvJ0h4ihPHG+mlFgXNi7RLSc6zYRdLoUcywZcE6CVPAj5N5GrB+
+         51oaySw4Dfd2cHCps7uMcdCbI+4B+KgXqedpJVMpy5obEWq6oazJ9RH8ukl5UtylNm
+         fmnm9Lrpn6OzA==
+Received: (nullmailer pid 444993 invoked by uid 1000);
+        Fri, 06 Oct 2023 22:46:30 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Subject: [PATCH] pmdomain: Use device_get_match_data()
-Date:   Fri,  6 Oct 2023 17:46:13 -0500
-Message-Id: <20231006224614.444488-1-robh@kernel.org>
+To:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fpga: altera-ps-spi: Use spi_get_device_match_data()
+Date:   Fri,  6 Oct 2023 17:46:24 -0500
+Message-Id: <20231006224624.444857-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -59,129 +49,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use preferred device_get_match_data() instead of of_match_device() to
-get the driver match data. With this, adjust the includes to explicitly
-include the correct headers.
+Use preferred spi_get_device_match_data() instead of of_match_device() and
+spi_get_device_id() to get the driver match data. With this, adjust the
+includes to explicitly include the correct headers.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/pmdomain/actions/owl-sps.c     | 16 +++++-----------
- drivers/pmdomain/imx/gpc.c             |  7 +++----
- drivers/pmdomain/rockchip/pm-domains.c | 13 ++++---------
- 3 files changed, 12 insertions(+), 24 deletions(-)
+ drivers/fpga/altera-ps-spi.c | 44 ++++--------------------------------
+ 1 file changed, 5 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/pmdomain/actions/owl-sps.c b/drivers/pmdomain/actions/owl-sps.c
-index 73a9e0bb7e8e..3a586d1f3256 100644
---- a/drivers/pmdomain/actions/owl-sps.c
-+++ b/drivers/pmdomain/actions/owl-sps.c
-@@ -8,8 +8,10 @@
-  * Copyright (c) 2017 Andreas Färber
-  */
- 
-+#include <linux/mod_devicetable.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/pm_domain.h>
- #include <linux/soc/actions/owl-sps.h>
- #include <dt-bindings/power/owl-s500-powergate.h>
-@@ -96,24 +98,16 @@ static int owl_sps_init_domain(struct owl_sps *sps, int index)
- 
- static int owl_sps_probe(struct platform_device *pdev)
- {
--	const struct of_device_id *match;
- 	const struct owl_sps_info *sps_info;
- 	struct owl_sps *sps;
- 	int i, ret;
- 
--	if (!pdev->dev.of_node) {
--		dev_err(&pdev->dev, "no device node\n");
--		return -ENODEV;
--	}
--
--	match = of_match_device(pdev->dev.driver->of_match_table, &pdev->dev);
--	if (!match || !match->data) {
-+	sps_info = device_get_match_data(&pdev->dev);
-+	if (!sps_info) {
- 		dev_err(&pdev->dev, "unknown compatible or missing data\n");
- 		return -EINVAL;
- 	}
- 
--	sps_info = match->data;
--
- 	sps = devm_kzalloc(&pdev->dev,
- 			   struct_size(sps, domains, sps_info->num_domains),
- 			   GFP_KERNEL);
-diff --git a/drivers/pmdomain/imx/gpc.c b/drivers/pmdomain/imx/gpc.c
-index 90a8b2c0676f..114f44ca07dd 100644
---- a/drivers/pmdomain/imx/gpc.c
-+++ b/drivers/pmdomain/imx/gpc.c
-@@ -7,9 +7,10 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/io.h>
+diff --git a/drivers/fpga/altera-ps-spi.c b/drivers/fpga/altera-ps-spi.c
+index 5e1e009dba89..6be7410e4f09 100644
+--- a/drivers/fpga/altera-ps-spi.c
++++ b/drivers/fpga/altera-ps-spi.c
+@@ -18,8 +18,7 @@
+ #include <linux/fpga/fpga-mgr.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/module.h>
+-#include <linux/of_gpio.h>
 -#include <linux/of_device.h>
 +#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_domain.h>
-+#include <linux/property.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
+ #include <linux/spi/spi.h>
+ #include <linux/sizes.h>
  
-@@ -403,9 +404,7 @@ static int imx_gpc_old_dt_init(struct device *dev, struct regmap *regmap,
+@@ -72,12 +71,6 @@ static struct altera_ps_data a10_data = {
+ 	.t_st2ck_us = 10, /* min(t_ST2CK) */
+ };
  
- static int imx_gpc_probe(struct platform_device *pdev)
+-/* Array index is enum altera_ps_devtype */
+-static const struct altera_ps_data *altera_ps_data_map[] = {
+-	&c5_data,
+-	&a10_data,
+-};
+-
+ static const struct of_device_id of_ef_match[] = {
+ 	{ .compatible = "altr,fpga-passive-serial", .data = &c5_data },
+ 	{ .compatible = "altr,fpga-arria10-passive-serial", .data = &a10_data },
+@@ -237,43 +230,16 @@ static const struct fpga_manager_ops altera_ps_ops = {
+ 	.write_complete = altera_ps_write_complete,
+ };
+ 
+-static const struct altera_ps_data *id_to_data(const struct spi_device_id *id)
+-{
+-	kernel_ulong_t devtype = id->driver_data;
+-	const struct altera_ps_data *data;
+-
+-	/* someone added a altera_ps_devtype without adding to the map array */
+-	if (devtype >= ARRAY_SIZE(altera_ps_data_map))
+-		return NULL;
+-
+-	data = altera_ps_data_map[devtype];
+-	if (!data || data->devtype != devtype)
+-		return NULL;
+-
+-	return data;
+-}
+-
+ static int altera_ps_probe(struct spi_device *spi)
  {
--	const struct of_device_id *of_id =
--			of_match_device(imx_gpc_dt_ids, &pdev->dev);
--	const struct imx_gpc_dt_data *of_id_data = of_id->data;
-+	const struct imx_gpc_dt_data *of_id_data = device_get_match_data(&pdev->dev);
- 	struct device_node *pgc_node;
- 	struct regmap *regmap;
- 	void __iomem *base;
-diff --git a/drivers/pmdomain/rockchip/pm-domains.c b/drivers/pmdomain/rockchip/pm-domains.c
-index d5d3ecb38283..9b76b62869d0 100644
---- a/drivers/pmdomain/rockchip/pm-domains.c
-+++ b/drivers/pmdomain/rockchip/pm-domains.c
-@@ -9,11 +9,13 @@
- #include <linux/iopoll.h>
- #include <linux/err.h>
- #include <linux/mutex.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_clock.h>
- #include <linux/pm_domain.h>
-+#include <linux/property.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_clk.h>
--#include <linux/of_platform.h>
- #include <linux/clk.h>
- #include <linux/regmap.h>
- #include <linux/mfd/syscon.h>
-@@ -857,7 +859,6 @@ static int rockchip_pm_domain_probe(struct platform_device *pdev)
- 	struct device_node *node;
- 	struct device *parent;
- 	struct rockchip_pmu *pmu;
--	const struct of_device_id *match;
- 	const struct rockchip_pmu_info *pmu_info;
- 	int error;
+ 	struct altera_ps_conf *conf;
+-	const struct of_device_id *of_id;
+ 	struct fpga_manager *mgr;
  
-@@ -866,13 +867,7 @@ static int rockchip_pm_domain_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
+ 	conf = devm_kzalloc(&spi->dev, sizeof(*conf), GFP_KERNEL);
+ 	if (!conf)
+ 		return -ENOMEM;
  
--	match = of_match_device(dev->driver->of_match_table, dev);
--	if (!match || !match->data) {
--		dev_err(dev, "missing pmu data\n");
--		return -EINVAL;
+-	if (spi->dev.of_node) {
+-		of_id = of_match_device(of_ef_match, &spi->dev);
+-		if (!of_id)
+-			return -ENODEV;
+-		conf->data = of_id->data;
+-	} else {
+-		conf->data = id_to_data(spi_get_device_id(spi));
+-		if (!conf->data)
+-			return -ENODEV;
 -	}
 -
--	pmu_info = match->data;
-+	pmu_info = device_get_match_data(dev);
++	conf->data = spi_get_device_match_data(spi);
+ 	conf->spi = spi;
+ 	conf->config = devm_gpiod_get(&spi->dev, "nconfig", GPIOD_OUT_LOW);
+ 	if (IS_ERR(conf->config)) {
+@@ -308,9 +274,9 @@ static int altera_ps_probe(struct spi_device *spi)
+ }
  
- 	pmu = devm_kzalloc(dev,
- 			   struct_size(pmu, domains, pmu_info->num_domains),
+ static const struct spi_device_id altera_ps_spi_ids[] = {
+-	{ "cyclone-ps-spi", CYCLONE5 },
+-	{ "fpga-passive-serial", CYCLONE5 },
+-	{ "fpga-arria10-passive-serial", ARRIA10 },
++	{ "cyclone-ps-spi", (uintptr_t)&c5_data },
++	{ "fpga-passive-serial", (uintptr_t)&c5_data },
++	{ "fpga-arria10-passive-serial", (uintptr_t)&a10_data },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(spi, altera_ps_spi_ids);
 -- 
 2.40.1
 
