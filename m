@@ -2,961 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E37C7BB55C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4207BB561
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbjJFKfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 06:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
+        id S231774AbjJFKiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 06:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231772AbjJFKfO (ORCPT
+        with ESMTP id S231778AbjJFKiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 06:35:14 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3C2E4
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 03:35:08 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40535597f01so17561575e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 03:35:08 -0700 (PDT)
+        Fri, 6 Oct 2023 06:38:08 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BE783;
+        Fri,  6 Oct 2023 03:38:05 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3969EfkN020138;
+        Fri, 6 Oct 2023 10:37:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=8VXDKQT2UO5UnYBxNwWFi1cux+BRsFpgwsRFMfMCVY8=;
+ b=hDAFFacB5zYRdExWK2yBvWdjWkQqkom37USKbi0nFYv3fDJtA3UnQWcsa7e3tL500IlY
+ BvvEcToWUoBfNLiwRoLYqiFTGIJHk4GLe4VGJ1Y2L3xHJ8KHD2STPybY0Kgdnh8t2BVy
+ e9gpguNYjjtw4mGkKmxRctpoL8Pl9XE5/cZRdKkUy3gf7YeHS1Om33H9IsnpJ1xwASbE
+ AFDWdKN1b/cCozJgpBDv3rdWd3N3mtWfRjc/Yn7G27aG5FAbYTZ+5CXUVmukr4RGU+pZ
+ Z7uLF0eUA87u0wzwm9Cy9jHuX0x797UMiNTYSZNVAxRUAhDJ4ux1uPO/UDaV7gY62ZM5 kA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tea3ekj4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Oct 2023 10:37:30 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3969eoH1005786;
+        Fri, 6 Oct 2023 10:37:29 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tea4agasr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Oct 2023 10:37:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ozv2naDGd6y7DFyUL6TuOkpK0DYQI2g+4BadTVtbGpFcP7oUo8ik6xrHuWiuBLxPNKp0W0uiUxzfBAafcVskNvtID2quZZdydR5BzxMh92T0DGjTqoo3PCGrIx6brx9Xr1GevT8kLGuDSjqurnao4Hgdm+gL23vcEXPVayfrS6EDGzjTi7BJvMMWP3Z0H4NEv6SBceHKh8e/mgHrCCzy9BQJW/pN++C3Kl/EAq2mH2goDjGCys/TItR3kKs+tStyhSMoUzm/uH/9iugXFHIGIgKQOPrUkNpP76Uo6QEv8T6QjCAXvAIyfEmbxt60AdPlNx+pP7++KJ9JAStMPLuwIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8VXDKQT2UO5UnYBxNwWFi1cux+BRsFpgwsRFMfMCVY8=;
+ b=beQoO3GKhDDfETaBUFiU/XcpisroyT8feUApnJK6tApCyLCb1K1iJ5hd3aw2HQYXgi/oFWuHoxv4Pvd6mXvFmFS9wuVJA3zq7UXiBbxW5E8OSQvc3i+tehgqeYa7N90/52gko8/i29/odcs5r7YOykw8sOyN1lQr9Jx8/puruVLalAV/AgtfN0IaVbBys0IdeXEpPSq2gREWekEb2ovhC0ie8aBim53HAo+4CwyXIF1gokn+0xjWLJe9fD1Fzu3yo/AjS59oyiF4pmNxkxVLTk84lz4qk+LiUYfhNQIywf9PSVfwVRoQWv7t0a7J99oG34THcqUvXBaWJMpvnj7kfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696588507; x=1697193307; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=On741AyZ3AKo8NQuV3fMiGYE0rRhzhS6sjOJ83S5SHA=;
-        b=gHEoT7ZhBL/tepytlSiWUoBFKt1EaUBF0AK7Ln5I5YYsfQSqe8JATA0/tLyyJXLbNK
-         lKUyGfv8IC/AXk9t+iOy0VCgbbl/tpWqdfWCYrFjLs+SkA4g/YAdZBETQZlukRS+FVgo
-         9KLszaBj3Bn27WkDIT3mFIgcdaht7DyOBRIXyZYb2RRrI5LYvcPshWKzr1isFMuWtmRK
-         ztdRr0xdxeqbS3eeSntOxOEJgiIi0Jw0gyCM17TeIST5nojE96tCOcc/J9gX5D5MDPME
-         chG8CId6vvec32weRPxhIUywW+CBXJ2KrPvfOhOIhzjF+Ity/Us7CB+4O2lmzs+YdRhe
-         qiAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696588507; x=1697193307;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=On741AyZ3AKo8NQuV3fMiGYE0rRhzhS6sjOJ83S5SHA=;
-        b=qYiiHedhVRgUpbu28VdkLiEfqK/ZPNgxHiR5JOjooKf8mfBPXa68cGRXrU+FmdjkHI
-         0PGI5csuVQJ/eZq/isZTKN/dBMKand2qNzWxcBV696SMzsv3bxO4FdjfegSND25iQHsI
-         ZrYGsl4zWdeswJImSGeWjsLHoeToeyXMzdlEUN1dxQcelkefNVOv0ymCYSF/0NF/SOjC
-         08AP1sZEm7OgqcwUFHx7TeCUQ7yHsQteHjYP4XoBUOFJjSJE0yS/u/W1NEJsH74uhJVv
-         M45rBd4rkcJG3WSVfsSGMbSMMWtyPipUcdGe60wnwubiIaACnk2xsojwiYoPoNAFgO5p
-         oCvQ==
-X-Gm-Message-State: AOJu0Yxdzkg8NpFD82oaKhsviThskG1XIlKpwtybdeRxg1VBUr2EgiYk
-        Rrf4D5q0uK90yKLkFaweo5jTAA==
-X-Google-Smtp-Source: AGHT+IGIm+e4NLR4VvBVpaywY77NbZT5zN8n7sOpe30EySRXGi7zN4SVkPlud8DKvYDc9bf3o2ZMBg==
-X-Received: by 2002:a1c:f710:0:b0:400:ce4f:f184 with SMTP id v16-20020a1cf710000000b00400ce4ff184mr7319582wmh.41.1696588507105;
-        Fri, 06 Oct 2023 03:35:07 -0700 (PDT)
-Received: from toaster.lan ([2a01:e0a:3c5:5fb1:8f44:72b3:5bcb:6c6b])
-        by smtp.googlemail.com with ESMTPSA id l9-20020a1c7909000000b00401b242e2e6sm5664963wme.47.2023.10.06.03.35.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 03:35:06 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Da Xue <da.xue@libretech.co>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
-Subject: [PATCH v2 2/2] arm64: dts: amlogic: add libretech cottonwood support
-Date:   Fri,  6 Oct 2023 12:35:00 +0200
-Message-Id: <20231006103500.2015183-3-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231006103500.2015183-1-jbrunet@baylibre.com>
-References: <20231006103500.2015183-1-jbrunet@baylibre.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8VXDKQT2UO5UnYBxNwWFi1cux+BRsFpgwsRFMfMCVY8=;
+ b=AP3wDh2wlQmwXN6gpuMXCIWYytn6/4Hry1nxJWIaiBsR8njQob5v1iYKi6MjZWsIZUVjeKJAB5bNd8FfmaCB24boZWwSx8HowG3bM/C78dgiphxCg2gIWxRkcSzugnySjQayo2lgCNi8LQrjsq4/yX7fEYrdcQ6rcv2H1cuhrX4=
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
+ by SA2PR10MB4492.namprd10.prod.outlook.com (2603:10b6:806:11f::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.28; Fri, 6 Oct
+ 2023 10:37:26 +0000
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::3ec2:5bfc:fb8e:3ff4]) by PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::3ec2:5bfc:fb8e:3ff4%4]) with mapi id 15.20.6813.027; Fri, 6 Oct 2023
+ 10:37:26 +0000
+Message-ID: <9fec75ba-a319-027c-6cf2-b65e703d3ce7@oracle.com>
+Date:   Fri, 6 Oct 2023 16:07:14 +0530
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Darren Kenny <darren.kenny@oracle.com>
+References: <20231004175203.943277832@linuxfoundation.org>
+ <ec06c2fb-6737-489f-8439-307e0d84687b@gmail.com>
+ <2023100601-ending-prevalent-c8d4@gregkh>
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+In-Reply-To: <2023100601-ending-prevalent-c8d4@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TYCPR01CA0013.jpnprd01.prod.outlook.com (2603:1096:405::25)
+ To PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6290:EE_|SA2PR10MB4492:EE_
+X-MS-Office365-Filtering-Correlation-Id: a56cec36-c540-44d0-5387-08dbc6583b3d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Kzf9piwK3RIcGgPpEXrj+O5C8B7ZNN2/1an1/Ka9M6/W07oHl2v8oQHPk4C5yl7PNQr/IJr9cpwXm2wk9GKmM+jeZhW6A0TUGuwyWtTSqtkpCYsjRTbo40pUMl4dqMfkYtFqydvi9Cc41vRAf0qaJNyTufGjmnKP/HDLDkKtdjjo6zwxz7VjMNY3O2urzP5GCP2lxkSkgYFX5nO2AV3ZY15ovrAS3ve75YVy4BGsUnbTqV6oKkrdTiQXRpr4fPYEMjxh2dZ1MPKc4+UgboxQhdyhoXO/8KvmPg219AF4ECOCGrjwe3onvoDZly7BIROjQGE2shQCiFx/eNQCso9Bb9ve9sAx6Y5SxLayOsi0CrUeFMsSE6OZ8+hmccmVDJw+zn6bEqIL/rURGFaOVHYqLn0oHA2L/mxpaRgxwTgnlld+K9LNWJun6i6VO3xgNYUdlQFmU2bsuEpsYX7CI0GJCI3wrLFnSBQSVp3BwJSpUyVtsuJsNNMzohkWp0LdReBwxvR6mwv858a5SjWEmsfTNH91kWy3YAowFD1MJbgfUdrV0GOHYMoT0V4Dfxuib/QQx9A0Dz5lhjKwaF+XMA1ECNBt5VX1s8wX23taxvt4OfArSV6/fdCBNd7objFKbfEW82YJ3qDuqsEWXG2xh2z4i/6ODS720ZB7SNHICxb2k7PScrxtApikRrMxwD4CSZYu
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6290.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(396003)(136003)(39860400002)(346002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(83380400001)(7416002)(2906002)(110136005)(66946007)(66556008)(478600001)(66476007)(31696002)(86362001)(31686004)(36756003)(316002)(6512007)(8936002)(4326008)(53546011)(54906003)(5660300002)(8676002)(41300700001)(6486002)(966005)(6666004)(6506007)(107886003)(2616005)(26005)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YzcxVU5ZSHAyaFlqUVF2WUowaVhWdERKVFJ5cFcvNVpZekI5a1hsV01xQmxB?=
+ =?utf-8?B?L3ZEZFhPbEdpazRUeGk4Skl2dWdHeE1uVWRTNTNpaU9ISXU5VzRsYkFxcDlG?=
+ =?utf-8?B?TERZTG9NWkU5RDV6WWNtVjYwWWppQm9XbSthZTA1Y3RaWDV4RG80dkt6aHFS?=
+ =?utf-8?B?OG1YOEZUek94NTBjRUFsVkYxUCtkRnFoVDRtajFxSldtVll4UlFxMGp3bFZl?=
+ =?utf-8?B?MkVxYWxFYXYzUWsvNmlEdnRWVDlxK0NYUTVFalpNZUxFKzZmeW56RFFqTVpp?=
+ =?utf-8?B?a2FZZGF0aUxla2czaER4YW9wUUdUSGx3alJlaGdwSDhHZlEvTTJMdncvNjhN?=
+ =?utf-8?B?MmFUTVI2SkhyM1hUZDBoVDJiR2xCdEJJeE5OQUNUR2FQeENoMHB2bFNrNE55?=
+ =?utf-8?B?b0FFVUtwUEcxdmk2THNlRzdEemM2YSs2MmY1bVhCekZJWWZRaHpvY05zYnNv?=
+ =?utf-8?B?YnRldWI5WFhJL0t1K3NaL2daaTZmNS96VWJOdzFtRHhFNEZENGVVWmNhRGZz?=
+ =?utf-8?B?WHU1RVNnVXZla3hJdkExOWRUSGcrMEFQdXRIaHBpRUVtai9PbG0xMDNsNith?=
+ =?utf-8?B?enVmRHhaOXRJcHIzSTAxYUtPSmFsU2p1OEcwcng5eTVES0tYK0Vid01NWDJx?=
+ =?utf-8?B?TkRVMHNJWmJYbzJEK1NSR2YwWDhBVlhwN1ZtQldLNUgwOHQycGp5b1RVWjdL?=
+ =?utf-8?B?UnU5a3J4YmsyY0k3cU1hMWc0SVVlSEdhcEVzMzFZR1ljL0x4NExPNXhMbDVu?=
+ =?utf-8?B?T0VhTFdmUGs2bGJoSUZuWllRellFcDA5anpMUXRuS2VLei9SUnFvc2RYblFz?=
+ =?utf-8?B?SUtGYi9Dd2Y4cG9lcDdDL0dnU2VyZEJOdERZbTlKcTM3alF1bllNUXI5SVFT?=
+ =?utf-8?B?YWZoRFJwdUVkUnNkK0dXZ0lRbjY3SlNxclBmK3c3L3dGeVdlV0FZaGxrU1No?=
+ =?utf-8?B?L25QWEpkTzczZVFrcTN1bG5QRzRhbHZHeTkyZERyNE8yNmNQZ1JDRGlTSGN3?=
+ =?utf-8?B?UTlUNGJVVnhDd2FuaDRWay9ETDYrZ3NvYzJleTB0U0d2OURoRzBMRzFBbGYx?=
+ =?utf-8?B?blNKSzR0eXRibUVUWUE2enFvTUhzekswS0M5UjFUNncxMngrUlorVnhCMy9Q?=
+ =?utf-8?B?ZkNmeGtQUWJlUzhHQ2trcEVrTEMwMVBKYno1TTk5UUJreFoxbUd6Uk9ETXVp?=
+ =?utf-8?B?dVYrOHlJS2h0Y210QTE5M2hHeldCSEVOUG9NbGVCRXZ0TEVJOFpvd0o0ZmZB?=
+ =?utf-8?B?amVKNFZONFJod0Ewd3pqclhVa1J6Y2duS0hXQk1KRlpkZDltamd4VlR6MjVD?=
+ =?utf-8?B?Yjhra3VtTU5pMjVtbE9KUUUwU2hibkI3UnpZNmVzRE9xajFwQU9MRld1cmlD?=
+ =?utf-8?B?a3FlajRxc3BMdy8wTXRmdVA1SXM3dSs5bTNOVGlQaHR6TDNpVllZMVpEaU82?=
+ =?utf-8?B?WmR2LzFsVlcwaVlxMVAxUlJVc2hBL25rQXEzMU5tT055OFJLaTZHZVdVeXBU?=
+ =?utf-8?B?dnJnaU1sajE0Umlhckd4SnM2VFVuN3MveXlCR2tsTERTa3E3YisrVDFHRk53?=
+ =?utf-8?B?NmJFUk1vai8zMmg5MFRYN0kwK2l5enoyTEpKb3k1OEFpbWRmT3NwOTVjekE0?=
+ =?utf-8?B?WU5VbWd0YmRibVcvN3pmWnlVc0YwUWdHcEdrUWRCWGhBOWJLSXEvdFZWdksz?=
+ =?utf-8?B?V09ySlNSV3BPT0RqVUEyRWl5SW5DdkJ1MWZrQjJRS2JQVFdMVStQVEZBRi91?=
+ =?utf-8?B?SmQvazFYTmVNZEwveGh1WkFNUWxMa2FMK1EzYkVhZjhoaCtlaGg2Ym5EdnRz?=
+ =?utf-8?B?NFFlMy96bUVURytITlpkVFh6YzQrWEJuRjlNeEk5VzU2andqSDZ3WUw3alZ0?=
+ =?utf-8?B?UWZ0bE1kR1RFMHhUeHp1TnV3QXVJQXBEa3dkR3Zvbmgxc2UxQW1tNFZEQldq?=
+ =?utf-8?B?K3dLS0hES28vL0p6WG05SW5VWUtNUGFjWG51Nno5b0U2enN4c01UWktDYm9I?=
+ =?utf-8?B?aHNpVHkrQ2kyMjM4a0hQRVE4Q1Z0dnVzdTBVVU9iR3VSTmhlZ25Fb2dEYzhy?=
+ =?utf-8?B?dEt0NzV5a0E1R09mUWo5TFdLR0lWZENMVTZFeEFzSXRvVTgyN3NYbWpxdEZM?=
+ =?utf-8?B?NVRzc2RsOTFkZVp3QVQyRCtYdjRDK0dIUEZ3WWdRMHVsTFRBWEJhdVBIVlVm?=
+ =?utf-8?Q?u0v1+gIBtfXXTavHnAu3R2w=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?bHhlLzFTbXFmZVNQTEk0V2haMnVteE5GN3JrbTJsQzBZOUZSR0lxZ2VlY3BU?=
+ =?utf-8?B?UmEwZzM2TVBISmExekJYV1JBRWlGMUlLYXFaSHIrdy9ZRklSR1F5VTNWc0Qr?=
+ =?utf-8?B?UWpUM0ZESEJmTEY3WHZDVDdUWkViQVN5Wk4yOFFUOGE3ZE1uZ0dWL1RySnBj?=
+ =?utf-8?B?VE9HYWhGT0tnbmpzVjBueWRicmxObTgzOUZSSkF3djB3a0V1c1d1a0d2THNv?=
+ =?utf-8?B?Y2xSR0JncDRhS3V2ZG10K2JHelZ4TG0rcktVYjY5aTlBZHl5ZnRMbk5iZS9y?=
+ =?utf-8?B?bkliY1VNekJuR3E0UWJacVFOZTNoMFk5NXVLNzRBWDVzWUt4TmFXM3BWcGJQ?=
+ =?utf-8?B?TENOYzNrQThHcGdXbUZWNzl0SzFkVzFrMTd6MVh4M3BiUFBSeHVzam80R1JE?=
+ =?utf-8?B?bng3Vkd0V3BlMUhQOUdHQlVkNW50VW1LankzekdGTDR4N3lEY25RZVdwZDhE?=
+ =?utf-8?B?VmJNRXNNQ0tjZC9ENjQzZEFuWGhTbFduTlpsK01nOXJJeXV1RmxtSXZiejhv?=
+ =?utf-8?B?NTh3eXdmZ1ducENKM1p3aG94WVU1bWpSN2hNbDVDenUvQmtQUFZCK2VvVjBU?=
+ =?utf-8?B?eTg1OTArZ09BVEJNZU5sNW1ucnc2VGhnZXF5eVBPNTJoRSt5dmpxSEk2QjBM?=
+ =?utf-8?B?ejRYUTZtdFZsQk1UcTZod25Tb3dxNnBqRnQ0Ti9vQUNNbXVtU1pOTGhZQkJz?=
+ =?utf-8?B?WW9iNGNJN21YYW1NcXhqaFFwYm80RFZWOHRXM0t3RWhkZW8rMmJDSTNnWHdj?=
+ =?utf-8?B?d0NGSm4wa21hQVN1QndwMEpZZGoweHJqdlVzT3ltV2NJdzM1TXp0UlFLcXlm?=
+ =?utf-8?B?SGVLVEcrb0VxV1lqTHIyVHMwZXJoaUxaeS9PN2lCT3V4cDZRZHVyRkE5dmpt?=
+ =?utf-8?B?ZnBXeTEvQVpQRC8xZHg5STZOVTFaOU9SZWNpNWYwdk9xVm93cWFNdlczd2Jo?=
+ =?utf-8?B?NUpnRzR4UnN2Q1RjZjMyL2ZmRGRXbzJocm1tWHZRTVIyTlBGZ1hoSTE3Zkx5?=
+ =?utf-8?B?YlNUK0dlVmo3RGhaQjJ3dGpvRUJVN3Bzd1RzM0NJZ2dzWXlZbnlaQ2QxQ2lQ?=
+ =?utf-8?B?OWJ0ejZyenVubWNqL0M3YUYwN2J0YjRSNTFzaFU1SVM3eFRjUG9vOUVNYlRZ?=
+ =?utf-8?B?eFI5T3JleERQV0lsNk5MVVNCZFplNlFxN2xsZTZUL216bm81OTI2RnZBdC9i?=
+ =?utf-8?B?UlNJdnpSdkI1VkRvNUxLbHBWMkoxUXBnL29PNWhQZFVPZ1dBRXRRV0s0RHJB?=
+ =?utf-8?B?VDhlM05QUzZ1ekpMU1Q4Vk9TVEhuWDFHTVo1WjNTeDEreTMyT1FMbFFhZVBQ?=
+ =?utf-8?B?a3ZHVWJuQk0xQWkyZW9mb2xTWHVNUDEwamRRT1VVeStJSmVPRGpCd3ZGSFZm?=
+ =?utf-8?B?bUR0bzNhL1VxYWlyVEhpNzh2MFR4OUtQMCtYWGQ4OWpyUG4wZUJCK1BodzAx?=
+ =?utf-8?B?MlpTZGVYUEpVN1FSRUk0TzBDbnZEM0pTaXRONU1SdG9TVVZ0ZFdTaXN3eE9O?=
+ =?utf-8?B?SmI2anhTT2M3OUVlRk5FWmVONDRTUGtaamdZQnZNdERSOFkrSkgrelUvZjEz?=
+ =?utf-8?Q?hFgs1FLZMwhHU+87QsbNAOh08QoM5tqkE/pTkmkViJxy00?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a56cec36-c540-44d0-5387-08dbc6583b3d
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6290.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2023 10:37:25.8915
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: d2vtX74OuZWVfcRHMiy6r9Ze6ezA3dnLiv5ep9gZk1WoVJlkCcK2ah/HumZCVUabPbY2ONYmlAiYUp6T6AEhgCeqhMRB1L0nTU6IgquDJm9RSsmp/2jVO93cQJ+nkWZ4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4492
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-06_07,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ adultscore=0 mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310060077
+X-Proofpoint-ORIG-GUID: V19JDTLovtwqq9KQc2PEFjAC4-tAGOEE
+X-Proofpoint-GUID: V19JDTLovtwqq9KQc2PEFjAC4-tAGOEE
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the Libretech cottonwood board family.
-These 2 boards are based on the same PCB, with an RPi B form factor.
 
-The "Alta" board uses an a311d while the "Solitude" variant uses an s905d3.
 
-Co-developed-by: Da Xue <da.xue@libretech.co>
-Signed-off-by: Da Xue <da.xue@libretech.co>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/Makefile          |   2 +
- .../amlogic/meson-g12b-a311d-libretech-cc.dts | 121 ++++
- .../amlogic/meson-libretech-cottonwood.dtsi   | 614 ++++++++++++++++++
- .../amlogic/meson-sm1-s905d3-libretech-cc.dts |  89 +++
- 4 files changed, 826 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts
+On 06/10/23 3:55 pm, Greg Kroah-Hartman wrote:
+> On Wed, Oct 04, 2023 at 11:43:46AM -0700, Florian Fainelli wrote:
+>> On 10/4/23 10:53, Greg Kroah-Hartman wrote:
+>>> This is the start of the stable review cycle for the 5.15.134 release.
+>>> There are 183 patches in this series, all will be posted as a response
+>>> to this one.  If anyone has any issues with these being applied, please
+>>> let me know.
+>>>
+>>> Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+>>> Anything received after that time might be too late.
+>>>
+>>> The whole patch series can be found in one patch at:
+>>> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.134-rc1.gz
+>>> or in the git tree and branch at:
+>>> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+>>> and the diffstat can be found below.
+>>>
+>>> thanks,
+>>>
+>>> greg k-h
+>>
+>> perf fails to build with:
+>>
+>>    CC /local/users/fainelli/buildroot/output/arm/build/linux-custom/tools/perf/util/metricgroup.o
+>> util/metricgroup.c: In function 'metricgroup__parse_groups':
+>> util/metricgroup.c:1261:7: error: 'table' undeclared (first use in this
+>> function)
+>>    if (!table)
+>>         ^~~~~
+>> util/metricgroup.c:1261:7: note: each undeclared identifier is reported only
+>> once for each function it appears in
+>> make[6]: *** [/local/users/fainelli/buildroot/output/arm/build/linux-custom/tools/build/Makefile.build:97: /local/users/fainelli/buildroot/output/arm/build/linux-custom/tools/perf/util/metricgroup.o]
+>> Error 1
+>>
+>> caused by c1ef510a0f2a879bf29ddebae766ec9f0790eb8f ("perf metric: Return
+>> early if no CPU PMU table exists"). Dropping this commit allows the build to
+>> continue.
+>>
+>> I had reported in the previous cycle that 00facc760903be66 ("perf jevents:
+>> Switch build to use jevents.py") was causing build failures:
+>>
+>> https://lore.kernel.org/all/6a577578-8adb-aa70-1bf8-b1a4573152cf@gmail.com/
+>>
+>> do we still want these commits to be included?
+> 
+> No, I'll go drop them now, thanks for the report.
 
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index 4ce401d17b63..cc8b34bd583d 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -18,6 +18,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-bananapi-cm4-cm4io.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gsking-x.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking-pro.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-libretech-cc.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-go-ultra.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2-plus.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2.dtb
-@@ -73,6 +74,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-sm1-bananapi-m2-pro.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-bananapi-m5.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-h96-max.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-khadas-vim3l.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-sm1-s905d3-libretech-cc.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-odroid-c4.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-odroid-hc4.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-sei610.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
-new file mode 100644
-index 000000000000..65b963d794cd
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2023 BayLibre, SAS.
-+ * Author: Jerome Brunet <jbrunet@baylibre.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/clock/g12a-clkc.h>
-+#include "meson-g12b-a311d.dtsi"
-+#include "meson-libretech-cottonwood.dtsi"
-+
-+/ {
-+	compatible = "libretech,aml-a311d-cc", "amlogic,a311d", "amlogic,g12b";
-+	model = "Libre Computer AML-A311D-CC Alta";
-+
-+	vddcpu_a: regulator-vddcpu-a {
-+		compatible = "pwm-regulator";
-+		regulator-name = "VDDCPU_A";
-+		regulator-min-microvolt = <730000>;
-+		regulator-max-microvolt = <1011000>;
-+		regulator-boot-on;
-+		regulator-always-on;
-+		pwm-supply = <&dc_in>;
-+		pwms = <&pwm_ab 0 1250 0>;
-+		pwm-dutycycle-range = <100 0>;
-+	};
-+
-+	sound {
-+		model = "LC-ALTA";
-+		audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
-+				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
-+				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
-+				"TDM_A Playback", "TDMOUT_A OUT",
-+				"TDMOUT_B IN 0", "FRDDR_A OUT 1",
-+				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
-+				"TDMOUT_B IN 2", "FRDDR_C OUT 1",
-+				"TDM_B Playback", "TDMOUT_B OUT",
-+				"TDMOUT_C IN 0", "FRDDR_A OUT 2",
-+				"TDMOUT_C IN 1", "FRDDR_B OUT 2",
-+				"TDMOUT_C IN 2", "FRDDR_C OUT 2",
-+				"TDM_C Playback", "TDMOUT_C OUT",
-+				"TDMIN_A IN 0", "TDM_A Capture",
-+				"TDMIN_B IN 0", "TDM_A Capture",
-+				"TDMIN_C IN 0", "TDM_A Capture",
-+				"TDMIN_A IN 3", "TDM_A Loopback",
-+				"TDMIN_B IN 3", "TDM_A Loopback",
-+				"TDMIN_C IN 3", "TDM_A Loopback",
-+				"TDMIN_A IN 1", "TDM_B Capture",
-+				"TDMIN_B IN 1", "TDM_B Capture",
-+				"TDMIN_C IN 1", "TDM_B Capture",
-+				"TDMIN_A IN 4", "TDM_B Loopback",
-+				"TDMIN_B IN 4", "TDM_B Loopback",
-+				"TDMIN_C IN 4", "TDM_B Loopback",
-+				"TDMIN_A IN 2", "TDM_C Capture",
-+				"TDMIN_B IN 2", "TDM_C Capture",
-+				"TDMIN_C IN 2", "TDM_C Capture",
-+				"TDMIN_A IN 5", "TDM_C Loopback",
-+				"TDMIN_B IN 5", "TDM_C Loopback",
-+				"TDMIN_C IN 5", "TDM_C Loopback",
-+				"TODDR_A IN 0", "TDMIN_A OUT",
-+				"TODDR_B IN 0", "TDMIN_A OUT",
-+				"TODDR_C IN 0", "TDMIN_A OUT",
-+				"TODDR_A IN 1", "TDMIN_B OUT",
-+				"TODDR_B IN 1", "TDMIN_B OUT",
-+				"TODDR_C IN 1", "TDMIN_B OUT",
-+				"TODDR_A IN 2", "TDMIN_C OUT",
-+				"TODDR_B IN 2", "TDMIN_C OUT",
-+				"TODDR_C IN 2", "TDMIN_C OUT",
-+				"Lineout", "ACODEC LOLP",
-+				"Lineout", "ACODEC LORP";
-+	};
-+};
-+
-+&cpu0 {
-+	cpu-supply = <&vddcpu_b>;
-+	operating-points-v2 = <&cpu_opp_table_0>;
-+	clocks = <&clkc CLKID_CPU_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu1 {
-+	cpu-supply = <&vddcpu_b>;
-+	operating-points-v2 = <&cpu_opp_table_0>;
-+	clocks = <&clkc CLKID_CPU_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu100 {
-+	cpu-supply = <&vddcpu_a>;
-+	operating-points-v2 = <&cpub_opp_table_1>;
-+	clocks = <&clkc CLKID_CPUB_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu101 {
-+	cpu-supply = <&vddcpu_a>;
-+	operating-points-v2 = <&cpub_opp_table_1>;
-+	clocks = <&clkc CLKID_CPUB_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu102 {
-+	cpu-supply = <&vddcpu_a>;
-+	operating-points-v2 = <&cpub_opp_table_1>;
-+	clocks = <&clkc CLKID_CPUB_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu103 {
-+	cpu-supply = <&vddcpu_a>;
-+	operating-points-v2 = <&cpub_opp_table_1>;
-+	clocks = <&clkc CLKID_CPUB_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&pwm_ab {
-+	pinctrl-0 = <&pwm_a_e_pins>, <&pwm_b_x7_pins>;
-+	clocks = <&xtal>, <&xtal>;
-+	clock-names = "clkin0", "clkin1";
-+};
-diff --git a/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi b/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
-new file mode 100644
-index 000000000000..ed826f673349
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
-@@ -0,0 +1,614 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2023 BayLibre, SAS.
-+ * Author: Jerome Brunet <jbrunet@baylibre.com>
-+ */
-+
-+#include <dt-bindings/clock/g12a-clkc.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/gpio/meson-g12a-gpio.h>
-+#include <dt-bindings/sound/meson-g12a-toacodec.h>
-+#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
-+
-+/ {
-+	aliases {
-+		serial0 = &uart_AO;
-+		ethernet0 = &ethmac;
-+		spi0 = &spifc;
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0x80000000>;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	dioo2133: audio-amplifier-0 {
-+		compatible = "simple-audio-amplifier";
-+		enable-gpios = <&gpio GPIOX_0 GPIO_ACTIVE_HIGH>;
-+		VCC-supply = <&vcc_5v>;
-+		sound-name-prefix = "10U2";
-+	};
-+
-+	/* TOFIX: handle CVBS_DET on SARADC channel 0 */
-+	cvbs-connector {
-+		compatible = "composite-video-connector";
-+
-+		port {
-+			cvbs_connector_in: endpoint {
-+				remote-endpoint = <&cvbs_vdac_out>;
-+			};
-+		};
-+	};
-+
-+	emmc_pwrseq: emmc-pwrseq {
-+		compatible = "mmc-pwrseq-emmc";
-+		reset-gpios = <&gpio BOOT_12 GPIO_ACTIVE_LOW>;
-+	};
-+
-+	hdmi-connector {
-+		compatible = "hdmi-connector";
-+		type = "a";
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint = <&hdmi_tx_tmds_out>;
-+			};
-+		};
-+	};
-+
-+	led-blue {
-+		compatible = "pwm-leds";
-+
-+		led {
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_ACTIVITY;
-+			linux,default-trigger = "heartbeat";
-+			max-brightness = <255>;
-+			pwms = <&pwm_cd 1 1250 0>;
-+			active-low;
-+		};
-+	};
-+
-+	led-green {
-+		compatible = "pwm-leds";
-+
-+		led {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_STATUS;
-+			linux,default-trigger = "default-on";
-+			max-brightness = <255>;
-+			pwms = <&pwm_ab 1 1250 0>;
-+			active-low;
-+		};
-+	};
-+
-+	led-orange {
-+		compatible = "gpio-leds";
-+
-+		led {
-+			color = <LED_COLOR_ID_AMBER>;
-+			function = LED_FUNCTION_STANDBY;
-+			gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
-+			panic-indicator;
-+		};
-+	};
-+
-+	dc_in: regulator-dc-in {
-+		compatible = "regulator-fixed";
-+		regulator-name = "5V_IN";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
-+	flash_1v8: regulator-flash-1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "FLASH_1V8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-always-on;
-+		vin-supply = <&vcc_3v3>;
-+	};
-+
-+	vcc_card: regulator-vcc-card {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_CARD";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vddao_3v3>;
-+		gpio = <&gpio GPIOX_2 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+		enable-active-high;
-+		gpio-open-drain;
-+	};
-+
-+	vcc_3v3: regulator-vcc-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+		vin-supply = <&vddao_3v3>;
-+
-+		/* FIXME: controlled by TEST_N */
-+	};
-+
-+	vcc_5v: regulator-vcc-5v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+		vin-supply = <&dc_in>;
-+		gpio = <&gpio GPIOH_8 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+		enable-active-high;
-+		gpio-open-drain;
-+	};
-+
-+	vddao_3v3: regulator-vddao_3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDAO_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+		vin-supply = <&dc_in>;
-+	};
-+
-+	vddcpu_b: regulator-vddcpu-b {
-+		compatible = "pwm-regulator";
-+		regulator-name = "VDDCPU_B";
-+		regulator-min-microvolt = <730000>;
-+		regulator-max-microvolt = <1011000>;
-+		regulator-boot-on;
-+		regulator-always-on;
-+		pwm-supply = <&dc_in>;
-+		pwms = <&pwm_AO_cd 1 1250 0>;
-+		pwm-dutycycle-range = <100 0>;
-+	};
-+
-+	vddio_ao18: regulator-vddio_ao18 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDIO_AO18";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-always-on;
-+		vin-supply = <&vddao_3v3>;
-+	};
-+
-+	vddio_c: regulator-vddio_c {
-+		compatible = "regulator-gpio";
-+		regulator-name = "VDDIO_C";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-settling-time-up-us = <200>;
-+		regulator-settling-time-down-us = <50000>;
-+		vin-supply = <&vddao_3v3>;
-+		gpios = <&gpio GPIOX_4 GPIO_ACTIVE_HIGH>;
-+		states = <3300000 0>,
-+			 <1800000 1>;
-+	};
-+
-+	sound {
-+		compatible = "amlogic,axg-sound-card";
-+		audio-widgets = "Line", "Lineout";
-+		audio-aux-devs = <&tdmout_a>, <&tdmout_b>, <&tdmout_c>,
-+				 <&tdmin_a>, <&tdmin_b>, <&tdmin_c>,
-+				 <&dioo2133>;
-+
-+		assigned-clocks = <&clkc CLKID_MPLL2>,
-+				  <&clkc CLKID_MPLL0>,
-+				  <&clkc CLKID_MPLL1>;
-+		assigned-clock-parents = <0>, <0>, <0>;
-+		assigned-clock-rates = <294912000>,
-+				       <270950400>,
-+				       <393216000>;
-+
-+		dai-link-0 {
-+			sound-dai = <&frddr_a>;
-+		};
-+
-+		dai-link-1 {
-+			sound-dai = <&frddr_b>;
-+		};
-+
-+		dai-link-2 {
-+			sound-dai = <&frddr_c>;
-+		};
-+
-+		dai-link-3 {
-+			sound-dai = <&toddr_a>;
-+		};
-+
-+		dai-link-4 {
-+			sound-dai = <&toddr_b>;
-+		};
-+
-+		dai-link-5 {
-+			sound-dai = <&toddr_c>;
-+		};
-+
-+		/*
-+		 * Audio setup: The 40 pins header provides access to 2 TDMs,
-+		 * SPDIF In/Out and PDM inputs.
-+		 * - TDM A: 2 lanes
-+		 *    D0:    40/X9
-+		 *    D1:    38/X8
-+		 *    BCLK:  12/X11
-+		 *    FS:    35/X10
-+		 * - TDM B: 4 lanes
-+		 *    D0:    37/A3
-+		 *    D1:    16/A4
-+		 *    D2:    18/A5 or 7/AO6
-+		 *    D3:    22/A6 or 21/H5
-+		 *    BCLK:  29/A1 or 8/AO8
-+		 *    FS:    31/A2 or 11/AO7
-+		 * - 2 Master Clocks:
-+		 *    MCLK0: 15/A0 or 10/AO9
-+		 *    MCLK1: 33/X15
-+		 * - SPDIF:
-+		 *    OUT:   32/A11
-+		 *    IN:    21/H5
-+		 * - PDM Input:
-+		 *    DO:    13/A8
-+		 *    D1:    26/A9
-+		 *    D2:    22/A6
-+		 *    D3:    18/A5
-+		 *    DCLK:  36/A7
-+		 *
-+		 * TDM C is not usable on the 40 pins connector so it is
-+		 * setup for the HDMI 4 lanes i2s.
-+		 *
-+		 * No pinctrl is enabled by default to preserve the
-+		 * genericity of the 40 pins header. Many configurations are
-+		 * possible based on the desired use case. Please adjust TDM
-+		 * masks, clock setups and pinctrl accordingly.
-+		 */
-+
-+		dai-link-6 {
-+			sound-dai = <&tdmif_a>;
-+			dai-format = "dsp_a";
-+			dai-tdm-slot-tx-mask-0 = <1 1>;
-+			mclk-fs = <256>;
-+
-+			codec-0 {
-+				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_A>;
-+			};
-+
-+			codec-1 {
-+				sound-dai = <&toacodec TOACODEC_IN_A>;
-+			};
-+		};
-+
-+		dai-link-7 {
-+			sound-dai = <&tdmif_b>;
-+			dai-format = "i2s";
-+			dai-tdm-slot-tx-mask-0 = <1 1>;
-+			dai-tdm-slot-rx-mask-1 = <1 1>;
-+			mclk-fs = <256>;
-+
-+			codec-0 {
-+				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_B>;
-+			};
-+
-+			codec-1 {
-+				sound-dai = <&toacodec TOACODEC_IN_B>;
-+			};
-+		};
-+
-+		dai-link-8 {
-+			sound-dai = <&tdmif_c>;
-+			dai-format = "i2s";
-+			dai-tdm-slot-tx-mask-0 = <1 1>;
-+			dai-tdm-slot-tx-mask-1 = <1 1>;
-+			dai-tdm-slot-tx-mask-2 = <1 1>;
-+			dai-tdm-slot-tx-mask-3 = <1 1>;
-+			mclk-fs = <256>;
-+
-+			codec-0 {
-+				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_C>;
-+			};
-+
-+			codec-1 {
-+				sound-dai = <&toacodec TOACODEC_IN_C>;
-+			};
-+		};
-+
-+		dai-link-9 {
-+			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
-+
-+			codec {
-+				sound-dai = <&hdmi_tx>;
-+			};
-+		};
-+
-+		dai-link-10 {
-+			sound-dai = <&toacodec TOACODEC_OUT>;
-+
-+			codec {
-+				sound-dai = <&acodec>;
-+			};
-+		};
-+	};
-+};
-+
-+&acodec {
-+	status = "okay";
-+	AVDD-supply = <&vddio_ao18>;
-+};
-+
-+&arb {
-+	status = "okay";
-+};
-+
-+&cecb_AO {
-+	status = "okay";
-+	pinctrl-0 = <&cec_ao_b_h_pins>;
-+	pinctrl-names = "default";
-+	hdmi-phandle = <&hdmi_tx>;
-+};
-+
-+&clkc_audio {
-+	status = "okay";
-+};
-+
-+&cvbs_vdac_port {
-+	cvbs_vdac_out: endpoint {
-+		remote-endpoint = <&cvbs_connector_in>;
-+	};
-+};
-+
-+&dwc3 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	hub: hub@1 {
-+		compatible = "usb5e3,626";
-+		reg = <1>;
-+		reset-gpios = <&gpio GPIOC_7 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
-+		vdd-supply = <&vcc_5v>;
-+	};
-+};
-+
-+&ethmac {
-+	pinctrl-0 = <&eth_pins>, <&eth_rgmii_pins>, <&eth_phy_irq_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+	phy-mode = "rgmii";
-+	phy-handle = <&external_phy>;
-+	amlogic,tx-delay-ns = <2>;
-+};
-+
-+&ext_mdio {
-+	external_phy: ethernet-phy@0 {
-+		/* Realtek RTL8211F (0x001cc916) */
-+		reg = <0>;
-+		max-speed = <1000>;
-+
-+		reset-assert-us = <100000>;
-+		reset-deassert-us = <100000>;
-+		reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
-+
-+		interrupt-parent = <&gpio_intc>;
-+		/* MAC_INTR on GPIOZ_14 */
-+		interrupts = <26 IRQ_TYPE_LEVEL_LOW>;
-+	};
-+};
-+
-+&frddr_a {
-+	status = "okay";
-+};
-+
-+&frddr_b {
-+	status = "okay";
-+};
-+
-+&frddr_c {
-+	status = "okay";
-+};
-+
-+&hdmi_tx {
-+	status = "okay";
-+	pinctrl-0 = <&hdmitx_hpd_pins>, <&hdmitx_ddc_pins>;
-+	pinctrl-names = "default";
-+	hdmi-supply = <&vcc_5v>;
-+};
-+
-+&hdmi_tx_tmds_port {
-+	hdmi_tx_tmds_out: endpoint {
-+		remote-endpoint = <&hdmi_connector_in>;
-+	};
-+};
-+
-+&ir {
-+	status = "okay";
-+	pinctrl-0 = <&remote_input_ao_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&periphs_pinctrl {
-+	spi_cs_disable_pins: spi-cs-disable {
-+		mux {
-+			groups = "BOOT_14";
-+			function = "gpio_periphs";
-+			bias-disable;
-+			output-high;
-+		};
-+	};
-+
-+	eth_phy_irq_pins: eth-phy-irq {
-+		mux {
-+			groups = "GPIOZ_14";
-+			function = "gpio_periphs";
-+			bias-pull-up;
-+			output-disable;
-+		};
-+	};
-+};
-+
-+&pwm_AO_cd {
-+	status = "okay";
-+	pinctrl-0 = <&pwm_ao_d_e_pins>;
-+	pinctrl-names = "default";
-+	clocks = <&xtal>;
-+	clock-names = "clkin1";
-+};
-+
-+&pwm_ab {
-+	status = "okay";
-+	pinctrl-0 = <&pwm_b_x7_pins>;
-+	pinctrl-names = "default";
-+	clocks = <&xtal>;
-+	clock-names = "clkin1";
-+};
-+
-+&pwm_cd {
-+	status = "okay";
-+	pinctrl-0 = <&pwm_d_x3_pins>;
-+	pinctrl-names = "default";
-+	clocks = <&xtal>;
-+	clock-names = "clkin1";
-+};
-+
-+&saradc {
-+	status = "okay";
-+	vref-supply = <&vddio_ao18>;
-+};
-+
-+/* SD card */
-+&sd_emmc_b {
-+	status = "okay";
-+	pinctrl-0 = <&sdcard_c_pins>;
-+	pinctrl-1 = <&sdcard_clk_gate_c_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	sd-uhs-sdr12;
-+	sd-uhs-sdr25;
-+	sd-uhs-sdr50;
-+	sd-uhs-sdr104;
-+	max-frequency = <200000000>;
-+	disable-wp;
-+
-+	cd-gpios = <&gpio GPIOC_6 GPIO_ACTIVE_LOW>;
-+	vmmc-supply = <&vcc_card>;
-+	vqmmc-supply = <&vddio_c>;
-+};
-+
-+/*
-+ * EMMC_D4, EMMC_D5, EMMC_D6 and EMMC_D7 pins are shared between SPI NOR CS
-+ * and eMMC Data 4 to 7 pins.
-+ * Replace emmc_data_8b_pins to emmc_data_4b_pins from sd_emmc_c pinctrl-0,
-+ * and change bus-width to 4 then spifc can be enabled.
-+ */
-+&sd_emmc_c {
-+	status = "okay";
-+	pinctrl-0 = <&emmc_ctrl_pins>, <&emmc_data_8b_pins>, <&emmc_ds_pins>,
-+		    <&spi_cs_disable_pins>;
-+	pinctrl-1 = <&emmc_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <8>;
-+	cap-mmc-highspeed;
-+	mmc-hs200-1_8v;
-+	max-frequency = <200000000>;
-+	disable-wp;
-+
-+	mmc-pwrseq = <&emmc_pwrseq>;
-+	vmmc-supply = <&vcc_3v3>;
-+	vqmmc-supply = <&flash_1v8>;
-+};
-+
-+&spifc {
-+	status = "disabled";
-+	pinctrl-0 = <&nor_pins>;
-+	pinctrl-names = "default";
-+	cs-gpios = <&gpio BOOT_14 GPIO_ACTIVE_LOW>;
-+
-+	w25lq128d: flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		spi-max-frequency = <80000000>;
-+	};
-+};
-+
-+&tdmif_a {
-+	status = "okay";
-+};
-+
-+&tdmif_b {
-+	status = "okay";
-+};
-+
-+&tdmif_c {
-+	status = "okay";
-+};
-+
-+&tdmin_a {
-+	status = "okay";
-+};
-+
-+&tdmin_b {
-+	status = "okay";
-+};
-+
-+&tdmin_c {
-+	status = "okay";
-+};
-+
-+&tdmout_a {
-+	status = "okay";
-+};
-+
-+&tdmout_b {
-+	status = "okay";
-+};
-+
-+&tdmout_c {
-+	status = "okay";
-+};
-+
-+&toacodec {
-+	status = "okay";
-+};
-+
-+&toddr_a {
-+	status = "okay";
-+};
-+
-+&toddr_b {
-+	status = "okay";
-+};
-+
-+&toddr_c {
-+	status = "okay";
-+};
-+
-+&tohdmitx {
-+	status = "okay";
-+};
-+
-+&uart_AO {
-+	status = "okay";
-+	pinctrl-0 = <&uart_ao_a_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&usb2_phy1 {
-+	phy-supply = <&dc_in>;
-+};
-+
-+&usb3_pcie_phy {
-+	phy-supply = <&vcc_5v>;
-+};
-+
-+&usb {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts
-new file mode 100644
-index 000000000000..537370db360f
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts
-@@ -0,0 +1,89 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2023 BayLibre, SAS.
-+ * Author: Jerome Brunet <jbrunet@baylibre.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/clock/g12a-clkc.h>
-+#include "meson-sm1.dtsi"
-+#include "meson-libretech-cottonwood.dtsi"
-+
-+/ {
-+	compatible = "libretech,aml-s905d3-cc", "amlogic,sm1";
-+	model = "Libre Computer AML-S905D3-CC Solitude";
-+
-+	sound {
-+		model = "LC-SOLITUDE";
-+		audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
-+				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
-+				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
-+				"TDM_A Playback", "TDMOUT_A OUT",
-+				"TDMOUT_B IN 0", "FRDDR_A OUT 1",
-+				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
-+				"TDMOUT_B IN 2", "FRDDR_C OUT 1",
-+				"TDM_B Playback", "TDMOUT_B OUT",
-+				"TDMOUT_C IN 0", "FRDDR_A OUT 2",
-+				"TDMOUT_C IN 1", "FRDDR_B OUT 2",
-+				"TDMOUT_C IN 2", "FRDDR_C OUT 2",
-+				"TDM_C Playback", "TDMOUT_C OUT",
-+				"TDMIN_A IN 0", "TDM_A Capture",
-+				"TDMIN_B IN 0", "TDM_A Capture",
-+				"TDMIN_C IN 0", "TDM_A Capture",
-+				"TDMIN_A IN 13", "TDM_A Loopback",
-+				"TDMIN_B IN 13", "TDM_A Loopback",
-+				"TDMIN_C IN 13", "TDM_A Loopback",
-+				"TDMIN_A IN 1", "TDM_B Capture",
-+				"TDMIN_B IN 1", "TDM_B Capture",
-+				"TDMIN_C IN 1", "TDM_B Capture",
-+				"TDMIN_A IN 14", "TDM_B Loopback",
-+				"TDMIN_B IN 14", "TDM_B Loopback",
-+				"TDMIN_C IN 14", "TDM_B Loopback",
-+				"TDMIN_A IN 2", "TDM_C Capture",
-+				"TDMIN_B IN 2", "TDM_C Capture",
-+				"TDMIN_C IN 2", "TDM_C Capture",
-+				"TDMIN_A IN 15", "TDM_C Loopback",
-+				"TDMIN_B IN 15", "TDM_C Loopback",
-+				"TDMIN_C IN 15", "TDM_C Loopback",
-+				"TODDR_A IN 0", "TDMIN_A OUT",
-+				"TODDR_B IN 0", "TDMIN_A OUT",
-+				"TODDR_C IN 0", "TDMIN_A OUT",
-+				"TODDR_A IN 1", "TDMIN_B OUT",
-+				"TODDR_B IN 1", "TDMIN_B OUT",
-+				"TODDR_C IN 1", "TDMIN_B OUT",
-+				"TODDR_A IN 2", "TDMIN_C OUT",
-+				"TODDR_B IN 2", "TDMIN_C OUT",
-+				"TODDR_C IN 2", "TDMIN_C OUT",
-+				"Lineout", "ACODEC LOLP",
-+				"Lineout", "ACODEC LORP";
-+	};
-+};
-+
-+&cpu0 {
-+	cpu-supply = <&vddcpu_b>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu1 {
-+	cpu-supply = <&vddcpu_b>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU1_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu2 {
-+	cpu-supply = <&vddcpu_b>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU2_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu3 {
-+	cpu-supply = <&vddcpu_b>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU3_CLK>;
-+	clock-latency = <50000>;
-+};
--- 
-2.40.1
+Thought:
+It's not the first time we see build failures in tools/perf -- would it 
+make sense to add this to your own build tests to reduce the round trip 
+time for these errors ?
 
+Note: After reverting three patches in perf/ the build succeeds:
+
+Patch 151: c1ef510a0f2a perf metric: Return early if no CPU PMU table exists
+Patch 81: 40ddac4ffc75 perf build: Update build rule for generated files
+Patch 80: 8df938ed8c8a perf jevents: Switch build to use jevents.py
+
+
+Thanks,
+Harshit
+
+> 
+> greg k-h
