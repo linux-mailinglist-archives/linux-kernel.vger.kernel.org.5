@@ -2,123 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A73687BC2E2
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 01:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34B47BC2E6
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 01:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233779AbjJFXV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 19:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48110 "EHLO
+        id S233810AbjJFXYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 19:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233754AbjJFXV5 (ORCPT
+        with ESMTP id S233692AbjJFXYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 19:21:57 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A27AC
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 16:21:53 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9338e4695so33203291fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 16:21:53 -0700 (PDT)
+        Fri, 6 Oct 2023 19:24:17 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B00393;
+        Fri,  6 Oct 2023 16:24:16 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-536b39daec1so4647337a12.2;
+        Fri, 06 Oct 2023 16:24:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696634512; x=1697239312; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y2hTgynvyU8HD1veXrLbrqbx40e596jXkVNUJT4I/tk=;
-        b=VJlfwBt6d7x9HD2eclYA3JZzQfK9R04HJQZKIe1d8wFEZqHIUypU2/4ZokqttIJL7p
-         LtkLk1fLiutbZcdk9BC2PL1OytXoXSAh/zeQVtPIf2AArAXUsxC0B6x2LtHYIpvBzUsV
-         3SKT1xxuScwseUNzkNNBM/gg3f/O1vbE7t3GwHQC4nhIH4E+6oXN43YqMuaGXCzKQJHk
-         z5MNZ64HtOtrIyEjh7S1ZEkbyvXcOnAFZT5jpSR4brKf5GT/07igFipLlF564wEwTvaE
-         rwKYYkkW3gjtXkGBows84g+6sd76N2zYrmRhdjmNzRvxT8Zu40wf6DNVp0+QDl9Ov2Yw
-         YKoA==
+        d=gmail.com; s=20230601; t=1696634654; x=1697239454; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=hPaXNBZLQrXq61kgT1VtVRZp5hOGTGuxGwxK2C9WNE4=;
+        b=iVqqtZeRsgB5REbjUpRx2q+IFE4l1xa0KxH/D7yVsLmIeExUcYqVoZIJbmqUoSOh+t
+         wWFE0XhgO0ibRpQfaXI0oHyr052p71thwoeSzGjrFVERG/yJcZ2RNrf2d12FgKr5jFOS
+         IaK8pndDf45XTEZzUzKjkBMItBpW+nWL1XIWrORYpRO3cKYEaQYCeG8jyhNW+hi9FlLt
+         UtZ7HpnIXwiJvqSWXhNFdWQxHbqb8zwClii5gfT+6nhznDN9l+LxeESZ1Qw6dRt9Ygdj
+         hryC9dzqa9QAp9iGDM4Uj4qjJ/AKW/OIWXVEqwU02V0WvApBV/ptCszPYijrap6v/eA3
+         GFeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696634512; x=1697239312;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y2hTgynvyU8HD1veXrLbrqbx40e596jXkVNUJT4I/tk=;
-        b=ZKzGyjLW3Rl72s7MtbwfAbH/2FuA8aSaNS5sU25wNxjFoHuN4GuzOSOwVJ1O9zGYa5
-         yQ3nJIR7vwSp8lGLidmooda+5//Ys6lVf6NEyPXXCuf8r32dS1oNIZmx6Z9lz2Ecjz41
-         HdhM8EJCPLZQSOxBwT8j6rtQlexaUnahWCfIlgXCg5QoSEK06FpVCLJKmmB+Y6x7vJNk
-         CuHl/ccA8YFo7m43+V1FmCwBLTqnS9Ca0+kJkYXLTiyMibwGfFnn6j9IuOUeozOMe460
-         7/Z+wfK5wvp3qSp6OZU5Z3wVg25nPVjx42ezVuzLkGvIfgzvrk89dPUuwCsIFL0DS/Gb
-         vr3g==
-X-Gm-Message-State: AOJu0YyjHPj3/ApgTsDVDa0kwHFW9K9A6wQt1B6rpMtYdxC5sy5hmgaw
-        n5pgeLOpe2uWZ8yZr3pvdykxtQ==
-X-Google-Smtp-Source: AGHT+IHvlqzcq38thoX3PZn34o6zqZkwWj8ZiJlIwZnWxtg1XOZmelZD9GDdYV04RWUkP0T3ij0O7g==
-X-Received: by 2002:a2e:9a89:0:b0:2c1:7a96:c770 with SMTP id p9-20020a2e9a89000000b002c17a96c770mr8335693lji.19.1696634512183;
-        Fri, 06 Oct 2023 16:21:52 -0700 (PDT)
-Received: from [192.168.200.173] (178235177147.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.147])
-        by smtp.gmail.com with ESMTPSA id w11-20020a2e998b000000b002bffbe767cbsm973514lji.85.2023.10.06.16.21.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 16:21:51 -0700 (PDT)
-Message-ID: <b8f2d7f1-16e2-4e6a-9c84-37da393f74a3@linaro.org>
-Date:   Sat, 7 Oct 2023 01:21:49 +0200
+        d=1e100.net; s=20230601; t=1696634654; x=1697239454;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hPaXNBZLQrXq61kgT1VtVRZp5hOGTGuxGwxK2C9WNE4=;
+        b=sUxFJrl21lEMhxhUrbyFJazPEo3/52mr6ELDM84ZTxvLXTTS5K+5C38BwzO2vbP1Po
+         6x4PKAueO7xmgLK0P3MOhq3f4s6B0i9YukzFfa1SJPqwujZ/Gjsy3ee+z1gXP+J5ztkK
+         rNliOuXdX04h0wRXbkzE2CQ8+Gy1s5lWWtRV6XCt3YdH7sgWTA5HusWeIhePUVDayLw1
+         EGvt95GIHw8T+kCQUWwXnKym0vd3Ei0gbifFlgCBw2vhMh0B7j1HfIoZXoEeNTq+gxCY
+         nmhNvrclZnrsPOWa2geRNk6O3E2EGVq/cNZ3AesAste5Gzqss1xS0Cuzk0H4iL4KvG7x
+         EHdA==
+X-Gm-Message-State: AOJu0YxBJSHVCuK0I0UL+TNFk7SNm9U/Ksf+WOnfntYNd1BXnJ6DS0ku
+        4TZbK4+rnMLMuUmFpkXPg9aAgexbJqmZmg==
+X-Google-Smtp-Source: AGHT+IFfto7EAMEg7VApspqL6vAy9RqJg0LXgxG7jOvdtW7oM72tB4A8+dN9tWoFUCe051xP4IEYnA==
+X-Received: by 2002:aa7:d492:0:b0:533:39da:6ffb with SMTP id b18-20020aa7d492000000b0053339da6ffbmr8401911edr.14.1696634654420;
+        Fri, 06 Oct 2023 16:24:14 -0700 (PDT)
+Received: from akanner-r14. ([77.222.24.57])
+        by smtp.gmail.com with ESMTPSA id l25-20020aa7c319000000b0053441519ed5sm3152155edq.88.2023.10.06.16.24.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 16:24:13 -0700 (PDT)
+Message-ID: <6520971d.a70a0220.758e3.8cf7@mx.google.com>
+X-Google-Original-Message-ID: <ZSCXFdDLDycRAPxQ@akanner-r14.>
+Date:   Sat, 7 Oct 2023 02:24:05 +0300
+From:   Andrew Kanner <andrew.kanner@gmail.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com,
+        syzbot+b132693e925cbbd89e26@syzkaller.appspotmail.com,
+        bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, aleksander.lobakin@intel.com,
+        xuanzhuo@linux.alibaba.com, ast@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, daniel@iogearbox.net
+Subject: Re: [PATCH bpf v3] net/xdp: fix zero-size allocation warning in
+ xskq_create()
+References: <20231005193548.515-1-andrew.kanner@gmail.com>
+ <7aa47549-5a95-22d7-1d03-ffdd251cec6d@linux.dev>
+ <651fb2a8.c20a0220.8d6c3.0fd9@mx.google.com>
+ <57c35480-983d-2056-1d72-f6e555069b83@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] i2c: qcom-cci: Add sc8280xp compatible
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
-        andersson@kernel.org, loic.poulain@linaro.org, rfoss@kernel.org,
-        andi.shyti@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        todor.too@gmail.com, mchehab@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
- <20231006120159.3413789-3-bryan.odonoghue@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231006120159.3413789-3-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57c35480-983d-2056-1d72-f6e555069b83@linux.dev>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6.10.2023 14:01, Bryan O'Donoghue wrote:
-> Add sc8280xp compatible with cci_v2_data parameters.
+On Fri, Oct 06, 2023 at 10:37:44AM -0700, Martin KaFai Lau wrote:
+[...] 
+> > > What if "size" is SIZE_MAX-1? Would it still overflow the PAGE_ALIGN below?
+> > > 
+> > > > +		kfree(q);
+> > > > +		return NULL;
+> > > > +	}
+> > > > +
+> > > >    	size = PAGE_ALIGN(size);
+> > > >    	q->ring = vmalloc_user(size);
+> > > 
+> > 
+> > I asked myself the same question before v1. E.g. thinking about the
+> > check: (size > SIZE_MAX - PAGE_SIZE + 1)
+> > 
+> > But xskq_create() is called after the check for
+> > !is_power_of_2(entries) in xsk_init_queue(). So I tried the same
+> > reproducer and divided the (nentries) value by 2 in a loop - it hits
+> > either SIZE_MAX case or the normal cases without overflow (sometimes
+> > throwing vmalloc error complaining about size which exceed total pages
+> > in my arm setup).
+> > 
+> > So I can't see a way size will be SIZE_MAX-1, etc. Correct me if I'm
+> > wrong, please.
+> > 
+> > PS: In the output below the first 2 values of (nentries) hit SIZE_MAX
 > 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
-Drop this patch, it adds nothing useful
+> Thanks for the explanation, so iiuc it means it will overflow the
+> struct_size() first because of the is_power_of_2(nentries) requirement?
+> Could you help adding some comment to explain? Thanks.
+>
 
-Konrad
+The overflow happens because there's no upper limit for nentries
+(userspace input). Let me add more context, e.g. from net/xdp/xsk.c:
+
+static int xsk_setsockopt(struct socket *sock, int level, int optname,
+                          sockptr_t optval, unsigned int optlen)
+{
+[...]
+                if (copy_from_sockptr(&entries, optval, sizeof(entries)))
+                        return -EFAULT;
+[...]
+                err = xsk_init_queue(entries, q, false);
+[...]
+}
+
+'entries' is passed to xsk_init_queue() and there're 2 checks: for 0
+and is_power_of_2() only, no upper bound check:
+
+static int xsk_init_queue(u32 entries, struct xsk_queue **queue,
+                          bool umem_queue)
+{
+        struct xsk_queue *q;
+
+        if (entries == 0 || *queue || !is_power_of_2(entries))
+                return -EINVAL;
+
+        q = xskq_create(entries, umem_queue);
+        if (!q)
+                return -ENOMEM;
+[...]
+}
+
+The 'entries' value is next passed to struct_size() in
+net/xdp/xsk_queue.c. If it's large enough - SIZE_MAX will be returned.
+
+I'm not sure if some appropriate limit for the size of XDP_RX_RING /
+XDP_TX_RING and XDP_UMEM_FILL_RING / XDP_UMEM_COMPLETION_RING rings
+should be used. But anyway, vmalloc() will tell if it's not ok with
+the requested allocation size.
+
+-- 
+Andrew Kanner
