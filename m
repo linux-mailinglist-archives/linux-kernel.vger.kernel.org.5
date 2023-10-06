@@ -2,130 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CBB7BB003
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C64C7BB008
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbjJFBQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 21:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
+        id S229729AbjJFBTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 21:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbjJFBQx (ORCPT
+        with ESMTP id S229606AbjJFBTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 21:16:53 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6E9DE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 18:16:52 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81646fcf3eso2362943276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 18:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696555011; x=1697159811; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jd5KxEqEwY2iqG9q8MvnGaf7JmKJ2HuMOoFFZ0hbqA8=;
-        b=SVY4b76bYUYMfoXuEmJf3k2FR1jcMSAnsA6OLo8zwPKgmYN3BYRn2ZWvsN46pn6vTY
-         ou0OQMGmyzVR7+IQk5mHMMF/TT6nz0dsjb6RLTI0Ekwki8Xq3+mgxqTp4yhF/gGvibQy
-         4Gl6bnD6HuQfYjy4BiKv42trsQiNAtuJQPF1rH4cz4NdBiXm0OVJwV81mieNp/SuqwMJ
-         AWqNZWrcZO9mGKDcwZB+Js5wW3HR55N0pelh/viy8I72JmA+ARC9nTY2EnYQQmCAjiee
-         /sNy7wiHfz1OCF8BeLBV/g7b9IQ43PrT2v6YOGpEaWTDa0Qrx5E6aga3vJB/KE+1NKeC
-         IWJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696555011; x=1697159811;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jd5KxEqEwY2iqG9q8MvnGaf7JmKJ2HuMOoFFZ0hbqA8=;
-        b=AiT3m0maqrEX0wHHR9fmfgEKmGOD2vbBleQZak2Yg30avz35wSzDBS6zeVacQeMfyE
-         kVGLXKjq75nzRkfSaJpsU3gk6bOgbwx3oaFTz5bG+BXmCU1TKql1HfJJbmNhMVuYr9dm
-         wsbpIAL5H8D6YBMSDDkfkryQ1vOryeIwMLP9q58iDr8zSgpJ74oy4+jBYrMjCwc2Pic3
-         LwYfHTdLtSuysL7bHg8LHMgv2rkGDaLvE0rcWWLkNRnzrvSCMQlL5FGOfnGx14SbGfYo
-         GCfzVkffzk6M65deAKYIUbs6kRjmWEtlQzrT5+VASuqzjhocEa7OYAjsJQHug/X4+DS/
-         kXxA==
-X-Gm-Message-State: AOJu0YwxgZqqytI8WBAO1y+43NjvvKOIUjij9mEhNn1mPD3RdsgFymOG
-        MSfxJSBupHInBpQUPQneW8n4BDgiD4k=
-X-Google-Smtp-Source: AGHT+IHfG8E/0LJ9G93D45hP8patkOPnQ0VmZvmttke/y2ua8eemwq7tU907u2qwiUzAuKPPgEAJ1HKQOxw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:180e:b0:d77:984e:c770 with SMTP id
- cf14-20020a056902180e00b00d77984ec770mr114742ybb.5.1696555011194; Thu, 05 Oct
- 2023 18:16:51 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 18:16:49 -0700
-In-Reply-To: <CW0NB512KP2E.2ZZD07F49LND3@amazon.com>
-Mime-Version: 1.0
-References: <20231001111313.77586-1-nsaenz@amazon.com> <ZR35gq1NICwhOUAS@google.com>
- <CW0NB512KP2E.2ZZD07F49LND3@amazon.com>
-Message-ID: <ZR9gATE2NSOOhedQ@google.com>
-Subject: Re: [RFC] KVM: Allow polling vCPUs for events
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nicolas Saenz Julienne <nsaenz@amazon.com>
-Cc:     kvm@vger.kernel.org, pbonzini@redhat.com,
-        linux-kernel@vger.kernel.org, graf@amazon.de, dwmw2@infradead.org,
-        fgriffo@amazon.com, anelkz@amazon.de, peterz@infradead.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 5 Oct 2023 21:19:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE87DE
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 18:19:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+AiG5RcuIRXjXQBaPipww/shhwqPCseS7Zrsx9WocQ0=; b=BC0oYb8aTYOJBZjE50dd8NPPc7
+        /73Cl4ZQ6jjJ90vlAM/EoJxzOd5H/w65Jl40qapwuCR4+7/CbkOci6f1rVTuM95HLFwef0uky/c0+
+        TqDERrDka6zstklGFvad7asco2exJ0GDEqADstiBXwuKDeYpkc3b7KBBMGwoZcr0Nryib+rDoYbOw
+        5QNF2BuRFcLhOqrspD4pB3oeCChYLLOlZXtGanexFxob6KrLb5WOyZck3ba9KYyauokJmgjcw59qE
+        3T0nQGcdq19KhbJd+n5sX6HQYaySrZVymsSwsHO/i1UsiwQn2laYEA51/0V7wGYqXV0xWYwyVINtg
+        unnCg4lw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qoZUn-00CWqH-Bv; Fri, 06 Oct 2023 01:19:13 +0000
+Date:   Fri, 6 Oct 2023 02:19:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Erhard Furtner <erhard_f@mailbox.org>,
+        Linux PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [Bisected] PowerMac G5 fails booting kernel 6.6-rc3 (BUG: Unable
+ to handle kernel data access at 0xfeffbb62ffec65fe)
+Message-ID: <ZR9gkZKafUSNOAEf@casper.infradead.org>
+References: <20230929132750.3cd98452@yea>
+ <ZR9esG8H17LY2KOX@debian.me>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZR9esG8H17LY2KOX@debian.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023, Nicolas Saenz Julienne wrote:
-> Hi Sean,
-> Thanks for taking the time to look at this.
-> 
-> On Wed Oct 4, 2023 at 11:47 PM UTC, Sean Christopherson wrote:
-> > This does not look remotely safe on multiple fronts.  For starters, I don't see
-> > anything in the .poll() infrastructure that provides serialization, e.g. if there
-> > are multiple tasks polling then this will be "interesting".
-> 
-> Would allowing only one poller be acceptable?
+On Fri, Oct 06, 2023 at 08:11:12AM +0700, Bagas Sanjaya wrote:
+> Matthew Wilcox, did you miss this regression report? You should look into it
+> since it is (apparently) cause by a commit of yours.
 
-As a last resort, but I think we should first try to support multiple pollers.
+No, I didn't miss it.  I'm simply choosing to work on other things.
+All this regression tracking nonsense and being told to work on things
+by people who've appointed themselves my manager has completely sapped
+my motivation to work on bugs.  If you want me to work on things, *don't*
+harass me.
 
-> > And there is zero chance this is race-free, e.g. nothing prevents the vCPU task
-> > itself from changing vcpu->mode from POLLING_FOR_EVENTS to something else.
-> >
-> > Why on earth is this mucking with vcpu->mode?  Ignoring for the moment that using
-> > vcpu->requests as the poll source is never going to happen, there's zero reason
-> 
-> IIUC accessing vcpu->requests in the kvm_vcpu_poll() is out of the
-> question? Aren't we're forced to do so in order to avoid the race I
-> mention above.
-
-Reading vcpu->requests is fine, though I suspect it will be easier to use a
-dedicated field.  Requests aren't single bit values and most of them are arch
-specific, which will make it annoying to key off of requests directly.  I'm
-guessing it will be impossible to completely avoid arch specific polling logic,
-but I'd rather not jump straight to that.
-
-> > @@ -285,6 +293,9 @@ static void kvm_make_vcpu_request(struct kvm_vcpu *vcpu, unsigned int req,
-> >                 if (cpu != -1 && cpu != current_cpu)
-> >                         __cpumask_set_cpu(cpu, tmp);
-> >         }
-> > +
-> > +       if (kvm_request_is_being_polled(vcpu, req))
-> > +               wake_up_interruptible(...);
-> >  }
-> >
-> >  bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
-> 
-> I'll use this approach.
-> 
-> So since we have to provide a proper uAPI, do you have anything against
-> having user-space set the polling mask through an ioctl?
-
-What exactly do you mean?  The mask of what poll "events" userspace cares about?
-I doubt that will work well if KVM supports more than one poller, as preventing
-them from stomping over one another would be all but impossible.
-
-> Also any suggestions on how kvm_request_to_poll_mask() should look like. For
-> ex.  VSM mostly cares for regular interrupts/timers, so mapping
-> 
->   KVM_REQ_UNBLOCK, KVM_REQ_HV_STIMER, KVM_REQ_EVENT, KVM_REQ_SMI,
->   KVM_REQ_NMI
-> 
-> to a KVM_POLL_INTERRUPTS_FLAG would work. We can then have ad-hoc flags
-> for async-pf, kvmclock updates, dirty logging, etc...
-
-What all does your use case need/want to poll on?  Mapping out exactly what all
-you want/need to poll is probably the best way to answer this question.
