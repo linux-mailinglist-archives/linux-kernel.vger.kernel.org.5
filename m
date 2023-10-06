@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEE17BC079
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519037BC060
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233509AbjJFUiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 16:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49110 "EHLO
+        id S233488AbjJFUb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233133AbjJFUiC (ORCPT
+        with ESMTP id S233368AbjJFUb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:38:02 -0400
-X-Greylist: delayed 425 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 06 Oct 2023 13:38:00 PDT
-Received: from st43p00im-ztdg10061801.me.com (st43p00im-ztdg10061801.me.com [17.58.63.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FEFBD
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:38:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1696624254;
-        bh=jpgWkkgEKfUsXrA2ZQG7eE1vYyPJC5fkNDGWTc4YXIQ=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        b=psPfLxkMILPBNjNiOlvQhtW0hS756ZA8mNS0cpmMfj/YiymTPuUHIWc29ZBy6jggP
-         O+UjIj/2N8DdxspCme9P/Mf0uS1RHgFf4nDQeiKc6IibN9tMG//O6F5fcw0lA/+Lls
-         JYbnwV3LN349HM0kCeU9jXXafFifs4GDuzVPYnvcTFHX2rG/uUwUKSAAR+PmlIAw5+
-         BPqvHfSU4PiZwaniAUArZ9XoQraNoIX9Blf4hyyum/nC//vl6VU2mEC0kw5shshI/e
-         iFxB4f61cD1lXl4sDRMevsb9u2oEU+rzSIm9wUPe/iJQoMhU4C5OQtp2n+as65+ZC1
-         wAjzSp8YEjUig==
-Received: from mainframe (st43p00im-dlb-asmtp-mailmevip.me.com [17.42.251.41])
-        by st43p00im-ztdg10061801.me.com (Postfix) with ESMTPSA id E3A4E600486;
-        Fri,  6 Oct 2023 20:30:53 +0000 (UTC)
-Date:   Fri, 6 Oct 2023 22:30:51 +0200
-From:   Lucy Mielke <lucymielke@icloud.com>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: add printf attribute to shrinker_debugfs_name_alloc
-Message-ID: <ZSBue-3kM6gI6jCr@mainframe>
+        Fri, 6 Oct 2023 16:31:28 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C85DBE;
+        Fri,  6 Oct 2023 13:31:26 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 12AB15C029C;
+        Fri,  6 Oct 2023 16:31:26 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute5.internal (MEProxy); Fri, 06 Oct 2023 16:31:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1696624286; x=1696710686; bh=TE
+        jfaMeYHcib8Xw0tECSLaDw+nvGzaQ8DdiMNTVke70=; b=TLtPOzqexax31+DnSL
+        B/Lk0GlMM5k6sqRrypQy7hStmK82R6yHWbeITuagK68z/q7DXcvNB+BZZ67nOOoF
+        ZrFS9wjmjR/dksz4m1Nb6QSfiESg+fRh6S/QNtM5dJ1LRvCKn+mm3vO6s6T10c04
+        HrTgKkVQhz2O0cqmNOGRtHmNcc+xs440zX48L5PPYKkmVBdH8NYEQOrqPWLJwR7v
+        u+/J/YSDgokd1H28pf/U/Fso5q65MHOCp5gBNzoNMXuz0/1yNvqRbB/X6s2ApV+y
+        KRPxz/EIM9luIj6G6YbTIIj3LHx4VAlL6QRU8VH6OxPr3kblV2avBUA2i4wDPXgZ
+        NTbg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696624286; x=1696710686; bh=TEjfaMeYHcib8
+        Xw0tECSLaDw+nvGzaQ8DdiMNTVke70=; b=QO/duo7w4ZwBzpw/I0MQ01HbQ0zBn
+        2PTVqzUaQDnF1kEPh/NbDWVW9QrW+cSCw4PHVL6QHtDP4QBvtVhJ8suHc6P9F4eo
+        /CUnOB+jtq2u4HmR6bfn+D4jQB/ppBpo6+6nQ4QpBPvpx4kTzK3rIursoBwyqD4u
+        DOmZadk6JVd6hAM8m4BJclN6r4xdsLuS4Ds+TsrhZfCcvWg4VUE53EznF9Uj0GWV
+        hS1qOdb5u5r27vZX2l1mGAso/LufEkJ15EZCP52mawAs0nYSeabG8AV1DZRgkuA1
+        NCSmteNu4jn2TPq0ZI0plyKzmG/MV2uHPL1a1erYw/H4iHD3oB2VAIdqQ==
+X-ME-Sender: <xms:nW4gZcvUkuwS5KgX6wiFM_6-djJTAnRamidJ9We1iO38C24P_NPeIQ>
+    <xme:nW4gZZcYzSI4U0OsH_z6_kcHjjZNzgK2FNCoNLy7KnenHyaboahVxc2ApWXSotd4A
+    DGOV9DKY_p4Qd2BFuo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeigddugeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:nW4gZXx6_6nqaoGuZeJs_GRfeZWor0dKttAi-ombTkShtXScK7ca1Q>
+    <xmx:nW4gZfP6BaGfP5QvR3ExECYzCf2a3lpzuyGEKHNlldhm1qgcm1ojJA>
+    <xmx:nW4gZc_vST3DiKylMAgomgTEakFKG0rUcRnBVzSNOGBl6GEpyNcb7Q>
+    <xmx:nm4gZalRGMa_dbE_ytCnHyHFYMuG2fu9z-lRF7fizcs2dcZObHGWNA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 88ECA1700089; Fri,  6 Oct 2023 16:31:25 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: VAw--NUYFuVX3GYwAM3zW3KwZcEog9e-
-X-Proofpoint-ORIG-GUID: VAw--NUYFuVX3GYwAM3zW3KwZcEog9e-
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.138,18.0.957,17.11.170.22.0000000_definitions?=
- =?UTF-8?Q?=3D2023-05-18=5F15:2020-02-14=5F02,2023-05-18=5F15,2023-02-09?=
- =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 malwarescore=0
- adultscore=0 phishscore=0 mlxlogscore=753 suspectscore=0 bulkscore=0
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2310060156
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <cc43f8c8-5361-4c0f-9402-aa3c45c5f8e6@app.fastmail.com>
+In-Reply-To: <ZSAiueycCL067TrJ@smile.fi.intel.com>
+References: <20230724134301.13980-1-andriy.shevchenko@linux.intel.com>
+ <ZN+V7P6srKrAelUQ@smile.fi.intel.com>
+ <3a5898a1-71b3-7377-cf46-94149e53cbce@infradead.org>
+ <ZSAiueycCL067TrJ@smile.fi.intel.com>
+Date:   Fri, 06 Oct 2023 22:31:03 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+        "Randy Dunlap" <rdunlap@infradead.org>
+Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] asm-generic: Fix spelling of architecture
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes a compiler warning when compiling an allyesconfig with W=1:
+On Fri, Oct 6, 2023, at 17:07, Andy Shevchenko wrote:
+> On Fri, Aug 18, 2023 at 04:08:13PM -0700, Randy Dunlap wrote:
+>> On 8/18/23 09:01, Andy Shevchenko wrote:
+>> > On Mon, Jul 24, 2023 at 04:43:01PM +0300, Andy Shevchenko wrote:
+>> >> Fix spelling of "architecture" in the Kbuild file.
+>> > 
+>> > Any comments?
+>> 
+>> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+>
+> Thank you!
+>
+> Arnd, is it possible to get this applied?
+> Or should I use another tree?
 
-mm/internal.h:1235:9: error: function might be a candidate for ‘gnu_printf’
-format attribute [-Werror=suggest-attribute=format]
+Merged for v6.7 now, thanks for the patch.
 
-Signed-off-by: Lucy Mielke <lucymielke@icloud.com>
----
- mm/internal.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/mm/internal.h b/mm/internal.h
-index 18e360fa53bc..e23f1ea55a8e 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1229,8 +1229,8 @@ unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup *memcg,
- 			  int priority);
- 
- #ifdef CONFIG_SHRINKER_DEBUG
--static inline int shrinker_debugfs_name_alloc(struct shrinker *shrinker,
--					      const char *fmt, va_list ap)
-+static inline __printf(2, 0) int shrinker_debugfs_name_alloc(
-+			struct shrinker *shrinker, const char *fmt, va_list ap)
- {
- 	shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
- 
--- 
-2.42.0
-
+     Arnd
