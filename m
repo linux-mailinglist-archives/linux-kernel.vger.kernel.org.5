@@ -2,62 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 730657BB807
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FC77BB80C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232007AbjJFMoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
+        id S231766AbjJFMrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbjJFMod (ORCPT
+        with ESMTP id S232046AbjJFMrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:44:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F71CA
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:44:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696596272; x=1728132272;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=KDV9Q7v6w7NxbZwSmJ1KGY0KMmrRQm4pceT0Mes1vok=;
-  b=VKaG0Mvv5eVDJ8TMeqtCwX09fHec0c28xUCSHa2Iv2BVAsMuyxXRwWK9
-   SY9oPvMzRytYw3fL+dsCqjX5KUziiS7WU/oRPLMqmfyolrYxv4Mhj0E+c
-   xWkeqBLHg2sbxXn8YPdTwQOeqhrCua3zPnrbEET82Z6bveZcRR68AD5jO
-   QLPN5VgLxttjOhnSgY8U558++IZxbohV3/9XyehYa8GRpHrg27/7+XaOX
-   esRIIBZ9f/XUsv3Qs9lemntLnyeBQPJwhF90FPIhbA1hCsXEBuGGf8i17
-   Y/yt588p+tynarVKyNdRs+wcT1bP9YusfWLWNkyVQefzaF2p4P9Yc0jsu
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="381024899"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="381024899"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 05:44:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="752181743"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="752181743"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 06 Oct 2023 05:44:29 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qokBv-00005d-0c;
-        Fri, 06 Oct 2023 12:44:27 +0000
-Date:   Fri, 6 Oct 2023 20:43:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Bjorn Andersson <andersson@kernel.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Subject: drivers/remoteproc/da8xx_remoteproc.c:80: warning: Function
- parameter or member 'dsp_reset' not described in 'da8xx_rproc'
-Message-ID: <202310062044.AWGLMitV-lkp@intel.com>
+        Fri, 6 Oct 2023 08:47:41 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C92CE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:47:39 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d868d8363e6so2389667276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:47:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696596459; x=1697201259; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kE5lcMpcuRWxeOB9S6L9Si7YaWv5hLYl1VeNlBZzT/8=;
+        b=wXitWH63YyQNrPPne4or1YDsmFgI2V8pRMPSMT6yXVEdd/leOukdoJiEdLKrL+7aag
+         zoga0bm8D+JRbO8cZmC9DSGJSgd/fFZSGCQJApcWPuHk2kA9MES1gm2V8pdNW7h6g651
+         vmxjn7YuHleZhMefL4xVonsLKfAlMhXpOuUmzj4OvRdDoqiglD6jSVEtAPZ7rSn9fM41
+         T0/Iq2DJZ1x8sI/PwN7cFQQfSyDzOXGCs/lFBcDIURojuB+25CxbAyYS2oZfhdxXnOrL
+         XZUhW1H4GpAboykPvZxM6DGZytw7ITTziMMurbnnOX7V2/FMNAvDXc1zioGobpuap4qK
+         v47A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696596459; x=1697201259;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kE5lcMpcuRWxeOB9S6L9Si7YaWv5hLYl1VeNlBZzT/8=;
+        b=MePnXzO4iw8RS5/BO3aVv14CWlOmjyT8A2w6/oLRTDhGwO+MS1js2QPwSy94hrv0RF
+         0OW0Y6zWY7NC1qOPJh018H1dl39xMXklFVjjoy20zJLcvMl74F5GSy2trVrrH7oXv+Y/
+         Tth9WeIp69tZMhgKvyk4ugxNPNkF5pXIIdlskcDEEBLI37cosKzvvHJW8vvaWvPNAkDO
+         27uv2gsw4bt5U2EymEl/EteikXlMeXGyLcr3me04kFalX3fJGUprZa2MH3Gg6uqOw5QK
+         Fn1XBxGxG8LBkse3H+9GxOyGlh8zDgbPicITitXvZ7Tu3RMRgoRNAHyBP3INzjei2M2+
+         Azew==
+X-Gm-Message-State: AOJu0Yy8Z8xX8XsQcC9Ak3L7EMcaSv85Fm3ufwEzJKginPai3bAt4K1d
+        aULqvyCby5BYj54FuQQMfjPBAwCdBX9Q9F+mQen3jQ==
+X-Google-Smtp-Source: AGHT+IGILgsJf+f8eayHVHqX0rISrGr9tP06v0nLvKR1oTcr5riaw9zUWCGoAJpDUWeKMDK50UY6pLVZ+E+8O7Aw+dY=
+X-Received: by 2002:a5b:807:0:b0:d47:8db3:8bcf with SMTP id
+ x7-20020a5b0807000000b00d478db38bcfmr7283393ybp.49.1696596458614; Fri, 06 Oct
+ 2023 05:47:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <CA+EHjTwTgEVtea7wgef5G6EEgFa0so_GbNXTMZNKyFE=ucyV0g@mail.gmail.com>
+ <ZR99K_ZuWXEtfDuR@google.com>
+In-Reply-To: <ZR99K_ZuWXEtfDuR@google.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Fri, 6 Oct 2023 13:47:01 +0100
+Message-ID: <CA+EHjTyDPEY7B_a8GC7RS8gzfoT2q9kJqJPuHB58ZXQ_61NGkQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, KVM <kvm@vger.kernel.org>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        KVMARM <kvmarm@lists.linux.dev>,
+        LinuxMIPS <linux-mips@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,67 +107,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bartosz,
+Hi Sean,
 
-FYI, the error/warning still remains.
+On Fri, Oct 6, 2023 at 4:21=E2=80=AFAM Sean Christopherson <seanjc@google.c=
+om> wrote:
+>
+> On Thu, Oct 05, 2023, Fuad Tabba wrote:
+> > Hi Sean,
+> >
+> > On Tue, Oct 3, 2023 at 9:51=E2=80=AFPM Sean Christopherson <seanjc@goog=
+le.com> wrote:
+> > > > Like I said, pKVM doesn't need a userspace ABI for managing PRIVATE=
+/SHARED,
+> > > > just a way of tracking in the host kernel of what is shared (as opp=
+osed to
+> > > > the hypervisor, which already has the knowledge). The solution coul=
+d simply
+> > > > be that pKVM does not enable KVM_GENERIC_MEMORY_ATTRIBUTES, has its=
+ own
+> > > > tracking of the status of the guest pages, and only selects KVM_PRI=
+VATE_MEM.
+> > >
+> > > At the risk of overstepping my bounds, I think that effectively givin=
+g the guest
+> > > full control over what is shared vs. private is a mistake.  It more o=
+r less locks
+> > > pKVM into a single model, and even within that model, dealing with er=
+rors and/or
+> > > misbehaving guests becomes unnecessarily problematic.
+> > >
+> > > Using KVM_SET_MEMORY_ATTRIBUTES may not provide value *today*, e.g. t=
+he userspace
+> > > side of pKVM could simply "reflect" all conversion hypercalls, and te=
+rminate the
+> > > VM on errors.  But the cost is very minimal, e.g. a single extra ioct=
+l() per
+> > > converion, and the upside is that pKVM won't be stuck if a use case c=
+omes along
+> > > that wants to go beyond "all conversion requests either immediately s=
+ucceed or
+> > > terminate the guest".
+> >
+> > Now that I understand the purpose of KVM_SET_MEMORY_ATTRIBUTES, I
+> > agree. However, pKVM needs to track at the host kernel (i.e., EL1)
+> > whether guest memory is shared or private.
+>
+> Why does EL1 need it's own view/opinion?  E.g. is it to avoid a accessing=
+ data
+> that is still private according to EL2 (on behalf of the guest)?
+>
+> Assuming that's the case, why can't EL1 wait until it gets confirmation f=
+rom EL2
+> that the data is fully shared before doing whatever it is that needs to b=
+e done?
+>
+> Ah, is the problem that whether or not .mmap() is allowed keys off of the=
+ state
+> of the memory attributes?  If that's so, then yeah, an internal flag in a=
+ttributes
+> is probably the way to go.  It doesn't need to be a "host kernel private"=
+ flag
+> though, e.g. an IN_FLUX flag to capture that the attributes aren't fully =
+realized
+> might be more intuitive for readers, and might have utility for other att=
+ributes
+> in the future too.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   b78b18fb8ee19f7a05f20c3abc865b3bfe182884
-commit: b2201ee554a5811f569f31280b0079e7d6177606 remoteproc/davinci: use the reset framework
-date:   5 years ago
-config: arm-randconfig-004-20230928 (https://download.01.org/0day-ci/archive/20231006/202310062044.AWGLMitV-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231006/202310062044.AWGLMitV-lkp@intel.com/reproduce)
+Yes, it's because of mmap. I think that an IN_FLUX flag might work
+here. I'll have a go at it and see how it turns out.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310062044.AWGLMitV-lkp@intel.com/
+Thanks,
+/fuad
 
-All warnings (new ones prefixed by >>):
-
->> drivers/remoteproc/da8xx_remoteproc.c:80: warning: Function parameter or member 'dsp_reset' not described in 'da8xx_rproc'
-   drivers/remoteproc/da8xx_remoteproc.c:89: warning: Function parameter or member 'irq' not described in 'handle_event'
-   drivers/remoteproc/da8xx_remoteproc.c:89: warning: Function parameter or member 'p' not described in 'handle_event'
-   drivers/remoteproc/da8xx_remoteproc.c:109: warning: Function parameter or member 'irq' not described in 'da8xx_rproc_callback'
-   drivers/remoteproc/da8xx_remoteproc.c:109: warning: Function parameter or member 'p' not described in 'da8xx_rproc_callback'
-
-
-vim +80 drivers/remoteproc/da8xx_remoteproc.c
-
-59b2355fc90e4a Suman Anna          2017-08-01  56  
-13be5432d8721d Robert Tivy         2013-04-09  57  /**
-13be5432d8721d Robert Tivy         2013-04-09  58   * struct da8xx_rproc - da8xx remote processor instance state
-13be5432d8721d Robert Tivy         2013-04-09  59   * @rproc: rproc handle
-59b2355fc90e4a Suman Anna          2017-08-01  60   * @mem: internal memory regions data
-59b2355fc90e4a Suman Anna          2017-08-01  61   * @num_mems: number of internal memory regions
-13be5432d8721d Robert Tivy         2013-04-09  62   * @dsp_clk: placeholder for platform's DSP clk
-13be5432d8721d Robert Tivy         2013-04-09  63   * @ack_fxn: chip-specific ack function for ack'ing irq
-13be5432d8721d Robert Tivy         2013-04-09  64   * @irq_data: ack_fxn function parameter
-13be5432d8721d Robert Tivy         2013-04-09  65   * @chipsig: virt ptr to DSP interrupt registers (CHIPSIG & CHIPSIG_CLR)
-13be5432d8721d Robert Tivy         2013-04-09  66   * @bootreg: virt ptr to DSP boot address register (HOST1CFG)
-13be5432d8721d Robert Tivy         2013-04-09  67   * @irq: irq # used by this instance
-13be5432d8721d Robert Tivy         2013-04-09  68   */
-13be5432d8721d Robert Tivy         2013-04-09  69  struct da8xx_rproc {
-13be5432d8721d Robert Tivy         2013-04-09  70  	struct rproc *rproc;
-59b2355fc90e4a Suman Anna          2017-08-01  71  	struct da8xx_rproc_mem *mem;
-59b2355fc90e4a Suman Anna          2017-08-01  72  	int num_mems;
-13be5432d8721d Robert Tivy         2013-04-09  73  	struct clk *dsp_clk;
-b2201ee554a581 Bartosz Golaszewski 2018-06-21  74  	struct reset_control *dsp_reset;
-13be5432d8721d Robert Tivy         2013-04-09  75  	void (*ack_fxn)(struct irq_data *data);
-13be5432d8721d Robert Tivy         2013-04-09  76  	struct irq_data *irq_data;
-13be5432d8721d Robert Tivy         2013-04-09  77  	void __iomem *chipsig;
-13be5432d8721d Robert Tivy         2013-04-09  78  	void __iomem *bootreg;
-13be5432d8721d Robert Tivy         2013-04-09  79  	int irq;
-13be5432d8721d Robert Tivy         2013-04-09 @80  };
-13be5432d8721d Robert Tivy         2013-04-09  81  
-
-:::::: The code at line 80 was first introduced by commit
-:::::: 13be5432d8721d89cadae105663761f45f427842 remoteproc/davinci: add a remoteproc driver for OMAP-L13x DSP
-
-:::::: TO: Robert Tivy <rtivy@ti.com>
-:::::: CC: Ohad Ben-Cohen <ohad@wizery.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> > One approach would be to add another flag to the attributes that
+> > tracks the host kernel view. The way KVM_SET_MEMORY_ATTRIBUTES is
+> > implemented now, userspace can zero it, so in that case, that
+> > operation would need to be masked to avoid that.
+> >
+> > Another approach would be to have a pKVM-specific xarray (or similar)
+> > to do the tracking, but since there is a structure that's already
+> > doing something similar (i.e.,the attributes array), it seems like it
+> > would be unnecessary overhead.
+> >
+> > Do you have any ideas or preferences?
+> >
+> > Cheers,
+> > /fuad
