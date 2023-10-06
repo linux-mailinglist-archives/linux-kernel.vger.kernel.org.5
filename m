@@ -2,98 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 295227BC047
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24967BC045
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233482AbjJFU1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 16:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
+        id S233466AbjJFU0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:26:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbjJFU07 (ORCPT
+        with ESMTP id S231912AbjJFU0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:26:59 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525FFC2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:26:57 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-692a885f129so2138970b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:26:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696624017; x=1697228817; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5ik+8xyOrxrDENzMU2+XdXOoH+BEnHgLDW/RYA7oHq4=;
-        b=gD3kK/oSz9HpK1bX6ilsgqMakimaq8cgsY52n1LikFP8Titet9S97kTAwIIa6d7y4F
-         1RJWF9rdgeOWQCoB/ft170/3JQTKpCxY8FKvdmNzTXAbASZPDsG2tjd7EtEk2XqpVNZH
-         Wix9Eo44RUWCVF5p0lzNn79tIabC7ZQGPe5uU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696624017; x=1697228817;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5ik+8xyOrxrDENzMU2+XdXOoH+BEnHgLDW/RYA7oHq4=;
-        b=vRh/sjD5oLo7FDAFIcf5Xtktrwzc5LA0YSPRmyjzJfTLpJxR4AUi9iymPDlOv6PqOt
-         Vbm+tQLkXRC5KQQr8OUGqXoylxiwjuID/b93iuXgLxKZDJxlJ/RUd/vXbQNe4lqIyAJr
-         EHzjQnTy2a6Ssy3K10UA32NxF5zHRQ0kchkM8e/wRdJdVpXx/8Q9dodH/GIfBwf1v0Qc
-         i1aWX8IPfI34cdjFzZjKwK/SpcWxwpKSeekewuWRZmEInkPEg+xEsWnTeVNmDz6xoqTI
-         vggvmVEmdqo3+3TL5jmzvBlVIlN7hp0W0EnYoyJpARZzY542KlX5MU9q7oVf2R4ybCUe
-         O97Q==
-X-Gm-Message-State: AOJu0Yyqdk9UJ7kZ7+DoYVzOqm7Vlg0KbUEENSkQKYMpYOsa2UsY4PrO
-        1rgu8NQN8lq3S1b7tda7RsJL7Q==
-X-Google-Smtp-Source: AGHT+IG2uZ4oQ6pqs/gPUxE9hmNLIVY3TcFTdzCBj+5FryP0YVUJaPRylWXG7huLOl6hdWH/tBpVog==
-X-Received: by 2002:a05:6a20:3942:b0:14b:8023:33c8 with SMTP id r2-20020a056a20394200b0014b802333c8mr10453505pzg.2.1696624016776;
-        Fri, 06 Oct 2023 13:26:56 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c8-20020aa78c08000000b0069102ae6d93sm1952733pfd.14.2023.10.06.13.26.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 13:26:56 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>
-Cc:     sparclinux@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] sparc: Annotate struct cpuinfo_tree with __counted_by
-Date:   Fri,  6 Oct 2023 13:25:46 -0700
-Message-Id: <169662394357.2154428.12028362294967452741.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230922175159.work.357-kees@kernel.org>
-References: <20230922175159.work.357-kees@kernel.org>
+        Fri, 6 Oct 2023 16:26:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46471BD
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:26:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3E05C433C7;
+        Fri,  6 Oct 2023 20:26:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696623960;
+        bh=QPzTmb5/1DB0NMquULcALN2ygsW27WAkF/x0WUgo1LA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uAEV6jJlml6Gzejf+VQJTL/pc7ei0O4nXg6LcVHsRkT2ncLGEztegJugOg78k78Cw
+         ztsf9tjToi/TP0APFDu1aKhlOTdIzKeVu07nwJXv4PDSikYPmJZzdp6dXwcGqZadKB
+         eg1VUOdDeRthW5qVbLQyyEwrY82PHT0y2EvI1+D1LX/FO2jU+VCy2XoukYmC8iST3B
+         iakI/dLCTeAPX+RGN1t6KiPikrm30JG4il5TngYJUhmdqgX31BE76DfObL9grts63q
+         M8NViw7SmLBdW90+Q5G9mFOg4as7M1LgGsV8Ks4SIr8pQP+nsaqoaBfEfvnOMKe8Jh
+         lzaL5wzRpEipQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 607E2CE0BAE; Fri,  6 Oct 2023 13:26:00 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 13:26:00 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Leonardo Bras <leobras@redhat.com>,
+        Imran Khan <imran.f.khan@oracle.com>
+Subject: Re: [PATCH smp,csd] Throw an error if a CSD lock is stuck for too
+ long
+Message-ID: <a459fe36-3077-48f1-bcd4-63a07f4866f3@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop>
+ <53b8065f-1f65-6956-279c-05bd461a7284@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <53b8065f-1f65-6956-279c-05bd461a7284@huaweicloud.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 10:52:00 -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Fri, Oct 06, 2023 at 08:48:23PM +0200, Jonas Oberhauser wrote:
+> Is this related to the qspinlock issue you described earlier?
+
+Kind of in that sometimes qspinlock issues trigger CSD-lock warnings,
+but not really directly related.
+
+							Thanx, Paul
+
+> jonas
 > 
-> As found with Coccinelle[1], add __counted_by for struct cpuinfo_tree.
 > 
-> [...]
-
-Since this is a trivial change and it's been 2 week without further
-discussion, I'll snag this patch.
-
-Applied to for-next/hardening, thanks!
-
-[1/1] sparc: Annotate struct cpuinfo_tree with __counted_by
-      https://git.kernel.org/kees/c/cfa36f889f23
-
-Take care,
-
--- 
-Kees Cook
-
+> Am 10/5/2023 um 6:48 PM schrieb Paul E. McKenney:
+> > The CSD lock seems to get stuck in 2 "modes". When it gets stuck
+> > temporarily, it usually gets released in a few seconds, and sometimes
+> > up to one or two minutes.
+> > 
+> > If the CSD lock stays stuck for more than several minutes, it never
+> > seems to get unstuck, and gradually more and more things in the system
+> > end up also getting stuck.
+> > 
+> > In the latter case, we should just give up, so the system can dump out
+> > a little more information about what went wrong, and, with panic_on_oops
+> > and a kdump kernel loaded, dump a whole bunch more information about
+> > what might have gone wrong.
+> > 
+> > Question: should this have its own panic_on_ipistall switch in
+> > /proc/sys/kernel, or maybe piggyback on panic_on_oops in a different
+> > way than via BUG_ON?
+> > 
+> > Signed-off-by: Rik van Riel <riel@surriel.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > diff --git a/kernel/smp.c b/kernel/smp.c
+> > index 8455a53465af..059f1f53fc6b 100644
+> > --- a/kernel/smp.c
+> > +++ b/kernel/smp.c
+> > @@ -230,6 +230,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+> >   	}
+> >   	ts2 = sched_clock();
+> > +	/* How long since we last checked for a stuck CSD lock.*/
+> >   	ts_delta = ts2 - *ts1;
+> >   	if (likely(ts_delta <= csd_lock_timeout_ns || csd_lock_timeout_ns == 0))
+> >   		return false;
+> > @@ -243,9 +244,17 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+> >   	else
+> >   		cpux = cpu;
+> >   	cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux)); /* Before func and info. */
+> > +	/* How long since this CSD lock was stuck. */
+> > +	ts_delta = ts2 - ts0;
+> >   	pr_alert("csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %llu ns for CPU#%02d %pS(%ps).\n",
+> > -		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts2 - ts0,
+> > +		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts_delta,
+> >   		 cpu, csd->func, csd->info);
+> > +	/*
+> > +	 * If the CSD lock is still stuck after 5 minutes, it is unlikely
+> > +	 * to become unstuck. Use a signed comparison to avoid triggering
+> > +	 * on underflows when the TSC is out of sync between sockets.
+> > +	 */
+> > +	BUG_ON((s64)ts_delta > 300000000000LL);
+> >   	if (cpu_cur_csd && csd != cpu_cur_csd) {
+> >   		pr_alert("\tcsd: CSD lock (#%d) handling prior %pS(%ps) request.\n",
+> >   			 *bug_id, READ_ONCE(per_cpu(cur_csd_func, cpux)),
+> 
