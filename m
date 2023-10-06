@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F5A7BB1C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 08:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C2C7BB1C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 08:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbjJFGxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 02:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
+        id S230235AbjJFG5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 02:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbjJFGxp (ORCPT
+        with ESMTP id S230175AbjJFG5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 02:53:45 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26AA1EB;
-        Thu,  5 Oct 2023 23:53:43 -0700 (PDT)
-Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:40dd:1541:8234:4d16])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 009216607336;
-        Fri,  6 Oct 2023 07:53:40 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696575221;
-        bh=lxJjyV/iMvcHmNqd0VGLIe+5rW3S6hUI6UcED93hyTo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ya3dxMsz3yXH4nuNnydhrYwXRinFUR/TJJYZ2h2HNQlkfeO1497C4raGKAhtEUygp
-         1H0WzPmXABuaB/OOCl58KG3MDtWRz47YsN9bFhlo7Z88GKKD2MA4ah2xRF3v9XrZDu
-         nXCMdxmWR3tMTLeF0c0qJO2HFfnStkHDRPMDAQYYdev7JE3YqiDlaOAat/f33UHLne
-         OzfKau+q0b9i00z7E29FAMIOCeyH+qIv+yL16DDOK/sPLSfrLKRacai5/65epDRj9h
-         qUyR+jntfMeXcAdmaJZMG6IAwJA7SaiThsUyv39Qy6JV0A5lFA6i7cjx6T+cY8m8Zi
-         /3UHA6pK7MkEg==
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, heiko@sntech.de
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH v3] arm64: dts: rockchip: rk3588s: Add AV1 decoder node
-Date:   Fri,  6 Oct 2023 08:53:34 +0200
-Message-Id: <20231006065334.8117-1-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 6 Oct 2023 02:57:24 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C85E4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 23:57:20 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c6219307b2so13238345ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 23:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696575439; x=1697180239; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ltCjm4aJUWe9aYqASEplzIRx3exF5lO5oefAHyj9uWI=;
+        b=Kq6YVFnnFCOVf43HPBclDrsBIPDxha4hoT8FeWjj/0a2RWS3YiBnLiJzkUgvG4wXgm
+         h5WOmgdUVg5dDHzfqx20dlGhoZ/lSgbFIYRiZlJSBCUgs76VPsX+yZchcez+pzAM+Pem
+         nfZmDQ77Qmrca7TYJrMkEZrwx6K+7yrqb6MweCd5qLErWwhBeEOPQJWKGfEoGb/USIwr
+         V+C1+RuV93UmMDdQLXhtvfoXAJrhlDAgotK0eeBHIsy/1CKsyZvm3aZPR2mnEYy1EBj3
+         1Zi4WR7Kbfa3wdcB4IZuVs61dqcovE/F5Ec4UjwuEvB7F4nFC3JISTQxjfdhSApFZsid
+         r1lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696575439; x=1697180239;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ltCjm4aJUWe9aYqASEplzIRx3exF5lO5oefAHyj9uWI=;
+        b=FxdaPoth0PBCKjR49/iNJ5/MjHz/eM+tRQQZd21zxlS77D8bSenyNnoLxLPSys/Cgi
+         j2DRHHoWsHYz2+gj3mfvWua5aDD1C1xSnmqjG0A1WVUj2mqasgnhvvp37/a2eC+V2kT7
+         C4FQuIfRrFIysk+5dm9osAkW9tEHJaZBtO7zaLbE9/qlkHsJ2T2hV3yWupS6tPkR5Iml
+         Is8k4cLABMEh4Vn89iFzzIsZJUGv+p4Xrsnjypp6dvbpPO7fvmGTULUNT5q5xcyoPTqh
+         BY8nnhoNSe2h8vMi8LhxijuFK7mda0Eeww2Ji5X3urTpwA7zyNnaF5G8Ial+IUFV5hP+
+         GPyg==
+X-Gm-Message-State: AOJu0YzJOVU81jFuamxmbnNKU2GMo2Qd2QhiUI5GbT9YZ3JOhFPhSz6s
+        buO5R875ZJB14ySJNcZZUfINkFmhz60=
+X-Google-Smtp-Source: AGHT+IGqQwQOB9t6/yYKRaS6b8thQhpGRr5Dk8tWrNhV15C8CICkgfRtYX3GSYgryu7yNxfhJNi1eQ==
+X-Received: by 2002:a17:902:ecc8:b0:1c4:29dd:2519 with SMTP id a8-20020a170902ecc800b001c429dd2519mr7615049plh.67.1696575439280;
+        Thu, 05 Oct 2023 23:57:19 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id q1-20020a170902a3c100b001c61512f2a6sm3035443plb.220.2023.10.05.23.57.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 23:57:18 -0700 (PDT)
+Message-ID: <0802bc5a-9fb0-433a-8491-47806cc7c549@gmail.com>
+Date:   Fri, 6 Oct 2023 13:57:12 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Bisected] PowerMac G5 fails booting kernel 6.6-rc3 (BUG: Unable
+ to handle kernel data access at 0xfeffbb62ffec65fe)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Erhard Furtner <erhard_f@mailbox.org>,
+        Linux PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20230929132750.3cd98452@yea> <ZR9esG8H17LY2KOX@debian.me>
+ <ZR9gkZKafUSNOAEf@casper.infradead.org>
+Content-Language: en-US
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <ZR9gkZKafUSNOAEf@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add node for AV1 video decoder.
+On 06/10/2023 08:19, Matthew Wilcox wrote:
+> On Fri, Oct 06, 2023 at 08:11:12AM +0700, Bagas Sanjaya wrote:
+>> Matthew Wilcox, did you miss this regression report? You should look into it
+>> since it is (apparently) cause by a commit of yours.
+> 
+> No, I didn't miss it.  I'm simply choosing to work on other things.
+> All this regression tracking nonsense and being told to work on things
+> by people who've appointed themselves my manager has completely sapped
+> my motivation to work on bugs.  If you want me to work on things, *don't*
+> harass me.
+> 
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
-version 3:
-- remove status = "okay"
+OK, thanks!
 
-version 2:
-- change node name to video-codec
-- fix typo in commit header
-
- arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-index 5544f66c6ff4..5481f59f551f 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-@@ -2304,6 +2304,19 @@ gpio4: gpio@fec50000 {
- 			#interrupt-cells = <2>;
- 		};
- 	};
-+
-+	av1d: video-codec@fdc70000 {
-+		compatible = "rockchip,rk3588-av1-vpu";
-+		reg = <0x0 0xfdc70000 0x0 0x800>;
-+		interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH 0>;
-+		interrupt-names = "vdpu";
-+		clocks = <&cru ACLK_AV1>, <&cru PCLK_AV1>;
-+		clock-names = "aclk", "hclk";
-+		assigned-clocks = <&cru ACLK_AV1>, <&cru PCLK_AV1>;
-+		assigned-clock-rates = <400000000>, <400000000>;
-+		resets = <&cru SRST_A_AV1>, <&cru SRST_P_AV1>, <&cru SRST_A_AV1_BIU>, <&cru SRST_P_AV1_BIU>;
-+		power-domains = <&power RK3588_PD_AV1>;
-+	};
- };
- 
- #include "rk3588s-pinctrl.dtsi"
 -- 
-2.39.2
+An old man doll... just what I always wanted! - Clara
 
