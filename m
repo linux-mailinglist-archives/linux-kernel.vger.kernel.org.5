@@ -2,77 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E37EE7BC036
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09857BC038
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbjJFUUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 16:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
+        id S233478AbjJFUVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233452AbjJFUU1 (ORCPT
+        with ESMTP id S233438AbjJFUVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:20:27 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD80DC2;
-        Fri,  6 Oct 2023 13:20:24 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-533edb5ac54so4726432a12.0;
-        Fri, 06 Oct 2023 13:20:24 -0700 (PDT)
+        Fri, 6 Oct 2023 16:21:16 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C42CBE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:21:15 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c0ecb9a075so19572645ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:21:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696623623; x=1697228423; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cKhoOovJJCN2upy+4Afr69/fh1TMRJWzCU1Zea4v2kE=;
-        b=PDVVEFv8gIqFq3oHh6twa4sOauegXiPp1XL2qFvuk4iVzNTRZ6oq3rZkp7Bka9I+sK
-         PCiZSFtltVr6V+8+7tldooPU/9lFOtNYRvo0v+jZQeFqUJMxMMZGnxet+hejOD1NFukw
-         Lt27bTLn95cP2puvOjEoUVuchnjR3UsTdxt0nuF03uZ8TZOnxT/DFmtj1iYM4juCgOUQ
-         gCcWXwuyMI0m9JDXYFIzX07JlLNxfneB4Ey/SjbV3CcQEZwMFNVwV9LuTkxEFIBzC88P
-         FsAdawsRrHjmV8shCfeBozXd1nP54fBF0xX+NDLmRWC0qims9FPiXWwP+0ea8kEqzufN
-         FmNA==
+        d=chromium.org; s=google; t=1696623674; x=1697228474; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=N1oQgMYYOHJAqGUemakHE7gLhffpSOgun7mdtdcyLAY=;
+        b=jc7xccloVcyKtIUqHNW9tr5OKqtIb4XH0tjVog2mXqEoPZRvY3LirwxoSSLxGsEnep
+         rWNFdAcP4NT2EEDCsqD+M+FGmJxc/zj98fujKfyl5tlsvYcAg2y06hDYi94/PsxHtzpU
+         XJyDn4Oj5qJoNZ7Dvrm0xbyynKpkzoAx8yy6k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696623623; x=1697228423;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cKhoOovJJCN2upy+4Afr69/fh1TMRJWzCU1Zea4v2kE=;
-        b=WSUUrYI6F3aMXbVJX+vjmViYDuM1YekvqaOKTQ5rfxlRwnI++CYVjRj9hUDASkpC4T
-         V3Ha0N50xZzzoslRX+/e5ESjknc/092ML1ns2LonCcVJEcsBAPQXpNoAVcVC81ls38ad
-         sHJRs+Csxis2/f4iCrtwWU6pvYeGCpuGjpj2alOWm0eN87UK0N4razyZoJpHj5ERKSN3
-         DuuYpUjaCDdok95Le31IjjqMbfd17w1UFo0+dCZ/3t/ytTl51A3CfBjfF80vCGQfV9Ot
-         jGc8IGe8ri03fjd8J8OCuIXml1dBAXLGSTrB9QU19FsPDhUywCmbvy/4QMz3Z0Pe70Fw
-         yrRQ==
-X-Gm-Message-State: AOJu0YzlNbJAQFpAkGjiuEAqRrtDDR9/bnc2yfCPT2eZ71K4EaEMvWih
-        Td5HgBTzQhVT81ORUckAXUeiKyib1eK/PdEfN4TEf1yxNCs=
-X-Google-Smtp-Source: AGHT+IFzBm9NPnRnmS8KzfFV5+HqYcGQ+gqqDuIW64le9nHxHtHRtiylHsLDpMMTFMiBw97Ki6fkalJg7XGv9Jw0h1g=
-X-Received: by 2002:aa7:d151:0:b0:530:db58:61c8 with SMTP id
- r17-20020aa7d151000000b00530db5861c8mr8699991edo.23.1696623622922; Fri, 06
- Oct 2023 13:20:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696623674; x=1697228474;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N1oQgMYYOHJAqGUemakHE7gLhffpSOgun7mdtdcyLAY=;
+        b=JfQcSctEseEV7h+1SlzwAxjkrwl5LpgkLleryIxWS+Nx5t0NdKts8fXwkMXIYZQ4sT
+         loCP58SHmixxtLEDk5PhrUuWsAu16NZeb7oJII4+ngFsQCSYDhtdEZmo7uASbdnqQSyj
+         /tppBzS1Sp+nIXzbgPnKZeCwUNqt6bwcZHH7CRj/8vct/d/tE5hYpGLlDwcTd2eCNR57
+         1ya6h2ri4nQzcC+Y13L8cL9gPXPme7LiVQnqBjMzUj6471SJxvWcR0qD/5fSuba0PncC
+         pYmnHQ4ZpJ5DSJVycU7Bd02DGE3N8XD+aBGO/3psTuFzCdMz+qu9DcrQdkPT5etIDsX6
+         40aQ==
+X-Gm-Message-State: AOJu0YyjysH1gTU/IJ8B7jBMsOVK2Ro69Hq1VJsrDhgMWy5jj2Fw0UFh
+        Ucm1hbMoN/qCqdnlqxspqny2MA==
+X-Google-Smtp-Source: AGHT+IGu32OJlQsQg2gdMOhdV/v2W3V3QUsAfaY6LRJfqpsCLXyocjInS1I983619DISa2FBj4aXpA==
+X-Received: by 2002:a17:902:e810:b0:1c5:59ea:84de with SMTP id u16-20020a170902e81000b001c559ea84demr11148430plg.29.1696623674642;
+        Fri, 06 Oct 2023 13:21:14 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id ji2-20020a170903324200b001c75f94b0b0sm4333924plb.213.2023.10.06.13.21.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 13:21:14 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 13:21:13 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Felix Fietkau <nbd@nbd.name>, Kalle Valo <kvalo@kernel.org>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] wifi: mt76: Annotate struct mt76_rx_tid with __counted_by
+Message-ID: <202310061320.8630F7E51@keescook>
+References: <20230915200612.never.786-kees@kernel.org>
 MIME-Version: 1.0
-References: <20231005220324.3635499-1-irogers@google.com>
-In-Reply-To: <20231005220324.3635499-1-irogers@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 6 Oct 2023 13:20:11 -0700
-Message-ID: <CAEf4Bza0YGVW0G-oO3h1j0L0ytiKsn-pRbuqU39C2wO0VP__BA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] bpftool: Align output skeleton ELF code
-To:     Ian Rogers <irogers@google.com>
-Cc:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915200612.never.786-kees@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,93 +80,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 3:03=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> libbpf accesses the ELF data requiring at least 8 byte alignment,
-> however, the data is generated into a C string that doesn't guarantee
-> alignment. Fix this by assigning to an aligned char array. Use sizeof
-> on the array, less one for the \0 terminator, rather than generating a
-> constant.
->
-> Fixes: a6cc6b34b93e ("bpftool: Provide a helper method for accessing skel=
-eton's embedded ELF data")
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> Acked-by: Quentin Monnet <quentin@isovalent.com>
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+On Fri, Sep 15, 2023 at 01:06:12PM -0700, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct mt76_rx_tid.
+
+Friendly ping. Can this get picked up by the wifi tree, or should it go
+via something else?
+
+Thanks!
+
+-Kees
+
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Felix Fietkau <nbd@nbd.name>
+> Cc: Lorenzo Bianconi <lorenzo@kernel.org>
+> Cc: Ryder Lee <ryder.lee@mediatek.com>
+> Cc: Shayne Chen <shayne.chen@mediatek.com>
+> Cc: Sean Wang <sean.wang@mediatek.com>
+> Cc: Kalle Valo <kvalo@kernel.org>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-mediatek@lists.infradead.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
->  tools/bpf/bpftool/gen.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 2883660d6b67..b8ebcee9bc56 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -1209,7 +1209,7 @@ static int do_skeleton(int argc, char **argv)
->         codegen("\
->                 \n\
->                                                                          =
-   \n\
-> -                       s->data =3D (void *)%2$s__elf_bytes(&s->data_sz);=
-     \n\
-> +                       s->data =3D (void *)%1$s__elf_bytes(&s->data_sz);=
-     \n\
+>  drivers/net/wireless/mediatek/mt76/mt76.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
+> index e8757865a3d0..03ef617b1527 100644
+> --- a/drivers/net/wireless/mediatek/mt76/mt76.h
+> +++ b/drivers/net/wireless/mediatek/mt76/mt76.h
+> @@ -376,7 +376,7 @@ struct mt76_rx_tid {
+>  
+>  	u8 started:1, stopped:1, timer_pending:1;
+>  
+> -	struct sk_buff *reorder_buf[];
+> +	struct sk_buff *reorder_buf[] __counted_by(size);
+>  };
+>  
+>  #define MT_TX_CB_DMA_DONE		BIT(0)
+> -- 
+> 2.34.1
+> 
 
-Seems like you based this on top of bpf tree, can you please rebase
-onto bpf-next, it has a small change here and I can't apply it cleanly
-anymore. Other than that it looks good. Thanks!
-
-
->                                                                          =
-   \n\
->                         obj->skeleton =3D s;                             =
-     \n\
->                         return 0;                                        =
-   \n\
-> @@ -1218,12 +1218,12 @@ static int do_skeleton(int argc, char **argv)
->                         return err;                                      =
-   \n\
->                 }                                                        =
-   \n\
->                                                                          =
-   \n\
-> -               static inline const void *%2$s__elf_bytes(size_t *sz)    =
-   \n\
-> +               static inline const void *%1$s__elf_bytes(size_t *sz)    =
-   \n\
->                 {                                                        =
-   \n\
-> -                       *sz =3D %1$d;                                    =
-     \n\
-> -                       return (const void *)\"\\                        =
-   \n\
-> -               "
-> -               , file_sz, obj_name);
-> +                       static const char data[] __attribute__((__aligned=
-__(8))) =3D \"\\\n\
-> +               ",
-> +               obj_name
-> +       );
->
->         /* embed contents of BPF object file */
->         print_hex(obj_data, file_sz);
-> @@ -1231,6 +1231,9 @@ static int do_skeleton(int argc, char **argv)
->         codegen("\
->                 \n\
->                 \";                                                      =
-   \n\
-> +                                                                        =
-   \n\
-> +                       *sz =3D sizeof(data) - 1;                        =
-     \n\
-> +                       return (const void *)data;                       =
-   \n\
->                 }                                                        =
-   \n\
->                                                                          =
-   \n\
->                 #ifdef __cplusplus                                       =
-   \n\
-> --
-> 2.42.0.609.gbb76f46606-goog
->
+-- 
+Kees Cook
