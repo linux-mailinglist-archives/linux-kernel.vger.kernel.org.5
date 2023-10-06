@@ -2,108 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 276727BBB3C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 331BA7BBB44
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232706AbjJFPGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 11:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33450 "EHLO
+        id S232753AbjJFPH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 11:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232611AbjJFPGo (ORCPT
+        with ESMTP id S232714AbjJFPHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 11:06:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03868A6;
-        Fri,  6 Oct 2023 08:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696604803; x=1728140803;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=gNgwqDPrxhz8wCl3Okr47BvVxVZ4M+5ATpm+bjH86Rc=;
-  b=WN7pWWPJDQpmmFMV+n52UU1g/oIKyq3EXbggq7Srn0vRvXezisd7Wlzr
-   bEyLSDM9K8wFCyVhQrE6uwf+oaJvUJ/DSWvRxponIRE1eUeMBBmjHwAfc
-   N/SWknu52lpS5BklsavYmPvcQy2mpIlOpGcrWloJPAeQx+rywkgLF1Ftd
-   mVRilQKqnzqlRj/QgQYRIMWdiXK83dPQmFE0diLZNKiBKAKsfJNUFW2Go
-   nKS35pV674RP/vvsRAUTFFNdZ6qNTR/IeM8Z9XvTK6NcmJHM8FSt9iUeH
-   aZYC52r35bD0+5dCIH/sZ/XYSUL3rTo0XhsICjzkFN/BVNibpWU12wS6G
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="470034212"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="470034212"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 08:06:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="702079788"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="702079788"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 06 Oct 2023 08:06:41 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id B2831430; Fri,  6 Oct 2023 18:06:39 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [resend, PATCH v1 1/1] PCI: Update the devres documentation regarding to pcim_*()
-Date:   Fri,  6 Oct 2023 18:06:34 +0300
-Message-Id: <20231006150634.3444251-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Fri, 6 Oct 2023 11:07:11 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F47E9
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 08:07:08 -0700 (PDT)
+Received: from dude05.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::54])
+        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <m.tretter@pengutronix.de>)
+        id 1qomPx-00051v-RY; Fri, 06 Oct 2023 17:07:05 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+Subject: [PATCH v2 0/5] drm/bridge: samsung-dsim: fix various modes with
+ ADV7535 bridge
+Date:   Fri, 06 Oct 2023 17:07:02 +0200
+Message-Id: <20230818-samsung-dsim-v2-0-846603df0e0a@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJYiIGUC/3WOOw6DMBBEr4Jcx4CNMSRV7hFR+LOBLbCRDYgIc
+ fcYuhQp32ieZnYSISBE8sh2EmDFiN4l4LeMmEG5HijaxISXvCpb1tKoxri4ntqIIxW8ElIIoQ3
+ UJClaRaA6KGeGU1plXhezn9AUNow/6tmeArxxu8ZfXeIB4+zD5/qysjP9M7syWlJd3RsmrZa6U
+ c8JXL/MwTvccgukO47jC+QlD4bbAAAA
+To:     Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, Michael Tretter <m.tretter@pengutronix.de>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Adam Ford <aford173@gmail.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>
+X-Mailer: b4 0.12.0
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::54
+X-SA-Exim-Mail-From: m.tretter@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There were many changes to PCI core in scope of managed resources APIs.
-Update documentation to list the current state of affairs.
+I tested the i.MX8M Nano EVK with the NXP supplied MIPI-DSI adapter,
+which uses an ADV7535 MIPI-DSI to HDMI converter. I found that a few
+modes were working, but in many modes my monitor stayed dark.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This series fixes the Samsung DSIM bridge driver to bring up a few more
+modes:
+
+The driver read the rate of the PLL ref clock only during probe.
+However, if the clock is re-parented to the VIDEO_PLL, changes to the
+pixel clock have an effect on the PLL ref clock. Therefore, the driver
+must read and potentially update the PLL ref clock on every modeset.
+
+I also found that the rounding mode of the porches and active area has
+an effect on the working modes. If the driver rounds up instead of
+rounding down and be calculates them in Hz instead of kHz, more modes
+start to work.
+
+The following table shows the modes that were working in my test without
+this patch set and the modes that are working now:
+
+|            Mode | Before | Now |
+| 1920x1080-60.00 | X      | X   |
+| 1920x1080-59.94 |        | X   |
+| 1920x1080-50.00 |        | X   |
+| 1920x1080-30.00 |        | X   |
+| 1920x1080-29.97 |        | X   |
+| 1920x1080-25.00 |        | X   |
+| 1920x1080-24.00 |        |     |
+| 1920x1080-23.98 |        |     |
+| 1680x1050-59.88 |        | X   |
+| 1280x1024-75.03 | X      | X   |
+| 1280x1024-60.02 | X      | X   |
+|  1200x960-59.99 |        | X   |
+|  1152x864-75.00 | X      | X   |
+|  1280x720-60.00 |        |     |
+|  1280x720-59.94 |        |     |
+|  1280x720-50.00 |        | X   |
+|  1024x768-75.03 |        | X   |
+|  1024x768-60.00 |        | X   |
+|   800x600-75.00 | X      | X   |
+|   800x600-60.32 | X      | X   |
+|   720x576-50.00 | X      | X   |
+|   720x480-60.00 |        |     |
+|   720x480-59.94 | X      |     |
+|   640x480-75.00 | X      | X   |
+|   640x480-60.00 |        | X   |
+|   640x480-59.94 |        | X   |
+|   720x400-70.08 |        |     |
+
+Interestingly, the 720x480-59.94 mode stopped working. However, I am
+able to bring up the 720x480 modes by manually hacking the active area
+(hsa) to 40 and carefully adjusting the clocks, but something still
+seems to be off.
+
+Unfortunately, a few more modes are still not working at all. The NXP
+downstream kernel has some quirks to handle some of the modes especially
+wrt. to the porches, but I cannot figure out, what the driver should
+actually do in these cases. Maybe there is still an error in the
+calculation of the porches and someone at NXP can chime in.
+
+Michael
+
+Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
 ---
- Documentation/driver-api/driver-model/devres.rst | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+Changes in v2:
+- Specify limits for the PLL input clock in samsung_dsim_driver_data
+- Rephrase/clarify commit messages
+- Link to v1: https://lore.kernel.org/r/20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de
 
-diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
-index 8be086b3f829..c5f99d834ec5 100644
---- a/Documentation/driver-api/driver-model/devres.rst
-+++ b/Documentation/driver-api/driver-model/devres.rst
-@@ -322,10 +322,8 @@ IOMAP
-   devm_platform_ioremap_resource_byname()
-   devm_platform_get_and_ioremap_resource()
-   devm_iounmap()
--  pcim_iomap()
--  pcim_iomap_regions()	: do request_region() and iomap() on multiple BARs
--  pcim_iomap_table()	: array of mapped addresses indexed by BAR
--  pcim_iounmap()
-+
-+  Note: For the PCI devices the specific pcim_*() functions may be used, see below.
- 
- IRQ
-   devm_free_irq()
-@@ -392,8 +390,16 @@ PCI
-   devm_pci_alloc_host_bridge()  : managed PCI host bridge allocation
-   devm_pci_remap_cfgspace()	: ioremap PCI configuration space
-   devm_pci_remap_cfg_resource()	: ioremap PCI configuration space resource
-+
-   pcim_enable_device()		: after success, all PCI ops become managed
-+  pcim_iomap()			: do iomap() on a single BAR
-+  pcim_iomap_regions()		: do request_region() and iomap() on multiple BARs
-+  pcim_iomap_regions_request_all() : do request_region() on all and iomap() on multiple BARs
-+  pcim_iomap_table()		: array of mapped addresses indexed by BAR
-+  pcim_iounmap()		: do iounmap() on a single BAR
-+  pcim_iounmap_regions()	: do iounmap() and release_region() on multiple BARs
-   pcim_pin_device()		: keep PCI device enabled after release
-+  pcim_set_mwi()		: enable Memory-Write-Invalidate PCI transaction
- 
- PHY
-   devm_usb_get_phy()
+---
+Marco Felsch (1):
+      drm/bridge: samsung-dsim: add more mipi-dsi device debug information
+
+Michael Tretter (4):
+      drm/bridge: samsung-dsim: reread ref clock before configuring PLL
+      drm/bridge: samsung-dsim: update PLL reference clock
+      drm/bridge: samsung-dsim: adjust porches by rounding up
+      drm/bridge: samsung-dsim: calculate porches in Hz
+
+ drivers/gpu/drm/bridge/samsung-dsim.c | 54 +++++++++++++++++++++++++++--------
+ include/drm/bridge/samsung-dsim.h     |  3 ++
+ 2 files changed, 45 insertions(+), 12 deletions(-)
+---
+base-commit: b78b18fb8ee19f7a05f20c3abc865b3bfe182884
+change-id: 20230818-samsung-dsim-42346444bce5
+
+Best regards,
 -- 
-2.40.0.1.gaa8946217a0b
+Michael Tretter <m.tretter@pengutronix.de>
 
