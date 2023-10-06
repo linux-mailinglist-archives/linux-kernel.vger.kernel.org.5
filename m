@@ -2,98 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 016A07BB767
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F4D7BB768
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbjJFMP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
+        id S232192AbjJFMQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231991AbjJFMPz (ORCPT
+        with ESMTP id S231991AbjJFMQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:15:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECF3C6
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:15:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696594553; x=1728130553;
-  h=from:to:cc:subject:date:message-id;
-  bh=NdTc3/DUxfAV3N4tPE4vGkhnkzQ8RRiJjrrmEKPFfSI=;
-  b=Hi2zS3a8oPVlEyxYGSgnsfKEBk7ohsPQQbLwA/IW6/0vQAn2jvwPOvES
-   ftSwVLHJg3Niz3B6mS6tNmd4MG96OrPJv/IRRagGVwHD2IIcMxYEYFInD
-   jXqI5eEz/XlqSLXoOZcBDewacRrm2sCOh+Hdg8ctFgl8IbpgDHUV9Erc1
-   0jXvAu64tbQdag9hIEKl5d1cEwKf3yYA2OXwViVH9hHTOv98nwZ+J0FG8
-   qZUdQaT70ozVHH5U7uubNX+IFRWXMcvCVc9V41M3DRbMSSCryK1eUkp9N
-   3o3DuH1++LLrq4cbXhO/VPNfSaaGNMwxe+T0zAJ6FX78UuzO2PeTQdZQr
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="386560892"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="386560892"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 05:15:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="781638826"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="781638826"
-Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by orsmga008.jf.intel.com with ESMTP; 06 Oct 2023 05:15:32 -0700
-From:   lakshmi.sowjanya.d@intel.com
-To:     linux-kernel@vger.kernel.org, giometti@enneenne.com
-Cc:     andriy.shevchenko@linux.intel.com, pandith.n@intel.com,
-        lakshmi.sowjanya.d@intel.com
-Subject: [PATCH v1] Documentation: driver-api: pps: Update PPS generator documentation
-Date:   Fri,  6 Oct 2023 17:45:31 +0530
-Message-Id: <20231006121531.22450-1-lakshmi.sowjanya.d@intel.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 6 Oct 2023 08:16:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30F6C2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hNVK67EoEfC4ks5hIAmDG5CWFmou5FKHiT7V2Fk4tdM=; b=d1BCfI5Y1aDqG8YFJIpPF8rqpg
+        iX0dqf3J5uWGdolaIETXawNMHPUMFTjjpVZgO+7Ovginh9ff7pRDkB1myntd9n4LyHrItWhkK55gR
+        yKTKZtf3kF/jPbIFSbRmDQp4dO7ohyBJVa2RocafQf5TrNSXflCbUZ5dKsaBAP+NZ5802HQuEHeHQ
+        WosGZ9/Z+Tu/W63PJijMdnT+S950bB+lFBospOiArsxwj320Fy8z7e3hUMlh7HdwNdObkfyNFJ0fo
+        pTS9oXr7tM/OStaBt1wt++t2skwpbA+ybA2RX7PINzg8gq2OoiyUrLB1IvgqRGXNqdp6S1nh5Wc5T
+        1pXtrEog==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qojlB-00FEWW-5W; Fri, 06 Oct 2023 12:16:49 +0000
+Date:   Fri, 6 Oct 2023 13:16:49 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Muzammil <m.muzzammilashraf@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: rmap.c: fix kenrel-doc warning
+Message-ID: <ZR/6sZmNMpMkfxKf@casper.infradead.org>
+References: <20231006113948.51673-1-muzammil@dreambigsemi.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006113948.51673-1-muzammil@dreambigsemi.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pandith N <pandith.n@intel.com>
+On Fri, Oct 06, 2023 at 04:39:48PM +0500, Muzammil wrote:
+>  /**
+>   * folio_move_anon_rmap - move a folio to our anon_vma
+> - * @page:	The folio to move to our anon_vma
+> + * @folio:  struct folio - Represents a contiguous set of bytes.
+>   * @vma:	The vma the folio belongs to
 
-PPS documentation has a generalized section for generators. Update the
-section so any new generator documentation can be appended.
-
-Signed-off-by: Pandith N <pandith.n@intel.com>
-Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
----
- Documentation/driver-api/pps.rst | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/driver-api/pps.rst b/Documentation/driver-api/pps.rst
-index 2d6b99766ee8..78dded03e5d8 100644
---- a/Documentation/driver-api/pps.rst
-+++ b/Documentation/driver-api/pps.rst
-@@ -200,11 +200,17 @@ Generators
- 
- Sometimes one needs to be able not only to catch PPS signals but to produce
- them also. For example, running a distributed simulation, which requires
--computers' clock to be synchronized very tightly. One way to do this is to
--invent some complicated hardware solutions but it may be neither necessary
--nor affordable. The cheap way is to load a PPS generator on one of the
--computers (master) and PPS clients on others (slaves), and use very simple
--cables to deliver signals using parallel ports, for example.
-+computers' clock to be synchronized very tightly.
-+
-+
-+Parallel port generator
-+------------------------
-+
-+One way to do this is to invent some complicated hardware solutions but it
-+may be neither necessary nor affordable. The cheap way is to load a PPS
-+generator on one of the computers (master) and PPS clients on others
-+(slaves), and use very simple cables to deliver signals using parallel
-+ports, for example.
- 
- Parallel port cable pinout::
- 
--- 
-2.17.1
-
+Why did you change more than just 'page' to 'folio'?  I think the
+other changes you have made to this line are not an improvement.
