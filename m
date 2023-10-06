@@ -2,195 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 181307BC2DE
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 01:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73687BC2E2
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 01:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbjJFXTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 19:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56918 "EHLO
+        id S233779AbjJFXV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 19:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233754AbjJFXTl (ORCPT
+        with ESMTP id S233754AbjJFXV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 19:19:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B1D93
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 16:19:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696634378; x=1728170378;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=h+t8v7+tfoSSmArQ2R2VuQiZ7kIi9aB2FdTQvbxH1lQ=;
-  b=ApIFbaRk5Inn2hQziSdVbEpSn4JoZb5euO2usCE/7Y98iw4emj81Oy/Q
-   Zm1p5HYXFq+rUY4QyVqDSJK++LAv3VMWRIH0zFFNuyrLk3FF01OeqCXp4
-   UcZXcFyTg7oe8zspSH3gIiY+CNHgYQf/kZP2owy/YRwvzk68cluRwAtaE
-   C5wnyAsZZRVpu+0iE+Y9jaqjGUz1asoWFMz5jumO/jwNQw5zWpAL7OPtO
-   01IWkc+d2PAdx9nGJHJIqi5yF10qsZNYynmBIHl3jhQ9tP/JTpUrmBafR
-   HIvcP5YlUDdbgPlazXAwZrfNFUT6+CBO6jQijFA51PgDrE5N6afni/NiX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="382719254"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="382719254"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 16:19:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="822676955"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="822676955"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 06 Oct 2023 16:19:36 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qou6X-0003jR-2B;
-        Fri, 06 Oct 2023 23:19:33 +0000
-Date:   Sat, 7 Oct 2023 07:18:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kate Hsuan <hpa@redhat.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
-Subject: drivers/platform/x86/intel/telemetry/core.c:116: warning: Function
- parameter or member 'ioss_evtconfig' not described in
- 'telemetry_update_events'
-Message-ID: <202310070743.WALmRGSY-lkp@intel.com>
+        Fri, 6 Oct 2023 19:21:57 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A27AC
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 16:21:53 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9338e4695so33203291fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 16:21:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696634512; x=1697239312; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y2hTgynvyU8HD1veXrLbrqbx40e596jXkVNUJT4I/tk=;
+        b=VJlfwBt6d7x9HD2eclYA3JZzQfK9R04HJQZKIe1d8wFEZqHIUypU2/4ZokqttIJL7p
+         LtkLk1fLiutbZcdk9BC2PL1OytXoXSAh/zeQVtPIf2AArAXUsxC0B6x2LtHYIpvBzUsV
+         3SKT1xxuScwseUNzkNNBM/gg3f/O1vbE7t3GwHQC4nhIH4E+6oXN43YqMuaGXCzKQJHk
+         z5MNZ64HtOtrIyEjh7S1ZEkbyvXcOnAFZT5jpSR4brKf5GT/07igFipLlF564wEwTvaE
+         rwKYYkkW3gjtXkGBows84g+6sd76N2zYrmRhdjmNzRvxT8Zu40wf6DNVp0+QDl9Ov2Yw
+         YKoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696634512; x=1697239312;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y2hTgynvyU8HD1veXrLbrqbx40e596jXkVNUJT4I/tk=;
+        b=ZKzGyjLW3Rl72s7MtbwfAbH/2FuA8aSaNS5sU25wNxjFoHuN4GuzOSOwVJ1O9zGYa5
+         yQ3nJIR7vwSp8lGLidmooda+5//Ys6lVf6NEyPXXCuf8r32dS1oNIZmx6Z9lz2Ecjz41
+         HdhM8EJCPLZQSOxBwT8j6rtQlexaUnahWCfIlgXCg5QoSEK06FpVCLJKmmB+Y6x7vJNk
+         CuHl/ccA8YFo7m43+V1FmCwBLTqnS9Ca0+kJkYXLTiyMibwGfFnn6j9IuOUeozOMe460
+         7/Z+wfK5wvp3qSp6OZU5Z3wVg25nPVjx42ezVuzLkGvIfgzvrk89dPUuwCsIFL0DS/Gb
+         vr3g==
+X-Gm-Message-State: AOJu0YyjHPj3/ApgTsDVDa0kwHFW9K9A6wQt1B6rpMtYdxC5sy5hmgaw
+        n5pgeLOpe2uWZ8yZr3pvdykxtQ==
+X-Google-Smtp-Source: AGHT+IHvlqzcq38thoX3PZn34o6zqZkwWj8ZiJlIwZnWxtg1XOZmelZD9GDdYV04RWUkP0T3ij0O7g==
+X-Received: by 2002:a2e:9a89:0:b0:2c1:7a96:c770 with SMTP id p9-20020a2e9a89000000b002c17a96c770mr8335693lji.19.1696634512183;
+        Fri, 06 Oct 2023 16:21:52 -0700 (PDT)
+Received: from [192.168.200.173] (178235177147.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.147])
+        by smtp.gmail.com with ESMTPSA id w11-20020a2e998b000000b002bffbe767cbsm973514lji.85.2023.10.06.16.21.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 16:21:51 -0700 (PDT)
+Message-ID: <b8f2d7f1-16e2-4e6a-9c84-37da393f74a3@linaro.org>
+Date:   Sat, 7 Oct 2023 01:21:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] i2c: qcom-cci: Add sc8280xp compatible
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
+        andersson@kernel.org, loic.poulain@linaro.org, rfoss@kernel.org,
+        andi.shyti@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        todor.too@gmail.com, mchehab@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
+ <20231006120159.3413789-3-bryan.odonoghue@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231006120159.3413789-3-bryan.odonoghue@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kate,
+On 6.10.2023 14:01, Bryan O'Donoghue wrote:
+> Add sc8280xp compatible with cci_v2_data parameters.
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+Drop this patch, it adds nothing useful
 
-First bad commit (maybe != root cause):
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   af95dc6fdc25e616051d0234aad638e15c02ec8f
-commit: 2b6cb8f2e88b416393d2b34cad51bfe6e1aae8a7 platform/x86: intel_telemetry: Move to intel sub-directory
-date:   2 years, 2 months ago
-config: x86_64-randconfig-003-20230909 (https://download.01.org/0day-ci/archive/20231007/202310070743.WALmRGSY-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231007/202310070743.WALmRGSY-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310070743.WALmRGSY-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/platform/x86/intel/telemetry/core.c:116: warning: Function parameter or member 'ioss_evtconfig' not described in 'telemetry_update_events'
->> drivers/platform/x86/intel/telemetry/core.c:188: warning: Function parameter or member 'ioss_evtconfig' not described in 'telemetry_get_eventconfig'
-
-
-vim +116 drivers/platform/x86/intel/telemetry/core.c
-
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  101  
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  102  /**
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  103   * telemetry_update_events() - Update telemetry Configuration
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  104   * @pss_evtconfig: PSS related config. No change if num_evts = 0.
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  105   * @pss_evtconfig: IOSS related config. No change if num_evts = 0.
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  106   *
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  107   * This API updates the IOSS & PSS Telemetry configuration. Old config
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  108   * is overwritten. Call telemetry_reset_events when logging is over
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  109   * All sample period values should be in the form of:
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  110   * bits[6:3] -> value; bits [0:2]-> Exponent; Period = (Value *16^Exponent)
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  111   *
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  112   * Return: 0 success, < 0 for failure
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  113   */
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  114  int telemetry_update_events(struct telemetry_evtconfig pss_evtconfig,
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  115  			    struct telemetry_evtconfig ioss_evtconfig)
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12 @116  {
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  117  	return telm_core_conf.telem_ops->update_events(pss_evtconfig,
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  118  						       ioss_evtconfig);
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  119  }
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  120  EXPORT_SYMBOL_GPL(telemetry_update_events);
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  121  
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  122  
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  123  /**
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  124   * telemetry_set_sampling_period() - Sets the IOSS & PSS sampling period
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  125   * @pss_period:  placeholder for PSS Period to be set.
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  126   *		 Set to 0 if not required to be updated
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  127   * @ioss_period: placeholder for IOSS Period to be set
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  128   *		 Set to 0 if not required to be updated
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  129   *
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  130   * All values should be in the form of:
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  131   * bits[6:3] -> value; bits [0:2]-> Exponent; Period = (Value *16^Exponent)
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  132   *
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  133   * Return: 0 success, < 0 for failure
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  134   */
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  135  int telemetry_set_sampling_period(u8 pss_period, u8 ioss_period)
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  136  {
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  137  	return telm_core_conf.telem_ops->set_sampling_period(pss_period,
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  138  							     ioss_period);
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  139  }
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  140  EXPORT_SYMBOL_GPL(telemetry_set_sampling_period);
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  141  
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  142  /**
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  143   * telemetry_get_sampling_period() - Get IOSS & PSS min & max sampling period
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  144   * @pss_min_period:  placeholder for PSS Min Period supported
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  145   * @pss_max_period:  placeholder for PSS Max Period supported
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  146   * @ioss_min_period: placeholder for IOSS Min Period supported
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  147   * @ioss_max_period: placeholder for IOSS Max Period supported
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  148   *
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  149   * All values should be in the form of:
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  150   * bits[6:3] -> value; bits [0:2]-> Exponent; Period = (Value *16^Exponent)
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  151   *
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  152   * Return: 0 success, < 0 for failure
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  153   */
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  154  int telemetry_get_sampling_period(u8 *pss_min_period, u8 *pss_max_period,
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  155  				  u8 *ioss_min_period, u8 *ioss_max_period)
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  156  {
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  157  	return telm_core_conf.telem_ops->get_sampling_period(pss_min_period,
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  158  							     pss_max_period,
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  159  							     ioss_min_period,
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  160  							     ioss_max_period);
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  161  }
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  162  EXPORT_SYMBOL_GPL(telemetry_get_sampling_period);
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  163  
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  164  
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  165  /**
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  166   * telemetry_reset_events() - Restore the IOSS & PSS configuration to default
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  167   *
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  168   * Return: 0 success, < 0 for failure
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  169   */
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  170  int telemetry_reset_events(void)
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  171  {
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  172  	return telm_core_conf.telem_ops->reset_events();
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  173  }
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  174  EXPORT_SYMBOL_GPL(telemetry_reset_events);
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  175  
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  176  /**
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  177   * telemetry_get_eventconfig() - Returns the pss and ioss events enabled
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  178   * @pss_evtconfig: Pointer to PSS related configuration.
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  179   * @pss_evtconfig: Pointer to IOSS related configuration.
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  180   * @pss_len:	   Number of u32 elements allocated for pss_evtconfig array
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  181   * @ioss_len:	   Number of u32 elements allocated for ioss_evtconfig array
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  182   *
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  183   * Return: 0 success, < 0 for failure
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  184   */
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  185  int telemetry_get_eventconfig(struct telemetry_evtconfig *pss_evtconfig,
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  186  			      struct telemetry_evtconfig *ioss_evtconfig,
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  187  			      int pss_len, int ioss_len)
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12 @188  {
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  189  	return telm_core_conf.telem_ops->get_eventconfig(pss_evtconfig,
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  190  							 ioss_evtconfig,
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  191  							 pss_len, ioss_len);
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  192  }
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  193  EXPORT_SYMBOL_GPL(telemetry_get_eventconfig);
-378f956e3f93b7 drivers/platform/x86/intel_telemetry_core.c Souvik Kumar Chakravarty 2016-01-12  194  
-
-:::::: The code at line 116 was first introduced by commit
-:::::: 378f956e3f93b7862d89f93411953758491b42cc platform/x86: Add Intel Telemetry Core Driver
-
-:::::: TO: Souvik Kumar Chakravarty <souvik.k.chakravarty@intel.com>
-:::::: CC: Darren Hart <dvhart@linux.intel.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Konrad
