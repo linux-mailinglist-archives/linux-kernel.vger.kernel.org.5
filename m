@@ -2,133 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8AF7BB9E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917337BB9EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232377AbjJFOAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 10:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
+        id S232484AbjJFOCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 10:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbjJFOAT (ORCPT
+        with ESMTP id S232335AbjJFOCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 10:00:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9AEBB
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 07:00:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A496C433C7;
-        Fri,  6 Oct 2023 14:00:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696600817;
-        bh=n60Zl5/dYdqZbu0B+NBdbry8iIlOp840xx7nxoVwwvo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VK7hsTp0UWarjXE4myPTx9v5PwbCI7E3mpqrpGnHuzAfW3Lf7LeLzPGEBZvQbh5+t
-         3+chdH5S/plWueiR3gjHpuyGWrHK4tJ9h1gWfcWclwg6iEjy6woWSBQBZ1OoyTSr/L
-         W8f/Dp2xZZs+ixlTe/uYMvDLUfTQ4udj5+l0aYro=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     op-tee@lists.trustedfirmware.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH] tee: make tee_class constant
-Date:   Fri,  6 Oct 2023 16:00:14 +0200
-Message-ID: <2023100613-lustiness-affiliate-7dcb@gregkh>
-X-Mailer: git-send-email 2.42.0
+        Fri, 6 Oct 2023 10:02:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA61A6;
+        Fri,  6 Oct 2023 07:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=N8UPfLYf9vEiYVIDXQNO7a8O1EepdVqeUPWrMOmuJzs=; b=VRxWZ/BeNe73kUZrTnO4pRJoyG
+        u9dYWBYXIxukJki49sKewpmGaQx6/JpPVe7T7ubfwuY08bfwl7xBsxzNQ7XnAv8jtnKZWdktkULec
+        zwJdtJyG5wBnal557U8WDHw1LzESJEEVto7coOTQDUXFoyDZ6y7fk20VQes8DsDVKLjRsuVgB+Mv8
+        Vka+zcf7GqK08PUjQk1P5KIghTdaX0q0FQyPb1AKoDTW12t8931P6qBMvjzv9jF7te37ewxKzKlTB
+        3G5kLwLawvJCRUNZZoklnIJztHpBPXN4oKI7h+MY1amHzhnyOHXZhtu864/5QX0dzpC+vmT1bNKk0
+        Dhowh6qQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qolNi-00FgnE-VS; Fri, 06 Oct 2023 14:00:43 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8251A300392; Fri,  6 Oct 2023 16:00:42 +0200 (CEST)
+Date:   Fri, 6 Oct 2023 16:00:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "chris.hyser@oracle.com" <chris.hyser@oracle.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "joshdon@google.com" <joshdon@google.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "kprateek.nayak@amd.com" <kprateek.nayak@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "patrick.bellasi@matbug.net" <patrick.bellasi@matbug.net>,
+        Pavel Machek <pavel@ucw.cz>, "pjt@google.com" <pjt@google.com>,
+        "qperret@google.com" <qperret@google.com>,
+        "qyousef@layalina.io" <qyousef@layalina.io>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "timj@gnu.org" <timj@gnu.org>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "youssefesmat@chromium.org" <youssefesmat@chromium.org>,
+        "yu.c.chen@intel.com" <yu.c.chen@intel.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct se
+Message-ID: <20231006140042.GG36277@noisy.programming.kicks-ass.net>
+References: <OS0PR01MB59220AF3959BDC5FEFC0340F86CAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <20231005150258.GA36277@noisy.programming.kicks-ass.net>
+ <CGME20231005150845eucas1p1ed3aae6b90c411b5c26a5dfadf7e0733@eucas1p1.samsung.com>
+ <OS0PR01MB592295E06AD01CAEFBA83BF386CAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <553e2ee4-ab3a-4635-a74f-0ba4cc03f3f9@samsung.com>
+ <867f5121d7d010cacf938c293f862b0cea560ec2.camel@gmx.de>
 MIME-Version: 1.0
-Lines:  82
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2566; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=n60Zl5/dYdqZbu0B+NBdbry8iIlOp840xx7nxoVwwvo=; b=owGbwMvMwCRo6H6F97bub03G02pJDKkKQm+DmW9IrpTaWZu1vX292vpn4c0z5ULuhH6v3j+Dp ywsykumI5aFQZCJQVZMkeXLNp6j+ysOKXoZ2p6GmcPKBDKEgYtTACZyLZRhrnD/3llKbl7e7iwL 5hhJLz8S9tvDnmHBVhdJffvVG6bNUUvWkFs/wb+nwm0mAA==
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <867f5121d7d010cacf938c293f862b0cea560ec2.camel@gmx.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the driver core allows for struct class to be in read-only
-memory, we should make all 'class' structures declared at build time
-placing them into read-only memory, instead of having to be dynamically
-allocated at runtime.
+On Fri, Oct 06, 2023 at 12:31:28PM +0200, Mike Galbraith wrote:
+> On Fri, 2023-10-06 at 10:35 +0200, Marek Szyprowski wrote:
+> >
+> >
+> > Just to note, I've run into this issue on the QEmu's 'arm64/virt'
+> > platform, not on the Samsung specific hardware. 
+> 
+> It doesn't appear to be arch specific, all I have to do is enable
+> autogroup, raspberry or x86_64 desktop box, the occasional failure
+> tripping over task groups, leaving both best and best_left with
+> identical but not what we're looking for ->min_deadline.
 
-Cc: Jens Wiklander <jens.wiklander@linaro.org>
-Cc: Sumit Garg <sumit.garg@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/tee/tee_core.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+OK, autogroups enabled and booted, /debug/sched/debug shows autogroups
+are indeed in existence.
 
-diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-index 0eb342de0b00..5ddfd5d9ac7f 100644
---- a/drivers/tee/tee_core.c
-+++ b/drivers/tee/tee_core.c
-@@ -40,7 +40,10 @@ static const uuid_t tee_client_uuid_ns = UUID_INIT(0x58ac9ca0, 0x2086, 0x4683,
- static DECLARE_BITMAP(dev_mask, TEE_NUM_DEVICES);
- static DEFINE_SPINLOCK(driver_lock);
- 
--static struct class *tee_class;
-+static const struct class tee_class = {
-+	.name = "tee",
-+};
-+
- static dev_t tee_devt;
- 
- struct tee_context *teedev_open(struct tee_device *teedev)
-@@ -919,7 +922,7 @@ struct tee_device *tee_device_alloc(const struct tee_desc *teedesc,
- 		 teedesc->flags & TEE_DESC_PRIVILEGED ? "priv" : "",
- 		 teedev->id - offs);
- 
--	teedev->dev.class = tee_class;
-+	teedev->dev.class = &tee_class;
- 	teedev->dev.release = tee_release_device;
- 	teedev->dev.parent = dev;
- 
-@@ -1112,7 +1115,7 @@ tee_client_open_context(struct tee_context *start,
- 		dev = &start->teedev->dev;
- 
- 	do {
--		dev = class_find_device(tee_class, dev, &match_data, match_dev);
-+		dev = class_find_device(&tee_class, dev, &match_data, match_dev);
- 		if (!dev) {
- 			ctx = ERR_PTR(-ENOENT);
- 			break;
-@@ -1226,10 +1229,10 @@ static int __init tee_init(void)
- {
- 	int rc;
- 
--	tee_class = class_create("tee");
--	if (IS_ERR(tee_class)) {
-+	rc = class_register(&tee_class);
-+	if (rc) {
- 		pr_err("couldn't create class\n");
--		return PTR_ERR(tee_class);
-+		return rc;
- 	}
- 
- 	rc = alloc_chrdev_region(&tee_devt, 0, TEE_NUM_DEVICES, "tee");
-@@ -1249,8 +1252,7 @@ static int __init tee_init(void)
- out_unreg_chrdev:
- 	unregister_chrdev_region(tee_devt, TEE_NUM_DEVICES);
- out_unreg_class:
--	class_destroy(tee_class);
--	tee_class = NULL;
-+	class_unregister(&tee_class);
- 
- 	return rc;
- }
-@@ -1259,8 +1261,7 @@ static void __exit tee_exit(void)
- {
- 	bus_unregister(&tee_bus_type);
- 	unregister_chrdev_region(tee_devt, TEE_NUM_DEVICES);
--	class_destroy(tee_class);
--	tee_class = NULL;
-+	class_unregister(&tee_class);
- }
- 
- subsys_initcall(tee_init);
--- 
-2.42.0
+I've ran hackbench and a kernel build, but no whoopsie yet :-(
 
+I suppose I'll kick some benchmarks and go make a cup 'o tea or
+something.
