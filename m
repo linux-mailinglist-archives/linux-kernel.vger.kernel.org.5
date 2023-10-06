@@ -2,41 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E127BC253
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB1F7BC257
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233841AbjJFWpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 18:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
+        id S233819AbjJFWpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 18:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233823AbjJFWpD (ORCPT
+        with ESMTP id S233796AbjJFWph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 18:45:03 -0400
+        Fri, 6 Oct 2023 18:45:37 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BEC10A;
-        Fri,  6 Oct 2023 15:44:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E078DC433D9;
-        Fri,  6 Oct 2023 22:44:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3F5A2;
+        Fri,  6 Oct 2023 15:45:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0796DC433C7;
+        Fri,  6 Oct 2023 22:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696632298;
-        bh=rsuLvtPZieeVynmOZTmnXXStTu0E/YWo9FrSL29+J+0=;
+        s=k20201202; t=1696632335;
+        bh=r0hgPd26vNJNNKdbRDndzXFBSLd85QxGGtazkx8k9RA=;
         h=From:To:Cc:Subject:Date:From;
-        b=rtgrXkkccCWrEHzNN1qR0Mb39Oz+p6/BMAKxtnSvAvquuyZl/F+ydp9wD5zYljRDi
-         mOnCIi9gYtyHPSVq769iI9zCYgZoPi8c6EIH1sfWp18HgdJ9c+eFMT8z3/leu8zc1+
-         SV3Ody2D2rNQt9MuV8oZ87asSn7SWi/NZyXjpvT1nX0WyKyZW6dTQaWRDaa5kSGVPZ
-         VLIQzEY+loh6mD8iViQ0bbFTBPosN5fiN4uVYtV9l8k1InADt+00Q8/zqyG4k5yHhA
-         bqLZkoNeHoNHjfnm21exnDUp2NMYXPB7GkK38SyTwMgEgDajbA1Nb0pWF+kfHrnfaQ
-         i1yMj6CNgki1A==
-Received: (nullmailer pid 443258 invoked by uid 1000);
-        Fri, 06 Oct 2023 22:44:56 -0000
+        b=TkUiToD41EoSHzdGDHb1BVUYjz2DR57gQ89EBfGdiSV7XyLH003ZIKt983ICbgLtz
+         t+JCHOx8JtpAZ4RXIbc40AgxuVm9wB5xNNe9pHE6uLlwaGiArTZiDXc/6SJPYP65GX
+         sFz803xKiozrR8cnXyva4Gf9I8CEwgye0w+Bjuf5PfvkYSJmwn5uLERDLmkzrqILBW
+         KiEJHJSVsyl0GD8SeMHoaq68xllDN2H57S/hf8APFZrlkAU4gW3jANmKpdbuySY4je
+         v+0UDNjMSPWq6LOsMz6sB2gDoczswQ0wXPAzfhiGyO6UHjO8HzewgP9JDyLto/1VVC
+         k5HX676k/3vIA==
+Received: (nullmailer pid 443988 invoked by uid 1000);
+        Fri, 06 Oct 2023 22:45:34 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Zev Weiss <zev@bewilderbeest.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: Use i2c_get_match_data()
-Date:   Fri,  6 Oct 2023 17:44:52 -0500
-Message-Id: <20231006224452.443154-1-robh@kernel.org>
+To:     Keerthy <j-keerthy@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: [PATCH] gpio: Use device_get_match_data()
+Date:   Fri,  6 Oct 2023 17:45:07 -0500
+Message-Id: <20231006224507.443486-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -50,144 +55,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use preferred i2c_get_match_data() instead of of_match_device() and
-i2c_match_id() to get the driver match data. With this, adjust the
-includes to explicitly include the correct headers.
+Use preferred device_get_match_data() instead of of_match_device() to
+get the driver match data. With this, adjust the includes to explicitly
+include the correct headers.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/hwmon/max6650.c       |  8 +++-----
- drivers/hwmon/nct6775-i2c.c   | 14 ++------------
- drivers/hwmon/nct6775.h       |  2 +-
- drivers/hwmon/pmbus/lm25066.c | 14 +++-----------
- 4 files changed, 9 insertions(+), 29 deletions(-)
+ drivers/gpio/gpio-davinci.c |  9 +++------
+ drivers/gpio/gpio-mmio.c    |  4 ++--
+ drivers/gpio/gpio-mvebu.c   | 10 +++-------
+ 3 files changed, 8 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/hwmon/max6650.c b/drivers/hwmon/max6650.c
-index cc8428a3045d..9649c6611d5f 100644
---- a/drivers/hwmon/max6650.c
-+++ b/drivers/hwmon/max6650.c
-@@ -26,7 +26,7 @@
- #include <linux/hwmon.h>
- #include <linux/hwmon-sysfs.h>
- #include <linux/err.h>
+diff --git a/drivers/gpio/gpio-davinci.c b/drivers/gpio/gpio-davinci.c
+index 8db5717bdabe..bb499e362912 100644
+--- a/drivers/gpio/gpio-davinci.c
++++ b/drivers/gpio/gpio-davinci.c
+@@ -16,10 +16,10 @@
+ #include <linux/irqdomain.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
 -#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/thermal.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/platform_data/gpio-davinci.h>
++#include <linux/property.h>
+ #include <linux/irqchip/chained_irq.h>
+ #include <linux/spinlock.h>
+ #include <linux/pm_runtime.h>
+@@ -486,7 +486,6 @@ static int davinci_gpio_irq_setup(struct platform_device *pdev)
+ 	struct davinci_gpio_platform_data *pdata = dev->platform_data;
+ 	struct davinci_gpio_regs __iomem *g;
+ 	struct irq_domain	*irq_domain = NULL;
+-	const struct of_device_id *match;
+ 	struct irq_chip *irq_chip;
+ 	struct davinci_gpio_irq_data *irqdata;
+ 	gpio_get_irq_chip_cb_t gpio_get_irq_chip;
+@@ -495,10 +494,8 @@ static int davinci_gpio_irq_setup(struct platform_device *pdev)
+ 	 * Use davinci_gpio_get_irq_chip by default to handle non DT cases
+ 	 */
+ 	gpio_get_irq_chip = davinci_gpio_get_irq_chip;
+-	match = of_match_device(of_match_ptr(davinci_gpio_ids),
+-				dev);
+-	if (match)
+-		gpio_get_irq_chip = (gpio_get_irq_chip_cb_t)match->data;
++	if (dev->of_node)
++		gpio_get_irq_chip = (gpio_get_irq_chip_cb_t)device_get_match_data(dev);
  
- /*
-@@ -763,8 +763,6 @@ static int max6650_probe(struct i2c_client *client)
- {
- 	struct thermal_cooling_device *cooling_dev;
- 	struct device *dev = &client->dev;
--	const struct of_device_id *of_id =
--		of_match_device(of_match_ptr(max6650_dt_match), dev);
- 	struct max6650_data *data;
- 	struct device *hwmon_dev;
- 	int err;
-@@ -776,8 +774,8 @@ static int max6650_probe(struct i2c_client *client)
- 	data->client = client;
- 	i2c_set_clientdata(client, data);
- 	mutex_init(&data->update_lock);
--	data->nr_fans = of_id ? (int)(uintptr_t)of_id->data :
--				i2c_match_id(max6650_id, client)->driver_data;
-+
-+	data->nr_fans = (uintptr_t)i2c_get_match_data(client);
+ 	ngpio = pdata->ngpio;
  
- 	/*
- 	 * Initialize the max6650 chip
-diff --git a/drivers/hwmon/nct6775-i2c.c b/drivers/hwmon/nct6775-i2c.c
-index 87a4fc78c571..63b669d511f4 100644
---- a/drivers/hwmon/nct6775-i2c.c
-+++ b/drivers/hwmon/nct6775-i2c.c
-@@ -21,7 +21,7 @@
- #include <linux/hwmon.h>
- #include <linux/hwmon-sysfs.h>
- #include <linux/err.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regmap.h>
- #include "nct6775.h"
- 
-@@ -155,23 +155,13 @@ static const struct regmap_config nct6775_i2c_regmap_config = {
- static int nct6775_i2c_probe(struct i2c_client *client)
- {
- 	struct nct6775_data *data;
--	const struct of_device_id *of_id;
--	const struct i2c_device_id *i2c_id;
- 	struct device *dev = &client->dev;
- 
--	of_id = of_match_device(nct6775_i2c_of_match, dev);
--	i2c_id = i2c_match_id(nct6775_i2c_id, client);
--
--	if (of_id && (unsigned long)of_id->data != i2c_id->driver_data)
--		dev_notice(dev, "Device mismatch: %s in device tree, %s detected\n",
--			   of_id->name, i2c_id->name);
--
- 	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
- 	if (!data)
- 		return -ENOMEM;
- 
--	data->kind = i2c_id->driver_data;
--
-+	data->kind = (enum kinds)i2c_get_match_data(client);
- 	data->read_only = true;
- 	data->driver_data = client;
- 	data->driver_init = nct6775_i2c_probe_init;
-diff --git a/drivers/hwmon/nct6775.h b/drivers/hwmon/nct6775.h
-index 296eff99d003..d31e7a030216 100644
---- a/drivers/hwmon/nct6775.h
-+++ b/drivers/hwmon/nct6775.h
-@@ -4,7 +4,7 @@
- 
- #include <linux/types.h>
- 
--enum kinds { nct6106, nct6116, nct6775, nct6776, nct6779, nct6791, nct6792,
-+enum kinds { nct6106 = 1, nct6116, nct6775, nct6776, nct6779, nct6791, nct6792,
- 	     nct6793, nct6795, nct6796, nct6797, nct6798, nct6799 };
- enum pwm_enable { off, manual, thermal_cruise, speed_cruise, sf3, sf4 };
- 
-diff --git a/drivers/hwmon/pmbus/lm25066.c b/drivers/hwmon/pmbus/lm25066.c
-index 929fa6d34efd..bd43457094a6 100644
---- a/drivers/hwmon/pmbus/lm25066.c
-+++ b/drivers/hwmon/pmbus/lm25066.c
-@@ -14,10 +14,10 @@
+diff --git a/drivers/gpio/gpio-mmio.c b/drivers/gpio/gpio-mmio.c
+index 74fdf0d87b2c..3ff0ea1e351c 100644
+--- a/drivers/gpio/gpio-mmio.c
++++ b/drivers/gpio/gpio-mmio.c
+@@ -56,9 +56,9 @@ o        `                     ~~~~\___/~~~~    ` controller in FPGA is ,.`
  #include <linux/slab.h>
- #include <linux/i2c.h>
- #include <linux/log2.h>
+ #include <linux/bitops.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ 
+ #include "gpiolib.h"
+ 
+@@ -702,7 +702,7 @@ static struct bgpio_pdata *bgpio_parse_dt(struct platform_device *pdev,
+ {
+ 	struct bgpio_pdata *pdata;
+ 
+-	if (!of_match_device(bgpio_of_match, &pdev->dev))
++	if (!pdev->dev.of_node)
+ 		return NULL;
+ 
+ 	pdata = devm_kzalloc(&pdev->dev, sizeof(struct bgpio_pdata),
+diff --git a/drivers/gpio/gpio-mvebu.c b/drivers/gpio/gpio-mvebu.c
+index 67497116ce27..8f80ca8ec1ed 100644
+--- a/drivers/gpio/gpio-mvebu.c
++++ b/drivers/gpio/gpio-mvebu.c
+@@ -42,9 +42,10 @@
+ #include <linux/irqchip/chained_irq.h>
+ #include <linux/irqdomain.h>
+ #include <linux/mfd/syscon.h>
 -#include <linux/of_device.h>
 +#include <linux/of.h>
- #include "pmbus.h"
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/pwm.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+@@ -1122,7 +1123,6 @@ static void mvebu_gpio_remove_irq_domain(void *data)
+ static int mvebu_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct mvebu_gpio_chip *mvchip;
+-	const struct of_device_id *match;
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct irq_chip_generic *gc;
+ 	struct irq_chip_type *ct;
+@@ -1132,11 +1132,7 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
+ 	int i, cpu, id;
+ 	int err;
  
--enum chips { lm25056, lm25066, lm5064, lm5066, lm5066i };
-+enum chips { lm25056 = 1, lm25066, lm5064, lm5066, lm5066i };
+-	match = of_match_device(mvebu_gpio_of_match, &pdev->dev);
+-	if (match)
+-		soc_variant = (unsigned long) match->data;
+-	else
+-		soc_variant = MVEBU_GPIO_SOC_VARIANT_ORION;
++	soc_variant = (unsigned long)device_get_match_data(&pdev->dev);
  
- #define LM25066_READ_VAUX		0xd0
- #define LM25066_MFR_READ_IIN		0xd1
-@@ -468,8 +468,6 @@ static int lm25066_probe(struct i2c_client *client)
- 	struct lm25066_data *data;
- 	struct pmbus_driver_info *info;
- 	const struct __coeff *coeff;
--	const struct of_device_id *of_id;
--	const struct i2c_device_id *i2c_id;
- 
- 	if (!i2c_check_functionality(client->adapter,
- 				     I2C_FUNC_SMBUS_READ_BYTE_DATA))
-@@ -484,14 +482,8 @@ static int lm25066_probe(struct i2c_client *client)
- 	if (config < 0)
- 		return config;
- 
--	i2c_id = i2c_match_id(lm25066_id, client);
-+	data->id = (enum chips)i2c_get_match_data(client);
- 
--	of_id = of_match_device(lm25066_of_match, &client->dev);
--	if (of_id && (unsigned long)of_id->data != i2c_id->driver_data)
--		dev_notice(&client->dev, "Device mismatch: %s in device tree, %s detected\n",
--			   of_id->name, i2c_id->name);
--
--	data->id = i2c_id->driver_data;
- 	info = &data->info;
- 
- 	info->pages = 1;
+ 	/* Some gpio controllers do not provide irq support */
+ 	err = platform_irq_count(pdev);
 -- 
 2.40.1
 
