@@ -2,110 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D617BBF83
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA217BBF86
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbjJFTGJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 15:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
+        id S233471AbjJFTFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 15:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbjJFTFs (ORCPT
+        with ESMTP id S233430AbjJFTFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 15:05:48 -0400
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251ABCA;
-        Fri,  6 Oct 2023 12:05:39 -0700 (PDT)
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-57b8cebf57dso1344084eaf.0;
-        Fri, 06 Oct 2023 12:05:39 -0700 (PDT)
+        Fri, 6 Oct 2023 15:05:41 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0F3112
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:05:31 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9b2c5664cb4so91670666b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:05:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696619129; x=1697223929; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4lreX3SHKEa8+ecJVm/PXdFDdYzsRKnuuuJws5KzVZg=;
+        b=gmC6gSWaJWpJUL2bxwjtFYxzeptc5MK8q3Zkpp6/hOuyIzAgG1L8tT3H2fwFbuk0g0
+         /yJUeSzLVp6KmPdCfQK+9Nd+dkxAV1252L1Tg7Bpj0Qvo/7FCH4Sawo1zthBot74rqOy
+         wWX+dCFXcMGlHrPDAUuqGmGA7VDFm4h7kjTHgR6/WhhPQeartGDw9vV4S8Z6ClSQQRE6
+         5jZhYG98uOYRCPuZhh0gshGqJ46wGASre3b5KRaQ4/hsnLfc/XJhlpBojgJ1BQ4vkopw
+         GU5N8HuCXzblv9XUrPf+CFYPMgPaXEdRsa/Uju3ZyDOSj9pgQAE4oMfbvgTl8VAOUNsa
+         uEPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696619138; x=1697223938;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rTVoeVfMOxsjEM7ujAVqwzrstYR+YNmGmlAo8xZUyMo=;
-        b=ahx8z5uV0WL9ctIOMDegl9omLN+95Edtqz+etGLiAsFZIie1bF/UTV4q4BYDZCHhmA
-         aa86+UGsPL4yuSGQ7Qij/98biA28SLq/oAaB8WPE407eoQ6QauIZzVw3jKbeMaRMIPhU
-         dvD1DW5QdamR+TXGf5jp8gqMaDNNr84fIv5zoh35/qxn76eHWOkUiM2ADWvEll+DsdSK
-         +Lw/f7BhRlQTLH8XyCGnbsjc6q/6tkRIcZsCrjr94qh6rkAZR+pkcc3k4TNHhesKEAvi
-         hx+e25rRCc+yzkZdZTl4tPBC70c/2YqK0lQYuSiFEwb3insOB2XI6Wb5Pe6r0xsyCtnj
-         zyiw==
-X-Gm-Message-State: AOJu0YwEmV0XZzr9vQ25XdUfs73Pv+/1jsgZHuBCh62esO5U3sDJXyXu
-        wUvGQfpkHECvZGTYvENxnrO+9/MktBmzdcnIZ6w=
-X-Google-Smtp-Source: AGHT+IHYPEjnvWDeT4zLtq3cc/leWn1Uoy2fLkCUMXkmWJbiIU6zZFunk+iDI3YM2AB8kvMEy+wZiuEeMV1OW/zFQ1A=
-X-Received: by 2002:a05:6358:938f:b0:140:ecf2:4c69 with SMTP id
- h15-20020a056358938f00b00140ecf24c69mr9234027rwb.3.1696619137983; Fri, 06 Oct
- 2023 12:05:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696619129; x=1697223929;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4lreX3SHKEa8+ecJVm/PXdFDdYzsRKnuuuJws5KzVZg=;
+        b=hxp5sGVlS7sx2wRicbBaO5Vp+qCKt/NPitbwudrC8QeOtOK6za7dN+SYyyl24QIj0q
+         uGIKPsOutKJlNwsEG4j7QTY145FzslR8vf5L0iiI0VRB7h4hZcDbRnZdXpx9ikBwZxT/
+         R1zszLkF8zyljoodS11/JqZ0iC3GoZf2RLI0IDRFO4/C4JtzXNR/E27Bns+E7vfMr5TL
+         cEJzaCGqucwKJNY2Ank6jg9Bv+aUwQDb/WO7USJnxWervyPK2cthhGCaL6rO/0H2+sCs
+         YFagfHLXkT7xXHba742J/FuxcfK7Ojw6V31WgR6BYCFrP5Aj97HNc01xaioFGSdlecNW
+         /Mvw==
+X-Gm-Message-State: AOJu0YzIS3b+q9OMQoxr5AXrEhK0/6GMOm9VzqLQiLINGdZjm8FhM3VE
+        c1FahYZ54iRSvcRm6VURok90TgbN5q0=
+X-Google-Smtp-Source: AGHT+IEQ9iBFt236jfyvvA52ycBLUW+mtonNN2gijec8nrJC/C4dXiDWsZPqvpoqIe5kMoeVQosHng==
+X-Received: by 2002:a17:906:530b:b0:9a1:aea8:cb5a with SMTP id h11-20020a170906530b00b009a1aea8cb5amr7653347ejo.1.1696619129491;
+        Fri, 06 Oct 2023 12:05:29 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id g20-20020a17090613d400b009b96e88759bsm3406991ejc.13.2023.10.06.12.05.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 12:05:29 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 21:05:27 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 08/10] staging: rtl8192e: Remove function
+ _rtl92e_wx_set_debug()
+Message-ID: <887ca5f66bad5105eeba449a9bd3e40be4b835ce.1696548527.git.philipp.g.hortmann@gmail.com>
+References: <cover.1696548527.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
-References: <20230907210533.3712979-1-irogers@google.com> <CAP-5=fVaK2hhBTX4=zKX5Dft36RurctYEtGzsdUp6XKsjHguMw@mail.gmail.com>
-In-Reply-To: <CAP-5=fVaK2hhBTX4=zKX5Dft36RurctYEtGzsdUp6XKsjHguMw@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 6 Oct 2023 12:05:26 -0700
-Message-ID: <CAM9d7cjDmX=k1aEYGZAf5NJ-j6_q55BOOaMofABHE52KWD3jjA@mail.gmail.com>
-Subject: Re: [PATCH v1] perf parse-events: Avoid erange from hex numbers
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1696548527.git.philipp.g.hortmann@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+Remove function _rtl92e_wx_set_debug() as this functionality is not
+commonly used and the tool to access it is deprecated.
 
-On Fri, Oct 6, 2023 at 8:30 AM Ian Rogers <irogers@google.com> wrote:
->
-> On Thu, Sep 7, 2023 at 2:05 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > We specify that a "num_hex" comprises 1 or more digits, however, that
-> > allows strtoull to fail with ERANGE. Limit the number of hex digits to
-> > being between 1 and 16.
-> >
-> > Before:
-> > ```
-> > $ perf stat -e 'cpu/rE7574c47490475745/' true
-> > perf: util/parse-events.c:215: fix_raw: Assertion `errno == 0' failed.
-> > Aborted (core dumped)
-> > ```
-> >
-> > After:
-> > ```
-> > $ perf stat -e 'cpu/rE7574c47490475745/' true
-> > event syntax error: 'cpu/rE7574c47490475745/'
-> >                          \___ Bad event or PMU
-> >
-> > Unable to find PMU or event on a PMU of 'cpu'
-> >
-> > Initial error:
-> > event syntax error: 'cpu/rE7574c47490475745/'
-> >                          \___ unknown term 'rE7574c47490475745' for pmu 'cpu'
-> >
-> > valid terms: event,pc,edge,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,config3,name,period,percore,metric-id
-> > Run 'perf list' for a list of valid events
-> >
-> >  Usage: perf stat [<options>] [<command>]
-> >
-> >     -e, --event <event>   event selector. use 'perf list' to list available events
-> > ```
-> >
-> > Issue found through fuzz testing.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+---
+ drivers/staging/rtl8192e/rtl8192e/rtl_wx.c | 40 ----------------------
+ 1 file changed, 40 deletions(-)
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+index d4d8d66df82c..ec8e7d5fe634 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+@@ -122,25 +122,6 @@ static int _rtl92e_wx_get_power(struct net_device *dev,
+ 	return rtllib_wx_get_power(priv->rtllib, info, wrqu, extra);
+ }
+ 
+-static int _rtl92e_wx_set_debug(struct net_device *dev,
+-				struct iw_request_info *info,
+-				union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = rtllib_priv(dev);
+-	u8 c = *extra;
+-
+-	if (priv->hw_radio_off)
+-		return 0;
+-
+-	netdev_info(dev, "=====>%s(), *extra:%x, debugflag:%x\n", __func__,
+-		    *extra, rt_global_debug_component);
+-	if (c > 0)
+-		rt_global_debug_component |= (1 << c);
+-	else
+-		rt_global_debug_component &= BIT31;
+-	return 0;
+-}
+-
+ static int _rtl92e_wx_set_mode(struct net_device *dev,
+ 			       struct iw_request_info *a,
+ 			       union iwreq_data *wrqu, char *b)
+@@ -872,22 +853,6 @@ static iw_handler r8192_wx_handlers[] = {
+ 	[IW_IOCTL(SIOCSIWENCODEEXT)] = _rtl92e_wx_set_encode_ext,
+ };
+ 
+-/* the following rule need to be following,
+- * Odd : get (world access),
+- * even : set (root access)
+- */
+-static const struct iw_priv_args r8192_private_args[] = {
+-	{
+-		SIOCIWFIRSTPRIV + 0x0,
+-		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "set_debugflag"
+-	}
+-
+-};
+-
+-static iw_handler r8192_private_handler[] = {
+-	(iw_handler)_rtl92e_wx_set_debug,   /*SIOCIWSECONDPRIV*/
+-};
+-
+ static struct iw_statistics *_rtl92e_get_wireless_stats(struct net_device *dev)
+ {
+ 	struct r8192_priv *priv = rtllib_priv(dev);
+@@ -919,10 +884,5 @@ static struct iw_statistics *_rtl92e_get_wireless_stats(struct net_device *dev)
+ const struct iw_handler_def r8192_wx_handlers_def = {
+ 	.standard = r8192_wx_handlers,
+ 	.num_standard = ARRAY_SIZE(r8192_wx_handlers),
+-	.private = r8192_private_handler,
+-	.num_private = ARRAY_SIZE(r8192_private_handler),
+-	.num_private_args = sizeof(r8192_private_args) /
+-			    sizeof(struct iw_priv_args),
+ 	.get_wireless_stats = _rtl92e_get_wireless_stats,
+-	.private_args = (struct iw_priv_args *)r8192_private_args,
+ };
+-- 
+2.42.0
 
-Thanks,
-Namhyung
