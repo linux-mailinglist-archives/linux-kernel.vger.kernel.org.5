@@ -2,139 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DD37BBEC7
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707607BBECF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbjJFSdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 14:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38358 "EHLO
+        id S233116AbjJFSh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 14:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbjJFSdt (ORCPT
+        with ESMTP id S232906AbjJFSh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 14:33:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919D4BE
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 11:33:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696617227; x=1728153227;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=LLZX7zRwrS6v1TQS+z2JHoWVTzAPsFpDcoMbYNf7c0Y=;
-  b=VkvbEjPBMg6bSpQGAZoAVA6nB1nq7d7YG60nUOIZWxnOzmbs3+NPC3ge
-   XyE9hLkp4BTFY3XJgOoKx/sVKM1O+tgztQLUrqsxE0ihD/qTXkppGCp+h
-   oW4LHbJVmkBg9RDOo6ASCEMjVVXKkUPPI2b3nP4Y4iXQi3FSeEiFjnHn1
-   zY5oHGacHPZ7jLRFjrUiaFlMwTyqolDmdTQWO7yToB5KBeDVXvAGEdtbW
-   dxc/TpyC6auwOFXYCJUULJ07Y7RYN8OeXeAbcpD0LAkOv27WaLdBPclJQ
-   aHcz48GA1lf1fuTs9AHtTgVtKLFBrK9iveHu3lR5USYqpVA4F4Xitm2X1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="387688600"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="387688600"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 11:33:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="745950981"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="745950981"
-Received: from wangz2-mobl.amr.corp.intel.com (HELO [10.209.88.26]) ([10.209.88.26])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 11:33:46 -0700
-Message-ID: <2be8a356-79c8-49a0-ba93-2a92df119af3@linux.intel.com>
-Date:   Fri, 6 Oct 2023 11:33:47 -0700
+        Fri, 6 Oct 2023 14:37:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE71B6;
+        Fri,  6 Oct 2023 11:37:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A256DC433C7;
+        Fri,  6 Oct 2023 18:37:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696617475;
+        bh=IE1bF8kdC9VMb3KABS+1fAZSI1WmO3d4DmO0mYqCYU4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=iLiHCtc35wuVkfpj7gS1mDntDlZUCW4IUvjH0kro2FzIQWgv2uTdWKgUpbgKSE+E1
+         3vetV+UMfUZEiVWpR8YR4BtWPDSKpGln/gRpDXTWiPsDfA37dvYp9m+vmScjZp6GJ1
+         3mrMHzvZyY4xeyJSI3i4ARc6OAhuYEo5bgGMUMieLIiqZy7iAk1mZP1QK+elEDykyI
+         MIhZfrvgMhSqnVM0gobcq7T/wsfOW3Jy5yvOQN08FFd3kcOvvCJ06u7GysQ/tPLqL/
+         VmmuKH3b7tAWA2K49DLIPBSDZGI81AP+05F7fUSH/SB1NmPpKMFSjA9wziX7nu2N/3
+         VnAW43xq9IdDg==
+Message-ID: <fbe836a5-97c5-340e-3644-1b0e046d3fbb@kernel.org>
+Date:   Sat, 7 Oct 2023 03:37:51 +0900
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/13] x86/acpi: Extract ACPI MADT wakeup code into a
- separate file
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v7 15/26] PM / devfreq: rockchip-dfi: give variable a
+ better name
 Content-Language: en-US
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
- <20231005131402.14611-2-kirill.shutemov@linux.intel.com>
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20231005131402.14611-2-kirill.shutemov@linux.intel.com>
+To:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Vincent Legoll <vincent.legoll@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20230704093242.583575-1-s.hauer@pengutronix.de>
+ <20230704093242.583575-16-s.hauer@pengutronix.de>
+From:   Chanwoo Choi <chanwoo@kernel.org>
+In-Reply-To: <20230704093242.583575-16-s.hauer@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kirill,
-
-On 10/5/2023 6:13 AM, Kirill A. Shutemov wrote:
-> In order to prepare for the expansion of support for the ACPI MADT
-> wakeup method, the relevant code has been moved into a separate file.
-> A new configuration option has been introduced to clearly indicate
-> dependencies without the use of ifdefs.
+On 23. 7. 4. 18:32, Sascha Hauer wrote:
+> struct dmc_count_channel::total counts the clock cycles of the DDR
+> controller. Rename it accordingly to give the reader a better idea
+> what this is about. While at it, at some documentation to struct
+> dmc_count_channel.
 > 
-> There have been no functional changes.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > ---
->  arch/x86/Kconfig                   |  7 +++
->  arch/x86/include/asm/acpi.h        |  5 ++
->  arch/x86/kernel/acpi/Makefile      | 11 ++--
->  arch/x86/kernel/acpi/boot.c        | 86 +-----------------------------
->  arch/x86/kernel/acpi/madt_wakeup.c | 80 +++++++++++++++++++++++++++
->  5 files changed, 99 insertions(+), 90 deletions(-)
->  create mode 100644 arch/x86/kernel/acpi/madt_wakeup.c
+>  drivers/devfreq/event/rockchip-dfi.c | 19 ++++++++++++-------
+>  1 file changed, 12 insertions(+), 7 deletions(-)
 > 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 3154dbc49cf5..7368d254d01f 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1108,6 +1108,13 @@ config X86_LOCAL_APIC
->  	depends on X86_64 || SMP || X86_32_NON_STANDARD || X86_UP_APIC || PCI_MSI
->  	select IRQ_DOMAIN_HIERARCHY
+> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
+> index 8a7af7c32ae0d..50e497455dc69 100644
+> --- a/drivers/devfreq/event/rockchip-dfi.c
+> +++ b/drivers/devfreq/event/rockchip-dfi.c
+> @@ -46,9 +46,14 @@
+>  #define DDRMON_CH1_COUNT_NUM		0x3c
+>  #define DDRMON_CH1_DFI_ACCESS_NUM	0x40
 >  
-> +config X86_ACPI_MADT_WAKEUP
-> +	def_bool y
-> +	depends on X86_64
-> +	depends on ACPI
-> +	depends on SMP
-> +	depends on X86_LOCAL_APIC
-> +
->  config X86_IO_APIC
->  	def_bool y
->  	depends on X86_LOCAL_APIC || X86_UP_IOAPIC
-> diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
-> index c8a7fc23f63c..b536b5a6a57b 100644
-> --- a/arch/x86/include/asm/acpi.h
-> +++ b/arch/x86/include/asm/acpi.h
-> @@ -73,6 +73,11 @@ static inline bool acpi_skip_set_wakeup_address(void)
+> +/**
+> + * struct dmc_count_channel - structure to hold counter values from the DDR controller
+> + * @access:       Number of read and write accesses
+> + * @clock_cycles: DDR clock cycles
+> + */
+>  struct dmc_count_channel {
+>  	u32 access;
+> -	u32 total;
+> +	u32 clock_cycles;
+>  };
 >  
->  #define acpi_skip_set_wakeup_address acpi_skip_set_wakeup_address
+>  struct dmc_count {
+> @@ -150,7 +155,7 @@ static void rockchip_dfi_read_counters(struct rockchip_dfi *dfi, struct dmc_coun
+>  			continue;
+>  		count->c[i].access = readl_relaxed(dfi_regs +
+>  				DDRMON_CH0_DFI_ACCESS_NUM + i * 20);
+> -		count->c[i].total = readl_relaxed(dfi_regs +
+> +		count->c[i].clock_cycles = readl_relaxed(dfi_regs +
+>  				DDRMON_CH0_COUNT_NUM + i * 20);
+>  	}
+>  }
+> @@ -182,29 +187,29 @@ static int rockchip_dfi_get_event(struct devfreq_event_dev *edev,
+>  	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
+>  	struct dmc_count count;
+>  	struct dmc_count *last = &dfi->last_event_count;
+> -	u32 access = 0, total = 0;
+> +	u32 access = 0, clock_cycles = 0;
+>  	int i;
 >  
-> +union acpi_subtable_headers;
-> +
-> +int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
-> +			      const unsigned long end);
-> +
+>  	rockchip_dfi_read_counters(dfi, &count);
+>  
+>  	/* We can only report one channel, so find the busiest one */
+>  	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
+> -		u32 a, t;
+> +		u32 a, c;
+>  
+>  		if (!(dfi->channel_mask & BIT(i)))
+>  			continue;
+>  
+>  		a = count.c[i].access - last->c[i].access;
+> -		t = count.c[i].total - last->c[i].total;
+> +		c = count.c[i].clock_cycles - last->c[i].clock_cycles;
+>  
+>  		if (a > access) {
+>  			access = a;
+> -			total = t;
+> +			clock_cycles = c;
+>  		}
+>  	}
+>  
+>  	edata->load_count = access * 4;
+> -	edata->total_count = total;
+> +	edata->total_count = clock_cycles;
+>  
+>  	dfi->last_event_count = count;
+>  
 
-IMO, you don't need to declare acpi_parse_mp_wake() in asm/acpi.h. Since the
-only user of this function is in arch/x86/kernel/acpi, you can either create
-a header file there or re-use sleep.h.
-
-If you want to leave it here, do you want to protect it with
-CONFIG_X86_ACPI_MADT_WAKEUP?
-
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
+
