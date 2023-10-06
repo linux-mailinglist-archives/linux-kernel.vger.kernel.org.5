@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6547BBFBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96187BBFBF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbjJFTar convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 15:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48724 "EHLO
+        id S233258AbjJFTfj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 15:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233013AbjJFTaq (ORCPT
+        with ESMTP id S231163AbjJFTfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 15:30:46 -0400
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764D283;
-        Fri,  6 Oct 2023 12:30:44 -0700 (PDT)
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-57be74614c0so125150eaf.1;
-        Fri, 06 Oct 2023 12:30:44 -0700 (PDT)
+        Fri, 6 Oct 2023 15:35:37 -0400
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D595A83;
+        Fri,  6 Oct 2023 12:35:36 -0700 (PDT)
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-57c0775d4fcso330053eaf.0;
+        Fri, 06 Oct 2023 12:35:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696620644; x=1697225444;
+        d=1e100.net; s=20230601; t=1696620936; x=1697225736;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TuKl5KaDg+pyNLcIMdUQdNVHBW291e75bQagS3FL0iQ=;
-        b=ASbWo/TUxL0aB2oJd1VTQ9n5S1MqWZjTCthWbkwWIXBNwWEzkc3zciH+s30pY5SrPY
-         DovDg2hyeq5sk245YbVCxsjNITQ1hx1RusP8WK36SBFQjbz5Vr4jT58q96sbFxkdm44+
-         ApD4Y5m++og6u6s9+vP0dLIZNd6agvVdbhf7lyYA57uGmL21mDBKn2pGfWR0yrCxSYPo
-         MwAefdLRgXqbsn0ScNnMC4aitRtn5VN9d5Qy6gPvL2E/xsNJ78trBy7PrvmDlE3pqU5h
-         ryoILnc2EcJXWym+eMdpZH+xqI5Oi/M+EOHVieIcxL+Q1v4EfDo90Jk14FltILvslVZz
-         rIuw==
-X-Gm-Message-State: AOJu0Yy6iUdb92wn+KLlBJpIRLgEoS/k7SaMKOHlneCs2NYvmRHE13II
-        YKfokzlGTqQhxezxMjYZG1Wv1xR7xotAsUGdtNmVsWNhHl0=
-X-Google-Smtp-Source: AGHT+IH9VWGIKHbqmkdamXGHCCSy0uN+1ur6XMncRy4fDozmzedAhMeLXcDN9rZwIxsit1BOxiSi1mxoRRzUath/TKE=
-X-Received: by 2002:a4a:df07:0:b0:57b:73f6:6f80 with SMTP id
- i7-20020a4adf07000000b0057b73f66f80mr9655668oou.0.1696620643727; Fri, 06 Oct
- 2023 12:30:43 -0700 (PDT)
+        bh=MKAwecnvkxtRCGWDeS12LsGl0fw9bBw14Ff9x7XqtoI=;
+        b=ULCNJ5vj9FM0+L6g6EJvFHAf+gSAZm3bbkLlc+FuT1sjlOCJ/dR7u8hsAsb8K8cCuz
+         SYQZrV2hOkPh3ARhdfpRP/Wu7qRKsPHnkaVIVJY9ckwrDt7EUO1MOQkvW+J04ebh535k
+         ORAv1LZjMPBviON7FXpyoReb3l+TX07h8ER/mOPJhK7hfkLKGo+Oa/16DqKccBZ9nEOS
+         SAqXpphfIlAr3YsoCu//ESi6a7/7uYIprtd8CLRSl0uB8k/3mJLxNl9avrwDQ9qIYWto
+         0f1WafoHA1GLGynuRFNtP5bFrsvXUV78sFABQDx5C4e1e2F+p6A9mgWsMUU8yxO8tpvi
+         kWRg==
+X-Gm-Message-State: AOJu0YzqmBJZpP6QNJf8lMxuBo0jCV7ItrYKJsT210u8GgIfLvhWMFvl
+        W9EmpU4CZLb/4ApVC89nDDzxdn2PTohnoO6AlUI=
+X-Google-Smtp-Source: AGHT+IFgWzAS1RXH4hZZBq/nk+53XC8N4cJO2GHDOSy0HSJpD6bW7gkkIPU0hdImEU+PnuBh40nIQn3vKFh3651iNn0=
+X-Received: by 2002:a4a:de08:0:b0:56e:94ed:c098 with SMTP id
+ y8-20020a4ade08000000b0056e94edc098mr8847250oot.0.1696620936084; Fri, 06 Oct
+ 2023 12:35:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230929134010.25644-1-wse@tuxedocomputers.com>
- <CAJZ5v0iH4PGaCdSuQ-4Pu7oXbzrw+zLxpEqMjtMgcNFextgfqw@mail.gmail.com> <5d82fcac-a360-2d8b-8f6a-9b5cecb08ca2@tuxedocomputers.com>
-In-Reply-To: <5d82fcac-a360-2d8b-8f6a-9b5cecb08ca2@tuxedocomputers.com>
+References: <20231006130418.659320-1-sudeep.holla@arm.com>
+In-Reply-To: <20231006130418.659320-1-sudeep.holla@arm.com>
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 6 Oct 2023 21:30:32 +0200
-Message-ID: <CAJZ5v0gO77ydCfs8m4w3Juwg2B85ZZ=zY-zQptB0UmKvxBnd3w@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: resource: Do IRQ override on TongFang GMxXGxx
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Date:   Fri, 6 Oct 2023 21:35:25 +0200
+Message-ID: <CAJZ5v0i-aHT+Uu6XvJrLb6ZoUBQ4rp4WJxiLOAtMSWH-KcdgMA@mail.gmail.com>
+Subject: Re: [GIT PULL] ACPI: PCC: Updates for v6.7
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 11:38 AM Werner Sembach <wse@tuxedocomputers.com> wrote:
->
-> Hi,
->
-> Am 03.10.23 um 20:39 schrieb Rafael J. Wysocki:
-> > On Fri, Sep 29, 2023 at 3:40 PM Werner Sembach <wse@tuxedocomputers.com> wrote:
-> >> The TongFang GMxXGxx/TUXEDO Stellaris/Pollaris Gen5 needs IRQ overriding
-> >> for the keyboard to work. Adding an entry for this laptop to the
-> >> override_table makes the internal keyboard functional again.
-> > You said "again", so it used to work.  Do you know which commit broke it?
->
-> Sorry that "again" is a bit misleading. I Copied it from here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7592b79ba4a9
->
-> I actually only tested the direct predecessor of this Notebook on older kernels:
-> https://bugzilla.kernel.org/show_bug.cgi?id=216698
->
-> I suspected that it's the same issue and since the same fix worked I now even
-> more believe so, but I actually never tested a kernel before the breaking change.
->
-> >
-> >> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> >> Cc: <stable@vger.kernel.org>
-> > What's the oldest kernel version you want this to be applied to?
->
-> 5.15 because Ubuntu 22.04
+Hi Sudeep,
 
-So first of all Hans posted this:
+On Fri, Oct 6, 2023 at 4:36 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> Hi Rafael,
+>
+> I2C, HWMON and Hisilicon SoC changes are all acked-by respective maintainers.
+> All the changes are in the linux-next for some time now. Please pull!
 
-https://patchwork.kernel.org/project/linux-acpi/patch/20231006123304.32686-1-hdegoede@redhat.com/
+Pulled, thanks!
 
-and I'm wondering if it addresses the problem for you too.
 
-If it doesn't, the patch will need to be rebased on top of the new
-acpi-resource material in linux-next and retested.
-
-Thanks!
+> -->8
+>
+> The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+>
+>   Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git tags/acpi-pcc-updates-6.7
+>
+> for you to fetch changes up to a46e42c097982e258f89c64c5f52f30994bcfeda:
+>
+>   soc: kunpeng_hccs: Migrate to use generic PCC shmem related macros (2023-09-29 11:55:37 +0100)
+>
+> ----------------------------------------------------------------
+> ACPI: PCC: Mailbox and generic updates for v6.7
+>
+> Main updates include:
+> 1. Addition of support for Type 4 PCC subspace that enables platform
+>    notification handling (Huisong Li).
+> 2. Support for the shared interrupt amongst multiple PCC subspaces/
+>    channels (Huisong Li).
+> 3. Consolidation of PCC shared memory region command and status
+>    bitfields definitions that were duplicated and scattered across
+>    multiple PCC client drivers (Sudeep Holla).
+>
+> ----------------------------------------------------------------
+> Huisong Li (2):
+>       mailbox: pcc: Add support for platform notification handling
+>       mailbox: pcc: Support shared interrupt for multiple subspaces
+>
+> Sudeep Holla (4):
+>       ACPI: PCC: Add PCC shared memory region command and status bitfields
+>       i2c: xgene-slimpro: Migrate to use generic PCC shmem related macros
+>       hwmon: (xgene) Migrate to use generic PCC shmem related macros
+>       soc: kunpeng_hccs: Migrate to use generic PCC shmem related macros
+>
+>  drivers/hwmon/xgene-hwmon.c            | 16 ++----
+>  drivers/i2c/busses/i2c-xgene-slimpro.c | 16 ++----
+>  drivers/mailbox/pcc.c                  | 91 ++++++++++++++++++++++++++++++----
+>  drivers/soc/hisilicon/kunpeng_hccs.c   |  8 +--
+>  include/acpi/pcc.h                     | 13 +++++
+>  5 files changed, 104 insertions(+), 40 deletions(-)
+>
