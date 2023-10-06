@@ -2,135 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C6D7BBEF7
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EB87BBF0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233265AbjJFSts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 14:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
+        id S233254AbjJFSxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 14:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233122AbjJFStq (ORCPT
+        with ESMTP id S233119AbjJFSxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 14:49:46 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96221CE;
-        Fri,  6 Oct 2023 11:49:44 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4064867903cso23648685e9.2;
-        Fri, 06 Oct 2023 11:49:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696618183; x=1697222983; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=J8TnZukIluCCYT6M1BV1r+HvisyoMBi+KKDF01G+Mhg=;
-        b=M+VuO8kI5wZUDXLEV6RujN0d4RyRfRhwuuqxrt5xrHfHfn3YNP6rk+RqNVTtDtyMnj
-         /weoqEDta1TErA2m3SK5LnJPLm9ZOlvk0hNgyb64q7SIIWgGxgG6GMErgFShx3FlOPrR
-         M1vJ6FhqKHQJDOvfK/qkfDFC8gU+RD55LhGYOh8ih6s5Hp7oNfCZAIIpng0ez4XaFTgr
-         6QQkR2xcLWYA64VcrPG+IQYDtoyCiGrAvQQgdwFxgcqqrv+dK/EhJAJdU2QrcmYMPD/k
-         TYSQ5iz9GIW8BE7Avzxopo+Urxd6kMBrODndeoKBYy4s9+fiSeBZvnBkPozo7/qCsB9w
-         PK4A==
+        Fri, 6 Oct 2023 14:53:05 -0400
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A1DD8;
+        Fri,  6 Oct 2023 11:52:26 -0700 (PDT)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-57de9237410so1297836eaf.0;
+        Fri, 06 Oct 2023 11:52:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696618183; x=1697222983;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J8TnZukIluCCYT6M1BV1r+HvisyoMBi+KKDF01G+Mhg=;
-        b=jzvLhBScqiquwVYSN7AK446RuiYk8DgsflAm+dwf2g0zsJ85l+vaOKGusL265wA19a
-         P4SLmFhu3ecwTLFUZPuk7Nc73tKOANWG+bQ8lWiHO6mwGk56f6a7PEvUIVPaJyQz9kV2
-         EaXmByuGYCJgvdLHWQCkxmf6gB4SpRq+GxD8sQ0oFTWnY/xjKsjsNFLIpxVxZ2rxh6hM
-         vkmCjH3/mdd5TD9gz1YtbmSiRjw0XAI1Ukzob4mFKR+LsyV6NCQihTkyTZN6XcCZ7sfT
-         AnXhCUYn8FWXv+MsFP28/G9q9PYz50SxSRIXeVBvEAiy/i0//Gdh0mofLjNcHypCkyHa
-         MXXw==
-X-Gm-Message-State: AOJu0YyPuSmyWHivwk1mcMPmeKq5lzFOvs2VjggLWdxZ7+tin8hh9cZs
-        2ACU3b4S5PkkSy5qDIkrbRA=
-X-Google-Smtp-Source: AGHT+IGnyXDNMYk8HFRpUEcTSZlI2oSIFcmKPz3Tef9zJ6V0zvxO56KtfzCWQ2oyr2OO4KuUJibc4g==
-X-Received: by 2002:a05:6000:48:b0:31f:f8a5:15db with SMTP id k8-20020a056000004800b0031ff8a515dbmr8155280wrx.48.1696618182580;
-        Fri, 06 Oct 2023 11:49:42 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id p4-20020a5d68c4000000b003232f167df5sm2217218wrw.108.2023.10.06.11.49.39
+        d=1e100.net; s=20230601; t=1696618345; x=1697223145;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RNOQ3ahZw3ChgJyCcGSpyxiAH42KlZx7pAe81L0nIMo=;
+        b=LS3OoI/BIz6Q3GUKgs7gx2xJGyzn2VuPSsfIWckJ2KbppdG9XHXVERcHpMCPu0l3aA
+         XO0eg8f++/xtIg/1DlIboI9+sONa+3ec9e5qnyHYNHz75VYP8jNyrQIz5j0mwmZraThQ
+         MMEhKfKj2L1WL+EqI0y3iGbKOVwvwuLVxdUAV6fYytLSYRSMOzdjbtVt0AGe7uQynx5Q
+         VI0w7LMQ/ogTfD3DlYSZqL6MJpM0I2G31vlDJ8GGBb4E68TOzufeL8yLTKHCwzS8H6FL
+         doe0NYWJJ2iUkWZVUOPzglErobaf9K4pyGCj8PRjDLg6rA3SLYeAos0GH9hokc4Ejm2D
+         FBEw==
+X-Gm-Message-State: AOJu0YyKhc/aabs+uhuhwYGC5+yY0ABGyYfID08MiJjBZw2k71MMN3j8
+        c6NYc25gLA/VTlRZHvus6A==
+X-Google-Smtp-Source: AGHT+IE7hUsL5IdR+DnVE8LzG2mVH0Wt5WH1UJQSbC1YxyZJTc6mSX7wuP0uK/wghBs+dQJ3kQacAg==
+X-Received: by 2002:a4a:d2dc:0:b0:571:1a1d:f230 with SMTP id j28-20020a4ad2dc000000b005711a1df230mr9020280oos.9.1696618345590;
+        Fri, 06 Oct 2023 11:52:25 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id b3-20020a4ae803000000b0055ab0abaf31sm466601oob.19.2023.10.06.11.52.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 11:49:41 -0700 (PDT)
-Message-ID: <652056c5.5d0a0220.2b60d.c5dc@mx.google.com>
-X-Google-Original-Message-ID: <ZSBWxW8ba8P0szfD@Ansuel-xps.>
-Date:   Fri, 6 Oct 2023 20:49:41 +0200
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Douglas Miller <dougmill@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nick Child <nnac123@linux.ibm.com>,
-        Haren Myneni <haren@linux.ibm.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Dany Madden <danymadden@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun <haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
-        Ziwei Xiao <ziweixiao@google.com>,
-        Rushil Gupta <rushilg@google.com>,
-        Coco Li <lixiaoyan@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Junfeng Guo <junfeng.guo@intel.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Yuri Karpov <YKarpov@ispras.ru>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        Lee Jones <lee@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dawei Li <set_pte_at@outlook.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Subject: Re: [net-next PATCH v2 4/4] netdev: use napi_schedule bool instead
- of napi_schedule_prep/__napi_schedule
-References: <20231003145150.2498-1-ansuelsmth@gmail.com>
- <20231003145150.2498-4-ansuelsmth@gmail.com>
- <CANn89iLtYZJPOQE7OkAbEdmhT8qjzAJ+27poa__3c8Nf0M6u_w@mail.gmail.com>
+        Fri, 06 Oct 2023 11:52:24 -0700 (PDT)
+Received: (nullmailer pid 135158 invoked by uid 1000);
+        Fri, 06 Oct 2023 18:52:23 -0000
+Date:   Fri, 6 Oct 2023 13:52:23 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Conor Dooley <conor+dt@kernel.org>, Liu Ying <victor.liu@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] dt-bindings: bus: fsl,imx8qxp-pixel-link-msi-bus: Drop
+ child 'reg' property
+Message-ID: <169661833704.134998.2141713434112587457.robh@kernel.org>
+References: <20230925212639.1975002-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANn89iLtYZJPOQE7OkAbEdmhT8qjzAJ+27poa__3c8Nf0M6u_w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20230925212639.1975002-1-robh@kernel.org>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -138,118 +71,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 06:16:26PM +0200, Eric Dumazet wrote:
-> On Tue, Oct 3, 2023 at 8:36 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
-> >
-> > Replace if condition of napi_schedule_prep/__napi_schedule and use bool
-> > from napi_schedule directly where possible.
-> >
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> >  drivers/net/ethernet/atheros/atlx/atl1.c     | 4 +---
-> >  drivers/net/ethernet/toshiba/tc35815.c       | 4 +---
-> >  drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 4 +---
-> >  3 files changed, 3 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/atheros/atlx/atl1.c b/drivers/net/ethernet/atheros/atlx/atl1.c
-> > index 02aa6fd8ebc2..a9014d7932db 100644
-> > --- a/drivers/net/ethernet/atheros/atlx/atl1.c
-> > +++ b/drivers/net/ethernet/atheros/atlx/atl1.c
-> > @@ -2446,7 +2446,7 @@ static int atl1_rings_clean(struct napi_struct *napi, int budget)
-> >
-> >  static inline int atl1_sched_rings_clean(struct atl1_adapter* adapter)
-> >  {
-> > -       if (!napi_schedule_prep(&adapter->napi))
-> > +       if (!napi_schedule(&adapter->napi))
-> >                 /* It is possible in case even the RX/TX ints are disabled via IMR
-> >                  * register the ISR bits are set anyway (but do not produce IRQ).
-> >                  * To handle such situation the napi functions used to check is
-> > @@ -2454,8 +2454,6 @@ static inline int atl1_sched_rings_clean(struct atl1_adapter* adapter)
-> >                  */
-> >                 return 0;
-> >
-> > -       __napi_schedule(&adapter->napi);
-> > -
-> >         /*
-> >          * Disable RX/TX ints via IMR register if it is
-> >          * allowed. NAPI handler must reenable them in same
-> > diff --git a/drivers/net/ethernet/toshiba/tc35815.c b/drivers/net/ethernet/toshiba/tc35815.c
-> > index 14cf6ecf6d0d..a8b8a0e13f9a 100644
-> > --- a/drivers/net/ethernet/toshiba/tc35815.c
-> > +++ b/drivers/net/ethernet/toshiba/tc35815.c
-> > @@ -1436,9 +1436,7 @@ static irqreturn_t tc35815_interrupt(int irq, void *dev_id)
-> >         if (!(dmactl & DMA_IntMask)) {
-> >                 /* disable interrupts */
-> >                 tc_writel(dmactl | DMA_IntMask, &tr->DMA_Ctl);
-> > -               if (napi_schedule_prep(&lp->napi))
-> > -                       __napi_schedule(&lp->napi);
-> > -               else {
-> > +               if (!napi_schedule(&lp->napi)) {
-> >                         printk(KERN_ERR "%s: interrupt taken in poll\n",
-> >                                dev->name);
-> >                         BUG();
-> 
-> Hmmm... could you also remove this BUG() ? I think this code path can be taken
-> if some applications are using busy polling.
-> 
-> Or simply rewrite this with the traditional
-> 
-> if (napi_schedule_prep(&lp->napi)) {
->    /* disable interrupts */
->    tc_writel(dmactl | DMA_IntMask, &tr->DMA_Ctl);
->     __napi_schedule(&lp->napi);
-> }
-> 
->
 
-Mhhh is it safe to do so? I mean it seems very wrong to print a warning
-and BUG() instead of disabling the interrupt only if napi can be
-scheduled... Maybe is very old code? The more I see this the more I see
-problem... (randomly disabling the interrupt and then make the kernel
-die)
-
+On Mon, 25 Sep 2023 16:26:34 -0500, Rob Herring wrote:
+> A bus schema based on simple-pm-bus shouldn't define how may 'reg' entries
+> a child device has. That is a property of the device. Drop the 'reg' entry.
 > 
-> > diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-> > index 23b5a0adcbd6..146bc7bd14fb 100644
-> > --- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-> > +++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-> > @@ -1660,9 +1660,7 @@ irqreturn_t iwl_pcie_irq_rx_msix_handler(int irq, void *dev_id)
-> >         IWL_DEBUG_ISR(trans, "[%d] Got interrupt\n", entry->entry);
-> >
-> >         local_bh_disable();
-> > -       if (napi_schedule_prep(&rxq->napi))
-> > -               __napi_schedule(&rxq->napi);
-> > -       else
-> > +       if (!napi_schedule(&rxq->napi))
-> >                 iwl_pcie_clear_irq(trans, entry->entry);
-> 
-> Same remark here about twisted logic.
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../bindings/bus/fsl,imx8qxp-pixel-link-msi-bus.yaml           | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
 
-Ehhh here we need to be careful... We can do the usual prep/__schedule
-with the DMA disable in between...
+Applied, thanks!
 
-From the comments of iwl_pcie_clear_irq.
-
-	/*
-	 * Before sending the interrupt the HW disables it to prevent
-	 * a nested interrupt. This is done by writing 1 to the corresponding
-	 * bit in the mask register. After handling the interrupt, it should be
-	 * re-enabled by clearing this bit. This register is defined as
-	 * write 1 clear (W1C) register, meaning that it's being clear
-	 * by writing 1 to the bit.
-	 */
-
-So the device disable the interrupt after being fired and the bit needs
-to set again for the interrupt to be reenabled. So the function
-correctly reenable the irq if a napi can't be scheduled... Think there
-isn't another way to handle this.
-
-> >         local_bh_enable();
-> >
-> > --
-> > 2.40.1
-> >
-
--- 
-	Ansuel
