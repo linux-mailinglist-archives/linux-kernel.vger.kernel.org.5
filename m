@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FBF7BB099
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 05:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6FC7BB09B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 05:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbjJFDuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 23:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50632 "EHLO
+        id S230083AbjJFDuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 23:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbjJFDuC (ORCPT
+        with ESMTP id S229949AbjJFDuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 23:50:02 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE92DE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 20:50:01 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-27903b68503so1487658a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 20:50:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696564200; x=1697169000; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=t2G7odMMkPTde6ooevhbuWblep4YjCVrOlqJpRqgObg=;
-        b=u4aaRuqaxiEVX7+fgxXP3JAqmgAGNCkhTNBvcjzdXtH3ZzClBJqoEhSyvLh6ntegqz
-         lVgJqb1noh8GVJyNGTny+yLOyMKurVkBo++aIU+lYLN2Rj0DxPOy36ptbc7u64V4xUrn
-         OUWjZuXt7dJSlijzMyfz1cQo8MsYpoc2kMmLwnYO9odpzN7afgjF1ohmyNgNbOMUWOiD
-         i1tKNpxIjVWe8IrF1N0/gQ4/AzPAmV6Dx7C2wKYB4wizAjy9jqGfsrsiqkdSLkkbqYWe
-         ukjK+w/Pn0U1Qa0AT98shCgdesRO3zS89xTLZ2EMEPphWWiNOJgSDgtkoNYJC+OBWWuM
-         nLLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696564200; x=1697169000;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t2G7odMMkPTde6ooevhbuWblep4YjCVrOlqJpRqgObg=;
-        b=mmnmHF9FbMysOLubokjMz2R/SPQmgWBRqMrTpCJYDyHr5ZOt8R2uZ7vfDjiOVX5uP3
-         e4chWswjFTOpDeLopQO9rnrXpvFeArBxam5DKrTOkyX1UKX94LgA+M4hTGAYRqksvZbP
-         FVG6xD7V8Dqz70t48jLvYbCpHZtRF9CYCLqAQUOl/MisYLAyjyLck2WWJqBjReIgeEoo
-         oewXQNluPbAXb02rhp2dZGRc0+CKVaBVPi29eVjlzvZCSiUngoG6IkiMlEujOWfSMyQI
-         ShgRSCBNHdwQyNJ33NdtbFANHwfz+C9wge+4/Fk0IHDkjWfJXFxtAhtUI1S8FdLioQWH
-         MeVA==
-X-Gm-Message-State: AOJu0YxvY+ii0EulMQO84o94XqVyBLoUqtuLSoBFz8OL4Cq67WMExXXi
-        tlsWCucF9zZ2LrLyS6VaexEBKNFx6uY=
-X-Google-Smtp-Source: AGHT+IHJw+5gT02f8H3V0ZCldxQSI2F+UC9hQf1f7PEAGRtWd0XB6YuIcXo2+LzVUVQz1YEHyEKidHpzLLw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:cb8b:b0:268:8e93:6459 with SMTP id
- a11-20020a17090acb8b00b002688e936459mr110389pju.8.1696564200585; Thu, 05 Oct
- 2023 20:50:00 -0700 (PDT)
-Date:   Thu,  5 Oct 2023 20:48:47 -0700
-In-Reply-To: <20231005002954.2887098-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20231005002954.2887098-1-seanjc@google.com>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Message-ID: <169655906345.3551422.1856629391041106669.b4-ty@google.com>
-Subject: Re: [PATCH] KVM: selftests: Zero-initialize entire test_result in
- memslot perf test
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Thu, 5 Oct 2023 23:50:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783F2F0
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 20:50:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 46477C433CA;
+        Fri,  6 Oct 2023 03:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696564207;
+        bh=f/8a4cC4NCWswVWtS7qHd7MQdEwfhxD030udLKp0ROc=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=R7/UWQhz0mdOdG1sbCaBNhFS+FD+XKqB7pdn41djlTo1XDGN337YqlY53gORzR7pt
+         emMhKlAcjOOJdZo4iPhgfjJU/OBwr9Oyz027UJLLcOeHInohk37aPMEkq6GrjLVd0l
+         HmSThHjNQhDtz7IbVvvpWuYD+wit5EGXeDxSCoEEmgy52JebSxvctNydcdBRTaUfaA
+         /IQDe5qJWu/dbvxBIV6Rd0TS6qPq0sJPC9wkYPsEFqKAPIpGrnLKDaVMy+qld1QV73
+         /Jrxc2tvg+UbrxSrzx+selnUkRzlipOIBmK+c8ujtr7M3YbO3eGgFsmYfz8T9uxwLA
+         4dKc1A7odKu1w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 21D2FE11F54;
+        Fri,  6 Oct 2023 03:50:07 +0000 (UTC)
+Subject: Re: [GIT PULL] erofs fixes for 6.6-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZR8Fyu+gi7yw6HMh@debian>
+References: <ZR8Fyu+gi7yw6HMh@debian>
+X-PR-Tracked-List-Id: Development of Linux EROFS file system <linux-erofs.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <ZR8Fyu+gi7yw6HMh@debian>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.6-rc5-fixes
+X-PR-Tracked-Commit-Id: 3048102d9d68008e948decbd730f0748dd7bdc31
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b78b18fb8ee19f7a05f20c3abc865b3bfe182884
+Message-Id: <169656420711.12601.12535394337239272246.pr-tracker-bot@kernel.org>
+Date:   Fri, 06 Oct 2023 03:50:07 +0000
+To:     Gao Xiang <xiang@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        linux-erofs@lists.ozlabs.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Oct 2023 17:29:54 -0700, Sean Christopherson wrote:
-> Zero-initialize the entire test_result structure used by memslot_perf_test
-> instead of zeroing only the fields used to guard the pr_info() calls.
+The pull request you sent on Fri, 6 Oct 2023 02:51:54 +0800:
 
-Applied to kvm-x86 selftests, thanks much for the quick reviews!
+> git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.6-rc5-fixes
 
-[1/1] KVM: selftests: Zero-initialize entire test_result in memslot perf test
-      https://github.com/kvm-x86/linux/commit/6313e096dbfa
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b78b18fb8ee19f7a05f20c3abc865b3bfe182884
 
---
-https://github.com/kvm-x86/linux/tree/next
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
