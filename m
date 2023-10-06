@@ -2,112 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB327BB34C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 10:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09C57BB34D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 10:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbjJFIfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 04:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
+        id S231216AbjJFIgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 04:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbjJFIfK (ORCPT
+        with ESMTP id S230266AbjJFIf7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 04:35:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B553883
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 01:35:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696581309; x=1728117309;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=m1CMtkCKGgGZYyj4w3mVKAmmsfebN1OzkXvenqcgPho=;
-  b=ZXvFJ91ohgVaL/AM9k05wvPFNsPwJEDBL3U9bOXpBTYRJDW3UWG4j09p
-   kIFSlQwZlpnExxSVPt5t3fwwH04+d6iFG2b4ErmN5Ke5kSOlzKaG0SNr9
-   Am7hXQ8dMlvvAHyYXe14rtUErWAmWRHaxZgWWZcanEBdhOlTF5dl8B/Zm
-   PsTkPwbbTmJbguiMfZkFy0GwJ9medigkvWlZdsZaFdU70BqYbxvlqQzU/
-   jJ7ZqSsC90mWkG1EKQLdSdgFK5ByyQn4789BxqOSRWTF+Ng/rvSBxkDRV
-   /uZdzWU6x9LzbVXIWBFJsUEu105a1CkM7tl63tBwxy/sXOLnNt+CMER+k
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="380985134"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="380985134"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 01:35:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="781561675"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="781561675"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 01:35:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qogIV-00000003Ern-3hgM;
-        Fri, 06 Oct 2023 11:34:59 +0300
-Date:   Fri, 6 Oct 2023 11:34:59 +0300
-From:   "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>
-To:     Rodolfo Giometti <giometti@enneenne.com>
-Cc:     "N, Pandith" <pandith.n@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Sangannavar, Mallikarjunappa" 
-        <mallikarjunappa.sangannavar@intel.com>,
-        "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
-        "T R, Thejesh Reddy" <thejesh.reddy.t.r@intel.com>,
-        "Hall, Christopher S" <christopher.s.hall@intel.com>,
-        "Gross, Mark" <mark.gross@intel.com>
-Subject: Re: PPS functionality for Intel Timed I/O
-Message-ID: <ZR/Gs3q1JfJ3pCky@smile.fi.intel.com>
-References: <fa3f1765-eb59-bf69-7f7b-14621caef6ea@enneenne.com>
- <BYAPR11MB3240801F21598EEFAEA79605E1D39@BYAPR11MB3240.namprd11.prod.outlook.com>
- <1e02cc71-baee-1e75-9160-062d563af795@enneenne.com>
- <BYAPR11MB32408E2D9758BD01EC65FB49E1DA9@BYAPR11MB3240.namprd11.prod.outlook.com>
- <f2788a74-19f8-8992-5b92-427c7b2a27ab@enneenne.com>
- <BYAPR11MB3240C6789B4C04F3BDAE34D5E1A39@BYAPR11MB3240.namprd11.prod.outlook.com>
- <f8a97493-a5ab-565f-825a-dd0a508f2b66@enneenne.com>
- <BYAPR11MB32405694C3C9A1DE083EA673E1C9A@BYAPR11MB3240.namprd11.prod.outlook.com>
- <8ca736c3-7da9-2599-7e55-15e2fc9fedc2@enneenne.com>
- <ZR/GgpHAWYEKvzdN@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZR/GgpHAWYEKvzdN@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 6 Oct 2023 04:35:59 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE0E93
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 01:35:58 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6BDBF1F45F;
+        Fri,  6 Oct 2023 08:35:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1696581357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZGO2mlUqE3aPcsibFoQXFlBLId1U3oI6EbfB7CylCGI=;
+        b=wP2UXOhuOPQagS4qtjhTDzOcJuBmqZQagcfwVqH74ZrdSomM771xtKx2HusMgvXX2t8vRU
+        Q9AHM8DQNRsnBvPCfLO1SqNw1qChCJE18GgPl2qRrDiGhgBSIdPbpOsblcmopRWlMfflKq
+        I4NQSQxpUVFk6fNFzmnRcFF8SU296Io=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1696581357;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZGO2mlUqE3aPcsibFoQXFlBLId1U3oI6EbfB7CylCGI=;
+        b=UhUaC8ONSa4MQOaXEnJZh82SKSYlYnn6Nro96QOl8VO42nDc7URMp0BCzwdElCIibJ+vrL
+        CSLUS6HXWR9G/QCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2575F13A2E;
+        Fri,  6 Oct 2023 08:35:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KvsuCO3GH2W+GQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 06 Oct 2023 08:35:57 +0000
+Date:   Fri, 06 Oct 2023 10:35:56 +0200
+Message-ID: <87zg0ww3kj.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Ma Ke <make_ruc2021@163.com>
+Cc:     perex@perex.cz, tiwai@suse.com, mhocko@suse.com,
+        mgorman@techsingularity.net, 42.hyeyoo@gmail.com,
+        surenb@google.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ALSA: pcm: oss: Fix race at SNDCTL_DSP_SETTRIGGER
+In-Reply-To: <20230921135837.3590897-1-make_ruc2021@163.com>
+References: <20230921135837.3590897-1-make_ruc2021@163.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 11:34:10AM +0300, andriy.shevchenko@linux.intel.com wrote:
-> On Fri, Oct 06, 2023 at 08:23:09AM +0200, Rodolfo Giometti wrote:
-> > On 06/10/23 07:31, N, Pandith wrote:
-> > > > From: Rodolfo Giometti <giometti@enneenne.com>
-> > > > Sent: Wednesday, February 15, 2023 1:16 PM
-> > > > On 15/02/23 08:09, N, Pandith wrote:
-
-[snip]
-
-> > > > Regarding Documentation/driver-api/pps.rst let me suggest you to prose a
-> > > > separate patch to rewrite the Generators section in such a way you easily can add
-> > > > your solution at the end. A possible example is attached but feel free to rewrite it
-> > > > according to your needs.
-> > > > 
-> > > Ok, we are updating documentation as you have suggested as a separate patch.
-> > > Can we use your "Signed-off-by" tag for attached patch.
-> > 
-> > If you just followed my suggestion then it's OK for me.
+On Thu, 21 Sep 2023 15:58:37 +0200,
+Ma Ke wrote:
 > 
-> But can we have your SoB or not? If so, please provide it explicitly as
-> the (Linux kernel) process requires.
+> There is a small race window at snd_pcm_oss_set_trigger() that is
+> called from OSS PCM SNDCTL_DSP_SETTRIGGER ioctl; namely the function
+> calls snd_pcm_oss_make_ready() at first, then takes the params_lock
+> mutex for the rest. When the stream is set up again by another thread
+> between them, it leads to inconsistency, and may result in unexpected
+> results such as NULL dereference of OSS buffer as a fuzzer spotted
+> recently.
+> The fix is simply to cover snd_pcm_oss_make_ready() call into the same
+> params_lock mutex with snd_pcm_oss_make_ready_locked() variant.
 
-Or even better if you provide the patch itself or apply directly to your tree
-that we can rebase the our stuff on.
+Sorry for the late response, as I've been (still) off since the last
+week.
 
--- 
-With Best Regards,
-Andy Shevchenko
+The code change itself looks OK, but unlike the change (with almost
+same changelog) in commit 8423f0b6d513, this won't hit a serious
+problem like NULL dereference.  The code path merely sets
+runtime->oss.trigger and start_threshold flags, then issues the ioctl
+outside the lock.
+
+Unless you really hit a problem with a fuzzer, the changelog is
+misleading and better to be rewritten.
 
 
+thanks,
+
+Takashi
+
+> 
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> ---
+>  sound/core/oss/pcm_oss.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+> index 728c211142d1..fd9d23c3684b 100644
+> --- a/sound/core/oss/pcm_oss.c
+> +++ b/sound/core/oss/pcm_oss.c
+> @@ -2083,21 +2083,16 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
+>  	psubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
+>  	csubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
+>  
+> -	if (psubstream) {
+> -		err = snd_pcm_oss_make_ready(psubstream);
+> -		if (err < 0)
+> -			return err;
+> -	}
+> -	if (csubstream) {
+> -		err = snd_pcm_oss_make_ready(csubstream);
+> -		if (err < 0)
+> -			return err;
+> -	}
+>        	if (psubstream) {
+>        		runtime = psubstream->runtime;
+>  		cmd = 0;
+>  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
+>  			return -ERESTARTSYS;
+> +		err = snd_pcm_oss_make_ready_locked(psubstream);
+> +		if (err < 0) {
+> +			mutex_unlock(&runtime->oss.params_lock);
+> +			return err;
+> +		}
+>  		if (trigger & PCM_ENABLE_OUTPUT) {
+>  			if (runtime->oss.trigger)
+>  				goto _skip1;
+> @@ -2128,6 +2123,11 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
+>  		cmd = 0;
+>  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
+>  			return -ERESTARTSYS;
+> +		err = snd_pcm_oss_make_ready_locked(csubstream);
+> +		if (err < 0) {
+> +			mutex_unlock(&runtime->oss.params_lock);
+> +			return err;
+> +		}
+>  		if (trigger & PCM_ENABLE_INPUT) {
+>  			if (runtime->oss.trigger)
+>  				goto _skip2;
+> -- 
+> 2.37.2
+> 
