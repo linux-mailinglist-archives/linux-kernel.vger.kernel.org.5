@@ -2,102 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB497BB910
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9E77BB913
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbjJFN1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35768 "EHLO
+        id S232370AbjJFN1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232082AbjJFN06 (ORCPT
+        with ESMTP id S232082AbjJFN1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:26:58 -0400
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF8683;
-        Fri,  6 Oct 2023 06:26:56 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 501)
-        id 197301007F8; Fri,  6 Oct 2023 14:26:55 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1696598815; bh=UXwmvyfcz7+G6k1Eio3GnnTX/uptDTtBSTC2steX08w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jmQs7Ss/peRiRt886mq2geyLW8byTP0ykuahAlIny14b2PeJppNMX8iP8sHogLCqv
-         5fj4MzrTWK4jujeczzIG5iC+x7QDHSnGjKpsuPsupY4HIRZ03NXjbdrnqrv9EHDotj
-         NFAkNcIjhGTlmZjACLkhxd/sxGIf5cDmAXOdr/YsNLXns6KE3PGb8fqH+2sCBZBB6o
-         +IxwnA1i30+zGYaRCm42qiIUPaLc8S2S6OYPb/PYVNiSGeh9H4fIFdUIZtOguKUsIr
-         ura4CgF9NfgUUTC5jNEKE24QIsNa6yDC7va70NjqXatWp7KvdqSYkmD/AHecCPG/BZ
-         wWtkrvOxr6vOA==
+        Fri, 6 Oct 2023 09:27:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29372AC;
+        Fri,  6 Oct 2023 06:27:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696598835; x=1728134835;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=2cc26gFKLWV1zohqFQ9a2XIcjoRWt0n03Xemi9o+UVA=;
+  b=QB5+Gr8lpX+N+lwZkP1bGdyfHOl4uvAFIFG2KuouxAQObNXVvo414EHd
+   Kx89qb3T0SGaQO6c4LGGfr6he7Pfx9HMVOY3NnW0RX+2DBxdtpiAOosmY
+   9Kqkt6byhXr90lYIKeOU8/d93+4mP7xlDoguYn4xlR3Pm+Mpd7xZM8bNG
+   hkpcML+nT7y1pbWSfJo9ePVSHlm+7iRIqf08l+Vk3dNqLO3SZwV5NbtBO
+   EH64HgkPDWqBHm60+wj1isIjKGerbgZS4HWflaSL+nNjQl3y5LByc383z
+   /LG8Gvi/K3C37Y2tin6bcoJPf71ZMbuO3TaVKO7PVSUq3kC5EhHFRnqLu
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="383641043"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="383641043"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 06:27:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="999328555"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="999328555"
+Received: from srab-mobl1.ger.corp.intel.com ([10.252.43.69])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 06:27:11 -0700
+Date:   Fri, 6 Oct 2023 16:27:09 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Mark Gross <markgross@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] platform/x86: int3472: don't use
+ gpiod_toggle_active_low()
+In-Reply-To: <29764d46-8d3d-9794-bbde-d7928a91cbb5@redhat.com>
+Message-ID: <2e9621e7-59e-dc20-71a-9da6f367557e@linux.intel.com>
+References: <20230926145943.42814-1-brgl@bgdev.pl> <e6817d30-b443-1a73-efae-84415604b19f@redhat.com> <CACMJSetWH=Z5ubHb33W0mYvpqkU7vv=nKNBSa9eLmAi94NyrgA@mail.gmail.com> <29764d46-8d3d-9794-bbde-d7928a91cbb5@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-Received: from bigcore.mess.org (unknown [IPv6:2a02:8011:d000:212:ca7f:54ff:fe51:14d6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by gofer.mess.org (Postfix) with ESMTPSA id F3209100057;
-        Fri,  6 Oct 2023 14:26:53 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1696598814; bh=UXwmvyfcz7+G6k1Eio3GnnTX/uptDTtBSTC2steX08w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ldpy4Gh0DGhTVX2j5z/b7p2QSlULiXt5MhhXKKoKNjjvk+5VKTJQtxrmQe7d+f+oD
-         9UIl+F9KE7hDIqwN1gjYbQ/Ss/6CWot1tMxRVqZcmQs/Gp5y4TxBRixReBHbyR28kT
-         dOx6cQ0vJDqBODXIAKXDaXuUH9nCfva82wFjQvm0xZhwIq97ZGO7Bl1h/ywF3/ZGcO
-         yDM9w93M8MTpPVu+6Jc8anpmuu3nd6hiJ4fHlLcXLRJy/RIDBoLGfkTtPBFR3eZ35+
-         UUNQZEBlYmshaKxBPOF81A52SpMcAPwwtcSKxD9iiFkbbvu9HCGawLTAfyQwX+fElc
-         5M4XLSQink4mA==
-From:   Sean Young <sean@mess.org>
-To:     linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Joe Ferner <joe.m.ferner@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: sharp: fix sharp encoding
-Date:   Fri,  6 Oct 2023 14:26:30 +0100
-Message-ID: <20231006132631.216231-1-sean@mess.org>
-X-Mailer: git-send-email 2.42.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Sharp protocol[1] encoding has incorrect timings for bit space.
+On Wed, 4 Oct 2023, Hans de Goede wrote:
 
-[1] https://www.sbprojects.net/knowledge/ir/sharp.php
+> Hi Bart,
+> 
+> On 9/28/23 20:40, Bartosz Golaszewski wrote:
+> > On Thu, 28 Sept 2023 at 14:40, Hans de Goede <hdegoede@redhat.com> wrote:
+> >>
+> >> Hi All,
+> >>
+> >> Here is a v2 of Bartosz' "don't use gpiod_toggle_active_low()" series.
+> >>
+> >> New in v2:
+> >> - Rework to deal with ACPI path vs gpiod_lookup.key differences:
+> >>   acpi_get_handle(path) -> acpi_fetch_acpi_dev(handle) -> acpi_dev_name(adev)
+> >>
+> >> Regards,
+> >>
+> >> Hans
+> >>
+> >>
+> >> Bartosz Golaszewski (2):
+> >>   platform/x86: int3472: Add new
+> >>     skl_int3472_gpiod_get_from_temp_lookup() helper
+> >>   gpio: acpi: remove acpi_get_and_request_gpiod()
+> >>
+> >> Hans de Goede (3):
+> >>   platform/x86: int3472: Add new skl_int3472_fill_gpiod_lookup() helper
+> >>   platform/x86: int3472: Stop using gpiod_toggle_active_low()
+> >>   platform/x86: int3472: Switch to devm_get_gpiod()
+> >>
+> >>  drivers/gpio/gpiolib-acpi.c                   |  28 -----
+> >>  .../x86/intel/int3472/clk_and_regulator.c     |  54 ++--------
+> >>  drivers/platform/x86/intel/int3472/common.h   |   7 +-
+> >>  drivers/platform/x86/intel/int3472/discrete.c | 101 ++++++++++++++----
+> >>  drivers/platform/x86/intel/int3472/led.c      |  24 +----
+> >>  include/linux/gpio/consumer.h                 |   8 --
+> >>  6 files changed, 93 insertions(+), 129 deletions(-)
+> >>
+> >> --
+> >> 2.41.0
+> >>
+> > 
+> > Thanks Hans, this looks good to me. I'd let it sit on the list for a
+> > week. After that, do you want to take patches 1-4 and provide me with
+> > another tag?
+> 
+> I have just send out a v3 to address Andy's remark about me
+> somehow resetting the authorship to me on 2 patches from Bartosz.
 
-Reported-by: Joe Ferner <joe.m.ferner@gmail.com>
-Closes: https://sourceforge.net/p/lirc/mailman/message/38604507/
-Signed-off-by: Sean Young <sean@mess.org>
----
- drivers/media/rc/ir-sharp-decoder.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> As for your request for a tag for the 4st 4 patches for you to merge
+> into gpiolib. I'll go and work work on that. I need to coordinate
+> this with Ilpo, with whom I now co-maintain pdx86 .
 
-diff --git a/drivers/media/rc/ir-sharp-decoder.c b/drivers/media/rc/ir-sharp-decoder.c
-index 3d8488c39c56..3311099cbd57 100644
---- a/drivers/media/rc/ir-sharp-decoder.c
-+++ b/drivers/media/rc/ir-sharp-decoder.c
-@@ -15,7 +15,9 @@
- #define SHARP_UNIT		40  /* us */
- #define SHARP_BIT_PULSE		(8    * SHARP_UNIT) /* 320us */
- #define SHARP_BIT_0_PERIOD	(25   * SHARP_UNIT) /* 1ms (680us space) */
--#define SHARP_BIT_1_PERIOD	(50   * SHARP_UNIT) /* 2ms (1680ms space) */
-+#define SHARP_BIT_1_PERIOD	(50   * SHARP_UNIT) /* 2ms (1680us space) */
-+#define SHARP_BIT_0_SPACE	(17   * SHARP_UNIT) /* 680us space */
-+#define SHARP_BIT_1_SPACE	(42   * SHARP_UNIT) /* 1680us space */
- #define SHARP_ECHO_SPACE	(1000 * SHARP_UNIT) /* 40 ms */
- #define SHARP_TRAILER_SPACE	(125  * SHARP_UNIT) /* 5 ms (even longer) */
- 
-@@ -168,8 +170,8 @@ static const struct ir_raw_timings_pd ir_sharp_timings = {
- 	.header_pulse  = 0,
- 	.header_space  = 0,
- 	.bit_pulse     = SHARP_BIT_PULSE,
--	.bit_space[0]  = SHARP_BIT_0_PERIOD,
--	.bit_space[1]  = SHARP_BIT_1_PERIOD,
-+	.bit_space[0]  = SHARP_BIT_0_SPACE,
-+	.bit_space[1]  = SHARP_BIT_1_SPACE,
- 	.trailer_pulse = SHARP_BIT_PULSE,
- 	.trailer_space = SHARP_ECHO_SPACE,
- 	.msb_first     = 1,
+Thanks all. I've applied patches 1-4 into platform-drivers-x86-int3472 and 
+merged that into review-ilpo.
+
+I'll send the IB PR once LKP has done its thing for the branch.
+
+
 -- 
-2.42.0
+ i.
 
