@@ -2,69 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB2F7BB70A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4890A7BB70D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbjJFL5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52742 "EHLO
+        id S232148AbjJFL6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbjJFL5c (ORCPT
+        with ESMTP id S231939AbjJFL6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:57:32 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678BEC6;
-        Fri,  6 Oct 2023 04:57:31 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-27752a1e184so1582301a91.3;
-        Fri, 06 Oct 2023 04:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696593451; x=1697198251; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KoSF9wvyTQN8x1CfR4FfjTHw+BbzcOr6JcmJZ2YuPUM=;
-        b=KO18hdzupEOdFv2Pi8gBdwn5iVAwQoQ1TD/Y/GaO60pSnK0P68/jM3GN+na9GmbNTU
-         DvEdGCJxElmHWVv86hVTRsy8PI7CI6/ykiXGO9aMQGzWsrUIsrp1vdpa5tUV8KyvjMqS
-         IJMUBJEjKSxXmNx2T11UxDiOH+lnRfInAZKSgTMXl3PK21DlLPMYp1m5nMUjaiuo9r0a
-         c446svJySwTfUVgwgE5BRO+MQX9BPd0kkTFCMFTg/5BIDbLBz9canRpIxsBfxZn9+XlV
-         Snvzk8YBAEN7rUjsnPu+fbjro1pZx1L0TBIf5lb+r1t5lOn+U85eSStK27igCBhMT/vJ
-         jKjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696593451; x=1697198251;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KoSF9wvyTQN8x1CfR4FfjTHw+BbzcOr6JcmJZ2YuPUM=;
-        b=bKpnlYPz+SGkX6hwEa2JfQncoIOGid4kt1/Dc98Bt3mwbzx5xRPWkm5XawO8sYSWmq
-         ieLvaUQyFkYXT3hrQVeAzUx3XUrZECpbuRJlNCzpp2Sw1L6PTQq7a4qWE9AS1TPPvT+h
-         gCTYuDXbkhRALjWM+ebAao3yzj6yslwh94LS31XUBLjJPn7Ac/JqVFpiPUf91crkSDyv
-         AKgj1m+cpDemAcAEQ6bj2p+LYCYuFRBCQyXikGOQnBqoSlwkZER3E8lwh9bKc605k8OY
-         HBvfdQUaEn8UzsH1DWmqau2ULwfqx3mSCdpFqDWCBTaIW8GjlR6BA3G5h0Xh0ztcUEch
-         1tiw==
-X-Gm-Message-State: AOJu0YxUUQvRbikHu2m9PZbvf8V/JYFGQlTTCkRCxLwXtL0vtu2nqFxE
-        sfpAIm+6KMUnAdG/MbSybFaXYZNPaps=
-X-Google-Smtp-Source: AGHT+IG+IJMB4FFbXgv/lKIOgPJerMMb1CfdE72ZGszvaonISNDgMiJKBp/5bdRvkYCqDjapTsTiRA==
-X-Received: by 2002:a17:90a:db8a:b0:274:945b:6979 with SMTP id h10-20020a17090adb8a00b00274945b6979mr7763533pjv.16.1696593450708;
-        Fri, 06 Oct 2023 04:57:30 -0700 (PDT)
-Received: from octofox.hsd1.ca.comcast.net ([2601:646:a201:19d0:e49f:b2dc:3729:f25b])
-        by smtp.gmail.com with ESMTPSA id n14-20020a170902968e00b001bf044dc1a6sm3652729plp.39.2023.10.06.04.57.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 04:57:30 -0700 (PDT)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH] serial: add PORT_ANY definition
-Date:   Fri,  6 Oct 2023 04:57:13 -0700
-Message-Id: <20231006115713.801322-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 6 Oct 2023 07:58:35 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63914CA
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 04:58:34 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qojTN-0006LK-O7; Fri, 06 Oct 2023 13:58:25 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qojTL-00BVN8-M8; Fri, 06 Oct 2023 13:58:23 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qojTL-000bVL-1y;
+        Fri, 06 Oct 2023 13:58:23 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        Petr Machata <petrm@nvidia.com>,
+        Lukasz Majewski <lukma@denx.de>
+Subject: [PATCH net-next v1 1/1] net: dsa: microchip: Fix uninitialized var in ksz9477_acl_move_entries()
+Date:   Fri,  6 Oct 2023 13:58:22 +0200
+Message-Id: <20231006115822.144152-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,38 +65,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current pattern in the linux kernel is that every new serial driver adds
-one or more new PORT_ definitions because uart_ops::config_port()
-callback documentation prescribes setting port->type according to the
-type of port found, or to PORT_UNKNOWN if no port was detected.
+Address an issue in ksz9477_acl_move_entries() where, in the scenario
+(src_idx == dst_idx), ksz9477_validate_and_get_src_count() returns 0,
+leading to usage of uninitialized src_count and dst_count variables,
+which causes undesired behavior as it attempts to move ACL entries
+around.
 
-When the specific type of the port is not important to the userspace
-there's no need for a unique PORT_ value, but so far there's no suitable
-identifier for that case.
-
-Provide generic port type identifier other than PORT_UNKNOWN for ports
-which type is not important to userspace.
-
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Fixes: 002841be134e ("net: dsa: microchip: Add partial ACL support for ksz9477 switches")
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Suggested-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- include/uapi/linux/serial.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/dsa/microchip/ksz9477_acl.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/uapi/linux/serial.h b/include/uapi/linux/serial.h
-index 53bc1af67a41..070e50cf9e1e 100644
---- a/include/uapi/linux/serial.h
-+++ b/include/uapi/linux/serial.h
-@@ -47,6 +47,8 @@ struct serial_struct {
- /*
-  * These are the supported serial types.
-  */
-+/* Generic type identifier for ports which type is not important to userspace. */
-+#define PORT_ANY	(-1)
- #define PORT_UNKNOWN	0
- #define PORT_8250	1
- #define PORT_16450	2
+diff --git a/drivers/net/dsa/microchip/ksz9477_acl.c b/drivers/net/dsa/microchip/ksz9477_acl.c
+index 06d74c19eb94..7ba778df63ac 100644
+--- a/drivers/net/dsa/microchip/ksz9477_acl.c
++++ b/drivers/net/dsa/microchip/ksz9477_acl.c
+@@ -420,10 +420,6 @@ static int ksz9477_validate_and_get_src_count(struct ksz_device *dev, int port,
+ 		return -EINVAL;
+ 	}
+ 
+-	/* Nothing to do */
+-	if (src_idx == dst_idx)
+-		return 0;
+-
+ 	/* Validate if the source entries are contiguous */
+ 	ret = ksz9477_acl_get_cont_entr(dev, port, src_idx);
+ 	if (ret < 0)
+@@ -556,6 +552,10 @@ static int ksz9477_acl_move_entries(struct ksz_device *dev, int port,
+ 	struct ksz9477_acl_entries *acles = &acl->acles;
+ 	int src_count, ret, dst_count;
+ 
++	/* Nothing to do */
++	if (src_idx == dst_idx)
++		return 0;
++
+ 	ret = ksz9477_validate_and_get_src_count(dev, port, src_idx, dst_idx,
+ 						 &src_count, &dst_count);
+ 	if (ret)
 -- 
-2.30.2
+2.39.2
 
