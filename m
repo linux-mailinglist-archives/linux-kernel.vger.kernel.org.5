@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC6E7BB4E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FD57BB4EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbjJFKK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 06:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
+        id S231681AbjJFKLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 06:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbjJFKK1 (ORCPT
+        with ESMTP id S231597AbjJFKLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 06:10:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3ECEA
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 03:10:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 19889C433C9;
-        Fri,  6 Oct 2023 10:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696587026;
-        bh=TyMA7QWGzHqpaOo8yRqAooHEF0/hM+J1QpQ1B6n7uP0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=npO1I9xdhKl1rbvIEs7thvNZLqBhEreQi31ZWB8hbWycZfTGXLSqBY3wKTszi2EeH
-         NhshrnUj7JSUCM0L+mP8u3aHDH1af955xsVBTOoTOgP+sbwCXAjxfwwH+ydl0N/wr0
-         iTEEeHuWvpD4bPdukXyQD0kOepHD1VXBE0dfX1l1EUSSQ34MjHBlpUwmEspbIp4YGD
-         7ke8r9Gjz29GygfhqzMa4UZK3DZjZgySdXHZyRQFWSj/1qC36u5RmrJMWVOG1sLsU+
-         ezfdNwwgPTxFqHUr98uA548CpQ/LsPgkksuKLBbmrLQJDJ4qWMM/tZjO6mTjgu2PqM
-         mSF53uDcTOW6g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F1EF9E11F50;
-        Fri,  6 Oct 2023 10:10:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 6 Oct 2023 06:11:03 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EBEBE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 03:11:01 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32483535e51so1889106f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 03:11:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696587060; x=1697191860; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hwWW0sABsjh41YiHpOu0oUsWiTPmoqzV+38FlfE5YNs=;
+        b=nq+s4fQj2mcftSGpPJ2EBRBAnnIRD6UutYjjTtbkPeXDutqKQ/rVkaVNP8cZ3/SYA/
+         Oh5FQkXLs4Li74fyA403SR5pTAixifsN3eaSB1LWW1l+GMbwdYn7PkmKPr2nC9k8OydE
+         8BosMxXQaccUMa2qmsUclp8d0eaH9U0Gp8IXd+iYOOjyPmVhcuGh/5r8TPeu7oHF0Iz/
+         9s/F1o6jQieoq2HCr7jKwSLaZQ26jwBPUcV1UpDhxikAZCwm9PaVMSGSPZHHHvmxHutW
+         dsZYlFYV9fRcXKg7AT1qrOELsh1V5stRLBtQqCy7+aSccevK062+9TtF8xPTgwDqulnM
+         24ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696587060; x=1697191860;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hwWW0sABsjh41YiHpOu0oUsWiTPmoqzV+38FlfE5YNs=;
+        b=gbXH6rV6K5mNiNvQO8G/9kS++cB8CKFwfq1z8Xr6qQj99HsZw5iSHxq629UREctzt6
+         rhPeRi27vjbe8Gpm72qNHjZUPSA3NaJrWmDJgJv1Ru9zkzn0/Vinai4ZggJshtVu+wD3
+         Z1ZkojqhlDO700ncL1CIhfLr7tKo9duUUmo5weuwtYb/xA24S6HHj7anlUJRGBrEw/HS
+         NM1l5TkIoHo9OwERoaLR8Drez9nGDe21uZ4RuNtDEVSauhWZyFWXDE1yG6SNDwL5wXSM
+         HH0YTRa0u1FmRx57IsLkdoMjnNJnkd0/hwCxuGWZh5fSXL6g4QRZ+zHE65DiHz0Uf/Ng
+         j3tQ==
+X-Gm-Message-State: AOJu0YyFrsOe5XCrO3XTyLo94BOP5zpmZTH2fAT6tN00e6iVINU4YnLL
+        LWmHjMTUfDDotp5HvaaEaOu+qQ==
+X-Google-Smtp-Source: AGHT+IGYhlwFF07RvZ38Py5lab35w5tbnwiTBeJleQWMQAS8m72BMQD3KLpLHth0tKiNxpaKbjwTLA==
+X-Received: by 2002:a5d:574f:0:b0:321:63d0:1f0e with SMTP id q15-20020a5d574f000000b0032163d01f0emr6520490wrw.20.1696587059529;
+        Fri, 06 Oct 2023 03:10:59 -0700 (PDT)
+Received: from toaster.lan ([2a01:e0a:3c5:5fb1:8f44:72b3:5bcb:6c6b])
+        by smtp.googlemail.com with ESMTPSA id t6-20020adff046000000b003231a0ca5ebsm1287343wro.49.2023.10.06.03.10.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 03:10:59 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH] usb: misc: onboard_usb_hub: extend gl3510 reset duration
+Date:   Fri,  6 Oct 2023 12:10:28 +0200
+Message-Id: <20231006101028.1973730-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/3] Fixes for lynx-28g PHY driver
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169658702598.26383.13479730802203078272.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Oct 2023 10:10:25 +0000
-References: <20231004111708.3598832-1-vladimir.oltean@nxp.com>
-In-Reply-To: <20231004111708.3598832-1-vladimir.oltean@nxp.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, linux-phy@lists.infradead.org,
-        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        ioana.ciornei@nxp.com, vkoul@kernel.org, kishon@kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Initial tests with the gl3510 has been done on libretech aml-a311d-cc.
+A 50us reset was fine as long as the hub node was under the usb phy node it
+DT. DT schema does not allow that. Moving the hub under the dwc3 controller
+caused issues, such as:
 
-This series was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+onboard-usb-hub 1-1: Failed to suspend device, error -32
+onboard-usb-hub 1-1: can't set config #1, error -71
+onboard-usb-hub 1-1: Failed to suspend device, error -32
+onboard-usb-hub 1-1: USB disconnect, device number 2
 
-On Wed,  4 Oct 2023 14:17:05 +0300 you wrote:
-> This series fixes some issues in the Lynx 28G SerDes driver, namely an
-> oops when unloading the module, a race between the periodic workqueue
-> and the PHY API, and a race between phy_set_mode_ext() calls on multiple
-> lanes on the same SerDes.
-> 
-> Ioana Ciornei (1):
->   phy: lynx-28g: cancel the CDR check work item on the remove path
-> 
-> [...]
+Extending the reset duration solves the problem.
+Since there is no documentation available for this hub, it is difficult to
+know the actual required reset duration. 200us seems to work fine so far.
 
-Here is the summary with links:
-  - [net,1/3] phy: lynx-28g: cancel the CDR check work item on the remove path
-    https://git.kernel.org/netdev/net/c/f200bab3756f
-  - [net,2/3] phy: lynx-28g: lock PHY while performing CDR lock workaround
-    https://git.kernel.org/netdev/net/c/0ac87fe54a17
-  - [net,3/3] phy: lynx-28g: serialize concurrent phy_set_mode_ext() calls to shared registers
-    https://git.kernel.org/netdev/net/c/139ad1143151
+Suggested-by: Neil Armstrong <neil.armstrong@linaro.org>
+Fixes: 65009ccf7e8f ("usb: misc: onboard_usb_hub: add Genesys Logic gl3510 hub support")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ drivers/usb/misc/onboard_usb_hub.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-You are awesome, thank you!
+diff --git a/drivers/usb/misc/onboard_usb_hub.h b/drivers/usb/misc/onboard_usb_hub.h
+index a9e2f6023c1c..38de22452963 100644
+--- a/drivers/usb/misc/onboard_usb_hub.h
++++ b/drivers/usb/misc/onboard_usb_hub.h
+@@ -31,6 +31,11 @@ static const struct onboard_hub_pdata cypress_hx3_data = {
+ 	.num_supplies = 2,
+ };
+ 
++static const struct onboard_hub_pdata genesys_gl3510_data = {
++	.reset_us = 200,
++	.num_supplies = 1,
++};
++
+ static const struct onboard_hub_pdata genesys_gl850g_data = {
+ 	.reset_us = 3,
+ 	.num_supplies = 1,
+@@ -56,7 +61,7 @@ static const struct of_device_id onboard_hub_match[] = {
+ 	{ .compatible = "usb5e3,608", .data = &genesys_gl850g_data, },
+ 	{ .compatible = "usb5e3,610", .data = &genesys_gl852g_data, },
+ 	{ .compatible = "usb5e3,620", .data = &genesys_gl852g_data, },
+-	{ .compatible = "usb5e3,626", .data = &genesys_gl852g_data, },
++	{ .compatible = "usb5e3,626", .data = &genesys_gl3510_data, },
+ 	{ .compatible = "usbbda,411", .data = &realtek_rts5411_data, },
+ 	{ .compatible = "usbbda,5411", .data = &realtek_rts5411_data, },
+ 	{ .compatible = "usbbda,414", .data = &realtek_rts5411_data, },
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.40.1
 
