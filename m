@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C8B7BB85B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3B57BB85C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232315AbjJFM7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
+        id S232356AbjJFNAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232299AbjJFM7p (ORCPT
+        with ESMTP id S232321AbjJFNAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:59:45 -0400
+        Fri, 6 Oct 2023 09:00:01 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79598CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:59:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CE63C433C8;
-        Fri,  6 Oct 2023 12:59:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7A0FA
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:59:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2F57C433CA;
+        Fri,  6 Oct 2023 12:59:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696597184;
-        bh=xeiRNUc4plg9mqQLBIuwt3xJ8XavslbvRY83Yxe0m9I=;
+        s=k20201202; t=1696597187;
+        bh=dybQF8DkN2/JhqeqS15XevL69SBvMkd526HSMEBGE2k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NFse097SUzS2HxnUZQ5LB2jWwVxT4VbHCDYlfpEUpFPndskHcE66Cri2THLZSy1zo
-         RJuiSGgMEbKwVg7x/uMyFwyGCRVqcbcfMVQddchZVW7FzDYuK7KS+D5ZEVjCyk8KJA
-         RNDaQD0UFdLVkOfunTxncnQAnw+KLvn+iMIzWw/osqc/nvRXEc8YxhBrDu6JO29zZt
-         OQADeLc2cXDGEVEF/KiXHweclABZF8JuB0CIKPF1jTAiIt5B7isk62N/zXV/OL2Q85
-         RUKZxVeS62LEQd0dJnOEjdEwNEdsXJpkKbbNX7ixVR+WOj3/HfPTR9ureWYUIIQmaT
-         JmdopIDR+UhPg==
+        b=MrmT9imnkoF3JnWlsyG+olHe5v/Kmz7IuPl1f2srIBIGa99TSCr6L9hnbb3aAF3+7
+         jwQVBLxZUd0poP4OTvdyvaXAcoFPG0NUgHIy0TtZkh6NQwscGBiasnaCJr1FKG7q89
+         idqvool1J/+KhFGIlKiaaJfuWzeqjNG4qHdsqQ6qinPpo30Hx0EcRX2ZajyWsmJQ1Z
+         gY0Grhw2keLHki7LYl041p8iQvbIGS1AWPOJVaD/V5TKHRrK/f2XgmoZE/68zKLuHN
+         aZLmdlfIXPf3oiQ+gZNBTwts31Muj29ntLI+YUfSVyotHDtPjYuknK4XIMTP9hBXYH
+         LKDrPeJAdyliQ==
 From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
+Cc:     Marc Zyngier <maz@kernel.org>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
+        linux-acpi@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Fang Xiang <fangxiang3@xiaomi.com>
-Subject: [PATCH v3 2/5] irqchip/gic-v3: Enable non-coherent redistributors/ITSes DT probing
-Date:   Fri,  6 Oct 2023 14:59:26 +0200
-Message-Id: <20231006125929.48591-3-lpieralisi@kernel.org>
+Subject: [PATCH v3 3/5] irqchip/gic-v3-its: Split allocation from initialisation of its_node
+Date:   Fri,  6 Oct 2023 14:59:27 +0200
+Message-Id: <20231006125929.48591-4-lpieralisi@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231006125929.48591-1-lpieralisi@kernel.org>
 References: <20230905104721.52199-1-lpieralisi@kernel.org>
@@ -57,146 +55,317 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GIC architecture specification defines a set of registers
-for redistributors and ITSes that control the sharebility and
-cacheability attributes of redistributors/ITSes initiator ports
-on the interconnect (GICR_[V]PROPBASER, GICR_[V]PENDBASER,
-GITS_BASER<n>).
+From: Marc Zyngier <maz@kernel.org>
 
-Architecturally the GIC provides a means to drive shareability
-and cacheability attributes signals and related IWB/OWB/ISH barriers
-but it is not mandatory for designs to wire up the corresponding
-interconnect signals that control the cacheability/shareability
-of transactions.
+In order to pave the way for more fancy quirk handling without making
+more of a mess of this terrible driver, split the allocation of the
+ITS descriptor (its_node) from the actual probing.
 
-Redistributors and ITSes interconnect ports can be connected to
-non-coherent interconnects that are not able to manage the
-shareability/cacheability attributes; this implicitly makes
-the redistributors and ITSes non-coherent observers.
+This will allow firmware-specific hooks to be added between these
+two points.
 
-So far, the GIC driver on probe executes a write to "probe" for
-the redistributors and ITSes registers shareability bitfields
-by writing a value (ie InnerShareable - the shareability domain the
-CPUs are in) and check it back to detect whether the value sticks or
-not; this hinges on a GIC programming model behaviour that predates the
-current specifications, that just define shareability bits as writeable
-but do not guarantee that writing certain shareability values
-enable the expected behaviour for the redistributors/ITSes
-memory interconnect ports.
-
-To enable non-coherent GIC designs, introduce the "dma-noncoherent"
-device tree property to allow firmware to describe redistributors and
-ITSes as non-coherent observers on the memory interconnect and use the
-property to force the shareability attributes to be programmed into the
-redistributors and ITSes registers through the GIC quirks mechanism.
-
-Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/irqchip/irq-gic-common.h |  4 ++++
- drivers/irqchip/irq-gic-v3-its.c | 21 +++++++++++++++++----
- drivers/irqchip/irq-gic-v3.c     | 13 +++++++++++++
- 3 files changed, 34 insertions(+), 4 deletions(-)
+ drivers/irqchip/irq-gic-v3-its.c | 149 ++++++++++++++++++-------------
+ 1 file changed, 89 insertions(+), 60 deletions(-)
 
-diff --git a/drivers/irqchip/irq-gic-common.h b/drivers/irqchip/irq-gic-common.h
-index 3db4592cda1c..f407cce9ecaa 100644
---- a/drivers/irqchip/irq-gic-common.h
-+++ b/drivers/irqchip/irq-gic-common.h
-@@ -29,4 +29,8 @@ void gic_enable_quirks(u32 iidr, const struct gic_quirk *quirks,
- void gic_enable_of_quirks(const struct device_node *np,
- 			  const struct gic_quirk *quirks, void *data);
- 
-+#define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING    (1 << 0)
-+#define RDIST_FLAGS_RD_TABLES_PREALLOCATED     (1 << 1)
-+#define RDIST_FLAGS_FORCE_NON_SHAREABLE        (1 << 2)
-+
- #endif /* _IRQ_GIC_COMMON_H */
 diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index e0c2b10d154d..adde347dc890 100644
+index adde347dc890..75a2dd550625 100644
 --- a/drivers/irqchip/irq-gic-v3-its.c
 +++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -44,10 +44,6 @@
- #define ITS_FLAGS_WORKAROUND_CAVIUM_23144	(1ULL << 2)
- #define ITS_FLAGS_FORCE_NON_SHAREABLE		(1ULL << 3)
+@@ -4965,7 +4965,7 @@ static void __init __iomem *its_map_one(struct resource *res, int *err)
+ 	return NULL;
+ }
  
--#define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
--#define RDIST_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
--#define RDIST_FLAGS_FORCE_NON_SHAREABLE		(1 << 2)
+-static int its_init_domain(struct fwnode_handle *handle, struct its_node *its)
++static int its_init_domain(struct its_node *its)
+ {
+ 	struct irq_domain *inner_domain;
+ 	struct msi_domain_info *info;
+@@ -4979,7 +4979,7 @@ static int its_init_domain(struct fwnode_handle *handle, struct its_node *its)
+ 
+ 	inner_domain = irq_domain_create_hierarchy(its_parent,
+ 						   its->msi_domain_flags, 0,
+-						   handle, &its_domain_ops,
++						   its->fwnode_handle, &its_domain_ops,
+ 						   info);
+ 	if (!inner_domain) {
+ 		kfree(info);
+@@ -5030,8 +5030,7 @@ static int its_init_vpe_domain(void)
+ 	return 0;
+ }
+ 
+-static int __init its_compute_its_list_map(struct resource *res,
+-					   void __iomem *its_base)
++static int __init its_compute_its_list_map(struct its_node *its)
+ {
+ 	int its_number;
+ 	u32 ctlr;
+@@ -5045,15 +5044,15 @@ static int __init its_compute_its_list_map(struct resource *res,
+ 	its_number = find_first_zero_bit(&its_list_map, GICv4_ITS_LIST_MAX);
+ 	if (its_number >= GICv4_ITS_LIST_MAX) {
+ 		pr_err("ITS@%pa: No ITSList entry available!\n",
+-		       &res->start);
++		       &its->phys_base);
+ 		return -EINVAL;
+ 	}
+ 
+-	ctlr = readl_relaxed(its_base + GITS_CTLR);
++	ctlr = readl_relaxed(its->base + GITS_CTLR);
+ 	ctlr &= ~GITS_CTLR_ITS_NUMBER;
+ 	ctlr |= its_number << GITS_CTLR_ITS_NUMBER_SHIFT;
+-	writel_relaxed(ctlr, its_base + GITS_CTLR);
+-	ctlr = readl_relaxed(its_base + GITS_CTLR);
++	writel_relaxed(ctlr, its->base + GITS_CTLR);
++	ctlr = readl_relaxed(its->base + GITS_CTLR);
+ 	if ((ctlr & GITS_CTLR_ITS_NUMBER) != (its_number << GITS_CTLR_ITS_NUMBER_SHIFT)) {
+ 		its_number = ctlr & GITS_CTLR_ITS_NUMBER;
+ 		its_number >>= GITS_CTLR_ITS_NUMBER_SHIFT;
+@@ -5061,75 +5060,50 @@ static int __init its_compute_its_list_map(struct resource *res,
+ 
+ 	if (test_and_set_bit(its_number, &its_list_map)) {
+ 		pr_err("ITS@%pa: Duplicate ITSList entry %d\n",
+-		       &res->start, its_number);
++		       &its->phys_base, its_number);
+ 		return -EINVAL;
+ 	}
+ 
+ 	return its_number;
+ }
+ 
+-static int __init its_probe_one(struct resource *res,
+-				struct fwnode_handle *handle, int numa_node)
++static int __init its_probe_one(struct its_node *its)
+ {
+-	struct its_node *its;
+-	void __iomem *its_base;
+-	u64 baser, tmp, typer;
++	u64 baser, tmp;
+ 	struct page *page;
+ 	u32 ctlr;
+ 	int err;
+ 
+-	its_base = its_map_one(res, &err);
+-	if (!its_base)
+-		return err;
 -
- #define RD_LOCAL_LPI_ENABLED                    BIT(0)
- #define RD_LOCAL_PENDTABLE_PREALLOCATED         BIT(1)
- #define RD_LOCAL_MEMRESERVE_DONE                BIT(2)
-@@ -4754,6 +4750,14 @@ static bool __maybe_unused its_enable_rk3588001(void *data)
- 	return true;
+-	pr_info("ITS %pR\n", res);
+-
+-	its = kzalloc(sizeof(*its), GFP_KERNEL);
+-	if (!its) {
+-		err = -ENOMEM;
+-		goto out_unmap;
+-	}
+-
+-	raw_spin_lock_init(&its->lock);
+-	mutex_init(&its->dev_alloc_lock);
+-	INIT_LIST_HEAD(&its->entry);
+-	INIT_LIST_HEAD(&its->its_device_list);
+-	typer = gic_read_typer(its_base + GITS_TYPER);
+-	its->typer = typer;
+-	its->base = its_base;
+-	its->phys_base = res->start;
+ 	if (is_v4(its)) {
+-		if (!(typer & GITS_TYPER_VMOVP)) {
+-			err = its_compute_its_list_map(res, its_base);
++		if (!(its->typer & GITS_TYPER_VMOVP)) {
++			err = its_compute_its_list_map(its);
+ 			if (err < 0)
+-				goto out_free_its;
++				goto out;
+ 
+ 			its->list_nr = err;
+ 
+ 			pr_info("ITS@%pa: Using ITS number %d\n",
+-				&res->start, err);
++				&its->phys_base, err);
+ 		} else {
+-			pr_info("ITS@%pa: Single VMOVP capable\n", &res->start);
++			pr_info("ITS@%pa: Single VMOVP capable\n", &its->phys_base);
+ 		}
+ 
+ 		if (is_v4_1(its)) {
+-			u32 svpet = FIELD_GET(GITS_TYPER_SVPET, typer);
++			u32 svpet = FIELD_GET(GITS_TYPER_SVPET, its->typer);
+ 
+-			its->sgir_base = ioremap(res->start + SZ_128K, SZ_64K);
++			its->sgir_base = ioremap(its->phys_base + SZ_128K, SZ_64K);
+ 			if (!its->sgir_base) {
+ 				err = -ENOMEM;
+-				goto out_free_its;
++				goto out;
+ 			}
+ 
+-			its->mpidr = readl_relaxed(its_base + GITS_MPIDR);
++			its->mpidr = readl_relaxed(its->base + GITS_MPIDR);
+ 
+ 			pr_info("ITS@%pa: Using GICv4.1 mode %08x %08x\n",
+-				&res->start, its->mpidr, svpet);
++				&its->phys_base, its->mpidr, svpet);
+ 		}
+ 	}
+ 
+-	its->numa_node = numa_node;
+-
+ 	page = alloc_pages_node(its->numa_node, GFP_KERNEL | __GFP_ZERO,
+ 				get_order(ITS_CMD_QUEUE_SZ));
+ 	if (!page) {
+@@ -5138,12 +5112,9 @@ static int __init its_probe_one(struct resource *res,
+ 	}
+ 	its->cmd_base = (void *)page_address(page);
+ 	its->cmd_write = its->cmd_base;
+-	its->fwnode_handle = handle;
+ 	its->get_msi_base = its_irq_get_msi_base;
+ 	its->msi_domain_flags = IRQ_DOMAIN_FLAG_ISOLATED_MSI;
+ 
+-	its_enable_quirks(its);
+-
+ 	err = its_alloc_tables(its);
+ 	if (err)
+ 		goto out_free_cmd;
+@@ -5187,7 +5158,7 @@ static int __init its_probe_one(struct resource *res,
+ 		ctlr |= GITS_CTLR_ImDe;
+ 	writel_relaxed(ctlr, its->base + GITS_CTLR);
+ 
+-	err = its_init_domain(handle, its);
++	err = its_init_domain(its);
+ 	if (err)
+ 		goto out_free_tables;
+ 
+@@ -5204,11 +5175,8 @@ static int __init its_probe_one(struct resource *res,
+ out_unmap_sgir:
+ 	if (its->sgir_base)
+ 		iounmap(its->sgir_base);
+-out_free_its:
+-	kfree(its);
+-out_unmap:
+-	iounmap(its_base);
+-	pr_err("ITS@%pa: failed probing (%d)\n", &res->start, err);
++out:
++	pr_err("ITS@%pa: failed probing (%d)\n", &its->phys_base, err);
+ 	return err;
  }
  
-+static bool its_set_non_coherent(void *data)
+@@ -5369,10 +5337,53 @@ static const struct of_device_id its_device_id[] = {
+ 	{},
+ };
+ 
++static struct its_node __init *its_node_init(struct resource *res,
++					     struct fwnode_handle *handle, int numa_node)
 +{
-+	struct its_node *its = data;
++	void __iomem *its_base;
++	struct its_node *its;
++	int err;
 +
-+	its->flags |= ITS_FLAGS_FORCE_NON_SHAREABLE;
-+	return true;
++	its_base = its_map_one(res, &err);
++	if (!its_base)
++		return NULL;
++
++	pr_info("ITS %pR\n", res);
++
++	its = kzalloc(sizeof(*its), GFP_KERNEL);
++	if (!its)
++		goto out_unmap;
++
++	raw_spin_lock_init(&its->lock);
++	mutex_init(&its->dev_alloc_lock);
++	INIT_LIST_HEAD(&its->entry);
++	INIT_LIST_HEAD(&its->its_device_list);
++
++	its->typer = gic_read_typer(its_base + GITS_TYPER);
++	its->base = its_base;
++	its->phys_base = res->start;
++
++	its->numa_node = numa_node;
++	its->fwnode_handle = handle;
++
++	return its;
++
++out_unmap:
++	iounmap(its_base);
++	return NULL;
 +}
 +
- static const struct gic_quirk its_quirks[] = {
- #ifdef CONFIG_CAVIUM_ERRATUM_22375
- 	{
-@@ -4808,6 +4812,11 @@ static const struct gic_quirk its_quirks[] = {
- 		.init   = its_enable_rk3588001,
- 	},
- #endif
-+	{
-+		.desc   = "ITS: non-coherent attribute",
-+		.property = "dma-noncoherent",
-+		.init   = its_set_non_coherent,
-+	},
- 	{
- 	}
- };
-@@ -4817,6 +4826,10 @@ static void its_enable_quirks(struct its_node *its)
- 	u32 iidr = readl_relaxed(its->base + GITS_IIDR);
- 
- 	gic_enable_quirks(iidr, its_quirks, its);
-+
-+	if (is_of_node(its->fwnode_handle))
-+		gic_enable_of_quirks(to_of_node(its->fwnode_handle),
-+				     its_quirks, its);
- }
- 
- static int its_save_disable(void)
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index eedfa8e9f077..f59ac9586b7b 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -1857,6 +1857,14 @@ static bool gic_enable_quirk_arm64_2941627(void *data)
- 	return true;
- }
- 
-+static bool rd_set_non_coherent(void *data)
++static void its_node_destroy(struct its_node *its)
 +{
-+	struct gic_chip_data *d = data;
-+
-+	d->rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
-+	return true;
++	iounmap(its->base);
++	kfree(its);
 +}
 +
- static const struct gic_quirk gic_quirks[] = {
- 	{
- 		.desc	= "GICv3: Qualcomm MSM8996 broken firmware",
-@@ -1923,6 +1931,11 @@ static const struct gic_quirk gic_quirks[] = {
- 		.mask	= 0xff0f0fff,
- 		.init	= gic_enable_quirk_arm64_2941627,
- 	},
-+	{
-+		.desc   = "GICv3: non-coherent attribute",
-+		.property = "dma-noncoherent",
-+		.init   = rd_set_non_coherent,
-+	},
- 	{
+ static int __init its_of_probe(struct device_node *node)
+ {
+ 	struct device_node *np;
+ 	struct resource res;
++	int err;
+ 
+ 	/*
+ 	 * Make sure *all* the ITS are reset before we probe any, as
+@@ -5382,8 +5393,6 @@ static int __init its_of_probe(struct device_node *node)
+ 	 */
+ 	for (np = of_find_matching_node(node, its_device_id); np;
+ 	     np = of_find_matching_node(np, its_device_id)) {
+-		int err;
+-
+ 		if (!of_device_is_available(np) ||
+ 		    !of_property_read_bool(np, "msi-controller") ||
+ 		    of_address_to_resource(np, 0, &res))
+@@ -5396,6 +5405,8 @@ static int __init its_of_probe(struct device_node *node)
+ 
+ 	for (np = of_find_matching_node(node, its_device_id); np;
+ 	     np = of_find_matching_node(np, its_device_id)) {
++		struct its_node *its;
++
+ 		if (!of_device_is_available(np))
+ 			continue;
+ 		if (!of_property_read_bool(np, "msi-controller")) {
+@@ -5409,7 +5420,17 @@ static int __init its_of_probe(struct device_node *node)
+ 			continue;
+ 		}
+ 
+-		its_probe_one(&res, &np->fwnode, of_node_to_nid(np));
++
++		its = its_node_init(&res, &np->fwnode, of_node_to_nid(np));
++		if (!its)
++			return -ENOMEM;
++
++		its_enable_quirks(its);
++		err = its_probe_one(its);
++		if (err)  {
++			its_node_destroy(its);
++			return err;
++		}
  	}
- };
+ 	return 0;
+ }
+@@ -5521,6 +5542,7 @@ static int __init gic_acpi_parse_madt_its(union acpi_subtable_headers *header,
+ {
+ 	struct acpi_madt_generic_translator *its_entry;
+ 	struct fwnode_handle *dom_handle;
++	struct its_node *its;
+ 	struct resource res;
+ 	int err;
+ 
+@@ -5545,11 +5567,18 @@ static int __init gic_acpi_parse_madt_its(union acpi_subtable_headers *header,
+ 		goto dom_err;
+ 	}
+ 
+-	err = its_probe_one(&res, dom_handle,
+-			acpi_get_its_numa_node(its_entry->translation_id));
++	its = its_node_init(&res, dom_handle,
++			    acpi_get_its_numa_node(its_entry->translation_id));
++	if (!its) {
++		err = -ENOMEM;
++		goto node_err;
++	}
++
++	err = its_probe_one(its);
+ 	if (!err)
+ 		return 0;
+ 
++node_err:
+ 	iort_deregister_domain_token(its_entry->translation_id);
+ dom_err:
+ 	irq_domain_free_fwnode(dom_handle);
 -- 
 2.34.1
 
