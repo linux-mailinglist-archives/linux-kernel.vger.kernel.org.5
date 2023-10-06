@@ -2,163 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCEEF7BBD11
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F61B7BBD1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbjJFQm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
+        id S233017AbjJFQnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233020AbjJFQlm (ORCPT
+        with ESMTP id S233104AbjJFQnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:41:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF0C11D;
-        Fri,  6 Oct 2023 09:41:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696610497; x=1728146497;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=oCB2iayETAThIUo1Mi99No7tmrulj+3bPWY5sR/v+X0=;
-  b=FmJzlKJILEPHGrQQR6yJK+ptuttvbkEBnCiEvG90QANIc6BgEM5c9KcG
-   r0gA6ZJvqmyGeSOc2XNV/pyr1s/aLC/Izjc+RjsZdgGQHFkGjsWWTCzOb
-   t/OpEEIYwOgIxbtvVFzLBtoIhC2qtCGVMdSbzm2auKuLALpmLmbsCVo5m
-   K2gI9c++87XXsu+Ku2CHzSd32FUnTNxfQMKiydus8CsJ6BJdO39rJu8mZ
-   Uswa93fPami2JyAF1DR5ZcCVj3heLH9KpWrRB9/g3s2uFR8TOAaaVDctJ
-   bxvNnMn4JytjBaGeARWIdTqA3gT1lkMABm0fEr0/+N03x1p3Lzz75dCpl
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="364063249"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="364063249"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 09:41:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="842892903"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="842892903"
-Received: from rchatre-ws.ostc.intel.com ([10.54.69.144])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 09:41:28 -0700
-From:   Reinette Chatre <reinette.chatre@intel.com>
-To:     jgg@nvidia.com, yishaih@nvidia.com,
-        shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
-        alex.williamson@redhat.com
-Cc:     kvm@vger.kernel.org, dave.jiang@intel.com, jing2.liu@intel.com,
-        ashok.raj@intel.com, fenghua.yu@intel.com,
-        tom.zanussi@linux.intel.com, reinette.chatre@intel.com,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Subject: [RFC PATCH V2 18/18] vfio/pci: Support IMS cookie modification
-Date:   Fri,  6 Oct 2023 09:41:13 -0700
-Message-Id: <edc3856829899b387904d77aea1b0e707488e0f8.1696609476.git.reinette.chatre@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1696609476.git.reinette.chatre@intel.com>
-References: <cover.1696609476.git.reinette.chatre@intel.com>
+        Fri, 6 Oct 2023 12:43:19 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC24191;
+        Fri,  6 Oct 2023 09:42:45 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396Et2vt006118;
+        Fri, 6 Oct 2023 16:42:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=HKd9xrK3zkUUSOIzOYk53A/BFWHivrHqCJQpned/qx8=;
+ b=PN4u4UwVHbqq3pc6Y6QhRViGaM9k131KKUzFf8JXE8rGRkF5W2bk1aFWYtmcXPaP0wdV
+ +1V0sPe8+Pct6b70dpbE0c7PK9N/vKt1SirxBKi33WpQbQSk/VF/J2Zh8y312qZqrDim
+ P8IMW3Ip64HYca9uk3K/54hIIF/KVSdhebRvQOd8yIvZAr2fyzD0BlHRTL9dR0yzt68T
+ LkKOOmjqi1dbc9nnGTgQN8AUPHdwtz4v/sdfcIw6ITG35muqgkWa7EwEzU+g5yPaM1pK
+ iCtZGtbdKVRxLTQEZQfjYPbzYPsO5oC3vop+UB2tjtlt81YF1cqtaH0OM2t8agoc8eai aA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3thg7hvmpx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Oct 2023 16:42:22 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 396GgLZH013298
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 6 Oct 2023 16:42:21 GMT
+Received: from car-linux11.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 6 Oct 2023 09:42:20 -0700
+From:   Nikunj Kela <quic_nkela@quicinc.com>
+To:     <sudeep.holla@arm.com>
+CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        Nikunj Kela <quic_nkela@quicinc.com>
+Subject: [PATCH v5 0/2] Add qcom smc/hvc transport support
+Date:   Fri, 6 Oct 2023 09:42:04 -0700
+Message-ID: <20231006164206.40710-1-quic_nkela@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230718160833.36397-1-quic_nkela@quicinc.com>
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: XHvjQ-152ByeRUhpUpxxNChZhZTU_Bnr
+X-Proofpoint-ORIG-GUID: XHvjQ-152ByeRUhpUpxxNChZhZTU_Bnr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-06_12,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ priorityscore=1501 mlxscore=0 suspectscore=0 spamscore=0 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 adultscore=0 malwarescore=0
+ mlxlogscore=868 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310060125
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMS supports an implementation specific cookie that is associated
-with each interrupt. By default the IMS interrupt allocation backend
-will assign a default cookie to a new interrupt instance.
+This change augments smc transport to include support for Qualcomm virtual
+platforms by passing a parameter(capability-id) in the hypervisor call to
+identify which doorbell to assert. This parameter is dynamically generated
+at runtime on the device and insuitable to pass via the devicetree.
 
-Add support for a virtual device driver to set the interrupt instance
-specific cookie. For example, the virtual device driver may intercept
-the guest's MMIO write that configuresa a new PASID for a particular
-interrupt. Calling vfio_pci_ims_set_cookie() with the new PASID value
-as IMS cookie enables subsequent interrupts to be allocated with
-accurate data.
+The capability-id is stored by firmware in the shmem region.
 
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+This has been tested on ARM64 virtual Qualcomm platform.
+
 ---
- drivers/vfio/pci/vfio_pci_intrs.c | 53 +++++++++++++++++++++++++++++++
- include/linux/vfio_pci_core.h     |  3 ++
- 2 files changed, 56 insertions(+)
+v5 -> changed compatible, removed polling support patch,
+      make use of smc-id binding for function-id
 
-diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
-index df458aed2175..e9e46633af65 100644
---- a/drivers/vfio/pci/vfio_pci_intrs.c
-+++ b/drivers/vfio/pci/vfio_pci_intrs.c
-@@ -1228,6 +1228,59 @@ int vfio_pci_ims_hwirq(struct vfio_pci_intr_ctx *intr_ctx, unsigned int vector)
- }
- EXPORT_SYMBOL_GPL(vfio_pci_ims_hwirq);
- 
-+/*
-+ * vfio_pci_ims_set_cookie() - Set unique cookie for vector.
-+ * @intr_ctx:	Interrupt context.
-+ * @vector:	Vector.
-+ * @icookie:	New cookie for @vector.
-+ *
-+ * When new IMS interrupt is allocated for @vector it will be
-+ * assigned @icookie.
-+ */
-+int vfio_pci_ims_set_cookie(struct vfio_pci_intr_ctx *intr_ctx,
-+			    unsigned int vector,
-+			    union msi_instance_cookie *icookie)
-+{
-+	struct vfio_pci_irq_ctx *ctx;
-+	int ret = -EINVAL;
-+
-+	mutex_lock(&intr_ctx->igate);
-+
-+	if (!intr_ctx->ims_backed_irq)
-+		goto out_unlock;
-+
-+	ctx = vfio_irq_ctx_get(intr_ctx, vector);
-+	if (ctx) {
-+		if (WARN_ON_ONCE(ctx->emulated)) {
-+			ret = -EINVAL;
-+			goto out_unlock;
-+		}
-+		ctx->icookie = *icookie;
-+		ret = 0;
-+		goto out_unlock;
-+	}
-+
-+	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL_ACCOUNT);
-+	if (!ctx) {
-+		ret = -ENOMEM;
-+		goto out_unlock;
-+	}
-+
-+	ctx->icookie = *icookie;
-+	ret = xa_insert(&intr_ctx->ctx, vector, ctx, GFP_KERNEL_ACCOUNT);
-+	if (ret) {
-+		kfree(ctx);
-+		goto out_unlock;
-+	}
-+
-+	ret = 0;
-+
-+out_unlock:
-+	mutex_unlock(&intr_ctx->igate);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(vfio_pci_ims_set_cookie);
-+
- int vfio_pci_set_irqs_ioctl(struct vfio_pci_intr_ctx *intr_ctx, uint32_t flags,
- 			    unsigned int index, unsigned int start,
- 			    unsigned int count, void *data)
-diff --git a/include/linux/vfio_pci_core.h b/include/linux/vfio_pci_core.h
-index c6e399b39e90..32c2145ffdb5 100644
---- a/include/linux/vfio_pci_core.h
-+++ b/include/linux/vfio_pci_core.h
-@@ -168,6 +168,9 @@ int vfio_pci_ims_init_intr_ctx(struct vfio_device *vdev,
- 			       struct pci_dev *pdev,
- 			       union msi_instance_cookie *default_cookie);
- int vfio_pci_ims_hwirq(struct vfio_pci_intr_ctx *intr_ctx, unsigned int vector);
-+int vfio_pci_ims_set_cookie(struct vfio_pci_intr_ctx *intr_ctx,
-+			    unsigned int vector,
-+			    union msi_instance_cookie *icookie);
- void vfio_pci_ims_release_intr_ctx(struct vfio_pci_intr_ctx *intr_ctx);
- void vfio_pci_send_signal(struct vfio_pci_intr_ctx *intr_ctx, unsigned int vector);
- int vfio_pci_set_emulated(struct vfio_pci_intr_ctx *intr_ctx,
+v4 -> port the changes into smc.c
+
+v3 -> fix the compilation error reported by the test bot,
+      add support for polling based instances
+
+v2 -> use allOf construct in dtb schema,
+      remove wrappers from mutexes,
+      use architecture independent channel layout
+
+v1 -> original patches
+
+Nikunj Kela (2):
+  dt-bindings: arm: Add new compatible for smc/hvc transport for SCMI
+  firmware: arm_scmi: Add qcom smc/hvc transport support
+
+ .../bindings/firmware/arm,scmi.yaml           |  4 +++
+ drivers/firmware/arm_scmi/driver.c            |  1 +
+ drivers/firmware/arm_scmi/smc.c               | 33 +++++++++++++++++--
+ 3 files changed, 36 insertions(+), 2 deletions(-)
+
 -- 
-2.34.1
+2.17.1
 
