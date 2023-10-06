@@ -2,205 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEF07BB99C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2EF7BB99E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbjJFNpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
+        id S232624AbjJFNp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232489AbjJFNpT (ORCPT
+        with ESMTP id S232545AbjJFNps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:45:19 -0400
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A24A6;
-        Fri,  6 Oct 2023 06:45:16 -0700 (PDT)
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 5F65E83F72;
-        Fri,  6 Oct 2023 15:45:15 +0200 (CEST)
-From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Fri, 06 Oct 2023 15:44:30 +0200
-Subject: [PATCH RFT v6 6/6] input: ads7846: Move wait_for_sync() logic to
- driver
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231006-pxa-gpio-v6-6-981b4910d599@skole.hr>
-References: <20231006-pxa-gpio-v6-0-981b4910d599@skole.hr>
-In-Reply-To: <20231006-pxa-gpio-v6-0-981b4910d599@skole.hr>
-To:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-spi@vger.kernel.org,
-        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4335;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=WwErEB93WBzHtWVtjMPvyswbjztvxyH9/d5QcCsmPgU=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlIA9dQzEhg6l+OrzvF2JShhkoAwCrJEaY0qPfq
- gZNy0RyIi+JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSAPXQAKCRCaEZ6wQi2W
- 4aVDEACQfgzF2JA5g5+/dfFTyPeP0PogzvS5djifnaCN3JXzeeIoGz1pU4mb/GKYWVi9mMKLTlr
- VPt6O8txKZnXT5QEoEj+U6TWF/LHHxio+PAsAxcbBMSEnS+dRQ61Dl/lbr2+9aAxgoWY7Bld509
- EKvs6Ekyw1paOlFd6m3MyghWmJUfOq7Juy4eGZJZo9vsT4kyJt9fh1uI19Fh8nlI29xzWKNu9Iy
- Sv2iQ9rbSli9QmJ0P59ZXElNrYXFbug4xAcR0AVKYGS2ChY1RTB2eVHE8vHjEaRos5Qzh6i3QQN
- +xpPKrpZgyDeIxr53qcb3NEweUl14AYck44Zcy6XfW3Kc71VGw5Y/RMvfziRHApAwuwPXVxtKul
- LZY1KOwZQjcNGx3Y9TIk+qRUQP7XvKonUnIALLmTvCas7Ra7vQt64Y1pBQxVzcxNy7sIoLFI8Op
- CltdNofYhKksbhGIOd/Fgu/NlfnIxVk0A4OY1lhCxDXGXDtiroHylTSZmi2uK+g/l3SDhxInrqB
- ky6o/tVci3yGmuEEd7EnwgAdanlUCxy4S2fOm+QLhWKSvGcsLrxb5A119ZL5BpzzPtAhRz5ARDk
- CTxQIrdQr2UseEUle2BO9EodzcpMHUooUV6tFeH0LyHjjTRXZIAbM1puEtO13WR5G8ohuudp8Xc
- oPO56adG7O8KNvQ==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 6 Oct 2023 09:45:48 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F397181
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 06:45:35 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-3217fdf913dso1583510f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 06:45:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696599933; x=1697204733; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OtrAKvkMflYTL+omQBnC5NvMsnVi6sQ3TFEd0qd0ZG0=;
+        b=O4T9lU/mURNyyyqIs88yj3Vtxog5kQ6+cPcru/PnqPMoyolZ6wtZtc8rQo4JLpRKc9
+         +mMS9cDF3VNgS3AAXQAtgZgwPDaGKRIKg3+xBZWlck3tHQzYGT7xeKY12NBzfIzyqV0e
+         HkkJ0PKYvKlHsJLyBnyojVrtm6jIx+0gx8OkvZcuIh3e7dQ/ORcN3HeVh57MFyzzi7zO
+         DlFakDhbZqzgZqJP/P0eMOT6ZCD8g/Ep7VcWgBRlGLsrm9mXFpqX4s7YDTF7K1OR3ZpL
+         i+Vl4XdO6bT0VdZE5MwTTMZ6hVoYYAKqWs0aHXiAVhQCVAwA0KA7XpOhKQoJxPZofw8e
+         B9Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696599933; x=1697204733;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OtrAKvkMflYTL+omQBnC5NvMsnVi6sQ3TFEd0qd0ZG0=;
+        b=QK6OchyUsxw4k9jLEhnPHcA3/ChKJaxy45O22R7Gk8WiE4I3jKrWpNnD6PzjbJInH+
+         XI0tVLAQDSiIyyq5xNlsmhkX2QDJxoKNiKRRk9l+vCn05MLLMlozWhHwFv8NLV9aSBvl
+         eaqQj5E9GpBU8Z7wpz600Tg2PkXZWbXh625n7ZHLT0p/RPvhXcYVFCixPJn9RUJFC4CF
+         ps6s89bndMmHAGYi3SuG5UI+pdljhedbVBZ4YD2okpFhM+OSjFuDrOHxM75sVFn6mtzw
+         RconZ6gTkkUIeLmUHAztzKyfrNhv1K2G77weT20vKhEvEvbstG/Rx4NkVNpNCB5BOAi+
+         FVDg==
+X-Gm-Message-State: AOJu0Yy7duGhlwpI3Pm6/7Gpq2hLTJyDmk8h1AOiwUFZ0xMx/YaOj5Y8
+        aq7pgOiKSeDRRYYrDSW+OzbDeyRwUCk=
+X-Google-Smtp-Source: AGHT+IGb2cjEpqpBiIxzfPcD7K+9H+vfdX5CJqGEai4UM1Lm/lfEASgpnVc0FwnbuY0gHX3Q3GYs/ydoebc=
+X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:2691:23e9:f01f:964])
+ (user=glider job=sendgmr) by 2002:a5d:6549:0:b0:319:8430:f801 with SMTP id
+ z9-20020a5d6549000000b003198430f801mr52714wrv.2.1696599933422; Fri, 06 Oct
+ 2023 06:45:33 -0700 (PDT)
+Date:   Fri,  6 Oct 2023 15:45:24 +0200
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+Message-ID: <20231006134529.2816540-1-glider@google.com>
+Subject: [PATCH v6 0/5] Implement MTE tag compression for swapped pages
+From:   Alexander Potapenko <glider@google.com>
+To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
+        pcc@google.com, andreyknvl@gmail.com,
+        andriy.shevchenko@linux.intel.com, aleksander.lobakin@intel.com,
+        linux@rasmusvillemoes.dk, yury.norov@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If this code is left in the board file, the sync GPIO would have to be
-separated into another lookup table during conversion to the GPIO
-descriptor API (which is also done in this patch).
+Currently, when MTE pages are swapped out, the tags are kept in the
+memory, occupying PAGE_SIZE/32 bytes per page. This is especially
+problematic for devices that use zram-backed in-memory swap, because
+tags stored uncompressed in the heap effectively reduce the available
+amount of swap memory.
 
-The only user of this code (Sharp Spitz) is also converted in this
-patch.
+The RLE-based algorithm suggested by Evgenii Stepanov and implemented in
+this patch series is able to efficiently compress fixed-size tag buffers,
+resulting in practical compression ratio between 2.5x and 4x. In most
+cases it is possible to store the compressed data in 63-bit Xarray values,
+resulting in no extra memory allocations.
 
-Suggested-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Acked-by: Mark Brown <broonie@kernel.org>
-Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
- arch/arm/mach-pxa/spitz.c           | 12 ++----------
- drivers/input/touchscreen/ads7846.c | 22 +++++++++++++++-------
- include/linux/spi/ads7846.h         |  1 -
- 3 files changed, 17 insertions(+), 18 deletions(-)
+Our measurements show that the proposed algorithm provides better
+compression than existing kernel compression algorithms (LZ4, LZO,
+LZ4HC, ZSTD) can offer.
 
-diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index 554a4b9782c5..1df72d4d6a35 100644
---- a/arch/arm/mach-pxa/spitz.c
-+++ b/arch/arm/mach-pxa/spitz.c
-@@ -522,22 +522,12 @@ static inline void spitz_leds_init(void) {}
-  * SSP Devices
-  ******************************************************************************/
- #if defined(CONFIG_SPI_PXA2XX) || defined(CONFIG_SPI_PXA2XX_MODULE)
--static void spitz_ads7846_wait_for_hsync(void)
--{
--	while (gpio_get_value(SPITZ_GPIO_HSYNC))
--		cpu_relax();
--
--	while (!gpio_get_value(SPITZ_GPIO_HSYNC))
--		cpu_relax();
--}
--
- static struct ads7846_platform_data spitz_ads7846_info = {
- 	.model			= 7846,
- 	.vref_delay_usecs	= 100,
- 	.x_plate_ohms		= 419,
- 	.y_plate_ohms		= 486,
- 	.pressure_max		= 1024,
--	.wait_for_sync		= spitz_ads7846_wait_for_hsync,
- };
- 
- static struct gpiod_lookup_table spitz_ads7846_gpio_table = {
-@@ -545,6 +535,8 @@ static struct gpiod_lookup_table spitz_ads7846_gpio_table = {
- 	.table = {
- 		GPIO_LOOKUP("gpio-pxa", SPITZ_GPIO_TP_INT,
- 			    "pendown", GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP("gpio-pxa", SPITZ_GPIO_HSYNC,
-+			    "sync", GPIO_ACTIVE_LOW),
- 		{ }
- 	},
- };
-diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-index faea40dd66d0..139b0f3735d0 100644
---- a/drivers/input/touchscreen/ads7846.c
-+++ b/drivers/input/touchscreen/ads7846.c
-@@ -138,8 +138,7 @@ struct ads7846 {
- 	void			*filter_data;
- 	int			(*get_pendown_state)(void);
- 	struct gpio_desc	*gpio_pendown;
--
--	void			(*wait_for_sync)(void);
-+	struct gpio_desc	*sync;
- };
- 
- enum ads7846_filter {
-@@ -636,9 +635,15 @@ static const struct attribute_group ads784x_attr_group = {
- };
- 
- /*--------------------------------------------------------------------------*/
--
--static void null_wait_for_sync(void)
-+static void ads7846_wait_for_sync_gpio(struct ads7846 *ts)
- {
-+	if (!ts->sync)
-+		return;
-+	while (!gpiod_get_value(ts->sync))
-+		cpu_relax();
-+
-+	while (gpiod_get_value(ts->sync))
-+		cpu_relax();
- }
- 
- static int ads7846_debounce_filter(void *ads, int data_idx, int *val)
-@@ -803,7 +808,7 @@ static void ads7846_read_state(struct ads7846 *ts)
- 	packet->last_cmd_idx = 0;
- 
- 	while (true) {
--		ts->wait_for_sync();
-+		ads7846_wait_for_sync_gpio(ts);
- 
- 		m = &ts->msg[msg_idx];
- 		error = spi_sync(ts->spi, m);
-@@ -1261,8 +1266,6 @@ static int ads7846_probe(struct spi_device *spi)
- 		ts->penirq_recheck_delay_usecs =
- 				pdata->penirq_recheck_delay_usecs;
- 
--	ts->wait_for_sync = pdata->wait_for_sync ? : null_wait_for_sync;
--
- 	snprintf(ts->phys, sizeof(ts->phys), "%s/input0", dev_name(dev));
- 	snprintf(ts->name, sizeof(ts->name), "ADS%d Touchscreen", ts->model);
- 
-@@ -1361,6 +1364,11 @@ static int ads7846_probe(struct spi_device *spi)
- 	if (err)
- 		return err;
- 
-+	ts->sync = devm_gpiod_get_optional(dev, "sync", GPIOD_IN);
-+	if (IS_ERR(ts->sync))
-+		return dev_err_probe(dev, PTR_ERR(ts->sync),
-+				"Failed to get sync GPIO");
-+
- 	err = input_register_device(input_dev);
- 	if (err)
- 		return err;
-diff --git a/include/linux/spi/ads7846.h b/include/linux/spi/ads7846.h
-index a04c1c34c344..fa7c4f119023 100644
---- a/include/linux/spi/ads7846.h
-+++ b/include/linux/spi/ads7846.h
-@@ -38,7 +38,6 @@ struct ads7846_platform_data {
- 	int	gpio_pendown_debounce;	/* platform specific debounce time for
- 					 * the gpio_pendown */
- 	int	(*get_pendown_state)(void);
--	void	(*wait_for_sync)(void);
- 	bool	wakeup;
- 	unsigned long irq_flags;
- };
+To implement compression/decompression, we also extend <linux/bitmap.h>
+with methods to read/write bit values at arbitrary places in the map.
+
+We refactor arch/arm64/mm/mteswap.c to support both the compressed
+(CONFIG_ARM64_MTE_COMP) and non-compressed case. For the former, in
+addition to tag compression, we move tag allocation from kmalloc() to
+separate kmem caches, providing greater locality and relaxing the
+alignment requirements.
+
+v6:
+ - fixed comments by Yury Norov
+ - fixed handling of sizes divisible by MTE_GRANULES_PER_PAGE / 2
+   (caught while testing on a real device)
+
+v5:
+ - fixed comments by Andy Shevchenko, Catalin Marinas, and Yury Norov
+ - added support for 16K- and 64K pages
+ - more efficient bitmap_write() implementation
+
+v4:
+ - fixed a bunch of comments by Andy Shevchenko and Yury Norov
+ - added Documentation/arch/arm64/mte-tag-compression.rst
+
+v3:
+ - as suggested by Andy Shevchenko, use
+   bitmap_get_value()/bitmap_set_value() written by Syed Nayyar Waris
+ - switched to unsigned long to reduce typecasts
+ - simplified the compression code
+
+v2:
+ - as suggested by Yuri Norov, replace the poorly implemented struct
+   bitq with <linux/bitmap.h>
+
+
+
+Alexander Potapenko (4):
+  lib/test_bitmap: add tests for bitmap_{read,write}()
+  arm64: mte: implement CONFIG_ARM64_MTE_COMP
+  arm64: mte: add a test for MTE tags compression
+  arm64: mte: add compression support to mteswap.c
+
+Syed Nayyar Waris (1):
+  lib/bitmap: add bitmap_{read,write}()
+
+ Documentation/arch/arm64/index.rst            |   1 +
+ .../arch/arm64/mte-tag-compression.rst        | 266 +++++++++
+ arch/arm64/Kconfig                            |  21 +
+ arch/arm64/include/asm/mtecomp.h              |  13 +
+ arch/arm64/mm/Makefile                        |   7 +
+ arch/arm64/mm/mtecomp.c                       | 524 ++++++++++++++++++
+ arch/arm64/mm/mtecomp.h                       |  12 +
+ arch/arm64/mm/mteswap.c                       |  20 +-
+ arch/arm64/mm/mteswap.h                       |  12 +
+ arch/arm64/mm/mteswap_comp.c                  |  60 ++
+ arch/arm64/mm/mteswap_nocomp.c                |  38 ++
+ arch/arm64/mm/test_mtecomp.c                  | 377 +++++++++++++
+ include/linux/bitmap.h                        |  68 +++
+ lib/test_bitmap.c                             | 118 ++++
+ 14 files changed, 1526 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/arch/arm64/mte-tag-compression.rst
+ create mode 100644 arch/arm64/include/asm/mtecomp.h
+ create mode 100644 arch/arm64/mm/mtecomp.c
+ create mode 100644 arch/arm64/mm/mtecomp.h
+ create mode 100644 arch/arm64/mm/mteswap.h
+ create mode 100644 arch/arm64/mm/mteswap_comp.c
+ create mode 100644 arch/arm64/mm/mteswap_nocomp.c
+ create mode 100644 arch/arm64/mm/test_mtecomp.c
 
 -- 
-2.42.0
-
+2.42.0.609.gbb76f46606-goog
 
