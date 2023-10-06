@@ -2,630 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5DE7BC211
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E967BC213
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233346AbjJFWK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 18:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40674 "EHLO
+        id S233691AbjJFWLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 18:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233325AbjJFWK5 (ORCPT
+        with ESMTP id S233692AbjJFWLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 18:10:57 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411F3C5
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 15:10:52 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-59f4f80d084so30499177b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 15:10:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696630251; x=1697235051; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ktppJtCTQcZ9/MB8nl+vWtOVK6fcmn/rP9jX+FchFjA=;
-        b=wE9OrXfFgA40V9r1vivHSUIiv0YBCKYZPLMFQicHLJIwJzcX4Wx8/DBasX4QO9lMms
-         aKn2k5dGPXuSH76dCLoUTYYfYAXVBAShBh7AKg9NY9XPcZQQKkl+LJEVD2Qz53z1uq8p
-         u/ANEeMpjvTcsLatzHsMl+1pOnSWhZo5apkOwRdHFFvjjTFPBsRpkeITn6yblwzFh8Es
-         rjs8c7pEviUmaOdVBatJgEGQgoAbGBDJnCWbWjC2mbRTWqLgeuWiha42M9KklQsx+8IM
-         Ki6YecLG+kusx4SSApL3iUz3MuYTdsJci/bTLth/zieU/j4U0Him5WSONyjhrZk9u3qN
-         nB+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696630251; x=1697235051;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ktppJtCTQcZ9/MB8nl+vWtOVK6fcmn/rP9jX+FchFjA=;
-        b=Mu6Fx12IxDBw+XITVljdLZhpUQB2M5uAMTmRBX5oDnU15bjvkKVgRJUY6PoxRzmO6H
-         H9d9QYGQdNEoCKggnDksI1L3cjn5RTpeugWyy1lFjcnbE5y4QdtzmgtfSINCQmcqsF6b
-         smepRgaUMjOGytDqcLH9SABMABC/31JAHMg0myEC50oke/z2iaRPFq/+VdElY6YrcxPp
-         Rsr7PaAsE6UyM+X8lqhlPw+ThOKqyK7Za7tgG5IK1Zh60zPztp1EjKEOb8mXSXIwMWek
-         tLGMH+ucKyxC+euOs3GVwtQG/zjFwin73YCspSCBm07q77wHILr2CQoNCrjylJ3aMZ/L
-         610Q==
-X-Gm-Message-State: AOJu0Yzk7pAA4khkf3xHmChOOm9jTiK1LMgfX3OLg0+7qVn3SNBvIxCy
-        qnhU5N92bJ0bvYFmNun172CL6we+uWw2mP35WyJYHg==
-X-Google-Smtp-Source: AGHT+IHuWXI6b/tUF9p0CP5Mu3zkniNHWDBOkqRLijk6lNESjnD01M79V+nCxxq3w6uy65zorS/1InPzbcHP6oahEYo=
-X-Received: by 2002:a81:6907:0:b0:592:1bab:52bd with SMTP id
- e7-20020a816907000000b005921bab52bdmr9571122ywc.39.1696630251138; Fri, 06 Oct
- 2023 15:10:51 -0700 (PDT)
+        Fri, 6 Oct 2023 18:11:16 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DA3BE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 15:11:13 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qot2L-00036p-GK; Sat, 07 Oct 2023 00:11:09 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qot2K-00Bcel-VG; Sat, 07 Oct 2023 00:11:08 +0200
+Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qot2K-00Gj2M-Lv; Sat, 07 Oct 2023 00:11:08 +0200
+Date:   Sat, 7 Oct 2023 00:11:08 +0200
+From:   Michael Grzeschik <mgr@pengutronix.de>
+To:     Avichal Rakesh <arakesh@google.com>
+Cc:     dan.scally@ideasonboard.com, gregkh@linuxfoundation.org,
+        laurent.pinchart@ideasonboard.com, etalvala@google.com,
+        jchowdhary@google.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] usb: gadget: uvc: Allocate uvc_requests one at a
+ time
+Message-ID: <ZSCF/IEkVxnTImGM@pengutronix.de>
+References: <20230930184821.310143-1-arakesh@google.com>
+ <20231005180814.3278050-1-arakesh@google.com>
+ <20231005180814.3278050-2-arakesh@google.com>
 MIME-Version: 1.0
-References: <20231006213959.334439-1-robh@kernel.org>
-In-Reply-To: <20231006213959.334439-1-robh@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sat, 7 Oct 2023 01:10:39 +0300
-Message-ID: <CAA8EJpp7yKZP3SAHdZAJg57vbyRjYAS=vDEV-353mc9yzHe4vw@mail.gmail.com>
-Subject: Re: [PATCH] clk: Use device_get_match_data()
-To:     Rob Herring <robh@kernel.org>
-Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        David Lechner <david@lechnology.com>,
-        Sekhar Nori <nsekhar@ti.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Tero Kristo <kristo@kernel.org>, patches@opensource.cirrus.com,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Ef3RzvolJfkDMu+D"
+Content-Disposition: inline
+In-Reply-To: <20231005180814.3278050-2-arakesh@google.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mgr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 7 Oct 2023 at 00:41, Rob Herring <robh@kernel.org> wrote:
->
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/clk/clk-lochnagar.c             |  9 ++-------
->  drivers/clk/davinci/da8xx-cfgchip.c     |  8 +++-----
->  drivers/clk/davinci/pll.c               | 10 +++-------
->  drivers/clk/davinci/psc.c               | 10 +++-------
->  drivers/clk/qcom/gcc-msm8960.c          | 13 +++++--------
->  drivers/clk/qcom/gcc-msm8974.c          | 10 +++-------
->  drivers/clk/qcom/kpss-xcc.c             |  9 ++-------
->  drivers/clk/qcom/krait-cc.c             | 14 +++++---------
->  drivers/clk/qcom/mmcc-msm8960.c         | 16 +++++-----------
->  drivers/clk/qcom/mmcc-sdm660.c          |  8 ++------
->  drivers/clk/rockchip/clk-rk3399.c       |  9 ++-------
->  drivers/clk/samsung/clk-exynos-clkout.c |  8 +++-----
->  drivers/clk/ti/adpll.c                  | 14 ++++----------
->  13 files changed, 42 insertions(+), 96 deletions(-)
->
-> diff --git a/drivers/clk/clk-lochnagar.c b/drivers/clk/clk-lochnagar.c
-> index db468a62c8d7..5561a2c66b69 100644
-> --- a/drivers/clk/clk-lochnagar.c
-> +++ b/drivers/clk/clk-lochnagar.c
-> @@ -12,8 +12,8 @@
->  #include <linux/device.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> -#include <linux/of_device.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/regmap.h>
->
->  #include <linux/mfd/lochnagar1_regs.h>
-> @@ -242,22 +242,17 @@ static int lochnagar_clk_probe(struct platform_device *pdev)
->         };
->         struct device *dev = &pdev->dev;
->         struct lochnagar_clk_priv *priv;
-> -       const struct of_device_id *of_id;
->         struct lochnagar_clk *lclk;
->         struct lochnagar_config *conf;
->         int ret, i;
->
-> -       of_id = of_match_device(lochnagar_of_match, dev);
-> -       if (!of_id)
-> -               return -EINVAL;
-> -
->         priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
->         if (!priv)
->                 return -ENOMEM;
->
->         priv->dev = dev;
->         priv->regmap = dev_get_regmap(dev->parent, NULL);
-> -       conf = (struct lochnagar_config *)of_id->data;
-> +       conf = (struct lochnagar_config *)device_get_match_data(dev);
->
->         memcpy(priv->lclks, conf->clks, sizeof(priv->lclks));
->
-> diff --git a/drivers/clk/davinci/da8xx-cfgchip.c b/drivers/clk/davinci/da8xx-cfgchip.c
-> index e5b2cdfe88ce..ad2d0df43dc6 100644
-> --- a/drivers/clk/davinci/da8xx-cfgchip.c
-> +++ b/drivers/clk/davinci/da8xx-cfgchip.c
-> @@ -11,10 +11,10 @@
->  #include <linux/init.h>
->  #include <linux/mfd/da8xx-cfgchip.h>
->  #include <linux/mfd/syscon.h>
-> -#include <linux/of_device.h>
->  #include <linux/of.h>
->  #include <linux/platform_data/clk-da8xx-cfgchip.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
->
-> @@ -744,15 +744,13 @@ static int da8xx_cfgchip_probe(struct platform_device *pdev)
->  {
->         struct device *dev = &pdev->dev;
->         struct da8xx_cfgchip_clk_platform_data *pdata = dev->platform_data;
-> -       const struct of_device_id *of_id;
->         da8xx_cfgchip_init clk_init = NULL;
->         struct regmap *regmap = NULL;
->
-> -       of_id = of_match_device(da8xx_cfgchip_of_match, dev);
-> -       if (of_id) {
-> +       clk_init = device_get_match_data(dev);
-> +       if (clk_init) {
->                 struct device_node *parent;
->
-> -               clk_init = of_id->data;
->                 parent = of_get_parent(dev->of_node);
->                 regmap = syscon_node_to_regmap(parent);
->                 of_node_put(parent);
-> diff --git a/drivers/clk/davinci/pll.c b/drivers/clk/davinci/pll.c
-> index 87bdf8879045..5bbbb3a66477 100644
-> --- a/drivers/clk/davinci/pll.c
-> +++ b/drivers/clk/davinci/pll.c
-> @@ -18,11 +18,10 @@
->  #include <linux/kernel.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/notifier.h>
-> -#include <linux/of_address.h>
-> -#include <linux/of_device.h>
->  #include <linux/of.h>
->  #include <linux/platform_data/clk-davinci-pll.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
->  #include <linux/types.h>
-> @@ -892,14 +891,11 @@ static int davinci_pll_probe(struct platform_device *pdev)
->  {
->         struct device *dev = &pdev->dev;
->         struct davinci_pll_platform_data *pdata;
-> -       const struct of_device_id *of_id;
->         davinci_pll_init pll_init = NULL;
->         void __iomem *base;
->
-> -       of_id = of_match_device(davinci_pll_of_match, dev);
-> -       if (of_id)
-> -               pll_init = of_id->data;
-> -       else if (pdev->id_entry)
-> +       pll_init = device_get_match_data(dev);
-> +       if (!pll_init && pdev->id_entry)
->                 pll_init = (void *)pdev->id_entry->driver_data;
->
->         if (!pll_init) {
-> diff --git a/drivers/clk/davinci/psc.c b/drivers/clk/davinci/psc.c
-> index cd85d9f158b0..355d1be0b5d8 100644
-> --- a/drivers/clk/davinci/psc.c
-> +++ b/drivers/clk/davinci/psc.c
-> @@ -18,10 +18,9 @@
->  #include <linux/clk/davinci.h>
->  #include <linux/clkdev.h>
->  #include <linux/err.h>
-> -#include <linux/of_address.h>
-> -#include <linux/of_device.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/pm_clock.h>
->  #include <linux/pm_domain.h>
->  #include <linux/regmap.h>
-> @@ -517,15 +516,12 @@ static const struct platform_device_id davinci_psc_id_table[] = {
->  static int davinci_psc_probe(struct platform_device *pdev)
->  {
->         struct device *dev = &pdev->dev;
-> -       const struct of_device_id *of_id;
->         const struct davinci_psc_init_data *init_data = NULL;
->         void __iomem *base;
->         int ret;
->
-> -       of_id = of_match_device(davinci_psc_of_match, dev);
-> -       if (of_id)
-> -               init_data = of_id->data;
-> -       else if (pdev->id_entry)
-> +       init_data = device_get_match_data(dev);
-> +       if (!init_data && pdev->id_entry)
->                 init_data = (void *)pdev->id_entry->driver_data;
->
->         if (!init_data) {
-> diff --git a/drivers/clk/qcom/gcc-msm8960.c b/drivers/clk/qcom/gcc-msm8960.c
-> index dbc7093ab9cc..6236a458e4eb 100644
-> --- a/drivers/clk/qcom/gcc-msm8960.c
-> +++ b/drivers/clk/qcom/gcc-msm8960.c
-> @@ -7,9 +7,10 @@
->  #include <linux/bitops.h>
->  #include <linux/err.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> -#include <linux/of_device.h>
-> +#include <linux/of_platform.h>
->  #include <linux/clk-provider.h>
->  #include <linux/regmap.h>
->  #include <linux/reset-controller.h>
-> @@ -3716,14 +3717,10 @@ MODULE_DEVICE_TABLE(of, gcc_msm8960_match_table);
->  static int gcc_msm8960_probe(struct platform_device *pdev)
->  {
->         struct device *dev = &pdev->dev;
-> -       const struct of_device_id *match;
->         struct platform_device *tsens;
-> +       const struct qcom_cc_desc *desc = device_get_match_data(dev);
->         int ret;
->
-> -       match = of_match_device(gcc_msm8960_match_table, &pdev->dev);
-> -       if (!match)
-> -               return -EINVAL;
-> -
->         ret = qcom_cc_register_board_clk(dev, "cxo_board", "cxo", 19200000);
->         if (ret)
->                 return ret;
-> @@ -3732,11 +3729,11 @@ static int gcc_msm8960_probe(struct platform_device *pdev)
->         if (ret)
->                 return ret;
->
-> -       ret = qcom_cc_probe(pdev, match->data);
-> +       ret = qcom_cc_probe(pdev, desc);
->         if (ret)
->                 return ret;
->
-> -       if (match->data == &gcc_apq8064_desc) {
-> +       if (desc == &gcc_apq8064_desc) {
->                 hfpll1.d = &hfpll1_8064_data;
->                 hfpll_l2.d = &hfpll_l2_8064_data;
->         }
-> diff --git a/drivers/clk/qcom/gcc-msm8974.c b/drivers/clk/qcom/gcc-msm8974.c
-> index 0231c1efd286..b32e66714951 100644
-> --- a/drivers/clk/qcom/gcc-msm8974.c
-> +++ b/drivers/clk/qcom/gcc-msm8974.c
-> @@ -7,9 +7,9 @@
->  #include <linux/bitops.h>
->  #include <linux/err.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> -#include <linux/of_device.h>
->  #include <linux/clk-provider.h>
->  #include <linux/regmap.h>
->  #include <linux/reset-controller.h>
-> @@ -2875,14 +2875,10 @@ static int gcc_msm8974_probe(struct platform_device *pdev)
->  {
->         int ret;
->         struct device *dev = &pdev->dev;
-> -       const struct of_device_id *id;
-> -
-> -       id = of_match_device(gcc_msm8974_match_table, dev);
-> -       if (!id)
-> -               return -ENODEV;
-> +       const void *data = device_get_match_data(dev);
->
->         if (!of_device_is_compatible(dev->of_node, "qcom,gcc-msm8974")) {
-> -               if (id->data == &gcc_msm8226_desc)
-> +               if (data == &gcc_msm8226_desc)
->                         msm8226_clock_override();
->                 else
->                         msm8974_pro_clock_override();
-> diff --git a/drivers/clk/qcom/kpss-xcc.c b/drivers/clk/qcom/kpss-xcc.c
-> index 97358c98c6c9..23b0b11f0007 100644
-> --- a/drivers/clk/qcom/kpss-xcc.c
-> +++ b/drivers/clk/qcom/kpss-xcc.c
-> @@ -5,10 +5,10 @@
->  #include <linux/init.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/err.h>
->  #include <linux/io.h>
->  #include <linux/of.h>
-> -#include <linux/of_device.h>
->  #include <linux/clk.h>
->  #include <linux/clk-provider.h>
->
-> @@ -32,20 +32,15 @@ MODULE_DEVICE_TABLE(of, kpss_xcc_match_table);
->  static int kpss_xcc_driver_probe(struct platform_device *pdev)
->  {
->         struct device *dev = &pdev->dev;
-> -       const struct of_device_id *id;
->         void __iomem *base;
->         struct clk_hw *hw;
->         const char *name;
->
-> -       id = of_match_device(kpss_xcc_match_table, dev);
-> -       if (!id)
-> -               return -ENODEV;
-> -
->         base = devm_platform_ioremap_resource(pdev, 0);
->         if (IS_ERR(base))
->                 return PTR_ERR(base);
->
-> -       if (id->data) {
-> +       if (device_get_match_data(&pdev->dev)) {
->                 if (of_property_read_string_index(dev->of_node,
->                                                   "clock-output-names",
->                                                   0, &name))
-> diff --git a/drivers/clk/qcom/krait-cc.c b/drivers/clk/qcom/krait-cc.c
-> index 410ae8390f1c..ae325f4e1047 100644
-> --- a/drivers/clk/qcom/krait-cc.c
-> +++ b/drivers/clk/qcom/krait-cc.c
-> @@ -5,10 +5,10 @@
->  #include <linux/init.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/err.h>
->  #include <linux/io.h>
->  #include <linux/of.h>
-> -#include <linux/of_device.h>
->  #include <linux/clk.h>
->  #include <linux/clk-provider.h>
->  #include <linux/slab.h>
-> @@ -347,22 +347,18 @@ MODULE_DEVICE_TABLE(of, krait_cc_match_table);
->  static int krait_cc_probe(struct platform_device *pdev)
->  {
->         struct device *dev = &pdev->dev;
-> -       const struct of_device_id *id;
->         unsigned long cur_rate, aux_rate;
->         int cpu;
->         struct clk_hw *mux, *l2_pri_mux;
->         struct clk *clk, **clks;
-> -
-> -       id = of_match_device(krait_cc_match_table, dev);
-> -       if (!id)
-> -               return -ENODEV;
-> +       bool unique_aux = !!device_get_match_data(dev);
->
->         /* Rate is 1 because 0 causes problems for __clk_mux_determine_rate */
->         clk = clk_register_fixed_rate(dev, "qsb", NULL, 0, 1);
->         if (IS_ERR(clk))
->                 return PTR_ERR(clk);
->
-> -       if (!id->data) {
-> +       if (!unique_aux) {
->                 clk = clk_register_fixed_factor(dev, "acpu_aux",
->                                                 "gpll0_vote", 0, 1, 2);
->                 if (IS_ERR(clk))
-> @@ -375,13 +371,13 @@ static int krait_cc_probe(struct platform_device *pdev)
->                 return -ENOMEM;
->
->         for_each_possible_cpu(cpu) {
-> -               mux = krait_add_clks(dev, cpu, id->data);
-> +               mux = krait_add_clks(dev, cpu, unique_aux);
->                 if (IS_ERR(mux))
->                         return PTR_ERR(mux);
->                 clks[cpu] = mux->clk;
->         }
->
-> -       l2_pri_mux = krait_add_clks(dev, -1, id->data);
-> +       l2_pri_mux = krait_add_clks(dev, -1, unique_aux);
->         if (IS_ERR(l2_pri_mux))
->                 return PTR_ERR(l2_pri_mux);
->         clks[l2_mux] = l2_pri_mux->clk;
-> diff --git a/drivers/clk/qcom/mmcc-msm8960.c b/drivers/clk/qcom/mmcc-msm8960.c
-> index 6bf908a51f53..50638ab341ec 100644
-> --- a/drivers/clk/qcom/mmcc-msm8960.c
-> +++ b/drivers/clk/qcom/mmcc-msm8960.c
-> @@ -8,9 +8,9 @@
->  #include <linux/err.h>
->  #include <linux/delay.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> -#include <linux/of_device.h>
->  #include <linux/clk.h>
->  #include <linux/clk-provider.h>
->  #include <linux/regmap.h>
-> @@ -3105,30 +3105,24 @@ MODULE_DEVICE_TABLE(of, mmcc_msm8960_match_table);
->
->  static int mmcc_msm8960_probe(struct platform_device *pdev)
->  {
-> -       const struct of_device_id *match;
->         struct regmap *regmap;
-> -       bool is_8064;
->         struct device *dev = &pdev->dev;
-> +       const struct qcom_cc_desc *desc = device_get_match_data(dev);
->
-> -       match = of_match_device(mmcc_msm8960_match_table, dev);
-> -       if (!match)
-> -               return -EINVAL;
-> -
-> -       is_8064 = of_device_is_compatible(dev->of_node, "qcom,mmcc-apq8064");
 
-Can we please keep of_device_is_compatible here? It is more explicit
-and self-documenting.
+--Ef3RzvolJfkDMu+D
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also, it would be really nice to have per-platform patches, so that
-our maintainers can pick them, otherwise the risk of conflicts is
-pretty high.
+On Thu, Oct 05, 2023 at 11:08:13AM -0700, Avichal Rakesh wrote:
+>Currently, the uvc gadget driver allocates all uvc_requests as one array
+>and deallocates them all when the video stream stops. This includes
+>de-allocating all the usb_requests associated with those uvc_requests.
+>This can lead to use-after-free issues if any of those de-allocated
+>usb_requests were still owned by the usb controller.
+>
+>This patch is 1 of 2 patches addressing the use-after-free issue.
+>Instead of bulk allocating all uvc_requests as an array, this patch
+>allocates uvc_requests one at a time, which should allows for similar
+>granularity when deallocating the uvc_requests. This patch has no
+>functional changes other than allocating each uvc_request separately,
+>and similarly freeing each of them separately.
+>
+>Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.=
+com
+>Suggested-by: Michael Grzeschik <mgr@pengutronix.de>
 
-Otherwise:
+Please use my full address here. m.grzeschik@pengutronix.de
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> #msm part
+>Signed-off-by: Avichal Rakesh <arakesh@google.com>
+>---
+>v1 -> v2: Rebased to ToT
+>V2 -> V3: Fix email threading goof-up
+>
+> drivers/usb/gadget/function/uvc.h       |  3 +-
+> drivers/usb/gadget/function/uvc_video.c | 90 ++++++++++++++-----------
+> 2 files changed, 51 insertions(+), 42 deletions(-)
+>
+>diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/functi=
+on/uvc.h
+>index 989bc6b4e93d..993694da0bbc 100644
+>--- a/drivers/usb/gadget/function/uvc.h
+>+++ b/drivers/usb/gadget/function/uvc.h
+>@@ -81,6 +81,7 @@ struct uvc_request {
+> 	struct sg_table sgt;
+> 	u8 header[UVCG_REQUEST_HEADER_LEN];
+> 	struct uvc_buffer *last_buf;
+>+	struct list_head list;
+> };
+>
+> struct uvc_video {
+>@@ -102,7 +103,7 @@ struct uvc_video {
+>
+> 	/* Requests */
+> 	unsigned int req_size;
+>-	struct uvc_request *ureq;
+>+	struct list_head ureqs; /* all uvc_requests allocated by uvc_video */
+> 	struct list_head req_free;
+> 	spinlock_t req_lock;
+>
+>diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/=
+function/uvc_video.c
+>index 97d875c27dcf..3c4d286d81c0 100644
+>--- a/drivers/usb/gadget/function/uvc_video.c
+>+++ b/drivers/usb/gadget/function/uvc_video.c
+>@@ -227,6 +227,23 @@ uvc_video_encode_isoc(struct usb_request *req, struct=
+ uvc_video *video,
+>  * Request handling
+>  */
+>
+>+static void uvc_video_free_request(struct uvc_request *ureq, struct usb_e=
+p *ep)
+>+{
+>+	sg_free_table(&ureq->sgt);
+>+	if (ureq->req && ep) {
+>+		usb_ep_free_request(ep, ureq->req);
+>+		ureq->req =3D NULL;
+>+	}
+>+
+>+	kfree(ureq->req_buffer);
+>+	ureq->req_buffer =3D NULL;
+>+
+>+	if (!list_empty(&ureq->list))
+>+		list_del_init(&ureq->list);
+>+
+>+	kfree(ureq);
+>+}
+>+
+> static int uvcg_video_ep_queue(struct uvc_video *video, struct usb_reques=
+t *req)
+> {
+> 	int ret;
+>@@ -299,27 +316,13 @@ uvc_video_complete(struct usb_ep *ep, struct usb_req=
+uest *req)
+> static int
+> uvc_video_free_requests(struct uvc_video *video)
+> {
+>-	unsigned int i;
+>-
+>-	if (video->ureq) {
+>-		for (i =3D 0; i < video->uvc_num_requests; ++i) {
+>-			sg_free_table(&video->ureq[i].sgt);
+>-
+>-			if (video->ureq[i].req) {
+>-				usb_ep_free_request(video->ep, video->ureq[i].req);
+>-				video->ureq[i].req =3D NULL;
+>-			}
+>+	struct uvc_request *ureq, *temp;
+>
+>-			if (video->ureq[i].req_buffer) {
+>-				kfree(video->ureq[i].req_buffer);
+>-				video->ureq[i].req_buffer =3D NULL;
+>-			}
+>-		}
+>-
+>-		kfree(video->ureq);
+>-		video->ureq =3D NULL;
+>+	list_for_each_entry_safe(ureq, temp, &video->ureqs, list) {
+>+		uvc_video_free_request(ureq, video->ep);
+> 	}
 
-> -       if (is_8064) {
-> +       if (desc == &mmcc_apq8064_desc) {
->                 gfx3d_src.freq_tbl = clk_tbl_gfx3d_8064;
->                 gfx3d_src.clkr.hw.init = &gfx3d_8064_init;
->                 gfx3d_src.s[0].parent_map = mmcc_pxo_pll8_pll2_pll15_map;
->                 gfx3d_src.s[1].parent_map = mmcc_pxo_pll8_pll2_pll15_map;
->         }
+Please drop the extra braces.
+
 >
-> -       regmap = qcom_cc_map(pdev, match->data);
-> +       regmap = qcom_cc_map(pdev, desc);
->         if (IS_ERR(regmap))
->                 return PTR_ERR(regmap);
+>+	INIT_LIST_HEAD(&video->ureqs);
+> 	INIT_LIST_HEAD(&video->req_free);
+> 	video->req_size =3D 0;
+> 	return 0;
+>@@ -328,6 +331,7 @@ uvc_video_free_requests(struct uvc_video *video)
+> static int
+> uvc_video_alloc_requests(struct uvc_video *video)
+> {
+>+	struct uvc_request *ureq;
+> 	unsigned int req_size;
+> 	unsigned int i;
+> 	int ret =3D -ENOMEM;
+>@@ -338,29 +342,31 @@ uvc_video_alloc_requests(struct uvc_video *video)
+> 		 * max_t(unsigned int, video->ep->maxburst, 1)
+> 		 * (video->ep->mult);
 >
->         clk_pll_configure_sr(&pll15, regmap, &pll15_config, false);
+>-	video->ureq =3D kcalloc(video->uvc_num_requests, sizeof(struct uvc_reque=
+st), GFP_KERNEL);
+>-	if (video->ureq =3D=3D NULL)
+>-		return -ENOMEM;
+>-
+>-	for (i =3D 0; i < video->uvc_num_requests; ++i) {
+>-		video->ureq[i].req_buffer =3D kmalloc(req_size, GFP_KERNEL);
+>-		if (video->ureq[i].req_buffer =3D=3D NULL)
+>+	INIT_LIST_HEAD(&video->ureqs);
+>+	for (i =3D 0; i < video->uvc_num_requests; i++) {
+>+		ureq =3D kzalloc(sizeof(struct uvc_request), GFP_KERNEL);
+>+		if (ureq =3D=3D NULL)
+> 			goto error;
+>+		INIT_LIST_HEAD(&ureq->list);
+>+		list_add_tail(&ureq->list, &video->ureqs);
+>+	}
 >
-> -       return qcom_cc_really_probe(pdev, match->data, regmap);
-> +       return qcom_cc_really_probe(pdev, desc, regmap);
->  }
+>-		video->ureq[i].req =3D usb_ep_alloc_request(video->ep, GFP_KERNEL);
+>-		if (video->ureq[i].req =3D=3D NULL)
+>+	list_for_each_entry(ureq, &video->ureqs, list) {
+>+		ureq->req_buffer =3D kmalloc(req_size, GFP_KERNEL);
+>+		if (ureq->req_buffer =3D=3D NULL)
+> 			goto error;
+>-
+
+Instead of looping twice. Wouldn't it be possible to fill the
+just created ureq from the for loop here directly.
+
+>-		video->ureq[i].req->buf =3D video->ureq[i].req_buffer;
+>-		video->ureq[i].req->length =3D 0;
+>-		video->ureq[i].req->complete =3D uvc_video_complete;
+>-		video->ureq[i].req->context =3D &video->ureq[i];
+>-		video->ureq[i].video =3D video;
+>-		video->ureq[i].last_buf =3D NULL;
+>-
+>-		list_add_tail(&video->ureq[i].req->list, &video->req_free);
+>+		ureq->req =3D usb_ep_alloc_request(video->ep, GFP_KERNEL);
+>+		if (ureq->req =3D=3D NULL)
+>+			goto error;
+>+		ureq->req->buf =3D ureq->req_buffer;
+>+		ureq->req->length =3D 0;
+>+		ureq->req->complete =3D uvc_video_complete;
+>+		ureq->req->context =3D ureq;
+>+		ureq->video =3D video;
+>+		ureq->last_buf =3D NULL;
+
+Add an extra spare line just like in the code before.
+
+>+		list_add_tail(&ureq->req->list, &video->req_free);
+> 		/* req_size/PAGE_SIZE + 1 for overruns and + 1 for header */
+>-		sg_alloc_table(&video->ureq[i].sgt,
+>+		sg_alloc_table(&ureq->sgt,
+> 			       DIV_ROUND_UP(req_size - UVCG_REQUEST_HEADER_LEN,
+> 					    PAGE_SIZE) + 2, GFP_KERNEL);
+> 	}
+>@@ -504,7 +510,7 @@ static void uvcg_video_pump(struct work_struct *work)
+> int uvcg_video_enable(struct uvc_video *video, int enable)
+> {
+> 	struct uvc_device *uvc =3D video->uvc;
+>-	unsigned int i;
+>+	struct uvc_request *ureq;
+> 	int ret;
 >
->  static struct platform_driver mmcc_msm8960_driver = {
-> diff --git a/drivers/clk/qcom/mmcc-sdm660.c b/drivers/clk/qcom/mmcc-sdm660.c
-> index bc19a23e13f8..996bd01fb9ac 100644
-> --- a/drivers/clk/qcom/mmcc-sdm660.c
-> +++ b/drivers/clk/qcom/mmcc-sdm660.c
-> @@ -9,9 +9,9 @@
->  #include <linux/bitops.h>
->  #include <linux/err.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> -#include <linux/of_device.h>
->  #include <linux/clk-provider.h>
->  #include <linux/regmap.h>
->  #include <linux/reset-controller.h>
-> @@ -2828,14 +2828,10 @@ static void sdm630_clock_override(void)
+> 	if (video->ep =3D=3D NULL) {
+>@@ -519,9 +525,10 @@ int uvcg_video_enable(struct uvc_video *video, int en=
+able)
+> 		cancel_work_sync(&video->pump);
+> 		uvcg_queue_cancel(&video->queue, 0);
 >
->  static int mmcc_660_probe(struct platform_device *pdev)
->  {
-> -       const struct of_device_id *id;
->         struct regmap *regmap;
->         bool is_sdm630;
+>-		for (i =3D 0; i < video->uvc_num_requests; ++i)
+>-			if (video->ureq && video->ureq[i].req)
+>-				usb_ep_dequeue(video->ep, video->ureq[i].req);
+>+		list_for_each_entry(ureq, &video->ureqs, list) {
+>+			if (ureq->req)
+>+				usb_ep_dequeue(video->ep, ureq->req);
+>+		}
 >
-> -       id = of_match_device(mmcc_660_match_table, &pdev->dev);
-> -       if (!id)
-> -               return -ENODEV;
-> -       is_sdm630 = !!(id->data);
-> +       is_sdm630 = !!device_get_match_data(&pdev->dev);
->
->         regmap = qcom_cc_map(pdev, &mmcc_660_desc);
->         if (IS_ERR(regmap))
-> diff --git a/drivers/clk/rockchip/clk-rk3399.c b/drivers/clk/rockchip/clk-rk3399.c
-> index 9ebd6c451b3d..9316e5c8a0ea 100644
-> --- a/drivers/clk/rockchip/clk-rk3399.c
-> +++ b/drivers/clk/rockchip/clk-rk3399.c
-> @@ -9,8 +9,8 @@
->  #include <linux/io.h>
->  #include <linux/of.h>
->  #include <linux/of_address.h>
-> -#include <linux/of_device.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/regmap.h>
->  #include <dt-bindings/clock/rk3399-cru.h>
->  #include "clk.h"
-> @@ -1634,14 +1634,9 @@ static const struct of_device_id clk_rk3399_match_table[] = {
->  static int __init clk_rk3399_probe(struct platform_device *pdev)
->  {
->         struct device_node *np = pdev->dev.of_node;
-> -       const struct of_device_id *match;
->         const struct clk_rk3399_inits *init_data;
->
-> -       match = of_match_device(clk_rk3399_match_table, &pdev->dev);
-> -       if (!match || !match->data)
-> -               return -EINVAL;
-> -
-> -       init_data = match->data;
-> +       init_data = device_get_match_data(&pdev->dev);
->         if (init_data->inits)
->                 init_data->inits(np);
->
-> diff --git a/drivers/clk/samsung/clk-exynos-clkout.c b/drivers/clk/samsung/clk-exynos-clkout.c
-> index 72b6cf83aff4..3484e6cc80ad 100644
-> --- a/drivers/clk/samsung/clk-exynos-clkout.c
-> +++ b/drivers/clk/samsung/clk-exynos-clkout.c
-> @@ -13,9 +13,9 @@
->  #include <linux/io.h>
->  #include <linux/of.h>
->  #include <linux/of_address.h>
-> -#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm.h>
-> +#include <linux/property.h>
->
->  #define EXYNOS_CLKOUT_NR_CLKS          1
->  #define EXYNOS_CLKOUT_PARENTS          32
-> @@ -84,19 +84,17 @@ MODULE_DEVICE_TABLE(of, exynos_clkout_ids);
->  static int exynos_clkout_match_parent_dev(struct device *dev, u32 *mux_mask)
->  {
->         const struct exynos_clkout_variant *variant;
-> -       const struct of_device_id *match;
->
->         if (!dev->parent) {
->                 dev_err(dev, "not instantiated from MFD\n");
->                 return -EINVAL;
->         }
->
-> -       match = of_match_device(exynos_clkout_ids, dev->parent);
-> -       if (!match) {
-> +       variant = device_get_match_data(dev->parent);
-> +       if (!variant) {
->                 dev_err(dev, "cannot match parent device\n");
->                 return -EINVAL;
->         }
-> -       variant = match->data;
->
->         *mux_mask = variant->mux_mask;
->
-> diff --git a/drivers/clk/ti/adpll.c b/drivers/clk/ti/adpll.c
-> index ff42ea75cb43..6121020b4b38 100644
-> --- a/drivers/clk/ti/adpll.c
-> +++ b/drivers/clk/ti/adpll.c
-> @@ -8,7 +8,9 @@
->  #include <linux/io.h>
->  #include <linux/math64.h>
->  #include <linux/module.h>
-> -#include <linux/of_device.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/string.h>
->
->  #define ADPLL_PLLSS_MMR_LOCK_OFFSET    0x00    /* Managed by MPPULL */
-> @@ -860,24 +862,16 @@ static int ti_adpll_probe(struct platform_device *pdev)
->  {
->         struct device_node *node = pdev->dev.of_node;
->         struct device *dev = &pdev->dev;
-> -       const struct of_device_id *match;
-> -       const struct ti_adpll_platform_data *pdata;
->         struct ti_adpll_data *d;
->         struct resource *res;
->         int err;
->
-> -       match = of_match_device(ti_adpll_match, dev);
-> -       if (match)
-> -               pdata = match->data;
-> -       else
-> -               return -ENODEV;
-> -
->         d = devm_kzalloc(dev, sizeof(*d), GFP_KERNEL);
->         if (!d)
->                 return -ENOMEM;
->         d->dev = dev;
->         d->np = node;
-> -       d->c = pdata;
-> +       d->c = device_get_match_data(dev);
->         dev_set_drvdata(d->dev, d);
->         spin_lock_init(&d->lock);
->
-> --
-> 2.40.1
+> 		uvc_video_free_requests(video);
+> 		uvcg_queue_enable(&video->queue, 0);
+>@@ -555,6 +562,7 @@ int uvcg_video_enable(struct uvc_video *video, int ena=
+ble)
+>  */
+> int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
+> {
+>+	INIT_LIST_HEAD(&video->ureqs);
+> 	INIT_LIST_HEAD(&video->req_free);
+> 	spin_lock_init(&video->req_lock);
+> 	INIT_WORK(&video->pump, uvcg_video_pump);
+>--
+>2.42.0.609.gbb76f46606-goog
 >
 
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
--- 
-With best wishes
-Dmitry
+--Ef3RzvolJfkDMu+D
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmUghfoACgkQC+njFXoe
+LGTJtg/+OUPWJt59T9LfxBKbd/Tkma52uWhfcaAVFsi9sMlQjb8Gs004JxhVVl+A
+MfxolWuJOWxF8o4aT3mTqfEKjKF1DkeFR+U/IUg9yEkgReLEOACJ6CgfFLXmwAAm
+zi4WmFJ2U9iQ5KunfBWCcHtaXREvA8beEXXBij5E/V3hZwv6tK23MKij01jtjEB1
+hF2Bt/Ryzaqz43kX1veYuLRXtGE3vppBPdz18tBFXndCdXy4Myzt3LeuJh/iCK5i
+gzfgNh/rXf22sbkMhRyfdSGSu24bFA62QoL6QTlO2+Yg+s7nbA7Y+lOE8wvDPOT9
++9INghUKr4XYGCD4s+8QH+dyz+R9NlfOMGGz3nycH7E6fSvRYecOMKDHGjcDoMy2
+QV+WppcaFXqPdYYtBr86fK0/h57lBiIp8fScWTlpRZfJfDIR4WspXFHKz6rt102S
+KnnVCg/bHvP5BiQlJvqC4hj4nprs0ApSGfUY/xgfhqK3RDMwc1UJqpGY5y+7+bB6
+e089uh6tryy3+Fuou4UT7bd0UR0vL8wex4WnadpT/mJ/MTMLxh4pEQ2laVtovWch
+3s4fBOizsHTXzFobBGiZ0my2jVwdRjYwTFMi8ruJl9afE7v8qDq8Y8iQ+IwX+mdh
+rLoFhbe6PQXw6jlkxAbHSBsEizKRUBKUSy3RC3wimu/r/H5u0A8=
+=Qw1y
+-----END PGP SIGNATURE-----
+
+--Ef3RzvolJfkDMu+D--
