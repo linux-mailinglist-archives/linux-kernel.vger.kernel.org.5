@@ -2,115 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3037BBEA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7457BBEA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233242AbjJFSYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 14:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
+        id S233263AbjJFSZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 14:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233236AbjJFSYk (ORCPT
+        with ESMTP id S233233AbjJFSZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 14:24:40 -0400
+        Fri, 6 Oct 2023 14:25:53 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC4CFBE;
-        Fri,  6 Oct 2023 11:24:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D67D8C433B9;
-        Fri,  6 Oct 2023 18:24:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BD5B6
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 11:25:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33CB7C433C7;
+        Fri,  6 Oct 2023 18:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696616678;
-        bh=XMRbzsY9A1FpB7Vearw0HGHjviPa4Dpe+NZgXwP5iv4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ZSahHaYaKVg4WEtqzwfvKNNUo0gzDdfLcPymxZt3Qn2Q7bcl5pfMEogdU4o/nZYur
-         J6fuaWBP8lUXAvd1XfDJEVlHmCLJkKJM8FGNTuulgNI0UJ991JCaP/p4kVQ2aMw6UP
-         EjwzCcoVGxlSMlD2wQzV+Xj2kjwUaAT2ePHEmBkqOQ3Ui9d50v5+KY4hs1FurXmohF
-         uBOo4+sZgm1J2DWEEhGGnjRo2tSaH4Nr7uUYRTZjOsVshfCw2W8d0ZHGYzo+CapYoh
-         vTQT8jDYtaj3SjJ0Z5W4GY8Fu1bGxnbgNW0THGzh5pLq3B6CjhB34RIGsNxFDhg7b3
-         TqntO7l2Ly4Ag==
-Message-ID: <df27b5a4-9010-e76c-e974-452ee8ee22c3@kernel.org>
-Date:   Sat, 7 Oct 2023 03:24:33 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 11/26] PM / devfreq: rockchip-dfi: Handle LPDDR2
- correctly
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
+        s=k20201202; t=1696616752;
+        bh=0s7XSTa4N92Ujnnwdg/7gTJrzEQ91J9ts2I7XBTXC5Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g/7qd/swmx7g3EM/dwzIeT0CgY/+lDyiBD0eYkjzICAZKi8JosfCBRsa2zssVTZxk
+         4KwyrFIyzX2IeI7hpU5HQyOECPM1z81rosMefj+qrG/CqQNS+zusSNOYoSMapHVX8i
+         9fhbQc7YenSPDAKTyIdAPtV+hS9lvKc9BQEW7EP2OIll1TdYHwRG5Y+HSOJusDB9u1
+         +7Dcz3OIgbEL58jwP6W06ecbxFvZ3AOgP/kLQFFoC0SX356RpUJCtDAeo9gRnKL/CD
+         LeCkqhaOsW5di5TCSffg8hScYfUMkcrtjJgNrf5wTyHTdxXjfvj42+dvFV9fsPs5GK
+         X61xQCKxtJUsw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qopWH-001nny-VN;
+        Fri, 06 Oct 2023 19:25:50 +0100
+Date:   Fri, 06 Oct 2023 19:25:49 +0100
+Message-ID: <878r8fmwuq.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Coboy Chen <coboy.chen@mediatek.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Olivier Deprez <olivier.deprez@arm.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
         Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-12-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20230704093242.583575-12-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH v4 14/17] KVM: arm64: FFA: Remove access of endpoint memory access descriptor array
+In-Reply-To: <20231005-ffa_v1-1_notif-v4-14-cddd3237809c@arm.com>
+References: <20231005-ffa_v1-1_notif-v4-0-cddd3237809c@arm.com>
+        <20231005-ffa_v1-1_notif-v4-14-cddd3237809c@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, marc.bonnici@arm.com, jens.wiklander@linaro.org, coboy.chen@mediatek.com, lpieralisi@kernel.org, olivier.deprez@arm.com, oliver.upton@linux.dev, will@kernel.org, qperret@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> According to the downstream driver the DDRMON_CTRL_LPDDR23 bit must be
-> set for both LPDDR2 and LPDDR3. Add the missing LPDDR2 case and while
-> at it turn the if/else if/else into switch/case which makes it easier
-> to read.
+On Thu, 05 Oct 2023 15:45:07 +0100,
+Sudeep Holla <sudeep.holla@arm.com> wrote:
 > 
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> FF-A v1.1 removes the fixed location of endpoint memory access descriptor
+> array within the memory transaction descriptor structure. In preparation
+> to remove the ep_mem_access member from the ffa_mem_region structure,
+> provide the accessor to fetch the offset and use the same in FF-A proxy
+> implementation.
+> 
+> The accessor take the FF-A version as the argument from which the memory
+> access descriptor format can be determined. v1.0 uses the old format while
+> v1.1 onwards use the new format specified in the v1.1 specification.
+> 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Oliver Upton <oliver.upton@linux.dev>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Quentin Perret <qperret@google.com>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 > ---
->  drivers/devfreq/event/rockchip-dfi.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
+>  arch/arm64/kvm/hyp/nvhe/ffa.c | 10 ++++++++--
+>  include/linux/arm_ffa.h       |  6 ++++++
+>  2 files changed, 14 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index 261d112580c9e..16cd5365671f7 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -82,12 +82,19 @@ static void rockchip_dfi_start_hardware_counter(struct devfreq_event_dev *edev)
->  		       DDRMON_CTRL_HARDWARE_EN), dfi_regs + DDRMON_CTRL);
+> diff --git a/arch/arm64/kvm/hyp/nvhe/ffa.c b/arch/arm64/kvm/hyp/nvhe/ffa.c
+> index 6e4dba9eadef..320f2eaa14a9 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/ffa.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/ffa.c
+> @@ -423,6 +423,7 @@ static __always_inline void do_ffa_mem_xfer(const u64 func_id,
+>  	DECLARE_REG(u32, fraglen, ctxt, 2);
+>  	DECLARE_REG(u64, addr_mbz, ctxt, 3);
+>  	DECLARE_REG(u32, npages_mbz, ctxt, 4);
+> +	struct ffa_mem_region_attributes *ep_mem_access;
+>  	struct ffa_composite_mem_region *reg;
+>  	struct ffa_mem_region *buf;
+>  	u32 offset, nr_ranges;
+> @@ -452,7 +453,9 @@ static __always_inline void do_ffa_mem_xfer(const u64 func_id,
+>  	buf = hyp_buffers.tx;
+>  	memcpy(buf, host_buffers.tx, fraglen);
 >  
->  	/* set ddr type to dfi */
-> -	if (dfi->ddr_type == ROCKCHIP_DDRTYPE_LPDDR3)
-> +	switch (dfi->ddr_type) {
-> +	case ROCKCHIP_DDRTYPE_LPDDR2:
-> +	case ROCKCHIP_DDRTYPE_LPDDR3:
->  		writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_LPDDR23, DDRMON_CTRL_DDR_TYPE_MASK),
->  			       dfi_regs + DDRMON_CTRL);
-> -	else if (dfi->ddr_type == ROCKCHIP_DDRTYPE_LPDDR4)
-> +		break;
-> +	case ROCKCHIP_DDRTYPE_LPDDR4:
->  		writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_LPDDR4, DDRMON_CTRL_DDR_TYPE_MASK),
->  			       dfi_regs + DDRMON_CTRL);
-> +		break;
-> +	default:
-> +		break;
-> +	}
+> -	offset = buf->ep_mem_access[0].composite_off;
+> +	ep_mem_access = (void *)buf +
+> +			ffa_mem_desc_offset(buf, 0, FFA_VERSION_1_0);
+> +	offset = ep_mem_access->composite_off;
+>  	if (!offset || buf->ep_count != 1 || buf->sender_id != HOST_FFA_ID) {
+>  		ret = FFA_RET_INVALID_PARAMETERS;
+>  		goto out_unlock;
+> @@ -504,6 +507,7 @@ static void do_ffa_mem_reclaim(struct arm_smccc_res *res,
+>  	DECLARE_REG(u32, handle_lo, ctxt, 1);
+>  	DECLARE_REG(u32, handle_hi, ctxt, 2);
+>  	DECLARE_REG(u32, flags, ctxt, 3);
+> +	struct ffa_mem_region_attributes *ep_mem_access;
+>  	struct ffa_composite_mem_region *reg;
+>  	u32 offset, len, fraglen, fragoff;
+>  	struct ffa_mem_region *buf;
+> @@ -528,7 +532,9 @@ static void do_ffa_mem_reclaim(struct arm_smccc_res *res,
+>  	len = res->a1;
+>  	fraglen = res->a2;
 >  
->  	/* enable count, use software mode */
->  	writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_SOFTWARE_EN, DDRMON_CTRL_SOFTWARE_EN),
+> -	offset = buf->ep_mem_access[0].composite_off;
+> +	ep_mem_access = (void *)buf +
+> +			ffa_mem_desc_offset(buf, 0, FFA_VERSION_1_0);
+> +	offset = ep_mem_access->composite_off;
+>  	/*
+>  	 * We can trust the SPMD to get this right, but let's at least
+>  	 * check that we end up with something that doesn't look _completely_
+> diff --git a/include/linux/arm_ffa.h b/include/linux/arm_ffa.h
+> index 748d0a83a4bc..2444d596b703 100644
+> --- a/include/linux/arm_ffa.h
+> +++ b/include/linux/arm_ffa.h
+> @@ -357,6 +357,12 @@ struct ffa_mem_region {
+>  #define CONSTITUENTS_OFFSET(x)	\
+>  	(offsetof(struct ffa_composite_mem_region, constituents[x]))
+>  
+> +static inline u32
+> +ffa_mem_desc_offset(struct ffa_mem_region *buf, int count, u32 ffa_version)
+> +{
+> +	return COMPOSITE_OFFSET(0);
+> +}
+> +
+>  struct ffa_mem_ops_args {
+>  	bool use_txbuf;
+>  	u32 nattrs;
+> 
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+I haven't looked at the rest of the series, but for the purpose of
+this particular patch, it looks OK to me.
+
+Acked-by: Marc Zyngier <maz@kernel.org>
+
+	M.
 
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
-
+Without deviation from the norm, progress is not possible.
