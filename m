@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C65A17BC008
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A6D7BC006
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233407AbjJFUJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 16:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
+        id S233416AbjJFUJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:09:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233428AbjJFUJt (ORCPT
+        with ESMTP id S233398AbjJFUJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:09:49 -0400
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD1F107
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:09:45 -0700 (PDT)
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1dcead29b3eso1565676fac.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:09:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696622982; x=1697227782;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JVsnx99XaF2BlRuypV2LU30baSB/YEHayThwv4pWeUs=;
-        b=f6NKebdhF7zS2D2S04HqnfiSfx+sNxrFVdf5LEMDmhuKohYawIIuPErI7a2RZ/OFXq
-         7Y38WiRnDpcCCqRs/T/HfeIBrYm5ZI6feHZuDd5Z2yxnPZRTN9RVIdpiIZKc0t3b6LAF
-         ChOB+FDXoXAnm8n0gbubPQhVvUQZqOKKDx69kvXHeWIn1NTI2r0a75TSZoyHIoEuMPG8
-         tQKRa0uknZ6crEATJRUZ3GwaOKsmvw04Oe3l6S/aVTovr8tyh11clASUeTgmzi7jttZD
-         Z9CoZ99ZOVsr2sgqnvPgg5/xD5FTc8QMd1t8+KsXLsG5J/zTiRj2xrCpNpsdG+w/jDSW
-         4NbQ==
-X-Gm-Message-State: AOJu0YzL2oc5cTUu4GHS0PaEFglrCWpYmpCfq9Yu5qhv4wUFGfjlDCCE
-        vXlVpYBNOFicIqDbfHIfug==
-X-Google-Smtp-Source: AGHT+IFMJInUIFHrgEQD9vA7uqYqkPI9fMQEJg7bV58syV74W+C2NvjX2+0Zd+j4zXsT00jSSxkdOQ==
-X-Received: by 2002:a05:6871:5cc:b0:1bb:6ee1:114e with SMTP id v12-20020a05687105cc00b001bb6ee1114emr10232512oan.28.1696622982349;
-        Fri, 06 Oct 2023 13:09:42 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id g2-20020a056870a24200b001dcba6381dcsm879814oai.39.2023.10.06.13.09.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 13:09:41 -0700 (PDT)
-Received: (nullmailer pid 229133 invoked by uid 1000);
-        Fri, 06 Oct 2023 20:09:30 -0000
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 06 Oct 2023 15:09:14 -0500
-Subject: [PATCH v3 5/5] ASoC: Use device_get_match_data()
+        Fri, 6 Oct 2023 16:09:36 -0400
+Received: from DM5PR00CU002.outbound.protection.outlook.com (mail-centralusazon11021020.outbound.protection.outlook.com [52.101.62.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D1FC6;
+        Fri,  6 Oct 2023 13:09:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NDQ69YQh2595JTIWCPdALcFWiqVCX2NT1dWF3bc8sN7iub4Ox/b+iVeHULeoWtX/lKHtOWXPw0q58NKlkQEMusXis105LcEPI46SJY2lyjvTkPTMm97V581oxW+ap3cCJZ36Py1eyjs3TzHEjEgRF97e1z4PaBX81FthNi/Fs2h6lpQ3A44CBdCvXavjSUX5lHiCoJslcHYd6hef3GPg6I2kcyyaanD1Iu79MBs4mf6d0IMhz24gORUSVPEeLM8LdIJ+Is5qNcmbQIs6nL8h2RLsUP7F++XvfdrZ+uGb0RtFRBUWEgwrL4AUpmJ/uwXoJvwqwp6HtFUGjPWwNIfkSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tuSP7/jMQrFfYw/fB3SMvIyrvR7F0YRHRqNOOzSoZ5k=;
+ b=NFLbOx7Rc00vFWkZ1ge8Yuqf8nqqQ+dmiYqUTS8QgBQDfIkBLXFNlALof1U6SbuUyaTAA66zRy/vOfQ5QNvm3TUcAf5ZQxdLYeviYP6w1ikRIA9Kl4mg5mkWrykd0oH+8DrKGyKF4SnFy6xLRcQXy3/ERwucq3sCs8TN0dYNH3rJOgkybSMsBK0ExwQ4DpMhzjOL3EaM5A2+f9Sb9z3on6vUBjBED+mRUUJN/SI7vTUIfBmOK0VmPOHo1236+pG73wGbP5e3rqQhaiN7t+QjPsHOQ3h0cncWPAlu9P/gW8UlpBT2AAYZ5b4p8W22t56QKQAtdnfBxkjdZD00Em6aFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tuSP7/jMQrFfYw/fB3SMvIyrvR7F0YRHRqNOOzSoZ5k=;
+ b=htVhROeFKgssvLEsWe+c2IdXcFN2XI9ylLx6ZOetw5lYV1Q+KG1sY+AXo0PpsFVUWCARX75a1pDZL1uFQiLApO/yCcAVTnuyll6JF985ZdL8KJ4pqwzPl4g+4EDOplYdUcyBOE9BbyNjJylq4fCQxodQjzg1IHI3WvHcrecl4Lk=
+Received: from MW2PR2101MB1033.namprd21.prod.outlook.com (2603:10b6:302:4::32)
+ by MN0PR21MB3266.namprd21.prod.outlook.com (2603:10b6:208:37e::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.11; Fri, 6 Oct
+ 2023 20:09:30 +0000
+Received: from MW2PR2101MB1033.namprd21.prod.outlook.com
+ ([fe80::e6d1:7be6:9ded:9b42]) by MW2PR2101MB1033.namprd21.prod.outlook.com
+ ([fe80::e6d1:7be6:9ded:9b42%6]) with mapi id 15.20.6886.016; Fri, 6 Oct 2023
+ 20:09:30 +0000
+From:   Dan Clash <Dan.Clash@microsoft.com>
+To:     "audit@vger.kernel.org" <audit@vger.kernel.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
+CC:     "paul@paul-moore.com" <paul@paul-moore.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: audit: io_uring openat triggers audit reference count underflow in
+ worker thread
+Thread-Topic: audit: io_uring openat triggers audit reference count underflow
+ in worker thread
+Thread-Index: AQHZ+JAylfbNgEMpYU+qEdC5Blzyag==
+Date:   Fri, 6 Oct 2023 20:09:30 +0000
+Message-ID: <MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-10-06T20:09:26.683Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW2PR2101MB1033:EE_|MN0PR21MB3266:EE_
+x-ms-office365-filtering-correlation-id: c5adbb83-a827-4de1-a3f3-08dbc6a82637
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: rr4oj0kki6I0maPbF5463gnpz16/pYfTgK1ngXw7NznUZJrkGnxvbH+ldmoNw7u0h7CTR+TQnyC9WqOGOkePReS63UopOt05UUwWRtNZrQPTdpXe0obqGfOHZkB245iHqZlfx3quW2KRdf76YUV382eOOeBuX3HYuBuaFq8WRsoEGpNHZEbD+5Zh0kGaFQKYXypMk2smZK4CL5AgJugHl6R4qc6CeW2Rc1PCHF/EvkktJUV1q3bRjNH8THyP2827G5TnGplbc8cZuHADBtBGV7w9N6JrygfG13xqddtfGfdvGnw4gjN2uzKyubFar9AsQq2Kg0n72d4/UfncHfUFE8ht3Q5EDWm5N7NO3ylaLymTKvE2ebJnS8Tnnb6i5tabBO+n6q2Jqv3FUg8w7tNd9YzObpW07Q47UZ/g3eZz4L9WGEPtg15KBbmsl5Oqd347G3O8gN68OcrScf73exNPwl5m4IWJHz4dDhZ6GT/zzR10MqhF3Fe9CxeJoWFar8nRo4EtQH8UHnaUGxXUpGo115zumlwp9d4DsUVjpEWg5fS4+S93fDCrr3b3TwlngTeeWhKPs/uyPpZZ9+s1BG8ZH6ceqOgzqwOfrhXX6aIWeiusI5y7CCG3SNLptvY2+rKnxcWLYwURMjz6VELe61mVX7cmhPL/jT64PFOt3QiLNQiwcu4b6WUYWiXash6rOOVOfs+zeNcpUjfvh4U9R7gWOg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1033.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(376002)(136003)(366004)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(55016003)(7696005)(6506007)(10290500003)(478600001)(71200400001)(38070700005)(86362001)(122000001)(82960400001)(82950400001)(38100700002)(8990500004)(41300700001)(2906002)(9686003)(83380400001)(8936002)(8676002)(4326008)(66556008)(5660300002)(66476007)(91956017)(76116006)(316002)(33656002)(54906003)(66946007)(110136005)(66446008)(64756008)(52536014)(22770500002)(349545003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?ZXTV8TI+9cEKcUjyttGIqV8Unk/z6BqjO7rDJrQ1w9FQX9SdsyYk9L4FCp?=
+ =?iso-8859-1?Q?xcC+MryJSrf7PKeUjPW0b/6R7VFdisIeNEsIGsIVJ6SsGPxd62934z4ofV?=
+ =?iso-8859-1?Q?2XHvUP3S4902vr3PdK/08mMpnRVZ8S583k69Rvk/MS7FxcIcN6vkDQe9d7?=
+ =?iso-8859-1?Q?WJkQtuI2JncwietlgPD34jCgISZ7Q0cpeE1Hg/VU1UtSmv7K5rGTULGOwF?=
+ =?iso-8859-1?Q?GDC0ID5KwmLFjqmgRIBdhefzWirmM+ItwM8UPdSyL8RPVO7AbGt4V0eWij?=
+ =?iso-8859-1?Q?Cip9yku35TZbnkU33+LfHVf8wfx9S/VoJQ0a4qxubt+eZKnyp0wNkYeAi2?=
+ =?iso-8859-1?Q?Z0NyDVU2umzxnsmQObOp+zZoW3F60e7Cnx7KnveH7qo2arBPjmWS5mlb78?=
+ =?iso-8859-1?Q?cDdSPe/HJEdOK6+hBAUHg1LWGwM+L3MYcNibHsN+mJlTAiGKf9L2kOYemo?=
+ =?iso-8859-1?Q?qotnb9Rs3orTD2M9HKQDRp2JFH4qjdqwjo+wxEmJAB0JO35LGGwgd2usSr?=
+ =?iso-8859-1?Q?w9Qtc5jcqo52rJ+5gXy3frkaA5G/WRwPJHIHq+Vm7XScDLvCdxECVg/15O?=
+ =?iso-8859-1?Q?8p0m4ky2t/bAt7V/CHjlrU4VkccEYD8qXoKH+LtTIFDfCAcsvsD9Q8buoi?=
+ =?iso-8859-1?Q?/C8Toc4CS2eRWkyr8ALYsSUltiAoV07WTX3L7nx63zYN/v9l+p/d8uteQT?=
+ =?iso-8859-1?Q?juVvLwwJ4kCnPPhpQlW+Hsr5/Gnh946mHMl/SeAVqtaigKR+qcrB7ELzrt?=
+ =?iso-8859-1?Q?5cRIDk7QIl4WwMQ5B73xkBTxSrewDCWuSQVO+8x6mG+/m9hWxzTsQGBX4R?=
+ =?iso-8859-1?Q?rOvnkja3FDs0AwiENai8npwhXcwd2YfeFAA+NN1a1Fm0kL7nd7+Ixwi1d9?=
+ =?iso-8859-1?Q?1wqwi1ek2JppIEBYZGDAIRNXdLE/VHiN55VXf9i48+DftPdktcLQ+2JBFp?=
+ =?iso-8859-1?Q?11WyESCcBQ9kb6YwjkcPoEN5DV8C74zRNKWm62KPZ62HRmEBV6BSq4uvXo?=
+ =?iso-8859-1?Q?ZK6EJTPJ6SoQ0e40agzEESBBiHRLxS8zXEAoxidQfZzCkKST/cu2L5Td7i?=
+ =?iso-8859-1?Q?lKVmseCS45BSicubgQgIFxpD4Vy7DrfQsgfi0bWiMyvU/OXX2NQV27a6dj?=
+ =?iso-8859-1?Q?WpvumiQtEsZ05nqLP+thW54sW7viUWbs+AGGZ0vai6N0KveBLGOpbGM3sU?=
+ =?iso-8859-1?Q?5k9PD1+SDsJu4vmTFMaQwNQ0WlWCj+aJl3oq0v+lAQImmGfqvwyLcj5Cmo?=
+ =?iso-8859-1?Q?Op+Avgf+m0Fp6ndhKmgydS3kgin6oFv1f/Jc8iEPWlkMMSDsGZ8N+GBx28?=
+ =?iso-8859-1?Q?Csiw+fzn3QoEfa2S03ux/0zCDZw4nPKFxjMZrNdpwP2Nloosu3Yb0m121p?=
+ =?iso-8859-1?Q?1CllrkyC9f58IBU3lEDOJyyJX9a26b4k3RfIZElgdeeT4iwe1DOSuhGUr5?=
+ =?iso-8859-1?Q?WamzjPdPVo8tbYy8W+Sp2PEKxITXKkZ16Wdy5FTbm1nszxw6MoFDbtdjSk?=
+ =?iso-8859-1?Q?aOvH/P9iiu3Z/Ac9IG0ydUWHJoUqMfPF5BFAtRW9lJsnQapPoRcpsukT/3?=
+ =?iso-8859-1?Q?gB9c++7AA/64FCEmTbI885tbtukbjAqY2IwJuTq0kyYZfuQudvinRfefvT?=
+ =?iso-8859-1?Q?eFMD0I180uTL0V0AVNQ/0jS5kYxkQp/Evpxc2H1c+Y8ydFvjRI+uIaeh/7?=
+ =?iso-8859-1?Q?VDBPa6Zx93ajOgw4O2b3bozC1i6KNkDotqvnO4hz?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231006-dt-asoc-header-cleanups-v3-5-13a4f0f7fee6@kernel.org>
-References: <20231006-dt-asoc-header-cleanups-v3-0-13a4f0f7fee6@kernel.org>
-In-Reply-To: <20231006-dt-asoc-header-cleanups-v3-0-13a4f0f7fee6@kernel.org>
-To:     Mark Brown <broonie@kernel.org>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Peter Rosin <peda@axentia.se>,
-        Lars-Peter Clausen <lars@metafoo.de>, nuno.sa@analog.com,
-        James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Shenghao Ding <shenghao-ding@ti.com>,
-        Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Kiseok Jo <kiseok.jo@irondevice.com>,
-        Kevin Cernekee <cernekee@chromium.org>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Ban Tao <fengzheng923@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-X-Mailer: b4 0.13-dev
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1033.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c5adbb83-a827-4de1-a3f3-08dbc6a82637
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2023 20:09:30.0691
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fF+ScyEpp3JLMda3dE+BIcqnGY36Abs993f4oTZ6ljbTXl5vxE6ukqLcShYF/Jkw6+yeDgcV+Mgflt/kSwG6kQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR21MB3266
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        LOCALPART_IN_SUBJECT,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE,T_FILL_THIS_FORM_SHORT autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,586 +122,317 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use preferred device_get_match_data() instead of of_match_device() to
-get the driver match data. With this, adjust the includes to explicitly
-include the correct headers.
-
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-v3:
- - Move some header changes from patch 1 to here for rockchip_i2s_tdm.c,
-   rockchip_pdm.c, smdk_wm8994.c, and tegra210_amx.c.
----
- sound/soc/intel/keembay/kmb_platform.c | 13 +------------
- sound/soc/qcom/lpass-cpu.c             | 15 +++++----------
- sound/soc/rockchip/rockchip_i2s.c      |  8 +++-----
- sound/soc/rockchip/rockchip_i2s_tdm.c  | 24 ++++++++----------------
- sound/soc/rockchip/rockchip_pdm.c      |  7 +------
- sound/soc/samsung/smdk_wm8994.c        | 28 +++-------------------------
- sound/soc/stm/stm32_i2s.c              |  7 ++-----
- sound/soc/stm/stm32_sai.c              |  8 ++++----
- sound/soc/stm/stm32_sai_sub.c          |  6 +-----
- sound/soc/stm/stm32_spdifrx.c          |  8 ++------
- sound/soc/tegra/tegra210_amx.c         | 10 ++--------
- sound/soc/ti/davinci-evm.c             |  7 ++-----
- sound/soc/ti/davinci-mcasp.c           |  9 ++++-----
- sound/soc/ti/omap-mcbsp.c              | 10 ++++------
- 14 files changed, 42 insertions(+), 118 deletions(-)
-
-diff --git a/sound/soc/intel/keembay/kmb_platform.c b/sound/soc/intel/keembay/kmb_platform.c
-index e929497a5eb5..37ea2e1d2e92 100644
---- a/sound/soc/intel/keembay/kmb_platform.c
-+++ b/sound/soc/intel/keembay/kmb_platform.c
-@@ -11,7 +11,6 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -820,7 +819,6 @@ static int kmb_plat_dai_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	struct snd_soc_dai_driver *kmb_i2s_dai;
--	const struct of_device_id *match;
- 	struct device *dev = &pdev->dev;
- 	struct kmb_i2s_info *kmb_i2s;
- 	struct resource *res;
-@@ -831,16 +829,7 @@ static int kmb_plat_dai_probe(struct platform_device *pdev)
- 	if (!kmb_i2s)
- 		return -ENOMEM;
- 
--	kmb_i2s_dai = devm_kzalloc(dev, sizeof(*kmb_i2s_dai), GFP_KERNEL);
--	if (!kmb_i2s_dai)
--		return -ENOMEM;
--
--	match = of_match_device(kmb_plat_of_match, &pdev->dev);
--	if (!match) {
--		dev_err(&pdev->dev, "Error: No device match found\n");
--		return -ENODEV;
--	}
--	kmb_i2s_dai = (struct snd_soc_dai_driver *) match->data;
-+	kmb_i2s_dai = (struct snd_soc_dai_driver *)device_get_match_data(&pdev->dev);
- 
- 	/* Prepare the related clocks */
- 	kmb_i2s->clk_apb = devm_clk_get(dev, "apb_clk");
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 18aff2654f89..ac0feb89b458 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -9,7 +9,6 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -1106,7 +1105,6 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	const struct lpass_variant *variant;
- 	struct device *dev = &pdev->dev;
--	const struct of_device_id *match;
- 	int ret, i, dai_id;
- 
- 	dsp_of_node = of_parse_phandle(pdev->dev.of_node, "qcom,adsp", 0);
-@@ -1121,17 +1119,14 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	platform_set_drvdata(pdev, drvdata);
- 
--	match = of_match_device(dev->driver->of_match_table, dev);
--	if (!match || !match->data)
-+	variant = device_get_match_data(dev);
-+	if (!variant)
- 		return -EINVAL;
- 
--	if (of_device_is_compatible(dev->of_node, "qcom,lpass-cpu-apq8016")) {
--		dev_warn(dev, "%s compatible is deprecated\n",
--			 match->compatible);
--	}
-+	if (of_device_is_compatible(dev->of_node, "qcom,lpass-cpu-apq8016"))
-+		dev_warn(dev, "qcom,lpass-cpu-apq8016 compatible is deprecated\n");
- 
--	drvdata->variant = (struct lpass_variant *)match->data;
--	variant = drvdata->variant;
-+	drvdata->variant = variant;
- 
- 	of_lpass_cpu_parse_dai_data(dev, drvdata);
- 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 74e7d6ee0f28..b0c3ef030e06 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -10,8 +10,8 @@
- #include <linux/module.h>
- #include <linux/mfd/syscon.h>
- #include <linux/delay.h>
-+#include <linux/of.h>
- #include <linux/of_gpio.h>
--#include <linux/of_device.h>
- #include <linux/clk.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/pm_runtime.h>
-@@ -736,7 +736,6 @@ static int rockchip_i2s_init_dai(struct rk_i2s_dev *i2s, struct resource *res,
- static int rockchip_i2s_probe(struct platform_device *pdev)
- {
- 	struct device_node *node = pdev->dev.of_node;
--	const struct of_device_id *of_id;
- 	struct rk_i2s_dev *i2s;
- 	struct snd_soc_dai_driver *dai;
- 	struct resource *res;
-@@ -752,11 +751,10 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
- 
- 	i2s->grf = syscon_regmap_lookup_by_phandle(node, "rockchip,grf");
- 	if (!IS_ERR(i2s->grf)) {
--		of_id = of_match_device(rockchip_i2s_match, &pdev->dev);
--		if (!of_id || !of_id->data)
-+		i2s->pins = device_get_match_data(&pdev->dev);
-+		if (!i2s->pins)
- 			return -EINVAL;
- 
--		i2s->pins = of_id->data;
- 	}
- 
- 	/* try to prepare related clocks */
-diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
-index d3700f3c98e6..7e996550d1df 100644
---- a/sound/soc/rockchip/rockchip_i2s_tdm.c
-+++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
-@@ -10,9 +10,7 @@
- #include <linux/delay.h>
- #include <linux/mfd/syscon.h>
- #include <linux/module.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
--#include <linux/of_gpio.h>
-+#include <linux/of.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
-@@ -75,7 +73,7 @@ struct rk_i2s_tdm_dev {
- 	struct snd_dmaengine_dai_dma_data playback_dma_data;
- 	struct reset_control *tx_reset;
- 	struct reset_control *rx_reset;
--	struct rk_i2s_soc_data *soc_data;
-+	const struct rk_i2s_soc_data *soc_data;
- 	bool is_master_mode;
- 	bool io_multiplex;
- 	bool mclk_calibrate;
-@@ -1277,21 +1275,21 @@ static const struct txrx_config rv1126_txrx_config[] = {
- 	{ 0xff800000, 0x10260, RV1126_I2S0_CLK_TXONLY, RV1126_I2S0_CLK_RXONLY },
- };
- 
--static struct rk_i2s_soc_data px30_i2s_soc_data = {
-+static const struct rk_i2s_soc_data px30_i2s_soc_data = {
- 	.softrst_offset = 0x0300,
- 	.configs = px30_txrx_config,
- 	.config_count = ARRAY_SIZE(px30_txrx_config),
- 	.init = common_soc_init,
- };
- 
--static struct rk_i2s_soc_data rk1808_i2s_soc_data = {
-+static const struct rk_i2s_soc_data rk1808_i2s_soc_data = {
- 	.softrst_offset = 0x0300,
- 	.configs = rk1808_txrx_config,
- 	.config_count = ARRAY_SIZE(rk1808_txrx_config),
- 	.init = common_soc_init,
- };
- 
--static struct rk_i2s_soc_data rk3308_i2s_soc_data = {
-+static const struct rk_i2s_soc_data rk3308_i2s_soc_data = {
- 	.softrst_offset = 0x0400,
- 	.grf_reg_offset = 0x0308,
- 	.grf_shift = 5,
-@@ -1300,14 +1298,14 @@ static struct rk_i2s_soc_data rk3308_i2s_soc_data = {
- 	.init = common_soc_init,
- };
- 
--static struct rk_i2s_soc_data rk3568_i2s_soc_data = {
-+static const struct rk_i2s_soc_data rk3568_i2s_soc_data = {
- 	.softrst_offset = 0x0400,
- 	.configs = rk3568_txrx_config,
- 	.config_count = ARRAY_SIZE(rk3568_txrx_config),
- 	.init = common_soc_init,
- };
- 
--static struct rk_i2s_soc_data rv1126_i2s_soc_data = {
-+static const struct rk_i2s_soc_data rv1126_i2s_soc_data = {
- 	.softrst_offset = 0x0300,
- 	.configs = rv1126_txrx_config,
- 	.config_count = ARRAY_SIZE(rv1126_txrx_config),
-@@ -1544,7 +1542,6 @@ static int rockchip_i2s_tdm_rx_path_prepare(struct rk_i2s_tdm_dev *i2s_tdm,
- static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
- {
- 	struct device_node *node = pdev->dev.of_node;
--	const struct of_device_id *of_id;
- 	struct rk_i2s_tdm_dev *i2s_tdm;
- 	struct resource *res;
- 	void __iomem *regs;
-@@ -1556,13 +1553,8 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
- 
- 	i2s_tdm->dev = &pdev->dev;
- 
--	of_id = of_match_device(rockchip_i2s_tdm_match, &pdev->dev);
--	if (!of_id)
--		return -EINVAL;
--
- 	spin_lock_init(&i2s_tdm->lock);
--	i2s_tdm->soc_data = (struct rk_i2s_soc_data *)of_id->data;
--
-+	i2s_tdm->soc_data = device_get_match_data(&pdev->dev);
- 	i2s_tdm->frame_width = 64;
- 
- 	i2s_tdm->clk_trcm = TRCM_TXRX;
-diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
-index 4756cfc23218..d16a4a67a6a2 100644
---- a/sound/soc/rockchip/rockchip_pdm.c
-+++ b/sound/soc/rockchip/rockchip_pdm.c
-@@ -8,7 +8,6 @@
- #include <linux/module.h>
- #include <linux/clk.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/rational.h>
- #include <linux/regmap.h>
-@@ -572,7 +571,6 @@ static int rockchip_pdm_path_parse(struct rk_pdm_dev *pdm, struct device_node *n
- static int rockchip_pdm_probe(struct platform_device *pdev)
- {
- 	struct device_node *node = pdev->dev.of_node;
--	const struct of_device_id *match;
- 	struct rk_pdm_dev *pdm;
- 	struct resource *res;
- 	void __iomem *regs;
-@@ -582,10 +580,7 @@ static int rockchip_pdm_probe(struct platform_device *pdev)
- 	if (!pdm)
- 		return -ENOMEM;
- 
--	match = of_match_device(rockchip_pdm_match, &pdev->dev);
--	if (match)
--		pdm->version = (uintptr_t)match->data;
--
-+	pdm->version = (enum rk_pdm_version)device_get_match_data(&pdev->dev);
- 	if (pdm->version == RK_PDM_RK3308) {
- 		pdm->reset = devm_reset_control_get(&pdev->dev, "pdm-m");
- 		if (IS_ERR(pdm->reset))
-diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
-index 13fb1bd7f4c9..def92cc09f9c 100644
---- a/sound/soc/samsung/smdk_wm8994.c
-+++ b/sound/soc/samsung/smdk_wm8994.c
-@@ -5,7 +5,6 @@
- #include <sound/soc.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- 
-  /*
-   * Default CFG switch settings to use this driver:
-@@ -32,15 +31,6 @@
- /* SMDK has a 16.934MHZ crystal attached to WM8994 */
- #define SMDK_WM8994_FREQ 16934000
- 
--struct smdk_wm8994_data {
--	int mclk1_rate;
--};
--
--/* Default SMDKs */
--static struct smdk_wm8994_data smdk_board_data = {
--	.mclk1_rate = SMDK_WM8994_FREQ,
--};
--
- static int smdk_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
-@@ -136,8 +126,8 @@ static struct snd_soc_card smdk = {
- 	.num_links = ARRAY_SIZE(smdk_dai),
- };
- 
--static const struct of_device_id samsung_wm8994_of_match[] __maybe_unused = {
--	{ .compatible = "samsung,smdk-wm8994", .data = &smdk_board_data },
-+static const struct of_device_id samsung_wm8994_of_match[] = {
-+	{ .compatible = "samsung,smdk-wm8994" },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, samsung_wm8994_of_match);
-@@ -147,15 +137,9 @@ static int smdk_audio_probe(struct platform_device *pdev)
- 	int ret;
- 	struct device_node *np = pdev->dev.of_node;
- 	struct snd_soc_card *card = &smdk;
--	struct smdk_wm8994_data *board;
--	const struct of_device_id *id;
- 
- 	card->dev = &pdev->dev;
- 
--	board = devm_kzalloc(&pdev->dev, sizeof(*board), GFP_KERNEL);
--	if (!board)
--		return -ENOMEM;
--
- 	if (np) {
- 		smdk_dai[0].cpus->dai_name = NULL;
- 		smdk_dai[0].cpus->of_node = of_parse_phandle(np,
-@@ -171,12 +155,6 @@ static int smdk_audio_probe(struct platform_device *pdev)
- 		smdk_dai[0].platforms->of_node = smdk_dai[0].cpus->of_node;
- 	}
- 
--	id = of_match_device(samsung_wm8994_of_match, &pdev->dev);
--	if (id)
--		*board = *((struct smdk_wm8994_data *)id->data);
--
--	platform_set_drvdata(pdev, board);
--
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 
- 	if (ret)
-@@ -188,7 +166,7 @@ static int smdk_audio_probe(struct platform_device *pdev)
- static struct platform_driver smdk_audio_driver = {
- 	.driver		= {
- 		.name	= "smdk-audio-wm8994",
--		.of_match_table = of_match_ptr(samsung_wm8994_of_match),
-+		.of_match_table = samsung_wm8994_of_match,
- 		.pm	= &snd_soc_pm_ops,
- 	},
- 	.probe		= smdk_audio_probe,
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 06a42130f5e4..46098e111142 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -1024,7 +1024,6 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
- 			      struct stm32_i2s_data *i2s)
- {
- 	struct device_node *np = pdev->dev.of_node;
--	const struct of_device_id *of_id;
- 	struct reset_control *rst;
- 	struct resource *res;
- 	int irq, ret;
-@@ -1032,10 +1031,8 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
- 	if (!np)
- 		return -ENODEV;
- 
--	of_id = of_match_device(stm32_i2s_ids, &pdev->dev);
--	if (of_id)
--		i2s->regmap_conf = (const struct regmap_config *)of_id->data;
--	else
-+	i2s->regmap_conf = device_get_match_data(&pdev->dev);
-+	if (!i2s->regmap_conf)
- 		return -EINVAL;
- 
- 	i2s->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
-index 8e21e6f886fc..b45ee7e24f22 100644
---- a/sound/soc/stm/stm32_sai.c
-+++ b/sound/soc/stm/stm32_sai.c
-@@ -151,8 +151,8 @@ static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
- static int stm32_sai_probe(struct platform_device *pdev)
- {
- 	struct stm32_sai_data *sai;
-+	const struct stm32_sai_conf *conf;
- 	struct reset_control *rst;
--	const struct of_device_id *of_id;
- 	u32 val;
- 	int ret;
- 
-@@ -164,9 +164,9 @@ static int stm32_sai_probe(struct platform_device *pdev)
- 	if (IS_ERR(sai->base))
- 		return PTR_ERR(sai->base);
- 
--	of_id = of_match_device(stm32_sai_ids, &pdev->dev);
--	if (of_id)
--		memcpy(&sai->conf, (const struct stm32_sai_conf *)of_id->data,
-+	conf = device_get_match_data(&pdev->dev);
-+	if (conf)
-+		memcpy(&sai->conf, (const struct stm32_sai_conf *)conf,
- 		       sizeof(struct stm32_sai_conf));
- 	else
- 		return -EINVAL;
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 8bcb98d9b64e..ad2492efb1cd 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -1506,7 +1506,6 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
- static int stm32_sai_sub_probe(struct platform_device *pdev)
- {
- 	struct stm32_sai_sub_data *sai;
--	const struct of_device_id *of_id;
- 	const struct snd_dmaengine_pcm_config *conf = &stm32_sai_pcm_config;
- 	int ret;
- 
-@@ -1514,10 +1513,7 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
- 	if (!sai)
- 		return -ENOMEM;
- 
--	of_id = of_match_device(stm32_sai_sub_ids, &pdev->dev);
--	if (!of_id)
--		return -EINVAL;
--	sai->id = (uintptr_t)of_id->data;
-+	sai->id = (uintptr_t)device_get_match_data(&pdev->dev);
- 
- 	sai->pdev = pdev;
- 	mutex_init(&sai->ctrl_lock);
-diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
-index a359b528b26b..9eed3c57e3f1 100644
---- a/sound/soc/stm/stm32_spdifrx.c
-+++ b/sound/soc/stm/stm32_spdifrx.c
-@@ -908,17 +908,13 @@ static int stm32_spdifrx_parse_of(struct platform_device *pdev,
- 				  struct stm32_spdifrx_data *spdifrx)
- {
- 	struct device_node *np = pdev->dev.of_node;
--	const struct of_device_id *of_id;
- 	struct resource *res;
- 
- 	if (!np)
- 		return -ENODEV;
- 
--	of_id = of_match_device(stm32_spdifrx_ids, &pdev->dev);
--	if (of_id)
--		spdifrx->regmap_conf =
--			(const struct regmap_config *)of_id->data;
--	else
-+	spdifrx->regmap_conf = device_get_match_data(&pdev->dev);
-+	if (!spdifrx->regmap_conf)
- 		return -EINVAL;
- 
- 	spdifrx->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-diff --git a/sound/soc/tegra/tegra210_amx.c b/sound/soc/tegra/tegra210_amx.c
-index 179876949b30..dd1a2c77c6ea 100644
---- a/sound/soc/tegra/tegra210_amx.c
-+++ b/sound/soc/tegra/tegra210_amx.c
-@@ -7,9 +7,8 @@
- #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/io.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-@@ -536,18 +535,13 @@ static int tegra210_amx_platform_probe(struct platform_device *pdev)
- 	struct tegra210_amx *amx;
- 	void __iomem *regs;
- 	int err;
--	const struct of_device_id *match;
- 	struct tegra210_amx_soc_data *soc_data;
- 
--	match = of_match_device(tegra210_amx_of_match, dev);
--
--	soc_data = (struct tegra210_amx_soc_data *)match->data;
--
- 	amx = devm_kzalloc(dev, sizeof(*amx), GFP_KERNEL);
- 	if (!amx)
- 		return -ENOMEM;
- 
--	amx->soc_data = soc_data;
-+	amx->soc_data = device_get_match_data(dev);
- 
- 	dev_set_drvdata(dev, amx);
- 
-diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
-index ae7fdd761a7a..1bf333d2740d 100644
---- a/sound/soc/ti/davinci-evm.c
-+++ b/sound/soc/ti/davinci-evm.c
-@@ -175,20 +175,17 @@ static struct snd_soc_card evm_soc_card = {
- static int davinci_evm_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
--	const struct of_device_id *match;
- 	struct snd_soc_dai_link *dai;
- 	struct snd_soc_card_drvdata_davinci *drvdata = NULL;
- 	struct clk *mclk;
- 	int ret = 0;
- 
--	match = of_match_device(of_match_ptr(davinci_evm_dt_ids), &pdev->dev);
--	if (!match) {
-+	dai = (struct snd_soc_dai_link *) device_get_match_data(&pdev->dev);
-+	if (!dai) {
- 		dev_err(&pdev->dev, "Error: No device match found\n");
- 		return -ENODEV;
- 	}
- 
--	dai = (struct snd_soc_dai_link *) match->data;
--
- 	evm_soc_card.dai_link = dai;
- 
- 	dai->codecs->of_node = of_parse_phandle(np, "ti,audio-codec", 0);
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index 7e7d665a5504..b892d66f7847 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -21,8 +21,6 @@
- #include <linux/clk.h>
- #include <linux/pm_runtime.h>
- #include <linux/of.h>
--#include <linux/of_platform.h>
--#include <linux/of_device.h>
- #include <linux/platform_data/davinci_asp.h>
- #include <linux/math64.h>
- #include <linux/bitmap.h>
-@@ -1882,9 +1880,10 @@ static bool davinci_mcasp_have_gpiochip(struct davinci_mcasp *mcasp)
- static int davinci_mcasp_get_config(struct davinci_mcasp *mcasp,
- 				    struct platform_device *pdev)
- {
--	const struct of_device_id *match = of_match_device(mcasp_dt_ids, &pdev->dev);
- 	struct device_node *np = pdev->dev.of_node;
- 	struct davinci_mcasp_pdata *pdata = NULL;
-+	const struct davinci_mcasp_pdata *match_pdata =
-+		device_get_match_data(&pdev->dev);
- 	const u32 *of_serial_dir32;
- 	u32 val;
- 	int i;
-@@ -1893,8 +1892,8 @@ static int davinci_mcasp_get_config(struct davinci_mcasp *mcasp,
- 		pdata = pdev->dev.platform_data;
- 		pdata->dismod = DISMOD_LOW;
- 		goto out;
--	} else if (match) {
--		pdata = devm_kmemdup(&pdev->dev, match->data, sizeof(*pdata),
-+	} else if (match_pdata) {
-+		pdata = devm_kmemdup(&pdev->dev, match_pdata, sizeof(*pdata),
- 				     GFP_KERNEL);
- 		if (!pdata)
- 			return -ENOMEM;
-diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-index bfe51221f541..7643a54592f5 100644
---- a/sound/soc/ti/omap-mcbsp.c
-+++ b/sound/soc/ti/omap-mcbsp.c
-@@ -13,7 +13,6 @@
- #include <linux/device.h>
- #include <linux/pm_runtime.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -1360,23 +1359,22 @@ MODULE_DEVICE_TABLE(of, omap_mcbsp_of_match);
- static int asoc_mcbsp_probe(struct platform_device *pdev)
- {
- 	struct omap_mcbsp_platform_data *pdata = dev_get_platdata(&pdev->dev);
-+	const struct omap_mcbsp_platform_data *match_pdata =
-+		device_get_match_data(&pdev->dev);
- 	struct omap_mcbsp *mcbsp;
--	const struct of_device_id *match;
- 	int ret;
- 
--	match = of_match_device(omap_mcbsp_of_match, &pdev->dev);
--	if (match) {
-+	if (match_pdata) {
- 		struct device_node *node = pdev->dev.of_node;
- 		struct omap_mcbsp_platform_data *pdata_quirk = pdata;
- 		int buffer_size;
- 
--		pdata = devm_kzalloc(&pdev->dev,
-+		pdata = devm_kmemdup(&pdev->dev, match_pdata,
- 				     sizeof(struct omap_mcbsp_platform_data),
- 				     GFP_KERNEL);
- 		if (!pdata)
- 			return -ENOMEM;
- 
--		memcpy(pdata, match->data, sizeof(*pdata));
- 		if (!of_property_read_u32(node, "ti,buffer-size", &buffer_size))
- 			pdata->buffer_size = buffer_size;
- 		if (pdata_quirk)
-
--- 
-2.40.1
-
+This discussion is about how to fix an audit reference count decrement=0A=
+race between two io_uring threads.=0A=
+=0A=
+Original discussion link:=0A=
+https : / / github . com / axboe / liburing / issues / 958=0A=
+=0A=
+Details:=0A=
+=0A=
+The test program below hangs indefinitely waiting for an openat cqe.  The=
+=0A=
+reproduction is with a distro kernel Ubuntu-azure-6.2-6.2.0-1012.12_22.04.1=
+.=0A=
+However, the bug seems possible with an upstream kernel.  An experiment of=
+=0A=
+changing the reference count in struct filename from int to refcount_t allo=
+ws=0A=
+the test program to complete.=0A=
+=0A=
+The bug did not occur with this test program until a kernel containing=0A=
+commit 5bd2182d58e9 was used.  I have not found a matching reported issue=
+=0A=
+or upstream commit yet.=0A=
+=0A=
+The dmseg log shows an audit related path:=0A=
+=0A=
+[27883.992550] kernel BUG at fs/namei.c:262!=0A=
+[27883.994051] invalid opcode: 0000 [#15] SMP PTI=0A=
+[27883.995719] CPU: 3 PID: 84988 Comm: iou-wrk-84835 Tainted: G      D=0A=
+               6.2.0-1012-azure #12~22.04.1-Ubuntu=0A=
+[27883.999064] Hardware name: Microsoft Corporation Virtual Machine/Virtual=
+ Machine,=0A=
+               BIOS Hyper-V UEFI Release v4.1 05/09/2022=0A=
+[27884.002734] RIP: 0010:putname+0x68/0x70=0A=
+...=0A=
+[27884.032893] Call Trace:=0A=
+[27884.034032]  <TASK>=0A=
+[27884.035117]  ? show_regs+0x6a/0x80=0A=
+[27884.036763]  ? die+0x38/0xa0=0A=
+[27884.038023]  ? do_trap+0xd0/0xf0=0A=
+[27884.039359]  ? do_error_trap+0x70/0x90=0A=
+[27884.040861]  ? putname+0x68/0x70=0A=
+[27884.042201]  ? exc_invalid_op+0x53/0x70=0A=
+[27884.043698]  ? putname+0x68/0x70=0A=
+[27884.045076]  ? asm_exc_invalid_op+0x1b/0x20=0A=
+[27884.047051]  ? putname+0x68/0x70=0A=
+[27884.048415]  audit_reset_context.part.0.constprop.0+0xe1/0x300=0A=
+[27884.050511]  __audit_uring_exit+0xda/0x1c0=0A=
+[27884.052100]  io_issue_sqe+0x1f3/0x450=0A=
+[27884.053702]  ? lock_timer_base+0x3b/0xd0=0A=
+[27884.055283]  io_wq_submit_work+0x8d/0x2b0=0A=
+[27884.056848]  ? __try_to_del_timer_sync+0x67/0xa0=0A=
+[27884.058577]  io_worker_handle_work+0x17c/0x2b0=0A=
+[27884.060267]  io_wqe_worker+0x10a/0x350=0A=
+[27884.061714]  ? raw_spin_rq_unlock+0x10/0x30=0A=
+[27884.063295]  ? finish_task_switch.isra.0+0x8b/0x2c0=0A=
+[27884.065537]  ? __pfx_io_wqe_worker+0x10/0x10=0A=
+[27884.067215]  ret_from_fork+0x2c/0x50=0A=
+[27884.068733] RIP: 0033:0x0=0A=
+...=0A=
+=0A=
+Test program usage:=0A=
+=0A=
+./io_uring_open_close_audit_hang --directory /tmp/deleteme --count 10000=0A=
+=0A=
+Test program source:=0A=
+=0A=
+// Note: The test program is C++ but could be converted to C.=0A=
+#include <cassert>=0A=
+#include <fcntl.h>=0A=
+#include <filesystem>=0A=
+#include <getopt.h>=0A=
+#include <iostream>=0A=
+#include <liburing.h>=0A=
+=0A=
+// open and close a file.  the file is created if it does not exist.=0A=
+=0A=
+void=0A=
+openClose(struct io_uring& ring, std::string fileName)=0A=
+{=0A=
+    int ret;=0A=
+    struct io_uring_cqe* cqe {};=0A=
+    struct io_uring_sqe* sqe {};=0A=
+    int fd {};=0A=
+    int flags {O_RDWR | O_CREAT};=0A=
+    mode_t mode {0666};=0A=
+=0A=
+    // openat2=0A=
+=0A=
+    sqe =3D io_uring_get_sqe(&ring);=0A=
+    assert(sqe !=3D nullptr);=0A=
+=0A=
+    io_uring_prep_openat(sqe, AT_FDCWD, fileName.data(), flags, mode);=0A=
+    io_uring_sqe_set_flags(sqe, IOSQE_ASYNC);=0A=
+=0A=
+    ret =3D io_uring_submit(&ring);=0A=
+    assert(ret =3D=3D 1);=0A=
+=0A=
+    ret =3D io_uring_wait_cqe(&ring, &cqe);=0A=
+    assert(ret =3D=3D 0);=0A=
+=0A=
+    fd =3D cqe->res;=0A=
+    assert(fd > 0);=0A=
+=0A=
+    io_uring_cqe_seen(&ring, cqe);=0A=
+=0A=
+    // close=0A=
+=0A=
+    sqe =3D io_uring_get_sqe(&ring);=0A=
+    assert(sqe !=3D nullptr);=0A=
+=0A=
+    io_uring_prep_close(sqe, fd);=0A=
+    io_uring_sqe_set_flags(sqe, IOSQE_ASYNC);=0A=
+=0A=
+    ret =3D io_uring_submit(&ring);=0A=
+    assert(ret =3D=3D 1);=0A=
+=0A=
+    // wait for the close to complete.=0A=
+    ret =3D io_uring_wait_cqe(&ring, &cqe);=0A=
+    assert(ret =3D=3D 0);=0A=
+=0A=
+    // verify that close succeeded.=0A=
+    assert(cqe->res =3D=3D 0);=0A=
+=0A=
+    io_uring_cqe_seen(&ring, cqe);=0A=
+}=0A=
+=0A=
+// create 100 files and then open each file twice.=0A=
+=0A=
+void=0A=
+openCloseHang(std::string filePath)=0A=
+{=0A=
+    int ret;=0A=
+    struct io_uring ring;=0A=
+=0A=
+    ret =3D io_uring_queue_init(8, &ring, 0);=0A=
+    assert(0 =3D=3D ret);=0A=
+=0A=
+    int repeat {3};=0A=
+    int numFiles {100};=0A=
+=0A=
+    std::filesystem::create_directory(filePath);=0A=
+=0A=
+    // files of length 0 are created in the j=3D=3D0 iteration below.=0A=
+    // those files are opened and closed during the j>0 iteraions.=0A=
+    // a repeat of 3 results in a fairly reliable reproduction.=0A=
+=0A=
+    for (int j =3D 0; j < repeat; j +=3D 1) {=0A=
+        for (int i =3D 0; i < numFiles; i +=3D 1) {=0A=
+            std::string fileName(filePath + "/file" + std::to_string(i));=
+=0A=
+            openClose(ring, fileName);=0A=
+        }=0A=
+    }=0A=
+=0A=
+    std::filesystem::remove_all(filePath);=0A=
+=0A=
+    io_uring_queue_exit(&ring);=0A=
+}=0A=
+=0A=
+int=0A=
+main(int argc, char** argv)=0A=
+{=0A=
+    std::string filePath {};=0A=
+    int iterations {};=0A=
+=0A=
+    struct option options[]=0A=
+    {=0A=
+        {"help", no_argument, 0, 'h'}, {"directory", required_argument, 0, =
+'d'},=0A=
+            {"count", required_argument, 0, 'c'},=0A=
+        {=0A=
+            0, 0, 0, 0=0A=
+        }=0A=
+    };=0A=
+    bool printUsage {false};=0A=
+    int val {};=0A=
+=0A=
+    while ((val =3D getopt_long_only(argc, argv, "", options, nullptr)) !=
+=3D -1) {=0A=
+        if (val =3D=3D 'h') {=0A=
+            printUsage =3D true;=0A=
+        } else if (val =3D=3D 'd') {=0A=
+            filePath =3D optarg;=0A=
+            if (std::filesystem::exists(filePath)) {=0A=
+                printUsage =3D true;=0A=
+                std::cerr << "directory must not exist" << std::endl;=0A=
+            }=0A=
+        } else if (val =3D=3D 'c') {=0A=
+            iterations =3D atoi(optarg);=0A=
+            if (0 =3D=3D iterations) {=0A=
+                printUsage =3D true;=0A=
+            }=0A=
+        } else {=0A=
+            printUsage =3D true;=0A=
+        }=0A=
+    }=0A=
+=0A=
+    if ((0 =3D=3D iterations) || (filePath.empty())) {=0A=
+        printUsage =3D true;=0A=
+    }=0A=
+=0A=
+    if (printUsage || (optind < argc)) {=0A=
+        std::cerr << "io_uring_open_close_audit_hang.cc --directory DIR --c=
+ount COUNT" << std::endl;=0A=
+        exit(1);=0A=
+    }=0A=
+=0A=
+    for (int i =3D 0; i < iterations; i +=3D 1) {=0A=
+        if (0 =3D=3D (i % 100)) {=0A=
+            std::cout << "i=3D" << std::to_string(i) << std::endl;=0A=
+        }=0A=
+        openCloseHang(filePath);=0A=
+    }=0A=
+    return 0;=0A=
+}=0A=
+=0A=
+Changing the reference count from int to refcount_t allows the test program=
+=0A=
+to complete using the v6.2 distro kernel.  The patch applies and builds on =
+the=0A=
+upstream v6.1.55 kernel.=0A=
+=0A=
+Signed-off-by: Dan Clash <dan.clash@microsoft.com>=0A=
+---=0A=
+diff --git a/fs/namei.c b/fs/namei.c=0A=
+index 2a8baa6ce3e8..4f7ac131c9d1 100644=0A=
+--- a/fs/namei.c=0A=
++++ b/fs/namei.c=0A=
+@@ -187,7 +187,7 @@ getname_flags(const char __user *filename, int flags, i=
+nt *empty)=0A=
+ 		}=0A=
+ 	}=0A=
+=0A=
+-	result->refcnt =3D 1;=0A=
++	refcount_set(&result->refcnt, 1);=0A=
+ 	/* The empty path is special. */=0A=
+ 	if (unlikely(!len)) {=0A=
+ 		if (empty)=0A=
+@@ -248,7 +248,7 @@ getname_kernel(const char * filename)=0A=
+ 	memcpy((char *)result->name, filename, len);=0A=
+ 	result->uptr =3D NULL;=0A=
+ 	result->aname =3D NULL;=0A=
+-	result->refcnt =3D 1;=0A=
++	refcount_set(&result->refcnt, 1);=0A=
+ 	audit_getname(result);=0A=
+=0A=
+ 	return result;=0A=
+@@ -259,9 +259,10 @@ void putname(struct filename *name)=0A=
+ 	if (IS_ERR(name))=0A=
+ 		return;=0A=
+=0A=
+-	BUG_ON(name->refcnt <=3D 0);=0A=
++	BUG_ON(refcount_read(&name->refcnt) =3D=3D 0);=0A=
++	BUG_ON(refcount_read(&name->refcnt) =3D=3D REFCOUNT_SATURATED);=0A=
+=0A=
+-	if (--name->refcnt > 0)=0A=
++	if (!refcount_dec_and_test(&name->refcnt))=0A=
+ 		return;=0A=
+=0A=
+ 	if (name->name !=3D name->iname) {=0A=
+diff --git a/include/linux/fs.h b/include/linux/fs.h=0A=
+index d0a54e9aac7a..8217e07726d4 100644=0A=
+--- a/include/linux/fs.h=0A=
++++ b/include/linux/fs.h=0A=
+@@ -2719,7 +2719,7 @@ struct audit_names;=0A=
+ struct filename {=0A=
+ 	const char		*name;	/* pointer to actual string */=0A=
+ 	const __user char	*uptr;	/* original userland pointer */=0A=
+-	int			refcnt;=0A=
++	refcount_t		refcnt;=0A=
+ 	struct audit_names	*aname;=0A=
+ 	const char		iname[];=0A=
+ };=0A=
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c=0A=
+index 37cded22497e..232e0be9f6d9 100644=0A=
+--- a/kernel/auditsc.c=0A=
++++ b/kernel/auditsc.c=0A=
+@@ -2188,7 +2188,7 @@ __audit_reusename(const __user char *uptr)=0A=
+ 		if (!n->name)=0A=
+ 			continue;=0A=
+ 		if (n->name->uptr =3D=3D uptr) {=0A=
+-			n->name->refcnt++;=0A=
++			refcount_inc(&n->name->refcnt);=0A=
+ 			return n->name;=0A=
+ 		}=0A=
+ 	}=0A=
+@@ -2217,7 +2217,7 @@ void __audit_getname(struct filename *name)=0A=
+ 	n->name =3D name;=0A=
+ 	n->name_len =3D AUDIT_NAME_FULL;=0A=
+ 	name->aname =3D n;=0A=
+-	name->refcnt++;=0A=
++	refcount_inc(&name->refcnt);=0A=
+ }=0A=
+=0A=
+ static inline int audit_copy_fcaps(struct audit_names *name,=0A=
+@@ -2349,7 +2349,7 @@ void __audit_inode(struct filename *name, const struc=
+t dentry *dentry,=0A=
+ 		return;=0A=
+ 	if (name) {=0A=
+ 		n->name =3D name;=0A=
+-		name->refcnt++;=0A=
++		refcount_inc(&name->refcnt);=0A=
+ 	}=0A=
+=0A=
+ out:=0A=
+@@ -2474,7 +2474,7 @@ void __audit_inode_child(struct inode *parent,=0A=
+ 		if (found_parent) {=0A=
+ 			found_child->name =3D found_parent->name;=0A=
+ 			found_child->name_len =3D AUDIT_NAME_FULL;=0A=
+-			found_child->name->refcnt++;=0A=
++			refcount_inc(&found_child->name->refcnt);=0A=
+ 		}=0A=
+ 	}=0A=
+=0A=
