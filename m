@@ -2,196 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 185357BB0A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96177BB0B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjJFEDg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 00:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
+        id S229914AbjJFEMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 00:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjJFEDe (ORCPT
+        with ESMTP id S229815AbjJFEMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 00:03:34 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C664FDB;
-        Thu,  5 Oct 2023 21:03:30 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39642neN61336496, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 39642neN61336496
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 6 Oct 2023 12:02:51 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 6 Oct 2023 12:02:49 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 6 Oct 2023 12:02:49 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Fri, 6 Oct 2023 12:02:49 +0800
-From:   Justin Lai <justinlai0215@realtek.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Larry Chiu <larry.chiu@realtek.com>
-Subject: RE: [PATCH net-next v9 08/13] net:ethernet:realtek:rtase: Implement net_device_ops
-Thread-Topic: [PATCH net-next v9 08/13] net:ethernet:realtek:rtase: Implement
- net_device_ops
-Thread-Index: AQHZ8fl5hDe6qB9qzkmKif0/hXC9sLAvvsaAgAxiTMA=
-Date:   Fri, 6 Oct 2023 04:02:48 +0000
-Message-ID: <99dfcd7363dc412f877730fab4a9f7dd@realtek.com>
-References: <20230928104920.113511-1-justinlai0215@realtek.com>
- <20230928104920.113511-9-justinlai0215@realtek.com>
- <b28a3ea6-d75e-45e0-8b87-0b062b5c3a64@lunn.ch>
-In-Reply-To: <b28a3ea6-d75e-45e0-8b87-0b062b5c3a64@lunn.ch>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.210.185]
-x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 6 Oct 2023 00:12:08 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCF0DE;
+        Thu,  5 Oct 2023 21:12:07 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-690b7cb71aeso1366963b3a.0;
+        Thu, 05 Oct 2023 21:12:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696565527; x=1697170327; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Eu6aaTza3btLqwJeXCa4CkRwr35Is1denoYOzgGUDs=;
+        b=BubVBVnKyLGkD1JRXfI8KcqPkRkp6I0TmvxOR4jgVUPFZzUnkQR5dmN/A8xkjwUy8Q
+         tso9zUAcxD4xN7QFZP9DG6CXzo3Be/NJRLsjyyKu88sqmkEjl5c/hUyEdMwNByBwZ1Zx
+         xlvbwaftQ6aGT03+kU8cur7CvkISKAImlCmLss1w37zJZk8zD3eIcIzWQIAn7OvO3y+L
+         EAXwjjO5xNvYWKbuPpzkX35RdNHoQlMgR22KSrUeDcr2LHa8OpzP85aZv6evjMsPxLJk
+         t4uSRuwSDkHAO3Im0vRJ8VRXTbAF9CUqI6VjIigOFT+An3ZEghzUl+ZuafNFSje53gxk
+         KIxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696565527; x=1697170327;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4Eu6aaTza3btLqwJeXCa4CkRwr35Is1denoYOzgGUDs=;
+        b=hBvt1LbpT7pSQEK+FuB2shG6idoV+xfrhJch5aTNUkbXYgodZAGY4nLWvxXeGSUFR0
+         FfZ4J91Kf8DeqS5NUOSxDQdkJBrnX7VWWN31uu61FVp4JHsYfxsxc7ZBwVhyvO4i16fe
+         zUiYiijWPwxI+ohnve0FGrg4fdH6oUiGxpixgMJFUSMwjrydIKe1zGWvpiKBJX2f8P83
+         GdHrvf2h5wXepyo6fUr8JXQXMRaR0+5X6ije876MknW/g8Zmd3jiQn/CyLZKNCXWsBwB
+         4N9IWxrmKay5y3PYp6jOznwrG4yRQnbpchd+R1vGaD21bDdMLCxiqJTyJnEPqiZYuZXH
+         LifQ==
+X-Gm-Message-State: AOJu0Yw/JPJlkI6ZBBmAf4Jg/XPFQ6THYMK4glrQPC+f8uGHu27tgDKY
+        coJPgLv4BoflDyUkTMmzjZM=
+X-Google-Smtp-Source: AGHT+IGMGyGp+bKC07hLojC8Cr3py2DZz0u8Od/wENDqekEuvYzB0ZycWJMz3Fi+LUlScx3nmtZa8A==
+X-Received: by 2002:a05:6a00:99c:b0:690:fd48:1aa4 with SMTP id u28-20020a056a00099c00b00690fd481aa4mr5494112pfg.0.1696565526810;
+        Thu, 05 Oct 2023 21:12:06 -0700 (PDT)
+Received: from toolbox.iitism.net ([103.15.228.92])
+        by smtp.gmail.com with ESMTPSA id t17-20020aa79391000000b00694fee1011asm401131pfe.208.2023.10.05.21.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 21:12:06 -0700 (PDT)
+From:   Ayush Singh <ayushdevel1325@gmail.com>
+To:     greybus-dev@lists.linaro.org
+Cc:     Ayush Singh <ayushdevel1325@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        vaishnav@beagleboard.org, jkridner@beagleboard.org, nm@ti.com,
+        krzysztof.kozlowski+dt@linaro.org
+Subject: [PATCH v8 0/3] greybus: Add BeaglePlay Greybus Driver
+Date:   Fri,  6 Oct 2023 09:40:30 +0530
+Message-ID: <20231006041035.652841-1-ayushdevel1325@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +static int rtase_change_mtu(struct net_device *dev, int new_mtu) {
-> > +     struct rtase_private *tp = netdev_priv(dev);
-> > +     int ret;
-> > +
-> > +     dev->mtu = new_mtu;
-> > +
-> > +     if (!netif_running(dev))
-> > +             goto out;
-> > +
-> > +     rtase_down(dev);
-> > +
-> > +     rtase_set_rxbufsize(tp, dev);
-> > +
-> > +     ret = rtase_init_ring(dev);
-> > +
-> > +     if (ret)
-> > +             return ret;
-> 
-> If this fails, what state is the interface in?
-> 
-> What you often see is that the new ring is first allocated. If that is successful,
-> you free the old rung. If the allocation fails, it does not matter, you still have
-> the old ring, and you keep using it.
-> 
+BeagleConnect is both a technology concept and a line of board designs
+that implement the technology. Born from Greybus, a mechanism for
+dynamically extending a Linux system with embedded peripherals,
+BeagleConnect adds two key elements: a 6LoWPAN transport and mikroBUS
+manifests. The 6LoWPAN transport provides for arbitrary connections,
+including the IEEE802.15.4g long-range wireless transport supported
+between BeaglePlay and BeagleConnect Freedom (the first BeagleConnect
+board design). The mikroBUS manifests provide for rapid prototyping
+and low-node-count production with sensor boards following the
+mikroBUS freely-licensable embedded bus standard such that existing
+Linux drivers can be loaded upon Greybus discovery of the nodes.
+This patch set provides the Linux-side hooks required for the 6LoWPAN
+transport for BeagleConnect on BeaglePlay. Also adds required devicetree
+additions.
 
-If it fails, the driver will not work properly. We will make modifications based on your suggestions.
+Tested over `next-20230825`.
 
-> > +
-> > +     netif_stop_queue(dev);
-> > +     netif_carrier_off(dev);
-> > +     rtase_hw_config(dev);
-> > +
-> > +     /* always link, so start to transmit & receive */
-> > +     rtase_hw_start(dev);
-> > +     netif_carrier_on(dev);
-> > +     netif_wake_queue(dev);
-> 
-> I don't think you need to down/up the carrier when changing the MTU.
+Link: https://programmershideaway.xyz/tags/gsoc23/ GSoC23 Blog
+Link: https://git.beagleboard.org/gsoc/greybus/cc1352-firmware Zephyr App
+Link: https://github.com/Ayush1325/linux/tree/gb-beagleplay GitHub Branch
+Link: https://docs.beagleboard.org/latest/boards/beagleconnect/index.html BeagleConnect
+Link: https://docs.beagleboard.org/latest/boards/beagleplay/index.html BeaglePlay
+Link: https://github.com/Ayush1325/linux/tree/gb-beagleplay Github Repo
+Link: https://lists.linaro.org/archives/list/greybus-dev@lists.linaro.org/thread/CBMC25GFHFOPHHKYRHG7UTJAOTONJKGV/ Patch v7
 
-Thank you for your suggestion, we will confirm this part again.
+Changes in Patch v8
+v7 -> v8:
+- fix clocks
+- fix reset-gpios
+- depend on serdev
 
-> 
-> > +static void rtase_sw_reset(struct net_device *dev) {
-> > +     struct rtase_private *tp = netdev_priv(dev);
-> > +     int ret;
-> > +
-> > +     netif_stop_queue(dev);
-> > +     netif_carrier_off(dev);
-> > +     rtase_hw_reset(dev);
-> > +
-> > +     /* let's wait a bit while any (async) irq lands on */
-> > +     rtase_wait_for_quiescence(dev);
-> > +     rtase_tx_clear(tp);
-> > +     rtase_rx_clear(tp);
-> > +
-> > +     ret = rtase_init_ring(dev);
-> > +     if (ret)
-> > +             netdev_alert(dev, "unable to init ring\n");
-> > +
-> > +     rtase_hw_config(dev);
-> > +     /* always link, so start to transmit & receive */
-> > +     rtase_hw_start(dev);
-> > +
-> > +     netif_carrier_on(dev);
-> > +     netif_wake_queue(dev);
-> > +}
-> > +
-> > +static void rtase_tx_timeout(struct net_device *dev, unsigned int
-> > +txqueue) {
-> > +     rtase_sw_reset(dev);
-> 
-> Do you actually see this happening? The timeout is set pretty high, i think 5
-> seconds. If it does happen, it probably means you have a hardware/firmware
-> bug. So you want to be noisy here, so you get to know about these problems,
-> rather than silently work around them.
+v6 -> v7:
+- Drop speed variable
+- Fix commit message
+- add clock-names and descriptions
+- fix power lines
 
-I would like to ask if we can dump some information that will help us understand the cause of the problem before doing the reset? And should we use netdev_warn to print this information?
+v5 -> v6:
+- Rename compatible to `ti,cc1352p7`
+- Fix formatting
+- Use kerneldoc
+- Add clocks, power-gpios, reset-gpios to dt bindings
 
-> 
-> > +static int rtase_setup_tc(struct net_device *dev, enum tc_setup_type type,
-> > +                       void *type_data) {
-> > +     struct rtase_private *tp = netdev_priv(dev);
-> > +     int ret = 0;
-> > +
-> > +     switch (type) {
-> > +     case TC_SETUP_QDISC_MQPRIO:
-> > +             break;
-> > +     case TC_SETUP_BLOCK:
-> > +             break;
-> 
-> This looks odd. You silently return 0, doing nothing?
+v4 -> v5:
+- Move DT Bindings to net
+- Rename compatible to `beagle,play-cc1352`
+- Expose CC1352 as MCU
+- Remove redundant tracing messages
+- Fix memory leaks
 
-Thank you for your reminder, we will remove it.
+v3 -> v4:
+- Add DT Bindings
+- Reorder commits
+- Improve commit messages
 
-> 
-> > +     case TC_SETUP_QDISC_CBS:
-> > +             ret = rtase_setup_tc_cbs(tp, type_data);
-> > +             break;
-> > +     default:
-> > +             return -EOPNOTSUPP;
-> > +     }
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static netdev_features_t rtase_fix_features(struct net_device *dev,
-> > +                                         netdev_features_t
-> features)
-> > +{
-> > +     netdev_features_t features_fix = features;
-> > +
-> > +     if (dev->mtu > MSS_MAX)
-> > +             features_fix &= ~NETIF_F_ALL_TSO;
-> > +
-> > +     if (dev->mtu > ETH_DATA_LEN) {
-> > +             features_fix &= ~NETIF_F_ALL_TSO;
-> > +             features_fix &= ~NETIF_F_CSUM_MASK;
-> > +     }
-> 
-> So the hardware does not support TSO and checksumming for jumbo frames?
+v2 -> v3:
+- Move gb-beagleplay out of staging
 
-This hardware supports checksumming for jumbo frames, but does not support TSO. We will modify this part, thank you.
+v1 -> v2:
+- Combine the driver into a single file
+- Remove redundant code
+- Fix Checkpatch complaints
+- Other suggested changes
 
-> 
->    Andrew
+Ayush Singh (3):
+  dt-bindings: net: Add ti,cc1352p7
+  greybus: Add BeaglePlay Linux Driver
+  dts: ti: k3-am625-beagleplay: Add beaglecc1352
+
+ .../devicetree/bindings/net/ti,cc1352p7.yaml  |  51 ++
+ MAINTAINERS                                   |   7 +
+ .../arm64/boot/dts/ti/k3-am625-beagleplay.dts |   4 +
+ drivers/greybus/Kconfig                       |  10 +
+ drivers/greybus/Makefile                      |   2 +
+ drivers/greybus/gb-beagleplay.c               | 501 ++++++++++++++++++
+ 6 files changed, 575 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
+ create mode 100644 drivers/greybus/gb-beagleplay.c
+
+
+base-commit: 6269320850097903b30be8f07a5c61d9f7592393
+-- 
+2.41.0
+
