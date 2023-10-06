@@ -2,76 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1377B7BBDE6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E92A7BBDE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233022AbjJFRnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 13:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
+        id S233064AbjJFRnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 13:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232552AbjJFRnG (ORCPT
+        with ESMTP id S233011AbjJFRnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 13:43:06 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DDAAD;
-        Fri,  6 Oct 2023 10:43:05 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396HQidc011774;
-        Fri, 6 Oct 2023 17:43:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=w9D5zFiE5Fk89khSJXhALG58nv+79xh2VzKC33OnWMg=;
- b=WcpGaMnASCpvYFByZ2x/lpO8iNhURKjSvGgQL9aZcK0eWoljDPFLAFmk5g5ciM+4vpMT
- kyAfO5a81qjHd6HC9Q3TY21iTSsPMohCkhs9AYnP/8/Hrtx5vJBYZ7J10u6xY1p21Cxd
- 24kWy1TAyMDYb3c4/oXeiK/xRp4xHof/q0rR0gK1o+AHK+bbuf5AeZ4wlA+/V3E4axsW
- MyzXuiIG1jPLg7Ec82fjXZto5KGzKcRtniFh2CGKL6LYENJi7h9DwHlQ/OhrVIY/SZpA
- sgabUNcQjgVKQjNMqhwiy1OON3xMnq5A5vwuYUepFyRstQ1G2GRWzjFWzGYJh5AIp81F GQ== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tjgc691qd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Oct 2023 17:43:00 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 396HgtZB009715;
-        Fri, 6 Oct 2023 17:42:55 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3tecrm81td-1;
-        Fri, 06 Oct 2023 17:42:55 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 396HgtFE009710;
-        Fri, 6 Oct 2023 17:42:55 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-vnivarth-hyd.qualcomm.com [10.213.111.166])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 396Hgt6Z009708;
-        Fri, 06 Oct 2023 17:42:55 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3994820)
-        id 680AB3FEC; Fri,  6 Oct 2023 23:12:54 +0530 (+0530)
-From:   Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        broonie@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     quic_msavaliy@quicinc.com, dianders@chromium.org, mka@chromium.org,
-        swboyd@chromium.org, quic_vtanuku@quicinc.com,
-        Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
-Subject: [PATCH] spi: spi-geni-qcom: Rename the label unmap_if_dma
-Date:   Fri,  6 Oct 2023 23:12:50 +0530
-Message-Id: <1696614170-18969-1-git-send-email-quic_vnivarth@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: KOlDzzKuiDLgQvqTndcrOZQkhU1USYlI
-X-Proofpoint-GUID: KOlDzzKuiDLgQvqTndcrOZQkhU1USYlI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-06_13,2023-10-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- mlxlogscore=643 impostorscore=0 adultscore=0 spamscore=0 phishscore=0
- mlxscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310060131
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        Fri, 6 Oct 2023 13:43:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15236CE;
+        Fri,  6 Oct 2023 10:43:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2BDCC433C7;
+        Fri,  6 Oct 2023 17:43:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696614190;
+        bh=3pHBD8r/iPh/v5cgOzJJy4If3hivbFUEGjN+b6bqFKI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=OvPbzaM2D/+mLKHaRTMMFrEpSKvYejfKtoC/+RB+YAabg/6A0VNDQRGB+7TAtZuak
+         uS64Q/Sft1qfwBN87fAPShxrS7YYollPm7HQlVrSl4w+8Hnap/mYjI8utfUE3Jo2XN
+         /I4fS8KyXJfgv0wbgfQM9uVPr+JIU2/Sn/pJmg9xyPWj7wHBvSmxz1dM2Znfd80spl
+         FHbIf7UeIREC89a4S8JbzrDSKg26GiJilhrzCNvELcupBvD8/LGtqzEE9KPV+TPDUS
+         pmaNKW7CLwgRk67DkXeq5yjKGSVIKm5sSpEkNaErN0y7HOgag4Oqz3CikmAxgbODEF
+         TvQO2dMbhDbnA==
+Message-ID: <f142ae65-0609-ccf2-5908-663cd2ecab73@kernel.org>
+Date:   Sat, 7 Oct 2023 02:43:04 +0900
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v7 08/26] PM / devfreq: rk3399_dmc,dfi: generalize DDRTYPE
+ defines
+Content-Language: en-US
+To:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Vincent Legoll <vincent.legoll@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20230704093242.583575-1-s.hauer@pengutronix.de>
+ <20230704093242.583575-9-s.hauer@pengutronix.de>
+From:   Chanwoo Choi <chanwoo@kernel.org>
+In-Reply-To: <20230704093242.583575-9-s.hauer@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,49 +66,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code at unmap_if_dma label doesn't contain unmapping dma anymore but
-has only fsm reset.
+On 23. 7. 4. 18:32, Sascha Hauer wrote:
+> The DDRTYPE defines are named to be RK3399 specific, but they can be
+> used for other Rockchip SoCs as well, so replace the RK3399_PMUGRF_
+> prefix with ROCKCHIP_. They are defined in a SoC specific header
+> file, so when generalizing the prefix also move the new defines to
+> a SoC agnostic header file. While at it use GENMASK to define the
+> DDRTYPE bitfield and give it a name including the full register name.
+> 
+> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/devfreq/event/rockchip-dfi.c |  9 +++++----
+>  drivers/devfreq/rk3399_dmc.c         | 10 +++++-----
+>  include/soc/rockchip/rk3399_grf.h    |  7 +------
+>  include/soc/rockchip/rockchip_grf.h  | 17 +++++++++++++++++
+>  4 files changed, 28 insertions(+), 15 deletions(-)
+>  create mode 100644 include/soc/rockchip/rockchip_grf.h
+> 
+> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
+> index 82de24a027579..6bccb6fbcfc0c 100644
+> --- a/drivers/devfreq/event/rockchip-dfi.c
+> +++ b/drivers/devfreq/event/rockchip-dfi.c
+> @@ -18,8 +18,10 @@
+>  #include <linux/list.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> +#include <linux/bitfield.h>
+>  #include <linux/bits.h>
+>  
+> +#include <soc/rockchip/rockchip_grf.h>
+>  #include <soc/rockchip/rk3399_grf.h>
+>  
+>  #define DMC_MAX_CHANNELS	2
+> @@ -74,9 +76,9 @@ static void rockchip_dfi_start_hardware_counter(struct devfreq_event_dev *edev)
+>  	writel_relaxed(CLR_DDRMON_CTRL, dfi_regs + DDRMON_CTRL);
+>  
+>  	/* set ddr type to dfi */
+> -	if (dfi->ddr_type == RK3399_PMUGRF_DDRTYPE_LPDDR3)
+> +	if (dfi->ddr_type == ROCKCHIP_DDRTYPE_LPDDR3)
+>  		writel_relaxed(LPDDR3_EN, dfi_regs + DDRMON_CTRL);
+> -	else if (dfi->ddr_type == RK3399_PMUGRF_DDRTYPE_LPDDR4)
+> +	else if (dfi->ddr_type == ROCKCHIP_DDRTYPE_LPDDR4)
+>  		writel_relaxed(LPDDR4_EN, dfi_regs + DDRMON_CTRL);
+>  
+>  	/* enable count, use software mode */
+> @@ -191,8 +193,7 @@ static int rk3399_dfi_init(struct rockchip_dfi *dfi)
+>  
+>  	/* get ddr type */
+>  	regmap_read(regmap_pmu, RK3399_PMUGRF_OS_REG2, &val);
+> -	dfi->ddr_type = (val >> RK3399_PMUGRF_DDRTYPE_SHIFT) &
+> -			RK3399_PMUGRF_DDRTYPE_MASK;
+> +	dfi->ddr_type = FIELD_GET(RK3399_PMUGRF_OS_REG2_DDRTYPE, val);
+>  
+>  	dfi->channel_mask = GENMASK(1, 0);
+>  
+> diff --git a/drivers/devfreq/rk3399_dmc.c b/drivers/devfreq/rk3399_dmc.c
+> index daff407026157..fd2c5ffedf41e 100644
+> --- a/drivers/devfreq/rk3399_dmc.c
+> +++ b/drivers/devfreq/rk3399_dmc.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/suspend.h>
+>  
+>  #include <soc/rockchip/pm_domains.h>
+> +#include <soc/rockchip/rockchip_grf.h>
+>  #include <soc/rockchip/rk3399_grf.h>
+>  #include <soc/rockchip/rockchip_sip.h>
+>  
+> @@ -381,17 +382,16 @@ static int rk3399_dmcfreq_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	regmap_read(data->regmap_pmu, RK3399_PMUGRF_OS_REG2, &val);
+> -	ddr_type = (val >> RK3399_PMUGRF_DDRTYPE_SHIFT) &
+> -		    RK3399_PMUGRF_DDRTYPE_MASK;
+> +	ddr_type = FIELD_GET(RK3399_PMUGRF_OS_REG2_DDRTYPE, val);
+>  
+>  	switch (ddr_type) {
+> -	case RK3399_PMUGRF_DDRTYPE_DDR3:
+> +	case ROCKCHIP_DDRTYPE_DDR3:
+>  		data->odt_dis_freq = data->ddr3_odt_dis_freq;
+>  		break;
+> -	case RK3399_PMUGRF_DDRTYPE_LPDDR3:
+> +	case ROCKCHIP_DDRTYPE_LPDDR3:
+>  		data->odt_dis_freq = data->lpddr3_odt_dis_freq;
+>  		break;
+> -	case RK3399_PMUGRF_DDRTYPE_LPDDR4:
+> +	case ROCKCHIP_DDRTYPE_LPDDR4:
+>  		data->odt_dis_freq = data->lpddr4_odt_dis_freq;
+>  		break;
+>  	default:
+> diff --git a/include/soc/rockchip/rk3399_grf.h b/include/soc/rockchip/rk3399_grf.h
+> index 3eebabcb28123..775f8444bea8d 100644
+> --- a/include/soc/rockchip/rk3399_grf.h
+> +++ b/include/soc/rockchip/rk3399_grf.h
+> @@ -11,11 +11,6 @@
+>  
+>  /* PMU GRF Registers */
+>  #define RK3399_PMUGRF_OS_REG2		0x308
+> -#define RK3399_PMUGRF_DDRTYPE_SHIFT	13
+> -#define RK3399_PMUGRF_DDRTYPE_MASK	7
+> -#define RK3399_PMUGRF_DDRTYPE_DDR3	3
+> -#define RK3399_PMUGRF_DDRTYPE_LPDDR2	5
+> -#define RK3399_PMUGRF_DDRTYPE_LPDDR3	6
+> -#define RK3399_PMUGRF_DDRTYPE_LPDDR4	7
+> +#define RK3399_PMUGRF_OS_REG2_DDRTYPE		GENMASK(15, 13)
+>  
+>  #endif
+> diff --git a/include/soc/rockchip/rockchip_grf.h b/include/soc/rockchip/rockchip_grf.h
+> new file mode 100644
+> index 0000000000000..dde1a9796ccb5
+> --- /dev/null
+> +++ b/include/soc/rockchip/rockchip_grf.h
+> @@ -0,0 +1,17 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
+> +/*
+> + * Rockchip General Register Files definitions
+> + */
+> +
+> +#ifndef __SOC_ROCKCHIP_GRF_H
+> +#define __SOC_ROCKCHIP_GRF_H
+> +
+> +/* Rockchip DDRTYPE defines */
+> +enum {
+> +	ROCKCHIP_DDRTYPE_DDR3	= 3,
+> +	ROCKCHIP_DDRTYPE_LPDDR2	= 5,
+> +	ROCKCHIP_DDRTYPE_LPDDR3	= 6,
+> +	ROCKCHIP_DDRTYPE_LPDDR4	= 7,
+> +};
+> +
+> +#endif /* __SOC_ROCKCHIP_GRF_H */
 
-Rename it to reset_if_dma accordingly.
 
-No functional change.
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
-Signed-off-by: Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
----
- drivers/spi/spi-geni-qcom.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This patch must require Ack of rockchip Maintainer (Heiko Stuebner)
+because of include/soc/rockchip.
 
-diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-index f4f376a..b956a32 100644
---- a/drivers/spi/spi-geni-qcom.c
-+++ b/drivers/spi/spi-geni-qcom.c
-@@ -166,7 +166,7 @@ static void handle_se_timeout(struct spi_master *spi,
- 		 * doesn`t support CMD Cancel sequnece
- 		 */
- 		spin_unlock_irq(&mas->lock);
--		goto unmap_if_dma;
-+		goto reset_if_dma;
- 	}
- 
- 	reinit_completion(&mas->cancel_done);
-@@ -175,7 +175,7 @@ static void handle_se_timeout(struct spi_master *spi,
- 
- 	time_left = wait_for_completion_timeout(&mas->cancel_done, HZ);
- 	if (time_left)
--		goto unmap_if_dma;
-+		goto reset_if_dma;
- 
- 	spin_lock_irq(&mas->lock);
- 	reinit_completion(&mas->abort_done);
-@@ -193,7 +193,7 @@ static void handle_se_timeout(struct spi_master *spi,
- 		mas->abort_failed = true;
- 	}
- 
--unmap_if_dma:
-+reset_if_dma:
- 	if (mas->cur_xfer_mode == GENI_SE_DMA) {
- 		if (xfer) {
- 			if (xfer->tx_buf) {
 -- 
-2.7.4
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
 
