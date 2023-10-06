@@ -2,87 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0BC7BBDEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65F47BBDF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbjJFRpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 13:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
+        id S233057AbjJFRqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 13:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233032AbjJFRps (ORCPT
+        with ESMTP id S232851AbjJFRqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 13:45:48 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EDFDF;
-        Fri,  6 Oct 2023 10:45:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5453EC433C7;
-        Fri,  6 Oct 2023 17:45:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696614346;
-        bh=m/31zFx7p634FZoa2MB8a6EcMoxskB9XZBiy1PLjgOk=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=B/PJGyD+If0/sLWCL2ewd9s8znH0Je7ZO5+re0LHtj7XzzuvsVufHlboeIqrHBQRZ
-         94EFi+GRwgUumEo1a+eflgD7LxuOmA5E7ANj8kferjRHD4a2SatqVCgV/deBJ7gKTe
-         dL2wTNr3oBwbl6IDRcnq702GUzEttpKZAYHF8817Kc0dCt4Wt74DEr1Ot5W4wU3SBa
-         5x74Qy4C79KKvo6zApL28n25Txfsp2C/CooZENn6rfhshAACPr2JIfc/C9B/tlWmYH
-         ob/CnqqSSf/Ed48cVFsgmzSfCGd6TpBcuVHuMsxWpyMy6zKP78invleSwFpQRICv+g
-         uWTkYnxGd63VQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-spi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <2023100639-celtic-herbs-66be@gregkh>
-References: <2023100639-celtic-herbs-66be@gregkh>
-Subject: Re: [PATCH] spi: spidev: make spidev_class constant
-Message-Id: <169661434501.222776.95310349603374179.b4-ty@kernel.org>
-Date:   Fri, 06 Oct 2023 18:45:45 +0100
+        Fri, 6 Oct 2023 13:46:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E470FB6;
+        Fri,  6 Oct 2023 10:46:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696614368; x=1728150368;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jUeIQL2G9apTjdeNAodowXeret/higzFFRbWbM/OE/Q=;
+  b=ChkBdaEENiQvjl7vuwIWhPQwGF3yzCC5t3o9JOGVQAyqZFojCNmDbA5z
+   yFNIGy+lylZh9hj88QNwSRQ2TVi6whp/Ti8cUbQ35ZZ6CNHFZ0GCidftu
+   yhFCzC6agyCzU3pb4PGqTbBOwsR7vsaSVE16Ood1/be18NznbOgkoj3CY
+   DD4R/DtqonN/Z8IG1rumUCvjtRHmYTgp3fLy74Vik3JJDGKkA+TuKp8LV
+   +BbdNRMt5zXjFgiw7MTRkbesmMgA/6MtkwxSIQ+wKJVtT0XnFE7JMVGZI
+   TjjdRPxNpp4ldLhkXIaLpzh27rh9DDT6drIN3x0GdLCWo1GDI9VOMvPGp
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="2400166"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="2400166"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 10:46:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="868418423"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="868418423"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 10:46:01 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qooti-00000003OlT-301H;
+        Fri, 06 Oct 2023 20:45:58 +0300
+Date:   Fri, 6 Oct 2023 20:45:58 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Michal Wilczynski <michal.wilczynski@intel.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev, rafael.j.wysocki@intel.com,
+        lenb@kernel.org, dan.j.williams@intel.com,
+        vishal.l.verma@intel.com, ira.weiny@intel.com
+Subject: Re: [PATCH v2 3/6] ACPI: AC: Replace acpi_driver with platform_driver
+Message-ID: <ZSBH1pd2cfk83QZ4@smile.fi.intel.com>
+References: <20231006173055.2938160-1-michal.wilczynski@intel.com>
+ <20231006173055.2938160-4-michal.wilczynski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006173055.2938160-4-michal.wilczynski@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Oct 2023 15:58:40 +0200, Greg Kroah-Hartman wrote:
-> Now that the driver core allows for struct class to be in read-only
-> memory, we should make all 'class' structures declared at build time
-> placing them into read-only memory, instead of having to be dynamically
-> allocated at runtime.
+On Fri, Oct 06, 2023 at 08:30:52PM +0300, Michal Wilczynski wrote:
+> AC driver uses struct acpi_driver incorrectly to register itself. This
+> is wrong as the instances of the ACPI devices are not meant to
+> be literal devices, they're supposed to describe ACPI entry of a
+> particular device.
 > 
+> Use platform_driver instead of acpi_driver. In relevant places call
+> platform devices instances pdev to make a distinction with ACPI
+> devices instances.
 > 
+> Drop unnecessary casts from acpi_bus_generate_netlink_event() and
+> acpi_notifier_call_chain().
+> 
+> Add a blank line to distinguish pdev API vs local ACPI notify function.
 
-Applied to
+...
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+>  struct acpi_ac {
+>  	struct power_supply *charger;
+>  	struct power_supply_desc charger_desc;
+> -	struct acpi_device *device;
+> +	struct device *dev;
+>  	unsigned long long state;
+>  	struct notifier_block battery_nb;
+>  };
 
-Thanks!
+When changing this, also makes sense just to check if the moving a member in
+the data structure makes code shorter, but it's not a show stopper.
 
-[1/1] spi: spidev: make spidev_class constant
-      commit: df22568ad8ed317db95acc11e1c08bae7a0fba5d
+...
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> -	status = acpi_evaluate_integer(ac->device->handle, "_PSR", NULL,
+> +	status = acpi_evaluate_integer(ACPI_HANDLE(ac->dev), "_PSR", NULL,
+>  				       &ac->state);
+>  	if (ACPI_FAILURE(status)) {
+> -		acpi_handle_info(ac->device->handle,
+> +		acpi_handle_info(ACPI_HANDLE(ac->dev),
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Can we call ACPI_HANDLE() only once and cache that in a local variable and use
+in all places?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+...
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> -	struct acpi_ac *ac = acpi_driver_data(device);
+> +	struct acpi_ac *ac = data;
+> +	struct acpi_device *device = ACPI_COMPANION(ac->dev);
+>  
+>  	switch (event) {
+>  	default:
 
-Thanks,
-Mark
+> -		acpi_handle_debug(device->handle, "Unsupported event [0x%x]\n",
+> +		acpi_handle_debug(ACPI_HANDLE(ac->dev), "Unsupported event [0x%x]\n",
+>  				  event);
+
+Does it makes any sense now? Basically it duplicates the ACPI_COMPANION() call
+as Rafael pointed out in previous version discussion.
+
+>  		fallthrough;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
