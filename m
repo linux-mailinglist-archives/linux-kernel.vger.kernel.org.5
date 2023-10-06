@@ -2,169 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEBE7BBD32
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDADA7BBD34
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232971AbjJFQrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
+        id S232984AbjJFQru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbjJFQrD (ORCPT
+        with ESMTP id S232973AbjJFQri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:47:03 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAF2184
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 09:46:45 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-79fca042ec0so95216439f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 09:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1696610804; x=1697215604; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gUEhW6+BD62ukRk7cyuW+qq/HbiZNK3QK+6OmmBkfkw=;
-        b=H4z7ZAz3NeZBDoN73YBXpLH4yTo/DybCAzovGQxDYmrHtiN8QjWuHC+FV7mZjsi5hL
-         aOlox+Z6ekrVG5rve05DeKMMpjMXmr5P1nNcY8jbJMQDuZUfsirAS4Z/jl/SFKk84TKK
-         wOslfw41S40zuIcgAEtHW3LD0BEnT/77a1Kf8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696610804; x=1697215604;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gUEhW6+BD62ukRk7cyuW+qq/HbiZNK3QK+6OmmBkfkw=;
-        b=Ei/YyH41g7MF5kyQz4510mMt0lJW1vqXNVfcMstJoIsoBstF5uwudxLj/Y3PC8ybRJ
-         RidXQlLDZpYCdRyejITE+GLBwPm8RPfHZZgY4Uy23UWEl2SNZM214lxleJTqDCk6Rm6k
-         FMpPYwbFyOa+eX6H7tLacgDPGcpvkYQ0tIy/1sjeXmYBIsTKworBjnNhrCk8DL0ZMUYc
-         s1y9LNjVnO2BlXolgwMTRdA++MZrz6LjOMP5gGn2zVNCk3iOaCK85g0/nhFrR17Pbt2p
-         ZWdARh5bF39Y+WUQfu4KvmtXTbgeAgfsUzYvNlO8HJx4/se+EIVUppmpbKRGzoaJ4zIs
-         Ybew==
-X-Gm-Message-State: AOJu0Yx9kuGcI4eWHBRajGZtfbN2EUDflzpRJT7s1HmA7mlDSgcr9Iu0
-        a0w8zqgBNx6mT/azgV+HnwMAeA==
-X-Google-Smtp-Source: AGHT+IGUxcSwszQA6RTlMCdq9Hi405ccUR8Ll1+CDy3nUlMs2+fZMVyfHOfECmnMpd8Y3ZTKpcKWfw==
-X-Received: by 2002:a5d:9743:0:b0:79f:96db:f33d with SMTP id c3-20020a5d9743000000b0079f96dbf33dmr9426665ioo.9.1696610804633;
-        Fri, 06 Oct 2023 09:46:44 -0700 (PDT)
-Received: from localhost (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id 8-20020a5d9c48000000b007836c7e8dccsm659831iof.17.2023.10.06.09.46.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 09:46:44 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 16:46:43 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Fri, 6 Oct 2023 12:47:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3D91A2;
+        Fri,  6 Oct 2023 09:47:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60C76C433C7;
+        Fri,  6 Oct 2023 16:47:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696610853;
+        bh=JLObAK4u+o/GPUHb3r4lwMVq0fFGrX+4xDzQeYHKrxM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=V7y74gIe11uWg//mGvyxu4087WTTxdxa42Pe7zFr4eSI5VbCa7hLb6fiIGZBvS2gY
+         6nOom2Kj7+DC+iqQbhdTweH81PbEaTcAp/EauuX3BNkLfYREBxTkICQDlQC/cHozTn
+         t6EinhQ1SsiOh3WK/Q2Zs9qOujg9cWQN6fuXBh+ggRQYojEuEMaKfygmi33/AO1opF
+         n8apdgogCQvBqiilbVUWX/lMIemMy0vHXSIRFDas44fi7mFumrT9ja1xOIma7HcwTP
+         Mkf9DIYCexQsGIRyb4pcDmjinUcjvzunnnWdVS8QH2nnndDD7ZIrTvlHN0htJB5Snw
+         aN08QFm4TiZ5Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id EC9CDCE0976; Fri,  6 Oct 2023 09:47:32 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 09:47:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, Chengming Zhou <zhouchengming@bytedance.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Hsin Yi <hsinyi@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH RFC] sched/fair: Avoid unnecessary IPIs for ILB
-Message-ID: <20231006164643.GB2188081@google.com>
-References: <20231005161727.1855004-1-joel@joelfernandes.org>
- <CAKfTPtC8Qhr+jjXmwdxCNE5f3etuqg=WpZ6icUFpT9Lg+-pwmg@mail.gmail.com>
+        Ovidiu Panait <ovidiu.panait@windriver.com>,
+        Ingo Molnar <mingo@kernel.org>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
+Message-ID: <57c1ff4d-f138-4f89-8add-c96fb3ba6701@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231004175203.943277832@linuxfoundation.org>
+ <CA+G9fYunnEUT2evdabX1KOTiryP1heNHWDH4LWZCt2SVRmnKOA@mail.gmail.com>
+ <20231006162038.d3q7sl34b4ouvjxf@revolver>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtC8Qhr+jjXmwdxCNE5f3etuqg=WpZ6icUFpT9Lg+-pwmg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231006162038.d3q7sl34b4ouvjxf@revolver>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
-
-On Fri, Oct 06, 2023 at 03:46:44PM +0200, Vincent Guittot wrote:
-[...]
-> > ---
-> >  kernel/sched/fair.c | 21 ++++++++++++++-------
-> >  1 file changed, 14 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index cb225921bbca..2ece55f32782 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -11786,13 +11786,12 @@ void nohz_balance_enter_idle(int cpu)
-> >         /*
-> >          * Ensures that if nohz_idle_balance() fails to observe our
-> >          * @idle_cpus_mask store, it must observe the @has_blocked
-> > -        * and @needs_update stores.
-> > +        * stores.
-> >          */
-> >         smp_mb__after_atomic();
-> >
-> >         set_cpu_sd_state_idle(cpu);
-> >
-> > -       WRITE_ONCE(nohz.needs_update, 1);
+On Fri, Oct 06, 2023 at 12:20:38PM -0400, Liam R. Howlett wrote:
+> * Naresh Kamboju <naresh.kamboju@linaro.org> [231005 13:49]:
+> > On Wed, 4 Oct 2023 at 23:33, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > This is the start of the stable review cycle for the 5.15.134 release.
+> > > There are 183 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > >
+> > > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+> > > Anything received after that time might be too late.
+> > >
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.134-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > > and the diffstat can be found below.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> > 
+> > Results from Linaro’s test farm.
+> > Regressions on x86.
+> > 
+> > Following kernel warning noticed on x86 while booting stable-rc 5.15.134-rc1
+> > with selftest merge config built kernel.
+> > 
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > 
+> > Anyone noticed this kernel warning ?
+> > 
+> > This is always reproducible while booting x86 with a given config.
 > 
-> the set of needs_updat here is the main way to set nohz.needs_update
-> and trigger an update of next_balance so it would be good to explain
-> why we still need to keep it instead r removing it entirely
-
-Ok, we are thinking of getting rid of it as Ingo suggested.
-
-> >  out:
-> >         /*
-> >          * Each time a cpu enter idle, we assume that it has blocked load and
-> > @@ -11945,21 +11944,25 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
-> >  }
-> >
-> >  /*
-> > - * Check if we need to run the ILB for updating blocked load before entering
-> > - * idle state.
-> > + * Check if we need to run the ILB for updating blocked load and/or updating
-> > + * nohz.next_balance before entering idle state.
-> >   */
-> >  void nohz_run_idle_balance(int cpu)
-> >  {
-> >         unsigned int flags;
-> >
-> > -       flags = atomic_fetch_andnot(NOHZ_NEWILB_KICK, nohz_flags(cpu));
-> > +       flags = atomic_fetch_andnot(NOHZ_NEWILB_KICK | NOHZ_NEXT_KICK, nohz_flags(cpu));
-> > +
-> > +       if (!flags)
-> > +               return;
-> >
-> >         /*
-> >          * Update the blocked load only if no SCHED_SOFTIRQ is about to happen
-> >          * (ie NOHZ_STATS_KICK set) and will do the same.
-> >          */
-> > -       if ((flags == NOHZ_NEWILB_KICK) && !need_resched())
-> > -               _nohz_idle_balance(cpu_rq(cpu), NOHZ_STATS_KICK);
-> > +       if ((flags == (flags & (NOHZ_NEXT_KICK | NOHZ_NEWILB_KICK))) &&
-> > +           !need_resched())
-> > +               _nohz_idle_balance(cpu_rq(cpu), flags);
+> >From that config:
+> #
+> # RCU Subsystem
+> #
+> CONFIG_TREE_RCU=y
+> # CONFIG_RCU_EXPERT is not set
+> CONFIG_SRCU=y
+> CONFIG_TREE_SRCU=y
+> CONFIG_TASKS_RCU_GENERIC=y
+> CONFIG_TASKS_RUDE_RCU=y
+> CONFIG_TASKS_TRACE_RCU=y
+> CONFIG_RCU_STALL_COMMON=y
+> CONFIG_RCU_NEED_SEGCBLIST=y
+> # end of RCU Subsystem    
 > 
-> This breaks the update of the blocked load.
-> nohz_newidle_balance() only sets NOHZ_NEWILB_KICK (and not
-> NOHZ_STATS_KICK) when it wants to update blocked load before going
-> idle but it then sets NOHZ_STATS_KICK when calling_nohz_idle_balance()
-> . We only clear NOHZ_NEWILB_KICK  when fetching flags but we test if
-> other bits have been set by a pending softirq which will do the same.
+> #
+> # RCU Debugging
+> #
+> CONFIG_PROVE_RCU=y
+> # CONFIG_RCU_SCALE_TEST is not set
+> # CONFIG_RCU_TORTURE_TEST is not set
+> # CONFIG_RCU_REF_SCALE_TEST is not set
+> CONFIG_RCU_CPU_STALL_TIMEOUT=21
+> CONFIG_RCU_TRACE=y
+> # CONFIG_RCU_EQS_DEBUG is not set
+> # end of RCU Debugging
+> 
+> 
+> > 
+> > x86 boot log:
+> > -----
+> > [    0.000000] Linux version 5.15.134-rc1 (tuxmake@tuxmake)
+> > (x86_64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils
+> > for Debian) 2.40) #1 SMP @1696443178
+> > ...
+> > [    1.480701] ------------[ cut here ]------------
+> > [    1.481296] WARNING: CPU: 0 PID: 13 at kernel/rcu/tasks.h:958
+> > trc_inspect_reader+0x80/0xb0
+> > [    1.481296] Modules linked in:
+> > [    1.481296] CPU: 0 PID: 13 Comm: rcu_tasks_trace Not tainted 5.15.134-rc1 #1
+> > [    1.481296] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+> > 2.5 11/26/2020
+> > [    1.481296] RIP: 0010:trc_inspect_reader+0x80/0xb0
+> 
+> This function has changed a lot, including the dropping of this
+> WARN_ON_ONCE().  The warning was replaced in 897ba84dc5aa ("rcu-tasks:
+> Handle idle tasks for recently offlined CPUs") with something that looks
+> equivalent so I'm not sure why it would not trigger in newer revisions.
+> 
+> Obviously the behaviour I changed was the test for the task being idle.
+> I am not sure how best to short-circuit that test from happening during
+> boot as I am not familiar with the RCU code.
 
-Yes, we realized this just after sending the RFC. Will fix, thank you!
+The usual test for RCU's notion of early boot being completed is
+(rcu_scheduler_active != RCU_SCHEDULER_INIT).
 
-> That's why we use NOHZ_NEWILB_KICK and not NOHZ_STATS_KICK directly.
-> Similarly you can't directly use NOHZ_NEXT_KICK.
+Except that "ofl" should always be false that early in boot, at least
+in mainline.
 
-This is not an issue actually, as NEXT_KICK is only set by this path
-(nohz_newidle_balance()) after this patch. The NEWILB_KICK and STATS_KICK
-case is different where it can be updated in more than 1 path. Right?
+> It's also worth noting that the bug this fixes wasn't exposed until the
+> maple tree (added in v6.1) was used for the IRQ descriptors (added in
+> v6.5).
 
-> Also note that _nohz_idle_balance() is not robust against parallel run
+Lots of latent bugs, to be sure, even with rcutorture.  :-/
 
-True, though the parallelism is already happening. However your point is well
-taken and we'll try to improve the existing code to make it more robust as
-well (if needed). Will dig deeper into it.
+							Thanx, Paul
 
-thanks,
-
-- Joel & Vineeth
-
+> > [    1.481296] Code: b6 83 45 04 00 00 84 c0 75 48 c6 83 45 04 00 00
+> > 01 b8 01 00 00 00 5b 41 5c 5d c3 cc cc cc cc 0f 94 c0 eb b4 f6 43 2c
+> > 02 75 02 <0f> 0b 48 83 05 36 f8 ee 02 01 b8 01 00 00 00 48 83 05 21 f8
+> > ee 02
+> > [    1.481296] RSP: 0000:ffffb25e000afd70 EFLAGS: 00010046
+> > [    1.481296] RAX: 0000000000000000 RBX: ffff9b40c080d040 RCX: 0000000000000003
+> > [    1.481296] RDX: ffff9b4427b80000 RSI: 0000000000000000 RDI: ffff9b40c080d040
+> > [    1.481296] RBP: ffffb25e000afd80 R08: e32db91cdfdc3bef R09: 00000000035b89d4
+> > [    1.481296] R10: 000000006a495065 R11: 0000000000000030 R12: ffffffffae692100
+> > [    1.481296] R13: 0000000000000000 R14: ffff9b40c080d9a8 R15: 0000000000000000
+> > [    1.481296] FS:  0000000000000000(0000) GS:ffff9b4427a00000(0000)
+> > knlGS:0000000000000000
+> > [    1.481296] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [    1.481296] CR2: ffff9b4297201000 CR3: 00000002d5e26001 CR4: 00000000003706f0
+> > [    1.481296] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [    1.481296] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [    1.481296] Call Trace:
+> > [    1.481296]  <TASK>
+> > [    1.481296]  ? show_regs.cold+0x1a/0x1f
+> > [    1.481296]  ? __warn+0x88/0x120
+> > [    1.481296]  ? trc_inspect_reader+0x80/0xb0
+> > [    1.481296]  ? report_bug+0xa8/0xd0
+> > [    1.481296]  ? handle_bug+0x40/0x70
+> > [    1.481296]  ? exc_invalid_op+0x18/0x70
+> > [    1.481296]  ? asm_exc_invalid_op+0x1b/0x20
+> > [    1.481296]  ? rcu_tasks_kthread+0x250/0x250
+> > [    1.481296]  ? trc_inspect_reader+0x80/0xb0
+> > [    1.481296]  ? rcu_tasks_kthread+0x250/0x250
+> > [    1.481296]  try_invoke_on_locked_down_task+0x109/0x120
+> > [    1.481296]  trc_wait_for_one_reader.part.0+0x48/0x270
+> > [    1.481296]  rcu_tasks_trace_postscan+0x76/0xb0
+> > [    1.481296]  rcu_tasks_wait_gp+0x186/0x380
+> > [    1.481296]  ? _raw_spin_unlock_irqrestore+0x35/0x50
+> > [    1.481296]  rcu_tasks_kthread+0x145/0x250
+> > [    1.481296]  ? do_wait_intr_irq+0xc0/0xc0
+> > [    1.481296]  ? synchronize_rcu_tasks_rude+0x20/0x20
+> > [    1.481296]  kthread+0x146/0x170
+> > [    1.481296]  ? set_kthread_struct+0x50/0x50
+> > [    1.481296]  ret_from_fork+0x1f/0x30
+> > [    1.481296]  </TASK>
+> > [    1.481296] irq event stamp: 132
+> > [    1.481296] hardirqs last  enabled at (131): [<ffffffffaf7936a5>]
+> > _raw_spin_unlock_irqrestore+0x35/0x50
+> > [    1.481296] hardirqs last disabled at (132): [<ffffffffaf79345b>]
+> > _raw_spin_lock_irqsave+0x5b/0x60
+> > [    1.481296] softirqs last  enabled at (54): [<ffffffffae69201c>]
+> > rcu_tasks_kthread+0x16c/0x250
+> > [    1.481296] softirqs last disabled at (50): [<ffffffffae69201c>]
+> > rcu_tasks_kthread+0x16c/0x250
+> > [    1.481296] ---[ end trace 5a00c61d8412a9ac ]---
+> > 
+> > 
+> > Links:
+> > ----
+> >  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15.133-184-g6f28ecf24aef/testrun/20260259/suite/log-parser-boot/test/check-kernel-exception/log
+> >  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15.133-184-g6f28ecf24aef/testrun/20260259/suite/log-parser-boot/tests/
+> >  Build: https://storage.tuxsuite.com/public/linaro/lkft/builds/2WJFhcfqqG69pqj6LWuI14kVoP5/
+> > 
+> > steps to reproduce:
+> > --------
+> >  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WJFhcfqqG69pqj6LWuI14kVoP5/tuxmake_reproducer.sh
+> > 
+> > ## Build
+> > * kernel: 5.15.134-rc1
+> > * git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+> > * git branch: linux-5.15.y
+> > * git commit: 6f28ecf24aef2896f4071dc6268d3fb5f8259c77
+> > * git describe: v5.15.133-184-g6f28ecf24aef
+> > * test details:
+> > https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15.133-184-g6f28ecf24aef
+> > 
+> > ## Test Regressions (compared to v5.15.133)
+> > * x86, log-parser-boot
+> >   - check-kernel-exception
+> >   - check-kernel-warning
+> > 
+> > * x86, log-parser-test
+> >   - check-kernel-exception
+> >   - check-kernel-warning
+> > 
+> > 
+> > ## Metric Regressions (compared to v5.15.133)
+> > 
+> > ## Test Fixes (compared to v5.15.133)
+> > 
+> > ## Metric Fixes (compared to v5.15.133)
+> > 
+> > ## Test result summary
+> > total: 90392, pass: 71514, fail: 2557, skip: 16224, xfail: 97
+> > 
+> > ## Build Summary
+> > * arc: 4 total, 4 passed, 0 failed
+> > * arm: 114 total, 114 passed, 0 failed
+> > * arm64: 42 total, 42 passed, 0 failed
+> > * i386: 32 total, 31 passed, 1 failed
+> > * mips: 27 total, 26 passed, 1 failed
+> > * parisc: 4 total, 4 passed, 0 failed
+> > * powerpc: 26 total, 25 passed, 1 failed
+> > * riscv: 11 total, 11 passed, 0 failed
+> > * s390: 12 total, 11 passed, 1 failed
+> > * sh: 13 total, 11 passed, 2 failed
+> > * sparc: 8 total, 8 passed, 0 failed
+> > * x86_64: 38 total, 38 passed, 0 failed
+> > 
+> > ## Test suites summary
+> > * boot
+> > * kselftest-android
+> > * kselftest-arm64
+> > * kselftest-breakpoints
+> > * kselftest-capabilities
+> > * kselftest-cgroup
+> > * kselftest-clone3
+> > * kselftest-core
+> > * kselftest-cpu-hotplug
+> > * kselftest-cpufreq
+> > * kselftest-drivers-dma-buf
+> > * kselftest-efivarfs
+> > * kselftest-exec
+> > * kselftest-filesystems
+> > * kselftest-filesystems-binderfs
+> > * kselftest-filesystems-epoll
+> > * kselftest-firmware
+> > * kselftest-fpu
+> > * kselftest-ftrace
+> > * kselftest-futex
+> > * kselftest-gpio
+> > * kselftest-intel_pstate
+> > * kselftest-ipc
+> > * kselftest-ir
+> > * kselftest-kcmp
+> > * kselftest-kexec
+> > * kselftest-kvm
+> > * kselftest-lib
+> > * kselftest-membarrier
+> > * kselftest-memfd
+> > * kselftest-memory-hotplug
+> > * kselftest-mincore
+> > * kselftest-mount
+> > * kselftest-mqueue
+> > * kselftest-net
+> > * kselftest-net-forwarding
+> > * kselftest-net-mptcp
+> > * kselftest-netfilter
+> > * kselftest-nsfs
+> > * kselftest-openat2
+> > * kselftest-pid_namespace
+> > * kselftest-pidfd
+> > * kselftest-proc
+> > * kselftest-pstore
+> > * kselftest-ptrace
+> > * kselftest-rseq
+> > * kselftest-rtc
+> > * kselftest-seccomp
+> > * kselftest-sigaltstack
+> > * kselftest-size
+> > * kselftest-splice
+> > * kselftest-static_keys
+> > * kselftest-sync
+> > * kselftest-sysctl
+> > * kselftest-tc-testing
+> > * kselftest-timens
+> > * kselftest-tmpfs
+> > * kselftest-tpm2
+> > * kselftest-user
+> > * kselftest-user_events
+> > * kselftest-vDSO
+> > * kselftest-vm
+> > * kselftest-watchdog
+> > * kselftest-x86
+> > * kselftest-zram
+> > * kunit
+> > * kvm-unit-tests
+> > * libgpiod
+> > * log-parser-boot
+> > * log-parser-test
+> > * ltp-cap_bounds
+> > * ltp-commands
+> > * ltp-containers
+> > * ltp-controllers
+> > * ltp-cpuhotplug
+> > * ltp-crypto
+> > * ltp-cve
+> > * ltp-dio
+> > * ltp-fcntl-locktests
+> > * ltp-filecaps
+> > * ltp-fs
+> > * ltp-fs_bind
+> > * ltp-fs_perms_simple
+> > * ltp-fsx
+> > * ltp-hugetlb
+> > * ltp-io
+> > * ltp-ipc
+> > * ltp-math
+> > * ltp-mm
+> > * ltp-nptl
+> > * ltp-pty
+> > * ltp-sched
+> > * ltp-securebits
+> > * ltp-smoke
+> > * ltp-syscalls
+> > * ltp-tracing
+> > * network-basic-tests
+> > * perf
+> > * rcutorture
+> > * v4l2-compliance
+> > 
+> > --
+> > Linaro LKFT
+> > https://lkft.linaro.org
