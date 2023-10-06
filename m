@@ -2,49 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BAC7BB41F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAD17BB422
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbjJFJVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 05:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51884 "EHLO
+        id S231232AbjJFJXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 05:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbjJFJVa (ORCPT
+        with ESMTP id S230484AbjJFJXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 05:21:30 -0400
-Received: from mx.exactcode.de (mx.exactcode.de [144.76.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4DB93
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 02:21:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=exactco.de; s=x;
-        h=To:References:Message-Id:Content-Transfer-Encoding:Cc:Date:In-Reply-To:From:Subject:Mime-Version:Content-Type; bh=gg4F1C7Bsnu8VL38dBFamcZXf6mHSEPhxMJxJeziYtc=;
-        b=eyMJ9Yd+IKSVAouTHCd188prtAeyCSj0j3As3xau7nYPE7vjK/u065XSpsnBqfQzGLX+5UsjvQFzRAZfluQVewIAdAZPmoBGdtsHW4RcX18cm9m5otHGMKFoOp+sjR9nJHAY8YIrFg0FCiaNmazHn767apxv1ln30Hm8ENEdVAE=;
-Received: from exactco.de ([90.187.5.221])
-        by mx.exactcode.de with esmtp (Exim 4.82)
-        (envelope-from <rene@exactcode.com>)
-        id 1qoh24-0000nQ-DB; Fri, 06 Oct 2023 09:22:04 +0000
-Received: from [192.168.2.109] (helo=smtpclient.apple)
-        by exactco.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.86_2)
-        (envelope-from <rene@exactcode.com>)
-        id 1qoh34-0001JV-Sg; Fri, 06 Oct 2023 09:23:07 +0000
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: [RFC] AMD Zen4 CPU bug? Spurious SMT Sibling Invalid Opcode
- Speculation
-From:   =?utf-8?Q?Ren=C3=A9_Rebe?= <rene@exactcode.com>
-In-Reply-To: <20231004222511.GHZR3mR/oNFZuJGB9P@fat_crate.local>
-Date:   Fri, 6 Oct 2023 11:21:13 +0200
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+        Fri, 6 Oct 2023 05:23:43 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B1B9E
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 02:23:41 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-537f07dfe8eso7650a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 02:23:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696584220; x=1697189020; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g+2OvC4UsKZZVe9u7q5rQ09fkS7zT+qmc1odAaqtWMQ=;
+        b=tsVryQ+Joxok1ibkzWKvC5RRpWqYT7/45ua+wQC8wrFCj4OGbsrq/sVmxJ7I3yUaAw
+         ZxAaExfzWFpJ9iKDA5NSEJ0Zkk2lbJRtvKdj17FU8f2vSn5+aaBKPoOnnt/SYAj0HwUi
+         3YtNkBp6hSFF3YnI9Sz91BEYwdeBdcSjlNtwg6yQWV0tswWIq6TR1MNXvZYQDX3BO8YZ
+         Yw38HG5aUBnuecmN8SG+sRzguiJ6lGJsGm+WftBh8xvpODWECvR9BFR//DDasQyl/KUS
+         GHo9zsJpIdUSLz6HODbTFPZIasLArDmuO6rYwM7Ho13unfvdw3Mrc5M3D60uUo23YoJt
+         M0og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696584220; x=1697189020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g+2OvC4UsKZZVe9u7q5rQ09fkS7zT+qmc1odAaqtWMQ=;
+        b=HMslkiIYFYJ9oLz/8jgVGeRLxfoTtZXldToCPksAlwM/dMeJahhsULLklKo3iKqwuD
+         eF63+fi8+dnSI395dzQslYymD+Cstr8psuPHLoRYaeCloK95b8fWxYhE+KYIUwqfHMeS
+         obgHhMdLs8eLLHaGwIxyMCixDA5ZCtrRV0cAoSXYe3gky8ZQLJGqe81UXJ8eNqPB6uGc
+         kDa6RzFZ9sm72E3Bwnj/AQDPrIqZwAhaRLGiqyby8nwzaaU7fJ0bZcbDmp4gqlyC3dfs
+         6tQbZ7bASigdHVxZohZwYNsDijydw2Obl2JfeyTeoT8zlSP6VwKIjHVx9ocy6dKRA239
+         kaFg==
+X-Gm-Message-State: AOJu0Yzw9ekQPtFzrnuljbz1E5pBQgztgoOLm7L5m/ZOuZuALMAr3Ptw
+        PPc0NSJxzykz/lve25kmxYM2VgqpugYyLm7O+I4/nw==
+X-Google-Smtp-Source: AGHT+IHoIPRhtUQ5uuIPkP4QsVp+QK7bs+DXcxmsIaDAcPgDTfHtOTqkQjKrkJrop+V5dLLPZT7C8FCSJqLUpERZH2o=
+X-Received: by 2002:a50:9e8d:0:b0:52f:2f32:e76c with SMTP id
+ a13-20020a509e8d000000b0052f2f32e76cmr184149edf.2.1696584217891; Fri, 06 Oct
+ 2023 02:23:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231005181747.3017588-1-florian.fainelli@broadcom.com>
+In-Reply-To: <20231005181747.3017588-1-florian.fainelli@broadcom.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 6 Oct 2023 11:23:24 +0200
+Message-ID: <CANn89iKF65tsKRXoAx6tPmgf-y6zBdT7OgNShNrVjdPjGNOEsA@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: bcmgenet: Remove custom ndo_poll_controller()
+To:     Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     netdev@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <797F7A00-541E-4333-B653-1120DF5C56B1@exactcode.com>
-References: <D99589F4-BC5D-430B-87B2-72C20370CF57@exactcode.com>
- <20231004222511.GHZR3mR/oNFZuJGB9P@fat_crate.local>
-To:     Borislav Petkov <bp@alien8.de>
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
-X-Spam-Score: -1.6 (-)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,25 +75,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Oct 5, 2023 at 8:19=E2=80=AFPM Florian Fainelli
+<florian.fainelli@broadcom.com> wrote:
+>
+> The driver gained a .ndo_poll_controller() at a time where the TX
+> cleaning process was always done from NAPI which makes this unnecessary.
+> See commit ac3d9dd034e5 ("netpoll: make ndo_poll_controller() optional")
+> for more background.
+>
+> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
-> On 5. Oct 2023, at 00:25, Borislav Petkov <bp@alien8.de> wrote:
->=20
-> On Wed, Oct 04, 2023 at 05:29:32PM +0200, Ren=C3=A9 Rebe wrote:
->> during cross compiling our =E2=80=9CEmbedded=E2=80=9D Linux =
-Distribution T2 (https://t2sde.org) I observers some random illegal =
-instruction build errors since we got ourselves a Ryzen 7950x on launch =
-day a year ago:
->=20
-> Thanks for reporting. I'm looking into it.
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-Thank you Borislav, were you able to reproduce this on Zen 4 you have =
-access to?
-
-Thanks,
-	Ren=C3=A9
-
---
-ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
-http://exactcode.com | http://exactscan.com | http://ocrkit.com
-
+Yes, many drivers should do the same...
