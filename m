@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6EB7BC061
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6357BC062
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbjJFUbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 16:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        id S233524AbjJFUbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233368AbjJFUbe (ORCPT
+        with ESMTP id S233523AbjJFUbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:31:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F18C5
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:31:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696624293; x=1728160293;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=/J8gZ8L7hl3O6no8WeVh4EuERdE7tFbN+p1mX9+8Rcg=;
-  b=INbprGF3VJdmyhUBIRQo2xdveB1Xon97K0spgZeomN50CL5i3fhC/xke
-   FK0UxWI81peOxz/9f+azHVSdSCPxEXfQG/L8gpkjqNgI33LJw+AgkTTwV
-   JMSu5ptvDbGkSC1DQ4vnyWgb0CgsT2La6rZWgKhrViKZdiwAkaEc/geqe
-   /1F9tAr8VOK8G8fagjHP1kNDkd2J86r3DeVz0cW3GMlVhduTDYioyAoBb
-   1AqXOCkVIvjJjsTGW76rQyZAYnp634VMnrwUjcblWEmjrAx16eimhbZA2
-   /dTPeUM9+XbuoRxB8SXP9QXB7oJ1CH1uiGwrEADv+haN/oMLwbnG7kOt3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="368904013"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="368904013"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 13:31:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="787500392"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="787500392"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 06 Oct 2023 13:31:31 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qorTt-0003c9-1A;
-        Fri, 06 Oct 2023 20:31:29 +0000
-Date:   Sat, 7 Oct 2023 04:31:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krzysztof Wilczynski <kw@linux.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: arch/mips/pci/fixup-lantiq.c:13:5: warning: no previous prototype
- for 'pcibios_plat_dev_init'
-Message-ID: <202310070445.tzRBNYRC-lkp@intel.com>
+        Fri, 6 Oct 2023 16:31:47 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA767F1
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:31:46 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-690fa0eea3cso2255738b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:31:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696624306; x=1697229106; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fX47GVueSgt+x88lXgjrOuEvVhXaBMxhauYyZI06tqQ=;
+        b=mKyhi+TDoCaD4LcnhoWxxHl1Jiw7/0pvkXAJ2TOSxuev9IUPxKVkBm7ShuaSFXj9+q
+         1TV95Hp26kG/i5Cz2WkSz4K4G+xpKva61PAWh2gSZZZnGG7HqBWL4qc1nXBV88eTrr+2
+         H4YJZI8tPsFGC9um9hJBvj6CjMaJs3bhvvpzc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696624306; x=1697229106;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fX47GVueSgt+x88lXgjrOuEvVhXaBMxhauYyZI06tqQ=;
+        b=H0G/KuPrK8R7CWgnvmIoRP4ewpEgAXwMBNt8UZc6gR/JRUOnf+kCKOP+bZ+ysUt90S
+         5P0EcGS03xiKax9GSTgOhevSXwwM5wJ6xRRz7CNyN8Boiu07NpRVUKQAQrd0siGvj8A8
+         H2phuF1/PRNF2cLfZnYk0yVEe9MKOYLDF3dbyd/tFggAS6XX1RVJCj/tcdAKWJnIac56
+         DNAFI5+Qq+VS8V6nALluuJS+zsY8n/3kLdxaU1ocuWLDx35nC+BJR2xlLdJ0ekgtcF+j
+         LOUR91Vl12YnqKth5ar0QeREi+kzhrWDt1ucdav0WgUYqLFA/cYN0FbDy4S32x3dqfG/
+         MkTQ==
+X-Gm-Message-State: AOJu0YwsDD3iem9PNSM6PhRCPmTR7hgzlmL8uG7GpS8Ex82h6Gr9xhVP
+        oek6+lib5lH66O11z6/88SSzgw==
+X-Google-Smtp-Source: AGHT+IEDB4JiE6QwcjTIlFZlq6WWddYaDMaPi1FSwSZbG+KVJWywvAicRGeUH+/1a8vmGHDJmVIHMA==
+X-Received: by 2002:a05:6a20:394d:b0:153:5366:dec1 with SMTP id r13-20020a056a20394d00b001535366dec1mr10718663pzg.15.1696624306130;
+        Fri, 06 Oct 2023 13:31:46 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id b18-20020aa78112000000b006933e71956dsm1903839pfi.9.2023.10.06.13.31.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 13:31:45 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Tim Harvey <tharvey@gateworks.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] hwmon: Annotate struct gsc_hwmon_platform_data with __counted_by
+Date:   Fri,  6 Oct 2023 13:31:32 -0700
+Message-Id: <169662429066.2155323.3293633131737633450.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230922175053.work.564-kees@kernel.org>
+References: <20230922175053.work.564-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   af95dc6fdc25e616051d0234aad638e15c02ec8f
-commit: bbd8810d399812f2016713565e4d8ff8f1508aa6 PCI: Remove unused includes and superfluous struct declaration
-date:   3 years, 11 months ago
-config: mips-xway_defconfig (https://download.01.org/0day-ci/archive/20231007/202310070445.tzRBNYRC-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231007/202310070445.tzRBNYRC-lkp@intel.com/reproduce)
+On Fri, 22 Sep 2023 10:50:53 -0700, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct gsc_hwmon_platform_data.
+> 
+> [...]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310070445.tzRBNYRC-lkp@intel.com/
+Since this is a trivial change and it's been 2 week without further
+discussion, I'll snag this patch.
 
-All warnings (new ones prefixed by >>):
+Applied to for-next/hardening, thanks!
 
->> arch/mips/pci/fixup-lantiq.c:13:5: warning: no previous prototype for 'pcibios_plat_dev_init' [-Wmissing-prototypes]
-      13 | int pcibios_plat_dev_init(struct pci_dev *dev)
-         |     ^~~~~~~~~~~~~~~~~~~~~
->> arch/mips/pci/fixup-lantiq.c:24:5: warning: no previous prototype for 'pcibios_map_irq' [-Wmissing-prototypes]
-      24 | int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
-         |     ^~~~~~~~~~~~~~~
+[1/1] hwmon: Annotate struct gsc_hwmon_platform_data with __counted_by
+      https://git.kernel.org/kees/c/e909028ba701
 
-
-vim +/pcibios_plat_dev_init +13 arch/mips/pci/fixup-lantiq.c
-
-57c8cb8f242988 John Crispin 2012-05-11  12  
-57c8cb8f242988 John Crispin 2012-05-11 @13  int pcibios_plat_dev_init(struct pci_dev *dev)
-57c8cb8f242988 John Crispin 2012-05-11  14  {
-57c8cb8f242988 John Crispin 2012-05-11  15  	if (ltq_pci_plat_arch_init)
-57c8cb8f242988 John Crispin 2012-05-11  16  		return ltq_pci_plat_arch_init(dev);
-57c8cb8f242988 John Crispin 2012-05-11  17  
-57c8cb8f242988 John Crispin 2012-05-11  18  	if (ltq_pci_plat_dev_init)
-57c8cb8f242988 John Crispin 2012-05-11  19  		return ltq_pci_plat_dev_init(dev);
-57c8cb8f242988 John Crispin 2012-05-11  20  
-57c8cb8f242988 John Crispin 2012-05-11  21  	return 0;
-57c8cb8f242988 John Crispin 2012-05-11  22  }
-57c8cb8f242988 John Crispin 2012-05-11  23  
-8eba3651f1dad4 Manuel Lauss 2017-09-12 @24  int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
-
-:::::: The code at line 13 was first introduced by commit
-:::::: 57c8cb8f242988b8048a7058cd1edde025c6f232 MIPS: pci: convert lantiq driver to OF
-
-:::::: TO: John Crispin <blogic@openwrt.org>
-:::::: CC: Ralf Baechle <ralf@linux-mips.org>
+Take care,
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Kees Cook
+
