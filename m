@@ -2,136 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6F57BB3AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4E27BB3B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbjJFI76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 04:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
+        id S231324AbjJFJAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 05:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbjJFI74 (ORCPT
+        with ESMTP id S231293AbjJFI76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 04:59:56 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB4793;
-        Fri,  6 Oct 2023 01:59:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E29AFC433C7;
-        Fri,  6 Oct 2023 08:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696582794;
-        bh=ZRZ4zoIUrHvuhR7yir1ccOBONWXMYWEbomq4C32pLnc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VlgUW7LXE3NK3DFuR9GpzTXztcP+gwPt8hH0bcesUwEtCog5ycJc1rulxKq56T0Zn
-         uQNAMZxQsxFbWb/t254r8A7PdDde8ZvBqIni5WbsBICf2nJJLoHNC5Tahog+qcCSXK
-         FaAR1JipdGVB1eJ9GWN1ArOFEb4MTJsr9XMysesZkw0LneLQ3Qv80+J/P131yLxpo1
-         KKb678z/Hy7PBSBuRk8X9Li4fKQ/Ak0SlrxlAbD4LaJw6cEly6+gtChRpommr9uIGX
-         ASb9M+P8VgKLaEGKznXrgd69lHrfFjKwqjGpSvpBhZPlKIovSGV6Rr54yUk0au5bfH
-         5Kzo8LwbvZ5xw==
-Date:   Fri, 6 Oct 2023 17:59:48 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bootconfig 2/3] fs/proc: Add boot loader arguments as
- comment to /proc/bootconfig
-Message-Id: <20231006175948.14df07948d8c6a4a46473c13@kernel.org>
-In-Reply-To: <20231005171747.541123-2-paulmck@kernel.org>
-References: <6ea609a4-12e3-4266-8816-b9fca1f1f21c@paulmck-laptop>
-        <20231005171747.541123-2-paulmck@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        Fri, 6 Oct 2023 04:59:58 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A469695;
+        Fri,  6 Oct 2023 01:59:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 611CD1F896;
+        Fri,  6 Oct 2023 08:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1696582795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=srsNrgZL9zR7WLAyT/RuTZKhjlgD3sHz3MPU5cn2BWI=;
+        b=ZCsjFioV7vYcwiEHo+5WQbDXQfwKOFUSQr8L6NlaRfg3WSyQyj1z8YAytwlDi4zp+II0PG
+        79QLmVOl5S2tBkOwoRWLBK1FIsQo4zOSkXYasWBJNCnEMUGougG+kPlFI2ak6S+3hUPIe7
+        k2yv1v/KP5cRYYdRh4+yM0XdBUC4QTc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1696582795;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=srsNrgZL9zR7WLAyT/RuTZKhjlgD3sHz3MPU5cn2BWI=;
+        b=jDkDMmATGw1QHuu5h9nmfyzmoUhPndizF41NCJAiTgTTHXNKphOTcdSwlRub96x085JSWZ
+        /k0EXK0fzmkumhCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25A6E13A2E;
+        Fri,  6 Oct 2023 08:59:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id todOCIvMH2UbKAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 06 Oct 2023 08:59:55 +0000
+Date:   Fri, 06 Oct 2023 10:59:54 +0200
+Message-ID: <87pm1sw2gl.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Jussi Kivilinna <jussi.kivilinna@iki.fi>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] ALSA: 6fire: Fix undefined behavior bug in struct comm_runtime
+In-Reply-To: <ZRb0WiViajjqcyKT@work>
+References: <ZRb0WiViajjqcyKT@work>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  5 Oct 2023 10:17:46 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-
-> In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
-> show all kernel boot parameters, both those supplied by the boot loader
-> and those embedded in the kernel image.  This works well for those who
-> just want to see all of the kernel boot parameters, but is not helpful to
-> those who need to see only those parameters supplied by the boot loader.
-> This is especially important when these parameters are presented to the
-> boot loader by automation that might gather them from diverse sources.
-> It is also useful when booting the next kernel via kexec(), in which
-> case it is necessary to supply only those kernel command-line arguments
-> from the boot loader, and most definitely not those that were embedded
-> into the current kernel.
+On Fri, 29 Sep 2023 17:59:22 +0200,
+Gustavo A. R. Silva wrote:
 > 
-> Therefore, add comments to /proc/bootconfig of the form:
+> `struct urb` is a flexible structure, which means that it contains a
+> flexible-array member at the bottom. This could potentially lead to an
+> overwrite of the objects following `receiver` in `struct comm_runtime`,
+> among them some function pointers.
 > 
-> 	# Parameters from bootloader:
-> 	# root=UUID=ac0f0548-a69d-43ca-a06b-7db01bcbd5ad ro quiet ...
+> Fix this by placing the declaration of object `receiver` at the end of
+> `struct comm_runtime`.
 > 
-> The second added line shows only those kernel boot parameters supplied
-> by the boot loader.
+> Fixes: ddb6b5a96437 ("ALSA: 6fire: fix DMA issues with URB transfer_buffer usage")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Thanks for update it.
+Sorry for the late reply, as I've been (still) off since the last
+week.
 
-This looks good to me.
+Through a quick glance, I don't mind much to apply this, but I still
+wonder how this "fixes" anything.  Does it silence compiler warnings
+or such?
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Certainly struct urb *may* have flex array, but in this case, it's
+clearly not used, so it's fixed-size.  And, even if we shuffle the
+member to put to the last, it doesn't fix anything automagically
+alone.  If a flex array were used, it still leads to memory corruption
+unless we implement the allocation properly.  So I find the patch
+description is somehow misleading.
 
-Thank you!
 
-> 
-> Link: https://lore.kernel.org/all/CAHk-=wjpVAW3iRq_bfKnVfs0ZtASh_aT67bQBG11b4W6niYVUw@mail.gmail.com/
-> Link: https://lore.kernel.org/all/20230731233130.424913-1-paulmck@kernel.org/
-> Co-developed-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Arnd Bergmann <arnd@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Alexey Dobriyan <adobriyan@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: <linux-trace-kernel@vger.kernel.org>
-> Cc: <linux-fsdevel@vger.kernel.org>
+thanks,
+
+Takashi
+
 > ---
->  fs/proc/bootconfig.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  sound/usb/6fire/comm.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
-> index 2e244ada1f97..902b326e1e56 100644
-> --- a/fs/proc/bootconfig.c
-> +++ b/fs/proc/bootconfig.c
-> @@ -62,6 +62,12 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
->  				break;
->  			dst += ret;
->  		}
-> +		if (ret >= 0 && boot_command_line[0]) {
-> +			ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
-> +				       boot_command_line);
-> +			if (ret > 0)
-> +				dst += ret;
-> +		}
->  	}
->  out:
->  	kfree(key);
+> diff --git a/sound/usb/6fire/comm.h b/sound/usb/6fire/comm.h
+> index 2447d7ecf179..ee81572a4eec 100644
+> --- a/sound/usb/6fire/comm.h
+> +++ b/sound/usb/6fire/comm.h
+> @@ -19,7 +19,6 @@ enum /* settings for comm */
+>  struct comm_runtime {
+>  	struct sfire_chip *chip;
+>  
+> -	struct urb receiver;
+>  	u8 *receiver_buffer;
+>  
+>  	u8 serial; /* urb serial */
+> @@ -30,6 +29,7 @@ struct comm_runtime {
+>  	int (*write8)(struct comm_runtime *rt, u8 request, u8 reg, u8 value);
+>  	int (*write16)(struct comm_runtime *rt, u8 request, u8 reg,
+>  			u8 vh, u8 vl);
+> +	struct urb receiver;
+>  };
+>  
+>  int usb6fire_comm_init(struct sfire_chip *chip);
 > -- 
-> 2.40.1
+> 2.34.1
 > 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
