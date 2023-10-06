@@ -2,42 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 063537BB9DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9267B7BB9E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232428AbjJFN6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
+        id S232477AbjJFN7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:59:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231891AbjJFN6q (ORCPT
+        with ESMTP id S232447AbjJFN7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:58:46 -0400
+        Fri, 6 Oct 2023 09:59:01 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C905683;
-        Fri,  6 Oct 2023 06:58:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 116B2C43397;
-        Fri,  6 Oct 2023 13:58:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696600725;
-        bh=xGEGTQtmdwSYwKj04O5pwjQF4+kQOGxNbHqDgmTikZA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VJCRyR7IBbHUluxhmUT/VAs+/Ey+KzwxBap4XkKgu3uezUXXcmpHJmRAmJ1bKkydz
-         DuT5AphEYzLR3mVrKtZsoguc5dA669Vq4O9YxWcjzNhxsnLrfWJLoigkmlEppH7M1X
-         KH/vHoSLhARNMZVtBu/CfeKL6vZ9ySdPLkCxaCTU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-spi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH] spi: spidev: make spidev_class constant
-Date:   Fri,  6 Oct 2023 15:58:40 +0200
-Message-ID: <2023100639-celtic-herbs-66be@gregkh>
-X-Mailer: git-send-email 2.42.0
-MIME-Version: 1.0
-Lines:  75
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2560; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=xGEGTQtmdwSYwKj04O5pwjQF4+kQOGxNbHqDgmTikZA=; b=owGbwMvMwCRo6H6F97bub03G02pJDKkKQv3KNgnpM37brLZ+lHk5waNyVa232grFo/JPWKbq3 t2/aIJMRywLgyATg6yYIsuXbTxH91ccUvQytD0NM4eVCWQIAxenAEzkSxjDgi3XPA1e3JqVG1Cw Z5ptk+JcSadoaYZ5tkcjtM5u5Vm8Y0/ggjuPLTuiz8W8AQA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E2BD6;
+        Fri,  6 Oct 2023 06:58:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D68CC433B6;
+        Fri,  6 Oct 2023 13:58:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696600739;
+        bh=B+nSMcPQ6Dfl5BlciIkViTGxDzdj1bYUxQNg0HS+Vlw=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=k04UhtoGjZnMPVLw1q7zv7NSaXAEqjNHtEAZ6QQwW/wQXu3UXIRE53/OhcfRygQFj
+         8cfsn5qYN4SUe7gTGM6NtQ62xmxxbk7ejeFoTRi0UcOK+hVT4hbRAI5F+EgOUNlATV
+         JHD0CgF5uFi8/RCs+vAvITjxJq8Skzhm0jKgIJxAgi6w4sucOptQ+o+ISnCw7H27n4
+         imMHSuXHOAZGEn5xUkU9kPd9xFmqJaM0XhfLbaIKlmszJmQP3IPgSCx0F+k8/zBZ5S
+         Zq0GKUfvRS/g1WPl1/rrZ7qJgDt2JWQUNrEI6SK33mpZ1g7xoyM/qT7lEyIR461a5k
+         BzNlNQjyw1sAA==
+Received: (nullmailer pid 3776809 invoked by uid 1000);
+        Fri, 06 Oct 2023 13:58:51 -0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     konrad.dybcio@linaro.org, andi.shyti@kernel.org,
+        mchehab@kernel.org, conor+dt@kernel.org, linux-i2c@vger.kernel.org,
+        andersson@kernel.org, linux-media@vger.kernel.org,
+        rfoss@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, loic.poulain@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        todor.too@gmail.com, agross@kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20231006120159.3413789-5-bryan.odonoghue@linaro.org>
+References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
+ <20231006120159.3413789-5-bryan.odonoghue@linaro.org>
+Message-Id: <169660073123.3776792.1207909917818505118.robh@kernel.org>
+Subject: Re: [PATCH 4/5] media: dt-bindings: media: camss: Add
+ qcom,sc8280xp-camss binding
+Date:   Fri, 06 Oct 2023 08:58:51 -0500
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -48,79 +58,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the driver core allows for struct class to be in read-only
-memory, we should make all 'class' structures declared at build time
-placing them into read-only memory, instead of having to be dynamically
-allocated at runtime.
 
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/spi/spidev.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+On Fri, 06 Oct 2023 13:01:58 +0100, Bryan O'Donoghue wrote:
+> Add bindings for qcom,sc8280xp-camss in order to support the camera
+> subsystem for sc8280xp as found in the Lenovo x13s Laptop.
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+>  .../bindings/media/qcom,sc8280xp-camss.yaml   | 598 ++++++++++++++++++
+>  1 file changed, 598 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
+> 
 
-diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-index d13dc15cc191..a078860a52ac 100644
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -701,7 +701,9 @@ static const struct file_operations spidev_fops = {
-  * It also simplifies memory management.
-  */
- 
--static struct class *spidev_class;
-+static const struct class spidev_class = {
-+	.name = "spidev",
-+};
- 
- static const struct spi_device_id spidev_spi_ids[] = {
- 	{ .name = "dh2228fv" },
-@@ -804,7 +806,7 @@ static int spidev_probe(struct spi_device *spi)
- 		struct device *dev;
- 
- 		spidev->devt = MKDEV(SPIDEV_MAJOR, minor);
--		dev = device_create(spidev_class, &spi->dev, spidev->devt,
-+		dev = device_create(&spidev_class, &spi->dev, spidev->devt,
- 				    spidev, "spidev%d.%d",
- 				    spi->master->bus_num, spi_get_chipselect(spi, 0));
- 		status = PTR_ERR_OR_ZERO(dev);
-@@ -840,7 +842,7 @@ static void spidev_remove(struct spi_device *spi)
- 	mutex_unlock(&spidev->spi_lock);
- 
- 	list_del(&spidev->device_entry);
--	device_destroy(spidev_class, spidev->devt);
-+	device_destroy(&spidev_class, spidev->devt);
- 	clear_bit(MINOR(spidev->devt), minors);
- 	if (spidev->users == 0)
- 		kfree(spidev);
-@@ -878,15 +880,15 @@ static int __init spidev_init(void)
- 	if (status < 0)
- 		return status;
- 
--	spidev_class = class_create("spidev");
--	if (IS_ERR(spidev_class)) {
-+	status = class_register(&spidev_class);
-+	if (status) {
- 		unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
--		return PTR_ERR(spidev_class);
-+		return status;
- 	}
- 
- 	status = spi_register_driver(&spidev_spi_driver);
- 	if (status < 0) {
--		class_destroy(spidev_class);
-+		class_unregister(&spidev_class);
- 		unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
- 	}
- 	return status;
-@@ -896,7 +898,7 @@ module_init(spidev_init);
- static void __exit spidev_exit(void)
- {
- 	spi_unregister_driver(&spidev_spi_driver);
--	class_destroy(spidev_class);
-+	class_unregister(&spidev_class);
- 	unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
- }
- module_exit(spidev_exit);
--- 
-2.42.0
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml: properties:power-domain-names:items: 'oneOf' conditional failed, one must be fixed:
+	[{'description': 'ife0'}, {'description': 'ife1'}, {'description': 'ife2'}, {'description': 'ife3'}, {'description': 'top'}] is not of type 'object'
+	Additional properties are not allowed ('description' was unexpected)
+	from schema $id: http://devicetree.org/meta-schemas/string-array.yaml#
+Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.example.dts:26:18: fatal error: dt-bindings/clock/qcom,sc8280xp-camcc.h: No such file or directory
+   26 |         #include <dt-bindings/clock/qcom,sc8280xp-camcc.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231006120159.3413789-5-bryan.odonoghue@linaro.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
