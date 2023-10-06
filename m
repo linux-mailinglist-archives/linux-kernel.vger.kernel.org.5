@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 044247BBCCC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DFD7BBCD4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbjJFQdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47656 "EHLO
+        id S232839AbjJFQea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232839AbjJFQdp (ORCPT
+        with ESMTP id S232699AbjJFQe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:33:45 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C836B9;
-        Fri,  6 Oct 2023 09:33:42 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 990EA1BF211;
-        Fri,  6 Oct 2023 16:33:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696610021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VfJelQFnwa56H+6/+mIriGMXn/wXqjlj1wHqN5EwtYU=;
-        b=oNoPy6Su0Z99klFNRhnrdmcy+/ovW4/lKX5Ttfg/6r7vWQVI3N9XGd3eOFRBm1j6qE6tJX
-        wPzf/alCUJ3/G73gzZ0yLfLyLYkbM7H3Yf2tf7A0mHbGYvKG/gzicm01RcvOSJv7tDweG+
-        oTL9jBshyfxRSJkF1UvOrtQJusw/wQvPQkmr0PXA6c9Baq95MJCdsW0j9ZBtVtQ/z2wUaY
-        gkhXxg2SUWYZJD8FKGWd0/6Z3SVbMI4ecwD7Z7NTFGv1Ck+zqY1TDFyr0W226UlVny+7Ay
-        z5hHIyp/6WVfNrEyuGIDQR9XVVIHsn3lTmgk5XIpWR0yULBxzwtAhkBR1mInbA==
-Date:   Fri, 6 Oct 2023 18:33:37 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Walle <michael@walle.cc>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robert.marko@sartura.hr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v12 5/7] nvmem: core: Rework layouts to become regular
- devices
-Message-ID: <20231006183337.18c285e2@xps-13>
-In-Reply-To: <f2ac55b6361264a6a4b0dbb1b4af11a6@milecki.pl>
-References: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
-        <20231005155907.2701706-6-miquel.raynal@bootlin.com>
-        <f2ac55b6361264a6a4b0dbb1b4af11a6@milecki.pl>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Fri, 6 Oct 2023 12:34:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0ACA6;
+        Fri,  6 Oct 2023 09:34:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DDA2C433C8;
+        Fri,  6 Oct 2023 16:34:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696610067;
+        bh=1HcmpHjvQ0eMD+nDrJ3xLK1sZ1Um3mNVlGOZd0rUGWQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=QbsK2TdiCNYvwi75XBByYOb4fM1yAFUGIh/CljHhZghz5tbhcaeeFJFq/wT2B5xhk
+         dhjDraRzwOrPDbsp75VhI7amEg0spNerkdLwD3TA12F21eVcW9K806vcdDqeFsOX5S
+         yuLHV8etb9TczUBgWU1ROsWiqy01mvoXj3DdmN9lbv4yhfU/g75GUkRYpu/Qi6yu/n
+         LAZwS7N+cWu7mYcU48aAHB4k3iexxzC3ICN7B1hU/Clkr2rFna7EXq5ZUrxpyRU7iM
+         VLW00Ol305cyMMBSyprYOJ9NtLyEJ+J16BdpD5eIog2rUfn5TCfgCbcDgfeh9kmfn5
+         k0zGTUcaXEobg==
+Message-ID: <0b4adfee-b559-aa87-93c3-7591faf0dabc@kernel.org>
+Date:   Sat, 7 Oct 2023 01:34:22 +0900
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v7 05/26] PM / devfreq: rockchip-dfi: dfi store raw values
+ in counter struct
+Content-Language: en-US
+To:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Vincent Legoll <vincent.legoll@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <20230704093242.583575-1-s.hauer@pengutronix.de>
+ <20230704093242.583575-6-s.hauer@pengutronix.de>
+From:   Chanwoo Choi <chanwoo@kernel.org>
+In-Reply-To: <20230704093242.583575-6-s.hauer@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafa=C5=82,
+On 23. 7. 4. 18:32, Sascha Hauer wrote:
+> When adding perf support to the DFI driver the perf part will
+> need the raw counter values, so move the fixed * 4 factor to
+> rockchip_dfi_get_event().
+> 
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/devfreq/event/rockchip-dfi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
+> index 6b1ef29df7048..680f629da64fc 100644
+> --- a/drivers/devfreq/event/rockchip-dfi.c
+> +++ b/drivers/devfreq/event/rockchip-dfi.c
+> @@ -97,7 +97,7 @@ static int rockchip_dfi_get_busier_ch(struct devfreq_event_dev *edev)
+>  	/* Find out which channel is busier */
+>  	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
+>  		dfi->ch_usage[i].access = readl_relaxed(dfi_regs +
+> -				DDRMON_CH0_DFI_ACCESS_NUM + i * 20) * 4;
+> +				DDRMON_CH0_DFI_ACCESS_NUM + i * 20);
+>  		dfi->ch_usage[i].total = readl_relaxed(dfi_regs +
+>  				DDRMON_CH0_COUNT_NUM + i * 20);
+>  		tmp = dfi->ch_usage[i].access;
+> @@ -149,7 +149,7 @@ static int rockchip_dfi_get_event(struct devfreq_event_dev *edev,
+>  
+>  	busier_ch = rockchip_dfi_get_busier_ch(edev);
+>  
+> -	edata->load_count = dfi->ch_usage[busier_ch].access;
+> +	edata->load_count = dfi->ch_usage[busier_ch].access * 4;
+>  	edata->total_count = dfi->ch_usage[busier_ch].total;
+>  
+>  	return 0;
 
-rafal@milecki.pl wrote on Fri, 06 Oct 2023 13:49:49 +0200:
+Applied it. Thanks.
 
-> On 2023-10-05 17:59, Miquel Raynal wrote:
-> > +static struct bus_type nvmem_layout_bus_type =3D {
-> > +	.name		=3D "nvmem-layouts",
-> > +	.match		=3D nvmem_layout_bus_match,
-> > +};
-> > +
-> > +static struct device nvmem_layout_bus =3D {
-> > +	.init_name	=3D "nvmem-layouts",
-> > +}; =20
->=20
-> Nitpicking: would it be more consistent and still make sense to use
-> singular form "nvmem-layout"?
->=20
-> By looking at my /sys/bus/ I can see there:
-> 1. cpu (not cpus)
-> 2. gpio (not gpios)
-> 3. node (not nodes)
-> 4. nvmem (not nvmems)
-> etc.
->=20
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
 
-Probably, yes. I will wait for more feedback on this series but I'm
-fine with the renaming you proposed, makes sense.
-
-Thanks,
-Miqu=C3=A8l
