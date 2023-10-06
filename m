@@ -2,107 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DACC57BBD3A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C791B7BBD3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbjJFQul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        id S232900AbjJFQwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbjJFQuj (ORCPT
+        with ESMTP id S230223AbjJFQwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:50:39 -0400
+        Fri, 6 Oct 2023 12:52:32 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F89AD;
-        Fri,  6 Oct 2023 09:50:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD7F4C433C7;
-        Fri,  6 Oct 2023 16:50:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EBEAD;
+        Fri,  6 Oct 2023 09:52:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DAEEC433C8;
+        Fri,  6 Oct 2023 16:52:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696611037;
-        bh=2aaZimPgHTbIm4nYbzzNMap4dmH7kQIVxsi+EmgVXzk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jKKIYCm1cbYRcvcQLLOlTTHe4wq6pp/CzXSjhvdRhLGlAx18oEMTQ3LXm0QGUDH6n
-         hyBpwuP6H2nthJm8hWhPbuI6flcwWfj8S99rHoqyr6XrhT13dbmtyvKmRIQ0Hysbac
-         rOp3JM5Do7cSOFUAIUjp60ozaH83GE2prLw34lZGQhmUSVFFd8SdzX4h4LGetDOk7K
-         KagfRn5BhO4epM9lNg3RetFKlPZT4nQeHqcdX6WDymgXsal8z+kmZzj+zm0mc7DCxR
-         pDkjaaY1VRWxMCrqBCc6xS3DWszOI3vvmCqSGeSWPIsRzngH5syTqScpSguAwrQ7B9
-         lyGPSxZHyqQhg==
-Received: (nullmailer pid 4059854 invoked by uid 1000);
-        Fri, 06 Oct 2023 16:50:35 -0000
-Date:   Fri, 6 Oct 2023 11:50:35 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 06/11] dt-bindings: mips: Add bindings for Mobileye SoCs
-Message-ID: <20231006165035.GA4049125-robh@kernel.org>
-References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
- <20231004161038.2818327-7-gregory.clement@bootlin.com>
- <CAL_Jsq+NkRM07U8enKSVvpOg+9qtDdnkqs2Pc0X8LgjVVo7Vhg@mail.gmail.com>
- <87pm1tce5v.fsf@BL-laptop>
+        s=k20201202; t=1696611150;
+        bh=1/agTdIoDPH5KB+pV6NQO44zrxCRyNQUeJI7drOS5Ig=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=qMn2CbkwKErRdOowM3Ocy1kddkjyVCyEK2ZursCABQCNB/0S9dT0SBu/6poU8xsW7
+         HbKDn6iHiU+SpC2c5wZuD/92KeKcwxzUZQMoPL2E+kClr3tludjzbnlLerO5t/IjZv
+         RrgqoxXjyOVgcB0+a7dg8Idgc6YA6JLpNnDV+9CHYnxkLi2aoX1wkGyhRVxEULU4bh
+         aFWIrg5CJxZfIMYhJ9hXHxWD7iSfON50Z/PvPKTOU6RajLcLTF3d4FR8fxZ1invZhc
+         a58yV2tXI2a4LDntzqX0YDKdJ9jy16hYNjrtZ5tbcHBpczp9+Qngx9REKBDzAO9HGg
+         HkEsAUNNfiiSw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 18A1BCE0976; Fri,  6 Oct 2023 09:52:30 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 09:52:30 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH bootconfig 2/3] fs/proc: Add boot loader arguments as
+ comment to /proc/bootconfig
+Message-ID: <55067c09-9ec6-452a-a6db-30b8a8d08485@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <6ea609a4-12e3-4266-8816-b9fca1f1f21c@paulmck-laptop>
+ <20231005171747.541123-2-paulmck@kernel.org>
+ <20231006175948.14df07948d8c6a4a46473c13@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87pm1tce5v.fsf@BL-laptop>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231006175948.14df07948d8c6a4a46473c13@kernel.org>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 04:55:08PM +0200, Gregory CLEMENT wrote:
-> Hello Rob,
+On Fri, Oct 06, 2023 at 05:59:48PM +0900, Masami Hiramatsu wrote:
+> On Thu,  5 Oct 2023 10:17:46 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> > On Wed, Oct 4, 2023 at 11:11 AM Gregory CLEMENT
-> > <gregory.clement@bootlin.com> wrote:
-> >>
-> >> Add the yaml bindings for Mobileye SoCs. Currently only EyeQ5 is
-> >> supported
-> >>
-> >> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> >> ---
-> >>  .../devicetree/bindings/mips/mobileye.yaml    | 36 +++++++++
-> >>  include/dt-bindings/soc/mobileye,eyeq5.h      | 77 +++++++++++++++++++
-> >>  2 files changed, 113 insertions(+)
-> >>  create mode 100644 Documentation/devicetree/bindings/mips/mobileye.yaml
-> >>  create mode 100644 include/dt-bindings/soc/mobileye,eyeq5.h
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/mips/mobileye.yaml b/Documentation/devicetree/bindings/mips/mobileye.yaml
-> >> new file mode 100644
-> >> index 000000000000..f47767bc2c8f
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/mips/mobileye.yaml
-> >> @@ -0,0 +1,36 @@
-> >> +# SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
-> >
-> > Use what checkpatch tells you.
+> > In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
+> > show all kernel boot parameters, both those supplied by the boot loader
+> > and those embedded in the kernel image.  This works well for those who
+> > just want to see all of the kernel boot parameters, but is not helpful to
+> > those who need to see only those parameters supplied by the boot loader.
+> > This is especially important when these parameters are presented to the
+> > boot loader by automation that might gather them from diverse sources.
+> > It is also useful when booting the next kernel via kexec(), in which
+> > case it is necessary to supply only those kernel command-line arguments
+> > from the boot loader, and most definitely not those that were embedded
+> > into the current kernel.
+> > 
+> > Therefore, add comments to /proc/bootconfig of the form:
+> > 
+> > 	# Parameters from bootloader:
+> > 	# root=UUID=ac0f0548-a69d-43ca-a06b-7db01bcbd5ad ro quiet ...
+> > 
+> > The second added line shows only those kernel boot parameters supplied
+> > by the boot loader.
 > 
-> >From my point of view GPL-2.0-or-later is compatible with GPL-2.0-only,
-> but OK I will do this.
+> Thanks for update it.
+> 
+> This looks good to me.
+> 
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Thank you!
 
-GPL-2.0-only is compatible with GPL3, so why does that matter? And MIT 
-is compatible with BSD-2-Clause, but we don't include that. 
+And thank you!  I take this as meaning that I should push these three
+commits for the upcoming v6.7 merge window.  Please let me know if I
+should be doing something else.
 
-Are we okay with GPLv4, v5, ...?
+							Thanx, Paul
 
-What I really care about is having a free-for-all and having a 
-proliferation of different licenses and combinations of licenses under 
-bindings. If everyone paid attention, then I wouldn't care. But they 
-don't and just copy code around. We already have a license mess with DT 
-headers and .dts files. Besides the copying problem, it is not hard to 
-find GPL only license included in dual or BSD/MIT only licensed .dts 
-files. Seems like an issue to me.
-
-Rob
+> > Link: https://lore.kernel.org/all/CAHk-=wjpVAW3iRq_bfKnVfs0ZtASh_aT67bQBG11b4W6niYVUw@mail.gmail.com/
+> > Link: https://lore.kernel.org/all/20230731233130.424913-1-paulmck@kernel.org/
+> > Co-developed-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Cc: Arnd Bergmann <arnd@kernel.org>
+> > Cc: Nick Desaulniers <ndesaulniers@google.com>
+> > Cc: Alexey Dobriyan <adobriyan@gmail.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: <linux-trace-kernel@vger.kernel.org>
+> > Cc: <linux-fsdevel@vger.kernel.org>
+> > ---
+> >  fs/proc/bootconfig.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+> > index 2e244ada1f97..902b326e1e56 100644
+> > --- a/fs/proc/bootconfig.c
+> > +++ b/fs/proc/bootconfig.c
+> > @@ -62,6 +62,12 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+> >  				break;
+> >  			dst += ret;
+> >  		}
+> > +		if (ret >= 0 && boot_command_line[0]) {
+> > +			ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+> > +				       boot_command_line);
+> > +			if (ret > 0)
+> > +				dst += ret;
+> > +		}
+> >  	}
+> >  out:
+> >  	kfree(key);
+> > -- 
+> > 2.40.1
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
