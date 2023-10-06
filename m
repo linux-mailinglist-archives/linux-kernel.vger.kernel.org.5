@@ -2,129 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EF17BB662
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD447BB667
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232026AbjJFLXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
+        id S230304AbjJFL1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231911AbjJFLXM (ORCPT
+        with ESMTP id S230138AbjJFL1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:23:12 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 313C583;
-        Fri,  6 Oct 2023 04:23:09 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8CxyOgb7h9li4IvAA--.55266S3;
-        Fri, 06 Oct 2023 19:23:07 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxri8C7h9lgVIZAA--.53378S3;
-        Fri, 06 Oct 2023 19:23:02 +0800 (CST)
-Message-ID: <f903cf7c-4b9d-a6e6-5047-9d4ee0df283f@loongson.cn>
-Date:   Fri, 6 Oct 2023 19:22:42 +0800
+        Fri, 6 Oct 2023 07:27:05 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1999AC5;
+        Fri,  6 Oct 2023 04:27:04 -0700 (PDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailout.west.internal (Postfix) with ESMTP id 0AAFC3200ACB;
+        Fri,  6 Oct 2023 07:27:02 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Fri, 06 Oct 2023 07:27:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bearcove.net; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1696591622; x=1696678022; bh=DfsU3izUar
+        c3urIWoQV9VaCFxzhD45N7hVfrg6KIZDA=; b=Ow/1XNa7qmUGOzUPyN8DJX1sue
+        LeS9RBxVkUqsajMnSXnjYmneOUSLJ5p0ICeQGu8fEJ77CWHOLd9Ihsflgnz1X9rH
+        iePqNhT3tAZBI6axg40+tNBt9dOfQYIRs6j/7A1GUeFgXoWei7UiThaEPZJSpskh
+        ynlsN0cYqdud/2gpI2+PMBx4gbSW/bX5+ArdIRbrA0ekSycBB1HBl8SYML5+WP5w
+        XuJfirJM4CuFa17XmvcqjPhqw099xTCjYLFAoTN8e4/NdiS1IuHj155YC3UQZkNz
+        4lE4Bxtm9CJP2j9OTnK09glx/ggte+7sgMS8BSDqEf/1aTTOewCpNWp96n2w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696591622; x=1696678022; bh=DfsU3izUarc3u
+        rIWoQV9VaCFxzhD45N7hVfrg6KIZDA=; b=EA7xUKzREuuKfVjRlCk3yrhmvk/oX
+        3980WsyyeHXQQ45yL3lg4b0TsPD94bzPx4L0rl0ZoOvSsPSNiSmBB6q8C75hjIz/
+        jvOipKVvAhvqqe4PGvSVxes28W9MFkAVIbLH/KaeMlcsMUjSY2SRFktoMcXlCy+M
+        POMSqL3fx+FDf5hbz4I7R3Xw4j5tfIOUnhOVNCOkZvvuVDZUzlkVgy0HLTvZax/N
+        UCDkqk+mrg7wrDisO0uc+Q6O6vsocF3V4oNIhxjQvkWi428yI9njKtCEvs7/N0gn
+        kr9b9imJ4UYl/LKtFgTzuyMKHlpsKeiSVn1Qs/MsyzQ75t1W/LxgjEHAQ==
+X-ME-Sender: <xms:Bu8fZVEb_9g79KHPZgKGKE653JP5u0088lQzVQ49wkzt0MWUH8bgkQ>
+    <xme:Bu8fZaWDy0uhR2mfmLqeyR-CrGezB3Bs2z_3uoPsrEDPeRfPVCtwoDwBnHhe36waq
+    ef1cvc3KxpLTkP9AJg>
+X-ME-Received: <xmr:Bu8fZXKjaYftPKdobgq88Fq5p_22nonb4APhyiHHLHUBNSL__tr5D-iHdbu1LuH0dg0gyt4H8sA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeigdefkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
+    etfedtuddqtdduucdludehmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddt
+    necuhfhrohhmpeetmhhoshcuhggvnhhgvghruceorghmohhssegsvggrrhgtohhvvgdrnh
+    gvtheqnecuggftrfgrthhtvghrnhepkeehfeefgefhheeuhfevgeelieegleehtdfffeef
+    veduveejieekveejgeevudfgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomheprghmohhssegsvggrrhgtohhvvgdrnhgvth
+X-ME-Proxy: <xmx:Bu8fZbFvzl6LjssoRnBxPZoqqixaT4-uz1t6i4ET9jT-yv2HjlVnZw>
+    <xmx:Bu8fZbVYroe06MkoA3DfZ0qKhcy3DcrosMnDPwubgDKxIa57YtNeAA>
+    <xmx:Bu8fZWP_sKY0ouF84OFzYJIfpoKVjceCJDnToLU9zX7Aw6PX58fupA>
+    <xmx:Bu8fZRxY90iwdWrlT9YHg9kWu1lJ3rfY-pBO4dXzgVmDjnG8WJXcDg>
+Feedback-ID: i779946bd:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 6 Oct 2023 07:27:00 -0400 (EDT)
+From:   Amos Wenger <amos@bearcove.net>
+To:     amos@bearcove.net
+Cc:     David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-mm@kvack.org (open list:MEMORY HOT(UN)PLUG),
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] mm/memory-hotplug: fix typo in documentation
+Date:   Fri,  6 Oct 2023 13:26:36 +0200
+Message-Id: <20231006112636.97128-1-amos@bearcove.net>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [-next 4/5] drm/virgpu: Switch to pci_is_vga()
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        David Airlie <airlied@redhat.com>
-References: <20231005215714.GA792609@bhelgaas>
-Content-Language: en-US
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <20231005215714.GA792609@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8Cxri8C7h9lgVIZAA--.53378S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7WF4Uur1xJr4kWr13JryDCFX_yoW8tw1rpF
-        WrGFyFkryftFW7K392qF1fuFyYva9aqFyfCFsY93sI9r98tw15Zry0kr13WrW7Zrs7CF4S
-        yw4v9F1Ig3ZF9rXCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4j6r4UJwAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
-        Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
-        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48J
-        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcbAwUUUUU
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+I'm 90% sure memory hotunplugging doesn't involve a "fist" phase
 
+Signed-off-by: Amos Wenger <amos@bearcove.net>
+---
+ Documentation/admin-guide/mm/memory-hotplug.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 2023/10/6 05:57, Bjorn Helgaas wrote:
-> In subject: "drm/virtio" to match previous history.
->
-> On Wed, Aug 30, 2023 at 07:15:31PM +0800, Sui Jingfeng wrote:
->> From: Sui Jingfeng <suijingfeng@loongson.cn>
->>
->> Should be no functional change, just for cleanup purpose.
->>
->> Cc: David Airlie <airlied@redhat.com>
->> Cc: Gerd Hoffmann <kraxel@redhat.com>
->> Cc: Gurchetan Singh <gurchetansingh@chromium.org>
->> Cc: Chia-I Wu <olvaffe@gmail.com>
->> Cc: Daniel Vetter <daniel@ffwll.ch>
->> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
->> ---
->>   drivers/gpu/drm/virtio/virtgpu_drv.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.c b/drivers/gpu/drm/virtio/virtgpu_drv.c
->> index add075681e18..3a368304475a 100644
->> --- a/drivers/gpu/drm/virtio/virtgpu_drv.c
->> +++ b/drivers/gpu/drm/virtio/virtgpu_drv.c
->> @@ -51,7 +51,7 @@ static int virtio_gpu_pci_quirk(struct drm_device *dev)
->>   {
->>   	struct pci_dev *pdev = to_pci_dev(dev->dev);
->>   	const char *pname = dev_name(&pdev->dev);
->> -	bool vga = (pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA;
->> +	bool vga = pci_is_vga(pdev);
-> This *is* a functional change: Previously "vga" was only true for
-> PCI_CLASS_DISPLAY_VGA (0x0300).  Now it will be true for both
-> PCI_CLASS_DISPLAY_VGA (0x0300) and PCI_CLASS_DISPLAY_OTHER (0x0380).
->
-> Is that desirable?  I can't tell.  Maybe the GPU folks will chime in.
->
-
-Yes, the vga variable still will be "true" for the PCI_CLASS_DISPLAY_VGA (0x0300) class code,
-and this is the major case. But the devices with PCI_CLASS_NOT_DEFINED_VGA class code are quite
-uncommon, and virtio gpu is virtual GPU driver, It is unlikely that the QEMU to emulate a
-old device with PCI_CLASS_NOT_DEFINED_VGA class code. I means that there no reason to do so.
-Am I correct? Is there anyone know more?
-
-For virtio virtual GPU driver, I would like to drop this patch, if no one response.
-
-We probably only need to consider PCI_CLASS_NOT_DEFINED_VGA case for the real (probably old) hardware device.
-It do exists, as Maciej mention at [1].
-
-[1] https://lkml.org/lkml/2023/6/18/315
-
-
->>   	int ret;
->>   
->>   	DRM_INFO("pci: %s detected at %s\n",
->> -- 
->> 2.34.1
->>
+diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
+index cfe034cf1e87..fbf2c22f890d 100644
+--- a/Documentation/admin-guide/mm/memory-hotplug.rst
++++ b/Documentation/admin-guide/mm/memory-hotplug.rst
+@@ -75,7 +75,7 @@ Memory hotunplug consists of two phases:
+ (1) Offlining memory blocks
+ (2) Removing the memory from Linux
+ 
+-In the fist phase, memory is "hidden" from the page allocator again, for
++In the first phase, memory is "hidden" from the page allocator again, for
+ example, by migrating busy memory to other memory locations and removing all
+ relevant free pages from the page allocator After this phase, the memory is no
+ longer visible in memory statistics of the system.
+-- 
+2.39.2
 
