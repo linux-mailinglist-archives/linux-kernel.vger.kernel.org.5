@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D897BB087
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 05:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEE47BB08B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 05:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjJFD3d convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Oct 2023 23:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
+        id S229902AbjJFDjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 23:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjJFD3b (ORCPT
+        with ESMTP id S229815AbjJFDjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 23:29:31 -0400
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21873E4
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 20:29:29 -0700 (PDT)
-Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1qobWM-0001qH-1a;
-        Thu, 05 Oct 2023 23:28:58 -0400
-Message-ID: <d31f976cd37567b88b359749ee31fbf42568dd6d.camel@surriel.com>
-Subject: Re: [PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with
- invalidate_lock
-From:   Rik van Riel <riel@surriel.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        muchun.song@linux.dev, leit@meta.com, willy@infradead.org
-Date:   Thu, 05 Oct 2023 23:28:58 -0400
-In-Reply-To: <20231006001912.GB86415@monkey>
-References: <20231004032814.3108383-1-riel@surriel.com>
-         <20231004032814.3108383-4-riel@surriel.com> <20231006001912.GB86415@monkey>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Thu, 5 Oct 2023 23:39:11 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7B3DB;
+        Thu,  5 Oct 2023 20:39:09 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 05:39:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696563547;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y8gM+5bxgcjLBwjx6eiNsY111P2+A8NBDT1mBtA5yyo=;
+        b=KW1MHQI0yb22k6g0oHz61UQiSGNbsUYUSK0J/7eaMiIexsb9ZS2FwiXI8YSRDnFMzBn4MW
+        cN22jQ9ok1sWEIWAHWFBQE2mzwVwvnSEbsj9dVurLd3x61gDNp8vevkAWsfo4aEVsj27zx
+        Q/YXmlQLiSTgcVykKtQM1dz6/SCp2r4PJQU1c2wgnNanQYFoyQoY8HUjbD+bDrVFz2Ttn/
+        KyvhztZEfAt0TIWNa0wu9YdqQoP+vANkWEc52E1Wd7lHMjBHUbLnbg5gLeIQX1sIrDvnYV
+        CemQDB/NyQM1V8/11uNVsPEr4MkX/nqk2VEvQQCiCNJ+9tMy6z0guo4xAWKRWA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696563547;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y8gM+5bxgcjLBwjx6eiNsY111P2+A8NBDT1mBtA5yyo=;
+        b=bNCmbpBIEcFp+V3vBpVGtEpl81sllI2MPzb45Hn/BpNWkqKPRuAFJJpTZB/ioxiYC6hsQf
+        AtCjiG9GM8VybECQ==
+From:   Benedikt Spranger <b.spranger@linutronix.de>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Subject: Re: [PATCH 1/1] clk: socfpga: gate: Fix of by factor 2 for serial
+ console
+Message-ID: <20231006053906.1bb2a7d8@mitra>
+In-Reply-To: <77d94f6a6a4b45f8ad711f52ca6ba86c.sboyd@kernel.org>
+References: <20231005095927.12398-1-b.spranger@linutronix.de>
+        <20231005095927.12398-2-b.spranger@linutronix.de>
+        <qpskbgigcaoyjuhzeguz366cjukv3ij7utlbkra5edhwn6uzh4@bdedm6vs62y5>
+        <20231005203202.08b5d1cf@mitra>
+        <77d94f6a6a4b45f8ad711f52ca6ba86c.sboyd@kernel.org>
+Organization: Linutronix GmbH
 MIME-Version: 1.0
-Sender: riel@surriel.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-05 at 17:19 -0700, Mike Kravetz wrote:
+On Thu, 05 Oct 2023 14:03:19 -0700
+Stephen Boyd <sboyd@kernel.org> wrote:
+
+> What's your analysis?
+Commit 9607beb917df ("clk: socfpga: gate: Add a determine_rate hook")
+breaks serial console output and changing the determine_rate hook to 
+__clk_mux_determine_rate() fix the issue.
+ 
+> Does this patch also fix it?
 > 
-> I have not gone through the patch, but it does produce the following:
-> 
-> [   49.783584] =====================================
-> [   49.784570] WARNING: bad unlock balance detected!
-> [   49.785589] 6.6.0-rc3-next-20230925+ #35 Not tainted
-> [   49.786644] -------------------------------------
-> [   49.787768] hfill2/938 is trying to release lock
-> (mapping.invalidate_lock) at:
-> [   49.789387] [<ffffffff815212e5>]
-> remove_inode_hugepages+0x405/0x4b0
-> [   49.790723] but there are no more locks to release!
-> [   49.791808] 
-> [   49.791808] other info that might help us debug this:
-> [   49.793274] 4 locks held by hfill2/938:
-> [   49.794190]  #0: ffff8881ff3213e8 (sb_writers#11){.+.+}-{0:0}, at:
-> do_syscall_64+0x37/0x90
-> [   49.796165]  #1: ffff888181c99640 (&sb->s_type-
-> >i_mutex_key#16){+.+.}-{3:3}, at: do_truncate+0x6f/0xd0
-> [   49.798188]  #2: ffff888301592f98
-> (&hugetlb_fault_mutex_table[i]){+.+.}-{3:3}, at:
-> remove_inode_hugepages+0x144/0x4b0
-> [   49.800494]  #3: ffff888181c998b0
-> (&hugetlbfs_i_mmap_rwsem_key){++++}-{3:3}, at:
-> remove_inode_hugepages+0x239/0x4b0
+> ---8<---
+> diff --git a/drivers/clk/socfpga/clk-gate.c
+> b/drivers/clk/socfpga/clk-gate.c index 8dd601bd8538..b3400d2d8128
+> 100644 --- a/drivers/clk/socfpga/clk-gate.c
+> +++ b/drivers/clk/socfpga/clk-gate.c
+> @@ -173,6 +173,7 @@ void __init socfpga_gate_init(struct device_node
+> *node) if (init.num_parents < 2) {
+>  		ops->get_parent = NULL;
+>  		ops->set_parent = NULL;
+> +		ops->determine_rate = NULL;
+>  	}
+>  
+>  	init.parent_names = parent_name;
 
-Well that's a fun one. The remove_inode_hugepages function
-does not take the mapping.invalidate_lock, but it calls
-hugetlb_unmap_file_folio which does.
+No. serial console is broken too.
 
-The vma_interval_tree_foreach loop has a stray
-hugetlb_vma_unlock_write() left, which I should have
-removed when lifting the lock outside of the loop.
-
-Nice catch!
-
--- 
-All Rights Reversed.
+Regards
+    Benedikt Spranger
