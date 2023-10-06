@@ -2,166 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B677BAFDE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFD27BAFE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjJFBE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 21:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37216 "EHLO
+        id S229597AbjJFBEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 21:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjJFBEZ (ORCPT
+        with ESMTP id S229623AbjJFBEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 21:04:25 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86223D9
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 18:04:23 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3af5b5d7f16so1017567b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 18:04:23 -0700 (PDT)
+        Thu, 5 Oct 2023 21:04:47 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F9FE8
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 18:04:45 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d8181087dc9so1800366276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 18:04:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696554263; x=1697159063; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xbWXVkPufIc/8Du+zQCnrHClPnWAOU4FcdQfVWLhTPM=;
-        b=gGgh3ek/mVp3aao2oeyLBHoXNJaqHyEcAdh1hYOwi53lJgxfDoFPOpIVBQVum+bElW
-         BEr9pB6FQrTHE2GNwlE4NZM5KH7Nl2K2gzufjEU2ZH0EZ3rIAtZy/jhav+CrPTvj+hxh
-         7ALCKeGXzb64PVkAaQJbcrTDzYWsYxgOkASWdZpy8STs2Vxnwvv41sGEDmmQvROIQq0H
-         LGNddbAcFk6FvDYn2Dwh3+/cFV5ta3J7uNxGZUAfPBhb6Rudp8vY5WNEJBT0/qI+fhs5
-         k+XMRSObGzLNI6V6iu37az288BwthhL2xOClx44gt5qq/B6eoF5nGFJZ2TyNKG7QIBh+
-         /wSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696554263; x=1697159063;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1696554285; x=1697159085; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xbWXVkPufIc/8Du+zQCnrHClPnWAOU4FcdQfVWLhTPM=;
-        b=N7spoZxwQA08y4ruSX8PN1lb8PgqhJhkc/hEv6Y3A2A9SNmq1LE+EPEJnozRUzC75c
-         Ihc+cKy5vLZcCQZJ6DFjKdY4Bq9IJNQ6DPFoRgY0DnZF0CPZvh77LcdrvDZYJN81394t
-         yD+WnARKozweoZGI80TZS+Qat7Q9mB2fPYHHtdL9vXh8wZYsH0bVQJJTBKORau7WMDno
-         9qTRfv3dljLfFmGR+FVNDlfDaIdzq3fiUfcXcjFA1WgPhLV+9OxoUqnpJ2uTB+OVIIWQ
-         ixDy/hLEEBH24FQByvdK1AZO2lYHT/IIMZoRYUUKuNhGq8lz2RWhdUAa/BUoFrdKA263
-         +m4w==
-X-Gm-Message-State: AOJu0YyV5QrJTdwQmyAhfQtE/enynUIZIXK2Hw3fHjQuVO07B1Wzx41F
-        zphqqsYuuGQ8GsbUpcGRzfo5jylUNTk=
-X-Google-Smtp-Source: AGHT+IFh2w6zzhV5IY1apER8J1+pgvye6XXqvRnnMvh23W1RQguKILS+24Zm9m4xUzHHHEty7//QLg==
-X-Received: by 2002:a05:6808:138a:b0:3a7:1d15:28fe with SMTP id c10-20020a056808138a00b003a71d1528femr7789531oiw.56.1696554262692;
-        Thu, 05 Oct 2023 18:04:22 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id g2-20020a63ad02000000b00584d035c08asm2083377pgf.24.2023.10.05.18.04.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 18:04:22 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 777638209CB9; Fri,  6 Oct 2023 08:04:18 +0700 (WIB)
-Date:   Fri, 6 Oct 2023 08:04:18 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Tatu =?utf-8?B?SGVpa2tpbMOk?= <tatu.heikkila@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Device Mapper <dm-devel@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: (Bisected) Accessing opened Bitlocker partition leads to memory
- fault and kernel panic on Imac8,1
-Message-ID: <ZR9dEiXhQv-wBVA2@debian.me>
-References: <f1b8d8f5-2079-537e-9d0f-d58da166fe50@gmail.com>
+        bh=6gL74AVv/kADxmrat7aE6h2s1GttYw5i8Oajx36h7rE=;
+        b=V3o+t/na+IFVLoo5v84Iz4jG8x49Mr0lKmSlaVgb5LdfKLOWFr/d1ssmVrLozY0Apl
+         AzQhfKA5NA7ezx19Zthz7DtYEcNPUdQWb5ghclRp+QH3YXSHIS2+CxnIDURJS9xi4fXt
+         gkZ3fyW62F2HQ+h1J4Pqxv17Jq0xw+v2IZlRPTEV3K6xQ5ZxNcGLjjZ5occzy/bdqj/Q
+         eE12QdrBY0jHkVvOHA1LK29X1S2JZBXK/anzu283ZTuEvB4reIQ6gpqaeM3ZglhzuAS4
+         oy8EJby6qQFjh82lDtviSb0R6I0H//vTxRUAdXns79hW9rK1zwan5ijjalNRVDg+44g4
+         aTrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696554285; x=1697159085;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6gL74AVv/kADxmrat7aE6h2s1GttYw5i8Oajx36h7rE=;
+        b=P0O59ZaQh1Wm1sdbque+pXWI2DprVhs2I9GLnRD6QUo7oY7DfdQdeXySugBxUOSqtt
+         tMnurMSQC4e66HAbjKMepapB6sKunmRui7PL3iIS11Pd+WqOr4b8m2ERILWuMsE6ov7U
+         VddNpNiEoXHYdZlFLfKn5QE8j4w21CC8tSgvohTOqpE9TUXxTnTI5hFCF+ul9sbzGZAL
+         OWFRG5+ydnN2HLN0br4UuOayJ5G3A3wbU0X6zXHYC/qN0ahzFAWRLidmzTDfOABTLUtY
+         OnBtXxXYwmOXjdedMO3ywRvu5m2gFZMpVsyswoiwHk1LHQEEZgEUPLz0p3q7z35zAxj+
+         kzbw==
+X-Gm-Message-State: AOJu0YwX2DXCFPSkymfW7r1ClhDZI8yE05/8EcmNCynyZPgMUTllkKjQ
+        PgUpTcieOQ4OniKmwOac6+PY20zdLdMTVikvSQFq
+X-Google-Smtp-Source: AGHT+IFjA2MaGiVDVxZNi9Kil7q848FSc5god1/jayS8nH5Zot/WRoFgFQBx1DUh0fv4zhps9wL+Oj28UeN5TTuHiKU=
+X-Received: by 2002:a25:cb05:0:b0:d78:18c3:23dd with SMTP id
+ b5-20020a25cb05000000b00d7818c323ddmr6954997ybg.62.1696554284853; Thu, 05 Oct
+ 2023 18:04:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Jb5IqaSpz/f9tNpy"
-Content-Disposition: inline
-In-Reply-To: <f1b8d8f5-2079-537e-9d0f-d58da166fe50@gmail.com>
+References: <20230912205658.3432-1-casey@schaufler-ca.com> <20230912205658.3432-5-casey@schaufler-ca.com>
+ <20231003.kooghohS2Aiz@digikod.net>
+In-Reply-To: <20231003.kooghohS2Aiz@digikod.net>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 5 Oct 2023 21:04:34 -0400
+Message-ID: <CAHC9VhT_ijmqo9ap-EokWHuALsMAqome2qcWgst3eRP6m+vbRA@mail.gmail.com>
+Subject: Re: [PATCH v15 04/11] LSM: syscalls for current process attributes
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module@vger.kernel.org, jmorris@namei.org,
+        serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 3, 2023 at 10:09=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@digik=
+od.net> wrote:
+> On Tue, Sep 12, 2023 at 01:56:49PM -0700, Casey Schaufler wrote:
+> > Create a system call lsm_get_self_attr() to provide the security
+> > module maintained attributes of the current process.
+> > Create a system call lsm_set_self_attr() to set a security
+> > module maintained attribute of the current process.
+> > Historically these attributes have been exposed to user space via
+> > entries in procfs under /proc/self/attr.
+> >
+> > The attribute value is provided in a lsm_ctx structure. The structure
+> > identifies the size of the attribute, and the attribute value. The form=
+at
+> > of the attribute value is defined by the security module. A flags field
+> > is included for LSM specific information. It is currently unused and mu=
+st
+> > be 0. The total size of the data, including the lsm_ctx structure and a=
+ny
+> > padding, is maintained as well.
+> >
+> > struct lsm_ctx {
+> >         __u64 id;
+> >         __u64 flags;
+> >         __u64 len;
+> >         __u64 ctx_len;
+> >         __u8 ctx[];
+> > };
+> >
+> > Two new LSM hooks are used to interface with the LSMs.
+> > security_getselfattr() collects the lsm_ctx values from the
+> > LSMs that support the hook, accounting for space requirements.
+> > security_setselfattr() identifies which LSM the attribute is
+> > intended for and passes it along.
+> >
+> > Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Reviewed-by: Serge Hallyn <serge@hallyn.com>
+> > Reviewed-by: John Johansen <john.johansen@canonical.com>
+> > ---
+> >  Documentation/userspace-api/lsm.rst |  70 +++++++++++++
+> >  include/linux/lsm_hook_defs.h       |   4 +
+> >  include/linux/lsm_hooks.h           |   1 +
+> >  include/linux/security.h            |  19 ++++
+> >  include/linux/syscalls.h            |   5 +
+> >  include/uapi/linux/lsm.h            |  36 +++++++
+> >  kernel/sys_ni.c                     |   2 +
+> >  security/Makefile                   |   1 +
+> >  security/lsm_syscalls.c             |  57 +++++++++++
+> >  security/security.c                 | 152 ++++++++++++++++++++++++++++
+> >  10 files changed, 347 insertions(+)
+> >  create mode 100644 Documentation/userspace-api/lsm.rst
+> >  create mode 100644 security/lsm_syscalls.c
 
---Jb5IqaSpz/f9tNpy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-On Thu, Oct 05, 2023 at 08:15:43PM +0300, Tatu Heikkil=C3=A4 wrote:
-> Hello,
-> I think you and the lists are right recipients, forgive me if not, I've
-> never reported kernel bugs before. Naively this seems a crypto issue and
-> Herbert Xu from crypto maintainers made the buggy commit, but it edits
-> drivers/md/dm_crypt.c maintained by dm-devel people per MAINTAINERS, so I=
-'m
-> going by that.
->=20
-> At the center of the issue is my Imac8,1 and an external 2TB SSD with 5
-> partitions: an EFI+MBR portable Arch Linux install with LUKS encrypted ex=
-t4
-> /home, and a 1.7TB exFAT encrypted with Bitlocker.
->=20
-> Mounting the LUKS partition works fine on all my 4 computers (Imac8,1,
-> Imac12,2, two generic Intels; Fedora's GNOME gvfs volume monitor often
-> crashes on mount using this drive), and mounting the Bitlocker partition
-> works on all other computers, but my Imac8,1. On my other computers, I can
-> boot into the portable install which automounts the Bitlocker partition
-> fine. However, on my Imac8,1, regardless if I boot into the external driv=
-e's
-> portable Arch Linux install, or use the Imac's own internal Debian testing
-> install, any post-6.4 kernel reliably panics (50+ times so far, 100% of t=
-he
-> time) when accessing the unlocked Bitlocker volume:
->=20
-> # cryptsetup open /dev/sdb5 --type bitlk crucial
-> Enter passphrase for /dev/sdb5:
-> # mount /dev/mapper/crucial temp [kernel immediately panics if I try to
-> tab-complete the mount point, making the shell also access the decrypted
-> device I assume, or try to run the command]
->=20
-> I originally ran into this when mounting using XFCE's Thunar implementati=
-on.
-> Using it, the mount fails with "Operation was cancelled" and the system
-> crashes within a minute.
->=20
-> Git bisect lead me to:
-> # first bad commit: [e3023094dffb41540330fb0c74cd3a019cd525c2] dm crypt:
-> Avoid using MAX_CIPHER_BLOCKSIZE
->=20
-> If I git revert e3023094dffb41540330fb0c74cd3a019cd525c2 on current Linus'
-> git master, the issue goes away. So I'm personally not all that affected
-> anymore (if I'm ready to compile my kernels from now on), and I understand
-> that you have no clear way to reproduce this as it seems strongly bound to
-> hardware, but seems like this could point to a potentially serious securi=
-ty
-> issue since it involves both crypto and undefined behaviour.
->=20
-> Kdump dmesg logs (the error output is not completely consistent between
-> panics) & .config can be found in a dummy Bugzilla report
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D217982
->=20
-> Please let me know if I can help you in any way. I don't mind using this =
-as
-> a gateway to learn more about kernel debugging etc.
->=20
+> > diff --git a/security/security.c b/security/security.c
+> > index a3489c04b783..0d179750d964 100644
+> > --- a/security/security.c
+> > +++ b/security/security.c
+> > @@ -3837,6 +3837,158 @@ void security_d_instantiate(struct dentry *dent=
+ry, struct inode *inode)
+> >  }
+> >  EXPORT_SYMBOL(security_d_instantiate);
+> >
+> > +/*
+> > + * Please keep this in sync with it's counterpart in security/lsm_sysc=
+alls.c
+> > + */
+> > +
+> > +/**
+> > + * security_getselfattr - Read an LSM attribute of the current process=
+.
+> > + * @attr: which attribute to return
+> > + * @uctx: the user-space destination for the information, or NULL
+> > + * @size: pointer to the size of space available to receive the data
+> > + * @flags: special handling options. LSM_FLAG_SINGLE indicates that on=
+ly
+> > + * attributes associated with the LSM identified in the passed @ctx be
+> > + * reported.
+> > + *
+> > + * A NULL value for @uctx can be used to get both the number of attrib=
+utes
+> > + * and the size of the data.
+> > + *
+> > + * Returns the number of attributes found on success, negative value
+> > + * on error. @size is reset to the total size of the data.
+> > + * If @size is insufficient to contain the data -E2BIG is returned.
+> > + */
+> > +int security_getselfattr(unsigned int attr, struct lsm_ctx __user *uct=
+x,
+> > +                      size_t __user *size, u32 flags)
+> > +{
+> > +     struct security_hook_list *hp;
+> > +     struct lsm_ctx lctx =3D { .id =3D LSM_ID_UNDEF, };
+> > +     u8 __user *base =3D (u8 __user *)uctx;
+> > +     size_t total =3D 0;
+> > +     size_t entrysize;
+> > +     size_t left;
+> > +     bool toobig =3D false;
+> > +     bool single =3D false;
+> > +     int count =3D 0;
+> > +     int rc;
+> > +
+> > +     if (attr =3D=3D LSM_ATTR_UNDEF)
+> > +             return -EINVAL;
+> > +     if (size =3D=3D NULL)
+> > +             return -EINVAL;
+> > +     if (get_user(left, size))
+> > +             return -EFAULT;
+> > +
+> > +     if (flags) {
+> > +             /*
+> > +              * Only flag supported is LSM_FLAG_SINGLE
+> > +              */
+> > +             if (flags !=3D LSM_FLAG_SINGLE)
+> > +                     return -EINVAL;
+> > +             if (uctx && copy_from_user(&lctx, uctx, sizeof(lctx)))
+>
+> I'm not sure if we should return -EINVAL or -EFAULT when uctx =3D=3D NULL=
+.
+> Because uctx is optional (when LSM_FLAG_SINGLE is not set), I guess
+> -EINVAL is OK.
 
-Thanks for the regression report. I'm adding it to regzbot:
+That's a good point, we should probably the error codes here: if uctx
+is NULL in the LSM_FLAG_SINGLE case we should return -EINVAL, if the
+copy_from_user() fails we should return -EFAULT.
 
-#regzbot ^introduced: e3023094dffb41
-#regzbot title: kernel panic when accessing opened bitlocker partition due =
-to avoiding MAX_CIPHER_BLOCKSIZE
-#regzbot link: https://bugzilla.kernel.org/show_bug.cgi?id=3D217982
+> > +                     return -EFAULT;
+> > +             /*
+> > +              * If the LSM ID isn't specified it is an error.
+> > +              */
+> > +             if (lctx.id =3D=3D LSM_ID_UNDEF)
+> > +                     return -EINVAL;
+> > +             single =3D true;
+> > +     }
+> > +
+> > +     /*
+> > +      * In the usual case gather all the data from the LSMs.
+> > +      * In the single case only get the data from the LSM specified.
+> > +      */
+> > +     hlist_for_each_entry(hp, &security_hook_heads.getselfattr, list) =
+{
+> > +             if (single && lctx.id !=3D hp->lsmid->id)
+> > +                     continue;
+> > +             entrysize =3D left;
+> > +             if (base)
+> > +                     uctx =3D (struct lsm_ctx __user *)(base + total);
+> > +             rc =3D hp->hook.getselfattr(attr, uctx, &entrysize, flags=
+);
+> > +             if (rc =3D=3D -EOPNOTSUPP) {
+> > +                     rc =3D 0;
+> > +                     continue;
+> > +             }
+> > +             if (rc =3D=3D -E2BIG) {
+> > +                     toobig =3D true;
+> > +                     left =3D 0;
+> > +             } else if (rc < 0)
+> > +                     return rc;
+> > +             else
+> > +                     left -=3D entrysize;
+> > +
+> > +             total +=3D entrysize;
+> > +             count +=3D rc;
+>
+> There is a bug if rc =3D=3D -E2BIG
+
+Can you elaborate a bit more on this? Nothing is jumping out at me as
+obviously broken... are you talking about @count becoming garbage due
+to @rc being equal to -E2BIG?  If that is the case it should be okay
+since we explicitly return -E2BIG, not @count, if @toobig is true.
+
+> > +             if (single)
+> > +                     break;
+> > +     }
+> > +     if (put_user(total, size))
+> > +             return -EFAULT;
+> > +     if (toobig)
+> > +             return -E2BIG;
+> > +     if (count =3D=3D 0)
+> > +             return LSM_RET_DEFAULT(getselfattr);
+> > +     return count;
+> > +}
 
 --=20
-An old man doll... just what I always wanted! - Clara
-
---Jb5IqaSpz/f9tNpy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZR9dDAAKCRD2uYlJVVFO
-oz5dAQCMP/K95ZXJESKmwYJsaJzV2PzQpaGweREO01xriKlshQD9FfLS/rj+AhM0
-sYS2+qls+vEXoyzp5laVX3fWeL1l1Ao=
-=7sAU
------END PGP SIGNATURE-----
-
---Jb5IqaSpz/f9tNpy--
+paul-moore.com
