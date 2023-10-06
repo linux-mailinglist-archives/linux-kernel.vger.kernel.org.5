@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1BA7BB429
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EC47BB42E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbjJFJ1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 05:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35298 "EHLO
+        id S231414AbjJFJ2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 05:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbjJFJ1x (ORCPT
+        with ESMTP id S231284AbjJFJ2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 05:27:53 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9C895;
-        Fri,  6 Oct 2023 02:27:51 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c735473d1aso14932225ad.1;
-        Fri, 06 Oct 2023 02:27:51 -0700 (PDT)
+        Fri, 6 Oct 2023 05:28:30 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D90795
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 02:28:28 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b96c3b4be4so332414566b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 02:28:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696584471; x=1697189271; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qd8PELAk6On3fpApQm8hLN5EGlr4n91DxF8C8aXw5Uk=;
-        b=P9Nl687RnKNOMgNwaDAya9QiCOKu7pLhhheuZkVnL3OtkN8bAGi/VtVLvB6sFmJtl3
-         LF8Y5KCSm7CRz1itGXPBgr1aN1aMou4ZbRbFNYM/zyDKMVLWH649lPR52dAuaW4hK6Ez
-         RA8c6duxCDvPGozL2i8ojJtqc4uWBsT56nP27ploFvig312ce9n095v9I+/cD4hRdUfD
-         dySlGxHTmeiXz28yJh6k8yFtOelO+hlXYaQEkQAWN9T7mdiUjgxXm3jNZjnBa+XbaUJa
-         3/Uir4c4jVZnxDk7Hd/XmycpDt6T28evHauvaTm9Q4fWQ31oaKekU4YIc6v5OMCrVOth
-         FzJQ==
+        d=linaro.org; s=google; t=1696584507; x=1697189307; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9oMQ4sfKITrqglJ7HukYbUVCwdr/XxwFy7LQhh9sK4U=;
+        b=x23K7KJDCK/cfTMfdwdcBzxzSK6qzMv/CxjbkuTxng4xjKDsD8uWm3ZKR+0843Ea80
+         i17OU35hpIcwWU5zgmMKCTtPoSZNASUV6c65QOIUozLYs4Jo2DSJSShrnRyrsRCgR8wv
+         4Ltr/JnuJd0w6iBNopmVvXFE2eybCyXxtuIQY+pFlvuT6Ffs8IW+HfYpaYJKIoz7rJ4d
+         /IutEMST2seJA7J9UqS3Cjgd9nH1d5bIvZYAGntvdPp3CfMPRT4FZldjClntqRplFQVv
+         lgV1Q9fYcxQkDakqBn1rW1fZQ5O5kuCvf6g7xQvpRBQoXkiLPg/ZKYuyXwlwH0lFRCOR
+         nvTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696584471; x=1697189271;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qd8PELAk6On3fpApQm8hLN5EGlr4n91DxF8C8aXw5Uk=;
-        b=NlVj9SaiUK5AQQO4B2yHFLJ/33YCdThaMdSo7dcXFK2nXy3PU8X7GnGsMEkTT6A75d
-         m2EHrZkLQmq4ULwQq3i8oqy7PEUG3dZjUPSLa8ud1xHd9iNzkxWdBxAyvk1fawCETN3K
-         jlrrYQptOF8Nv1U76PvtACHzALmyErmaxJW5Hf+RZ3F0VMBXIuCbO6mCa/77BHTr/cEV
-         LT4o2RFuPvEjKktnj+IBZquurbOFsM+iB4WeSWRCK/iJyKtxMQsZ9oob5woA1kUBwWK4
-         LPAQsEGZQkgdXSfB1uHzPVWX8JFrXiXD+gw1rCbSmcefBmeK3/ZHuFgv6WHx1Mrjz94f
-         pAHw==
-X-Gm-Message-State: AOJu0YxdFmTmegmPDg0tvgQHWXiY6dq7cYDHE1A3fNtoClxL7KKrgHBA
-        PvFIRrZ1B168oNVb4SH7JyE=
-X-Google-Smtp-Source: AGHT+IFE3+eJ4cgE1olPLOlFYEDjaAcXkz86sb6eE2ajYLliRdanEX9PMpRbM09FPQsCy2nHMOSeeQ==
-X-Received: by 2002:a17:902:7790:b0:1c4:56c8:27f8 with SMTP id o16-20020a170902779000b001c456c827f8mr6052803pll.68.1696584470813;
-        Fri, 06 Oct 2023 02:27:50 -0700 (PDT)
-Received: from [172.22.12.30] ([123.51.235.123])
-        by smtp.gmail.com with ESMTPSA id f8-20020a170902ce8800b001c76fcccee8sm3303741plg.156.2023.10.06.02.27.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 02:27:50 -0700 (PDT)
-Message-ID: <b08d6cf6-cd48-86d7-a959-290fc4de092c@gmail.com>
-Date:   Fri, 6 Oct 2023 17:27:48 +0800
+        d=1e100.net; s=20230601; t=1696584507; x=1697189307;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9oMQ4sfKITrqglJ7HukYbUVCwdr/XxwFy7LQhh9sK4U=;
+        b=bNGdnzFJi96xLaSxBGWWZdDxWeqYyLeD/rVClsQZI9rQYES3yIlM7q+hJ1ox2THCoO
+         FBycP6/flJU5kkKNu79eTKICPm5n2q31aM+9HgMXuKv/8yvoof6L74FvF2gIAtjbB//u
+         lVXqM274il0YwwK0AzOZi4nFDdTMq6sHoC3m7RqsFSS0qJzY1cA3/cyBS+xCV/vFzwxT
+         1T8OpW3IW3uCZpIqNiE+Gq/N8aL4wbf2fk8QdKhoVHNWuywsgDDn7jspxuDniW2BpHrc
+         T++ZogHhYkuOlJFwIIj5Sbhi4bMtechLoreoFX1Nah1jo0AF21NdqNBeojViGDYzSBvr
+         7Tgg==
+X-Gm-Message-State: AOJu0YyDDV6ST9n3azONobeg/H3AKU1JFmoSWoRNKdKubRVT/Wh3QIJN
+        I6YDkJaim7WbB98DGbipQO5YHg==
+X-Google-Smtp-Source: AGHT+IGpxsusnlFnvTn4ZM0ktTcxxo0I0Dt559z6iS7MDTS1MwPqy0hAbGZ+L98X7zoY9l/NctcgWw==
+X-Received: by 2002:a17:906:1097:b0:9ad:be8a:a588 with SMTP id u23-20020a170906109700b009adbe8aa588mr6450602eju.1.1696584506696;
+        Fri, 06 Oct 2023 02:28:26 -0700 (PDT)
+Received: from krzk-bin.. (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id u25-20020a1709063b9900b0099bc2d1429csm2573006ejf.72.2023.10.06.02.28.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 02:28:26 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm@kernel.org, soc@kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL 1/2] arm64: dts: minor cleanup for v6.7
+Date:   Fri,  6 Oct 2023 11:28:22 +0200
+Message-Id: <20231006092823.94839-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 0/5] watchdog: eiois200_wdt: Add EIO-IS200 Watchdog Driver
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     wenkai.chung@advantech.com.tw, Susi.Driver@advantech.com,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-References: <cover.1696495372.git.advantech.susiteam@gmail.com>
- <d7df3c7b-730a-4d09-8f15-3cc8591c8092@roeck-us.net>
-Content-Language: en-US
-From:   Wenkai <advantech.susiteam@gmail.com>
-In-Reply-To: <d7df3c7b-730a-4d09-8f15-3cc8591c8092@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-Guenter Roeck 於 10/6/2023 11:02 AM 寫道:
-> On Thu, Oct 05, 2023 at 04:51:18PM +0800, advantech.susiteam@gmail.com wrote:
->> From: Wenkai <advantech.susiteam@gmail.com>
->>
->> This patch series aims to add support for the Advantech EIO-IS200
->> Embedded Controller's watchdog timer to the Linux kernel. The EIO-IS200
->> is a widely used embedded controller, and this series introduces a
->> native driver for its watchdog timer functionality within the Linux
->> ecosystem.
->>
-> I am not going to review this patch series. This is just ne watchdog driver.
-> One patch is sufficient.
->
-> Guenter
-Hi Guenter,
-
-Advantech's EIO-IS200 watchdog supports 5 output pins: RESET, Power
-Button, SCI, IRQ, and GPIO. The most traditional scenario is that the
-Pretimeout triggers IRQ, and the timeout triggers RESET.
-
-However, unfortunately, for industrial usages, there are various use
-cases, which require certain mechanisms and logic to manage which signal
-is output when Pretimeout and timeout expire. I am concerned that
-consolidating all these features into a single patch for upstream may
-lead to confusion and make the source code less readable and
-understandable.
-
-Therefore, I have divided the implementation into 5 separate patches,
-aiming to make the code more comprehensible and acceptable. If it's
-acceptable to you, I am more than willing to provide a single patch as
-per your preference.
-
-I would also like to note that this watchdog driver is part of the
-EIO-IS200 MFD (Multi-Function Device) driver family. It serves as one
-of the child-drivers of the drivers/mfd/eiois200_core core driver. It's
-important to mention that without the presence of
-drivers/mfd/eiois200_core, this child-driver eiois200_wdt cannot be
-compiled or used.
-
-Should we wait until the core driver (drivers/mfd/eiois200_core) is
-successfully incorporated before upstreaming the watchdog child-driver,
-or would you prefer to proceed with these patches independently?
+Few patches which were acked by maintainers or slipped through the cracks.
 
 Best regards,
-Wenkai
+Krzysztof
 
+
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-dt.git tags/dt64-cleanup-6.7
+
+for you to fetch changes up to 12ca3ca8cf06d803b3690ef523ccf5ffd0b23a71:
+
+  arm64: dts: marvell: minor whitespace cleanup around '=' (2023-09-24 20:56:14 +0200)
+
+----------------------------------------------------------------
+Minor improvements in ARM64 DTS for v6.7
+
+Few cleanups and improvements: use lowercase hex for unit addresses
+(Bitmain), add missing spaces before '{' (APM, MediaTek) and cleanup
+whitespace around '=' (MediaTek, Marvell).
+
+----------------------------------------------------------------
+Krzysztof Kozlowski (5):
+      arm64: dts: bitmain: lowercase unit addresses
+      arm64: dts: apm: add missing space before {
+      arm64: dts: mediatek: add missing space before {
+      arm64: dts: mediatek: minor whitespace cleanup around '='
+      arm64: dts: marvell: minor whitespace cleanup around '='
+
+ arch/arm64/boot/dts/apm/apm-shadowcat.dtsi         |  2 +-
+ arch/arm64/boot/dts/apm/apm-storm.dtsi             |  2 +-
+ arch/arm64/boot/dts/bitmain/bm1880.dtsi            |  6 +--
+ arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi      |  4 +-
+ .../boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts  |  6 +--
+ arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts       |  6 +--
+ arch/arm64/boot/dts/mediatek/mt8183-evb.dts        | 48 +++++++++++-----------
+ arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi     | 12 +++---
+ arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts    | 12 +++---
+ arch/arm64/boot/dts/mediatek/mt8195-demo.dts       |  2 +-
+ 10 files changed, 50 insertions(+), 50 deletions(-)
