@@ -2,233 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9088B7BBD68
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FB97BBD6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232955AbjJFRAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 13:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
+        id S232948AbjJFRCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 13:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbjJFRAS (ORCPT
+        with ESMTP id S232678AbjJFRCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 13:00:18 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70059C5
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 10:00:14 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c752caeaa6so18593235ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 10:00:14 -0700 (PDT)
+        Fri, 6 Oct 2023 13:02:08 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7385AD
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 10:02:06 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-5056ca2b6d1so2884001e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 10:02:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696611614; x=1697216414; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3a1zB5iqkMCQGi1pVDxSq4254WHlCszmLY8laq4etNM=;
-        b=QUNY0ih9cOhHpmCyEc1trs6YQuD5CEn0yvShlsxp6g1RBHFb4foBcywumBNOF/D/T9
-         liz9DzZ91ZDXkw7U7aC5riW0dx6sPtEY2nBbVBLqCST9r/i7F9ZpOCTwNSHs0xiMPzaq
-         V5qlFCgbuEAz/DeV0wAWlcUa4djZ2t7mcyyux961BYQ/yu0KS7BF2L1/24CR4FGLH7xY
-         rDbKg7t6j0iY4ViuiQDlnipH9fudnZ+zeuyOehdlB0eM0s52R/QYRbimn3Pk5UDj4nAX
-         F8AsIcP66jTj5Y2MN7tESMy6BksS5FKN9Yg3ZtZyOC2mWIU9kNBc2lanzs6UD7QFYHpa
-         913g==
+        d=gmail.com; s=20230601; t=1696611725; x=1697216525; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NpEemiWViboQRLEteZ7S4m4qM1WTeD7Vt/riE2+tgxU=;
+        b=nLI+HsxxctfyNINMbwUGslqOCAUoEj/Oz1T6nyquEfTOzd45EsvJwjp/7TdMLTVDaa
+         F9Qj75vsaRdSYgf6t2CLHY5og+p4DlXsD+6vF68pnioFCcDMUOgGubl3GaFuc2pJSxC/
+         BIvNFJmC7y35nwztb1Tw66N/WHoYjKiwDoTB3CyXiDKtXQbpqzbaJ1LfTdfCzYqLSY4m
+         916nNRdHQaX9lSLfT+akYa2vUP3NJAV84E+qEkWX/Ovs3/MDS5OGbx58QEq03kfW9mUc
+         u2crkDxwL21A3O8Xg4WwzV5EWRXYQQHsyiv1iZD8YPTaOXFDL0sZDOJqw/5s8E8ybhny
+         tozg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696611614; x=1697216414;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3a1zB5iqkMCQGi1pVDxSq4254WHlCszmLY8laq4etNM=;
-        b=VJGbOB+ODg7YDW+9ePUGXEuDVg/DPOoxnR+mw7wwBkYv4HGtsXGNJs2dyjR1u6lHMa
-         vj17c62lncVIxhuj6xXrM2q/oqyjvFZ2sv+SYKRpY0Ur51LhpplfKcH3bRweRrNSV/rz
-         1z9ryCAcxIGVyHVxWk1ikfNIbBJ+yxTmfyJLL9zz+HSNX+JW/bS0XdRef4pDhVUy1gp7
-         DmA1Ctf9+RWvLAwKYujNlKKrL4+sp5eUyfnA9jMNNnB24108x/hk/F6yjqD/1z7SXJs/
-         7K2c+QDwvgj15sUv9pUfH+3pspm8FfysROw0pA7NUwfYqlk98Md18MMXcK2tjoPJDy2t
-         FGug==
-X-Gm-Message-State: AOJu0Yz89uzOfwOx9yF/yqXTlF6FMkfJ93HgVi5eZKOCOktXH2cwZGSZ
-        MiqtDTa1I//3xnomz1Peq/LnGjy9POvhREzwQE2XdQ==
-X-Google-Smtp-Source: AGHT+IHV8kSNg77Ccj7KJwInggLXRX1UA4g3LFRSPtI7w1J9+OM0efBnthGhwckLxIa5dPqeViVGiA==
-X-Received: by 2002:a17:903:2441:b0:1c3:61d9:2b32 with SMTP id l1-20020a170903244100b001c361d92b32mr10312827pls.45.1696611613510;
-        Fri, 06 Oct 2023 10:00:13 -0700 (PDT)
-Received: from [192.168.60.239] (213.126.145.34.bc.googleusercontent.com. [34.145.126.213])
-        by smtp.gmail.com with ESMTPSA id d20-20020a170902c19400b001b890009634sm4116446pld.139.2023.10.06.10.00.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 10:00:12 -0700 (PDT)
-Message-ID: <50f92131-3e41-49a8-834d-8ae3ae36f565@google.com>
-Date:   Fri, 6 Oct 2023 10:00:11 -0700
+        d=1e100.net; s=20230601; t=1696611725; x=1697216525;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NpEemiWViboQRLEteZ7S4m4qM1WTeD7Vt/riE2+tgxU=;
+        b=Z1ae9wwmYkO0O9ZZ6VqYXglkDC/q5rfsjH2dBaOeq8zxJtzwT3uOEMCnVFrggOGTou
+         gBb/bLtwzQg1nZPADixOYA16h/TtHUisG81ChxoLALTzQDdDiHgQhPO8LP1PPYkhjDST
+         OQLzOfVJ8mTKvEGcm05vhGV2ORCD7ShHFPljX+90gAyZQv5vDOtNuFzPCav0/Dos+k+2
+         XjZtqAg+fWTfurU22gt/MBBlFu2UOVx1CJZiMkPeC6kErPG/1xI9D5SX+oggMszs/8vs
+         LtWNH0n5SNehAz1TEjP40/IX/hE8wJENkhrpgpm2LQdNhmHJhmJT+xTFlCZnyN2n8Jim
+         HYOg==
+X-Gm-Message-State: AOJu0Yy8IebbaA95IJBdN6+L3Rr/OY3qRCgAY91tfWrtBe82MLSPpLzk
+        VYoppf2I2Y01Wn9WCFZbGgF/fGxs2Bi8VdO9AP0=
+X-Google-Smtp-Source: AGHT+IGpgyIYbUYr1q07Ewq7VZ1D+MCvK+ROlqmYGQ59gkhEuBDu364dw5gAUXppZKeZ0j4KGcwo2yw0LgV6mqRRi00=
+X-Received: by 2002:a05:6512:12cb:b0:500:7bf0:2b91 with SMTP id
+ p11-20020a05651212cb00b005007bf02b91mr3673618lfg.13.1696611724416; Fri, 06
+ Oct 2023 10:02:04 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/3] usb: gadget: uvc: stability fixes on STREAMOFF.
-Content-Language: en-US
-To:     Michael Grzeschik <mgr@pengutronix.de>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Scally <dan.scally@ideasonboard.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        jchowdhary@google.com, etalvala@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230930184821.310143-1-arakesh@google.com>
- <ZRv2UnKztgyqk2pt@pengutronix.de>
- <20231005082327.GC13853@pendragon.ideasonboard.com>
- <ZR6Me5WsAbjvc2hk@pengutronix.de>
- <53300d24-b558-428d-b52f-316b2e456313@google.com>
- <ZR8zKHQv1dkyLosv@pengutronix.de>
-From:   Avichal Rakesh <arakesh@google.com>
-In-Reply-To: <ZR8zKHQv1dkyLosv@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+From:   Yikebaer Aizezi <yikebaer61@gmail.com>
+Date:   Sat, 7 Oct 2023 01:01:52 +0800
+Message-ID: <CALcu4rZOs3sbXBWARhjM6d8UngPUF3bU1CPmSZBugUpgaP_0WA@mail.gmail.com>
+Subject: KASAN: slab-use-after-free Read in try_to_wake_up
+To:     brauner@kernel.org, linux-kernel@vger.kernel.org
+Cc:     bp@alien8.de, brgerst@gmail.com, dave.hansen@linux.intel.com,
+        hpa@zytor.com, "keescook@chromium.org" <keescook@chromium.org>,
+        mingo@redhat.com, peterz@infradead.org,
+        "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
+        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+When using Healer to fuzz the latest Linux kernel,  the following crash
+was triggered.
 
-On 10/5/23 15:05, Michael Grzeschik wrote:
-> Hi Avichal,
-> 
-> On Thu, Oct 05, 2023 at 11:30:32AM -0700, Avichal Rakesh wrote:
->> On 10/5/23 03:14, Michael Grzeschik wrote:
->>> On Thu, Oct 05, 2023 at 11:23:27AM +0300, Laurent Pinchart wrote:
->>>> On Tue, Oct 03, 2023 at 01:09:06PM +0200, Michael Grzeschik wrote:
->>>>> On Sat, Sep 30, 2023 at 11:48:18AM -0700, Avichal Rakesh wrote:
->>>>> > We have been seeing two main stability issues that uvc gadget driver
->>>>> > runs into when stopping streams:
->>>>> >  1. Attempting to queue usb_requests to a disabled usb_ep
->>>>> >  2. use-after-free issue for inflight usb_requests
->>>>> >
->>>>> > The three patches below fix the two issues above. Patch 1/3 fixes the
->>>>> > first issue, and Patch 2/3 and 3/3 fix the second issue.
->>>>> >
->>>>> > Avichal Rakesh (3):
->>>>> >   usb: gadget: uvc: prevent use of disabled endpoint
->>>>> >   usb: gadget: uvc: Allocate uvc_requests one at a time
->>>>> >   usb: gadget: uvc: Fix use-after-free for inflight usb_requests
->>>>> >
->>>>> > drivers/usb/gadget/function/f_uvc.c     |  11 +-
->>>>> > drivers/usb/gadget/function/f_uvc.h     |   2 +-
->>>>> > drivers/usb/gadget/function/uvc.h       |   6 +-
->>>>> > drivers/usb/gadget/function/uvc_v4l2.c  |  21 ++-
->>>>> > drivers/usb/gadget/function/uvc_video.c | 189 +++++++++++++++++-------
->>>>> > 5 files changed, 164 insertions(+), 65 deletions(-)
->>>>>
->>>>> These patches are not applying on gregkh/usb-testing since
->>>>> Greg did take my patches first. I have already rebased them.
->>>>
->>>> I think they got merged too soon :-( We could fix things on top, but
->>>> there's very little time to do so for v6.7.
->>>
->>> Agreed. I was jumping from one workaround to another one, since this
->>> is not easy to fix in a proper way. And still after this long discussion
->>> with Avichal I don't think we are there yet.
->>>
->>>
->>> So far the first two patches from Avichal look legit. But the overall
->>> Use-After-Free fix is yet to be done properly.
->>>
->>> The "abondoned" method he suggested is really bad to follow and will
->>> add too much complexity and will be hard to debug.
->>>
->>> IMHO it should be possible to introduce two cleanup pathes.
->>>
->>> One path would be in the uvc_cleanup_requests that will cleanup the
->>> requests that are actually not used in the controller and are registered
->>> in the req_free list.
->>>
->>> The second path would be the complete functions that are being run
->>> from the controller and will ensure that the cleanup will really free
->>> the requests from the controller after they were consumed.
->>>
->>> What do you think?
->>
->> I am not sure I follow. Patch 3/3 does exactly what you say here.
-> 
-> Yes, it was just to summ up what the latest state of the idea was,
-> so Laurent does not read the whole thread in detail. Sorry for not
-> being clear enough about that.
+HEAD commit: f291209eca5eba0b4704fa0832af57b12dbc1a02 (  Merge tag
+'net-6.6-rc5' of
+git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net=EF=BC=89
+git tree: upstream
 
-Whoops! Sorry about the misunderstanding!
+console output:
+https://drive.google.com/file/d/1Tm8J2Yc3ziJdhJ2BQtsYOVVSb1_VDQIw/view?usp=
+=3Ddrive_link
+kernel config:
+C reproducer:https://drive.google.com/file/d/1DILSzuO8NVktVBafoAd_mcQgvNAe8=
+Lpo/view?usp=3Ddrive_link
+Syzlang reproducer:https://drive.google.com/file/d/11hb2CdlWpg8er66lcQnrv1L=
+-Smqp5WXm/view?usp=3Ddrive_link
+https://drive.google.com/file/d/1sMG483D2ZVg2mZzC72_gTIQhBmuHtO4K/view?usp=
+=3Ddrive_link
 
-> 
->> There are two cleanup paths:
->>  1. uvcg_video_disable cleans up only the requests in req_free, and
->>  2. complete handler cleans up the in-flight requests.
->>
->> The "abandoned" flag is simply to let the completion handler know
->> which requests to clean up and which ones to re-queue back to
->> the gadget driver.
-> 
-> What I don't get is, why in the case of shutdown there needs to
-> be something re-queued back to the gadget driver. There should not
-> need to be any sort of barrier flag for the requests. Just the
-> complete handler running past a barrier where it knows that the
-> whole device is stopped. So every call on complete should then clean
-> that exact request it is touching currently.
-> 
-> I don't know where the extra complexity comes from.
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
 
-A lot of this complexity comes from assuming a back to back
-STREAMOFF -> STREAMON sequence is possible where the gadget driver
-doesn't have the time to clean up all in-flight usb_requests.
-However, looking through the usb gadget APIs again, and it 
-looks like  usb_ep_disable enforces that all requests will 
-be sent back to the gadget driver before it returns. 
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+BUG: KASAN: slab-use-after-free in __lock_acquire+0x432a/0x5b90
+kernel/locking/lockdep.c:5004
+Read of size 8 at addr ffff888021444600 by task swapper/0/0
 
-So you're right:
-With Patch 1/3 in place, I think we can just guard on uvc->state 
-alone, because control requests are blocked until usb_ep_disable
-is finished anyway. I'll upload v4 with the "is_abandoned"
-flag removed and the checks simplified once I've verified the
-fix locally.
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.6.0-rc4-gf291209eca5e #4
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd5/0x150 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc1/0x5e0 mm/kasan/report.c:475
+ kasan_report+0xba/0xf0 mm/kasan/report.c:588
+ __lock_acquire+0x432a/0x5b90 kernel/locking/lockdep.c:5004
+ lock_acquire kernel/locking/lockdep.c:5753 [inline]
+ lock_acquire+0x1ad/0x520 kernel/locking/lockdep.c:5718
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
+ class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:518 [inlin=
+e]
+ try_to_wake_up+0xa8/0x1510 kernel/sched/core.c:4230
+ call_timer_fn+0x19e/0x580 kernel/time/timer.c:1700
+ expire_timers kernel/time/timer.c:1751 [inline]
+ __run_timers.part.0+0x682/0xa00 kernel/time/timer.c:2022
+ __run_timers kernel/time/timer.c:2000 [inline]
+ run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:2035
+ __do_softirq+0x1d0/0x8eb kernel/softirq.c:553
+ invoke_softirq kernel/softirq.c:427 [inline]
+ __irq_exit_rcu kernel/softirq.c:632 [inline]
+ irq_exit_rcu+0xb3/0x120 kernel/softirq.c:644
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1074
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x16/0x20 arch/x86/include/asm/idtentry.h:=
+645
+RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:37 [inline]
+RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:72 [inline=
+]
+RIP: 0010:default_idle+0x1a/0x20 arch/x86/kernel/process.c:743
+Code: c8 4c 01 c7 4c 29 c2 e9 72 ff ff ff cc cc cc cc 0f 1f 44 00 00
+eb 0c 0f 1f 44 00 00 0f 00 2d ed a2 31 00 0f 1f 44 00 00 fb f4 <fa> c3
+0f 1f 40 00 55 53 0f 1f 44 00 00 65 48 8b 2c 25 80 ac 03 00
+RSP: 0018:ffffffff8be07e08 EFLAGS: 00000206
+RAX: 0000000000382ebd RBX: 0000000000000000 RCX: ffffffff89b52186
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: 0000000000000001 R09: ffffed100c786bbd
+R10: ffff888063c35deb R11: 0000000000000000 R12: 0000000000000000
+R13: ffffffff8e184dd0 R14: 0000000000000000 R15: 0000000000000000
+ default_idle_call+0x63/0x90 kernel/sched/idle.c:97
+ cpuidle_idle_call kernel/sched/idle.c:170 [inline]
+ do_idle+0x317/0x3c0 kernel/sched/idle.c:282
+ cpu_startup_entry+0x4c/0x60 kernel/sched/idle.c:380
+ rest_init+0x16b/0x2b0 init/main.c:726
+ arch_call_rest_init+0xf/0x20 init/main.c:823
+ start_kernel+0x395/0x470 init/main.c:1068
+ x86_64_start_reservations+0x14/0x30 arch/x86/kernel/head64.c:556
+ x86_64_start_kernel+0xaf/0xc0 arch/x86/kernel/head64.c:537
+ secondary_startup_64_no_verify+0x166/0x16b
+ </TASK>
 
-That should also remove any bookkeeping issues that may have 
-triggered the stack below.
+Allocated by task 2:
+ kasan_save_stack+0x1e/0x40 mm/kasan/common.c:45
+ kasan_set_track+0x21/0x30 mm/kasan/common.c:52
+ __kasan_slab_alloc+0x7b/0x80 mm/kasan/common.c:328
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook mm/slab.h:762 [inline]
+ slab_alloc_node mm/slub.c:3478 [inline]
+ kmem_cache_alloc_node+0x1c0/0x3e0 mm/slub.c:3523
+ alloc_task_struct_node kernel/fork.c:173 [inline]
+ dup_task_struct kernel/fork.c:1110 [inline]
+ copy_process+0x3f2/0x73c0 kernel/fork.c:2327
+ kernel_clone+0xe7/0x860 kernel/fork.c:2909
+ kernel_thread+0xbc/0x100 kernel/fork.c:2971
+ create_kthread kernel/kthread.c:411 [inline]
+ kthreadd+0x506/0x7b0 kernel/kthread.c:746
+ ret_from_fork+0x41/0x70 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
 
-Regards,
-Avi.
+Freed by task 0:
+ kasan_save_stack+0x1e/0x40 mm/kasan/common.c:45
+ kasan_set_track+0x21/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x27/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15e/0x1c0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x95/0x1d0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ kmem_cache_free+0xec/0x480 mm/slub.c:3831
+ put_task_struct include/linux/sched/task.h:136 [inline]
+ put_task_struct include/linux/sched/task.h:123 [inline]
+ delayed_put_task_struct+0x217/0x2b0 kernel/exit.c:226
+ rcu_do_batch kernel/rcu/tree.c:2139 [inline]
+ rcu_core+0x813/0x1bd0 kernel/rcu/tree.c:2403
+ __do_softirq+0x1d0/0x8eb kernel/softirq.c:553
 
-> 
->> The other "complications" are around making sure we can trust
->> the values in an inherently racey situation. The reasoning
->> can admittedly be difficult to follow at a glance, which incidentally
->> is why I went with a simple to prove timed wait in the past
->> (https://lore.kernel.org/20230912041910.726442-3-arakesh@google.com).
->>
->> I am not suggesting we go back to a timed wait, but please do look
->> at the patch and let me know which parts don't make sense, or are
->> difficult to understand. We can add more documentation about our
->> assumptions there, or if you have a way to do this that you
->> think is simpler to reason about, then please let me know and I'll
->> be more than happy to use that!
-> 
-> I really try to spin my head around the idea of the is_abondoned flag
-> you are using. Unfortunatly for now I am out to debug the issues I see
-> with your series.
-> 
-> So I did try these patches you send. Yes the deadlock error is gone with
-> v3. But the linked list is still running into cases where
-> dwc3_gadget_giveback(complete) is touching requests that are already
-> freed.
-> 
-> [   61.408715] ------------[ cut here ]------------
-> [   61.413897] kernel BUG at lib/list_debug.c:56!
-> ...
-> [   61.590762] Call trace:
-> [   61.596890]  __list_del_entry_valid+0xb8/0xe8
-> [   61.603408]  dwc3_gadget_giveback+0x3c/0x1b0
-> [   61.607594]  dwc3_remove_requests.part.0+0xcc/0x100
-> [   61.612948]  __dwc3_gadget_ep_disable+0xbc/0x1b8
-> [   61.621019]  dwc3_gadget_ep_disable+0x48/0x100
-> [   61.627925]  usb_ep_disable+0x3c/0x138
-> [   61.638230]  uvc_function_setup_continue+0x3c/0x60
-> [   61.645040]  uvc_v4l2_streamoff+0x5c/0x80
-> [   61.659812]  v4l_streamoff+0x40/0x60
-> [   61.668950]  __video_do_ioctl+0x344/0x420
-> [   61.679548]  video_usercopy+0x1d0/0x788
-> [   61.685677]  video_ioctl2+0x40/0x70
-> [   61.697439]  v4l2_ioctl+0x68/0xa0
-> [   61.709200]  __arm64_sys_ioctl+0x304/0xda0
-> [   61.720768]  invoke_syscall.constprop.0+0x70/0x130
-> 
+Last potentially related work creation:
+ kasan_save_stack+0x1e/0x40 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
+ __call_rcu_common.constprop.0+0x99/0x790 kernel/rcu/tree.c:2653
+ put_task_struct_rcu_user+0x83/0xc0 kernel/exit.c:232
+ context_switch kernel/sched/core.c:5385 [inline]
+ __schedule+0xcc5/0x5890 kernel/sched/core.c:6695
+ preempt_schedule_common+0x45/0xb0 kernel/sched/core.c:6864
+ preempt_schedule_thunk+0x16/0x30 arch/x86/entry/thunk_64.S:45
+ rmqueue_pcplist mm/page_alloc.c:2741 [inline]
+ rmqueue mm/page_alloc.c:2777 [inline]
+ get_page_from_freelist+0x1613/0x2c50 mm/page_alloc.c:3167
+ __alloc_pages+0x1c7/0x490 mm/page_alloc.c:4426
+ __folio_alloc+0x12/0x40 mm/page_alloc.c:4458
+ vma_alloc_folio+0x153/0x870 mm/mempolicy.c:2258
+ shmem_alloc_folio+0x121/0x1f0 mm/shmem.c:1658
+ shmem_alloc_and_acct_folio+0xd2/0x150 mm/shmem.c:1683
+ shmem_get_folio_gfp+0x96b/0x18e0 mm/shmem.c:2020
+ shmem_get_folio mm/shmem.c:2143 [inline]
+ shmem_write_begin+0x146/0x440 mm/shmem.c:2688
+ generic_perform_write+0x267/0x5d0 mm/filemap.c:3969
+ shmem_file_write_iter+0x10f/0x140 mm/shmem.c:2865
+ call_write_iter include/linux/fs.h:1956 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x989/0xdb0 fs/read_write.c:584
+ ksys_write+0x11e/0x240 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
+Second to last potentially related work creation:
+ kasan_save_stack+0x1e/0x40 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
+ __call_rcu_common.constprop.0+0x99/0x790 kernel/rcu/tree.c:2653
+ put_task_struct_rcu_user+0x83/0xc0 kernel/exit.c:232
+ context_switch kernel/sched/core.c:5385 [inline]
+ __schedule+0xcc5/0x5890 kernel/sched/core.c:6695
+ schedule_idle+0x57/0x80 kernel/sched/core.c:6799
+ do_idle+0x273/0x3c0 kernel/sched/idle.c:310
+ cpu_startup_entry+0x4c/0x60 kernel/sched/idle.c:380
+ rest_init+0x16b/0x2b0 init/main.c:726
+ arch_call_rest_init+0xf/0x20 init/main.c:823
+ start_kernel+0x395/0x470 init/main.c:1068
+ x86_64_start_reservations+0x14/0x30 arch/x86/kernel/head64.c:556
+ x86_64_start_kernel+0xaf/0xc0 arch/x86/kernel/head64.c:537
+ secondary_startup_64_no_verify+0x166/0x16b
+
+The buggy address belongs to the object at ffff888021443c00
+ which belongs to the cache task_struct of size 7368
+The buggy address is located 2560 bytes inside of
+ freed 7368-byte region [ffff888021443c00, ffff8880214458c8)
+
+The buggy address belongs to the physical page:
+page:ffffea0000851000 refcount:1 mapcount:0 mapping:0000000000000000
+index:0x0 pfn:0x21440
+head:ffffea0000851000 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:=
+0
+memcg:ffff8880179df641
+anon flags: 0xfff00000000840(slab|head|node=3D0|zone=3D1|lastcpupid=3D0x7ff=
+)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff88801367c140 0000000000000000 dead000000000001
+raw: 0000000000000000 0000000000040004 00000001ffffffff ffff8880179df641
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask
+0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEM=
+ALLOC),
+pid 2, tgid 2 (kthreadd), ts 26884708343, free_ts 0
+ prep_new_page mm/page_alloc.c:1543 [inline]
+ get_page_from_freelist+0xf09/0x2c50 mm/page_alloc.c:3170
+ __alloc_pages+0x1c7/0x490 mm/page_alloc.c:4426
+ alloc_pages+0x1a6/0x270 mm/mempolicy.c:2297
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x261/0x390 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0xbda/0x15e0 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ kmem_cache_alloc_node+0x131/0x3e0 mm/slub.c:3523
+ alloc_task_struct_node kernel/fork.c:173 [inline]
+ dup_task_struct kernel/fork.c:1110 [inline]
+ copy_process+0x3f2/0x73c0 kernel/fork.c:2327
+ kernel_clone+0xe7/0x860 kernel/fork.c:2909
+ kernel_thread+0xbc/0x100 kernel/fork.c:2971
+ create_kthread kernel/kthread.c:411 [inline]
+ kthreadd+0x506/0x7b0 kernel/kthread.c:746
+ ret_from_fork+0x41/0x70 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888021444500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888021444580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888021444600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff888021444680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888021444700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+----------------
+Code disassembly (best guess):
+   0:   c8 4c 01 c7             enter  $0x14c,$0xc7
+   4:   4c 29 c2                sub    %r8,%rdx
+   7:   e9 72 ff ff ff          jmp    0xffffff7e
+   c:   cc                      int3
+   d:   cc                      int3
+   e:   cc                      int3
+   f:   cc                      int3
+  10:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+  15:   eb 0c                   jmp    0x23
+  17:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+  1c:   0f 00 2d ed a2 31 00    verw   0x31a2ed(%rip)        # 0x31a310
+  23:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+  28:   fb                      sti
+  29:   f4                      hlt
+* 2a:   fa                      cli <-- trapping instruction
+  2b:   c3                      ret
+  2c:   0f 1f 40 00             nopl   0x0(%rax)
+  30:   55                      push   %rbp
+  31:   53                      push   %rbx
+  32:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+  37:   65 48 8b 2c 25 80 ac    mov    %gs:0x3ac80,%rbp
+  3e:   03 00
