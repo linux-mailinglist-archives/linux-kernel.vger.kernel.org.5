@@ -2,63 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 949847BBD94
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CCBC7BBD9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232916AbjJFRVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 13:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
+        id S232977AbjJFRWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 13:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbjJFRVQ (ORCPT
+        with ESMTP id S232993AbjJFRWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 13:21:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE94AD;
-        Fri,  6 Oct 2023 10:21:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 524E7C433C7;
-        Fri,  6 Oct 2023 17:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696612875;
-        bh=hEX8GICdbnocfUQaerMPod0XxNCYLb4HKRbbA7Fb65g=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=rCtCmb+tjfrjb/T/TOG+QdU88a3tIujtPHGZNkq6Bkpmffy1q9BSym/lhBeLt29n4
-         Sx8hik6Av7AiF/apzPTW03eHrgGzR6cGTZXXdbZxzWvRR92IYXu3E67OgmaigXVMan
-         S37MIdGaAmaC2PRd1DEQCWx82lq0RkQNgWqiuGKJ2AWlHqLHu5vvKSxZh8VGdBwXUc
-         8ww4yQS1DzJtP6SIrJp3U01s7mvZWMC4SkFDScR6iWhoZTMIYRuWt9T+MQP0nvwG7y
-         muXXCL0vKpRxXAEHC1XLIwUrPsZx5de8sK11VdZT+4tEHKjx5HExMJB24PZjCSPphf
-         ni96WDrKD1OqA==
-Message-ID: <859b0091-e361-6060-2977-4aba13af418a@kernel.org>
-Date:   Sat, 7 Oct 2023 02:21:10 +0900
+        Fri, 6 Oct 2023 13:22:09 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C79FCF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 10:22:08 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-668d9c1f70fso12613616d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 10:22:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696612927; x=1697217727; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EknEuy8+VO/WBZWGFtfzssW3dtzNayZawyALF7dqvnA=;
+        b=SlyUjpb4Z98wEz8TOIrAkLCzruhoe2QiH6UhEDbrld3+oLP+LtK3GOcImTm2dZJNbt
+         M7r9n0ohVXL76p6FVcIw4mgURNAhwdOF9/S4mcJhiOCQ8uYKEHyHLtvkJC3NxWPPHdG8
+         DsIeER1sUVGPd40Q3WL9xarulC0HmOWrlnLOmE1JR/n3DiZI3fOAXhjQhMCVJUyU8KFd
+         2ULPvUKc/In4u0ETchVLf0qdDnzsuuFY7kiNLRBVMBjv1cARQLe73bY1449SQJdp8F4K
+         D46j5WOaHNQbNlzDPk7EKX9/2MftpO0ONqYHcGd6u4wpDKj8vzAsMILJyujv18mRG5AR
+         itTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696612927; x=1697217727;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EknEuy8+VO/WBZWGFtfzssW3dtzNayZawyALF7dqvnA=;
+        b=jg0MTgMv/PgzKHIE5lHyaJLAFp9hlKOllaBCqmmjKnVodyuwsGDVBZnwjoFxflXACk
+         mMVmSo8QbJqpPVnP/wbsd16JZ3BbW0mDeV9nmEbKP+ifCusA2TsIvLy3VRrAEN94vtVI
+         P76IFuQtmpyg9y9lOMw+OoqEU5bcsqhymvUfwmlx8z5fkcpsJ2CESDerEhV9oGYDaRvI
+         ZKz1rnKv3otBnl61Uh74Uy0XA9Hs5GQA1n02aw3SymtMFt+nsNCQlt2WPn9SIfoAnBcu
+         7TP3EtQxFyRI1dYMHKuPwJuBENbXgOjsRhZHGJaiNBL/tOvuwtTjelTaF4r221yQHVpT
+         ekrQ==
+X-Gm-Message-State: AOJu0Yytk6osszNYNQIUANKgahGuwx6ojgdqZBbqxKmH2SIR9CBVQ96c
+        BP8rGZS8mZrG+/wMhj1iQltsbF8oEHnv/HIyE9Ws6Q==
+X-Google-Smtp-Source: AGHT+IHgHuSZWW0zfjtiu53Q/dfXf6JAdjtdD5ymPm4GEksstftSEGfNyqhSiXc3DrR0aWOMGHN5RryhqLR06mwr6h0=
+X-Received: by 2002:a05:6214:180e:b0:65b:ed3:9a02 with SMTP id
+ o14-20020a056214180e00b0065b0ed39a02mr8264327qvw.17.1696612926911; Fri, 06
+ Oct 2023 10:22:06 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 07/26] PM / devfreq: rockchip-dfi: introduce channel
- mask
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-8-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20230704093242.583575-8-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <cover.1694625260.git.andreyknvl@google.com> <e78360a883edac7bc3c6a351c99a6019beacf264.1694625260.git.andreyknvl@google.com>
+ <CAG_fn=UAF2aYD1mFbakNhcYk5yZR6tFeP8R-Yyq0p_7hy9owXA@mail.gmail.com>
+In-Reply-To: <CAG_fn=UAF2aYD1mFbakNhcYk5yZR6tFeP8R-Yyq0p_7hy9owXA@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 6 Oct 2023 19:21:25 +0200
+Message-ID: <CAG_fn=XyqgfZO=bduYPTGpM9NovQPZOzZf8cidt7=m6H092sSg@mail.gmail.com>
+Subject: Re: [PATCH v2 06/19] lib/stackdepot: fix and clean-up atomic annotations
+To:     andrey.konovalov@linux.dev
+Cc:     Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,99 +78,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Oct 6, 2023 at 6:14=E2=80=AFPM Alexander Potapenko <glider@google.c=
+om> wrote:
+>
+> On Wed, Sep 13, 2023 at 7:15=E2=80=AFPM <andrey.konovalov@linux.dev> wrot=
+e:
+> >
+> > From: Andrey Konovalov <andreyknvl@google.com>
+> >
+> > Simplify comments accompanying the use of atomic accesses in the
+> > stack depot code.
+> >
+> > Also drop smp_load_acquire from next_pool_required in depot_init_pool,
+> > as both depot_init_pool and the all smp_store_release's to this variabl=
+e
+> > are executed under the stack depot lock.
 
-On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> Different Rockchip SoC variants have a different number of channels.
-> Introduce a channel mask to make the number of channels configurable
-> from SoC initialization code.
-> 
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/devfreq/event/rockchip-dfi.c | 23 +++++++++++++++++------
->  1 file changed, 17 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index 126bb744645b6..82de24a027579 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -18,10 +18,11 @@
->  #include <linux/list.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> +#include <linux/bits.h>
->  
->  #include <soc/rockchip/rk3399_grf.h>
->  
-> -#define RK3399_DMC_NUM_CH	2
-> +#define DMC_MAX_CHANNELS	2
->  
->  /* DDRMON_CTRL */
->  #define DDRMON_CTRL	0x04
-> @@ -44,7 +45,7 @@ struct dmc_count_channel {
->  };
->  
->  struct dmc_count {
-> -	struct dmc_count_channel c[RK3399_DMC_NUM_CH];
-> +	struct dmc_count_channel c[DMC_MAX_CHANNELS];
->  };
->  
->  /*
-> @@ -61,6 +62,7 @@ struct rockchip_dfi {
->  	struct regmap *regmap_pmu;
->  	struct clk *clk;
->  	u32 ddr_type;
-> +	unsigned int channel_mask;
->  };
->  
->  static void rockchip_dfi_start_hardware_counter(struct devfreq_event_dev *edev)
-> @@ -95,7 +97,9 @@ static void rockchip_dfi_read_counters(struct devfreq_event_dev *edev, struct dm
->  	u32 i;
->  	void __iomem *dfi_regs = dfi->regs;
->  
-> -	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
-> +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
-> +		if (!(dfi->channel_mask & BIT(i)))
-> +			continue;
->  		count->c[i].access = readl_relaxed(dfi_regs +
->  				DDRMON_CH0_DFI_ACCESS_NUM + i * 20);
->  		count->c[i].total = readl_relaxed(dfi_regs +
-> @@ -145,9 +149,14 @@ static int rockchip_dfi_get_event(struct devfreq_event_dev *edev,
->  	rockchip_dfi_read_counters(edev, &count);
->  
->  	/* We can only report one channel, so find the busiest one */
-> -	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
-> -		u32 a = count.c[i].access - last->c[i].access;
-> -		u32 t = count.c[i].total - last->c[i].total;
-> +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
-
-Instead of DMC_MAX_CHANNELS defintion,
-you can initialize the max channel in each rkXXXX_dfi_init() like 'dfi->channel_count'.
-It reduces the unnecessary loop by initializing the proper max channel.
-
-> +		u32 a, t;
-> +
-> +		if (!(dfi->channel_mask & BIT(i)))
-> +			continue;
-> +
-> +		a = count.c[i].access - last->c[i].access;
-> +		t = count.c[i].total - last->c[i].total;
->  
->  		if (a > access) {
->  			access = a;
-> @@ -185,6 +194,8 @@ static int rk3399_dfi_init(struct rockchip_dfi *dfi)
->  	dfi->ddr_type = (val >> RK3399_PMUGRF_DDRTYPE_SHIFT) &
->  			RK3399_PMUGRF_DDRTYPE_MASK;
->  
-> +	dfi->channel_mask = GENMASK(1, 0);
-> +
->  	return 0;
->  };
->  
-
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
-
+Maybe add this to the comment before "if (!next_pool_required)" ?
