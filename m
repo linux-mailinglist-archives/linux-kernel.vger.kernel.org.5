@@ -2,62 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA56F7BBDD0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DAE7BBDD1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233136AbjJFRbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 13:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41562 "EHLO
+        id S233069AbjJFRcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 13:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233069AbjJFRbd (ORCPT
+        with ESMTP id S232774AbjJFRcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 13:31:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAD4DE;
-        Fri,  6 Oct 2023 10:31:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696613491; x=1728149491;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=lbaG7NRajF8nHEz9svf8w2+E2KSzNWQz4W3JznGdv6w=;
-  b=aFn+45By1JwJZX3eL4SdVokPPlE0Yh8+ZEZWkqv5nko5RIJnbdm/b+yk
-   TueIBMniu4vppv18TbT88CChJ1Ejwf+BaaDuhhUzjJSS8J4Qs4GvadUI2
-   kTdAxu62JW/22+udDR/WbsUr77UqalqGQJDLr30ZRalBlL+A/YtMY6BC+
-   2i/hY9/hNDcwrrEos7S59eYTF0d6U2rWCDGgcEb9nFd8WTlNFa4tZ3zHf
-   wWfFXzkt6NOyBoYJxs7MTj5j+NFiM6UosgcLwGj7Wvlj46Mnfxy4gHoiA
-   qAFuzyO3fTi+mElpbCLZu0nURxSaSGXADgoWyVcm8lXy8ALnXG1XD2Ca5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="387676845"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="387676845"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 10:31:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="745937598"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="745937598"
-Received: from powerlab.fi.intel.com ([10.237.71.25])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 10:31:27 -0700
-From:   Michal Wilczynski <michal.wilczynski@intel.com>
-To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nvdimm@lists.linux.dev
-Cc:     rafael.j.wysocki@intel.com, andriy.shevchenko@intel.com,
-        lenb@kernel.org, dan.j.williams@intel.com,
-        vishal.l.verma@intel.com, ira.weiny@intel.com,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v2 6/6] ACPI: NFIT: Remove redundant call to to_acpi_dev()
-Date:   Fri,  6 Oct 2023 20:30:55 +0300
-Message-ID: <20231006173055.2938160-7-michal.wilczynski@intel.com>
+        Fri, 6 Oct 2023 13:32:11 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035FFD8
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 10:32:10 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-690d2441b95so1884107b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 10:32:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696613529; x=1697218329; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uht+32O1H7tS91EbXmyBFBF49QB3RXcTs2kBCgDMo1c=;
+        b=XlVwCyAWmU8ndqXRIJA7TfC4EvPbZrwe8odwn4qzeERELDMpVsYEcVieocMAg9LPyo
+         VuvH4TLUEggostVeCCCQYZmfznbAihPRVPwL5Sr4p5zuKCpSJesB+KPdiWMVZVsdPXok
+         71+wVP68t9gKXgKqMn6ZAmWu+bUQ+wyZ7NmVGY/MP4I+/mtbYM8R6myIEmKhfkLSl0ei
+         VWTdgcZQCSsyW+hr0wpEjfaqA0u/YqkjwQAT6KZCUyYBRyxjZ/l0os+N7XIgCiOSmlfy
+         bHb/gfPVJvBIxcDdUmbU3a++O/tOtRqzEIvo67nqSyVhkcN1X9UnQRaLVpMDlJ/+IK43
+         Fe/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696613529; x=1697218329;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uht+32O1H7tS91EbXmyBFBF49QB3RXcTs2kBCgDMo1c=;
+        b=rlz+2SwlFi/cJjx1UY2pfaYyG7q7iiTpyf1XbE6/4kAS+SmtGCxjQ8J13rGfyQU/6J
+         p8mTNeTkBTKayXuAyLSREPOVk1EkqWrUKZ3WDIqkgNFbXxldxiQ/sMIE7991dBauB5ER
+         DyZrGNJITA5M+kuRBOO0N7DuXhw9fiWewf8XPiMjDiY4BhS1V1czfhmn5eaeHg5DfKMK
+         xJpTMSKsNrEar0+MZWKoGeLNhjwKZibW+9lHYDLVnoKnmMzU9/7Lf1wgpKaf7YoJEy09
+         oBFPAtpaj3zEUEJ3EsfPLYLsDICxCZJO1qRuAiL6To6IM0hrLssA6zaIsEw8Z64lO04N
+         0ZiA==
+X-Gm-Message-State: AOJu0YxDeh2+KqgQSHsM7HnwlcyJ27QOqRCik3ayh8vU0qpUDGfSKKF4
+        /Gy57QJyrFZcwDZyAjjXBeI=
+X-Google-Smtp-Source: AGHT+IF03+UeFYlMbGjpNfhcVQTy2jzlGLfhtzouZi5hnhM3IqftqKCIAYKKX1oupjvWcd0yojLG1Q==
+X-Received: by 2002:a05:6a00:b82:b0:68b:a137:373d with SMTP id g2-20020a056a000b8200b0068ba137373dmr9853667pfj.17.1696613529169;
+        Fri, 06 Oct 2023 10:32:09 -0700 (PDT)
+Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
+        by smtp.gmail.com with ESMTPSA id k2-20020a632402000000b005898e4acf2dsm1577574pgk.49.2023.10.06.10.32.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 10:32:08 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Emma Anholt <emma@anholt.net>,
+        Helen Koike <helen.koike@collabora.com>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/ci: Default to UART for logging
+Date:   Fri,  6 Oct 2023 10:32:04 -0700
+Message-ID: <20231006173205.371205-1-robdclark@gmail.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231006173055.2938160-1-michal.wilczynski@intel.com>
-References: <20231006173055.2938160-1-michal.wilczynski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,40 +73,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In acpi_nfit_ctl() ACPI handle is extracted using to_acpi_dev()
-function and accessing handle field in ACPI device. After transformation
-from ACPI driver to platform driver this is not optimal anymore. To get
-a handle it's enough to just use ACPI_HANDLE() macro to extract the
-handle.
+From: Rob Clark <robdclark@chromium.org>
 
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+ssh logging is the default for mesa, as it is generally more reliable.
+But if there are kernel issues, especially at boot, UART logging is
+infinitely more useful.
+
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 ---
- drivers/acpi/nfit/core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/gpu/drm/ci/gitlab-ci.yml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-index fb0bc16fa186..3d254b2cf2e7 100644
---- a/drivers/acpi/nfit/core.c
-+++ b/drivers/acpi/nfit/core.c
-@@ -475,8 +475,6 @@ int acpi_nfit_ctl(struct nvdimm_bus_descriptor *nd_desc, struct nvdimm *nvdimm,
- 		guid = to_nfit_uuid(nfit_mem->family);
- 		handle = adev->handle;
- 	} else {
--		struct acpi_device *adev = to_acpi_dev(acpi_desc);
--
- 		cmd_name = nvdimm_bus_cmd_name(cmd);
- 		cmd_mask = nd_desc->cmd_mask;
- 		if (cmd == ND_CMD_CALL && call_pkg->nd_family) {
-@@ -493,7 +491,7 @@ int acpi_nfit_ctl(struct nvdimm_bus_descriptor *nd_desc, struct nvdimm *nvdimm,
- 			guid = to_nfit_uuid(NFIT_DEV_BUS);
- 		}
- 		desc = nd_cmd_bus_desc(cmd);
--		handle = adev->handle;
-+		handle = ACPI_HANDLE(dev);
- 		dimm_name = "bus";
- 	}
+diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+index 2c4df53f5dfe..7c55f02f7313 100644
+--- a/drivers/gpu/drm/ci/gitlab-ci.yml
++++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+@@ -27,6 +27,12 @@ variables:
  
+   LAVA_JOB_PRIORITY: 30
+ 
++  # Default to UART logging.  Mesa uses ssh by default, as that is more
++  # reliable if you have a stable kernel.  But kernel CI is more likely
++  # to encounter unstable kernels (and has lower volume of CI jobs so is
++  # less likely to be troubled by occasional UART flakes)
++  LAVA_FORCE_UART: 1
++
+ default:
+   before_script:
+     - export SCRIPTS_DIR=$(mktemp -d)
 -- 
 2.41.0
 
