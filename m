@@ -2,123 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 599887BB76E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A186B7BB771
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbjJFMRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37432 "EHLO
+        id S232236AbjJFMRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232140AbjJFMRL (ORCPT
+        with ESMTP id S232196AbjJFMRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:17:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A555C6;
-        Fri,  6 Oct 2023 05:17:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55541C433C7;
-        Fri,  6 Oct 2023 12:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696594630;
-        bh=EqGDo44ijwt3PzVq3fJt0gXvMnUdPHnl13/q3Gh+IJA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D6ltmfDmvp/75b1XYAh+EJYFw/UiG6APNmLiR0Md1c9oGsu9Fiy31mMH20KZXQuYw
-         FKgRMGjTR644c3uzTx61Cm80OZQhHhsiyjqVSP+9hqVdDS0OVgHeu/G8tpH/31UT+b
-         0YUh9zl6+KPXMGMBPuckQKhdexTkruFBEKPFFXXQBC/eLNKiLVjlv2VGlAJZHHCa0p
-         lfCcMGqLD5ybTYvxe7rNBO1RZGUbORUTxeQIcTKtggoyf5KQ/ljs9Xi34jkXztew5n
-         5Tr5syleMJi8nkG5skjcn/oaxRzGS0K/pDWsXyFl+a9uj+kpWutmxRROX/rZ7FFEdK
-         fdZspU9mRq+gw==
-Date:   Fri, 6 Oct 2023 13:17:01 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
- Stacks
-Message-ID: <638a7be5-6662-471d-a3ce-0de0ac768e99@sirena.org.uk>
-References: <aaea542c-929c-4c9b-8caa-ca67e0eb9c1e@sirena.org.uk>
- <ZOTnL1SDJWZjHPUW@arm.com>
- <43ec219d-bf20-47b8-a5f8-32bc3b64d487@sirena.org.uk>
- <ZOXa98SqwYPwxzNP@arm.com>
- <ZOYFazB1gYjzDRdA@arm.com>
- <ZRWw7aa3C0LlMPTH@arm.com>
- <38edb5c3-367e-4ab7-8cb7-aa1a5c0e330c@sirena.org.uk>
- <ZRvUxLgMse8QYlGS@arm.com>
- <a7d2fd66-c06b-4033-bca2-4b14afc4904f@sirena.org.uk>
- <ZR7w/mr0xZbpIPc5@arm.com>
+        Fri, 6 Oct 2023 08:17:12 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85778C2;
+        Fri,  6 Oct 2023 05:17:09 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c3d8fb23d9so15630025ad.0;
+        Fri, 06 Oct 2023 05:17:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696594629; x=1697199429;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KOliDYSfdDjd8qPENuvroDgTApgk5BQpxPpwejVZeFQ=;
+        b=MH0DFd6ACHbKdBeKavmmImFXwxUt/pt2aQBDnpP4ePw+WMsyJNHf3x+9CFHVCbxPvg
+         8klP8YURbN5klJGxfSG3te2Eo42RZaZC1nXusUT8jhTMp3I4dx2LL/p7j5IQWH9xASoh
+         eDbp5NaQhtpZFvkkkf1TMPeYNilfBfQsouI7FC5xw+7S97Ya9ug+Fr2MeWs7RgdvPZDL
+         vNbjdmr5PTxImLJpCMixP1RKMngnKKPXgxs18eXRHZ24CWkHabjRcwP7U0HMuAaSzLoB
+         rEdd5ciVk7IybWA2sX2QRgM2rVtuAivhoFD+U82Dxe9MJO5ZciH8NpppBm/jA3fAuVML
+         oIZw==
+X-Gm-Message-State: AOJu0Yyb8v2FbTrsC+8zhOH7zU1rTUa2iq/wk/zX47ipwctbvzulkLf9
+        4IDRRFB7VHYdPW8EGpjDe9k=
+X-Google-Smtp-Source: AGHT+IGpqLWRjfqW0a1Q63oZsAgBWs0TG5UVFflGSESYtARNtaAA7H4ylYwrFP7YDABFRj/NZcJzSA==
+X-Received: by 2002:a17:902:d50f:b0:1c3:bc2a:f6b4 with SMTP id b15-20020a170902d50f00b001c3bc2af6b4mr9121885plg.42.1696594628907;
+        Fri, 06 Oct 2023 05:17:08 -0700 (PDT)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id ji2-20020a170903324200b001b8b2b95068sm3679811plb.204.2023.10.06.05.17.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 05:17:08 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 09:17:08 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+        s=2023; t=1696594627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KOliDYSfdDjd8qPENuvroDgTApgk5BQpxPpwejVZeFQ=;
+        b=Bvj2ZZmlAmcheOfr191AVtGk6RsvZcgU71VUMj7sbdUrqSjrgltToamVt70fjLzGKsWZyV
+        kg1qq6c1/37JQu9fJx7HrCuZiEqGIBo3CWSvot6SZUr08393v4l3Z98dmLdctRhRTRtrBh
+        EebfnWIFSlySCiJRb8NETGLLVSVbR7C+aRkGdxyGQozIxlmS9DyCoxBM6zZlJ5oss8V4Ts
+        U79eL8Vq+IuwQigxogHjRHDwIk4yXEr/HRWYgpjaaugJ/7zy4qCYx2YTCeWXbHwo6ocDrj
+        nuRXlnPo15YXScnDSAHYGFHWDEa+/Fv6uYhYZbxSGCY5WnYRHK7Awa6vu3+2pg==
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From:   "Ricardo B. Marliere" <ricardo@marliere.net>
+To:     syzbot <syzbot+621409285c4156a009b3@syzkaller.appspotmail.com>
+Cc:     isely@pobox.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-usb@vger.kernel.org,
+        mchehab@kernel.org, pvrusb2@isely.net,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [pvrusb2?] [usb?] KASAN: slab-use-after-free Read in
+ pvr2_context_set_notify
+Message-ID: <cb6fm6c65rqbk6hzjii5bqanscy7njfu5k7nnpe4doxytshqpf@ulv5noywsnlv>
+References: <000000000000a02a4205fff8eb92@google.com>
+ <gugiuvjgpoogf3k5cm4px4jwevg5torsu3d7afbbhvnrxho4zu@wkcxeb5sr5ez>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fv2LrnWqf0aiVt0H"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZR7w/mr0xZbpIPc5@arm.com>
-X-Cookie: Rome wasn't burnt in a day.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <gugiuvjgpoogf3k5cm4px4jwevg5torsu3d7afbbhvnrxho4zu@wkcxeb5sr5ez>
+X-Spam-Status: No, score=1.3 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,TVD_SPACE_RATIO autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---fv2LrnWqf0aiVt0H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Oct 05, 2023 at 06:23:10PM +0100, Catalin Marinas wrote:
-
-> It's not just the default size that I dislike (I think the x86
-> RLIMIT_STACK or clone3() stack_size is probably good enough) but the
-> kernel allocating the shadow stack and inserting it into the user
-> address space. The actual thread stack is managed by the user but the
-> shadow stack is not (and we don't do this very often). Anyway, I don't
-> have a better solution for direct uses of clone() or clone3(), other
-> than running those threads with the shadow stack disabled. Not sure
-> that's desirable.
-
-Running threads with the shadow stack disabled if they don't explicitly
-request it feels like it's asking for trouble - as well as the escape
-route from the protection it'd provide I'd expect there to be trouble
-for things that do stack pivots, potentially random issues if there's a
-mix of ways threads are started.  It's going to be a tradeoff whatever
-we do.
-
---fv2LrnWqf0aiVt0H
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUf+rwACgkQJNaLcl1U
-h9AHQQf7BUjbkJGRbqVL5lGyELqXE64nUXJxqNVQXzkHQ1ujZqDV/cLF9uojqJh6
-yo1MngEonxyKeJjgqupcA6TzR0LGD9KvuzahtnPwSfluLAxLQG5iY2L+sA2Tdwb4
-kPqoRiUS0++v1w/Oud9y0kcF6an3/im18MenqLAPGtnHPH+xE3EHipQsrYN53Fos
-vsFAhXwuDhqGVonMiS+J1OxVsYZ9cRcVlStwZI0JbcCPGjS/vMUsCiE1j8ERuLYr
-ZUNLyxMMQy35iW2uIdk67nRdv03mjTOw9yYr3akjxNW5eJeFrc804fBdZZ7YqrEE
-Ju28oLb7xq1zQUOX3lYKlNKWsex4KA==
-=iNQp
------END PGP SIGNATURE-----
-
---fv2LrnWqf0aiVt0H--
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git 1053c4a4b8fcbd28386e80347e7c82d4d617e352
