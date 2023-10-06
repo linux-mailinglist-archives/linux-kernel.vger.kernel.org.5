@@ -2,138 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 753BD7BB799
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553677BB794
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231980AbjJFMaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
+        id S231743AbjJFM34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231797AbjJFM36 (ORCPT
+        with ESMTP id S231651AbjJFM3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:29:58 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0187ED
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:29:55 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-532c81b9adbso3695930a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696595394; x=1697200194; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=KSPOq6GPySdwGSInmYuZudkJs+/ss1/t1gFD1Bmsqj0=;
-        b=WuLwpVEMNObtFu/9BVndCtt+4t3zIxfDiQx1f2ExiQk8lVtDZKGCL2HP6xeKMEjK7Y
-         7bWaXVrNrQO4fsg7jovQff/8tl9tq+NoNE9fIczhH/L84cZ/hy/il6YoWWaf67xi1nKB
-         HDNTPIT2EaBujHJ/78boJ/wmWS7YtoH1SN7vbIS2R3wC9t8wLalvLmI0yQ73HSd2n2J+
-         VXuhdtUyolLTsp+CEqd0czhzTxH7B9WcSjOsY7xPgB52fESX39H5LOgZQdsey4pGN7Cd
-         57Bmdp3bi9P3QXX1cnQrFaIZBzYw4/t/AA8SHI/k0T/FdmjtgGoO7itwSpd33ZpbJdnc
-         4hxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696595394; x=1697200194;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KSPOq6GPySdwGSInmYuZudkJs+/ss1/t1gFD1Bmsqj0=;
-        b=t+IHnRWh/NjqWWcipB3M5oHBltMJpf51MKiGJ4lBLWBBZT8LPCcvFYcfHJmr2Uhbh2
-         2VfLk/p6g/DbqaDSCz/cJZLaMfnNOliObkR6lYVBvR/sqPZLGEPX2MQkUqOStlx0snZF
-         5+0V36wA6x6qzz/K7EkQTa6VrXHcrlXSIdWc5RdXNdAzpH7ntpx6Lx5Kd1exWWTL4qDT
-         92AKTqAV4Y6arfm9x6rdmHD3Ol+YX4MK1ljSdFaUkgN5dHagYDRgvERS7SuqzSVj4sCH
-         3eLQGXZXLD4uYWZx51Mcjrx0KjIznDUWzxCDevCtX1/JHBqBZp07oA7IY5cieBAubfGp
-         cYRw==
-X-Gm-Message-State: AOJu0YyEBA0dScWkoRl6WKakcIz/o68NLYXIWsqPvC89WSS0VnNKqsfo
-        VHRLW/ZpwlgIoqNMsZwey48L6g==
-X-Google-Smtp-Source: AGHT+IHIJYhzfMfqm5jJJJdMb0s4l/rwMkhsc+9gNrP1kQScSjKUMoJCGdv7FY5EQIzpAw8Chi6DOw==
-X-Received: by 2002:a50:ee84:0:b0:531:9c1:8276 with SMTP id f4-20020a50ee84000000b0053109c18276mr7646714edr.4.1696595393667;
-        Fri, 06 Oct 2023 05:29:53 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id u1-20020a05640207c100b005311e934765sm2519564edy.27.2023.10.06.05.29.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 05:29:53 -0700 (PDT)
-Message-ID: <9e7a5316-ade2-45c7-8c72-e99f9ce21f25@linaro.org>
-Date:   Fri, 6 Oct 2023 14:29:49 +0200
+        Fri, 6 Oct 2023 08:29:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730D7CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:29:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F305C433C8;
+        Fri,  6 Oct 2023 12:29:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696595393;
+        bh=51m5wGizcEYElwYCHpNGdY2Iw17cdYgJSa3s4ueJ80c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=mA99UncT6o3snJFGoBVaLbSwpgGUgls5XBwiTh0u9VViN7/TBCudO4vKCe9cnvG4h
+         qXlvoIViFOjiN/3+nxUIBqvbF1wqWQT9lkvYv3kB00erBsiJTpdKgjf9GpX8u9RQPh
+         UShGSg9leaGAyiF3aomIrKbpqf4bL7w9QzKQcG+WS3WZnn9uanWJmXHHoJlvRRf5jK
+         sOYIKHVeHeRwvquPS5od+xXvRCzaA8Nsaulsk+sOoAmC2FnjVc9VhHwRzb/nQpVdKF
+         Tc4q0haNp3BvNcG31UNflY2NTtwv6VutSodIUAkcUIJTHcuRgWgd9Y60D2TG0YVE07
+         nW5JLFJSRgfWA==
+Message-ID: <6075c30f-5e2b-43b9-b57b-f4b9a918df22@kernel.org>
+Date:   Fri, 6 Oct 2023 15:29:49 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/5] dt-bindings: i2c: qcom-cci: Document sc8280xp
- compatible
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        loic.poulain@linaro.org, rfoss@kernel.org, andi.shyti@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, todor.too@gmail.com, mchehab@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
- <20231006120159.3413789-2-bryan.odonoghue@linaro.org>
+Subject: Re: [PATCH v5 net-next 2/4] net: ethernet: ti: am65-cpsw: add mqprio
+ qdisc offload in channel mode
 Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231006120159.3413789-2-bryan.odonoghue@linaro.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, horms@kernel.org, s-vadapalli@ti.com,
+        srk@ti.com, vigneshr@ti.com, p-varis@ti.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230927072741.21221-1-rogerq@kernel.org>
+ <20230927072741.21221-3-rogerq@kernel.org>
+ <20231005090141.bjya2lfarcs3ujhb@skbuf>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20231005090141.bjya2lfarcs3ujhb@skbuf>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2023 14:01, Bryan O'Donoghue wrote:
-> Add sc8280xp compatible consistent with recent CAMSS CCI interfaces.
+
+
+On 05/10/2023 12:01, Vladimir Oltean wrote:
+> On Wed, Sep 27, 2023 at 10:27:39AM +0300, Roger Quadros wrote:
+>> diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.c b/drivers/net/ethernet/ti/am65-cpsw-qos.c
+>> index f91137d8e73b..991221d8f148 100644
+>> --- a/drivers/net/ethernet/ti/am65-cpsw-qos.c
+>> +++ b/drivers/net/ethernet/ti/am65-cpsw-qos.c
+>> @@ -16,10 +16,19 @@
+>>  #include "cpsw_ale.h"
+>>  
+>>  #define AM65_CPSW_REG_CTL			0x004
+>> +#define AM65_CPSW_P0_REG_TX_PRI_MAP		0x018
+>> +#define AM65_CPSW_P0_REG_RX_PRI_MAP		0x020
+>> +#define AM65_CPSW_P0_REG_FIFO_STATUS		0x050
+>> +#define AM65_CPSW_P0_REG_PRI_CIR(pri)		(0x140 + 4 * (pri))
+>> +#define AM65_CPSW_P0_REG_PRI_EIR(pri)		(0x160 + 4 * (pri))
+>> +
+>>  #define AM65_CPSW_PN_REG_CTL			0x004
+>> +#define AM65_CPSW_PN_REG_TX_PRI_MAP		0x018
+>> +#define AM65_CPSW_PN_REG_RX_PRI_MAP		0x020
+>>  #define AM65_CPSW_PN_REG_FIFO_STATUS		0x050
+>>  #define AM65_CPSW_PN_REG_EST_CTL		0x060
+>>  #define AM65_CPSW_PN_REG_PRI_CIR(pri)		(0x140 + 4 * (pri))
+>> +#define AM65_CPSW_PN_REG_PRI_EIR(pri)		(0x160 + 4 * (pri))
+>>  
+>>  /* AM65_CPSW_REG_CTL register fields */
+>>  #define AM65_CPSW_CTL_EST_EN			BIT(18)
+>> @@ -50,12 +59,18 @@
+>>  #define AM65_CPSW_FETCH_ALLOW_MSK		GENMASK(7, 0)
+>>  #define AM65_CPSW_FETCH_ALLOW_MAX		AM65_CPSW_FETCH_ALLOW_MSK
+>>  
+>> +#define TO_MBPS(x)	((x) * 8 / 1000000)
+>> +
+>>  enum timer_act {
+>>  	TACT_PROG,		/* need program timer */
+>>  	TACT_NEED_STOP,		/* need stop first */
+>>  	TACT_SKIP_PROG,		/* just buffer can be updated */
+>>  };
+>>  
+>> +/* number of priority queues per port FIFO */
+>> +#define AM65_CPSW_PN_FIFO_PRIO_NUM		8
+>> +#define AM65_CPSW_PN_TX_PRI_MAP_DEFAULT		0x76543210
 > 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> +static void am65_cpsw_reset_tc_mqprio(struct net_device *ndev)
+>> +{
+>> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+>> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
+>> +	struct am65_cpsw_common *common = port->common;
+>> +
+>> +	p_mqprio->shaper_en = false;
+>> +	p_mqprio->max_rate_total = 0;
+>> +
+>> +	am65_cpsw_tx_pn_shaper_reset(port);
+>> +	netdev_reset_tc(ndev);
+>> +	netif_set_real_num_tx_queues(ndev, common->tx_ch_num);
+> 
+> If this never gets changed from the value set by am65_cpsw_nuss_ndo_slave_open(),
+> then there is no reason to call netif_set_real_num_tx_queues() here.
+> 
+>> +
+>> +	/* Reset all Queue priorities to 0 */
+>> +	writel(0, port->port_base + AM65_CPSW_PN_REG_TX_PRI_MAP);
+> 
+> To 0 or to AM65_CPSW_PN_TX_PRI_MAP_DEFAULT (which is now unused)?
+> Also, do I understand correctly that immediately after boot, TX_PRI_MAP
+> will have a different value than after the deletion of the mqprio root qdisc
+> (if AM65_CPSW_PN_TX_PRI_MAP_DEFAULT represents the hardware default value)?
+> The behavior needs to be identical in the 2 cases, since both represent
+> "no mqprio offload".
 
+Good catch. I'll get rid of AM65_CPSW_PN_TX_PRI_MAP_DEFAULT and set this to
+0 at init time.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+>> +}
+>> +
+>> +static int am65_cpsw_setup_mqprio(struct net_device *ndev, void *type_data)
+>> +{
+>> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+>> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
+>> +	struct tc_mqprio_qopt_offload *mqprio = type_data;
+>> +	struct am65_cpsw_common *common = port->common;
+>> +	struct tc_mqprio_qopt *qopt = &mqprio->qopt;
+>> +	int tc, offset, count, ret, prio;
+>> +	u8 num_tc = qopt->num_tc;
+>> +	u32 tx_prio_map = 0;
+>> +	int i;
+>> +
+>> +	memcpy(&p_mqprio->mqprio_hw, mqprio, sizeof(*mqprio));
+>> +
+>> +	ret = pm_runtime_get_sync(common->dev);
+>> +	if (ret < 0) {
+>> +		pm_runtime_put_noidle(common->dev);
+>> +		return ret;
+>> +	}
+>> +
+>> +	if (!num_tc) {
+>> +		am65_cpsw_reset_tc_mqprio(ndev);
+>> +		goto exit_put;
+>> +	}
+>> +
+>> +	ret = am65_cpsw_mqprio_verify_shaper(port, mqprio);
+>> +	if (ret)
+>> +		goto exit_put;
+> 
+> At "exit_put" we have "return 0" and this discards the value of "ret".
 
-Best regards,
-Krzysztof
+Will fix.
 
+> 
+>> +
+>> +	netdev_set_num_tc(ndev, num_tc);
+>> +
+>> +	/* Multiple Linux priorities can map to a Traffic Class
+>> +	 * A Traffic Class can have multiple contiguous Queues,
+>> +	 * Queues get mapped to Channels (thread_id),
+>> +	 *	if not VLAN tagged, thread_id is used as packet_priority
+>> +	 *	if VLAN tagged. VLAN priority is used as packet_priorit
+>> +	 * packet_priority gets mapped to header_priority in p0_rx_pri_map,
+>> +	 * header_priority gets mapped to switch_priority in pn_tx_pri_map.
+>> +	 * As p0_rx_pri_map is left at defaults (0x76543210), we can
+>> +	 * assume that Queue_n gets mapped to header_priority_n. We can then
+>> +	 * set the switch priority in pn_tx_pri_map.
+>> +	 */
+>> +
+>> +	for (tc = 0; tc < num_tc; tc++) {
+>> +		prio = tc;
+>> +
+>> +		/* For simplicity we assign the same priority (TCn) to
+>> +		 * all queues of a Traffic Class.
+>> +		 */
+>> +		for (i = qopt->offset[tc]; i < qopt->offset[tc] + qopt->count[tc]; i++)
+>> +			tx_prio_map |= prio << (4 * i);
+>> +
+>> +		count = qopt->count[tc];
+>> +		offset = qopt->offset[tc];
+>> +		netdev_set_tc_queue(ndev, tc, count, offset);
+>> +	}
+> 
+> I think this is okay.
+> 
+>> +
+>> +	writel(tx_prio_map,
+>> +	       port->port_base + AM65_CPSW_PN_REG_TX_PRI_MAP);
+> 
+> Nit: This can be written on a single line.
+> 
+OK.
+
+>> +
+>> +	am65_cpsw_tx_pn_shaper_apply(port);
+>> +
+>> +exit_put:
+>> +	pm_runtime_put(common->dev);
+>> +	return 0;
+>> +}
+>> +
+>>  int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+>>  			       void *type_data)
+>>  {
+
+-- 
+cheers,
+-roger
