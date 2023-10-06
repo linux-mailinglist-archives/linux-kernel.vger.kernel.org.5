@@ -2,255 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEB77BB39A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 10:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6757BB39F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 10:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbjJFI4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 04:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48190 "EHLO
+        id S231301AbjJFI5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 04:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbjJFI4U (ORCPT
+        with ESMTP id S230358AbjJFI5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 04:56:20 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2049.outbound.protection.outlook.com [40.107.6.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A6595;
-        Fri,  6 Oct 2023 01:56:18 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VOXepLrixg9BXEhCn9YTu5p6BsGhBM0U9u7wY1WUsrTwo0TJYF6rzDahMbyzgnuDHHuSIS1FRIWEuBt5ab2qLlPdecPMBoJBLm4uH/Kikj6gaHv45EXKCbuyQGCKQUGmcGCr93llyffjyQwIgnopmtWleBgNKbyEpRRdd/3iQZJdbNKVBaKcceMc36kvIRkVxSvZi+5H/s8oL2xrsM8b0Wep5WQ3T/XprwhTNh88T/LrYDsoFVfLSfXLkuTEMv+nm1FjMren1H/YzuXVHj2B5SUH/hiOdEnM8Z970hvBki8iyrmR9Bd89R68fpqCXt2ytduDCli4xFnqOklZ+KjrhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9tVCEowK77NSiKPvbYWsZOcs+Z9u3XVi4GMPQbKCJhI=;
- b=CMiCL1YN3k0SoSSETu2CA+1ytujQdZ3O9OHt5/GBZzOl/T7oNNe//yL10q5VX2hSd8Apf+oPLur95pd+SfJdPWxYJIvRdAF2ar709ZAXqZQy0x0z1/BjMo3+1bMRbp6mcLzLAMQhCxAzi4S1qUU1cbCQ2S7X5Do9V4+T2XqbPqqLs+/8C80UmPEXMpcVu8ta/VxmtoznIXJe5Nwr07QOMB7/WFpTbTJl4es/PaL8+yruv2jsHMi9qLBBrNwJjkD11XLzQIn8Doqcm+MT1AVTFQQiQl0jIsVZ1ZVUjyGO/Efm4GHhMV6Hw9hm8438+lJCAvl1dUt99gUIJ4jGCbB86A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
- header.d=asem.it; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9tVCEowK77NSiKPvbYWsZOcs+Z9u3XVi4GMPQbKCJhI=;
- b=RUYEb/MzPp10T13Gc5uJEiuKjTVyeURcstAE3CojasJNguA0DKqtl9idBmBFhUKx/xQ3FXQj1iQCsGIsQGVtmsf3+XsFqHhaJMnfOIMTGOCMjkBb5pvjizpaj4MPvKZevF36eR5+mXBfAgI3hioSMy6KYrU3MshagF6nvWtpfzo=
-Received: from AM8PR01MB8045.eurprd01.prod.exchangelabs.com
- (2603:10a6:20b:320::8) by PR3PR01MB7162.eurprd01.prod.exchangelabs.com
- (2603:10a6:102:7d::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.29; Fri, 6 Oct
- 2023 08:56:15 +0000
-Received: from AM8PR01MB8045.eurprd01.prod.exchangelabs.com
- ([fe80::e0b4:579f:9463:f4cc]) by AM8PR01MB8045.eurprd01.prod.exchangelabs.com
- ([fe80::e0b4:579f:9463:f4cc%4]) with mapi id 15.20.6838.033; Fri, 6 Oct 2023
- 08:56:15 +0000
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-CC:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: RE: [PATCH v3 1/2] dt-bindings: backlight: Add MPS MP3309C
-Thread-Topic: [PATCH v3 1/2] dt-bindings: backlight: Add MPS MP3309C
-Thread-Index: AQHZ76uO1Fb/EPNT/k67j1TrFzld37AtE7aAgAmVcBCAAT5MAIAAXgAggAGFVUCAAW0hAIABTgZg
-Date:   Fri, 6 Oct 2023 08:56:15 +0000
-Message-ID: <AM8PR01MB804533DE0885FFC6A46A7C97F9C9A@AM8PR01MB8045.eurprd01.prod.exchangelabs.com>
-References: <20230925122609.78849-1-f.suligoi@asem.it>
- <20230926130113.GB4356@aspen.lan>
- <DU2PR01MB8034F448F6E66BAC3823CDB1F9C4A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
- <20231003102138.GB69443@aspen.lan>
- <DU2PR01MB80349344FB8CB1415BFA917DF9C4A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
- <DU2PR01MB8034F17A9C81FE198CCAC5B7F9CBA@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
- <20231005125824.GC4874@aspen.lan>
-In-Reply-To: <20231005125824.GC4874@aspen.lan>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=asem.it;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM8PR01MB8045:EE_|PR3PR01MB7162:EE_
-x-ms-office365-filtering-correlation-id: 5dc2ef25-7521-4c00-8352-08dbc64a190c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +qvyq/o6IfCX7/sfL5br6EZGe691OhkRhkfQpeSP/SZdZQz7rPHO0wQQrBabAAsO6QkO/C2JcDG9y8ietsjXah8LOBgea85RxmDcRAg2XYC6rbONey5jIkd+QxsxLy0JzA5vy8xCYxah5QAthywJs68BWL/HlKgYKkLkPU+7/xMozoU1hmNwSmoEsnt1/8R6QJ9kODf+bq5aQIFI8NAxIET1CcHddfCY+revikxrvqp8IKOT6uK6ANg20bFBbNINjA0FsvCYjjaoBGke7FSzDQP9QTz3yANERXDTRoQUYfpX7aS2DpRmRgDSFtd1z3HGmm7uJ8grNvABqwaFWVU2g3h7Gg7b+lizhFPQSRUQGvoYj3vlytIWbqJzi3DYls8NwUobVwz59vlRbXayrNsu0BxXayqaPjkP+U1K30X1p5a4M7eqywzlm8gQ+q8WrSpy8W7Vh50RmbubMQpZYgUVH8I0kQVXS1Hbe/TGsqfZbJkERZBBfwJrV7qxjCEDm5wVrceNSMcWPHsETxbW29nNfstEuyj/V0jJASM5KZXDT/XoxZRLenhJnrZ4oc1yBpSJYU8Q2UqsbGvwpHHF7pfFQiR2epPBC/nzBoXDA0jb5aK5KdlYTBzPgElK3ZOszeyS
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR01MB8045.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(366004)(376002)(39850400004)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(66446008)(54906003)(66946007)(66476007)(66556008)(64756008)(316002)(6916009)(66899024)(41300700001)(9686003)(33656002)(26005)(71200400001)(6506007)(7696005)(38100700002)(478600001)(122000001)(38070700005)(86362001)(55016003)(76116006)(7416002)(2906002)(4326008)(8936002)(8676002)(5660300002)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?jGLun+9wF+XQCHgv3sy+xDHcRCT2IHGP6yBCC6EjK7HRETPpIHDz1B3TkNsd?=
- =?us-ascii?Q?zaRBoASUtDsBWieYQyrlVpzt04O7gXih2M4QRs+2A/FDRurS3cLvoTSkHtng?=
- =?us-ascii?Q?0YR0RJa8p88AGqlQisz2e6yOna58i7q0HVY1UtS30pmXY4JXFAe+CHLWa5EF?=
- =?us-ascii?Q?7De2QL9drDiwPldtshf12cB8S0YMRJEjP07UmGY+ONPlA1aG+Go3XXY0eNgE?=
- =?us-ascii?Q?jrHXYtHs9lnDIwvUnhqzyl/BHIvqyyuQQZjWZExXBchBnwDGu0s+3pNaggbU?=
- =?us-ascii?Q?fSNq7N5yF+v8bJTHId4u0HXDtcJG15RORFthdfBompZ6nQ1gHSw2VGeCOdYu?=
- =?us-ascii?Q?iaAoVFE47yxYi/NDuTf3QLsfwQ/w9eWUbfI2P4GKWyeyh2FGn/hz5NCeVJLI?=
- =?us-ascii?Q?t2UaNk3kUj8vNXpcC+2R7FUu6OXM8U/+dbK4ZUS38A2DhjBl9dwZ/hI2//jC?=
- =?us-ascii?Q?RH9aTMrhDVrE57PJiX65B+O1Ant0bN5hXklQQ4eOBESSuh03395uz+k4UxMA?=
- =?us-ascii?Q?UHbUxWmb99Cqh9N5+vZs7nt7Yz4RyL3CXVIguCJKbI2PnSmDLuCjHJdVf2yK?=
- =?us-ascii?Q?o3dmDo8TbYe8mvIIXVGRa6B7m3H4OsHVRYVMhNpmqAdmauqYy/RAcwx5nNaB?=
- =?us-ascii?Q?t7ohUsdt/syrMAv81x6R8han57Pn0PQhjNOAKjWoc8pguO3OCCiSF6dv/TfF?=
- =?us-ascii?Q?8OEflh5upMVsVfqgVky46s4n2ee5QjOJkusiAOoQ1JOT21xyds2VVorgEsNz?=
- =?us-ascii?Q?uZZ0kkKkmLuNIh2T+yNJoUEI3HTRtZI1rhEh7XJMWldcF5/Ym9v8Zi+kFOT4?=
- =?us-ascii?Q?92r8L6Rg8ut1MMCJB9QBWGsyYGHbaqFHZ30HNPbrzddeGApDKoSwOdJL1Mbi?=
- =?us-ascii?Q?psPkiYS7SaJB7bzsLCiFu2T2FkgDO3JwCujSHxND+HzOcYufFD0fj0X19rvS?=
- =?us-ascii?Q?U15Pxvw6mj2V6JXwmazBU39LaI3xkvtJfb/opLwDDM7s1yJvnFrQMDcx0oPp?=
- =?us-ascii?Q?l+FeFAzW+/BNhXx+VTXIXqHdbUxpO/v0McBVfqQor8nBZzsdn/gE9kaK00Hn?=
- =?us-ascii?Q?6mgdtMEcgaIDrmWCecASslxOgOvo/RzGb0QUGZu7rukKcoHsEmy0ipbjEz7y?=
- =?us-ascii?Q?WcHJDt8/7UdMNl87jAOp0w9Lz8Q2jcmmD2AQVqesqyrFAv6mKcMMXiSIri0v?=
- =?us-ascii?Q?VMKKB5/SUYYgWLTQpB/1tBmsO2iOkvolwXRf2ONxpZxuzKMRPMbNqoJpgHWS?=
- =?us-ascii?Q?tfF5Y1NC/sNv6uoWzWimai6kz8q59of3wdcUTEHSPCNijZlmpjuE2nC7xwSt?=
- =?us-ascii?Q?7zSn1Fn6udkTAtuoj6rra2bGmgShRRkhFpV8pjVk/fl1d1bTsgv+/60FIGJC?=
- =?us-ascii?Q?YQ6/0CdGPmsz5lJz6MLmDL/6NFkHiC3N6YRY4Cny3hJnuI7sVvlEM9SJpsqI?=
- =?us-ascii?Q?vSU+5dYYg/S08O3+qz5anKIsErtnvW4sPD6dTXM8Ungud5szILRxfdBwPF/8?=
- =?us-ascii?Q?pTo9+79CciwZKm68nMY2hXe/bcQvi5X9IpqJgOB8T0QUpcdE/KBg1W4LgyOb?=
- =?us-ascii?Q?tFB0clkwDhdh3ny0vg4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 6 Oct 2023 04:57:43 -0400
+Received: from smtpcmd04131.aruba.it (smtpcmd04131.aruba.it [62.149.158.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F336483
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 01:57:39 -0700 (PDT)
+Received: from [192.168.1.56] ([79.0.204.227])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id ogePqKYQGRbLIogePqUzfR; Fri, 06 Oct 2023 10:57:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1696582658; bh=IJDI1eWWavN8zcnH8yKbKAzLWin1rm4hxwkoyXI90AM=;
+        h=Date:MIME-Version:Subject:To:From:Content-Type;
+        b=fjzWL8LLqOSO8UPnmfXSGzwUGAsf1pyGrQ7Ymp/oKkhJBZf5AhECwuudMryxU2jbY
+         ulXpVDiAugaiAHfB6NaKd5f99U6anC66hTZ4Qz24e3mYWuTxWj4JSzh9jPZqNkfm3S
+         OpBQDetYDkw81pOH+HC+C38X2MBzj70xqGtunrllCaL0FhnzFtiJJJjhlRNJa6DVKY
+         YujuchcCSX8XGzgmX31uKrpQskv0IuOCYG/ICIeiCvwIlIKHaYxffPZlCFXAxr7yDo
+         m0iQCAj6l+4ZyaYZHh2J6M9p+G6EpUKJYirigghQ78oNkYYC7vynX+gJ3yiQuXPJyV
+         wFSWxA8nn/cVg==
+Message-ID: <633ea9ab-7d86-33c7-f20c-6b7be945750a@enneenne.com>
+Date:   Fri, 6 Oct 2023 10:57:37 +0200
 MIME-Version: 1.0
-X-OriginatorOrg: asem.it
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM8PR01MB8045.eurprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5dc2ef25-7521-4c00-8352-08dbc64a190c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2023 08:56:15.2788
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nd98O/bV4pkKsT3PD643C4NwNHYaJfbBLg0heNIxUU/uv4I3EENeZVgwUey7PuZeVBEbYvP1LAM6J0T69jGv9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR01MB7162
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: PPS functionality for Intel Timed I/O
+Content-Language: en-US
+To:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>
+Cc:     "N, Pandith" <pandith.n@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Sangannavar, Mallikarjunappa" 
+        <mallikarjunappa.sangannavar@intel.com>,
+        "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
+        "T R, Thejesh Reddy" <thejesh.reddy.t.r@intel.com>,
+        "Hall, Christopher S" <christopher.s.hall@intel.com>,
+        "Gross, Mark" <mark.gross@intel.com>
+References: <fa3f1765-eb59-bf69-7f7b-14621caef6ea@enneenne.com>
+ <BYAPR11MB3240801F21598EEFAEA79605E1D39@BYAPR11MB3240.namprd11.prod.outlook.com>
+ <1e02cc71-baee-1e75-9160-062d563af795@enneenne.com>
+ <BYAPR11MB32408E2D9758BD01EC65FB49E1DA9@BYAPR11MB3240.namprd11.prod.outlook.com>
+ <f2788a74-19f8-8992-5b92-427c7b2a27ab@enneenne.com>
+ <BYAPR11MB3240C6789B4C04F3BDAE34D5E1A39@BYAPR11MB3240.namprd11.prod.outlook.com>
+ <f8a97493-a5ab-565f-825a-dd0a508f2b66@enneenne.com>
+ <BYAPR11MB32405694C3C9A1DE083EA673E1C9A@BYAPR11MB3240.namprd11.prod.outlook.com>
+ <8ca736c3-7da9-2599-7e55-15e2fc9fedc2@enneenne.com>
+ <ZR/GgpHAWYEKvzdN@smile.fi.intel.com> <ZR/Gs3q1JfJ3pCky@smile.fi.intel.com>
+From:   Rodolfo Giometti <giometti@enneenne.com>
+In-Reply-To: <ZR/Gs3q1JfJ3pCky@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfBOE/C0Zze3ac27LAy/+ILzhp4tHoOSOHyAG8NB2RmY3GzpeIsdsbaAMlRojNunnzctSMQtSkz1UYF7AGey8BxcPn4TG7+e+dQTUMmxUilavuTijFSPS
+ kfOBlYN1whdI4beWEEaUE4bOqfCbd8nFoGq0reQDeQ2ouE+skbTCo5zCTvZr1e+clUYqDI8xMvl4yg9wkjlQHpAFr3pfMeX/shU8xPlpsg4FrDB2MJAvPdYR
+ a5OqighUkDNn/iwxTiuM8hJ82vGe8eYYHgVzDztYWkXumxu5FC8fcEawVOfRp8UfF82kIf2CHA2zqI8tY7YOSmg08+Hvc3UsVwUXX10R0HpyNyLFcDJtfzic
+ 3yPnRLyDPySC7oF4TQd7zcJ5wQ1FSYssAQnST8FZhfsnnU76nWTPNhLILrYcGUsu1FDFycLMxCFmBI/Tt4EWT1qRzQ+4HfbKDUGMazF9KaDhC6fyky6dDOc6
+ 1Xj8kURtoHeBYbXPtv4d8RhxAsJCzi7uDvAY2Q==
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Daniel,
+On 06/10/23 10:34, andriy.shevchenko@linux.intel.com wrote:
+> On Fri, Oct 06, 2023 at 11:34:10AM +0300, andriy.shevchenko@linux.intel.com wrote:
+>> On Fri, Oct 06, 2023 at 08:23:09AM +0200, Rodolfo Giometti wrote:
+>>> On 06/10/23 07:31, N, Pandith wrote:
+>>>>> From: Rodolfo Giometti <giometti@enneenne.com>
+>>>>> Sent: Wednesday, February 15, 2023 1:16 PM
+>>>>> On 15/02/23 08:09, N, Pandith wrote:
+> 
+> [snip]
+> 
+>>>>> Regarding Documentation/driver-api/pps.rst let me suggest you to prose a
+>>>>> separate patch to rewrite the Generators section in such a way you easily can add
+>>>>> your solution at the end. A possible example is attached but feel free to rewrite it
+>>>>> according to your needs.
+>>>>>
+>>>> Ok, we are updating documentation as you have suggested as a separate patch.
+>>>> Can we use your "Signed-off-by" tag for attached patch.
+>>>
+>>> If you just followed my suggestion then it's OK for me.
+>>
+>> But can we have your SoB or not? If so, please provide it explicitly as
+>> the (Linux kernel) process requires.
+> 
+> Or even better if you provide the patch itself or apply directly to your tree
+> that we can rebase the our stuff on.
 
-...
-> > ...
-> > > ...
-> > > > > > > +required:
-> > > > > > > +  - compatible
-> > > > > > > +  - reg
-> > > > > > > +  - max-brightness
-> > > > > >
-> > > > > > Why is this mandatory?
-> > > > > >
-> > > > > > There's no point in setting max-brightness when running in I2C
-> > > > > > mode
-> > > > > > (max- brightness should default to 31 in that case).
-> > > > > >
-> > > > > >
-> > > > > > > +  - default-brightness
-> > > > > >
-> > > > > > Again. I'm not clear why this needs to be mandatory.
-> > > > > >
-> > > > > >
-> > > > >
-> > > > > Ok, you are right, I'll remove max-brightness and
-> > > > > default-brightness from required properties list. I think to
-> > > > > change these properties, for the pwm dimming, into a clearer:
-> > > > >
-> > > > > - brightness-levels (uint32)
-> > > > > - default-brightness-levels (uint32).
-> > > > >
-> > > > > For example:
-> > > > >
-> > > > >   brightness-levels:
-> > > > >     description:
-> > > > >       Number of brightness levels. The actual brightness
-> > > > >       level (PWM duty cycle) will be interpolated from 0 to this =
-value.
-> > > > >       0 means a  0% duty cycle (darkest/off), while the
-> > > > > brightness-levels
-> > > > represents
-> > > > >       a 100% duty cycle (brightest).
-> > > > >     $ref: /schemas/types.yaml#/definitions/uint32
-> > > > >
-> > > > >   default-brightness-level:
-> > > > >     description:
-> > > > >       The default brightness level (from 0 to brightness-levels)
-> > > > >     $ref: /schemas/types.yaml#/definitions/uint32
-> > > > >
-> > > > > Example:
-> > > > > brightness-levels =3D <10>;
-> > > > > default-brightness-level =3D <6>;
-> > > > >
-> > > > > What do you think about this solution?
-> > > >
-> > > > If you want to introduce a brightness-levels property then I would
-> > > > expect it to be defined with the same meaning as pwm-backlight
-> > > > (it's not relevant to the bindings but ideally it would be
-> > > > implemented by refactoring and reusing the code from pwm_bl.c).
-> > >
-> > > ok, I'll use the brightness-levels property as used in pwm-backlight
-> > >
-> > > >
-> > > > Same with default-brightness-level although I'm not sure why one
-> > > > wouldn't just use default-brightness for new bindings (doesn't
-> > > > default-brightness-level simply do exactly the same thing as
-> > > > default-
-> > > brightness).
-> > >
-> > > ok for default-brightness instead of default-brightness-level
-> >
-> > Just a question: default-brightness-level is the index into the brightn=
-ess-
-> levels array.
-> > But, if I use default-brightness instead of default-brightness-level,
-> > should I consider default-brightness also as an index into brightness-l=
-evels
-> array?
->=20
-> Yes.
->=20
->=20
-> > Or, in this case, have the default-brightness to be equal to one of
-> > the values inside the brightness-levels array?
->=20
-> When there is a brightness array (and there is no interpolation) then it =
-is
-> indexed by brightness. The values in the array are not brightness (e.g. t=
-he
-> controlable value describing the output of the hardware). The values in t=
-he
-> table are merely the PWM duty cycle...
+Just send the patch to the kernel mail list and, if OK, I'm going to sign it and 
+forwarding to Greg Kroah-Hartman.
 
-ok
+Ciao,
 
->=20
-> Main difference is, with a correct table the brightness can use an approp=
-riate
-> logarithmic power scale (which matches how humans perceive
-> brightness) instead of the linear scale provided by the PWM duty cycle.
->=20
->=20
-> Daniel.
->=20
->=20
-> Brightness and "index into the brightness-levels array" should be one and=
- the
-> same thing
+Rodolfo
 
-ok, I'll use default-brightness, thanks for the explanations!
+-- 
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming                     skype:  rodolfo.giometti
 
-> >
-> > >
-> > > >
-> > > >
-> > > > Daniel.
-> > >
-> > > Thanks an best regards,
-> > > Flavio
-> >
-> > Thanks,
-> >
-> > Flavio
-
-Flavio
