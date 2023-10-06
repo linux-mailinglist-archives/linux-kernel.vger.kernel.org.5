@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 304017BBA2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF5D7BBA2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbjJFOZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 10:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
+        id S232520AbjJFOZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 10:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbjJFOZr (ORCPT
+        with ESMTP id S232447AbjJFOZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 10:25:47 -0400
+        Fri, 6 Oct 2023 10:25:48 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4636AA6
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 07:25:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30237C433C8;
-        Fri,  6 Oct 2023 14:25:44 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B668C6
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 07:25:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61607C433C7;
+        Fri,  6 Oct 2023 14:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696602345;
-        bh=fFp/oJMKykWY4xVvhpzOX11gmMZerHpy4oahhiXd2wk=;
+        s=k20201202; t=1696602347;
+        bh=OvLqM9XmKRBSlmHs/YJiWIpPmHLm85bUF5Nx8aFphQo=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=pbYZJEoRoSPYLNTxz6IfxvbZuIMKICVmgeCUCSNc1zfT3hAaldOrh2N3vlBDBQK0f
-         E3baf4THdKbMpu572Vm4ngiKWSAJwxAo9KZ9TjtrhgWidqHrQWL8Pyo6nNLsH/ZJeJ
-         bfyu7VgJElz4ToYzpjdiDJ0rqftdTWbuHp/gPa7btqqHAysdHX+eP48kfwzgz428pT
-         9mjAfFuH8fbBYl99dOIwGd7GPxFme9bdckMA6aglx29DaVhy3OW5m2nU1YddbsTDrm
-         yD/D2RoUuJGbthvXmlvNmp39sJdX9lnS8REQZjGJm7SCxn3WPgXzW1hEG5JVDAjYtj
-         K0ULWniGrdqEw==
+        b=gBlck0m9UoIQR2SRna/scVu7GIFlGOiuPdzOse1uoZp54BePFOf2cykcPvnB8SBrf
+         EhkuMlOixmsRUkCax6I5+o86/ZszPC6SJHqJ0OZW+g4HOSSIcKJcb4xpjofOLgBAyq
+         2d2M6Y6Rrc1n9UzSVRw/KZhypZzJrXD2VaH7sKPKCL47sImv64Yq4M1gafhFnNR00u
+         oyPVPPVY1qI1lOJ4gcaO3ExBwefnOBZYGb54NJggeyo1sOP1Z59kk/nE/J5+LfV75u
+         R53Wwcbo4lU3cn1w54+y/STcXx7Or9076OBmVESvmvDloMKXkbmfObeb3Q0nQoPSvM
+         tG/+B7j0Exdaw==
 From:   Mark Brown <broonie@kernel.org>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-In-Reply-To: <20231004193441.work.109-kees@kernel.org>
-References: <20231004193441.work.109-kees@kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Include additional ASoC paths
-Message-Id: <169660234489.30982.2954706569529238887.b4-ty@kernel.org>
-Date:   Fri, 06 Oct 2023 15:25:44 +0100
+In-Reply-To: <20231005025618.work.355-kees@kernel.org>
+References: <20231005025618.work.355-kees@kernel.org>
+Subject: Re: [PATCH] MAINTAINERS: Include sof headers under ASoC
+Message-Id: <169660234611.30982.7753004263104446247.b4-ty@kernel.org>
+Date:   Fri, 06 Oct 2023 15:25:46 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -49,8 +49,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Oct 2023 12:34:45 -0700, Kees Cook wrote:
-> Make sure a few other paths are correctly sent to the ASoC maintainers.
+On Wed, 04 Oct 2023 19:56:21 -0700, Kees Cook wrote:
+> Add missing sof header files for ASoC.
 > 
 > 
 
@@ -60,8 +60,8 @@ Applied to
 
 Thanks!
 
-[1/1] MAINTAINERS: Include additional ASoC paths
-      commit: 2175362f594bc8d3764c8108b1a0b88d0a56610a
+[1/1] MAINTAINERS: Include sof headers under ASoC
+      commit: 4b226f15421d160cc07ff497179547f5590ce758
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
