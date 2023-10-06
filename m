@@ -2,160 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7BA7BB6FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD8A7BB701
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbjJFLxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
+        id S232128AbjJFLzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232137AbjJFLxw (ORCPT
+        with ESMTP id S232062AbjJFLzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:53:52 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7626FCA;
-        Fri,  6 Oct 2023 04:53:51 -0700 (PDT)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 396BnWcb023037;
-        Fri, 6 Oct 2023 13:53:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=FTF/KnFa4HI87ODyf1fZyRJiPCg00/ZE8IQgxm+KA2U=; b=eV
-        TnBSVhmLnyHkzhBohrMS3uPcsvYCoh2rqZHs68euBl3pxOwPn7YFnq49qy34Yy6o
-        TKOs1HzDmXeDezvYVDIyiBU8sjyKOxt3MaG5AOyKxmJV2vFV9f2mlG3fqMV22Xdj
-        sFfNC2aAXYTfg3J/ph9ItApXmL+RDGbDPbRWaFWIu2qsVo7wu+41TvLWZs5036Cl
-        LpNdAHRdT1vVx6xLQvK51jvfHApx5UR/f6aRv+5oq2SmmPZtfdspXvepdyc69xUL
-        VMFVWI0VD0lk83rUXIZppZDn0D/owwc9G6iJ697pas2f2LHxHuTNp3P4F1Vz42MD
-        VmQzDoV+WzTnuG5M58EA==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tj06tkeyw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Oct 2023 13:53:30 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EE253100053;
-        Fri,  6 Oct 2023 13:53:29 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 049B222AFF5;
-        Fri,  6 Oct 2023 13:53:25 +0200 (CEST)
-Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 6 Oct
- 2023 13:53:24 +0200
-Message-ID: <162c98ab-52ca-5f90-d28d-78e7903391b1@foss.st.com>
-Date:   Fri, 6 Oct 2023 13:53:23 +0200
+        Fri, 6 Oct 2023 07:55:38 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE9AC2;
+        Fri,  6 Oct 2023 04:55:37 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 396BtVdF071941;
+        Fri, 6 Oct 2023 06:55:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696593331;
+        bh=bV7N1eMvMIbNRZkpg5EJivJIzf1bI9x51VJMvfYW/R0=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=RW21+BcuiPXthnTMkf60m3NJo1eqpcvE04U238hkITNWwXJDL4ZyfVi4LWHJdtPFt
+         k262TwJPjAyQsjCJjuVvd6PaB+ORVkmD2G3U2sNnIVCpgSS42FgAyDk9/M8oh6t+p8
+         w1BaFsh1zMSGCAAY5nr53Khalk2JhG/VnlQxBYtA=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 396BtV5t024951
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 6 Oct 2023 06:55:31 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 6
+ Oct 2023 06:55:30 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 6 Oct 2023 06:55:30 -0500
+Received: from [10.249.131.134] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 396BtR4i009986;
+        Fri, 6 Oct 2023 06:55:27 -0500
+Message-ID: <1acde127-5141-45c0-aa58-5189e280bb7f@ti.com>
+Date:   Fri, 6 Oct 2023 17:25:26 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3 08/12] net: ethernet: stmmac: stm32: support the
- phy-supply regulator binding
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 5/7] arm64: dts: ti: k3-j784s4-mcu: Add the mcu domain
+ watchdog instances
 Content-Language: en-US
-To:     Christophe ROULLIER <christophe.roullier@foss.st.com>,
-        Ben Wolsieffer <ben.wolsieffer@hefring.com>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230928151512.322016-1-christophe.roullier@foss.st.com>
- <20230928151512.322016-9-christophe.roullier@foss.st.com>
- <ZRWfhk0aEDwytGv5@dell-precision-5540>
- <c8804fbe-46e7-2771-e503-4e786df2f97c@foss.st.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <c8804fbe-46e7-2771-e503-4e786df2f97c@foss.st.com>
+To:     Nishanth Menon <nm@ti.com>
+CC:     <robh+dt@kernel.org>, <vigneshr@ti.com>, <conor+dt@kernel.org>,
+        <kristo@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <u-kumar1@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231006042901.6474-1-j-keerthy@ti.com>
+ <20231006042901.6474-6-j-keerthy@ti.com>
+ <20231006113410.tibvxxkeuujqnbv4@evolution>
+From:   "J, KEERTHY" <j-keerthy@ti.com>
+In-Reply-To: <20231006113410.tibvxxkeuujqnbv4@evolution>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.201.21.122]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-06_09,2023-10-06_01,2023-05-22_02
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/23 13:27, Christophe ROULLIER wrote:
+
+
+On 10/6/2023 5:04 PM, Nishanth Menon wrote:
+> On 09:58-20231006, Keerthy wrote:
+>> There are totally 2 instances of watchdog module in MCU domain.
+>> These instances are coupled with the MCU domain R5F instances.
 > 
-> On 9/28/23 17:45, Ben Wolsieffer wrote:
->> Hello,
+>> Disabling them as they are not used by Linux.
+> Device tree is hardware description - not tied to how Linux uses it.
+> 
+> Reason these wdts are disabled by default is because they are tightly
+> coupled with R5Fs.
+
+Okay. I will rephrase that.
+
+> 
 >>
->> On Thu, Sep 28, 2023 at 05:15:08PM +0200, Christophe Roullier wrote:
->>> From: Christophe Roullier <christophe.roullier@st.com>
->>>
->>> Configure the phy regulator if defined by the "phy-supply" DT phandle.
->>>
->>> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
->>> ---
->>>   .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 51 ++++++++++++++++++-
->>>   1 file changed, 50 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c 
->>> b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
->>> index 72dda71850d75..31e3abd2caeaa 100644
->>> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
->>> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
->> ... snip ...
->>>   static int stm32mp1_suspend(struct stm32_dwmac *dwmac)
->>> @@ -455,12 +496,20 @@ static int stm32mp1_suspend(struct stm32_dwmac 
->>> *dwmac)
->>>       if (dwmac->enable_eth_ck)
->>>           clk_disable_unprepare(dwmac->clk_eth_ck);
->>> +    /* Keep the PHY up if we use Wake-on-Lan. */
->>> +    if (!device_may_wakeup(dwmac->dev))
->>> +        phy_power_on(dwmac, false);
->>> +
->>>       return ret;
->>>   }
->>>   static void stm32mp1_resume(struct stm32_dwmac *dwmac)
->>>   {
->>>       clk_disable_unprepare(dwmac->clk_ethstp);
->>> +
->>> +    /* The PHY was up for Wake-on-Lan. */
->>> +    if (!device_may_wakeup(dwmac->dev))
->>> +        phy_power_on(dwmac, true);
->>>   }
->>>   static int stm32mcu_suspend(struct stm32_dwmac *dwmac)
->> Why only turn off the regulator in suspend on the STM32MP1 and not STM32
->> MCUs? It seems like this could just go in stm32_dwmac_suspend/resume().
+>> Signed-off-by: Keerthy <j-keerthy@ti.com>
+>> ---
+>>   .../boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi     | 24 +++++++++++++++++++
+>>   1 file changed, 24 insertions(+)
 >>
->> Selfishly, I have a use case for this on an STM32F746 platform, so I
->> would like to see support for it and would test an updated version.
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+>> index a7b5c4cb7d3e..809a0b1cf038 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+>> @@ -714,4 +714,28 @@
+>>   		ti,esm-pins = <63>;
+>>   		bootph-pre-ram;
+>>   	};
+>> +
+>> +	/*
+>> +	 * The 2 RTI instances are couple with MCU R5Fs so keeping them
+>> +	 * disabled as these will be used by their respective firmware
+>> +	 */
+>> +	mcu_watchdog0: watchdog@40600000 {
+>> +		compatible = "ti,j7-rti-wdt";
+>> +		reg = <0x00 0x40600000 0x00 0x100>;
+>> +		clocks = <&k3_clks 367 1>;
+>> +		power-domains = <&k3_pds 367 TI_SCI_PD_EXCLUSIVE>;
+>> +		assigned-clocks = <&k3_clks 367 0>;
+>> +		assigned-clock-parents = <&k3_clks 367 4>;
+>> +		status = "disabled";
+>> +	};
+>> +
+>> +	mcu_watchdog1: watchdog@40610000 {
+>> +		compatible = "ti,j7-rti-wdt";
+>> +		reg = <0x00 0x40610000 0x00 0x100>;
+>> +		clocks = <&k3_clks 368 1>;
+>> +		power-domains = <&k3_pds 368 TI_SCI_PD_EXCLUSIVE>;
+>> +		assigned-clocks = <&k3_clks 368 0>;
+>> +		assigned-clock-parents = <&k3_clks 368 4>;
+> 
+> Please DONOT ignore the review comments - I did ask the documentation in
+> dts as well. reason being that this is what people will see rather than
+> dig up the commit log. it should be intutive when reading the dts why
+> nodes are disabled by default Vs the standard of leaving it enabled by
+> default. Given esp that these peripherals do not have anything to do
+> with board semantics (pinmux or something similar) to be complete.
+> 
+>> +		status = "disabled";
+>> +	};
+>>   };
+>> -- 
+>> 2.17.1
 >>
-> Hi,
 > 
-> I'm working on MPU boards, I do not have MCU board, so feel free to 
-> contribute on MCU part ;-)
-
-Christophe,
-
-The point here is to manage regulator for MPU and MCU. If you don't have 
-MCU board it doesn't seem to be an issue as Ben proposed to test the 
-patch for you.
-
-> 
-> Thanks
-> 
-> Christophe
-> 
->>> -- 
->>> 2.25.1
->>>
->> Thanks, Ben
-
