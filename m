@@ -2,161 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DDB7BC12E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A1A7BC13C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233585AbjJFVdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 17:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
+        id S233705AbjJFVjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 17:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233277AbjJFVdO (ORCPT
+        with ESMTP id S233696AbjJFVjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 17:33:14 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE48BF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 14:33:11 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50481a0eee7so4549317e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 14:33:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696627990; x=1697232790; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rawKGi5+aCpZkW6aymum55S+bE/zcCvvHQE0Xng8Uug=;
-        b=jT825H9VdFf+x9sgpCmYkRZNj4DvrlDGfyk2ayJd3WRAA7yMdGqKiwynz+SEMAkfsp
-         6PQ5TEpakykRouGx2YGb/xewmqC1c0txwaC4mgHNvlnEJx6yRcPdK7zjB06EaNLGU9Pi
-         H0A4vebKNrx2MxdRD8NZxyEehuqSubLsSovYsSP4K6pQegw5qBo7OxKQSYCGhv21iA6a
-         nHm0KCo01AUphbjOezeonFSTokgGxTUl1cLdm6xLsLTQkakiQ4MjPmBcMqbFRrlShj5z
-         ujQd6/MYKPnczWjuhxzbfLXtARgrm/yvTUtrv0KXz8AZxEwq0MgoQkF2xXrGE1TIvhcF
-         Svnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696627990; x=1697232790;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rawKGi5+aCpZkW6aymum55S+bE/zcCvvHQE0Xng8Uug=;
-        b=A0Y5tXaLTuo1qnwR8lveZgUU4UIiNIjgD6y6nMqutL7i3ctsa054w+h6ENlY8el1in
-         7suCsPvT+TUcsKsmo4+tDyC2/ADXeihvDykeaLckFx/sWm2B5dFLH/84LPTjiaPep9wz
-         NhZr9pyc5PJku2pggqaB6yc40+fgLFFayWQPjKA5scjPt7gthptMA7iaXMeRfsNdgAW4
-         LWlwFgQ6AkKlbOyry+XqqIxNk5OMG0b0n7S+rDKL3JBZZ089Wpfx32Pujh+TatxAjnav
-         p54Yu1pJuvbg7kCZRCFbh7La4M3UqShlNT70/hUfskMvo7tK2wTh5pJlwWCXVeRV9fcU
-         t26Q==
-X-Gm-Message-State: AOJu0Yym1RAIB/zlYq12GWkJ2Yi8Husu2fwGM+PoXpDExZujWJ0je7Hq
-        Ky4NUSWqQxJGyAY5ztilbsRvFPL9T+oMl3ryhQ==
-X-Google-Smtp-Source: AGHT+IEMfzsbPLYHtPJIEks7Faun0TDoaT+GiR7oQeWkFswVhjGwOBPrl1TdT+uX/JdusBVtO3GwBS6U3z9CVyAOIMc=
-X-Received: by 2002:a05:6512:318b:b0:4fd:daa0:aed8 with SMTP id
- i11-20020a056512318b00b004fddaa0aed8mr4310429lfe.4.1696627989550; Fri, 06 Oct
- 2023 14:33:09 -0700 (PDT)
+        Fri, 6 Oct 2023 17:39:03 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71D6F4;
+        Fri,  6 Oct 2023 14:39:01 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396L7Je4018334;
+        Fri, 6 Oct 2023 21:38:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=cLamHiseiKqgJ457eYhm61noU3jj8kTfINBfQYfEYQw=;
+ b=GfRwGTBKsXyIcNS00dZQEbD9N47LTfpHTKrPHa7qqxxBRMQtoMnSMDCRGG9mKy6WL3C3
+ 5FxMaHLwp2JaK4W26c+qEK3oV9JsKL28rs+5Ryb2U4EXKhJEaX5xSW4i8bttUq3+c1aa
+ i7RocF/LVQgiz0mKl613tMm6wWUTdrhxC9r9eh+dXwi+S2cN7NVRKPabt45Qx8gLs6gG
+ Cr7Zzd4tvM78ftXMPWguDP+eqWI4u9AMeWBThAPRrupdGQuDCC9uz1AQG5ALYmEYJgVG
+ WC5CN+XVauLXuUQ5M/JqoMlQq3irlb/BdSKDkZkCMXtSIGg0Xb0HQ32ACg266F7vqRWJ JQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tjgc69fmy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Oct 2023 21:38:49 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 396Lcmik014597
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 6 Oct 2023 21:38:48 GMT
+Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Fri, 6 Oct 2023 14:38:47 -0700
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+To:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
+        <andersson@kernel.org>
+CC:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v6 0/7] incorporate pm runtime framework and eDP clean up
+Date:   Fri, 6 Oct 2023 14:38:31 -0700
+Message-ID: <1696628318-15095-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20230721161018.50214-1-brgerst@gmail.com> <ZR5yTecBhCFsVOtQ@gmail.com>
- <CAMzpN2j7qddPEUdD+ZX3dtyQkPq6e4gzwcu5szkZ2esh_8zm9g@mail.gmail.com>
- <ZR8an4+JbkLS8/Ol@gmail.com> <5def7e28-3949-9685-7ddf-19b550847ef0@zytor.com>
-In-Reply-To: <5def7e28-3949-9685-7ddf-19b550847ef0@zytor.com>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Fri, 6 Oct 2023 17:32:58 -0400
-Message-ID: <CAMzpN2jdGc1P4Ha_sO5RZv8M9RsHPA+KU3a9c5BdgX5O3D5Jew@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] x86: Clean up fast syscall return validation
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mpenttil@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: V9YwkkGC-DilBJ-zewEcK7DFs9sgWcqt
+X-Proofpoint-GUID: V9YwkkGC-DilBJ-zewEcK7DFs9sgWcqt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-06_15,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ mlxlogscore=762 impostorscore=0 adultscore=0 spamscore=0 phishscore=0
+ mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310060166
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 2:59=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> wrote=
-:
->
-> On 10/5/23 13:20, Ingo Molnar wrote:
-> >
-> > * Brian Gerst <brgerst@gmail.com> wrote:
-> >
-> >> Looking at the compiled output, the only suboptimal code appears to be
-> >> the canonical address test, where the C code uses the CL register for
-> >> the shifts instead of immediates.
-> >>
-> >>   180:   e9 00 00 00 00          jmp    185 <do_syscall_64+0x85>
-> >>                          181: R_X86_64_PC32      .altinstr_aux-0x4
-> >>   185:   b9 07 00 00 00          mov    $0x7,%ecx
-> >>   18a:   eb 05                   jmp    191 <do_syscall_64+0x91>
-> >>   18c:   b9 10 00 00 00          mov    $0x10,%ecx
-> >>   191:   48 89 c2                mov    %rax,%rdx
-> >>   194:   48 d3 e2                shl    %cl,%rdx
-> >>   197:   48 d3 fa                sar    %cl,%rdx
-> >>   19a:   48 39 d0                cmp    %rdx,%rax
-> >>   19d:   75 39                   jne    1d8 <do_syscall_64+0xd8>
-> >
-> > Yeah, it didn't look equivalent - so I guess we want a C equivalent for=
-:
-> >
-> > -       ALTERNATIVE "shl $(64 - 48), %rcx; sar $(64 - 48), %rcx", \
-> > -               "shl $(64 - 57), %rcx; sar $(64 - 57), %rcx", X86_FEATU=
-RE_LA57
-> >
-> > instead of the pgtable_l5_enabled() runtime test that
-> > __is_canonical_address() uses?
-> >
->
-> I don't think such a thing (without simply duplicate the above as an
-> alternative asm, which is obviously easy enough, and still allows the
-> compiler to pick the register used) would be possible without immediate
-> patching support[*].
->
-> Incidentally, this is a question for Uros: is there a reason this is a
-> mov to %ecx and not just %cl, which would save 3 bytes?
->
-> Incidentally, it is possible to save one instruction and use only *one*
-> alternative immediate:
->
->         leaq (%rax,%rax),%rdx
->         xorq %rax,%rdx
->         shrq $(63 - LA),%rdx            # Yes, 63, not 64
->         # ZF=3D1 if canonical
->
-> This works because if bit [x] is set in the output, then bit [x] and
-> [x-1] in the input are different (bit [-1] considered to be zero); and
-> by definition a bit is canonical if and only if all the bits [63:LA] are
-> identical, thus bits [63:LA+1] in the output must all be zero.
->
-> The first two instructions are pure arithmetic and can thus be done in C:
->
->         bar =3D foo ^ (foo << 1);
->
-> ... leaving only one instruction needing to be patched at runtime.
->
->         -hpa
+The purpose of this patch series is to incorporate pm runtime framework
+into MSM eDP/DP driver so that eDP panel can be detected by DRM eDP panel
+driver during system probe time. During incorporating procedure, original
+customized pm realted fucntions, such as dp_pm_prepare(), dp_pm_suspend(),
+dp_pm_resume() and dp_pm_prepare(), are removed and replaced with functions
+provided by pm runtiem framework such as pm_runtime_force_suspend() and
+pm_runtime_force_resume(). In addition, both eDP aux-bus and irq handler
+are bound at system probe time too.
 
-One other alternative I have been considering is comparing against
-TASK_SIZE_MAX.  The only user-executable address above that is the
-long deprecated vsyscall page.  IMHO it's not worth optimizing for
-that case, so just let it fall back to using IRET.
+Kuogee Hsieh (7):
+  drm/msm/dp: tie dp_display_irq_handler() with dp driver
+  drm/msm/dp: rename is_connected with link_ready
+  drm/msm/dp: use drm_bridge_hpd_notify() to report HPD status changes
+  drm/msm/dp: move parser->parse() and dp_power_client_init() to probe
+  drm/msm/dp: incorporate pm_runtime framework into DP driver
+  drm/msm/dp: delete EV_HPD_INIT_SETUP
+  drm/msm/dp: move of_dp_aux_populate_bus() to eDP probe()
 
-    if (unlikely(regs->ip >=3D TASK_SIZE_MAX)) return false;
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c |   4 -
+ drivers/gpu/drm/msm/dp/dp_aux.c         |  39 +++-
+ drivers/gpu/drm/msm/dp/dp_display.c     | 319 +++++++++++---------------------
+ drivers/gpu/drm/msm/dp/dp_display.h     |   3 +-
+ drivers/gpu/drm/msm/dp/dp_drm.c         |  14 +-
+ drivers/gpu/drm/msm/dp/dp_power.c       |  16 --
+ drivers/gpu/drm/msm/dp/dp_power.h       |  11 --
+ drivers/gpu/drm/msm/msm_drv.h           |   5 -
+ 8 files changed, 147 insertions(+), 264 deletions(-)
 
-compiles to:
+-- 
+2.7.4
 
- 180:   48 b9 00 f0 ff ff ff    movabs $0x7ffffffff000,%rcx
- 187:   7f 00 00
- 18a:   48 39 c8                cmp    %rcx,%rax
- 18d:   73 39                   jae    1c8 <do_syscall_64+0xc8>
-
-0000000000000000 <.altinstr_replacement>:
-   0:   48 b9 00 f0 ff ff ff    movabs $0xfffffffffff000,%rcx
-   7:   ff ff 00
-
-Brian Gerst
