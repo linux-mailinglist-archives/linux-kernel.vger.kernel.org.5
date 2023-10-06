@@ -2,133 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7007BB6F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9219F7BB6F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbjJFLvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:51:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
+        id S232129AbjJFLwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232038AbjJFLve (ORCPT
+        with ESMTP id S232093AbjJFLv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:51:34 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30488C5
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 04:51:32 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-692c02adeefso1696953b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 04:51:32 -0700 (PDT)
+        Fri, 6 Oct 2023 07:51:59 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8BD7EA
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 04:51:57 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5033918c09eso2597568e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 04:51:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20230601.gappssmtp.com; s=20230601; t=1696593091; x=1697197891; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rvlaPDr0ZaJ1x37a2ONF6H4ToXENQDx2tAlrZ4vOKTQ=;
-        b=F9IAOAv1dEQPMt17AaKIMdIJstyTYMqRM6WS1md2+vjcEcufmF0zygf3HO3V42eYf4
-         Th13BLQh3mXdCM7CpEsjswdYErh7ZML/ZghxvN3xd1GQX1ZgTWh6EMVNSxaPyxUl3683
-         kQSeheDV7bzkCBmS7cHB45GHHr2LxgTSMZ8fVxQ2e7FontDqhEVCe54sOzJbBv3vfTjX
-         EDdyvQY3cnDGXInNl48qgW00BLNfl6UGPRVQxoNeE3Y+6uQuW2oXq8w7osWBc4QQGwWs
-         PpCJvL/fudj2jNGOyXpGhDapknzYgN64+Xi0sM6qreRQLKbw8rQJxo8wbPfqJF1EKmMs
-         mhrQ==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696593116; x=1697197916; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=C9Fu9pZwHvbe3yOhUi4vBaHVRbGW0hT6b2oIce4vCFM=;
+        b=j25lHW8tVld5f1597X5nkczjlroK+lMkJQ+S1vZSb16XXofGD3q5Fg6UF/vUaMIsQ1
+         5kt3eQ7EsMY2h+YEpj1JriY5s6qPzcmf7OmW0ZTVfD2whR8J9A1kMo8GDz9lJ/NDZOOa
+         P8sKxKWcss1OAGHKNLnir0TM46VUOAy+O6ByzUpOVDrpcf4wyIOrjwhTKDpbC09Zcwn+
+         d5NnmbxTcdQNXtJMIkX7reqGGQK/PkLMYZikvnXpwom8kSICGsEDNaX3M+NIcSsCS3ry
+         J54BAD1K5SoWEp1dAG1NJMBmTynj0m+HPdaU/V3A4GMheiF70KEdl6eYv3KqaDYm/vRK
+         dFCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696593091; x=1697197891;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rvlaPDr0ZaJ1x37a2ONF6H4ToXENQDx2tAlrZ4vOKTQ=;
-        b=qIbxNhPWiFreT9Isof1/C65uoXwV3hOz6O/sPwOB7locV+MLQEF0eM4inonr+MP7nz
-         o3vEKSsUBZ6GnUDCGECicHgQDHQao5SLUwNSp/w9JopPNB61dorL+Fs21+ToeKgmwRuE
-         7A0zz4la8ZbCkDK1uwHNoSBsFolY8DzXoG48qGgCUMsXZ2SY+f8WlS746tAudOUtBHc3
-         lVM29zZKpljz8Yad36O5h7oCPttEVIwY+NOYVSn5ypK6BshbNyye6NlTVaCIdd/7QWZ8
-         PKgHH1xErEdUe5MxUpVEG5jiKCiJq//kox5/OumLCObcXygW35RG8kVeb/w5ElxWZN7P
-         Mn+Q==
-X-Gm-Message-State: AOJu0YxgnE0KwyqUEbzZmX+NiMhrhNyBi0ZKWWdONV7QXe6XBI11F7L1
-        N9FXswybTFnAoqvO0d5Wq7NkWQ==
-X-Google-Smtp-Source: AGHT+IFR5hqtYTXozK4kSlJkLHQDyAnNdUmjKDyiuo+Xn23zdFBiJ3GnlASYbFinkoIkYM4FK6OUcw==
-X-Received: by 2002:a05:6a20:8419:b0:161:2389:e34b with SMTP id c25-20020a056a20841900b001612389e34bmr9981678pzd.13.1696593091546;
-        Fri, 06 Oct 2023 04:51:31 -0700 (PDT)
-Received: from [10.16.161.199] (napt.igel.co.jp. [219.106.231.132])
-        by smtp.gmail.com with ESMTPSA id u23-20020a62ed17000000b006884844dfcdsm1264512pfh.55.2023.10.06.04.51.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 04:51:31 -0700 (PDT)
-Message-ID: <88775092-78d7-d1b6-100b-369079ff979b@igel.co.jp>
-Date:   Fri, 6 Oct 2023 20:51:26 +0900
+        d=1e100.net; s=20230601; t=1696593116; x=1697197916;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C9Fu9pZwHvbe3yOhUi4vBaHVRbGW0hT6b2oIce4vCFM=;
+        b=t55fUPAQGqZZnzXAjdRgX3nJrUk/CnWkRiQZH8RpwOPThlxLAW9Eadww6Nr6u5cdzg
+         ywjlft6anGQz6dktUYIWxoWS+e60Jc91+hbyJW9QuyLxEB2KQs/n3qy/7E6vKHJr1N0F
+         cWr7dakT7R+nAcLArcSPbjQ8D570Brcqb+OV5Pi2p4wsTUID+ctn9dl5rGbXaLvkMLBz
+         mOaqofx3PiUgKk27+7l4jIrRD9e0wXdN5m24HQaBRHHRrLYMwn9OgSZCap6e1gW1Sr6E
+         TfsdDn9DfclJdzhcCLGia582HTPyiXXhavxH+E8Iu/ZhCmVP/KvTa+uWKbJ/zHfqHnDH
+         zW8w==
+X-Gm-Message-State: AOJu0YwOKGxQbhyJb8i8bcII7s+ei+Yoh2qQZVExFsJbIOhyV8kvKQMs
+        ydEo65T9PLsZBmzJ2Vu0B5eK9hK+IC+Ps6YBCrE=
+X-Google-Smtp-Source: AGHT+IFPR4swyIG+AUk+8DPiEdgxLmGYVlZGtc6867/z5zYIXVDN33m77/cCvbJar1vXIuxQGf6I/Q==
+X-Received: by 2002:a05:6512:3488:b0:503:a76:4eeb with SMTP id v8-20020a056512348800b005030a764eebmr6317894lfr.16.1696593115805;
+        Fri, 06 Oct 2023 04:51:55 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:8160:8fdc:c61c:a0a6])
+        by smtp.gmail.com with ESMTPSA id i2-20020a05600c290200b004063d8b43e7sm5834057wmd.48.2023.10.06.04.51.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 04:51:55 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dipen Patel <dipenp@nvidia.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [RFC/RFT PATCH] gpiolib: reverse-assign the fwnode to struct gpio_chip
+Date:   Fri,  6 Oct 2023 13:51:47 +0200
+Message-Id: <20231006115147.18559-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [RFC] Proposal of QEMU PCI Endpoint test environment
-Content-Language: en-US
-To:     Mattias Nissler <mnissler@rivosinc.com>
-Cc:     cz172638@gmail.com, bhelgaas@google.com,
-        Jagannathan Raman <jag.raman@oracle.com>, kishon@kernel.org,
-        kvijayab@amd.com, kw@linux.com, levon@movementarian.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org,
-        Marcel Apfelbaum <marcel.apfelbaum@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, qemu-devel@nongnu.org,
-        robh@kernel.org, thanos.makatos@nutanix.com, vaishnav.a@ti.com,
-        william.henderson@nutanix.com
-References: <CAGNS4TbhS3XnCFAEi378+cSmJvGMdjN2oTv=tES36vbV4CaDuA@mail.gmail.com>
- <CANXvt5qKxfU3p1eSK4fkzRFRBXHSVvSkJrnQRLKPkQjhsMGNzQ@mail.gmail.com>
- <CAGNS4TbAgqRQepv=fMoUxo02Qea5S9LwWFm-jjt1ej8DdLjshw@mail.gmail.com>
-From:   Shunsuke Mie <mie@igel.co.jp>
-In-Reply-To: <CAGNS4TbAgqRQepv=fMoUxo02Qea5S9LwWFm-jjt1ej8DdLjshw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-On 2023/10/05 16:02, Mattias Nissler wrote:
-> On Thu, Oct 5, 2023 at 3:31 AM Shunsuke Mie <mie@igel.co.jp> wrote:
->> Hi Jiri, Mattias and all.
->>
->> 2023年10月4日(水) 16:36 Mattias Nissler <mnissler@rivosinc.com>:
->>>> hi shunsuke, all,
->>>> what about vfio-user + qemu?
->> Thank you for the suggestion.
->>
->>> FWIW, I have had some good success using VFIO-user to bridge software components to hardware designs. For the most part, I have been hooking up software endpoint models to hardware design components speaking the PCIe transaction layer protocol. The central piece you need is a way to translate between the VFIO-user protocol and PCIe transaction layer messages, basically converting ECAM accesses, memory accesses (DMA+MMIO), and interrupts between the two worlds. I have some code which implements the basics of that. It's certainly far from complete (TLP is a massive protocol), but it works well enough for me. I believe we should be able to open-source this if there's interest, let me know.
->> It is what I want to do, but I'm not familiar with the vfio and vfio-user, and I have a question. QEMU has a PCI TLP communication implementation for Multi-process QEMU[1]. It is similar to your success.
-> I'm no qemu expert, but my understanding is that the plan is for the
-> existing multi-process QEMU implementation to eventually be
-> superseded/replaced by the VFIO-user based one (qemu folks, please
-> correct me if I'm wrong). From a functional perspective they are more
-> or less equivalent AFAICT.
->
-The project is promising.
+struct gpio_chip is not only used to carry the information needed to
+set-up a GPIO device but is also used in all GPIOLIB callbacks and is
+passed to the matching functions of lookup helpers.
 
-I found a session about the vfio adapts to Multi-process QEMU[1] in KVM 
-Forun 2021, butI couldn't found some posted patches.
-If anyone knows status of this project, could you please let me know?
+In that last case, it is currently impossible to match a GPIO device by
+fwnode unless it was explicitly assigned to the chip in the provider
+code. If the fwnode is taken from the parent device, the pointer in
+struct gpio_chip will remain NULL.
 
-[1] https://www.youtube.com/watch?v=NBT8rImx3VE
->> The multi-process qemu also communicates TLP over UDS. Could you let me know your opinion about it?
-> Note that neither multi-process qemu nor VFIO-user actually pass
-> around TLPs, but rather have their own command language to encode
-> ECAM, MMIO, DMA, interrupts etc. However, translation from/to TLP is
-> possible and works well enough in my experience.
-I agree.
->>> One thing to note is that there are currently some limits to bridging VFIO-user / TLP that I haven't figured out and/or will need further work: Advanced PCIe concepts like PASID, ATS/PRI, SR-IOV etc. may lack equivalents on the VFIO-user side that would have to be filled in. The folk behind libvfio-user[2] have been very approachable and open to improvements in my experience though.
->>>
->>> If I understand correctly, the specific goal here is testing PCIe endpoint designs against a Linux host. What you'd need for that is a PCI host controller for the Linux side to talk to and then hooking up endpoints on the transaction layer. QEMU can simulate host controllers that work with existing Linux drivers just fine. Then you can put a vfio-user-pci stub device (I don't think this has landed in qemu yet, but you can find the code at [1]) on the simulated PCI bus which will expose any software interactions with the endpoint as VFIO-user protocol messages over unix domain socket. The piece you need to bring is a VFIO-user server that handles these messages. Its task is basically translating between VFIO-user and TLP and then injecting TLP into your hardware design.
->> Yes, If the pci host controller you said can be implemented, I can achieve my goal.
-> I meant to say that the existing PCIe host controller implementations
-> in qemu can be used as is.
-Sorry, I misunderstood.
->> To begin with, I'll investigate the vfio and libvfio-user.  Thanks!.
->>
->> [1] https://www.qemu.org/docs/master/system/multi-process.html
->>
->> Best,
->> Shunsuke
->>>
->>> [1] https://github.com/oracle/qemu/tree/vfio-user-p3.1 - I believe that's the latest version, Jagannathan Raman will know best
->>> [2] https://github.com/nutanix/libvfio-user
->>>
+If we have a parent device but gc->fwnode was not assigned by the
+provider, let's assign it ourselves so that lookup by fwnode can work in
+all cases.
+
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+This is something that Dipen reported with one of the tegra drivers where
+a GPIO lookup by fwnode does not work because the fwnode pointer in struct
+gpio_chip is NULL. This patch addresses this use-case.
+
+ drivers/gpio/gpiolib.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 191f9c87b4d0..a0e3d255fb73 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -782,6 +782,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 			       struct lock_class_key *lock_key,
+ 			       struct lock_class_key *request_key)
+ {
++	struct fwnode_handle *parent_fwnode;
+ 	struct gpio_device *gdev;
+ 	unsigned long flags;
+ 	unsigned int i;
+@@ -806,10 +807,13 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 	 * If the calling driver did not initialize firmware node,
+ 	 * do it here using the parent device, if any.
+ 	 */
+-	if (gc->fwnode)
++	if (gc->fwnode) {
+ 		device_set_node(&gdev->dev, gc->fwnode);
+-	else if (gc->parent)
+-		device_set_node(&gdev->dev, dev_fwnode(gc->parent));
++	} else if (gc->parent) {
++		parent_fwnode = dev_fwnode(gc->parent);
++		device_set_node(&gdev->dev, parent_fwnode);
++		gc->fwnode = parent_fwnode;
++	}
+ 
+ 	gdev->id = ida_alloc(&gpio_ida, GFP_KERNEL);
+ 	if (gdev->id < 0) {
+-- 
+2.39.2
+
