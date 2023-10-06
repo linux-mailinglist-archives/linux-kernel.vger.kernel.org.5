@@ -2,80 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 899F17BBA04
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B80BA7BBA06
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbjJFOMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 10:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55684 "EHLO
+        id S232518AbjJFOM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 10:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232378AbjJFOMq (ORCPT
+        with ESMTP id S232502AbjJFOMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 10:12:46 -0400
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A15CAC;
-        Fri,  6 Oct 2023 07:12:42 -0700 (PDT)
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id EFA6C52050C;
-        Fri,  6 Oct 2023 16:12:39 +0200 (CEST)
-Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.32; Fri, 6 Oct
- 2023 16:12:39 +0200
-From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
-To:     <gregkh@linuxfoundation.org>, <s.hauer@pengutronix.de>,
-        <jonathanh@nvidia.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <quic_linyyuan@quicinc.com>, <paul@crapouillou.net>,
-        <quic_eserrao@quicinc.com>, <erosca@de.adit-jv.com>,
-        gah2hi <external.Hardik.Gajjar@de.bosch.com>
-Subject: [PATCH] usb: gadget: u_ether: Replace netif_stop_queue with netif_device_detach
-Date:   Fri, 6 Oct 2023 16:12:31 +0200
-Message-ID: <20231006141231.7220-1-hgajjar@de.adit-jv.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 6 Oct 2023 10:12:54 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB678A6;
+        Fri,  6 Oct 2023 07:12:50 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 55C5C1C0012;
+        Fri,  6 Oct 2023 14:12:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696601568;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=agJi0nKF7FOULQsqtdpXdutlZ5f5eTcBhobxYJ95y04=;
+        b=OcgiKH3GTtvsfq6zaW1CVNcZt6+/AyeiINmUGtHdnWt5I7aMH0YFCydwd+KdJRebhS3YF3
+        CzQ0U5Qzp4MRTjFa1yPiP9VMS591VG9jM1g19DNWzZ/bBB9UEIv0Wxp2HN2SyZWYzyuSxr
+        yYzmblz7wnLSDcJIuRV2+OxX+fbx90bWisN2Rr+1xDgXj4wE0f9vu91E8yaABUQi9iGKJ+
+        45aqO9ZGQE0YfVlmO7bzAeeccDPi/blNgqNGkuPUsW6hTNNXSFxj5Hq3TgT8XW0jBz8NLE
+        iYw5koCOBfMzYi9VvVLScS73uevl2lVNuVOBKto2iXtQXdqL0hfMKFVBgFpvQw==
+From:   =?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Michal Kubecek <mkubecek@suse.cz>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Simon Horman <horms@kernel.org>,
+        Kory Maincent <kory.maincent@bootlin.com>,
+        thomas.petazzoni@bootlin.com, Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH net v2 1/1] ethtool: Fix mod state of verbose no_mask bitset
+Date:   Fri,  6 Oct 2023 16:12:46 +0200
+Message-Id: <20231006141246.3747944-1-kory.maincent@bootlin.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.72.93.77]
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gah2hi <external.Hardik.Gajjar@de.bosch.com>
+From: Kory Maincent <kory.maincent@bootlin.com>
 
-This patch replaces the usage of netif_stop_queue with netif_device_detach
-in the u_ether driver. The netif_device_detach function not only stops all
-tx queues by calling netif_tx_stop_all_queues but also marks the device as
-removed by clearing the __LINK_STATE_PRESENT bit.
+A bitset without mask in a _SET request means we want exactly the bits in
+the bitset to be set. This works correctly for compact format but when
+verbose format is parsed, ethnl_update_bitset32_verbose() only sets the
+bits present in the request bitset but does not clear the rest. The commit
+6699170376ab fixes this issue by clearing the whole target bitmap before we
+start iterating. The solution proposed brought an issue with the behavior
+of the mod variable. As the bitset is always cleared the old val will
+always differ to the new val.
 
-This change helps notify user space about the disconnection of the device
-more effectively, compared to netif_stop_queue, which only stops a single
-transmit queue.
+Fix it by adding a new temporary variable which save the state of the old
+bitmap.
 
-Signed-off-by: gah2hi <external.Hardik.Gajjar@de.bosch.com>
+Fixes: 6699170376ab ("ethtool: fix application of verbose no_mask bitset")
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 ---
- drivers/usb/gadget/function/u_ether.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/function/u_ether.c b/drivers/usb/gadget/function/u_ether.c
-index 4bb0553da658..9d1c40c152d8 100644
---- a/drivers/usb/gadget/function/u_ether.c
-+++ b/drivers/usb/gadget/function/u_ether.c
-@@ -1200,7 +1200,7 @@ void gether_disconnect(struct gether *link)
+Changes in v2:
+- Fix the allocated size.
+---
+ net/ethtool/bitset.c | 31 +++++++++++++++++++++++++------
+ 1 file changed, 25 insertions(+), 6 deletions(-)
+
+diff --git a/net/ethtool/bitset.c b/net/ethtool/bitset.c
+index 0515d6604b3b..8a6b35c920cd 100644
+--- a/net/ethtool/bitset.c
++++ b/net/ethtool/bitset.c
+@@ -432,7 +432,9 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
+ 			      struct netlink_ext_ack *extack, bool *mod)
+ {
+ 	struct nlattr *bit_attr;
++	u32 *tmp = NULL;
+ 	bool no_mask;
++	bool dummy;
+ 	int rem;
+ 	int ret;
  
- 	DBG(dev, "%s\n", __func__);
+@@ -448,8 +450,16 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
+ 	}
  
--	netif_stop_queue(dev->net);
-+	netif_device_detach(dev->net);
- 	netif_carrier_off(dev->net);
+ 	no_mask = tb[ETHTOOL_A_BITSET_NOMASK];
+-	if (no_mask)
+-		ethnl_bitmap32_clear(bitmap, 0, nbits, mod);
++	if (no_mask) {
++		unsigned int nwords = DIV_ROUND_UP(nbits, 32);
++		unsigned int nbytes = nwords * sizeof(u32);
++
++		tmp = kcalloc(nwords, sizeof(u32), GFP_KERNEL);
++		if (!tmp)
++			return -ENOMEM;
++		memcpy(tmp, bitmap, nbytes);
++		ethnl_bitmap32_clear(bitmap, 0, nbits, &dummy);
++	}
  
- 	/* disable endpoints, forcing (synchronous) completion
+ 	nla_for_each_nested(bit_attr, tb[ETHTOOL_A_BITSET_BITS], rem) {
+ 		bool old_val, new_val;
+@@ -458,13 +468,19 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
+ 		if (nla_type(bit_attr) != ETHTOOL_A_BITSET_BITS_BIT) {
+ 			NL_SET_ERR_MSG_ATTR(extack, bit_attr,
+ 					    "only ETHTOOL_A_BITSET_BITS_BIT allowed in ETHTOOL_A_BITSET_BITS");
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto out;
+ 		}
+ 		ret = ethnl_parse_bit(&idx, &new_val, nbits, bit_attr, no_mask,
+ 				      names, extack);
+ 		if (ret < 0)
+-			return ret;
+-		old_val = bitmap[idx / 32] & ((u32)1 << (idx % 32));
++			goto out;
++
++		if (no_mask)
++			old_val = tmp[idx / 32] & ((u32)1 << (idx % 32));
++		else
++			old_val = bitmap[idx / 32] & ((u32)1 << (idx % 32));
++
+ 		if (new_val != old_val) {
+ 			if (new_val)
+ 				bitmap[idx / 32] |= ((u32)1 << (idx % 32));
+@@ -474,7 +490,10 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
+ 		}
+ 	}
+ 
+-	return 0;
++	ret = 0;
++out:
++	kfree(tmp);
++	return ret;
+ }
+ 
+ static int ethnl_compact_sanity_checks(unsigned int nbits,
 -- 
-2.17.1
+2.25.1
 
