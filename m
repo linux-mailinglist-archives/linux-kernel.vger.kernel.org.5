@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DED7BB7A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A8F7BB7A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232114AbjJFMbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
+        id S231513AbjJFMad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbjJFMbD (ORCPT
+        with ESMTP id S232014AbjJFMa2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:31:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4FB133
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696595411;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8It8tkqkVjlZ4hD1o0BfKil40eztbarnBcDIj9TIgRw=;
-        b=AL9bsp/99fpiM5GAJnm9dLb9vECeBmidViIy+eNTRYUecjJ8vdqF1pmRP75DC08GpV4SjG
-        v22CdJwFE2mMKCcINJgwuYO08/hTKTZsz1Qq6GKR49WXWiOcSie9XFcT3s+QTCAPYjJAhF
-        FtBEACJgy7GoGbVMEb6kHR5xGY4QEmY=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-609-ztQp0NJjMNmHwGdVdSPQXA-1; Fri, 06 Oct 2023 08:30:09 -0400
-X-MC-Unique: ztQp0NJjMNmHwGdVdSPQXA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40570ccc497so15258445e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:30:09 -0700 (PDT)
+        Fri, 6 Oct 2023 08:30:28 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A840129
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:30:18 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so3819576a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:30:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696595417; x=1697200217; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=sYSZgor/RBGjf4wuXsOz+ucEbF12Vj/yAHNRuHZ3l+Q=;
+        b=i2mlEtJrA7fE5xNLnVS42Kxq7T87YxagT0s9Bdw76j2ejWhNdyBX3+3j3NLxrVP8wV
+         +FRzwA37aXtuiSKsOxqgS0Tj81X6C8JnZaJkrbfD50KwyeafelCUedU9+ogwmiCOZ/tO
+         gojugn+AEy/C5/E/1kHQ2paOQcU748fZtErmhCEEzrBFFbGDOJYopfKtL4/9RG0kYQvR
+         45+PR/bvWAHlCprhCaMR+FMGYgr4oe743UmWA4OcrYPvZtTvR9n83IY7trakfPe9sHdA
+         CQHRc1g6ZHgIh4FUdJK0tiq5n0nmN17zh3XlseHWoV548/asSm2fLvsBZk1PJ00NRv7c
+         Mlqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696595408; x=1697200208;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8It8tkqkVjlZ4hD1o0BfKil40eztbarnBcDIj9TIgRw=;
-        b=jO1N6lA+j2N4Tcql37JkK19SgPxUQISRz/9X32/OELNCSITJO3Vi0SKHJjbH3uZSqF
-         tK9R37KDep56kVrScPHVvUNxpJO2FnPMNRQNoajXPpq1XgtET17P+aBDvUM5PJijKlvI
-         z/wPl1L/fY+9YG7d6//H+yrfCVE17I1SDRbT1N+lS89/+wOB3UOXF6w7Py5msc7s7EAu
-         g3DanLqp8jldASmozgslXYIg7Zr6DFCNAVIzdPc1FCx06AkxSU5YeWdXceUnbBkSB2G+
-         yIheyAgsoLbOqVOicE0mJnD9FTRBOe5KhVEiuGzatJ0rlRd0dSxwzb9MfX/7rxhe269m
-         lF9A==
-X-Gm-Message-State: AOJu0YwAQR4yu1e8jUWBRi74htG+uYI7XET6bRN4Pkwgw92zKdidtFDo
-        SzYA27+V5ewlV30Is5xc6IAhWNU7EI6aRi6nYu/J94w6/s+6qSqCfKB0QGv3WDyLTfrz7LCPylQ
-        j6GCUbxiNpbd4//YhP4YHAs7Y
-X-Received: by 2002:a5d:654e:0:b0:31d:db92:31ae with SMTP id z14-20020a5d654e000000b0031ddb9231aemr7724612wrv.44.1696595408361;
-        Fri, 06 Oct 2023 05:30:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHPeDl/jbLTAu2J7xcFjLubeMat581zk8oYiD1AECauqAehKlE4r1vrKnp4LPajXvYKo35KQw==
-X-Received: by 2002:a5d:654e:0:b0:31d:db92:31ae with SMTP id z14-20020a5d654e000000b0031ddb9231aemr7724581wrv.44.1696595407844;
-        Fri, 06 Oct 2023 05:30:07 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c715:ee00:4e24:cf8e:3de0:8819? (p200300cbc715ee004e24cf8e3de08819.dip0.t-ipconnect.de. [2003:cb:c715:ee00:4e24:cf8e:3de0:8819])
-        by smtp.gmail.com with ESMTPSA id g7-20020a056000118700b003143c9beeaesm1559784wrx.44.2023.10.06.05.30.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 05:30:07 -0700 (PDT)
-Message-ID: <df0ccf08-1bbb-418c-0b3b-57c7288a9871@redhat.com>
-Date:   Fri, 6 Oct 2023 14:30:06 +0200
+        d=1e100.net; s=20230601; t=1696595417; x=1697200217;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sYSZgor/RBGjf4wuXsOz+ucEbF12Vj/yAHNRuHZ3l+Q=;
+        b=Pe4oVVvX6X363TeXtym1CUJgDAjSeJC178q7yoQih+LQY82VGK+O/buuCHKZp5yCy3
+         +oak212Py12RiJxInJzIXvPW8ghXAhWL/rN4Mp907KIDTYJNaYXhbOa7B1B/jJM6BAwD
+         14t+so6HfGvswvxLItPv+Zwns8OanR9ds6wualvtxcGJHjQnyDD0wXGes+pHr2U9Q060
+         f4k5LcJrV9JE86TaGV6YSjvtsno7nqp3om6Td/SSzHfLnIWRo7IwFo0DwnDMfgSKUKjj
+         eQNWmV1tBvbSsUEP8D4vv5VS2YxwH1PuOgss20PsklJoYxA9yBhoSyM9uJgSVPkFLCkA
+         Ntxw==
+X-Gm-Message-State: AOJu0YxqHZlG0e0UjOuyyNUMttjA14A6OMh4HalgvbJ2GIzdvtRp07kf
+        u+qXGCvG+9Nllw+RzCnMQbTyKg==
+X-Google-Smtp-Source: AGHT+IHTOw/VY6TBFq65jsChMS223mo3Uv9ez720nz2z/rFj0PF94m9QIFEGrTuIdcUQuzYKV9Ty9Q==
+X-Received: by 2002:a50:ee91:0:b0:51e:53eb:88a3 with SMTP id f17-20020a50ee91000000b0051e53eb88a3mr6699147edr.25.1696595417011;
+        Fri, 06 Oct 2023 05:30:17 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id v4-20020aa7d9c4000000b0052284228e3bsm2511897eds.8.2023.10.06.05.30.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 05:30:16 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 13:30:14 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Helge Deller <deller@gmx.de>, Karel Balej <balejk@matfyz.cz>,
+        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 1/2] dt-bindings: backlight: add Kinetic KTD2801 binding
+Message-ID: <20231006123014.GA96854@aspen.lan>
+References: <20231005-ktd2801-v1-0-43cd85b0629a@skole.hr>
+ <20231005-ktd2801-v1-1-43cd85b0629a@skole.hr>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     Lokesh Gidra <lokeshgidra@google.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Cc:     Peter Xu <peterx@redhat.com>, Jann Horn <jannh@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-References: <ZRXHK3hbdjfQvCCp@x1n>
- <fc27ce41-bc97-91a7-deb6-67538689021c@redhat.com> <ZRrf8NligMzwqx97@x1n>
- <CA+EESO5VtrfXv-kvDsotPLXcpMgOK5t5c+tbXZ7KWRU2O_0PBQ@mail.gmail.com>
- <CA+EESO4W2jmBSpyHkkqZV0LHnA_OyWQcvwSkfPcWmWCsAF5UWw@mail.gmail.com>
- <9434ef94-15e8-889c-0c31-3e875060a2f7@redhat.com>
- <CA+EESO4GuDXZ6newN-oF43WOxrfsZ9Ejq8RJNF2wOYq571zmDA@mail.gmail.com>
- <CAJuCfpE_h7Bj41sBiADswkUfVCoLXANuQmctdYUEgYjn6fHSCw@mail.gmail.com>
- <ZRx31TKFDGRatoC8@x1n> <c837fc02-3dbd-ba88-dacb-cf150272a4c4@redhat.com>
- <ZRyFnurIgVFVD8hd@x1n>
- <CAJuCfpFggFpPxJjx9uGe05x0fTNONgoUf=QzkpCHLx43Tbryjg@mail.gmail.com>
- <CA+EESO5UPJrWpUKLg6m=1EmG6P9oXW6ADRkbRKjijVxj641qFQ@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
-In-Reply-To: <CA+EESO5UPJrWpUKLg6m=1EmG6P9oXW6ADRkbRKjijVxj641qFQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+In-Reply-To: <20231005-ktd2801-v1-1-43cd85b0629a@skole.hr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -103,59 +80,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.10.23 01:39, Lokesh Gidra wrote:
-> On Tue, Oct 3, 2023 at 11:26 PM Suren Baghdasaryan <surenb@google.com> wrote:
->>
->> On Tue, Oct 3, 2023 at 2:21 PM Peter Xu <peterx@redhat.com> wrote:
->>>
->>> On Tue, Oct 03, 2023 at 11:08:07PM +0200, David Hildenbrand wrote:
->>>> Sorry I have to ask: has this ever been discussed on the list? I don't see
->>>> any pointers. If not, then probably the number of people that know about the
->>>> history can be counted with my two hands and that shouldn't be the basis for
->>>> making decisions.
->>>
->>> For example:
->>>
->>> https://lore.kernel.org/all/1425575884-2574-21-git-send-email-aarcange@redhat.com/
+On Thu, Oct 05, 2023 at 08:49:08PM +0200, Duje Mihanović wrote:
+> Add the dt binding for the Kinetic KTD2801 backlight driver.
+>
+> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+> ---
+>  .../bindings/leds/backlight/kinetic,ktd2801.yaml   | 46 ++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/leds/backlight/kinetic,ktd2801.yaml b/Documentation/devicetree/bindings/leds/backlight/kinetic,ktd2801.yaml
+> new file mode 100644
+> index 000000000000..970d54bac18e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/backlight/kinetic,ktd2801.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/backlight/kinetic,ktd2801.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Kinetic Technologies KTD2801 one-wire backlight
+> +
+> +maintainers:
+> +  - Duje Mihanović <duje.mihanovic@skole.hr>
+> +
+> +description: |
+> +  The Kinetic Technologies KTD2801 is a LED backlight driver controlled
+> +  by a single GPIO line. The driver can be controlled with a PWM signal
+> +  or by pulsing the GPIO line to set the backlight level. This is called
+> +  "ExpressWire".
+> +
+> +allOf:
+> +  - $ref: common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: kinetic,ktd2801
+> +
+> +  enable-gpios:
+> +    maxItems: 1
 
-Sorry, I had to process a family NMI the last couple of days.
-
->>
->> There was another submission in 2019:
->> https://lore.kernel.org/all/cover.1547251023.git.blake.caldwell@colorado.edu/
-
-It would be good to link them in the cover letter and shortly explain 
-why that wasn't merged back then (if there was any reason).
-
->>
->> Though both times it did not generate much discussion. I don't have a
->> strong preference though MOVE sounds more generic to me TBH (it
->> specifies the operation rather than REMAP which hints on how that
->> operation is carried out). But again, I'm fine either way.
-> 
-> That's a good point. IMHO, if in future we want to have the fallback
-> implemented, then MOVE would be a more appropriate name than REMAP.
-> 
->> As for UFFDIO_MOVE_ZERO_COPY_ONLY vs UFFDIO_MOVE_MODE_ALLOW_COPY, I
->> find it weird that the default (the most efficient/desired) mode of
->> operation needs a flag. I would prefer to have no flag initially and
->> add UFFDIO_MOVE_MODE_ALLOW_COPY or whatever name is more appropriate
->> when/if we ever need it. Makes sense?
-> 
-> Agreed!
-
-I agree. One could have UFFDIO_MOVE that is best-effort and documented 
-like that, and a to-be-named future extension that always works but 
-might be more expensive.
+Why "enable"? This is the line we are going to us to bitbang the
+ExpressWire protocol. Doesn't that make it a control or data pin?
 
 
-Ideally we'd have an interface that does not expose and/or rely on such 
-low-level information and simply always works, but getting that would 
-mean that we'd have to implement the fallback immediately ... so I guess 
-we'll have to expose a best-effort interface first.
-
--- 
-Cheers,
-
-David / dhildenb
-
+Daniel.
