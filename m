@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B887BB9B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49B57BB9BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbjJFNrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
+        id S232541AbjJFNrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232662AbjJFNrD (ORCPT
+        with ESMTP id S232536AbjJFNrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:47:03 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C8D10E7
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 06:46:30 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50325ce89e9so2817712e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 06:46:30 -0700 (PDT)
+        Fri, 6 Oct 2023 09:47:04 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF0A10F4
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 06:46:32 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50481a0eee7so4027489e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 06:46:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696599989; x=1697204789; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696599990; x=1697204790; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Gs9kODHBf7pe1hvttMIGP4XQeIHebOI3TikCUwTzhsU=;
-        b=Hw1Xj9YD8xe61mktLwaUCSoVaZFQprx2cR9WnnpaU3VFI5HuK8cCfMBuTkdjkCclva
-         US3Ug5bxW+Z/ECcWRllOfLgJ+BoAqy3T3UDRuM0zzGfv84+RM6a/fk+JJ6DdrPX7HscN
-         QS+mGvd0LIrlK8JBwJ3D3sAsFxSSM2pbxP6xiJ4+fAV4dqZ6naG7bUFnyFB8Psa20EtD
-         Es5RipMrx3jMvhDnsTPJLTWpehMDU9JMbOBqQZDzfoiC58hWno2C54fUTO3/zryrxbiF
-         oCcjbv5E1Jy+VMqCPO5OedugsZXCyvmgNFykVLZiO6nFi7iBwcNxR3i59ZkLpiTPdyhS
-         ptBA==
+        bh=rbOUvzEjDlea4hheqP+YItFqmSWqoancs5Dg0PuH8cA=;
+        b=mser5/1lL17Pw+gZLiOv/Izo2sdLWvSD+5mNX5aQ5cCixs2F2ZoGk3fsNOq2JFsBEa
+         lEFg8eR8JeCU8tqNOfT0KKaLkKmaYzIfXEem/WG/4UOgyRRrvftTcbWI9A9te2Ez+MbN
+         Twd/xrZ1G8nr0DMAMxL27hlKLdrzLq5uglp3vXwoIvTaE1ZNIrkih0/et6lyCr1u38Gc
+         BGtQmoefyzrZJUa0I+tZhq/7KtWnbuT9CDz/3UFHcVsFiGhpoiPEcftIfKfHLrV3UYOU
+         8udafGLcfMsSqT7mbcBOtKskFtdhNc+2jgpOu5K3XyEPfNuFPmFpQowRYC4RZZxbr7kv
+         xDCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696599989; x=1697204789;
+        d=1e100.net; s=20230601; t=1696599990; x=1697204790;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Gs9kODHBf7pe1hvttMIGP4XQeIHebOI3TikCUwTzhsU=;
-        b=ElbgLf1RwbOxlfeajR1d2WdNmBG5RcVSkzGtN7Pla2v9YmLOyY0e61/boI+O6avxxp
-         hGT1hoiSkg7EGMySYDkCvygo+a9nwz1qaf8mCuY2mv7XHE2K7S1QrIT5Uywtywn+AR4L
-         uY50NcS7y4eYBuXhJyRrLdQlu5wWMKcBcKskxWg+webvqlDt+VK6N0QJxNFE1XbMPo3l
-         qruCudTlVdL+S3evZq8OOZxvDSi/zszd3R26zJaqwQIf9bhhiaCY5VcObLUjEA+3HYFW
-         EZNmyKg2VypykgATvt3uXS04oDK9CcMbkNe0hM1IqoreaZB3l0khL4NtUJpgueUKx0JH
-         YJlA==
-X-Gm-Message-State: AOJu0YxUOQ+bTWPgYiWTaR0wGubZpy7p0rR6evksmgfoU61JDGmVg8kX
-        G1rC/06VTGH+OhSp6FGNkFSMtg==
-X-Google-Smtp-Source: AGHT+IGilaqLsNAkpUFN8HUXTZkEVfQxXSILLUJqpOsm7o4gtJ9UIFBnw+6Mj0Tl221lqSmXK7G3yQ==
-X-Received: by 2002:a05:6512:238a:b0:502:a588:6609 with SMTP id c10-20020a056512238a00b00502a5886609mr9257631lfv.3.1696599989015;
-        Fri, 06 Oct 2023 06:46:29 -0700 (PDT)
+        bh=rbOUvzEjDlea4hheqP+YItFqmSWqoancs5Dg0PuH8cA=;
+        b=XqdVK2hnb+FkxI5m4+O3w6aY9bMYLg/gd3tGhIYs4cEBaNg9ZclJBx4RtSH1SXq+dM
+         XteJ/XupHheEiThMWq8NP7I5qUPvxOXcG/3ypV4f1fiemISOJ6YHx/ZA95PHbwnpWwGi
+         v3zInsuZNxVG8atu3h3DAYkWOoycFrB221Bvg2oIOSgtROc2yNdFFT/ZTuai3e2Nmu0E
+         oZZCKPa+HATVz38Wk30F8bJGSYBOpT12SqEUiLNqKfrJbrB/xuGNCRCKQL09APY6v2sq
+         FZUOvYxiAiIVMA/GyAmdb4Btip5gEGxSiNCoHdDEbmErLoJfsf4WKVKW6bmK5cfZl3yw
+         cEIw==
+X-Gm-Message-State: AOJu0Yz6qlIQOKlZe530+fwZIrIwn+WMl/WyyEVkvSCCzZQGfx7Ot7kW
+        4PwYOBwTBiVTI3LqJw8hPEBfpA==
+X-Google-Smtp-Source: AGHT+IE03cY9cbfFat4D3ognOlfRjSknFV24Pw5RSzWKwx+wwbMMYFomv7Z/+zEYe9XkBY/RRQgYGA==
+X-Received: by 2002:a05:6512:3e0d:b0:504:320a:b420 with SMTP id i13-20020a0565123e0d00b00504320ab420mr3957398lfv.17.1696599990012;
+        Fri, 06 Oct 2023 06:46:30 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id v25-20020a197419000000b004fe37199b87sm308733lfe.156.2023.10.06.06.46.28
+        by smtp.gmail.com with ESMTPSA id v25-20020a197419000000b004fe37199b87sm308733lfe.156.2023.10.06.06.46.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 06:46:28 -0700 (PDT)
+        Fri, 06 Oct 2023 06:46:29 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 06 Oct 2023 15:46:25 +0200
-Subject: [PATCH 2/8] ASoC: mediatek: mt2701-cs42448: Convert to GPIO
- descriptors
+Date:   Fri, 06 Oct 2023 15:46:26 +0200
+Subject: [PATCH 3/8] ASoC: mt8173-max98090: Drop unused include
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231006-descriptors-asoc-mediatek-v1-2-07fe79f337f5@linaro.org>
+Message-Id: <20231006-descriptors-asoc-mediatek-v1-3-07fe79f337f5@linaro.org>
 References: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
 In-Reply-To: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
 To:     Bartosz Golaszewski <brgl@bgdev.pl>,
@@ -74,117 +73,34 @@ Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver is pretty straight-forward to convert to use GPIO
-descriptors, however a separate patch is needed to accept
-the DT GPIO resources ending with "-gpio1" and "-gpio2"
-instead of the standard "-gpio" or "-gpios" name convention.
+This driver includes the legacy GPIO header <linux/gpio.h> but
+is not using any symbols from it. Drop the include.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- sound/soc/mediatek/mt2701/mt2701-cs42448.c | 54 ++++++++++++------------------
- 1 file changed, 22 insertions(+), 32 deletions(-)
+ sound/soc/mediatek/mt8173/mt8173-max98090.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-cs42448.c b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
-index 08ef109744c7..81b695a19dc7 100644
---- a/sound/soc/mediatek/mt2701/mt2701-cs42448.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
-@@ -10,16 +10,15 @@
+diff --git a/sound/soc/mediatek/mt8173/mt8173-max98090.c b/sound/soc/mediatek/mt8173/mt8173-max98090.c
+index bfb2094758ff..0200da192116 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-max98090.c
++++ b/sound/soc/mediatek/mt8173/mt8173-max98090.c
+@@ -9,7 +9,6 @@
  #include <linux/module.h>
  #include <sound/soc.h>
- #include <linux/delay.h>
+ #include <sound/jack.h>
 -#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/pinctrl/consumer.h>
--#include <linux/of_gpio.h>
+ #include "../../codecs/max98090.h"
  
- #include "mt2701-afe-common.h"
- 
- struct mt2701_cs42448_private {
- 	int i2s1_in_mux;
--	int i2s1_in_mux_gpio_sel_1;
--	int i2s1_in_mux_gpio_sel_2;
-+	struct gpio_desc *i2s1_in_mux_sel_1;
-+	struct gpio_desc *i2s1_in_mux_sel_2;
- };
- 
- static const char * const i2sin_mux_switch_text[] = {
-@@ -53,20 +52,20 @@ static int mt2701_cs42448_i2sin1_mux_set(struct snd_kcontrol *kcontrol,
- 
- 	switch (ucontrol->value.integer.value[0]) {
- 	case 0:
--		gpio_set_value(priv->i2s1_in_mux_gpio_sel_1, 0);
--		gpio_set_value(priv->i2s1_in_mux_gpio_sel_2, 0);
-+		gpiod_set_value(priv->i2s1_in_mux_sel_1, 0);
-+		gpiod_set_value(priv->i2s1_in_mux_sel_2, 0);
- 		break;
- 	case 1:
--		gpio_set_value(priv->i2s1_in_mux_gpio_sel_1, 1);
--		gpio_set_value(priv->i2s1_in_mux_gpio_sel_2, 0);
-+		gpiod_set_value(priv->i2s1_in_mux_sel_1, 1);
-+		gpiod_set_value(priv->i2s1_in_mux_sel_2, 0);
- 		break;
- 	case 2:
--		gpio_set_value(priv->i2s1_in_mux_gpio_sel_1, 0);
--		gpio_set_value(priv->i2s1_in_mux_gpio_sel_2, 1);
-+		gpiod_set_value(priv->i2s1_in_mux_sel_1, 0);
-+		gpiod_set_value(priv->i2s1_in_mux_sel_2, 1);
- 		break;
- 	case 3:
--		gpio_set_value(priv->i2s1_in_mux_gpio_sel_1, 1);
--		gpio_set_value(priv->i2s1_in_mux_gpio_sel_2, 1);
-+		gpiod_set_value(priv->i2s1_in_mux_sel_1, 1);
-+		gpiod_set_value(priv->i2s1_in_mux_sel_2, 1);
- 		break;
- 	default:
- 		dev_warn(card->dev, "%s invalid setting\n", __func__);
-@@ -382,27 +381,18 @@ static int mt2701_cs42448_machine_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	priv->i2s1_in_mux_gpio_sel_1 =
--		of_get_named_gpio(dev->of_node, "i2s1-in-sel-gpio1", 0);
--	if (gpio_is_valid(priv->i2s1_in_mux_gpio_sel_1)) {
--		ret = devm_gpio_request(dev, priv->i2s1_in_mux_gpio_sel_1,
--					"i2s1_in_mux_gpio_sel_1");
--		if (ret)
--			dev_warn(&pdev->dev, "%s devm_gpio_request fail %d\n",
--				 __func__, ret);
--		gpio_direction_output(priv->i2s1_in_mux_gpio_sel_1, 0);
--	}
-+	priv->i2s1_in_mux_sel_1 = devm_gpiod_get_optional(dev, "i2s1-in-sel-gpio1",
-+							  GPIOD_OUT_LOW);
-+	if (IS_ERR(priv->i2s1_in_mux_sel_1))
-+		return dev_err_probe(dev, PTR_ERR(priv->i2s1_in_mux_sel_1),
-+				     "error getting mux 1 selector\n");
-+
-+	priv->i2s1_in_mux_sel_2 = devm_gpiod_get_optional(dev, "i2s1-in-sel-gpio2",
-+							  GPIOD_OUT_LOW);
-+	if (IS_ERR(priv->i2s1_in_mux_sel_2))
-+		return dev_err_probe(dev, PTR_ERR(priv->i2s1_in_mux_sel_2),
-+				     "error getting mux 2 selector\n");
- 
--	priv->i2s1_in_mux_gpio_sel_2 =
--		of_get_named_gpio(dev->of_node, "i2s1-in-sel-gpio2", 0);
--	if (gpio_is_valid(priv->i2s1_in_mux_gpio_sel_2)) {
--		ret = devm_gpio_request(dev, priv->i2s1_in_mux_gpio_sel_2,
--					"i2s1_in_mux_gpio_sel_2");
--		if (ret)
--			dev_warn(&pdev->dev, "%s devm_gpio_request fail2 %d\n",
--				 __func__, ret);
--		gpio_direction_output(priv->i2s1_in_mux_gpio_sel_2, 0);
--	}
- 	snd_soc_card_set_drvdata(card, priv);
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ static struct snd_soc_jack mt8173_max98090_jack;
 
 -- 
 2.34.1
