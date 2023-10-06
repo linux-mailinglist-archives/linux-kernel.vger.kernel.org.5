@@ -2,290 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A85D47BBE41
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7EA7BBE27
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbjJFSBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 14:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60680 "EHLO
+        id S233112AbjJFR5c convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 13:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbjJFSB1 (ORCPT
+        with ESMTP id S233094AbjJFR5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 14:01:27 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE1BB6;
-        Fri,  6 Oct 2023 11:01:25 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396Cbt2I006021;
-        Fri, 6 Oct 2023 18:01:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-03-30;
- bh=/czMuQ6hMH4QeiZ7lcsz7mKC95Cguxk3rp7VNIM5q+4=;
- b=wclL4SkSsoC7NxmqsIXvjn+BWT5/GZs84FZ9eTZkyKcqL20CiKkG7FZ25YSgG1KmQn18
- ksHKfTAPQAZ3xlXWh3PXkezqj4A0Z8Qv89etF+rs9GdBcsMwUqXvf6ZruUgOHXIokzoA
- 4gSdfT4ispkkT4rHrnDBNM46ZeZ9mseeUow6LZcNhlyJll8QBeu9l/oZDd4K7/0du5on
- wL/laGqpM6DwLY6jCWCngYyVe6pPWJE1Bdt/3qFJtyLLfJUI6fBpyq2XtBHp6KoQzr5S
- VVXpflKSJw2B+QXuXJoMV1qDdfS6c47NHOKBD0VU0oylD4rC4aTBw5aWxY3F4lUIOmEc Ow== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3teb9umgyn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Oct 2023 18:01:13 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 396HQugC002971;
-        Fri, 6 Oct 2023 18:01:13 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tea4ay08d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Oct 2023 18:01:12 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W8LlU9J1sdg3lmw0H3d55TgbP/mW0feK5khfJxcoeiSAsdvNj7HvCNItSCXd2fqzFmwcSXqSmSC8kAk3cJxAXk6ZRvrFTAYExmBPM6r+QQVMA8alxY/Y2gvhU+caf6tXkPXX5aaEsAl9aP7nf+74XgbuN7FJkO6FEdWoS04wVu9d/wqxO+JZSItKVp6wASOJwyoTJJum4eFwObvBwuBdP0ocLsxqr6F0bNydkrI3tKDjdp0E6Upga3eOgfZ9JQD9tlJKIOXOZ29bs/r8cq6S2MTQhjccrLfeZC2tBVrwjbb22SlC93K3WFcSqiARpErYvyrF5ErSq6I/BVoY87++Sg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/czMuQ6hMH4QeiZ7lcsz7mKC95Cguxk3rp7VNIM5q+4=;
- b=j8HmvmvZb/gsxa/badCT2d0rpA5EZzrvv1Tgr1i9CSy9ypWRnmY4Ju7oQylm0She+hihIlyw7xxmSD2Poc5BFfevNhBaqgpkkZaKGRMbFtvN/YWtk7FmmY/V+DwdRPwDUbXM/TQd7PcNOdXBNfvYmsVGWDBTehZYSsEZm7c9upP2R3GJ4GJGAT/IL9XG6Ob5aHO7Y11VHMGIGZOn/yR7ETsuxbnRcnLP3O3HIn6sRx4GMafWLEsrpiPNvJ/r96+JGDy68fmKWrjRdKlbefWq8W9RgPIw4zafH0mha6eS+AT+ijYN+VJMUk7TbjFWCSUQO40Fmwmx02aC6OO+gMSsow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/czMuQ6hMH4QeiZ7lcsz7mKC95Cguxk3rp7VNIM5q+4=;
- b=Zx5155HeMl1Vlr+YJAXLg+WycQvc/uT03iiWdaxTNcdjKfkQRqfwgpujvjtCplFm0XWcV8G/c7hxiNMgoi68kr3VOhoCU1g4SflzsLJPCYT3TwoOZ/TKyJYHsux7GSQNf3JVjNH8OfrVasa7a6uDwXZ1w/KSXlbC7S69saMghw4=
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
- by DM4PR10MB6744.namprd10.prod.outlook.com (2603:10b6:8:10c::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Fri, 6 Oct
- 2023 18:01:09 +0000
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::7e3d:f3b3:7964:87c3]) by BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::7e3d:f3b3:7964:87c3%7]) with mapi id 15.20.6838.033; Fri, 6 Oct 2023
- 18:01:09 +0000
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-To:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        shuah@kernel.org, seanjc@google.com, dwmw2@infradead.org,
-        joe.jin@oracle.com
-Subject: [PATCH 1/1] selftests: KVM: add test to print boottime wallclock
-Date:   Fri,  6 Oct 2023 10:57:15 -0700
-Message-Id: <20231006175715.105517-1-dongli.zhang@oracle.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BL1PR13CA0127.namprd13.prod.outlook.com
- (2603:10b6:208:2bb::12) To BYAPR10MB2663.namprd10.prod.outlook.com
- (2603:10b6:a02:a9::20)
+        Fri, 6 Oct 2023 13:57:31 -0400
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A7FC6;
+        Fri,  6 Oct 2023 10:57:29 -0700 (PDT)
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6c6591642f2so517215a34.1;
+        Fri, 06 Oct 2023 10:57:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696615049; x=1697219849;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d+dhIoEDM1PenE6vLFoSqXGSc7iM/SVLbgtY4WYn6B4=;
+        b=QBoh6KbzE2wjS8YSVpxqkRvuj5Bc/XFMYoHfwzqI9DVAp6icHl/H0kMcdjpI4A6FFO
+         3K43EEJ3TmzLzdtfkXwiS1SZ0BOAFfWGeE8u13tMaT0m9jIXBBNWdWirT8Ox70LCDIg3
+         hfXaDpuqDl3YsqPfpC0+19Hc3pZX7gluzuz+fZVuhPQ1t0zh+htCZCk93Mu9Ws+mm9WM
+         Mfs9mg85b6h8TP7dlnm92Qr26iCEV7sJ6ExwhBh1h/AfoA4fIk2g+Vs/XgTvcf6AMFas
+         fNWZTSMudgHN1XCeHRGDU2rTi4Vwfjeadvo4RHtLzgiT4/xCtUa3sFEJqJAwI/Jlm014
+         oYCw==
+X-Gm-Message-State: AOJu0Yzak7bklGW1pViDA9chAaJL/9DRZT6LZKsyi2xmCwZ1j9/xD+BW
+        Pka28XJ2kpP6atMvBqcYeWIJoNzOVCywuSSk/Dw=
+X-Google-Smtp-Source: AGHT+IFQiP2+5fPGIBtxfCHPwHkFQVRVFSTgV7dwuQI3d0uucjF6cm31T6uWBAEa3xg0Xg59eK69Jb1nw5EWZV3fg2g=
+X-Received: by 2002:a4a:b807:0:b0:57b:3b64:7ea5 with SMTP id
+ g7-20020a4ab807000000b0057b3b647ea5mr8048795oop.1.1696615048770; Fri, 06 Oct
+ 2023 10:57:28 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2663:EE_|DM4PR10MB6744:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3bb5fd13-860a-408f-c843-08dbc696383a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7Z0j8or03luT5Kk367Ae7aINVJHiZtqXrBMGcXJZlEcaeGF/fxEysrPoCYubOxR1yRAn9a6K9KARNmVxJ+vkJtfz0Yn/Fex11MJFlCDXEXVvh+jseSzoihndKwbKyjJR3nRkX3yHG1YUNUXytpbNjGohmSnIQVpVhS3g8rYhkdDumPSow1zhX/YCJUCbt6OgrG5w8+EFUqZ6lui3AuJNb6FX9TKrEmz2AmEl5oce4MiWiWI9xo2ViSQMPS59McCiUAVLtKsn+cRqr9i37nhrNff87cBNsHH4eKYcfWsmAHlskYUg5iQMWzb0AmeakkeTE8eHXK1WdNfqE8nKd+dcimxBi8E26/oZ02q916hSLeDnKtVzFFDbgnSFTDswsQd4IGyGpja7At7gd53xx5g7QQEEtqSy56y1tw9y9KRtczyAxd+vgTh/hiIqgHHmHFNlPHH8SuqxxRcEnlCnFsWwoF3Us/dQIv0dw/RbVhqvXyGupVHFuU0LTDkl5T+ZpJ9GIqLlJKbrUaYQBluBlwOKa05W0kbOWQPGuec3LlFshWY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(39860400002)(346002)(376002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(2906002)(6512007)(107886003)(83380400001)(2616005)(1076003)(26005)(38100700002)(8936002)(4326008)(8676002)(41300700001)(478600001)(36756003)(966005)(6486002)(66556008)(66476007)(66946007)(86362001)(316002)(6666004)(6506007)(44832011)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XHh61IZM76hONpI9Ajplqt2Jzecc+EuaOAMoHBegaGAKp+ZZbUD9YOJC2dDM?=
- =?us-ascii?Q?tR74D3Han4rIvFtVme0Wml7EWYsFYY4nZQf8NevJDv7deOdd1DuZvGQQ6sBJ?=
- =?us-ascii?Q?4E9JrRsq6WMpHFKWzJ+ZnUQy57+g1Zhv2C7eVx/xCX9COTARX9BHOWf1SQvG?=
- =?us-ascii?Q?NQMoOUNsgG6ThQznewYGYddw+zY53XRw7AEd8s4odQjRCyUWFbuAlhMtxNC+?=
- =?us-ascii?Q?MyByCiCn8C4BfEctJc6+ITuIIaC0nkcMZJgWIuVD9reTORCpr/GZENsZY+a/?=
- =?us-ascii?Q?uSNTSZRcWGknnH4x/JZGYcLXjb8eC/RfypWynBKuBpGBpX3X/DjFS9NIZVlp?=
- =?us-ascii?Q?uuwki7RQmEqW937EDymMn1FAFbIz8EvrQxNy/uNyK2GfUjDnwxHGamtYZxsq?=
- =?us-ascii?Q?NdSVErFzA5YiJOuGm7rjXZesk4rWqIWi+vr5hp/L3uJRKdO0geSW0GBBN8eW?=
- =?us-ascii?Q?fWhJjun8nOeFSPfxDYrqS5CbUB1YFjwN9NYlayywozl8GgUONyKGx2dgmnII?=
- =?us-ascii?Q?kfcoN/9Hz86mXvC7YSw4szk9lhN/6OTBq6gsU2YaIVYXT2s3lAXXKlmsd6g+?=
- =?us-ascii?Q?8/FFBd36Cb9zddO2iR0EbwSTgmox2rOgaQYZXZAeX95Is+PQaKXAHVOF2haw?=
- =?us-ascii?Q?Azugu7ZqAZKXVWmHk/nwepglFVaAm3UL13/pHYEej6IBBwnc1jC3OtfEUQH4?=
- =?us-ascii?Q?S6PU4Rz5XIuwmefCsw9QXvevaer0OgbppVt/SVfWUwb3Ss7me+4AYD8d5Lzq?=
- =?us-ascii?Q?21w0M34+FLkIJl7MXshrAIz1riV9WSuIb5YhiVtQ5Cp5ObOVuGAxPXYjEXfk?=
- =?us-ascii?Q?wYxSqNutzLxKYuuDIilx3jeI4x48CK4P8R/hMIG/dCYQKaYIFTSCbNvv1ALg?=
- =?us-ascii?Q?zap9XFGexkS7/q2fBXMwzwq7t8iL6/VRPtl0dm/dOuXc+u+Y6RV3vcgW2EB3?=
- =?us-ascii?Q?WZG2djIU+dI2rUL2Bn9YSikxf4cZ/6bLRxVSxmyApguPPgfIeZgXWCkhk6Ku?=
- =?us-ascii?Q?0M2VMqn+WvNK7btk8e9B5+jXs5wHxSbySpi55m4vj7tbIwmAdjIq/VP430sI?=
- =?us-ascii?Q?TdLFTnyqx9OL0YzatEVeYArruzpDNwhZ0Lcdh1p6Ng+IMnKhObHbhaUIzzAq?=
- =?us-ascii?Q?09nJ6zf4F8SktxF/+gulWjVaTUv/BszZZQ99s0yjb3SWLybTl1G1AkBUe+gA?=
- =?us-ascii?Q?3oVvvzOpkmZfDKpq60haGDTh1dkGZvWAaQ87DfSuyxra5BkYsL0+aOreOyyO?=
- =?us-ascii?Q?ccyvN4Fo7CTcLu5SgAIS/umtf/fRjfY2A96HZPBL2+zw9mzkYh36pJdojvna?=
- =?us-ascii?Q?XMF7z29noIHB3w5OedEWCCo2/FHMe/74P4eu9dDzDAJlzUySOoNTWdR96lbj?=
- =?us-ascii?Q?+srJjX4FbjpQ9FbZ/5LZJdqncOdg182AV+mQ/O40EbHRiNRunBUGmoCZPzuu?=
- =?us-ascii?Q?MvJDO15SmvgaeQ25FeWPtv8WP0X7UHaiQFHbUddKJcDtKpNe+XZ6xGDns2C2?=
- =?us-ascii?Q?2X/S2j+HMCQHlzr78HuPXA7OeViN0UYH7wCGL3un7uoUz36QSokYTaEJbL9S?=
- =?us-ascii?Q?JUHvzO2guyRoU6IRiZPSFArRxJTdS1DTg75yHqIp?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: erj5bWSbA//afUHRWZVXt5j7YlRllnjT1w99Z4SdLfg8fYyJZnCDjukO27FwWQOQdGRiMw8uk3JDBPZJuph0a8sqYt+Z93LXFXJGJU86ISWPpKVVjVJPhyuGUvfYuoQeuz5WEl2VNTZGiYHLAR96Wr/GghVvHnnQxIzAIuPnUiLo4Mwr+79FWWu5GpD0qH/2wbB+n/0PrJ0Lvy/btd2xKX9gcFzXxOER0Fk/B6xGlQykN6NTCsHZAfl6yG4sRTkzFb4K+ibrYSu/n9C+Mzbq7SCH2NG/Xzxp9X5C4WMK61Nlj5aGyglgirAczPV5a1e9HYP/GGLSktsdracDxpwpEivDkcKTEkH8HWBn34LEJVM5Qa8DsXcBGD4vdyzJR4fjKBHkyN9NEL8LoOP8uIXRCKhTQT791NWoy24m93NIbORgy0QA50gvKGLzObjin4zSdAGc0CIBpwvoC5MJwz9SuS24BiMcdyD/Pa6u0V6Yx2I/T+7usBKh5albwWecNKyoY3G6egmY6PGJWViIEs0BZP2anPl4XZzzrMmlHboY3YbNU8Vi97XXc8IMtIeyu6Sn536oHqBKM5ZBqoi5fJIyxvi+XYESwHwrBdWwbG+/3GwyP+zcyqlSJwDRBt//WdmpkEP0/Al1lM+OL7Q3GbP/ITr8AUMPT1p8H3TkibNeMl2aGMBL2OB7rKw4ksmCyQSgA1EEzbyG08QuMDm7OKnVuAG4P+NzNeQKGLoszV2+O/JHLNAYkJei4tRHDfVpr1bBshG8m9EWoAoAlfNlypuZxWmIAMmjLOUxKdKadmdK6x0UaZloQwpQCeJ0lcDrWAL5ITjKQ5vcmdIdrTM6CKxWOoc9H8RMsPidmu3a/9DRPlMJl9Z7euFUX+AozbEa8sB6
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bb5fd13-860a-408f-c843-08dbc696383a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2023 18:01:09.7092
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h6VWGu/OTIsBI8bkW23O0HLTELEZTrUY2WvL0aK/DeJCPLB7bGbZvPD4PQx6wxPYCBbqdqOnMInduR7KNCv/4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6744
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-06_14,2023-10-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310060135
-X-Proofpoint-ORIG-GUID: ZQm88UL7-tVL_eX2O8iPIJvQ12gyZUW1
-X-Proofpoint-GUID: ZQm88UL7-tVL_eX2O8iPIJvQ12gyZUW1
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231004-hib_zero_bitmap_fix-v2-1-6a530b7b6e98@quicinc.com>
+ <CADyq12ziGEpkpvLv9zg91Zpp-12GW1iLnXcT8LaMt48WiKaVMw@mail.gmail.com>
+ <CAJZ5v0g8uBw6syXMC9p6BRn_E77wyUsvBOYX3dv1jwXU7k-uHA@mail.gmail.com> <ZSBCLE1VLxN-hdRD@FVFF77S0Q05N.cambridge.arm.com>
+In-Reply-To: <ZSBCLE1VLxN-hdRD@FVFF77S0Q05N.cambridge.arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 6 Oct 2023 19:57:17 +0200
+Message-ID: <CAJZ5v0jy3D13AERvPBRG+nzVupERB059zsvpb_hzcifA52=Vqw@mail.gmail.com>
+Subject: Re: [PATCH v2] PM: hibernate: Fix a bug in copying the zero bitmap to
+ safe pages
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Brian Geffon <bgeffon@google.com>,
+        Pavankumar Kondeti <quic_pkondeti@quicinc.com>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        kernel@quicinc.com,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As inspired by the discussion in [1], the boottime wallclock may drift due
-to the fact that the masterclock (or host monotonic clock) and kvmclock are
-calculated based on the algorithms in different domains.
+On Fri, Oct 6, 2023 at 7:21 PM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> Hi Rafael,
+>
+> On Wed, Oct 04, 2023 at 08:46:56PM +0200, Rafael J. Wysocki wrote:
+> > On Wed, Oct 4, 2023 at 2:19 PM Brian Geffon <bgeffon@google.com> wrote:
+> > >
+> > > On Wed, Oct 4, 2023 at 1:01 AM Pavankumar Kondeti
+> > > <quic_pkondeti@quicinc.com> wrote:
+> > > >
+> > > > The following crash is observed 100% of the time during resume from
+> > > > the hibernation on a x86 QEMU system.
+> > > >
+> > > > [   12.931887]  ? __die_body+0x1a/0x60
+> > > > [   12.932324]  ? page_fault_oops+0x156/0x420
+> > > > [   12.932824]  ? search_exception_tables+0x37/0x50
+> > > > [   12.933389]  ? fixup_exception+0x21/0x300
+> > > > [   12.933889]  ? exc_page_fault+0x69/0x150
+> > > > [   12.934371]  ? asm_exc_page_fault+0x26/0x30
+> > > > [   12.934869]  ? get_buffer.constprop.0+0xac/0x100
+> > > > [   12.935428]  snapshot_write_next+0x7c/0x9f0
+> > > > [   12.935929]  ? submit_bio_noacct_nocheck+0x2c2/0x370
+> > > > [   12.936530]  ? submit_bio_noacct+0x44/0x2c0
+> > > > [   12.937035]  ? hib_submit_io+0xa5/0x110
+> > > > [   12.937501]  load_image+0x83/0x1a0
+> > > > [   12.937919]  swsusp_read+0x17f/0x1d0
+> > > > [   12.938355]  ? create_basic_memory_bitmaps+0x1b7/0x240
+> > > > [   12.938967]  load_image_and_restore+0x45/0xc0
+> > > > [   12.939494]  software_resume+0x13c/0x180
+> > > > [   12.939994]  resume_store+0xa3/0x1d0
+> > > >
+> > > > The commit being fixed introduced a bug in copying the zero bitmap
+> > > > to safe pages. A temporary bitmap is allocated with PG_ANY flag in
+> > > > prepare_image() to make a copy of zero bitmap after the unsafe pages
+> > > > are marked. Freeing this temporary bitmap with PG_UNSAFE_KEEP later
+> > > > results in an inconsistent state of unsafe pages. Since free bit is
+> > > > left as is for this temporary bitmap after free, these pages are
+> > > > treated as unsafe pages when they are allocated again. This results
+> > > > in incorrect calculation of the number of pages pre-allocated for the
+> > > > image.
+> > > >
+> > > > nr_pages = (nr_zero_pages + nr_copy_pages) - nr_highmem - allocated_unsafe_pages;
+> > > >
+> > > > The allocate_unsafe_pages is estimated to be higher than the actual
+> > > > which results in running short of pages in safe_pages_list. Hence the
+> > > > crash is observed in get_buffer() due to NULL pointer access of
+> > > > safe_pages_list.
+> > > >
+> > > > Fix this issue by creating the temporary zero bitmap from safe pages
+> > > > (free bit not set) so that the corresponding free bits can be cleared while
+> > > > freeing this bitmap.
+> > > >
+> > > > Cc: stable <stable@kernel.org>
+> > > > Fixes: 005e8dddd497 ("PM: hibernate: don't store zero pages in the image file")
+> > > > Suggested-by:: Brian Geffon <bgeffon@google.com>
+> > > > Signed-off-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
+> > >
+> > > Reviewed-by: Brian Geffon <bgeffon@google.com>
+> >
+> > Applied as 6.7 material, but without the Cc: stable tag that is (a)
+> > invalid (there should be vger.kernel.org in the host part) and (b)
+> > unnecessary AFAICS.
+>
+> Just to check, did you mean as v6.6 material?
 
-This is to introduce a testcase to print the boottime wallclock
-periodically to help diagnose the wallclock drift issue in the future.
+Yes, I did, sorry.
 
-The idea is to wrmsr the MSR_KVM_WALL_CLOCK_NEW, and read the boottime
-wallclock nanoseconds immediately.
+Actually, I've just sent a pull request with it.
 
-References:
-[1] https://lore.kernel.org/all/20231001111313.77586-1-nsaenz@amazon.com
+> I'm consistently hitting this on real arm64 hardware with v6.6-rc*.
+>
+> If this is v6.7 material, are we going to revert 005e8dddd497 for now?
+>
+> I've tested the above patch atop v6.6-rc3, and it solves the problem for me, so
+> FWIW:
+>
+> Tested-by: Mark Rutland <mark.rutland@arm.com>
 
-Cc: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
----
- tools/testing/selftests/kvm/Makefile          |   3 +-
- .../selftests/kvm/x86_64/boottime_wallclock.c | 100 ++++++++++++++++++
- 2 files changed, 102 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/kvm/x86_64/boottime_wallclock.c
-
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index a3bb36fb3cfc..fea05b0118de 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -60,7 +60,8 @@ LIBKVM_riscv += lib/riscv/ucall.c
- TEST_PROGS_x86_64 += x86_64/nx_huge_pages_test.sh
- 
- # Compiled test targets
--TEST_GEN_PROGS_x86_64 = x86_64/cpuid_test
-+TEST_GEN_PROGS_x86_64 = x86_64/boottime_wallclock
-+TEST_GEN_PROGS_x86_64 += x86_64/cpuid_test
- TEST_GEN_PROGS_x86_64 += x86_64/cr4_cpuid_sync_test
- TEST_GEN_PROGS_x86_64 += x86_64/dirty_log_page_splitting_test
- TEST_GEN_PROGS_x86_64 += x86_64/get_msr_index_features
-diff --git a/tools/testing/selftests/kvm/x86_64/boottime_wallclock.c b/tools/testing/selftests/kvm/x86_64/boottime_wallclock.c
-new file mode 100644
-index 000000000000..cc48c9b19920
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/boottime_wallclock.c
-@@ -0,0 +1,100 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2023 Oracle and/or its affiliates.
-+ */
-+
-+#include <asm/kvm_para.h>
-+#include <asm/pvclock-abi.h>
-+
-+#include "kvm_util.h"
-+#include "processor.h"
-+
-+static int period = 10;
-+
-+#define GUEST_SYNC_WALLCLOCK(__stage, __val)                        \
-+		GUEST_SYNC_ARGS(__stage, __val, 0, 0, 0)
-+
-+static void guest_main(vm_paddr_t wc_pa, struct pvclock_wall_clock *wc)
-+{
-+	uint64_t wallclock;
-+
-+	while (true) {
-+		wrmsr(MSR_KVM_WALL_CLOCK_NEW, wc_pa);
-+
-+		wallclock = wc->sec * NSEC_PER_SEC + wc->nsec;
-+
-+		GUEST_SYNC_WALLCLOCK(0, wallclock);
-+	}
-+}
-+
-+static void handle_sync(struct ucall *uc)
-+{
-+	uint64_t wallclock;
-+
-+	wallclock = uc->args[2];
-+
-+	pr_info("Boottime wallclock value: %"PRIu64" ns\n", wallclock);
-+}
-+
-+static void handle_abort(struct ucall *uc)
-+{
-+	REPORT_GUEST_ASSERT(*uc);
-+}
-+
-+static void enter_guest(struct kvm_vcpu *vcpu)
-+{
-+	struct ucall uc;
-+
-+	while (true) {
-+		vcpu_run(vcpu);
-+
-+		TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
-+
-+		switch (get_ucall(vcpu, &uc)) {
-+		case UCALL_SYNC:
-+			handle_sync(&uc);
-+			break;
-+		case UCALL_ABORT:
-+			handle_abort(&uc);
-+			return;
-+		default:
-+			TEST_ASSERT(0, "unhandled ucall: %ld\n", uc.cmd);
-+			return;
-+		}
-+
-+		sleep(period);
-+	}
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct kvm_vcpu *vcpu;
-+	struct kvm_vm *vm;
-+	vm_vaddr_t wc_gva;
-+	vm_paddr_t wc_gpa;
-+	int opt;
-+
-+	while ((opt = getopt(argc, argv, "p:h")) != -1) {
-+		switch (opt) {
-+		case 'p':
-+			period = atoi_positive("The period (seconds)", optarg);
-+			break;
-+		case 'h':
-+		default:
-+			pr_info("usage: %s [-p period (seconds)]\n", argv[0]);
-+			exit(1);
-+		}
-+	}
-+
-+	pr_info("Capture boottime wallclock every %d seconds.\n", period);
-+	pr_info("Stop with Ctrl + c.\n\n");
-+
-+	vm = vm_create_with_one_vcpu(&vcpu, guest_main);
-+
-+	wc_gva = vm_vaddr_alloc(vm, getpagesize(), 0x10000);
-+	wc_gpa = addr_gva2gpa(vm, wc_gva);
-+	vcpu_args_set(vcpu, 2, wc_gpa, wc_gva);
-+
-+	enter_guest(vcpu);
-+	kvm_vm_free(vm);
-+}
--- 
-2.34.1
-
+Thanks a lot for verifying this!  Alas, it is too late to add the tag ...
