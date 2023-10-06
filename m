@@ -2,218 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3144E7BBDD8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA6B7BBDE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233067AbjJFRdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 13:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
+        id S232918AbjJFRiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 13:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232774AbjJFRdf (ORCPT
+        with ESMTP id S232552AbjJFRiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 13:33:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22794C2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 10:33:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EC23C433C9;
-        Fri,  6 Oct 2023 17:33:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696613613;
-        bh=4IY5wvH6Tu8PjK8sB+KMGi/o7CRamiSkVLdDByB8yd8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JLgw/UkCyfmsvFHkORbsNApmlFxfQIWwAspg7Fgtj7uPVIWdvAhtw04GGiTbDYQgU
-         1NcRUUKEdX98ooHi0UShUy8PN3FdMPPaykMmKqJK+nG7EdgTbceY7vSGy9qCM1QQvi
-         RkkVLS9B7Kv445176PYUUham34401aZOlX6CwIKbjTM1DmC8nNUKjLfabxIW1VcsMF
-         id2cn/dFAO1AG1GG+6/5eS2voYp3c+sXJEDLrfjeWZvg42g2KtTaAdrhU8+EOIOswF
-         uvVTpmOpUNHgJrjWPfo/NvPCdZb55r9VdDBIIOpd8W4TUMwcV4GxQxdf92GByJiWNL
-         CsSL1voPt3ONQ==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5044dd5b561so2928579e87.1;
-        Fri, 06 Oct 2023 10:33:33 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyWyIlen5VyOrw6TrBzNXgv4ZDiAm3PF1iwGmb1vJSFasUWWHU8
-        GBNm6QwZFY/pfEgS1FuTTAr5ZOY6CmTXMFyy/u0=
-X-Google-Smtp-Source: AGHT+IG2WFsPGJcnl4fQlvIDX23yxE4FYGH11uyJoLwu4bJYLZExy/cAZV6tzSxf3TqK4KzjOHM+0kg+tpgnDaQV7yU=
-X-Received: by 2002:a19:c217:0:b0:504:7e12:4846 with SMTP id
- l23-20020a19c217000000b005047e124846mr7273243lfc.30.1696613611592; Fri, 06
- Oct 2023 10:33:31 -0700 (PDT)
+        Fri, 6 Oct 2023 13:38:03 -0400
+Received: from out-199.mta0.migadu.com (out-199.mta0.migadu.com [91.218.175.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB001C2
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 10:38:01 -0700 (PDT)
+Message-ID: <57c35480-983d-2056-1d72-f6e555069b83@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696613876;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qpXKuzg71AgBMcaKo6kzSKg7OXzsFHX5EQqRaIUxIhA=;
+        b=WfD9FbXP+XfaMTekiCdxwIA2Ul/LvowsY4QBrZ5BWJNt6IM4YA16uruGqTq54eIe4xeXf6
+        pPDH/1uRgfEVVr24mekBmZ544XqEhwaPL+soaK/g99hIBxGcRgu0DCFI6WceegYvhmfhzv
+        rtE8yomic9cJM1uYaQGbmi3/EfQMvfM=
+Date:   Fri, 6 Oct 2023 10:37:44 -0700
 MIME-Version: 1.0
-References: <20230926194242.2732127-1-sjg@chromium.org> <20230926194242.2732127-2-sjg@chromium.org>
- <CAPnjgZ0Xf3U1aj32LbU-xiU1AqwnM3JL1F8xX-wZ18oEmg+irw@mail.gmail.com>
-In-Reply-To: <CAPnjgZ0Xf3U1aj32LbU-xiU1AqwnM3JL1F8xX-wZ18oEmg+irw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 6 Oct 2023 19:33:20 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEXcX7BkDyfy-6_5Vnch=N+onza-yfWfsVaGLE93h2c+Q@mail.gmail.com>
-Message-ID: <CAMj1kXEXcX7BkDyfy-6_5Vnch=N+onza-yfWfsVaGLE93h2c+Q@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
-To:     Simon Glass <sjg@chromium.org>
-Cc:     devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Lean Sheng Tan <sheng.tan@9elements.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Dhaval Sharma <dhaval@rivosinc.com>,
-        Maximilian Brune <maximilian.brune@9elements.com>,
-        Yunhui Cui <cuiyunhui@bytedance.com>,
-        Guo Dong <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>,
-        ron minnich <rminnich@gmail.com>, Gua Guo <gua.guo@intel.com>,
-        Chiu Chasel <chasel.chiu@intel.com>,
-        linux-acpi@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf v3] net/xdp: fix zero-size allocation warning in
+ xskq_create()
+Content-Language: en-US
+To:     Andrew Kanner <andrew.kanner@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com,
+        syzbot+b132693e925cbbd89e26@syzkaller.appspotmail.com,
+        bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, aleksander.lobakin@intel.com,
+        xuanzhuo@linux.alibaba.com, ast@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, daniel@iogearbox.net
+References: <20231005193548.515-1-andrew.kanner@gmail.com>
+ <7aa47549-5a95-22d7-1d03-ffdd251cec6d@linux.dev>
+ <651fb2a8.c20a0220.8d6c3.0fd9@mx.google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <651fb2a8.c20a0220.8d6c3.0fd9@mx.google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Oct 2023 at 19:54, Simon Glass <sjg@chromium.org> wrote:
->
-> Hi Rob,
->
-> On Tue, 26 Sept 2023 at 13:42, Simon Glass <sjg@chromium.org> wrote:
-> >
-> > It is common to split firmware into 'Platform Init', which does the
-> > initial hardware setup and a "Payload" which selects the OS to be booted.
-> > Thus an handover interface is required between these two pieces.
-> >
-> > Where UEFI boot-time services are not available, but UEFI firmware is
-> > present on either side of this interface, information about memory usage
-> > and attributes must be presented to the "Payload" in some form.
-> >
-> > This aims to provide an small schema addition for the memory mapping
-> > needed to keep these two pieces working together well.
-> >
-> > Signed-off-by: Simon Glass <sjg@chromium.org>
-> > ---
-> >
-> > Changes in v7:
-> > - Rename acpi-reclaim to acpi
-> > - Drop individual mention of when memory can be reclaimed
-> > - Rewrite the item descriptions
-> > - Add back the UEFI text (with trepidation)
->
-> I am again checking on this series. Can it be applied, please?
->
+On 10/6/23 12:09 AM, Andrew Kanner wrote:
+> On Thu, Oct 05, 2023 at 06:00:46PM -0700, Martin KaFai Lau wrote:
+> [...]
+>>> diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
+>>> index f8905400ee07..c7e8bbb12752 100644
+>>> --- a/net/xdp/xsk_queue.c
+>>> +++ b/net/xdp/xsk_queue.c
+>>> @@ -34,6 +34,11 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
+>>>    	q->ring_mask = nentries - 1;
+>>>    	size = xskq_get_ring_size(q, umem_queue);
+>>> +	if (unlikely(size == SIZE_MAX)) {
+>>
+>> What if "size" is SIZE_MAX-1? Would it still overflow the PAGE_ALIGN below?
+>>
+>>> +		kfree(q);
+>>> +		return NULL;
+>>> +	}
+>>> +
+>>>    	size = PAGE_ALIGN(size);
+>>>    	q->ring = vmalloc_user(size);
+>>
+> 
+> I asked myself the same question before v1. E.g. thinking about the
+> check: (size > SIZE_MAX - PAGE_SIZE + 1)
+> 
+> But xskq_create() is called after the check for
+> !is_power_of_2(entries) in xsk_init_queue(). So I tried the same
+> reproducer and divided the (nentries) value by 2 in a loop - it hits
+> either SIZE_MAX case or the normal cases without overflow (sometimes
+> throwing vmalloc error complaining about size which exceed total pages
+> in my arm setup).
+> 
+> So I can't see a way size will be SIZE_MAX-1, etc. Correct me if I'm
+> wrong, please.
+> 
+> PS: In the output below the first 2 values of (nentries) hit SIZE_MAX
 
-Apologies for the delay in response. I have been away.
+Thanks for the explanation, so iiuc it means it will overflow the struct_size() 
+first because of the is_power_of_2(nentries) requirement? Could you help adding 
+some comment to explain? Thanks.
 
->
-> >
-> > Changes in v6:
-> > - Drop mention of UEFI
-> > - Use compatible strings instead of node names
-> >
-> > Changes in v5:
-> > - Drop the memory-map node (should have done that in v4)
-> > - Tidy up schema a bit
-> >
-> > Changes in v4:
-> > - Make use of the reserved-memory node instead of creating a new one
-> >
-> > Changes in v3:
-> > - Reword commit message again
-> > - cc a lot more people, from the FFI patch
-> > - Split out the attributes into the /memory nodes
-> >
-> > Changes in v2:
-> > - Reword commit message
-> >
-> >  .../reserved-memory/common-reserved.yaml      | 71 +++++++++++++++++++
-> >  1 file changed, 71 insertions(+)
-> >  create mode 100644 dtschema/schemas/reserved-memory/common-reserved.yaml
-> >
-> > diff --git a/dtschema/schemas/reserved-memory/common-reserved.yaml b/dtschema/schemas/reserved-memory/common-reserved.yaml
-> > new file mode 100644
-> > index 0000000..f7fbdfd
-> > --- /dev/null
-> > +++ b/dtschema/schemas/reserved-memory/common-reserved.yaml
-> > @@ -0,0 +1,71 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/reserved-memory/common-reserved.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Common memory reservations
-> > +
-> > +description: |
-> > +  Specifies that the reserved memory region can be used for the purpose
-> > +  indicated by its compatible string.
-> > +
-> > +  Clients may reuse this reserved memory if they understand what it is for,
-> > +  subject to the notes below.
-> > +
-> > +maintainers:
-> > +  - Simon Glass <sjg@chromium.org>
-> > +
-> > +allOf:
-> > +  - $ref: reserved-memory.yaml
-> > +
-> > +properties:
-> > +  compatible:
-> > +    description: |
-> > +      This describes some common memory reservations, with the compatible
-> > +      string indicating what it is used for:
-> > +
-> > +         acpi: Advanced Configuration and Power Interface (ACPI) tables
-> > +         acpi-nvs: ACPI Non-Volatile-Sleeping Memory (NVS). This is reserved by
-> > +           the firmware for its use and is required to be saved and restored
-> > +           across an NVS sleep
-> > +         boot-code: Contains code used for booting which is not needed by the OS
-> > +         boot-code: Contains data used for booting which is not needed by the OS
-> > +         runtime-code: Contains code used for interacting with the system when
-> > +           running the OS
-> > +         runtime-data: Contains data used for interacting with the system when
-> > +           running the OS
-> > +
-> > +    enum:
-> > +      - acpi
-> > +      - acpi-nvs
-> > +      - boot-code
-> > +      - boot-data
-> > +      - runtime-code
-> > +      - runtime-data
-> > +
+> case, the rest hit the normal case, vmalloc_user() is complaining
+> about 1 allocation:
+> 
+> 0x20000000
+> 0x10000000
+> 0x8000000
+> [   41.759195][ T2807] pre PAGE_ALIGN size = 2147483968 (0x80000140), PAGE_SIZE = 4096 (0x1000)
+> [   41.759621][ T2807] repro-iter: vmalloc error: size 2147487744, exceeds total pages, mode:0xdc0(GFP_KERNEL|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
+> [...]
+> 0x4000000
+> 0x2000000
+> 0x1000000
+> 0x800000
+> 0x400000
+> 0x200000
+> 0x100000
+> 0x80000
+> 0x40000
+> 0x20000
+> 0x10000
+> 0x8000
+> 0x4000
+> 0x2000
+> 0x1000
+> 0x800
+> 0x400
+> 0x200
+> 0x100
+> 0x80
+> 0x40
+> 0x20
+> 0x10
+> 0x8
+> 0x4
+> 0x2
+> 
 
-As I mentioned a few times already, I don't think these compatibles
-should be introduced here.
-
-A reserved region has a specific purpose, and the compatible should be
-more descriptive than the enum above. If the consumer does not
-understand this purpose, it should simply treat the memory as reserved
-and not touch it. Alternatively, these regions can be referenced from
-other DT nodes using phandles if needed.
-
-
-> > +  reg:
-> > +    description: region of memory that is reserved for the purpose indicated
-> > +      by the compatible string.
-> > +
-> > +required:
-> > +  - reg
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    reserved-memory {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <1>;
-> > +
-> > +        reserved@12340000 {
-> > +            compatible = "boot-code";
-> > +            reg = <0x12340000 0x00800000>;
-> > +        };
-> > +
-> > +        reserved@43210000 {
-> > +            compatible = "boot-data";
-> > +            reg = <0x43210000 0x00800000>;
-> > +        };
-> > +    };
-> > --
-> > 2.42.0.515.g380fc7ccd1-goog
-> >
->
-> Regards,
-> Simon
