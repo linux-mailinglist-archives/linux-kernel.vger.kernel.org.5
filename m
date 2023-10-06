@@ -2,126 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1427BB608
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8AA7BB60C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbjJFLMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
+        id S232004AbjJFLMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231915AbjJFLMT (ORCPT
+        with ESMTP id S231915AbjJFLMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:12:19 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA67C5;
-        Fri,  6 Oct 2023 04:12:16 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 33E1B3200B46;
-        Fri,  6 Oct 2023 07:12:15 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 06 Oct 2023 07:12:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1696590734; x=1696677134; bh=qkt+m70PAHdUwl4bbxA9Wg0tllCUmbYfUGV
-        1peNteno=; b=hIvK4T7NBaS1Dz9lWQxY6XhaCxH3HKfop/ZhiwgFroEkz5UsF67
-        0IFF/LLRwZN/xBewnnys987qhZDH8vrdgQWdZtjox3eYm2zBtbGSD5Nqq9g703Wv
-        YMM7TNizUa1Vf3fNEWXzLpgQbWvPdaVBDc4eQKP761nXiF7QIyXueLjmfCPaJrFJ
-        zrTO1oro9RWWJWlyw/QlycMye30P/UL8nAARa8b1n0jg6iqkMLmZqoS9nt0Gq4Q9
-        qFVDz8slKz3o+MtLC6jZn/+uz8eu7DO7TMICaRydNt36B7OXMApnsHH+9+DR8JdZ
-        5xmT5iOke1fadJHxtvlkH8kroZh/2Yq05Cg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1696590734; x=1696677134; bh=qkt+m70PAHdUwl4bbxA9Wg0tllCUmbYfUGV
-        1peNteno=; b=hJ2tWgOaqQ1G3IUK6fK+/hNHrQwIpfqVWsTkC4YSuPqkGFcweB7
-        kMgbWk4QisAJ0OK4WC46JkZhCiHtWq8e6siGS5wzl+l6rxIzJS2HYs3GFHN4mjkN
-        RM/Gj/Af6IXBDWSmyogbttjRRDYKQ8h9552erlqBUuM3sSx8X5YcxM58V3XuZ13I
-        tfxwIDpezVGGzmbEysYupKXvk7uanqsBsqqea4ZweRSJj7/Zso3VELRfCCGLYmrw
-        KWBAIdrStq4izTFjpkLyNyLuTxtOmrOkWuQtVPViW4t7XVSnp5x6ukFkXa6MSrN5
-        WXwVrqlNhXygvFZlmyaytRLbDs3En7VF3fA==
-X-ME-Sender: <xms:jusfZZCWiMt1_JCsiYXdMaK4_2b7hLooPK7xkwm6v_DsQaqFDFixrQ>
-    <xme:jusfZXiXI1WPmyP7zhaUOkJIbBb7_Fkf6Sf0GD4cDOsPDMXjycG3yyla08KpqX0r-
-    W6LfDBnsocbfkFdgbI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeigdefiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffeftdelveejveeikeekgeejgeekfeehhfevleevveektdduiedtjeevteeh
-    ueelnecuffhomhgrihhnpehprghlohhsrggrrhhirdhfihdplhhinhhugihtvhdrohhrgh
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhn
-    ugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:jusfZUmmPeQcRyNfk_5vBhfM8hA8Lr0XdqHI0OCZar2xHhVJQfP4QA>
-    <xmx:jusfZTzP1G_UzxM9iPigFXx9D42mv36DOydvv-p5fg6dCpLlxt8UxQ>
-    <xmx:jusfZeToXx9zCpRJQl2K01VsV5TYLXqtY6dKLgUHpC__buZWPbjNgQ>
-    <xmx:jusfZTJ84k51-t8nz5TGYDcG3SRitx2ebXs24hVX_IHShlLOyx8dcQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 2F611B6008D; Fri,  6 Oct 2023 07:12:14 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+        Fri, 6 Oct 2023 07:12:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BDEF0;
+        Fri,  6 Oct 2023 04:12:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=2id1/+9flOvIccMuyVXeYT1CBOnL0U83OznUMHRoXl0=; b=aknUV9/slsQKLvyMXTeYIafutn
+        d6ts337l+E35PCRYrfxMyaPlytpaEPSfH0BmQkP1wZlNOo5t5sYO8CoXdyHATlbNvmGfM+9GjnjP+
+        bm2ibTmEaLSUSwVmndCxEyV0qUb5maBUkbulCo9gFYOwD2hOS+0E858Jc6IiCsjk4sF+Nq51Ct7ib
+        SQDgcsFzCtKzJdqmgOnTcgov2/b3I3J6U/UXdHcjKqVbJWQkwdpZr4POZmQLAWNbNCAK7UUAf2Xnx
+        BMFwlKcp9T3Bqp7GbxxPH/ojJFZ4NTqRpXHlB7XFYzaBUAT5VtC+G8qU1t0ZGk4Z1wnxKhA8wejo7
+        brKVy4kQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qoiku-00EzA1-NW; Fri, 06 Oct 2023 11:12:28 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6301D300392; Fri,  6 Oct 2023 13:12:28 +0200 (CEST)
+Date:   Fri, 6 Oct 2023 13:12:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-tip-commits@vger.kernel.org, x86@kernel.org
+Subject: Re: [tip: locking/core] locking/futex/selftests: Remove duplicate
+ ABI defines
+Message-ID: <20231006111228.GD36277@noisy.programming.kicks-ass.net>
+References: <20231006095539.1601385-1-usama.anjum@collabora.com>
+ <169658834039.3135.4395839213523782496.tip-bot2@tip-bot2>
+ <20231006104325.GC36277@noisy.programming.kicks-ass.net>
+ <ZR/oKYY7R52wKYC5@gmail.com>
+ <ZR/ptQMWKxHCeXyp@gmail.com>
+ <1b9a4e52-cfa3-4f56-b259-41c94abed362@collabora.com>
 MIME-Version: 1.0
-Message-Id: <721f56db-8e36-44aa-8984-48cdbcdc271d@app.fastmail.com>
-In-Reply-To: <20231004161038.2818327-12-gregory.clement@bootlin.com>
-References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
- <20231004161038.2818327-12-gregory.clement@bootlin.com>
-Date:   Fri, 06 Oct 2023 13:11:53 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Gregory Clement" <gregory.clement@bootlin.com>,
-        "Paul Burton" <paulburton@kernel.org>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Vladimir Kondratiev" <vladimir.kondratiev@intel.com>,
-        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 11/11] MAINTAINERS: Add entry for Mobileye MIPS SoCs
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1b9a4e52-cfa3-4f56-b259-41c94abed362@collabora.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023, at 18:10, Gregory CLEMENT wrote:
-> Add Vlad, Th=C3=A9o and myself as co-maintainers for the Mobileye MIPS
-> SoCs.
->
-> Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> ---
->  MAINTAINERS | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 90f13281d297..6aedeab5f07c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14423,6 +14423,18 @@ W:	http://palosaari.fi/linux/
->  Q:	http://patchwork.linuxtv.org/project/linux-media/list/
->  F:	drivers/media/dvb-frontends/mn88473*
->=20
-> +MOBILEYE MIPS SOCS
-> +M:	Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-> +M:	Gregory CLEMENT <gregory.clement@bootlin.com>
-> +M:	Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+On Fri, Oct 06, 2023 at 04:05:31PM +0500, Muhammad Usama Anjum wrote:
 
-Is Vladimir's @intel.com address going to stay valid in the
-future? I would have assumed that after the spin-out, all
-remaining developers working on eyeq would go back to a
-mobileye address.
+>     cd /linux_mainline/tools/testing/selftests/../../..
 
-     Arnd
+That's very odd way of writing:
+
+ cd /linux_mainline/
+
+>     make headers
+
+This does a build without O=, I can't do that. 
+
+As in, one must not mix O= and non O= builds, and since I have a ton of
+O= output dirs on, I simply can't do this.
+
+> make: *** [../../lib.mk:81: kernel_header_files] Error 1
+> ➜  functional (06bc8fe4bfc4b) ✗ (cd $mainline && make headers) > /dev/null
+> ➜  functional (06bc8fe4bfc4b) ✗ make
+> gcc  -g -O2 -Wall -D_GNU_SOURCE -pthread -I../include -I../../
+> futex_wait_timeout.c -lpthread -lrt -o
+> /linux_mainline/tools/testing/selftests/futex/functional/futex_wait_timeout
+
+root@noisy:/usr/src/linux-2.6# cd tools/testing/selftests/futex/functional/
+root@noisy:/usr/src/linux-2.6/tools/testing/selftests/futex/functional# make
+gcc  -g -O2 -Wall -D_GNU_SOURCE -pthread -I../include -I../../       futex_wait_timeout.c -lpthread -lrt -o /mnt/hirez/usr/src/linux-2.6/tools/testing/selftests/futex/functional/futex_wait_timeout
+In file included from futex_wait_timeout.c:20:
+../include/futex2test.h:18:47: warning: ‘struct futex_waitv’ declared inside parameter list will not be visible outside of this definition or declaration
+18 | static inline int futex_waitv(volatile struct futex_waitv *waiters, unsigned long nr_waiters,
+
+
+Because noisy runs a really old userspace (buster)..
+
+
+
