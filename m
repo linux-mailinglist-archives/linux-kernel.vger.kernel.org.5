@@ -2,167 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA907BB71F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C6F7BB722
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbjJFMBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
+        id S232181AbjJFMCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbjJFMBJ (ORCPT
+        with ESMTP id S232167AbjJFMCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:01:09 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3829CE
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:01:04 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1dceaa7aeffso1637272fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1696593664; x=1697198464; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C4dHLe022tfg6JAJt/ugwVPdl75c59qlrzkRNqgnv8E=;
-        b=JHRox7Y8JoZxD/ReN+Rj6I0gNWJ+vwJv+tH7uVYqDevGExDqNXjPGB135WjzNyabE8
-         33eOstDv4TyIt+Q3J5KIwThcaGLniahk18cTRTvj/LWZ9f++9ypjeO75ut2ElQPaOlVL
-         jsbN8OZq1COxDk61jDYaxqnloWp0u8boALBoLRF6lGG94LwCwFfzH518HodUv/9WT0gk
-         sAUbPlYMxs0eMYC8lida5ci7RtYNHi6eWQpGNqtWadHwQ1XzvnPIMexd6cYsK24MCku+
-         4WmbbBUvufDHxEf7vjeqD8g3UU55CU8K/JeEtfKIuGf9aO1rPNfbXwOrmQ00flvfRDN+
-         DP2Q==
+        Fri, 6 Oct 2023 08:02:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1E3CA
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:01:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696593676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kCYNyulRpx1YyhVOL3Le9TlBc2wHmh6Ikm1+wxMUQTM=;
+        b=bqRfCYmWLPMz6GIwyA176vyhWmGfvTsB+kBGbXb1fkEy9ohHZyfBWBeLoQn8m2fH5cLnJI
+        rz7HqJCCxUE5kYriW6aEqdc7jA6/uJoFqoG6seBGbVnxrUL6aL1ZgrAR/nHXpy4Mo5HzSc
+        ydePACf9Cgjph64vr4+cDy9PMpZ1t98=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-417-i5QmRvkgNBa2Tw7LccCbWw-1; Fri, 06 Oct 2023 08:01:12 -0400
+X-MC-Unique: i5QmRvkgNBa2Tw7LccCbWw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40566c578b7so15095225e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:01:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696593664; x=1697198464;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C4dHLe022tfg6JAJt/ugwVPdl75c59qlrzkRNqgnv8E=;
-        b=ALkZv/8vaWyf4FAdKCa1b9jiZjjT8ZmCHQsopJmvaMBVoH3hcFx33ZqE1Q5g5N0fmY
-         G465Mq4V9fAVKnyy/a8W4vSHieutTAvxBsZbfPZNxoANdSB+GS7ACTx0giTX0AcJL90B
-         6/vkgFA7vlpMTcp0VoUzVAaaEP0Fx7gslJqCihS9/tWLt7JG+HPQYfKf392W8V/qOcXq
-         Ea/EcGouhkkN3HlrcA7pTWasbbP+iVz9+5T4QI2l78pLtalLB7RqY+BPIPmLn+RMbjrY
-         2r1OabBKtTwG/VeDGK3PkjPyh4DaSRfP7e3DI+SZQ4lnOVeCX5sDKBT5GonZKV20u6cE
-         eraA==
-X-Gm-Message-State: AOJu0YxakrGjB6QiIPKJzpOreCDTvG8eYkjIHxrSNGsNjMkiNCvxPvYm
-        PdbSsTsV9hOjl7OuMbR2F91Am8rUrL8HeRjhR3sQTA==
-X-Google-Smtp-Source: AGHT+IHtR0I2S6gwdB3Du4+URFD8ib3OjGxKppuEG08esn3Jzi/IpuBRLxCeeR6aXGWBXeA+lBOhwhRbkeyse6Zpz+w=
-X-Received: by 2002:a05:6870:c192:b0:1d6:ce75:d472 with SMTP id
- h18-20020a056870c19200b001d6ce75d472mr2307177oad.6.1696593663716; Fri, 06 Oct
- 2023 05:01:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696593671; x=1697198471;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kCYNyulRpx1YyhVOL3Le9TlBc2wHmh6Ikm1+wxMUQTM=;
+        b=OifiVOHeW2mVmIWzW7ZA6sjCWrYYO5VycNrzhJoSXBg2d7FAiTchjPrVowhj6PNXze
+         xgqzjUhJZI2Y9NxzS2fa/vdPluwRO2cZdInnm7aE7SwW4hpUbbZXuv9mgQdxgtRT1ovY
+         8CDiGYpmr9xAJtAlCZYDf8mCTmSx3Tl+xlespidbDB2QnhdSu7/53jqcX8DInOYEAtZy
+         cNR1i9KZw6oSDdyRaydMnnzxBYdu+vG1rDhQSiqdBM4sfV6wXpUf7co/N8nQy84aE2mG
+         Z4Z6bV44Bdssgv2+xu+JVG3IW+eO5cUGNKddpkgwkZkBxu0WwRVM+1ZFdyTDtBCDQlCt
+         0NFg==
+X-Gm-Message-State: AOJu0YwA8ypvtJ6pJyi/rZe+jTwlg7UHazo9EtXoTiKIrSTQSUWM/ylC
+        1ALRtb4MUDZ9OjJa8QtvG2HPKsdw3VOy6+dTlyliPFgG35Y1A/T9TfM4QNyipK4iR5oqUcp2kn9
+        bt9AowkecUfKknqgnMuW4A7aL
+X-Received: by 2002:adf:ea8f:0:b0:317:6175:95fd with SMTP id s15-20020adfea8f000000b00317617595fdmr7669954wrm.43.1696593670827;
+        Fri, 06 Oct 2023 05:01:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGIHkTSWEYQCqhtcnXwQbXXcji0NvYj5HwDLBbmOfLGxJeobULC9BGehmgcvKkiU172hpNvnA==
+X-Received: by 2002:adf:ea8f:0:b0:317:6175:95fd with SMTP id s15-20020adfea8f000000b00317617595fdmr7669924wrm.43.1696593670256;
+        Fri, 06 Oct 2023 05:01:10 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c715:ee00:4e24:cf8e:3de0:8819? (p200300cbc715ee004e24cf8e3de08819.dip0.t-ipconnect.de. [2003:cb:c715:ee00:4e24:cf8e:3de0:8819])
+        by smtp.gmail.com with ESMTPSA id m15-20020adfe94f000000b0031984b370f2sm1500366wrn.47.2023.10.06.05.01.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 05:01:09 -0700 (PDT)
+Message-ID: <4509a3b4-16a6-f63e-1dd5-e20c7eadf87d@redhat.com>
+Date:   Fri, 6 Oct 2023 14:01:09 +0200
 MIME-Version: 1.0
-References: <CAGNS4TbhS3XnCFAEi378+cSmJvGMdjN2oTv=tES36vbV4CaDuA@mail.gmail.com>
- <CANXvt5qKxfU3p1eSK4fkzRFRBXHSVvSkJrnQRLKPkQjhsMGNzQ@mail.gmail.com>
- <CAGNS4TbAgqRQepv=fMoUxo02Qea5S9LwWFm-jjt1ej8DdLjshw@mail.gmail.com> <88775092-78d7-d1b6-100b-369079ff979b@igel.co.jp>
-In-Reply-To: <88775092-78d7-d1b6-100b-369079ff979b@igel.co.jp>
-From:   Mattias Nissler <mnissler@rivosinc.com>
-Date:   Fri, 6 Oct 2023 14:00:52 +0200
-Message-ID: <CAGNS4TbhB19XZN-eXe4uT=ShjLUfmzC9qAkR4abzC1EUg4=r6A@mail.gmail.com>
-Subject: Re: [RFC] Proposal of QEMU PCI Endpoint test environment
-To:     Shunsuke Mie <mie@igel.co.jp>
-Cc:     cz172638@gmail.com, bhelgaas@google.com,
-        Jagannathan Raman <jag.raman@oracle.com>, kishon@kernel.org,
-        kvijayab@amd.com, kw@linux.com, levon@movementarian.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org,
-        Marcel Apfelbaum <marcel.apfelbaum@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, qemu-devel@nongnu.org,
-        robh@kernel.org, thanos.makatos@nutanix.com, vaishnav.a@ti.com,
-        william.henderson@nutanix.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, riel@surriel.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231004190249.829015-1-shr@devkernel.io>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 0/4] mm/ksm: Add ksm advisor
+In-Reply-To: <20231004190249.829015-1-shr@devkernel.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 1:51=E2=80=AFPM Shunsuke Mie <mie@igel.co.jp> wrote:
->
->
-> On 2023/10/05 16:02, Mattias Nissler wrote:
-> > On Thu, Oct 5, 2023 at 3:31=E2=80=AFAM Shunsuke Mie <mie@igel.co.jp> wr=
-ote:
-> >> Hi Jiri, Mattias and all.
-> >>
-> >> 2023=E5=B9=B410=E6=9C=884=E6=97=A5(=E6=B0=B4) 16:36 Mattias Nissler <m=
-nissler@rivosinc.com>:
-> >>>> hi shunsuke, all,
-> >>>> what about vfio-user + qemu?
-> >> Thank you for the suggestion.
-> >>
-> >>> FWIW, I have had some good success using VFIO-user to bridge software=
- components to hardware designs. For the most part, I have been hooking up =
-software endpoint models to hardware design components speaking the PCIe tr=
-ansaction layer protocol. The central piece you need is a way to translate =
-between the VFIO-user protocol and PCIe transaction layer messages, basical=
-ly converting ECAM accesses, memory accesses (DMA+MMIO), and interrupts bet=
-ween the two worlds. I have some code which implements the basics of that. =
-It's certainly far from complete (TLP is a massive protocol), but it works =
-well enough for me. I believe we should be able to open-source this if ther=
-e's interest, let me know.
-> >> It is what I want to do, but I'm not familiar with the vfio and vfio-u=
-ser, and I have a question. QEMU has a PCI TLP communication implementation=
- for Multi-process QEMU[1]. It is similar to your success.
-> > I'm no qemu expert, but my understanding is that the plan is for the
-> > existing multi-process QEMU implementation to eventually be
-> > superseded/replaced by the VFIO-user based one (qemu folks, please
-> > correct me if I'm wrong). From a functional perspective they are more
-> > or less equivalent AFAICT.
-> >
-> The project is promising.
->
-> I found a session about the vfio adapts to Multi-process QEMU[1] in KVM
-> Forun 2021, butI couldn't found some posted patches.
-> If anyone knows status of this project, could you please let me know?
+On 04.10.23 21:02, Stefan Roesch wrote:
+> What is the KSM advisor?
+> =========================
+> The ksm advisor automatically manages the pages_to_scan setting to
+> achieve a target scan time. The target scan time defines how many seconds
+> it should take to scan all the candidate KSM pages. In other words the
+> pages_to_scan rate is changed by the advisor to achieve the target scan
+> time.
+> 
+> Why do we need a KSM advisor?
+> ==============================
+> The number of candidate pages for KSM is dynamic. It can often be observed
+> that during the startup of an application more candidate pages need to be
+> processed. Without an advisor the pages_to_scan parameter needs to be
+> sized for the maximum number of candidate pages. With the scan time
+> advisor the pages_to_scan parameter based can be changed based on demand.
+> 
+> Algorithm
+> ==========
+> The algorithm calculates the change value based on the target scan time
+> and the previous scan time. To avoid pertubations an exponentially
+> weighted moving average is applied.
+> 
+> The algorithm has a max and min
+> value to:
+> - guarantee responsiveness to changes
+> - to avoid to spend too much CPU
+> 
+> Parameters to influence the KSM scan advisor
+> =============================================
+> The respective parameters are:
+> - ksm_advisor_mode
+>    0: None (default), 1: scan time advisor
+> - ksm_advisor_target_scan_time
+>    how many seconds a scan should of all candidate pages take
+> - ksm_advisor_min_pages
+>    minimum value for pages_to_scan per batch
+> - ksm_advisor_max_pages
+>    maximum value for pages_to_scan per batch
+> 
+> The parameters are exposed as knobs in /sys/kernel/mm/ksm.
+> By default the scan time advisor is disabled.
 
-Again, I'm just an interested bystander, so take my words with a grain
-of salt. That said, my understanding is that there is an intention to
-get the vfio-user client code into qemu in the foreseeable future. The
-most recent version of the code that I'm aware of is here:
-https://github.com/oracle/qemu/tree/vfio-user-p3.1
+What would be the main reason to not have this enabled as default?
 
->
-> [1] https://www.youtube.com/watch?v=3DNBT8rImx3VE
-> >> The multi-process qemu also communicates TLP over UDS. Could you let m=
-e know your opinion about it?
-> > Note that neither multi-process qemu nor VFIO-user actually pass
-> > around TLPs, but rather have their own command language to encode
-> > ECAM, MMIO, DMA, interrupts etc. However, translation from/to TLP is
-> > possible and works well enough in my experience.
-> I agree.
-> >>> One thing to note is that there are currently some limits to bridging=
- VFIO-user / TLP that I haven't figured out and/or will need further work: =
-Advanced PCIe concepts like PASID, ATS/PRI, SR-IOV etc. may lack equivalent=
-s on the VFIO-user side that would have to be filled in. The folk behind li=
-bvfio-user[2] have been very approachable and open to improvements in my ex=
-perience though.
-> >>>
-> >>> If I understand correctly, the specific goal here is testing PCIe end=
-point designs against a Linux host. What you'd need for that is a PCI host =
-controller for the Linux side to talk to and then hooking up endpoints on t=
-he transaction layer. QEMU can simulate host controllers that work with exi=
-sting Linux drivers just fine. Then you can put a vfio-user-pci stub device=
- (I don't think this has landed in qemu yet, but you can find the code at [=
-1]) on the simulated PCI bus which will expose any software interactions wi=
-th the endpoint as VFIO-user protocol messages over unix domain socket. The=
- piece you need to bring is a VFIO-user server that handles these messages.=
- Its task is basically translating between VFIO-user and TLP and then injec=
-ting TLP into your hardware design.
-> >> Yes, If the pci host controller you said can be implemented, I can ach=
-ieve my goal.
-> > I meant to say that the existing PCIe host controller implementations
-> > in qemu can be used as is.
-> Sorry, I misunderstood.
-> >> To begin with, I'll investigate the vfio and libvfio-user.  Thanks!.
-> >>
-> >> [1] https://www.qemu.org/docs/master/system/multi-process.html
-> >>
-> >> Best,
-> >> Shunsuke
-> >>>
-> >>> [1] https://github.com/oracle/qemu/tree/vfio-user-p3.1 - I believe th=
-at's the latest version, Jagannathan Raman will know best
-> >>> [2] https://github.com/nutanix/libvfio-user
-> >>>
+IIUC, it is kind-of an auto-tuning of pages_to_scan. Would "auto-tuning" 
+describe it better than "advisor" ?
+
+[...]
+
+> How is defining a target scan time better?
+> ===========================================
+> For an administrator it is more logical to set a target scan time.. The
+> administrator can determine how many pages are scanned on each scan.
+> Therefore setting a target scan time makes more sense.
+> 
+> In addition the administrator might have a good idea about the
+> memory sizing of its respective workloads.
+
+Is there any way you could imagine where we could have this just do 
+something reasonable without any user input? IOW, true auto-tuning?
+
+I read above:
+ > - guarantee responsiveness to changes
+ > - to avoid to spend too much CPU
+
+whereby both things are accountable/measurable to use that as the input 
+for auto-tuning?
+
+
+I just had a family NMI, so my todo list is quite lengthy. Hoping I cna 
+take a closer look next week.
+
+-- 
+Cheers,
+
+David / dhildenb
+
