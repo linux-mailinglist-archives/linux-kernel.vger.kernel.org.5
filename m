@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3C07BC040
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B280A7BC042
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233423AbjJFUXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 16:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
+        id S233450AbjJFUYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231912AbjJFUW7 (ORCPT
+        with ESMTP id S231912AbjJFUYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:22:59 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB15C5
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:22:57 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3af5fcb5e37so1687317b6e.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:22:57 -0700 (PDT)
+        Fri, 6 Oct 2023 16:24:01 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD67BBE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:23:59 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-27761d85b31so1810744a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:23:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696623777; x=1697228577; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=v8kAE0L3XYT2zduhiLheo6/OoQQtkbHtadi2JLu6gYg=;
-        b=SQAOm7mxJwp8A70M7SmHvhOVbjNCbVpWxfmgyc8x8MGl2URWXQYazZH/vDNR3cBh0Y
-         jB9zlJi4doGVus4mdCPj/vA4YyEsrhC4fzLf7ylNa/e0HXTRhyd2DfqkZ8jnwEsqwXHJ
-         QlEhlu4jObvUqBwnIkAaguUJRH3jRx3UmaQL8=
+        d=chromium.org; s=google; t=1696623839; x=1697228639; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yeQqUbIodZOEmRnT0u+h/uvWq4E1WjoaKYarDgehFlU=;
+        b=iQRTcKN0wALqRkVkliQHqshB55L2Nmw99XqnJWa2UNQ7C1T36H46nNDrxh7Unz1xAq
+         i7rSlm7JXbCY8+buinpGkob+OTERy91GR6oFT7PQuY0WF3aOUUW7/qCfDLMVW2pe4kBz
+         YJIAlAC1WVFdoELEYq4iuUBPt4MIG02P0/PDQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696623777; x=1697228577;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v8kAE0L3XYT2zduhiLheo6/OoQQtkbHtadi2JLu6gYg=;
-        b=dCEyoRT/m7H+nPb9L+nAtKCeHT6wsl3luQBGoOVo2k2D8o91ZBBc8rJ+GmRj3NZ51U
-         OorvGDwx/Khtgni/SUfpnO0lKan5R/ATbL59mYISzoLdKT5jKkyUqkfMncygO0N1/aCv
-         NarZoKJ4Uuo+c85mNT2v+XqV7ML69GUo9i8Ll4TW1DA8rw1RRZuRE2PZtpkwXOrW5p4W
-         Y0usUOEAmgeU4uetsdNa7vhZ5VZrivlD52ShgreYxt2fRmFtjh3adYruK0lYJK41e6D5
-         hVcdBceM0IyZ+pYFIFx6d8tszK1DxXS49O3aelmiQvYgAIxZDra15oS78DZ5XO8UQ+kv
-         uAbQ==
-X-Gm-Message-State: AOJu0YywQ+cbYf01Ir4AbyZHFw8e43iBvu2qfrH+7YiQJQ3y/LgjG1+/
-        6G38dnZ6UB9K82pnXBQDrFEDsg==
-X-Google-Smtp-Source: AGHT+IFJgYFdXQLoiEQmx+lFHyuC0qUrDFQKLIKGfw/wrLmvAN6GJdpM5ZD/9ihDG8TtTiEFnZjYhg==
-X-Received: by 2002:a05:6358:9691:b0:164:8742:525 with SMTP id o17-20020a056358969100b0016487420525mr1346056rwa.17.1696623777190;
-        Fri, 06 Oct 2023 13:22:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696623839; x=1697228639;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yeQqUbIodZOEmRnT0u+h/uvWq4E1WjoaKYarDgehFlU=;
+        b=S4/6ial6AXXgW9h+SBT42eWqdP8vSPMNRkLta8fnlMEJgVj+EMblQEXHBbTBWShBCu
+         bMDtvj7mUHKfe4jvRQFtcFd4o3Ib8DGCeyq6Dgm2mQGgA7SYT/RmCD0Qbl/0AX7rUIDS
+         ljFZ4w6p0lupoeNocqtsu1v/y23uXW9ovcWhjrw3FP95a6VonriQejZxj3MNA32IMYgM
+         GjnRTyrrFgbDZZjIjWyKFZLxhwEHVz+PMdso4Rpy0f5VCgXeKxG4IfL5XNNPjCOM5gD4
+         M2v1ZfJDUR/Jt/LaydPnhVJU4tK5woXmTi4pcN5BbJPKQfgi9P+PdpP/VlNdpbkq245T
+         FGAA==
+X-Gm-Message-State: AOJu0YxUYQD6jDa/SNMTGIJidVdXCARXum0iRVe1Nd1h+6B9Ogzz1O+N
+        8bVuoFK3/I0upY/UG2+PiBYSyw==
+X-Google-Smtp-Source: AGHT+IHEr5nv1cWEM1Y3LbpIOqHG/Lj+SrRUHy4wA915uDKNkG765B0Y8Pm/6H1gh2Qpt05VCVwqjA==
+X-Received: by 2002:a17:90a:a085:b0:276:e14a:4991 with SMTP id r5-20020a17090aa08500b00276e14a4991mr8929179pjp.2.1696623839216;
+        Fri, 06 Oct 2023 13:23:59 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 19-20020a17090a1a1300b00273744e6eccsm4271576pjk.12.2023.10.06.13.22.56
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c10d00b001bc68602e54sm4343643pli.142.2023.10.06.13.23.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 13:22:56 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 13:22:55 -0700
+        Fri, 06 Oct 2023 13:23:58 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 13:23:56 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, asahi@lists.linux.dev,
-        alsa-devel@alsa-project.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ASoC: apple: mca: Annotate struct mca_data with
- __counted_by
-Message-ID: <202310061321.E7247C52B@keescook>
-References: <20230922175050.work.819-kees@kernel.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Bo YU <tsu.yubo@gmail.com>
+Subject: Re: [PATCH v2] drm/etnaviv: refactor deprecated strncpy
+Message-ID: <202310061323.05B262D@keescook>
+References: <20230918-strncpy-drivers-gpu-drm-etnaviv-etnaviv_perfmon-c-v2-1-8ae12071c138@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230922175050.work.819-kees@kernel.org>
+In-Reply-To: <20230918-strncpy-drivers-gpu-drm-etnaviv-etnaviv_perfmon-c-v2-1-8ae12071c138@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,51 +73,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 10:50:50AM -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Mon, Sep 18, 2023 at 01:34:08PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
 > 
-> As found with Coccinelle[1], add __counted_by for struct mca_data.
+> We should prefer more robust and less ambiguous string interfaces.
+> 
+> A suitable replacement is `strscpy_pad` due to the fact that it
+> guarantees NUL-termination on the destination buffer whilst maintaining
+> the NUL-padding behavior that strncpy provides.
 
-Friendly ping. Mark, can you pick this up please?
+Friend ping. Who can pick this change up?
 
 Thanks!
 
 -Kees
 
 > 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: "Martin Povišer" <povik+lin@cutebit.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: asahi@lists.linux.dev
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Cc: Bo YU <tsu.yubo@gmail.com>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 > ---
->  sound/soc/apple/mca.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes in v2:
+> - use strscpy_pad (thanks Kees)
+> - Link to v1: https://lore.kernel.org/r/20230914-strncpy-drivers-gpu-drm-etnaviv-etnaviv_perfmon-c-v1-1-3adc2d9bfc52@google.com
+> ---
+> Similar to [2] which was never picked up. Let's prefer strscpy_pad to strlcpy, though
 > 
-> diff --git a/sound/soc/apple/mca.c b/sound/soc/apple/mca.c
-> index ce77934f3eef..99e547ef95e6 100644
-> --- a/sound/soc/apple/mca.c
-> +++ b/sound/soc/apple/mca.c
-> @@ -161,7 +161,7 @@ struct mca_data {
->  	struct mutex port_mutex;
+> [2]: https://lore.kernel.org/all/20190328080918.9290-1-tsu.yubo@gmail.com/
+> ---
+>  drivers/gpu/drm/etnaviv/etnaviv_perfmon.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+> index bafdfe49c1d8..dc9dea664a28 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+> @@ -511,7 +511,7 @@ int etnaviv_pm_query_dom(struct etnaviv_gpu *gpu,
 >  
->  	int nclusters;
-> -	struct mca_cluster clusters[];
-> +	struct mca_cluster clusters[] __counted_by(nclusters);
->  };
+>  	domain->id = domain->iter;
+>  	domain->nr_signals = dom->nr_signals;
+> -	strncpy(domain->name, dom->name, sizeof(domain->name));
+> +	strscpy_pad(domain->name, dom->name, sizeof(domain->name));
 >  
->  static void mca_modify(struct mca_cluster *cl, int regoffset, u32 mask, u32 val)
-> -- 
-> 2.34.1
+>  	domain->iter++;
+>  	if (domain->iter == nr_domains)
+> @@ -540,7 +540,7 @@ int etnaviv_pm_query_sig(struct etnaviv_gpu *gpu,
+>  	sig = &dom->signal[signal->iter];
+>  
+>  	signal->id = signal->iter;
+> -	strncpy(signal->name, sig->name, sizeof(signal->name));
+> +	strscpy_pad(signal->name, sig->name, sizeof(signal->name));
+>  
+>  	signal->iter++;
+>  	if (signal->iter == dom->nr_signals)
+> 
+> ---
+> base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
+> change-id: 20230914-strncpy-drivers-gpu-drm-etnaviv-etnaviv_perfmon-c-dd095491dfde
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
 > 
 
 -- 
