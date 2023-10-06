@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8092D7BBD5C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE5F7BBD5F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbjJFQ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
+        id S232929AbjJFQ6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbjJFQ6T (ORCPT
+        with ESMTP id S232912AbjJFQ6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:58:19 -0400
+        Fri, 6 Oct 2023 12:58:23 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9928BAD;
-        Fri,  6 Oct 2023 09:58:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3B1CC433C8;
-        Fri,  6 Oct 2023 16:58:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2362FBF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 09:58:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E76DDC433C8;
+        Fri,  6 Oct 2023 16:58:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696611498;
-        bh=W/PV9BEnW7qV8HRBjAeCSKH71F8YRJwxXRxGjI45a6Q=;
+        s=k20201202; t=1696611501;
+        bh=iVc5ncutti07i299unS9e4aBYDPYiKeh0xWAD/nJg+I=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QtctmrP7HPX723W0dFuw/syZx1G3b4jfABirVj7JKuUFR4u0ANnNX9D9WFqmGsizJ
-         iomwfbA3VchilnHSRmBdJbSjGjzv5uZ49OeA095CjlXG8M7ItBd8qPL9QMUK/QrZ65
-         tnkIn0MBo8NLpb3kkkez6smKI0yHnyR3oxGlCH7Tw/BF5baOzK8QzamZtZYZ52UHfJ
-         yuPotqd/7l+OL/s5ThUw+Zlv1HX02eOtqk4dWMHcHjngAb1dbCohYH2U37ymWy+5oD
-         qVCziJ7OACmhP86Vhm0WeDvNsTJ8c6ZOUc6cwNYampiMTHyv1l+aZYg0NdiQL/F+lj
-         fowcyiaLg/Xng==
-Date:   Fri, 6 Oct 2023 09:58:15 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Michal Suchanek <msuchanek@suse.de>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Lucas De Marchi <lucas.de.marchi@gmail.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH rebased] kbuild: rpm-pkg: Fix build with non-default
- MODLIB
-Message-ID: <20231006165815.GA3359308@dev-arch.thelio-3990X>
-References: <20231005150728.3429-1-msuchanek@suse.de>
+        b=P080P8RwpkFq/3cYtN9/2Bgq3epTiSizjGICcW6rb4MM1j4YlBtZjaxuY8T6Pq1Sg
+         k+e0QouM67rmzIUS1usTeBsGjqi3ccy+DmB9EV+sfvc00GvvNEUyDCPvoeclnykoWZ
+         eDFRaGGXBZCVu3bcdKuBPDQMK9ZEM2ADLj67o0LW+VY79G0KlYvJUwb4GLyFV8amiM
+         o05vTUU4cqenrymPf//CbBe8p8FfWoEi9QOZnW7jl54DadSzRrLtwZ1pdmM7GGAlH+
+         CuAryxOtFuKptclCp+0JjZ6h1pQrtOXEQjSGm3bQRoThYKlA+84+vrJl+ZBhvRaK4H
+         ee7rEFuPelJmg==
+Received: (nullmailer pid 4068792 invoked by uid 1000);
+        Fri, 06 Oct 2023 16:58:19 -0000
+Date:   Fri, 6 Oct 2023 11:58:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     niravkumar.l.rabara@intel.com
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: mtd: cadence: convert
+ cadence-nand-controller.txt to yaml
+Message-ID: <20231006165819.GA4066666-robh@kernel.org>
+References: <20231005051548.55122-1-niravkumar.l.rabara@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231005150728.3429-1-msuchanek@suse.de>
+In-Reply-To: <20231005051548.55122-1-niravkumar.l.rabara@intel.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,80 +56,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 05:07:28PM +0200, Michal Suchanek wrote:
-> The default MODLIB value is composed of two variables and the hardcoded
-> string '/lib/modules/'.
+On Thu, Oct 05, 2023 at 01:15:48PM +0800, niravkumar.l.rabara@intel.com wrote:
+> From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
 > 
-> MODLIB = $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+> Convert cadence-nand-controller.txt to yaml format.
+> Update cadence-nand-controller.txt to cadence,nand.yaml in MAINTAINER file.
 > 
-> Defining this middle part as a variable was rejected on the basis that
-> users can pass the whole MODLIB to make, such as
-> 
-> make 'MODLIB=$(INSTALL_MOD_PATH)/usr/lib/modules/$(KERNELRELEASE)'
-> 
-> However, this middle part of MODLIB is independently hardcoded by
-> rpm-pkg, and when the user alters MODLIB this is not reflected when
-> building the package.
-> 
-> Given that $(INSTALL_MOD_PATH) is overridden during the rpm package build
-> it is likely going to be empty. Then MODLIB can be passed to the rpm
-> package, and used in place of the whole
-> /usr/lib/modules/$(KERNELRELEASE) part.
-> 
-> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-
-This appears to work for me.
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
+> Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
 > ---
->  scripts/package/kernel.spec | 8 ++++----
->  scripts/package/mkspec      | 1 +
->  2 files changed, 5 insertions(+), 4 deletions(-)
+>  .../devicetree/bindings/mtd/cadence,nand.yaml | 73 +++++++++++++++++++
+
+Filename matching compatible.
+
+>  .../bindings/mtd/cadence-nand-controller.txt  | 53 --------------
+>  MAINTAINERS                                   |  2 +-
+>  3 files changed, 74 insertions(+), 54 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/cadence,nand.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
 > 
-> diff --git a/scripts/package/kernel.spec b/scripts/package/kernel.spec
-> index 3eee0143e0c5..15f49c5077db 100644
-> --- a/scripts/package/kernel.spec
-> +++ b/scripts/package/kernel.spec
-> @@ -67,7 +67,7 @@ cp $(%{make} %{makeflags} -s image_name) %{buildroot}/boot/vmlinuz-%{KERNELRELEA
->  %{make} %{makeflags} INSTALL_HDR_PATH=%{buildroot}/usr headers_install
->  cp System.map %{buildroot}/boot/System.map-%{KERNELRELEASE}
->  cp .config %{buildroot}/boot/config-%{KERNELRELEASE}
-> -ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEASE}/build
-> +ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}%{MODLIB}/build
->  %if %{with_devel}
->  %{make} %{makeflags} run-command KBUILD_RUN_COMMAND='${srctree}/scripts/package/install-extmod-build %{buildroot}/usr/src/kernels/%{KERNELRELEASE}'
->  %endif
-> @@ -98,8 +98,8 @@ fi
+> diff --git a/Documentation/devicetree/bindings/mtd/cadence,nand.yaml b/Documentation/devicetree/bindings/mtd/cadence,nand.yaml
+> new file mode 100644
+> index 000000000000..781812ac702f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/cadence,nand.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/cadence,nand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Cadence NAND controller
+> +
+> +maintainers:
+> +  - Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+> +
+> +allOf:
+> +  - $ref: nand-controller.yaml
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: cdns,hp-nfc
+> +
+> +  reg:
+> +    items:
+> +      - description: Address and length of the controller register set
+> +      - description: Address and length of the Slave DMA data port
+> +
+> +  reg-names:
+> +    items:
+> +      - const: reg
+> +      - const: sdma
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  dmas:
+> +    maxItems: 1
+> +
+> +  cdns,board-delay-ps:
+> +    description: |
+> +      Estimated Board delay. The value includes the total round trip
+> +      delay for the signals and is used for deciding on values associated
+> +      with data read capture. The example formula for SDR mode is the
+> +      following.
+> +      board delay = RE#PAD delay + PCB trace to device + PCB trace from device
+> +      + DQ PAD delay
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - clocks
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +      nand-controller@10b80000 {
+> +        compatible = "cdns,hp-nfc";
+> +        reg = <0x10b80000 0x10000>,
+> +            <0x10840000 0x10000>;
+> +        reg-names = "reg", "sdma";
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        interrupts = <0 97 4>;
+> +        clocks = <&nf_clk>;
+> +        cdns,board-delay-ps = <4830>;
+> +
+> +        nand@0 {
+> +            reg = <0>;
+> +        };
+> +      };
+> diff --git a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+> deleted file mode 100644
+> index d2eada5044b2..000000000000
+> --- a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+> +++ /dev/null
+> @@ -1,53 +0,0 @@
+> -* Cadence NAND controller
+> -
+> -Required properties:
+> -  - compatible : "cdns,hp-nfc"
+> -  - reg : Contains two entries, each of which is a tuple consisting of a
+> -	  physical address and length. The first entry is the address and
+> -	  length of the controller register set. The second entry is the
+> -	  address and length of the Slave DMA data port.
+> -  - reg-names: should contain "reg" and "sdma"
+> -  - #address-cells: should be 1. The cell encodes the chip select connection.
+> -  - #size-cells : should be 0.
+> -  - interrupts : The interrupt number.
+> -  - clocks: phandle of the controller core clock (nf_clk).
+> -
+> -Optional properties:
+> -  - dmas: shall reference DMA channel associated to the NAND controller
+> -  - cdns,board-delay-ps : Estimated Board delay. The value includes the total
+> -    round trip delay for the signals and is used for deciding on values
+> -    associated with data read capture. The example formula for SDR mode is
+> -    the following:
+> -    board delay = RE#PAD delay + PCB trace to device + PCB trace from device
+> -    + DQ PAD delay
+> -
+> -Child nodes represent the available NAND chips.
+> -
+> -Required properties of NAND chips:
+> -  - reg: shall contain the native Chip Select ids from 0 to max supported by
+> -    the cadence nand flash controller
+> -
+> -See Documentation/devicetree/bindings/mtd/nand-controller.yaml for more details on
+> -generic bindings.
+> -
+> -Example:
+> -
+> -nand_controller: nand-controller@60000000 {
+> -	  compatible = "cdns,hp-nfc";
+> -	  #address-cells = <1>;
+> -	  #size-cells = <0>;
+> -	  reg = <0x60000000 0x10000>, <0x80000000 0x10000>;
+> -	  reg-names = "reg", "sdma";
+> -	  clocks = <&nf_clk>;
+> -	  cdns,board-delay-ps = <4830>;
+> -	  interrupts = <2 0>;
+> -	  nand@0 {
+> -	      reg = <0>;
+> -	      label = "nand-1";
+> -	  };
+> -	  nand@1 {
+> -	      reg = <1>;
+> -	      label = "nand-2";
+> -	  };
+> -
+> -};
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 90f13281d297..502963390646 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4474,7 +4474,7 @@ F:	drivers/media/platform/cadence/cdns-csi2*
+>  CADENCE NAND DRIVER
+>  L:	linux-mtd@lists.infradead.org
+>  S:	Orphan
+> -F:	Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+> +F:	Documentation/devicetree/bindings/mtd/cadence,nand.yaml
+>  F:	drivers/mtd/nand/raw/cadence-nand-controller.c
 >  
->  %files
->  %defattr (-, root, root)
-> -/lib/modules/%{KERNELRELEASE}
-> -%exclude /lib/modules/%{KERNELRELEASE}/build
-> +%{MODLIB}
-> +%exclude %{MODLIB}/build
->  /boot/*
->  
->  %files headers
-> @@ -110,5 +110,5 @@ fi
->  %files devel
->  %defattr (-, root, root)
->  /usr/src/kernels/%{KERNELRELEASE}
-> -/lib/modules/%{KERNELRELEASE}/build
-> +%{MODLIB}/build
->  %endif
-> diff --git a/scripts/package/mkspec b/scripts/package/mkspec
-> index d41608efb747..d41b2e5304ac 100755
-> --- a/scripts/package/mkspec
-> +++ b/scripts/package/mkspec
-> @@ -18,6 +18,7 @@ fi
->  cat<<EOF
->  %define ARCH ${ARCH}
->  %define KERNELRELEASE ${KERNELRELEASE}
-> +%define MODLIB ${MODLIB}
->  %define pkg_release $("${srctree}/init/build-version")
->  EOF
->  
+>  CADENCE USB3 DRD IP DRIVER
 > -- 
-> 2.42.0
+> 2.25.1
 > 
