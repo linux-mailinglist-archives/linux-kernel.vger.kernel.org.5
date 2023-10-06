@@ -2,70 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C28CC7BB537
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276A17BB53A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbjJFKaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 06:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
+        id S231665AbjJFKad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 06:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbjJFKa1 (ORCPT
+        with ESMTP id S231782AbjJFKaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 06:30:27 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40249E4;
-        Fri,  6 Oct 2023 03:30:24 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-49d0f24a815so782709e0c.2;
-        Fri, 06 Oct 2023 03:30:24 -0700 (PDT)
+        Fri, 6 Oct 2023 06:30:30 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC492FF;
+        Fri,  6 Oct 2023 03:30:28 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7abda795363so832060241.0;
+        Fri, 06 Oct 2023 03:30:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696588223; x=1697193023; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696588227; x=1697193027; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=blEZscFcgy/Pf7C3AmtaKvEya+48OGSVdWrJtz/KTDU=;
-        b=eTXdDXxqVzzdSJy8ldk6eauPMFg5ahiXt8RNqsAwAYq7ZLgmDly1zGYB13mkeraGC4
-         ETH88q1EcHoKax2omvC3eqV/iMVvBe6uVfCFLHxVr1m+Mwyt6s4I2OE09trgJT/qJHxa
-         mWP32evSUdhnPqk72yUakRxARo+uBTr6F+OJaCweUlZa/OuGIggmAHd0n9lMJ5OZz3bW
-         eIOO4PgrzpdxIU/CWuejhCxVVMuNDzZRxnU4MIU67bkvuv57yzd3eHut2ZfWEQPuOz/R
-         uJGm8Jmag7TwIh54GGWDzWlWESO4uDtlZzCeha0UKzN2Di6BELaaI/dLhNgE2xZIEYeb
-         O9TA==
+        bh=+TgLZiI7aDgS25qRr3woiF/RYIv1V3MyNXKdAtoU2Rk=;
+        b=RPz/o3KjBAUk6YMCjTxZrmIeT8MA43uBnAXDO5UrSGra6nCJ8zlyMi+znOmf1Mv5FD
+         h9mH2C1kL13hThCh/vXGcJkS8IteUidYBwbATgpQDdbijgaaLuMjl8P5xbg1mUHeFu0M
+         zIdsQuGnz4zi7AegHAH8ZifllTwp5Zbqxv1rpwp+ii32C3bkcMwQ4paFTt8CS9e9B53r
+         7kCfX8lcnlqcp6c8F0/6DaGaFsev7tmIeIsd5dfB4SzdEecyPMGWMCtvOKM1Zf7BXZxp
+         NLb26CXe/feDZnJV0oRI9KJqTZ2hujHS+dCyAi94I37Zb+oTBdYm94tGCvxbGNDwzRbI
+         h46g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696588223; x=1697193023;
+        d=1e100.net; s=20230601; t=1696588227; x=1697193027;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=blEZscFcgy/Pf7C3AmtaKvEya+48OGSVdWrJtz/KTDU=;
-        b=DVJ2HTCuoVO8vQIdW+EHevSz5uTN2b2MYrzqEIW/Ey/KKx1Ed9ZGiJ4VxE6wwPa2DZ
-         stx7iqru1zVpATBidOw0DeHM/upYfQEMeqvkTG+mAucS8KPSvRMsBi3bFIhMHho6gAd9
-         WC57q3RAVPrp8k03ekMvEt7L9Xzs1dXMSCTTwTU0eucNDGgrdbD6oFKn6AVy8KnOwZ2I
-         ELROI6Cv8fE6q8KaCXqia7xPlqbjxblPwD3K/gM6wH4GZbzmPbgc4umHxSbAJ8Y0wJxJ
-         XR71NthSZnCOFZx6obRnVwiPxVptXuJZ3wzvFXhsKmVjTMGoyoflNegrqDLqsyY/iP9H
-         SpUQ==
-X-Gm-Message-State: AOJu0YwP/dHohQAUZg6nxK0BfZnMAZt7835HnSmO4LZNuuMLCL+M6EAy
-        HdXRNayWB1M5HHdR+lccL73eWjQzpubaHaZY+8M=
-X-Google-Smtp-Source: AGHT+IEc9SH8+bqTt7/mMwGK+N32gBqkbR0vxkfp3Kvpo0QjZwZ+hqdzk5+siE4OPjbbUi+gn+Bb0GAnr/NEVg5IO58=
-X-Received: by 2002:a1f:4887:0:b0:493:3491:ce89 with SMTP id
- v129-20020a1f4887000000b004933491ce89mr5920840vka.14.1696588223186; Fri, 06
- Oct 2023 03:30:23 -0700 (PDT)
+        bh=+TgLZiI7aDgS25qRr3woiF/RYIv1V3MyNXKdAtoU2Rk=;
+        b=CUDXNEbly+tA5zNpAe1iKX+Dbm0zTKn+w33tGCbMG3aEQgu2tn2T89bPL9XW6wK32n
+         183DXUkUL7yLeJVWLLnPMp6rhyCQgMO9wxCPB6/qF3oG/OdS4fM2GDinrtH2B8swdVkk
+         G5gBTWnfyLY6p6/+nVb2xqUcMDscpwlpPmjt+GhgIsCTgDM/KZP+XXGsO8FqpPmKFPdb
+         JkLykwfPuMj9bPArP96Uhuph6dcSW9U0z+DPE6ZHiD4P08XRcrjoBVuTGiWM9qMTsy97
+         JK//ycTEnZ+hi3qK1eUQsEqIUnGJlGKFZayrUUPJcfq8aY+GWzY9Q8sTm59g1MuUQ/g1
+         2k8Q==
+X-Gm-Message-State: AOJu0Yw65SHf+p1eKTcuQ33G37lZxPZiHGIlZDuuqRQpADTVaT9yfUws
+        6miRoPfke2TT1WDAQhj2bXS+kNR+52JKhWKlMDQ=
+X-Google-Smtp-Source: AGHT+IEu+Q/g6jteDs8gJCJhmZzUfGhOsVVatq9qBqMgbaSNMyTg4HtvEUgc54rgt8vdR0x8zU0jWSjEJM2shaNmdVE=
+X-Received: by 2002:a1f:e246:0:b0:499:dec9:e1a8 with SMTP id
+ z67-20020a1fe246000000b00499dec9e1a8mr6919423vkg.14.1696588227573; Fri, 06
+ Oct 2023 03:30:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230918103055.5471-1-victorshihgli@gmail.com>
- <CAAd53p4qhf+3j=zMs_RXSpLQzn6RGD9yUNcSA12V5aACswgeeQ@mail.gmail.com>
- <CAK00qKDnG1o6ZxzY=pGs0J7o_RYYsr1XHxJKirRKeghsp6QOBg@mail.gmail.com>
- <CAAd53p6cgN7QDZXzTsw_DVgOmpv46DY+Ttom5V0vTBVn2jpUQg@mail.gmail.com>
- <CAK00qKA2kaQ2k0Tp=F86BmAMEK=GiAmtLiAQcZRBGVvHOd64MQ@mail.gmail.com>
- <CAAd53p4EemJQfp2nwKTPoGpwPJchZKfC8hKU8zuvtK-YKmM9bQ@mail.gmail.com>
- <CAK00qKCXYg_JPUf=kCxLR1wmi=kmQ25X-ScQ7OYL1zpBKQAQkA@mail.gmail.com> <CAAd53p6_qQvp3EJgds_CAnHHSJLBQWc9TYyWpOzNaBZjyoDpeg@mail.gmail.com>
-In-Reply-To: <CAAd53p6_qQvp3EJgds_CAnHHSJLBQWc9TYyWpOzNaBZjyoDpeg@mail.gmail.com>
+References: <20230915094351.11120-1-victorshihgli@gmail.com>
+ <20230915094351.11120-13-victorshihgli@gmail.com> <CAPDyKFpzuds6Ttbhw1cqZwisa+M6167DT3DUihcDqFjYJX95eA@mail.gmail.com>
+In-Reply-To: <CAPDyKFpzuds6Ttbhw1cqZwisa+M6167DT3DUihcDqFjYJX95eA@mail.gmail.com>
 From:   Victor Shih <victorshihgli@gmail.com>
-Date:   Fri, 6 Oct 2023 18:30:08 +0800
-Message-ID: <CAK00qKAhOnGzX8mAUADXDAjExHTQmyb5DyNkZoFht3Cn6bU1Aw@mail.gmail.com>
-Subject: Re: [PATCH V1] mmc: sdhci-pci-gli: GL975[05]: Mask the replay timer
- timeout of AER
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        benchuanggli@gmail.com, HL.Liu@genesyslogic.com.tw,
-        Greg.tu@genesyslogic.com.tw, kangzhen.lou@dell.com,
+Date:   Fri, 6 Oct 2023 18:30:13 +0800
+Message-ID: <CAK00qKDtXR2aV_h4KhAaWqjUfn8M2-yMsDHeFmz0ztjaF4wB=g@mail.gmail.com>
+Subject: Re: [PATCH V12 12/23] mmc: sdhci-uhs2: skip signal_voltage_switch()
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
+        HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
+        takahiro.akashi@linaro.org, dlunev@chromium.org,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
         Victor Shih <victor.shih@genesyslogic.com.tw>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -79,216 +74,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 10:18=E2=80=AFAM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
+On Tue, Oct 3, 2023 at 5:58=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.org>=
+ wrote:
 >
-> Hi Victor,
->
-> On Tue, Sep 26, 2023 at 4:21=E2=80=AFPM Victor Shih <victorshihgli@gmail.=
-com> wrote:
+> On Fri, 15 Sept 2023 at 11:44, Victor Shih <victorshihgli@gmail.com> wrot=
+e:
 > >
-> > On Fri, Sep 22, 2023 at 3:11=E2=80=AFPM Kai-Heng Feng
-> > <kai.heng.feng@canonical.com> wrote:
-> > >
-> > > Hi Victor,
-> > >
-> > > On Wed, Sep 20, 2023 at 4:54=E2=80=AFPM Victor Shih <victorshihgli@gm=
-ail.com> wrote:
-> > > >
-> > > > On Tue, Sep 19, 2023 at 3:31=E2=80=AFPM Kai-Heng Feng
-> > > > <kai.heng.feng@canonical.com> wrote:
-> > > > >
-> > > > > Hi Victor,
-> > > > >
-> > > > > On Tue, Sep 19, 2023 at 3:10=E2=80=AFPM Victor Shih <victorshihgl=
-i@gmail.com> wrote:
-> > > > > >
-> > > > > > On Tue, Sep 19, 2023 at 12:24=E2=80=AFPM Kai-Heng Feng
-> > > > > > <kai.heng.feng@canonical.com> wrote:
-> > > > > > >
-> > > > > > > Hi Victor,
-> > > > > > >
-> > > > > > > On Mon, Sep 18, 2023 at 6:31=E2=80=AFPM Victor Shih <victorsh=
-ihgli@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > From: Victor Shih <victor.shih@genesyslogic.com.tw>
-> > > > > > > >
-> > > > > > > > Due to a flaw in the hardware design, the GL975x replay tim=
-er frequently
-> > > > > > > > times out when ASPM is enabled. As a result, the system wil=
-l resume
-> > > > > > > > immediately when it enters suspend. Therefore, the replay t=
-imer
-> > > > > > > > timeout must be masked.
-> > > > > > >
-> > > > > > > This patch solves AER error when its PCI config gets accessed=
-, but the
-> > > > > > > AER still happens at system suspend:
-> > > > > > >
-> > > > > > > [ 1100.103603] ACPI: EC: interrupt blocked
-> > > > > > > [ 1100.268244] ACPI: EC: interrupt unblocked
-> > > > > > > [ 1100.326960] pcieport 0000:00:1c.0: AER: Corrected error re=
-ceived:
-> > > > > > > 0000:00:1c.0
-> > > > > > > [ 1100.326991] pcieport 0000:00:1c.0: PCIe Bus Error:
-> > > > > > > severity=3DCorrected, type=3DData Link Layer, (Transmitter ID=
-)
-> > > > > > > [ 1100.326993] pcieport 0000:00:1c.0:   device [8086:7ab9] er=
-ror
-> > > > > > > status/mask=3D00001000/00002000
-> > > > > > > [ 1100.326996] pcieport 0000:00:1c.0:    [12] Timeout
-> > > > > > >
-> > > > > > > Kai-Heng
-> > > > > > >
-> > > > > >
-> > > > > > Hi, Kai-Heng
-> > > > > >
-> > > > > > Could you try applying the patch and re-testing again after res=
-tarting
-> > > > > > the system?
-> > > > >
-> > > > > Same issue happens after coldboot.
-> > > > >
-> > > > > > Because I applied the patch and restarted the system and it did=
-n't happen.
-> > > > > > The system can enter suspend normally.
-> > > > > >
-> > > > > > If you still have the issue after following the above instructi=
-ons,
-> > > > > > please provide me with your environment and I will verify it ag=
-ain.
-> > > > >
-> > > > > The patch gets applied on top of next-20230918. Please let me kno=
-w
-> > > > > what else you want to know.
-> > > > >
-> > > > > Kai-Heng
-> > > > >
-> > > >
-> > > > Hi, Kai-Heng
-> > > >
-> > > > If I want to mask the replay timer timeout AER of the upper layer r=
-oot port,
-> > > > could you give me some suggestions?
-> > > > Or could you provide sample code for my reference?
-> > >
-> > > I am not aware of anyway to mask "replay timer timeout" from root por=
-t.
-> > > I wonder if the device supoprt D3hot? Or should it stay at D0 when
-> > > ASPM L1.2 is enabled?
-> > >
-> > > Kai-Heng
-> > >
+> > From: Victor Shih <victor.shih@genesyslogic.com.tw>
 > >
-> > Hi, Kai-Heng
+> > For UHS2, the signal voltage is supplied by vdd2 which is already 1.8v,
+> > so no voltage switch required.
+>
+> Can you please elaborate on this? I don't get anything of the above, sorr=
+y.
+>
 > >
-> > Do you know any way to mask the replay timer timeout AER of the
-> > upstream port from the device?
+> > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
+> > Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> > ---
+> >
+> > Updates in V5:
+> >  - Use sdhci_uhs2_mode() to simplify code in
+> >    sdhci_uhs2_start_signal_voltage_switch().
+> >
+> > ---
+> >
+> >  drivers/mmc/host/sdhci-uhs2.c | 24 ++++++++++++++++++++++++
+> >  1 file changed, 24 insertions(+)
+> >
+> > diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs=
+2.c
+> > index fc37a34629c2..92fb69b7e209 100644
+> > --- a/drivers/mmc/host/sdhci-uhs2.c
+> > +++ b/drivers/mmc/host/sdhci-uhs2.c
+> > @@ -142,6 +142,27 @@ static void sdhci_uhs2_set_power(struct sdhci_host=
+ *host, unsigned char mode, un
+> >         }
+> >  }
+> >
+> > +/*********************************************************************=
+********\
+> > + *                                                                    =
+       *
+> > + * MMC callbacks                                                      =
+       *
+> > + *                                                                    =
+       *
+> > +\*********************************************************************=
+********/
+> > +
+> > +static int sdhci_uhs2_start_signal_voltage_switch(struct mmc_host *mmc=
+,
+> > +                                                 struct mmc_ios *ios)
+> > +{
+> > +       struct sdhci_host *host =3D mmc_priv(mmc);
+> > +
+> > +       /*
+> > +        * For UHS2, the signal voltage is supplied by vdd2 which is
+> > +        * already 1.8v so no voltage switch required.
+> > +        */
+> > +       if (sdhci_uhs2_mode(host))
+> > +               return 0;
 >
-> Per PCIe Spec, I don't think it's possible to only mask 'replay timer tim=
-eout'.
->
-> > The device supports D3hot.
->
-> Do you think such error plays any crucial rule? Otherwise disable
-> 'correctable' errors may be plausible.
->
-> Kai-Heng
+> This is just wrong. If we are initializing a uhs2 card, we certainly
+> should call ->start_signal_voltage_switch() callback at all. This is
+> for UHS-I cards, right?
 >
 
-Hi, Kai-Heng
+Hi, Ulf
 
-Due to a flaw in the hardware design, the GL975x replay timer frequently
-times out when ASPM is enabled.
-This patch solves the AER error of the replay timer timeout for GL975x.
-We have not encountered any other errors so far.
-Does your 'correctable' errors mean the AER error of the replay timer timeo=
-ut?
-May I ask if you have any other comments on this patch?
+UHS-II does not need single_voltage.
+I will modify the commit message in the next version.
+sdhci_uhs2_start_signal_voltage_switch() is under
+mmc_host_ops.start_signal_voltage_switch host ops,
+therefore, we need to keep the UHS-I path here.
 
 Thanks, Victor Shih
 
+> > +
+> > +       return sdhci_start_signal_voltage_switch(mmc, ios);
+> > +}
+> > +
+> >  /*********************************************************************=
+********\
+> >   *                                                                    =
+       *
+> >   * Driver init/exit                                                   =
+       *
+> > @@ -150,6 +171,9 @@ static void sdhci_uhs2_set_power(struct sdhci_host =
+*host, unsigned char mode, un
 > >
-> > Thanks, Victor Shih
+> >  static int sdhci_uhs2_host_ops_init(struct sdhci_host *host)
+> >  {
+> > +       host->mmc_host_ops.start_signal_voltage_switch =3D
+> > +               sdhci_uhs2_start_signal_voltage_switch;
+> > +
+> >         return 0;
+> >  }
 > >
-> > > >
-> > > > Thanks, Victor Shih
-> > > >
-> > > > > >
-> > > > > > Thanks, Victor Shih
-> > > > > >
-> > > > > > > >
-> > > > > > > > Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw=
 >
-> > > > > > > > ---
-> > > > > > > >  drivers/mmc/host/sdhci-pci-gli.c | 16 ++++++++++++++++
-> > > > > > > >  1 file changed, 16 insertions(+)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc=
-/host/sdhci-pci-gli.c
-> > > > > > > > index d83261e857a5..d8a991b349a8 100644
-> > > > > > > > --- a/drivers/mmc/host/sdhci-pci-gli.c
-> > > > > > > > +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> > > > > > > > @@ -28,6 +28,9 @@
-> > > > > > > >  #define PCI_GLI_9750_PM_CTRL   0xFC
-> > > > > > > >  #define   PCI_GLI_9750_PM_STATE          GENMASK(1, 0)
-> > > > > > > >
-> > > > > > > > +#define PCI_GLI_9750_CORRERR_MASK                         =
-     0x214
-> > > > > > > > +#define   PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT  =
-       BIT(12)
-> > > > > > > > +
-> > > > > > > >  #define SDHCI_GLI_9750_CFG2          0x848
-> > > > > > > >  #define   SDHCI_GLI_9750_CFG2_L1DLY    GENMASK(28, 24)
-> > > > > > > >  #define   GLI_9750_CFG2_L1DLY_VALUE    0x1F
-> > > > > > > > @@ -152,6 +155,9 @@
-> > > > > > > >  #define PCI_GLI_9755_PM_CTRL     0xFC
-> > > > > > > >  #define   PCI_GLI_9755_PM_STATE    GENMASK(1, 0)
-> > > > > > > >
-> > > > > > > > +#define PCI_GLI_9755_CORRERR_MASK                         =
-     0x214
-> > > > > > > > +#define   PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_TIMEOUT  =
-       BIT(12)
-> > > > > > > > +
-> > > > > > > >  #define SDHCI_GLI_9767_GM_BURST_SIZE                   0x5=
-10
-> > > > > > > >  #define   SDHCI_GLI_9767_GM_BURST_SIZE_AXI_ALWAYS_SET    B=
-IT(8)
-> > > > > > > >
-> > > > > > > > @@ -561,6 +567,11 @@ static void gl9750_hw_setting(struct s=
-dhci_host *host)
-> > > > > > > >         value &=3D ~PCI_GLI_9750_PM_STATE;
-> > > > > > > >         pci_write_config_dword(pdev, PCI_GLI_9750_PM_CTRL, =
-value);
-> > > > > > > >
-> > > > > > > > +       /* mask the replay timer timeout of AER */
-> > > > > > > > +       pci_read_config_dword(pdev, PCI_GLI_9750_CORRERR_MA=
-SK, &value);
-> > > > > > > > +       value |=3D PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_T=
-IMEOUT;
-> > > > > > > > +       pci_write_config_dword(pdev, PCI_GLI_9750_CORRERR_M=
-ASK, value);
-> > > > > > > > +
-> > > > > > > >         gl9750_wt_off(host);
-> > > > > > > >  }
-> > > > > > > >
-> > > > > > > > @@ -770,6 +781,11 @@ static void gl9755_hw_setting(struct s=
-dhci_pci_slot *slot)
-> > > > > > > >         value &=3D ~PCI_GLI_9755_PM_STATE;
-> > > > > > > >         pci_write_config_dword(pdev, PCI_GLI_9755_PM_CTRL, =
-value);
-> > > > > > > >
-> > > > > > > > +       /* mask the replay timer timeout of AER */
-> > > > > > > > +       pci_read_config_dword(pdev, PCI_GLI_9755_CORRERR_MA=
-SK, &value);
-> > > > > > > > +       value |=3D PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_T=
-IMEOUT;
-> > > > > > > > +       pci_write_config_dword(pdev, PCI_GLI_9755_CORRERR_M=
-ASK, value);
-> > > > > > > > +
-> > > > > > > >         gl9755_wt_off(pdev);
-> > > > > > > >  }
-> > > > > > > >
-> > > > > > > > --
-> > > > > > > > 2.25.1
-> > > > > > > >
+> Kind regards
+> Uffe
