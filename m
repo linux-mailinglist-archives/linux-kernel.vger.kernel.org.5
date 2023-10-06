@@ -2,143 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D65267BBBEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736687BBBF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232787AbjJFPmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 11:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
+        id S232831AbjJFPnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 11:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbjJFPmG (ORCPT
+        with ESMTP id S232152AbjJFPnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 11:42:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D3B9E;
-        Fri,  6 Oct 2023 08:42:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CF61C433C7;
-        Fri,  6 Oct 2023 15:42:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696606924;
-        bh=tbHnpOTYGNIXcPamnhQXfo0iLGWFbnd+Sut1PridISA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=q+fTlW4AFWVXdVUVxU0JJ1SpniY5IUKGTvCJtdjQ584qPnp9muQwgqKjOelOIzOcI
-         vop9zPdKs7uo3bxTD5KwUf7HmNAmzG0Kb8lJRHEQLfxEsLiUW9LdXunFkxk5DL7IrL
-         Ff0FOtaKPav+LEhYajiYOCXqBU/14jzEHcMkKK9N/ep1/tsvdpHgtw36KagNttva5r
-         yJgTofHb2BYs/Sk2xGVzHbbAiZhpRg25HPGCJ2LfNTlr9Ji2z7oI3EJ6JJeAFrBtWO
-         zwIwWdab1BW486GeEcVA30KdOWSHFxcsZjvakG014uRuV40neergrHPV4DIHQ/3iPi
-         evMeT2+EqiyOQ==
-Message-ID: <4ec509f6-698d-4a58-a49b-8dbb247edb88@kernel.org>
-Date:   Fri, 6 Oct 2023 18:41:59 +0300
+        Fri, 6 Oct 2023 11:43:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035A69E
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 08:43:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696606984; x=1728142984;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=fQsFBquArgc+9IJQ4xqInI1mZINN33gx7S35zWcm+b8=;
+  b=BvrhtbOKpAMCiVsBo1jgito6EUirFAFARxx7daZeum36kPPqbD0ZRv92
+   NREv97BJab6X/adCAV7HfyLvQJPKzWd0niYMPG7T6rzDpjcDSZd7aJrUO
+   POtzEabiKdnk0io7r3eiL5X/hNfWBfjAu6/mK4iDk4j6e0m3ANM3CIcp1
+   2TikUHhLK8EmogZOJmGA5NFpIIqVy6jXjb0Kw0kI1Col0tfjQl+EG5WGX
+   aPj+YfgxfjmKQgW+c40db/roEzNbWgjh4MbWtrrb4QyyOt6l/B5ELFG4T
+   DVom9/GI+Va+KfJwQdIhy7JImmNblzfWsXjJnE9G3YR7xecRfSrjdPuj7
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="368849745"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="368849745"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 08:43:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="1083491800"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="1083491800"
+Received: from dhimanbh-mobl1.amr.corp.intel.com (HELO [10.209.88.92]) ([10.209.88.92])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 08:43:02 -0700
+Message-ID: <4325732d-f5cc-b15b-157b-e5b0e61f8976@intel.com>
+Date:   Fri, 6 Oct 2023 08:43:01 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: build warnings after merge of the ti tree
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] x86/tdx: Override the tsc calibration for TDX VMs
 Content-Language: en-US
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Nishanth Menon <nm@ti.com>,
-        "Raghavendra, Vignesh" <vigneshr@ti.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Yadav, Nitin" <n-yadav@ti.com>
-References: <20231005141536.77538147@canb.auug.org.au>
- <f70dec2a-dbdf-479c-af5b-a70db02b27b4@ti.com>
- <2905cfc2-912f-4620-9455-2e91586a2839@kernel.org>
- <20231005132921.2vg6kdcr273bh7et@cabbage>
- <fde87d28-ee5d-4e02-b824-27c1cb7c1e38@kernel.org>
- <CAL_Jsq+NXp_d1g507G=G+_cJ1s0GrM099JMNAj2MU4Dpaw=c8g@mail.gmail.com>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <CAL_Jsq+NXp_d1g507G=G+_cJ1s0GrM099JMNAj2MU4Dpaw=c8g@mail.gmail.com>
+To:     Vishal Annapurve <vannapurve@google.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231006011255.4163884-1-vannapurve@google.com>
+ <2d952c6b-2357-208b-e816-bca19c2a7ca6@intel.com>
+ <CAGtprH-_C28G1WEPqmgdpHJpo3_esqOnOYad6YiKQ6g4Z+s9wg@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <CAGtprH-_C28G1WEPqmgdpHJpo3_esqOnOYad6YiKQ6g4Z+s9wg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/6/23 08:27, Vishal Annapurve wrote:
+>> Would it be possible to do this by refactoring the existing code and
+>> calling it directly instead of copying and pasting so much?
+> One option is to call native_calibrate_tsc from tdx_calibrate_tsc and
+> undo the lapic_timer_period configuration after the call. Does that
+> sound reasonable?
 
+That sounds like a hack.
 
-On 06/10/2023 16:55, Rob Herring wrote:
-> On Fri, Oct 6, 2023 at 7:03 AM Roger Quadros <rogerq@kernel.org> wrote:
->>
->>
->>
->> On 05/10/2023 16:29, Nishanth Menon wrote:
->>> On 16:12-20231005, Roger Quadros wrote:
->>>> Hi,
->>>>
->>>> On 05/10/2023 11:25, Raghavendra, Vignesh wrote:
->>>>> + Rob and DT list
->>>>>
->>>>> Hi Stephen
->>>>>
->>>>> On 10/5/2023 8:45 AM, Stephen Rothwell wrote:
->>>>>> Hi all,
->>>>>>
->>>>>> [I may have missed this yesterday, sorry]
->>>>>>
->>>>>> After merging the ti tree, today's linux-next build (arm64 defconfig)
->>>>>> produced these warnings:
->>>>>>
->>>>>> arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #address-cells value
->>>>>> arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #size-cells value
->>>>>>
->>>>>> Introduced by commit
->>>>>>
->>>>>>   45a0c06571e1 ("arm64: dts: ti: am642-evm: Add overlay for NAND expansion card")
->>>>>>
->>>>>
->>>>> Thanks for the report. I will drop the offending comment.
->>>>>
->>>>> Roger,
->>>>>
->>>>> Sorry, this would need to be fixed in dtc or need exception from DT
->>>>> maintainers to ignore the warnings.
->>>>
->>>> Please don't drop this patch as the issue is not with the patch but with
->>>> the dtc tool itself.
->>>>
->>>> As this is a DT overlay there is no way to specify address-cells/size-cells
->>>> of parent here. This will be resolved only after merge with base tree.
->>>>
->>>> This will be fixed in next dtc sync.
->>>> https://www.spinics.net/lists/devicetree-compiler/msg04036.html
->>>>
->>>> See further discussion here
->>>> https://lore.kernel.org/all/CAL_JsqLmv904+_2EOmsQ__y1yLDvsT+_02i85phuh0cpe7X8NQ@mail.gmail.com/
->>>>
->>>
->>> Roger, build warnings are a strict NO,NO for kernel. Lets bring in the
->>> series *after* the dtc sync is complete.
->>>
->>
->> Hi Rob,
->>
->> Following commit from dtc is required to resolve this issue.
->>
->> afbddcd418fb ("Suppress warnings on overlay fragments")
-> 
-> That is from 2018, so it's been in the kernel's dtc for a long time.
-
-Oh, my bad. I saw your Reviewed-by tag and assumed the patch was already upstream.
-
-> 
-> I believe what you need is the patch I referenced which hasn't been
-> applied upstream.
-> 
->> FYI. Another patch of similar nature is on its way and will also require the
->> above commit to DTC.
->> https://lore.kernel.org/all/20231005093739.4071934-3-n-yadav@ti.com/
-> 
-> You'll need to fix dtc first.
-
--- 
-cheers,
--roger
+Why not just refactor the code properly?
