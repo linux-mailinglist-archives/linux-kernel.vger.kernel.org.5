@@ -2,147 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675D07BBCE7
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915367BBCE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232879AbjJFQkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
+        id S232849AbjJFQjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232807AbjJFQj7 (ORCPT
+        with ESMTP id S232496AbjJFQjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:39:59 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D14C2;
-        Fri,  6 Oct 2023 09:39:57 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4S2DNF5kL1z9ylcZ;
-        Sat,  7 Oct 2023 00:27:09 +0800 (CST)
-Received: from [10.45.145.231] (unknown [10.45.145.231])
-        by APP1 (Coremail) with SMTP id LxC2BwBHn5A4OCBlj9m1AQ--.6636S2;
-        Fri, 06 Oct 2023 17:39:32 +0100 (CET)
-Message-ID: <4110a58a-8db5-57c4-2f5a-e09ee054baaa@huaweicloud.com>
-Date:   Fri, 6 Oct 2023 18:39:18 +0200
+        Fri, 6 Oct 2023 12:39:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E666AD
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 09:39:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7730C433C8;
+        Fri,  6 Oct 2023 16:39:36 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Peter Collingbourne <pcc@google.com>
+Subject: [RESEND PATCH] mm: slab: Do not create kmalloc caches smaller than arch_slab_minalign()
+Date:   Fri,  6 Oct 2023 17:39:34 +0100
+Message-Id: <20231006163934.3273940-1-catalin.marinas@arm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH memory-model] docs: memory-barriers: Add note on compiler
- transformation and address deps
-To:     paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <ceaeba0a-fc30-4635-802a-668c859a58b2@paulmck-laptop>
-From:   Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-In-Reply-To: <ceaeba0a-fc30-4635-802a-668c859a58b2@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwBHn5A4OCBlj9m1AQ--.6636S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWr15WF4fAryUKFWrAFWDArb_yoW5CF47pr
-        WfKr13tFZrJr12kw1UAw17AryjyFZ5CF43Gr9F9r1kurn09r1FyrnxKr48uFyDC395AryU
-        ZrZ0yws8Zw1DAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU13rcDUUUUU==
-X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Commit b035f5a6d852 ("mm: slab: reduce the kmalloc() minimum alignment
+if DMA bouncing possible") allows architectures with non-coherent DMA to
+define a small ARCH_KMALLOC_MINALIGN (e.g. sizeof(unsigned long long))
+and this has been enabled on arm64. With KASAN_HW_TAGS enabled, however,
+ARCH_SLAB_MINALIGN becomes 16 on arm64 (arch_slab_minalign() dynamically
+selects it since commit d949a8155d13 ("mm: make minimum slab alignment a
+runtime property")). This can lead to a situation where kmalloc-8 caches
+are attempted to be created with a kmem_caches.size aligned to 16. When
+the cache is mergeable, it can lead to kernel warnings like:
 
-The "more up-to-date information" makes it sound like (some of) the 
-information in this section is out-of-date/no longer valid.
+sysfs: cannot create duplicate filename '/kernel/slab/:d-0000016'
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc1-00001-gda98843cd306-dirty #5
+Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+Call trace:
+ dump_backtrace+0x90/0xe8
+ show_stack+0x18/0x24
+ dump_stack_lvl+0x48/0x60
+ dump_stack+0x18/0x24
+ sysfs_warn_dup+0x64/0x80
+ sysfs_create_dir_ns+0xe8/0x108
+ kobject_add_internal+0x98/0x264
+ kobject_init_and_add+0x8c/0xd8
+ sysfs_slab_add+0x12c/0x248
+ slab_sysfs_init+0x98/0x14c
+ do_one_initcall+0x6c/0x1b0
+ kernel_init_freeable+0x1c0/0x288
+ kernel_init+0x24/0x1e0
+ ret_from_fork+0x10/0x20
+kobject: kobject_add_internal failed for :d-0000016 with -EEXIST, don't try to register things with the same name in the same directory.
+SLUB: Unable to add boot slab dma-kmalloc-8 to sysfs
 
-But after reading the sections, it seems the information is valid, but 
-discusses mostly the history of address dependency barriers.
+Limit the __kmalloc_minalign() return value (used to create the
+kmalloc-* caches) to arch_slab_minalign() so that kmalloc-8 caches are
+skipped when KASAN_HW_TAGS is enabled (both config and runtime).
 
-Given that the sepcond part  specifically already starts with a 
-disclaimer that this information is purely relevant to people interested 
-in history or working on alpha, I think it would make more sense to 
-modify things slightly differently.
+Fixes: b035f5a6d852 ("mm: slab: reduce the kmalloc() minimum alignment if DMA bouncing possible")
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Reported-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: <stable@vger.kernel.org> # 6.5.x
+---
 
-Firstly I'd remove the "historical" part in the first section, and add 
-two short paragraphs explaining that
+The previous post was messed up by my git send-email configuration, so
+sending it again. Also cc'ing Vlastimil since he reviewed the previous
+slab changes for ARCH_KMALLOC_MINALIGN. Thanks.
 
-- every marked access implies a address dependency barrier
+ mm/slab_common.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-- address dependencies considered by the model are *semantic* 
-dependencies, meaning that a *syntactic* dependency is not sufficient to 
-imply ordering; see the rcu file for some examples where compilers can 
-elide syntactic dependencies
-
-Secondly, I'd not add the disclaimer to the second section; there's 
-already a link to rcu_dereference in that section ( 
-https://github.com/torvalds/linux/blob/master/Documentation/memory-barriers.txt#L634 
-), and already a small text explaining that the section is historical.
-
-
-Best wishes,
-
-jonas
-
-
-Am 10/5/2023 um 6:53 PM schrieb Paul E. McKenney:
-> The compiler has the ability to cause misordering by destroying
-> address-dependency barriers if comparison operations are used. Add a
-> note about this to memory-barriers.txt in the beginning of both the
-> historical address-dependency sections and point to rcu-dereference.rst
-> for more information.
->
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
-> index 06e14efd8662..d414e145f912 100644
-> --- a/Documentation/memory-barriers.txt
-> +++ b/Documentation/memory-barriers.txt
-> @@ -396,6 +396,10 @@ Memory barriers come in four basic varieties:
->   
->   
->    (2) Address-dependency barriers (historical).
-> +     [!] This section is marked as HISTORICAL: For more up-to-date
-> +     information, including how compiler transformations related to pointer
-> +     comparisons can sometimes cause problems, see
-> +     Documentation/RCU/rcu_dereference.rst.
->   
->        An address-dependency barrier is a weaker form of read barrier.  In the
->        case where two loads are performed such that the second depends on the
-> @@ -556,6 +560,9 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
->   
->   ADDRESS-DEPENDENCY BARRIERS (HISTORICAL)
->   ----------------------------------------
-> +[!] This section is marked as HISTORICAL: For more up-to-date information,
-> +including how compiler transformations related to pointer comparisons can
-> +sometimes cause problems, see Documentation/RCU/rcu_dereference.rst.
->   
->   As of v4.15 of the Linux kernel, an smp_mb() was added to READ_ONCE() for
->   DEC Alpha, which means that about the only people who need to pay attention
-
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index cd71f9581e67..8b45922ed295 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -895,10 +895,13 @@ void __init setup_kmalloc_cache_index_table(void)
+ 
+ static unsigned int __kmalloc_minalign(void)
+ {
++	unsigned int minalign = dma_get_cache_alignment();
++
+ 	if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) &&
+ 	    is_swiotlb_allocated())
+-		return ARCH_KMALLOC_MINALIGN;
+-	return dma_get_cache_alignment();
++		minalign = ARCH_KMALLOC_MINALIGN;
++
++	return ALIGN(minalign, arch_slab_minalign());
+ }
+ 
+ void __init
