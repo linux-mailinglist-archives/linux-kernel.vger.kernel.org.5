@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 392B37BC25F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2B97BC260
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233843AbjJFWrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 18:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54108 "EHLO
+        id S233870AbjJFWrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 18:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233862AbjJFWrD (ORCPT
+        with ESMTP id S233854AbjJFWrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 18:47:03 -0400
+        Fri, 6 Oct 2023 18:47:12 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2676E9C
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 15:46:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BC4FC433A9;
-        Fri,  6 Oct 2023 22:46:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BCB186;
+        Fri,  6 Oct 2023 15:47:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A622C433C8;
+        Fri,  6 Oct 2023 22:47:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696632415;
-        bh=QhfxJqEQ6OJSl5IcILtNokOuYw1e3Q+5kT0sh/iU5Yw=;
+        s=k20201202; t=1696632422;
+        bh=dHi+uhc5JmMdS0vOiwqKPO+fur6fetbxxWrDuMzxW9s=;
         h=From:To:Cc:Subject:Date:From;
-        b=BLamJ5PL9kCXURtOMy/xt58EyKrzqixFGNEjB1szGolW99SxpKzX7HN/LfbIjfU1S
-         szhS38E7TIMHQ5S7uluKmWdZdixdRQsoqJLz8zUFKRpxBlQLv99LwcEza2AJh87sMX
-         N3qfz+oBSuDmv44aFuqvwGWaxZF62bWM+DZo+9Uv5h+wrWsP40dehnz7l+KbFzIwWB
-         3XuY8g/qCULly3SXJVYddn4IwIv0aFLIg3HB933+/7nkcZWhrToPi8eDqL6h5gIvSY
-         7t+tzIn+HOREOO9EJMamzsRJDt4ebvhDWhFC85fJbzrjc7rdgExmYivaETLmso1NrN
-         jd3dPkDP+hMiw==
-Received: (nullmailer pid 445513 invoked by uid 1000);
-        Fri, 06 Oct 2023 22:46:54 -0000
+        b=CnU8Ad18XEIdVWdtF4JdAtf7WJ2CELAZ2WRm2m0xRt8N5et7x4Wh3M8ssQJPxU9OO
+         i+ZlxgeMi93T5Q8wSL1pbql+nd4RYdx320qpVRts/bDOYNH1cFXMxOay4xDWYuKQDR
+         uLjSFfbacyGbia+E1IVhVntZVz4R0LgPJ/kUBITGptGytiOv8F2Cnk70aNZ+vbSOVZ
+         gpcw2RJy0GRrTVWrWHactuKXXjcBO+v5vPvSM3mOWtvfONOT+v/SWNv8r7943OX+Y+
+         NXdc9+9UJ8GRFojR/7KMJJpOKEvS7MA3gyH6S11aHkQ4rjmaOBUmvnwuxc5mTBnKTE
+         scBjoS2MX1W5A==
+Received: (nullmailer pid 445636 invoked by uid 1000);
+        Fri, 06 Oct 2023 22:47:00 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] firmware: arm_scpi: Use device_get_match_data()
-Date:   Fri,  6 Oct 2023 17:46:50 -0500
-Message-Id: <20231006224650.445424-1-robh@kernel.org>
+To:     Dinh Nguyen <dinguyen@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] EDAC: altera: Use device_get_match_data()
+Date:   Fri,  6 Oct 2023 17:46:57 -0500
+Message-Id: <20231006224657.445561-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -55,57 +58,50 @@ include the correct headers.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/firmware/arm_scpi.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ drivers/edac/altera_edac.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/firmware/arm_scpi.c b/drivers/firmware/arm_scpi.c
-index 435d0e2658a4..3f123f592cb4 100644
---- a/drivers/firmware/arm_scpi.c
-+++ b/drivers/firmware/arm_scpi.c
-@@ -26,9 +26,12 @@
- #include <linux/list.h>
- #include <linux/mailbox_client.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
+diff --git a/drivers/edac/altera_edac.c b/drivers/edac/altera_edac.c
+index 8b31cd54bdb6..541acf5eba05 100644
+--- a/drivers/edac/altera_edac.c
++++ b/drivers/edac/altera_edac.c
+@@ -22,6 +22,7 @@
  #include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/printk.h>
+ #include <linux/panic_notifier.h>
+ #include <linux/platform_device.h>
 +#include <linux/property.h>
- #include <linux/pm_opp.h>
- #include <linux/scpi_protocol.h>
- #include <linux/slab.h>
-@@ -894,11 +897,6 @@ static int scpi_alloc_xfer_list(struct device *dev, struct scpi_chan *ch)
- 	return 0;
- }
+ #include <linux/regmap.h>
+ #include <linux/types.h>
+ #include <linux/uaccess.h>
+@@ -279,7 +280,6 @@ static int a10_unmask_irq(struct platform_device *pdev, u32 mask)
  
--static const struct of_device_id legacy_scpi_of_match[] = {
--	{.compatible = "arm,scpi-pre-1.0"},
--	{},
--};
+ static int altr_sdram_probe(struct platform_device *pdev)
+ {
+-	const struct of_device_id *id;
+ 	struct edac_mc_layer layers[2];
+ 	struct mem_ctl_info *mci;
+ 	struct altr_sdram_mc_data *drvdata;
+@@ -290,10 +290,6 @@ static int altr_sdram_probe(struct platform_device *pdev)
+ 	int irq, irq2, res = 0;
+ 	unsigned long mem_size, irqflags = 0;
+ 
+-	id = of_match_device(altr_sdram_ctrl_of_match, &pdev->dev);
+-	if (!id)
+-		return -ENODEV;
 -
- static const struct of_device_id shmem_of_match[] __maybe_unused = {
- 	{ .compatible = "amlogic,meson-gxbb-scp-shmem", },
- 	{ .compatible = "amlogic,meson-axg-scp-shmem", },
-@@ -919,8 +917,7 @@ static int scpi_probe(struct platform_device *pdev)
- 	if (!scpi_drvinfo)
- 		return -ENOMEM;
+ 	/* Grab the register range from the sdr controller in device tree */
+ 	mc_vbase = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
+ 						   "altr,sdr-syscon");
+@@ -304,8 +300,7 @@ static int altr_sdram_probe(struct platform_device *pdev)
+ 	}
  
--	if (of_match_device(legacy_scpi_of_match, &pdev->dev))
--		scpi_drvinfo->is_legacy = true;
-+	scpi_drvinfo->is_legacy = !!device_get_match_data(dev);
+ 	/* Check specific dependencies for the module */
+-	priv = of_match_node(altr_sdram_ctrl_of_match,
+-			     pdev->dev.of_node)->data;
++	priv = device_get_match_data(&pdev->dev);
  
- 	count = of_count_phandle_with_args(np, "mboxes", "#mbox-cells");
- 	if (count < 0) {
-@@ -1038,7 +1035,7 @@ static int scpi_probe(struct platform_device *pdev)
- 
- static const struct of_device_id scpi_of_match[] = {
- 	{.compatible = "arm,scpi"},
--	{.compatible = "arm,scpi-pre-1.0"},
-+	{.compatible = "arm,scpi-pre-1.0", .data = (void *)1UL },
- 	{},
- };
- 
+ 	/* Validate the SDRAM controller has ECC enabled */
+ 	if (regmap_read(mc_vbase, priv->ecc_ctrl_offset, &read_reg) ||
 -- 
 2.40.1
 
