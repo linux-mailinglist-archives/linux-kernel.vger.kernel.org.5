@@ -2,137 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CCE7BBC8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B951E7BBC8C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbjJFQQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
+        id S232499AbjJFQRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbjJFQQY (ORCPT
+        with ESMTP id S230050AbjJFQQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:16:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2A29E;
-        Fri,  6 Oct 2023 09:16:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89291C433C7;
-        Fri,  6 Oct 2023 16:16:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696608982;
-        bh=nn2PakBIGbgtsjEPpxAO4jVlLqjVjHADYSnUr1qUXew=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lFkTvMoc5xPxQnjGQFbbukgR7nGvQnaMUmIi8cIFrTDFwzZVKr9iEZ8kf9UwtmkqS
-         JjVmj8vB0ZE3TTOhwWGNB1o+JGF1B090dzJEdIgroxf4E0ngIgy808gaNyUPH5DIJl
-         J26870g4clx/9i8PyhovxrsBJET6ud3yGuLTEpzfK6WP1sXVcDOKmAYFwmPgx7Hx42
-         TgUnvqo/j6K5BNN2TivJ1Z+rTg5nraUATk/swrNf592B9syT+5kdlaHuidRWPb9A8x
-         eVXAhvs+zO1q6xgZPse0VgS1i3yG6J3XpznXuO3teSMIwX7oX5V6lQddll6CHRjwHj
-         1rUD3xOytS4kg==
-Received: (nullmailer pid 4022504 invoked by uid 1000);
-        Fri, 06 Oct 2023 16:16:16 -0000
-Date:   Fri, 6 Oct 2023 11:16:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Komal Bajaj <quic_kbajaj@quicinc.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andy Gross <agross@kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-rockchip@lists.infradead.org, linux-rtc@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Vincent Shih <vincent.sunplus@gmail.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Kumar Thella <sthella@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        devicetree@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        linux-kernel@vger.kernel.org,
-        A ndrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        linux-arm-msm@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, asahi@lists.linux.dev,
-        Keiji Hayashibara <hayashibara.keiji@socionext.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Lala Lin <lala.lin@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Richard Weinberger <richard@nod.at>,
-        Sven Peter <sven@svenpeter.dev>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: Re: [PATCH V2] dt-bindings: nvmem: move deprecated cells binding to
- its own file
-Message-ID: <169660897594.4022464.17777045780008018792.robh@kernel.org>
-References: <20231003064018.7502-1-zajec5@gmail.com>
+        Fri, 6 Oct 2023 12:16:57 -0400
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0559E
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 09:16:56 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231006161654euoutp0137bdf4fca96fd3367a4be3a10ec9c6f7~LkOjX0tl42020320203euoutp01Q
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 16:16:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231006161654euoutp0137bdf4fca96fd3367a4be3a10ec9c6f7~LkOjX0tl42020320203euoutp01Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1696609014;
+        bh=qAAAzXrrsj5Rb1r1+7kJS+1Fb64LpnKfMoYosLgQlgc=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=nY9DkCv5KmhvIUcAO5ETa0J4lPItie7OI2Fria6jW2ORw8rZqj5pNBaAOEnz4JHKe
+         afYZIDgY/GmSjc50WJ19Xjso3R4rzKkvp1+yUeMzh4TYannscNH2GAtbM38NrbiRih
+         q96zgYnSNy/vysqXdGLfx+8fGZ+jTmqi3Raw+vYA=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231006161653eucas1p2691995adc126c0a6477e2e5a1ac6a441~LkOi8XNyY1416314163eucas1p2J;
+        Fri,  6 Oct 2023 16:16:53 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 7C.1B.11320.5F230256; Fri,  6
+        Oct 2023 17:16:53 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231006161653eucas1p22a6382869a0995a5b799a899873cd9e4~LkOieu5y21327713277eucas1p2Q;
+        Fri,  6 Oct 2023 16:16:53 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231006161653eusmtrp26b12b6c8261351bdca248990dde0fb26~LkOidxRSZ1620416204eusmtrp2h;
+        Fri,  6 Oct 2023 16:16:53 +0000 (GMT)
+X-AuditID: cbfec7f4-993ff70000022c38-f5-652032f5b09f
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id A4.19.10549.5F230256; Fri,  6
+        Oct 2023 17:16:53 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231006161652eusmtip2219645029196c668d21b790716473311~LkOhcvvLh0766707667eusmtip2N;
+        Fri,  6 Oct 2023 16:16:52 +0000 (GMT)
+Message-ID: <1a25e5b9-43f6-47a4-877a-a0744dc6f56c@samsung.com>
+Date:   Fri, 6 Oct 2023 18:16:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231003064018.7502-1-zajec5@gmail.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/5] drm/bridge: samsung-dsim: fix various modes with
+ ADV7535 bridge
+Content-Language: en-US
+To:     Michael Tretter <m.tretter@pengutronix.de>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, Marco Felsch <m.felsch@pengutronix.de>,
+        Adam Ford <aford173@gmail.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20230818-samsung-dsim-v2-0-846603df0e0a@pengutronix.de>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJKsWRmVeSWpSXmKPExsWy7djP87pfjRRSDXq26VncuX2a2eLE9UVM
+        FvcXf2ax+L9tIrPFla/v2Sx6l55jtZh0fwKLxZdNE9gsns9fx2hx8s1VFotVU3eyWHROXMJu
+        cXnXHDaLD7uuMltsWwFU/H7nLUaLSfNusjoIeqz9eJ/VY++3BSweO2fdZfeY3TGT1WPxnpdM
+        HptWdbJ5HLm6mNXjxIRLTB53ru1h87jffZzJo/+vgUffllWMHp83yQXwRnHZpKTmZJalFunb
+        JXBl3JqyhK3gp1xF3+ZZzA2MO8W6GDk5JARMJO5N+8rexcjFISSwglHixP77UM4XRom5yzez
+        QjifGSXOP21lhGl5d2o9mC0ksByoahsbRNFHRokfn08ygyR4Bewkjt66CVbEIqAise/eVnaI
+        uKDEyZlPWEBsUQF5ifu3ZoDFhQViJX4vWQgWZxYQl7j1ZD4TyFARgX3MEs9/rGQEcZgFrjBK
+        7PyzEqyDTcBQouttFxuIzSngKnHs/Q9GiG55ie1v5zCDNEgIPOOU2LOujxXibheJld0tLBC2
+        sMSr41vYIWwZif87IdZJCLQzSiz4fR/KmcAo0fD8FtTX1hJ3zv0CWscBtEJTYv0ufYiwo8Sj
+        /2cYQcISAnwSN94KQhzBJzFp23RmiDCvREebEES1msSs4+vg1h68cIl5AqPSLKSAmYUUALOQ
+        vDMLYe8CRpZVjOKppcW56anFRnmp5XrFibnFpXnpesn5uZsYganz9L/jX3YwLn/1Ue8QIxMH
+        4yFGCQ5mJRHe9AaZVCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8qinyqUIC6YklqdmpqQWpRTBZ
+        Jg5OqQamYk+1sjadz+v01uSc8SzdzhXPdD/nyVOugDNfr+z4OmeH39Z5rDdevPOz19Tb573p
+        e81OsY2P1ouF5PgYWXN7R51Iv37xwiyz8zeUz81oj7uyan7z0sl7oo9XN543uMPqeWGXceje
+        G+eX1dXe3S0ulcjiuz8tYp3Nq7BHhpEv5a7aNQhLMbxesfqUhNDpfAfuv/IVB0uZojRnBYt8
+        8WtWcVzn+4Fl2Yc3FV2Ga1ezPtsf5vPi6Fu+XbvYN01vUeH55TQvovlooMjE0kdaD/39W263
+        dJ3V49iQu+a53J20Bg7JvGdf/544z9IQLbLefanOyTqjnQ/23J5iIc/Xc2PihpLuyMPsJYXS
+        oXVcCTX7lFiKMxINtZiLihMBLWmdMwwEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphleLIzCtJLcpLzFFi42I5/e/4Pd2vRgqpBvvu8VvcuX2a2eLE9UVM
+        FvcXf2ax+L9tIrPFla/v2Sx6l55jtZh0fwKLxZdNE9gsns9fx2hx8s1VFotVU3eyWHROXMJu
+        cXnXHDaLD7uuMltsWwFU/H7nLUaLSfNusjoIeqz9eJ/VY++3BSweO2fdZfeY3TGT1WPxnpdM
+        HptWdbJ5HLm6mNXjxIRLTB53ru1h87jffZzJo/+vgUffllWMHp83yQXwRunZFOWXlqQqZOQX
+        l9gqRRtaGOkZWlroGZlY6hkam8daGZkq6dvZpKTmZJalFunbJehl3JqyhK3gp1xF3+ZZzA2M
+        O8W6GDk5JARMJN6dWs/YxcjFISSwlFGi8/UlZoiEjMTJaQ2sELawxJ9rXWwQRe8ZJfZ2TWQD
+        SfAK2EkcvXWTEcRmEVCR2HdvKztEXFDi5MwnLCC2qIC8xP1bM8DiwgKxEr+XLASLMwuIS9x6
+        Mp8JZKiIwD5miSc3lrGDOMwC1xgl5jXeYYJYN4NR4vDh7WA3sQkYSnS97QJbzSngKnHs/Q9G
+        iFFmEl1bu6BseYntb+cwT2AUmoXkkllINs5C0jILScsCRpZVjCKppcW56bnFhnrFibnFpXnp
+        esn5uZsYgcli27Gfm3cwznv1Ue8QIxMH4yFGCQ5mJRHe9AaZVCHelMTKqtSi/Pii0pzU4kOM
+        psDgmMgsJZqcD0xXeSXxhmYGpoYmZpYGppZmxkrivJ4FHYlCAumJJanZqakFqUUwfUwcnFIN
+        TCyp7EcmXJnOJSMva61cs64zUcxMv1r1sFPX1J//jthpFuQnVldkmvh7l1dNmRNVZ/453fyP
+        1hODkpScTp5s3nnT9TsLZpZ9KYnu+PVU7gFDxU0NLYH1ohl7EhcX3vxzd92ne/xirJPktLbz
+        XD74avH3pcX3G89WPHiUz/fwl/c7mej4I253D5pOVmb5atG0g+Plkrkzs4vCb62cvj/45Qs9
+        ZV9xge5rF0JXnXnB3je1dn0tw8LOhU9MbO8suPl00vI3i4oOnV1a5fxm775mb9kTs31TEvNP
+        yd16ybjZ/qeIb8Hmqw88a07yeui3lupMen7tQNPs3x/mrGWI6VjWdqb9v3JCxCTlyS9Dos8c
+        VFJiKc5INNRiLipOBACLp48nnwMAAA==
+X-CMS-MailID: 20231006161653eucas1p22a6382869a0995a5b799a899873cd9e4
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231006150716eucas1p2a4d91a9fb322ddaccf2e9a0b7d517a51
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231006150716eucas1p2a4d91a9fb322ddaccf2e9a0b7d517a51
+References: <CGME20231006150716eucas1p2a4d91a9fb322ddaccf2e9a0b7d517a51@eucas1p2.samsung.com>
+        <20230818-samsung-dsim-v2-0-846603df0e0a@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06.10.2023 17:07, Michael Tretter wrote:
+> I tested the i.MX8M Nano EVK with the NXP supplied MIPI-DSI adapter,
+> which uses an ADV7535 MIPI-DSI to HDMI converter. I found that a few
+> modes were working, but in many modes my monitor stayed dark.
+>
+> This series fixes the Samsung DSIM bridge driver to bring up a few more
+> modes:
+>
+> The driver read the rate of the PLL ref clock only during probe.
+> However, if the clock is re-parented to the VIDEO_PLL, changes to the
+> pixel clock have an effect on the PLL ref clock. Therefore, the driver
+> must read and potentially update the PLL ref clock on every modeset.
+>
+> I also found that the rounding mode of the porches and active area has
+> an effect on the working modes. If the driver rounds up instead of
+> rounding down and be calculates them in Hz instead of kHz, more modes
+> start to work.
+>
+> The following table shows the modes that were working in my test without
+> this patch set and the modes that are working now:
+>
+> |            Mode | Before | Now |
+> | 1920x1080-60.00 | X      | X   |
+> | 1920x1080-59.94 |        | X   |
+> | 1920x1080-50.00 |        | X   |
+> | 1920x1080-30.00 |        | X   |
+> | 1920x1080-29.97 |        | X   |
+> | 1920x1080-25.00 |        | X   |
+> | 1920x1080-24.00 |        |     |
+> | 1920x1080-23.98 |        |     |
+> | 1680x1050-59.88 |        | X   |
+> | 1280x1024-75.03 | X      | X   |
+> | 1280x1024-60.02 | X      | X   |
+> |  1200x960-59.99 |        | X   |
+> |  1152x864-75.00 | X      | X   |
+> |  1280x720-60.00 |        |     |
+> |  1280x720-59.94 |        |     |
+> |  1280x720-50.00 |        | X   |
+> |  1024x768-75.03 |        | X   |
+> |  1024x768-60.00 |        | X   |
+> |   800x600-75.00 | X      | X   |
+> |   800x600-60.32 | X      | X   |
+> |   720x576-50.00 | X      | X   |
+> |   720x480-60.00 |        |     |
+> |   720x480-59.94 | X      |     |
+> |   640x480-75.00 | X      | X   |
+> |   640x480-60.00 |        | X   |
+> |   640x480-59.94 |        | X   |
+> |   720x400-70.08 |        |     |
+>
+> Interestingly, the 720x480-59.94 mode stopped working. However, I am
+> able to bring up the 720x480 modes by manually hacking the active area
+> (hsa) to 40 and carefully adjusting the clocks, but something still
+> seems to be off.
+>
+> Unfortunately, a few more modes are still not working at all. The NXP
+> downstream kernel has some quirks to handle some of the modes especially
+> wrt. to the porches, but I cannot figure out, what the driver should
+> actually do in these cases. Maybe there is still an error in the
+> calculation of the porches and someone at NXP can chime in.
+>
+> Michael
+>
+> Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
 
-On Tue, 03 Oct 2023 08:40:18 +0200, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> Support for old NVMEM fixed cells was deprecated in favour of
-> "fixed-layout". It's still part of the nvmem.yaml though and may be
-> unknowingly used by new bindings added without much of analyze.
-> 
-> To make it more difficult to accidentally support old syntax move its
-> binding to separated file with "deprecated" in its name.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+All my Exynos-based test boards with DSI display panels still work fine 
+with this patchset.
+
+Feel free to add:
+
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+
+
 > ---
-> V2: Fix path to nvmem-deprecated-cells.yaml in amlogic,meson6-rtc.yaml
-> 
->  .../devicetree/bindings/mtd/mtd.yaml          |  7 ++++-
->  .../bindings/mtd/partitions/nvmem-cells.yaml  |  1 +
->  .../nvmem/amlogic,meson-gxbb-efuse.yaml       |  1 +
->  .../bindings/nvmem/amlogic,meson6-efuse.yaml  |  1 +
->  .../bindings/nvmem/apple,efuses.yaml          |  1 +
->  .../devicetree/bindings/nvmem/imx-ocotp.yaml  |  1 +
->  .../bindings/nvmem/mediatek,efuse.yaml        |  1 +
->  .../nvmem/microchip,sama7g5-otpc.yaml         |  1 +
->  .../devicetree/bindings/nvmem/mxs-ocotp.yaml  |  1 +
->  .../nvmem/nvmem-deprecated-cells.yaml         | 28 +++++++++++++++++++
->  .../devicetree/bindings/nvmem/nvmem.yaml      |  9 ------
->  .../bindings/nvmem/qcom,qfprom.yaml           |  1 +
->  .../bindings/nvmem/qcom,sec-qfprom.yaml       |  1 +
->  .../bindings/nvmem/qcom,spmi-sdam.yaml        |  1 +
->  .../bindings/nvmem/rockchip,otp.yaml          |  1 +
->  .../bindings/nvmem/rockchip-efuse.yaml        |  1 +
->  .../nvmem/socionext,uniphier-efuse.yaml       |  1 +
->  .../bindings/nvmem/sunplus,sp7021-ocotp.yaml  |  1 +
->  .../bindings/rtc/amlogic,meson6-rtc.yaml      |  1 +
->  19 files changed, 50 insertions(+), 10 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/nvmem-deprecated-cells.yaml
-> 
+> Changes in v2:
+> - Specify limits for the PLL input clock in samsung_dsim_driver_data
+> - Rephrase/clarify commit messages
+> - Link to v1: https://lore.kernel.org/r/20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de
+>
+> ---
+> Marco Felsch (1):
+>        drm/bridge: samsung-dsim: add more mipi-dsi device debug information
+>
+> Michael Tretter (4):
+>        drm/bridge: samsung-dsim: reread ref clock before configuring PLL
+>        drm/bridge: samsung-dsim: update PLL reference clock
+>        drm/bridge: samsung-dsim: adjust porches by rounding up
+>        drm/bridge: samsung-dsim: calculate porches in Hz
+>
+>   drivers/gpu/drm/bridge/samsung-dsim.c | 54 +++++++++++++++++++++++++++--------
+>   include/drm/bridge/samsung-dsim.h     |  3 ++
+>   2 files changed, 45 insertions(+), 12 deletions(-)
+> ---
+> base-commit: b78b18fb8ee19f7a05f20c3abc865b3bfe182884
+> change-id: 20230818-samsung-dsim-42346444bce5
+>
+> Best regards,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
