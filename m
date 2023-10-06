@@ -2,149 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A99067BC223
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64187BC228
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233772AbjJFWQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 18:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
+        id S233731AbjJFWRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 18:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233754AbjJFWQZ (ORCPT
+        with ESMTP id S233545AbjJFWRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 18:16:25 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00ACBD
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 15:16:22 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-578d791dd91so2049293a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 15:16:22 -0700 (PDT)
+        Fri, 6 Oct 2023 18:17:45 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C84BE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 15:17:43 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ad810be221so447998066b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 15:17:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696630582; x=1697235382; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1696630662; x=1697235462; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mKHn8MHAksMieZVNplmzQ9td3WQY/zTB+/6WLDFqzoc=;
-        b=ZSFXcvartjnVLWjOnc1Zm3GTsvaBpPPgn7YtM+5QGifXxevKNVwsw21LQ0hA3L+S7I
-         3A6tSW3yTRM/2nQZbBdrwLPsq9P4GYmv1wmJzp+Hn78NwSwX7cfaxRTLZLlUQoaQYv0e
-         /QxBW/gsil9hUoy+DstembkO2gJqG8CBxYPYo=
+        bh=xhO3ehWc1dLHvm/xZLr7SfH1xniT/+pUCjErhuF2vy4=;
+        b=XtIozXrfIsIA9DPsPbmAyofab6jlrYN0K0xxhpLmqnXD4TyXc7mdPUJbpoiZDntM/q
+         y2/GGKZR7iGHiXlEb+dL7fWqpkVWMy3oIu2434UYTVCHJX7HaSiMZ5EYJYrJiD3Ho8Kj
+         uXYKVtA5WKKP9yxSZtX111HdhattYUPSs2Tjw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696630582; x=1697235382;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696630662; x=1697235462;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mKHn8MHAksMieZVNplmzQ9td3WQY/zTB+/6WLDFqzoc=;
-        b=QyIazbNHo3g5bopwkG5fBa4JW1R128fZR7JMHKlL31pW2B4J6mhE8m1Gfh0qhG7SHO
-         Y+8+6/bhgVHrtwemViE6gw6P8KsLvwr7fBeZQGMRUJZKLh/dIKl6dbsMCSKA+p1prsiL
-         sPp4l9WyhaRlmooigNFe/AM5lDaEi4nFt0QP5iEOx/dooaNZQ6xeokpcwEz6Op0EdgtK
-         CaAW8cYC7Gj69NQ3sUCo+2XZIfuxlmRbHssxlcIBp/8iI+KjDKx5UWij+VyHP6izPo6g
-         0U3udVtTxK9uZglfr00h9oxpBb0WkeGynskfmoDulbZUfu71ebbHEVR5+nqyek/D3pk/
-         M/Mw==
-X-Gm-Message-State: AOJu0YzixySTpqfinLKDNkvk7idUsB9U0ixEn2xSs2Xn6hNjHTskcv07
-        jq9rV+A7/K2jEomLz+KEf89idA==
-X-Google-Smtp-Source: AGHT+IFtVb4aW+OND3UEg2HZFIAKdVlqCxraW/RlbV8GK+Xlw6U93GKGB3E+X4qacvY9EjVOr1BC8g==
-X-Received: by 2002:a17:90b:3907:b0:276:5512:13ab with SMTP id ob7-20020a17090b390700b00276551213abmr8650294pjb.10.1696630582413;
-        Fri, 06 Oct 2023 15:16:22 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:1f37:5459:32bf:faf9])
-        by smtp.gmail.com with ESMTPSA id rj6-20020a17090b3e8600b00276e8e4f1fbsm5946523pjb.1.2023.10.06.15.16.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 15:16:21 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        bh=xhO3ehWc1dLHvm/xZLr7SfH1xniT/+pUCjErhuF2vy4=;
+        b=wZ64MjJ3FNCdafb/Ufz1PFGc/t+dbPZsjLu9erc5up50AIAd5YTSPKjspTkGEF+uWY
+         5yYKMElCyyKV6xazel8IObxKF25NNobaL3Dd3KjL6DkFFpZA/7gB+Il8037vifZG+jjT
+         dyIL+RWwNLPEGtAgCPW3ZwnS8qYZ+9rmvGbrEy572a9ATUqF52LvHh8ejAYoV5Ukm1ys
+         1k0EIymV8D0G0Ie7sHg5prkCKWp32OH8RdQxtg9smwuEcDgr42OX3/yipmvLaRnTdIxE
+         QBNAqrRU7VtLXYaas0BxPgAjXEiSjen/jVojrSst5C6xaMAGe/YnDmG88cvfFiCQsTkB
+         xByw==
+X-Gm-Message-State: AOJu0YzRVFYU4DtePzjLyzCWlD6cM18l9Wp0jNWEz7JffHiARt5Zdkss
+        jDcWaapREU9inD37axEWSq/N9J5p0veLCvTOiOjve+N5
+X-Google-Smtp-Source: AGHT+IGLBN/OLS3tqhNsRbwFJ1WwvJ/dpMDUtkYtmLEEq1Cm0shxPHY3UJ6bFFiRKzSimSVA+F//jw==
+X-Received: by 2002:a17:906:13:b0:9ae:1de:f4fb with SMTP id 19-20020a170906001300b009ae01def4fbmr7621920eja.46.1696630661563;
+        Fri, 06 Oct 2023 15:17:41 -0700 (PDT)
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
+        by smtp.gmail.com with ESMTPSA id q14-20020a170906360e00b009a5f1d1564dsm3415171ejb.126.2023.10.06.15.17.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 15:17:41 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-405459d9a96so27835e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 15:17:41 -0700 (PDT)
+X-Received: by 2002:a05:600c:2e11:b0:3fe:f32f:c57f with SMTP id
+ o17-20020a05600c2e1100b003fef32fc57fmr226863wmf.0.1696630660734; Fri, 06 Oct
+ 2023 15:17:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231002094526.1.Ie8f760213053e3d11592f892b30912dbac6b8b48@changeid>
+ <ZRr8r7XMoyDKaitd@FVFF77S0Q05N.cambridge.arm.com> <CAD=FV=UeeL9uycVeKpOm+eDm3xHrOnKi2frt6a1qFG1HX9yEUg@mail.gmail.com>
+ <ZRwJKBZaYwF1rrur@FVFF77S0Q05N> <CAD=FV=WASz1uvTgwsu3H3cTr3smHk+E_XNUVnjoPpttwv095rQ@mail.gmail.com>
+ <ZRxCCZxZWCG0NBur@FVFF77S0Q05N> <CAD=FV=Xk-OMKQPXxU9Z9HOcWwUxxrmLZ4vD0u5ouZRW_zDFDPg@mail.gmail.com>
+ <ZR03liCodnTQWs7s@FVFF77S0Q05N> <86jzs2ofqs.wl-maz@kernel.org>
+ <CAD=FV=XasZR6dhKBjpbYfby4F1Nu_bsq1m_HP+NpufjsJi0COg@mail.gmail.com>
+ <ZR6Pjk_3gpx1K3pF@FVFF77S0Q05N> <864jj4njb7.wl-maz@kernel.org>
+In-Reply-To: <864jj4njb7.wl-maz@kernel.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 6 Oct 2023 15:17:24 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Wdkm6uMMtSL0qWmciaNV33Q-OFw_ttPo3zUzpoguBjsg@mail.gmail.com>
+Message-ID: <CAD=FV=Wdkm6uMMtSL0qWmciaNV33Q-OFw_ttPo3zUzpoguBjsg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: smp: Fix pseudo NMI issues w/ broken Mediatek FW
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
+        Misono Tomohiro <misono.tomohiro@fujitsu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org
-Subject: [PATCH 3/3] irqchip/gic-v3: Remove Mediatek pseudo-NMI firmware quirk handling
-Date:   Fri,  6 Oct 2023 15:15:53 -0700
-Message-ID: <20231006151547.3.Ie582d33cfe46f9ec2248e7f2dabdd6bbd66486a6@changeid>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-In-Reply-To: <20231006151547.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
-References: <20231006151547.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a partial revert of commit 44bd78dd2b88 ("irqchip/gic-v3:
-Disable pseudo NMIs on Mediatek devices w/ firmware issues"). In the
-patch ("arm64: Disable GiC priorities on Mediatek devices w/ firmware
-issues") we've moved the quirk handling to another place and so it's
-not needed in the GiC driver.
+Hi,
 
-NOTE: this isn't a full revert because it leaves some of the changes
-to the "quirks" structure around in case future code needs it.
+On Fri, Oct 6, 2023 at 3:20=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Thu, 05 Oct 2023 11:27:26 +0100,
+> Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> > 3) Partial fix: make the ARM64_HAS_GIC_PRIO_MASKING cpucap depend on th=
+e
+> >    absence of a "mediatek,broken-save-restore-fw" property in the DT. I=
+ believe
+> >    we can check that in early_enable_pseudo_nmi() or can_use_gic_priori=
+ties().
+> >
+> >    That'll avoid potential issues if/when we change the priorities used=
+ for
+> >    pNMI (which is something I've been looking at).
+> >
+> > I'm happy with (3) if Marc is.
+>
+> Definitely worth investigating if you have the bandwidth.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+I made an attempt at it. See:
 
- drivers/irqchip/irq-gic-v3.c | 22 +---------------------
- 1 file changed, 1 insertion(+), 21 deletions(-)
-
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index 787ccc880b22..9ff776709ae6 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -39,8 +39,7 @@
- 
- #define FLAGS_WORKAROUND_GICR_WAKER_MSM8996	(1ULL << 0)
- #define FLAGS_WORKAROUND_CAVIUM_ERRATUM_38539	(1ULL << 1)
--#define FLAGS_WORKAROUND_MTK_GICR_SAVE		(1ULL << 2)
--#define FLAGS_WORKAROUND_ASR_ERRATUM_8601001	(1ULL << 3)
-+#define FLAGS_WORKAROUND_ASR_ERRATUM_8601001	(1ULL << 2)
- 
- #define GIC_IRQ_TYPE_PARTITION	(GIC_IRQ_TYPE_LPI + 1)
- 
-@@ -1790,15 +1789,6 @@ static bool gic_enable_quirk_msm8996(void *data)
- 	return true;
- }
- 
--static bool gic_enable_quirk_mtk_gicr(void *data)
--{
--	struct gic_chip_data *d = data;
--
--	d->flags |= FLAGS_WORKAROUND_MTK_GICR_SAVE;
--
--	return true;
--}
--
- static bool gic_enable_quirk_cavium_38539(void *data)
- {
- 	struct gic_chip_data *d = data;
-@@ -1891,11 +1881,6 @@ static const struct gic_quirk gic_quirks[] = {
- 		.compatible = "asr,asr8601-gic-v3",
- 		.init	= gic_enable_quirk_asr8601,
- 	},
--	{
--		.desc	= "GICv3: Mediatek Chromebook GICR save problem",
--		.property = "mediatek,broken-save-restore-fw",
--		.init	= gic_enable_quirk_mtk_gicr,
--	},
- 	{
- 		.desc	= "GICv3: HIP06 erratum 161010803",
- 		.iidr	= 0x0204043b,
-@@ -1957,11 +1942,6 @@ static void gic_enable_nmi_support(void)
- 	if (!gic_prio_masking_enabled())
- 		return;
- 
--	if (gic_data.flags & FLAGS_WORKAROUND_MTK_GICR_SAVE) {
--		pr_warn("Skipping NMI enable due to firmware issues\n");
--		return;
--	}
--
- 	rdist_nmi_refs = kcalloc(gic_data.ppi_nr + SGI_NR,
- 				 sizeof(*rdist_nmi_refs), GFP_KERNEL);
- 	if (!rdist_nmi_refs)
--- 
-2.42.0.609.gbb76f46606-goog
-
+https://lore.kernel.org/20231006151547.1.Ide945748593cffd8ff0feb9ae22b79593=
+5b944d6@changeid
