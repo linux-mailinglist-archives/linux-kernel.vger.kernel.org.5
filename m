@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5AE7BB879
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9F77BB87C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbjJFNCd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 09:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
+        id S232110AbjJFNCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232327AbjJFNCR (ORCPT
+        with ESMTP id S232469AbjJFNCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:02:17 -0400
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA70192;
-        Fri,  6 Oct 2023 06:01:56 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-59f7cc71e2eso25983057b3.0;
-        Fri, 06 Oct 2023 06:01:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696597315; x=1697202115;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H0zfspsBQgNn0ppgGjBprJwMwlx+wA4oWVeHq3pcB3I=;
-        b=c+dguzeouJCj2OUZ1ebYrMaMSOD3VevN4at7yhBPGI/6upsp68zBuS2KkXGIh4CrdO
-         jvsUwWR3BN2sSVxPXyjocg+P049OsuvnZsEmB92FHZrkL9g+ZWkEhubVjcJK5Ei3+hOM
-         mTKdt+Aw4dQpRPzBJ3mvzdMXrVz3DEhzaaHLnwbkT0iw1K/QZq4iKTP+D5o7Zw+sD3nG
-         +ovJDcQwH7bkSnCwisQYJplIpjgcK3BFd6ePC+qxDL6s5naKIlJ9pZpfOl/yx7/Lnlbr
-         6i3DjyAu60f5Mv8iyOjpY2+tIX4T8GOIqLLpEDlf9NC5i/gHCRY4BqrnA005h8S/Sl07
-         J7YA==
-X-Gm-Message-State: AOJu0YzNz8E+rMzF+sYadpXsT6SyXhPm+P2m587zWtHEM9vr9KGsZlMK
-        nLP3DHR9nRxzoEpLqjmVCryuY901cd3w3Q==
-X-Google-Smtp-Source: AGHT+IGhL5z43Lx7vqvAl0+pQm3IhKwd1W9WDPj2vDj4Zbfvn3GN3MAFJSiX91l+xTaFehvhmfFMAw==
-X-Received: by 2002:a0d:d690:0:b0:59b:eb64:bcc5 with SMTP id y138-20020a0dd690000000b0059beb64bcc5mr8707950ywd.8.1696597314836;
-        Fri, 06 Oct 2023 06:01:54 -0700 (PDT)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id f64-20020a0ddc43000000b0059b20231f1dsm1265692ywe.121.2023.10.06.06.01.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 06:01:54 -0700 (PDT)
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-d865854ef96so2221055276.2;
-        Fri, 06 Oct 2023 06:01:52 -0700 (PDT)
-X-Received: by 2002:a25:f309:0:b0:d81:5240:679f with SMTP id
- c9-20020a25f309000000b00d815240679fmr6690046ybs.16.1696597309661; Fri, 06 Oct
- 2023 06:01:49 -0700 (PDT)
+        Fri, 6 Oct 2023 09:02:36 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C58A18B;
+        Fri,  6 Oct 2023 06:02:28 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S27qm2Qp6z6K6wd;
+        Fri,  6 Oct 2023 21:02:12 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 6 Oct
+ 2023 14:02:25 +0100
+Date:   Fri, 6 Oct 2023 14:02:24 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     David Rientjes <rientjes@google.com>
+CC:     Jiaqi Yan <jiaqiyan@google.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Grimm, Jon" <jon.grimm@amd.com>, <dave.hansen@linux.intel.com>,
+        <vilas.sridharan@amd.com>, <linuxarm@huawei.com>,
+        <shiju.jose@huawei.com>, <linux-acpi@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <rafael@kernel.org>, <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
+        <james.morse@arm.com>, <david@redhat.com>, <jthoughton@google.com>,
+        <somasundaram.a@hpe.com>, <erdemaktas@google.com>,
+        <pgonda@google.com>, <duenwen@google.com>,
+        <mike.malvestuto@intel.com>, <gthelen@google.com>,
+        <tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>
+Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries
+ for set of scrub attributes
+Message-ID: <20231006140224.000018a2@Huawei.com>
+In-Reply-To: <92f48c1c-3235-49b2-aabd-7da87ad3febc@google.com>
+References: <20230915172818.761-1-shiju.jose@huawei.com>
+        <20230915172818.761-3-shiju.jose@huawei.com>
+        <CACw3F50jRzJnr9h7qYyD3t+6h7Uw9QMfkCkgu7a=7Lv0Tpi8Zg@mail.gmail.com>
+        <20230922111740.000046d7@huawei.com>
+        <CACw3F539gZc0FoJLo6VvYSyZmeWZ3Pbec7AzsH+MYUJJNzQbUQ@mail.gmail.com>
+        <92f48c1c-3235-49b2-aabd-7da87ad3febc@google.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-References: <20230830184958.2333078-8-ankur.a.arora@oracle.com>
- <20230908070258.GA19320@noisy.programming.kicks-ass.net> <87zg1v3xxh.fsf@oracle.com>
- <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
- <87edj64rj1.fsf@oracle.com> <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
- <87zg1u1h5t.fsf@oracle.com> <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net> <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net> <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com> <87led2wdj0.ffs@tglx>
-In-Reply-To: <87led2wdj0.ffs@tglx>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 6 Oct 2023 15:01:37 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXRsYNhui=Xh6Hmw5OZpG57uLf4y66L9r_wfAHOqn7prw@mail.gmail.com>
-Message-ID: <CAMuHMdXRsYNhui=Xh6Hmw5OZpG57uLf4y66L9r_wfAHOqn7prw@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Linux OpenRISC <linux-openrisc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,31 +65,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Wed, 4 Oct 2023 20:18:12 -0700 (PDT)
+David Rientjes <rientjes@google.com> wrote:
 
-On Tue, Sep 19, 2023 at 9:57 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> Though it just occured to me that there are dragons lurking:
->
-> arch/alpha/Kconfig:     select ARCH_NO_PREEMPT
-> arch/hexagon/Kconfig:   select ARCH_NO_PREEMPT
-> arch/m68k/Kconfig:      select ARCH_NO_PREEMPT if !COLDFIRE
-> arch/um/Kconfig:        select ARCH_NO_PREEMPT
->
-> So we have four architectures which refuse to enable preemption points,
-> i.e. the only model they allow is NONE and they rely on cond_resched()
-> for breaking large computations.
+> On Wed, 27 Sep 2023, Jiaqi Yan wrote:
+> 
+> > > > 1. I am not aware of any chip/platform hardware that implemented the
+> > > > hw ps part defined in ACPI RASF/RAS2 spec. So I am curious what the
+> > > > RAS experts from different hardware vendors think about this. For
+> > > > example, Tony and Dave from Intel, Jon and Vilas from AMD. Is there
+> > > > any hardware platform (if allowed to disclose) that implemented ACPI
+> > > > RASF/RAS2? If so, will vendors continue to support the control of
+> > > > patrol scrubber using the ACPI spec? If not (as Tony said in [1], will
+> > > > the vendor consider starting some future platform?
+> > > >
+> > > > If we are unlikely to get the vendor support, creating this ACPI
+> > > > specific sysfs API (and the driver implementations) in Linux seems to
+> > > > have limited meaning.  
+> > >
+> > > There is a bit of a chicken and egg problem here. Until there is
+> > > reasonable support in kernel (or it looks like there will be),
+> > > BIOS teams push back on a requirement to add the tables.
+> > > I'd encourage no one to bother with RASF - RAS2 is much less
+> > > ambiguous.  
+> > 
+> > Here mainly to re-ping folks from Intel (Tony and Dave)  and AMD (Jon
+> > and Vilas) for your opinion on RAS2.
+> >   
+> 
+> We'll need to know from vendors, ideally at minimum from both Intel and 
+> AMD, whether RAS2 is the long-term vision here.  Nothing is set in stone, 
+> of course, but deciding whether RAS2 is the standard that we should be 
+> rallying around will help to guide future development including in the 
+> kernel.
+> 
+> If RAS2 is insufficient for future use cases or we would need to support 
+> multiple implementations in the kernel for configuring the patrol scrubber 
+> depending on vendor, that's great feedback to have.
+> 
+> I'd much rather focus on implementing something in the kernel that we have 
+> some clarity about the vendors supporting, especially when it comes with 
+> user visible interfaces, as opposed to something that may not be used long 
+> term.  I think that's a fair ask and that vendor feedback is required 
+> here?
 
-Looks like there is a fifth one hidden: although openrisc does not
-select ARCH_NO_PREEMPT, it does not call preempt_schedule_irq() or
-select GENERIC_ENTRY?
+Agreed and happy to have feedback from Intel and AMD + all the other CPU
+vendors who make use of ACPI + all the OEMs who add stuff well beyond what
+Intel and AMD tell them to :)  I'll just note a lot of the ACPI support in the
+kernel covers stuff not used on mainstream x86 platforms because they are
+doing something custom and we didn't want 2 + X custom implementations...
 
-Gr{oetje,eeting}s,
+Some other interfaces for scrub control (beyond existing embedded ones)
+will surface in the next few months where RAS2 is not appropriate.
 
-                        Geert
+Jonathan
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
