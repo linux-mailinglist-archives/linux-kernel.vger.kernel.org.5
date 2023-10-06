@@ -2,115 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D96187BBFBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE4B7BBFC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbjJFTfj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 15:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
+        id S233252AbjJFTgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 15:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjJFTfh (ORCPT
+        with ESMTP id S231163AbjJFTgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 15:35:37 -0400
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D595A83;
-        Fri,  6 Oct 2023 12:35:36 -0700 (PDT)
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-57c0775d4fcso330053eaf.0;
-        Fri, 06 Oct 2023 12:35:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696620936; x=1697225736;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MKAwecnvkxtRCGWDeS12LsGl0fw9bBw14Ff9x7XqtoI=;
-        b=ULCNJ5vj9FM0+L6g6EJvFHAf+gSAZm3bbkLlc+FuT1sjlOCJ/dR7u8hsAsb8K8cCuz
-         SYQZrV2hOkPh3ARhdfpRP/Wu7qRKsPHnkaVIVJY9ckwrDt7EUO1MOQkvW+J04ebh535k
-         ORAv1LZjMPBviON7FXpyoReb3l+TX07h8ER/mOPJhK7hfkLKGo+Oa/16DqKccBZ9nEOS
-         SAqXpphfIlAr3YsoCu//ESi6a7/7uYIprtd8CLRSl0uB8k/3mJLxNl9avrwDQ9qIYWto
-         0f1WafoHA1GLGynuRFNtP5bFrsvXUV78sFABQDx5C4e1e2F+p6A9mgWsMUU8yxO8tpvi
-         kWRg==
-X-Gm-Message-State: AOJu0YzqmBJZpP6QNJf8lMxuBo0jCV7ItrYKJsT210u8GgIfLvhWMFvl
-        W9EmpU4CZLb/4ApVC89nDDzxdn2PTohnoO6AlUI=
-X-Google-Smtp-Source: AGHT+IFgWzAS1RXH4hZZBq/nk+53XC8N4cJO2GHDOSy0HSJpD6bW7gkkIPU0hdImEU+PnuBh40nIQn3vKFh3651iNn0=
-X-Received: by 2002:a4a:de08:0:b0:56e:94ed:c098 with SMTP id
- y8-20020a4ade08000000b0056e94edc098mr8847250oot.0.1696620936084; Fri, 06 Oct
- 2023 12:35:36 -0700 (PDT)
+        Fri, 6 Oct 2023 15:36:13 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9D883;
+        Fri,  6 Oct 2023 12:36:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43F44C433C8;
+        Fri,  6 Oct 2023 19:36:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696620971;
+        bh=uU75gGc/mU2MCCDeRgAfU3mJXITt7ggSvRzVht76IfE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=dbHBJVTnWMzuLnfLpNAK2A3NvbD7TavxkiRkgAsQAvHTm/4Zbsw2ufdUY1AXLXFuO
+         rPi2DqPwtEzjKKZXJUNRjK/ZFmgXmTl3MEmw7BL8oSn/ObKAQAu4DH9/uGZMpRZkXp
+         iYhBjokPm17RMpMzAN4UtCeBE9k05cM7wJvYUvLkU46y/ZkbosMa0qU76PGXVMnYgL
+         6XDKbnxquLyXq9goeyjcik0ISO0VKkwSODUjVYpZ7Y3UIGT7hbe16GKI2UKpVoLcpQ
+         ly6Jl5HCUxu1bgSqrLcibepDc7MIEHz1mE7SYbq9ouOMoyP5nhnQg++Do/Fz/ffsIE
+         HUfEuELeoGfFA==
+Date:   Fri, 6 Oct 2023 14:36:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Liu Song <liusong@linux.alibaba.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] PCI: eliminate abnormal characters when reads help
+ information of "PCI_P2PDMA" under menuconfig
+Message-ID: <20231006193609.GA865463@bhelgaas>
 MIME-Version: 1.0
-References: <20231006130418.659320-1-sudeep.holla@arm.com>
-In-Reply-To: <20231006130418.659320-1-sudeep.holla@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 6 Oct 2023 21:35:25 +0200
-Message-ID: <CAJZ5v0i-aHT+Uu6XvJrLb6ZoUBQ4rp4WJxiLOAtMSWH-KcdgMA@mail.gmail.com>
-Subject: Re: [GIT PULL] ACPI: PCC: Updates for v6.7
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1658301723-111283-1-git-send-email-liusong@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sudeep,
+On Wed, Jul 20, 2022 at 03:22:03PM +0800, Liu Song wrote:
+> From: Liu Song <liusong@linux.alibaba.com>
+> 
+> Read the help information of PCI_P2PDMA through make menuconfig,
+> "Enables" is partially displayed as garbled characters, so fix it.
+> 
+> Signed-off-by: Liu Song <liusong@linux.alibaba.com>
 
-On Fri, Oct 6, 2023 at 4:36 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> Hi Rafael,
->
-> I2C, HWMON and Hisilicon SoC changes are all acked-by respective maintainers.
-> All the changes are in the linux-next for some time now. Please pull!
+I think I derailed this by suggesting that we fix other Kconfig files
+at the same time, which ended up with a cross-subsystem patch that
+nobody picked up.  My fault, sorry.
 
-Pulled, thanks!
+So I applied this now to pci/misc for v6.7, thank you!
 
+Uwe just posted an identical patch, so I updated the commit log to
+mention his patch as well:
 
-> -->8
->
-> The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
->
->   Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git tags/acpi-pcc-updates-6.7
->
-> for you to fetch changes up to a46e42c097982e258f89c64c5f52f30994bcfeda:
->
->   soc: kunpeng_hccs: Migrate to use generic PCC shmem related macros (2023-09-29 11:55:37 +0100)
->
-> ----------------------------------------------------------------
-> ACPI: PCC: Mailbox and generic updates for v6.7
->
-> Main updates include:
-> 1. Addition of support for Type 4 PCC subspace that enables platform
->    notification handling (Huisong Li).
-> 2. Support for the shared interrupt amongst multiple PCC subspaces/
->    channels (Huisong Li).
-> 3. Consolidation of PCC shared memory region command and status
->    bitfields definitions that were duplicated and scattered across
->    multiple PCC client drivers (Sudeep Holla).
->
-> ----------------------------------------------------------------
-> Huisong Li (2):
->       mailbox: pcc: Add support for platform notification handling
->       mailbox: pcc: Support shared interrupt for multiple subspaces
->
-> Sudeep Holla (4):
->       ACPI: PCC: Add PCC shared memory region command and status bitfields
->       i2c: xgene-slimpro: Migrate to use generic PCC shmem related macros
->       hwmon: (xgene) Migrate to use generic PCC shmem related macros
->       soc: kunpeng_hccs: Migrate to use generic PCC shmem related macros
->
->  drivers/hwmon/xgene-hwmon.c            | 16 ++----
->  drivers/i2c/busses/i2c-xgene-slimpro.c | 16 ++----
->  drivers/mailbox/pcc.c                  | 91 ++++++++++++++++++++++++++++++----
->  drivers/soc/hisilicon/kunpeng_hccs.c   |  8 +--
->  include/acpi/pcc.h                     | 13 +++++
->  5 files changed, 104 insertions(+), 40 deletions(-)
->
+  PCI: Replace unnecessary UTF-8 in Kconfig
+
+  The CONFIG_PCI_P2PDMA Kconfig help text contains a Cyrillic small "Dze"
+  (ѕ).  When menuconfig renders it, it looks like "Enable ~U drivers" instead
+  of "Enables drivers".
+
+  Replace it by a plain "s" so the help text is displayed correctly by
+  menuconfig.
+
+  Uwe Kleine-König <u.kleine-koenig@pengutronix.de> later posted the same
+  patch at
+  https://lore.kernel.org/r/20231006150209.87666-1-u.kleine-koenig@pengutronix.de
+
+> ---
+>  drivers/pci/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+> index 133c732..8102b78 100644
+> --- a/drivers/pci/Kconfig
+> +++ b/drivers/pci/Kconfig
+> @@ -166,7 +166,7 @@ config PCI_P2PDMA
+>  	depends on ZONE_DEVICE
+>  	select GENERIC_ALLOCATOR
+>  	help
+> -	  Enableѕ drivers to do PCI peer-to-peer transactions to and from
+> +	  Enables drivers to do PCI peer-to-peer transactions to and from
+>  	  BARs that are exposed in other devices that are the part of
+>  	  the hierarchy where peer-to-peer DMA is guaranteed by the PCI
+>  	  specification to work (ie. anything below a single PCI bridge).
+> -- 
+> 1.8.3.1
+> 
