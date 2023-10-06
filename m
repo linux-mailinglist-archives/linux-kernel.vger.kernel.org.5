@@ -2,453 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 728EC7BB0D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FF77BB0D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbjJFE1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 00:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
+        id S230006AbjJFE2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 00:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjJFE12 (ORCPT
+        with ESMTP id S229953AbjJFE2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 00:27:28 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19FADE;
-        Thu,  5 Oct 2023 21:27:26 -0700 (PDT)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395Mgvdt009043;
-        Thu, 5 Oct 2023 21:27:05 -0700
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3tj60qgxqt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 21:27:05 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PcVl7a5qRYL1nowvIIyQZhCKjOFkcJwG2Rg2ckUCJBvd1Guz4d+zNkSVBMm0J2X4oZx2P/gJuekLOZr8vzSNz2r9fmTPrOb7UnJRK3NPVXNgxE6IX8i0Jyb0DWQ77BrTy162SUtGpcbDbOyZDPJlZklatkEusZLpea1uQYnqz2B/I6rPGO6dcZVc61Ikf/WdC4loobI+2zQy0/IM2JEePSbMSj6i5zbWpcUl/ba+JOxZLGdF0PhyWIQsPIhigTmi/B9OovccHWv/cQq8sy1NItUi7xO6suadtWe1WyAaFaPOYZsuvQcKRnyW7XBw+qiUXv8PPMlXUAYCHq8h29tRZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yHqEOesyXsrroywmSLtzJffcYSUMlyML8IrCxMkCUzg=;
- b=K/jX5wFVW+9Cl9ac0GTTqFpw2EvlXyuveuaDE7GLmFsDE1hAz7bRc/fKmQccsU3NMeTK14zeoFKXzce3RIZ+NKwjqgy8rNIbC99NzjP1+W75PqYSctHSA6uwFR7P5gfYvRsnohbOciTi+X0r1DPlGtTm/WxO5QCjjI19P203EyTzMHQeFRVZfjU231JrBkUTMDQu7icTiTV03lHcNZFuUuX35SCfrjLktfzBEeTw8FrJPBCDDQ6DYpD/2wJtkdx+jaz+ThL4rt6RupZhheNBOaaUy1LG98jesn+M7FGDpaPFmX1bw2F2//WCVtza2GmHX29M60THq74RdmNBsXcgPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yHqEOesyXsrroywmSLtzJffcYSUMlyML8IrCxMkCUzg=;
- b=mskQ/Hx6Rcx5t9xe+kKJ1nooKdTUhtS9vOjVtp9mGy4CTIwJlBG+f1MSNcqPecrWXW9nXG+5sZxr1CZB09/5diRXyIOK6V9hN8XWkF+fp3531emfmPgMDPs0OwT3I4JlLPfBkVMPoHwomYIx2r5ZqTojQIWnlwuzXhFWmq9Dk38=
-Received: from PH0PR18MB5002.namprd18.prod.outlook.com (2603:10b6:510:11d::12)
- by PH0PR18MB4103.namprd18.prod.outlook.com (2603:10b6:510:2c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.31; Fri, 6 Oct
- 2023 04:27:03 +0000
-Received: from PH0PR18MB5002.namprd18.prod.outlook.com
- ([fe80::2ace:2e4c:29ae:e924]) by PH0PR18MB5002.namprd18.prod.outlook.com
- ([fe80::2ace:2e4c:29ae:e924%6]) with mapi id 15.20.6838.016; Fri, 6 Oct 2023
- 04:27:03 +0000
-From:   Linu Cherian <lcherian@marvell.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "mike.leach@linaro.org" <mike.leach@linaro.org>,
-        "james.clark@arm.com" <james.clark@arm.com>,
-        "leo.yan@linaro.org" <leo.yan@linaro.org>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
+        Fri, 6 Oct 2023 00:28:09 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF053DB;
+        Thu,  5 Oct 2023 21:28:07 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+        id 16F1220B74C0; Thu,  5 Oct 2023 21:28:07 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 16F1220B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1696566487;
+        bh=VBmYwvXPtMjKxp0JBBoGPP6lwV3PKu/EqwN3kEREnbw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iBmOLzLeSVS1UZvXtX6J/+6jaPe9RtlnV/ovwK3HQsua+ZuhN8XUo5YON91oE2J8+
+         1s2NdXVPGbzVByTuC1Q/rSCWoZRZlhuTH2U3P6c0LlzxdlwwglsZpNl1NwgFczYKBI
+         /8J+5EkkDNtZ+UhCpqt1aXY2H0gR2QLLfJkD5JiQ=
+Date:   Thu, 5 Oct 2023 21:28:07 -0700
+From:   Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        George Cherian <gcherian@marvell.com>
-Subject: RE: [EXT] Re: [PATCH 1/7] dt-bindings: arm: coresight-tmc: Add
- "memory-region" property
-Thread-Topic: [EXT] Re: [PATCH 1/7] dt-bindings: arm: coresight-tmc: Add
- "memory-region" property
-Thread-Index: AQHZ8to0uuH+gntbaUWsA3manUggY7Azf+sAgAP86qCAACP0gIAEk42g
-Date:   Fri, 6 Oct 2023 04:27:02 +0000
-Message-ID: <PH0PR18MB500225778CA4B807C6149D2BCEC9A@PH0PR18MB5002.namprd18.prod.outlook.com>
-References: <20230929133754.857678-1-lcherian@marvell.com>
- <20230929133754.857678-2-lcherian@marvell.com>
- <e5663ac2-e197-4667-8c70-28951628920a@linaro.org>
- <PH0PR18MB50028D5A8AA48036974D45A2CEC4A@PH0PR18MB5002.namprd18.prod.outlook.com>
- <fa467359-85d6-4847-b956-db793811d304@linaro.org>
-In-Reply-To: <fa467359-85d6-4847-b956-db793811d304@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-rorf: true
-x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
- =?utf-8?B?bk5jYkdOb1pYSnBZVzVjWVhCd1pHRjBZVnh5YjJGdGFXNW5YREE1WkRnME9X?=
- =?utf-8?B?STJMVE15WkRNdE5HRTBNQzA0TldWbExUWmlPRFJpWVRJNVpUTTFZbHh0YzJk?=
- =?utf-8?B?elhHMXpaeTA1TkdRNE5qSmlOaTAyTkRBd0xURXhaV1V0WWpabU15MHdNRGt4?=
- =?utf-8?B?T1dVek1XSTBNbVJjWVcxbExYUmxjM1JjT1RSa09EWXlZamd0TmpRd01DMHhN?=
- =?utf-8?B?V1ZsTFdJMlpqTXRNREE1TVRsbE16RmlOREprWW05a2VTNTBlSFFpSUhONlBT?=
- =?utf-8?B?STJOVFk0SWlCMFBTSXhNek0wTVRBME1EQXhOalV5TXpjNU1Ea2lJR2c5SWxV?=
- =?utf-8?B?eWFrNXRLeXRqVWtseFprZFFTVmR2TmtJNE1IRk1jbFpTYnowaUlHbGtQU0lp?=
- =?utf-8?B?SUdKc1BTSXdJaUJpYnowaU1TSWdZMms5SW1OQlFVRkJSVkpJVlRGU1UxSlZS?=
- =?utf-8?B?azVEWjFWQlFVZEpWMEZCUTFaR1JFWllSR1pxV2tGYWFVTkdUVFZ0VFRkRWRt?=
- =?utf-8?B?MUpTVlY2YlZsNmMwODRXa0ZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRklRVUZCUVVKMVJIZEJRVE5uT0VGQlNWRkhRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGRlFVRlJSVUpCUVVGQk9WSmxia3gzUTBGQlVVRkJRVUZCUVVGQlFVRkJT?=
- =?utf-8?B?alJCUVVGQ2FFRkhVVUZhUVVKNVFVZFZRV04zUW5wQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVWQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlowRkJRVUZCUVc1blFVRkJSMDFCWkZGQ2VrRklVVUZpZDBKMFFVWTRRV05C?=
- =?utf-8?B?UW14QlNFbEJZM2RDZGtGSE5FRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRV2RCUVVGQlFVRkJRVUZCUVVGQlFVRlJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRMEZCUVVGQlFVTmxRVUZCUVZsM1FqRkJTRTFCWkVGQ2Rr?=
- =?utf-8?B?RkhNRUZZZDBKM1FVZG5RV0ozUW5WQlIxVkJZbWRDTVVGSE1FRlpaMEpzUVVo?=
- =?utf-8?B?SlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZDUVVGQlFVRkJRVUZCUVVsQlFVRkJRVUZLTkVGQlFVSnFRVWhW?=
- =?utf-8?B?UVdOM1FqQkJSemhCWWxGQ1prRklUVUZqZDBKMVFVWTRRVnBCUW1oQlNFMUJZ?=
- =?utf-8?B?VUZDWmtGSVdVRk5RVUY1UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?Q?FBQUFB?=
-x-dg-refone: =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlJVRkJRVUZCUVVGQlFVRm5RVUZCUVVGQmJtZEJRVUZI?=
- =?utf-8?B?VFVGa1VVSjZRVWhSUVdKM1FuUkJSamhCWTNkQ2VrRkhORUZZZDBKeVFVZFZR?=
- =?utf-8?B?V1ZSUWpOQlJ6aEJZMmRDYTBGSVRVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVkZCUVVGQlFVRkJRVUZEUVVGQlFV?=
- =?utf-8?B?RkJRMlZCUVVGQldYZENNVUZJVFVGa1FVSjJRVWN3UVZoM1FucEJTRTFCWW1k?=
- =?utf-8?B?Q1prRkhORUZpZDBKclFVZFZRV0pCUW5CQlJ6QkJZVkZDTUVGSFZVRmpaMEpt?=
- =?utf-8?B?UVVoWlFVMUJRWGxCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVKQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlNVRkJRVUZCUVVvMFFVRkJRbXBCU0ZWQlkzZENNRUZIT0VGaVVVSm1R?=
- =?utf-8?B?VWhOUVdOM1FuVkJSamhCWTNkQ2QwRkhSVUZaZDBKc1FVWTRRV1JuUVhkQlJF?=
- =?utf-8?B?bEJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkZRVUZCUVVGQlFVRkJRV2RCUVVGQlFVRnVaMEZCUVVkUlFXSkJRbmRCUmpo?=
- =?utf-8?B?QlkzZENja0ZJYTBGalFVSnNRVVk0UVZsM1FtOUJSMFZCWkVGQ1prRkhNRUZh?=
- =?utf-8?B?VVVKNlFVaE5RVmxSUW01QlIxVkJXSGRDTWtGRVFVRk5aMEZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCVVVGQlFVRkJRVUZCUVVOQlFVRkJRVUZEWlVGQlFVRmFR?=
- =?utf-8?B?VUp6UVVoQlFWaDNRbnBCUjNkQldWRkNha0ZIYzBGWWQwSnFRVWRuUVZsUlFq?=
- =?utf-8?B?QkJSamhCWWxGQ2JFRklUVUZqZDBKb1FVZGpRVnBSUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?Q?FBQUFB?=
-x-dg-reftwo: =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFrRkJRVUZCUVVGQlFVRkpRVUZCUVVGQlNqUkJR?=
- =?utf-8?B?VUZDYTBGSGQwRmpRVUptUVVoUlFWcFJRbWhCUnpCQlkzZENaa0ZIT0VGaVow?=
- =?utf-8?B?SnNRVWRSUVdOblFuQkJTRmxCV2xGQ1prRkhXVUZoVVVKelFVZFZRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVVZCUVVGQlFVRkJRVUZCWjBG?=
- =?utf-8?B?QlFVRkJRVzVuUVVGQlIxVkJZbEZDYUVGSGEwRmlRVUptUVVkRlFWcEJRbXRC?=
- =?utf-8?B?U0VsQldsRkNla0ZJVFVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlNIZEJRVUZCUVVGQlFVRkJRVUZCUVVGUlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlEwRkJRVUZCUVVObFFVRkJRV0pSUW1oQlNFbEJaR2RDYkVGSGQw?=
- =?utf-8?B?RllkMEozUVVoSlFXSjNRbkZCUjFWQldYZENNRUZHT0VGaVowSm9RVWN3UVZw?=
- =?utf-8?B?UlFucEJSamhCV1hkQ2RrRkhORUZhWjBKd1FVZFJRVnBSUW5WQlNGRkJZVkZD?=
- =?utf-8?B?YUVGSGQwRllkMEpvUVVkM1FXSjNRblZCUjFWQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVWhCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkNRVUZCUVVGQlFVRkJRVWxCUVVGQlFVRktORUZCUVVKMFFVZEZRV05u?=
- =?utf-8?B?UWpKQlIxVkJZa0ZDWmtGSVFVRmpaMEoyUVVkdlFWcFJRbXBCU0ZGQldIZENk?=
- =?utf-8?B?VUZIUlVGaVVVSnNRVWhOUVZoM1FubEJSMVZCWTNkQ01FRklTVUZoVVVKcVFV?=
- =?utf-8?B?aFJRVnBSUW10QlJqaEJXVkZDYzBGSE9FRmlaMEpzUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUlVGQlFVRkJRVUZCUVVGblFVRkJRVUZCYm1kQlFV?=
- =?utf-8?B?RkhNRUZaVVVKNVFVaFpRVnBSUW5OQlJqaEJZMEZDZVVGSE9FRmhaMEpzUVVk?=
- =?utf-8?B?TlFXUkJRbVpCUnpSQldWRkNkRUZIVlVGamQwSm1RVWhKUVZwUlFucEJTRkZC?=
- =?utf-8?B?WTJkQ2NFRkhUVUZrUVVKc1FVZFJRVmgzUW05QlIxVkJaVUZDYWtGSE9FRmFR?=
- =?utf-8?B?VUpzUVVoTlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFWRkJRVUZCUVVGQlFVRkRRVUZC?=
- =?utf-8?B?UVVGQlEyVkJRVUZCWWxGQ2FFRklTVUZrWjBKc1FVZDNRV0pCUW1aQlIwVkJZ?=
- =?utf-8?B?MmRDZEVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?Q?FBQUFB?=
-x-dg-refthree: =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUmtGQlFVRkJRVUZCUVVGQlFVRkJRVUpCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?U1VGQlFVRkJRVW8wUVVGQlFuUkJSMFZCWTJkQ01rRkhWVUZpUVVKelFVWTRR?=
- =?utf-8?B?VnAzUW5aQlJ6aEJXbmRDYzBGSFZVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGRlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFXZEJRVUZCUVVGdVowRkJRVWN3UVZsUlFubEJTRmxCV2xG?=
- =?utf-8?B?Q2MwRkhkMEZZZDBKM1FVaEpRV0ozUW5GQlIxVkJXWGRDTUVGR09FRlpkMEoy?=
- =?utf-8?B?UVVkUlFWcFJRbnBCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJVVUZCUVVGQlFVRkJRVU5CUVVGQlFVRkRaVUZCUVVGaVVVSm9R?=
- =?utf-8?B?VWhKUVdSblFteEJSM2RCWWtGQ1prRklRVUZqWjBKMlFVZHZRVnBSUW1wQlNG?=
- =?utf-8?B?RkJXSGRDYWtGSE9FRmFRVUpzUVVoTlFWaDNRbXRCUjJ0QldYZENNRUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUWtGQlFVRkJRVUZCUVVGSlFVRkJRVUZCU2pS?=
- =?utf-8?B?QlFVRkNkRUZIUlVGalowSXlRVWRWUVdKQlFuTkJSamhCWTBGQ2VVRkhPRUZo?=
- =?utf-8?B?WjBKc1FVZE5RV1JCUW1aQlJ6UkJXVkZDZEVGSFZVRmpkMEptUVVkTlFXSjNR?=
- =?utf-8?B?blZCUjFsQllWRkNhMEZIVlVGaVowSXdRVWRyUVZsUlFuTkJSamhCWWxGQ2FF?=
- =?utf-8?B?RklTVUZrWjBKc1FVZDNRV0pCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVVkJRVUZCUVVGQlFVRkJa?=
- =?utf-8?B?MEZCUVVGQlFXNW5RVUZCUnpCQldWRkNlVUZJV1VGYVVVSnpRVWQzUVZoM1Fu?=
- =?utf-8?B?ZEJTRWxCWW5kQ2NVRkhWVUZaZDBJd1FVWTRRV0puUW1oQlJ6QkJXbEZDZWtG?=
- =?utf-8?B?R09FRlpkMEoyUVVjMFFWcG5RbkJCUjFGQldsRkNkVUZJVVVGaFVVSm9RVWQz?=
- =?utf-8?B?UVZoM1FuUkJSMFZCWTJkQ01rRkhWVUZpUVVKelFVWTRRV0ozUW5sQlJqaEJX?=
- =?utf-8?B?VkZDZVVGSE1FRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?Q?FBQUFB?=
-x-dg-reffour: =?utf-8?B?UVVGQlFVRkJRVUZCUVdkQlFVRkJRVUZCUVVGQlFVRkJRVUZSUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUTBGQlFVRkJRVU5sUVVGQlFXSlJRbWhCU0VsQlpHZENiRUZIZDBGaVFV?=
- =?utf-8?B?Sm1RVWhCUVdOblFuWkJSMjlCV2xGQ2FrRklVVUZZZDBKMVFVZEZRV0pSUW14?=
- =?utf-8?B?QlNFMUJXSGRDYWtGSE9FRmlaMEp0UVVkclFWcEJRbXhCUnpSQlpFRkNjRUZI?=
- =?utf-8?B?UlVGaVFVSm1RVWN3UVZsUlFubEJTRmxCV2xGQ2MwRkhkMEZZZDBKMlFVaEpR?=
- =?utf-8?B?VmgzUW01QlJ6aEJZbmRDYmtGSGQwRmFVVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?Q1FVRkJRVUZCUVVGQlFVbEJRVUZCUVVGS05FRkJRVUowUVVkRlFXTm5RakpC?=
- =?utf-8?B?UjFWQllrRkNjMEZHT0VGalFVSjVRVWM0UVdGblFteEJSMDFCWkVGQ1prRkhO?=
- =?utf-8?B?RUZaVVVKMFFVZFZRV04zUW1aQlNFbEJXbEZDZWtGSVVVRmpaMEp3UVVkTlFX?=
- =?utf-8?B?UkJRbXhCUjFGQldIZENkRUZIUlVGalowSXlRVWRWUVdKQlFuTkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJSVUZCUVVGQlFVRkJRVUZuUVVGQlFVRkJibWRCUVVGSE1F?=
- =?utf-8?B?RlpVVUo1UVVoWlFWcFJRbk5CUjNkQldIZENkMEZJU1VGaWQwSnhRVWRWUVZs?=
- =?utf-8?B?M1FqQkJSamhCWW1kQ2FFRkhNRUZhVVVKNlFVWTRRV05uUW14QlNFMUJaRUZD?=
- =?utf-8?B?ZVVGSGEwRlpkMEl3UVVkVlFWcEJRbVpCUnpCQldWRkNlVUZJV1VGYVVVSnpR?=
- =?utf-8?B?VWQzUVZoM1FuWkJTRWxCV0hkQ2FFRklTVUZpVVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVZGQlFVRkJRVUZCUVVGRFFVRkJRVUZC?=
- =?utf-8?B?UTJWQlFVRkJZbEZDYUVGSVNVRmtaMEpzUVVkM1FXSkJRbVpCU0ZGQldsRkNl?=
- =?utf-8?B?VUZITUVGaFVVSjFRVWhWUVdOM1FVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVSkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJTVUZCUVVGQlFVbzBRVUZCUW5SQlIwVkJZMmRDTWtGSFZVRmlRVUp6UVVZ?=
- =?utf-8?B?NFFXUjNRblpCU0VsQldrRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZG?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVdkQlFVRkJRVUZvUVZsQlFVRkJRVUZCUVdOQlFVRkJR?=
- =?utf-8?B?VkZCUVVGQlFVRkJRVVE0V0U1NVFXNVNVVzFSYjB3MmVVTjZjbGhGV1VsSVFV?=
- =?utf-8?Q?FBQUFF?=
-x-dg-reffive: =?utf-8?B?UVVGQlFVRkJRVUZCU21keVVsRnJNbVZVUlV0UGQwSkJZMEZoZVRGd2FXOUJR?=
- =?utf-8?B?VUZCUWtGQlFVRkpaMEZCUVVGQlFVRkJRbXBCUnpoQlltZENiVUZIYTBGYVFV?=
- =?utf-8?B?SnNRVWMwUVdSQlFuQkJSMFZCWWtGQlFVRkNiMGRCUVVGYVFVRkJRVWRCUVVG?=
- =?utf-8?B?QlFVRkJRVUZDYUVGSFVVRmFRVUo1UVVkVlFXTjNRbnBCUVVGQlNrRkJRVUZC?=
- =?utf-8?B?U1VGQlFVSnFRVWhWUVdOM1FqQkJSemhCWWxGQ1prRklRVUZhVVVKNVFVaE5R?=
- =?utf-8?B?V0ozUW5WQlFVRkJUR2RCUVVGQlFVRkJRVUpxUVVoVlFXTjNRakJCUnpoQlls?=
- =?utf-8?B?RkNaa0ZJUVVGaFFVSjJRVWMwUVZwUlFuVkJTRlZCWWxGQ2FVRkhWVUZqWjBG?=
- =?utf-8?B?QlFVUkJRVUZCUVVGQlFVRkJXWGRDTVVGSVRVRmtRVUoyUVVjd1FWaDNRbnBC?=
- =?utf-8?B?U0UxQlltZENaa0ZIVVVGWlVVSjZRVWRuUVZoM1FqSkJSRUZCVFdkQlFVRkVR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVmwzUWpGQlNFMUJaRUZDZGtGSE1FRllkMEo2UVVoTlFX?=
- =?utf-8?B?Sm5RbVpCUjNOQldsRkNOVUZJWTBGaWQwSjVRVWRSUVdOM1FVRkJSRFJCUVVG?=
- =?utf-8?B?QlFVRkJRVUZaZDBJeFFVaE5RV1JCUW5aQlJ6QkJXSGRDZWtGSVRVRmlaMEpt?=
- =?utf-8?B?UVVjMFFXSjNRbXRCUjFWQllrRkNjRUZITUVGaFVVSXdRVWRWUVdOblFtWkJT?=
- =?utf-8?B?RmxCVFVGQmVVRkJRVUZOWjBGQlFVRkJRVUZCUW1wQlNGVkJZM2RDTUVGSE9F?=
- =?utf-8?B?RmlVVUptUVVoTlFXTjNRblZCUmpoQlkzZENkMEZIUlVGWmQwSnNRVVk0UVdS?=
- =?utf-8?B?blFYZEJSRWxCUVVGQkswRkJRVUZCUVVGQlFVZFJRV0pCUW5kQlJqaEJZM2RD?=
- =?utf-8?B?Y2tGSWEwRmpRVUpzUVVZNFFWbDNRbTlCUjBWQlpFRkNaa0ZITUVGYVVVSjZR?=
- =?utf-8?B?VWhOUVZsUlFtNUJSMVZCV0hkQ01rRkVRVUZOWjBGQlFVUlpRVUZCUVVGQlFV?=
- =?utf-8?B?RkJXa0ZDYzBGSVFVRllkMEo2UVVkM1FWbFJRbXBCUjNOQldIZENha0ZIWjBG?=
- =?utf-8?B?WlVVSXdRVVk0UVdKUlFteEJTRTFCWTNkQ2FFRkhZMEZhVVVGQlFVUm5RVUZC?=
- =?utf-8?B?UVVGQlFVRkJXa0ZDYzBGSVFVRllkMEl3UVVkVlFWbFJRblJCU0UxQldIZENk?=
- =?utf-8?B?a0ZITkVGYVVVSnJRVWhKUVdGUlFqSkJSMVZCV0hkQ2JVRkhhMEZpUVVKc1FV?=
- =?utf-8?B?RkJRVXBCUVVGQlFqaEJRVUZDYkVGSE1FRlpVVUp3UVVkM1FWaDNRbWhCUjFG?=
- =?utf-8?B?QldrRkNlVUZIVlVGamQwSjZRVUZCUVZkQlFVRkJRV05CUVVGQ2RFRkhSVUZq?=
- =?utf-8?B?WjBJeVFVZFZRV0pCUW1aQlNFRkJZMmRDZGtGSGIwRmFVVUpxUVVoUlFWaDNR?=
- =?utf-8?B?blZCUjBWQllsRkNiRUZJVFVGWWQwSnFRVWM0UVdKblFtMUJSMnRCV2tGQ2JF?=
- =?utf-8?B?RkhORUZrUVVKd1FVZEZRV0pCUW1aQlIwVkJZa0ZDZGtGSE5FRmFVVUZCUVVa?=
- =?utf-8?B?UlFVRkJRVUZCUVVGQllsRkNhRUZJU1VGa1owSnNRVWQzUVZoM1FuZEJTRWxC?=
- =?utf-8?B?WW5kQ2NVRkhWVUZaZDBJd1FVWTRRV0puUW1oQlJ6QkJXbEZDZWtGR09FRmpa?=
- =?utf-8?B?MEpzUVVoTlFXUkJRbmxCUjJ0QldYZENNRUZIVlVGYVFVSm1RVWRGUVdKQlFu?=
- =?utf-8?B?WkJSelJCV2xGQlFVRkdiMEZCUVVGQlFVRkJRV0pSUW1oQlNFbEJaR2RDYkVG?=
- =?utf-8?B?SGQwRllkMEozUVVoSlFXSjNRbkZCUjFWQldYZENNRUZHT0VGaVowSm9RVWN3?=
- =?utf-8?B?UVZwUlFucEJSamhCWTJkQ2JFRklUVUZrUVVKNVFVZHJRVmwzUWpCQlIxVkJX?=
- =?utf-8?B?a0ZDWmtGSFowRmFVVUkwUVVkTlFXSjNRbXRCUjFWQlkzZEJRVUZEUVVGQlFV?=
- =?utf-8?Q?FGQUFB?=
-x-dg-tag-bcast: {BB38C8B4-BBDA-40C5-8168-0013E523D1A2}
-x-dg-refsix: =?utf-8?B?UVdKUlFtaEJTRWxCWkdkQ2JFRkhkMEZpUVVKbVFVZEZRV05uUW5SQlFVRkJT?=
- =?utf-8?B?bWRCUVVGQlFVRkJRVUowUVVkRlFXTm5RakpCUjFWQllrRkNjMEZHT0VGYWQw?=
- =?utf-8?B?SjJRVWM0UVZwM1FuTkJSMVZCUVVGQk1FRkJRVUZCUVVGQlFVY3dRVmxSUW5s?=
- =?utf-8?B?QlNGbEJXbEZDYzBGSGQwRllkMEozUVVoSlFXSjNRbkZCUjFWQldYZENNRUZH?=
- =?utf-8?B?T0VGWmQwSjJRVWRSUVZwUlFucEJRVUZCVUdkQlFVRkJRVUZCUVVKMFFVZEZR?=
- =?utf-8?B?V05uUWpKQlIxVkJZa0ZDYzBGR09FRmpRVUo1UVVjNFFXRm5RbXhCUjAxQlpF?=
- =?utf-8?B?RkNaa0ZIVFVGaWQwSnJRVWRWUVdOM1FtWkJSMUZCWVZGQ2FrRklVVUZCUVVK?=
- =?utf-8?B?bFFVRkJRVUZCUVVGQlJ6QkJXVkZDZVVGSVdVRmFVVUp6UVVkM1FWaDNRbmRC?=
- =?utf-8?B?U0VsQlluZENjVUZIVlVGWmQwSXdRVVk0UVdKblFtaEJSekJCV2xGQ2VrRkdP?=
- =?utf-8?B?RUZaZDBKMlFVYzBRVnBuUW5CQlIxRkJXbEZDZFVGSVVVRmhVVUpvUVVkM1FW?=
- =?utf-8?B?aDNRblJCUjBWQlkyZENNa0ZIVlVGaVFVSnpRVUZCUVdKQlFVRkJRVWxCUVVG?=
- =?utf-8?B?Q2RFRkhSVUZqWjBJeVFVZFZRV0pCUW5OQlJqaEJZMEZDZVVGSE9FRmhaMEpz?=
- =?utf-8?B?UVVkTlFXUkJRbVpCUnpSQldWRkNkRUZIVlVGamQwSm1RVWROUVdKM1FuVkJS?=
- =?utf-8?B?MWxCWVZGQ2EwRkhWVUZpWjBJd1FVZHJRVmxSUW5OQlJqaEJZbEZDYUVGSVNV?=
- =?utf-8?B?RmtaMEpzUVVkM1FXSkJRbVpCUnpoQlkyZENaa0ZIUlVGalowSjBRVUZCUVdO?=
- =?utf-8?B?blFVRkJRVUZCUVVGQ2RFRkhSVUZqWjBJeVFVZFZRV0pCUW5OQlJqaEJZMEZD?=
- =?utf-8?B?ZVVGSE9FRmhaMEpzUVVkTlFXUkJRbVpCUnpSQldWRkNkRUZIVlVGamQwSm1R?=
- =?utf-8?B?VWROUVdKM1FuVkJSMWxCWVZGQ2EwRkhWVUZpWjBJd1FVZHJRVmxSUW5OQlJq?=
- =?utf-8?B?aEJZbEZDYUVGSVNVRmtaMEpzUVVkM1FXSkJRbVpCUnpoQlkyZENaa0ZIWTBG?=
- =?utf-8?B?aWQwSjJRVWRqUVdKQlFteEJRVUZCVjJkQlFVRkJRVUZCUVVKMFFVZEZRV05u?=
- =?utf-8?B?UWpKQlIxVkJZa0ZDYzBGR09FRmpRVUo1UVVjNFFXRm5RbXhCUjAxQlpFRkNa?=
- =?utf-8?B?a0ZITkVGWlVVSjBRVWRWUVdOM1FtWkJTRWxCV2xGQ2VrRklVVUZqWjBKd1FV?=
- =?utf-8?B?ZE5RV1JCUW14QlIxRkJXSGRDZEVGSFJVRmpaMEl5UVVkVlFXSkJRbk5CUVVG?=
- =?utf-8?B?QllVRkJRVUZCUVVGQlFVSjBRVWRGUVdOblFqSkJSMVZCWWtGQ2MwRkdPRUZq?=
- =?utf-8?B?UVVKNVFVYzRRV0ZuUW14QlIwMUJaRUZDWmtGSE5FRlpVVUowUVVkVlFXTjNR?=
- =?utf-8?B?bVpCU0VsQldsRkNla0ZJVVVGalowSndRVWROUVdSQlFteEJSMUZCV0hkQ2RF?=
- =?utf-8?B?RkhSVUZqWjBJeVFVZFZRV0pCUW5OQlJqaEJZbmRDZVVGR09FRlpVVUo1UVVj?=
- =?utf-8?B?d1FVRkJRWEZCUVVGQlFVRkJRVUZITUVGWlVVSjVRVWhaUVZwUlFuTkJSM2RC?=
- =?utf-8?B?V0hkQ01FRkhWVUZqWjBKMFFVZHJRV0puUWpGQlNFMUJRVUZCYVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVjd1FWbFJRbmxCU0ZsQldsRkNjMEZIZDBGWWQwSXpRVWM0UVdOblFt?=
- =?utf-8?B?dEJRVUZCSWk4K1BDOXRaWFJoUGc9PQ==?=
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR18MB5002:EE_|PH0PR18MB4103:EE_
-x-ms-office365-filtering-correlation-id: 62299f6a-9855-40fb-db61-08dbc6247d75
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rdmrERYql4kgLmsyHUyP1uQ4Z02jeJeWcqtIw4DkYg6D+TqoKCGqyRDbXupMFNyrpFcT52IGJKhy/EcGprRVnnrWz4LQL2AntuJMyaSLmEDTnoXuK3zsHNqZxF438m3laPY7/iPwZpj/CmZcu99nTJj2jUIorrf1U0VmX1iJfu9mVutAmTXWnpcgSF/ukehQ+sVroYA7INjK6GzRNlcVAhQaCXhwvBwzC4EqOI94I2PQPH3UWuyf9QTq3zPlp8+dxeCTDrv2+8n09RJr7550rzgjQcYgfeAUWZEtIFuN5LRYh7u2FM3SfsydEbyKkQMQjzySEUxBzG9avgHJyo5MUdyNXpCmvy2P3+1B44YC1G+eNGiUlB9K3svQN01IRNhhH1NpCrhpUH1F687vo+QdlUXEfKgDPrjhbXux+RPo/RNchOB1cQr17m3dKWObLC59S9wDJG19Y6ty7T7QyzJ+tmyI08Vdtdj4FxmER+VJxKUVxXV3jlTdSZi2d3HDhxzYvrTejzgYNgCXvDhT670hieQzIG9gQ4W54TqFY3FYXc6ZDrVYmB/F52oiYWgF/aBoq6pQsGKXcLBSCWFCiXXk77WarY75NCECXCclJ2vzXSJ968nDlxew98jUhRx6v0h+
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB5002.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(39860400002)(346002)(366004)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(41300700001)(110136005)(107886003)(66946007)(316002)(66446008)(66556008)(7696005)(9686003)(6506007)(64756008)(54906003)(76116006)(66476007)(478600001)(4326008)(8936002)(26005)(5660300002)(71200400001)(8676002)(53546011)(52536014)(7416002)(83380400001)(2906002)(55016003)(38100700002)(38070700005)(122000001)(33656002)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RU1VMFdOM0VGdnhCWnhMRVBrU0Rya3FZaHd3L204c3hsMnJteWtVb01Fa2xo?=
- =?utf-8?B?Y3l6SkRNWGlzem9wdlV6T2M5Rno4WkV0TnVQTVdUZnZNeDAvY3ZGQzZ0aTR1?=
- =?utf-8?B?TC9zWTJHZml4bktZOU1FMVNhdDkzSXhOUFc3cmJtd3F2amFZTWRSem9FYzBL?=
- =?utf-8?B?T3F6ZlZwQzhjM3VMampCczRiZ3NXcVFVbWI4Q0hTZkxqMTAxd0hQaGRNMzAv?=
- =?utf-8?B?S2NiclNFYWMxcUtJZXh1Q2VRZjJWWVB0UGphUjM5aG5yTmJUQUhUMGo5SDV5?=
- =?utf-8?B?RC8yd3h2d1V1ZzlDRW4zcGViSTBWMEV5UGxidkNwd1BjQmFmQ2hjTzJBZkxs?=
- =?utf-8?B?cVF6U1pleWR6VHErNmd5MTd3ajQxTzM0Y3NxUTJUL1VxU0pkQmw2SXI0Z1dn?=
- =?utf-8?B?VE16L2ZHYjljazNTd2FrdmZXWXN1aUtXU29GWG82cTNVK21OMlZDbU9Wd0VS?=
- =?utf-8?B?a2tucUZzV0hRMkp2VVdleHBtUEIwRkdiVy83MjZqd2cyS2c5dGpocHFQTU4r?=
- =?utf-8?B?TnRWYThrWHNyMGhCOVM5MTFwUUNzZE1qS0VEa21uTmxyVEdHL2pnaWw5VDlw?=
- =?utf-8?B?ZEkxZjZwRHRVWE44eFZMZytiTi9Yc1oxZjdrYXhQbkFrdmo3OWt0dUR6M0JG?=
- =?utf-8?B?Rkt2TGF3RzFHcnRQSUkrWEJSQU1RTml4U244K2RVRmQrUk1VWkJ3OU13WmFU?=
- =?utf-8?B?c0ZJdUhKZmJIZFgycHFoNjlKRFhyN203N0UveHlmU1I0QldWNkFTZVlkbk1O?=
- =?utf-8?B?VFlrSW9BQU0zdUpSVkd5Wmd1M2Mxc2xaaVB0Vlo0TldqZi9Rc095MzZDRkxn?=
- =?utf-8?B?UkYyWGxHOWtxTTJYK2ZJYWs4MWQ4eklib3I0ZE4rSW1xZU1JbTAwRi9yVXZQ?=
- =?utf-8?B?eXBoVGc5V2psYmswVytUTXNXSzZoT0pFVmxpYVVnRWlRRU9oU3NRY2g4dWFw?=
- =?utf-8?B?OUpPN0R4RkZiUS9mWjdQYnhFb0ZOY1hxZCt0cXg1eUpoeWllZnRkTDl5QUlT?=
- =?utf-8?B?WnRrSXFmeDg4NXg4eThPVXl1cktUMlVaaHNxblpXREZaREc4QVBuelBWYVRZ?=
- =?utf-8?B?Q2ROVjVlazlWVXRUaTY5OU93Y0htRnVydmtaYmc1cEpaT3AvUlRXLy9pVlZa?=
- =?utf-8?B?VlFzczJSS25IY3JOR0FoRGFCaDc2RXlQSWFTN2dybGFnWkhHRXE5MTJHWVJq?=
- =?utf-8?B?WWVhN0NjLyttZC9SMXpMMndQMXFGc3JUaDBtOVRCVWl4MG5Mb0dYWkVRWE5v?=
- =?utf-8?B?ZG9GUGZiS0JzNHMxNmZ6cm9idHBEd3J5QjNWZ1FZcmJyUmRwWVlzSC95V04z?=
- =?utf-8?B?T2Fac1FTQlliNlBhSUdwL1JoRmtPWWxkZTNxQWdyWFVRMDlMeE4yYVZMbnF3?=
- =?utf-8?B?czhzOFhxMld5UXQ1ZjZINXd3QVEvSmwyMEJ4WFp4ZmNhQXdpNE9FbTJVK3c4?=
- =?utf-8?B?MVNUMU8yT2ZSb2R6aUpDUm9ZR3pRZElRK0pRYnFxa3hxbDBHQUxRaVFzUXFB?=
- =?utf-8?B?VG5HQ3QvRExRcEdTNHlFS0s5YkRxTjNjWVB1a01MQWthMml5eDU3ZUp5Wmdu?=
- =?utf-8?B?VG0xc29xempvS01aTmFXVnlibnkyYmhidWZDdVVCRUE0TUJVelF6bWx4U1By?=
- =?utf-8?B?QysxcXpCU2xhYnRRTnBCc0JpMFp5aC9LdWdVOW1PNDMrbDRkTnc2TDdJSnpI?=
- =?utf-8?B?OWZkb0RiNjhXVjR1YXVjZjV3V1crNzdTOGN1OXIzM0QzUmNpNkJIOGY2aVZz?=
- =?utf-8?B?dm4wZU05c3ZrL0cza1VQRGdvYThCNER5ZjFOekxiZlVvQXMzOVBsQzJMVmw5?=
- =?utf-8?B?SGEweUsyVE92blJxdEJKMTFSRHQwSGdlYmt1a29DZmQxK2dWMW9xOFZkMnds?=
- =?utf-8?B?enU5ajhDT3kvSnRWUWlWUUIyNERmZEJrbFlkRmJESUw3NmdMMFFYclV0UGtR?=
- =?utf-8?B?NUNsdEZ0Smx0Z1BKNEZjTkt0Vkpjc1JWazJvQXV1aEkzQ0xKT3hqbDRQb0wy?=
- =?utf-8?B?aERqUDU4NXF2WUNIL1BJNnhPN0NGK1F5bTNJS0ZML1U2SVdocEErT1hTMFBh?=
- =?utf-8?B?NUdqVzhhQ29BS0d3T1N6UnNZZUt2YndOMWY3OS9va0xndUhFYVRGY0NreFVo?=
- =?utf-8?Q?L93IEdeiYofBKFMy1f/14e9Ac?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH v4 0/3] UIO driver for low speed Hyper-V
+ devices
+Message-ID: <20231006042807.GA22906@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1691132996-11706-1-git-send-email-ssengar@linux.microsoft.com>
+ <2023081215-canine-fragile-0a69@gregkh>
+ <PUZP153MB06350DAEA2384B996519E07EBE1EA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+ <2023082246-lumping-rebate-4142@gregkh>
+ <20230906122307.GA5737@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20230926124126.GA12048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB5002.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 62299f6a-9855-40fb-db61-08dbc6247d75
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2023 04:27:02.8676
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tqoib2GNPMzWQHD5U+GHoQjJqBkLgFLLe2L/MBRyF6I/Jt1nUfv4dRRoA5IjUde4pIiP/tCXn1IZFxXogTgwjg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR18MB4103
-X-Proofpoint-ORIG-GUID: C92tP-uw_RLFNPFhUd-WtvjcZes47voa
-X-Proofpoint-GUID: C92tP-uw_RLFNPFhUd-WtvjcZes47voa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-06_01,2023-10-05_01,2023-05-22_02
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230926124126.GA12048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEty
-enlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi5rb3psb3dza2lAbGluYXJvLm9yZz4NCj4gU2Vu
-dDogVHVlc2RheSwgT2N0b2JlciAzLCAyMDIzIDEyOjAyIFBNDQo+IFRvOiBMaW51IENoZXJpYW4g
-PGxjaGVyaWFuQG1hcnZlbGwuY29tPjsgc3V6dWtpLnBvdWxvc2VAYXJtLmNvbTsNCj4gbWlrZS5s
-ZWFjaEBsaW5hcm8ub3JnOyBqYW1lcy5jbGFya0Bhcm0uY29tOyBsZW8ueWFuQGxpbmFyby5vcmcN
-Cj4gQ2M6IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgY29yZXNpZ2h0QGxp
-c3RzLmxpbmFyby5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyByb2JoK2R0
-QGtlcm5lbC5vcmc7DQo+IGtyenlzenRvZi5rb3psb3dza2krZHRAbGluYXJvLm9yZzsgY29ub3Ir
-ZHRAa2VybmVsLm9yZzsNCj4gZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IFN1bmlsIEtvdnZ1
-cmkgR291dGhhbQ0KPiA8c2dvdXRoYW1AbWFydmVsbC5jb20+OyBHZW9yZ2UgQ2hlcmlhbiA8Z2No
-ZXJpYW5AbWFydmVsbC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbRVhUXSBSZTogW1BBVENIIDEvN10g
-ZHQtYmluZGluZ3M6IGFybTogY29yZXNpZ2h0LXRtYzogQWRkDQo+ICJtZW1vcnktcmVnaW9uIiBw
-cm9wZXJ0eQ0KPiANCj4gT24gMDMvMTAvMjAyMyAwNjozMywgTGludSBDaGVyaWFuIHdyb3RlOg0K
-PiA+IEhpIEtyenlzenRvZiwNCj4gPg0KPiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
-PiA+PiBGcm9tOiBLcnp5c3p0b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFy
-by5vcmc+DQo+ID4+IFNlbnQ6IFNhdHVyZGF5LCBTZXB0ZW1iZXIgMzAsIDIwMjMgODo1OSBQTQ0K
-PiA+PiBUbzogTGludSBDaGVyaWFuIDxsY2hlcmlhbkBtYXJ2ZWxsLmNvbT47IHN1enVraS5wb3Vs
-b3NlQGFybS5jb207DQo+ID4+IG1pa2UubGVhY2hAbGluYXJvLm9yZzsgamFtZXMuY2xhcmtAYXJt
-LmNvbTsgbGVvLnlhbkBsaW5hcm8ub3JnDQo+ID4+IENjOiBsaW51eC1hcm0ta2VybmVsQGxpc3Rz
-LmluZnJhZGVhZC5vcmc7IGNvcmVzaWdodEBsaXN0cy5saW5hcm8ub3JnOw0KPiA+PiBsaW51eC0g
-a2VybmVsQHZnZXIua2VybmVsLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOw0KPiA+PiBrcnp5c3p0
-b2Yua296bG93c2tpK2R0QGxpbmFyby5vcmc7IGNvbm9yK2R0QGtlcm5lbC5vcmc7DQo+ID4+IGRl
-dmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBTdW5pbCBLb3Z2dXJpIEdvdXRoYW0NCj4gPj4gPHNn
-b3V0aGFtQG1hcnZlbGwuY29tPjsgR2VvcmdlIENoZXJpYW4gPGdjaGVyaWFuQG1hcnZlbGwuY29t
-Pg0KPiA+PiBTdWJqZWN0OiBbRVhUXSBSZTogW1BBVENIIDEvN10gZHQtYmluZGluZ3M6IGFybTog
-Y29yZXNpZ2h0LXRtYzogQWRkDQo+ID4+ICJtZW1vcnktcmVnaW9uIiBwcm9wZXJ0eQ0KPiA+Pg0K
-PiA+PiBFeHRlcm5hbCBFbWFpbA0KPiA+Pg0KPiA+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPj4gLSBPbiAy
-OS8wOS8yMDIzIDE1OjM3LCBMaW51IENoZXJpYW4gd3JvdGU6DQo+ID4+PiBtZW1vcnktcmVnaW9u
-IDA6IFJlc2VydmVkIHRyYWNlIGJ1ZmZlciBtZW1vcnkNCj4gPj4+DQo+ID4+PiAgIFRNQyBFVFI6
-IFdoZW4gYXZhaWxhYmxlLCB1c2UgdGhpcyByZXNlcnZlZCBtZW1vcnkgcmVnaW9uIGZvcg0KPiA+
-Pj4gICB0cmFjZSBkYXRhIGNhcHR1cmUuIFNhbWUgcmVnaW9uIGlzIHVzZWQgZm9yIHRyYWNlIGRh
-dGENCj4gPj4+ICAgcmV0ZW50aW9uIGFmdGVyIGEgcGFuaWMgb3Igd2F0Y2hkb2cgcmVzZXQuDQo+
-ID4+Pg0KPiA+Pj4gICBUTUMgRVRGOiBXaGVuIGF2YWlsYWJsZSwgdXNlIHRoaXMgcmVzZXJ2ZWQg
-bWVtb3J5IHJlZ2lvbiBmb3INCj4gPj4+ICAgdHJhY2UgZGF0YSByZXRlbnRpb24gc3luY2VkIGZy
-b20gaW50ZXJuYWwgU1JBTSBhZnRlciBhIHBhbmljIG9yDQo+ID4+PiAgIHdhdGNoZG9nIHJlc2V0
-Lg0KPiA+Pj4NCj4gPj4+IG1lbW9yeS1yZWdpb24gMTogUmVzZXJ2ZWQgbWV0YSBkYXRhIG1lbW9y
-eQ0KPiA+Pj4NCj4gPj4+ICAgVE1DIEVUUiwgRVRGOiBXaGVuIGF2YWlsYWJsZSwgdXNlIHRoaXMg
-bWVtb3J5IGZvciByZWdpc3Rlcg0KPiA+Pj4gICBzbmFwc2hvdCByZXRlbnRpb24gc3luY2VkIGZy
-b20gaGFyZHdhcmUgcmVnaXN0ZXJzIGFmdGVyIGEgcGFuaWMNCj4gPj4+ICAgb3Igd2F0Y2hkb2cg
-cmVzZXQuDQo+ID4+Pg0KPiA+Pj4gU2lnbmVkLW9mZi1ieTogTGludSBDaGVyaWFuIDxsY2hlcmlh
-bkBtYXJ2ZWxsLmNvbT4NCj4gPj4+IC0tLQ0KPiA+Pg0KPiA+PiBXaGVyZSBpcyB0aGUgY2hhbmdl
-bG9nPyBUaGlzIGlzIHN1cHBvc2VkIHRvIGJlIHY0IG9yIHNvbWV0aGluZyBsYXRlci4NCj4gPj4g
-UGxlYXNlLCBrZWVwIHByb3BlciB2ZXJzaW9uaW5nIGFuZCBjaGFuZ2Vsb2cuDQo+ID4NCj4gPiBT
-dXJlLCB3aWxsIGFkZCB0aGUgY2hhbmdlbG9nIGZyb20gbmV4dCB2ZXJzaW9uIG9ud2FyZHMuDQo+
-ID4NCj4gPiBZZWFoLCB0aGUgbGFzdCB2ZXJzaW9uIHdhcyBSRkMgdjMgYW5kIHRoZSBSRkMgdGFn
-IGhhcyBiZWVuIGRyb3BwZWQgZnJvbQ0KPiB0aGlzIHZlcnNpb24gb253YXJkcy4NCj4gPiBIZW5j
-ZSBzdGFydGVkIHRoaXMgdmVyc2lvbiB3aXRoIFYxLg0KPiANCj4gdjEgc2F5cyBpdCBpcyB0aGUg
-Zmlyc3QgdmVyc2lvbiwgYnV0IHlvdSBhbHJlYWR5IGhhZCB0aHJlZSBvdGhlcnMuDQo+IFBsZWFz
-ZSBrZWVwIGNvbnRpbnVvdXMgdmVyc2lvbiBsb2csIHJlZ2FyZGxlc3Mgd2hldGhlciB5b3UgY2Fs
-bCBpdCBSRkMgb3IgUkZUDQo+IG9yIFJGc29tZXRoaW5nLg0KDQpPa2F5LiBXaWxsIGNvbnRpbnVl
-IHdpdGggUGF0Y2ggVjUgZnJvbSBuZXh0IHNlcmllcyBhbmQgYWRkIG5lY2Vzc2FyeSBub3RlcyBp
-biBjb3ZlciBsZXR0ZXIuDQoNCj4gDQo+ID4NCj4gPj4NCj4gPj4+ICAuLi4vYmluZGluZ3MvYXJt
-L2FybSxjb3Jlc2lnaHQtdG1jLnlhbWwgICAgICAgfCAxOQ0KPiArKysrKysrKysrKysrKysrKysr
-DQo+ID4+PiAgMSBmaWxlIGNoYW5nZWQsIDE5IGluc2VydGlvbnMoKykNCj4gPj4+DQo+IA0KPiBC
-ZXN0IHJlZ2FyZHMsDQo+IEtyenlzenRvZg0KDQo=
+On Tue, Sep 26, 2023 at 05:41:26AM -0700, Saurabh Singh Sengar wrote:
+> On Wed, Sep 06, 2023 at 05:23:07AM -0700, Saurabh Singh Sengar wrote:
+> > On Tue, Aug 22, 2023 at 01:48:03PM +0200, Greg KH wrote:
+> > > On Mon, Aug 21, 2023 at 07:36:18AM +0000, Saurabh Singh Sengar wrote:
+> > > > 
+> > > > 
+> > > > > -----Original Message-----
+> > > > > From: Greg KH <gregkh@linuxfoundation.org>
+> > > > > Sent: Saturday, August 12, 2023 4:45 PM
+> > > > > To: Saurabh Sengar <ssengar@linux.microsoft.com>
+> > > > > Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> > > > > <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+> > > > > <decui@microsoft.com>; Michael Kelley (LINUX) <mikelley@microsoft.com>;
+> > > > > corbet@lwn.net; linux-kernel@vger.kernel.org; linux-hyperv@vger.kernel.org;
+> > > > > linux-doc@vger.kernel.org
+> > > > > Subject: [EXTERNAL] Re: [PATCH v4 0/3] UIO driver for low speed Hyper-V
+> > > > > devices
+> > > > > 
+> > > > > On Fri, Aug 04, 2023 at 12:09:53AM -0700, Saurabh Sengar wrote:
+> > > > > > Hyper-V is adding multiple low speed "speciality" synthetic devices.
+> > > > > > Instead of writing a new kernel-level VMBus driver for each device,
+> > > > > > make the devices accessible to user space through a UIO-based
+> > > > > > hv_vmbus_client driver. Each device can then be supported by a user
+> > > > > > space driver. This approach optimizes the development process and
+> > > > > > provides flexibility to user space applications to control the key
+> > > > > > interactions with the VMBus ring buffer.
+> > > > > 
+> > > > > Why is it faster to write userspace drivers here?  Where are those new drivers,
+> > > > > and why can't they be proper kernel drivers?  Are all hyper-v drivers going to
+> > > > > move to userspace now?
+> > > > 
+> > > > Hi Greg,
+> > > > 
+> > > > You are correct; it isn't faster. However, the developers working on these userspace
+> > > > drivers can concentrate entirely on the business logic of these devices. The more
+> > > > intricate aspects of the kernel, such as interrupt management and host communication,
+> > > > can be encapsulated within the uio driver.
+> > > 
+> > > Yes, kernel drivers are hard, we all know that.
+> > > 
+> > > But if you do it right, it doesn't have to be, saying "it's too hard for
+> > > our programmers to write good code for our platform" isn't exactly a
+> > > good endorcement of either your programmers, or your platform :)
+> > > 
+> > > > The quantity of Hyper-V devices is substantial, and their numbers are consistently
+> > > > increasing. Presently, all of these drivers are in a development/planning phase and
+> > > > rely significantly on the acceptance of this UIO driver as a prerequisite.
+> > > 
+> > > Don't make my acceptance of something that you haven't submitted before
+> > > a business decision that I need to make, that's disenginous.
+> > > 
+> > > > Not all hyper-v drivers will move to userspace, but many a new slow Hyperv-V
+> > > > devices will use this framework and will avoid introducing a new kernel driver. We
+> > > > will also plan to remove some of the existing drivers like kvp/vss.
+> > > 
+> > > Define "slow" please.
+> > 
+> > In the Hyper-V environment, most devices, with the exception of network and storage,
+> > typically do not require extensive data read/write exchanges with the host. Such
+> > devices are considered to be 'slow' devices.
+> > 
+> > > 
+> > > > > > The new synthetic devices are low speed devices that don't support
+> > > > > > VMBus monitor bits, and so they must use vmbus_setevent() to notify
+> > > > > > the host of ring buffer updates. The new driver provides this
+> > > > > > functionality along with a configurable ring buffer size.
+> > > > > >
+> > > > > > Moreover, this series of patches incorporates an update to the fcopy
+> > > > > > application, enabling it to seamlessly utilize the new interface. The
+> > > > > > older fcopy driver and application will be phased out gradually.
+> > > > > > Development of other similar userspace drivers is still underway.
+> > > > > >
+> > > > > > Moreover, this patch series adds a new implementation of the fcopy
+> > > > > > application that uses the new UIO driver. The older fcopy driver and
+> > > > > > application will be phased out gradually. Development of other similar
+> > > > > > userspace drivers is still underway.
+> > > > > 
+> > > > > You are adding a new user api with the "ring buffer" size api, which is odd for
+> > > > > normal UIO drivers as that's not something that UIO was designed for.
+> > > > > 
+> > > > > Why not just make you own generic type uiofs type kernel api if you really
+> > > > > want to do all of this type of thing in userspace instead of in the kernel?
+> > > > 
+> > > > Could you please elaborate more on this suggestion. I couldn't understand it
+> > > > completely.
+> > > 
+> > > Why is uio the requirement here?  Why not make your own framework to
+> > > write hv drivers in userspace that fits in better with the overall goal?
+> > > Call it "hvfs" or something like that, much like we have usbfs for
+> > > writing usb drivers in userspace.
+> > > 
+> > > Bolting on HV drivers to UIO seems very odd as that is not what this
+> > > framework is supposed to be providing at all.  UIO was to enable "pass
+> > > through" memory-mapped drivers that only wanted an interrupt and access
+> > > to raw memory locations in the hardware.
+> > > 
+> > > Now you are adding ring buffer managment and all other sorts of things
+> > > just for your platform.  So make it a real subsystem tuned exactly for
+> > > what you need and NOT try to force it into the UIO interface (which
+> > > should know nothing about ring buffers...)
+> > 
+> > Thank you for elaborating the details. I will drop the plan to introduce a
+> > new UIO driver for this effort. However, I would like to know your thoughts
+> > on enhancing existing 'uio_hv_generic' driver to achieve the same.  We
+> > already have 'uio_hv_generic' driver in linux kernel, which is used for
+> > developing userspace drivers for 'fast Hyper-V devices'.
+> > 
+> > Since these newly introduced synthetic devices operate at a lower speed,
+> > they do not have the capability to support monitor bits. Instead, we must
+> > utilize the 'vmbus_setevent()' method to enable interrupts from the host.
+> > Earlier we made an attempt to support slow devices by uio_hv_generic :
+> > https://lore.kernel.org/lkml/1665685754-13971-1-git-send-email-ssengar@linux.microsoft.com/.
+> > At that time, the absence of userspace code (fcopy) hindered progress
+> > in this direction.
+> > 
+> > Acknowledging your valid concerns about introducing a new UIO driver for
+> > Hyper-V, I propose exploring the potential to enhance the existing
+> > 'uio_hv_generic' driver to accommodate slower devices effectively. My
+> > commitment to this endeavour includes ensuring the seamless operation of
+> > the existing 'fcopy' functionality with the modified 'uio_hv_generic'
+> > driver. Additionally, I will undertake the task of removing the current
+> > 'fcopy' kernel driver and userspace daemon as part of this effort.
+> > 
+> > Please let me know your thoughts. I look forward to your feedback and
+> > the opportunity to discuss this proposal further. 
+> 
+> Greg,
+> 
+> May I know if enhancing uio_hv_generic.c to support 'slow devices' is
+> an accptable approach ? I'm willing to undertake this task and propose
+> the necessary modifications.
+> 
+> - Saurabh
+
+ping
+
+> 
+> > 
+> > - Saurabh
