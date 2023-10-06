@@ -2,114 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1427BB864
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F49D7BB830
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232328AbjJFNBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
+        id S232266AbjJFMy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232430AbjJFNBD (ORCPT
+        with ESMTP id S231705AbjJFMy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:01:03 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFAC10F0;
-        Fri,  6 Oct 2023 06:00:28 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396Cm2Yi027588;
-        Fri, 6 Oct 2023 13:00:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=bYY3YhVBnbQhx5HFvODLAVARQ2hrt7AtExXhXmnuCmc=;
- b=UvfJBi6twavdh6VuM7py0/MJogO2UoNLGYDznpZNJONODZ+/AHltUs0x3gwUUrtZ6htV
- nKbs4yuMoDZQ7HqFDygGvx4hnPUDAq5L9fnZOexfKNHXtjcr604QsqS+Srh3YcKP8MPo
- 4em9dQsifQzZf05XPwoFFTH9M6g9XgQJXY58RHyS79aen2v6hP/h3fzUucO3uoJ8ZFws
- 5Pk1uny+5g3bkCDtuERkI8IJj/t88v9pXVXZV1ZpEqnEd43UbLdWXPpANV8LyIITTkeU
- NzCJZbgirM9HBxVn2gF5TfbFrmNCmRsTGKDJZJLCq9CGG9UP6YI0IQqLgNYkwP9m/mRy Og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tjjj70fn5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Oct 2023 13:00:25 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 396CmiNE029118;
-        Fri, 6 Oct 2023 12:59:11 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tjjj70dum-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Oct 2023 12:59:11 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 396Co7oo010941;
-        Fri, 6 Oct 2023 12:54:06 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tf0q32wes-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Oct 2023 12:54:06 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 396Cs4eH65470872
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 6 Oct 2023 12:54:04 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 95EDF20040;
-        Fri,  6 Oct 2023 12:54:04 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 731662004B;
-        Fri,  6 Oct 2023 12:54:04 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri,  6 Oct 2023 12:54:04 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: Test failure from "file: convert to SLAB_TYPESAFE_BY_RCU"
-References: <00e5cc23-a888-46ce-8789-fc182a2131b0@sirena.org.uk>
-        <yt9dil7k151d.fsf@linux.ibm.com> <ZR//+QDRI3sBpqY4@f>
-Date:   Fri, 06 Oct 2023 14:54:04 +0200
-In-Reply-To: <ZR//+QDRI3sBpqY4@f> (Mateusz Guzik's message of "Fri, 6 Oct 2023
-        14:39:21 +0200")
-Message-ID: <yt9d4jj3zzbn.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Fri, 6 Oct 2023 08:54:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDC3CA
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:54:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696596854;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g6htZfDbswFCPywJQRCZEocbznYQRU2LfNQkxAULUvc=;
+        b=Fx2L0LB7jYeEwLQohJdyEzAOFE3zR841il4OmQmF7tLKYT/v/AP8PpzeG1PxzcZKmSLGIC
+        sG9Opd6J5f9eCaPfTpZu08/kvtu8PYgODmg0RkJqgOZQO3mswDbUYwd+44BVzqW039hqtw
+        OIgoubLSnZoXXWDU/jeKKxBd/+dUd1g=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-73-84U66ZB8PLSguOSvSq3RwA-1; Fri, 06 Oct 2023 08:54:12 -0400
+X-MC-Unique: 84U66ZB8PLSguOSvSq3RwA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-327b5f2235aso1516261f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:54:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696596851; x=1697201651;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g6htZfDbswFCPywJQRCZEocbznYQRU2LfNQkxAULUvc=;
+        b=sW+yEJDJ5EALqoLzb7q/3ZfqVlOv/NHJjUr2NBYmT6CvARCPnXvITwLcI9b0zONNe7
+         zenrGA3jwJZVcMGDVpc878pkN0hqSOFJLKtOy5M5DHThQrz5VPHIzHMQI+vtAAXe488L
+         EhSjNsi/x//8/j1p4Mx44o1dRAEKg3eesAfx674YCl6zniNy+v4tKptDukMHexYBuwXJ
+         q0Er9Jz5oSRB9AodA7H7HxkgWg3cI5fr402FiLWiNYTvh3GHEtfJAFiic8MBUgcIokAu
+         tvt+2wexV6UxBGjcbEOJe1ZO3sBo3LVxEQ+5PiHSGgO846R7MocEfE40KUKxte/09cyS
+         CwXg==
+X-Gm-Message-State: AOJu0Yy5w4SpNeg5bu/GCUtFzhNWB+ZD/OkdUqi3eTVmToWje33MdF6w
+        0lerUjqbsjTxN5/D7O+TOx4yGr/sLLtQwKx7kvGpBVXkM9VBsExwH7Gm/KKfLBrodi7Fm3sQp3c
+        /0q29ZJ02UN7VtSn+r8YS/41P8MRrdpy5
+X-Received: by 2002:a5d:6a07:0:b0:321:7844:de44 with SMTP id m7-20020a5d6a07000000b003217844de44mr7428904wru.45.1696596851419;
+        Fri, 06 Oct 2023 05:54:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHHv/gkP7aT8VVN2umYs2E0/Kde3dTjiaHaJJCy5yGltZralKb5wcUVCXDjPHRwN/I9vOKxQQ==
+X-Received: by 2002:a5d:6a07:0:b0:321:7844:de44 with SMTP id m7-20020a5d6a07000000b003217844de44mr7428883wru.45.1696596850933;
+        Fri, 06 Oct 2023 05:54:10 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c715:ee00:4e24:cf8e:3de0:8819? (p200300cbc715ee004e24cf8e3de08819.dip0.t-ipconnect.de. [2003:cb:c715:ee00:4e24:cf8e:3de0:8819])
+        by smtp.gmail.com with ESMTPSA id n9-20020adff089000000b0031ad2f9269dsm1607947wro.40.2023.10.06.05.54.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 05:54:10 -0700 (PDT)
+Message-ID: <97577076-8083-df9e-15fd-fc1a5fdaf748@redhat.com>
+Date:   Fri, 6 Oct 2023 14:54:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 71RIwD2D7PaWMMg9nMWSBGc6cV0z4AY0
-X-Proofpoint-GUID: Y-SGr6yrQUi3vyfhwUSYbiM_p6srS_3k
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-06_10,2023-10-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=579
- suspectscore=0 clxscore=1015 malwarescore=0 phishscore=0 spamscore=0
- adultscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310060096
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] mm: rmap.c: fix kenrel-doc warning
+Content-Language: en-US
+To:     Muhammad Muzammil <m.muzzammilashraf@gmail.com>,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20231006122825.54840-1-m.muzzammilashraf@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20231006122825.54840-1-m.muzzammilashraf@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mateusz Guzik <mjguzik@gmail.com> writes:
+On 06.10.23 14:28, Muhammad Muzammil wrote:
+> after running make htmldocs, getting this warning
+> warning: Function parameter or member 'folio' not described in
+> 'folio_move_anon_rmap'
+> and this patch resolves this warning
+> 
+> changes since v1:
+> 	- changed page to folio and reverted other changes
+> 
+> Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
+> ---
+>   mm/rmap.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index c1f11c9dbe61..6976fb6feeed 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1129,7 +1129,7 @@ int folio_total_mapcount(struct folio *folio)
+>   
+>   /**
+>    * folio_move_anon_rmap - move a folio to our anon_vma
+> - * @page:	The folio to move to our anon_vma
+> + * @folio:  The folio to move to our anon_vma
+>    * @vma:	The vma the folio belongs to
+>    *
+>    * When a folio belongs exclusively to one process after a COW event,
 
-> On Fri, Oct 06, 2023 at 11:19:58AM +0200, Sven Schnelle wrote:
->> I'm seeing the same with the strace test-suite on s390. The problem is
->> that /proc/*/fd now contains the file descriptors of the calling
->> process, and not the target process.
->> 
->
-> This is why:
->
-> +static inline struct file *files_lookup_fdget_rcu(struct files_struct *files, unsigned int fd)
-> +{
-> +       RCU_LOCKDEP_WARN(!rcu_read_lock_held(),
-> +                        "suspicious rcu_dereference_check() usage");
-> +       return lookup_fdget_rcu(fd);
-> +}
->
-> files argument is now thrown away, instead it always uses current.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Yes, passing files to lookup_fdget_rcu() fixes the issue.
+-- 
+Cheers,
+
+David / dhildenb
+
