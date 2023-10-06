@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 498F97BB87F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BE07BB881
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232303AbjJFNE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
+        id S232031AbjJFNEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbjJFNEZ (ORCPT
+        with ESMTP id S231879AbjJFNEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:04:25 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CE012CE;
-        Fri,  6 Oct 2023 06:04:23 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F871C15;
-        Fri,  6 Oct 2023 06:05:02 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AFA0D3F641;
-        Fri,  6 Oct 2023 06:04:22 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ACPI: PCC: Updates for v6.7
-Date:   Fri,  6 Oct 2023 14:04:18 +0100
-Message-ID: <20231006130418.659320-1-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.42.0
+        Fri, 6 Oct 2023 09:04:46 -0400
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED51E9;
+        Fri,  6 Oct 2023 06:04:43 -0700 (PDT)
+Received: from francesco-nb.corp.toradex.com (unknown [201.82.41.210])
+        by mail11.truemail.it (Postfix) with ESMTPA id 2530C20B4D;
+        Fri,  6 Oct 2023 15:04:37 +0200 (CEST)
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] power: reset: gpio-poweroff: use sys-off handler API
+Date:   Fri,  6 Oct 2023 10:04:24 -0300
+Message-Id: <20231006130428.11259-1-francesco@dolcini.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,54 +41,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-I2C, HWMON and Hisilicon SoC changes are all acked-by respective maintainers.
-All the changes are in the linux-next for some time now. Please pull!
+Use the new sys-off handler API for gpio-poweroff. This allows us to have more
+than one power-off handler and to have a priority for the handler. Also, add a
+priority property so we can use gpio-poweroff even when registering another
+poweroff handler or using the legacy pm_power_off method.
 
-Regards,
-Sudeep
+v1->v2:
+ - Add $ref to restart-handler.yaml in gpio-poweroff.yaml
 
--->8
+Stefan Eichenberger (4):
+  power: reset: gpio-poweroff: use a struct to store the module
+    variables
+  power: reset: gpio-poweroff: use sys-off handler API
+  dt-bindings: power: reset: gpio-poweroff: Add priority property
+  power: reset: gpio-poweroff: make sys handler priority configurable
 
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+ .../bindings/power/reset/gpio-poweroff.yaml   |  6 ++
+ drivers/power/reset/gpio-poweroff.c           | 82 ++++++++++---------
+ 2 files changed, 50 insertions(+), 38 deletions(-)
 
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+-- 
+2.25.1
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git tags/acpi-pcc-updates-6.7
-
-for you to fetch changes up to a46e42c097982e258f89c64c5f52f30994bcfeda:
-
-  soc: kunpeng_hccs: Migrate to use generic PCC shmem related macros (2023-09-29 11:55:37 +0100)
-
-----------------------------------------------------------------
-ACPI: PCC: Mailbox and generic updates for v6.7
-
-Main updates include:
-1. Addition of support for Type 4 PCC subspace that enables platform
-   notification handling (Huisong Li).
-2. Support for the shared interrupt amongst multiple PCC subspaces/
-   channels (Huisong Li).
-3. Consolidation of PCC shared memory region command and status
-   bitfields definitions that were duplicated and scattered across
-   multiple PCC client drivers (Sudeep Holla).
-
-----------------------------------------------------------------
-Huisong Li (2):
-      mailbox: pcc: Add support for platform notification handling
-      mailbox: pcc: Support shared interrupt for multiple subspaces
-
-Sudeep Holla (4):
-      ACPI: PCC: Add PCC shared memory region command and status bitfields
-      i2c: xgene-slimpro: Migrate to use generic PCC shmem related macros
-      hwmon: (xgene) Migrate to use generic PCC shmem related macros
-      soc: kunpeng_hccs: Migrate to use generic PCC shmem related macros
-
- drivers/hwmon/xgene-hwmon.c            | 16 ++----
- drivers/i2c/busses/i2c-xgene-slimpro.c | 16 ++----
- drivers/mailbox/pcc.c                  | 91 ++++++++++++++++++++++++++++++----
- drivers/soc/hisilicon/kunpeng_hccs.c   |  8 +--
- include/acpi/pcc.h                     | 13 +++++
- 5 files changed, 104 insertions(+), 40 deletions(-)
