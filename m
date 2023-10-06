@@ -2,72 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BFC7BB9BE
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3667BB9BD
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbjJFNs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59066 "EHLO
+        id S232593AbjJFNsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbjJFNsH (ORCPT
+        with ESMTP id S232609AbjJFNsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:48:07 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE1119B2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 06:46:56 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-57b5f0d658dso1203271eaf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 06:46:56 -0700 (PDT)
+        Fri, 6 Oct 2023 09:48:05 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA647D6D
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 06:46:55 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bdcade7fbso377661366b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 06:46:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696600016; x=1697204816; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xfUMpCb972x02fuc9xITgOLc26MysozXmGisOPR9cQQ=;
-        b=GTDwGYfY6sE+7hKfpqP1cc85CFr2DXc3t2yoO4buRe36IHA/iRC8aS8Lv1LhiW6vXN
-         1Ek2w7s31svRS0cqMj4+UkdF2abKc5y9lXYks6cqIwjVjVIc0GPTxdw9afSzFn0pwTqt
-         UnyXBb2zb6hwzOLeUTfW8157YAY3C4fxYdSS/sbU1cNBN1Sf514rxgw1m0UuZLxdVUZ9
-         Z0DfPQKDcjOFRvvtK73irf+9idgi1DCIgT0PO59KLutm6rhuwUtglj1B1uTEQBLJMEkh
-         Sr4AuVsny9OjFhQK+Tt9Qnhc5fS8WcB0chGkvaZnH359tekVeRCunx82OZZk4AfY8Fj9
-         2VKA==
+        d=linaro.org; s=google; t=1696600014; x=1697204814; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4Kbdufx+AHXJ7bO+V5r5LajhsEMCAIPjaRpknMjUD+4=;
+        b=tKtfW6F7BoL+r/nNs/tQ5QZoB1nKnth+/6UzJglFob9m2Yb9x4aEK2HtKhrvxcff9k
+         pdlBnFMrTgqyXMIdqBxUP60gLFwZYdf8EeX7Xy5Ki7OL9V+JssL14W0n0JZJzVHl8r6p
+         A6Y95KZA1rlbDsOmZb9xV0qvzrGJho+mrTRcwF/ExmrXkqUfESTVUB/1sK6Ttyfhbaez
+         XneQoH2UwW3BDYfTnAvI0UUEsF8k/Rt/xhnS+ZjtrL4CxgkwNJguWJ68YwXA1jBw/RkK
+         yzTgJFt5lcuDHYoxPxkfpob432J9giCfL5z27pXXM87n7pGSSW7Caad7forHVWWhrx1x
+         DTrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696600016; x=1697204816;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xfUMpCb972x02fuc9xITgOLc26MysozXmGisOPR9cQQ=;
-        b=sx5DiZYNVdTvyMZ4v7xQXU4Npy3X+BtUeU279BGtiruanqta5QEQ8lnHGyA2xUZruA
-         CmDakTDHghpD/NUHdQxxXQqdrgK3ooBMmEj+GIZf7SEu6MOqvFSOcnHffcypHmibzuGY
-         UYyiJSOZSAZ7tlO6qc6JM/tz1KToPW4ha1aJpKyJy772M+Ssyyt17zP+Tdz1c2OSuG7B
-         KflbmMfCoUCbEZPF/JPtEXG3Ed8Q4wEEdbYLHBu/G7fPmDQyd3Opm/ASR9QdsIGfwPBl
-         v7xvErGd9hEzIN6tQSIXR3c2GKeMuuuRP7vYYbwUHNyqZIjIE9e80L6m7Qr7c4KtFP7m
-         l1eQ==
-X-Gm-Message-State: AOJu0YwnjdLqIl4XrjegPZD0HltfvlCybce6EmDNjf4THGsvtosT3sdj
-        l4QOLBW0bj2IbKzX2BEQmhnZcr4CBGXVaMBrnctZDw==
-X-Google-Smtp-Source: AGHT+IGy6zNajs68BWswIShmRu6tjYSL6FL5FSzQFBDm74lDgsrZUvWRJTCJGacLx5xdE5pGnKj0U2n4CwFXIB8zX78=
-X-Received: by 2002:a05:6358:3407:b0:134:e3d2:1e50 with SMTP id
- h7-20020a056358340700b00134e3d21e50mr7278311rwd.18.1696600015719; Fri, 06 Oct
- 2023 06:46:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696600014; x=1697204814;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Kbdufx+AHXJ7bO+V5r5LajhsEMCAIPjaRpknMjUD+4=;
+        b=K1I5NS026z8nA/4xKBiOfuVtfVIpjckhN1198MSdcayAeYH8v75i45ANp8KFJZVYsN
+         jat7UdZ6VEjGprgwlhKyp53Inv/YFNJBq/g0c92dbPtMkp6vZF6JDyKsPjUI6alUrSrv
+         UrTipTpd3c+wwdBjivzTmJzJUtbCFBrgiBMg5ncXXLR+XAm1Kc04tAXIm0kROxPcT59w
+         EPA9EXbqv53vLdyFL0hL+6MsqMjOzY2XuVWpjXePMR5by1cidhcw/RQU/p/5CLk1VmyH
+         jzsH0+BqYC7mBVXaFMJvU7mHQbo/VVE1LLEdVleCneU8IJSzkLew9Q1Z//jJvjE7CoC2
+         uEJQ==
+X-Gm-Message-State: AOJu0YzhTfwcRvYYmw8WrexkWrDYVo6y1vHwo3J7mAJthQhBgoc+qpsx
+        1h7tS9kWgYl7ohFg8ruz35iZww==
+X-Google-Smtp-Source: AGHT+IE0IHER02baeg64vD4NFKJGKKk9/C4zdTpjhZWXo8zy8VFiw5MCCPLhmr4wFqK6avJ7wDBI5Q==
+X-Received: by 2002:a17:906:301a:b0:9a5:b814:8254 with SMTP id 26-20020a170906301a00b009a5b8148254mr7494241ejz.24.1696600013816;
+        Fri, 06 Oct 2023 06:46:53 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.123])
+        by smtp.gmail.com with ESMTPSA id x26-20020a170906711a00b0099329b3ab67sm2918398ejj.71.2023.10.06.06.46.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 06:46:53 -0700 (PDT)
+Message-ID: <bc76767e-00c1-47ca-9a27-2aa7d2a262f6@linaro.org>
+Date:   Fri, 6 Oct 2023 14:46:49 +0100
 MIME-Version: 1.0
-References: <20231005161727.1855004-1-joel@joelfernandes.org>
-In-Reply-To: <20231005161727.1855004-1-joel@joelfernandes.org>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 6 Oct 2023 15:46:44 +0200
-Message-ID: <CAKfTPtC8Qhr+jjXmwdxCNE5f3etuqg=WpZ6icUFpT9Lg+-pwmg@mail.gmail.com>
-Subject: Re: [PATCH RFC] sched/fair: Avoid unnecessary IPIs for ILB
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Hsin Yi <hsinyi@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mtd: micron-st: enable lock/unlock for mt25qu512a
+Content-Language: en-US
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+To:     SHUKLA Mamta Ramendra <mamta.shukla@leica-geosystems.com>,
+        "pratyush@kernel.org" <pratyush@kernel.org>,
+        "michael@walle.cc" <michael@walle.cc>,
+        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+        "richard@nod.at" <richard@nod.at>,
+        "vigneshr@ti.com" <vigneshr@ti.com>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     GEO-CHHER-bsp-development 
+        <bsp-development.geo@leica-geosystems.com>
+References: <20230705154942.3936658-1-mamta.shukla@leica-geosystems.com>
+ <19800e51-a871-be9f-9eb5-5829237e2613@linaro.org>
+ <a8271289-0611-4e37-cf37-0be19a85656b@leica-geosystems.com>
+ <084ed945-7674-280f-5866-9238473a294d@leica-geosystems.com>
+ <17989610-d069-40e2-9b4d-7ca6bdf2497e@linaro.org>
+ <a24d7b3b-4077-9dbe-49ae-96f595b42223@leica-geosystems.com>
+ <2d7271b3-dd60-44bb-9700-f6a5295ea873@linaro.org>
+ <372046cb-9135-9a6c-fdb7-307a42f55b30@leica-geosystems.com>
+ <a86b93c4-a507-47c7-bdce-4aed8dfcf929@linaro.org>
+ <eb2a9138-a76e-4b1e-e001-315149c4dabd@leica-geosystems.com>
+ <f0a7acb3-00b5-433d-af5c-724a509fb816@linaro.org>
+In-Reply-To: <f0a7acb3-00b5-433d-af5c-724a509fb816@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -77,154 +90,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Oct 2023 at 18:17, Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> From: Vineeth Pillai <vineethrp@google.com>
->
-> Whenever a CPU stops its tick, it now requires another idle CPU to handle the
-> balancing for it because it can't perform its own periodic load balancing.
-> This means it might need to update 'nohz.next_balance' to 'rq->next_balance' if
-> the upcoming nohz-idle load balancing is too distant in the future. This update
-> process is done by triggering an ILB, as the general ILB handler
-> (_nohz_idle_balance) that manages regular nohz balancing also refreshes
-> 'nohz.next_balance' by looking at the 'rq->next_balance' of all other idle CPUs
-> and selecting the smallest value.
->
-> Triggering this ILB can be achieved by setting the NOHZ_NEXT_KICK flag. This
-> primarily results in the ILB handler updating 'nohz.next_balance' while
-> possibly not doing any load balancing at all. However, sending an IPI merely to
-> refresh 'nohz.next_balance' seems excessive, and there ought to be a more
-> efficient method to update 'nohz.next_balance' from the local CPU.
->
-> Fortunately, there already exists a mechanism to directly invoke the ILB
-> handler (_nohz_idle_balance) without initiating an IPI. It's accomplished by
-> setting the NOHZ_NEWILB_KICK flag. This flag is set during regular "newly idle"
-> balancing and solely exists to update a CPU's blocked load if it couldn't pull
-> more tasks during regular "newly idle balancing" - and it does so without
-> having to send any IPIs. Once the flag is set, the ILB handler is called
-> directly from do_idle()-> nohz_run_idle_balance(). While its goal is to update
-> the blocked load without an IPI, in our situation, we aim to refresh
-> 'nohz.next_balance' without an IPI but we can piggy back on this.
->
-> So in this patch, we reuse this mechanism by also setting the NOHZ_NEXT_KICK to
-> indicate nohz.next_balance needs an update via this direct call shortcut. Note
-> that we set this flag without knowledge that the tick is about to be stopped,
-> because at the point we do it, we have no way of knowing that. However we do
-> know that the CPU is about to enter idle. In our testing, the reduction in IPIs
-> is well worth updating nohz.next_balance a few more times.
->
-> Also just to note, without this patch we observe the following pattern:
->
-> 1. A CPU is about to stop its tick.
-> 2. It sets nohz.needs_update to 1.
-> 3. It then stops its tick and goes idle.
-> 4. The scheduler tick on another CPU checks this flag and decides an ILB kick is needed.
-> 5. The ILB CPU ends up being the one that just stopped its tick!
-> 6. This results in an IPI to the tick-stopped CPU which ends up waking it up
->    and disturbing it!
->
-> Testing shows a considerable reduction in IPIs when doing this:
->
-> Running "cyclictest -i 100 -d 100 --latency=1000 -t -m" on a 4vcpu VM
-> the IPI call count profiled over 10s period is as follows:
-> without fix: ~10500
-> with fix: ~1000
->
-> Fixes: 7fd7a9e0caba ("sched/fair: Trigger nohz.next_balance updates when a CPU goes NOHZ-idle")
->
-> [ Joel: wrote commit messages, collaborated on fix, helped reproduce issue etc. ]
->
-> Cc: Suleiman Souhlal <suleiman@google.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Hsin Yi <hsinyi@google.com>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Vineeth Pillai <vineethrp@google.com>
-> Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/sched/fair.c | 21 ++++++++++++++-------
->  1 file changed, 14 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index cb225921bbca..2ece55f32782 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -11786,13 +11786,12 @@ void nohz_balance_enter_idle(int cpu)
->         /*
->          * Ensures that if nohz_idle_balance() fails to observe our
->          * @idle_cpus_mask store, it must observe the @has_blocked
-> -        * and @needs_update stores.
-> +        * stores.
->          */
->         smp_mb__after_atomic();
->
->         set_cpu_sd_state_idle(cpu);
->
-> -       WRITE_ONCE(nohz.needs_update, 1);
 
-the set of needs_updat here is the main way to set nohz.needs_update
-and trigger an update of next_balance so it would be good to explain
-why we still need to keep it instead r removing it entirely
 
->  out:
->         /*
->          * Each time a cpu enter idle, we assume that it has blocked load and
-> @@ -11945,21 +11944,25 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
->  }
->
->  /*
-> - * Check if we need to run the ILB for updating blocked load before entering
-> - * idle state.
-> + * Check if we need to run the ILB for updating blocked load and/or updating
-> + * nohz.next_balance before entering idle state.
->   */
->  void nohz_run_idle_balance(int cpu)
->  {
->         unsigned int flags;
->
-> -       flags = atomic_fetch_andnot(NOHZ_NEWILB_KICK, nohz_flags(cpu));
-> +       flags = atomic_fetch_andnot(NOHZ_NEWILB_KICK | NOHZ_NEXT_KICK, nohz_flags(cpu));
-> +
-> +       if (!flags)
-> +               return;
->
->         /*
->          * Update the blocked load only if no SCHED_SOFTIRQ is about to happen
->          * (ie NOHZ_STATS_KICK set) and will do the same.
->          */
-> -       if ((flags == NOHZ_NEWILB_KICK) && !need_resched())
-> -               _nohz_idle_balance(cpu_rq(cpu), NOHZ_STATS_KICK);
-> +       if ((flags == (flags & (NOHZ_NEXT_KICK | NOHZ_NEWILB_KICK))) &&
-> +           !need_resched())
-> +               _nohz_idle_balance(cpu_rq(cpu), flags);
+On 10/6/23 14:33, Tudor Ambarus wrote:
+> 
+> Hi,
+> 
+> Thanks for the debugging info.
+> 
+> On 10/6/23 11:30, SHUKLA Mamta Ramendra wrote:
+> 
+> cut
+> 
+>> --------------------------------------------------------
+>>
+>> IMO, HAS_16BIT_SR flag is causing lock/unlock failure,
+>> since BP bits are calculated wrong then.
+>>
+>> I tested also for a case where I don't parse SFDP and
+>> reverted the condition in  micron_st_nor_default_init()
+>> for 16BIT Status Register Flag. And lock/unlock fails with
+>> same log as Non-working case.
+>>
+>> And this mt25qu512 has 8-BIT SR as typical micron-st flash.
+>>
+> 
+> Indeed, the problem is that HAS_16BIT_SR gets set when it shouldn't have
+> to. This means that the BFPT table of the flash is wrong and we should
+> fix the parsed settings via a post_bfpt hook.
+> 
+> Does the following fix your problem?
+> 
 
-This breaks the update of the blocked load.
-nohz_newidle_balance() only sets NOHZ_NEWILB_KICK (and not
-NOHZ_STATS_KICK) when it wants to update blocked load before going
-idle but it then sets NOHZ_STATS_KICK when calling_nohz_idle_balance()
-. We only clear NOHZ_NEWILB_KICK  when fetching flags but we test if
-other bits have been set by a pending softirq which will do the same.
-That's why we use NOHZ_NEWILB_KICK and not NOHZ_STATS_KICK directly.
-Similarly you can't directly use NOHZ_NEXT_KICK.
+here it is again, this time compile tested:
 
-Also note that _nohz_idle_balance() is not robust against parallel run
+diff --git a/drivers/mtd/spi-nor/micron-st.c
+b/drivers/mtd/spi-nor/micron-st.c
+index 4afcfc57c896..20f76e278095 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -180,6 +180,18 @@ static const struct flash_info micron_nor_parts[] = {
+        },
+ };
 
->  }
->
->  static void nohz_newidle_balance(struct rq *this_rq)
-> @@ -11977,6 +11980,10 @@ static void nohz_newidle_balance(struct rq *this_rq)
->         if (this_rq->avg_idle < sysctl_sched_migration_cost)
->                 return;
->
-> +       /* If rq->next_balance before nohz.next_balance, trigger ILB */
-> +       if (time_before(this_rq->next_balance, READ_ONCE(nohz.next_balance)))
-> +               atomic_or(NOHZ_NEXT_KICK, nohz_flags(this_cpu));
-> +
->         /* Don't need to update blocked load of idle CPUs*/
->         if (!READ_ONCE(nohz.has_blocked) ||
->             time_before(jiffies, READ_ONCE(nohz.next_blocked)))
-> --
-> 2.42.0.609.gbb76f46606-goog
->
++static int mt25qu512a_post_bfpt_fixup(struct spi_nor *nor,
++                               const struct sfdp_parameter_header
+*bfpt_header,
++                               const struct sfdp_bfpt *bfpt)
++{
++       nor->flags &= ~SNOR_F_HAS_16BIT_SR;
++       return 0;
++}
++
++static struct spi_nor_fixups mt25qu512a_fixups = {
++       .post_bfpt = mt25qu512a_post_bfpt_fixup,
++};
++
+ static const struct flash_info st_nor_parts[] = {
+        {
+                .name = "m25p05-nonjedec",
+@@ -405,10 +417,10 @@ static const struct flash_info st_nor_parts[] = {
+        }, {
+                .id = SNOR_ID(0x20, 0xbb, 0x20, 0x10, 0x44, 0x00),
+                .name = "mt25qu512a",
+-               .size = SZ_64M,
+-               .no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ |
+SPI_NOR_QUAD_READ,
+-               .fixup_flags = SPI_NOR_4B_OPCODES,
++               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+SPI_NOR_4BIT_BP |
++                        SPI_NOR_BP3_SR_BIT6,
+                .mfr_flags = USE_FSR,
++               .fixups = &mt25qu512a_fixups,
+        }, {
+                .id = SNOR_ID(0x20, 0xbb, 0x20),
+                .name = "n25q512a",
+
+cut
+
+> If yes, please add some prints in sfdp.c to determine where it's set,
+> either in BFPT_DWORD15_QER_SR2_BIT1 or BFPT_DWORD15_QER_SR2_BIT1_NO_RD
+> 
+> Is the datasheet for this flash public? Would you send me a link to it
+> please?
+> 
+> Cheers,
+> ta
