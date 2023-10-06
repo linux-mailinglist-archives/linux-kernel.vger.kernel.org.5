@@ -2,269 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FEF7BB7B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75BD7BB7BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbjJFMcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:32:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
+        id S232187AbjJFMe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbjJFMct (ORCPT
+        with ESMTP id S232146AbjJFMeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:32:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EA1FB
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:32:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04511C433C8;
-        Fri,  6 Oct 2023 12:32:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696595566;
-        bh=61DYdc53aKk3vt7BSVcWpMssttdDG8L65eoi6rh4zxQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=JNGJGeeh/xb2lnmH/Z5KJ4/LKFvtvGVMmz/tk/DHO8sgDP4P5/642radicsHW28GK
-         SfU6fOY5HV7BaSCwxg7wRnh1YiYbtbCmSx/uk0npL9lU/Tb0+6zbM/rnUmFHWDiLPk
-         vo2Jw5CgOTzCPZP9HDg2kQvB9do7YCLuP48Ejn2MEk62Z0ObMVT47tDnBYtHXS1tCm
-         t/xnJ44noa8fu1Ti5Id/9FsVSzZm7a7cSbaNHCfbjgj7sopoEf0ZLTWkBZyOtSVrN2
-         eVoB7yl698z2RNrLSYesekc3QhWgycdwOVAkbVADcds5o+EtqmP9VScES/vswhkzOB
-         C8O8hg/HRI3Dg==
-Message-ID: <7b001e41-47b2-467e-b63c-b654b856c2e3@kernel.org>
-Date:   Fri, 6 Oct 2023 15:32:40 +0300
+        Fri, 6 Oct 2023 08:34:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42521CE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:33:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696595616;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kp2picVzpjCiZ5thzoNnS4NIffKCsvdoirWsfiXrjmU=;
+        b=Dsy1O4s4pjitIvwNMlEbQcVUUJngbjIVMAT4kpJD/P0KhmAy1ElxGpekoc4rAVAhLgVeGa
+        62gJO22noiYvqAfNgZWO0HUem1Su+SHhxlUo4etIGgeM5ZwxaemxM31dK1Yw+XvhGwuU/I
+        X/qzCwz/jPL0W2KrTekBCGeRq+QyRq0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-167-p4-yOYXoNoupVgZLPvhCmw-1; Fri, 06 Oct 2023 08:33:30 -0400
+X-MC-Unique: p4-yOYXoNoupVgZLPvhCmw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-406710d9a4aso15180565e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:33:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696595609; x=1697200409;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kp2picVzpjCiZ5thzoNnS4NIffKCsvdoirWsfiXrjmU=;
+        b=wtgYrw4Yp2zb0AMRaFfxeYA3RrWYLmF+NXuyqHlWMOmnQMl7TrNFxL5PSfTXrumS3Q
+         2w4pzZtvR2iyEdrlSE+m2tZXO4VCe7z9hKcDn5OQyMMbKCWD0AfLu9YjuOircPaypXFH
+         hw2itOiHIXnnclYkoHJpXRhvxVIDv2F6RcQK9cF6PLNfdkR/XgSScgRtGdPLvLwYYZHi
+         18r4TVWrpRJfwVfLXGZE1PslPItVIfzj1Yz062pZN+LkakqtkZhs/UtJ8YhXiQzrJBDr
+         XdGHwwQDp4glw3z3xcaZGHHE9sfT4ty8zJHybl97MapneSghfQb6BePb17rzr7AHG41r
+         XsbQ==
+X-Gm-Message-State: AOJu0YxSJjRDm71Xk/F3Po87yb1+AvIHYBWEyJAR9vW4eJTH8q2IwLDv
+        8msqJJy+vX5jREoG5yZk+Z8uj85mj7hsLMZpXW67H39Fw/eHUe7Xg4flkygfYLxrnln9ELAkOKw
+        VpsnpeSYZ3biF8QSFpQ+jEuNV
+X-Received: by 2002:a7b:c84d:0:b0:3fa:934c:8356 with SMTP id c13-20020a7bc84d000000b003fa934c8356mr7567189wml.10.1696595609214;
+        Fri, 06 Oct 2023 05:33:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG+qbujoqL35rM+01e93eyEax/eUnX6DN6O6MIW9k5Yq00U138jBSP0b8qR2JxHr3nONKt2Og==
+X-Received: by 2002:a7b:c84d:0:b0:3fa:934c:8356 with SMTP id c13-20020a7bc84d000000b003fa934c8356mr7567153wml.10.1696595608689;
+        Fri, 06 Oct 2023 05:33:28 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c715:ee00:4e24:cf8e:3de0:8819? (p200300cbc715ee004e24cf8e3de08819.dip0.t-ipconnect.de. [2003:cb:c715:ee00:4e24:cf8e:3de0:8819])
+        by smtp.gmail.com with ESMTPSA id y4-20020a05600c364400b0040472ad9a3dsm3666144wmq.14.2023.10.06.05.33.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 05:33:28 -0700 (PDT)
+Message-ID: <1d606139-9fff-a00e-c09b-587a8b6736f2@redhat.com>
+Date:   Fri, 6 Oct 2023 14:33:27 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 net-next 3/4] net: ethernet: ti: am65-cpsw-qos: Add
- Frame Preemption MAC Merge support
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 1/2] mm/memory_hotplug: split memmap_on_memory requests
+ across memblocks
 Content-Language: en-US
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, horms@kernel.org, s-vadapalli@ti.com,
-        srk@ti.com, vigneshr@ti.com, p-varis@ti.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230927072741.21221-1-rogerq@kernel.org>
- <20230927072741.21221-1-rogerq@kernel.org>
- <20230927072741.21221-4-rogerq@kernel.org>
- <20230927072741.21221-4-rogerq@kernel.org>
- <20231005092943.q7no33k32thyo6y4@skbuf>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20231005092943.q7no33k32thyo6y4@skbuf>
-Content-Type: text/plain; charset=UTF-8
+To:     "Verma, Vishal L" <vishal.l.verma@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Cc:     "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "Hocko, Michal" <mhocko@suse.com>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "jmoyer@redhat.com" <jmoyer@redhat.com>,
+        "Jonathan.Cameron@Huawei.com" <Jonathan.Cameron@Huawei.com>
+References: <20230928-vv-kmem_memmap-v4-0-6ff73fec519a@intel.com>
+ <20230928-vv-kmem_memmap-v4-1-6ff73fec519a@intel.com>
+ <efe2acfd-f22f-f856-cd2a-32374af2053a@redhat.com>
+ <7893b6a37a429e2f06f2b65009f044208f904b32.camel@intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <7893b6a37a429e2f06f2b65009f044208f904b32.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 05/10/2023 12:29, Vladimir Oltean wrote:
-> On Wed, Sep 27, 2023 at 10:27:40AM +0300, Roger Quadros wrote:
->> Add driver support for viewing / changing the MAC Merge sublayer
->> parameters and seeing the verification state machine's current state
->> via ethtool.
+On 03.10.23 22:03, Verma, Vishal L wrote:
+> On Mon, 2023-10-02 at 11:28 +0200, David Hildenbrand wrote:
 >>
->> As hardware does not support interrupt notification for verification
->> events we resort to polling on link up. On link up we try a couple of
->> times for verification success and if unsuccessful then give up.
+>>> +
+>>> +static int __ref try_remove_memory(u64 start, u64 size)
+>>> +{
+>>> +       int rc, nid = NUMA_NO_NODE;
+>>> +
+>>> +       BUG_ON(check_hotplug_memory_range(start, size));
+>>> +
+>>> +       /*
+>>> +        * All memory blocks must be offlined before removing memory.  Check
+>>> +        * whether all memory blocks in question are offline and return error
+>>> +        * if this is not the case.
+>>> +        *
+>>> +        * While at it, determine the nid. Note that if we'd have mixed nodes,
+>>> +        * we'd only try to offline the last determined one -- which is good
+>>> +        * enough for the cases we care about.
+>>> +        */
+>>> +       rc = walk_memory_blocks(start, size, &nid, check_memblock_offlined_cb);
+>>> +       if (rc)
+>>> +               return rc;
+>>> +
+>>> +       /*
+>>> +        * For memmap_on_memory, the altmaps could have been added on
+>>> +        * a per-memblock basis. Loop through the entire range if so,
+>>> +        * and remove each memblock and its altmap.
+>>> +        */
+>>> +       if (mhp_memmap_on_memory()) {
+>>> +               unsigned long memblock_size = memory_block_size_bytes();
+>>> +               u64 cur_start;
+>>> +
+>>> +               for (cur_start = start; cur_start < start + size;
+>>> +                    cur_start += memblock_size)
+>>> +                       __try_remove_memory(nid, cur_start, memblock_size);
+>>> +       } else {
+>>> +               __try_remove_memory(nid, start, size);
+>>> +       }
+>>> +
+>>>          return 0;
+>>>    }
 >>
->> The Frame Preemption feature is described in the Technical Reference
->> Manual [1] in section:
->> 	12.3.1.4.6.7 Intersperced Express Traffic (IET – P802.3br/D2.0)
+>> Why is the firmware, memblock and nid handling not kept in this outer
+>> function?
 >>
->> Due to Silicon Errata i2208 [2] we set limit min IET fragment size to 124.
->>
->> [1] AM62x TRM - https://www.ti.com/lit/ug/spruiv7a/spruiv7a.pdf
->> [2] AM62x Silicon Errata - https://www.ti.com/lit/er/sprz487c/sprz487c.pdf
->>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
->>  drivers/net/ethernet/ti/am65-cpsw-ethtool.c | 150 ++++++++++++
->>  drivers/net/ethernet/ti/am65-cpsw-nuss.c    |   2 +
->>  drivers/net/ethernet/ti/am65-cpsw-nuss.h    |   5 +
->>  drivers/net/ethernet/ti/am65-cpsw-qos.c     | 240 ++++++++++++++++----
->>  drivers/net/ethernet/ti/am65-cpsw-qos.h     | 104 +++++++++
->>  5 files changed, 454 insertions(+), 47 deletions(-)
->>
->> Changelog:
->> v5:
->> - No change
->>
->> v4:
->> - Rebase and include in the same series as mqprio support.
->>
->> v3:
->> - Rebase on top of v6.6-rc1 and mqprio support [1]
->> - Support ethtool_ops :: get_mm_stats()
->> - drop unused variables cmn_ctrl and verify_cnt
->> - make am65_cpsw_iet_link_state_update() and
->>   am65_cpsw_iet_change_preemptible_tcs() static
->>
->> [1] https://lore.kernel.org/all/20230918075358.5878-1-rogerq@kernel.org/
->>
->> v2:
->> - Use proper control bits for PMAC enable (AM65_CPSW_PN_CTL_IET_PORT_EN)
->>   and TX enable (AM65_CPSW_PN_IET_MAC_PENABLE)
->> - Common IET Enable (AM65_CPSW_CTL_IET_EN) is set if any port has
->>   AM65_CPSW_PN_CTL_IET_PORT_EN set.
->> - Fix workaround for erratum i2208. i.e. Limit rx_min_frag_size to 124
->> - Fix am65_cpsw_iet_get_verify_timeout_ms() to default to timeout for
->>   1G link if link is inactive.
->> - resize the RX FIFO based on pmac_enabled, not tx_enabled.
->>
->> Test Procedure:
->>
->> - 2 EVMs with AM65-CPSW network port connected to each other
->> - Run iet-setup-mqprio.sh on both
->>
->> #!/bin/sh
->> #iet-setup-mqprio.sh
->>
->> ifconfig eth0 down
->> ifconfig eth1 down
->> ethtool -L eth0 tx 4
->> ethtool --set-mm eth0 pmac-enabled on tx-enabled on verify-enabled on verify-time 10 tx-min-frag-size 124
->> ifconfig eth0 up
->> sleep 10
->>
->> tc qdisc add dev eth0 handle 100: root mqprio \
->> num_tc 4 \
->> map 0 1 2 3 \
->> queues 1@0 1@1 1@2 1@3 \
->> hw 1 \
->> mode dcb \
->> fp P P P E
->>
->> tc -g class show dev eth0
->> tc qdisc add dev eth0 clsact
->> tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5002 0xffff action skbedit priority 2
->> tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5003 0xffff action skbedit priority 3
->> ip addr add 192.168.3.102/24 dev eth0 
->>
->> - check that MAC merge verification has succeeded
->>
->> ethtool --show-mm eth0
->>
->>         MAC Merge layer state for eth0:
->>         pMAC enabled: on
->>         TX enabled: on
->>         TX active: on
->>         TX minimum fragment size: 124
->>         RX minimum fragment size: 124
->>         Verify enabled: on
->>         Verify time: 10
->>         Max verify time: 134
->>         Verification status: SUCCEEDED
->>
->> - On receiver EVM run 2 iperf instances
->>
->> iperf3 -s -i30 -p5002&
->> iperf3 -s -i30 -p5003&
->>
->> - On sender EVM run 2 iperf instances
->>
->> iperf3 -c 192.168.3.102 -u -b200M -l1472 -u -t5 -i30 -p5002&
->> iperf3 -c 192.168.3.102 -u -b50M -l1472 -u -t5 -i30 -p5003&
->>
->> - Check IET stats on sender. Look for MACMergeFragCountTx: increments
->>
->> ethtool -I --show-mm eth0
->> MAC Merge layer state for eth0:
->> pMAC enabled: on
->> TX enabled: on
->> TX active: on
->> TX minimum fragment size: 124
->> RX minimum fragment size: 124
->> Verify enabled: on
->> Verify time: 10
->> Max verify time: 134
->> Verification status: SUCCEEDED
->> Statistics:
->>   MACMergeFrameAssErrorCount: 0
->>   MACMergeFrameSmdErrorCount: 0
->>   MACMergeFrameAssOkCount: 0
->>   MACMergeFragCountRx: 0
->>   MACMergeFragCountTx: 57824
->>   MACMergeHoldCount: 0
->>
->> - Check IET stats on receiver. Look for MACMergeFragCountRx: and
->>   MACMergeFrameAssOkCount:
->>
->> ethtool -I --show-mm eth0
->> MAC Merge layer state for eth0:
->> pMAC enabled: on
->> TX enabled: on
->> TX active: on
->> TX minimum fragment size: 124
->> RX minimum fragment size: 124
->> Verify enabled: on
->> Verify time: 10
->> Max verify time: 134
->> Verification status: SUCCEEDED
->> Statistics:
->>   MACMergeFrameAssErrorCount: 0
->>   MACMergeFrameSmdErrorCount: 0
->>   MACMergeFrameAssOkCount: 57018
->>   MACMergeFragCountRx: 57824
->>   MACMergeFragCountTx: 0
->>   MACMergeHoldCount: 0
+>> We really shouldn't be doing per memory block what needs to be done per
+>> memblock: remove_memory_block_devices() and arch_remove_memory().
 > 
-> Nice of you to post commands, but could you also please clearly state
-> whether the implementation passes tools/testing/selftests/net/forwarding/ethtool_mm.sh?
+> 
+> Ah yes makes sense since we only do create_memory_block_devices() and
+> arch_add_memory() in the per memory block inner loop during addition.
+> 
+> How should the locking work in this case though?
 
-Honestly, I didn't spend much time with it. I will try to run
-those tests and get back.
+Sorry, I had to process a family NMI the last couple of days.
 
 > 
->> +	val &= ~AM65_CPSW_PN_IET_MAC_MAC_ADDFRAGSIZE_MASK;
->> +	val |= AM65_CPSW_PN_IET_MAC_SET_ADDFRAGSIZE(add_frag_size);
->> +	writel(val, port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
->> +
->> +	/* verify_timeout_count can only be set at valid link */
->> +	port->qos.iet.verify_time_ms = cfg->verify_time;
->> +
->> +	/* enable/disable pre-emption based on link status */
-> 
-> For the benefit of grep, I would appreciate if it was spelled
-> "preemption" everywhere.
+> The original code holds the mem_hotplug_begin() lock over
+> arch_remove_memory() and all of the nid and memblock stuff. Should I
+> just hold the lock and release it in the inner loop for each memory
+> block, and then also acquire and release it separately for the memblock
+> and nid stuff in the outer function?
 
-OK.
+I think we have to hold it over the whole operation.
 
-> 
->> +	am65_cpsw_iet_commit_preemptible_tcs(port);
->> +
->> +	mutex_unlock(&priv->mm_lock);
->> +
->> +	return 0;
->> +}
->> +
->>  static int am65_cpsw_port_est_enabled(struct am65_cpsw_port *port)
->>  {
->>  	return port->qos.est_oper || port->qos.est_admin;
->> @@ -602,6 +743,8 @@ static int am65_cpsw_setup_taprio(struct net_device *ndev, void *type_data)
->>  	if (port->qos.link_speed == SPEED_UNKNOWN)
->>  		return -ENOLINK;
->>  
->> +	am65_cpsw_iet_change_preemptible_tcs(port, taprio->mqprio.preemptible_tcs);
->> +
-> 
-> Hmm, why just look at the preemptible traffic classes and not at
-> taprio's entire mqprio configuration? This bypasses the mapping between
-> Linux traffic classes and switch priorities that you've established in
-> am65_cpsw_setup_mqprio().
-> 
-> With the addition of the "mqprio" structure in tc_taprio_qopt_offload,
-> my intention was to facilitate calling am65_cpsw_setup_mqprio() from
-> am65_cpsw_setup_taprio().
+I saw that you sent a v5, I'll comment there.
 
-OK. I will take a look at this. Thanks!
-
-> 
->>  	return am65_cpsw_set_taprio(ndev, type_data);
->>  }
 
 -- 
-cheers,
--roger
+Cheers,
+
+David / dhildenb
+
