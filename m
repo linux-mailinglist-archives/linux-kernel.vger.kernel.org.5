@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A83477BBCEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058A37BBCED
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbjJFQk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51056 "EHLO
+        id S232892AbjJFQko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232496AbjJFQkY (ORCPT
+        with ESMTP id S232496AbjJFQkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:40:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9EAAD;
-        Fri,  6 Oct 2023 09:40:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01BF2C433C8;
-        Fri,  6 Oct 2023 16:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696610421;
-        bh=H2sx5NQhBAPqc06JxSGI5reERf87Iy6LrLxkuOsSTIU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y6UcyhKycR5lVRB15yhRRoIb9gnrAt2sZUtNDNV8pmp4g5JsoQqbBNi51nQ48M7pX
-         n0rHiZpB8O1Eb//mKzBAX2ijP6lrBVK3PF4t1cpjjREh0SY7RU2tn/y/YntAY+21c/
-         VqxTZNdA/0Kxd8NxfT2boAs9VIs0hn3IVpdfG6LPCRcosu3InlbMB79mblyzmlNOCw
-         e00RqEPT2edPaeOXV2EaiWYNirXLe7jmH6uiECUSeSz5N44DFMfAuEM0A/jANLWwYg
-         WHW1ro0OFRhxtXd2hSYlOLZ8NCJYEf6EnOl2mYdON9+o2navaRnZ0v3AV7870IcEi0
-         SCKpbFBZVhlHw==
-Received: (nullmailer pid 4048805 invoked by uid 1000);
-        Fri, 06 Oct 2023 16:40:19 -0000
-Date:   Fri, 6 Oct 2023 11:40:19 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Gregory Clement <gregory.clement@bootlin.com>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Phil =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 05/11] dt-bindings: mips: cpu: Add I-Class I6500
- Multiprocessor Core
-Message-ID: <20231006164019.GA4040344-robh@kernel.org>
-References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
- <20231004161038.2818327-6-gregory.clement@bootlin.com>
- <hu5ksk2gw7zbbeiwi4unfo242qm2wfn36bpgea5inlamn4kqrf@magwi4w7gp3x>
- <87sf6pcebd.fsf@BL-laptop>
- <53050bbd-6a46-470d-9764-c83b8588698e@app.fastmail.com>
+        Fri, 6 Oct 2023 12:40:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2567FC2;
+        Fri,  6 Oct 2023 09:40:40 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 18:40:36 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696610438;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xJK9V2VtLPnBrImfjMOmFTNsUiDy1Y0fI2z1sk+3JmU=;
+        b=1uoOGzSonar2EkeoparSKR9fpxQO4KWP9mczppZnHMlBSeaTPqCqtigTWCZJ3XFCDtecad
+        G1L9RRBTaWv+ds1u7J9/x8WnhL9MLdYkDkGHszVTd7pRYndKjWotV/GG1dQR5rEi2G3M3d
+        v53c4q7xCOmH/13Sp/ylOVcRhFfWVQIoDzcNAHI4iiegIkFvgd1CyFpKLHaKe/8OtVXQid
+        SeqnVVChA8exJYD9p/KbyIxL1zF7DgcFO16wPwuNE0tTnEmlGjY5EyR9KC1rth3Z1vRIGT
+        XA3MNp2PhpBSY4GQERrXN6APSzbjwntKvCYRguDWYNWjFYut3XC8880gxIwiaw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696610438;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xJK9V2VtLPnBrImfjMOmFTNsUiDy1Y0fI2z1sk+3JmU=;
+        b=74pAOyjNU+plxaJMGG2ktItK+APbVyqDvDy1lePId2QUmYEWVnhs5OppTY+ms9MDHHfPQ9
+        zKL2rsyKf7o9yMCA==
+From:   Benedikt Spranger <b.spranger@linutronix.de>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Subject: Re: [PATCH 1/1] clk: socfpga: gate: Fix of by factor 2 for serial
+ console
+Message-ID: <20231006184020.7fb6f509@mitra>
+In-Reply-To: <ujs6kaisllqu3qzm76qkwpmdy2vnulp6z742ooclbsdz36zl5f@m7ujgar4pwqs>
+References: <20231005095927.12398-1-b.spranger@linutronix.de>
+        <20231005095927.12398-2-b.spranger@linutronix.de>
+        <qpskbgigcaoyjuhzeguz366cjukv3ij7utlbkra5edhwn6uzh4@bdedm6vs62y5>
+        <20231005203202.08b5d1cf@mitra>
+        <ujs6kaisllqu3qzm76qkwpmdy2vnulp6z742ooclbsdz36zl5f@m7ujgar4pwqs>
+Organization: Linutronix GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53050bbd-6a46-470d-9764-c83b8588698e@app.fastmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,55 +65,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 12:48:03PM +0200, Arnd Bergmann wrote:
-> On Thu, Oct 5, 2023, at 16:51, Gregory CLEMENT wrote:
-> >> On Wed, Oct 04, 2023 at 06:10:32PM +0200, Gregory CLEMENT wrote:
-> >>> The MIPS Warrior I-class I6500 was announced by Imagination
-> >>> Technologies in 2016 and is used in the Mobileye SoC EyeQ5.
-> >>> 
-> >>> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> >>> ---
-> >>>  Documentation/devicetree/bindings/mips/cpus.yaml | 1 +
-> >>>  1 file changed, 1 insertion(+)
-> >>> 
-> >>> diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
-> >>> index cf382dea3922..87fd2842ba68 100644
-> >>> --- a/Documentation/devicetree/bindings/mips/cpus.yaml
-> >>> +++ b/Documentation/devicetree/bindings/mips/cpus.yaml
-> >>> @@ -39,6 +39,7 @@ properties:
-> >>>        - mti,mips24KEc
-> >>>        - mti,mips14KEc
-> >>>        - mti,mips14Kc
-> >>
-> >>> +      - mti,i6500
-> >>
-> >> Since the CPU core vendor is Imagination Technologies thus it would
-> >> be more appropriate to have the "img," prefix. Wouldn't it?
-> >
-> > According to Documentation/devicetree/bindings/vendor-prefixes.yaml
-> >
-> > "^mti,.*":
-> >     description: Imagination Technologies Ltd. (formerly MIPS
-> >     Technologies Inc.)
-> >
-> > So I think it's OK.
+On Fri, 6 Oct 2023 17:01:34 +0200
+Maxime Ripard <mripard@kernel.org> wrote:
+
+> On Thu, Oct 05, 2023 at 08:32:23PM +0200, Benedikt Spranger wrote:
+> > On Thu, 5 Oct 2023 13:34:01 +0200
+> > Maxime Ripard <mripard@kernel.org> wrote:
+> > 
+> > > Where is that factor 2 coming from?
+> > In drivers/tty/serial/8250/8250_dw.c p->uartclk is set twice as high,
+> > as it should be: 
+> > 
+> > dw8250_set_termios() is called and rate is evaluated to 20000000 in the
+> > bad and 10000000 in the good case. As a result p->uartclk is set to
+> > 20000000 in the bad case.
 > 
-> I don't see any good solution, they changed their name and
-> ownership too many times. I would actually revert back the
-> description here to "MIPS Technologies Inc" instead of trying
-> to keep track of what they currently call themselves.
+> Sure, sorry I worded that poorly. What I meant was what clock tree
+> decision is taken now that wasn't taken before that leads to that factor
+> 2 difference.
+OK.
+
+> Thanks for the traces, that's helpful. It looks like the culprit is:
 > 
-> Since we already have both the 'mips,' and 'mti,' vendow
-> names for the 14Kc, 14KEc and 24KEc parts, maybe we can
-> just go back to 'mips,' for all cores past the mti era
-> rather than trying to date and geolocate each of the
-> classic cores as one of 'mti', 'img', 'wavecomp', 'tallwood',
-> 'mips' 'cipunited' etc.
+> Good:
+> 
+>             init-1       [001] .....     0.125643: clk_rate_request_start: l4_sp_clk min 0 max 4294967295, parent per_base_clk (200000000)
+>             init-1       [001] .....     0.125651: clk_rate_request_done: l4_sp_clk min 0 max 4294967295, parent per_base_clk (200000000)
+>             init-1       [001] .....     0.125657: dw8250_set_termios: dw8250_set_termios: rate = 200000000 newrate = 1843200
+> 
+> vs Bad:
+> 
+>             init-1       [001] .....     0.116063: clk_rate_request_start: l4_sp_clk min 0 max 4294967295, parent per_base_clk (200000000)
+>             init-1       [001] .....     0.116089: clk_rate_request_done: l4_sp_clk min 0 max 4294967295, parent per_base_clk (200000000)
+>             init-1       [001] .....     0.116096: dw8250_set_termios: dw8250_set_termios: rate = 4294967274 newrate = 1843200
+> 
+> The rate returned is super suspicious, as it's an -EINVAL casted into an
+> unsigned long. So I think something on that clock chain is returning an
+> error for some reason, which is then treated as a rate by the rest and
+> everybody's just confused.
+OK.
 
-I would reserve 'mips' for anything common. Much like 'riscv' is only 
-for things based on RiscV specs/standards.
+> What is the board that you're using?
+I am using a Cyclone5 DE0-Nano-Soc/Atlas board
+(socfpga_cyclone5_de0_nano_soc.dts). 
 
-I would use 'img' here if we know this was designed/implemented by 
-Imagination.
-
-Rob
+Regards
+    Benedikt Spranger
