@@ -2,144 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 097DC7BB181
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 08:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0432F7BB18D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 08:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbjJFGYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 02:24:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
+        id S230168AbjJFGaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 02:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJFGYT (ORCPT
+        with ESMTP id S229848AbjJFGaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 02:24:19 -0400
-X-Greylist: delayed 60 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Oct 2023 23:24:16 PDT
-Received: from smtpcmd04132.aruba.it (smtpcmd04132.aruba.it [62.149.158.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5300590
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 23:24:16 -0700 (PDT)
-Received: from [192.168.1.56] ([79.0.204.227])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id oeEwqIZBPRbLIoeExqSU1E; Fri, 06 Oct 2023 08:23:12 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1696573392; bh=1g4cE2HuG32l4c0jdgyiNG0Vc4f/Jd4BC4OAvpvtJu8=;
-        h=Date:MIME-Version:Subject:To:From:Content-Type;
-        b=m6x/TAAfP6HnbJu44l9yFOq+rN+xFSmM2Cu0xkgvVT3A1PnyRjldZ9sVAo92jitTN
-         vU5poXE2Oh4NZnF9PaCPoLMsojq/gxS/Rme/Bh1M2H7tS82gRSWAqELkyujuRSXCkf
-         pK21CckOXU5H2YONqoVUluYCdRn60U5DkB2+CXFwQxLSGZ0JZUJwBf4OOR7tLb/ZfR
-         QrBhjuJGuxexB7ep+vHSTeJUc4MYioCWhlUFNWt6/WjvhnjIqIuzrs784RsBDPp2VH
-         nIX5kq4X/ng7KXABWJcsZfxi6jiYFFUh4yiji0ouaGjEZIKtCXTLy/j9Dp7rhmYvj9
-         cbr+4WDKBbIjg==
-Message-ID: <8ca736c3-7da9-2599-7e55-15e2fc9fedc2@enneenne.com>
-Date:   Fri, 6 Oct 2023 08:23:09 +0200
+        Fri, 6 Oct 2023 02:30:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B72AE4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 23:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696573806; x=1728109806;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6KA3o7Q+0ZiB26ZPIhrmr6o7vKG/7KfJ8PTKqX0mwec=;
+  b=CZPqeX1I/4VPsi4dV1Q/zWv9jrsbBA4sKYkArPhKuurCjP/hVxLA36Qe
+   /85Cy3QFH61ggMWmBLwzbDr0AGzc1L5vwg/wwuinWmFiqV/6zQyGPtncn
+   +KEB4om6cELhwIbgjlfvuLatcl9o84X0QEyoDvXilXMTLfpBD2qje52zk
+   HKFxQAP2oTgyINMHco/pSwVkP3qHMP+hDMLg3xnvnfhAj+fiPRkNppGI3
+   hpk/sYkH7C5lMEKtnwfr+zOORaWnMG2qTzXZg/ez095RQOvdn/B5yJJeh
+   yst5ODtvpmsmc2ITi71LajCivT2gRIY2CGYIzEP2BotU5WcA3/xZxaYx+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="2290389"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="2290389"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 23:30:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="755749919"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="755749919"
+Received: from sunyi-station.sh.intel.com (HELO ysun46-mobl.sh.intel.com) ([10.239.159.10])
+  by fmsmga007.fm.intel.com with ESMTP; 05 Oct 2023 23:30:00 -0700
+From:   Yi Sun <yi.sun@intel.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, peterz@infradead.org, x86@kernel.org
+Cc:     kirill.shutemov@linux.intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, kai.huang@intel.com,
+        linux-kernel@vger.kernel.org, heng.su@intel.com,
+        yi.sun@linux.intel.com, Yi Sun <yi.sun@intel.com>,
+        Dongcheng Yan <dongcheng.yan@intel.com>
+Subject: [PATCH v4] x86/tdx: Dump TDX version During the TD Bootup
+Date:   Fri,  6 Oct 2023 14:28:55 +0800
+Message-Id: <20231006062855.875631-1-yi.sun@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: PPS functionality for Intel Timed I/O
-Content-Language: en-US
-To:     "N, Pandith" <pandith.n@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Sangannavar, Mallikarjunappa" 
-        <mallikarjunappa.sangannavar@intel.com>,
-        "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
-        "T R, Thejesh Reddy" <thejesh.reddy.t.r@intel.com>,
-        "Hall, Christopher S" <christopher.s.hall@intel.com>,
-        "Gross, Mark" <mark.gross@intel.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>
-References: <BYAPR11MB3240A86B426158623DB9983EE1D39@BYAPR11MB3240.namprd11.prod.outlook.com>
- <fa3f1765-eb59-bf69-7f7b-14621caef6ea@enneenne.com>
- <BYAPR11MB3240801F21598EEFAEA79605E1D39@BYAPR11MB3240.namprd11.prod.outlook.com>
- <1e02cc71-baee-1e75-9160-062d563af795@enneenne.com>
- <BYAPR11MB32408E2D9758BD01EC65FB49E1DA9@BYAPR11MB3240.namprd11.prod.outlook.com>
- <f2788a74-19f8-8992-5b92-427c7b2a27ab@enneenne.com>
- <BYAPR11MB3240C6789B4C04F3BDAE34D5E1A39@BYAPR11MB3240.namprd11.prod.outlook.com>
- <f8a97493-a5ab-565f-825a-dd0a508f2b66@enneenne.com>
- <BYAPR11MB32405694C3C9A1DE083EA673E1C9A@BYAPR11MB3240.namprd11.prod.outlook.com>
-From:   Rodolfo Giometti <giometti@enneenne.com>
-In-Reply-To: <BYAPR11MB32405694C3C9A1DE083EA673E1C9A@BYAPR11MB3240.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfMAx4tZAxRB7YBxzABY8FxJ4N3jczSvovPedbUKVPywsYjMWLUH6jDo+TwaOhasfJFiG2l8OCieAyiy/DbTSIMEgwdAEYtu/FSLtxznBpXS2ej/HQeKB
- mxySHZA7U+8rv6mjdrLbM2EwX8mCZKPTqhyfCY+50Chho7SiQjvkgk5qlcn+I+XykDtZvWEhiF6JE09zyd5QNG6toCoIouI3Qo5PzygcjPlmHHg8h6VFXXN0
- eYX2HuQmv3i9aN4ua5vgheHAl20XQnIzOgQcpKh7wHuei+FFb3cLvmFQZz1dBotbTXSahLv4glluFtkze766i5h0NxmLS+qa3k/MMnkgDTbA5atIeaMAUpr0
- ZVVHcC9S2IbRF/v1pTfimwlKiTKi11/e97P/vHdHOahSIM5rj1jZVJroCqfyNOxQAHxUq/Uzgkd1jPOSURwK9pp8tMa2sgIjvnAKLNbNiZf2zOQNF2jEa1bd
- xCjD1KhOUoR4yBTCu7S4nvaL8tW+80BylMalfQ==
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/23 07:31, N, Pandith wrote:
-> Hi,
+It is essential for TD users to be aware of the vendor and version of
+the current TDX. Additionally, they can reference the TDX version when
+reporting bugs or issues.
 
-Hello.
+Furthermore, the applications or device drivers running in TD can achieve
+enhanced reliability and flexibility by following the TDX Module ABI
+specification, because there are significant differences between different
+versions of TDX, as mentioned in the "Intel® TDX Module Incompatibilities
+between v1.0 and v1.5" reference. Here are a few examples:
 
->> -----Original Message-----
->> From: Rodolfo Giometti <giometti@enneenne.com>
->> Sent: Wednesday, February 15, 2023 1:16 PM
->> To: N, Pandith <pandith.n@intel.com>
->> Cc: linux-kernel@vger.kernel.org; Sangannavar, Mallikarjunappa
->> <mallikarjunappa.sangannavar@intel.com>; D, Lakshmi Sowjanya
->> <lakshmi.sowjanya.d@intel.com>; T R, Thejesh Reddy
->> <thejesh.reddy.t.r@intel.com>; Hall, Christopher S
->> <christopher.s.hall@intel.com>; Gross, Mark <mark.gross@intel.com>
->> Subject: Re: PPS functionality for Intel Timed I/O
->>
->> On 15/02/23 08:09, N, Pandith wrote:
->>> Hi Rodolfo,
->>
->> Hello.
->>
->>>> -----Original Message-----
->>>> From: Rodolfo Giometti <giometti@enneenne.com>
->>>> Sent: Monday, February 6, 2023 4:17 PM
->>>> To: N, Pandith <pandith.n@intel.com>
->>>> Cc: linux-kernel@vger.kernel.org; Sangannavar, Mallikarjunappa
->>>> <mallikarjunappa.sangannavar@intel.com>; D, Lakshmi Sowjanya
->>>> <lakshmi.sowjanya.d@intel.com>; T R, Thejesh Reddy
->>>> <thejesh.reddy.t.r@intel.com>; Hall, Christopher S
->>>> <christopher.s.hall@intel.com>
->>>> Subject: Re: PPS functionality for Intel Timed I/O
->>
->> [snip]
->>
->>>> Mmm... I'm not sure this is correct since PPS generators should
->>>> generate their pulses according to system clock and not according to
->>>> their internal clocks even if they are synced with the system clock.
->>>>
->>> Timed I/O and system time are both driven by the *same* hardware clock.
->>> Timed I/O is a high precision device (nanoseconds), able to output pulses.
->>> The driver gets the system time and schedules output at target_time in
->>> the future.
->>
->> OK, in this case it would be OK. Please put an appropriate note within the
->> generator's code and a detailed one within Documentation/driver-api/pps.rst.
->>
->> Regarding Documentation/driver-api/pps.rst let me suggest you to prose a
->> separate patch to rewrite the Generators section in such a way you easily can add
->> your solution at the end. A possible example is attached but feel free to rewrite it
->> according to your needs.
->>
-> Ok, we are updating documentation as you have suggested as a separate patch.
-> Can we use your "Signed-off-by" tag for attached patch.
+MSR Name		Index		Reason
+----------------------------------------------
+IA32_UARCH_MISC_CTL	0x1B01		From v1.5
+IA32_ARCH_CAPABILITIES	0x010A		Changed in v1.5
+IA32_TSX_CTRL		0x0122		Changed in v1.5
 
-If you just followed my suggestion then it's OK for me.
+CPUID Leaf	Sub-leaf	Reason
+---------------------------------------
+0x7		2		From v1.5
+0x22		0		From v1.5
+0x23		0~3		From v1.5
+0x80000007	0		From v1.5
 
-> We are adding Intel timed I/O documentation as a separate patch.
+During TD initialization, the TDX version info can be obtained by calling
+TDG.SYS.RD. This will fetch the current version of TDX, including the major
+and minor version numbers and vendor ID.
 
-OK.
+The TDCALL TDG.SYS.RD originates from TDX version 1.5. If the error
+TDCALL_INVALID_OPERAND occurs, it should be treated as TDX version 1.0.
 
-Ciao,
+If the __tdcall_ret fails, expect a zero value for all tdx sys info.
+No additional error code is necessary to avoid introducing noise during
+the bootup.
 
-Rodolfo Giometti
+Co-developed-by: Dongcheng Yan <dongcheng.yan@intel.com>
+Signed-off-by: Dongcheng Yan <dongcheng.yan@intel.com>
+Signed-off-by: Yi Sun <yi.sun@intel.com>
 
+diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+index 3e6dbd2199cf..991f7dc695bd 100644
+--- a/arch/x86/coco/tdx/tdx.c
++++ b/arch/x86/coco/tdx/tdx.c
+@@ -37,6 +37,24 @@
+ 
+ #define TDREPORT_SUBTYPE_0	0
+ 
++/*
++ * TDX metadata base field id, used by TDCALL TDG.SYS.RD
++ * See TDX ABI Spec section 3.3.2.3 Global Metadata Fields
++ */
++#define TDX_SYS_VENDOR_ID_FID		0x0800000200000000ULL
++#define TDX_SYS_MINOR_FID		0x0800000100000003ULL
++#define TDX_SYS_MAJOR_FID		0x0800000100000004ULL
++#define TDX_VENDOR_INTEL		0x8086
++
++/*
++ * The global-scope metadata field via TDG.SYS.RD TDCALL
++ */
++struct tdg_sys_info {
++	u32 vendor_id;
++	u16 major_version;
++	u16 minor_version;
++};
++
+ /* Called from __tdx_hypercall() for unrecoverable failure */
+ noinstr void __noreturn __tdx_hypercall_failed(void)
+ {
+@@ -800,6 +818,60 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
+ 	return true;
+ }
+ 
++/*
++ * Parse the tdx module version info from the global-scope metadata fields.
++ *
++ * Refer to Intel TDX Application Binary Interface (ABI) section
++ * "TDG.SYS.RD".
++ */
++static void tdg_get_sysinfo(struct tdg_sys_info *td_sys)
++{
++	u64 ret;
++	struct tdx_module_args args = {
++		.rdx = TDX_SYS_VENDOR_ID_FID,
++	};
++
++	if (!td_sys)
++		return;
++
++	memset(td_sys, 0, sizeof(struct tdg_sys_info));
++
++	/*
++	 * TDCALL leaf TDX_SYS_RD
++	 * Input Field Identifier via RDX and get the output via R8.
++	 */
++	ret = __tdcall_ret(TDX_SYS_RD, &args);
++	/*
++	 * The TDCALL TDG.SYS.RD originates from TDX version 1.5.
++	 * Treat TDCALL_INVALID_OPERAND error as TDX version 1.0.
++	 * If other errors occur, return with zero td_sys.
++	 */
++	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
++		goto version_1_0;
++	else if (ret)
++		return;
++
++	td_sys->vendor_id = (u32)args.r8;
++
++	args.rdx = TDX_SYS_MAJOR_FID;
++	__tdcall_ret(TDX_SYS_RD, &args);
++
++	td_sys->major_version = (u16)args.r8;
++
++	args.rdx = TDX_SYS_MINOR_FID;
++	__tdcall_ret(TDX_SYS_RD, &args);
++
++	td_sys->minor_version = (u16)args.r8;
++
++	return;
++
++	/* TDX 1.0 does not have the TDCALL TDG.SYS.RD */
++version_1_0:
++	td_sys->vendor_id = TDX_VENDOR_INTEL;
++	td_sys->major_version = 1;
++	td_sys->minor_version = 0;
++}
++
+ void __init tdx_early_init(void)
+ {
+ 	struct tdx_module_args args = {
+@@ -808,6 +880,7 @@ void __init tdx_early_init(void)
+ 	};
+ 	u64 cc_mask;
+ 	u32 eax, sig[3];
++	struct tdg_sys_info td_sys_info;
+ 
+ 	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2],  &sig[1]);
+ 
+@@ -867,5 +940,9 @@ void __init tdx_early_init(void)
+ 	 */
+ 	x86_cpuinit.parallel_bringup = false;
+ 
+-	pr_info("Guest detected\n");
++	tdg_get_sysinfo(&td_sys_info);
++
++	pr_info("Guest detected. TDX version:%u.%u VendorID: %x\n",
++		td_sys_info.major_version, td_sys_info.minor_version,
++		td_sys_info.vendor_id);
+ }
+diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
+index f74695dea217..d326509832e6 100644
+--- a/arch/x86/include/asm/shared/tdx.h
++++ b/arch/x86/include/asm/shared/tdx.h
+@@ -17,6 +17,7 @@
+ #define TDG_MR_REPORT			4
+ #define TDG_MEM_PAGE_ACCEPT		6
+ #define TDG_VM_WR			8
++#define TDX_SYS_RD			11
+ 
+ /* TDCS fields. To be used by TDG.VM.WR and TDG.VM.RD module calls */
+ #define TDCS_NOTIFY_ENABLES		0x9100000000000010
 -- 
-GNU/Linux Solutions                  e-mail: giometti@enneenne.com
-Linux Device Driver                          giometti@linux.it
-Embedded Systems                     phone:  +39 349 2432127
-UNIX programming                     skype:  rodolfo.giometti
+2.34.1
 
