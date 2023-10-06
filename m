@@ -2,52 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE95F7BB788
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D656B7BB766
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbjJFM1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
+        id S232177AbjJFMP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbjJFM1Q (ORCPT
+        with ESMTP id S231991AbjJFMPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:27:16 -0400
+        Fri, 6 Oct 2023 08:15:24 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903DEE9
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:27:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3600EC116A7;
-        Fri,  6 Oct 2023 12:27:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF162C2;
+        Fri,  6 Oct 2023 05:15:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52027C433C8;
+        Fri,  6 Oct 2023 12:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696595233;
-        bh=RtdMEoqo8nayEQ4k8BfxK/6NPIxdjeCli2iRVgA15Qk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l9Zm4XpqcRXxtoKBJ04/OP2WV4jBlgdVOmS+pJWo0bE4lEilHOgidYWUHIXLM6bHS
-         IzwlrGHDYYQg4jsC7LSgmgWQ/WnB4i62BF9L8muVDrWTRqsURMvOM2oJvCnWRXJ18j
-         T/ukWIQtJ/2wYXWptjfh1DluHgU7a51xfTo6oyEbnLnE/zEYEi6MRcDtKKK3NU6Pmf
-         Smm4b938sKDqReI6BKx5sOe+bwcR6RHz30msy9DW9c0slSSSq1qgmYnBnqUT7Nk8SC
-         MLIr3hBjTtrQb3W8HSoLrwcKKDQIsYQoy7HzmeArK3UUxC5lKEeUuC7UVOky8jqkC7
-         /eCzsLbTMzZAA==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Inochi Amaoto <inochiama@outlook.com>
-Subject: [PATCH v2 5/5] riscv: dts: sophgo: add Milk-V Duo board device tree
-Date:   Fri,  6 Oct 2023 20:14:49 +0800
-Message-Id: <20231006121449.721-6-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20231006121449.721-1-jszhang@kernel.org>
-References: <20231006121449.721-1-jszhang@kernel.org>
+        s=k20201202; t=1696594523;
+        bh=1PPdkbMc/MyaGwiSwvJ6nfyD8SFhjrbhkH6vIXGUf7E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jUPW4UKophvwwFf4GMEXgZF7s5oJPpS2SYkLgBXXXAI+umJUE4mCKyAm8uCiNkAEC
+         JUj5gUX9rH7CPAQzSSu+y62VuBaTOSB/TpffvfkzQG+VMilGWatfrYuKsqC5CNaV3g
+         ErPOR04B8HQCNALB5DJwHCvg8eQMJiPaDVdwgf1J4VRvHGzxYFCPE/r2HR7eWMRY+u
+         zHlMm+PF9XvZVvmJhjY2u3+0Y7j5VpwVFphTixIyT00X9wMESy2n+OflKWsz3PRRoP
+         jfqF9wJ3RNLbWuSwdzCTuQZxtX/nlumbxNFQrUwgR+0ZAI7rTRqA5ChUMLHqacier9
+         YmR/uFz0XjAEg==
+Date:   Fri, 6 Oct 2023 08:15:22 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Darren Kenny <darren.kenny@oracle.com>
+Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
+Message-ID: <ZR_6Wl_pNbdF9M-k@sashalap>
+References: <20231004175203.943277832@linuxfoundation.org>
+ <ec06c2fb-6737-489f-8439-307e0d84687b@gmail.com>
+ <2023100601-ending-prevalent-c8d4@gregkh>
+ <9fec75ba-a319-027c-6cf2-b65e703d3ce7@oracle.com>
+ <2023100610-purge-pupil-b754@gregkh>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <2023100610-purge-pupil-b754@gregkh>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -58,72 +61,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Milk-V Duo[1] board is an embedded development platform based on the
-CV1800B chip. Add minimal device tree files for the development board.
+On Fri, Oct 06, 2023 at 01:03:30PM +0200, Greg Kroah-Hartman wrote:
+>On Fri, Oct 06, 2023 at 04:07:14PM +0530, Harshit Mogalapalli wrote:
+>>
+>>
+>> On 06/10/23 3:55 pm, Greg Kroah-Hartman wrote:
+>> > On Wed, Oct 04, 2023 at 11:43:46AM -0700, Florian Fainelli wrote:
+>> > > On 10/4/23 10:53, Greg Kroah-Hartman wrote:
+>> > > > This is the start of the stable review cycle for the 5.15.134 release.
+>> > > > There are 183 patches in this series, all will be posted as a response
+>> > > > to this one.  If anyone has any issues with these being applied, please
+>> > > > let me know.
+>> > > >
+>> > > > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+>> > > > Anything received after that time might be too late.
+>> > > >
+>> > > > The whole patch series can be found in one patch at:
+>> > > > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.134-rc1.gz
+>> > > > or in the git tree and branch at:
+>> > > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+>> > > > and the diffstat can be found below.
+>> > > >
+>> > > > thanks,
+>> > > >
+>> > > > greg k-h
+>> > >
+>> > > perf fails to build with:
+>> > >
+>> > >    CC /local/users/fainelli/buildroot/output/arm/build/linux-custom/tools/perf/util/metricgroup.o
+>> > > util/metricgroup.c: In function 'metricgroup__parse_groups':
+>> > > util/metricgroup.c:1261:7: error: 'table' undeclared (first use in this
+>> > > function)
+>> > >    if (!table)
+>> > >         ^~~~~
+>> > > util/metricgroup.c:1261:7: note: each undeclared identifier is reported only
+>> > > once for each function it appears in
+>> > > make[6]: *** [/local/users/fainelli/buildroot/output/arm/build/linux-custom/tools/build/Makefile.build:97: /local/users/fainelli/buildroot/output/arm/build/linux-custom/tools/perf/util/metricgroup.o]
+>> > > Error 1
+>> > >
+>> > > caused by c1ef510a0f2a879bf29ddebae766ec9f0790eb8f ("perf metric: Return
+>> > > early if no CPU PMU table exists"). Dropping this commit allows the build to
+>> > > continue.
+>> > >
+>> > > I had reported in the previous cycle that 00facc760903be66 ("perf jevents:
+>> > > Switch build to use jevents.py") was causing build failures:
+>> > >
+>> > > https://lore.kernel.org/all/6a577578-8adb-aa70-1bf8-b1a4573152cf@gmail.com/
+>> > >
+>> > > do we still want these commits to be included?
+>> >
+>> > No, I'll go drop them now, thanks for the report.
+>>
+>> Thought:
+>> It's not the first time we see build failures in tools/perf -- would it make
+>> sense to add this to your own build tests to reduce the round trip time for
+>> these errors ?
+>
+>Last time I tried to build perf, I couldn't do it at all so I just gave
+>up trying to test for it :)
 
-Support basic uart drivers, so supports booting to a basic shell.
+Same... I've also removed perf from AUTOSEL for that reason.
 
-Link: https://milkv.io/duo [1]
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/boot/dts/sophgo/Makefile           |  2 +-
- .../boot/dts/sophgo/cv1800b-milkv-duo.dts     | 38 +++++++++++++++++++
- 2 files changed, 39 insertions(+), 1 deletion(-)
- create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-
-diff --git a/arch/riscv/boot/dts/sophgo/Makefile b/arch/riscv/boot/dts/sophgo/Makefile
-index 5a471b19df22..3fb65512c631 100644
---- a/arch/riscv/boot/dts/sophgo/Makefile
-+++ b/arch/riscv/boot/dts/sophgo/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
-+dtb-$(CONFIG_ARCH_SOPHGO) += cv1800b-milkv-duo.dtb
- dtb-$(CONFIG_ARCH_SOPHGO) += sg2042-milkv-pioneer.dtb
--
-diff --git a/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-new file mode 100644
-index 000000000000..3af9e34b3bc7
---- /dev/null
-+++ b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "cv1800b.dtsi"
-+
-+/ {
-+	model = "Milk-V Duo";
-+	compatible = "milkv,duo", "sophgo,cv1800b";
-+
-+	aliases {
-+		serial0 = &uart0;
-+		serial1 = &uart1;
-+		serial2 = &uart2;
-+		serial3 = &uart3;
-+		serial4 = &uart4;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x80000000 0x3f40000>;
-+	};
-+};
-+
-+&osc {
-+	clock-frequency = <25000000>;
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
 -- 
-2.40.1
-
+Thanks,
+Sasha
