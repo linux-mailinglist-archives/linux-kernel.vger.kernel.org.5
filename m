@@ -2,125 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE7F7BC113
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F387BC114
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbjJFVSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 17:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
+        id S233571AbjJFVU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 17:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233668AbjJFVSU (ORCPT
+        with ESMTP id S233426AbjJFVUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 17:18:20 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E186C6
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 14:18:17 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso4788273a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 14:18:17 -0700 (PDT)
+        Fri, 6 Oct 2023 17:20:55 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BFDBD
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 14:20:54 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c6052422acso17195ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 14:20:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696627096; x=1697231896; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rE6IA6B4Hk+nEgMBtJ3IL8NSuwYtGuuvfoDejoBxhNA=;
-        b=ELkzPuYDJa9YtyMw7s6sdEqMpJyViFfBdJgiT5UujJoh5YP7u315Otkp4UoN6uSMfZ
-         rj6hAOQxwFDg9uXFTgc0WXZYdg3FwCuTFzjnMRt5j+pPDok1Fa3J+UYzxjpd4u2+ZlhS
-         9YokyGrUVR6Zs8TwIf8Mnpcroguetm/896JwOfxHRINVbxntkhQWy0gh1jCWfb63QYDX
-         ymtaAV3R7o79Nt2BxR1V4LYOw01Rm4F+E5c+mjXuwewmg+garn+UMsPua/8jO1pNVvrI
-         mMI3Dl5H6XADcvn7dhomfLbV6xxktof7b3OoaNSDqJirVp1X8vZfkEnD+5NE6F1SkFkd
-         M5Ug==
+        d=google.com; s=20230601; t=1696627254; x=1697232054; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BZRgIGFg6lrUN9pglRmXEYe1by1YmD9hFDYRcGyMRWM=;
+        b=j7fF7mFceD6RgxzGOFhwq7fWZq+X1wz3sjlsKGI7HZ+deWRJlIe36bcwmeCCL7Zyw5
+         pwMcNeVDZm1O9VQEl5y5/5Lc4mssRQVKDqcuAGJy/0qYY1ohzuVb6OFgenfcoMdTiiXX
+         rsGALM96Z9J77syyJ7sWwL+/knlvhbhNh9Go2BDUTChJZo5qkeUan50wXB9divFj9s/U
+         uK7nisnz6l58QRM9t8Uz65/vROWH1UZVOlXwXWWcta4ODlAygzBOfHtHn0dTlO6Z4c7o
+         VJ9PJyPz5wJnSNbn/0zt/i01bxwavvzULIUGrz6sAJpNjQocpj/u7iV//CTM3LbGtiXK
+         v9dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696627096; x=1697231896;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rE6IA6B4Hk+nEgMBtJ3IL8NSuwYtGuuvfoDejoBxhNA=;
-        b=Pc4I8y8s3ImIfZOTyxT9OOAg09wD8CNzy1sAlEYs//RRZ88Q7gCDWeAkQvI4q4HxfR
-         69SZgB3NAULs43kv1maH17sn3RlnLuG5k5s1eJQJgCyzAvwKuJhp3aLm+SmqepdwhFbc
-         /4vWvzYIX61tOdVqXA4yyRM+QEbdfgzlAspj6eDGgc/7jeOatqJjn+I0b6UHK8f9uPf7
-         5cwB1fHqJhwpIKGgaNecx81wetV5RCZbDE/A1+aR+viBipuAXrWtvpQ1gIMIZGExyanl
-         wN8zn5yKxah5djI7JrV893piPVcTi64OR6jOQfLlAac1XsTNPM4/x4/WVCMd8cK8CfX0
-         epLw==
-X-Gm-Message-State: AOJu0Yw5lVTfpOKfyigSKT05ZWQacv5d3rAZVVBKJDMTi53t+CsG8Xyn
-        zQMpdDFsS5LrXNPhcL+9ID4QwQ==
-X-Google-Smtp-Source: AGHT+IGC1GkIF4UV1EaBGdW8g6NhNjSpnkIFu0AaBDuyP8/lR2hB9lyN/P04HvTvDKc+J7sPzxGOOg==
-X-Received: by 2002:a17:906:57:b0:99c:c50f:7fb4 with SMTP id 23-20020a170906005700b0099cc50f7fb4mr7899723ejg.1.1696627096205;
-        Fri, 06 Oct 2023 14:18:16 -0700 (PDT)
-Received: from [192.168.200.140] (178235177147.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.147])
-        by smtp.gmail.com with ESMTPSA id ca9-20020a170906a3c900b009ae587ce128sm3414983ejb.216.2023.10.06.14.18.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 14:18:15 -0700 (PDT)
-Message-ID: <bec0bb75-7584-4a9d-8d8b-957044bbf009@linaro.org>
-Date:   Fri, 6 Oct 2023 23:18:14 +0200
+        d=1e100.net; s=20230601; t=1696627254; x=1697232054;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BZRgIGFg6lrUN9pglRmXEYe1by1YmD9hFDYRcGyMRWM=;
+        b=uVWu9eqjBsCsiICapiVqJ4AC9ermOGnYi7tZyR2lgIPw/Ec5O+Pl0LrMfufn7nRmIQ
+         HUKaNvZjZcQ+nQeYCdyBb1XHjyfVg+Ieko7QPECligrJqhC9FTzxd82zqmGNUlken0Ph
+         zbwTX2gujKRguOM2XRlu9OSMiS5fWlXp1cuL3qGOG3Pubux4x4XFQK01x7z1H5CcWx1L
+         mMmt+oY5eaaVpfQf/rcQadlqklqXEDkRqZBFbWlNeZYkR9CjjH0F5VdOnosPW1eoB4xO
+         3BxdAIWQ3qxuAsXnU0xKXbC6Dk3RewZmCaXkHpv4caExQfNf6Gdz+00oK+MXR7BTgZgx
+         MSCw==
+X-Gm-Message-State: AOJu0YxF4NM99HDn9WKWog+p3vgHTE5Mi/ojp6xHpmLdtNMgaR83JwC+
+        D3Anr7Ievmc2CE3ckPTGc7Ty1lbnX6IZGei7HlR/gQ==
+X-Google-Smtp-Source: AGHT+IFRXnwR6+2izIzyd4/tJlEcGO7lkAPGqEz8k5mxPrZ0LnKvdCzE6En1ZR9p/UpNPrwh1Z7tKglSCNugUDVsp9E=
+X-Received: by 2002:a17:902:ea03:b0:1c8:9a60:388b with SMTP id
+ s3-20020a170902ea0300b001c89a60388bmr74493plg.27.1696627253422; Fri, 06 Oct
+ 2023 14:20:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/3] PCI: tegra194: Use Mbps_to_icc() macro for setting
- icc speed
-Content-Language: en-US
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        lpieralisi@kernel.org, kw@linux.com
-Cc:     andersson@kernel.org, bhelgaas@google.com,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, abel.vesa@linaro.org,
-        Vidya Sagar <vidyas@nvidia.com>
-References: <20231004164430.39662-1-manivannan.sadhasivam@linaro.org>
- <20231004164430.39662-3-manivannan.sadhasivam@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231004164430.39662-3-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231005161727.1855004-1-joel@joelfernandes.org> <98d06022-accd-a1df-7608-dcd6689b44ec@linux.vnet.ibm.com>
+In-Reply-To: <98d06022-accd-a1df-7608-dcd6689b44ec@linux.vnet.ibm.com>
+From:   Vineeth Pillai <vineethrp@google.com>
+Date:   Fri, 6 Oct 2023 17:20:41 -0400
+Message-ID: <CA+HDTgSnab1eTWkFX-E9Yjvd8R3Apw4PyqbBHnYYg246Va1zYA@mail.gmail.com>
+Subject: Re: [PATCH RFC] sched/fair: Avoid unnecessary IPIs for ILB
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Hsin Yi <hsinyi@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4.10.2023 18:44, Manivannan Sadhasivam wrote:
-> PCIe speed returned by the PCIE_SPEED2MBS_ENC() macro is in Mbps. So
-> instead of converting it to MBps explicitly and using the MBps_to_icc()
-> macro, let's use the Mbps_to_icc() macro to pass the value directly.
-> 
-> Cc: Vidya Sagar <vidyas@nvidia.com>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Hi Shrikanth,
 
-Konrad
+> Hi Joel/Vineeth.
+>
+> Its an interesting patch.
+>
+> Gave this patch a try on powerpc system with 96 CPU. (12 cores SMT8)
+> Was debugging an issue where ILB count goes up significantly at a specific
+> busy CPU count. Haven't yet found out why. Its WIP. Was curious if this patch
+> would address that issue.
+>
+Increased SCHED_SOFTIRQ was another problem that we noticed and we
+have a separate fix for that in the chromeos tree. We were planning to
+send the patch after a bit more testing. You could try the patch and
+see if it solves the problem that you are seeing:
+https://chromium.googlesource.com/chromiumos/third_party/kernel/+/918f229ba2ff720f5dfae4768469acbb6ea39fe2
+
+Thanks
