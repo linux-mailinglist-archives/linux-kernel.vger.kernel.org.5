@@ -2,234 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB2E7BB895
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632277BB89F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbjJFNHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50316 "EHLO
+        id S232354AbjJFNJF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 09:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbjJFNG5 (ORCPT
+        with ESMTP id S232349AbjJFNI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:06:57 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2045.outbound.protection.outlook.com [40.107.94.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B7483;
-        Fri,  6 Oct 2023 06:06:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RVjIKgKMMRahQnwFhWAq1XUVfKgT4Xx7+7t/31t8KR7ZTJnCt++0B7Gjh3QxqacRlYXaV4YzkD/usvhwkuuWMr3z10/QF3rCrQz7FevsFIpJdyElCrovP+wM3hpNnZMrsAapQFsZ9UKfYG/1qdDo8IEFpX0S5L9wxDova3YeSKesMgamijNOpBF8isTzqQ8CcX/cpDDl4zY+ss9UjlYq24Yvpj3hhk3rH535AKQMccE7edtqhkgZbTZBpbLqoeNyroMivI3Ah1+gnlGqEmLWylVeKaCIZPHXy05V4JDnIobX54z0Dx+pLd4zy3ybR8lI/KmDgsfJ2iICrzX8yjbedw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lPTIV5DY86LBxAqGFwEWwsqWQwez+QCW4Ri052boiXY=;
- b=jobI5ExxJMz/5j0iZ+JL54DwFPYkCFUWv72gHD/1gWRjTfLbRYI3OdQBK8sFy5YIRbm5M8pIsKGTnBhcq37zX9esLm29zKsUCPtc9JHCTcNheUMUIPJQmZK4zIPUEs0r2p8R40MxTHTLVOBLGzP4ILexu8KsogO9IJ6WZ30qSy8j8BM73H8TbdATSdL76YP+0zgn0f7FgUyeFfFChY3gCLVWCDi/Fcm79Btd0EOONcJmYevfIfAJykL18lPBQsDToYQlWR/IyixPZ1qKOw8BSvF2AjghG+7fYGxpWDUjEVVE5uIi9EiMgbTD/3UOx2FKIO4hH34rYmLYjtSDx02kKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lPTIV5DY86LBxAqGFwEWwsqWQwez+QCW4Ri052boiXY=;
- b=3ZJBF7XWkz2eI0MLhYQT/wHVsTi8vjupEBFhXm+T+lvROSxdzhv9I7smTTnNKfvcaAlsPp5X4tvLgOAWN2vI7ScDYdv3THa4MrzLhNG/OubVc6IPG7uy10LAEt66gMgXps/14YdC304KKdLbcdEVM7P5t5jfgMzpsXkrgwRaHKE=
-Received: from BL0PR12MB4673.namprd12.prod.outlook.com (2603:10b6:207:1d::16)
- by DM4PR12MB5215.namprd12.prod.outlook.com (2603:10b6:5:397::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.38; Fri, 6 Oct
- 2023 13:06:53 +0000
-Received: from BL0PR12MB4673.namprd12.prod.outlook.com
- ([fe80::262d:85ff:ef23:629e]) by BL0PR12MB4673.namprd12.prod.outlook.com
- ([fe80::262d:85ff:ef23:629e%7]) with mapi id 15.20.6838.033; Fri, 6 Oct 2023
- 13:06:53 +0000
-From:   "Sridharan, Vilas" <Vilas.Sridharan@amd.com>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        David Rientjes <rientjes@google.com>
-CC:     Jiaqi Yan <jiaqiyan@google.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Grimm, Jon" <Jon.Grimm@amd.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "linuxarm@huawei.com" <linuxarm@huawei.com>,
-        "shiju.jose@huawei.com" <shiju.jose@huawei.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "jthoughton@google.com" <jthoughton@google.com>,
-        "somasundaram.a@hpe.com" <somasundaram.a@hpe.com>,
-        "erdemaktas@google.com" <erdemaktas@google.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "duenwen@google.com" <duenwen@google.com>,
-        "mike.malvestuto@intel.com" <mike.malvestuto@intel.com>,
-        "gthelen@google.com" <gthelen@google.com>,
-        "tanxiaofei@huawei.com" <tanxiaofei@huawei.com>,
-        "prime.zeng@hisilicon.com" <prime.zeng@hisilicon.com>
-Subject: RE: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries
- for set of scrub attributes
-Thread-Topic: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries
- for set of scrub attributes
-Thread-Index: AQHZ5/onsXhE7XQ22EC/SjWOQvHCtrAmAXoAgACrR4CACRvJAIAK3KYAgAI1jgCAAACIEA==
-Date:   Fri, 6 Oct 2023 13:06:53 +0000
-Message-ID: <BL0PR12MB4673F5E024B62D64B065DBE4EAC9A@BL0PR12MB4673.namprd12.prod.outlook.com>
-References: <20230915172818.761-1-shiju.jose@huawei.com>
-        <20230915172818.761-3-shiju.jose@huawei.com>
-        <CACw3F50jRzJnr9h7qYyD3t+6h7Uw9QMfkCkgu7a=7Lv0Tpi8Zg@mail.gmail.com>
-        <20230922111740.000046d7@huawei.com>
-        <CACw3F539gZc0FoJLo6VvYSyZmeWZ3Pbec7AzsH+MYUJJNzQbUQ@mail.gmail.com>
-        <92f48c1c-3235-49b2-aabd-7da87ad3febc@google.com>
- <20231006140224.000018a2@Huawei.com>
-In-Reply-To: <20231006140224.000018a2@Huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=32d725df-ef94-48ef-a0c4-06f7ed44c8b0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-10-06T13:04:17Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL0PR12MB4673:EE_|DM4PR12MB5215:EE_
-x-ms-office365-filtering-correlation-id: 92c18997-d812-4feb-76ba-08dbc66d1c87
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: upMNeObUF+tvIY3GWKL4xYyoqOjc9WXD9lr/DlwkcCa5sfbLbPuYXNPHnv54mhyb3aS10XztCZhPHIEXyqZrx76Fhq8Cizj6xnU19jS1QTbSzNzNve2MQWtuEL02Jeoq51GzrtlrYjKj3BQswOkmR1AcwAbV4tbYWwDoOzU2B72fyP/y4z6TBXjSudT/uWcREdmCGDEkjby8CbL3MH7VesbLWREFp7r8kiuwVCSiRSPZu9Q84uqO3ZASVN5hjlgJDN0bH0+9sKZs+Uvo835MkKcSL9MuA4EXPcFZx9mu/3appF9yH0miTIz51WIJHs/gSUgowh3AOt47aGtIVZtioTtObGp/baTX+Wt5wMRhe3Vi7gSBSQTmBlrHRD8WCoy7SG5RYov4OnJrWXNTLs9nEu3X/HXxPx7NBIFcbzxP6GFe6t1elQ25HXXN8oyQ7DxFlENy3oi7PE1wKMPiLewZ4FR/IeeWZI/cdazRZgbgzNETUCEOiQcf4g31WJRPiDo5pujQrS5AhB7iTAcMR+NBniwakhsqCYLlJY5eyfz4WMQYTd59IwDdFqMDFTwAUjB7dCzoA/5JyFCSI8wjopUuCxmx6QgKmCJd756/P+VhFIF4Kw3sp3LeVJQxwnRDUlFo
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4673.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(376002)(136003)(396003)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(53546011)(8936002)(66899024)(52536014)(55016003)(5660300002)(83380400001)(7416002)(122000001)(2906002)(38070700005)(86362001)(33656002)(38100700002)(8676002)(4326008)(66476007)(66446008)(478600001)(110136005)(66946007)(76116006)(54906003)(64756008)(66556008)(316002)(9686003)(41300700001)(7696005)(6506007)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VEenSy1xg8Q3b2xFTFLprF6nHTCOgs82amEkDxnymuakve1MgADnrWowGCue?=
- =?us-ascii?Q?zZSJygq2GscfIlb8a+ug8K8IlXhH81781WyJT/y1iHoUpIMrW+BsdXy25xYN?=
- =?us-ascii?Q?LEdnwgABBVWDqIPYxfLKulZxSdaWxtzqqEOQDjs10G0OHMJcNU0g0LaL1mJP?=
- =?us-ascii?Q?SR2+BgvnzB6VHVHFvKVmsd0SQBSdXRHNZxcZ/8U5meZXvkzIshvqI0aDz8e9?=
- =?us-ascii?Q?/Oh6aQIxRUbLQzPIY/AiU2Vd56FcUs90tG8fPs2XlSA621S4fmGvzSfQt2JK?=
- =?us-ascii?Q?/k6eD3LMuMdVUpE70HTveu/wulwL9slUUPHfeqPs1eDSf/G+AuGOJARmljaN?=
- =?us-ascii?Q?dcPvEkImQZYp9E7de1gMRX85qjVTOeUnxwiNPQUHswAFKvGW34jYYG0pqn7s?=
- =?us-ascii?Q?uBVLg4gJ/bh354A73ptyrdfJERhH/xD+H+VM+mi2HqbvZJcIKOrydf9kYR2O?=
- =?us-ascii?Q?P7/3ivFQh0p4vQcm4k3JB/ovOhg8klPDigF0m2G5F+i49GfL5gFHygvZNQUJ?=
- =?us-ascii?Q?nVJJWVXV3g9UdHw2W2LeAWHKT8B8pvQ38ipmrtu76KuLouFK18NaDW+LFiww?=
- =?us-ascii?Q?B1xc08IEt4CVj+FluwlyJb0sg3uc67gXciEEsq2I/nhMUqWkF8MrewgHxpM5?=
- =?us-ascii?Q?X1AuT52wXC+0Jo+jw3LaiOFciDD8FfBeN/v7dLYb0nhf777dhBe/ZpS5GZka?=
- =?us-ascii?Q?1gUtuUzlcofDnFdLs6Oj1h4UpfNJ4iylu6oT9nV9RB43ujub1Nlf3U3MOKq3?=
- =?us-ascii?Q?NWNuecaSW5Mqu7JF5LQdN8NP6GR+Jxdy0XwWIJGZSMvvHFieVckC8m+YMiLL?=
- =?us-ascii?Q?7T2tlq5Sjrj8cjBd+uVNpXRHpY5VHFmTiH+AXHSPqR5qtubhVjdpnP9Rhilr?=
- =?us-ascii?Q?NrZ9q8B18rPUEBS3oODGMZUgsWOrUIKk88KoocARucLyxJvNkSXTQKJkdmGK?=
- =?us-ascii?Q?1vWjnu37wzCrHI7YoLAtWZbSGqMaUBV99fMMwHVQfUWGxndsPqVbIOfpVwoX?=
- =?us-ascii?Q?OrN9el6STjyFYJRfx2V90jlknqA40K9QBDdJ+R/NGNtgzbMVvVWjcTjumn8C?=
- =?us-ascii?Q?a5c5zNaduJswVSaKHNss75jaZlycmrfo2Xrhz/KbTv65tyzvdWMn5cO80Ggn?=
- =?us-ascii?Q?zn8qTsufuV1uzdCT3lyNj6N8J/hKAVBEIyihnwkj3elv3xK1E0UpkV5LE56b?=
- =?us-ascii?Q?varPBT2W6GdbpHTSv3xXhNNoaqkqTXRnwjvjNzH1IpFSnrpURCXqnkKCnmLn?=
- =?us-ascii?Q?fpE0L97rH6LrNOP2HSZSUdHNXmiqId1zQkgZG3E6nmN2q7s1bc+6dGw7aJst?=
- =?us-ascii?Q?4nxrGlo6rK50cMDH+HumBunul8x5UgFHYtdkhjtXr2a62j6s0K+qBc9E3Hmw?=
- =?us-ascii?Q?eCMkMcwIX+SpmTYZHYEuufc41fDeK9Lo8RrTPww8Div7KKYAIIsxIgjWzi1d?=
- =?us-ascii?Q?xu6KUA/NilBicMdNp6iegrk0NH7ABJyJw1ibb2KbLsNu/HtntYuJbxSLaWNy?=
- =?us-ascii?Q?iCTXuhy3bKBp+jE5RqKrsvUx//9+gXpF9TIylZDtJv2SLs1Dm9UKYifjnQ?=
- =?us-ascii?Q?=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 6 Oct 2023 09:08:56 -0400
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343D583;
+        Fri,  6 Oct 2023 06:08:53 -0700 (PDT)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 84AE982D45;
+        Fri,  6 Oct 2023 15:08:50 +0200 (CEST)
+From:   Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Helge Deller <deller@gmx.de>, Karel Balej <balejk@matfyz.cz>,
+        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 1/2] dt-bindings: backlight: add Kinetic KTD2801 binding
+Date:   Fri, 06 Oct 2023 15:08:42 +0200
+Message-ID: <5984411.lOV4Wx5bFT@radijator>
+In-Reply-To: <20231006123014.GA96854@aspen.lan>
+References: <20231005-ktd2801-v1-0-43cd85b0629a@skole.hr>
+ <20231005-ktd2801-v1-1-43cd85b0629a@skole.hr>
+ <20231006123014.GA96854@aspen.lan>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4673.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 92c18997-d812-4feb-76ba-08dbc66d1c87
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2023 13:06:53.5039
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qfGzF7i0MjGDzFwSkYsZ6O/gz2gkwp9yqoRoEaF3so2m58b2GQexuqP/NU8XgSd0Jre1QE71FxqG92e22kB9RQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5215
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Autocrypt: addr=duje.mihanovic@skole.hr;
+ keydata=
+ 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
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only - General]
+On Friday, October 6, 2023 2:30:14 PM CEST Daniel Thompson wrote:
+> On Thu, Oct 05, 2023 at 08:49:08PM +0200, Duje Mihanović wrote:
+> > +  enable-gpios:
+> > +    maxItems: 1
+> 
+> Why "enable"? This is the line we are going to us to bitbang the
+> ExpressWire protocol. Doesn't that make it a control or data pin?
 
-I do not believe AMD has implemented RASF/RAS2 at all.
+I named it "enable" because the KTD253 driver does so too, but also because 
+that pin is also used to power down the IC. If "enable" isn't right 
+regardless, is just "gpios" fine for this?
 
-We are looking at it, but our initial impression is that it is insufficient=
-ly flexible for general use. (Not just for this feature, but for others in =
-the future.)
+Regards,
+Duje
 
-    -Vilas
-
------Original Message-----
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Sent: Friday, October 6, 2023 9:02 AM
-To: David Rientjes <rientjes@google.com>
-Cc: Jiaqi Yan <jiaqiyan@google.com>; Luck, Tony <tony.luck@intel.com>; Grim=
-m, Jon <Jon.Grimm@amd.com>; dave.hansen@linux.intel.com; Sridharan, Vilas <=
-Vilas.Sridharan@amd.com>; linuxarm@huawei.com; shiju.jose@huawei.com; linux=
--acpi@vger.kernel.org; linux-mm@kvack.org; linux-kernel@vger.kernel.org; ra=
-fael@kernel.org; lenb@kernel.org; naoya.horiguchi@nec.com; james.morse@arm.=
-com; david@redhat.com; jthoughton@google.com; somasundaram.a@hpe.com; erdem=
-aktas@google.com; pgonda@google.com; duenwen@google.com; mike.malvestuto@in=
-tel.com; gthelen@google.com; tanxiaofei@huawei.com; prime.zeng@hisilicon.co=
-m
-Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entrie=
-s for set of scrub attributes
-
-Caution: This message originated from an External Source. Use proper cautio=
-n when opening attachments, clicking links, or responding.
-
-
-On Wed, 4 Oct 2023 20:18:12 -0700 (PDT)
-David Rientjes <rientjes@google.com> wrote:
-
-> On Wed, 27 Sep 2023, Jiaqi Yan wrote:
->
-> > > > 1. I am not aware of any chip/platform hardware that implemented
-> > > > the hw ps part defined in ACPI RASF/RAS2 spec. So I am curious
-> > > > what the RAS experts from different hardware vendors think about
-> > > > this. For example, Tony and Dave from Intel, Jon and Vilas from
-> > > > AMD. Is there any hardware platform (if allowed to disclose)
-> > > > that implemented ACPI RASF/RAS2? If so, will vendors continue to
-> > > > support the control of patrol scrubber using the ACPI spec? If
-> > > > not (as Tony said in [1], will the vendor consider starting some fu=
-ture platform?
-> > > >
-> > > > If we are unlikely to get the vendor support, creating this ACPI
-> > > > specific sysfs API (and the driver implementations) in Linux
-> > > > seems to have limited meaning.
-> > >
-> > > There is a bit of a chicken and egg problem here. Until there is
-> > > reasonable support in kernel (or it looks like there will be),
-> > > BIOS teams push back on a requirement to add the tables.
-> > > I'd encourage no one to bother with RASF - RAS2 is much less
-> > > ambiguous.
-> >
-> > Here mainly to re-ping folks from Intel (Tony and Dave)  and AMD
-> > (Jon and Vilas) for your opinion on RAS2.
-> >
->
-> We'll need to know from vendors, ideally at minimum from both Intel
-> and AMD, whether RAS2 is the long-term vision here.  Nothing is set in
-> stone, of course, but deciding whether RAS2 is the standard that we
-> should be rallying around will help to guide future development
-> including in the kernel.
->
-> If RAS2 is insufficient for future use cases or we would need to
-> support multiple implementations in the kernel for configuring the
-> patrol scrubber depending on vendor, that's great feedback to have.
->
-> I'd much rather focus on implementing something in the kernel that we
-> have some clarity about the vendors supporting, especially when it
-> comes with user visible interfaces, as opposed to something that may
-> not be used long term.  I think that's a fair ask and that vendor
-> feedback is required here?
-
-Agreed and happy to have feedback from Intel and AMD + all the other CPU ve=
-ndors who make use of ACPI + all the OEMs who add stuff well beyond what In=
-tel and AMD tell them to :)  I'll just note a lot of the ACPI support in th=
-e kernel covers stuff not used on mainstream x86 platforms because they are=
- doing something custom and we didn't want 2 + X custom implementations...
-
-Some other interfaces for scrub control (beyond existing embedded ones) wil=
-l surface in the next few months where RAS2 is not appropriate.
-
-Jonathan
 
 
