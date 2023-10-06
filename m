@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E68BF7BBF7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14F17BBF7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233381AbjJFTFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 15:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
+        id S233394AbjJFTFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 15:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbjJFTFO (ORCPT
+        with ESMTP id S233376AbjJFTFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 15:05:14 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F099DF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:05:11 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ae65c0e46fso98998366b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:05:11 -0700 (PDT)
+        Fri, 6 Oct 2023 15:05:20 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60160ED
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:05:18 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5221bd8f62eso777124a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:05:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696619109; x=1697223909; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696619117; x=1697223917; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=frWFn5a7WskkCNBBns5qHFEWZyzl6mTq0HND4RnFXso=;
-        b=mwVDpUvxDlAVx81FARIDNZ6YeAJXsET5mQygZV42hsVULI+tnRewgM8ndkhttzhhuR
-         APSErj734lGk8yzUY3mVqSjI41/C/mk6ca5LQIgNUvVm2gVRgmJgDPp6DrRBMjcTtmpz
-         w0e8+mxbsuOHqVF4r0UqHB9DiTKpjIIElzHj/0XKOBFQ9Mpnw0k6kS1tHxDRey4L/92X
-         kyFueZ7F0iARtPj6+R2aQj41HTJVdqV5nZMLuJJAFAgcWLETKDRKxjwwKWYl0fC7diVk
-         qhNfWCQQ3yKd5Yq77aQXjlDrZjY9DVQHBJgoSuN3iUALoavoQfTo8ftQX3uod/uRNmBV
-         WWWw==
+        bh=L+5/W8zfr89+jzPHersBFwpSIge2gJvw1XUex3kLRTw=;
+        b=RxffgPUq5lYECZajZM5GZzWgLAQiD9CInxzvBr7WLR84wSgJu3VRkIHFnOpG8am7Z0
+         lLeMwifdSsEXnssAYjsG+jK87MtzNNXfqV2jQMh9ViSneh1CSoHs914xSCS5CEVKhlAq
+         GwuRKMLksIlKNZG6SlYGH/V8KKSvQLotzME6Py+o2xVngWaGiTN7m/Rs5QzmnwIe9SDC
+         IYlzX8FXzxOaCJb1pACHTYTVbVbpOjmlBguRhT64/7d+smteRdfQ7nvtnsvjq1sQ4r6u
+         JditJADJ8Y5lFntpJs+wrGzpZ0mDEkQIhiuGda1X5JYt/JD0YUJukWKLZ+DMHK0b358L
+         XhrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696619109; x=1697223909;
+        d=1e100.net; s=20230601; t=1696619117; x=1697223917;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=frWFn5a7WskkCNBBns5qHFEWZyzl6mTq0HND4RnFXso=;
-        b=cpU6u6L5yjeeqYvqoEgUIDnir3+DLqm78S7REP6v/vVHqozFxz2QV7zY0Ze8E5opkR
-         llsvXDp5FUwVN9dHxC2XqI44ulZ7P/oyvPRkX1aKIoo1bGqiDDobyRfo8NjI1/OkwEkf
-         /dQnXvfrKTZqCMwOUFVwokrItcvMNsoPH09xnKPOKHFdXZlTyh0lMPEzDxPBmOWOcFGG
-         I+lgO71dE7x7yr7Ighl6Y/JgTWozqgE4kmqr0r8aNFE1z+Y3hM8IGtRyDM4D1bkopzR4
-         wsqJmUlx4z21zFjLTfm4UDP5jMM8KTuiuaYqsyPFwPmMAtWtuOkjGBHVzweu2zE8LseL
-         QlVA==
-X-Gm-Message-State: AOJu0Yy+hdtIA2z8FcKd0nf+pcWf5q5itI2p67IR9s111QSRz5JEGkg0
-        XmlvN2HKY35bdJ+bqkPwFJY=
-X-Google-Smtp-Source: AGHT+IElU1Lkaos/3KQRc7F70agUsD4OHvfRx5rL1+pRjH3SdB3TUUx/0dLm38nyPZ2EAbQLkb8how==
-X-Received: by 2002:a17:906:2255:b0:9a1:be9b:c935 with SMTP id 21-20020a170906225500b009a1be9bc935mr7672676ejr.0.1696619109546;
-        Fri, 06 Oct 2023 12:05:09 -0700 (PDT)
+        bh=L+5/W8zfr89+jzPHersBFwpSIge2gJvw1XUex3kLRTw=;
+        b=PKsHT40cUJAXdkTSUJjEjq98evCT5NcqEpc8C5rLb+56Dm/Q/X0DB3oYjCGeiRZGMo
+         qLf1OHNpChRxMJpBK7tpcrJSkD0LTGZd4X3jZtC72eO6BwCJenyy7khnhr2WYvmxtFDY
+         Z2RvFt5FkeDs5i/dPIA1xKu5sRhTq3lXhDetPtgWj9Nz/CdeaOepUiXbihwu2bT4XLkm
+         BcTdCcRj6bmseCIUGkLFt2NJrmzdu29UOlIdcdGSPiX8oMvBYmKfupVmyzJzqLRBeRBN
+         ktCde2N4w8FAGBAosiKL/H+ZfRsdgDbIpNb6tutLMxD4U2Ne2PCRFj6gmKVq51RfUKX6
+         Lleg==
+X-Gm-Message-State: AOJu0YxocEBAXJCFQFQzb9ZyuzXrJVTR8GA0zllSxjOqOidAejypQ8pO
+        ouEU9ychEh0BBAkP//Xr7sg=
+X-Google-Smtp-Source: AGHT+IEvANf54FpArnQMlxmNuMfePdWnNr1sJEIJQOKWvwvG7U+yoh110mg1nWK9jpRaYXH9ABew8g==
+X-Received: by 2002:a05:6402:524a:b0:530:8a69:c6da with SMTP id t10-20020a056402524a00b005308a69c6damr7326575edd.4.1696619116810;
+        Fri, 06 Oct 2023 12:05:16 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id lf8-20020a170906ae4800b00992e14af9c3sm3326901ejb.143.2023.10.06.12.05.09
+        by smtp.gmail.com with ESMTPSA id r19-20020a056402035300b00522828d438csm2993147edw.7.2023.10.06.12.05.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 12:05:09 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 21:05:07 +0200
+        Fri, 06 Oct 2023 12:05:16 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 21:05:14 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 05/10] staging: rtl8192e: Remove constant variable ps_force
-Message-ID: <ecebc90415c202e4e465bfb5b10c54be8b42e684.1696548527.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 06/10] staging: rtl8192e: Remove function
+ _rtl92e_wx_set_scan_type()
+Message-ID: <8a0ce95447dbd736e3aeec5f7aa0e997f916b7d8.1696548527.git.philipp.g.hortmann@gmail.com>
 References: <cover.1696548527.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -70,41 +71,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove constant variable ps_force as its value is always 0. The equation
-results accordingly. Remove dead code.
+Remove function _rtl92e_wx_set_scan_type() as this functionality is not
+commonly used and the tool to access it is deprecated.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_core.h | 1 -
- drivers/staging/rtl8192e/rtl8192e/rtl_ps.c   | 3 +--
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ drivers/staging/rtl8192e/rtl8192e/rtl_wx.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-index 4b2ee1684dac..d4e998cfbefc 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-@@ -263,7 +263,6 @@ struct r8192_priv {
- 	short	promisc;
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+index 27309df925ba..d4d8d66df82c 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+@@ -627,22 +627,6 @@ static int _rtl92e_wx_set_enc(struct net_device *dev,
+ 	return ret;
+ }
  
- 	short	chan;
--	bool ps_force;
+-static int _rtl92e_wx_set_scan_type(struct net_device *dev,
+-				    struct iw_request_info *aa,
+-				    union iwreq_data *wrqu, char *p)
+-{
+-	struct r8192_priv *priv = rtllib_priv(dev);
+-	int *parms = (int *)p;
+-	int mode = parms[0];
+-
+-	if (priv->hw_radio_off)
+-		return 0;
+-
+-	priv->rtllib->active_scan = mode;
+-
+-	return 1;
+-}
+-
+ #define R8192_MAX_RETRY 255
+ static int _rtl92e_wx_set_retry(struct net_device *dev,
+ 				struct iw_request_info *info,
+@@ -896,16 +880,12 @@ static const struct iw_priv_args r8192_private_args[] = {
+ 	{
+ 		SIOCIWFIRSTPRIV + 0x0,
+ 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "set_debugflag"
+-	}, {
+-		SIOCIWFIRSTPRIV + 0x1,
+-		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "activescan"
+ 	}
  
- 	u32 irq_mask[2];
+ };
  
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_ps.c b/drivers/staging/rtl8192e/rtl8192e/rtl_ps.c
-index a4da11627199..44a9fe831849 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_ps.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_ps.c
-@@ -181,8 +181,7 @@ static bool _rtl92e_ps_set_mode(struct net_device *dev, u8 rtPsMode)
- {
- 	struct r8192_priv *priv = rtllib_priv(dev);
+ static iw_handler r8192_private_handler[] = {
+ 	(iw_handler)_rtl92e_wx_set_debug,   /*SIOCIWSECONDPRIV*/
+-	(iw_handler)_rtl92e_wx_set_scan_type,
+ };
  
--	if (!priv->ps_force)
--		priv->rtllib->ps = rtPsMode;
-+	priv->rtllib->ps = rtPsMode;
- 	if (priv->rtllib->sta_sleep != LPS_IS_WAKE &&
- 	    rtPsMode == RTLLIB_PS_DISABLED) {
- 		unsigned long flags;
+ static struct iw_statistics *_rtl92e_get_wireless_stats(struct net_device *dev)
 -- 
 2.42.0
 
