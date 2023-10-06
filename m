@@ -2,130 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6047BC10F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE7F7BC113
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbjJFVSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 17:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52806 "EHLO
+        id S233624AbjJFVSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 17:18:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233678AbjJFVR7 (ORCPT
+        with ESMTP id S233668AbjJFVSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 17:17:59 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D015EA
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 14:17:57 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-56c306471ccso1995314a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 14:17:57 -0700 (PDT)
+        Fri, 6 Oct 2023 17:18:20 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E186C6
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 14:18:17 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso4788273a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 14:18:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696627076; x=1697231876; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z8YyZNdSqKiy5DzZ/PIG6aNvb3OwzQTDwFSCpe0do0I=;
-        b=HfrIIaaeG6ZvdsF5OrF+ECo8MaHyzuchjI1AMOtJwDfiR+5av1Hs68gj1ZcNWLXTnk
-         jAk8cSEMYWr+7C2fRmFbadWnotGqYKgpOMRcy9LAKW3vzruv89qoLob8/YX3lSzwKWQw
-         HdckU35LLE9t/ogFw8/vBM/afrJ4VBsgL6vhr5VIPWDNc/E2l1h+uSAYwhZvPR3kaEzi
-         sn4RUx60bVtkWMJiB2dsHiSgtt10+h6HGFMf9oj2qlQnWsNNL0fDqb0QDtv1fSWJiU91
-         w77WpllBCrYQH7SCkXEZfRV6VaJkV/ZgKged5gmO1oDVHUvPVxed6DKE8QxuC1S+Jv3Z
-         Z0dw==
+        d=linaro.org; s=google; t=1696627096; x=1697231896; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rE6IA6B4Hk+nEgMBtJ3IL8NSuwYtGuuvfoDejoBxhNA=;
+        b=ELkzPuYDJa9YtyMw7s6sdEqMpJyViFfBdJgiT5UujJoh5YP7u315Otkp4UoN6uSMfZ
+         rj6hAOQxwFDg9uXFTgc0WXZYdg3FwCuTFzjnMRt5j+pPDok1Fa3J+UYzxjpd4u2+ZlhS
+         9YokyGrUVR6Zs8TwIf8Mnpcroguetm/896JwOfxHRINVbxntkhQWy0gh1jCWfb63QYDX
+         ymtaAV3R7o79Nt2BxR1V4LYOw01Rm4F+E5c+mjXuwewmg+garn+UMsPua/8jO1pNVvrI
+         mMI3Dl5H6XADcvn7dhomfLbV6xxktof7b3OoaNSDqJirVp1X8vZfkEnD+5NE6F1SkFkd
+         M5Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696627076; x=1697231876;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z8YyZNdSqKiy5DzZ/PIG6aNvb3OwzQTDwFSCpe0do0I=;
-        b=cGGdj4gbDmehOey6Xq/MNXdPW0rL9lltZE+eTt9VfCB4PtExczoUkH2s4LJcMUo2XZ
-         zeU8XbPExbYIaa1tkBsirvBxlLxztGjhlJLHafM04pMFKjuEEt25Rtk1193yb0Xvkav4
-         YOBzNgqnVb+lwn0rdDdl36xz6vdMijlsE75wsz4GjFo+/dks7gZCbj4opp2X1f6mUb8P
-         mIR1XCz6bR4PoEuBqBYqsTozcszcp0s+0zf7tNbb4lxB0PkVJk/vxASdi9fHCm0cW+x2
-         M/7RitVH7yRBgE+oAk33KYT1xOdr7P7HhNXdZJwnffrFT05sFHoGvytFC0KDm8IWheaJ
-         yLQg==
-X-Gm-Message-State: AOJu0YzSPH7XPuzR51Igmqn/sLER8pOo1fzb1q7fmh9xauhIA1RSdO9Y
-        1RxchH/1ATVSnuJmqJUCEtcPoDI=
-X-Google-Smtp-Source: AGHT+IGnmD6XCIMe/EZKQtEqPeVmzgwcfi0GavAMqiLOd1teM7yDtIh3f0wNuZUWye4WBFumI9XzkvY=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:4e4d:0:b0:589:86ae:2107 with SMTP id
- o13-20020a634e4d000000b0058986ae2107mr57778pgl.9.1696627076618; Fri, 06 Oct
- 2023 14:17:56 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 14:17:55 -0700
-In-Reply-To: <20231006201657.work.531-kees@kernel.org>
-Mime-Version: 1.0
-References: <20231006201657.work.531-kees@kernel.org>
-Message-ID: <ZSB5g6CmpjS-l5nK@google.com>
-Subject: Re: [PATCH] bpf: Annotate struct bpf_stack_map with __counted_by
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696627096; x=1697231896;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rE6IA6B4Hk+nEgMBtJ3IL8NSuwYtGuuvfoDejoBxhNA=;
+        b=Pc4I8y8s3ImIfZOTyxT9OOAg09wD8CNzy1sAlEYs//RRZ88Q7gCDWeAkQvI4q4HxfR
+         69SZgB3NAULs43kv1maH17sn3RlnLuG5k5s1eJQJgCyzAvwKuJhp3aLm+SmqepdwhFbc
+         /4vWvzYIX61tOdVqXA4yyRM+QEbdfgzlAspj6eDGgc/7jeOatqJjn+I0b6UHK8f9uPf7
+         5cwB1fHqJhwpIKGgaNecx81wetV5RCZbDE/A1+aR+viBipuAXrWtvpQ1gIMIZGExyanl
+         wN8zn5yKxah5djI7JrV893piPVcTi64OR6jOQfLlAac1XsTNPM4/x4/WVCMd8cK8CfX0
+         epLw==
+X-Gm-Message-State: AOJu0Yw5lVTfpOKfyigSKT05ZWQacv5d3rAZVVBKJDMTi53t+CsG8Xyn
+        zQMpdDFsS5LrXNPhcL+9ID4QwQ==
+X-Google-Smtp-Source: AGHT+IGC1GkIF4UV1EaBGdW8g6NhNjSpnkIFu0AaBDuyP8/lR2hB9lyN/P04HvTvDKc+J7sPzxGOOg==
+X-Received: by 2002:a17:906:57:b0:99c:c50f:7fb4 with SMTP id 23-20020a170906005700b0099cc50f7fb4mr7899723ejg.1.1696627096205;
+        Fri, 06 Oct 2023 14:18:16 -0700 (PDT)
+Received: from [192.168.200.140] (178235177147.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.147])
+        by smtp.gmail.com with ESMTPSA id ca9-20020a170906a3c900b009ae587ce128sm3414983ejb.216.2023.10.06.14.18.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 14:18:15 -0700 (PDT)
+Message-ID: <bec0bb75-7584-4a9d-8d8b-957044bbf009@linaro.org>
+Date:   Fri, 6 Oct 2023 23:18:14 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/3] PCI: tegra194: Use Mbps_to_icc() macro for setting
+ icc speed
+Content-Language: en-US
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        lpieralisi@kernel.org, kw@linux.com
+Cc:     andersson@kernel.org, bhelgaas@google.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, abel.vesa@linaro.org,
+        Vidya Sagar <vidyas@nvidia.com>
+References: <20231004164430.39662-1-manivannan.sadhasivam@linaro.org>
+ <20231004164430.39662-3-manivannan.sadhasivam@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231004164430.39662-3-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On 4.10.2023 18:44, Manivannan Sadhasivam wrote:
+> PCIe speed returned by the PCIE_SPEED2MBS_ENC() macro is in Mbps. So
+> instead of converting it to MBps explicitly and using the MBps_to_icc()
+> macro, let's use the Mbps_to_icc() macro to pass the value directly.
 > 
-> As found with Coccinelle[1], add __counted_by for struct bpf_stack_map.
-> 
-> Cc: Song Liu <song@kernel.org>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: bpf@vger.kernel.org
-> Cc: linux-hardening@vger.kernel.org
-> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-TIL about __counted_by :-)
-
-Acked-by: Stanislav Fomichev <sdf@google.com>
-
+> Cc: Vidya Sagar <vidyas@nvidia.com>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 > ---
->  kernel/bpf/stackmap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index 458bb80b14d5..d6b277482085 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -28,7 +28,7 @@ struct bpf_stack_map {
->  	void *elems;
->  	struct pcpu_freelist freelist;
->  	u32 n_buckets;
-> -	struct stack_map_bucket *buckets[];
-> +	struct stack_map_bucket *buckets[] __counted_by(n_buckets);
->  };
->  
->  static inline bool stack_map_use_build_id(struct bpf_map *map)
-> -- 
-> 2.34.1
-> 
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Konrad
