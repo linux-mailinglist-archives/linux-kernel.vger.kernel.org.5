@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5667BC1F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD3D7BC23C
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233677AbjJFWC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 18:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50348 "EHLO
+        id S233646AbjJFWaa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 18:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233545AbjJFWCz (ORCPT
+        with ESMTP id S233248AbjJFWa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 18:02:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CAEBE;
-        Fri,  6 Oct 2023 15:02:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49C4CC433C7;
-        Fri,  6 Oct 2023 22:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696629774;
-        bh=5qNpTHdPbPHNPOq+CPvh8QULUoFCrWL4op5DAxKIpGM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mr5hNZS7cPEC9fZ9Pm1otMuyEoQtn5x0MebbmvDKT1ysxZd56Xx+tCIEM8QZkQ0Rx
-         2HUNxrgaPRHz8QjWANUbD1mH6curuCdl6HomjYf2KnrCtmGyAAnY5ufgjcVH8v/6jb
-         QG2jDbcpxxyNYg4G8snQQRAUJZiH1mXGOYt8SQQGeANRY51XoIQTOlWK6yuYXJMFzl
-         JuNX4YzwFq+kxxRqEiTycDfkPmkv5j5xhBajGBUP1pMm0yb+NbugndmWBLihXxE3sN
-         +UAuDIx49s6xJ7b8nNHq77RCfPL2Bx0miv1JSuqRDSCA4eQG0Z9vQ8/jx1890NcVXF
-         fyDg6rJJsfGGg==
-Date:   Fri, 6 Oct 2023 15:02:52 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v7 26/30] net: wan: framer: Add support for the Lantiq
- PEF2256 framer
-Message-ID: <20231006150252.6d45be95@kernel.org>
-In-Reply-To: <20230928070652.330429-27-herve.codina@bootlin.com>
-References: <20230928070652.330429-1-herve.codina@bootlin.com>
-        <20230928070652.330429-27-herve.codina@bootlin.com>
+        Fri, 6 Oct 2023 18:30:29 -0400
+X-Greylist: delayed 11096 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 06 Oct 2023 15:30:28 PDT
+Received: from dentika.net (unknown [202.72.206.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D348F
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 15:30:28 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by dentika.net (Postfix) with ESMTP id 756914ABEA4;
+        Sat,  7 Oct 2023 00:36:05 +0700 (WIB)
+Received: from dentika.net ([127.0.0.1])
+ by localhost (dentika.net [127.0.0.1]) (amavis, port 10032) with ESMTP
+ id BUYEMtcJJSIQ; Sat,  7 Oct 2023 00:36:03 +0700 (WIB)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by dentika.net (Postfix) with ESMTP id E6B674A948D;
+        Sat,  7 Oct 2023 00:23:55 +0700 (WIB)
+X-Virus-Scanned: amavis at 
+Received: from dentika.net ([127.0.0.1])
+ by localhost (dentika.net [127.0.0.1]) (amavis, port 10026) with ESMTP
+ id xkIO1EsNrofh; Sat,  7 Oct 2023 00:23:55 +0700 (WIB)
+Received: from [185.225.73.120] (pk01.dentika.net [10.0.0.1])
+        by dentika.net (Postfix) with ESMTP id B92C14A5224;
+        Sat,  7 Oct 2023 00:12:58 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: business loan and investment are you interested? 
+To:     Recipients <support@xmails.me>
+From:   "Mr. mohd" <support@xmails.me>
+Date:   Fri, 06 Oct 2023 10:12:52 -0700
+Reply-To: a69412571@gmail.com
+Message-Id: <20231006171258.B92C14A5224@dentika.net>
+X-Spam-Status: Yes, score=6.3 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,HK_NAME_MR_MRS,
+        RCVD_IN_VALIDITY_RPBL,RDNS_NONE,SPF_HELO_PASS,T_SPF_PERMERROR
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [202.72.206.114 listed in bl.score.senderscore.com]
+        * -0.0 SPF_HELO_PASS SPF: HELO matches SPF record
+        *  0.0 T_SPF_PERMERROR SPF: test of record failed (permerror)
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [a69412571[at]gmail.com]
+        *  1.0 HK_NAME_MR_MRS No description available.
+        *  0.8 RDNS_NONE Delivered to internal network by a host with no rDNS
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sep 2023 09:06:44 +0200 Herve Codina wrote:
-> +	for (i = 0; i < count; i++) {
-> +		(audio_devs + i)->name = "framer-codec";
-> +		(audio_devs + i)->of_compatible = compatible;
-> +		(audio_devs + i)->id = i;
 
-Why not array notation?
+Dear
+My name is Mohamed Abdul I have the capacity to inject a considerable
+amount of capital in any viable project 
+1,cell phone number 
+2,full name
 
-> +	}
-> +
-> +	ret = mfd_add_devices(pef2256->dev, 0, audio_devs, count, NULL, 0, NULL);
 
-Should Lee be CCed for the MFD part?
+yours truly
+Mohamed Abdul Ahmed
