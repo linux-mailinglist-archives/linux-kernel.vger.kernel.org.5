@@ -2,44 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC697BBFD0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CA57BBFD2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbjJFTrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 15:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
+        id S233295AbjJFTrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 15:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjJFTrg (ORCPT
+        with ESMTP id S233279AbjJFTrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 15:47:36 -0400
+        Fri, 6 Oct 2023 15:47:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9157D83;
-        Fri,  6 Oct 2023 12:47:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F2F9C433C8;
-        Fri,  6 Oct 2023 19:47:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3ABBE;
+        Fri,  6 Oct 2023 12:47:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48A23C433C7;
+        Fri,  6 Oct 2023 19:47:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696621654;
-        bh=g5PzMd1bqmBKkTiRTS3JMWcR/gyi4weAfC1z7SeKX90=;
+        s=k20201202; t=1696621663;
+        bh=h0DLLJZqCZlG+/BaIeE1qTGFs+lWvxzxYNkN6b5g38E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ms6lBEG8CnayjUUdGJdGJGABn0ix5jQRkywxXY4KYxj0PwUaBIqkLKgnDvRQ98IQq
-         nOZuwQT3Sv3fD/S5+wtN3X0NHQa433V8O3ELnWPqu3pDyKlKFIAuy+WVy4fOwLpn5M
-         xtOxtNbtmj6De8ScR3mP6q2JSA+qXUlXRVsR89INEFHm0VN8QFquEa+ngI4DT4vM8c
-         0wvpHLIc3XGcT0c/9HzZLEWrzPgXrWokHPk5RhZB6vui8jSawoHDSbii0FruRiv4Lu
-         wzpOCGgp6hk0OH9+zuKWEM8Y45BIuJJeG3ptwSg//fvCwVZT4NQdTrR8vsdx3ARhTe
-         B5TjiJ/bVmrrw==
-Date:   Fri, 6 Oct 2023 21:47:29 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: Test failure from "file: convert to SLAB_TYPESAFE_BY_RCU"
-Message-ID: <20231006-essen-abdrehen-72ef45311a33@brauner>
-References: <00e5cc23-a888-46ce-8789-fc182a2131b0@sirena.org.uk>
- <20231006-bahnfahren-anpflanzen-9e871ee3353e@brauner>
+        b=ni0MjEaHF+7SUg/jgNB0F/EFSlY5Rx7mXGORS93Lqm3ftLmTcwLCTzd8Gj3ruGldL
+         Lp/tD0zEJ7E2NsimLDKVwqvPLnk8PlIVT1e+7M0mllsQOE/T7g2WtRMMWLWsZ+2Ws/
+         /tCU2DcJj30lTM0LW/PcN29PoAihSRX4H53qCt/3vYxUlVG8zSglonRkAGGkQCkMN1
+         07wZT274f7iTthdaoWIxvTbtG3KpcNHnR9S3Sh9OafhmqXN7Ou49vBhfrJFThEO93L
+         L0MaK2akLYss4R49XnIF4jU+84tUjM/ZJNNqiN+itv3BJg+2s9SZSjVgej0wBh5Epz
+         5hIq5w+jxbbmA==
+Date:   Fri, 6 Oct 2023 19:47:41 +0000
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jerry Shih <jerry.shih@sifive.com>
+Cc:     He-Jie Shih <bignose1007@gmail.com>,
+        Charlie Jenkins <charlie@rivosinc.com>,
+        Heiko Stuebner <heiko@sntech.de>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        christoph.muellner@vrull.eu,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>
+Subject: Re: [PATCH v4 00/12] RISC-V: support some cryptography accelerations
+Message-ID: <20231006194741.GA68531@google.com>
+References: <20230711153743.1970625-1-heiko@sntech.de>
+ <20230914001144.GA924@sol.localdomain>
+ <ZQJdnCwf99Glggin@ghost>
+ <3A0F6A71-C521-44A5-A56C-076AF3E13897@gmail.com>
+ <DD3113B1-AB9F-4D6D-BD6E-8F75A83DA45D@sifive.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231006-bahnfahren-anpflanzen-9e871ee3353e@brauner>
+In-Reply-To: <DD3113B1-AB9F-4D6D-BD6E-8F75A83DA45D@sifive.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -49,13 +59,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 10:38:30AM +0200, Christian Brauner wrote:
-> On Fri, Oct 06, 2023 at 01:04:19AM +0100, Mark Brown wrote:
-> > For the past few days (I was away last week...) the fd-003-kthread.c
-> > test from the proc kselftests has been failing on arm64, this is an
-> > nfsroot system if that makes any odds.  The test output itself is:
+On Fri, Sep 15, 2023 at 11:21:28AM +0800, Jerry Shih wrote:
+> On Sep 15, 2023, at 09:48, He-Jie Shih <bignose1007@gmail.com> wrote:
 > 
-> I'm out this week but will look at this right when I'm back.
+> > On Sep 14, 2023, at 09:10, Charlie Jenkins <charlie@rivosinc.com> wrote:
+> > 
+> >> On Wed, Sep 13, 2023 at 05:11:44PM -0700, Eric Biggers wrote:
+> >>> On Tue, Jul 11, 2023 at 05:37:31PM +0200, Heiko Stuebner wrote:
+> >>> 
+> >>> Hi Heiko!  Are you still working on this patchset?  And which of its
+> >>> prerequisites still haven't been merged upstream?
+> >>> 
+> >>> - Eric
+> >> It is my understanding that Heiko is taking a break from development, I
+> >> don't think he will be working on this soon.
+> > 
+> > We would like to take over these RISC-V vector crypto implementations.
+> > Our proposed implementations is under reviewing in OpenSSL pr.
+> > And I will check the gluing parts between Linux kernel and OpenSSL.
+> 
+> The OpenSSL PR is at [1].
+> And we are from SiFive.
+> 
+> -Jerry
+> 
+> [1]
+> https://github.com/openssl/openssl/pull/21923
 
-Fixed in-tree. Was a pretty dump s// bug on my side. Sorry about the
-noise. Should be gone tomorrow. Thanks for the report.
+Hi Jerry, I'm wondering if you have an update on this?  Do you need any help?
+
+I'm also wondering about riscv.pm and the choice of generating the crypto
+instructions from .words instead of using the assembler.  It makes it
+significantly harder to review the code, IMO.  Can we depend on assembler
+support for these instructions, or is that just not ready yet?
+
+- Eric
