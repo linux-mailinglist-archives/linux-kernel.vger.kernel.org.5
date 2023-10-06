@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B037BBDFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F3E7BBDF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbjJFRvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 13:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
+        id S233033AbjJFRuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 13:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232953AbjJFRva (ORCPT
+        with ESMTP id S232552AbjJFRuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 13:51:30 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85F5C2;
-        Fri,  6 Oct 2023 10:51:28 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 822ee62ecd4cce57; Fri, 6 Oct 2023 19:51:27 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id CD019665D08;
-        Fri,  6 Oct 2023 19:51:26 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: [PATCH v1 5/6] thermal: gov_step_wise: Fold update_passive_instance() into its caller
-Date:   Fri, 06 Oct 2023 19:49:39 +0200
-Message-ID: <9177552.CDJkKcVGEf@kreacher>
-In-Reply-To: <13365827.uLZWGnKmhe@kreacher>
-References: <13365827.uLZWGnKmhe@kreacher>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeigdduudeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgv
- lhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 6 Oct 2023 13:50:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD7FB6
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 10:50:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C3B4C433C8;
+        Fri,  6 Oct 2023 17:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1696614617;
+        bh=ezaBAA978dV4qGKI1Hk+XVCJoI17xD2mQigx1z5Hii0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sD7RhdItpYC6z9S8pZzd51a6UkqXvBynRqpuACzS6cBLRdc/z1Kor2vgtMwhB5LUO
+         vMPleiMLFKRgVnBMUF37r6iuKjN8uUFs7vdjvSvWWs/34voXRZ9id779z5Ck1L2d1i
+         aGtJNydxuewIGcWQCbBiDJINd/8qAvVaiBgsFca8=
+Date:   Fri, 6 Oct 2023 10:50:12 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     "Zach O'Keefe" <zokeefe@google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Saurabh Singh Sengar <ssengar@microsoft.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v4] mm/thp: fix
+ "mm: thp: kill __transhuge_page_enabled()"
+Message-Id: <20231006105012.61a12beefaa0f9a5adc8299f@linux-foundation.org>
+In-Reply-To: <20230925200110.1979606-1-zokeefe@google.com>
+References: <20230925200110.1979606-1-zokeefe@google.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, 25 Sep 2023 13:01:10 -0700 "Zach O'Keefe" <zokeefe@google.com> wrote:
 
-Fold update_passive_instance() into thermal_zone_trip_update() that is
-its only caller so as to make the code in question easeir to follow.
+> The 6.0 commits:
+> 
+> commit 9fec51689ff6 ("mm: thp: kill transparent_hugepage_active()")
+> commit 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
+> 
+> merged "can we have THPs in this VMA?" logic that was previously done
+> separately by fault-path, khugepaged, and smaps "THPeligible" checks.
+> 
+> During the process, the semantics of the fault path check changed in two
+> ways:
+> 
+> 1) A VM_NO_KHUGEPAGED check was introduced (also added to smaps path).
+> 2) We no longer checked if non-anonymous memory had a vm_ops->huge_fault
+>    handler that could satisfy the fault.  Previously, this check had been
+>    done in create_huge_pud() and create_huge_pmd() routines, but after
+>    the changes, we never reach those routines.
+> 
+> During the review of the above commits, it was determined that in-tree
+> users weren't affected by the change; most notably, since the only relevant
+> user (in terms of THP) of VM_MIXEDMAP or ->huge_fault is DAX, which is
+> explicitly approved early in approval logic. However, this was a bad
+> assumption to make as it assumes the only reason to support ->huge_fault
+> was for DAX (which is not true in general).
+> 
+> Remove the VM_NO_KHUGEPAGED check when not in collapse path and give
+> any ->huge_fault handler a chance to handle the fault.  Note that we
+> don't validate the file mode or mapping alignment, which is consistent
+> with the behavior before the aforementioned commits.
 
-No intentional functional impact.
+It's unclear what are the userspace visible impacts of this change. 
+Which makes it hard for others to determine whether -stable kernels
+should be patched.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/gov_step_wise.c |   28 ++++++++++------------------
- 1 file changed, 10 insertions(+), 18 deletions(-)
+> Fixes: 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
+> Reported-by: Saurabh Singh Sengar <ssengar@microsoft.com>
 
-Index: linux-pm/drivers/thermal/gov_step_wise.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_step_wise.c
-+++ linux-pm/drivers/thermal/gov_step_wise.c
-@@ -68,17 +68,6 @@ static unsigned long get_target_state(st
- 	return next_target;
- }
- 
--static void update_passive_instance(struct thermal_zone_device *tz,
--				enum thermal_trip_type type, int value)
--{
--	/*
--	 * If value is +1, activate a passive instance.
--	 * If value is -1, deactivate a passive instance.
--	 */
--	if (type == THERMAL_TRIP_PASSIVE)
--		tz->passive += value;
--}
--
- static void thermal_zone_trip_update(struct thermal_zone_device *tz, int trip_id)
- {
- 	const struct thermal_trip *trip = &tz->trips[trip_id];
-@@ -109,14 +98,17 @@ static void thermal_zone_trip_update(str
- 		if (instance->initialized && old_target == instance->target)
- 			continue;
- 
--		/* Activate a passive thermal instance */
- 		if (old_target == THERMAL_NO_TARGET &&
--			instance->target != THERMAL_NO_TARGET)
--			update_passive_instance(tz, trip->type, 1);
--		/* Deactivate a passive thermal instance */
--		else if (old_target != THERMAL_NO_TARGET &&
--			instance->target == THERMAL_NO_TARGET)
--			update_passive_instance(tz, trip->type, -1);
-+		    instance->target != THERMAL_NO_TARGET) {
-+			/* Activate a passive thermal instance */
-+			if (trip->type == THERMAL_TRIP_PASSIVE)
-+				tz->passive++;
-+		} else if (old_target != THERMAL_NO_TARGET &&
-+			   instance->target == THERMAL_NO_TARGET) {
-+			/* Deactivate a passive thermal instance */
-+			if (trip->type == THERMAL_TRIP_PASSIVE)
-+				tz->passive--;
-+		}
- 
- 		instance->initialized = true;
- 		mutex_lock(&instance->cdev->lock);
+It's nice to include a Closes: link after a Reported-by:.  Then readers
+are better able to answer the above question.
 
-
+> Signed-off-by: Zach O'Keefe <zokeefe@google.com>
+> Cc: Yang Shi <shy828301@gmail.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: David Hildenbrand <david@redhat.com>
 
