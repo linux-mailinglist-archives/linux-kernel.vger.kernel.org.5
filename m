@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BF77BC0FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F193B7BC103
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233610AbjJFVL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 17:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
+        id S233642AbjJFVPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 17:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233585AbjJFVLz (ORCPT
+        with ESMTP id S233585AbjJFVPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 17:11:55 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F05ABF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 14:11:53 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c28e35752cso32007271fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 14:11:53 -0700 (PDT)
+        Fri, 6 Oct 2023 17:15:45 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13FFBD
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 14:15:43 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9b2cee55056so481489866b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 14:15:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696626711; x=1697231511; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696626942; x=1697231742; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+mtIQs92L5Wk31EKsK+xNGb3G5c+wYVuR2u3blviMog=;
-        b=B7KXEkt6AyrIk0OInRo//f+sg/9srl1ZG5JccOyRtqzaI1f/c1HiOY5bQvl3exFeH1
-         JChygW7zVaR2Nf7GSfqrp1ztjgjapHhO5gA/BYO1+IINXfKcjC1MzQ4LmLJEm3lBRjVs
-         0uca2C9oX5H8zan4/EAHUrMwuerO3DHZGyHBFC85ir9r+i4b0HgnKgFvGqP2vJc3lS4Z
-         A7LSVoosnL0UrNutidggocZaTt/ZydYdD4sh5OgCjGpL7wf+NwC8hpcf+iVeP9Ra0erO
-         ey1FKu+INclI6f0mxH5SM9wLmaobXItyya0gaTQ3CnBUK/39MwJg3IrXdcZwUgZF17vo
-         a/TA==
+        bh=pguxjsrE6r696sdJh+EBa8vjPrUgEjJuICEkTOaYc5c=;
+        b=BlFg37eXaJ4W3JAHhpCGjwGrbrwoLLDh9/StfM/F3xTopS/wFXVjsKk1JDuwVzh4EX
+         GDViO64VGtVvq0LJK3619+U8gybsdmAu/z3whOb42AP3o6IQNYpyn65ZWkcherpRCUrK
+         FtZkrkajJeVOQsgjr5HDecIALplDklYgWyQLE9xJo8Q6fyw+xpXuSoArz6dgG97bk9KH
+         HRfMgDByyJ2Lg8YxceACQMDM2KtW06kEnYcdNKIb9WO4YfN1kirPIbJt4yDRR/mNiuHZ
+         24YNEgHcsnIxm6+WuABoH3X/22GFk+O9BxfQ61mI3G6FT8fTdq2dJ6nTayD2qQHhfk/8
+         2LXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696626711; x=1697231511;
+        d=1e100.net; s=20230601; t=1696626942; x=1697231742;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+mtIQs92L5Wk31EKsK+xNGb3G5c+wYVuR2u3blviMog=;
-        b=ESlbzNy+A39wc5t2wbX5BDCh48TZpgjcBnPT7rUjJG6iTknxlyqfd+1g5z6NbW+aWR
-         RTxWAVJGcenP/r8qIM00yXbGHktuKgnObaBXQFbYKBNTzLwuTL5EH1dElHm4rEw/GpYH
-         UP7BEPt2sQOgZ5K6vMvLLMUVxQZZhLtZoIi/wzOf1B7XMdUrZq/fbXyBucf3HcGn/cho
-         nNCknxKHdlfIg2Nl9uxA11XkWkPgl0DzfpPLWKCB3OSLuex+8mspeu5ue+jovNoMtw/j
-         BwR2s6EkGZZEyeW6+oCytPsezUKUMBd+1MMUxrVsrAyIWRRd3nfJcPnj8MQleVwGqIyu
-         K3tA==
-X-Gm-Message-State: AOJu0Yzf0D+I3ZtwjU7BlDfqa4RjtjYmPWTtVUU9tmOf8vO5Z11t7Gn5
-        etcIMAnAY7UDn4VhwMcSNCJzmg==
-X-Google-Smtp-Source: AGHT+IFL69SO2l1xyAyTIwulLcXZAuAdP65Ry6oh3AErOFZHRz3jQ3SObXxmcFkmLuqMsktrVDPfUQ==
-X-Received: by 2002:a05:6512:34c8:b0:503:3913:c2c9 with SMTP id w8-20020a05651234c800b005033913c2c9mr7265743lfr.40.1696626711118;
-        Fri, 06 Oct 2023 14:11:51 -0700 (PDT)
+        bh=pguxjsrE6r696sdJh+EBa8vjPrUgEjJuICEkTOaYc5c=;
+        b=W/Sy1jhSs/WagcKtj2t4gfRwTfeeHhQbYfIrXwcyXE3s4pmxrYxdKQoJu+QhQBqPE3
+         FD+5Me3vWv8amSVW+D+ogQeweubZD2xVXJ6m3imXZcmpHc8rOWfKQ640TFxkwv3ORK1Z
+         7JPdFUGScpPT5Nn5XMm4KuKNY+EGPMzrKX2xWmT7kEhiUtfcQGVj5vPA1MbNN6o3xpDX
+         6Ebtve/0pI7LhIV+r2LoXaHUD+5y5TRa+GX89CUO8et4lP1bpJnFZsI6NWtynhorHKoJ
+         y/jURrZm8xBB0NKYV5zI9nNPHK1TVMSMj3D/vy+gRWIF7zvUD9EV533JTNtDmwUBTiEK
+         dZzw==
+X-Gm-Message-State: AOJu0YzZkc/A0tjbHg4Ca4YbtuOcScU9qRoYgIqsxdmSFdlAqc8htXVA
+        d076EtCJ4AsUtPnkw5nBnu+SRpIZH2G6vQJRNdU=
+X-Google-Smtp-Source: AGHT+IHUo9wMeHL6vBi7PW9BifONMemPhh1IyuNZLiN170MfDjC4smWxHLZyGtiOcXlO6nb1TCoNFw==
+X-Received: by 2002:a17:906:73d8:b0:9ae:53af:c57f with SMTP id n24-20020a17090673d800b009ae53afc57fmr9471702ejl.65.1696626942359;
+        Fri, 06 Oct 2023 14:15:42 -0700 (PDT)
 Received: from [192.168.200.140] (178235177147.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.147])
-        by smtp.gmail.com with ESMTPSA id l21-20020ac24315000000b00500a4679148sm440802lfh.20.2023.10.06.14.11.49
+        by smtp.gmail.com with ESMTPSA id ca9-20020a170906a3c900b009ae587ce128sm3414983ejb.216.2023.10.06.14.15.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 14:11:50 -0700 (PDT)
-Message-ID: <9b78cab5-d72f-469a-816d-6b3f86aecada@linaro.org>
-Date:   Fri, 6 Oct 2023 23:11:48 +0200
+        Fri, 06 Oct 2023 14:15:41 -0700 (PDT)
+Message-ID: <9b7744bf-d42c-4922-85e8-ca4777f313a7@linaro.org>
+Date:   Fri, 6 Oct 2023 23:15:40 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 1/2] regulator: core: Disable unused regulators with
- unknown status
+Subject: Re: [PATCH RFC 2/2] regulator: qcom_smd: Disable unused regulators
 Content-Language: en-US
 To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
         Mark Brown <broonie@kernel.org>
@@ -65,7 +64,7 @@ Cc:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Stephan Gerhold <stephan@gerhold.net>
 References: <20231004-reg-smd-unused-v1-0-5d682493d555@kernkonzept.com>
- <20231004-reg-smd-unused-v1-1-5d682493d555@kernkonzept.com>
+ <20231004-reg-smd-unused-v1-2-5d682493d555@kernkonzept.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -102,13 +101,12 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231004-reg-smd-unused-v1-1-5d682493d555@kernkonzept.com>
+In-Reply-To: <20231004-reg-smd-unused-v1-2-5d682493d555@kernkonzept.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -116,47 +114,40 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 4.10.2023 16:17, Stephan Gerhold wrote:
-> Some regulator drivers do not provide a way to check if the regulator is
-> currently enabled or not. That does not necessarily mean that the
-> regulator is always-on. For example, the regulators managed by the RPM
-> firmware on Qualcomm platforms can be either on or off during boot but
-> the initial state is not known. To sync the state the regulator should
-> get either explicitly enabled or explicitly disabled.
+> The RPM firmware on Qualcomm platforms does not provide a way to check
+> if a regulator is on during boot using the SMD interface. If the
+> regulators are already on during boot and Linux does not make use of
+> them they will currently stay enabled forever. The regulator core does
+> not know these regulators are on and cannot clean them up together with
+> the other unused regulators.
 > 
-> Enabling all regulators unconditionally is not safe, because we might
-> not know which voltages are safe. The devices supplied by those
-> regulators might also require a special power-up sequence where the
-> regulators are turned on in a certain order or with specific delay.
-> 
-> Disabling all unused regulators is safer. If the regulator is already
-> off it will just stay that way. If the regulator is on, disabling it
-> explicitly allows the firmware to turn it off for reduced power
-> consumption.
-> 
-> The regulator core already has functionality for disabling unused
-> regulators. However, at the moment it assumes that all regulators where
-> the .is_enabled() callback fails are actually off. There is no way to
-> return a special value for the "unknown" state to explicitly ask for
-> disabling those regulators.
-> 
-> Some drivers (e.g. qcom-rpmh-regulator.c) return -EINVAL for the case
-> where the initial status is unknown. Use that return code to assume the
-> initial status is unknown and try to explicitly disable the regulator
-> in that case.
+> Fix this by setting the initial enable state to -EINVAL similar to
+> qcom-rpmh-regulator.c. The regulator core will then also explicitly
+> disable all unused regulators with unknown status.
 > 
 > Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
 > ---
-> Instead of -EINVAL we could also use a different return code to indicate
-> the initial status is unknown. Or maybe there is some other option that
-> would be easier? This is working for me but I'm sending it as RFC to get
-> more feedback. :)
--EOPNOTSUPP for "doesn't support getting is_enabled state"?
-
-I think this looks really good.. And will definitely help finding
-power hogs!
-
-At the cost of breaking booting with broken DTs. But as the name by
-which I referred to them suggests, this was never really destined to
-work..
+> NOTE: This has a slight potential of breaking boards that rely on having
+> unused regulators permanently enabled (without regulator-always-on).
+> However, this is always a mistake in the device tree so it's probably
+> better to risk some breakage now, add the missing regulators and avoid
+> this problem for all future boards.
+> ---
+>  drivers/regulator/qcom_smd-regulator.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
+> index f53ada076252..0bbfba2e17ff 100644
+> --- a/drivers/regulator/qcom_smd-regulator.c
+> +++ b/drivers/regulator/qcom_smd-regulator.c
+> @@ -53,14 +53,14 @@ static int rpm_reg_write_active(struct qcom_rpm_reg *vreg)
+>  		reqlen++;
+>  	}
+>  
+> -	if (vreg->uv_updated && vreg->is_enabled) {
+> +	if (vreg->uv_updated && vreg->is_enabled > 0) {
+At a quick glance, are there any states for this value, other
+than 0 and 1? This is not the regulator_ops->is_enabled, but
+qcom_rpm_reg->is_enabled.
 
 Konrad
