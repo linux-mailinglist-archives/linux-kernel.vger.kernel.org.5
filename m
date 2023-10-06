@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 156557BBC12
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2B07BBC16
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232825AbjJFPqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 11:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
+        id S232855AbjJFPqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 11:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbjJFPqM (ORCPT
+        with ESMTP id S232845AbjJFPqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 11:46:12 -0400
+        Fri, 6 Oct 2023 11:46:50 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD36C5;
-        Fri,  6 Oct 2023 08:46:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C885EC433C8;
-        Fri,  6 Oct 2023 15:46:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAF7DE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 08:46:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F15CC433C8;
+        Fri,  6 Oct 2023 15:46:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696607170;
-        bh=RqPT1sAX+CTz+LW7FuFBdj/iCoI5RcSD8+uIrgrjRII=;
+        s=k20201202; t=1696607207;
+        bh=ksSYkcdw/6cmeqtqG2iMHN+7nIEblCybrVsjoCbBp8k=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TJcW5fQIHClkSNCykvIXtff2T4paynN6ON2HHsJur23X/V+AytMrdMa8Z+YSrMKg7
-         wLoYz3k3KY1Aihi0JnyZ0KWWwEyN5hrypUPCfKfqeWiKNrAB/E8y19+9Nu3LqTGaxk
-         +HPtFku6IVKUm7vlWyAJYeSDkQTXn3/DMiBsY478ifOr440NNBFjs+X/2ufi9wA+dA
-         MTOIP4mB1+OvXOmOhEdBP7zpQfcmuQz55tkVx7xQjc4yUwILkfjoog+sTRlc9dtH/w
-         t81RK79s4fmnJhoySGDTNJKsT/illXeqAOUK490U0lrbZa2wa4n4eXXCfapsk9xF7X
-         zzzJBk3wtxSiA==
-Date:   Fri, 6 Oct 2023 16:46:05 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
-        Amit Kucheria <amitk@kernel.org>
-Subject: Re: [PATCH v2] thermal: Remove Amit Kucheria from MAINTAINERS
-Message-ID: <20231006-earthly-equal-dd5d82312add@spud>
-References: <2702191.mvXUDI8C0e@kreacher>
+        b=IrQlPwGvGxCPQz4wOxg+XyD4dDq3MEvesVTQy6DxQgeM1nte2Qxop0OPxRfxOtK6l
+         q8HC00ubJ6o2p43TooGK/qsFKzR/EHiDi/6vpZKOwR3xhuZNDOYLPsqQXedyUuBgZe
+         LFIpcEhhgPIOaVV56PsmfX/bNblUjELgDHE4ZAkZbeuNTpjibXmuuVlICzwSrpS055
+         vncR/zjhGbfTwjUso5u3P4z6ioGrWVvSj5NuG8ziUNJdA+foBai9dfk57F3KstNqSJ
+         aEL8ecNdGnj3zNSzII2W5IuvMCXJWOgN13Xc0sKni+uChidHEzUhQFfZCgyQHAO8yl
+         KVmiRm7SG4jzw==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qon2f-0006BE-36;
+        Fri, 06 Oct 2023 17:47:06 +0200
+Date:   Fri, 6 Oct 2023 17:47:05 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_ppratap@quicinc.com, quic_wcheng@quicinc.com,
+        quic_jackp@quicinc.com
+Subject: Re: [PATCH v12 0/3] Add multiport support for DWC3 controllers
+Message-ID: <ZSAr-SSaZcsIoC2P@hovoldconsulting.com>
+References: <20231004165922.25642-1-quic_kriskura@quicinc.com>
+ <ZR5ZUaWcyRj5sZKx@hovoldconsulting.com>
+ <d6974352-e157-421b-aa2d-e4a6c791ca2b@quicinc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aL7ZvF+92viwC5jJ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2702191.mvXUDI8C0e@kreacher>
+In-Reply-To: <d6974352-e157-421b-aa2d-e4a6c791ca2b@quicinc.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,69 +58,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 05, 2023 at 02:32:54PM +0530, Krishna Kurapati PSSNV wrote:
+> On 10/5/2023 12:06 PM, Johan Hovold wrote:
+> > On Wed, Oct 04, 2023 at 10:29:19PM +0530, Krishna Kurapati wrote:
 
---aL7ZvF+92viwC5jJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >> Krishna Kurapati (3):
+> >>    usb: dwc3: core: Access XHCI address space temporarily to read port
+> >>      info
+> >>    usb: dwc3: core: Skip setting event buffers for host only controllers
+> >>    usb: dwc3: qcom: Add helper function to request threaded IRQ
+> > 
+> > NAK.
+> > 
+> > These patches make very little sense on their own and can't really be
+> > evaluated without the context of the larger series.
+> > 
+> > Just work on getting the multiport series in shape and include any acks
+> > you've received so far when submitting new revisions.
 
-On Fri, Oct 06, 2023 at 05:04:42PM +0200, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->=20
-> Amit Kucheria has not been participating in kernel development in any
-> way or form for quite some time, so it is not useful to list him as a
-> designated reviewer for the thermal subsystem.
->=20
-> Remove him from the THERMAL entry in MAINTAINERS.
->=20
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->=20
-> v1 -> v2: Drop the DT binding change
->=20
-> I'm really not inclined to fight over stuff that doesn't make any sense t=
-o me.
+>   This may be partially true for first patch of this series, (where we 
+> read num_ports), but the other two patches are self explanatory and are 
+> applicable for non-mp controllers as well. Intention was to ensure we 
+> make the next rebase easy.
 
-I don't understand what you mean by this. All that was required was
-putting __someone__ down as a maintainer in the dt-binding, as Rob's bot
-told you:
-https://lore.kernel.org/linux-devicetree/CAJZ5v0gwvo_CriNwz_g-oQ8EZUqdp4ymi=
-uamU-KkrmQ87RhZyA@mail.gmail.com/T/#m56a9b1616477566e2976044c11b58dccbd3be0=
-fb
+No, just send the whole series at once.
+ 
+>   Will try to address all comments and send v12 again as a whole series 
+> this week. I am actually blocked on [1]. Not able to repro the compile 
+> error on my end. That's what stopped me from sending all at once.
 
->=20
-> ---
->  Documentation/devicetree/bindings/thermal/thermal-zones.yaml |    3 ---
->  MAINTAINERS                                                  |    1 -
->  2 files changed, 4 deletions(-)
->=20
-> Index: linux-pm/MAINTAINERS
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/MAINTAINERS
-> +++ linux-pm/MAINTAINERS
-> @@ -21363,7 +21363,6 @@ F:	drivers/media/radio/radio-raremono.c
->  THERMAL
->  M:	Rafael J. Wysocki <rafael@kernel.org>
->  M:	Daniel Lezcano <daniel.lezcano@linaro.org>
-> -R:	Amit Kucheria <amitk@kernel.org>
->  R:	Zhang Rui <rui.zhang@intel.com>
->  L:	linux-pm@vger.kernel.org
->  S:	Supported
->=20
->=20
->=20
+Looks like your buffer is too small for a u8 index. Should be easy to
+fix.
 
---aL7ZvF+92viwC5jJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSArvQAKCRB4tDGHoIJi
-0tJOAP0RchSWseK6p2cPyt+7A6+5M4M5Z7+A4KOKtDbdtWVzGQD7B25vFO7lmNDy
-xfpFomW8uCMUMr0q7VBHLhYrNVBW3g4=
-=dNGo
------END PGP SIGNATURE-----
-
---aL7ZvF+92viwC5jJ--
+Johan
+ 
+> [1]: https://lore.kernel.org/all/202309200156.CxQ3yaLY-lkp@intel.com/
