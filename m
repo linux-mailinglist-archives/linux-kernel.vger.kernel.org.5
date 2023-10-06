@@ -2,135 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 081087BB068
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 04:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACF37BB06B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 05:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbjJFC4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 22:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
+        id S229863AbjJFDCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 23:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbjJFC4W (ORCPT
+        with ESMTP id S229615AbjJFDCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 22:56:22 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338A8E8
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 19:56:20 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d8198ca891fso1876549276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 19:56:20 -0700 (PDT)
+        Thu, 5 Oct 2023 23:02:08 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9621CD6;
+        Thu,  5 Oct 2023 20:02:05 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-79fa5d9f3a2so70496439f.3;
+        Thu, 05 Oct 2023 20:02:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1696560979; x=1697165779; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PHArqxu2qvv+0QWfp9YXmo0v1ys/eNAvTHWEBAqut18=;
-        b=ajSKYXOro6poGXXUa2xNDgWiay9AME4I17RTXh6yZTxpQS+CWtFw35WTy01NS+Nc4s
-         7qn9Lq87Eyx6Sh7QUByM2XZag6WbGko6TTgAgYv3dfV1SnO9UxA0yp5sBeI7lFfI8fr6
-         xZolX9+dexXjLMRrihXCsHUuqb3Nfcw8KxAy2tAEOYYkEunCkd/4jbttmLjJRHF4o6yZ
-         a62vh4n/+NtmixCzs8k4yFjDztO7FCI1zqNBK2lMso+Ztg2TawGLsQQUEC48n1Qg17vH
-         ceMB7Uc/ruF+vTS4S/AbfojCHeFMnKZ/khLOdQ+2x9hoBt7rcXotjk79ikqVAe1+Cjt5
-         D7bw==
+        d=gmail.com; s=20230601; t=1696561325; x=1697166125; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d7jsDyJHAOcOCgxSJEzqajp1/MqcnDBxKNllh4yji8k=;
+        b=OTkYHtqp/vvzDiMmbcAw0R2kUWzNbabCSf5oy3s9WObcy3KxMWBVYoV4Ej7nLqrBlY
+         gB8tnI6aVg9aEAFr6LjxE462ekCASoNU/nHx75LoKBB9/O2lVI9Fj5BAgZSX/IcvFC/K
+         oKcOLW/WEH5Gk9NzgWIcV8MXwwq6R81WLUnzZmi+EU5B8gQNjdBlqTrlIOS0bPj9Q96V
+         4KVaqcQy6m1mN/sQW5bIiAUqVaniCsNf/HQws2SqVZrdHSFm13a6RvDX35y6kuk4MyE+
+         6PQyrcMXRCqIpBRkigUnO/sYKNdaeHti7JRP1SjlBt7r+e9P7qwILTsH5+PqsoCbrOdm
+         99Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696560979; x=1697165779;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696561325; x=1697166125;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PHArqxu2qvv+0QWfp9YXmo0v1ys/eNAvTHWEBAqut18=;
-        b=N7e4Y/yTdz/l0JZq+n2qslL1ivUDPN0L0ikrBMQVUiBez4GJ1FbbHii5ZmlZRE6gLX
-         m7fAqKXkFqL1qwqEXX9okuvWZ0vJxEVxgU2Vo/fR7cK1lKJU/HjwbbabhVUxPZM7BY1d
-         uXOfgG4MsNbbCapLGAaGZWNaYYlF2Wp31R62IoYPY7HtQPXWB1gWj03DHyzMGTihFfZx
-         qdJvSdsK88fGlfrqmLCPvuWNgi7v/C0HfIDODZqPc8QbwwUL54cUB6YEsbDOROJxYzKw
-         5ba1BzlAk+oTgKwION/PSBat3AWeofDwDRvaLucVMU3hgHIGbwYaFzHX7H89xnNgXz/8
-         ZPLQ==
-X-Gm-Message-State: AOJu0YydQ8RPzOWkgP1pOJBHBBXlhvgg3IIxV9wabVJ6cl106wSdpsvE
-        hPPIGfVH1OCGZ+neTpCYI0UC6FzFbphXudzFjypd
-X-Google-Smtp-Source: AGHT+IHre+a34KZNGIs0z++veEpRz77t1WlEFWTAbeLlkjBKLMPcIoQncO3aQ0/CHJ2xAP9H60aKr56+aFyEAFaH3e8=
-X-Received: by 2002:a25:556:0:b0:d0f:6f1d:89ec with SMTP id
- 83-20020a250556000000b00d0f6f1d89ecmr6477803ybf.35.1696560979263; Thu, 05 Oct
- 2023 19:56:19 -0700 (PDT)
+        bh=d7jsDyJHAOcOCgxSJEzqajp1/MqcnDBxKNllh4yji8k=;
+        b=AqQ6ZchWXoEuXyvCB8lat67ruGb4z24OIO+Wea2zXhWkHz8V0wqNeTXlGls+sPvEdN
+         fNB+jzcKAPKy810mN7BoscRubD0LQnMx3+WSqJr9Ey9tvSWxY+BZ1wKrZVWsIdgeVRw+
+         mVzSVw5jYmekUlqa6C3rA1SHwfRFcthlL1hog8ABC393eME2ihdCLjn+o3Kg1+oajgcx
+         PS30O+/HIg/IZmp8+3UVWF8pedNCRKFQl//mvpqHHtGrSb+JClZtXsLuVBzrTh75Q7YN
+         K0+DA7LrrxfWzqNV1yaueMWykksl9uR4Ti6U7e5RjLLxZPK0o0mdBS+Xk2Z++H83jnvH
+         9MkA==
+X-Gm-Message-State: AOJu0Yx4BDRuIF3txq0+asOIM7W5RM8iqG/1/5fR4kDxUGByYariYNH7
+        8eoZac3JR/FaRPuS+0rTexI=
+X-Google-Smtp-Source: AGHT+IFxz7b0lJ1fngfStUeoueHr5eIHWhk83Qc8PCIveFkamkwk3MWploBUuoczYgLk68vp6A6ljQ==
+X-Received: by 2002:a6b:919:0:b0:792:8230:c175 with SMTP id t25-20020a6b0919000000b007928230c175mr6956244ioi.6.1696561324859;
+        Thu, 05 Oct 2023 20:02:04 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o16-20020a02cc30000000b0042bb296863asm164464jap.56.2023.10.05.20.02.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 20:02:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 5 Oct 2023 20:02:02 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     advantech.susiteam@gmail.com
+Cc:     wenkai.chung@advantech.com.tw, Susi.Driver@advantech.com,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 0/5] watchdog: eiois200_wdt: Add EIO-IS200 Watchdog Driver
+Message-ID: <d7df3c7b-730a-4d09-8f15-3cc8591c8092@roeck-us.net>
+References: <cover.1696495372.git.advantech.susiteam@gmail.com>
 MIME-Version: 1.0
-References: <20230928130147.564503-1-mszeredi@redhat.com> <20230928130147.564503-5-mszeredi@redhat.com>
- <CAHC9VhQD9r+Qf5Vz1XmxUdJJJO7HNTKdo8Ux=n+xkxr=JGFMrw@mail.gmail.com>
- <CAJfpegsPbDgaz46x4Rr9ZgCpF9rohVHsvuWtQ5LNAdiYU_D4Ww@mail.gmail.com>
- <a25f2736-1837-f4ca-b401-85db24f46452@themaw.net> <CAJfpegv78njkWdaShTskKXoGOpKAndvYYJwq7CLibiu+xmLCvg@mail.gmail.com>
-In-Reply-To: <CAJfpegv78njkWdaShTskKXoGOpKAndvYYJwq7CLibiu+xmLCvg@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 5 Oct 2023 22:56:08 -0400
-Message-ID: <CAHC9VhTwnjhfmkT5Rzt+SBf-8hyw4PYkbuPYnm6XLoyY7VAUiw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] add listmount(2) syscall
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Ian Kent <raven@themaw.net>, Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1696495372.git.advantech.susiteam@gmail.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 11:47=E2=80=AFAM Miklos Szeredi <miklos@szeredi.hu> =
-wrote:
-> On Thu, 5 Oct 2023 at 06:23, Ian Kent <raven@themaw.net> wrote:
-> > The proc interfaces essentially use <mount namespace>->list to provide
-> >
-> > the mounts that can be seen so it's filtered by mount namespace of the
-> >
-> > task that's doing the open().
-> >
-> >
-> > See fs/namespace.c:mnt_list_next() and just below the m_start(), m_next=
-(),
->
-> /proc/$PID/mountinfo will list the mount namespace of $PID.  Whether
-> current task has permission to do so is decided at open time.
->
-> listmount() will list the children of the given mount ID.  The mount
-> ID is looked up in the task's mount namespace, so this cannot be used
-> to list mounts of other namespaces.  It's a more limited interface.
->
-> I sort of understand the reasoning behind calling into a security hook
-> on entry to statmount() and listmount().  And BTW I also think that if
-> statmount() and listmount() is limited in this way, then the same
-> limitation should be applied to the proc interfaces.  But that needs
-> to be done real carefully because it might cause regressions.  OTOH if
-> it's only done on the new interfaces, then what is the point, since
-> the old interfaces will be available indefinitely?
+On Thu, Oct 05, 2023 at 04:51:18PM +0800, advantech.susiteam@gmail.com wrote:
+> From: Wenkai <advantech.susiteam@gmail.com>
+> 
+> This patch series aims to add support for the Advantech EIO-IS200
+> Embedded Controller's watchdog timer to the Linux kernel. The EIO-IS200
+> is a widely used embedded controller, and this series introduces a
+> native driver for its watchdog timer functionality within the Linux
+> ecosystem.
+> 
+I am not going to review this patch series. This is just one watchdog driver.
+One patch is sufficient.
 
-LSMs that are designed to enforce access controls on procfs interfaces
-typically leverage the fact that the procfs interfaces are file based
-and the normal file I/O access controls can be used.  In some cases,
-e.g. /proc/self/attr, there may also be additional access controls
-implemented via a dedicated set of LSM hooks.
-
-> Also I cannot see the point in hiding some mount ID's from the list.
-> It seems to me that the list is just an array of numbers that in
-> itself doesn't carry any information.
-
-I think it really comes down to the significance of the mount ID, and
-I can't say I know enough of the details here to be entirely
-comfortable taking a hard stance on this.  Can you help me understand
-the mount ID concept a bit better?
-
-While I'm reasonably confident that we want a security_sb_statfs()
-control point in statmount(), it may turn out that we don't want/need
-a call in the listmount() case.  Perhaps your original patch was
-correct in the sense that we only want a single security_sb_statfs()
-call for the root (implying that the child mount IDs are attributes of
-the root/parent mount)?  Maybe it's something else entirely?
-
---=20
-paul-moore.com
+Guenter
