@@ -2,99 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 036FF7BBA7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF857BBA7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbjJFOkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 10:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        id S232542AbjJFOkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 10:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232554AbjJFOkL (ORCPT
+        with ESMTP id S230158AbjJFOkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 10:40:11 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41053CF;
-        Fri,  6 Oct 2023 07:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1696603153; x=1697207953; i=efault@gmx.de;
- bh=6ocLe5mCpj5JliJZmmhdjcr12lLq+uiT5TG/FZLfMO4=;
- h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
- b=Z5k/qWRzGM5sOWULHpHiQjfqVtnhENB+PBzY/c9yx9b3si9bzWJNIdLCXdBuJuTl8xq7vVLwkGK
- RMJ1bt/4Tv4YrUAHfgA5sPy8sq7l7qCeAYKJkIdU3FtlPzrt95zYymCO54FsNap4CCFL5AT2RdLHy
- XBkEHI9ISTqag7yh67FzUJId1wDkMcNKrFz60rg9I73jwnWGz2ucMgLHToqb8m0TUQzEXv+AtdWkE
- jPTC0Xc2ttTxxPcN57vbTpm2r3YLXnnak+Rxh12dcd84Wu7hCSpN8rybJ5ZAUsP2SQZjT0w+omnRA
- ZcJDxKIhLcUMw+ctNKEzzzAXxN4b76ShJvfA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from homer.fritz.box ([185.191.217.82]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M72oB-1qxGpi1FWh-008Wwn; Fri, 06
- Oct 2023 16:39:13 +0200
-Message-ID: <e2645a659b6fc1c592e2f2dc45273c361a2d2f47.camel@gmx.de>
-Subject: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct se
-From:   Mike Galbraith <efault@gmx.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "chris.hyser@oracle.com" <chris.hyser@oracle.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "joshdon@google.com" <joshdon@google.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "kprateek.nayak@amd.com" <kprateek.nayak@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "patrick.bellasi@matbug.net" <patrick.bellasi@matbug.net>,
-        Pavel Machek <pavel@ucw.cz>, "pjt@google.com" <pjt@google.com>,
-        "qperret@google.com" <qperret@google.com>,
-        "qyousef@layalina.io" <qyousef@layalina.io>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        "timj@gnu.org" <timj@gnu.org>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "youssefesmat@chromium.org" <youssefesmat@chromium.org>,
-        "yu.c.chen@intel.com" <yu.c.chen@intel.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
-Date:   Fri, 06 Oct 2023 16:39:09 +0200
-In-Reply-To: <20231006140042.GG36277@noisy.programming.kicks-ass.net>
-References: <OS0PR01MB59220AF3959BDC5FEFC0340F86CAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-         <20231005150258.GA36277@noisy.programming.kicks-ass.net>
-         <CGME20231005150845eucas1p1ed3aae6b90c411b5c26a5dfadf7e0733@eucas1p1.samsung.com>
-         <OS0PR01MB592295E06AD01CAEFBA83BF386CAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-         <553e2ee4-ab3a-4635-a74f-0ba4cc03f3f9@samsung.com>
-         <867f5121d7d010cacf938c293f862b0cea560ec2.camel@gmx.de>
-         <20231006140042.GG36277@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Fri, 6 Oct 2023 10:40:02 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B418F;
+        Fri,  6 Oct 2023 07:39:59 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id D02AC6015F;
+        Fri,  6 Oct 2023 16:39:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.hr; s=mail;
+        t=1696603196; bh=gWbvobNGF28CJLr9wnkGmX50TRcvlH20M3chC9jCr7g=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=mYOXU7apfkw+pqOran3baDkpA3PUAR3xpBANiH1HVl0QMEEbJDsk9B+YBo+PCvf8z
+         +WWJQWFn9BjOMDeA91Xdnejcy6By8nQaBNLO944IH8ROVJp3D3LZ/L8I9F1egwKGZz
+         SUCt3B9FEzVnbbTjbp50N5Sr3xLpvic8j1LO1VxH0wt4Lg5i1bPo8UMhDxUIG8rsNi
+         WOi8DKUH54QreiqHy6siDljMJjeGofO/T0ZUBWr0FWoH50wtmbu//TmlijWtzrxyik
+         NijWlgHnS7TtEOebacd8lQEY79SFuwST326RqUuUqVU8s41M/ZYCQKiB8iCVglTpGY
+         WY4NCNIjo7hXQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 6DIY4nOvsf05; Fri,  6 Oct 2023 16:39:54 +0200 (CEST)
+Received: from [IPV6:2001:b68:2:2600:d8db:4285:ac45:389f] (unknown [IPv6:2001:b68:2:2600:d8db:4285:ac45:389f])
+        by domac.alu.hr (Postfix) with ESMTPSA id F15CF6015E;
+        Fri,  6 Oct 2023 16:39:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1696603194; bh=gWbvobNGF28CJLr9wnkGmX50TRcvlH20M3chC9jCr7g=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=fDl1y89dp+RnVuhSwjmNI3KS9/0GICfJF24QIglm9I4K6gR+SKD9VEtOeUsIRKpLJ
+         YjpVja7nr6DdR8K7KmF0bvt+EUDwXzMSjN1Av171uIv3gMrAi/HBKh/wXshSQGILZ/
+         F0MTOFM+CtplXwQQb5tZmk2PJ857NVQqehjp72wvulbQju/Me3QAUxSmSSiw4JWRwu
+         Oo3s9Kra2TouJKbadvFs6FCmGiijxu3EyfAU91/c1Lu72JTvX/2nTLc6acDUs4CVS1
+         T2ksTQMRdAFFWKSBlGbuzmz229+7dKahvOP3RNLA9xYzQCDSeZLwnTVTnIUiPWLsfQ
+         g9p+Z8HMb92lw==
+Message-ID: <2c7f2acd-ef37-4504-a0e3-f74b66c455ec@alu.unizg.hr>
+Date:   Fri, 6 Oct 2023 16:39:54 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ca1uBg7Wi+TN1pRX0GlOPnh7bWQolkjBVxxjpAPAi+VGC0DNzS4
- mIgEv+WCHzb6okNBF6pFOohK58WcULpma49+ZYKifEP8UwMDcWOtnX63lmxQ3QEFpKChDiz
- oMJXMgVxu1tfgqRXCV9j0ZEJRBfIe2hL0p7ziY7LNGievsqtELlOYqXf32NBnB2FtRYAPcV
- Ypnyt8x1gHr5ko9TqApkg==
-UI-OutboundReport: notjunk:1;M01:P0:lOAnfQNL7L4=;97F/blw5sAmXcOy4IQxvmmsUqt/
- R6ZfCTYXl/Gkc0NqF2dUNEavmBaEAK0C8SwxdjirUnPRySPqU5mKyw1YCrBKMbyBPgHFAqbpu
- Pb1Ti94zdsaX4jEH5e6PD0w1ovst+q5qRAzslSmTyH3S+7NdSwz5NukjOMO3H1d8tTCLUFi+c
- bvEK311b7QNWga0Xqayom8lxCX3pAfTE1AW598IMUYF8h8bfVUqRuaqx+eodiCwOHGk5qH7nL
- c9afeQR/Iav+QH8d/rTYQZaA5Ob1Rg3wmvG1Kn17pS/9vE60q6jzQihv6PYQjFWz0Un6GdlQ6
- VyG8qzRnYYZ4DwmquO+604bdJRF5nbEWP1FNx4T+W7zntEYsna8tP85d0HUxRANRlW+EW2lm0
- c9XipsnCGoZ48p1P09t+UGIha0LZhm8v2QcNH8uRg5zb7PJa+XGgyoauFSto8E68dvfdSYu1b
- EE8dYrn8Zsr3KacFGHAAHQehBvqmsO4ur1MIG49TswI45jmMIBkFJCV2L5TNGvHV37nNHK7/A
- M87BOuKbAWlApOKSl38uRlND/0vCnCMrDTJ2la7AMfRF2mKuMqM8geim4V+uE97AewVXO801X
- QX8w/nk2o1sMppNL/IFM/jAq1EFRoibrplyOBUGPawiIIRSSHHmypclw15ov5WN+Z69LW1kJ3
- LGDYPSjYuuAM67U2tG+qcD+C382EaYZ3csiwWWZQTR3k4V5LQkiN6Ml4mYG71s6Gg08lFRUM1
- bfjFJlYbjQZtEO9amILvDPwSMpCIEOT2KchrJOnvfPJ0EhcgcJ9VrIkHEWUj9rGX4jC9N9FVc
- ylDfjFhIuib3D4FwO2HuTAoS06HT1rBXqJV3VKH0g6zBcCfSbTfyk9spcAHA9nOaUpWN7xvZe
- 5n5Oon2SsjyMUISdJYOtAA+NJl0MXpKZ6jJ8YqMjpvIovWarnSdUZzyAZ73QvTchNUb9F8AP3
- 06TEKnwDec0LZDDcFNAysLAUDHg=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] xarray: fix the data-race in xas_find_chunk() by
+ using READ_ONCE()
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>,
+        Yury Norov <yury.norov@gmail.com>
+Cc:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Jan Kara <jack@suse.cz>, Philipp Stanner <pstanner@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Mason <clm@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230918044739.29782-1-mirsad.todorovac@alu.unizg.hr>
+ <20230918094116.2mgquyxhnxcawxfu@quack3>
+ <22ca3ad4-42ef-43bc-51d0-78aaf274977b@alu.unizg.hr>
+ <20230918113840.h3mmnuyer44e5bc5@quack3>
+ <fb0f5ba9-7fe3-a951-0587-640e7672efec@alu.unizg.hr>
+ <ZQhlt/EbRf3Y+0jT@yury-ThinkPad> <20230918155403.ylhfdbscgw6yek6p@quack3>
+ <cda628df-1933-cce8-86cd-23346541e3d8@alu.unizg.hr>
+ <ZQidZLUcrrITd3Vy@yury-ThinkPad> <ZQkhgVb8nWGxpSPk@casper.infradead.org>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.hr>
+In-Reply-To: <ZQkhgVb8nWGxpSPk@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,42 +81,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-06 at 16:00 +0200, Peter Zijlstra wrote:
-> On Fri, Oct 06, 2023 at 12:31:28PM +0200, Mike Galbraith wrote:
-> > On Fri, 2023-10-06 at 10:35 +0200, Marek Szyprowski wrote:
-> > >
-> > >
-> > > Just to note, I've run into this issue on the QEmu's 'arm64/virt'
-> > > platform, not on the Samsung specific hardware.=C2=A0
-> >
-> > It doesn't appear to be arch specific, all I have to do is enable
-> > autogroup, raspberry or x86_64 desktop box, the occasional failure
-> > tripping over task groups, leaving both best and best_left with
-> > identical but not what we're looking for ->min_deadline.
->
-> OK, autogroups enabled and booted, /debug/sched/debug shows autogroups
-> are indeed in existence.
->
-> I've ran hackbench and a kernel build, but no whoopsie yet :-(
->
-> I suppose I'll kick some benchmarks and go make a cup 'o tea or
-> something.
+On 9/19/2023 6:20 AM, Matthew Wilcox wrote:
+> On Mon, Sep 18, 2023 at 11:56:36AM -0700, Yury Norov wrote:
+>> Guys, I lost the track of the conversation. In the other email Mirsad
+>> said:
+>>          Which was the basic reason in the first place for all this, because something changed
+>>          data from underneath our fingers ..
+>>
+>> It sounds clearly to me that this is a bug in xarray, *revealed* by
+>> find_next_bit() function. But later in discussion you're trying to 'fix'
+>> find_*_bit(), like if find_bit() corrupted the bitmap, but it's not.
+> 
+> No, you're really confused.  That happens.
+> 
+> KCSAN is looking for concurrency bugs.  That is, does another thread
+> mutate the data "while" we're reading it.  It does that by reading
+> the data, delaying for a few instructions and reading it again.  If it
+> changed, clearly there's a race.  That does not mean there's a bug!
+> 
+> Some races are innocuous.  Many races are innocuous!  The problem is
+> that compilers sometimes get overly clever and don't do the obvious
+> thing you ask them to do.  READ_ONCE() serves two functions here;
+> one is that it tells the compiler not to try anything fancy, and
+> the other is that it tells KCSAN to not bother instrumenting this
+> load; no load-delay-reload.
+> 
+>> In previous email Jan said:
+>>          for any sane compiler the generated assembly with & without READ_ONCE()
+>>          will be exactly the same.
+>>
+>> If the code generated with and without READ_ONCE() is the same, the
+>> behavior would be the same, right? If you see the difference, the code
+>> should differ.
+> 
+> Hopefully now you understand why this argument is wrong ...
+> 
+>> You say that READ_ONCE() in find_bit() 'fixes' 200 KCSAN BUG warnings. To
+>> me it sounds like hiding the problems instead of fixing. If there's a race
+>> between writing and reading bitmaps, it should be fixed properly by
+>> adding an appropriate serialization mechanism. Shutting Kcsan up with
+>> READ_ONCE() here and there is exactly the opposite path to the right direction.
+> 
+> Counterpoint: generally bitmaps are modified with set_bit() which
+> actually is atomic.  We define so many bitmap things as being atomic
+> already, it doesn't feel like making find_bit() "must be protected"
+> as a useful use of time.
+> 
+> But hey, maybe I'm wrong.  Mirsad, can you send Yury the bug reports
+> for find_bit and friends, and Yury can take the time to dig through them
+> and see if there are any real races in that mess?
+> 
+>> Every READ_ONCE must be paired with WRITE_ONCE, just like atomic
+>> reads/writes or spin locks/unlocks. Having that in mind, adding
+>> READ_ONCE() in find_bit() requires adding it to every bitmap function
+>> out there. And this is, as I said before, would be an overhead for
+>> most users.
+> 
+> I don't believe you.  Telling the compiler to stop trying to be clever
+> rarely results in a performance loss.
 
-Hm, just booting gets me a handful, and generic desktop activity
-produces a fairly regular supply.  This is virgin 6.6.0.ga9e6eb3-tip.
+Hi Mr. Wilcox,
 
-[  340.473123] EEVDF scheduling fail, picking leftmost
-[  340.473132] EEVDF scheduling fail, picking leftmost
-[  343.656549] EEVDF scheduling fail, picking leftmost
-[  343.656557] EEVDF scheduling fail, picking leftmost
-[  343.690463] EEVDF scheduling fail, picking leftmost
-[  343.690472] EEVDF scheduling fail, picking leftmost
-[  426.224039] EEVDF scheduling fail, picking leftmost
-[  426.224080] EEVDF scheduling fail, picking leftmost
-[  426.224084] EEVDF scheduling fail, picking leftmost
-[  426.363323] EEVDF scheduling fail, picking leftmost
-[  426.759244] EEVDF scheduling fail, picking leftmost
-[  426.759256] EEVDF scheduling fail, picking leftmost
-[  441.872524] EEVDF scheduling fail, picking leftmost
-[  441.872556] EEVDF scheduling fail, picking leftmost
+Do you think we should submit a formal patch for this data-race?
 
+Thank you.
+
+Best regards,
+Mirsad Todorovac
