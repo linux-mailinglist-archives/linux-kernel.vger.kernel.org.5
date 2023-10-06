@@ -2,84 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB407BC07D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC0B7BC07E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbjJFUjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 16:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        id S233537AbjJFUkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbjJFUjy (ORCPT
+        with ESMTP id S233536AbjJFUkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:39:54 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AF1CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:39:52 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a2379a8b69so31007217b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:39:52 -0700 (PDT)
+        Fri, 6 Oct 2023 16:40:12 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC47D6
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:40:11 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c723f1c80fso19774585ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:40:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696624792; x=1697229592; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fCCsvCjoztAYuiGh0Xey9xgcOmDlkIVfrEdnFUpQWQo=;
-        b=qmMMSAtMV0KLM9RtwJ1oPScNfXITRyUkLad/AhjuEweUNldoN0AJeWyNTstvXzmeQ8
-         gPagpsAknageqJ2nJkzj1ta1fJ0XCstDYqFU45yFywpi4tbZ9PIxxmiXc/JGDlzuoCCY
-         PGYi3ppvhtoA1qOCMTA9FCqIf/deMf3VYK0t9K61OJIACuquQmKYrxD3lnzwrG2ohtk/
-         Pw95MIx+DEwBJYHWkm+2yVyA9K84i4zSAu8wFowL3uJFmi5G+cgf7UengCnZeg06OmHC
-         J/v33EpEEpX/CfrOF5KDjxdJs3ik4LGPL6KER0wrk3d2Zaa8I88NSs9sOf0LQy0HuEJC
-         ViFw==
+        d=chromium.org; s=google; t=1696624811; x=1697229611; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gYltLeYvbo/1mtF+cJGeNFCBhuyzY8y0TMwn8mJuDlU=;
+        b=aVVs8RPrQTqCTjnXOY9nAwr2OCb8YXiOco08CShS92ljT8lrczAb7/Bvecss2ocb4E
+         b4mlzDnaTPBAj8FMY2bLfu962Yhs8wEoHZNKD6oj9FHN0UTlp7PBO8e/21TlSI5sXeTC
+         suJmtsaKQds6w+Z5C4JdwqH9eMc3yw9HMlNW8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696624792; x=1697229592;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fCCsvCjoztAYuiGh0Xey9xgcOmDlkIVfrEdnFUpQWQo=;
-        b=RbCQ63K6yNZq/8ZvDY3SGGB7YunJ1seyCJGBmLo1qyx6Na5eOnlnam8hKqfpz35nsY
-         sc1FSH8UEkCCLGU3bhIU7orkvwtN9AZnx2s/fLlMjr99Uvlxjt9oWVWRxC9483mNOnQQ
-         7rhDikBXldHozt/frnNM2AMAVYJF8+TeOJ1I70EgpgfYNAQnunJ+oHYBGE8atq2QJJbr
-         QTrc9c+neuQwJkMRH+rI5OotwEzqPThmNg0O9MY3uWTg1IxbANmYcwBZDLjdzOQqrGhI
-         hcadtTMN52IC7Utn3xuwLjxwYj3eQExjxyjLZ6C+i+yRgNObum6QjuDFeJ86+pTolzBA
-         5CBA==
-X-Gm-Message-State: AOJu0YynNgvJSBWpsytiwkVkYi+qRlr/bS2hc91eaBNEfGCTbuRKJmZP
-        RsRRZ+pIeSDVVnc1NhTAtRCrS7j1PwQFUur5lTXgON10b4XsrYcR
-X-Google-Smtp-Source: AGHT+IFR8NVGwTdVcapVfJC8kRBUPD6L6tfpVRlQ1CZCYYO//rqZ3c7OWFya24qTOj/hY79e7ym8EazegWVwlW4BrEw=
-X-Received: by 2002:a81:7cc5:0:b0:599:b59f:5280 with SMTP id
- x188-20020a817cc5000000b00599b59f5280mr9869580ywc.28.1696624792113; Fri, 06
- Oct 2023 13:39:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696624811; x=1697229611;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gYltLeYvbo/1mtF+cJGeNFCBhuyzY8y0TMwn8mJuDlU=;
+        b=CcmDX+JBy4lP0U0cir142u7dy+SaIPHFS0fKCPantN9dHF9jlxJ1UK//ahB9fL0Dtq
+         cwM1CHtxlKi/OwQbHwGVcxWwfXrJub5q91hqQWSQkk9hqjDlHzGxDbeFP3JNK1GeTijv
+         7LCz27TP54IFT4SGlk9KqeY1geeRawScFn7lYJWybPQKIClhJ24rEPXt+3T9Wf6pEoTH
+         nXhkU2v4lX59EnYMkoCKzN8gT6J2paNvixfsAoiVazNsvMDMWh3PnZXB32585IvudVPE
+         Rn7OjJuuGj74yZx090bUr9cCzWa9jAqlbX0nZ90xxopSe90SlWp26MM5DMlzSFZbATIT
+         c77g==
+X-Gm-Message-State: AOJu0YzKvaVGQ+zmEa/6UUZEmJ/NyLLlUIXmiREV2SsbGXb9xWcQSTKR
+        ujSnqta64ZbTEuw9wshaQetlJg==
+X-Google-Smtp-Source: AGHT+IGoeOCB9BQIIYsDUHmHt0dNs5E/IqnYM+4JDPUgBzU2U7hQ3/G8hmfV02fZLGW6TulWR0YmQg==
+X-Received: by 2002:a17:902:9b8e:b0:1c6:2780:3adc with SMTP id y14-20020a1709029b8e00b001c627803adcmr8091459plp.24.1696624810733;
+        Fri, 06 Oct 2023 13:40:10 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id z18-20020a170902ee1200b001c55e13bf2asm4349404plb.283.2023.10.06.13.40.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 13:40:10 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 13:40:08 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] regulator: da9063: Annotate struct da9063_regulators
+ with __counted_by
+Message-ID: <202310061339.56F7680B5E@keescook>
+References: <20230922175207.work.576-kees@kernel.org>
 MIME-Version: 1.0
-References: <tencent_DD2D371DB5925B4B602B1E1D0A5FA88F1208@qq.com>
-In-Reply-To: <tencent_DD2D371DB5925B4B602B1E1D0A5FA88F1208@qq.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 6 Oct 2023 22:39:40 +0200
-Message-ID: <CACRpkdZtOdBYfHtAE-2QzqhUhELFm38TV93ek7bO1qLJMGiXLA@mail.gmail.com>
-Subject: Re: [PATCH] maengine: ste_dma40: Fix PM disable depth imbalance in d40_probe
-To:     Zhang Shurong <zhang_shurong@foxmail.com>
-Cc:     vkoul@kernel.org, linux-arm-kernel@lists.infradead.org,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922175207.work.576-kees@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 4:28=E2=80=AFPM Zhang Shurong <zhang_shurong@foxmail=
-.com> wrote:
+On Fri, Sep 22, 2023 at 10:52:07AM -0700, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct da9063_regulators.
 
-> The pm_runtime_enable will increase power disable depth. Thus
-> a pairing decrement is needed on the error handling path to
-> keep it balanced according to context.
-> We fix it by calling pm_runtime_disable when error returns.
->
-> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+Friendly ping. Mark can you pick this up?
 
-Looks correct,
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Thanks!
 
-Yours,
-Linus Walleij
+-Kees
+
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Support Opensource <support.opensource@diasemi.com>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/regulator/da9063-regulator.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/regulator/da9063-regulator.c b/drivers/regulator/da9063-regulator.c
+> index a0621665a6d2..82bf321ae06f 100644
+> --- a/drivers/regulator/da9063-regulator.c
+> +++ b/drivers/regulator/da9063-regulator.c
+> @@ -158,7 +158,7 @@ struct da9063_regulator {
+>  struct da9063_regulators {
+>  	unsigned int				n_regulators;
+>  	/* Array size to be defined during init. Keep at end. */
+> -	struct da9063_regulator			regulator[];
+> +	struct da9063_regulator			regulator[] __counted_by(n_regulators);
+>  };
+>  
+>  /* BUCK modes for DA9063 */
+> -- 
+> 2.34.1
+> 
+
+-- 
+Kees Cook
