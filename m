@@ -2,157 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B187BB686
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2DAD7BB68A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbjJFLhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55286 "EHLO
+        id S232080AbjJFLiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbjJFLhU (ORCPT
+        with ESMTP id S232018AbjJFLiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:37:20 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B21D6
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 04:37:17 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-503065c4b25so2703247e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 04:37:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696592236; x=1697197036; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=W1VsvxhUXFiTgLAymq3ebUz3YFWk1kEe5SWqaT+jDqg=;
-        b=MXHad73Rieia+KSM9N8U0lQHJIVVd3qas9djEHlGb4LtAvqVCNBpnyCrVo0m0MSwoi
-         z1wJ/teSabSZeSMbReH8umazPIMWwZKHLfUV2yD/Eb6qLau0u95OFNA3V3hdyHUZB3ky
-         MjRTWZKChgS7CZi61S5NwpljenSbBVj64ytoJr1M3cOhwXO/TNWHzyxtLw6gRrMqnigy
-         76vMzq270ClxbYIZZYSaf4eer3eMd/ufFseHJvSn2Qwz3t0R5BWA/hYzVjNlPOQwo21I
-         4fa5L3F9pqVFPmnwV3BE17heBmLH8yw43C061q5crhz2T+I2mMUEdUJSHa2FDZLQaB+N
-         m49Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696592236; x=1697197036;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W1VsvxhUXFiTgLAymq3ebUz3YFWk1kEe5SWqaT+jDqg=;
-        b=DuUF5QvAZEtf017tp43Py+jLbiV6cKB59kFPBVz2pknIMwzVDECYfbfV3M+ltZ3ooL
-         99YaXhAI+I1+0mYAJQGC+J9cHu5ELfx1Q4z28yvhcaBhroyFT2tzz7d0Wi76VPWbXraB
-         cEa8IBwLpvfoaqNNkUx8YQXUyVhmHytqzp63vKF0Hhf3thvHPWbyj4/vozpSdogdoeO+
-         63+4lgEaz34Irlq5mijR8YLHUeJf2N2YntRU6NEELRuNzVqpbNq5LKTgcxsJbdhDCF9X
-         Q7flG6X9J3G7mD0ICSfkcVvKiTNGooZ3+WdLEyuHG4tnf9+PIx+aqdZXosoMrxOpE/z2
-         GQrA==
-X-Gm-Message-State: AOJu0YxR2IJjvm+6MrBKZOahLQSD5xV6Gq1BaFsIIqkPjx8OpZiCXgL0
-        v5AtLCdHIgzTgH+QNqkbKzVXeQ==
-X-Google-Smtp-Source: AGHT+IF+Jpya32i8cpjd/eEUDafUcO+YT0nT8KXnyToGumNwtjpvCiq/Lgj7ChqbBTe+srBXkEe46g==
-X-Received: by 2002:a05:6512:4015:b0:503:9eb:d277 with SMTP id br21-20020a056512401500b0050309ebd277mr8005030lfb.49.1696592235801;
-        Fri, 06 Oct 2023 04:37:15 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id y20-20020ac24214000000b00500829f7b2bsm269094lfh.250.2023.10.06.04.37.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 04:37:15 -0700 (PDT)
-Message-ID: <1b317a1f-f7d1-4ec2-8e15-7c9cad3036bf@linaro.org>
-Date:   Fri, 6 Oct 2023 14:37:14 +0300
+        Fri, 6 Oct 2023 07:38:17 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C38283;
+        Fri,  6 Oct 2023 04:38:15 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1E7A3E0010;
+        Fri,  6 Oct 2023 11:38:05 +0000 (UTC)
+Message-ID: <e08d9ab1-a61f-442c-9eb2-81aaac291815@ghiti.fr>
+Date:   Fri, 6 Oct 2023 13:38:05 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/7] drm/msm/dp: move parser->parse() and
- dp_power_client_init() to probe
-Content-Language: en-GB
-To:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
-        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
-        agross@kernel.org, andersson@kernel.org
-Cc:     quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com,
-        quic_sbillaka@quicinc.com, marijn.suijten@somainline.org,
-        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1696436821-14261-1-git-send-email-quic_khsieh@quicinc.com>
- <1696436821-14261-5-git-send-email-quic_khsieh@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <1696436821-14261-5-git-send-email-quic_khsieh@quicinc.com>
+From:   Alexandre Ghiti <alex@ghiti.fr>
+Subject: Re: [PATCH] Test for riscv fixes
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Edward AD <twuufnxlz@gmail.com>, aou@eecs.berkeley.edu,
+        conor@kernel.org, gregkh@linuxfoundation.org, guoren@kernel.org,
+        jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
+        liushixin2@huawei.com, palmer@dabbelt.com,
+        paul.walmsley@sifive.com,
+        syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+References: <CAHVXubhG2c=ShFHF4hMMFm8=BYDTyDUduOizujbUWQBW+55wTw@mail.gmail.com>
+ <20230929230549.45206-2-twuufnxlz@gmail.com>
+ <CAHVXubiBVKJ89fBtV1fvEpoOyLvdvjkWfeDmw2yZsod5ao9hPw@mail.gmail.com>
+ <ZRrIcaa-2Co2cSJm@FVFF77S0Q05N.cambridge.arm.com>
+Content-Language: en-US
+In-Reply-To: <ZRrIcaa-2Co2cSJm@FVFF77S0Q05N.cambridge.arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alex@ghiti.fr
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2023 19:26, Kuogee Hsieh wrote:
-> Original both parser->parse() and dp_power_client_init() are done at
-> dp_display_bind() since eDP population is done at binding time.
-> In the preparation of having eDP population done at probe() time,
-> move both function from dp_display_bind() to dp_display_probe().
-> 
-> Changes in v4:
-> -- explain why parser->parse() and dp_power_client_init() are moved to probe time
-> -- tear down sub modules if failed
-> 
-> Changes in v4:
-> -- split this patch out of "incorporate pm_runtime framework into DP driver" patch
-> 
-> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> ---
->   drivers/gpu/drm/msm/dp/dp_display.c | 22 ++++++++++++----------
->   1 file changed, 12 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 32663ea..e4942fc 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -276,11 +276,6 @@ static int dp_display_bind(struct device *dev, struct device *master,
->   	dp->dp_display.drm_dev = drm;
->   	priv->dp[dp->id] = &dp->dp_display;
->   
-> -	rc = dp->parser->parse(dp->parser);
-> -	if (rc) {
-> -		DRM_ERROR("device tree parsing failed\n");
-> -		goto end;
-> -	}
->   
->   
->   	dp->drm_dev = drm;
-> @@ -291,11 +286,6 @@ static int dp_display_bind(struct device *dev, struct device *master,
->   		goto end;
->   	}
->   
-> -	rc = dp_power_client_init(dp->power);
+Hi Mark,
 
-As we have moved dp_power_client_init() from bind() to probe(), we 
-should also move dp_power_client_deinit() to remove(). Otherwise after 
-several bind/unbind attempts the pm enablement count can become negative.
+On 02/10/2023 15:41, Mark Rutland wrote:
+> On Mon, Oct 02, 2023 at 09:13:52AM +0200, Alexandre Ghiti wrote:
+>> Hi Edward,
+>>
+>> On Sat, Sep 30, 2023 at 1:06 AM Edward AD<twuufnxlz@gmail.com>  wrote:
+>>> Hi Alexandre,
+>>>
+>>> On Fri, 29 Sep 2023 10:25:59 +0200 Alexandre Ghiti<alexghiti@rivosinc.com>  wrote:
+>>>> I'm still not convinced this will fix the kasan out-of-bounds
+>>>> accesses, the page can be valid but the read can happen at an offset
+>>>> not initialized and trigger such errors right? I still think there is
+>>>> something weird about the stack frame, as to me this should not happen
+>>>> (but admittedly I don't know much about that).
+>>> The added check can confirm that the physical page is invalid (whether it is a
+>>> vmalloc allocated page or a slab allocated page), and exit the for loop when it is invalid.
+>> Yes, but to me this is not what happens in the bug report you link:
+>>
+>> | BUG: KASAN: out-of-bounds in walk_stackframe+0x130/0x2f2
+>> arch/riscv/kernel/stacktrace.c:59
+>> | Read of size 8 at addr ff20000006d37c38 by task swapper/1/0
+>>
+>> So the read at address ff20000006d37c38 is not "normal" according to
+>> KASAN (you can see there is no trap, meaning the physical mapping
+>> exists).
+>>
+>> | The buggy address belongs to the virtual mapping at
+>> |  [ff20000006d30000, ff20000006d39000) created by:
+>> | kernel_clone+0x118/0x896 kernel/fork.c:2909
+>>
+>> The virtual address is legitimate since the vma exists ^
+>>
+>> | The buggy address belongs to the physical page:
+>> | page:ff1c00000250dbc0 refcount:1 mapcount:0 mapping:0000000000000000
+>> index:0x0 pfn:0x9436f
+>>
+>> And the physical page also exists ^
+>>
+>> So I insist, checking that a physical mapping exists to exit the loop
+>> is not enough, to me, the error here is that the backtrace goes "too
+>> far" at an address where nothing was written before and then KASAN
+>> complains about that, again, we don't take any page fault here so it's
+>> not a problem of existing physical mapping.
+> Yep!
+>
+> I believe what's happening here is one task unwinding another (starting from
+> whatever gets saved in switch_to()), and there's nothing that prevents that
+> other task from running concurrently and modifying/poisoning its stack. In
+> general trying to unwind a remote stack is racy and broken, but we're stuck
+> with a few bits of the kernel tryingto do that occasionally and so the arch
+> code needs to handle that without blowing up.
 
-> -	if (rc) {
-> -		DRM_ERROR("Power client create failed\n");
-> -		goto end;
-> -	}
->   
->   	rc = dp_register_audio_driver(dev, dp->audio);
->   	if (rc) {
-> @@ -1250,6 +1240,18 @@ static int dp_display_probe(struct platform_device *pdev)
->   		return -EPROBE_DEFER;
->   	}
->   
-> +	rc = dp->parser->parse(dp->parser);
-> +	if (rc) {
-> +		DRM_ERROR("device tree parsing failed\n");
-> +		goto err;
-> +	}
-> +
-> +	rc = dp_power_client_init(dp->power);
-> +	if (rc) {
-> +		DRM_ERROR("Power client create failed\n");
-> +		goto err;
-> +	}
-> +
->   	/* setup event q */
->   	mutex_init(&dp->event_mutex);
->   	init_waitqueue_head(&dp->event_q);
 
--- 
-With best wishes
-Dmitry
+Thanks for that, I had already fixed the "imprecise" unwinder (when we 
+don't have a frame pointer) using READ_ONCE_NOCHECK() but I had not this 
+use case in mind, so I'll fix that too.
 
+
+> For KASAN specifically you'll need to access the stack with unchecked accesses
+> (e.g. using READ_ONCE_NOCHECK() to read the struct stackframe), and you'll
+> probably want to add some explicit checks that pointers are within stack bounds
+> since concurrent modification (or corruption) could result in entirely bogus
+> pointers.
+>
+> I *think* that we do the right thing on arm64, so you might want to take a look
+> at arm64's unwinder in arch/arm64/kernel/stacktrace.c,
+> arch/arm64/include/asm/stacktrace.h, and
+> arch/arm64/include/asm/stacktrace/common.h.
+
+
+And I'll check that for the stack bounds check.
+
+Thanks again,
+
+Alex
+
+
+>
+> Mark.
