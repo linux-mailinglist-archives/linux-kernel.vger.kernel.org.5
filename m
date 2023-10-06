@@ -2,147 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BE77BB87B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 875247BB852
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232077AbjJFNCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41610 "EHLO
+        id S232263AbjJFM7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232439AbjJFNCV (ORCPT
+        with ESMTP id S232082AbjJFM7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:02:21 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48196ED;
-        Fri,  6 Oct 2023 06:02:00 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396Clq1s026747;
-        Fri, 6 Oct 2023 13:00:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-transfer-encoding
- : mime-version; s=pp1; bh=EzIkQvdqHkvqU8pfoi8auX9WuaFYkA4CdPiXxhdMDJM=;
- b=aMB5YnwwdD81Fs/pqdankSbbxB248JstoF0QDgTEXcNgMPh6hDJl4ljJ/elSctI4U3cA
- odFrSY0WBNjrfkVOIOxdU+C7KTFQrPXFanavJa4aUYjPiKprhYxZ65BfEQgK+ItWNzdH
- HKjS20ScH6jlpvQgNT+Lbsu7D5kPzb/L94rWRLXESGsGCxlSaBRt1XqcuZ11awQene6s
- oRMeJk7fL7oRyjZEiKtPYMWNYFJCpIHdhg8eVeKPV5DnFwXrzetDqwzb9jl+YL3rDsQa
- nmwqGoCeNiLeCdipYkI851Q5t5LbmfDgIwf47BK+Xnzjn5refTy4+P3aEx+h0e1VRSW2 eg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tjjj70h27-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Oct 2023 13:00:06 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 396Cm8ur027771;
-        Fri, 6 Oct 2023 12:59:25 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tjjj70edd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Oct 2023 12:59:25 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 396CPqMk017592;
-        Fri, 6 Oct 2023 12:58:53 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tey0pkg8n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Oct 2023 12:58:53 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 396Cwm2G43254510
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 6 Oct 2023 12:58:48 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F17F320043;
-        Fri,  6 Oct 2023 12:58:47 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A4E3D2004B;
-        Fri,  6 Oct 2023 12:58:47 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  6 Oct 2023 12:58:47 +0000 (GMT)
-From:   Gerd Bayer <gbayer@linux.ibm.com>
-To:     rdunlap@infradead.org, wenjia@linux.ibm.com
-Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        netdev@vger.kernel.org, raspl@linux.ibm.com, sfr@canb.auug.org.au,
-        alibuda@linux.alibaba.com, wintera@linux.ibm.com,
-        guwen@linux.alibaba.com, tonylu@linux.alibaba.com,
-        jaka@linux.ibm.com
-Subject: [PATCH net] net/smc: Fix dependency of SMC on ISM
-Date:   Fri,  6 Oct 2023 14:58:47 +0200
-Message-Id: <20231006125847.1517840-1-gbayer@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <d9a2d47d-c8bd-cf17-83e0-d9b82561a594@linux.ibm.com>
-References: <d9a2d47d-c8bd-cf17-83e0-d9b82561a594@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: SG6ZWIKrpDqZYggufCdzL7By_oFzYgj7
-X-Proofpoint-GUID: wzbrlymHai5pgffCHOQI33fNRdJYEgKO
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 6 Oct 2023 08:59:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5EECF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:59:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F24AC433C8;
+        Fri,  6 Oct 2023 12:59:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696597177;
+        bh=4MA/LskURMEJ12KVbP+fP6rhRzcvwd/Y3VAARsbtgKE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bETbu+rA1puRoxryATnjVCGhe6ye4E0ESqOWM6iYAC/DHD1zut2RX78JHqc+hYyGD
+         7z2fo359Izt9OJ6Hs+5nywrwiZ9aa/o4oMbrsFy1GIHGEfRk/LmdxFIrsJsU1uIArh
+         rDdSMpM6jmotdHt3qsJXrcIYljGLxAUhLLvdrELcASS5Cs3JVXdvbXUbpats7CgkEC
+         dvbaWN4pbyoqOkvFo7ZHQgSMDQv2qyVORbjMuqEA5VGAI8Bg80N522iXxKGc1Ll9c7
+         obD9dwFN/dGaGqIOarT0IeFfTcKpMdf9iRq05P2TmVklXSHoZobiMFEGOZa/vvrc9c
+         uekebDszGTMxQ==
+From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-acpi@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fang Xiang <fangxiang3@xiaomi.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH v3 0/5] irqchip/gic-v3: Enable non-coherent GIC designs probing
+Date:   Fri,  6 Oct 2023 14:59:24 +0200
+Message-Id: <20231006125929.48591-1-lpieralisi@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230905104721.52199-1-lpieralisi@kernel.org>
+References: <20230905104721.52199-1-lpieralisi@kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-06_10,2023-10-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=816
- suspectscore=0 clxscore=1011 malwarescore=0 phishscore=0 spamscore=0
- adultscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310060096
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the SMC protocol is built into the kernel proper while ISM is
-configured to be built as module, linking the kernel fails due to
-unresolved dependencies out of net/smc/smc_ism.o to
-ism_get_smcd_ops, ism_register_client, and ism_unregister_client
-as reported via the linux-next test automation (see link).
-This however is a bug introduced a while ago.
+This series is v3 of previous series:
 
-Correct the dependency list in ISM's and SMC's Kconfig to reflect the
-dependencies that are actually inverted. With this you cannot build a
-kernel with CONFIG_SMC=y and CONFIG_ISM=m. Either ISM needs to be 'y',
-too - or a 'n'. That way, SMC can still be configured on non-s390
-architectures that do not have (nor need) an ISM driver.
+v2: https://lore.kernel.org/all/20230906094139.16032-1-lpieralisi@kernel.org
+v1: https://lore.kernel.org/all/20230905104721.52199-1-lpieralisi@kernel.org
 
-Fixes: 89e7d2ba61b7 ("net/ism: Add new API for client registration")
+v2 -> v3:
+	- Added ACPICA temporary changes and ACPI changes to implement
+	  ECR https://bugzilla.tianocore.org/show_bug.cgi?id=4557
+	- ACPI changes are for testing purposes - subject to ECR code
+	  first approval
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Closes: https://lore.kernel.org/linux-next/d53b5b50-d894-4df8-8969-fd39e63440ae@infradead.org/
-Co-developed-by: Wenjia Zhang <wenjia@linux.ibm.com>
-Signed-off-by: Wenjia Zhang <wenjia@linux.ibm.com>
-Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+v1 -> v2:
+	- Updated DT bindings as per feedback
+	- Updated patch[2] to use GIC quirks infrastructure
+
+Original cover letter
 ---
- drivers/s390/net/Kconfig | 2 +-
- net/smc/Kconfig          | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+The GICv3 architecture specifications provide a means for the
+system programmer to set the shareability and cacheability
+attributes the GIC components (redistributors and ITSes) use
+to drive memory transactions.
 
-diff --git a/drivers/s390/net/Kconfig b/drivers/s390/net/Kconfig
-index 74760c1a163b..4902d45e929c 100644
---- a/drivers/s390/net/Kconfig
-+++ b/drivers/s390/net/Kconfig
-@@ -102,7 +102,7 @@ config CCWGROUP
- 
- config ISM
- 	tristate "Support for ISM vPCI Adapter"
--	depends on PCI && SMC
-+	depends on PCI
- 	default n
- 	help
- 	  Select this option if you want to use the Internal Shared Memory
-diff --git a/net/smc/Kconfig b/net/smc/Kconfig
-index 1ab3c5a2c5ad..746be3996768 100644
---- a/net/smc/Kconfig
-+++ b/net/smc/Kconfig
-@@ -2,6 +2,7 @@
- config SMC
- 	tristate "SMC socket protocol family"
- 	depends on INET && INFINIBAND
-+	depends on m || ISM != m
- 	help
- 	  SMC-R provides a "sockets over RDMA" solution making use of
- 	  RDMA over Converged Ethernet (RoCE) technology to upgrade
+Albeit the architecture give control over shareability/cacheability
+memory transactions attributes (and barriers), it is allowed to
+connect the GIC interconnect ports to non-coherent memory ports
+on the interconnect, basically tying off shareability/cacheability
+"wires" and de-facto making the redistributors and ITSes non-coherent
+memory observers.
+
+This series aims at starting a discussion over a possible solution
+to this problem, by adding to the GIC device tree bindings the
+standard dma-noncoherent property. The GIC driver uses the property
+to force the redistributors and ITSes shareability attributes to
+non-shareable, which consequently forces the driver to use CMOs
+on GIC memory tables.
+
+On ARM DT DMA is default non-coherent, so the GIC driver can't rely
+on the generic DT dma-coherent/non-coherent property management layer
+(of_dma_is_coherent()) which would default all GIC designs in the field
+as non-coherent; it has to rely on ad-hoc dma-noncoherent property handling.
+
+When a consistent approach is agreed upon for DT an equivalent binding will
+be put forward for ACPI based systems.
+
+Lorenzo Pieralisi (4):
+  dt-bindings: interrupt-controller: arm,gic-v3: Add dma-noncoherent
+    property
+  irqchip/gic-v3: Enable non-coherent redistributors/ITSes DT probing
+  ACPICA: Add new MADT GICC/GICR/ITS flags handling [code first]
+  irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
+
+Marc Zyngier (1):
+  irqchip/gic-v3-its: Split allocation from initialisation of its_node
+
+ .../interrupt-controller/arm,gic-v3.yaml      |  12 ++
+ drivers/acpi/processor_core.c                 |  21 +++
+ drivers/irqchip/irq-gic-common.h              |  12 ++
+ drivers/irqchip/irq-gic-v3-its.c              | 174 +++++++++++-------
+ drivers/irqchip/irq-gic-v3.c                  |  22 +++
+ include/acpi/actbl2.h                         |  11 +-
+ include/linux/acpi.h                          |   3 +
+ 7 files changed, 189 insertions(+), 66 deletions(-)
+
 -- 
-2.39.2
+2.34.1
 
