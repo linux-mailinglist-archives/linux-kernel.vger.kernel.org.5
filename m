@@ -2,175 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E80F7BB48D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1B57BB492
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbjJFJv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 05:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46142 "EHLO
+        id S231509AbjJFJxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 05:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbjJFJvZ (ORCPT
+        with ESMTP id S231439AbjJFJxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 05:51:25 -0400
-Received: from icts-p-cavuit-4.kulnet.kuleuven.be (icts-p-cavuit-4.kulnet.kuleuven.be [134.58.240.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8307BAD;
-        Fri,  6 Oct 2023 02:51:20 -0700 (PDT)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: B6F02E4.A2FD6
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:213:242:ac11:64])
-        by icts-p-cavuit-4.kulnet.kuleuven.be (Postfix) with ESMTP id B6F02E4;
-        Fri,  6 Oct 2023 11:51:18 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1696585878;
-        bh=2O7Z74NrcNY3C7YcNAvm7mBNNZyOF3fhdowlO4ULU+0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=GApPb/ctpV6h3Ig7YixyU7wxSYGRYK+mqdvd1QooGIVz6EUY6TzlSp1kmAanCGHji
-         GFHp9nnHBsTBHW3FIsyPKggW6K1LmA+m7zHffIWJjZC+pWUZoR4rDXHv/kQhmcO/7r
-         5knpRGwivzPrLmWNo3oG2GBZOGirUtsWWRNM2wEk=
-Received: from [IPV6:2a02:1811:d31:8b00:3eef:508b:d52c:c553] (ptr-82s0fs6lc2e44cgawyb.18120a2.ip6.access.telenet.be [IPv6:2a02:1811:d31:8b00:3eef:508b:d52c:c553])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id 6D1DCD4EB6F67;
-        Fri,  6 Oct 2023 11:51:18 +0200 (CEST)
-Message-ID: <f2726c67-87f7-409a-9ac2-e845249348cc@cs.kuleuven.be>
-Date:   Fri, 6 Oct 2023 11:51:26 +0200
+        Fri, 6 Oct 2023 05:53:45 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAEF9F
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 02:53:43 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40572aeb6d0so17339865e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 02:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696586022; x=1697190822; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=EAsXkny87ZOF57hq2rRzij47Q/y5dvWojHFo8373xlo=;
+        b=p/Yjr8SJzp0FOZvU9tGkYOv8Sy5p+MEBUZH350LpCar5L7/wzXgLi3NIoXCcM5yNE6
+         8siV/oHsbWfT10ihKrAfmopoRfeJcdM7pJcE2zl4ruLyYG2x/JKZ+fQQj5kyCxFowOLE
+         CfPuau5HCGuGeQ4vQBSBa5NJNYGt1lkmyC5fjnM83xpfMm0l8U8L3NHfMNMUO7pjrk8d
+         hZrbM851eZ8jZGBQzBrKoEGtKcFLyBiounrN/3unxBfFDEzL+EpoLwJmodejLveqJNtK
+         cTZIWhntZeeyJIK6H2Nvso2ZT+FSUQhpg8uH2GbVEsSu5ZBkhQQyHNLklkBJy+tfQpwL
+         nGxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696586022; x=1697190822;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EAsXkny87ZOF57hq2rRzij47Q/y5dvWojHFo8373xlo=;
+        b=GQUuTIHTmWBGNGZVlZ54aPetID4uiDGm10nBFGRLQU7HH/Dn2iJBwgP5/I/mRz+s1K
+         UPgIfb5JlEBM2ryZ6+sTlV7R8B7RBjuzXzIS2HKY2w3QLL3p42xpnM/rIabxkwFE3K7N
+         LVxnUKa4zeLnAfgqGsDSWH4VMi98q/xY/L1Y8pBOLhTbVET4FST6RWPZy8aN15/5xR5V
+         9zymh8VKSo2TW1llL46IjzLeNBs51XSsWHygNL+5DcjhUlQE3DknA9Mt6+s0nacJD/lW
+         fdcvhJFnNIa7bLes9kt42RVrPSmghFsQcDoN08ZVQPMAZi/yFTscsGbpbfE9RZ6y/lBt
+         uBfA==
+X-Gm-Message-State: AOJu0YxXU9ZtATgbDFreyp0mNb4AqXspIc0TviZmcuHjDkImXo3QdrSb
+        VBFoEOBWLOW/rr0ZhqDo7Qd5ig==
+X-Google-Smtp-Source: AGHT+IHrcOMJ9DKWXLL+OqURxmxVAi/wXO6noduuqphftmmCBE8BiZD7h8nJrZjcg+IQZX0E+BghMg==
+X-Received: by 2002:a05:600c:2a4e:b0:3fe:fc0f:52e2 with SMTP id x14-20020a05600c2a4e00b003fefc0f52e2mr6934953wme.37.1696586022042;
+        Fri, 06 Oct 2023 02:53:42 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:8f44:72b3:5bcb:6c6b])
+        by smtp.gmail.com with ESMTPSA id c5-20020a05600c0ac500b0040586360a36sm5579460wmr.17.2023.10.06.02.53.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 02:53:41 -0700 (PDT)
+References: <20231002141020.2403652-1-jbrunet@baylibre.com>
+ <20231002141020.2403652-3-jbrunet@baylibre.com>
+ <b81a296d-0640-4b2e-aab6-c9de37d10206@linaro.org>
+ <1j5y3ozvmk.fsf@starbuckisacylon.baylibre.com>
+ <3e69ae4b-5d9e-42ee-a21e-151de8fbb996@linaro.org>
+ <1j8r8hxutt.fsf@starbuckisacylon.baylibre.com>
+ <036a9fef-02fd-4bfd-afb5-50724f15176c@linaro.org>
+ <1j4jj4xik6.fsf@starbuckisacylon.baylibre.com>
+ <78c8d21f-99b1-40ed-a76f-fdf3cbb42274@linaro.org>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Kevin Hilman <khilman@baylibre.com>, Da Xue <da.xue@libretech.co>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH 2/2] arm64: dts: amlogic: add libretech cottonwood support
+Date:   Fri, 06 Oct 2023 11:52:58 +0200
+In-reply-to: <78c8d21f-99b1-40ed-a76f-fdf3cbb42274@linaro.org>
+Message-ID: <1jzg0wvzyz.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 00/13] selftests/sgx: Fix compilation errors
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-References: <20231005153854.25566-1-jo.vanbulck@cs.kuleuven.be>
- <119aaa2820be5dc58144e74574cfaa7777f79604.camel@intel.com>
-Content-Language: en-US
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-In-Reply-To: <119aaa2820be5dc58144e74574cfaa7777f79604.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you, Kai! I'm not familiar with any next steps to get this merged 
-upstream, but atm all commits in this series have been reviewed by at 
-least Jarkko. Let me know if anything further is needed from my side!
 
-Best,
-Jo
+On Fri 06 Oct 2023 at 10:32, Neil Armstrong <neil.armstrong@linaro.org> wrote:
 
-On 05.10.23 23:25, Huang, Kai wrote:
-> Hi Jo,
-> 
-> Just FYI I won't review the rest patches in this series.  One of the reasons is
-> I am not that familiar with the rest.  Jarkko has reviewed anyway :-).
-> 
-> On Thu, 2023-10-05 at 17:38 +0200, Jo Van Bulck wrote:
->> Hi,
->>
->> This patch series ensures that all SGX selftests succeed when compiling with
->> optimizations (as tested with -O{0,1,2,3,s} for both gcc 11.3.0 and clang
->> 14.0.0). The aim of the patches is to avoid reliance on undefined,
->> compiler-specific behavior that can make the test results fragile.
->>
->> As far as I see, all commits in this series now have an explicit reviewed-by
->> tag, so hopefully this can get merged upstream? Please let me know if any
->> concerns remain and I'd happily address them.
->>
->> Reference output below:
->>
->> .. Testing   gcc   -O0    [OK]
->> .. Testing   gcc   -O1    [OK]
->> .. Testing   gcc   -O2    [OK]
->> .. Testing   gcc   -O3    [OK]
->> .. Testing   gcc   -Os    [OK]
->> .. Testing   gcc   -Ofast [OK]
->> .. Testing   gcc   -Og    [OK]
->> .. Testing   clang -O0    [OK]
->> .. Testing   clang -O1    [OK]
->> .. Testing   clang -O2    [OK]
->> .. Testing   clang -O3    [OK]
->> .. Testing   clang -Os    [OK]
->> .. Testing   clang -Ofast [OK]
->> .. Testing   clang -Og    [OK]
->>
->> Changelog
->> ---------
->>
->> v7
->>    - Add reviewed-by tag (Jarkko)
->>
->> v6
->>    - Collect final ack/reviewed-by tags (Jarkko, Kai)
->>
->> v5
->>    - Reorder patches (Jarkko, Kai)
->>    - Include fixes tag for inline asm memory clobber patch (Kai)
->>    - Include linker error in static-pie commit message (Kai)
->>    - Include generated assembly in relocations commit (Kai)
->>
->> v4
->>    - Remove redundant -nostartfiles compiler flag (Jarkko)
->>    - Split dynamic symbol table removal in separate commit (Kai)
->>    - Split redundant push/pop elimination in separate commit (Kai)
->>    - Remove (incomplete) register cleansing on enclave exit
->>    - Fix possibly uninitialized pointer dereferences in load.c
->>
->> v3
->>    - Refactor encl_op_array declaration and indexing (Jarkko)
->>    - Annotate encl_buffer with "used" attribute (Kai)
->>    - Split encl_buffer size and placement commits (Kai)
->>
->> v2
->>    - Add additional check for NULL pointer (Kai)
->>    - Refine to produce proper static-pie executable
->>    - Fix linker script assertions
->>    - Specify memory clobber for inline asm instead of volatile (Kai)
->>    - Clarify why encl_buffer non-static (Jarkko, Kai)
->>    - Clarify -ffreestanding (Jarkko)
->>
->> Best,
->> Jo
->>
->> Jo Van Bulck (13):
->>    selftests/sgx: Fix uninitialized pointer dereference in error path
->>    selftests/sgx: Fix uninitialized pointer dereferences in
->>      encl_get_entry
->>    selftests/sgx: Include memory clobber for inline asm in test enclave
->>    selftests/sgx: Separate linker options
->>    selftests/sgx: Specify freestanding environment for enclave
->>      compilation
->>    selftests/sgx: Remove redundant enclave base address save/restore
->>    selftests/sgx: Produce static-pie executable for test enclave
->>    selftests/sgx: Handle relocations in test enclave
->>    selftests/sgx: Fix linker script asserts
->>    selftests/sgx: Ensure test enclave buffer is entirely preserved
->>    selftests/sgx: Ensure expected location of test enclave buffer
->>    selftests/sgx: Discard unsupported ELF sections
->>    selftests/sgx: Remove incomplete ABI sanitization code in test enclave
->>
->>   tools/testing/selftests/sgx/Makefile          | 12 ++--
->>   tools/testing/selftests/sgx/defines.h         |  2 +
->>   tools/testing/selftests/sgx/load.c            |  9 ++-
->>   tools/testing/selftests/sgx/sigstruct.c       |  5 +-
->>   tools/testing/selftests/sgx/test_encl.c       | 67 +++++++++++++------
->>   tools/testing/selftests/sgx/test_encl.lds     | 10 +--
->>   .../selftests/sgx/test_encl_bootstrap.S       | 28 +++-----
->>   7 files changed, 77 insertions(+), 56 deletions(-)
->>
-> 
+> On 06/10/2023 10:21, Jerome Brunet wrote:
+>> On Thu 05 Oct 2023 at 12:04, Neil Armstrong <neil.armstrong@linaro.org>
+>> wrote:
+>> 
+>>> On 05/10/2023 11:42, Jerome Brunet wrote:
+>>>> On Tue 03 Oct 2023 at 09:35, Neil Armstrong <neil.armstrong@linaro.org>
+>>>> wrote:
+>>>>
+>>>>> On 02/10/2023 20:57, Jerome Brunet wrote:
+>>>>>> On Mon 02 Oct 2023 at 18:45, Neil Armstrong <neil.armstrong@linaro.org>
+>>>>>> wrote:
+>>>>>>
+>>>>>
+>>>>> <snip>
+>>>>>
+>>>>>>>> +&usb3_pcie_phy {
+>>>>>>>> +	#address-cells = <1>;
+>>>>>>>> +	#size-cells = <0>;
+>>>>>>>> +	phy-supply = <&vcc_5v>;
+>>>>>>>> +
+>>>>>>>> +	hub: hub@1 {
+>>>>>>>> +		compatible = "usb5e3,626";
+>>>>>>>> +		reg = <1>;
+>>>>>>>> +		reset-gpios = <&gpio GPIOC_7 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
+>>>>>>>> +	};
+>>>>>>>
+>>>>>>> Not sure the PHY is the right place to put the USB HUB,
+>>>>>>> and it's probable the HUB is connected to both the USB2 and USB3 lines
+>>>>>> It is connected to the USB3.0 only
+>>>>>>
+>>>>>>> so you should have both USB IDs in DT like it'd done for the Odroid-C4:
+>>>>>>>
+>>>>>>> / {
+>>>>>>> ...
+>>>>>>>             /* USB hub supports both USB 2.0 and USB 3.0 root hub */
+>>>>>>>             usb-hub {
+>>>>>>>                     dr_mode = "host";
+>>>>>>>                     #address-cells = <1>;
+>>>>>>>                     #size-cells = <0>;
+>>>>>>>
+>>>>>>>                     /* 2.0 hub on port 1 */
+>>>>>>>                     hub_2_0: hub@1 {
+>>>>>>>                             compatible = "usb2109,2817";
+>>>>>>>                             reg = <1>;
+>>>>>>>                             peer-hub = <&hub_3_0>;
+>>>>>>>                             reset-gpios = <&gpio GPIOH_4 GPIO_ACTIVE_LOW>;
+>>>>>>>                             vdd-supply = <&vcc_5v>;
+>>>>>>>                     };
+>>>>>>>
+>>>>>>>                     /* 3.1 hub on port 4 */
+>>>>>>>                     hub_3_0: hub@2 {
+>>>>>>>                             compatible = "usb2109,817";
+>>>>>>>                             reg = <2>;
+>>>>>>>                             peer-hub = <&hub_2_0>;
+>>>>>>>                             reset-gpios = <&gpio GPIOH_4 GPIO_ACTIVE_LOW>;
+>>>>>>>                             vdd-supply = <&vcc_5v>;
+>>>>>>>                     };
+>>>>>>>             };
+>>>>>>> ...
+>>>>>>> };
+>>>>>>>
+>>>>>>> if it only has a single USB ID, then it should go under the dwc3 node.
+>>>>>> The usb controller is connected to the PHY and what's coming out of the
+>>>>>> PHY
+>>>>>> goes to the hub. It seems logical to hub the hub under it.
+>>>>>> Why bypass the PHY ?
+>>>>>
+>>>>> The USB bindings the USB devices nodes should be under the controller's node,
+>>>>> not the PHY, see:
+>>>>>
+>>>>> Documentation/devicetree/bindings/usb/usb-hcd.yaml
+>>>>> ...
+>>>>> patternProperties:
+>>>>>     "^.*@[0-9a-f]{1,2}$":
+>>>>>       description: The hard wired USB devices
+>>>>>       type: object
+>>>>>       $ref: /schemas/usb/usb-device.yaml
+>>>>> ...
+>>>>> and the example.
+>>>>>
+>>>>> Subnodes aren't allowed in the PHY node.
+>>>> Ok, that is what schema says.
+>>>> HW wise there is possible problem though.
+>>>> The phy node has the power supply to the bus.
+>>>> In that case it is a controllable one.
+>>>> If fixed USB devices go under the controller instead of the PHY, isn't
+>>>> it possible that the kernel may attempt to probe them before the bus is
+>>>> powered ? For this particular board, it would make the reset we are
+>>>> trying to apply useless.
+>>>
+>>> The usb core has a special handling for those usb hubs doing the power
+>>> up at the right time during the USB setup, including the PHY powering up.
+>>> So the power sequence should be fine.
+>>>
+>>> This has been done on Odroid-C2 and Odroid-N2 already.
+>> Tried it. Unfortunately something is off with the hub under the dwc3 node
+>> I often get this error (like once in 3 boots):
+>> [    0.419301] usbcore: registered new interface driver usbfs
+>> [    0.424434] usbcore: registered new interface driver hub
+>> [    0.429696] usbcore: registered new device driver usb
+>> [    0.921460] usbcore: registered new interface driver usb-storage
+>> [    0.968157] usbcore: registered new interface driver usbhid
+>> [    0.972114] usbhid: USB HID core driver
+>> [    1.132529] dwc3-meson-g12a ffe09000.usb: USB2 ports: 2
+>> [    1.134897] dwc3-meson-g12a ffe09000.usb: USB3 ports: 1
+>> [    1.144451] dwc2 ff400000.usb: supply vusb_d not found, using dummy regulator
+>> [    1.147231] dwc2 ff400000.usb: supply vusb_a not found, using dummy regulator
+>> [    1.154464] dwc2 ff400000.usb: EPs: 7, dedicated fifos, 712 entries in SPRAM
+>> [    1.219515] usb usb2: We don't know the algorithms for LPM for this host, disabling LPM.
+>> [    1.469260] usb 1-1: new high-speed USB device number 2 using xhci-hcd
+>> [    1.745395] usb 2-1: new SuperSpeed USB device number 2 using xhci-hcd
+>> [    9.794777] usbcore: registered new device driver onboard-usb-hub
+>> [   10.255484] onboard-usb-hub 1-1: Failed to suspend device, error -32
+>> [   10.261699] onboard-usb-hub 1-1: can't set config #1, error -71
+>> [   10.287500] onboard-usb-hub 1-1: Failed to suspend device, error -32
+>> [   10.287844] onboard-usb-hub 1-1: USB disconnect, device number 2
+>> [   10.573277] usb 1-1: new high-speed USB device number 3 using xhci-hcd
+>> [   10.921468] usb 2-1: reset SuperSpeed USB device number 2 using xhci-hcd
+>> [   11.193453] usb 2-1: reset SuperSpeed USB device number 2 using xhci-hcd
+>> While it works reliably when the onboard-usb-hub is under the phy node.
+>> I added the 5v supply as vdd under the hub for good measure.
+>
+> The .reset_us you used from genesys_gl852g is probably too low, you may need to use a bigger one then.
+>
+
+Indeed. This seems to do the trick.
+I'll change this
+
+Thx
+
+> Neil
+>
+>> 
+>>>
+>>> Neil
+>>>
+>>>>
+>>>>>
+>>>>> Neil
+>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>>> +};
+>>>>>>>> +
+>>>>>>>> +&usb {
+>>>>>>>> +	status = "okay";
+>>>>>>>> +};
+>>>>>
+>>>>> <snip>
+>>>>
+>> 
+
