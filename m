@@ -2,198 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6287BBE9B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CBE7BBEA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbjJFSVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 14:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54544 "EHLO
+        id S233192AbjJFSXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 14:23:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbjJFSU7 (ORCPT
+        with ESMTP id S232906AbjJFSXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 14:20:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2A1B6;
-        Fri,  6 Oct 2023 11:20:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 461EEC433C8;
-        Fri,  6 Oct 2023 18:20:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696616457;
-        bh=bW7xb8UcwfoF/vlsFYDPvx7RfEeNLXCBqnmUHKIXv6s=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=YMddIapoFKWjCnbNCVbFVs6w/jUVcZyHar1ZNtg6Lgm+t6RD67qeCCtrLrWZI5jkq
-         vbITgAQs5Nw7mx2S+4/DzzvQexQitGyduWJELFYuVQ/uu1Gp7+uN+uHEKkXjWDBaZq
-         bPnWkqW3PbyyacsIr6NL4c2xfJjl4iXbZsVcgxZ0wAi1b5bPrRJjm5XbqjJ+ZJRMd9
-         TKcrzMx2IqyLoSppbG2Ca9nBFEywhE8bUv/odlLv/+PcxH6c4p5IVW9AacmrIEsHNl
-         qc+Ue+oUUorDJpArpbgSAfj5CxXVedDY2lVwTiWxuqjCEO2XKk8AiBR0Msn+lXjI15
-         RziamoxWQ9Tng==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D5489CE0B6B; Fri,  6 Oct 2023 11:20:56 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 11:20:56 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Chengming Zhou <zhouchengming@bytedance.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>,
-        Ingo Molnar <mingo@kernel.org>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
-Message-ID: <7652477c-a37c-4509-9dc9-7f9d1dc08291@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231004175203.943277832@linuxfoundation.org>
- <CA+G9fYunnEUT2evdabX1KOTiryP1heNHWDH4LWZCt2SVRmnKOA@mail.gmail.com>
- <20231006162038.d3q7sl34b4ouvjxf@revolver>
- <57c1ff4d-f138-4f89-8add-c96fb3ba6701@paulmck-laptop>
- <20231006175714.begtgj6wrs46ukmo@revolver>
+        Fri, 6 Oct 2023 14:23:51 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E56BE;
+        Fri,  6 Oct 2023 11:23:50 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-79fa387fb96so103911839f.1;
+        Fri, 06 Oct 2023 11:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696616630; x=1697221430; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o68PLV4udEbPFs/VVjQWU3h52B5qcFcaG2B/iYOksIU=;
+        b=jI0W2RhyxXuXPYSh+O2Wo7g8uHlgub0RfGqrQ+hjpxiBLm7J+dTdaLNfJ+BKMSgryW
+         0+7gO2YqKosK2R2eiXXtUkx18CaqDP3BiXzxKq1FVA2pdwV4/TSQ8zactEN99lfA1UEh
+         otFokpz4sJVlnJQyP12IZLXkdz+Vs1/IozD4USwA1ML93ejwcNyBy/vzsn2i9fhvSbaH
+         K3UMfmVSgmhbyp0+zpIo7PD1r2LnLzrcXsRzui4cziOEM2SdLIfRntWAfqSsGnnNruh9
+         //vtminrFdc8h+fHfbs5lNKpD+vjRRL66AgnaHL8WUrX8dmjLNchKtnNqmGefpMW5pG9
+         nQqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696616630; x=1697221430;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o68PLV4udEbPFs/VVjQWU3h52B5qcFcaG2B/iYOksIU=;
+        b=w8FuzzMWikJaZ/aZpNqmEE//UsHGFuLRq+V53hO48L/zNbhLAvHXVcfHbxktYsQPvP
+         SgGZ3QhTKqUXa3IcsmnoXaTCrf76T3iXaop53UGshXglGKB7nLS4sAHonzyHHrGTbz0E
+         G7v2YINK5+Wdwz8DOLXTaZOxff7iDw71EDtx5czPwfGYfiWwBSHEWYrcjWNZGnVXuxF5
+         wvbiOJXBuxbyUmc7VzJeOLi1/XX0zM+MP2dn275PngRdk2PV3VS9r0kFFqMiyq/8OYiA
+         N8exN6i0OoqH1Prh8ZRZdyQXYC4L9cxUSAkE7xpTewUjhTQRaZWqBB1ZJR8STc+NxuZV
+         oZhg==
+X-Gm-Message-State: AOJu0YxwRH/98uoZLLwcSvsBCuHOb3cf/i8MwRARkLW8yVGJuXV87CpD
+        mdkVRd/GWOJD/iQSTwegx5UeRZdDewaJ5r4ZFDSVstb62PU=
+X-Google-Smtp-Source: AGHT+IEBpBAP7dyRy7MudKX46NCt62sD1tPli23qMuGiDSsnfTavL2MRkqh3a5CnLZWonhU3SnQAEZD0KHB/B6jUGyw=
+X-Received: by 2002:a5d:9910:0:b0:780:c787:637b with SMTP id
+ x16-20020a5d9910000000b00780c787637bmr9406112iol.0.1696616630114; Fri, 06 Oct
+ 2023 11:23:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231006175714.begtgj6wrs46ukmo@revolver>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231003001828.2554080-3-nphamcs@gmail.com> <20231004194506.946908-1-nphamcs@gmail.com>
+ <20231006102523.cc8ea46aeda6ef0a03ae22a2@linux-foundation.org>
+In-Reply-To: <20231006102523.cc8ea46aeda6ef0a03ae22a2@linux-foundation.org>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Fri, 6 Oct 2023 11:23:38 -0700
+Message-ID: <CAKEwX=OJJ9vbYs8__R8hroK0nQHSiyZ=L5u5xxemzUrLyTCXZg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] hugetlb: memcg: account hugetlb-backed memory in
+ memory controller (fix)
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 01:57:14PM -0400, Liam R. Howlett wrote:
-> * Paul E. McKenney <paulmck@kernel.org> [231006 12:47]:
-> > On Fri, Oct 06, 2023 at 12:20:38PM -0400, Liam R. Howlett wrote:
-> > > * Naresh Kamboju <naresh.kamboju@linaro.org> [231005 13:49]:
-> > > > On Wed, 4 Oct 2023 at 23:33, Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > This is the start of the stable review cycle for the 5.15.134 release.
-> > > > > There are 183 patches in this series, all will be posted as a response
-> > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > let me know.
-> > > > >
-> > > > > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
-> > > > > Anything received after that time might be too late.
-> > > > >
-> > > > > The whole patch series can be found in one patch at:
-> > > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.134-rc1.gz
-> > > > > or in the git tree and branch at:
-> > > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > > > > and the diffstat can be found below.
-> > > > >
-> > > > > thanks,
-> > > > >
-> > > > > greg k-h
-> > > > 
-> > > > Results from Linaro’s test farm.
-> > > > Regressions on x86.
-> > > > 
-> > > > Following kernel warning noticed on x86 while booting stable-rc 5.15.134-rc1
-> > > > with selftest merge config built kernel.
-> > > > 
-> > > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > > > 
-> > > > Anyone noticed this kernel warning ?
-> > > > 
-> > > > This is always reproducible while booting x86 with a given config.
-> > > 
-> > > >From that config:
-> > > #
-> > > # RCU Subsystem
-> > > #
-> > > CONFIG_TREE_RCU=y
-> > > # CONFIG_RCU_EXPERT is not set
-> > > CONFIG_SRCU=y
-> > > CONFIG_TREE_SRCU=y
-> > > CONFIG_TASKS_RCU_GENERIC=y
-> > > CONFIG_TASKS_RUDE_RCU=y
-> > > CONFIG_TASKS_TRACE_RCU=y
-> > > CONFIG_RCU_STALL_COMMON=y
-> > > CONFIG_RCU_NEED_SEGCBLIST=y
-> > > # end of RCU Subsystem    
-> > > 
-> > > #
-> > > # RCU Debugging
-> > > #
-> > > CONFIG_PROVE_RCU=y
-> > > # CONFIG_RCU_SCALE_TEST is not set
-> > > # CONFIG_RCU_TORTURE_TEST is not set
-> > > # CONFIG_RCU_REF_SCALE_TEST is not set
-> > > CONFIG_RCU_CPU_STALL_TIMEOUT=21
-> > > CONFIG_RCU_TRACE=y
-> > > # CONFIG_RCU_EQS_DEBUG is not set
-> > > # end of RCU Debugging
-> > > 
-> > > 
-> > > > 
-> > > > x86 boot log:
-> > > > -----
-> > > > [    0.000000] Linux version 5.15.134-rc1 (tuxmake@tuxmake)
-> > > > (x86_64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils
-> > > > for Debian) 2.40) #1 SMP @1696443178
-> > > > ...
-> > > > [    1.480701] ------------[ cut here ]------------
-> > > > [    1.481296] WARNING: CPU: 0 PID: 13 at kernel/rcu/tasks.h:958
-> > > > trc_inspect_reader+0x80/0xb0
-> > > > [    1.481296] Modules linked in:
-> > > > [    1.481296] CPU: 0 PID: 13 Comm: rcu_tasks_trace Not tainted 5.15.134-rc1 #1
-> > > > [    1.481296] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> > > > 2.5 11/26/2020
-> > > > [    1.481296] RIP: 0010:trc_inspect_reader+0x80/0xb0
-> > > 
-> > > This function has changed a lot, including the dropping of this
-> > > WARN_ON_ONCE().  The warning was replaced in 897ba84dc5aa ("rcu-tasks:
-> > > Handle idle tasks for recently offlined CPUs") with something that looks
-> > > equivalent so I'm not sure why it would not trigger in newer revisions.
-> > > 
-> > > Obviously the behaviour I changed was the test for the task being idle.
-> > > I am not sure how best to short-circuit that test from happening during
-> > > boot as I am not familiar with the RCU code.
-> > 
-> > The usual test for RCU's notion of early boot being completed is
-> > (rcu_scheduler_active != RCU_SCHEDULER_INIT).
-> > 
-> > Except that "ofl" should always be false that early in boot, at least
-> > in mainline.
-> 
-> Is this still true in the final version of the patch where we set the
-> boot task as !idle until just before the early boot is finished?  I
-> wouldn't think of this as 'early in boot' anymore as much as the entire
-> kernel setup.  Maybe we need to shorten the time we stay in !idle mode
-> for earlier kernels?
+On Fri, Oct 6, 2023 at 10:25=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
+>
+> On Wed,  4 Oct 2023 12:45:06 -0700 Nhat Pham <nphamcs@gmail.com> wrote:
+>
+> > Ensure hugetlb folio migration also transfers the memcg metadata.
+> >
+> > This fixlet should be squashed to the following patch:
+> > https://lore.kernel.org/lkml/20231003001828.2554080-3-nphamcs@gmail.com=
+/
+> > hugetlb: memcg: account hugetlb-backed memory in memory controller
+> >
+>
+> I've rather lost track of what's going on here.  I'll drop the series
+> "hugetlb memcg accounting" v3.  Please resend everything and let's try
+> again.
+>
 
-In mainline, the ofl variable is defined as cpu_is_offline(cpu), and
-during boot, the boot CPU is guaranteed to be online.  (As opposed to
-the boot CPU's idle-task state.)
-
-> How frequent is this function called?  We could check something for
-> early boot... or track down where the cpu is put online and restore idle
-> before that happens?
-
-Once per RCU Tasks Trace grace period per reader seen to be blocking
-that grace period.  Its performance is as issue, but not to anywhere
-near the same extent as (say) rcu_read_lock_trace().
-
-> > > It's also worth noting that the bug this fixes wasn't exposed until the
-> > > maple tree (added in v6.1) was used for the IRQ descriptors (added in
-> > > v6.5).
-> > 
-> > Lots of latent bugs, to be sure, even with rcutorture.  :-/
-> 
-> The Right Thing is to fix the bug all the way back to the introduction,
-> but what fallout makes the backport less desirable than living with the
-> unexposed bug?
-
-You are quite right that it is possible for the risk of a backport to
-exceed the risk of the original bug.
-
-I defer to Joel (CCed) on how best to resolve this in -stable.
-
-							Thanx, Paul
+Sure thing! I'll send a v4 with everything cleaned up + squashed
+in a moment. Apologies for the confusion.
