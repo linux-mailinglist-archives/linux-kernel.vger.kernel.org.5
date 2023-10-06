@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FE57BB5C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B647BB5C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbjJFK6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 06:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
+        id S231843AbjJFK7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 06:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231789AbjJFK6K (ORCPT
+        with ESMTP id S231475AbjJFK7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 06:58:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B43DDE;
-        Fri,  6 Oct 2023 03:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696589889; x=1728125889;
-  h=from:to:subject:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding;
-  bh=6MLMXL4M6BDsSXjfE8vIxvogcxwlXrYT4iShqFi4veI=;
-  b=gLt7BjcQ7ti0yWSGBPQUmkX95Vqp2HkXomr7Z4H0WoO0vm4VY2r8ubTN
-   I+0N7QfID++arH2a1wrf/rEO+U/3FjFsl2qg4h5J8JpSfGhOicchlUOQ4
-   bDf29M+vsLd8D8BAC7kqgZCFtiUxjYqUb/ROMv2bU7kJpTfGPNfPjEcL2
-   G6VgEy058vf3PcquLFuMDOPsilAwpt9NiVe3Lkd8+Kv3M+0Ga94PyhTtK
-   B5ROYvSqYAXW1UnZr+XUQ4ZUvIEygHbETdy38g+Z1pcDNt01trrupTB9w
-   H2y7LGZQYsFqPZBNYAsasuxUIG02KvmjsTtot/YogCAS1Ao7ftF7fLFe5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="447915549"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="447915549"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 03:58:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="728807796"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="728807796"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 06 Oct 2023 03:58:06 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 86801430; Fri,  6 Oct 2023 13:58:05 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] mmc: sdhci-pltfm: Make driver OF independent
-Date:   Fri,  6 Oct 2023 13:58:03 +0300
-Message-Id: <20231006105803.3374241-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20231006105803.3374241-1-andriy.shevchenko@linux.intel.com>
-References: <20231006105803.3374241-1-andriy.shevchenko@linux.intel.com>
+        Fri, 6 Oct 2023 06:59:50 -0400
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766CACE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 03:59:45 -0700 (PDT)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5335725cf84so3616020a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 03:59:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696589984; x=1697194784;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rAuuYKt1AgIPyV6uxItWEA2AncLhqXC4C5AM+mIo8z0=;
+        b=gyoLuVp2V3+erT/+L4SkKZMM5fEIBFkdW0Lf5cT4jWvPZ/uXnDgHE66xNFunFBO7Co
+         RZx2QOutdLka2TptTXDIv0TfiuQXlbbPCCMo/if8utiFYdXfRNiCjTXFfeKze+vzMYpj
+         5simal4qY/laxmI+GSXSjcKKpMXYFh6jON24o0pSZpmcPhQoA6aw/XvBW6ZFdMDY+kBX
+         OjVyDOFCysondwuMS+NfAtGYqhI+amVkXsuyBUTRo109cqp2kXEtrMYYQsBHk3ayP9BK
+         L8mZWl0y00qPCSnqRCYv0Yf9HVmf1unPp0r5yaZvvddqM+NapHS+oItv49RG7JmJaXQl
+         jV2w==
+X-Gm-Message-State: AOJu0YzIODY55XZywtJbTI9EgIX2KLxwo3yMyY+sFLljiKL0cge15Le0
+        rdZfxjkwdqzQ+fl4MGz9Ws/39/hIANM=
+X-Google-Smtp-Source: AGHT+IFf2FQsn9AXzxNxCXar1vrjQNt3kFz2IQq0VUCg2GqPLtb9flOIgIfwACr9pyXMHVJOghrtKQ==
+X-Received: by 2002:aa7:d9cd:0:b0:533:49d2:dc8f with SMTP id v13-20020aa7d9cd000000b0053349d2dc8fmr6473773eds.17.1696589983603;
+        Fri, 06 Oct 2023 03:59:43 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-009.fbsv.net. [2a03:2880:31ff:9::face:b00c])
+        by smtp.gmail.com with ESMTPSA id c6-20020aa7c746000000b00537f5e85ea0sm2393308eds.13.2023.10.06.03.59.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 03:59:43 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 03:59:39 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] x86/bugs: Add a separate config for each mitigation
+Message-ID: <ZR/om/SzaPCwzYv7@gmail.com>
+References: <20230628142129.2468174-1-leitao@debian.org>
+ <ZRV1bIuSXjZ+uPKB@gmail.com>
+ <20231005162545.GFZR7jiUNyNkscijUl@fat_crate.local>
+ <CAHk-=wjTHeQjsqtHcBGvy9TaJQ5uAm5HrCDuOD9v7qA9U1Xr4w@mail.gmail.com>
+ <20231006095410.GBZR/ZQmaako5yMhVs@fat_crate.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006095410.GBZR/ZQmaako5yMhVs@fat_crate.local>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we have device_is_compatible() API, drop OF dependency
-in the driver.
+On Fri, Oct 06, 2023 at 11:54:10AM +0200, Borislav Petkov wrote:
+> On Thu, Oct 05, 2023 at 11:29:02AM -0700, Linus Torvalds wrote:
+> > ...
+> > "complex" conditionals may also be annoying, but dammit, they are
+> > important documentation about why we do those things, and unlike just
+> > comments that will inevitably bit-rot, they have semantics and get
+> > tested.
+> 
+> Thanks for explaining - it does make sense to me.
+Thanks for clarifying it.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mmc/host/sdhci-pltfm.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+> So, from the looks of it, we're halfway there:
+> 
+>  - SPECULATION_MITIGATIONS is there for people who want to whack off the
+>    whole crap
+> 
+>  - the separate Kconfig switches are for people who want to do
+>    a finer-grained control. And yeah, they might be annoying the first
+>    time but you do them once and then you use the .config forever, like
+>    with anything else.
+> 
+> So yeah, sounds like a plan. Breno, please add Linus' explanation to the
+> commit message why we're doing it this way, when sending your new
+> version.
 
-diff --git a/drivers/mmc/host/sdhci-pltfm.c b/drivers/mmc/host/sdhci-pltfm.c
-index 4d1a703a5bdb..62753d72198a 100644
---- a/drivers/mmc/host/sdhci-pltfm.c
-+++ b/drivers/mmc/host/sdhci-pltfm.c
-@@ -19,7 +19,6 @@
- #include <linux/err.h>
- #include <linux/module.h>
- #include <linux/property.h>
--#include <linux/of.h>
- #ifdef CONFIG_PPC
- #include <asm/machdep.h>
- #endif
-@@ -56,19 +55,16 @@ static bool sdhci_wp_inverted(struct device *dev)
- 
- static void sdhci_get_compatibility(struct platform_device *pdev)
- {
-+	struct device *dev = &pdev->dev;
- 	struct sdhci_host *host = platform_get_drvdata(pdev);
--	struct device_node *np = pdev->dev.of_node;
- 
--	if (!np)
--		return;
--
--	if (of_device_is_compatible(np, "fsl,p2020-rev1-esdhc"))
-+	if (device_is_compatible(dev, "fsl,p2020-rev1-esdhc"))
- 		host->quirks |= SDHCI_QUIRK_BROKEN_DMA;
- 
--	if (of_device_is_compatible(np, "fsl,p2020-esdhc") ||
--	    of_device_is_compatible(np, "fsl,p1010-esdhc") ||
--	    of_device_is_compatible(np, "fsl,t4240-esdhc") ||
--	    of_device_is_compatible(np, "fsl,mpc8536-esdhc"))
-+	if (device_is_compatible(dev, "fsl,p2020-esdhc") ||
-+	    device_is_compatible(dev, "fsl,p1010-esdhc") ||
-+	    device_is_compatible(dev, "fsl,t4240-esdhc") ||
-+	    device_is_compatible(dev, "fsl,mpc8536-esdhc"))
- 		host->quirks |= SDHCI_QUIRK_BROKEN_TIMEOUT_VAL;
- }
- 
--- 
-2.40.0.1.gaa8946217a0b
+Sure, I will update the version 3 of the patchset[1] and add Linus'
+explanation plus some new mitigation that showed up in the meantime.
+
+[1] https://lore.kernel.org/all/20230628142129.2468174-1-leitao@debian.org/
 
