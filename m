@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B38A7BB143
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 07:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C4D7BB144
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 07:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbjJFFmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 01:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
+        id S230136AbjJFFrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 01:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjJFFmW (ORCPT
+        with ESMTP id S230017AbjJFFrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 01:42:22 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305E6BF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 22:42:21 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59c215f2f4aso20830387b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 22:42:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696570940; x=1697175740; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iMNU/NcReGRTQoFhUIKFEhWrRToHaZS/r6S0IyfUYQA=;
-        b=SA+o1acD+FtLsYNEUhzawIOUUFxuMD4SCozuTCTQtEIf8xsGjfnehkKT3gPXtqEXyM
-         iZompe2XYlOamDl5cMHVTLMroUFR1xlXUvBNnasTZV1/UAO33aCIpNhN1hHqJKdr9JJ/
-         Dl8DF13lYIPkB7uTTmhWBcsQ0y8Pv07xSlorbFnXkzApo1q1huULdlZYF/Ykuo4N40fo
-         /7KjrlIqLTXIQaCR+NmSpqgIR4QP2QcD0TIYEhWm1O1ILY0nxnuf0IdTeFgJ5WJGQj9v
-         Px2hWNqHqcc/sGZ4aiUVGS1l7Y5YdijhE9831ZyqvJ66+jXw8PtmmOWk9bQak3QdhBQ/
-         WmLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696570940; x=1697175740;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iMNU/NcReGRTQoFhUIKFEhWrRToHaZS/r6S0IyfUYQA=;
-        b=ARr/26wW8IlHyC3uXR/Z6NFmAcSjcsq2AuTc0NF+5jS46hRRGSYtGjJWhTxUePMqgP
-         n2ytPVUkUM8xLg9YWRTTFnYoqmgrf5kLH7CC6r6jKAZPYVBNXt4T/gXluifh6zusDiFG
-         /QuHdvXrZ323hAm+klYh+BAUqbTuu1Rk2OJM/l7efdfXq5oO/R9zwg4FREVqO1ryTH9V
-         WIZBZinzfqNjK8z1Ah1XYuuFt2RLmVoAzmiMF337Xg44CBHANAM2EiwIQAv1PMB+fR+t
-         sVBa8B26Xlyf6W9aAUytz6KJOe73NPabmfoBTgdJMpwE6RHFrxenbch20Z3T6bfKDXwW
-         9XYg==
-X-Gm-Message-State: AOJu0YzbY4Bivzm1LbA7OcE1G5Nj76s3vD1pDImmi2fmeYUWnSzx3rTz
-        GbAMKUuzItuUX3kqRwpYVLBohA==
-X-Google-Smtp-Source: AGHT+IGEuUVUDHmEfgU2ZUeoXgbdvGNBLmcG/5Ng06kfo9sfd8SOCeQ0ooBNx3Jipoe0YW6Lkbx0lA==
-X-Received: by 2002:a81:4810:0:b0:5a1:d0fe:e44b with SMTP id v16-20020a814810000000b005a1d0fee44bmr7584991ywa.11.1696570940293;
-        Thu, 05 Oct 2023 22:42:20 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w1-20020a81a201000000b005837633d9cbsm1033602ywg.64.2023.10.05.22.42.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 22:42:19 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 22:42:17 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     "Chen, Tim C" <tim.c.chen@intel.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Carlos Maiolino <cem@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: RE: [PATCH 8/8] shmem,percpu_counter: add _limited_add(fbc, limit,
- amount)
-In-Reply-To: <DM6PR11MB4107F132CC1203486A91A4DEDCCAA@DM6PR11MB4107.namprd11.prod.outlook.com>
-Message-ID: <17877ef1-8aac-378b-94-af5afa2793ae@google.com>
-References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com> <bb817848-2d19-bcc8-39ca-ea179af0f0b4@google.com> <DM6PR11MB4107F132CC1203486A91A4DEDCCAA@DM6PR11MB4107.namprd11.prod.outlook.com>
+        Fri, 6 Oct 2023 01:47:35 -0400
+Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940D8B6;
+        Thu,  5 Oct 2023 22:47:33 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 41DD92087D;
+        Fri,  6 Oct 2023 07:47:31 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pHY9T4XaCd70; Fri,  6 Oct 2023 07:47:30 +0200 (CEST)
+Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 01E5D207BB;
+        Fri,  6 Oct 2023 07:47:30 +0200 (CEST)
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        by mailout1.secunet.com (Postfix) with ESMTP id E937280004A;
+        Fri,  6 Oct 2023 07:47:29 +0200 (CEST)
+Received: from mbx-essen-02.secunet.de (10.53.40.198) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 6 Oct 2023 07:47:29 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
+ (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 6 Oct
+ 2023 07:47:29 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 29F9B3182C7D; Fri,  6 Oct 2023 07:47:29 +0200 (CEST)
+Date:   Fri, 6 Oct 2023 07:47:29 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Kees Cook <keescook@chromium.org>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>, <llvm@lists.linux.dev>
+Subject: Re: [PATCH] xfrm: Annotate struct xfrm_sec_ctx with __counted_by
+Message-ID: <ZR+fcY+W5CBODmfX@gauss3.secunet.de>
+References: <20231003231828.work.527-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231003231828.work.527-kees@kernel.org>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-02.secunet.de (10.53.40.198)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Oct 2023, Chen, Tim C wrote:
-
-> >--- a/lib/percpu_counter.c
-> >+++ b/lib/percpu_counter.c
-> >@@ -278,6 +278,59 @@ int __percpu_counter_compare(struct
-> >percpu_counter *fbc, s64 rhs, s32 batch)  }
-> >EXPORT_SYMBOL(__percpu_counter_compare);
-> >
-> >+/*
-> >+ * Compare counter, and add amount if the total is within limit.
-> >+ * Return true if amount was added, false if it would exceed limit.
-> >+ */
-> >+bool __percpu_counter_limited_add(struct percpu_counter *fbc,
-> >+				  s64 limit, s64 amount, s32 batch) {
-> >+	s64 count;
-> >+	s64 unknown;
-> >+	unsigned long flags;
-> >+	bool good;
-> >+
-> >+	if (amount > limit)
-> >+		return false;
-> >+
-> >+	local_irq_save(flags);
-> >+	unknown = batch * num_online_cpus();
-> >+	count = __this_cpu_read(*fbc->counters);
-> >+
-> >+	/* Skip taking the lock when safe */
-> >+	if (abs(count + amount) <= batch &&
-> >+	    fbc->count + unknown <= limit) {
-> >+		this_cpu_add(*fbc->counters, amount);
-> >+		local_irq_restore(flags);
-> >+		return true;
-> >+	}
-> >+
-> >+	raw_spin_lock(&fbc->lock);
-> >+	count = fbc->count + amount;
-> >+
+On Tue, Oct 03, 2023 at 04:18:28PM -0700, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
 > 
-> Perhaps we can fast path the case where for sure
-> we will exceed limit? 
+> As found with Coccinelle[1], add __counted_by for struct xfrm_sec_ctx.
 > 
-> if (fbc->count + amount - unknown > limit)
-> 	return false;
+> Cc: Steffen Klassert <steffen.klassert@secunet.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: netdev@vger.kernel.org
+> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Thanks, that sounds reasonable: I'll try to add something like that -
-but haven't thought about it carefully enough yet (too easy for me
-to overlook some negative case which messes everything up).
-
-Hugh
+Applied to ipsec-next, thanks!
