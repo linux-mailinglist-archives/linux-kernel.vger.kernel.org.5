@@ -2,83 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 534127BC314
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 01:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3467BC319
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 01:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233896AbjJFXs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 19:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
+        id S233933AbjJFXtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 19:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231381AbjJFXsY (ORCPT
+        with ESMTP id S231381AbjJFXtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 19:48:24 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28D8BF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 16:48:22 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bf55a81eeaso21265975ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 16:48:22 -0700 (PDT)
+        Fri, 6 Oct 2023 19:49:31 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686DEBD;
+        Fri,  6 Oct 2023 16:49:28 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396LO2tJ028862;
+        Fri, 6 Oct 2023 23:49:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=f/7V4GPOscG4FZ74AixysPK9SejqoXIFuTFl0Y/uaCQ=;
+ b=Vc5/AYRlhseeTrW/mCpuXKMtPsWhxUtuEP4rYvbQbDwDSTwbV4ItZhAefxtT1Mc+6+EJ
+ Bf/hb2FPC6aeNgOyB6H6qhLPZkFswpvkn+n2vAsc3y6BuHyNoUs1CsCdUMVeCRbN9CW7
+ k6CUnQx+WkpU72v9vO1EF5hD3rA+yaNIJ6emLTY8mLVE/ivQdWemlNWqmqdo6HbK08Rq
+ TV6BXdI9SDcJKEjpIQTDEjDJ3qmZdvVw9bxDIwjvCzzMfZ8qT7jTtbLdpNfPXIhfuML5
+ AvFtRs3F03gf/MpDLA4JkdFET6MyTnNjVEHvchTSvDEhZKz6dyW59dFBf4kWHPKUz3uO Og== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tea3emwuj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Oct 2023 23:49:05 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 396M6P9G002843;
+        Fri, 6 Oct 2023 23:48:58 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tea4b929g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Oct 2023 23:48:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j5j3ttEQY24NxtIENJGMY6YcW8+GNTCdtB+2wWMEZNj3VcMMSgyPNhzGrQ585jvhrRyJ5Iqva3BNb5/RpNGi4BxJ7pIgtvC48NA6ajLXHdV3pOEvFL9RjCTbJ6UG1b/v5wUiimTKnYps75Tjr/ZRl2jsjWQIckOAVmXdXwoX7WVviHjLgrbwRxiv5emeobLdIdpa71m6lboDcFkuaiPgj8kRq0FYAla9o66HXapuE2ycxa/w5zwpoO25ZzHQCuxH+X0FM4ObC0VclH8wsuu78CrHaUUKSiQ5gHyVb5rtJPMNhsR/7rqtUzsgGwLlqyUQqRapywxXgsHS6X3oxkJNkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f/7V4GPOscG4FZ74AixysPK9SejqoXIFuTFl0Y/uaCQ=;
+ b=SXWMhiTY8cvHDw0ywIoJCe5AusQ3yz7Latiiq97nhJDZ9Cq4jHyYfBiV5eTcfdLO7VmYjgG0Jj0HgsKcQbbd9eYK9k9vyqDiNpOtjw5c34ls867++6dVlw5kC3X7Kggt2O7ZALgfKNZ7fbiqSt2HFR1/WsMz8shVzVKDPO8yCFmzN3YtsDYImmQaxnEiP5qTtSY9Y4ImpvTL3+VutnfEz1O8fS6MnmEiuuzPtvozik5EFyPDdNtKDBf8C2/43E7BoS/HDfwSOSh22cmeSHfL+ziRcUI03h6yZaO8x+64w/eH0dBNhhGj924wAzC3yPisw5wYv6itEouTblwv/MjiDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696636102; x=1697240902; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TpXCe1KTyZtGhN1Q9RaSDFPQZzN1jFdhG3uXTsEDJSg=;
-        b=FEJ2Y4FVbpM30pGWLLFdiAlLFujnX/rqOWm9nb4MPfwJq+5ijUt42+Mn9i3/kVo2sA
-         8BizNmkkoboTUUwm+M3uWQftyNAVUjLnu3qJc7sUmXxeGG/AdblyRYDdhq6CHEPeKkNM
-         fdIPereA00+RYiml0xeMgVJqibvAQfm+O0EziueMuTVylY53kgO730Q4EE0jHguoTfw/
-         q+bTEkoZuoxiUaye0/sj58gAqbYoCG0+eORlV84tyoK5Oaz/RXExg294pMA0yYYRvp2Z
-         O28jvlF/MgljaECKuUn9YQ1p8VfRq3HSoQzdl/8YpcVm0YmjRvOc3/dqu+LxSp+pkhxC
-         p+8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696636102; x=1697240902;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TpXCe1KTyZtGhN1Q9RaSDFPQZzN1jFdhG3uXTsEDJSg=;
-        b=BbOxUCo+uPvYjfJvs6Fw1x42qefGR6Ij8nZlczckh6ualUx1l/TMlKORnBqJ2h0AKJ
-         DVVs3UmH4++iMpuNS5pO3zUtw7i404qUFiDnYIBs38YN3sML0sFGQCjQ8AXFJbdqb7Ei
-         L1e1IUa95XGWrjc60o6s9xAmV5th+OvxVuNfQxOKJSQTiTu3zLk6YuAvZjXM1GxQ7eHF
-         2k0F2kPqbKEKXDvcbu8VezAkRFOelg45kSUi3aOJzmXTAl//Q3AnyBWWsacLK0CaHS69
-         mF19L6EXNssv8jUXZPElWIcNAb3ZbxX6KuiJafIeJ1EFrU8HpXVyGjWg7fp/B/GgZU17
-         Xk7g==
-X-Gm-Message-State: AOJu0YwEoVDqaSn4La2k6CKrWAgNZmZILWPJd4muWca4n7XcaahWNNWy
-        mwIXKZhpmsijUIT+mURsfkuc7jyuA9z6eIaegs0ikg==
-X-Google-Smtp-Source: AGHT+IGAYtjgXZCWicZczSjSQcmr679f2uW5wBiJV5TjFWVF22oLZjM3STy9TWsU9P5teHmEdZvwYQ==
-X-Received: by 2002:a17:902:e803:b0:1c6:2acc:62ea with SMTP id u3-20020a170902e80300b001c62acc62eamr11191077plg.57.1696636101736;
-        Fri, 06 Oct 2023 16:48:21 -0700 (PDT)
-Received: from [192.168.60.239] (213.126.145.34.bc.googleusercontent.com. [34.145.126.213])
-        by smtp.gmail.com with ESMTPSA id d3-20020a170902c18300b001a5fccab02dsm4531826pld.177.2023.10.06.16.48.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 16:48:21 -0700 (PDT)
-Message-ID: <b14b296f-2e08-4edf-aeea-1c5b621e2d0c@google.com>
-Date:   Fri, 6 Oct 2023 16:48:19 -0700
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f/7V4GPOscG4FZ74AixysPK9SejqoXIFuTFl0Y/uaCQ=;
+ b=PwU24EU8ht1IZ56/gbR+tN7vFDir5x26c3YXo+twTkuVTYZq75ngZuPyoO8BvGSYd5IwOLhok05QwE1Hz53ks1FC8YwDbizFrJMOI72ozj8m6Ld4ubX/4Gl2GsXYtBI8kWcfT9+r/OAr9YieBKJmD7OKdmK4YYd6Yd6jUMh9IeY=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by SA2PR10MB4682.namprd10.prod.outlook.com (2603:10b6:806:110::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.32; Fri, 6 Oct
+ 2023 23:48:55 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::1ae3:44f0:f5b:2383]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::1ae3:44f0:f5b:2383%4]) with mapi id 15.20.6838.033; Fri, 6 Oct 2023
+ 23:48:55 +0000
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
+        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH 18/21] scsi: sd: Support reading atomic properties from
+ block limits VPD
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq11qe7qptg.fsf@ca-mkp.ca.oracle.com>
+References: <20230929102726.2985188-1-john.g.garry@oracle.com>
+        <20230929102726.2985188-19-john.g.garry@oracle.com>
+        <2e5af8a4-f2e1-4c2e-bd0b-14cc9894b48e@acm.org>
+        <53bfe07e-e125-7a69-4f89-481c10e0959e@oracle.com>
+        <a7a24914-4940-4a23-b439-bc8f0ad99212@acm.org>
+Date:   Fri, 06 Oct 2023 19:48:53 -0400
+In-Reply-To: <a7a24914-4940-4a23-b439-bc8f0ad99212@acm.org> (Bart Van Assche's
+        message of "Fri, 6 Oct 2023 10:52:40 -0700")
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR06CA0060.namprd06.prod.outlook.com
+ (2603:10b6:a03:14b::37) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/3] usb: gadget: uvc: stability fixes on STREAMOFF.
-Content-Language: en-US
-To:     Michael Grzeschik <mgr@pengutronix.de>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Scally <dan.scally@ideasonboard.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        jchowdhary@google.com, etalvala@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230930184821.310143-1-arakesh@google.com>
- <ZRv2UnKztgyqk2pt@pengutronix.de>
- <20231005082327.GC13853@pendragon.ideasonboard.com>
- <ZR6Me5WsAbjvc2hk@pengutronix.de>
- <53300d24-b558-428d-b52f-316b2e456313@google.com>
- <ZR8zKHQv1dkyLosv@pengutronix.de>
- <50f92131-3e41-49a8-834d-8ae3ae36f565@google.com>
- <ZSCP0clqb1Nn/Ft3@pengutronix.de>
-From:   Avichal Rakesh <arakesh@google.com>
-In-Reply-To: <ZSCP0clqb1Nn/Ft3@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|SA2PR10MB4682:EE_
+X-MS-Office365-Filtering-Correlation-Id: c8bc7e5e-c600-4d7d-1494-08dbc6c6cd55
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tSjhlboLOt/RURTBKShc4HwCdiY9xMmItYTlJ2fjAE0M+4VpKRXYb17gxoItdUFsnbxS4y0Z8zl5gA4Z+wXPkwAPd5XqHXQrs2veQSxafKqCqasktUQdapExDa5kLxSAoojQ0r5RAn6ClaSIEIC48MXOEHuJIAX5MNO8PBKwmBWJ5ycfRtfpkj8H7kbCVV2NzrnITqIeBZ1SeXEmPRJ3HGeFyLpevRvTdKH1UQcJXsOhj0+KXO3pQkAIAMmA+bKits6iDhtG9Qea+yqpxFYyhc2+NfIlrS0nyz+hReqCJMTyM2CSRFinq04S7Obx7m7idtwd3FJWha4pLa2LrZB3vnO4yFnDNpECKFkNhYW1eGsYEvnE2iOkmu5hOQsAxB5D1bV8+ArNcqnOXWYxNBvIujaLaKMtZvEWUhRg1DGKs14q5QGJJ5QeIZx2Bj5kMa5FjNX7zzbyB3uphw4MUVa8wsL+jPQWVXolHHACq2fBwbZa7nuo/h7vF/8o+xdPrFiuzvguFpuIA0Pp7lNNThJv/UioXiI1L8SmpXDdfeMUGrSijRb23ERtO+CntD7j6nqs
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(346002)(136003)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(26005)(478600001)(6506007)(36916002)(6486002)(38100700002)(86362001)(558084003)(7416002)(6512007)(2906002)(66476007)(66946007)(316002)(4326008)(8936002)(8676002)(41300700001)(5660300002)(6916009)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DBvNMJ2aiX03/sjESb5R84TGEdSXCXjkrXgnV45bKC6fj0y988HgJaIWuEUR?=
+ =?us-ascii?Q?CBnW1dJLVLJBxCagZSA3Pdz/h6aVE522cHvCMAEogVKvxRoch5DEYFvXsF9G?=
+ =?us-ascii?Q?+H6QrOl8IVZok4I3028/U1KdkKILETUhtMXhNadAbLa8CZQjU+COyhHdn1en?=
+ =?us-ascii?Q?drnw7J1XcurMosK4w7CE/IGGIIOE1W1i9/zugwpA+6dnsSnHi2CF1fyJjiSr?=
+ =?us-ascii?Q?ywxyfiK7SLNBHa7C/yVhqeCgPtdx5u1LeeOpsGEo1UUgWc0HrkrlmJS63bwM?=
+ =?us-ascii?Q?IyHViqQOwtD8c9HHKpjz4T0i6Oa6NA2iE9sCU0Pd2PzkPIenlPjgu8xcBrBE?=
+ =?us-ascii?Q?sob8mxPsc546+hJ1vGCgeDdYaouML8G+yYQyeokBmYBkP8L1S/C9at7Uy4TB?=
+ =?us-ascii?Q?80S9to8rsa/oiceekDa4KSXbgMct+YEuj7tdxpW80N8dhSUhqE84tAbIduPa?=
+ =?us-ascii?Q?u6aYwZbw/nkO82TJE7SK/vIzqDe5t7Y6HTTI6DwwgkJGh+nR0u9UrlQCyxxj?=
+ =?us-ascii?Q?KrhH82r3A6LuE/jqfhiIqDoy2b5GLVl+2qZ8zhbjzUqNFnSqmmDK4Tx/w2bO?=
+ =?us-ascii?Q?IFh1oJgalePeNsYA5aEWJ0GOH6lQnU1aU3YtCOlVWsON298DM01i0OqVeSa4?=
+ =?us-ascii?Q?Gw5cy+0qEc240pZoflXojqktJWCP2XrZOdUGhcniHxCxfxMbb5HgmqsUZOwl?=
+ =?us-ascii?Q?FPiMDmFWWKl3tT7diLKBXeLPdA6Q+A/4OHEOi4dqzyYCyUK/vXxTsIilMuGr?=
+ =?us-ascii?Q?g0oOZgyHrekqnSylRRdIejBSWl4tZJS1xgqyNjnLBz3+3z55yigbhtc4Foql?=
+ =?us-ascii?Q?zv92sldrVurAD8gfT1Wn02luubFBh1Y6HM/Ea7FWFAB1evbWN5LeUF+jhJZ5?=
+ =?us-ascii?Q?kImOg7BuqIaImda9oWXxEatZPacaKdYmCADmemZkr2zclIGoM28V/rnUCuN6?=
+ =?us-ascii?Q?4yplo67iLDHoMwifE1qVowM0CR+ejSqQ0LQoKfoxhafmEd8n78K+GDhDUZr+?=
+ =?us-ascii?Q?i5uxIbhjvQwIy6tQYMVnA/7HS9W/d+cHibhfJNuyfAMnyFvYYdJ8ee4LsC12?=
+ =?us-ascii?Q?QLMBVdTHdutm/SMUZbWfsP7GWeRMnI5+IDNZRP0LJ4tHremvXbsg5Tj6zpAD?=
+ =?us-ascii?Q?YxnwXXkIhaMuB/OFhUU50skB2BfXlRRsgEbWmlFCbP5w//w4ZuaHRveH3HlY?=
+ =?us-ascii?Q?1BRAfzuXjUvwFh3fXEu4ihC8UTznjxr+q3ltSZS/TkBZznZAEb/xqkJwVLPq?=
+ =?us-ascii?Q?xcKhxT9F9IrSrh7FQVqR6DCfSq5GtI5a52WtU77Cdwu46A9Qov3Colyx9LaB?=
+ =?us-ascii?Q?67vHy73k5CTNXe5Uip2Dcu4DwxAg4WfRmufx9mG8fgXfOnaZjlCcLwcqSBUd?=
+ =?us-ascii?Q?1MsCyvdoKv0J3GYta3RyNhvqSS4asXAeAXR4/lSzAjiDI52ufUpy/Ei0qqx9?=
+ =?us-ascii?Q?X3wqmJKAfiRSNMlScwBOaJN6kUy4mD0DCzC9qj0f6+ikmCDWUci3Cb5k5xQ9?=
+ =?us-ascii?Q?EAQXHyz22b5l+OlEevsuBWkUX/7+cuoGHD3wevFniwcWRMZiuO2UfaLIYjuo?=
+ =?us-ascii?Q?dABZH6WZoLT5vSyt+3ineizeWZQuipu9G0nFwYE0sCzSperlmIl1I4OGxFqR?=
+ =?us-ascii?Q?eA=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?eB+nI1oKxA3Ufy5B2I6IpCzK6XAOXIg09Mrdy6V/UJ9TaACpRFgnerNpnUg1?=
+ =?us-ascii?Q?XOytO4cbc9LJhL0BULMSMtNrGxr2JCsE0armDKasedfKLTrCUZSaeBYnf9+c?=
+ =?us-ascii?Q?ct4zs+pTKGzuezdcOds/vHI6N4peJfW1l0RDZSvklcc3kC7Pk5M8XOnVTK6Y?=
+ =?us-ascii?Q?rra27F59/xLT0XDRKZ3TL/pdumA3ziFsfFyiszLn8e9JUYPZkItQNmF3y7fV?=
+ =?us-ascii?Q?r2HouD/obLMemppQkU5yS9ibfbx4qcnoTzGH+O4QWI5vvkdyfsxyZyrhW0J8?=
+ =?us-ascii?Q?e1uXDbgJxHpmweAA3WempaYGDA5/M9X6rMnBxzlgkLPeaZ28knNvt7SqadhS?=
+ =?us-ascii?Q?HXD7Ni6T53WF4DuhNAjcflF7B5dRQWqJNpLrOMXdYhVKfYLP9WAZMr/SnDfm?=
+ =?us-ascii?Q?sqCirY5lQafBUJh/JkT+QBLHTilH8jJENlnimzGmsHDqebsZllhfM2PO3PA0?=
+ =?us-ascii?Q?lf77affbgGoHW7AMb6/9bignw012BixtrH7CniLfJ411gZfbDxk8PHMs6Zhd?=
+ =?us-ascii?Q?RD6eCNWfRHuGxUF+L+J34B7NB+2PtXImKbtt+nNYdDbG0xoi0r+f9WPw7Ee/?=
+ =?us-ascii?Q?fdN+1QVs4YzarMqcz6WTGq8ja3gqkZ+ZqTeg+AonbIiGsO8GZ/NR79PcOy98?=
+ =?us-ascii?Q?M58GBVK61kth67ksEIXtMdOjCr8DiRoeHf0SuQ9PD9cpLWowtjy+hHGGJ80K?=
+ =?us-ascii?Q?7dN164ARZkki2TrI/PNp+W29dqYTza6oE2W3BNdnD5249eJ7Dkf54Usw2zaM?=
+ =?us-ascii?Q?JaBXlcZRLmc//IwwYgh7i07K6a3UFytYozUGals33di/Y8ZTY0wxS/lejxeB?=
+ =?us-ascii?Q?eadPDX4cbmusnfUO5vUzG0KcxBthXDidQ2Vs60miLaRD6njrmeDpukT4FVFh?=
+ =?us-ascii?Q?HnNlnHqTbsnZpKviANIJsF+x/uN626IyTx6vazsomCq/HLJ0l0/7QjKewEeY?=
+ =?us-ascii?Q?QIRTTlHlDcG9L8eld+i9D2ojov5FHqwpqGjKmoA4rEAk0/JZ0l01YDct+frL?=
+ =?us-ascii?Q?wU5DNUUAigxeLTdk1FAvXypiPbfHmOZghB92RMyRRr8fpUDk1KRsev3AdM0U?=
+ =?us-ascii?Q?+b3oE8Hdh3Vq/zPJu0AwUeiYcFc/1Bga9c9dEeTRl8UyxkPq/L8=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8bc7e5e-c600-4d7d-1494-08dbc6c6cd55
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2023 23:48:55.5158
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5gvSxVdnuJwZtVXceZxgz4teFwaCwq5GwgmMU+CFk+fHEUUwJjwcbalkvoaMSx2fHP2ti3XWKbyGJMQk2GyDx5IZuttnBeOsZRaHksIeXts=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4682
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-06_15,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=752 mlxscore=0
+ spamscore=0 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310060184
+X-Proofpoint-ORIG-GUID: 7NqGmHuYDhNusafGdRtd62H4fiSjOoyJ
+X-Proofpoint-GUID: 7NqGmHuYDhNusafGdRtd62H4fiSjOoyJ
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -86,220 +178,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Bart,
 
-On 10/6/23 15:53, Michael Grzeschik wrote:
-> On Fri, Oct 06, 2023 at 10:00:11AM -0700, Avichal Rakesh wrote:
->>
->>
->> On 10/5/23 15:05, Michael Grzeschik wrote:
->>> Hi Avichal,
->>>
->>> On Thu, Oct 05, 2023 at 11:30:32AM -0700, Avichal Rakesh wrote:
->>>> On 10/5/23 03:14, Michael Grzeschik wrote:
->>>>> On Thu, Oct 05, 2023 at 11:23:27AM +0300, Laurent Pinchart wrote:
->>>>>> On Tue, Oct 03, 2023 at 01:09:06PM +0200, Michael Grzeschik wrote:
->>>>>>> On Sat, Sep 30, 2023 at 11:48:18AM -0700, Avichal Rakesh wrote:
->>>>>>> > We have been seeing two main stability issues that uvc gadget driver
->>>>>>> > runs into when stopping streams:
->>>>>>> >  1. Attempting to queue usb_requests to a disabled usb_ep
->>>>>>> >  2. use-after-free issue for inflight usb_requests
->>>>>>> >
->>>>>>> > The three patches below fix the two issues above. Patch 1/3 fixes the
->>>>>>> > first issue, and Patch 2/3 and 3/3 fix the second issue.
->>>>>>> >
->>>>>>> > Avichal Rakesh (3):
->>>>>>> >   usb: gadget: uvc: prevent use of disabled endpoint
->>>>>>> >   usb: gadget: uvc: Allocate uvc_requests one at a time
->>>>>>> >   usb: gadget: uvc: Fix use-after-free for inflight usb_requests
->>>>>>> >
->>>>>>> > drivers/usb/gadget/function/f_uvc.c     |  11 +-
->>>>>>> > drivers/usb/gadget/function/f_uvc.h     |   2 +-
->>>>>>> > drivers/usb/gadget/function/uvc.h       |   6 +-
->>>>>>> > drivers/usb/gadget/function/uvc_v4l2.c  |  21 ++-
->>>>>>> > drivers/usb/gadget/function/uvc_video.c | 189 +++++++++++++++++-------
->>>>>>> > 5 files changed, 164 insertions(+), 65 deletions(-)
->>>>>>>
->>>>>>> These patches are not applying on gregkh/usb-testing since
->>>>>>> Greg did take my patches first. I have already rebased them.
->>>>>>
->>>>>> I think they got merged too soon :-( We could fix things on top, but
->>>>>> there's very little time to do so for v6.7.
->>>>>
->>>>> Agreed. I was jumping from one workaround to another one, since this
->>>>> is not easy to fix in a proper way. And still after this long discussion
->>>>> with Avichal I don't think we are there yet.
->>>>>
->>>>>
->>>>> So far the first two patches from Avichal look legit. But the overall
->>>>> Use-After-Free fix is yet to be done properly.
->>>>>
->>>>> The "abondoned" method he suggested is really bad to follow and will
->>>>> add too much complexity and will be hard to debug.
->>>>>
->>>>> IMHO it should be possible to introduce two cleanup pathes.
->>>>>
->>>>> One path would be in the uvc_cleanup_requests that will cleanup the
->>>>> requests that are actually not used in the controller and are registered
->>>>> in the req_free list.
->>>>>
->>>>> The second path would be the complete functions that are being run
->>>>> from the controller and will ensure that the cleanup will really free
->>>>> the requests from the controller after they were consumed.
->>>>>
->>>>> What do you think?
->>>>
->>>> I am not sure I follow. Patch 3/3 does exactly what you say here.
->>>
->>> Yes, it was just to summ up what the latest state of the idea was,
->>> so Laurent does not read the whole thread in detail. Sorry for not
->>> being clear enough about that.
->>
->> Whoops! Sorry about the misunderstanding!
->>
->>>
->>>> There are two cleanup paths:
->>>>  1. uvcg_video_disable cleans up only the requests in req_free, and
->>>>  2. complete handler cleans up the in-flight requests.
->>>>
->>>> The "abandoned" flag is simply to let the completion handler know
->>>> which requests to clean up and which ones to re-queue back to
->>>> the gadget driver.
->>>
->>> What I don't get is, why in the case of shutdown there needs to
->>> be something re-queued back to the gadget driver. There should not
->>> need to be any sort of barrier flag for the requests. Just the
->>> complete handler running past a barrier where it knows that the
->>> whole device is stopped. So every call on complete should then clean
->>> that exact request it is touching currently.
->>>
->>> I don't know where the extra complexity comes from.
->>
->> A lot of this complexity comes from assuming a back to back
->> STREAMOFF -> STREAMON sequence is possible where the gadget driver
->> doesn't have the time to clean up all in-flight usb_requests.
->> However, looking through the usb gadget APIs again, and it
->> looks like  usb_ep_disable enforces that all requests will
->> be sent back to the gadget driver before it returns.
-> 
-> Great!
+> I think the above means that it is wrong to round down the ATOMIC
+> TRANSFER LENGTH GRANULARITY or the ATOMIC BOUNDARY values.
 
-Uhh...apologies, I will have to take this back. I've been
-trying to use uvc->state as the condition for when completion
-handler should clean up usb_requests, and I cannot figure 
-out a way to do so cleanly.
+It was a deliberate design choice to facilitate supporting MAM. John
+will look into relaxing the constraints.
 
-The fundamental problem with using uvc->state is that it is
-not protected by any locks. So there is no real way to
-assert that its value has not changed between reading
-uvc->state and acting on it.
-
-Naively we can write something like the following in the 
-completion handler:
-
-void uvc_video_complete(...) {
-    if (uvc->state != UVC_EVENT_STREAMING) {
-        usb_ep_free_request(....);
-    } else { 
-        // handle usb_request normally
-    }
-}
-
-But without any locks, there are no guarantees that 
-uvc->state didn't mutate immediately after the if 
-condition was checked, and the complete handler is 
-handling a request that it should've freed instead
-or vice-versa. This argument would hold for any logic 
-we guard with uvc->state, making uvc->state effectively 
-useless as a check for freeing memory.
-
-We can work around it by either
-1. Locking uvc->state with some driver level lock
-   to ensure that we can trust the value of uvc->state
-   at least for a little while, or
-2. Using some other barrier condition that is protected by 
-   another lock
-
-If we go with (1), we'd have to add a lock around every
-and every write to uvc->state, which isn't terrible, but
-would require more testing to ensure that it doesn't
-create any new deadlocks.
-
-For (2), with the realization that usb_ep_disable flushes 
-all requests, we can add a barrier in uvc_video, protected by 
-req_lock. That should simplify the logic a little bit and 
-will hopefully be easier to reason about.
-
-I could of course be missing a simpler solution here,
-and am happy to be wrong. So please let me know if you 
-have any other ideas on how to guarantee such a check. 
-
-
-> 
->> So you're right:
->> With Patch 1/3 in place, I think we can just guard on uvc->state
->> alone, because control requests are blocked until usb_ep_disable
->> is finished anyway. I'll upload v4 with the "is_abandoned"
->> flag removed and the checks simplified once I've verified the
->> fix locally.
->>
->> That should also remove any bookkeeping issues that may have
->> triggered the stack below.
-> 
-> I am currious if we should handle -ECONNRESET and -ESHUTDOWN in more
-> detail in the completion handler and make sure that the request will not
-> be added into the req_free list from there.
-> 
-> Will review your v4 then.
-
-Appreciate the reviews, thank you!
-
-> 
->>>> The other "complications" are around making sure we can trust
->>>> the values in an inherently racey situation. The reasoning
->>>> can admittedly be difficult to follow at a glance, which incidentally
->>>> is why I went with a simple to prove timed wait in the past
->>>> (https://lore.kernel.org/20230912041910.726442-3-arakesh@google.com).
->>>>
->>>> I am not suggesting we go back to a timed wait, but please do look
->>>> at the patch and let me know which parts don't make sense, or are
->>>> difficult to understand. We can add more documentation about our
->>>> assumptions there, or if you have a way to do this that you
->>>> think is simpler to reason about, then please let me know and I'll
->>>> be more than happy to use that!
->>>
->>> I really try to spin my head around the idea of the is_abondoned flag
->>> you are using. Unfortunatly for now I am out to debug the issues I see
->>> with your series.
->>>
->>> So I did try these patches you send. Yes the deadlock error is gone with
->>> v3. But the linked list is still running into cases where
->>> dwc3_gadget_giveback(complete) is touching requests that are already
->>> freed.
->>>
->>> [   61.408715] ------------[ cut here ]------------
->>> [   61.413897] kernel BUG at lib/list_debug.c:56!
->>> ...
->>> [   61.590762] Call trace:
->>> [   61.596890]  __list_del_entry_valid+0xb8/0xe8
->>> [   61.603408]  dwc3_gadget_giveback+0x3c/0x1b0
->>> [   61.607594]  dwc3_remove_requests.part.0+0xcc/0x100
->>> [   61.612948]  __dwc3_gadget_ep_disable+0xbc/0x1b8
->>> [   61.621019]  dwc3_gadget_ep_disable+0x48/0x100
->>> [   61.627925]  usb_ep_disable+0x3c/0x138
->>> [   61.638230]  uvc_function_setup_continue+0x3c/0x60
->>> [   61.645040]  uvc_v4l2_streamoff+0x5c/0x80
->>> [   61.659812]  v4l_streamoff+0x40/0x60
->>> [   61.668950]  __video_do_ioctl+0x344/0x420
->>> [   61.679548]  video_usercopy+0x1d0/0x788
->>> [   61.685677]  video_ioctl2+0x40/0x70
->>> [   61.697439]  v4l2_ioctl+0x68/0xa0
->>> [   61.709200]  __arm64_sys_ioctl+0x304/0xda0
->>> [   61.720768]  invoke_syscall.constprop.0+0x70/0x130
-
-Just to confirm: this stack was with all 3 patches applied? 
-Want to make sure this won't happen with v4.
-
-
-
-Regards,
-Avi.
+-- 
+Martin K. Petersen	Oracle Linux Engineering
