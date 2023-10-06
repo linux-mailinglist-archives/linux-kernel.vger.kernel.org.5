@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D11E7BC039
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3C07BC040
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbjJFUWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 16:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
+        id S233423AbjJFUXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233318AbjJFUWU (ORCPT
+        with ESMTP id S231912AbjJFUW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:22:20 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBFEBD
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:22:18 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5032a508e74so213e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:22:18 -0700 (PDT)
+        Fri, 6 Oct 2023 16:22:59 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB15C5
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:22:57 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3af5fcb5e37so1687317b6e.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:22:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696623737; x=1697228537; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d/4hSoCDyaBEYy7aXsgoLzXeIlCi3RJAlrp96XY1SLQ=;
-        b=KgF1nKu0lGe2xmMn80uRxeexdo4SSk/JFsTSn2t7igSpS4bbQFKblxTmezmIDGwq6F
-         uA9rXTEDr5yGBHDa6mgn3cXF6sm43SpaMfyIRkgO84r6L57j/g4vegE2nyDtgC+VoLcs
-         OZrcFb3cPw8xsMdJigFXI0x9UK52LSpEC/T41Fq5LIViviq8BoCiqIlX4U5k9H+YQCRR
-         AJOw+dzbch+8mQBvFrxb/AJxv8pAzCpJ4E+8bmg2n3CeGhx903NEyQsmr+S0pzZKsaV1
-         wNQE5cqK41/EcguwkOfi5we7zDHjO0X4SMc+Pj6POyNZ94iFU1wk+CPQD9X4hv7/3QMA
-         VpYA==
+        d=chromium.org; s=google; t=1696623777; x=1697228577; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=v8kAE0L3XYT2zduhiLheo6/OoQQtkbHtadi2JLu6gYg=;
+        b=SQAOm7mxJwp8A70M7SmHvhOVbjNCbVpWxfmgyc8x8MGl2URWXQYazZH/vDNR3cBh0Y
+         jB9zlJi4doGVus4mdCPj/vA4YyEsrhC4fzLf7ylNa/e0HXTRhyd2DfqkZ8jnwEsqwXHJ
+         QlEhlu4jObvUqBwnIkAaguUJRH3jRx3UmaQL8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696623737; x=1697228537;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d/4hSoCDyaBEYy7aXsgoLzXeIlCi3RJAlrp96XY1SLQ=;
-        b=Xf98q5lSvXnObL2LIGKgqRiLfyZt2fODIeZIGzzDjecC7i6FwLq4a7tOjoNUC1M3Jl
-         NXcUIa2cb22Xed/6SiR1Fl8i1/qKo7Z6SjbtfH3UZ8Uq7oxIUJ8CTADFs3HmDUFpUZHr
-         rP3SRGVjoGZP2/T1Pa5utp05x8lMsDHobPorbj8NgQmxV2d6f0b8AqZ5+edLDqRfKUl5
-         KBuquPsqVdYI8xl6I8LETM4pciQdOibfd/sBdyeYqWodT4qGmnxyhUtMQztFKrohmK49
-         y/NrQGUiEXDVkxiS0QyPGEZl0XFjGQZvJGSxbiPwDbkI2p4yOt0br4FS9Nj8fPDojxjG
-         VGNQ==
-X-Gm-Message-State: AOJu0YwBAsYlIEGvjNVGM6fLdRLjzEBmIGkUPEdM5vBW2g7tlk47WnnC
-        w8OZUJP2dxYwl08T89FeiDv47Fy/lzPmC1AGTuJNIQ==
-X-Google-Smtp-Source: AGHT+IHhKTU1D0Ef+p5VelaG4Up6LZ2v8VqW7+q726CrnzSrF9GjvVQH5R7kGBvYSniUUm/TR+Aals4sbq1T7/fPsag=
-X-Received: by 2002:a05:6512:4801:b0:502:a55e:fec0 with SMTP id
- eo1-20020a056512480100b00502a55efec0mr146330lfb.6.1696623736764; Fri, 06 Oct
- 2023 13:22:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696623777; x=1697228577;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v8kAE0L3XYT2zduhiLheo6/OoQQtkbHtadi2JLu6gYg=;
+        b=dCEyoRT/m7H+nPb9L+nAtKCeHT6wsl3luQBGoOVo2k2D8o91ZBBc8rJ+GmRj3NZ51U
+         OorvGDwx/Khtgni/SUfpnO0lKan5R/ATbL59mYISzoLdKT5jKkyUqkfMncygO0N1/aCv
+         NarZoKJ4Uuo+c85mNT2v+XqV7ML69GUo9i8Ll4TW1DA8rw1RRZuRE2PZtpkwXOrW5p4W
+         Y0usUOEAmgeU4uetsdNa7vhZ5VZrivlD52ShgreYxt2fRmFtjh3adYruK0lYJK41e6D5
+         hVcdBceM0IyZ+pYFIFx6d8tszK1DxXS49O3aelmiQvYgAIxZDra15oS78DZ5XO8UQ+kv
+         uAbQ==
+X-Gm-Message-State: AOJu0YywQ+cbYf01Ir4AbyZHFw8e43iBvu2qfrH+7YiQJQ3y/LgjG1+/
+        6G38dnZ6UB9K82pnXBQDrFEDsg==
+X-Google-Smtp-Source: AGHT+IFJgYFdXQLoiEQmx+lFHyuC0qUrDFQKLIKGfw/wrLmvAN6GJdpM5ZD/9ihDG8TtTiEFnZjYhg==
+X-Received: by 2002:a05:6358:9691:b0:164:8742:525 with SMTP id o17-20020a056358969100b0016487420525mr1346056rwa.17.1696623777190;
+        Fri, 06 Oct 2023 13:22:57 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 19-20020a17090a1a1300b00273744e6eccsm4271576pjk.12.2023.10.06.13.22.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 13:22:56 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 13:22:55 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, asahi@lists.linux.dev,
+        alsa-devel@alsa-project.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ASoC: apple: mca: Annotate struct mca_data with
+ __counted_by
+Message-ID: <202310061321.E7247C52B@keescook>
+References: <20230922175050.work.819-kees@kernel.org>
 MIME-Version: 1.0
-References: <20231005220324.3635499-1-irogers@google.com> <CAEf4Bza0YGVW0G-oO3h1j0L0ytiKsn-pRbuqU39C2wO0VP__BA@mail.gmail.com>
-In-Reply-To: <CAEf4Bza0YGVW0G-oO3h1j0L0ytiKsn-pRbuqU39C2wO0VP__BA@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 6 Oct 2023 13:22:05 -0700
-Message-ID: <CAP-5=fW=v9oFr1+B_JcEe+kG60wB2W0dtKkD7Fmkh8KSKdu7Aw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] bpftool: Align output skeleton ELF code
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230922175050.work.819-kees@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,100 +77,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 1:20=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Oct 5, 2023 at 3:03=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
-> >
-> > libbpf accesses the ELF data requiring at least 8 byte alignment,
-> > however, the data is generated into a C string that doesn't guarantee
-> > alignment. Fix this by assigning to an aligned char array. Use sizeof
-> > on the array, less one for the \0 terminator, rather than generating a
-> > constant.
-> >
-> > Fixes: a6cc6b34b93e ("bpftool: Provide a helper method for accessing sk=
-eleton's embedded ELF data")
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > Acked-by: Quentin Monnet <quentin@isovalent.com>
-> > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> > ---
-> >  tools/bpf/bpftool/gen.c | 15 +++++++++------
-> >  1 file changed, 9 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> > index 2883660d6b67..b8ebcee9bc56 100644
-> > --- a/tools/bpf/bpftool/gen.c
-> > +++ b/tools/bpf/bpftool/gen.c
-> > @@ -1209,7 +1209,7 @@ static int do_skeleton(int argc, char **argv)
-> >         codegen("\
-> >                 \n\
-> >                                                                        =
-     \n\
-> > -                       s->data =3D (void *)%2$s__elf_bytes(&s->data_sz=
-);     \n\
-> > +                       s->data =3D (void *)%1$s__elf_bytes(&s->data_sz=
-);     \n\
->
-> Seems like you based this on top of bpf tree, can you please rebase
-> onto bpf-next, it has a small change here and I can't apply it cleanly
-> anymore. Other than that it looks good. Thanks!
+On Fri, Sep 22, 2023 at 10:50:50AM -0700, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct mca_data.
 
-Sure thing, sorry for so many V-s, we'll get there in the end.
+Friendly ping. Mark, can you pick this up please?
 
-Thanks,
-Ian
+Thanks!
 
-> >                                                                        =
-     \n\
-> >                         obj->skeleton =3D s;                           =
-       \n\
-> >                         return 0;                                      =
-     \n\
-> > @@ -1218,12 +1218,12 @@ static int do_skeleton(int argc, char **argv)
-> >                         return err;                                    =
-     \n\
-> >                 }                                                      =
-     \n\
-> >                                                                        =
-     \n\
-> > -               static inline const void *%2$s__elf_bytes(size_t *sz)  =
-     \n\
-> > +               static inline const void *%1$s__elf_bytes(size_t *sz)  =
-     \n\
-> >                 {                                                      =
-     \n\
-> > -                       *sz =3D %1$d;                                  =
-       \n\
-> > -                       return (const void *)\"\\                      =
-     \n\
-> > -               "
-> > -               , file_sz, obj_name);
-> > +                       static const char data[] __attribute__((__align=
-ed__(8))) =3D \"\\\n\
-> > +               ",
-> > +               obj_name
-> > +       );
-> >
-> >         /* embed contents of BPF object file */
-> >         print_hex(obj_data, file_sz);
-> > @@ -1231,6 +1231,9 @@ static int do_skeleton(int argc, char **argv)
-> >         codegen("\
-> >                 \n\
-> >                 \";                                                    =
-     \n\
-> > +                                                                      =
-     \n\
-> > +                       *sz =3D sizeof(data) - 1;                      =
-       \n\
-> > +                       return (const void *)data;                     =
-     \n\
-> >                 }                                                      =
-     \n\
-> >                                                                        =
-     \n\
-> >                 #ifdef __cplusplus                                     =
-     \n\
-> > --
-> > 2.42.0.609.gbb76f46606-goog
-> >
+-Kees
+
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: "Martin Povišer" <povik+lin@cutebit.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: asahi@lists.linux.dev
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  sound/soc/apple/mca.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/apple/mca.c b/sound/soc/apple/mca.c
+> index ce77934f3eef..99e547ef95e6 100644
+> --- a/sound/soc/apple/mca.c
+> +++ b/sound/soc/apple/mca.c
+> @@ -161,7 +161,7 @@ struct mca_data {
+>  	struct mutex port_mutex;
+>  
+>  	int nclusters;
+> -	struct mca_cluster clusters[];
+> +	struct mca_cluster clusters[] __counted_by(nclusters);
+>  };
+>  
+>  static void mca_modify(struct mca_cluster *cl, int regoffset, u32 mask, u32 val)
+> -- 
+> 2.34.1
+> 
+
+-- 
+Kees Cook
