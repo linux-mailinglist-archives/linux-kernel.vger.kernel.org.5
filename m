@@ -2,291 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9D47BB084
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 05:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC317BB07A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 05:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbjJFDWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 23:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
+        id S229903AbjJFDV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 23:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjJFDVs (ORCPT
+        with ESMTP id S229834AbjJFDVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 23:21:48 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FD5D8
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 20:21:42 -0700 (PDT)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3962Pdhg002406;
-        Fri, 6 Oct 2023 03:20:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2023-03-30; bh=ts++G+BYdmdUFqdAtNKLn3GW8JSwEPzR7WlqhqbkpgY=;
- b=W4L9YpjywekoEZjjH0n4FHcRYLam6SSCpSinxXSFhbpAD2BBVvWOYIu8rFOzNdskjVjK
- YTE+Mut1YdouHqJJ9OArvuFyCAuh3wVynhNiHUERSMM0A2fu0X2d6MVLvOKxAf40KdNH
- ZcaY7egjo+yaX91/KxPl3+TScufb6Np9W5nMRk09ZqI0IDPDxIFWh1iX/dm2TN7K0aqJ
- icug3BoAQ0ssyvqUhCNjc8dH5xUiV96nNuW2y+lZQ/zeSKB3rbz0i1f9UhHPNBetO2b1
- RmaULL/02sfLMy74XNEObMz74l/ZSVfI5NviQ0frJ9EciM9WGj4Os2UotRqfDgZ35CPU Kg== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3teakck2e2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Oct 2023 03:20:47 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3960toAS002971;
-        Fri, 6 Oct 2023 03:20:46 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2043.outbound.protection.outlook.com [104.47.56.43])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tea49yq0h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Oct 2023 03:20:46 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VSO9hTXC0YBw/ofp/+LUk16b+mwsW4t+kUFA8uCgYFPWyusK9En9SBgKazaWHwH5c07pdtc56lUb8wNrrWl/xyEra2C/c2LZ06jepVXhuDhNaIcdwet2jpXQm0qNjfIsQLJ9+nBT4j3AX+PDodNLEU4gjTHizjZRiAfhme+bct8sTm27mrVAyFivXZ3UeOTSX3J3Qftg2bscgDbNaxZu76coGfSUOd/UGGXQFQRvJ0aWTTz2qhEi+2NfXpIZ0ne0KP6GRNc4m0h1XsLZ84qK18v9V0Qr+m81IJY0Lg7bQiYezBYZAjajOfBYkM7UYl/2ADgR8upx3ordJXeaRwE+uA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ts++G+BYdmdUFqdAtNKLn3GW8JSwEPzR7WlqhqbkpgY=;
- b=ER6CjpJ+4Vs9KKv92IfWbfZeYFlWzUsfu1IHCoIP9SxjHgfSFNtKwpFU2w/sUkVGv41gridE2e/9/waTpC6cWb7GcrTMGX5d3eMZmrAa1KU71FgVX9RtTZ51NrOCd5ycWecwPhsxfgkIfcLSsH/Vw7vMuak/2wflK/KmD4lset6J3O1dsy11ZTJnFuVGAj9Z35oFrkxbozLj6z7M0sM1RKRE3R+Mk/iTmOFz+hNcVNo8wSQfEHjUnZcvAjUdT4RMK0HJUc9YZ7nv/a5843Trmz/bP605edVh0qI6ZilDxSX0RA4p9B+ayPil9tbUIRAIjNPBC6r0tUu5LdrMRrGj7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 5 Oct 2023 23:21:22 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E345E8
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 20:21:18 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9299cac11aso1543777276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 20:21:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ts++G+BYdmdUFqdAtNKLn3GW8JSwEPzR7WlqhqbkpgY=;
- b=DECk5jqGuq+T4ojIJKIEAZe3DxoCRzIX6wuem4Q41tLq15H0EGRX1gFntkJSZc9T3VcSHGnmhqgH0X75wQC0ms/I4iw5Rb/v0OJpeHHrOg9v9UYU53Zxv2pKsNkq3LF88SNBuDvPyzCcWll4wmN4Lbu5Sq1aaWJDNaBuDmnX68g=
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by DS7PR10MB5391.namprd10.prod.outlook.com (2603:10b6:5:3ac::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.38; Fri, 6 Oct
- 2023 03:20:44 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::59f7:ec45:eb41:d8c2]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::59f7:ec45:eb41:d8c2%6]) with mapi id 15.20.6838.033; Fri, 6 Oct 2023
- 03:20:44 +0000
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        d=google.com; s=20230601; t=1696562477; x=1697167277; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+GCfD3J/utVXt7fNFcXS7tndSxc76Lg25lhLquZNVGo=;
+        b=hrtpfTHdnDlVQOSCXorsT/aQpCWyDltEjd8ggllmcRKf0hehE+I3NnH7FBjDok1ZhH
+         zxiW3QeU7M+QnZdyltwO1UIpQuMKmo9EQEhNWpfk6pSMe/HEt+4b3rNW8zjTdMQg/B10
+         iZCLZl51zE9bQUpUbrhdEF9Fmxm16pzP4f8ofIJuXk4gLecrkB9/Q9kxBHT8rugTv8s/
+         bNMRxJ7Ujm366qW+kXMXoWNpdDO/O2Ot3Am4VUOq6Zgsd/yx/oiEIVzi0LddaCdnW98k
+         ehUE5i2UPtmnCpl8Hmq2OcMNaedBdRXW8yU7hbzO+v/QqNJ1b108X36Fx61ihw91uxsp
+         thqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696562477; x=1697167277;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+GCfD3J/utVXt7fNFcXS7tndSxc76Lg25lhLquZNVGo=;
+        b=tFtumMAi0QV5eo2lHr0nGelgvVw0w4FQq8A/djCVC9EpUq0cBYIXIqbe6MUlZkk2kQ
+         p8tox3H8HHjUrdcdKxXXql6kaIFaUj3erACKIh3ZNDLy8JZdy733cZt11mI6Wle1n9oZ
+         gCoLxKv8gxLXhwGTZ8qd/cz7xGbpqESCKh5/TbfeDsAgdRQ/ukLmDZyCU/6lZC+xoxWA
+         2Sdf0Lj7yomsx4L79cFSx/4PuFdjOflSvztKkZnkPLcY0BQ4RlJjf3MUCt+fAYhMvoYW
+         kAm5b/1SJn+R8sC4FRc0IvACrh7F5ogxU+xj404SxPXh4QBUFwcYkqxOidWOJ/yFTSs+
+         /7Mw==
+X-Gm-Message-State: AOJu0Yze5ZkVk4+x4SuUy6SIOE+45GHILiIZ7ssDtXD4ix3gs/quExbC
+        rC/Lie7O27B0HFku0zAaLiOdmp0vFSk=
+X-Google-Smtp-Source: AGHT+IHbgJX1dul2brLKqtxy3zNH4Wq8osuz6z+RCm0MrNAV7Qoo4mqOPY/NVTlIcosnwAkmq4EHKfjNEDc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ae41:0:b0:d78:a78:6fc7 with SMTP id
+ g1-20020a25ae41000000b00d780a786fc7mr101904ybe.6.1696562477545; Thu, 05 Oct
+ 2023 20:21:17 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 20:21:15 -0700
+In-Reply-To: <CA+EHjTwTgEVtea7wgef5G6EEgFa0so_GbNXTMZNKyFE=ucyV0g@mail.gmail.com>
+Mime-Version: 1.0
+References: <CA+EHjTwTgEVtea7wgef5G6EEgFa0so_GbNXTMZNKyFE=ucyV0g@mail.gmail.com>
+Message-ID: <ZR99K_ZuWXEtfDuR@google.com>
+Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
+From:   Sean Christopherson <seanjc@google.com>
+To:     Fuad Tabba <tabba@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH v7 8/8] hugetlb: batch TLB flushes when restoring vmemmap
-Date:   Thu,  5 Oct 2023 20:20:10 -0700
-Message-ID: <20231006032012.296473-9-mike.kravetz@oracle.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231006032012.296473-1-mike.kravetz@oracle.com>
-References: <20231006032012.296473-1-mike.kravetz@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR04CA0283.namprd04.prod.outlook.com
- (2603:10b6:303:89::18) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|DS7PR10MB5391:EE_
-X-MS-Office365-Filtering-Correlation-Id: f4302c32-2a9a-4014-55c5-08dbc61b39f3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uDUhy576Vei0M6EPV4/DzehaHW8FWsqFhiFJDWZ7swelFl9XFE5xsthi6SkoOLIdxgjYYOVNc2oBa+daIl8tqfbQw26zqX5z1jIqn0P805kRepK0svoKTyajO/3tU+pP/N5keBF1XbKeH8XSpXSEB5pERCQUhbIGQ1KSSagAKNL8jMOoCqpzD4Nj79bxIu9hGXta0ZGmqsQhlzTCTWgihH0YUAHTNSsxTT2qj/DQxtdnOlW2owMV6J2xDChH6axCk3INhnVnAo6CM7kd6OpLxsUcp5a4+OHUuXDzJl4mB+cT7c3Cjvjx9PvQ6RPid96AWW4nuFXJixd8hAjumr0JBD/tbPHDZnO1INRhO0P81f3kxm8lhlUvuTtX4jXa5kapwA4G3x7moPvjxGyfIhctbpCZow+s11aHHOQ8aQSsff7OCQI/gl5xkUZoylmU34XrENPt51g7ZETKzeOa3hDp62K7yEXUvsW2hwvmUyyzzbnJsnURL6s6ILioe9LsnJAKsQDBmvmyF3IzU77gHfDaKi1ZD6mwUQrD3SEHsSs2rsGbluSfR/tgNHcAARKzaqVF
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(376002)(136003)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(6506007)(6666004)(6512007)(6486002)(478600001)(38100700002)(86362001)(2906002)(7416002)(316002)(41300700001)(2616005)(83380400001)(1076003)(107886003)(26005)(36756003)(44832011)(66946007)(66556008)(66476007)(5660300002)(54906003)(4326008)(8936002)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vkGV686udWlCGJwfKCCS7dwnslBcyl++oKGE0APluLZRGOQXYNFU475kPzKC?=
- =?us-ascii?Q?s6vAiB/anYlKA3gDN248A53XPuyAwiQkjypkfV7mNdqNacU9lCkUO951+kSA?=
- =?us-ascii?Q?z3wCBIBgfXZunLJok5vqXvY7LNzdYdfS5farhwhsUmJUpcbUY9dXSCfN1QPf?=
- =?us-ascii?Q?ThusVqM/opa3+BEqnx892OOwZPFWP/hKq/FK6rARvP33RgAAS8y3N0H3GRTz?=
- =?us-ascii?Q?OFe1prXAdwj+9a4HxI1BQuJEcSSmmuP4t58ueff09joyNOi8lEb9+2bDRuUY?=
- =?us-ascii?Q?CCOV+HkKdg6Pr1Zh0V2TD0hRiGAhP8VvM1k07l3vCmuKdfNvAN6le5Nj1RC+?=
- =?us-ascii?Q?zqB70XlT/RzizSoygdIZbLHMc0g0bNx6TVR0djQjelT+xCL0+jGmf2A1j9PF?=
- =?us-ascii?Q?McGByNUOAdahh46TIXfUFG0+Uq0DL4X7MtRNKb4OzgYOz+1eNgfRTH11fkpw?=
- =?us-ascii?Q?KmfOQcDEeslllwLF0yHbTdpFzy+t5ayCFO382xO234ymySqs1+l1e8ZQIjBM?=
- =?us-ascii?Q?Jg/KTlrAt59jNuYt0ywnoCUSExsZZkhQARCunh2ZILiBM6taCpHCtkHvsBBC?=
- =?us-ascii?Q?7KFBg80gmSP9ig8leH0Z3xnF3+ePa9GugQnFwr8A3vPsxCJs+olOousSSJ/e?=
- =?us-ascii?Q?I+49EH6KbP7WaOZeDb1sxeY9+aszMthJbZs7go7XFTBQ7gGeCteJpz/JUMKl?=
- =?us-ascii?Q?vRJtnolGXrv9xZ9K7+Xqj1DphmpXeMM8rrQVMSHv8nk/ioLWHG5uSsK2vyed?=
- =?us-ascii?Q?tZ4D6kAlPaGRryRQ046wK0tINmAZfg0S+DwS/aDLwgUm9vwzbyr2Yth8WpL+?=
- =?us-ascii?Q?lBdAxA30rKhTokv4Qo5Qfe0V7+MAzvKpRKk+nIhao3pvUlkFtgcFEJWJoNAM?=
- =?us-ascii?Q?3Kr+Hj1nxU8xbu0MQ394T2gyFKirUWPduWSc1YbKGPbxe88sTXO9d0K5f+W3?=
- =?us-ascii?Q?SnYYwwNBNcjbaeFCvvyUQUNM5+Iu/giKgknphCwJdLjfQEhQ9Ixb5lvayhpD?=
- =?us-ascii?Q?7AW27eEYo3zYUvLANo2K38827YFoP/46c4xqPUhwRRku1dgrgZcb3Zp0ZHgR?=
- =?us-ascii?Q?B5ZORz7Ol7v3x70sls52hy9OWC/DNeQkw9tcuBfvDb4GCH62PFkVUm8mQg4c?=
- =?us-ascii?Q?FwCySij0F/YW/3jsgOW/Q7infv/qqPu3QDRLMYQZ3qse5Hm8EJyeKFEIhbOw?=
- =?us-ascii?Q?DqOjLNhLuERplkfJUpTDIB03I/ojXqStfzKhq6lL4kkKHOLiFFXOxRTAD6k9?=
- =?us-ascii?Q?Wg4/9AqtQk/HU+cZzrsX0wJGvShb3Zy5qISMYXuRJ0gR6z+2Eqar0V8kWLyn?=
- =?us-ascii?Q?FC6VpIrEVOZIyKxQVc5AtMUhnu9VnD263ZJaLZHuKnF4aUQjFc/RGK2+fKrz?=
- =?us-ascii?Q?K6ZDWQP9jqLFr2x/SmRijbMOH7dYykffVETMjqBnykC2kmqGeqRKtIfz237I?=
- =?us-ascii?Q?N6/HglwhUXaaLcEnSntZnS5La8F7cJKD0NOCzoJ083BjEl7b6vyQ3gYdUHzG?=
- =?us-ascii?Q?YlbDaG4e0Orddpt+tqgPieKZEyoBZ87GMs/aHfI3aV5zHu47v93DgcDQBCjx?=
- =?us-ascii?Q?U2fnxrh2RFja2Ekc192R9Q1nJYhG3X08SpRNHfP+JQeg8U1eOoyK0lKdDIob?=
- =?us-ascii?Q?4g=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?sYWOesysSsb4uk/T4Ws9ERaH/CmViu4yJMGmLm+c9AxdhWRg0ncyzobQ+C3f?=
- =?us-ascii?Q?lwf6tWserEpAVLhtDDL679NdDnkSGIB0sRev4yaSoRYUIAfatXOocFDnwCrl?=
- =?us-ascii?Q?7y+ZFt4pOIM5dW/oc2f0n8bTi1vpfuZKHAFXJvv/DEypx0ERn0FGPSp7vGgm?=
- =?us-ascii?Q?gbzU3W9yQ0hwh/avxlkl9afWWt0DRC5y9L+oAWsYEtq2eswKJXTZtmVKruLW?=
- =?us-ascii?Q?c8lv+FSdnpHgVIV1/5z5d6dAgMgB0Vp2XY3q7hmb/xk6QVHh5gVZcpa6GYDc?=
- =?us-ascii?Q?LvmxXlfLHP9D/B97c3gDi7Z1GMmn/Mf9hqrYJS5LOnq5+ogL6mT+CMW54IKy?=
- =?us-ascii?Q?4XxTPApseGCotLqqPrhUb4TNEK2sJNVGADswKeRTPRfUw5biVAb5kl90AY9I?=
- =?us-ascii?Q?izTcjggtBuU64Verd7OHiptlXZ0to6+B/GZW8PKQPfut8y1WZRBrX7ANgRfR?=
- =?us-ascii?Q?s3G//xDolKtk7KE0nkpoIn9XaLnhHqwbSksO+rXuTY2Hcia/1k1HvuxYQB1Z?=
- =?us-ascii?Q?TcnlnDqQhy15xbwv8lUV/YjIXECNgwbjadi2JCst3GnJuhG7YLBs72IXuL0s?=
- =?us-ascii?Q?0mlQFy4kH7R7ZhGY9rYdKKW9kiMxHRzJ/w6CDPok2kpcpgkYbuRToZOf22Jz?=
- =?us-ascii?Q?ZmHBRay9xHqeHgX6t2KVhzHbALzShcxILt/44672ERu3FGVpKnG18F/ULD7E?=
- =?us-ascii?Q?/n7i6mRnPnpc6IP/R1EdobjMhWDun965LBNq4CNEiFSmHqcRfiecWY/Q3rwO?=
- =?us-ascii?Q?KUdE2EPq/vfYAmMrutAZldfcpK9iHJwz74I+nlkJYGJH9jj6QBsFXenmJvfX?=
- =?us-ascii?Q?yITTI/4syjgRcOcJA1ailbM9t8FxKf/s+mFFYYLM7lahWeoxubzzWV37EL8j?=
- =?us-ascii?Q?dhF8yTm/E7bEMyehc4wBO5EmcVFySAzn0/W8WRtH85gPf7OIyjDYzE6vlxIN?=
- =?us-ascii?Q?+VTTuMKvvb7tSldb11hqwj9AP1bv8lXL+aAPThl2VNQQ6k9EMIV0RtAZEsOk?=
- =?us-ascii?Q?SjvfNLXnjKoyJRyVK48obbF0aAq5hbmktAtZqaYXHXPfMz3weoTP1AXD3PYN?=
- =?us-ascii?Q?hwAxD3aKVE/lMrnHK+ax2yXsOa3SZdteQ9jrR6UfEaw8GBMBokRyNOWDgvID?=
- =?us-ascii?Q?GFeqIehvCP8SWSJhDLQw7wQr3J29W9RO8Q=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4302c32-2a9a-4014-55c5-08dbc61b39f3
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2023 03:20:44.2980
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9QhQSvPVReA668Q/6dI4PtjJ+ySQzzt9C+CMWRMNeMaEZB4RFRjwNdZdVDABz8GJa1l4vwjdTA/UL28uXLIoQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5391
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_18,2023-10-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310060024
-X-Proofpoint-GUID: hGyZmpWMRUcFCQu6hR3LLaKda783hnLa
-X-Proofpoint-ORIG-GUID: hGyZmpWMRUcFCQu6hR3LLaKda783hnLa
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, KVM <kvm@vger.kernel.org>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        KVMARM <kvmarm@lists.linux.dev>,
+        LinuxMIPS <linux-mips@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the internal hugetlb restore vmemmap code path such that TLB
-flushing can be batched.  Use the existing mechanism of passing the
-VMEMMAP_REMAP_NO_TLB_FLUSH flag to indicate flushing should not be
-performed for individual pages.  The routine hugetlb_vmemmap_restore_folios
-is the only user of this new mechanism, and it will perform a global
-flush after all vmemmap is restored.
+On Thu, Oct 05, 2023, Fuad Tabba wrote:
+> Hi Sean,
+>=20
+> On Tue, Oct 3, 2023 at 9:51=E2=80=AFPM Sean Christopherson <seanjc@google=
+.com> wrote:
+> > > Like I said, pKVM doesn't need a userspace ABI for managing PRIVATE/S=
+HARED,
+> > > just a way of tracking in the host kernel of what is shared (as oppos=
+ed to
+> > > the hypervisor, which already has the knowledge). The solution could =
+simply
+> > > be that pKVM does not enable KVM_GENERIC_MEMORY_ATTRIBUTES, has its o=
+wn
+> > > tracking of the status of the guest pages, and only selects KVM_PRIVA=
+TE_MEM.
+> >
+> > At the risk of overstepping my bounds, I think that effectively giving =
+the guest
+> > full control over what is shared vs. private is a mistake.  It more or =
+less locks
+> > pKVM into a single model, and even within that model, dealing with erro=
+rs and/or
+> > misbehaving guests becomes unnecessarily problematic.
+> >
+> > Using KVM_SET_MEMORY_ATTRIBUTES may not provide value *today*, e.g. the=
+ userspace
+> > side of pKVM could simply "reflect" all conversion hypercalls, and term=
+inate the
+> > VM on errors.  But the cost is very minimal, e.g. a single extra ioctl(=
+) per
+> > converion, and the upside is that pKVM won't be stuck if a use case com=
+es along
+> > that wants to go beyond "all conversion requests either immediately suc=
+ceed or
+> > terminate the guest".
+>=20
+> Now that I understand the purpose of KVM_SET_MEMORY_ATTRIBUTES, I
+> agree. However, pKVM needs to track at the host kernel (i.e., EL1)
+> whether guest memory is shared or private.
 
-Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/hugetlb_vmemmap.c | 39 ++++++++++++++++++++++++---------------
- 1 file changed, 24 insertions(+), 15 deletions(-)
+Why does EL1 need it's own view/opinion?  E.g. is it to avoid a accessing d=
+ata
+that is still private according to EL2 (on behalf of the guest)?
 
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index 9df350372046..d2999c303031 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -461,18 +461,19 @@ static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
-  * @end:	end address of the vmemmap virtual address range that we want to
-  *		remap.
-  * @reuse:	reuse address.
-+ * @flags:	modifications to vmemmap_remap_walk flags
-  *
-  * Return: %0 on success, negative error code otherwise.
-  */
- static int vmemmap_remap_alloc(unsigned long start, unsigned long end,
--			       unsigned long reuse)
-+			       unsigned long reuse, unsigned long flags)
- {
- 	LIST_HEAD(vmemmap_pages);
- 	struct vmemmap_remap_walk walk = {
- 		.remap_pte	= vmemmap_restore_pte,
- 		.reuse_addr	= reuse,
- 		.vmemmap_pages	= &vmemmap_pages,
--		.flags		= 0,
-+		.flags		= flags,
- 	};
- 
- 	/* See the comment in the vmemmap_remap_free(). */
-@@ -494,17 +495,7 @@ EXPORT_SYMBOL(hugetlb_optimize_vmemmap_key);
- static bool vmemmap_optimize_enabled = IS_ENABLED(CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEFAULT_ON);
- core_param(hugetlb_free_vmemmap, vmemmap_optimize_enabled, bool, 0);
- 
--/**
-- * hugetlb_vmemmap_restore - restore previously optimized (by
-- *			     hugetlb_vmemmap_optimize()) vmemmap pages which
-- *			     will be reallocated and remapped.
-- * @h:		struct hstate.
-- * @head:	the head page whose vmemmap pages will be restored.
-- *
-- * Return: %0 if @head's vmemmap pages have been reallocated and remapped,
-- * negative error code otherwise.
-- */
--int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
-+static int __hugetlb_vmemmap_restore(const struct hstate *h, struct page *head, unsigned long flags)
- {
- 	int ret;
- 	unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
-@@ -525,7 +516,7 @@ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
- 	 * When a HugeTLB page is freed to the buddy allocator, previously
- 	 * discarded vmemmap pages must be allocated and remapping.
- 	 */
--	ret = vmemmap_remap_alloc(vmemmap_start, vmemmap_end, vmemmap_reuse);
-+	ret = vmemmap_remap_alloc(vmemmap_start, vmemmap_end, vmemmap_reuse, flags);
- 	if (!ret) {
- 		ClearHPageVmemmapOptimized(head);
- 		static_branch_dec(&hugetlb_optimize_vmemmap_key);
-@@ -534,6 +525,21 @@ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
- 	return ret;
- }
- 
-+/**
-+ * hugetlb_vmemmap_restore - restore previously optimized (by
-+ *				hugetlb_vmemmap_optimize()) vmemmap pages which
-+ *				will be reallocated and remapped.
-+ * @h:		struct hstate.
-+ * @head:	the head page whose vmemmap pages will be restored.
-+ *
-+ * Return: %0 if @head's vmemmap pages have been reallocated and remapped,
-+ * negative error code otherwise.
-+ */
-+int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
-+{
-+	return __hugetlb_vmemmap_restore(h, head, 0);
-+}
-+
- /**
-  * hugetlb_vmemmap_restore_folios - restore vmemmap for every folio on the list.
-  * @h:			hstate.
-@@ -557,7 +563,8 @@ long hugetlb_vmemmap_restore_folios(const struct hstate *h,
- 
- 	list_for_each_entry_safe(folio, t_folio, folio_list, lru) {
- 		if (folio_test_hugetlb_vmemmap_optimized(folio)) {
--			ret = hugetlb_vmemmap_restore(h, &folio->page);
-+			ret = __hugetlb_vmemmap_restore(h, &folio->page,
-+						VMEMMAP_REMAP_NO_TLB_FLUSH);
- 			if (ret)
- 				break;
- 			restored++;
-@@ -567,6 +574,8 @@ long hugetlb_vmemmap_restore_folios(const struct hstate *h,
- 		list_move(&folio->lru, non_hvo_folios);
- 	}
- 
-+	if (restored)
-+		flush_tlb_all();
- 	if (!ret)
- 		ret = restored;
- 	return ret;
--- 
-2.41.0
+Assuming that's the case, why can't EL1 wait until it gets confirmation fro=
+m EL2
+that the data is fully shared before doing whatever it is that needs to be =
+done?
 
+Ah, is the problem that whether or not .mmap() is allowed keys off of the s=
+tate
+of the memory attributes?  If that's so, then yeah, an internal flag in att=
+ributes
+is probably the way to go.  It doesn't need to be a "host kernel private" f=
+lag
+though, e.g. an IN_FLUX flag to capture that the attributes aren't fully re=
+alized
+might be more intuitive for readers, and might have utility for other attri=
+butes
+in the future too.
+
+> One approach would be to add another flag to the attributes that
+> tracks the host kernel view. The way KVM_SET_MEMORY_ATTRIBUTES is
+> implemented now, userspace can zero it, so in that case, that
+> operation would need to be masked to avoid that.
+>=20
+> Another approach would be to have a pKVM-specific xarray (or similar)
+> to do the tracking, but since there is a structure that's already
+> doing something similar (i.e.,the attributes array), it seems like it
+> would be unnecessary overhead.
+>=20
+> Do you have any ideas or preferences?
+>=20
+> Cheers,
+> /fuad
