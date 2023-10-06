@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC147BBF88
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F6C7BBF84
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbjJFTGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 15:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45086 "EHLO
+        id S233297AbjJFTGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 15:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233387AbjJFTFr (ORCPT
+        with ESMTP id S233448AbjJFTFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 15:05:47 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC4319D
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:05:37 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53142351997so840306a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:05:37 -0700 (PDT)
+        Fri, 6 Oct 2023 15:05:50 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1AA132
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:05:42 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b2c5664cb4so91676466b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:05:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696619135; x=1697223935; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696619141; x=1697223941; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PddiH55x+W9MXtYbdET9UUNCdNqM/zZgQg6IQuIHC9o=;
-        b=IhPsBXv3iUXTGifKWumGQODxOo1rYP0OK3zyDyeoe/0cuAOAr8XbvkfMfueiOGfUJR
-         wak8dYcLSS2cjSJqnAS0M2hpBIG1bSsp3Pl3NLs3NrihwCiNunt7rF2ph4dPZYqoSSex
-         wtPX0EXVf8RQPx5cIWXQaR3RUMZDyChxumRXZEuQ8BD7ZesUigToNk+qMTped8JIB0nO
-         xVGJCcApjyGOQ5KOnsfLw462C9LGeYwn5KXxi1LQNTIBmHKYIZh++/cP3pZjqKg0/cLD
-         A8YcY9+WtiImZqr9gpHrvpiOMMSbFKXc3o1Tq7Qvw2bUJYfo2xNoTDrvHVBhqRQ6YP8w
-         c3LA==
+        bh=50wAwYPZKotuW/XLuJMHGzTqySgRqtpp7TbieAYYB4c=;
+        b=KkBCH9Hr4KDn48nh3htXhNoFZNypg3dLvbOaSdOazqdwhJEArF8GzVtnCji/bwRPiD
+         ruWosttdzmeeQn+gM2Uz6OOrFCJ0TfBUFlq/MZE8MVtfwJlw1R9bAwO3x8bpczNDqSIF
+         OZy19B9UWL6873vTwcosXnWCsarLipDHaBPZtrnIlwV0Q6StUsZuWsAf07KfcOXjpp5r
+         080fXMEVWOQ8Vc+j3HTf5Ev68ox5X/Ubf6uZPmiyRHQ01iTrtd739Wx+kEPUp2Bxhnk3
+         /x+bYyhjxJ8L85gC6DCH7pJ5YXZQVH5AWgBoiWAtLNkfrP0W2CVEr9y4hzuKigU14jRJ
+         dBBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696619135; x=1697223935;
+        d=1e100.net; s=20230601; t=1696619141; x=1697223941;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PddiH55x+W9MXtYbdET9UUNCdNqM/zZgQg6IQuIHC9o=;
-        b=MYzSgarER7LThMVCpoP024JSHGyMInlc1szqQWb4Oqy9meMxGUI5hiBpFyQ6LlS9VX
-         ctlyUjVWs6H7raytRuEFx/ewdcELf3TbL+ZBbdvQzFO5T1QnB8r/kEOqnB5ZfHxAYRac
-         +4bg4Zgt+ShCYPC5XvaLEKEkW1LA0f4nIbLDhB5Grxlm07smjBnyQpEmxcXL9JsMkX7c
-         ZH2PBPLTzLDgInQErl/+VTG/znJl+ufFcG3/1qWliq0IHApNriyNoCkWZT1QlOX74dMg
-         gibNSFVuLlL2SMBDqXeg5fCz4wQp9ErqKm/PUoLsPhhbWshkN/ou93q6/yba8C3yA+gU
-         RNYQ==
-X-Gm-Message-State: AOJu0Yxxz7IbZhH9qdL6Qe8U26a9SgInlQGU3U1LaExrMzyMwRPCk0MH
-        J+IvqyzG+47elnztYweQY3Q=
-X-Google-Smtp-Source: AGHT+IE2VILWoBXLlNlCUEQmPGaZVpyEYdfY/rkrsyVHLJ2oREeSk84ug6GcPexj47mIt+w5VC3Nmg==
-X-Received: by 2002:a05:6402:40c2:b0:523:37cf:6f37 with SMTP id z2-20020a05640240c200b0052337cf6f37mr7470007edb.4.1696619135304;
-        Fri, 06 Oct 2023 12:05:35 -0700 (PDT)
+        bh=50wAwYPZKotuW/XLuJMHGzTqySgRqtpp7TbieAYYB4c=;
+        b=hGnueNyfv+OmNZFm89JJqcH80crhAR0pycMEmZ0afb+QCJ1VC/+o6il4v3/5mnv57j
+         B9XlABR1q3mFjLlkYe1qPNR3DfheYzp6K1tVKi5gAAtioEA6pesQah58IIdpptk8dBzS
+         lLWfOtwiew2JbD2XJs5AZ5ERhcCAXzf0j4Ydvv+PqEzVKdnw8JgQ4VtDxAJ+jUintlTz
+         MB+pOIuVkhOAehV8RHsJfB6RpIomLqkn4WtaW+MvBNiUvPnHpJUi59BziM4xGDveMazb
+         /c1b2rCEiVmDVdcqGHJVYc5lqiISWxCkSxhxvOGubv9DAaoWLjhRM0BAAW3XWk2zpZQ1
+         WFkA==
+X-Gm-Message-State: AOJu0Yz8gxRQbE31R8VHDbCE73YYismFp9Xy24vFdr5pTbGBjdfH8tdk
+        SzstLoybV0sGWxgwSWgI7WQ=
+X-Google-Smtp-Source: AGHT+IEqE6zbj595QGffuxcQqPzMt5FYCve+/vlKmTRiKuQuL1v51WpzYFImS1wF/JMhli3D8sGv+Q==
+X-Received: by 2002:a17:906:24e:b0:9a5:9f3c:961f with SMTP id 14-20020a170906024e00b009a59f3c961fmr7849157ejl.3.1696619140986;
+        Fri, 06 Oct 2023 12:05:40 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id g18-20020a056402181200b0053782c81c69sm2933456edy.96.2023.10.06.12.05.34
+        by smtp.gmail.com with ESMTPSA id cd16-20020a170906b35000b00991faf3810esm3345530ejb.146.2023.10.06.12.05.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 12:05:35 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 21:05:33 +0200
+        Fri, 06 Oct 2023 12:05:40 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 21:05:39 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 09/10] staging: rtl8192e: Remove unused variable
- rt_global_debug_component
-Message-ID: <082272e20dc0659e7700f7756a6bf1a8b71c411e.1696548527.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 10/10] staging: rtl8192e: Remove unused file rtllib_debug.h
+Message-ID: <b7b61bd068e8090b954e3c025bc724d9e85fc568.1696548527.git.philipp.g.hortmann@gmail.com>
 References: <cover.1696548527.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,41 +70,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused variable rt_global_debug_component.
+Remove #define DRV_NAME "rtllib_92e" as it is already set. Remove enum
+RTL_DEBUG as it is unused. Remove #include <linux/bits.h> as it is unused.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtllib_debug.h  | 2 --
- drivers/staging/rtl8192e/rtllib_module.c | 3 ---
- 2 files changed, 5 deletions(-)
+ drivers/staging/rtl8192e/rtllib.h       |  1 -
+ drivers/staging/rtl8192e/rtllib_debug.h | 47 -------------------------
+ 2 files changed, 48 deletions(-)
+ delete mode 100644 drivers/staging/rtl8192e/rtllib_debug.h
 
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index 2f968c3c0229..b12a39ecdd9d 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -31,7 +31,6 @@
+ #include <linux/delay.h>
+ #include <linux/wireless.h>
+ 
+-#include "rtllib_debug.h"
+ #include "rtl819x_HT.h"
+ #include "rtl819x_BA.h"
+ #include "rtl819x_TS.h"
 diff --git a/drivers/staging/rtl8192e/rtllib_debug.h b/drivers/staging/rtl8192e/rtllib_debug.h
-index f6b23defe225..06adfebd7c89 100644
+deleted file mode 100644
+index 06adfebd7c89..000000000000
 --- a/drivers/staging/rtl8192e/rtllib_debug.h
-+++ b/drivers/staging/rtl8192e/rtllib_debug.h
-@@ -14,8 +14,6 @@
- #define DRV_NAME "rtllib_92e"
- #endif
- 
--extern u32 rt_global_debug_component;
++++ /dev/null
+@@ -1,47 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Copyright(c) 2008 - 2010 Realtek Corporation. All rights reserved.
+- *
+- * Contact Information: wlanfae <wlanfae@realtek.com>
+- */
+-#ifndef _RTL_DEBUG_H
+-#define _RTL_DEBUG_H
 -
- /* These are the defines for rt_global_debug_component */
- enum RTL_DEBUG {
- 	COMP_TRACE		= BIT(0),
-diff --git a/drivers/staging/rtl8192e/rtllib_module.c b/drivers/staging/rtl8192e/rtllib_module.c
-index 195d8aa88138..f280c9e94958 100644
---- a/drivers/staging/rtl8192e/rtllib_module.c
-+++ b/drivers/staging/rtl8192e/rtllib_module.c
-@@ -34,9 +34,6 @@
- #include <net/arp.h>
- #include "rtllib.h"
- 
--u32 rt_global_debug_component = COMP_ERR;
--EXPORT_SYMBOL(rt_global_debug_component);
+-#include <linux/bits.h>
 -
- static inline int rtllib_networks_allocate(struct rtllib_device *ieee)
- {
- 	if (ieee->networks)
+-/* Allow files to override DRV_NAME */
+-#ifndef DRV_NAME
+-#define DRV_NAME "rtllib_92e"
+-#endif
+-
+-/* These are the defines for rt_global_debug_component */
+-enum RTL_DEBUG {
+-	COMP_TRACE		= BIT(0),
+-	COMP_DBG		= BIT(1),
+-	COMP_INIT		= BIT(2),
+-	COMP_RECV		= BIT(3),
+-	COMP_POWER		= BIT(6),
+-	COMP_SWBW		= BIT(8),
+-	COMP_SEC		= BIT(9),
+-	COMP_LPS		= BIT(10),
+-	COMP_QOS		= BIT(11),
+-	COMP_RATE		= BIT(12),
+-	COMP_RXDESC		= BIT(13),
+-	COMP_PHY		= BIT(14),
+-	COMP_DIG		= BIT(15),
+-	COMP_TXAGC		= BIT(16),
+-	COMP_HALDM		= BIT(17),
+-	COMP_POWER_TRACKING	= BIT(18),
+-	COMP_CH			= BIT(19),
+-	COMP_RF			= BIT(20),
+-	COMP_FIRMWARE		= BIT(21),
+-	COMP_RESET		= BIT(23),
+-	COMP_CMDPKT		= BIT(24),
+-	COMP_SCAN		= BIT(25),
+-	COMP_PS			= BIT(26),
+-	COMP_DOWN		= BIT(27),
+-	COMP_INTR		= BIT(28),
+-	COMP_ERR		= BIT(31)
+-};
+-
+-#endif
 -- 
 2.42.0
 
