@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5BF7BC16C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52FB7BC16E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233735AbjJFVoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 17:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
+        id S233734AbjJFVoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 17:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233504AbjJFVn7 (ORCPT
+        with ESMTP id S233714AbjJFVoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 17:43:59 -0400
+        Fri, 6 Oct 2023 17:44:21 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF73CA
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 14:43:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D394AC433CB;
-        Fri,  6 Oct 2023 21:43:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80535CA
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 14:44:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B99E6C433C8;
+        Fri,  6 Oct 2023 21:44:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696628638;
-        bh=A9EK5qf4E+GvhcHWqqYNDqcdaWlBVaP7GwgiYFQn6KY=;
+        s=k20201202; t=1696628660;
+        bh=DmsXWqZVA04oJx2004Lm5q2na1hsfJMHrU27+MQlR4Q=;
         h=From:To:Cc:Subject:Date:From;
-        b=BYVl3Mue9GyJiGJZ82boPI0tqIYhO823qcDCjCfS8lryC8XiBeN98qqEG+4lEp+h3
-         AeAlNz5oocIkQuwJdqAwa82PTcp39DgcOdQYfAlgFX9YzMLTjkCo0jD3iJSiIdapqT
-         xfev52xLt+lseR+Zbaw/7rFjX5IxMBY5j3ow9zkX4lWoMi2iuNWa+ngTC8p66iUx9l
-         UlM37ZfPOUBtuzqyTUJB+jFM4jjBRguIvdq1atEU23mcRcqLQtoEbCZ1cjtXJVV2rw
-         KuiAi2mX0gtelZA7cwaJuxv/D5q9AgBSA8EzY4cODqP3cONyRFXRVtMuflUWMwVP8h
-         Mr5qu6WwhAxjA==
-Received: (nullmailer pid 338978 invoked by uid 1000);
-        Fri, 06 Oct 2023 21:43:56 -0000
+        b=U68WKfV6UUALEGmGiUv81LMjFzEKXBUtsMinrOJe+TxRrdOStYpGbnAWdOVO27VvX
+         wlLCrzV6Ak7Yh+xYaMRS/tnNc8J7anypiNC5JWDxcMK9PLqHD9yjTeXYm35JDIkkpb
+         DFAtZ/X1CC+qghEaa6kBZU1SsB8SoLNiQ6hYj5ewJsfDwlHt+PbtDdifiI23Py+UAE
+         Qw8Y7OhkRyI2fame18DqMYCXIOBh/m+UH2toHukBFBBgwcuJWtOakd5T1bEk9snX4w
+         rt7kAl3jFR5xwUXm5EIqvgoRCLThYJaoizn1Rmj9Zv+sqCJWbuQwuok6yw3P6N9F14
+         gf14CDK9X4LwA==
+Received: (nullmailer pid 339385 invoked by uid 1000);
+        Fri, 06 Oct 2023 21:44:18 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bus: imx-weim: Use device_get_match_data()
-Date:   Fri,  6 Oct 2023 16:43:52 -0500
-Message-Id: <20231006214352.338851-1-robh@kernel.org>
+To:     Paul Burton <paulburton@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] auxdisplay: img-ascii-lcd: Use device_get_match_data()
+Date:   Fri,  6 Oct 2023 16:44:12 -0500
+Message-Id: <20231006214412.339250-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -58,36 +55,44 @@ include the correct headers.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/bus/imx-weim.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/auxdisplay/img-ascii-lcd.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/bus/imx-weim.c b/drivers/bus/imx-weim.c
-index 42c9386a7b42..6b5da73c8541 100644
---- a/drivers/bus/imx-weim.c
-+++ b/drivers/bus/imx-weim.c
-@@ -11,7 +11,10 @@
- #include <linux/clk.h>
+diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
+index fa23e415f260..c16a14becdfc 100644
+--- a/drivers/auxdisplay/img-ascii-lcd.c
++++ b/drivers/auxdisplay/img-ascii-lcd.c
+@@ -8,9 +8,9 @@
  #include <linux/io.h>
- #include <linux/of_address.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
  #include <linux/mfd/syscon.h>
- #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
+ #include <linux/module.h>
+-#include <linux/of_address.h>
+-#include <linux/of_platform.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
  #include <linux/regmap.h>
-@@ -202,9 +205,7 @@ static int weim_timing_setup(struct device *dev, struct device_node *np,
+ #include <linux/slab.h>
  
- static int weim_parse_dt(struct platform_device *pdev)
+@@ -225,17 +225,12 @@ MODULE_DEVICE_TABLE(of, img_ascii_lcd_matches);
+  */
+ static int img_ascii_lcd_probe(struct platform_device *pdev)
  {
--	const struct of_device_id *of_id = of_match_device(weim_id_table,
--							   &pdev->dev);
--	const struct imx_weim_devtype *devtype = of_id->data;
-+	const struct imx_weim_devtype *devtype = device_get_match_data(&pdev->dev);
- 	int ret = 0, have_child = 0;
- 	struct device_node *child;
- 	struct weim_priv *priv;
+-	const struct of_device_id *match;
+ 	const struct img_ascii_lcd_config *cfg;
+ 	struct device *dev = &pdev->dev;
+ 	struct img_ascii_lcd_ctx *ctx;
+ 	int err;
+ 
+-	match = of_match_device(img_ascii_lcd_matches, dev);
+-	if (!match)
+-		return -ENODEV;
+-
+-	cfg = match->data;
++	cfg = device_get_match_data(&pdev->dev);
+ 	ctx = devm_kzalloc(dev, sizeof(*ctx) + cfg->num_chars, GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
 -- 
 2.40.1
 
