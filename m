@@ -2,108 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D437BC31B
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 01:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812A57BC31E
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 01:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbjJFXu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 19:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47106 "EHLO
+        id S233953AbjJFXug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 19:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231381AbjJFXuY (ORCPT
+        with ESMTP id S233960AbjJFXue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 19:50:24 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B983C6
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 16:50:22 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50433d8385cso3519043e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 16:50:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696636221; x=1697241021; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Hu3bT/bg5MKS5nmmxKBtPj+L+cYk6yo/9FATsBXH5cw=;
-        b=Q2aDheJHgY9rNzmLrEsttfsxEM5k5KztOuuMAcx2M6WduuDJbm4RPZy40PrOiXuN8o
-         7Cwyk4e9jdgBvJNeM4BUh8s2UaRT3uW0+ZiWAsxvOVXM4y1fMhewVWZ9a3BoKz28L9dv
-         PTjtgX83/TtMK/xMUJUXh8gwafRpGo8trmDtqXsyf6vfQZuGK6CfjGORsL5SZZNfmwSy
-         V8WDqlvkLzl36upg+Ze7neCkI1CUHpGMSDs9ELFiC/IBNSWXNQmfglSxr+JbI3fPbUYw
-         yBaOgif4Gp+CcESe1aOwf/zfve96aXTmKwHB1BMYvl1javV+QNalX92nKF4lPs0XSKuA
-         pHjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696636221; x=1697241021;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hu3bT/bg5MKS5nmmxKBtPj+L+cYk6yo/9FATsBXH5cw=;
-        b=Hf4Rfw4sqr7/QYs5HkOV99BmDkDMcc4ncKCjUjAGqgBpkTcjCYAgNSBcgOykCSqYd6
-         kOJ310FdUnhl9EsZQ7liwU5jPICAf8xKC2YwpH72fJ29swFL2ZIjogZizdiy3YtWyBiO
-         Ieuylv+2i3iLFaxecouJ2rH2OqQ8p5pvWYfw3m0+oGCer/DgADMwsMZMuDjvrEB4S1dD
-         ODp6c+6fiy8maldcoCgQn8DMdwGTVpQP/inhHxIR2LskQ1Kmd8O7/6vDMoSjfNa9N4sJ
-         uSNVqagTnsZ0tW8qg5sYpzOkraMsr3Xz5iYvqUFS74cK9n+FGkj9xEXf9s3b+JZQ2ntE
-         AJjg==
-X-Gm-Message-State: AOJu0YydVrz9o906lMUAvLjvifk1UNf5r33AgeRQG4ytace/Y0rUB7QY
-        3NKi9tfzg/a4ypsAPMIVFu/zMg==
-X-Google-Smtp-Source: AGHT+IEs2MGl26fIACYsXS5dfGGfgG3l016KrHdttUNgYelmOFhZfjkW7m6pNTxusAGP8lKywcXNIw==
-X-Received: by 2002:ac2:44af:0:b0:502:adbb:f9db with SMTP id c15-20020ac244af000000b00502adbbf9dbmr7680338lfm.65.1696636220713;
-        Fri, 06 Oct 2023 16:50:20 -0700 (PDT)
-Received: from [192.168.200.173] (178235177147.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.147])
-        by smtp.gmail.com with ESMTPSA id u7-20020ac25187000000b005047bf13b6bsm480681lfi.42.2023.10.06.16.50.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 16:50:20 -0700 (PDT)
-Message-ID: <0eebfc14-dbcd-4987-9e94-ea5630b6c268@linaro.org>
-Date:   Sat, 7 Oct 2023 01:50:18 +0200
+        Fri, 6 Oct 2023 19:50:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45644C6;
+        Fri,  6 Oct 2023 16:50:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C294AC433C7;
+        Fri,  6 Oct 2023 23:50:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696636230;
+        bh=Gr8NIy25jma5858InK0zSBJrzPSCMCjYQVnqkTHw2Ls=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=cf8rmM8kOwHed/fJq5mUa78PdLQJMfB6sVSDtHUHa0g/+fzucMGBeTEyoUqKAWLwG
+         t2XTq+qWqJeOhiVwjkMbN3V6j8/GJYM5ya2KgSCLzsSBBwymHzDMFskkP7fK3G2fl+
+         n6VPW/w1qIyS+8MDs19LKYCAW/H2ZYJIiRaUo885k2wPQ4A7uIEoNha8E42qTVw4o9
+         mnW9ahoyXKu25iMUKbI9I6uecCcDYXXmKWXbWsSKtzmIRRfY/AbnKeXHyfc1UrT+fW
+         H4DtIa3nld7kAGuCH/73LI2cS98ufhEQpnQc5qE7EwiqUch+VKfD10uh+dqfCaIvEQ
+         zpKaO+xHhsB6w==
+Message-ID: <7d529b2b9a16f238f533f1c03b4261b2.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: gcc-msm8953: fix stuck gcc_usb30_master_clk
-Content-Language: en-US
-To:     =?UTF-8?B?QmFybmFiw6FzIEN6w6ltw6Fu?= <trabarni@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231002170021.192740-1-trabarni@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231002170021.192740-1-trabarni@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230928224051.160851-1-tmaimon77@gmail.com>
+References: <20230928224051.160851-1-tmaimon77@gmail.com>
+Subject: Re: [PATCH v20] clk: npcm8xx: add clock controller
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tomer Maimon <tmaimon77@gmail.com>
+To:     Tomer Maimon <tmaimon77@gmail.com>, avifishman70@gmail.com,
+        benjaminfair@google.com, joel@jms.id.au, mturquette@baylibre.com,
+        tali.perry1@gmail.com, venture@google.com, yuenn@google.com
+Date:   Fri, 06 Oct 2023 16:50:28 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -111,23 +51,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2.10.2023 19:00, Barnabás Czémán wrote:
-> According to downstream dwc3-msm source this clock has FSM dependency on
-> gcc_pcnoc_usb30_clk so enabling it would fail if latter isn't enabled.
-> This patch add works around this issue by changing parent of
-> gcc_usb30_master_clk to gcc_pcnoc_usb30_clk. This is acceptable because
-> both clocks have same parent and are branches/gates.
-> 
-> Signed-off-by: Barnabás Czémán <trabarni@gmail.com>
-> ---
-"meh"
+Quoting Tomer Maimon (2023-09-28 15:40:51)
+> diff --git a/drivers/clk/clk-npcm8xx.c b/drivers/clk/clk-npcm8xx.c
+> new file mode 100644
+> index 000000000000..e575a8676ca3
+> --- /dev/null
+> +++ b/drivers/clk/clk-npcm8xx.c
+> @@ -0,0 +1,547 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+[...]
+> +
+> +/* configurable dividers: */
+> +static const struct npcm8xx_clk_div_data npcm8xx_divs[] =3D {
+> +       { NPCM8XX_CLKDIV1, 28, 3, NPCM8XX_CLK_S_ADC,
+> +       { .name =3D NPCM8XX_CLK_S_PRE_ADC, .index =3D -1 },
+> +       CLK_DIVIDER_READ_ONLY | CLK_DIVIDER_POWER_OF_TWO, 0, NPCM8XX_CLK_=
+ADC },
 
-There are multiple cases, especially with qcom, where there are some
-magic "dependencies" without parent-child relationship. The common
-clock framework doesn't currently have any good way to handle this,
-other than some mind gymnastics like you had to do here with matching
-them against a common parent/ancestor..
+Please format this some other way. I assume one line means one clk, but
+here it is actually three lines. Perhaps something like this?
 
-Stephen, what do you say?
+> +       {
+> +		NPCM8XX_CLKDIV1, 28, 3, NPCM8XX_CLK_S_ADC,
+> +       	{ .name =3D NPCM8XX_CLK_S_PRE_ADC, .index =3D -1 },
+> +       	CLK_DIVIDER_READ_ONLY | CLK_DIVIDER_POWER_OF_TWO, 0, NPCM8XX_CLK=
+_ADC
+> +	  },
 
-Konrad
+Please stop using the .name member of struct clk_parent_data. That
+member is only there to support drivers that are migrating from a
+binding that didn't specify the parents of clks that are outside of the
+clk controller with the clocks property in their DT node. I see that the
+dts exists upstream, but luckily we don't have a driver merged, so we're
+free to change the binding to specify clks external to the node. The
+.fw_name member will match a 'clock-names' element for the registering
+driver's node. The .index member will match the index in the 'clocks'
+property. Neither of those properties exist in the nuvoton,npcm845-clk
+DT binding, so neither of those members shall be present. This means
+that either the binding needs to be updated, or the clk_parent_data
+structure should be replaced with clk_hw pointers to describe parents.
+I'm going to guess that there aren't any external clk parents, so to
+keep things simple this driver should change to use direct clk_hw
+pointers to describe topology.
+
+> +       { NPCM8XX_CLKDIV1, 26, 2, NPCM8XX_CLK_S_AHB, { .hw =3D &hw_pre_cl=
+k },
+> +       CLK_DIVIDER_READ_ONLY, CLK_IS_CRITICAL, NPCM8XX_CLK_AHB },
+> +       { NPCM8XX_CLKDIV1, 21, 5, NPCM8XX_CLK_S_PRE_ADC,
+> +       { .hw =3D &npcm8xx_muxes[6].hw }, CLK_DIVIDER_READ_ONLY, 0, -1 },
+> +       { NPCM8XX_CLKDIV1, 16, 5, NPCM8XX_CLK_S_UART,
+> +       { .hw =3D &npcm8xx_muxes[3].hw }, 0, 0, NPCM8XX_CLK_UART },
+> +       { NPCM8XX_CLKDIV1, 11, 5, NPCM8XX_CLK_S_MMC,
+> +       { .hw =3D &npcm8xx_muxes[2].hw }, CLK_DIVIDER_READ_ONLY, 0,
+> +       NPCM8XX_CLK_MMC },
+> +       { NPCM8XX_CLKDIV1, 6, 5, NPCM8XX_CLK_S_SPI3,
+> +       { .fw_name =3D NPCM8XX_CLK_S_AHB, .name =3D NPCM8XX_CLK_S_AHB }, =
+0, 0,
+> +       NPCM8XX_CLK_SPI3 },
+> +       { NPCM8XX_CLKDIV1, 2, 4, NPCM8XX_CLK_S_PCI,
+> +       { .hw =3D &npcm8xx_muxes[7].hw }, CLK_DIVIDER_READ_ONLY, 0,
+> +       NPCM8XX_CLK_PCI },
+
+BTW, I looked at the dts file upstream (nuvoton-common-npcm8xx.dtsi).
+The reset and clock controller start at the same address, which can only
+mean that they're actually the same device. The two nodes should be
+combined into one node and one driver should match that compatible so
+that one IO mapping is made for the entire clock and reset contoller
+register space. If you want, that driver can make two auxiliary device
+drivers for the reset and clk parts of the io space and then those two
+drivers can reside in drivers/reset and drivers/clk. I don't know where
+the driver goes that matches the compatible node though, probably in
+drivers/soc. This allows us to properly model the logical components
+that make up the device in hardware (clks and resets) while also
+allowing any device specific things for that entire register space to
+live in the soc driver. For example, if some power domain needs to be
+enabled to access that register space it would be attached to the soc
+driver.
