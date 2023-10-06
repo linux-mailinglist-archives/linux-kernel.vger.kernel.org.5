@@ -2,209 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5907BB04A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 04:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033DB7BB04E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 04:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbjJFCZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 22:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
+        id S229811AbjJFC1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 22:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbjJFCZg (ORCPT
+        with ESMTP id S229615AbjJFC1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 22:25:36 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0E7E8
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 19:25:12 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-573e67cc6eeso1158294a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 19:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1696559112; x=1697163912; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:in-reply-to
-         :mime-version:references:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CxYo6IvDP4Cql5sw9bTnnh2Yqh8RieWPcYmErtsaoMY=;
-        b=RzeQJAFqgtZh1NhIc4o3D8kks06sO6r8hqzUiMazYNtMQU2o+Bs1CH9J4dnp3D5Re4
-         vrzS9qG6tXnEtpfu3ZagBSQfpG84zEpQPEnNjF5wXFCS73/J9y+PWak6hCsHyr1Etldn
-         M62v7xr35V3ZjafYraezjpNswMzRkzJl5cSxEz3kV4LJV063Yd12dOvT9laXIPwcKaSD
-         W2NN0/xWHGzE2B0JTnNyeQEQsqIsDKBk2cvqcM4U/9Qqf5+Mnqa6umJAz2xdiDk9X9NG
-         Au3K2Tp9iPok29nk1V6F/on3Kw1Wams/2lhC8g122vKIPOwd2Fo60TL2LND3rX2xXPia
-         LXdQ==
+        Thu, 5 Oct 2023 22:27:04 -0400
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AE2DE
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 19:26:17 -0700 (PDT)
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7741c2e76a3so99052585a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 19:26:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696559112; x=1697163912;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:in-reply-to
-         :mime-version:references:from:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=CxYo6IvDP4Cql5sw9bTnnh2Yqh8RieWPcYmErtsaoMY=;
-        b=d8BlJV88hOQWFp9ugyAt0yV6g+m7vrFWm4mg2SfP4m17i2YRV5ZmS7zrIK7+fIvaPN
-         jUnoHmy54LXlseUEV2NNDhFEcxWw1GsZ5kHh+iOhAtMk/WxzhvSDTYeDHOExnO4xmco5
-         TQ+0QEP5doUJhdMsPrdqimFxbPYoKPjhp9tGvvUOmv5szQtRYFEEZWkoEUoHbIplS2Uy
-         9R6NMrQTbFCC9vgKxfLSh9fgLEita/zvN1GheG3kSBazfXZlk4IN4UCHUXClOI1366aJ
-         1EZ/ZXSuZ2SzPJ7+sSZ8d7iV71f1ZOdHoncrBeH7RAyL1gWcXhekU5hM1NjEatLhq+70
-         jUiA==
-X-Gm-Message-State: AOJu0Yx8u4cZmY8si5LPHvKcWZ6BnaAxWHdsEgU9eTWggvPlJEL/WHNj
-        z1gU0gboTq68B1M5VPyRdvCesyiLiAnkSTUovbpTnA==
-X-Google-Smtp-Source: AGHT+IFwhwsyiIbKY3C4WD+0/ePkpd25/S3dbGe0Zd6YKc1+vFt6mHdS6faR6OqiHQ7LdSQOzoDww5EWr4asjIaXiqo=
-X-Received: by 2002:a05:6a20:551d:b0:161:7a0c:3c38 with SMTP id
- ko29-20020a056a20551d00b001617a0c3c38mr5963368pzb.32.1696559112315; Thu, 05
- Oct 2023 19:25:12 -0700 (PDT)
-Received: from 44278815321 named unknown by gmailapi.google.com with HTTPREST;
- Thu, 5 Oct 2023 21:25:11 -0500
-From:   Jian Zhang <zhangjian.3032@bytedance.com>
-References: <20230927154244.3774670-1-zhangjian.3032@bytedance.com>
- <ZRZ/ObZmntMLw2r+@ninjato> <975c69de32eefb124fe668e921e8dbda86962deb.camel@codeconstruct.com.au>
- <052ccd48-2541-1ef3-1f33-75b7d49611ad@os.amperecomputing.com> <9407cee639b3eeb715a953c33b26a9a3830a64f8.camel@codeconstruct.com.au>
-Mime-Version: 1.0
-In-Reply-To: <9407cee639b3eeb715a953c33b26a9a3830a64f8.camel@codeconstruct.com.au>
-Date:   Thu, 5 Oct 2023 21:25:11 -0500
-Message-ID: <CA+J-oUsjqT4aQH8ZHbMex18xP_LODD5ycCyhTpv=C2X0DqriZA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] i2c: aspeed: Fix i2c bus hang in slave read
-To:     Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc:     Quan Nguyen <quan@os.amperecomputing.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>, andrew@aj.id.au,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        yulei.sh@bytedance.com, open list <linux-kernel@vger.kernel.org>,
-        Tommy Huang <tommy_huang@aspeedtech.com>,
-        "open list:ARM/ASPEED I2C DRIVER" <linux-i2c@vger.kernel.org>,
-        brendan.higgins@linux.dev, joel@jms.id.au, zhangjian3032@gmail.com,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>, xiexinnan@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696559176; x=1697163976;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FfXO766UylwaXpVj/Oq96aej9C9Ew70cll8S/lw9EnM=;
+        b=NjWzFcZeCCte3BOzAIf0i/vYwOrjX3JSwJn7D1b3BctqD0oqf+JeUDB3WlUypPPAhZ
+         hlrvkTMdBANReH730pqBK5o2RVuHg0XGnDOH+bT+63VgntcsXmhVp3QHPAf3UWz+uANA
+         hU4afBGx95lnjyJOnMVGw9ifHx0KfXGrCjR4Ka9sr0kBQEawNwKPuj+X5fEc2K9KU7Oq
+         gcFdU9fr9mQCKwYn+K9TWiRlVmOERRT3iZa/4tuyAyMPLKDqH+3GXDFTwlOCVXWadli1
+         +x7qH67W35AN95nxFbOilr/uQkzYwmsqCb27tM8q75UaiN9nTMlfWtjnCcZNq49DKXsP
+         dVSA==
+X-Gm-Message-State: AOJu0Yz9ochKnBzG9Dzj67XxJdjBgRjyX4ZenWpLQpF1jorYR7Pi8SoN
+        Ljiws5CWQVjPphDvyTGbmB0G
+X-Google-Smtp-Source: AGHT+IEbnZ5An5rfeR8TQKTpHfEHRlPnV15GqqvAmbaV4MRtIXV55yHwkiIiw6qRvj6rDgqFs1thjQ==
+X-Received: by 2002:a05:620a:c54:b0:773:c6a1:a4ce with SMTP id u20-20020a05620a0c5400b00773c6a1a4cemr7691743qki.36.1696559176408;
+        Thu, 05 Oct 2023 19:26:16 -0700 (PDT)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id du33-20020a05620a47e100b0076db1caab16sm948320qkb.22.2023.10.05.19.26.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 19:26:15 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 22:26:14 -0400
+From:   Mike Snitzer <snitzer@kernel.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Tatu =?iso-8859-1?Q?Heikkil=E4?= <tatu.heikkila@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Device Mapper <dm-devel@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: dm crypt: Fix reqsize in crypt_iv_eboiv_gen
+Message-ID: <ZR9wRq7Rkz+LocDX@redhat.com>
+References: <f1b8d8f5-2079-537e-9d0f-d58da166fe50@gmail.com>
+ <ZR9dEiXhQv-wBVA2@debian.me>
+ <ZR9l446ndB4n1Xl4@gondor.apana.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZR9l446ndB4n1Xl4@gondor.apana.org.au>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: "Andrew Jeffery"<andrew@codeconstruct.com.au>
-> Date:=C2=A0 Fri, Oct 6, 2023, 08:20
-> Subject:=C2=A0 [External] Re: [PATCH v2] i2c: aspeed: Fix i2c bus hang in=
- slave read
-> To: "Quan Nguyen"<quan@os.amperecomputing.com>, "Wolfram Sang"<wsa@kernel=
-.org>, "Jian Zhang"<zhangjian.3032@bytedance.com>
-> Cc: "Andi Shyti"<andi.shyti@kernel.org>, "moderated list:ARM/ASPEED MACHI=
-NE SUPPORT"<linux-aspeed@lists.ozlabs.org>, <andrew@aj.id.au>, "moderated l=
-ist:ARM/ASPEED I2C DRIVER"<openbmc@lists.ozlabs.org>, <yulei.sh@bytedance.c=
-om>, "open list"<linux-kernel@vger.kernel.org>, "Tommy Huang"<tommy_huang@a=
-speedtech.com>, "open list:ARM/ASPEED I2C DRIVER"<linux-i2c@vger.kernel.org=
->, <brendan.higgins@linux.dev>, <joel@jms.id.au>, <zhangjian3032@gmail.com>=
-, "moderated list:ARM/ASPEED MACHINE SUPPORT"<linux-arm-kernel@lists.infrad=
-ead.org>, <xiexinnan@bytedance.com>
-> On Thu, 2023-10-05 at 14:55 +0700, Quan Nguyen wrote:
-> >
-> > On 04/10/2023 13:08, Andrew Jeffery wrote:
-> > > On Fri, 2023-09-29 at 09:39 +0200, Wolfram Sang wrote:
-> > > > On Wed, Sep 27, 2023 at 11:42:43PM +0800, Jian Zhang wrote:
-> > > > > When the `CONFIG_I2C_SLAVE` option is enabled and the device oper=
-ates
-> > > > > as a slave, a situation arises where the master sends a START sig=
-nal
-> > > > > without the accompanying STOP signal. This action results in a
-> > > > > persistent I2C bus timeout. The core issue stems from the fact th=
-at
-> > > > > the i2c controller remains in a slave read state without a timeou=
-t
-> > > > > mechanism. As a consequence, the bus perpetually experiences time=
-outs.
-> > > > >
-> > > > > In this case, the i2c bus will be reset, but the slave_state rese=
-t is
-> > > > > missing.
-> > > > >
-> > > > > Fixes: fee465150b45 ("i2c: aspeed: Reset the i2c controller when =
-timeout occurs")
-> > > > > Signed-off-by: Jian Zhang <zhangjian.3032@bytedance.com>
-> > > >
-> > > > Somebody wants to add tags here? I think it should go to my pull re=
-quest
-> > > > this week.
-> > > >
-> > >
-> > > I've tested this patch applied on top of fee465150b45 on an AST2600 a=
-nd
-> > > the the system behaviour doesn't seem worse. However, I can still loc=
-k
-> > > the bus up and trigger a hung task panic by surprise-unplugging thing=
-s.
-> > > I'll poke around to see if I can get to the bottom of that.
-> > >
-> > > Resetting the slave state makes sense, so with the above observation
-> > > aside:
-> > >
-> > > Tested-by: Andrew Jeffery <andrew@codeconstruct.com.au>
-> > > Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
-> > >
-> > > That said I do wonder whether we should update the slave state in the
-> > > same place we're updating the hardware state. It would cover off the
-> > > gap identified by Jian if it were to ever occur anywhere else.
-> > > Something like:
-> > >
-> > > diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c=
--
-> > > aspeed.c
-> > > index 5a416b39b818..28e2a5fc4528 100644
-> > > --- a/drivers/i2c/busses/i2c-aspeed.c
-> > > +++ b/drivers/i2c/busses/i2c-aspeed.c
-> > > @@ -749,6 +749,8 @@ static void __aspeed_i2c_reg_slave(struct
-> > > aspeed_i2c_bus *bus, u16 slave_addr)
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 func_ctrl_reg_val =3D readl(bus->ba=
-se + ASPEED_I2C_FUN_CTRL_REG);
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 func_ctrl_reg_val |=3D ASPEED_I2CD_=
-SLAVE_EN;
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 writel(func_ctrl_reg_val, bus->base=
- + ASPEED_I2C_FUN_CTRL_REG);
-> > > +
-> > > + =C2=A0 =C2=A0 =C2=A0 bus->slave_state =3D ASPEED_I2C_SLAVE_INACTIVE=
-;
-> > > =C2=A0 }
-> > >
-> > > =C2=A0 static int aspeed_i2c_reg_slave(struct i2c_client *client)
-> > > @@ -765,7 +767,6 @@ static int aspeed_i2c_reg_slave(struct i2c_client
-> > > *client)
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 __aspeed_i2c_reg_slave(bus, client-=
->addr);
-> > >
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 bus->slave =3D client;
-> > > - =C2=A0 =C2=A0 =C2=A0 bus->slave_state =3D ASPEED_I2C_SLAVE_INACTIVE=
-;
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 spin_unlock_irqrestore(&bus->lock, =
-flags);
-> > >
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 return 0;
-> > >
-> > >
-> >
-> > We tested both Jian's patch and Andrew's patch on our MCTP-i2c bus
-> > (ast2600 based BMC) and see both patches work well.
-> >
-> > We currently use upstream i2c-aspeed.c driver with the commit [1]
-> > backported. Without that commit, we frequently experienced the bus hang
-> > (due to bus arbitration) and it is unable to recover.
-> >
-> > But, by reverting that commit and with Jian or Andrew's patch, we see
-> > the bus could be able to recover so we think both changes are good.
-> >
-> > [1]
-> > https://github.com/AspeedTech-BMC/linux/commit/11a94e5918aa0f87c828d63f=
-d254dd60ab2505e5
-> >
-> > Anyway, I would prefer Andrew's way because the bus->slave_state must
-> > always be reset to ASPEED_I2C_SLAVE_INACTIVE everytime
-> > __aspeed_i2c_reg_slave() is called.
->
-> Jian, what's your preference? Are you happy to do a v3 along the lines
-> of my suggestion above?
-Thanks, LGTM,=C2=A0 I will send the patch v3.
+On Thu, Oct 05 2023 at  9:41P -0400,
+Herbert Xu <herbert@gondor.apana.org.au> wrote:
 
-Jian.
->
-> Otherwise Wolfram can take v2 and we can always do the cleanup in a
-> follow-up patch.
->
-> Andrew
+> On Fri, Oct 06, 2023 at 08:04:18AM +0700, Bagas Sanjaya wrote:
+> >
+> > > Git bisect lead me to:
+> > > # first bad commit: [e3023094dffb41540330fb0c74cd3a019cd525c2] dm crypt:
+> > > Avoid using MAX_CIPHER_BLOCKSIZE
+> > > 
+> > > If I git revert e3023094dffb41540330fb0c74cd3a019cd525c2 on current Linus'
+> > > git master, the issue goes away. So I'm personally not all that affected
+> > > anymore (if I'm ready to compile my kernels from now on), and I understand
+> > > that you have no clear way to reproduce this as it seems strongly bound to
+> > > hardware, but seems like this could point to a potentially serious security
+> > > issue since it involves both crypto and undefined behaviour.
+> 
+> Thanks for the report.  Sorry this is indeed my fault.  The allocated
+> buffer is too small as it's missing the size for the request object
+> itself.
+> 
+> Mike, would you be OK with me picking this fix up and pushing it to
+> Linus?
+> 
+> Cheers,
+> 
+> ---8<---
+> A skcipher_request object is made up of struct skcipher_request
+> followed by a variable-sized trailer.  The allocation of the
+> skcipher_request and IV in crypt_iv_eboiv_gen is missing the
+> memory for struct skcipher_request.  Fix it by adding it to
+> reqsize.
+> 
+> Fixes: e3023094dffb ("dm crypt: Avoid using MAX_CIPHER_BLOCKSIZE")
+> Reported-by: Tatu Heikkil� <tatu.heikkila@gmail.com>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> 
+> diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+> index f2662c21a6df..5315fd261c23 100644
+> --- a/drivers/md/dm-crypt.c
+> +++ b/drivers/md/dm-crypt.c
+> @@ -753,7 +753,8 @@ static int crypt_iv_eboiv_gen(struct crypt_config *cc, u8 *iv,
+>  	int err;
+>  	u8 *buf;
+>  
+> -	reqsize = ALIGN(crypto_skcipher_reqsize(tfm), __alignof__(__le64));
+> +	reqsize = sizeof(*req) + crypto_skcipher_reqsize(tfm);
+> +	reqsize = ALIGN(reqsize, __alignof__(__le64));
+>  
+>  	req = kmalloc(reqsize + cc->iv_size, GFP_NOIO);
+>  	if (!req)
+
+Sure, please do.  Shouldn't your header Cc: stable given that the
+Fixes commit implies v6.5 needs this fix?
+
+(sorry I missed this the first time I 'Reviewed-by' the original
+commit)
+
+Reviewed-by: Mike Mike Snitzer <snitzer@kernel.org>
+
+Thanks,
+Mike
