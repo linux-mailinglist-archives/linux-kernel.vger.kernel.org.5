@@ -2,138 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D99DF7BB16E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 08:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097DC7BB181
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 08:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjJFGKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 02:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55664 "EHLO
+        id S230169AbjJFGYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 02:24:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbjJFGKS (ORCPT
+        with ESMTP id S229848AbjJFGYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 02:10:18 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26CAF2
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 23:10:15 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso332480066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 23:10:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696572614; x=1697177414; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CTYCOyGIfBUQlV/VGXme0Sk4Pz1DgTdKLXhRLVc3b2c=;
-        b=HQGr4xPrF7wMvrFGx07q/G2Xnusd/mCc824es1SuXHzrHzMdc0YzrnN6joH0oEeomE
-         DYJyMRbceNKYD+ZqGc+RQtl8fhXrSKMyCUJ76WEI37hNxQI+n72awGjPccpYLEYFNqXy
-         4nkOyzkJxC0wvvRcw7BJpKrpb4/9VzPQMDOZUmIwqaozwEByC34iqKKZtSHjML+X2zWd
-         taCxcT2JqOCKRxQsFFWkxwCglhjUwwAxrc38/jncTo7Kr7Ats4phRYSkFgTc+ErG0Nm0
-         pkBxe+HMYXq2AAzt7qmcS16ZW2ye+XwPMrv5Mktm9oWVsbl/0ag4kleYkyuLQDE55Ivn
-         zcmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696572614; x=1697177414;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CTYCOyGIfBUQlV/VGXme0Sk4Pz1DgTdKLXhRLVc3b2c=;
-        b=UUQz8YgzSv2valHOrvSqgoMfIVEfMGFTMyOnsIre2CWuTTer+N8lhcHUJWe9SXYJeJ
-         Cr57Z7VOTFcjjW9ajA/HUTZ/wwr7+WNRYASm/XS6w7OtKEMCI4KIGCNP4FlQCUfEa9Fh
-         sBO88aHg2deb1gBYAW27nmgJn1IxHbun+bZZJRJu7hjVZJt9bf98bLrADE/Jl+XxYv1o
-         /W6DsdHYhAfWuxRLFIkrjVJS06CSrKmDmxyNZyyQaopINsUXA/Yjkm2Wi65yv01bCTtQ
-         bzwQ4uS7iSckhXFwD457x5kj/9svIUqxZtxcxP6ZhmifK2iSPEpM6uXkvX/VFxg3bkq2
-         HPlQ==
-X-Gm-Message-State: AOJu0YwEmgR4VKjCqVm2Ya1enE/cBt7Egbt7+f0BuXrBlsuGowjUXSMl
-        tRHyOzm4Dl7YrJoRtdvJElXKcA==
-X-Google-Smtp-Source: AGHT+IHYHuJ6Tj10QIAmVLJhOMeaAVag2mHBu1xm5fi+8XLh6a1OWrJvVyPbuS+eMJ+qpKuv15XR5g==
-X-Received: by 2002:a17:906:314f:b0:9b0:169b:eece with SMTP id e15-20020a170906314f00b009b0169beecemr6690090eje.40.1696572614322;
-        Thu, 05 Oct 2023 23:10:14 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id z11-20020a170906074b00b00988f168811bsm2336410ejb.135.2023.10.05.23.10.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 23:10:13 -0700 (PDT)
-Message-ID: <9c4f6ad9-4503-4517-9839-7d50461689e7@linaro.org>
-Date:   Fri, 6 Oct 2023 08:10:12 +0200
+        Fri, 6 Oct 2023 02:24:19 -0400
+X-Greylist: delayed 60 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Oct 2023 23:24:16 PDT
+Received: from smtpcmd04132.aruba.it (smtpcmd04132.aruba.it [62.149.158.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5300590
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 23:24:16 -0700 (PDT)
+Received: from [192.168.1.56] ([79.0.204.227])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id oeEwqIZBPRbLIoeExqSU1E; Fri, 06 Oct 2023 08:23:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1696573392; bh=1g4cE2HuG32l4c0jdgyiNG0Vc4f/Jd4BC4OAvpvtJu8=;
+        h=Date:MIME-Version:Subject:To:From:Content-Type;
+        b=m6x/TAAfP6HnbJu44l9yFOq+rN+xFSmM2Cu0xkgvVT3A1PnyRjldZ9sVAo92jitTN
+         vU5poXE2Oh4NZnF9PaCPoLMsojq/gxS/Rme/Bh1M2H7tS82gRSWAqELkyujuRSXCkf
+         pK21CckOXU5H2YONqoVUluYCdRn60U5DkB2+CXFwQxLSGZ0JZUJwBf4OOR7tLb/ZfR
+         QrBhjuJGuxexB7ep+vHSTeJUc4MYioCWhlUFNWt6/WjvhnjIqIuzrs784RsBDPp2VH
+         nIX5kq4X/ng7KXABWJcsZfxi6jiYFFUh4yiji0ouaGjEZIKtCXTLy/j9Dp7rhmYvj9
+         cbr+4WDKBbIjg==
+Message-ID: <8ca736c3-7da9-2599-7e55-15e2fc9fedc2@enneenne.com>
+Date:   Fri, 6 Oct 2023 08:23:09 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: ipq5332: Add pwm support
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: PPS functionality for Intel Timed I/O
 Content-Language: en-US
-To:     Devi Priya <quic_devipriy@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, lee@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, thierry.reding@gmail.com, baruch@tkos.co.il,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, u.kleine-koenig@pengutronix.de,
-        linux-pwm@vger.kernel.org
-References: <20231006045317.1056625-1-quic_devipriy@quicinc.com>
- <20231006045317.1056625-5-quic_devipriy@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231006045317.1056625-5-quic_devipriy@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+To:     "N, Pandith" <pandith.n@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Sangannavar, Mallikarjunappa" 
+        <mallikarjunappa.sangannavar@intel.com>,
+        "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
+        "T R, Thejesh Reddy" <thejesh.reddy.t.r@intel.com>,
+        "Hall, Christopher S" <christopher.s.hall@intel.com>,
+        "Gross, Mark" <mark.gross@intel.com>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>
+References: <BYAPR11MB3240A86B426158623DB9983EE1D39@BYAPR11MB3240.namprd11.prod.outlook.com>
+ <fa3f1765-eb59-bf69-7f7b-14621caef6ea@enneenne.com>
+ <BYAPR11MB3240801F21598EEFAEA79605E1D39@BYAPR11MB3240.namprd11.prod.outlook.com>
+ <1e02cc71-baee-1e75-9160-062d563af795@enneenne.com>
+ <BYAPR11MB32408E2D9758BD01EC65FB49E1DA9@BYAPR11MB3240.namprd11.prod.outlook.com>
+ <f2788a74-19f8-8992-5b92-427c7b2a27ab@enneenne.com>
+ <BYAPR11MB3240C6789B4C04F3BDAE34D5E1A39@BYAPR11MB3240.namprd11.prod.outlook.com>
+ <f8a97493-a5ab-565f-825a-dd0a508f2b66@enneenne.com>
+ <BYAPR11MB32405694C3C9A1DE083EA673E1C9A@BYAPR11MB3240.namprd11.prod.outlook.com>
+From:   Rodolfo Giometti <giometti@enneenne.com>
+In-Reply-To: <BYAPR11MB32405694C3C9A1DE083EA673E1C9A@BYAPR11MB3240.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-CMAE-Envelope: MS4xfMAx4tZAxRB7YBxzABY8FxJ4N3jczSvovPedbUKVPywsYjMWLUH6jDo+TwaOhasfJFiG2l8OCieAyiy/DbTSIMEgwdAEYtu/FSLtxznBpXS2ej/HQeKB
+ mxySHZA7U+8rv6mjdrLbM2EwX8mCZKPTqhyfCY+50Chho7SiQjvkgk5qlcn+I+XykDtZvWEhiF6JE09zyd5QNG6toCoIouI3Qo5PzygcjPlmHHg8h6VFXXN0
+ eYX2HuQmv3i9aN4ua5vgheHAl20XQnIzOgQcpKh7wHuei+FFb3cLvmFQZz1dBotbTXSahLv4glluFtkze766i5h0NxmLS+qa3k/MMnkgDTbA5atIeaMAUpr0
+ ZVVHcC9S2IbRF/v1pTfimwlKiTKi11/e97P/vHdHOahSIM5rj1jZVJroCqfyNOxQAHxUq/Uzgkd1jPOSURwK9pp8tMa2sgIjvnAKLNbNiZf2zOQNF2jEa1bd
+ xCjD1KhOUoR4yBTCu7S4nvaL8tW+80BylMalfQ==
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2023 06:53, Devi Priya wrote:
-> Add PWM support in ipq5332. The PWM is in the TCSR area. Make tcsr
-> "simple-mfd" compatible, and add pwm as a child of &tcsr.
-> 
-> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/ipq5332.dtsi | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
+On 06/10/23 07:31, N, Pandith wrote:
+> Hi,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Hello.
 
-Best regards,
-Krzysztof
+>> -----Original Message-----
+>> From: Rodolfo Giometti <giometti@enneenne.com>
+>> Sent: Wednesday, February 15, 2023 1:16 PM
+>> To: N, Pandith <pandith.n@intel.com>
+>> Cc: linux-kernel@vger.kernel.org; Sangannavar, Mallikarjunappa
+>> <mallikarjunappa.sangannavar@intel.com>; D, Lakshmi Sowjanya
+>> <lakshmi.sowjanya.d@intel.com>; T R, Thejesh Reddy
+>> <thejesh.reddy.t.r@intel.com>; Hall, Christopher S
+>> <christopher.s.hall@intel.com>; Gross, Mark <mark.gross@intel.com>
+>> Subject: Re: PPS functionality for Intel Timed I/O
+>>
+>> On 15/02/23 08:09, N, Pandith wrote:
+>>> Hi Rodolfo,
+>>
+>> Hello.
+>>
+>>>> -----Original Message-----
+>>>> From: Rodolfo Giometti <giometti@enneenne.com>
+>>>> Sent: Monday, February 6, 2023 4:17 PM
+>>>> To: N, Pandith <pandith.n@intel.com>
+>>>> Cc: linux-kernel@vger.kernel.org; Sangannavar, Mallikarjunappa
+>>>> <mallikarjunappa.sangannavar@intel.com>; D, Lakshmi Sowjanya
+>>>> <lakshmi.sowjanya.d@intel.com>; T R, Thejesh Reddy
+>>>> <thejesh.reddy.t.r@intel.com>; Hall, Christopher S
+>>>> <christopher.s.hall@intel.com>
+>>>> Subject: Re: PPS functionality for Intel Timed I/O
+>>
+>> [snip]
+>>
+>>>> Mmm... I'm not sure this is correct since PPS generators should
+>>>> generate their pulses according to system clock and not according to
+>>>> their internal clocks even if they are synced with the system clock.
+>>>>
+>>> Timed I/O and system time are both driven by the *same* hardware clock.
+>>> Timed I/O is a high precision device (nanoseconds), able to output pulses.
+>>> The driver gets the system time and schedules output at target_time in
+>>> the future.
+>>
+>> OK, in this case it would be OK. Please put an appropriate note within the
+>> generator's code and a detailed one within Documentation/driver-api/pps.rst.
+>>
+>> Regarding Documentation/driver-api/pps.rst let me suggest you to prose a
+>> separate patch to rewrite the Generators section in such a way you easily can add
+>> your solution at the end. A possible example is attached but feel free to rewrite it
+>> according to your needs.
+>>
+> Ok, we are updating documentation as you have suggested as a separate patch.
+> Can we use your "Signed-off-by" tag for attached patch.
+
+If you just followed my suggestion then it's OK for me.
+
+> We are adding Intel timed I/O documentation as a separate patch.
+
+OK.
+
+Ciao,
+
+Rodolfo Giometti
+
+-- 
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming                     skype:  rodolfo.giometti
 
