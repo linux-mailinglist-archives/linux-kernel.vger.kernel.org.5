@@ -2,67 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A077BB6A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98537BB6AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232083AbjJFLk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
+        id S231880AbjJFLlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbjJFLkx (ORCPT
+        with ESMTP id S232091AbjJFLlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:40:53 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C5D31CA;
-        Fri,  6 Oct 2023 04:40:50 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8CxyOhB8h9lRIMvAA--.55274S3;
-        Fri, 06 Oct 2023 19:40:49 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxeuQ78h9lglQZAA--.55836S3;
-        Fri, 06 Oct 2023 19:40:46 +0800 (CST)
-Message-ID: <42a15522-7bed-c5b1-1dc3-65446b65e348@loongson.cn>
-Date:   Fri, 6 Oct 2023 19:40:44 +0800
+        Fri, 6 Oct 2023 07:41:03 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11B5DB
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 04:41:00 -0700 (PDT)
+Received: from [192.168.100.7] (unknown [39.34.184.141])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4D75C6612A7A;
+        Fri,  6 Oct 2023 12:40:57 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696592459;
+        bh=ZDyYuG9iSvl4sm1CTET1n1lNwYdeHLIPj4SXX+NUK/4=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=hTcn1xm8hsOadKSXGJ7C16RQBesuRfTM+rbFhkg0MhpPV7TbjMG82uTihjmH4Iqmb
+         wktBPSS7ZVIab05IHstdZaZCxO0HC+yV0VGAhknzWhXW/UHDe6dvHR75bgW4J0jsiQ
+         DsfIahZU0ggwi1WUFXVgohISM4URzSgWLlT1P0JFIUXRQfhhAe2N1AJ9UlGeSeBJDG
+         0YxwHUYaDMxRTJA1EHeAUuIO2hgmyjcGBIraZcVtXz5KxMnZeDEKjho0e2dML78f3f
+         fP2/Ggmzw8Fsyaz2b3i2UlWRCsyTQX/QkhdyOAbTrTU7Bwva98IQqTGjb5tNK2hVEl
+         q5EkrWCFTkuQg==
+Message-ID: <6cee3838-1807-4983-9d7f-b3a30ee30563@collabora.com>
+Date:   Fri, 6 Oct 2023 16:40:53 +0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [-next 1/5] PCI: Add the pci_is_vga() helper
+User-Agent: Mozilla Thunderbird
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel@collabora.com, Paul Gofman <pgofman@codeweavers.com>
+Subject: Re: [PATCH v33 3/6] fs/proc/task_mmu: Add fast paths to get/clear
+ PAGE_IS_WRITTEN flag
 Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>
-References: <20231005225101.GA792747@bhelgaas>
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <20231005225101.GA792747@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxeuQ78h9lglQZAA--.55836S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxWF4DAw4xJr1UAw4rur1fXwc_yoW5tF1fpF
-        W8AFy8GF18WF17Gwnav3WIga45ZFZ5CF98Ar1agw1Ykrnxta4YqrWFkry5Wa1xZr4vgF4f
-        trWqqr45Cw1DXFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUD529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4Xo7DU
-        UUU
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
+        Andrei Vagin <avagin@gmail.com>
+References: <20230821141518.870589-1-usama.anjum@collabora.com>
+ <20230821141518.870589-4-usama.anjum@collabora.com>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20230821141518.870589-4-usama.anjum@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,93 +60,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Andrew,
 
+You picked up all the other patches in this series except this one. Thank
+you so much. I'm unable to find any comment on why this wasn't picked or
+maybe you missed it?
 
-On 2023/10/6 06:51, Bjorn Helgaas wrote:
-> On Wed, Aug 30, 2023 at 07:15:28PM +0800, Sui Jingfeng wrote:
->> From: Sui Jingfeng <suijingfeng@loongson.cn>
->>
->> The PCI code and ID assignment specification defined four types of
->> display controllers for the display base class(03h), and the devices
->> with 0x00h sub-class code are VGA devices. VGA devices with programming
-> I can update this with the spec details (PCI Code and Assignment spec
-> r1.15, secs 1.1 and 1.4).
->
->> interface 0x00 is VGA-compatible, VGA devices with programming interface
->> 0x01 are 8514-compatible controllers. Besides, PCI_CLASS_NOT_DEFINED_VGA
->> is defined to provide backward compatibility for devices that were built
->> before the class code field was defined. Hence, introduce the pci_is_vga()
->> helper, let it handle the details for us. It returns true if the PCI(e)
->> device being tested belongs to the VGA devices category.
->>
->> Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>
->> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
->> ---
->>   include/linux/pci.h | 27 +++++++++++++++++++++++++++
->>   1 file changed, 27 insertions(+)
->>
->> diff --git a/include/linux/pci.h b/include/linux/pci.h
->> index cf6e0b057752..ace727001911 100644
->> --- a/include/linux/pci.h
->> +++ b/include/linux/pci.h
->> @@ -713,6 +713,33 @@ static inline bool pci_is_bridge(struct pci_dev *dev)
->>   		dev->hdr_type == PCI_HEADER_TYPE_CARDBUS;
->>   }
->>   
->> +/**
->> + * The PCI code and ID assignment specification defined four types of
->> + * display controllers for the display base class(03h), and the devices
->> + * with 0x00h sub-class code are VGA devices. VGA devices with programming
->> + * interface 0x00 is VGA-compatible, VGA devices with programming interface
->> + * 0x01 are 8514-compatible controllers. Besides, PCI_CLASS_NOT_DEFINED_VGA
->> + * is defined to provide backward compatibility for devices that were built
->> + * before the class code field was defined. This means that it belong to the
->> + * VGA devices category also.
->> + *
->> + * Returns:
->> + * true if the PCI device is a VGA device, false otherwise.
->> + */
->> +static inline bool pci_is_vga(struct pci_dev *pdev)
->> +{
->> +	if (!pdev)
->> +		return false;
->> +
->> +	if ((pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA)
->> +		return true;
->> +
->> +	if ((pdev->class >> 8) == PCI_CLASS_NOT_DEFINED_VGA)
->> +		return true;
-> Are you seeing a problem that will be fixed by this series, i.e., a
-> PCI_CLASS_NOT_DEFINED_VGA device that we currently don't handle
-> correctly?
+Please let me know what you think.
 
-No, I write it according to the spec.
-But I'm sure that the boot_vga will not be shown at sysfs for a PCI_CLASS_NOT_DEFINED_VGA device.
+Regards,
+Usama
 
+On 8/21/23 7:15 PM, Muhammad Usama Anjum wrote:
+> Adding fast code paths to handle specifically only get and/or clear
+> operation of PAGE_IS_WRITTEN, increases its performance by 0-35%.
+> The results of some test cases are given below:
+> 
+> Test-case-1
+> t1 = (Get + WP) time
+> t2 = WP time
+>                        t1            t2
+> Without this patch:    140-170mcs    90-115mcs
+> With this patch:       110mcs        80mcs
+> Worst case diff:       35% faster    30% faster
+> 
+> Test-case-2
+> t3 = atomic Get and WP
+>                       t3
+> Without this patch:   120-140mcs
+> With this patch:      100-110mcs
+> Worst case diff:      21% faster
+> 
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+> The test to measure the performance can be found: https://is.gd/FtSKcD
+> 8 8192 3 1 0 and 8 8192 3 1 1 arguments have been used to produce the
+> above mentioned results.
+> 
+> Changes in v29:
+> - Minor updates in flush logic following the original patch
+> ---
+>  fs/proc/task_mmu.c | 36 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 6e6261e8b91b1..79cf023148b28 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -2138,6 +2138,41 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
+>  		return 0;
+>  	}
+>  
+> +	if (!p->vec_out) {
+> +		/* Fast path for performing exclusive WP */
+> +		for (addr = start; addr != end; pte++, addr += PAGE_SIZE) {
+> +			if (pte_uffd_wp(ptep_get(pte)))
+> +				continue;
+> +			make_uffd_wp_pte(vma, addr, pte);
+> +			if (!flush_end)
+> +				start = addr;
+> +			flush_end = addr + PAGE_SIZE;
+> +		}
+> +		goto flush_and_return;
+> +	}
+> +
+> +	if (!p->arg.category_anyof_mask && !p->arg.category_inverted &&
+> +	    p->arg.category_mask == PAGE_IS_WRITTEN &&
+> +	    p->arg.return_mask == PAGE_IS_WRITTEN) {
+> +		for (addr = start; addr < end; pte++, addr += PAGE_SIZE) {
+> +			unsigned long next = addr + PAGE_SIZE;
+> +
+> +			if (pte_uffd_wp(ptep_get(pte)))
+> +				continue;
+> +			ret = pagemap_scan_output(p->cur_vma_category | PAGE_IS_WRITTEN,
+> +						  p, addr, &next);
+> +			if (next == addr)
+> +				break;
+> +			if (~p->arg.flags & PM_SCAN_WP_MATCHING)
+> +				continue;
+> +			make_uffd_wp_pte(vma, addr, pte);
+> +			if (!flush_end)
+> +				start = addr;
+> +			flush_end = next;
+> +		}
+> +		goto flush_and_return;
+> +	}
+> +
+>  	for (addr = start; addr != end; pte++, addr += PAGE_SIZE) {
+>  		unsigned long categories = p->cur_vma_category |
+>  					   pagemap_page_category(p, vma, addr, ptep_get(pte));
+> @@ -2161,6 +2196,7 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
+>  		flush_end = next;
+>  	}
+>  
+> +flush_and_return:
+>  	if (flush_end)
+>  		flush_tlb_range(vma, start, addr);
+>  
 
-> I think this makes sense per the spec, but there's always a risk of
-> breaking something, so it's nice if the change actually *fixes*
-> something to make that risk worthwhile.
-
-
-Maciej mentioned that PCI_CLASS_NOT_DEFINED_VGA device should also be handled in the past.
-see [1]. But if no one interested in PCI_CLASS_NOT_DEFINED_VGA nowaday, then I guess
-the gains of this patch may not deserve the time and risk. But I don't mind if someone
-would like pick it up for other purpose.
-
-Thanks for the reviewing. :-)
-
-[1] https://lkml.org/lkml/2023/6/18/315
-
-
->> +	return false;
->> +}
->> +
->>   #define for_each_pci_bridge(dev, bus)				\
->>   	list_for_each_entry(dev, &bus->devices, bus_list)	\
->>   		if (!pci_is_bridge(dev)) {} else
->> -- 
->> 2.34.1
->>
-
+-- 
+BR,
+Muhammad Usama Anjum
