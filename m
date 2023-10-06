@@ -2,71 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBCF7BBA18
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69087BBA1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232304AbjJFOTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 10:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43398 "EHLO
+        id S232488AbjJFOVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 10:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232382AbjJFOTb (ORCPT
+        with ESMTP id S232248AbjJFOVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 10:19:31 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDC3C5
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 07:19:28 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32003aae100so2075988f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 07:19:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696601967; x=1697206767; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=emLkV2UaIMLS837NeYJskcNbCX7MRqsLLSL/k6u/yn4=;
-        b=AvJlO3dPD4Ro/lUEDgCzGuhTfGB6MytdYOu+RnJi7AHrldH9knP2oATa4f17RIMtOn
-         E1p8BO+SX4BH99kjLkaGFS1B5fh3Vx4EQ+Rp0953Zs0WLPYB2afxoOS7pS4Oc1hO+znh
-         Qt4if7Va2UP5iKmDBSKzYblyW0TfEzmbIWzCfNWg/K8ASM5x9DZEYs+nFrntmT1l0G07
-         qUiQsEZGzsaiKD+iF+s3xCh4Msv+B7FFGZf1QKQaC74R8t1gSkr7XV/DfGEQThTVeEig
-         kORzfCmUN03NszNqaiOmmvtbJ+uOrpRvOYtYsOHW2dOh7RpXx1BVhOm3HCk12zajXa7U
-         MJjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696601967; x=1697206767;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=emLkV2UaIMLS837NeYJskcNbCX7MRqsLLSL/k6u/yn4=;
-        b=eg3TbWisGcelTYWNgn4JI2YRuiSGy48wCuZ1YG1EZ3zA8O9Aa2CSuznVW9cfPJ6N+c
-         D5r9gvBGlTCgZmwPediIWYLWwfukecFq8D4m7NLxsRapLVWsIKaczCAiHcIRvfGOYyb6
-         P2TVNHsBtpR68koUf649s+bikg4G2YJFOld0rrzensePrtrlicDHaydHC6M7AZXrcfqp
-         1sg/y8S616IYZFLOIJ8iXs+Mv7iNasdO1SsRPy6T1Xe65rOIgbzQMFM9NtJslbnt8l0W
-         nIMp6GnLU2gWyr8ZAwbdZdOv85CCQaoQtBwBdtebMsuN8vsvorAlIMdtGqDYHMSw5bs4
-         Lvew==
-X-Gm-Message-State: AOJu0YwfMCIRjpczZ1LAtLvd4ac/2XDOxL4qpGDHAnIf+ZFlnhzQcbsS
-        g7X/MudFpM/9S77t2/8OZac78g==
-X-Google-Smtp-Source: AGHT+IFZtgIuveq5UIaO3n9ZJc/f6XqidNKNy9T9tT5+M1b1k0Awh+6++MuPoXnOPEeWHWdI0KwXcA==
-X-Received: by 2002:a5d:4690:0:b0:318:720c:bb3 with SMTP id u16-20020a5d4690000000b00318720c0bb3mr4851212wrq.20.1696601967294;
-        Fri, 06 Oct 2023 07:19:27 -0700 (PDT)
-Received: from toaster.lan ([2a01:e0a:3c5:5fb1:30eb:5a3:102a:599e])
-        by smtp.googlemail.com with ESMTPSA id x14-20020a5d54ce000000b0031773a8e5c4sm1778479wrv.37.2023.10.06.07.19.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 07:19:26 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Da Xue <da.xue@libretech.co>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
-Subject: [PATCH] arm64: dts: amlogic: cottonwood: fix blue/green led inversion
-Date:   Fri,  6 Oct 2023 16:19:15 +0200
-Message-Id: <20231006141915.3623097-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.40.1
+        Fri, 6 Oct 2023 10:21:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5D9A6
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 07:21:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2A08C433C7;
+        Fri,  6 Oct 2023 14:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696602078;
+        bh=2Grp6Qh6qeNuh49mj8YjpgGdvSj5dFC4iUiXZ5AqqSw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FdWZmuPPmt/PM3EzsBffE6Dhf7B3EJmmPf60vBYWZal9yf9ON/z+QETHTIf8NrnfQ
+         8GCGiqXzqiXSxZq0kajOYf2UpC5dyiSgKvl0rW/3TKTZ21xD+53BmShz6fwpQDA0zg
+         VIals/MScQD0okxkGaInq9o3/yAgHrEb/esZFrwo=
+Date:   Fri, 6 Oct 2023 16:21:15 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hardik Gajjar <hgajjar@de.adit-jv.com>
+Cc:     s.hauer@pengutronix.de, jonathanh@nvidia.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_linyyuan@quicinc.com, paul@crapouillou.net,
+        quic_eserrao@quicinc.com, erosca@de.adit-jv.com,
+        gah2hi <external.Hardik.Gajjar@de.bosch.com>
+Subject: Re: [PATCH] usb: gadget: u_ether: Replace netif_stop_queue with
+ netif_device_detach
+Message-ID: <2023100656-swagger-anagram-a381@gregkh>
+References: <20231006141231.7220-1-hgajjar@de.adit-jv.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006141231.7220-1-hgajjar@de.adit-jv.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,37 +50,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While making the v2, blue and green LED pwms got inverted
-This change fixes the problem
+On Fri, Oct 06, 2023 at 04:12:31PM +0200, Hardik Gajjar wrote:
+> From: gah2hi <external.Hardik.Gajjar@de.bosch.com>
+> 
+> This patch replaces the usage of netif_stop_queue with netif_device_detach
+> in the u_ether driver. The netif_device_detach function not only stops all
+> tx queues by calling netif_tx_stop_all_queues but also marks the device as
+> removed by clearing the __LINK_STATE_PRESENT bit.
+> 
+> This change helps notify user space about the disconnection of the device
+> more effectively, compared to netif_stop_queue, which only stops a single
+> transmit queue.
+> 
+> Signed-off-by: gah2hi <external.Hardik.Gajjar@de.bosch.com>
+> ---
+>  drivers/usb/gadget/function/u_ether.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/gadget/function/u_ether.c b/drivers/usb/gadget/function/u_ether.c
+> index 4bb0553da658..9d1c40c152d8 100644
+> --- a/drivers/usb/gadget/function/u_ether.c
+> +++ b/drivers/usb/gadget/function/u_ether.c
+> @@ -1200,7 +1200,7 @@ void gether_disconnect(struct gether *link)
+>  
+>  	DBG(dev, "%s\n", __func__);
+>  
+> -	netif_stop_queue(dev->net);
+> +	netif_device_detach(dev->net);
+>  	netif_carrier_off(dev->net);
+>  
+>  	/* disable endpoints, forcing (synchronous) completion
+> -- 
+> 2.17.1
+> 
+> 
 
-Fixes: 9f841514c9c2 ("arm64: dts: amlogic: add libretech cottonwood support")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi,
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi b/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
-index ed826f673349..35e8f5bae990 100644
---- a/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
-@@ -70,7 +70,7 @@ led {
- 			function = LED_FUNCTION_ACTIVITY;
- 			linux,default-trigger = "heartbeat";
- 			max-brightness = <255>;
--			pwms = <&pwm_cd 1 1250 0>;
-+			pwms = <&pwm_ab 1 1250 0>;
- 			active-low;
- 		};
- 	};
-@@ -83,7 +83,7 @@ led {
- 			function = LED_FUNCTION_STATUS;
- 			linux,default-trigger = "default-on";
- 			max-brightness = <255>;
--			pwms = <&pwm_ab 1 1250 0>;
-+			pwms = <&pwm_cd 1 1250 0>;
- 			active-low;
- 		};
- 	};
--- 
-2.40.1
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- It looks like you did not use your "real" name for the patch on either
+  the Signed-off-by: line, or the From: line (both of which have to
+  match).  Please read the kernel file,
+  Documentation/process/submitting-patches.rst for how to do this
+  correctly.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
