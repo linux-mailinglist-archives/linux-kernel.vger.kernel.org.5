@@ -2,158 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FA87BC2B0
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F057BC2B2
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233857AbjJFW6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 18:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
+        id S233863AbjJFW7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 18:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233568AbjJFW6t (ORCPT
+        with ESMTP id S233568AbjJFW7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 18:58:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA24FAD;
-        Fri,  6 Oct 2023 15:58:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8007AC433CB;
-        Fri,  6 Oct 2023 22:58:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696633127;
-        bh=VfpPsL7bm6HmerXk75YQFSWmkvZ5EqPcTozDyLPJ7ZE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rcV3x9OFyzgcq5JnKP7XyajjlUizbG7zv6TwJX1iaKrCN8FqIuecH1Zs6kZmhQOEZ
-         P5swnL8g91dfdtAH5uD7CUPfp58B/0YpSIN3ixWWJxQCviyKPUkQq+hsY1llVzxYks
-         n7hsv2wXXYKbSOT/lGjFXr+QCVT1bYxu2KJgb8h/w4I/W4nHsezboD2QmBMGg+JS+c
-         fddknGRh0stdSH0IZPgrnL/3usGUh990pEG/HYNmtGfKnUEX0brB5XNw5LeEfdwL77
-         yiA6xNpKXtTYNHFZcFfGboeB8buBhEtSzb/U6IMxeUW700lfF9/6Pry8ADjWXuuya7
-         fqO4GAuHBxKnQ==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5046bf37daeso3418245e87.1;
-        Fri, 06 Oct 2023 15:58:47 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw9hyN/C7Rv7isqw8Eo8yOD44kYSejPdkCsbeZBGE3mti2mTbMY
-        9v4VE93KEOKvJaxutYldXTzHdTgu2LQOY4KHhQ==
-X-Google-Smtp-Source: AGHT+IGLN4usMWBOz3e69x4mdRwL549LapQyzyV9YwhpOdQ+Wbn8qFwQJDLpXo6dG/GqnWIxylZDOOe8h7XSov2Ays4=
-X-Received: by 2002:a19:6414:0:b0:4fb:8435:3efc with SMTP id
- y20-20020a196414000000b004fb84353efcmr7215825lfb.16.1696633125695; Fri, 06
- Oct 2023 15:58:45 -0700 (PDT)
+        Fri, 6 Oct 2023 18:59:37 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29E793;
+        Fri,  6 Oct 2023 15:59:35 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4064876e8b8so25802475e9.0;
+        Fri, 06 Oct 2023 15:59:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696633174; x=1697237974; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=a4kjcUaoav85BgSvtv1BA6kawwG45pQg/poo37oA9DU=;
+        b=CHVUJKD0Dl4dwKYGau1J7VJHj+JNgOwkvDdJdUkdCh6ae55I7zFJfgl7ph6eqti17C
+         FlPP2OHgW3bvS42i984ScLtdwO7LgRdbBUXHMsKGssVx7EF/OmJxFAurHe8ZPjqbmLRG
+         4/un+IvaCreSb9LEI4WDOlbkaQMQY63xfoeYjKFd4kF+UAL0n+11XquHO604JSm8vanr
+         xbd2rKJ0U0+AeYWf9DLiG52kGWYlJRneMM32mOn+qdd5AuZw9VOooEGkVCAMZZ18u+Gw
+         ur80dd5DZtelXbPeUyGm6OnzfEu6bRJKNWTPwWHktGXODR6/xlu871jFWtSAFdR6ZiCc
+         NypA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696633174; x=1697237974;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a4kjcUaoav85BgSvtv1BA6kawwG45pQg/poo37oA9DU=;
+        b=uMcETZlpobCE2BS4bSNXp2k38bQmQAw4hpnn0zI5GxjL08KTCXkqjOPXOAcvyQNdxg
+         POMwydIasQl9RAlcgW44gCGehzShyD2lrItdHf8ZD4yXZbhSxPmnerA4I+ON8IonnTkI
+         mez8wqek9cYo/AO2PiOynQYek35QSdFWF1lIMEvpE2AYJ7D88dTIO12mk9r0KEZnct7T
+         mp1q4V9LJCz+RQmAKHQNnCLvC5xw2/2rTzrAEbE2q/G+2ignJ3YLyMsLiel6B5C28QS1
+         JKKkGMGVxfko+O0ctbYMzdbQSGsmC+FJ9cP0eypDZAa78uIoNu8yx8p76AxEMg5/00nI
+         ioTA==
+X-Gm-Message-State: AOJu0YzBZn2nlUmLtmOgXkKfqWL57beL+uBH+9W+X+4/fF3OLWPS0qsi
+        SPdHa4y8tEOQTtK/uSqh1ZbSt6sGVrVnFTUxFMQ=
+X-Google-Smtp-Source: AGHT+IGGwAEzUi1vGrqfSHucnhnxYAKWrFPtL6Ez8wKd/cxxlGuXqAv5ZREH5fqYGsW8nA600wYPxQ==
+X-Received: by 2002:adf:f9cc:0:b0:320:1c7:fd30 with SMTP id w12-20020adff9cc000000b0032001c7fd30mr8011763wrr.17.1696633173942;
+        Fri, 06 Oct 2023 15:59:33 -0700 (PDT)
+Received: from snowbird (host86-164-181-115.range86-164.btcentralplus.com. [86.164.181.115])
+        by smtp.gmail.com with ESMTPSA id v6-20020adff686000000b0031980294e9fsm2565811wrp.116.2023.10.06.15.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 15:59:33 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 15:59:31 -0700
+From:   Dennis Zhou <dennisszhou@gmail.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     "Chen, Tim C" <tim.c.chen@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Maiolino <cem@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH 8/8] shmem,percpu_counter: add _limited_add(fbc, limit,
+ amount)
+Message-ID: <ZSCRU/e1dwMftYLC@snowbird>
+References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
+ <bb817848-2d19-bcc8-39ca-ea179af0f0b4@google.com>
+ <DM6PR11MB4107F132CC1203486A91A4DEDCCAA@DM6PR11MB4107.namprd11.prod.outlook.com>
+ <17877ef1-8aac-378b-94-af5afa2793ae@google.com>
 MIME-Version: 1.0
-References: <20231006213959.334439-1-robh@kernel.org> <CAA8EJpp7yKZP3SAHdZAJg57vbyRjYAS=vDEV-353mc9yzHe4vw@mail.gmail.com>
-In-Reply-To: <CAA8EJpp7yKZP3SAHdZAJg57vbyRjYAS=vDEV-353mc9yzHe4vw@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 6 Oct 2023 17:58:33 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJ0O=-vNqSUjgr_Po=Xy1G+7Zdz7Dz+euUDjcpBAqtGqA@mail.gmail.com>
-Message-ID: <CAL_JsqJ0O=-vNqSUjgr_Po=Xy1G+7Zdz7Dz+euUDjcpBAqtGqA@mail.gmail.com>
-Subject: Re: [PATCH] clk: Use device_get_match_data()
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        David Lechner <david@lechnology.com>,
-        Sekhar Nori <nsekhar@ti.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Tero Kristo <kristo@kernel.org>, patches@opensource.cirrus.com,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <17877ef1-8aac-378b-94-af5afa2793ae@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 5:10=E2=80=AFPM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
+Hello,
+
+On Thu, Oct 05, 2023 at 10:42:17PM -0700, Hugh Dickins wrote:
+> On Thu, 5 Oct 2023, Chen, Tim C wrote:
+> 
+> > >--- a/lib/percpu_counter.c
+> > >+++ b/lib/percpu_counter.c
+> > >@@ -278,6 +278,59 @@ int __percpu_counter_compare(struct
+> > >percpu_counter *fbc, s64 rhs, s32 batch)  }
+> > >EXPORT_SYMBOL(__percpu_counter_compare);
+> > >
+> > >+/*
+> > >+ * Compare counter, and add amount if the total is within limit.
+> > >+ * Return true if amount was added, false if it would exceed limit.
+> > >+ */
+> > >+bool __percpu_counter_limited_add(struct percpu_counter *fbc,
+> > >+				  s64 limit, s64 amount, s32 batch) {
+> > >+	s64 count;
+> > >+	s64 unknown;
+> > >+	unsigned long flags;
+> > >+	bool good;
+> > >+
+> > >+	if (amount > limit)
+> > >+		return false;
+> > >+
+> > >+	local_irq_save(flags);
+> > >+	unknown = batch * num_online_cpus();
+> > >+	count = __this_cpu_read(*fbc->counters);
+> > >+
+> > >+	/* Skip taking the lock when safe */
+> > >+	if (abs(count + amount) <= batch &&
+> > >+	    fbc->count + unknown <= limit) {
+> > >+		this_cpu_add(*fbc->counters, amount);
+> > >+		local_irq_restore(flags);
+> > >+		return true;
+> > >+	}
+> > >+
+> > >+	raw_spin_lock(&fbc->lock);
+> > >+	count = fbc->count + amount;
+> > >+
+> > 
+> > Perhaps we can fast path the case where for sure
+> > we will exceed limit? 
+> > 
+> > if (fbc->count + amount - unknown > limit)
+> > 	return false;
+> 
+> Thanks, that sounds reasonable: I'll try to add something like that -
+> but haven't thought about it carefully enough yet (too easy for me
+> to overlook some negative case which messes everything up).
+> 
+> Hugh
 >
-> On Sat, 7 Oct 2023 at 00:41, Rob Herring <robh@kernel.org> wrote:
-> >
-> > Use preferred device_get_match_data() instead of of_match_device() to
-> > get the driver match data. With this, adjust the includes to explicitly
-> > include the correct headers.
-> >
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  drivers/clk/clk-lochnagar.c             |  9 ++-------
-> >  drivers/clk/davinci/da8xx-cfgchip.c     |  8 +++-----
-> >  drivers/clk/davinci/pll.c               | 10 +++-------
-> >  drivers/clk/davinci/psc.c               | 10 +++-------
-> >  drivers/clk/qcom/gcc-msm8960.c          | 13 +++++--------
-> >  drivers/clk/qcom/gcc-msm8974.c          | 10 +++-------
-> >  drivers/clk/qcom/kpss-xcc.c             |  9 ++-------
-> >  drivers/clk/qcom/krait-cc.c             | 14 +++++---------
-> >  drivers/clk/qcom/mmcc-msm8960.c         | 16 +++++-----------
-> >  drivers/clk/qcom/mmcc-sdm660.c          |  8 ++------
-> >  drivers/clk/rockchip/clk-rk3399.c       |  9 ++-------
-> >  drivers/clk/samsung/clk-exynos-clkout.c |  8 +++-----
-> >  drivers/clk/ti/adpll.c                  | 14 ++++----------
-> >  13 files changed, 42 insertions(+), 96 deletions(-)
-> >
 
-> > diff --git a/drivers/clk/qcom/mmcc-msm8960.c b/drivers/clk/qcom/mmcc-ms=
-m8960.c
-> > index 6bf908a51f53..50638ab341ec 100644
-> > --- a/drivers/clk/qcom/mmcc-msm8960.c
-> > +++ b/drivers/clk/qcom/mmcc-msm8960.c
-> > @@ -8,9 +8,9 @@
-> >  #include <linux/err.h>
-> >  #include <linux/delay.h>
-> >  #include <linux/platform_device.h>
-> > +#include <linux/property.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of.h>
-> > -#include <linux/of_device.h>
-> >  #include <linux/clk.h>
-> >  #include <linux/clk-provider.h>
-> >  #include <linux/regmap.h>
-> > @@ -3105,30 +3105,24 @@ MODULE_DEVICE_TABLE(of, mmcc_msm8960_match_tabl=
-e);
-> >
-> >  static int mmcc_msm8960_probe(struct platform_device *pdev)
-> >  {
-> > -       const struct of_device_id *match;
-> >         struct regmap *regmap;
-> > -       bool is_8064;
-> >         struct device *dev =3D &pdev->dev;
-> > +       const struct qcom_cc_desc *desc =3D device_get_match_data(dev);
-> >
-> > -       match =3D of_match_device(mmcc_msm8960_match_table, dev);
-> > -       if (!match)
-> > -               return -EINVAL;
-> > -
-> > -       is_8064 =3D of_device_is_compatible(dev->of_node, "qcom,mmcc-ap=
-q8064");
->
-> Can we please keep of_device_is_compatible here? It is more explicit
-> and self-documenting.
+Sorry for the late chime in. I'm traveling right now.
 
-Why do we need to match 3 times (match, device_get_match_data,
-of_device_is_compatible)?
+I haven't been super happy lately with percpu_counter as it has had a
+few corner cases such as the cpu_dying_mask fiasco which I thought we
+fixed with a series from tglx [1]. If not I can resurrect it and pull
+it.
 
-Perhaps put it in the match data? Or make a helper function is_8064()
-that does the comparison to the match data?
+I feel like percpu_counter is deviating from its original intended
+usecase which, from my perspective, was a thin wrapper around a percpu
+variable. At this point we seem to be bolting onto percpu_counter
+instead of giving it a clear focus for what it's supposed to do well.
+I think I understand the use case, and ultimately it's kind of the
+duality where I think it was xfs is using percpu_counters where it must
+be > 0 for the value to make sense and there was a race condition with
+cpu dying [2].
 
-> Also, it would be really nice to have per-platform patches, so that
-> our maintainers can pick them, otherwise the risk of conflicts is
-> pretty high.
+At this point, I think it's probably better to wholy think about the
+lower bound and upper bound problem of percpu_counter wrt the # of
+online cpus.
 
-No.
+Thanks,
+Dennis
 
-I'm doing this treewide. It's already pretty unmanageable. But feel
-free to submit a separate patch if you prefer to this for QCom. When I
-split things up by sub-arch, then I also have to spend time chasing
-down non-responsive maintainers.
-
-Rob
+[1] https://lore.kernel.org/lkml/20230414162755.281993820@linutronix.de/
+[2] https://lore.kernel.org/lkml/20230406015629.1804722-1-yebin@huaweicloud.com/
