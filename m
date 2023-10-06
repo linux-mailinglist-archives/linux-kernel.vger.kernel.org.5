@@ -2,55 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 470577BB4A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3785E7BB49C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbjJFJ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 05:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36944 "EHLO
+        id S231563AbjJFJz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 05:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbjJFJ4a (ORCPT
+        with ESMTP id S231478AbjJFJz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 05:56:30 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF19AD;
-        Fri,  6 Oct 2023 02:56:27 -0700 (PDT)
-Received: from localhost.localdomain (unknown [39.34.184.141])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C78E76612212;
-        Fri,  6 Oct 2023 10:56:22 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696586185;
-        bh=cAPdTDO9l0OljwiXmnH2mEX0mLjZo06Oo9SZMhEPWy8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=id+xbwaR+mi0oM79N7gUk028gNKm6zbI0LnzEC9D9a9zZrVQKy60rY+qf7YhoVVtp
-         s5IHS2XvlKSRVaYZCwrqzBnSVCoYgO9aFzN9wadyCL52UXbRol1qRboKogx4OL7LuQ
-         fTw2cfFtt1Lw3oERf8lA+P3yesqd5Qf2NAfqBFzJvgdOR9dVUBBd1XthOSoohMCAME
-         Xf7bdUN6+ltsEqxNsH6RNEcm4GCMOSxBmY+SY7DFeGCQN1wWmsy3fYECOzu3Eqacof
-         II0X9TRVUXpptg3P3cIFSOyQ8O1e1MMMsr60tht9JLRmqKBjhR3os3HphZ3KXqa8Fp
-         f+SNBlEPXiyAQ==
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
+        Fri, 6 Oct 2023 05:55:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6F29F
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 02:55:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9220C433C7;
+        Fri,  6 Oct 2023 09:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696586153;
+        bh=MSPT5qCyt9p9n6mF95tmGSpTSK04dAtYDhwOdjcnjY0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=l0b02o1QiGt/FjcBvGj0i65cE3CC+ku/YW7MLg9y2DXZ/FwpEv1GqCeX/Ot4T4X96
+         F//MwEYim6Kig5fTMtW6AM5oYGYkuF3MNlfWyYmUlGGw74jci3KYy+FmlU+cnG4fyJ
+         0sfDEnQ3QkqcntO+vSVPQrQsNvmWyfR5TjiAyjnRwLIpvq5NBrzwoYEgga6vkj6DKU
+         b3AHVl05/iSAYsPiwsVvg/PkMZxVH0fQy+opMWIqZW0gUvwAYZSTA/Sv+4M/IqdJ8O
+         6cWh6o9MxHJGXlsC9JfwhutdHxfkMcbESofPYVMfQh8I6UXolPmReBhRmYGeJdK0oB
+         +TvjAn2CE4yuA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qohYk-001fhS-Sp;
+        Fri, 06 Oct 2023 10:55:50 +0100
+Date:   Fri, 06 Oct 2023 10:55:49 +0100
+Message-ID: <865y3knkgq.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Misono Tomohiro <misono.tomohiro@fujitsu.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     kernel@collabora.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v2] selftests: futex: remove duplicate unneeded defines
-Date:   Fri,  6 Oct 2023 14:55:37 +0500
-Message-Id: <20231006095539.1601385-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/2] arm64: smp: Fix pseudo NMI issues w/ broken Mediatek FW
+In-Reply-To: <ZRr8r7XMoyDKaitd@FVFF77S0Q05N.cambridge.arm.com>
+References: <20231002094526.1.Ie8f760213053e3d11592f892b30912dbac6b8b48@changeid>
+        <ZRr8r7XMoyDKaitd@FVFF77S0Q05N.cambridge.arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mark.rutland@arm.com, dianders@chromium.org, catalin.marinas@arm.com, will@kernel.org, swboyd@chromium.org, vschneid@redhat.com, wenst@chromium.org, angelogioacchino.delregno@collabora.com, scott@os.amperecomputing.com, jpoimboe@kernel.org, matthias.bgg@gmail.com, misono.tomohiro@fujitsu.com, peterz@infradead.org, sumit.garg@linaro.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,53 +76,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kselftests are kernel tests and must be build with kernel headers from
-same source version. The kernel headers are already being included
-correctly in futex selftest Makefile with the help of KHDR_INCLUDE. In
-this patch, only the dead code is being removed. No functional change is
-intended.
+On Mon, 02 Oct 2023 18:24:11 +0100,
+Mark Rutland <mark.rutland@arm.com> wrote:
+> 
+> On Mon, Oct 02, 2023 at 09:45:29AM -0700, Douglas Anderson wrote:
+> > Some mediatek devices have the property
+> > "mediatek,broken-save-restore-fw" in their GIC. This means that,
+> > although the hardware supports pseudo-NMI, the firmware has a bug
+> > that blocks enabling it. When we're in this state,
+> > system_uses_irq_prio_masking() will return true but we'll fail to
+> > actually enable the IRQ in the GIC.
+> > 
+> > Let's make the code handle this. We'll detect that we failed to
+> > request an IPI as NMI and fallback to requesting it normally. Though
+> > we expect that either all of our requests will fail or all will
+> > succeed, it's just as cheap to keep a per-IPI bitmap and that keeps us
+> > robust.
+> > 
+> > Fixes: 331a1b3a836c ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
+> > Reported-by: Chen-Yu Tsai <wenst@chromium.org>
+> > Closes: https://issuetracker.google.com/issues/197061987#comment68
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> > 
+> >  arch/arm64/kernel/smp.c | 19 ++++++++++++-------
+> >  1 file changed, 12 insertions(+), 7 deletions(-)
+> 
+> I'm not too keen on falling back here when we have no idea why the request failed.
+> 
+> I'd prefer if we could check the `supports_pseudo_nmis` static key directly to
+> account for the case of broken FW, e.g. as below.
+> 
+> Mark.
+> 
+> ---->8----
+> From 72fdec05c64a74f21871b44c7c760bbe07cac044 Mon Sep 17 00:00:00 2001
+> From: Mark Rutland <mark.rutland@arm.com>
+> Date: Mon, 2 Oct 2023 18:00:36 +0100
+> Subject: [PATCH] arm64: smp: avoid NMI IPIs with broken MediaTek FW
+> 
+> Some MediaTek devices have broken firmware which corrupts some GICR
+> registers behind the back of the OS, and pseudo-NMIs cannot be used on
+> these devices. For more details see commit:
+> 
+>   44bd78dd2b8897f5 ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware issues")
+> 
+> We did not take this problem into account in commit:
+> 
+>   331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
+> 
+> Since that commit arm64's SMP code will try to setup some IPIs as
+> pseudo-NMIs, even on systems with broken FW. The GICv3 code will
+> (rightly) reject attempts to request interrupts as pseudo-NMIs,
+> resulting in boot-time failures.
+> 
+> Avoid the problem by taking the broken FW into account when deciding to
+> request IPIs as pseudo-NMIs. The GICv3 driver maintains a static_key
+> named "supports_pseudo_nmis" which is false on systems with broken FW,
+> and we can consult this within ipi_should_be_nmi().
+> 
+> Fixes: 331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
+> Reported-by: Chen-Yu Tsai <wenst@chromium.org>
+> Closes: https://issuetracker.google.com/issues/197061987#comment68
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> ---
+>  arch/arm64/kernel/smp.c      | 5 ++++-
+>  drivers/irqchip/irq-gic-v3.c | 2 +-
+>  2 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> index 814d9aa93b21b..061c69160f90f 100644
+> --- a/arch/arm64/kernel/smp.c
+> +++ b/arch/arm64/kernel/smp.c
+> @@ -964,7 +964,10 @@ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
+>  
+>  static bool ipi_should_be_nmi(enum ipi_msg_type ipi)
+>  {
+> -	if (!system_uses_irq_prio_masking())
+> +	DECLARE_STATIC_KEY_FALSE(supports_pseudo_nmis);
+> +
+> +	if (!system_uses_irq_prio_masking() ||
+> +	    !static_branch_likely(&supports_pseudo_nmis))
+>  		return false;
+>  
+>  	switch (ipi) {
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index 787ccc880b22d..737da1b9aabf2 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -106,7 +106,7 @@ static DEFINE_STATIC_KEY_TRUE(supports_deactivate_key);
+>   * - Figure 4-7 Secure read of the priority field for a Non-secure Group 1
+>   *   interrupt.
+>   */
+> -static DEFINE_STATIC_KEY_FALSE(supports_pseudo_nmis);
+> +DEFINE_STATIC_KEY_FALSE(supports_pseudo_nmis);
+>  
+>  DEFINE_STATIC_KEY_FALSE(gic_nonsecure_priorities);
+>  EXPORT_SYMBOL(gic_nonsecure_priorities);
 
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-Changes since v1:
-- Make the explanation correct
----
- .../selftests/futex/include/futextest.h       | 22 -------------------
- 1 file changed, 22 deletions(-)
+This last hunk is going to result in more spam from the robots about
+global objects without a previous declaration. Not that I care the
+least, but worth mentioning.
 
-diff --git a/tools/testing/selftests/futex/include/futextest.h b/tools/testing/selftests/futex/include/futextest.h
-index ddbcfc9b7bac4..59f66af3a6d10 100644
---- a/tools/testing/selftests/futex/include/futextest.h
-+++ b/tools/testing/selftests/futex/include/futextest.h
-@@ -25,28 +25,6 @@
- typedef volatile u_int32_t futex_t;
- #define FUTEX_INITIALIZER 0
- 
--/* Define the newer op codes if the system header file is not up to date. */
--#ifndef FUTEX_WAIT_BITSET
--#define FUTEX_WAIT_BITSET		9
--#endif
--#ifndef FUTEX_WAKE_BITSET
--#define FUTEX_WAKE_BITSET		10
--#endif
--#ifndef FUTEX_WAIT_REQUEUE_PI
--#define FUTEX_WAIT_REQUEUE_PI		11
--#endif
--#ifndef FUTEX_CMP_REQUEUE_PI
--#define FUTEX_CMP_REQUEUE_PI		12
--#endif
--#ifndef FUTEX_WAIT_REQUEUE_PI_PRIVATE
--#define FUTEX_WAIT_REQUEUE_PI_PRIVATE	(FUTEX_WAIT_REQUEUE_PI | \
--					 FUTEX_PRIVATE_FLAG)
--#endif
--#ifndef FUTEX_REQUEUE_PI_PRIVATE
--#define FUTEX_CMP_REQUEUE_PI_PRIVATE	(FUTEX_CMP_REQUEUE_PI | \
--					 FUTEX_PRIVATE_FLAG)
--#endif
--
- /**
-  * futex() - SYS_futex syscall wrapper
-  * @uaddr:	address of first futex
+Other than that:
+
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+
+Please take it via the arm64 tree with patch #1
+
+Thanks,
+
+	M.
+
 -- 
-2.40.1
-
+Without deviation from the norm, progress is not possible.
