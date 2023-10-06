@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A417BB200
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 09:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62207BB204
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 09:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbjJFHKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 03:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
+        id S230301AbjJFHME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 03:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbjJFHKc (ORCPT
+        with ESMTP id S230261AbjJFHMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 03:10:32 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036C2ED
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 00:10:30 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7a8b5ec9a6fso677134241.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 00:10:30 -0700 (PDT)
+        Fri, 6 Oct 2023 03:12:02 -0400
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A285EA
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 00:12:00 -0700 (PDT)
+Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-49a885c5961so656018e0c.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 00:12:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696576230; x=1697181030; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696576319; x=1697181119; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s4Pz6V+l7g1fDRYkyErgWlYbtoLKmeqMrzbk272HU6I=;
-        b=DVbrAv/OhKHORSxdsS3e5euO2Z1vQWa+xc8b/wOAkbX9s1Q4i0rbCXanOzgWcML8tF
-         FwPobV/Yskf0wQz793l01oRnLguLoGd/nKmTZy1TkSmqGvUnIbooAJlctrjzf8h3DadK
-         cT0gRMAWzlzNQ3trpjrvVQ7wl89AlIftknFL9iksHDdNki+XFrAKNFiBYBjcbb5QOaCz
-         66nHlqTjK0egyeIvdBBSnhUxPPSkRaFfJihI3wrX3CVaGkyC1LNOGGyXG5d2e+qmzzcw
-         mD3+mbax2JJ5pfiQOKvL+l9DgJUdzqMXCcJZa0PYKua7vlRCNrHzJ3+mDIpGIPkou/6z
-         hrOQ==
+        bh=iHzPDIF0nHvJ4MjZXtd+1YcUGWWggbQugVNz0aoRvm4=;
+        b=uoti3CP1UVIV4y6Az3AEUllKS7h0StIL6Gn5M0VSwN5J2LjQDgx/3fM6a5KHKfRPin
+         WPJNTf9VKGtmJj57NXv/hF+GqyJpGR5OY8LmTZ8SLDIUCPBLaqBe6iW2aHR5vk2Z94hu
+         tKw7liJchp9+hKSiGjzbKY1V7XhBAzjEUALg1ZWBP236ZkoRuQEhdtyFNljlW2JVKpcJ
+         l55foz2jy+6FfXFxVUbS7GMm8y7EDbLEM0b3qKhCAUP28otIEsYwBQd5rlBVXZtF/zLe
+         aopFz0015uSyrxJUwX1vvY+bqLTqk9EEfe98wwLMnp4AG9p4IL3WLHiT3bLdcukYkSbF
+         dnKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696576230; x=1697181030;
+        d=1e100.net; s=20230601; t=1696576319; x=1697181119;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=s4Pz6V+l7g1fDRYkyErgWlYbtoLKmeqMrzbk272HU6I=;
-        b=TOF9Dpf/ch1MIqiP5lj9wHwGU/fciRWTsN+VuEgLo2zlkkIffIL6eWUzXMiITUygYz
-         vJ69s5WGbvW6KFrp4f+fmFX7/tKBLnVoyogNgOpNBJ+UUq2dsonRStWa6nBCoHlhM0jI
-         udEsu5yqC0yDZeoGTS9flDaHDufHKxPF+637DQh5WJsHGe3PBEYWH+vUPZhSyT92ke66
-         rZvmo2b4wnyK737o9aH7eg7YHxYhB6dZdZ2RDU4N3arXoks4+D2Pt2QBZVI46rgeXhD7
-         9a71JWckwJ1cSHsHtYqDA7xA2zZb1CX8WmEh+Yq2HoWuxvq8SJIeOfBZcmzESzsun9kQ
-         XBNw==
-X-Gm-Message-State: AOJu0YwKhqqQHcnbIgo2nRhM1slsjCzF0SYbk6F/nODmA7i/EUVj/BWG
-        6byZquKAgosi765z8wA491FCEi7Cxs/p79Zw36TNaA==
-X-Google-Smtp-Source: AGHT+IElekYbONyUWUDSEziCQbS03+r3xAaUoSu1bVKXQLUSAIno+7zsmOgB0alZ0ADMgfjFwh9TNpN3RIIBLTKJWkY=
-X-Received: by 2002:a1f:e246:0:b0:48f:8533:3cda with SMTP id
- z67-20020a1fe246000000b0048f85333cdamr6331515vkg.11.1696576229965; Fri, 06
- Oct 2023 00:10:29 -0700 (PDT)
+        bh=iHzPDIF0nHvJ4MjZXtd+1YcUGWWggbQugVNz0aoRvm4=;
+        b=NbjtiDnysqfWkGCUWjUR26IJvx+EhfPwxV4LtnLsir9NUuQP96shbPuYFas5Ghf+xF
+         Hc9JLrJJs+lTcFR94Z/I7vDjoxRt/ldy3pnOJKP+fdceeQL5CkNEPADlgBEylGVw4vTd
+         JZUR9Tm+z0sSlyfTJOd0F6aG/ttgXtygcz+dfi1gVj3wHmDGAOpUA3f6jYsD7XQka2Jv
+         wvb7vMa/yPorr3BVgyubfJ4hNcFSyOlDg8X2kADRrwgU+PlogjKfMJSUjTJYCUIk4/hY
+         jHgYYhdczuL48VvP/E65eJtvIJ2JrrnnjEK+5201OQv/KvvZT+lNh4yHc2sLvzlVjn5V
+         tzWQ==
+X-Gm-Message-State: AOJu0YxvRLyYICNfa3yNybtN3FR9lxyOq69YG0qry3HJFN/XMNXKsJhL
+        uWShiEqCilkSoWBP+98rnCOgo7e3qENsd19iYJm9QA==
+X-Google-Smtp-Source: AGHT+IHiUqGjKQHUfgrIcgITqHkmD2z1HCMXkK+vuDHKcerGKLDJ+4ufx0fc/UxlguWUqe3soL3/3nEQ/msf2e3kc/I=
+X-Received: by 2002:a1f:a9d0:0:b0:49d:92e0:9cd1 with SMTP id
+ s199-20020a1fa9d0000000b0049d92e09cd1mr7100923vke.11.1696576319479; Fri, 06
+ Oct 2023 00:11:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231004-pxa-gpio-v5-0-d99ae6fceea8@skole.hr> <20231004-pxa-gpio-v5-5-d99ae6fceea8@skole.hr>
-In-Reply-To: <20231004-pxa-gpio-v5-5-d99ae6fceea8@skole.hr>
+References: <20231004-pxa-gpio-v5-0-d99ae6fceea8@skole.hr> <20231004-pxa-gpio-v5-6-d99ae6fceea8@skole.hr>
+In-Reply-To: <20231004-pxa-gpio-v5-6-d99ae6fceea8@skole.hr>
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 6 Oct 2023 09:10:19 +0200
-Message-ID: <CAMRc=Mf47F7GgLyp+DkRQp2H7+JiqjczVHSQwZoYJg8455n_bA@mail.gmail.com>
-Subject: Re: [PATCH RFC v5 5/6] ARM: pxa: Convert gumstix Bluetooth to GPIO descriptors
+Date:   Fri, 6 Oct 2023 09:11:48 +0200
+Message-ID: <CAMRc=MeGvqnsn63o1sH66AwTFCPd5kqj+7V=B08afrwUZdZCvQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v5 6/6] input: ads7846: Move wait_for_sync() logic to driver
 To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
 Cc:     Daniel Mack <daniel@zonque.org>,
         Haojian Zhuang <haojian.zhuang@gmail.com>,
@@ -82,12 +82,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Wed, Oct 4, 2023 at 4:56=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic@=
 skole.hr> wrote:
 >
-> Gumstix still uses the legacy GPIO interface for resetting the Bluetooth
-> device.
+> If this code is left in the board file, the sync GPIO would have to be
+> separated into another lookup table during conversion to the GPIO
+> descriptor API (which is also done in this patch).
 >
-> Convert it to use the GPIO descriptor interface.
+> The only user of this code (Sharp Spitz) is also converted in this
+> patch.
 >
+> Suggested-by: Linus Walleij <linus.walleij@linaro.org>
 > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Acked-by: Mark Brown <broonie@kernel.org>
 > Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
 > ---
 
