@@ -2,51 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB427BB01B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 264DF7BB01E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbjJFBk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 21:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
+        id S229737AbjJFBmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 21:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjJFBk1 (ORCPT
+        with ESMTP id S229666AbjJFBl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 21:40:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC53CD8
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 18:40:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 20FDFC433C8;
-        Fri,  6 Oct 2023 01:40:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696556426;
-        bh=ZHhwy/QHQKjO8JjOgoHcu01ousohyctGzcyeY+52kKI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=US1ViA3LzYovQRX1B7arGfXz3AFtGzwIzhCB927yLRcRgfTuJO2iPk/BU48BhV0Gm
-         xWUN92DpslOGJE2jwVnc0H/YeZiLj1YziEEg7UyZBTppTeNTcmAQaadHscBs9vZ7no
-         Z5J9lQ4nl92zCCFT6CsWKJ7xEoxFC7TnS+tiD0gU823lGBIQM4kTSbrc+5ZKD7Zyxw
-         HR/2p+irzqQboK4Y69UvYNfRCW1MfW8MdJCFD8lrywZOiPg2+pPTwKBvxP5v0dsTp9
-         Tmf50jTjUqAwoO+wBsK9yIOt2rR7hEcgoMtoC2sK44FlrY2gNS973ZZxzYl5dO+sKO
-         jWL7veN/QmMJw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 038BEE11F50;
-        Fri,  6 Oct 2023 01:40:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 5 Oct 2023 21:41:58 -0400
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3785BE7;
+        Thu,  5 Oct 2023 18:41:57 -0700 (PDT)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1qoZqh-0043of-2s; Fri, 06 Oct 2023 09:41:52 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 06 Oct 2023 09:41:55 +0800
+Date:   Fri, 6 Oct 2023 09:41:55 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Cc:     Tatu =?iso-8859-1?Q?Heikkil=E4?= <tatu.heikkila@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Device Mapper <dm-devel@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Linux Regressions <regressions@lists.linux.dev>
+Subject: [PATCH] dm crypt: Fix reqsize in crypt_iv_eboiv_gen
+Message-ID: <ZR9l446ndB4n1Xl4@gondor.apana.org.au>
+References: <f1b8d8f5-2079-537e-9d0f-d58da166fe50@gmail.com>
+ <ZR9dEiXhQv-wBVA2@debian.me>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] nexthop: Annotate struct nh_res_table with __counted_by
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169655642600.20160.10641329259797936886.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Oct 2023 01:40:26 +0000
-References: <20231003231813.work.042-kees@kernel.org>
-In-Reply-To: <20231003231813.work.042-kees@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     dsahern@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        gustavoars@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
-        trix@redhat.com, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <ZR9dEiXhQv-wBVA2@debian.me>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,29 +47,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, Oct 06, 2023 at 08:04:18AM +0700, Bagas Sanjaya wrote:
+>
+> > Git bisect lead me to:
+> > # first bad commit: [e3023094dffb41540330fb0c74cd3a019cd525c2] dm crypt:
+> > Avoid using MAX_CIPHER_BLOCKSIZE
+> > 
+> > If I git revert e3023094dffb41540330fb0c74cd3a019cd525c2 on current Linus'
+> > git master, the issue goes away. So I'm personally not all that affected
+> > anymore (if I'm ready to compile my kernels from now on), and I understand
+> > that you have no clear way to reproduce this as it seems strongly bound to
+> > hardware, but seems like this could point to a potentially serious security
+> > issue since it involves both crypto and undefined behaviour.
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Thanks for the report.  Sorry this is indeed my fault.  The allocated
+buffer is too small as it's missing the size for the request object
+itself.
 
-On Tue,  3 Oct 2023 16:18:13 -0700 you wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct nh_res_table.
-> 
-> [...]
+Mike, would you be OK with me picking this fix up and pushing it to
+Linus?
 
-Here is the summary with links:
-  - nexthop: Annotate struct nh_res_table with __counted_by
-    https://git.kernel.org/netdev/net-next/c/2253bb3ff242
+Cheers,
 
-You are awesome, thank you!
+---8<---
+A skcipher_request object is made up of struct skcipher_request
+followed by a variable-sized trailer.  The allocation of the
+skcipher_request and IV in crypt_iv_eboiv_gen is missing the
+memory for struct skcipher_request.  Fix it by adding it to
+reqsize.
+
+Fixes: e3023094dffb ("dm crypt: Avoid using MAX_CIPHER_BLOCKSIZE")
+Reported-by: Tatu Heikkil� <tatu.heikkila@gmail.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+index f2662c21a6df..5315fd261c23 100644
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -753,7 +753,8 @@ static int crypt_iv_eboiv_gen(struct crypt_config *cc, u8 *iv,
+ 	int err;
+ 	u8 *buf;
+ 
+-	reqsize = ALIGN(crypto_skcipher_reqsize(tfm), __alignof__(__le64));
++	reqsize = sizeof(*req) + crypto_skcipher_reqsize(tfm);
++	reqsize = ALIGN(reqsize, __alignof__(__le64));
+ 
+ 	req = kmalloc(reqsize + cc->iv_size, GFP_NOIO);
+ 	if (!req)
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
