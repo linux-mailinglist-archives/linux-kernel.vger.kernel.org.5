@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4F17BB0BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4267BB0C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbjJFEMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 00:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        id S229970AbjJFEVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 00:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbjJFEMZ (ORCPT
+        with ESMTP id S229876AbjJFEVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 00:12:25 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D2A107;
-        Thu,  5 Oct 2023 21:12:22 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1dd7139aa57so1106639fac.1;
-        Thu, 05 Oct 2023 21:12:22 -0700 (PDT)
+        Fri, 6 Oct 2023 00:21:30 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFFDDB
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 21:21:29 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c877f27e8fso13736335ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 21:21:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696565540; x=1697170340; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oVKOeyfzPTqe/CUiQ9KqX2upeUQqv3i7YeBbchF99cg=;
-        b=X31PaMlJA60AjBFamrlz0GE07si2+jQDB9NnMTbueWBBWdYzaUhy35ZiN+EMZnzEYb
-         ktOTjR35xABZ3vH8H+eIIk3z4JM84YE5xxN5J/nPEh+8FgHWaDOOkletCedsnPacYJGw
-         k3o8Zy/hml+dq6SQ0hy9VAfzp2SdAQLDl01wkkSa87vEk6wOxWpu6lhRBfhGoDEF0STH
-         jKiMxr4fx8xRC/TFK6xLnwUyyrG4UyhI5cbzmP3s5G4qBLHapEUhPf6nLIxaSQ2Lu4pX
-         eoNGuuyUz5RYlyXCfgyDu5Zk46LJRHpALLMKi65B7yTjCiXxnKOXrBr3ltt9gSivaI4N
-         rQcg==
+        d=chromium.org; s=google; t=1696566089; x=1697170889; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=31a7+5f+dKEUOjTapfT2dmGxD91zYjZdh7R9akPGW1Y=;
+        b=XnQhiNzTpVp1s3lQ4cNxN7gDMaIo8+CKS5Qu9MWe7VHjPsNAsw01dzkM35kyDCYpPd
+         SJQh23ZKJ9WSbeLCAp5iZJSwUSEnIbse8IPv7ab0URZYdexztqDRISg1Jz4/Najhe64P
+         GLCMJzDEyAO7VjLo5UvjJCZ7mIJu5B13bAJYc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696565540; x=1697170340;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oVKOeyfzPTqe/CUiQ9KqX2upeUQqv3i7YeBbchF99cg=;
-        b=fZvTd3tvP1cbN7FviuLr9D3dhHr0+6zOTnxiEJrnx7TGneTYv50d+BvtFWyGnxRiBP
-         XIXItPcVnLTbe7mHB/hmNpkRqTdm0IOSXkqeTO+HfzH0DXrKfe2hnX06XDx84OUBGXQw
-         8R2lrasUtaq1fGIJmHr/Gv21aP8KlGRMeY/pMvS/fwKKaWQ/83CY3cVdNH+eg0u8cPKg
-         /G3pSbOZnb8R2gYRvQ2+bX7IplPgNjIOQC3w3heed52qzAn9ICcomf6WFqhrhvbT5DZC
-         v4/os20Y386+eKuCJa6BfCA8PooX9kJzT8MUVmh7esOZ5V9l+KDU1EnJ7Q3FkLzMpVJC
-         cPFQ==
-X-Gm-Message-State: AOJu0Yz0bUovv+IWppOyLFESvm/EiZbWme1GA5StzhTvYEoGSWF4mYAP
-        TzJtUzOFByGmvPLoJ+dYWwaqp5LGyVEJhQ==
-X-Google-Smtp-Source: AGHT+IHKShHmFoX6g4eYJMYkSYLJOFe6EddPNVGX6m8IyulpLKYMQXzc/RE5XrQ7C5u/q6l3ytJgYw==
-X-Received: by 2002:a05:6870:e2cf:b0:1d6:563b:c3a5 with SMTP id w15-20020a056870e2cf00b001d6563bc3a5mr8732318oad.7.1696565539958;
-        Thu, 05 Oct 2023 21:12:19 -0700 (PDT)
-Received: from toolbox.iitism.net ([103.15.228.92])
-        by smtp.gmail.com with ESMTPSA id t17-20020aa79391000000b00694fee1011asm401131pfe.208.2023.10.05.21.12.15
+        d=1e100.net; s=20230601; t=1696566089; x=1697170889;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=31a7+5f+dKEUOjTapfT2dmGxD91zYjZdh7R9akPGW1Y=;
+        b=cfBULixvwby2ZO0WOlqs+sapmI0UoISPKV/8hx2n/NQtNxhqN79H+D3E4xN3JqUlk5
+         6iN52VzYuuLXAn3a/32g1PaRcWB4dy5KSfbHNG7gochRo7g5BiF8LfQWn7QpZ/eY+Wgj
+         K8LWjTdv0W6Cq/QE4ew7fmPsYZrB1afXOUjRjPXuvoi3nQ57rQdw0eq7J9zbSZ5Y5yaI
+         skb0IPWc83Ohun4YQy7I2FTzan7DvTJ7rGaNWMoXGtwyl36IA5M3zlbWgzrvG2kh1cTj
+         ydkvqbEmr/l8imvoRk7lNqDFm4hHSzC/9hgM6XRUMMf2OmE3Il6bjPzUaDQ0qLu80vcW
+         TeRw==
+X-Gm-Message-State: AOJu0YxJ1tsTexBIuS+d0mE3zaRnocsI87Rd/bloBNL/CBg0ZqazlgK4
+        5vTqahAhHBg2NnAby0nK5lgdXg==
+X-Google-Smtp-Source: AGHT+IGopr7FkMNaDgBjublbZIBMMlQiWD+3JIFSW0Wg9pUK8sYj3ONwZZMOK+8xPV5llqQjeKeInA==
+X-Received: by 2002:a17:902:8649:b0:1bb:9c45:130f with SMTP id y9-20020a170902864900b001bb9c45130fmr6189953plt.69.1696566088853;
+        Thu, 05 Oct 2023 21:21:28 -0700 (PDT)
+Received: from google.com ([2401:fa00:8f:203:4afa:2f75:6a8f:b6ea])
+        by smtp.gmail.com with ESMTPSA id jb17-20020a170903259100b001c8836a3795sm2619729plb.271.2023.10.05.21.18.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 21:12:19 -0700 (PDT)
-From:   Ayush Singh <ayushdevel1325@gmail.com>
-To:     greybus-dev@lists.linaro.org
-Cc:     Ayush Singh <ayushdevel1325@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        vaishnav@beagleboard.org, jkridner@beagleboard.org, nm@ti.com,
-        krzysztof.kozlowski+dt@linaro.org, vigneshr@ti.com,
-        kristo@kernel.org, robh+dt@kernel.org, conor+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v8 3/3] dts: ti: k3-am625-beagleplay: Add beaglecc1352
-Date:   Fri,  6 Oct 2023 09:40:33 +0530
-Message-ID: <20231006041035.652841-4-ayushdevel1325@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231006041035.652841-1-ayushdevel1325@gmail.com>
-References: <20231006041035.652841-1-ayushdevel1325@gmail.com>
+        Thu, 05 Oct 2023 21:19:56 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 13:18:37 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     John Johansen <john.johansen@canonical.com>
+Cc:     Anil Altinay <aaltinay@google.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKLM <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v3] apparmor: global buffers spin lock may get contended
+Message-ID: <20231006041837.GA17924@google.com>
+References: <YO2S+C7Cw7AS7bsg@google.com>
+ <cfd5cc6f-5943-2e06-1dbe-f4b4ad5c1fa1@canonical.com>
+ <Y19GhTg8Q/3ym/VD@google.com>
+ <dac1c2d5-367f-c8a7-c61e-c1774d98d602@canonical.com>
+ <4595e7b4-ea31-5b01-f636-259e84737dfc@canonical.com>
+ <Y+9aoFjrYkpFSvuE@linutronix.de>
+ <f3fd5dd8-9d78-43be-fc5c-bf990ad3a64d@canonical.com>
+ <CACCxZWOK6=mHNQrWEhjw4pC2i3qBKYdn9joiaaCNE7ge8FAz0A@mail.gmail.com>
+ <CACCxZWO-+M-J_enENr7q1WDcu1U8vYFoytqJxAh=x-nuP268zA@mail.gmail.com>
+ <31d6e8d6-0747-a282-746b-5c144a9970bb@canonical.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <31d6e8d6-0747-a282-746b-5c144a9970bb@canonical.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BeaglePlay board by BeagleBoard.org has a CC1352P7 co-processor
-connected to the main AM62 (running Linux) over UART. In the BeagleConnect
-Technology, CC1352 is responsible for handling 6LoWPAN communication with
-beagleconnect freedom nodes as well as their discovery.
+On (23/06/26 17:31), John Johansen wrote:
+> On 6/26/23 16:33, Anil Altinay wrote:
+> > Hi John,
+> > 
+> > I was wondering if you get a chance to work on patch v4. Please let me know if you need help with testing.
+> > 
+> 
+> yeah, testing help is always much appreciated. I have a v4, and I am
+> working on 3 alternate version to compare against, to help give a better
+> sense if we can get away with simplifying or tweak the scaling.
+>
+> I should be able to post them out some time tonight.
 
-This mcu is used by gb-beagleplay, a Greybus driver for BeaglePlay.
+Hi John,
 
-Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
----
- arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-index 7cfdf562b53b..5160923b4dc2 100644
---- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-@@ -870,6 +870,10 @@ &main_uart6 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&wifi_debug_uart_pins_default>;
- 	status = "okay";
-+
-+	mcu {
-+		compatible = "ti,cc1352p7";
-+	};
- };
- 
- &dss {
--- 
-2.41.0
-
+Did you get a chance to post v4? I may be able to give it some testing
+on our real-life case.
