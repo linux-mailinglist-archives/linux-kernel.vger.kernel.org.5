@@ -2,393 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 020267BB73F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132757BB9AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232298AbjJFMCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
+        id S232633AbjJFNr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232226AbjJFMCZ (ORCPT
+        with ESMTP id S232659AbjJFNrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:02:25 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691F5F1
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:02:14 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3226cc3e324so1966605f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:02:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696593732; x=1697198532; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VzQ8FzGWz9UGdc1ySLgVdxhzuhMHOwHYsPZV42fXu+Y=;
-        b=qVV8Xs9G415c6UCN8gq8/4Ug+bCG/Qqq58ORP4d/EDp1LfhoQcA7Z0HzGGKnoenI/L
-         tTUtLki4L4hShQpB/TR5h2SwibiR2Tp0yIlnDgKDw/+QICKCGVoltiv4fOD3d5YXGmrc
-         QbxOG+jOXcAkFWK1b0DkmmE6lxAnaiT+L5oyAiuV1e6yZ+2GTObQ8s6pPeH88WUi+t1f
-         7IR+PLjxHYs3JqAxGtgFgCN+F7e04CPPoZrmDOExQFqRnUWCg7EB1wXCVCLn9s8Pxc93
-         MMx+s6/XeLQqUDzD0UzDNh1K2Yl/QsBg8zQjf3XxCqGdDP76h7h9LP8UD2hGK5QICp7P
-         +fYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696593732; x=1697198532;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VzQ8FzGWz9UGdc1ySLgVdxhzuhMHOwHYsPZV42fXu+Y=;
-        b=sDl8hhnsGBI5F1YWPMhvbCGVFLzhZLs+fG1MAjXsp8dC386P+E0792wC5l9VlK/gs3
-         hspUNWvxOZL19XF3g0JqqILG3QqNNh4Ikzhukujrno/WyPPY8itg6zOd74hSYtPlVBM/
-         zOk91QkUOai0CE52DNQkVU1LEOB4yYFxRwExmARzjRmCHvA9RB/+HWM0Lzgkb/ZfAOAj
-         QsqcM7FyXbxkHOih3INWRkYVVjIe2jFc4PPrxzsWuj4InYesBC0ISTVrA9S+dzl88lUc
-         n7mAkjngzaavSq7inqrCOFU648Xwqv672ng3fBYx9sdvjzbMXgT2SrbePoTgS2dswOzd
-         VOTQ==
-X-Gm-Message-State: AOJu0YzDEL6AlEXO+refCvIMO/AHyWZGTrxkMT1S4jz342sGAd1Lov98
-        /5kCJL+aDwEpxZTOORQz2/J1mw==
-X-Google-Smtp-Source: AGHT+IG41E6NxIP4y7G4cwVFBPLIHvoy0I6ts1jaF4npY0v497e9iBogM3a0cg/7PIZPYe0eDxcYxQ==
-X-Received: by 2002:a5d:6909:0:b0:317:70da:abdd with SMTP id t9-20020a5d6909000000b0031770daabddmr7396117wru.59.1696593731765;
-        Fri, 06 Oct 2023 05:02:11 -0700 (PDT)
-Received: from x13s-linux.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id m8-20020a056000180800b00321773bb933sm1491061wrh.77.2023.10.06.05.02.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 05:02:11 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        loic.poulain@linaro.org, rfoss@kernel.org, andi.shyti@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, todor.too@gmail.com, mchehab@kernel.org,
-        bryan.odonoghue@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] arm64: dts: qcom: sc8280xp: camss: Add CAMSS block definition
-Date:   Fri,  6 Oct 2023 13:01:59 +0100
-Message-Id: <20231006120159.3413789-6-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
-References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
-MIME-Version: 1.0
+        Fri, 6 Oct 2023 09:47:02 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0287310EC
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 06:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696599992; x=1728135992;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=A7bCwxYX6MeWyBVSx6jZ4bD1I2OACc6MWLGm+zhxLdE=;
+  b=jCRYkD28KfdUUuXVKxCN9W3YjbkKkJOEFSV5aC5pOZ1gsvbZ632DcVjR
+   5inKchz+u2srN3DlpTGsGo3uACI4N1c35Xa5P8JLxFwCrZPkaZpUN6Fht
+   VbhJp5Uuzlgcv/x1Lc5gQpbQCaRWCri+gz06Own0gSYLcPGbrmoIXBZ9Z
+   8Hw6/8fj7zi3CBH4wG5emaH7WBFugEbSI73u6MDo7dGYxUiyWp8z0Pe95
+   UZ4EooCTiDospWcL0hzOqJupb6c9Fv832HshnyA8gnVgjwL3iRqGGTljq
+   THihIbjCW3JjqIQhSTJJPo+nb1Kd8alDLV97wUoVt9yyg7G2G6n2lEJau
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="363107700"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="363107700"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 06:46:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="895888880"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="895888880"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Oct 2023 06:44:57 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 6 Oct 2023 06:46:29 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 6 Oct 2023 06:46:29 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Fri, 6 Oct 2023 06:46:29 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Fri, 6 Oct 2023 06:46:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RtL5RomhlGL+9VjaeQd6Q5TD1ltQ/YY1a3hu6afIWkiPV4e4+uqPUc5Rt4Yyry5b7paYLHZX/pVCUjvqJzs+8mjMZ+xeMxH4gA/RcgjlmkYs1yzjYwGPnogVQxfuRQ3YCT/g4D4DRt+SJsOZQNtdGxmL8XdjNCaHXVxB/q3xAtd5VDVFjyZbgoWtoBnREHxnSGidG96KwYf85RiK3lnSaiUTPej0qnDRpTNSf4Ynway05OyG+pYTPGMmddZbiw/V4QLSyKQDs+F7HLL4JrEiKMyzgjrS+y/3KlBDQnwxDLGzCMPrGeKNYAjBVjwhtgaR7PKAFuQcGNnueJ+/z2VFDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3d/ljYKnKnwsN9RHLLM1Cl4QRARwJZIlQm9KKMfhDc8=;
+ b=Io2P1zOhjPdKoHvw/vQaiAiEx7jtteIPju3R6up7Q/780oTTgbvwBagib7C3yU9BGo+2J4813hmEmM4NJ6WBdiFVXq9YBsMzRZlUYFQS3cpzHYIfDEb8GIEvCYX9TQfAHEQt+53YikeI+0h78KEGnMnXBiTjqBOoNL4xGYmqDOjaWB6ThbUD9pONa4uOZ9SCkIYmVuf4orl75tuc46hagZEOaVe7pKMiissalQmAbraizySRooarG33dDlWRAkdBXxbZldsMwIF5agJXG5XI8uNhkdcKnBmbz6bH9KPefNo4FmTkQZ8nKLW6hLZYnF1iffh/OCnxq2YRHQaXiAnFog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3094.namprd11.prod.outlook.com (2603:10b6:a03:87::25)
+ by MW6PR11MB8338.namprd11.prod.outlook.com (2603:10b6:303:247::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Fri, 6 Oct
+ 2023 13:46:27 +0000
+Received: from BYAPR11MB3094.namprd11.prod.outlook.com
+ ([fe80::f6c2:449c:7191:984b]) by BYAPR11MB3094.namprd11.prod.outlook.com
+ ([fe80::f6c2:449c:7191:984b%3]) with mapi id 15.20.6838.039; Fri, 6 Oct 2023
+ 13:46:27 +0000
+Date:   Fri, 6 Oct 2023 18:20:18 +0800
+From:   Yi Sun <yi.sun@intel.com>
+To:     Nikolay Borisov <nik.borisov@suse.com>
+CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <dave.hansen@linux.intel.com>, <peterz@infradead.org>,
+        <x86@kernel.org>, <kirill.shutemov@linux.intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <kai.huang@intel.com>, <linux-kernel@vger.kernel.org>,
+        <heng.su@intel.com>, <yi.sun@linux.intel.com>,
+        Dongcheng Yan <dongcheng.yan@intel.com>
+Subject: Re: [PATCH v4] x86/tdx: Dump TDX version During the TD Bootup
+Message-ID: <ZR/fN5SDW5pFX1yR@ysun46-mobl.ccr.corp.intel.com>
+References: <20231006062855.875631-1-yi.sun@intel.com>
+ <2b222a2a-f749-46e8-8489-b590dc2061cb@suse.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2b222a2a-f749-46e8-8489-b590dc2061cb@suse.com>
+X-ClientProxiedBy: SI2PR01CA0036.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:192::22) To BYAPR11MB3094.namprd11.prod.outlook.com
+ (2603:10b6:a03:87::25)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3094:EE_|MW6PR11MB8338:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3e7ed9e8-ba9e-4e90-fb4a-08dbc672a333
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: G3Pm5Azx4JMTsxg+z4BsoGp2yP1kKwDKAF1w12o84s+YpbxVSl4m7NsTEUmGlwYyY2SO6eKoweJEc9oARHZFcB9GVWePW/CtT+TcyPvqwSh3uAZMj9FMzSughlEBKaYrs8nVeFZcvwtT+FxxBK2YBFJt77GpfL9GcGEabFswkg+IKEK3dCUkPuTEQfuWwwZ+SgU8JfLpauEDAMEhjSHDRGlocSOf+YubHjVR9MJbJakDjwQvLg3DI4qJkPwk/BdO2n5hG7lOqTetDAJASOBSEpdnMwIA9cGTQNShGmrllWm6N1sGP02BjINCiacDYcn9y9UM5D7qw9BdFfKsrbY573BIY6BttZLgBKepUdrdYmOcIFGqnwVa0dIZrZbXNgudKSPRysi8FLMEsgnXdZvLNu0lQlfqR76iZdBr3Z9IWZqcuc7fbd9Im60FBQI74lDa2gILE66PteSuFFc4WNRBZdyKHx4JDMLpzHNRsoDBhwsXj/qEn5ZL4Ua+n0lTopLD+wRB4yaT/BU4RWU0aEqmjed8eERMjID0X6eKv7kUbMSMLRlLdwgM/mzK7YMhM2hu
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3094.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(39860400002)(136003)(376002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(53546011)(6512007)(86362001)(38100700002)(82960400001)(83380400001)(26005)(4744005)(7416002)(2906002)(6666004)(6486002)(478600001)(6506007)(4326008)(6916009)(8936002)(8676002)(316002)(66476007)(66946007)(5660300002)(41300700001)(66556008)(44832011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MGJnM0tIWkJTZ1ZGL0duSW9SckV6T2R0MmVLYnZjMlYzOElkK0ZobzYrdVZM?=
+ =?utf-8?B?Ymlaak1kTkxpY1BFd05kNndndHlTNHE1WXRzV0thM1BZNVNjT2l2RkNQdWdo?=
+ =?utf-8?B?Wnptd2dpU0pobURtSUJ6Sm5VNklRbG8vc3pNVUY0MEtZZXJJUlNqQkdETVd1?=
+ =?utf-8?B?Wk9BbmlhNUpycGpzNWFEbDRqcitIaHFrL2YydFB4V1Z5TURsVHFMWnJhdHlw?=
+ =?utf-8?B?SmtwMEIrUzFlOTZEeEZRa2tqRm9xNGJDTXZidlBhb3R1NUV0VnYvQmNLZm40?=
+ =?utf-8?B?TjA0cW5tNWQ4eUtZQmdRVXcwK0x0R1BONDhKNFIxNk1YY3pDSTBhWTQrWWdy?=
+ =?utf-8?B?ZUhQdkpDRzFnWDBsYlhrUW1xVHd1Q2dSQ0hCRDRKM0RENXRaTHVxblMyMHFX?=
+ =?utf-8?B?WXR5Y2RqSG43R3BNZnJ5a01SOCtudHQxOGhlMVlYQTI4UW5kYlVHdTNUa2xG?=
+ =?utf-8?B?enhXSllKMUp6ZVJ0bDlTY292RXQ2NytQV25mcXVvZ1JiL1ZUT2tQdUg1Slc0?=
+ =?utf-8?B?TVQ4NG1FaTZyUkJwV21UaldENkxQTSt6OVdnVXR6OWowaHZuSEZKRzRPYnJ0?=
+ =?utf-8?B?WGdDTmE5RGkyekF2S0xrVHpaWGFzeUdnYjFwUVBrYmUxK1VQOXhnc2w1d1Jx?=
+ =?utf-8?B?NTlUMEt6RUIweDNVZVNWRmYzYmc5ZUJnMGluZGp3SHVWNTU3bkNwWWVYVUhP?=
+ =?utf-8?B?YWg3STBkSTIxK3pUVkRuMm4xbmtNS3hobnlnWk8vWWNTY1lKVE5UODFoaS9P?=
+ =?utf-8?B?SjNvcDFZODBUTEc3Z0JMKzJjOHdxVmc3RzRqVUhYUW9RM3FHVFVXTmYzOFhl?=
+ =?utf-8?B?QkpGbzFmM2IvQTZIYzYyYmV6QmphUy9PT2o3K1MrSXdaTVYvSnZJbndUZVdI?=
+ =?utf-8?B?MTB0N0h2UkZNQlVMd0sxcm1xeHBLaXR0YnZuTlYxN2x0YkZRRlRHd0p2UGZR?=
+ =?utf-8?B?TE1CRDJZQ3F6OGdLV1c0ZjJQMG9SQU5jZXY4cEhPNUZGQ2JPZXdsSjlOamxm?=
+ =?utf-8?B?SW9PRXM2dVhBUzNOdG40QjFQRUc0cTFNanI4S1gxenZLR2pQY2M1MDl5TkYv?=
+ =?utf-8?B?cHFsekQ1S25zcnVhbWtiR2EvRjNFdENNQWZqbkJoZy9NQ21TdzZpYVRrR29s?=
+ =?utf-8?B?c2dsMytIUGFMM2xZK2pKZXRiOGRHKzVqNk5rejV5dFdkc0hxZ3BaRlc3L3FJ?=
+ =?utf-8?B?SGIxODhqMVdYTTNZdkdjQ1ZXYWs2Tk4wS3cxWXVYNFAzREtrR1pSS0tic3Z6?=
+ =?utf-8?B?ZDdHaENXeGh6MzNGTWllQU1YZE1QZlJUR1pScHMvNFZNVDhkdVZQcmxxd1pK?=
+ =?utf-8?B?QzJNVU1FWXU1OGRjcnRDWlRJQ3dYSThOS0UrVU4wSm5tWk1pajZGcjB0bjFv?=
+ =?utf-8?B?clcvRTZCQytHRkZZZlg1OG1sOUtVRGdSaGY4RnNscmhkQ1IxUGxLcW1Ra0tS?=
+ =?utf-8?B?NTRzQTlQOUxiR1BkWnIzb1lMSXYxRjhBVHNDaXBYSkJMNFVjYmg1dGV1QUpI?=
+ =?utf-8?B?YTQ5NndrL1RaVmY1WmF6eDBjZHEySm9ncE5PRVJaUGFzbWxwUG5iN0E2ekx4?=
+ =?utf-8?B?VUVwb1hxRllJMjlLWGtOTURzNFl3NnhJTjBvTTdmNEJVZktBaDNtZEJGZllI?=
+ =?utf-8?B?OWQ0UytXd0s3cjRqKzVaOG4xT0Jyb0hFQlJDNlZicXBUMFoxZUdvVnpVK09U?=
+ =?utf-8?B?eCtYa2FROGNmV2xRQkVFSndLSnZsNjRqV1FKRlZkS2NpR1FKLzQ3N1ZEWmc4?=
+ =?utf-8?B?Um1wTEdsMjBvWEhYNUtBT25JOXp6QWh3SXpoYVFCeGl0MDhHRTl2RTd1YUVi?=
+ =?utf-8?B?RlMvMXZNSk9neHVJY1pOdzB1Ky82Q091ajFDTmJGNnJ2QTFPaDZ3QVhxMFB5?=
+ =?utf-8?B?dWpmcW5PQklHSkpaRHpDRXY3dWJIUExGaDl2WldXdzltSGFRNDNIRFJQUk5q?=
+ =?utf-8?B?NThYekxXS1JHNWZuRW9FZmM2Z2k0U0pXNHN6L0V2UFVZOTlYQ0R3L1hxWFNV?=
+ =?utf-8?B?MGxOR1NxLzQ5THhyMW9TakxDbGZxR0U1SFRLS1JFOWFDMy9pVVNkT1JyRElF?=
+ =?utf-8?B?Y21nUVUvVzJma29VWWtWUUFWQkRMR2RaaXRjZ1JmR2JrYnE1RFhWdTBSRGJ0?=
+ =?utf-8?Q?sz7Tn+CE/MzF8b9Xow73sz4xZ?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e7ed9e8-ba9e-4e90-fb4a-08dbc672a333
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3094.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2023 13:46:27.1791
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: deNK722hkl3IOt9VSaEltDmtfREYkwV2bGvp+HgBpfIllT5Umx+eGAvVA9OEeOL/mMeGes8GfZt5ttoA/8vPkg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR11MB8338
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add CAMSS block definition for sc8280xp.
+On 06.10.2023 11:11, Nikolay Borisov wrote:
+>
+>
+>On 6.10.23 г. 9:28 ч., Yi Sun wrote:
+>>+static void tdg_get_sysinfo(struct tdg_sys_info *td_sys)
+>>+{
+>>+	u64 ret;
+>>+	struct tdx_module_args args = {
+>>+		.rdx = TDX_SYS_VENDOR_ID_FID,
+>>+	};
+>>+
+>>+	if (!td_sys)
+>>+		return;
+>>+
+>>+	memset(td_sys, 0, sizeof(struct tdg_sys_info));
+>
+>So in case of an error this function would effectively zero out 
+>tdg_sys_info and not explicitly mention that something went wrong. 
+>Dunno how sensible or likely it is to get an error while requesting 
+>the ID_FID ? Also why don't you check for errors on subsequent calls 
+>to TDG.SYS.RD ?
+>
+I'll add some error info before each error return to know what going
+on when some error occurs.
 
-This drop contains definitions for the following components on sc8280xp:
+Actually, I removed the error check for subsequent calls to TDG.SYS.RD
+in this version, since it's probably not necessary when the first call
+is successful. I can add them back with warning dumping when errors occurs.
 
-VFE * 4
-VFE Lite * 4
-CSID * 4
-CSIPHY * 4
-
-This dtsi definition has been developed and validated on a Lenovo X13s
-laptop.
-
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 285 +++++++++++++++++++++++++
- 1 file changed, 285 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-index 199b112da295..58bea7617666 100644
---- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-@@ -3615,6 +3615,291 @@ cci3_i2c1: i2c-bus@1 {
- 			};
- 		};
- 
-+		camss: camss@ac5a000 {
-+			compatible = "qcom,sc8280xp-camss";
-+
-+			reg = <0 0x0ac5a000 0 0x2000>,
-+			      <0 0x0ac5c000 0 0x2000>,
-+			      <0 0x0ac65000 0 0x2000>,
-+			      <0 0x0ac67000 0 0x2000>,
-+			      <0 0x0acaf000 0 0x4000>,
-+			      <0 0x0acb3000 0 0x1000>,
-+			      <0 0x0acb6000 0 0x4000>,
-+			      <0 0x0acba000 0 0x1000>,
-+			      <0 0x0acbd000 0 0x4000>,
-+			      <0 0x0acc1000 0 0x1000>,
-+			      <0 0x0acc4000 0 0x4000>,
-+			      <0 0x0acc8000 0 0x1000>,
-+			      <0 0x0accb000 0 0x4000>,
-+			      <0 0x0accf000 0 0x1000>,
-+			      <0 0x0acd2000 0 0x4000>,
-+			      <0 0x0acd6000 0 0x1000>,
-+			      <0 0x0acd9000 0 0x4000>,
-+			      <0 0x0acdd000 0 0x1000>,
-+			      <0 0x0ace0000 0 0x4000>,
-+			      <0 0x0ace4000 0 0x1000>;
-+
-+			reg-names = "csiphy2",
-+				    "csiphy3",
-+				    "csiphy0",
-+				    "csiphy1",
-+				    "vfe0",
-+				    "csid0",
-+				    "vfe1",
-+				    "csid1",
-+				    "vfe2",
-+				    "csid2",
-+				    "vfe_lite0",
-+				    "csid0_lite",
-+				    "vfe_lite1",
-+				    "csid1_lite",
-+				    "vfe_lite2",
-+				    "csid2_lite",
-+				    "vfe_lite3",
-+				    "csid3_lite",
-+				    "vfe3",
-+				    "csid3";
-+
-+			interrupts = <GIC_SPI 359 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 360 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 448 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 464 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 465 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 466 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 467 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 468 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 469 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 477 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 478 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 479 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 640 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 641 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 758 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 759 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 760 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 761 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 762 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 764 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			interrupt-names = "csid1_lite",
-+					  "vfe_lite1",
-+					  "csiphy3",
-+					  "csid0",
-+					  "vfe0",
-+					  "csid1",
-+					  "vfe1",
-+					  "csid0_lite",
-+					  "vfe_lite0",
-+					  "csiphy0",
-+					  "csiphy1",
-+					  "csiphy2",
-+					  "csid2",
-+					  "vfe2",
-+					  "csid3_lite",
-+					  "csid2_lite",
-+					  "vfe_lite3",
-+					  "vfe_lite2",
-+					  "csid3",
-+					  "vfe3";
-+
-+			power-domains = <&camcc IFE_0_GDSC>,
-+					<&camcc IFE_1_GDSC>,
-+					<&camcc IFE_2_GDSC>,
-+					<&camcc IFE_3_GDSC>,
-+					<&camcc TITAN_TOP_GDSC>;
-+
-+			power-domain-names = "ife0",
-+					     "ife1",
-+					     "ife2",
-+					     "ife3",
-+					     "top";
-+
-+			clocks = <&camcc CAMCC_CAMNOC_AXI_CLK>,
-+				 <&camcc CAMCC_CAMNOC_AXI_CLK_SRC>,
-+				 <&camcc CAMCC_CPAS_AHB_CLK>,
-+				 <&camcc CAMCC_CPHY_RX_CLK_SRC>,
-+				 <&camcc CAMCC_CSIPHY0_CLK>,
-+				 <&camcc CAMCC_CSI0PHYTIMER_CLK_SRC>,
-+				 <&camcc CAMCC_CSI0PHYTIMER_CLK>,
-+				 <&camcc CAMCC_CSIPHY1_CLK>,
-+				 <&camcc CAMCC_CSI1PHYTIMER_CLK_SRC>,
-+				 <&camcc CAMCC_CSI1PHYTIMER_CLK>,
-+				 <&camcc CAMCC_CSIPHY2_CLK>,
-+				 <&camcc CAMCC_CSI2PHYTIMER_CLK_SRC>,
-+				 <&camcc CAMCC_CSI2PHYTIMER_CLK>,
-+				 <&camcc CAMCC_CSIPHY3_CLK>,
-+				 <&camcc CAMCC_CSI3PHYTIMER_CLK_SRC>,
-+				 <&camcc CAMCC_CSI3PHYTIMER_CLK>,
-+				 <&camcc CAMCC_IFE_0_AXI_CLK>,
-+				 <&camcc CAMCC_IFE_0_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_0_CLK>,
-+				 <&camcc CAMCC_IFE_0_CPHY_RX_CLK>,
-+				 <&camcc CAMCC_IFE_0_CSID_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_0_CSID_CLK>,
-+				 <&camcc CAMCC_IFE_1_AXI_CLK>,
-+				 <&camcc CAMCC_IFE_1_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_1_CLK>,
-+				 <&camcc CAMCC_IFE_1_CPHY_RX_CLK>,
-+				 <&camcc CAMCC_IFE_1_CSID_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_1_CSID_CLK>,
-+				 <&camcc CAMCC_IFE_2_AXI_CLK>,
-+				 <&camcc CAMCC_IFE_2_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_2_CLK>,
-+				 <&camcc CAMCC_IFE_2_CPHY_RX_CLK>,
-+				 <&camcc CAMCC_IFE_2_CSID_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_2_CSID_CLK>,
-+				 <&camcc CAMCC_IFE_3_AXI_CLK>,
-+				 <&camcc CAMCC_IFE_3_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_3_CLK>,
-+				 <&camcc CAMCC_IFE_3_CPHY_RX_CLK>,
-+				 <&camcc CAMCC_IFE_3_CSID_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_3_CSID_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_0_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_LITE_0_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_0_CPHY_RX_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_0_CSID_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_LITE_0_CSID_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_1_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_LITE_1_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_1_CPHY_RX_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_1_CSID_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_LITE_1_CSID_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_2_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_LITE_2_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_2_CPHY_RX_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_2_CSID_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_LITE_2_CSID_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_3_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_LITE_3_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_3_CPHY_RX_CLK>,
-+				 <&camcc CAMCC_IFE_LITE_3_CSID_CLK_SRC>,
-+				 <&camcc CAMCC_IFE_LITE_3_CSID_CLK>,
-+				 <&gcc GCC_CAMERA_HF_AXI_CLK>,
-+				 <&gcc GCC_CAMERA_SF_AXI_CLK>,
-+				 <&camcc CAMCC_SLOW_AHB_CLK_SRC>;
-+
-+			clock-names = "camnoc_axi",
-+				      "camnoc_axi_src",
-+				      "cpas_ahb",
-+				      "cphy_rx_src",
-+				      "csiphy0",
-+				      "csiphy0_timer_src",
-+				      "csiphy0_timer",
-+				      "csiphy1",
-+				      "csiphy1_timer_src",
-+				      "csiphy1_timer",
-+				      "csiphy2",
-+				      "csiphy2_timer_src",
-+				      "csiphy2_timer",
-+				      "csiphy3",
-+				      "csiphy3_timer_src",
-+				      "csiphy3_timer",
-+				      "vfe0_axi",
-+				      "vfe0_src",
-+				      "vfe0",
-+				      "vfe0_cphy_rx",
-+				      "vfe0_csid_src",
-+				      "vfe0_csid",
-+				      "vfe1_axi",
-+				      "vfe1_src",
-+				      "vfe1",
-+				      "vfe1_cphy_rx",
-+				      "vfe1_csid_src",
-+				      "vfe1_csid",
-+				      "vfe2_axi",
-+				      "vfe2_src",
-+				      "vfe2",
-+				      "vfe2_cphy_rx",
-+				      "vfe2_csid_src",
-+				      "vfe2_csid",
-+				      "vfe3_axi",
-+				      "vfe3_src",
-+				      "vfe3",
-+				      "vfe3_cphy_rx",
-+				      "vfe3_csid_src",
-+				      "vfe3_csid",
-+				      "vfe_lite0_src",
-+				      "vfe_lite0",
-+				      "vfe_lite0_cphy_rx",
-+				      "vfe_lite0_csid_src",
-+				      "vfe_lite0_csid",
-+				      "vfe_lite1_src",
-+				      "vfe_lite1",
-+				      "vfe_lite1_cphy_rx",
-+				      "vfe_lite1_csid_src",
-+				      "vfe_lite1_csid",
-+				      "vfe_lite2_src",
-+				      "vfe_lite2",
-+				      "vfe_lite2_cphy_rx",
-+				      "vfe_lite2_csid_src",
-+				      "vfe_lite2_csid",
-+				      "vfe_lite3_src",
-+				      "vfe_lite3",
-+				      "vfe_lite3_cphy_rx",
-+				      "vfe_lite3_csid_src",
-+				      "vfe_lite3_csid",
-+				      "gcc_axi_hf",
-+				      "gcc_axi_sf",
-+				      "slow_ahb_src";
-+
-+			iommus = <&apps_smmu 0x2000 0x4e0>,
-+				 <&apps_smmu 0x2020 0x4e0>,
-+				 <&apps_smmu 0x2040 0x4e0>,
-+				 <&apps_smmu 0x2060 0x4e0>,
-+				 <&apps_smmu 0x2080 0x4e0>,
-+				 <&apps_smmu 0x20e0 0x4e0>,
-+				 <&apps_smmu 0x20c0 0x4e0>,
-+				 <&apps_smmu 0x20a0 0x4e0>,
-+				 <&apps_smmu 0x2400 0x4e0>,
-+				 <&apps_smmu 0x2420 0x4e0>,
-+				 <&apps_smmu 0x2440 0x4e0>,
-+				 <&apps_smmu 0x2460 0x4e0>,
-+				 <&apps_smmu 0x2480 0x4e0>,
-+				 <&apps_smmu 0x24e0 0x4e0>,
-+				 <&apps_smmu 0x24c0 0x4e0>,
-+				 <&apps_smmu 0x24a0 0x4e0>;
-+
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_CAMERA_CFG 0>,
-+					<&mmss_noc MASTER_CAMNOC_HF 0 &mc_virt SLAVE_EBI1 0>,
-+					<&mmss_noc MASTER_CAMNOC_SF 0 &mc_virt SLAVE_EBI1 0>,
-+					<&mmss_noc MASTER_CAMNOC_ICP 0 &mc_virt SLAVE_EBI1 0>;
-+			interconnect-names = "cam_ahb",
-+					     "cam_hf_mnoc",
-+					     "cam_sf_mnoc",
-+					     "cam_sf_icp_mnoc";
-+
-+			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+				};
-+
-+				port@2 {
-+					reg = <2>;
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+				};
-+
-+				port@3 {
-+					reg = <3>;
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+				};
-+			};
-+		};
-+
- 		camcc: clock-controller@ad00000 {
- 			compatible = "qcom,sc8280xp-camcc";
- 			reg = <0 0x0ad00000 0 0x20000>;
--- 
-2.40.1
-
+Thanks
+    --Sun, Yi
