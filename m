@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C4B7BC24A
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68337BC24D
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbjJFWoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 18:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44214 "EHLO
+        id S233780AbjJFWop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 18:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233780AbjJFWoc (ORCPT
+        with ESMTP id S233802AbjJFWon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 18:44:32 -0400
+        Fri, 6 Oct 2023 18:44:43 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29ED093
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 15:44:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68DEAC433C8;
-        Fri,  6 Oct 2023 22:44:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B2F93;
+        Fri,  6 Oct 2023 15:44:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90726C433C7;
+        Fri,  6 Oct 2023 22:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696632271;
-        bh=kLBBvmt6zja6l1H2kl0074A16902exhUloqRcMFqCwA=;
+        s=k20201202; t=1696632279;
+        bh=YoE+IETji8jPLWdxvOTSBPuvIy3CWy3/W00cFbvaZVA=;
         h=From:To:Cc:Subject:Date:From;
-        b=B/B7N/O5k7Kz3bqzzp45Z0IB4Gx00Xyu0Ur8CTEAYFvtWVppzeunPwYF81XY1MDIp
-         o/CHscO81d6wyUFCyk5Z6gSHD3rX88eXGmyBMcQ87ExMsnXFv5sMOIIUFTTI0uKgR/
-         jTNakNxEBn7AhnV6C1GTVeeFMiOEq+t5d1N5vHwSJpDWASAd0bCzs4xKq3gQOwxqz2
-         FMgGNb0RqkpYpvGif1z2M3mqUfO3Bne4D7P4X9QD/1TvUxf27O5fB7fTnmwnYE/JXa
-         YgMj0UaA+UfGJwEL5u65q9xuw+XBXSp+IBH5BjpMndoW2i8JxxAiP+aQPXokH7f0JO
-         2fc490xC9sAuA==
-Received: (nullmailer pid 442674 invoked by uid 1000);
-        Fri, 06 Oct 2023 22:44:30 -0000
+        b=sfdwVhXLnB5x0G2GMOhFQwyi7aN8LrsurzCp6eDI5oRAo6KLVOBCnf0ffzW8ch4s7
+         bT6XjnaWuoUAMtF57vrHlOOlnAYKSj49vR79/mRVfVLTNBg25KIRdFZhQNX2UTGJ+l
+         YUI45j/EvJbJ3R6bxXYg4oKVS3e7I2W+nLgoswk8ovhmY4eFtqKU/4khwbdS96LsZN
+         CaeH3D0FrfS9hqb4lg0jBwdUsir6f6SMDeJevG2TH8JrxndS0JTQ8h06Eoe4zefKSK
+         4X3XyaF4XMeyV4/9s9f7lfYYHWuVGEzqPxSK3z0oxLtzwLKJILE65qKnsMg4LYFyFP
+         vAoRGjMAneU6g==
+Received: (nullmailer pid 442832 invoked by uid 1000);
+        Fri, 06 Oct 2023 22:44:37 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] irqchip: ls-scfg-msi: Use device_get_match_data()
-Date:   Fri,  6 Oct 2023 17:44:21 -0500
-Message-Id: <20231006224422.442491-1-robh@kernel.org>
+To:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     linux-input@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: tegra: Use device_get_match_data()
+Date:   Fri,  6 Oct 2023 17:44:32 -0500
+Message-Id: <20231006224432.442709-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -54,47 +58,41 @@ include the correct headers.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/irqchip/irq-ls-scfg-msi.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/input/keyboard/tegra-kbc.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/irqchip/irq-ls-scfg-msi.c b/drivers/irqchip/irq-ls-scfg-msi.c
-index f31a262fe438..15cf80b46322 100644
---- a/drivers/irqchip/irq-ls-scfg-msi.c
-+++ b/drivers/irqchip/irq-ls-scfg-msi.c
-@@ -17,7 +17,8 @@
- #include <linux/irqdomain.h>
- #include <linux/of_irq.h>
- #include <linux/of_pci.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
+diff --git a/drivers/input/keyboard/tegra-kbc.c b/drivers/input/keyboard/tegra-kbc.c
+index c9a823ea45d0..a1765ed8c825 100644
+--- a/drivers/input/keyboard/tegra-kbc.c
++++ b/drivers/input/keyboard/tegra-kbc.c
+@@ -14,7 +14,7 @@
+ #include <linux/io.h>
+ #include <linux/interrupt.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
 +#include <linux/property.h>
- #include <linux/spinlock.h>
- 
- #define MSI_IRQS_PER_MSIR	32
-@@ -334,20 +335,17 @@ MODULE_DEVICE_TABLE(of, ls_scfg_msi_id);
- 
- static int ls_scfg_msi_probe(struct platform_device *pdev)
- {
+ #include <linux/clk.h>
+ #include <linux/slab.h>
+ #include <linux/input/matrix_keypad.h>
+@@ -602,9 +602,6 @@ static int tegra_kbc_probe(struct platform_device *pdev)
+ 	unsigned int debounce_cnt;
+ 	unsigned int scan_time_rows;
+ 	unsigned int keymap_rows;
 -	const struct of_device_id *match;
- 	struct ls_scfg_msi *msi_data;
- 	struct resource *res;
- 	int i, ret;
- 
--	match = of_match_device(ls_scfg_msi_id, &pdev->dev);
--	if (!match)
--		return -ENODEV;
 -
- 	msi_data = devm_kzalloc(&pdev->dev, sizeof(*msi_data), GFP_KERNEL);
- 	if (!msi_data)
- 		return -ENOMEM;
+-	match = of_match_device(tegra_kbc_of_match, &pdev->dev);
  
--	msi_data->cfg = (struct ls_scfg_msi_cfg *) match->data;
-+	msi_data->cfg = (struct ls_scfg_msi_cfg *)device_get_match_data(&pdev->dev);
-+	if (!msi_data->cfg)
-+		return -ENODEV;
+ 	kbc = devm_kzalloc(&pdev->dev, sizeof(*kbc), GFP_KERNEL);
+ 	if (!kbc) {
+@@ -613,7 +610,7 @@ static int tegra_kbc_probe(struct platform_device *pdev)
+ 	}
  
- 	msi_data->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(msi_data->regs)) {
+ 	kbc->dev = &pdev->dev;
+-	kbc->hw_support = match->data;
++	kbc->hw_support = device_get_match_data(&pdev->dev);
+ 	kbc->max_keys = kbc->hw_support->max_rows *
+ 				kbc->hw_support->max_columns;
+ 	kbc->num_rows_and_columns = kbc->hw_support->max_rows +
 -- 
 2.40.1
 
