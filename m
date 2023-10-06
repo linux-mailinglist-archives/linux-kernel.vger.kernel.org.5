@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2BA7BBE45
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1467BBE4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233146AbjJFSDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 14:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
+        id S233080AbjJFSE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 14:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232983AbjJFSDB (ORCPT
+        with ESMTP id S233145AbjJFSEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 14:03:01 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C594FB6
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 11:03:00 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3175e1bb38cso376312f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 11:03:00 -0700 (PDT)
+        Fri, 6 Oct 2023 14:04:25 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3032CDB;
+        Fri,  6 Oct 2023 11:04:24 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-65b0216b067so28795646d6.1;
+        Fri, 06 Oct 2023 11:04:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696615379; x=1697220179; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DW5DjcAJlISg3sn4dnbscxpT4hEh5MjXjjwSsYat0ec=;
-        b=lznVfkCGvtRhAzipxKhDyepjPL76u4ZJGOnwHINO1/MlK6LpSkNwaf7CK3jcBPTOFm
-         ajGVt3UUbjXEVOyxt4gx+Ir4zfBvvjLhkWeLITMFawvPYo7WK+H7uJGzIvPKmDotmX2s
-         gYUoSAlHLF8ICx2sDQSCDtQ7EYYYiEtRmUP9B1pqg3C8GdjOH2Bx4JCSthfUpMirlCiK
-         hr1TyCqGnn/OF7cKCOcZbMFgAZPepM+NYjbiCqGYHwSSZRN0QgdxKLKos4zcn2hwvbZ9
-         yFyF0lx1eHPKRMA/x0rXabkndRDvn5Q5pnOUbUsnJm06hnqDeu4Vyx9NQdDE9GxcYX3p
-         XI5g==
+        d=gmail.com; s=20230601; t=1696615463; x=1697220263; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Oahi2dyVEaZskw5jxKCp0Yrt/7KivDjXw0+gyqOGweg=;
+        b=mSRDdp7pWmEPkNQnPmZAZbKB6/gyTll9DHvCHYlnT/+xgK6BsmIIIW7AZg5d05yelo
+         pj7tZq6MeyKyQbdW5HXmqdSAtpBk39uLd1yWOFGn9YspSwh44wPrsgAPMBdSOWnBNfUV
+         ahhnlFmPtr0A8OytiPvOw+dxy+f8hfE46/M2rgk1Gsbip07+9QblRt0zzgh0UKF5+5WM
+         aO03xU6NyOENzXgZvoTgknTZPIWVCp6sRMujj4/2rzN1R9E0RAhP3MNbmNn/HSKbI0Lr
+         QskpSvpCVUc2bsG9oJH5QawERT05yIhsSCoaFtuG28C098eWsiLGo+KsvxiD6grAtKzg
+         aPGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696615379; x=1697220179;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DW5DjcAJlISg3sn4dnbscxpT4hEh5MjXjjwSsYat0ec=;
-        b=hLzDc66RIPJrRhxC9dfRgfKLcf+GmyDbe/hoVWkl/qPknyUCTxLpSQw+iAlJSsZZ6K
-         mHzb5miWBsVuT9WpSygySZUh+T5lq+vcDqDTh3ICmVzH4KhNY3S95GoJbt6niBF8OmP4
-         Zc7DBt07vzP7CpjvPkc7L+EBwXHhmeehbElzsLxsyjIz2xtea3PBmkGQTOXKfBbU2tXx
-         0Y9Zdo1SmWanjFBXw8LmU/zAIwR4kKJsfFy/84Nrh78CmXURNRzS7rjoCQonD8FsAuz8
-         Ei4W27/GFXg2CpPMowmorGwVs0bbEonnkeLAXyk/B5v7WKvIu86FdRPbjcqppYNR9rZR
-         EzcQ==
-X-Gm-Message-State: AOJu0Yz0V/FijibG3/O9rh7Q+ROmJDvrCMuA8w2bTx778DuX2m84Bcu3
-        MR1DiKnGMa58BKWYo/dyao0=
-X-Google-Smtp-Source: AGHT+IE3rPgMYpXgMKooXH0DQLexRyaKcUcmKebwZM6Kl3hFNlUUhmaaSDA2KHIsA8aGt7JMQzno8A==
-X-Received: by 2002:a5d:5687:0:b0:317:73e3:cf41 with SMTP id f7-20020a5d5687000000b0031773e3cf41mr7453777wrv.1.1696615378930;
-        Fri, 06 Oct 2023 11:02:58 -0700 (PDT)
-Received: from ?IPV6:2a01:4b00:e405:da00:cf04:a7d5:e45d:73bf? ([2a01:4b00:e405:da00:cf04:a7d5:e45d:73bf])
-        by smtp.gmail.com with ESMTPSA id v11-20020a5d6b0b000000b00324853fc8adsm2129192wrw.104.2023.10.06.11.02.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 11:02:58 -0700 (PDT)
-Message-ID: <2fa1f433-326a-8eb6-b01e-e34ff82a2dd9@gmail.com>
-Date:   Fri, 6 Oct 2023 19:02:56 +0100
+        d=1e100.net; s=20230601; t=1696615463; x=1697220263;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Oahi2dyVEaZskw5jxKCp0Yrt/7KivDjXw0+gyqOGweg=;
+        b=ahNUQ5GAgWgayUE8HhsEBsRH/uc6IC318gn5AximMCdqa7pm14HeqUFXwuf+A840M+
+         bz+4ODf1D3H+dv0Xj9ETU9gku1TrkEVfb0i9l5nmSC5Wd/WXU0BNOhYV+RoXfJhJD8Bq
+         CU0o9KyzN4soXlvWsrA79sXbKvSOFkLVveodUOrmKiWv9vLOmjwcDQsBox02K0TZ8AHB
+         0eB7AMwMvdo5kXF6+39Duk0vVdXkNEMZmAgfXyVKmJhu+Y9g62ZNolcZKzBxw4YFJEMT
+         +7M1ffnAo5p4XiEbYFxKD0Q0D2zKHjAFXlrY3AZTarxPN9pgLSGm6LR4cPFjG0UoYwvH
+         5ltw==
+X-Gm-Message-State: AOJu0Yyicv66mHgmqtgzyGy/NI78902pMu06BPSwjabVN6syOuIRK2Sc
+        q4rZPKNNm7Avk6Oa/OFc34PVBiMG0OhxoDLWe2cRppb1KtE=
+X-Google-Smtp-Source: AGHT+IE34GkElrxFcY5JkwPfFMyXCiywAt8LnJLGogO91k/Z5EQjHlqRzKTxxPay08Pse6fYrzg2vDX53XD9Fw+nCEA=
+X-Received: by 2002:a05:6214:c29:b0:658:310d:2214 with SMTP id
+ a9-20020a0562140c2900b00658310d2214mr6255280qvd.9.1696615463170; Fri, 06 Oct
+ 2023 11:04:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/2] ALSA: aloop: Add support for the non-interleaved
- access mode
-Content-Language: en-US
-To:     Jaroslav Kysela <perex@perex.cz>, tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20230927113555.14877-1-ivan.orlov0322@gmail.com>
- <b9b2ea05-9d10-d263-f08a-5e3cf1f33a9d@perex.cz>
-From:   Ivan Orlov <ivan.orlov0322@gmail.com>
-In-Reply-To: <b9b2ea05-9d10-d263-f08a-5e3cf1f33a9d@perex.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231006160437.15627-1-ddrokosov@salutedevices.com> <20231006160437.15627-10-ddrokosov@salutedevices.com>
+In-Reply-To: <20231006160437.15627-10-ddrokosov@salutedevices.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 6 Oct 2023 21:03:47 +0300
+Message-ID: <CAHp75VcntHXe31H8C9GcGhc+HRA-gZjtD=uibMMYN-FS254RJw@mail.gmail.com>
+Subject: Re: [PATCH v1 09/11] leds: aw200xx: improve autodim calculation method
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     lee@kernel.org, pavel@ucw.cz, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        kernel@sberdevices.ru, rockosov@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org,
+        George Stark <gnstark@salutedevices.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/23 08:23, Jaroslav Kysela wrote:
-> On 27. 09. 23 13:35, Ivan Orlov wrote:
->> The current version of the loopback driver supports interleaved access
->> mode only. This patch introduces support for the non-interleaved
->> access mode.
->>
->> When in the interleaved mode, the 'copy_play_buf' function copies data
->> from the playback to the capture buffer using one memcpy call. This call
->> copies samples for multiple, interleaved channels.
->>
->> In the non-interleaved mode we have multiple channel buffers, so we have
->> to perform multiple memcpy calls to copy samples channel after channel.
->>
->> Add new function called 'copy_play_buf_part_n', which copies a part of
->> each channel buffer from playback to capture. Modify the 'copy_play_buf'
->> to use the corresponding memory copy function(just memcpy /
->> copy_play_buf_part_n) depending on the access mode.
->>
->> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
-> 
-> Nice extension. Thank you.
-> 
->> +static void copy_play_buf_part_n(struct loopback_pcm *play, struct 
->> loopback_pcm *capt,
->> +                 unsigned int size, unsigned int src_off, unsigned 
->> int dst_off)
-> 
-> I would probably prefer to have dst,src,size arguments to follow memcpy, 
-> but it's really nitpicking.
-> 
-> Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-> 
->                      Jaroslav
-> 
+On Fri, Oct 6, 2023 at 7:05=E2=80=AFPM Dmitry Rokosov
+<ddrokosov@salutedevices.com> wrote:
+>
+> From: George Stark <gnstark@salutedevices.com>
+>
+> use DIV_ROUND_UP instead of coarse div
 
-Hi Jaroslav,
+Please, respect English grammar and punctuation.
+Refer to macros and functions as func() (note the parentheses).
 
-Thank you for the review!
+...
 
-I agree that parameters similar to the memcpy would look better than 
-that, I'll keep it in mind when I send the next patch :)
+>  #define AW200XX_REG_DIM2FADE(x) ((x) + 1)
+> +#define AW200XX_REG_FADE2DIM(fade) \
+> +       DIV_ROUND_UP((fade) * AW200XX_DIM_MAX, AW200XX_FADE_MAX)
 
---
-Kind regards,
-Ivan Orlov
+Have you checked if the overflow is _now_ possible (compiling on
+32-bit platforms as well)?
+
+--=20
+With Best Regards,
+Andy Shevchenko
