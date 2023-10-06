@@ -2,218 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B067BBFF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD587BBFFB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbjJFUDT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 16:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        id S233345AbjJFUGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjJFUDR (ORCPT
+        with ESMTP id S233306AbjJFUGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:03:17 -0400
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64ED83;
-        Fri,  6 Oct 2023 13:03:14 -0700 (PDT)
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6bc9353be9bso352413a34.1;
-        Fri, 06 Oct 2023 13:03:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696622594; x=1697227394;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nrnQlg+Ks22EwGBpOoGufahFztzvaGoZvpb10F2egwQ=;
-        b=UTKLJa09Xmgyttk1+eZD4QFPifDz58ws5WB5dGJfQs8c5U5eSSmBtSjdumIT3msDsu
-         3agrzizzDZk3B9/qiAm9ipjkhvmSW7Q5yUOL/MsPMHQ1n+TWLhleQoB9Hs3o5mL2UWkn
-         m5kRKOo4/EQIbNBxRJVyXIhasE16w0erBeKR/HPHS2gfCS9WgH6UBiZ85QkgDYRQMfc4
-         lRsw6iboE4YuG/Bx8yF9d3blYobU6OL2O+uv20+ckXAMAc/Mq/uNZM91ENoHF5aVO6C0
-         N9bGWnWrj4114ntTjSVtujmvnI99DchTqQAm2yigOb3XBeu92UVTbk9U7msD26+Q4CS6
-         dy6g==
-X-Gm-Message-State: AOJu0YxwmH6dQMNQy5C+MKYX6yEbEJ3k2nfBSdGFoXxKzo/1/CHzCJCY
-        aNrBcDa6QCAWUA+u1DZsKVWVn4A/FxSdH8Bw9AYfacFt
-X-Google-Smtp-Source: AGHT+IE5lf+OzVD0JblqRIq9hmdGUD6xjJvQXOB/f7VFJrSqWnkhXWjdREK1gIYLCAer976QignmLzOkzCqB8ZrSWno=
-X-Received: by 2002:a4a:b588:0:b0:578:c2af:45b5 with SMTP id
- t8-20020a4ab588000000b00578c2af45b5mr8791223ooo.0.1696622594035; Fri, 06 Oct
- 2023 13:03:14 -0700 (PDT)
+        Fri, 6 Oct 2023 16:06:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B09CA;
+        Fri,  6 Oct 2023 13:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=CcUhLWm6Uitg1RPnfOWl75RnCJGsrCoiVJ2CURtoDI4=; b=eXCOyQZ0Rru3UbvhtaghjcnmMt
+        fFgKul/RuM3GvX8rjYcZiPvsnOwVv5k7EAhycrqnQEox2XMJzmhylmZmqaExuwsTa6VYKXpn4EfbM
+        VChQIIXMP634743XyJg86/Ctx5uZSwDSexWOS1jJhqS3JjFwmxVgbvSeYG7U0BYFoeNtFTP2ounMO
+        7ixHIFxD0tVzbUw9behh9HO/2i0lVkAqeYEVx6gMDvbXEGlcWuLYai/kr2FRC8tP+K3GjhgkVQAuQ
+        En9YQFy+7rVwUYqlpfCtxlSa1BJu72kxzYhIVClbyOAcgePb1b2YW2k+z+t5tiPr7bTKjMcLsz/nW
+        xbvf6qNA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qor5C-006QO2-15;
+        Fri, 06 Oct 2023 20:05:58 +0000
+Message-ID: <1c6bdfbf-54c1-4251-916e-9a703a9f644c@infradead.org>
+Date:   Fri, 6 Oct 2023 13:05:57 -0700
 MIME-Version: 1.0
-References: <20230912061057.2516963-1-liaochang1@huawei.com> <20231005110255.fk736npzqsrffl2c@vireshk-i7>
-In-Reply-To: <20231005110255.fk736npzqsrffl2c@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 6 Oct 2023 22:03:03 +0200
-Message-ID: <CAJZ5v0iA0HbvFnOUDcrJKDVxEBx_87HK4QVoqCVEeGsntsgiQw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] cpufreq: userspace: Use fine-grained mutex in
- userspace governor
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Liao Chang <liaochang1@huawei.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net/smc: Fix dependency of SMC on ISM
+Content-Language: en-US
+To:     Gerd Bayer <gbayer@linux.ibm.com>, wenjia@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        netdev@vger.kernel.org, raspl@linux.ibm.com, sfr@canb.auug.org.au,
+        alibuda@linux.alibaba.com, wintera@linux.ibm.com,
+        guwen@linux.alibaba.com, tonylu@linux.alibaba.com,
+        jaka@linux.ibm.com
+References: <d9a2d47d-c8bd-cf17-83e0-d9b82561a594@linux.ibm.com>
+ <20231006125847.1517840-1-gbayer@linux.ibm.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231006125847.1517840-1-gbayer@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 1:05 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 12-09-23, 06:10, Liao Chang wrote:
-> > The userspace governor currently uses a big global mutex to avoid the
-> > race condition on the governor_data field of cpufreq_policy structure.
-> > This leads to a low concurrency if multiple userspace applications are
-> > trying to set the speed of different policies at the same time. This
-> > patch introduces a per-policy mutex to allow the updating of different
-> > policies to be performed concurrently, improving overall concurrency.
-> >
-> > Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> > ---
-> >  drivers/cpufreq/cpufreq_userspace.c | 69 +++++++++++++++++------------
-> >  1 file changed, 40 insertions(+), 29 deletions(-)
-> >
-> > diff --git a/drivers/cpufreq/cpufreq_userspace.c b/drivers/cpufreq/cpufreq_userspace.c
-> > index 50a4d7846580..442e31060d62 100644
-> > --- a/drivers/cpufreq/cpufreq_userspace.c
-> > +++ b/drivers/cpufreq/cpufreq_userspace.c
-> > @@ -16,7 +16,11 @@
-> >  #include <linux/slab.h>
-> >
-> >  static DEFINE_PER_CPU(unsigned int, cpu_is_managed);
-> > -static DEFINE_MUTEX(userspace_mutex);
-> > +
-> > +struct userspace_policy {
-> > +     unsigned int setspeed;
-> > +     struct mutex mutex;
-> > +};
-> >
-> >  /**
-> >   * cpufreq_set - set the CPU frequency
-> > @@ -28,19 +32,19 @@ static DEFINE_MUTEX(userspace_mutex);
-> >  static int cpufreq_set(struct cpufreq_policy *policy, unsigned int freq)
-> >  {
-> >       int ret = -EINVAL;
-> > -     unsigned int *setspeed = policy->governor_data;
-> > +     struct userspace_policy *userspace = policy->governor_data;
-> >
-> >       pr_debug("cpufreq_set for cpu %u, freq %u kHz\n", policy->cpu, freq);
-> >
-> > -     mutex_lock(&userspace_mutex);
-> > +     mutex_lock(&userspace->mutex);
-> >       if (!per_cpu(cpu_is_managed, policy->cpu))
-> >               goto err;
-> >
-> > -     *setspeed = freq;
-> > +     userspace->setspeed = freq;
-> >
-> >       ret = __cpufreq_driver_target(policy, freq, CPUFREQ_RELATION_L);
-> >   err:
-> > -     mutex_unlock(&userspace_mutex);
-> > +     mutex_unlock(&userspace->mutex);
-> >       return ret;
-> >  }
-> >
-> > @@ -51,67 +55,74 @@ static ssize_t show_speed(struct cpufreq_policy *policy, char *buf)
-> >
-> >  static int cpufreq_userspace_policy_init(struct cpufreq_policy *policy)
-> >  {
-> > -     unsigned int *setspeed;
-> > +     struct userspace_policy *userspace;
-> >
-> > -     setspeed = kzalloc(sizeof(*setspeed), GFP_KERNEL);
-> > -     if (!setspeed)
-> > +     userspace = kzalloc(sizeof(*userspace), GFP_KERNEL);
-> > +     if (!userspace)
-> >               return -ENOMEM;
-> >
-> > -     policy->governor_data = setspeed;
-> > +     mutex_init(&userspace->mutex);
-> > +
-> > +     policy->governor_data = userspace;
-> >       return 0;
-> >  }
-> >
-> > +/*
-> > + * Any routine that writes to the policy struct will hold the "rwsem" of
-> > + * policy struct that means it is free to free "governor_data" here.
-> > + */
-> >  static void cpufreq_userspace_policy_exit(struct cpufreq_policy *policy)
-> >  {
-> > -     mutex_lock(&userspace_mutex);
-> >       kfree(policy->governor_data);
-> >       policy->governor_data = NULL;
-> > -     mutex_unlock(&userspace_mutex);
-> >  }
-> >
-> >  static int cpufreq_userspace_policy_start(struct cpufreq_policy *policy)
-> >  {
-> > -     unsigned int *setspeed = policy->governor_data;
-> > +     struct userspace_policy *userspace = policy->governor_data;
-> >
-> >       BUG_ON(!policy->cur);
-> >       pr_debug("started managing cpu %u\n", policy->cpu);
-> >
-> > -     mutex_lock(&userspace_mutex);
-> > +     mutex_lock(&userspace->mutex);
-> >       per_cpu(cpu_is_managed, policy->cpu) = 1;
-> > -     *setspeed = policy->cur;
-> > -     mutex_unlock(&userspace_mutex);
-> > +     userspace->setspeed = policy->cur;
-> > +     mutex_unlock(&userspace->mutex);
-> >       return 0;
-> >  }
-> >
-> >  static void cpufreq_userspace_policy_stop(struct cpufreq_policy *policy)
-> >  {
-> > -     unsigned int *setspeed = policy->governor_data;
-> > +     struct userspace_policy *userspace = policy->governor_data;
-> >
-> >       pr_debug("managing cpu %u stopped\n", policy->cpu);
-> >
-> > -     mutex_lock(&userspace_mutex);
-> > +     mutex_lock(&userspace->mutex);
-> >       per_cpu(cpu_is_managed, policy->cpu) = 0;
-> > -     *setspeed = 0;
-> > -     mutex_unlock(&userspace_mutex);
-> > +     userspace->setspeed = 0;
-> > +     mutex_unlock(&userspace->mutex);
-> >  }
-> >
-> >  static void cpufreq_userspace_policy_limits(struct cpufreq_policy *policy)
-> >  {
-> > -     unsigned int *setspeed = policy->governor_data;
-> > +     struct userspace_policy *userspace = policy->governor_data;
-> >
-> > -     mutex_lock(&userspace_mutex);
-> > +     mutex_lock(&userspace->mutex);
-> >
-> >       pr_debug("limit event for cpu %u: %u - %u kHz, currently %u kHz, last set to %u kHz\n",
-> > -              policy->cpu, policy->min, policy->max, policy->cur, *setspeed);
-> > -
-> > -     if (policy->max < *setspeed)
-> > -             __cpufreq_driver_target(policy, policy->max, CPUFREQ_RELATION_H);
-> > -     else if (policy->min > *setspeed)
-> > -             __cpufreq_driver_target(policy, policy->min, CPUFREQ_RELATION_L);
-> > +              policy->cpu, policy->min, policy->max, policy->cur, userspace->setspeed);
-> > +
-> > +     if (policy->max < userspace->setspeed)
-> > +             __cpufreq_driver_target(policy, policy->max,
-> > +                                     CPUFREQ_RELATION_H);
-> > +     else if (policy->min > userspace->setspeed)
-> > +             __cpufreq_driver_target(policy, policy->min,
-> > +                                     CPUFREQ_RELATION_L);
-> >       else
-> > -             __cpufreq_driver_target(policy, *setspeed, CPUFREQ_RELATION_L);
-> > +             __cpufreq_driver_target(policy, userspace->setspeed,
-> > +                                     CPUFREQ_RELATION_L);
-> >
-> > -     mutex_unlock(&userspace_mutex);
-> > +     mutex_unlock(&userspace->mutex);
-> >  }
-> >
-> >  static struct cpufreq_governor cpufreq_gov_userspace = {
->
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Hi,
 
-Applied as 6.7 material along with the [2/2], thanks!
+On 10/6/23 05:58, Gerd Bayer wrote:
+> When the SMC protocol is built into the kernel proper while ISM is
+> configured to be built as module, linking the kernel fails due to
+> unresolved dependencies out of net/smc/smc_ism.o to
+> ism_get_smcd_ops, ism_register_client, and ism_unregister_client
+> as reported via the linux-next test automation (see link).
+> This however is a bug introduced a while ago.
+> 
+> Correct the dependency list in ISM's and SMC's Kconfig to reflect the
+> dependencies that are actually inverted. With this you cannot build a
+> kernel with CONFIG_SMC=y and CONFIG_ISM=m. Either ISM needs to be 'y',
+> too - or a 'n'. That way, SMC can still be configured on non-s390
+> architectures that do not have (nor need) an ISM driver.
+> 
+> Fixes: 89e7d2ba61b7 ("net/ism: Add new API for client registration")
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Closes: https://lore.kernel.org/linux-next/d53b5b50-d894-4df8-8969-fd39e63440ae@infradead.org/
+> Co-developed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+> Signed-off-by: Wenjia Zhang <wenjia@linux.ibm.com>
+> Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+
+Works for me. Thanks.
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+
+> ---
+>  drivers/s390/net/Kconfig | 2 +-
+>  net/smc/Kconfig          | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/s390/net/Kconfig b/drivers/s390/net/Kconfig
+> index 74760c1a163b..4902d45e929c 100644
+> --- a/drivers/s390/net/Kconfig
+> +++ b/drivers/s390/net/Kconfig
+> @@ -102,7 +102,7 @@ config CCWGROUP
+>  
+>  config ISM
+>  	tristate "Support for ISM vPCI Adapter"
+> -	depends on PCI && SMC
+> +	depends on PCI
+>  	default n
+>  	help
+>  	  Select this option if you want to use the Internal Shared Memory
+> diff --git a/net/smc/Kconfig b/net/smc/Kconfig
+> index 1ab3c5a2c5ad..746be3996768 100644
+> --- a/net/smc/Kconfig
+> +++ b/net/smc/Kconfig
+> @@ -2,6 +2,7 @@
+>  config SMC
+>  	tristate "SMC socket protocol family"
+>  	depends on INET && INFINIBAND
+> +	depends on m || ISM != m
+>  	help
+>  	  SMC-R provides a "sockets over RDMA" solution making use of
+>  	  RDMA over Converged Ethernet (RoCE) technology to upgrade
+
+-- 
+~Randy
