@@ -2,94 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2F67BBFCA
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC697BBFD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233249AbjJFTnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 15:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
+        id S233262AbjJFTrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 15:47:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjJFTnn (ORCPT
+        with ESMTP id S231163AbjJFTrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 15:43:43 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA1B83
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:43:42 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34f69780037so2937125ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:43:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1696621422; x=1697226222; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N7YYLqQKEBxYGYHN/5uoJBXyuFdtBHM7nG76jzEtpXc=;
-        b=J7uxfpAOJSzQp/vQtHYW0xVpSQ1sRSs4Y0yC+ZJPNsPZgGtSXLJMybPbIHzNH5npOL
-         kYhJ/JEeWZGMxK/GpIutH2TFVLw3HbDmr3RkqNf8wifhfle6TaUoYWK7d5Ks3srUZO1e
-         0YiF7BJQsGux8Do3OdOp7pIo4j1cxBlT3hYw0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696621422; x=1697226222;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N7YYLqQKEBxYGYHN/5uoJBXyuFdtBHM7nG76jzEtpXc=;
-        b=nwgdz6w+X3CeaN1pvqIdlaIjQxx06ZmcebppvRRDitKqXvZLKD6CO2TMNheKaK5Jm2
-         MHEqgldopQxAH6f9z6wRAW9MFQRuguhDGkzV1JHy92JhYcCl1ooXPDHFKHxVDnGTuit1
-         epqLaT3Z6yHI75CLXfh27t3NZo+CbCySPA9624ZgHxZgJ2LUMyiEA6z/ZCNlBHTwO57+
-         tmsmtFqX2o604UV24L3Um0xtE4MVFdU8lkhjCWHNEEp17lTED5A8X0GUSuIAXGSXsP9x
-         iAUOu6PYnNrjhBDqh0YmEBGpMNW+z3HvhzXCcQha/GBirV5GL8uF/Ma60sGfqXRPEvxs
-         6EcQ==
-X-Gm-Message-State: AOJu0YwYXsrjLshhl8nd1PkdNhVrd+AFkzZfnEfjdJH1pZFigKaCw8b6
-        ZHdfOilA77/fxHBXYkCcHHTW+Q==
-X-Google-Smtp-Source: AGHT+IH8S+W4GcBgA8b7s2M/grRMn193p8+srz/4y0+Oit8CvMkRb+3GUpCbZJdp3ZEo6R8stxI0wQ==
-X-Received: by 2002:a05:6602:368c:b0:792:7c78:55be with SMTP id bf12-20020a056602368c00b007927c7855bemr8827149iob.0.1696621422104;
-        Fri, 06 Oct 2023 12:43:42 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id s12-20020a5eaa0c000000b0078754bed499sm749769ioe.37.2023.10.06.12.43.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 12:43:41 -0700 (PDT)
-Message-ID: <d8437b59-552b-4ea5-9400-07535c200560@linuxfoundation.org>
-Date:   Fri, 6 Oct 2023 13:43:40 -0600
+        Fri, 6 Oct 2023 15:47:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9157D83;
+        Fri,  6 Oct 2023 12:47:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F2F9C433C8;
+        Fri,  6 Oct 2023 19:47:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696621654;
+        bh=g5PzMd1bqmBKkTiRTS3JMWcR/gyi4weAfC1z7SeKX90=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ms6lBEG8CnayjUUdGJdGJGABn0ix5jQRkywxXY4KYxj0PwUaBIqkLKgnDvRQ98IQq
+         nOZuwQT3Sv3fD/S5+wtN3X0NHQa433V8O3ELnWPqu3pDyKlKFIAuy+WVy4fOwLpn5M
+         xtOxtNbtmj6De8ScR3mP6q2JSA+qXUlXRVsR89INEFHm0VN8QFquEa+ngI4DT4vM8c
+         0wvpHLIc3XGcT0c/9HzZLEWrzPgXrWokHPk5RhZB6vui8jSawoHDSbii0FruRiv4Lu
+         wzpOCGgp6hk0OH9+zuKWEM8Y45BIuJJeG3ptwSg//fvCwVZT4NQdTrR8vsdx3ARhTe
+         B5TjiJ/bVmrrw==
+Date:   Fri, 6 Oct 2023 21:47:29 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: Test failure from "file: convert to SLAB_TYPESAFE_BY_RCU"
+Message-ID: <20231006-essen-abdrehen-72ef45311a33@brauner>
+References: <00e5cc23-a888-46ce-8789-fc182a2131b0@sirena.org.uk>
+ <20231006-bahnfahren-anpflanzen-9e871ee3353e@brauner>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] usbip: Use platform_device_register_full()
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Hongren Zheng <i@zenithal.me>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231006164312.3528524-1-andriy.shevchenko@linux.intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231006164312.3528524-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231006-bahnfahren-anpflanzen-9e871ee3353e@brauner>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/23 10:43, Andy Shevchenko wrote:
-> The code to create the child platform device is essentially the same as
-> what platform_device_register_full() does, so change over to use
-> that same function to reduce duplication.
+On Fri, Oct 06, 2023 at 10:38:30AM +0200, Christian Brauner wrote:
+> On Fri, Oct 06, 2023 at 01:04:19AM +0100, Mark Brown wrote:
+> > For the past few days (I was away last week...) the fd-003-kthread.c
+> > test from the proc kselftests has been failing on arm64, this is an
+> > nfsroot system if that makes any odds.  The test output itself is:
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> v2: (hopefully) fixed run-time NULL-dereference (LKP)
->   drivers/usb/usbip/vhci_hcd.c | 55 +++++++++++++-----------------------
->   1 file changed, 20 insertions(+), 35 deletions(-)
-> 
+> I'm out this week but will look at this right when I'm back.
 
-Looks good to me.
-
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
-
+Fixed in-tree. Was a pretty dump s// bug on my side. Sorry about the
+noise. Should be gone tomorrow. Thanks for the report.
