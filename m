@@ -2,99 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFF07BB32D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 10:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC5E7BB32F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 10:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbjJFI2T convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 04:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
+        id S231190AbjJFI20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 04:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231247AbjJFI2L (ORCPT
+        with ESMTP id S231216AbjJFI2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 04:28:11 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5721CDE
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 01:28:07 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-170-uSPFK65kPNWIoiEJ1iteNg-1; Fri, 06 Oct 2023 09:28:05 +0100
-X-MC-Unique: uSPFK65kPNWIoiEJ1iteNg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 6 Oct
- 2023 09:28:04 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 6 Oct 2023 09:28:04 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kees Cook' <keescook@chromium.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux@rasmusvillemoes.dk'" <linux@rasmusvillemoes.dk>,
-        'Steven Rostedt' <rostedt@goodmis.org>,
-        "'bvanassche@acm.org'" <bvanassche@acm.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: RE: [PATCH v2 next] compiler.h: Move __is_constexpr() to compiler.h.
-Thread-Topic: [PATCH v2 next] compiler.h: Move __is_constexpr() to compiler.h.
-Thread-Index: AQHZ96gTRq31SBDNvUGrpdwig3TLHLA8axEg
-Date:   Fri, 6 Oct 2023 08:28:04 +0000
-Message-ID: <a52781cd79104c978289d3d5e98b0cd4@AcuMS.aculab.com>
-References: <2a6680bbe2e84459816a113730426782@AcuMS.aculab.com>
- <202310050921.F0B15702D4@keescook>
-In-Reply-To: <202310050921.F0B15702D4@keescook>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 6 Oct 2023 04:28:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA89895;
+        Fri,  6 Oct 2023 01:28:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696580897; x=1728116897;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=S8+HFso4Rk71WY+Z9bwagGWrgqG8WYun7/txDw+H/rw=;
+  b=n9VKBSYdSPqx05TOk4MHSEJbZNaOJ0q36Qp4cdmMxCPC4klpm241/HQs
+   FXmwWDb2eUGN6NrEGh9+jFrS5eHL4qxnbzVACcVKdO4dexSTg4C2U60zs
+   x2/S05T1CY8nv/FToVX3R0GueJlCmZ9ohiHvExOJfXyzcBKBxb0VYJMKA
+   CirNTFSaptPXFV0lQMkvJ++DhFvgFhmk65ApceQEe00JM/4b9gMtIRO0v
+   dgExFV4BrC5+xkR4C5MG+MbhONvVxePExoBTW7ELNZ1AJRS43hFKLRAcq
+   mi/yGVlY9hYJadPAbBOicMiJnmX6UMXvJdz7FeZhyRFkepre+PfkN3b9W
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="380983703"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="380983703"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 01:28:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="728763253"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="728763253"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 01:28:16 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qogBx-00000003Emx-2k3w;
+        Fri, 06 Oct 2023 11:28:13 +0300
+Date:   Fri, 6 Oct 2023 11:28:13 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] pinctrl: core: Remove unneeded {} around one line
+ conditional body
+Message-ID: <ZR/FHUIPdMzrbLmQ@smile.fi.intel.com>
+References: <20231003120648.2838047-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003120648.2838047-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook
-> Sent: 05 October 2023 17:22
-> 
-> On Thu, Oct 05, 2023 at 11:39:54AM +0000, David Laight wrote:
-> > Prior to f747e6667ebb2 __is_constexpr() was in its only user minmax.h.
-> > That commit moved it to const.h - but that file just defines ULL(x) and
-> >   UL(x) so that constants can be defined for .S and .c files.
-> > So apart from the word 'const' it wasn't really a good location.
-> > Instead move the definition to compiler.h just before the similar
-> >   is_signed_type() and is_unsigned_type().
-> > This may not be a good long-term home, but the three definitions
-> >   belong together.
-> >
-> > Signed-off-by: David Laight <david.laight@aculab.com>
-> 
-> Yeah, this is what I'd expect (a duplicate move in tools/). Thanks!
+On Tue, Oct 03, 2023 at 03:06:48PM +0300, Andy Shevchenko wrote:
+> The one line conditional body doesn't require {} surrounding it.
+> Remove unneeded {}.
 
-I did try to run something that might have built 'perf'.
-But it complained about a lot of stuff not being installed.
+Linus, if you are okay with the change, I can include in my usual PR.
+Whatever you prefer, though.
 
-I do wonder if a better home for all these is_xxx() and __is_xxx()
-would be at the top of build_bug.h.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-While they can be used on their own (eg with __builtin_choose_expr())
-they are typically used with the compile-time asserts
-(or at least with code that is also doing asserts.)
-So there might only be a few places that need the extra #include.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
