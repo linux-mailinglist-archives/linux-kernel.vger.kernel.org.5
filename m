@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A72EC7BC167
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4427BC169
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233724AbjJFVnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 17:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
+        id S233713AbjJFVny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 17:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233504AbjJFVnK (ORCPT
+        with ESMTP id S233504AbjJFVnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 17:43:10 -0400
+        Fri, 6 Oct 2023 17:43:52 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49C7CA
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 14:43:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF39DC433C7;
-        Fri,  6 Oct 2023 21:43:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E41BE;
+        Fri,  6 Oct 2023 14:43:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E698C433C8;
+        Fri,  6 Oct 2023 21:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696628588;
-        bh=ueT+PDq/dcVRZVlCN00GU9z103GTs29FEWL1o6CcU4U=;
+        s=k20201202; t=1696628630;
+        bh=JxKvTUqfP6X/thRxp0Sb58Y81IsFbCSSCaPiysJgstc=;
         h=From:To:Cc:Subject:Date:From;
-        b=WwmSMrz+9sq/ZkBRA6lUw48zeNBb8P7ryVSVAC5SocsMkZPe3oKjBkev7+qw0a6nh
-         gyMnC5zP+LEG+ay1SjHZgVDmenbZosRzRSRkQ/GjqPAgjPc0WKNRLuuaTfikDySoHB
-         fUPqsm6bPsUTEa8CIv6NhvY4bVtevCyutZxsyqQroavcnnA8x8Z2RD3U7UImKu5snu
-         v22RBPHT3D0F809re4a9C/AgG1ABvdmw0NDup71DHFi4QoMBF0E0/zU8/yFb034zbI
-         EgsQvm2njgfdAwlpPlrdYQJfxbfEZvH7+cW40Eak857UY8UdcfzDR+5cYHnf4OumlH
-         6Fgdeko0K4kaw==
-Received: (nullmailer pid 337927 invoked by uid 1000);
-        Fri, 06 Oct 2023 21:43:07 -0000
+        b=LhFD1pSzwcoyLl85ZonWuOjB1KhaBmVEOgnb47R4hiNxz94poqXgpgWkib513rpw6
+         pVC/EhJLj6eBsph2dD/wZlPtVmxyBVJnm1O+chHjuGABKiW9NhQcARcNSxAOFrAGAm
+         IYUOZMz4qc+JNqdRbC3GcyPKMmL/vat6PMccQNPkaZfGHh9xbAX1cCDO02A2nDWbmC
+         J9r0GK+E4mCUDmG8A6hTvBw3Q+4KimdWtX6IwtsqNUWYRoq3dRla6PTDXnCx2D/7LX
+         8nYvreOxjLs57esLH2iK/1z/G+aRso4ay2klkJ76NCFO/qWyxASIsVcb3RT1MPprvY
+         RjfM46TkTPmSg==
+Received: (nullmailer pid 338802 invoked by uid 1000);
+        Fri, 06 Oct 2023 21:43:49 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Corey Minyard <minyard@acm.org>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ipmi: si: Use device_get_match_data()
-Date:   Fri,  6 Oct 2023 16:42:52 -0500
-Message-Id: <20231006214252.337588-1-robh@kernel.org>
+To:     Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] hwrng: n2: Use device_get_match_data()
+Date:   Fri,  6 Oct 2023 16:43:40 -0500
+Message-Id: <20231006214340.338620-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -55,54 +55,44 @@ include the correct headers.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/char/ipmi/ipmi_si_platform.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ drivers/char/hw_random/n2-drv.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/char/ipmi/ipmi_si_platform.c b/drivers/char/ipmi/ipmi_si_platform.c
-index c3d8ac7873ba..cd2edd8f8a03 100644
---- a/drivers/char/ipmi/ipmi_si_platform.c
-+++ b/drivers/char/ipmi/ipmi_si_platform.c
-@@ -11,10 +11,11 @@
+diff --git a/drivers/char/hw_random/n2-drv.c b/drivers/char/hw_random/n2-drv.c
+index 73e408146420..aaae16b98475 100644
+--- a/drivers/char/hw_random/n2-drv.c
++++ b/drivers/char/hw_random/n2-drv.c
+@@ -14,7 +14,8 @@
+ #include <linux/hw_random.h>
  
- #include <linux/types.h>
- #include <linux/module.h>
+ #include <linux/of.h>
 -#include <linux/of_device.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
 +#include <linux/platform_device.h>
 +#include <linux/property.h>
- #include <linux/acpi.h>
- #include "ipmi_si.h"
- #include "ipmi_dmi.h"
-@@ -224,7 +225,6 @@ MODULE_DEVICE_TABLE(of, of_ipmi_match);
  
- static int of_ipmi_probe(struct platform_device *pdev)
+ #include <asm/hypervisor.h>
+ 
+@@ -695,20 +696,15 @@ static void n2rng_driver_version(void)
+ static const struct of_device_id n2rng_match[];
+ static int n2rng_probe(struct platform_device *op)
  {
 -	const struct of_device_id *match;
- 	struct si_sm_io io;
- 	struct resource resource;
- 	const __be32 *regsize, *regspacing, *regshift;
-@@ -237,10 +237,6 @@ static int of_ipmi_probe(struct platform_device *pdev)
+ 	int err = -ENOMEM;
+ 	struct n2rng *np;
  
- 	dev_info(&pdev->dev, "probing via device tree\n");
- 
--	match = of_match_device(of_ipmi_match, &pdev->dev);
+-	match = of_match_device(n2rng_match, &op->dev);
 -	if (!match)
--		return -ENODEV;
+-		return -EINVAL;
 -
- 	if (!of_device_is_available(np))
- 		return -EINVAL;
+ 	n2rng_driver_version();
+ 	np = devm_kzalloc(&op->dev, sizeof(*np), GFP_KERNEL);
+ 	if (!np)
+ 		goto out;
+ 	np->op = op;
+-	np->data = (struct n2rng_template *)match->data;
++	np->data = (struct n2rng_template *)device_get_match_data(&op->dev);
  
-@@ -269,7 +265,7 @@ static int of_ipmi_probe(struct platform_device *pdev)
- 	}
- 
- 	memset(&io, 0, sizeof(io));
--	io.si_type	= (unsigned long) match->data;
-+	io.si_type	= (enum si_type)device_get_match_data(&pdev->dev);
- 	io.addr_source	= SI_DEVICETREE;
- 	io.irq_setup	= ipmi_std_irq_setup;
+ 	INIT_DELAYED_WORK(&np->work, n2rng_work);
  
 -- 
 2.40.1
