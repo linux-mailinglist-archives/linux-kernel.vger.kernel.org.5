@@ -2,48 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB1F7BC257
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728297BC25A
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbjJFWpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 18:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
+        id S233829AbjJFWq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 18:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233796AbjJFWph (ORCPT
+        with ESMTP id S233805AbjJFWq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 18:45:37 -0400
+        Fri, 6 Oct 2023 18:46:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3F5A2;
-        Fri,  6 Oct 2023 15:45:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0796DC433C7;
-        Fri,  6 Oct 2023 22:45:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6709F;
+        Fri,  6 Oct 2023 15:46:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 410B4C433C7;
+        Fri,  6 Oct 2023 22:46:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696632335;
-        bh=r0hgPd26vNJNNKdbRDndzXFBSLd85QxGGtazkx8k9RA=;
+        s=k20201202; t=1696632384;
+        bh=D9nd/T1QbYtvFd+kC/X4Q1OtVD/3HpjeGmA8YdjLW20=;
         h=From:To:Cc:Subject:Date:From;
-        b=TkUiToD41EoSHzdGDHb1BVUYjz2DR57gQ89EBfGdiSV7XyLH003ZIKt983ICbgLtz
-         t+JCHOx8JtpAZ4RXIbc40AgxuVm9wB5xNNe9pHE6uLlwaGiArTZiDXc/6SJPYP65GX
-         sFz803xKiozrR8cnXyva4Gf9I8CEwgye0w+Bjuf5PfvkYSJmwn5uLERDLmkzrqILBW
-         KiEJHJSVsyl0GD8SeMHoaq68xllDN2H57S/hf8APFZrlkAU4gW3jANmKpdbuySY4je
-         v+0UDNjMSPWq6LOsMz6sB2gDoczswQ0wXPAzfhiGyO6UHjO8HzewgP9JDyLto/1VVC
-         k5HX676k/3vIA==
-Received: (nullmailer pid 443988 invoked by uid 1000);
-        Fri, 06 Oct 2023 22:45:34 -0000
+        b=KtoakUqVnLPmvv9T3lObN9A7LSeFB/+nVzId9ubHHKSxu5dzFdCX/fZIwudFomtab
+         zKfMsWQ8ZcdmzjLPMZFgSqyd07i2NV/Tc/ZciZHlT1AEFQksLdF6Mn3bIixUJoBHrY
+         WeTd7S0mG2NKVP5AXzWq+8h8A5dvX6XuXURf/jzHTJawtLHFZHScfhX14yPfkD8wca
+         /FdOmgH9BsCADIKWJ2Tn9JWol1p2PeKFNZ0vW6VsYPnGFeTe3/iwFB+wQo4HCmAuQ0
+         +wOJgRcBNTCcYwploTNibIIoOoyLQ4cZprvyIgF9XxRbJr1mYxFwqthoUH1PaJk1se
+         kjGrOJN+W0QuQ==
+Received: (nullmailer pid 444811 invoked by uid 1000);
+        Fri, 06 Oct 2023 22:46:22 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Keerthy <j-keerthy@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: [PATCH] gpio: Use device_get_match_data()
-Date:   Fri,  6 Oct 2023 17:45:07 -0500
-Message-Id: <20231006224507.443486-1-robh@kernel.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH] pmdomain: Use device_get_match_data()
+Date:   Fri,  6 Oct 2023 17:46:13 -0500
+Message-Id: <20231006224614.444488-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -61,109 +65,123 @@ include the correct headers.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/gpio/gpio-davinci.c |  9 +++------
- drivers/gpio/gpio-mmio.c    |  4 ++--
- drivers/gpio/gpio-mvebu.c   | 10 +++-------
- 3 files changed, 8 insertions(+), 15 deletions(-)
+ drivers/pmdomain/actions/owl-sps.c     | 16 +++++-----------
+ drivers/pmdomain/imx/gpc.c             |  7 +++----
+ drivers/pmdomain/rockchip/pm-domains.c | 13 ++++---------
+ 3 files changed, 12 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/gpio/gpio-davinci.c b/drivers/gpio/gpio-davinci.c
-index 8db5717bdabe..bb499e362912 100644
---- a/drivers/gpio/gpio-davinci.c
-+++ b/drivers/gpio/gpio-davinci.c
-@@ -16,10 +16,10 @@
- #include <linux/irqdomain.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/platform_device.h>
- #include <linux/platform_data/gpio-davinci.h>
+diff --git a/drivers/pmdomain/actions/owl-sps.c b/drivers/pmdomain/actions/owl-sps.c
+index 73a9e0bb7e8e..3a586d1f3256 100644
+--- a/drivers/pmdomain/actions/owl-sps.c
++++ b/drivers/pmdomain/actions/owl-sps.c
+@@ -8,8 +8,10 @@
+  * Copyright (c) 2017 Andreas Färber
+  */
+ 
++#include <linux/mod_devicetable.h>
+ #include <linux/of_address.h>
+-#include <linux/of_platform.h>
++#include <linux/platform_device.h>
 +#include <linux/property.h>
- #include <linux/irqchip/chained_irq.h>
- #include <linux/spinlock.h>
- #include <linux/pm_runtime.h>
-@@ -486,7 +486,6 @@ static int davinci_gpio_irq_setup(struct platform_device *pdev)
- 	struct davinci_gpio_platform_data *pdata = dev->platform_data;
- 	struct davinci_gpio_regs __iomem *g;
- 	struct irq_domain	*irq_domain = NULL;
--	const struct of_device_id *match;
- 	struct irq_chip *irq_chip;
- 	struct davinci_gpio_irq_data *irqdata;
- 	gpio_get_irq_chip_cb_t gpio_get_irq_chip;
-@@ -495,10 +494,8 @@ static int davinci_gpio_irq_setup(struct platform_device *pdev)
- 	 * Use davinci_gpio_get_irq_chip by default to handle non DT cases
- 	 */
- 	gpio_get_irq_chip = davinci_gpio_get_irq_chip;
--	match = of_match_device(of_match_ptr(davinci_gpio_ids),
--				dev);
--	if (match)
--		gpio_get_irq_chip = (gpio_get_irq_chip_cb_t)match->data;
-+	if (dev->of_node)
-+		gpio_get_irq_chip = (gpio_get_irq_chip_cb_t)device_get_match_data(dev);
+ #include <linux/pm_domain.h>
+ #include <linux/soc/actions/owl-sps.h>
+ #include <dt-bindings/power/owl-s500-powergate.h>
+@@ -96,24 +98,16 @@ static int owl_sps_init_domain(struct owl_sps *sps, int index)
  
- 	ngpio = pdata->ngpio;
- 
-diff --git a/drivers/gpio/gpio-mmio.c b/drivers/gpio/gpio-mmio.c
-index 74fdf0d87b2c..3ff0ea1e351c 100644
---- a/drivers/gpio/gpio-mmio.c
-+++ b/drivers/gpio/gpio-mmio.c
-@@ -56,9 +56,9 @@ o        `                     ~~~~\___/~~~~    ` controller in FPGA is ,.`
- #include <linux/slab.h>
- #include <linux/bitops.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/mod_devicetable.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- 
- #include "gpiolib.h"
- 
-@@ -702,7 +702,7 @@ static struct bgpio_pdata *bgpio_parse_dt(struct platform_device *pdev,
+ static int owl_sps_probe(struct platform_device *pdev)
  {
- 	struct bgpio_pdata *pdata;
+-	const struct of_device_id *match;
+ 	const struct owl_sps_info *sps_info;
+ 	struct owl_sps *sps;
+ 	int i, ret;
  
--	if (!of_match_device(bgpio_of_match, &pdev->dev))
-+	if (!pdev->dev.of_node)
- 		return NULL;
+-	if (!pdev->dev.of_node) {
+-		dev_err(&pdev->dev, "no device node\n");
+-		return -ENODEV;
+-	}
+-
+-	match = of_match_device(pdev->dev.driver->of_match_table, &pdev->dev);
+-	if (!match || !match->data) {
++	sps_info = device_get_match_data(&pdev->dev);
++	if (!sps_info) {
+ 		dev_err(&pdev->dev, "unknown compatible or missing data\n");
+ 		return -EINVAL;
+ 	}
  
- 	pdata = devm_kzalloc(&pdev->dev, sizeof(struct bgpio_pdata),
-diff --git a/drivers/gpio/gpio-mvebu.c b/drivers/gpio/gpio-mvebu.c
-index 67497116ce27..8f80ca8ec1ed 100644
---- a/drivers/gpio/gpio-mvebu.c
-+++ b/drivers/gpio/gpio-mvebu.c
-@@ -42,9 +42,10 @@
- #include <linux/irqchip/chained_irq.h>
- #include <linux/irqdomain.h>
- #include <linux/mfd/syscon.h>
+-	sps_info = match->data;
+-
+ 	sps = devm_kzalloc(&pdev->dev,
+ 			   struct_size(sps, domains, sps_info->num_domains),
+ 			   GFP_KERNEL);
+diff --git a/drivers/pmdomain/imx/gpc.c b/drivers/pmdomain/imx/gpc.c
+index 90a8b2c0676f..114f44ca07dd 100644
+--- a/drivers/pmdomain/imx/gpc.c
++++ b/drivers/pmdomain/imx/gpc.c
+@@ -7,9 +7,10 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/io.h>
 -#include <linux/of_device.h>
 +#include <linux/of.h>
- #include <linux/pinctrl/consumer.h>
  #include <linux/platform_device.h>
+ #include <linux/pm_domain.h>
 +#include <linux/property.h>
- #include <linux/pwm.h>
  #include <linux/regmap.h>
- #include <linux/slab.h>
-@@ -1122,7 +1123,6 @@ static void mvebu_gpio_remove_irq_domain(void *data)
- static int mvebu_gpio_probe(struct platform_device *pdev)
+ #include <linux/regulator/consumer.h>
+ 
+@@ -403,9 +404,7 @@ static int imx_gpc_old_dt_init(struct device *dev, struct regmap *regmap,
+ 
+ static int imx_gpc_probe(struct platform_device *pdev)
  {
- 	struct mvebu_gpio_chip *mvchip;
+-	const struct of_device_id *of_id =
+-			of_match_device(imx_gpc_dt_ids, &pdev->dev);
+-	const struct imx_gpc_dt_data *of_id_data = of_id->data;
++	const struct imx_gpc_dt_data *of_id_data = device_get_match_data(&pdev->dev);
+ 	struct device_node *pgc_node;
+ 	struct regmap *regmap;
+ 	void __iomem *base;
+diff --git a/drivers/pmdomain/rockchip/pm-domains.c b/drivers/pmdomain/rockchip/pm-domains.c
+index d5d3ecb38283..9b76b62869d0 100644
+--- a/drivers/pmdomain/rockchip/pm-domains.c
++++ b/drivers/pmdomain/rockchip/pm-domains.c
+@@ -9,11 +9,13 @@
+ #include <linux/iopoll.h>
+ #include <linux/err.h>
+ #include <linux/mutex.h>
++#include <linux/platform_device.h>
+ #include <linux/pm_clock.h>
+ #include <linux/pm_domain.h>
++#include <linux/property.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_clk.h>
+-#include <linux/of_platform.h>
+ #include <linux/clk.h>
+ #include <linux/regmap.h>
+ #include <linux/mfd/syscon.h>
+@@ -857,7 +859,6 @@ static int rockchip_pm_domain_probe(struct platform_device *pdev)
+ 	struct device_node *node;
+ 	struct device *parent;
+ 	struct rockchip_pmu *pmu;
 -	const struct of_device_id *match;
- 	struct device_node *np = pdev->dev.of_node;
- 	struct irq_chip_generic *gc;
- 	struct irq_chip_type *ct;
-@@ -1132,11 +1132,7 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
- 	int i, cpu, id;
- 	int err;
+ 	const struct rockchip_pmu_info *pmu_info;
+ 	int error;
  
--	match = of_match_device(mvebu_gpio_of_match, &pdev->dev);
--	if (match)
--		soc_variant = (unsigned long) match->data;
--	else
--		soc_variant = MVEBU_GPIO_SOC_VARIANT_ORION;
-+	soc_variant = (unsigned long)device_get_match_data(&pdev->dev);
+@@ -866,13 +867,7 @@ static int rockchip_pm_domain_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
  
- 	/* Some gpio controllers do not provide irq support */
- 	err = platform_irq_count(pdev);
+-	match = of_match_device(dev->driver->of_match_table, dev);
+-	if (!match || !match->data) {
+-		dev_err(dev, "missing pmu data\n");
+-		return -EINVAL;
+-	}
+-
+-	pmu_info = match->data;
++	pmu_info = device_get_match_data(dev);
+ 
+ 	pmu = devm_kzalloc(dev,
+ 			   struct_size(pmu, domains, pmu_info->num_domains),
 -- 
 2.40.1
 
