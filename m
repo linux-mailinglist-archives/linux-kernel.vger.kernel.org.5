@@ -2,76 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 519AF7BBFA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0747BBFD5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbjJFTO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 15:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S233319AbjJFTtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 15:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233284AbjJFTO2 (ORCPT
+        with ESMTP id S233139AbjJFTtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 15:14:28 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E9D95
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:14:25 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-533c8f8f91dso4477079a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696619662; x=1697224462; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wmhUWZX30hXfIU80TyRy7axZSi3Eoh4Vptrv5M6pTXM=;
-        b=WAt53QfLhYdq5q3IXyvQFKpgMsTDLGTwRlR0hwPEN5/zAQdr6PeGW78lH1017x3hoG
-         8rF6do7ptSLKNdZi6ul3t2s4eGbPXpqmILZz4AqROBsUb7ahXiy3ipdtNRnJZS5gYu6f
-         drFYOIN4cKTZN91IhObQxqJBwLJ44aJyoGjAc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696619662; x=1697224462;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wmhUWZX30hXfIU80TyRy7axZSi3Eoh4Vptrv5M6pTXM=;
-        b=udatL1C1mjEezFNG+W2nt0zFoop6qciosyLjW1WzkeK2LgDM2n1LfndtMbk5J3wCMR
-         Q7PzIoxkX/t9z/0JhRROLkgr48KcWJLAp+zTUhcb+++g1Tz3GLauOizbzPCLghE4rH0H
-         mYnOSLGE5B0VxQgArgNWQAy28sL0AAUQMoeAntAKfpSz5+11FTEy0+aNrk9L1tf9uJ92
-         xBoK/I9vE+6Be23sfMcMLszcEdWmrmIxwry45AT0oMyYVwVdA/UKN1Oh6vLyjMbCSfBX
-         u3RwLWk1Uf9raBtKXoj72WP+YRI/ff1O4Bw0zMuqcDy8aYnjXZlY8AENEwbTdXJSc5dc
-         K57g==
-X-Gm-Message-State: AOJu0YwA10gwmO2y9GpTVJdeGTMyJUSq5p5cQPO1H5ULt3VHcidLI/wd
-        EvtwjCQEFNTUbiTShWr81I+YkBJhijKbYyYW0KYauWll
-X-Google-Smtp-Source: AGHT+IF+zQv18E/o9kIUsCqRST8GSdTs2q4ZhuI+SAAyXMiqOQcKR7GxGBFcir9i9ZBVMONgNnu05w==
-X-Received: by 2002:a17:906:3ca1:b0:9ae:55f5:180a with SMTP id b1-20020a1709063ca100b009ae55f5180amr8248279ejh.9.1696619662178;
-        Fri, 06 Oct 2023 12:14:22 -0700 (PDT)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id s10-20020a170906354a00b0099bd1ce18fesm3389840eja.10.2023.10.06.12.14.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 12:14:21 -0700 (PDT)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-537f07dfe8eso2318a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:14:21 -0700 (PDT)
-X-Received: by 2002:a50:9b1d:0:b0:525:573c:643b with SMTP id
- o29-20020a509b1d000000b00525573c643bmr232878edi.7.1696619660110; Fri, 06 Oct
- 2023 12:14:20 -0700 (PDT)
+        Fri, 6 Oct 2023 15:49:06 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C5A83
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:49:04 -0700 (PDT)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396JigDr006217;
+        Fri, 6 Oct 2023 19:48:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/2xpH27KdEtygtqi65BgVggUU+nJAf7JEG64qmdIeoc=;
+ b=F7QXhYDM0j21xTHrvQmv65blguyzMNz4FZkrp3KO47iCk9khqp6sBUMAXgfFHApbC7qG
+ WPTD4cqsMydMJBcPic040a+47/+w4ddXDBg06gkZ5UbAqTtoDR2Sj8fgyqkIn1f5pg6K
+ buTBThCGuanpoAjduaFNeYyACRPHUZvGwKII3Xi3yKgQ9qw7GDu+eYNTh/CjzeTbDgbA
+ MMxAF8B1xmMrszm0uWkB7RI6b6CvND0gcPAJCJeQXMJ5WSRntbEGGdebg7H9FVSC8zFr
+ iA9rNJGIO5hJl49qkrpw41E0Ky8vupEcnr2FNBsTuyhe7leCcB7PyyHQBWucnx9mv98i dQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tjrnp04bt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Oct 2023 19:48:40 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 396JkjHZ014988;
+        Fri, 6 Oct 2023 19:48:40 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tjrnp049m-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Oct 2023 19:48:40 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 396Io2n9007456;
+        Fri, 6 Oct 2023 19:19:06 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3teygn50w2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Oct 2023 19:19:06 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 396JJ5Yn262772
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Oct 2023 19:19:06 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C242B5805D;
+        Fri,  6 Oct 2023 19:19:05 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3B7558062;
+        Fri,  6 Oct 2023 19:18:58 +0000 (GMT)
+Received: from [9.171.68.118] (unknown [9.171.68.118])
+        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Fri,  6 Oct 2023 19:18:58 +0000 (GMT)
+Message-ID: <98d06022-accd-a1df-7608-dcd6689b44ec@linux.vnet.ibm.com>
+Date:   Sat, 7 Oct 2023 00:48:57 +0530
 MIME-Version: 1.0
-References: <1696614170-18969-1-git-send-email-quic_vnivarth@quicinc.com>
-In-Reply-To: <1696614170-18969-1-git-send-email-quic_vnivarth@quicinc.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 6 Oct 2023 12:14:03 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Ua-bDMvSj-FRWKxCm3oS4U-rqzd--g4UX_TBDF65rb5A@mail.gmail.com>
-Message-ID: <CAD=FV=Ua-bDMvSj-FRWKxCm3oS4U-rqzd--g4UX_TBDF65rb5A@mail.gmail.com>
-Subject: Re: [PATCH] spi: spi-geni-qcom: Rename the label unmap_if_dma
-To:     Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        broonie@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_msavaliy@quicinc.com, mka@chromium.org, swboyd@chromium.org,
-        quic_vtanuku@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH RFC] sched/fair: Avoid unnecessary IPIs for ILB
+Content-Language: en-US
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Hsin Yi <hsinyi@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+References: <20231005161727.1855004-1-joel@joelfernandes.org>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <20231005161727.1855004-1-joel@joelfernandes.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: eJQiFujLtjj7VkiJH7oJCAAVczC7F1UE
+X-Proofpoint-ORIG-GUID: vrRgjxbkt4SeQHD7V0XYT2_EnslgRBH5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-06_15,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
+ priorityscore=1501 impostorscore=0 malwarescore=0 suspectscore=0
+ bulkscore=0 phishscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310060150
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,30 +106,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Fri, Oct 6, 2023 at 10:43=E2=80=AFAM Vijaya Krishna Nivarthi
-<quic_vnivarth@quicinc.com> wrote:
->
-> The code at unmap_if_dma label doesn't contain unmapping dma anymore but
-> has only fsm reset.
->
-> Rename it to reset_if_dma accordingly.
->
-> No functional change.
->
-> Signed-off-by: Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
+
+On 10/5/23 9:47 PM, Joel Fernandes (Google) wrote:
+> From: Vineeth Pillai <vineethrp@google.com>
+> 
+> Whenever a CPU stops its tick, it now requires another idle CPU to handle the
+> balancing for it because it can't perform its own periodic load balancing.
+> This means it might need to update 'nohz.next_balance' to 'rq->next_balance' if
+> the upcoming nohz-idle load balancing is too distant in the future. This update
+> process is done by triggering an ILB, as the general ILB handler
+> (_nohz_idle_balance) that manages regular nohz balancing also refreshes
+> 'nohz.next_balance' by looking at the 'rq->next_balance' of all other idle CPUs
+> and selecting the smallest value.
+> 
+> Triggering this ILB can be achieved by setting the NOHZ_NEXT_KICK flag. This
+> primarily results in the ILB handler updating 'nohz.next_balance' while
+> possibly not doing any load balancing at all. However, sending an IPI merely to
+> refresh 'nohz.next_balance' seems excessive, and there ought to be a more
+> efficient method to update 'nohz.next_balance' from the local CPU.
+> 
+> Fortunately, there already exists a mechanism to directly invoke the ILB
+> handler (_nohz_idle_balance) without initiating an IPI. It's accomplished by
+> setting the NOHZ_NEWILB_KICK flag. This flag is set during regular "newly idle"
+> balancing and solely exists to update a CPU's blocked load if it couldn't pull
+> more tasks during regular "newly idle balancing" - and it does so without
+> having to send any IPIs. Once the flag is set, the ILB handler is called
+> directly from do_idle()-> nohz_run_idle_balance(). While its goal is to update
+> the blocked load without an IPI, in our situation, we aim to refresh
+> 'nohz.next_balance' without an IPI but we can piggy back on this.
+> 
+> So in this patch, we reuse this mechanism by also setting the NOHZ_NEXT_KICK to
+> indicate nohz.next_balance needs an update via this direct call shortcut. Note
+> that we set this flag without knowledge that the tick is about to be stopped,
+> because at the point we do it, we have no way of knowing that. However we do
+> know that the CPU is about to enter idle. In our testing, the reduction in IPIs
+> is well worth updating nohz.next_balance a few more times.
+> 
+> Also just to note, without this patch we observe the following pattern:
+> 
+> 1. A CPU is about to stop its tick.
+> 2. It sets nohz.needs_update to 1.
+> 3. It then stops its tick and goes idle.
+> 4. The scheduler tick on another CPU checks this flag and decides an ILB kick is needed.
+> 5. The ILB CPU ends up being the one that just stopped its tick!
+> 6. This results in an IPI to the tick-stopped CPU which ends up waking it up
+>    and disturbing it!
+> 
+> Testing shows a considerable reduction in IPIs when doing this:
+> 
+> Running "cyclictest -i 100 -d 100 --latency=1000 -t -m" on a 4vcpu VM
+> the IPI call count profiled over 10s period is as follows:
+> without fix: ~10500
+> with fix: ~1000
+> 
+> Fixes: 7fd7a9e0caba ("sched/fair: Trigger nohz.next_balance updates when a CPU goes NOHZ-idle")
+> 
+> [ Joel: wrote commit messages, collaborated on fix, helped reproduce issue etc. ]
+
+Hi Joel/Vineeth. 
+
+Its an interesting patch. 
+
+Gave this patch a try on powerpc system with 96 CPU. (12 cores SMT8)
+Was debugging an issue where ILB count goes up significantly at a specific 
+busy CPU count. Haven't yet found out why. Its WIP. Was curious if this patch 
+would address that issue. 
+
+cloned rt-test repo and ran same cyclictest command and collected 
+softirq's count using bcc tool. That count remains same more or less with patch. 
+Is what I am checking incorrect? Any other way to check IPI count?
+
+        base 6.6_rc4    +patch
+
+block       31.00        48.86
+net_rx     475.90       348.90
+timer     2213.20      2405.00
+rcu      33057.30     34738.10
+sched   175904.70    169695.60
+
+
+> 
+> Cc: Suleiman Souhlal <suleiman@google.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Hsin Yi <hsinyi@google.com>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Vineeth Pillai <vineethrp@google.com>
+> Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > ---
->  drivers/spi/spi-geni-qcom.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-
-I guess perhaps technically this could have:
-
-Fixes: 3a76c7ca9e77 ("spi: spi-geni-qcom: Do not do DMA map/unmap
-inside driver, use framework instead")
-
-...since before that commit it _did_ do the unmap, right? ;-)
-
-In any case, this seems good to me:
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>  kernel/sched/fair.c | 21 ++++++++++++++-------
+>  1 file changed, 14 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index cb225921bbca..2ece55f32782 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -11786,13 +11786,12 @@ void nohz_balance_enter_idle(int cpu)
+>  	/*
+>  	 * Ensures that if nohz_idle_balance() fails to observe our
+>  	 * @idle_cpus_mask store, it must observe the @has_blocked
+> -	 * and @needs_update stores.
+> +	 * stores.
+>  	 */
+>  	smp_mb__after_atomic();
+>  
+>  	set_cpu_sd_state_idle(cpu);
+>  
+> -	WRITE_ONCE(nohz.needs_update, 1);
+>  out:
+>  	/*
+>  	 * Each time a cpu enter idle, we assume that it has blocked load and
+> @@ -11945,21 +11944,25 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
+>  }
+>  
+>  /*
+> - * Check if we need to run the ILB for updating blocked load before entering
+> - * idle state.
+> + * Check if we need to run the ILB for updating blocked load and/or updating
+> + * nohz.next_balance before entering idle state.
+>   */
+>  void nohz_run_idle_balance(int cpu)
+>  {
+>  	unsigned int flags;
+>  
+> -	flags = atomic_fetch_andnot(NOHZ_NEWILB_KICK, nohz_flags(cpu));
+> +	flags = atomic_fetch_andnot(NOHZ_NEWILB_KICK | NOHZ_NEXT_KICK, nohz_flags(cpu));
+> +
+> +	if (!flags)
+> +		return;
+>  
+>  	/*
+>  	 * Update the blocked load only if no SCHED_SOFTIRQ is about to happen
+>  	 * (ie NOHZ_STATS_KICK set) and will do the same.
+>  	 */
+> -	if ((flags == NOHZ_NEWILB_KICK) && !need_resched())
+> -		_nohz_idle_balance(cpu_rq(cpu), NOHZ_STATS_KICK);
+> +	if ((flags == (flags & (NOHZ_NEXT_KICK | NOHZ_NEWILB_KICK))) &&
+> +	    !need_resched())
+> +		_nohz_idle_balance(cpu_rq(cpu), flags);
+>  }
+>  
+>  static void nohz_newidle_balance(struct rq *this_rq)
+> @@ -11977,6 +11980,10 @@ static void nohz_newidle_balance(struct rq *this_rq)
+>  	if (this_rq->avg_idle < sysctl_sched_migration_cost)
+>  		return;
+>  
+> +	/* If rq->next_balance before nohz.next_balance, trigger ILB */
+> +	if (time_before(this_rq->next_balance, READ_ONCE(nohz.next_balance)))
+> +		atomic_or(NOHZ_NEXT_KICK, nohz_flags(this_cpu));
+> +
+>  	/* Don't need to update blocked load of idle CPUs*/
+>  	if (!READ_ONCE(nohz.has_blocked) ||
+>  	    time_before(jiffies, READ_ONCE(nohz.next_blocked)))
