@@ -2,190 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4007BB6F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7007BB6F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbjJFLvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50718 "EHLO
+        id S232124AbjJFLvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:51:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbjJFLv3 (ORCPT
+        with ESMTP id S232038AbjJFLve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:51:29 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02327C5;
-        Fri,  6 Oct 2023 04:51:25 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3969DvTx015058;
-        Fri, 6 Oct 2023 11:51:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-03-30;
- bh=c/+qaoyryYIy1wZAUF7Dj6jQ22EXFhLlqtq2idJNKhk=;
- b=rDCxaVm+dAoqTAvmX/IPJ4WA2gUcpLJJRSCnkWNWjwAWZwycxrWAhm7L8J3q7HkhREoy
- Ih5VX7WCYHXUMZIvAZLXhdXqH5u0JnJQfJflsnr28MRc7fkixSU7USwkk+/p+CQkdIRQ
- EM+LOFePgsckC4fELPetpcPUtKnmDYUuuYOWFiJms8x/Tl85l4WuZjQrXgjDZ0Di5vKA
- UXvFkYPIpxvR34Mue0YTRCtTCxag+IPYvynRyQcYpc7wtM66Dm4iFA50u5wKjFblKp4Z
- AGsRh3P3S9npCxIWa3qXSsBLrfFH9fWXU5Wt7ZceQQio+nvOB1ROcEoHVXdksUPOMr7Q pg== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3teaf4bqw8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Oct 2023 11:51:10 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3969gMfb008659;
-        Fri, 6 Oct 2023 11:51:09 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tea4b2eu0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Oct 2023 11:51:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ng+GvJLM0TvMa94NmF7cvoe4da6QWQLufjPy4RQcC7e3wbdNXfepXFieZ+X3FlanfK3tj/+98bXuk1y3oNZQDAQnrLS1y4D5fSYmJ0OZgdky7OCNebFJXlE9PhGS5Gx9gwXohtGGVrox7Dhy9AOg7zDE/f9cWrG2Nr/q5ZNAuZj15X1QJHFamfvoYLmpjt/ll4WMDGMbvkOichAPl+dLthbL/6LoRUYrUXjD/NfWt6XVggr7zEbY81cEaCtiLA//wvnSov2UGLNXQTDBhpJWOG1B6+p9p2A4a+utnmebClkdTCrt9+UKXskmsJp6ia99LI8P7lvhuCVI3qSvkK9SpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c/+qaoyryYIy1wZAUF7Dj6jQ22EXFhLlqtq2idJNKhk=;
- b=UIuyaIx6NMw70tEXxz9y6LXlB1fA/oF+LLCQhCvwQCS8D/EiWoz+vaVpEmPkxte0oG98ITU1pNJaMcVUIkja4cszoYDTjSyoTCa7Ua4CRM42/mbeX78Cvf2QHxGkZbednnUZBgwrvEj6SHloTONRulxvIunoDGpB72nnSzcc0MfRg7yxfNivattFX5ocnM+kVj7rCM1MHqGHtYRa5mTccSjydGJ9ZILBC/YnL59WQn4TZCW3UN7mtPpe4+ZE/Dcuzxi8pgnwDg/RkKUJwpxm6KSFJHv4by4XqqSbDe0iTb4Ca9HHUyaujC25BpKHgb6MK1mQyfkHj8LPal0gysEgjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 6 Oct 2023 07:51:34 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30488C5
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 04:51:32 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-692c02adeefso1696953b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 04:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c/+qaoyryYIy1wZAUF7Dj6jQ22EXFhLlqtq2idJNKhk=;
- b=DDe0ftkS4zsqQP56INekaFpp2G4woLFVIJ4YnZcSUG1eMgTLdJUPbUlSe4Fcdv9zRwNbHaJsbIt8gUS9kW2KC41WlQ1drn+gzM1IdC30x3jsULht2dE32EnfqQeds6QUcu6YDufT1M5k5GpHkBD5wtdL6EN1ZbXpHSD5IWvppFY=
-Received: from DM6PR10MB3001.namprd10.prod.outlook.com (2603:10b6:5:69::23) by
- MW4PR10MB5884.namprd10.prod.outlook.com (2603:10b6:303:180::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.23; Fri, 6 Oct
- 2023 11:51:07 +0000
-Received: from DM6PR10MB3001.namprd10.prod.outlook.com
- ([fe80::3c2a:5677:55fa:2d36]) by DM6PR10MB3001.namprd10.prod.outlook.com
- ([fe80::3c2a:5677:55fa:2d36%7]) with mapi id 15.20.6838.033; Fri, 6 Oct 2023
- 11:51:07 +0000
-From:   Kamalesh Babulal <kamalesh.babulal@oracle.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tom Hromatka <tom.hromatka@oracle.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] cgroup: use legacy_name for cgroup v1 disable info
-Date:   Fri,  6 Oct 2023 17:20:32 +0530
-Message-ID: <20231006115034.86615-1-kamalesh.babulal@oracle.com>
-X-Mailer: git-send-email 2.41.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MA0PR01CA0020.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:b8::8) To DM6PR10MB3001.namprd10.prod.outlook.com
- (2603:10b6:5:69::23)
+        d=igel-co-jp.20230601.gappssmtp.com; s=20230601; t=1696593091; x=1697197891; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rvlaPDr0ZaJ1x37a2ONF6H4ToXENQDx2tAlrZ4vOKTQ=;
+        b=F9IAOAv1dEQPMt17AaKIMdIJstyTYMqRM6WS1md2+vjcEcufmF0zygf3HO3V42eYf4
+         Th13BLQh3mXdCM7CpEsjswdYErh7ZML/ZghxvN3xd1GQX1ZgTWh6EMVNSxaPyxUl3683
+         kQSeheDV7bzkCBmS7cHB45GHHr2LxgTSMZ8fVxQ2e7FontDqhEVCe54sOzJbBv3vfTjX
+         EDdyvQY3cnDGXInNl48qgW00BLNfl6UGPRVQxoNeE3Y+6uQuW2oXq8w7osWBc4QQGwWs
+         PpCJvL/fudj2jNGOyXpGhDapknzYgN64+Xi0sM6qreRQLKbw8rQJxo8wbPfqJF1EKmMs
+         mhrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696593091; x=1697197891;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rvlaPDr0ZaJ1x37a2ONF6H4ToXENQDx2tAlrZ4vOKTQ=;
+        b=qIbxNhPWiFreT9Isof1/C65uoXwV3hOz6O/sPwOB7locV+MLQEF0eM4inonr+MP7nz
+         o3vEKSsUBZ6GnUDCGECicHgQDHQao5SLUwNSp/w9JopPNB61dorL+Fs21+ToeKgmwRuE
+         7A0zz4la8ZbCkDK1uwHNoSBsFolY8DzXoG48qGgCUMsXZ2SY+f8WlS746tAudOUtBHc3
+         lVM29zZKpljz8Yad36O5h7oCPttEVIwY+NOYVSn5ypK6BshbNyye6NlTVaCIdd/7QWZ8
+         PKgHH1xErEdUe5MxUpVEG5jiKCiJq//kox5/OumLCObcXygW35RG8kVeb/w5ElxWZN7P
+         Mn+Q==
+X-Gm-Message-State: AOJu0YxgnE0KwyqUEbzZmX+NiMhrhNyBi0ZKWWdONV7QXe6XBI11F7L1
+        N9FXswybTFnAoqvO0d5Wq7NkWQ==
+X-Google-Smtp-Source: AGHT+IFR5hqtYTXozK4kSlJkLHQDyAnNdUmjKDyiuo+Xn23zdFBiJ3GnlASYbFinkoIkYM4FK6OUcw==
+X-Received: by 2002:a05:6a20:8419:b0:161:2389:e34b with SMTP id c25-20020a056a20841900b001612389e34bmr9981678pzd.13.1696593091546;
+        Fri, 06 Oct 2023 04:51:31 -0700 (PDT)
+Received: from [10.16.161.199] (napt.igel.co.jp. [219.106.231.132])
+        by smtp.gmail.com with ESMTPSA id u23-20020a62ed17000000b006884844dfcdsm1264512pfh.55.2023.10.06.04.51.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 04:51:31 -0700 (PDT)
+Message-ID: <88775092-78d7-d1b6-100b-369079ff979b@igel.co.jp>
+Date:   Fri, 6 Oct 2023 20:51:26 +0900
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB3001:EE_|MW4PR10MB5884:EE_
-X-MS-Office365-Filtering-Correlation-Id: 18c95bad-57b1-490e-7afa-08dbc6628651
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G6b8hZI7JmG3RNITVquW/dnfztyn7K7F1HxvnuN1f+qrArmS1/AT9yYN8JEYtEu1t50YA7+1UOqzJX4cfq6Mncn5xcVX5f14mXdXxJKp0EX0OX0ui9MQVwX9rqGb4QQI7MyVMwBy9hrGg9DanWRzdJc97HzpYdQtcCtlzCH/NMW/SpmFMR0Yfav/964PZNJqZvsRJhZHgUyopCvLMoELDn/ahFS3csdZoFxjZdaY3Frb0PKbR/t3TJWWhsUlBmcvsiKVHoOER2wX7zshEhLq1FiSFH4YlIO13MitMlsA7UsQsJ2pzjow+pkvOav3Ww+r7RbxOG5sQEKz/0SfAEWPfz8xuCube+rfxR8TlCs2RJmagx7c7lXyTpK7tYO2iBzUe4bHL0DkfyaoCJ/8JcHgaLItwPT18jv+r1bdDA7fp3PY3QEQRwZv9Kv6XBIa4elsIEJP3bdwtE72OKABoyGhsqBjIeKJaIYlJQB5Jfel1uPxi6dZPEvaLzUa4GOcNIp+OzrJ94qBKG8Plq+uN68RzacxVTQtfr6UTS9xOjgyrevUCBEY3CsNI22vGgXnzoq0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3001.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(396003)(366004)(136003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(6506007)(6666004)(478600001)(6486002)(6512007)(2616005)(1076003)(2906002)(316002)(41300700001)(110136005)(66476007)(66556008)(66946007)(44832011)(5660300002)(8676002)(8936002)(4326008)(36756003)(38100700002)(86362001)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CZHu6ZJK5Sh6Ec+UX+lkBo+TVjhgYCIE4rhzGioKIAgTAgFZRM3hO5Ajcy7u?=
- =?us-ascii?Q?30oc38p33o9U9mJqt3WURDNra05B4qzFjIGS8Ruh9tVLi2Pfauqtr7usgHXu?=
- =?us-ascii?Q?0W242J+za18fMv2Tr5P3X2jY4NKJJjFlA3EENJ+gvrrnv1utSwQehmiOARB0?=
- =?us-ascii?Q?cBj8vYOm5OT9vdlhR8gDrnkRjmXMNXC0H0L47q+qg3W8kR2c+2OC71Z40SeU?=
- =?us-ascii?Q?urYfVPi9om3eB9XqxHZoGCBKiU9uZDe6vV5mUC72hiEE6Q5oAG6pMKSSHYLM?=
- =?us-ascii?Q?MLfzvsUW322fT42IVRrAAyNhTloXCCAl6xnD2mxgY3eAUloLjseK3Fn0LaVT?=
- =?us-ascii?Q?m52WR8wSPnDA5PJtgyZeQiLQcXLOQ+BWtdids+89ydGi6U+Y5oedRH3pQoPf?=
- =?us-ascii?Q?M0uB4snYokT2tWDS8MHPeFDpsCpGredIiK8xLO2TZ0XKKgswLolSfBt0omwb?=
- =?us-ascii?Q?bykVUi4INbzZg+S3jf7+bujkhtMqskxw7rQHronbrWmYAhk7CK2J9bnLR3Vo?=
- =?us-ascii?Q?ZpOYQtbRS8YSMSKOIHPUq90+QLoLmWommzc/r5HPOx9ur/fvdOcG7GYTXjoR?=
- =?us-ascii?Q?ApPPQNPmQ7bvDONN1MzioUPa5xrP/P/u0ffh4vGcBNn485K/Vz71Rm6Zmly+?=
- =?us-ascii?Q?3FZ6nPoWCig14n7bWtbNCqM6BByto5zjOJ0A6JQDyDS9FIWup9gQ/1Z8b+8V?=
- =?us-ascii?Q?DV3qhpyP52Jqv2MJAv6xCHxzHFmfzhrUZLMghAxyLBJTZsXJHjGNirSK9R8K?=
- =?us-ascii?Q?TyR2liF7u/XMnTlMVGrAAdSuFqNFdfBHtnoqG5xucsuno1wJJViwpkCVAQfM?=
- =?us-ascii?Q?dviA0/iMpQ5lGroVv5nWipmudqeg88eE34JrNPHpS8gLIrlfVFcVRA3C5L8V?=
- =?us-ascii?Q?Nt5eYgxGEk3CXE9lkq9XxUx2+xv4roHXXqtKY2810pWNA7pvTNIwgPw0L17V?=
- =?us-ascii?Q?O/aby1q7GbUXLp8G3V6IOOuKyMrAXdQdWdkvfpNCaJRREF7UAleQP4A1fV7v?=
- =?us-ascii?Q?HkLTaPjszsAANEzdCzfewIEwKugXw+L1y849sjezjrXUTqDSc0SIDKh3iR7q?=
- =?us-ascii?Q?RUXJYlSyuojVFeDMtFq7TRm84sO59v8gICGsT1hy6n1LkJ3gW4n97TBT3Y8x?=
- =?us-ascii?Q?TLetJSYuwo0uecPFFIzItZxsqVUv/4D1twhSYS8/LxvAkPq7jwtK0OfrBCtY?=
- =?us-ascii?Q?08DtKF0b027VS3ToHSXkMzv079GiFL73DeNgf0Ne1s1uqIk2KvP9aYcrXUYm?=
- =?us-ascii?Q?G3J+J4Da4FWDzZDViao1i1aJWw/WTzDrLOyXXThdH2wmNB6iLTzUlzuK5J0B?=
- =?us-ascii?Q?mwrOGGYRGSb6/RuMFIyZY0VabF/IU1lun0nwZjih95M3qS4G61T+f98JQ71i?=
- =?us-ascii?Q?DClYxVYvrpY9Jot+W4QG4LWSCmavmKbw4OxXOnVliQ/Ip5mu2Pw9/yOzr5D7?=
- =?us-ascii?Q?VfopZWOSx3IuK+WCuvy4qdsKMQvCnlFNRLXbcnYwXkIiiD9lg/3ExL5yRPIZ?=
- =?us-ascii?Q?23Vk9VLmvtbp8xf6p4IEHsouW30XNon+mpFyk0bw6vCVNwMJL31REyKYxS6s?=
- =?us-ascii?Q?Op7H+G2i77KqrfGmwTH+PUPpx/oRUGkcGd9I4aBaDmMLoZeTWE2Tt/wyza7v?=
- =?us-ascii?Q?iSJGdjOyDLzHWrr5eHIt13ebMVlAnvbJGrNfaWDJ2OGAFtDzhTjQUP2VnkqN?=
- =?us-ascii?Q?FrZx/Q=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: cvOwA2oi7e7YtstMSjLKLeBOClEeswmUaqb4S27Q8cIBEv5OHHVLimep01oNkxVVGL7zQYGCOKdgKU3ehNcK+h2MVBwT/hRmryljekW2Q+ZsvIqUT4JLpHTht9A4eN3Qr4q7bzZZp4G1vnIcerXiWtjFAL5PKDRRf3VsiL6NwsVsMYWdSS0vwwA/2URVdQKk6oreY6sl0PEFEgn2JEcnjOpDW3XMgOvbA/IlFICOi3u+5afGZEI6UAFKBO9oM84cv7DDA7vrSK0F9l6NeVdIjinAd+kCyQGx6Qgbhk2KqAithNHlFcH3DHSh4bYTQ/7RDi+yxfiGlnP4O69b9PCY5+QiOzJAT0m9x7d8jOLxyIOllngEIhb0lsl+5NSryC/SFSoWsEgbL2BUUWoyO2dkkmsbaps+ogkcjCUdkEMYwelXI6irNdsPHjfnUJxRZzfFFr4Lk5InGboOd1S2ufZ5oMRr7xA6gpfE6rGvgBPyW/HbYcxZXSdADaOvqgdu/Z/Azcjcbha7g72fmMM7GBDZYB1SkRP/FvNf64HkVa5AISdOe5nsqDvoWcMCcDN8rVHsoN9G0VWJj8fkrLaY1iwOcG1h9vc3rVUTrn1vCxFblHMhNPKs8LYc3nRLrRdtx4+R7vGTjTZqKKX+AmaxLz+30tZCqq56c4mJGNgasWLfTGyk6aX75yci9VGx0YBpbTGmTl0ZWDbvUOqXv7Qldl7mON8sywibU88XyNFWQgg6eGy7A9jfmZaRxQhUMG7GCMsGVAm4BcZpDJIK2YnLXwojHv/U4MxSVkaGvRkSfd20FQkBLN4xwgIH+5R58GwksCVaDuCLUbBYUneqgvac0P30HB4AA2Cm11jeKshoOp2dyXE=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18c95bad-57b1-490e-7afa-08dbc6628651
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3001.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2023 11:51:07.0041
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: I6bwTKJ6wlWht4+3EWUHw94UwRgwxlX7XPUojVMmrPwL4xmuPXP0r1adsya4OagjwmRFrsccHVdPWC5LGc7RPgajTPvjmCO/J/xtFk4MBI4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB5884
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-06_09,2023-10-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
- phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310060087
-X-Proofpoint-GUID: qdTZ8gNLaeepLD28vq7mwUaV9Gyk6Cvr
-X-Proofpoint-ORIG-GUID: qdTZ8gNLaeepLD28vq7mwUaV9Gyk6Cvr
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [RFC] Proposal of QEMU PCI Endpoint test environment
+Content-Language: en-US
+To:     Mattias Nissler <mnissler@rivosinc.com>
+Cc:     cz172638@gmail.com, bhelgaas@google.com,
+        Jagannathan Raman <jag.raman@oracle.com>, kishon@kernel.org,
+        kvijayab@amd.com, kw@linux.com, levon@movementarian.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org,
+        Marcel Apfelbaum <marcel.apfelbaum@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, qemu-devel@nongnu.org,
+        robh@kernel.org, thanos.makatos@nutanix.com, vaishnav.a@ti.com,
+        william.henderson@nutanix.com
+References: <CAGNS4TbhS3XnCFAEi378+cSmJvGMdjN2oTv=tES36vbV4CaDuA@mail.gmail.com>
+ <CANXvt5qKxfU3p1eSK4fkzRFRBXHSVvSkJrnQRLKPkQjhsMGNzQ@mail.gmail.com>
+ <CAGNS4TbAgqRQepv=fMoUxo02Qea5S9LwWFm-jjt1ej8DdLjshw@mail.gmail.com>
+From:   Shunsuke Mie <mie@igel.co.jp>
+In-Reply-To: <CAGNS4TbAgqRQepv=fMoUxo02Qea5S9LwWFm-jjt1ej8DdLjshw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cgroup v1 or v2 or both controller names can be passed as arguments to
-the 'cgroup_no_v1' kernel parameter, though most of the controller's
-names are the same for both cgroup versions. This can be confusing when
-both versions are used interchangeably, i.e., passing cgroup_no_v1=io
 
-$ sudo dmesg |grep cgroup
-...
-cgroup: Disabling io control group subsystem in v1 mounts
-cgroup: Disabled controller 'blkio'
+On 2023/10/05 16:02, Mattias Nissler wrote:
+> On Thu, Oct 5, 2023 at 3:31 AM Shunsuke Mie <mie@igel.co.jp> wrote:
+>> Hi Jiri, Mattias and all.
+>>
+>> 2023年10月4日(水) 16:36 Mattias Nissler <mnissler@rivosinc.com>:
+>>>> hi shunsuke, all,
+>>>> what about vfio-user + qemu?
+>> Thank you for the suggestion.
+>>
+>>> FWIW, I have had some good success using VFIO-user to bridge software components to hardware designs. For the most part, I have been hooking up software endpoint models to hardware design components speaking the PCIe transaction layer protocol. The central piece you need is a way to translate between the VFIO-user protocol and PCIe transaction layer messages, basically converting ECAM accesses, memory accesses (DMA+MMIO), and interrupts between the two worlds. I have some code which implements the basics of that. It's certainly far from complete (TLP is a massive protocol), but it works well enough for me. I believe we should be able to open-source this if there's interest, let me know.
+>> It is what I want to do, but I'm not familiar with the vfio and vfio-user, and I have a question. QEMU has a PCI TLP communication implementation for Multi-process QEMU[1]. It is similar to your success.
+> I'm no qemu expert, but my understanding is that the plan is for the
+> existing multi-process QEMU implementation to eventually be
+> superseded/replaced by the VFIO-user based one (qemu folks, please
+> correct me if I'm wrong). From a functional perspective they are more
+> or less equivalent AFAICT.
+>
+The project is promising.
 
-Make it consistent across the pr_info()'s, by using ss->legacy_name, as
-the subsystem name, while printing the cgroup v1 controller disabling
-information in cgroup_init().
+I found a session about the vfio adapts to Multi-process QEMU[1] in KVM 
+Forun 2021, butI couldn't found some posted patches.
+If anyone knows status of this project, could you please let me know?
 
-Signed-off-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
----
-v2 changes:
-- Dropped the subsys name comparison with ss->legacy_name only while
-  parsing cgroup_no_v1 cmdline
-- Adapt the commit subject to match the partial change
-
- kernel/cgroup/cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 1fb7f562289d..622fb53a806b 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -6121,7 +6121,7 @@ int __init cgroup_init(void)
- 
- 		if (cgroup1_ssid_disabled(ssid))
- 			pr_info("Disabling %s control group subsystem in v1 mounts\n",
--				ss->name);
-+				ss->legacy_name);
- 
- 		cgrp_dfl_root.subsys_mask |= 1 << ss->id;
- 
-
-base-commit: b78b18fb8ee19f7a05f20c3abc865b3bfe182884
--- 
-2.41.0
-
+[1] https://www.youtube.com/watch?v=NBT8rImx3VE
+>> The multi-process qemu also communicates TLP over UDS. Could you let me know your opinion about it?
+> Note that neither multi-process qemu nor VFIO-user actually pass
+> around TLPs, but rather have their own command language to encode
+> ECAM, MMIO, DMA, interrupts etc. However, translation from/to TLP is
+> possible and works well enough in my experience.
+I agree.
+>>> One thing to note is that there are currently some limits to bridging VFIO-user / TLP that I haven't figured out and/or will need further work: Advanced PCIe concepts like PASID, ATS/PRI, SR-IOV etc. may lack equivalents on the VFIO-user side that would have to be filled in. The folk behind libvfio-user[2] have been very approachable and open to improvements in my experience though.
+>>>
+>>> If I understand correctly, the specific goal here is testing PCIe endpoint designs against a Linux host. What you'd need for that is a PCI host controller for the Linux side to talk to and then hooking up endpoints on the transaction layer. QEMU can simulate host controllers that work with existing Linux drivers just fine. Then you can put a vfio-user-pci stub device (I don't think this has landed in qemu yet, but you can find the code at [1]) on the simulated PCI bus which will expose any software interactions with the endpoint as VFIO-user protocol messages over unix domain socket. The piece you need to bring is a VFIO-user server that handles these messages. Its task is basically translating between VFIO-user and TLP and then injecting TLP into your hardware design.
+>> Yes, If the pci host controller you said can be implemented, I can achieve my goal.
+> I meant to say that the existing PCIe host controller implementations
+> in qemu can be used as is.
+Sorry, I misunderstood.
+>> To begin with, I'll investigate the vfio and libvfio-user.  Thanks!.
+>>
+>> [1] https://www.qemu.org/docs/master/system/multi-process.html
+>>
+>> Best,
+>> Shunsuke
+>>>
+>>> [1] https://github.com/oracle/qemu/tree/vfio-user-p3.1 - I believe that's the latest version, Jagannathan Raman will know best
+>>> [2] https://github.com/nutanix/libvfio-user
+>>>
