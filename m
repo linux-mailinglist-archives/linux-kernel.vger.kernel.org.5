@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B157BB27D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 09:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3831F7BB27F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 09:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbjJFHj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 03:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
+        id S230311AbjJFHnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 03:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbjJFHjA (ORCPT
+        with ESMTP id S231171AbjJFHm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 03:39:00 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC93101;
-        Fri,  6 Oct 2023 00:38:47 -0700 (PDT)
-X-UUID: 602903b8641b11ee8051498923ad61e6-20231006
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=xuYB8jdgmzU1QH0j3GSOoWIQlfm7CLnlDGenylU6HlE=;
-        b=MGshxL75sOr20iCwfSKDeETXMSYacaiF7nqDid6bh4+G+mNEY0a2lm14Z0RkhDQNURSy5RxmK6XupWQgpNvis8XhidBrUspGHysLwJNLfiL8i9URiKUsuXSK40xyTno6bJQ2R9SGQvnhKAobLyQeWd+EDS9KebAa8Q+QDQL0wp4=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:19e43d3b-9890-4743-915b-5868a797294d,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:5f78ec9,CLOUDID:f3adc014-4929-4845-9571-38c601e9c3c9,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 602903b8641b11ee8051498923ad61e6-20231006
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <shawn.sung@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 721719642; Fri, 06 Oct 2023 15:38:43 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 6 Oct 2023 15:38:42 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 6 Oct 2023 15:38:42 +0800
-From:   Hsiao Chien Sung <shawn.sung@mediatek.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Singo Chang <singo.chang@mediatek.com>,
-        "Nancy . Lin" <nancy.lin@mediatek.com>,
-        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
-        Hsiao Chien Sung <shawn.sung@mediatek.com>
-Subject: [PATCH v7 23/23] drm/mediatek: Support MT8188 VDOSYS1 in display driver
-Date:   Fri, 6 Oct 2023 15:38:31 +0800
-Message-ID: <20231006073831.10402-24-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20231006073831.10402-1-shawn.sung@mediatek.com>
-References: <20231006073831.10402-1-shawn.sung@mediatek.com>
+        Fri, 6 Oct 2023 03:42:59 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DA9386B
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 00:40:55 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0AFDA6732D; Fri,  6 Oct 2023 09:40:46 +0200 (CEST)
+Date:   Fri, 6 Oct 2023 09:40:45 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/1] ARM: Select DMA_DIRECT_REMAP to fix restricted
+ DMA
+Message-ID: <20231006074045.GA15303@lst.de>
+References: <20230926175208.9298-1-james.quinlan@broadcom.com> <20230926175208.9298-2-james.quinlan@broadcom.com> <CACRpkdYGPpUUCqmJLT4t+6CNOOmRAh_vYPSPK1SWy+tNycnSqQ@mail.gmail.com> <20231002061628.GC911@lst.de> <CA+-6iNy79pLgACMGXxRkPuVkXca0VyLis+jQcRmCwtBvEfFzgw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_NONE,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+-6iNy79pLgACMGXxRkPuVkXca0VyLis+jQcRmCwtBvEfFzgw@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- The mmsys_dev_num in MT8188 VDOSYS0 was set to 1 since
-  VDOSYS1 was not available before. Increase it to support
-  VDOSYS1 in display driver.
-- Add compatible name for MT8188 VDOSYS1
-  (shares the same driver data with MT8195 VDOSYS1)
+On Thu, Oct 05, 2023 at 01:53:33PM -0400, Jim Quinlan wrote:
+> > Yes, DMA_DIRECT_REMAP should only be used for platforms using the
+> > generic generic remap that plus straight into dma-direct and
+> > bypasses arch_dma_alloc.
+> >
+> > ARM first needs support to directly set the uncached/wc bits on
+> > the direct mapping for CMA, which should be fairly simple but require
+> > wide spread testing.
+> >
+> > I'd be happy to work with anyone who wants to look into this.
+> I'd like to look into this and help make it work for ARCH=arm but you
+> seem to be saying that you also need help from ARM the company?
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_drm_drv.c | 3 +++
- 1 file changed, 3 insertions(+)
+No, I don't care about companies.  I just need someone (singular or
+plural) to test a wide range of arm systems.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index cde69f39a066..212475436f47 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -288,6 +288,7 @@ static const struct mtk_mmsys_driver_data mt8186_mmsys_driver_data = {
- static const struct mtk_mmsys_driver_data mt8188_vdosys0_driver_data = {
- 	.main_path = mt8188_mtk_ddp_main,
- 	.main_len = ARRAY_SIZE(mt8188_mtk_ddp_main),
-+	.mmsys_dev_num = 2,
- };
- 
- static const struct mtk_mmsys_driver_data mt8192_mmsys_driver_data = {
-@@ -328,6 +329,8 @@ static const struct of_device_id mtk_drm_of_ids[] = {
- 	  .data = &mt8186_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8188-vdosys0",
- 	  .data = &mt8188_vdosys0_driver_data},
-+	{ .compatible = "mediatek,mt8188-vdosys1",
-+	  .data = &mt8195_vdosys1_driver_data},
- 	{ .compatible = "mediatek,mt8192-mmsys",
- 	  .data = &mt8192_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8195-mmsys",
--- 
-2.18.0
+Here is my idea for the attack plan:
 
+As step 1 ignore the whole CMA direct map issue, and just to the
+trivial generic dma remap conversion.  This should involved:
+
+ - select DMA_DIRECT_REMAP
+ - provide arch_dma_prep_coherent to flush out all dirty data by
+   calling __dma_clear_buffer
+ - remove the existing arch_dma_alloc/arch_dma_free and all their
+   infrastructure
+
+With this things should work fine on any system not using CMA
+
+Then attack the CMA direct mapping:
+
+ - modify the core DMA mapping code so that the
+   ARCH_HAS_DMA_SET_UNCACHED code is only used conditionally
+   I'm not quite sure what the right checks and right place is,
+   but the intent is that it should allow arm to only use that
+   path for CMA allocations.  For all existing users of
+   CONFIG_ARCH_HAS_DMA_SET_UNCACHED it should evaluate to
+   a compile-time true to not change the behavior or code
+   generation
+ - then in arm select ARCH_HAS_DMA_SET_UNCACHED and implement
+   arch_dma_set_uncached, arch_dma_clear_uncached and the new
+   helper above
