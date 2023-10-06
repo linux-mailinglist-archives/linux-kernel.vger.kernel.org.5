@@ -2,101 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 565527BC2C0
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 01:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48D77BC1FB
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbjJFXCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 19:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46564 "EHLO
+        id S233685AbjJFWEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 18:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233820AbjJFXCO (ORCPT
+        with ESMTP id S233545AbjJFWEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 19:02:14 -0400
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4351F9C;
-        Fri,  6 Oct 2023 16:02:12 -0700 (PDT)
-Received: from eig-obgw-6005a.ext.cloudfilter.net ([10.0.30.201])
-        by cmsmtp with ESMTP
-        id orRIqdGkHqBU3otpjqVuis; Fri, 06 Oct 2023 23:02:11 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id otpiqd15fsqNFotpiqdcYf; Fri, 06 Oct 2023 23:02:10 +0000
-X-Authority-Analysis: v=2.4 cv=aPzjFJxm c=1 sm=1 tr=0 ts=652091f2
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=Dx1Zrv+1i3YEdDUMOX3koA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=hWMQpYRtAAAA:8 a=pGLkceISAAAA:8 a=1XWaLZrsAAAA:8 a=NEAV23lmAAAA:8
- a=cm27Pg_UAAAA:8 a=GO2MODqShKhmYEK19rIA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=KCsI-UfzjElwHeZNREa_:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=D1jWl+Tzg11Q4/gxmIXK9n2WMBr7aaQFJ8hHOf2UdsQ=; b=ePX/sYbpKTIU/yGeXz9L+5lgna
-        Hr5tQZm1PJJuwoB480gET8ruoogLBVGfA6PEAsSTnl81iBF57gow0WycKxTc7MEliqABUbmKpBzrB
-        PmVcQihYF9wJMLqh2wA/lEAlECvczrvlmxKNWsgYylZcR7RvBsoQsRREHuW1HL6d1KoKXzwnrSRgX
-        hsfGq194ZqjEHxoF1jT+6f1gQoGIoG8Y8dC9nmLX68LfJ/oq1bpJNr0gZJQOR0OF5640Gf+RDIYld
-        9nqlCB42qcwp4tXelWk75+PJ8DZ6u/s1ZpVSC6wtvKT68KhCYmi9kgRSD7dGGB6g2VziLJlTOOZUX
-        iWJ2TQWg==;
-Received: from 94-238-9-39.abo.bbox.fr ([94.238.9.39]:47408 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.1)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qorm9-001Bge-1M;
-        Fri, 06 Oct 2023 15:50:21 -0500
-Message-ID: <6b203ddd-d8d9-46e3-acbd-89d658f80e3a@embeddedor.com>
-Date:   Fri, 6 Oct 2023 22:50:15 +0200
+        Fri, 6 Oct 2023 18:04:14 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1650BF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 15:04:09 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qosvV-0002l6-WE; Sat, 07 Oct 2023 00:04:06 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qosvV-00BcCv-6U; Sat, 07 Oct 2023 00:04:05 +0200
+Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qosvU-00Gj07-TP; Sat, 07 Oct 2023 00:04:04 +0200
+Date:   Sat, 7 Oct 2023 00:04:04 +0200
+From:   Michael Grzeschik <mgr@pengutronix.de>
+To:     Avichal Rakesh <arakesh@google.com>
+Cc:     dan.scally@ideasonboard.com, gregkh@linuxfoundation.org,
+        laurent.pinchart@ideasonboard.com, etalvala@google.com,
+        jchowdhary@google.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] usb: gadget: uvc: prevent use of disabled endpoint
+Message-ID: <ZSCEVOZbdPQRpoxl@pengutronix.de>
+References: <20230930184821.310143-1-arakesh@google.com>
+ <20231005180814.3278050-1-arakesh@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpf: Annotate struct bpf_stack_map with __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Song Liu <song@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-References: <20231006201657.work.531-kees@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20231006201657.work.531-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.238.9.39
-X-Source-L: No
-X-Exim-ID: 1qorm9-001Bge-1M
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 94-238-9-39.abo.bbox.fr ([192.168.1.98]) [94.238.9.39]:47408
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 0
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfPbIlqTGL6AuBhAaU/RqerWqzU9CWVTp3Q4V017J421Xs7UiLFH7qNBwND26g4H0OrN2bExfYRtVpC/dWpNok8zBA2QN2U5+0oY2NPq4jcqmno0tTkVW
- I5hFBqdX3ODmtm52YikTT0qn1nCU6kLELF+gV/tifgMMIHvLglEfDLX22gIlyAlrMlpx84GFgOGD1ilh+G3d0G0aMRRHGjhyFGVmHAt3HwPI++3l7qSFsLZZ
- DGkjYkt7XLtjXoL4tS/9uv98izIAU6b7wHLqmUW2+ZbClN9TW1x8e4kt62HjQphE
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WOGjcAmyrQ2IDO+m"
+Content-Disposition: inline
+In-Reply-To: <20231005180814.3278050-1-arakesh@google.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mgr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -104,53 +62,206 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--WOGjcAmyrQ2IDO+m
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 10/6/23 22:17, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct bpf_stack_map.
-> 
-> Cc: Song Liu <song@kernel.org>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: bpf@vger.kernel.org
-> Cc: linux-hardening@vger.kernel.org
-> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Thu, Oct 05, 2023 at 11:08:12AM -0700, Avichal Rakesh wrote:
+>Currently the set_alt callback immediately disables the endpoint and queues
+>the v4l2 streamoff event. However, as the streamoff event is processed
+>asynchronously, it is possible that the video_pump thread attempts to queue
+>requests to an already disabled endpoint.
+>
+>This change moves disabling usb endpoint to the end of streamoff event
+>callback. To be consistent with the actual streaming state, uvc->state
+>is now toggled between CONNECTED and STREAMING from the v4l2 event
+>callback only.
+>
+>Link: https://lore.kernel.org/20230615171558.GK741@pendragon.ideasonboard.=
+com/
+>Link: https://lore.kernel.org/20230531085544.253363-1-dan.scally@ideasonbo=
+ard.com/
+>Signed-off-by: Avichal Rakesh <arakesh@google.com>
+>---
+>v1 -> v2: Rebased to ToT and reworded commit message.
+>v2 -> v3: Fix email threading goof-up
+>
+> drivers/usb/gadget/function/f_uvc.c    | 11 +++++------
+> drivers/usb/gadget/function/f_uvc.h    |  2 +-
+> drivers/usb/gadget/function/uvc.h      |  2 +-
+> drivers/usb/gadget/function/uvc_v4l2.c | 21 ++++++++++++++++++---
+> 4 files changed, 25 insertions(+), 11 deletions(-)
+>
+>diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/func=
+tion/f_uvc.c
+>index faa398109431..75c9f9a3f884 100644
+>--- a/drivers/usb/gadget/function/f_uvc.c
+>+++ b/drivers/usb/gadget/function/f_uvc.c
+>@@ -263,10 +263,13 @@ uvc_function_setup(struct usb_function *f, const str=
+uct usb_ctrlrequest *ctrl)
+> 	return 0;
+> }
+>
+>-void uvc_function_setup_continue(struct uvc_device *uvc)
+>+void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep)
+> {
+> 	struct usb_composite_dev *cdev =3D uvc->func.config->cdev;
+>
+>+	if (disable_ep && uvc->video.ep) {
+>+		usb_ep_disable(uvc->video.ep);
+>+	}
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Could you drop the extra braces and add one spare line here.
 
-Thanks!
--- 
-Gustavo
+> 	usb_composite_setup_continue(cdev);
+> }
+>
+>@@ -337,15 +340,11 @@ uvc_function_set_alt(struct usb_function *f, unsigne=
+d interface, unsigned alt)
+> 		if (uvc->state !=3D UVC_STATE_STREAMING)
+> 			return 0;
+>
+>-		if (uvc->video.ep)
+>-			usb_ep_disable(uvc->video.ep);
+>-
+> 		memset(&v4l2_event, 0, sizeof(v4l2_event));
+> 		v4l2_event.type =3D UVC_EVENT_STREAMOFF;
+> 		v4l2_event_queue(&uvc->vdev, &v4l2_event);
+>
+>-		uvc->state =3D UVC_STATE_CONNECTED;
+>-		return 0;
+>+		return USB_GADGET_DELAYED_STATUS;
+>
+> 	case 1:
+> 		if (uvc->state !=3D UVC_STATE_CONNECTED)
+>diff --git a/drivers/usb/gadget/function/f_uvc.h b/drivers/usb/gadget/func=
+tion/f_uvc.h
+>index 1db972d4beeb..e7f9f13f14dc 100644
+>--- a/drivers/usb/gadget/function/f_uvc.h
+>+++ b/drivers/usb/gadget/function/f_uvc.h
+>@@ -11,7 +11,7 @@
+>
+> struct uvc_device;
+>
+>-void uvc_function_setup_continue(struct uvc_device *uvc);
+>+void uvc_function_setup_continue(struct uvc_device *uvc, int disale_ep);
+>
+> void uvc_function_connect(struct uvc_device *uvc);
+>
+>diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/functi=
+on/uvc.h
+>index 6751de8b63ad..989bc6b4e93d 100644
+>--- a/drivers/usb/gadget/function/uvc.h
+>+++ b/drivers/usb/gadget/function/uvc.h
+>@@ -177,7 +177,7 @@ struct uvc_file_handle {
+>  * Functions
+>  */
+>
+>-extern void uvc_function_setup_continue(struct uvc_device *uvc);
+>+extern void uvc_function_setup_continue(struct uvc_device *uvc, int disab=
+le_ep);
+> extern void uvc_function_connect(struct uvc_device *uvc);
+> extern void uvc_function_disconnect(struct uvc_device *uvc);
+>
+>diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget/f=
+unction/uvc_v4l2.c
+>index 3f0a9795c0d4..3d3469883ed0 100644
+>--- a/drivers/usb/gadget/function/uvc_v4l2.c
+>+++ b/drivers/usb/gadget/function/uvc_v4l2.c
+>@@ -451,7 +451,7 @@ uvc_v4l2_streamon(struct file *file, void *fh, enum v4=
+l2_buf_type type)
+> 	 * Complete the alternate setting selection setup phase now that
+> 	 * userspace is ready to provide video frames.
+> 	 */
+>-	uvc_function_setup_continue(uvc);
+>+	uvc_function_setup_continue(uvc, 0);
+> 	uvc->state =3D UVC_STATE_STREAMING;
+>
+> 	return 0;
+>@@ -463,11 +463,19 @@ uvc_v4l2_streamoff(struct file *file, void *fh, enum=
+ v4l2_buf_type type)
+> 	struct video_device *vdev =3D video_devdata(file);
+> 	struct uvc_device *uvc =3D video_get_drvdata(vdev);
+> 	struct uvc_video *video =3D &uvc->video;
+>+	int ret =3D 0;
+>
+> 	if (type !=3D video->queue.queue.type)
+> 		return -EINVAL;
+>
+>-	return uvcg_video_enable(video, 0);
+>+	uvc->state =3D UVC_STATE_CONNECTED;
+>+	ret =3D uvcg_video_enable(video, 0);
+>+	if (ret < 0) {
+>+		return ret;
+>+	}
 
-> ---
->   kernel/bpf/stackmap.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index 458bb80b14d5..d6b277482085 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -28,7 +28,7 @@ struct bpf_stack_map {
->   	void *elems;
->   	struct pcpu_freelist freelist;
->   	u32 n_buckets;
-> -	struct stack_map_bucket *buckets[];
-> +	struct stack_map_bucket *buckets[] __counted_by(n_buckets);
->   };
->   
->   static inline bool stack_map_use_build_id(struct bpf_map *map)
+Please drop those extra braces.
+
+>+
+>+	uvc_function_setup_continue(uvc, 1);
+>+	return 0;
+> }
+>
+> static int
+>@@ -500,6 +508,14 @@ uvc_v4l2_subscribe_event(struct v4l2_fh *fh,
+> static void uvc_v4l2_disable(struct uvc_device *uvc)
+> {
+> 	uvc_function_disconnect(uvc);
+>+	if (uvc->state =3D=3D UVC_STATE_STREAMING) {
+>+		/*
+>+		 * Drop uvc->state to CONNECTED if it was streaming before.
+>+		 * This ensures that the usb_requests are no longer queued
+>+		 * to the controller.
+>+		 */
+>+		uvc->state =3D UVC_STATE_CONNECTED;
+>+	}
+
+Could you write the comment above the check
+and also remove the extra braces.
+
+> 	uvcg_video_enable(&uvc->video, 0);
+> 	uvcg_free_buffers(&uvc->video.queue);
+> 	uvc->func_connected =3D false;
+>@@ -647,4 +663,3 @@ const struct v4l2_file_operations uvc_v4l2_fops =3D {
+> 	.get_unmapped_area =3D uvcg_v4l2_get_unmapped_area,
+> #endif
+> };
+>-
+>--
+>2.42.0.609.gbb76f46606-goog
+
+
+With this you can add my:
+
+Reviewed-by: <m.grzeschik@pengutronix.de>
+
+Thanks
+
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--WOGjcAmyrQ2IDO+m
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmUghFIACgkQC+njFXoe
+LGTc/Q//adZosXC8N27hjLgQm5kh+qqWuFrAOY7Wu94h2U2dRJAsYbO3k0XkzLXt
+KZJTbfrJG1YG4OECoGiCo6aB5RwpZ5+8YdlLkjDsUjuPOk1tbxYYOHqVpI6t+wUf
+O+HZ9VyFNS3Mi/5/NkovZoRKO1uMup/MorKWVgqG9cx25+/+QwOuKiubqA1zMInu
+KYewtxgfaWtwECOp5brt8EfVZoISPfs+aVRVXN2UOk6bSeJrtLvJqsyGcfXl0X7N
+mnXinKKc0ay3jhhyf7AglSeAfSrhSS/Mq1zmDLP39LMzo/ArDaOh9bZNSswqO+qv
+zDFixO+24bdPEsFX2yM1VllnGldhyiG5D2BLb50HWZtriQmNQk2RdDkWs8/3Ylno
+WuaBlsoGE7ePJehZmFyGrgPP+NK+CzX2Uz/qYN4IatAYAK+OFepUGLtYtFpR9jyT
+zB/vxSfyGHj9ICvG5MXB4fHkVq8bsarzpGzGOq88IsD67zwSDjRz2dDGn8RkJLUj
+ZNzKemWaurQNSYAZZok5Ii7SlWg/TOoOrjW4892WILpEEDgRoCrp62Vtw+uCh3AJ
+LO/1dBMLouEjQXuw7lPrOOjHjqT6VWr7kdm1n2W6Pts9kg1jThIqkpwp7IwkYVYU
+UZ/eJlSGtM8eedSb85pL5mS2qdWQPH0ilvvxvENQw1XnL3LER0g=
+=GHnC
+-----END PGP SIGNATURE-----
+
+--WOGjcAmyrQ2IDO+m--
