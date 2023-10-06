@@ -2,147 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5DF7BB1A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 08:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB4F7BB1A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 08:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbjJFGlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 02:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38660 "EHLO
+        id S230194AbjJFGmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 02:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbjJFGls (ORCPT
+        with ESMTP id S230150AbjJFGms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 02:41:48 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E666EA;
-        Thu,  5 Oct 2023 23:41:46 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B62D51F45F;
-        Fri,  6 Oct 2023 06:41:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696574503;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AHPegFj7wYRBnWo4iJfVnNBssSPMttVzktBNWxsaxJY=;
-        b=RPqzfKv4gZGmUZdxYmP2RazsngprG/807/v2Of1+KBo5sUqo9JSFupq8mGvNz6LrSpyLHC
-        qoqJVH8IWZF4iVQ7uGKPcp2MOF2HAqeK2AYYUXY0Nn57WS3JfpE/hSCm86/po3CzryejT2
-        7T2n4g1+hMUPCYmGifNU1lOhdwZT6OE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696574503;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AHPegFj7wYRBnWo4iJfVnNBssSPMttVzktBNWxsaxJY=;
-        b=t5N6hNk50AuI+4qPPg4glFprLLTrJyOMPg25eEz33RGUSTueo0on1yxzZmg9dTdscRqq9O
-        AZRSUM7ZJwsJjfDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4608913A2E;
-        Fri,  6 Oct 2023 06:41:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2t+vCCasH2UZWgAAMHmgww
-        (envelope-from <pvorel@suse.cz>); Fri, 06 Oct 2023 06:41:42 +0000
-Date:   Fri, 6 Oct 2023 08:41:40 +0200
-From:   Petr Vorel <pvorel@suse.cz>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-nfs@vger.kernel.org, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        Anna Schumaker <Anna.Schumaker@netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        LTP List <ltp@lists.linux.it>,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Eryu Guan <eguan@redhat.com>, chrubis <chrubis@suse.cz>
-Subject: Re: [PATCH 6.1 000/259] 6.1.56-rc1 review
-Message-ID: <20231006064140.GA178316@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20231004175217.404851126@linuxfoundation.org>
- <CA+G9fYsqbZhSQnEi-qSc7n+4d7nPap8HWcdbZGWLfo3mTH-L7A@mail.gmail.com>
- <20231005172448.GA161140@pevik>
- <CA+G9fYuyXgWvsRhznP2x2VE5CvSyCCgcvxPz2J=dbvg6YW2iUA@mail.gmail.com>
+        Fri, 6 Oct 2023 02:42:48 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C9AE8
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 23:42:46 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50337b43ee6so2319552e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 23:42:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696574565; x=1697179365; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W48qcl+qVVYwRgZC9dzFeOYmfNEtgKzD22rI+wL+TnY=;
+        b=W3776beY1WhbnwkPTXU43k1YN3bvA4HlOBqBgtXAJzQprzX/UGxajTumHDGQWNKiKm
+         /1t0l/pO3krDhIBHQ3XxXDVbArB99i2ZUh3oZY4SPbIb8YXPAszCWNYcHvHou3oE3HSB
+         QSohK1xz+5hgMrNeV9sWOQy4R2JEhL6cXNk/MDq3ta2/xSwcLVQLdSCgt5Lwonn/VKv+
+         TqccQKyo2IfiWDGqqjrC6vfv1TR9o27kSf/Tr+j/wOI8z1YC5f4AV07jnTEN14AZBlDV
+         V/t1IVApB6pmJRcgwoWp7Erq46w0NLVOKO/gHgc7qkcazCMOqgMtIfwAQmTxjEmFuuWs
+         c/wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696574565; x=1697179365;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W48qcl+qVVYwRgZC9dzFeOYmfNEtgKzD22rI+wL+TnY=;
+        b=wFPF2QZe72KM+nGBmPD3Pyi6bd/ajtXhoybQfniqHqDAlajGEBdRYpPJED6AA1EMFW
+         5fmUya4gq0/DZimnEYfmLJm3M3l+o54l+6TDRTUkdMrFtA67VtL+gGwJl3P2Y3CxAKNc
+         UOlKDIs/RmP5qjs1eJmyknpoluKPYJrpw8puahxpV5Lq8T4PYCb7QFFVMC+AjBC16WrJ
+         1cbPaWu3cC7tTj8p6R5kSZtoUbukK5JsYnmzf+Og183hgGdd704JlJ+yVlVuDU/q6MYB
+         BtbS22MiVEfVOEgSXAR/njmpcyoBXdCknmXe2PAMxSaz1oD7mpvQDDMIB5ZSNYTJyAY6
+         hteQ==
+X-Gm-Message-State: AOJu0Yz/au8ohe8n5SziLkd7fMjEF7SIZOkFJwzXeE4nLR5+BME5+5g0
+        zEPmI7EYecm4cfiNK4SYGbFRehfGgo8wPfOagn8=
+X-Google-Smtp-Source: AGHT+IFIWdwm8yYcilcNJBfYGLjSxm5s+ZR2i1auLhHaCiDm+4VaFO3iNGZddB32L6PiCOJ5HAbcYw==
+X-Received: by 2002:ac2:5f5b:0:b0:4fd:cae7:2393 with SMTP id 27-20020ac25f5b000000b004fdcae72393mr5162245lfz.2.1696574564680;
+        Thu, 05 Oct 2023 23:42:44 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id f17-20020a1c6a11000000b004063ea92492sm3019275wmc.22.2023.10.05.23.42.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 23:42:44 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 09:42:41 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Ricardo Lopes <ricardoapl.dev@gmail.com>
+Cc:     manishc@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        coiby.xu@gmail.com, gregkh@linuxfoundation.org,
+        netdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: qlge: Replace strncpy with strscpy
+Message-ID: <0b78b29f-2a84-487c-a43b-f8d3fa20d935@kadam.mountain>
+References: <20231005191459.10698-1-ricardoapl.dev@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYuyXgWvsRhznP2x2VE5CvSyCCgcvxPz2J=dbvg6YW2iUA@mail.gmail.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <20231005191459.10698-1-ricardoapl.dev@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu, 5 Oct 2023 at 22:54, Petr Vorel <pvorel@suse.cz> wrote:
+On Thu, Oct 05, 2023 at 08:14:55PM +0100, Ricardo Lopes wrote:
+> Avoid read overflows and other misbehavior due to missing termination.
+> 
 
-> > Hi Naresh,
+There aren't any read overflows in the current code.
 
-> > > On Wed, 4 Oct 2023 at 23:41, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
+> Reported by checkpatch:
+> 
+> WARNING: Prefer strscpy, strscpy_pad, or __nonstring over strncpy
 
-> > > > This is the start of the stable review cycle for the 6.1.56 release.
-> > > > There are 259 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
+But making checkpatch happy is good and the patch is fine.
 
-> > > > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
-> > > > Anything received after that time might be too late.
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-> > > > The whole patch series can be found in one patch at:
-> > > >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.56-rc1.gz
-> > > > or in the git tree and branch at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> > > > and the diffstat can be found below.
+regards,
+dan carpenter
 
-> > > > thanks,
-
-> > > > greg k-h
-
-> > > Results from Linaro’s test farm.
-> > > Regressions on arm64 bcm2711-rpi-4-b device running LTP dio tests on
-> > Could you please note in your reports also LTP version?
-
-> Sure.
-> We are running LTP Version: 20230516 for our testing.
-
-> We will update the latest LTP release (20230929) next week.
-
-Great, thank you.
-
-> > FYI the best LTP release is always the latest release or git master branch.
-
-> We have two threads here.
-> 1) LTP release tag testing on all stable-rc branches
-> 2) LTP master testing on a given specific kernel version [a]
-
-Great, this makes sense.
-
-BTW from looking in the log [b] ("INFO: ltp-pan reported some tests FAIL")
-I see you use runltp. We recommend to switch to kirk [c]. And we definitely
-appreciate your feedback from it.
-
-Kind regards,
-Petr
-
-> [a] https://qa-reports.linaro.org/lkft/ltp-master/
-[b] https://qa-reports.linaro.org/lkft/ltp-master/build/v6.5.3_20230929-2-g48a150bfd/testrun/20223790/suite/ltp-cve/test/cve-2017-8890/log
-[c] https://github.com/linux-test-project/kirk/#readme
-
-> - Naresh
