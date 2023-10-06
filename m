@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE3E7BB4C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222FA7BB4C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbjJFKFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 06:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48550 "EHLO
+        id S231644AbjJFKFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 06:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbjJFKFM (ORCPT
+        with ESMTP id S231631AbjJFKFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 06:05:12 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34670D6
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 03:05:11 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9b95622c620so363665666b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 03:05:11 -0700 (PDT)
+        Fri, 6 Oct 2023 06:05:20 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABE7AD
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 03:05:18 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b6559cbd74so360211966b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 03:05:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696586709; x=1697191509; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696586717; x=1697191517; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=iY6fElU/+Yn424+y/7zln+kN71IDd3kyRbkx9hlqq1s=;
-        b=lDt3GLBjpJ+rVyBhn3w2mG0WNjMnQx5gNoSevQQWUB6qjkJylVQzhRR5VIp2owt+AC
-         xR4seZ6H0im8CeDuB8dNMUGQffCXJgIhXCqbUU53jlzdZukc+6xU0C4pxgByBfbGQ5FP
-         W8iSthAWymH7ZA6xNLHOYOILqocB/8cNgMjEJaaEa0/ks5aUv2GMhGmMJ8nxWo5Y4X4m
-         SPZe22+bRIegzRrhqXIEwgmabUf9MBymmspXOgHVinNpXG24fYB/2Fw/wOkcsqv458Xk
-         8NLomDP5P6lz+2LuF/if7/M1EXO+xaaAcqtJESSVY5WoYg4A6wvbpNJklVO2eKqcLTON
-         JFZQ==
+        bh=CSOi+VeDowjPxTwCttzdxIY52YzDGdj4vv8HS7Ph7xA=;
+        b=txDKANI7YLZEGeroiaIRU12kLDo+81cGE98P9mxSF0ZSM4fi0u4nZhCJZJNhA+7LjX
+         fZMGO+LDW7AqlBKEzeDbNnMrQ4yDAz3agfMxYgfrfu1Wk8CP4FKZDwvQsLOebZq+tRmg
+         W118dsyH+3Pwuj8JElS+B8yQJoAs48FKb82Ji3VhUiWQohJgDRb8+9BwCTCcRxmu2+kH
+         3GKDEeTU4l/aaTgXAmk5I0+KbKb/lCDT6+JsZ55MQiluE/MbzK3TUpBJ154olbO/aexQ
+         N7tjnI+gT4Cv737ohtrgzwUtlCEtziWauYUQu81nRdrW5RlMYZ0+jffGeho/jy0oCezI
+         gj6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696586709; x=1697191509;
+        d=1e100.net; s=20230601; t=1696586717; x=1697191517;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iY6fElU/+Yn424+y/7zln+kN71IDd3kyRbkx9hlqq1s=;
-        b=Qvit3IUYjqo19bvvoG7IfSTRNR4VbrQhY3dVS+VLRqgwbRQqXc0KiUknXv2QExNt5B
-         LTP+MfiFGJpitrZ1RY7EpNmZGHSd8AuZfNmtbwJSXkr6w+2nVsJN1Xshb5R9m2s4Xnhv
-         BgNpeTyMM+zihk++ADwZpC57QMm+s79Rf/PrYpv4KiM2rrM8lI3TkvA7/e9/BxVYHcri
-         tu0cJ2L5p+DvqTAu+CO0nccnzceZn4IyNdNLsuN/WhS0+4GRKd5aZYkp9SRdkjR+uu18
-         FcdhQC+cE07jbS19JRfSeZaGmoX2rVnQ0taJveEU+Yu4fP82Kz7698sJ2qBwYZkJlcLi
-         r/vA==
-X-Gm-Message-State: AOJu0YxCJWwB94Aa2A5G0OPYSE52shHUb1hl592pRYH/UTIRht+NONVr
-        lqxOUVRFugYvV24uLW/K+6hEIA==
-X-Google-Smtp-Source: AGHT+IEIO0ubjGOFlxlgW1JSxt6e1AhM2CwVWr2tEVYQ7/0Gcb3BlCgQbCwS76a/DlOXD3JDrq8U5Q==
-X-Received: by 2002:a17:907:7751:b0:9b2:c0ea:af7c with SMTP id kx17-20020a170907775100b009b2c0eaaf7cmr6537644ejc.11.1696586709774;
-        Fri, 06 Oct 2023 03:05:09 -0700 (PDT)
+        bh=CSOi+VeDowjPxTwCttzdxIY52YzDGdj4vv8HS7Ph7xA=;
+        b=dnIP/L+8zRqGZs3l+e7YGy3krelfKRz5iUaNDLrxRUhrzU9xuKL964LZ4KDAwWFm+s
+         plEiZW/Xehb5ngULkbPdnpLYEffi5s4zzKSjO7h3Ranageo3a+Fn7fagfpkRPra+rDAv
+         0sTkkic5XUUisjKmXrCWQGY0EbMYvd8v57QeOYb6LIBiXYejFFvQWIAjdObGxAaeJPM2
+         QjBaXvFgg6BmsOHwQhsJi0BEFCdqZaptTtCNwbdUAud+4xEUYqXWFB3fBk0UkCtMqQ0O
+         N48J+NLrs/WuHpDjXuRFGPQ0aUaMKESLxuLJMVv3KTSl8vaqMsRNo3XKgXO/Eo5AWKY8
+         F0Fw==
+X-Gm-Message-State: AOJu0YxUCrCHiYls9OL0vNQrvUbBHFTptswqsZPNf55n9WHojBrzzZpH
+        VSSvI6xzpXgbgloTRsYvj6S6/Q==
+X-Google-Smtp-Source: AGHT+IH/eoEz+j6D6qTmDqBILSLTZmdkhBtuYmpeoFQJxuYmRgXD8ntyEN6Gem5lTSzQCb7mgTyomg==
+X-Received: by 2002:a17:906:3012:b0:9ae:4054:5d2a with SMTP id 18-20020a170906301200b009ae40545d2amr6596739ejz.16.1696586716853;
+        Fri, 06 Oct 2023 03:05:16 -0700 (PDT)
 Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id e27-20020a170906045b00b009b655c43710sm2621313eja.24.2023.10.06.03.05.08
+        by smtp.gmail.com with ESMTPSA id e27-20020a170906045b00b009b655c43710sm2621313eja.24.2023.10.06.03.05.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 03:05:09 -0700 (PDT)
-Message-ID: <7d9c2877-0a13-4345-92af-5ed87a555cfc@linaro.org>
-Date:   Fri, 6 Oct 2023 12:05:08 +0200
+        Fri, 06 Oct 2023 03:05:16 -0700 (PDT)
+Message-ID: <83e46b38-9759-4bcc-8288-b5747a9c166f@linaro.org>
+Date:   Fri, 6 Oct 2023 12:05:15 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] extcon: max77693: add device-tree compatible
+Subject: Re: [PATCH v2 2/2] extcon: max77843: add device-tree compatible
  string
 Content-Language: en-US
 To:     Marek Szyprowski <m.szyprowski@samsung.com>,
         linux-kernel@vger.kernel.org
 Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
         MyungJoo Ham <myungjoo.ham@samsung.com>
-References: <CGME20231006100441eucas1p1642aee6baa9713864274aa254f4b5116@eucas1p1.samsung.com>
- <20231006100434.2908243-1-m.szyprowski@samsung.com>
+References: <20231006100434.2908243-1-m.szyprowski@samsung.com>
+ <CGME20231006100442eucas1p2a51781e74ccd43bbac5c5d0eead6101f@eucas1p2.samsung.com>
+ <20231006100434.2908243-2-m.szyprowski@samsung.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -108,11 +109,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231006100434.2908243-1-m.szyprowski@samsung.com>
+In-Reply-To: <20231006100434.2908243-2-m.szyprowski@samsung.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -121,19 +122,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 06/10/2023 12:04, Marek Szyprowski wrote:
-> Commit 57f706bf7307 ("ARM: dts: samsung: exynos4412-midas: add USB
-> connector and USB OTG") added a 'muic' node to the MAX77693 PMIC
-> definition in various device-tree files. Since that commit, the newly
-> created MFD cell gained its own of_node and compatible string. This
-> changed its modalias, what in turn broke automated loading of the driver
-> module, because the new modalias is based on the of_node compatible
-> string, not the platform device name.
-> 
-> Fix this by adding the needed device-tree compatible string.
+> Add the needed device-tree compatible string to the MAX77843 extcon
+> driver, so it can be automatically loaded when compiled as a kernel
+> module and given device-tree contains separate 'muic' node under the main
+> MAX77843 PMIC node.
 > 
 > Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-Changelog would be nice :)
+> ---
 
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
