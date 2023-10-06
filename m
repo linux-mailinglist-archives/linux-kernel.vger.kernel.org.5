@@ -2,90 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43B87BBD2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661567BBD2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232120AbjJFQqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
+        id S233042AbjJFQqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbjJFQqH (ORCPT
+        with ESMTP id S233100AbjJFQqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:46:07 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7F712F
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 09:45:10 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3965fxui025983;
-        Fri, 6 Oct 2023 11:44:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=PODMain02222019; bh=p
-        H+b7cTnbRfSavq8cBv4h/A1y4bvx50yn5YvvvNOCj0=; b=hN1uLARqUxZxNaej5
-        5gux3uKBYvy/j2b8lnFGtq4n8vdSjuXAnXV/WZIHiS9XabcXwFE5sRogoiHpeBs0
-        UpYYbxzylxn54K2IkLihlN4tQOOjfc6GOf0YeJ/J7ZVi4+hWewm2uzNq9YEBLBFc
-        2x9nzxNKOH8n2iHpCTAnJ6qm4VoBKgiB6JcXmCe6txiPllpKKrXQooZGJX6xAK9p
-        cKdy9z4WUwinbqPVeOevciZE+9OCz4+hji5A5pDIXlW6yTxNt73Y7DjY/dWlJxbH
-        Td/obIFZ7TCI+6BSQv7vwTUseKAZtOUuLRoCdVcHsyOMilaGRkxf3SJynoRxpPWl
-        y5LZg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3th2dtc30q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Oct 2023 11:44:10 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 6 Oct
- 2023 17:44:08 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Fri, 6 Oct 2023 17:44:08 +0100
-Received: from work-debian.ad.cirrus.com (unknown [198.61.64.45])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0E3B2B2F;
-        Fri,  6 Oct 2023 16:44:08 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs35l56: Fix illegal use of init_completion()
-Date:   Fri, 6 Oct 2023 17:44:05 +0100
-Message-ID: <20231006164405.253796-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 6 Oct 2023 12:46:32 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46A9F116
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 09:46:03 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA282C15;
+        Fri,  6 Oct 2023 09:46:41 -0700 (PDT)
+Received: from [10.57.66.230] (unknown [10.57.66.230])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 035C03F5A1;
+        Fri,  6 Oct 2023 09:46:00 -0700 (PDT)
+Message-ID: <6a049f36-f0eb-4ae4-a257-7d72b723f0c7@arm.com>
+Date:   Fri, 6 Oct 2023 17:45:59 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: y9UfC_QQ_r_8KptxzeJwrtZ5C0U7ECQu
-X-Proofpoint-GUID: y9UfC_QQ_r_8KptxzeJwrtZ5C0U7ECQu
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-0.8 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] iommu/smmu-v3: Refactor smmu stream data structure
+Content-Language: en-GB
+To:     Dawei Li <set_pte_at@outlook.com>, will@kernel.org, joro@8bytes.org
+Cc:     jgg@ziepe.ca, baolu.lu@linux.intel.com, iommu@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <TYTP286MB3564A9E3854CACDEE366D59DCAC9A@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <TYTP286MB3564A9E3854CACDEE366D59DCAC9A@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.0 required=5.0 tests=RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix cs35l56_patch() to call reinit_completion() to reinitialize
-the completion object.
+On 2023-10-06 15:56, Dawei Li wrote:
+> The relationship between stream ID and stream can be abstracted in K-V
+> mappings, in which stream is identified uniquely by ID, but with notes
+> below:
+> 
+> <1> The number of streams is varied.
+> <2> The stream IDs are not necessarily contigeous, they can be sparsely
+>      ranged.
+> 
+> Xarray is a data structure which can deal with interger-pointer mapping
+> in cache-friendly way.
 
-It was incorrectly using init_completion().
+Cache effects shouldn't really matter here, however last time it came 
+up[1] there was a question of memory consumption increasing. Have you 
+tested the difference in performance and memory overhead, and if so, on 
+what size of system?
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
----
- sound/soc/codecs/cs35l56.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Compared with current rbtree implementation, xarray are more handy for
+> index-orinted operations:
+> <1> Find/locate an entry based on a key  //xa_load
+> <2> Associating a key with an entry. //xa_insert
+> 
+> Rbtree version for ops above will be cumbersome, for it is implementer's
 
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 232af4e8faa4..8ccdd3f134a5 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -708,3 +708,3 @@ static void cs35l56_patch(struct cs35l56_private *cs35l56)
- 
--	init_completion(&cs35l56->init_completion);
-+	reinit_completion(&cs35l56->init_completion);
- 
--- 
-2.30.2
+"will be" ? AFAICS it's already implemented, and judging by the diffstat 
+below it wasn't all that bad really ;)
 
+> duty to specify full logic of lookup, such as key comparision and so on.
+> 
+> As such, re-implement mapping between stream ID and streams from rbtree to
+> xarray.
+> 
+> Signed-off-by: Dawei Li <set_pte_at@outlook.com>
+> ---
+>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 57 ++++++---------------
+>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  3 +-
+>   2 files changed, 16 insertions(+), 44 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index bd0a596f9863..31cf1c0d0a88 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -489,7 +489,6 @@ static bool arm_smmu_cmdq_shared_tryunlock(struct arm_smmu_cmdq *cmdq)
+>   	local_irq_restore(flags);					\
+>   })
+>   
+> -
+>   /*
+>    * Command queue insertion.
+>    * This is made fiddly by our attempts to achieve some sort of scalability
+> @@ -1446,23 +1445,13 @@ static int arm_smmu_init_l2_strtab(struct arm_smmu_device *smmu, u32 sid)
+>   static struct arm_smmu_master *
+>   arm_smmu_find_master(struct arm_smmu_device *smmu, u32 sid)
+>   {
+> -	struct rb_node *node;
+>   	struct arm_smmu_stream *stream;
+>   
+>   	lockdep_assert_held(&smmu->streams_mutex);
+>   
+> -	node = smmu->streams.rb_node;
+> -	while (node) {
+> -		stream = rb_entry(node, struct arm_smmu_stream, node);
+> -		if (stream->id < sid)
+> -			node = node->rb_right;
+> -		else if (stream->id > sid)
+> -			node = node->rb_left;
+> -		else
+> -			return stream->master;
+> -	}
+> +	stream = xa_load(&smmu->streams, sid);
+>   
+> -	return NULL;
+> +	return stream ? stream->master : NULL;
+>   }
+>   
+>   /* IRQ and event handlers */
+> @@ -2573,11 +2562,10 @@ static int arm_smmu_init_sid_strtab(struct arm_smmu_device *smmu, u32 sid)
+>   static int arm_smmu_insert_master(struct arm_smmu_device *smmu,
+>   				  struct arm_smmu_master *master)
+>   {
+> -	int i;
+> -	int ret = 0;
+> -	struct arm_smmu_stream *new_stream, *cur_stream;
+> -	struct rb_node **new_node, *parent_node = NULL;
+>   	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(master->dev);
+> +	struct arm_smmu_stream *new_stream;
+> +	int ret = 0;
+> +	int i;
+>   
+>   	master->streams = kcalloc(fwspec->num_ids, sizeof(*master->streams),
+>   				  GFP_KERNEL);
+> @@ -2597,34 +2585,18 @@ static int arm_smmu_insert_master(struct arm_smmu_device *smmu,
+>   		if (ret)
+>   			break;
+>   
+> -		/* Insert into SID tree */
+> -		new_node = &(smmu->streams.rb_node);
+> -		while (*new_node) {
+> -			cur_stream = rb_entry(*new_node, struct arm_smmu_stream,
+> -					      node);
+> -			parent_node = *new_node;
+> -			if (cur_stream->id > new_stream->id) {
+> -				new_node = &((*new_node)->rb_left);
+> -			} else if (cur_stream->id < new_stream->id) {
+> -				new_node = &((*new_node)->rb_right);
+> -			} else {
+> -				dev_warn(master->dev,
+> -					 "stream %u already in tree\n",
+> -					 cur_stream->id);
+> -				ret = -EINVAL;
+> -				break;
+> -			}
+> -		}
+> -		if (ret)
+> +		ret = xa_insert(&smmu->streams, sid, new_stream, GFP_KERNEL);
+> +		if (ret) {
+> +			if (ret == -EBUSY)
+> +				dev_warn(master->dev, "stream %u already binded\n",
+
+Nit: "bound", however I think "in use" would be even better, to avoid 
+confusion with SVA terminology.
+
+Thanks,
+Robin.
+
+[1] 
+https://lore.kernel.org/linux-iommu/ecb3725c-27c4-944b-b42c-f4e293521f94@arm.com/
+
+> +					 sid);
+>   			break;
+> -
+> -		rb_link_node(&new_stream->node, parent_node, new_node);
+> -		rb_insert_color(&new_stream->node, &smmu->streams);
+> +		}
+>   	}
+>   
+>   	if (ret) {
+>   		for (i--; i >= 0; i--)
+> -			rb_erase(&master->streams[i].node, &smmu->streams);
+> +			xa_erase(&smmu->streams, master->streams[i].id);
+>   		kfree(master->streams);
+>   	}
+>   	mutex_unlock(&smmu->streams_mutex);
+> @@ -2643,7 +2615,7 @@ static void arm_smmu_remove_master(struct arm_smmu_master *master)
+>   
+>   	mutex_lock(&smmu->streams_mutex);
+>   	for (i = 0; i < fwspec->num_ids; i++)
+> -		rb_erase(&master->streams[i].node, &smmu->streams);
+> +		xa_erase(&smmu->streams, master->streams[i].id);
+>   	mutex_unlock(&smmu->streams_mutex);
+>   
+>   	kfree(master->streams);
+> @@ -3097,7 +3069,7 @@ static int arm_smmu_init_structures(struct arm_smmu_device *smmu)
+>   	int ret;
+>   
+>   	mutex_init(&smmu->streams_mutex);
+> -	smmu->streams = RB_ROOT;
+> +	xa_init(&smmu->streams);
+>   
+>   	ret = arm_smmu_init_queues(smmu);
+>   	if (ret)
+> @@ -3913,6 +3885,7 @@ static void arm_smmu_device_remove(struct platform_device *pdev)
+>   	arm_smmu_device_disable(smmu);
+>   	iopf_queue_free(smmu->evtq.iopf);
+>   	ida_destroy(&smmu->vmid_map);
+> +	xa_destroy(&smmu->streams);
+>   }
+>   
+>   static void arm_smmu_device_shutdown(struct platform_device *pdev)
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> index 9915850dd4db..f500754d4fbe 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> @@ -680,14 +680,13 @@ struct arm_smmu_device {
+>   	/* IOMMU core code handle */
+>   	struct iommu_device		iommu;
+>   
+> -	struct rb_root			streams;
+> +	struct xarray			streams;
+>   	struct mutex			streams_mutex;
+>   };
+>   
+>   struct arm_smmu_stream {
+>   	u32				id;
+>   	struct arm_smmu_master		*master;
+> -	struct rb_node			node;
+>   };
+>   
+>   /* SMMU private data for each master */
