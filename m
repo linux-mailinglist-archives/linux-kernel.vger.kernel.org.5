@@ -2,202 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FF77BB0D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092EB7BB0D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjJFE2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 00:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51466 "EHLO
+        id S230014AbjJFE3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 00:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbjJFE2J (ORCPT
+        with ESMTP id S229953AbjJFE31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 00:28:09 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF053DB;
-        Thu,  5 Oct 2023 21:28:07 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-        id 16F1220B74C0; Thu,  5 Oct 2023 21:28:07 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 16F1220B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1696566487;
-        bh=VBmYwvXPtMjKxp0JBBoGPP6lwV3PKu/EqwN3kEREnbw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iBmOLzLeSVS1UZvXtX6J/+6jaPe9RtlnV/ovwK3HQsua+ZuhN8XUo5YON91oE2J8+
-         1s2NdXVPGbzVByTuC1Q/rSCWoZRZlhuTH2U3P6c0LlzxdlwwglsZpNl1NwgFczYKBI
-         /8J+5EkkDNtZ+UhCpqt1aXY2H0gR2QLLfJkD5JiQ=
-Date:   Thu, 5 Oct 2023 21:28:07 -0700
-From:   Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH v4 0/3] UIO driver for low speed Hyper-V
- devices
-Message-ID: <20231006042807.GA22906@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1691132996-11706-1-git-send-email-ssengar@linux.microsoft.com>
- <2023081215-canine-fragile-0a69@gregkh>
- <PUZP153MB06350DAEA2384B996519E07EBE1EA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <2023082246-lumping-rebate-4142@gregkh>
- <20230906122307.GA5737@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20230926124126.GA12048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        Fri, 6 Oct 2023 00:29:27 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F1CDB;
+        Thu,  5 Oct 2023 21:29:25 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3964THXe088548;
+        Thu, 5 Oct 2023 23:29:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696566557;
+        bh=pwnkMwR2tBSt3HzKqa4HG5flSqFzYm6NFU7RMvCJbrU=;
+        h=From:To:CC:Subject:Date;
+        b=otr9iFNHCALv+FzVkoDGQ2rSO00cUpX1of9LOebf5VCuUpHs2TSfyOY9z9x7A/66k
+         h/qjCgLOAN6esj5MUdz4Z/IOtT06KA4JgGfOD+nC+EYX8+nJKGAnKM2nxV6Mh5QnZN
+         7oXT8mD6Wh5W4/tdVWcgcUq3lV/jk0OdlmZ33HFM=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3964THcw029585
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Oct 2023 23:29:17 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 5
+ Oct 2023 23:29:17 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 5 Oct 2023 23:29:17 -0500
+Received: from keerthy.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3964TDH5074236;
+        Thu, 5 Oct 2023 23:29:14 -0500
+From:   Keerthy <j-keerthy@ti.com>
+To:     <robh+dt@kernel.org>, <nm@ti.com>, <vigneshr@ti.com>,
+        <conor+dt@kernel.org>, <kristo@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     <j-keerthy@ti.com>, <u-kumar1@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v7 0/7] arm64: ti: k3-j7: Add the ESM & main domain watchdog nodes
+Date:   Fri, 6 Oct 2023 09:58:54 +0530
+Message-ID: <20231006042901.6474-1-j-keerthy@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926124126.GA12048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 05:41:26AM -0700, Saurabh Singh Sengar wrote:
-> On Wed, Sep 06, 2023 at 05:23:07AM -0700, Saurabh Singh Sengar wrote:
-> > On Tue, Aug 22, 2023 at 01:48:03PM +0200, Greg KH wrote:
-> > > On Mon, Aug 21, 2023 at 07:36:18AM +0000, Saurabh Singh Sengar wrote:
-> > > > 
-> > > > 
-> > > > > -----Original Message-----
-> > > > > From: Greg KH <gregkh@linuxfoundation.org>
-> > > > > Sent: Saturday, August 12, 2023 4:45 PM
-> > > > > To: Saurabh Sengar <ssengar@linux.microsoft.com>
-> > > > > Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> > > > > <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-> > > > > <decui@microsoft.com>; Michael Kelley (LINUX) <mikelley@microsoft.com>;
-> > > > > corbet@lwn.net; linux-kernel@vger.kernel.org; linux-hyperv@vger.kernel.org;
-> > > > > linux-doc@vger.kernel.org
-> > > > > Subject: [EXTERNAL] Re: [PATCH v4 0/3] UIO driver for low speed Hyper-V
-> > > > > devices
-> > > > > 
-> > > > > On Fri, Aug 04, 2023 at 12:09:53AM -0700, Saurabh Sengar wrote:
-> > > > > > Hyper-V is adding multiple low speed "speciality" synthetic devices.
-> > > > > > Instead of writing a new kernel-level VMBus driver for each device,
-> > > > > > make the devices accessible to user space through a UIO-based
-> > > > > > hv_vmbus_client driver. Each device can then be supported by a user
-> > > > > > space driver. This approach optimizes the development process and
-> > > > > > provides flexibility to user space applications to control the key
-> > > > > > interactions with the VMBus ring buffer.
-> > > > > 
-> > > > > Why is it faster to write userspace drivers here?  Where are those new drivers,
-> > > > > and why can't they be proper kernel drivers?  Are all hyper-v drivers going to
-> > > > > move to userspace now?
-> > > > 
-> > > > Hi Greg,
-> > > > 
-> > > > You are correct; it isn't faster. However, the developers working on these userspace
-> > > > drivers can concentrate entirely on the business logic of these devices. The more
-> > > > intricate aspects of the kernel, such as interrupt management and host communication,
-> > > > can be encapsulated within the uio driver.
-> > > 
-> > > Yes, kernel drivers are hard, we all know that.
-> > > 
-> > > But if you do it right, it doesn't have to be, saying "it's too hard for
-> > > our programmers to write good code for our platform" isn't exactly a
-> > > good endorcement of either your programmers, or your platform :)
-> > > 
-> > > > The quantity of Hyper-V devices is substantial, and their numbers are consistently
-> > > > increasing. Presently, all of these drivers are in a development/planning phase and
-> > > > rely significantly on the acceptance of this UIO driver as a prerequisite.
-> > > 
-> > > Don't make my acceptance of something that you haven't submitted before
-> > > a business decision that I need to make, that's disenginous.
-> > > 
-> > > > Not all hyper-v drivers will move to userspace, but many a new slow Hyperv-V
-> > > > devices will use this framework and will avoid introducing a new kernel driver. We
-> > > > will also plan to remove some of the existing drivers like kvp/vss.
-> > > 
-> > > Define "slow" please.
-> > 
-> > In the Hyper-V environment, most devices, with the exception of network and storage,
-> > typically do not require extensive data read/write exchanges with the host. Such
-> > devices are considered to be 'slow' devices.
-> > 
-> > > 
-> > > > > > The new synthetic devices are low speed devices that don't support
-> > > > > > VMBus monitor bits, and so they must use vmbus_setevent() to notify
-> > > > > > the host of ring buffer updates. The new driver provides this
-> > > > > > functionality along with a configurable ring buffer size.
-> > > > > >
-> > > > > > Moreover, this series of patches incorporates an update to the fcopy
-> > > > > > application, enabling it to seamlessly utilize the new interface. The
-> > > > > > older fcopy driver and application will be phased out gradually.
-> > > > > > Development of other similar userspace drivers is still underway.
-> > > > > >
-> > > > > > Moreover, this patch series adds a new implementation of the fcopy
-> > > > > > application that uses the new UIO driver. The older fcopy driver and
-> > > > > > application will be phased out gradually. Development of other similar
-> > > > > > userspace drivers is still underway.
-> > > > > 
-> > > > > You are adding a new user api with the "ring buffer" size api, which is odd for
-> > > > > normal UIO drivers as that's not something that UIO was designed for.
-> > > > > 
-> > > > > Why not just make you own generic type uiofs type kernel api if you really
-> > > > > want to do all of this type of thing in userspace instead of in the kernel?
-> > > > 
-> > > > Could you please elaborate more on this suggestion. I couldn't understand it
-> > > > completely.
-> > > 
-> > > Why is uio the requirement here?  Why not make your own framework to
-> > > write hv drivers in userspace that fits in better with the overall goal?
-> > > Call it "hvfs" or something like that, much like we have usbfs for
-> > > writing usb drivers in userspace.
-> > > 
-> > > Bolting on HV drivers to UIO seems very odd as that is not what this
-> > > framework is supposed to be providing at all.  UIO was to enable "pass
-> > > through" memory-mapped drivers that only wanted an interrupt and access
-> > > to raw memory locations in the hardware.
-> > > 
-> > > Now you are adding ring buffer managment and all other sorts of things
-> > > just for your platform.  So make it a real subsystem tuned exactly for
-> > > what you need and NOT try to force it into the UIO interface (which
-> > > should know nothing about ring buffers...)
-> > 
-> > Thank you for elaborating the details. I will drop the plan to introduce a
-> > new UIO driver for this effort. However, I would like to know your thoughts
-> > on enhancing existing 'uio_hv_generic' driver to achieve the same.  We
-> > already have 'uio_hv_generic' driver in linux kernel, which is used for
-> > developing userspace drivers for 'fast Hyper-V devices'.
-> > 
-> > Since these newly introduced synthetic devices operate at a lower speed,
-> > they do not have the capability to support monitor bits. Instead, we must
-> > utilize the 'vmbus_setevent()' method to enable interrupts from the host.
-> > Earlier we made an attempt to support slow devices by uio_hv_generic :
-> > https://lore.kernel.org/lkml/1665685754-13971-1-git-send-email-ssengar@linux.microsoft.com/.
-> > At that time, the absence of userspace code (fcopy) hindered progress
-> > in this direction.
-> > 
-> > Acknowledging your valid concerns about introducing a new UIO driver for
-> > Hyper-V, I propose exploring the potential to enhance the existing
-> > 'uio_hv_generic' driver to accommodate slower devices effectively. My
-> > commitment to this endeavour includes ensuring the seamless operation of
-> > the existing 'fcopy' functionality with the modified 'uio_hv_generic'
-> > driver. Additionally, I will undertake the task of removing the current
-> > 'fcopy' kernel driver and userspace daemon as part of this effort.
-> > 
-> > Please let me know your thoughts. I look forward to your feedback and
-> > the opportunity to discuss this proposal further. 
-> 
-> Greg,
-> 
-> May I know if enhancing uio_hv_generic.c to support 'slow devices' is
-> an accptable approach ? I'm willing to undertake this task and propose
-> the necessary modifications.
-> 
-> - Saurabh
+The series add the ESM & main domain watchdog nodes for j721s2,
+j784s4 SOCs.
 
-ping
+Changes in v7:
+	* Rebased on top of ti-next branch
+	* Reordered the watchdog nodes based on the addresses.
+	* Changed the watchdog numbering.
 
-> 
-> > 
-> > - Saurabh
+Changes in v5/v6:
+
+        * Updated commit log and added comments for MCU & non-A72 watchdog
+          instances disabling.
+
+Changes in v4:
+
+        * Added bootph-pre-ram for all the ESM instances needed for SPL.
+
+Changes in v3:
+
+        * Added all the RTI events for MAIN_ESM for j784s4 as 8 instances
+          are enabled.
+        * Rebased on top of 6.6-rc1
+        * Tested for the watchdog reset
+
+RESEND series - corrected krzysztof.kozlowski+dt@linaro.org ID
+
+Changes in v2:
+
+        * Added all the instances of watchdog on j784s4/j721s2
+        * Fixed all 0x0 in dts to 0x00
+        * Fixed couple of ESM event numbers for j721s2
+        * Rebased to linux-next branch
+
+Keerthy (7):
+  arm64: dts: ti: k3-j721s2: Add ESM instances
+  arm64: dts: ti: k3-j784s4: Add ESM instances
+  arm64: dts: ti: k3-j7200: Add MCU domain ESM instance
+  arm64: dts: ti: k3-j784s4-main: Add the main domain watchdog instances
+  arm64: dts: ti: k3-j784s4-mcu: Add the mcu domain watchdog instances
+  arm64: dts: ti: k3-j721s2-main: Add the main domain watchdog instances
+  arm64: dts: ti: k3-j712s2-mcu: Add the mcu domain watchdog instances
+
+ .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      |   7 +
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    | 100 +++++++++
+ .../boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi     |  38 ++++
+ arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi    | 195 ++++++++++++++++++
+ .../boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi     |  38 ++++
+ 5 files changed, 378 insertions(+)
+
+-- 
+2.17.1
+
