@@ -2,60 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0FD7BBC38
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D27B7BBC3B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbjJFP5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 11:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
+        id S232915AbjJFP5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 11:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjJFP5W (ORCPT
+        with ESMTP id S229853AbjJFP5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 11:57:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262E8A6
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 08:57:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696607841; x=1728143841;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=kzc0LYg6L2msZi6SaSG/KRmbXMM8HDRdyUT2641/IrQ=;
-  b=KLVn+zI3yenlJkuXgb0RNJ4Dv7HP6xodD4xd3CKD+M2qMLJXX+eI023z
-   oOC2wuXUHD+r6Ww1Dc0NX0WwO8V0aDBsbzCH0Y/OH1Vj2utA97bxLLf+I
-   qjEP8E1TZlCfzL/FwzPPNPJPJ5X62XXEL4FY6q9uNS9p2fNpQFKI4YzHK
-   r8LwIHOlK07UxISZPvRJOSGbpnarA6bXKVJ0WTnoYWVm868QQMoyoluT/
-   mHN+yIdRCyMpvchnwfJ4Mzz399eP+KDFvHaoQhIGVxfjCl8gFf0hFTyLE
-   S8FTXEuAHgeAmOSlUknlroaMfybmuV3kam0Mbk3FRdL7Q1XPm9aW3+HmF
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="2379207"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="2379207"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 08:57:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="745911413"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="745911413"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 06 Oct 2023 08:57:18 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qonCW-0003Lt-0N;
-        Fri, 06 Oct 2023 15:57:16 +0000
-Date:   Fri, 6 Oct 2023 23:57:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>
-Subject: arch/x86/kernel/cpu/resctrl/monitor.c:38: warning: Cannot understand
-  * @rmid_free_lru    A least recently used list of free RMIDs
-Message-ID: <202310062356.lX3xpLP9-lkp@intel.com>
+        Fri, 6 Oct 2023 11:57:51 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F174B6;
+        Fri,  6 Oct 2023 08:57:50 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c760b34d25so17896615ad.3;
+        Fri, 06 Oct 2023 08:57:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696607870; x=1697212670; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dylRp2V5hDsi4674Tiw8VLIJ52LHz+mcDjR7Zr1Bs3Y=;
+        b=KRjIXQz5+/Ya8A1pTDQePtOVSP5DlMpVhnQ/w01LYosO7ncr//zOIrCLs4NfRz3DYC
+         0hQgoeX46OBM0KCalXQBb8S6q4urwNrcJlfIKHsL5Hfxv6/mAQjsz9lSpG9uNRaICHR0
+         OMnDoIGScsAsTwI0z/AixAM0xEMRloUD+9JYQHt1c40cOIl0F6Xl6BiMi/kxpd8XGNAH
+         ak4WOt8h+4oQKztlBv6Xgb9faH7RF4zPN5qN2xu5G/mpnTeM4CkY67CNDpRUfo5nSKh2
+         yTlHabnCqipVt+xqPoID+pF4jDoDNL2tMm1MSCFUimL1Dkzx6/O1VPZa2ZzPH+55hBSf
+         dxBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696607870; x=1697212670;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dylRp2V5hDsi4674Tiw8VLIJ52LHz+mcDjR7Zr1Bs3Y=;
+        b=KWhhxOFAnllSNKCMPxQCSQFsrEXIspAVPDVeUn5wYBjrLItrpP5/4dctytuCg1rMsU
+         Cbh3oETSbXlkFQF3w91oGFp5lc6CRKicnRdQg00UPu6i1TtN5rc5YPZ7O1uBjqSiSALU
+         QK33I03LDWLqmoIt6Xjn3OlRiiMEqRc+rrsdP9HUoaElaATXZ4vcuWbyCKW6T/q1Ic7Q
+         Fb7zZLfysIXzRri0PKui+WIUKHc0/goGq5bAbUlDX3Nkfed1yOAil5+FqcBMjiLvagd6
+         YSEgQs3xCr1S3rtr9H0lwK+ii18zJCOeRKD5G6IBL3LRp6BMJp5rdlCdnJNTzb2XOGhV
+         ohSg==
+X-Gm-Message-State: AOJu0YzC08lnTYXM6dgqqy+8XWISClzAEPGswbtJPFAb6yxLk9WYJSX4
+        OTA8LUC1+f6NTFHDTI9jEpo=
+X-Google-Smtp-Source: AGHT+IG7vWiKtSobRyxTqjlRPV7HrpoBU3Ji68aWY9K+5VbFhCnthI+zOioQEBbbot/nKuljTyayAw==
+X-Received: by 2002:a17:902:d2cd:b0:1c3:94a4:34bf with SMTP id n13-20020a170902d2cd00b001c394a434bfmr10084533plc.66.1696607869908;
+        Fri, 06 Oct 2023 08:57:49 -0700 (PDT)
+Received: from tx3000mach.io (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id p4-20020a170902eac400b001aaf2e8b1eesm4040797pld.248.2023.10.06.08.57.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 08:57:49 -0700 (PDT)
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org
+Subject: [RFC PATCH 1/1] scripts: Build per module Rust crates
+Date:   Fri,  6 Oct 2023 12:57:37 -0300
+Message-ID: <20231006155739.246381-2-yakoyoku@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231006155739.246381-1-yakoyoku@gmail.com>
+References: <20231006155739.246381-1-yakoyoku@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,77 +83,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johannes,
+Enables compiling Rust crates as dependencies of kernel modules.
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+When a composite object depends on an `.rlib` file, which by the way is
+a current ar archive, Kbuild will compile it from its base Rust source
+and link it.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   b78b18fb8ee19f7a05f20c3abc865b3bfe182884
-commit: e6d429313ea5c776d2e76b4494df69102e6b7115 x86/resctrl: Avoid confusion over the new X86_RESCTRL config
-date:   4 years, 8 months ago
-config: x86_64-randconfig-003-20230909 (https://download.01.org/0day-ci/archive/20231006/202310062356.lX3xpLP9-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231006/202310062356.lX3xpLP9-lkp@intel.com/reproduce)
+This makes possible to have Rust bindings for a subsystem that is
+compiled as a module.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310062356.lX3xpLP9-lkp@intel.com/
+Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+---
+ Makefile               |  4 ++--
+ scripts/Makefile.build | 10 +++++++++-
+ scripts/Makefile.lib   | 19 +++++++++++++------
+ 3 files changed, 24 insertions(+), 9 deletions(-)
 
-All warnings (new ones prefixed by >>):
-
->> arch/x86/kernel/cpu/resctrl/monitor.c:38: warning: Cannot understand  * @rmid_free_lru    A least recently used list of free RMIDs
-    on line 38 - I thought it was a doc line
->> arch/x86/kernel/cpu/resctrl/monitor.c:45: warning: Cannot understand  * @rmid_limbo_count     count of currently unused but (potentially)
-    on line 45 - I thought it was a doc line
->> arch/x86/kernel/cpu/resctrl/monitor.c:54: warning: Cannot understand  * @rmid_entry - The entry in the limbo and free lists.
-    on line 54 - I thought it was a doc line
---
->> arch/x86/kernel/cpu/resctrl/rdtgroup.c:803: warning: Function parameter or member 'of' not described in 'rdt_bit_usage_show'
->> arch/x86/kernel/cpu/resctrl/rdtgroup.c:803: warning: Function parameter or member 'seq' not described in 'rdt_bit_usage_show'
->> arch/x86/kernel/cpu/resctrl/rdtgroup.c:803: warning: Function parameter or member 'v' not described in 'rdt_bit_usage_show'
->> arch/x86/kernel/cpu/resctrl/rdtgroup.c:1148: warning: Function parameter or member 'rdtgrp' not described in 'rdtgroup_mode_test_exclusive'
->> arch/x86/kernel/cpu/resctrl/rdtgroup.c:1181: warning: Function parameter or member 'of' not described in 'rdtgroup_mode_write'
->> arch/x86/kernel/cpu/resctrl/rdtgroup.c:1181: warning: Function parameter or member 'buf' not described in 'rdtgroup_mode_write'
->> arch/x86/kernel/cpu/resctrl/rdtgroup.c:1181: warning: Function parameter or member 'nbytes' not described in 'rdtgroup_mode_write'
->> arch/x86/kernel/cpu/resctrl/rdtgroup.c:1181: warning: Function parameter or member 'off' not described in 'rdtgroup_mode_write'
->> arch/x86/kernel/cpu/resctrl/rdtgroup.c:1290: warning: Function parameter or member 'of' not described in 'rdtgroup_size_show'
->> arch/x86/kernel/cpu/resctrl/rdtgroup.c:1290: warning: Function parameter or member 's' not described in 'rdtgroup_size_show'
->> arch/x86/kernel/cpu/resctrl/rdtgroup.c:1290: warning: Function parameter or member 'v' not described in 'rdtgroup_size_show'
-   arch/x86/kernel/cpu/resctrl/rdtgroup.c:2483: warning: Function parameter or member 'rdtgrp' not described in 'rdtgroup_init_alloc'
-
-
-vim +38 arch/x86/kernel/cpu/resctrl/monitor.c
-
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  36  
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  37  /**
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25 @38   * @rmid_free_lru    A least recently used list of free RMIDs
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  39   *     These RMIDs are guaranteed to have an occupancy less than the
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  40   *     threshold occupancy
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  41   */
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  42  static LIST_HEAD(rmid_free_lru);
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  43  
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  44  /**
-24247aeeabe99e arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-08-15 @45   * @rmid_limbo_count     count of currently unused but (potentially)
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  46   *     dirty RMIDs.
-24247aeeabe99e arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-08-15  47   *     This counts RMIDs that no one is currently using but that
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  48   *     may have a occupancy value > intel_cqm_threshold. User can change
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  49   *     the threshold occupancy value.
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  50   */
-5fd88b60e11b7d arch/x86/kernel/cpu/intel_rdt_monitor.c Colin Ian King 2017-10-02  51  static unsigned int rmid_limbo_count;
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  52  
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  53  /**
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25 @54   * @rmid_entry - The entry in the limbo and free lists.
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  55   */
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  56  static struct rmid_entry	*rmid_ptrs;
-6a445edce65781 arch/x86/kernel/cpu/intel_rdt_monitor.c Vikas Shivappa 2017-07-25  57  
-
-:::::: The code at line 38 was first introduced by commit
-:::::: 6a445edce657810992594c7b9e679219aaf78ad9 x86/intel_rdt/cqm: Add RDT monitoring initialization
-
-:::::: TO: Vikas Shivappa <vikas.shivappa@linux.intel.com>
-:::::: CC: Thomas Gleixner <tglx@linutronix.de>
-
+diff --git a/Makefile b/Makefile
+index 7d6be12e4c3e..7774c97e8aa0 100644
+--- a/Makefile
++++ b/Makefile
+@@ -283,7 +283,7 @@ no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
+ 			headers_install modules_install modules_sign kernelrelease image_name
+ no-sync-config-targets := $(no-dot-config-targets) %install modules_sign kernelrelease \
+ 			  image_name
+-single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.rsi %.s %.symtypes %/
++single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.rlib %.rsi %.s %.symtypes %/
+ 
+ config-build	:=
+ mixed-build	:=
+@@ -1919,7 +1919,7 @@ $(clean-dirs):
+ clean: $(clean-dirs)
+ 	$(call cmd,rmfiles)
+ 	@find $(or $(KBUILD_EXTMOD), .) $(RCS_FIND_IGNORE) \
+-		\( -name '*.[aios]' -o -name '*.rsi' -o -name '*.ko' -o -name '.*.cmd' \
++		\( -name '*.[aios]' -o -name '*.rlib' -o -name '*.rsi' -o -name '*.ko' -o -name '.*.cmd' \
+ 		-o -name '*.ko.*' \
+ 		-o -name '*.dtb' -o -name '*.dtbo' \
+ 		-o -name '*.dtb.S' -o -name '*.dtbo.S' \
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index da37bfa97211..627010518b27 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -246,7 +246,9 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) FORCE
+ # To make this rule robust against "Argument list too long" error,
+ # ensure to add $(obj)/ prefix by a shell command.
+ cmd_mod = printf '%s\n' $(call real-search, $*.o, .o, -objs -y -m) | \
+-	$(AWK) '!x[$$0]++ { print("$(obj)/"$$0) }' > $@
++	$(AWK) '!x[$$0]++ { print("$(obj)/"$$0) }' > $@ && \
++	printf '%s\n' $(call real-search, $*.rlib, .rlib, -objs -y -m) | \
++	$(AWK) '!x[$$0]++ { print("--library=$(obj)/"$$0) }' >> $@
+ 
+ $(obj)/%.mod: FORCE
+ 	$(call if_changed,mod)
+@@ -291,6 +293,12 @@ quiet_cmd_rustc_o_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+ $(obj)/%.o: $(src)/%.rs FORCE
+ 	$(call if_changed_dep,rustc_o_rs)
+ 
++quiet_cmd_rustc_rlib_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
++      cmd_rustc_rlib_rs = $(rust_common_cmd) -Ccodegen-units=1 --emit=link=$@ $<
++
++$(obj)/%.rlib: $(src)/%.rs FORCE
++	$(call if_changed_dep,rustc_rlib_rs)
++
+ quiet_cmd_rustc_rsi_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+       cmd_rustc_rsi_rs = \
+ 	$(rust_common_cmd) -Zunpretty=expanded $< >$@; \
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 68d0134bdbf9..6e8cfbad015d 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -53,14 +53,18 @@ multi-search = $(sort $(foreach m, $1, $(if $(call suffix-search, $m, $2, $3 -),
+ real-search = $(foreach m, $1, $(if $(call suffix-search, $m, $2, $3 -), $(call suffix-search, $m, $2, $3), $m))
+ 
+ # If $(foo-objs), $(foo-y), $(foo-m), or $(foo-) exists, foo.o is a composite object
+-multi-obj-y := $(call multi-search, $(obj-y), .o, -objs -y)
+-multi-obj-m := $(call multi-search, $(obj-m), .o, -objs -y -m)
++multi-obj-y := $(call multi-search, $(obj-y), .o, -objs -y) \
++	$(call multi-search, $(obj-y), .rlib, -objs -y)
++multi-obj-m := $(call multi-search, $(obj-m), .o, -objs -y -m) \
++	$(call multi-search, $(obj-m), .rlib, -objs -y -m)
+ multi-obj-ym := $(multi-obj-y) $(multi-obj-m)
+ 
+ # Replace multi-part objects by their individual parts,
+ # including built-in.a from subdirectories
+-real-obj-y := $(call real-search, $(obj-y), .o, -objs -y)
+-real-obj-m := $(call real-search, $(obj-m), .o, -objs -y -m)
++real-obj-y := $(call real-search, $(obj-y), .o, -objs -y) \
++	$(call real-search, $(obj-y), .rlib, -objs -y)
++real-obj-m := $(call real-search, $(obj-m), .o, -objs -y -m) \
++	$(call real-search, $(obj-m), .rlib, -objs -y -m)
+ 
+ always-y += $(always-m)
+ 
+@@ -107,7 +111,8 @@ endif
+ # Finds the multi-part object the current object will be linked into.
+ # If the object belongs to two or more multi-part objects, list them all.
+ modname-multi = $(sort $(foreach m,$(multi-obj-ym),\
+-		$(if $(filter $*.o, $(call suffix-search, $m, .o, -objs -y -m)),$(m:.o=))))
++		$(if $(filter $*.o, $(call suffix-search, $m, .o, -objs -y -m)),$(m:.o=)) \
++		$(if $(filter $*.rlib, $(call suffix-search, $m, .rlib, -objs -y -m)),$(m:.rlib=))))
+ 
+ __modname = $(or $(modname-multi),$(basetarget))
+ 
+@@ -210,7 +215,9 @@ _cpp_flags += -I $(srctree)/$(src) -I $(objtree)/$(obj)
+ endif
+ endif
+ 
+-part-of-module = $(if $(filter $(basename $@).o, $(real-obj-m)),y)
++part-of-module =                                             \
++	$(if $(or $(filter $(basename $@).o, $(real-obj-m)), \
++		$(filter $(basename $@).rlib, $(real-obj-m))),y)
+ quiet_modtag = $(if $(part-of-module),[M],   )
+ 
+ modkern_cflags =                                          \
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
