@@ -2,154 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F217BB745
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573D27BB747
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbjJFMDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35726 "EHLO
+        id S232251AbjJFMDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbjJFMDO (ORCPT
+        with ESMTP id S232218AbjJFMDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:03:14 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DF518F;
-        Fri,  6 Oct 2023 05:02:46 -0700 (PDT)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39680k8m024051;
-        Fri, 6 Oct 2023 05:02:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=S8Cq08ugMc5inXhpD8oOlGzUxkQakuolu6wFy7vBCdo=;
- b=N/tCTBrIjvgAe2HP9YSob8kWefe9Qi3/14F7AJIdO4hFC7sLR2xIqht2oX1u4JsPJJXQ
- dCd6Nb2CqNXLS4p93eJ4AAZ1iDUPpIyCParJL01sE3VkzcWkzeeHOr8SIEpbuoxdnbYI
- vGaE+kXs90MT7sqY93F0DMXZeXVXlEo81nKk0lptysCb4H49b2AkPiwzgJXW6W6bS4lE
- T8c+ozZfcpziEKCSDRyq5bjf1yKtwxHCKtOoqx+hss+7TjliAmwb9m3HWfZeY3O352m1
- 4FzW5rVBQNr/jUOsz4krn5QOGdAwuzkHOh9kpj/Jt/1y4X7tRNGsSp0t221VuL57RKTX UA== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3tj60qj5vk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 06 Oct 2023 05:02:32 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 6 Oct
- 2023 05:02:31 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Fri, 6 Oct 2023 05:02:31 -0700
-Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
-        by maili.marvell.com (Postfix) with ESMTP id 749FF3F7051;
-        Fri,  6 Oct 2023 05:02:25 -0700 (PDT)
-From:   Shinas Rasheed <srasheed@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <hgani@marvell.com>
-CC:     <egallen@redhat.com>, <mschmidt@redhat.com>,
-        Shinas Rasheed <srasheed@marvell.com>,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        "Sathesh Edara" <sedara@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: [net-next PATCH] octeon_ep: pack hardware structures
-Date:   Fri, 6 Oct 2023 05:02:25 -0700
-Message-ID: <20231006120225.2259533-1-srasheed@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 6 Oct 2023 08:03:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B10F2;
+        Fri,  6 Oct 2023 05:03:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 106D5C433C7;
+        Fri,  6 Oct 2023 12:03:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696593799;
+        bh=b/loAVhv+05F1dRd/uZATizDv0mFcEZF9GrpYWKet2I=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=k4fdN0Um6sRBvIDQ8qWQN6Z7nRtwmmETohf5F+jAWNT414i08GKfJlY9lcKW7oeRm
+         Jzd92qzYBWCVve/wDtOapmxVinrb8w8qLB+1x2jtqG3iQcpK2Lu3V9DzkyFVau2xfS
+         Ro6mnU1c5OKRne361tWc3l1c0LzWfYIaPEIiEYRpmqBsW/ddhZLihyX3ZTEaCD4p0d
+         pf0/DnGvjaL4g/eK42bOarsYDSF3iEczLJvILhyH64rKUNTzt2puE4kpIqyl1/GeVx
+         BpvbayD0sKiyXAKWF30ww/ngoW+ix3GhUq5l+ycsZ3DpN0z5o+FV4QuJ6IoYMRpFto
+         EBwOxJ7yWH8XA==
+Message-ID: <fde87d28-ee5d-4e02-b824-27c1cb7c1e38@kernel.org>
+Date:   Fri, 6 Oct 2023 15:03:14 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: F_KeOV0NrR1i55C30fZXdFdUJvrgJRfY
-X-Proofpoint-GUID: F_KeOV0NrR1i55C30fZXdFdUJvrgJRfY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-06_09,2023-10-06_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: build warnings after merge of the ti tree
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>
+Cc:     "Raghavendra, Vignesh" <vigneshr@ti.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Yadav, Nitin" <n-yadav@ti.com>
+References: <20231005141536.77538147@canb.auug.org.au>
+ <f70dec2a-dbdf-479c-af5b-a70db02b27b4@ti.com>
+ <2905cfc2-912f-4620-9455-2e91586a2839@kernel.org>
+ <20231005132921.2vg6kdcr273bh7et@cabbage>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20231005132921.2vg6kdcr273bh7et@cabbage>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add packed attribute to hardware structures.
 
-Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
----
- drivers/net/ethernet/marvell/octeon_ep/octep_rx.h | 6 +++---
- drivers/net/ethernet/marvell/octeon_ep/octep_tx.h | 8 ++++----
- 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_rx.h b/drivers/net/ethernet/marvell/octeon_ep/octep_rx.h
-index 782a24f27f3e..ca42ddb77491 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_rx.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_rx.h
-@@ -19,7 +19,7 @@
- struct octep_oq_desc_hw {
- 	dma_addr_t buffer_ptr;
- 	u64 info_ptr;
--};
-+} __packed;
- 
- #define OCTEP_OQ_DESC_SIZE    (sizeof(struct octep_oq_desc_hw))
- 
-@@ -38,7 +38,7 @@ struct octep_oq_resp_hw_ext {
- 
- 	/* checksum verified. */
- 	u64 csum_verified:2;
--};
-+} __packed;
- 
- #define  OCTEP_OQ_RESP_HW_EXT_SIZE   (sizeof(struct octep_oq_resp_hw_ext))
- 
-@@ -49,7 +49,7 @@ struct octep_oq_resp_hw_ext {
- struct octep_oq_resp_hw {
- 	/* The Length of the packet. */
- 	__be64 length;
--};
-+} __packed;
- 
- #define OCTEP_OQ_RESP_HW_SIZE   (sizeof(struct octep_oq_resp_hw))
- 
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
-index 21e75ff9f5e7..74189e5a7d33 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
-@@ -35,7 +35,7 @@
- struct octep_tx_sglist_desc {
- 	u16 len[4];
- 	dma_addr_t dma_ptr[4];
--};
-+} __packed;
- 
- /* Each Scatter/Gather entry sent to hardwar hold four pointers.
-  * So, number of entries required is (MAX_SKB_FRAGS + 1)/4, where '+1'
-@@ -238,7 +238,7 @@ struct octep_instr_hdr {
- 
- 	/* Reserved3 */
- 	u64 reserved3:1;
--};
-+} __packed;
- 
- /* Hardware Tx completion response header */
- struct octep_instr_resp_hdr {
-@@ -262,7 +262,7 @@ struct octep_instr_resp_hdr {
- 
- 	/* Opcode for the return packet  */
- 	u64 opcode:16;
--};
-+} __packed;
- 
- /* 64-byte Tx instruction format.
-  * Format of instruction for a 64-byte mode input queue.
-@@ -292,7 +292,7 @@ struct octep_tx_desc_hw {
- 
- 	/* Additional headers available in a 64-byte instruction. */
- 	u64 exhdr[4];
--};
-+} __packed;
- 
- #define OCTEP_IQ_DESC_SIZE (sizeof(struct octep_tx_desc_hw))
- #endif /* _OCTEP_TX_H_ */
+On 05/10/2023 16:29, Nishanth Menon wrote:
+> On 16:12-20231005, Roger Quadros wrote:
+>> Hi,
+>>
+>> On 05/10/2023 11:25, Raghavendra, Vignesh wrote:
+>>> + Rob and DT list
+>>>
+>>> Hi Stephen
+>>>
+>>> On 10/5/2023 8:45 AM, Stephen Rothwell wrote:
+>>>> Hi all,
+>>>>
+>>>> [I may have missed this yesterday, sorry]
+>>>>
+>>>> After merging the ti tree, today's linux-next build (arm64 defconfig)
+>>>> produced these warnings:
+>>>>
+>>>> arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #address-cells value
+>>>> arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #size-cells value
+>>>>
+>>>> Introduced by commit
+>>>>
+>>>>   45a0c06571e1 ("arm64: dts: ti: am642-evm: Add overlay for NAND expansion card")
+>>>>
+>>>
+>>> Thanks for the report. I will drop the offending comment.
+>>>
+>>> Roger,
+>>>
+>>> Sorry, this would need to be fixed in dtc or need exception from DT
+>>> maintainers to ignore the warnings.
+>>
+>> Please don't drop this patch as the issue is not with the patch but with
+>> the dtc tool itself.
+>>
+>> As this is a DT overlay there is no way to specify address-cells/size-cells
+>> of parent here. This will be resolved only after merge with base tree.
+>>
+>> This will be fixed in next dtc sync.
+>> https://www.spinics.net/lists/devicetree-compiler/msg04036.html
+>>
+>> See further discussion here
+>> https://lore.kernel.org/all/CAL_JsqLmv904+_2EOmsQ__y1yLDvsT+_02i85phuh0cpe7X8NQ@mail.gmail.com/
+>>
+> 
+> Roger, build warnings are a strict NO,NO for kernel. Lets bring in the
+> series *after* the dtc sync is complete.
+> 
+
+Hi Rob,
+
+Following commit from dtc is required to resolve this issue.
+
+afbddcd418fb ("Suppress warnings on overlay fragments")
+
+FYI. Another patch of similar nature is on its way and will also require the
+above commit to DTC.
+https://lore.kernel.org/all/20231005093739.4071934-3-n-yadav@ti.com/
+
 -- 
-2.25.1
-
+cheers,
+-roger
