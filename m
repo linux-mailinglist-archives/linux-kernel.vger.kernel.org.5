@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A58067BB029
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2C47BB03D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 04:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjJFBsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 21:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        id S229731AbjJFCUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 22:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjJFBsY (ORCPT
+        with ESMTP id S229615AbjJFCUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 21:48:24 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14210DE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 18:48:22 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d815354ea7fso2134562276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 18:48:22 -0700 (PDT)
+        Thu, 5 Oct 2023 22:20:35 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B0CD8;
+        Thu,  5 Oct 2023 19:20:33 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-405361bba99so14732525e9.2;
+        Thu, 05 Oct 2023 19:20:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696556901; x=1697161701; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pXc2O/7sCaxNCrmG6skLU9Fi8ZAb+bkQu9XTdeJPITM=;
-        b=Id1JyKTE+DXe1zXADSJhMkgJCISFAetC0ZgprPpbixwdbVAHvTW2DZX+QEuizCEE63
-         NCsq12r4rPcHxYzTd3xfdnNrBWpBxaAUF4/ifkRs/eLZ9mFZMmUQQ4KH4ZfsXl8zOi2X
-         HXELmdYhtOxeqEAuM46HzRpt5jq+BzOTK9jx3USTt4tbnYsqLmpqRCnGxb1gldIOpCnV
-         NfBUsW6MZURpD45b1/ZNqux+CMV4BgoY+C9N1oJzeTHvSG9vlCO1U16pI3yOJ1SAitWR
-         LK/qvppVra3/3Uf7vhFg4fnowzPZ4QveTtDL/t6DdBmRTQnCwwbOSofUAO076cksFG2q
-         z16A==
+        d=gmail.com; s=20230601; t=1696558832; x=1697163632; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7A6svaZ5NLBPCdvLBtrQYDjuifxfenalJYib+EmtrBE=;
+        b=PMoIPAQSaPvXLyhyRrSc7Ymkz0KboMwITRzSOZxzm09doaHaeQOWDmKdpbUpW9ZZ9v
+         bYxky/qlSBZ1CEn+pIYZrzXqmwIRcJd/UriB/FxkX+aae9q6FlPdZ8BqFh+OBrHR/D25
+         OPQMdCYNlHXwuyF4sy4c/WVtCFUgEC+rEzy4gGv8omZtSIW9b83xUAVI4fXbgzmqctVJ
+         yQtXJZb9q6Q/8R9GWLegUXhjTlz+mc5y4l57fNsfscJJ7g5m01JSdoAr3jQUjfepl9F7
+         U/MRzN2AhESOAoJi9bO2DKMvZQnQPleprTRL4HQ6lNyU6aVhejb/uljEn/f0dC30ZjFL
+         A6cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696556901; x=1697161701;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pXc2O/7sCaxNCrmG6skLU9Fi8ZAb+bkQu9XTdeJPITM=;
-        b=Wnlivp7UtilBh4qGT5+ha54N7SJQlP6fkrQQRuO/CCK/mUfB7i278UCnlvQM3s8GPp
-         jWBaPCVFUX8lvCQGAt5AhprXvOPzejYehmB2KP105vSTc30gnVr6ihBjnfhr4N6hPjjn
-         P5PFRIASIHrTzxJbFKQCwSE0dnHTXU41h8XZyszntGy7IIgQRSFZwqHab8Msj/m5pcjG
-         A8eCpEKUopVdNAZxnFndKezafPrpCkVUr0QbcTkGjxKxAnyTbRb/Zihx7LrdJMp9+wPf
-         oi4LESDc7AbBUK4BDONvMMrXytJHkoJ6eLUFCLTCAixqxXsDchTGa3cBFwUWUBbP750P
-         W6QQ==
-X-Gm-Message-State: AOJu0Yw81b2rvgaNkvDepizueZnigtEVGQ0RUb9l0cqcKKUG+x522gMW
-        i4tvWDxyiEl2gxu0P2rGBgK1Eec1qjo=
-X-Google-Smtp-Source: AGHT+IG5kNlkia9mNVTpbkW4qVJ+ISAXuag8oe/q6O2fyloXPP+UYEYfKbsxwZ6+HCaMsJtpRYwGXiuE5ss=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:500c:0:b0:d81:fc08:29ea with SMTP id
- e12-20020a25500c000000b00d81fc0829eamr89926ybb.2.1696556901326; Thu, 05 Oct
- 2023 18:48:21 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 18:48:19 -0700
-In-Reply-To: <5fc0fbfe-72e8-44bf-bad2-92513f299832@xen.org>
-Mime-Version: 1.0
-References: <20231004174628.2073263-1-paul@xen.org> <ZR2vTN618U0UgtIA@google.com>
- <5fc0fbfe-72e8-44bf-bad2-92513f299832@xen.org>
-Message-ID: <ZR9nYw53O21y0VYM@google.com>
-Subject: Re: [PATCH v2] KVM: x86/xen: ignore the VCPU_SSHOTTMR_future flag
-From:   Sean Christopherson <seanjc@google.com>
-To:     paul@xen.org
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Durrant <pdurrant@amazon.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        d=1e100.net; s=20230601; t=1696558832; x=1697163632;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7A6svaZ5NLBPCdvLBtrQYDjuifxfenalJYib+EmtrBE=;
+        b=s/Wlz1xEDvCC86cxSXTcYcbMTTWMTygaa0Kz6KkqfBDiox9RnSsfZmHFUX/YQnzFAX
+         yIdmUVdS1Vp4yMT68RJppq5RRGtm/Tdsjy2y1UsWQqJ3VxkjOQIqWhr8dVkEIJ9Nc91S
+         eC6tGVBrQE64cKE2qEfj0dyyDUIEbOQg2HwlpQ/KC//kwBQNERvVk8vk08w9Pibfv022
+         nRZbfCaCNpw73hv3kKLMjU3SUKjAE5SXsRI4JFFaXKIrf4rXn0655ezDtwwzyFcndmLC
+         /72+QfQYuucK9oW2lGm0MALhuk4JgqUUAKTVj3VVy8Tkrf/gaknniz6Zfw5OaluE8USZ
+         ZkcA==
+X-Gm-Message-State: AOJu0YyRf1t+HhuR0yKiY40u5jTV+uOLEGHgj7Zn1azsLe6NwYlvJlx9
+        yG3VCsv/lj9K95kSaOAkB7oyvQMl+W7PZ3lZAitpuZWQuzg=
+X-Google-Smtp-Source: AGHT+IEiTyzp02X3Gv5QGee69SJTznrbwBrw/DOEGtGOalihMEdXuCrKaMq/kTK3AF19NS06vrJBgOIphrRfedf5MxU=
+X-Received: by 2002:adf:f546:0:b0:323:3421:9a9 with SMTP id
+ j6-20020adff546000000b00323342109a9mr6326854wrp.60.1696558831882; Thu, 05 Oct
+ 2023 19:20:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230921192749.1542462-1-dianders@chromium.org>
+ <CGME20230921194907eucas1p1027c5dfc5c5f77bca3c43673427c89cc@eucas1p1.samsung.com>
+ <20230921122641.RFT.v2.9.Iea33274908b6b258955f45a8aaf6f5bba24ad6cd@changeid> <fb9cd62b-6637-7bcc-e23d-37f3806f8460@samsung.com>
+In-Reply-To: <fb9cd62b-6637-7bcc-e23d-37f3806f8460@samsung.com>
+From:   Inki Dae <daeinki@gmail.com>
+Date:   Fri, 6 Oct 2023 11:19:54 +0900
+Message-ID: <CAAQKjZNn4RTJ-SHHEugcQoS2U9fzNTOGtUpSLLM0w1V6Pb0amw@mail.gmail.com>
+Subject: Re: [RFT PATCH v2 09/12] drm/exynos: Call drm_atomic_helper_shutdown()
+ at shutdown/unbind time
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, alim.akhtar@samsung.com,
+        sw0312.kim@samsung.com, krzysztof.kozlowski@linaro.org,
+        linux-kernel@vger.kernel.org, kyungmin.park@samsung.com,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,65 +77,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023, Paul Durrant wrote:
-> On 04/10/2023 19:30, Sean Christopherson wrote:
-> > On Wed, Oct 04, 2023, Paul Durrant wrote:
-> > > ---
-> > > Cc: David Woodhouse <dwmw2@infradead.org>
-> > > Cc: Sean Christopherson <seanjc@google.com>
-> > > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > Cc: Ingo Molnar <mingo@redhat.com>
-> > > Cc: Borislav Petkov <bp@alien8.de>
-> > > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > > Cc: x86@kernel.org
-> > 
-> > If you're going to manually Cc folks, put the Cc's in the changelog proper so that
-> > there's a record of who was Cc'd on the patch.
-> > 
-> 
-> FTR, the basic list was generated:
-> 
-> ./scripts/get_maintainer.pl --no-rolestats
-> 0001-KVM-xen-ignore-the-VCPU_SSHOTTMR_future-flag.patch | while read line;
-> do echo Cc: $line; done
-> 
-> and then lightly hacked put x86 at the end and remove my own name... so not
-> really manual.
-> Also not entirely sure why you'd want the Cc list making it into the actual
-> commit.
+Thanks for testing. :)
 
-It's useful for Cc's that *don't* come from get_maintainers, as it provides a
-record in the commit of who was Cc'd on a patch. 
+Acked-by : Inki Dae <inki.dae@samsung.com>
 
-E.g. if someone encounters an issue with a commit, the Cc records provide additional
-contacts that might be able to help sort things out.
-
-Or if a maintainer further up the stream has questions or concerns about a pull
-request, they can use the Cc list to grab the right audience for a discussion,
-or be more confident in merging the request because the maintainer knows that the
-"right" people at least saw the patch.
-
-Lore links provide much of that functionality, but following a link is almost
-always slower, and some maintainers are allergic to web browsers :-)
-
-> > Or even better, just use scripts/get_maintainers.pl and only manually Cc people
-> > when necessary.
-> 
-> I guess this must be some other way of using get_maintainers.pl that you are
-> expecting?
-
-Ah, I was just assuming that you were handcoding the Cc "list", but it sounds
-like you're piping the results into each patch.  That's fine, just a bit noisy
-and uncommon.
-
-FWIW, my scripts gather the To/Cc for all patches in a series, and then use the
-results for the entire series, e.g.
-
-  git send-email --confirm=always --suppress-cc=all $to $bcc $cc ...
-
-That way everyone that gets sent mail gets all patches in a series.  Most
-contributors, myself included, don't like to receive bits and pieces of a series,
-e.g. it makes doing quick triage/reviews annoying, especially if the patches I
-didn't receive weren't sent to any of the mailing list to which I'm subscribed.
+2023=EB=85=84 9=EC=9B=94 22=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 3:00, M=
+arek Szyprowski <m.szyprowski@samsung.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=
+=84=B1:
+>
+>
+> On 21.09.2023 21:26, Douglas Anderson wrote:
+> > Based on grepping through the source code this driver appears to be
+> > missing a call to drm_atomic_helper_shutdown() at system shutdown time
+> > and at driver unbind time. Among other things, this means that if a
+> > panel is in use that it won't be cleanly powered off at system
+> > shutdown time.
+> >
+> > The fact that we should call drm_atomic_helper_shutdown() in the case
+> > of OS shutdown/restart and at driver remove (or unbind) time comes
+> > straight out of the kernel doc "driver instance overview" in
+> > drm_drv.c.
+> >
+> > A few notes about this fix:
+> > - When adding drm_atomic_helper_shutdown() to the unbind path, I added
+> >    it after drm_kms_helper_poll_fini() since that's when other drivers
+> >    seemed to have it.
+> > - Technically with a previous patch, ("drm/atomic-helper:
+> >    drm_atomic_helper_shutdown(NULL) should be a noop"), we don't
+> >    actually need to check to see if our "drm" pointer is NULL before
+> >    calling drm_atomic_helper_shutdown(). We'll leave the "if" test in,
+> >    though, so that this patch can land without any dependencies. It
+> >    could potentially be removed later.
+> > - This patch also makes sure to set the drvdata to NULL in the case of
+> >    bind errors to make sure that shutdown can't access freed data.
+> >
+> > Suggested-by: Maxime Ripard <mripard@kernel.org>
+> > Reviewed-by: Maxime Ripard <mripard@kernel.org>
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>
+> Seems to be working fine on all my test Exynos-based boards with display.
+>
+> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>
+> Reviewed-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>
+> > ---
+> > This commit is only compile-time tested.
+> >
+> > (no changes since v1)
+> >
+> >   drivers/gpu/drm/exynos/exynos_drm_drv.c | 11 +++++++++++
+> >   1 file changed, 11 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/exynos/exynos_drm_drv.c b/drivers/gpu/drm/=
+exynos/exynos_drm_drv.c
+> > index 8399256cb5c9..5380fb6c55ae 100644
+> > --- a/drivers/gpu/drm/exynos/exynos_drm_drv.c
+> > +++ b/drivers/gpu/drm/exynos/exynos_drm_drv.c
+> > @@ -300,6 +300,7 @@ static int exynos_drm_bind(struct device *dev)
+> >       drm_mode_config_cleanup(drm);
+> >       exynos_drm_cleanup_dma(drm);
+> >       kfree(private);
+> > +     dev_set_drvdata(dev, NULL);
+> >   err_free_drm:
+> >       drm_dev_put(drm);
+> >
+> > @@ -313,6 +314,7 @@ static void exynos_drm_unbind(struct device *dev)
+> >       drm_dev_unregister(drm);
+> >
+> >       drm_kms_helper_poll_fini(drm);
+> > +     drm_atomic_helper_shutdown(drm);
+> >
+> >       component_unbind_all(drm->dev, drm);
+> >       drm_mode_config_cleanup(drm);
+> > @@ -350,9 +352,18 @@ static int exynos_drm_platform_remove(struct platf=
+orm_device *pdev)
+> >       return 0;
+> >   }
+> >
+> > +static void exynos_drm_platform_shutdown(struct platform_device *pdev)
+> > +{
+> > +     struct drm_device *drm =3D platform_get_drvdata(pdev);
+> > +
+> > +     if (drm)
+> > +             drm_atomic_helper_shutdown(drm);
+> > +}
+> > +
+> >   static struct platform_driver exynos_drm_platform_driver =3D {
+> >       .probe  =3D exynos_drm_platform_probe,
+> >       .remove =3D exynos_drm_platform_remove,
+> > +     .shutdown =3D exynos_drm_platform_shutdown,
+> >       .driver =3D {
+> >               .name   =3D "exynos-drm",
+> >               .pm     =3D &exynos_drm_pm_ops,
+>
+> Best regards
+> --
+> Marek Szyprowski, PhD
+> Samsung R&D Institute Poland
+>
