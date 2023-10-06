@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EDE7BB535
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED82D7BB543
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbjJFKaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 06:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
+        id S231773AbjJFKbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 06:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231532AbjJFKaV (ORCPT
+        with ESMTP id S231758AbjJFKa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 06:30:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAEC783;
-        Fri,  6 Oct 2023 03:30:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1287C433C7;
-        Fri,  6 Oct 2023 10:30:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696588218;
-        bh=+mvqaTG4RUdvegWzAzQB4Km4EgJ3oHRf9PT0mYVLsRQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dtvkELudcMaOFfelR/3Ox3pum0NvWYQp26iwod064iJ4LtzK46ucZRC1v1NdHxoPP
-         h8UbymfRUuLWVkfnDCpvGPXsD2k0dcL8ANcR951bsdiKUGzIN+nNgci8mTkHNu8XZo
-         TyWSloZk71IEsC88JwZBTtFKuU88e3z+pKFw38oGOylqBoY5KH5nbLPQRgkD7lHlLi
-         3f8msQO4QXgJHBsgwNGsMB+KGaxau8Nl9P9iPqz7AjWp3Ql0NnmVm1NlxGeAn2KV7r
-         qIqkbiySckJv3eyTfJnTYGnHH2CR5N0hpfOcOJKsEqFXeuVdkWDTDeMcOV7cTWIZBG
-         DH99zA3gEvRmA==
-Date:   Fri, 6 Oct 2023 16:00:14 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Kelvin.Cao@microchip.com
-Cc:     dmaengine@vger.kernel.org, George.Ge@microchip.com,
-        christophe.jaillet@wanadoo.fr, hch@infradead.org,
-        linux-kernel@vger.kernel.org, logang@deltatee.com
-Subject: Re: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
- engine PCI driver
-Message-ID: <ZR/htuZSKGJP1wgU@matsya>
-References: <20230728200327.96496-1-kelvin.cao@microchip.com>
- <20230728200327.96496-2-kelvin.cao@microchip.com>
- <ZMlSLXaYaMry7ioA@matsya>
- <fd597a2a71f1c5146c804bb9fce3495864212d69.camel@microchip.com>
- <b0dc3da623dee479386e7cb75841b8b7913c9890.camel@microchip.com>
+        Fri, 6 Oct 2023 06:30:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B52AEA;
+        Fri,  6 Oct 2023 03:30:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696588257; x=1728124257;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=XqzqC3u6ICreoTyLjbtbD1a0rx/MReQVULfRZwZtusQ=;
+  b=g1YCK6eMZA37ztaP5c3yELVv08veGzfUnCySKqvhBL8utPLitrK9mXvr
+   JQejtunm6t7AVcoicymHRTDexJY4rcdwH7b4mJPWRbDBcXDZjn69MSqtq
+   OqHoK+VSQ8uBBKqFiuS0ofD17CIRnicABUG10ejoIFito2GyX6kLVzYFL
+   z/r2P9UasTfcE11SbHRI5xyps2udnTznZiRiH23gBVlKfr5g4cS0Pdl81
+   tgsElbCO2AlPHA2HbvWQlt0Fb6gmhE0uBzrQF2ME+27MWgrT2FyoLOMO0
+   XenvPKo3V+iEOjnVMaYy0OEwJrLaWZLdiY3JimOeDzZc1yRQLThH+ddEv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="469993915"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="469993915"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 03:30:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="822459341"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="822459341"
+Received: from srab-mobl1.ger.corp.intel.com ([10.252.43.69])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 03:30:37 -0700
+Date:   Fri, 6 Oct 2023 13:30:33 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Jithu Joseph <jithu.joseph@intel.com>
+cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        rostedt@goodmis.org, ashok.raj@intel.com, tony.luck@intel.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
+        ravi.v.shankar@intel.com, pengfei.xu@intel.com
+Subject: Re: [PATCH v4 9/9] platform/x86/intel/ifs: ARRAY BIST for Sierra
+ Forest
+In-Reply-To: <20231005195137.3117166-10-jithu.joseph@intel.com>
+Message-ID: <34d7c827-4437-93c6-4c72-8b9b0c5f988@linux.intel.com>
+References: <20230929202436.2850388-1-jithu.joseph@intel.com> <20231005195137.3117166-1-jithu.joseph@intel.com> <20231005195137.3117166-10-jithu.joseph@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b0dc3da623dee479386e7cb75841b8b7913c9890.camel@microchip.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-10-23, 18:35, Kelvin.Cao@microchip.com wrote:
+On Thu, 5 Oct 2023, Jithu Joseph wrote:
 
-> > > > +static struct dma_async_tx_descriptor *
-> > > > +switchtec_dma_prep_wimm_data(struct dma_chan *c, dma_addr_t
-> > > > dma_dst, u64 data,
-> > > > +                          unsigned long flags)
-> > > 
-> > > can you please explain what this wimm data refers to...
-> > > 
-> > > I think adding imm callback was a mistake, we need a better
-> > > justification for another user for this, who programs this, what
-> > > gets
-> > > programmed here
-> > 
-> > Sure. I think it's an alternative method to prep_mem and would be
-> > more
-> > convenient to use when the write is 8-byte and the data to be moved
-> > is
-> > not in a DMA mapped memory location. For example, we write to a
-> > doorbell register with the value from a local variable which is not
-> > associated with a DMA address to notify the receiver to consume the
-> > data, after confirming that the previously initiated DMA transactions
-> > of the data have completed. I agree that the use scenario would be
-> > very
-> > limited.
+> Array BIST MSR addresses, bit definition and semantics are different for
+> Sierra Forest. Branch into a separate Array BIST flow on Sierra Forest
+> when user invokes Array Test.
+> 
+> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+> ---
+>  drivers/platform/x86/intel/ifs/ifs.h     |  7 +++++
+>  drivers/platform/x86/intel/ifs/core.c    | 15 +++++-----
+>  drivers/platform/x86/intel/ifs/runtest.c | 37 +++++++++++++++++++++++-
+>  3 files changed, 51 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
+> index f0dd849b3400..2dd5e3406dac 100644
+> --- a/drivers/platform/x86/intel/ifs/ifs.h
+> +++ b/drivers/platform/x86/intel/ifs/ifs.h
+> @@ -137,6 +137,8 @@
+>  #define MSR_CHUNKS_AUTHENTICATION_STATUS	0x000002c5
+>  #define MSR_ACTIVATE_SCAN			0x000002c6
+>  #define MSR_SCAN_STATUS				0x000002c7
+> +#define MSR_ARRAY_TRIGGER			0x000002d6
+> +#define MSR_ARRAY_STATUS			0x000002d7
+>  #define MSR_SAF_CTRL				0x000004f0
+>  
+>  #define SCAN_NOT_TESTED				0
+> @@ -146,6 +148,9 @@
+>  #define IFS_TYPE_SAF			0
+>  #define IFS_TYPE_ARRAY_BIST		1
+>  
+> +#define ARRAY_GEN_0			0
+> +#define ARRAY_GEN_1			1
 
-Can you please explain more about this 'value' where is it derived from?
-Who programs it and how...
+Thank you for your contribution. I've applied this series to my local 
+review-ilpo branch.
 
-> > > > +     /* set sq/cq */
-> > > > +     writel(lower_32_bits(swdma_chan->dma_addr_sq), &chan_fw-
-> > > > > sq_base_lo);
-> > > > +     writel(upper_32_bits(swdma_chan->dma_addr_sq), &chan_fw-
-> > > > > sq_base_hi);
-> > > > +     writel(lower_32_bits(swdma_chan->dma_addr_cq), &chan_fw-
-> > > > > cq_base_lo);
-> > > > +     writel(upper_32_bits(swdma_chan->dma_addr_cq), &chan_fw-
-> > > > > cq_base_hi);
-> > > > +
-> > > > +     writew(SWITCHTEC_DMA_SQ_SIZE, &swdma_chan->mmio_chan_fw-
-> > > > > sq_size);
-> > > > +     writew(SWITCHTEC_DMA_CQ_SIZE, &swdma_chan->mmio_chan_fw-
-> > > > > cq_size);
-> > > 
-> > > what is write happening in the descriptor alloc callback, that does
-> > > not
-> > > sound correct to me
-> > 
-> > All the queue descriptors of a channel are pre-allocated, so I think
-> > it's proper to convey the queue address/size to hardware at this
-> > point.
-> > After this initialization, we only need to assign cookie in submit
-> > and
-> > update queue head to hardware in issue_pending.
-
-Sorry that is not right, you can prepare multiple descriptors and then
-submit. Only at submit is the cookie assigned which is in order, so this
-should be moved to when we start the txn and not in this call
+I ended up renaming these defines ARRAY_GEN_* -> ARRAY_GEN* to make
+them more consistent.
 
 -- 
-~Vinod
+ i.
+
