@@ -2,124 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 271577BBDFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1377B7BBDE6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbjJFRvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 13:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
+        id S233022AbjJFRnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 13:43:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233058AbjJFRvb (ORCPT
+        with ESMTP id S232552AbjJFRnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 13:51:31 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A782FB6;
-        Fri,  6 Oct 2023 10:51:30 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 6f63dadd0b78c61c; Fri, 6 Oct 2023 19:51:29 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 9AD47665D08;
-        Fri,  6 Oct 2023 19:51:28 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: [PATCH v1 3/6] thermal: gov_fair_share: Rearrange get_trip_level()
-Date:   Fri, 06 Oct 2023 19:42:48 +0200
-Message-ID: <2244940.iZASKD2KPV@kreacher>
-In-Reply-To: <13365827.uLZWGnKmhe@kreacher>
-References: <13365827.uLZWGnKmhe@kreacher>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeigdduudehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgv
- lhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 6 Oct 2023 13:43:06 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DDAAD;
+        Fri,  6 Oct 2023 10:43:05 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396HQidc011774;
+        Fri, 6 Oct 2023 17:43:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=w9D5zFiE5Fk89khSJXhALG58nv+79xh2VzKC33OnWMg=;
+ b=WcpGaMnASCpvYFByZ2x/lpO8iNhURKjSvGgQL9aZcK0eWoljDPFLAFmk5g5ciM+4vpMT
+ kyAfO5a81qjHd6HC9Q3TY21iTSsPMohCkhs9AYnP/8/Hrtx5vJBYZ7J10u6xY1p21Cxd
+ 24kWy1TAyMDYb3c4/oXeiK/xRp4xHof/q0rR0gK1o+AHK+bbuf5AeZ4wlA+/V3E4axsW
+ MyzXuiIG1jPLg7Ec82fjXZto5KGzKcRtniFh2CGKL6LYENJi7h9DwHlQ/OhrVIY/SZpA
+ sgabUNcQjgVKQjNMqhwiy1OON3xMnq5A5vwuYUepFyRstQ1G2GRWzjFWzGYJh5AIp81F GQ== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tjgc691qd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Oct 2023 17:43:00 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 396HgtZB009715;
+        Fri, 6 Oct 2023 17:42:55 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3tecrm81td-1;
+        Fri, 06 Oct 2023 17:42:55 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 396HgtFE009710;
+        Fri, 6 Oct 2023 17:42:55 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-vnivarth-hyd.qualcomm.com [10.213.111.166])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 396Hgt6Z009708;
+        Fri, 06 Oct 2023 17:42:55 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3994820)
+        id 680AB3FEC; Fri,  6 Oct 2023 23:12:54 +0530 (+0530)
+From:   Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        broonie@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     quic_msavaliy@quicinc.com, dianders@chromium.org, mka@chromium.org,
+        swboyd@chromium.org, quic_vtanuku@quicinc.com,
+        Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
+Subject: [PATCH] spi: spi-geni-qcom: Rename the label unmap_if_dma
+Date:   Fri,  6 Oct 2023 23:12:50 +0530
+Message-Id: <1696614170-18969-1-git-send-email-quic_vnivarth@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: KOlDzzKuiDLgQvqTndcrOZQkhU1USYlI
+X-Proofpoint-GUID: KOlDzzKuiDLgQvqTndcrOZQkhU1USYlI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-06_13,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ mlxlogscore=643 impostorscore=0 adultscore=0 spamscore=0 phishscore=0
+ mlxscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310060131
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+The code at unmap_if_dma label doesn't contain unmapping dma anymore but
+has only fsm reset.
 
-Make get_trip_level() use for_each_trip() to iterate over trip points
-and make it call thermal_zone_trip_id() to obtain the integer ID of a
-given trip point so as to avoid relying on the knowledge of struct
-thermal_zone_device internals.
+Rename it to reset_if_dma accordingly.
 
-The general functionality is not expected to be changed.
+No functional change.
 
-This change causes the governor to use trip pointers instead of trip
-indices everywhere except for the fair_share_throttle() second argument
-that will be modified subsequently along with the definition of the
-governor .throttle() callback.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
 ---
- drivers/thermal/gov_fair_share.c |   30 ++++++++++++++----------------
- 1 file changed, 14 insertions(+), 16 deletions(-)
+ drivers/spi/spi-geni-qcom.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Index: linux-pm/drivers/thermal/gov_fair_share.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_fair_share.c
-+++ linux-pm/drivers/thermal/gov_fair_share.c
-@@ -15,29 +15,27 @@
- 
- #include "thermal_core.h"
- 
--/**
-- * get_trip_level: - obtains the current trip level for a zone
-- * @tz:		thermal zone device
-- */
- static int get_trip_level(struct thermal_zone_device *tz)
- {
--	struct thermal_trip trip;
--	int count;
-+	const struct thermal_trip *trip, *level_trip = NULL;
-+	int trip_level;
- 
--	for (count = 0; count < tz->num_trips; count++) {
--		__thermal_zone_get_trip(tz, count, &trip);
--		if (tz->temperature < trip.temperature)
-+	for_each_trip(tz, trip) {
-+		if (level_trip && trip->temperature >= tz->temperature)
- 			break;
-+
-+		level_trip = trip;
+diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+index f4f376a..b956a32 100644
+--- a/drivers/spi/spi-geni-qcom.c
++++ b/drivers/spi/spi-geni-qcom.c
+@@ -166,7 +166,7 @@ static void handle_se_timeout(struct spi_master *spi,
+ 		 * doesn`t support CMD Cancel sequnece
+ 		 */
+ 		spin_unlock_irq(&mas->lock);
+-		goto unmap_if_dma;
++		goto reset_if_dma;
  	}
  
--	/*
--	 * count > 0 only if temperature is greater than first trip
--	 * point, in which case, trip_point = count - 1
--	 */
--	if (count > 0)
--		trace_thermal_zone_trip(tz, count - 1, trip.type);
-+	/*  Bail out if the temperature is not greater than any trips. */
-+	if (level_trip->temperature >= tz->temperature)
-+		return 0;
-+
-+	trip_level = thermal_zone_trip_id(tz, level_trip);
-+
-+	trace_thermal_zone_trip(tz, trip_level, level_trip->type);
+ 	reinit_completion(&mas->cancel_done);
+@@ -175,7 +175,7 @@ static void handle_se_timeout(struct spi_master *spi,
  
--	return count;
-+	return trip_level;
- }
+ 	time_left = wait_for_completion_timeout(&mas->cancel_done, HZ);
+ 	if (time_left)
+-		goto unmap_if_dma;
++		goto reset_if_dma;
  
- static long get_target_state(struct thermal_zone_device *tz,
-
-
+ 	spin_lock_irq(&mas->lock);
+ 	reinit_completion(&mas->abort_done);
+@@ -193,7 +193,7 @@ static void handle_se_timeout(struct spi_master *spi,
+ 		mas->abort_failed = true;
+ 	}
+ 
+-unmap_if_dma:
++reset_if_dma:
+ 	if (mas->cur_xfer_mode == GENI_SE_DMA) {
+ 		if (xfer) {
+ 			if (xfer->tx_buf) {
+-- 
+2.7.4
 
