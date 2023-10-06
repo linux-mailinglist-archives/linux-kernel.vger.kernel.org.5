@@ -2,52 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9267B7BB9E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8AF7BB9E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232477AbjJFN7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
+        id S232377AbjJFOAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 10:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232447AbjJFN7B (ORCPT
+        with ESMTP id S232357AbjJFOAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:59:01 -0400
+        Fri, 6 Oct 2023 10:00:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E2BD6;
-        Fri,  6 Oct 2023 06:58:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D68CC433B6;
-        Fri,  6 Oct 2023 13:58:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696600739;
-        bh=B+nSMcPQ6Dfl5BlciIkViTGxDzdj1bYUxQNg0HS+Vlw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=k04UhtoGjZnMPVLw1q7zv7NSaXAEqjNHtEAZ6QQwW/wQXu3UXIRE53/OhcfRygQFj
-         8cfsn5qYN4SUe7gTGM6NtQ62xmxxbk7ejeFoTRi0UcOK+hVT4hbRAI5F+EgOUNlATV
-         JHD0CgF5uFi8/RCs+vAvITjxJq8Skzhm0jKgIJxAgi6w4sucOptQ+o+ISnCw7H27n4
-         imMHSuXHOAZGEn5xUkU9kPd9xFmqJaM0XhfLbaIKlmszJmQP3IPgSCx0F+k8/zBZ5S
-         Zq0GKUfvRS/g1WPl1/rrZ7qJgDt2JWQUNrEI6SK33mpZ1g7xoyM/qT7lEyIR461a5k
-         BzNlNQjyw1sAA==
-Received: (nullmailer pid 3776809 invoked by uid 1000);
-        Fri, 06 Oct 2023 13:58:51 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9AEBB
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 07:00:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A496C433C7;
+        Fri,  6 Oct 2023 14:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696600817;
+        bh=n60Zl5/dYdqZbu0B+NBdbry8iIlOp840xx7nxoVwwvo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VK7hsTp0UWarjXE4myPTx9v5PwbCI7E3mpqrpGnHuzAfW3Lf7LeLzPGEBZvQbh5+t
+         3+chdH5S/plWueiR3gjHpuyGWrHK4tJ9h1gWfcWclwg6iEjy6woWSBQBZ1OoyTSr/L
+         W8f/Dp2xZZs+ixlTe/uYMvDLUfTQ4udj5+l0aYro=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     op-tee@lists.trustedfirmware.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH] tee: make tee_class constant
+Date:   Fri,  6 Oct 2023 16:00:14 +0200
+Message-ID: <2023100613-lustiness-affiliate-7dcb@gregkh>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     konrad.dybcio@linaro.org, andi.shyti@kernel.org,
-        mchehab@kernel.org, conor+dt@kernel.org, linux-i2c@vger.kernel.org,
-        andersson@kernel.org, linux-media@vger.kernel.org,
-        rfoss@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, loic.poulain@linaro.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        todor.too@gmail.com, agross@kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <20231006120159.3413789-5-bryan.odonoghue@linaro.org>
-References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
- <20231006120159.3413789-5-bryan.odonoghue@linaro.org>
-Message-Id: <169660073123.3776792.1207909917818505118.robh@kernel.org>
-Subject: Re: [PATCH 4/5] media: dt-bindings: media: camss: Add
- qcom,sc8280xp-camss binding
-Date:   Fri, 06 Oct 2023 08:58:51 -0500
+Lines:  82
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2566; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=n60Zl5/dYdqZbu0B+NBdbry8iIlOp840xx7nxoVwwvo=; b=owGbwMvMwCRo6H6F97bub03G02pJDKkKQm+DmW9IrpTaWZu1vX292vpn4c0z5ULuhH6v3j+Dp ywsykumI5aFQZCJQVZMkeXLNp6j+ysOKXoZ2p6GmcPKBDKEgYtTACZyLZRhrnD/3llKbl7e7iwL 5hhJLz8S9tvDnmHBVhdJffvVG6bNUUvWkFs/wb+nwm0mAA==
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -58,51 +49,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Now that the driver core allows for struct class to be in read-only
+memory, we should make all 'class' structures declared at build time
+placing them into read-only memory, instead of having to be dynamically
+allocated at runtime.
 
-On Fri, 06 Oct 2023 13:01:58 +0100, Bryan O'Donoghue wrote:
-> Add bindings for qcom,sc8280xp-camss in order to support the camera
-> subsystem for sc8280xp as found in the Lenovo x13s Laptop.
-> 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
->  .../bindings/media/qcom,sc8280xp-camss.yaml   | 598 ++++++++++++++++++
->  1 file changed, 598 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
-> 
+Cc: Jens Wiklander <jens.wiklander@linaro.org>
+Cc: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/tee/tee_core.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml: properties:power-domain-names:items: 'oneOf' conditional failed, one must be fixed:
-	[{'description': 'ife0'}, {'description': 'ife1'}, {'description': 'ife2'}, {'description': 'ife3'}, {'description': 'top'}] is not of type 'object'
-	Additional properties are not allowed ('description' was unexpected)
-	from schema $id: http://devicetree.org/meta-schemas/string-array.yaml#
-Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.example.dts:26:18: fatal error: dt-bindings/clock/qcom,sc8280xp-camcc.h: No such file or directory
-   26 |         #include <dt-bindings/clock/qcom,sc8280xp-camcc.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231006120159.3413789-5-bryan.odonoghue@linaro.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+index 0eb342de0b00..5ddfd5d9ac7f 100644
+--- a/drivers/tee/tee_core.c
++++ b/drivers/tee/tee_core.c
+@@ -40,7 +40,10 @@ static const uuid_t tee_client_uuid_ns = UUID_INIT(0x58ac9ca0, 0x2086, 0x4683,
+ static DECLARE_BITMAP(dev_mask, TEE_NUM_DEVICES);
+ static DEFINE_SPINLOCK(driver_lock);
+ 
+-static struct class *tee_class;
++static const struct class tee_class = {
++	.name = "tee",
++};
++
+ static dev_t tee_devt;
+ 
+ struct tee_context *teedev_open(struct tee_device *teedev)
+@@ -919,7 +922,7 @@ struct tee_device *tee_device_alloc(const struct tee_desc *teedesc,
+ 		 teedesc->flags & TEE_DESC_PRIVILEGED ? "priv" : "",
+ 		 teedev->id - offs);
+ 
+-	teedev->dev.class = tee_class;
++	teedev->dev.class = &tee_class;
+ 	teedev->dev.release = tee_release_device;
+ 	teedev->dev.parent = dev;
+ 
+@@ -1112,7 +1115,7 @@ tee_client_open_context(struct tee_context *start,
+ 		dev = &start->teedev->dev;
+ 
+ 	do {
+-		dev = class_find_device(tee_class, dev, &match_data, match_dev);
++		dev = class_find_device(&tee_class, dev, &match_data, match_dev);
+ 		if (!dev) {
+ 			ctx = ERR_PTR(-ENOENT);
+ 			break;
+@@ -1226,10 +1229,10 @@ static int __init tee_init(void)
+ {
+ 	int rc;
+ 
+-	tee_class = class_create("tee");
+-	if (IS_ERR(tee_class)) {
++	rc = class_register(&tee_class);
++	if (rc) {
+ 		pr_err("couldn't create class\n");
+-		return PTR_ERR(tee_class);
++		return rc;
+ 	}
+ 
+ 	rc = alloc_chrdev_region(&tee_devt, 0, TEE_NUM_DEVICES, "tee");
+@@ -1249,8 +1252,7 @@ static int __init tee_init(void)
+ out_unreg_chrdev:
+ 	unregister_chrdev_region(tee_devt, TEE_NUM_DEVICES);
+ out_unreg_class:
+-	class_destroy(tee_class);
+-	tee_class = NULL;
++	class_unregister(&tee_class);
+ 
+ 	return rc;
+ }
+@@ -1259,8 +1261,7 @@ static void __exit tee_exit(void)
+ {
+ 	bus_unregister(&tee_bus_type);
+ 	unregister_chrdev_region(tee_devt, TEE_NUM_DEVICES);
+-	class_destroy(tee_class);
+-	tee_class = NULL;
++	class_unregister(&tee_class);
+ }
+ 
+ subsys_initcall(tee_init);
+-- 
+2.42.0
 
