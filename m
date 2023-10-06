@@ -2,84 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C79767BB5DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287217BB5E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbjJFLEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38946 "EHLO
+        id S231941AbjJFLFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231936AbjJFLEh (ORCPT
+        with ESMTP id S231916AbjJFLFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:04:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC91CA;
-        Fri,  6 Oct 2023 04:04:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E05BEC433C7;
-        Fri,  6 Oct 2023 11:04:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696590275;
-        bh=XLlwpGj1hGJ6zbiAJm0mczBltVK0XU1/GnjKB3xO8Kw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t9sDin+6Bx9KckpASK79eyQQDDBomfGeuU8KogasxXKv1d57Mtv6mAj2kIKRC3dLy
-         VBKwFd5ahyGAq9dVV30loulisE9s6e5uBc/iPD9mZ01kDzVB8/J1vvH6HbPHu+M7sx
-         6PD2ArRTwAJZmzeD6382ROVEM6iZjKSSbIo4/4ao=
-Date:   Fri, 6 Oct 2023 13:04:32 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: Re: [PATCH v4 5/5] drivers/tty/serial: add ESP32S3 ACM device driver
-Message-ID: <2023100640-isolating-privatize-7bf7@gregkh>
-References: <20230928151631.149333-1-jcmvbkbc@gmail.com>
- <20230928151631.149333-6-jcmvbkbc@gmail.com>
- <2023100326-crushing-septic-4856@gregkh>
- <CAMo8BfJgpP-=tNEChcyR3z6i_QeJ9Ywq7EOjjC5i7Uq4OrgXNA@mail.gmail.com>
- <2023100544-rendering-identify-e0ad@gregkh>
- <CAMo8Bf+wS+qiX2mMZm0i8dt7xkDO8RvroP8RF=78zxgFj-zwaA@mail.gmail.com>
- <2023100625-water-molehill-4a8f@gregkh>
- <CAMo8BfLfBEQVTyBXw=K2wsgGF+ZUfJhffX4ax8kX+k_DPSOKYg@mail.gmail.com>
+        Fri, 6 Oct 2023 07:05:42 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8D4CA;
+        Fri,  6 Oct 2023 04:05:41 -0700 (PDT)
+Received: from [192.168.100.7] (unknown [39.34.184.141])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C417366125F2;
+        Fri,  6 Oct 2023 12:05:36 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696590340;
+        bh=Br2dDU51tDwN159y1nk0DEOvOinELT3kcnJgVWVZ96I=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=NWC7KZpOJ4vkunO0YgdxRWPlEeQUuzQvdd6SZ0K/qb0ynsFvQfWHCRLd+dgdVauJH
+         Cjl+eEaglVWwNTl452zEBtgYkyE+0k1Or7Ae1ucJY5EZNm1EIlmBJHhzjFDuJkVkYO
+         Bj97ga7KPDpVUWaNS4LjV39nUUH0Vc6Zn4fsYuCi3HGQ2+anTakmBLCZe4w8eOJ4u8
+         ZpRHAk3Mz8zbqTT2lD0JEJ6gqk9I3n17rNKJf47lvLHkMAWzvFUFLKovFmAiUGIsYi
+         GKq0FtPCIScbeL5zyNQ97UAKM/5YaFnsxHmFafx2CpOToqyffk37jvJ9FhZYnYct6u
+         TgZ0P2EXklAYQ==
+Message-ID: <1b9a4e52-cfa3-4f56-b259-41c94abed362@collabora.com>
+Date:   Fri, 6 Oct 2023 16:05:31 +0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [tip: locking/core] locking/futex/selftests: Remove duplicate ABI
+ defines
+Content-Language: en-US
+To:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20231006095539.1601385-1-usama.anjum@collabora.com>
+ <169658834039.3135.4395839213523782496.tip-bot2@tip-bot2>
+ <20231006104325.GC36277@noisy.programming.kicks-ass.net>
+ <ZR/oKYY7R52wKYC5@gmail.com> <ZR/ptQMWKxHCeXyp@gmail.com>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <ZR/ptQMWKxHCeXyp@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMo8BfLfBEQVTyBXw=K2wsgGF+ZUfJhffX4ax8kX+k_DPSOKYg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 03:27:37AM -0700, Max Filippov wrote:
-> On Fri, Oct 6, 2023 at 2:34 AM Greg Kroah-Hartman
-> > > > Yes, but not all do.  If you don't need to do anything special, it can
-> > > > just claim to be a normal device, we've had threads about this on the
-> > > > list before.  If you don't need to determine in userspace from the tty
-> > > > connection what device it is, just use the default one instead.
-> > >
-> > > Ok, it looks like having
-> > >
-> > > #define PORT_ESP32ACM (-1)
-> > >
-> > > in the driver source should be ok? I've tested that it works.
-> >
-> > Hah, I like that hack.  But why not just use PORT_UNKNOWN?
+On 10/6/23 4:04 PM, Ingo Molnar wrote:
 > 
-> A lot of functionality doesn't work with PORT_UNKNOWN, e.g.
-> console or modem control.
-> I've got the idea of using -1 from this email:
-> https://lore.kernel.org/linux-serial/502240f7-2cac-4fe6-9e27-f9861db3666d@app.fastmail.com/
+> * Ingo Molnar <mingo@kernel.org> wrote:
+> 
+>>
+>> * Peter Zijlstra <peterz@infradead.org> wrote:
+>>
+>>> On Fri, Oct 06, 2023 at 10:32:20AM -0000, tip-bot2 for Muhammad Usama Anjum wrote:
+>>>> The following commit has been merged into the locking/core branch of tip:
+>>>>
+>>>> Commit-ID:     d351a9e56cc90a9ff694550e4b3bcaf51a391525
+>>>> Gitweb:        https://git.kernel.org/tip/d351a9e56cc90a9ff694550e4b3bcaf51a391525
+>>>> Author:        Muhammad Usama Anjum <usama.anjum@collabora.com>
+>>>> AuthorDate:    Fri, 06 Oct 2023 14:55:37 +05:00
+>>>> Committer:     Ingo Molnar <mingo@kernel.org>
+>>>> CommitterDate: Fri, 06 Oct 2023 12:29:45 +02:00
+>>>>
+>>>> locking/futex/selftests: Remove duplicate ABI defines
+>>>>
+>>>> Kselftests are kernel tests that are built with kernel headers
+>>>> from the same source version. The kernel headers, which includes
+>>>> current ABI definitions, are already being included correctly
+>>>> in the futex selftest Makefile with the help of KHDR_INCLUDE,
+>>>> no need to define them again.
+>>>>
+>>>> Remove duplicate ABI definitions, which is effectively dead code.
+>>>>
+>>>> No functional changes intended.
+>>>
+>>> so.. as it happens I recently built these things as stand-alone, and
+>>> then you ver much end up using the system headers.
+>>>
+>>> Also see 20230922205449.808782861@infradead.org where I add more of
+>>> this.
+>>>
+>>> Specifically, if one does:
+>>>
+>>> cd tools/testing/selftests/futex/functional; make
+>>>
+>>> You don't get kernel headers and stuff does not build.
+>>
+>> Hm, I did this after applying the patch, and it does work,
+>> but maybe I missed that those definitions were picked up
+>> from system headers...
+>>
+>> So how about we make sure current kernel headers are applied
+>> correctly in a 'standalone' build? There's no reason they
+>> shouldn't be.
+> 
+> Anyway, I've removed this patch from tip:locking/core until
+> this is cleared up, as your usecase is obviously a valid one ...
 
-Ok, we should encode this as a "real" number, "PORT_ANY" and set it to
--1 and let all new devices use it.
+These days a error should appear if the kernel headers aren't found at
+build time of kselftests. After building headers, kselftests should be build.
 
-thanks,
+➜  functional (06bc8fe4bfc4b) ✗ pwd
+/linux_mainline/tools/testing/selftests/futex/functional
+➜  functional (06bc8fe4bfc4b) ✗ make
 
-greg k-h
+-e error: missing kernel header files.
+Please run this and try again:
+
+    cd /linux_mainline/tools/testing/selftests/../../..
+    make headers
+
+make: *** [../../lib.mk:81: kernel_header_files] Error 1
+➜  functional (06bc8fe4bfc4b) ✗ (cd $mainline && make headers) > /dev/null
+➜  functional (06bc8fe4bfc4b) ✗ make
+gcc  -g -O2 -Wall -D_GNU_SOURCE -pthread -I../include -I../../
+futex_wait_timeout.c -lpthread -lrt -o
+/linux_mainline/tools/testing/selftests/futex/functional/futex_wait_timeout
+
+Before and after applying this patch the behavior is same. I'm doing
+testing on next-20231005.
+
+> 
+> Thanks,
+> 
+> 	Ingo
+
+-- 
+BR,
+Muhammad Usama Anjum
