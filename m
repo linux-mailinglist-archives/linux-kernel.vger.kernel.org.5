@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 192077BBC47
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD327BBC4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbjJFQDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
+        id S232908AbjJFQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjJFQDU (ORCPT
+        with ESMTP id S229853AbjJFQE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:03:20 -0400
+        Fri, 6 Oct 2023 12:04:29 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400E39E;
-        Fri,  6 Oct 2023 09:03:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB46AC433C7;
-        Fri,  6 Oct 2023 16:03:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDB2A6;
+        Fri,  6 Oct 2023 09:04:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A72BC433C8;
+        Fri,  6 Oct 2023 16:04:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696608198;
-        bh=R8EzuiOPzX++xJlYgn5dTs5bXl/SqLiLW9dDDvGhA+k=;
+        s=k20201202; t=1696608268;
+        bh=JIca2rNF7pnZk1VDUltU0QafLhtvatujIWLbLfgLEJ0=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=lASRVfTLCObH/UC45oJ698Wzi/++O6o5B25Bbx+OIWwDyhTqNzJeyOWo3Go2adD6C
-         /D2RkLc8BV9pwCFn8bVVuGlkXNOuSy2DXlAiIYtCLk+xAxNoh99OODMSGXC9s46hn1
-         nyAnrvhiSXI+kA9EOIGWAl07ZKEIQ97fW/hg8P8RGEq70O45rBHLue/leUSVSazoQw
-         PJjM6JQ9wYABQxKT0g/pZ7rXjhLIjy0Ql1eMy8LJLj5uyxTb9xaiZBkee+f+VWITZG
-         i/RYhcj4guXxbBh6ysHuwDo61WVw7/PjqGRM15Ci0ofFo2hbkSKvSvPtZCzavPca0I
-         LjuZB5hrDFlgw==
-Message-ID: <f9a0cd9b-eba8-2abf-2839-2cf3f230c92c@kernel.org>
-Date:   Sat, 7 Oct 2023 01:03:13 +0900
+        b=FtnsFQACjd5d5AS+BffoAu44TRMwoBbkzz9y/AQuHZO1jWYXeA0rAkSzHQEaz72pk
+         oIq5Af/Z4jnFY/vgaOYZbCC+Il1ACSFwgzVvGgkfcl0HIpiWnk7zC/7OdyHUuSxGTD
+         vtuz8a6Iv1tyCl6WSPql5PRbFHL4Muq91AXhmCak+eh2MVf0B0vqrcbvZICOxLtPhW
+         ZhIPOfsFu976YcxTUG8bEqM0SEOHOaotW3e2bjJFYsOr1Vf7jmHVa/XoKn2FzmiLAJ
+         1wbItfg1AqkKrQK6yJi0mSYAFAFAC33mwWPqYDi2SezreOkVbeAG9dRAWqa1iZ6hIA
+         cV/DNGulBD9qg==
+Message-ID: <0b2741dd-a524-dde1-7aa3-520ce076e3c6@kernel.org>
+Date:   Sat, 7 Oct 2023 01:04:22 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH v7 01/26] PM / devfreq: rockchip-dfi: Make pmu regmap
- mandatory
+Subject: Re: [PATCH v7 02/26] PM / devfreq: rockchip-dfi: Embed desc into
+ private data struct
+Content-Language: en-US
 To:     Sascha Hauer <s.hauer@pengutronix.de>,
         linux-rockchip@lists.infradead.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -48,12 +49,12 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
 References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-2-s.hauer@pengutronix.de>
+ <20230704093242.583575-3-s.hauer@pengutronix.de>
 From:   Chanwoo Choi <chanwoo@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20230704093242.583575-2-s.hauer@pengutronix.de>
+In-Reply-To: <20230704093242.583575-3-s.hauer@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -67,51 +68,46 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> As a matter of fact the regmap_pmu already is mandatory because
-> it is used unconditionally in the driver. Bail out gracefully in
-> probe() rather than crashing later.
+> No need for an extra allocation, just embed the struct
+> devfreq_event_desc into the private data struct.
 > 
-> Fixes: b9d1262bca0af ("PM / devfreq: event: support rockchip dfi controller")
+> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > ---
-> 
-> Notes:
->     Changes since v4:
->     - move to beginning of the series to make it easier to backport to stable
->     - Add a Fixes: tag
->     - add missing of_node_put()
-> 
->  drivers/devfreq/event/rockchip-dfi.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
+>  drivers/devfreq/event/rockchip-dfi.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 > 
 > diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index 39ac069cabc75..74893c06aa087 100644
+> index 74893c06aa087..467f9f42d38f7 100644
 > --- a/drivers/devfreq/event/rockchip-dfi.c
 > +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -193,14 +193,15 @@ static int rockchip_dfi_probe(struct platform_device *pdev)
->  		return dev_err_probe(dev, PTR_ERR(data->clk),
->  				     "Cannot get the clk pclk_ddr_mon\n");
+> @@ -49,7 +49,7 @@ struct dmc_usage {
+>   */
+>  struct rockchip_dfi {
+>  	struct devfreq_event_dev *edev;
+> -	struct devfreq_event_desc *desc;
+> +	struct devfreq_event_desc desc;
+>  	struct dmc_usage ch_usage[RK3399_DMC_NUM_CH];
+>  	struct device *dev;
+>  	void __iomem *regs;
+> @@ -204,14 +204,10 @@ static int rockchip_dfi_probe(struct platform_device *pdev)
 >  
-> -	/* try to find the optional reference to the pmu syscon */
->  	node = of_parse_phandle(np, "rockchip,pmu", 0);
-> -	if (node) {
-> -		data->regmap_pmu = syscon_node_to_regmap(node);
-> -		of_node_put(node);
-> -		if (IS_ERR(data->regmap_pmu))
-> -			return PTR_ERR(data->regmap_pmu);
-> -	}
-> +	if (!node)
-> +		return dev_err_probe(&pdev->dev, -ENODEV, "Can't find pmu_grf registers\n");
-> +
-> +	data->regmap_pmu = syscon_node_to_regmap(node);
-> +	of_node_put(node);
-> +	if (IS_ERR(data->regmap_pmu))
-> +		return PTR_ERR(data->regmap_pmu);
-> +
 >  	data->dev = dev;
 >  
->  	desc = devm_kzalloc(dev, sizeof(*desc), GFP_KERNEL);
+> -	desc = devm_kzalloc(dev, sizeof(*desc), GFP_KERNEL);
+> -	if (!desc)
+> -		return -ENOMEM;
+> -
+> +	desc = &data->desc;
+>  	desc->ops = &rockchip_dfi_ops;
+>  	desc->driver_data = data;
+>  	desc->name = np->name;
+> -	data->desc = desc;
+>  
+>  	data->edev = devm_devfreq_event_add_edev(&pdev->dev, desc);
+>  	if (IS_ERR(data->edev)) {
 
 Applied it. Thanks.
 
