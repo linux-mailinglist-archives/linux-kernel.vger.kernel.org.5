@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6447BB789
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE95F7BB788
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbjJFM1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53396 "EHLO
+        id S232285AbjJFM1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbjJFM1O (ORCPT
+        with ESMTP id S232257AbjJFM1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:27:14 -0400
+        Fri, 6 Oct 2023 08:27:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B619FF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:27:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41D96C433AD;
-        Fri,  6 Oct 2023 12:27:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903DEE9
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:27:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3600EC116A7;
+        Fri,  6 Oct 2023 12:27:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696595229;
-        bh=bOf8w7XnCc16OPMA+e95RqpCtIBPs/nM95W8FKx64k0=;
+        s=k20201202; t=1696595233;
+        bh=RtdMEoqo8nayEQ4k8BfxK/6NPIxdjeCli2iRVgA15Qk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NP80/FAHyJhx3j01yWIu134p/m29xD1K3Ijk8Or65OIPy+/vZg3qqkLuqI06ZtSa3
-         siQewwfwxXxIUr7ls+Z3ldqvWMoknqNIx/FWvcKpvh9MhN2eD3khDwWpi1o307/zyk
-         JhQx9m3LJN2HRuxoxQqPyiUCu5UEes+e3K+dMPGxLESsclqnPeKvvPoV5XpZ2RI2Ni
-         Ntw9A7qIFcvlL/0tfQw+3PCQg7eBrYZTnyS/7uUK8vSvP9Ht9t8lsa9GsN0Gyd4TMz
-         1r2VnN+YKlOIkzQ8MpwyuGpKdzKwWbi7dCPctPJGtcMteKfR7TOvH2FT466OQ3YmZn
-         lr3nvfYLaEPTg==
+        b=l9Zm4XpqcRXxtoKBJ04/OP2WV4jBlgdVOmS+pJWo0bE4lEilHOgidYWUHIXLM6bHS
+         IzwlrGHDYYQg4jsC7LSgmgWQ/WnB4i62BF9L8muVDrWTRqsURMvOM2oJvCnWRXJ18j
+         T/ukWIQtJ/2wYXWptjfh1DluHgU7a51xfTo6oyEbnLnE/zEYEi6MRcDtKKK3NU6Pmf
+         Smm4b938sKDqReI6BKx5sOe+bwcR6RHz30msy9DW9c0slSSSq1qgmYnBnqUT7Nk8SC
+         MLIr3hBjTtrQb3W8HSoLrwcKKDQIsYQoy7HzmeArK3UUxC5lKEeUuC7UVOky8jqkC7
+         /eCzsLbTMzZAA==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>,
@@ -40,9 +40,9 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-riscv@lists.infradead.org,
         Inochi Amaoto <inochiama@outlook.com>
-Subject: [PATCH v2 4/5] riscv: dts: sophgo: add initial CV1800B SoC device tree
-Date:   Fri,  6 Oct 2023 20:14:48 +0800
-Message-Id: <20231006121449.721-5-jszhang@kernel.org>
+Subject: [PATCH v2 5/5] riscv: dts: sophgo: add Milk-V Duo board device tree
+Date:   Fri,  6 Oct 2023 20:14:49 +0800
+Message-Id: <20231006121449.721-6-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20231006121449.721-1-jszhang@kernel.org>
 References: <20231006121449.721-1-jszhang@kernel.org>
@@ -58,142 +58,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial device tree for the CV1800B RISC-V SoC by SOPHGO.
+Milk-V Duo[1] board is an embedded development platform based on the
+CV1800B chip. Add minimal device tree files for the development board.
 
+Support basic uart drivers, so supports booting to a basic shell.
+
+Link: https://milkv.io/duo [1]
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 123 ++++++++++++++++++++++++
- 1 file changed, 123 insertions(+)
- create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+ arch/riscv/boot/dts/sophgo/Makefile           |  2 +-
+ .../boot/dts/sophgo/cv1800b-milkv-duo.dts     | 38 +++++++++++++++++++
+ 2 files changed, 39 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
 
-diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+diff --git a/arch/riscv/boot/dts/sophgo/Makefile b/arch/riscv/boot/dts/sophgo/Makefile
+index 5a471b19df22..3fb65512c631 100644
+--- a/arch/riscv/boot/dts/sophgo/Makefile
++++ b/arch/riscv/boot/dts/sophgo/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
++dtb-$(CONFIG_ARCH_SOPHGO) += cv1800b-milkv-duo.dtb
+ dtb-$(CONFIG_ARCH_SOPHGO) += sg2042-milkv-pioneer.dtb
+-
+diff --git a/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
 new file mode 100644
-index 000000000000..df40e87ee063
+index 000000000000..3af9e34b3bc7
 --- /dev/null
-+++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-@@ -0,0 +1,123 @@
++++ b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
+@@ -0,0 +1,38 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
 +/*
 + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
 + */
 +
-+#include <dt-bindings/interrupt-controller/irq.h>
++/dts-v1/;
++
++#include "cv1800b.dtsi"
 +
 +/ {
-+	compatible = "sophgo,cv1800b";
-+	#address-cells = <1>;
-+	#size-cells = <1>;
++	model = "Milk-V Duo";
++	compatible = "milkv,duo", "sophgo,cv1800b";
 +
-+	cpus: cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		timebase-frequency = <25000000>;
-+
-+		cpu0: cpu@0 {
-+			compatible = "thead,c906", "riscv";
-+			device_type = "cpu";
-+			reg = <0>;
-+			d-cache-block-size = <64>;
-+			d-cache-sets = <512>;
-+			d-cache-size = <65536>;
-+			i-cache-block-size = <64>;
-+			i-cache-sets = <128>;
-+			i-cache-size = <32768>;
-+			mmu-type = "riscv,sv39";
-+			riscv,isa = "rv64imafdc";
-+			riscv,isa-base = "rv64i";
-+			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zicntr", "zicsr",
-+					       "zifencei", "zihpm";
-+
-+			cpu0_intc: interrupt-controller {
-+				compatible = "riscv,cpu-intc";
-+				interrupt-controller;
-+				#address-cells = <0>;
-+				#interrupt-cells = <1>;
-+			};
-+		};
++	aliases {
++		serial0 = &uart0;
++		serial1 = &uart1;
++		serial2 = &uart2;
++		serial3 = &uart3;
++		serial4 = &uart4;
 +	};
 +
-+	osc: oscillator {
-+		compatible = "fixed-clock";
-+		clock-output-names = "osc_25m";
-+		#clock-cells = <0>;
++	chosen {
++		stdout-path = "serial0:115200n8";
 +	};
 +
-+	soc {
-+		compatible = "simple-bus";
-+		interrupt-parent = <&plic>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		dma-noncoherent;
-+		ranges;
-+
-+		uart0: serial@4140000 {
-+			compatible = "snps,dw-apb-uart";
-+			reg = <0x04140000 0x100>;
-+			interrupts = <44 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			reg-shift = <2>;
-+			reg-io-width = <4>;
-+			status = "disabled";
-+		};
-+
-+		uart1: serial@4150000 {
-+			compatible = "snps,dw-apb-uart";
-+			reg = <0x04150000 0x100>;
-+			interrupts = <45 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			reg-shift = <2>;
-+			reg-io-width = <4>;
-+			status = "disabled";
-+		};
-+
-+		uart2: serial@4160000 {
-+			compatible = "snps,dw-apb-uart";
-+			reg = <0x04160000 0x100>;
-+			interrupts = <46 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			reg-shift = <2>;
-+			reg-io-width = <4>;
-+			status = "disabled";
-+		};
-+
-+		uart3: serial@4170000 {
-+			compatible = "snps,dw-apb-uart";
-+			reg = <0x04170000 0x100>;
-+			interrupts = <47 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			reg-shift = <2>;
-+			reg-io-width = <4>;
-+			status = "disabled";
-+		};
-+
-+		uart4: serial@41c0000 {
-+			compatible = "snps,dw-apb-uart";
-+			reg = <0x041c0000 0x100>;
-+			interrupts = <48 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			reg-shift = <2>;
-+			reg-io-width = <4>;
-+			status = "disabled";
-+		};
-+
-+		plic: interrupt-controller@70000000 {
-+			compatible = "sophgo,cv1800b-plic", "thead,c900-plic";
-+			reg = <0x70000000 0x4000000>;
-+			interrupts-extended = <&cpu0_intc 11>, <&cpu0_intc 9>;
-+			interrupt-controller;
-+			#address-cells = <0>;
-+			#interrupt-cells = <2>;
-+			riscv,ndev = <101>;
-+		};
-+
-+		clint: timer@74000000 {
-+			compatible = "sophgo,cv1800b-clint", "thead,c900-clint";
-+			reg = <0x74000000 0x10000>;
-+			interrupts-extended = <&cpu0_intc 3>, <&cpu0_intc 7>;
-+		};
++	memory@80000000 {
++		device_type = "memory";
++		reg = <0x80000000 0x3f40000>;
 +	};
++};
++
++&osc {
++	clock-frequency = <25000000>;
++};
++
++&uart0 {
++	status = "okay";
 +};
 -- 
 2.40.1
