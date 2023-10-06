@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AAB7BB0FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 796D77BB101
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjJFExx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 00:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58040 "EHLO
+        id S230081AbjJFEyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 00:54:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbjJFExv (ORCPT
+        with ESMTP id S229918AbjJFEyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 00:53:51 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53595DB;
-        Thu,  5 Oct 2023 21:53:50 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3964e3Cx010052;
-        Fri, 6 Oct 2023 04:53:37 GMT
+        Fri, 6 Oct 2023 00:54:01 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70144DE;
+        Thu,  5 Oct 2023 21:53:59 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3963d9U6022421;
+        Fri, 6 Oct 2023 04:53:42 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=9GFh1YS01daGYvKQdXjTgJDCh+b5kd4B1nYLfCB+O6A=;
- b=fraDxTfSIS/64oiZuUlhNQ6mqMAtb+Xwb0iw5ZaXq80ec8d4x9L6G4vHXgTJAwO94Nm0
- lR5cvV6/Zg94am4PZz/R/BSwFhRcvZD0lJBZXJffR3lPwhG1qrX1gq6Ijw//t5rRBkou
- Yclt7MGMI0WX57SRwq+iJ1tIN1kBRr5RZD57CNL5mHsExAwIsCmWlYoQ56WiuDJMyDxu
- ncfe+ir+2JWeHuB0qidR6YojYUbgeA33f2zqyd+tPFAgagjKpvrQoGokGHMpjmKIXU6Z
- cAxCr5Fq5Ck7VtlcpfNXnh0FFvjOC2G0m2Yb0Xm8/P/kZQA8nKpoSRh2IOqtpAolkpXD /w== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3thn05am04-1
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=qcppdkim1;
+ bh=ym7AeYADiKI1I2XUjRkhj44BrtRJQi/RAV/mHmnnS8w=;
+ b=YfWwVWWy+5XGdWi0Z1TxwcR/qxgV2LhSJOBTjHknmAxEDJ46xOR2fSayrBEot6ewgdQd
+ PGkOS6KGvB2fIvA+K9zhVixZYXqAXuXbCTPkXB/PjXIrBnskZGVwx/oy5iTkdbq3VVyb
+ rGwhsPpwKNd1gsmo1HrnB4cyfbtdoTkKNX7GfHW3IPIRmF2ergLh1D1FInkBwWW8wBm3
+ 4AX+Hisygy34uOP2CgNtgRWlIoMP5ntuuTTkw3yr1aov42YgUNppA5+ab0VQWHmYVYFh
+ GEWUA7Z7Nrxz5uajPOV9p6EmrskA8gkycNCKvaDB/jIW3ZOg6HqDDxQskeZ9WAgLHyTJ rw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3thj6gk3dj-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Oct 2023 04:53:37 +0000
+        Fri, 06 Oct 2023 04:53:42 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3964rahf006966
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3964rfEa003753
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 6 Oct 2023 04:53:36 GMT
+        Fri, 6 Oct 2023 04:53:41 GMT
 Received: from hu-devipriy-blr.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 5 Oct 2023 21:53:31 -0700
+ 15.2.1118.36; Thu, 5 Oct 2023 21:53:36 -0700
 From:   Devi Priya <quic_devipriy@quicinc.com>
 To:     <agross@kernel.org>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
@@ -47,10 +47,12 @@ To:     <agross@kernel.org>, <andersson@kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <u.kleine-koenig@pengutronix.de>,
         <linux-pwm@vger.kernel.org>
-Subject: [PATCH 0/4] Enable pwm support for IPQ5332 & IPQ9574 SoCs
-Date:   Fri, 6 Oct 2023 10:23:13 +0530
-Message-ID: <20231006045317.1056625-1-quic_devipriy@quicinc.com>
+Subject: [PATCH 1/4] dt-bindings: pwm: Document the pwm compatible for ipq5332 & ipq9574
+Date:   Fri, 6 Oct 2023 10:23:14 +0530
+Message-ID: <20231006045317.1056625-2-quic_devipriy@quicinc.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231006045317.1056625-1-quic_devipriy@quicinc.com>
+References: <20231006045317.1056625-1-quic_devipriy@quicinc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -59,48 +61,52 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: dhqULUY4BVT7scxAlZMb_OrYfPUQUecf
-X-Proofpoint-GUID: dhqULUY4BVT7scxAlZMb_OrYfPUQUecf
+X-Proofpoint-GUID: ZRqsp0yTo9oVO1J5rFcOmC9pa9Svk0yP
+X-Proofpoint-ORIG-GUID: ZRqsp0yTo9oVO1J5rFcOmC9pa9Svk0yP
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-06_01,2023-10-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- impostorscore=0 bulkscore=0 spamscore=0 mlxlogscore=549 priorityscore=1501
- mlxscore=0 malwarescore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310060036
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 suspectscore=0 spamscore=0 malwarescore=0 adultscore=0
+ priorityscore=1501 clxscore=1015 mlxlogscore=999 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310060036
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable pwm support for IPQ5332 & IPQ9574 SoCs and document the
-pwm compatibles.
-While at it, use qcom,ipq6018-pwm as the fallback compatible and extend the
-simple-mfd support for ipq5332 & ipq9574 targets.
+Use ipq6018 as the fallback for ipq5332 & ipq9574 and document its compatibles.
 
-This series depends on the below series which adds support
-for the PWM driver on IPQ targets:
-https://lore.kernel.org/linux-arm-msm/20231005160550.2423075-1-quic_devipriy@quicinc.com/
+Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
+---
+ .../devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml        | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Devi Priya (4):
-  dt-bindings: pwm: Document the pwm compatible for ipq5332 & ipq9574
-  dt-bindings: mfd: qcom,tcsr: Extend simple-mfd & pwm support for IPQ
-    targets
-  arm64: dts: qcom: ipq9574: Add pwm support
-  arm64: dts: qcom: ipq5332: Add pwm support
-
- .../devicetree/bindings/mfd/qcom,tcsr.yaml        |  9 ++++++---
- .../devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml |  9 ++++++++-
- arch/arm64/boot/dts/qcom/ipq5332.dtsi             | 15 ++++++++++++++-
- arch/arm64/boot/dts/qcom/ipq9574-rdp418.dts       | 12 ++++++++++++
- arch/arm64/boot/dts/qcom/ipq9574.dtsi             | 15 ++++++++++++++-
- 5 files changed, 54 insertions(+), 6 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml b/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
+index 6d0d7ed271f7..8335c2952c2a 100644
+--- a/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
++++ b/Documentation/devicetree/bindings/pwm/qcom,ipq6018-pwm.yaml
+@@ -11,7 +11,14 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: qcom,ipq6018-pwm
++    oneOf:
++      - items:
++          - enum:
++              - qcom,ipq5332-pwm
++              - qcom,ipq9574-pwm
++          - const: qcom,ipq6018-pwm
++      - enum:
++          - qcom,ipq6018-pwm
+ 
+   reg:
+     description: Offset of PWM register in the TCSR block.
 -- 
 2.34.1
 
