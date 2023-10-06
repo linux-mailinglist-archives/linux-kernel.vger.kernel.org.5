@@ -2,137 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E707BBB64
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35FD7BBB6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbjJFPMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 11:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        id S232725AbjJFPMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 11:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232718AbjJFPMB (ORCPT
+        with ESMTP id S230223AbjJFPMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 11:12:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B474CDE
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 08:12:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696605120; x=1728141120;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fjbIAXrWpPm5Y8Alw4dLyHvY0cP22rX9Piu85LI1l5Y=;
-  b=BDF7ixhwfSMFPPeSRyJAr1nBOdAZ0DBTBh/6rHEiYP1dPT4daKoQMKEx
-   b384Bb9hShyyTVBxyFdp3vFRQls0jExDJvP4Z0B0a5YB5/Ddca1V7h8tw
-   WejuyPYWqDZzrKwDhIRg36WcsZvdmx/SFThc4XEZH5TGkKBtJ3C1q3Qgg
-   +/IxK34EQu2KlQ5T20uYmnPy/wh5oXo4CUkERFcHeBIJ27ltKMBtX7/5c
-   38CtAeVMF4FGn2imXFUM68wlFyBmC6UjTwLtVrj9bHwmWkDdWPI1i6QkA
-   D3aB+E5P568l+23HTidQ6iKBuDSxPjy2pWh/PjvaBGwRM8APzxypz7zZW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="470035254"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="470035254"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 08:11:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="702081581"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="702081581"
-Received: from kvsudesh-mobl1.gar.corp.intel.com (HELO box.shutemov.name) ([10.251.222.76])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 08:11:54 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id AD52C10A172; Fri,  6 Oct 2023 18:11:51 +0300 (+03)
-Date:   Fri, 6 Oct 2023 18:11:51 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        "Kalra, Ashish" <ashish.kalra@amd.com>
-Subject: Re: [PATCH 10/13] x86/tdx: Convert shared memory back to private on
- kexec
-Message-ID: <20231006151151.2m6t7fcu36hlrtzj@box.shutemov.name>
-References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
- <20231005131402.14611-11-kirill.shutemov@linux.intel.com>
- <ZSAge6W4vF6ePudw@google.com>
+        Fri, 6 Oct 2023 11:12:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA3A9F;
+        Fri,  6 Oct 2023 08:12:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E7A5C433C9;
+        Fri,  6 Oct 2023 15:12:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696605140;
+        bh=pBOi8Gv1qqAYJ4e8Pn7HdfqP1/2VS6TDqzcavQT8xAc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nh1+bqXtCsi7ZZjZza7aC7d+ut2k/L3MQ+5Yjbyyv1/rHiu7DpXYb0fba6V9ovLcq
+         3nThaQWrbMSifXObCGFbgCaXVJETfj+p1iG9omrqLEXdhglmUntxPtacm984ZQ1IBq
+         Z56bKzR9KRYYZqsZzOfgNAeaXVyIOXMLoOpWbR5GfsoOlMe93ATdTWsA/vWL3yOZIw
+         im/S8fZbvtC5Y7Yqda311tVnW6zF4kuV7/vvLGpLqNiA9Oq8oT3u2sKz0otwYRSmfL
+         idCa4DHkyLoKI6w+NKGAmzCYnkJFjfggZH5oYwNtKZs9UAyZjuvi9kdrvFd1Qyly2K
+         XwCQmPtZXBDEw==
+Received: (nullmailer pid 3946956 invoked by uid 1000);
+        Fri, 06 Oct 2023 15:12:17 -0000
+Date:   Fri, 6 Oct 2023 10:12:17 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        loic.poulain@linaro.org, rfoss@kernel.org, andi.shyti@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        todor.too@gmail.com, mchehab@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] media: dt-bindings: media: camss: Add
+ qcom,sc8280xp-camss binding
+Message-ID: <20231006151217.GA3943830-robh@kernel.org>
+References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
+ <20231006120159.3413789-5-bryan.odonoghue@linaro.org>
+ <ace84d7f-d332-4598-a95d-634c1d17f852@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZSAge6W4vF6ePudw@google.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ace84d7f-d332-4598-a95d-634c1d17f852@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 07:58:03AM -0700, Sean Christopherson wrote:
-> On Thu, Oct 05, 2023, Kirill A. Shutemov wrote:
-> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > index 7368d254d01f..b5acf9fb4c70 100644
-> > --- a/arch/x86/Kconfig
-> > +++ b/arch/x86/Kconfig
-> > @@ -884,6 +884,7 @@ config INTEL_TDX_GUEST
-> >  	select X86_MEM_ENCRYPT
-> >  	select X86_MCE
-> >  	select UNACCEPTED_MEMORY
-> > +	select EMERGENCY_VIRT_CALLBACK
-> >  	help
-> >  	  Support running as a guest under Intel TDX.  Without this support,
-> >  	  the guest kernel can not boot or run under TDX.
-> 
-> ...
-> 
-> >  void __init tdx_early_init(void)
-> >  {
-> >  	struct tdx_module_args args = {
-> > @@ -882,6 +1007,14 @@ void __init tdx_early_init(void)
-> >  	 */
-> >  	x86_cpuinit.parallel_bringup = false;
-> >  
-> > +	machine_ops.shutdown = tdx_shutdown;
+On Fri, Oct 06, 2023 at 02:33:42PM +0200, Krzysztof Kozlowski wrote:
+> On 06/10/2023 14:01, Bryan O'Donoghue wrote:
+> > Add bindings for qcom,sc8280xp-camss in order to support the camera
+> > subsystem for sc8280xp as found in the Lenovo x13s Laptop.
+> > 
+> > Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> > ---
+> >  .../bindings/media/qcom,sc8280xp-camss.yaml   | 598 ++++++++++++++++++
+> >  1 file changed, 598 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml b/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
+> > new file mode 100644
+> > index 000000000000..46d2da4ad373
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
+> > @@ -0,0 +1,598 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 > > +
-> > +	/*
-> > +	 * KVM overrides machine_ops.crash_shutdown, use emergency
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/media/qcom,sc8280xp-camss.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm CAMSS
 > 
-> This is going to be super confusing.  KVM utilizes the emergency virt callback.
-> The KVM paravirt guest code uses .crash_shutdown().  People that are passingly
-> familiar with virt and know what KVM is, but don't already know the difference
-> between the two are going to be all kinds of confused.
+> Instead something like:
+> Qualcomm SC8280xp Camera SubSystem (CAMSS)
+> ?
 > 
-> I also feel like you're playing with fire, e.g. what's to stop the hypervisor
-> specific paravirt guest support from using .shutdown() in the future?
+> > +
+> > +maintainers:
+> > +  - Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> > +
+> > +description: |
+> > +  The CAMSS IP is a CSI decoder and ISP present on Qualcomm platforms.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: qcom,sc8280xp-camss
+> > +
+> > +  clocks:
+> > +    minItems: 63
 > 
-> And the callback is invoked for far more than just kexec().  I don't see how the
-> host can emulate a reboot without destroying and rebuilding the VM, e.g. it can't
-> stuff register state to emulate INIT or RESET.  Unless I'm missing something,
-> converting shared memory back to private for a shutdown or reboot is undesirable
-> as adds one more thing that can go wrong and prevent the system from cleanly
-> shutting down ASAP (for some definitions of "cleanly").
+> You can drop minItems if they equal maxItems.
+> 
+> > +    maxItems: 63
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: camnoc_axi
+> > +      - const: camnoc_axi_src
+> > +      - const: cpas_ahb
+> > +      - const: cphy_rx_src
+> > +      - const: csiphy0
+> > +      - const: csiphy0_timer_src
+> > +      - const: csiphy0_timer
+> > +      - const: csiphy1
+> > +      - const: csiphy1_timer_src
+> > +      - const: csiphy1_timer
+> > +      - const: csiphy2
+> > +      - const: csiphy2_timer_src
+> > +      - const: csiphy2_timer
+> > +      - const: csiphy3
+> > +      - const: csiphy3_timer_src
+> > +      - const: csiphy3_timer
+> > +      - const: vfe0_axi
+> > +      - const: vfe0_src
+> > +      - const: vfe0
+> > +      - const: vfe0_cphy_rx
+> > +      - const: vfe0_csid_src
+> > +      - const: vfe0_csid
+> > +      - const: vfe1_axi
+> > +      - const: vfe1_src
+> > +      - const: vfe1
+> > +      - const: vfe1_cphy_rx
+> > +      - const: vfe1_csid_src
+> > +      - const: vfe1_csid
+> > +      - const: vfe2_axi
+> > +      - const: vfe2_src
+> > +      - const: vfe2
+> > +      - const: vfe2_cphy_rx
+> > +      - const: vfe2_csid_src
+> > +      - const: vfe2_csid
+> > +      - const: vfe3_axi
+> > +      - const: vfe3_src
+> > +      - const: vfe3
+> > +      - const: vfe3_cphy_rx
+> > +      - const: vfe3_csid_src
+> > +      - const: vfe3_csid
+> > +      - const: vfe_lite0_src
+> > +      - const: vfe_lite0
+> > +      - const: vfe_lite0_cphy_rx
+> > +      - const: vfe_lite0_csid_src
+> > +      - const: vfe_lite0_csid
+> > +      - const: vfe_lite1_src
+> > +      - const: vfe_lite1
+> > +      - const: vfe_lite1_cphy_rx
+> > +      - const: vfe_lite1_csid_src
+> > +      - const: vfe_lite1_csid
+> > +      - const: vfe_lite2_src
+> > +      - const: vfe_lite2
+> > +      - const: vfe_lite2_cphy_rx
+> > +      - const: vfe_lite2_csid_src
+> > +      - const: vfe_lite2_csid
+> > +      - const: vfe_lite3_src
+> > +      - const: vfe_lite3
+> > +      - const: vfe_lite3_cphy_rx
+> > +      - const: vfe_lite3_csid_src
+> > +      - const: vfe_lite3_csid
+> > +      - const: gcc_axi_hf
+> > +      - const: gcc_axi_sf
+> > +      - const: slow_ahb_src
+> > +
+> > +  interrupts:
+> > +    minItems: 20
+> 
+> You can drop minItems if they equal maxItems.
+> 
+> 
+> > +    maxItems: 20
+> > +
+> > +  interrupt-names:
+> > +    items:
+> > +      - const: csid1_lite
+> > +      - const: vfe_lite1
+> > +      - const: csiphy3
+> > +      - const: csid0
+> > +      - const: vfe0
+> > +      - const: csid1
+> > +      - const: vfe1
+> > +      - const: csid0_lite
+> > +      - const: vfe_lite0
+> > +      - const: csiphy0
+> > +      - const: csiphy1
+> > +      - const: csiphy2
+> > +      - const: csid2
+> > +      - const: vfe2
+> > +      - const: csid3_lite
+> > +      - const: csid2_lite
+> > +      - const: vfe_lite3
+> > +      - const: vfe_lite2
+> > +      - const: csid3
+> > +      - const: vfe3
+> > +
+> > +  iommus:
+> > +    minItems: 16
+> 
+> You can drop minItems if they equal maxItems.
+> 
+> > +    maxItems: 16
+> > +
+> > +  interconnects:
+> > +    minItems: 4
+> 
+> You can drop minItems if they equal maxItems.
+> 
+> 
+> > +    maxItems: 4
+> > +
+> > +  interconnect-names:
+> > +    items:
+> > +      - const: cam_ahb
+> > +      - const: cam_hf_mnoc
+> > +      - const: cam_sf_mnoc
+> > +      - const: cam_sf_icp_mnoc
+> > +
+> > +  power-domains:
+> > +    items:
+> > +      - description: IFE0 GDSC - Image Front End, Global Distributed Switch Controller.
+> > +      - description: IFE1 GDSC - Image Front End, Global Distributed Switch Controller.
+> > +      - description: IFE2 GDSC - Image Front End, Global Distributed Switch Controller.
+> > +      - description: IFE3 GDSC - Image Front End, Global Distributed Switch Controller.
+> > +      - description: Titan Top GDSC - Titan ISP Block, Global Distributed Switch Controller.
+> > +
+> > +  power-domain-names:
+> > +    items:
+> > +      - description: ife0
+> > +      - description: ife1
+> > +      - description: ife2
+> > +      - description: ife3
+> > +      - description: top
+> > +
+> > +  ports:
+> > +    $ref: /schemas/graph.yaml#/properties/ports
+> > +
+> 
+> On this level of indentation:
+> additionalProperties: false
 
-Okay, fair enough. I will look for better way to hookup into kexec
-process. That was the best fit I found so far, but yes it is not ideal.
+No, because then #size-cells/#address-cells won't be allowed.
 
-> Lastly, doesn't SEV need similar behavior?  This seems like core functionality
-> for any guest with cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT).  Why not make the
-> "unshare on kexec" code common and gate it with CC_ATTR_GUEST_MEM_ENCRYPT?
-
-I don't know SEV specifics. I am open to collaboration on this.
-
-Tom, Ashish, let me know if you need this in generic code. I can arrange
-that.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Rob
