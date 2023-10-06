@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7075A7BB46F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125477BB478
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbjJFJnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 05:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
+        id S231461AbjJFJrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 05:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbjJFJnp (ORCPT
+        with ESMTP id S231429AbjJFJra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 05:43:45 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 31FEBE4;
-        Fri,  6 Oct 2023 02:43:44 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FBD8C15;
-        Fri,  6 Oct 2023 02:44:22 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A7C473F5A1;
-        Fri,  6 Oct 2023 02:43:41 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 10:43:39 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 9/9] firmware: arm_scmi: Add generic OPP support to the
- SCMI performance domain
-Message-ID: <20231006094339.i6kbotlsbdqmgxb6@bogus>
-References: <20230925131715.138411-1-ulf.hansson@linaro.org>
- <20230925131715.138411-10-ulf.hansson@linaro.org>
- <20230929162522.zjoh5d2tqspzm3nc@bogus>
- <20231003082133.xyu46szs3jfm6fks@vireshk-i7>
- <20231003112647.bbqwnre5bzijw5sg@bogus>
- <20231004050806.sba3ogq76yiylrro@vireshk-i7>
- <20231005150649.p6viyorcucq2irsi@bogus>
- <20231006070923.hf3izdazuwng7uv5@vireshk-i7>
+        Fri, 6 Oct 2023 05:47:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4089F;
+        Fri,  6 Oct 2023 02:47:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5000DC433C8;
+        Fri,  6 Oct 2023 09:47:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696585648;
+        bh=Yl15YQeFlc8bzC6oSZ0ClIT+LMOvWWe4T1wyTMdQweQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GDXRlib3O1Le5bWbTLHB6PgNtXJL+0OHtFGWLEGfe1PVHz1ASUZs3dV0LIuEsSKYF
+         EZ1CUHgo/0oR5L8+6P2ynTmsW0CGQFxpBj9Dsb/c+f+5u4Meurhn6YOiqYOEc2ButZ
+         nVsh2Re/XvHRw56MHOwh26rocm21yBZg2tIk4f9l34XmN2Ud/crC7xs3hYua4VNd40
+         /fj+VvK1tugZZEpNnFCaYkiZfpGZvzL/SqNd3xoukROobjF5g/aLg1iPwe2XANuMMA
+         d52FT8acCRJPiXQt9E4Cv4UmYG6tHD5LooLSh5brELHCZ+0QY3QQk5Si+p+hHpdELx
+         tk7qkluolK49A==
+Message-ID: <cf16e053-2303-e60e-dfa3-368393b54cec@kernel.org>
+Date:   Fri, 6 Oct 2023 18:47:25 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231006070923.hf3izdazuwng7uv5@vireshk-i7>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 0/4] ata: pata_parport: fix EXP Computer CD-865 with
+ MC-1285B EPP cable
+Content-Language: en-US
+To:     Ondrej Zary <linux@zary.sk>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Tim Waugh <tim@cyberelk.net>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231005205559.6504-1-linux@zary.sk>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20231005205559.6504-1-linux@zary.sk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 12:39:23PM +0530, Viresh Kumar wrote:
-> On 05-10-23, 16:06, Sudeep Holla wrote:
-> > Thanks, I wasn't expecting these patches in the branch, but if you are
-> > aware off and are fine with it, I have no objections.
-> > 
-> > 	dt-bindings: opp: opp-v2-kryo-cpu: Allow opp-peak-kBps
-> > 	OPP: debugfs: Fix warning with W=1 builds
-> > 	OPP: Remove doc style comments for internal routines
-> > 	OPP: Add dev_pm_opp_find_level_floor()
+On 10/6/23 05:55, Ondrej Zary wrote:
 > 
-> Ahh, I didn't create a fresh branch for this but added them on top of
-> OPP changes. Fixed it now. Fetch the repo again.
+> Two bugfixes, one workaround and IDE command set registers support for fit3
+> driver. All needed for EXP Computer CD-865 drive with MC-1285B EPP cable to
+> work.
+> 
+> Signed-off-by: Ondrej Zary <linux@zary.sk>
+> ---
+> Changes in v4:
+>  - coding style fixes in patch 3
+> 
+>  drivers/ata/pata_parport/fit3.c         | 14 +-----
+>  drivers/ata/pata_parport/pata_parport.c | 78 ++++++++++++++++++++++++++++++++-
+>  2 files changed, 78 insertions(+), 14 deletions(-)
 
-Thanks, glad I asked, initially assumed you were aware of it :).
+Applied to for-6.6-fixes. Thanks !
 
 -- 
-Regards,
-Sudeep
+Damien Le Moal
+Western Digital Research
+
