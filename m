@@ -2,288 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C57737BBAB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA8D7BBAB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232572AbjJFOqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 10:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
+        id S232590AbjJFOsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 10:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232506AbjJFOqx (ORCPT
+        with ESMTP id S232506AbjJFOr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 10:46:53 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6795A6
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 07:46:51 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4064876e8b8so21447365e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 07:46:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696603610; x=1697208410; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zMY6Oywu9+xD9eu/3FX3tlRBq0A2AjLLPkWOIrzo07w=;
-        b=KYTzsdMvCT7lTijZ0+RyL25Dd7z9DVlC+kJhgS4+Gl8G0DjQE+SyyME8NRFwi3DsnQ
-         5aI4zXdmqWc+aVM0s5EXbfYt9BRMfdEsmDT1Vkm3Z2EpeZCb4Gzwe3X17Vx5ISrFUdpY
-         JDzQG3jBG4zOidgrVzew4I473DDwutUc9MDBn0BmnjeH8GgvPdD+6Op7hGBxRVKCLXK/
-         IE5jzJrCBHaEtpTC+3dW9PJFNZQDAbKLH10/Wzq0hpDaCCUF/xLj4QnCAISEbuvM9En8
-         u5FPrCso1/bUqPVkj6t9AjIq7cH50zb9x2D2a2HJma8EsuHTk3FI440BKvEVBEWm2OYY
-         mhUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696603610; x=1697208410;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zMY6Oywu9+xD9eu/3FX3tlRBq0A2AjLLPkWOIrzo07w=;
-        b=JpY+ApOAn2CwLdCIRsDxqU20iCKlfK6TzjkzkJAwi4Gd0ULv2MQj6x+jXBr3BLkkPM
-         LGLWsedK4LwUp/yYVEOP8OjoKtidurwlmKP1eiq5EBNap+NztMEpSykZVXCNUKwTN71i
-         A2lx2TsxRqiPSErmoHILcAFPruXmCDISmF5lqYeCP+m6nA/kILbFZ+SLHzvnLDTnmXNI
-         MzRda4eH9+x8WPWwDkmv4Ps1jlpg+sPv8ozlbGkuIjJX85Rh4ctIRTxB1fJoCr1peTSl
-         pLceP0uUdYl/rGxfThZRGfUPsSnKx9zYJDfzxqUG1GBbc24Il5YhQBB1iqRJhJF9XlS4
-         xTkg==
-X-Gm-Message-State: AOJu0YxmBawbQc8MN36MncGlhHSU/2FADOusMayB42Q8U5LVRaGq7dyl
-        3X0wC0jv1QKp96/uYWx3jORqyw==
-X-Google-Smtp-Source: AGHT+IEs8p5YrMMkbRPAukUwPzYqqFBywIqnknUGZ1/mKgg5n7mfYi2FPs0LeWV2gUT14L7JIx8BSg==
-X-Received: by 2002:a05:600c:22d5:b0:406:52e4:cd23 with SMTP id 21-20020a05600c22d500b0040652e4cd23mr7724633wmg.0.1696603610039;
-        Fri, 06 Oct 2023 07:46:50 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:c8f7:4bc7:2e11:c133? ([2a01:e0a:982:cbb0:c8f7:4bc7:2e11:c133])
-        by smtp.gmail.com with ESMTPSA id m7-20020a7bce07000000b003fc16ee2864sm3896804wmc.48.2023.10.06.07.46.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 07:46:49 -0700 (PDT)
-Message-ID: <00bb552d-be6f-464f-9ca9-03a6d4ea26b7@linaro.org>
-Date:   Fri, 6 Oct 2023 16:46:48 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v1] arm64: dts: amlogic: a1: support all i2c masters and
- their muxes
-Content-Language: en-US, fr
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>, jbrunet@baylibre.com,
-        mturquette@baylibre.com, khilman@baylibre.com,
-        martin.blumenstingl@googlemail.com
-Cc:     kernel@sberdevices.ru, rockosov@gmail.com,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        Fri, 6 Oct 2023 10:47:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E51A6
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 07:47:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696603677; x=1728139677;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Q6cQelynE4rTwAzTODBvQckDdOlp9FgcGKV65uBI6Pw=;
+  b=ajoWItSFg/Gxuww7DJ6z5RiA57pPLUg01HMZHE1a8DmCxQg8+I39NGJE
+   xE9fp5oQlnSwjIyCtG0wH/wzNUArleOg+MXFvg/MbJBTWwLlne2d3xeur
+   O+a6IayskSFQGIpnnOM3TscBvhlQWJUJVP8LTyTydGVXD1klw3FnZS9Iq
+   MldsuNOl6gh8r+wvlC36wxKfn+S9DnY2I7QU66Mudr9ycsMHI5MeAgJ7l
+   zxlQEl7oHo0dthgzEsUElmIDwcRvbvGj4YU3j9oBaaEA8okmtJg51KD7F
+   8iMpBWTobLMq9OSSiG8YvlWUqCVc/U5t3Rn/tr256QYVgYCGjC9don5VU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="387642136"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="387642136"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 07:47:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="752212944"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="752212944"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 07:47:53 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qom7K-00000003L89-0Ik7;
+        Fri, 06 Oct 2023 17:47:50 +0300
+Date:   Fri, 6 Oct 2023 17:47:49 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, aleksander.lobakin@intel.com,
+        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        George Stark <gnstark@salutedevices.com>
-References: <20231006114145.18718-1-ddrokosov@salutedevices.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231006114145.18718-1-ddrokosov@salutedevices.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v6 1/5] lib/bitmap: add bitmap_{read,write}()
+Message-ID: <ZSAeFfNOUZIrK3Yk@smile.fi.intel.com>
+References: <20231006134529.2816540-1-glider@google.com>
+ <20231006134529.2816540-2-glider@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006134529.2816540-2-glider@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2023 13:41, Dmitry Rokosov wrote:
-> A1 SoC family has four i2c masters: i2c0 (I2CM_A), i2c1 (I2CM_B), i2c2
-> (I2CM_C) and i2c3 (I2CM_D).
+On Fri, Oct 06, 2023 at 03:45:25PM +0200, Alexander Potapenko wrote:
+> From: Syed Nayyar Waris <syednwaris@gmail.com>
 > 
-> Signed-off-by: George Stark <gnstark@salutedevices.com>
-> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> ---
->   arch/arm64/boot/dts/amlogic/meson-a1.dtsi | 144 ++++++++++++++++++++++
->   1 file changed, 144 insertions(+)
+> The two new functions allow reading/writing values of length up to
+> BITS_PER_LONG bits at arbitrary position in the bitmap.
 > 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
-> index 823714bcb7a0..f53000a5d0cc 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
-> @@ -126,6 +126,106 @@ gpio: bank@400 {
->   					gpio-ranges = <&periphs_pinctrl 0 0 62>;
->   				};
->   
-> +				i2c0_f11_pins: i2c0-f11 {
-> +					mux {
-> +						groups = "i2c0_sck_f11",
-> +							 "i2c0_sda_f12";
-> +						function = "i2c0";
-> +						bias-pull-up;
-> +						drive-strength-microamp = <3000>;
-> +					};
-> +				};
-> +
-> +				i2c0_f9_pins: i2c0-f9 {
-> +					mux {
-> +						groups = "i2c0_sck_f9",
-> +							 "i2c0_sda_f10";
-> +						function = "i2c0";
-> +						bias-pull-up;
-> +						drive-strength-microamp = <3000>;
-> +					};
-> +				};
-> +
-> +				i2c1_x_pins: i2c1-x {
-> +					mux {
-> +						groups = "i2c1_sck_x",
-> +							 "i2c1_sda_x";
-> +						function = "i2c1";
-> +						bias-pull-up;
-> +						drive-strength-microamp = <3000>;
-> +					};
-> +				};
-> +
-> +				i2c1_a_pins: i2c1-a {
-> +					mux {
-> +						groups = "i2c1_sck_a",
-> +							 "i2c1_sda_a";
-> +						function = "i2c1";
-> +						bias-pull-up;
-> +						drive-strength-microamp = <3000>;
-> +					};
-> +				};
-> +
-> +				i2c2_x0_pins: i2c2-x0 {
-> +					mux {
-> +						groups = "i2c2_sck_x0",
-> +							 "i2c2_sda_x1";
-> +						function = "i2c2";
-> +						bias-pull-up;
-> +						drive-strength-microamp = <3000>;
-> +					};
-> +				};
-> +
-> +				i2c2_x15_pins: i2c2-x15 {
-> +					mux {
-> +						groups = "i2c2_sck_x15",
-> +							 "i2c2_sda_x16";
-> +						function = "i2c2";
-> +						bias-pull-up;
-> +						drive-strength-microamp = <3000>;
-> +					};
-> +				};
-> +
-> +				i2c2_a4_pins: i2c2-a4 {
-> +					mux {
-> +						groups = "i2c2_sck_a4",
-> +							 "i2c2_sda_a5";
-> +						function = "i2c2";
-> +						bias-pull-up;
-> +						drive-strength-microamp = <3000>;
-> +					};
-> +				};
-> +
-> +				i2c2_a8_pins: i2c2-a8 {
-> +					mux {
-> +						groups = "i2c2_sck_a8",
-> +							 "i2c2_sda_a9";
-> +						function = "i2c2";
-> +						bias-pull-up;
-> +						drive-strength-microamp = <3000>;
-> +					};
-> +				};
-> +
-> +				i2c3_x_pins: i2c3-x {
-> +					mux {
-> +						groups = "i2c3_sck_x",
-> +							 "i2c3_sda_x";
-> +						function = "i2c3";
-> +						bias-pull-up;
-> +						drive-strength-microamp = <3000>;
-> +					};
-> +				};
-> +
-> +				i2c3_f_pins: i2c3-f {
-> +					mux {
-> +						groups = "i2c3_sck_f",
-> +							 "i2c3_sda_f";
-> +						function = "i2c3";
-> +						bias-pull-up;
-> +						drive-strength-microamp = <3000>;
-> +					};
-> +				};
-> +
->   				uart_a_pins: uart-a {
->   					mux {
->   						groups = "uart_a_tx",
-> @@ -377,6 +477,17 @@ clkc_periphs: clock-controller@800 {
->   					      "hifi_pll", "xtal";
->   			};
->   
-> +			i2c0: i2c@1400 {
-> +				compatible = "amlogic,meson-axg-i2c";
-> +				status = "disabled";
-> +				reg = <0x0 0x1400 0x0 0x20>;
-> +				interrupts = <GIC_SPI 32 IRQ_TYPE_EDGE_RISING>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				clocks = <&clkc_periphs CLKID_I2C_M_A>;
-> +				power-domains = <&pwrc PWRC_I2C_ID>;
-> +			};
-> +
->   			uart_AO: serial@1c00 {
->   				compatible = "amlogic,meson-a1-uart",
->   					     "amlogic,meson-ao-uart";
-> @@ -437,6 +548,39 @@ saradc: adc@2c00 {
->   				status = "disabled";
->   			};
->   
-> +			i2c1: i2c@5c00 {
-> +				compatible = "amlogic,meson-axg-i2c";
-> +				status = "disabled";
-> +				reg = <0x0 0x5c00 0x0 0x20>;
-> +				interrupts = <GIC_SPI 68 IRQ_TYPE_EDGE_RISING>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				clocks = <&clkc_periphs CLKID_I2C_M_B>;
-> +				power-domains = <&pwrc PWRC_I2C_ID>;
-> +			};
-> +
-> +			i2c2: i2c@6800 {
-> +				compatible = "amlogic,meson-axg-i2c";
-> +				status = "disabled";
-> +				reg = <0x0 0x6800 0x0 0x20>;
-> +				interrupts = <GIC_SPI 76 IRQ_TYPE_EDGE_RISING>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				clocks = <&clkc_periphs CLKID_I2C_M_C>;
-> +				power-domains = <&pwrc PWRC_I2C_ID>;
-> +			};
-> +
-> +			i2c3: i2c@6c00 {
-> +				compatible = "amlogic,meson-axg-i2c";
-> +				status = "disabled";
-> +				reg = <0x0 0x6c00 0x0 0x20>;
-> +				interrupts = <GIC_SPI 78 IRQ_TYPE_EDGE_RISING>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				clocks = <&clkc_periphs CLKID_I2C_M_D>;
-> +				power-domains = <&pwrc PWRC_I2C_ID>;
-> +			};
-> +
->   			usb2_phy1: phy@4000 {
->   				compatible = "amlogic,a1-usb2-phy";
->   				clocks = <&clkc_periphs CLKID_USB_PHY_IN>;
+> The code was taken from "bitops: Introduce the for_each_set_clump macro"
+> by Syed Nayyar Waris with a number of changes and simplifications:
+>  - instead of using roundup(), which adds an unnecessary dependency
+>    on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
+>  - indentation is reduced by not using else-clauses (suggested by
+>    checkpatch for bitmap_get_value());
+>  - bitmap_get_value()/bitmap_set_value() are renamed to bitmap_read()
+>    and bitmap_write();
+>  - some redundant computations are omitted.
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+...
+
+> v6:
+>  - As suggested by Yury Norov, do not require bitmap_read(..., 0) to
+>    return 0.
+
+Hmm... See below.
+
+...
+
+>   *  bitmap_to_arr32(buf, src, nbits)            Copy nbits from buf to u32[] dst
+>   *  bitmap_to_arr64(buf, src, nbits)            Copy nbits from buf to u64[] dst
+
+With the grouping as below I would add a blank line here. But was the intention
+to group _arrXX() to these groups?
+
+>   *  bitmap_get_value8(map, start)               Get 8bit value from map at start
+> + *  bitmap_read(map, start, nbits)              Read an nbits-sized value from
+> + *                                              map at start
+>   *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
+> + *  bitmap_write(map, value, start, nbits)      Write an nbits-sized value to
+> + *                                              map at start
+
+...
+
+> +static inline unsigned long bitmap_read(const unsigned long *map,
+> +					unsigned long start,
+> +					unsigned long nbits)
+> +{
+> +	size_t index = BIT_WORD(start);
+> +	unsigned long offset = start % BITS_PER_LONG;
+> +	unsigned long space = BITS_PER_LONG - offset;
+> +	unsigned long value_low, value_high;
+
+> +	if (unlikely(!nbits))
+> +		return 0;
+
+Hmm... I didn't get was the comment to add or to remove these checks?
+
+> +	if (space >= nbits)
+> +		return (map[index] >> offset) & GENMASK(nbits - 1, 0);
+
+And don't you want to replace this GENMASK() as well?
+
+> +	value_low = map[index] & BITMAP_FIRST_WORD_MASK(start);
+> +	value_high = map[index + 1] & BITMAP_LAST_WORD_MASK(start + nbits);
+> +	return (value_low >> offset) | (value_high << space);
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
