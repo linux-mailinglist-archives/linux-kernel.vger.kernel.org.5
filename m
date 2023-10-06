@@ -2,161 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DE87BC0B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49097BC0BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbjJFUsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 16:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44202 "EHLO
+        id S233602AbjJFUta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233525AbjJFUsj (ORCPT
+        with ESMTP id S233525AbjJFUt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:48:39 -0400
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484CABE
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:48:38 -0700 (PDT)
-Received: from eig-obgw-6008a.ext.cloudfilter.net ([10.0.30.227])
-        by cmsmtp with ESMTP
-        id oqrgqd7W2qBU3orkTqVAzq; Fri, 06 Oct 2023 20:48:37 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id orkSqj4K8GElaorkTqQ4wf; Fri, 06 Oct 2023 20:48:37 +0000
-X-Authority-Analysis: v=2.4 cv=P5IpOwMu c=1 sm=1 tr=0 ts=652072a5
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=Dx1Zrv+1i3YEdDUMOX3koA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=P-IC7800AAAA:8
- a=sozttTNsAAAA:8 a=VwQbUJbxAAAA:8 a=mK_AVkanAAAA:8 a=XYAwZIGsAAAA:8
- a=Ikd4Dj_1AAAA:8 a=i0EeH86SAAAA:8 a=T1oDNNq1AAAA:8 a=1RTuLK3dAAAA:8
- a=JfrnYn6hAAAA:8 a=NEAV23lmAAAA:8 a=cm27Pg_UAAAA:8 a=0yL73Cyy68KADmUz8mEA:9
- a=QEXdDO2ut3YA:10 a=d3PnA9EDa4IxuAV0gXij:22 a=aeg5Gbbo78KNqacMgKqU:22
- a=AjGcO6oz07-iQ99wixmX:22 a=3gWm3jAn84ENXaBijsEo:22 a=E8ToXWR_bxluHZ7gmE-Z:22
- a=RDR0i3bhJUuoZSeB_ChE:22 a=kRpfLKi8w9umh8uBmg1i:22 a=1CNFftbPRP8L7MoqJWF3:22
- a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=4QrkZaC8I3x+NYPAvbO6PQjOx4YgS6vmJGhsbvHZz6U=; b=bJlEBsDz1hqI5968UGUp4/OqSs
-        w37DXwT5z/QF2u+CJ+69fe0W1KOlticXzJC7x5TKCPWEbfL8nJ0DWX01of6UBL7G6GJZjAV74wKhx
-        HKRiRHZcX3SLHP1k4y25URrB/7zaQqUfFxQrbDu2YOeeVG3YZ9TrdKKy6mFufaXM0aOyozQsLSQAh
-        W6GY9OoQXk+uIeYryRdfXT/9mKDSkOL2/qmPTuOs7EDqf9j4NMtjM1yKoQ02Gh9jQ6tUKDWXXsR1B
-        XqWo+vFkBCXhkbVwIfuCUpWM10KUXvPzi9CcW5YGbREPfrBIFzVmwnVJ2N/C4mymoCwfHJyuqC9Q6
-        3QEytMCA==;
-Received: from 94-238-9-39.abo.bbox.fr ([94.238.9.39]:47408 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.1)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qorkQ-001Bge-1H;
-        Fri, 06 Oct 2023 15:48:34 -0500
-Message-ID: <bc89b149-8a93-4677-823a-72302a1876ef@embeddedor.com>
-Date:   Fri, 6 Oct 2023 22:48:29 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: rawnand: cadence: Annotate struct cdns_nand_chip
- with __counted_by
+        Fri, 6 Oct 2023 16:49:27 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2084.outbound.protection.outlook.com [40.107.220.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0430BF;
+        Fri,  6 Oct 2023 13:49:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=itvek8JLvmr7Ni0mRXThGalKCIBfQs2vz5z0uKTseLSu3GBD4fqFQIrbC7AmH4fURulF7deCxuweM2QY7Gu0h5vx6B1fRaTqfMMOdH/Cy2Qn0v3J+T8hvr5AJNIJGos8Uk63JTjOUxEinDIr6TBfwVhGJ5gN0Sp2es4TyU8jIsn0kLcFFmhr6x8uDIpfV31fTwuhTuzYEvtaEv+j7wMOFls+Hlasty7xbneauLm/JoIehutCPRR0Pm88RvMFm/5NysA4NvJkuvPSLHVNKHdyjsutXn3geacM1K03vFAYdnS59sx+g83rKwdBloPLk4p2xSkyjEF4H9RvjOkUgTn8Vg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=S/1mIbmfRNDsSVkPA7SUT9y+KQKADFVVYZNLApOs+I4=;
+ b=c9Qfen2Rn8TZLe0uEKUyk3S3JPieaMQN+6txMLi1GEp7zlMEYe74EYezRzyNZW4qFgeibghLCA5qggnp01zoQmYQv9QVKbX4ceCDs3y5jTCojZvJrXQAFb7K8SwuthNQKQQVATGXH6Qs19IRgRD6EXKXpk7KbvN98/DGmv7uO2n0sCugOtyccSng2q8bZ5Hz09PUyUOIkwgpFYkh4cvu8WYNKfAo+MbhKXVRHEjbVEBycNNBiVa/cp2kWQzK4gClsttLyiVQUeBdQmsVbtD5dYSi/Z6A8XCfZP2szS+ZBWekQydAaH3gqwA2Zh+Z8mM2fnDKsmfJqUOWPZuED0Wu4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S/1mIbmfRNDsSVkPA7SUT9y+KQKADFVVYZNLApOs+I4=;
+ b=Mw1bU10/vvy2sqeU1dBU6KAVxHKYranD0g4VTE7neFXMq09Fz5NIp7AT+LlF8DR9K96l2+DCPa32Y0I46ixPj+cqBO2C7qjc3OHO9BZJdmEWxrV/XjdaEXGqfRUmmKILZE+c2ZHGLIS5P/UI4WU4oIpvJzdR0v8+gSEgpqW6MWw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by DM4PR12MB7694.namprd12.prod.outlook.com (2603:10b6:8:102::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Fri, 6 Oct
+ 2023 20:49:22 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::b5d1:8b74:fe73:bd39]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::b5d1:8b74:fe73:bd39%6]) with mapi id 15.20.6838.039; Fri, 6 Oct 2023
+ 20:49:22 +0000
+Message-ID: <76eb259e-f2ae-b41b-9501-40c9a99e2433@amd.com>
+Date:   Fri, 6 Oct 2023 15:49:17 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v11 09/10] x86/resctrl: Add support for the files for MON
+ groups only
 Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Valentin Korenblit <vkorenblit@sequans.com>,
-        ye xingchen <ye.xingchen@zte.com.cn>,
-        linux-mtd@lists.infradead.org, linux-hardening@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Heiko Stuebner <heiko@sntech.de>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <20231006201734.work.060-kees@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20231006201734.work.060-kees@kernel.org>
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        Babu Moger <babu.moger@amd.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
+Cc:     fenghua.yu@intel.com, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, paulmck@kernel.org, akpm@linux-foundation.org,
+        quic_neeraju@quicinc.com, rdunlap@infradead.org,
+        damien.lemoal@opensource.wdc.com, songmuchun@bytedance.com,
+        peterz@infradead.org, jpoimboe@kernel.org, pbonzini@redhat.com,
+        chang.seok.bae@intel.com, pawan.kumar.gupta@linux.intel.com,
+        jmattson@google.com, daniel.sneddon@linux.intel.com,
+        sandipan.das@amd.com, tony.luck@intel.com, james.morse@arm.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bagasdotme@gmail.com, eranian@google.com,
+        christophe.leroy@csgroup.eu, jarkko@kernel.org,
+        adrian.hunter@intel.com, quic_jiles@quicinc.com,
+        peternewman@google.com
+References: <20231003235430.1231238-1-babu.moger@amd.com>
+ <20231003235430.1231238-10-babu.moger@amd.com>
+ <b08ebaf3-6fe1-4677-a4d7-2c0e530153fa@intel.com>
+From:   "Moger, Babu" <bmoger@amd.com>
+In-Reply-To: <b08ebaf3-6fe1-4677-a4d7-2c0e530153fa@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.238.9.39
-X-Source-L: No
-X-Exim-ID: 1qorkQ-001Bge-1H
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 94-238-9-39.abo.bbox.fr ([192.168.1.98]) [94.238.9.39]:47408
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 79
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfMidPoDXXbq2+DMfW2abrfhwBmlxC421AfAFytxIT1qBJ/xUpCOzMMK9s1n3oTkrRk7WYN74xu3KyM3bRqxhzupPSNSeLll44TTr51MVtKoCgqApyYIC
- iNEZYswjUy8UuECqK8LUDQ4ivlNlrLWGlD9fCqPoQ+MLVy19rtIRNRwBSbadH7btspM4+9SJzknctRKkf/YUq7aMTrH9Z/C1OJuoGb41o1vhngaHzpFBeQgS
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SN4PR0501CA0069.namprd05.prod.outlook.com
+ (2603:10b6:803:41::46) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|DM4PR12MB7694:EE_
+X-MS-Office365-Filtering-Correlation-Id: adad4387-4d0c-403b-9428-08dbc6adb81c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8aNBS777W9sUmKzWpCgskwE7IlT/65+fAbhLqbDuj80Seu0PQCD0I9tqc7y5lPwDuavnwHGRMR/H4R+mgF21yOrLyW3eCFkX+TDhpx3dYCa8zjifH7f6bVYkaBbjLoBevemg8t+q7EFPgLLELRp5ByxmkU6k+f4L98ULk6AlhNzUK/vNwDq9pnXvNl287twqbvtv8gvToh8/oy57NX40lRhWdSJJcm8l7QnXjfOavupVKc2t+di5TdEOxO/1vMsK+aTAeIHUfvAYu9LtPqqNAwvPOCTjLqTbKX+UYugb3D65FftY40d+nEV/zLfgJRNgKvEgHQQIdr8LPZcyMSN+8vmPwfxqQ5D9l6p/QtMnNsAA0enW1IlRHsrER1BaCQMSOCxJ6bqNRQ1d7BUYjS8XkQqUPWoHiedytcJp6sMMTOtk6JW3HXoJI0v589zJIXvn5+udEVo6pEomwrxvA6fIaNdQbxn7qBMgbgVQMgpsU7j4GaQXrBYpQ+ggCTcl7flNNkHdouC7B6d4wC6JDXuzTZr2SB8t5iMP0s4j/UkTn+kTQ0T3c2gBgcpgfmZN7URMvOZpeyEowFrFqJOUo1ss0gABlgTfNh9hMSHchAbOzncw/Ke/B6RTDDwtozGkuiBb0eJR/M5ua5uJcRhxbrRypY5uKll4f5Vo09BcilrjWDc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(366004)(136003)(39860400002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(31686004)(7416002)(7406005)(5660300002)(8936002)(8676002)(2906002)(4326008)(41300700001)(53546011)(2616005)(66946007)(316002)(66556008)(66476007)(110136005)(66574015)(26005)(36756003)(6506007)(38100700002)(6512007)(6486002)(6666004)(966005)(478600001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZFZSb3Y3U0xFR2ZhSFpZVU1Zb2YyY000enBRaEJoRWswemVYMDRsekhtVkpt?=
+ =?utf-8?B?WG8wUy9GdTJ3L2tkOC8rclN3aklzNEs3QjJBT2dXb3FzemRTVEIvNmp4RURV?=
+ =?utf-8?B?VUk4emRvK3AzZ0hNVWxWZ3dMZWdlOXpHaHVUSWJvaFFhUkMwQm02WGN2L0xD?=
+ =?utf-8?B?ZHBxR2ZmM1pGVWRueUVCU2cwSTZyOEF3c2QyQTQwaldJQnZYYjVxTEgzSUN0?=
+ =?utf-8?B?OVMzbFI5VDRoV2dTYWdsTXBIanBNaEZrdU1JeW9hQkVzZkpnNUFDVDZWWXQv?=
+ =?utf-8?B?a2FKZ2lqR2J4bjlKSVYzU3djWUhLaENGdU9uRUN4eUZMYkhhWVI2TXE2cFc3?=
+ =?utf-8?B?NmpSbTEzVmlQVDBqZ2tIUmRweVBVcGxIVmRiOGNvK3JYSWFRajhnUDAvbGc4?=
+ =?utf-8?B?VS96VFV6aWdjWG1ZWkVrTm5qcTFsdVRyQzYvM2hOUlFHTWk5UTk1NmIrUWtr?=
+ =?utf-8?B?dWF1cnRucFBQOUN1RVhVQ1hrQUNVSHNFa0U4UXQrWW5PT2hTRnpxeHdYZmU0?=
+ =?utf-8?B?b0JVQWU4dWlHYzNFNmRXa0FZSXVNN3RtVzVTakJMN2RsMmhFcElUbEl6ci8w?=
+ =?utf-8?B?eU8zZTh6YVBLZnFFNXNxa3BsWWE1eXJZZDRhWE9EMzNxNjkyeERDSkpSbzVy?=
+ =?utf-8?B?ZDFzUW0rMlpiZ2ZaMHhqc3pzTTg0cHMrWHJhOW5US3grMkFPMThoenNGbVcz?=
+ =?utf-8?B?Mi8ybjBEOXFCMWpLZTNHQyt5Z2p0anFiU1ZXYkxoZnZaazlEUmpNNkJpcnNm?=
+ =?utf-8?B?S2Y2TVlDNnJqZFd2UERoOHArNnFLYXRQM1h6RUx4QnJwZGJmN2U1SDlKVnRl?=
+ =?utf-8?B?VEtGSXNrVllwVEFMWEJHaXVWWERCc25qNGtVZlo0TFdWRVYzOTRqNHdocEs5?=
+ =?utf-8?B?Snh4S0JSVWFmZ1prbzRBSGQwT21iL3NQSDFlWFdhUlNMQU5uYmtLd25hWHVK?=
+ =?utf-8?B?RGN3RVFIQ3pXbnhPK2VaclExaitOVm8zQUROVXY0TzlndEtjTWxqZkVPQzVk?=
+ =?utf-8?B?TTlVS2xtajB1dmk5ajV3SHF0dFEzSDNHOWtBb0JhWjl5Q3dKSFU2eVlEZ1hC?=
+ =?utf-8?B?Nm5HY0lWUkpJaWtWNm9YeDkwVVFYejV5eEdHOEh1ZVNsb0MvUTFFcTJ3U01k?=
+ =?utf-8?B?UU9ITmltK1BqZktoZno1cU1OV2FoeUZDNUZtbWNYRmQ3SnEvZlJidk15cGxO?=
+ =?utf-8?B?QUFKWVV4dUZhVzRITUFDbHB5QXJzUFdwSjhuWkk0cW9SbG9XNUY2S3hMTXZ5?=
+ =?utf-8?B?cDVqUVFhc0U2UVU4VlpkTkNjVDM1a1FmMVVhZEQ5ZkxST1BrekQvV3hPVTFn?=
+ =?utf-8?B?NG5WS296Ung2TFVEenhiOWVNdWZMbWdQT3lTdGNJMnprdGxrZmpYNlhEV21U?=
+ =?utf-8?B?M25tTEtsNFlDaWFtTklqZjBJR2w2NlBDcm1jVE5lb2s5TWtjWmh2enZuQkZv?=
+ =?utf-8?B?cTJRUFpJaEJLYk1mbitNdkR4SnhibFpHMi9paHdISFFpRldjWUpSZGdFYjNP?=
+ =?utf-8?B?Zkt5aDNhKzhmdHJIUE44alc3WmJEU2U4MzFqbStWYjZFeitFbmY1ditkclhh?=
+ =?utf-8?B?NVNKNGpTaTZGRWc5b0VYLzh3QVdWbTVINEROd0ZDak1XT2ozM08zWWc1V2RD?=
+ =?utf-8?B?bDdWdGZIRkZpdFFMUmFnZTk4N3RUQVpKV1F0R1Y0aStNaGNJK1pGL3o1N3ZD?=
+ =?utf-8?B?dWRiVHhheGJLV2hLbnZDMGxuSHpQOEZCMUNqclN0RTJWNlFkUHJmdkRSdmFD?=
+ =?utf-8?B?ZHVIazVmdXNCMkV2YituWXRvbUN3aUZHSXpwdmdWR2E2dGJXZkJIQW1DWktB?=
+ =?utf-8?B?Znp5SjIxa2YrU3g5VHhBak5PYVBtK2JLZTJUOVRRQi93OGpZa2RBSERJbVNa?=
+ =?utf-8?B?SzkrUU1tZUhpK1VNUXF0ODdZcDZCQi9YMTk5TzF2LzZ4TDRLeFJTT1FhbnlC?=
+ =?utf-8?B?WW1nNmtBNTdPVzBIRExLbGxQQ2t6WGluTUtNRlVwT2dwTlUwcnFTcGdSZTdz?=
+ =?utf-8?B?NXY2N1JZMkFSbDZ6UTQ5SVdYaytTUTYyV2hKeGxZdDdWamt1QlM2b3NDVmtH?=
+ =?utf-8?B?NzZTMDgvdmJScm5BL1FzRVJCZk1Ka1gzVXJMQ0lTL2tHZ0RpNjBGdFc2VU1D?=
+ =?utf-8?Q?DpLyqv9VaWgfVt4jYbbj7j/88?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: adad4387-4d0c-403b-9428-08dbc6adb81c
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2023 20:49:22.5226
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vazdeSco/TTUoaX8a+6TtlpN3BdiWTW2C+nTuNu03PL+MQq79oOrdPgOI9xmWTu3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7694
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Reinette,
 
+On 10/6/2023 12:53 PM, Reinette Chatre wrote:
+> Hi Babu,
+>
+> On 10/3/2023 4:54 PM, Babu Moger wrote:
+>> Files unique to monitoring groups have the RFTYPE_MON flag. When a new
+>> monitoring group is created the resctrl files with flags RFTYPE_BASE
+>> (files common to all resource groups) and RFTYPE_MON (files unique to
+>> monitoring groups) are created to support interacting with the new
+>> monitoring group.
+>>
+>> A resource group can support both monitoring and control, also termed
+>> a CTRL_MON resource group. CTRL_MON groups should get both monitoring
+>> and control resctrl files but that is not the case. Only the
+>> RFTYPE_BASE and RFTYPE_CTRL files are created for CTRL_MON groups.
+>> This is not a problem because there are no monitoring specific files
+>> with the RFTYPE_MON flag associated with resource groups.
+>>
+>> A later patch introduces the first monitoring specific (RFTYPE_MON)
+>> file for resource groups. Ensure that files with the RFTYPE_MON
+>> flag are created for CTRL_MON groups.
+>>
+>> Signed-off-by: Babu Moger <babu.moger@amd.com>
+>> Tested-by: Peter Newman <peternewman@google.com>
+>> Reviewed-by: Peter Newman <peternewman@google.com>
+>> Tested-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+>> Reviewed-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+>> Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+>> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>> ---
+> Thank you.
+>
+> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+>
+> I believe this series is ready for inclusion. There is a conflict between
+> this series and Maciej's non-contiguous work [1] that is also ready for
+> inclusion. We could wait for outcome of next level review to determine
+> who will need to rebase. It may help to provide a snippet of the conflict
+> resolution in anticipation of Maciej's series being merged first (I will
+> propose the same to Maciej for the scenario of this work merged first).
 
-On 10/6/23 22:17, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct cdns_nand_chip.
-> 
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Cc: Roger Quadros <rogerq@kernel.org>
-> Cc: Thierry Reding <treding@nvidia.com>
-> Cc: Yang Yingliang <yangyingliang@huawei.com>
-> Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
-> Cc: Valentin Korenblit <vkorenblit@sequans.com>
-> Cc: ye xingchen <ye.xingchen@zte.com.cn>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-hardening@vger.kernel.org
-> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+I had a minor comment on Maciej's patch.
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+https://lore.kernel.org/lkml/fd2309d5-ea56-abed-5c3e-a8a038b07d9e@amd.com/
 
-Thanks!
--- 
-Gustavo
+I will respond to his patch 3 with the conflict resolution.
 
-> ---
->   drivers/mtd/nand/raw/cadence-nand-controller.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
-> index 034ec564c2ed..7d5ef7ffe0fe 100644
-> --- a/drivers/mtd/nand/raw/cadence-nand-controller.c
-> +++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
-> @@ -526,7 +526,7 @@ struct cdns_nand_chip {
->   	/* ECC strength index. */
->   	u8 corr_str_idx;
->   
-> -	u8 cs[];
-> +	u8 cs[] __counted_by(nsels);
->   };
->   
->   struct ecc_info {
+Thanks
+
+Babu
+
+>
+> Reinette
+>
+> [1] https://lore.kernel.org/lkml/cover.1696493034.git.maciej.wieczor-retman@intel.com/
