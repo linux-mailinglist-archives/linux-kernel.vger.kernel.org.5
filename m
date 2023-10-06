@@ -2,92 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 544A27BBC2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABEA7BBC32
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbjJFPya convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 11:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
+        id S232859AbjJFP4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 11:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232876AbjJFPy2 (ORCPT
+        with ESMTP id S231495AbjJFPz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 11:54:28 -0400
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6FCB6;
-        Fri,  6 Oct 2023 08:54:27 -0700 (PDT)
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-57b83ff7654so153263eaf.1;
-        Fri, 06 Oct 2023 08:54:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696607666; x=1697212466;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qyVUD+jtO3xjKZijmbi69I8h0KpD3PVUx5fopCCsA34=;
-        b=Cs8sBu7oNCAza03v36rrmlmVZb7ASF+ZwCGI4KpAgxRmwr35KRaNS/BNPF5K1ldsoF
-         jks4ZR1AOwMbrzQctRiAS0xIp8UXQivYldSTI+w/hTtgwPpiMnQb/WsdB/ZXVdZeAMnu
-         HT4dCqKw5Oye6a1qSKF+9b0AgCYC5jQd5Guiyw05A4LJ+ZVIY+vntqKIChR06yeqMW5B
-         jpWVztHlc0cqqaOUDInMTt9kBMxE/oNtOJxrZhOiqLtxQs9XinJM8rT2p6zoFUx3C7yx
-         +ESjHhMuK7KL2uuaZBaeYQnRwqopheUX0yBQe4QTTN8HIxReS8YL1lQI9Agczufkmb4s
-         nBYg==
-X-Gm-Message-State: AOJu0Ywf9p+PedjYCqi7jXBRVl0m+WiWade4RvxCq6Z4OuXHh5s3aa6b
-        5KfY9I1ZAWdtQEU6l3Uca7Keg5mhlwkBpFm6s2w=
-X-Google-Smtp-Source: AGHT+IFWASLRCNFIE/UGk9jOTbyA2SJBiczvi635c3ueLXQnQ5y0w5AY3AsHaewjdL00Z0TXAa6dEyI3BhB4/hf8iaM=
-X-Received: by 2002:a4a:b588:0:b0:578:c2af:45b5 with SMTP id
- t8-20020a4ab588000000b00578c2af45b5mr8191603ooo.0.1696607665758; Fri, 06 Oct
- 2023 08:54:25 -0700 (PDT)
+        Fri, 6 Oct 2023 11:55:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500409E;
+        Fri,  6 Oct 2023 08:55:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=WaEf6FrRWvtJnI5YP9M3tuune/f/xvQ8jUCMeM104oA=; b=p7lYaZ7x0sCFwueHdtmZIZAewN
+        qoKhx2eoWOrz5CzIPGPFqw19jMPfXXuCJgXuX0Ny7EYS/U5iZu7cRL6d7zTN7SheI9dz9Q12lsghM
+        gXZj3aqzWotuB0ALp5XykK0ROpHk/mGxqaD4GRScfPqZqc+t+i4AgmkPlz6br2Hkp7buhSkR3uZxt
+        7KMyPyTmK0TFuBCOmq0cf9bnXeXalcS0DT+ZMBuqp12s/Uk2Q6FyGI/ZGlGs1tyvE6iIo2A5SYFeW
+        KxxlcNJuA/BgGn5+bpJ8zcJIDFe5bF1DeeFGWmhFvhz7+JtMNcRjJDzDxMIdH9tb6mSsPz2p5JNEo
+        U2pZt83w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qonAL-00G9FU-Sv; Fri, 06 Oct 2023 15:55:01 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8B3A3300392; Fri,  6 Oct 2023 17:55:01 +0200 (CEST)
+Date:   Fri, 6 Oct 2023 17:55:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "chris.hyser@oracle.com" <chris.hyser@oracle.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "joshdon@google.com" <joshdon@google.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "kprateek.nayak@amd.com" <kprateek.nayak@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "patrick.bellasi@matbug.net" <patrick.bellasi@matbug.net>,
+        Pavel Machek <pavel@ucw.cz>, "pjt@google.com" <pjt@google.com>,
+        "qperret@google.com" <qperret@google.com>,
+        "qyousef@layalina.io" <qyousef@layalina.io>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "timj@gnu.org" <timj@gnu.org>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "youssefesmat@chromium.org" <youssefesmat@chromium.org>,
+        "yu.c.chen@intel.com" <yu.c.chen@intel.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct se
+Message-ID: <20231006155501.GH36277@noisy.programming.kicks-ass.net>
+References: <OS0PR01MB59220AF3959BDC5FEFC0340F86CAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <20231005150258.GA36277@noisy.programming.kicks-ass.net>
+ <CGME20231005150845eucas1p1ed3aae6b90c411b5c26a5dfadf7e0733@eucas1p1.samsung.com>
+ <OS0PR01MB592295E06AD01CAEFBA83BF386CAA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <553e2ee4-ab3a-4635-a74f-0ba4cc03f3f9@samsung.com>
+ <867f5121d7d010cacf938c293f862b0cea560ec2.camel@gmx.de>
+ <20231006140042.GG36277@noisy.programming.kicks-ass.net>
+ <e2645a659b6fc1c592e2f2dc45273c361a2d2f47.camel@gmx.de>
 MIME-Version: 1.0
-References: <2702191.mvXUDI8C0e@kreacher> <20231006-earthly-equal-dd5d82312add@spud>
-In-Reply-To: <20231006-earthly-equal-dd5d82312add@spud>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 6 Oct 2023 17:54:14 +0200
-Message-ID: <CAJZ5v0g56dS0xV4m+WUCZPU3aU_5JNP52ex6ebTQmNh7hjVacA@mail.gmail.com>
-Subject: Re: [PATCH v2] thermal: Remove Amit Kucheria from MAINTAINERS
-To:     Conor Dooley <conor@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
-        Amit Kucheria <amitk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e2645a659b6fc1c592e2f2dc45273c361a2d2f47.camel@gmx.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 5:46â€¯PM Conor Dooley <conor@kernel.org> wrote:
->
-> On Fri, Oct 06, 2023 at 05:04:42PM +0200, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Oct 06, 2023 at 04:39:09PM +0200, Mike Galbraith wrote:
+> On Fri, 2023-10-06 at 16:00 +0200, Peter Zijlstra wrote:
+> > On Fri, Oct 06, 2023 at 12:31:28PM +0200, Mike Galbraith wrote:
+> > > On Fri, 2023-10-06 at 10:35 +0200, Marek Szyprowski wrote:
+> > > >
+> > > >
+> > > > Just to note, I've run into this issue on the QEmu's 'arm64/virt'
+> > > > platform, not on the Samsung specific hardware. 
+> > >
+> > > It doesn't appear to be arch specific, all I have to do is enable
+> > > autogroup, raspberry or x86_64 desktop box, the occasional failure
+> > > tripping over task groups, leaving both best and best_left with
+> > > identical but not what we're looking for ->min_deadline.
 > >
-> > Amit Kucheria has not been participating in kernel development in any
-> > way or form for quite some time, so it is not useful to list him as a
-> > designated reviewer for the thermal subsystem.
+> > OK, autogroups enabled and booted, /debug/sched/debug shows autogroups
+> > are indeed in existence.
 > >
-> > Remove him from the THERMAL entry in MAINTAINERS.
+> > I've ran hackbench and a kernel build, but no whoopsie yet :-(
 > >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >
-> > v1 -> v2: Drop the DT binding change
-> >
-> > I'm really not inclined to fight over stuff that doesn't make any sense to me.
->
-> I don't understand what you mean by this. All that was required was
-> putting __someone__ down as a maintainer in the dt-binding, as Rob's bot
-> told you:
-> https://lore.kernel.org/linux-devicetree/CAJZ5v0gwvo_CriNwz_g-oQ8EZUqdp4ymiuamU-KkrmQ87RhZyA@mail.gmail.com/T/#m56a9b1616477566e2976044c11b58dccbd3be0fb
+> > I suppose I'll kick some benchmarks and go make a cup 'o tea or
+> > something.
+> 
+> Hm, just booting gets me a handful, and generic desktop activity
+> produces a fairly regular supply.  This is virgin 6.6.0.ga9e6eb3-tip.
 
-And this doesn't make sense, because I don't know who to put in there
-and the current record is clearly stale.
+You're running that systemd thing, eh?
+
+If I create two groups (or two users with autogroup on) and have them
+both build a kernel I do indeed get splat.
+
+And yeah, min_deadline is hosed somehow.
+
+migration/28-185     [028] d..2.    70.264274: validate_cfs_rq: --- /
+migration/28-185     [028] d..2.    70.264277: __print_se: ffff88845cf48080 w: 1024 ve: -58857638 lag: 870381 vd: -55861854 vmd: -66302085 E (11372/tr)
+migration/28-185     [028] d..2.    70.264280: __print_se:   ffff88810d165800 w: 25 ve: -80323686 lag: 22336429 vd: -41496434 vmd: -66302085 E (-1//autogroup-31)
+migration/28-185     [028] d..2.    70.264282: __print_se:   ffff888108379000 w: 25 ve: 0 lag: -57987257 vd: 114632828 vmd: 114632828 N (-1//autogroup-33)
+migration/28-185     [028] d..2.    70.264283: validate_cfs_rq: min_deadline: -55861854 avg_vruntime: -62278313462 / 1074 = -57987256
+
+I need to go make dinner (kids hungry), but I'll see if I can figure out
+how this happens...
