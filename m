@@ -2,679 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D2E7BC23E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A837BC240
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 00:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbjJFWbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 18:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
+        id S233706AbjJFWep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 18:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233473AbjJFWbJ (ORCPT
+        with ESMTP id S233473AbjJFWeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 18:31:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B023A2;
-        Fri,  6 Oct 2023 15:31:07 -0700 (PDT)
+        Fri, 6 Oct 2023 18:34:44 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D2A83;
+        Fri,  6 Oct 2023 15:34:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696631467; x=1728167467;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=1Xh5Xl6zIju/WmK1saMVcq0Jh6v2ct7XttOxs4wQacA=;
-  b=OniiqDy2ghSTdl3lq6IAo0Q7lnK7UFCL3233nLwkYV/mvRA+hCeJPevB
-   +c2HAcQD7jAcNwSSo7IrczkNyx5brVkiqr7QKWeOiZ6BGQIhtE5wtU4+N
-   d3Bzyltz7ZPeSXaTgZ0J7z8kcVglXRWqlgHPRKs8ULnTvkDKiu+8yCzMk
-   4U6Tm4z8ioP6GU5PCuyqhsqnhcU3ZoBDEllHPVsh17Nq1SFFU1F6Kv3Y6
-   lA41lc9JsLuE0ZSjRbTbdmTscV7hVKReSMYd9EJ6Nu+RQMFWmSElfYlIq
-   rWUnZYFLRD5ucAAUiMWNM4zTxLe5EC2N0qGChit6mALymt3x58BOqgv39
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="363198135"
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1696631681; x=1728167681;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=jpMmgeD+R2UYQiMhLDlJhA0+dUntcx6++GDJMy/9cS0=;
+  b=vR5L0EwvXKiAzAYu5py1YhdMCCEWzmc5pM3w+s5+v7/YYRnvizcn2Oq8
+   oorT14cWJNV2frZcC/9btPU9iSkaDB3vym/rJIRvxhy0ngmEtUp7xa0nS
+   9bZ8S6ewZ+1Hgp/IyFf3GTJPJGKcibK+SiitlwJc8HIe3EE5Dg7toENps
+   uYQsO1K45vgp1RPG4zumb3SAsoq8pg18Il42wlAOtkDLLjqWIqPx2VYld
+   CRlH2xxVhXUDItaz4UWvA/RtGsrv/NG54m2UPn2e0f6XZyDlR56JxK5wg
+   I9keO8fsoaYOth+X8RbdzOdSJnIIPZZgrjN45gbknrF94ThMZGiGqWmRH
+   w==;
+X-CSE-ConnectionGUID: q/G+pcXQR2S6A8VFQ2gYGQ==
+X-CSE-MsgGUID: wXb4uESBRmiXX8aTtP4OMA==
+X-ThreatScanner-Verdict: Negative
 X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="363198135"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 15:31:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="1083607625"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="1083607625"
-Received: from vcostago-mobl3.jf.intel.com (HELO vcostago-mobl3) ([10.24.14.106])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 15:31:04 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     MD Danish Anwar <danishanwar@ti.com>, Andrew Lunn <andrew@lunn.ch>,
-        Roger Quadros <rogerq@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        MD Danish Anwar <danishanwar@ti.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, vladimir.oltean@nxp.com,
-        Simon Horman <horms@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org, srk@ti.com,
-        r-gunasekaran@ti.com, linux-arm-kernel@lists.infradead.org,
-        Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH net-next v4] net: ti: icssg_prueth: add TAPRIO offload
- support
-In-Reply-To: <20231006102028.3831341-1-danishanwar@ti.com>
-References: <20231006102028.3831341-1-danishanwar@ti.com>
-Date:   Fri, 06 Oct 2023 15:31:03 -0700
-Message-ID: <87cyxr8jtk.fsf@intel.com>
+   d="scan'208";a="8851014"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Oct 2023 15:34:40 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 6 Oct 2023 15:34:22 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Fri, 6 Oct 2023 15:34:21 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WWNSL5CPrDRTH3sRSg+o3yz9geITBarsmG1jutWNMTAQ6jluNVSvK4Q6O0FsTqXV6EKMNPG68xACM203dvOVgnXk7qVN2j48kkRebtbS6U4qPor090UgoqDP+1dicw8vmi3pn3zQTNbOSooHXt1twW7G7aeJWjMZZq8ugGXu95CkxTJuQW7i69rk+vjEQ8QefeCZeePTXgRTQ2JvUvLDz9CSk0opTCj7ArSg3rd1MgDnpwy6j2F2wm8PkYQEq+fHrs2kUQz+muu9fQuxOSTTQPTaSRw8blRyPcMWGCF9K80yOTBSI9fPBzzWaxVaadAXrZ4DGZytIzwFo4JtoHcfUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jpMmgeD+R2UYQiMhLDlJhA0+dUntcx6++GDJMy/9cS0=;
+ b=JPXdHAEt7D9UghnwsjZt9HMpMxLZz28SBRN2SynhxfYmKd5qeyGDGl2zg7CEQV2grAiLqyxmNOOoIQJ3nbWpzgWqAInm3bT/marXFw9SDW064LBBK3CxCXuCkrPHHFItjwFQ8p1c9+oCzEBduzTPkMxO6zN9iSai9sOgJCHsiP2FcR+2dNQjdEd7RHjmFz2X3+KV9cQ431ak2XNO5KEwdqlRJRHW8DEJavx63DIJlmCegCiIIxHB3qYipEAdwmgHYdZVbWIOjNptAJVBXG/HbqzooMa4nejGEjX4iOLrLChlHjDcpdE6PZdu/EeexmyzQwFM5MN1JyTrA3Ol3vF3Qg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jpMmgeD+R2UYQiMhLDlJhA0+dUntcx6++GDJMy/9cS0=;
+ b=IWw4myit0VpbnkI2mRs77Zo/XEC4TReAb/u2jUP5B8b3sjJWF99cFlOIS/z37M4b8PgUj8h/MYHh7gJGdjCyDL7AkD1U3zTu6jscnzN5dXkOxLDt3WEFOdx3yZhg6NyL317NiDVKYUToJh8dDtYqZjAQqViXWAv5/GeniQ15blQ=
+Received: from CO6PR11MB5618.namprd11.prod.outlook.com (2603:10b6:303:13f::24)
+ by CY8PR11MB6988.namprd11.prod.outlook.com (2603:10b6:930:54::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Fri, 6 Oct
+ 2023 22:34:19 +0000
+Received: from CO6PR11MB5618.namprd11.prod.outlook.com
+ ([fe80::db2b:c4a2:b71a:95da]) by CO6PR11MB5618.namprd11.prod.outlook.com
+ ([fe80::db2b:c4a2:b71a:95da%4]) with mapi id 15.20.6838.030; Fri, 6 Oct 2023
+ 22:34:19 +0000
+From:   <Kelvin.Cao@microchip.com>
+To:     <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <George.Ge@microchip.com>,
+        <logang@deltatee.com>, <christophe.jaillet@wanadoo.fr>,
+        <hch@infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
+ engine PCI driver
+Thread-Topic: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
+ engine PCI driver
+Thread-Index: AQHZwZllP9AErauFFUmKz13YRSBKD6/VzMKAgAIhf4CAZAP1gIABCsYAgADKTQA=
+Date:   Fri, 6 Oct 2023 22:34:19 +0000
+Message-ID: <f72b924b8c51a7768b0748848555e395ecbb32eb.camel@microchip.com>
+References: <20230728200327.96496-1-kelvin.cao@microchip.com>
+         <20230728200327.96496-2-kelvin.cao@microchip.com> <ZMlSLXaYaMry7ioA@matsya>
+         <fd597a2a71f1c5146c804bb9fce3495864212d69.camel@microchip.com>
+         <b0dc3da623dee479386e7cb75841b8b7913c9890.camel@microchip.com>
+         <ZR/htuZSKGJP1wgU@matsya>
+In-Reply-To: <ZR/htuZSKGJP1wgU@matsya>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.44.4-0ubuntu1 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CO6PR11MB5618:EE_|CY8PR11MB6988:EE_
+x-ms-office365-filtering-correlation-id: 41406e70-3219-41ca-1ce1-08dbc6bc616f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: r3ywotnxNEYvAtprPyVub+dOqnHEYjowCVhAJKnDEq53dXNvk7dSZugkc0Mssylb9z9Mt6UxsHkJpW5Sb4Us71env9Oa257496c6tWN3KMrve5QH5rP3xp6vKUj2XsVPHm7EIZxsO/YnTqRd9N2qrngSJlz879ek2aYVpkoyFIPLK29DS4w2orYbjorujz2CVmWmCBi34ao9S6r7txSXi1zuh5/aQx7U/F+0oBBkO+9QGUAPCAQRy/6VuLpTzTII9Lm/mKUKTCtYFLDhVuIvnWW97ZVMwgHdEtXFcw5c6FKuq+39Pna7X5WB79X2lIRsxxPPigB78zYMMx8pbWDDzqhApn8K9LiAro/W1FPT07+MSFXwpxSahOu3s+AVTWE6+pIxVfBH32r2KdU3zm1velwLgOX1r5aEa1rAHjDg3pMtx73G/lARWSXFYeM1vVoVNJaDrig/tBe0N5qxrz974Q2mGn2+ik+AscP1RMLjEOlw793G7qEJVs8R5BdnflpGCg7lvU2jVVjEgozyp4tMLvV3cAwYfM3EKj3oNwY4qMurtF+XzbBvT4e90oKZ5z8qt8DDUYLPndm1bJ8uTKHPKgkaqGczZXE4DYGs5jcODXAbZa0XzxdN/VKWbYlSvIoE
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR11MB5618.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(366004)(39860400002)(396003)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(478600001)(5660300002)(316002)(4326008)(8936002)(41300700001)(54906003)(66476007)(66556008)(6916009)(64756008)(66446008)(76116006)(66946007)(2906002)(8676002)(6506007)(2616005)(6512007)(36756003)(53546011)(71200400001)(38070700005)(26005)(83380400001)(38100700002)(6486002)(86362001)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QlU1b05RaDNjbTh4aGxmT3QzeEFyenZzRkxRU1dQMVpRUzR1UkJYdkpzSmpG?=
+ =?utf-8?B?eVBGaGNGOGg0cUxiNmhwQUNXRmg3ZUxsUTlIN3UzWGNvSURGbXVpOTJHcit6?=
+ =?utf-8?B?VnBXMjZ3cS9SR1JEYmpYR1pXTVVtR0ZSMGNod1hRTytZOUQ1M3dnYldwd2RV?=
+ =?utf-8?B?QlJyRWZhbG5DWGlyZ3JnT3VaOXRXaDBrYUZhRUhoT1k0bG1EUDNCVmMwZmx3?=
+ =?utf-8?B?N2NhbjU4c3Zsc0xLSkt5dG1Gb0xZNjJIZ01Cc3g1cDlXVitzNS8wKzJlWnVs?=
+ =?utf-8?B?c0lTVjVOeEVJbjFkb2ZnNHJ1VnNTZmkyZXEzMnRmT0xRMXE2dENKRFlZK0t6?=
+ =?utf-8?B?dFExVkJoQkkxcXltRnZEL3A2a2lYVjhZRk5VUmNWY0RhZjNvNUVVeW80U3J2?=
+ =?utf-8?B?bGZKOGlGdzJxbWtmdCtDNkJ2VitSR2xHaCtzM2xxQUYyZWdtSG5Zd0xpbjVZ?=
+ =?utf-8?B?Y0g4WTRucUVqeU13TXJvS2RzS2xoWnN1ekJtOWI0WVJEZnU5RVg5THFLRVov?=
+ =?utf-8?B?cmZlbktVK0cvQndxV3RpU09rcGh6V3d0cFl1OTdNbjBBUFJNZ2FsRkhNeE9x?=
+ =?utf-8?B?VzFSZWNXVm9pTnZVdFdmd3lBbS80S2tzbU1waFJCbnNlazNkVzZtSmtQUDN6?=
+ =?utf-8?B?dWhCTTFKN00vYm5ib1JtNzFHT1RmaStUUXpobkxyRitWWnN6V1RjazY0aEt6?=
+ =?utf-8?B?SGVOTzh3VlhWaDZGelU3NDJxUTNtR2lxUGZkYzkzdzloanZ0c2kyRFY0OE84?=
+ =?utf-8?B?YWNzQWtlUkE2M3hVTC9hUDg2KzA1QW5pR2F6T0l6WjhrUU04ZnhJWkJ4RzV6?=
+ =?utf-8?B?WjM0S1R3dlZSbDhVN1JqaEovdGQxcnlKVm5mSkVMc3c0TUFDWEpMQ0NoRDc0?=
+ =?utf-8?B?TEhnblR0Z3pOT1dyZGdCRWFhUmErMzZvZmtLTGptdldVeS9icTdEaEpUTC9q?=
+ =?utf-8?B?U2VCSWZUSEFOZGxiQXNPL0E0WVQ3OHZ5S2VVbGV3SE8vNjdyaVY5U0RoTHBy?=
+ =?utf-8?B?S2Q0L29lRWRXZEdEUmgrVDF0ZFZWNlBnYTZHbmplUDFCQUl3cHJxL2R4WkZo?=
+ =?utf-8?B?bHc5R3JLTlVjOHE0Rk1wei9UYTZaa3g5M2pvTStpRlJ6eVAwUSs3dFV4ZUY0?=
+ =?utf-8?B?R0VWd0RCTkUzY3BudnZvcit1c2NRc0RyYit1LzlaamtxbnZNZWMxU2lVK2hW?=
+ =?utf-8?B?VnlHanFpUG14WmhmY0ZpN1RQUElnU09ZVnhlbkJraW5RNjZFYWMwbUdBMEpE?=
+ =?utf-8?B?NVM1MWFNbXVIUzR3dU9PUnoyT2RGUWlaRU9PbHd4TmZFNGp5OGJOS3FmZU92?=
+ =?utf-8?B?QWFjZGQ5RVhVSXNxOE1WVm9TeW9ScGtzMmtyajNPZUowb0FTYlBlaTMzWlRk?=
+ =?utf-8?B?ZDJBNDdEeENXNmJxVmUxYXdOaGxUWEFtM2l2cmxBaTllVUY1WVp1K0UybDJw?=
+ =?utf-8?B?a1NyY2cvUUpXUUJZck96V2Q1clVCbkJHdTZFMFBLTzdub21EYVA5L3lBUzJF?=
+ =?utf-8?B?VTBWUjlQRGV1U0E0ZFhIZnpVU1EvWDVFZVBiUFA4MVRnUC9BcEt5R3MrWlZ4?=
+ =?utf-8?B?eWI3U21KanZEaW9ha3FBQjlmQkFkdndwemIzU3pDR0VUSTNkYVZuM1RtVFZw?=
+ =?utf-8?B?cHFlejNURFc2ZWRSc0psMlUxbThLbUdhUUlRMnM3SlBLT2RRdlFscWV6YWQz?=
+ =?utf-8?B?SUhhc2JUeHZlTWxJb3dFRnEzMnlTLzJ6N244SFFyMUxaWVFTQ0g1NFBZU3RB?=
+ =?utf-8?B?ci9OY0pudUFpUzJOVFhDVnhwMnBXK1IvdkRzQVJYdHBKZlBjdi9Zcm0rYTVX?=
+ =?utf-8?B?QnlQOUtYMElVdllPVHNIaVhKMVVTTVF0dEVsVGtGb2hKOTRweXFEMisrMlJJ?=
+ =?utf-8?B?eTd0STk1ekhRWXNhdDNWdEloR3RKNkZIV25qSnpwNzk0cEk2eHdCY3U0dFU0?=
+ =?utf-8?B?UnBGelgybkgrWFBFaHBlc0ZTaEluL3VHaE43ZkZ4blhtVVh4K3NMek9tNnNR?=
+ =?utf-8?B?aTFaZFVkbCs5VFdZTlRCY1J5SHY0UEVWemc5MzNib1hSUlpaVzE4RktyZTFa?=
+ =?utf-8?B?VndYTExOU2pBbEQ2a0JKam5OMHdEZmRqR0RyTEhBMm5aV3orMXJuRXBzR1pk?=
+ =?utf-8?B?VDE2QzBTYTlOMy82NW9DQVBTSUZac0luK1hoY25WS2R3cmJ1YVlFcnFOdWJv?=
+ =?utf-8?B?c0E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <05F2284112B2B84E90CE24470599DB00@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR11MB5618.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41406e70-3219-41ca-1ce1-08dbc6bc616f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2023 22:34:19.3336
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: of2oSbkLwFahv4x5pr/+jVaG1Go6oL3/ReYCcqlmWGnLtihfzAMCXtAmrkfEpS+qyvbLW6qFeoWi42y9v0xe+vKIA6a//uShZeKhjJmPLVw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6988
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MD Danish Anwar <danishanwar@ti.com> writes:
-
-> From: Roger Quadros <rogerq@ti.com>
->
-> ICSSG dual-emac f/w supports Enhanced Scheduled Traffic (EST =E2=80=93 de=
-fined
-> in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
-> configuration. EST allows express queue traffic to be scheduled
-> (placed) on the wire at specific repeatable time intervals. In
-> Linux kernel, EST configuration is done through tc command and
-> the taprio scheduler in the net core implements a software only
-> scheduler (SCH_TAPRIO). If the NIC is capable of EST configuration,
-> user indicate "flag 2" in the command which is then parsed by
-> taprio scheduler in net core and indicate that the command is to
-> be offloaded to h/w. taprio then offloads the command to the
-> driver by calling ndo_setup_tc() ndo ops. This patch implements
-> ndo_setup_tc() to offload EST configuration to ICSSG.
->
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> ---
-> Cc: Roger Quadros <rogerq@ti.com>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
->
-> Changes from v3 to v4:
-> *) Rebased on the latest next-20231005 linux-next.
-> *) Addressed Roger and Vinicius' comments and moved all the validations to
->    emac_taprio_replace() API.
-> *) Modified emac_setup_taprio() API to use switch case based on taprio->c=
-md
->    and added emac_taprio_destroy() and emac_taprio_replace() APIs.
-> *) Modified the documentation of structs / enums in icssg_qos.h by using
->    the correct kdoc format.
->
-> Changes from v2 to v3:
-> *) Rebased on the latest next-20230928 linux-next.
-> *) Retained original authorship of the patch.
-> *) Addressed Roger's comments and modified emac_setup_taprio() and
->    emac_set_taprio() APIs accordingly.
-> *) Removed netif_running() check from emac_setup_taprio().
-> *) Addressed Vinicius' comments and added check for MIN and MAX cycle tim=
-e.
-> *) Added check for allocation failure of est_new in emac_setup_taprio().
->
-> Changes from v1 to v2:
-> *) Rebased on the latest next-20230921 linux-next.
-> *) Dropped the RFC tag as merge window is open now.
-> *) Splitted this patch from the switch mode series [v1].
-> *) Removed TODO comment as asked by Andrew and Roger.
-> *) Changed Copyright to 2023 as asked by Roger.
->
-> v3: https://lore.kernel.org/all/20230928103000.186304-1-danishanwar@ti.co=
-m/
-> v2: https://lore.kernel.org/all/20230921070031.795788-1-danishanwar@ti.co=
-m/
-> v1: https://lore.kernel.org/all/20230830110847.1219515-1-danishanwar@ti.c=
-om/
->
->  drivers/net/ethernet/ti/Makefile             |   3 +-
->  drivers/net/ethernet/ti/icssg/icssg_prueth.c |   5 +-
->  drivers/net/ethernet/ti/icssg/icssg_prueth.h |   6 +
->  drivers/net/ethernet/ti/icssg/icssg_qos.c    | 301 +++++++++++++++++++
->  drivers/net/ethernet/ti/icssg/icssg_qos.h    | 113 +++++++
->  5 files changed, 426 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.c
->  create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.h
->
-> diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/M=
-akefile
-> index 34fd7a716ba6..0df60ded1b2d 100644
-> --- a/drivers/net/ethernet/ti/Makefile
-> +++ b/drivers/net/ethernet/ti/Makefile
-> @@ -37,5 +37,6 @@ icssg-prueth-y :=3D k3-cppi-desc-pool.o \
->  		  icssg/icssg_config.o \
->  		  icssg/icssg_mii_cfg.o \
->  		  icssg/icssg_stats.o \
-> -		  icssg/icssg_ethtool.o
-> +		  icssg/icssg_ethtool.o \
-> +		  icssg/icssg_qos.o
->  obj-$(CONFIG_TI_ICSS_IEP) +=3D icssg/icss_iep.o
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/e=
-thernet/ti/icssg/icssg_prueth.c
-> index 6635b28bc672..89c301716926 100644
-> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-> @@ -1166,7 +1166,7 @@ static int emac_phy_connect(struct prueth_emac *ema=
-c)
->  	return 0;
->  }
->=20=20
-> -static u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_tim=
-estamp *sts)
-> +u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp =
-*sts)
->  {
->  	u32 hi_rollover_count, hi_rollover_count_r;
->  	struct prueth_emac *emac =3D clockops_data;
-> @@ -1403,6 +1403,8 @@ static int emac_ndo_open(struct net_device *ndev)
->  		napi_enable(&emac->tx_chns[i].napi_tx);
->  	napi_enable(&emac->napi_rx);
->=20=20
-> +	icssg_qos_tas_init(ndev);
-> +
->  	/* start PHY */
->  	phy_start(ndev->phydev);
->=20=20
-> @@ -1669,6 +1671,7 @@ static const struct net_device_ops emac_netdev_ops =
-=3D {
->  	.ndo_set_rx_mode =3D emac_ndo_set_rx_mode,
->  	.ndo_eth_ioctl =3D emac_ndo_ioctl,
->  	.ndo_get_stats64 =3D emac_ndo_get_stats64,
-> +	.ndo_setup_tc =3D icssg_qos_ndo_setup_tc,
->  };
->=20=20
->  /* get emac_port corresponding to eth_node name */
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/e=
-thernet/ti/icssg/icssg_prueth.h
-> index 8b6d6b497010..7cbf0e561905 100644
-> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-> @@ -37,6 +37,7 @@
->  #include "icssg_config.h"
->  #include "icss_iep.h"
->  #include "icssg_switch_map.h"
-> +#include "icssg_qos.h"
->=20=20
->  #define PRUETH_MAX_MTU          (2000 - ETH_HLEN - ETH_FCS_LEN)
->  #define PRUETH_MIN_PKT_SIZE     (VLAN_ETH_ZLEN)
-> @@ -174,6 +175,8 @@ struct prueth_emac {
->=20=20
->  	struct pruss_mem_region dram;
->=20=20
-> +	struct prueth_qos qos;
-> +
->  	struct delayed_work stats_work;
->  	u64 stats[ICSSG_NUM_STATS];
->  };
-> @@ -285,4 +288,7 @@ u32 icssg_queue_level(struct prueth *prueth, int queu=
-e);
->  void emac_stats_work_handler(struct work_struct *work);
->  void emac_update_hardware_stats(struct prueth_emac *emac);
->  int emac_get_stat_by_name(struct prueth_emac *emac, char *stat_name);
-> +
-> +u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp =
-*sts);
-> +
->  #endif /* __NET_TI_ICSSG_PRUETH_H */
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.c b/drivers/net/ethe=
-rnet/ti/icssg/icssg_qos.c
-> new file mode 100644
-> index 000000000000..c8c4450c41bb
-> --- /dev/null
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_qos.c
-> @@ -0,0 +1,301 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Texas Instruments ICSSG PRUETH QoS submodule
-> + * Copyright (C) 2023 Texas Instruments Incorporated - http://www.ti.com/
-> + */
-> +
-> +#include <linux/printk.h>
-> +#include "icssg_prueth.h"
-> +#include "icssg_switch_map.h"
-> +
-> +static void tas_update_fw_list_pointers(struct prueth_emac *emac)
-> +{
-> +	struct tas_config *tas =3D &emac->qos.tas.config;
-> +
-> +	if ((readb(tas->active_list)) =3D=3D TAS_LIST0) {
-> +		tas->fw_active_list =3D emac->dram.va + TAS_GATE_MASK_LIST0;
-> +		tas->fw_shadow_list =3D emac->dram.va + TAS_GATE_MASK_LIST1;
-> +	} else {
-> +		tas->fw_active_list =3D emac->dram.va + TAS_GATE_MASK_LIST1;
-> +		tas->fw_shadow_list =3D emac->dram.va + TAS_GATE_MASK_LIST0;
-> +	}
-> +}
-> +
-> +static void tas_update_maxsdu_table(struct prueth_emac *emac)
-> +{
-> +	struct tas_config *tas =3D &emac->qos.tas.config;
-> +	u16 __iomem *max_sdu_tbl_ptr;
-> +	u8 gate_idx;
-> +
-> +	/* update the maxsdu table */
-> +	max_sdu_tbl_ptr =3D emac->dram.va + TAS_QUEUE_MAX_SDU_LIST;
-> +
-> +	for (gate_idx =3D 0; gate_idx < TAS_MAX_NUM_QUEUES; gate_idx++)
-> +		writew(tas->max_sdu_table.max_sdu[gate_idx], &max_sdu_tbl_ptr[gate_idx=
-]);
-> +}
-> +
-> +static void tas_reset(struct prueth_emac *emac)
-> +{
-> +	struct tas_config *tas =3D &emac->qos.tas.config;
-> +	int i;
-> +
-> +	for (i =3D 0; i < TAS_MAX_NUM_QUEUES; i++)
-> +		tas->max_sdu_table.max_sdu[i] =3D 2048;
-> +
-> +	tas_update_maxsdu_table(emac);
-> +
-> +	writeb(TAS_LIST0, tas->active_list);
-> +
-> +	memset_io(tas->fw_active_list, 0, sizeof(*tas->fw_active_list));
-> +	memset_io(tas->fw_shadow_list, 0, sizeof(*tas->fw_shadow_list));
-> +}
-> +
-> +static int tas_set_state(struct prueth_emac *emac, enum tas_state state)
-> +{
-> +	struct tas_config *tas =3D &emac->qos.tas.config;
-> +	int ret;
-> +
-> +	if (tas->state =3D=3D state)
-> +		return 0;
-> +
-> +	switch (state) {
-> +	case TAS_STATE_RESET:
-> +		tas_reset(emac);
-> +		ret =3D emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_RESET);
-> +		tas->state =3D TAS_STATE_RESET;
-> +		break;
-> +	case TAS_STATE_ENABLE:
-> +		ret =3D emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_ENABLE);
-> +		tas->state =3D TAS_STATE_ENABLE;
-> +		break;
-> +	case TAS_STATE_DISABLE:
-> +		ret =3D emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_DISABLE);
-> +		tas->state =3D TAS_STATE_DISABLE;
-> +		break;
-> +	default:
-> +		netdev_err(emac->ndev, "%s: unsupported state\n", __func__);
-> +		ret =3D -EINVAL;
-> +		break;
-> +	}
-> +
-> +	if (ret)
-> +		netdev_err(emac->ndev, "TAS set state failed %d\n", ret);
-> +	return ret;
-> +}
-> +
-> +static int tas_set_trigger_list_change(struct prueth_emac *emac)
-> +{
-> +	struct tc_taprio_qopt_offload *admin_list =3D emac->qos.tas.taprio_admi=
-n;
-> +	struct tas_config *tas =3D &emac->qos.tas.config;
-> +	struct ptp_system_timestamp sts;
-> +	u32 change_cycle_count;
-> +	u32 cycle_time;
-> +	u64 base_time;
-> +	u64 cur_time;
-> +
-> +	if (admin_list->cycle_time < TAS_MIN_CYCLE_TIME)
-> +		return -EINVAL;
-> +
-> +	cycle_time =3D admin_list->cycle_time - 4; /* -4ns to compensate for IE=
-P wraparound time */
-> +	base_time =3D admin_list->base_time;
-> +	cur_time =3D prueth_iep_gettime(emac, &sts);
-> +
-> +	if (base_time > cur_time)
-> +		change_cycle_count =3D DIV_ROUND_UP_ULL(base_time - cur_time, cycle_ti=
-me);
-> +	else
-> +		change_cycle_count =3D 1;
-> +
-> +	writel(cycle_time, emac->dram.va + TAS_ADMIN_CYCLE_TIME);
-> +	writel(change_cycle_count, emac->dram.va + TAS_CONFIG_CHANGE_CYCLE_COUN=
-T);
-> +	writeb(admin_list->num_entries, emac->dram.va + TAS_ADMIN_LIST_LENGTH);
-> +
-> +	/* config_change cleared by f/w to ack reception of new shadow list */
-> +	writeb(1, &tas->config_list->config_change);
-> +	/* config_pending cleared by f/w when new shadow list is copied to acti=
-ve list */
-> +	writeb(1, &tas->config_list->config_pending);
-> +
-> +	return emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_TRIGGER);
-> +}
-> +
-> +static int tas_update_oper_list(struct prueth_emac *emac)
-> +{
-> +	struct tc_taprio_qopt_offload *admin_list =3D emac->qos.tas.taprio_admi=
-n;
-> +	struct tas_config *tas =3D &emac->qos.tas.config;
-> +	u32 tas_acc_gate_close_time =3D 0;
-> +	u8 idx, gate_idx, val;
-> +	int ret;
-> +
-> +	if (admin_list->cycle_time > TAS_MAX_CYCLE_TIME)
-> +		return -EINVAL;
-> +
-> +	tas_update_fw_list_pointers(emac);
-> +
-> +	for (idx =3D 0; idx < admin_list->num_entries; idx++) {
-> +		writeb(admin_list->entries[idx].gate_mask,
-> +		       &tas->fw_shadow_list->gate_mask_list[idx]);
-> +		tas_acc_gate_close_time +=3D admin_list->entries[idx].interval;
-> +
-> +		/* extend last entry till end of cycle time */
-> +		if (idx =3D=3D admin_list->num_entries - 1)
-> +			writel(admin_list->cycle_time,
-> +			       &tas->fw_shadow_list->win_end_time_list[idx]);
-> +		else
-> +			writel(tas_acc_gate_close_time,
-> +			       &tas->fw_shadow_list->win_end_time_list[idx]);
-> +	}
-> +
-> +	/* clear remaining entries */
-> +	for (idx =3D admin_list->num_entries; idx < TAS_MAX_CMD_LISTS; idx++) {
-> +		writeb(0, &tas->fw_shadow_list->gate_mask_list[idx]);
-> +		writel(0, &tas->fw_shadow_list->win_end_time_list[idx]);
-> +	}
-> +
-> +	/* update the Array of gate close time for each queue in each window */
-> +	for (idx =3D 0 ; idx < admin_list->num_entries; idx++) {
-> +		/* On Linux, only PRUETH_MAX_TX_QUEUES are supported per port */
-> +		for (gate_idx =3D 0; gate_idx < PRUETH_MAX_TX_QUEUES; gate_idx++) {
-> +			u8 gate_mask_list_idx =3D readb(&tas->fw_shadow_list->gate_mask_list[=
-idx]);
-> +			u32 gate_close_time =3D 0;
-> +
-> +			if (gate_mask_list_idx & BIT(gate_idx))
-> +				gate_close_time =3D readl(&tas->fw_shadow_list->win_end_time_list[id=
-x]);
-> +
-> +			writel(gate_close_time,
-> +			       &tas->fw_shadow_list->gate_close_time_list[idx][gate_idx]);
-> +		}
-> +	}
-> +
-> +	/* tell f/w to swap active & shadow list */
-> +	ret =3D tas_set_trigger_list_change(emac);
-> +	if (ret) {
-> +		netdev_err(emac->ndev, "failed to swap f/w config list: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* Wait for completion */
-> +	ret =3D readb_poll_timeout(&tas->config_list->config_change, val, !val,
-> +				 USEC_PER_MSEC, 10 * USEC_PER_MSEC);
-> +	if (ret) {
-> +		netdev_err(emac->ndev, "TAS list change completion time out\n");
-> +		return ret;
-> +	}
-> +
-> +	tas_update_fw_list_pointers(emac);
-> +
-> +	return 0;
-> +}
-> +
-> +static void emac_cp_taprio(struct tc_taprio_qopt_offload *from,
-> +			   struct tc_taprio_qopt_offload *to)
-> +{
-> +	int i;
-> +
-> +	*to =3D *from;
-> +	for (i =3D 0; i < from->num_entries; i++)
-> +		to->entries[i] =3D from->entries[i];
-> +}
-> +
-> +static int emac_taprio_replace(struct net_device *ndev,
-> +			       struct tc_taprio_qopt_offload *taprio)
-> +{
-> +	struct prueth_emac *emac =3D netdev_priv(ndev);
-> +	struct tc_taprio_qopt_offload *est_new;
-> +	int ret, idx;
-> +
-> +	if (taprio->cycle_time_extension) {
-> +		netdev_err(ndev, "Failed to set cycle time extension");
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	if (taprio->num_entries =3D=3D 0 ||
-> +	    taprio->num_entries > TAS_MAX_CMD_LISTS) {
-> +		NL_SET_ERR_MSG_FMT_MOD(taprio->extack, "unsupported num_entries %ld in=
- taprio config\n",
-> +				       taprio->num_entries);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* If any time_interval is 0 in between the list, then exit */
-> +	for (idx =3D 0; idx < taprio->num_entries; idx++) {
-> +		if (taprio->entries[idx].interval =3D=3D 0) {
-> +			NL_SET_ERR_MSG_MOD(taprio->extack, "0 interval in taprio config not s=
-upported\n");
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	if (emac->qos.tas.taprio_admin)
-> +		devm_kfree(&ndev->dev, emac->qos.tas.taprio_admin);
-> +
-> +	est_new =3D devm_kzalloc(&ndev->dev,
-> +			       struct_size(est_new, entries, taprio->num_entries),
-> +			       GFP_KERNEL);
-> +	if (!est_new)
-> +		return -ENOMEM;
-> +
-> +	emac_cp_taprio(taprio, est_new);
-> +	emac->qos.tas.taprio_admin =3D est_new;
-> +	ret =3D tas_update_oper_list(emac);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D  tas_set_state(emac, TAS_STATE_ENABLE);
-
-The double space is still here...
-
-> +	if (ret)
-> +		devm_kfree(&ndev->dev, est_new);
-
-... as is the free'ing of 'est_new' while 'taprio_admin' still points to it.
-
-> +
-> +	return ret;
-> +}
-> +
-> +static int emac_taprio_destroy(struct net_device *ndev)
-> +{
-> +	struct prueth_emac *emac =3D netdev_priv(ndev);
-> +	int ret;
-> +
-> +	ret =3D tas_set_state(emac, TAS_STATE_RESET);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return tas_set_state(emac, TAS_STATE_DISABLE);
-> +}
-> +
-> +static int emac_setup_taprio(struct net_device *ndev, void *type_data)
-> +{
-> +	struct tc_taprio_qopt_offload *taprio =3D type_data;
-> +	int ret;
-> +
-> +	switch (taprio->cmd) {
-> +	case TAPRIO_CMD_REPLACE:
-> +		ret =3D emac_taprio_replace(ndev, taprio);
-> +		break;
-> +	case TAPRIO_CMD_DESTROY:
-> +		ret =3D emac_taprio_destroy(ndev);
-> +		break;
-> +	default:
-> +		ret =3D -EOPNOTSUPP;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type t=
-ype,
-> +			   void *type_data)
-> +{
-> +	switch (type) {
-> +	case TC_SETUP_QDISC_TAPRIO:
-> +		return emac_setup_taprio(ndev, type_data);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +void icssg_qos_tas_init(struct net_device *ndev)
-> +{
-> +	struct prueth_emac *emac =3D netdev_priv(ndev);
-> +	struct tas_config *tas;
-> +
-> +	tas =3D &emac->qos.tas.config;
-> +
-> +	tas->config_list =3D emac->dram.va + TAS_CONFIG_CHANGE_TIME;
-> +	tas->active_list =3D emac->dram.va + TAS_ACTIVE_LIST_INDEX;
-> +
-> +	tas_update_fw_list_pointers(emac);
-> +
-> +	tas_set_state(emac, TAS_STATE_RESET);
-> +}
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.h b/drivers/net/ethe=
-rnet/ti/icssg/icssg_qos.h
-> new file mode 100644
-> index 000000000000..25baccdd1ce5
-> --- /dev/null
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_qos.h
-> @@ -0,0 +1,113 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Copyright (C) 2023 Texas Instruments Incorporated - http://www.ti.com/
-> + */
-> +
-> +#ifndef __NET_TI_ICSSG_QOS_H
-> +#define __NET_TI_ICSSG_QOS_H
-> +
-> +#include <linux/atomic.h>
-> +#include <linux/netdevice.h>
-> +#include <net/pkt_sched.h>
-> +
-> +/* Maximum number of gate command entries in each list. */
-> +#define TAS_MAX_CMD_LISTS   (16)
-> +
-> +/* Maximum number of transmit queues supported by implementation */
-> +#define TAS_MAX_NUM_QUEUES  (8)
-> +
-> +/* Minimum cycle time supported by implementation (in ns) */
-> +#define TAS_MIN_CYCLE_TIME  (1000000)
-> +
-> +/* Minimum cycle time supported by implementation (in ns) */
-> +#define TAS_MAX_CYCLE_TIME  (4000000000)
-> +
-> +/* Minimum TAS window duration supported by implementation (in ns) */
-> +#define TAS_MIN_WINDOW_DURATION  (10000)
-> +
-> +/**
-> + * enum tas_list_num - TAS list number
-> + * @TAS_LIST0: TAS list number is 0
-> + * @TAS_LIST1: TAS list number is 1
-> + */
-> +enum tas_list_num {
-> +	TAS_LIST0 =3D 0,
-> +	TAS_LIST1 =3D 1
-> +};
-> +
-> +/**
-> + * enum tas_state - State of TAS in firmware
-> + * @TAS_STATE_DISABLE: TAS state machine is disabled.
-> + * @TAS_STATE_ENABLE: TAS state machine is enabled.
-> + * @TAS_STATE_RESET: TAS state machine is reset.
-> + */
-> +enum tas_state {
-> +	TAS_STATE_DISABLE =3D 0,
-> +	TAS_STATE_ENABLE =3D 1,
-> +	TAS_STATE_RESET =3D 2,
-> +};
-> +
-> +/**
-> + * struct tas_config_list - Config state machine variables
-> + * @config_change_time: New list is copied at this time
-> + * @config_change_error_counter: Incremented if admin->BaseTime < curren=
-t time
-> + *				 and TAS_enabled is true
-> + * @config_pending: True if list update is pending
-> + * @config_change: Set to true when application trigger updating of admi=
-n list
-> + *		   to active list, cleared when configChangeTime is updated
-> + */
-> +struct tas_config_list {
-> +	u64 config_change_time;
-> +	u32 config_change_error_counter;
-> +	u8 config_pending;
-> +	u8 config_change;
-> +};
-> +
-> +/* Max SDU table. See IEEE Std 802.1Q-2018 12.29.1.1 */
-> +struct tas_max_sdu_table {
-> +	u16 max_sdu[TAS_MAX_NUM_QUEUES];
-> +};
-> +
-> +/**
-> + * struct tas_firmware_list - TAS List Structure based on firmware memor=
-y map
-> + * @gate_mask_list: Window gate mask list
-> + * @win_end_time_list: Window end time list
-> + * @gate_close_time_list: Array of gate close time for each queue in eac=
-h window
-> + */
-> +struct tas_firmware_list {
-> +	u8 gate_mask_list[TAS_MAX_CMD_LISTS];
-> +	u32 win_end_time_list[TAS_MAX_CMD_LISTS];
-> +	u32 gate_close_time_list[TAS_MAX_CMD_LISTS][TAS_MAX_NUM_QUEUES];
-> +};
-> +
-> +/**
-> + * struct tas_config - Main Time Aware Shaper Handle
-> + * @state: TAS state
-> + * @max_sdu_table: Max SDU table
-> + * @config_list: Config change variables
-> + * @active_list: Current operating list operating list
-> + * @fw_active_list: Active List pointer, used by firmware
-> + * @fw_shadow_list: Shadow List pointer, used by driver
-> + */
-> +struct tas_config {
-> +	enum tas_state state;
-> +	struct tas_max_sdu_table max_sdu_table;
-> +	struct tas_config_list __iomem *config_list;
-> +	u8 __iomem *active_list;
-> +	struct tas_firmware_list __iomem *fw_active_list;
-> +	struct tas_firmware_list __iomem *fw_shadow_list;
-> +};
-> +
-> +struct prueth_qos_tas {
-> +	struct tc_taprio_qopt_offload *taprio_admin;
-> +	struct tc_taprio_qopt_offload *taprio_oper;
-> +	struct tas_config config;
-> +};
-> +
-> +struct prueth_qos {
-> +	struct prueth_qos_tas tas;
-> +};
-> +
-> +void icssg_qos_tas_init(struct net_device *ndev);
-> +int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type t=
-ype,
-> +			   void *type_data);
-> +#endif /* __NET_TI_ICSSG_QOS_H */
-> --=20
-> 2.34.1
->
-
---=20
-Vinicius
+T24gRnJpLCAyMDIzLTEwLTA2IGF0IDE2OjAwICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOg0KPiBF
+WFRFUk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5s
+ZXNzIHlvdQ0KPiBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDA1LTEwLTIzLCAx
+ODozNSwgS2VsdmluLkNhb0BtaWNyb2NoaXAuY29twqB3cm90ZToNCj4gDQo+ID4gPiA+ID4gK3N0
+YXRpYyBzdHJ1Y3QgZG1hX2FzeW5jX3R4X2Rlc2NyaXB0b3IgKg0KPiA+ID4gPiA+ICtzd2l0Y2h0
+ZWNfZG1hX3ByZXBfd2ltbV9kYXRhKHN0cnVjdCBkbWFfY2hhbiAqYywgZG1hX2FkZHJfdA0KPiA+
+ID4gPiA+IGRtYV9kc3QsIHU2NCBkYXRhLA0KPiA+ID4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1bnNpZ25lZCBsb25nIGZsYWdzKQ0KPiA+
+ID4gPiANCj4gPiA+ID4gY2FuIHlvdSBwbGVhc2UgZXhwbGFpbiB3aGF0IHRoaXMgd2ltbSBkYXRh
+IHJlZmVycyB0by4uLg0KPiA+ID4gPiANCj4gPiA+ID4gSSB0aGluayBhZGRpbmcgaW1tIGNhbGxi
+YWNrIHdhcyBhIG1pc3Rha2UsIHdlIG5lZWQgYSBiZXR0ZXINCj4gPiA+ID4ganVzdGlmaWNhdGlv
+biBmb3IgYW5vdGhlciB1c2VyIGZvciB0aGlzLCB3aG8gcHJvZ3JhbXMgdGhpcywNCj4gPiA+ID4g
+d2hhdA0KPiA+ID4gPiBnZXRzDQo+ID4gPiA+IHByb2dyYW1tZWQgaGVyZQ0KPiA+ID4gDQo+ID4g
+PiBTdXJlLiBJIHRoaW5rIGl0J3MgYW4gYWx0ZXJuYXRpdmUgbWV0aG9kIHRvIHByZXBfbWVtIGFu
+ZCB3b3VsZCBiZQ0KPiA+ID4gbW9yZQ0KPiA+ID4gY29udmVuaWVudCB0byB1c2Ugd2hlbiB0aGUg
+d3JpdGUgaXMgOC1ieXRlIGFuZCB0aGUgZGF0YSB0byBiZQ0KPiA+ID4gbW92ZWQNCj4gPiA+IGlz
+DQo+ID4gPiBub3QgaW4gYSBETUEgbWFwcGVkIG1lbW9yeSBsb2NhdGlvbi4gRm9yIGV4YW1wbGUs
+IHdlIHdyaXRlIHRvIGENCj4gPiA+IGRvb3JiZWxsIHJlZ2lzdGVyIHdpdGggdGhlIHZhbHVlIGZy
+b20gYSBsb2NhbCB2YXJpYWJsZSB3aGljaCBpcw0KPiA+ID4gbm90DQo+ID4gPiBhc3NvY2lhdGVk
+IHdpdGggYSBETUEgYWRkcmVzcyB0byBub3RpZnkgdGhlIHJlY2VpdmVyIHRvIGNvbnN1bWUNCj4g
+PiA+IHRoZQ0KPiA+ID4gZGF0YSwgYWZ0ZXIgY29uZmlybWluZyB0aGF0IHRoZSBwcmV2aW91c2x5
+IGluaXRpYXRlZCBETUENCj4gPiA+IHRyYW5zYWN0aW9ucw0KPiA+ID4gb2YgdGhlIGRhdGEgaGF2
+ZSBjb21wbGV0ZWQuIEkgYWdyZWUgdGhhdCB0aGUgdXNlIHNjZW5hcmlvIHdvdWxkDQo+ID4gPiBi
+ZQ0KPiA+ID4gdmVyeQ0KPiA+ID4gbGltaXRlZC4NCj4gDQo+IENhbiB5b3UgcGxlYXNlIGV4cGxh
+aW4gbW9yZSBhYm91dCB0aGlzICd2YWx1ZScgd2hlcmUgaXMgaXQgZGVyaXZlZA0KPiBmcm9tPw0K
+PiBXaG8gcHJvZ3JhbXMgaXQgYW5kIGhvdy4uLg0KDQpTdXJlLiBUaGluayBvZiBhIHByb2R1Y2Vy
+L2NvbnN1bWVyIHVzZSBjYXNlIHdoZXJlIHRoZSBwcm9kdWNlciBpcyBhDQpob3N0IERNQSBjbGll
+bnQgZHJpdmVyIGFuZCB0aGUgY29uc3VtZXIgaXMgYSBQQ0llIEVQLiBPbiB0aGUgRVAsIHRoZXJl
+DQppcyBhIG1lbW9yeS1tYXBwZWQgZGF0YSBidWZmZXIgZm9yIGRhdGEgcmVjZWl2aW5nIGFuZCBh
+IG1lbW9yeS1tYXBwZWQNCmRvb3JiZWxsIGJ1ZmZlciBmb3IgdHJpZ2dlcmluZyBkYXRhIGNvbnN1
+bWluZy4gRWFjaCB0aW1lIGZvciBhIGJ1bGsNCmRhdGEgdHJhbnNmZXIsIHRoZSBETUEgY2xpZW50
+IGRyaXZlciBmaXJzdCBETUEgdGhlIGRhdGEgb2Ygc2l6ZSBYIHRvDQp0aGUgbWVtb3J5LW1hcHBl
+ZCBkYXRhIGJ1ZmZlciwgdGhlbiBpdCBETUEgdGhlIHZhbHVlIFggdG8gdGhlIGRvb3JiZWxsDQpi
+dWZmZXIgdG8gdHJpZ2dlciBkYXRhIGNvbnN1bXB0aW9uIG9uIGRldmljZS4gT24gcmVjZWl2aW5n
+IGEgZG9vcmJlbGwNCndyaXRpbmcsIHRoZSBkZXZpY2Ugc3RhcnRzIHRvIGNvbnN1bWUgdGhlIGRh
+dGEgb2Ygc2l6ZSBYIGZyb20gdGhlIGRhdGENCmJ1ZmZlci4gIA0KDQpGb3IgdGhlIGZpcnN0IERN
+QSBvcGVyYXRpb24sIHRoZSBETUEgY2xpZW50IHdvdWxkIHVzZSBkbWFfcHJlcF9tZW1vcnkoKQ0K
+bGlrZSB3aGF0IG1vc3QgRE1BIGNsaWVudHMgZG8uIEhvd2V2ZXIsIGZvciB0aGUgc2Vjb25kIHRy
+YW5zZmVyLCB2YWx1ZQ0KWCBpcyBoZWxkIGluIGEgbG9jYWwgdmFyaWFibGUgbGlrZSBiZWxvdy4N
+Cg0KdTY0IHNpemVfdG9fdHJhbnNmZXI7DQoNCkluIHRoaXMgY2FzZSwgdGhlIGNsaWVudCB3b3Vs
+ZCB1c2UgZG1hX3ByZXBfd2ltbV9kYXRhKCkgdG8gRE1BIHZhbHVlIFgNCnRvIHRoZSBkb29yYmVs
+bCBidWZmZXIsIGxpa2UgYmVsb3cuDQoNCmRtYV9wcmVwX3dpbW1fZGF0YShjaGFuLCBkc3RfZm9y
+X2RiX2J1ZmZlciwgc2l6ZV90b190cmFuc2ZlciwgZmxhZyk7IA0KDQpIb3BlIHRoaXMgZXhhbXBs
+ZSBleHBsYWlucyB0aGUgdGhpbmcuIFBlb3BsZSB3b3VsZCBhcmd1ZSB0aGF0IHRoZQ0KY2xpZW50
+IGNvdWxkIHVzZSB0aGUgc2FtZSBkbWFfcHJlcF9tZW1vcnkoKSBmb3IgdGhlIGRvb3JiZWxsIHJp
+bmdpbmcuIEkNCndvdWxkIGFncmVlLCB0aGlzIEFQSSBqdXN0IGFkZHMgYW4gYWx0ZXJuYXRpdmUg
+d2F5IHRvIGRvIHNvIHdoZW4gdGhlDQpkYXRhIGlzIGFzIGxpdHRsZSBhcyA2NCBiaXQgYW5kIGl0
+IGFsc28gc2F2ZXMgYSBjYWxsIHNpdGUgdG8NCmRtYV9hbGxvY19jb2hlcmVudCgpIHRvIGFsbG9j
+YXRlIGEgc291cmNlIERNQSBidWZmZXIganVzdCBmb3IgaG9sZGluZw0KdGhlIDgtYnl0ZSB2YWx1
+ZSwgd2hpY2ggaXMgcmVxdWlyZWQgYnkgZG1hX3ByZXBfbWVtY3B5KCkuDQogDQoNCj4gPiA+ID4g
+PiArwqDCoMKgwqAgLyogc2V0IHNxL2NxICovDQo+ID4gPiA+ID4gK8KgwqDCoMKgIHdyaXRlbChs
+b3dlcl8zMl9iaXRzKHN3ZG1hX2NoYW4tPmRtYV9hZGRyX3NxKSwNCj4gPiA+ID4gPiAmY2hhbl9m
+dy0NCj4gPiA+ID4gPiA+IHNxX2Jhc2VfbG8pOw0KPiA+ID4gPiA+ICvCoMKgwqDCoCB3cml0ZWwo
+dXBwZXJfMzJfYml0cyhzd2RtYV9jaGFuLT5kbWFfYWRkcl9zcSksDQo+ID4gPiA+ID4gJmNoYW5f
+ZnctDQo+ID4gPiA+ID4gPiBzcV9iYXNlX2hpKTsNCj4gPiA+ID4gPiArwqDCoMKgwqAgd3JpdGVs
+KGxvd2VyXzMyX2JpdHMoc3dkbWFfY2hhbi0+ZG1hX2FkZHJfY3EpLA0KPiA+ID4gPiA+ICZjaGFu
+X2Z3LQ0KPiA+ID4gPiA+ID4gY3FfYmFzZV9sbyk7DQo+ID4gPiA+ID4gK8KgwqDCoMKgIHdyaXRl
+bCh1cHBlcl8zMl9iaXRzKHN3ZG1hX2NoYW4tPmRtYV9hZGRyX2NxKSwNCj4gPiA+ID4gPiAmY2hh
+bl9mdy0NCj4gPiA+ID4gPiA+IGNxX2Jhc2VfaGkpOw0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiAr
+wqDCoMKgwqAgd3JpdGV3KFNXSVRDSFRFQ19ETUFfU1FfU0laRSwgJnN3ZG1hX2NoYW4tDQo+ID4g
+PiA+ID4gPm1taW9fY2hhbl9mdy0NCj4gPiA+ID4gPiA+IHNxX3NpemUpOw0KPiA+ID4gPiA+ICvC
+oMKgwqDCoCB3cml0ZXcoU1dJVENIVEVDX0RNQV9DUV9TSVpFLCAmc3dkbWFfY2hhbi0NCj4gPiA+
+ID4gPiA+bW1pb19jaGFuX2Z3LQ0KPiA+ID4gPiA+ID4gY3Ffc2l6ZSk7DQo+ID4gPiA+IA0KPiA+
+ID4gPiB3aGF0IGlzIHdyaXRlIGhhcHBlbmluZyBpbiB0aGUgZGVzY3JpcHRvciBhbGxvYyBjYWxs
+YmFjaywgdGhhdA0KPiA+ID4gPiBkb2VzDQo+ID4gPiA+IG5vdA0KPiA+ID4gPiBzb3VuZCBjb3Jy
+ZWN0IHRvIG1lDQo+ID4gPiANCj4gPiA+IEFsbCB0aGUgcXVldWUgZGVzY3JpcHRvcnMgb2YgYSBj
+aGFubmVsIGFyZSBwcmUtYWxsb2NhdGVkLCBzbyBJDQo+ID4gPiB0aGluaw0KPiA+ID4gaXQncyBw
+cm9wZXIgdG8gY29udmV5IHRoZSBxdWV1ZSBhZGRyZXNzL3NpemUgdG8gaGFyZHdhcmUgYXQgdGhp
+cw0KPiA+ID4gcG9pbnQuDQo+ID4gPiBBZnRlciB0aGlzIGluaXRpYWxpemF0aW9uLCB3ZSBvbmx5
+IG5lZWQgdG8gYXNzaWduIGNvb2tpZSBpbg0KPiA+ID4gc3VibWl0DQo+ID4gPiBhbmQNCj4gPiA+
+IHVwZGF0ZSBxdWV1ZSBoZWFkIHRvIGhhcmR3YXJlIGluIGlzc3VlX3BlbmRpbmcuDQo+IA0KPiBT
+b3JyeSB0aGF0IGlzIG5vdCByaWdodCwgeW91IGNhbiBwcmVwYXJlIG11bHRpcGxlIGRlc2NyaXB0
+b3JzIGFuZA0KPiB0aGVuDQo+IHN1Ym1pdC4gT25seSBhdCBzdWJtaXQgaXMgdGhlIGNvb2tpZSBh
+c3NpZ25lZCB3aGljaCBpcyBpbiBvcmRlciwgc28NCj4gdGhpcw0KPiBzaG91bGQgYmUgbW92ZWQg
+dG8gd2hlbiB3ZSBzdGFydCB0aGUgdHhuIGFuZCBub3QgaW4gdGhpcyBjYWxsDQo+IA0KVGhlIGhh
+cmR3YXJlIGFzc3VtZXMgdGhlIFNRL0NRIGlzIGEgY29udGlndW91cyBjaXJjdWxhciBidWZmZXIg
+b2YgZml4DQpzaXplZCBlbGVtZW50LiBBbmQgdGhlIGFib3ZlIGNvZGUgcGFzc2VzIHRoZSBhZGRy
+ZXNzIGFuZCBzaXplIG9mIFNRL0NRDQp0byB0aGUgaGFyZHdhcmUuIEF0IHRoaXMgcG9pbnQgaGFy
+ZHdhcmUgd2lsbCBkbyBub3RoaW5nIGJ1dCB0YWtlIG5vdGUNCm9mIHRoZSBTUS9DUSBsb2NhdGlv
+bi9zaXplLsKgDQoNCldoZW4gZG8gZG1hX2lzc3VlX3BlbmRpbmcoKSwgdGhlIGFjdHVhbCBTUSBo
+ZWFkIHdyaXRlIHdpbGwgb2NjdXIgdG8NCnVwZGF0ZSBoYXJkd2FyZSB3aXRoIHRoZSBjdXJyZW50
+IFNRIGhlYWQsIGFzIGJlbG93Og0KDQp3cml0ZXcoc3dkbWFfY2hhbi0+aGVhZCwgJnN3ZG1hX2No
+YW4tPm1taW9fY2hhbl9ody0+c3FfdGFpbCk7DQoNCg0KVGhhbmsgeW91IFZpbm9kIGZvciB5b3Vy
+IHRpbWUhDQpLZWx2aW4NCg==
