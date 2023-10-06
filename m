@@ -2,83 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 736C27BC034
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37EE7BC036
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233485AbjJFUTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 16:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53722 "EHLO
+        id S233484AbjJFUUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233445AbjJFUTX (ORCPT
+        with ESMTP id S233452AbjJFUU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:19:23 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AF5181
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:19:04 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c6219307b2so18914905ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:19:04 -0700 (PDT)
+        Fri, 6 Oct 2023 16:20:27 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD80DC2;
+        Fri,  6 Oct 2023 13:20:24 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-533edb5ac54so4726432a12.0;
+        Fri, 06 Oct 2023 13:20:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696623544; x=1697228344; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5f6ytO4v8vRnOLZhCY/GWjs+tAFnZkSFkkdvYDNCuiM=;
-        b=TaI8cg108Z+FMYXbLmtGXzt85khSvCQ8ZqpzT3S5C0ne8ixhqMJ7RNhBEtYJHOeydC
-         YJcsNxvGlw2FmWA+n5cB6Qm+GrbrNTNCxBCD7TICWsP7rViIvVK03P/rb40VesaRN+RC
-         IcKZYsz7m2dcT5K6DXy5FgJ7Zr8XXln/ZZNOY=
+        d=gmail.com; s=20230601; t=1696623623; x=1697228423; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cKhoOovJJCN2upy+4Afr69/fh1TMRJWzCU1Zea4v2kE=;
+        b=PDVVEFv8gIqFq3oHh6twa4sOauegXiPp1XL2qFvuk4iVzNTRZ6oq3rZkp7Bka9I+sK
+         PCiZSFtltVr6V+8+7tldooPU/9lFOtNYRvo0v+jZQeFqUJMxMMZGnxet+hejOD1NFukw
+         Lt27bTLn95cP2puvOjEoUVuchnjR3UsTdxt0nuF03uZ8TZOnxT/DFmtj1iYM4juCgOUQ
+         gCcWXwuyMI0m9JDXYFIzX07JlLNxfneB4Ey/SjbV3CcQEZwMFNVwV9LuTkxEFIBzC88P
+         FsAdawsRrHjmV8shCfeBozXd1nP54fBF0xX+NDLmRWC0qims9FPiXWwP+0ea8kEqzufN
+         FmNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696623544; x=1697228344;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5f6ytO4v8vRnOLZhCY/GWjs+tAFnZkSFkkdvYDNCuiM=;
-        b=NBLhjOWS3ffH8q0M5gZj0bRkJAY76PxUHVN7pBS3uPhc692MCP+rhdTRKJhk51PiDU
-         6u0+XdlVsziEfswGRzdaZazeJGrBUx+6BgHdM4Vq4VTqdPcuWiS9c5B0667XNiZFx1vM
-         e91DRz2FnDOMBDKltnXVoAedBR5LXXM8h2pM/2DVVnghqcUx9OXuPw5zBDGxqgFYWEmL
-         HbBA13Fsd/bQDhChAg5u5AGv/wixWelLkD+BVRKMojGUy+aFwM4eJqllcnL0Zr2ORRnZ
-         K3hPQFPI2UQTa87yPYBi8j4zLuUY7lbWSkwFk6GtkN9t0x0oxixPtVc+6BIjVlcNTSSK
-         /qxQ==
-X-Gm-Message-State: AOJu0YyM3L+3e1pxJrIiy0Yyfhj7OxWKh7GLe0GHozA22PVInY1YsRIr
-        27gTenVdCnwQ/qpr/ayXFLisUw==
-X-Google-Smtp-Source: AGHT+IHoIlMhgrt/e6wSDVo6U3GrZoPZTlLlZDAUuVIjDuJVhWRmiaJrCWW+kz/LaH09wQ+DUjWSpg==
-X-Received: by 2002:a17:903:1245:b0:1c4:4dbc:92bc with SMTP id u5-20020a170903124500b001c44dbc92bcmr10579883plh.16.1696623543892;
-        Fri, 06 Oct 2023 13:19:03 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a12-20020a170902ee8c00b001acae9734c0sm4331895pld.266.2023.10.06.13.19.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 13:19:03 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-wireless@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: [PATCH] wifi: intersil: hostap: Annotate struct prism2_download_data with __counted_by
-Date:   Fri,  6 Oct 2023 13:19:02 -0700
-Message-Id: <20231006201901.work.278-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1696623623; x=1697228423;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cKhoOovJJCN2upy+4Afr69/fh1TMRJWzCU1Zea4v2kE=;
+        b=WSUUrYI6F3aMXbVJX+vjmViYDuM1YekvqaOKTQ5rfxlRwnI++CYVjRj9hUDASkpC4T
+         V3Ha0N50xZzzoslRX+/e5ESjknc/092ML1ns2LonCcVJEcsBAPQXpNoAVcVC81ls38ad
+         sHJRs+Csxis2/f4iCrtwWU6pvYeGCpuGjpj2alOWm0eN87UK0N4razyZoJpHj5ERKSN3
+         DuuYpUjaCDdok95Le31IjjqMbfd17w1UFo0+dCZ/3t/ytTl51A3CfBjfF80vCGQfV9Ot
+         jGc8IGe8ri03fjd8J8OCuIXml1dBAXLGSTrB9QU19FsPDhUywCmbvy/4QMz3Z0Pe70Fw
+         yrRQ==
+X-Gm-Message-State: AOJu0YzlNbJAQFpAkGjiuEAqRrtDDR9/bnc2yfCPT2eZ71K4EaEMvWih
+        Td5HgBTzQhVT81ORUckAXUeiKyib1eK/PdEfN4TEf1yxNCs=
+X-Google-Smtp-Source: AGHT+IFzBm9NPnRnmS8KzfFV5+HqYcGQ+gqqDuIW64le9nHxHtHRtiylHsLDpMMTFMiBw97Ki6fkalJg7XGv9Jw0h1g=
+X-Received: by 2002:aa7:d151:0:b0:530:db58:61c8 with SMTP id
+ r17-20020aa7d151000000b00530db5861c8mr8699991edo.23.1696623622922; Fri, 06
+ Oct 2023 13:20:22 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1293; i=keescook@chromium.org;
- h=from:subject:message-id; bh=TKH2rwBEryE3wL9UTdezXy/1pyU6gGSThNovHiWR+yA=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlIGu2xaMzE8hOMdtfFrRZu2+Af9UD+Je6xgVdx
- MTm5JiaiHGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZSBrtgAKCRCJcvTf3G3A
- Ju49EACitXCernnFJ9biGqz8FuXcSt+CYk4lCp82ncDmztIE7w8s7PrVYr3qyIXD5St+yemEvIY
- 8+TFJqHuSJ+paWaoNHAhsxTg1r09JWvOimJUZ3ElMl6n/Bd8/pxwY1ZHbmnlgOkLvs8+kXiYhfN
- /6++V7c10DTQExTdfUBlANEEoIZ8mQdJEHPv6sbSbxYOFYQeKo4XW3BxYi9WU4g1JcCmoRSNQB3
- /k0E9TD8cAbbKU8FvNLEMCG9ME9FlhoA9yskpT6t7sTt4eBqzc1XNpXHTEnqwn9kHsRmi2WaUui
- vCgEF5gre80jNXK/sNllBjTiVbWYgBw3dyX1ghrHZMJmec97kDFi+IDdwdp9X68JKFcIqwEdM0i
- eJROy9QnWw9Rqo9gH+mfkop6wvtjTIlAfOTHlRzMvS+rIXhZAdMu/q88krRTEI4Q39mFJnxOuCE
- gOHoMiSxFoo+Lk8jQ4psIWfiq616RjfdOkBeWatRJ1SXz5clGVKm/GIjrmAUNUfQQ03Tnnj08W3
- YQzgJWjH7EcBu0Yi0xiAELx8XW4MBy1Dn+rlcWlyOXyMd0J0W3M0iPxQD0ttRrhHVa/pILy9THj
- ACXphBwkKUpFySPa87ZUKJkkZETjbhD+ROuipwdrpc9vCOeiP22iA6esHKK6LteyO+UPePjIBJE
- ouK1x0v ulZR6wig==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+References: <20231005220324.3635499-1-irogers@google.com>
+In-Reply-To: <20231005220324.3635499-1-irogers@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 6 Oct 2023 13:20:11 -0700
+Message-ID: <CAEf4Bza0YGVW0G-oO3h1j0L0ytiKsn-pRbuqU39C2wO0VP__BA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] bpftool: Align output skeleton ELF code
+To:     Ian Rogers <irogers@google.com>
+Cc:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,38 +80,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+On Thu, Oct 5, 2023 at 3:03=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> libbpf accesses the ELF data requiring at least 8 byte alignment,
+> however, the data is generated into a C string that doesn't guarantee
+> alignment. Fix this by assigning to an aligned char array. Use sizeof
+> on the array, less one for the \0 terminator, rather than generating a
+> constant.
+>
+> Fixes: a6cc6b34b93e ("bpftool: Provide a helper method for accessing skel=
+eton's embedded ELF data")
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> Acked-by: Quentin Monnet <quentin@isovalent.com>
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  tools/bpf/bpftool/gen.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index 2883660d6b67..b8ebcee9bc56 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -1209,7 +1209,7 @@ static int do_skeleton(int argc, char **argv)
+>         codegen("\
+>                 \n\
+>                                                                          =
+   \n\
+> -                       s->data =3D (void *)%2$s__elf_bytes(&s->data_sz);=
+     \n\
+> +                       s->data =3D (void *)%1$s__elf_bytes(&s->data_sz);=
+     \n\
 
-As found with Coccinelle[1], add __counted_by for struct
-prism2_download_data.
+Seems like you based this on top of bpf tree, can you please rebase
+onto bpf-next, it has a small change here and I can't apply it cleanly
+anymore. Other than that it looks good. Thanks!
 
-Cc: Kalle Valo <kvalo@kernel.org>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: linux-wireless@vger.kernel.org
-Cc: linux-hardening@vger.kernel.org
-Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/wireless/intersil/hostap/hostap_wlan.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_wlan.h b/drivers/net/wireless/intersil/hostap/hostap_wlan.h
-index c25cd21d18bd..f71c0545c0be 100644
---- a/drivers/net/wireless/intersil/hostap/hostap_wlan.h
-+++ b/drivers/net/wireless/intersil/hostap/hostap_wlan.h
-@@ -617,7 +617,7 @@ struct prism2_download_data {
- 		u32 addr; /* wlan card address */
- 		u32 len;
- 		u8 *data; /* allocated data */
--	} data[];
-+	} data[] __counted_by(num_areas);
- };
- 
- 
--- 
-2.34.1
-
+>                                                                          =
+   \n\
+>                         obj->skeleton =3D s;                             =
+     \n\
+>                         return 0;                                        =
+   \n\
+> @@ -1218,12 +1218,12 @@ static int do_skeleton(int argc, char **argv)
+>                         return err;                                      =
+   \n\
+>                 }                                                        =
+   \n\
+>                                                                          =
+   \n\
+> -               static inline const void *%2$s__elf_bytes(size_t *sz)    =
+   \n\
+> +               static inline const void *%1$s__elf_bytes(size_t *sz)    =
+   \n\
+>                 {                                                        =
+   \n\
+> -                       *sz =3D %1$d;                                    =
+     \n\
+> -                       return (const void *)\"\\                        =
+   \n\
+> -               "
+> -               , file_sz, obj_name);
+> +                       static const char data[] __attribute__((__aligned=
+__(8))) =3D \"\\\n\
+> +               ",
+> +               obj_name
+> +       );
+>
+>         /* embed contents of BPF object file */
+>         print_hex(obj_data, file_sz);
+> @@ -1231,6 +1231,9 @@ static int do_skeleton(int argc, char **argv)
+>         codegen("\
+>                 \n\
+>                 \";                                                      =
+   \n\
+> +                                                                        =
+   \n\
+> +                       *sz =3D sizeof(data) - 1;                        =
+     \n\
+> +                       return (const void *)data;                       =
+   \n\
+>                 }                                                        =
+   \n\
+>                                                                          =
+   \n\
+>                 #ifdef __cplusplus                                       =
+   \n\
+> --
+> 2.42.0.609.gbb76f46606-goog
+>
