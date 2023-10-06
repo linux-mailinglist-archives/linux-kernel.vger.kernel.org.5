@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D02677BBC06
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156557BBC12
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbjJFPpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 11:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
+        id S232825AbjJFPqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 11:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjJFPpG (ORCPT
+        with ESMTP id S232502AbjJFPqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 11:45:06 -0400
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE7CAD;
-        Fri,  6 Oct 2023 08:45:05 -0700 (PDT)
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-9936b3d0286so420992966b.0;
-        Fri, 06 Oct 2023 08:45:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696607103; x=1697211903;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8aFYMnezX6QVt6CPqUMIG1km0ffIJ/7lCOUbibCVNYY=;
-        b=cr27A3mZjcwN/2wRLR+iWgqsHOq9hJfamtEh/LuSr5A/xOgRWm8TP6XNjksmYUYaPe
-         iSRDwHgcZNRezDU298WX/3B0TDH93SRW4Uag4RCAJSabwftxLSUdk8Dio4Dn+62XGjHi
-         X+FNQYCY7SyUCTM9OYiln8SJOT9TBV0HdKoGPZCfuLuWXSJgV9LNsYOZa617a6nV7CD3
-         fuuKHx5izEtDeyQfnlFXy0JUSojtQ/IH8AYGsh5hLp3wNtgmeOIzVhpyEmKWFdzsDm9P
-         wr0TIfmZr27gf/E5vSdNzwQ/OLk2khzk4kw672nYksamgKDzMeXpVWcslwd/DPVS1ldP
-         pYRg==
-X-Gm-Message-State: AOJu0Yzc2U4YqMa1COiPHr6dbW+smLkYeJRHrB0LYI0DH+dEJHa9X/Fv
-        drANEtfxm21zK8x/SrfvbJg=
-X-Google-Smtp-Source: AGHT+IE9DXNEm/MJhfpSSluc6f57Rm80AeOvy49rpEIS7UOG3ALQ+Sr77GzdCmsCicO59TMC1q98SQ==
-X-Received: by 2002:a17:906:9c1:b0:9ae:5aa4:9fa with SMTP id r1-20020a17090609c100b009ae5aa409famr7685330eje.42.1696607103107;
-        Fri, 06 Oct 2023 08:45:03 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-117.fbsv.net. [2a03:2880:31ff:75::face:b00c])
-        by smtp.gmail.com with ESMTPSA id jw26-20020a17090776ba00b009ae3d711fd9sm3040104ejc.69.2023.10.06.08.45.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 08:45:02 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 08:45:00 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, martin.lau@linux.dev,
-        krisman@suse.de, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org, pabeni@redhat.com
-Subject: Re: [PATCH v4 00/10] io_uring: Initial support for {s,g}etsockopt
- commands
-Message-ID: <ZSArfLaaGcfd8LH8@gmail.com>
-References: <20230904162504.1356068-1-leitao@debian.org>
- <20230905154951.0d0d3962@kernel.org>
+        Fri, 6 Oct 2023 11:46:12 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD36C5;
+        Fri,  6 Oct 2023 08:46:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C885EC433C8;
+        Fri,  6 Oct 2023 15:46:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696607170;
+        bh=RqPT1sAX+CTz+LW7FuFBdj/iCoI5RcSD8+uIrgrjRII=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TJcW5fQIHClkSNCykvIXtff2T4paynN6ON2HHsJur23X/V+AytMrdMa8Z+YSrMKg7
+         wLoYz3k3KY1Aihi0JnyZ0KWWwEyN5hrypUPCfKfqeWiKNrAB/E8y19+9Nu3LqTGaxk
+         +HPtFku6IVKUm7vlWyAJYeSDkQTXn3/DMiBsY478ifOr440NNBFjs+X/2ufi9wA+dA
+         MTOIP4mB1+OvXOmOhEdBP7zpQfcmuQz55tkVx7xQjc4yUwILkfjoog+sTRlc9dtH/w
+         t81RK79s4fmnJhoySGDTNJKsT/illXeqAOUK490U0lrbZa2wa4n4eXXCfapsk9xF7X
+         zzzJBk3wtxSiA==
+Date:   Fri, 6 Oct 2023 16:46:05 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        Amit Kucheria <amitk@kernel.org>
+Subject: Re: [PATCH v2] thermal: Remove Amit Kucheria from MAINTAINERS
+Message-ID: <20231006-earthly-equal-dd5d82312add@spud>
+References: <2702191.mvXUDI8C0e@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="aL7ZvF+92viwC5jJ"
 Content-Disposition: inline
-In-Reply-To: <20230905154951.0d0d3962@kernel.org>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <2702191.mvXUDI8C0e@kreacher>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jakub,
 
-On Tue, Sep 05, 2023 at 03:49:51PM -0700, Jakub Kicinski wrote:
-> On Mon,  4 Sep 2023 09:24:53 -0700 Breno Leitao wrote:
-> > Patches 1-2: Modify the BPF hooks to support sockptr_t, so, these functions
-> > become flexible enough to accept user or kernel pointers for optval/optlen.
-> 
-> Have you seen:
-> 
-> https://lore.kernel.org/all/CAHk-=wgGV61xrG=gO0=dXH64o2TDWWrXn1mx-CX885JZ7h84Og@mail.gmail.com/
-> 
-> ? I wasn't aware that Linus felt this way, now I wonder if having
-> sockptr_t spread will raise any red flags as this code flows back
-> to him.
+--aL7ZvF+92viwC5jJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the heads-up. I've been thinking about it for a while and I'd
-like to hear what are the next steps here.
+On Fri, Oct 06, 2023 at 05:04:42PM +0200, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>=20
+> Amit Kucheria has not been participating in kernel development in any
+> way or form for quite some time, so it is not useful to list him as a
+> designated reviewer for the thermal subsystem.
+>=20
+> Remove him from the THERMAL entry in MAINTAINERS.
+>=20
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>=20
+> v1 -> v2: Drop the DT binding change
+>=20
+> I'm really not inclined to fight over stuff that doesn't make any sense t=
+o me.
 
-Let me first back up and state where we are, and what is the current
-situation:
+I don't understand what you mean by this. All that was required was
+putting __someone__ down as a maintainer in the dt-binding, as Rob's bot
+told you:
+https://lore.kernel.org/linux-devicetree/CAJZ5v0gwvo_CriNwz_g-oQ8EZUqdp4ymi=
+uamU-KkrmQ87RhZyA@mail.gmail.com/T/#m56a9b1616477566e2976044c11b58dccbd3be0=
+fb
 
-1) __sys_getsockopt() uses __user pointers for both optval and optlen
-2) For io_uring command, Jens[1] suggested we get optlen from the io_uring
-sqe, which is a kernel pointer/value.
+>=20
+> ---
+>  Documentation/devicetree/bindings/thermal/thermal-zones.yaml |    3 ---
+>  MAINTAINERS                                                  |    1 -
+>  2 files changed, 4 deletions(-)
+>=20
+> Index: linux-pm/MAINTAINERS
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-pm.orig/MAINTAINERS
+> +++ linux-pm/MAINTAINERS
+> @@ -21363,7 +21363,6 @@ F:	drivers/media/radio/radio-raremono.c
+>  THERMAL
+>  M:	Rafael J. Wysocki <rafael@kernel.org>
+>  M:	Daniel Lezcano <daniel.lezcano@linaro.org>
+> -R:	Amit Kucheria <amitk@kernel.org>
+>  R:	Zhang Rui <rui.zhang@intel.com>
+>  L:	linux-pm@vger.kernel.org
+>  S:	Supported
+>=20
+>=20
+>=20
 
-Thus, we need to make the common code (callbacks) able to handle __user
-and kernel pointers (for optlen, at least).
+--aL7ZvF+92viwC5jJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-From a proto_ops callback perspective, ->setsockopt() uses sockptr.
+-----BEGIN PGP SIGNATURE-----
 
-          int             (*setsockopt)(struct socket *sock, int level,
-                                        int optname, sockptr_t optval,
-                                        unsigned int optlen);
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSArvQAKCRB4tDGHoIJi
+0tJOAP0RchSWseK6p2cPyt+7A6+5M4M5Z7+A4KOKtDbdtWVzGQD7B25vFO7lmNDy
+xfpFomW8uCMUMr0q7VBHLhYrNVBW3g4=
+=dNGo
+-----END PGP SIGNATURE-----
 
-Getsockopt() uses sockptr() for level=SOL_SOCKET:
-
-	int sk_getsockopt(struct sock *sk, int level, int optname,
-                    sockptr_t optval, sockptr_t optlen)
-
-But not for the other levels:
-
-	int             (*getsockopt)(struct socket *sock, int level,
-				      int optname, char __user *optval, int __user *optlen);
-
-
-That said, if this patchset shouldn't use sockptr anymore, what is the
-recommendation?
-
-If we move this patchset to use iov_iter instead of sockptr, then I
-understand we want to move *all* these callbacks to use iov_vec. Is this
-the right direction?
-
-Thanks for the guidance!
-
-[1] https://lore.kernel.org/all/efe602f1-8e72-466c-b796-0083fd1c6d82@kernel.dk/
+--aL7ZvF+92viwC5jJ--
