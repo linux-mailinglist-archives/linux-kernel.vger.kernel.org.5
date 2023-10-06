@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8AA47BBF8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4689B7BBF8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbjJFTIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 15:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48168 "EHLO
+        id S233110AbjJFTIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 15:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233110AbjJFTID (ORCPT
+        with ESMTP id S233363AbjJFTII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 15:08:03 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B1695
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:08:02 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-49ab6c1869dso2360313e0c.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:08:02 -0700 (PDT)
+        Fri, 6 Oct 2023 15:08:08 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB0CAB
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:08:06 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-45274236ef6so1193984137.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696619281; x=1697224081; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696619285; x=1697224085; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7r1PEvN0Zc1sSEhTcDnAnqbtYBFlOuEiAfTjeDdat8E=;
-        b=NRX/+Y6sYNw53y3eqUM/6v/Eui1yaIzt9Wzydg+nsX35hTt5zMmw6be6LHZ1GvXC2H
-         7VK3tYxKI4cVfesTB69OlgG29qJLyS3Ab6VDD6Q/coinsphnUvLE6Lwq4/IRwtO/Yzws
-         ztXrv/BhGVefmMpTumruOXp68TfrhhiAdT7TGXopwEAZDsalbkhSX82q7o/7JrVPsfkY
-         LDdli+WcPVnrpLCnyk8B5ttqiviUmZpIZmnkMMnUDOxf8AOPBw1iHH35dhHeCv76d6/L
-         f/9/WQCsLdyongnBEtclFrZoYw8t1tMzQaiKLrQvwQlIVgiV3agCvtIGCIQBzboNogIB
-         4Now==
+        bh=zxlLhkoj1Kmhin2Qlx3Q+WrvoF0R0Cb9Ja4Y1YVu+4c=;
+        b=TLDxoEpd1VVzP2mVNHKHE5dptEcJRqLnM8p/qOjD0CgPHt51KMoCLmd5kw1nzxcSWY
+         yJNamVcOdDvcSGyjnliAn82Ky8Y63Z7IabIObEorEe9cIogWLZ5e8bP74QFLqjkg4zip
+         FWFgfyWxf7PcJNAMeDQYPxhUyVWyF3a1+5qlbHHghJK1W0r6kuLePkF6M8lrdzk5exmd
+         aJYstLDJ8Qew+l0SINgLx4F5p+FbNjYLrp8WZ8UWXpiDr3wyd1fbvCjXICu7wQ4yx+mW
+         wGy0ug/gFbcSwavz4gXMQlt8USDnpXJGytFLgsbM1rnu62QUaby5f8/hTqK9NTnA+o8j
+         4gxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696619281; x=1697224081;
+        d=1e100.net; s=20230601; t=1696619285; x=1697224085;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7r1PEvN0Zc1sSEhTcDnAnqbtYBFlOuEiAfTjeDdat8E=;
-        b=tZnl2uKnb3kVGr8d9VvDmu0cVPtzsrx7RWsI1WcyDGNjyVneX79ulue2WIGvPjJify
-         fRUCzHLkvm7Mas0MfoHWu00iY6S+OL/LHwLNpXxrwywQiWAMcl1rJlftA3lt3+AKBHEF
-         AzBtiE6y45dcNzaq1VpMqh7WC3CjX/nCoD80Awn6mhTKyNjZpJ4WXmRU4WgM9SC8zuRW
-         RKvPw0uEo7U70u4z5TPO9aZXNQ9fT7wDP3kt2wtNZLzw185K63fY5h6UcC9vxMqUi1cW
-         G4+VoG8+krh1wTGMgha5mqeiCUxSXX3k2aQSEE+1INEx+ry7fItt0A/fCb+y10howRWT
-         IyTw==
-X-Gm-Message-State: AOJu0YxN/bE0ifAEBerZt4Oe64VNFlQGR0yXaYcU3mXG+87mLzoJ1EWj
-        vfeJg65G0Ainmmqn9tbD1Oaz3ggLB+5ueU47AC9t0Q==
-X-Google-Smtp-Source: AGHT+IHJIlOoYKPPmacIOMs5XSsifwMP29jR+K5QaYIYQh7g1mnafIxpy2gs/JWBP4o2HkKCVVV0LLYeU0vmrmvXqPA=
-X-Received: by 2002:a1f:62c1:0:b0:496:187e:b33f with SMTP id
- w184-20020a1f62c1000000b00496187eb33fmr4117122vkb.3.1696619281083; Fri, 06
- Oct 2023 12:08:01 -0700 (PDT)
+        bh=zxlLhkoj1Kmhin2Qlx3Q+WrvoF0R0Cb9Ja4Y1YVu+4c=;
+        b=wKukhDmytubN4H/LoUey8C9ellS7qlW2fE3hGw1toU4sNp2D8xnoKaC49ioDpwV7cA
+         isCTQYtxIg8wvJoomsKHxeYU5Vqn+uVE+7JHQ+1f8DyZBnk0f0A8KOHFGR1fb2tDDenE
+         YVtLjnm7oPwDeIqMb00bwjf42NJr9EEEj3hBqecxcNhkDdarzsXRtd02LV7IJ8OGB5X0
+         ZtJlTLfmRhYFCwo4E1Qr92v1bv3yiFhqykhxhfAVaoCwEAV4xzqUfjDJ/wKEqvkIO9vu
+         u95qZhxlV1SsAFOpgV0LfWJAghgnZrpAI+p08IkuZ9fnzCfAp5lOOhyafVHSLN6fZNlw
+         1uZw==
+X-Gm-Message-State: AOJu0YxiubQ86vwn3ukPhZtjprMMAyIZkp958LOn7Yo4wCcWLaymUB+U
+        qBJh89VS7GTkPRcnAGcXMXWhbgUnnL1yF4KKIzwRLpGBMgt8BGDF
+X-Google-Smtp-Source: AGHT+IG4YWnlNuzYQ3D7QfQ85iW7UB8nypued/rD9Y1v+Txs/czpFfkdZpjjbAeS2dURl24tCbNVSIcLGC9D4KBQ7Mo=
+X-Received: by 2002:a67:fdd0:0:b0:454:2d1e:6ced with SMTP id
+ l16-20020a67fdd0000000b004542d1e6cedmr9726691vsq.27.1696619285327; Fri, 06
+ Oct 2023 12:08:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231006115147.18559-1-brgl@bgdev.pl> <ZSAKdOXpo+xOI3sJ@smile.fi.intel.com>
-In-Reply-To: <ZSAKdOXpo+xOI3sJ@smile.fi.intel.com>
+References: <20231006115147.18559-1-brgl@bgdev.pl> <ZSAIUVAQ6ifi8LTL@smile.fi.intel.com>
+In-Reply-To: <ZSAIUVAQ6ifi8LTL@smile.fi.intel.com>
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 6 Oct 2023 21:07:49 +0200
-Message-ID: <CAMRc=MeYiiWaaqRtSjRBfaWGFtZCPWCjYk+ZrX5TwicNq9MQeA@mail.gmail.com>
+Date:   Fri, 6 Oct 2023 21:07:54 +0200
+Message-ID: <CAMRc=MdrLSPCEsQ6OEgRX-7Wh7ka+Rczja=QjY-srozj3cz68w@mail.gmail.com>
 Subject: Re: [RFC/RFT PATCH] gpiolib: reverse-assign the fwnode to struct gpio_chip
 To:     Andy Shevchenko <andy@kernel.org>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
@@ -70,7 +70,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 3:24=E2=80=AFPM Andy Shevchenko <andy@kernel.org> wr=
+On Fri, Oct 6, 2023 at 3:15=E2=80=AFPM Andy Shevchenko <andy@kernel.org> wr=
 ote:
 >
 > On Fri, Oct 06, 2023 at 01:51:47PM +0200, Bartosz Golaszewski wrote:
@@ -82,50 +82,46 @@ ote:
 > >
 > > In that last case, it is currently impossible to match a GPIO device by
 > > fwnode unless it was explicitly assigned to the chip in the provider
-> > code. If the fwnode is taken from the parent device, the pointer in
+> > code.
+>
+> That's expected behaviour.
+>
+
+Is it though? We now have a GPIO device that represents a piece of
+physical hardware that has an fwnode assigned and the associated GPIO
+chip (tied to that device) that has none. How is that logical? It's
+not coherent. I'm not surprised users of that code will be confused -
+like Dipen in this case.
+
+Bart
+
+> > If the fwnode is taken from the parent device, the pointer in
 > > struct gpio_chip will remain NULL.
-> >
+>
 > > If we have a parent device but gc->fwnode was not assigned by the
 > > provider, let's assign it ourselves so that lookup by fwnode can work i=
 n
 > > all cases.
 >
+> I don't think this is a good change. We paper over the real issue where
+> we and callers need to understand what they are looking for.
+>
 > ...
 >
-> > +             gc->fwnode =3D parent_fwnode;
+> > This is something that Dipen reported with one of the tegra drivers whe=
+re
+> > a GPIO lookup by fwnode does not work because the fwnode pointer in str=
+uct
+> > gpio_chip is NULL. This patch addresses this use-case.
 >
-> Ah, this is basically reverts my commit, the whole idea of which was to g=
-o
-> towards constant struct gpio_chip object that is supplied by a provider.
+> I am not sure I understand the problem here. All these should have been
+> addressed already, no?
 >
-
-Then this idea was wrong in the first place and that goal will never
-be achieved. Whether that's a correct approach is questionable but
-struct gpio_chip has become so much more than a simple config
-structure and - given how ubiquitous GPIO providers are throughout the
-different subsystems of the kernel - it'll stay that way unless we're
-ready to rebuild every GPIO provider in linux.
-
-The best we can do now is at least make its usage safe. Meaning: it's
-a structure with which providers will interact using GPIOLIB callbacks
-which will in turn assure that during the execution of any function
-taking struct gpio_chip as argument, it will remain alive and
-protected from concurrent access.
-
-The providers however will continue to use gpio_chip for many
-purposes. One of such purposes is matching the GPIO device BY its
-backing gpio_chip structure. It not having the same fwnode in this
-particular case is an inconsistency rather than design IMO.
-
-I don't see any good reason for it not having the fwnode assigned.
-User calling gpio_device_find() will have to jump through hoops in
-order to match the device by fwnode (include gpiolib.h and dereference
-gpiodev?) but it could be very easily facilitated by just assigning it
-at registration-time - just like we assign a whole bunch of other
-pointers and data structures.
-
-Bart
-
+> So, the GPIOLIB should use dev_fwnode(&gdev->dev) inside it, outside it
+> the GPIO drivers are free to use gc->fwnode as long as they understand
+> the lifetime of the respective object.
+>
+>
 > --
 > With Best Regards,
 > Andy Shevchenko
