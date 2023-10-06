@@ -2,107 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0228D7BB025
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58067BB029
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbjJFBo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 21:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47728 "EHLO
+        id S229802AbjJFBsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 21:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJFBo6 (ORCPT
+        with ESMTP id S229693AbjJFBsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 21:44:58 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAC7E4;
-        Thu,  5 Oct 2023 18:44:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696556690;
-        bh=FEZ5Zt1GmousPutMjHkXHKTXZftkzEH+5BRetQ9SLH8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=QPsAkMu3ouwOCN8SrhzPXaAqTmCtz+DPaSeZTeqeRbim3p4EL/Vlcb7Wkz/onPK4o
-         T1E+FTSDxp8+LLlWXhFpOAZ8II+WFxUh/Xn7KHhCL3cUyJoO4riWlwVwTBi5+32CHz
-         afj8enCEZX0e6VY5M1szvDeLMGHCMXPXxjTDJdOJppSflqRAdoZRX7/DO89tcwuRDe
-         isQ2AZNzN8vN4pZPaYIXdlgTcW0cvYq8+fEIdx6QRsnpDNp8GLJ8daYEKki2XwK1LU
-         FymHFqlrMdektyMorj/NzUaH9sHM6QEo0HtDDsgK4wFAv8iCiVKGbYANgcIjb/tjXw
-         JsB41dGJP8kpg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S1rp93DYFz4x5k;
-        Fri,  6 Oct 2023 12:44:49 +1100 (AEDT)
-Date:   Fri, 6 Oct 2023 12:44:47 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the drm-msm-lumag tree with the
- drm-misc tree
-Message-ID: <20231006124447.10031f6e@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/eXIVIosoXmtrWkP4jtgIGQQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 5 Oct 2023 21:48:24 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14210DE
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 18:48:22 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d815354ea7fso2134562276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 18:48:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696556901; x=1697161701; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pXc2O/7sCaxNCrmG6skLU9Fi8ZAb+bkQu9XTdeJPITM=;
+        b=Id1JyKTE+DXe1zXADSJhMkgJCISFAetC0ZgprPpbixwdbVAHvTW2DZX+QEuizCEE63
+         NCsq12r4rPcHxYzTd3xfdnNrBWpBxaAUF4/ifkRs/eLZ9mFZMmUQQ4KH4ZfsXl8zOi2X
+         HXELmdYhtOxeqEAuM46HzRpt5jq+BzOTK9jx3USTt4tbnYsqLmpqRCnGxb1gldIOpCnV
+         NfBUsW6MZURpD45b1/ZNqux+CMV4BgoY+C9N1oJzeTHvSG9vlCO1U16pI3yOJ1SAitWR
+         LK/qvppVra3/3Uf7vhFg4fnowzPZ4QveTtDL/t6DdBmRTQnCwwbOSofUAO076cksFG2q
+         z16A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696556901; x=1697161701;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pXc2O/7sCaxNCrmG6skLU9Fi8ZAb+bkQu9XTdeJPITM=;
+        b=Wnlivp7UtilBh4qGT5+ha54N7SJQlP6fkrQQRuO/CCK/mUfB7i278UCnlvQM3s8GPp
+         jWBaPCVFUX8lvCQGAt5AhprXvOPzejYehmB2KP105vSTc30gnVr6ihBjnfhr4N6hPjjn
+         P5PFRIASIHrTzxJbFKQCwSE0dnHTXU41h8XZyszntGy7IIgQRSFZwqHab8Msj/m5pcjG
+         A8eCpEKUopVdNAZxnFndKezafPrpCkVUr0QbcTkGjxKxAnyTbRb/Zihx7LrdJMp9+wPf
+         oi4LESDc7AbBUK4BDONvMMrXytJHkoJ6eLUFCLTCAixqxXsDchTGa3cBFwUWUBbP750P
+         W6QQ==
+X-Gm-Message-State: AOJu0Yw81b2rvgaNkvDepizueZnigtEVGQ0RUb9l0cqcKKUG+x522gMW
+        i4tvWDxyiEl2gxu0P2rGBgK1Eec1qjo=
+X-Google-Smtp-Source: AGHT+IG5kNlkia9mNVTpbkW4qVJ+ISAXuag8oe/q6O2fyloXPP+UYEYfKbsxwZ6+HCaMsJtpRYwGXiuE5ss=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:500c:0:b0:d81:fc08:29ea with SMTP id
+ e12-20020a25500c000000b00d81fc0829eamr89926ybb.2.1696556901326; Thu, 05 Oct
+ 2023 18:48:21 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 18:48:19 -0700
+In-Reply-To: <5fc0fbfe-72e8-44bf-bad2-92513f299832@xen.org>
+Mime-Version: 1.0
+References: <20231004174628.2073263-1-paul@xen.org> <ZR2vTN618U0UgtIA@google.com>
+ <5fc0fbfe-72e8-44bf-bad2-92513f299832@xen.org>
+Message-ID: <ZR9nYw53O21y0VYM@google.com>
+Subject: Re: [PATCH v2] KVM: x86/xen: ignore the VCPU_SSHOTTMR_future flag
+From:   Sean Christopherson <seanjc@google.com>
+To:     paul@xen.org
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Durrant <pdurrant@amazon.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/eXIVIosoXmtrWkP4jtgIGQQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 05, 2023, Paul Durrant wrote:
+> On 04/10/2023 19:30, Sean Christopherson wrote:
+> > On Wed, Oct 04, 2023, Paul Durrant wrote:
+> > > ---
+> > > Cc: David Woodhouse <dwmw2@infradead.org>
+> > > Cc: Sean Christopherson <seanjc@google.com>
+> > > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > Cc: Ingo Molnar <mingo@redhat.com>
+> > > Cc: Borislav Petkov <bp@alien8.de>
+> > > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > > Cc: x86@kernel.org
+> > 
+> > If you're going to manually Cc folks, put the Cc's in the changelog proper so that
+> > there's a record of who was Cc'd on the patch.
+> > 
+> 
+> FTR, the basic list was generated:
+> 
+> ./scripts/get_maintainer.pl --no-rolestats
+> 0001-KVM-xen-ignore-the-VCPU_SSHOTTMR_future-flag.patch | while read line;
+> do echo Cc: $line; done
+> 
+> and then lightly hacked put x86 at the end and remove my own name... so not
+> really manual.
+> Also not entirely sure why you'd want the Cc list making it into the actual
+> commit.
 
-Hi all,
+It's useful for Cc's that *don't* come from get_maintainers, as it provides a
+record in the commit of who was Cc'd on a patch. 
 
-Today's linux-next merge of the drm-msm-lumag tree got a conflict in:
+E.g. if someone encounters an issue with a commit, the Cc records provide additional
+contacts that might be able to help sort things out.
 
-  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
+Or if a maintainer further up the stream has questions or concerns about a pull
+request, they can use the Cc list to grab the right audience for a discussion,
+or be more confident in merging the request because the maintainer knows that the
+"right" people at least saw the patch.
 
-between commit:
+Lore links provide much of that functionality, but following a link is almost
+always slower, and some maintainers are allergic to web browsers :-)
 
-  8f5d3daad715 ("drm/msm/dpu: Annotate struct dpu_hw_intr with __counted_by=
-")
+> > Or even better, just use scripts/get_maintainers.pl and only manually Cc people
+> > when necessary.
+> 
+> I guess this must be some other way of using get_maintainers.pl that you are
+> expecting?
 
-from the drm-misc tree and commits:
+Ah, I was just assuming that you were handcoding the Cc "list", but it sounds
+like you're piping the results into each patch.  That's fine, just a bit noisy
+and uncommon.
 
-  eb7af0e86349 ("drm/msm/dpu: add helper to get IRQ-related data")
-  07e7d96dcb08 ("drm/msm/dpu: make the irq table size static")
+FWIW, my scripts gather the To/Cc for all patches in a series, and then use the
+results for the entire series, e.g.
 
-from the drm-msm-lumag tree.
+  git send-email --confirm=always --suppress-cc=all $to $bcc $cc ...
 
-I fixed it up (the latter 2 replaced what was updated by the former) and
-can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/eXIVIosoXmtrWkP4jtgIGQQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUfZo8ACgkQAVBC80lX
-0GzxjAgAoMVn3jWTorqxP+K3iyB+pqlcIgz90HiPbveLth6LEasVkPQQJsRKMUlt
-MgH791r86UQGTWQi1YTAfhGxj+wBrXUFYXzAUjlYsGLyBY8+q/reb3Tt+IydPBTB
-ZVWA50yhpS4c4jTkOKob8Y06hegR7anpPlypRxeSEU9beG8ZogLXN51FSGjiJBYX
-HquwMYxEWAqHBTk10vzSEEDEg8wVdmr6rdv7Gz4MbBdaJhqKEZaxNTkVGXXuy+kn
-jePWgxTaCPXNPzBW4+yJNVrkTdF4RklSCUoNuRKgFesWRLBnCabFVgwv7WVY4Ig1
-2p5BV5lb3L4x5JS07YcBEx69kL29VA==
-=D7A5
------END PGP SIGNATURE-----
-
---Sig_/eXIVIosoXmtrWkP4jtgIGQQ--
+That way everyone that gets sent mail gets all patches in a series.  Most
+contributors, myself included, don't like to receive bits and pieces of a series,
+e.g. it makes doing quick triage/reviews annoying, especially if the patches I
+didn't receive weren't sent to any of the mailing list to which I'm subscribed.
