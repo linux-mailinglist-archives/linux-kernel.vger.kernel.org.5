@@ -2,164 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1007BBDEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705C77BBDEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbjJFRoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 13:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49392 "EHLO
+        id S232970AbjJFRpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 13:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232552AbjJFRo3 (ORCPT
+        with ESMTP id S232552AbjJFRpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 13:44:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38102AD
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 10:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696614267; x=1728150267;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=VhHENdpgY+sILTg2ivPgyRFZ3jNbhscJkyL8yBGyQjU=;
-  b=bVPS2ODcUx4nqbEKfsvQmzWjWfiXHh7vJPJHJbrRC+GNZrM6fvCA0MMQ
-   JpOblSOM2MHDSm6I8F8QwkuFJDkb4IoKpfPMp2ebDIOxBHKKzlC29VmMA
-   VLkIMEXyHT4HKUl1VFE6cItN4HbOSgRDIXOk0xhU+/JOHxDRNXjCpnK8r
-   WfluKQ0zv7KqItra81ZI5TYY3pPAfYDbdkPEK0+7YJQ78LjShPHl+OS/Q
-   SxzNIcM4IevJeWrqlpZPp3n4eg/s9i9aSLHA0I7+fLR4/mqJE7PmmN86t
-   OfQiIiDfOJFVDkKQXFMEA9R+RNYqmbkdanleePP3/gZ/9pOTqZOwftmbi
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="2399415"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="2399415"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 10:44:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="868417795"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="868417795"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 06 Oct 2023 10:44:25 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoosA-0003U7-2k;
-        Fri, 06 Oct 2023 17:44:22 +0000
-Date:   Sat, 7 Oct 2023 01:43:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: arch/arm/mach-omap1/timer32k.c:186: warning: cannot understand
- function prototype: 'struct timespec64 persistent_ts; '
-Message-ID: <202310070106.8QSyJOm3-lkp@intel.com>
+        Fri, 6 Oct 2023 13:45:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E4EBE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 10:45:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 041DDC433C8;
+        Fri,  6 Oct 2023 17:45:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696614339;
+        bh=eR2R0F/vcWmTXvkygEMikVDgfUW8yNTc/B0mv/Thh/Q=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=H3+2v7Y+DSgsz0T5otVWlNHANJXOJ5610MQm+JQ5HL6JBe9soPh07DyrGaiAQEKzx
+         kRpt/7yu3hew9LpWKdWNZgbsSxTRUC8tj8vTBgaQx9c+9T2v9LzYTbYZ+NoLSJ0qMa
+         SgTu9j7tsGszpThY+Ifqwxa12g1xGOu05D3EBLNUzrPPbhyrPpU1ETpSNtuQ3IJgqp
+         2cdCLqJHQReUXZtr00Vz+IPajuyhMhtUmM6jDivPHJwLL0MGwhw9g2jBue0Pz3SyJb
+         Tmq6k0fYbLvcqKgFHW7NTMXIjewIHDNDJhj3DsY5Q+c8POuLpaeuHkYogpWtu/vj49
+         L5SA3fNqvyLRg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com
+In-Reply-To: <20231006111039.101914-1-rf@opensource.cirrus.com>
+References: <20231006111039.101914-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH 0/4] ASoC: cs35l56: Update hibernate/wake sequences and
+ enable hibernation
+Message-Id: <169661433758.222574.6492928964060068556.b4-ty@kernel.org>
+Date:   Fri, 06 Oct 2023 18:45:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   af95dc6fdc25e616051d0234aad638e15c02ec8f
-commit: d379e8899a8da1041c347ae5b792773c48a559a9 ARM: omap1: move 32k counter from plat-omap to mach-omap1
-date:   1 year, 6 months ago
-config: arm-omap1_defconfig (https://download.01.org/0day-ci/archive/20231007/202310070106.8QSyJOm3-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231007/202310070106.8QSyJOm3-lkp@intel.com/reproduce)
+On Fri, 06 Oct 2023 12:10:35 +0100, Richard Fitzgerald wrote:
+> Update the hibernate and wake command sequences to meet the latest
+> datasheet specification and enable hibernation for I2C and SPI control
+> interfaces.
+> 
+> Richard Fitzgerald (1):
+>   ASoC: cs35l56: Enable low-power hibernation mode on SPI
+> 
+> [...]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310070106.8QSyJOm3-lkp@intel.com/
+Applied to
 
-All warnings (new ones prefixed by >>):
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
->> arch/arm/mach-omap1/timer32k.c:186: warning: cannot understand function prototype: 'struct timespec64 persistent_ts; '
->> arch/arm/mach-omap1/timer32k.c:216: warning: Function parameter or member 'vbase' not described in 'omap_init_clocksource_32k'
->> arch/arm/mach-omap1/timer32k.c:216: warning: Excess function parameter 'pbase' description in 'omap_init_clocksource_32k'
->> arch/arm/mach-omap1/timer32k.c:216: warning: Excess function parameter 'size' description in 'omap_init_clocksource_32k'
+Thanks!
 
+[1/4] ASoC: cs35l56: Change hibernate sequence to use allow auto hibernate
+      commit: a47cf4dac7dcc43ef25d009ca0ad28fc86ba0eef
+[2/4] ASoC: cs35l56: Wake transactions need to be issued twice
+      commit: 3df761bdbc8bc1bb679b5a4d4e068728d930a552
+[3/4] ASoC: cs35l56: Enable low-power hibernation mode on i2c
+      commit: 79b101947a829a1c4c3eca4b6365093d2b534cf4
+[4/4] ASoC: cs35l56: Enable low-power hibernation mode on SPI
+      commit: 634ed138d80b1cc8a903edb226458ea203c44abd
 
-vim +186 arch/arm/mach-omap1/timer32k.c
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-   178	
-   179	/**
-   180	 * omap_read_persistent_clock64 -  Return time from a persistent clock.
-   181	 *
-   182	 * Reads the time from a source which isn't disabled during PM, the
-   183	 * 32k sync timer.  Convert the cycles elapsed since last read into
-   184	 * nsecs and adds to a monotonically increasing timespec64.
-   185	 */
- > 186	static struct timespec64 persistent_ts;
-   187	static cycles_t cycles;
-   188	static unsigned int persistent_mult, persistent_shift;
-   189	
-   190	static void omap_read_persistent_clock64(struct timespec64 *ts)
-   191	{
-   192		unsigned long long nsecs;
-   193		cycles_t last_cycles;
-   194	
-   195		last_cycles = cycles;
-   196		cycles = sync32k_cnt_reg ? readl_relaxed(sync32k_cnt_reg) : 0;
-   197	
-   198		nsecs = clocksource_cyc2ns(cycles - last_cycles,
-   199						persistent_mult, persistent_shift);
-   200	
-   201		timespec64_add_ns(&persistent_ts, nsecs);
-   202	
-   203		*ts = persistent_ts;
-   204	}
-   205	
-   206	/**
-   207	 * omap_init_clocksource_32k - setup and register counter 32k as a
-   208	 * kernel clocksource
-   209	 * @pbase: base addr of counter_32k module
-   210	 * @size: size of counter_32k to map
-   211	 *
-   212	 * Returns 0 upon success or negative error code upon failure.
-   213	 *
-   214	 */
-   215	int __init omap_init_clocksource_32k(void __iomem *vbase)
- > 216	{
-   217		int ret;
-   218	
-   219		/*
-   220		 * 32k sync Counter IP register offsets vary between the
-   221		 * highlander version and the legacy ones.
-   222		 * The 'SCHEME' bits(30-31) of the revision register is used
-   223		 * to identify the version.
-   224		 */
-   225		if (readl_relaxed(vbase + OMAP2_32KSYNCNT_REV_OFF) &
-   226							OMAP2_32KSYNCNT_REV_SCHEME)
-   227			sync32k_cnt_reg = vbase + OMAP2_32KSYNCNT_CR_OFF_HIGH;
-   228		else
-   229			sync32k_cnt_reg = vbase + OMAP2_32KSYNCNT_CR_OFF_LOW;
-   230	
-   231		/*
-   232		 * 120000 rough estimate from the calculations in
-   233		 * __clocksource_update_freq_scale.
-   234		 */
-   235		clocks_calc_mult_shift(&persistent_mult, &persistent_shift,
-   236				32768, NSEC_PER_SEC, 120000);
-   237	
-   238		ret = clocksource_mmio_init(sync32k_cnt_reg, "32k_counter", 32768,
-   239					250, 32, clocksource_mmio_readl_up);
-   240		if (ret) {
-   241			pr_err("32k_counter: can't register clocksource\n");
-   242			return ret;
-   243		}
-   244	
-   245		sched_clock_register(omap_32k_read_sched_clock, 32, 32768);
-   246		register_persistent_clock(omap_read_persistent_clock64);
-   247		pr_info("OMAP clocksource: 32k_counter at 32768 Hz\n");
-   248	
-   249		return 0;
-   250	}
-   251	
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
