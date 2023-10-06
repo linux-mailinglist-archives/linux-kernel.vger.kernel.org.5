@@ -2,232 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B951E7BBC8C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31E47BBCB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbjJFQRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
+        id S232459AbjJFQ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbjJFQQ5 (ORCPT
+        with ESMTP id S230113AbjJFQ2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:16:57 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0559E
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 09:16:56 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231006161654euoutp0137bdf4fca96fd3367a4be3a10ec9c6f7~LkOjX0tl42020320203euoutp01Q
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 16:16:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231006161654euoutp0137bdf4fca96fd3367a4be3a10ec9c6f7~LkOjX0tl42020320203euoutp01Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1696609014;
-        bh=qAAAzXrrsj5Rb1r1+7kJS+1Fb64LpnKfMoYosLgQlgc=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=nY9DkCv5KmhvIUcAO5ETa0J4lPItie7OI2Fria6jW2ORw8rZqj5pNBaAOEnz4JHKe
-         afYZIDgY/GmSjc50WJ19Xjso3R4rzKkvp1+yUeMzh4TYannscNH2GAtbM38NrbiRih
-         q96zgYnSNy/vysqXdGLfx+8fGZ+jTmqi3Raw+vYA=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20231006161653eucas1p2691995adc126c0a6477e2e5a1ac6a441~LkOi8XNyY1416314163eucas1p2J;
-        Fri,  6 Oct 2023 16:16:53 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 7C.1B.11320.5F230256; Fri,  6
-        Oct 2023 17:16:53 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231006161653eucas1p22a6382869a0995a5b799a899873cd9e4~LkOieu5y21327713277eucas1p2Q;
-        Fri,  6 Oct 2023 16:16:53 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231006161653eusmtrp26b12b6c8261351bdca248990dde0fb26~LkOidxRSZ1620416204eusmtrp2h;
-        Fri,  6 Oct 2023 16:16:53 +0000 (GMT)
-X-AuditID: cbfec7f4-993ff70000022c38-f5-652032f5b09f
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id A4.19.10549.5F230256; Fri,  6
-        Oct 2023 17:16:53 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231006161652eusmtip2219645029196c668d21b790716473311~LkOhcvvLh0766707667eusmtip2N;
-        Fri,  6 Oct 2023 16:16:52 +0000 (GMT)
-Message-ID: <1a25e5b9-43f6-47a4-877a-a0744dc6f56c@samsung.com>
-Date:   Fri, 6 Oct 2023 18:16:51 +0200
+        Fri, 6 Oct 2023 12:28:17 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB999E
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 09:28:16 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6EB3A5C0213;
+        Fri,  6 Oct 2023 12:28:13 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 06 Oct 2023 12:28:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1696609693; x=1696696093; bh=2d
+        W/PhGhZL1Lh2ZgVhKfLyMXlLp6UoQWQqOjD8RsV10=; b=cLi8DYffjeojMfh1Dv
+        q7uzxOznqANC6PyQjtD2xy0XKYoUTAAmVbCbHDViPAx00/jnYHwGguxdjF5+ri64
+        INeocidXsISovnWWUeNxEVIKxSHG3IvOkfhMMU9gIBecbJPsUhCOWT8AMNRmqmtG
+        f0HoviWT5o5QH18hV7of1rvChTp7FaN9tFmlfKmjVcLO4eYYtXQ3u0Txzt5fnhKJ
+        4vCr4Z/mSL7+7ucHrW3FbO03Gafjdb0STCPTwGBLTIVt6ytxDD15Vl5q8i/ng1h7
+        33DaOGTAV6EPnZtF40uRUN289PcprjcDMmhRiWRm7c/wpfah5DbCjxzy7ksVrtqw
+        O58Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696609693; x=1696696093; bh=2dW/PhGhZL1Lh
+        2ZgVhKfLyMXlLp6UoQWQqOjD8RsV10=; b=Sn4wefnFYw1VNTShs/wobCkjxEoCC
+        gbzSmfmWPLa6z6GWTy8rGxSdUGWv7WUT1+kct7lnHFZNCWlZgBPgzn5gFDbnJOB/
+        g9U+4L1iU2Dp01shyr0NtKkufhC27QI+XstLDR+fgm0allg8PUCWV0zDSjd6aLVi
+        75dgJFiCuMsUGuhawuxMaNAL8c132JPPg9oHQ3KaGL9tVu1tNXbLY0gL4zZ7zTUm
+        Go++o/o6yGUDz9C835qjzLAGxz8vQdAuG9OcA4KNKVt+A+M3LWaxcWNu6VCepsTx
+        U5BDFruSBPl5TmzPl3+wMjAHOQBSbADnXQnSu+0PF2ipbzbs1R+CzWzHQ==
+X-ME-Sender: <xms:nDUgZQJ_II6RYpWmGDGRGhrGQYmlVm3dxl5J7OUTj6ORyIQLzhvzzw>
+    <xme:nDUgZQL8v8-MuCaC7MOvpRs3g0whbTlKy8L49RcokJbbtbwIcf6xW18cE-R78Nqnm
+    ThvHSfS-TDljFegkKQ>
+X-ME-Received: <xmr:nDUgZQtxYPbPc4zXr65mMQKmD7flbLQIdYwuZbduoYZPUrR_ptIhiKJJ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeigdellecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpefuthgvfhgr
+    nhcutfhovghstghhuceoshhhrhesuggvvhhkvghrnhgvlhdrihhoqeenucggtffrrghtth
+    gvrhhnpeevlefggffhheduiedtheejveehtdfhtedvhfeludetvdegieekgeeggfdugeeu
+    tdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehshh
+    hrseguvghvkhgvrhhnvghlrdhioh
+X-ME-Proxy: <xmx:nTUgZdZvp5E9pvvip9kaYvbbJ65Y-yKDNXqH9FWKeJXMwhtiG427rA>
+    <xmx:nTUgZXamUFz77fgO3AjeHbb4IGTfZPpS87i27CPIzmxp1biLuDh6vw>
+    <xmx:nTUgZZCAkw06_hYCXHdr3CY1mlIJBSYNXqtt99OyXjwNXmK6Z2bHww>
+    <xmx:nTUgZSy5USzgvFaxN7cbQW8GqF2CjOQuVglKkfAIYTeHIrJAn1H8Aw>
+Feedback-ID: i84614614:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 6 Oct 2023 12:28:10 -0400 (EDT)
+References: <20231004190249.829015-1-shr@devkernel.io>
+ <4509a3b4-16a6-f63e-1dd5-e20c7eadf87d@redhat.com>
+User-agent: mu4e 1.10.3; emacs 29.1
+From:   Stefan Roesch <shr@devkernel.io>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     kernel-team@fb.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 0/4] mm/ksm: Add ksm advisor
+Date:   Fri, 06 Oct 2023 09:17:32 -0700
+In-reply-to: <4509a3b4-16a6-f63e-1dd5-e20c7eadf87d@redhat.com>
+Message-ID: <87fs2nhg14.fsf@devkernel.io>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/5] drm/bridge: samsung-dsim: fix various modes with
- ADV7535 bridge
-Content-Language: en-US
-To:     Michael Tretter <m.tretter@pengutronix.de>,
-        Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Marco Felsch <m.felsch@pengutronix.de>,
-        Adam Ford <aford173@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20230818-samsung-dsim-v2-0-846603df0e0a@pengutronix.de>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJKsWRmVeSWpSXmKPExsWy7djP87pfjRRSDXq26VncuX2a2eLE9UVM
-        FvcXf2ax+L9tIrPFla/v2Sx6l55jtZh0fwKLxZdNE9gsns9fx2hx8s1VFotVU3eyWHROXMJu
-        cXnXHDaLD7uuMltsWwFU/H7nLUaLSfNusjoIeqz9eJ/VY++3BSweO2fdZfeY3TGT1WPxnpdM
-        HptWdbJ5HLm6mNXjxIRLTB53ru1h87jffZzJo/+vgUffllWMHp83yQXwRnHZpKTmZJalFunb
-        JXBl3JqyhK3gp1xF3+ZZzA2MO8W6GDk5JARMJO5N+8rexcjFISSwglHixP77UM4XRom5yzez
-        QjifGSXOP21lhGl5d2o9mC0ksByoahsbRNFHRokfn08ygyR4Bewkjt66CVbEIqAise/eVnaI
-        uKDEyZlPWEBsUQF5ifu3ZoDFhQViJX4vWQgWZxYQl7j1ZD4TyFARgX3MEs9/rGQEcZgFrjBK
-        7PyzEqyDTcBQouttFxuIzSngKnHs/Q9GiG55ie1v5zCDNEgIPOOU2LOujxXibheJld0tLBC2
-        sMSr41vYIWwZif87IdZJCLQzSiz4fR/KmcAo0fD8FtTX1hJ3zv0CWscBtEJTYv0ufYiwo8Sj
-        /2cYQcISAnwSN94KQhzBJzFp23RmiDCvREebEES1msSs4+vg1h68cIl5AqPSLKSAmYUUALOQ
-        vDMLYe8CRpZVjOKppcW56anFRnmp5XrFibnFpXnpesn5uZsYganz9L/jX3YwLn/1Ue8QIxMH
-        4yFGCQ5mJRHe9AaZVCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8qinyqUIC6YklqdmpqQWpRTBZ
-        Jg5OqQamYk+1sjadz+v01uSc8SzdzhXPdD/nyVOugDNfr+z4OmeH39Z5rDdevPOz19Tb573p
-        e81OsY2P1ouF5PgYWXN7R51Iv37xwiyz8zeUz81oj7uyan7z0sl7oo9XN543uMPqeWGXceje
-        G+eX1dXe3S0ulcjiuz8tYp3Nq7BHhpEv5a7aNQhLMbxesfqUhNDpfAfuv/IVB0uZojRnBYt8
-        8WtWcVzn+4Fl2Yc3FV2Ga1ezPtsf5vPi6Fu+XbvYN01vUeH55TQvovlooMjE0kdaD/39W263
-        dJ3V49iQu+a53J20Bg7JvGdf/544z9IQLbLefanOyTqjnQ/23J5iIc/Xc2PihpLuyMPsJYXS
-        oXVcCTX7lFiKMxINtZiLihMBLWmdMwwEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphleLIzCtJLcpLzFFi42I5/e/4Pd2vRgqpBvvu8VvcuX2a2eLE9UVM
-        FvcXf2ax+L9tIrPFla/v2Sx6l55jtZh0fwKLxZdNE9gsns9fx2hx8s1VFotVU3eyWHROXMJu
-        cXnXHDaLD7uuMltsWwFU/H7nLUaLSfNusjoIeqz9eJ/VY++3BSweO2fdZfeY3TGT1WPxnpdM
-        HptWdbJ5HLm6mNXjxIRLTB53ru1h87jffZzJo/+vgUffllWMHp83yQXwRunZFOWXlqQqZOQX
-        l9gqRRtaGOkZWlroGZlY6hkam8daGZkq6dvZpKTmZJalFunbJehl3JqyhK3gp1xF3+ZZzA2M
-        O8W6GDk5JARMJN6dWs/YxcjFISSwlFGi8/UlZoiEjMTJaQ2sELawxJ9rXWwQRe8ZJfZ2TWQD
-        SfAK2EkcvXWTEcRmEVCR2HdvKztEXFDi5MwnLCC2qIC8xP1bM8DiwgKxEr+XLASLMwuIS9x6
-        Mp8JZKiIwD5miSc3lrGDOMwC1xgl5jXeYYJYN4NR4vDh7WA3sQkYSnS97QJbzSngKnHs/Q9G
-        iFFmEl1bu6BseYntb+cwT2AUmoXkkllINs5C0jILScsCRpZVjCKppcW56bnFhnrFibnFpXnp
-        esn5uZsYgcli27Gfm3cwznv1Ue8QIxMH4yFGCQ5mJRHe9AaZVCHelMTKqtSi/Pii0pzU4kOM
-        psDgmMgsJZqcD0xXeSXxhmYGpoYmZpYGppZmxkrivJ4FHYlCAumJJanZqakFqUUwfUwcnFIN
-        TCyp7EcmXJnOJSMva61cs64zUcxMv1r1sFPX1J//jthpFuQnVldkmvh7l1dNmRNVZ/453fyP
-        1hODkpScTp5s3nnT9TsLZpZ9KYnu+PVU7gFDxU0NLYH1ohl7EhcX3vxzd92ne/xirJPktLbz
-        XD74avH3pcX3G89WPHiUz/fwl/c7mej4I253D5pOVmb5atG0g+Plkrkzs4vCb62cvj/45Qs9
-        ZV9xge5rF0JXnXnB3je1dn0tw8LOhU9MbO8suPl00vI3i4oOnV1a5fxm775mb9kTs31TEvNP
-        yd16ybjZ/qeIb8Hmqw88a07yeui3lupMen7tQNPs3x/mrGWI6VjWdqb9v3JCxCTlyS9Dos8c
-        VFJiKc5INNRiLipOBACLp48nnwMAAA==
-X-CMS-MailID: 20231006161653eucas1p22a6382869a0995a5b799a899873cd9e4
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20231006150716eucas1p2a4d91a9fb322ddaccf2e9a0b7d517a51
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231006150716eucas1p2a4d91a9fb322ddaccf2e9a0b7d517a51
-References: <CGME20231006150716eucas1p2a4d91a9fb322ddaccf2e9a0b7d517a51@eucas1p2.samsung.com>
-        <20230818-samsung-dsim-v2-0-846603df0e0a@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.10.2023 17:07, Michael Tretter wrote:
-> I tested the i.MX8M Nano EVK with the NXP supplied MIPI-DSI adapter,
-> which uses an ADV7535 MIPI-DSI to HDMI converter. I found that a few
-> modes were working, but in many modes my monitor stayed dark.
->
-> This series fixes the Samsung DSIM bridge driver to bring up a few more
-> modes:
->
-> The driver read the rate of the PLL ref clock only during probe.
-> However, if the clock is re-parented to the VIDEO_PLL, changes to the
-> pixel clock have an effect on the PLL ref clock. Therefore, the driver
-> must read and potentially update the PLL ref clock on every modeset.
->
-> I also found that the rounding mode of the porches and active area has
-> an effect on the working modes. If the driver rounds up instead of
-> rounding down and be calculates them in Hz instead of kHz, more modes
-> start to work.
->
-> The following table shows the modes that were working in my test without
-> this patch set and the modes that are working now:
->
-> |            Mode | Before | Now |
-> | 1920x1080-60.00 | X      | X   |
-> | 1920x1080-59.94 |        | X   |
-> | 1920x1080-50.00 |        | X   |
-> | 1920x1080-30.00 |        | X   |
-> | 1920x1080-29.97 |        | X   |
-> | 1920x1080-25.00 |        | X   |
-> | 1920x1080-24.00 |        |     |
-> | 1920x1080-23.98 |        |     |
-> | 1680x1050-59.88 |        | X   |
-> | 1280x1024-75.03 | X      | X   |
-> | 1280x1024-60.02 | X      | X   |
-> |  1200x960-59.99 |        | X   |
-> |  1152x864-75.00 | X      | X   |
-> |  1280x720-60.00 |        |     |
-> |  1280x720-59.94 |        |     |
-> |  1280x720-50.00 |        | X   |
-> |  1024x768-75.03 |        | X   |
-> |  1024x768-60.00 |        | X   |
-> |   800x600-75.00 | X      | X   |
-> |   800x600-60.32 | X      | X   |
-> |   720x576-50.00 | X      | X   |
-> |   720x480-60.00 |        |     |
-> |   720x480-59.94 | X      |     |
-> |   640x480-75.00 | X      | X   |
-> |   640x480-60.00 |        | X   |
-> |   640x480-59.94 |        | X   |
-> |   720x400-70.08 |        |     |
->
-> Interestingly, the 720x480-59.94 mode stopped working. However, I am
-> able to bring up the 720x480 modes by manually hacking the active area
-> (hsa) to 40 and carefully adjusting the clocks, but something still
-> seems to be off.
->
-> Unfortunately, a few more modes are still not working at all. The NXP
-> downstream kernel has some quirks to handle some of the modes especially
-> wrt. to the porches, but I cannot figure out, what the driver should
-> actually do in these cases. Maybe there is still an error in the
-> calculation of the porches and someone at NXP can chime in.
->
-> Michael
->
-> Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
 
-All my Exynos-based test boards with DSI display panels still work fine 
-with this patchset.
+David Hildenbrand <david@redhat.com> writes:
 
-Feel free to add:
-
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-
-> ---
-> Changes in v2:
-> - Specify limits for the PLL input clock in samsung_dsim_driver_data
-> - Rephrase/clarify commit messages
-> - Link to v1: https://lore.kernel.org/r/20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de
+> On 04.10.23 21:02, Stefan Roesch wrote:
+>> What is the KSM advisor?
+>> =========================
+>> The ksm advisor automatically manages the pages_to_scan setting to
+>> achieve a target scan time. The target scan time defines how many seconds
+>> it should take to scan all the candidate KSM pages. In other words the
+>> pages_to_scan rate is changed by the advisor to achieve the target scan
+>> time.
+>> Why do we need a KSM advisor?
+>> ==============================
+>> The number of candidate pages for KSM is dynamic. It can often be observed
+>> that during the startup of an application more candidate pages need to be
+>> processed. Without an advisor the pages_to_scan parameter needs to be
+>> sized for the maximum number of candidate pages. With the scan time
+>> advisor the pages_to_scan parameter based can be changed based on demand.
+>> Algorithm
+>> ==========
+>> The algorithm calculates the change value based on the target scan time
+>> and the previous scan time. To avoid pertubations an exponentially
+>> weighted moving average is applied.
+>> The algorithm has a max and min
+>> value to:
+>> - guarantee responsiveness to changes
+>> - to avoid to spend too much CPU
+>> Parameters to influence the KSM scan advisor
+>> =============================================
+>> The respective parameters are:
+>> - ksm_advisor_mode
+>>    0: None (default), 1: scan time advisor
+>> - ksm_advisor_target_scan_time
+>>    how many seconds a scan should of all candidate pages take
+>> - ksm_advisor_min_pages
+>>    minimum value for pages_to_scan per batch
+>> - ksm_advisor_max_pages
+>>    maximum value for pages_to_scan per batch
+>> The parameters are exposed as knobs in /sys/kernel/mm/ksm.
+>> By default the scan time advisor is disabled.
 >
-> ---
-> Marco Felsch (1):
->        drm/bridge: samsung-dsim: add more mipi-dsi device debug information
+> What would be the main reason to not have this enabled as default?
 >
-> Michael Tretter (4):
->        drm/bridge: samsung-dsim: reread ref clock before configuring PLL
->        drm/bridge: samsung-dsim: update PLL reference clock
->        drm/bridge: samsung-dsim: adjust porches by rounding up
->        drm/bridge: samsung-dsim: calculate porches in Hz
->
->   drivers/gpu/drm/bridge/samsung-dsim.c | 54 +++++++++++++++++++++++++++--------
->   include/drm/bridge/samsung-dsim.h     |  3 ++
->   2 files changed, 45 insertions(+), 12 deletions(-)
-> ---
-> base-commit: b78b18fb8ee19f7a05f20c3abc865b3bfe182884
-> change-id: 20230818-samsung-dsim-42346444bce5
->
-> Best regards,
+There might be already exisiting users which directly set pages_to_scan
+and tuned the KSM settings accordingly, as the default setting of 100 for
+pages_to_scan is too low for typical workloads.
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+> IIUC, it is kind-of an auto-tuning of pages_to_scan. Would "auto-tuning"
+> describe it better than "advisor" ?
+>
+> [...]
+>
 
+I'm fine with auto-tune. I was also thinking about that name, but I
+chose advisor, its a bit less strong and it needs input from the user.
+
+>> How is defining a target scan time better?
+>> ===========================================
+>> For an administrator it is more logical to set a target scan time.. The
+>> administrator can determine how many pages are scanned on each scan.
+>> Therefore setting a target scan time makes more sense.
+>> In addition the administrator might have a good idea about the
+>> memory sizing of its respective workloads.
+>
+> Is there any way you could imagine where we could have this just do something
+> reasonable without any user input? IOW, true auto-tuning?
+>
+
+True auto-tuning might be difficult as users might want to be able to
+choose how aggressive KSM is. Some might want it to be as aggressive as
+possible to get the maximum de-duplication rate. Others might want a
+more balanced approach that takes CPU-consumption into consideration.
+
+I guess it depends if you are memory-bound, cpu-bound or both.
+
+> I read above:
+>> - guarantee responsiveness to changes
+>> - to avoid to spend too much CPU
+>
+> whereby both things are accountable/measurable to use that as the input for
+> auto-tuning?
+>
+I'm not sure a true auto-tuning can be achieved. I think we need
+some input from the user
+- How much resources to consume
+- How fast memory changes or how stable memory is
+  (this we might be able to detect)
+
+>
+>
+> I just had a family NMI, so my todo list is quite lengthy. Hoping I cna take a
+> closer look next week.
