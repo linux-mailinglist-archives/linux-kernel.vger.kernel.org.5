@@ -2,92 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C75C97BBBE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65267BBBEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbjJFPlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 11:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54096 "EHLO
+        id S232787AbjJFPmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 11:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbjJFPlm (ORCPT
+        with ESMTP id S232502AbjJFPmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 11:41:42 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF06AD
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 08:41:40 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 754BCFF80A;
-        Fri,  6 Oct 2023 15:41:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696606899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wWgixyze7ly2jxAoSChg1RnG0qY3wYNYv8+NFu8WJl0=;
-        b=IKJou9RkycVWCcf7n+d7yoYGr1piTPjh9K5pok60FzRAqerD29qvCVjAUYl1Ss6XmakocD
-        LLa3wX7a14toQNvGnFtHPw8G1BLisvCMJ0DWOQoOqefhyP7BYiF7S7kn4ZS5m+cgQve3Op
-        2xLQVE7YPmPCCUzHBWldvxcTuU1/I5cYWIkF+eBkDqxa/hyNxoSX3Ui7dQnwyT9ZrHlS8K
-        JMuaCJz7VCGiklbJ2OqqMUVs+fIAX1GEsjtA9pQ1OOjX9MQVhHwPL6Uh1ZuqE04m9QZKOC
-        SnW4mDUvnxzfzF70eQNtvHv67cJFnxAiqnL2FYBs3g9kERyjNxCNDNN3WkT1Sw==
-Date:   Fri, 6 Oct 2023 17:41:37 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     JaimeLiao <jaimeliao.tw@gmail.com>,
-        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v1 1/1] mtd: rawnand: Remove unused of_gpio.h inclusion
-Message-ID: <20231006174137.2e745cb4@xps-13>
-In-Reply-To: <ZSAkUMnXw4SbS2pC@smile.fi.intel.com>
-References: <20230615164210.25515-1-andriy.shevchenko@linux.intel.com>
-        <CAFBinCAJ5m+NTVry56=0AYMYr9xiM9KS7F837Hqb=ptOG_u54g@mail.gmail.com>
-        <ZKvW0yzxU1ktDALd@smile.fi.intel.com>
-        <ZSAkUMnXw4SbS2pC@smile.fi.intel.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Fri, 6 Oct 2023 11:42:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D3B9E;
+        Fri,  6 Oct 2023 08:42:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CF61C433C7;
+        Fri,  6 Oct 2023 15:42:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696606924;
+        bh=tbHnpOTYGNIXcPamnhQXfo0iLGWFbnd+Sut1PridISA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=q+fTlW4AFWVXdVUVxU0JJ1SpniY5IUKGTvCJtdjQ584qPnp9muQwgqKjOelOIzOcI
+         vop9zPdKs7uo3bxTD5KwUf7HmNAmzG0Kb8lJRHEQLfxEsLiUW9LdXunFkxk5DL7IrL
+         Ff0FOtaKPav+LEhYajiYOCXqBU/14jzEHcMkKK9N/ep1/tsvdpHgtw36KagNttva5r
+         yJgTofHb2BYs/Sk2xGVzHbbAiZhpRg25HPGCJ2LfNTlr9Ji2z7oI3EJ6JJeAFrBtWO
+         zwIwWdab1BW486GeEcVA30KdOWSHFxcsZjvakG014uRuV40neergrHPV4DIHQ/3iPi
+         evMeT2+EqiyOQ==
+Message-ID: <4ec509f6-698d-4a58-a49b-8dbb247edb88@kernel.org>
+Date:   Fri, 6 Oct 2023 18:41:59 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: build warnings after merge of the ti tree
+Content-Language: en-US
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Nishanth Menon <nm@ti.com>,
+        "Raghavendra, Vignesh" <vigneshr@ti.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Yadav, Nitin" <n-yadav@ti.com>
+References: <20231005141536.77538147@canb.auug.org.au>
+ <f70dec2a-dbdf-479c-af5b-a70db02b27b4@ti.com>
+ <2905cfc2-912f-4620-9455-2e91586a2839@kernel.org>
+ <20231005132921.2vg6kdcr273bh7et@cabbage>
+ <fde87d28-ee5d-4e02-b824-27c1cb7c1e38@kernel.org>
+ <CAL_Jsq+NXp_d1g507G=G+_cJ1s0GrM099JMNAj2MU4Dpaw=c8g@mail.gmail.com>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <CAL_Jsq+NXp_d1g507G=G+_cJ1s0GrM099JMNAj2MU4Dpaw=c8g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
 
-andriy.shevchenko@linux.intel.com wrote on Fri, 6 Oct 2023 18:14:24
-+0300:
 
-> +Cc: GPIO maintainers
->=20
-> On Mon, Jul 10, 2023 at 01:00:51PM +0300, Andy Shevchenko wrote:
-> > On Fri, Jun 16, 2023 at 12:10:52AM +0200, Martin Blumenstingl wrote: =20
-> > > On Thu, Jun 15, 2023 at 6:42=E2=80=AFPM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote: =20
-> > > >
-> > > > The of_gpio.h is not and shouldn't be used in the drivers. Remove i=
-t.
-> > > >
-> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com> =
-=20
-> > > Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com> =20
-> >=20
-> > Thank you!
-> >=20
-> > Can it be applied now? =20
->=20
-> So, this is still not applied, does it mean we need to go via GPIO tree
-> with it?
+On 06/10/2023 16:55, Rob Herring wrote:
+> On Fri, Oct 6, 2023 at 7:03 AM Roger Quadros <rogerq@kernel.org> wrote:
+>>
+>>
+>>
+>> On 05/10/2023 16:29, Nishanth Menon wrote:
+>>> On 16:12-20231005, Roger Quadros wrote:
+>>>> Hi,
+>>>>
+>>>> On 05/10/2023 11:25, Raghavendra, Vignesh wrote:
+>>>>> + Rob and DT list
+>>>>>
+>>>>> Hi Stephen
+>>>>>
+>>>>> On 10/5/2023 8:45 AM, Stephen Rothwell wrote:
+>>>>>> Hi all,
+>>>>>>
+>>>>>> [I may have missed this yesterday, sorry]
+>>>>>>
+>>>>>> After merging the ti tree, today's linux-next build (arm64 defconfig)
+>>>>>> produced these warnings:
+>>>>>>
+>>>>>> arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #address-cells value
+>>>>>> arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso:65.8-140.3: Warning (avoid_default_addr_size): /fragment@3/__overlay__: Relying on default #size-cells value
+>>>>>>
+>>>>>> Introduced by commit
+>>>>>>
+>>>>>>   45a0c06571e1 ("arm64: dts: ti: am642-evm: Add overlay for NAND expansion card")
+>>>>>>
+>>>>>
+>>>>> Thanks for the report. I will drop the offending comment.
+>>>>>
+>>>>> Roger,
+>>>>>
+>>>>> Sorry, this would need to be fixed in dtc or need exception from DT
+>>>>> maintainers to ignore the warnings.
+>>>>
+>>>> Please don't drop this patch as the issue is not with the patch but with
+>>>> the dtc tool itself.
+>>>>
+>>>> As this is a DT overlay there is no way to specify address-cells/size-cells
+>>>> of parent here. This will be resolved only after merge with base tree.
+>>>>
+>>>> This will be fixed in next dtc sync.
+>>>> https://www.spinics.net/lists/devicetree-compiler/msg04036.html
+>>>>
+>>>> See further discussion here
+>>>> https://lore.kernel.org/all/CAL_JsqLmv904+_2EOmsQ__y1yLDvsT+_02i85phuh0cpe7X8NQ@mail.gmail.com/
+>>>>
+>>>
+>>> Roger, build warnings are a strict NO,NO for kernel. Lets bring in the
+>>> series *after* the dtc sync is complete.
+>>>
+>>
+>> Hi Rob,
+>>
+>> Following commit from dtc is required to resolve this issue.
+>>
+>> afbddcd418fb ("Suppress warnings on overlay fragments")
+> 
+> That is from 2018, so it's been in the kernel's dtc for a long time.
 
-I remember your ping and also answering it, but I cannot find it. Let
-me look into this. In any case, apologies for that.
+Oh, my bad. I saw your Reviewed-by tag and assumed the patch was already upstream.
 
-Thanks,
-Miqu=C3=A8l
+> 
+> I believe what you need is the patch I referenced which hasn't been
+> applied upstream.
+> 
+>> FYI. Another patch of similar nature is on its way and will also require the
+>> above commit to DTC.
+>> https://lore.kernel.org/all/20231005093739.4071934-3-n-yadav@ti.com/
+> 
+> You'll need to fix dtc first.
+
+-- 
+cheers,
+-roger
