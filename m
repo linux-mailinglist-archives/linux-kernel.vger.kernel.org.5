@@ -2,42 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 791E87BB0A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185357BB0A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbjJFEAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 00:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
+        id S229904AbjJFEDg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Oct 2023 00:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbjJFEAl (ORCPT
+        with ESMTP id S229454AbjJFEDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 00:00:41 -0400
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BDEFF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 21:00:36 -0700 (PDT)
-Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1qoc0l-0000mf-0Q;
-        Fri, 06 Oct 2023 00:00:23 -0400
-From:   riel@surriel.com
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@meta.com, linux-mm@kvack.org,
-        akpm@linux-foundation.org, muchun.song@linux.dev,
-        mike.kravetz@oracle.com, leit@meta.com, willy@infradead.org,
-        Rik van Riel <riel@surriel.com>
-Subject: [PATCH 4/4] hugetlbfs: replace hugetlb_vma_lock with invalidate_lock
-Date:   Thu,  5 Oct 2023 23:59:09 -0400
-Message-ID: <20231006040020.3677377-5-riel@surriel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231006040020.3677377-1-riel@surriel.com>
-References: <20231006040020.3677377-1-riel@surriel.com>
+        Fri, 6 Oct 2023 00:03:34 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C664FDB;
+        Thu,  5 Oct 2023 21:03:30 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39642neN61336496, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 39642neN61336496
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Oct 2023 12:02:51 +0800
+Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Fri, 6 Oct 2023 12:02:49 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Fri, 6 Oct 2023 12:02:49 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Fri, 6 Oct 2023 12:02:49 +0800
+From:   Justin Lai <justinlai0215@realtek.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Larry Chiu <larry.chiu@realtek.com>
+Subject: RE: [PATCH net-next v9 08/13] net:ethernet:realtek:rtase: Implement net_device_ops
+Thread-Topic: [PATCH net-next v9 08/13] net:ethernet:realtek:rtase: Implement
+ net_device_ops
+Thread-Index: AQHZ8fl5hDe6qB9qzkmKif0/hXC9sLAvvsaAgAxiTMA=
+Date:   Fri, 6 Oct 2023 04:02:48 +0000
+Message-ID: <99dfcd7363dc412f877730fab4a9f7dd@realtek.com>
+References: <20230928104920.113511-1-justinlai0215@realtek.com>
+ <20230928104920.113511-9-justinlai0215@realtek.com>
+ <b28a3ea6-d75e-45e0-8b87-0b062b5c3a64@lunn.ch>
+In-Reply-To: <b28a3ea6-d75e-45e0-8b87-0b062b5c3a64@lunn.ch>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.21.210.185]
+x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: riel@surriel.com
+X-KSE-AntiSpam-Interceptor-Info: fallback
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,598 +70,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rik van Riel <riel@surriel.com>
+> > +static int rtase_change_mtu(struct net_device *dev, int new_mtu) {
+> > +     struct rtase_private *tp = netdev_priv(dev);
+> > +     int ret;
+> > +
+> > +     dev->mtu = new_mtu;
+> > +
+> > +     if (!netif_running(dev))
+> > +             goto out;
+> > +
+> > +     rtase_down(dev);
+> > +
+> > +     rtase_set_rxbufsize(tp, dev);
+> > +
+> > +     ret = rtase_init_ring(dev);
+> > +
+> > +     if (ret)
+> > +             return ret;
+> 
+> If this fails, what state is the interface in?
+> 
+> What you often see is that the new ring is first allocated. If that is successful,
+> you free the old rung. If the allocation fails, it does not matter, you still have
+> the old ring, and you keep using it.
+> 
 
-Replace the custom hugetlbfs VMA locking code with the recently
-introduced invalidate_lock. This greatly simplifies things.
+If it fails, the driver will not work properly. We will make modifications based on your suggestions.
 
-However, this is a large enough change that it should probably go in
-separately from the other changes.
+> > +
+> > +     netif_stop_queue(dev);
+> > +     netif_carrier_off(dev);
+> > +     rtase_hw_config(dev);
+> > +
+> > +     /* always link, so start to transmit & receive */
+> > +     rtase_hw_start(dev);
+> > +     netif_carrier_on(dev);
+> > +     netif_wake_queue(dev);
+> 
+> I don't think you need to down/up the carrier when changing the MTU.
 
-Another question is whether this simplification hurts scalability
-for certain workloads.
+Thank you for your suggestion, we will confirm this part again.
 
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Rik van Riel <riel@surriel.com>
----
- fs/hugetlbfs/inode.c    |  71 ++----------
- include/linux/fs.h      |   6 +
- include/linux/hugetlb.h |  21 +---
- mm/hugetlb.c            | 237 ++++------------------------------------
- 4 files changed, 35 insertions(+), 300 deletions(-)
+> 
+> > +static void rtase_sw_reset(struct net_device *dev) {
+> > +     struct rtase_private *tp = netdev_priv(dev);
+> > +     int ret;
+> > +
+> > +     netif_stop_queue(dev);
+> > +     netif_carrier_off(dev);
+> > +     rtase_hw_reset(dev);
+> > +
+> > +     /* let's wait a bit while any (async) irq lands on */
+> > +     rtase_wait_for_quiescence(dev);
+> > +     rtase_tx_clear(tp);
+> > +     rtase_rx_clear(tp);
+> > +
+> > +     ret = rtase_init_ring(dev);
+> > +     if (ret)
+> > +             netdev_alert(dev, "unable to init ring\n");
+> > +
+> > +     rtase_hw_config(dev);
+> > +     /* always link, so start to transmit & receive */
+> > +     rtase_hw_start(dev);
+> > +
+> > +     netif_carrier_on(dev);
+> > +     netif_wake_queue(dev);
+> > +}
+> > +
+> > +static void rtase_tx_timeout(struct net_device *dev, unsigned int
+> > +txqueue) {
+> > +     rtase_sw_reset(dev);
+> 
+> Do you actually see this happening? The timeout is set pretty high, i think 5
+> seconds. If it does happen, it probably means you have a hardware/firmware
+> bug. So you want to be noisy here, so you get to know about these problems,
+> rather than silently work around them.
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 316c4cebd3f3..18a66632d789 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -485,7 +485,6 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
- 					struct folio *folio, pgoff_t index)
- {
- 	struct rb_root_cached *root = &mapping->i_mmap;
--	struct hugetlb_vma_lock *vma_lock;
- 	struct page *page = &folio->page;
- 	struct vm_area_struct *vma;
- 	unsigned long v_start;
-@@ -495,9 +494,9 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
- 	start = index * pages_per_huge_page(h);
- 	end = (index + 1) * pages_per_huge_page(h);
- 
-+	filemap_invalidate_lock(mapping);
- 	i_mmap_lock_write(mapping);
--retry:
--	vma_lock = NULL;
-+
- 	vma_interval_tree_foreach(vma, root, start, end - 1) {
- 		v_start = vma_offset_start(vma, start);
- 		v_end = vma_offset_end(vma, end);
-@@ -505,62 +504,12 @@ static void hugetlb_unmap_file_folio(struct hstate *h,
- 		if (!hugetlb_vma_maps_page(vma, v_start, page))
- 			continue;
- 
--		if (!hugetlb_vma_trylock_write(vma)) {
--			vma_lock = vma->vm_private_data;
--			/*
--			 * If we can not get vma lock, we need to drop
--			 * immap_sema and take locks in order.  First,
--			 * take a ref on the vma_lock structure so that
--			 * we can be guaranteed it will not go away when
--			 * dropping immap_sema.
--			 */
--			kref_get(&vma_lock->refs);
--			break;
--		}
--
- 		unmap_hugepage_range(vma, v_start, v_end, NULL,
- 				     ZAP_FLAG_DROP_MARKER);
--		hugetlb_vma_unlock_write(vma);
- 	}
- 
-+	filemap_invalidate_unlock(mapping);
- 	i_mmap_unlock_write(mapping);
--
--	if (vma_lock) {
--		/*
--		 * Wait on vma_lock.  We know it is still valid as we have
--		 * a reference.  We must 'open code' vma locking as we do
--		 * not know if vma_lock is still attached to vma.
--		 */
--		down_write(&vma_lock->rw_sema);
--		i_mmap_lock_write(mapping);
--
--		vma = vma_lock->vma;
--		if (!vma) {
--			/*
--			 * If lock is no longer attached to vma, then just
--			 * unlock, drop our reference and retry looking for
--			 * other vmas.
--			 */
--			up_write(&vma_lock->rw_sema);
--			kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
--			goto retry;
--		}
--
--		/*
--		 * vma_lock is still attached to vma.  Check to see if vma
--		 * still maps page and if so, unmap.
--		 */
--		v_start = vma_offset_start(vma, start);
--		v_end = vma_offset_end(vma, end);
--		if (hugetlb_vma_maps_page(vma, v_start, page))
--			unmap_hugepage_range(vma, v_start, v_end, NULL,
--					     ZAP_FLAG_DROP_MARKER);
--
--		kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
--		hugetlb_vma_unlock_write(vma);
--
--		goto retry;
--	}
- }
- 
- static void
-@@ -578,20 +527,10 @@ hugetlb_vmdelete_list(struct rb_root_cached *root, pgoff_t start, pgoff_t end,
- 		unsigned long v_start;
- 		unsigned long v_end;
- 
--		if (!hugetlb_vma_trylock_write(vma))
--			continue;
--
- 		v_start = vma_offset_start(vma, start);
- 		v_end = vma_offset_end(vma, end);
- 
- 		unmap_hugepage_range(vma, v_start, v_end, NULL, zap_flags);
--
--		/*
--		 * Note that vma lock only exists for shared/non-private
--		 * vmas.  Therefore, lock is not held when calling
--		 * unmap_hugepage_range for private vmas.
--		 */
--		hugetlb_vma_unlock_write(vma);
- 	}
- }
- 
-@@ -725,10 +664,12 @@ static void hugetlb_vmtruncate(struct inode *inode, loff_t offset)
- 	pgoff = offset >> PAGE_SHIFT;
- 
- 	i_size_write(inode, offset);
-+	filemap_invalidate_lock(mapping);
- 	i_mmap_lock_write(mapping);
- 	if (!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root))
- 		hugetlb_vmdelete_list(&mapping->i_mmap, pgoff, 0,
- 				      ZAP_FLAG_DROP_MARKER);
-+	filemap_invalidate_unlock(mapping);
- 	i_mmap_unlock_write(mapping);
- 	remove_inode_hugepages(inode, offset, LLONG_MAX);
- }
-@@ -778,6 +719,7 @@ static long hugetlbfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
- 		return -EPERM;
- 	}
- 
-+	filemap_invalidate_lock(mapping);
- 	i_mmap_lock_write(mapping);
- 
- 	/* If range starts before first full page, zero partial page. */
-@@ -799,6 +741,7 @@ static long hugetlbfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
- 				hole_end, offset + len);
- 
- 	i_mmap_unlock_write(mapping);
-+	filemap_invalidate_unlock(mapping);
- 
- 	/* Remove full pages from the file. */
- 	if (hole_end > hole_start)
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 4aeb3fa11927..b455a8913db4 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -847,6 +847,12 @@ static inline void filemap_invalidate_lock(struct address_space *mapping)
- 	down_write(&mapping->invalidate_lock);
- }
- 
-+static inline int filemap_invalidate_trylock(
-+					struct address_space *mapping)
-+{
-+	return down_write_trylock(&mapping->invalidate_lock);
-+}
-+
- static inline void filemap_invalidate_unlock(struct address_space *mapping)
- {
- 	up_write(&mapping->invalidate_lock);
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index d9ec500cfef9..2908c47e7bf2 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -60,7 +60,6 @@ struct resv_map {
- 	long adds_in_progress;
- 	struct list_head region_cache;
- 	long region_cache_count;
--	struct rw_semaphore rw_sema;
- #ifdef CONFIG_CGROUP_HUGETLB
- 	/*
- 	 * On private mappings, the counter to uncharge reservations is stored
-@@ -107,12 +106,6 @@ struct file_region {
- #endif
- };
- 
--struct hugetlb_vma_lock {
--	struct kref refs;
--	struct rw_semaphore rw_sema;
--	struct vm_area_struct *vma;
--};
--
- extern struct resv_map *resv_map_alloc(void);
- void resv_map_release(struct kref *ref);
- 
-@@ -1277,17 +1270,9 @@ hugetlb_walk(struct vm_area_struct *vma, unsigned long addr, unsigned long sz)
- {
- #if defined(CONFIG_HUGETLB_PAGE) && \
- 	defined(CONFIG_ARCH_WANT_HUGE_PMD_SHARE) && defined(CONFIG_LOCKDEP)
--	struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--	/*
--	 * If pmd sharing possible, locking needed to safely walk the
--	 * hugetlb pgtables.  More information can be found at the comment
--	 * above huge_pte_offset() in the same file.
--	 *
--	 * NOTE: lockdep_is_held() is only defined with CONFIG_LOCKDEP.
--	 */
--	if (__vma_shareable_lock(vma))
--		WARN_ON_ONCE(!lockdep_is_held(&vma_lock->rw_sema) &&
-+	if (vma->vm_file)
-+		WARN_ON_ONCE(!lockdep_is_held(
-+				 &vma->vm_file->f_mapping->invalidate_lock) &&
- 			     !lockdep_is_held(
- 				 &vma->vm_file->f_mapping->i_mmap_rwsem));
- #endif
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 552c2e3221bd..0dcaccc29e97 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -92,9 +92,6 @@ struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
- 
- /* Forward declaration */
- static int hugetlb_acct_memory(struct hstate *h, long delta);
--static void hugetlb_vma_lock_free(struct vm_area_struct *vma);
--static void hugetlb_vma_lock_alloc(struct vm_area_struct *vma);
--static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma);
- static void hugetlb_unshare_pmds(struct vm_area_struct *vma,
- 		unsigned long start, unsigned long end);
- static struct resv_map *vma_resv_map(struct vm_area_struct *vma);
-@@ -264,170 +261,41 @@ static inline struct hugepage_subpool *subpool_vma(struct vm_area_struct *vma)
-  */
- void hugetlb_vma_lock_read(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		down_read(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		down_read(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_lock_shared(vma->vm_file->f_mapping);
- }
- 
- void hugetlb_vma_unlock_read(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		up_read(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		up_read(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_unlock_shared(vma->vm_file->f_mapping);
- }
- 
- void hugetlb_vma_lock_write(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		down_write(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		down_write(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_lock(vma->vm_file->f_mapping);
- }
- 
- void hugetlb_vma_unlock_write(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		up_write(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		up_write(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		filemap_invalidate_unlock(vma->vm_file->f_mapping);
- }
- 
- int hugetlb_vma_trylock_write(struct vm_area_struct *vma)
- {
- 
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		return down_write_trylock(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		return down_write_trylock(&resv_map->rw_sema);
--	}
-+	if (vma->vm_file)
-+		return filemap_invalidate_trylock(vma->vm_file->f_mapping);
- 
- 	return 1;
- }
- 
- void hugetlb_vma_assert_locked(struct vm_area_struct *vma)
- {
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		lockdep_assert_held(&vma_lock->rw_sema);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		lockdep_assert_held(&resv_map->rw_sema);
--	}
--}
--
--void hugetlb_vma_lock_release(struct kref *kref)
--{
--	struct hugetlb_vma_lock *vma_lock = container_of(kref,
--			struct hugetlb_vma_lock, refs);
--
--	kfree(vma_lock);
--}
--
--static void __hugetlb_vma_unlock_write_put(struct hugetlb_vma_lock *vma_lock)
--{
--	struct vm_area_struct *vma = vma_lock->vma;
--
--	/*
--	 * vma_lock structure may or not be released as a result of put,
--	 * it certainly will no longer be attached to vma so clear pointer.
--	 * Semaphore synchronizes access to vma_lock->vma field.
--	 */
--	vma_lock->vma = NULL;
--	vma->vm_private_data = NULL;
--	up_write(&vma_lock->rw_sema);
--	kref_put(&vma_lock->refs, hugetlb_vma_lock_release);
--}
--
--static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma)
--{
--	if (__vma_shareable_lock(vma)) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		__hugetlb_vma_unlock_write_put(vma_lock);
--	} else if (__vma_private_lock(vma)) {
--		struct resv_map *resv_map = vma_resv_map(vma);
--
--		/* no free for anon vmas, but still need to unlock */
--		up_write(&resv_map->rw_sema);
--	}
--}
--
--static void hugetlb_vma_lock_free(struct vm_area_struct *vma)
--{
--	/*
--	 * Only present in sharable vmas.
--	 */
--	if (!vma || !__vma_shareable_lock(vma))
--		return;
--
--	if (vma->vm_private_data) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		down_write(&vma_lock->rw_sema);
--		__hugetlb_vma_unlock_write_put(vma_lock);
--	}
--}
--
--static void hugetlb_vma_lock_alloc(struct vm_area_struct *vma)
--{
--	struct hugetlb_vma_lock *vma_lock;
--
--	/* Only establish in (flags) sharable vmas */
--	if (!vma || !(vma->vm_flags & VM_MAYSHARE))
--		return;
--
--	/* Should never get here with non-NULL vm_private_data */
--	if (vma->vm_private_data)
--		return;
--
--	vma_lock = kmalloc(sizeof(*vma_lock), GFP_KERNEL);
--	if (!vma_lock) {
--		/*
--		 * If we can not allocate structure, then vma can not
--		 * participate in pmd sharing.  This is only a possible
--		 * performance enhancement and memory saving issue.
--		 * However, the lock is also used to synchronize page
--		 * faults with truncation.  If the lock is not present,
--		 * unlikely races could leave pages in a file past i_size
--		 * until the file is removed.  Warn in the unlikely case of
--		 * allocation failure.
--		 */
--		pr_warn_once("HugeTLB: unable to allocate vma specific lock\n");
--		return;
--	}
--
--	kref_init(&vma_lock->refs);
--	init_rwsem(&vma_lock->rw_sema);
--	vma_lock->vma = vma;
--	vma->vm_private_data = vma_lock;
-+	if (vma->vm_file)
-+		lockdep_assert_held(&vma->vm_file->f_mapping->invalidate_lock);
- }
- 
- /* Helper that removes a struct file_region from the resv_map cache and returns
-@@ -1100,7 +968,6 @@ struct resv_map *resv_map_alloc(void)
- 	kref_init(&resv_map->refs);
- 	spin_lock_init(&resv_map->lock);
- 	INIT_LIST_HEAD(&resv_map->regions);
--	init_rwsem(&resv_map->rw_sema);
- 
- 	resv_map->adds_in_progress = 0;
- 	/*
-@@ -1194,22 +1061,11 @@ void hugetlb_dup_vma_private(struct vm_area_struct *vma)
- 	VM_BUG_ON_VMA(!is_vm_hugetlb_page(vma), vma);
- 	/*
- 	 * Clear vm_private_data
--	 * - For shared mappings this is a per-vma semaphore that may be
--	 *   allocated in a subsequent call to hugetlb_vm_op_open.
--	 *   Before clearing, make sure pointer is not associated with vma
--	 *   as this will leak the structure.  This is the case when called
--	 *   via clear_vma_resv_huge_pages() and hugetlb_vm_op_open has already
--	 *   been called to allocate a new structure.
- 	 * - For MAP_PRIVATE mappings, this is the reserve map which does
- 	 *   not apply to children.  Faults generated by the children are
- 	 *   not guaranteed to succeed, even if read-only.
- 	 */
--	if (vma->vm_flags & VM_MAYSHARE) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		if (vma_lock && vma_lock->vma != vma)
--			vma->vm_private_data = NULL;
--	} else
-+	if (!(vma->vm_flags & VM_MAYSHARE))
- 		vma->vm_private_data = NULL;
- }
- 
-@@ -4845,25 +4701,6 @@ static void hugetlb_vm_op_open(struct vm_area_struct *vma)
- 		resv_map_dup_hugetlb_cgroup_uncharge_info(resv);
- 		kref_get(&resv->refs);
- 	}
--
--	/*
--	 * vma_lock structure for sharable mappings is vma specific.
--	 * Clear old pointer (if copied via vm_area_dup) and allocate
--	 * new structure.  Before clearing, make sure vma_lock is not
--	 * for this vma.
--	 */
--	if (vma->vm_flags & VM_MAYSHARE) {
--		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
--
--		if (vma_lock) {
--			if (vma_lock->vma != vma) {
--				vma->vm_private_data = NULL;
--				hugetlb_vma_lock_alloc(vma);
--			} else
--				pr_warn("HugeTLB: vma_lock already exists in %s.\n", __func__);
--		} else
--			hugetlb_vma_lock_alloc(vma);
--	}
- }
- 
- static void hugetlb_vm_op_close(struct vm_area_struct *vma)
-@@ -4874,8 +4711,6 @@ static void hugetlb_vm_op_close(struct vm_area_struct *vma)
- 	unsigned long reserve, start, end;
- 	long gbl_reserve;
- 
--	hugetlb_vma_lock_free(vma);
--
- 	resv = vma_resv_map(vma);
- 	if (!resv || !is_vma_resv_set(vma, HPAGE_RESV_OWNER))
- 		return;
-@@ -5047,16 +4882,10 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 		mmu_notifier_invalidate_range_start(&range);
- 		vma_assert_write_locked(src_vma);
- 		raw_write_seqcount_begin(&src->write_protect_seq);
--	} else {
--		/*
--		 * For shared mappings the vma lock must be held before
--		 * calling hugetlb_walk() in the src vma. Otherwise, the
--		 * returned ptep could go away if part of a shared pmd and
--		 * another thread calls huge_pmd_unshare.
--		 */
--		hugetlb_vma_lock_read(src_vma);
- 	}
- 
-+	hugetlb_vma_lock_read(src_vma);
-+
- 	last_addr_mask = hugetlb_mask_last_page(h);
- 	for (addr = src_vma->vm_start; addr < src_vma->vm_end; addr += sz) {
- 		spinlock_t *src_ptl, *dst_ptl;
-@@ -5208,10 +5037,10 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 	if (cow) {
- 		raw_write_seqcount_end(&src->write_protect_seq);
- 		mmu_notifier_invalidate_range_end(&range);
--	} else {
--		hugetlb_vma_unlock_read(src_vma);
- 	}
- 
-+	hugetlb_vma_unlock_read(src_vma);
-+
- 	return ret;
- }
- 
-@@ -5449,28 +5278,12 @@ void __hugetlb_zap_begin(struct vm_area_struct *vma,
- void __hugetlb_zap_end(struct vm_area_struct *vma,
- 		       struct zap_details *details)
- {
--	zap_flags_t zap_flags = details ? details->zap_flags : 0;
--
- 	if (!vma->vm_file)	/* hugetlbfs_file_mmap error */
- 		return;
- 
--	if (zap_flags & ZAP_FLAG_UNMAP) {	/* final unmap */
--		/*
--		 * Unlock and free the vma lock before releasing i_mmap_rwsem.
--		 * When the vma_lock is freed, this makes the vma ineligible
--		 * for pmd sharing.  And, i_mmap_rwsem is required to set up
--		 * pmd sharing.  This is important as page tables for this
--		 * unmapped range will be asynchrously deleted.  If the page
--		 * tables are shared, there will be issues when accessed by
--		 * someone else.
--		 */
--		__hugetlb_vma_unlock_write_free(vma);
--	} else {
--		hugetlb_vma_unlock_write(vma);
--	}
--
- 	if (vma->vm_file)
- 		i_mmap_unlock_write(vma->vm_file->f_mapping);
-+	hugetlb_vma_unlock_write(vma);
- }
- 
- void unmap_hugepage_range(struct vm_area_struct *vma, unsigned long start,
-@@ -6713,12 +6526,6 @@ bool hugetlb_reserve_pages(struct inode *inode,
- 		return false;
- 	}
- 
--	/*
--	 * vma specific semaphore used for pmd sharing and fault/truncation
--	 * synchronization
--	 */
--	hugetlb_vma_lock_alloc(vma);
--
- 	/*
- 	 * Only apply hugepage reservation if asked. At fault time, an
- 	 * attempt will be made for VM_NORESERVE to allocate a page
-@@ -6841,7 +6648,6 @@ bool hugetlb_reserve_pages(struct inode *inode,
- 	hugetlb_cgroup_uncharge_cgroup_rsvd(hstate_index(h),
- 					    chg * pages_per_huge_page(h), h_cg);
- out_err:
--	hugetlb_vma_lock_free(vma);
- 	if (!vma || vma->vm_flags & VM_MAYSHARE)
- 		/* Only call region_abort if the region_chg succeeded but the
- 		 * region_add failed or didn't run.
-@@ -6913,13 +6719,10 @@ static unsigned long page_table_shareable(struct vm_area_struct *svma,
- 	/*
- 	 * match the virtual addresses, permission and the alignment of the
- 	 * page table page.
--	 *
--	 * Also, vma_lock (vm_private_data) is required for sharing.
- 	 */
- 	if (pmd_index(addr) != pmd_index(saddr) ||
- 	    vm_flags != svm_flags ||
--	    !range_in_vma(svma, sbase, s_end) ||
--	    !svma->vm_private_data)
-+	    !range_in_vma(svma, sbase, s_end))
- 		return 0;
- 
- 	return saddr;
-@@ -6939,8 +6742,6 @@ bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr)
- 	 */
- 	if (!(vma->vm_flags & VM_MAYSHARE))
- 		return false;
--	if (!vma->vm_private_data)	/* vma lock required for sharing */
--		return false;
- 	if (!range_in_vma(vma, start, end))
- 		return false;
- 	return true;
--- 
-2.41.0
+I would like to ask if we can dump some information that will help us understand the cause of the problem before doing the reset? And should we use netdev_warn to print this information?
 
+> 
+> > +static int rtase_setup_tc(struct net_device *dev, enum tc_setup_type type,
+> > +                       void *type_data) {
+> > +     struct rtase_private *tp = netdev_priv(dev);
+> > +     int ret = 0;
+> > +
+> > +     switch (type) {
+> > +     case TC_SETUP_QDISC_MQPRIO:
+> > +             break;
+> > +     case TC_SETUP_BLOCK:
+> > +             break;
+> 
+> This looks odd. You silently return 0, doing nothing?
+
+Thank you for your reminder, we will remove it.
+
+> 
+> > +     case TC_SETUP_QDISC_CBS:
+> > +             ret = rtase_setup_tc_cbs(tp, type_data);
+> > +             break;
+> > +     default:
+> > +             return -EOPNOTSUPP;
+> > +     }
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static netdev_features_t rtase_fix_features(struct net_device *dev,
+> > +                                         netdev_features_t
+> features)
+> > +{
+> > +     netdev_features_t features_fix = features;
+> > +
+> > +     if (dev->mtu > MSS_MAX)
+> > +             features_fix &= ~NETIF_F_ALL_TSO;
+> > +
+> > +     if (dev->mtu > ETH_DATA_LEN) {
+> > +             features_fix &= ~NETIF_F_ALL_TSO;
+> > +             features_fix &= ~NETIF_F_CSUM_MASK;
+> > +     }
+> 
+> So the hardware does not support TSO and checksumming for jumbo frames?
+
+This hardware supports checksumming for jumbo frames, but does not support TSO. We will modify this part, thank you.
+
+> 
+>    Andrew
