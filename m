@@ -2,213 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C577BC132
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9187BC155
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 23:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233621AbjJFVip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 17:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36050 "EHLO
+        id S233751AbjJFVjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 17:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233277AbjJFVip (ORCPT
+        with ESMTP id S233707AbjJFVjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 17:38:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BBCBD;
-        Fri,  6 Oct 2023 14:38:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CC90C433C7;
-        Fri,  6 Oct 2023 21:38:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696628323;
-        bh=mtOK85aeQi5zxtQ5qxl21dr+kSNJG6tsBGqhON2xals=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mdA3EliYhLBRpICdZsSU/iSXwksjuJCbPBVnMmVEXFlTNPi4yUhxf5ukz9QIMWj5W
-         B2iCefR1QD8PN2ISKt18ovC8btGFvYO4HSXQhvNJagWYw+oI5iwUa6HROCmKqznthQ
-         +dqEN11aHAySxDS7qK5Yk7YUIx+GMCAogv9FoTsJysUo8dSfshzP4Gn0dEv4OkjpSr
-         /eeNZ1JrfFMt2AoYaw6+XsIpWrgFob+Cc8snCZaV25CNCUraZagwFw28wEBcmC8OFK
-         g362ICGYQbYa1Z/hjCDITCmz2lXa9m/RCck7Pios36Fbw1WwljU8whA5WHZrTEsfex
-         E1/8Qk4EMB2RQ==
-Received: (nullmailer pid 332965 invoked by uid 1000);
-        Fri, 06 Oct 2023 21:38:40 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>, Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH] dmaengine: Drop unnecessary of_match_device() calls
-Date:   Fri,  6 Oct 2023 16:38:35 -0500
-Message-Id: <20231006213835.332848-1-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
+        Fri, 6 Oct 2023 17:39:06 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6111C6;
+        Fri,  6 Oct 2023 14:39:04 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396LF0L0023886;
+        Fri, 6 Oct 2023 21:38:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=zBySumyWUsTUJ5MWaB2XFCUX7En9cQIYGAhkyMs/2jM=;
+ b=djrX4fGT6m/IQ+TNS9G8n5xkSN/u6NT+kWtcwKsIdFUVRlx/vVoCfxRD32PPDH9uwZfJ
+ ihfj0Y1ei3jxsq4m5h2ge6zScAC24BIZzcULo9CoB7GPnFpFZkoPudy/4t8pR1OLcB0Y
+ 2g8zQMi/CAa71ce+GDRRHTKfvMraPbGOsxjxib/N+6NQJTjVL4/OT/x3gNWDneJR1sQz
+ n+ig77nRhkeIe9gbbr2iIRQqcEz0S47nJsCpCn0NOMWtlKADbrJ7IIkYb7fFtdZlncAq
+ Rg6rVwIfmD5V9MYcJf4ynVWpuMTj1pEUzpDvGCM0a5O2n2UhONUK0FztM0D9xvRT9crg Rw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3thrjdvd8g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Oct 2023 21:38:56 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 396LctFr030895
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 6 Oct 2023 21:38:55 GMT
+Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Fri, 6 Oct 2023 14:38:54 -0700
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+To:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
+        <andersson@kernel.org>
+CC:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v6 4/7] drm/msm/dp: move parser->parse() and dp_power_client_init() to probe
+Date:   Fri, 6 Oct 2023 14:38:35 -0700
+Message-ID: <1696628318-15095-5-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1696628318-15095-1-git-send-email-quic_khsieh@quicinc.com>
+References: <1696628318-15095-1-git-send-email-quic_khsieh@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: mxeyiVF2MEJX3St54dornCjpIyMMi6HG
+X-Proofpoint-GUID: mxeyiVF2MEJX3St54dornCjpIyMMi6HG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-06_15,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 priorityscore=1501 phishscore=0
+ mlxscore=0 mlxlogscore=999 impostorscore=0 bulkscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310060166
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If probe is reached, we've already matched the device and in the case of
-DT matching, the struct device_node pointer will be set. Therefore, there
-is no need to call of_match_device() in probe.
+Original both parser->parse() and dp_power_client_init() are done at
+dp_display_bind() since eDP population is done at binding time.
+In the preparation of having eDP population done at probe() time,
+move both function from dp_display_bind() to dp_display_probe().
 
-Signed-off-by: Rob Herring <robh@kernel.org>
+Changes in v6:
+-- move dp_power_client_deinit() to remove()
+
+Changes in v5:
+-- explain why parser->parse() and dp_power_client_init() are moved to probe time
+-- tear down sub modules if failed
+
+Changes in v4:
+-- split this patch out of "incorporate pm_runtime framework into DP driver" patch
+
+Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
 ---
- drivers/dma/k3dma.c     | 25 ++++++++++---------------
- drivers/dma/mmp_pdma.c  |  5 +----
- drivers/dma/pxa_dma.c   |  7 ++-----
- drivers/dma/stm32-dma.c |  8 --------
- 4 files changed, 13 insertions(+), 32 deletions(-)
+ drivers/gpu/drm/msm/dp/dp_display.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/dma/k3dma.c b/drivers/dma/k3dma.c
-index 22b37b525a48..5de8c21d41e7 100644
---- a/drivers/dma/k3dma.c
-+++ b/drivers/dma/k3dma.c
-@@ -15,7 +15,6 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
--#include <linux/of_device.h>
- #include <linux/of.h>
- #include <linux/clk.h>
- #include <linux/of_dma.h>
-@@ -839,7 +838,6 @@ static int k3_dma_probe(struct platform_device *op)
- {
- 	const struct k3dma_soc_data *soc_data;
- 	struct k3_dma_dev *d;
--	const struct of_device_id *of_id;
- 	int i, ret, irq = 0;
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 32663ea..89fad67 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -276,11 +276,6 @@ static int dp_display_bind(struct device *dev, struct device *master,
+ 	dp->dp_display.drm_dev = drm;
+ 	priv->dp[dp->id] = &dp->dp_display;
  
- 	d = devm_kzalloc(&op->dev, sizeof(*d), GFP_KERNEL);
-@@ -854,19 +852,16 @@ static int k3_dma_probe(struct platform_device *op)
- 	if (IS_ERR(d->base))
- 		return PTR_ERR(d->base);
+-	rc = dp->parser->parse(dp->parser);
+-	if (rc) {
+-		DRM_ERROR("device tree parsing failed\n");
+-		goto end;
+-	}
  
--	of_id = of_match_device(k3_pdma_dt_ids, &op->dev);
--	if (of_id) {
--		of_property_read_u32((&op->dev)->of_node,
--				"dma-channels", &d->dma_channels);
--		of_property_read_u32((&op->dev)->of_node,
--				"dma-requests", &d->dma_requests);
--		ret = of_property_read_u32((&op->dev)->of_node,
--				"dma-channel-mask", &d->dma_channel_mask);
--		if (ret) {
--			dev_warn(&op->dev,
--				 "dma-channel-mask doesn't exist, considering all as available.\n");
--			d->dma_channel_mask = (u32)~0UL;
--		}
-+	of_property_read_u32((&op->dev)->of_node,
-+			"dma-channels", &d->dma_channels);
-+	of_property_read_u32((&op->dev)->of_node,
-+			"dma-requests", &d->dma_requests);
-+	ret = of_property_read_u32((&op->dev)->of_node,
-+			"dma-channel-mask", &d->dma_channel_mask);
-+	if (ret) {
-+		dev_warn(&op->dev,
-+			 "dma-channel-mask doesn't exist, considering all as available.\n");
-+		d->dma_channel_mask = (u32)~0UL;
+ 
+ 	dp->drm_dev = drm;
+@@ -291,11 +286,6 @@ static int dp_display_bind(struct device *dev, struct device *master,
+ 		goto end;
  	}
  
- 	if (!(soc_data->flags & K3_FLAG_NOCLK)) {
-diff --git a/drivers/dma/mmp_pdma.c b/drivers/dma/mmp_pdma.c
-index 492ec491a59b..136fcaeff8dd 100644
---- a/drivers/dma/mmp_pdma.c
-+++ b/drivers/dma/mmp_pdma.c
-@@ -15,7 +15,6 @@
- #include <linux/device.h>
- #include <linux/platform_data/mmp_dma.h>
- #include <linux/dmapool.h>
--#include <linux/of_device.h>
- #include <linux/of_dma.h>
- #include <linux/of.h>
- 
-@@ -1019,7 +1018,6 @@ static struct dma_chan *mmp_pdma_dma_xlate(struct of_phandle_args *dma_spec,
- static int mmp_pdma_probe(struct platform_device *op)
- {
- 	struct mmp_pdma_device *pdev;
--	const struct of_device_id *of_id;
- 	struct mmp_dma_platdata *pdata = dev_get_platdata(&op->dev);
- 	int i, ret, irq = 0;
- 	int dma_channels = 0, irq_num = 0;
-@@ -1039,8 +1037,7 @@ static int mmp_pdma_probe(struct platform_device *op)
- 	if (IS_ERR(pdev->base))
- 		return PTR_ERR(pdev->base);
- 
--	of_id = of_match_device(mmp_pdma_dt_ids, pdev->dev);
--	if (of_id) {
-+	if (pdev->dev->of_node) {
- 		/* Parse new and deprecated dma-channels properties */
- 		if (of_property_read_u32(pdev->dev->of_node, "dma-channels",
- 					 &dma_channels))
-diff --git a/drivers/dma/pxa_dma.c b/drivers/dma/pxa_dma.c
-index 3c574dc0613b..e260cadfc46f 100644
---- a/drivers/dma/pxa_dma.c
-+++ b/drivers/dma/pxa_dma.c
-@@ -15,9 +15,8 @@
- #include <linux/device.h>
- #include <linux/platform_data/mmp_dma.h>
- #include <linux/dmapool.h>
--#include <linux/of_device.h>
--#include <linux/of_dma.h>
- #include <linux/of.h>
-+#include <linux/of_dma.h>
- #include <linux/wait.h>
- #include <linux/dma/pxa-dma.h>
- 
-@@ -1342,7 +1341,6 @@ static int pxad_init_dmadev(struct platform_device *op,
- static int pxad_probe(struct platform_device *op)
- {
- 	struct pxad_device *pdev;
--	const struct of_device_id *of_id;
- 	const struct dma_slave_map *slave_map = NULL;
- 	struct mmp_dma_platdata *pdata = dev_get_platdata(&op->dev);
- 	int ret, dma_channels = 0, nb_requestors = 0, slave_map_cnt = 0;
-@@ -1360,8 +1358,7 @@ static int pxad_probe(struct platform_device *op)
- 	if (IS_ERR(pdev->base))
- 		return PTR_ERR(pdev->base);
- 
--	of_id = of_match_device(pxad_dt_ids, &op->dev);
--	if (of_id) {
-+	if (op->dev.of_node) {
- 		/* Parse new and deprecated dma-channels properties */
- 		if (of_property_read_u32(op->dev.of_node, "dma-channels",
- 					 &dma_channels))
-diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
-index a732b3807b11..c8089e77c950 100644
---- a/drivers/dma/stm32-dma.c
-+++ b/drivers/dma/stm32-dma.c
-@@ -21,7 +21,6 @@
- #include <linux/list.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_dma.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-@@ -1561,17 +1560,10 @@ static int stm32_dma_probe(struct platform_device *pdev)
- 	struct stm32_dma_chan *chan;
- 	struct stm32_dma_device *dmadev;
- 	struct dma_device *dd;
--	const struct of_device_id *match;
- 	struct resource *res;
- 	struct reset_control *rst;
- 	int i, ret;
- 
--	match = of_match_device(stm32_dma_of_match, &pdev->dev);
--	if (!match) {
--		dev_err(&pdev->dev, "Error: No device match found\n");
--		return -ENODEV;
+-	rc = dp_power_client_init(dp->power);
+-	if (rc) {
+-		DRM_ERROR("Power client create failed\n");
+-		goto end;
 -	}
--
- 	dmadev = devm_kzalloc(&pdev->dev, sizeof(*dmadev), GFP_KERNEL);
- 	if (!dmadev)
- 		return -ENOMEM;
+ 
+ 	rc = dp_register_audio_driver(dev, dp->audio);
+ 	if (rc) {
+@@ -328,7 +318,6 @@ static void dp_display_unbind(struct device *dev, struct device *master,
+ 
+ 	of_dp_aux_depopulate_bus(dp->aux);
+ 
+-	dp_power_client_deinit(dp->power);
+ 	dp_unregister_audio_driver(dev, dp->audio);
+ 	dp_aux_unregister(dp->aux);
+ 	dp->drm_dev = NULL;
+@@ -1250,6 +1239,18 @@ static int dp_display_probe(struct platform_device *pdev)
+ 		return -EPROBE_DEFER;
+ 	}
+ 
++	rc = dp->parser->parse(dp->parser);
++	if (rc) {
++		DRM_ERROR("device tree parsing failed\n");
++		goto err;
++	}
++
++	rc = dp_power_client_init(dp->power);
++	if (rc) {
++		DRM_ERROR("Power client create failed\n");
++		goto err;
++	}
++
+ 	/* setup event q */
+ 	mutex_init(&dp->event_mutex);
+ 	init_waitqueue_head(&dp->event_q);
+@@ -1284,6 +1285,7 @@ static int dp_display_remove(struct platform_device *pdev)
+ 	struct dp_display_private *dp = dev_get_dp_display_private(&pdev->dev);
+ 
+ 	component_del(&pdev->dev, &dp_display_comp_ops);
++	dp_power_client_deinit(dp->power);
+ 	dp_display_deinit_sub_modules(dp);
+ 
+ 	platform_set_drvdata(pdev, NULL);
 -- 
-2.40.1
+2.7.4
 
