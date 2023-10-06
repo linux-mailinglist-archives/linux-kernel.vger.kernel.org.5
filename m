@@ -2,100 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E86A7BB38D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 10:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511D07BB393
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 10:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjJFIw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 04:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
+        id S231139AbjJFIyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 04:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbjJFIw4 (ORCPT
+        with ESMTP id S230398AbjJFIyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 04:52:56 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C7283
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 01:52:55 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-45269fe9d6bso887588137.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 01:52:55 -0700 (PDT)
+        Fri, 6 Oct 2023 04:54:04 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DDF9F
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 01:54:00 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9b98a699f45so322211266b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 01:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696582375; x=1697187175; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qxeu+1oR48xD2Gd7sf1n3o5+xMOLz2MYkIZCLI1NQDM=;
-        b=11sI97Qs14SPAr3bSU+ATGMvzlEmRpvOtweT0YXm+VUkn5sEOc8TMjSWaHbzVpGQyr
-         O6aYzTDNXW94LKt35kmJuH9F3xtpwkZapMzE6ZiRKpg6RXenJefYffsqvG6DdRVlpXIq
-         lYgDIwW26OxOcgVyjAGhLx3Dap7We8CDgRE6RiHULNdhV7HW/jCpCoRdqs4DMd43rjCo
-         Vpy9tlFmFfCRUKYRzPDEgr0Cayy9aTfhTNulk+Ad6asOhYjoEMOTOUoHoN2sMVuPutj+
-         mQjN9mw6fKingy10mWW4icMoNW5AdM6kWT6f7MKrPpYHITBlX3XxvBGhO2vybeHthF37
-         tXdQ==
+        d=szeredi.hu; s=google; t=1696582439; x=1697187239; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3xGSg1ywEPdzy+7pm5ys+NDpYYhLyChWJlGKSbRiijw=;
+        b=e9JOMdBddiy+e2X+XurG3ruDYEHCQk3UVKyXYxDFYF6XrhfOyP7Ato/eVIEGR8Logq
+         81e6/dyfh73Lsst2k4dsDNpGBJCi7izTL7CPKkAFe4U2y+awEF+a7D+evT3y7n39fFWx
+         lJs5HQgMTUkhEIyVnUfxn+0aQVgdBiP30I5CQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696582375; x=1697187175;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qxeu+1oR48xD2Gd7sf1n3o5+xMOLz2MYkIZCLI1NQDM=;
-        b=Fpe0homVv5TfT73EdhNce0AjMA5LGveLK/4dFpyoA9LOWQ8YEmK6j/UzSknf7aBCPa
-         mzvRmuLjfj2uE3itAbB2wZEl+wSHo1WCoYnLClrctGvuuHR/yk4zOVRW7M6lyyzuaPo2
-         GwhHlg+IYVyuh4/WNruBiLyZ9abLPo0bFdzk1Ehl10xzSP4HTL0lX8CM+uMtkwJDmFv2
-         mJ6XSGg2CNXY4dgkpq8omvsssYSKMx4VtiLjflqz3wGhuSZYZ/qiusYo4WgyoeIFXRsW
-         OsC4eojnDUkMzGcEGU1t7sgcevTOSsrIlDMJj1BSKXI9iIK+s2D7P7h92Ii5dmPfHln5
-         nfzw==
-X-Gm-Message-State: AOJu0YyDJb6v5MFpU+PP461Ibsu4Kyo3ctVdgEfNFk9SEeg0mwblgQ0S
-        fwuLM3B/pxSyQayYcHt7LW40TwkvN5j4S6bAl5oShA==
-X-Google-Smtp-Source: AGHT+IGpa9oDupsxw07rqioIpfopJAPI0Ytv6CAxXQQ9ojG3965uvekx2SZ/ff+/vZJ9EI796i4mhJoVjm+u2xK7FaU=
-X-Received: by 2002:a67:bb06:0:b0:44e:9674:7781 with SMTP id
- m6-20020a67bb06000000b0044e96747781mr7243449vsn.15.1696582374867; Fri, 06 Oct
- 2023 01:52:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696582439; x=1697187239;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3xGSg1ywEPdzy+7pm5ys+NDpYYhLyChWJlGKSbRiijw=;
+        b=jmNYGf5Bp2Gr84318mEVZr+NgzzJDVwxVgpdlDcV76uYEyvT1VifuLrq5O7AacwAAh
+         4KexGWrTALKJ3ZCaCTzQUUXSDzkDcXMeJgKFENM4MxYPyoPr/5oPgoQN7w07qHW26OCl
+         X/TGyUfaC3nouQeUytjk5JEkjfZmzUinJ4xXGedz2Cn3G9/3TXXtDa1Lv2SUX1b/iqWI
+         6rF9gAkLoRqtNALJ7L0PyG/jN9EYtB4a58GrnRoMz3kcyvnr9q9mUMPwVK2Vpz6bWLzk
+         4h0Z250wZiyNBdbeJq/Tur/q8e5Id/6WpGzs+SrKGxAcyohHkOXdk6K3YtYQHA3Pqr2i
+         SlLA==
+X-Gm-Message-State: AOJu0Yy/L+RMCKWsLsHsH9g4J4ko9vYt2pMi9XyIb5qpWQEZSZkEDMPF
+        lvsxM++JUECYT/4dJn+BeQ/lnEy0UEzycg2/937pxg==
+X-Google-Smtp-Source: AGHT+IE83piQJm/UCJj7lGXWIXCxJWyzvaAX8JQ2evdgbQBnXPLUaWBfp6YDG5512fSgiL66epwHp3T7nz1LEyZLGHk=
+X-Received: by 2002:a17:906:109e:b0:9b2:a7f2:f819 with SMTP id
+ u30-20020a170906109e00b009b2a7f2f819mr6282014eju.31.1696582438701; Fri, 06
+ Oct 2023 01:53:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231005210556.466856-1-ojeda@kernel.org> <20231005210556.466856-3-ojeda@kernel.org>
-In-Reply-To: <20231005210556.466856-3-ojeda@kernel.org>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Fri, 6 Oct 2023 10:52:44 +0200
-Message-ID: <CAH5fLgiqCyV3OJ_mvBrSH0rX+GhQ9f6EpY+eZ13g_ebmue1TNg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] rust: print: use explicit link in documentation
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
+References: <20230928130147.564503-1-mszeredi@redhat.com> <20230928130147.564503-5-mszeredi@redhat.com>
+ <CAHC9VhQD9r+Qf5Vz1XmxUdJJJO7HNTKdo8Ux=n+xkxr=JGFMrw@mail.gmail.com>
+ <CAJfpegsPbDgaz46x4Rr9ZgCpF9rohVHsvuWtQ5LNAdiYU_D4Ww@mail.gmail.com>
+ <a25f2736-1837-f4ca-b401-85db24f46452@themaw.net> <CAJfpegv78njkWdaShTskKXoGOpKAndvYYJwq7CLibiu+xmLCvg@mail.gmail.com>
+ <CAHC9VhTwnjhfmkT5Rzt+SBf-8hyw4PYkbuPYnm6XLoyY7VAUiw@mail.gmail.com>
+In-Reply-To: <CAHC9VhTwnjhfmkT5Rzt+SBf-8hyw4PYkbuPYnm6XLoyY7VAUiw@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 6 Oct 2023 10:53:47 +0200
+Message-ID: <CAJfpegsZqF4TnnFBsV-tzi=w_7M=To5DeAjyW=cei9YuG+qMfg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] add listmount(2) syscall
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Ian Kent <raven@themaw.net>, Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Matthew House <mattlloydhouse@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 11:06=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> wro=
-te:
-> The future `rustdoc` in the Rust 1.73.0 upgrade requires an explicit
-> link for `pr_info!`:
->
->     error: unresolved link to `pr_info`
->        --> rust/kernel/print.rs:395:63
->         |
->     395 | /// Use only when continuing a previous `pr_*!` macro (e.g. [`p=
-r_info!`]).
->         |                                                               ^=
-^^^^^^^ no item named `pr_info` in scope
->         |
->         =3D note: `macro_rules` named `pr_info` exists in this crate, but=
- it is not in scope at this link's location
->         =3D note: `-D rustdoc::broken-intra-doc-links` implied by `-D war=
-nings`
->
-> Thus do so to avoid a broken link while upgrading.
->
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+On Fri, 6 Oct 2023 at 04:56, Paul Moore <paul@paul-moore.com> wrote:
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+> > Also I cannot see the point in hiding some mount ID's from the list.
+> > It seems to me that the list is just an array of numbers that in
+> > itself doesn't carry any information.
+>
+> I think it really comes down to the significance of the mount ID, and
+> I can't say I know enough of the details here to be entirely
+> comfortable taking a hard stance on this.  Can you help me understand
+> the mount ID concept a bit better?
+
+Mount ID is a descriptor that allows referring to a specific struct
+mount from userspace.
+
+The old 32 bit mount id is allocated with IDA from a global pool.
+Because it's non-referencing it doesn't allow uniquely identifying a
+mount.  That was a design mistake that I made back in 2008, thinking
+that the same sort of dense descriptor space as used for file
+descriptors would work.  Originally it was used to identify the mount
+and the parent mount in /proc/PID/mountinfo.  Later it was also added
+to the following interfaces:
+
+ - name_to_handle_at(2) returns 32 bit value
+ - /proc/PID/FD/fdinfo
+ - statx(2) returns 64 bit value
+
+It was never used on the kernel interfaces as an input argument.
+
+statmount(2) and listmount(2) require the mount to be identified by
+userspace, so having a unique ID is important.  So the "[1/4] add
+unique mount ID" adds a new 64 bit ID (still global) that is allocated
+sequentially and only reused after reboot.   It is used as an input to
+these syscalls.  It is returned by statx(2) if requested by
+STATX_MNT_ID_UNIQUE and as an array of ID's by listmount(2).
+
+I can see mild security problems with the global allocation, since a
+task can observe mounts being done in other namespaces.  This doesn't
+sound too serious, and the old ID has similar issues.  But I think
+making the new ID be local to the mount namespace is also feasible.
+
+> While I'm reasonably confident that we want a security_sb_statfs()
+> control point in statmount(), it may turn out that we don't want/need
+> a call in the listmount() case.  Perhaps your original patch was
+> correct in the sense that we only want a single security_sb_statfs()
+> call for the root (implying that the child mount IDs are attributes of
+> the root/parent mount)?  Maybe it's something else entirely?
+
+Mounts are arranged in a tree (I think it obvious how) and
+listmount(2) just lists the IDs of the immediate children of a mount.
+
+I don't see ID being an attribute of a mount, it's a descriptor.
+
+Thanks,
+Miklos
