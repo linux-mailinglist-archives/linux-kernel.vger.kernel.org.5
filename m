@@ -2,275 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C06497BB71D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA907BB71F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbjJFMAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
+        id S232166AbjJFMBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232143AbjJFMAg (ORCPT
+        with ESMTP id S232169AbjJFMBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:00:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F14CE
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:00:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696593635; x=1728129635;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=yh5MuiZGQXQ6liK7/Tt2HXhGriUga9iujO4PJpKEKQU=;
-  b=S8Ewy1qif1xLB61TmBLQiNJ/1BaUVkLTu98fOb179NRi2ZdsDW8NhbTF
-   gmPZxoHUBTdaPOdzSNVHVhUGTNy92g5D68tCRemZOu1NLgLkKNdmuwb/c
-   AzB9QSQMEZB7rquh0Eg/p6jkVY4rmeCfeXa/MtT92/xfZMXWxFeBDMbVC
-   UvYElE5XfzM9+Z90MdX01AiMCNqZevolB/v/VGj8baPBtjkXNmMyNgyiF
-   vW/l47k62SvWzRqn0cRsIq5JQjMsN2dCUNbyE4wMX5qjgv4cdZtN8vzN+
-   dJUqy20Uy4/LNTJGOzgY9va1yPqj4zA/fxBeI8ssrYv5WJUYpbxfW7UhK
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="414732558"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="414732558"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 04:59:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="1083426786"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="1083426786"
-Received: from kvsudesh-mobl1.gar.corp.intel.com (HELO box.shutemov.name) ([10.251.222.76])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 04:59:39 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 2368510A12D; Fri,  6 Oct 2023 14:59:37 +0300 (+03)
-Date:   Fri, 6 Oct 2023 14:59:37 +0300
-From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
-Subject: Re: [PATCH 01/13] x86/acpi: Extract ACPI MADT wakeup code into a
- separate file
-Message-ID: <20231006115937.js5zkqlbqyv3venr@box.shutemov.name>
-References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
- <20231005131402.14611-2-kirill.shutemov@linux.intel.com>
- <e11888bc9775a8083b72cce8c58ee71b39d0e17f.camel@intel.com>
+        Fri, 6 Oct 2023 08:01:09 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3829CE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:01:04 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1dceaa7aeffso1637272fac.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:01:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1696593664; x=1697198464; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C4dHLe022tfg6JAJt/ugwVPdl75c59qlrzkRNqgnv8E=;
+        b=JHRox7Y8JoZxD/ReN+Rj6I0gNWJ+vwJv+tH7uVYqDevGExDqNXjPGB135WjzNyabE8
+         33eOstDv4TyIt+Q3J5KIwThcaGLniahk18cTRTvj/LWZ9f++9ypjeO75ut2ElQPaOlVL
+         jsbN8OZq1COxDk61jDYaxqnloWp0u8boALBoLRF6lGG94LwCwFfzH518HodUv/9WT0gk
+         sAUbPlYMxs0eMYC8lida5ci7RtYNHi6eWQpGNqtWadHwQ1XzvnPIMexd6cYsK24MCku+
+         4WmbbBUvufDHxEf7vjeqD8g3UU55CU8K/JeEtfKIuGf9aO1rPNfbXwOrmQ00flvfRDN+
+         DP2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696593664; x=1697198464;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C4dHLe022tfg6JAJt/ugwVPdl75c59qlrzkRNqgnv8E=;
+        b=ALkZv/8vaWyf4FAdKCa1b9jiZjjT8ZmCHQsopJmvaMBVoH3hcFx33ZqE1Q5g5N0fmY
+         G465Mq4V9fAVKnyy/a8W4vSHieutTAvxBsZbfPZNxoANdSB+GS7ACTx0giTX0AcJL90B
+         6/vkgFA7vlpMTcp0VoUzVAaaEP0Fx7gslJqCihS9/tWLt7JG+HPQYfKf392W8V/qOcXq
+         Ea/EcGouhkkN3HlrcA7pTWasbbP+iVz9+5T4QI2l78pLtalLB7RqY+BPIPmLn+RMbjrY
+         2r1OabBKtTwG/VeDGK3PkjPyh4DaSRfP7e3DI+SZQ4lnOVeCX5sDKBT5GonZKV20u6cE
+         eraA==
+X-Gm-Message-State: AOJu0YxakrGjB6QiIPKJzpOreCDTvG8eYkjIHxrSNGsNjMkiNCvxPvYm
+        PdbSsTsV9hOjl7OuMbR2F91Am8rUrL8HeRjhR3sQTA==
+X-Google-Smtp-Source: AGHT+IHtR0I2S6gwdB3Du4+URFD8ib3OjGxKppuEG08esn3Jzi/IpuBRLxCeeR6aXGWBXeA+lBOhwhRbkeyse6Zpz+w=
+X-Received: by 2002:a05:6870:c192:b0:1d6:ce75:d472 with SMTP id
+ h18-20020a056870c19200b001d6ce75d472mr2307177oad.6.1696593663716; Fri, 06 Oct
+ 2023 05:01:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e11888bc9775a8083b72cce8c58ee71b39d0e17f.camel@intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CAGNS4TbhS3XnCFAEi378+cSmJvGMdjN2oTv=tES36vbV4CaDuA@mail.gmail.com>
+ <CANXvt5qKxfU3p1eSK4fkzRFRBXHSVvSkJrnQRLKPkQjhsMGNzQ@mail.gmail.com>
+ <CAGNS4TbAgqRQepv=fMoUxo02Qea5S9LwWFm-jjt1ej8DdLjshw@mail.gmail.com> <88775092-78d7-d1b6-100b-369079ff979b@igel.co.jp>
+In-Reply-To: <88775092-78d7-d1b6-100b-369079ff979b@igel.co.jp>
+From:   Mattias Nissler <mnissler@rivosinc.com>
+Date:   Fri, 6 Oct 2023 14:00:52 +0200
+Message-ID: <CAGNS4TbhB19XZN-eXe4uT=ShjLUfmzC9qAkR4abzC1EUg4=r6A@mail.gmail.com>
+Subject: Re: [RFC] Proposal of QEMU PCI Endpoint test environment
+To:     Shunsuke Mie <mie@igel.co.jp>
+Cc:     cz172638@gmail.com, bhelgaas@google.com,
+        Jagannathan Raman <jag.raman@oracle.com>, kishon@kernel.org,
+        kvijayab@amd.com, kw@linux.com, levon@movementarian.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org,
+        Marcel Apfelbaum <marcel.apfelbaum@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, qemu-devel@nongnu.org,
+        robh@kernel.org, thanos.makatos@nutanix.com, vaishnav.a@ti.com,
+        william.henderson@nutanix.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 10:22:54AM +0000, Huang, Kai wrote:
-> On Thu, 2023-10-05 at 16:13 +0300, Kirill A. Shutemov wrote:
-> > In order to prepare for the expansion of support for the ACPI MADT
-> > wakeup method, the relevant code has been moved into a separate file.
-> > A new configuration option has been introduced to clearly indicate
-> > dependencies without the use of ifdefs.
-> 
-> Use imperative mood?  
-> 
-> - Move the relevant code into ...
-> - Introduce a new configuration option to ...
+On Fri, Oct 6, 2023 at 1:51=E2=80=AFPM Shunsuke Mie <mie@igel.co.jp> wrote:
+>
+>
+> On 2023/10/05 16:02, Mattias Nissler wrote:
+> > On Thu, Oct 5, 2023 at 3:31=E2=80=AFAM Shunsuke Mie <mie@igel.co.jp> wr=
+ote:
+> >> Hi Jiri, Mattias and all.
+> >>
+> >> 2023=E5=B9=B410=E6=9C=884=E6=97=A5(=E6=B0=B4) 16:36 Mattias Nissler <m=
+nissler@rivosinc.com>:
+> >>>> hi shunsuke, all,
+> >>>> what about vfio-user + qemu?
+> >> Thank you for the suggestion.
+> >>
+> >>> FWIW, I have had some good success using VFIO-user to bridge software=
+ components to hardware designs. For the most part, I have been hooking up =
+software endpoint models to hardware design components speaking the PCIe tr=
+ansaction layer protocol. The central piece you need is a way to translate =
+between the VFIO-user protocol and PCIe transaction layer messages, basical=
+ly converting ECAM accesses, memory accesses (DMA+MMIO), and interrupts bet=
+ween the two worlds. I have some code which implements the basics of that. =
+It's certainly far from complete (TLP is a massive protocol), but it works =
+well enough for me. I believe we should be able to open-source this if ther=
+e's interest, let me know.
+> >> It is what I want to do, but I'm not familiar with the vfio and vfio-u=
+ser, and I have a question. QEMU has a PCI TLP communication implementation=
+ for Multi-process QEMU[1]. It is similar to your success.
+> > I'm no qemu expert, but my understanding is that the plan is for the
+> > existing multi-process QEMU implementation to eventually be
+> > superseded/replaced by the VFIO-user based one (qemu folks, please
+> > correct me if I'm wrong). From a functional perspective they are more
+> > or less equivalent AFAICT.
+> >
+> The project is promising.
+>
+> I found a session about the vfio adapts to Multi-process QEMU[1] in KVM
+> Forun 2021, butI couldn't found some posted patches.
+> If anyone knows status of this project, could you please let me know?
 
-Okay.
+Again, I'm just an interested bystander, so take my words with a grain
+of salt. That said, my understanding is that there is an intention to
+get the vfio-user client code into qemu in the foreseeable future. The
+most recent version of the code that I'm aware of is here:
+https://github.com/oracle/qemu/tree/vfio-user-p3.1
 
-> > There have been no functional changes.
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >  arch/x86/Kconfig                   |  7 +++
-> >  arch/x86/include/asm/acpi.h        |  5 ++
-> >  arch/x86/kernel/acpi/Makefile      | 11 ++--
-> >  arch/x86/kernel/acpi/boot.c        | 86 +-----------------------------
-> >  arch/x86/kernel/acpi/madt_wakeup.c | 80 +++++++++++++++++++++++++++
-> >  5 files changed, 99 insertions(+), 90 deletions(-)
-> >  create mode 100644 arch/x86/kernel/acpi/madt_wakeup.c
-> > 
-> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > index 3154dbc49cf5..7368d254d01f 100644
-> > --- a/arch/x86/Kconfig
-> > +++ b/arch/x86/Kconfig
-> > @@ -1108,6 +1108,13 @@ config X86_LOCAL_APIC
-> >  	depends on X86_64 || SMP || X86_32_NON_STANDARD || X86_UP_APIC || PCI_MSI
-> >  	select IRQ_DOMAIN_HIERARCHY
-> >  
-> > +config X86_ACPI_MADT_WAKEUP
-> > +	def_bool y
-> > +	depends on X86_64
-> > +	depends on ACPI
-> > +	depends on SMP
-> > +	depends on X86_LOCAL_APIC
-> > +
-> >  config X86_IO_APIC
-> >  	def_bool y
-> >  	depends on X86_LOCAL_APIC || X86_UP_IOAPIC
-> > diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
-> > index c8a7fc23f63c..b536b5a6a57b 100644
-> > --- a/arch/x86/include/asm/acpi.h
-> > +++ b/arch/x86/include/asm/acpi.h
-> > @@ -73,6 +73,11 @@ static inline bool acpi_skip_set_wakeup_address(void)
-> >  
-> >  #define acpi_skip_set_wakeup_address acpi_skip_set_wakeup_address
-> >  
-> > +union acpi_subtable_headers;
-> > +
-> > +int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
-> > +			      const unsigned long end);
-> > +
-> >  /*
-> >   * Check if the CPU can handle C2 and deeper
-> >   */
-> > diff --git a/arch/x86/kernel/acpi/Makefile b/arch/x86/kernel/acpi/Makefile
-> > index fc17b3f136fe..8c7329c88a75 100644
-> > --- a/arch/x86/kernel/acpi/Makefile
-> > +++ b/arch/x86/kernel/acpi/Makefile
-> > @@ -1,11 +1,12 @@
-> >  # SPDX-License-Identifier: GPL-2.0
-> >  
-> > -obj-$(CONFIG_ACPI)		+= boot.o
-> > -obj-$(CONFIG_ACPI_SLEEP)	+= sleep.o wakeup_$(BITS).o
-> > -obj-$(CONFIG_ACPI_APEI)		+= apei.o
-> > -obj-$(CONFIG_ACPI_CPPC_LIB)	+= cppc.o
-> > +obj-$(CONFIG_ACPI)			+= boot.o
-> > +obj-$(CONFIG_ACPI_SLEEP)		+= sleep.o wakeup_$(BITS).o
-> > +obj-$(CONFIG_ACPI_APEI)			+= apei.o
-> > +obj-$(CONFIG_ACPI_CPPC_LIB)		+= cppc.o
-> > +obj-$(CONFIG_X86_ACPI_MADT_WAKEUP)	+= madt_wakeup.o
-> >  
-> >  ifneq ($(CONFIG_ACPI_PROCESSOR),)
-> > -obj-y				+= cstate.o
-> > +obj-y					+= cstate.o
-> >  endif
-> 
-> unintended code change?
-
-No. It keeps += aligned as they are before the patch.
-> 
-> [...]
-> 
-> > 
-> > diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
-> > new file mode 100644
-> > index 000000000000..1b9747bfd5b9
-> > --- /dev/null
-> > +++ b/arch/x86/kernel/acpi/madt_wakeup.c
-> > @@ -0,0 +1,80 @@
-> > +#include <linux/acpi.h>
-> > +#include <asm/apic.h>
-> 
-> Functions like memremap(), smp_store_release() and cpu_relax() are used in this
-> file.  Should we explicitly include the relevant headers?
-
-Okay, will do.
-
-> > +
-> > +/* Physical address of the Multiprocessor Wakeup Structure mailbox */
-> > +static u64 acpi_mp_wake_mailbox_paddr;
-> > +/* Virtual address of the Multiprocessor Wakeup Structure mailbox */
-> > +static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
-> > +
-> > +static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
-> > +{
-> > +	/*
-> > +	 * Remap mailbox memory only for the first call to acpi_wakeup_cpu().
-> > +	 *
-> > +	 * Wakeup of secondary CPUs is fully serialized in the core code.
-> > +	 * No need to protect acpi_mp_wake_mailbox from concurrent accesses.
-> > +	 */
-> > +	if (!acpi_mp_wake_mailbox) {
-> > +		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
-> > +						sizeof(*acpi_mp_wake_mailbox),
-> > +						MEMREMAP_WB);
-> > +	}
-> > +
-> > +	/*
-> > +	 * Mailbox memory is shared between the firmware and OS. Firmware will
-> > +	 * listen on mailbox command address, and once it receives the wakeup
-> > +	 * command, the CPU associated with the given apicid will be booted.
-> > +	 *
-> > +	 * The value of 'apic_id' and 'wakeup_vector' must be visible to the
-> > +	 * firmware before the wakeup command is visible.  smp_store_release()
-> > +	 * ensures ordering and visibility.
-> > +	 */
-> > +	acpi_mp_wake_mailbox->apic_id	    = apicid;
-> > +	acpi_mp_wake_mailbox->wakeup_vector = start_ip;
-> > +	smp_store_release(&acpi_mp_wake_mailbox->command,
-> > +			  ACPI_MP_WAKE_COMMAND_WAKEUP);
-> > +
-> > +	/*
-> > +	 * Wait for the CPU to wake up.
-> > +	 *
-> > +	 * The CPU being woken up is essentially in a spin loop waiting to be
-> > +	 * woken up. It should not take long for it wake up and acknowledge by
-> > +	 * zeroing out ->command.
-> > +	 *
-> > +	 * ACPI specification doesn't provide any guidance on how long kernel
-> > +	 * has to wait for a wake up acknowledgement. It also doesn't provide
-> > +	 * a way to cancel a wake up request if it takes too long.
-> > +	 *
-> > +	 * In TDX environment, the VMM has control over how long it takes to
-> > +	 * wake up secondary. It can postpone scheduling secondary vCPU
-> > +	 * indefinitely. Giving up on wake up request and reporting error opens
-> > +	 * possible attack vector for VMM: it can wake up a secondary CPU when
-> > +	 * kernel doesn't expect it. Wait until positive result of the wake up
-> > +	 * request.
-> > +	 */
-> > +	while (READ_ONCE(acpi_mp_wake_mailbox->command))
-> > +		cpu_relax();
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
-> > +			      const unsigned long end)
-> > +{
-> > +	struct acpi_madt_multiproc_wakeup *mp_wake;
-> > +
-> > +	if (!IS_ENABLED(CONFIG_SMP))
-> > +		return -ENODEV;
-> 
-> Now you have made X86_ACPI_MADT_WAKEUP depend on SMP, and this file will only be
-> compiled when  X86_ACPI_MADT_WAKEUP is turned on.  IIUC this essentially means
-> IS_ENABLED(CONFIG_SMP) will always report true?
-
-Good catch. I didn't have 'depends SMP' initially, but it triggered build
-issue, so I added it, but forgot to drop IS_ENABLED().
-
-> > +
-> > +	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
-> > +	if (BAD_MADT_ENTRY(mp_wake, end))
-> > +		return -EINVAL;
-> > +
-> > +	acpi_table_print_madt_entry(&header->common);
-> > +
-> > +	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
-> > +
-> > +	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
-> > +
-> > +	return 0;
-> > +}
-> 
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+>
+> [1] https://www.youtube.com/watch?v=3DNBT8rImx3VE
+> >> The multi-process qemu also communicates TLP over UDS. Could you let m=
+e know your opinion about it?
+> > Note that neither multi-process qemu nor VFIO-user actually pass
+> > around TLPs, but rather have their own command language to encode
+> > ECAM, MMIO, DMA, interrupts etc. However, translation from/to TLP is
+> > possible and works well enough in my experience.
+> I agree.
+> >>> One thing to note is that there are currently some limits to bridging=
+ VFIO-user / TLP that I haven't figured out and/or will need further work: =
+Advanced PCIe concepts like PASID, ATS/PRI, SR-IOV etc. may lack equivalent=
+s on the VFIO-user side that would have to be filled in. The folk behind li=
+bvfio-user[2] have been very approachable and open to improvements in my ex=
+perience though.
+> >>>
+> >>> If I understand correctly, the specific goal here is testing PCIe end=
+point designs against a Linux host. What you'd need for that is a PCI host =
+controller for the Linux side to talk to and then hooking up endpoints on t=
+he transaction layer. QEMU can simulate host controllers that work with exi=
+sting Linux drivers just fine. Then you can put a vfio-user-pci stub device=
+ (I don't think this has landed in qemu yet, but you can find the code at [=
+1]) on the simulated PCI bus which will expose any software interactions wi=
+th the endpoint as VFIO-user protocol messages over unix domain socket. The=
+ piece you need to bring is a VFIO-user server that handles these messages.=
+ Its task is basically translating between VFIO-user and TLP and then injec=
+ting TLP into your hardware design.
+> >> Yes, If the pci host controller you said can be implemented, I can ach=
+ieve my goal.
+> > I meant to say that the existing PCIe host controller implementations
+> > in qemu can be used as is.
+> Sorry, I misunderstood.
+> >> To begin with, I'll investigate the vfio and libvfio-user.  Thanks!.
+> >>
+> >> [1] https://www.qemu.org/docs/master/system/multi-process.html
+> >>
+> >> Best,
+> >> Shunsuke
+> >>>
+> >>> [1] https://github.com/oracle/qemu/tree/vfio-user-p3.1 - I believe th=
+at's the latest version, Jagannathan Raman will know best
+> >>> [2] https://github.com/nutanix/libvfio-user
+> >>>
