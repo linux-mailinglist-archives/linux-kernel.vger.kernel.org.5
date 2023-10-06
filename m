@@ -2,63 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 669587BAF8C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 02:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3437BAF73
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 02:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229531AbjJFAXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 20:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57942 "EHLO
+        id S229541AbjJFAE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 20:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjJFAXI (ORCPT
+        with ESMTP id S229455AbjJFAEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 20:23:08 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A7AD6;
-        Thu,  5 Oct 2023 17:23:06 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 395A0Tob100282;
-        Thu, 5 Oct 2023 05:00:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696500029;
-        bh=IQ4+7/ENgJsfdg6282wpLTkp9VO2hoZ8JiSjdo/MfWU=;
-        h=From:To:CC:Subject:Date;
-        b=kCcS7JklxVJlNCWWtlLyFHQ9189GldQW63Z0wCiHxT83VU8u2SriNRF7cxCeKiOH6
-         DKPEa8e2V2GU2xqmzXlECT/gT966wEYZqFS0F1XCkFpjonag3dDp3recOudtU4DPAB
-         +Ic0FRClXrkfIbNSlNaaxdUYsnGl4ZM0izFcLKVo=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 395A0TmI031096
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 5 Oct 2023 05:00:29 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 5
- Oct 2023 05:00:28 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 5 Oct 2023 05:00:28 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 395A0R4F007034;
-        Thu, 5 Oct 2023 05:00:28 -0500
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <a-bhatia1@ti.com>
-CC:     <afd@ti.com>, <rogerq@kernel.org>, <s-vadapalli@ti.com>,
-        <conor+dt@kernel.org>, <r-ravikumar@ti.com>, <sabiya.d@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <j-choudhary@ti.com>
-Subject: [PATCH v11 0/5] Enable Display for J784S4 and AM69-SK platform
-Date:   Thu, 5 Oct 2023 15:30:22 +0530
-Message-ID: <20231005100027.228806-1-j-choudhary@ti.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 5 Oct 2023 20:04:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0399F;
+        Thu,  5 Oct 2023 17:04:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4C00C433C7;
+        Fri,  6 Oct 2023 00:04:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696550663;
+        bh=jNRpRQ7anZvbWj7vKpq9mEWAlqO+Yk+hyZvPIkYO+ag=;
+        h=Date:From:To:Cc:Subject:From;
+        b=j5y8PkDvEXUIbnEAbGwNvHAX0jLjFIDRl/jwTRgZ4MU12y6+VK5PJRQF96SVIrHN9
+         HncHGIjkkH0+XksCFNusFryrm/gmUtJ6aouvTRR7jKpHVA5vS79N57HmmARXDLnibp
+         2DsKuMLeKdHgktl9gLkq3BotMGITcuwoxwA8GMZJ9u6VG14mVrmhiBho/QbUAlGbdu
+         O8tZPWALmL2nNTqPUoVkD0v5FhL3NgMJDMRSJynkeAQbOpcaXGtcEw0adyasCiySs6
+         zgat0rpuFIsjXlMq4h3ezz7UN8V1FmuietEYek0JOUWyYajHjtXm4fiwmcsSy5WsNS
+         e+MYJjRWpSK+w==
+Date:   Fri, 6 Oct 2023 01:04:19 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Test failure from "file: convert to SLAB_TYPESAFE_BY_RCU"
+Message-ID: <00e5cc23-a888-46ce-8789-fc182a2131b0@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="f4w7RcmGnW7dyD3d"
+Content-Disposition: inline
+X-Cookie: Avoid contact with eyes.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,119 +49,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for:
-- DisplayPort for J784S4-EVM
-- Displayport and HDMI for AM69-SK platform
 
-NOTE: Patch 4/5 introduces the following dtc warning which can be ignored
-since its behind W=1 check:
-Warning (graph_child_address): /bus@100000/dss@4a00000/ports: graph node
-has single child node 'port@0', #address-cells/#size-cells are not
-necessary
+--f4w7RcmGnW7dyD3d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-(This is more accurate description for port and the dtc check should not
-differentiate between port@0 and port@1.[0])
+For the past few days (I was away last week...) the fd-003-kthread.c
+test from the proc kselftests has been failing on arm64, this is an
+nfsroot system if that makes any odds.  The test output itself is:
 
-Changelog v10->v11:
-- Added comment for disabling serdes-refclk (according to comments of v5)
-- Update commit message to document why serdes, wiz nodes (2/5) and mhdp-
-  bridge, tidss nodes (3/5) are disabled.
-- Keep only ports in board files and move common properties to main file
-  and document why ports are kept empty.
+  # selftests: proc: fd-003-kthread
+  # fd-003-kthread: fd-003-kthread.c:113: test_readdir: Assertion `!de' failed.
+  # Aborted
+  not ok 3 selftests: proc: fd-003-kthread # exit=134
 
-v10: https://lore.kernel.org/all/20230927121157.278592-1-j-choudhary@ti.com/
+I ran a bisect which pointed at the commit
 
-Changelog v9->v10:
-- Remove duplicate properties from dp0_ports node in main file.
-- Add reg for the port even though there is only single port in dss_port
-  since its more accurate description for the port.
-- Carry the R-by tags from v9.
+   d089d9d056c048303aedd40a7f3f26593ebd040c file: convert to SLAB_TYPESAFE_BY_RCU
 
-v9: https://lore.kernel.org/all/20230803080441.367341-1-j-choudhary@ti.com/
+(I can't seem to find that on lore.) I've not done any further analysis
+of what the commit is doing or anything, though it does look like the
+bisect ran fairly smoothly and it looks at least plausibly related to
+the issue and reverting the commit on top of -next causes the test to
+start passing again.
 
-Changelog v8->v9:
-- Fix compatible of serdes_ln_ctrl node
-- Fix extra new lines across nodes
-- Fix node-names to keep them generic
+The bisect log is below and a full log from a failing test job can be
+seen here:
 
-v8: https://lore.kernel.org/all/20230801070019.219660-1-j-choudhary@ti.com/
+   https://lava.sirena.org.uk/scheduler/job/154334
 
-Changelog v7->v8:
-- rebase on tag next-20230731
-- add AM69 display support
-- fix commit heading for patch [2/5]
+Thanks,
+Mark
 
-v7: https://lore.kernel.org/all/20230728050859.7370-1-j-choudhary@ti.com/
+git bisect start
+# bad: [7d730f1bf6f39ece2d9f3ae682f12e5b593d534d] Add linux-next specific files for 20231005
+git bisect bad 7d730f1bf6f39ece2d9f3ae682f12e5b593d534d
+# good: [4d6ee1bd3e3820b523d43349cbcae230fdfcb613] Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
+git bisect good 4d6ee1bd3e3820b523d43349cbcae230fdfcb613
+# bad: [d6dfa62947bd47317de464c3ca55a6eaafe2e5af] Merge branch 'master' of git://linuxtv.org/media_tree.git
+git bisect bad d6dfa62947bd47317de464c3ca55a6eaafe2e5af
+# good: [73773d2fdd7172955a4476e8956c34aa49959219] bcachefs: Data update path no longer leaves cached replicas
+git bisect good 73773d2fdd7172955a4476e8956c34aa49959219
+# good: [87825243dfb1a14a0d8d3ae60754c34dfc084802] Merge branch 'loongarch-next' of git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git
+git bisect good 87825243dfb1a14a0d8d3ae60754c34dfc084802
+# good: [3855d73729a7ab4c3a6694a6efdf0816c8ad9dd1] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
+git bisect good 3855d73729a7ab4c3a6694a6efdf0816c8ad9dd1
+# bad: [298370bcbb0e5a2fae6c8efd35e2b7bf4c918f54] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git
+git bisect bad 298370bcbb0e5a2fae6c8efd35e2b7bf4c918f54
+# good: [927cf8c9dd2a58846b541d106149c5e94fd0556f] Merge branch 'nfsd-next' of git://git.kernel.org/pub/scm/linux/kernel/git/cel/linux
+git bisect good 927cf8c9dd2a58846b541d106149c5e94fd0556f
+# bad: [530d23ed060f9c9ddf3b03398367aba9a9577b82] Merge branch 'vfs.super' into vfs.all
+git bisect bad 530d23ed060f9c9ddf3b03398367aba9a9577b82
+# bad: [7291b00e6f694af2b42d223145acb77b2bf1f62c] Merge branch 'vfs.iov_iter' into vfs.all
+git bisect bad 7291b00e6f694af2b42d223145acb77b2bf1f62c
+# bad: [459218d4c663f094951d71bbf293fd14dbb688e1] Merge branch 'vfs.mount.write' into vfs.all
+git bisect bad 459218d4c663f094951d71bbf293fd14dbb688e1
+# good: [cbe52963050bac0f2bfe2c24e09f50ffdc41132b] watch_queue: Annotate struct watch_filter with __counted_by
+git bisect good cbe52963050bac0f2bfe2c24e09f50ffdc41132b
+# bad: [450f431b47219235870f57a3f72fa8fec0a0ba43] vfs: fix readahead(2) on block devices
+git bisect bad 450f431b47219235870f57a3f72fa8fec0a0ba43
+# good: [1cf2d167e7f661b687feb0bd15278b859fe1513c] vfs: shave work on failed file open
+git bisect good 1cf2d167e7f661b687feb0bd15278b859fe1513c
+# bad: [d089d9d056c048303aedd40a7f3f26593ebd040c] file: convert to SLAB_TYPESAFE_BY_RCU
+git bisect bad d089d9d056c048303aedd40a7f3f26593ebd040c
+# first bad commit: [d089d9d056c048303aedd40a7f3f26593ebd040c] file: convert to SLAB_TYPESAFE_BY_RCU
 
-Changelog v6->v7:
-- change compatible for scm_conf to 'simple-bus'
-- drop main_cpsw node due to driver dependency on [1]
+--f4w7RcmGnW7dyD3d
+Content-Type: application/pgp-signature; name="signature.asc"
 
-v6: https://lore.kernel.org/all/20230721132029.123881-1-j-choudhary@ti.com/
+-----BEGIN PGP SIGNATURE-----
 
-Changelog v5->v6:
-- Change header file according to [2].
-- Add idle-state property in serdes_ln_ctrl node.
-- Fix dtbs_check warning due to clock-frequency property in serdes_refclk
-  node by disabling the node in main.dtsi and enabling it in board file
-  when the clock-frequency node is actually added.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUfTwIACgkQJNaLcl1U
+h9Balwf+KctNxpWpdLJd4w+5+82DrGudqyRx/6+Vito3vGyvjsqnLUB5nVxbjql2
+EZlLDT2tjS+Ap1B4U9UvxHuUAiNwwhxLu2Sx+vYhHhMZoeOaqmzIr/F20qdRQMs/
+VI/Fvc69iS/epSIDda+t5cesEDK0K9frqWNgXb27PXv4uKmSeNdWznyHzS38F0kJ
+EElBSjSqIiBHHvT3jdhrlvJG/16JKthi+uSEXCdaUSwebYAT9F1MC80kEzFKb72w
+W5/dwIdxE+3jd4AzPObiSdtcfnAKgWXtH3884/B3vQ4YkNpMnhNNrtD22Xahvn6K
+wQcZlbQWofFtzB642ExENu7HkVcq7A==
+=VOXX
+-----END PGP SIGNATURE-----
 
-v5: https://lore.kernel.org/all/20230710101705.154119-1-j-choudhary@ti.com/
-
-Changelog v4->v5:
-- rebased the patches on linux-next tip.
-
-v4: https://lore.kernel.org/all/20230425131607.290707-1-j-choudhary@ti.com/
-
-Changelog v3->v4:
-- add reg property to serdes_ln_ctrl and fix the node name again to
-  get rid of dtbs_check error.
-- reorder reg, reg-names and ranges property for main_cpsw1.
-- correct the order for clocks in serdes_wiz nodes to fix dtbs_check
-  warnings.
-- fix indentation in reg, reg-names and clock property for dss node.
-- add comments for the reg type in dss registers.
-
-v3: https://lore.kernel.org/all/20230419061710.290068-1-j-choudhary@ti.com/
-
-Changelog v3->v2:
-- fix dtc warnings for 'scm_conf' and 'serdes_ln_ctrl' nodes
-  (Checked all the changes of the series with W=12 option during build)
-- added clock-frequency for serdes_refclk along with other EVM changes
-  This refclk is being used by all the instances of serdes_wiz which
-  are disabled by default. So configuring refclk when the serdes nodes
-  are used for the first time is okay.
-
-v2: https://lore.kernel.org/all/20230414151553.339599-1-j-choudhary@ti.com/
-
-Changelog v1->v2:
-- Moved J784S4 EVM changes together to the last patch
-  (Suggested by Andrew)
-
-v1: https://lore.kernel.org/all/20230405111412.151192-1-j-choudhary@ti.com/
-
-
-[0]: <https://lore.kernel.org/all/570903b6-8239-d44a-5fac-71700804cb5d@ti.com/>
-[1]: <https://lore.kernel.org/all/20230605154153.24025-1-afd@ti.com/>
-[2]: <https://lore.kernel.org/all/20230721125732.122421-1-j-choudhary@ti.com/>
-
-Dasnavis Sabiya (1):
-  arm64: dts: ti: k3-am69-sk: Add DP and HDMI support
-
-Rahul T R (2):
-  arm64: dts: ti: k3-j784s4-main: Add DSS and DP-bridge node
-  arm64: dts: ti: k3-j784s4-evm: Enable DisplayPort-0
-
-Siddharth Vadapalli (2):
-  arm64: dts: ti: k3-j784s4-main: Add system controller and SERDES lane
-    mux
-  arm64: dts: ti: k3-j784s4-main: Add WIZ and SERDES PHY nodes
-
- arch/arm64/boot/dts/ti/k3-am69-sk.dts      | 229 +++++++++++++++++
- arch/arm64/boot/dts/ti/k3-j784s4-evm.dts   | 119 +++++++++
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 276 +++++++++++++++++++++
- 3 files changed, 624 insertions(+)
-
--- 
-2.25.1
-
+--f4w7RcmGnW7dyD3d--
