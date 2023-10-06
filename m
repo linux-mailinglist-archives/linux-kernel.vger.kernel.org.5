@@ -2,134 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B407BBAA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2917BBAAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232545AbjJFOpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 10:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
+        id S232568AbjJFOqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 10:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232506AbjJFOpa (ORCPT
+        with ESMTP id S232572AbjJFOqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 10:45:30 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5289ADB
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 07:45:28 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qom4Y-0002UN-Rq; Fri, 06 Oct 2023 16:44:58 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qom4W-00BXaY-Dx; Fri, 06 Oct 2023 16:44:56 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qom4W-00AJrq-4D; Fri, 06 Oct 2023 16:44:56 +0200
-Date:   Fri, 6 Oct 2023 16:44:56 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] pwm: make it possible to apply pwm changes in atomic
- context
-Message-ID: <20231006144456.zybxv2pn4c37fpr3@pengutronix.de>
-References: <cover.1696156485.git.sean@mess.org>
- <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
- <20231004095920.ne7yrrthow6tnuvg@pengutronix.de>
- <ZR_hJ05h5O6SpM_D@orome.fritz.box>
+        Fri, 6 Oct 2023 10:46:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF861E4
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 07:46:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696603577; x=1728139577;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=YBcpvjCK4+25iq2YgElEdnQeYkCFUq/UFQ9ZwM6zUaA=;
+  b=Qsxq2BLfkLlM/Jgl9M9VGM2gpGNr4+qx7KjdSIhxUYqGbH2Sx3gf2EWF
+   Y3PgmTjRx+oTShkHti1dFLm7GZAL0L1E6QhiUhu2SXhQpKJda8sGEOvkj
+   bB8LmjAjGm5FrJmPE8stMRBc10PCTGQB7ph1gU2LP5W7oUE1OHgWfsmX9
+   ZpZFc0nrk+EdcwQOlnpHu4oU/tl5yjojo9HpMARsCLP4zvjq/t3N18dxE
+   kXKw5NvVcA34VID39Xzv+u/VAOfL4IwM9HJLqWDa+JZTEOWKAxbU3fD8R
+   WZd7LkSEOj8tjzL70lo6F3owjU/i9/UcIuBzzCD4wewyrGtb9dFkbrM1F
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="363116172"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="363116172"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 07:46:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="1083474099"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="1083474099"
+Received: from kvsudesh-mobl1.gar.corp.intel.com (HELO box.shutemov.name) ([10.251.222.76])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 07:46:12 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id ABA8110A172; Fri,  6 Oct 2023 17:46:09 +0300 (+03)
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>, x86@kernel.org,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Kai Huang <kai.huang@intel.com>
+Subject: [PATCHv3] x86/tdx: Mark TSC reliable
+Date:   Fri,  6 Oct 2023 17:45:49 +0300
+Message-ID: <20231006144549.2633-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="57x2r3oojyooxlif"
-Content-Disposition: inline
-In-Reply-To: <ZR_hJ05h5O6SpM_D@orome.fritz.box>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In x86 virtualization environments, including TDX, RDTSC instruction is
+handled without causing a VM exit, resulting in minimal overhead and
+jitters. On the other hand, other clock sources (such as HPET, ACPI
+timer, APIC, etc.) necessitate VM exits to implement, resulting in more
+fluctuating measurements compared to TSC. Thus, those clock sources are
+not effective for calibrating TSC.
 
---57x2r3oojyooxlif
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The host TSC is invariant on platforms where TDX is available.
 
-Hello Thierry,
+In TD guests, TSC is virtualized by the TDX module, which ensures:
 
-On Fri, Oct 06, 2023 at 12:27:51PM +0200, Thierry Reding wrote:
-> On Wed, Oct 04, 2023 at 11:59:20AM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Sun, Oct 01, 2023 at 11:40:29AM +0100, Sean Young wrote:
-> > > diff --git a/drivers/pwm/pwm-fsl-ftm.c b/drivers/pwm/pwm-fsl-ftm.c
-> > > index b7c6045c5d08..b8b9392844e9 100644
-> > > --- a/drivers/pwm/pwm-fsl-ftm.c
-> > > +++ b/drivers/pwm/pwm-fsl-ftm.c
-> > > @@ -405,6 +405,7 @@ static int fsl_pwm_probe(struct platform_device *=
-pdev)
-> > > =20
-> > >  	fpc->soc =3D of_device_get_match_data(&pdev->dev);
-> > >  	fpc->chip.dev =3D &pdev->dev;
-> > > +	fpc->chip.can_sleep =3D true;
-> >=20
-> > As .apply() being callable in non-sleepable context only depends on
-> > .apply() I think a better place for this property is in struct pwm_ops.
->=20
-> What about drivers for devices that can be either sleeping or not? There
-> are things like regmap which can abstract those differences away, so you
-> could have a driver that works on both types of devices, so setting this
-> in ops wouldn't be correct all the time. I think can_sleep needs to be
-> per-chip rather than per-driver.
+  - Virtual TSC is monotonously incrementing for any single VCPU;
+  - Virtual TSC values are consistent among all the TD’s VCPUs at the
+    level supported by the CPU:
+    + VMM is required to set the same TSC_ADJUST;
+    + VMM must not modify from initial value of TSC_ADJUST before
+      SEAMCALL;
+  - The frequency is determined by TD configuration:
+    + Virtual TSC frequency is specified by VMM on TDH.MNG.INIT;
+    + Virtual TSC starts counting from 0 at TDH.MNG.INIT;
 
-I would consider that a theoretic possibility. If there is a hardware
-that has a (say) i2c and a memory-mapped register variant, I never
-encountered such a thing. Hmm, the dwc driver seems to have a pci and a
-memory-mapped variant, both would be "fast" though. (Wouldn't they?)
+Reliable TSC is architectural guarantee for the TDX platform and it must
+work for any sane TDX implementation.
 
-Best regards
-Uwe
+Use TSC as the only reliable clock source in TD guests, bypassing
+unstable calibration.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Erdem Aktas <erdemaktas@google.com>
+Reviewed-by: Isaku Yamahata <isaku.yamahata@intel.com>
+Acked-by: Kai Huang <kai.huang@intel.com>
+---
 
---57x2r3oojyooxlif
-Content-Type: application/pgp-signature; name="signature.asc"
+ v3:
+  - More details in the commit message;
+  - Add Reviewed-bys and Acked-by;
 
------BEGIN PGP SIGNATURE-----
+ arch/x86/coco/tdx/tdx.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUgHWcACgkQj4D7WH0S
-/k7AkAgAuDF4yIt2iIMt7tFGHsc89qpaKIjDUSKxqgB4lz5w3E1CYWmOWOSFjuiU
-bZpxAL0kQ59hMs24OJONQb7ZJrN2l1LuYC0rUBEgPh46tZXF9fQhEI8OtmsICxsn
-tpEKsJB0Y3gRod2QvYDSu4vcVRFfXqZflcpDXeIA7bsTVV1KN/v6dqFX3zOKRKvu
-7Y356VPxQOp6clwewkrvh5Jou1KF4IhKb4LOdPIRnTQlrOF8hx7efoOQmiwYUI9A
-WrloVww0jolKUVUs/RnT+bOzfieEFHtSok2o9vMheSxETVtJcw/mfAucMQURNxF+
-ykxzRqKEfm+5k6pp5by9MOO8KkmX/A==
-=MC1V
------END PGP SIGNATURE-----
+diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+index 3e6dbd2199cf..2f27ae1e2c6b 100644
+--- a/arch/x86/coco/tdx/tdx.c
++++ b/arch/x86/coco/tdx/tdx.c
+@@ -816,6 +816,9 @@ void __init tdx_early_init(void)
+ 
+ 	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+ 
++	/* TSC is the only reliable clock in TDX guest */
++	setup_force_cpu_cap(X86_FEATURE_TSC_RELIABLE);
++
+ 	cc_vendor = CC_VENDOR_INTEL;
+ 	tdx_parse_tdinfo(&cc_mask);
+ 	cc_set_mask(cc_mask);
+-- 
+2.41.0
 
---57x2r3oojyooxlif--
