@@ -2,85 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27EB87BBF0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DEC7BBF2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233254AbjJFSxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 14:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
+        id S233314AbjJFSyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 14:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233119AbjJFSxF (ORCPT
+        with ESMTP id S233296AbjJFSyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 14:53:05 -0400
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A1DD8;
-        Fri,  6 Oct 2023 11:52:26 -0700 (PDT)
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-57de9237410so1297836eaf.0;
-        Fri, 06 Oct 2023 11:52:26 -0700 (PDT)
+        Fri, 6 Oct 2023 14:54:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3963FE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 11:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696618355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JOeQFdxxoelQGpngpLs9e1LT5gw6XGDAEUlktj2VpH4=;
+        b=IdLX3bRKL05Wwz/lExH9iX0mjTqCW90wywGYBpJ0+kaXlUaP8QtQmexNMCjZxER3kIncM2
+        sfkSHo+X5CAvQPDLJu5qiYPBuYomQSL5hxnBU0lEzEY0IUy/DoGTxBXfY8PoLZ4+3WgL1q
+        YG/BjPly3YlsLBrV0shwnKOkJBPy+uQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-640-7Km3meM2MPmOP6k-cR_sRA-1; Fri, 06 Oct 2023 14:52:33 -0400
+X-MC-Unique: 7Km3meM2MPmOP6k-cR_sRA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3251bc06680so1798578f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 11:52:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696618345; x=1697223145;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RNOQ3ahZw3ChgJyCcGSpyxiAH42KlZx7pAe81L0nIMo=;
-        b=LS3OoI/BIz6Q3GUKgs7gx2xJGyzn2VuPSsfIWckJ2KbppdG9XHXVERcHpMCPu0l3aA
-         XO0eg8f++/xtIg/1DlIboI9+sONa+3ec9e5qnyHYNHz75VYP8jNyrQIz5j0mwmZraThQ
-         MMEhKfKj2L1WL+EqI0y3iGbKOVwvwuLVxdUAV6fYytLSYRSMOzdjbtVt0AGe7uQynx5Q
-         VI0w7LMQ/ogTfD3DlYSZqL6MJpM0I2G31vlDJ8GGBb4E68TOzufeL8yLTKHCwzS8H6FL
-         doe0NYWJJ2iUkWZVUOPzglErobaf9K4pyGCj8PRjDLg6rA3SLYeAos0GH9hokc4Ejm2D
-         FBEw==
-X-Gm-Message-State: AOJu0YyKhc/aabs+uhuhwYGC5+yY0ABGyYfID08MiJjBZw2k71MMN3j8
-        c6NYc25gLA/VTlRZHvus6A==
-X-Google-Smtp-Source: AGHT+IE7hUsL5IdR+DnVE8LzG2mVH0Wt5WH1UJQSbC1YxyZJTc6mSX7wuP0uK/wghBs+dQJ3kQacAg==
-X-Received: by 2002:a4a:d2dc:0:b0:571:1a1d:f230 with SMTP id j28-20020a4ad2dc000000b005711a1df230mr9020280oos.9.1696618345590;
-        Fri, 06 Oct 2023 11:52:25 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id b3-20020a4ae803000000b0055ab0abaf31sm466601oob.19.2023.10.06.11.52.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 11:52:24 -0700 (PDT)
-Received: (nullmailer pid 135158 invoked by uid 1000);
-        Fri, 06 Oct 2023 18:52:23 -0000
-Date:   Fri, 6 Oct 2023 13:52:23 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Conor Dooley <conor+dt@kernel.org>, Liu Ying <victor.liu@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] dt-bindings: bus: fsl,imx8qxp-pixel-link-msi-bus: Drop
- child 'reg' property
-Message-ID: <169661833704.134998.2141713434112587457.robh@kernel.org>
-References: <20230925212639.1975002-1-robh@kernel.org>
+        d=1e100.net; s=20230601; t=1696618352; x=1697223152;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JOeQFdxxoelQGpngpLs9e1LT5gw6XGDAEUlktj2VpH4=;
+        b=vFLXcV+Ot6Uhu0cviePtiwz6zDWuwMi0h5/468hg2DDg5gceQzLzn2rsESOytMeWMy
+         WVFkVwSEo2p5lT9X3UInnEGGS9snRrDvzdtOZgyEKR+7BORAYbn0+gSxcyQ5LoE+Bt0M
+         sutl69rr+S7Vm0ezZlGAn4yPjQnl7TLLIF8/TSFbDr0YQE2iLUK/5DXAEcW+a0Uvhzj+
+         Yco/kqxy4mpImqdNDwJgNa1Wn6om+6dgMDUchtGBoHYE6n6g3C/PefATyq4q5QSnyPo1
+         w63lDA38/U/UNXjQCzhKzzajYFti4pxwZbcWowHo5Q+J9gfDjwL01K9zpFyr0nzVarZS
+         YCxg==
+X-Gm-Message-State: AOJu0YzKfIXsGc6bERMGUZhbCGhM8eKOVrifEVJx5IeuorWvJb2yvLOP
+        Bos0qoeRBC2Vc4P5La6zJCRWUbZ7OLSPkv0z8ZY4CNZRrb+BdIcoFV2K6Ly2YvQXyU1WNvG/dhz
+        7LF1n7Ml6ENOQzZVgxCd0lDi7heKe7+7L
+X-Received: by 2002:a5d:4286:0:b0:321:651b:4651 with SMTP id k6-20020a5d4286000000b00321651b4651mr8540564wrq.29.1696618352496;
+        Fri, 06 Oct 2023 11:52:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHcCPOFXmr+bA/jHzGh7Itci+F3ST/K5NJOrqs3d3a4HSFV8LqOi+029gM3IVISV4ItpA6YkA==
+X-Received: by 2002:a5d:4286:0:b0:321:651b:4651 with SMTP id k6-20020a5d4286000000b00321651b4651mr8540544wrq.29.1696618351955;
+        Fri, 06 Oct 2023 11:52:31 -0700 (PDT)
+Received: from [192.168.3.108] (p4ff23b7e.dip0.t-ipconnect.de. [79.242.59.126])
+        by smtp.gmail.com with ESMTPSA id p13-20020a5d68cd000000b0031ae8d86af4sm2213046wrw.103.2023.10.06.11.52.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 11:52:31 -0700 (PDT)
+Message-ID: <0ed83331-9037-421a-d450-363e07e87f6a@redhat.com>
+Date:   Fri, 6 Oct 2023 20:52:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230925212639.1975002-1-robh@kernel.org>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
+Content-Language: en-US
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Zach O'Keefe <zokeefe@google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Saurabh Singh Sengar <ssengar@microsoft.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ryan Roberts <ryan.roberts@arm.com>
+References: <20230925200110.1979606-1-zokeefe@google.com>
+ <20231006105810.17fcb352e33cbcab1645099b@linux-foundation.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20231006105810.17fcb352e33cbcab1645099b@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 25 Sep 2023 16:26:34 -0500, Rob Herring wrote:
-> A bus schema based on simple-pm-bus shouldn't define how may 'reg' entries
-> a child device has. That is a property of the device. Drop the 'reg' entry.
+On 06.10.23 19:58, Andrew Morton wrote:
+> On Mon, 25 Sep 2023 13:01:10 -0700 "Zach O'Keefe" <zokeefe@google.com> wrote:
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bindings/bus/fsl,imx8qxp-pixel-link-msi-bus.yaml           | 3 ---
->  1 file changed, 3 deletions(-)
+>> The 6.0 commits:
+>>
+>> commit 9fec51689ff6 ("mm: thp: kill transparent_hugepage_active()")
+>> commit 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
+>>
+>> merged "can we have THPs in this VMA?" logic that was previously done
+>> separately by fault-path, khugepaged, and smaps "THPeligible" checks.
+>>
+>> During the process, the semantics of the fault path check changed in two
+>> ways:
+>>
+>> 1) A VM_NO_KHUGEPAGED check was introduced (also added to smaps path).
+>> 2) We no longer checked if non-anonymous memory had a vm_ops->huge_fault
+>>     handler that could satisfy the fault.  Previously, this check had been
+>>     done in create_huge_pud() and create_huge_pmd() routines, but after
+>>     the changes, we never reach those routines.
+>>
+>> During the review of the above commits, it was determined that in-tree
+>> users weren't affected by the change; most notably, since the only relevant
+>> user (in terms of THP) of VM_MIXEDMAP or ->huge_fault is DAX, which is
+>> explicitly approved early in approval logic. However, this was a bad
+>> assumption to make as it assumes the only reason to support ->huge_fault
+>> was for DAX (which is not true in general).
+>>
+>> Remove the VM_NO_KHUGEPAGED check when not in collapse path and give
+>> any ->huge_fault handler a chance to handle the fault.  Note that we
+>> don't validate the file mode or mapping alignment, which is consistent
+>> with the behavior before the aforementioned commits.
+>>
+>> ...
+>>
+>> @@ -100,11 +100,11 @@ bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
+>>   		return in_pf;
+>>   
 > 
+> Ryan's "mm: thp: introduce anon_orders and anon_always_mask sysfs
+> files" changes hugepage_vma_check() to return an unsigned int, so this
+> patch will need some rework to fit in after that.
+> 
+> However Ryan's overall series "variable-order, large folios for
+> anonymous memory" is in early days and might not make it.
+> 
+> And as I don't know what is the urgency of this patch ("mm/thp: fix
+> "mm: thp: kill __transhuge_page_enabled()"), I'm unable to decide which
+> patch needs to come first (thus requiring rework of the other patch).
+> 
+> Please discuss!
 
-Applied, thanks!
+IMHO clearly this one.
+
+-- 
+Cheers,
+
+David / dhildenb
 
