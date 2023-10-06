@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 705C77BBDEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0BC7BBDEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 19:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232970AbjJFRpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 13:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36558 "EHLO
+        id S233072AbjJFRpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 13:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232552AbjJFRpk (ORCPT
+        with ESMTP id S233032AbjJFRps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 13:45:40 -0400
+        Fri, 6 Oct 2023 13:45:48 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E4EBE
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 10:45:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 041DDC433C8;
-        Fri,  6 Oct 2023 17:45:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EDFDF;
+        Fri,  6 Oct 2023 10:45:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5453EC433C7;
+        Fri,  6 Oct 2023 17:45:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696614339;
-        bh=eR2R0F/vcWmTXvkygEMikVDgfUW8yNTc/B0mv/Thh/Q=;
+        s=k20201202; t=1696614346;
+        bh=m/31zFx7p634FZoa2MB8a6EcMoxskB9XZBiy1PLjgOk=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=H3+2v7Y+DSgsz0T5otVWlNHANJXOJ5610MQm+JQ5HL6JBe9soPh07DyrGaiAQEKzx
-         kRpt/7yu3hew9LpWKdWNZgbsSxTRUC8tj8vTBgaQx9c+9T2v9LzYTbYZ+NoLSJ0qMa
-         SgTu9j7tsGszpThY+Ifqwxa12g1xGOu05D3EBLNUzrPPbhyrPpU1ETpSNtuQ3IJgqp
-         2cdCLqJHQReUXZtr00Vz+IPajuyhMhtUmM6jDivPHJwLL0MGwhw9g2jBue0Pz3SyJb
-         Tmq6k0fYbLvcqKgFHW7NTMXIjewIHDNDJhj3DsY5Q+c8POuLpaeuHkYogpWtu/vj49
-         L5SA3fNqvyLRg==
+        b=B/PJGyD+If0/sLWCL2ewd9s8znH0Je7ZO5+re0LHtj7XzzuvsVufHlboeIqrHBQRZ
+         94EFi+GRwgUumEo1a+eflgD7LxuOmA5E7ANj8kferjRHD4a2SatqVCgV/deBJ7gKTe
+         dL2wTNr3oBwbl6IDRcnq702GUzEttpKZAYHF8817Kc0dCt4Wt74DEr1Ot5W4wU3SBa
+         5x74Qy4C79KKvo6zApL28n25Txfsp2C/CooZENn6rfhshAACPr2JIfc/C9B/tlWmYH
+         ob/CnqqSSf/Ed48cVFsgmzSfCGd6TpBcuVHuMsxWpyMy6zKP78invleSwFpQRICv+g
+         uWTkYnxGd63VQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com
-In-Reply-To: <20231006111039.101914-1-rf@opensource.cirrus.com>
-References: <20231006111039.101914-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH 0/4] ASoC: cs35l56: Update hibernate/wake sequences and
- enable hibernation
-Message-Id: <169661433758.222574.6492928964060068556.b4-ty@kernel.org>
-Date:   Fri, 06 Oct 2023 18:45:37 +0100
+To:     linux-spi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <2023100639-celtic-herbs-66be@gregkh>
+References: <2023100639-celtic-herbs-66be@gregkh>
+Subject: Re: [PATCH] spi: spidev: make spidev_class constant
+Message-Id: <169661434501.222776.95310349603374179.b4-ty@kernel.org>
+Date:   Fri, 06 Oct 2023 18:45:45 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -51,30 +50,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Oct 2023 12:10:35 +0100, Richard Fitzgerald wrote:
-> Update the hibernate and wake command sequences to meet the latest
-> datasheet specification and enable hibernation for I2C and SPI control
-> interfaces.
+On Fri, 06 Oct 2023 15:58:40 +0200, Greg Kroah-Hartman wrote:
+> Now that the driver core allows for struct class to be in read-only
+> memory, we should make all 'class' structures declared at build time
+> placing them into read-only memory, instead of having to be dynamically
+> allocated at runtime.
 > 
-> Richard Fitzgerald (1):
->   ASoC: cs35l56: Enable low-power hibernation mode on SPI
 > 
-> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/4] ASoC: cs35l56: Change hibernate sequence to use allow auto hibernate
-      commit: a47cf4dac7dcc43ef25d009ca0ad28fc86ba0eef
-[2/4] ASoC: cs35l56: Wake transactions need to be issued twice
-      commit: 3df761bdbc8bc1bb679b5a4d4e068728d930a552
-[3/4] ASoC: cs35l56: Enable low-power hibernation mode on i2c
-      commit: 79b101947a829a1c4c3eca4b6365093d2b534cf4
-[4/4] ASoC: cs35l56: Enable low-power hibernation mode on SPI
-      commit: 634ed138d80b1cc8a903edb226458ea203c44abd
+[1/1] spi: spidev: make spidev_class constant
+      commit: df22568ad8ed317db95acc11e1c08bae7a0fba5d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
