@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0807BBB3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1D57BBB4B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbjJFPHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 11:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
+        id S232793AbjJFPH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 11:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232659AbjJFPHK (ORCPT
+        with ESMTP id S232838AbjJFPHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 11:07:10 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975348F
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 08:07:08 -0700 (PDT)
-Received: from dude05.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::54])
-        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <m.tretter@pengutronix.de>)
-        id 1qomPy-00051v-D3; Fri, 06 Oct 2023 17:07:06 +0200
-From:   Michael Tretter <m.tretter@pengutronix.de>
-Date:   Fri, 06 Oct 2023 17:07:07 +0200
-Subject: [PATCH v2 5/5] drm/bridge: samsung-dsim: calculate porches in Hz
+        Fri, 6 Oct 2023 11:07:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F482FC;
+        Fri,  6 Oct 2023 08:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696604863; x=1728140863;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DwQeK5g+nZrAsMFaywjVF9oKx41J1cDOJOgnHvkpWNk=;
+  b=WwgNFnupgrxVQhAHmsB1O64kFr1uu8AO40HEUGZqmYqeB0g5AMY3UrGJ
+   +ogy/sswWRp7vcc1+6vgVD3aBDuMcv0O3L1bwndzYjGwWikuzB0YMHr5v
+   WJs1cyyd/rYKKVogXXvS4TgoaEHb+VMTxJgoHANkmtoOcOnJXaLgWjk6h
+   MNJRkv6T30yaN3Y1FiEUXVMFq44alRfHDKa/EgsFulaPm57u8u0Wt0xrr
+   dfmHW0xLrMLn/ipE39KbTn4ejXn8p19v6xj9X0lK+3BPxZP2qtI1dk9DQ
+   deJlpZFh5F6AXwFSzRyKnWPD+bMfAqSOovUzXqtS/+PlvHa+BQNub5jus
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="363120403"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="363120403"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 08:07:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="1083484364"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="1083484364"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 08:07:40 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qomQU-00000003LPZ-0p8U;
+        Fri, 06 Oct 2023 18:07:38 +0300
+Date:   Fri, 6 Oct 2023 18:07:37 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v1 1/1] asm-generic: Fix spelling of architecture
+Message-ID: <ZSAiueycCL067TrJ@smile.fi.intel.com>
+References: <20230724134301.13980-1-andriy.shevchenko@linux.intel.com>
+ <ZN+V7P6srKrAelUQ@smile.fi.intel.com>
+ <3a5898a1-71b3-7377-cf46-94149e53cbce@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230818-samsung-dsim-v2-5-846603df0e0a@pengutronix.de>
-References: <20230818-samsung-dsim-v2-0-846603df0e0a@pengutronix.de>
-In-Reply-To: <20230818-samsung-dsim-v2-0-846603df0e0a@pengutronix.de>
-To:     Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Michael Tretter <m.tretter@pengutronix.de>,
-        Adam Ford <aford173@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Marco Felsch <m.felsch@pengutronix.de>
-X-Mailer: b4 0.12.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::54
-X-SA-Exim-Mail-From: m.tretter@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3a5898a1-71b3-7377-cf46-94149e53cbce@infradead.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calculating the byte_clk in kHz is imprecise for a hs_clock of 55687500
-Hz, which may be used with a pixel clock of 74.25 MHz with mode
-1920x1080-30.
+On Fri, Aug 18, 2023 at 04:08:13PM -0700, Randy Dunlap wrote:
+> On 8/18/23 09:01, Andy Shevchenko wrote:
+> > On Mon, Jul 24, 2023 at 04:43:01PM +0300, Andy Shevchenko wrote:
+> >> Fix spelling of "architecture" in the Kbuild file.
+> > 
+> > Any comments?
+> 
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Fix the calculation by using HZ instead of kHZ.
+Thank you!
 
-This requires to change the type to u64 to prevent overflows of the
-integer type.
-
-Reviewed-by: Adam Ford <aford173@gmail.com>  #imx8mm-beacon
-Tested-by: Adam Ford <aford173@gmail.com>  #imx8mm-beacon
-Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron BL i.MX8MM + Waveshare 10.1inch HDMI LCD (E)
-Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
-Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
-
----
-Changes in v2: None
----
- drivers/gpu/drm/bridge/samsung-dsim.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-index 714e1e833606..63a0d8dbe37c 100644
---- a/drivers/gpu/drm/bridge/samsung-dsim.c
-+++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-@@ -986,10 +986,12 @@ static void samsung_dsim_set_display_mode(struct samsung_dsim *dsi)
- 	u32 reg;
- 
- 	if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO) {
--		int byte_clk_khz = dsi->hs_clock / 1000 / 8;
--		int hfp = DIV_ROUND_UP((m->hsync_start - m->hdisplay) * byte_clk_khz, m->clock);
--		int hbp = DIV_ROUND_UP((m->htotal - m->hsync_end) * byte_clk_khz, m->clock);
--		int hsa = DIV_ROUND_UP((m->hsync_end - m->hsync_start) * byte_clk_khz, m->clock);
-+		u64 byte_clk = dsi->hs_clock / 8;
-+		u64 pix_clk = m->clock * 1000;
-+
-+		int hfp = DIV64_U64_ROUND_UP((m->hsync_start - m->hdisplay) * byte_clk, pix_clk);
-+		int hbp = DIV64_U64_ROUND_UP((m->htotal - m->hsync_end) * byte_clk, pix_clk);
-+		int hsa = DIV64_U64_ROUND_UP((m->hsync_end - m->hsync_start) * byte_clk, pix_clk);
- 
- 		/* remove packet overhead when possible */
- 		hfp = max(hfp - 6, 0);
+Arnd, is it possible to get this applied?
+Or should I use another tree?
 
 -- 
-2.39.2
+With Best Regards,
+Andy Shevchenko
+
 
